@@ -12,6 +12,7 @@ const {
   handleRtTfSingleEventError,
   getAccessToken,
 } = require('../../util');
+const { CommonUtils } = require('../../../util/common');
 
 const {
   ConfigCategories,
@@ -22,7 +23,7 @@ const {
   MAX_BATCH_CONVERSATIONS_SIZE,
 } = require('./config');
 
-const { convertToMicroseconds } = require('./util');
+const { convertToMicroseconds, prepareUserIdentifiers } = require('./util');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 function isEmptyObject(obj) {
@@ -103,6 +104,15 @@ function processTrack(message, metadata, destination) {
           'properties.encryptionEntityType , properties.encryptionSource and properties.encryptionEntityId',
       );
     }
+  }
+
+  if (
+    destination.Config.enableEnhancedConversions &&
+    message.properties.requestType === 'batchupdate'
+  ) {
+    requestJson.userIdentifiers = CommonUtils.toArray(
+      prepareUserIdentifiers(message, destination.Config.isHashingRequired ?? true),
+    );
   }
 
   const endpointUrl = prepareUrl(message, destination);

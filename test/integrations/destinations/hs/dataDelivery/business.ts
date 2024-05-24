@@ -170,7 +170,7 @@ export const businessData = [
                   ...generateMetadata(1),
                   dontBatch: true,
                 },
-                statusCode: 400,
+                statusCode: 500,
               },
               {
                 error:
@@ -179,7 +179,7 @@ export const businessData = [
                   ...generateMetadata(2),
                   dontBatch: true,
                 },
-                statusCode: 400,
+                statusCode: 500,
               },
             ],
             status: 500,
@@ -251,7 +251,7 @@ export const businessData = [
                   ...generateMetadata(1),
                   dontBatch: true,
                 },
-                statusCode: 400,
+                statusCode: 500,
               },
               {
                 error:
@@ -260,7 +260,7 @@ export const businessData = [
                   ...generateMetadata(2),
                   dontBatch: true,
                 },
-                statusCode: 400,
+                statusCode: 500,
               },
               {
                 error:
@@ -269,7 +269,7 @@ export const businessData = [
                   ...generateMetadata(3),
                   dontBatch: true,
                 },
-                statusCode: 400,
+                statusCode: 500,
               },
             ],
             status: 500,

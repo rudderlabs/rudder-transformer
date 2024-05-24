@@ -1,5 +1,6 @@
 const get = require('get-value');
 const { InstrumentationError } = require('@rudderstack/integrations-lib');
+const { groupBy } = require('lodash');
 const { EventType } = require('../../../constants');
 const { handleRtTfSingleEventError, getDestinationExternalIDInfoForRetl } = require('../../util');
 const { API_VERSION } = require('./config');
@@ -15,6 +16,7 @@ const {
   fetchFinalSetOfTraits,
   getProperties,
   validateDestinationConfig,
+  convertToResponseFormat,
 } = require('./util');
 
 const processSingleMessage = async (message, destination, propertyMap) => {
@@ -137,16 +139,41 @@ const processRouterDest = async (inputs, reqMetadata) => {
     }),
   );
 
+  const groupedByDifferentDontBatch = groupBy(
+    successRespList,
+    (response) => response.metadata.dontBatch,
+  );
+
+  const dontBatchTrueResponses = [];
+  const dontBatchFalseOrUndefinedResponses = [];
+  Object.keys(groupedByDifferentDontBatch).forEach((dontaBatchVal) => {
+    switch (dontaBatchVal) {
+      case 'true':
+        dontBatchTrueResponses.push(...groupedByDifferentDontBatch.true);
+        break;
+      case 'false':
+        dontBatchFalseOrUndefinedResponses.push(...groupedByDifferentDontBatch.false);
+        break;
+      case 'undefined':
+        dontBatchFalseOrUndefinedResponses.push(...groupedByDifferentDontBatch.undefined);
+        break;
+      default:
+    }
+  });
   // batch implementation
   let batchedResponseList = [];
   if (successRespList.length > 0) {
     if (destination.Config.apiVersion === API_VERSION.v3) {
-      batchedResponseList = batchEvents(successRespList);
+      batchedResponseList = batchEvents(dontBatchFalseOrUndefinedResponses);
     } else {
-      batchedResponseList = legacyBatchEvents(successRespList);
+      batchedResponseList = legacyBatchEvents(dontBatchFalseOrUndefinedResponses);
     }
   }
-  return [...batchedResponseList, ...errorRespList];
+  return [
+    ...batchedResponseList,
+    ...errorRespList,
+    ...convertToResponseFormat(dontBatchTrueResponses),
+  ];
 };
 
 module.exports = { process, processRouterDest };

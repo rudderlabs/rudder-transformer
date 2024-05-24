@@ -19,7 +19,7 @@ const populateResponseWithDontBatch = (rudderJobMetadata, status, response) => {
   for (const metadata of rudderJobMetadata) {
     metadata.dontBatch = true;
     responseWithIndividualEvents.push({
-      statusCode: status,
+      statusCode: 500,
       metadata,
       error: errorMessage,
     });

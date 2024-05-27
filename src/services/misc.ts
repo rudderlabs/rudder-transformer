@@ -1,12 +1,12 @@
 /* eslint-disable global-require, import/no-dynamic-require */
-import { LoggableExtraData, structuredLogger as logger } from '@rudderstack/integrations-lib';
+import { LoggableExtraData } from '@rudderstack/integrations-lib';
 import fs from 'fs';
 import { Context } from 'koa';
 import path from 'path';
 import { DestHandlerMap } from '../constants/destinationCanonicalNames';
 import { getCPUProfile, getHeapProfile } from '../middleware';
 import { ErrorDetailer, Metadata } from '../types';
-import { getLoggableData } from '../v0/util';
+import logger from '../logger';
 
 export class MiscService {
   public static getDestHandler(dest: string, version: string) {
@@ -78,7 +78,7 @@ export class MiscService {
   }
 
   public static logError(message: string, errorDetailer: ErrorDetailer) {
-    const loggableExtraData: Partial<LoggableExtraData> = getLoggableData(errorDetailer);
-    logger.errorw(message || '', loggableExtraData);
+    const loggableExtraData: Partial<LoggableExtraData> = logger.getLogMetadata(errorDetailer);
+    logger.error(message || '', loggableExtraData);
   }
 }

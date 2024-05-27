@@ -1,11 +1,8 @@
 const { defaultRequestConfig } = require('rudder-transformer-cdk/build/utils');
 const lodash = require('lodash');
-const {
-  NetworkError,
-  InstrumentationError,
-  structuredLogger: logger,
-} = require('@rudderstack/integrations-lib');
+const { NetworkError, InstrumentationError } = require('@rudderstack/integrations-lib');
 const { WhiteListedTraits } = require('../../../constants');
+const logger = require('../../../logger');
 
 const {
   constructPayload,
@@ -16,7 +13,6 @@ const {
   defaultBatchRequestConfig,
   getSuccessRespEvents,
   defaultPatchRequestConfig,
-  getLoggableData,
 } = require('../../util');
 const tags = require('../../util/tags');
 const { handleHttpRequest } = require('../../../adapters/network');
@@ -60,9 +56,11 @@ const getIdFromNewOrExistingProfile = async ({ endpoint, payload, requestOptions
       module: 'router',
     },
   );
-  logger.debug(`[${destType.toUpperCase()}] get id from profile`, {
-    ...getLoggableData(metadata),
-    ...(resp.headers ? { responseHeaders: resp.headers } : {}),
+  logger.responseLog(`[${destType.toUpperCase()}] get id from profile`, {
+    metadata,
+    responseDetails: {
+      ...resp,
+    },
   });
 
   /**

@@ -17,6 +17,8 @@ import {
   isCdkV2Destination,
 } from './utils';
 
+import logger from '../../logger';
+
 const defTags = {
   [tags.TAG_NAMES.IMPLEMENTATION]: tags.IMPLEMENTATIONS.CDK_V2,
 };
@@ -82,7 +84,6 @@ export async function processCdkV2Workflow(
   destType: string,
   parsedEvent: FixMe,
   feature: string,
-  logger: FixMe,
   requestMetadata: NonNullable<unknown> = {},
   bindings: Record<string, FixMe> = {},
 ) {

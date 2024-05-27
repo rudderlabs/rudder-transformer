@@ -123,7 +123,7 @@ const ProxyRequest = async (request) => {
     },
   );
   const { response: processedResp, status, headers: responseHeaders } = processedResponse;
-  logger.responseLog(`[${destType.toUpperCase()}] get conversion action id response`, {
+  logger.responseLog(`[${destType.toUpperCase()}] conversion enhancement response`, {
     metadata,
     responseDetails: {
       response: processedResp,

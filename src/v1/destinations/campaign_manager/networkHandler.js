@@ -1,19 +1,15 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-restricted-syntax */
-const { structuredLogger: logger } = require('@rudderstack/integrations-lib');
 const { TransformerProxyError } = require('../../../v0/util/errorTypes');
 const { prepareProxyRequest, proxyRequest } = require('../../../adapters/network');
-const {
-  isHttpStatusSuccess,
-  getAuthErrCategoryFromStCode,
-  getLoggableData,
-} = require('../../../v0/util/index');
+const { isHttpStatusSuccess, getAuthErrCategoryFromStCode } = require('../../../v0/util/index');
 
 const {
   processAxiosResponse,
   getDynamicErrorType,
 } = require('../../../adapters/utils/networkUtils');
 const tags = require('../../../v0/util/tags');
+const logger = require('../../../logger');
 
 function isEventAbortableAndExtractErrMsg(element, proxyOutputObj) {
   let isAbortable = false;
@@ -45,11 +41,13 @@ const responseHandler = (responseParams) => {
   const responseWithIndividualEvents = [];
   const { response, status, headers } = destinationResponse;
 
-  logger.debug('[campaign_manager] response handling', {
-    ...getLoggableData(rudderJobMetadata),
-    ...(headers ? { headers } : {}),
-    response,
-    status,
+  logger.responseLog('[campaign_manager] response handling', {
+    metadata: rudderJobMetadata,
+    responseDetails: {
+      headers,
+      response,
+      status,
+    },
   });
 
   if (isHttpStatusSuccess(status)) {

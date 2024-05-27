@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 const lodash = require('lodash');
 const get = require('get-value');
-const { RedisError, structuredLogger: logger } = require('@rudderstack/integrations-lib');
+const { RedisError } = require('@rudderstack/integrations-lib');
 const stats = require('../../../util/stats');
 const {
   getShopifyTopic,
@@ -13,6 +13,7 @@ const {
   getHashLineItems,
   getDataFromRedis,
 } = require('./util');
+const logger = require('../../../logger');
 const { RedisDB } = require('../../../util/redis/redisConnector');
 const { removeUndefinedAndNullValues, isDefinedAndNotNull } = require('../../util');
 const Message = require('../message');

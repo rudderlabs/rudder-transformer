@@ -2234,22 +2234,6 @@ const validateEventAndLowerCaseConversion = (event, isMandatory, convertToLowerC
   return convertToLowerCase ? event.toString().toLowerCase() : event.toString();
 };
 
-function getLoggableData(metadata) {
-  let reqMeta = metadata;
-  if (Array.isArray(metadata)) {
-    [reqMeta] = metadata;
-  }
-  return {
-    ...(reqMeta?.destinationId && { destinationId: reqMeta.destinationId }),
-    ...(reqMeta?.sourceId && { sourceId: reqMeta.sourceId }),
-    ...(reqMeta?.workspaceId && { workspaceId: reqMeta.workspaceId }),
-    ...(reqMeta?.destType && { destType: reqMeta.destType }),
-    ...(reqMeta?.module && { module: reqMeta.module }),
-    ...(reqMeta?.implementation && { implementation: reqMeta.implementation }),
-    ...(reqMeta?.feature && { feature: reqMeta.feature }),
-  };
-}
-
 // ========================================================================
 // EXPORTS
 // ========================================================================
@@ -2368,5 +2352,4 @@ module.exports = {
   removeDuplicateMetadata,
   combineBatchRequestsWithSameJobIds,
   validateEventAndLowerCaseConversion,
-  getLoggableData,
 };

@@ -1,7 +1,8 @@
 const sha256 = require('sha256');
-const { TransformationError, structuredLogger: logger } = require('@rudderstack/integrations-lib');
+const { TransformationError } = require('@rudderstack/integrations-lib');
 const Message = require('../message');
 const { voterMapping, authorMapping, checkForRequiredFields } = require('./util');
+const logger = require('../../../logger');
 
 const CannyOperation = {
   VOTE_CREATED: 'vote.created',

@@ -25,8 +25,6 @@ import {
 } from '../../types/index';
 import stats from '../../util/stats';
 import tags from '../../v0/util/tags';
-import { getLoggableData } from '../../v0/util';
-import { MiscService } from '../misc';
 import { DestinationPostTransformationService } from './postTransformation';
 
 export class NativeIntegrationDestinationService implements DestinationService {
@@ -61,7 +59,6 @@ export class NativeIntegrationDestinationService implements DestinationService {
     destinationType: string,
     version: string,
     requestMetadata: NonNullable<unknown>,
-    logger: any,
   ): Promise<ProcessorTransformationResponse[]> {
     const destHandler = FetchHandler.getDestHandler(destinationType, version);
     const respList: ProcessorTransformationResponse[][] = await Promise.all(
@@ -73,15 +70,10 @@ export class NativeIntegrationDestinationService implements DestinationService {
           tags.FEATURES.PROCESSOR,
         );
         metaTO.metadata = event.metadata;
-        const loggerWithCtx = logger.child({ ...getLoggableData(metaTO.errorDetails) });
         try {
           const transformedPayloads:
             | ProcessorTransformationOutput
-            | ProcessorTransformationOutput[] = await destHandler.process(
-            event,
-            requestMetadata,
-            loggerWithCtx,
-          );
+            | ProcessorTransformationOutput[] = await destHandler.process(event, requestMetadata);
           return DestinationPostTransformationService.handleProcessorTransformSucessEvents(
             event,
             transformedPayloads,
@@ -105,7 +97,6 @@ export class NativeIntegrationDestinationService implements DestinationService {
     destinationType: string,
     version: string,
     requestMetadata: NonNullable<unknown>,
-    logger: any,
   ): Promise<RouterTransformationResponse[]> {
     const destHandler = FetchHandler.getDestHandler(destinationType, version);
     const allDestEvents: NonNullable<unknown> = groupBy(
@@ -121,16 +112,9 @@ export class NativeIntegrationDestinationService implements DestinationService {
           destInputArray[0].metadata?.workspaceId,
           tags.FEATURES.ROUTER,
         );
-        const loggerWithCtx = logger.child({
-          ...getLoggableData(metaTO.errorDetails),
-        });
         try {
           const doRouterTransformationResponse: RouterTransformationResponse[] =
-            await destHandler.processRouterDest(
-              cloneDeep(destInputArray),
-              requestMetadata,
-              loggerWithCtx,
-            );
+            await destHandler.processRouterDest(cloneDeep(destInputArray), requestMetadata);
           metaTO.metadata = destInputArray[0].metadata;
           return DestinationPostTransformationService.handleRouterTransformSuccessEvents(
             doRouterTransformationResponse,
@@ -157,7 +141,6 @@ export class NativeIntegrationDestinationService implements DestinationService {
     destinationType: string,
     version: any,
     requestMetadata: NonNullable<unknown>,
-    logger: any,
   ): RouterTransformationResponse[] {
     const destHandler = FetchHandler.getDestHandler(destinationType, version);
     if (!destHandler.batch) {
@@ -176,14 +159,10 @@ export class NativeIntegrationDestinationService implements DestinationService {
         tags.FEATURES.BATCH,
       );
       metaTO.metadatas = events.map((event) => event.metadata);
-      const loggerWithCtx = logger.child({
-        ...getLoggableData(metaTO.errorDetails),
-      });
       try {
         const destBatchedRequests: RouterTransformationResponse[] = destHandler.batch(
           destEvents,
           requestMetadata,
-          loggerWithCtx,
         );
         return destBatchedRequests;
       } catch (error: any) {

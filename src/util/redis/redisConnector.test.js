@@ -2,8 +2,9 @@ const fs = require('fs');
 const path = require('path');
 const version = 'v0';
 const { RedisDB } = require('./redisConnector');
-const { structuredLogger: logger } = require('@rudderstack/integrations-lib');
+const logger = require('../../logger');
 jest.mock('ioredis', () => require('../../../test/__mocks__/redis'));
+
 const sourcesList = ['shopify'];
 process.env.USE_REDIS_DB = 'true';
 

@@ -5,7 +5,6 @@ const {
   AbortedError,
   ConfigurationError,
   InstrumentationError,
-  structuredLogger: logger,
 } = require('@rudderstack/integrations-lib');
 const { httpPOST } = require('../../../adapters/network');
 const {
@@ -20,7 +19,6 @@ const {
   getAuthErrCategoryFromStCode,
   getAccessToken,
   getIntegrationsObj,
-  getLoggableData,
 } = require('../../util');
 const {
   SEARCH_STREAM,
@@ -38,6 +36,7 @@ const { processAxiosResponse } = require('../../../adapters/utils/networkUtils')
 const Cache = require('../../util/cache');
 const helper = require('./helper');
 const { finaliseConsent } = require('../../util/googleUtils');
+const logger = require('../../../logger');
 
 const conversionActionIdCache = new Cache(CONVERSION_ACTION_ID_CACHE_TTL);
 
@@ -81,9 +80,13 @@ const getConversionActionId = async ({ headers, params, metadata }) => {
     });
     searchStreamResponse = processAxiosResponse(searchStreamResponse);
     const { response, status, headers: responseHeaders } = searchStreamResponse;
-    logger.debug(`[${destType.toUpperCase()}] get conversion custom variable`, {
-      ...getLoggableData(metadata),
-      ...(responseHeaders ? { responseHeaders } : {}),
+    logger.responseLog(`[${destType.toUpperCase()}] get conversion custom variable`, {
+      metadata,
+      responseDetails: {
+        response,
+        status,
+        headers: responseHeaders,
+      },
     });
     if (!isHttpStatusSuccess(status)) {
       throw new AbortedError(

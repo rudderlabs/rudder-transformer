@@ -1,6 +1,7 @@
 const Redis = require('ioredis');
-const { RedisError, structuredLogger: logger } = require('@rudderstack/integrations-lib');
+const { RedisError } = require('@rudderstack/integrations-lib');
 const stats = require('../stats');
+const logger = require('../../logger');
 
 const timeoutPromise = () =>
   new Promise((_, reject) => {

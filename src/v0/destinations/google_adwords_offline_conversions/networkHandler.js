@@ -5,15 +5,13 @@ const {
   AbortedError,
   NetworkInstrumentationError,
   NetworkError,
-  structuredLogger: logger,
 } = require('@rudderstack/integrations-lib');
-const { prepareProxyRequest, httpSend, httpPOST } = require('../../../adapters/network');
+const { prepareProxyRequest, httpPOST, handleHttpRequest } = require('../../../adapters/network');
 const {
   isHttpStatusSuccess,
   getHashFromArray,
   isDefinedAndNotNullAndNotEmpty,
   getAuthErrCategoryFromStCode,
-  getLoggableData,
 } = require('../../util');
 const { getConversionActionId } = require('./utils');
 const Cache = require('../../util/cache');
@@ -23,6 +21,7 @@ const {
   getDynamicErrorType,
 } = require('../../../adapters/utils/networkUtils');
 const tags = require('../../util/tags');
+const logger = require('../../../logger');
 
 const conversionCustomVariableCache = new Cache(CONVERSION_CUSTOM_VARIABLE_CACHE_TTL);
 
@@ -42,9 +41,13 @@ const createJob = async ({ endpoint, headers, payload, metadata }) => {
   );
   createJobResponse = processAxiosResponse(createJobResponse);
   const { response, status, headers: responseHeaders } = createJobResponse;
-  logger.debug(`[${destType.toUpperCase()}] create job`, {
-    ...getLoggableData(metadata),
-    ...(responseHeaders ? { responseHeaders } : {}),
+  logger.responseLog(`[${destType.toUpperCase()}] create job`, {
+    metadata,
+    responseDetails: {
+      headers: responseHeaders,
+      status,
+      response,
+    },
   });
   if (!isHttpStatusSuccess(status)) {
     throw new AbortedError(
@@ -73,9 +76,13 @@ const addConversionToJob = async ({ endpoint, headers, jobId, payload, metadata 
   );
   addConversionToJobResponse = processAxiosResponse(addConversionToJobResponse);
   const { response, status, headers: responseHeaders } = addConversionToJobResponse;
-  logger.debug(`[${destType.toUpperCase()}] add conversion to job`, {
-    ...getLoggableData(metadata),
-    ...(responseHeaders ? { responseHeaders } : {}),
+  logger.responseLog(`[${destType.toUpperCase()}] add conversion to job`, {
+    metadata,
+    responseDetails: {
+      response,
+      status,
+      headers: responseHeaders,
+    },
   });
   if (!isHttpStatusSuccess(status)) {
     throw new AbortedError(
@@ -90,7 +97,14 @@ const addConversionToJob = async ({ endpoint, headers, jobId, payload, metadata 
 
 const runTheJob = async ({ endpoint, headers, payload, jobId, metadata }) => {
   const endPoint = `${endpoint}/${jobId}:run`;
-  const executeJobResponse = await httpPOST(
+  // logger.responseLog(`[${destType.toUpperCase()}] run job request`, {
+  //   ...getLoggableData(metadata),
+  //   requestBody: payload,
+  //   method: 'POST',
+  //   url: endPoint,
+  // });
+  const { httpResponse: executeJobResponse, processedResponse } = await handleHttpRequest(
+    'post',
     endPoint,
     payload,
     { headers },
@@ -102,10 +116,14 @@ const runTheJob = async ({ endpoint, headers, payload, jobId, metadata }) => {
       module: 'dataDelivery',
     },
   );
-  const { headers: responseHeaders } = executeJobResponse;
-  logger.debug(`[${destType.toUpperCase()}] run job`, {
-    ...getLoggableData(metadata),
-    ...(responseHeaders ? { responseHeaders } : {}),
+  const { headers: responseHeaders, response, status } = processedResponse;
+  logger.responseLog(`[${destType.toUpperCase()}] run job`, {
+    metadata,
+    responseDetails: {
+      response,
+      status,
+      responseHeaders,
+    },
   });
   return executeJobResponse;
 };
@@ -137,9 +155,13 @@ const getConversionCustomVariable = async ({ headers, params, metadata }) => {
     });
     searchStreamResponse = processAxiosResponse(searchStreamResponse);
     const { response, status, headers: responseHeaders } = searchStreamResponse;
-    logger.debug(`[${destType.toUpperCase()}] get conversion custom variable`, {
-      ...getLoggableData(metadata),
-      ...(responseHeaders ? { responseHeaders } : {}),
+    logger.responseLog(`[${destType.toUpperCase()}] get conversion custom variable`, {
+      metadata,
+      responseDetails: {
+        response,
+        status,
+        headers: responseHeaders,
+      },
     });
     if (!isHttpStatusSuccess(status)) {
       throw new NetworkError(
@@ -288,19 +310,23 @@ const ProxyRequest = async (request) => {
   }
 
   const requestBody = { url: endpoint, data: body.JSON, headers, method };
-  const response = await httpSend(requestBody, {
+  const { httpResponse, processedResponse } = await handleHttpRequest('constructor', requestBody, {
     feature: 'proxy',
     destType: 'gogole_adwords_offline_conversions',
     endpointPath: `/proxy`,
     requestMethod: 'POST',
     module: 'dataDelivery',
   });
-  const { headers: responseHeaders } = response;
-  logger.debug(`[${destType.toUpperCase()}] deliver event to destination`, {
-    ...getLoggableData(metadata),
-    ...(responseHeaders ? { responseHeaders } : {}),
+  const { headers: responseHeaders, status, response } = processedResponse;
+  logger.responseLog(`[${destType.toUpperCase()}] deliver event to destination`, {
+    metadata,
+    responseDetails: {
+      response,
+      headers: responseHeaders,
+      status,
+    },
   });
-  return response;
+  return httpResponse;
 };
 
 const responseHandler = (responseParams) => {

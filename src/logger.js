@@ -1,6 +1,5 @@
 /* istanbul ignore file */
 const { structuredLogger: logger } = require('@rudderstack/integrations-lib');
-const { getLoggableData } = require('./v0/util');
 
 const levelDebug = 0; // Most verbose logging level
 const levelInfo = 1; // Logs about state of the application
@@ -49,6 +48,22 @@ const error = (...args) => {
   }
 };
 
+const getLogMetadata = (metadata) => {
+  let reqMeta = metadata;
+  if (Array.isArray(metadata)) {
+    [reqMeta] = metadata;
+  }
+  return {
+    ...(reqMeta?.destinationId && { destinationId: reqMeta.destinationId }),
+    ...(reqMeta?.sourceId && { sourceId: reqMeta.sourceId }),
+    ...(reqMeta?.workspaceId && { workspaceId: reqMeta.workspaceId }),
+    ...(reqMeta?.destType && { destType: reqMeta.destType }),
+    ...(reqMeta?.module && { module: reqMeta.module }),
+    ...(reqMeta?.implementation && { implementation: reqMeta.implementation }),
+    ...(reqMeta?.feature && { feature: reqMeta.feature }),
+  };
+};
+
 const responseLog = (
   identifierMsg,
   { metadata, responseDetails: { response: responseBody, status, headers: responseHeaders } },
@@ -56,7 +71,7 @@ const responseLog = (
   const logger = getLogger();
   if (levelError >= logLevel) {
     logger.debug(identifierMsg, {
-      ...getLoggableData(metadata),
+      ...getLogMetadata(metadata),
       ...(responseBody ? { responseBody } : {}),
       ...(responseHeaders ? { responseHeaders } : {}),
       status,
@@ -75,4 +90,5 @@ module.exports = {
   levelWarn,
   levelError,
   responseLog,
+  getLogMetadata,
 };

@@ -1,10 +1,18 @@
 const { get, set } = require('lodash');
 const sha256 = require('sha256');
-const { NetworkError, NetworkInstrumentationError } = require('@rudderstack/integrations-lib');
+const {
+  NetworkError,
+  NetworkInstrumentationError,
+  structuredLogger: logger,
+} = require('@rudderstack/integrations-lib');
 const SqlString = require('sqlstring');
 const { prepareProxyRequest, handleHttpRequest } = require('../../../adapters/network');
-const { isHttpStatusSuccess, getAuthErrCategoryFromStCode } = require('../../util/index');
-const { CONVERSION_ACTION_ID_CACHE_TTL } = require('./config');
+const {
+  isHttpStatusSuccess,
+  getAuthErrCategoryFromStCode,
+  getLoggableData,
+} = require('../../util/index');
+const { CONVERSION_ACTION_ID_CACHE_TTL, destType } = require('./config');
 const Cache = require('../../util/cache');
 
 const conversionActionIdCache = new Cache(CONVERSION_ACTION_ID_CACHE_TTL);
@@ -27,7 +35,7 @@ const ERROR_MSG_PATH = 'response[0].error.message';
  * @returns
  */
 
-const getConversionActionId = async (method, headers, params) => {
+const getConversionActionId = async ({ method, headers, params, metadata }) => {
   const conversionActionIdKey = sha256(params.event + params.customerId).toString();
   return conversionActionIdCache.get(conversionActionIdKey, async () => {
     const queryString = SqlString.format(
@@ -54,19 +62,26 @@ const getConversionActionId = async (method, headers, params) => {
         module: 'dataDelivery',
       },
     );
-    if (!isHttpStatusSuccess(gaecConversionActionIdResponse.status)) {
+    const { status, response, headers: responseHeaders } = gaecConversionActionIdResponse;
+    logger.debug(`[${destType.toUpperCase()}] get conversion action id response`, {
+      ...getLoggableData(metadata),
+      ...(responseHeaders ? { responseHeaders } : {}),
+      ...(response ? { response } : {}),
+      status,
+    });
+    if (!isHttpStatusSuccess(status)) {
       throw new NetworkError(
         `"${JSON.stringify(
           get(gaecConversionActionIdResponse, ERROR_MSG_PATH, '')
             ? get(gaecConversionActionIdResponse, ERROR_MSG_PATH, '')
-            : gaecConversionActionIdResponse.response,
+            : response,
         )} during Google_adwords_enhanced_conversions response transformation"`,
-        gaecConversionActionIdResponse.status,
+        status,
         {
-          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(gaecConversionActionIdResponse.status),
+          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
         },
-        gaecConversionActionIdResponse.response,
-        getAuthErrCategoryFromStCode(gaecConversionActionIdResponse.status),
+        response,
+        getAuthErrCategoryFromStCode(status),
       );
     }
     const conversionActionId = get(
@@ -90,10 +105,10 @@ const getConversionActionId = async (method, headers, params) => {
  * @returns
  */
 const ProxyRequest = async (request) => {
-  const { body, method, endpoint, params } = request;
+  const { body, method, endpoint, params, metadata } = request;
   const { headers } = request;
 
-  const conversionActionId = await getConversionActionId(method, headers, params);
+  const conversionActionId = await getConversionActionId({ method, headers, params, metadata });
 
   set(
     body.JSON,
@@ -101,12 +116,23 @@ const ProxyRequest = async (request) => {
     `customers/${params.customerId}/conversionActions/${conversionActionId}`,
   );
   const requestBody = { url: endpoint, data: body.JSON, headers, method };
-  const { httpResponse: response } = await handleHttpRequest('constructor', requestBody, {
-    destType: 'google_adwords_enhanced_conversions',
-    feature: 'proxy',
-    endpointPath: `/googleAds:uploadOfflineUserData`,
-    requestMethod: 'POST',
-    module: 'dataDelivery',
+  const { httpResponse: response, processedResponse } = await handleHttpRequest(
+    'constructor',
+    requestBody,
+    {
+      destType: 'google_adwords_enhanced_conversions',
+      feature: 'proxy',
+      endpointPath: `/googleAds:uploadOfflineUserData`,
+      requestMethod: 'POST',
+      module: 'dataDelivery',
+    },
+  );
+  const { response: resp, status, headers: responseHeaders } = processedResponse;
+  logger.debug(`[${destType.toUpperCase()}] get conversion action id response`, {
+    ...getLoggableData(metadata),
+    ...(responseHeaders ? { responseHeaders } : {}),
+    ...(resp ? { response: resp } : {}),
+    status,
   });
   return response;
 };

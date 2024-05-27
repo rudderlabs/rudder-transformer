@@ -1,19 +1,12 @@
 const { get, set } = require('lodash');
 const sha256 = require('sha256');
-const {
-  NetworkError,
-  NetworkInstrumentationError,
-  structuredLogger: logger,
-} = require('@rudderstack/integrations-lib');
+const { NetworkError, NetworkInstrumentationError } = require('@rudderstack/integrations-lib');
 const SqlString = require('sqlstring');
 const { prepareProxyRequest, handleHttpRequest } = require('../../../adapters/network');
-const {
-  isHttpStatusSuccess,
-  getAuthErrCategoryFromStCode,
-  getLoggableData,
-} = require('../../util/index');
+const { isHttpStatusSuccess, getAuthErrCategoryFromStCode } = require('../../util/index');
 const { CONVERSION_ACTION_ID_CACHE_TTL, destType } = require('./config');
 const Cache = require('../../util/cache');
+const logger = require('../../../logger');
 
 const conversionActionIdCache = new Cache(CONVERSION_ACTION_ID_CACHE_TTL);
 
@@ -63,11 +56,13 @@ const getConversionActionId = async ({ method, headers, params, metadata }) => {
       },
     );
     const { status, response, headers: responseHeaders } = gaecConversionActionIdResponse;
-    logger.debug(`[${destType.toUpperCase()}] get conversion action id response`, {
-      ...getLoggableData(metadata),
-      ...(responseHeaders ? { responseHeaders } : {}),
-      ...(response ? { response } : {}),
-      status,
+    logger.responseLog(`[${destType.toUpperCase()}] get conversion action id response`, {
+      metadata,
+      responseDetails: {
+        response,
+        status,
+        headers: responseHeaders,
+      },
     });
     if (!isHttpStatusSuccess(status)) {
       throw new NetworkError(
@@ -127,12 +122,14 @@ const ProxyRequest = async (request) => {
       module: 'dataDelivery',
     },
   );
-  const { response: resp, status, headers: responseHeaders } = processedResponse;
-  logger.debug(`[${destType.toUpperCase()}] get conversion action id response`, {
-    ...getLoggableData(metadata),
-    ...(responseHeaders ? { responseHeaders } : {}),
-    ...(resp ? { response: resp } : {}),
-    status,
+  const { response: processedResp, status, headers: responseHeaders } = processedResponse;
+  logger.responseLog(`[${destType.toUpperCase()}] get conversion action id response`, {
+    metadata,
+    responseDetails: {
+      response: processedResp,
+      status,
+      headers: responseHeaders,
+    },
   });
   return response;
 };

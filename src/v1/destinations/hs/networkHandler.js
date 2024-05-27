@@ -30,7 +30,7 @@ const responseHandler = (responseParams) => {
   const { destinationResponse, rudderJobMetadata } = responseParams;
   const successMessage = `[HUBSPOT Response V1 Handler] - Request Processed Successfully`;
   const failureMessage =
-    'HUBSPOT: Error transformer proxy v1 during HUBSPOT response transformation';
+    'HUBSPOT: Error in transformer proxy v1 during HUBSPOT response transformation';
   const responseWithIndividualEvents = [];
   const { response, status } = destinationResponse;
 

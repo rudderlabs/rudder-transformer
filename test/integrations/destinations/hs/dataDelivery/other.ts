@@ -67,7 +67,8 @@ export const otherData = [
         status: 200,
         body: {
           output: {
-            message: 'HUBSPOT: Error transformer proxy v1 during HUBSPOT response transformation',
+            message:
+              'HUBSPOT: Error in transformer proxy v1 during HUBSPOT response transformation',
             response: [
               {
                 error: '"Gateway Timeout"',
@@ -107,7 +108,8 @@ export const otherData = [
         status: 200,
         body: {
           output: {
-            message: 'HUBSPOT: Error transformer proxy v1 during HUBSPOT response transformation',
+            message:
+              'HUBSPOT: Error in transformer proxy v1 during HUBSPOT response transformation',
             response: [
               {
                 error: '"Internal Server Error"',
@@ -147,7 +149,8 @@ export const otherData = [
         status: 200,
         body: {
           output: {
-            message: 'HUBSPOT: Error transformer proxy v1 during HUBSPOT response transformation',
+            message:
+              'HUBSPOT: Error in transformer proxy v1 during HUBSPOT response transformation',
             response: [
               {
                 error:

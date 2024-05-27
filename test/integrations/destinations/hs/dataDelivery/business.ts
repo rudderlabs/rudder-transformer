@@ -161,7 +161,8 @@ export const businessData = [
               },
               status: 400,
             },
-            message: 'HUBSPOT: Error transformer proxy v1 during HUBSPOT response transformation',
+            message:
+              'HUBSPOT: Error in transformer proxy v1 during HUBSPOT response transformation',
             response: [
               {
                 error:
@@ -242,7 +243,8 @@ export const businessData = [
               },
               status: 400,
             },
-            message: 'HUBSPOT: Error transformer proxy v1 during HUBSPOT response transformation',
+            message:
+              'HUBSPOT: Error in transformer proxy v1 during HUBSPOT response transformation',
             response: [
               {
                 error:

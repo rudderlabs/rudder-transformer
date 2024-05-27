@@ -173,7 +173,17 @@ export class UserTransformService {
             ...getTransformationMetadata(eventsToProcess[0]?.metadata),
           });
 
-          stats.histogram('user_transform_batch_size', requestSize, {
+          stats.timing('user_transform_batch_size', requestSize, {
+            ...metaTags,
+            ...getTransformationMetadata(eventsToProcess[0]?.metadata),
+          });
+
+          stats.timingSummary('user_transform_request_latency_summary', userFuncStartTime, {
+            ...metaTags,
+            ...getTransformationMetadata(eventsToProcess[0]?.metadata),
+          });
+
+          stats.timingSummary('user_transform_batch_size_summary', requestSize, {
             ...metaTags,
             ...getTransformationMetadata(eventsToProcess[0]?.metadata),
           });

@@ -3,6 +3,7 @@ const { BASE_URL, ConfigCategory, mappingConfig } = require('./config');
 const { defaultRequestConfig, constructPayload, simpleProcessRouterDest } = require('../../util');
 
 const { getParams, trackProduct, populateCustomTransactionProperties } = require('./utils');
+const { FilteredEventsError } = require('../../util/errorTypes');
 
 const responseBuilder = (message, { Config }) => {
   const { advertiserId, eventsToTrack, customFieldMap } = Config;
@@ -33,9 +34,9 @@ const responseBuilder = (message, { Config }) => {
         ...customTransactionProperties,
       };
     } else {
-      throw new InstrumentationError(
-        "Event is not present in 'Events to Track' list. Aborting message.",
-        400,
+      throw new FilteredEventsError(
+        "Event is not present in 'Events to Track' list. Dropping the event.",
+        298,
       );
     }
   }

@@ -293,8 +293,8 @@ const formingFinalResponse = (
 };
 
 const isHtmlFormat = (string) => {
-  const pattern = /<([a-z]+)\b[^>]*>(.*?)<\/\1>/i;
-  return pattern.test(string);
+  const htmlTags = /<(?!(!DOCTYPE\s*html|html))\b[^>]*>[\s\S]*?<\/[^>]*>/i;
+  return htmlTags.test(string);
 };
 
 module.exports = {

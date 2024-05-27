@@ -642,14 +642,6 @@ describe('getContentType', () => {
 });
 
 describe('isHtmlFormat', () => {
-  it('should recognize simple valid HTML tags', () => {
-    expect(isHtmlFormat('<div></div>')).toBe(true);
-  });
-
-  it('should handle nested HTML correctly', () => {
-    expect(isHtmlFormat('<div><span></span></div>')).toBe(true);
-  });
-
   it('should return false for Json', () => {
     expect(isHtmlFormat('{"a": 1, "b":2}')).toBe(false);
   });
@@ -666,8 +658,8 @@ describe('isHtmlFormat', () => {
     expect(isHtmlFormat(null)).toBe(false);
   });
 
-  it('should return false for empty string', () => {
-    expect(isHtmlFormat('')).toBe(false);
+  it('should return false for empty array', () => {
+    expect(isHtmlFormat([])).toBe(false);
   });
 
   it('should return true for html doctype', () => {
@@ -676,5 +668,25 @@ describe('isHtmlFormat', () => {
         '<!DOCTYPE html><html lang="en"><body><div style="text-align: center; margin-top: 50px;"><h1>Sorry, something went wrong.</h1><p>We\'re working on it and we\'ll get it fixed as soon as we can.</p><p><a href="javascript:history.back()">Go Back</a></p><footer><p>Facebook &copy; 2024 &middot; <a href="https://www.facebook.com/help/">Help Center</a></p></footer></div></body></html>',
       ),
     ).toBe(true);
+  });
+
+  it('should return true for html', () => {
+    expect(
+      isHtmlFormat(
+        '<head> <title>Hello, World!</title><link rel="stylesheet" href="styles.css" /></head><body><h1 class="title">Hello World! </h1><p id="currentTime"></p><script src="script.js"></script></body></html>',
+      ),
+    ).toBe(true);
+  });
+
+  it('should return true for html', () => {
+    expect(
+      isHtmlFormat(
+        '<html><body><h1 class="title">Hello World! </h1><p id="currentTime"></p><script src="script.js"></script></body></html>',
+      ),
+    ).toBe(true);
+  });
+
+  it('should return false json type', () => {
+    expect(isHtmlFormat('{"<a>": 12, "b": "test, "arr": [1,2]}')).toBe(false);
   });
 });

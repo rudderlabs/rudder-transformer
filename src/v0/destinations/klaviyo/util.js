@@ -56,11 +56,9 @@ const getIdFromNewOrExistingProfile = async ({ endpoint, payload, requestOptions
       module: 'router',
     },
   );
-  logger.responseLog(`[${destType.toUpperCase()}] get id from profile`, {
+  logger.responseLog(`[${destType.toUpperCase()}] get id from profile response`, {
     metadata,
-    responseDetails: {
-      ...resp,
-    },
+    responseDetails: resp,
   });
 
   /**

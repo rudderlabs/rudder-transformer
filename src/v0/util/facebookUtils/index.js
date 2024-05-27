@@ -293,7 +293,7 @@ const formingFinalResponse = (
 };
 
 const isHtmlFormat = (string) => {
-  const htmlTags = /<(?!(!DOCTYPE\s*html|html))\b[^>]*>[\s\S]*?<\/[^>]*>/i;
+  const htmlTags = /<(?!(!doctype\s*html|html))\b[^>]*>[\S\s]*?<\/[^>]*>/i;
   return htmlTags.test(string);
 };
 

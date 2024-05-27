@@ -828,16 +828,14 @@ export const data = [
         status: 200,
         body: [
           {
-            error: "Event is not present in 'Events to Track' list. Aborting message.",
+            error: "Event is not present in 'Events to Track' list. Dropping the event.",
             statTags: {
               destType: 'AWIN',
-              errorCategory: 'dataValidation',
-              errorType: 'instrumentation',
               feature: 'processor',
               implementation: 'native',
               module: 'destination',
             },
-            statusCode: 400,
+            statusCode: 298,
           },
         ],
       },

@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.67.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.66.1...v1.67.0) (2024-05-23)
+
+
+### Features
+
+* sre 456 ut move high cardinality histogram metrics to summaries cp ([#3409](https://github.com/rudderlabs/rudder-transformer/issues/3409)) ([be20dc2](https://github.com/rudderlabs/rudder-transformer/commit/be20dc26ade2fa0212dc91126cf42087a84a07c9))
+
 ### [1.66.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.66.0...v1.66.1) (2024-05-20)
 
 

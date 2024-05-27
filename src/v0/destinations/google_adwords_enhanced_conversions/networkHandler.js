@@ -38,8 +38,13 @@ const getConversionActionId = async ({ method, headers, params, metadata }) => {
     const data = {
       query: queryString,
     };
+    const searchStreamEndpoint = `${BASE_ENDPOINT}/${params.customerId}/googleAds:searchStream`;
+    logger.requestLog(`[${destType.toUpperCase()}] conversion enhancement request`, {
+      metadata,
+      requestDetails: { url: searchStreamEndpoint, body: data, method },
+    });
     const requestBody = {
-      url: `${BASE_ENDPOINT}/${params.customerId}/googleAds:searchStream`,
+      url: searchStreamEndpoint,
       data,
       headers,
       method,
@@ -110,6 +115,10 @@ const ProxyRequest = async (request) => {
     'conversionAdjustments[0].conversionAction',
     `customers/${params.customerId}/conversionActions/${conversionActionId}`,
   );
+  logger.requestLog(`[${destType.toUpperCase()}] conversion enhancement request`, {
+    metadata,
+    requestDetails: { url: endpoint, body: body.JSON, method },
+  });
   const requestBody = { url: endpoint, data: body.JSON, headers, method };
   const { httpResponse: response, processedResponse } = await handleHttpRequest(
     'constructor',

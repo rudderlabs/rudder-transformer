@@ -64,6 +64,18 @@ const getLogMetadata = (metadata) => {
   };
 };
 
+const requestLog = (identifierMsg, { metadata, requestDetails: { url, body, method } }) => {
+  const logger = getLogger();
+  if (levelError >= logLevel) {
+    logger.debug(identifierMsg, {
+      ...getLogMetadata(metadata),
+      url,
+      body,
+      method,
+    });
+  }
+};
+
 const responseLog = (
   identifierMsg,
   { metadata, responseDetails: { response: responseBody, status, headers: responseHeaders } },
@@ -91,4 +103,5 @@ module.exports = {
   levelError,
   responseLog,
   getLogMetadata,
+  requestLog,
 };

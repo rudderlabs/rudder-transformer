@@ -78,7 +78,7 @@ jobs:
             linux/arm64
           build-args: |
             version=${{ inputs.img_tag }}-arm64
-            GIT_COMMIT_SHA=${{ github.sha }}
+            GIT_COMMIT_SHA=${{ github.event.pull_request.head.sha }}
           # cache-from: type=gha
           # cache-to: type=gha,mode=max
 
@@ -129,7 +129,7 @@ jobs:
             linux/amd64
           build-args: |
             version=${{ inputs.img_tag }}-amd64
-            GIT_COMMIT_SHA=${{ github.sha }}
+            GIT_COMMIT_SHA=${{ github.event.pull_request.head.sha }}
           # cache-from: type=gha
           # cache-to: type=gha,mode=max
 

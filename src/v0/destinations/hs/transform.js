@@ -1,6 +1,5 @@
 const get = require('get-value');
 const { InstrumentationError } = require('@rudderstack/integrations-lib');
-const { groupBy } = require('lodash');
 const { EventType } = require('../../../constants');
 const { handleRtTfSingleEventError, getDestinationExternalIDInfoForRetl } = require('../../util');
 const { API_VERSION } = require('./config');
@@ -139,27 +138,17 @@ const processRouterDest = async (inputs, reqMetadata) => {
     }),
   );
 
-  const groupedByDifferentDontBatch = groupBy(
-    successRespList,
-    (response) => response.metadata.dontBatch,
-  );
-
   const dontBatchTrueResponses = [];
   const dontBatchFalseOrUndefinedResponses = [];
-  Object.keys(groupedByDifferentDontBatch).forEach((dontaBatchVal) => {
-    switch (dontaBatchVal) {
-      case 'true':
-        dontBatchTrueResponses.push(...groupedByDifferentDontBatch.true);
-        break;
-      case 'false':
-        dontBatchFalseOrUndefinedResponses.push(...groupedByDifferentDontBatch.false);
-        break;
-      case 'undefined':
-        dontBatchFalseOrUndefinedResponses.push(...groupedByDifferentDontBatch.undefined);
-        break;
-      default:
+  // segregating successRepList depending on dontbatch value
+  successRespList.forEach((successResp) => {
+    if (successResp.metadata?.dontBatch) {
+      dontBatchTrueResponses.push(successResp);
+    } else {
+      dontBatchFalseOrUndefinedResponses.push(successResp);
     }
   });
+
   // batch implementation
   let batchedResponseList = [];
   if (successRespList.length > 0) {
@@ -172,6 +161,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
   return [
     ...batchedResponseList,
     ...errorRespList,
+    // if there are any events where dontbatch set to true we need to update them according to the response format
     ...convertToResponseFormat(dontBatchTrueResponses),
   ];
 };

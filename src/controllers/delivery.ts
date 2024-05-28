@@ -17,6 +17,7 @@ import { FixMe } from '../util/types';
 import tags from '../v0/util/tags';
 import { ControllerUtility } from './util';
 import logger from '../logger';
+import MetaBinder from '../helpers/metadata/binder';
 
 const NON_DETERMINABLE = 'Non-determinable';
 
@@ -28,6 +29,17 @@ export class DeliveryController {
     const deliveryRequest = ctx.request.body as ProxyV0Request;
     const { destination }: { destination: string } = ctx.params;
     const integrationService = ServiceSelector.getNativeDestinationService();
+    const metaTO = integrationService.getTags(
+      destination,
+      deliveryRequest.metadata?.destinationId,
+      deliveryRequest.metadata?.workspaceId,
+      tags.FEATURES.PROCESSOR,
+    );
+    MetaBinder.bindTransformMetaToDeliveryV0(deliveryRequest, {
+      module: metaTO.errorDetails.module,
+      implementation: metaTO.errorDetails.implementation,
+      feature: metaTO.errorDetails.feature,
+    });
     try {
       deliveryResponse = (await integrationService.deliver(
         deliveryRequest,
@@ -63,7 +75,18 @@ export class DeliveryController {
     const deliveryRequest = ctx.request.body as ProxyV1Request;
     const { destination }: { destination: string } = ctx.params;
     const integrationService = ServiceSelector.getNativeDestinationService();
+    const metaTO = integrationService.getTags(
+      destination,
+      deliveryRequest.metadata[0].destinationId || NON_DETERMINABLE,
+      deliveryRequest.metadata[0].workspaceId || NON_DETERMINABLE,
+      tags.FEATURES.DATA_DELIVERY,
+    );
     try {
+      MetaBinder.bindTransformMetaToDeliveryV1(deliveryRequest.metadata, {
+        module: metaTO.errorDetails.module,
+        implementation: metaTO.errorDetails.implementation,
+        feature: metaTO.errorDetails.feature,
+      });
       deliveryResponse = (await integrationService.deliver(
         deliveryRequest,
         destination,
@@ -72,12 +95,7 @@ export class DeliveryController {
       )) as DeliveryV1Response;
     } catch (error: any) {
       const { metadata } = deliveryRequest;
-      const metaTO = integrationService.getTags(
-        destination,
-        metadata[0].destinationId || NON_DETERMINABLE,
-        metadata[0].workspaceId || NON_DETERMINABLE,
-        tags.FEATURES.DATA_DELIVERY,
-      );
+
       metaTO.metadatas = metadata;
       deliveryResponse = DestinationPostTransformationService.handlevV1DeliveriesFailureEvents(
         error,

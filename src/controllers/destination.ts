@@ -16,6 +16,7 @@ import { checkInvalidRtTfEvents } from '../v0/util';
 import tags from '../v0/util/tags';
 import { ControllerUtility } from './util';
 import logger from '../logger';
+import MetaBinder from '../helpers/metadata/binder';
 
 export class DestinationController {
   public static async destinationTransformAtProcessor(ctx: Context) {
@@ -34,6 +35,17 @@ export class DestinationController {
     const integrationService = ServiceSelector.getDestinationService(events);
     try {
       integrationService.init();
+      const metaTO = integrationService.getTags(
+        destination,
+        events[0].metadata?.destinationId,
+        events[0].metadata?.workspaceId,
+        tags.FEATURES.PROCESSOR,
+      );
+      MetaBinder.bindTransformMetaToTransformation(events, {
+        module: metaTO.errorDetails.module,
+        implementation: metaTO.errorDetails.implementation,
+        feature: metaTO.errorDetails.feature,
+      });
       events = DestinationPreTransformationService.preProcess(
         events,
         ctx,
@@ -114,7 +126,18 @@ export class DestinationController {
     });
     const integrationService = ServiceSelector.getDestinationService(events);
     let resplist: RouterTransformationResponse[];
+    const metaTO = integrationService.getTags(
+      destination,
+      events[0].metadata?.destinationId,
+      events[0].metadata?.workspaceId,
+      tags.FEATURES.ROUTER,
+    );
     try {
+      MetaBinder.bindTransformMetaToTransformation(events, {
+        module: metaTO.errorDetails.module,
+        implementation: metaTO.errorDetails.implementation,
+        feature: metaTO.errorDetails.feature,
+      });
       events = DestinationPreTransformationService.preProcess(events, ctx);
       const timestampCorrectEvents = ControllerUtility.handleTimestampInEvents(events);
       events = DynamicConfigParser.process(timestampCorrectEvents);
@@ -125,12 +148,6 @@ export class DestinationController {
         requestMetadata,
       );
     } catch (error: any) {
-      const metaTO = integrationService.getTags(
-        destination,
-        events[0].metadata?.destinationId,
-        events[0].metadata?.workspaceId,
-        tags.FEATURES.ROUTER,
-      );
       metaTO.metadatas = events.map((ev) => ev.metadata);
       const errResp = DestinationPostTransformationService.handleRouterTransformFailureEvents(
         error,
@@ -162,7 +179,18 @@ export class DestinationController {
     const destination = routerRequest.destType;
     let events = routerRequest.input;
     const integrationService = ServiceSelector.getDestinationService(events);
+    const metaTO = integrationService.getTags(
+      destination,
+      routerRequest.input[0].metadata.destinationId,
+      routerRequest.input[0].metadata.workspaceId,
+      tags.FEATURES.BATCH,
+    );
     try {
+      MetaBinder.bindTransformMetaToTransformation(events, {
+        module: metaTO.errorDetails.module,
+        implementation: metaTO.errorDetails.implementation,
+        feature: metaTO.errorDetails.feature,
+      });
       events = DestinationPreTransformationService.preProcess(events, ctx);
       const timestampCorrectEvents = ControllerUtility.handleTimestampInEvents(events);
       const resplist = integrationService.doBatchTransformation(
@@ -173,12 +201,6 @@ export class DestinationController {
       );
       ctx.body = resplist;
     } catch (error: any) {
-      const metaTO = integrationService.getTags(
-        destination,
-        events[0].metadata.destinationId,
-        events[0].metadata.workspaceId,
-        tags.FEATURES.BATCH,
-      );
       metaTO.metadatas = events.map((ev) => ev.metadata);
       const errResp = DestinationPostTransformationService.handleBatchTransformFailureEvents(
         error,

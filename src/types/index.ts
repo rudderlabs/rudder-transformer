@@ -1,3 +1,4 @@
+import { ProxyMetdata, Metadata } from '../helpers/metadata/types';
 import { CatchErr, FixMe } from '../util/types';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -57,53 +58,6 @@ type ProxyV1Request = {
 };
 
 type ProxyRequest = ProxyV0Request | ProxyV1Request;
-
-type ProxyMetdata = {
-  jobId: number;
-  attemptNum: number;
-  userId: string;
-  sourceId: string;
-  destinationId: string;
-  workspaceId: string;
-  secret: Record<string, unknown>;
-  destInfo?: Record<string, unknown>;
-  omitempty?: Record<string, unknown>;
-  dontBatch: boolean;
-};
-
-type Metadata = {
-  sourceId: string;
-  workspaceId: string;
-  namespace: string;
-  instanceId: string;
-  sourceType: string;
-  sourceCategory: string;
-  trackingPlanId: string;
-  trackingPlanVersion: number;
-  sourceTpConfig: object;
-  mergedTpConfig: object;
-  destinationId: string;
-  jobRunId: string;
-  jobId: number;
-  sourceBatchId: string;
-  sourceJobId: string;
-  sourceJobRunId: string;
-  sourceTaskId: string;
-  sourceTaskRunId: string;
-  recordId: object;
-  destinationType: string;
-  messageId: string;
-  oauthAccessToken: string;
-  messageIds: string[];
-  rudderId: string;
-  receivedAt: string;
-  eventName: string;
-  eventType: string;
-  sourceDefinitionId: string;
-  destinationDefinitionId: string;
-  transformationId: string;
-  dontBatch?: boolean;
-};
 
 type MessageIdMetadataMap = {
   [key: string]: Metadata;
@@ -329,6 +283,7 @@ type SourceInput = {
   event: NonNullable<unknown>[];
   source?: Source;
 };
+export { Metadata, ProxyMetdata } from '../helpers/metadata/types';
 export {
   ComparatorInput,
   DeliveryJobState,
@@ -338,11 +293,9 @@ export {
   ErrorDetailer,
   MessageIdMetadataMap,
   MetaTransferObject,
-  Metadata,
   ProcessorTransformationOutput,
   ProcessorTransformationRequest,
   ProcessorTransformationResponse,
-  ProxyMetdata,
   ProxyRequest,
   ProxyV0Request,
   ProxyV1Request,

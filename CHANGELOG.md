@@ -12,21 +12,13 @@ All notable changes to this project will be documented in this file. See [standa
 * filtering unknown events in awin ([#3392](https://github.com/rudderlabs/rudder-transformer/issues/3392)) ([d842da8](https://github.com/rudderlabs/rudder-transformer/commit/d842da87a34cb63023eba288e0c5258e29997dcf))
 * **ga4:** component test refactor ([#3220](https://github.com/rudderlabs/rudder-transformer/issues/3220)) ([3ff9a5e](https://github.com/rudderlabs/rudder-transformer/commit/3ff9a5e8e955b929a1b04a89dcf0ccbc49e18648))
 * **integrations/auth0:** include Auth0 event type in Rudderstack message ([#3370](https://github.com/rudderlabs/rudder-transformer/issues/3370)) ([e9409fd](https://github.com/rudderlabs/rudder-transformer/commit/e9409fde6063d7eaa8558396b85b5fdf99f964e1))
-* onboard koddi destination ([88b2d57](https://github.com/rudderlabs/rudder-transformer/commit/88b2d5709da00445ffae54f5a36de855cb5f8479))
 * onboard koddi destination ([#3359](https://github.com/rudderlabs/rudder-transformer/issues/3359)) ([f74c4a0](https://github.com/rudderlabs/rudder-transformer/commit/f74c4a0bc92ae6ccb0c00ac5b21745e496a015bc))
 * onboarding adjust source ([#3395](https://github.com/rudderlabs/rudder-transformer/issues/3395)) ([668d331](https://github.com/rudderlabs/rudder-transformer/commit/668d3311aadacbb92b1873bf43919db7d341afbb))
 
 
 ### Bug Fixes
 
-* added componenet test ([189cf93](https://github.com/rudderlabs/rudder-transformer/commit/189cf9367a907dc1848257733e13713245458579))
-* added conversions bidders validation and improved implementation ([ddf8d46](https://github.com/rudderlabs/rudder-transformer/commit/ddf8d46fed980204c561f95daa12fc740302e6e3))
-* config ([847e3e0](https://github.com/rudderlabs/rudder-transformer/commit/847e3e04d3ef67b9a7b5e35127251f3fc34ba3bf))
-* fb custom audience html response ([#3402](https://github.com/rudderlabs/rudder-transformer/issues/3402)) ([d1a2bd6](https://github.com/rudderlabs/rudder-transformer/commit/d1a2bd61468c75f944135cf61cbf2464f08404ed))
-* fixed some issue and added unit test ([bc7970c](https://github.com/rudderlabs/rudder-transformer/commit/bc7970c4f0a70e9fe8ad06ffd92f8f4b2a4ec910))
-* fixed unit test issue ([d4a82e2](https://github.com/rudderlabs/rudder-transformer/commit/d4a82e2d2df7ee86c4b149bca7e0c12be3a6a545))
-* minor mapping issue in conversions ([31e6460](https://github.com/rudderlabs/rudder-transformer/commit/31e6460ccc0c18014ebf67eab23b59abe5d81ef6))
-* resolving comments ([7c0d963](https://github.com/rudderlabs/rudder-transformer/commit/7c0d963d3ee87a3ed5712492300dc50768c529de))
+* fb custom audience html response ([#3402](https://github.com/rudderlabs/rudder-transformer/issues/3402)) ([d1a2bd6](https://github.com/rudder
 * standardise hashing for all CAPI integrations ([#3379](https://github.com/rudderlabs/rudder-transformer/issues/3379)) ([c249a69](https://github.com/rudderlabs/rudder-transformer/commit/c249a694d735f6d241a35b6e21f493c54890ac84))
 * tiktok_v2 remove default value for content-type for custom events ([#3383](https://github.com/rudderlabs/rudder-transformer/issues/3383)) ([6e7b5a0](https://github.com/rudderlabs/rudder-transformer/commit/6e7b5a0d8bf2c859dfb15b9cad7ed6070bd0892b))
 * added step for reconciling openfaas functions for python transformations ([#3420](https://github.com/rudderlabs/rudder-transformer/issues/3420)) ([7a2ab63](https://github.com/rudderlabs/rudder-transformer/commit/7a2ab63674d40870af4d16f0673a2a2594c899e9))

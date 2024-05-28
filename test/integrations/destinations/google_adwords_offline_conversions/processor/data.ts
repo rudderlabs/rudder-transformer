@@ -321,7 +321,7 @@ export const data = [
                   advertisingId: '44c97318-9040-4361-8bc7-4eb30f665ca8',
                 },
                 traits: {
-                  email: 'alex@example.com',
+                  email: ' alex@example.com',
                   phone: '+1-202-555-0146',
                   firstName: 'John',
                   lastName: 'Gomes',

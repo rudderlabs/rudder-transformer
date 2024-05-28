@@ -25,10 +25,7 @@
   },
   {
     "destKey": "properties.content_type",
-    "sourceKeys": ["properties.contentType", "properties.content_type"],
-    "metadata": {
-      "defaultValue": "product"
-    }
+    "sourceKeys": ["properties.contentType", "properties.content_type"]
   },
   {
     "destKey": "properties.shop_id",

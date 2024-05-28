@@ -1,3 +1,207 @@
+import { RedisTc, SupportedEventTypes, TraitsLocation } from '../types';
+
+const getRedisTestCase = (tc: RedisTc) => {
+  const context = {
+    app: {
+      build: '1.0.0',
+      name: 'RudderLabs JavaScript SDK',
+      namespace: 'com.rudderlabs.javascript',
+      version: '1.0.5',
+    },
+    ip: '0.0.0.0',
+    library: {
+      name: 'RudderLabs JavaScript SDK',
+      version: '1.0.5',
+    },
+    locale: 'en-GB',
+    os: {
+      name: '',
+      version: '',
+    },
+    screen: {
+      density: 2,
+    },
+    traits: {},
+    userAgent:
+      'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36',
+  };
+  return {
+    name: 'redis',
+    description: tc.description,
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            metadata: {
+              workspaceId: tc.workspaceId || 'wspId',
+            },
+            destination: {
+              Config: {
+                address: 'localhost:6379',
+                database: 'test',
+                prefix: ' ',
+                ...tc.destinationConfig,
+              },
+              DestinationDefinition: {
+                DisplayName: 'Redis',
+                ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
+                Name: 'REDIS',
+              },
+              Enabled: true,
+              ID: tc.destId || '1WhcOCGgj9asZu850HvugU2C3Aq',
+              Name: 'Redis',
+
+              Transformations: [],
+            },
+            message: {
+              anonymousId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
+              channel: 'web',
+              ...(tc.traitsLocation === TraitsLocation.Traits ? { traits: tc.traits } : {}),
+              context: {
+                ...context,
+                ...(tc.traitsLocation === TraitsLocation.ContextTraits
+                  ? { traits: tc.traits }
+                  : {}),
+                ...(tc.profilesContext ?? {}),
+              },
+              integrations: {
+                All: true,
+              },
+              messageId: '2536eda4-d638-4c93-8014-8ffe3f083214',
+              originalTimestamp: '2020-01-24T06:29:02.362Z',
+              receivedAt: '2020-01-24T11:59:02.403+05:30',
+              request_ip: '[::1]:53708',
+              sentAt: '2020-01-24T06:29:02.363Z',
+              timestamp: '2020-01-24T11:59:02.402+05:30',
+              type: tc.eventType,
+              userId: tc.userId || 'myUserId',
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            metadata: {
+              workspaceId: tc.workspaceId || 'wspId',
+            },
+            output: tc.expectedResponse,
+            statusCode: tc.expectedStatusCode,
+          },
+        ],
+      },
+    },
+  };
+};
+
+const jsonTestCases: RedisTc[] = [
+  {
+    description:
+      'Test 6: [Event-stream] when useJSONModule is enabled with traits in context.traits, should transform successfully',
+    destinationConfig: {
+      useJSONModule: true,
+    },
+    traitsLocation: TraitsLocation.ContextTraits,
+    traits: {
+      prop1: 'k',
+      prop2: 2,
+      prop3: {
+        p4: 'a',
+      },
+    },
+    eventType: SupportedEventTypes.Identify,
+    userId: 'user-1',
+    expectedResponse: {
+      message: {
+        key: 'user:user-1',
+        value: {
+          prop1: 'k',
+          prop2: 2,
+          prop3: {
+            p4: 'a',
+          },
+        },
+      },
+      userId: 'user-1',
+    },
+    expectedStatusCode: 200,
+  },
+  {
+    description:
+      'Test 7: [Event-stream] when useJSONModule is enabled with traits in traits, should transform successfully',
+    destinationConfig: {
+      useJSONModule: true,
+    },
+    traitsLocation: TraitsLocation.Traits,
+    traits: {
+      prop1: 'k',
+      prop2: 2,
+      prop3: {
+        p4: 'a',
+      },
+    },
+    eventType: SupportedEventTypes.Identify,
+    userId: 'user-1',
+    expectedResponse: {
+      message: {
+        key: 'user:user-1',
+        value: {
+          prop1: 'k',
+          prop2: 2,
+          prop3: {
+            p4: 'a',
+          },
+        },
+      },
+      userId: 'user-1',
+    },
+    expectedStatusCode: 200,
+  },
+  {
+    description:
+      'Test 8: [Profiles] when useJSONModule is enabled with traits in traits, should transform successfully',
+    destinationConfig: {
+      useJSONModule: true,
+    },
+    destId: 'd1',
+    workspaceId: 'w1',
+    traitsLocation: TraitsLocation.Traits,
+    traits: {
+      field: 'k',
+      model_name: 'analytics_app',
+    },
+    profilesContext: {
+      sources: {
+        profiles_entity: 'e1',
+        profiles_model: 'model1',
+        profiles_id_type: 'id-1',
+      },
+    },
+    eventType: SupportedEventTypes.Identify,
+    userId: 'user-2',
+    expectedResponse: {
+      message: {
+        key: 'w1:d1:e1:id-1:user-2',
+        path: 'model1',
+        value: {
+          field: 'k',
+          model_name: 'analytics_app',
+        },
+      },
+      userId: 'user-2',
+    },
+    expectedStatusCode: 200,
+  },
+];
+
+const jsonTcs = jsonTestCases.map((tc) => getRedisTestCase(tc));
+
 export const data = [
   {
     name: 'redis',
@@ -658,4 +862,5 @@ export const data = [
       },
     },
   },
+  ...jsonTcs,
 ];

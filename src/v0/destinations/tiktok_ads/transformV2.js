@@ -31,7 +31,7 @@ const { JSON_MIME_TYPE } = require('../../util/constant');
  * @param {*} event
  * @returns track payload
  */
-const getTrackResponsePayload = (message, destConfig, event) => {
+const getTrackResponsePayload = (message, destConfig, event, setDefaultForContentType = true) => {
   const payload = constructPayload(message, trackMappingV2);
 
   // if contents is not an array converting it into array
@@ -52,6 +52,10 @@ const getTrackResponsePayload = (message, destConfig, event) => {
   }
   if (destConfig.hashUserProperties && isDefinedAndNotNullAndNotEmpty(payload.user)) {
     payload.user = hashUserField(payload.user);
+  }
+  // setting content-type default value in case of all standard event except `page-view`
+  if (!payload.properties?.content_type && setDefaultForContentType) {
+    payload.properties.content_type = 'product';
   }
   payload.event = event;
   // add partner name and return payload
@@ -90,13 +94,17 @@ const trackResponseBuilder = async (message, { Config }) => {
         });
       }
     });
-  } else {
+  } else if (!eventNameMapping[event]) {
     /* 
+    Custom Event Case -> if there exists no event mapping we will build payload with custom event recieved
     For custom event we do not want to lower case the event or trim it we just want to send those as it is
     Doc https://ads.tiktok.com/help/article/standard-events-parameters?lang=en
     */
-    event = eventNameMapping[event] || message.event;
-    // if there exists no event mapping we will build payload with custom event recieved
+    event = message.event;
+    responseList.push(getTrackResponsePayload(message, Config, event, false));
+  } else {
+    // incoming event name is already a standard event name
+    event = eventNameMapping[event];
     responseList.push(getTrackResponsePayload(message, Config, event));
   }
   // set event source and event_source_id

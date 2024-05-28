@@ -254,6 +254,7 @@ export const data = [
               batch: [
                 {
                   type: 'identify',
+                  source_type: 'ss',
                   sentAt: '2022-10-31T05:57:06.859Z',
                   traits: {
                     connection: 'Username-Password-Authentication',
@@ -304,6 +305,7 @@ export const data = [
               batch: [
                 {
                   type: 'track',
+                  source_type: 'sapi',
                   event: 'Success API Operation',
                   sentAt: '2022-10-31T05:57:06.874Z',
                   userId: 'auth0|dummyPassword',
@@ -594,6 +596,7 @@ export const data = [
               batch: [
                 {
                   type: 'group',
+                  source_type: 'sapi',
                   sentAt: '2022-10-31T06:09:59.135Z',
                   userId: 'google-oauth2|123456',
                   anonymousId: '97fcd7b2-cc24-47d7-b776-057b7b199513',
@@ -936,6 +939,7 @@ export const data = [
               batch: [
                 {
                   type: 'track',
+                  source_type: 'sapi',
                   event: 'Success API Operation',
                   sentAt: '2022-10-31T06:15:25.201Z',
                   userId: 'google-oauth2|123456',
@@ -1157,6 +1161,7 @@ export const data = [
               batch: [
                 {
                   type: 'track',
+                  source_type: 'gd_tenant_update',
                   event: 'Guardian tenant update',
                   sentAt: '2022-10-31T06:15:25.196Z',
                   userId: 'google-oauth2|123456',
@@ -1285,6 +1290,7 @@ export const data = [
               batch: [
                 {
                   type: 'identify',
+                  source_type: 'ss',
                   sentAt: '2022-10-31T05:57:06.859Z',
                   traits: {
                     connection: 'Username-Password-Authentication',
@@ -1404,6 +1410,7 @@ export const data = [
               batch: [
                 {
                   type: 'identify',
+                  source_type: 'ss',
                   userId: '',
                   anonymousId: '97fcd7b2-cc24-47d7-b776-057b7b199513',
                   sentAt: '2022-10-31T05:57:06.859Z',
@@ -1454,6 +1461,7 @@ export const data = [
               batch: [
                 {
                   type: 'track',
+                  source_type: 'sapi',
                   event: 'Success API Operation',
                   sentAt: '2022-10-31T05:57:06.874Z',
                   anonymousId: '97fcd7b2-cc24-47d7-b776-057b7b199513',
@@ -1484,6 +1492,31 @@ export const data = [
             },
           },
         ],
+      },
+    },
+    mockFns: () => {
+      defaultMockFns();
+    },
+  },
+  {
+    name: 'auth0',
+    description: 'empty batch',
+    module: 'source',
+    version: 'v0',
+    input: {
+      request: {
+        body: [],
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      },
+      pathSuffix: '',
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [],
       },
     },
     mockFns: () => {

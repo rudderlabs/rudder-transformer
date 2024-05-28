@@ -4,18 +4,15 @@ const logger = require('../../../logger');
 const {
   returnArrayOfSubarrays,
   constructPayload,
-
   getValueFromMessage,
-
   simpleProcessRouterDest,
-
   getAccessToken,
 } = require('../../util');
 
 const { populateConsentFromConfig } = require('../../util/googleUtils');
-
 const { offlineDataJobsMapping, consentConfigMap } = require('./config');
-const { processRecordInputs, populateIdentifiers, responseBuilder } = require('./transformV2');
+const { processRecordInputs } = require('./recordTransform');
+const { populateIdentifiers, responseBuilder } = require('./util');
 
 function extraKeysPresent(dictionary, keyList) {
   // eslint-disable-next-line no-restricted-syntax
@@ -28,15 +25,6 @@ function extraKeysPresent(dictionary, keyList) {
 }
 
 /**
- * This function helps creates an array with proper mapping for userIdentiFier.
- * Logics: Here we are creating an array with all the attributes provided in the add/remove array
- * inside listData.
- * @param {rudder event message properties listData add} attributeArray
- * @param {rudder event destination} Config
- * @returns
- */
-
-/**
  * This function helps to create different operations by breaking the
  * userIdentiFier Array in chunks of 20.
  * Logics: Here for add/remove type lists, we are creating create/remove operations by
@@ -46,7 +34,6 @@ function extraKeysPresent(dictionary, keyList) {
  * @param {rudder event destination} destination
  * @returns
  */
-
 const createPayload = (message, destination) => {
   const { listData } = message.properties;
   const properties = ['add', 'remove'];

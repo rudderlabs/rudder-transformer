@@ -222,7 +222,7 @@ export const data = [
                   type: 'REST',
                   method: 'POST',
                   endpoint:
-                    'https://googleads.googleapis.com/v15/customers/7693729833/offlineUserDataJobs',
+                    'https://googleads.googleapis.com/v16/customers/7693729833/offlineUserDataJobs',
                   headers: {
                     Authorization: 'Bearer abcd1234',
                     'Content-Type': 'application/json',
@@ -303,7 +303,7 @@ export const data = [
                   type: 'REST',
                   method: 'POST',
                   endpoint:
-                    'https://googleads.googleapis.com/v15/customers/7693729833/offlineUserDataJobs',
+                    'https://googleads.googleapis.com/v16/customers/7693729833/offlineUserDataJobs',
                   headers: {
                     Authorization: 'Bearer abcd1234',
                     'Content-Type': 'application/json',
@@ -361,7 +361,7 @@ export const data = [
                   type: 'REST',
                   method: 'POST',
                   endpoint:
-                    'https://googleads.googleapis.com/v15/customers/7693729833/offlineUserDataJobs',
+                    'https://googleads.googleapis.com/v16/customers/7693729833/offlineUserDataJobs',
                   headers: {
                     Authorization: 'Bearer abcd1234',
                     'Content-Type': 'application/json',
@@ -442,7 +442,7 @@ export const data = [
                   type: 'REST',
                   method: 'POST',
                   endpoint:
-                    'https://googleads.googleapis.com/v15/customers/7693729833/offlineUserDataJobs',
+                    'https://googleads.googleapis.com/v16/customers/7693729833/offlineUserDataJobs',
                   headers: {
                     Authorization: 'Bearer abcd1234',
                     'Content-Type': 'application/json',
@@ -494,7 +494,7 @@ export const data = [
                   type: 'REST',
                   method: 'POST',
                   endpoint:
-                    'https://googleads.googleapis.com/v15/customers/7693729833/offlineUserDataJobs',
+                    'https://googleads.googleapis.com/v16/customers/7693729833/offlineUserDataJobs',
                   headers: {
                     Authorization: 'Bearer abcd1234',
                     'Content-Type': 'application/json',
@@ -712,6 +712,92 @@ export const data = [
                 userId: 'u3',
               },
             },
+            {
+              destination: {
+                Config: {
+                  rudderAccountId: '258Yea7usSKNpbkIaesL9oJ9iYw',
+                  listId: '7090784486',
+                  customerId: '7693729833',
+                  loginCustomerId: '',
+                  subAccount: false,
+                  userSchema: ['email', 'phone', 'addressInfo'],
+                  isHashRequired: true,
+                  typeOfList: 'General',
+                },
+              },
+              message: {
+                action: 'lol',
+                context: {
+                  ip: '14.5.67.21',
+                  library: {
+                    name: 'http',
+                  },
+                },
+                recordId: '2',
+                rudderId: '2',
+                fields: {
+                  email: 'test@abc.com',
+                  phone: '@09876543210',
+                  firstName: 'test',
+                  lastName: 'rudderlabs',
+                  country: 'US',
+                  postalCode: '1245',
+                },
+                type: 'record',
+              },
+              metadata: {
+                secret: {
+                  access_token: 'abcd1234',
+                  refresh_token: 'efgh5678',
+                  developer_token: 'ijkl9101',
+                },
+                jobId: 4,
+                userId: 'u4',
+              },
+            },
+            {
+              destination: {
+                Config: {
+                  rudderAccountId: '258Yea7usSKNpbkIaesL9oJ9iYw',
+                  listId: '7090784486',
+                  customerId: '7693729833',
+                  loginCustomerId: '',
+                  subAccount: false,
+                  userSchema: ['email', 'phone', 'addressInfo'],
+                  isHashRequired: true,
+                  typeOfList: 'General',
+                },
+              },
+              message: {
+                action: 'insert',
+                context: {
+                  ip: '14.5.67.21',
+                  library: {
+                    name: 'http',
+                  },
+                },
+                recordId: '2',
+                rudderId: '2',
+                fields: {
+                  email: 'test@abc.com',
+                  phone: '@09876543210',
+                  firstName: 'test',
+                  lastName: 'rudderlabs',
+                  country: 'US',
+                  postalCode: '1245',
+                },
+                type: 'record',
+              },
+              metadata: {
+                secret: {
+                  access_token: 'abcd1234',
+                  refresh_token: 'efgh5678',
+                  developer_token: 'ijkl9101',
+                },
+                jobId: 5,
+                userId: 'u5',
+              },
+            },
           ],
           destType: 'google_adwords_remarketing_lists',
         },
@@ -730,7 +816,7 @@ export const data = [
                   type: 'REST',
                   method: 'POST',
                   endpoint:
-                    'https://googleads.googleapis.com/v15/customers/7693729833/offlineUserDataJobs',
+                    'https://googleads.googleapis.com/v16/customers/7693729833/offlineUserDataJobs',
                   headers: {
                     Authorization: 'Bearer abcd1234',
                     'Content-Type': 'application/json',
@@ -813,7 +899,7 @@ export const data = [
                   type: 'REST',
                   method: 'POST',
                   endpoint:
-                    'https://googleads.googleapis.com/v15/customers/7693729833/offlineUserDataJobs',
+                    'https://googleads.googleapis.com/v16/customers/7693729833/offlineUserDataJobs',
                   headers: {
                     Authorization: 'Bearer abcd1234',
                     'Content-Type': 'application/json',
@@ -833,6 +919,24 @@ export const data = [
                         {
                           create: {
                             userIdentifiers: [
+                              {
+                                hashedEmail:
+                                  'd3142c8f9c9129484daf28df80cc5c955791efed5e69afabb603bc8cb9ffd419',
+                              },
+                              {
+                                hashedPhoneNumber:
+                                  '8846dcb6ab2d73a0e67dbd569fa17cec2d9d391e5b05d1dd42919bc21ae82c45',
+                              },
+                              {
+                                addressInfo: {
+                                  hashedFirstName:
+                                    '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08',
+                                  hashedLastName:
+                                    'dcf000c2386fb76d22cefc0d118a8511bb75999019cd373df52044bccd1bd251',
+                                  countryCode: 'US',
+                                  postalCode: '1245',
+                                },
+                              },
                               {
                                 hashedEmail:
                                   'd3142c8f9c9129484daf28df80cc5c955791efed5e69afabb603bc8cb9ffd419',
@@ -873,6 +977,15 @@ export const data = [
                   jobId: 1,
                   userId: 'u1',
                 },
+                {
+                  secret: {
+                    access_token: 'abcd1234',
+                    refresh_token: 'efgh5678',
+                    developer_token: 'ijkl9101',
+                  },
+                  jobId: 5,
+                  userId: 'u5',
+                },
               ],
               batched: true,
               statusCode: 200,
@@ -896,7 +1009,7 @@ export const data = [
                   type: 'REST',
                   method: 'POST',
                   endpoint:
-                    'https://googleads.googleapis.com/v15/customers/7693729833/offlineUserDataJobs',
+                    'https://googleads.googleapis.com/v16/customers/7693729833/offlineUserDataJobs',
                   headers: {
                     Authorization: 'Bearer abcd1234',
                     'Content-Type': 'application/json',
@@ -970,6 +1083,30 @@ export const data = [
                   isHashRequired: true,
                   typeOfList: 'General',
                 },
+              },
+            },
+            {
+              metadata: [
+                {
+                  secret: {
+                    access_token: 'abcd1234',
+                    refresh_token: 'efgh5678',
+                    developer_token: 'ijkl9101',
+                  },
+                  jobId: 4,
+                  userId: 'u4',
+                },
+              ],
+              batched: false,
+              statusCode: 400,
+              error: 'Invalid action type in record event',
+              statTags: {
+                errorCategory: 'dataValidation',
+                errorType: 'instrumentation',
+                destType: 'GOOGLE_ADWORDS_REMARKETING_LISTS',
+                module: 'destination',
+                implementation: 'native',
+                feature: 'router',
               },
             },
           ],

@@ -39,9 +39,10 @@ const getConversionActionId = async ({ method, headers, params, metadata }) => {
       query: queryString,
     };
     const searchStreamEndpoint = `${BASE_ENDPOINT}/${params.customerId}/googleAds:searchStream`;
-    logger.requestLog(`[${destType.toUpperCase()}] conversion enhancement request`, {
-      metadata,
-      requestDetails: { url: searchStreamEndpoint, body: data, method },
+    metadata?.requestLog(`[${destType.toUpperCase()}] conversion enhancement request`, {
+      url: searchStreamEndpoint,
+      body: data,
+      method,
     });
     const requestBody = {
       url: searchStreamEndpoint,
@@ -61,13 +62,10 @@ const getConversionActionId = async ({ method, headers, params, metadata }) => {
       },
     );
     const { status, response, headers: responseHeaders } = gaecConversionActionIdResponse;
-    logger.responseLog(`[${destType.toUpperCase()}] get conversion action id response`, {
-      metadata,
-      responseDetails: {
-        response,
-        status,
-        headers: responseHeaders,
-      },
+    metadata?.responseLog(`[${destType.toUpperCase()}] get conversion action id response`, {
+      responseBody: response,
+      status,
+      responseHeaders,
     });
     if (!isHttpStatusSuccess(status)) {
       throw new NetworkError(
@@ -115,9 +113,10 @@ const ProxyRequest = async (request) => {
     'conversionAdjustments[0].conversionAction',
     `customers/${params.customerId}/conversionActions/${conversionActionId}`,
   );
-  logger.requestLog(`[${destType.toUpperCase()}] conversion enhancement request`, {
-    metadata,
-    requestDetails: { url: endpoint, body: body.JSON, method },
+  metadata?.requestLog(`[${destType.toUpperCase()}] conversion enhancement request`, {
+    url: endpoint,
+    body: body.JSON,
+    method,
   });
   const requestBody = { url: endpoint, data: body.JSON, headers, method };
   const { httpResponse: response, processedResponse } = await handleHttpRequest(
@@ -132,13 +131,10 @@ const ProxyRequest = async (request) => {
     },
   );
   const { response: processedResp, status, headers: responseHeaders } = processedResponse;
-  logger.responseLog(`[${destType.toUpperCase()}] conversion enhancement response`, {
-    metadata,
-    responseDetails: {
-      response: processedResp,
-      status,
-      headers: responseHeaders,
-    },
+  metadata?.responseLog(`[${destType.toUpperCase()}] conversion enhancement response`, {
+    responseBody: processedResp,
+    status,
+    responseHeaders,
   });
   return response;
 };

@@ -118,4 +118,4 @@ function combinePayloads(inputs) {
   return { ...payload };
 }
 
-export { transformSingleMessage, combinePayloads };
+module.exports = { transformSingleMessage, combinePayloads };

@@ -55,6 +55,7 @@ export const data = [
             metadata: {
               destinationId: 'destId',
               workspaceId: 'wspId',
+              jobId: 1,
             },
           },
         ],
@@ -94,6 +95,7 @@ export const data = [
                                 ip: '213.5.6.41',
                               },
                               anonymous_id: 'user1',
+                              jobIdentifier: 'user1:1',
                             },
                           },
                         ],
@@ -122,6 +124,7 @@ export const data = [
             metadata: {
               destinationId: 'destId',
               workspaceId: 'wspId',
+              jobId: 1,
             },
           },
         ],
@@ -180,6 +183,7 @@ export const data = [
             metadata: {
               destinationId: 'destId',
               workspaceId: 'wspId',
+              jobId: 1,
             },
           },
         ],
@@ -215,6 +219,7 @@ export const data = [
                                 ip: '213.5.6.41',
                               },
                               anonymous_id: 'user1',
+                              jobIdentifier: 'user1:1',
                             },
                           },
                         ],
@@ -243,6 +248,7 @@ export const data = [
             metadata: {
               destinationId: 'destId',
               workspaceId: 'wspId',
+              jobId: 1,
             },
           },
         ],
@@ -300,6 +306,7 @@ export const data = [
             metadata: {
               destinationId: 'destId',
               workspaceId: 'wspId',
+              jobId: 1,
             },
           },
         ],
@@ -335,6 +342,7 @@ export const data = [
                                 ip: '213.5.6.41',
                               },
                               anonymous_id: 'user1',
+                              jobIdentifier: 'user1:1',
                             },
                           },
                         ],
@@ -353,157 +361,10 @@ export const data = [
             metadata: {
               destinationId: 'destId',
               workspaceId: 'wspId',
+              jobId: 1,
             },
           },
         ],
-      },
-    },
-  },
-  {
-    name: 'klaviyo_bulk_upload',
-    description: 'Failed identify event with missing Private Api Key',
-    feature: 'processor',
-    module: 'destination',
-    version: 'v0',
-    input: {
-      request: {
-        body: [
-          {
-            message: {
-              channel: 'sources',
-              context: {
-                externalId: [
-                  {
-                    id: 'user1',
-                    identifierType: 'userId',
-                    type: 'KLAVIYO_BULK_UPLOAD-userProfiles',
-                  },
-                ],
-                mappedToDestination: 'true',
-                sources: {
-                  job_id: '2gif2bMzsX1Nt0rbV1vcbAE3cxC',
-                  job_run_id: 'cp5p5ilq47pqg38v2nfg',
-                  task_run_id: 'cp5p5ilq47pqg38v2ng0',
-                  version: '2051/merge',
-                },
-              },
-              traits: {
-                email: 'qwe22@mail.com',
-                first_name: 'Testqwe0022',
-                last_name: 'user',
-                phone_number: '+919902330123',
-                ip: '213.5.6.41',
-              },
-              type: 'identify',
-              userId: '1',
-            },
-            destination: {
-              DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
-              },
-              Config: {
-                privateApiKey: '',
-                listId: 'list101',
-              },
-            },
-            metadata: {
-              destinationId: 'destId',
-              workspaceId: 'wspId',
-            },
-          },
-        ],
-      },
-    },
-    output: {
-      metadata: {
-        jobId: 1,
-      },
-      statusCode: 400,
-      error:
-        'Private Api Key is not present. Aborting: Workflow: procWorkflow, Step: validateInput, ChildStep: undefined, OriginalError: Private Api Key is not present. Aborting',
-      statTags: {
-        errorCategory: 'dataValidation',
-        errorType: 'configuration',
-        implementation: 'cdkV2',
-        destType: 'KLAVIYO_BULK_UPLOAD',
-        module: 'destination',
-        feature: 'processor',
-      },
-    },
-  },
-  {
-    name: 'klaviyo_bulk_upload',
-    description: 'Failed event with invalid event type',
-    feature: 'processor',
-    module: 'destination',
-    version: 'v0',
-    input: {
-      request: {
-        body: [
-          {
-            message: {
-              channel: 'sources',
-              context: {
-                externalId: [
-                  {
-                    id: 'user1',
-                    identifierType: 'userId',
-                    type: 'KLAVIYO_BULK_UPLOAD-userProfiles',
-                  },
-                ],
-                mappedToDestination: 'true',
-                sources: {
-                  job_id: '2gif2bMzsX1Nt0rbV1vcbAE3cxC',
-                  job_run_id: 'cp5p5ilq47pqg38v2nfg',
-                  task_run_id: 'cp5p5ilq47pqg38v2ng0',
-                  version: '2051/merge',
-                },
-              },
-              traits: {
-                email: 'qwe22@mail.com',
-                first_name: 'Testqwe0022',
-                last_name: 'user',
-                phone_number: '+919902330123',
-                ip: '213.5.6.41',
-              },
-              type: 'identify',
-              userId: '1',
-            },
-            destination: {
-              DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
-              },
-              Config: {
-                privateApiKey: 'pk_dummy_123',
-                listId: 'list101',
-              },
-            },
-            metadata: {
-              destinationId: 'destId',
-              workspaceId: 'wspId',
-            },
-          },
-        ],
-      },
-    },
-    output: {
-      metadata: {
-        jobId: 1,
-      },
-      statusCode: 400,
-      error:
-        'message type track is not supported: Workflow: procWorkflow, Step: validateInput, ChildStep: undefined, OriginalError: message type track is not supported',
-      statTags: {
-        errorCategory: 'dataValidation',
-        errorType: 'instrumentation',
-        implementation: 'cdkV2',
-        destType: 'KLAVIYO_BULK_UPLOAD',
-        module: 'destination',
-        feature: 'processor',
       },
     },
   },

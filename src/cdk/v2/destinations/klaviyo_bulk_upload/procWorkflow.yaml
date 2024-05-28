@@ -17,9 +17,9 @@ steps:
       .message.type.toLowerCase();
   - name: validateInput
     template: |
-      let messageType = $.outputs.messageType;
+      let messageType = .message.type;
       $.assert(messageType, "message Type is not present. Aborting");
-      $.assert(messageType in {{$.EventType.([.IDENTIFY])}}, "message type " + messageType + " is not supported");
+      $.assert(.message.type.toLowerCase() ==='identify', "Event type " + .message.type.toLowerCase() + " is not supported. Aborting message.");
       $.assertConfig(.destination.Config.privateApiKey, "Private Api Key is not present. Aborting");
 
   - name: generatePayload

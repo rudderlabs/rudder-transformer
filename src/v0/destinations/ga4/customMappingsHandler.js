@@ -98,7 +98,8 @@ const handleCustomMappings = (message, Config) => {
     rawPayload = { ...rawPayload, events: [ga4EventPayload] };
 
     boilerplateOperations(rawPayload, message, Config, rsEvent);
-    return rawPayload;
+
+    return buildDeliverablePayload(rawPayload, Config);
   }
 
   const processedPayloads = validMappings.map((mapping) => {

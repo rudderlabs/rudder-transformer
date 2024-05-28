@@ -36,9 +36,10 @@ function generateLocationObject({
   };
 }
 
-function transformSingleMessage(data) {
+function transformSingleMessage(data, metadata) {
   const { context, traits } = data;
   const location = generateLocationObject(data);
+  const { jobId } = metadata;
   const traitsWithoutLocation = removeLocationAttributes(traits);
   let transformedSinglePayload = {};
   if (context.externalId[0].identifierType === 'id') {
@@ -48,6 +49,7 @@ function transformSingleMessage(data) {
       attributes: {
         ...traitsWithoutLocation,
         location,
+        jobIdentifier: `${context.externalId[0].id}:${jobId}`,
       },
     };
   } else {
@@ -57,6 +59,7 @@ function transformSingleMessage(data) {
         ...traitsWithoutLocation,
         location,
         anonymous_id: context.externalId[0].id,
+        jobIdentifier: `${context.externalId[0].id}:${jobId}`,
       },
     };
   }
@@ -106,8 +109,8 @@ function wrapCombinePayloads(transformedInputs, destinationObj) {
 
 function combinePayloads(inputs) {
   const transformedInputs = inputs.map((input) => {
-    const { message } = input;
-    return transformSingleMessage(message);
+    const { message, metadata } = input;
+    return transformSingleMessage(message, metadata);
   });
   const destinationObj = inputs[inputs.length - 1].destination;
 

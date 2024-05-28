@@ -281,6 +281,7 @@ export const customMappingTestCases = [
                   client_id: 'root_anonId',
                   events: [
                     {
+                      name: 'view_item_list',
                       params: {
                         items: [
                           {
@@ -380,6 +381,7 @@ export const customMappingTestCases = [
                   client_id: 'root_anonId',
                   events: [
                     {
+                      name: 'add_to_cart',
                       params: {
                         items: [
                           {
@@ -442,6 +444,7 @@ export const customMappingTestCases = [
                   client_id: 'root_anonId',
                   events: [
                     {
+                      name: 'checkout_started',
                       params: {
                         items: [
                           {
@@ -644,7 +647,7 @@ export const customMappingTestCases = [
                   timestamp_micros: 1651105389000000,
                   non_personalized_ads: false,
                   client_id: 'root_anonId',
-                  events: [{}],
+                  events: [{ name: 'join_group' }],
                   userProperties: {
                     firstName: {
                       value: 'John',

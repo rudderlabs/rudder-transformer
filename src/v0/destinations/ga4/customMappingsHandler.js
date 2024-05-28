@@ -74,8 +74,6 @@ const handleCustomMappings = (message, Config) => {
 
     const ga4EventPayload = {};
 
-    ga4EventPayload.name = rsEvent;
-
     // take optional params parameters for custom events
     ga4EventPayload.params = {
       ...ga4EventPayload.params,
@@ -99,7 +97,7 @@ const handleCustomMappings = (message, Config) => {
     rawPayload = removeUndefinedAndNullValues(rawPayload);
     rawPayload = { ...rawPayload, events: [ga4EventPayload] };
 
-    boilerplateOperations(rawPayload, message, Config);
+    boilerplateOperations(rawPayload, message, Config, rsEvent);
     return rawPayload;
   }
 
@@ -125,7 +123,7 @@ const handleCustomMappings = (message, Config) => {
     }
     removeUndefinedAndNullRecurse(ga4MappedPayload);
 
-    boilerplateOperations(ga4MappedPayload, message, Config);
+    boilerplateOperations(ga4MappedPayload, message, Config, eventName);
 
     if (isDefinedAndNotNull(ga4BasicPayload)) {
       return { ...ga4BasicPayload, ...ga4MappedPayload };
@@ -139,9 +137,9 @@ const handleCustomMappings = (message, Config) => {
   );
 };
 
-const boilerplateOperations = (ga4Payload, message, Config) => {
+const boilerplateOperations = (ga4Payload, message, Config, eventName) => {
   removeReservedParameterPrefixNames(ga4Payload.events[0].params);
-
+  ga4Payload.events[0].name = eventName;
   const integrationsObj = getIntegrationsObj(message, 'ga4');
 
   if (isHybridModeEnabled(Config) && integrationsObj && integrationsObj.sessionId) {

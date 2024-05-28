@@ -29,6 +29,7 @@ All notable changes to this project will be documented in this file. See [standa
 * resolving comments ([7c0d963](https://github.com/rudderlabs/rudder-transformer/commit/7c0d963d3ee87a3ed5712492300dc50768c529de))
 * standardise hashing for all CAPI integrations ([#3379](https://github.com/rudderlabs/rudder-transformer/issues/3379)) ([c249a69](https://github.com/rudderlabs/rudder-transformer/commit/c249a694d735f6d241a35b6e21f493c54890ac84))
 * tiktok_v2 remove default value for content-type for custom events ([#3383](https://github.com/rudderlabs/rudder-transformer/issues/3383)) ([6e7b5a0](https://github.com/rudderlabs/rudder-transformer/commit/6e7b5a0d8bf2c859dfb15b9cad7ed6070bd0892b))
+* added step for reconciling openfaas functions for python transformations ([#3420](https://github.com/rudderlabs/rudder-transformer/issues/3420)) ([7a2ab63](https://github.com/rudderlabs/rudder-transformer/commit/7a2ab63674d40870af4d16f0673a2a2594c899e9))
 
 ## [1.67.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.66.1...v1.67.0) (2024-05-23)
 

@@ -4,21 +4,17 @@ const get = require('get-value');
 const {
   InstrumentationError,
   ConfigurationError,
-  TransformationError,
   getErrorRespEvents,
 } = require('@rudderstack/integrations-lib');
-const { schemaFields, typeFields, subTypeFields, getEndPoint } = require('./config');
+const { schemaFields } = require('./config');
 const { MappedToDestinationKey } = require('../../../constants');
 const stats = require('../../../util/stats');
 const {
   getDestinationExternalIDInfoForRetl,
   isDefinedAndNotNullAndNotEmpty,
   checkSubsetOfArray,
-  defaultRequestConfig,
   returnArrayOfSubarrays,
   getSuccessRespEvents,
-  defaultPostRequestConfig,
-  defaultDeleteRequestConfig,
   generateErrorObject,
 } = require('../../util');
 const {
@@ -26,6 +22,8 @@ const {
   getUpdatedDataElement,
   getSchemaForEventMappedToDest,
   batchingWithPayloadSize,
+  responseBuilderSimple,
+  getDataSource,
 } = require('./util');
 
 function getErrorMetaData(inputs, acceptedOperations) {
@@ -40,37 +38,6 @@ function getErrorMetaData(inputs, acceptedOperations) {
   }
   return metadata;
 }
-
-const getDataSource = (type, subType) => {
-  const dataSource = {};
-  if (type && type !== 'NA' && typeFields.includes(type)) {
-    dataSource.type = type;
-  }
-  if (subType && subType !== 'NA' && subTypeFields.includes(subType)) {
-    dataSource.sub_type = subType;
-  }
-  return dataSource;
-};
-
-const responseBuilderSimple = (payload, audienceId) => {
-  if (payload) {
-    const responseParams = payload.responseField;
-    const response = defaultRequestConfig();
-    response.endpoint = getEndPoint(audienceId);
-
-    if (payload.operationCategory === 'add') {
-      response.method = defaultPostRequestConfig.requestMethod;
-    }
-    if (payload.operationCategory === 'remove') {
-      response.method = defaultDeleteRequestConfig.requestMethod;
-    }
-
-    response.params = responseParams;
-    return response;
-  }
-  // fail-safety for developer error
-  throw new TransformationError(`Payload could not be constructed`);
-};
 
 const processRecordEventArray = (
   recordChunksArray,
@@ -307,6 +274,4 @@ async function processRecordInputs(groupedRecordInputs) {
 
 module.exports = {
   processRecordInputs,
-  responseBuilderSimple,
-  getDataSource,
 };

@@ -14,11 +14,13 @@ const {
   getSchemaForEventMappedToDest,
   batchingWithPayloadSize,
   generateAppSecretProof,
+  responseBuilderSimple,
+  getDataSource,
 } = require('./util');
 const { schemaFields, USER_ADD, USER_DELETE } = require('./config');
 
 const { MappedToDestinationKey } = require('../../../constants');
-const { processRecordInputs, responseBuilderSimple, getDataSource } = require('./transformV2');
+const { processRecordInputs } = require('./recordTransform');
 
 function extraKeysPresent(dictionary, keyList) {
   // eslint-disable-next-line no-restricted-syntax

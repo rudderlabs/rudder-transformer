@@ -1,43 +1,64 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+// @ts-nocheck
+
 import logger from '../../logger';
-import { Metadata, ProxyMetdata, RequestInfo, ResponseInfo, TransformationKindInfo } from './types';
+import {
+  AllMetadata,
+  Metadata,
+  ProxyMetdata,
+  RequestInfo,
+  ResponseInfo,
+  TransformationKindInfo,
+} from './types';
 
-export class TransformationMetadata {
-  private m: Metadata | ProxyMetdata;
-
-  private tfKind: TransformationKindInfo;
-
-  constructor(m: Metadata | ProxyMetdata, tfKind: TransformationKindInfo) {
-    this.m = m;
-    this.tfKind = tfKind;
-  }
-
-  private pickMetaInfo() {
-    const { sourceId, destinationId, workspaceId } = this.m;
-    const { module, feature, implementation } = this.tfKind;
-    return {
-      sourceId,
-      destinationId,
-      // destinationType,
-      workspaceId,
-      module,
-      feature,
-      implementation,
-    };
-  }
-
-  requestLog(identifierMsg: string, args: RequestInfo) {
+const pickMetaInfo = (m: Metadata | ProxyMetdata, tfKind: TransformationKindInfo) => {
+  const { sourceId, destinationId, workspaceId, jobId } = m;
+  const { module, feature, implementation } = tfKind;
+  return {
+    sourceId,
+    destinationId,
+    jobId,
+    // destinationType,
+    workspaceId,
+    module,
+    feature,
+    implementation,
+  };
+};
+export function requestLog(this: AllMetadata, kindInfo: TransformationKindInfo) {
+  return function internalReqLog(identifierMsg: string, args: RequestInfo) {
     // do something before if necessary
+    if (Array.isArray(this)) {
+      this.forEach((m) => {
+        logger.debug(identifierMsg, {
+          ...pickMetaInfo(m, kindInfo),
+          ...args,
+        });
+      });
+      return;
+    }
     logger.debug(identifierMsg, {
-      ...this.pickMetaInfo(),
+      ...pickMetaInfo(this, kindInfo),
       ...args,
     });
-  }
+  };
+}
 
-  responseLog(identifierMsg: string, args: ResponseInfo) {
+export function responseLog(this: AllMetadata, kindInfo: TransformationKindInfo) {
+  return function internalResLog(identifierMsg: string, args: ResponseInfo) {
     // do something before if necessary
+    if (Array.isArray(this)) {
+      this.forEach((m) => {
+        logger.debug(identifierMsg, {
+          ...pickMetaInfo(m, kindInfo),
+          ...args,
+        });
+      });
+      return;
+    }
     logger.debug(identifierMsg, {
-      ...this.pickMetaInfo(),
+      ...pickMetaInfo(this, kindInfo),
       ...args,
     });
-  }
+  };
 }

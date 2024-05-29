@@ -6,7 +6,7 @@ const { prepareProxyRequest, handleHttpRequest } = require('../../../adapters/ne
 const { isHttpStatusSuccess, getAuthErrCategoryFromStCode } = require('../../util/index');
 const { CONVERSION_ACTION_ID_CACHE_TTL, destType } = require('./config');
 const Cache = require('../../util/cache');
-const logger = require('../../../logger');
+// const logger = require('../../../logger');
 
 const conversionActionIdCache = new Cache(CONVERSION_ACTION_ID_CACHE_TTL);
 

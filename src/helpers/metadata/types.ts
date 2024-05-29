@@ -1,12 +1,28 @@
 import { FixMe } from '../../util/types';
 
+export type AllMetadata = Metadata | ProxyMetdata | Metadata[] | ProxyMetdata[];
+
+export type MetadataT = {
+  requestLog(
+    m: AllMetadata,
+    kindInfo: TransformationKindInfo,
+  ): (msg: string, args: Record<string, FixMe>) => void;
+  responseLog(
+    m: AllMetadata,
+    kindInfo: TransformationKindInfo,
+  ): (msg: string, args: Record<string, FixMe>) => void;
+} & (Metadata | ProxyMetdata | Metadata[] | ProxyMetdata[]);
+
+export interface MetadataI {
+  requestLog(msg: string, args: Record<string, FixMe>): void;
+  responseLog(msg: string, args: Record<string, FixMe>): void;
+}
+
 export type CommonMetadata = {
   sourceId: string;
   destinationId: string;
   workspaceId: string;
-
-  requestLog(msg: string, args: Record<string, FixMe>): void;
-  responseLog(msg: string, args: Record<string, FixMe>): void;
+  jobId: number;
 };
 
 export type Metadata = CommonMetadata & {

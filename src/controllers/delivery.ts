@@ -49,12 +49,12 @@ export class DeliveryController {
       )) as DeliveryV0Response;
     } catch (error: any) {
       const { metadata } = deliveryRequest;
-      const metaTO = integrationService.getTags(
-        destination,
-        metadata?.destinationId || NON_DETERMINABLE,
-        metadata?.workspaceId || NON_DETERMINABLE,
-        tags.FEATURES.DATA_DELIVERY,
-      );
+      // const metaTO = integrationService.getTags(
+      //   destination,
+      //   metadata?.destinationId || NON_DETERMINABLE,
+      //   metadata?.workspaceId || NON_DETERMINABLE,
+      //   tags.FEATURES.DATA_DELIVERY,
+      // );
       metaTO.metadata = metadata;
       deliveryResponse = DestinationPostTransformationService.handleDeliveryFailureEvents(
         error,

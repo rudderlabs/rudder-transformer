@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
 import { ProxyV0Request } from '../../types';
-import { TransformationMetadata } from './metadata';
+import { requestLog, responseLog } from './metadata';
 import { Metadata, ProxyMetdata, TransformationKindInfo } from './types';
 
 export default class MetaBinder {
@@ -9,20 +9,20 @@ export default class MetaBinder {
     event: ProxyV0Request,
     kindInfo: TransformationKindInfo,
   ) {
-    const tfMetadata = new TransformationMetadata(event.metadata, kindInfo);
-    event.metadata.requestLog = tfMetadata.requestLog;
-    event.metadata.responseLog = tfMetadata.responseLog;
+    // @ts-expect-error this assignment is necessary
+    event.metadata.requestLog = requestLog(event.metadata, kindInfo);
+    // @ts-expect-error this assignment is necessary
+    event.metadata.responseLog = responseLog(event.metadata, kindInfo);
   }
 
   public static bindTransformMetaToDeliveryV1(
     metadatas: ProxyMetdata[],
     kindInfo: TransformationKindInfo,
   ) {
-    metadatas.forEach((metadata) => {
-      const tfMetadata = new TransformationMetadata(metadata, kindInfo);
-      metadata.requestLog = tfMetadata.requestLog;
-      metadata.responseLog = tfMetadata.responseLog;
-    });
+    // @ts-expect-error this assignment is necessary
+    metadatas.requestLog = requestLog(metadatas, kindInfo);
+    // @ts-expect-error this assignment is necessary
+    metadatas.responseLog = responseLog(metadatas, kindInfo);
   }
 
   public static bindTransformMetaToTransformation(
@@ -30,9 +30,10 @@ export default class MetaBinder {
     kindInfo: TransformationKindInfo,
   ) {
     events.forEach((ev) => {
-      const tfMetadata = new TransformationMetadata(ev.metadata, kindInfo);
-      ev.metadata.requestLog = tfMetadata.requestLog;
-      ev.metadata.responseLog = tfMetadata.responseLog;
+      // @ts-expect-error this assignment is necessary
+      ev.metadata.requestLog = requestLog(ev.metadata, kindInfo);
+      // @ts-expect-error this assignment is necessary
+      ev.metadata.responseLog = responseLog(ev.metadata, kindInfo);
     });
   }
 }

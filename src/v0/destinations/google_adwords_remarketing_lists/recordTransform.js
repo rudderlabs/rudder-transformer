@@ -92,10 +92,7 @@ const processRecordEventArray = (
 };
 
 async function processRecordInputs(groupedRecordInputs) {
-  const { destination } = groupedRecordInputs[0];
-  const { message } = groupedRecordInputs[0];
-
-  const { metadata } = groupedRecordInputs[0];
+  const { destination, message, metadata  } = groupedRecordInputs[0];
   const accessToken = getAccessToken(metadata, 'access_token');
   const developerToken = getValueFromMessage(metadata, 'secret.developer_token');
 

@@ -41,3 +41,15 @@ export const destinationWithWrongUrl = {
     },
   },
 };
+
+export const destinationWithMaxBatchSize = {
+  Config: {
+    maxBatchSize: 2,
+    webhookUrl: 'http://6b0e6a60.ngrok.io',
+    headers: [
+      { from: '', to: '' },
+      { from: 'test2', to: 'value2' },
+    ],
+  },
+  DestinationDefinition: { Config: { cdkV2Enabled: true } },
+};

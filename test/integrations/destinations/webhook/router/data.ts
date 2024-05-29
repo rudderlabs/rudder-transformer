@@ -1,5 +1,11 @@
 import { generalProperties, userProperties } from '../basicProperties';
-import { context, destination, destinationWithoutHeaders } from '../commonConfig';
+import {
+  context,
+  destination,
+  destinationWithMaxBatchSize,
+  destinationWithWrongUrl,
+  destinationWithoutHeaders,
+} from '../commonConfig';
 
 export const data = [
   {
@@ -296,6 +302,365 @@ export const data = [
               batched: false,
               statusCode: 200,
               destination: destinationWithoutHeaders,
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    name: 'webhook',
+    id: 'Test 2 - router',
+    description: 'Identify payload with 2 events in 1 batch',
+    scenario: 'Framework',
+    successCriteria: 'All events should be transformed successfully and status code should be 200',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: {
+                anonymousId: 'anon_1',
+                channel: 'mobile',
+                context,
+                integrations: {
+                  All: true,
+                },
+                messageId: '1590431830865-3be680d6-7dcd-4b05-8460-f3acc30046d9',
+                originalTimestamp: '2020-05-25T18:37:10.865Z',
+                sentAt: '2020-05-25T18:37:10.917Z',
+                type: 'identify',
+                userId: 'sample_user_id',
+              },
+              metadata: { jobId: 2, userId: 'u1' },
+              destination: destination,
+            },
+            {
+              message: {
+                anonymousId: 'anon_2',
+                channel: 'mobile',
+                context,
+                integrations: {
+                  All: true,
+                },
+                messageId: '23432324-3be680d6-7dcd-4b05-8460-f3acc30046d9',
+                type: 'identify',
+                userId: 'sample_user_id',
+              },
+              metadata: { jobId: 3, userId: 'u1' },
+              destination: destination,
+            },
+            {
+              message: {
+                anonymousId: 'anon_3',
+                channel: 'mobile',
+                integrations: {
+                  All: true,
+                },
+                messageId: '23432324-3be680d6-7dcd-4b05-8460-f3acc30046d9',
+                type: 'identify',
+                userId: 'sample_user_id',
+              },
+              metadata: { jobId: 4, userId: 'u1' },
+              destination: destination,
+            },
+          ],
+          destType: 'webhook',
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batchedRequest: {
+                body: {
+                  XML: {},
+                  JSON_ARRAY: {},
+                  JSON: [
+                    {
+                      anonymousId: 'anon_1',
+                      channel: 'mobile',
+                      context,
+                      integrations: {
+                        All: true,
+                      },
+                      messageId: '1590431830865-3be680d6-7dcd-4b05-8460-f3acc30046d9',
+                      originalTimestamp: '2020-05-25T18:37:10.865Z',
+                      sentAt: '2020-05-25T18:37:10.917Z',
+                      type: 'identify',
+                      userId: 'sample_user_id',
+                    },
+                    {
+                      anonymousId: 'anon_2',
+                      channel: 'mobile',
+                      context,
+                      integrations: {
+                        All: true,
+                      },
+                      messageId: '23432324-3be680d6-7dcd-4b05-8460-f3acc30046d9',
+                      type: 'identify',
+                      userId: 'sample_user_id',
+                    },
+                  ],
+                  FORM: {},
+                },
+                files: {},
+                endpoint: 'http://6b0e6a60.ngrok.io',
+                headers: { 'content-type': 'application/json', test2: 'value2' },
+                version: '1',
+                params: {},
+                type: 'REST',
+                method: 'POST',
+              },
+              metadata: [
+                { jobId: 2, userId: 'u1' },
+                { jobId: 3, userId: 'u1' },
+              ],
+              batched: true,
+              statusCode: 200,
+              destination: destinationWithMaxBatchSize,
+            },
+            {
+              batchedRequest: {
+                body: {
+                  XML: {},
+                  JSON_ARRAY: {},
+                  JSON: {
+                    anonymousId: 'anon_3',
+                    channel: 'mobile',
+                    integrations: {
+                      All: true,
+                    },
+                    messageId: '23432324-3be680d6-7dcd-4b05-8460-f3acc30046d9',
+                    type: 'identify',
+                    userId: 'sample_user_id',
+                  },
+                  FORM: {},
+                },
+                files: {},
+                endpoint: 'https://6b0e6a60.',
+                headers: { 'content-type': 'application/json' },
+                version: '1',
+                params: {},
+                type: 'REST',
+                method: 'POST',
+              },
+              metadata: [{ jobId: 4, userId: 'u1' }],
+              batched: true,
+              statusCode: 200,
+              destination: destinationWithMaxBatchSize,
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    name: 'webhook',
+    id: 'Test 3 - router',
+    description: 'Identify payload with 2 events in 1 batch and one failed event',
+    scenario: 'Framework',
+    successCriteria: 'All events should be transformed successfully and status code should be 200',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: {
+                anonymousId: 'anon_1',
+                channel: 'mobile',
+                context,
+                integrations: {
+                  All: true,
+                },
+                messageId: '1590431830865-3be680d6-7dcd-4b05-8460-f3acc30046d9',
+                originalTimestamp: '2020-05-25T18:37:10.865Z',
+                sentAt: '2020-05-25T18:37:10.917Z',
+                type: 'identify',
+                userId: 'sample_user_id',
+              },
+              metadata: { jobId: 1, userId: 'u1' },
+              destination: destinationWithMaxBatchSize,
+            },
+            {
+              message: {
+                anonymousId: 'anon_2',
+                channel: 'mobile',
+                context,
+                integrations: {
+                  All: true,
+                },
+                messageId: '23432324-3be680d6-7dcd-4b05-8460-f3acc30046d9',
+                type: 'identify',
+                userId: 'sample_user_id',
+              },
+              metadata: { jobId: 2, userId: 'u1' },
+              destination: destinationWithMaxBatchSize,
+            },
+            {
+              message: {
+                anonymousId: 'anon_3',
+                channel: 'mobile',
+                integrations: {
+                  All: true,
+                },
+                messageId: '23432324-3be680d6-7dcd-4b05-8460-f3acc30046d9',
+                // type: 'identify',
+                userId: 'sample_user_id',
+              },
+              metadata: { jobId: 3, userId: 'u1' },
+              destination: destinationWithMaxBatchSize,
+            },
+            {
+              message: {
+                anonymousId: 'anon_4',
+                channel: 'mobile',
+                integrations: {
+                  All: true,
+                },
+                messageId: '23432324-3be680d6-7dcd-4b05-8460-f3acc30046d9',
+                type: 'identify',
+                userId: 'sample_user_id',
+              },
+              metadata: { jobId: 4, userId: 'u1' },
+              destination: destinationWithMaxBatchSize,
+            },
+            {
+              message: {
+                anonymousId: 'anon_5',
+                channel: 'mobile',
+                integrations: {
+                  All: true,
+                },
+                messageId: '23432324-3be680d6-7dcd-4b05-8460-f3acc30046d9',
+                type: 'identify',
+                userId: 'sample_user_id',
+              },
+              metadata: { jobId: 5, userId: 'u1' },
+              destination: destinationWithMaxBatchSize,
+            },
+          ],
+          destType: 'webhook',
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batched: true,
+              destination: destinationWithMaxBatchSize,
+              error: 'Missing required value from "type"',
+              metadata: [{ jobId: 3, userId: 'u1' }],
+              statusCode: 400,
+            },
+            {
+              batchedRequest: {
+                body: {
+                  XML: {},
+                  JSON_ARRAY: {},
+                  JSON: [
+                    {
+                      anonymousId: 'anon_1',
+                      channel: 'mobile',
+                      context,
+                      integrations: {
+                        All: true,
+                      },
+                      messageId: '1590431830865-3be680d6-7dcd-4b05-8460-f3acc30046d9',
+                      originalTimestamp: '2020-05-25T18:37:10.865Z',
+                      sentAt: '2020-05-25T18:37:10.917Z',
+                      type: 'identify',
+                      userId: 'sample_user_id',
+                    },
+                    {
+                      anonymousId: 'anon_2',
+                      channel: 'mobile',
+                      context,
+                      integrations: {
+                        All: true,
+                      },
+                      messageId: '23432324-3be680d6-7dcd-4b05-8460-f3acc30046d9',
+                      type: 'identify',
+                      userId: 'sample_user_id',
+                    },
+                  ],
+                  FORM: {},
+                },
+                files: {},
+                endpoint: 'http://6b0e6a60.ngrok.io',
+                headers: { 'content-type': 'application/json', test2: 'value2' },
+                version: '1',
+                params: {},
+                type: 'REST',
+                method: 'POST',
+              },
+              metadata: [
+                { jobId: 1, userId: 'u1' },
+                { jobId: 2, userId: 'u1' },
+              ],
+              batched: true,
+              statusCode: 200,
+              destination: destinationWithMaxBatchSize,
+            },
+            {
+              batchedRequest: {
+                body: {
+                  XML: {},
+                  JSON_ARRAY: {},
+                  JSON: [
+                    {
+                      anonymousId: 'anon_4',
+                      channel: 'mobile',
+                      integrations: {
+                        All: true,
+                      },
+                      messageId: '23432324-3be680d6-7dcd-4b05-8460-f3acc30046d9',
+                      type: 'identify',
+                      userId: 'sample_user_id',
+                    },
+                    {
+                      anonymousId: 'anon_5',
+                      channel: 'mobile',
+                      integrations: {
+                        All: true,
+                      },
+                      messageId: '23432324-3be680d6-7dcd-4b05-8460-f3acc30046d9',
+                      type: 'identify',
+                      userId: 'sample_user_id',
+                    },
+                  ],
+                  FORM: {},
+                },
+                files: {},
+                endpoint: 'http://6b0e6a60.ngrok.io',
+                userId: 'anon_4',
+                headers: { 'content-type': 'application/json' },
+                version: '1',
+                params: {},
+                type: 'REST',
+                method: 'POST',
+              },
+              metadata: [
+                { jobId: 4, userId: 'u1' },
+                { jobId: 5, userId: 'u1' },
+              ],
+              batched: true,
+              statusCode: 200,
+              destination: destinationWithMaxBatchSize,
             },
           ],
         },

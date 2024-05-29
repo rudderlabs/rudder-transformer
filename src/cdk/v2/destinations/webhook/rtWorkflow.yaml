@@ -1,7 +1,7 @@
 bindings:
   - name: handleRtTfSingleEventError
     path: ../../../../v0/util/index
-
+  - path: ./utils
 steps:
   - name: validateInput
     template: |
@@ -26,6 +26,11 @@ steps:
       $.outputs.transform#idx.error.(
         $.handleRtTfSingleEventError(^[idx], .originalError ?? ., {})
       )[]
+  - name: batchSuccessfulEvents
+    condition: ['POST', 'PUT', 'PATCH'].includes($.outputs.successfulEvents[0].destination.Config?.webhookMethod || 'POST')
+    description: Batches the successfulEvents
+    template: |
+      $.batchResponseBuilder($.outputs.successfulEvents);
   - name: finalPayload
     template: |
-      [...$.outputs.failedEvents, ...$.outputs.successfulEvents]
+      [...$.outputs.failedEvents, ...$.outputs.batchSuccessfulEvents]

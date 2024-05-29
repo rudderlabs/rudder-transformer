@@ -41,27 +41,18 @@ function transformSingleMessage(data, metadata) {
   const location = generateLocationObject(data);
   const { jobId } = metadata;
   const traitsWithoutLocation = removeLocationAttributes(traits);
-  let transformedSinglePayload = {};
+  const transformedSinglePayload = {
+    type: 'profile',
+    attributes: {
+      ...traitsWithoutLocation,
+      location,
+      anonymous_id: context.externalId[0].id,
+      jobIdentifier: `${context.externalId[0].id}:${jobId}`,
+    },
+  };
   if (context.externalId[0].identifierType === 'id') {
-    transformedSinglePayload = {
-      type: 'profile',
-      id: context.externalId[0].id || traits.id,
-      attributes: {
-        ...traitsWithoutLocation,
-        location,
-        jobIdentifier: `${context.externalId[0].id}:${jobId}`,
-      },
-    };
-  } else {
-    transformedSinglePayload = {
-      type: 'profile',
-      attributes: {
-        ...traitsWithoutLocation,
-        location,
-        anonymous_id: context.externalId[0].id,
-        jobIdentifier: `${context.externalId[0].id}:${jobId}`,
-      },
-    };
+    transformedSinglePayload.id = context.externalId[0].id || traits.id;
+    transformedSinglePayload.attributes.anonymous_id = context.externalId[0].id;
   }
   return transformedSinglePayload;
 }

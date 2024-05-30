@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.68.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.68.0...v1.68.1) (2024-05-29)
+
+
+### Bug Fixes
+
+* tiktok_v2 assigning value to undefined properties ([#3426](https://github.com/rudderlabs/rudder-transformer/issues/3426)) ([323396b](https://github.com/rudderlabs/rudder-transformer/commit/323396b09fd6b7fda3cce53cc4f1cc443d7a78c1))
+
 ## [1.68.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.67.0...v1.68.0) (2024-05-27)
 
 

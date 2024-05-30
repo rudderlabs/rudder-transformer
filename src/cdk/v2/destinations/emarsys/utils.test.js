@@ -539,5 +539,14 @@ describe('Emarsys utils', () => {
         'validEvent is not mapped to any Emersys external event. Aborting',
       );
     });
+
+    // When eventsMapping is undefined, the function should throw a TypeError.
+    it('should throw a TypeError when eventsMapping is not an array', () => {
+      const message = { event: 'validEvent' };
+      const destConfig = { eventsMapping: undefined };
+      expect(() => deduceEventId(message, destConfig)).toThrow(
+        'validEvent is not mapped to any Emersys external event. Aborting',
+      );
+    });
   });
 });

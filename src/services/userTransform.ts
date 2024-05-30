@@ -192,7 +192,7 @@ export class UserTransformService {
     } as UserTransformationServiceResponse;
   }
 
-  public static async testTransformRoutine(events, trRevCode, libraryVersionIDs) {
+  public static async testTransformRoutine(events, trRevCode, libraryVersionIDs, credentials) {
     const response: FixMe = {};
     try {
       if (!trRevCode || !trRevCode.code || !trRevCode.codeVersion) {
@@ -210,6 +210,7 @@ export class UserTransformService {
         trRevCode.versionId,
         libraryVersionIDs,
         trRevCode,
+        credentials,
         true,
       );
       logger.debug(`[CT] Test Output Events: ${JSON.stringify(response.body.transformedEvents)}`);

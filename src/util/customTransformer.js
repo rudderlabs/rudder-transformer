@@ -273,6 +273,7 @@ async function userTransformHandler(
   versionId,
   libraryVersionIDs,
   trRevCode = {},
+  credentials = {},
   testMode = false,
 ) {
   if (versionId) {
@@ -285,16 +286,22 @@ async function userTransformHandler(
       events.forEach((ev) => {
         eventsMetadata[ev.message.messageId] = ev.metadata;
       });
-      const credentials = {};
-      events[0]?.credentials?.forEach((cred) => {
-        credentials[cred.key] = cred.value;
-      });
+      const credentialsMap = {};
+      if (testMode === false) {
+        events[0]?.credentials?.forEach((cred) => {
+          credentialsMap[cred.key] = cred.value;
+        });
+      } else {
+        credentials?.forEach((cred) => {
+          credentialsMap[cred.key] = cred.value;
+        });
+      }
       let userTransformedEvents = [];
       let result;
       if (res.codeVersion && res.codeVersion === '1') {
         result = await UserTransformHandlerFactory(res).runUserTransfrom(
           events,
-          credentials,
+          credentialsMap,
           testMode,
           libraryVersionIDs,
         );

@@ -1081,6 +1081,7 @@ describe("User transformation", () => {
       trRevCode.versionId,
       [libraryVersionId],
       trRevCode,
+      null,
       true
     );
 
@@ -1117,6 +1118,7 @@ describe("User transformation", () => {
       trRevCode.versionId,
       [],
       trRevCode,
+      null,
       true
     );
     expect(output).toEqual(expectedData);
@@ -1536,6 +1538,7 @@ describe("Python transformations", () => {
       trRevCode.versionId,
       [],
       trRevCode,
+      null,
       true
     );
     expect(output).toEqual(outputData);
@@ -1581,6 +1584,7 @@ describe("Python transformations", () => {
       trRevCode.versionId,
       Object.values(importNameLibraryVersionIdsMap),
       trRevCode,
+      null,
       true
     );
     expect(output).toEqual(outputData);
@@ -1622,6 +1626,7 @@ describe("Python transformations", () => {
       trRevCode.versionId,
       Object.values(importNameLibraryVersionIdsMap),
       trRevCode,
+      null,
       true
     );
     expect(output).toEqual(outputData);

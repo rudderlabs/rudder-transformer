@@ -42,6 +42,8 @@ const getTrackResponsePayload = (message, destConfig, event, setDefaultForConten
   // if contents is not present but we have properties.products present which has fields with superset of contents fields
   if (!payload.properties?.contents && message.properties?.products) {
     // retreiving data from products only when contents is not present
+    // properties object may be empty due which next line may give some error
+    payload.properties = payload.properties || {};
     payload.properties.contents = getContents(message, false);
   }
 
@@ -55,6 +57,8 @@ const getTrackResponsePayload = (message, destConfig, event, setDefaultForConten
   }
   // setting content-type default value in case of all standard event except `page-view`
   if (!payload.properties?.content_type && setDefaultForContentType) {
+    // properties object may be empty due which next line may give some error
+    payload.properties = payload.properties || {};
     payload.properties.content_type = 'product';
   }
   payload.event = event;

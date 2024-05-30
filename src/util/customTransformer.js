@@ -273,7 +273,7 @@ async function userTransformHandler(
   versionId,
   libraryVersionIDs,
   trRevCode = {},
-  credentials = {},
+  credentials = [],
   testMode = false,
 ) {
   if (versionId) {

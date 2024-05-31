@@ -159,13 +159,14 @@ describe("Function invocation & creation tests", () => {
       versionId,
       [],
       trRevCode,
+      null,
       true
     );
     expect(response).toEqual(outputEvents);
 
     // Test with language python; should return same output
     trRevCode = contructTrRevCode(versionId, 'python');
-    response = await userTransformHandler(inputEvents, versionId, [], trRevCode, true);
+    response = await userTransformHandler(inputEvents, versionId, [], trRevCode, null, true);
     expect(response).toEqual(outputEvents);
   });
 
@@ -184,7 +185,7 @@ describe("Function invocation & creation tests", () => {
       });
 
     await expect(async () => {
-      await userTransformHandler(inputEvents, respBody.versionId, []);
+      await userTransformHandler(inputEvents, respBody.versionId, null, []);
     }).rejects.toThrow(RetryRequestError);
 
     // If function is not found, it will be created

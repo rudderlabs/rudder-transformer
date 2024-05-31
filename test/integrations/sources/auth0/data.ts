@@ -276,6 +276,7 @@ export const data = [
                     integration: {
                       name: 'Auth0',
                     },
+                    source_type: 'ss',
                   },
                   properties: {
                     log_id: '90020221031055712103169676686005480714681762668315934738',
@@ -324,6 +325,7 @@ export const data = [
                     integration: {
                       name: 'Auth0',
                     },
+                    source_type: 'sapi',
                   },
                   properties: {
                     log_id: '90020221031055712103169676686007898566320991926665347090',
@@ -614,6 +616,7 @@ export const data = [
                     integration: {
                       name: 'Auth0',
                     },
+                    source_type: 'sapi',
                   },
                   groupId: 'org_eoe8p2atZ7furBxg',
                   properties: {
@@ -958,6 +961,7 @@ export const data = [
                     integration: {
                       name: 'Auth0',
                     },
+                    source_type: 'sapi',
                   },
                   properties: {
                     log_id: '90020221031061527239169676960191065529099349299958906898',
@@ -1178,6 +1182,7 @@ export const data = [
                     integration: {
                       name: 'Auth0',
                     },
+                    source_type: 'gd_tenant_update',
                   },
                   properties: {
                     log_id: '90020221031061530247169676961198100736838335677367058450',
@@ -1312,6 +1317,7 @@ export const data = [
                     integration: {
                       name: 'Auth0',
                     },
+                    source_type: 'ss',
                   },
                   properties: {
                     log_id: '90020221031055712103169676686005480714681762668315934738',
@@ -1432,6 +1438,7 @@ export const data = [
                     integration: {
                       name: 'Auth0',
                     },
+                    source_type: 'ss',
                   },
                   properties: {
                     log_id: '90020221031055712103169676686005480714681762668315934738',
@@ -1476,6 +1483,7 @@ export const data = [
                     integration: {
                       name: 'Auth0',
                     },
+                    source_type: 'sapi',
                   },
                   properties: {
                     log_id: '90020221031055712103169676686007898566320991926665347090',

@@ -65,6 +65,6 @@
   },
   {
     "sourceKeys": "type",
-    "destKeys": "source_type"
+    "destKeys": ["source_type", "context.source_type"]
   }
 ]

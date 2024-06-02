@@ -45,6 +45,7 @@ export const destinationWithWrongUrl = {
 export const destinationWithMaxBatchSize = {
   Config: {
     maxBatchSize: 2,
+    enableBatching: true,
     webhookUrl: 'http://6b0e6a60.ngrok.io',
     headers: [
       { from: '', to: '' },

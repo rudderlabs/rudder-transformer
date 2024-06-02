@@ -12,6 +12,10 @@ steps:
       path: ./procWorkflow.yaml
     loopOverInput: true
 
+  - name: webhookMethod
+    template: |
+      ^[0].destination.Config.webhookMethod ?? 'POST'
+
   - name: successfulEvents
     template: |
       $.outputs.transform#idx.output.({
@@ -26,8 +30,12 @@ steps:
       $.outputs.transform#idx.error.(
         $.handleRtTfSingleEventError(^[idx], .originalError ?? ., {})
       )[]
+  - name: enableBatching
+    template: |
+      ^[0].destination.Config.enableBatching ?? false
+
   - name: batchSuccessfulEvents
-    condition: ['POST', 'PUT', 'PATCH'].includes($.outputs.successfulEvents[0].destination.Config?.webhookMethod || 'POST')
+    condition: $.outputs.webhookMethod in ['POST', 'PUT', 'PATCH']
     description: Batches the successfulEvents
     template: |
       $.batchResponseBuilder($.outputs.successfulEvents);

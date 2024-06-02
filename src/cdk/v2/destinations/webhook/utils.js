@@ -34,7 +34,7 @@ const batchBuilder = (batch) => ({
     params: {},
     files: {},
   },
-  metadata: '',
+  metadata: batch[0].metadata,
   batched: true,
   statusCode: 200,
   destination: batch[0].destination,

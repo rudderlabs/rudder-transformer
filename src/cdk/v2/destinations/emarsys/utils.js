@@ -158,6 +158,7 @@ const buildGroupPayload = (message, destConfig) => {
 };
 
 const deduceEventId = (message, destConfig) => {
+  console.log('dest config', JSON.stringify(destConfig));
   let eventId;
   const { eventsMapping } = destConfig;
   const { event } = message;

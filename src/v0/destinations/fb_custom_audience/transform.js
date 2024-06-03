@@ -21,19 +21,20 @@ const { schemaFields, USER_ADD, USER_DELETE } = require('./config');
 
 const { MappedToDestinationKey } = require('../../../constants');
 const { processRecordInputs } = require('./recordTransform');
+const logger = require('../../../logger');
 
-function extraKeysPresent(dictionary, keyList) {
+function checkForUnsupportedEventTypes(dictionary, keyList) {
+  const unsupportedEventTypes = [];
   // eslint-disable-next-line no-restricted-syntax
   for (const key in dictionary) {
     if (!keyList.includes(key)) {
-      return true;
+      unsupportedEventTypes.push(key);
     }
   }
-  return false;
+  return unsupportedEventTypes;
 }
 
 // Function responsible prepare the payload field of every event parameter
-
 const preparePayload = (
   userUpdateList,
   userSchema,
@@ -244,7 +245,9 @@ const processRouterDest = async (inputs, reqMetadata) => {
   let transformedAudienceEvent = [];
 
   const eventTypes = ['record', 'audiencelist'];
-  if (extraKeysPresent(groupedInputs, eventTypes)) {
+  const unsupportedEventList = checkForUnsupportedEventTypes(groupedInputs, eventTypes);
+  if (unsupportedEventList.length > 0) {
+    logger.info(`unsupported events found ${unsupportedEventList}`);
     throw new ConfigurationError('unsupported events present in the event');
   }
 

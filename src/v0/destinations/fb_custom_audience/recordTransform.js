@@ -142,7 +142,7 @@ async function processRecordInputs(groupedRecordInputs) {
   // audience id validation
   let operationAudienceId = audienceId;
   const mappedToDestination = get(message, MappedToDestinationKey);
-  if (!operationAudienceId && mappedToDestination) {
+  if (mappedToDestination) {
     const { objectType } = getDestinationExternalIDInfoForRetl(message, 'FB_CUSTOM_AUDIENCE');
     operationAudienceId = objectType;
   }

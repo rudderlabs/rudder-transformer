@@ -243,14 +243,14 @@ async function createIvm(code, libraryVersionIds, versionId, credentials, secret
     }),
   );
 
-  await jail.set('_credentials', function (...args) {
-    if (args[0].length === 0) {
-      throw new Error('Invalid credentials key');
+  await jail.set('_credential', function (key) {
+    if (_.isNil(credentials) || !_.isObject(credentials)) {
+      throw new Error('Credentials in incorrect format');
     }
-    if (!credentials) {
-      throw new Error('Credentials not available');
+    if (_.isNil(key[0]) || !_.isString(key[0])) {
+      throw new Error('Key should be a string');
     }
-    return credentials[args[0]];
+    return credentials[key];
   });
 
   await jail.set('_rsSecrets', function (...args) {
@@ -331,10 +331,10 @@ async function createIvm(code, libraryVersionIds, versionId, credentials, secret
         ]);
       };
 
-      let credentials = _credentials;
-      delete _credentials;
-      global.credentials = function(...args) {
-        return credentials([
+      let credential = _credential;
+      delete _credential;
+      global.credential = function(...args) {
+        return credential([
           ...args.map(arg => new ivm.ExternalCopy(arg).copyInto())
         ]);
       };

@@ -244,7 +244,12 @@ async function createIvm(code, libraryVersionIds, versionId, credentials, secret
   );
 
   await jail.set('_credentials', function (...args) {
-    if (args.length == 0 || !credentials || !credentials[args[0]]) return 'ERROR';
+    if (args[0].length === 0) {
+      throw new Error('Invalid credentials key');
+    }
+    if (!credentials) {
+      throw new Error('Credentials not available');
+    }
     return credentials[args[0]];
   });
 

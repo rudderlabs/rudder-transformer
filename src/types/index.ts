@@ -138,9 +138,10 @@ type UserTransformationLibrary = {
 };
 
 type Credential = {
+  ID: string;
   Key: string;
   Value: string;
-  isPublic: boolean;
+  IsSecret: boolean;
 };
 
 type ProcessorTransformationRequest = {

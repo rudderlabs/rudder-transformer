@@ -13,6 +13,7 @@ const {
   filterCustomAttributes,
   checkIfEmailOrUserIdPresent,
   separateReservedAndRestMetadata,
+  addOrUpdateTagToCompany,
 } = require('./utils');
 const { BASE_ENDPOINT, BASE_EU_ENDPOINT, BASE_AU_ENDPOINT } = require('./config');
 
@@ -761,5 +762,92 @@ describe('attachUserAndCompany utility test', () => {
     };
     const response = attachUserAndCompany(message, Config);
     expect(response).toEqual(expectedResponse);
+  });
+});
+
+describe('addOrUpdateTagToCompany utility test', () => {
+  it('Should successfully add tags to company', async () => {
+    const message = {
+      traits: {
+        tags: ['tag1', 'tag2'],
+      },
+    };
+    const destination = { Config: { apiKey: 'testApiKey', apiServer: 'us' } };
+    const id = 'companyId';
+
+    axios.post
+      .mockResolvedValueOnce({
+        status: 200,
+        data: { type: 'tag', id: '123', name: 'tag1' },
+      })
+      .mockResolvedValueOnce({
+        status: 200,
+        data: { type: 'tag', id: '124', name: 'tag2' },
+      });
+
+    axios.post.mockClear();
+    await addOrUpdateTagToCompany(message, destination, id);
+
+    expect(axios.post).toHaveBeenCalledTimes(2);
+
+    expect(axios.post).toHaveBeenCalledWith(
+      `${getBaseEndpoint(destination)}/tags`,
+      { name: 'tag1', companies: [{ id: 'companyId' }] },
+      expect.objectContaining({
+        headers: getHeaders(destination),
+      }),
+    );
+
+    expect(axios.post).toHaveBeenCalledWith(
+      `${getBaseEndpoint(destination)}/tags`,
+      { name: 'tag2', companies: [{ id: 'companyId' }] },
+      expect.objectContaining({
+        headers: getHeaders(destination),
+      }),
+    );
+  });
+
+  it('Should throw an error in case if axios calls returns an error', async () => {
+    const message = {
+      traits: {
+        tags: ['tag1'],
+      },
+    };
+    const destination = { Config: { apiKey: 'testApiKey', apiServer: 'us' } };
+    const id = 'companyId';
+
+    axios.post.mockRejectedValue({
+      status: 400,
+      data: {
+        type: 'error.list',
+        request_id: 'request_400',
+        errors: [
+          {
+            code: 'unauthorized',
+            message: 'Access Token Invalid',
+          },
+        ],
+      },
+    });
+
+    try {
+      axios.post.mockClear();
+      await addOrUpdateTagToCompany(message, destination, id);
+    } catch (error) {
+      expect(error.message).toEqual(
+        `Unable to Add or Update the Tag to Company due to : [{"code":"unauthorized","message":"Access Token Invalid"}]`,
+      );
+    }
+  });
+
+  it('Should do nothing when no tags are provided', async () => {
+    const message = { traits: {} };
+    const destination = { Config: { apiKey: 'testApiKey', apiServer: 'us' } };
+    const id = 'companyId';
+
+    axios.post.mockClear();
+    await addOrUpdateTagToCompany(message, destination, id);
+
+    expect(axios.post).not.toHaveBeenCalled();
   });
 });

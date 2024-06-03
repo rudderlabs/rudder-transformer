@@ -178,6 +178,7 @@ steps:
           const contactId = $.outputs.searchContact;
           const companyId = await $.createOrUpdateCompany($.context.payload, .destination);
           $.assert(companyId, "Unable to create or update company");
+          await $.addOrUpdateTagToCompany(.message, .destination, companyId);
           $.context.payload = {
             id: companyId,
           };
@@ -185,6 +186,9 @@ steps:
         else:
           name: whenSearchContactNotFound
           template: |
+            const companyId = await $.createOrUpdateCompany($.context.payload, .destination);
+            $.assert(companyId, "Unable to create or update company");
+            await $.addOrUpdateTagToCompany(.message, .destination, companyId);
             $.context.endpoint = $.getBaseEndpoint(.destination) + "/" + "companies";
       - name: prepareFinalPayload
         template: |

@@ -27,6 +27,7 @@ const {
   SEARCH_CONTACT_ENDPOINT,
   ReservedCompanyProperties,
   CREATE_OR_UPDATE_COMPANY_ENDPOINT,
+  TAGS,
 } = require('./config');
 
 /**
@@ -369,6 +370,61 @@ const addMetadataToPayload = (payload) => {
   return finalPayload;
 };
 
+/**
+ * Add or Update tags to a company
+ * @param message
+ * @param destination
+ * @param id
+ * @returns
+ */
+const addOrUpdateTagToCompany = async (message, destination, id) => {
+  const companyTags = message?.traits?.tags || message?.context?.traits?.tags;
+  if (!companyTags) return;
+  const headers = getHeaders(destination);
+  const baseEndPoint = getBaseEndpoint(destination);
+  const endpoint = `${baseEndPoint}/${TAGS}`;
+  const statTags = {
+    destType: 'intercom',
+    feature: 'transformation',
+    endpointPath: '/tags',
+    requestMethod: 'POST',
+    module: 'router',
+  };
+  await Promise.all(
+    companyTags.map(async (tag) => {
+      const finalPayload = {
+        name: tag,
+        companies: [
+          {
+            id,
+          },
+        ],
+      };
+      const response = await httpPOST(
+        endpoint,
+        finalPayload,
+        {
+          headers,
+        },
+        statTags,
+      );
+      const processedResponse = processAxiosResponse(response);
+      if (!isHttpStatusSuccess(processedResponse.status)) {
+        throw new NetworkError(
+          `Unable to Add or Update the Tag to Company due to : ${JSON.stringify(
+            processedResponse?.response?.errors,
+          )}`,
+          processedResponse?.status,
+          {
+            [tags]: getDynamicErrorType(processedResponse?.status),
+          },
+          processedResponse,
+        );
+      }
+    }),
+  );
+};
+
 module.exports = {
   getName,
   getHeaders,
@@ -382,4 +438,5 @@ module.exports = {
   filterCustomAttributes,
   checkIfEmailOrUserIdPresent,
   separateReservedAndRestMetadata,
+  addOrUpdateTagToCompany,
 };

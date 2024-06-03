@@ -1,6 +1,6 @@
-import { generateMetadata, generateProxyV1Payload } from '../../../testUtils';
-import { ProxyV1TestData } from '../../../testTypes';
 import { getEndPoint } from '../../../../../src/v0/destinations/fb_custom_audience/config';
+import { ProxyV1TestData } from '../../../testTypes';
+import { generateMetadata, generateProxyV1Payload } from '../../../testUtils';
 import { statTags, testParams2 as testParams } from './business';
 
 export const otherScenariosV1: ProxyV1TestData[] = [
@@ -42,6 +42,49 @@ export const otherScenariosV1: ProxyV1TestData[] = [
               {
                 error: 'There have been too many calls to this ad-account.',
                 statusCode: 429,
+                metadata: generateMetadata(1),
+              },
+            ],
+          },
+        },
+      },
+    },
+  },
+  {
+    id: 'fbca_v1_other_scenario_2',
+    name: 'fb_custom_audience',
+    description: 'got invalid response format (not-json) from facebook',
+    successCriteria: 'should throw retyable error',
+    scenario: 'Framework',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v1',
+    input: {
+      request: {
+        body: generateProxyV1Payload({
+          method: 'DELETE',
+          endpoint: getEndPoint('aud1'),
+          headers: {
+            'test-dest-response-key': 'htmlResponse',
+          },
+          params: testParams,
+        }),
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: {
+            status: 500,
+            message: 'Invalid response format (HTML) during response transformation',
+            statTags,
+            response: [
+              {
+                error:
+                  '"<!DOCTYPE html><html> <body> <h1>My First Heading</h1><p>My first paragraph.</p> </body></html>"',
+                statusCode: 500,
                 metadata: generateMetadata(1),
               },
             ],

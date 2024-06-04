@@ -162,7 +162,7 @@ const deduceEventId = (message, destConfig) => {
   const { eventsMapping } = destConfig;
   const { event } = message;
   validateEventName(event);
-  if (eventsMapping.length > 0) {
+  if (Array.isArray(eventsMapping) && eventsMapping.length > 0) {
     const keyMap = getHashFromArray(eventsMapping, 'from', 'to', false);
     eventId = keyMap[event];
   }

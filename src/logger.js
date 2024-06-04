@@ -66,8 +66,8 @@ const getLogMetadata = (metadata) => {
 
 const requestLog = (identifierMsg, { metadata, requestDetails: { url, body, method } }) => {
   const logger = getLogger();
-  if (levelError >= logLevel) {
-    logger.debug(identifierMsg, {
+  if (logLevel === levelWarn) {
+    logger.warn(identifierMsg, {
       ...getLogMetadata(metadata),
       url,
       body,
@@ -81,8 +81,8 @@ const responseLog = (
   { metadata, responseDetails: { response: responseBody, status, headers: responseHeaders } },
 ) => {
   const logger = getLogger();
-  if (levelError >= logLevel) {
-    logger.debug(identifierMsg, {
+  if (logLevel === levelWarn) {
+    logger.warn(identifierMsg, {
       ...getLogMetadata(metadata),
       ...(responseBody ? { responseBody } : {}),
       ...(responseHeaders ? { responseHeaders } : {}),

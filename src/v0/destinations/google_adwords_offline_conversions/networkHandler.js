@@ -308,8 +308,11 @@ const ProxyRequest = async (request) => {
       set(body.JSON, 'conversions.0.customVariables', resultantCustomVariables);
     }
   }
-
   const requestBody = { url: endpoint, data: body.JSON, headers, method };
+  logger.requestLog(`[${destType.toUpperCase()}] offline conversion creation request`, {
+    metadata,
+    requestDetails: { url: requestBody.url, body: requestBody.data, method },
+  });
   const { httpResponse, processedResponse } = await handleHttpRequest('constructor', requestBody, {
     feature: 'proxy',
     destType: 'gogole_adwords_offline_conversions',

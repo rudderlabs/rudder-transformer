@@ -4,6 +4,8 @@ const logger = require('../logger');
 
 const enableStats = process.env.ENABLE_STATS !== 'false';
 const statsClientType = process.env.STATS_CLIENT || 'statsd';
+// summary metrics are enabled by default. To disable set ENABLE_SUMMARY_METRICS='false'.
+const enableSummaryMetrics = process.env.ENABLE_SUMMARY_METRICS !== 'false';
 
 let statsClient;
 function init() {
@@ -13,17 +15,19 @@ function init() {
 
   switch (statsClientType) {
     case 'statsd':
-      logger.info("setting up statsd client")
+      logger.info('setting up statsd client');
       statsClient = new statsd.Statsd();
       break;
 
     case 'prometheus':
-      logger.info("setting up prometheus client")
-      statsClient = new prometheus.Prometheus();
+      logger.info('setting up prometheus client');
+      statsClient = new prometheus.Prometheus(enableSummaryMetrics);
       break;
 
     default:
-      logger.error(`invalid stats client type: ${statsClientType}, supported values are 'statsd' and 'prometheues'`)
+      logger.error(
+        `invalid stats client type: ${statsClientType}, supported values are 'statsd' and 'prometheues'`,
+      );
   }
 }
 
@@ -34,6 +38,15 @@ const timing = (name, start, tags = {}) => {
   }
 
   statsClient.timing(name, start, tags);
+};
+
+// timingSummary is used to record observations for a summary metric
+const timingSummary = (name, start, tags = {}) => {
+  if (!enableStats || !statsClient || !enableSummaryMetrics) {
+    return;
+  }
+
+  statsClient.timingSummary(name, start, tags);
 };
 
 const increment = (name, tags = {}) => {
@@ -86,4 +99,13 @@ async function metricsController(ctx) {
 
 init();
 
-module.exports = { init, timing, increment, counter, gauge, histogram, metricsController };
+module.exports = {
+  init,
+  timing,
+  timingSummary,
+  increment,
+  counter,
+  gauge,
+  histogram,
+  metricsController,
+};

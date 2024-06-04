@@ -1,9 +1,12 @@
 const get = require('get-value');
 const md5 = require('md5');
-const { InstrumentationError, NetworkError } = require('@rudderstack/integrations-lib');
+const {
+  InstrumentationError,
+  NetworkError,
+  structuredLogger: logger,
+} = require('@rudderstack/integrations-lib');
 const myAxios = require('../../../util/myAxios');
 const { MappedToDestinationKey } = require('../../../constants');
-const logger = require('../../../logger');
 const {
   isDefinedAndNotNull,
   isDefined,
@@ -163,7 +166,13 @@ const checkIfMailExists = async (apiKey, datacenterId, audienceId, email) => {
           Authorization: `Basic ${basicAuth}`,
         },
       },
-      { destType: 'mailchimp', feature: 'transformation' },
+      {
+        destType: 'mailchimp',
+        feature: 'transformation',
+        endpointPath: '/lists/audienceId/members/email',
+        requestMethod: 'GET',
+        module: 'router',
+      },
     );
     if (response?.data?.contact_id) {
       userStatus.exists = true;
@@ -194,7 +203,13 @@ const checkIfDoubleOptIn = async (apiKey, datacenterId, audienceId) => {
           Authorization: `Basic ${basicAuth}`,
         },
       },
-      { destType: 'mailchimp', feature: 'transformation' },
+      {
+        destType: 'mailchimp',
+        feature: 'transformation',
+        endpointPath: '/lists/audienceId',
+        requestMethod: 'GET',
+        module: 'router',
+      },
     );
   } catch (error) {
     const status = error.status || 400;

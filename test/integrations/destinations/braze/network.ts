@@ -524,4 +524,104 @@ const deleteNwData = [
     },
   },
 ];
-export const networkCallsData = [...deleteNwData, ...dataDeliveryMocksData];
+
+const BRAZE_USERS_TRACK_ENDPOINT = 'https://rest.iad-03.braze.com/users/track';
+
+// New Mocks for Braze
+const updatedDataDeliveryMocksData = [
+  {
+    description:
+      'Mock response from destination depicting a valid request for 2 valid events and 1 purchase event',
+    httpReq: {
+      url: `${BRAZE_USERS_TRACK_ENDPOINT}/valid_scenario1`,
+      method: 'POST',
+    },
+    httpRes: {
+      data: {
+        events_processed: 2,
+        purchases_processed: 1,
+        message: 'success',
+      },
+      status: 200,
+    },
+  },
+
+  {
+    description:
+      'Mock response from destination depicting a request with 1 valid and 1 invalid event and 1 invalid purchase event',
+    httpReq: {
+      url: `${BRAZE_USERS_TRACK_ENDPOINT}/invalid_scenario1`,
+      method: 'POST',
+    },
+    httpRes: {
+      data: {
+        events_processed: 1,
+        message: 'success',
+        errors: [
+          {
+            type: "'external_id', 'braze_id', 'user_alias', 'email' or 'phone' is required",
+            input_array: 'events',
+            index: 1,
+          },
+          {
+            type: "'quantity' is not valid",
+            input_array: 'purchases',
+            index: 0,
+          },
+        ],
+      },
+      status: 200,
+    },
+  },
+
+  {
+    description:
+      'Mock response from destination depicting a request with all the payloads are invalid',
+    httpReq: {
+      url: `${BRAZE_USERS_TRACK_ENDPOINT}/invalid_scenario2`,
+      method: 'POST',
+    },
+    httpRes: {
+      data: {
+        message:
+          "Valid data must be provided in the 'attributes', 'events', or 'purchases' fields.",
+        errors: [
+          {
+            type: "'external_id', 'braze_id', 'user_alias', 'email' or 'phone' is required",
+            input_array: 'events',
+            index: 0,
+          },
+          {
+            type: "'external_id', 'braze_id', 'user_alias', 'email' or 'phone' is required",
+            input_array: 'events',
+            index: 1,
+          },
+          {
+            type: "'quantity' is not valid",
+            input_array: 'purchases',
+            index: 0,
+          },
+        ],
+      },
+      status: 400,
+    },
+  },
+  {
+    description: 'Mock response from destination depicting a request with invalid credentials',
+    httpReq: {
+      url: `${BRAZE_USERS_TRACK_ENDPOINT}/invalid_scenario3`,
+      method: 'POST',
+    },
+    httpRes: {
+      data: {
+        message: 'Invalid API Key',
+      },
+      status: 401,
+    },
+  },
+];
+export const networkCallsData = [
+  ...deleteNwData,
+  ...dataDeliveryMocksData,
+  ...updatedDataDeliveryMocksData,
+];

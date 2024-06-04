@@ -78,6 +78,7 @@ const populateProductProperties = (productsMapping, properties) => {
   const productProperties = {};
   if (products && Array.isArray(products)) {
     products.forEach((item, index) => {
+      // Following product properties have a default mapping as well in config.js as itemMapping
       productProperties[getPropertyName('ItemBrand', index + 1)] =
         item[getProductsMapping(productsMapping, 'ItemBrand')];
       productProperties[getPropertyName('ItemCategory', index + 1)] =
@@ -92,8 +93,16 @@ const populateProductProperties = (productsMapping, properties) => {
         item[getProductsMapping(productsMapping, 'ItemQuantity')];
       productProperties[getPropertyName('ItemSku', index + 1)] =
         item[getProductsMapping(productsMapping, 'ItemSku')];
+
+      // Following product properties are build from configuration in RudderStack dashboard
+      if (productsMapping && Array.isArray(productsMapping)) {
+        productsMapping.forEach((mapping) => {
+          productProperties[getPropertyName(mapping.to, index + 1)] = item[mapping.from];
+        });
+      }
     });
   } else {
+    // Not providing product level mapping here as following are fetched from properties level
     const index = 1;
     productProperties[getPropertyName('ItemBrand', index)] = brand;
     productProperties[getPropertyName('ItemCategory', index)] = category;

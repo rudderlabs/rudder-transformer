@@ -9,7 +9,6 @@ const {
   ErrorMessage,
   isEmptyObject,
   constructPayload,
-  getErrorRespEvents,
   extractCustomFields,
   getValueFromMessage,
   defaultRequestConfig,
@@ -236,10 +235,6 @@ const batchEvents = (successRespList) => {
 };
 
 const processRouterDest = async (inputs, reqMetadata) => {
-  if (!Array.isArray(inputs) || inputs.length <= 0) {
-    const respEvents = getErrorRespEvents(null, 400, 'Invalid event array');
-    return [respEvents];
-  }
   let batchResponseList = [];
   const batchErrorRespList = [];
   const successRespList = [];

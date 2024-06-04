@@ -90,6 +90,8 @@ export const data = [
                 properties: {
                   list_id: 'list1',
                   category: "What's New",
+                  value: 2600,
+                  value_decimal: 26,
                   products: [
                     {
                       product_id: '017c6f5d5cf86a4b22432066',
@@ -205,7 +207,10 @@ export const data = [
                           screen_dimensions: {},
                         },
                         event_metadata: {
-                          item_count: 3,
+                          item_count: 2,
+                          currency: 'USD',
+                          value: 1500,
+                          value_decimal: 15,
                           products: [
                             { id: '123', name: 'Monopoly', category: 'Games' },
                             { id: '345', name: 'UNO', category: 'Games' },
@@ -227,6 +232,8 @@ export const data = [
                         },
                         event_metadata: {
                           item_count: 0,
+                          value: 2600,
+                          value_decimal: 26,
                           products: [
                             {
                               id: '017c6f5d5cf86a4b22432066',
@@ -256,6 +263,8 @@ export const data = [
                         },
                         event_metadata: {
                           item_count: 5,
+                          value: 24995,
+                          value_decimal: 249.95,
                           products: [
                             {
                               id: '622c6f5d5cf86a4c77358033',
@@ -346,6 +355,8 @@ export const data = [
                 properties: {
                   list_id: 'list1',
                   category: "What's New",
+                  value: 2600,
+                  value_decimal: 26,
                   products: [
                     {
                       product_id: '017c6f5d5cf86a4b22432066',

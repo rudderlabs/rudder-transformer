@@ -23,7 +23,7 @@ const whPageColumnMappingRules = require('./config/WHPageConfig.js');
 const whScreenColumnMappingRules = require('./config/WHScreenConfig.js');
 const whGroupColumnMappingRules = require('./config/WHGroupConfig.js');
 const whAliasColumnMappingRules = require('./config/WHAliasConfig.js');
-const {isDataLakeProvider, isBlank} = require('./config/helpers');
+const { isDataLakeProvider, isBlank } = require('./config/helpers');
 const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const whExtractEventTableColumnMappingRules = require('./config/WHExtractEventTableConfig.js');
 
@@ -154,7 +154,7 @@ function setDataFromColumnMappingAndComputeColumnTypes(
     const columnName = utils.safeColumnName(options, key);
     // do not set column if val is null/empty/object
     if (typeof val === 'object' || isBlank(val)) {
-      // delete in output and columnTypes, so as to remove if we user
+      // delete in output and columnTypes, to remove if the user
       // has set property with same name
       // eslint-disable-next-line no-param-reassign
       delete output[columnName];
@@ -565,8 +565,10 @@ function processWarehouseMessage(message, options) {
       : {};
   const responses = [];
   const eventType = message.type?.toLowerCase();
-  const skipTracksTable = options.integrationOptions.skipTracksTable || false;
-  const skipUsersTable = options.integrationOptions.skipUsersTable || false;
+  const skipTracksTable =
+    options.destConfig?.skipTracksTable || options.integrationOptions.skipTracksTable || false;
+  const skipUsersTable =
+    options.destConfig?.skipUsersTable || options.integrationOptions.skipUsersTable || false;
   const skipReservedKeywordsEscaping =
     options.integrationOptions.skipReservedKeywordsEscaping || false;
 

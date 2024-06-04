@@ -1,0 +1,47 @@
+[
+  {
+    "sourceKeys": "app.name",
+    "destKey": "app.name"
+  },
+  {
+    "sourceKeys": "app.version",
+    "destKey": "app.version"
+  },
+  {
+    "sourceKeys": "campaign",
+    "destKey": "campaign"
+  },
+  {
+    "sourceKeys": "library.name",
+    "destKey": "library.name",
+    "metadata": {
+      "defaultValue": "Rudderstack Ninetailed Destination"
+    }
+  },
+  {
+    "sourceKeys": "library.version",
+    "metadata": {
+      "defaultValue": "1"
+    },
+    "destKey": "library.version"
+  },
+  {
+    "sourceKeys": "locale",
+    "destKey": "locale"
+  },
+  {
+    "sourceKeys": "page",
+    "destKey": "page"
+  },
+  {
+    "sourceKeys": "userAgent",
+    "destKey": "userAgent"
+  },
+  {
+    "sourceKeys": "location",
+    "metadata": {
+      "defaultValue": {}
+    },
+    "destKey": "location"
+  }
+]

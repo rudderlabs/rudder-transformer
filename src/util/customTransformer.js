@@ -254,12 +254,13 @@ async function runUserTransform(
     const tags = {
       identifier: 'v0',
       errored: transformationError ? true : false,
-      ...events.length && events[0].metadata ? getMetadata(events[0].metadata) : {},
-      ...events.length && events[0].metadata ? getTransformationMetadata(events[0].metadata) : {}
-    }
+      ...(events.length && events[0].metadata ? getMetadata(events[0].metadata) : {}),
+      ...(events.length && events[0].metadata ? getTransformationMetadata(events[0].metadata) : {}),
+    };
 
     stats.counter('user_transform_function_input_events', events.length, tags);
     stats.timing('user_transform_function_latency', invokeTime, tags);
+    stats.timingSummary('user_transform_function_latency_summary', invokeTime, tags);
   }
 
   return {

@@ -2,10 +2,13 @@ const { InstrumentationError, ConfigurationError } = require('@rudderstack/integ
 const { BASE_URL, ConfigCategory, mappingConfig } = require('./config');
 const { defaultRequestConfig, constructPayload, simpleProcessRouterDest } = require('../../util');
 
-const { getParams } = require('./utils');
+const { getParams, trackProduct, populateCustomTransactionProperties } = require('./utils');
+const { FilteredEventsError } = require('../../util/errorTypes');
 
 const responseBuilder = (message, { Config }) => {
-  const { advertiserId, eventsToTrack } = Config;
+  const { advertiserId, eventsToTrack, customFieldMap } = Config;
+  const { event, properties } = message;
+  let finalParams = {};
 
   const payload = constructPayload(message, mappingConfig[ConfigCategory.TRACK.name]);
 
@@ -17,17 +20,28 @@ const responseBuilder = (message, { Config }) => {
     });
 
     // if the event is present in eventsList
-    if (eventsList.includes(message.event)) {
+    if (eventsList.includes(event)) {
       params = getParams(payload.params, advertiserId);
+      const productTrackObject = trackProduct(properties, advertiserId, params.parts);
+      const customTransactionProperties = populateCustomTransactionProperties(
+        properties,
+        customFieldMap,
+      );
+
+      finalParams = {
+        ...params,
+        ...productTrackObject,
+        ...customTransactionProperties,
+      };
     } else {
-      throw new InstrumentationError(
-        "Event is not present in 'Events to Track' list. Aborting message.",
-        400,
+      throw new FilteredEventsError(
+        "Event is not present in 'Events to Track' list. Dropping the event.",
+        298,
       );
     }
   }
   const response = defaultRequestConfig();
-  response.params = params;
+  response.params = finalParams;
   response.endpoint = BASE_URL;
 
   return response;

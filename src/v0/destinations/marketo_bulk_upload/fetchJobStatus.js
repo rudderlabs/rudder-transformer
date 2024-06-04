@@ -33,6 +33,9 @@ const getJobsStatus = async (event, type, accessToken) => {
   const { processedResponse: resp } = await handleHttpRequest('get', url, requestOptions, {
     destType: 'marketo_bulk_upload',
     feature: 'transformation',
+    endpointPath: '/leads/batch/',
+    requestMethod: 'GET',
+    module: 'router',
   });
   const endTime = Date.now();
   const requestTime = endTime - startTime;

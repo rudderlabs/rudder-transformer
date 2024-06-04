@@ -37,7 +37,7 @@ const IDENTIFY_CRM_UPDATE_CONTACT = `${BASE_ENDPOINT}/crm/v3/objects/contacts/:c
 const BATCH_IDENTIFY_CRM_CREATE_NEW_CONTACT = `${BASE_ENDPOINT}/crm/v3/objects/contacts/batch/create`;
 const BATCH_IDENTIFY_CRM_UPDATE_CONTACT = `${BASE_ENDPOINT}/crm/v3/objects/contacts/batch/update`;
 // Ref - https://developers.hubspot.com/docs/api/crm/contacts#endpoint?spec=GET-/crm/v3/objects/contacts
-const MAX_BATCH_SIZE_CRM_CONTACT = 10;
+const MAX_BATCH_SIZE_CRM_CONTACT = 100;
 
 // Track
 // Ref - https://developers.hubspot.com/docs/api/analytics/events
@@ -64,6 +64,8 @@ const API_VERSION = {
   v3: 'newApi',
 };
 
+const MAX_CONTACTS_PER_REQUEST = 100;
+
 const ConfigCategory = {
   COMMON: {
     name: 'HSCommonConfig',
@@ -82,6 +84,9 @@ const RETL_SOURCE = 'rETL';
 const mappingConfig = getMappingConfig(ConfigCategory, __dirname);
 const hsCommonConfigJson = mappingConfig[ConfigCategory.COMMON.name];
 
+const primaryToSecondaryFields = {
+  email: 'hs_additional_emails',
+};
 module.exports = {
   BASE_ENDPOINT,
   CONTACT_PROPERTY_MAP_ENDPOINT,
@@ -109,5 +114,7 @@ module.exports = {
   SEARCH_LIMIT_VALUE,
   RETL_SOURCE,
   RETL_CREATE_ASSOCIATION_OPERATION,
+  MAX_CONTACTS_PER_REQUEST,
+  primaryToSecondaryFields,
   DESTINATION: 'HS',
 };

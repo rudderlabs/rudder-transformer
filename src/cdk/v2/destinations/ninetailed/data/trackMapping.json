@@ -1,0 +1,14 @@
+[
+  {
+    "sourceKeys": "properties",
+    "metadata": {
+      "defaultValue": {}
+    },
+    "destKey": "properties"
+  },
+  {
+    "sourceKeys": "event",
+    "required": true,
+    "destKey": "event"
+  }
+]

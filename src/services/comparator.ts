@@ -1,8 +1,9 @@
 /* eslint-disable class-methods-use-this */
+import { structuredLogger as logger } from '@rudderstack/integrations-lib';
 import { DestinationService } from '../interfaces/DestinationService';
 import {
-  DeliveriesResponse,
-  DeliveryResponse,
+  DeliveryV0Response,
+  DeliveryV1Response,
   Destination,
   ErrorDetailer,
   MetaTransferObject,
@@ -14,10 +15,9 @@ import {
   UserDeletionRequest,
   UserDeletionResponse,
 } from '../types';
-import tags from '../v0/util/tags';
-import stats from '../util/stats';
-import logger from '../logger';
 import { CommonUtils } from '../util/common';
+import stats from '../util/stats';
+import tags from '../v0/util/tags';
 
 const NS_PER_SEC = 1e9;
 
@@ -204,6 +204,7 @@ export class ComparatorService implements DestinationService {
       destinationType,
       version,
       requestMetadata,
+      logger,
     );
     const primaryTimeDiff = process.hrtime(primaryStartTime);
     const primaryTime = primaryTimeDiff[0] * NS_PER_SEC + primaryTimeDiff[1];
@@ -262,6 +263,7 @@ export class ComparatorService implements DestinationService {
       destinationType,
       version,
       requestMetadata,
+      logger,
     );
     const primaryTimeDiff = process.hrtime(primaryStartTime);
     const primaryTime = primaryTimeDiff[0] * NS_PER_SEC + primaryTimeDiff[1];
@@ -320,6 +322,7 @@ export class ComparatorService implements DestinationService {
       destinationType,
       version,
       requestMetadata,
+      {},
     );
     const primaryTimeDiff = process.hrtime(primaryStartTime);
     const primaryTime = primaryTimeDiff[0] * NS_PER_SEC + primaryTimeDiff[1];
@@ -370,7 +373,7 @@ export class ComparatorService implements DestinationService {
     destinationType: string,
     requestMetadata: NonNullable<unknown>,
     version: string,
-  ): Promise<DeliveryResponse | DeliveriesResponse> {
+  ): Promise<DeliveryV0Response | DeliveryV1Response> {
     const primaryResplist = await this.primaryService.deliver(
       event,
       destinationType,

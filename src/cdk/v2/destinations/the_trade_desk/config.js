@@ -1,8 +1,9 @@
-const SUPPORTED_EVENT_TYPE = 'record';
+const SUPPORTED_EVENT_TYPE = ['record'];
 const ACTION_TYPES = ['insert', 'delete'];
 const DATA_PROVIDER_ID = 'rudderstack';
 
 // ref:- https://partner.thetradedesk.com/v3/portal/data/doc/DataEnvironments
+// api ref:- https://partner.thetradedesk.com/v3/portal/data/doc/post-data-advertiser-external
 const DATA_SERVERS_BASE_ENDPOINTS_MAP = {
   apac: 'https://sin-data.adsrvr.org',
   tokyo: 'https://tok-data.adsrvr.org',

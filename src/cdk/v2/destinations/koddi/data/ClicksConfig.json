@@ -1,0 +1,35 @@
+[
+  {
+    "sourceKeys": "properties.tracking_data",
+    "required": true,
+    "destKey": "trackingData"
+  },
+  {
+    "sourceKeys": "properties.rank",
+    "required": true,
+    "destKey": "rank"
+  },
+  {
+    "sourceKeys": "properties.beacon_issued",
+    "required": true,
+    "destKey": "beaconIssued"
+  },
+  {
+    "sourceKeys": "userId",
+    "sourceFromGenericMap": true,
+    "required": true,
+    "destKey": "userGuid"
+  },
+  {
+    "sourceKeys": "properties.test_version_override",
+    "destKey": "testVersionOverride"
+  },
+  {
+    "sourceKeys": "properties.destination_url",
+    "destKey": "destinationUrl"
+  },
+  {
+    "sourceKeys": "properties.overrides",
+    "destKey": "overrides"
+  }
+]

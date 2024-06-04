@@ -113,9 +113,16 @@ function getEventValueForUnIdentifiedTrackEvent(message) {
   return { eventValue };
 }
 
-function getEventValueMapFromMappingJson(message, mappingJson, isMultiSupport) {
+function getEventValueMapFromMappingJson(message, mappingJson, isMultiSupport, config) {
   let eventValue = {};
-  set(eventValue, 'properties', message.properties);
+  const { addPropertiesAtRoot, afCurrencyAtRoot } = config;
+
+  if (addPropertiesAtRoot) {
+    eventValue = message.properties;
+  } else {
+    set(eventValue, 'properties', message.properties);
+  }
+
   const sourceKeys = Object.keys(mappingJson);
   sourceKeys.forEach((sourceKey) => {
     set(eventValue, mappingJson[sourceKey], get(message, sourceKey));
@@ -141,6 +148,9 @@ function getEventValueMapFromMappingJson(message, mappingJson, isMultiSupport) {
       af_price: prices,
     };
   }
+  if (afCurrencyAtRoot) {
+    eventValue.af_currency = message.properties.currency;
+  }
   eventValue = removeUndefinedValues(eventValue);
   if (Object.keys(eventValue).length > 0) {
     eventValue = JSON.stringify(eventValue);
@@ -160,7 +170,7 @@ function processNonTrackEvents(message, eventName) {
   return payload;
 }
 
-function processEventTypeTrack(message) {
+function processEventTypeTrack(message, config) {
   let isMultiSupport = true;
   const evType = message.event && message.event.toLowerCase();
   let category = ConfigCategory.DEFAULT;
@@ -184,6 +194,7 @@ function processEventTypeTrack(message) {
     message,
     mappingConfig[category.name],
     isMultiSupport,
+    config,
   );
   payload.eventName = message.event;
   payload.eventCurrency = message?.properties?.currency;
@@ -196,7 +207,7 @@ function processSingleMessage(message, destination) {
   let payload;
   switch (messageType) {
     case EventType.TRACK: {
-      payload = processEventTypeTrack(message);
+      payload = processEventTypeTrack(message, destination.Config);
       break;
     }
     case EventType.SCREEN: {

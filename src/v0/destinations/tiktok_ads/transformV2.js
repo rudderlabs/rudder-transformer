@@ -13,8 +13,8 @@ const {
   isDefinedAndNotNullAndNotEmpty,
   getDestinationExternalID,
   getHashFromArrayWithDuplicate,
-  checkInvalidRtTfEvents,
   handleRtTfSingleEventError,
+  validateEventName,
 } = require('../../util');
 const { getContents, hashUserField } = require('./util');
 const config = require('./config');
@@ -31,7 +31,7 @@ const { JSON_MIME_TYPE } = require('../../util/constant');
  * @param {*} event
  * @returns track payload
  */
-const getTrackResponsePayload = (message, destConfig, event) => {
+const getTrackResponsePayload = (message, destConfig, event, setDefaultForContentType = true) => {
   const payload = constructPayload(message, trackMappingV2);
 
   // if contents is not an array converting it into array
@@ -40,8 +40,10 @@ const getTrackResponsePayload = (message, destConfig, event) => {
   }
 
   // if contents is not present but we have properties.products present which has fields with superset of contents fields
-  if (payload.properties && !payload.properties.contents && message.properties.products) {
+  if (!payload.properties?.contents && message.properties?.products) {
     // retreiving data from products only when contents is not present
+    // properties object may be empty due which next line may give some error
+    payload.properties = payload.properties || {};
     payload.properties.contents = getContents(message, false);
   }
 
@@ -53,6 +55,12 @@ const getTrackResponsePayload = (message, destConfig, event) => {
   if (destConfig.hashUserProperties && isDefinedAndNotNullAndNotEmpty(payload.user)) {
     payload.user = hashUserField(payload.user);
   }
+  // setting content-type default value in case of all standard event except `page-view`
+  if (!payload.properties?.content_type && setDefaultForContentType) {
+    // properties object may be empty due which next line may give some error
+    payload.properties = payload.properties || {};
+    payload.properties.content_type = 'product';
+  }
   payload.event = event;
   // add partner name and return payload
   return removeUndefinedAndNullValues(payload);
@@ -60,7 +68,7 @@ const getTrackResponsePayload = (message, destConfig, event) => {
 
 const trackResponseBuilder = async (message, { Config }) => {
   const { eventsToStandard, sendCustomEvents, accessToken, pixelCode } = Config;
-
+  validateEventName(message.event);
   let event = message.event?.toLowerCase().trim();
   if (!event) {
     throw new InstrumentationError('Event name is required');
@@ -90,13 +98,17 @@ const trackResponseBuilder = async (message, { Config }) => {
         });
       }
     });
-  } else {
+  } else if (!eventNameMapping[event]) {
     /* 
+    Custom Event Case -> if there exists no event mapping we will build payload with custom event recieved
     For custom event we do not want to lower case the event or trim it we just want to send those as it is
     Doc https://ads.tiktok.com/help/article/standard-events-parameters?lang=en
     */
-    event = eventNameMapping[event] || message.event;
-    // if there exists no event mapping we will build payload with custom event recieved
+    event = message.event;
+    responseList.push(getTrackResponsePayload(message, Config, event, false));
+  } else {
+    // incoming event name is already a standard event name
+    event = eventNameMapping[event];
     responseList.push(getTrackResponsePayload(message, Config, event));
   }
   // set event source and event_source_id
@@ -690,10 +702,6 @@ const batchEvents = (eventsChunk) => {
   return events;
 };
 const processRouterDest = async (inputs, reqMetadata) => {
-  const errorRespEvents = checkInvalidRtTfEvents(inputs);
-  if (errorRespEvents.length > 0) {
-    return errorRespEvents;
-  }
   const trackResponseList = []; // list containing single track event in batched format
   const eventsChunk = []; // temporary variable to divide payload into chunks
   const errorRespList = [];

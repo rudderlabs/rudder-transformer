@@ -1,0 +1,143 @@
+[
+  {
+    "sourceKeys": ["properties.order_id", "properties.orderId"],
+    "required": true,
+    "destKey": "ord"
+  },
+  {
+    "sourceKeys": ["properties.tr", "properties.ran_site_id", "properties.ranSiteID"],
+    "destKey": "tr",
+    "metadata": {
+      "defaultValue": " "
+    }
+  },
+  {
+    "sourceKeys": ["properties.land", "properties.land_time", "properties.landTime"],
+    "required": true,
+    "destKey": "land"
+  },
+  {
+    "sourceKeys": [
+      "properties.date",
+      "properties.order_completed_time",
+      "properties.orderCompletedTime"
+    ],
+    "destKey": "date"
+  },
+  {
+    "sourceKeys": [
+      "properties.alt_ord",
+      "properties.altord",
+      "properties.alter_order_id",
+      "properties.alterOrderId"
+    ],
+    "destKey": "altord"
+  },
+  {
+    "sourceKeys": "properties.currency",
+    "destKey": "cur"
+  },
+  {
+    "sourceKeys": ["properties.credit_card_type", "properties.creditCardType"],
+    "destKey": "cc"
+  },
+  {
+    "sourceKeys": ["properties.comm_reason", "properties.commReason"],
+    "destKey": "commreason"
+  },
+  {
+    "sourceKeys": ["properties.is_comm", "properties.isComm"],
+    "destKey": "iscomm"
+  },
+  {
+    "sourceKeys": "properties.consumed",
+    "destKey": "consumed"
+  },
+  {
+    "sourceKeys": "properties.coupon",
+    "destKey": "coupon"
+  },
+  {
+    "sourceKeys": [
+      "properties.cust_id",
+      "properties.custId",
+      "properties.customer_id",
+      "properties.customerId",
+      "properties.userId"
+    ],
+    "destKey": "custid"
+  },
+  {
+    "sourceKeys": [
+      "properties.cust_score",
+      "properties.custScore",
+      "properties.customer_score",
+      "properties.customerScore"
+    ],
+    "destKey": "custscore"
+  },
+  {
+    "sourceKeys": [
+      "properties.cust_status",
+      "properties.custStatus",
+      "properties.customer_status",
+      "properties.customerStatus"
+    ],
+    "destKey": "custstatus"
+  },
+  {
+    "sourceKeys": ["properties.dId", "properties.advertising_id", "properties.advertisingId"],
+    "destKey": "did"
+  },
+  {
+    "sourceKeys": ["properties.disamt", "properties.discount_amount", "properties.discountAmount"],
+    "destKey": "disamt"
+  },
+  {
+    "sourceKeys": [
+      "properties.ord_status",
+      "properties.ordStatus",
+      "properties.order_status",
+      "properties.orderStatus"
+    ],
+    "destKey": "ordstatus"
+  },
+  {
+    "sourceKeys": "properties.segment",
+    "destKey": "segment"
+  },
+  {
+    "sourceKeys": ["properties.ship_country", "properties.shipcountry"],
+    "destKey": "shipcountry"
+  },
+  {
+    "sourceKeys": "properties.shipped",
+    "destKey": "shipped"
+  },
+  {
+    "sourceKeys": [
+      "properties.site_name",
+      "properties.sitename",
+      "properties.url",
+      "context.page.url"
+    ],
+    "destKey": "sitename"
+  },
+  {
+    "sourceKeys": ["properties.store_id", "properties.storeId"],
+    "destKey": "storeid"
+  },
+  {
+    "sourceKeys": [
+      "properties.store_cat",
+      "properties.storecat",
+      "properties.store_category",
+      "properties.storeCategory"
+    ],
+    "destKey": "storecat"
+  },
+  {
+    "sourceKeys": "properties.currency",
+    "destKey": "cur"
+  }
+]

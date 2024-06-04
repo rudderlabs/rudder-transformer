@@ -24,6 +24,7 @@ async function getTransformationCode(versionId) {
     responseStatusHandler(response.status, 'Transformation', versionId, url);
     stats.increment('get_transformation_code', { versionId, success: 'true' });
     stats.timing('get_transformation_code_time', startTime, { versionId });
+    stats.timingSummary('get_transformation_code_time_summary', startTime, { versionId });
     const myJson = await response.json();
     myCache.set(versionId, myJson);
     return myJson;

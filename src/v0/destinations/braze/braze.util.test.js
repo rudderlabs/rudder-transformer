@@ -305,7 +305,14 @@ describe('dedup utility tests', () => {
           },
           timeout: 10000,
         },
-        { destType: 'braze', feature: 'transformation' },
+        {
+          destType: 'braze',
+          feature: 'transformation',
+          endpointPath: '/users/export/ids',
+          feature: 'transformation',
+          module: 'router',
+          requestMethod: 'POST',
+        },
       );
     });
 
@@ -732,7 +739,7 @@ describe('dedup utility tests', () => {
       });
     });
 
-    test('returns null if all keys are in BRAZE_NON_BILLABLE_ATTRIBUTES', () => {
+    test('returns only non-billable attribute if there is key of BRAZE_NON_BILLABLE_ATTRIBUTES', () => {
       const userData = {
         external_id: '123',
         country: 'US',
@@ -750,7 +757,7 @@ describe('dedup utility tests', () => {
       };
       store.set('123', storeData);
       const result = BrazeDedupUtility.deduplicate(userData, store);
-      expect(result).toBeNull();
+      expect(result).toEqual({ country: 'US', external_id: '123', language: 'en' });
     });
 
     test('returns null if all keys have $add, $update, or $remove properties', () => {

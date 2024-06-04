@@ -1,3 +1,45 @@
+import { Destination } from '../../../../../src/types';
+import { generateMetadata, generateSimplifiedIdentifyPayload } from '../../../testUtils';
+
+const commonOutputHeaders = {
+  'Content-Type': 'application/json',
+  Authorization: 'Bearer dummy-access-token',
+};
+
+const destination: Destination = {
+  Config: {
+    authorizationType: 'newPrivateAppApi',
+    accessToken: 'dummy-access-token',
+    hubID: 'dummy-hubId',
+    apiKey: 'dummy-apikey',
+    apiVersion: 'newApi',
+    lookupField: 'email',
+    hubspotEvents: [],
+    eventFilteringOption: 'disable',
+    blacklistedEvents: [
+      {
+        eventName: '',
+      },
+    ],
+    whitelistedEvents: [
+      {
+        eventName: '',
+      },
+    ],
+  },
+  Enabled: true,
+  ID: '123',
+  Name: 'hs',
+  DestinationDefinition: {
+    ID: '123',
+    Name: 'hs',
+    DisplayName: 'Hubspot',
+    Config: {},
+  },
+  WorkspaceID: '123',
+  Transformations: [],
+};
+
 export const data = [
   {
     name: 'hs',
@@ -1492,7 +1534,6 @@ export const data = [
                     firstname: 'Test Hubspot',
                     anonymousId: '12345',
                     country: 'India',
-                    email: 'testhubspot2@email.com',
                   },
                 },
                 XML: {},
@@ -4769,7 +4810,7 @@ export const data = [
         body: [
           {
             error:
-              '{"message":"rETL - Error during searching object record. Request Rate Limit reached","destinationResponse":{"response":{"status":"error","message":"Request Rate Limit reached","correlationId":"4d39ff11-e121-4514-bcd8-132a9dd1ff50","category":"RATE-LIMIT_REACHED","links":{"api key":"https://app.hubspot.com/l/api-key/"}},"status":429}}',
+              '{"message":"rETL - Error during searching object record. \\"Request Rate Limit reached\\"","destinationResponse":{"response":{"status":"error","message":"Request Rate Limit reached","correlationId":"4d39ff11-e121-4514-bcd8-132a9dd1ff50","category":"RATE-LIMIT_REACHED","links":{"api key":"https://app.hubspot.com/l/api-key/"}},"status":429}}',
             metadata: {
               jobId: 2,
             },
@@ -5255,6 +5296,121 @@ export const data = [
         body: [
           {
             error: 'Event and property mappings are required for track call',
+            statTags: {
+              destType: 'HS',
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              feature: 'processor',
+              implementation: 'native',
+              module: 'destination',
+            },
+            statusCode: 400,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'hs',
+    description: 'Test coversion of null to string values',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination,
+            message: generateSimplifiedIdentifyPayload({
+              userId: '12345',
+              context: {
+                traits: {
+                  email: 'noname@email.com',
+                  firstname: null,
+                  gender: '',
+                  lookupField: 'email',
+                },
+              },
+            }),
+            metadata: generateMetadata(1),
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              userId: '',
+              method: 'POST',
+              endpoint: 'https://api.hubapi.com/crm/v3/objects/contacts',
+              files: {},
+              headers: commonOutputHeaders,
+              operation: 'createContacts',
+              params: {},
+              body: {
+                FORM: {},
+                JSON: {
+                  properties: {
+                    email: 'noname@email.com',
+                    firstname: '',
+                    gender: '',
+                  },
+                },
+                JSON_ARRAY: {},
+                XML: {},
+              },
+            },
+            statusCode: 200,
+            metadata: generateMetadata(1),
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'hs',
+    description: 'if event name is anything other than string we throw error',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              channel: 'web',
+              context: {
+                traits: {
+                  email: 'testhubspot2@email.com',
+                  firstname: 'Test Hubspot',
+                },
+              },
+              type: 'track',
+              originalTimestamp: '2019-10-15T09:35:31.291Z',
+              userId: '12345',
+              event: { name: 'event' },
+              properties: {
+                user_actual_role: 'system_admin, system_user',
+                user_actual_id: 12345,
+              },
+              sentAt: '2019-10-14T11:15:53.296Z',
+            },
+            destination: destination,
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            error: 'Event is a required field and should be a string',
             statTags: {
               destType: 'HS',
               errorCategory: 'dataValidation',

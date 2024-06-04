@@ -20,6 +20,7 @@ const {
   prepareDataField,
   getSchemaForEventMappedToDest,
   batchingWithPayloadSize,
+  generateAppSecretProof,
 } = require('./util');
 const {
   getEndPoint,
@@ -88,7 +89,7 @@ const prepareResponse = (
   userSchema,
   isHashRequired = true,
 ) => {
-  const { accessToken, disableFormat, type, subType, isRaw } = destination.Config;
+  const { accessToken, disableFormat, type, subType, isRaw, appSecret } = destination.Config;
 
   const mappedToDestination = get(message, MappedToDestinationKey);
 
@@ -104,6 +105,12 @@ const prepareResponse = (
   const dataSource = {};
 
   prepareParams.access_token = accessToken;
+
+  if (isDefinedAndNotNullAndNotEmpty(appSecret)) {
+    const dateNow = Date.now();
+    prepareParams.appsecret_time = Math.floor(dateNow / 1000); // Get current Unix time in seconds
+    prepareParams.appsecret_proof = generateAppSecretProof(accessToken, appSecret, dateNow);
+  }
 
   // creating the payload field for parameters
   if (isRaw) {

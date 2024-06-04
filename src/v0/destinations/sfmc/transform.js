@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 /* eslint-disable no-nested-ternary */
 const {
   NetworkError,
@@ -6,8 +7,8 @@ const {
   isDefinedAndNotNull,
   isEmpty,
 } = require('@rudderstack/integrations-lib');
-const myAxios = require('../../../util/myAxios');
 const { EventType } = require('../../../constants');
+const { handleHttpRequest } = require('../../../adapters/network');
 const { CONFIG_CATEGORIES, MAPPING_CONFIG, ENDPOINTS } = require('./config');
 const {
   removeUndefinedAndNullValues,
@@ -21,10 +22,8 @@ const {
   getHashFromArray,
   simpleProcessRouterDest,
 } = require('../../util');
-const {
-  getDynamicErrorType,
-  nodeSysErrorToStatus,
-} = require('../../../adapters/utils/networkUtils');
+const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
+const { isHttpStatusSuccess } = require('../../util');
 const tags = require('../../util/tags');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
@@ -33,45 +32,38 @@ const CONTACT_KEY_KEY = 'Contact Key';
 // DOC: https://developer.salesforce.com/docs/atlas.en-us.mc-app-development.meta/mc-app-development/access-token-s2s.htm
 
 const getToken = async (clientId, clientSecret, subdomain) => {
-  try {
-    const resp = await myAxios.post(
-      `https://${subdomain}.${ENDPOINTS.GET_TOKEN}`,
-      {
-        grant_type: 'client_credentials',
-        client_id: clientId,
-        client_secret: clientSecret,
-      },
-      {
-        'Content-Type': JSON_MIME_TYPE,
-      },
-      { destType: 'sfmc', feature: 'transformation' },
-    );
-    if (resp && resp.data) {
-      return resp.data.access_token;
-    }
-    const status = resp.status || 400;
+  const { processedResponse: processedResponseSfmc } = await handleHttpRequest(
+    'post',
+    `https://${subdomain}.${ENDPOINTS.GET_TOKEN}`,
+    {
+      grant_type: 'client_credentials',
+      client_id: clientId,
+      client_secret: clientSecret,
+    },
+    {
+      'Content-Type': JSON_MIME_TYPE,
+    },
+    {
+      destType: 'sfmc',
+      feature: 'transformation',
+      endpointPath: '/token',
+      requestMethod: 'POST',
+      module: 'router',
+    },
+  );
+
+  if (!isHttpStatusSuccess(processedResponseSfmc.status)) {
     throw new NetworkError(
       'Could not retrieve access token',
-      status,
+      processedResponseSfmc.status || 400,
       {
-        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(processedResponseSfmc.status || 400),
       },
-      resp,
+      processedResponseSfmc.response,
     );
-  } catch (error) {
-    if (!isEmpty(error.response)) {
-      const status = error.status || 400;
-      throw new NetworkError(`Authorization Failed ${error.response.statusText}`, status, {
-        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
-      });
-    } else {
-      const httpError = nodeSysErrorToStatus(error.code);
-      const status = httpError.status || 400;
-      throw new NetworkError(`Authorization Failed ${httpError.message}`, status, {
-        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
-      });
-    }
   }
+
+  return processedResponseSfmc.response.access_token;
 };
 
 // DOC : https://developer.salesforce.com/docs/atlas.en-us.noversion.mc-apis.meta/mc-apis/createContacts.htm
@@ -182,6 +174,26 @@ const responseBuilderForInsertData = (
   return response;
 };
 
+// DOC : https://developer.salesforce.com/docs/marketing/marketing-cloud/references/mc_rest_interaction/postEvent.html
+
+const responseBuilderForMessageEvent = (message, subDomain, authToken, hashMapEventDefinition) => {
+  const contactKey = message.properties.contactId;
+  delete message.properties.contactId;
+  const response = defaultRequestConfig();
+  response.method = defaultPostRequestConfig.requestMethod;
+  response.endpoint = `https://${subDomain}.${ENDPOINTS.EVENT}`;
+  response.headers = {
+    'Content-Type': JSON_MIME_TYPE,
+    Authorization: `Bearer ${authToken}`,
+  };
+  response.body.JSON = {
+    ContactKey: contactKey,
+    EventDefinitionKey: hashMapEventDefinition[message.event.toLowerCase()],
+    Data: { ...message.properties },
+  };
+  return response;
+};
+
 const responseBuilderSimple = async (message, category, destination) => {
   const {
     clientId,
@@ -192,6 +204,7 @@ const responseBuilderSimple = async (message, category, destination) => {
     eventToExternalKey,
     eventToPrimaryKey,
     eventToUUID,
+    eventToDefinitionMapping,
   } = destination.Config;
   // map from an event name to an external key of a data extension.
   const hashMapExternalKey = getHashFromArray(eventToExternalKey, 'from', 'to');
@@ -201,6 +214,8 @@ const responseBuilderSimple = async (message, category, destination) => {
   const hashMapUUID = getHashFromArray(eventToUUID, 'event', 'uuid');
   // token needed for authorization for subsequent calls
   const authToken = await getToken(clientId, clientSecret, subDomain);
+  // map from an event name to an event definition key.
+  const hashMapEventDefinition = getHashFromArray(eventToDefinitionMapping, 'from', 'to');
   // if createOrUpdateContacts is true identify calls for create and update of contacts will not occur.
   if (category.type === 'identify' && !createOrUpdateContacts) {
     // first call to identify the contact
@@ -234,10 +249,12 @@ const responseBuilderSimple = async (message, category, destination) => {
     if (typeof message.event !== 'string') {
       throw new ConfigurationError('Event name must be a string');
     }
+    if (hashMapEventDefinition[message.event.toLowerCase()]) {
+      return responseBuilderForMessageEvent(message, subDomain, authToken, hashMapEventDefinition);
+    }
     if (!isDefinedAndNotNull(hashMapExternalKey[message.event.toLowerCase()])) {
       throw new ConfigurationError('Event not mapped for this track call');
     }
-
     return responseBuilderForInsertData(
       message,
       hashMapExternalKey[message.event.toLowerCase()],
@@ -287,4 +304,9 @@ const processRouterDest = async (inputs, reqMetadata) => {
   return respList;
 };
 
-module.exports = { process, processRouterDest, responseBuilderSimple };
+module.exports = {
+  process,
+  processRouterDest,
+  responseBuilderSimple,
+  responseBuilderForMessageEvent,
+};

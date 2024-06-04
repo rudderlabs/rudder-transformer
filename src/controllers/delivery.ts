@@ -1,30 +1,33 @@
 /* eslint-disable prefer-destructuring */
 /* eslint-disable sonarjs/no-duplicate-string */
-import { Context } from 'koa';
-import { MiscService } from '../services/misc';
 import {
-  DeliveriesResponse,
-  DeliveryResponse,
-  ProcessorTransformationOutput,
-  ProxyDeliveriesRequest,
-  ProxyDeliveryRequest,
-} from '../types/index';
+  isDefinedAndNotNullAndNotEmpty,
+  structuredLogger as logger,
+} from '@rudderstack/integrations-lib';
+import { Context } from 'koa';
 import { ServiceSelector } from '../helpers/serviceSelector';
 import { DeliveryTestService } from '../services/delivertTest/deliveryTest';
-import { ControllerUtility } from './util';
-import logger from '../logger';
 import { DestinationPostTransformationService } from '../services/destination/postTransformation';
-import tags from '../v0/util/tags';
+import { MiscService } from '../services/misc';
+import {
+  DeliveryV0Response,
+  DeliveryV1Response,
+  ProcessorTransformationOutput,
+  ProxyV0Request,
+  ProxyV1Request,
+} from '../types/index';
 import { FixMe } from '../util/types';
+import tags from '../v0/util/tags';
+import { ControllerUtility } from './util';
 
 const NON_DETERMINABLE = 'Non-determinable';
 
 export class DeliveryController {
   public static async deliverToDestination(ctx: Context) {
-    logger.debug('Native(Delivery):: Request to transformer::', JSON.stringify(ctx.request.body));
-    let deliveryResponse: DeliveryResponse;
+    logger.debug('Native(Delivery):: Request to transformer::', ctx.request.body);
+    let deliveryResponse: DeliveryV0Response;
     const requestMetadata = MiscService.getRequestMetadata(ctx);
-    const deliveryRequest = ctx.request.body as ProxyDeliveryRequest;
+    const deliveryRequest = ctx.request.body as ProxyV0Request;
     const { destination }: { destination: string } = ctx.params;
     const integrationService = ServiceSelector.getNativeDestinationService();
     try {
@@ -33,7 +36,7 @@ export class DeliveryController {
         destination,
         requestMetadata,
         'v0',
-      )) as DeliveryResponse;
+      )) as DeliveryV0Response;
     } catch (error: any) {
       const { metadata } = deliveryRequest;
       const metaTO = integrationService.getTags(
@@ -51,15 +54,15 @@ export class DeliveryController {
     ctx.body = { output: deliveryResponse };
     ControllerUtility.deliveryPostProcess(ctx, deliveryResponse.status);
 
-    logger.debug('Native(Delivery):: Response from transformer::', JSON.stringify(ctx.body));
+    logger.debug('Native(Delivery):: Response from transformer::', ctx.body);
     return ctx;
   }
 
   public static async deliverToDestinationV1(ctx: Context) {
-    logger.debug('Native(Delivery):: Request to transformer::', JSON.stringify(ctx.request.body));
-    let deliveryResponse: DeliveriesResponse;
+    logger.debug('Native(Delivery):: Request to transformer::', ctx.request.body);
+    let deliveryResponse: DeliveryV1Response;
     const requestMetadata = MiscService.getRequestMetadata(ctx);
-    const deliveryRequest = ctx.request.body as ProxyDeliveriesRequest;
+    const deliveryRequest = ctx.request.body as ProxyV1Request;
     const { destination }: { destination: string } = ctx.params;
     const integrationService = ServiceSelector.getNativeDestinationService();
     try {
@@ -68,7 +71,7 @@ export class DeliveryController {
         destination,
         requestMetadata,
         'v1',
-      )) as DeliveriesResponse;
+      )) as DeliveryV1Response;
     } catch (error: any) {
       const { metadata } = deliveryRequest;
       const metaTO = integrationService.getTags(
@@ -84,17 +87,18 @@ export class DeliveryController {
       );
     }
     ctx.body = { output: deliveryResponse };
-    ControllerUtility.deliveryPostProcess(ctx, deliveryResponse.status);
+    if (isDefinedAndNotNullAndNotEmpty(deliveryResponse.authErrorCategory)) {
+      ControllerUtility.deliveryPostProcess(ctx, deliveryResponse.status);
+    } else {
+      ControllerUtility.deliveryPostProcess(ctx);
+    }
 
-    logger.debug('Native(Delivery):: Response from transformer::', JSON.stringify(ctx.body));
+    logger.debug('Native(Delivery):: Response from transformer::', ctx.body);
     return ctx;
   }
 
   public static async testDestinationDelivery(ctx: Context) {
-    logger.debug(
-      'Native(Delivery-Test):: Request to transformer::',
-      JSON.stringify(ctx.request.body),
-    );
+    logger.debug('Native(Delivery-Test):: Request to transformer::', ctx.request.body);
     const { destination }: { destination: string } = ctx.params;
     const { version }: { version: string } = ctx.params;
     const {
@@ -112,7 +116,7 @@ export class DeliveryController {
     );
     ctx.body = { output: response };
     ControllerUtility.postProcess(ctx);
-    logger.debug('Native(Delivery-Test):: Response from transformer::', JSON.stringify(ctx.body));
+    logger.debug('Native(Delivery-Test):: Response from transformer::', ctx.body);
     return ctx;
   }
 }

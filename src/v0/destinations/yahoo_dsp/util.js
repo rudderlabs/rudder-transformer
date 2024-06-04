@@ -51,7 +51,7 @@ const populateIdentifiers = (audienceList, Config) => {
       }
       // here, hashing the data if is not hashed and pushing in the seedList array.
       if (hashRequired) {
-        seedList.push(sha256(userTraits[audienceAttribute]));
+        seedList.push(sha256(userTraits[audienceAttribute].trim()));
       } else {
         seedList.push(userTraits[audienceAttribute]);
       }
@@ -137,6 +137,9 @@ const getAccessToken = async (destination) => {
     const dspAuthorisationData = await httpSend(request, {
       destType: 'yahoo_dsp',
       feature: 'transformation',
+      endpointPath: '/identity/oauth2/access_token',
+      requestMethod: 'POST',
+      module: 'router',
     });
     // If the request fails, throwing error.
     if (dspAuthorisationData.success === false) {

@@ -739,7 +739,7 @@ export const data = [
         body: [
           {
             statusCode: 400,
-            error: 'Missing required value from "email"',
+            error: 'Missing required value from "emailOnly"',
             statTags: {
               errorCategory: 'dataValidation',
               errorType: 'instrumentation',

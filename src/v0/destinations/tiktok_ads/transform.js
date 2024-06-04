@@ -17,9 +17,9 @@ const {
   getDestinationExternalID,
   getFieldValueFromMessage,
   getHashFromArrayWithDuplicate,
-  checkInvalidRtTfEvents,
   handleRtTfSingleEventError,
   batchMultiplexedEvents,
+  validateEventName,
 } = require('../../util');
 const { process: processV2, processRouterDest: processRouterDestV2 } = require('./transformV2');
 const { getContents } = require('./util');
@@ -130,14 +130,9 @@ const getTrackResponse = (message, Config, event) => {
 
 const trackResponseBuilder = async (message, { Config }) => {
   const { eventsToStandard, sendCustomEvents } = Config;
-
-  let event = message.event?.toLowerCase().trim();
-  if (!event) {
-    throw new InstrumentationError('Event name is required');
-  }
-
+  validateEventName(message.event);
+  let event = message.event.toLowerCase().trim();
   const standardEventsMap = getHashFromArrayWithDuplicate(eventsToStandard);
-
   if (!sendCustomEvents && eventNameMapping[event] === undefined && !standardEventsMap[event]) {
     throw new InstrumentationError(
       `Event name (${event}) is not valid, must be mapped to one of standard events`,
@@ -247,10 +242,6 @@ const processRouterDest = async (inputs, reqMetadata) => {
   const { Config } = destination;
   if (Config?.version === 'v2') {
     return processRouterDestV2(inputs, reqMetadata);
-  }
-  const errorRespEvents = checkInvalidRtTfEvents(inputs);
-  if (errorRespEvents.length > 0) {
-    return errorRespEvents;
   }
 
   const trackResponseList = []; // list containing single track event in batched format

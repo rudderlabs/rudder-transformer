@@ -1,0 +1,15 @@
+[
+  {
+    "sourceKeys": "traits",
+    "sourceFromGenericMap": true,
+    "metadata": {
+      "defaultValue": {}
+    },
+    "destKey": "traits"
+  },
+  {
+    "sourceKeys": "userIdOnly",
+    "sourceFromGenericMap": true,
+    "destKey": "userId"
+  }
+]

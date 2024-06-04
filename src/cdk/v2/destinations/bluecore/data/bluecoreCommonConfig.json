@@ -1,0 +1,52 @@
+[
+  {
+    "destKey": "properties.customer.name",
+    "sourceKeys": "name",
+    "required": false,
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "properties.customer.first_name",
+    "sourceKeys": "firstName",
+    "required": false,
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "properties.customer.last_name",
+    "sourceKeys": "lastName",
+    "required": false,
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "properties.customer.age",
+    "sourceKeys": ["context.traits.age", "traits.age"],
+    "required": false
+  },
+  {
+    "destKey": "properties.customer.sex",
+    "sourceKeys": ["traits.gender", "context.traits.gender", "traits.sex", "context.traits.sex"],
+    "required": false
+  },
+  {
+    "destKey": "properties.customer.address",
+    "sourceKeys": "address",
+    "required": false,
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "properties.customer.email",
+    "sourceKeys": "emailOnly",
+    "required": false,
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "properties.client",
+    "sourceKeys": "context.app.version",
+    "required": false
+  },
+  {
+    "destKey": "properties.device",
+    "sourceKeys": "context.device.model",
+    "required": false
+  }
+]

@@ -360,7 +360,7 @@ export const data = [
                 { jobId: 2, userId: 'u1' },
               ],
               statusCode: 400,
-              error: 'Segment name is not present. Aborting',
+              error: 'Segment name/Audience ID is not present. Aborting',
               statTags: {
                 destType: destTypeInUpperCase,
                 implementation: 'cdkV2',
@@ -403,6 +403,24 @@ export const data = [
                 userId: 'u1',
               },
             },
+            {
+              message: {
+                type: 'record',
+                action: 'insert',
+                fields: {
+                  DAID: 'test-daid-2',
+                  UID2: 'test-uid2-2',
+                },
+                channel: 'sources',
+                context: sampleContext,
+                recordId: '1',
+              },
+              destination: overrideDestination(sampleDestination, { advertiserId: '' }),
+              metadata: {
+                jobId: 2,
+                userId: 'u1',
+              },
+            },
           ],
           destType,
         },
@@ -416,7 +434,10 @@ export const data = [
           output: [
             {
               batched: false,
-              metadata: [{ jobId: 1, userId: 'u1' }],
+              metadata: [
+                { jobId: 1, userId: 'u1' },
+                { jobId: 2, userId: 'u1' },
+              ],
               statusCode: 400,
               error: 'Advertiser ID is not present. Aborting',
               statTags: {
@@ -658,7 +679,8 @@ export const data = [
               batched: false,
               metadata: [{ jobId: 2 }],
               statusCode: 400,
-              error: 'Invalid action type',
+              error:
+                'Invalid action type. You can only add or remove IDs from the audience/segment',
               statTags: {
                 destType: destTypeInUpperCase,
                 implementation: 'cdkV2',
@@ -771,7 +793,7 @@ export const data = [
               batched: false,
               metadata: [{ jobId: 1 }],
               statusCode: 400,
-              error: 'Fields cannot be empty',
+              error: '`fields` cannot be empty',
               statTags: {
                 destType: destTypeInUpperCase,
                 implementation: 'cdkV2',
@@ -826,7 +848,7 @@ export const data = [
               batched: false,
               metadata: [{ jobId: 1 }],
               statusCode: 400,
-              error: 'Fields cannot be empty',
+              error: '`fields` cannot be empty',
               statTags: {
                 destType: destTypeInUpperCase,
                 implementation: 'cdkV2',
@@ -842,5 +864,119 @@ export const data = [
       },
     },
     mockFns: defaultMockFns,
+  },
+  {
+    name: destType,
+    description: 'Batch call with different event types',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: {
+                type: 'record',
+                action: 'insert',
+                fields: {
+                  DAID: 'test-daid-1',
+                },
+                channel: 'sources',
+                context: sampleContext,
+                recordId: '1',
+              },
+              destination: sampleDestination,
+              metadata: {
+                jobId: 1,
+              },
+            },
+            {
+              message: {
+                type: 'identify',
+                context: {
+                  traits: {
+                    name: 'John Doe',
+                    email: 'johndoe@gmail.com',
+                    age: 25,
+                  },
+                },
+              },
+              destination: sampleDestination,
+              metadata: {
+                jobId: 2,
+              },
+            },
+          ],
+          destType,
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batchedRequest: [
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint: 'https://sin-data.adsrvr.org/data/advertiser',
+                  headers: {},
+                  params: {},
+                  body: {
+                    JSON: {
+                      DataProviderId: dataProviderId,
+                      AdvertiserId: advertiserId,
+                      Items: [
+                        {
+                          DAID: 'test-daid-1',
+                          Data: [
+                            {
+                              Name: segmentName,
+                              TTLInMinutes: 43200,
+                            },
+                          ],
+                        },
+                      ],
+                    },
+                    JSON_ARRAY: {},
+                    XML: {},
+                    FORM: {},
+                  },
+                  files: {},
+                },
+              ],
+              metadata: [
+                {
+                  jobId: 1,
+                },
+              ],
+              batched: true,
+              statusCode: 200,
+              destination: sampleDestination,
+            },
+            {
+              batched: false,
+              metadata: [{ jobId: 2 }],
+              statusCode: 400,
+              error: 'Event type identify is not supported',
+              statTags: {
+                errorCategory: 'dataValidation',
+                errorType: 'instrumentation',
+                destType: 'THE_TRADE_DESK',
+                module: 'destination',
+                implementation: 'cdkV2',
+                feature: 'router',
+              },
+              destination: sampleDestination,
+            },
+          ],
+        },
+      },
+    },
   },
 ];

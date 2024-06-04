@@ -1,31 +1,32 @@
 /* eslint-disable prefer-destructuring */
 /* eslint-disable sonarjs/no-duplicate-string */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import groupBy from 'lodash/groupBy';
 import cloneDeep from 'lodash/cloneDeep';
-import { DestinationService } from '../../interfaces/DestinationService';
-import {
-  DeliveryResponse,
-  ErrorDetailer,
-  MetaTransferObject,
-  ProcessorTransformationRequest,
-  ProcessorTransformationResponse,
-  RouterTransformationRequestData,
-  RouterTransformationResponse,
-  ProcessorTransformationOutput,
-  UserDeletionRequest,
-  UserDeletionResponse,
-  ProxyRequest,
-  ProxyDeliveriesRequest,
-  ProxyDeliveryRequest,
-  DeliveriesResponse,
-  DeliveryJobState,
-} from '../../types/index';
-import { DestinationPostTransformationService } from './postTransformation';
+import groupBy from 'lodash/groupBy';
 import networkHandlerFactory from '../../adapters/networkHandlerFactory';
 import { FetchHandler } from '../../helpers/fetchHandlers';
-import tags from '../../v0/util/tags';
+import { DestinationService } from '../../interfaces/DestinationService';
+import {
+  DeliveryJobState,
+  DeliveryV0Response,
+  DeliveryV1Response,
+  ErrorDetailer,
+  MetaTransferObject,
+  ProcessorTransformationOutput,
+  ProcessorTransformationRequest,
+  ProcessorTransformationResponse,
+  ProxyRequest,
+  ProxyV0Request,
+  ProxyV1Request,
+  RouterTransformationRequestData,
+  RouterTransformationResponse,
+  UserDeletionRequest,
+  UserDeletionResponse,
+} from '../../types/index';
 import stats from '../../util/stats';
+import tags from '../../v0/util/tags';
+import { MiscService } from '../misc';
+import { DestinationPostTransformationService } from './postTransformation';
 
 export class NativeIntegrationDestinationService implements DestinationService {
   public init() {}
@@ -59,27 +60,33 @@ export class NativeIntegrationDestinationService implements DestinationService {
     destinationType: string,
     version: string,
     requestMetadata: NonNullable<unknown>,
+    logger: any,
   ): Promise<ProcessorTransformationResponse[]> {
     const destHandler = FetchHandler.getDestHandler(destinationType, version);
     const respList: ProcessorTransformationResponse[][] = await Promise.all(
       events.map(async (event) => {
+        const metaTO = this.getTags(
+          destinationType,
+          event.metadata?.destinationId,
+          event.metadata?.workspaceId,
+          tags.FEATURES.PROCESSOR,
+        );
+        metaTO.metadata = event.metadata;
+        const loggerWithCtx = logger.child({ ...MiscService.getLoggableData(metaTO.errorDetails) });
         try {
           const transformedPayloads:
             | ProcessorTransformationOutput
-            | ProcessorTransformationOutput[] = await destHandler.process(event, requestMetadata);
+            | ProcessorTransformationOutput[] = await destHandler.process(
+            event,
+            requestMetadata,
+            loggerWithCtx,
+          );
           return DestinationPostTransformationService.handleProcessorTransformSucessEvents(
             event,
             transformedPayloads,
             destHandler,
           );
         } catch (error: any) {
-          const metaTO = this.getTags(
-            destinationType,
-            event.metadata?.destinationId,
-            event.metadata?.workspaceId,
-            tags.FEATURES.PROCESSOR,
-          );
-          metaTO.metadata = event.metadata;
           const erroredResp =
             DestinationPostTransformationService.handleProcessorTransformFailureEvents(
               error,
@@ -97,6 +104,7 @@ export class NativeIntegrationDestinationService implements DestinationService {
     destinationType: string,
     version: string,
     requestMetadata: NonNullable<unknown>,
+    logger: any,
   ): Promise<RouterTransformationResponse[]> {
     const destHandler = FetchHandler.getDestHandler(destinationType, version);
     const allDestEvents: NonNullable<unknown> = groupBy(
@@ -112,9 +120,16 @@ export class NativeIntegrationDestinationService implements DestinationService {
           destInputArray[0].metadata?.workspaceId,
           tags.FEATURES.ROUTER,
         );
+        const loggerWithCtx = logger.child({
+          ...MiscService.getLoggableData(metaTO.errorDetails),
+        });
         try {
           const doRouterTransformationResponse: RouterTransformationResponse[] =
-            await destHandler.processRouterDest(cloneDeep(destInputArray), requestMetadata);
+            await destHandler.processRouterDest(
+              cloneDeep(destInputArray),
+              requestMetadata,
+              loggerWithCtx,
+            );
           metaTO.metadata = destInputArray[0].metadata;
           return DestinationPostTransformationService.handleRouterTransformSuccessEvents(
             doRouterTransformationResponse,
@@ -141,6 +156,7 @@ export class NativeIntegrationDestinationService implements DestinationService {
     destinationType: string,
     version: any,
     requestMetadata: NonNullable<unknown>,
+    logger: any,
   ): RouterTransformationResponse[] {
     const destHandler = FetchHandler.getDestHandler(destinationType, version);
     if (!destHandler.batch) {
@@ -152,20 +168,24 @@ export class NativeIntegrationDestinationService implements DestinationService {
     );
     const groupedEvents: RouterTransformationRequestData[][] = Object.values(allDestEvents);
     const response = groupedEvents.map((destEvents) => {
+      const metaTO = this.getTags(
+        destinationType,
+        destEvents[0].metadata.destinationId,
+        destEvents[0].metadata.workspaceId,
+        tags.FEATURES.BATCH,
+      );
+      metaTO.metadatas = events.map((event) => event.metadata);
+      const loggerWithCtx = logger.child({
+        ...MiscService.getLoggableData(metaTO.errorDetails),
+      });
       try {
         const destBatchedRequests: RouterTransformationResponse[] = destHandler.batch(
           destEvents,
           requestMetadata,
+          loggerWithCtx,
         );
         return destBatchedRequests;
       } catch (error: any) {
-        const metaTO = this.getTags(
-          destinationType,
-          destEvents[0].metadata.destinationId,
-          destEvents[0].metadata.workspaceId,
-          tags.FEATURES.BATCH,
-        );
-        metaTO.metadatas = events.map((event) => event.metadata);
         const errResp = DestinationPostTransformationService.handleBatchTransformFailureEvents(
           error,
           metaTO,
@@ -181,7 +201,7 @@ export class NativeIntegrationDestinationService implements DestinationService {
     destinationType: string,
     _requestMetadata: NonNullable<unknown>,
     version: string,
-  ): Promise<DeliveryResponse | DeliveriesResponse> {
+  ): Promise<DeliveryV0Response | DeliveryV1Response> {
     try {
       const { networkHandler, handlerVersion } = networkHandlerFactory.getNetworkHandler(
         destinationType,
@@ -191,37 +211,40 @@ export class NativeIntegrationDestinationService implements DestinationService {
       const processedProxyResponse = networkHandler.processAxiosResponse(rawProxyResponse);
       let rudderJobMetadata =
         version.toLowerCase() === 'v1'
-          ? (deliveryRequest as ProxyDeliveriesRequest).metadata
-          : (deliveryRequest as ProxyDeliveryRequest).metadata;
+          ? (deliveryRequest as ProxyV1Request).metadata
+          : (deliveryRequest as ProxyV0Request).metadata;
 
       if (version.toLowerCase() === 'v1' && handlerVersion.toLowerCase() === 'v0') {
         rudderJobMetadata = rudderJobMetadata[0];
       }
-
-      let responseProxy = networkHandler.responseHandler(
-        {
-          ...processedProxyResponse,
-          rudderJobMetadata,
-        },
-        destinationType,
-      );
+      const responseParams = {
+        destinationResponse: processedProxyResponse,
+        rudderJobMetadata,
+        destType: destinationType,
+        destinationRequest: deliveryRequest,
+      };
+      let responseProxy = networkHandler.responseHandler(responseParams);
       // Adaption Logic for V0 to V1
       if (handlerVersion.toLowerCase() === 'v0' && version.toLowerCase() === 'v1') {
-        const v0Response = responseProxy as DeliveryResponse;
-        const jobStates = (deliveryRequest as ProxyDeliveriesRequest).metadata.map(
+        const v0Response = responseProxy as DeliveryV0Response;
+        const jobStates = (deliveryRequest as ProxyV1Request).metadata.map(
           (metadata) =>
             ({
-              error: JSON.stringify(v0Response.destinationResponse?.response),
+              error: JSON.stringify(
+                v0Response.destinationResponse?.response === undefined
+                  ? v0Response.destinationResponse
+                  : v0Response.destinationResponse?.response,
+              ),
               statusCode: v0Response.status,
               metadata,
-            } as DeliveryJobState),
+            }) as DeliveryJobState,
         );
         responseProxy = {
           response: jobStates,
           status: v0Response.status,
           message: v0Response.message,
           authErrorCategory: v0Response.authErrorCategory,
-        } as DeliveriesResponse;
+        } as DeliveryV1Response;
       }
       return responseProxy;
     } catch (err: any) {
@@ -236,10 +259,10 @@ export class NativeIntegrationDestinationService implements DestinationService {
       );
 
       if (version.toLowerCase() === 'v1') {
-        metaTO.metadatas = (deliveryRequest as ProxyDeliveriesRequest).metadata;
+        metaTO.metadatas = (deliveryRequest as ProxyV1Request).metadata;
         return DestinationPostTransformationService.handlevV1DeliveriesFailureEvents(err, metaTO);
       }
-      metaTO.metadata = (deliveryRequest as ProxyDeliveryRequest).metadata;
+      metaTO.metadata = (deliveryRequest as ProxyV0Request).metadata;
       return DestinationPostTransformationService.handleDeliveryFailureEvents(err, metaTO);
     }
   }
@@ -262,6 +285,7 @@ export class NativeIntegrationDestinationService implements DestinationService {
             error: `${destType}: Doesn't support deletion of users`,
           } as UserDeletionResponse;
         }
+        const metaTO = this.getTags(destType, 'unknown', 'unknown', tags.FEATURES.USER_DELETION);
         try {
           const result: UserDeletionResponse = await destUserDeletionHandler.processDeleteUsers({
             ...request,
@@ -274,7 +298,6 @@ export class NativeIntegrationDestinationService implements DestinationService {
           });
           return result;
         } catch (error: any) {
-          const metaTO = this.getTags(destType, 'unknown', 'unknown', tags.FEATURES.USER_DELETION);
           return DestinationPostTransformationService.handleUserDeletionFailureEvents(
             error,
             metaTO,

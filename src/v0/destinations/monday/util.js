@@ -27,7 +27,7 @@ const getGroupId = (groupTitle, board) => {
     }
   });
   if (groupId) {
-    return groupId;
+    return JSON.stringify(groupId);
   }
   throw new ConfigurationError(`Group ${groupTitle} doesn't exist in the board`);
 };
@@ -195,6 +195,8 @@ const getBoardDetails = async (url, boardID, apiToken) => {
       destType: 'monday',
       feature: 'transformation',
       endpointPath: '/v2',
+      requestMethod: 'POST',
+      module: 'router',
     },
   );
   const boardDetailsResponse = processAxiosResponse(clientResponse);
@@ -237,19 +239,20 @@ const populatePayload = (message, Config, boardDeatailsResponse) => {
     columnToPropertyMapping,
     boardDeatailsResponse.response?.data,
   );
+  const items = [
+    `board_id: ${boardId}`,
+    `item_name: ${JSON.stringify(message.properties?.name)}`,
+    `column_values: ${JSON.stringify(columnValues)}`,
+  ];
   if (groupTitle) {
     if (!message.properties?.name) {
       throw new InstrumentationError('Item name is required to create an item');
     }
     const groupId = getGroupId(groupTitle, boardDeatailsResponse.response?.data);
-    payload.query = `mutation { create_item (board_id: ${boardId}, group_id: ${groupId} item_name: ${JSON.stringify(
-      message.properties?.name,
-    )}, column_values: ${JSON.stringify(columnValues)}) {id}}`;
-  } else {
-    payload.query = `mutation { create_item (board_id: ${boardId},  item_name: ${JSON.stringify(
-      message.properties?.name,
-    )}, column_values: ${JSON.stringify(columnValues)}) {id}}`;
+    items.push(`group_id: ${groupId}`);
   }
+  const itemsQuery = items.join(', ');
+  payload.query = `mutation { create_item (${itemsQuery}) {id}}`;
   return payload;
 };
 

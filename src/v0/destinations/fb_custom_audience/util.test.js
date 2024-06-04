@@ -15,9 +15,6 @@ const basePayload = {
   },
 };
 
-//  operationCategory: 'add',
-// method: "POST",
-
 const baseResponse = {
   version: '1',
   type: 'REST',

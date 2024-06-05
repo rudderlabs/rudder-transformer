@@ -1,9 +1,13 @@
 [
   {
     "destKey": "external_id",
-    "sourceKeys": "userId",
+    "sourceKeys": "userIdOnly",
     "required": false,
     "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "anonymous_id",
+    "sourceKeys": "anonymousId"
   },
   {
     "destKey": "email",

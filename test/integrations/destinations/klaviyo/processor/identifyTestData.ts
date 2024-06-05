@@ -50,6 +50,7 @@ const commonTraits = {
 const commonTraits2 = { ...commonTraits, street: '63, Shibuya' };
 
 const commonOutputUserProps = {
+  anonymous_id: '97c46c81-3140-456d-b2a9-690d70aaca35',
   external_id: 'user@1',
   email: 'test@rudderstack.com',
   first_name: 'Test',

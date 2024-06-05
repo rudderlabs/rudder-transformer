@@ -253,6 +253,7 @@ export const data: RouterTestData[] = [
                         type: 'profile',
                         attributes: {
                           external_id: 'test',
+                          anonymous_id: '97c46c81-3140-456d-b2a9-690d70aaca35',
                           email: 'test@rudderstack.com',
                           first_name: 'Test',
                           last_name: 'Rudderlabs',
@@ -301,6 +302,7 @@ export const data: RouterTestData[] = [
                       type: 'profile',
                       attributes: {
                         external_id: 'test',
+                        anonymous_id: '97c46c81-3140-456d-b2a9-690d70aaca35',
                         email: 'test@rudderstack.com',
                         first_name: 'Test',
                         last_name: 'Rudderlabs',

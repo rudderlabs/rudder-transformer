@@ -1,6 +1,8 @@
 const axios = require('axios');
 const { RespStatusError, RetryRequestError } = require('../utils');
 
+const logger = require('../../logger');
+
 const OPENFAAS_GATEWAY_URL = process.env.OPENFAAS_GATEWAY_URL || 'http://localhost:8080';
 const OPENFAAS_GATEWAY_USERNAME = process.env.OPENFAAS_GATEWAY_USERNAME || '';
 const OPENFAAS_GATEWAY_PASSWORD = process.env.OPENFAAS_GATEWAY_PASSWORD || '';
@@ -12,7 +14,7 @@ const basicAuth = {
 
 const parseAxiosError = (error) => {
   if (error.response) {
-    const status = error.response.status || 400;
+    const status = error.response.status || 500;
     const errorData = error.response?.data;
     const message =
       (errorData && (errorData.message || errorData.error || errorData)) || error.message;
@@ -61,6 +63,8 @@ const invokeFunction = async (functionName, payload) =>
   });
 
 const checkFunctionHealth = async (functionName) => {
+  logger.debug(`Checking function health: ${functionName}`);
+
   return new Promise((resolve, reject) => {
     const url = `${OPENFAAS_GATEWAY_URL}/function/${functionName}`;
     axios
@@ -76,8 +80,10 @@ const checkFunctionHealth = async (functionName) => {
   });
 };
 
-const deployFunction = async (payload) =>
-  new Promise((resolve, reject) => {
+const deployFunction = async (payload) => {
+  logger.debug(`Deploying function: ${payload?.name}`);
+
+  return new Promise((resolve, reject) => {
     const url = `${OPENFAAS_GATEWAY_URL}/system/functions`;
     axios
       .post(url, payload, { auth: basicAuth })
@@ -86,6 +92,21 @@ const deployFunction = async (payload) =>
         reject(parseAxiosError(err));
       });
   });
+};
+
+const updateFunction = async (fnName, payload) => {
+  logger.debug(`Updating function: ${fnName}`);
+
+  return new Promise((resolve, reject) => {
+    const url = `${OPENFAAS_GATEWAY_URL}/system/functions`;
+    axios
+      .put(url, payload, { auth: basicAuth })
+      .then((resp) => resolve(resp.data))
+      .catch((err) => {
+        reject(parseAxiosError(err));
+      });
+  });
+};
 
 module.exports = {
   deleteFunction,
@@ -94,4 +115,5 @@ module.exports = {
   getFunctionList,
   invokeFunction,
   checkFunctionHealth,
+  updateFunction,
 };

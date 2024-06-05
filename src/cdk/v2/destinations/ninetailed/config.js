@@ -19,7 +19,6 @@ const ConfigCategories = {
   },
 };
 
-// MAX_BATCH_SIZE : // Maximum number of events to send in a single batch
 const mappingConfig = getMappingConfig(ConfigCategories, __dirname);
 const batchEndpoint =
   'https://experience.ninetailed.co/v2/organizations/{{organisationId}}/environments/{{environment}}/events';

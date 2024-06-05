@@ -1,0 +1,88 @@
+bindings:
+  - name: EventType
+    path: ../../../../constants
+  - path: ../../bindings/jsontemplate
+    exportAll: true
+  - name: removeUndefinedValues
+    path: ../../../../v0/util
+  - name: removeUndefinedAndNullValues
+    path: ../../../../v0/util
+  - name: defaultRequestConfig
+    path: ../../../../v0/util
+  - name: getIntegrationsObj
+    path: ../../../../v0/util
+  - name: getFieldValueFromMessage
+    path: ../../../../v0/util
+  - name: CommonUtils
+    path: ../../../../util/common
+  - path: ./utils
+  - path: ./config
+  - path: lodash
+    name: cloneDeep
+
+steps:
+  - name: checkIfProcessed
+    condition: .message.statusCode
+    template: |
+      $.batchMode ? .message.body.JSON : .message
+    onComplete: return
+  - name: messageType
+    template: |
+      .message.type.toLowerCase()
+  - name: validateInput
+    template: |
+      let messageType = $.outputs.messageType;
+      $.assert(messageType, "Message type is not present. Aborting message.");
+      $.assert(messageType in {{$.EventType.([.TRACK, .IDENTIFY, .GROUP])}}, 
+        "message type " + messageType + " is not supported")
+      $.assertConfig(.destination.Config.emersysUsername, "Emersys user name is not configured. Aborting");
+      $.assertConfig(.destination.Config.emersysUserSecret, "Emersys user secret is not configured. Aborting");
+
+  - name: validateInputForTrack
+    description: Additional validation for Track events
+    condition: $.outputs.messageType === {{$.EventType.TRACK}}
+    template: |
+      $.assert(.message.event, "event could not be mapped to conversion rule. Aborting.")
+  - name: preparePayloadForIdentify
+    description: |
+      Builds identify payload. ref: https://dev.emarsys.com/docs/core-api-reference/f8ljhut3ac2i1-update-contacts
+    condition: $.outputs.messageType === {{$.EventType.IDENTIFY}}
+    template: |
+      $.context.payload = $.buildIdentifyPayload(.message, .destination.Config,);
+  - name: preparePayloadForGroup
+    description: |
+      Builds group payload. ref: https://dev.emarsys.com/docs/core-api-reference/1m0m70hy3tuov-add-contacts-to-a-contact-list
+    condition: $.outputs.messageType === {{$.EventType.GROUP}}
+    template: |
+      $.context.payload = $.buildGroupPayload(.message, .destination.Config,);
+  - name: preparePayloadForTrack
+    description: |
+      Builds track payload. ref: https://dev.emarsys.com/docs/core-api-reference/fl0xx6rwfbwqb-trigger-an-external-event
+    condition: $.outputs.messageType === {{$.EventType.TRACK}}
+    template: |
+      const properties = ^.message.properties;
+      const integrationObject = $.getIntegrationsObj(^.message, 'emarsys');
+      const emersysIdentifierId =  $.deduceCustomIdentifier(integrationObject, ^.destination.Config.emersysCustomIdentifier);
+      const payload = {
+          key_id: emersysIdentifierId,
+          external_id: $.deduceExternalIdValue(^.message,emersysIdentifierId,.destination.Config.fieldMapping),
+          trigger_id: integrationObject.trigger_id,
+          data: properties.data,
+          attachment:$.CommonUtils.toArray(properties.attachment),
+          event_time: $.getFieldValueFromMessage(^.message, 'timestamp'),
+          };
+      $.context.payload = {
+          eventType: ^.message.type,
+          destinationPayload: {
+            payload: $.removeUndefinedAndNullValues(payload),
+            eventId: $.deduceEventId(^.message,.destination.Config),
+          },
+        };
+  - name: buildResponse
+    template: |
+      const response = $.defaultRequestConfig();
+      response.body.JSON = $.context.payload;
+      response.endpoint = $.deduceEndPoint($.context.payload,.destination.Config);
+      response.method = "POST";
+      response.headers = $.buildHeader(.destination.Config)
+      response

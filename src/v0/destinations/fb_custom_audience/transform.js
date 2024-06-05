@@ -1,14 +1,7 @@
 const lodash = require('lodash');
 const get = require('get-value');
+const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const {
-  InstrumentationError,
-  TransformationError,
-  ConfigurationError,
-} = require('@rudderstack/integrations-lib');
-const {
-  defaultRequestConfig,
-  defaultPostRequestConfig,
-  defaultDeleteRequestConfig,
   checkSubsetOfArray,
   isDefinedAndNotNullAndNotEmpty,
   returnArrayOfSubarrays,
@@ -20,40 +13,28 @@ const {
   prepareDataField,
   getSchemaForEventMappedToDest,
   batchingWithPayloadSize,
+  generateAppSecretProof,
+  responseBuilderSimple,
+  getDataSource,
 } = require('./util');
-const {
-  getEndPoint,
-  schemaFields,
-  USER_ADD,
-  USER_DELETE,
-  typeFields,
-  subTypeFields,
-} = require('./config');
+const { schemaFields, USER_ADD, USER_DELETE } = require('./config');
 
 const { MappedToDestinationKey } = require('../../../constants');
+const { processRecordInputs } = require('./recordTransform');
+const logger = require('../../../logger');
 
-const responseBuilderSimple = (payload, audienceId) => {
-  if (payload) {
-    const responseParams = payload.responseField;
-    const response = defaultRequestConfig();
-    response.endpoint = getEndPoint(audienceId);
-
-    if (payload.operationCategory === 'add') {
-      response.method = defaultPostRequestConfig.requestMethod;
+function checkForUnsupportedEventTypes(dictionary, keyList) {
+  const unsupportedEventTypes = [];
+  // eslint-disable-next-line no-restricted-syntax
+  for (const key in dictionary) {
+    if (!keyList.includes(key)) {
+      unsupportedEventTypes.push(key);
     }
-    if (payload.operationCategory === 'remove') {
-      response.method = defaultDeleteRequestConfig.requestMethod;
-    }
-
-    response.params = responseParams;
-    return response;
   }
-  // fail-safety for developer error
-  throw new TransformationError(`Payload could not be constructed`);
-};
+  return unsupportedEventTypes;
+}
 
 // Function responsible prepare the payload field of every event parameter
-
 const preparePayload = (
   userUpdateList,
   userSchema,
@@ -88,7 +69,7 @@ const prepareResponse = (
   userSchema,
   isHashRequired = true,
 ) => {
-  const { accessToken, disableFormat, type, subType, isRaw } = destination.Config;
+  const { accessToken, disableFormat, type, subType, isRaw, appSecret } = destination.Config;
 
   const mappedToDestination = get(message, MappedToDestinationKey);
 
@@ -101,9 +82,14 @@ const prepareResponse = (
   const prepareParams = {};
   // creating the parameters field
   const paramsPayload = {};
-  const dataSource = {};
 
   prepareParams.access_token = accessToken;
+
+  if (isDefinedAndNotNullAndNotEmpty(appSecret)) {
+    const dateNow = Date.now();
+    prepareParams.appsecret_time = Math.floor(dateNow / 1000); // Get current Unix time in seconds
+    prepareParams.appsecret_proof = generateAppSecretProof(accessToken, appSecret, dateNow);
+  }
 
   // creating the payload field for parameters
   if (isRaw) {
@@ -111,13 +97,7 @@ const prepareResponse = (
   }
   // creating the data_source block
 
-  if (type && type !== 'NA' && typeFields.includes(type)) {
-    dataSource.type = type;
-  }
-
-  if (subType && subType !== 'NA' && subTypeFields.includes(subType)) {
-    dataSource.sub_type = subType;
-  }
+  const dataSource = getDataSource(type, subType);
   if (Object.keys(dataSource).length > 0) {
     paramsPayload.data_source = dataSource;
   }
@@ -243,6 +223,7 @@ const processEvent = (message, destination) => {
       ),
     );
   }
+
   toSendEvents.forEach((sendEvent) => {
     respList.push(responseBuilderSimple(sendEvent, operationAudienceId));
   });
@@ -258,7 +239,31 @@ const processEvent = (message, destination) => {
 const process = (event) => processEvent(event.message, event.destination);
 
 const processRouterDest = async (inputs, reqMetadata) => {
-  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
+  const respList = [];
+  const groupedInputs = lodash.groupBy(inputs, (input) => input.message.type?.toLowerCase());
+  let transformedRecordEvent = [];
+  let transformedAudienceEvent = [];
+
+  const eventTypes = ['record', 'audiencelist'];
+  const unsupportedEventList = checkForUnsupportedEventTypes(groupedInputs, eventTypes);
+  if (unsupportedEventList.length > 0) {
+    logger.info(`unsupported events found ${unsupportedEventList}`);
+    throw new ConfigurationError('unsupported events present in the event');
+  }
+
+  if (groupedInputs.record) {
+    transformedRecordEvent = await processRecordInputs(groupedInputs.record, reqMetadata);
+  }
+
+  if (groupedInputs.audiencelist) {
+    transformedAudienceEvent = await simpleProcessRouterDest(
+      groupedInputs.audiencelist,
+      process,
+      reqMetadata,
+    );
+  }
+
+  respList.push(...transformedRecordEvent, ...transformedAudienceEvent);
   return flattenMap(respList);
 };
 

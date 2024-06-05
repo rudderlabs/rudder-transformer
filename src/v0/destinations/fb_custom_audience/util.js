@@ -1,8 +1,16 @@
 const lodash = require('lodash');
 const sha256 = require('sha256');
+const crypto = require('crypto');
 const get = require('get-value');
 const jsonSize = require('json-size');
 const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
+const { TransformationError } = require('@rudderstack/integrations-lib');
+const { typeFields, subTypeFields, getEndPoint } = require('./config');
+const {
+  defaultRequestConfig,
+  defaultPostRequestConfig,
+  defaultDeleteRequestConfig,
+} = require('../../util');
 const stats = require('../../../util/stats');
 
 const { isDefinedAndNotNull } = require('../../util');
@@ -92,11 +100,11 @@ const ensureApplicableFormat = (userProperty, userInformation) => {
       case 'FN':
       case 'FI':
         if (userProperty !== 'FI') {
-          updatedProperty = stringifiedUserInformation.toLowerCase().replace(/[!#$%&@A-Za-z]/g, '');
+          updatedProperty = stringifiedUserInformation.toLowerCase().replace(/[^#$%&'*+/a-z]/g, '');
         } else {
           updatedProperty = stringifiedUserInformation
             .toLowerCase()
-            .replace(/[^!#$%&,.?@A-Za-z]/g, '');
+            .replace(/[^!"#$%&'()*+,-./a-z]/g, '');
         }
         break;
       case 'MADID':
@@ -206,4 +214,57 @@ const prepareDataField = (
   return data;
 };
 
-module.exports = { prepareDataField, getSchemaForEventMappedToDest, batchingWithPayloadSize };
+// ref: https://developers.facebook.com/docs/facebook-login/security/#generate-the-proof
+const generateAppSecretProof = (accessToken, appSecret, dateNow) => {
+  const currentTime = Math.floor(dateNow / 1000); // Get current Unix time in seconds
+  const data = `${accessToken}|${currentTime}`;
+
+  // Creating a HMAC SHA-256 hash with the app_secret as the key
+  const hmac = crypto.createHmac('sha256', appSecret);
+  hmac.update(data);
+  const appsecretProof = hmac.digest('hex');
+
+  return appsecretProof;
+};
+
+const getDataSource = (type, subType) => {
+  const dataSource = {};
+  if (type && type !== 'NA' && typeFields.includes(type)) {
+    dataSource.type = type;
+  }
+  if (subType && subType !== 'NA' && subTypeFields.includes(subType)) {
+    dataSource.sub_type = subType;
+  }
+  return dataSource;
+};
+
+const responseBuilderSimple = (payload, audienceId) => {
+  if (payload) {
+    const responseParams = payload.responseField;
+    const response = defaultRequestConfig();
+    response.endpoint = getEndPoint(audienceId);
+
+    if (payload.operationCategory === 'add') {
+      response.method = defaultPostRequestConfig.requestMethod;
+    }
+    if (payload.operationCategory === 'remove') {
+      response.method = defaultDeleteRequestConfig.requestMethod;
+    }
+
+    response.params = responseParams;
+    return response;
+  }
+  // fail-safety for developer error
+  throw new TransformationError(`Payload could not be constructed`);
+};
+
+module.exports = {
+  prepareDataField,
+  getSchemaForEventMappedToDest,
+  batchingWithPayloadSize,
+  ensureApplicableFormat,
+  getUpdatedDataElement,
+  generateAppSecretProof,
+  responseBuilderSimple,
+  getDataSource,
+};

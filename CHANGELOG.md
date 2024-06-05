@@ -2,6 +2,113 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.68.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.68.0...v1.68.1) (2024-05-29)
+
+
+### Bug Fixes
+
+* tiktok_v2 assigning value to undefined properties ([#3426](https://github.com/rudderlabs/rudder-transformer/issues/3426)) ([323396b](https://github.com/rudderlabs/rudder-transformer/commit/323396b09fd6b7fda3cce53cc4f1cc443d7a78c1))
+
+## [1.68.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.67.0...v1.68.0) (2024-05-27)
+
+
+### Features
+
+* add json-data type support in redis ([#3336](https://github.com/rudderlabs/rudder-transformer/issues/3336)) ([0196f20](https://github.com/rudderlabs/rudder-transformer/commit/0196f20cc79e1f470d96a649dd9404c3c9284329))
+* facebook custom audience app secret support ([#3357](https://github.com/rudderlabs/rudder-transformer/issues/3357)) ([fce4ef9](https://github.com/rudderlabs/rudder-transformer/commit/fce4ef973500411c7ad812e7949bb1b73dabc3ba))
+* filtering unknown events in awin ([#3392](https://github.com/rudderlabs/rudder-transformer/issues/3392)) ([d842da8](https://github.com/rudderlabs/rudder-transformer/commit/d842da87a34cb63023eba288e0c5258e29997dcf))
+* **ga4:** component test refactor ([#3220](https://github.com/rudderlabs/rudder-transformer/issues/3220)) ([3ff9a5e](https://github.com/rudderlabs/rudder-transformer/commit/3ff9a5e8e955b929a1b04a89dcf0ccbc49e18648))
+* **integrations/auth0:** include Auth0 event type in Rudderstack message ([#3370](https://github.com/rudderlabs/rudder-transformer/issues/3370)) ([e9409fd](https://github.com/rudderlabs/rudder-transformer/commit/e9409fde6063d7eaa8558396b85b5fdf99f964e1))
+* onboard koddi destination ([#3359](https://github.com/rudderlabs/rudder-transformer/issues/3359)) ([f74c4a0](https://github.com/rudderlabs/rudder-transformer/commit/f74c4a0bc92ae6ccb0c00ac5b21745e496a015bc))
+* onboarding adjust source ([#3395](https://github.com/rudderlabs/rudder-transformer/issues/3395)) ([668d331](https://github.com/rudderlabs/rudder-transformer/commit/668d3311aadacbb92b1873bf43919db7d341afbb))
+
+
+### Bug Fixes
+
+* fb custom audience html response ([#3402](https://github.com/rudderlabs/rudder-transformer/issues/3402)) ([d1a2bd6](https://github.com/rudder
+* standardise hashing for all CAPI integrations ([#3379](https://github.com/rudderlabs/rudder-transformer/issues/3379)) ([c249a69](https://github.com/rudderlabs/rudder-transformer/commit/c249a694d735f6d241a35b6e21f493c54890ac84))
+* tiktok_v2 remove default value for content-type for custom events ([#3383](https://github.com/rudderlabs/rudder-transformer/issues/3383)) ([6e7b5a0](https://github.com/rudderlabs/rudder-transformer/commit/6e7b5a0d8bf2c859dfb15b9cad7ed6070bd0892b))
+* added step for reconciling openfaas functions for python transformations ([#3420](https://github.com/rudderlabs/rudder-transformer/issues/3420)) ([7a2ab63](https://github.com/rudderlabs/rudder-transformer/commit/7a2ab63674d40870af4d16f0673a2a2594c899e9))
+
+## [1.67.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.66.1...v1.67.0) (2024-05-23)
+
+
+### Features
+
+* sre 456 ut move high cardinality histogram metrics to summaries cp ([#3409](https://github.com/rudderlabs/rudder-transformer/issues/3409)) ([be20dc2](https://github.com/rudderlabs/rudder-transformer/commit/be20dc26ade2fa0212dc91126cf42087a84a07c9))
+
+### [1.66.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.66.0...v1.66.1) (2024-05-20)
+
+
+### Bug Fixes
+
+* add validation for null/undefined traits in slack ([#3382](https://github.com/rudderlabs/rudder-transformer/issues/3382)) ([755073c](https://github.com/rudderlabs/rudder-transformer/commit/755073c4341a454785050d835021d9f17e0b9d3f))
+* gaoc store sales batching transform contract ([#3384](https://github.com/rudderlabs/rudder-transformer/issues/3384)) ([e7678cb](https://github.com/rudderlabs/rudder-transformer/commit/e7678cbdae4c06449ea9352ce3db390d2a29da14))
+* move af_currency outside properties in eventValue ([#3316](https://github.com/rudderlabs/rudder-transformer/issues/3316)) ([71c3d46](https://github.com/rudderlabs/rudder-transformer/commit/71c3d46236fff9209625cfb0737c21db2d275345))
+* remove default traits from ortto ([#3389](https://github.com/rudderlabs/rudder-transformer/issues/3389)) ([fbb0811](https://github.com/rudderlabs/rudder-transformer/commit/fbb0811aa0e417b0cffcea4ecc103979afccfe74))
+* update validation of event duration ([#3376](https://github.com/rudderlabs/rudder-transformer/issues/3376)) ([3ad7850](https://github.com/rudderlabs/rudder-transformer/commit/3ad78506446915ada8bdc5f5594dc2710e6b0646))
+
+## [1.66.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.65.1...v1.66.0) (2024-05-13)
+
+
+### Features
+
+* add slack source ([#3148](https://github.com/rudderlabs/rudder-transformer/issues/3148))
+* onboard monday to proxy ([#3347](https://github.com/rudderlabs/rudder-transformer/issues/3347))
+* onboard emarsys destination ([#3369](https://github.com/rudderlabs/rudder-transformer/issues/3369))
+
+
+### Bug Fixes
+
+* ninetailed: modify parameter requirements and add default values ([#3364](https://github.com/rudderlabs/rudder-transformer/issues/3364))
+
+### [1.65.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.65.0...v1.65.1) (2024-05-10)
+
+
+### Bug Fixes
+
+* update regex which was discarding firstname and lastname ([#3360](https://github.com/rudderlabs/rudder-transformer/issues/3360)) ([cb10aa7](https://github.com/rudderlabs/rudder-transformer/commit/cb10aa7707518b52edcf7fb1081c6969bcb5f8f8))
+
+## [1.65.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.64.0...v1.65.0) (2024-05-06)
+
+
+### Features
+
+* generate anonymousId and move to component testcases ([447f85f](https://github.com/rudderlabs/rudder-transformer/commit/447f85faf6ccca2179ab33b7fe43e281fc4f5897))
+
+
+### Bug Fixes
+
+* auth0 error handling ([2e22075](https://github.com/rudderlabs/rudder-transformer/commit/2e22075ddf792c573642fd09c5f9d31d8132525b))
+* auth0 error handling for missing userId ([#3334](https://github.com/rudderlabs/rudder-transformer/issues/3334)) ([d2cce77](https://github.com/rudderlabs/rudder-transformer/commit/d2cce772d6f0485ff8ee51af261006eb2066c3a2))
+* braze dedup for non-billable attributes ([#3320](https://github.com/rudderlabs/rudder-transformer/issues/3320)) ([ac59fdc](https://github.com/rudderlabs/rudder-transformer/commit/ac59fdc37d6fe08847d79d249d166de7cc358fd6))
+* multiple event mappings in ortto ([#3341](https://github.com/rudderlabs/rudder-transformer/issues/3341)) ([0a9a2e9](https://github.com/rudderlabs/rudder-transformer/commit/0a9a2e9e2a3029ad7b4834820ba2132d3f57ce98))
+
+## [1.64.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.63.0...v1.64.0) (2024-04-29)
+
+
+### Features
+
+* adding custom properties support to bluecore ([#3282](https://github.com/rudderlabs/rudder-transformer/issues/3282)) ([8592e66](https://github.com/rudderlabs/rudder-transformer/commit/8592e664eb568e70a00261e275ab2faed8f6f618))
+* onboard Yandex Metrica Offline Events Destination ([#3232](https://github.com/rudderlabs/rudder-transformer/issues/3232)) ([8f79f53](https://github.com/rudderlabs/rudder-transformer/commit/8f79f53d30326e07fc92dd624e799015ff9f87c2))
+* transactional custom property support for awin ([#3325](https://github.com/rudderlabs/rudder-transformer/issues/3325)) ([fdecaf3](https://github.com/rudderlabs/rudder-transformer/commit/fdecaf36d91db7540d6f68a013e4f7fb2a36ebaa))
+
+
+### Bug Fixes
+
+* algolia enhancement ( adding currency, price, subType and objectData support ) ([#3290](https://github.com/rudderlabs/rudder-transformer/issues/3290)) ([f06ebde](https://github.com/rudderlabs/rudder-transformer/commit/f06ebde110693fe32f8e450dc395f1f4019defab))
+* **delighted:** replace myAxios utility with handleHttpRequest utility ([#3237](https://github.com/rudderlabs/rudder-transformer/issues/3237)) ([bac3cc5](https://github.com/rudderlabs/rudder-transformer/commit/bac3cc5670c149454a6063a55a4b901043b0ff02))
+* handle empty userId ([5402b21](https://github.com/rudderlabs/rudder-transformer/commit/5402b219ccdeaafb710c8c2828e983e9864a415f))
+* handle empty userId (movable ink, bloomreach) ([#3300](https://github.com/rudderlabs/rudder-transformer/issues/3300)) ([038c1aa](https://github.com/rudderlabs/rudder-transformer/commit/038c1aa04049aaa1caa1bf82cf6c69611b5d3fd9))
+* send content_ids as a string if there is only one value ([#3317](https://github.com/rudderlabs/rudder-transformer/issues/3317)) ([54eca32](https://github.com/rudderlabs/rudder-transformer/commit/54eca3220ea48fae64c655813fe4430dd704639e))
+
+## [1.63.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.62.2...v1.63.0) (2024-04-25)
+
+
+### Features
+
+* remove redundant data from traits in hubspot ([#3310](https://github.com/rudderlabs/rudder-transformer/issues/3310)) ([4b21f13](https://github.com/rudderlabs/rudder-transformer/commit/4b21f1353d3d9a431a0d5446d019f66a543b977b))
+
 ### [1.62.2](https://github.com/rudderlabs/rudder-transformer/compare/v1.62.1...v1.62.2) (2024-04-18)
 
 

@@ -33,7 +33,7 @@ steps:
           {{{{$.getGenericPaths("email")}}}};
       );
 
-      $.assert(userId ?? email ?? .message.anonymousId, "Either one of userId or email or anonymousId is required. Aborting");
+      $.assert(userId || email || .message.anonymousId, "Either one of userId or email or anonymousId is required. Aborting");
       $.validateEventPayload(.message);
 
   - name: preparePayload
@@ -50,7 +50,7 @@ steps:
       ));
       $.context.payload = {
         ...(.message),
-        userId: userId ?? email,
+        userId: userId || email,
         timestamp: timestampInUnix,
         anonymousId: .message.anonymousId
       }

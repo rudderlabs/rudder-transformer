@@ -306,7 +306,10 @@ function buildOpenfaasFn(name, code, versionId, libraryVersionIDs, testMode, trM
     envProcess = `${envProcess} --code "${code}" --config-backend-url ${CONFIG_BACKEND_URL} --lvids "${lvidsString}"`;
   }
 
-  const envVars = {};
+  const envVars = {
+    GUNICORN_WORKER_COUNT: FAAS_GUNICORN_WORKERS,
+    GUNICORN_THREAD_COUNT: FAAS_GUNICORN_THREADS,
+  };
 
   if (FAAS_ENABLE_WATCHDOG_ENV_VARS.trim().toLowerCase() === 'true') {
     envVars.max_inflight = FAAS_MAX_INFLIGHT;

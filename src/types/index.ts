@@ -131,6 +131,8 @@ type Destination = {
   WorkspaceID: string;
   Transformations: UserTransformationInput[];
   RevisionID?: string;
+  IsProcessorEnabled?: boolean;
+  IsConnectionEnabled?: boolean;
 };
 
 type UserTransformationLibrary = {

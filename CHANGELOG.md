@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.68.2](https://github.com/rudderlabs/rudder-transformer/compare/v1.68.1...v1.68.2) (2024-06-06)
+
+
+### Bug Fixes
+
+* **user-transformation:** pass tf id in common metadata ([d2b0779](https://github.com/rudderlabs/rudder-transformer/commit/d2b0779d3a0145c0088903edfe328c1c7554cbd2))
+
 ### [1.68.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.68.0...v1.68.1) (2024-05-29)
 
 

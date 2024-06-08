@@ -67,6 +67,7 @@ export class UserTransformService {
           destinationId: eventsToProcess[0]?.metadata.destinationId,
           destinationType: eventsToProcess[0]?.metadata.destinationType,
           workspaceId: eventsToProcess[0]?.metadata.workspaceId,
+          transformationId: eventsToProcess[0]?.metadata.transformationId,
           messageIds,
         };
 

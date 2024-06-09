@@ -6,11 +6,12 @@ import {
   destinationWithWrongUrl,
   destinationWithoutHeaders,
 } from '../commonConfig';
+import { multipleMethodTestData } from './multipleMethodTestData';
 
 export const data = [
   {
     name: 'webhook',
-    id: 'Test 0 - router',
+    id: 'Test_0_router',
     description: 'Two Track calls with one having headers from config',
     scenario: 'Framework',
     successCriteria: 'All events should be transformed successfully and status code should be 200',
@@ -133,7 +134,7 @@ export const data = [
   },
   {
     name: 'webhook',
-    id: 'Test 1 - router',
+    id: 'Test_1_router',
     description: 'Identify payload with 3 events in 1 batch with one payload with no context',
     scenario: 'Framework',
     successCriteria: 'All events should be transformed successfully and status code should be 200',
@@ -310,7 +311,7 @@ export const data = [
   },
   {
     name: 'webhook',
-    id: 'Test 2 - router',
+    id: 'Test_2_router',
     description: 'Identify payload with 2 events in 1 batch',
     scenario: 'Framework',
     successCriteria: 'All events should be transformed successfully and status code should be 200',
@@ -332,7 +333,7 @@ export const data = [
                 messageId: '1590431830865-3be680d6-7dcd-4b05-8460-f3acc30046d9',
                 originalTimestamp: '2020-05-25T18:37:10.865Z',
                 sentAt: '2020-05-25T18:37:10.917Z',
-                type: 'identify',
+                type: 'identify', 
                 userId: 'sample_user_id',
               },
               metadata: { jobId: 1, userId: 'u1' },
@@ -432,7 +433,7 @@ export const data = [
                 body: {
                   XML: {},
                   JSON_ARRAY: {},
-                  JSON: {
+                  JSON: [{
                     anonymousId: 'anon_3',
                     channel: 'mobile',
                     integrations: {
@@ -441,7 +442,7 @@ export const data = [
                     messageId: '23432324-3be680d6-7dcd-4b05-8460-f3acc30046d9',
                     type: 'identify',
                     userId: 'sample_user_id',
-                  },
+                  }],
                   FORM: {},
                 },
                 files: {},
@@ -464,7 +465,7 @@ export const data = [
   },
   {
     name: 'webhook',
-    id: 'Test 3 - router',
+    id: 'Test_3_router',
     description: 'Identify payload with 2 events in 1 batch and one failed event',
     scenario: 'Framework',
     successCriteria: 'All events should be transformed successfully and status code should be 200',
@@ -666,4 +667,5 @@ export const data = [
       },
     },
   },
+  ...multipleMethodTestData
 ];

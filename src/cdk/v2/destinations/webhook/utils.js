@@ -18,11 +18,20 @@ const buildHeaderBlock = (destination) => {
   };
 };
 
+const createBatchPayload = (batch) => {
+  const payloads = [];
+  batch.forEach((item) => {
+    const jsonPayload = item.batchedRequest.body.JSON;
+    payloads.push(jsonPayload);
+  });
+  return payloads;
+};
+
 const batchBuilder = (batch) => ({
   batchedRequest: {
     body: {
-      JSON: batch,
-      JSON_ARRAY: {},
+      JSON: {},
+      JSON_ARRAY: { batch: JSON.stringify(createBatchPayload(batch)) },
       XML: {},
       FORM: {},
     },

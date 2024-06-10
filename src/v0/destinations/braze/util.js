@@ -655,6 +655,46 @@ function getPurchaseObjs(message, config) {
   return purchaseObjs;
 }
 
+const collectStatsForAliasFailure = (brazeResponse, destinationId) => {
+  /**
+   * Braze Response for Alias failure
+   * {
+   * "aliases_processed": 0,
+   * "message": "success",
+   * "errors": [
+   *     {
+   *         "type": "'external_id' is required",
+   *         "input_array": "user_identifiers",
+   *         "index": 0
+   *     }
+   *   ]
+   * }
+   */
+
+  /**
+   * Braze Response for Alias success
+   * {
+   *   "aliases_processed": 1,
+   *   "message": "success"
+   *   }
+   */
+
+  const { aliases_processed: aliasesProcessed, errors } = brazeResponse;
+  if (aliasesProcessed === 0) {
+    stats.increment('braze_alias_failure_count', { destination_id: destinationId });
+    const errorType = [];
+    if (Array.isArray(errors)) {
+      errors.forEach((error) => {
+        errorType.push(error.type);
+      });
+    }
+    stats.increment('braze_alias_failure_error_type', {
+      destination_id: destinationId,
+      alias_error_type: errorType.join(','),
+    });
+  }
+};
+
 module.exports = {
   BrazeDedupUtility,
   CustomAttributeOperationUtil,
@@ -667,4 +707,5 @@ module.exports = {
   setExternalId,
   setAliasObjectWithAnonId,
   addMandatoryPurchaseProperties,
+  collectStatsForAliasFailure,
 };

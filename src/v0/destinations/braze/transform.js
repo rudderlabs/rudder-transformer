@@ -13,6 +13,7 @@ const {
   getPurchaseObjs,
   setExternalId,
   setAliasObjectWithAnonId,
+  collectStatsForAliasFailure,
 } = require('./util');
 const tags = require('../../util/tags');
 const { EventType, MappedToDestinationKey } = require('../../../constants');
@@ -228,6 +229,9 @@ async function processIdentify(message, destination) {
       endpointPath: '/users/identify',
     },
   );
+
+  collectStatsForAliasFailure(brazeIdentifyResp, destination.ID);
+
   if (!isHttpStatusSuccess(brazeIdentifyResp.status)) {
     throw new NetworkError(
       `Braze identify failed - ${JSON.stringify(brazeIdentifyResp.response)}`,

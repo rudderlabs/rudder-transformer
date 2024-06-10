@@ -24,6 +24,8 @@ const {
   OAuthSecretError,
   getErrorRespEvents,
 } = require('@rudderstack/integrations-lib');
+
+const { JsonTemplateEngine, PathType } = require('@rudderstack/json-template-engine');
 const logger = require('../../logger');
 const stats = require('../../util/stats');
 const { DestCanonicalNames, DestHandlerMap } = require('../../constants/destinationCanonicalNames');
@@ -2246,6 +2248,16 @@ const validateEventAndLowerCaseConversion = (event, isMandatory, convertToLowerC
   return convertToLowerCase ? event.toString().toLowerCase() : event.toString();
 };
 
+const applyCustomMappings = (message, mappings) => {
+  const flatMappings = mappings.map((mapping) => ({
+    input: mapping.from,
+    output: mapping.to,
+  }));
+  return JsonTemplateEngine.create(flatMappings, { defaultPathType: PathType.JSON }).evaluate(
+    message,
+  );
+};
+
 // ========================================================================
 // EXPORTS
 // ========================================================================
@@ -2254,6 +2266,7 @@ module.exports = {
   ErrorMessage,
   addExternalIdToTraits,
   adduserIdFromExternalId,
+  applyCustomMappings,
   base64Convertor,
   batchMultiplexedEvents,
   checkEmptyStringInarray,

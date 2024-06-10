@@ -9,7 +9,6 @@ const {
   InstrumentationError,
   NetworkInstrumentationError,
 } = require('@rudderstack/integrations-lib');
-const myAxios = require('../../../util/myAxios');
 const { EventType } = require('../../../constants');
 const { EndPoints, BASE_URL } = require('./config');
 const {
@@ -27,6 +26,7 @@ const {
 const tags = require('../../util/tags');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const { JSON_MIME_TYPE } = require('../../util/constant');
+const { httpGET } = require('../../../adapters/network');
 
 /**
  *
@@ -83,7 +83,7 @@ const validate = (email, phone, channelIdentifier) => {
 const lookupContact = async (term, destination) => {
   let res;
   try {
-    res = await myAxios.get(
+    res = await httpGET(
       `${BASE_URL}/contacts?page=1&term=${term}`,
       {
         headers: {
@@ -98,6 +98,7 @@ const lookupContact = async (term, destination) => {
         module: 'router',
       },
     );
+    res = res.response;
   } catch (err) {
     // check if exists err.response && err.response.status else 500
     const status = err.response?.status || 400;

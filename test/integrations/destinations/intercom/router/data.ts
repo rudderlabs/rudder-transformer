@@ -137,6 +137,49 @@ export const data = [
             },
             {
               message: {
+                userId: 'user@5',
+                groupId: 'rudderlabs',
+                channel: 'web',
+                context: {
+                  traits: {
+                    email: 'test+5@rudderlabs.com',
+                    phone: '+91 9599999999',
+                    firstName: 'John',
+                    lastName: 'Snow',
+                    ownerId: '17',
+                    tags: ['tag1', 'tag2'],
+                  },
+                },
+                traits: {
+                  name: 'RudderStack',
+                  size: 500,
+                  website: 'www.rudderstack.com',
+                  industry: 'CDP',
+                  plan: 'enterprise',
+                },
+                type: 'group',
+                originalTimestamp: '2023-11-10T14:42:44.724Z',
+                timestamp: '2023-11-22T10:12:44.757+05:30',
+              },
+              destination: {
+                DestinationDefinition: {
+                  Config: {
+                    cdkV2Enabled: true,
+                  },
+                },
+                Config: {
+                  apiKey: 'testApiKey',
+                  apiVersion: 'v2',
+                  apiServer: 'eu',
+                  sendAnonymousId: false,
+                },
+              },
+              metadata: {
+                jobId: 5,
+              },
+            },
+            {
+              message: {
                 userId: 'user@6',
                 groupId: 'rudderlabs',
                 channel: 'web',
@@ -333,6 +376,50 @@ export const data = [
               metadata: [
                 {
                   jobId: 3,
+                },
+              ],
+              statusCode: 299,
+            },
+            {
+              batched: false,
+              batchedRequest: {
+                body: {
+                  JSON: {
+                    id: '657264e9018c0a647s45',
+                  },
+                  XML: {},
+                  FORM: {},
+                  JSON_ARRAY: {},
+                },
+                endpoint: 'https://api.eu.intercom.io/contacts/70701240741e45d040/companies',
+                files: {},
+                headers: {
+                  Authorization: 'Bearer testApiKey',
+                  'Content-Type': 'application/json',
+                  Accept: 'application/json',
+                  'Intercom-Version': '2.10',
+                },
+                method: 'POST',
+                params: {},
+                type: 'REST',
+                version: '1',
+              },
+              destination: {
+                Config: {
+                  apiKey: 'testApiKey',
+                  apiServer: 'eu',
+                  apiVersion: 'v2',
+                  sendAnonymousId: false,
+                },
+                DestinationDefinition: {
+                  Config: {
+                    cdkV2Enabled: true,
+                  },
+                },
+              },
+              metadata: [
+                {
+                  jobId: 5,
                 },
               ],
               statusCode: 299,

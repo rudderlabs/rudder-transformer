@@ -406,7 +406,7 @@ const attachContactToCompany = async (payload, endpoint, destination) => {
   const processedResponse = processAxiosResponse(response);
   if (!isHttpStatusSuccess(processedResponse.status)) {
     throw new NetworkError(
-      `Unable to attach Contact to Company due to : ${JSON.stringify(
+      `Unable to attach Contact or User to Company due to : ${JSON.stringify(
         processedResponse?.response?.errors,
       )}`,
       processedResponse?.status,

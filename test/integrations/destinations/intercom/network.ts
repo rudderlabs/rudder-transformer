@@ -913,5 +913,51 @@ const deliveryCallsData = [
       data: attachUserDummyResp,
     },
   },
+  {
+    httpReq: {
+      method: 'post',
+      url: 'https://api.eu.intercom.io/tags',
+      data: {
+        name: 'tag1',
+        companies: [
+          {
+            id: '657264e9018c0a647s45',
+          },
+        ],
+      },
+      headers: commonHeaders,
+    },
+    httpRes: {
+      status: 200,
+      data: {
+        type: 'tag',
+        name: 'tag1',
+        id: '123',
+      },
+    },
+  },
+  {
+    httpReq: {
+      method: 'post',
+      url: 'https://api.eu.intercom.io/tags',
+      data: {
+        name: 'tag2',
+        companies: [
+          {
+            id: '657264e9018c0a647s45',
+          },
+        ],
+      },
+      headers: commonHeaders,
+    },
+    httpRes: {
+      status: 200,
+      data: {
+        type: 'tag',
+        name: 'tag2',
+        id: '123',
+      },
+    },
+  },
 ];
 export const networkCallsData = [...deleteNwData, ...deliveryCallsData];

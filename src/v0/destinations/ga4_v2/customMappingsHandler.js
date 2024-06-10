@@ -12,7 +12,6 @@ const {
   buildDeliverablePayload,
   GA4_PARAMETERS_EXCLUSION,
   prepareUserProperties,
-  sanitizeUserProperties,
 } = require('../ga4/utils');
 const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const {
@@ -39,7 +38,7 @@ const findGA4Events = (eventsMapping, event) => {
   return validMappings;
 };
 
-const handleCustomMappings = async (message, Config) => {
+const handleCustomMappings = (message, Config) => {
   const { eventsMapping } = Config;
 
   let rsEvent = '';
@@ -102,35 +101,33 @@ const handleCustomMappings = async (message, Config) => {
     return buildDeliverablePayload(rawPayload, Config);
   }
 
-  const processedPayloads = await Promise.all(
-    validMappings.map(async (mapping) => {
-      const eventName = mapping.destEventName;
-      // reserved event names are not allowed
-      if (isReservedEventName(eventName)) {
-        throw new InstrumentationError(`[GA4]:: Reserved event name: ${eventName} are not allowed`);
-      }
-      // validation for ga4 event name
-      validateEventName(eventName);
+  const processedPayloads = validMappings.map((mapping) => {
+    const eventName = mapping.destEventName;
+    // reserved event names are not allowed
+    if (isReservedEventName(eventName)) {
+      throw new InstrumentationError(`[GA4]:: Reserved event name: ${eventName} are not allowed`);
+    }
+    // validation for ga4 event name
+    validateEventName(eventName);
 
-      // Add common top level payload
-      let ga4BasicPayload = constructPayload(message, trackCommonConfig);
-      ga4BasicPayload = addClientDetails(ga4BasicPayload, message, Config);
+    // Add common top level payload
+    let ga4BasicPayload = constructPayload(message, trackCommonConfig);
+    ga4BasicPayload = addClientDetails(ga4BasicPayload, message, Config);
 
-      const eventPropertiesMappings = mapping.eventProperties || [];
+    const eventPropertiesMappings = mapping.eventProperties || [];
 
-      const ga4MappedPayload = await applyCustomMappings(message, eventPropertiesMappings);
+    const ga4MappedPayload = applyCustomMappings(message, eventPropertiesMappings);
 
-      removeUndefinedAndNullRecurse(ga4MappedPayload);
+    removeUndefinedAndNullRecurse(ga4MappedPayload);
 
-      boilerplateOperations(ga4MappedPayload, message, Config, eventName);
+    boilerplateOperations(ga4MappedPayload, message, Config, eventName);
 
-      if (isDefinedAndNotNull(ga4BasicPayload)) {
-        return { ...ga4BasicPayload, ...ga4MappedPayload };
-      } else {
-        return ga4MappedPayload;
-      }
-    }),
-  );
+    if (isDefinedAndNotNull(ga4BasicPayload)) {
+      return { ...ga4BasicPayload, ...ga4MappedPayload };
+    } else {
+      return ga4MappedPayload;
+    }
+  });
 
   return processedPayloads.map((processedPayload) =>
     buildDeliverablePayload(processedPayload, Config),

@@ -2253,7 +2253,7 @@ const applyCustomMappings = (message, mappings) => {
     input: mapping.from,
     output: mapping.to,
   }));
-  return JsonTemplateEngine.create(flatMappings, { defaultPathType: PathType.JSON }).evaluate(
+  return JsonTemplateEngine.createAsSync(flatMappings, { defaultPathType: PathType.JSON }).evaluate(
     message,
   );
 };

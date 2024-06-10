@@ -680,6 +680,10 @@ const collectStatsForAliasFailure = (brazeResponse, destinationId) => {
    *   }
    */
 
+  // Should not happen but still checking for unhandled exceptions
+  if (!isDefinedAndNotNull(brazeResponse)) {
+    return;
+  }
   const { aliases_processed: aliasesProcessed, errors } = brazeResponse;
   if (aliasesProcessed === 0) {
     stats.increment('braze_alias_failure_count', { destination_id: destinationId });

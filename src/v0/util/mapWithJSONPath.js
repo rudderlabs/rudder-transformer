@@ -4,7 +4,7 @@ const jsonpath = require('rs-jsonpath');
 function mapWithJsonPath(message, targetObject, sourcePath, targetPath) {
   const values = jsonpath.query(message, sourcePath);
   const matchTargetPath = targetPath.split('$.events[0].')[1] || targetPath;
-  const regexMatch = /\[([^\n\]]+)]/;
+  const regexMatch = /\[[^\n\]]*]/;
   if (regexMatch.test(sourcePath) && regexMatch.test(matchTargetPath)) {
     // both paths are arrays
     // eslint-disable-next-line unicorn/no-for-loop

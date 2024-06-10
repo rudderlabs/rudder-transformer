@@ -1,3 +1,6 @@
+/* eslint-disable no-param-reassign */
+const { removeUndefinedValues } = require('../../../../v0/util');
+
 const locationAttributes = [
   'address1',
   'address2',
@@ -10,20 +13,39 @@ const locationAttributes = [
   'ip',
 ];
 
-function removeLocationAttributes(traits) {
-  const finalObject = {};
-  return Object.keys(traits).reduce((result, key) => {
-    if (!locationAttributes.includes(key)) {
-      finalObject[key] = traits[key];
-    }
-    return finalObject;
-  }, {});
+const standardTraits = [
+  'email',
+  'phone_number',
+  'external_id',
+  'anonymous_id',
+  '_kx',
+  'first_name',
+  'last_name',
+  'organization',
+  'title',
+  'image',
+];
+
+function setStandardAndCustomTraits(traits) {
+  const standardAttributes = {};
+  const customAttributes = {};
+  return Object.keys(traits).reduce(
+    (result, key) => {
+      if (!locationAttributes.includes(key) && standardTraits.includes(key)) {
+        result.standardAttributes[key] = traits[key];
+      } else if (!locationAttributes.includes(key)) {
+        result.customAttributes[key] = traits[key];
+      }
+      return result;
+    },
+    { standardAttributes, customAttributes },
+  );
 }
 
 function generateLocationObject({
   traits: { address1, address2, city, country, latitude, longitude, region, zip, ip },
 }) {
-  return {
+  const locationObject = {
     address1,
     address2,
     city,
@@ -34,18 +56,21 @@ function generateLocationObject({
     zip,
     ip,
   };
+
+  return removeUndefinedValues(locationObject);
 }
 
 function transformSingleMessage(data, metadata) {
   const { context, traits } = data;
   const location = generateLocationObject(data);
   const { jobId } = metadata;
-  const traitsWithoutLocation = removeLocationAttributes(traits);
+  const { standardAttributes, customAttributes } = setStandardAndCustomTraits(traits);
   const transformedSinglePayload = {
     type: 'profile',
     attributes: {
-      ...traitsWithoutLocation,
+      ...standardAttributes,
       location,
+      properties: customAttributes,
       anonymous_id: context.externalId[0].id,
       jobIdentifier: `${context.externalId[0].id}:${jobId}`,
     },
@@ -54,7 +79,13 @@ function transformSingleMessage(data, metadata) {
     transformedSinglePayload.id = context.externalId[0].id || traits.id;
     transformedSinglePayload.attributes.anonymous_id = context.externalId[0].id;
   }
-  return transformedSinglePayload;
+  if (Object.keys(transformedSinglePayload.attributes.location).length === 0) {
+    delete transformedSinglePayload.attributes.location;
+  }
+  if (Object.keys(transformedSinglePayload.attributes.properties).length === 0) {
+    delete transformedSinglePayload.attributes.properties;
+  }
+  return removeUndefinedValues(transformedSinglePayload);
 }
 
 function wrapCombinePayloads(transformedInputs, destinationObj) {

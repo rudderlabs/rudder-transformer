@@ -1,6 +1,7 @@
 /* eslint-disable */
 const _ = require('lodash');
 const get = require('get-value');
+const { structuredLogger: logger } = require('@rudderstack/integrations-lib');
 const stats = require('../../../util/stats');
 const { handleHttpRequest } = require('../../../adapters/network');
 const {
@@ -655,6 +656,47 @@ function getPurchaseObjs(message, config) {
   return purchaseObjs;
 }
 
+const collectStatsForAliasFailure = (brazeResponse, destinationId) => {
+  /**
+   * Braze Response for Alias failure
+   * {
+   * "aliases_processed": 0,
+   * "message": "success",
+   * "errors": [
+   *     {
+   *         "type": "'external_id' is required",
+   *         "input_array": "user_identifiers",
+   *         "index": 0
+   *     }
+   *   ]
+   * }
+   */
+
+  /**
+   * Braze Response for Alias success
+   * {
+   *   "aliases_processed": 1,
+   *   "message": "success"
+   *   }
+   */
+
+  // Should not happen but still checking for unhandled exceptions
+  if (!isDefinedAndNotNull(brazeResponse)) {
+    return;
+  }
+  const { aliases_processed: aliasesProcessed, errors } = brazeResponse;
+  if (aliasesProcessed === 0) {
+    stats.increment('braze_alias_failure_count', { destination_id: destinationId });
+
+    if (Array.isArray(errors)) {
+      logger.info('Braze Alias Failure Errors:', {
+        destinationId,
+        errors,
+      });
+    }
+  }
+};
+
 module.exports = {
   BrazeDedupUtility,
   CustomAttributeOperationUtil,
@@ -667,4 +709,5 @@ module.exports = {
   setExternalId,
   setAliasObjectWithAnonId,
   addMandatoryPurchaseProperties,
+  collectStatsForAliasFailure,
 };

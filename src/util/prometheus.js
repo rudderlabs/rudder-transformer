@@ -602,6 +602,12 @@ class Prometheus {
         labelNames: ['destination_id'],
       },
       {
+        name: 'braze_alias_failure_count',
+        help: 'braze_alias_failure_count',
+        type: 'counter',
+        labelNames: ['destination_id'],
+      },
+      {
         name: 'mixpanel_batch_engage_pack_size',
         help: 'mixpanel_batch_engage_pack_size',
         type: 'gauge',

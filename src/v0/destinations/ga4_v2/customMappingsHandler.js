@@ -13,7 +13,7 @@ const {
   GA4_PARAMETERS_EXCLUSION,
   prepareUserProperties,
   sanitizeUserProperties,
-} = require('./utils');
+} = require('../ga4/utils');
 const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const {
   removeUndefinedAndNullRecurse,
@@ -25,7 +25,7 @@ const {
   getIntegrationsObj,
   applyCustomMappings,
 } = require('../../util');
-const { trackCommonConfig, ConfigCategory, mappingConfig } = require('./config');
+const { trackCommonConfig, ConfigCategory, mappingConfig } = require('../ga4/config');
 
 const findGA4Events = (eventsMapping, event) => {
   // Find the event using destructuring and early return

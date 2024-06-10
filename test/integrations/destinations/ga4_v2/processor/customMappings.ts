@@ -84,7 +84,7 @@ const eventsMapping = [
       },
       {
         to: '$.events[0].params.items[*].name',
-        from: "$.properties.products[?(@.name=='Salt')].name",
+        from: '$.properties.products[*].name',
       },
       {
         to: '$.events[0].params.prices',
@@ -227,7 +227,7 @@ const destination = {
 };
 export const customMappingTestCases = [
   {
-    name: 'ga4',
+    name: 'ga4_v2',
     id: 'ga4_custom_mapping_test_0',
     description: 'Custom Mapping Test 0',
     feature: 'processor',
@@ -293,6 +293,7 @@ export const customMappingTestCases = [
                             id: 213123,
                             key: 'someValue',
                             list_id: 'random_list_id',
+                            name: 'Sugar',
                           },
                         ],
                         prices: 456,
@@ -327,7 +328,7 @@ export const customMappingTestCases = [
     mockFns: defaultMockFns,
   },
   {
-    name: 'ga4',
+    name: 'ga4_v2',
     id: 'ga4_custom_mapping_test_1',
     description: 'Custom Mapping Test for multiplexing',
     feature: 'processor',
@@ -491,7 +492,7 @@ export const customMappingTestCases = [
     mockFns: defaultMockFns,
   },
   {
-    name: 'ga4',
+    name: 'ga4_v2',
     id: 'ga4_custom_mapping_test_2',
     description: 'Custom Mapping Test For mapping not present in events mapping',
     feature: 'processor',
@@ -616,7 +617,7 @@ export const customMappingTestCases = [
     mockFns: defaultMockFns,
   },
   {
-    name: 'ga4',
+    name: 'ga4_v2',
     id: 'ga4_custom_mapping_test_3',
     description: 'Custom Mapping Test For Group Event Type',
     feature: 'processor',

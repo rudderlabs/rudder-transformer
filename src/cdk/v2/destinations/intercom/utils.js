@@ -27,7 +27,7 @@ const {
   SEARCH_CONTACT_ENDPOINT,
   ReservedCompanyProperties,
   CREATE_OR_UPDATE_COMPANY_ENDPOINT,
-  TAGS,
+  TAGS_ENDPOINT,
 } = require('./config');
 
 /**
@@ -286,7 +286,8 @@ const searchContact = async (message, destination) => {
  * @returns
  */
 const createOrUpdateCompany = async (payload, destination) => {
-  const headers = getHeaders(destination);
+  const { apiVersion } = destination.Config;
+  const headers = getHeaders(destination, apiVersion);
   const finalPayload = JSON.stringify(removeUndefinedAndNullValues(payload));
   const baseEndPoint = getBaseEndpoint(destination);
   const endpoint = `${baseEndPoint}/${CREATE_OR_UPDATE_COMPANY_ENDPOINT}`;
@@ -371,18 +372,68 @@ const addMetadataToPayload = (payload) => {
 };
 
 /**
- * Add or Update tags to a company
+ * Api call to attach user to the company
+ * Ref doc v1: https://developers.intercom.com/docs/references/1.4/rest-api/users/companies-and-users/
+ * Ref doc v2: https://developers.intercom.com/docs/references/2.10/rest-api/api.intercom.io/Contacts/attachContactToACompany/
+ * @param {*} payload
+ * @param {*} endpoint
+ * @param {*} destination
+ */
+const attachContactToCompany = async (payload, endpoint, destination) => {
+  let { apiVersion } = destination.Config;
+  apiVersion = isDefinedAndNotNull(apiVersion) ? apiVersion : 'v2';
+  let endpointPath = '/contact/{id}/companies';
+  if (apiVersion === 'v1') {
+    endpointPath = '/users';
+  }
+  const headers = getHeaders(destination, apiVersion);
+  const finalPayload = JSON.stringify(removeUndefinedAndNullValues(payload));
+  const response = await httpPOST(
+    endpoint,
+    finalPayload,
+    {
+      headers,
+    },
+    {
+      destType: 'intercom',
+      feature: 'transformation',
+      endpointPath,
+      requestMethod: 'POST',
+      module: 'router',
+    },
+  );
+
+  const processedResponse = processAxiosResponse(response);
+  if (!isHttpStatusSuccess(processedResponse.status)) {
+    throw new NetworkError(
+      `Unable to attach Contact to Company due to : ${JSON.stringify(
+        processedResponse?.response?.errors,
+      )}`,
+      processedResponse?.status,
+      {
+        [tags]: getDynamicErrorType(processedResponse?.status),
+      },
+      processedResponse,
+    );
+  }
+};
+
+/**
+ * Api calls to add or update tags to the company
+ * Ref doc v1: https://developers.intercom.com/docs/references/1.4/rest-api/tags/tag-or-untag-users-companies-leads-contacts/
+ * Ref doc v2: https://developers.intercom.com/docs/references/2.10/rest-api/api.intercom.io/Tags/createTag/
  * @param message
  * @param destination
  * @param id
  * @returns
  */
-const addOrUpdateTagToCompany = async (message, destination, id) => {
-  const companyTags = message?.traits?.tags || message?.context?.traits?.tags;
+const addOrUpdateTagsToCompany = async (message, destination, id) => {
+  const companyTags = message?.context?.traits?.tags;
   if (!companyTags) return;
-  const headers = getHeaders(destination);
+  const { apiVersion } = destination.Config;
+  const headers = getHeaders(destination, apiVersion);
   const baseEndPoint = getBaseEndpoint(destination);
-  const endpoint = `${baseEndPoint}/${TAGS}`;
+  const endpoint = `${baseEndPoint}/${TAGS_ENDPOINT}`;
   const statTags = {
     destType: 'intercom',
     feature: 'transformation',
@@ -438,5 +489,6 @@ module.exports = {
   filterCustomAttributes,
   checkIfEmailOrUserIdPresent,
   separateReservedAndRestMetadata,
-  addOrUpdateTagToCompany,
+  attachContactToCompany,
+  addOrUpdateTagsToCompany,
 };

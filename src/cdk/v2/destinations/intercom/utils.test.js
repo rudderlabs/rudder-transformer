@@ -13,7 +13,8 @@ const {
   filterCustomAttributes,
   checkIfEmailOrUserIdPresent,
   separateReservedAndRestMetadata,
-  addOrUpdateTagToCompany,
+  attachContactToCompany,
+  addOrUpdateTagsToCompany,
 } = require('./utils');
 const { BASE_ENDPOINT, BASE_EU_ENDPOINT, BASE_AU_ENDPOINT } = require('./config');
 
@@ -765,11 +766,13 @@ describe('attachUserAndCompany utility test', () => {
   });
 });
 
-describe('addOrUpdateTagToCompany utility test', () => {
+describe('addOrUpdateTagsToCompany utility test', () => {
   it('Should successfully add tags to company', async () => {
     const message = {
-      traits: {
-        tags: ['tag1', 'tag2'],
+      context: {
+        traits: {
+          tags: ['tag1', 'tag2'],
+        },
       },
     };
     const destination = { Config: { apiKey: 'testApiKey', apiServer: 'us' } };
@@ -786,7 +789,7 @@ describe('addOrUpdateTagToCompany utility test', () => {
       });
 
     axios.post.mockClear();
-    await addOrUpdateTagToCompany(message, destination, id);
+    await addOrUpdateTagsToCompany(message, destination, id);
 
     expect(axios.post).toHaveBeenCalledTimes(2);
 
@@ -809,8 +812,10 @@ describe('addOrUpdateTagToCompany utility test', () => {
 
   it('Should throw an error in case if axios calls returns an error', async () => {
     const message = {
-      traits: {
-        tags: ['tag1'],
+      context: {
+        traits: {
+          tags: ['tag1'],
+        },
       },
     };
     const destination = { Config: { apiKey: 'testApiKey', apiServer: 'us' } };
@@ -832,7 +837,7 @@ describe('addOrUpdateTagToCompany utility test', () => {
 
     try {
       axios.post.mockClear();
-      await addOrUpdateTagToCompany(message, destination, id);
+      await addOrUpdateTagsToCompany(message, destination, id);
     } catch (error) {
       expect(error.message).toEqual(
         `Unable to Add or Update the Tag to Company due to : [{"code":"unauthorized","message":"Access Token Invalid"}]`,
@@ -846,7 +851,7 @@ describe('addOrUpdateTagToCompany utility test', () => {
     const id = 'companyId';
 
     axios.post.mockClear();
-    await addOrUpdateTagToCompany(message, destination, id);
+    await addOrUpdateTagsToCompany(message, destination, id);
 
     expect(axios.post).not.toHaveBeenCalled();
   });

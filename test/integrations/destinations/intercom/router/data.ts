@@ -335,7 +335,7 @@ export const data = [
                   jobId: 3,
                 },
               ],
-              statusCode: 200,
+              statusCode: 299,
             },
             {
               batched: false,
@@ -787,7 +787,7 @@ export const data = [
                   jobId: 3,
                 },
               ],
-              statusCode: 200,
+              statusCode: 299,
             },
           ],
         },

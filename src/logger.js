@@ -1,51 +1,22 @@
 /* istanbul ignore file */
-const { structuredLogger: logger } = require('@rudderstack/integrations-lib');
+const { structuredLogger: logger /* LOGLEVELS */ } = require('@rudderstack/integrations-lib');
 
-const levelDebug = 0; // Most verbose logging level
-const levelInfo = 1; // Logs about state of the application
-const levelWarn = 2; // Logs about warnings which dont immediately halt the application
-const levelError = 3; // Logs about errors which dont immediately halt the application
+const LOGLEVELS = {
+  debug: 0, // Most verbose logging level
+  info: 1, // Logs about state of the application
+  warn: 2, // Logs about warnings which dont immediately halt the application
+  error: 3, // Logs about errors which dont immediately halt the application
+};
+
 // any value greater than levelError will work as levelNone
 const loggerImpl = process.env.LOGGER_IMPL ?? 'winston';
 
-let logLevel = process.env.LOG_LEVEL ? parseInt(process.env.LOG_LEVEL, 10) : levelInfo;
+let logLevel = process.env.LOG_LEVEL ?? 'error';
 
 const setLogLevel = (level) => {
   const logger = getLogger();
   logLevel = level || logLevel;
   logger?.setLogLevel(`${loglevel}`);
-};
-
-const getLogger = () => {
-  return loggerImpl === 'winston' ? logger : console;
-};
-
-const debug = (...args) => {
-  const logger = getLogger();
-  if (levelDebug >= logLevel) {
-    logger.debug(...args);
-  }
-};
-
-const info = (...args) => {
-  const logger = getLogger();
-  if (levelInfo >= logLevel) {
-    logger.info(...args);
-  }
-};
-
-const warn = (...args) => {
-  const logger = getLogger();
-  if (levelWarn >= logLevel) {
-    logger.warn(...args);
-  }
-};
-
-const error = (...args) => {
-  const logger = getLogger();
-  if (levelError >= logLevel) {
-    logger.error(...args);
-  }
 };
 
 const getLogMetadata = (metadata) => {
@@ -64,30 +35,84 @@ const getLogMetadata = (metadata) => {
   };
 };
 
+const log = (logMethod, args) => {
+  const [message, logInfo, ...otherArgs] = args;
+  if (logInfo) {
+    const { metadata, ...otherLogInfoArgs } = logInfo;
+    if (Array.isArray(metadata)) {
+      metadata.forEach((m) => {
+        logMethod(
+          message,
+          {
+            ...getLogMetadata(m),
+            ...otherLogInfoArgs,
+          },
+          ...otherArgs,
+        );
+      });
+      return;
+    }
+    logMethod(
+      message,
+      {
+        ...getLogMetadata(metadata),
+        ...otherLogInfoArgs,
+      },
+      ...otherArgs,
+    );
+    return;
+  }
+  logMethod(message);
+};
+
+const getLogger = () => {
+  return loggerImpl === 'winston' ? logger : console;
+};
+
+const debug = (...args) => {
+  const logger = getLogger();
+  if (logLevel >= LOGLEVELS.debug) {
+    log(logger.debug, args);
+  }
+};
+
+const info = (...args) => {
+  const logger = getLogger();
+  if (logLevel >= LOGLEVELS.info) {
+    log(logger.info, args);
+  }
+};
+
+const warn = (...args) => {
+  const logger = getLogger();
+  if (logLevel >= LOGLEVELS.warn) {
+    log(logger.warn, args);
+  }
+};
+
+const error = (...args) => {
+  const logger = getLogger();
+  if (logLevel >= LOGLEVELS.error) {
+    log(logger.error, args);
+  }
+};
+
 const requestLog = (identifierMsg, { metadata, requestDetails: { url, body, method } }) => {
   const logger = getLogger();
-  if (logLevel === levelWarn) {
-    logger.warn(identifierMsg, {
-      ...getLogMetadata(metadata),
-      url,
-      body,
-      method,
-    });
+  if (logLevel === LOGLEVELS.warn) {
+    const reqLogArgs = [identifierMsg, { metadata, url, body, method }];
+    log(logger.warn, reqLogArgs);
   }
 };
 
 const responseLog = (
   identifierMsg,
-  { metadata, responseDetails: { response: responseBody, status, headers: responseHeaders } },
+  { metadata, responseDetails: { response: body, status, headers } },
 ) => {
   const logger = getLogger();
-  if (logLevel === levelWarn) {
-    logger.warn(identifierMsg, {
-      ...getLogMetadata(metadata),
-      ...(responseBody ? { responseBody } : {}),
-      ...(responseHeaders ? { responseHeaders } : {}),
-      status,
-    });
+  if (logLevel === LOGLEVELS.warn) {
+    const resLogArgs = [identifierMsg, { metadata, body, status, headers }];
+    log(logger.warn, resLogArgs);
   }
 };
 
@@ -97,10 +122,10 @@ module.exports = {
   warn,
   error,
   setLogLevel,
-  levelDebug,
-  levelInfo,
-  levelWarn,
-  levelError,
+  // levelDebug,
+  // levelInfo,
+  // levelWarn,
+  // levelError,
   responseLog,
   getLogMetadata,
   requestLog,

@@ -1,11 +1,12 @@
 const { NetworkError, AbortedError } = require('@rudderstack/integrations-lib');
-const myAxios = require('../../../util/myAxios');
+// const myAxios = require('../../../util/myAxios');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const logger = require('../../../logger');
 const { constructPayload, isDefinedAndNotNull } = require('../../util');
 const { ENDPOINT, productMapping } = require('./config');
 const tags = require('../../util/tags');
 const { JSON_MIME_TYPE } = require('../../util/constant');
+const { httpGET, httpPOST } = require('../../../adapters/network');
 
 const isValidEmail = (email) => {
   const re =
@@ -21,9 +22,8 @@ const isValidTimestamp = (timestamp) => {
 
 const userExists = async (Config, id) => {
   const basicAuth = Buffer.from(Config.apiKey).toString('base64');
-  let response;
   try {
-    response = await myAxios.get(
+    const { response } = await httpGET(
       `${ENDPOINT}/v2/${Config.accountId}/subscribers/${id}`,
       {
         headers: {
@@ -50,7 +50,8 @@ const userExists = async (Config, id) => {
       },
       response,
     );
-  } catch (error) {
+  } catch ({ destinationResponse }) {
+    const error = destinationResponse;
     let errMsg = '';
     let errStatus = 400;
     if (error.response) {
@@ -67,7 +68,7 @@ const userExists = async (Config, id) => {
 
 const createUpdateUser = async (finalpayload, Config, basicAuth) => {
   try {
-    const response = await myAxios.post(
+    const { response } = await httpPOST(
       `${ENDPOINT}/v2/${Config.accountId}/subscribers`,
       finalpayload,
       {
@@ -84,11 +85,29 @@ const createUpdateUser = async (finalpayload, Config, basicAuth) => {
         module: 'router',
       },
     );
+    // await myAxios.post(
+    //   `${ENDPOINT}/v2/${Config.accountId}/subscribers`,
+    //   finalpayload,
+    //   {
+    //     headers: {
+    //       Authorization: `Basic ${basicAuth}`,
+    //       'Content-Type': JSON_MIME_TYPE,
+    //     },
+    //   },
+    //   {
+    //     destType: 'drip',
+    //     feature: 'transformation',
+    //     requestMethod: 'POST',
+    //     endpointPath: '/subscribers',
+    //     module: 'router',
+    //   },
+    // );
     if (response) {
       return response.status === 200 || response.status === 201;
     }
     throw new AbortedError('Invalid response.');
-  } catch (error) {
+  } catch ({ destinationResponse }) {
+    const error = destinationResponse;
     let errMsg = '';
     if (error.response && error.response.data) {
       errMsg = JSON.stringify(error.response.data);

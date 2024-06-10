@@ -230,8 +230,6 @@ async function processIdentify(message, destination) {
     },
   );
 
-  collectStatsForAliasFailure(brazeIdentifyResp, destination.ID);
-
   if (!isHttpStatusSuccess(brazeIdentifyResp.status)) {
     throw new NetworkError(
       `Braze identify failed - ${JSON.stringify(brazeIdentifyResp.response)}`,
@@ -242,6 +240,8 @@ async function processIdentify(message, destination) {
       brazeIdentifyResp.response,
     );
   }
+
+  collectStatsForAliasFailure(brazeIdentifyResp, destination.ID);
 }
 
 function processTrackWithUserAttributes(

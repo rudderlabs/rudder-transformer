@@ -1,6 +1,7 @@
 /* eslint-disable */
 const _ = require('lodash');
 const get = require('get-value');
+const { structuredLogger: logger } = require('@rudderstack/integrations-lib');
 const stats = require('../../../util/stats');
 const { handleHttpRequest } = require('../../../adapters/network');
 const {
@@ -682,16 +683,13 @@ const collectStatsForAliasFailure = (brazeResponse, destinationId) => {
   const { aliases_processed: aliasesProcessed, errors } = brazeResponse;
   if (aliasesProcessed === 0) {
     stats.increment('braze_alias_failure_count', { destination_id: destinationId });
-    const errorType = [];
+
     if (Array.isArray(errors)) {
-      errors.forEach((error) => {
-        errorType.push(error.type);
+      logger.info('Braze Alias Failure Errors:', {
+        destinationId,
+        errors,
       });
     }
-    stats.increment('braze_alias_failure_error_type', {
-      destination_id: destinationId,
-      alias_error_type: errorType.join(','),
-    });
   }
 };
 

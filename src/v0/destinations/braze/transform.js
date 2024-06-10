@@ -241,7 +241,7 @@ async function processIdentify(message, destination) {
     );
   }
 
-  collectStatsForAliasFailure(brazeIdentifyResp, destination.ID);
+  collectStatsForAliasFailure(brazeIdentifyResp.response, destination.ID);
 }
 
 function processTrackWithUserAttributes(

@@ -837,7 +837,7 @@ describe('attachContactToCompany utility test', () => {
     );
   });
 
-  it('Should throw a network error during attachment', async () => {
+  it('Should throw error for invalid company during attachment', async () => {
     const payload = {
       id: 'company123',
     };
@@ -865,6 +865,36 @@ describe('attachContactToCompany utility test', () => {
     } catch (error) {
       expect(error.message).toEqual(
         'Unable to attach Contact or User to Company due to : [{"code":"company_not_found","message":"Company Not Found"}]',
+      );
+    }
+  });
+
+  it('Should throw error for faulty payload during attachment', async () => {
+    const payload = {};
+    const endpoint = 'https://api.intercom.io/contacts/contact123/companies';
+    const destination = { Config: { apiKey: 'testApiKey', apiServer: 'us', apiVersion: 'v2' } };
+
+    axios.post.mockRejectedValue({
+      response: {
+        status: 400,
+        data: {
+          type: 'error.list',
+          request_id: '123',
+          errors: [
+            {
+              code: 'parameter_not_found',
+              message: 'company not specified',
+            },
+          ],
+        },
+      },
+    });
+
+    try {
+      await attachContactToCompany(payload, endpoint, destination);
+    } catch (error) {
+      expect(error.message).toEqual(
+        'Unable to attach Contact or User to Company due to : [{"code":"parameter_not_found","message":"company not specified"}]',
       );
     }
   });
@@ -926,10 +956,10 @@ describe('addOrUpdateTagsToCompany utility test', () => {
     const id = 'companyId';
 
     axios.post.mockRejectedValue({
-      status: 400,
+      status: 401,
       data: {
         type: 'error.list',
-        request_id: 'request_400',
+        request_id: 'request_401',
         errors: [
           {
             code: 'unauthorized',
@@ -944,7 +974,42 @@ describe('addOrUpdateTagsToCompany utility test', () => {
       await addOrUpdateTagsToCompany(message, destination, id);
     } catch (error) {
       expect(error.message).toEqual(
-        `Unable to Add or Update the Tag to Company due to : [{"code":"unauthorized","message":"Access Token Invalid"}]`,
+        `Unable to Add or Update the Tag to Company due to : [{\"code\":\"unauthorized\",\"message\":\"Access Token Invalid\"}]`,
+      );
+    }
+  });
+
+  it('Should throw a network error in case if axios calls returns an error', async () => {
+    const message = {
+      context: {
+        traits: {
+          tags: ['tag1'],
+        },
+      },
+    };
+    const destination = { Config: { apiKey: 'testApiKey', apiServer: 'us' } };
+    const id = 'companyId';
+
+    axios.post.mockRejectedValue({
+      status: 429,
+      data: {
+        type: 'error.list',
+        request_id: 'request_429',
+        errors: [
+          {
+            code: 'rate_limit_exceeded',
+            message: 'You have exceeded the rate limit. Please try again later.',
+          },
+        ],
+      },
+    });
+
+    try {
+      axios.post.mockClear();
+      await addOrUpdateTagsToCompany(message, destination, id);
+    } catch (error) {
+      expect(error.message).toEqual(
+        `Unable to Add or Update the Tag to Company due to : [{\"code\":\"rate_limit_exceeded\",\"message\":\"You have exceeded the rate limit. Please try again later.\"}]`,
       );
     }
   });

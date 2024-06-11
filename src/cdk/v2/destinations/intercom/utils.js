@@ -1,6 +1,10 @@
 const md5 = require('md5');
 const get = require('get-value');
-const { NetworkError } = require('@rudderstack/integrations-lib');
+const {
+  NetworkError,
+  ConfigurationError,
+  InstrumentationError,
+} = require('@rudderstack/integrations-lib');
 const tags = require('../../../../v0/util/tags');
 const { httpPOST } = require('../../../../adapters/network');
 const {
@@ -29,6 +33,27 @@ const {
   CREATE_OR_UPDATE_COMPANY_ENDPOINT,
   TAGS_ENDPOINT,
 } = require('./config');
+
+const intercomErrorHandler = (message, processedResponse) => {
+  const errorMessages = JSON.stringify(processedResponse?.response?.errors);
+  if (processedResponse?.status === 400) {
+    throw new InstrumentationError(`${message} : ${errorMessages}`);
+  }
+  if (processedResponse?.status === 401) {
+    throw new ConfigurationError(`${message} : ${errorMessages}`);
+  }
+  if (processedResponse?.status === 404) {
+    throw new InstrumentationError(`${message} : ${errorMessages}`);
+  }
+  throw new NetworkError(
+    `${message} : ${errorMessages}`,
+    processedResponse?.status,
+    {
+      [tags]: getDynamicErrorType(processedResponse?.status),
+    },
+    processedResponse,
+  );
+};
 
 /**
  * Returns destination request headers
@@ -405,16 +430,7 @@ const attachContactToCompany = async (payload, endpoint, destination) => {
 
   const processedResponse = processAxiosResponse(response);
   if (!isHttpStatusSuccess(processedResponse.status)) {
-    throw new NetworkError(
-      `Unable to attach Contact or User to Company due to : ${JSON.stringify(
-        processedResponse?.response?.errors,
-      )}`,
-      processedResponse?.status,
-      {
-        [tags]: getDynamicErrorType(processedResponse?.status),
-      },
-      processedResponse,
-    );
+    intercomErrorHandler('Unable to attach Contact or User to Company due to', processedResponse);
   }
 };
 
@@ -461,14 +477,8 @@ const addOrUpdateTagsToCompany = async (message, destination, id) => {
       );
       const processedResponse = processAxiosResponse(response);
       if (!isHttpStatusSuccess(processedResponse.status)) {
-        throw new NetworkError(
-          `Unable to Add or Update the Tag to Company due to : ${JSON.stringify(
-            processedResponse?.response?.errors,
-          )}`,
-          processedResponse?.status,
-          {
-            [tags]: getDynamicErrorType(processedResponse?.status),
-          },
+        intercomErrorHandler(
+          'Unable to Add or Update the Tag to Company due to',
           processedResponse,
         );
       }

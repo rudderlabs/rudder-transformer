@@ -49,5 +49,5 @@ We look forward to your feedback on improving this project.
 
 [slack]: https://resources.rudderstack.com/join-rudderstack-slack
 [issue]: https://github.com/rudderlabs/rudder-transformer/issues/new
-[cla]: https://rudderlabs.wufoo.com/forms/rudderlabs-contributor-license-agreement
+[cla]: https://forms.gle/845JRGVZaC6kPZy68
 [config-generator]: https://github.com/rudderlabs/config-generator

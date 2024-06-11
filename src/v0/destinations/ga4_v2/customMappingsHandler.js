@@ -139,7 +139,7 @@ const boilerplateOperations = (ga4Payload, message, Config, eventName) => {
   ga4Payload.events[0].name = eventName;
   const integrationsObj = getIntegrationsObj(message, 'ga4');
 
-  if (isHybridModeEnabled(Config) && integrationsObj && integrationsObj.sessionId) {
+  if (isHybridModeEnabled(Config) && integrationsObj?.sessionId) {
     ga4Payload.events[0].params.session_id = integrationsObj.sessionId;
   }
 

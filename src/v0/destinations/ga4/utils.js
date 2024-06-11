@@ -570,10 +570,26 @@ const sanitizeUserProperties = (userProperties) => {
   });
 };
 
+const basicConfigvalidaiton = (Config) => {
+  if (!Config.typesOfClient) {
+    throw new ConfigurationError('Client type not found. Aborting ');
+  }
+  if (!Config.apiSecret) {
+    throw new ConfigurationError('API Secret not found. Aborting ');
+  }
+  if (Config.typesOfClient === 'gtag' && !Config.measurementId) {
+    throw new ConfigurationError('measurementId must be provided. Aborting');
+  }
+  if (Config.typesOfClient === 'firebase' && !Config.firebaseAppId) {
+    throw new ConfigurationError('firebaseAppId must be provided. Aborting');
+  }
+};
+
 module.exports = {
   addClientDetails,
   basicValidation,
   buildDeliverablePayload,
+  basicConfigvalidaiton,
   getItem,
   getItemList,
   getItemsArray,

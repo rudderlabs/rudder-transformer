@@ -1,9 +1,5 @@
 const get = require('get-value');
-const {
-  ConfigurationError,
-  InstrumentationError,
-  UnsupportedEventError,
-} = require('@rudderstack/integrations-lib');
+const { InstrumentationError, UnsupportedEventError } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const {
   isEmptyObject,
@@ -33,6 +29,7 @@ const {
   basicValidation,
   addClientDetails,
   buildDeliverablePayload,
+  basicConfigvalidaiton,
 } = require('./utils');
 require('../../util/constant');
 
@@ -204,22 +201,11 @@ const process = (event) => {
   const { message, destination } = event;
   const { Config } = destination;
 
-  if (!Config.typesOfClient) {
-    throw new ConfigurationError('Client type not found. Aborting ');
-  }
-  if (!Config.apiSecret) {
-    throw new ConfigurationError('API Secret not found. Aborting ');
-  }
-  if (Config.typesOfClient === 'gtag' && !Config.measurementId) {
-    throw new ConfigurationError('measurementId must be provided. Aborting');
-  }
-  if (Config.typesOfClient === 'firebase' && !Config.firebaseAppId) {
-    throw new ConfigurationError('firebaseAppId must be provided. Aborting');
-  }
-
   if (!message.type) {
     throw new InstrumentationError('Message Type is not present. Aborting message.');
   }
+
+  basicConfigvalidaiton(Config);
 
   const messageType = message.type.toLowerCase();
 

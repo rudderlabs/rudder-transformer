@@ -1,28 +1,14 @@
-import {
-  ConfigurationError,
-  InstrumentationError,
-  RudderStackEvent,
-} from '@rudderstack/integrations-lib';
+import { InstrumentationError, RudderStackEvent } from '@rudderstack/integrations-lib';
 import { ProcessorTransformationRequest } from '../../../types';
 import { handleCustomMappings } from './customMappingsHandler';
 import { process as ga4Process } from '../ga4/transform';
+import { basicConfigvalidaiton } from '../ga4/utils';
 
 export function process(event: ProcessorTransformationRequest) {
   const { message, destination } = event;
   const { Config } = destination;
 
-  if (!Config.typesOfClient) {
-    throw new ConfigurationError('Client type not found. Aborting ');
-  }
-  if (!Config.apiSecret) {
-    throw new ConfigurationError('API Secret not found. Aborting ');
-  }
-  if (Config.typesOfClient === 'gtag' && !Config.measurementId) {
-    throw new ConfigurationError('measurementId must be provided. Aborting');
-  }
-  if (Config.typesOfClient === 'firebase' && !Config.firebaseAppId) {
-    throw new ConfigurationError('firebaseAppId must be provided. Aborting');
-  }
+  basicConfigvalidaiton(Config);
 
   const eventPayload = message as RudderStackEvent;
 

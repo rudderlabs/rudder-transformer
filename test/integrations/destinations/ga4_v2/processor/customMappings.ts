@@ -668,13 +668,35 @@ export const customMappingTestCases = [
                   timestamp_micros: 1651105389000000,
                   non_personalized_ads: false,
                   client_id: 'root_anonId',
-                  events: [{ name: 'join_group' }],
-                  userProperties: {
+                  events: [
+                    {
+                      name: 'join_group',
+                      params: {
+                        city: 'London',
+                        engagement_time_msec: 1,
+                        firstName: 'John',
+                        group: 'test group',
+                        lastName: 'Gomes',
+                        state: 'UK',
+                        streetAddress: '71 Cherry Court SOUTHAMPTON SO53 5PD UK',
+                      },
+                    },
+                  ],
+                  user_properties: {
                     firstName: {
                       value: 'John',
                     },
                     lastName: {
                       value: 'Gomes',
+                    },
+                    city: {
+                      value: 'London',
+                    },
+                    state: {
+                      value: 'UK',
+                    },
+                    group: {
+                      value: 'test group',
                     },
                   },
                   consent: {

@@ -276,7 +276,6 @@ export const data = [
                     integration: {
                       name: 'Auth0',
                     },
-                    source_type: 'ss',
                   },
                   properties: {
                     log_id: '90020221031055712103169676686005480714681762668315934738',
@@ -292,6 +291,7 @@ export const data = [
                     client_id: 'vQcJNDTxsM1W72eHFonRJdzyOvawlwIt',
                     client_name: 'All Applications',
                     description: '',
+                    source_type: 'ss',
                   },
                   integrations: {
                     Auth0: false,
@@ -325,7 +325,6 @@ export const data = [
                     integration: {
                       name: 'Auth0',
                     },
-                    source_type: 'sapi',
                   },
                   properties: {
                     log_id: '90020221031055712103169676686007898566320991926665347090',
@@ -513,6 +512,7 @@ export const data = [
                     client_id: 'vQcJNDTxsM1W72eHFonRJdzyOvawlwIt',
                     client_name: '',
                     description: 'Create a User',
+                    source_type: 'sapi',
                   },
                   integrations: {
                     Auth0: false,
@@ -616,7 +616,6 @@ export const data = [
                     integration: {
                       name: 'Auth0',
                     },
-                    source_type: 'sapi',
                   },
                   groupId: 'org_eoe8p2atZ7furBxg',
                   properties: {
@@ -653,6 +652,7 @@ export const data = [
                     client_id: 'vQcJNDTxsM1W72eHFonRJdzyOvawlwIt',
                     client_name: '',
                     description: 'Add members to an organization',
+                    source_type: 'sapi',
                   },
                   integrations: {
                     Auth0: false,
@@ -961,7 +961,6 @@ export const data = [
                     integration: {
                       name: 'Auth0',
                     },
-                    source_type: 'sapi',
                   },
                   properties: {
                     log_id: '90020221031061527239169676960191065529099349299958906898',
@@ -1151,6 +1150,7 @@ export const data = [
                     client_id: 'vQcJNDTxsM1W72eHFonRJdzyOvawlwIt',
                     client_name: '',
                     description: 'Update tenant settings',
+                    source_type: 'sapi',
                   },
                   integrations: {
                     Auth0: false,
@@ -1182,7 +1182,6 @@ export const data = [
                     integration: {
                       name: 'Auth0',
                     },
-                    source_type: 'gd_tenant_update',
                   },
                   properties: {
                     log_id: '90020221031061530247169676961198100736838335677367058450',
@@ -1226,6 +1225,7 @@ export const data = [
                       },
                     },
                     description: 'Guardian - Updates tenant settings',
+                    source_type: 'gd_tenant_update',
                   },
                   integrations: {
                     Auth0: false,
@@ -1317,7 +1317,6 @@ export const data = [
                     integration: {
                       name: 'Auth0',
                     },
-                    source_type: 'ss',
                   },
                   properties: {
                     log_id: '90020221031055712103169676686005480714681762668315934738',
@@ -1333,6 +1332,7 @@ export const data = [
                     client_id: 'vQcJNDTxsM1W72eHFonRJdzyOvawlwIt',
                     client_name: 'All Applications',
                     description: '',
+                    source_type: 'ss',
                   },
                   integrations: {
                     Auth0: false,
@@ -1438,7 +1438,6 @@ export const data = [
                     integration: {
                       name: 'Auth0',
                     },
-                    source_type: 'ss',
                   },
                   properties: {
                     log_id: '90020221031055712103169676686005480714681762668315934738',
@@ -1454,6 +1453,7 @@ export const data = [
                     client_id: 'vQcJNDTxsM1W72eHFonRJdzyOvawlwIt',
                     client_name: 'All Applications',
                     description: '',
+                    source_type: 'ss',
                   },
                   integrations: {
                     Auth0: false,
@@ -1483,13 +1483,13 @@ export const data = [
                     integration: {
                       name: 'Auth0',
                     },
-                    source_type: 'sapi',
                   },
                   properties: {
                     log_id: '90020221031055712103169676686007898566320991926665347090',
                     client_id: 'vQcJNDTxsM1W72eHFonRJdzyOvawlwIt',
                     client_name: '',
                     description: 'Create a User',
+                    source_type: 'sapi',
                   },
                   integrations: {
                     Auth0: false,

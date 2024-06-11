@@ -8,8 +8,6 @@ export function process(event: ProcessorTransformationRequest) {
   const { message, destination } = event;
   const { Config } = destination;
 
-  basicConfigvalidaiton(Config);
-
   const eventPayload = message as RudderStackEvent;
 
   if (!eventPayload.type) {
@@ -19,6 +17,8 @@ export function process(event: ProcessorTransformationRequest) {
   if (eventPayload.type !== 'track') {
     return ga4Process(event);
   }
+
+  basicConfigvalidaiton(Config);
 
   // custom mappings flow
   return handleCustomMappings(message, Config);

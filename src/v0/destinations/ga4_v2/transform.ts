@@ -5,6 +5,7 @@ import {
 } from '@rudderstack/integrations-lib';
 import { ProcessorTransformationRequest } from '../../../types';
 import { handleCustomMappings } from './customMappingsHandler';
+import { process as ga4Process } from '../ga4/transform';
 
 export function process(event: ProcessorTransformationRequest) {
   const { message, destination } = event;
@@ -27,6 +28,10 @@ export function process(event: ProcessorTransformationRequest) {
 
   if (!eventPayload.type) {
     throw new InstrumentationError('Message Type is not present. Aborting message.');
+  }
+
+  if (eventPayload.type !== 'track') {
+    return ga4Process(event);
   }
 
   // custom mappings flow

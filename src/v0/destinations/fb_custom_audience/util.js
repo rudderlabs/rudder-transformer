@@ -4,6 +4,13 @@ const crypto = require('crypto');
 const get = require('get-value');
 const jsonSize = require('json-size');
 const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
+const { TransformationError } = require('@rudderstack/integrations-lib');
+const { typeFields, subTypeFields, getEndPoint } = require('./config');
+const {
+  defaultRequestConfig,
+  defaultPostRequestConfig,
+  defaultDeleteRequestConfig,
+} = require('../../util');
 const stats = require('../../../util/stats');
 
 const { isDefinedAndNotNull } = require('../../util');
@@ -208,7 +215,6 @@ const prepareDataField = (
 };
 
 // ref: https://developers.facebook.com/docs/facebook-login/security/#generate-the-proof
-
 const generateAppSecretProof = (accessToken, appSecret, dateNow) => {
   const currentTime = Math.floor(dateNow / 1000); // Get current Unix time in seconds
   const data = `${accessToken}|${currentTime}`;
@@ -221,9 +227,44 @@ const generateAppSecretProof = (accessToken, appSecret, dateNow) => {
   return appsecretProof;
 };
 
+const getDataSource = (type, subType) => {
+  const dataSource = {};
+  if (type && type !== 'NA' && typeFields.includes(type)) {
+    dataSource.type = type;
+  }
+  if (subType && subType !== 'NA' && subTypeFields.includes(subType)) {
+    dataSource.sub_type = subType;
+  }
+  return dataSource;
+};
+
+const responseBuilderSimple = (payload, audienceId) => {
+  if (payload) {
+    const responseParams = payload.responseField;
+    const response = defaultRequestConfig();
+    response.endpoint = getEndPoint(audienceId);
+
+    if (payload.operationCategory === 'add') {
+      response.method = defaultPostRequestConfig.requestMethod;
+    }
+    if (payload.operationCategory === 'remove') {
+      response.method = defaultDeleteRequestConfig.requestMethod;
+    }
+
+    response.params = responseParams;
+    return response;
+  }
+  // fail-safety for developer error
+  throw new TransformationError(`Payload could not be constructed`);
+};
+
 module.exports = {
   prepareDataField,
   getSchemaForEventMappedToDest,
   batchingWithPayloadSize,
+  ensureApplicableFormat,
+  getUpdatedDataElement,
   generateAppSecretProof,
+  responseBuilderSimple,
+  getDataSource,
 };

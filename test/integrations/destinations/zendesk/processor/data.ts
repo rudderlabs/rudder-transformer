@@ -2370,4 +2370,89 @@ export const data = [
       },
     },
   },
+  {
+    name: 'zendesk',
+    description: 'Group Call : If message.traits are not present, aborting the call.',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: {
+              Config: {
+                apiToken: 'myDummyApiToken4',
+                createUsersAsVerified: true,
+                domain: 'rudderlabshelp',
+                email: 'myDummyUserName1',
+                password: 'myDummyPwd1',
+                removeUsersFromOrganization: true,
+                sendGroupCallsWithoutUserId: true,
+              },
+              DestinationDefinition: {
+                DisplayName: 'Zendesk',
+                ID: '1YknZ1ENqB8UurJQJE2VrEA61tr',
+                Name: 'ZENDESK',
+              },
+              Enabled: true,
+              ID: 'xxxxxxxxxxxxxxxxxxxxxxxO51P',
+              Name: 'zendesk',
+              Transformations: [],
+            },
+            message: {
+              anonymousId: '297b0750-934b-4411-b66c-9b418cdbc0c9',
+              channel: 'web',
+              context: {
+                app: {
+                  build: '1.0.0',
+                  name: 'RudderLabs JavaScript SDK',
+                  namespace: 'com.rudderlabs.javascript',
+                  version: '1.1.0-beta.2',
+                },
+                ip: '0.0.0.0',
+                library: { name: 'RudderLabs JavaScript SDK', version: '1.1.0-beta.2' },
+                locale: 'en-GB',
+                os: { name: '', version: '' },
+                screen: { density: 2 },
+                traits: { email: 'example124@email.com', name: 'abcd124' },
+                userAgent:
+                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36',
+              },
+              groupId: 'group-124',
+              integrations: { All: true },
+              messageId: '2d54ba80-ce5f-4bcb-b1d7-7587e7a865fc',
+              originalTimestamp: '2020-03-23T18:27:28.983Z',
+              receivedAt: '2020-03-23T23:57:29.022+05:30',
+              request_ip: '[::1]:51574',
+              sentAt: '2020-03-23T18:27:28.983Z',
+              timestamp: '2020-03-23T23:57:29.022+05:30',
+              type: 'group',
+              userId: 'abcd-124',
+            },
+          },
+        ],
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            error: 'Organisation Traits are missing. Aborting.',
+            statTags: {
+              destType: 'ZENDESK',
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              feature: 'processor',
+              implementation: 'native',
+              module: 'destination',
+            },
+            statusCode: 400,
+          },
+        ],
+      },
+    },
+  },
 ];

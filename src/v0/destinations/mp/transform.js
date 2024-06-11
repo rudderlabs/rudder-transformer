@@ -386,7 +386,7 @@ const processGroupEvents = (message, type, destination) => {
           $set: {
             [groupKey]: groupKeyVal,
           },
-          $ip: get(message, 'context.ip'),
+          $ip: get(message, 'context.ip') || message.request_ip,
         };
         if (destination?.Config.identityMergeApi === 'simplified') {
           payload.$distinct_id = message.userId || `$device:${message.anonymousId}`;

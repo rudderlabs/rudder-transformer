@@ -649,6 +649,9 @@ if (startDestTransformer) {
       stats.timing('user_transform_request_latency', startTime, {
         processSessions,
       });
+      stats.timingSummary('user_transform_request_latency_summary', startTime, {
+        processSessions,
+      });
       stats.increment('user_transform_requests', { processSessions });
       stats.histogram('user_transform_output_events', transformedEvents.length, {
         processSessions,

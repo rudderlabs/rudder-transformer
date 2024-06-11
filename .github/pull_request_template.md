@@ -46,7 +46,7 @@ N/A
 
 - [ ] Is the PR limited to one linear task?
 
-- [ ] Are relevant unit and component test-cases added?
+- [ ] Are relevant unit and component test-cases added in **new readability format**?
 
 ### Reviewer checklist
 

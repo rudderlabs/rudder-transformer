@@ -78,6 +78,8 @@ function transformSingleMessage(data, metadata) {
   if (context.externalId[0].identifierType === 'id') {
     transformedSinglePayload.id = context.externalId[0].id || traits.id;
     transformedSinglePayload.attributes.anonymous_id = context.externalId[0].id;
+  } else if (context.externalId[0].identifierType === 'email') {
+    transformedSinglePayload.attributes.email = context.externalId[0].id;
   }
   if (Object.keys(transformedSinglePayload.attributes.location).length === 0) {
     delete transformedSinglePayload.attributes.location;

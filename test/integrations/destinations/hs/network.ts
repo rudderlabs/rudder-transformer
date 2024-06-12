@@ -876,4 +876,47 @@ export const networkCallsData = [
       status: 200,
     },
   },
+  {
+    httpReq: {
+      url: 'https://api.hubapi.com/contacts/v1/contact/batch/',
+      method: 'POST',
+      headers: {
+        'User-Agent': 'RudderLabs',
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer validApiKey',
+      },
+    },
+    httpRes: {
+      status: 200,
+    },
+  },
+  {
+    httpReq: {
+      url: 'https://api.hubapi.com/contacts/v1/contact/batch/',
+      method: 'POST',
+      headers: {
+        'User-Agent': 'RudderLabs',
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer inValidApiKey',
+      },
+    },
+    httpRes: {
+      status: 400,
+      data: {
+        status: 'error',
+        message: 'Errors found processing batch update',
+        correlationId: 'a716ef20-79df-44d4-98bd-9136af7bdefc',
+        invalidEmails: ['identify111052@test.con'],
+        failureMessages: [
+          {
+            index: 1,
+            error: {
+              status: 'error',
+              message: 'Email address identify111052@test.con is invalid',
+            },
+          },
+        ],
+      },
+    },
+  },
 ];

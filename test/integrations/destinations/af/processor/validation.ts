@@ -1,4 +1,42 @@
-import { newConfigValidationTests } from './validation';
+import { Destination } from '../../../../../src/types';
+import { ProcessorTestData } from '../../../testTypes';
+import {
+  generateMetadata,
+  generateSimplifiedTrackPayload,
+  overrideDestination,
+  transformResultBuilder,
+} from '../../../testUtils';
+
+const destination: Destination = {
+  ID: '123',
+  Name: 'AF',
+  DestinationDefinition: {
+    ID: '123',
+    Name: 'AF',
+    DisplayName: 'Appsflyer',
+    Config: {},
+  },
+  Config: {
+    androidAppId: 'com.rudderlabs.javascript',
+    groupTypeTrait: 'email',
+    groupValueTrait: 'age',
+    trackProductsOnce: false,
+    trackRevenuePerProduct: false,
+    addPropertiesAtRoot: true,
+  },
+  Enabled: true,
+  WorkspaceID: '123',
+  Transformations: [],
+};
+
+const commonProperties = {
+  tax: 2,
+  total: 27.5,
+  coupon: 'hasbros',
+  revenue: 48,
+  price: 25,
+  quantity: 2,
+};
 
 const commonPropertiesWithProduct = {
   tax: 2,
@@ -1718,4 +1756,293 @@ export const existingTestCases = [
   },
 ];
 
-export const data = [...existingTestCases, ...newConfigValidationTests];
+export const newConfigValidationTests: ProcessorTestData[] = [
+  {
+    id: 'af-config-validation-test-1',
+    name: 'af',
+    description: 'No authentication Key is present',
+    scenario: 'Framework',
+    successCriteria:
+      'The request should fail as atleast one authentication key is must to propagate request',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination,
+            message: {
+              type: 'track',
+              event: 'Order Completed',
+              sentAt: '2020-08-14T05:30:30.118Z',
+              context: {},
+              messageId: '7208bbb6-2c4e-45bb-bf5b-ad426f3593e9',
+              timestamp: '2020-08-14T05:30:30.118Z',
+              properties: commonProperties,
+              anonymousId: '50be5c78-6c3f-4b60-be84-97805a316fb1',
+              integrations: { AF: { af_uid: 'afUid' } },
+            },
+            metadata: generateMetadata(1),
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            error: 'No authentication key is present. Aborting.',
+            statTags: {
+              destinationId: 'default-destinationId',
+              destType: 'AF',
+              errorCategory: 'dataValidation',
+              errorType: 'configuration',
+              feature: 'processor',
+              implementation: 'native',
+              module: 'destination',
+              workspaceId: 'default-workspaceId',
+            },
+            statusCode: 400,
+            metadata: generateMetadata(1),
+          },
+        ],
+      },
+    },
+  },
+  {
+    id: 'af-config-validation-test-2',
+    name: 'af',
+    description: 'No dev key present even if v1 authorization is chosen',
+    scenario: 'Framework',
+    successCriteria:
+      'The request should fail when authorization is of v1 type and there is no dev key',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: overrideDestination(destination, {
+              authVersion: 'v1',
+              s2sKey: 'dummy',
+            }),
+            message: {
+              type: 'track',
+              event: 'Order Completed',
+              sentAt: '2020-08-14T05:30:30.118Z',
+              context: {},
+              messageId: '7208bbb6-2c4e-45bb-bf5b-ad426f3593e9',
+              timestamp: '2020-08-14T05:30:30.118Z',
+              properties: commonProperties,
+              anonymousId: '50be5c78-6c3f-4b60-be84-97805a316fb1',
+              integrations: { AF: { af_uid: 'afUid' } },
+            },
+            metadata: generateMetadata(1),
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            error: 'dev key is mandatory for v1 authorization. Aborting.',
+            statTags: {
+              destType: 'AF',
+              destinationId: 'default-destinationId',
+              errorCategory: 'dataValidation',
+              errorType: 'configuration',
+              feature: 'processor',
+              implementation: 'native',
+              module: 'destination',
+              workspaceId: 'default-workspaceId',
+            },
+            statusCode: 400,
+            metadata: generateMetadata(1),
+          },
+        ],
+      },
+    },
+  },
+  {
+    id: 'af-config-validation-test-3',
+    name: 'af',
+    description: 'No dev key present even if v1 authorization is chosen',
+    scenario: 'Framework',
+    successCriteria:
+      'The request should fail when authorization is of v1 type and there is no dev key',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: overrideDestination(destination, {
+              authVersion: 'v2',
+              devKey: 'abcde',
+            }),
+            message: {
+              type: 'track',
+              event: 'Order Completed',
+              sentAt: '2020-08-14T05:30:30.118Z',
+              context: {},
+              messageId: '7208bbb6-2c4e-45bb-bf5b-ad426f3593e9',
+              timestamp: '2020-08-14T05:30:30.118Z',
+              properties: commonProperties,
+              anonymousId: '50be5c78-6c3f-4b60-be84-97805a316fb1',
+              integrations: { AF: { af_uid: 'afUid' } },
+            },
+            metadata: generateMetadata(1),
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            error: 's2s key is mandatory for v2 authorization. Aborting.',
+            statTags: {
+              destType: 'AF',
+              errorCategory: 'dataValidation',
+              errorType: 'configuration',
+              feature: 'processor',
+              implementation: 'native',
+              module: 'destination',
+              destinationId: 'default-destinationId',
+              workspaceId: 'default-workspaceId',
+            },
+            statusCode: 400,
+            metadata: generateMetadata(1),
+          },
+        ],
+      },
+    },
+  },
+  {
+    id: 'af-config-validation-test-4',
+    name: 'af',
+    description: 'New Config and old way of authentication',
+    scenario: 'Business',
+    successCriteria: 'Response should contain only event payload and status code should be 200',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: overrideDestination(destination, {
+              authVersion: 'v1',
+              devKey: 'abcde',
+            }),
+            message: generateSimplifiedTrackPayload({
+              type: 'track',
+              event: 'Order Completed',
+              sentAt: '2020-08-14T05:30:30.118Z',
+              context: commonContextWithExternalId,
+              messageId: '7208bbb6-2c4e-45bb-bf5b-ad426f3593e9',
+              timestamp: '2020-08-14T05:30:30.118Z',
+              properties: commonPropertiesWithProduct,
+              anonymousId: '50be5c78-6c3f-4b60-be84-97805a316fb1',
+              integrations: { AF: { af_uid: 'afUid' } },
+            }),
+            metadata: generateMetadata(1),
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: transformResultBuilder({
+              method: 'POST',
+              endpoint: commonV1EndPoint,
+              headers: commonHeader,
+              JSON: {
+                customer_user_id: 'default-user-id',
+                bundleIdentifier: 'com.rudderlabs.javascript',
+                eventValue:
+                  '{"tax":2,"total":27.5,"coupon":"hasbros","revenue":48,"price":25,"quantity":2,"currency":"ZAR","discount":2.5,"order_id":"50314b8e9bcf000000000000","products":[{"sku":"45790-32","url":"https://www.example.com/product/path","name":"Monopoly: 3rd Edition","price":19,"category":"Games","quantity":1,"image_url":"https:///www.example.com/product/path.jpg","product_id":"507f1f77bcf86cd799439011"},{"sku":"46493-32","name":"Uno Card Game","price":3,"category":"Games","quantity":2,"product_id":"505bd76785ebb509fc183733"}],"shipping":3,"subtotal":22.5,"affiliation":"Google Store","checkout_id":"fksdjfsdjfisjf9sdfjsd9f","af_revenue":48,"af_price":[19,3],"af_quantity":[1,2],"af_order_id":"50314b8e9bcf000000000000","af_content_id":["507f1f77bcf86cd799439011","505bd76785ebb509fc183733"]}',
+                eventName: 'Order Completed',
+                eventCurrency: 'ZAR',
+                appsflyer_id: 'afUid',
+              },
+              userId: '',
+            }),
+            statusCode: 200,
+            metadata: generateMetadata(1),
+          },
+        ],
+      },
+    },
+  },
+  {
+    id: 'af-config-validation-test-5',
+    name: 'af',
+    description: 'New Config and new way of authentication',
+    scenario: 'Business',
+    successCriteria: 'Response should contain only event payload and status code should be 200',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: overrideDestination(destination, {
+              authVersion: 'v2',
+              s2sKey: 'dummy',
+            }),
+            message: generateSimplifiedTrackPayload({
+              type: 'track',
+              event: 'Order Completed',
+              sentAt: '2020-08-14T05:30:30.118Z',
+              context: commonContextWithExternalId,
+              messageId: '7208bbb6-2c4e-45bb-bf5b-ad426f3593e9',
+              timestamp: '2020-08-14T05:30:30.118Z',
+              properties: commonPropertiesWithProduct,
+              anonymousId: '50be5c78-6c3f-4b60-be84-97805a316fb1',
+              integrations: { AF: { af_uid: 'afUid' } },
+            }),
+            metadata: generateMetadata(1),
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: transformResultBuilder({
+              method: 'POST',
+              endpoint: commonV2EndPoint,
+              headers: { ...commonHeader, authentication: 'dummy' },
+              JSON: {
+                bundleIdentifier: 'com.rudderlabs.javascript',
+                eventValue:
+                  '{"tax":2,"total":27.5,"coupon":"hasbros","revenue":48,"price":25,"quantity":2,"currency":"ZAR","discount":2.5,"order_id":"50314b8e9bcf000000000000","products":[{"sku":"45790-32","url":"https://www.example.com/product/path","name":"Monopoly: 3rd Edition","price":19,"category":"Games","quantity":1,"image_url":"https:///www.example.com/product/path.jpg","product_id":"507f1f77bcf86cd799439011"},{"sku":"46493-32","name":"Uno Card Game","price":3,"category":"Games","quantity":2,"product_id":"505bd76785ebb509fc183733"}],"shipping":3,"subtotal":22.5,"affiliation":"Google Store","checkout_id":"fksdjfsdjfisjf9sdfjsd9f","af_revenue":48,"af_price":[19,3],"af_quantity":[1,2],"af_order_id":"50314b8e9bcf000000000000","af_content_id":["507f1f77bcf86cd799439011","505bd76785ebb509fc183733"]}',
+                eventName: 'Order Completed',
+                eventCurrency: 'ZAR',
+                customer_user_id: 'default-user-id',
+                appsflyer_id: 'afUid',
+              },
+              userId: '',
+            }),
+            statusCode: 200,
+            metadata: generateMetadata(1),
+          },
+        ],
+      },
+    },
+  },
+];

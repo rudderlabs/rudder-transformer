@@ -1377,4 +1377,121 @@ export const data = [
       },
     },
   },
+  {
+    name: 'emarsys',
+    description: 'Test 11 : Track call with no event mapping field should fail',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            metadata: {},
+            message: {
+              event: 'Order Completed',
+              anonymousId: 'anonId06',
+              channel: 'web',
+              context: {
+                userAgent:
+                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36',
+                traits: {
+                  email: 'abc@gmail.com',
+                  lastName: 'Doe',
+                  firstName: 'John',
+                },
+              },
+              integrations: {
+                All: true,
+                EMARSYS: {
+                  trigger_id: 'EVENT_TRIGGER_ID',
+                },
+              },
+              properties: {
+                company: 'testComp',
+                data: {
+                  section_group1: [
+                    {
+                      section_variable1: 'some_value',
+                      section_variable2: 'another_value',
+                    },
+                    {
+                      section_variable1: 'yet_another_value',
+                      section_variable2: 'one_more_value',
+                    },
+                  ],
+                  global: {
+                    global_variable1: 'global_value',
+                    global_variable2: 'another_global_value',
+                  },
+                },
+                attachment: [
+                  {
+                    filename: 'example.pdf',
+                    data: 'ZXhhbXBsZQo=',
+                  },
+                ],
+              },
+              messageId: '2536eda4-d638-4c93-8014-8ffe3f083214',
+              originalTimestamp: '2020-01-24T06:29:02.362Z',
+              receivedAt: '2020-01-24T11:59:02.403+05:30',
+              request_ip: '[::1]:53709',
+              sentAt: '2020-01-24T06:29:02.363Z',
+              timestamp: '2023-07-06T11:59:02.402+05:30',
+              type: 'track',
+              userId: 'userId06',
+            },
+            destination: {
+              DestinationDefinition: {
+                Config: {
+                  cdkV2Enabled: true,
+                  excludeKeys: [],
+                  includeKeys: [],
+                },
+              },
+              Config: {
+                discardEmptyProperties: true,
+                emersysUsername: 'dummy',
+                emersysUserSecret: 'dummy',
+                emersysCustomIdentifier: '3',
+                defaultContactList: 'dummy',
+                fieldMapping: [
+                  {
+                    rudderProperty: 'email',
+                    emersysProperty: '3',
+                  },
+                ],
+                oneTrustCookieCategories: [
+                  {
+                    oneTrustCookieCategory: 'Marketing',
+                  },
+                ],
+              },
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            error:
+              'Order Completed is not mapped to any Emersys external event. Aborting: Workflow: procWorkflow, Step: preparePayloadForTrack, ChildStep: undefined, OriginalError: Order Completed is not mapped to any Emersys external event. Aborting',
+            metadata: {},
+            statTags: {
+              destType: 'EMARSYS',
+              errorCategory: 'dataValidation',
+              errorType: 'configuration',
+              feature: 'processor',
+              implementation: 'cdkV2',
+              module: 'destination',
+            },
+            statusCode: 400,
+          },
+        ],
+      },
+    },
+  },
 ].map((d) => ({ ...d, mockFns }));

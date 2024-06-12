@@ -1,13 +1,3 @@
-import { pageTestData } from './pageTestData';
-import { ecommTestData } from './ecomTestData';
-import { trackTestData } from './trackTestData';
-import { groupTestData } from './groupTestData';
-import { validationTestData } from './validationTestData';
+import { existingTests } from './exisitngTests';
 
-export const data = [
-  ...pageTestData,
-  ...trackTestData,
-  ...ecommTestData,
-  ...groupTestData,
-  ...validationTestData,
-];
+export const data = [...existingTests];

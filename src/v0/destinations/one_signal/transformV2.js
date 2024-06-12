@@ -13,7 +13,12 @@ const {
   defaultPostRequestConfig,
   removeUndefinedAndNullValues,
 } = require('../../util');
-const { populateTags, getProductPurchasesDetails, getSubscriptions } = require('./util');
+const {
+  populateTags,
+  getProductPurchasesDetails,
+  getSubscriptions,
+  getOneSignalAliases,
+} = require('./util');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const responseBuilder = (payload, Config) => {
@@ -46,7 +51,13 @@ const identifyResponseBuilder = (message, { Config }) => {
   const tags = populateTags(message);
 
   const payload = constructPayload(message, mappingConfig[ConfigCategory.IDENTIFY_V2.name]);
-
+  if (!payload?.identity?.external_id) {
+    const alias = getOneSignalAliases(message);
+    if (!alias.identifier) {
+      throw new InstrumentationError('userId or any other alias is required for identify');
+    }
+    payload.identity = alias;
+  }
   // Following check is to intialise properties object in case we don't get properties object from construct payload
   if (!payload.properties) {
     payload.properties = {};
@@ -87,9 +98,14 @@ const trackOrGroupResponseBuilder = (message, { Config }, msgtype) => {
 
   const externalUserId = getFieldValueFromMessage(message, 'userIdOnly');
   if (!externalUserId) {
-    throw new InstrumentationError('userId is required for track events/updating a device');
+    const alias = getOneSignalAliases(message);
+    if (!alias.identifier) {
+      throw new InstrumentationError('userId or any other alias is required for track and group');
+    }
+    payload.identity = alias;
+  } else {
+    payload.identity.external_id = externalUserId;
   }
-
   /* Populating event as true in tags.
   eg. tags: {
     "event_name": true

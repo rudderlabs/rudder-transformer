@@ -192,10 +192,19 @@ const getSubscriptions = (message, Config) => {
   }
   return subscriptions.length > 0 ? subscriptions : undefined;
 };
-
+const getOneSignalAliases = (message) => {
+  const integrationsObj = getIntegrationsObj(message, 'one_signal');
+  const alias = {};
+  if (integrationsObj && integrationsObj.aliasName && integrationsObj.aliasIdentifier) {
+    alias.type = integrationsObj.aliasName;
+    alias.identifier = integrationsObj.aliasIdentifier;
+  }
+  return alias;
+};
 module.exports = {
   populateDeviceType,
   populateTags,
   getProductPurchasesDetails,
   getSubscriptions,
+  getOneSignalAliases,
 };

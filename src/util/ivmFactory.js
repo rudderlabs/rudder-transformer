@@ -247,7 +247,7 @@ async function createIvm(code, libraryVersionIds, versionId, credentials, secret
     if (_.isNil(credentials) || !_.isObject(credentials)) {
       throw new Error('Credentials in incorrect format');
     }
-    if (_.isNil(key[0]) || !_.isString(key[0])) {
+    if (key.length > 1 || _.isNil(key[0]) || !_.isString(key[0])) {
       throw new Error('Key should be a string');
     }
     return credentials[key];

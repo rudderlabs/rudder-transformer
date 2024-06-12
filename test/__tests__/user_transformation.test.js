@@ -1174,6 +1174,35 @@ describe("User transformation", () => {
       expect(output[0].error).toMatch(/Key should be a string/);
     });
 
+    it(`Simple ${name} Test with credentials with multiple arguements for codeVersion 1`, async () => {
+      const versionId = randomID();
+
+      const inputData = require(`./data/${integration}_input_credentials.json`);
+
+      const respBody = {
+        versionId: versionId,
+        codeVersion: "1",
+        name,
+        code: `
+          export function transformEvent(event, metadata) {
+              event.credentialValue = credential('arg1', 'arg2');
+              return event;
+            }
+            `
+      };
+      fetch.mockResolvedValue({
+        status: 200,
+        json: jest.fn().mockResolvedValue(respBody)
+      });
+
+      const output = await userTransformHandler(inputData, versionId, []);
+      
+      expect(fetch).toHaveBeenCalledWith(
+        `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
+      );
+      expect(output[0].error).toMatch(/Key should be a string/);
+    });
+
     it(`Simple ${name} Test with credentials with non string key for codeVersion 1`, async () => {
       const versionId = randomID();
 

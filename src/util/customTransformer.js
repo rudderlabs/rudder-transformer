@@ -8,8 +8,7 @@ const { parserForImport } = require('./parser');
 const stats = require('./stats');
 const { fetchWithDnsWrapper } = require('./utils');
 const { getMetadata, getTransformationMetadata } = require('../v0/util');
-const _ = require('lodash');
-
+const { isNil } = require('lodash');
 const ISOLATE_VM_MEMORY = parseInt(process.env.ISOLATE_VM_MEMORY || '128', 10);
 const GEOLOCATION_TIMEOUT_IN_MS = parseInt(process.env.GEOLOCATION_TIMEOUT_IN_MS || '1000', 10);
 
@@ -298,7 +297,7 @@ async function userTransformHandler(
           credentialsMap[cred.key] = cred.value;
         });
         events.forEach((ev) => {
-          if (_.isNil(ev?.credentials)) {
+          if (isNil(ev?.credentials)) {
             ev.credentials = credentials;
           }
         });

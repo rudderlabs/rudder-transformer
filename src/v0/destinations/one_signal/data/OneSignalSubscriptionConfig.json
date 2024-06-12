@@ -1,0 +1,8 @@
+[
+  { "sourceKeys": "enabled", "destKey": "enabled", "required": false },
+  { "sourceKeys": "notification_types", "destKey": "notification_types", "required": false },
+  { "sourceKeys": "session_time", "destKey": "session_time", "required": false },
+  { "sourceKeys": "session_count", "destKey": "session_count", "required": false },
+  { "sourceKeys": "app_version", "destKey": "app_version", "required": false },
+  { "sourceKeys": "test_type", "destKey": "test_type", "required": false }
+]

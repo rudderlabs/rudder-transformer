@@ -1,5 +1,9 @@
+const dotenv = require('dotenv');
+
 /* istanbul ignore file */
 const { structuredLogger: logger /* LOGLEVELS */ } = require('@rudderstack/integrations-lib');
+
+dotenv.config({ path: '../.env' });
 
 const LOGLEVELS = {
   debug: 0, // Most verbose logging level
@@ -71,35 +75,35 @@ const getLogger = () => {
 
 const debug = (...args) => {
   const logger = getLogger();
-  if (logLevel >= LOGLEVELS.debug) {
+  if (LOGLEVELS.debug >= logLevel) {
     log(logger.debug, args);
   }
 };
 
 const info = (...args) => {
   const logger = getLogger();
-  if (logLevel >= LOGLEVELS.info) {
+  if (LOGLEVELS.info >= LOGLEVELS[logLevel]) {
     log(logger.info, args);
   }
 };
 
 const warn = (...args) => {
   const logger = getLogger();
-  if (logLevel >= LOGLEVELS.warn) {
+  if (LOGLEVELS.warn >= LOGLEVELS[logLevel]) {
     log(logger.warn, args);
   }
 };
 
 const error = (...args) => {
   const logger = getLogger();
-  if (logLevel >= LOGLEVELS.error) {
+  if (LOGLEVELS.error >= LOGLEVELS[logLevel]) {
     log(logger.error, args);
   }
 };
 
 const requestLog = (identifierMsg, { metadata, requestDetails: { url, body, method } }) => {
   const logger = getLogger();
-  if (logLevel === LOGLEVELS.warn) {
+  if (LOGLEVELS[logLevel] === LOGLEVELS.warn) {
     const reqLogArgs = [identifierMsg, { metadata, url, body, method }];
     log(logger.warn, reqLogArgs);
   }
@@ -110,7 +114,7 @@ const responseLog = (
   { metadata, responseDetails: { response: body, status, headers } },
 ) => {
   const logger = getLogger();
-  if (logLevel === LOGLEVELS.warn) {
+  if (LOGLEVELS[logLevel] === LOGLEVELS.warn) {
     const resLogArgs = [identifierMsg, { metadata, body, status, headers }];
     log(logger.warn, resLogArgs);
   }

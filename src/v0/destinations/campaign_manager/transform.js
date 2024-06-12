@@ -24,7 +24,6 @@ const {
 
 const { convertToMicroseconds } = require('./util');
 const { JSON_MIME_TYPE } = require('../../util/constant');
-const logger = require('../../../logger');
 
 function isEmptyObject(obj) {
   return Object.keys(obj).length === 0 && obj.constructor === Object;
@@ -245,7 +244,6 @@ const batchEvents = (eventChunksArray) => {
 };
 
 const processRouterDest = async (inputs, reqMetadata) => {
-  logger.debug(`Transformation router request received with size ${inputs.length}`);
   const batchErrorRespList = [];
   const eventChunksArray = [];
   const { destination } = inputs[0];

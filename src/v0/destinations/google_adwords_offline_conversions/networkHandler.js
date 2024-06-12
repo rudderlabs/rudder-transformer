@@ -27,6 +27,14 @@ const conversionCustomVariableCache = new Cache(CONVERSION_CUSTOM_VARIABLE_CACHE
 
 const createJob = async ({ endpoint, headers, payload, metadata }) => {
   const endPoint = `${endpoint}:create`;
+  logger.requestLog(`[${destType.toUpperCase()}] job creation request`, {
+    metadata,
+    requestDetails: {
+      url: endpoint,
+      body: payload,
+      method: 'post',
+    },
+  });
   let createJobResponse = await httpPOST(
     endPoint,
     payload,
@@ -37,6 +45,7 @@ const createJob = async ({ endpoint, headers, payload, metadata }) => {
       endpointPath: `/create`,
       requestMethod: 'POST',
       module: 'dataDelivery',
+      metadata,
     },
   );
   createJobResponse = processAxiosResponse(createJobResponse);
@@ -62,6 +71,14 @@ const createJob = async ({ endpoint, headers, payload, metadata }) => {
 
 const addConversionToJob = async ({ endpoint, headers, jobId, payload, metadata }) => {
   const endPoint = `${endpoint}/${jobId}:addOperations`;
+  logger.requestLog(`[${destType.toUpperCase()}] add conversion to job request`, {
+    metadata,
+    requestDetails: {
+      url: endpoint,
+      body: payload,
+      method: 'post',
+    },
+  });
   let addConversionToJobResponse = await httpPOST(
     endPoint,
     payload,
@@ -72,6 +89,7 @@ const addConversionToJob = async ({ endpoint, headers, jobId, payload, metadata 
       endpointPath: `/addOperations`,
       requestMethod: 'POST',
       module: 'dataDelivery',
+      metadata,
     },
   );
   addConversionToJobResponse = processAxiosResponse(addConversionToJobResponse);
@@ -97,12 +115,14 @@ const addConversionToJob = async ({ endpoint, headers, jobId, payload, metadata 
 
 const runTheJob = async ({ endpoint, headers, payload, jobId, metadata }) => {
   const endPoint = `${endpoint}/${jobId}:run`;
-  // logger.responseLog(`[${destType.toUpperCase()}] run job request`, {
-  //   ...getLoggableData(metadata),
-  //   requestBody: payload,
-  //   method: 'POST',
-  //   url: endPoint,
-  // });
+  logger.requestLog(`[${destType.toUpperCase()}] run job request`, {
+    metadata,
+    requestDetails: {
+      body: payload,
+      method: 'POST',
+      url: endPoint,
+    },
+  });
   const { httpResponse: executeJobResponse, processedResponse } = await handleHttpRequest(
     'post',
     endPoint,
@@ -114,6 +134,7 @@ const runTheJob = async ({ endpoint, headers, payload, jobId, metadata }) => {
       endpointPath: `/run`,
       requestMethod: 'POST',
       module: 'dataDelivery',
+      metadata,
     },
   );
   const { headers: responseHeaders, response, status } = processedResponse;
@@ -146,12 +167,21 @@ const getConversionCustomVariable = async ({ headers, params, metadata }) => {
     const requestOptions = {
       headers,
     };
+    logger.requestLog(`[${destType.toUpperCase()}] get conversion custom variable request`, {
+      metadata,
+      requestDetails: {
+        url: endpoint,
+        body: data,
+        method: 'post',
+      },
+    });
     let searchStreamResponse = await httpPOST(endpoint, data, requestOptions, {
       destType: 'google_adwords_offline_conversions',
       feature: 'proxy',
       endpointPath: `/searchStream`,
       requestMethod: 'POST',
       module: 'dataDelivery',
+      metadata,
     });
     searchStreamResponse = processAxiosResponse(searchStreamResponse);
     const { response, status, headers: responseHeaders } = searchStreamResponse;
@@ -319,6 +349,7 @@ const ProxyRequest = async (request) => {
     endpointPath: `/proxy`,
     requestMethod: 'POST',
     module: 'dataDelivery',
+    metadata,
   });
   const { headers: responseHeaders, status, response } = processedResponse;
   logger.responseLog(`[${destType.toUpperCase()}] deliver event to destination`, {

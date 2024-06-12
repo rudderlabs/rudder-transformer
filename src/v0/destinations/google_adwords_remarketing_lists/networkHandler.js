@@ -39,6 +39,14 @@ const createJob = async ({ endpoint, headers, method, params, metadata }) => {
     headers,
     method,
   };
+  logger.requestLog(`[${destType.toUpperCase()}] job creation request`, {
+    metadata,
+    requestDetails: {
+      url: jobCreatingRequest.url,
+      body: jobCreatingRequest.data,
+      method: jobCreatingRequest.method,
+    },
+  });
   const { httpResponse, processedResponse } = await handleHttpRequest(
     'constructor',
     jobCreatingRequest,
@@ -48,6 +56,7 @@ const createJob = async ({ endpoint, headers, method, params, metadata }) => {
       endpointPath: '/customers/create',
       requestMethod: 'POST',
       module: 'dataDelivery',
+      metadata,
     },
   );
   logger.responseLog(`[${destType.toUpperCase()}] job creation response`, {
@@ -73,6 +82,14 @@ const addUserToJob = async ({ endpoint, headers, method, jobId, body, metadata }
     headers,
     method,
   };
+  logger.requestLog(`[${destType.toUpperCase()}] add user to job request`, {
+    metadata,
+    requestDetails: {
+      url: secondRequest.url,
+      body: secondRequest.data,
+      method: secondRequest.method,
+    },
+  });
   const { httpResponse: response, processedResponse } = await handleHttpRequest(
     'constructor',
     secondRequest,
@@ -82,6 +99,7 @@ const addUserToJob = async ({ endpoint, headers, method, jobId, body, metadata }
       endpointPath: '/addOperations',
       requestMethod: 'POST',
       module: 'dataDelivery',
+      metadata,
     },
   );
   logger.responseLog(`[${destType.toUpperCase()}] add user to job response`, {
@@ -105,6 +123,14 @@ const runTheJob = async ({ endpoint, headers, method, jobId, metadata }) => {
     headers,
     method,
   };
+  logger.requestLog(`[${destType.toUpperCase()}] run job request`, {
+    metadata,
+    requestDetails: {
+      url: thirdRequest.url,
+      body: thirdRequest.data,
+      method: thirdRequest.method,
+    },
+  });
   const { httpResponse: response, processedResponse } = await handleHttpRequest(
     'constructor',
     thirdRequest,

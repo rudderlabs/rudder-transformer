@@ -23,6 +23,12 @@ const setLogLevel = (level) => {
   logger?.setLogLevel(`${loglevel}`);
 };
 
+/**
+ * obtains the metadata for logging
+ *
+ * @param {*} metadata
+ * @returns { destinationId:string, sourceId:string, workspaceId: string, destType:string, module:string, implementation:string, feature:string }
+ */
 const getLogMetadata = (metadata) => {
   let reqMeta = metadata;
   if (Array.isArray(metadata)) {

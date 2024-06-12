@@ -52,12 +52,14 @@ const fireHTTPStats = (clientResponse, startTime, statTags) => {
   const requestMethod = statTags.requestMethod ? statTags.requestMethod : '';
   const module = statTags.module ? statTags.module : '';
   const statusCode = clientResponse.success ? clientResponse.response.status : '';
+  const logMetaInfo = log.getLogMetadata(statTags?.metadata);
   stats.timing('outgoing_request_latency', startTime, {
     feature,
     destType,
     endpointPath,
     requestMethod,
     module,
+    ...logMetaInfo,
   });
   stats.counter('outgoing_request_count', 1, {
     feature,
@@ -323,25 +325,6 @@ const prepareProxyRequest = (request) => {
 };
 
 /**
- * depricating: handles proxying requests to destinations from server, expects requsts in "defaultRequestConfig"
- * note: needed for test api
- * @param {*} request
- * @returns
- */
-const proxyRequest = async (request, destType) => {
-  const { endpoint, data, method, params, headers } = prepareProxyRequest(request);
-  const requestOptions = {
-    url: endpoint,
-    data,
-    params,
-    headers,
-    method,
-  };
-  const response = await httpSend(requestOptions, { feature: 'proxy', destType });
-  return response;
-};
-
-/**
  * handles http request and sends the response in a simple format that is followed in transformer
  *
  * @param {string} requestType - http request type like post, get etc,.
@@ -390,6 +373,38 @@ const handleHttpRequest = async (requestType = 'post', ...httpArgs) => {
   const httpResponse = await httpWrapperMethod(...httpArgs);
   const processedResponse = processAxiosResponse(httpResponse);
   return { httpResponse, processedResponse };
+};
+
+/**
+ * depricating: handles proxying requests to destinations from server, expects requsts in "defaultRequestConfig"
+ * note: needed for test api
+ * @param {*} request
+ * @returns
+ */
+const proxyRequest = async (request, destType) => {
+  const { metadata } = request;
+  const { endpoint, data, method, params, headers } = prepareProxyRequest(request);
+  const requestOptions = {
+    url: endpoint,
+    data,
+    params,
+    headers,
+    method,
+  };
+  log.requestLog(`[${destType.toUpperCase()}] delivering data`, {
+    metadata,
+    requestDetails: {
+      body: data,
+      url: endpoint,
+      method,
+    },
+  });
+  const response = await httpSend(requestOptions, {
+    feature: 'proxy',
+    destType,
+    metadata,
+  });
+  return response;
 };
 
 module.exports = {

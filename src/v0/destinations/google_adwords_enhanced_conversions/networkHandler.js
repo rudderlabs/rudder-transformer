@@ -58,6 +58,7 @@ const getConversionActionId = async ({ method, headers, params, metadata }) => {
         endpointPath: `/googleAds:searchStream`,
         requestMethod: 'POST',
         module: 'dataDelivery',
+        metadata,
       },
     );
     const { status, response, headers: responseHeaders } = gaecConversionActionIdResponse;
@@ -129,6 +130,7 @@ const ProxyRequest = async (request) => {
       endpointPath: `/googleAds:uploadOfflineUserData`,
       requestMethod: 'POST',
       module: 'dataDelivery',
+      metadata,
     },
   );
   const { response: processedResp, status, headers: responseHeaders } = processedResponse;

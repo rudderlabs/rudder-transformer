@@ -1,0 +1,36 @@
+bindings:
+  - name: EventType
+    path: ../../../../constants
+  - path: ../../bindings/jsontemplate
+    exportAll: true
+  - path: ../../../../v0/destinations/webhook/utils
+  - name: getHashFromArray
+    path: ../../../../v0/util
+  - name: getIntegrationsObj
+    path: ../../../../v0/util
+  - name: removeUndefinedAndNullValues
+    path: ../../../../v0/util
+
+steps:
+  - name: checkIfProcessed
+    condition: .message.statusCode
+    template: |
+      $.batchMode ? .message.body.JSON : .message
+    onComplete: return
+
+  - name: messageType
+    template: |
+      $.context.messageType = .message.type.toLowerCase();  
+
+  - name: validateInput
+    template: |
+      let messageType = $.context.messageType;
+      $.assert(messageType, "message Type is not present. Aborting");
+      $.assert(messageType in {{$.EventType.([.TRACK])}}, "message type " + messageType + " is not supported");
+      $.assertConfig(.destination.Config.accountID, "Account ID is not present. Aborting");
+      $.assertConfig(.destination.Config.instanceID, "Instance ID is not present. Aborting");
+  - name: buildResponseForProcessTransformation
+    template: |
+       {
+        payload: JSON.stringify(.message.properties),
+       }

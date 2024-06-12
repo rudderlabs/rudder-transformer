@@ -74,6 +74,9 @@ class MetricsAggregator {
   async aggregateMetrics() {
     // If a request is already being processed, reject the new request
     // Use resolveFunc to check if a request is already being processed
+    // we dont support concurrent /metrics requests for now - we would need to implement a requestId mechanism and then handle all message calls accoridng to this requestId
+    // this is how it is implemented in prom-client [https://github.com/siimon/prom-client/blob/564e46724e258704df52ab329a7be833aaed4b69/lib/cluster.js#L43]
+    // we are not implementing it for now to keep things simple, once we validate the solution we can implement it
     if (this.resolveFunc !== null) {
       logger.error(
         '[MetricsAggregator] Failed to serve /metrics request, a request is already being processed.',

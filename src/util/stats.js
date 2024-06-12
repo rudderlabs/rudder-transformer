@@ -97,6 +97,16 @@ async function metricsController(ctx) {
   ctx.body = `Not supported`;
 }
 
+async function terminateWorkerThread() {
+  if (!enableStats || !statsClient) {
+    return;
+  }
+
+  if (statsClientType === 'prometheus') {
+    await statsClient.terminateWorkerThread();
+  }
+}
+
 init();
 
 module.exports = {
@@ -108,4 +118,5 @@ module.exports = {
   gauge,
   histogram,
   metricsController,
+  terminateWorkerThread,
 };

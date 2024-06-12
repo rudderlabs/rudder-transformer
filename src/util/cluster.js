@@ -3,6 +3,7 @@ const gracefulShutdown = require('http-graceful-shutdown');
 const logger = require('../logger');
 const { logProcessInfo } = require('./utils');
 const { RedisDB } = require('./redis/redisConnector');
+const { terminateWorkerThread } = require('./stats');
 
 const numWorkers = parseInt(process.env.NUM_PROCS || '1', 10);
 const metricsPort = parseInt(process.env.METRICS_PORT || '9091', 10);
@@ -23,6 +24,9 @@ function shutdownWorkers() {
     process.kill(worker.process.pid);
     logger.error(`Sent kill signal to worker ${worker.id} (pid: ${worker.process.pid})`);
   });
+  // TODO: find a better way to terminate worker thread, this is a temporary hack
+  // ideally we should put a await here, we will fix this in future
+  terminateWorkerThread();
 }
 
 function start(port, app, metricsApp) {

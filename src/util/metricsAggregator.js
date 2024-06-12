@@ -72,6 +72,16 @@ class MetricsAggregator {
   }
 
   async aggregateMetrics() {
+    // If a request is already being processed, reject the new request
+    // Use resolveFunc to check if a request is already being processed
+    if (this.resolveFunc !== null) {
+      logger.error(
+        '[MetricsAggregator] Failed to serve /metrics request, a request is already being processed.',
+      );
+      throw new Error(
+        '[MetricsAggregator] Currently processing a request, please try again later.',
+      );
+    }
     return new Promise((resolve, reject) => {
       this.resolveFunc = resolve;
       this.rejectFunc = reject;

@@ -151,7 +151,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
 
   // batch implementation
   let batchedResponseList = [];
-  if (successRespList.length > 0) {
+  if (dontBatchFalseOrUndefinedResponses.length > 0) {
     if (destination.Config.apiVersion === API_VERSION.v3) {
       batchedResponseList = batchEvents(dontBatchFalseOrUndefinedResponses);
     } else {

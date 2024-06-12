@@ -41,6 +41,9 @@ export const businessData = [
             },
           },
           [generateMetadata(1), generateMetadata(2)],
+          {
+            apiVersion: 'newApi',
+          },
         ),
       },
     },

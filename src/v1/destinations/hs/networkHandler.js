@@ -10,8 +10,15 @@ const {
 } = require('../../../adapters/utils/networkUtils');
 const tags = require('../../../v0/util/tags');
 
-const verify = (results, rudderJobMetadata) =>
-  Array.isArray(results) && results.length === rudderJobMetadata.length;
+const verify = (results, rudderJobMetadata, destinationConfig) => {
+  if (destinationConfig?.apiVersion === undefined) {
+    return false;
+  }
+  if (destinationConfig?.apiVersion === 'newApi') {
+    return Array.isArray(results) && results.length === rudderJobMetadata.length;
+  }
+  return true;
+};
 
 const populateResponseWithDontBatch = (rudderJobMetadata, status, response) => {
   const errorMessage = JSON.stringify(response);
@@ -27,7 +34,7 @@ const populateResponseWithDontBatch = (rudderJobMetadata, status, response) => {
   return responseWithIndividualEvents;
 };
 const responseHandler = (responseParams) => {
-  const { destinationResponse, rudderJobMetadata } = responseParams;
+  const { destinationResponse, rudderJobMetadata, destinationRequest } = responseParams;
   const successMessage = `[HUBSPOT Response V1 Handler] - Request Processed Successfully`;
   const failureMessage =
     'HUBSPOT: Error in transformer proxy v1 during HUBSPOT response transformation';
@@ -37,11 +44,11 @@ const responseHandler = (responseParams) => {
   if (isHttpStatusSuccess(status)) {
     // populate different response for each event
     const results = response?.results;
-    if (verify(results, rudderJobMetadata)) {
-      for (const [idx] of rudderJobMetadata.entries()) {
+    if (verify(results, rudderJobMetadata, destinationRequest?.destinationConfig)) {
+      for (const metadata of rudderJobMetadata) {
         const proxyOutputObj = {
           statusCode: 200,
-          metadata: rudderJobMetadata[idx],
+          metadata,
           error: 'success',
         };
         responseWithIndividualEvents.push(proxyOutputObj);
@@ -54,12 +61,15 @@ const responseHandler = (responseParams) => {
       };
     }
     // return the destiantionResponse as it is when the response is not in expected format
-    return {
+    throw new TransformerProxyError(
+      failureMessage,
       status,
-      message: successMessage,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
+      },
       destinationResponse,
-      response: destinationResponse,
-    };
+      getAuthErrCategoryFromStCode(status),
+    );
   }
 
   // At least one event in the batch is invalid.

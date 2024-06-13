@@ -35,6 +35,7 @@ const CUSTOM_NETWORK_POLICY_WORKSPACE_IDS = process.env.CUSTOM_NETWORK_POLICY_WO
 const customNetworkPolicyWorkspaceIds = CUSTOM_NETWORK_POLICY_WORKSPACE_IDS.split(',');
 const CUSTOMER_TIER = process.env.CUSTOMER_TIER || 'shared';
 const DISABLE_RECONCILE_FN = process.env.DISABLE_RECONCILE_FN == 'true' || false;
+const gatewayRetriableStatus = [408, 429, 500, 502, 503, 504];
 
 // Initialise node cache
 const functionListCache = new NodeCache();
@@ -347,16 +348,12 @@ const executeFaasFunction = async (
       throw new RetryRequestError(`${name} not found`);
     }
 
-    if (error.statusCode === 429) {
-      throw new RetryRequestError(`Rate limit exceeded for ${name}`);
-    }
+    if (gatewayRetriableStatus.includes(error.statusCode)) {
+      if (error.statusCode === 429) {
+        throw new RetryRequestError(`Rate limit exceeded for ${name}`);
+      }
 
-    if (error.statusCode === 500 || error.statusCode === 503) {
       throw new RetryRequestError(error.message);
-    }
-
-    if (error.statusCode === 504) {
-      throw new RespStatusError(`${name} timed out`, 504);
     }
 
     throw error;

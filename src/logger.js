@@ -1,14 +1,7 @@
 const dotenv = require('dotenv');
 
 /* istanbul ignore file */
-const { /* LOGLEVELS */ structuredLogger } = require('@rudderstack/integrations-lib');
-
-const LOGLEVELS = {
-  debug: 0, // Most verbose logging level
-  info: 1, // Logs about state of the application
-  warn: 2, // Logs about warnings which dont immediately halt the application
-  error: 3, // Logs about errors which dont immediately halt the application
-};
+const { LOGLEVELS, structuredLogger } = require('@rudderstack/integrations-lib');
 
 // any value greater than levelError will work as levelNone
 const loggerImpl = process.env.LOGGER_IMPL ?? 'winston';
@@ -16,11 +9,6 @@ const loggerImpl = process.env.LOGGER_IMPL ?? 'winston';
 let logLevel = process.env.LOG_LEVEL ?? 'error';
 
 const logger = structuredLogger({ level: logLevel });
-
-logger.debug('(debug) Loglevel is:', logLevel);
-logger.info('(info) Loglevel is:', logLevel);
-logger.warn('(warn) Loglevel is:', logLevel);
-logger.error('(error) Loglevel is:', logLevel);
 
 const getLogger = () => {
   return loggerImpl === 'winston' ? logger : console;
@@ -86,28 +74,28 @@ const log = (logMethod, args) => {
 
 const debug = (...args) => {
   const logger = getLogger();
-  if (LOGLEVELS.debug >= logLevel) {
+  if (LOGLEVELS.debug <= logLevel) {
     log(logger.debug, args);
   }
 };
 
 const info = (...args) => {
   const logger = getLogger();
-  if (LOGLEVELS.info >= LOGLEVELS[logLevel]) {
+  if (LOGLEVELS.info <= LOGLEVELS[logLevel]) {
     log(logger.info, args);
   }
 };
 
 const warn = (...args) => {
   const logger = getLogger();
-  if (LOGLEVELS.warn >= LOGLEVELS[logLevel]) {
+  if (LOGLEVELS.warn <= LOGLEVELS[logLevel]) {
     log(logger.warn, args);
   }
 };
 
 const error = (...args) => {
   const logger = getLogger();
-  if (LOGLEVELS.error >= LOGLEVELS[logLevel]) {
+  if (LOGLEVELS.error <= LOGLEVELS[logLevel]) {
     log(logger.error, args);
   }
 };

@@ -17,8 +17,10 @@ let logLevel = process.env.LOG_LEVEL ?? 'error';
 
 const logger = structuredLogger({ level: logLevel });
 
-logger.error('(error) Loglevel is:', logLevel);
+logger.debug('(debug) Loglevel is:', logLevel);
+logger.info('(info) Loglevel is:', logLevel);
 logger.warn('(warn) Loglevel is:', logLevel);
+logger.error('(error) Loglevel is:', logLevel);
 
 const getLogger = () => {
   return loggerImpl === 'winston' ? logger : console;

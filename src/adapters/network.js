@@ -51,7 +51,10 @@ const fireOutgoingReqStats = ({
   endpointPath,
   requestMethod,
   module,
-  metadata,
+  metadata = {},
+  startTime,
+  statusCode,
+  clientResponse,
 }) => {
   const logMetaInfo = log.getLogMetadata(metadata);
   stats.timing('outgoing_request_latency', startTime, {
@@ -81,29 +84,27 @@ const fireHTTPStats = (clientResponse, startTime, statTags) => {
   const requestMethod = statTags.requestMethod ? statTags.requestMethod : '';
   const module = statTags.module ? statTags.module : '';
   const statusCode = clientResponse.success ? clientResponse.response.status : '';
-  if (statTags?.metadata && !Array.isArray(statTags?.metadata)) {
-    const metadata = !Array.isArray(statTags?.metadata) ? [statTags.metadata] : statTags.metadata;
-    metadata?.forEach((m) => {
-      fireOutgoingReqStats({
-        destType,
-        endpointPath,
-        feature,
-        module,
-        requestMethod,
-        statusCode,
-        metadata: m,
-      });
-    });
-    return;
-  }
-  fireOutgoingReqStats({
+  const defArgs = {
     destType,
     endpointPath,
     feature,
     module,
     requestMethod,
     statusCode,
-  });
+    startTime,
+    clientResponse,
+  };
+  if (statTags?.metadata && !Array.isArray(statTags?.metadata)) {
+    const metadata = !Array.isArray(statTags?.metadata) ? [statTags.metadata] : statTags.metadata;
+    metadata?.forEach((m) => {
+      fireOutgoingReqStats({
+        ...defArgs,
+        metadata: m,
+      });
+    });
+    return;
+  }
+  fireOutgoingReqStats(defArgs);
 };
 
 const enhanceRequestOptions = (options) => {

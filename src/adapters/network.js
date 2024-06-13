@@ -52,23 +52,30 @@ const fireHTTPStats = (clientResponse, startTime, statTags) => {
   const requestMethod = statTags.requestMethod ? statTags.requestMethod : '';
   const module = statTags.module ? statTags.module : '';
   const statusCode = clientResponse.success ? clientResponse.response.status : '';
-  const logMetaInfo = log.getLogMetadata(statTags?.metadata);
-  stats.timing('outgoing_request_latency', startTime, {
-    feature,
-    destType,
-    endpointPath,
-    requestMethod,
-    module,
-    ...logMetaInfo,
-  });
-  stats.counter('outgoing_request_count', 1, {
-    feature,
-    destType,
-    endpointPath,
-    success: clientResponse.success,
-    statusCode,
-    requestMethod,
-    module,
+  let metadata = statTags?.metadata || [];
+  if (statTags?.metadata && !Array.isArray(statTags?.metadata)) {
+    metadata = [statTags.metadata];
+  }
+  metadata?.forEach((m) => {
+    const logMetaInfo = log.getLogMetadata(m);
+    stats.timing('outgoing_request_latency', startTime, {
+      ...logMetaInfo,
+      feature,
+      destType,
+      endpointPath,
+      requestMethod,
+      module,
+    });
+    stats.counter('outgoing_request_count', 1, {
+      ...logMetaInfo,
+      feature,
+      destType,
+      endpointPath,
+      success: clientResponse.success,
+      statusCode,
+      requestMethod,
+      module,
+    });
   });
 };
 

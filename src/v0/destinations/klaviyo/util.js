@@ -43,6 +43,14 @@ const getIdFromNewOrExistingProfile = async ({ endpoint, payload, requestOptions
   let response;
   let profileId;
   const endpointPath = '/api/profiles';
+  logger.requestLog(`[${destType.toUpperCase()}] get id from profile request`, {
+    metadata,
+    requestDetails: {
+      url: endpoint,
+      body: payload,
+      method: 'post',
+    },
+  });
   const { processedResponse: resp } = await handleHttpRequest(
     'post',
     endpoint,

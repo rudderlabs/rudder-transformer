@@ -44,7 +44,7 @@ const responseHandler = (responseParams) => {
   const responseWithIndividualEvents = [];
   const { response, status, headers } = destinationResponse;
 
-  logger.responseLog('[campaign_manager] response handling', {
+  logger.responseLog('[monday] proxy response', {
     metadata: rudderJobMetadata,
     responseDetails: {
       headers,

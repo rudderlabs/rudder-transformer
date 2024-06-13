@@ -45,6 +45,35 @@ const networkClientConfigs = {
   httpsAgent: new https.Agent({ keepAlive: true }),
 };
 
+const fireOutgoingReqStats = ({
+  destType,
+  feature,
+  endpointPath,
+  requestMethod,
+  module,
+  metadata,
+}) => {
+  const logMetaInfo = log.getLogMetadata(metadata);
+  stats.timing('outgoing_request_latency', startTime, {
+    ...logMetaInfo,
+    feature,
+    destType,
+    endpointPath,
+    requestMethod,
+    module,
+  });
+  stats.counter('outgoing_request_count', 1, {
+    ...logMetaInfo,
+    feature,
+    destType,
+    endpointPath,
+    success: clientResponse.success,
+    statusCode,
+    requestMethod,
+    module,
+  });
+};
+
 const fireHTTPStats = (clientResponse, startTime, statTags) => {
   const destType = statTags.destType ? statTags.destType : '';
   const feature = statTags.feature ? statTags.feature : '';
@@ -52,30 +81,28 @@ const fireHTTPStats = (clientResponse, startTime, statTags) => {
   const requestMethod = statTags.requestMethod ? statTags.requestMethod : '';
   const module = statTags.module ? statTags.module : '';
   const statusCode = clientResponse.success ? clientResponse.response.status : '';
-  let metadata = statTags?.metadata || [];
   if (statTags?.metadata && !Array.isArray(statTags?.metadata)) {
-    metadata = [statTags.metadata];
+    const metadata = !Array.isArray(statTags?.metadata) ? [statTags.metadata] : statTags.metadata;
+    metadata?.forEach((m) => {
+      fireOutgoingReqStats({
+        destType,
+        endpointPath,
+        feature,
+        module,
+        requestMethod,
+        statusCode,
+        metadata: m,
+      });
+    });
+    return;
   }
-  metadata?.forEach((m) => {
-    const logMetaInfo = log.getLogMetadata(m);
-    stats.timing('outgoing_request_latency', startTime, {
-      ...logMetaInfo,
-      feature,
-      destType,
-      endpointPath,
-      requestMethod,
-      module,
-    });
-    stats.counter('outgoing_request_count', 1, {
-      ...logMetaInfo,
-      feature,
-      destType,
-      endpointPath,
-      success: clientResponse.success,
-      statusCode,
-      requestMethod,
-      module,
-    });
+  fireOutgoingReqStats({
+    destType,
+    endpointPath,
+    feature,
+    module,
+    requestMethod,
+    statusCode,
   });
 };
 

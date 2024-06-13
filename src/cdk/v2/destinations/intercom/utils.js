@@ -34,22 +34,34 @@ const {
   TAGS_ENDPOINT,
 } = require('./config');
 
+/**
+ * method to handle error during api call
+ * ref docs: https://developers.intercom.com/docs/references/rest-api/errors/error-codes/
+ *           https://developers.intercom.com/docs/references/rest-api/errors/error-objects/
+ *           https://developers.intercom.com/docs/references/rest-api/errors/http-responses/
+ * e.g.
+ * 400 - code: parameter_not_found (or parameter_invalid), message: company not specified
+ * 401 - code: unauthorized, message: Access Token Invalid
+ * 404 - code: company_not_found, message: Company Not Found
+ * @param {*} message
+ * @param {*} processedResponse
+ */
 const intercomErrorHandler = (message, processedResponse) => {
-  const errorMessages = JSON.stringify(processedResponse?.response?.errors);
-  if (processedResponse?.status === 400) {
+  const errorMessages = JSON.stringify(processedResponse.response);
+  if (processedResponse.status === 400) {
     throw new InstrumentationError(`${message} : ${errorMessages}`);
   }
-  if (processedResponse?.status === 401) {
+  if (processedResponse.status === 401) {
     throw new ConfigurationError(`${message} : ${errorMessages}`);
   }
-  if (processedResponse?.status === 404) {
+  if (processedResponse.status === 404) {
     throw new InstrumentationError(`${message} : ${errorMessages}`);
   }
   throw new NetworkError(
     `${message} : ${errorMessages}`,
-    processedResponse?.status,
+    processedResponse.status,
     {
-      [tags]: getDynamicErrorType(processedResponse?.status),
+      [tags]: getDynamicErrorType(processedResponse.status),
     },
     processedResponse,
   );
@@ -411,6 +423,12 @@ const attachContactToCompany = async (payload, endpoint, destination) => {
   if (apiVersion === 'v1') {
     endpointPath = '/users';
   }
+  const commonStatTags = {
+    destType: 'intercom',
+    feature: 'transformation',
+    requestMethod: 'POST',
+    module: 'router',
+  };
   const headers = getHeaders(destination, apiVersion);
   const finalPayload = JSON.stringify(removeUndefinedAndNullValues(payload));
   const response = await httpPOST(
@@ -420,11 +438,8 @@ const attachContactToCompany = async (payload, endpoint, destination) => {
       headers,
     },
     {
-      destType: 'intercom',
-      feature: 'transformation',
+      ...commonStatTags,
       endpointPath,
-      requestMethod: 'POST',
-      module: 'router',
     },
   );
 

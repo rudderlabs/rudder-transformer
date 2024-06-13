@@ -864,7 +864,7 @@ describe('attachContactToCompany utility test', () => {
       await attachContactToCompany(payload, endpoint, destination);
     } catch (error) {
       expect(error.message).toEqual(
-        'Unable to attach Contact or User to Company due to : [{"code":"company_not_found","message":"Company Not Found"}]',
+        'Unable to attach Contact or User to Company due to : {"type":"error.list","request_id":"123","errors":[{"code":"company_not_found","message":"Company Not Found"}]}',
       );
     }
   });
@@ -894,7 +894,7 @@ describe('attachContactToCompany utility test', () => {
       await attachContactToCompany(payload, endpoint, destination);
     } catch (error) {
       expect(error.message).toEqual(
-        'Unable to attach Contact or User to Company due to : [{"code":"parameter_not_found","message":"company not specified"}]',
+        'Unable to attach Contact or User to Company due to : {"type":"error.list","request_id":"123","errors":[{"code":"parameter_not_found","message":"company not specified"}]}',
       );
     }
   });
@@ -974,7 +974,7 @@ describe('addOrUpdateTagsToCompany utility test', () => {
       await addOrUpdateTagsToCompany(message, destination, id);
     } catch (error) {
       expect(error.message).toEqual(
-        `Unable to Add or Update the Tag to Company due to : [{\"code\":\"unauthorized\",\"message\":\"Access Token Invalid\"}]`,
+        `Unable to Add or Update the Tag to Company due to : {"type":"error.list","request_id":"request_401","errors":[{"code":"unauthorized","message":"Access Token Invalid"}]}`,
       );
     }
   });
@@ -1009,7 +1009,7 @@ describe('addOrUpdateTagsToCompany utility test', () => {
       await addOrUpdateTagsToCompany(message, destination, id);
     } catch (error) {
       expect(error.message).toEqual(
-        `Unable to Add or Update the Tag to Company due to : [{\"code\":\"rate_limit_exceeded\",\"message\":\"You have exceeded the rate limit. Please try again later.\"}]`,
+        `Unable to Add or Update the Tag to Company due to : {"type":"error.list","request_id":"request_429","errors":[{"code":"rate_limit_exceeded","message":"You have exceeded the rate limit. Please try again later."}]}`,
       );
     }
   });

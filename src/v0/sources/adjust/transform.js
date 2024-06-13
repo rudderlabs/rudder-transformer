@@ -1,7 +1,8 @@
 const lodash = require('lodash');
 const path = require('path');
 const fs = require('fs');
-const { TransformationError, structuredLogger: logger } = require('@rudderstack/integrations-lib');
+const { TransformationError } = require('@rudderstack/integrations-lib');
+const logger = require('../../../logger');
 const Message = require('../message');
 const { CommonUtils } = require('../../../util/common');
 const { excludedFieldList } = require('./config');

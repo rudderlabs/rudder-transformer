@@ -1,0 +1,22 @@
+[
+  {
+    "sourceKeys": "properties.tracking_data",
+    "required": true,
+    "destKey": "trackingData"
+  },
+  {
+    "sourceKeys": "properties.rank",
+    "required": true,
+    "destKey": "rank"
+  },
+  {
+    "sourceKeys": "properties.beacon_issued",
+    "required": true,
+    "destKey": "beaconIssued"
+  },
+  {
+    "sourceKeys": "timestamp",
+    "sourceFromGenericMap": true,
+    "destKey": "ts"
+  }
+]

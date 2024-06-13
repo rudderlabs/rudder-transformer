@@ -497,7 +497,7 @@ export const data = [
                 traits: {
                   email: 'abc@gmail.com',
                   anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
-                  firstName: 'test',
+                  firstName: ' test',
                   lastName: 'last',
                   gender: 1234,
                   phone: '+91-9831311135',

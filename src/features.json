@@ -71,7 +71,8 @@
     "LINKEDIN_ADS": true,
     "BLOOMREACH": true,
     "MOVABLE_INK": true,
-    "EMARSYS": true
+    "EMARSYS": true,
+    "KODDI": true
   },
   "regulations": [
     "BRAZE",

@@ -24,7 +24,7 @@ const { JSON_MIME_TYPE } = require('../../util/constant');
 const updateMappingJson = (mapping) => {
   const newMapping = [];
   mapping.forEach((element) => {
-    if (get(element, 'metadata.type') && element.metadata.type === 'hashToSha256') {
+    if (get(element, 'metadata.type') && element.metadata.type.includes('hashToSha256')) {
       element.metadata.type = 'toString';
     }
     newMapping.push(element);

@@ -26,7 +26,7 @@ export const data = [
                   namespace: 'com.rudderlabs.javascript',
                 },
                 traits: {
-                  email: 'user123@email.com',
+                  email: ' user123@email.com',
                   phone: '+917836362334',
                   userId: 'user123',
                 },

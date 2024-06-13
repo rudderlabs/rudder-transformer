@@ -339,24 +339,15 @@ const executeFaasFunction = async (
     return await invokeFunction(name, events);
   } catch (error) {
     logger.error(`Error while invoking ${name}: ${error.message}`);
-    errorRaised = error;
 
+    errorRaised = error;
     if (error.statusCode === 404 && error.message.includes(`error finding function ${name}`)) {
       removeFunctionFromCache(name);
-
       await setupFaasFunction(name, null, versionId, libraryVersionIDs, testMode, trMetadata);
-      throw new RetryRequestError(`${name} not found`);
     }
 
-    if (gatewayRetriableStatus.includes(error.statusCode)) {
-      if (error.statusCode === 429) {
-        throw new RetryRequestError(`Rate limit exceeded for ${name}`);
-      }
-
-      throw new RetryRequestError(error.message);
-    }
-
-    throw error;
+    // all unexpected errors are retried at caller
+    throw new RetryRequestError(error.message);
   } finally {
     // delete the function created, if it's called as part of testMode
     if (testMode) {

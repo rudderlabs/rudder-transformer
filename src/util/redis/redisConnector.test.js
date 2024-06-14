@@ -2,7 +2,6 @@ const fs = require('fs');
 const path = require('path');
 const version = 'v0';
 const { RedisDB } = require('./redisConnector');
-const logger = require('../../logger');
 jest.mock('ioredis', () => require('../../../test/__mocks__/redis'));
 
 const sourcesList = ['shopify'];
@@ -56,7 +55,7 @@ describe(`Source Tests`, () => {
     data.forEach((dataPoint, index) => {
       it(`${index}. ${source} - ${dataPoint.description}`, async () => {
         try {
-          const output = await transformer.process(dataPoint.input, logger);
+          const output = await transformer.process(dataPoint.input);
           expect(output).toEqual(dataPoint.output);
         } catch (error) {
           expect(error.message).toEqual(dataPoint.output.error);

@@ -1,9 +1,7 @@
-const dotenv = require('dotenv');
-
 /* istanbul ignore file */
 const { LOGLEVELS, structuredLogger } = require('@rudderstack/integrations-lib');
 
-// any value greater than levelError will work as levelNone
+// LOGGER_IMPL can be `console` or `winston`
 const loggerImpl = process.env.LOGGER_IMPL ?? 'winston';
 
 let logLevel = process.env.LOG_LEVEL ?? 'error';
@@ -11,7 +9,12 @@ let logLevel = process.env.LOG_LEVEL ?? 'error';
 const logger = structuredLogger({ level: logLevel });
 
 const getLogger = () => {
-  return loggerImpl === 'winston' ? logger : console;
+  switch (loggerImpl) {
+    case 'winston':
+      return logger;
+    case 'console':
+      return console;
+  }
 };
 
 const setLogLevel = (level) => {

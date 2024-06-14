@@ -5,7 +5,6 @@ const {
   NetworkError,
   structuredLogger: logger,
 } = require('@rudderstack/integrations-lib');
-const myAxios = require('../../../util/myAxios');
 const { MappedToDestinationKey } = require('../../../constants');
 const {
   isDefinedAndNotNull,
@@ -23,6 +22,7 @@ const { MERGE_CONFIG, MERGE_ADDRESS, SUBSCRIPTION_STATUS, VALID_STATUSES } = req
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const tags = require('../../util/tags');
 const { JSON_MIME_TYPE } = require('../../util/constant');
+const { httpGET } = require('../../../adapters/network');
 
 const ADDRESS_MANDATORY_FIELDS = ['addr1', 'city', 'state', 'zip'];
 
@@ -158,28 +158,28 @@ const checkIfMailExists = async (apiKey, datacenterId, audienceId, email) => {
   };
   const url = `${mailChimpSubscriptionEndpoint(datacenterId, audienceId, email)}`;
   const basicAuth = Buffer.from(`apiKey:${apiKey}`).toString('base64');
-  try {
-    const response = await myAxios.get(
-      url,
-      {
-        headers: {
-          Authorization: `Basic ${basicAuth}`,
-        },
+
+  const res = await httpGET(
+    url,
+    {
+      headers: {
+        Authorization: `Basic ${basicAuth}`,
       },
-      {
-        destType: 'mailchimp',
-        feature: 'transformation',
-        endpointPath: '/lists/audienceId/members/email',
-        requestMethod: 'GET',
-        module: 'router',
-      },
-    );
-    if (response?.data?.contact_id) {
-      userStatus.exists = true;
-      userStatus.subscriptionStatus = response.data.status;
-    }
-  } catch (error) {
-    logger.info(`[Mailchimp] :: Email does not exists, Error: ${error.message}`);
+    },
+    {
+      destType: 'mailchimp',
+      feature: 'transformation',
+      endpointPath: '/lists/audienceId/members/email',
+      requestMethod: 'GET',
+      module: 'router',
+    },
+  );
+  if (res.response?.data?.contact_id) {
+    userStatus.exists = true;
+    userStatus.subscriptionStatus = res.response.data.status;
+  }
+  if (!res.status) {
+    logger.info(`[Mailchimp] :: Email does not exists, Error: ${res.response.message}`);
   }
   return userStatus;
 };
@@ -192,32 +192,32 @@ const checkIfMailExists = async (apiKey, datacenterId, audienceId, email) => {
  * @returns
  */
 const checkIfDoubleOptIn = async (apiKey, datacenterId, audienceId) => {
-  let response;
   const url = `${getMailChimpBaseEndpoint(datacenterId, audienceId)}`;
   const basicAuth = Buffer.from(`apiKey:${apiKey}`).toString('base64');
-  try {
-    response = await myAxios.get(
-      url,
-      {
-        headers: {
-          Authorization: `Basic ${basicAuth}`,
-        },
+  const res = await httpGET(
+    url,
+    {
+      headers: {
+        Authorization: `Basic ${basicAuth}`,
       },
-      {
-        destType: 'mailchimp',
-        feature: 'transformation',
-        endpointPath: '/lists/audienceId',
-        requestMethod: 'GET',
-        module: 'router',
-      },
-    );
-  } catch (error) {
+    },
+    {
+      destType: 'mailchimp',
+      feature: 'transformation',
+      endpointPath: '/lists/audienceId',
+      requestMethod: 'GET',
+      module: 'router',
+    },
+  );
+  if (!res.success) {
+    const error = res.response;
     const status = error.status || 400;
     throw new NetworkError('User does not have access to the requested operation', status, {
       [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
     });
   }
-  return !!response.data.double_optin;
+
+  return !!res.response?.data?.double_optin;
 };
 
 /**

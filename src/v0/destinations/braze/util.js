@@ -701,7 +701,7 @@ const collectStatsForAliasFailure = (brazeResponse, destinationId) => {
 };
 
 const collectStatsForAliasMissConfigurations = (destinationId) => {
-  stats.increment('braze_alias_missConfigured_count', { destination_id: destinationId });
+  stats.increment('braze_alias_missconfigured_count', { destination_id: destinationId });
 };
 
 module.exports = {

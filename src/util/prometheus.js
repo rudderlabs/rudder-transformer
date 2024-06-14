@@ -608,8 +608,8 @@ class Prometheus {
         labelNames: ['destination_id'],
       },
       {
-        name: 'braze_alias_missConfigured_count',
-        help: 'braze_alias_missConfigured_count',
+        name: 'braze_alias_missconfigured_count',
+        help: 'braze_alias_missconfigured_count',
         type: 'counter',
         labelNames: ['destination_id'],
       },

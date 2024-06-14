@@ -2017,4 +2017,159 @@ export const data = [
       },
     },
   },
+  {
+    name: 'slack',
+    description:
+      'Test 12-> Identify -> Default template with some whiteListed traits and traits as null',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: {
+              ID: '1ZQVSU9SXNg6KYgZALaqjAO3PIL',
+              Name: 'test-slack',
+              DestinationDefinition: {
+                ID: '1ZQUiJVMlmF7lfsdfXg7KXQnlLV',
+                Name: 'SLACK',
+                DisplayName: 'Slack',
+                Config: {
+                  excludeKeys: [],
+                  includeKeys: [],
+                },
+              },
+              Config: {
+                eventChannelSettings: [
+                  {
+                    eventChannelWebhook: 'https://hooks.slack.com/services/example/test/demo',
+                    eventName: 'is',
+                    eventRegex: true,
+                  },
+                ],
+                eventTemplateSettings: [
+                  {
+                    eventName: 'is',
+                    eventRegex: true,
+                    eventTemplate:
+                      '{{name}} performed {{event}} with {{properties.key1}} {{properties.key2}}',
+                  },
+                  {
+                    eventName: '',
+                    eventRegex: false,
+                    eventTemplate: '',
+                  },
+                ],
+                webhookUrl: 'https://hooks.slack.com/services/THZM86VSS/BV9HZ2UN6/demo',
+                whitelistedTraitsSettings: [],
+              },
+              Enabled: true,
+              Transformations: [],
+              IsProcessorEnabled: true,
+            },
+            message: {
+              anonymousId: '4de817fb-7f8e-4e23-b9be-f6736dbda20f',
+              channel: 'web',
+              context: {
+                app: {
+                  build: '1.0.0',
+                  name: 'RudderLabs JavaScript SDK',
+                  namespace: 'com.rudderlabs.javascript',
+                  version: '1.1.1-rc.1',
+                },
+                library: {
+                  name: 'RudderLabs JavaScript SDK',
+                  version: '1.1.1-rc.1',
+                },
+                locale: 'en-US',
+                os: {
+                  name: '',
+                  version: '',
+                },
+                page: {
+                  path: '/tests/html/script-test.html',
+                  referrer: 'http://localhost:1111/tests/html/',
+                  search: '',
+                  title: '',
+                  url: 'http://localhost:1111/tests/html/script-test.html',
+                },
+                screen: {
+                  density: 1.7999999523162842,
+                },
+                userAgent:
+                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36',
+              },
+              integrations: {
+                All: true,
+              },
+              messageId: '9ecc0183-89ed-48bd-87eb-b2d8e1ca6780',
+              originalTimestamp: '2020-03-23T03:46:30.916Z',
+              properties: {
+                path: '/tests/html/script-test.html',
+                referrer: 'http://localhost:1111/tests/html/',
+                search: '',
+                title: '',
+                url: 'http://localhost:1111/tests/html/script-test.html',
+              },
+              receivedAt: '2020-03-23T09:16:31.041+05:30',
+              request_ip: '[::1]:52056',
+              sentAt: '2020-03-23T03:46:30.916Z',
+              timestamp: '2020-03-23T09:16:31.041+05:30',
+              type: 'identify',
+              userId: '12345',
+            },
+            metadata: {
+              anonymousId: '4de817fb-7f8e-4e23-b9be-f6736dbda20f',
+              destinationId: '1ZQVSU9SXNg6KYgZALaqjAO3PIL',
+              destinationType: 'SLACK',
+              jobId: 126,
+              messageId: '9ecc0183-89ed-48bd-87eb-b2d8e1ca6780',
+              sourceId: '1YhwKyDcKstudlGxkeN5p2wgsrp',
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://hooks.slack.com/services/THZM86VSS/BV9HZ2UN6/demo',
+              headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+              },
+              params: {},
+              body: {
+                JSON: {},
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {
+                  payload:
+                    '{"text":"Identified User 12345","username":"RudderStack","icon_url":"https://cdn.rudderlabs.com/rudderstack.png"}',
+                },
+              },
+              files: {},
+              userId: '12345',
+              statusCode: 200,
+            },
+            metadata: {
+              anonymousId: '4de817fb-7f8e-4e23-b9be-f6736dbda20f',
+              destinationId: '1ZQVSU9SXNg6KYgZALaqjAO3PIL',
+              destinationType: 'SLACK',
+              jobId: 126,
+              messageId: '9ecc0183-89ed-48bd-87eb-b2d8e1ca6780',
+              sourceId: '1YhwKyDcKstudlGxkeN5p2wgsrp',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
 ];

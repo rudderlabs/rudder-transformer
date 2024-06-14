@@ -3,6 +3,7 @@ import {
   destination,
   commonOutput,
   routerInstrumentationErrorStatTags,
+  context,
 } from '../commonConfig';
 import { trackProperties, pageProperties, traits } from './basicProperties';
 import { defaultMockFns } from '../mocks';
@@ -137,9 +138,14 @@ export const data = [
             {
               message: {
                 type: 'identify',
-                ...commonInput,
+                messageId: 'dummy_msg_id',
+                context,
+                channel: 'web',
+                integrations: {
+                  All: true,
+                },
+                originalTimestamp: '2021-01-25T15:32:56.409Z',
                 traits,
-                integrations: { All: true },
               },
               metadata: { jobId: 3, userId: 'u1' },
               destination,
@@ -158,7 +164,7 @@ export const data = [
             {
               batched: false,
               destination,
-              error: 'Missing required value from "userIdOnly"',
+              error: 'Missing required value from "anonymousId"',
               metadata: [{ jobId: 3, userId: 'u1' }],
               statTags: routerInstrumentationErrorStatTags,
               statusCode: 400,
@@ -259,9 +265,14 @@ export const data = [
             {
               message: {
                 type: 'identify',
-                ...commonInput,
+                messageId: 'dummy_msg_id',
+                context,
+                channel: 'web',
+                integrations: {
+                  All: true,
+                },
+                originalTimestamp: '2021-01-25T15:32:56.409Z',
                 traits,
-                integrations: { All: true },
               },
               metadata: { jobId: 4, userId: 'u1' },
               destination,
@@ -280,7 +291,7 @@ export const data = [
             {
               batched: false,
               destination,
-              error: 'Missing required value from "userIdOnly"',
+              error: 'Missing required value from "anonymousId"',
               metadata: [{ jobId: 4, userId: 'u1' }],
               statTags: routerInstrumentationErrorStatTags,
               statusCode: 400,

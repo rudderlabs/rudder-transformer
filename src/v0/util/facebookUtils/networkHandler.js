@@ -14,6 +14,7 @@ const {
 } = require('../../../adapters/utils/networkUtils');
 const { prepareProxyRequest, proxyRequest } = require('../../../adapters/network');
 const { ErrorDetailsExtractorBuilder } = require('../../../util/error-extractor');
+const { isHtmlFormat } = require('./index');
 
 /**
  * Only under below mentioned scenario(s), add the errorCodes, subCodes etc,. to this map
@@ -277,6 +278,18 @@ const errorResponseHandler = (destResponse) => {
 
 const destResponseHandler = (responseParams) => {
   const { destinationResponse } = responseParams;
+
+  // check If the response is in html format
+  if (isHtmlFormat(destinationResponse.response) || isHtmlFormat(destinationResponse)) {
+    throw new NetworkError(
+      'Invalid response format (HTML) during response transformation',
+      500,
+      {
+        [TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(destinationResponse.status),
+      },
+      destinationResponse,
+    );
+  }
   errorResponseHandler(destinationResponse);
   return {
     destinationResponse: destinationResponse.response,

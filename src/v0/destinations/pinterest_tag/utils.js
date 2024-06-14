@@ -41,8 +41,8 @@ const getHashedValue = (key, value) => {
     case 'fn':
     case 'ge':
       value = Array.isArray(value)
-        ? value.map((val) => val.toString().toLowerCase())
-        : value.toString().toLowerCase();
+        ? value.map((val) => val.toString().trim().toLowerCase())
+        : value.toString().trim().toLowerCase();
       break;
     case 'ph':
       // phone numbers should only contain digits & should not contain leading zeros
@@ -53,7 +53,7 @@ const getHashedValue = (key, value) => {
     case 'zp':
       // zip fields should only contain digits
       value = Array.isArray(value)
-        ? value.map((val) => val.toString().replace(/\D/g, ''))
+        ? value.map((val) => val.toString().trim().replace(/\D/g, ''))
         : value.toString().replace(/\D/g, '');
       break;
     case 'hashed_maids':

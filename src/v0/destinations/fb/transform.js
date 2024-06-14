@@ -90,7 +90,7 @@ function sanityCheckPayloadForTypesAndModifications(updatedEvent) {
           clonedUpdatedEvent[prop] !== ''
         ) {
           isUDSet = true;
-          clonedUpdatedEvent[prop] = sha256(clonedUpdatedEvent[prop].toLowerCase());
+          clonedUpdatedEvent[prop] = sha256(clonedUpdatedEvent[prop].trim().toLowerCase());
         }
         break;
       case 'ud[zp]':
@@ -113,7 +113,7 @@ function sanityCheckPayloadForTypesAndModifications(updatedEvent) {
           } else {
             isUDSet = true;
             clonedUpdatedEvent[prop] = sha256(
-              clonedUpdatedEvent[prop].toLowerCase() === 'female' ? 'f' : 'm',
+              clonedUpdatedEvent[prop].trim().toLowerCase() === 'female' ? 'f' : 'm',
             );
           }
         }
@@ -128,7 +128,7 @@ function sanityCheckPayloadForTypesAndModifications(updatedEvent) {
         if (clonedUpdatedEvent[prop] && clonedUpdatedEvent[prop] !== '') {
           isUDSet = true;
           clonedUpdatedEvent[prop] = sha256(
-            clonedUpdatedEvent[prop].toLowerCase().replace(/ /g, ''),
+            clonedUpdatedEvent[prop].trim().toLowerCase().replace(/ /g, ''),
           );
         }
         break;

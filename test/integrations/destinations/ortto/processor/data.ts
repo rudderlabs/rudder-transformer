@@ -158,6 +158,8 @@ export const data = [
                   people: [
                     {
                       fields: {
+                        'bol::p': true,
+                        'bol::sp': true,
                         'str::first': 'John',
                         'str::last': 'Sparrow',
                         'str::email': 'identify@test.com',
@@ -172,9 +174,6 @@ export const data = [
                         'phn::phone': {
                           n: '9112340345',
                         },
-                        'bol::gdpr': true,
-                        'bol::p': true,
-                        'bol::sp': true,
                         'str:cm:ortto-attirbute0': 'abc',
                         'str:cm:ortto-attirbute1': 'def',
                       },
@@ -1036,8 +1035,6 @@ export const data = [
                           n: '9112340345',
                         },
                         'bol::gdpr': false,
-                        'bol::p': false,
-                        'bol::sp': false,
                         'str:cm:ortto-attirbute0': 'abc',
                         'str:cm:ortto-attirbute1': 'def',
                       },
@@ -1250,8 +1247,6 @@ export const data = [
                         'str::language': 'en-US',
                         'str::ei': 'sample_user_id',
                         'bol::gdpr': false,
-                        'bol::p': false,
-                        'bol::sp': false,
                         'str:cm:ortto-attirbute0': 'abc',
                         'str:cm:ortto-attirbute1': 'def',
                       },
@@ -1623,9 +1618,6 @@ export const data = [
                         'geo::region': {},
                         'str::ei': 'XxXxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx',
                         'str::language': 'en-MU',
-                        'bol::gdpr': true,
-                        'bol::p': false,
-                        'bol::sp': false,
                       },
                       activity_id: 'act:cm:liked-a-set',
                       attributes: {

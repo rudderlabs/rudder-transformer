@@ -46,11 +46,12 @@ const getLogMetadata = (metadata) => {
   if (Array.isArray(metadata)) {
     [reqMeta] = metadata;
   }
+  const destType = reqMeta?.destType || reqMeta?.destinationType;
   return {
     ...(reqMeta?.destinationId && { destinationId: reqMeta.destinationId }),
     ...(reqMeta?.sourceId && { sourceId: reqMeta.sourceId }),
     ...(reqMeta?.workspaceId && { workspaceId: reqMeta.workspaceId }),
-    ...(reqMeta?.destType && { destType: reqMeta.destType }),
+    ...(destType && { destType }),
     ...(reqMeta?.module && { module: reqMeta.module }),
     ...(reqMeta?.implementation && { implementation: reqMeta.implementation }),
     ...(reqMeta?.feature && { feature: reqMeta.feature }),

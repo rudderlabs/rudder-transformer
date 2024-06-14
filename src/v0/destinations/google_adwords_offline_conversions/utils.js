@@ -89,7 +89,7 @@ const getConversionActionId = async ({ headers, params, metadata }) => {
     });
     searchStreamResponse = processAxiosResponse(searchStreamResponse);
     const { response, status, headers: responseHeaders } = searchStreamResponse;
-    logger.responseLog(`[${destType.toUpperCase()}] get conversion custom variable`, {
+    logger.responseLog(`[${destType.toUpperCase()}] get conversion action id response`, {
       metadata,
       responseDetails: {
         response,

@@ -39,7 +39,7 @@ const getConversionActionId = async ({ method, headers, params, metadata }) => {
       query: queryString,
     };
     const searchStreamEndpoint = `${BASE_ENDPOINT}/${params.customerId}/googleAds:searchStream`;
-    logger.requestLog(`[${destType.toUpperCase()}] conversion enhancement request`, {
+    logger.requestLog(`[${destType.toUpperCase()}] get conversion action id request`, {
       metadata,
       requestDetails: { url: searchStreamEndpoint, body: data, method },
     });

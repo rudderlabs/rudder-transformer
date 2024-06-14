@@ -110,9 +110,12 @@ function processTrack(message, metadata, destination) {
     destination.Config.enableEnhancedConversions &&
     message.properties.requestType === 'batchupdate'
   ) {
-    requestJson.userIdentifiers = CommonUtils.toArray(
+    const userIdentifiers = CommonUtils.toArray(
       prepareUserIdentifiers(message, destination.Config.isHashingRequired ?? true),
     );
+    if (userIdentifiers.length > 0) {
+      requestJson.userIdentifiers = userIdentifiers;
+    }
   }
 
   const endpointUrl = prepareUrl(message, destination);

@@ -1191,4 +1191,153 @@ export const data = [
       },
     },
   },
+  {
+    name: 'campaign_manager',
+    description: 'Test 8: Enhanced Conversions with no traits in request payload',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              channel: 'web',
+              context: {
+                app: {
+                  build: '1.0.0',
+                  name: 'RudderLabs JavaScript SDK',
+                  namespace: 'com.rudderlabs.javascript',
+                  version: '1.0.0',
+                },
+                device: {
+                  id: '0572f78fa49c648e',
+                  name: 'generic_x86_arm',
+                  type: 'Android',
+                  model: 'AOSP on IA Emulator',
+                  manufacturer: 'Google',
+                  adTrackingEnabled: true,
+                  advertisingId: '44c97318-9040-4361-8bc7-4eb30f665ca8',
+                },
+                library: {
+                  name: 'RudderLabs JavaScript SDK',
+                  version: '1.0.0',
+                },
+                userAgent:
+                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
+                locale: 'en-US',
+                ip: '0.0.0.0',
+                os: {
+                  name: '',
+                  version: '',
+                },
+                screen: {
+                  density: 2,
+                },
+              },
+              originalTimestamp: '2022-11-17T00:22:02.903+05:30',
+              properties: {
+                profileId: '34245',
+                floodlightConfigurationId: '213123123',
+                ordinal: 'string',
+                floodlightActivityId: '456543345245',
+                value: '756',
+                encryptedUserIdCandidates: ['dfghjbnm'],
+                quantity: '455678',
+                encryptionSource: 'AD_SERVING',
+                encryptionEntityId: '3564523',
+                encryptionEntityType: 'DCM_ACCOUNT',
+                requestType: 'batchupdate',
+              },
+              type: 'track',
+              event: 'event test',
+              anonymousId: 'randomId',
+              integrations: {
+                All: true,
+              },
+              name: 'ApplicationLoaded',
+              sentAt: '2019-10-14T11:15:53.296Z',
+            },
+            metadata: {
+              secret: {
+                access_token: 'dummyApiToken',
+                refresh_token: 'efgh5678',
+                developer_token: 'ijkl91011',
+              },
+            },
+            destination: {
+              Config: {
+                profileId: '5343234',
+                treatmentForUnderage: false,
+                limitAdTracking: false,
+                childDirectedTreatment: false,
+                nonPersonalizedAd: false,
+                rudderAccountId: '2EOknn1JNH7WK1MfNku4fGYKkRK',
+                enableEnhancedConversions: true,
+                isHashingRequired: true,
+              },
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint:
+                'https://dfareporting.googleapis.com/dfareporting/v4/userprofiles/34245/conversions/batchupdate',
+              headers: {
+                Authorization: 'Bearer dummyApiToken',
+                'Content-Type': 'application/json',
+              },
+              params: {},
+              body: {
+                JSON: {
+                  kind: 'dfareporting#conversionsBatchUpdateRequest',
+                  encryptionInfo: {
+                    encryptionEntityType: 'DCM_ACCOUNT',
+                    encryptionSource: 'AD_SERVING',
+                    encryptionEntityId: '3564523',
+                    kind: 'dfareporting#encryptionInfo',
+                  },
+                  conversions: [
+                    {
+                      floodlightConfigurationId: '213123123',
+                      ordinal: 'string',
+                      timestampMicros: '1668624722903000',
+                      floodlightActivityId: '456543345245',
+                      quantity: '455678',
+                      value: 756,
+                      encryptedUserIdCandidates: ['dfghjbnm'],
+                      nonPersonalizedAd: false,
+                      treatmentForUnderage: false,
+                    },
+                  ],
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: '',
+            },
+            metadata: {
+              secret: {
+                access_token: 'dummyApiToken',
+                refresh_token: 'efgh5678',
+                developer_token: 'ijkl91011',
+              },
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
 ];

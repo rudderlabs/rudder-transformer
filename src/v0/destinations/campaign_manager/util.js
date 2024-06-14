@@ -5,6 +5,7 @@ const {
   constructPayload,
   isDefinedAndNotNull,
   removeUndefinedAndNullValues,
+  isEmptyObject,
 } = require('../../util');
 const { ConfigCategories, mappingConfig } = require('./config');
 
@@ -92,20 +93,25 @@ const prepareUserIdentifiers = (message, isHashingRequired) => {
   if (isHashingRequired) {
     payload.hashedEmail = normalizeAndHash('hashedEmail', payload.hashedEmail);
     payload.hashedPhoneNumber = normalizeAndHash('hashedPhoneNumber', payload.hashedPhoneNumber, {
-      options: payload.addressInfo.country,
+      options: payload.addressInfo?.countryCode,
     });
-    payload.addressInfo.hashedFirstName = normalizeAndHash(
-      'hashedFirstName',
-      payload.addressInfo.hashedFirstName,
-    );
-    payload.addressInfo.hashedLastName = normalizeAndHash(
-      'hashedLastName',
-      payload.addressInfo.hashedLastName,
-    );
-    payload.addressInfo.hashedStreetAddress = normalizeAndHash(
-      'hashedStreetAddress',
-      payload.addressInfo.hashedStreetAddress,
-    );
+
+    if (!isEmptyObject(payload.addressInfo)) {
+      payload.addressInfo.hashedFirstName = normalizeAndHash(
+        'hashedFirstName',
+        payload.addressInfo.hashedFirstName,
+      );
+
+      payload.addressInfo.hashedLastName = normalizeAndHash(
+        'hashedLastName',
+        payload.addressInfo.hashedLastName,
+      );
+
+      payload.addressInfo.hashedStreetAddress = normalizeAndHash(
+        'hashedStreetAddress',
+        payload.addressInfo.hashedStreetAddress,
+      );
+    }
   }
 
   const userIdentifiers = [];
@@ -117,7 +123,7 @@ const prepareUserIdentifiers = (message, isHashingRequired) => {
   }
 
   payload.addressInfo = removeUndefinedAndNullValues(payload.addressInfo);
-  if (Object.keys(payload.addressInfo)) {
+  if (!isEmptyObject(payload.addressInfo)) {
     userIdentifiers.push({ addressInfo: payload.addressInfo });
   }
 

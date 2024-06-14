@@ -1,0 +1,52 @@
+[
+  {
+    "sourceKeys": "activity_kind",
+    "destKeys": "properties.activity_kind"
+  },
+  {
+    "sourceKeys": "event",
+    "destKeys": "properties.event_token"
+  },
+  {
+    "sourceKeys": "event_name",
+    "destKeys": "event"
+  },
+  {
+    "sourceKeys": "gps_adid",
+    "destKeys": "properties.gps_adid"
+  },
+  {
+    "sourceKeys": "idfa",
+    "destKeys": "context.device.advertisingId"
+  },
+  {
+    "sourceKeys": "idfv",
+    "destKeys": "context.device.id"
+  },
+  {
+    "sourceKeys": "adid",
+    "destKeys": "context.device.id "
+  },
+  {
+    "sourceKeys": "tracker",
+    "destKeys": "properties.tracker"
+  },
+  {
+    "sourceKeys": "tracker_name",
+    "destKeys": "properties.tracker_name"
+  },
+  { "sourceKeys": "tracker_token", "destKeys": "properties.tracker_token" },
+
+  {
+    "sourceKeys": "app_name",
+    "destKeys": "context.app.name"
+  },
+  {
+    "sourceKeys": "ip_address",
+    "destKeys": ["context.ip", "request_ip"]
+  },
+  {
+    "sourceKeys": "tracking_enabled",
+    "destKeys": "properties.tracking_enabled"
+  }
+]

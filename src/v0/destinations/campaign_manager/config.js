@@ -7,6 +7,10 @@ const ConfigCategories = {
     type: 'track',
     name: 'CampaignManagerTrackConfig',
   },
+  ENHANCED_CONVERSION: {
+    type: 'track',
+    name: 'CampaignManagerEnhancedConversionConfig',
+  },
 };
 
 const MAX_BATCH_CONVERSATIONS_SIZE = 1000;

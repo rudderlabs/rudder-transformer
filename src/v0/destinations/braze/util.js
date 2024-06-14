@@ -697,14 +697,11 @@ const collectStatsForAliasFailure = (brazeResponse, destinationId) => {
   const { aliases_processed: aliasesProcessed, errors } = brazeResponse;
   if (aliasesProcessed === 0) {
     stats.increment('braze_alias_failure_count', { destination_id: destinationId });
-
-    if (Array.isArray(errors)) {
-      logger.info('Braze Alias Failure Errors:', {
-        destinationId,
-        errors,
-      });
-    }
   }
+};
+
+const collectStatsForAliasMissConfigurations = (destinationId) => {
+  stats.increment('braze_alias_missConfigured_count', { destination_id: destinationId });
 };
 
 module.exports = {
@@ -720,4 +717,5 @@ module.exports = {
   setAliasObject,
   addMandatoryPurchaseProperties,
   collectStatsForAliasFailure,
+  collectStatsForAliasMissConfigurations,
 };

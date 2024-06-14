@@ -1514,4 +1514,27 @@ describe('setAliasObject function', () => {
       },
     });
   });
+
+  test('should set user_alias from integrationsObj if alias_name and alias_label either is not defined', () => {
+    const payload = {};
+    const result = setAliasObject(payload, {
+      anonymousId: '12345',
+      userID: 'user123',
+      integrations: {
+        BRAZE: {
+          alias: {
+            alias_name: 'rudder_id-123',
+            alias_label: 'customer_id',
+          },
+        },
+      },
+    });
+
+    expect(result).toEqual({
+      user_alias: {
+        alias_name: 'rudder_id-123',
+        alias_label: 'customer_id',
+      },
+    });
+  });
 });

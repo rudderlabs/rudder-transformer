@@ -14,6 +14,7 @@ const {
   setExternalId,
   setAliasObject,
   collectStatsForAliasFailure,
+  collectStatsForAliasMissConfigurations,
 } = require('./util');
 const tags = require('../../util/tags');
 const { EventType, MappedToDestinationKey } = require('../../../constants');
@@ -517,6 +518,8 @@ async function process(event, processParams = { userStore: new Map() }, reqMetad
         getDestinationExternalID(message, 'brazeExternalId') || message.userId;
       if (message.anonymousId && brazeExternalID) {
         await processIdentify(message, destination);
+      } else {
+        collectStatsForAliasMissConfigurations(destination.ID);
       }
       response = processTrackWithUserAttributes(
         message,

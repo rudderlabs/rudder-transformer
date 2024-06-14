@@ -94,7 +94,7 @@ const fireHTTPStats = (clientResponse, startTime, statTags) => {
     startTime,
     clientResponse,
   };
-  if (statTags?.metadata && !Array.isArray(statTags?.metadata)) {
+  if (statTags?.metadata) {
     const metadata = !Array.isArray(statTags?.metadata) ? [statTags.metadata] : statTags.metadata;
     metadata?.forEach((m) => {
       fireOutgoingReqStats({

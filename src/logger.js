@@ -58,6 +58,15 @@ const getLogMetadata = (metadata) => {
   };
 };
 
+/**
+ * Perform logging operation on logMethod passed
+ *
+ * @param {*} logMethod
+ *  - instance method reference
+ *  - The logger should implement all of debug/info/warn/error methods
+ * @param {*} args
+ *  - the arguments that needs to be passed to logger instance method
+ */
 const log = (logMethod, args) => {
   const [message, logInfo, ...otherArgs] = args;
   if (logInfo) {

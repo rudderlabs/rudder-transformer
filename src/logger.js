@@ -6,7 +6,19 @@ const loggerImpl = process.env.LOGGER_IMPL ?? 'winston';
 
 let logLevel = process.env.LOG_LEVEL ?? 'error';
 
-const logger = structuredLogger({ level: logLevel });
+const logger = structuredLogger({
+  level: logLevel,
+  fillExcept: [
+    'destinationId',
+    'sourceId',
+    'destinationType',
+    'workspaceId',
+    'module',
+    'implementation',
+    'feature',
+    'destType',
+  ],
+});
 
 const getLogger = () => {
   switch (loggerImpl) {
@@ -77,7 +89,7 @@ const log = (logMethod, args) => {
 
 const debug = (...args) => {
   const logger = getLogger();
-  if (LOGLEVELS.debug <= logLevel) {
+  if (LOGLEVELS.debug <= LOGLEVELS[logLevel]) {
     log(logger.debug, args);
   }
 };

@@ -8,7 +8,8 @@ export const mockFns = (_) => {
 export const data = [
   {
     name: 'facebook_pixel',
-    description: 'Test 0',
+    description:
+      'Test 0: General batch request with two events, one track and one identify event with advancedMapping set to false and true respectively',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -203,7 +204,8 @@ export const data = [
   },
   {
     name: 'facebook_pixel',
-    description: 'Test 1',
+    description:
+      'Test 1 : adTrackingEnabled is passed in context, advertiser_tracking_enabled set to true',
     feature: 'router',
     module: 'destination',
     version: 'v0',

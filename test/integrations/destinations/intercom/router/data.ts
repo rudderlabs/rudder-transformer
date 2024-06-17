@@ -115,6 +115,47 @@ const destination5: Destination = {
   Transformations: [],
 };
 
+const destination6: Destination = {
+  ID: '123',
+  Name: 'intercom',
+  DestinationDefinition: {
+    ID: '123',
+    Name: 'intercom',
+    DisplayName: 'Intercom',
+    Config: {},
+  },
+  Config: {
+    apiKey: 'testApiKey',
+    apiVersion: 'v1',
+    sendAnonymousId: false,
+    updateLastRequestAt: false,
+    collectContext: false,
+  },
+  Enabled: true,
+  WorkspaceID: '123',
+  Transformations: [],
+};
+
+const destination7: Destination = {
+  ID: '123',
+  Name: 'intercom',
+  DestinationDefinition: {
+    ID: '123',
+    Name: 'intercom',
+    DisplayName: 'Intercom',
+    Config: {},
+  },
+  Config: {
+    apiKey: 'testApiKey',
+    apiVersion: 'v1',
+    sendAnonymousId: false,
+    collectContext: false,
+  },
+  Enabled: true,
+  WorkspaceID: '123',
+  Transformations: [],
+};
+
 const routerRequest1: RouterTransformationRequest = {
   input: [
     {
@@ -432,7 +473,7 @@ const routerRequest2: RouterTransformationRequest = {
 const routerRequest3: RouterTransformationRequest = {
   input: [
     {
-      destination: destination4,
+      destination: destination6,
       message: {
         anonymousId: '58b21c2d-f8d5-4410-a2d0-b268a26b7e33',
         channel: 'mobile',
@@ -499,7 +540,7 @@ const routerRequest3: RouterTransformationRequest = {
       metadata: generateMetadata(1),
     },
     {
-      destination: destination4,
+      destination: destination6,
       message: {
         anonymousId: '58b21c2d-f8d5-4410-a2d0-b268a26b7e33',
         channel: 'mobile',
@@ -564,7 +605,7 @@ const routerRequest3: RouterTransformationRequest = {
       metadata: generateMetadata(2),
     },
     {
-      destination: destination5,
+      destination: destination7,
       message: {
         userId: 'user@5',
         groupId: 'rudderlabs',
@@ -599,9 +640,10 @@ export const data: RouterTestData[] = [
   {
     id: 'Intercom-router-test-1',
     scenario: 'Framework',
-    successCriteria: 'Some events should be transformed successfully and some should fail',
+    successCriteria:
+      'Some events should be transformed successfully and some should fail for apiVersion v2',
     name: 'intercom',
-    description: 'Intercom router tests 1',
+    description: 'Intercom router tests for apiVersion v2',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -775,9 +817,10 @@ export const data: RouterTestData[] = [
   {
     id: 'Intercom-router-test-2',
     scenario: 'Framework',
-    successCriteria: 'Some events should be transformed successfully and some should fail',
+    successCriteria:
+      'Events should be transformed successfully for apiVersion v1 and cdk v2 enabled',
     name: 'intercom',
-    description: 'Intercom router tests 2',
+    description: 'Intercom router tests for apiVersion v1 and cdk v2 enabled',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -940,9 +983,10 @@ export const data: RouterTestData[] = [
   {
     id: 'Intercom-router-test-3',
     scenario: 'Framework',
-    successCriteria: 'Some events should be transformed successfully and some should fail',
+    successCriteria:
+      'Events should be transformed successfully for apiVersion v1 and cdk v2 not enabled',
     name: 'intercom',
-    description: 'Intercom router tests 3',
+    description: 'Intercom router tests for apiVersion v1 and cdk v2 not enabled',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -993,7 +1037,7 @@ export const data: RouterTestData[] = [
               metadata: [generateMetadata(1)],
               batched: false,
               statusCode: 200,
-              destination: destination4,
+              destination: destination6,
             },
             {
               batchedRequest: {
@@ -1031,7 +1075,7 @@ export const data: RouterTestData[] = [
               metadata: [generateMetadata(2)],
               batched: false,
               statusCode: 200,
-              destination: destination4,
+              destination: destination6,
             },
             {
               batched: false,
@@ -1093,9 +1137,9 @@ export const data: RouterTestData[] = [
                   version: '1',
                 },
               ],
-              destination: destination5,
+              destination: destination7,
               metadata: [generateMetadata(3)],
-              statusCode: 299,
+              statusCode: 200,
             },
           ],
         },

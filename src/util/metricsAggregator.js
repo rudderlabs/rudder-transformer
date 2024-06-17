@@ -6,6 +6,7 @@ const GET_METRICS_REQ = 'rudder-transformer:getMetricsReq';
 const GET_METRICS_RES = 'rudder-transformer:getMetricsRes';
 const AGGREGATE_METRICS_REQ = 'rudder-transformer:aggregateMetricsReq';
 const AGGREGATE_METRICS_RES = 'rudder-transformer:aggregateMetricsRes';
+const RESET_METRICS_REQUEST = 'rudder-transformer:resetMetricsReq';
 
 class MetricsAggregator {
   constructor(prometheusInstance) {
@@ -39,6 +40,12 @@ class MetricsAggregator {
         } catch (error) {
           cluster.worker.send({ type: GET_METRICS_RES, error: error.message });
         }
+      } else if (message.type === RESET_METRICS_REQUEST) {
+        logger.info(
+          `[MetricsAggregator] Worker ${cluster.worker.id} received reset metrics request`,
+        );
+        this.prometheusInstance.prometheusRegistry.resetMetrics();
+        logger.info(`[MetricsAggregator] Worker ${cluster.worker.id} reset metrics successfully`);
       }
     });
   }
@@ -117,6 +124,13 @@ class MetricsAggregator {
     logger.info(
       `[MetricsAggregator] Worker thread terminated with exit code ${await this.workerThread.terminate()}`,
     );
+  }
+
+  resetMetrics() {
+    for (const id in cluster.workers) {
+      logger.info(`[MetricsAggregator] Resetting metrics for worker ${id}`);
+      cluster.workers[id].send({ type: RESET_METRICS_REQUEST });
+    }
   }
 }
 

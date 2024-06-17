@@ -1,31 +1,17 @@
 /* eslint-disable no-const-assign */
 const lodash = require('lodash');
-const { InstrumentationError, getErrorRespEvents } = require('@rudderstack/integrations-lib');
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const {
   getValueFromMessage,
   getAccessToken,
   constructPayload,
   returnArrayOfSubarrays,
   getSuccessRespEvents,
-  generateErrorObject,
 } = require('../../util');
 const { populateConsentFromConfig } = require('../../util/googleUtils');
 const { populateIdentifiers, responseBuilder } = require('./util');
-
+const { getErrorResponse, createFinalResponse } = require('../../util/recordUtils');
 const { offlineDataJobsMapping, consentConfigMap } = require('./config');
-
-function getErrorMetaData(inputs, acceptedOperations) {
-  const metadata = [];
-  // eslint-disable-next-line no-restricted-syntax
-  for (const key in inputs) {
-    if (!acceptedOperations.includes(key)) {
-      inputs[key].forEach((input) => {
-        metadata.push(input.metadata);
-      });
-    }
-  }
-  return metadata;
-}
 
 const processRecordEventArray = (
   records,
@@ -92,15 +78,13 @@ const processRecordEventArray = (
 };
 
 async function processRecordInputs(groupedRecordInputs) {
-  const { destination, message, metadata  } = groupedRecordInputs[0];
-  const accessToken = getAccessToken(metadata, 'access_token');
+  const { destination, message, metadata } = groupedRecordInputs[0];
+  const accessToken = getAccessToken(metadata, 'accessToken');
   const developerToken = getValueFromMessage(metadata, 'secret.developer_token');
 
   const groupedRecordsByAction = lodash.groupBy(groupedRecordInputs, (record) =>
     record.message.action?.toLowerCase(),
   );
-
-  const finalResponse = [];
 
   let insertResponse;
   let deleteResponse;
@@ -139,30 +123,17 @@ async function processRecordInputs(groupedRecordInputs) {
     );
   }
 
-  const eventTypes = ['update', 'insert', 'delete'];
-  const errorMetaData = [];
-  const errorMetaDataObject = getErrorMetaData(groupedRecordsByAction, eventTypes);
-  if (errorMetaDataObject.length > 0) {
-    errorMetaData.push(errorMetaDataObject);
-  }
-
-  const error = new InstrumentationError('Invalid action type in record event');
-  const errorObj = generateErrorObject(error);
-  const errorResponseList = errorMetaData.map((data) =>
-    getErrorRespEvents(data, errorObj.status, errorObj.message, errorObj.statTags),
+  const errorResponse = getErrorResponse(groupedRecordsByAction);
+  const finalResponse = createFinalResponse(
+    deleteResponse,
+    insertResponse,
+    updateResponse,
+    errorResponse,
   );
-
-  if (deleteResponse && deleteResponse.batchedRequest.length > 0) {
-    finalResponse.push(deleteResponse);
-  }
-  if (insertResponse && insertResponse.batchedRequest.length > 0) {
-    finalResponse.push(insertResponse);
-  }
-  if (updateResponse && updateResponse.batchedRequest.length > 0) {
-    finalResponse.push(updateResponse);
-  }
-  if (errorResponseList.length > 0) {
-    finalResponse.push(...errorResponseList);
+  if (finalResponse.length === 0) {
+    throw new InstrumentationError(
+      'Missing valid parameters, unable to generate transformed payload',
+    );
   }
 
   return finalResponse;

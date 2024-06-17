@@ -1,3 +1,6 @@
+import { rETLAudienceRouterRequest } from './audience';
+import { rETLRecordRouterRequest } from './record';
+
 export const data = [
   {
     name: 'google_adwords_remarketing_lists',
@@ -7,206 +10,7 @@ export const data = [
     version: 'v0',
     input: {
       request: {
-        body: {
-          input: [
-            {
-              metadata: {
-                secret: {
-                  access_token: 'abcd1234',
-                  refresh_token: 'efgh5678',
-                  developer_token: 'ijkl9101',
-                },
-                jobId: 1,
-                userId: 'u1',
-              },
-              destination: {
-                Config: {
-                  rudderAccountId: '258Yea7usSKNpbkIaesL9oJ9iYw',
-                  listId: '7090784486',
-                  customerId: '7693729833',
-                  loginCustomerId: '',
-                  subAccount: false,
-                  userSchema: ['email', 'phone', 'addressInfo'],
-                  isHashRequired: true,
-                  typeOfList: 'General',
-                },
-              },
-              message: {
-                userId: 'user 1',
-                anonymousId: 'anon-id-new',
-                event: 'event1',
-                type: 'audiencelist',
-                properties: {
-                  listData: {
-                    add: [
-                      {
-                        email: 'test@abc.com',
-                        phone: '@09876543210',
-                        firstName: 'test',
-                        lastName: 'rudderlabs',
-                        country: 'US',
-                        postalCode: '1245',
-                      },
-                    ],
-                  },
-                  enablePartialFailure: true,
-                },
-                context: { ip: '14.5.67.21', library: { name: 'http' } },
-                timestamp: '2020-02-02T00:23:09.544Z',
-              },
-            },
-            {
-              metadata: {
-                secret: {
-                  access_token: 'abcd1234',
-                  refresh_token: 'efgh5678',
-                  developer_token: 'ijkl9101',
-                },
-                jobId: 2,
-                userId: 'u1',
-              },
-              destination: {
-                Config: {
-                  rudderAccountId: '258Yea7usSKNpbkIaesL9oJ9iYw',
-                  listId: '7090784486',
-                  customerId: '7693729833',
-                  loginCustomerId: '',
-                  subAccount: false,
-                  userSchema: ['email', 'phone', 'addressInfo'],
-                  isHashRequired: true,
-                  typeOfList: 'userID',
-                },
-              },
-              message: {
-                userId: 'user 1',
-                anonymousId: 'anon-id-new',
-                event: 'event1',
-                type: 'audiencelist',
-                properties: {
-                  listData: {
-                    add: [
-                      {
-                        email: 'test@abc.com',
-                        phone: '@09876543210',
-                        firstName: 'test',
-                        lastName: 'rudderlabs',
-                        country: 'US',
-                        postalCode: '1245',
-                        thirdPartyUserId: 'useri1234',
-                      },
-                    ],
-                  },
-                  enablePartialFailure: true,
-                },
-                context: { ip: '14.5.67.21', library: { name: 'http' } },
-                timestamp: '2020-02-02T00:23:09.544Z',
-              },
-            },
-            {
-              metadata: {
-                secret: {
-                  access_token: 'abcd1234',
-                  refresh_token: 'efgh5678',
-                  developer_token: 'ijkl9101',
-                },
-                jobId: 3,
-                userId: 'u1',
-              },
-              destination: {
-                Config: {
-                  rudderAccountId: '258Yea7usSKNpbkIaesL9oJ9iYw',
-                  listId: '7090784486',
-                  customerId: '7693729833',
-                  loginCustomerId: '',
-                  subAccount: false,
-                  userSchema: ['email', 'phone', 'addressInfo'],
-                  isHashRequired: true,
-                  typeOfList: 'General',
-                },
-              },
-              message: {
-                userId: 'user 1',
-                anonymousId: 'anon-id-new',
-                event: 'event1',
-                type: 'audiencelist',
-                properties: {
-                  listData: {
-                    remove: [
-                      {
-                        email: 'test@abc.com',
-                        phone: '@09876543210',
-                        firstName: 'test',
-                        lastName: 'rudderlabs',
-                        country: 'US',
-                        postalCode: '1245',
-                      },
-                    ],
-                  },
-                  enablePartialFailure: true,
-                },
-                context: { ip: '14.5.67.21', library: { name: 'http' } },
-                timestamp: '2020-02-02T00:23:09.544Z',
-              },
-            },
-            {
-              metadata: {
-                secret: {
-                  access_token: 'abcd1234',
-                  refresh_token: 'efgh5678',
-                  developer_token: 'ijkl9101',
-                },
-                jobId: 4,
-                userId: 'u1',
-              },
-              destination: {
-                Config: {
-                  rudderAccountId: '258Yea7usSKNpbkIaesL9oJ9iYw',
-                  listId: '7090784486',
-                  customerId: '7693729833',
-                  loginCustomerId: '',
-                  subAccount: false,
-                  userSchema: ['email', 'phone', 'addressInfo'],
-                  isHashRequired: true,
-                  typeOfList: 'General',
-                },
-              },
-              message: {
-                userId: 'user 1',
-                anonymousId: 'anon-id-new',
-                event: 'event1',
-                type: 'audiencelist',
-                properties: {
-                  listData: {
-                    remove: [
-                      {
-                        email: 'test@abc.com',
-                        phone: '@09876543210',
-                        firstName: 'test',
-                        lastName: 'rudderlabs',
-                        country: 'US',
-                        postalCode: '1245',
-                      },
-                    ],
-                    add: [
-                      {
-                        email: 'test@abc.com',
-                        phone: '@09876543210',
-                        firstName: 'test',
-                        lastName: 'rudderlabs',
-                        country: 'US',
-                        postalCode: '1245',
-                      },
-                    ],
-                  },
-                  enablePartialFailure: true,
-                },
-                context: { ip: '14.5.67.21', library: { name: 'http' } },
-                timestamp: '2020-02-02T00:23:09.544Z',
-              },
-            },
-          ],
-          destType: 'google_adwords_remarketing_lists',
-        },
+        body: rETLAudienceRouterRequest,
         method: 'POST',
       },
     },
@@ -224,9 +28,8 @@ export const data = [
                   endpoint:
                     'https://googleads.googleapis.com/v16/customers/7693729833/offlineUserDataJobs',
                   headers: {
-                    Authorization: 'Bearer abcd1234',
+                    Authorization: 'Bearer default-accessToken',
                     'Content-Type': 'application/json',
-                    'developer-token': 'ijkl9101',
                   },
                   params: {
                     listId: '7090784486',
@@ -272,13 +75,16 @@ export const data = [
               ],
               metadata: [
                 {
+                  attemptNum: 1,
+                  destinationId: 'default-destinationId',
+                  dontBatch: false,
                   secret: {
-                    access_token: 'abcd1234',
-                    refresh_token: 'efgh5678',
-                    developer_token: 'ijkl9101',
+                    accessToken: 'default-accessToken',
                   },
+                  sourceId: 'default-sourceId',
+                  userId: 'default-userId',
+                  workspaceId: 'default-workspaceId',
                   jobId: 1,
-                  userId: 'u1',
                 },
               ],
               batched: false,
@@ -294,6 +100,19 @@ export const data = [
                   isHashRequired: true,
                   typeOfList: 'General',
                 },
+                DestinationDefinition: {
+                  Config: {},
+                  DisplayName: 'GOOGLE_ADWORDS_REMARKETING_LISTS',
+                  ID: '1aIXqM806xAVm92nx07YwKbRrO9',
+                  Name: 'GOOGLE_ADWORDS_REMARKETING_LISTS',
+                },
+                Enabled: true,
+                ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
+                IsConnectionEnabled: true,
+                IsProcessorEnabled: true,
+                Name: 'GOOGLE_ADWORDS_REMARKETING_LISTS',
+                Transformations: [],
+                WorkspaceID: '1TSN08muJTZwH8iCDmnnRt1pmLd',
               },
             },
             {
@@ -305,67 +124,8 @@ export const data = [
                   endpoint:
                     'https://googleads.googleapis.com/v16/customers/7693729833/offlineUserDataJobs',
                   headers: {
-                    Authorization: 'Bearer abcd1234',
+                    Authorization: 'Bearer default-accessToken',
                     'Content-Type': 'application/json',
-                    'developer-token': 'ijkl9101',
-                  },
-                  params: {
-                    listId: '7090784486',
-                    customerId: '7693729833',
-                    consent: { adPersonalization: 'UNSPECIFIED', adUserData: 'UNSPECIFIED' },
-                  },
-                  body: {
-                    JSON: {
-                      enablePartialFailure: true,
-                      operations: [
-                        { create: { userIdentifiers: [{ thirdPartyUserId: 'useri1234' }] } },
-                      ],
-                    },
-                    JSON_ARRAY: {},
-                    XML: {},
-                    FORM: {},
-                  },
-                  files: {},
-                },
-              ],
-              metadata: [
-                {
-                  secret: {
-                    access_token: 'abcd1234',
-                    refresh_token: 'efgh5678',
-                    developer_token: 'ijkl9101',
-                  },
-                  jobId: 2,
-                  userId: 'u1',
-                },
-              ],
-              batched: false,
-              statusCode: 200,
-              destination: {
-                Config: {
-                  rudderAccountId: '258Yea7usSKNpbkIaesL9oJ9iYw',
-                  listId: '7090784486',
-                  customerId: '7693729833',
-                  loginCustomerId: '',
-                  subAccount: false,
-                  userSchema: ['email', 'phone', 'addressInfo'],
-                  isHashRequired: true,
-                  typeOfList: 'userID',
-                },
-              },
-            },
-            {
-              batchedRequest: [
-                {
-                  version: '1',
-                  type: 'REST',
-                  method: 'POST',
-                  endpoint:
-                    'https://googleads.googleapis.com/v16/customers/7693729833/offlineUserDataJobs',
-                  headers: {
-                    Authorization: 'Bearer abcd1234',
-                    'Content-Type': 'application/json',
-                    'developer-token': 'ijkl9101',
                   },
                   params: {
                     listId: '7090784486',
@@ -411,13 +171,16 @@ export const data = [
               ],
               metadata: [
                 {
+                  attemptNum: 1,
+                  destinationId: 'default-destinationId',
+                  dontBatch: false,
                   secret: {
-                    access_token: 'abcd1234',
-                    refresh_token: 'efgh5678',
-                    developer_token: 'ijkl9101',
+                    accessToken: 'default-accessToken',
                   },
+                  sourceId: 'default-sourceId',
+                  userId: 'default-userId',
+                  workspaceId: 'default-workspaceId',
                   jobId: 3,
-                  userId: 'u1',
                 },
               ],
               batched: false,
@@ -433,6 +196,19 @@ export const data = [
                   isHashRequired: true,
                   typeOfList: 'General',
                 },
+                DestinationDefinition: {
+                  Config: {},
+                  DisplayName: 'GOOGLE_ADWORDS_REMARKETING_LISTS',
+                  ID: '1aIXqM806xAVm92nx07YwKbRrO9',
+                  Name: 'GOOGLE_ADWORDS_REMARKETING_LISTS',
+                },
+                Enabled: true,
+                ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
+                IsConnectionEnabled: true,
+                IsProcessorEnabled: true,
+                Name: 'GOOGLE_ADWORDS_REMARKETING_LISTS',
+                Transformations: [],
+                WorkspaceID: '1TSN08muJTZwH8iCDmnnRt1pmLd',
               },
             },
             {
@@ -444,9 +220,8 @@ export const data = [
                   endpoint:
                     'https://googleads.googleapis.com/v16/customers/7693729833/offlineUserDataJobs',
                   headers: {
-                    Authorization: 'Bearer abcd1234',
+                    Authorization: 'Bearer default-accessToken',
                     'Content-Type': 'application/json',
-                    'developer-token': 'ijkl9101',
                   },
                   params: {
                     listId: '7090784486',
@@ -496,9 +271,8 @@ export const data = [
                   endpoint:
                     'https://googleads.googleapis.com/v16/customers/7693729833/offlineUserDataJobs',
                   headers: {
-                    Authorization: 'Bearer abcd1234',
+                    Authorization: 'Bearer default-accessToken',
                     'Content-Type': 'application/json',
-                    'developer-token': 'ijkl9101',
                   },
                   params: {
                     listId: '7090784486',
@@ -544,13 +318,16 @@ export const data = [
               ],
               metadata: [
                 {
+                  attemptNum: 1,
+                  destinationId: 'default-destinationId',
+                  dontBatch: false,
                   secret: {
-                    access_token: 'abcd1234',
-                    refresh_token: 'efgh5678',
-                    developer_token: 'ijkl9101',
+                    accessToken: 'default-accessToken',
                   },
+                  sourceId: 'default-sourceId',
+                  userId: 'default-userId',
+                  workspaceId: 'default-workspaceId',
                   jobId: 4,
-                  userId: 'u1',
                 },
               ],
               batched: false,
@@ -566,6 +343,19 @@ export const data = [
                   isHashRequired: true,
                   typeOfList: 'General',
                 },
+                DestinationDefinition: {
+                  Config: {},
+                  DisplayName: 'GOOGLE_ADWORDS_REMARKETING_LISTS',
+                  ID: '1aIXqM806xAVm92nx07YwKbRrO9',
+                  Name: 'GOOGLE_ADWORDS_REMARKETING_LISTS',
+                },
+                Enabled: true,
+                ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
+                IsConnectionEnabled: true,
+                IsProcessorEnabled: true,
+                Name: 'GOOGLE_ADWORDS_REMARKETING_LISTS',
+                Transformations: [],
+                WorkspaceID: '1TSN08muJTZwH8iCDmnnRt1pmLd',
               },
             },
           ],
@@ -581,226 +371,7 @@ export const data = [
     version: 'v0',
     input: {
       request: {
-        body: {
-          input: [
-            {
-              destination: {
-                Config: {
-                  rudderAccountId: '258Yea7usSKNpbkIaesL9oJ9iYw',
-                  listId: '7090784486',
-                  customerId: '7693729833',
-                  loginCustomerId: '',
-                  subAccount: false,
-                  userSchema: ['email', 'phone', 'addressInfo'],
-                  isHashRequired: true,
-                  typeOfList: 'General',
-                },
-              },
-              message: {
-                action: 'insert',
-                context: {
-                  ip: '14.5.67.21',
-                  library: {
-                    name: 'http',
-                  },
-                },
-                recordId: '2',
-                rudderId: '2',
-                fields: {
-                  email: 'test@abc.com',
-                  phone: '@09876543210',
-                  firstName: 'test',
-                  lastName: 'rudderlabs',
-                  country: 'US',
-                  postalCode: '1245',
-                },
-                type: 'record',
-              },
-              metadata: {
-                secret: {
-                  access_token: 'abcd1234',
-                  refresh_token: 'efgh5678',
-                  developer_token: 'ijkl9101',
-                },
-                jobId: 1,
-                userId: 'u1',
-              },
-            },
-            {
-              destination: {
-                Config: {
-                  rudderAccountId: '258Yea7usSKNpbkIaesL9oJ9iYw',
-                  listId: '7090784486',
-                  customerId: '7693729833',
-                  loginCustomerId: '',
-                  subAccount: false,
-                  userSchema: ['email', 'phone', 'addressInfo'],
-                  isHashRequired: true,
-                  typeOfList: 'General',
-                },
-              },
-              message: {
-                action: 'update',
-                context: {
-                  ip: '14.5.67.21',
-                  library: {
-                    name: 'http',
-                  },
-                },
-                recordId: '2',
-                rudderId: '2',
-                fields: {
-                  email: 'test@abc.com',
-                  phone: '@09876543210',
-                  firstName: 'test',
-                  lastName: 'rudderlabs',
-                  country: 'US',
-                  postalCode: '1245',
-                },
-                type: 'record',
-              },
-              metadata: {
-                secret: {
-                  access_token: 'abcd1234',
-                  refresh_token: 'efgh5678',
-                  developer_token: 'ijkl9101',
-                },
-                jobId: 2,
-                userId: 'u2',
-              },
-            },
-            {
-              destination: {
-                Config: {
-                  rudderAccountId: '258Yea7usSKNpbkIaesL9oJ9iYw',
-                  listId: '7090784486',
-                  customerId: '7693729833',
-                  loginCustomerId: '',
-                  subAccount: false,
-                  userSchema: ['email', 'phone', 'addressInfo'],
-                  isHashRequired: true,
-                  typeOfList: 'General',
-                },
-              },
-              message: {
-                action: 'delete',
-                context: {
-                  ip: '14.5.67.21',
-                  library: {
-                    name: 'http',
-                  },
-                },
-                recordId: '2',
-                rudderId: '2',
-                fields: {
-                  email: 'test@abc.com',
-                  phone: '@09876543210',
-                  firstName: 'test',
-                  lastName: 'rudderlabs',
-                  country: 'US',
-                  postalCode: '1245',
-                },
-                type: 'record',
-              },
-              metadata: {
-                secret: {
-                  access_token: 'abcd1234',
-                  refresh_token: 'efgh5678',
-                  developer_token: 'ijkl9101',
-                },
-                jobId: 3,
-                userId: 'u3',
-              },
-            },
-            {
-              destination: {
-                Config: {
-                  rudderAccountId: '258Yea7usSKNpbkIaesL9oJ9iYw',
-                  listId: '7090784486',
-                  customerId: '7693729833',
-                  loginCustomerId: '',
-                  subAccount: false,
-                  userSchema: ['email', 'phone', 'addressInfo'],
-                  isHashRequired: true,
-                  typeOfList: 'General',
-                },
-              },
-              message: {
-                action: 'lol',
-                context: {
-                  ip: '14.5.67.21',
-                  library: {
-                    name: 'http',
-                  },
-                },
-                recordId: '2',
-                rudderId: '2',
-                fields: {
-                  email: 'test@abc.com',
-                  phone: '@09876543210',
-                  firstName: 'test',
-                  lastName: 'rudderlabs',
-                  country: 'US',
-                  postalCode: '1245',
-                },
-                type: 'record',
-              },
-              metadata: {
-                secret: {
-                  access_token: 'abcd1234',
-                  refresh_token: 'efgh5678',
-                  developer_token: 'ijkl9101',
-                },
-                jobId: 4,
-                userId: 'u4',
-              },
-            },
-            {
-              destination: {
-                Config: {
-                  rudderAccountId: '258Yea7usSKNpbkIaesL9oJ9iYw',
-                  listId: '7090784486',
-                  customerId: '7693729833',
-                  loginCustomerId: '',
-                  subAccount: false,
-                  userSchema: ['email', 'phone', 'addressInfo'],
-                  isHashRequired: true,
-                  typeOfList: 'General',
-                },
-              },
-              message: {
-                action: 'insert',
-                context: {
-                  ip: '14.5.67.21',
-                  library: {
-                    name: 'http',
-                  },
-                },
-                recordId: '2',
-                rudderId: '2',
-                fields: {
-                  email: 'test@abc.com',
-                  phone: '@09876543210',
-                  firstName: 'test',
-                  lastName: 'rudderlabs',
-                  country: 'US',
-                  postalCode: '1245',
-                },
-                type: 'record',
-              },
-              metadata: {
-                secret: {
-                  access_token: 'abcd1234',
-                  refresh_token: 'efgh5678',
-                  developer_token: 'ijkl9101',
-                },
-                jobId: 5,
-                userId: 'u5',
-              },
-            },
-          ],
-          destType: 'google_adwords_remarketing_lists',
-        },
+        body: rETLRecordRouterRequest,
         method: 'POST',
       },
     },
@@ -818,9 +389,8 @@ export const data = [
                   endpoint:
                     'https://googleads.googleapis.com/v16/customers/7693729833/offlineUserDataJobs',
                   headers: {
-                    Authorization: 'Bearer abcd1234',
+                    Authorization: 'Bearer default-accessToken',
                     'Content-Type': 'application/json',
-                    'developer-token': 'ijkl9101',
                   },
                   params: {
                     listId: '7090784486',
@@ -868,123 +438,16 @@ export const data = [
               ],
               metadata: [
                 {
+                  attemptNum: 1,
+                  destinationId: 'default-destinationId',
+                  dontBatch: false,
                   secret: {
-                    access_token: 'abcd1234',
-                    refresh_token: 'efgh5678',
-                    developer_token: 'ijkl9101',
+                    accessToken: 'default-accessToken',
                   },
-                  jobId: 3,
-                  userId: 'u3',
-                },
-              ],
-              batched: true,
-              statusCode: 200,
-              destination: {
-                Config: {
-                  rudderAccountId: '258Yea7usSKNpbkIaesL9oJ9iYw',
-                  listId: '7090784486',
-                  customerId: '7693729833',
-                  loginCustomerId: '',
-                  subAccount: false,
-                  userSchema: ['email', 'phone', 'addressInfo'],
-                  isHashRequired: true,
-                  typeOfList: 'General',
-                },
-              },
-            },
-            {
-              batchedRequest: [
-                {
-                  version: '1',
-                  type: 'REST',
-                  method: 'POST',
-                  endpoint:
-                    'https://googleads.googleapis.com/v16/customers/7693729833/offlineUserDataJobs',
-                  headers: {
-                    Authorization: 'Bearer abcd1234',
-                    'Content-Type': 'application/json',
-                    'developer-token': 'ijkl9101',
-                  },
-                  params: {
-                    listId: '7090784486',
-                    customerId: '7693729833',
-                    consent: {
-                      adPersonalization: 'UNSPECIFIED',
-                      adUserData: 'UNSPECIFIED',
-                    },
-                  },
-                  body: {
-                    JSON: {
-                      operations: [
-                        {
-                          create: {
-                            userIdentifiers: [
-                              {
-                                hashedEmail:
-                                  'd3142c8f9c9129484daf28df80cc5c955791efed5e69afabb603bc8cb9ffd419',
-                              },
-                              {
-                                hashedPhoneNumber:
-                                  '8846dcb6ab2d73a0e67dbd569fa17cec2d9d391e5b05d1dd42919bc21ae82c45',
-                              },
-                              {
-                                addressInfo: {
-                                  hashedFirstName:
-                                    '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08',
-                                  hashedLastName:
-                                    'dcf000c2386fb76d22cefc0d118a8511bb75999019cd373df52044bccd1bd251',
-                                  countryCode: 'US',
-                                  postalCode: '1245',
-                                },
-                              },
-                              {
-                                hashedEmail:
-                                  'd3142c8f9c9129484daf28df80cc5c955791efed5e69afabb603bc8cb9ffd419',
-                              },
-                              {
-                                hashedPhoneNumber:
-                                  '8846dcb6ab2d73a0e67dbd569fa17cec2d9d391e5b05d1dd42919bc21ae82c45',
-                              },
-                              {
-                                addressInfo: {
-                                  hashedFirstName:
-                                    '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08',
-                                  hashedLastName:
-                                    'dcf000c2386fb76d22cefc0d118a8511bb75999019cd373df52044bccd1bd251',
-                                  countryCode: 'US',
-                                  postalCode: '1245',
-                                },
-                              },
-                            ],
-                          },
-                        },
-                      ],
-                    },
-                    JSON_ARRAY: {},
-                    XML: {},
-                    FORM: {},
-                  },
-                  files: {},
-                },
-              ],
-              metadata: [
-                {
-                  secret: {
-                    access_token: 'abcd1234',
-                    refresh_token: 'efgh5678',
-                    developer_token: 'ijkl9101',
-                  },
+                  sourceId: 'default-sourceId',
+                  userId: 'default-userId',
+                  workspaceId: 'default-workspaceId',
                   jobId: 1,
-                  userId: 'u1',
-                },
-                {
-                  secret: {
-                    access_token: 'abcd1234',
-                    refresh_token: 'efgh5678',
-                    developer_token: 'ijkl9101',
-                  },
-                  jobId: 5,
-                  userId: 'u5',
                 },
               ],
               batched: true,
@@ -1000,6 +463,19 @@ export const data = [
                   isHashRequired: true,
                   typeOfList: 'General',
                 },
+                DestinationDefinition: {
+                  Config: {},
+                  DisplayName: 'GOOGLE_ADWORDS_REMARKETING_LISTS',
+                  ID: '1aIXqM806xAVm92nx07YwKbRrO9',
+                  Name: 'GOOGLE_ADWORDS_REMARKETING_LISTS',
+                },
+                Enabled: true,
+                ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
+                IsConnectionEnabled: true,
+                IsProcessorEnabled: true,
+                Name: 'GOOGLE_ADWORDS_REMARKETING_LISTS',
+                Transformations: [],
+                WorkspaceID: '1TSN08muJTZwH8iCDmnnRt1pmLd',
               },
             },
             {
@@ -1011,9 +487,136 @@ export const data = [
                   endpoint:
                     'https://googleads.googleapis.com/v16/customers/7693729833/offlineUserDataJobs',
                   headers: {
-                    Authorization: 'Bearer abcd1234',
+                    Authorization: 'Bearer default-accessToken',
                     'Content-Type': 'application/json',
-                    'developer-token': 'ijkl9101',
+                  },
+                  params: {
+                    listId: '7090784486',
+                    customerId: '7693729833',
+                    consent: {
+                      adPersonalization: 'UNSPECIFIED',
+                      adUserData: 'UNSPECIFIED',
+                    },
+                  },
+                  body: {
+                    JSON: {
+                      operations: [
+                        {
+                          create: {
+                            userIdentifiers: [
+                              {
+                                hashedEmail:
+                                  'd3142c8f9c9129484daf28df80cc5c955791efed5e69afabb603bc8cb9ffd419',
+                              },
+                              {
+                                hashedPhoneNumber:
+                                  '8846dcb6ab2d73a0e67dbd569fa17cec2d9d391e5b05d1dd42919bc21ae82c45',
+                              },
+                              {
+                                addressInfo: {
+                                  hashedFirstName:
+                                    '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08',
+                                  hashedLastName:
+                                    'dcf000c2386fb76d22cefc0d118a8511bb75999019cd373df52044bccd1bd251',
+                                  countryCode: 'US',
+                                  postalCode: '1245',
+                                },
+                              },
+                              {
+                                hashedEmail:
+                                  'd3142c8f9c9129484daf28df80cc5c955791efed5e69afabb603bc8cb9ffd419',
+                              },
+                              {
+                                hashedPhoneNumber:
+                                  '8846dcb6ab2d73a0e67dbd569fa17cec2d9d391e5b05d1dd42919bc21ae82c45',
+                              },
+                              {
+                                addressInfo: {
+                                  hashedFirstName:
+                                    '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08',
+                                  hashedLastName:
+                                    'dcf000c2386fb76d22cefc0d118a8511bb75999019cd373df52044bccd1bd251',
+                                  countryCode: 'US',
+                                  postalCode: '1245',
+                                },
+                              },
+                            ],
+                          },
+                        },
+                      ],
+                    },
+                    JSON_ARRAY: {},
+                    XML: {},
+                    FORM: {},
+                  },
+                  files: {},
+                },
+              ],
+              metadata: [
+                {
+                  attemptNum: 1,
+                  destinationId: 'default-destinationId',
+                  dontBatch: false,
+                  secret: {
+                    accessToken: 'default-accessToken',
+                  },
+                  sourceId: 'default-sourceId',
+                  userId: 'default-userId',
+                  workspaceId: 'default-workspaceId',
+                  jobId: 2,
+                },
+                {
+                  attemptNum: 1,
+                  destinationId: 'default-destinationId',
+                  dontBatch: false,
+                  jobId: 3,
+                  secret: {
+                    accessToken: 'default-accessToken',
+                  },
+                  sourceId: 'default-sourceId',
+                  userId: 'default-userId',
+                  workspaceId: 'default-workspaceId',
+                },
+              ],
+              batched: true,
+              statusCode: 200,
+              destination: {
+                Config: {
+                  rudderAccountId: '258Yea7usSKNpbkIaesL9oJ9iYw',
+                  listId: '7090784486',
+                  customerId: '7693729833',
+                  loginCustomerId: '',
+                  subAccount: false,
+                  userSchema: ['email', 'phone', 'addressInfo'],
+                  isHashRequired: true,
+                  typeOfList: 'General',
+                },
+                DestinationDefinition: {
+                  Config: {},
+                  DisplayName: 'GOOGLE_ADWORDS_REMARKETING_LISTS',
+                  ID: '1aIXqM806xAVm92nx07YwKbRrO9',
+                  Name: 'GOOGLE_ADWORDS_REMARKETING_LISTS',
+                },
+                Enabled: true,
+                ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
+                IsConnectionEnabled: true,
+                IsProcessorEnabled: true,
+                Name: 'GOOGLE_ADWORDS_REMARKETING_LISTS',
+                Transformations: [],
+                WorkspaceID: '1TSN08muJTZwH8iCDmnnRt1pmLd',
+              },
+            },
+            {
+              batchedRequest: [
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint:
+                    'https://googleads.googleapis.com/v16/customers/7693729833/offlineUserDataJobs',
+                  headers: {
+                    Authorization: 'Bearer default-accessToken',
+                    'Content-Type': 'application/json',
                   },
                   params: {
                     listId: '7090784486',
@@ -1061,13 +664,16 @@ export const data = [
               ],
               metadata: [
                 {
+                  attemptNum: 1,
+                  destinationId: 'default-destinationId',
+                  dontBatch: false,
                   secret: {
-                    access_token: 'abcd1234',
-                    refresh_token: 'efgh5678',
-                    developer_token: 'ijkl9101',
+                    accessToken: 'default-accessToken',
                   },
-                  jobId: 2,
-                  userId: 'u2',
+                  sourceId: 'default-sourceId',
+                  userId: 'default-userId',
+                  workspaceId: 'default-workspaceId',
+                  jobId: 4,
                 },
               ],
               batched: true,
@@ -1083,18 +689,34 @@ export const data = [
                   isHashRequired: true,
                   typeOfList: 'General',
                 },
+                DestinationDefinition: {
+                  Config: {},
+                  DisplayName: 'GOOGLE_ADWORDS_REMARKETING_LISTS',
+                  ID: '1aIXqM806xAVm92nx07YwKbRrO9',
+                  Name: 'GOOGLE_ADWORDS_REMARKETING_LISTS',
+                },
+                Enabled: true,
+                ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
+                IsConnectionEnabled: true,
+                IsProcessorEnabled: true,
+                Name: 'GOOGLE_ADWORDS_REMARKETING_LISTS',
+                Transformations: [],
+                WorkspaceID: '1TSN08muJTZwH8iCDmnnRt1pmLd',
               },
             },
             {
               metadata: [
                 {
+                  attemptNum: 1,
+                  destinationId: 'default-destinationId',
+                  dontBatch: false,
                   secret: {
-                    access_token: 'abcd1234',
-                    refresh_token: 'efgh5678',
-                    developer_token: 'ijkl9101',
+                    accessToken: 'default-accessToken',
                   },
-                  jobId: 4,
-                  userId: 'u4',
+                  sourceId: 'default-sourceId',
+                  userId: 'default-userId',
+                  workspaceId: 'default-workspaceId',
+                  jobId: 5,
                 },
               ],
               batched: false,
@@ -1103,10 +725,12 @@ export const data = [
               statTags: {
                 errorCategory: 'dataValidation',
                 errorType: 'instrumentation',
+                destinationId: 'default-destinationId',
                 destType: 'GOOGLE_ADWORDS_REMARKETING_LISTS',
                 module: 'destination',
                 implementation: 'native',
                 feature: 'router',
+                workspaceId: 'default-workspaceId',
               },
             },
           ],

@@ -1,144 +1,9 @@
-import { data_v2 } from './data_v2';
-export const data = [
-  {
-    name: 'one_signal',
-    description:
-      'Identify call for creating new device (phone and playerId is not available in the payload). Integrations object is also not available.',
-    feature: 'processor',
-    module: 'destination',
-    version: 'v0',
-    input: {
-      request: {
-        body: [
-          {
-            destination: {
-              Config: {
-                appId: 'random-818c-4a28-b98e-6cd8a994eb22',
-                emailDeviceType: true,
-                smsDeviceType: true,
-                eventAsTags: false,
-                allowedProperties: [],
-              },
-            },
-            message: {
-              type: 'identify',
-              sentAt: '2021-01-03T17:02:53.195Z',
-              userId: 'user@27',
-              channel: 'web',
-              context: {
-                os: { name: '', version: '1.12.3' },
-                app: {
-                  name: 'RudderLabs JavaScript SDK',
-                  build: '1.0.0',
-                  version: '1.1.11',
-                  namespace: 'com.rudderlabs.javascript',
-                },
-                traits: {
-                  brand: 'John Players',
-                  price: '15000',
-                  firstName: 'Test',
-                  email: 'test@rudderstack.com',
-                  userId: 'user@27',
-                },
-                locale: 'en-US',
-                device: { token: 'token', id: 'id', type: 'ios' },
-                screen: { density: 2 },
-                library: { name: 'RudderLabs JavaScript SDK', version: '1.1.11' },
-                campaign: {},
-                userAgent:
-                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0',
-              },
-              rudderId: '8f8fa6b5-8e24-489c-8e22-61f23f2e364f',
-              messageId: '2116ef8c-efc3-4ca4-851b-02ee60dad6ff',
-              anonymousId: '97c46c81-3140-456d-b2a9-690d70aaca35',
-              originalTimestamp: '2021-01-03T17:02:53.193Z',
-            },
-          },
-        ],
-        method: 'POST',
-      },
-      pathSuffix: '',
-    },
-    output: {
-      response: {
-        status: 200,
-        body: [
-          {
-            output: {
-              version: '1',
-              type: 'REST',
-              method: 'POST',
-              endpoint: 'https://onesignal.com/api/v1/players',
-              headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
-              params: {},
-              body: {
-                JSON: {
-                  device_os: '1.12.3',
-                  laguage: 'en-US',
-                  created_at: 1609693373,
-                  last_active: 1609693373,
-                  external_user_id: 'user@27',
-                  app_id: 'random-818c-4a28-b98e-6cd8a994eb22',
-                  device_type: 11,
-                  identifier: 'test@rudderstack.com',
-                  tags: {
-                    brand: 'John Players',
-                    price: '15000',
-                    firstName: 'Test',
-                    email: 'test@rudderstack.com',
-                    userId: 'user@27',
-                    anonymousId: '97c46c81-3140-456d-b2a9-690d70aaca35',
-                  },
-                },
-                JSON_ARRAY: {},
-                XML: {},
-                FORM: {},
-              },
-              files: {},
-              userId: '',
-            },
-            statusCode: 200,
-          },
-          {
-            output: {
-              version: '1',
-              type: 'REST',
-              method: 'POST',
-              endpoint: 'https://onesignal.com/api/v1/players',
-              headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
-              params: {},
-              body: {
-                JSON: {
-                  device_os: '1.12.3',
-                  laguage: 'en-US',
-                  created_at: 1609693373,
-                  last_active: 1609693373,
-                  external_user_id: 'user@27',
-                  app_id: 'random-818c-4a28-b98e-6cd8a994eb22',
-                  device_type: 8,
-                  identifier: '97c46c81-3140-456d-b2a9-690d70aaca35',
-                  tags: {
-                    brand: 'John Players',
-                    price: '15000',
-                    firstName: 'Test',
-                    email: 'test@rudderstack.com',
-                    userId: 'user@27',
-                    anonymousId: '97c46c81-3140-456d-b2a9-690d70aaca35',
-                  },
-                },
-                JSON_ARRAY: {},
-                XML: {},
-                FORM: {},
-              },
-              files: {},
-              userId: '',
-            },
-            statusCode: 200,
-          },
-        ],
-      },
-    },
-  },
+import { identifyTests } from './identify';
+import { trackTests } from './track';
+
+export const data_v2 = [
+  ...identifyTests,
+  ...trackTests,
   {
     name: 'one_signal',
     description:
@@ -703,7 +568,7 @@ export const data = [
               headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
               version: '1',
               endpoint:
-                'https://onesignal.com/api/v1/apps/random-818c-4a28-b98e-6cd8a994eb22/users/user@27',
+                'https://onesignal.com/api/v1/apps/random-818c-4a28-b98e-6cd8a994eb22/users/user%4027',
               userId: '',
             },
             statusCode: 200,
@@ -790,7 +655,7 @@ export const data = [
               headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
               version: '1',
               endpoint:
-                'https://onesignal.com/api/v1/apps/random-818c-4a28-b98e-6cd8a994eb22/users/user@27',
+                'https://onesignal.com/api/v1/apps/random-818c-4a28-b98e-6cd8a994eb22/users/user%4027',
               userId: '',
             },
             statusCode: 200,
@@ -871,7 +736,7 @@ export const data = [
               headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
               version: '1',
               endpoint:
-                'https://onesignal.com/api/v1/apps/random-818c-4a28-b98e-6cd8a994eb22/users/user@27',
+                'https://onesignal.com/api/v1/apps/random-818c-4a28-b98e-6cd8a994eb22/users/user%4027',
               userId: '',
             },
             statusCode: 200,
@@ -946,7 +811,7 @@ export const data = [
               headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
               version: '1',
               endpoint:
-                'https://onesignal.com/api/v1/apps/random-818c-4a28-b98e-6cd8a994eb22/users/user@27',
+                'https://onesignal.com/api/v1/apps/random-818c-4a28-b98e-6cd8a994eb22/users/user%4027',
               userId: '',
             },
             statusCode: 200,
@@ -1026,7 +891,7 @@ export const data = [
               headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
               version: '1',
               endpoint:
-                'https://onesignal.com/api/v1/apps/random-818c-4a28-b98e-6cd8a994eb22/users/user@27',
+                'https://onesignal.com/api/v1/apps/random-818c-4a28-b98e-6cd8a994eb22/users/user%4027',
               userId: '',
             },
             statusCode: 200,
@@ -1543,5 +1408,4 @@ export const data = [
       },
     },
   },
-  ...data_v2,
 ];

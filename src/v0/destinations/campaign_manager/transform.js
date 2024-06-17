@@ -12,6 +12,7 @@ const {
   handleRtTfSingleEventError,
   getAccessToken,
 } = require('../../util');
+const { CommonUtils } = require('../../../util/common');
 
 const {
   ConfigCategories,
@@ -22,7 +23,7 @@ const {
   MAX_BATCH_CONVERSATIONS_SIZE,
 } = require('./config');
 
-const { convertToMicroseconds } = require('./util');
+const { convertToMicroseconds, prepareUserIdentifiers } = require('./util');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 function isEmptyObject(obj) {
@@ -102,6 +103,18 @@ function processTrack(message, metadata, destination) {
         '[CAMPAIGN MANAGER (DCM)]: If encryptedUserId or encryptedUserIdCandidates is used, provide proper values for ' +
           'properties.encryptionEntityType , properties.encryptionSource and properties.encryptionEntityId',
       );
+    }
+  }
+
+  if (
+    destination.Config.enableEnhancedConversions &&
+    message.properties.requestType === 'batchupdate'
+  ) {
+    const userIdentifiers = CommonUtils.toArray(
+      prepareUserIdentifiers(message, destination.Config.isHashingRequired ?? true),
+    );
+    if (userIdentifiers.length > 0) {
+      requestJson.userIdentifiers = userIdentifiers;
     }
   }
 

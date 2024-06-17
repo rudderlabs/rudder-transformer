@@ -17,20 +17,32 @@ const {
   simpleProcessRouterDest,
 } = require('../../util');
 
-const { Event, ENDPOINT, ConfigCategory, mappingConfig, nameToEventMap } = require('./config');
+const {
+  Event,
+  ENDPOINT,
+  ENDPOINT_V2,
+  ConfigCategory,
+  mappingConfig,
+  nameToEventMap,
+} = require('./config');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 function responseBuilderSimple(payload, message, destination) {
-  const { androidAppId, appleAppId } = destination.Config;
+  const { androidAppId, appleAppId, sharingFilter, devKey, s2sKey, authVersion } =
+    destination.Config;
   let endpoint;
   const os = get(message, 'context.os.name');
   // if ((os && os.toLowerCase() === "android") || (os && isAppleFamily(os))){
   //   if()
   // }
+
+  const finalEndPoint =
+    isDefinedAndNotNull(authVersion) && authVersion === 'v2' ? ENDPOINT_V2 : ENDPOINT;
+
   if (os && os.toLowerCase() === 'android' && androidAppId) {
-    endpoint = `${ENDPOINT}${androidAppId}`;
+    endpoint = `${finalEndPoint}${androidAppId}`;
   } else if (os && isAppleFamily(os) && appleAppId) {
-    endpoint = `${ENDPOINT}id${appleAppId}`;
+    endpoint = `${finalEndPoint}id${appleAppId}`;
   } else {
     throw new ConfigurationError(
       'os name is required along with the respective appId eg. (os->android & Android App Id is required) or (os->ios & Apple App Id is required)',
@@ -87,16 +99,19 @@ function responseBuilderSimple(payload, message, destination) {
     updatedPayload.bundleIdentifier = bundleIdentifier;
   }
 
-  const { sharingFilter, devKey } = destination.Config;
+  // const { sharingFilter, devKey } = destination.Config;
   if (isDefinedAndNotNullAndNotEmpty(sharingFilter)) {
     updatedPayload.sharing_filter = sharingFilter;
   }
+
+  const finalAuthentication =
+    isDefinedAndNotNull(authVersion) && authVersion === 'v2' ? s2sKey : devKey;
 
   const response = defaultRequestConfig();
   response.endpoint = endpoint;
   response.headers = {
     'Content-Type': JSON_MIME_TYPE,
-    authentication: devKey,
+    authentication: finalAuthentication,
   };
   response.method = defaultPostRequestConfig.requestMethod;
   response.body.JSON = removeUndefinedAndNullValues(updatedPayload);
@@ -203,6 +218,19 @@ function processEventTypeTrack(message, config) {
 }
 
 function processSingleMessage(message, destination) {
+  const { devKey, s2sKey, authVersion, useRichEventName } = destination.Config;
+
+  if (!isDefinedAndNotNull(authVersion) && !isDefinedAndNotNull(devKey)) {
+    throw new ConfigurationError('No authentication key is present. Aborting.');
+  }
+
+  if (isDefinedAndNotNull(authVersion) && authVersion === 'v2' && !isDefinedAndNotNull(s2sKey)) {
+    throw new ConfigurationError('s2s key is mandatory for v2 authorization. Aborting.');
+  }
+
+  if (isDefinedAndNotNull(authVersion) && authVersion === 'v1' && !isDefinedAndNotNull(devKey)) {
+    throw new ConfigurationError('dev key is mandatory for v1 authorization. Aborting.');
+  }
   const messageType = message.type.toLowerCase();
   let payload;
   switch (messageType) {
@@ -212,7 +240,7 @@ function processSingleMessage(message, destination) {
     }
     case EventType.SCREEN: {
       let eventName;
-      if (destination.Config.useRichEventName === true) {
+      if (useRichEventName === true) {
         eventName = `Viewed ${
           message.name || message.event || get(message, 'properties.name') || ''
         } Screen`;
@@ -224,7 +252,7 @@ function processSingleMessage(message, destination) {
     }
     case EventType.PAGE: {
       let eventName;
-      if (destination.Config.useRichEventName === true) {
+      if (useRichEventName === true) {
         eventName = `Viewed ${message.name || get(message, 'properties.name') || ''} Page`;
       } else {
         eventName = EventType.PAGE;

@@ -243,12 +243,15 @@ async function createIvm(code, libraryVersionIds, versionId, credentials, secret
     }),
   );
 
-  await jail.set('_credential', function (key) {
+  await jail.set('_credential', function (...args) {
     if (_.isNil(credentials) || !_.isObject(credentials)) {
-      throw new Error('Credentials in incorrect format');
+      logger.error('Error fetching credentials map');
+      stats.increment('credential_error', { versionId });
+      return undefined;
     }
-    if (key.length > 1 || _.isNil(key[0]) || !_.isString(key[0])) {
-      throw new Error('Key should be a string');
+    const key = args[0][0];
+    if (_.isNil(key)) {
+      throw new Error('Key should be valid and defined');
     }
     return credentials[key];
   });

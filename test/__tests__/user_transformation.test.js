@@ -1171,7 +1171,7 @@ describe("User transformation", () => {
       expect(fetch).toHaveBeenCalledWith(
         `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
       );
-      expect(output[0].error).toMatch(/Key should be a string/);
+      expect(output[0].error).toMatch(/Key should be valid and defined/);
     });
 
     it(`Simple ${name} Test with credentials with multiple arguements for codeVersion 1`, async () => {
@@ -1185,7 +1185,7 @@ describe("User transformation", () => {
         name,
         code: `
           export function transformEvent(event, metadata) {
-              event.credentialValue = credential('arg1', 'arg2');
+              event.credentialValue = credential('key1', 'key2');
               return event;
             }
             `
@@ -1200,7 +1200,7 @@ describe("User transformation", () => {
       expect(fetch).toHaveBeenCalledWith(
         `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
       );
-      expect(output[0].error).toMatch(/Key should be a string/);
+      expect(output[0].transformedEvent.credentialValue).toEqual("value1");
     });
 
     it(`Simple ${name} Test with credentials with non string key for codeVersion 1`, async () => {
@@ -1229,7 +1229,7 @@ describe("User transformation", () => {
       expect(fetch).toHaveBeenCalledWith(
         `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
       );
-      expect(output[0].error).toMatch(/Key should be a string/);
+      expect(output[0].transformedEvent.credentialValue).toEqual(undefined);
     });
 
     it(`Simple ${name} Test with credentials without value for codeVersion 1`, async () => {

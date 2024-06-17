@@ -19,34 +19,62 @@ class MetricsAggregator {
     this.registerCallbacks();
   }
 
+  timing(name, start, tags = {}) {
+    try {
+      let metric = this.prometheusInstance.prometheusRegistry.getSingleMetric(name);
+      if (!metric) {
+        logger.warn(
+          `Prometheus: Timing metric ${name} not found in the registry. Creating a new one`,
+        );
+        metric = this.prometheusInstance.newHistogramStat(name, name, Object.keys(tags));
+      }
+      metric.observe(tags, (new Date() - start) / 1000);
+    } catch (e) {
+      logger.error(`Prometheus: Timing metric ${name} failed with error ${e}`);
+    }
+  }
+
   registerCallbacks() {
     if (cluster.isPrimary) {
       // register callback for master process
       cluster.on('message', async (worker, message) => {
+        const startTime = Date.now();
         if (message.type === GET_METRICS_RES) {
-          logger.debug(`[MetricsAggregator] Master received metrics from worker ${worker.id}`);
+          logger.info(
+            `${new Date().toISOString()} [MetricsAggregator] Master received metrics from worker ${worker.id}`,
+          );
+          this.timing('getMetricsReq', message.startTime, { workerId: worker.id });
           await this.handleMetricsResponse(message);
         }
+        logger.info(
+          `[MetricsAggregator] Master processed ${message.type} in ${new Date() - startTime} ms`,
+        );
       });
       return;
     }
     // register callback for worker process
     cluster.worker.on('message', async (message) => {
+      const startTime = new Date();
       if (message.type === GET_METRICS_REQ) {
-        logger.debug(`[MetricsAggregator] Worker ${cluster.worker.id} received metrics request`);
+        logger.info(
+          `${new Date().toISOString()} [MetricsAggregator] Worker ${cluster.worker.id} received metrics request`,
+        );
         try {
           const metrics = await this.prometheusInstance.prometheusRegistry.getMetricsAsJSON();
-          cluster.worker.send({ type: GET_METRICS_RES, metrics });
+          cluster.worker.send({ type: GET_METRICS_RES, metrics, startTime: message.startTime });
         } catch (error) {
           cluster.worker.send({ type: GET_METRICS_RES, error: error.message });
         }
       } else if (message.type === RESET_METRICS_REQUEST) {
         logger.info(
-          `[MetricsAggregator] Worker ${cluster.worker.id} received reset metrics request`,
+          `[MetricsAggregator] Worker ${cluster.worker.id} received reset metrics request `,
         );
         this.prometheusInstance.prometheusRegistry.resetMetrics();
         logger.info(`[MetricsAggregator] Worker ${cluster.worker.id} reset metrics successfully`);
       }
+      logger.info(
+        `[MetricsAggregator] Worker ${cluster.worker.id} processed ${message.type} in ${new Date() - startTime} ms`,
+      );
     });
   }
 
@@ -58,7 +86,12 @@ class MetricsAggregator {
       );
 
       this.workerThread.on('message', (message) => {
+        const startTime = new Date();
         if ((message.type = AGGREGATE_METRICS_RES)) {
+          logger.info(
+            `${new Date().toISOString()} [MetricsAggregator] Master received aggregated metrics from worker thread`,
+          );
+          this.timing('aggregateMetricsReq', message.startTime);
           if (message.error) {
             this.rejectFunc(new Error(message.error));
             this.resetAggregator();
@@ -67,6 +100,9 @@ class MetricsAggregator {
           this.resolveFunc(message.metrics);
           this.resetAggregator();
         }
+        logger.info(
+          `[MetricsAggregator] Master processed ${message.type} in ${new Date() - startTime} ms`,
+        );
       });
     }
   }
@@ -95,16 +131,22 @@ class MetricsAggregator {
     return new Promise((resolve, reject) => {
       this.resolveFunc = resolve;
       this.rejectFunc = reject;
+      const startTime = Date.now();
       for (const id in cluster.workers) {
         this.pendingMetricRequests++;
-        logger.debug(`[MetricsAggregator] Requesting metrics from worker ${id}`);
-        cluster.workers[id].send({ type: GET_METRICS_REQ });
+        logger.info(`[MetricsAggregator] Requesting metrics from worker ${id}`);
+        cluster.workers[id].send({ type: GET_METRICS_REQ, startTime });
       }
     });
   }
 
   async aggregateMetricsInWorkerThread() {
-    this.workerThread.postMessage({ type: AGGREGATE_METRICS_REQ, metrics: this.metricsBuffer });
+    this.metricsBuffer.push(await this.prometheusInstance.prometheusRegistry.getMetricsAsJSON());
+    this.workerThread.postMessage({
+      type: AGGREGATE_METRICS_REQ,
+      metrics: this.metricsBuffer,
+      startTime: Date.now(),
+    });
   }
 
   async handleMetricsResponse(message) {
@@ -116,7 +158,11 @@ class MetricsAggregator {
     this.metricsBuffer.push(message.metrics);
     this.pendingMetricRequests--;
     if (this.pendingMetricRequests === 0) {
-      this.aggregateMetricsInWorkerThread();
+      this.timing('getMetricsAll', message.startTime);
+      logger.info(
+        `${new Date().toISOString()} [MetricsAggregator] All metrics received, sending metrics to worker thread`,
+      );
+      await this.aggregateMetricsInWorkerThread();
     }
   }
 

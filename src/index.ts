@@ -35,7 +35,6 @@ app.use(
 addRequestSizeMiddleware(app);
 addSwaggerRoutes(app);
 
-logger.info('Using new routes');
 applicationRoutes(app);
 
 function finalFunction() {

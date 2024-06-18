@@ -50,7 +50,7 @@ steps:
   - name: searchContact
     condition: ($.outputs.messageType === {{$.EventType.IDENTIFY}} || $.outputs.messageType === {{$.EventType.GROUP}}) && $.outputs.apiVersion !== "v1"
     template: |
-      const contactId = await $.searchContact(.message, .destination);
+      const contactId = await $.searchContact(.message, .destination, .metadata);
       contactId;
 
   - name: identifyTransformationForLatestVersion
@@ -176,7 +176,7 @@ steps:
         condition: $.isDefinedAndNotNull($.outputs.searchContact)
         template: |
           const contactId = $.outputs.searchContact;
-          const companyId = await $.createOrUpdateCompany($.context.payload, .destination);
+          const companyId = await $.createOrUpdateCompany($.context.payload, .destination, .metadata);
           $.assert(companyId, "Unable to create or update company");
           $.context.payload = {
             id: companyId,

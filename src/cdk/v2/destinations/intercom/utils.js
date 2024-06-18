@@ -227,7 +227,7 @@ const filterCustomAttributes = (payload, type, destination) => {
  * @param {*} destination
  * @returns
  */
-const searchContact = async (message, destination) => {
+const searchContact = async (message, destination, metadata) => {
   const lookupField = getLookUpField(message);
   const lookupFieldValue = getFieldValueFromMessage(message, lookupField);
   const data = JSON.stringify({
@@ -258,6 +258,7 @@ const searchContact = async (message, destination) => {
       endpointPath: '/contacts/search',
       requestMethod: 'POST',
       module: 'router',
+      metadata,
     },
   );
   const processedUserResponse = processAxiosResponse(response);
@@ -284,7 +285,7 @@ const searchContact = async (message, destination) => {
  * @param {*} destination
  * @returns
  */
-const createOrUpdateCompany = async (payload, destination) => {
+const createOrUpdateCompany = async (payload, destination, metadata) => {
   const headers = getHeaders(destination);
   const finalPayload = JSON.stringify(removeUndefinedAndNullValues(payload));
   const baseEndPoint = getBaseEndpoint(destination);
@@ -296,6 +297,7 @@ const createOrUpdateCompany = async (payload, destination) => {
       headers,
     },
     {
+      metadata,
       destType: 'intercom',
       feature: 'transformation',
       endpointPath: '/companies',

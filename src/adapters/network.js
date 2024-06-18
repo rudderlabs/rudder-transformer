@@ -7,7 +7,7 @@ const https = require('https');
 const axios = require('axios');
 const log = require('../logger');
 const stats = require('../util/stats');
-const { removeUndefinedValues } = require('../v0/util');
+const { removeUndefinedValues, getErrorStatusCode } = require('../v0/util');
 const { processAxiosResponse } = require('./utils/networkUtils');
 // Only for tests
 const { setResponsesForMockAxiosAdapter } = require('../../test/testHelper');
@@ -83,7 +83,9 @@ const fireHTTPStats = (clientResponse, startTime, statTags) => {
   const endpointPath = statTags.endpointPath ? statTags.endpointPath : '';
   const requestMethod = statTags.requestMethod ? statTags.requestMethod : '';
   const module = statTags.module ? statTags.module : '';
-  const statusCode = clientResponse.success ? clientResponse.response.status : '';
+  const statusCode = clientResponse.success
+    ? clientResponse.response.status
+    : getErrorStatusCode(clientResponse.response);
   const defArgs = {
     destType,
     endpointPath,

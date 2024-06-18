@@ -58,17 +58,33 @@ const getLogMetadata = (metadata) => {
   };
 };
 
+const formLogArgs = (args) => {
+  let msg = '';
+  let otherArgs = [];
+  args.forEach((arg) => {
+    if (typeof arg !== 'object') {
+      msg += ' ' + arg;
+      return;
+    }
+    otherArgs.push(arg);
+  });
+  return [msg, ...otherArgs];
+};
+
 /**
  * Perform logging operation on logMethod passed
  *
+ * **Good practices**:
+ * - Do not have more than one array args in logger
  * @param {*} logMethod
  *  - instance method reference
  *  - The logger should implement all of debug/info/warn/error methods
- * @param {*} args
+ * @param {*} logArgs
  *  - the arguments that needs to be passed to logger instance method
  */
-const log = (logMethod, args) => {
-  const [message, logInfo, ...otherArgs] = args;
+const log = (logMethod, logArgs) => {
+  const [message, ...args] = formLogArgs(logArgs);
+  const [logInfo, ...otherArgs] = args;
   if (logInfo) {
     const { metadata, ...otherLogInfoArgs } = logInfo;
     if (Array.isArray(metadata)) {

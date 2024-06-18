@@ -1370,7 +1370,7 @@ describe("User transformation", () => {
         code: `
           function transform(events) {
             events.forEach((event) => {
-              event.credentialValue = credential
+              event.credentialValue = credential('key1');
             });
             return events;
           }

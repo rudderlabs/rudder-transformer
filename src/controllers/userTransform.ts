@@ -33,7 +33,7 @@ export class UserTransformController {
       '(User transform - router:/transformation/test ):: Request to transformer',
       ctx.request.body,
     );
-    const { events, trRevCode, libraryVersionIDs = [], credentials } = ctx.request.body as any;
+    const { events, trRevCode, libraryVersionIDs = [], credentials = [] } = ctx.request.body as any;
     const response = await UserTransformService.testTransformRoutine(
       events,
       trRevCode,

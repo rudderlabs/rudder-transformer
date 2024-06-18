@@ -1,6 +1,6 @@
 const ivm = require('isolated-vm');
 const fetch = require('node-fetch');
-const _ = require('lodash');
+const { isNil, isObject, camelCase } = require('lodash');
 
 const { getLibraryCodeV1, getRudderLibByImportName } = require('./customTransforrmationsStore-v1');
 const { extractStackTraceUptoLastSubstringMatch } = require('./utils');
@@ -60,7 +60,7 @@ async function createIvm(
 
     // TODO: Check if this should this be &&
     libraries.forEach((library) => {
-      const libHandleName = _.camelCase(library.name);
+      const libHandleName = camelCase(library.name);
       if (extractedLibraries.includes(libHandleName)) {
         librariesMap[libHandleName] = library.code;
       }
@@ -253,9 +253,9 @@ async function createIvm(
   );
 
   await jail.set('_credential', function (key) {
-    if (_.isNil(credentials) || !_.isObject(credentials)) {
+    if (isNil(credentials) || !isObject(credentials)) {
       logger.error('Error fetching credentials map', versionId);
-      stats.increment('credential_error', { transformationId, workspaceId });
+      stats.increment('credential_errors', { transformationId, workspaceId });
       return undefined;
     }
     return credentials[key];

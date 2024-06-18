@@ -29,4 +29,5 @@ module.exports = {
   offlineDataJobsMapping: MAPPING_CONFIG[CONFIG_CATEGORIES.AUDIENCE_LIST.name],
   addressInfoMapping: MAPPING_CONFIG[CONFIG_CATEGORIES.ADDRESSINFO.name],
   consentConfigMap,
+  destType: 'google_adwords_remarketing_lists',
 };

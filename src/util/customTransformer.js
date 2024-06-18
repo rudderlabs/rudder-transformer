@@ -290,11 +290,11 @@ async function userTransformHandler(
       const credentialsMap = {};
       if (testMode === false) {
         (events[0]?.credentials || []).forEach((cred) => {
-          credentialsMap[cred.Key] = cred.Value;
+          credentialsMap[cred.key] = cred.value;
         });
       } else {
         (credentials || []).forEach((cred) => {
-          credentialsMap[cred.Key] = cred.Value;
+          credentialsMap[cred.key] = cred.value;
         });
         events.forEach((ev) => {
           if (isNil(ev.credentials)) {

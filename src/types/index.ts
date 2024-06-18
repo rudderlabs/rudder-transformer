@@ -140,10 +140,10 @@ type UserTransformationLibrary = {
 };
 
 type Credential = {
-  ID: string;
-  Key: string;
-  Value: string;
-  IsSecret: boolean;
+  id: string;
+  key: string;
+  value: string;
+  isSecret: boolean;
 };
 
 type ProcessorTransformationRequest = {

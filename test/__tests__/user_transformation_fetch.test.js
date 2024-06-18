@@ -43,7 +43,7 @@ describe("User transformation fetch tests", () => {
           `
     };
 
-    const output = await userTransformHandler(inputData, versionId, [], trRevCode, null, true);
+    const output = await userTransformHandler(inputData, versionId, [], trRevCode, [], true);
     expect(output).toEqual({
       logs: [],
       transformedEvents: expectedData.map(ev => (ev.transformedEvent))
@@ -67,7 +67,7 @@ describe("User transformation fetch tests", () => {
     };
     const errMsg = "ERROR";
 
-    const output = await userTransformHandler(inputData, versionId, [], trRevCode, null, true);
+    const output = await userTransformHandler(inputData, versionId, [], trRevCode, [], true);
     
     expect(mockResolver).toHaveBeenCalledTimes(0);
     output.transformedEvents.forEach(ev => {
@@ -92,7 +92,7 @@ describe("User transformation fetch tests", () => {
     const errMsg = "ERROR";
 
     mockResolver.mockResolvedValue([ '127.0.0.1' ]);
-    const output = await userTransformHandler(inputData, versionId, [], trRevCode, null, true);
+    const output = await userTransformHandler(inputData, versionId, [], trRevCode, [], true);
     
     expect(mockResolver).toHaveBeenCalledTimes(inputData.length);
     expect(mockResolver).toHaveBeenCalledWith('abc.xyz.com');
@@ -122,7 +122,7 @@ describe("User transformation fetch tests", () => {
     };
     const errMsg = "invalid url, localhost requests are not allowed";
     
-    const output = await userTransformHandler(inputData, versionId, [], trRevCode, null, true);
+    const output = await userTransformHandler(inputData, versionId, [], trRevCode, [], true);
     
     expect(mockResolver).toHaveBeenCalledTimes(0);
     output.transformedEvents.forEach(ev => {
@@ -152,7 +152,7 @@ describe("User transformation fetch tests", () => {
     const errMsg = "request to https://abc.xyz.com/dummyUrl failed, reason: Invalid IP address: unable to resolve IP address for abc.xyz.com";
     
     mockResolver.mockRejectedValue('invalid host');
-    const output = await userTransformHandler(inputData, versionId, [], trRevCode, null, true);
+    const output = await userTransformHandler(inputData, versionId, [], trRevCode, [], true);
     
     expect(mockResolver).toHaveBeenCalledTimes(inputData.length);
     expect(mockResolver).toHaveBeenCalledWith('abc.xyz.com');
@@ -182,7 +182,7 @@ describe("User transformation fetch tests", () => {
     };
     const errMsg = "invalid protocol, only http and https are supported";
     
-    const output = await userTransformHandler(inputData, versionId, [], trRevCode, null, true);
+    const output = await userTransformHandler(inputData, versionId, [], trRevCode, [], true);
     
     output.transformedEvents.forEach(ev => {
       expect(ev.errMsg).toEqual(errMsg);
@@ -204,7 +204,7 @@ describe("User transformation fetch tests", () => {
       versionId,
     };
 
-    const output = await userTransformHandler(inputData, versionId, [], trRevCode, null, true);
+    const output = await userTransformHandler(inputData, versionId, [], trRevCode, [], true);
     expect(output).toEqual({
       logs: [],
       transformedEvents: expectedData.map(ev => (ev.transformedEvent))
@@ -226,7 +226,7 @@ describe("User transformation fetch tests", () => {
     };
     const errMsg = "ERROR";
 
-    const output = await userTransformHandler(inputData, versionId, [], trRevCode, null, true);
+    const output = await userTransformHandler(inputData, versionId, [], trRevCode, [], true);
     
     expect(mockResolver).toHaveBeenCalledTimes(0);
     output.transformedEvents.forEach(ev => {
@@ -250,7 +250,7 @@ describe("User transformation fetch tests", () => {
     const errMsg = "ERROR";
 
     mockResolver.mockRejectedValue('invalid host');
-    const output = await userTransformHandler(inputData, versionId, [], trRevCode, null, true);
+    const output = await userTransformHandler(inputData, versionId, [], trRevCode, [], true);
     
     expect(mockResolver).toHaveBeenCalledTimes(inputData.length);
     expect(mockResolver).toHaveBeenCalledWith('abc.xyz.com');
@@ -279,7 +279,7 @@ describe("User transformation fetch tests", () => {
     };
     const errMsg = "invalid url, localhost requests are not allowed";
     
-    const output = await userTransformHandler(inputData, versionId, [], trRevCode, null, true);
+    const output = await userTransformHandler(inputData, versionId, [], trRevCode, [], true);
     
     expect(mockResolver).toHaveBeenCalledTimes(0);
     output.transformedEvents.forEach(ev => {
@@ -308,7 +308,7 @@ describe("User transformation fetch tests", () => {
     const errMsg = "request to https://abc.xyz.com/dummyUrl failed, reason: Invalid IP address: cannot use 127.0.0.1 as IP address";
     
     mockResolver.mockResolvedValue(['3.122.122.122', '127.0.0.1']);
-    const output = await userTransformHandler(inputData, versionId, [], trRevCode, null, true);
+    const output = await userTransformHandler(inputData, versionId, [], trRevCode, [], true);
     
     expect(mockResolver).toHaveBeenCalledTimes(inputData.length);
     expect(mockResolver).toHaveBeenCalledWith('abc.xyz.com');
@@ -337,7 +337,7 @@ describe("User transformation fetch tests", () => {
     };
     const errMsg = "fetch url is required";
     
-    const output = await userTransformHandler(inputData, versionId, [], trRevCode, null, true);
+    const output = await userTransformHandler(inputData, versionId, [], trRevCode, [], true);
     
     output.transformedEvents.forEach(ev => {
       expect(ev.errMsg).toEqual(errMsg);

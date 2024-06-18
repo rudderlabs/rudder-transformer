@@ -63,6 +63,8 @@ async function userTransformHandlerV1(
     userTransformation.code,
     libraryVersionIds,
     userTransformation.versionId,
+    userTransformation.id,
+    userTransformation.workspaceId || events[0].metadata?.workspaceId,
     credentials,
     userTransformation.secrets || {},
     testMode,

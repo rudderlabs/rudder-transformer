@@ -289,15 +289,15 @@ async function userTransformHandler(
       });
       const credentialsMap = {};
       if (testMode === false) {
-        events[0]?.credentials?.forEach((cred) => {
-          credentialsMap[cred.key] = cred.value;
+        (events[0]?.credentials || []).forEach((cred) => {
+          credentialsMap[cred.Key] = cred.Value;
         });
       } else {
-        credentials?.forEach((cred) => {
-          credentialsMap[cred.key] = cred.value;
+        (credentials || []).forEach((cred) => {
+          credentialsMap[cred.Key] = cred.Value;
         });
         events.forEach((ev) => {
-          if (isNil(ev?.credentials)) {
+          if (isNil(ev.credentials)) {
             ev.credentials = credentials;
           }
         });

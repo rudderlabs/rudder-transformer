@@ -30,7 +30,16 @@ async function loadModule(isolateInternal, contextInternal, moduleName, moduleCo
   return module;
 }
 
-async function createIvm(code, libraryVersionIds, versionId, credentials, secrets, testMode) {
+async function createIvm(
+  code,
+  libraryVersionIds,
+  versionId,
+  transformationId,
+  workspaceId,
+  credentials,
+  secrets,
+  testMode,
+) {
   const createIvmStartTime = new Date();
   const logs = [];
   const libraries = await Promise.all(
@@ -243,15 +252,11 @@ async function createIvm(code, libraryVersionIds, versionId, credentials, secret
     }),
   );
 
-  await jail.set('_credential', function (...args) {
+  await jail.set('_credential', function (key) {
     if (_.isNil(credentials) || !_.isObject(credentials)) {
-      logger.error('Error fetching credentials map');
-      stats.increment('credential_error', { versionId });
+      logger.error('Error fetching credentials map', versionId);
+      stats.increment('credential_error', { transformationId, workspaceId });
       return undefined;
-    }
-    const key = args[0][0];
-    if (_.isNil(key)) {
-      throw new Error('Key should be valid and defined');
     }
     return credentials[key];
   });
@@ -337,9 +342,11 @@ async function createIvm(code, libraryVersionIds, versionId, credentials, secret
       let credential = _credential;
       delete _credential;
       global.credential = function(...args) {
-        return credential([
-          ...args.map(arg => new ivm.ExternalCopy(arg).copyInto())
-        ]);
+        const key = args[0];
+        if (key === null || key === undefined) {
+          throw new Error('Key should be valid and defined'+ JSON.stringify(args));
+        }
+        return credential(new ivm.ExternalCopy(key).copyInto());
       };
 
       return new ivm.Reference(function forwardMainPromise(
@@ -432,10 +439,28 @@ async function compileUserLibrary(code) {
   return evaluateModule(isolate, context, code);
 }
 
-async function getFactory(code, libraryVersionIds, versionId, credentials, secrets, testMode) {
+async function getFactory(
+  code,
+  libraryVersionIds,
+  transformationId,
+  workspaceId,
+  versionId,
+  credentials,
+  secrets,
+  testMode,
+) {
   const factory = {
     create: async () => {
-      return createIvm(code, libraryVersionIds, versionId, credentials, secrets, testMode);
+      return createIvm(
+        code,
+        libraryVersionIds,
+        versionId,
+        transformationId,
+        workspaceId,
+        credentials,
+        secrets,
+        testMode,
+      );
     },
     destroy: async (client) => {
       client.fnRef.release();

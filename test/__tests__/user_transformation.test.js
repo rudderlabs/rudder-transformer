@@ -1073,7 +1073,7 @@ describe("User transformation", () => {
       trRevCode.versionId,
       [libraryVersionId],
       trRevCode,
-      null,
+      [],
       true
     );
 
@@ -1110,7 +1110,7 @@ describe("User transformation", () => {
       trRevCode.versionId,
       [],
       trRevCode,
-      null,
+      [],
       true
     );
     expect(output).toEqual(expectedData);
@@ -1128,7 +1128,7 @@ describe("User transformation", () => {
         name,
         code: `
           export function transformEvent(event, metadata) {
-              event.credentialValue = credential("key1");
+              event.credentialValue = credential('key1');
               return event;
             }
             `
@@ -1174,7 +1174,7 @@ describe("User transformation", () => {
       expect(output[0].error).toMatch(/Key should be valid and defined/);
     });
 
-    it(`Simple ${name} Test with credentials with multiple arguements for codeVersion 1`, async () => {
+    it(`Simple ${name} Test with credentials with multiple arguments for codeVersion 1`, async () => {
       const versionId = randomID();
 
       const inputData = require(`./data/${integration}_input_credentials.json`);
@@ -1214,7 +1214,10 @@ describe("User transformation", () => {
         name,
         code: `
           export function transformEvent(event, metadata) {
-              event.credentialValue = credential(1);
+              event.credentialValueForNumkey = credential(1);
+              event.credentialValueForBoolkey = credential(true);
+              event.credentialValueForArraykey = credential([]);
+              event.credentialValueForObjkey = credential({});
               return event;
             }
             `
@@ -1229,7 +1232,10 @@ describe("User transformation", () => {
       expect(fetch).toHaveBeenCalledWith(
         `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
       );
-      expect(output[0].transformedEvent.credentialValue).toEqual(undefined);
+      expect(output[0].transformedEvent.credentialValueForNumkey).toEqual(undefined);
+      expect(output[0].transformedEvent.credentialValueForBoolkey).toEqual(undefined);
+      expect(output[0].transformedEvent.credentialValueForArraykey).toEqual(undefined);
+      expect(output[0].transformedEvent.credentialValueForObjkey).toEqual(undefined);
     });
 
     it(`Simple ${name} Test with credentials without value for codeVersion 1`, async () => {
@@ -1707,7 +1713,7 @@ describe("Python transformations", () => {
       trRevCode.versionId,
       [],
       trRevCode,
-      null,
+      [],
       true
     );
     expect(output).toEqual(outputData);
@@ -1753,7 +1759,7 @@ describe("Python transformations", () => {
       trRevCode.versionId,
       Object.values(importNameLibraryVersionIdsMap),
       trRevCode,
-      null,
+      [],
       true
     );
     expect(output).toEqual(outputData);
@@ -1795,7 +1801,7 @@ describe("Python transformations", () => {
       trRevCode.versionId,
       Object.values(importNameLibraryVersionIdsMap),
       trRevCode,
-      null,
+      [],
       true
     );
     expect(output).toEqual(outputData);

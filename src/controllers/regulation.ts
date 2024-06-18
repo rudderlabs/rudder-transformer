@@ -1,4 +1,3 @@
-import { structuredLogger as logger } from '@rudderstack/integrations-lib';
 import { Context } from 'koa';
 import { ServiceSelector } from '../helpers/serviceSelector';
 import { DestinationPostTransformationService } from '../services/destination/postTransformation';
@@ -7,6 +6,7 @@ import stats from '../util/stats';
 import tags from '../v0/util/tags';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { CatchErr } from '../util/types';
+import logger from '../logger';
 
 export class RegulationController {
   public static async deleteUsers(ctx: Context) {

@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 const { v5 } = require('uuid');
 const sha256 = require('sha256');
-const { TransformationError, structuredLogger: logger } = require('@rudderstack/integrations-lib');
+const { TransformationError } = require('@rudderstack/integrations-lib');
 const stats = require('../../../util/stats');
 const {
   constructPayload,
@@ -22,6 +22,7 @@ const {
   useRedisDatabase,
   maxTimeToIdentifyRSGeneratedCall,
 } = require('./config');
+const logger = require('../../../logger');
 
 const getDataFromRedis = async (key, metricMetadata) => {
   try {

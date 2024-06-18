@@ -1,11 +1,7 @@
 /* eslint-disable no-const-assign */
 const lodash = require('lodash');
 const get = require('get-value');
-const {
-  InstrumentationError,
-  ConfigurationError,
-  getErrorRespEvents,
-} = require('@rudderstack/integrations-lib');
+const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const { schemaFields } = require('./config');
 const { MappedToDestinationKey } = require('../../../constants');
 const stats = require('../../../util/stats');
@@ -15,8 +11,8 @@ const {
   checkSubsetOfArray,
   returnArrayOfSubarrays,
   getSuccessRespEvents,
-  generateErrorObject,
 } = require('../../util');
+const { getErrorResponse, createFinalResponse } = require('../../util/recordUtils');
 const {
   ensureApplicableFormat,
   getUpdatedDataElement,
@@ -25,19 +21,6 @@ const {
   responseBuilderSimple,
   getDataSource,
 } = require('./util');
-
-function getErrorMetaData(inputs, acceptedOperations) {
-  const metadata = [];
-  // eslint-disable-next-line no-restricted-syntax
-  for (const key in inputs) {
-    if (!acceptedOperations.includes(key)) {
-      inputs[key].forEach((input) => {
-        metadata.push(input.metadata);
-      });
-    }
-  }
-  return metadata;
-}
 
 const processRecordEventArray = (
   recordChunksArray,
@@ -177,8 +160,6 @@ async function processRecordInputs(groupedRecordInputs) {
     record.message.action?.toLowerCase(),
   );
 
-  const finalResponse = [];
-
   let insertResponse;
   let deleteResponse;
   let updateResponse;
@@ -238,32 +219,14 @@ async function processRecordInputs(groupedRecordInputs) {
     );
   }
 
-  const eventTypes = ['update', 'insert', 'delete'];
-  const errorMetaData = [];
-  const errorMetaDataObject = getErrorMetaData(groupedRecordsByAction, eventTypes);
-  if (errorMetaDataObject.length > 0) {
-    errorMetaData.push(errorMetaDataObject);
-  }
+  const errorResponse = getErrorResponse(groupedRecordsByAction);
 
-  const error = new InstrumentationError('Invalid action type in record event');
-  const errorObj = generateErrorObject(error);
-  const errorResponseList = errorMetaData.map((metadata) =>
-    getErrorRespEvents(metadata, errorObj.status, errorObj.message, errorObj.statTags),
+  const finalResponse = createFinalResponse(
+    deleteResponse,
+    insertResponse,
+    updateResponse,
+    errorResponse,
   );
-
-  if (deleteResponse && deleteResponse.batchedRequest.length > 0) {
-    finalResponse.push(deleteResponse);
-  }
-  if (insertResponse && insertResponse.batchedRequest.length > 0) {
-    finalResponse.push(insertResponse);
-  }
-  if (updateResponse && updateResponse.batchedRequest.length > 0) {
-    finalResponse.push(updateResponse);
-  }
-  if (errorResponseList.length > 0) {
-    finalResponse.push(...errorResponseList);
-  }
-
   if (finalResponse.length === 0) {
     throw new InstrumentationError(
       'Missing valid parameters, unable to generate transformed payload',

@@ -1232,10 +1232,10 @@ describe("User transformation", () => {
       expect(fetch).toHaveBeenCalledWith(
         `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
       );
-      expect(output[0].transformedEvent.credentialValueForNumkey).toEqual(undefined);
-      expect(output[0].transformedEvent.credentialValueForBoolkey).toEqual(undefined);
-      expect(output[0].transformedEvent.credentialValueForArraykey).toEqual(undefined);
-      expect(output[0].transformedEvent.credentialValueForObjkey).toEqual(undefined);
+      expect(output[0].transformedEvent.credentialValueForNumkey).toBeUndefined();
+      expect(output[0].transformedEvent.credentialValueForBoolkey).toBeUndefined();
+      expect(output[0].transformedEvent.credentialValueForArraykey).toBeUndefined();
+      expect(output[0].transformedEvent.credentialValueForObjkey).toBeUndefined();
     });
 
     it(`Simple ${name} Test with credentials without value for codeVersion 1`, async () => {
@@ -1264,7 +1264,7 @@ describe("User transformation", () => {
       expect(fetch).toHaveBeenCalledWith(
         `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
       );
-      expect(output[0].transformedEvent.credentialValue).toEqual(undefined);
+      expect(output[0].transformedEvent.credentialValue).toBeUndefined();
     });
 
     it(`Simple ${name} Test without credentials for codeVersion 1`, async () => {
@@ -1293,7 +1293,7 @@ describe("User transformation", () => {
       expect(fetch).toHaveBeenCalledWith(
         `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
       );
-      expect(output[0].transformedEvent.credentialValue).toEqual(undefined);
+      expect(output[0].transformedEvent.credentialValue).toBeUndefined();
     });
 
     it(`Simple ${name} Batch Test with credentials for codeVersion 1`, async () => {
@@ -1325,7 +1325,7 @@ describe("User transformation", () => {
         `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
       );
       expect(output[0].transformedEvent.credentialValue1).toEqual("value1");
-      expect(output[0].transformedEvent.credentialValue2).toEqual(undefined);
+      expect(output[0].transformedEvent.credentialValue2).toBeUndefined();
     });
 
     it(`Simple ${name} Batch Test with credentials without key for codeVersion 1`, async () => {

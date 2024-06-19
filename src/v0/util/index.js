@@ -2248,9 +2248,8 @@ const validateEventAndLowerCaseConversion = (event, isMandatory, convertToLowerC
   return convertToLowerCase ? event.toString().toLowerCase() : event.toString();
 };
 
-const applyCustomMappings = (message, mappings) => JsonTemplateEngine.createAsSync(mappings, { defaultPathType: PathType.JSON }).evaluate(
-    message,
-  );
+const applyCustomMappings = (message, mappings) =>
+  JsonTemplateEngine.createAsSync(mappings, { defaultPathType: PathType.JSON }).evaluate(message);
 
 // ========================================================================
 // EXPORTS

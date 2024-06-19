@@ -206,7 +206,7 @@ const getListOfAssignees = (message, type) => {
  * @param {*} apiToken
  * @returns
  */
-const retrieveCustomFields = async (listId, apiToken) => {
+const retrieveCustomFields = async (listId, apiToken, metadata) => {
   const endpoint = getCustomFieldsEndPoint(listId);
   const requestOptions = {
     headers: {
@@ -220,6 +220,7 @@ const retrieveCustomFields = async (listId, apiToken) => {
     endpointPath: '/list/listId/field',
     requestMethod: 'GET',
     module: 'router',
+    metadata,
   });
   const processedCustomFieldsResponse = processAxiosResponse(customFieldsResponse);
 
@@ -278,11 +279,17 @@ const extractUIMappedCustomFieldDetails = (
  * @param {*} apiToken
  * @returns [{"id":"b0f40a94-ea2a-4998-a514-8074d0eddcde","value":"https://www.rudderstack.com/"}]
  */
-const customFieldsBuilder = async (keyToCustomFieldName, properties, listId, apiToken) => {
+const customFieldsBuilder = async (
+  keyToCustomFieldName,
+  properties,
+  listId,
+  apiToken,
+  metadata,
+) => {
   const responseArray = [];
   if (properties && keyToCustomFieldName) {
     // retrieve available clickup custom field for the given list
-    const availableCustomFields = await retrieveCustomFields(listId, apiToken);
+    const availableCustomFields = await retrieveCustomFields(listId, apiToken, metadata);
     // convert array to hashMap with key as field name and value as custom field object
     const availableCustomFieldsMap = getHashFromArrayWithValueAsObject(
       availableCustomFields,

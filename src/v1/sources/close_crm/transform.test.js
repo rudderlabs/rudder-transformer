@@ -119,7 +119,6 @@ describe('Transform.js Tests', () => {
             created_by_name: 'Joe Kemp',
             id: 'id_12',
             lead_name: 'KLine',
-            date_lost: null,
             note: '',
             date_updated: '2019-01-15T12:48:23.392000+00:00',
             status_id: 'stat_12',

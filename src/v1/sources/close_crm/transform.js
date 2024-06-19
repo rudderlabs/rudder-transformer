@@ -1,5 +1,10 @@
 const moment = require('moment');
-const { removeUndefinedAndNullValues, generateUUID, formatTimeStamp } = require('../../../v0/util');
+const {
+  removeUndefinedAndNullValues,
+  removeUndefinedAndNullRecurse,
+  generateUUID,
+  formatTimeStamp,
+} = require('../../../v0/util');
 const { excludedFieldList } = require('./config');
 const Message = require('../../../v0/sources/message');
 
@@ -31,7 +36,8 @@ function processEvent(inputEvent) {
   message.setProperty('originalTimestamp', formatTimeStamp(timestamp, 'yyyy-MM-ddTHH:mm:ss.SSSZ'));
 
   // Set properties
-  message.setProperty('properties', removeUndefinedAndNullValues(event));
+  removeUndefinedAndNullRecurse(event);
+  message.setProperty('properties', event);
   message.setProperty('properties.subscription_id', subscription_id);
 
   // Remove excluding fields

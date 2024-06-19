@@ -2258,6 +2258,14 @@ const applyCustomMappings = (message, mappings) => {
   );
 };
 
+/**
+ * Gets url path omitting the hostname & protocol
+ *
+ * **Note**:
+ * - This should only be used when there are no dynamic paths in URL
+ * @param {*} inputUrl
+ * @returns
+ */
 const getRelativePathFromURL = (inputUrl) => {
   if (isValidUrl(inputUrl)) {
     const url = new URL(inputUrl);

@@ -31,7 +31,7 @@ function processEvent(inputEvent) {
   message.setProperty('originalTimestamp', formatTimeStamp(timestamp, 'yyyy-MM-ddTHH:mm:ss.SSSZ'));
 
   // Set properties
-  message.setProperty('properties', event);
+  message.setProperty('properties', removeUndefinedAndNullValues(event));
   message.setProperty('properties.subscription_id', subscription_id);
 
   // Remove excluding fields

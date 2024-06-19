@@ -582,7 +582,12 @@ function getPurchaseObjs(message, config) {
     }
 
     products.forEach((product) => {
-      const productId = product?.product_id || product?.sku;
+      if (!isDefinedAndNotNull(product)) {
+        throw new InstrumentationError(
+          `Invalid product array at index: ${products.indexOf(product)}. product: ${product}`,
+        );
+      }
+      const productId = product.product_id || product.sku;
       const { price, quantity, currency: prodCurrencyCode } = product;
       if (!isDefinedAndNotNull(productId)) {
         throw new InstrumentationError(

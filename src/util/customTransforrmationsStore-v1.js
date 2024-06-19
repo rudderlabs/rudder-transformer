@@ -30,7 +30,6 @@ async function getTransformationCodeV1(versionId) {
 
     responseStatusHandler(response.status, 'Transformation', versionId, url);
     stats.increment('get_transformation_code', { success: 'true', ...tags });
-    stats.timing('get_transformation_code_time', startTime, tags);
     stats.timingSummary('get_transformation_code_time_summary', startTime, tags);
     const myJson = await response.json();
     transformationCache[versionId] = myJson;
@@ -56,7 +55,6 @@ async function getLibraryCodeV1(versionId) {
 
     responseStatusHandler(response.status, 'Transformation Library', versionId, url);
     stats.increment('get_libraries_code', { success: 'true', ...tags });
-    stats.timing('get_libraries_code_time', startTime, tags);
     stats.timingSummary('get_libraries_code_time_summary', startTime, tags);
     const myJson = await response.json();
     libraryCache[versionId] = myJson;
@@ -84,7 +82,6 @@ async function getRudderLibByImportName(importName) {
 
     responseStatusHandler(response.status, 'Rudder Library', importName, url);
     stats.increment('get_libraries_code', { success: 'true', ...tags });
-    stats.timing('get_libraries_code_time', startTime, tags);
     stats.timingSummary('get_libraries_code_time_summary', startTime, tags);
     const myJson = await response.json();
     rudderLibraryCache[importName] = myJson;

@@ -53,7 +53,7 @@ const identifyResponseBuilder = (message, { Config }) => {
   const payload = constructPayload(message, mappingConfig[ConfigCategory.IDENTIFY_V2.name]);
   if (!payload?.identity?.external_id) {
     const alias = getOneSignalAliases(message);
-    if (!alias.identifier) {
+    if (Object.keys(alias).length === 0) {
       throw new InstrumentationError('userId or any other alias is required for identify');
     }
     payload.identity = alias;
@@ -104,7 +104,7 @@ const trackOrGroupResponseBuilder = (message, { Config }, msgtype) => {
   const externalUserId = getFieldValueFromMessage(message, 'userIdOnly');
   if (!externalUserId) {
     const alias = getOneSignalAliases(message);
-    if (!typeof alias === 'object' || Object.keys(alias).length === 0) {
+    if (Object.keys(alias).length === 0) {
       throw new InstrumentationError('userId or any other alias is required for track and group');
     }
     payload.identity = alias;

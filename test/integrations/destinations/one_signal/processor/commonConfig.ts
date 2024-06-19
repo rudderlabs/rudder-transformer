@@ -21,13 +21,11 @@ export const commonTraits = {
   brand: 'John Players',
   price: '15000',
   firstName: 'Test',
-  userId: 'user@27',
 };
 export const commonTags = {
   brand: 'John Players',
   price: '15000',
   firstName: 'Test',
-  userId: 'user@27',
   anonymousId: '97c46c81-3140-456d-b2a9-690d70aaca35',
 };
 

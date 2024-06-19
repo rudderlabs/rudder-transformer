@@ -57,6 +57,7 @@ const getIdFromNewOrExistingProfile = async ({ endpoint, payload, requestOptions
     payload,
     requestOptions,
     {
+      metadata,
       destType: 'klaviyo',
       feature: 'transformation',
       endpointPath,

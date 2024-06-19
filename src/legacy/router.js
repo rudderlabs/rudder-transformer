@@ -678,7 +678,6 @@ if (transformerTestModeEnabled) {
         trRevCode.versionId,
         libraryVersionIDs,
         trRevCode,
-        null,
         true,
       );
       logger.debug(`[CT] Test Output Events: ${JSON.stringify(res.transformedEvents)}`);

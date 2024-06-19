@@ -570,7 +570,7 @@ class Prometheus {
         ],
       },
       {
-        name: 'credential_errors',
+        name: 'credential_error_total',
         help: 'Error in fetching credentials count',
         type: 'counter',
         labelNames: ['transformationId', 'workspaceId'],

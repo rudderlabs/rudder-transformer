@@ -166,7 +166,7 @@ describe("Function invocation & creation tests", () => {
 
     // Test with language python; should return same output
     trRevCode = contructTrRevCode(versionId, 'python');
-    response = await userTransformHandler(inputEvents, versionId, [], trRevCode, [], true);
+    response = await userTransformHandler(inputEvents, versionId, [], trRevCode, true);
     expect(response).toEqual(outputEvents);
   });
 

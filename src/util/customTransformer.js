@@ -8,7 +8,6 @@ const { parserForImport } = require('./parser');
 const stats = require('./stats');
 const { fetchWithDnsWrapper } = require('./utils');
 const { getMetadata, getTransformationMetadata } = require('../v0/util');
-const { isNil } = require('lodash');
 const ISOLATE_VM_MEMORY = parseInt(process.env.ISOLATE_VM_MEMORY || '128', 10);
 const GEOLOCATION_TIMEOUT_IN_MS = parseInt(process.env.GEOLOCATION_TIMEOUT_IN_MS || '1000', 10);
 
@@ -274,7 +273,6 @@ async function userTransformHandler(
   versionId,
   libraryVersionIDs,
   trRevCode = {},
-  credentials = [],
   testMode = false,
 ) {
   if (versionId) {
@@ -287,27 +285,11 @@ async function userTransformHandler(
       events.forEach((ev) => {
         eventsMetadata[ev.message.messageId] = ev.metadata;
       });
-      const credentialsMap = {};
-      if (testMode === false) {
-        (events[0]?.credentials || []).forEach((cred) => {
-          credentialsMap[cred.key] = cred.value;
-        });
-      } else {
-        (credentials || []).forEach((cred) => {
-          credentialsMap[cred.key] = cred.value;
-        });
-        events.forEach((ev) => {
-          if (isNil(ev.credentials)) {
-            ev.credentials = credentials;
-          }
-        });
-      }
       let userTransformedEvents = [];
       let result;
       if (res.codeVersion && res.codeVersion === '1') {
         result = await UserTransformHandlerFactory(res).runUserTransfrom(
           events,
-          credentialsMap,
           testMode,
           libraryVersionIDs,
         );

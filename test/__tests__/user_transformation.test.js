@@ -1073,7 +1073,6 @@ describe("User transformation", () => {
       trRevCode.versionId,
       [libraryVersionId],
       trRevCode,
-      [],
       true
     );
 
@@ -1110,14 +1109,13 @@ describe("User transformation", () => {
       trRevCode.versionId,
       [],
       trRevCode,
-      [],
       true
     );
     expect(output).toEqual(expectedData);
   });
 
-  describe("Credentials", () => {
-    it(`Simple ${name} Test with credentials for codeVersion 1`, async () => {
+  describe("UserTransformation With Credentials for code version 1", () => {
+    it(`successfully executes transformation with credential lookup with valid key`, async () => {
       const versionId = randomID();
 
       const inputData = require(`./data/${integration}_input_credentials.json`);
@@ -1145,7 +1143,7 @@ describe("User transformation", () => {
       expect(output[0].transformedEvent.credentialValue).toEqual("value1");
     });
 
-    it(`Simple ${name} Test with credentials without key for codeVersion 1`, async () => {
+    it(`throws TypeError if the key provided for credential lookup is null or undefined`, async () => {
       const versionId = randomID();
 
       const inputData = require(`./data/${integration}_input_credentials.json`);
@@ -1174,7 +1172,7 @@ describe("User transformation", () => {
       expect(output[0].error).toMatch(/Key should be valid and defined/);
     });
 
-    it(`Simple ${name} Test with credentials with multiple arguments for codeVersion 1`, async () => {
+    it(`allows user to pass multiple arguments to functions and performs lookup with first key passed`, async () => {
       const versionId = randomID();
 
       const inputData = require(`./data/${integration}_input_credentials.json`);
@@ -1203,7 +1201,7 @@ describe("User transformation", () => {
       expect(output[0].transformedEvent.credentialValue).toEqual("value1");
     });
 
-    it(`Simple ${name} Test with credentials with non string key for codeVersion 1`, async () => {
+    it(`allows user to pass valid key of any type and performs lookup accordingly`, async () => {
       const versionId = randomID();
 
       const inputData = require(`./data/${integration}_input_credentials.json`);
@@ -1238,7 +1236,7 @@ describe("User transformation", () => {
       expect(output[0].transformedEvent.credentialValueForObjkey).toBeUndefined();
     });
 
-    it(`Simple ${name} Test with credentials without value for codeVersion 1`, async () => {
+    it(`returns undefined when the key doesn't match any credential lookup`, async () => {
       const versionId = randomID();
 
       const inputData = require(`./data/${integration}_input_credentials.json`);
@@ -1267,7 +1265,7 @@ describe("User transformation", () => {
       expect(output[0].transformedEvent.credentialValue).toBeUndefined();
     });
 
-    it(`Simple ${name} Test without credentials for codeVersion 1`, async () => {
+    it(`returns undefined when the credentials are not passed in the request`, async () => {
       const versionId = randomID();
 
       const inputData = require(`./data/${integration}_input.json`);
@@ -1296,69 +1294,72 @@ describe("User transformation", () => {
       expect(output[0].transformedEvent.credentialValue).toBeUndefined();
     });
 
-    it(`Simple ${name} Batch Test with credentials for codeVersion 1`, async () => {
-      const versionId = randomID();
+    describe('Batch UserTransformation with Credentials', () => {
+      it(`successfully executes transformation with credential lookup with valid key`, async () => {
+        const versionId = randomID();
 
-      const inputData = require(`./data/${integration}_input_credentials.json`);
+        const inputData = require(`./data/${integration}_input_credentials.json`);
 
-      const respBody = {
-        versionId: versionId,
-        codeVersion: "1",
-        name,
-        code: `
-          export function transformBatch(events, metadata) {
-            events.forEach((event) => {
-              event.credentialValue1 = credential("key1");
-              event.credentialValue2 = credential("key3");
-            });
-            return events;
-          }
-          `
-      };
-      fetch.mockResolvedValue({
-        status: 200,
-        json: jest.fn().mockResolvedValue(respBody)
+        const respBody = {
+          versionId: versionId,
+          codeVersion: "1",
+          name,
+          code: `
+            export function transformBatch(events, metadata) {
+              events.forEach((event) => {
+                event.credentialValue1 = credential("key1");
+                event.credentialValue2 = credential("key3");
+              });
+              return events;
+            }
+            `
+        };
+        fetch.mockResolvedValue({
+          status: 200,
+          json: jest.fn().mockResolvedValue(respBody)
+        });
+
+        const output = await userTransformHandler(inputData, versionId, []);
+        expect(fetch).toHaveBeenCalledWith(
+          `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
+        );
+        expect(output[0].transformedEvent.credentialValue1).toEqual("value1");
+        expect(output[0].transformedEvent.credentialValue2).toBeUndefined();
       });
 
-      const output = await userTransformHandler(inputData, versionId, []);
-      expect(fetch).toHaveBeenCalledWith(
-        `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
-      );
-      expect(output[0].transformedEvent.credentialValue1).toEqual("value1");
-      expect(output[0].transformedEvent.credentialValue2).toBeUndefined();
-    });
+      it(`throws TypeError if the key provided for credential lookup is null or undefined`, async () => {
+        const versionId = randomID();
 
-    it(`Simple ${name} Batch Test with credentials without key for codeVersion 1`, async () => {
-      const versionId = randomID();
+        const inputData = require(`./data/${integration}_input_credentials.json`);
 
-      const inputData = require(`./data/${integration}_input_credentials.json`);
+        const respBody = {
+          versionId: versionId,
+          codeVersion: "1",
+          name,
+          code: `
+            export function transformBatch(events, metadata) {
+              events.forEach((event) => {
+                event.credentialValue = credential();
+              });
+              return events;
+            }
+            `
+        };
+        fetch.mockResolvedValue({
+          status: 200,
+          json: jest.fn().mockResolvedValue(respBody)
+        });
 
-      const respBody = {
-        versionId: versionId,
-        codeVersion: "1",
-        name,
-        code: `
-          export function transformBatch(events, metadata) {
-            events.forEach((event) => {
-              event.credentialValue = credential();
-            });
-            return events;
-          }
-          `
-      };
-      fetch.mockResolvedValue({
-        status: 200,
-        json: jest.fn().mockResolvedValue(respBody)
+        const output = await userTransformHandler(inputData, versionId, []);
+        expect(fetch).toHaveBeenCalledWith(
+          `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
+        );
+        expect(output[0].error).toMatch(/Key should be valid and defined/);
       });
 
-      const output = await userTransformHandler(inputData, versionId, []);
-      expect(fetch).toHaveBeenCalledWith(
-        `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
-      );
-      expect(output[0].error).toMatch(/Key should be valid and defined/);
     });
 
-    it(`Simple ${name} Test with credentials for codeVersion 0`, async () => {
+    it(`throws error when credentials function is used with code version 0`, async () => {
       const versionId = randomID();
 
       const inputData = require(`./data/${integration}_input_credentials.json`);
@@ -1804,7 +1805,6 @@ describe("Python transformations", () => {
       trRevCode.versionId,
       [],
       trRevCode,
-      [],
       true
     );
     expect(output).toEqual(outputData);
@@ -1850,7 +1850,6 @@ describe("Python transformations", () => {
       trRevCode.versionId,
       Object.values(importNameLibraryVersionIdsMap),
       trRevCode,
-      [],
       true
     );
     expect(output).toEqual(outputData);
@@ -1892,7 +1891,6 @@ describe("Python transformations", () => {
       trRevCode.versionId,
       Object.values(importNameLibraryVersionIdsMap),
       trRevCode,
-      [],
       true
     );
     expect(output).toEqual(outputData);

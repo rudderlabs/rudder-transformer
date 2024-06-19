@@ -254,9 +254,14 @@ async function createIvm(
 
   await jail.set('_credential', function (key) {
     if (isNil(credentials) || !isObject(credentials)) {
-      logger.error('Error fetching credentials map', versionId);
+      logger.error(
+        `Error fetching credentials map for transformationID: ${transformationId} and workspaceId: ${workspaceId}`,
+      );
       stats.increment('credential_error_total', { transformationId, workspaceId });
       return undefined;
+    }
+    if (key === null || key === undefined) {
+      throw new TypeError('Key should be valid and defined');
     }
     return credentials[key];
   });
@@ -343,9 +348,6 @@ async function createIvm(
       delete _credential;
       global.credential = function(...args) {
         const key = args[0];
-        if (key === null || key === undefined) {
-          throw new TypeError('Key should be valid and defined');
-        }
         return credential(new ivm.ExternalCopy(key).copyInto());
       };
 

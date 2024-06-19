@@ -52,7 +52,7 @@ const populateTags = (message) => {
 const populateDeviceType = (message, payload) => {
   const integrationsObj = getIntegrationsObj(message, 'one_signal');
   const devicePayload = payload;
-  if (integrationsObj && integrationsObj.deviceType && integrationsObj.identifier) {
+  if (integrationsObj?.deviceType && integrationsObj?.identifier) {
     devicePayload.device_type = parseInt(integrationsObj.deviceType, 10);
     devicePayload.identifier = integrationsObj.identifier;
     if (!validateDeviceType(devicePayload.device_type)) {
@@ -81,14 +81,15 @@ const populateDeviceType = (message, payload) => {
 
 /**
  * This function is used to populate device type required for creating a subscription
- * it checks from integrations object and fall back to message.channel and from their fallback to
+ * it checks from integrations object and fall back to message.channel and fif nothing is given it return a n empty object
  * @param {*} message
  * @param {*} payload
+ * returns Object
  */
 const getDeviceDetails = (message) => {
   const integrationsObj = getIntegrationsObj(message, 'one_signal');
   const devicePayload = {};
-  if (integrationsObj && integrationsObj.deviceType && integrationsObj.identifier) {
+  if (integrationsObj?.deviceType && integrationsObj?.identifier) {
     devicePayload.type = integrationsObj.deviceType;
     devicePayload.token = integrationsObj.token || integrationsObj.identifier;
   }
@@ -156,11 +157,13 @@ const constructSubscription = (message, deviceType, token) => {
     device_model: deviceModel,
     device_os: deviceOs,
   };
-  if (message.properties?.subscriptions?.[deviceType]) {
+  // Following mapping is used to do paticular and specific property mapping for subscription
+  const traits = message.context?.traits || message.traits;
+  if (traits?.subscriptions?.[deviceType]) {
     deviceSubscriptionPayload = {
       ...deviceSubscriptionPayload,
       ...constructPayload(
-        message.properties.subscriptions[deviceType],
+        traits.subscriptions[deviceType],
         mappingConfig[ConfigCategory.SUBSCRIPTION.name],
       ),
     };

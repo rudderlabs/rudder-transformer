@@ -1,4 +1,3 @@
-import { structuredLogger as logger } from '@rudderstack/integrations-lib';
 import { Context } from 'koa';
 import { UserTransformService } from '../services/userTransform';
 import { ProcessorTransformationRequest, UserTransformationServiceResponse } from '../types/index';
@@ -8,6 +7,7 @@ import {
   validateCode,
 } from '../util/customTransformer';
 import { ControllerUtility } from './util';
+import logger from '../logger';
 
 export class UserTransformController {
   public static async transform(ctx: Context) {

@@ -68,6 +68,15 @@ export const data = [
             message:
               '[Generic Response Handler] Request for destination: am Processed Successfully',
             destinationResponse: {
+              headers: {
+                'access-control-allow-methods': 'GET, POST',
+                'access-control-allow-origin': '*',
+                connection: 'keep-alive',
+                'content-length': '93',
+                'content-type': 'application/json',
+                date: 'Sat, 11 Dec 2021 15:08:22 GMT',
+                'strict-transport-security': 'max-age=15768000',
+              },
               response: {
                 code: 200,
                 server_upload_time: 1639235302252,
@@ -145,6 +154,15 @@ export const data = [
             message:
               '[Generic Response Handler] Request failed for destination am with status: 400',
             destinationResponse: {
+              headers: {
+                'access-control-allow-methods': 'GET, POST',
+                'access-control-allow-origin': '*',
+                connection: 'keep-alive',
+                'content-length': '93',
+                'content-type': 'application/json',
+                date: 'Sat, 11 Dec 2021 15:08:22 GMT',
+                'strict-transport-security': 'max-age=15768000',
+              },
               response: {
                 code: 400,
                 server_upload_time: 1639235302252,

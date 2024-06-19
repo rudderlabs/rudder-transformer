@@ -1,7 +1,7 @@
 /* eslint-disable */
 const _ = require('lodash');
 const get = require('get-value');
-const { structuredLogger: logger } = require('@rudderstack/integrations-lib');
+const logger = require('../../../logger');
 const stats = require('../../../util/stats');
 const { handleHttpRequest } = require('../../../adapters/network');
 const {

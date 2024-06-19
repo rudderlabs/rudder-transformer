@@ -17,7 +17,7 @@ const {
   validateDestinationConfig,
 } = require('./util');
 
-const processSingleMessage = async (message, destination, propertyMap) => {
+const processSingleMessage = async ({ message, destination, metadata }, propertyMap) => {
   if (!message.type) {
     throw new InstrumentationError('Message type is not present. Aborting message.');
   }
@@ -30,18 +30,18 @@ const processSingleMessage = async (message, destination, propertyMap) => {
     case EventType.IDENTIFY: {
       response = [];
       if (destination.Config.apiVersion === API_VERSION.v3) {
-        response.push(await processIdentify(message, destination, propertyMap));
+        response.push(await processIdentify({ message, destination, metadata }, propertyMap));
       } else {
         // Legacy API
-        response.push(await processLegacyIdentify(message, destination, propertyMap));
+        response.push(await processLegacyIdentify({ message, destination, metadata }, propertyMap));
       }
       break;
     }
     case EventType.TRACK:
       if (destination.Config.apiVersion === API_VERSION.v3) {
-        response = await processTrack(message, destination, propertyMap);
+        response = await processTrack({ message, destination }, propertyMap);
       } else {
-        response = await processLegacyTrack(message, destination, propertyMap);
+        response = await processLegacyTrack({ message, destination, metadata }, propertyMap);
       }
       break;
     default:
@@ -53,15 +53,19 @@ const processSingleMessage = async (message, destination, propertyMap) => {
 
 // has been deprecated - using routerTransform for both the versions
 const process = async (event) => {
-  const { destination, message } = event;
+  const { destination, message, metadata } = event;
   const mappedToDestination = get(message, MappedToDestinationKey);
   let events = [];
   events = [event];
   if (mappedToDestination && GENERIC_TRUE_VALUES.includes(mappedToDestination?.toString())) {
     // get info about existing objects and splitting accordingly.
-    events = await splitEventsForCreateUpdate([event], destination);
+    events = await splitEventsForCreateUpdate([event], destination, metadata);
   }
-  return processSingleMessage(events[0].message, events[0].destination);
+  return processSingleMessage({
+    message: events[0].message,
+    destination: events[0].destination,
+    metadata: events[0].metadata || metadata,
+  });
 };
 
 // we are batching by default at routerTransform
@@ -71,7 +75,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
   const successRespList = [];
   const errorRespList = [];
   // using the first destination config for transforming the batch
-  const { destination } = tempInputs[0];
+  const { destination, metadata } = tempInputs[0];
   let propertyMap;
   const mappedToDestination = get(tempInputs[0].message, MappedToDestinationKey);
   const { objectType } = getDestinationExternalIDInfoForRetl(tempInputs[0].message, 'HS');
@@ -80,9 +84,9 @@ const processRouterDest = async (inputs, reqMetadata) => {
     if (mappedToDestination && GENERIC_TRUE_VALUES.includes(mappedToDestination?.toString())) {
       // skip splitting the batches to inserts and updates if object it is an association
       if (objectType.toLowerCase() !== 'association') {
-        propertyMap = await getProperties(destination);
+        propertyMap = await getProperties(destination, metadata);
         // get info about existing objects and splitting accordingly.
-        tempInputs = await splitEventsForCreateUpdate(tempInputs, destination);
+        tempInputs = await splitEventsForCreateUpdate(tempInputs, destination, metadata);
       }
     } else {
       // reduce the no. of calls for properties endpoint
@@ -90,7 +94,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
         (input) => fetchFinalSetOfTraits(input.message) !== undefined,
       );
       if (traitsFound) {
-        propertyMap = await getProperties(destination);
+        propertyMap = await getProperties(destination, metadata);
       }
     }
   } catch (error) {
@@ -111,8 +115,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
         } else {
           // event is not transformed
           let receivedResponse = await processSingleMessage(
-            input.message,
-            destination,
+            { message: input.message, destination, metadata: input.metadata },
             propertyMap,
           );
 

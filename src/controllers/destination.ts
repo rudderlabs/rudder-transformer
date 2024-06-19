@@ -19,7 +19,6 @@ import logger from '../logger';
 
 export class DestinationController {
   public static async destinationTransformAtProcessor(ctx: Context) {
-    const startTime = new Date();
     logger.debug('Native(Process-Transform):: Requst to transformer::', ctx.request.body);
     let resplist: ProcessorTransformationResponse[];
     const requestMetadata = MiscService.getRequestMetadata(ctx);
@@ -71,22 +70,10 @@ export class DestinationController {
       version,
       ...metaTags,
     });
-    stats.timing('dest_transform_request_latency', startTime, {
-      destination,
-      feature: tags.FEATURES.PROCESSOR,
-      version,
-      ...metaTags,
-    });
-    stats.increment('dest_transform_requests', {
-      destination,
-      version,
-      ...metaTags,
-    });
     return ctx;
   }
 
   public static async destinationTransformAtRouter(ctx: Context) {
-    const startTime = new Date();
     logger.debug('Native(Router-Transform):: Requst to transformer::', ctx.request.body);
     const requestMetadata = MiscService.getRequestMetadata(ctx);
     const routerRequest = ctx.request.body as RouterTransformationRequest;
@@ -145,18 +132,11 @@ export class DestinationController {
       version: 'v0',
       ...metaTags,
     });
-    stats.timing('dest_transform_request_latency', startTime, {
-      destination,
-      version: 'v0',
-      feature: tags.FEATURES.ROUTER,
-      ...metaTags,
-    });
     return ctx;
   }
 
   public static batchProcess(ctx: Context) {
     logger.debug('Native(Process-Transform-Batch):: Requst to transformer::', ctx.request.body);
-    const startTime = new Date();
     const requestMetadata = MiscService.getRequestMetadata(ctx);
     const routerRequest = ctx.request.body as RouterTransformationRequest;
     const destination = routerRequest.destType;
@@ -187,11 +167,6 @@ export class DestinationController {
       ctx.body = [errResp];
     }
     ControllerUtility.postProcess(ctx);
-    stats.timing('dest_transform_request_latency', startTime, {
-      destination,
-      feature: tags.FEATURES.BATCH,
-      version: 'v0',
-    });
     return ctx;
   }
 }

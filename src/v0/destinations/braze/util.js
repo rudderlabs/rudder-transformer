@@ -519,8 +519,18 @@ function setExternalId(payload, message) {
   return payload;
 }
 
-function setAliasObjectWithAnonId(payload, message) {
-  if (message.anonymousId) {
+function setAliasObject(payload, message) {
+  const integrationsObj = getIntegrationsObj(message, 'BRAZE');
+  if (
+    isDefinedAndNotNull(integrationsObj?.alias?.alias_name) &&
+    isDefinedAndNotNull(integrationsObj?.alias?.alias_label)
+  ) {
+    const { alias_name, alias_label } = integrationsObj.alias;
+    payload.user_alias = {
+      alias_name,
+      alias_label,
+    };
+  } else if (message.anonymousId) {
     payload.user_alias = {
       alias_name: message.anonymousId,
       alias_label: 'rudder_id',
@@ -537,7 +547,7 @@ function setExternalIdOrAliasObject(payload, message) {
 
   // eslint-disable-next-line no-underscore-dangle
   payload._update_existing_only = false;
-  return setAliasObjectWithAnonId(payload, message);
+  return setAliasObject(payload, message);
 }
 
 function addMandatoryPurchaseProperties(productId, price, currencyCode, quantity, timestamp) {
@@ -687,14 +697,11 @@ const collectStatsForAliasFailure = (brazeResponse, destinationId) => {
   const { aliases_processed: aliasesProcessed, errors } = brazeResponse;
   if (aliasesProcessed === 0) {
     stats.increment('braze_alias_failure_count', { destination_id: destinationId });
-
-    if (Array.isArray(errors)) {
-      logger.info('Braze Alias Failure Errors:', {
-        destinationId,
-        errors,
-      });
-    }
   }
+};
+
+const collectStatsForAliasMissConfigurations = (destinationId) => {
+  stats.increment('braze_alias_missconfigured_count', { destination_id: destinationId });
 };
 
 module.exports = {
@@ -707,7 +714,8 @@ module.exports = {
   getPurchaseObjs,
   setExternalIdOrAliasObject,
   setExternalId,
-  setAliasObjectWithAnonId,
+  setAliasObject,
   addMandatoryPurchaseProperties,
   collectStatsForAliasFailure,
+  collectStatsForAliasMissConfigurations,
 };

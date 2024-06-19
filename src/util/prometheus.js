@@ -613,6 +613,12 @@ class Prometheus {
         labelNames: ['destination_id'],
       },
       {
+        name: 'braze_alias_missconfigured_count',
+        help: 'braze_alias_missconfigured_count',
+        type: 'counter',
+        labelNames: ['destination_id'],
+      },
+      {
         name: 'mixpanel_batch_engage_pack_size',
         help: 'mixpanel_batch_engage_pack_size',
         type: 'gauge',
@@ -714,19 +720,6 @@ class Prometheus {
         help: 'regulation_worker_requests_dest_latency',
         type: 'histogram',
         labelNames: ['feature', 'implementation', 'destType'],
-      },
-      {
-        name: 'dest_transform_request_latency',
-        help: 'dest_transform_request_latency',
-        type: 'histogram',
-        labelNames: [
-          'destination',
-          'version',
-          'sourceType',
-          'destinationType',
-          'k8_namespace',
-          'feature',
-        ],
       },
       {
         name: 'user_transform_request_latency',

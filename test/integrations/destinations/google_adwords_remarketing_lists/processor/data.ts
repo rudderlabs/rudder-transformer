@@ -11,7 +11,7 @@ export const data = [
           {
             metadata: {
               secret: {
-                access_token: 'dummy-access',
+                accessToken: 'dummy-access',
                 refresh_token: 'dummy-refresh',
                 developer_token: 'dummy-dev-token',
               },
@@ -70,7 +70,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint:
-                'https://googleads.googleapis.com/v15/customers/7693729833/offlineUserDataJobs',
+                'https://googleads.googleapis.com/v16/customers/7693729833/offlineUserDataJobs',
               headers: {
                 Authorization: 'Bearer dummy-access',
                 'Content-Type': 'application/json',
@@ -120,7 +120,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                access_token: 'dummy-access',
+                accessToken: 'dummy-access',
                 refresh_token: 'dummy-refresh',
                 developer_token: 'dummy-dev-token',
               },
@@ -143,7 +143,7 @@ export const data = [
           {
             metadata: {
               secret: {
-                access_token: 'dummy-access',
+                accessToken: 'dummy-access',
                 refresh_token: 'dummy-refresh',
                 developer_token: 'dummy-dev-token',
               },
@@ -203,7 +203,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint:
-                'https://googleads.googleapis.com/v15/customers/7693729833/offlineUserDataJobs',
+                'https://googleads.googleapis.com/v16/customers/7693729833/offlineUserDataJobs',
               headers: {
                 Authorization: 'Bearer dummy-access',
                 'Content-Type': 'application/json',
@@ -239,7 +239,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                access_token: 'dummy-access',
+                accessToken: 'dummy-access',
                 refresh_token: 'dummy-refresh',
                 developer_token: 'dummy-dev-token',
               },
@@ -262,7 +262,7 @@ export const data = [
           {
             metadata: {
               secret: {
-                access_token: 'dummy-access',
+                accessToken: 'dummy-access',
                 refresh_token: 'dummy-refresh',
                 developer_token: 'dummy-dev-token',
               },
@@ -323,7 +323,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint:
-                'https://googleads.googleapis.com/v15/customers/7693729833/offlineUserDataJobs',
+                'https://googleads.googleapis.com/v16/customers/7693729833/offlineUserDataJobs',
               headers: {
                 Authorization: 'Bearer dummy-access',
                 'Content-Type': 'application/json',
@@ -358,7 +358,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                access_token: 'dummy-access',
+                accessToken: 'dummy-access',
                 refresh_token: 'dummy-refresh',
                 developer_token: 'dummy-dev-token',
               },
@@ -381,7 +381,7 @@ export const data = [
           {
             metadata: {
               secret: {
-                access_token: 'dummy-access',
+                accessToken: 'dummy-access',
                 refresh_token: 'dummy-refresh',
                 developer_token: 'dummy-dev-token',
               },
@@ -456,7 +456,7 @@ export const data = [
           {
             metadata: {
               secret: {
-                access_token: 'dummy-access',
+                accessToken: 'dummy-access',
                 refresh_token: 'dummy-refresh',
                 developer_token: 'dummy-dev-token',
               },
@@ -489,7 +489,7 @@ export const data = [
           {
             metadata: {
               secret: {
-                access_token: 'dummy-access',
+                accessToken: 'dummy-access',
                 refresh_token: 'dummy-refresh',
                 developer_token: 'dummy-dev-token',
               },
@@ -546,7 +546,7 @@ export const data = [
           {
             metadata: {
               secret: {
-                access_token: 'dummy-access',
+                accessToken: 'dummy-access',
                 refresh_token: 'dummy-refresh',
                 developer_token: 'dummy-dev-token',
               },
@@ -579,7 +579,7 @@ export const data = [
           {
             metadata: {
               secret: {
-                access_token: 'dummy-access',
+                accessToken: 'dummy-access',
                 refresh_token: 'dummy-refresh',
                 developer_token: 'dummy-dev-token',
               },
@@ -635,7 +635,7 @@ export const data = [
           {
             metadata: {
               secret: {
-                access_token: 'dummy-access',
+                accessToken: 'dummy-access',
                 refresh_token: 'dummy-refresh',
                 developer_token: 'dummy-dev-token',
               },
@@ -667,7 +667,7 @@ export const data = [
           {
             metadata: {
               secret: {
-                access_token: 'dummy-access',
+                accessToken: 'dummy-access',
                 refresh_token: 'dummy-refresh',
                 developer_token: 'dummy-dev-token',
               },
@@ -711,7 +711,7 @@ export const data = [
           {
             metadata: {
               secret: {
-                access_token: 'dummy-access',
+                accessToken: 'dummy-access',
                 refresh_token: 'dummy-refresh',
                 developer_token: 'dummy-dev-token',
               },
@@ -743,7 +743,7 @@ export const data = [
           {
             metadata: {
               secret: {
-                access_token: 'dummy-access',
+                accessToken: 'dummy-access',
                 refresh_token: 'dummy-refresh',
                 developer_token: 'dummy-dev-token',
               },
@@ -807,7 +807,7 @@ export const data = [
           {
             metadata: {
               secret: {
-                access_token: 'dummy-access',
+                accessToken: 'dummy-access',
                 refresh_token: 'dummy-refresh',
                 developer_token: 'dummy-dev-token',
               },
@@ -839,7 +839,7 @@ export const data = [
           {
             metadata: {
               secret: {
-                access_token: 'dummy-access',
+                accessToken: 'dummy-access',
                 refresh_token: 'dummy-refresh',
                 developer_token: 'dummy-dev-token',
               },
@@ -1425,7 +1425,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint:
-                'https://googleads.googleapis.com/v15/customers/7693729833/offlineUserDataJobs',
+                'https://googleads.googleapis.com/v16/customers/7693729833/offlineUserDataJobs',
               headers: {
                 Authorization: 'Bearer dummy-access',
                 'Content-Type': 'application/json',
@@ -2712,7 +2712,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                access_token: 'dummy-access',
+                accessToken: 'dummy-access',
                 refresh_token: 'dummy-refresh',
                 developer_token: 'dummy-dev-token',
               },
@@ -2735,7 +2735,7 @@ export const data = [
           {
             metadata: {
               secret: {
-                access_token: 'dummy-access',
+                accessToken: 'dummy-access',
                 refresh_token: 'dummy-refresh',
                 developer_token: 'dummy-dev-token',
               },
@@ -2820,7 +2820,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint:
-                'https://googleads.googleapis.com/v15/customers/7693729833/offlineUserDataJobs',
+                'https://googleads.googleapis.com/v16/customers/7693729833/offlineUserDataJobs',
               headers: {
                 Authorization: 'Bearer dummy-access',
                 'Content-Type': 'application/json',
@@ -2887,7 +2887,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                access_token: 'dummy-access',
+                accessToken: 'dummy-access',
                 refresh_token: 'dummy-refresh',
                 developer_token: 'dummy-dev-token',
               },
@@ -2900,7 +2900,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint:
-                'https://googleads.googleapis.com/v15/customers/7693729833/offlineUserDataJobs',
+                'https://googleads.googleapis.com/v16/customers/7693729833/offlineUserDataJobs',
               headers: {
                 Authorization: 'Bearer dummy-access',
                 'Content-Type': 'application/json',
@@ -2967,7 +2967,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                access_token: 'dummy-access',
+                accessToken: 'dummy-access',
                 refresh_token: 'dummy-refresh',
                 developer_token: 'dummy-dev-token',
               },
@@ -2990,7 +2990,7 @@ export const data = [
           {
             metadata: {
               secret: {
-                access_token: 'dummy-access',
+                accessToken: 'dummy-access',
                 refresh_token: 'dummy-refresh',
                 developer_token: 'dummy-dev-token',
               },
@@ -4113,7 +4113,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint:
-                'https://googleads.googleapis.com/v15/customers/7693729833/offlineUserDataJobs',
+                'https://googleads.googleapis.com/v16/customers/7693729833/offlineUserDataJobs',
               headers: {
                 Authorization: 'Bearer dummy-access',
                 'Content-Type': 'application/json',
@@ -5400,7 +5400,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                access_token: 'dummy-access',
+                accessToken: 'dummy-access',
                 refresh_token: 'dummy-refresh',
                 developer_token: 'dummy-dev-token',
               },
@@ -5413,7 +5413,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint:
-                'https://googleads.googleapis.com/v15/customers/7693729833/offlineUserDataJobs',
+                'https://googleads.googleapis.com/v16/customers/7693729833/offlineUserDataJobs',
               headers: {
                 Authorization: 'Bearer dummy-access',
                 'Content-Type': 'application/json',
@@ -6700,7 +6700,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                access_token: 'dummy-access',
+                accessToken: 'dummy-access',
                 refresh_token: 'dummy-refresh',
                 developer_token: 'dummy-dev-token',
               },
@@ -6723,7 +6723,7 @@ export const data = [
           {
             metadata: {
               secret: {
-                access_token: 'dummy-access',
+                accessToken: 'dummy-access',
                 refresh_token: 'dummy-refresh',
                 developer_token: 'dummy-dev-token',
               },
@@ -6790,7 +6790,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint:
-                'https://googleads.googleapis.com/v15/customers/7693729833/offlineUserDataJobs',
+                'https://googleads.googleapis.com/v16/customers/7693729833/offlineUserDataJobs',
               headers: {
                 Authorization: 'Bearer dummy-access',
                 'Content-Type': 'application/json',
@@ -6857,7 +6857,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                access_token: 'dummy-access',
+                accessToken: 'dummy-access',
                 refresh_token: 'dummy-refresh',
                 developer_token: 'dummy-dev-token',
               },
@@ -6880,7 +6880,7 @@ export const data = [
           {
             metadata: {
               secret: {
-                access_token: 'dummy-access',
+                accessToken: 'dummy-access',
                 refresh_token: 'dummy-refresh',
                 developer_token: 'dummy-dev-token',
               },
@@ -6944,7 +6944,7 @@ export const data = [
           {
             metadata: {
               secret: {
-                access_token: 'dummy-access',
+                accessToken: 'dummy-access',
                 refresh_token: 'dummy-refresh',
                 developer_token: 'dummy-dev-token',
               },
@@ -6977,7 +6977,7 @@ export const data = [
           {
             metadata: {
               secret: {
-                access_token: 'dummy-access',
+                accessToken: 'dummy-access',
                 refresh_token: 'dummy-refresh',
                 developer_token: 'dummy-dev-token',
               },
@@ -8100,7 +8100,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint:
-                'https://googleads.googleapis.com/v15/customers/7693729833/offlineUserDataJobs',
+                'https://googleads.googleapis.com/v16/customers/7693729833/offlineUserDataJobs',
               headers: {
                 Authorization: 'Bearer dummy-access',
                 'Content-Type': 'application/json',
@@ -9387,7 +9387,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                access_token: 'dummy-access',
+                accessToken: 'dummy-access',
                 refresh_token: 'dummy-refresh',
                 developer_token: 'dummy-dev-token',
               },
@@ -9400,7 +9400,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint:
-                'https://googleads.googleapis.com/v15/customers/7693729833/offlineUserDataJobs',
+                'https://googleads.googleapis.com/v16/customers/7693729833/offlineUserDataJobs',
               headers: {
                 Authorization: 'Bearer dummy-access',
                 'Content-Type': 'application/json',
@@ -10687,7 +10687,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                access_token: 'dummy-access',
+                accessToken: 'dummy-access',
                 refresh_token: 'dummy-refresh',
                 developer_token: 'dummy-dev-token',
               },
@@ -10710,7 +10710,7 @@ export const data = [
           {
             metadata: {
               secret: {
-                access_token: 'dummy-access',
+                accessToken: 'dummy-access',
                 refresh_token: 'dummy-refresh',
                 developer_token: 'dummy-dev-token',
               },
@@ -10795,7 +10795,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint:
-                'https://googleads.googleapis.com/v15/customers/7693729833/offlineUserDataJobs',
+                'https://googleads.googleapis.com/v16/customers/7693729833/offlineUserDataJobs',
               headers: {
                 Authorization: 'Bearer dummy-access',
                 'Content-Type': 'application/json',
@@ -10862,7 +10862,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                access_token: 'dummy-access',
+                accessToken: 'dummy-access',
                 refresh_token: 'dummy-refresh',
                 developer_token: 'dummy-dev-token',
               },
@@ -10875,7 +10875,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint:
-                'https://googleads.googleapis.com/v15/customers/7693729833/offlineUserDataJobs',
+                'https://googleads.googleapis.com/v16/customers/7693729833/offlineUserDataJobs',
               headers: {
                 Authorization: 'Bearer dummy-access',
                 'Content-Type': 'application/json',
@@ -10942,7 +10942,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                access_token: 'dummy-access',
+                accessToken: 'dummy-access',
                 refresh_token: 'dummy-refresh',
                 developer_token: 'dummy-dev-token',
               },
@@ -10965,7 +10965,7 @@ export const data = [
           {
             metadata: {
               secret: {
-                access_token: 'dummy-access',
+                accessToken: 'dummy-access',
                 refresh_token: 'dummy-refresh',
                 developer_token: 'dummy-dev-token',
               },
@@ -11050,7 +11050,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint:
-                'https://googleads.googleapis.com/v15/customers/7693729833/offlineUserDataJobs',
+                'https://googleads.googleapis.com/v16/customers/7693729833/offlineUserDataJobs',
               headers: {
                 Authorization: 'Bearer dummy-access',
                 'Content-Type': 'application/json',
@@ -11115,7 +11115,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                access_token: 'dummy-access',
+                accessToken: 'dummy-access',
                 refresh_token: 'dummy-refresh',
                 developer_token: 'dummy-dev-token',
               },
@@ -11128,7 +11128,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint:
-                'https://googleads.googleapis.com/v15/customers/7693729833/offlineUserDataJobs',
+                'https://googleads.googleapis.com/v16/customers/7693729833/offlineUserDataJobs',
               headers: {
                 Authorization: 'Bearer dummy-access',
                 'Content-Type': 'application/json',
@@ -11190,7 +11190,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                access_token: 'dummy-access',
+                accessToken: 'dummy-access',
                 refresh_token: 'dummy-refresh',
                 developer_token: 'dummy-dev-token',
               },
@@ -11213,7 +11213,7 @@ export const data = [
           {
             metadata: {
               secret: {
-                access_token: 'dummy-access',
+                accessToken: 'dummy-access',
                 refresh_token: 'dummy-refresh',
                 developer_token: 'dummy-dev-token',
               },
@@ -11272,7 +11272,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint:
-                'https://googleads.googleapis.com/v15/customers/7693729833/offlineUserDataJobs',
+                'https://googleads.googleapis.com/v16/customers/7693729833/offlineUserDataJobs',
               headers: {
                 Authorization: 'Bearer dummy-access',
                 'Content-Type': 'application/json',
@@ -11316,7 +11316,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                access_token: 'dummy-access',
+                accessToken: 'dummy-access',
                 refresh_token: 'dummy-refresh',
                 developer_token: 'dummy-dev-token',
               },
@@ -11419,7 +11419,7 @@ export const data = [
           {
             metadata: {
               secret: {
-                access_token: 'dummy-access',
+                accessToken: 'dummy-access',
                 refresh_token: 'dummy-refresh',
                 developer_token: 'dummy-dev-token',
               },
@@ -11479,7 +11479,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint:
-                'https://googleads.googleapis.com/v15/customers/7693729833/offlineUserDataJobs',
+                'https://googleads.googleapis.com/v16/customers/7693729833/offlineUserDataJobs',
               headers: {
                 Authorization: 'Bearer dummy-access',
                 'Content-Type': 'application/json',
@@ -11523,7 +11523,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                access_token: 'dummy-access',
+                accessToken: 'dummy-access',
                 refresh_token: 'dummy-refresh',
                 developer_token: 'dummy-dev-token',
               },
@@ -11546,7 +11546,7 @@ export const data = [
           {
             metadata: {
               secret: {
-                access_token: 'dummy-access',
+                accessToken: 'dummy-access',
                 refresh_token: 'dummy-refresh',
                 developer_token: 'dummy-dev-token',
               },
@@ -11618,7 +11618,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint:
-                'https://googleads.googleapis.com/v15/customers/7693729833/offlineUserDataJobs',
+                'https://googleads.googleapis.com/v16/customers/7693729833/offlineUserDataJobs',
               headers: {
                 Authorization: 'Bearer dummy-access',
                 'Content-Type': 'application/json',
@@ -11661,7 +11661,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                access_token: 'dummy-access',
+                accessToken: 'dummy-access',
                 refresh_token: 'dummy-refresh',
                 developer_token: 'dummy-dev-token',
               },
@@ -11684,7 +11684,7 @@ export const data = [
           {
             metadata: {
               secret: {
-                access_token: 'dummy-access',
+                accessToken: 'dummy-access',
                 refresh_token: 'dummy-refresh',
                 developer_token: 'dummy-dev-token',
               },
@@ -11756,7 +11756,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint:
-                'https://googleads.googleapis.com/v15/customers/7693729833/offlineUserDataJobs',
+                'https://googleads.googleapis.com/v16/customers/7693729833/offlineUserDataJobs',
               headers: {
                 Authorization: 'Bearer dummy-access',
                 'Content-Type': 'application/json',
@@ -11799,7 +11799,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                access_token: 'dummy-access',
+                accessToken: 'dummy-access',
                 refresh_token: 'dummy-refresh',
                 developer_token: 'dummy-dev-token',
               },
@@ -11822,7 +11822,7 @@ export const data = [
           {
             metadata: {
               secret: {
-                access_token: 'dummy-access',
+                accessToken: 'dummy-access',
                 refresh_token: 'dummy-refresh',
                 developer_token: 'dummy-dev-token',
               },
@@ -11896,7 +11896,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint:
-                'https://googleads.googleapis.com/v15/customers/7693729833/offlineUserDataJobs',
+                'https://googleads.googleapis.com/v16/customers/7693729833/offlineUserDataJobs',
               headers: {
                 Authorization: 'Bearer dummy-access',
                 'Content-Type': 'application/json',
@@ -11942,7 +11942,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                access_token: 'dummy-access',
+                accessToken: 'dummy-access',
                 refresh_token: 'dummy-refresh',
                 developer_token: 'dummy-dev-token',
               },
@@ -11965,7 +11965,7 @@ export const data = [
           {
             metadata: {
               secret: {
-                access_token: 'dummy-access',
+                accessToken: 'dummy-access',
                 refresh_token: 'dummy-refresh',
                 developer_token: 'dummy-dev-token',
               },
@@ -12039,7 +12039,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint:
-                'https://googleads.googleapis.com/v15/customers/7693729833/offlineUserDataJobs',
+                'https://googleads.googleapis.com/v16/customers/7693729833/offlineUserDataJobs',
               headers: {
                 Authorization: 'Bearer dummy-access',
                 'Content-Type': 'application/json',
@@ -12082,7 +12082,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                access_token: 'dummy-access',
+                accessToken: 'dummy-access',
                 refresh_token: 'dummy-refresh',
                 developer_token: 'dummy-dev-token',
               },

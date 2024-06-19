@@ -1,17 +1,15 @@
-import { structuredLogger as logger } from '@rudderstack/integrations-lib';
 import { Context } from 'koa';
 import { ServiceSelector } from '../helpers/serviceSelector';
 import { DestinationPostTransformationService } from '../services/destination/postTransformation';
 import { UserDeletionRequest, UserDeletionResponse } from '../types';
-import stats from '../util/stats';
 import tags from '../v0/util/tags';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { CatchErr } from '../util/types';
+import logger from '../logger';
 
 export class RegulationController {
   public static async deleteUsers(ctx: Context) {
     logger.debug('Native(Process-Transform):: Requst to transformer::', ctx.request.body);
-    const startTime = new Date();
     let rudderDestInfo: any;
     try {
       const rudderDestInfoHeader = ctx.get('x-rudder-dest-info');
@@ -47,10 +45,6 @@ export class RegulationController {
       ctx.body = [{ error, statusCode: 500 }] as UserDeletionResponse[]; // TODO: responses array length is always 1. Is that okay?
       ctx.status = 500;
     }
-    stats.timing('dest_transform_request_latency', startTime, {
-      feature: tags.FEATURES.USER_DELETION,
-      version: 'v0',
-    });
     return ctx;
   }
 }

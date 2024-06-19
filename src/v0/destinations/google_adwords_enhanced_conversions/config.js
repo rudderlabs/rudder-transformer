@@ -16,4 +16,5 @@ module.exports = {
   BASE_ENDPOINT,
   hashAttributes,
   CONVERSION_ACTION_ID_CACHE_TTL,
+  destType: 'google_adwords_enhanced_conversions',
 };

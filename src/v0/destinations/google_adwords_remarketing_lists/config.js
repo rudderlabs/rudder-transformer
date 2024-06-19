@@ -1,6 +1,6 @@
 const { getMappingConfig } = require('../../util');
 
-const BASE_ENDPOINT = 'https://googleads.googleapis.com/v15/customers';
+const BASE_ENDPOINT = 'https://googleads.googleapis.com/v16/customers';
 const CONFIG_CATEGORIES = {
   AUDIENCE_LIST: { type: 'audienceList', name: 'offlineDataJobs' },
   ADDRESSINFO: { type: 'addressInfo', name: 'addressInfo' },
@@ -29,4 +29,5 @@ module.exports = {
   offlineDataJobsMapping: MAPPING_CONFIG[CONFIG_CATEGORIES.AUDIENCE_LIST.name],
   addressInfoMapping: MAPPING_CONFIG[CONFIG_CATEGORIES.ADDRESSINFO.name],
   consentConfigMap,
+  destType: 'google_adwords_remarketing_lists',
 };

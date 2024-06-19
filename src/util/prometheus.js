@@ -738,18 +738,6 @@ class Prometheus {
         ],
       },
       {
-        name: 'user_transform_request_latency',
-        help: 'user_transform_request_latency',
-        type: 'histogram',
-        labelNames: [
-          'workspaceId',
-          'transformationId',
-          'sourceType',
-          'destinationType',
-          'k8_namespace',
-        ],
-      },
-      {
         name: 'user_transform_request_latency_summary',
         help: 'user_transform_request_latency_summary',
         type: 'summary',
@@ -760,22 +748,6 @@ class Prometheus {
           'destinationType',
           'k8_namespace',
         ],
-      },
-      {
-        name: 'user_transform_batch_size',
-        help: 'user_transform_batch_size',
-        type: 'histogram',
-        labelNames: [
-          'workspaceId',
-          'transformationId',
-          'sourceType',
-          'destinationType',
-          'k8_namespace',
-        ],
-        buckets: [
-          1024, 102400, 524288, 1048576, 10485760, 20971520, 52428800, 104857600, 209715200,
-          524288000,
-        ], // 1KB, 100KB, 0.5MB, 1MB, 10MB, 20MB, 50MB, 100MB, 200MB, 500MB
       },
       {
         name: 'user_transform_batch_size_summary',
@@ -840,22 +812,10 @@ class Prometheus {
         labelNames: ['versionId'],
       },
       {
-        name: 'get_transformation_code_time',
-        help: 'get_transformation_code_time',
-        type: 'histogram',
-        labelNames: ['versionId', 'version'],
-      },
-      {
         name: 'get_transformation_code_time_summary',
         help: 'get_transformation_code_time_summary',
         type: 'summary',
         labelNames: ['versionId', 'version'],
-      },
-      {
-        name: 'get_libraries_code_time',
-        help: 'get_libraries_code_time',
-        type: 'histogram',
-        labelNames: ['libraryVersionId', 'versionId', 'type', 'version'],
       },
       {
         name: 'get_libraries_code_time_summary',
@@ -1086,22 +1046,6 @@ class Prometheus {
         name: 'user_transform_function_input_events',
         help: 'user_transform_function_input_events',
         type: 'counter',
-        labelNames: [
-          'identifier',
-          'testMode',
-          'sourceType',
-          'destinationType',
-          'k8_namespace',
-          'errored',
-          'statusCode',
-          'transformationId',
-          'workspaceId',
-        ],
-      },
-      {
-        name: 'user_transform_function_latency',
-        help: 'user_transform_function_latency',
-        type: 'histogram',
         labelNames: [
           'identifier',
           'testMode',

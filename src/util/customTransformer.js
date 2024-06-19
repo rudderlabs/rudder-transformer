@@ -259,7 +259,6 @@ async function runUserTransform(
     };
 
     stats.counter('user_transform_function_input_events', events.length, tags);
-    stats.timing('user_transform_function_latency', invokeTime, tags);
     stats.timingSummary('user_transform_function_latency_summary', invokeTime, tags);
   }
 

@@ -18,7 +18,7 @@ const {
   isDefinedAndNotNullAndNotEmpty,
   defaultPutRequestConfig,
 } = require('../../util');
-const { populateDeviceType, populateTags } = require('./util');
+const { populateDeviceType, populateTags } = require('./utils');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const responseBuilder = (payload, endpoint, eventType) => {
@@ -188,8 +188,8 @@ const groupResponseBuilder = (message, { Config }) => {
 
 const processEvent = (message, destination) => {
   const { Config } = destination;
-  const { apiVersion, appId } = Config;
-  if (apiVersion === 'V2') {
+  const { version, appId } = Config;
+  if (version === 'V2') {
     // This version is used to direct the request to user centric model
     return processV2(message, destination);
   }

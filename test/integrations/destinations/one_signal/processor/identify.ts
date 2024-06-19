@@ -5,7 +5,7 @@ export const identifyTests = [
     name: 'one_signal',
     id: 'One Signal V2-test-identify-success-1',
     description:
-      'Identify call for creating new user with userId only available and no subscriptions available',
+      'V2-> Identify call for creating new user with userId only available and no subscriptions available',
     module: 'destination',
     successCriteria: 'Request gets passed with 200 Status Code with userId mapped to external_id',
     feature: 'processor',
@@ -98,7 +98,7 @@ export const identifyTests = [
     name: 'one_signal',
     id: 'One Signal V2-test-identify-success-1',
     description:
-      'Identify call for creating new user with userId and one device subscription available',
+      'V2-> Identify call for creating new user with userId and one device subscription available',
     module: 'destination',
     successCriteria:
       'Request gets passed with 200 Status Code with userId mapped to external_id and one subscription for device where identifier is mapped from anonymousId',

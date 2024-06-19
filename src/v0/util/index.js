@@ -2258,6 +2258,14 @@ const applyCustomMappings = (message, mappings) => {
   );
 };
 
+const getRelativePathFromURL = (inputUrl) => {
+  if (isValidUrl(inputUrl)) {
+    const url = new URL(inputUrl);
+    return url.pathname;
+  }
+  return inputUrl;
+};
+
 // ========================================================================
 // EXPORTS
 // ========================================================================
@@ -2378,4 +2386,5 @@ module.exports = {
   removeDuplicateMetadata,
   combineBatchRequestsWithSameJobIds,
   validateEventAndLowerCaseConversion,
+  getRelativePathFromURL,
 };

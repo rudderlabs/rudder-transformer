@@ -3,6 +3,8 @@ const { LOGLEVELS, structuredLogger } = require('@rudderstack/integrations-lib')
 
 // LOGGER_IMPL can be `console` or `winston`
 const loggerImpl = process.env.LOGGER_IMPL ?? 'winston';
+const logDestIds = (process.env.LOG_DEST_IDS ?? '').split(',')?.map?.((s) => s?.trim?.()); // should be comma separated
+const logWspIds = (process.env.LOG_WSP_IDS ?? '').split(',')?.map?.((s) => s?.trim?.()); // should be comma separated
 
 let logLevel = process.env.LOG_LEVEL ?? 'error';
 
@@ -69,6 +71,24 @@ const formLogArgs = (args) => {
     otherArgs.push(arg);
   });
   return [msg, ...otherArgs];
+};
+
+const isMetadataMatching = (m) => {
+  const isDestIdConfigured = logDestIds?.find?.((envDId) => envDId && envDId === m?.destinationId);
+  const isWspIdConfigured = logWspIds?.find?.(
+    (envWspId) => envWspId && envWspId === m?.workspaceId,
+  );
+  return Boolean(isDestIdConfigured || isWspIdConfigured);
+};
+
+const getMatchedMetadata = (metadata) => {
+  if (!Array.isArray(metadata)) {
+    if (isMetadataMatching(metadata)) {
+      return [metadata];
+    }
+    return [];
+  }
+  return metadata.filter((m) => isMetadataMatching(m));
 };
 
 /**
@@ -143,8 +163,9 @@ const error = (...args) => {
 
 const requestLog = (identifierMsg, { metadata, requestDetails: { url, body, method } }) => {
   const logger = getLogger();
-  if (LOGLEVELS[logLevel] === LOGLEVELS.warn) {
-    const reqLogArgs = [identifierMsg, { metadata, url, body, method }];
+  const filteredMetadata = getMatchedMetadata(metadata);
+  if (LOGLEVELS[logLevel] === LOGLEVELS.warn && filteredMetadata.length > 0) {
+    const reqLogArgs = [identifierMsg, { metadata: filteredMetadata, url, body, method }];
     log(logger.warn, reqLogArgs);
   }
 };
@@ -154,8 +175,9 @@ const responseLog = (
   { metadata, responseDetails: { response: body, status, headers } },
 ) => {
   const logger = getLogger();
-  if (LOGLEVELS[logLevel] === LOGLEVELS.warn) {
-    const resLogArgs = [identifierMsg, { metadata, body, status, headers }];
+  const filteredMetadata = getMatchedMetadata(metadata);
+  if (LOGLEVELS[logLevel] === LOGLEVELS.warn && filteredMetadata.length > 0) {
+    const resLogArgs = [identifierMsg, { metadata: filteredMetadata, body, status, headers }];
     log(logger.warn, resLogArgs);
   }
 };
@@ -166,10 +188,6 @@ module.exports = {
   warn,
   error,
   setLogLevel,
-  // levelDebug,
-  // levelInfo,
-  // levelWarn,
-  // levelError,
   responseLog,
   getLogMetadata,
   requestLog,

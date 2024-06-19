@@ -1,3 +1,4 @@
+const moment = require('moment');
 const { removeUndefinedAndNullValues, generateUUID, formatTimeStamp } = require('../../../v0/util');
 const { excludedFieldList } = require('./config');
 const Message = require('../../../v0/sources/message');
@@ -26,10 +27,8 @@ function processEvent(inputEvent) {
   message.setProperty('messageId', event.id);
 
   // Set Timestamp
-  message.setProperty(
-    'originalTimestamp',
-    formatTimeStamp(event.date_updated, 'yyyy-MM-ddTHH:mm:ss.SSSZ'),
-  );
+  const timestamp = moment.utc(event.date_updated);
+  message.setProperty('originalTimestamp', formatTimeStamp(timestamp, 'yyyy-MM-ddTHH:mm:ss.SSSZ'));
 
   // Set properties
   message.setProperty('properties', event);

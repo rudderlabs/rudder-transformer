@@ -82,7 +82,7 @@ it(`Transform.js Tests`, () => {
       event: 'opportunity updated',
       messageId: 'ev_123',
       userId: 'lead_123',
-      originalTimestamp: '2019-01-TuT07:18:23.395+00:00',
+      originalTimestamp: '2019-01-TuT12:48:23.395+00:00',
       properties: {
         date_created: '2019-01-15T12:48:23.395000',
         meta: {

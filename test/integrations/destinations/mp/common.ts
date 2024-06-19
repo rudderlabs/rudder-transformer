@@ -22,9 +22,10 @@ const sampleDestination: Destination = {
   Name: 'MP',
   Transformations: [],
   WorkspaceID: '',
+  IsProcessorEnabled: true,
 };
 
-const destinationWithSetOnceProperty = {
+const destinationWithSetOnceProperty: Destination = {
   Config: {
     apiSecret: 'dummySecret',
     dataResidency: 'us',
@@ -55,11 +56,14 @@ const destinationWithSetOnceProperty = {
     DisplayName: 'Kiss Metrics',
     ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
     Name: 'MIXPANEL',
+    Config: {},
   },
   Enabled: true,
   ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
   Name: 'Kiss Metrics',
   Transformations: [],
+  IsProcessorEnabled: true,
+  WorkspaceID: 'workspaceId',
 };
 
 export { sampleDestination, defaultMockFns, destinationWithSetOnceProperty };

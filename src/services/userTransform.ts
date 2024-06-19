@@ -50,7 +50,7 @@ export class UserTransformService {
       Object.entries(groupedEvents).map(async ([, destEvents]) => {
         const eventsToProcess = destEvents as ProcessorTransformationRequest[];
         const transformationVersionId =
-          eventsToProcess[0]?.destination?.Transformations[0]?.VersionID;
+          eventsToProcess[0]?.destination?.Transformations?.[0]?.VersionID;
         const messageIds: string[] = [];
         const messageIdsSet = new Set<string>();
         const messageIdMetadataMap: MessageIdMetadataMap = {};

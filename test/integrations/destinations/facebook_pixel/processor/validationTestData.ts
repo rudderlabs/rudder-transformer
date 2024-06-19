@@ -47,6 +47,7 @@ const commonDestination: Destination = {
     ],
   },
   Enabled: true,
+  IsProcessorEnabled: true,
 };
 
 const commonStatTags = {

@@ -26,6 +26,7 @@ const sampleDestination: Destination = {
   Enabled: true,
   WorkspaceID: '',
   Transformations: [],
+  IsProcessorEnabled: true,
 };
 
 const sampleSource = {

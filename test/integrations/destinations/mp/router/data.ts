@@ -1,10 +1,95 @@
 import { overrideDestination } from '../../../testUtils';
 import { sampleDestination } from '../common';
 
+const destinationTestCase0_0 = overrideDestination(sampleDestination, {
+  apiSecret: 'test_api_secret',
+  token: 'test_api_token',
+  useOldMapping: true,
+  strictMode: true,
+});
+
+const destinationTestCase0_1 = overrideDestination(sampleDestination, {
+  apiSecret: 'test_api_secret',
+  token: 'test_api_token',
+  identityMergeApi: 'simplified',
+  strictMode: true,
+});
+const destinationTestCase0_2 = overrideDestination(sampleDestination, {
+  apiSecret: 'test_api_secret',
+  token: 'test_api_token',
+  useOldMapping: true,
+  strictMode: true,
+});
+const destinationTestCase0_3 = overrideDestination(sampleDestination, {
+  apiSecret: 'test_api_secret',
+  token: 'test_api_token',
+  identityMergeApi: 'simplified',
+  strictMode: true,
+});
+const destinationTestCase0_4 = overrideDestination(sampleDestination, {
+  apiSecret: 'test_api_secret',
+  token: 'test_api_token',
+  strictMode: true,
+});
+const destinationTestCase0_5 = overrideDestination(sampleDestination, {
+  apiSecret: 'test_api_secret',
+  token: 'test_api_token',
+  groupKeySettings: [
+    {
+      groupKey: 'company',
+    },
+  ],
+  strictMode: true,
+});
+const destinationTestCase0_6 = overrideDestination(sampleDestination, {
+  apiSecret: 'test_api_secret',
+  token: 'test_api_token',
+  groupKeySettings: [
+    {
+      groupKey: 'company',
+    },
+  ],
+  strictMode: true,
+});
+
+// ----------
+
+const destinationTestCase1_0 = overrideDestination(sampleDestination, {
+  apiSecret: 'test_api_secret',
+  token: 'test_api_token',
+  useOldMapping: true,
+  strictMode: true,
+});
+
+const destinationTestCase1_1 = overrideDestination(sampleDestination, {
+  apiSecret: 'test_api_secret',
+  token: 'test_api_token',
+  identityMergeApi: 'simplified',
+  strictMode: true,
+});
+
+const destinationTestCase1_4 = overrideDestination(sampleDestination, {
+  apiSecret: 'test_api_secret',
+  token: 'test_api_token',
+  strictMode: true,
+});
+
+const destinationTestCase1_5 = overrideDestination(sampleDestination, {
+  apiSecret: 'test_api_secret',
+  token: 'test_api_token',
+  groupKeySettings: [
+    {
+      groupKey: 'company',
+    },
+  ],
+  strictMode: true,
+});
+
 export const data = [
   {
     name: 'mp',
     description: 'Test 0',
+    id: 'mp-test-0',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -14,12 +99,7 @@ export const data = [
           input: [
             {
               description: 'Page call',
-              destination: overrideDestination(sampleDestination, {
-                apiSecret: 'test_api_secret',
-                token: 'test_api_token',
-                useOldMapping: true,
-                strictMode: true,
-              }),
+              destination: destinationTestCase0_0,
               metadata: { jobId: 1, additionalProp: 1, userId: 'u1' },
               message: {
                 anonymousId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
@@ -75,12 +155,7 @@ export const data = [
             {
               description:
                 'Track: set device id and user id when simplified id merge api is selected',
-              destination: overrideDestination(sampleDestination, {
-                apiSecret: 'test_api_secret',
-                token: 'test_api_token',
-                identityMergeApi: 'simplified',
-                strictMode: true,
-              }),
+              destination: destinationTestCase0_1,
               metadata: { jobId: 2, additionalProp: 2, userId: 'u1' },
               message: {
                 anonymousId: 'anonId01',
@@ -123,12 +198,7 @@ export const data = [
             },
             {
               description: 'Identify call to create anonymous user profile',
-              destination: overrideDestination(sampleDestination, {
-                apiSecret: 'test_api_secret',
-                token: 'test_api_token',
-                useOldMapping: true,
-                strictMode: true,
-              }),
+              destination: destinationTestCase0_2,
               metadata: { jobId: 3, additionalProp: 3, userId: 'u1' },
               message: {
                 anonymousId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
@@ -188,12 +258,7 @@ export const data = [
             {
               description:
                 'Identify: append $device: to deviceId while creating the user when simplified id merge api is selected',
-              destination: overrideDestination(sampleDestination, {
-                apiSecret: 'test_api_secret',
-                token: 'test_api_token',
-                identityMergeApi: 'simplified',
-                strictMode: true,
-              }),
+              destination: destinationTestCase0_3,
               metadata: { jobId: 4, additionalProp: 4, userId: 'u1' },
               message: {
                 anonymousId: 'anonId01',
@@ -253,11 +318,7 @@ export const data = [
             },
             {
               description: 'Merge call with strict mode enabled',
-              destination: overrideDestination(sampleDestination, {
-                apiSecret: 'test_api_secret',
-                token: 'test_api_token',
-                strictMode: true,
-              }),
+              destination: destinationTestCase0_4,
               metadata: { jobId: 5, additionalProp: 5, userId: 'u1' },
               message: {
                 anonymousId: '5094f5704b9cf2b3',
@@ -299,16 +360,7 @@ export const data = [
             },
             {
               description: 'Group call',
-              destination: overrideDestination(sampleDestination, {
-                apiSecret: 'test_api_secret',
-                token: 'test_api_token',
-                groupKeySettings: [
-                  {
-                    groupKey: 'company',
-                  },
-                ],
-                strictMode: true,
-              }),
+              destination: destinationTestCase0_5,
               metadata: { jobId: 6, additionalProp: 6, userId: 'u1' },
               message: {
                 anonymousId: 'anonId06',
@@ -362,16 +414,7 @@ export const data = [
             },
             {
               description: 'Group key not present in traits',
-              destination: overrideDestination(sampleDestination, {
-                apiSecret: 'test_api_secret',
-                token: 'test_api_token',
-                groupKeySettings: [
-                  {
-                    groupKey: 'company',
-                  },
-                ],
-                strictMode: true,
-              }),
+              destination: destinationTestCase0_6,
               metadata: { jobId: 7, additionalProp: 7, userId: 'u1' },
               message: {
                 anonymousId: 'anonId06',
@@ -460,27 +503,7 @@ export const data = [
               metadata: [{ jobId: 1, additionalProp: 1, userId: 'u1' }],
               batched: true,
               statusCode: 200,
-              destination: {
-                Config: {
-                  apiKey: 'dummyApiKey',
-                  apiSecret: 'test_api_secret',
-                  token: 'test_api_token',
-                  prefixProperties: true,
-                  useNativeSDK: false,
-                  useOldMapping: true,
-                  strictMode: true,
-                },
-                DestinationDefinition: {
-                  DisplayName: 'Mixpanel',
-                  ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
-                  Name: 'MP',
-                },
-                Enabled: true,
-                ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
-                Name: 'MP',
-                Transformations: [],
-                WorkspaceID: '',
-              },
+              destination: destinationTestCase0_0,
             },
             {
               batchedRequest: [
@@ -528,27 +551,7 @@ export const data = [
               metadata: [{ jobId: 2, additionalProp: 2, userId: 'u1' }],
               batched: true,
               statusCode: 200,
-              destination: {
-                Config: {
-                  apiKey: 'dummyApiKey',
-                  apiSecret: 'test_api_secret',
-                  token: 'test_api_token',
-                  prefixProperties: true,
-                  identityMergeApi: 'simplified',
-                  strictMode: true,
-                  useNativeSDK: false,
-                },
-                DestinationDefinition: {
-                  DisplayName: 'Mixpanel',
-                  ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
-                  Name: 'MP',
-                },
-                Enabled: true,
-                ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
-                Name: 'MP',
-                Transformations: [],
-                WorkspaceID: '',
-              },
+              destination: destinationTestCase0_1,
             },
             {
               batchedRequest: [
@@ -600,27 +603,7 @@ export const data = [
               ],
               batched: true,
               statusCode: 200,
-              destination: {
-                Config: {
-                  apiKey: 'dummyApiKey',
-                  apiSecret: 'test_api_secret',
-                  token: 'test_api_token',
-                  prefixProperties: true,
-                  useNativeSDK: false,
-                  useOldMapping: true,
-                  strictMode: true,
-                },
-                DestinationDefinition: {
-                  DisplayName: 'Mixpanel',
-                  ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
-                  Name: 'MP',
-                },
-                Enabled: true,
-                ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
-                Name: 'MP',
-                Transformations: [],
-                WorkspaceID: '',
-              },
+              destination: destinationTestCase0_2,
             },
             {
               batchedRequest: [
@@ -664,27 +647,7 @@ export const data = [
               metadata: [{ jobId: 6, additionalProp: 6, userId: 'u1' }],
               batched: true,
               statusCode: 200,
-              destination: {
-                Config: {
-                  apiKey: 'dummyApiKey',
-                  apiSecret: 'test_api_secret',
-                  token: 'test_api_token',
-                  prefixProperties: true,
-                  groupKeySettings: [{ groupKey: 'company' }],
-                  strictMode: true,
-                  useNativeSDK: false,
-                },
-                DestinationDefinition: {
-                  DisplayName: 'Mixpanel',
-                  ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
-                  Name: 'MP',
-                },
-                Enabled: true,
-                ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
-                Name: 'MP',
-                Transformations: [],
-                WorkspaceID: '',
-              },
+              destination: destinationTestCase0_5,
             },
             {
               metadata: [{ jobId: 7, additionalProp: 7, userId: 'u1' }],
@@ -700,27 +663,7 @@ export const data = [
                 implementation: 'native',
                 module: 'destination',
               },
-              destination: {
-                Config: {
-                  apiKey: 'dummyApiKey',
-                  apiSecret: 'test_api_secret',
-                  token: 'test_api_token',
-                  prefixProperties: true,
-                  useNativeSDK: false,
-                  groupKeySettings: [{ groupKey: 'company' }],
-                  strictMode: true,
-                },
-                DestinationDefinition: {
-                  DisplayName: 'Mixpanel',
-                  ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
-                  Name: 'MP',
-                },
-                Enabled: true,
-                ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
-                Name: 'MP',
-                Transformations: [],
-                WorkspaceID: '',
-              },
+              destination: destinationTestCase0_6,
             },
           ],
         },
@@ -739,12 +682,7 @@ export const data = [
           input: [
             {
               description: 'Page call',
-              destination: overrideDestination(sampleDestination, {
-                apiSecret: 'test_api_secret',
-                token: 'test_api_token',
-                useOldMapping: true,
-                strictMode: true,
-              }),
+              destination: destinationTestCase1_0,
               metadata: { jobId: 1, additionalProp: 1, userId: 'u1' },
               message: {
                 anonymousId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
@@ -800,12 +738,7 @@ export const data = [
             {
               description:
                 'Track: set device id and user id when simplified id merge api is selected',
-              destination: overrideDestination(sampleDestination, {
-                apiSecret: 'test_api_secret',
-                token: 'test_api_token',
-                identityMergeApi: 'simplified',
-                strictMode: true,
-              }),
+              destination: destinationTestCase1_1,
               metadata: { jobId: 2, additionalProp: 2, userId: 'u1' },
               message: {
                 anonymousId: 'anonId01',
@@ -848,12 +781,7 @@ export const data = [
             },
             {
               description: 'Identify call to create anonymous user profile',
-              destination: overrideDestination(sampleDestination, {
-                apiSecret: 'test_api_secret',
-                token: 'test_api_token',
-                useOldMapping: true,
-                strictMode: true,
-              }),
+              destination: destinationTestCase1_0,
               metadata: { jobId: 3, additionalProp: 3, userId: 'u1' },
               message: {
                 anonymousId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
@@ -913,12 +841,7 @@ export const data = [
             {
               description:
                 'Identify: append $device: to deviceId while creating the user when simplified id merge api is selected',
-              destination: overrideDestination(sampleDestination, {
-                apiSecret: 'test_api_secret',
-                token: 'test_api_token',
-                identityMergeApi: 'simplified',
-                strictMode: true,
-              }),
+              destination: destinationTestCase1_1,
               metadata: { jobId: 4, additionalProp: 4, userId: 'u1' },
               message: {
                 anonymousId: 'anonId01',
@@ -978,11 +901,7 @@ export const data = [
             },
             {
               description: 'Merge call with strict mode enabled',
-              destination: overrideDestination(sampleDestination, {
-                apiSecret: 'test_api_secret',
-                token: 'test_api_token',
-                strictMode: true,
-              }),
+              destination: destinationTestCase1_4,
               metadata: { jobId: 5, additionalProp: 5, userId: 'u1' },
               message: {
                 anonymousId: '5094f5704b9cf2b3',
@@ -1024,16 +943,7 @@ export const data = [
             },
             {
               description: 'Group call',
-              destination: overrideDestination(sampleDestination, {
-                apiSecret: 'test_api_secret',
-                token: 'test_api_token',
-                groupKeySettings: [
-                  {
-                    groupKey: 'company',
-                  },
-                ],
-                strictMode: true,
-              }),
+              destination: destinationTestCase1_5,
               metadata: { jobId: 6, additionalProp: 6, userId: 'u1' },
               message: {
                 anonymousId: 'anonId06',
@@ -1087,16 +997,7 @@ export const data = [
             },
             {
               description: 'Group key not present in traits',
-              destination: overrideDestination(sampleDestination, {
-                apiSecret: 'test_api_secret',
-                token: 'test_api_token',
-                groupKeySettings: [
-                  {
-                    groupKey: 'company',
-                  },
-                ],
-                strictMode: true,
-              }),
+              destination: destinationTestCase1_5,
               metadata: { jobId: 7, additionalProp: 7, userId: 'u1' },
               message: {
                 anonymousId: 'anonId06',
@@ -1183,27 +1084,7 @@ export const data = [
               metadata: [{ jobId: 1, additionalProp: 1, userId: 'u1' }],
               batched: true,
               statusCode: 200,
-              destination: {
-                Config: {
-                  apiKey: 'dummyApiKey',
-                  apiSecret: 'test_api_secret',
-                  token: 'test_api_token',
-                  prefixProperties: true,
-                  useNativeSDK: false,
-                  useOldMapping: true,
-                  strictMode: true,
-                },
-                DestinationDefinition: {
-                  DisplayName: 'Mixpanel',
-                  ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
-                  Name: 'MP',
-                },
-                Enabled: true,
-                ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
-                Name: 'MP',
-                Transformations: [],
-                WorkspaceID: '',
-              },
+              destination: destinationTestCase1_0,
             },
             {
               batchedRequest: [
@@ -1250,27 +1131,7 @@ export const data = [
               metadata: [{ jobId: 2, additionalProp: 2, userId: 'u1' }],
               batched: true,
               statusCode: 200,
-              destination: {
-                Config: {
-                  apiKey: 'dummyApiKey',
-                  apiSecret: 'test_api_secret',
-                  token: 'test_api_token',
-                  prefixProperties: true,
-                  identityMergeApi: 'simplified',
-                  strictMode: true,
-                  useNativeSDK: false,
-                },
-                DestinationDefinition: {
-                  DisplayName: 'Mixpanel',
-                  ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
-                  Name: 'MP',
-                },
-                Enabled: true,
-                ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
-                Name: 'MP',
-                Transformations: [],
-                WorkspaceID: '',
-              },
+              destination: destinationTestCase1_1,
             },
             {
               batchedRequest: [
@@ -1321,27 +1182,7 @@ export const data = [
               ],
               batched: true,
               statusCode: 200,
-              destination: {
-                Config: {
-                  apiKey: 'dummyApiKey',
-                  apiSecret: 'test_api_secret',
-                  token: 'test_api_token',
-                  prefixProperties: true,
-                  useNativeSDK: false,
-                  useOldMapping: true,
-                  strictMode: true,
-                },
-                DestinationDefinition: {
-                  DisplayName: 'Mixpanel',
-                  ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
-                  Name: 'MP',
-                },
-                Enabled: true,
-                ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
-                Name: 'MP',
-                Transformations: [],
-                WorkspaceID: '',
-              },
+              destination: destinationTestCase1_0,
             },
             {
               batchedRequest: [
@@ -1385,27 +1226,7 @@ export const data = [
               metadata: [{ jobId: 6, additionalProp: 6, userId: 'u1' }],
               batched: true,
               statusCode: 200,
-              destination: {
-                Config: {
-                  apiKey: 'dummyApiKey',
-                  apiSecret: 'test_api_secret',
-                  token: 'test_api_token',
-                  prefixProperties: true,
-                  groupKeySettings: [{ groupKey: 'company' }],
-                  strictMode: true,
-                  useNativeSDK: false,
-                },
-                DestinationDefinition: {
-                  DisplayName: 'Mixpanel',
-                  ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
-                  Name: 'MP',
-                },
-                Enabled: true,
-                ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
-                Name: 'MP',
-                Transformations: [],
-                WorkspaceID: '',
-              },
+              destination: destinationTestCase1_5,
             },
             {
               metadata: [{ jobId: 7, additionalProp: 7, userId: 'u1' }],
@@ -1421,27 +1242,7 @@ export const data = [
                 implementation: 'native',
                 module: 'destination',
               },
-              destination: {
-                Config: {
-                  apiKey: 'dummyApiKey',
-                  apiSecret: 'test_api_secret',
-                  token: 'test_api_token',
-                  prefixProperties: true,
-                  useNativeSDK: false,
-                  groupKeySettings: [{ groupKey: 'company' }],
-                  strictMode: true,
-                },
-                DestinationDefinition: {
-                  DisplayName: 'Mixpanel',
-                  ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
-                  Name: 'MP',
-                },
-                Enabled: true,
-                ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
-                Name: 'MP',
-                Transformations: [],
-                WorkspaceID: '',
-              },
+              destination: destinationTestCase1_5,
             },
           ],
         },

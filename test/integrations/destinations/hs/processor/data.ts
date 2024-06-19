@@ -38,6 +38,7 @@ const destination: Destination = {
   },
   WorkspaceID: '123',
   Transformations: [],
+  IsProcessorEnabled: true,
 };
 
 export const data = [

@@ -3,6 +3,7 @@ import { ProcessorTransformationRequest, RouterTransformationRequestData } from 
 import { INTEGRATION_SERVICE } from '../routes/utils/constants';
 import { CDKV1DestinationService } from '../services/destination/cdkV1Integration';
 import { CDKV2DestinationService } from '../services/destination/cdkV2Integration';
+import { PluginIntegrationService } from '../services/destination/pluginIntegration';
 import { DestinationService } from '../interfaces/DestinationService';
 import { NativeIntegrationDestinationService } from '../services/destination/nativeIntegration';
 import { SourceService } from '../interfaces/SourceService';
@@ -17,6 +18,7 @@ export class ServiceSelector {
     [INTEGRATION_SERVICE.CDK_V1_DEST]: CDKV1DestinationService,
     [INTEGRATION_SERVICE.CDK_V2_DEST]: CDKV2DestinationService,
     [INTEGRATION_SERVICE.NATIVE_DEST]: NativeIntegrationDestinationService,
+    [INTEGRATION_SERVICE.PLUGIN_DEST]: PluginIntegrationService,
     [INTEGRATION_SERVICE.NATIVE_SOURCE]: NativeIntegrationSourceService,
   };
 
@@ -26,6 +28,16 @@ export class ServiceSelector {
 
   private static isCdkV2Destination(destinationDefinitionConfig: FixMe) {
     return Boolean(destinationDefinitionConfig?.cdkV2Enabled);
+  }
+
+  private static isPluginDestination(destinationDefinitionConfig: FixMe, destinationType: string) {
+    const pluginDestinationList = process.env.PLUGIN_DESTINATION_LIST?.split(',') || [];
+
+    if (pluginDestinationList.includes(destinationType)) {
+      return true;
+    }
+
+    return !!destinationDefinitionConfig?.pluginEnabled;
   }
 
   private static isComparatorEnabled(destinationDefinitionConfig: FixMe): boolean {
@@ -66,8 +78,18 @@ export class ServiceSelector {
   private static getPrimaryDestinationService(
     events: ProcessorTransformationRequest[] | RouterTransformationRequestData[],
   ): DestinationService {
-    const destinationDefinitionConfig: FixMe =
-      events[0]?.destination?.DestinationDefinition?.Config;
+    const destinationDefinition = events[0]?.destination?.DestinationDefinition;
+    const destinationDefinitionConfig: FixMe = destinationDefinition?.Config;
+
+    if (
+      this.isPluginDestination(
+        destinationDefinitionConfig,
+        destinationDefinition?.Name?.toLowerCase(),
+      )
+    ) {
+      return this.fetchCachedService(INTEGRATION_SERVICE.PLUGIN_DEST);
+    }
+
     if (this.isCdkDestination(destinationDefinitionConfig)) {
       return this.fetchCachedService(INTEGRATION_SERVICE.CDK_V1_DEST);
     }

@@ -1,3 +1,4 @@
+import { Destination, Metadata } from '@rudderstack/integrations-lib';
 import { CatchErr, FixMe } from '../util/types';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -71,40 +72,6 @@ type ProxyMetdata = {
   dontBatch: boolean;
 };
 
-type Metadata = {
-  sourceId: string;
-  workspaceId: string;
-  namespace: string;
-  instanceId: string;
-  sourceType: string;
-  sourceCategory: string;
-  trackingPlanId: string;
-  trackingPlanVersion: number;
-  sourceTpConfig: object;
-  mergedTpConfig: object;
-  destinationId: string;
-  jobRunId: string;
-  jobId: number;
-  sourceBatchId: string;
-  sourceJobId: string;
-  sourceJobRunId: string;
-  sourceTaskId: string;
-  sourceTaskRunId: string;
-  recordId: object;
-  destinationType: string;
-  messageId: string;
-  oauthAccessToken: string;
-  messageIds: string[];
-  rudderId: string;
-  receivedAt: string;
-  eventName: string;
-  eventType: string;
-  sourceDefinitionId: string;
-  destinationDefinitionId: string;
-  transformationId: string;
-  dontBatch?: boolean;
-};
-
 type MessageIdMetadataMap = {
   [key: string]: Metadata;
 };
@@ -113,26 +80,6 @@ type UserTransformationInput = {
   VersionID: string;
   ID: string;
   Config: object;
-};
-
-type DestinationDefinition = {
-  ID: string;
-  Name: string;
-  DisplayName: string;
-  Config: FixMe;
-};
-
-type Destination = {
-  ID: string;
-  Name: string;
-  DestinationDefinition: DestinationDefinition;
-  Config: FixMe;
-  Enabled: boolean;
-  WorkspaceID: string;
-  Transformations: UserTransformationInput[];
-  RevisionID?: string;
-  IsProcessorEnabled?: boolean;
-  IsConnectionEnabled?: boolean;
 };
 
 type UserTransformationLibrary = {
@@ -336,11 +283,9 @@ export {
   DeliveryJobState,
   DeliveryV0Response,
   DeliveryV1Response,
-  Destination,
   ErrorDetailer,
   MessageIdMetadataMap,
   MetaTransferObject,
-  Metadata,
   ProcessorTransformationOutput,
   ProcessorTransformationRequest,
   ProcessorTransformationResponse,
@@ -361,3 +306,5 @@ export {
   UserTransformationResponse,
   UserTransformationServiceResponse,
 };
+
+export { Destination, Metadata } from '@rudderstack/integrations-lib';

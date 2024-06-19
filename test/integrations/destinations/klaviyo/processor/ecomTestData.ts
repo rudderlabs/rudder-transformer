@@ -18,6 +18,7 @@ const destination: Destination = {
   Enabled: true,
   WorkspaceID: '123',
   Transformations: [],
+  IsProcessorEnabled: true,
 };
 
 const commonTraits = {

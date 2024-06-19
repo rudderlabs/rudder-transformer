@@ -4,6 +4,7 @@ const {
   getFieldValueFromMessage,
   getBrowserInfo,
   constructPayload,
+  removeUndefinedAndNullValues,
 } = require('../../util');
 const { ConfigCategory, mappingConfig, deviceTypesV2Enums } = require('./config');
 const { isDefinedAndNotNullAndNotEmpty } = require('../../util');
@@ -118,7 +119,8 @@ const getDeviceDetails = (message) => {
  * @returns
  */
 const getProductPurchasesDetails = (message) => {
-  const purchases = message.properties.products;
+  const { properties } = message;
+  const purchases = properties?.products;
   if (purchases && Array.isArray(purchases)) {
     return purchases.map((product) => ({
       sku: product.sku,
@@ -127,7 +129,14 @@ const getProductPurchasesDetails = (message) => {
       amount: product.amount,
     }));
   }
-  return undefined;
+  return [
+    removeUndefinedAndNullValues({
+      sku: properties?.sku,
+      iso: properties?.iso,
+      count: properties?.quantity,
+      amount: properties?.amount,
+    }),
+  ];
 };
 
 /**
@@ -192,14 +201,18 @@ const getSubscriptions = (message, Config) => {
   }
   return subscriptions.length > 0 ? subscriptions : undefined;
 };
+
+/**
+ * This function fetched all the aliases to be passed to one signal from integrations object
+ * @param {*} message
+ * @returns object
+ */
 const getOneSignalAliases = (message) => {
   const integrationsObj = getIntegrationsObj(message, 'one_signal');
-  const alias = {};
-  if (integrationsObj && integrationsObj.aliasName && integrationsObj.aliasIdentifier) {
-    alias.type = integrationsObj.aliasName;
-    alias.identifier = integrationsObj.aliasIdentifier;
+  if (integrationsObj?.aliases) {
+    return integrationsObj.aliases;
   }
-  return alias;
+  return {};
 };
 module.exports = {
   populateDeviceType,

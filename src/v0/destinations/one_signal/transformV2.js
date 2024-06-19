@@ -18,7 +18,7 @@ const {
   getProductPurchasesDetails,
   getSubscriptions,
   getOneSignalAliases,
-} = require('./util');
+} = require('./utils');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const responseBuilder = (payload, Config) => {
@@ -86,6 +86,11 @@ const trackOrGroupResponseBuilder = (message, { Config }, msgtype) => {
     if (!event) {
       throw new InstrumentationError('Event is not present in the input payloads');
     }
+    /* Populating event as true in tags.
+      eg. tags: {
+        "event_name": true
+      }
+      */
     tags[event] = true;
     payload.properties.purchases = getProductPurchasesDetails(message);
   }
@@ -99,19 +104,16 @@ const trackOrGroupResponseBuilder = (message, { Config }, msgtype) => {
   const externalUserId = getFieldValueFromMessage(message, 'userIdOnly');
   if (!externalUserId) {
     const alias = getOneSignalAliases(message);
-    if (!alias.identifier) {
+    if (!typeof alias === 'object' || Object.keys(alias).length === 0) {
       throw new InstrumentationError('userId or any other alias is required for track and group');
     }
     payload.identity = alias;
   } else {
-    payload.identity.external_id = externalUserId;
+    payload.identity = {
+      external_id: externalUserId,
+    };
   }
-  /* Populating event as true in tags.
-  eg. tags: {
-    "event_name": true
-  }
-  */
-  tags[event] = true;
+
   // Populating tags using allowed properties(from dashboard)
   const properties = get(message, 'properties');
   if (properties && allowedProperties && Array.isArray(allowedProperties)) {
@@ -151,6 +153,6 @@ const processEvent = (message, destination) => {
   return response;
 };
 
-const process = (event) => processEvent(event.message, event.destination);
+const process = (message, destination) => processEvent(message, destination);
 
 module.exports = { process };

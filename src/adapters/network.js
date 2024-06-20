@@ -45,14 +45,20 @@ const networkClientConfigs = {
   httpsAgent: new https.Agent({ keepAlive: true }),
 };
 
-const fireHTTPStats = (clientResponse, startTime, statTags) => {
-  const destType = statTags.destType ? statTags.destType : '';
-  const feature = statTags.feature ? statTags.feature : '';
-  const endpointPath = statTags.endpointPath ? statTags.endpointPath : '';
-  const requestMethod = statTags.requestMethod ? statTags.requestMethod : '';
-  const module = statTags.module ? statTags.module : '';
-  const statusCode = clientResponse.success ? clientResponse.response.status : '';
+const fireOutgoingReqStats = ({
+  destType,
+  feature,
+  endpointPath,
+  requestMethod,
+  module,
+  metadata = {},
+  startTime,
+  statusCode,
+  clientResponse,
+}) => {
+  const logMetaInfo = log.getLogMetadata(metadata);
   stats.timing('outgoing_request_latency', startTime, {
+    ...logMetaInfo,
     feature,
     destType,
     endpointPath,
@@ -60,6 +66,7 @@ const fireHTTPStats = (clientResponse, startTime, statTags) => {
     module,
   });
   stats.counter('outgoing_request_count', 1, {
+    ...logMetaInfo,
     feature,
     destType,
     endpointPath,
@@ -68,6 +75,36 @@ const fireHTTPStats = (clientResponse, startTime, statTags) => {
     requestMethod,
     module,
   });
+};
+
+const fireHTTPStats = (clientResponse, startTime, statTags) => {
+  const destType = statTags.destType ? statTags.destType : '';
+  const feature = statTags.feature ? statTags.feature : '';
+  const endpointPath = statTags.endpointPath ? statTags.endpointPath : '';
+  const requestMethod = statTags.requestMethod ? statTags.requestMethod : '';
+  const module = statTags.module ? statTags.module : '';
+  const statusCode = clientResponse.success ? clientResponse.response.status : '';
+  const defArgs = {
+    destType,
+    endpointPath,
+    feature,
+    module,
+    requestMethod,
+    statusCode,
+    startTime,
+    clientResponse,
+  };
+  if (statTags?.metadata) {
+    const metadata = !Array.isArray(statTags?.metadata) ? [statTags.metadata] : statTags.metadata;
+    metadata?.forEach((m) => {
+      fireOutgoingReqStats({
+        ...defArgs,
+        metadata: m,
+      });
+    });
+    return;
+  }
+  fireOutgoingReqStats(defArgs);
 };
 
 const enhanceRequestOptions = (options) => {
@@ -323,25 +360,6 @@ const prepareProxyRequest = (request) => {
 };
 
 /**
- * depricating: handles proxying requests to destinations from server, expects requsts in "defaultRequestConfig"
- * note: needed for test api
- * @param {*} request
- * @returns
- */
-const proxyRequest = async (request, destType) => {
-  const { endpoint, data, method, params, headers } = prepareProxyRequest(request);
-  const requestOptions = {
-    url: endpoint,
-    data,
-    params,
-    headers,
-    method,
-  };
-  const response = await httpSend(requestOptions, { feature: 'proxy', destType });
-  return response;
-};
-
-/**
  * handles http request and sends the response in a simple format that is followed in transformer
  *
  * @param {string} requestType - http request type like post, get etc,.
@@ -390,6 +408,38 @@ const handleHttpRequest = async (requestType = 'post', ...httpArgs) => {
   const httpResponse = await httpWrapperMethod(...httpArgs);
   const processedResponse = processAxiosResponse(httpResponse);
   return { httpResponse, processedResponse };
+};
+
+/**
+ * depricating: handles proxying requests to destinations from server, expects requsts in "defaultRequestConfig"
+ * note: needed for test api
+ * @param {*} request
+ * @returns
+ */
+const proxyRequest = async (request, destType) => {
+  const { metadata } = request;
+  const { endpoint, data, method, params, headers } = prepareProxyRequest(request);
+  const requestOptions = {
+    url: endpoint,
+    data,
+    params,
+    headers,
+    method,
+  };
+  log.requestLog(`[${destType.toUpperCase()}] delivering data`, {
+    metadata,
+    requestDetails: {
+      body: data,
+      url: endpoint,
+      method,
+    },
+  });
+  const response = await httpSend(requestOptions, {
+    feature: 'proxy',
+    destType,
+    metadata,
+  });
+  return response;
 };
 
 module.exports = {

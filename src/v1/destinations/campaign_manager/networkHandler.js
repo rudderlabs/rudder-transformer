@@ -9,6 +9,7 @@ const {
   getDynamicErrorType,
 } = require('../../../adapters/utils/networkUtils');
 const tags = require('../../../v0/util/tags');
+const logger = require('../../../logger');
 
 function isEventAbortableAndExtractErrMsg(element, proxyOutputObj) {
   let isAbortable = false;
@@ -38,7 +39,16 @@ const responseHandler = (responseParams) => {
   const { destinationResponse, rudderJobMetadata } = responseParams;
   const message = `[CAMPAIGN_MANAGER Response V1 Handler] - Request Processed Successfully`;
   const responseWithIndividualEvents = [];
-  const { response, status } = destinationResponse;
+  const { response, status, headers } = destinationResponse;
+
+  logger.responseLog('[campaign_manager] response handling', {
+    metadata: rudderJobMetadata,
+    responseDetails: {
+      headers,
+      response,
+      status,
+    },
+  });
 
   if (isHttpStatusSuccess(status)) {
     // check for Partial Event failures and Successes

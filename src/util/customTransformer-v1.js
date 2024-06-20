@@ -58,10 +58,17 @@ async function userTransformHandlerV1(
     return { transformedEvents: events };
   }
 
+  const credentialsMap = {};
+  (events[0]?.credentials || []).forEach((cred) => {
+    credentialsMap[cred.key] = cred.value;
+  });
   const isolatevmFactory = await getFactory(
     userTransformation.code,
     libraryVersionIds,
     userTransformation.versionId,
+    userTransformation.id,
+    userTransformation.workspaceId,
+    credentialsMap,
     userTransformation.secrets || {},
     testMode,
   );

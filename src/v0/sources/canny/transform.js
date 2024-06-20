@@ -2,6 +2,7 @@ const sha256 = require('sha256');
 const { TransformationError } = require('@rudderstack/integrations-lib');
 const Message = require('../message');
 const { voterMapping, authorMapping, checkForRequiredFields } = require('./util');
+const logger = require('../../../logger');
 
 const CannyOperation = {
   VOTE_CREATED: 'vote.created',
@@ -14,7 +15,7 @@ const CannyOperation = {
  * @param {*} event
  * @param {*} typeOfUser
  */
-function settingIds(message, event, typeOfUser, logger) {
+function settingIds(message, event, typeOfUser) {
   const clonedMessage = { ...message };
   try {
     // setting up userId
@@ -47,7 +48,7 @@ function settingIds(message, event, typeOfUser, logger) {
  * @param {*} typeOfUser
  * @returns message
  */
-function createMessage(event, typeOfUser, logger) {
+function createMessage(event, typeOfUser) {
   const message = new Message(`Canny`);
 
   message.setEventType('track');
@@ -60,7 +61,7 @@ function createMessage(event, typeOfUser, logger) {
 
   message.context.integration.version = '1.0.0';
 
-  const finalMessage = settingIds(message, event, typeOfUser, logger);
+  const finalMessage = settingIds(message, event, typeOfUser);
 
   checkForRequiredFields(finalMessage);
 
@@ -72,7 +73,7 @@ function createMessage(event, typeOfUser, logger) {
   return finalMessage;
 }
 
-function process(event, logger) {
+function process(event) {
   let typeOfUser;
 
   switch (event.type) {
@@ -85,6 +86,6 @@ function process(event, logger) {
       typeOfUser = 'author';
   }
 
-  return createMessage(event, typeOfUser, logger);
+  return createMessage(event, typeOfUser);
 }
 module.exports = { process };

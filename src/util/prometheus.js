@@ -567,7 +567,18 @@ class Prometheus {
           'statusCode',
           'requestMethod',
           'module',
+          'workspaceId',
+          'destinationId',
+          'module',
+          'implementation',
+          'sourceId',
         ],
+      },
+      {
+        name: 'credential_error_total',
+        help: 'Error in fetching credentials count',
+        type: 'counter',
+        labelNames: ['transformationId', 'workspaceId'],
       },
 
       // Gauges
@@ -602,6 +613,18 @@ class Prometheus {
         labelNames: ['destination_id'],
       },
       {
+        name: 'braze_alias_failure_count',
+        help: 'braze_alias_failure_count',
+        type: 'counter',
+        labelNames: ['destination_id'],
+      },
+      {
+        name: 'braze_alias_missconfigured_count',
+        help: 'braze_alias_missconfigured_count',
+        type: 'counter',
+        labelNames: ['destination_id'],
+      },
+      {
         name: 'mixpanel_batch_engage_pack_size',
         help: 'mixpanel_batch_engage_pack_size',
         type: 'gauge',
@@ -625,7 +648,18 @@ class Prometheus {
         name: 'outgoing_request_latency',
         help: 'Outgoing HTTP requests duration in seconds',
         type: 'histogram',
-        labelNames: ['feature', 'destType', 'endpointPath', 'requestMethod', 'module'],
+        labelNames: [
+          'feature',
+          'destType',
+          'endpointPath',
+          'requestMethod',
+          'module',
+          'workspaceId',
+          'destinationId',
+          'module',
+          'implementation',
+          'sourceId',
+        ],
       },
       {
         name: 'http_request_duration',
@@ -692,19 +726,6 @@ class Prometheus {
         help: 'regulation_worker_requests_dest_latency',
         type: 'histogram',
         labelNames: ['feature', 'implementation', 'destType'],
-      },
-      {
-        name: 'dest_transform_request_latency',
-        help: 'dest_transform_request_latency',
-        type: 'histogram',
-        labelNames: [
-          'destination',
-          'version',
-          'sourceType',
-          'destinationType',
-          'k8_namespace',
-          'feature',
-        ],
       },
       {
         name: 'user_transform_request_latency',

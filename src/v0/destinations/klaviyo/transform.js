@@ -51,7 +51,10 @@ const { JSON_MIME_TYPE, HTTP_STATUS_CODES } = require('../../util/constant');
  * @param {*} reqMetadata
  * @returns
  */
-const identifyRequestHandler = async (message, category, destination, reqMetadata) => {
+const identifyRequestHandler = async (
+  { message, category, destination, metadata },
+  reqMetadata,
+) => {
   // If listId property is present try to subscribe/member user in list
   const { privateApiKey, enforceEmailAsPrimary, listId, flattenProperties } = destination.Config;
   const mappedToDestination = get(message, MappedToDestinationKey);
@@ -109,11 +112,12 @@ const identifyRequestHandler = async (message, category, destination, reqMetadat
     },
   };
 
-  const { profileId, response, statusCode } = await getIdFromNewOrExistingProfile(
+  const { profileId, response, statusCode } = await getIdFromNewOrExistingProfile({
     endpoint,
     payload,
     requestOptions,
-  );
+    metadata,
+  });
 
   const responseMap = {
     profileUpdateResponse: profileUpdateResponseBuilder(
@@ -271,7 +275,8 @@ const groupRequestHandler = (message, category, destination) => {
 };
 
 // Main event processor using specific handler funcs
-const processEvent = async (message, destination, reqMetadata) => {
+const processEvent = async (event, reqMetadata) => {
+  const { message, destination, metadata } = event;
   if (!message.type) {
     throw new InstrumentationError('Event type is required');
   }
@@ -285,7 +290,10 @@ const processEvent = async (message, destination, reqMetadata) => {
   switch (messageType) {
     case EventType.IDENTIFY:
       category = CONFIG_CATEGORIES.IDENTIFY;
-      response = await identifyRequestHandler(message, category, destination, reqMetadata);
+      response = await identifyRequestHandler(
+        { message, category, destination, metadata },
+        reqMetadata,
+      );
       break;
     case EventType.SCREEN:
     case EventType.TRACK:
@@ -303,7 +311,7 @@ const processEvent = async (message, destination, reqMetadata) => {
 };
 
 const process = async (event, reqMetadata) => {
-  const result = await processEvent(event.message, event.destination, reqMetadata);
+  const result = await processEvent(event, reqMetadata);
   return result;
 };
 

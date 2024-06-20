@@ -57,6 +57,7 @@ const LIST_CONF = {
 };
 
 const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
+const destType = 'klaviyo';
 
 module.exports = {
   BASE_ENDPOINT,
@@ -68,4 +69,5 @@ module.exports = {
   ecomEvents,
   eventNameMapping,
   jsonNameMapping,
+  destType,
 };

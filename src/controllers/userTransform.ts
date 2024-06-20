@@ -1,4 +1,3 @@
-import { structuredLogger as logger } from '@rudderstack/integrations-lib';
 import { Context } from 'koa';
 import { UserTransformService } from '../services/userTransform';
 import { ProcessorTransformationRequest, UserTransformationServiceResponse } from '../types/index';
@@ -8,6 +7,7 @@ import {
   validateCode,
 } from '../util/customTransformer';
 import { ControllerUtility } from './util';
+import logger from '../logger';
 
 export class UserTransformController {
   public static async transform(ctx: Context) {
@@ -33,11 +33,12 @@ export class UserTransformController {
       '(User transform - router:/transformation/test ):: Request to transformer',
       ctx.request.body,
     );
-    const { events, trRevCode, libraryVersionIDs = [] } = ctx.request.body as any;
+    const { events, trRevCode, libraryVersionIDs = [], credentials = [] } = ctx.request.body as any;
     const response = await UserTransformService.testTransformRoutine(
       events,
       trRevCode,
       libraryVersionIDs,
+      credentials,
     );
     ctx.body = response.body;
     ControllerUtility.postProcess(ctx, response.status);

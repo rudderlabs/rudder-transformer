@@ -80,7 +80,7 @@ const validate = (email, phone, channelIdentifier) => {
  *
  * In case no contact is founf for a particular identifer it returns -1
  */
-const lookupContact = async (term, destination) => {
+const lookupContact = async (term, destination, metadata) => {
   let res;
   try {
     res = await httpGET(
@@ -91,6 +91,7 @@ const lookupContact = async (term, destination) => {
         },
       },
       {
+        metadata,
         destType: 'trengo',
         feature: 'transformation',
         endpointPath: '/contacts',
@@ -142,6 +143,7 @@ const contactBuilderTrengo = async (
   destination,
   identifier,
   extIds,
+  metadata,
   createScope = true,
 ) => {
   let result;
@@ -176,7 +178,7 @@ const contactBuilderTrengo = async (
     let contactId = get(extIds, 'contactId');
     if (!contactId) {
       // If we alrady dont have contactId in our message we do lookup
-      contactId = await lookupContact(identifier, destination);
+      contactId = await lookupContact(identifier, destination, metadata);
       if (!contactId) {
         // In case contactId is returned null we throw error (This indicates and search API issue in trengo end)
         throw new NetworkInstrumentationError(
@@ -203,13 +205,13 @@ const contactBuilderTrengo = async (
   return result;
 };
 
-const ticketBuilderTrengo = async (message, destination, identifer, extIds) => {
+const ticketBuilderTrengo = async (message, destination, identifer, extIds, metadata) => {
   let subjectLine;
   const template = getTemplate(message, destination);
   const externalId = get(extIds, 'externalId');
   let contactId = get(extIds, 'contactId');
   if (!contactId) {
-    contactId = await lookupContact(identifer, destination);
+    contactId = await lookupContact(identifer, destination, metadata);
     if (!contactId) {
       throw new InstrumentationError(
         `LookupContact failed for term:${identifer} track event failed`,
@@ -264,7 +266,7 @@ const ticketBuilderTrengo = async (message, destination, identifer, extIds) => {
  * based on type of event and the destination configurations the
  * payloads are generated.
  */
-const responseBuilderSimple = async (message, messageType, destination) => {
+const responseBuilderSimple = async (message, messageType, destination, metadata) => {
   let trengoPayload;
   // ChannelId is a mandatory field if it is not present in destination config
   // we will abort events.
@@ -294,6 +296,7 @@ const responseBuilderSimple = async (message, messageType, destination) => {
         destination,
         channelIdentifier === 'email' ? email : phone,
         extIds,
+        metadata,
         false,
       );
       if (trengoPayload === -1) {
@@ -307,6 +310,7 @@ const responseBuilderSimple = async (message, messageType, destination) => {
           destination,
           channelIdentifier === 'email' ? email : phone,
           extIds,
+          metadata,
           true,
         );
       }
@@ -321,6 +325,7 @@ const responseBuilderSimple = async (message, messageType, destination) => {
         destination,
         channelIdentifier === 'email' ? email : phone,
         extIds,
+        metadata,
         true,
       );
     }
@@ -332,6 +337,7 @@ const responseBuilderSimple = async (message, messageType, destination) => {
       destination,
       channelIdentifier === 'email' ? email : phone,
       extIds,
+      metadata,
     );
   }
   // Wrapped payload with structure
@@ -371,7 +377,7 @@ const responseBuilderSimple = async (message, messageType, destination) => {
  * If event type is not identify or track it will discard
  * the event
  */
-const processEvent = async (message, destination) => {
+const processEvent = async (message, destination, metadata) => {
   if (!message.type) {
     throw new InstrumentationError('Event type is required');
   }
@@ -379,12 +385,12 @@ const processEvent = async (message, destination) => {
   if (messageType !== EventType.IDENTIFY && messageType !== EventType.TRACK) {
     throw new InstrumentationError(`Event type ${messageType} is not supported`);
   }
-  const resp = await responseBuilderSimple(message, messageType, destination);
+  const resp = await responseBuilderSimple(message, messageType, destination, metadata);
   return resp;
 };
 
 const process = async (event) => {
-  const response = await processEvent(event.message, event.destination);
+  const response = await processEvent(event.message, event.destination, event.metadata);
   return response;
 };
 

@@ -6,7 +6,7 @@ const { constructPayload, isDefinedAndNotNull } = require('../../util');
 const { ENDPOINT, productMapping } = require('./config');
 const tags = require('../../util/tags');
 const { JSON_MIME_TYPE } = require('../../util/constant');
-const { httpGET, httpPOST } = require('../../../adapters/network');
+const { handleHttpRequest } = require('../../../adapters/network');
 
 const isValidEmail = (email) => {
   const re =
@@ -20,10 +20,11 @@ const isValidTimestamp = (timestamp) => {
   return re.test(String(timestamp));
 };
 
-const userExists = async (Config, id) => {
+const userExists = async (Config, id, metadata) => {
   const basicAuth = Buffer.from(Config.apiKey).toString('base64');
   try {
-    const { response } = await httpGET(
+    const { httpResponse } = await handleHttpRequest(
+      'get',
       `${ENDPOINT}/v2/${Config.accountId}/subscribers/${id}`,
       {
         headers: {
@@ -32,6 +33,7 @@ const userExists = async (Config, id) => {
         },
       },
       {
+        metadata,
         destType: 'drip',
         feature: 'transformation',
         requestMethod: 'GET',
@@ -39,6 +41,7 @@ const userExists = async (Config, id) => {
         module: 'router',
       },
     );
+    const { response } = httpResponse;
     if (response && response.status) {
       return response.status === 200;
     }
@@ -66,9 +69,10 @@ const userExists = async (Config, id) => {
   }
 };
 
-const createUpdateUser = async (finalpayload, Config, basicAuth) => {
+const createUpdateUser = async (finalpayload, Config, basicAuth, metadata) => {
   try {
-    const { response } = await httpPOST(
+    const { httpResponse } = await handleHttpRequest(
+      'post',
       `${ENDPOINT}/v2/${Config.accountId}/subscribers`,
       finalpayload,
       {
@@ -78,6 +82,7 @@ const createUpdateUser = async (finalpayload, Config, basicAuth) => {
         },
       },
       {
+        metadata,
         destType: 'drip',
         feature: 'transformation',
         requestMethod: 'POST',
@@ -85,23 +90,7 @@ const createUpdateUser = async (finalpayload, Config, basicAuth) => {
         module: 'router',
       },
     );
-    // await myAxios.post(
-    //   `${ENDPOINT}/v2/${Config.accountId}/subscribers`,
-    //   finalpayload,
-    //   {
-    //     headers: {
-    //       Authorization: `Basic ${basicAuth}`,
-    //       'Content-Type': JSON_MIME_TYPE,
-    //     },
-    //   },
-    //   {
-    //     destType: 'drip',
-    //     feature: 'transformation',
-    //     requestMethod: 'POST',
-    //     endpointPath: '/subscribers',
-    //     module: 'router',
-    //   },
-    // );
+    const { response } = httpResponse;
     if (response) {
       return response.status === 200 || response.status === 201;
     }

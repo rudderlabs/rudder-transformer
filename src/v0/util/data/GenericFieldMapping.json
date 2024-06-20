@@ -72,12 +72,16 @@
     "traits.DOB",
     "context.traits.DOB"
   ],
-
   "state": ["traits.state", "context.traits.state"],
   "country": ["traits.country", "context.traits.country"],
   "region": ["traits.region", "context.traits.region"],
   "city": ["traits.address.city", "context.traits.address.city"],
-
+  "street": [
+    "traits.street",
+    "traits.address.street",
+    "context.traits.street",
+    "context.traits.address.street"
+  ],
   "avatar": [
     "traits.avatar",
     "context.traits.avatar",

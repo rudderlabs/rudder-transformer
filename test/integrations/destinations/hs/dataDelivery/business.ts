@@ -66,47 +66,6 @@ export const businessData = [
                 statusCode: 200,
               },
             ],
-            destinationResponse: {
-              response: {
-                status: 'COMPLETE',
-                results: [
-                  {
-                    id: '12877907025',
-                    properties: {
-                      createdate: '2024-04-16T09:50:16.034Z',
-                      email: 'test1@mail.com',
-                      firstname: 'test1',
-                      hs_is_unworked: 'true',
-                      hs_object_id: '12877907025',
-                      hs_pipeline: 'contacts-lifecycle-pipeline',
-                      lastmodifieddate: '2024-04-23T11:52:03.723Z',
-                      lifecyclestage: 'lead',
-                    },
-                    createdAt: '2024-04-16T09:50:16.034Z',
-                    updatedAt: '2024-04-23T11:52:03.723Z',
-                    archived: false,
-                  },
-                  {
-                    id: '12877907024',
-                    properties: {
-                      createdate: '2024-04-16T09:50:16.034Z',
-                      firstname: 'testmail1217',
-                      hs_is_unworked: 'true',
-                      hs_object_id: '12877907024',
-                      hs_pipeline: 'contacts-lifecycle-pipeline',
-                      lastmodifieddate: '2024-04-23T11:52:03.723Z',
-                      lifecyclestage: 'lead',
-                    },
-                    createdAt: '2024-04-16T09:50:16.034Z',
-                    updatedAt: '2024-04-23T11:52:03.723Z',
-                    archived: false,
-                  },
-                ],
-                startedAt: '2024-04-24T05:11:51.090Z',
-                completedAt: '2024-04-24T05:11:51.190Z',
-              },
-              status: 200,
-            },
           },
         },
       },
@@ -152,18 +111,6 @@ export const businessData = [
         status: 200,
         body: {
           output: {
-            destinationResponse: {
-              response: {
-                category: 'VALIDATION_ERROR',
-                context: {
-                  ids: ['12877907025'],
-                },
-                correlationId: 'd24ec5cd-8998-4674-a928-59603ae6b0eb',
-                message: 'Duplicate IDs found in batch input: [12877907025]. IDs must be unique',
-                status: 'error',
-              },
-              status: 400,
-            },
             message:
               'HUBSPOT: Error in transformer proxy v1 during HUBSPOT response transformation',
             response: [
@@ -237,15 +184,6 @@ export const businessData = [
         status: 200,
         body: {
           output: {
-            destinationResponse: {
-              response: {
-                correlationId: '99df04b9-da11-4504-bd97-2c15f58d0943',
-                message:
-                  'Invalid input JSON on line 3, column 9: Cannot deserialize value of type `com.hubspot.inbounddb.publicobject.core.v2.SimplePublicObjectBatchInput$Json` from Array value (token `JsonToken.START_ARRAY`)',
-                status: 'error',
-              },
-              status: 400,
-            },
             message:
               'HUBSPOT: Error in transformer proxy v1 during HUBSPOT response transformation',
             response: [

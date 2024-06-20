@@ -44,7 +44,7 @@ const deduceSchedule = (eventLevelSchedule, timestamp, destConfig) => {
   if (isDefinedAndNotNullAndNotEmpty(eventLevelSchedule) && !Number.isNaN(destConfig)) {
     return eventLevelSchedule;
   }
-  const { defaultCampaignScheduleUnit, defaultCampaignSchedule } = destConfig;
+  const { defaultCampaignScheduleUnit = 'minute', defaultCampaignSchedule = 0 } = destConfig;
   // Parse the input timestamp into a Date object
   const date = new Date(timestamp);
 

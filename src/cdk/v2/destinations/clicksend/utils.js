@@ -1,10 +1,8 @@
-const {
-  isDefinedAndNotNullAndNotEmpty,
-  InstrumentationError,
-} = require('@rudderstack/integrations-lib');
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const lodash = require('lodash');
 const { BatchUtils } = require('@rudderstack/workflow-engine');
 const { SMS_SEND_ENDPOINT, MAX_BATCH_SIZE, COMMON_CONTACT_DOMAIN } = require('./config');
+const { isDefinedAndNotNullAndNotEmpty } = require('../../../../v0/util');
 
 const getEndIdentifyPoint = (contactId, contactListId) => {
   if (isDefinedAndNotNullAndNotEmpty(contactId) && isDefinedAndNotNullAndNotEmpty(contactListId)) {
@@ -28,12 +26,7 @@ const validateIdentifyPayload = (payload) => {
 };
 
 const validateTrackSMSCampaignPayload = (payload) => {
-  if (
-    !isDefinedAndNotNullAndNotEmpty(payload.body) &&
-    !isDefinedAndNotNullAndNotEmpty(payload.name) &&
-    !isDefinedAndNotNullAndNotEmpty(payload.list_id) &&
-    !isDefinedAndNotNullAndNotEmpty(payload.from)
-  ) {
+  if (!(payload.body && payload.name && payload.list_id && payload.from)) {
     throw new InstrumentationError(
       'All of contact list Id, name, body and from are required to trigger an sms campaign',
     );

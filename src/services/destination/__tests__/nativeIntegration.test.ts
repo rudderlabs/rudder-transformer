@@ -1,4 +1,3 @@
-import { structuredLogger as logger } from '@rudderstack/integrations-lib';
 import { FetchHandler } from '../../../helpers/fetchHandlers';
 import {
   ProcessorTransformationOutput,
@@ -48,7 +47,6 @@ describe('NativeIntegration Service', () => {
       destType,
       version,
       requestMetadata,
-      logger,
     );
 
     expect(resp).toEqual(tresponse);
@@ -79,7 +77,6 @@ describe('NativeIntegration Service', () => {
       destType,
       version,
       requestMetadata,
-      logger,
     );
 
     const expected = [

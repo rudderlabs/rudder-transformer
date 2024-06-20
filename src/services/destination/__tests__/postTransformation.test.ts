@@ -1,4 +1,4 @@
-import { MetaTransferObject, ProcessorTransformationRequest } from '../../../types/index';
+import { MetaTransferObject } from '../../../types/index';
 import { DestinationPostTransformationService } from '../postTransformation';
 import { ProcessorTransformationResponse } from '../../../types';
 

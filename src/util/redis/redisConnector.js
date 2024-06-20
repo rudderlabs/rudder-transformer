@@ -1,7 +1,7 @@
 const Redis = require('ioredis');
 const { RedisError } = require('@rudderstack/integrations-lib');
-const log = require('../../logger');
 const stats = require('../stats');
+const logger = require('../../logger');
 
 const timeoutPromise = () =>
   new Promise((_, reject) => {
@@ -29,13 +29,13 @@ const RedisDB = {
           stats.increment('redis_error', {
             operation: 'redis_down',
           });
-          log.error(`Redis is down at ${this.host}:${this.port}`);
+          logger.error(`Redis is down at ${this.host}:${this.port}`);
           return false; // stop retrying
         },
         tls: {},
       });
       this.client.on('ready', () => {
-        log.info(`Connected to redis at ${this.host}:${this.port}`);
+        logger.info(`Connected to redis at ${this.host}:${this.port}`);
       });
     }
   },
@@ -89,7 +89,7 @@ const RedisDB = {
       stats.increment('redis_error', {
         operation: 'get',
       });
-      log.error(`Error getting value from Redis: ${e}`);
+      logger.error(`Error getting value from Redis: ${e}`);
       throw new RedisError(`Error getting value from Redis: ${e}`);
     }
   },
@@ -124,13 +124,13 @@ const RedisDB = {
       stats.increment('redis_error', {
         operation: 'set',
       });
-      log.error(`Error setting value in Redis due ${e}`);
+      logger.error(`Error setting value in Redis due ${e}`);
       throw new RedisError(`Error setting value in Redis due ${e}`);
     }
   },
   async disconnect() {
     if (process.env.USE_REDIS_DB && process.env.USE_REDIS_DB !== 'false') {
-      log.info(`Disconnecting from redis at ${this.host}:${this.port}`);
+      logger.info(`Disconnecting from redis at ${this.host}:${this.port}`);
       this.client.disconnect();
     }
   },

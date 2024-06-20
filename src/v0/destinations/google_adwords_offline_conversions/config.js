@@ -48,6 +48,7 @@ const consentConfigMap = {
 };
 
 module.exports = {
+  destType: 'google_adwords_offline_conversions',
   trackClickConversionsMapping:
     MAPPING_CONFIG[CONFIG_CATEGORIES.TRACK_CLICK_CONVERSIONS_CONFIG.name],
   trackCallConversionsMapping: MAPPING_CONFIG[CONFIG_CATEGORIES.TRACK_CALL_CONVERSIONS_CONFIG.name],

@@ -16,6 +16,8 @@ bindings:
   - name: addExternalIdToTraits
     path: ../../../../v0/util
   - path: ../../bindings/jsontemplate
+  - name: HTTP_STATUS_CODES
+    path: ../../../../v0/util/constant
 
 steps:
   - name: checkIfProcessed
@@ -182,10 +184,17 @@ steps:
             id: companyId,
           };
           $.context.endpoint = $.getBaseEndpoint(.destination) + "/" + "contacts" + "/" + contactId + "/" + "companies";
+          const payload = $.context.payload;
+          const endpoint = $.context.endpoint;
+          await $.attachContactToCompany(payload, endpoint, .destination);
+          await $.addOrUpdateTagsToCompany(.message, .destination, companyId);
         else:
           name: whenSearchContactNotFound
           template: |
+            const companyId = await $.createOrUpdateCompany($.context.payload, .destination);
+            $.assert(companyId, "Unable to create or update company");
             $.context.endpoint = $.getBaseEndpoint(.destination) + "/" + "companies";
+            await $.addOrUpdateTagsToCompany(.message, .destination, companyId);
       - name: prepareFinalPayload
         template: |
           $.context.requestMethod = 'POST';
@@ -208,9 +217,25 @@ steps:
       response.method = "POST";
       response.userId = .message.anonymousId;
       $.context.response.push(response);
+      payload = response.body.JSON;
+      const companyId = await $.createOrUpdateCompany(payload, .destination);
+      $.assert(companyId, "Unable to create or update company");
       const attachUserAndCompanyResponse = $.attachUserAndCompany(.message, .destination.Config);
       attachUserAndCompanyResponse ? attachUserAndCompanyResponse.userId = .message.anonymousId;
       attachUserAndCompanyResponse ? $.context.response.push(attachUserAndCompanyResponse);
+      payload = attachUserAndCompanyResponse.body.JSON;
+      let endpoint = attachUserAndCompanyResponse.endpoint;
+      attachUserAndCompanyResponse ? await $.attachContactToCompany(payload, endpoint, .destination);
+      await $.addOrUpdateTagsToCompany(.message, .destination, companyId);
+
+  - name: statusCode
+    condition: $.outputs.messageType === {{$.EventType.GROUP}}
+    template: |
+      $.HTTP_STATUS_CODES.SUPPRESS_EVENTS
+    else:
+      name: successStatusCode
+      template: |
+        $.HTTP_STATUS_CODES.OK
 
   - name: buildResponseForProcessTransformation
     description: Build response for multiple transformed event

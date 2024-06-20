@@ -28,7 +28,6 @@ export interface DestinationService {
     destinationType: string,
     version: string,
     requestMetadata: NonNullable<unknown>,
-    logger: NonNullable<unknown>,
   ): Promise<ProcessorTransformationResponse[]>;
 
   doRouterTransformation(
@@ -36,7 +35,6 @@ export interface DestinationService {
     destinationType: string,
     version: string,
     requestMetadata: NonNullable<unknown>,
-    logger: NonNullable<unknown>,
   ): Promise<RouterTransformationResponse[]>;
 
   doBatchTransformation(
@@ -44,7 +42,6 @@ export interface DestinationService {
     destinationType: string,
     version: string,
     requestMetadata: NonNullable<unknown>,
-    logger: NonNullable<unknown>,
   ): RouterTransformationResponse[];
 
   deliver(

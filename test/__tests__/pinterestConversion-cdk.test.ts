@@ -1,8 +1,8 @@
-import { structuredLogger as logger } from '@rudderstack/integrations-lib';
 import fs from 'fs';
 import path from 'path';
 import { executeWorkflow, getWorkflowEngine, processCdkV2Workflow } from '../../src/cdk/v2/handler';
 import tags from '../../src/v0/util/tags';
+import logger from '../../src/logger';
 
 const integration = 'pinterest_tag';
 const name = 'Pinterest Conversion API';

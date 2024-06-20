@@ -1,9 +1,9 @@
 const { NetworkError } = require('@rudderstack/integrations-lib');
-const myAxios = require('../../../util/myAxios');
 const { ENDPOINTS } = require('./config');
 const tags = require('../../util/tags');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const { JSON_MIME_TYPE } = require('../../util/constant');
+const { handleHttpRequest } = require('../../../adapters/network');
 
 const handleErrorResponse = (error, customErrMessage, expectedErrStatus, defaultStatus = 400) => {
   let destResp;
@@ -37,133 +37,86 @@ const handleErrorResponse = (error, customErrMessage, expectedErrStatus, default
  * @param {*} objectType
  * @returns
  */
-const objectExists = async (id, Config, objectType) => {
+const objectExists = async (id, Config, objectType, metadata) => {
   let url = `${ENDPOINTS.USERS_ENDPOINT}/${id}`;
-  let err = 'invalid response while searching user';
 
   if (objectType === 'account') {
     url = `${ENDPOINTS.ACCOUNTS_ENDPOINT}/${id}`;
-    err = 'invalid response while searching account';
   }
-
-  let response;
-  try {
-    response = await myAxios.get(
-      url,
-      {
-        headers: {
-          'X-APTRINSIC-API-KEY': Config.apiKey,
-          'Content-Type': JSON_MIME_TYPE,
-        },
+  const { httpResponse: res } = await handleHttpRequest(
+    'get',
+    url,
+    {
+      headers: {
+        'X-APTRINSIC-API-KEY': Config.apiKey,
+        'Content-Type': JSON_MIME_TYPE,
       },
-      {
-        destType: 'gainsight_px',
-        feature: 'transformation',
-        requestMethod: 'GET',
-        endpointPath: '/accounts/accountId',
-        module: 'router',
-      },
-    );
-    if (response && response.status === 200) {
-      return { success: true, err: null };
-    }
-    const defStatus = 400;
-    const status = response ? response.status || defStatus : defStatus;
-    throw new NetworkError(
-      err,
-      status,
-      {
-        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
-      },
-      response,
-    );
-  } catch (error) {
-    return handleErrorResponse(error, `error while fetching ${objectType}`, 404);
+    },
+    {
+      metadata,
+      destType: 'gainsight_px',
+      feature: 'transformation',
+      requestMethod: 'GET',
+      endpointPath: '/accounts/accountId',
+      module: 'router',
+    },
+  );
+  if (res.success && res.response && res.response.status === 200) {
+    return { success: true, err: null };
   }
+  return handleErrorResponse(res.response, `error while fetching ${objectType}`, 404);
 };
 
-const createAccount = async (payload, Config) => {
-  let response;
-  try {
-    response = await myAxios.post(
-      ENDPOINTS.ACCOUNTS_ENDPOINT,
-      payload,
-      {
-        headers: {
-          'X-APTRINSIC-API-KEY': Config.apiKey,
-          'Content-Type': JSON_MIME_TYPE,
-        },
+const createAccount = async (payload, Config, metadata) => {
+  const { httpResponse: res } = await handleHttpRequest(
+    'post',
+    ENDPOINTS.ACCOUNTS_ENDPOINT,
+    payload,
+    {
+      headers: {
+        'X-APTRINSIC-API-KEY': Config.apiKey,
+        'Content-Type': JSON_MIME_TYPE,
       },
-      {
-        destType: 'gainsight_px',
-        feature: 'transformation',
-        requestMethod: 'POST',
-        endpointPath: '/accounts',
-        module: 'router',
-      },
-    );
-    if (response && response.status === 201) {
-      return { success: true, err: null };
-    }
-
-    const defStatus = 400;
-    const status = response ? response.status || defStatus : defStatus;
-    throw new NetworkError(
-      'invalid response while creating account',
-      status,
-      {
-        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
-      },
-      response,
-    );
-  } catch (error) {
-    return handleErrorResponse(error, 'error while creating account', 400);
+    },
+    {
+      metadata,
+      destType: 'gainsight_px',
+      feature: 'transformation',
+      requestMethod: 'POST',
+      endpointPath: '/accounts',
+      module: 'router',
+    },
+  );
+  if (res.success && res.response.status === 201) {
+    return { success: true, err: null };
   }
+  return handleErrorResponse(res.response, 'error while creating account', 400);
 };
 
-const updateAccount = async (accountId, payload, Config) => {
-  let response;
-  try {
-    response = await myAxios.put(
-      `${ENDPOINTS.ACCOUNTS_ENDPOINT}/${accountId}`,
-      payload,
-      {
-        headers: {
-          'X-APTRINSIC-API-KEY': Config.apiKey,
-          'Content-Type': JSON_MIME_TYPE,
-        },
+const updateAccount = async (accountId, payload, Config, metadata) => {
+  const { httpResponse: res } = await handleHttpRequest(
+    'put',
+    `${ENDPOINTS.ACCOUNTS_ENDPOINT}/${accountId}`,
+    payload,
+    {
+      headers: {
+        'X-APTRINSIC-API-KEY': Config.apiKey,
+        'Content-Type': JSON_MIME_TYPE,
       },
-      {
-        destType: 'gainsight_px',
-        feature: 'transformation',
-        requestMethod: 'PUT',
-        endpointPath: '/accounts/accountId',
-        module: 'router',
-      },
-    );
-    if (response && response.status === 204) {
-      return { success: true, err: null };
-    }
-    const defStatus = 400;
-    const status = response ? response.status || defStatus : defStatus;
-    throw new NetworkError(
-      'invalid response while updating account',
-      status,
-      {
-        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
-      },
-      response,
-    );
-  } catch (error) {
-    // it will only occur if the user does not exist
-    if (
-      error.response?.status === 404 &&
-      error.response?.data?.externalapierror?.status === 'NOT_FOUND'
-    ) {
-      return { success: false, err: null };
-    }
-    return handleErrorResponse(error, 'error while updating account', 400);
+    },
+    {
+      metadata,
+      destType: 'gainsight_px',
+      feature: 'transformation',
+      requestMethod: 'PUT',
+      endpointPath: '/accounts/accountId',
+      module: 'router',
+    },
+  );
+  if (res.success && res.response.status === 204) {
+    return { success: true, err: null };
   }
+  return handleErrorResponse(res.response, 'error while updating account', 400);
 };
 
 /**

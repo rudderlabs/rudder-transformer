@@ -2,7 +2,7 @@ const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const lodash = require('lodash');
 const { BatchUtils } = require('@rudderstack/workflow-engine');
 const { SMS_SEND_ENDPOINT, MAX_BATCH_SIZE, COMMON_CONTACT_DOMAIN } = require('./config');
-const { isDefinedAndNotNullAndNotEmpty } = require('../../../../v0/util');
+const { isDefinedAndNotNullAndNotEmpty, isDefinedAndNotNull } = require('../../../../v0/util');
 
 const getEndIdentifyPoint = (contactId, contactListId) => {
   if (isDefinedAndNotNullAndNotEmpty(contactId) && isDefinedAndNotNullAndNotEmpty(contactListId)) {
@@ -34,7 +34,7 @@ const validateTrackSMSCampaignPayload = (payload) => {
 };
 
 const deduceSchedule = (eventLevelSchedule, timestamp, destConfig) => {
-  if (isDefinedAndNotNullAndNotEmpty(eventLevelSchedule) && !Number.isNaN(destConfig)) {
+  if (isDefinedAndNotNull(eventLevelSchedule) && !Number.isNaN(eventLevelSchedule)) {
     return eventLevelSchedule;
   }
   const { defaultCampaignScheduleUnit = 'minute', defaultCampaignSchedule = 0 } = destConfig;

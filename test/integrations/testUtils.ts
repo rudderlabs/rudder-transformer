@@ -187,6 +187,7 @@ export const generateSimplifiedIdentifyPayload: any = (parametersOverride: any) 
     context: {
       externalId: parametersOverride.context.externalId,
       traits: parametersOverride.context.traits,
+      ip: parametersOverride.context.ip,
     },
     anonymousId: parametersOverride.anonymousId || 'default-anonymousId',
     originalTimestamp: parametersOverride.originalTimestamp || '2021-01-03T17:02:53.193Z',

@@ -88,6 +88,10 @@ const commonOutputSubscriptionProps = {
     },
   ],
 };
+const location = {
+  longitude: '0.1.2.2',
+  latitude: '0.1.1.1',
+};
 
 const commonOutputHeaders = {
   Authorization: 'Klaviyo-API-Key dummyPrivateApiKey',
@@ -95,7 +99,14 @@ const commonOutputHeaders = {
   Accept: 'application/json',
   revision: '2023-02-22',
 };
+const commonOutputHeadersUpdated = {
+  Authorization: 'Klaviyo-API-Key dummyPrivateApiKey',
+  'Content-Type': 'application/json',
+  Accept: 'application/json',
+  revision: '2024-06-15',
+};
 
+const updatedEndpoint = 'https://a.klaviyo.com/api/profiles';
 const anonymousId = '97c46c81-3140-456d-b2a9-690d70aaca35';
 const userId = 'user@1';
 const sentAt = '2021-01-03T17:02:53.195Z';
@@ -585,6 +596,102 @@ export const identifyData: ProcessorTestData[] = [
             },
             statusCode: 400,
             metadata: generateMetadata(7),
+          },
+        ],
+      },
+    },
+  },
+  {
+    id: 'klaviyo-identify-test-8',
+    name: 'klaviyo',
+    description:
+      'Updated Identify call for with flattenProperties enabled in destination config and subscription also present',
+    scenario: 'Business',
+    successCriteria:
+      'The profile Create or update response should contain the flattened properties of the friend object and subscription request payload as well',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: overrideDestination(destination, {
+              flattenProperties: true,
+              useUpdatedKlaviyo: true,
+            }),
+            message: generateSimplifiedIdentifyPayload({
+              sentAt,
+              userId,
+              context: {
+                traits: {
+                  ...commonTraits2,
+                  _kx: 'encrytped number',
+                  friend: {
+                    names: {
+                      first: 'Alice',
+                      last: 'Smith',
+                    },
+                    age: 25,
+                  },
+                },
+                ip: '0.0.0.0',
+                location,
+              },
+              anonymousId,
+              originalTimestamp,
+            }),
+            metadata: generateMetadata(2),
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: transformResultBuilder({
+              userId: '',
+              method: 'POST',
+              endpoint: updatedEndpoint,
+              headers: commonOutputHeadersUpdated,
+              JSON: {
+                data: {
+                  type: 'profile',
+                  attributes: {
+                    ...commonOutputUserProps2,
+                    ip: '0.0.0.0',
+                    anonymous_id: anonymousId,
+                    _kx: 'encrytped number',
+                    properties: {
+                      ...commonOutputUserProps2.properties,
+                      'friend.age': 25,
+                      'friend.names.first': 'Alice',
+                      'friend.names.last': 'Smith',
+                    },
+                  },
+                },
+              },
+            }),
+            statusCode: 200,
+            metadata: generateMetadata(2),
+          },
+          {
+            output: transformResultBuilder({
+              userId: '',
+              method: 'POST',
+              endpoint: subscribeEndpoint,
+              headers: commonOutputHeaders,
+              JSON: {
+                data: {
+                  type: 'profile-subscription-bulk-create-job',
+                  attributes: commonOutputSubscriptionProps,
+                },
+              },
+            }),
+            statusCode: 200,
+            metadata: generateMetadata(2),
           },
         ],
       },

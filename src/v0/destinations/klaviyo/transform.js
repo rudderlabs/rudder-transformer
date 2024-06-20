@@ -2,6 +2,7 @@
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable  array-callback-return */
 const get = require('get-value');
+const set = require('set-value');
 const { ConfigurationError, InstrumentationError } = require('@rudderstack/integrations-lib');
 const { EventType, WhiteListedTraits, MappedToDestinationKey } = require('../../../constants');
 const {
@@ -12,6 +13,7 @@ const {
   ecomEvents,
   eventNameMapping,
   jsonNameMapping,
+  useUpdatedKlaviyoAPI,
 } = require('./config');
 const {
   createCustomerProperties,
@@ -20,6 +22,7 @@ const {
   batchSubscribeEvents,
   getIdFromNewOrExistingProfile,
   profileUpdateResponseBuilder,
+  createCustomerPropertiesV2,
 } = require('./util');
 const {
   defaultRequestConfig,
@@ -35,9 +38,89 @@ const {
   handleRtTfSingleEventError,
   flattenJson,
   isNewStatusCodesAccepted,
+  getDestinationExternalID,
+  isDefinedAndNotNullAndNotEmpty,
 } = require('../../util');
 const { JSON_MIME_TYPE, HTTP_STATUS_CODES } = require('../../util/constant');
 
+/**
+ * Identify function to handle request for Klaviyo version '2024-06-15'
+ * The function is used to create/update new (same endpoint and no intermediate API calls) users and also for adding/subscribing
+ * users to the list.
+ * DOCS: 1. https://developers.klaviyo.com/en/reference/create_or_update_profile
+ *       2. https://developers.klaviyo.com/en/v2023-02-22/reference/subscribe_profiles
+ * @param {*} message
+ * @param {*} category
+ * @param {*} destination
+ * @param {*} reqMetadata
+ * @returns
+ */
+const identifyRequestHandlerV2 = (message, category, destination) => {
+  // If listId property is present try to subscribe/member user in list
+  const { privateApiKey, listId, flattenProperties } = destination.Config;
+  const mappedToDestination = get(message, MappedToDestinationKey);
+  if (mappedToDestination) {
+    addExternalIdToTraits(message);
+    adduserIdFromExternalId(message);
+  }
+  const traitsInfo = getFieldValueFromMessage(message, 'traits');
+  let propertyPayload = constructPayload(message, MAPPING_CONFIG[category.name]);
+  // Extract other K-V property from traits about user custom properties
+  let customPropertyPayload = {};
+  customPropertyPayload = extractCustomFields(
+    message,
+    customPropertyPayload,
+    ['traits', 'context.traits'],
+    [...WhiteListedTraits, '_kx'],
+  );
+
+  propertyPayload = removeUndefinedAndNullValues(propertyPayload);
+  const data = {
+    type: 'profile',
+    attributes: {
+      ...propertyPayload,
+      properties: removeUndefinedAndNullValues(customPropertyPayload),
+    },
+  };
+  // if flattenProperties is enabled from UI, flatten the user properties
+  data.attributes.properties = flattenProperties
+    ? flattenJson(data.attributes.properties, '.', 'normal', false)
+    : data.attributes.properties;
+  // external id -> Klaviyo generated id for every profile
+  const externalId = getDestinationExternalID(message, 'klaviyoExternalId');
+  if (isDefinedAndNotNullAndNotEmpty(externalId)) {
+    set(data, 'id', externalId);
+  }
+  if (isEmptyObject(data.attributes.properties)) {
+    delete data.attributes.properties;
+  }
+  const payload = {
+    data: removeUndefinedAndNullValues(data),
+  };
+  const endpoint = `${BASE_ENDPOINT}${category.apiUrl}`;
+  const requestOptions = {
+    headers: {
+      Authorization: `Klaviyo-API-Key ${privateApiKey}`,
+      Accept: JSON_MIME_TYPE,
+      'Content-Type': JSON_MIME_TYPE,
+      revision: '2024-06-15',
+    },
+  };
+
+  const profileRequest = defaultRequestConfig();
+  profileRequest.endpoint = endpoint;
+  profileRequest.body.JSON = payload;
+  profileRequest.headers = requestOptions.headers;
+
+  let subscriptionRequest;
+  // check if user wants to subscribe profile or not and listId is present or not
+  if (traitsInfo?.properties?.subscribe && (traitsInfo.properties?.listId || listId)) {
+    subscriptionRequest = subscribeUserToList(message, traitsInfo, destination);
+    return [profileRequest, subscriptionRequest];
+  }
+
+  return profileRequest;
+};
 /**
  * Main Identify request handler func
  * The function is used to create/update new users and also for adding/subscribing
@@ -157,7 +240,7 @@ const identifyRequestHandler = async (
 
 const trackRequestHandler = (message, category, destination) => {
   const payload = {};
-  const { privateApiKey, flattenProperties } = destination.Config;
+  const { privateApiKey, flattenProperties, useUpdatedKlaviyo } = destination.Config;
   let event = get(message, 'event');
   if (event && typeof event !== 'string') {
     throw new InstrumentationError('Event type should be a string');
@@ -225,8 +308,12 @@ const trackRequestHandler = (message, category, destination) => {
     ? flattenJson(attributes.properties, '.', 'normal', false)
     : attributes.properties;
   // Map user properties to profile object
+  const customerProp =
+    useUpdatedKlaviyoAPI || useUpdatedKlaviyo
+      ? createCustomerProperties(message, destination.Config)
+      : createCustomerPropertiesV2(message, destination.Config);
   attributes.profile = {
-    ...createCustomerProperties(message, destination.Config),
+    ...customerProp,
     ...populateCustomFieldsFromTraits(message),
   };
 
@@ -289,6 +376,12 @@ const processEvent = async (event, reqMetadata) => {
   let response;
   switch (messageType) {
     case EventType.IDENTIFY:
+      // checking if we want to use the updated klaviyo api for identify
+      if (useUpdatedKlaviyoAPI || destination.Config?.useUpdatedKlaviyo) {
+        category = CONFIG_CATEGORIES.IDENTIFY_V2;
+        response = identifyRequestHandlerV2(message, category, destination);
+        break;
+      }
       category = CONFIG_CATEGORIES.IDENTIFY;
       response = await identifyRequestHandler(
         { message, category, destination, metadata },

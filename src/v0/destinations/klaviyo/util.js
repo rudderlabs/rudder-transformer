@@ -208,6 +208,27 @@ const createCustomerProperties = (message, Config) => {
   customerProperties = removeUndefinedAndNullValues(customerProperties);
   return customerProperties;
 };
+// This function is used for creating and returning customer properties using mapping json
+const createCustomerPropertiesV2 = (message, Config) => {
+  const { enforceEmailAsPrimary } = Config;
+  let customerProperties = constructPayload(
+    message,
+    MAPPING_CONFIG[CONFIG_CATEGORIES.PROFILE.name],
+  );
+  if (!enforceEmailAsPrimary) {
+    customerProperties.$id = getFieldValueFromMessage(message, 'userIdOnly');
+  } else {
+    if (!customerProperties.$email && !customerProperties.$phone_number) {
+      throw new InstrumentationError('None of email and phone are present in the payload');
+    }
+    customerProperties = {
+      ...customerProperties,
+      _id: getFieldValueFromMessage(message, 'userIdOnly'),
+    };
+  }
+  customerProperties = removeUndefinedAndNullValues(customerProperties);
+  return customerProperties;
+};
 
 const populateCustomFieldsFromTraits = (message) => {
   // Extract other K-V property from traits about user custom properties
@@ -327,6 +348,7 @@ const batchSubscribeEvents = (subscribeRespList) => {
 module.exports = {
   subscribeUserToList,
   createCustomerProperties,
+  createCustomerPropertiesV2,
   populateCustomFieldsFromTraits,
   generateBatchedPaylaodForArray,
   batchSubscribeEvents,

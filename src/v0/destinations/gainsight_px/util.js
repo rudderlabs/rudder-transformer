@@ -3,7 +3,7 @@ const { ENDPOINTS } = require('./config');
 const tags = require('../../util/tags');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const { JSON_MIME_TYPE } = require('../../util/constant');
-const { httpGET, httpPOST, httpPUT } = require('../../../adapters/network');
+const { handleHttpRequest } = require('../../../adapters/network');
 
 const handleErrorResponse = (error, customErrMessage, expectedErrStatus, defaultStatus = 400) => {
   let destResp;
@@ -37,13 +37,14 @@ const handleErrorResponse = (error, customErrMessage, expectedErrStatus, default
  * @param {*} objectType
  * @returns
  */
-const objectExists = async (id, Config, objectType) => {
+const objectExists = async (id, Config, objectType, metadata) => {
   let url = `${ENDPOINTS.USERS_ENDPOINT}/${id}`;
 
   if (objectType === 'account') {
     url = `${ENDPOINTS.ACCOUNTS_ENDPOINT}/${id}`;
   }
-  const res = await httpGET(
+  const res = await handleHttpRequest(
+    'get',
     url,
     {
       headers: {
@@ -52,6 +53,7 @@ const objectExists = async (id, Config, objectType) => {
       },
     },
     {
+      metadata,
       destType: 'gainsight_px',
       feature: 'transformation',
       requestMethod: 'GET',
@@ -65,8 +67,9 @@ const objectExists = async (id, Config, objectType) => {
   return handleErrorResponse(res.response, `error while fetching ${objectType}`, 404);
 };
 
-const createAccount = async (payload, Config) => {
-  const res = await httpPOST(
+const createAccount = async (payload, Config, metadata) => {
+  const res = await handleHttpRequest(
+    'post',
     ENDPOINTS.ACCOUNTS_ENDPOINT,
     payload,
     {
@@ -76,6 +79,7 @@ const createAccount = async (payload, Config) => {
       },
     },
     {
+      metadata,
       destType: 'gainsight_px',
       feature: 'transformation',
       requestMethod: 'POST',
@@ -89,8 +93,9 @@ const createAccount = async (payload, Config) => {
   return handleErrorResponse(res.response, 'error while creating account', 400);
 };
 
-const updateAccount = async (accountId, payload, Config) => {
-  const res = await httpPUT(
+const updateAccount = async (accountId, payload, Config, metadata) => {
+  const res = await handleHttpRequest(
+    'put',
     `${ENDPOINTS.ACCOUNTS_ENDPOINT}/${accountId}`,
     payload,
     {
@@ -100,6 +105,7 @@ const updateAccount = async (accountId, payload, Config) => {
       },
     },
     {
+      metadata,
       destType: 'gainsight_px',
       feature: 'transformation',
       requestMethod: 'PUT',

@@ -30,11 +30,13 @@ const {
   CLICK_CONVERSION,
   trackCallConversionsMapping,
   consentConfigMap,
+  destType,
 } = require('./config');
 const { processAxiosResponse } = require('../../../adapters/utils/networkUtils');
 const Cache = require('../../util/cache');
 const helper = require('./helper');
 const { finaliseConsent } = require('../../util/googleUtils');
+const logger = require('../../../logger');
 
 const conversionActionIdCache = new Cache(CONVERSION_ACTION_ID_CACHE_TTL);
 
@@ -55,7 +57,7 @@ const validateDestinationConfig = ({ Config }) => {
  * @param {*} headers
  * @returns
  */
-const getConversionActionId = async (headers, params) => {
+const getConversionActionId = async ({ headers, params, metadata }) => {
   const conversionActionIdKey = sha256(params.event + params.customerId).toString();
   return conversionActionIdCache.get(conversionActionIdKey, async () => {
     const queryString = SqlString.format(
@@ -69,21 +71,39 @@ const getConversionActionId = async (headers, params) => {
     const requestOptions = {
       headers,
     };
+    logger.requestLog(`[${destType.toUpperCase()}] get conversion action id request`, {
+      metadata,
+      requestDetails: {
+        url: endpoint,
+        body: data,
+        method: 'post',
+      },
+    });
     let searchStreamResponse = await httpPOST(endpoint, data, requestOptions, {
       destType: 'google_adwords_offline_conversions',
       feature: 'transformation',
       endpointPath: `/googleAds:searchStream`,
       requestMethod: 'POST',
       module: 'dataDelivery',
+      metadata,
     });
     searchStreamResponse = processAxiosResponse(searchStreamResponse);
-    if (!isHttpStatusSuccess(searchStreamResponse.status)) {
+    const { response, status, headers: responseHeaders } = searchStreamResponse;
+    logger.responseLog(`[${destType.toUpperCase()}] get conversion action id response`, {
+      metadata,
+      responseDetails: {
+        response,
+        status,
+        headers: responseHeaders,
+      },
+    });
+    if (!isHttpStatusSuccess(status)) {
       throw new AbortedError(
         `[Google Ads Offline Conversions]:: ${JSON.stringify(
-          searchStreamResponse.response,
+          response,
         )} during google_ads_offline_conversions response transformation`,
-        searchStreamResponse.status,
-        searchStreamResponse.response,
+        status,
+        response,
         getAuthErrCategoryFromStCode(get(searchStreamResponse, 'status')),
       );
     }
@@ -140,17 +160,17 @@ const buildAndGetAddress = (message, hashUserIdentifier) => {
   const address = constructPayload(message, trackAddStoreAddressConversionsMapping);
   if (address.hashed_last_name) {
     address.hashed_last_name = hashUserIdentifier
-      ? sha256(address.hashed_last_name).toString()
+      ? sha256(address.hashed_last_name.trim()).toString()
       : address.hashed_last_name;
   }
   if (address.hashed_first_name) {
     address.hashed_first_name = hashUserIdentifier
-      ? sha256(address.hashed_first_name).toString()
+      ? sha256(address.hashed_first_name.trim()).toString()
       : address.hashed_first_name;
   }
   if (address.hashed_street_address) {
     address.hashed_street_address = hashUserIdentifier
-      ? sha256(address.hashed_street_address).toString()
+      ? sha256(address.hashed_street_address.trim()).toString()
       : address.hashed_street_address;
   }
   return Object.keys(address).length > 0 ? address : null;
@@ -269,8 +289,10 @@ const getAddConversionPayload = (message, Config) => {
   const phone = getFieldValueFromMessage(message, 'phone');
 
   const userIdentifierInfo = {
-    email: hashUserIdentifier && isDefinedAndNotNull(email) ? sha256(email).toString() : email,
-    phone: hashUserIdentifier && isDefinedAndNotNull(phone) ? sha256(phone).toString() : phone,
+    email:
+      hashUserIdentifier && isDefinedAndNotNull(email) ? sha256(email.trim()).toString() : email,
+    phone:
+      hashUserIdentifier && isDefinedAndNotNull(phone) ? sha256(phone.trim()).toString() : phone,
     address: buildAndGetAddress(message, hashUserIdentifier),
   };
 
@@ -363,8 +385,10 @@ const getClickConversionPayloadAndEndpoint = (
   // Ref - https://developers.google.com/google-ads/api/rest/reference/rest/v11/customers/uploadClickConversions#ClickConversion
 
   const userIdentifierInfo = {
-    email: hashUserIdentifier && isDefinedAndNotNull(email) ? sha256(email).toString() : email,
-    phone: hashUserIdentifier && isDefinedAndNotNull(phone) ? sha256(phone).toString() : phone,
+    email:
+      hashUserIdentifier && isDefinedAndNotNull(email) ? sha256(email.trim()).toString() : email,
+    phone:
+      hashUserIdentifier && isDefinedAndNotNull(phone) ? sha256(phone.trim()).toString() : phone,
   };
 
   const keyName = getExisitingUserIdentifier(userIdentifierInfo, defaultUserIdentifier);

@@ -11,7 +11,7 @@ function appendPrefix(name) {
 }
 
 class Prometheus {
-  constructor() {
+  constructor(enableSummaryMetrics = true) {
     this.prometheusRegistry = new prometheusClient.Registry();
     this.prometheusRegistry.setDefaultLabels(defaultLabels);
     prometheusClient.collectDefaultMetrics({
@@ -21,7 +21,7 @@ class Prometheus {
     prometheusClient.AggregatorRegistry.setRegistries(this.prometheusRegistry);
     this.aggregatorRegistry = new prometheusClient.AggregatorRegistry();
 
-    this.createMetrics();
+    this.createMetrics(enableSummaryMetrics);
   }
 
   async metricsController(ctx) {
@@ -56,11 +56,22 @@ class Prometheus {
     return gauge;
   }
 
-  newSummaryStat(name, help, labelNames) {
+  newSummaryStat(
+    name,
+    help,
+    labelNames,
+    percentiles = [0.5, 0.9, 0.99],
+    maxAgeSeconds = 300,
+    ageBuckets = 5,
+  ) {
+    // we enable a 5 minute sliding window and calculate the 50th, 90th, and 99th percentiles by default
     const summary = new prometheusClient.Summary({
       name,
       help,
       labelNames,
+      percentiles,
+      maxAgeSeconds,
+      ageBuckets,
     });
     this.prometheusRegistry.registerMetric(summary);
     return summary;
@@ -117,6 +128,21 @@ class Prometheus {
     }
   }
 
+  timingSummary(name, start, tags = {}) {
+    try {
+      let metric = this.prometheusRegistry.getSingleMetric(appendPrefix(name));
+      if (!metric) {
+        logger.warn(
+          `Prometheus: summary metric ${name} not found in the registry. Creating a new one`,
+        );
+        metric = this.newSummaryStat(name, name, Object.keys(tags));
+      }
+      metric.observe(tags, (new Date() - start) / 1000);
+    } catch (e) {
+      logger.error(`Prometheus: Summary metric ${name} failed with error ${e}`);
+    }
+  }
+
   histogram(name, value, tags = {}) {
     try {
       let metric = this.prometheusRegistry.getSingleMetric(appendPrefix(name));
@@ -166,7 +192,7 @@ class Prometheus {
     }
   }
 
-  createMetrics() {
+  createMetrics(enableSummaryMetrics) {
     const metrics = [
       // Counters
       {
@@ -541,7 +567,18 @@ class Prometheus {
           'statusCode',
           'requestMethod',
           'module',
+          'workspaceId',
+          'destinationId',
+          'module',
+          'implementation',
+          'sourceId',
         ],
+      },
+      {
+        name: 'credential_error_total',
+        help: 'Error in fetching credentials count',
+        type: 'counter',
+        labelNames: ['transformationId', 'workspaceId'],
       },
 
       // Gauges
@@ -576,6 +613,18 @@ class Prometheus {
         labelNames: ['destination_id'],
       },
       {
+        name: 'braze_alias_failure_count',
+        help: 'braze_alias_failure_count',
+        type: 'counter',
+        labelNames: ['destination_id'],
+      },
+      {
+        name: 'braze_alias_missconfigured_count',
+        help: 'braze_alias_missconfigured_count',
+        type: 'counter',
+        labelNames: ['destination_id'],
+      },
+      {
         name: 'mixpanel_batch_engage_pack_size',
         help: 'mixpanel_batch_engage_pack_size',
         type: 'gauge',
@@ -584,12 +633,6 @@ class Prometheus {
       {
         name: 'mixpanel_batch_group_pack_size',
         help: 'mixpanel_batch_group_pack_size',
-        type: 'gauge',
-        labelNames: ['destination_id'],
-      },
-      {
-        name: 'mixpanel_batch_track_pack_size',
-        help: 'mixpanel_batch_track_pack_size',
         type: 'gauge',
         labelNames: ['destination_id'],
       },
@@ -605,7 +648,18 @@ class Prometheus {
         name: 'outgoing_request_latency',
         help: 'Outgoing HTTP requests duration in seconds',
         type: 'histogram',
-        labelNames: ['feature', 'destType', 'endpointPath', 'requestMethod', 'module'],
+        labelNames: [
+          'feature',
+          'destType',
+          'endpointPath',
+          'requestMethod',
+          'module',
+          'workspaceId',
+          'destinationId',
+          'module',
+          'implementation',
+          'sourceId',
+        ],
       },
       {
         name: 'http_request_duration',
@@ -674,22 +728,21 @@ class Prometheus {
         labelNames: ['feature', 'implementation', 'destType'],
       },
       {
-        name: 'dest_transform_request_latency',
-        help: 'dest_transform_request_latency',
-        type: 'histogram',
-        labelNames: [
-          'destination',
-          'version',
-          'sourceType',
-          'destinationType',
-          'k8_namespace',
-          'feature',
-        ],
-      },
-      {
         name: 'user_transform_request_latency',
         help: 'user_transform_request_latency',
         type: 'histogram',
+        labelNames: [
+          'workspaceId',
+          'transformationId',
+          'sourceType',
+          'destinationType',
+          'k8_namespace',
+        ],
+      },
+      {
+        name: 'user_transform_request_latency_summary',
+        help: 'user_transform_request_latency_summary',
+        type: 'summary',
         labelNames: [
           'workspaceId',
           'transformationId',
@@ -713,6 +766,18 @@ class Prometheus {
           1024, 102400, 524288, 1048576, 10485760, 20971520, 52428800, 104857600, 209715200,
           524288000,
         ], // 1KB, 100KB, 0.5MB, 1MB, 10MB, 20MB, 50MB, 100MB, 200MB, 500MB
+      },
+      {
+        name: 'user_transform_batch_size_summary',
+        help: 'user_transform_batch_size_summary',
+        type: 'summary',
+        labelNames: [
+          'workspaceId',
+          'transformationId',
+          'sourceType',
+          'destinationType',
+          'k8_namespace',
+        ],
       },
       {
         name: 'source_transform_request_latency',
@@ -771,9 +836,21 @@ class Prometheus {
         labelNames: ['versionId', 'version'],
       },
       {
+        name: 'get_transformation_code_time_summary',
+        help: 'get_transformation_code_time_summary',
+        type: 'summary',
+        labelNames: ['versionId', 'version'],
+      },
+      {
         name: 'get_libraries_code_time',
         help: 'get_libraries_code_time',
         type: 'histogram',
+        labelNames: ['libraryVersionId', 'versionId', 'type', 'version'],
+      },
+      {
+        name: 'get_libraries_code_time_summary',
+        help: 'get_libraries_code_time_summary',
+        type: 'summary',
         labelNames: ['libraryVersionId', 'versionId', 'type', 'version'],
       },
       {
@@ -1027,6 +1104,22 @@ class Prometheus {
           'workspaceId',
         ],
       },
+      {
+        name: 'user_transform_function_latency_summary',
+        help: 'user_transform_function_latency_summary',
+        type: 'summary',
+        labelNames: [
+          'identifier',
+          'testMode',
+          'sourceType',
+          'destinationType',
+          'k8_namespace',
+          'errored',
+          'statusCode',
+          'transformationId',
+          'workspaceId',
+        ],
+      },
     ];
 
     metrics.forEach((metric) => {
@@ -1042,6 +1135,17 @@ class Prometheus {
             metric.labelNames,
             metric.buckets,
           );
+        } else if (metric.type === 'summary') {
+          if (enableSummaryMetrics) {
+            this.newSummaryStat(
+              appendPrefix(metric.name),
+              metric.help,
+              metric.labelNames,
+              metric.percentiles,
+              metric.maxAge,
+              metric.ageBuckets,
+            );
+          }
         } else {
           logger.error(
             `Prometheus: Metric creation failed. Name: ${metric.name}. Invalid type: ${metric.type}`,

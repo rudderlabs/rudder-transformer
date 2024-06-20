@@ -1,5 +1,6 @@
 import groupBy from 'lodash/groupBy';
 import isEmpty from 'lodash/isEmpty';
+import { isNil } from 'lodash';
 import { userTransformHandler } from '../routerUtils';
 import {
   UserTransformationLibrary,
@@ -67,6 +68,7 @@ export class UserTransformService {
           destinationId: eventsToProcess[0]?.metadata.destinationId,
           destinationType: eventsToProcess[0]?.metadata.destinationType,
           workspaceId: eventsToProcess[0]?.metadata.workspaceId,
+          transformationId: eventsToProcess[0]?.metadata.transformationId,
           messageIds,
         };
 
@@ -173,7 +175,17 @@ export class UserTransformService {
             ...getTransformationMetadata(eventsToProcess[0]?.metadata),
           });
 
-          stats.histogram('user_transform_batch_size', requestSize, {
+          stats.timing('user_transform_batch_size', requestSize, {
+            ...metaTags,
+            ...getTransformationMetadata(eventsToProcess[0]?.metadata),
+          });
+
+          stats.timingSummary('user_transform_request_latency_summary', userFuncStartTime, {
+            ...metaTags,
+            ...getTransformationMetadata(eventsToProcess[0]?.metadata),
+          });
+
+          stats.timingSummary('user_transform_batch_size_summary', requestSize, {
             ...metaTags,
             ...getTransformationMetadata(eventsToProcess[0]?.metadata),
           });
@@ -192,7 +204,7 @@ export class UserTransformService {
     } as UserTransformationServiceResponse;
   }
 
-  public static async testTransformRoutine(events, trRevCode, libraryVersionIDs) {
+  public static async testTransformRoutine(events, trRevCode, libraryVersionIDs, credentials) {
     const response: FixMe = {};
     try {
       if (!trRevCode || !trRevCode.code || !trRevCode.codeVersion) {
@@ -202,11 +214,21 @@ export class UserTransformService {
         throw new Error('Invalid request. Missing events');
       }
 
+      const updatedEvents = events.map((ev) => {
+        if (isNil(ev.credentials)) {
+          return {
+            ...ev,
+            credentials,
+          };
+        }
+        return ev;
+      });
+
       logger.debug(`[CT] Test Input Events: ${JSON.stringify(events)}`);
       // eslint-disable-next-line no-param-reassign
       trRevCode.versionId = 'testVersionId';
       response.body = await userTransformHandler()(
-        events,
+        updatedEvents,
         trRevCode.versionId,
         libraryVersionIDs,
         trRevCode,

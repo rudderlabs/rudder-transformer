@@ -243,6 +243,9 @@ export const generateSimplifiedTrackPayload: any = (parametersOverride: any) => 
     context: removeUndefinedAndNullValues({
       externalId: parametersOverride.context.externalId,
       traits: parametersOverride.context.traits,
+      device: parametersOverride.context.device,
+      os: parametersOverride.context.os,
+      app: parametersOverride.context.app,
     }),
     anonymousId: parametersOverride.anonymousId || 'default-anonymousId',
     originalTimestamp: parametersOverride.originalTimestamp || '2021-01-03T17:02:53.193Z',
@@ -286,12 +289,14 @@ export const generatePageOrScreenPayload: any = (parametersOverride: any, eventT
       screen: {
         density: 2,
       },
+      page: parametersOverride.context.page,
       traits: parametersOverride.context.traits,
       externalId: parametersOverride.externalId,
       userAgent:
         'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36',
     }),
     event: parametersOverride.event,
+    name: parametersOverride.name,
     anonymousId: parametersOverride.anonymousId || 'default-anonymousId',
     properties: parametersOverride.properties,
     type: eventType || 'page',
@@ -350,8 +355,9 @@ export const generateGroupPayload: any = (parametersOverride: any) => {
       screen: {
         density: 2,
       },
+      device: parametersOverride.context.device,
       traits: parametersOverride.context.traits,
-      externalId: parametersOverride.externalId,
+      externalId: parametersOverride.context.externalId,
     }),
     messageId: parametersOverride.messageId || generateAlphanumericId(36),
     session_id: parametersOverride.session_id || generateAlphanumericId(36),

@@ -19,8 +19,8 @@ export const data = [
                 userAgent: 'chrome',
                 traits: {
                   anonymousId: '50be5c78-6c3f-4b60-be84-97805a316fb1',
-                  email: 'abc@gmail.com',
-                  phone: '+1234589947',
+                  email: ' abc@gmail.com',
+                  phone: '+1234589947 ',
                   gender: 'non-binary',
                   db: '19950715',
                   lastname: 'Rudderlabs',

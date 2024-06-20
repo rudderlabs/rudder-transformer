@@ -170,7 +170,8 @@ function processInfo() {
 }
 
 function logProcessInfo() {
-  logger.error(`Process info: `, util.inspect(processInfo(), false, null, true));
+  const inspectedInfo = util.inspect(processInfo(), false, Infinity, true);
+  logger.error(`Process info: ${inspectedInfo}`);
 }
 
 // stringLiterals expected to be an array of strings. A line in trace should contain

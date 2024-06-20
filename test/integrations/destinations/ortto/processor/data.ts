@@ -158,6 +158,8 @@ export const data = [
                   people: [
                     {
                       fields: {
+                        'bol::p': true,
+                        'bol::sp': true,
                         'str::first': 'John',
                         'str::last': 'Sparrow',
                         'str::email': 'identify@test.com',
@@ -172,9 +174,6 @@ export const data = [
                         'phn::phone': {
                           n: '9112340345',
                         },
-                        'bol::gdpr': true,
-                        'bol::p': true,
-                        'bol::sp': true,
                         'str:cm:ortto-attirbute0': 'abc',
                         'str:cm:ortto-attirbute1': 'def',
                       },
@@ -1036,8 +1035,6 @@ export const data = [
                           n: '9112340345',
                         },
                         'bol::gdpr': false,
-                        'bol::p': false,
-                        'bol::sp': false,
                         'str:cm:ortto-attirbute0': 'abc',
                         'str:cm:ortto-attirbute1': 'def',
                       },
@@ -1250,8 +1247,6 @@ export const data = [
                         'str::language': 'en-US',
                         'str::ei': 'sample_user_id',
                         'bol::gdpr': false,
-                        'bol::p': false,
-                        'bol::sp': false,
                         'str:cm:ortto-attirbute0': 'abc',
                         'str:cm:ortto-attirbute1': 'def',
                       },
@@ -1447,6 +1442,208 @@ export const data = [
               jobId: 2,
             },
             statusCode: 400,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'ortto',
+    description: 'Track call for testing multiple event mappings filter logic',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: {
+              DestinationDefinition: {
+                Config: {
+                  cdkV2Enabled: true,
+                },
+              },
+              ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
+              Name: 'ORTTO',
+              Config: {
+                privateApiKey: 'pvKey',
+                instanceRegion: 'other',
+                orttoEventsMapping: [
+                  {
+                    rsEventName: 'player.set.loved',
+                    orttoEventName: 'Loved a set',
+                    eventProperties: [
+                      {
+                        rudderProperty: 'set.id',
+                        orttoProperty: 'Set ID',
+                        type: 'text',
+                      },
+                      {
+                        rudderProperty: 'set.title',
+                        orttoProperty: 'Set title',
+                        type: 'text',
+                      },
+                      {
+                        rudderProperty: 'set.artist',
+                        orttoProperty: 'Artist name',
+                        type: 'text',
+                      },
+                    ],
+                  },
+                  {
+                    rsEventName: 'player.set.liked',
+                    orttoEventName: 'Liked a set',
+                    eventProperties: [
+                      {
+                        rudderProperty: 'set.id',
+                        orttoProperty: 'Set ID',
+                        type: 'text',
+                      },
+                      {
+                        rudderProperty: 'set.title',
+                        orttoProperty: 'Set title',
+                        type: 'text',
+                      },
+                      {
+                        rudderProperty: 'set.artist',
+                        orttoProperty: 'Artist name',
+                        type: 'text',
+                      },
+                    ],
+                  },
+                  {
+                    rsEventName: 'player.set.played',
+                    orttoEventName: 'Played a set',
+                    eventProperties: [
+                      {
+                        rudderProperty: 'set.id',
+                        orttoProperty: 'Set ID',
+                        type: 'text',
+                      },
+                      {
+                        rudderProperty: 'set.title',
+                        orttoProperty: 'Set title',
+                        type: 'text',
+                      },
+                      {
+                        rudderProperty: 'set.artist',
+                        orttoProperty: 'Artist name',
+                        type: 'text',
+                      },
+                    ],
+                  },
+                ],
+                orttoPersonAttributes: [
+                  {
+                    rudderTraits: 'id',
+                    orttoAttribute: 'External ID',
+                    type: 'text',
+                  },
+                ],
+              },
+              Enabled: true,
+              Transformations: [],
+            },
+            metadata: { destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq', jobId: 2 },
+            message: {
+              type: 'track',
+              event: 'player.set.liked',
+              sentAt: '2024-04-29T06:45:59.576Z',
+              userId: 'XxXxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx',
+              channel: 'mobile',
+              context: {
+                locale: 'en-MU',
+                traits: {
+                  email: 'dummy-test@email.oop',
+                  userId: 'XxXxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx',
+                  anonymousId: 'dd14b53d-bfb8-48a9-a46f-e3d1351d1dd8',
+                },
+                library: {
+                  name: 'rudder-ios-library',
+                  version: '1.26.3',
+                },
+                network: {
+                  wifi: true,
+                  cellular: false,
+                },
+                timezone: 'Africa/Johannesburg',
+              },
+              rudderId: '83cb2d47-9c08-4ce3-86cc-44d8486b337a',
+              messageId: '2d9525a7-2a55-4d31-9c34-78788a5cbb59',
+              timestamp: '2024-04-29T06:45:52.611Z',
+              properties: {
+                email: 'dummy-test@email.oop',
+                'set.id': '537d8682-4b37-4f12-8452-3f57091c2a54',
+                userId: 'XxXxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx',
+                'set.title': 'Burn Man_Master',
+                'set.artist': 'John Doe',
+                environment: 'test',
+                'set.artists.0.name': 'John Doe',
+              },
+              receivedAt: '2024-04-29T06:45:59.779Z',
+              request_ip: '206.0.75.23',
+              anonymousId: 'dd14b53d-bfb8-48a9-a46f-e3d1351d1dd8',
+              integrations: {
+                All: true,
+              },
+              originalTimestamp: '2024-04-29T06:45:52.408Z',
+            },
+          },
+        ],
+        method: 'POST',
+      },
+      pathSuffix: '',
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            metadata: {
+              destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
+              jobId: 2,
+            },
+            output: {
+              body: {
+                FORM: {},
+                JSON_ARRAY: {},
+                XML: {},
+                JSON: {
+                  activities: [
+                    {
+                      fields: {
+                        'str::email': 'dummy-test@email.oop',
+                        'geo::city': {},
+                        'geo::country': {},
+                        'geo::region': {},
+                        'str::ei': 'XxXxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx',
+                        'str::language': 'en-MU',
+                      },
+                      activity_id: 'act:cm:liked-a-set',
+                      attributes: {
+                        'str:cm:set-id': '537d8682-4b37-4f12-8452-3f57091c2a54',
+                        'str:cm:set-title': 'Burn Man_Master',
+                        'str:cm:artist-name': 'John Doe',
+                      },
+                      location: {},
+                    },
+                  ],
+                  merge_by: ['str::ei', 'str::email'],
+                },
+              },
+              endpoint: 'https://api.ap3api.com/v1/activities/create',
+              files: {},
+              headers: {
+                'Content-Type': 'application/json',
+                'X-Api-Key': 'pvKey',
+              },
+              method: 'POST',
+              params: {},
+              type: 'REST',
+              userId: '',
+              version: '1',
+            },
+            statusCode: 200,
           },
         ],
       },

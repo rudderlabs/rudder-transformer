@@ -1,12 +1,14 @@
 const { NetworkError } = require('@rudderstack/integrations-lib');
-const { httpSend, prepareProxyRequest } = require('../../../adapters/network');
+const { prepareProxyRequest, handleHttpRequest } = require('../../../adapters/network');
 const { isHttpStatusSuccess, getAuthErrCategoryFromStCode } = require('../../util/index');
+const logger = require('../../../logger');
 
 const {
   processAxiosResponse,
   getDynamicErrorType,
 } = require('../../../adapters/utils/networkUtils');
 const tags = require('../../util/tags');
+const { destType } = require('./config');
 /**
  * This function helps to create a offlineUserDataJobs
  * @param endpoint
@@ -18,7 +20,7 @@ const tags = require('../../util/tags');
  * ref: https://developers.google.com/google-ads/api/rest/reference/rest/v15/CustomerMatchUserListMetadata
  */
 
-const createJob = async (endpoint, headers, method, params) => {
+const createJob = async ({ endpoint, headers, method, params, metadata }) => {
   const jobCreatingUrl = `${endpoint}:create`;
   const customerMatchUserListMetadata = {
     userList: `customers/${params.customerId}/userLists/${params.listId}`,
@@ -37,14 +39,31 @@ const createJob = async (endpoint, headers, method, params) => {
     headers,
     method,
   };
-  const response = await httpSend(jobCreatingRequest, {
-    destType: 'google_adwords_remarketing_lists',
-    feature: 'proxy',
-    endpointPath: '/customers/create',
-    requestMethod: 'POST',
-    module: 'dataDelivery',
+  logger.requestLog(`[${destType.toUpperCase()}] job creation request`, {
+    metadata,
+    requestDetails: {
+      url: jobCreatingRequest.url,
+      body: jobCreatingRequest.data,
+      method: jobCreatingRequest.method,
+    },
   });
-  return response;
+  const { httpResponse, processedResponse } = await handleHttpRequest(
+    'constructor',
+    jobCreatingRequest,
+    {
+      destType: 'google_adwords_remarketing_lists',
+      feature: 'proxy',
+      endpointPath: '/customers/create',
+      requestMethod: 'POST',
+      module: 'dataDelivery',
+      metadata,
+    },
+  );
+  logger.responseLog(`[${destType.toUpperCase()}] job creation response`, {
+    metadata,
+    responseDetails: processedResponse,
+  });
+  return httpResponse;
 };
 /**
  * This function helps to put user details in a offlineUserDataJobs
@@ -55,7 +74,7 @@ const createJob = async (endpoint, headers, method, params) => {
  * @param body
  */
 
-const addUserToJob = async (endpoint, headers, method, jobId, body) => {
+const addUserToJob = async ({ endpoint, headers, method, jobId, body, metadata }) => {
   const jobAddingUrl = `${endpoint}/${jobId}:addOperations`;
   const secondRequest = {
     url: jobAddingUrl,
@@ -63,12 +82,29 @@ const addUserToJob = async (endpoint, headers, method, jobId, body) => {
     headers,
     method,
   };
-  const response = await httpSend(secondRequest, {
-    destType: 'google_adwords_remarketing_lists',
-    feature: 'proxy',
-    endpointPath: '/addOperations',
-    requestMethod: 'POST',
-    module: 'dataDelivery',
+  logger.requestLog(`[${destType.toUpperCase()}] add user to job request`, {
+    metadata,
+    requestDetails: {
+      url: secondRequest.url,
+      body: secondRequest.data,
+      method: secondRequest.method,
+    },
+  });
+  const { httpResponse: response, processedResponse } = await handleHttpRequest(
+    'constructor',
+    secondRequest,
+    {
+      destType: 'google_adwords_remarketing_lists',
+      feature: 'proxy',
+      endpointPath: '/addOperations',
+      requestMethod: 'POST',
+      module: 'dataDelivery',
+      metadata,
+    },
+  );
+  logger.responseLog(`[${destType.toUpperCase()}] add user to job response`, {
+    metadata,
+    responseDetails: processedResponse,
   });
   return response;
 };
@@ -80,19 +116,35 @@ const addUserToJob = async (endpoint, headers, method, jobId, body) => {
  * @param method
  * @param jobId
  */
-const runTheJob = async (endpoint, headers, method, jobId) => {
+const runTheJob = async ({ endpoint, headers, method, jobId, metadata }) => {
   const jobRunningUrl = `${endpoint}/${jobId}:run`;
   const thirdRequest = {
     url: jobRunningUrl,
     headers,
     method,
   };
-  const response = await httpSend(thirdRequest, {
-    destType: 'google_adwords_remarketing_lists',
-    feature: 'proxy',
-    endpointPath: '/run',
-    requestMethod: 'POST',
-    module: 'dataDelivery',
+  logger.requestLog(`[${destType.toUpperCase()}] run job request`, {
+    metadata,
+    requestDetails: {
+      url: thirdRequest.url,
+      body: thirdRequest.data,
+      method: thirdRequest.method,
+    },
+  });
+  const { httpResponse: response, processedResponse } = await handleHttpRequest(
+    'constructor',
+    thirdRequest,
+    {
+      destType: 'google_adwords_remarketing_lists',
+      feature: 'proxy',
+      endpointPath: '/run',
+      requestMethod: 'POST',
+      module: 'dataDelivery',
+    },
+  );
+  logger.responseLog(`[${destType.toUpperCase()}] run job response`, {
+    metadata,
+    responseDetails: processedResponse,
   });
   return response;
 };
@@ -104,12 +156,12 @@ const runTheJob = async (endpoint, headers, method, jobId) => {
  * @returns
  */
 const gaAudienceProxyRequest = async (request) => {
-  const { body, method, params, endpoint } = request;
+  const { body, method, params, endpoint, metadata } = request;
   const { headers } = request;
 
   // step1: offlineUserDataJobs creation
 
-  const firstResponse = await createJob(endpoint, headers, method, params);
+  const firstResponse = await createJob({ endpoint, headers, method, params, metadata });
   if (!firstResponse.success && !isHttpStatusSuccess(firstResponse?.response?.status)) {
     return firstResponse;
   }
@@ -126,7 +178,7 @@ const gaAudienceProxyRequest = async (request) => {
   if (firstResponse?.response?.data?.resourceName)
     // eslint-disable-next-line prefer-destructuring
     jobId = firstResponse.response.data.resourceName.split('/')[3];
-  const secondResponse = await addUserToJob(endpoint, headers, method, jobId, body);
+  const secondResponse = await addUserToJob({ endpoint, headers, method, jobId, body, metadata });
   if (!secondResponse.success && !isHttpStatusSuccess(secondResponse?.response?.status)) {
     return secondResponse;
   }
@@ -139,7 +191,7 @@ const gaAudienceProxyRequest = async (request) => {
   }
 
   // step3: running the job
-  const thirdResponse = await runTheJob(endpoint, headers, method, jobId);
+  const thirdResponse = await runTheJob({ endpoint, headers, method, jobId, metadata });
   return thirdResponse;
 };
 

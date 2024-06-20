@@ -1,6 +1,10 @@
 const md5 = require('md5');
 const get = require('get-value');
-const { NetworkError } = require('@rudderstack/integrations-lib');
+const {
+  NetworkError,
+  ConfigurationError,
+  InstrumentationError,
+} = require('@rudderstack/integrations-lib');
 const tags = require('../../../../v0/util/tags');
 const { httpPOST } = require('../../../../adapters/network');
 const {
@@ -27,7 +31,41 @@ const {
   SEARCH_CONTACT_ENDPOINT,
   ReservedCompanyProperties,
   CREATE_OR_UPDATE_COMPANY_ENDPOINT,
+  TAGS_ENDPOINT,
 } = require('./config');
+
+/**
+ * method to handle error during api call
+ * ref docs: https://developers.intercom.com/docs/references/rest-api/errors/error-codes/
+ *           https://developers.intercom.com/docs/references/rest-api/errors/error-objects/
+ *           https://developers.intercom.com/docs/references/rest-api/errors/http-responses/
+ * e.g.
+ * 400 - code: parameter_not_found (or parameter_invalid), message: company not specified
+ * 401 - code: unauthorized, message: Access Token Invalid
+ * 404 - code: company_not_found, message: Company Not Found
+ * @param {*} message
+ * @param {*} processedResponse
+ */
+const intercomErrorHandler = (message, processedResponse) => {
+  const errorMessages = JSON.stringify(processedResponse.response);
+  if (processedResponse.status === 400) {
+    throw new InstrumentationError(`${message} : ${errorMessages}`);
+  }
+  if (processedResponse.status === 401) {
+    throw new ConfigurationError(`${message} : ${errorMessages}`);
+  }
+  if (processedResponse.status === 404) {
+    throw new InstrumentationError(`${message} : ${errorMessages}`);
+  }
+  throw new NetworkError(
+    `${message} : ${errorMessages}`,
+    processedResponse.status,
+    {
+      [tags]: getDynamicErrorType(processedResponse.status),
+    },
+    processedResponse,
+  );
+};
 
 /**
  * Returns destination request headers
@@ -285,7 +323,8 @@ const searchContact = async (message, destination) => {
  * @returns
  */
 const createOrUpdateCompany = async (payload, destination) => {
-  const headers = getHeaders(destination);
+  const { apiVersion } = destination.Config;
+  const headers = getHeaders(destination, apiVersion);
   const finalPayload = JSON.stringify(removeUndefinedAndNullValues(payload));
   const baseEndPoint = getBaseEndpoint(destination);
   const endpoint = `${baseEndPoint}/${CREATE_OR_UPDATE_COMPANY_ENDPOINT}`;
@@ -369,6 +408,99 @@ const addMetadataToPayload = (payload) => {
   return finalPayload;
 };
 
+/**
+ * Api call to attach user to the company
+ * Ref doc v1: https://developers.intercom.com/docs/references/1.4/rest-api/users/companies-and-users/
+ * Ref doc v2: https://developers.intercom.com/docs/references/2.10/rest-api/api.intercom.io/Contacts/attachContactToACompany/
+ * @param {*} payload
+ * @param {*} endpoint
+ * @param {*} destination
+ */
+const attachContactToCompany = async (payload, endpoint, destination) => {
+  let { apiVersion } = destination.Config;
+  apiVersion = isDefinedAndNotNull(apiVersion) ? apiVersion : 'v2';
+  let endpointPath = '/contact/{id}/companies';
+  if (apiVersion === 'v1') {
+    endpointPath = '/users';
+  }
+  const commonStatTags = {
+    destType: 'intercom',
+    feature: 'transformation',
+    requestMethod: 'POST',
+    module: 'router',
+  };
+  const headers = getHeaders(destination, apiVersion);
+  const finalPayload = JSON.stringify(removeUndefinedAndNullValues(payload));
+  const response = await httpPOST(
+    endpoint,
+    finalPayload,
+    {
+      headers,
+    },
+    {
+      ...commonStatTags,
+      endpointPath,
+    },
+  );
+
+  const processedResponse = processAxiosResponse(response);
+  if (!isHttpStatusSuccess(processedResponse.status)) {
+    intercomErrorHandler('Unable to attach Contact or User to Company due to', processedResponse);
+  }
+};
+
+/**
+ * Api calls to add or update tags to the company
+ * Ref doc v1: https://developers.intercom.com/docs/references/1.4/rest-api/tags/tag-or-untag-users-companies-leads-contacts/
+ * Ref doc v2: https://developers.intercom.com/docs/references/2.10/rest-api/api.intercom.io/Tags/createTag/
+ * @param message
+ * @param destination
+ * @param id
+ * @returns
+ */
+const addOrUpdateTagsToCompany = async (message, destination, id) => {
+  const companyTags = message?.context?.traits?.tags;
+  if (!companyTags) return;
+  const { apiVersion } = destination.Config;
+  const headers = getHeaders(destination, apiVersion);
+  const baseEndPoint = getBaseEndpoint(destination);
+  const endpoint = `${baseEndPoint}/${TAGS_ENDPOINT}`;
+  const statTags = {
+    destType: 'intercom',
+    feature: 'transformation',
+    endpointPath: '/tags',
+    requestMethod: 'POST',
+    module: 'router',
+  };
+  await Promise.all(
+    companyTags.map(async (tag) => {
+      const finalPayload = {
+        name: tag,
+        companies: [
+          {
+            id,
+          },
+        ],
+      };
+      const response = await httpPOST(
+        endpoint,
+        finalPayload,
+        {
+          headers,
+        },
+        statTags,
+      );
+      const processedResponse = processAxiosResponse(response);
+      if (!isHttpStatusSuccess(processedResponse.status)) {
+        intercomErrorHandler(
+          'Unable to Add or Update the Tag to Company due to',
+          processedResponse,
+        );
+      }
+    }),
+  );
+};
+
 module.exports = {
   getName,
   getHeaders,
@@ -382,4 +514,6 @@ module.exports = {
   filterCustomAttributes,
   checkIfEmailOrUserIdPresent,
   separateReservedAndRestMetadata,
+  attachContactToCompany,
+  addOrUpdateTagsToCompany,
 };

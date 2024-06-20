@@ -1,10 +1,15 @@
 const Pyroscope = require('@pyroscope/nodejs');
 const { getDestTypeFromContext } = require('@rudderstack/integrations-lib');
+const cluster = require('cluster');
 const stats = require('./util/stats');
 
 function initPyroscope() {
   Pyroscope.init({
     appName: 'rudder-transformer',
+    tags: {
+      workerId: cluster.worker ? cluster.worker.id : 0,
+      isMaster: cluster.isMaster,
+    },
   });
   Pyroscope.startHeapCollecting();
 }

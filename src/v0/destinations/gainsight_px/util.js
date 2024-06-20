@@ -43,7 +43,7 @@ const objectExists = async (id, Config, objectType, metadata) => {
   if (objectType === 'account') {
     url = `${ENDPOINTS.ACCOUNTS_ENDPOINT}/${id}`;
   }
-  const res = await handleHttpRequest(
+  const { httpResponse: res } = await handleHttpRequest(
     'get',
     url,
     {
@@ -68,7 +68,7 @@ const objectExists = async (id, Config, objectType, metadata) => {
 };
 
 const createAccount = async (payload, Config, metadata) => {
-  const res = await handleHttpRequest(
+  const { httpResponse: res } = await handleHttpRequest(
     'post',
     ENDPOINTS.ACCOUNTS_ENDPOINT,
     payload,
@@ -94,7 +94,7 @@ const createAccount = async (payload, Config, metadata) => {
 };
 
 const updateAccount = async (accountId, payload, Config, metadata) => {
-  const res = await handleHttpRequest(
+  const { httpResponse: res } = await handleHttpRequest(
     'put',
     `${ENDPOINTS.ACCOUNTS_ENDPOINT}/${accountId}`,
     payload,

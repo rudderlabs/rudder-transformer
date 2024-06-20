@@ -113,7 +113,7 @@ describe('getHttpMethodForEndpoint', () => {
 
   // handles empty string as endpoint
   it('should return POST when endpoint is an empty string', () => {
-    const endpoint = 'https://rest.clicksend.com/v3/lists/2626790/contacts';
+    const endpoint = 'https://rest.clicksend.com/v3/lists/<list-id>/contacts';
     const result = getHttpMethodForEndpoint(endpoint);
     expect(result).toBe('POST');
   });

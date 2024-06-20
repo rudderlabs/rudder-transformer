@@ -1,88 +1,12 @@
 export const headerBlockWithCorrectAccessToken = {
   'Content-Type': 'application/json',
-  Accept: 'application/json',
-  'X-WSSE':
-    'UsernameToken Username="dummy", PasswordDigest="NDc5MjNlODIyMGE4ODhiMTQyNTA0OGMzZTFjZTM1MmMzMmU0NmNiNw==", Nonce="5398e214ae99c2e50afb709a3bc423f9", Created="2019-10-14T00:00:00.000Z"',
+  Authorization: 'dummy-key',
 };
-
-export const headerBlockWithWrongAccessToken = {
-  'Content-Type': 'application/json',
-  Accept: 'application/json',
-  'X-WSSE':
-    'UsernameToken Username="dummy2", PasswordDigest="NDc5MjNlODIyMGE4ODhiMTQyNTA0OGMzZTFjZTM1MmMzMmU0NmNiNw==", Nonce="5398e214ae99c2e50afb709a3bc423f9", Created="2019-10-14T00:00:00.000Z"',
-};
-
-export const correctContactCreateUpdateData = [
-  {
-    '2': 'Person0',
-    '3': 'person0@example.com',
-    '10569': 'efghi',
-    '10519': 'efghi',
-    '31': 1,
-    '39': 'abc',
-  },
-  {
-    '2': true,
-    '3': 'abcde',
-    '10569': 'efgh',
-    '10519': 1234,
-    '31': 2,
-    '39': 'abc',
-  },
-];
-
-export const correctContactWithWrongKeyIdCreateUpdateData = [
-  {
-    '2': 'Person0',
-    '3': 'person0@example.com',
-    '10569': 'efghi',
-    '10519': 'efghi',
-    '31': 1,
-    '39': 'abc',
-    '100': 'abc',
-  },
-  {
-    '2': true,
-    '3': 'abcde',
-    '10569': 'efgh',
-    '10519': 1234,
-    '31': 2,
-    '39': 'abc',
-    '100': 'abc',
-  },
-];
-
-export const wrongContactCreateUpdateData = [
-  {
-    '2': 'Person0',
-    '3': 'person0@example.com',
-    '10569': 'efghi',
-    '10519': 'efghi',
-    '31': 1,
-    '39': 'abc',
-  },
-  {
-    '2': true,
-    '3': 'person0@example.com',
-    '10569': 1234,
-    '10519': 'efgh',
-    '31': 2,
-    '39': 'abc',
-  },
-];
 
 export const contactPayload = {
   phone_number: '+919433127939',
   first_name: 'john',
   last_name: 'Doe',
-};
-
-export const comonHeader = {
-  Accept: 'application/json',
-  'Content-Type': 'application/json',
-
-  'X-WSSE':
-    'UsernameToken Username="dummy", PasswordDigest="MjEzMDY5ZmI3NjMwNzE1N2M1ZTI5MWMzMzI3ODQxNDU2YWM4NTI3YQ==", Nonce="5398e214ae99c2e50afb709a3bc423f9", Created="2023-10-14T00:00:00.000Z"',
 };
 
 // MOCK DATA

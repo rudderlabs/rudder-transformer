@@ -40,6 +40,27 @@ const validateTrackSMSCampaignPayload = (payload) => {
   }
 };
 
+const deduceSchedule = (eventLevelSchedule, timestamp, destConfig) => {
+  if (isDefinedAndNotNullAndNotEmpty(eventLevelSchedule) && !Number.isNaN(destConfig)) {
+    return eventLevelSchedule;
+  }
+  const { defaultCampaignScheduleUnit, defaultCampaignSchedule } = destConfig;
+  // Parse the input timestamp into a Date object
+  const date = new Date(timestamp);
+
+  // Check the delta unit and add the appropriate amount of time
+  if (defaultCampaignScheduleUnit === 'day') {
+    date.setDate(date.getDate() + defaultCampaignSchedule);
+  } else if (defaultCampaignScheduleUnit === 'minute') {
+    date.setMinutes(date.getMinutes() + defaultCampaignSchedule);
+  } else {
+    throw new Error("Invalid delta unit. Use 'day' or 'minute'.");
+  }
+
+  // Return the future date as a UNIX timestamp in seconds
+  return Math.floor(date.getTime() / 1000);
+};
+
 const mergeMetadata = (batch) => {
   const metadata = [];
   batch.forEach((event) => {
@@ -144,4 +165,5 @@ module.exports = {
   getEndIdentifyPoint,
   validateIdentifyPayload,
   validateTrackSMSCampaignPayload,
+  deduceSchedule,
 };

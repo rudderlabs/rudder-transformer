@@ -60,7 +60,7 @@ steps:
             name : String(.properties.name),
             body : String(.properties.body),
             from : $.getDestinationExternalID(^.message,'CLICKSEND_SENDER_EMAIL') ||  ^.destination.Config.defaultSenderEmail,
-            schedule : .properties.schedule,
+            schedule : $.deduceSchedule(.properties.schedule,{{{{$.getGenericPaths("timestamp")}}}}, ^.destination.Config)
             });
             console.log(JSON.stringify(.destination.Config));
             console.log(.destination.Config.defaultSenderEmail);
@@ -78,7 +78,7 @@ steps:
             to: {{{{$.getGenericPaths("phone")}}}},
             body: .properties.body,
             source: .properties.source ||  ^.destination.Config.defaultSource,
-            schedule: .properties.schedule,
+            schedule: $.deduceSchedule(.properties.schedule, ^.destination.Config),
             custom_string: .properties.custom_string,
             country: {{{{$.getGenericPaths("country")}}}},
             from_email: .properties.from_email

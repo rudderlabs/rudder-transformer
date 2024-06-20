@@ -1,4 +1,8 @@
-const { validateTrackSMSCampaignPayload, deduceSchedule } = require('./utils');
+const {
+  validateTrackSMSCampaignPayload,
+  deduceSchedule,
+  getHttpMethodForEndpoint,
+} = require('./utils');
 
 describe('validateTrackSMSCampaignPayload', () => {
   // payload with all required fields defined and non-empty does not throw an error
@@ -96,5 +100,33 @@ describe('deduceSchedule', () => {
 
     expect(typeof result).toBe('number');
     expect(result.toString()).toMatch(/^\d+$/);
+  });
+});
+
+describe('getHttpMethodForEndpoint', () => {
+  // returns 'PUT' for endpoint matching /contacts/{id}
+  it('should return PUT when endpoint matches /contacts/{id}', () => {
+    const endpoint = 'https://rest.clicksend.com/v3/lists/<list-id>/contacts/<contact-id>';
+    const result = getHttpMethodForEndpoint(endpoint);
+    expect(result).toBe('PUT');
+  });
+
+  // handles empty string as endpoint
+  it('should return POST when endpoint is an empty string', () => {
+    const endpoint = 'https://rest.clicksend.com/v3/lists/2626790/contacts';
+    const result = getHttpMethodForEndpoint(endpoint);
+    expect(result).toBe('POST');
+  });
+
+  it('should return POST when endpoint is an empty string', () => {
+    const endpoint = 'https://rest.clicksend.com/v3/sms-campaigns/send';
+    const result = getHttpMethodForEndpoint(endpoint);
+    expect(result).toBe('POST');
+  });
+
+  it('should return POST when endpoint is an empty string', () => {
+    const endpoint = 'https://rest.clicksend.com/v3/sms/send';
+    const result = getHttpMethodForEndpoint(endpoint);
+    expect(result).toBe('POST');
   });
 });

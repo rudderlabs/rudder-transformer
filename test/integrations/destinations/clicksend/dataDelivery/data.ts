@@ -176,7 +176,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
             status: 403,
             statTags,
             message:
-              ' CLICKSEND: Error transformer proxy v1 during  CLICKSEND response transformation. unknown error format',
+              'CLICKSEND: Error transformer proxy v1 during CLICKSEND response transformation. unknown error format',
             response: [
               {
                 statusCode: 403,
@@ -219,7 +219,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
             status: 404,
             statTags,
             message:
-              ' CLICKSEND: Error transformer proxy v1 during  CLICKSEND response transformation. unknown error format',
+              'CLICKSEND: Error transformer proxy v1 during CLICKSEND response transformation. unknown error format',
             response: [
               {
                 statusCode: 404,
@@ -262,7 +262,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
             status: 404,
             statTags,
             message:
-              ' CLICKSEND: Error transformer proxy v1 during  CLICKSEND response transformation. unknown error format',
+              'CLICKSEND: Error transformer proxy v1 during CLICKSEND response transformation. unknown error format',
             response: [
               {
                 statusCode: 404,
@@ -305,7 +305,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
             status: 400,
             statTags,
             message:
-              ' CLICKSEND: Error transformer proxy v1 during  CLICKSEND response transformation. unknown error format',
+              'CLICKSEND: Error transformer proxy v1 during CLICKSEND response transformation. unknown error format',
             response: [
               {
                 statusCode: 400,
@@ -348,7 +348,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
             status: 404,
             statTags,
             message:
-              ' CLICKSEND: Error transformer proxy v1 during  CLICKSEND response transformation. unknown error format',
+              'CLICKSEND: Error transformer proxy v1 during CLICKSEND response transformation. unknown error format',
             response: [
               {
                 statusCode: 404,
@@ -481,7 +481,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
               },
               status: 200,
             },
-            message: '[ CLICKSEND Response V1 Handler] - Request Processed Successfully',
+            message: '[CLICKSEND Response V1 Handler] - Request Processed Successfully',
             response: [
               {
                 statusCode: 200,

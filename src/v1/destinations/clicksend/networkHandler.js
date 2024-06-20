@@ -33,70 +33,60 @@ function checkIfEventIsAbortableAndExtractErrorMessage(singleResponse) {
     errorMsg: status || campaignStatus || '',
   };
 }
-const responseHandler = (responseParams) => {
-  const { destinationResponse, rudderJobMetadata } = responseParams;
-  const message = `[ CLICKSEND Response V1 Handler] - Request Processed Successfully`;
-  let responseWithIndividualEvents = [];
-  const { response, status } = destinationResponse;
-
-  if (!isHttpStatusSuccess(status)) {
-    const errorMessage = response.replyText || 'unknown error format';
-    responseWithIndividualEvents = rudderJobMetadata.map((metadata) => ({
-      statusCode: status,
-      metadata,
-      error: errorMessage,
-    }));
-    throw new TransformerProxyError(
-      ` CLICKSEND: Error transformer proxy v1 during  CLICKSEND response transformation. ${errorMessage}`,
-      status,
-      {
-        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
-      },
-      destinationResponse,
-      '',
-      responseWithIndividualEvents,
-    );
-  }
-
-  if (isHttpStatusSuccess(status)) {
-    // check for Partial Event failures and Successes
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    const { messages } = response.data;
-    const finalData = messages || [response.data];
-    finalData.forEach((singleResponse, idx) => {
-      const proxyOutput = {
-        statusCode: 200,
-        metadata: rudderJobMetadata[idx],
-        error: 'success',
-      };
-      // update status of partial event if abortable
-      const { isAbortable, errorMsg } = checkIfEventIsAbortableAndExtractErrorMessage(
-        singleResponse, // array sms send status / entire destination request
-      );
-      if (isAbortable) {
-        proxyOutput.statusCode = 400;
-        proxyOutput.error = errorMsg;
-      }
-      responseWithIndividualEvents.push(proxyOutput);
-    });
-    return {
-      status,
-      message,
-      destinationResponse,
-      response: responseWithIndividualEvents,
-    };
-  }
-
+const handleErrorResponse = (status, response, rudderJobMetadata) => {
+  const errorMessage = response.replyText || 'unknown error format';
+  const responseWithIndividualEvents = rudderJobMetadata.map((metadata) => ({
+    statusCode: status,
+    metadata,
+    error: errorMessage,
+  }));
   throw new TransformerProxyError(
-    ` CLICKSEND: Error transformer proxy v1 during  CLICKSEND response transformation`,
+    `CLICKSEND: Error transformer proxy v1 during CLICKSEND response transformation. ${errorMessage}`,
     status,
     {
       [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
     },
-    destinationResponse,
+    { response, status },
     '',
     responseWithIndividualEvents,
   );
+};
+
+const responseHandler = (responseParams) => {
+  const { destinationResponse, rudderJobMetadata } = responseParams;
+  const message = '[CLICKSEND Response V1 Handler] - Request Processed Successfully';
+  const { response, status } = destinationResponse;
+
+  if (!isHttpStatusSuccess(status)) {
+    handleErrorResponse(status, response, rudderJobMetadata);
+  }
+
+  const { messages } = response.data;
+  const finalData = messages || [response.data];
+  const responseWithIndividualEvents = finalData.map((singleResponse, idx) => {
+    const proxyOutput = {
+      statusCode: 200,
+      metadata: rudderJobMetadata[idx],
+      error: 'success',
+    };
+    const { isAbortable, errorMsg } = checkIfEventIsAbortableAndExtractErrorMessage(singleResponse);
+    if (isAbortable) {
+      proxyOutput.statusCode = 400;
+      proxyOutput.error = errorMsg;
+    }
+    return proxyOutput;
+  });
+
+  return {
+    status,
+    message,
+    destinationResponse,
+    response: responseWithIndividualEvents,
+  };
+};
+
+module.exports = {
+  responseHandler,
 };
 
 function networkHandler() {

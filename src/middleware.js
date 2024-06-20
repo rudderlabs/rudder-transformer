@@ -12,6 +12,7 @@ function initPyroscope() {
       isMaster: cluster.isMaster,
     },
   });
+  Pyroscope.start();
   Pyroscope.startHeapCollecting();
 }
 

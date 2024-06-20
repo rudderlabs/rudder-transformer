@@ -10,7 +10,7 @@ const { ENDPOINTS, getLookupPayload } = require('./config');
 const tags = require('../../util/tags');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
-const searchGroup = async (groupName, Config) => {
+const searchGroup = async (groupName, Config, metadata) => {
   let resp;
   try {
     resp = await myAxios.post(
@@ -28,6 +28,7 @@ const searchGroup = async (groupName, Config) => {
         requestMethod: 'POST',
         endpointPath: '/data/objects/query/Company',
         module: 'router',
+        metadata,
       },
     );
   } catch (error) {
@@ -48,7 +49,7 @@ const searchGroup = async (groupName, Config) => {
   return resp;
 };
 
-const createGroup = async (payload, Config) => {
+const createGroup = async (payload, Config, metadata) => {
   let resp;
   try {
     resp = await myAxios.post(
@@ -68,6 +69,7 @@ const createGroup = async (payload, Config) => {
         requestMethod: 'POST',
         endpointPath: '/data/objects/Company',
         module: 'router',
+        metadata,
       },
     );
   } catch (error) {
@@ -88,7 +90,7 @@ const createGroup = async (payload, Config) => {
   return resp.data.data.records[0].Gsid;
 };
 
-const updateGroup = async (payload, Config) => {
+const updateGroup = async (payload, Config, metadata) => {
   let resp;
   try {
     resp = await myAxios.put(
@@ -111,6 +113,7 @@ const updateGroup = async (payload, Config) => {
         requestMethod: 'PUT',
         endpointPath: '/data/objects/Company',
         module: 'router',
+        metadata,
       },
     );
   } catch (error) {

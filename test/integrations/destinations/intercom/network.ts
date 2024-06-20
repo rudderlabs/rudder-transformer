@@ -43,6 +43,141 @@ const companyPayload = {
   industry: 'CDP',
 };
 
+const v1Headers = {
+  'Content-Type': 'application/json',
+  Authorization: 'Bearer abcd=',
+  Accept: 'application/json',
+  'Intercom-Version': '1.4',
+};
+
+const companyData1 = {
+  company_id: 'test_company_id_wdasda',
+  name: 'rudderUpdate',
+  plan: 'basic',
+  size: 50,
+  industry: 'IT',
+  monthly_spend: 2131231,
+  remote_created_at: 1683017572,
+  custom_attributes: {
+    key1: 'val1',
+    employees: 450,
+    email: 'test@test.com',
+  },
+};
+
+const companyData2 = {
+  company_id: 'test_company_id_wdasda',
+  name: 'rudderUpdate',
+  website: 'url',
+  plan: 'basic',
+  size: 50,
+  industry: 'IT',
+  monthly_spend: 2131231,
+  remote_created_at: 1683017572,
+  custom_attributes: {
+    key1: 'val1',
+    employees: 450,
+    email: 'test@test.com',
+    'key2.a': 'a',
+    'key2.b': 'b',
+    'key3[0]': 1,
+    'key3[1]': 2,
+    'key3[2]': 3,
+    key4: null,
+  },
+};
+
+const companyData3 = {
+  company_id: 'test_company_id',
+  name: 'RudderStack',
+  website: 'www.rudderstack.com',
+  plan: 'enterprise',
+  size: 500,
+  industry: 'CDP',
+  monthly_spend: 2131231,
+  custom_attributes: {
+    email: 'comanyemail@abc.com',
+  },
+};
+
+const userData1 = {
+  user_id: 'sdfrsdfsdfsf',
+  companies: [
+    {
+      company_id: 'test_company_id_wdasda',
+      name: 'rudderUpdate',
+    },
+  ],
+};
+
+const userData2 = {
+  email: 'testUser@test.com',
+  companies: [
+    {
+      company_id: 'test_company_id_wdasda',
+      name: 'rudderUpdate',
+    },
+  ],
+};
+
+const userData3 = {
+  user_id: 'sdfrsdfsdfsf',
+  email: 'testUser@test.com',
+  companies: [
+    {
+      company_id: 'test_company_id_wdasda',
+      name: 'rudderUpdate',
+    },
+  ],
+};
+
+const createCompanyDummyResp = {
+  type: 'company',
+  company_id: 'test_company_id_wdasda',
+  id: '657264e9018c0a647s45',
+  name: 'rudderUpdate',
+  website: 'url',
+  plan: 'basic',
+  size: 50,
+  industry: 'IT',
+  monthly_spend: 2131231,
+  remote_created_at: 1683017572,
+  created_at: 1701930212,
+  updated_at: 1701930212,
+  custom_attributes: {
+    key1: 'val1',
+    employees: 450,
+    email: 'test@test.com',
+  },
+};
+
+const attachUserDummyResp = {
+  type: 'user',
+  id: '6662e5abd27951dd35e024e9',
+  user_id: 'user123',
+  anonymous: false,
+  email: 'test+5@rudderlabs.com',
+  app_id: '1234',
+  companies: {
+    type: 'company.list',
+    companies: [
+      {
+        type: 'company',
+        company_id: 'company_id',
+        id: '6664ec390b9416d083be97fc',
+        name: 'Company',
+      },
+    ],
+  },
+  created_at: 1717757355,
+  updated_at: 1717890105,
+  tags: {
+    type: 'tag.list',
+    tags: [],
+  },
+  custom_attributes: {},
+};
+
 const deleteNwData = [
   {
     httpReq: {
@@ -595,6 +730,233 @@ const deliveryCallsData = [
         ],
       },
       status: 504,
+    },
+  },
+  {
+    httpReq: {
+      method: 'post',
+      url: 'https://api.eu.intercom.io/contacts/70701240741e45d040/companies',
+      data: {
+        id: '657264e9018c0a647s45',
+      },
+      headers: commonHeaders,
+    },
+    httpRes: {
+      status: 200,
+      data: {
+        type: 'company',
+        company_id: 'rudderlabs',
+        id: '657264e9018c0a647s45',
+        name: 'RudderStack',
+        website: 'www.rudderstack.com',
+        plan: 'enterprise',
+        size: 500,
+        industry: 'CDP',
+        remote_created_at: 1374138000,
+        created_at: 1701930212,
+        updated_at: 1701930212,
+      },
+    },
+  },
+  {
+    httpReq: {
+      method: 'post',
+      url: 'https://api.intercom.io/companies',
+      data: companyPayload,
+      headers: commonHeaders,
+    },
+    httpRes: {
+      status: 200,
+      data: {
+        type: 'company',
+        company_id: 'rudderlabs',
+        id: '657264e9018c0a647s45',
+        name: 'RudderStack',
+        website: 'www.rudderstack.com',
+        plan: 'enterprise',
+        size: 500,
+        industry: 'CDP',
+        remote_created_at: 1374138000,
+        created_at: 1701930212,
+        updated_at: 1701930212,
+      },
+    },
+  },
+  {
+    httpReq: {
+      method: 'post',
+      url: 'https://api.intercom.io/users',
+      data: {
+        user_id: 'user@5',
+        email: 'test+5@rudderlabs.com',
+        companies: [
+          {
+            company_id: 'rudderlabs',
+            name: 'RudderStack',
+          },
+        ],
+      },
+      headers: commonHeaders,
+    },
+    httpRes: {
+      status: 200,
+      data: {
+        type: 'company',
+        company_id: 'rudderlabs',
+        id: '657264e9018c0a647s45',
+        name: 'RudderStack',
+        website: 'www.rudderstack.com',
+        plan: 'enterprise',
+        size: 500,
+        industry: 'CDP',
+        remote_created_at: 1374138000,
+        created_at: 1701930212,
+        updated_at: 1701930212,
+        companies: {
+          type: 'company.list',
+          companies: [
+            {
+              type: 'company',
+              company_id: 'rudderlabs',
+              id: '657264e9018c0a647s45',
+              name: 'RudderStack',
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    httpReq: {
+      method: 'post',
+      url: 'https://api.intercom.io/companies',
+      data: companyData1,
+      headers: v1Headers,
+    },
+    httpRes: {
+      status: 200,
+      data: createCompanyDummyResp,
+    },
+  },
+  {
+    httpReq: {
+      method: 'post',
+      url: 'https://api.intercom.io/companies',
+      data: {
+        ...companyData1,
+        website: 'url',
+      },
+      headers: v1Headers,
+    },
+    httpRes: {
+      status: 200,
+      data: createCompanyDummyResp,
+    },
+  },
+  {
+    httpReq: {
+      method: 'post',
+      url: 'https://api.intercom.io/companies',
+      data: companyData2,
+      headers: v1Headers,
+    },
+    httpRes: {
+      status: 200,
+      data: createCompanyDummyResp,
+    },
+  },
+  {
+    httpReq: {
+      method: 'post',
+      url: 'https://api.intercom.io/companies',
+      data: companyData3,
+      headers: v1Headers,
+    },
+    httpRes: {
+      status: 200,
+      data: createCompanyDummyResp,
+    },
+  },
+  {
+    httpReq: {
+      method: 'post',
+      url: 'https://api.intercom.io/users',
+      data: userData1,
+      headers: v1Headers,
+    },
+    httpRes: {
+      status: 200,
+      data: attachUserDummyResp,
+    },
+  },
+  {
+    httpReq: {
+      method: 'post',
+      url: 'https://api.intercom.io/users',
+      data: userData2,
+      headers: v1Headers,
+    },
+    httpRes: {
+      status: 200,
+      data: attachUserDummyResp,
+    },
+  },
+  {
+    httpReq: {
+      method: 'post',
+      url: 'https://api.intercom.io/users',
+      data: userData3,
+      headers: v1Headers,
+    },
+    httpRes: {
+      status: 200,
+      data: attachUserDummyResp,
+    },
+  },
+  {
+    httpReq: {
+      method: 'post',
+      url: 'https://api.eu.intercom.io/tags',
+      data: {
+        name: 'tag1',
+        companies: [
+          {
+            id: '657264e9018c0a647s45',
+          },
+        ],
+      },
+      headers: commonHeaders,
+    },
+    httpRes: {
+      status: 200,
+      data: {
+        type: 'tag',
+        name: 'tag1',
+        id: '123',
+      },
+    },
+  },
+  {
+    httpReq: {
+      method: 'post',
+      url: 'https://api.eu.intercom.io/tags',
+      data: {
+        name: 'tag2',
+        companies: [
+          {
+            id: '657264e9018c0a647s45',
+          },
+        ],
+      },
+      headers: commonHeaders,
+    },
+    httpRes: {
+      status: 200,
+      data: {
+        type: 'tag',
+        name: 'tag2',
+        id: '123',
+      },
     },
   },
 ];

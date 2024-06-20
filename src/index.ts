@@ -1,4 +1,3 @@
-import { structuredLogger as logger } from '@rudderstack/integrations-lib';
 import dotenv from 'dotenv';
 import gracefulShutdown from 'http-graceful-shutdown';
 import Koa from 'koa';
@@ -11,6 +10,10 @@ import { RedisDB } from './util/redis/redisConnector';
 import { logProcessInfo } from './util/utils';
 
 dotenv.config();
+
+// eslint-disable-next-line import/first
+import logger from './logger';
+
 const clusterEnabled = process.env.CLUSTER_ENABLED !== 'false';
 const port = parseInt(process.env.PORT ?? '9090', 10);
 const metricsPort = parseInt(process.env.METRICS_PORT || '9091', 10);
@@ -32,7 +35,6 @@ app.use(
 addRequestSizeMiddleware(app);
 addSwaggerRoutes(app);
 
-logger.info('Using new routes');
 applicationRoutes(app);
 
 function finalFunction() {

@@ -61,7 +61,8 @@ steps:
         headers: $.getHeaders(.destination)
       }
       const endpoint = $.getEndpoint(.destination) + "?" + $.getQueryParams($.context.payload);
-      const rawResponse = await $.httpGET(endpoint,requestOptions)
+      const reqStats = {metadata:.metadata, module: 'router',feature: "transformation", destType:"gladly",requestMethod:"get",endpointPath:"/api/v1/customer-profiles"}
+      const rawResponse = await $.httpGET(endpoint,requestOptions, reqStats)
       const processedResponse = $.processAxiosResponse(rawResponse)
       processedResponse
 

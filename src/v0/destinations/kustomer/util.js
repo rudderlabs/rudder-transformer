@@ -2,12 +2,12 @@
 const lodash = require('lodash');
 const set = require('set-value');
 const get = require('get-value');
-const { NetworkError, AbortedError } = require('@rudderstack/integrations-lib');
-const myAxios = require('../../../util/myAxios');
+const { NetworkError } = require('@rudderstack/integrations-lib');
 const { DEFAULT_BASE_ENDPOINT } = require('./config');
 const { getType, isDefinedAndNotNull, isObject } = require('../../util');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const tags = require('../../util/tags');
+const { httpGET } = require('../../../adapters/network');
 
 /**
  * RegExp to test a string for a ISO 8601 Date spec
@@ -97,7 +97,7 @@ const handleAdvancedtransformations = (event) => {
   return cloneEvent;
 };
 
-const handleResponse = (response) => {
+const handleResponse = ({ response }) => {
   const { status, data } = response;
   switch (status) {
     case 200:
@@ -129,31 +129,27 @@ const handleResponse = (response) => {
   }
 };
 
-const fetchKustomer = async (url, destination) => {
-  let response;
-  try {
-    response = await myAxios.get(
-      url,
-      {
-        headers: {
-          Authorization: `Bearer ${destination.Config.apiKey}`,
-        },
+const fetchKustomer = async (url, destination, metadata) => {
+  const response = await httpGET(
+    url,
+    {
+      headers: {
+        Authorization: `Bearer ${destination.Config.apiKey}`,
       },
-      {
-        destType: 'kustomer',
-        feature: 'transformation',
-        endpointPath: '/customers/email',
-        requestMethod: 'GET',
-        module: 'processor',
-      },
-    );
-  } catch (err) {
-    if (err.response) {
-      return handleResponse(err.response);
-    }
-    throw new AbortedError(err.message);
+    },
+    {
+      metadata,
+      destType: 'kustomer',
+      feature: 'transformation',
+      endpointPath: '/customers/email',
+      requestMethod: 'GET',
+      module: 'processor',
+    },
+  );
+  if (response.success) {
+    return handleResponse(response);
   }
-  return handleResponse(response);
+  return handleResponse(response.response);
 };
 
 module.exports = {

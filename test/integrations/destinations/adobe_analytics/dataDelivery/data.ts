@@ -1,4 +1,5 @@
 import { testScenariosForV1API } from './business';
+import { otherScenariosV1 } from './other';
 
 const legacyTests = [
   {
@@ -143,4 +144,4 @@ const legacyTests = [
   },
 ];
 
-export const data = [...testScenariosForV1API, ...legacyTests];
+export const data = [...testScenariosForV1API, ...legacyTests, ...otherScenariosV1];

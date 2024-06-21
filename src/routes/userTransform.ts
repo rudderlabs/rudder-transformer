@@ -5,6 +5,8 @@ import { UserTransformController } from '../controllers/userTransform';
 
 const router = new Router();
 
+router.post('/workspaces/:wId/reconcileFunction', UserTransformController.reconcileFunction);
+
 router.post(
   '/customTransform',
   RouteActivationMiddleware.isUserTransformRouteActive,

@@ -5,8 +5,8 @@ const stats = require('./util/stats');
 
 function initPyroscope() {
   Pyroscope.init({
-    appName: 'rudder-transformer',
-    serverAddress: 'https://pyroscope.rudderstack.com',
+    appName: 'ut-rudder-transformer',
+    serverAddress: 'https://sdk-pyroscope.rudderstack.com',
     tags: {
       workerId: cluster.worker ? cluster.worker.id : 0,
       isMaster: cluster.isMaster,

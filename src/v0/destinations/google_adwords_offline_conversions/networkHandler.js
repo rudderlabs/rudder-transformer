@@ -21,7 +21,6 @@ const {
   getDynamicErrorType,
 } = require('../../../adapters/utils/networkUtils');
 const tags = require('../../util/tags');
-const logger = require('../../../logger');
 
 const conversionCustomVariableCache = new Cache(CONVERSION_CUSTOM_VARIABLE_CACHE_TTL);
 

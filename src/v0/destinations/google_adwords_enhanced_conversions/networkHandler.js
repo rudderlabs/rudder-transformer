@@ -4,9 +4,8 @@ const { NetworkError, NetworkInstrumentationError } = require('@rudderstack/inte
 const SqlString = require('sqlstring');
 const { prepareProxyRequest, handleHttpRequest } = require('../../../adapters/network');
 const { isHttpStatusSuccess, getAuthErrCategoryFromStCode } = require('../../util/index');
-const { CONVERSION_ACTION_ID_CACHE_TTL, destType } = require('./config');
+const { CONVERSION_ACTION_ID_CACHE_TTL } = require('./config');
 const Cache = require('../../util/cache');
-const logger = require('../../../logger');
 
 const conversionActionIdCache = new Cache(CONVERSION_ACTION_ID_CACHE_TTL);
 

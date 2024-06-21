@@ -6,7 +6,6 @@ const {
 } = require('../../../adapters/utils/networkUtils');
 const { isHttpStatusSuccess } = require('../../../v0/util/index');
 const tags = require('../../../v0/util/tags');
-const logger = require('../../../logger');
 
 const checkIfUpdationOfStatusRequired = (response) => {
   let errorMsg = '';

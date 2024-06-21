@@ -574,6 +574,12 @@ class Prometheus {
           'sourceId',
         ],
       },
+      {
+        name: 'credential_error_total',
+        help: 'Error in fetching credentials count',
+        type: 'counter',
+        labelNames: ['transformationId', 'workspaceId'],
+      },
 
       // Gauges
       {

@@ -1,5 +1,6 @@
 import groupBy from 'lodash/groupBy';
 import isEmpty from 'lodash/isEmpty';
+import { isNil } from 'lodash';
 import { userTransformHandler } from '../routerUtils';
 import {
   UserTransformationLibrary,
@@ -193,7 +194,7 @@ export class UserTransformService {
     } as UserTransformationServiceResponse;
   }
 
-  public static async testTransformRoutine(events, trRevCode, libraryVersionIDs) {
+  public static async testTransformRoutine(events, trRevCode, libraryVersionIDs, credentials) {
     const response: FixMe = {};
     try {
       if (!trRevCode || !trRevCode.code || !trRevCode.codeVersion) {
@@ -203,11 +204,21 @@ export class UserTransformService {
         throw new Error('Invalid request. Missing events');
       }
 
+      const updatedEvents = events.map((ev) => {
+        if (isNil(ev.credentials)) {
+          return {
+            ...ev,
+            credentials,
+          };
+        }
+        return ev;
+      });
+
       logger.debug(`[CT] Test Input Events: ${JSON.stringify(events)}`);
       // eslint-disable-next-line no-param-reassign
       trRevCode.versionId = 'testVersionId';
       response.body = await userTransformHandler()(
-        events,
+        updatedEvents,
         trRevCode.versionId,
         libraryVersionIDs,
         trRevCode,

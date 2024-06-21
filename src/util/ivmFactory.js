@@ -1,6 +1,6 @@
 const ivm = require('isolated-vm');
 const fetch = require('node-fetch');
-const _ = require('lodash');
+const { isNil, isObject, camelCase } = require('lodash');
 
 const { getLibraryCodeV1, getRudderLibByImportName } = require('./customTransforrmationsStore-v1');
 const { extractStackTraceUptoLastSubstringMatch } = require('./utils');
@@ -30,7 +30,16 @@ async function loadModule(isolateInternal, contextInternal, moduleName, moduleCo
   return module;
 }
 
-async function createIvm(code, libraryVersionIds, versionId, secrets, testMode) {
+async function createIvm(
+  code,
+  libraryVersionIds,
+  versionId,
+  transformationId,
+  workspaceId,
+  credentials,
+  secrets,
+  testMode,
+) {
   const createIvmStartTime = new Date();
   const logs = [];
   const libraries = await Promise.all(
@@ -51,7 +60,7 @@ async function createIvm(code, libraryVersionIds, versionId, secrets, testMode) 
 
     // TODO: Check if this should this be &&
     libraries.forEach((library) => {
-      const libHandleName = _.camelCase(library.name);
+      const libHandleName = camelCase(library.name);
       if (extractedLibraries.includes(libHandleName)) {
         librariesMap[libHandleName] = library.code;
       }
@@ -243,6 +252,20 @@ async function createIvm(code, libraryVersionIds, versionId, secrets, testMode) 
     }),
   );
 
+  await jail.set('_credential', function (key) {
+    if (isNil(credentials) || !isObject(credentials)) {
+      logger.error(
+        `Error fetching credentials map for transformationID: ${transformationId} and workspaceId: ${workspaceId}`,
+      );
+      stats.increment('credential_error_total', { transformationId, workspaceId });
+      return undefined;
+    }
+    if (key === null || key === undefined) {
+      throw new TypeError('Key should be valid and defined');
+    }
+    return credentials[key];
+  });
+
   await jail.set('_rsSecrets', function (...args) {
     if (args.length == 0 || !secrets || !secrets[args[0]]) return 'ERROR';
     return secrets[args[0]];
@@ -319,6 +342,13 @@ async function createIvm(code, libraryVersionIds, versionId, secrets, testMode) 
         return rsSecrets([
           ...args.map(arg => new ivm.ExternalCopy(arg).copyInto())
         ]);
+      };
+
+      let credential = _credential;
+      delete _credential;
+      global.credential = function(...args) {
+        const key = args[0];
+        return credential(new ivm.ExternalCopy(key).copyInto());
       };
 
       return new ivm.Reference(function forwardMainPromise(
@@ -411,10 +441,28 @@ async function compileUserLibrary(code) {
   return evaluateModule(isolate, context, code);
 }
 
-async function getFactory(code, libraryVersionIds, versionId, secrets, testMode) {
+async function getFactory(
+  code,
+  libraryVersionIds,
+  transformationId,
+  workspaceId,
+  versionId,
+  credentials,
+  secrets,
+  testMode,
+) {
   const factory = {
     create: async () => {
-      return createIvm(code, libraryVersionIds, versionId, secrets, testMode);
+      return createIvm(
+        code,
+        libraryVersionIds,
+        versionId,
+        transformationId,
+        workspaceId,
+        credentials,
+        secrets,
+        testMode,
+      );
     },
     destroy: async (client) => {
       client.fnRef.release();

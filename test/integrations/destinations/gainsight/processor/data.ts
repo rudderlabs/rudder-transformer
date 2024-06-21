@@ -1156,4 +1156,203 @@ export const data = [
       },
     },
   },
+  {
+    name: 'gainsight',
+    description: 'group call when we need to update the existing group',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: {
+              Config: {
+                domain: 'demo-domain.gainsightcloud.com',
+                accessKey: 'valid-access-key-for-update-group',
+                sharedSecret: 'sample-shared-secret',
+                personMap: [],
+                companyMap: [],
+                eventNameMap: [],
+                eventVersionMap: [],
+              },
+            },
+            message: {
+              channel: 'web',
+              context: {
+                app: {
+                  build: '1.0.0',
+                  name: 'RudderLabs JavaScript SDK',
+                  namespace: 'com.rudderlabs.javascript',
+                  version: '1.0.0',
+                },
+                library: {
+                  name: 'RudderLabs JavaScript SDK',
+                  version: '1.0.0',
+                },
+                userAgent:
+                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
+                locale: 'en-US',
+                ip: '0.0.0.0',
+                os: {
+                  name: '',
+                  version: '',
+                },
+                screen: {
+                  density: 2,
+                },
+                traits: {
+                  email: 'krammer@seinfeld.com',
+                },
+              },
+              messageId: '84e26acc-56a5-4835-8233-591137fca468',
+              session_id: '3049dc4c-5a95-4ccd-a3e7-d74a7e411f22',
+              originalTimestamp: '2019-10-14T09:03:17.562Z',
+              anonymousId: 'anon_id',
+              type: 'group',
+              traits: {
+                name: 'Testing company',
+                industry: 'Sitcom',
+                employees: '100',
+                status: 'complete',
+                companyType: 'spoof',
+              },
+              integrations: {
+                All: true,
+              },
+              sentAt: '2019-10-14T09:03:22.563Z',
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              body: {
+                FORM: {},
+                JSON: {
+                  Email: 'krammer@seinfeld.com',
+                  companies: [
+                    {
+                      Company_ID: '12345',
+                    },
+                  ],
+                },
+                JSON_ARRAY: {},
+                XML: {},
+              },
+              endpoint: 'https://demo-domain.gainsightcloud.com/v1.0/api/people',
+              files: {},
+              headers: {
+                Accesskey: 'valid-access-key-for-update-group',
+                'Content-Type': 'application/json',
+              },
+              method: 'PUT',
+              params: {},
+              type: 'REST',
+              userId: '',
+              version: '1',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'gainsight',
+    description: 'group call when we need to update the existing group but the update call failed',
+    feature: 'processor',
+    id: 'gainsightUpdateGroup',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: {
+              Config: {
+                domain: 'demo-domain.gainsightcloud.com',
+                accessKey: 'valid-access-key-for-update-group',
+                sharedSecret: 'sample-shared-secret',
+                personMap: [],
+                companyMap: [],
+                eventNameMap: [],
+                eventVersionMap: [],
+              },
+            },
+            message: {
+              channel: 'web',
+              context: {
+                app: {
+                  build: '1.0.0',
+                  name: 'RudderLabs JavaScript SDK',
+                  namespace: 'com.rudderlabs.javascript',
+                  version: '1.0.0',
+                },
+                library: {
+                  name: 'RudderLabs JavaScript SDK',
+                  version: '1.0.0',
+                },
+                userAgent:
+                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
+                locale: 'en-US',
+                ip: '0.0.0.0',
+                os: {
+                  name: '',
+                  version: '',
+                },
+                screen: {
+                  density: 2,
+                },
+                traits: {
+                  email: 'krammer@seinfeld.com',
+                },
+              },
+              messageId: '84e26acc-56a5-4835-8233-591137fca468',
+              session_id: '3049dc4c-5a95-4ccd-a3e7-d74a7e411f22',
+              originalTimestamp: '2019-10-14T09:03:17.562Z',
+              anonymousId: 'anon_id',
+              type: 'group',
+              traits: {
+                name: 'Testing company with failed update',
+                industry: 'Sitcom',
+                employees: '100',
+                status: 'complete',
+                companyType: 'spoof',
+              },
+              integrations: {
+                All: true,
+              },
+              sentAt: '2019-10-14T09:03:22.563Z',
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            error:
+              '{"message":"failed to update group {\\"result\\":false,\\"errorCode\\":\\"GSOBJ_1006\\",\\"errorDesc\\":\\"Invalid dateTimes format (OriginalContractDate = 210318).\\",\\"requestId\\":\\"7cba3c98-b04b-4e21-9e57-44807fa52b8a\\",\\"data\\":{\\"count\\":0,\\"errors\\":[[{\\"success\\":false,\\"parsedValue\\":210318,\\"errors\\":[{\\"errorMessage\\":\\"Invalid dateTime format\\",\\"errorCode\\":\\"GSOBJ_1006\\",\\"fieldName\\":\\"OriginalContractDate\\",\\"invalidValue\\":210318}]}]],\\"records\\":null},\\"message\\":null}","destinationResponse":{"response":{"result":false,"errorCode":"GSOBJ_1006","errorDesc":"Invalid dateTimes format (OriginalContractDate = 210318).","requestId":"7cba3c98-b04b-4e21-9e57-44807fa52b8a","data":{"count":0,"errors":[[{"success":false,"parsedValue":210318,"errors":[{"errorMessage":"Invalid dateTime format","errorCode":"GSOBJ_1006","fieldName":"OriginalContractDate","invalidValue":210318}]}]],"records":null},"message":null},"status":400}}',
+            statTags: {
+              destType: 'GAINSIGHT',
+              errorCategory: 'network',
+              errorType: 'aborted',
+              feature: 'processor',
+              implementation: 'native',
+              module: 'destination',
+            },
+            statusCode: 400,
+          },
+        ],
+      },
+    },
+  },
 ];

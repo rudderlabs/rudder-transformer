@@ -129,15 +129,14 @@ const getProductPurchasesDetails = (message) => {
       count: product.quantity,
       amount: product.amount,
     }));
-  }
-  return [
-    removeUndefinedAndNullValues({
-      sku: properties?.sku,
-      iso: properties?.iso,
-      count: properties?.quantity,
-      amount: properties?.amount,
-    }),
-  ];
+  };
+  const purchaseObject = removeUndefinedAndNullValues({
+    sku: properties?.sku,
+    iso: properties?.iso,
+    count: properties?.quantity,
+    amount: properties?.amount,
+  })
+  return Object.keys(purchaseObject).length>0 ? [purchaseObject]: [];
 };
 
 /**
@@ -148,22 +147,22 @@ const getProductPurchasesDetails = (message) => {
  * @param {*} token
  * @returns
  */
-const constructSubscription = (message, deviceType, token) => {
+const constructSubscription = (message, subscriptionType, token, subscriptionField) => {
   const deviceModel = message.context?.device?.model;
   const deviceOs = message.context?.os?.version;
   let deviceSubscriptionPayload = {
-    type: deviceType,
+    type: subscriptionType,
     token,
     device_model: deviceModel,
     device_os: deviceOs,
   };
   // Following mapping is used to do paticular and specific property mapping for subscription
   const traits = message.context?.traits || message.traits;
-  if (traits?.subscriptions?.[deviceType]) {
+  if (traits?.subscriptions?.[subscriptionField]) {
     deviceSubscriptionPayload = {
       ...deviceSubscriptionPayload,
       ...constructPayload(
-        traits.subscriptions[deviceType],
+        traits.subscriptions[subscriptionField],
         mappingConfig[ConfigCategory.SUBSCRIPTION.name],
       ),
     };
@@ -192,14 +191,14 @@ const getSubscriptions = (message, Config) => {
   if (emailDeviceType) {
     const token = getFieldValueFromMessage(message, 'email');
     if (isDefinedAndNotNullAndNotEmpty(token)) {
-      subscriptions.push(constructSubscription(message, 'email', token));
+      subscriptions.push(constructSubscription(message, 'Email', token, 'email'));
     }
   }
   // Creating a device with phone as an identifier
   if (smsDeviceType) {
     const token = getFieldValueFromMessage(message, 'phone');
     if (isDefinedAndNotNullAndNotEmpty(token)) {
-      subscriptions.push(constructSubscription(message, 'phone', token));
+      subscriptions.push(constructSubscription(message, 'SMS', token, 'phone'));
     }
   }
   return subscriptions.length > 0 ? subscriptions : undefined;

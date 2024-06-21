@@ -166,7 +166,7 @@ const requestLog = (identifierMsg, { metadata, requestDetails: { url, body, meth
   const filteredMetadata = getMatchedMetadata(metadata);
   if (filteredMetadata.length > 0) {
     const reqLogArgs = [identifierMsg, { metadata: filteredMetadata, url, body, method }];
-    log(logger.warn, reqLogArgs);
+    log(logger.info, reqLogArgs);
   }
 };
 

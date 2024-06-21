@@ -164,7 +164,7 @@ const error = (...args) => {
 const requestLog = (identifierMsg, { metadata, requestDetails: { url, body, method } }) => {
   const logger = getLogger();
   const filteredMetadata = getMatchedMetadata(metadata);
-  if (LOGLEVELS[logLevel] === LOGLEVELS.warn && filteredMetadata.length > 0) {
+  if (filteredMetadata.length > 0) {
     const reqLogArgs = [identifierMsg, { metadata: filteredMetadata, url, body, method }];
     log(logger.warn, reqLogArgs);
   }
@@ -176,9 +176,9 @@ const responseLog = (
 ) => {
   const logger = getLogger();
   const filteredMetadata = getMatchedMetadata(metadata);
-  if (LOGLEVELS[logLevel] === LOGLEVELS.warn && filteredMetadata.length > 0) {
+  if (filteredMetadata.length > 0) {
     const resLogArgs = [identifierMsg, { metadata: filteredMetadata, body, status, headers }];
-    log(logger.warn, resLogArgs);
+    log(logger.info, resLogArgs);
   }
 };
 

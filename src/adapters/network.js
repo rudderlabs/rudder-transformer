@@ -5,6 +5,7 @@ const lodash = require('lodash');
 const http = require('http');
 const https = require('https');
 const axios = require('axios');
+const { isDefinedAndNotNull } = require('@rudderstack/integrations-lib');
 const log = require('../logger');
 const stats = require('../util/stats');
 const { removeUndefinedValues, getErrorStatusCode } = require('../v0/util');
@@ -96,9 +97,9 @@ const fireHTTPStats = (clientResponse, startTime, statTags) => {
     startTime,
     clientResponse,
   };
-  if (statTags?.metadata) {
+  if (statTags?.metadata && typeof statTags?.metadata === 'object') {
     const metadata = !Array.isArray(statTags?.metadata) ? [statTags.metadata] : statTags.metadata;
-    metadata?.forEach((m) => {
+    metadata?.filter(isDefinedAndNotNull)?.forEach((m) => {
       fireOutgoingReqStats({
         ...defArgs,
         metadata: m,
@@ -457,4 +458,5 @@ module.exports = {
   getFormData,
   handleHttpRequest,
   enhanceRequestOptions,
+  fireHTTPStats,
 };

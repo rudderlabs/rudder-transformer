@@ -241,11 +241,11 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
         body: {
           output: {
             status: 400,
-            message: 'Invalid Parameter',
+            message: 'Unsupported post request. some problem with sent parameters',
             statTags,
             response: [
               {
-                error: 'Invalid Parameter',
+                error: 'Unsupported post request. some problem with sent parameters',
                 statusCode: 400,
                 metadata: generateMetadata(1),
               },

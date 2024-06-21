@@ -118,14 +118,6 @@ const getConversionCustomVariable = async ({ headers, params, metadata }) => {
     const requestOptions = {
       headers,
     };
-    logger.requestLog(`[${destType.toUpperCase()}] get conversion custom variable request`, {
-      metadata,
-      requestDetails: {
-        url: endpoint,
-        body: data,
-        method: 'post',
-      },
-    });
     let searchStreamResponse = await httpPOST(endpoint, data, requestOptions, {
       destType: 'google_adwords_offline_conversions',
       feature: 'proxy',
@@ -135,15 +127,7 @@ const getConversionCustomVariable = async ({ headers, params, metadata }) => {
       metadata,
     });
     searchStreamResponse = processAxiosResponse(searchStreamResponse);
-    const { response, status, headers: responseHeaders } = searchStreamResponse;
-    logger.responseLog(`[${destType.toUpperCase()}] get conversion custom variable`, {
-      metadata,
-      responseDetails: {
-        response,
-        status,
-        headers: responseHeaders,
-      },
-    });
+    const { response, status } = searchStreamResponse;
     if (!isHttpStatusSuccess(status)) {
       throw new NetworkError(
         `[Google Ads Offline Conversions]:: ${response?.[0]?.error?.message} during google_ads_offline_conversions response transformation`,
@@ -290,10 +274,6 @@ const ProxyRequest = async (request) => {
     }
   }
   const requestBody = { url: endpoint, data: body.JSON, headers, method };
-  // logger.requestLog(`[${destType.toUpperCase()}] offline conversion creation request`, {
-  //   metadata,
-  //   requestDetails: { url: requestBody.url, body: requestBody.data, method },
-  // });
   const { httpResponse } = await handleHttpRequest('constructor', requestBody, {
     feature: 'proxy',
     destType: 'gogole_adwords_offline_conversions',
@@ -302,14 +282,6 @@ const ProxyRequest = async (request) => {
     module: 'dataDelivery',
     metadata,
   });
-  // logger.responseLog(`[${destType.toUpperCase()}] deliver event to destination`, {
-  //   metadata,
-  //   responseDetails: {
-  //     response,
-  //     headers: responseHeaders,
-  //     status,
-  //   },
-  // });
   return httpResponse;
 };
 

@@ -524,14 +524,6 @@ const proxyRequest = async (request, destType) => {
     headers,
     method,
   };
-  // log.requestLog(`[${destType.toUpperCase()}] delivering data`, {
-  //   metadata,
-  //   requestDetails: {
-  //     body: data,
-  //     url: endpoint,
-  //     method,
-  //   },
-  // });
   const response = await httpSend(requestOptions, {
     feature: 'proxy',
     destType,

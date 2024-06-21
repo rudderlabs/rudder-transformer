@@ -42,16 +42,8 @@ const responseHandler = (responseParams) => {
 
   const message = '[MONDAY Response V1 Handler] - Request Processed Successfully';
   const responseWithIndividualEvents = [];
-  const { response, status, headers } = destinationResponse;
+  const { response, status } = destinationResponse;
 
-  logger.responseLog('[monday] proxy response', {
-    metadata: rudderJobMetadata,
-    responseDetails: {
-      headers,
-      response,
-      status,
-    },
-  });
   // batching not supported
   if (isHttpStatusSuccess(status)) {
     const proxyOutput = {

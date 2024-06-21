@@ -1447,13 +1447,13 @@ const getTrackingPlanMetadata = (metadata) => ({
   workspaceId: metadata.workspaceId,
 });
 
-const getMetadata = (metadata) => ({
+const getMetadata = (metadata = {}) => ({
   sourceType: metadata.sourceType,
   destinationType: metadata.destinationType,
   k8_namespace: metadata.namespace,
 });
 
-const getTransformationMetadata = (metadata) => ({
+const getTransformationMetadata = (metadata = {}) => ({
   transformationId: metadata.transformationId,
   workspaceId: metadata.workspaceId,
 });

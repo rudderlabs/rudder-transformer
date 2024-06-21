@@ -11,6 +11,21 @@ const { JSON_MIME_TYPE } = require('../../util/constant');
 const { handleHttpRequest } = require('../../../adapters/network');
 const { isHttpStatusSuccess } = require('../../util');
 
+const throwNetworkError = (errMsg, status, response) => {
+  throw new NetworkError(
+    errMsg,
+    status,
+    {
+      [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
+    },
+    response,
+  );
+};
+
+const throwRetryableError = (errMsg, response) => {
+  throw new RetryableError(errMsg, 500, response);
+};
+
 const searchGroup = async (groupName, Config) => {
   const { processedResponse } = await handleHttpRequest(
     'post',
@@ -32,18 +47,15 @@ const searchGroup = async (groupName, Config) => {
   );
 
   if (!isHttpStatusSuccess(processedResponse.status)) {
-    throw new NetworkError(
+    throwNetworkError(
       `failed to search group ${JSON.stringify(processedResponse.response)}`,
       processedResponse.status,
-      {
-        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(processedResponse.status),
-      },
       processedResponse,
     );
   }
 
   if (!processedResponse?.response || processedResponse.status !== 200) {
-    throw new RetryableError('failed to search group', 500, processedResponse);
+    throwRetryableError('failed to search group', processedResponse);
   }
 
   return processedResponse.response;
@@ -72,18 +84,15 @@ const createGroup = async (payload, Config) => {
   );
 
   if (!isHttpStatusSuccess(processedResponse.status)) {
-    throw new NetworkError(
+    throwNetworkError(
       `failed to create group ${JSON.stringify(processedResponse.response)}`,
       processedResponse.status,
-      {
-        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(processedResponse.status),
-      },
       processedResponse,
     );
   }
 
   if (!processedResponse?.response || processedResponse.status !== 200) {
-    throw new RetryableError('failed to create group', 500, processedResponse);
+    throwRetryableError('failed to create group', processedResponse);
   }
 
   return processedResponse.response.data.records[0].Gsid;
@@ -115,18 +124,15 @@ const updateGroup = async (payload, Config) => {
   );
 
   if (!isHttpStatusSuccess(processedResponse.status)) {
-    throw new NetworkError(
+    throwNetworkError(
       `failed to update group ${JSON.stringify(processedResponse.response)}`,
       processedResponse.status,
-      {
-        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(processedResponse.status),
-      },
       processedResponse,
     );
   }
 
   if (!processedResponse?.response || processedResponse.status !== 200) {
-    throw new RetryableError('failed to update group', 500, processedResponse);
+    throwRetryableError('failed to update group', processedResponse);
   }
 
   return processedResponse.response.data.records[0].Gsid;

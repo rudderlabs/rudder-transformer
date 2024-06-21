@@ -880,24 +880,6 @@ class Prometheus {
         ],
       },
       {
-        name: 'lambda_test_time',
-        help: 'lambda_test_time',
-        type: 'histogram',
-        labelNames: ['transformerVersionId', 'language', 'publish'],
-      },
-      {
-        name: 'lambda_invoke_time',
-        help: 'lambda_invoke_time',
-        type: 'histogram',
-        labelNames: [
-          'transformerVersionId',
-          'language',
-          'sourceType',
-          'destinationType',
-          'k8_namespace',
-        ],
-      },
-      {
         name: 'marketo_bulk_upload_process_time',
         help: 'marketo_bulk_upload_process_time',
         type: 'histogram',

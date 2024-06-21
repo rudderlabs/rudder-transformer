@@ -1,7 +1,8 @@
 const { camelCase } = require('lodash');
 const moment = require('moment');
-const { removeUndefinedAndNullValues, isDefinedAndNotNull } = require('../../util');
-const { generateUUID } = require('../../util');
+const { isDefinedAndNotNullAndNotEmpty } = require('@rudderstack/integrations-lib');
+const { removeUndefinedAndNullValues, isDefinedAndNotNull, generateUUID } = require('../../util');
+
 const Message = require('../message');
 
 function process(event) {
@@ -11,7 +12,7 @@ function process(event) {
   message.setEventType('track');
 
   message.userId = event?.event?.app_user_id || event?.event?.original_app_user_id || '';
-  if (!isDefinedAndNotNull(message.userId)) {
+  if (!isDefinedAndNotNullAndNotEmpty(message.userId)) {
     message.anonymousId = generateUUID();
   }
 

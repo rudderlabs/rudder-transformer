@@ -102,7 +102,7 @@ export const trackTests = [
               event: 'Order Completed',
               userId: 'user@27',
               channel: 'server',
-              properties: commonProperties.products[0],
+              properties: {},
               rudderId: '8f8fa6b5-8e24-489c-8e22-61f23f2e364f',
               messageId: '2116ef8c-efc3-4ca4-851b-02ee60dad6ff',
               anonymousId: '97c46c81-3140-456d-b2a9-690d70aaca35',
@@ -129,8 +129,7 @@ export const trackTests = [
               body: {
                 FORM: {},
                 JSON: {
-                  properties: { purchases, tags: { 'Order Completed': true } },
-
+                  properties: { purchases:[], tags: { 'Order Completed': true } },
                   identity: {
                     external_id: 'user@27',
                   },

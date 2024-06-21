@@ -425,10 +425,10 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
     },
   },
   {
-    id: 'fbca_v1_scenario_8',
+    id: 'fbca_v1_scenario_9',
     name: 'fb_custom_audience',
-    description: 'user deletion failed due expired access token error',
-    successCriteria: 'Fail with status code 400',
+    description: 'user deletion failed differently created custom audience',
+    successCriteria: 'Fail with status code 400 and sending the actual error message.',
     scenario: 'Business',
     feature: 'dataDelivery',
     module: 'destination',

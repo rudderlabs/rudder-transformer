@@ -3863,4 +3863,252 @@ export const data = [
       },
     },
   },
+  {
+    name: 'braze',
+    description: '[Test 28] Test for alias_id overriding feature for track event',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: {
+              Config: {
+                restApiKey: 'dummyApiKey',
+                prefixProperties: true,
+                useNativeSDK: false,
+              },
+              DestinationDefinition: {
+                DisplayName: 'Braze',
+                ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
+                Name: 'BRAZE',
+              },
+              Enabled: true,
+              ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
+              Name: 'Braze',
+              Transformations: [],
+            },
+            message: {
+              anonymousId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
+              channel: 'web',
+              context: {
+                traits: {
+                  city: 'Disney',
+                  country: 'USA',
+                  email: 'micky@example.com',
+                  firstname: 'Mickey',
+                },
+                userAgent:
+                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36',
+              },
+              event: 'Test Event',
+              integrations: {
+                All: true,
+                Braze: {
+                  alias: {
+                    alias_label: 'email',
+                    alias_name: 'micky@example.com',
+                  },
+                },
+              },
+              messageId: 'aa5f5e44-8756-40ad-ad1e-b0d3b9fa710a',
+              originalTimestamp: '2020-01-24T06:29:02.367Z',
+              properties: {
+                affiliation: 'Google Store',
+                checkout_id: 'fksdjfsdjfisjf9sdfjsd9f',
+                coupon: 'hasbros',
+                currency: 'USD',
+                discount: 2.5,
+                order_id: '50314b8e9bcf000000000000',
+                revenue: 25,
+                shipping: 3,
+                subtotal: 22.5,
+                tax: 2,
+                total: 27.5,
+              },
+              receivedAt: '2020-01-24T11:59:02.403+05:30',
+              request_ip: '[::1]:53712',
+              sentAt: '2020-01-24T06:29:02.368Z',
+              timestamp: '2020-01-24T11:59:02.402+05:30',
+              type: 'track',
+              userId: '',
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://rest.fra-01.braze.eu/users/track',
+              headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                Authorization: 'Bearer dummyApiKey',
+              },
+              params: {},
+              body: {
+                JSON: {
+                  partner: 'RudderStack',
+                  attributes: [
+                    {
+                      email: 'micky@example.com',
+                      city: 'Disney',
+                      country: 'USA',
+                      firstname: 'Mickey',
+                      _update_existing_only: false,
+                      user_alias: {
+                        alias_name: 'micky@example.com',
+                        alias_label: 'email',
+                      },
+                    },
+                  ],
+                  events: [
+                    {
+                      name: 'Test Event',
+                      time: '2020-01-24T11:59:02.402+05:30',
+                      properties: {
+                        affiliation: 'Google Store',
+                        checkout_id: 'fksdjfsdjfisjf9sdfjsd9f',
+                        coupon: 'hasbros',
+                        discount: 2.5,
+                        order_id: '50314b8e9bcf000000000000',
+                        revenue: 25,
+                        shipping: 3,
+                        subtotal: 22.5,
+                        tax: 2,
+                        total: 27.5,
+                      },
+                      _update_existing_only: false,
+                      user_alias: {
+                        alias_name: 'micky@example.com',
+                        alias_label: 'email',
+                      },
+                    },
+                  ],
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'braze',
+    description:
+      '[Test 29] Test for alias_id overriding feature for identify event (with intermediate alias call)',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: {
+              Config: {
+                restApiKey: 'dummyApiKey',
+                prefixProperties: true,
+                useNativeSDK: false,
+                dataCenter: 'us-01',
+              },
+              DestinationDefinition: {
+                DisplayName: 'Braze',
+                ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
+                Name: 'BRAZE',
+              },
+              Enabled: true,
+              ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
+              Name: 'Braze',
+              Transformations: [],
+            },
+            message: {
+              anonymousId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
+              channel: 'web',
+              context: {
+                traits: {
+                  city: 'Disney',
+                  country: 'USA',
+                  email: 'micky@example.com',
+                  firstname: 'Mickey',
+                },
+                userAgent:
+                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36',
+              },
+              integrations: {
+                All: true,
+                Braze: {
+                  alias: {
+                    alias_label: 'email',
+                    alias_name: 'micky@example.com',
+                  },
+                },
+              },
+              messageId: 'aa5f5e44-8756-40ad-ad1e-b0d3b9fa710a',
+              originalTimestamp: '2020-01-24T06:29:02.367Z',
+              receivedAt: '2020-01-24T11:59:02.403+05:30',
+              request_ip: '[::1]:53712',
+              sentAt: '2020-01-24T06:29:02.368Z',
+              timestamp: '2020-01-24T11:59:02.402+05:30',
+              type: 'identify',
+              userId: 'mickeyUser',
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://rest.iad-01.braze.com/users/track',
+              headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                Authorization: 'Bearer dummyApiKey',
+              },
+              params: {},
+              body: {
+                JSON: {
+                  attributes: [
+                    {
+                      email: 'micky@example.com',
+                      city: 'Disney',
+                      country: 'USA',
+                      firstname: 'Mickey',
+                      external_id: 'mickeyUser',
+                    },
+                  ],
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: 'mickeyUser',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
 ];

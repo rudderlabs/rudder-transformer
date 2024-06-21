@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.69.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.68.2...v1.69.0) (2024-06-10)
+
+
+### Features
+
+* add request_ip as fallback for mixpanel group call ([#3421](https://github.com/rudderlabs/rudder-transformer/issues/3421)) ([a73ab75](https://github.com/rudderlabs/rudder-transformer/commit/a73ab75032d753b35cb0e18234dcd7289dd1e644))
+* add v3 api support to appsflyer ([#3412](https://github.com/rudderlabs/rudder-transformer/issues/3412)) ([e124470](https://github.com/rudderlabs/rudder-transformer/commit/e124470e82b6aa9934094146d4050af02bb62fff)), closes [#3395](https://github.com/rudderlabs/rudder-transformer/issues/3395) [#3402](https://github.com/rudderlabs/rudder-transformer/issues/3402)
+* changes for supporting record event in FB audience ([#3351](https://github.com/rudderlabs/rudder-transformer/issues/3351)) ([ac4a32a](https://github.com/rudderlabs/rudder-transformer/commit/ac4a32ab5e0c7e02a149e81d455666ed24fa01a3))
+
+
+### Bug Fixes
+
+* allowing traffic type dynamically for split.io ([#3425](https://github.com/rudderlabs/rudder-transformer/issues/3425)) ([3bea186](https://github.com/rudderlabs/rudder-transformer/commit/3bea186e725ec473ad757760355d6cc9670c4f8c))
+* bugsnag issue fix for zendesk ([#3439](https://github.com/rudderlabs/rudder-transformer/issues/3439)) ([775e8ee](https://github.com/rudderlabs/rudder-transformer/commit/775e8ee55a62ecddb58ff505302e4aabb8bffe24))
+
 ### [1.68.2](https://github.com/rudderlabs/rudder-transformer/compare/v1.68.1...v1.68.2) (2024-06-06)
 
 

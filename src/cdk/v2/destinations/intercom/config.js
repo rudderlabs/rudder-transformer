@@ -4,6 +4,7 @@ const BASE_AU_ENDPOINT = 'https://api.au.intercom.io';
 
 const SEARCH_CONTACT_ENDPOINT = 'contacts/search';
 const CREATE_OR_UPDATE_COMPANY_ENDPOINT = 'companies';
+const TAGS_ENDPOINT = 'tags';
 
 const ReservedAttributes = {
   v1UserAttributes: [
@@ -78,4 +79,5 @@ module.exports = {
   SEARCH_CONTACT_ENDPOINT,
   ReservedCompanyProperties,
   CREATE_OR_UPDATE_COMPANY_ENDPOINT,
+  TAGS_ENDPOINT,
 };

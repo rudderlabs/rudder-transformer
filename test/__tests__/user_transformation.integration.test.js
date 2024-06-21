@@ -159,6 +159,7 @@ describe("Function invocation & creation tests", () => {
       versionId,
       [],
       trRevCode,
+      [],
       true
     );
     expect(response).toEqual(outputEvents);

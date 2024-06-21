@@ -13,6 +13,8 @@ const {
   filterCustomAttributes,
   checkIfEmailOrUserIdPresent,
   separateReservedAndRestMetadata,
+  attachContactToCompany,
+  addOrUpdateTagsToCompany,
 } = require('./utils');
 const { BASE_ENDPOINT, BASE_EU_ENDPOINT, BASE_AU_ENDPOINT } = require('./config');
 
@@ -761,5 +763,265 @@ describe('attachUserAndCompany utility test', () => {
     };
     const response = attachUserAndCompany(message, Config);
     expect(response).toEqual(expectedResponse);
+  });
+});
+
+describe('attachContactToCompany utility test', () => {
+  it('Should successfully attach contact to company for apiVersion v2', async () => {
+    const payload = {
+      id: 'company123',
+    };
+    const endpoint = 'https://api.intercom.io/contacts/contact123/companies';
+    const destination = { Config: { apiKey: 'testApiKey', apiServer: 'us', apiVersion: 'v2' } };
+
+    axios.post.mockResolvedValue({
+      status: 200,
+      data: {
+        type: 'company',
+        id: 'contact123',
+        company_id: 'company123',
+      },
+    });
+
+    await attachContactToCompany(payload, endpoint, destination);
+
+    expect(axios.post).toHaveBeenCalledWith(
+      endpoint,
+      JSON.stringify(payload),
+      expect.objectContaining({
+        headers: getHeaders(destination, 'v2'),
+      }),
+    );
+  });
+
+  it('Should successfully attach contact to company for apiVersion v1', async () => {
+    const payload = {
+      user_id: 'user123',
+      companies: [
+        {
+          company_id: 'company123',
+          name: 'Company',
+        },
+      ],
+    };
+    const endpoint = 'https://api.intercom.io/users';
+    const destination = { Config: { apiKey: 'testApiKey', apiVersion: 'v1' } };
+
+    axios.post.mockResolvedValue({
+      status: 200,
+      data: {
+        id: 'contact123',
+        user_id: 'user123',
+        companies: {
+          type: 'companies.list',
+          companies: [
+            {
+              type: 'company',
+              company_id: 'company123',
+              id: '123',
+              name: 'Company',
+            },
+          ],
+        },
+      },
+    });
+
+    await attachContactToCompany(payload, endpoint, destination);
+
+    expect(axios.post).toHaveBeenCalledWith(
+      endpoint,
+      JSON.stringify(payload),
+      expect.objectContaining({
+        headers: getHeaders(destination, 'v1'),
+      }),
+    );
+  });
+
+  it('Should throw error for invalid company during attachment', async () => {
+    const payload = {
+      id: 'company123',
+    };
+    const endpoint = 'https://api.intercom.io/contacts/contact123/companies';
+    const destination = { Config: { apiKey: 'testApiKey', apiServer: 'us', apiVersion: 'v2' } };
+
+    axios.post.mockRejectedValue({
+      response: {
+        status: 404,
+        data: {
+          type: 'error.list',
+          request_id: '123',
+          errors: [
+            {
+              code: 'company_not_found',
+              message: 'Company Not Found',
+            },
+          ],
+        },
+      },
+    });
+
+    try {
+      await attachContactToCompany(payload, endpoint, destination);
+    } catch (error) {
+      expect(error.message).toEqual(
+        'Unable to attach Contact or User to Company due to : {"type":"error.list","request_id":"123","errors":[{"code":"company_not_found","message":"Company Not Found"}]}',
+      );
+    }
+  });
+
+  it('Should throw error for faulty payload during attachment', async () => {
+    const payload = {};
+    const endpoint = 'https://api.intercom.io/contacts/contact123/companies';
+    const destination = { Config: { apiKey: 'testApiKey', apiServer: 'us', apiVersion: 'v2' } };
+
+    axios.post.mockRejectedValue({
+      response: {
+        status: 400,
+        data: {
+          type: 'error.list',
+          request_id: '123',
+          errors: [
+            {
+              code: 'parameter_not_found',
+              message: 'company not specified',
+            },
+          ],
+        },
+      },
+    });
+
+    try {
+      await attachContactToCompany(payload, endpoint, destination);
+    } catch (error) {
+      expect(error.message).toEqual(
+        'Unable to attach Contact or User to Company due to : {"type":"error.list","request_id":"123","errors":[{"code":"parameter_not_found","message":"company not specified"}]}',
+      );
+    }
+  });
+});
+
+describe('addOrUpdateTagsToCompany utility test', () => {
+  it('Should successfully add tags to company', async () => {
+    const message = {
+      context: {
+        traits: {
+          tags: ['tag1', 'tag2'],
+        },
+      },
+    };
+    const destination = { Config: { apiKey: 'testApiKey', apiServer: 'us' } };
+    const id = 'companyId';
+
+    axios.post
+      .mockResolvedValueOnce({
+        status: 200,
+        data: { type: 'tag', id: '123', name: 'tag1' },
+      })
+      .mockResolvedValueOnce({
+        status: 200,
+        data: { type: 'tag', id: '124', name: 'tag2' },
+      });
+
+    axios.post.mockClear();
+    await addOrUpdateTagsToCompany(message, destination, id);
+
+    expect(axios.post).toHaveBeenCalledTimes(2);
+
+    expect(axios.post).toHaveBeenCalledWith(
+      `${getBaseEndpoint(destination)}/tags`,
+      { name: 'tag1', companies: [{ id: 'companyId' }] },
+      expect.objectContaining({
+        headers: getHeaders(destination),
+      }),
+    );
+
+    expect(axios.post).toHaveBeenCalledWith(
+      `${getBaseEndpoint(destination)}/tags`,
+      { name: 'tag2', companies: [{ id: 'companyId' }] },
+      expect.objectContaining({
+        headers: getHeaders(destination),
+      }),
+    );
+  });
+
+  it('Should throw an error in case if axios calls returns an error', async () => {
+    const message = {
+      context: {
+        traits: {
+          tags: ['tag1'],
+        },
+      },
+    };
+    const destination = { Config: { apiKey: 'testApiKey', apiServer: 'us' } };
+    const id = 'companyId';
+
+    axios.post.mockRejectedValue({
+      status: 401,
+      data: {
+        type: 'error.list',
+        request_id: 'request_401',
+        errors: [
+          {
+            code: 'unauthorized',
+            message: 'Access Token Invalid',
+          },
+        ],
+      },
+    });
+
+    try {
+      axios.post.mockClear();
+      await addOrUpdateTagsToCompany(message, destination, id);
+    } catch (error) {
+      expect(error.message).toEqual(
+        `Unable to Add or Update the Tag to Company due to : {"type":"error.list","request_id":"request_401","errors":[{"code":"unauthorized","message":"Access Token Invalid"}]}`,
+      );
+    }
+  });
+
+  it('Should throw a network error in case if axios calls returns an error', async () => {
+    const message = {
+      context: {
+        traits: {
+          tags: ['tag1'],
+        },
+      },
+    };
+    const destination = { Config: { apiKey: 'testApiKey', apiServer: 'us' } };
+    const id = 'companyId';
+
+    axios.post.mockRejectedValue({
+      status: 429,
+      data: {
+        type: 'error.list',
+        request_id: 'request_429',
+        errors: [
+          {
+            code: 'rate_limit_exceeded',
+            message: 'You have exceeded the rate limit. Please try again later.',
+          },
+        ],
+      },
+    });
+
+    try {
+      axios.post.mockClear();
+      await addOrUpdateTagsToCompany(message, destination, id);
+    } catch (error) {
+      expect(error.message).toEqual(
+        `Unable to Add or Update the Tag to Company due to : {"type":"error.list","request_id":"request_429","errors":[{"code":"rate_limit_exceeded","message":"You have exceeded the rate limit. Please try again later."}]}`,
+      );
+    }
+  });
+
+  it('Should do nothing when no tags are provided', async () => {
+    const message = { traits: {} };
+    const destination = { Config: { apiKey: 'testApiKey', apiServer: 'us' } };
+    const id = 'companyId';
+
+    axios.post.mockClear();
+    await addOrUpdateTagsToCompany(message, destination, id);
+
+    expect(axios.post).not.toHaveBeenCalled();
   });
 });

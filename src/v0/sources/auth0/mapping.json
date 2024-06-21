@@ -65,6 +65,6 @@
   },
   {
     "sourceKeys": "type",
-    "destKeys": "source_type"
+    "destKeys": "properties.source_type"
   }
 ]

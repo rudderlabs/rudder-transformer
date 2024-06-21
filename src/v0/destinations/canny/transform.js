@@ -137,7 +137,7 @@ const processEvent = (message, destination, metadata) => {
       response = identifyResponseBuilder(message, destination);
       break;
     case EventType.TRACK:
-      response = trackResponseBuilder(message, destination, metadata);
+      response = await trackResponseBuilder(message, destination, metadata);
       break;
     default:
       throw new InstrumentationError('Message type not supported');

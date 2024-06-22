@@ -5,6 +5,7 @@ const { Resolver } = require('dns').promises;
 const fetch = require('node-fetch');
 
 const util = require('util');
+const NodeCache = require('node-cache');
 const logger = require('../logger');
 const stats = require('./stats');
 
@@ -15,37 +16,61 @@ const BLOCK_HOST_NAMES_LIST = BLOCK_HOST_NAMES.split(',');
 const LOCAL_HOST_NAMES_LIST = ['localhost', '127.0.0.1', '[::]', '[::1]'];
 const LOCALHOST_OCTET = '127.';
 const RECORD_TYPE_A = 4; // ipv4
+const DNS_CACHE_ENABLED = process.env.DNS_CACHE_ENABLED === 'true';
+const DNS_CACHE_TTL = process.env.DNS_CACHE_TTL ? parseInt(process.env.DNS_CACHE_TTL, 10) : 300;
+const dnsCache = new NodeCache({
+  useClones: false,
+  stdTTL: DNS_CACHE_TTL,
+  checkperiod: DNS_CACHE_TTL,
+});
 
-const staticLookup = (transformerVersionId) => async (hostname, _, cb) => {
-  let ips;
+const fetchResolvedIp = async (hostname) => {
+  // ex: [{ address: '108.157.0.0', ttl: 600 }]
+  const addresses = await resolver.resolve4(hostname, { ttl: true });
+  return addresses.length > 0 ? addresses[0] : {};
+};
+
+const staticLookup = (transformationId) => async (hostname, _, cb) => {
+  let ip;
   const resolveStartTime = new Date();
+  let dnsHit = false;
   try {
-    ips = await resolver.resolve4(hostname);
+    if (DNS_CACHE_ENABLED) {
+      ip = dnsCache.get(hostname);
+      if (ip !== undefined) {
+        dnsHit = true;
+      } else {
+        const { address, ttl } = await fetchResolvedIp(hostname);
+        ip = address;
+        dnsCache.set(hostname, ip, ttl || DNS_CACHE_TTL);
+      }
+    } else {
+      const { address } = await fetchResolvedIp(hostname);
+      ip = address;
+    }
   } catch (error) {
     logger.error(`DNS Error Code: ${error.code} | Message : ${error.message}`);
     stats.timing('fetch_dns_resolve_time', resolveStartTime, {
-      transformerVersionId,
+      transformationId,
       error: 'true',
+      dnsHit,
     });
     cb(null, `unable to resolve IP address for ${hostname}`, RECORD_TYPE_A);
     return;
   }
-  stats.timing('fetch_dns_resolve_time', resolveStartTime, { transformerVersionId });
+  stats.timing('fetch_dns_resolve_time', resolveStartTime, { transformationId, dnsHit });
 
-  if (ips.length === 0) {
+  if (!ip) {
     cb(null, `resolved empty list of IP address for ${hostname}`, RECORD_TYPE_A);
     return;
   }
 
-  // eslint-disable-next-line no-restricted-syntax
-  for (const ip of ips) {
-    if (ip.startsWith(LOCALHOST_OCTET)) {
-      cb(null, `cannot use ${ip} as IP address`, RECORD_TYPE_A);
-      return;
-    }
+  if (ip.startsWith(LOCALHOST_OCTET)) {
+    cb(null, `cannot use ${ip} as IP address`, RECORD_TYPE_A);
+    return;
   }
 
-  cb(null, ips[0], RECORD_TYPE_A);
+  cb(null, ip, RECORD_TYPE_A);
 };
 
 const httpAgentWithDnsLookup = (scheme, transformerVersionId) => {

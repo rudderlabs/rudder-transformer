@@ -136,7 +136,7 @@ const getProductPurchasesDetails = (message) => {
     count: properties?.quantity,
     amount: properties?.amount,
   });
-  return Object.keys(purchaseObject).length > 0 ? [purchaseObject]: [];
+  return Object.keys(purchaseObject).length > 0 ? [purchaseObject] : [];
 };
 
 /**

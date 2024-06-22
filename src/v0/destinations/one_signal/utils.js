@@ -129,14 +129,14 @@ const getProductPurchasesDetails = (message) => {
       count: product.quantity,
       amount: product.amount,
     }));
-  };
+  }
   const purchaseObject = removeUndefinedAndNullValues({
     sku: properties?.sku,
     iso: properties?.iso,
     count: properties?.quantity,
     amount: properties?.amount,
-  })
-  return Object.keys(purchaseObject).length>0 ? [purchaseObject]: [];
+  });
+  return Object.keys(purchaseObject).length > 0 ? [purchaseObject]: [];
 };
 
 /**

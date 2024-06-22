@@ -129,7 +129,7 @@ export const trackTests = [
               body: {
                 FORM: {},
                 JSON: {
-                  properties: { purchases:[], tags: { 'Order Completed': true } },
+                  properties: { purchases: [], tags: { 'Order Completed': true } },
                   identity: {
                     external_id: 'user@27',
                   },

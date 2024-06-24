@@ -424,4 +424,50 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
       },
     },
   },
+  {
+    id: 'fbca_v1_scenario_9',
+    name: 'fb_custom_audience',
+    description: 'user deletion failed differently created custom audience',
+    successCriteria: 'Fail with status code 400 and sending the actual error message.',
+    scenario: 'Business',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v1',
+    input: {
+      request: {
+        body: generateProxyV1Payload({
+          method: 'DELETE',
+          endpoint: getEndPoint('aud-value-based'),
+          headers: {
+            'test-dest-response-key': 'validAccessToken',
+          },
+          params: testParams2,
+        }),
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: {
+            status: 400,
+            message: '(#100) Value-Based Custom Audience requires LOOKALIKE_VALUE attribute.',
+            statTags: {
+              ...statTags,
+              errorCategory: 'network',
+              errorType: 'aborted',
+            },
+            response: [
+              {
+                error: '(#100) Value-Based Custom Audience requires LOOKALIKE_VALUE attribute.',
+                statusCode: 400,
+                metadata: generateMetadata(1),
+              },
+            ],
+          },
+        },
+      },
+    },
+  },
 ];

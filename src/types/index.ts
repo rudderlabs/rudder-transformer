@@ -139,12 +139,20 @@ type UserTransformationLibrary = {
   VersionID: string;
 };
 
+type Credential = {
+  id: string;
+  key: string;
+  value: string;
+  isSecret: boolean;
+};
+
 type ProcessorTransformationRequest = {
   request?: object;
   message: object;
   metadata: Metadata;
   destination: Destination;
   libraries?: UserTransformationLibrary[];
+  credentials?: Credential[];
 };
 
 type RouterTransformationRequestData = {

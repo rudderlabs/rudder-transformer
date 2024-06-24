@@ -12,8 +12,9 @@ const {
   setExternalIdOrAliasObject,
   getPurchaseObjs,
   setExternalId,
-  setAliasObjectWithAnonId,
+  setAliasObject,
   collectStatsForAliasFailure,
+  collectStatsForAliasMissConfigurations,
 } = require('./util');
 const tags = require('../../util/tags');
 const { EventType, MappedToDestinationKey } = require('../../../constants');
@@ -27,6 +28,7 @@ const {
   simpleProcessRouterDestSync,
   simpleProcessRouterDest,
   isNewStatusCodesAccepted,
+  getDestinationExternalID,
 } = require('../../util');
 const {
   ConfigCategory,
@@ -82,7 +84,7 @@ function buildResponse(message, destination, properties, endpoint) {
 
 function getIdentifyPayload(message) {
   let payload = {};
-  payload = setAliasObjectWithAnonId(payload, message);
+  payload = setAliasObject(payload, message);
   payload = setExternalId(payload, message);
   return { aliases_to_identify: [payload], merge_behavior: 'merge' };
 }
@@ -202,12 +204,6 @@ function getUserAttributesObject(message, mappingJson, destination) {
  * @param {*} destination
  */
 async function processIdentify(message, destination) {
-  // override userId with externalId in context(if present) and event is mapped to destination
-  const mappedToDestination = get(message, MappedToDestinationKey);
-  if (mappedToDestination) {
-    adduserIdFromExternalId(message);
-  }
-
   const identifyPayload = getIdentifyPayload(message);
   const identifyEndpoint = getIdentifyEndpoint(getEndpointFromConfig(destination));
   const { processedResponse: brazeIdentifyResp } = await handleHttpRequest(
@@ -511,10 +507,19 @@ async function process(event, processParams = { userStore: new Map() }, reqMetad
         processParams,
       );
       break;
-    case EventType.IDENTIFY:
+    case EventType.IDENTIFY: {
       category = ConfigCategory.IDENTIFY;
-      if (message.anonymousId) {
+      // override userId with externalId in context(if present) and event is mapped to destination
+      const mappedToDestination = get(message, MappedToDestinationKey);
+      if (mappedToDestination) {
+        adduserIdFromExternalId(message);
+      }
+      const brazeExternalID =
+        getDestinationExternalID(message, 'brazeExternalId') || message.userId;
+      if (message.anonymousId && brazeExternalID) {
         await processIdentify(message, destination);
+      } else {
+        collectStatsForAliasMissConfigurations(destination.ID);
       }
       response = processTrackWithUserAttributes(
         message,
@@ -524,6 +529,7 @@ async function process(event, processParams = { userStore: new Map() }, reqMetad
         reqMetadata,
       );
       break;
+    }
     case EventType.GROUP:
       response = processGroup(message, destination);
       break;

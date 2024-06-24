@@ -2,6 +2,7 @@ const { defaultRequestConfig } = require('rudder-transformer-cdk/build/utils');
 const lodash = require('lodash');
 const { NetworkError, InstrumentationError } = require('@rudderstack/integrations-lib');
 const { WhiteListedTraits } = require('../../../constants');
+const logger = require('../../../logger');
 
 const {
   constructPayload,
@@ -17,7 +18,13 @@ const tags = require('../../util/tags');
 const { handleHttpRequest } = require('../../../adapters/network');
 const { JSON_MIME_TYPE, HTTP_STATUS_CODES } = require('../../util/constant');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
-const { BASE_ENDPOINT, MAPPING_CONFIG, CONFIG_CATEGORIES, MAX_BATCH_SIZE } = require('./config');
+const {
+  BASE_ENDPOINT,
+  MAPPING_CONFIG,
+  CONFIG_CATEGORIES,
+  MAX_BATCH_SIZE,
+  destType,
+} = require('./config');
 
 const REVISION_CONSTANT = '2023-02-22';
 
@@ -32,10 +39,18 @@ const REVISION_CONSTANT = '2023-02-22';
  * @param {*} requestOptions
  * @returns
  */
-const getIdFromNewOrExistingProfile = async (endpoint, payload, requestOptions) => {
+const getIdFromNewOrExistingProfile = async ({ endpoint, payload, requestOptions, metadata }) => {
   let response;
   let profileId;
   const endpointPath = '/api/profiles';
+  logger.requestLog(`[${destType.toUpperCase()}] get id from profile request`, {
+    metadata,
+    requestDetails: {
+      url: endpoint,
+      body: payload,
+      method: 'post',
+    },
+  });
   const { processedResponse: resp } = await handleHttpRequest(
     'post',
     endpoint,
@@ -49,6 +64,10 @@ const getIdFromNewOrExistingProfile = async (endpoint, payload, requestOptions) 
       module: 'router',
     },
   );
+  logger.responseLog(`[${destType.toUpperCase()}] get id from profile response`, {
+    metadata,
+    responseDetails: resp,
+  });
 
   /**
    * 201 - profile is created with updated payload no need to update it again (suppress event with 299 status code)

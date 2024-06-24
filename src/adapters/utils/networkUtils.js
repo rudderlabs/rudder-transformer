@@ -144,10 +144,11 @@ const processAxiosResponse = (clientResponse) => {
     }
     // non 2xx status handling for axios response
     if (response) {
-      const { data, status } = response;
+      const { data, status, headers } = response;
       return {
         response: data || '',
         status: status || 500,
+        ...(isDefinedAndNotNullAndNotEmpty(headers) ? { headers } : {}),
       };
     }
     // (edge case) response and code is not present
@@ -157,10 +158,11 @@ const processAxiosResponse = (clientResponse) => {
     };
   }
   // success(2xx) axios response
-  const { data, status } = clientResponse.response;
+  const { data, status, headers } = clientResponse.response;
   return {
     response: data || '',
     status: status || 500,
+    ...(isDefinedAndNotNullAndNotEmpty(headers) ? { headers } : {}),
   };
 };
 

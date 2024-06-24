@@ -101,7 +101,7 @@ export class NativeIntegrationDestinationService implements DestinationService {
     const destHandler = FetchHandler.getDestHandler(destinationType, version);
     const allDestEvents: NonNullable<unknown> = groupBy(
       events,
-      (ev: RouterTransformationRequestData) => ev.destination?.ID,
+      (ev: RouterTransformationRequestData) => [ev.destination?.ID, ev.metadata?.sourceJobRunId],
     );
     const groupedEvents: RouterTransformationRequestData[][] = Object.values(allDestEvents);
     const response: RouterTransformationResponse[][] = await Promise.all(

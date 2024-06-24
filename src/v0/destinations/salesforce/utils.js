@@ -58,12 +58,13 @@ const salesforceResponseHandler = (destResponse, sourceMessage, authKey, authori
     } else if (
       status === 400 &&
       matchErrorCode('CANNOT_INSERT_UPDATE_ACTIVATE_ENTITY') &&
-      response?.message?.includes('UNABLE_TO_LOCK_ROW')
+      (response?.message?.includes('UNABLE_TO_LOCK_ROW') ||
+        response?.message?.includes('Too many SOQL queries'))
     ) {
       // handling the error case where the record is locked by another background job
       // this is a retryable error
       throw new RetryableError(
-        `${DESTINATION} Request Failed - "Row locked due to another background running on the same object", (Retryable) ${sourceMessage}`,
+        `${DESTINATION} Request Failed - "${response.message}", (Retryable) ${sourceMessage}`,
         500,
         destResponse,
       );

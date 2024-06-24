@@ -7,7 +7,7 @@ const { DEFAULT_BASE_ENDPOINT } = require('./config');
 const { getType, isDefinedAndNotNull, isObject } = require('../../util');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const tags = require('../../util/tags');
-const { httpGET } = require('../../../adapters/network');
+const { handleHttpRequest } = require('../../../adapters/network');
 
 /**
  * RegExp to test a string for a ISO 8601 Date spec
@@ -97,8 +97,8 @@ const handleAdvancedtransformations = (event) => {
   return cloneEvent;
 };
 
-const handleResponse = ({ response }) => {
-  const { status, data } = response;
+const handleResponse = (processedResponse) => {
+  const { status, response: data } = processedResponse;
   switch (status) {
     case 200:
       if (data && data.data && data.data.id) {
@@ -113,7 +113,7 @@ const handleResponse = ({ response }) => {
         {
           [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
         },
-        response,
+        processedResponse,
       );
     case 404:
       return { userExists: false };
@@ -124,13 +124,14 @@ const handleResponse = ({ response }) => {
         {
           [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status || 400),
         },
-        response,
+        processedResponse,
       );
   }
 };
 
 const fetchKustomer = async (url, destination, metadata) => {
-  const response = await httpGET(
+  const { processedResponse } = await handleHttpRequest(
+    'get',
     url,
     {
       headers: {
@@ -146,10 +147,7 @@ const fetchKustomer = async (url, destination, metadata) => {
       module: 'processor',
     },
   );
-  if (response.success) {
-    return handleResponse(response);
-  }
-  return handleResponse(response.response);
+  return handleResponse(processedResponse);
 };
 
 module.exports = {

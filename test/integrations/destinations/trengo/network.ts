@@ -1323,4 +1323,23 @@ export const networkCallsData = [
       status: 200,
     },
   },
+  {
+    httpReq: {
+      headers: {
+        Authorization: 'Bearer wrong_trengo_integration_test_api_token',
+      },
+
+      method: 'GET',
+
+      url: 'https://app.trengo.com/api/v2/contacts?page=1&term=null',
+    },
+    httpRes: {
+      data: {
+        error: 'Request failed',
+        status: 404,
+        statusText: 'not able to make request invalid token',
+      },
+      status: 400,
+    },
+  },
 ];

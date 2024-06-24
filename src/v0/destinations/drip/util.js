@@ -1,5 +1,4 @@
 const { NetworkError, AbortedError } = require('@rudderstack/integrations-lib');
-// const myAxios = require('../../../util/myAxios');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const logger = require('../../../logger');
 const { constructPayload, isDefinedAndNotNull } = require('../../util');
@@ -22,51 +21,50 @@ const isValidTimestamp = (timestamp) => {
 
 const userExists = async (Config, id, metadata) => {
   const basicAuth = Buffer.from(Config.apiKey).toString('base64');
-  try {
-    const { httpResponse } = await handleHttpRequest(
-      'get',
-      `${ENDPOINT}/v2/${Config.accountId}/subscribers/${id}`,
-      {
-        headers: {
-          Authorization: `Basic ${basicAuth}`,
-          'Content-Type': JSON_MIME_TYPE,
+
+  const { httpResponse, processedResponse } = await handleHttpRequest(
+    'get',
+    `${ENDPOINT}/v2/${Config.accountId}/subscribers/${id}`,
+    {
+      headers: {
+        Authorization: `Basic ${basicAuth}`,
+        'Content-Type': JSON_MIME_TYPE,
+      },
+    },
+    {
+      metadata,
+      destType: 'drip',
+      feature: 'transformation',
+      requestMethod: 'GET',
+      endpointPath: '/subscribers/id',
+      module: 'router',
+    },
+  );
+  if (httpResponse.success) {
+    if (processedResponse.status) {
+      return processedResponse.status === 200;
+    } 
+      throw new NetworkError(
+        'Invalid response.',
+        processedResponse?.status,
+        {
+          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(processedResponse?.status),
         },
-      },
-      {
-        metadata,
-        destType: 'drip',
-        feature: 'transformation',
-        requestMethod: 'GET',
-        endpointPath: '/subscribers/id',
-        module: 'router',
-      },
-    );
-    const { response } = httpResponse;
-    if (response && response.status) {
-      return response.status === 200;
-    }
-    throw new NetworkError(
-      'Invalid response.',
-      response?.status,
-      {
-        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(response?.status),
-      },
-      response,
-    );
-  } catch ({ destinationResponse }) {
-    const error = destinationResponse;
-    let errMsg = '';
-    let errStatus = 400;
-    if (error.response) {
-      errStatus = error.response.status || 400;
-      errMsg = error.response.data
-        ? JSON.stringify(error.response.data)
-        : 'error response not found';
-    }
-    throw new NetworkError(`Error occurred while checking user : ${errMsg}`, errStatus, {
-      [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(errStatus),
-    });
+        processedResponse,
+      );
+    
   }
+
+  const error = processedResponse.response;
+  let errMsg = '';
+  let errStatus = 400;
+  if (processedResponse.status) {
+    errStatus = processedResponse.status || 400;
+    errMsg = error.data ? JSON.stringify(error.data) : 'error response not found';
+  }
+  throw new NetworkError(`Error occurred while checking user : ${errMsg}`, errStatus, {
+    [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(errStatus),
+  });
 };
 
 const createUpdateUser = async (finalpayload, Config, basicAuth, metadata) => {

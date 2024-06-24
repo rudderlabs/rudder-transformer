@@ -26,7 +26,7 @@ const {
 const tags = require('../../util/tags');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const { JSON_MIME_TYPE } = require('../../util/constant');
-const { httpGET } = require('../../../adapters/network');
+const { handleHttpRequest } = require('../../../adapters/network');
 
 /**
  *
@@ -81,40 +81,44 @@ const validate = (email, phone, channelIdentifier) => {
  * In case no contact is founf for a particular identifer it returns -1
  */
 const lookupContact = async (term, destination, metadata) => {
-  let res;
-  try {
-    res = await httpGET(
-      `${BASE_URL}/contacts?page=1&term=${term}`,
-      {
-        headers: {
-          Authorization: `Bearer ${destination.Config.apiToken}`,
-        },
+  const { httpResponse, processedResponse } = await handleHttpRequest(
+    'get',
+    `${BASE_URL}/contacts?page=1&term=${term}`,
+    {
+      headers: {
+        Authorization: `Bearer ${destination.Config.apiToken}`,
       },
-      {
-        metadata,
-        destType: 'trengo',
-        feature: 'transformation',
-        endpointPath: '/contacts',
-        requestMethod: 'GET',
-        module: 'router',
-      },
-    );
-    res = res.response;
-  } catch (err) {
-    // check if exists err.response && err.response.status else 500
-    const status = err.response?.status || 400;
+    },
+    {
+      metadata,
+      destType: 'trengo',
+      feature: 'transformation',
+      endpointPath: '/contacts',
+      requestMethod: 'GET',
+      module: 'router',
+    },
+  );
+  if (!httpResponse.success) {
+    const status = processedResponse?.status || 400;
     throw new NetworkError(
-      `Inside lookupContact, failed to make request: ${err.response?.statusText}`,
+      `Inside lookupContact, failed to make request: ${processedResponse.response?.statusText}`,
       status,
 
       {
         [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
       },
-      err.response,
+      processedResponse.response,
     );
   }
-  if (res && res.status === 200 && res.data && res.data.data && Array.isArray(res.data.data)) {
-    const { data } = res.data;
+  // check if exists err.response && err.response.status else 500
+
+  if (
+    processedResponse &&
+    processedResponse.status === 200 &&
+    processedResponse.response &&
+    Array.isArray(processedResponse.response.data)
+  ) {
+    const { data } = processedResponse.response;
     if (data.length > 1) {
       throw new NetworkInstrumentationError(
         `Inside lookupContact, duplicates present for identifier : ${term}`,

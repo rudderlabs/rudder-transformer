@@ -65,15 +65,15 @@ const identifyRequestHandlerV2 = (message, category, destination) => {
   }
   const traitsInfo = getFieldValueFromMessage(message, 'traits');
   let propertyPayload = constructPayload(message, MAPPING_CONFIG[category.name]);
-    // Extract other K-V property from traits about user custom properties
-    let customPropertyPayload = {};
-    customPropertyPayload = extractCustomFields(
-      message,
-      customPropertyPayload,
-      ['traits', 'context.traits'],
-      [...WhiteListedTraits, '_kx'],
-    );
-    propertyPayload = removeUndefinedAndNullValues(propertyPayload);
+  // Extract other K-V property from traits about user custom properties
+  let customPropertyPayload = {};
+  customPropertyPayload = extractCustomFields(
+    message,
+    customPropertyPayload,
+    ['traits', 'context.traits'],
+    [...WhiteListedTraits, '_kx'],
+  );
+  propertyPayload = removeUndefinedAndNullValues(propertyPayload);
   if (enforceEmailAsPrimary) {
     if (!propertyPayload.email && !propertyPayload.phone_number) {
       throw new InstrumentationError('None of email and phone are present in the payload');

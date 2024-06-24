@@ -711,7 +711,10 @@ export const identifyData: ProcessorTestData[] = [
       request: {
         body: [
           {
-            destination: overrideDestination(destination, { enforceEmailAsPrimary: true, useUpdatedKlaviyo: true, }),
+            destination: overrideDestination(destination, {
+              enforceEmailAsPrimary: true,
+              useUpdatedKlaviyo: true,
+            }),
             message: generateSimplifiedIdentifyPayload({
               sentAt,
               userId,
@@ -740,7 +743,7 @@ export const identifyData: ProcessorTestData[] = [
                 data: {
                   type: 'profile',
                   attributes: removeUndefinedAndNullValues({
-                    anonymous_id: "97c46c81-3140-456d-b2a9-690d70aaca35",
+                    anonymous_id: '97c46c81-3140-456d-b2a9-690d70aaca35',
                     ...commonOutputUserProps2,
                     properties: {
                       ...commonOutputUserProps2.properties,
@@ -748,7 +751,7 @@ export const identifyData: ProcessorTestData[] = [
                     },
                     // remove external_id from the payload
                     external_id: undefined,
-                  })
+                  }),
                 },
               },
             }),

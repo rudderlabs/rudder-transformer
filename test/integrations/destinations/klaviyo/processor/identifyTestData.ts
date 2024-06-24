@@ -602,7 +602,7 @@ export const identifyData: ProcessorTestData[] = [
     },
   },
   {
-    id: 'klaviyo-identify-test-8',
+    id: 'klaviyo-15-06-2024-identify-test-8',
     name: 'klaviyo',
     description:
       'Updated Identify call for with flattenProperties enabled in destination config and subscription also present',
@@ -692,6 +692,84 @@ export const identifyData: ProcessorTestData[] = [
             }),
             statusCode: 200,
             metadata: generateMetadata(2),
+          },
+        ],
+      },
+    },
+  },
+  {
+    id: 'klaviyo-15-06-2024-identify-test-9',
+    name: 'klaviyo',
+    description: 'Identify call with enforceEmailAsPrimary enabled in destination config',
+    scenario: 'Business',
+    successCriteria:
+      'Response should contain two payloads one for profile updation and other for subscription, response status code should be 200, for the profile updation payload there should be no external_id field in the payload as enforceEmailAsPrimary is set to true in the destination config and the userId should be mapped to _id field in the properties object',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: overrideDestination(destination, { enforceEmailAsPrimary: true, useUpdatedKlaviyo: true, }),
+            message: generateSimplifiedIdentifyPayload({
+              sentAt,
+              userId,
+              context: {
+                traits: commonTraits2,
+              },
+              anonymousId,
+              originalTimestamp,
+            }),
+            metadata: generateMetadata(5),
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: transformResultBuilder({
+              userId: '',
+              method: 'POST',
+              endpoint: updatedEndpoint,
+              headers: commonOutputHeadersUpdated,
+              JSON: {
+                data: {
+                  type: 'profile',
+                  attributes: removeUndefinedAndNullValues({
+                    anonymous_id: "97c46c81-3140-456d-b2a9-690d70aaca35",
+                    ...commonOutputUserProps2,
+                    properties: {
+                      ...commonOutputUserProps2.properties,
+                      _id: userId,
+                    },
+                    // remove external_id from the payload
+                    external_id: undefined,
+                  })
+                },
+              },
+            }),
+            statusCode: 200,
+            metadata: generateMetadata(5),
+          },
+          {
+            output: transformResultBuilder({
+              userId: '',
+              method: 'POST',
+              endpoint: subscribeEndpoint,
+              headers: commonOutputHeaders,
+              JSON: {
+                data: {
+                  type: 'profile-subscription-bulk-create-job',
+                  attributes: commonOutputSubscriptionProps,
+                },
+              },
+            }),
+            statusCode: 200,
+            metadata: generateMetadata(5),
           },
         ],
       },

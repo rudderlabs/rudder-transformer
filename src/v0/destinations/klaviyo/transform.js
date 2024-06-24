@@ -57,7 +57,7 @@ const { JSON_MIME_TYPE, HTTP_STATUS_CODES } = require('../../util/constant');
  */
 const identifyRequestHandlerV2 = (message, category, destination) => {
   // If listId property is present try to subscribe/member user in list
-  const { privateApiKey, listId, flattenProperties } = destination.Config;
+  const { privateApiKey, listId, flattenProperties, enforceEmailAsPrimary } = destination.Config;
   const mappedToDestination = get(message, MappedToDestinationKey);
   if (mappedToDestination) {
     addExternalIdToTraits(message);
@@ -65,16 +65,25 @@ const identifyRequestHandlerV2 = (message, category, destination) => {
   }
   const traitsInfo = getFieldValueFromMessage(message, 'traits');
   let propertyPayload = constructPayload(message, MAPPING_CONFIG[category.name]);
-  // Extract other K-V property from traits about user custom properties
-  let customPropertyPayload = {};
-  customPropertyPayload = extractCustomFields(
-    message,
-    customPropertyPayload,
-    ['traits', 'context.traits'],
-    [...WhiteListedTraits, '_kx'],
-  );
-
-  propertyPayload = removeUndefinedAndNullValues(propertyPayload);
+    // Extract other K-V property from traits about user custom properties
+    let customPropertyPayload = {};
+    customPropertyPayload = extractCustomFields(
+      message,
+      customPropertyPayload,
+      ['traits', 'context.traits'],
+      [...WhiteListedTraits, '_kx'],
+    );
+    propertyPayload = removeUndefinedAndNullValues(propertyPayload);
+  if (enforceEmailAsPrimary) {
+    if (!propertyPayload.email && !propertyPayload.phone_number) {
+      throw new InstrumentationError('None of email and phone are present in the payload');
+    }
+    delete propertyPayload.external_id;
+    customPropertyPayload = {
+      ...customPropertyPayload,
+      _id: getFieldValueFromMessage(message, 'userIdOnly'),
+    };
+  }
   const data = {
     type: 'profile',
     attributes: {

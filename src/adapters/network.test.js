@@ -40,6 +40,10 @@ describe(`${funcName} Tests`, () => {
 });
 
 describe('logging in http methods', () => {
+  beforeEach(() => {
+    mockLoggerInstance.info.mockClear();
+    loggerUtil.getMatchedMetadata.mockClear();
+  });
   test('when proper metadata is sent should call logger without error', async () => {
     const statTags = {
       metadata: {
@@ -85,6 +89,46 @@ describe('logging in http methods', () => {
       destinationId: 'd1',
       workspaceId: 'w1',
       sourceId: 's1',
+      body: { a: 1, b: 2, c: 'abc' },
+      status: 200,
+      headers: {
+        'Content-Type': 'apllication/json',
+        'X-Some-Header': 'headsome',
+      },
+    });
+  });
+
+  test('when metadata is not sent should call logger without error', async () => {
+    const statTags = {
+      destType: 'DT',
+      feature: 'feat',
+      endpointPath: '/m/n/o',
+      requestMethod: 'post',
+    };
+    loggerUtil.getMatchedMetadata.mockReturnValue([statTags.metadata]);
+
+    axios.post.mockResolvedValueOnce({
+      status: 200,
+      data: { a: 1, b: 2, c: 'abc' },
+      headers: {
+        'Content-Type': 'apllication/json',
+        'X-Some-Header': 'headsome',
+      },
+    });
+    await expect(httpPOST('https://some.web.com/m/n/o', {}, {}, statTags)).resolves.not.toThrow(
+      Error,
+    );
+    expect(loggerUtil.getMatchedMetadata).toHaveBeenCalledTimes(2);
+
+    expect(mockLoggerInstance.info).toHaveBeenCalledTimes(2);
+
+    expect(mockLoggerInstance.info).toHaveBeenNthCalledWith(1, ' [DT] /m/n/o request', {
+      body: {},
+      url: 'https://some.web.com/m/n/o',
+      method: 'post',
+    });
+
+    expect(mockLoggerInstance.info).toHaveBeenNthCalledWith(2, ' [DT] /m/n/o response', {
       body: { a: 1, b: 2, c: 'abc' },
       status: 200,
       headers: {

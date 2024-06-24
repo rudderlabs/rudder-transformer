@@ -18,7 +18,7 @@ const {
   getProductPurchasesDetails,
   getSubscriptions,
   getOneSignalAliases,
-} = require('./utils');
+} = require('./util');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const responseBuilder = (payload, Config) => {

@@ -20,6 +20,7 @@ const sampleDestination: Destination = {
     Name: 'TRADE_DESK',
     Config: { cdkV2Enabled: true },
   },
+  IsProcessorEnabled: true,
 };
 
 const sampleContextForConversion = {

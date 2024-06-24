@@ -20,6 +20,7 @@ const destination: Destination = {
   Name: destTypeInUpperCase,
   Transformations: [],
   WorkspaceID: 'test-workspace-id',
+  IsProcessorEnabled: true,
 };
 
 const processorInstrumentationErrorStatTags = {

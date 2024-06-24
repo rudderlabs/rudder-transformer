@@ -5,6 +5,7 @@ const INTEGRATION_SERVICE = {
   CDK_V1_DEST: 'cdkv1_dest',
   CDK_V2_DEST: 'cdkv2_dest',
   NATIVE_DEST: 'native_dest',
+  PLUGIN_DEST: 'plugin_dest',
   NATIVE_SOURCE: 'native_source',
 };
 const CHANNELS = {

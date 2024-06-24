@@ -26,6 +26,7 @@ const destination: Destination = {
     trackCategorisedPages: false,
   },
   Enabled: true,
+  IsProcessorEnabled: true,
 };
 
 const headers = {

@@ -61,7 +61,8 @@ export class ComparatorService implements DestinationService {
   }
 
   private getTestThreshold(destination: Destination) {
-    return destination.DestinationDefinition?.Config?.camparisonTestThreshold || 0;
+    // eslint-disable-next-line @typescript-eslint/dot-notation
+    return destination.DestinationDefinition?.Config?.['camparisonTestThreshold'] || 0;
   }
 
   private getComparisonLogs(

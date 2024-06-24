@@ -23,6 +23,7 @@ const destination1: Destination = {
   Enabled: true,
   WorkspaceID: '123',
   Transformations: [],
+  IsProcessorEnabled: true,
 };
 
 const destination2: Destination = {
@@ -46,6 +47,7 @@ const destination2: Destination = {
   Enabled: true,
   WorkspaceID: '123',
   Transformations: [],
+  IsProcessorEnabled: true,
 };
 
 const destination3: Destination = {
@@ -68,6 +70,7 @@ const destination3: Destination = {
   Enabled: true,
   WorkspaceID: '123',
   Transformations: [],
+  IsProcessorEnabled: true,
 };
 
 const destination4: Destination = {
@@ -91,6 +94,7 @@ const destination4: Destination = {
   Enabled: true,
   WorkspaceID: '123',
   Transformations: [],
+  IsProcessorEnabled: true,
 };
 
 const destination5: Destination = {
@@ -113,6 +117,7 @@ const destination5: Destination = {
   Enabled: true,
   WorkspaceID: '123',
   Transformations: [],
+  IsProcessorEnabled: true,
 };
 
 const destination6: Destination = {
@@ -134,6 +139,7 @@ const destination6: Destination = {
   Enabled: true,
   WorkspaceID: '123',
   Transformations: [],
+  IsProcessorEnabled: true,
 };
 
 const destination7: Destination = {
@@ -154,6 +160,7 @@ const destination7: Destination = {
   Enabled: true,
   WorkspaceID: '123',
   Transformations: [],
+  IsProcessorEnabled: true,
 };
 
 const routerRequest1: RouterTransformationRequest = {

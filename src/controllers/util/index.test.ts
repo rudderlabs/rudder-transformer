@@ -207,6 +207,7 @@ const destination: Destination = {
   Enabled: true,
   WorkspaceID: 'wspId',
   Transformations: [],
+  IsProcessorEnabled: true,
 };
 
 const message = {

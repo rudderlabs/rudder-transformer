@@ -21,6 +21,7 @@ const destination: Destination = {
     trackNamedPages: false,
   },
   Enabled: true,
+  IsProcessorEnabled: true,
 };
 
 const properties = {

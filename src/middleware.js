@@ -14,6 +14,11 @@ function initPyroscope() {
   });
   Pyroscope.start();
   Pyroscope.startHeapCollecting();
+  process.on('SIGINT', () => {
+    Pyroscope.stop();
+    Pyroscope.stopHeapCollecting();
+  });
+
 }
 
 function getCPUProfile(seconds) {

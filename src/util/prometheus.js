@@ -1,12 +1,17 @@
 const prometheusClient = require('prom-client');
 const logger = require('../logger');
 const { MetricsAggregator } = require('./metricsAggregator');
+const cluster = require('cluster');
 
 const clusterEnabled = process.env.CLUSTER_ENABLED !== 'false';
 const useMetricsAggregator = process.env.USE_METRICS_AGGREGATOR === 'true';
 const instanceID = process.env.INSTANCE_ID || 'localhost';
 const prefix = 'transformer';
-const defaultLabels = { instanceName: instanceID };
+const defaultLabels = { 
+  instanceName: instanceID, 
+  workerId: cluster.worker ? cluster.worker.id : 0, 
+  isMaster: cluster.isMaster  
+};
 
 function appendPrefix(name) {
   return `${prefix}_${name}`;

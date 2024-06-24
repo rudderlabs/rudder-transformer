@@ -18,7 +18,7 @@ const {
   isDefinedAndNotNullAndNotEmpty,
   defaultPutRequestConfig,
 } = require('../../util');
-const { populateDeviceType, populateTags } = require('./utils');
+const { populateDeviceType, populateTags } = require('./util');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const responseBuilder = (payload, endpoint, eventType) => {

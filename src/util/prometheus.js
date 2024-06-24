@@ -574,6 +574,12 @@ class Prometheus {
           'sourceId',
         ],
       },
+      {
+        name: 'credential_error_total',
+        help: 'Error in fetching credentials count',
+        type: 'counter',
+        labelNames: ['transformationId', 'workspaceId'],
+      },
 
       // Gauges
       {
@@ -868,24 +874,6 @@ class Prometheus {
           'transformerVersionId',
           'identifier',
           'version',
-          'sourceType',
-          'destinationType',
-          'k8_namespace',
-        ],
-      },
-      {
-        name: 'lambda_test_time',
-        help: 'lambda_test_time',
-        type: 'histogram',
-        labelNames: ['transformerVersionId', 'language', 'publish'],
-      },
-      {
-        name: 'lambda_invoke_time',
-        help: 'lambda_invoke_time',
-        type: 'histogram',
-        labelNames: [
-          'transformerVersionId',
-          'language',
           'sourceType',
           'destinationType',
           'k8_namespace',

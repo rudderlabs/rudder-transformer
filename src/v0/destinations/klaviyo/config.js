@@ -9,7 +9,7 @@ const MAX_BATCH_SIZE = 100;
 
 const CONFIG_CATEGORIES = {
   IDENTIFY: { name: 'KlaviyoIdentify', apiUrl: '/api/profiles' },
-  IDENTIFY_V2: { name: 'KlaviyoIdentifyV2', apiUrl: '/api/profiles' },
+  IDENTIFY_V2: { name: 'KlaviyoIdentifyV2', apiUrl: '/api/profile-import' },
   SCREEN: { name: 'KlaviyoTrack', apiUrl: '/api/events' },
   TRACK: { name: 'KlaviyoTrack', apiUrl: '/api/events' },
   GROUP: { name: 'KlaviyoGroup' },
@@ -19,7 +19,7 @@ const CONFIG_CATEGORIES = {
   ADDED_TO_CART: { name: 'AddedToCart' },
   ITEMS: { name: 'Items' },
 };
-const { useUpdatedKlaviyoAPI } = process.env;
+const useUpdatedKlaviyoAPI = process.env.USE_UPDATED_KLAVIYO_API === 'true' || false;
 const ecomExclusionKeys = [
   'name',
   'product_id',

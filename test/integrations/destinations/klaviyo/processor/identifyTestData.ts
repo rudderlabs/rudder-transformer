@@ -91,6 +91,7 @@ const commonOutputSubscriptionProps = {
 const location = {
   longitude: '0.1.2.2',
   latitude: '0.1.1.1',
+  ip: '0.0.0.0',
 };
 
 const commonOutputHeaders = {
@@ -106,7 +107,7 @@ const commonOutputHeadersUpdated = {
   revision: '2024-06-15',
 };
 
-const updatedEndpoint = 'https://a.klaviyo.com/api/profiles';
+const updatedEndpoint = 'https://a.klaviyo.com/api/profile-import';
 const anonymousId = '97c46c81-3140-456d-b2a9-690d70aaca35';
 const userId = 'user@1';
 const sentAt = '2021-01-03T17:02:53.195Z';
@@ -635,7 +636,6 @@ export const identifyData: ProcessorTestData[] = [
                     age: 25,
                   },
                 },
-                ip: '0.0.0.0',
                 location,
               },
               anonymousId,
@@ -661,7 +661,6 @@ export const identifyData: ProcessorTestData[] = [
                   type: 'profile',
                   attributes: {
                     ...commonOutputUserProps2,
-                    ip: '0.0.0.0',
                     anonymous_id: anonymousId,
                     _kx: 'encrytped number',
                     properties: {
@@ -700,7 +699,7 @@ export const identifyData: ProcessorTestData[] = [
   {
     id: 'klaviyo-15-06-2024-identify-test-9',
     name: 'klaviyo',
-    description: 'Identify call with enforceEmailAsPrimary enabled in destination config',
+    description: 'V2 Identify call with enforceEmailAsPrimary enabled in destination config',
     scenario: 'Business',
     successCriteria:
       'Response should contain two payloads one for profile updation and other for subscription, response status code should be 200, for the profile updation payload there should be no external_id field in the payload as enforceEmailAsPrimary is set to true in the destination config and the userId should be mapped to _id field in the properties object',

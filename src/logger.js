@@ -1,10 +1,8 @@
 /* istanbul ignore file */
 const { LOGLEVELS, structuredLogger } = require('@rudderstack/integrations-lib');
-
+const { getMatchedMetadata } = require('./util/logger');
 // LOGGER_IMPL can be `console` or `winston`
 const loggerImpl = process.env.LOGGER_IMPL ?? 'winston';
-const logDestIds = (process.env.LOG_DEST_IDS ?? '').split(',')?.map?.((s) => s?.trim?.()); // should be comma separated
-const logWspIds = (process.env.LOG_WSP_IDS ?? '').split(',')?.map?.((s) => s?.trim?.()); // should be comma separated
 
 let logLevel = process.env.LOG_LEVEL ?? 'error';
 
@@ -71,24 +69,6 @@ const formLogArgs = (args) => {
     otherArgs.push(arg);
   });
   return [msg, ...otherArgs];
-};
-
-const isMetadataMatching = (m) => {
-  const isDestIdConfigured = logDestIds?.find?.((envDId) => envDId && envDId === m?.destinationId);
-  const isWspIdConfigured = logWspIds?.find?.(
-    (envWspId) => envWspId && envWspId === m?.workspaceId,
-  );
-  return Boolean(isDestIdConfigured || isWspIdConfigured);
-};
-
-const getMatchedMetadata = (metadata) => {
-  if (!Array.isArray(metadata)) {
-    if (isMetadataMatching(metadata)) {
-      return [metadata];
-    }
-    return [];
-  }
-  return metadata.filter((m) => isMetadataMatching(m));
 };
 
 /**
@@ -170,10 +150,7 @@ const requestLog = (identifierMsg, { metadata, requestDetails: { url, body, meth
   }
 };
 
-const responseLog = (
-  identifierMsg,
-  { metadata, responseDetails: { response: body, status, headers } },
-) => {
+const responseLog = (identifierMsg, { metadata, responseDetails: { body, status, headers } }) => {
   const logger = getLogger();
   const filteredMetadata = getMatchedMetadata(metadata);
   if (filteredMetadata.length > 0) {

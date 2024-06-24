@@ -120,8 +120,8 @@ const trackOrGroupResponseBuilder = (message, { Config }, msgtype) => {
     allowedProperties.forEach((item) => {
       if (typeof properties[item.propertyName] === 'string') {
         const tagName =
-           event && eventAsTags ? `${event}_${[item.propertyName]}` : item.propertyName;
-         tags[tagName] = properties[item.propertyName];
+          event && eventAsTags ? `${event}_${[item.propertyName]}` : item.propertyName;
+        tags[tagName] = properties[item.propertyName];
       }
     });
   }

@@ -65,7 +65,6 @@ async function userTransformHandlerV1(
   const isolatevmFactory = await getFactory(
     userTransformation.code,
     libraryVersionIds,
-    userTransformation.versionId,
     userTransformation.id,
     userTransformation.workspaceId,
     credentialsMap,

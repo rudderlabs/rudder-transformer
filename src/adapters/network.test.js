@@ -44,7 +44,7 @@ describe('logging in http methods', () => {
     mockLoggerInstance.info.mockClear();
     loggerUtil.getMatchedMetadata.mockClear();
   });
-  test('when proper metadata is sent should call logger without error', async () => {
+  test('when proper metadata(object) is sent should call logger without error', async () => {
     const statTags = {
       metadata: {
         destType: 'DT',
@@ -105,6 +105,32 @@ describe('logging in http methods', () => {
       endpointPath: '/m/n/o',
       requestMethod: 'post',
     };
+    loggerUtil.getMatchedMetadata.mockReturnValue([]);
+
+    axios.post.mockResolvedValueOnce({
+      status: 200,
+      data: { a: 1, b: 2, c: 'abc' },
+      headers: {
+        'Content-Type': 'apllication/json',
+        'X-Some-Header': 'headsome',
+      },
+    });
+    await expect(httpPOST('https://some.web.com/m/n/o', {}, {}, statTags)).resolves.not.toThrow(
+      Error,
+    );
+    expect(loggerUtil.getMatchedMetadata).toHaveBeenCalledTimes(2);
+
+    expect(mockLoggerInstance.info).toHaveBeenCalledTimes(0);
+  });
+
+  test('when metadata is string should call logger without error', async () => {
+    const statTags = {
+      metadata: 'random metadata',
+      destType: 'DT',
+      feature: 'feat',
+      endpointPath: '/m/n/o',
+      requestMethod: 'post',
+    };
     loggerUtil.getMatchedMetadata.mockReturnValue([statTags.metadata]);
 
     axios.post.mockResolvedValueOnce({
@@ -120,21 +146,111 @@ describe('logging in http methods', () => {
     );
     expect(loggerUtil.getMatchedMetadata).toHaveBeenCalledTimes(2);
 
-    expect(mockLoggerInstance.info).toHaveBeenCalledTimes(2);
+    expect(mockLoggerInstance.info).toHaveBeenCalledTimes(0);
+  });
 
-    expect(mockLoggerInstance.info).toHaveBeenNthCalledWith(1, ' [DT] /m/n/o request', {
-      body: {},
-      url: 'https://some.web.com/m/n/o',
-      method: 'post',
-    });
+  test('when proper metadata(Array) is sent should call logger without error', async () => {
+    const metadata = [
+      {
+        destType: 'DT',
+        destinationId: 'd1',
+        workspaceId: 'w1',
+        sourceId: 's1',
+        jobId: 1,
+      },
+      {
+        destType: 'DT',
+        destinationId: 'd1',
+        workspaceId: 'w1',
+        sourceId: 's1',
+        jobId: 2,
+      },
+      {
+        destType: 'DT',
+        destinationId: 'd1',
+        workspaceId: 'w1',
+        sourceId: 's1',
+        jobId: 3,
+      },
+    ];
+    const statTags = {
+      metadata,
+      destType: 'DT',
+      feature: 'feat',
+      endpointPath: '/m/n/o',
+      requestMethod: 'post',
+    };
+    loggerUtil.getMatchedMetadata.mockReturnValue(statTags.metadata);
 
-    expect(mockLoggerInstance.info).toHaveBeenNthCalledWith(2, ' [DT] /m/n/o response', {
-      body: { a: 1, b: 2, c: 'abc' },
+    axios.post.mockResolvedValueOnce({
       status: 200,
+      data: { a: 1, b: 2, c: 'abc' },
       headers: {
         'Content-Type': 'apllication/json',
         'X-Some-Header': 'headsome',
       },
     });
+    await expect(httpPOST('https://some.web.com/m/n/o', {}, {}, statTags)).resolves.not.toThrow(
+      Error,
+    );
+    expect(loggerUtil.getMatchedMetadata).toHaveBeenCalledTimes(2);
+
+    expect(mockLoggerInstance.info).toHaveBeenCalledTimes(metadata.length * 2);
+
+    [1, 2, 3].forEach((i) => {
+      expect(mockLoggerInstance.info).toHaveBeenNthCalledWith(i, ' [DT] /m/n/o request', {
+        body: {},
+        destType: 'DT',
+        destinationId: 'd1',
+        workspaceId: 'w1',
+        sourceId: 's1',
+        url: 'https://some.web.com/m/n/o',
+        method: 'post',
+      });
+
+      expect(mockLoggerInstance.info).toHaveBeenNthCalledWith(
+        i + metadata.length,
+        ' [DT] /m/n/o response',
+        {
+          destType: 'DT',
+          destinationId: 'd1',
+          workspaceId: 'w1',
+          sourceId: 's1',
+          body: { a: 1, b: 2, c: 'abc' },
+          status: 200,
+          headers: {
+            'Content-Type': 'apllication/json',
+            'X-Some-Header': 'headsome',
+          },
+        },
+      );
+    });
+  });
+
+  test('when proper metadata(Array of strings,numbers) is sent should call logger without error', async () => {
+    const metadata = [1, 2, '3'];
+    const statTags = {
+      metadata,
+      destType: 'DT',
+      feature: 'feat',
+      endpointPath: '/m/n/o',
+      requestMethod: 'post',
+    };
+    loggerUtil.getMatchedMetadata.mockReturnValue(statTags.metadata);
+
+    axios.post.mockResolvedValueOnce({
+      status: 200,
+      data: { a: 1, b: 2, c: 'abc' },
+      headers: {
+        'Content-Type': 'apllication/json',
+        'X-Some-Header': 'headsome',
+      },
+    });
+    await expect(httpPOST('https://some.web.com/m/n/o', {}, {}, statTags)).resolves.not.toThrow(
+      Error,
+    );
+    expect(loggerUtil.getMatchedMetadata).toHaveBeenCalledTimes(2);
+
+    expect(mockLoggerInstance.info).toHaveBeenCalledTimes(0);
   });
 });

@@ -88,16 +88,18 @@ const log = (logMethod, logArgs) => {
   if (logInfo) {
     const { metadata, ...otherLogInfoArgs } = logInfo;
     if (Array.isArray(metadata)) {
-      metadata.forEach((m) => {
-        logMethod(
-          message,
-          {
-            ...getLogMetadata(m),
-            ...otherLogInfoArgs,
-          },
-          ...otherArgs,
-        );
-      });
+      metadata
+        .filter((m) => typeof m === 'object' && !Array.isArray(m))
+        .forEach((m) => {
+          logMethod(
+            message,
+            {
+              ...getLogMetadata(m),
+              ...otherLogInfoArgs,
+            },
+            ...otherArgs,
+          );
+        });
       return;
     }
     logMethod(

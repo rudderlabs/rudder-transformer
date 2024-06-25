@@ -26,25 +26,37 @@ const throwRetryableError = (errMsg, response) => {
   throw new RetryableError(errMsg, 500, response);
 };
 
-const searchGroup = async (groupName, Config) => {
-  const { processedResponse } = await handleHttpRequest(
-    'post',
-    `${ENDPOINTS.groupSearchEndpoint(Config.domain)}`,
-    getLookupPayload(groupName),
+const makeHttpRequest = async ({ method, url, payload, config, statTags, options = {} }) => handleHttpRequest(
+    method,
+    url,
+    payload,
     {
       headers: {
-        Accesskey: Config.accessKey,
+        Accesskey: config.accessKey,
         'Content-Type': JSON_MIME_TYPE,
       },
+      ...options,
     },
     {
       destType: 'gainsight',
       feature: 'transformation',
-      requestMethod: 'POST',
-      endpointPath: '/data/objects/query/Company',
+      requestMethod: method.toUpperCase(),
+      endpointPath: url,
       module: 'router',
+      ...statTags,
     },
   );
+
+const searchGroup = async (groupName, Config) => {
+  const { processedResponse } = await makeHttpRequest({
+    method: 'post',
+    url: `${ENDPOINTS.groupSearchEndpoint(Config.domain)}`,
+    payload: getLookupPayload(groupName),
+    config: Config,
+    statTags: {
+      endpointPath: '/data/objects/query/Company',
+    },
+  });
 
   if (!isHttpStatusSuccess(processedResponse.status)) {
     throwNetworkError(
@@ -62,26 +74,17 @@ const searchGroup = async (groupName, Config) => {
 };
 
 const createGroup = async (payload, Config) => {
-  const { processedResponse } = await handleHttpRequest(
-    'post',
-    `${ENDPOINTS.groupCreateEndpoint(Config.domain)}`,
-    {
+  const { processedResponse } = await makeHttpRequest({
+    method: 'post',
+    url: `${ENDPOINTS.groupCreateEndpoint(Config.domain)}`,
+    payload: {
       records: [payload],
     },
-    {
-      headers: {
-        Accesskey: Config.accessKey,
-        'Content-Type': JSON_MIME_TYPE,
-      },
-    },
-    {
-      destType: 'gainsight',
-      feature: 'transformation',
-      requestMethod: 'POST',
+    config: Config,
+    options: {
       endpointPath: '/data/objects/Company',
-      module: 'router',
     },
-  );
+  });
 
   if (!isHttpStatusSuccess(processedResponse.status)) {
     throwNetworkError(
@@ -99,29 +102,23 @@ const createGroup = async (payload, Config) => {
 };
 
 const updateGroup = async (payload, Config) => {
-  const { processedResponse } = await handleHttpRequest(
-    'put',
-    `${ENDPOINTS.groupUpdateEndpoint(Config.domain)}`,
-    {
+  const { processedResponse } = await makeHttpRequest({
+    method: 'put',
+    url: `${ENDPOINTS.groupUpdateEndpoint(Config.domain)}`,
+    payload: {
       records: [payload],
     },
-    {
-      headers: {
-        Accesskey: Config.accessKey,
-        'Content-Type': JSON_MIME_TYPE,
-      },
+    config: Config,
+    options: {
+      endpointPath: '/data/objects/Company',
+    },
+
+    statTags: {
       params: {
         keys: 'Name',
       },
     },
-    {
-      destType: 'gainsight',
-      feature: 'transformation',
-      requestMethod: 'PUT',
-      endpointPath: '/data/objects/Company',
-      module: 'router',
-    },
-  );
+  });
 
   if (!isHttpStatusSuccess(processedResponse.status)) {
     throwNetworkError(

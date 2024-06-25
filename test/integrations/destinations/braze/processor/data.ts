@@ -4212,7 +4212,8 @@ export const data = [
         body: [
           {
             statusCode: 400,
-            error: 'Invalid product array at index: 0. product: null',
+            error:
+              'Invalid Order Completed event: Message properties and product at index: 0 is missing currency',
             statTags: {
               errorCategory: 'dataValidation',
               errorType: 'instrumentation',
@@ -4276,24 +4277,7 @@ export const data = [
               },
               messageId: '24ecc509-ce3e-473c-8483-ba1ea2c195cb',
               properties: {
-                products: [
-                  undefined,
-                  {
-                    sku: '45790-32',
-                    url: 'https://www.example.com/product/path',
-                    key1: {
-                      key11: 'value1',
-                      key22: 'value2',
-                    },
-                    name: 'Monopoly: 3rd Edition',
-                    price: 19,
-                    category: 'Games',
-                    quantity: 1,
-                    image_url: 'https:///www.example.com/product/path.jpg',
-                    currency78: 'USD',
-                    product_id: '507f1f77bcf86cd799439011',
-                  },
-                ],
+                products: [undefined],
               },
               anonymousId: 'c6ff1462-b692-43d6-8f6a-659efedc99ea',
               integrations: {
@@ -4327,7 +4311,7 @@ export const data = [
         body: [
           {
             statusCode: 400,
-            error: 'Invalid product array at index: 0. product: null',
+            error: 'Invalid Order Completed event: Products array is empty',
             statTags: {
               errorCategory: 'dataValidation',
               errorType: 'instrumentation',

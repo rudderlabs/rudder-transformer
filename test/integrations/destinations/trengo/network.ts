@@ -1335,11 +1335,11 @@ export const networkCallsData = [
     },
     httpRes: {
       data: {
-        error: 'Request failed',
-        status: 404,
-        statusText: 'not able to make request invalid token',
+        message: 'Unauthenticated.',
+        errors: [],
       },
-      status: 400,
+      statusText: 'UNAUTHORIZED',
+      status: 401,
     },
   },
 ];

@@ -22,7 +22,7 @@ const isValidTimestamp = (timestamp) => {
 const userExists = async (Config, id, metadata) => {
   const basicAuth = Buffer.from(Config.apiKey).toString('base64');
 
-  const { httpResponse, processedResponse } = await handleHttpRequest(
+  const { httpResponse } = await handleHttpRequest(
     'get',
     `${ENDPOINT}/v2/${Config.accountId}/subscribers/${id}`,
     {
@@ -41,25 +41,24 @@ const userExists = async (Config, id, metadata) => {
     },
   );
   if (httpResponse.success) {
-    if (processedResponse.status) {
-      return processedResponse.status === 200;
-    } 
-      throw new NetworkError(
-        'Invalid response.',
-        processedResponse?.status,
-        {
-          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(processedResponse?.status),
-        },
-        processedResponse,
-      );
-    
+    if (httpResponse.response.status) {
+      return httpResponse.response.status === 200;
+    }
+    throw new NetworkError(
+      'Invalid response.',
+      httpResponse.response?.status,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(httpResponse.response.status),
+      },
+      httpResponse.response,
+    );
   }
 
-  const error = processedResponse.response;
+  const error = httpResponse.response.response;
   let errMsg = '';
   let errStatus = 400;
-  if (processedResponse.status) {
-    errStatus = processedResponse.status || 400;
+  if (httpResponse.response.response.status) {
+    errStatus = httpResponse.response.response.status || 400;
     errMsg = error.data ? JSON.stringify(error.data) : 'error response not found';
   }
   throw new NetworkError(`Error occurred while checking user : ${errMsg}`, errStatus, {

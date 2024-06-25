@@ -1527,8 +1527,9 @@ export const data = [
         status: 200,
         body: [
           {
+            // though we are getting undefined as statusText through mocked response but we are getting that from actual response
             error:
-              '{"message":"Inside lookupContact, failed to make request: not able to make request invalid token","destinationResponse":{"error":"Request failed","status":404,"statusText":"not able to make request invalid token"}}',
+              '{"message":"Inside lookupContact, failed to make request: undefined","destinationResponse":{"message":"Unauthenticated.","errors":[]}}',
             statTags: {
               destType: 'TRENGO',
               errorCategory: 'network',
@@ -1537,7 +1538,7 @@ export const data = [
               implementation: 'native',
               module: 'destination',
             },
-            statusCode: 400,
+            statusCode: 401,
           },
         ],
       },

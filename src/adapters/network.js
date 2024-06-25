@@ -151,7 +151,7 @@ const httpSend = async (options, statTags = {}) => {
   const requestOptions = enhanceRequestOptions(options);
 
   const { url, data, method } = requestOptions;
-  const commonMsg = `[${statTags?.destType?.toUpperCase?.() || ''}] ${statTags?.endpointPath}`;
+  const commonMsg = `[${statTags?.destType?.toUpperCase?.() || ''}] ${statTags?.endpointPath || ''}`;
   logger.requestLog(`${commonMsg} request`, {
     metadata: statTags?.metadata,
     requestDetails: {

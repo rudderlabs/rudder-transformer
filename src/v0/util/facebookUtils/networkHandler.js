@@ -85,10 +85,7 @@ const errorDetailsMap = {
         "Object with ID 'PIXEL_ID' / 'DATASET_ID' / 'AUDIENCE_ID' does not exist, cannot be loaded due to missing permissions, or does not support this operation",
       )
       .build(),
-    default: new ErrorDetailsExtractorBuilder()
-      .setStatus(400)
-      .setMessage('Invalid Parameter')
-      .build(),
+    default: new ErrorDetailsExtractorBuilder().setStatus(400).setMessageField('message').build(),
   },
   1: {
     // An unknown error occurred.

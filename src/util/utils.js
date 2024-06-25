@@ -30,7 +30,7 @@ const fetchResolvedIp = async (hostname) => {
   return addresses.length > 0 ? addresses[0] : {};
 };
 
-const staticLookup = (transformationId) => async (hostname, _, cb) => {
+const staticLookup = (transformationTags) => async (hostname, _, cb) => {
   let ip;
   const resolveStartTime = new Date();
   let dnsHit = false;
@@ -51,14 +51,14 @@ const staticLookup = (transformationId) => async (hostname, _, cb) => {
   } catch (error) {
     logger.error(`DNS Error Code: ${error.code} | Message : ${error.message}`);
     stats.timing('fetch_dns_resolve_time', resolveStartTime, {
-      transformationId,
+      ...transformationTags,
       error: 'true',
       dnsHit,
     });
     cb(null, `unable to resolve IP address for ${hostname}`, RECORD_TYPE_A);
     return;
   }
-  stats.timing('fetch_dns_resolve_time', resolveStartTime, { transformationId, dnsHit });
+  stats.timing('fetch_dns_resolve_time', resolveStartTime, { ...transformationTags, dnsHit });
 
   if (!ip) {
     cb(null, `resolved empty list of IP address for ${hostname}`, RECORD_TYPE_A);
@@ -73,9 +73,9 @@ const staticLookup = (transformationId) => async (hostname, _, cb) => {
   cb(null, ip, RECORD_TYPE_A);
 };
 
-const httpAgentWithDnsLookup = (scheme, transformerVersionId) => {
+const httpAgentWithDnsLookup = (scheme, transformationTags) => {
   const httpModule = scheme === 'http' ? http : https;
-  return new httpModule.Agent({ lookup: staticLookup(transformerVersionId) });
+  return new httpModule.Agent({ lookup: staticLookup(transformationTags) });
 };
 
 const blockLocalhostRequests = (url) => {
@@ -99,7 +99,7 @@ const blockInvalidProtocolRequests = (url) => {
   }
 };
 
-const fetchWithDnsWrapper = async (transformerVersionId, ...args) => {
+const fetchWithDnsWrapper = async (transformationTags, ...args) => {
   if (process.env.DNS_RESOLVE_FETCH_HOST !== 'true') {
     return await fetch(...args);
   }
@@ -113,7 +113,7 @@ const fetchWithDnsWrapper = async (transformerVersionId, ...args) => {
   const fetchOptions = args[1] || {};
   const schemeName = fetchURL.startsWith('https') ? 'https' : 'http';
   // assign resolved agent to fetch
-  fetchOptions.agent = httpAgentWithDnsLookup(schemeName, transformerVersionId);
+  fetchOptions.agent = httpAgentWithDnsLookup(schemeName, transformationTags);
   return await fetch(fetchURL, fetchOptions);
 };
 

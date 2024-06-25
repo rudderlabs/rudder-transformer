@@ -191,7 +191,6 @@ const commonHandler = async (axiosMethod, { statTags, method, ...args }) => {
  * @returns
  */
 const httpSend = async (options, statTags = {}) => {
-  // here the options argument K-Vs will take priority over the default options
   const requestOptions = enhanceRequestOptions(options);
   return commonHandler(axios, { statTags, options, requestOptions });
 };
@@ -205,9 +204,7 @@ const httpSend = async (options, statTags = {}) => {
  * handles http GET requests returns promise as a response throws error in case of non 2XX statuses
  */
 const httpGET = async (url, options, statTags = {}) => {
-  // here the options argument K-Vs will take priority over the default options
   const requestOptions = enhanceRequestOptions(options);
-
   return commonHandler(axios.get, { statTags, method: 'get', url, options, requestOptions });
 };
 
@@ -220,9 +217,7 @@ const httpGET = async (url, options, statTags = {}) => {
  * handles http DELETE requests returns promise as a response throws error in case of non 2XX statuses
  */
 const httpDELETE = async (url, options, statTags = {}) => {
-  // here the options argument K-Vs will take priority over the default options
   const requestOptions = enhanceRequestOptions(options);
-
   return commonHandler(axios.delete, { statTags, method: 'delete', url, options, requestOptions });
 };
 
@@ -236,8 +231,6 @@ const httpDELETE = async (url, options, statTags = {}) => {
  * handles http POST requests returns promise as a response throws error in case of non 2XX statuses
  */
 const httpPOST = async (url, data, options, statTags = {}) => {
-  // let clientResponse;
-  // here the options argument K-Vs will take priority over the default options
   const requestOptions = enhanceRequestOptions(options);
   return commonHandler(axios.post, {
     statTags,
@@ -247,31 +240,6 @@ const httpPOST = async (url, data, options, statTags = {}) => {
     options,
     requestOptions,
   });
-
-  // const commonMsg = `[${statTags?.destType?.toUpperCase?.() || ''}] ${statTags?.endpointPath}`;
-  // logger.requestLog(`${commonMsg} request`, {
-  //   metadata: statTags?.metadata,
-  //   requestDetails: {
-  //     url,
-  //     body: data,
-  //     method: 'post',
-  //   },
-  // });
-  // const startTime = new Date();
-  // try {
-  //   const response = await axios.post(url, data, requestOptions);
-  //   clientResponse = { success: true, response };
-  // } catch (err) {
-  //   clientResponse = { success: false, response: err };
-  // } finally {
-  //   logger.responseLog(`${commonMsg} response`, {
-  //     metadata: statTags?.metadata,
-  //     responseDetails: getResponseDetails(clientResponse),
-  //   });
-  //   fireHTTPStats(clientResponse, startTime, statTags);
-  // }
-  // setResponsesForMockAxiosAdapter({ url, data, options, method: 'POST' }, clientResponse);
-  // return clientResponse;
 };
 
 /**
@@ -284,7 +252,6 @@ const httpPOST = async (url, data, options, statTags = {}) => {
  * handles http PUT requests returns promise as a response throws error in case of non 2XX statuses
  */
 const httpPUT = async (url, data, options, statTags = {}) => {
-  // here the options argument K-Vs will take priority over the default options
   const requestOptions = enhanceRequestOptions(options);
   return commonHandler(axios.put, { statTags, url, data, method: 'put', options, requestOptions });
 };
@@ -299,7 +266,6 @@ const httpPUT = async (url, data, options, statTags = {}) => {
  * handles http PATCH requests returns promise as a response throws error in case of non 2XX statuses
  */
 const httpPATCH = async (url, data, options, statTags = {}) => {
-  // here the options argument K-Vs will take priority over the default options
   const requestOptions = enhanceRequestOptions(options);
   return commonHandler(axios.patch, {
     statTags,

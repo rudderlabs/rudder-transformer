@@ -319,8 +319,8 @@ const trackRequestHandler = (message, category, destination) => {
   // Map user properties to profile object
   const customerProp =
     useUpdatedKlaviyoAPI || useUpdatedKlaviyo
-      ? createCustomerProperties(message, destination.Config)
-      : createCustomerPropertiesV2(message, destination.Config);
+      ? createCustomerPropertiesV2(message, destination.Config)
+      : createCustomerProperties(message, destination.Config);
   attributes.profile = {
     ...customerProp,
     ...populateCustomFieldsFromTraits(message),

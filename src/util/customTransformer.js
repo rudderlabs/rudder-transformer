@@ -253,8 +253,10 @@ async function runUserTransform(
     const tags = {
       identifier: 'v0',
       errored: transformationError ? true : false,
-      ...(events.length && events[0].metadata ? getMetadata(events[0].metadata) : {}),
-      ...(events.length && events[0].metadata ? getTransformationMetadata(events[0].metadata) : {}),
+      ...(Object.keys(eventsMetadata).length ? getMetadata(Object.values(eventsMetadata)[0]) : {}),
+      ...(Object.keys(eventsMetadata).length
+        ? getTransformationMetadata(Object.values(eventsMetadata)[0])
+        : {}),
     };
 
     stats.counter('user_transform_function_input_events', events.length, tags);

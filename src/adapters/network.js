@@ -141,8 +141,8 @@ const getResponseDetails = (clientResponse) => {
 };
 
 const getHttpMethodArgs = (method, { url, data, requestOptions }) => {
-  const lowercasedMethod = method?.toLowerCase?.();
-  switch (lowercasedMethod) {
+  const requestMethod = method?.toLowerCase?.();
+  switch (requestMethod) {
     case 'post':
     case 'put':
     case 'patch':

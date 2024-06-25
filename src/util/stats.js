@@ -97,13 +97,29 @@ async function metricsController(ctx) {
   ctx.body = `Not supported`;
 }
 
-async function terminateWorkerThread() {
+async function resetMetricsController(ctx) {
+  if (!enableStats || !statsClient) {
+    ctx.status = 404;
+    ctx.body = `Not supported`;
+    return;
+  }
+
+  if (statsClientType === 'prometheus') {
+    await statsClient.resetMetricsController(ctx);
+    return;
+  }
+
+  ctx.status = 404;
+  ctx.body = `Not supported`;
+}
+
+async function shutdownMetricsClient() {
   if (!enableStats || !statsClient) {
     return;
   }
 
   if (statsClientType === 'prometheus') {
-    await statsClient.terminateWorkerThread();
+    await statsClient.shutdown();
   }
 }
 
@@ -118,5 +134,6 @@ module.exports = {
   gauge,
   histogram,
   metricsController,
-  terminateWorkerThread,
+  resetMetricsController,
+  shutdownMetricsClient,
 };

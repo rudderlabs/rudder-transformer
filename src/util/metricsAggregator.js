@@ -6,6 +6,13 @@ const GET_METRICS_REQ = 'rudder-transformer:getMetricsReq';
 const GET_METRICS_RES = 'rudder-transformer:getMetricsRes';
 const AGGREGATE_METRICS_REQ = 'rudder-transformer:aggregateMetricsReq';
 const AGGREGATE_METRICS_RES = 'rudder-transformer:aggregateMetricsRes';
+const RESET_METRICS_REQUEST = 'rudder-transformer:resetMetricsReq';
+const METRICS_AGGREGATOR_PERIODIC_RESET_ENABLED =
+  process.env.METRICS_AGGREGATOR_PERIODIC_RESET_ENABLED === 'true';
+const METRICS_AGGREGATOR_PERIODIC_RESET_INTERVAL_SECONDS = process.env
+  .METRICS_AGGREGATOR_PERIODIC_RESET_INTERVAL_SECONDS
+  ? parseInt(process.env.METRICS_AGGREGATOR_PERIODIC_RESET_INTERVAL_SECONDS, 10)
+  : 30 * 60;
 
 class MetricsAggregator {
   constructor(prometheusInstance) {
@@ -27,6 +34,10 @@ class MetricsAggregator {
           await this.handleMetricsResponse(message);
         }
       });
+      // register callback to reset metrics if enabled
+      if (METRICS_AGGREGATOR_PERIODIC_RESET_ENABLED) {
+        this.registerCallbackForPeriodicReset(METRICS_AGGREGATOR_PERIODIC_RESET_INTERVAL_SECONDS);
+      }
       return;
     }
     // register callback for worker process
@@ -39,8 +50,24 @@ class MetricsAggregator {
         } catch (error) {
           cluster.worker.send({ type: GET_METRICS_RES, error: error.message });
         }
+      } else if (message.type === RESET_METRICS_REQUEST) {
+        logger.info(
+          `[MetricsAggregator] Worker ${cluster.worker.id} received reset metrics request`,
+        );
+        this.prometheusInstance.prometheusRegistry.resetMetrics();
+        logger.info(`[MetricsAggregator] Worker ${cluster.worker.id} reset metrics successfully`);
       }
     });
+  }
+
+  registerCallbackForPeriodicReset(intervalSeconds) {
+    // store the timer in the aggregator for future operations like shutdown
+    this.periodicResetTimer = setInterval(() => {
+      logger.info(
+        `[MetricsAggregator] Periodic reset interval of ${intervalSeconds} seconds expired, reseting metrics`,
+      );
+      this.resetMetrics();
+    }, intervalSeconds * 1000);
   }
 
   createWorkerThread() {
@@ -117,6 +144,23 @@ class MetricsAggregator {
     logger.info(
       `[MetricsAggregator] Worker thread terminated with exit code ${await this.workerThread.terminate()}`,
     );
+  }
+
+  resetMetrics() {
+    for (const id in cluster.workers) {
+      logger.info(`[MetricsAggregator] Resetting metrics for worker ${id}`);
+      cluster.workers[id].send({ type: RESET_METRICS_REQUEST });
+    }
+  }
+
+  async shutdown() {
+    // terminate worker thread if the current process is the master
+    if (cluster.isPrimary) {
+      await this.terminateWorkerThread();
+    }
+    if (this.periodicResetTimer) {
+      clearInterval(this.periodicResetTimer);
+    }
   }
 }
 

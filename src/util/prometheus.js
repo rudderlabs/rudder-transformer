@@ -46,6 +46,15 @@ class Prometheus {
     return ctx.body;
   }
 
+  async resetMetricsController(ctx) {
+    ctx.status = 200;
+    if (clusterEnabled && useMetricsAggregator) {
+      this.metricsAggregator.resetMetrics();
+    }
+    ctx.body = 'Metrics reset';
+    return ctx.body;
+  }
+
   newCounterStat(name, help, labelNames) {
     const counter = new prometheusClient.Counter({
       name,
@@ -202,9 +211,9 @@ class Prometheus {
     }
   }
 
-  async terminateWorkerThread() {
+  async shutdown() {
     if (this.metricsAggregator) {
-      await this.metricsAggregator.terminateWorkerThread();
+      await this.metricsAggregator.shutdown();
     }
   }
 

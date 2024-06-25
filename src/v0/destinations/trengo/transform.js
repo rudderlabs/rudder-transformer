@@ -101,7 +101,7 @@ const lookupContact = async (term, destination, metadata) => {
   if (!httpResponse.success) {
     const status = processedResponse?.status || 400;
     throw new NetworkError(
-      `Inside lookupContact, failed to make request: ${processedResponse.response?.statusText}`,
+      `Inside lookupContact, failed to make request: ${httpResponse.response?.response?.statusText}`,
       status,
 
       {

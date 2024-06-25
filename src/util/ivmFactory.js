@@ -187,7 +187,7 @@ async function createIvm(
     new ivm.Reference(async (resolve, ...args) => {
       try {
         const fetchStartTime = new Date();
-        const res = await fetchWithDnsWrapper(transformationId, ...args);
+        const res = await fetchWithDnsWrapper(trTags, ...args);
         const data = await res.json();
         stats.timing('fetch_call_duration', fetchStartTime, trTags);
         resolve.applyIgnored(undefined, [new ivm.ExternalCopy(data).copyInto()]);
@@ -202,7 +202,7 @@ async function createIvm(
     new ivm.Reference(async (resolve, reject, ...args) => {
       try {
         const fetchStartTime = new Date();
-        const res = await fetchWithDnsWrapper(transformationId, ...args);
+        const res = await fetchWithDnsWrapper(trTags, ...args);
         const headersContent = {};
         res.headers.forEach((value, header) => {
           headersContent[header] = value;

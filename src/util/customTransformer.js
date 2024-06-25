@@ -38,7 +38,7 @@ async function runUserTransform(
     new ivm.Reference(async (resolve, ...args) => {
       try {
         const fetchStartTime = new Date();
-        const res = await fetchWithDnsWrapper(transformationId, ...args);
+        const res = await fetchWithDnsWrapper(trTags, ...args);
         const data = await res.json();
         stats.timing('fetch_call_duration', fetchStartTime, trTags);
         resolve.applyIgnored(undefined, [new ivm.ExternalCopy(data).copyInto()]);
@@ -53,7 +53,7 @@ async function runUserTransform(
     new ivm.Reference(async (resolve, reject, ...args) => {
       try {
         const fetchStartTime = new Date();
-        const res = await fetchWithDnsWrapper(transformationId, ...args);
+        const res = await fetchWithDnsWrapper(trTags, ...args);
         const headersContent = {};
         res.headers.forEach((value, header) => {
           headersContent[header] = value;
@@ -254,7 +254,7 @@ async function runUserTransform(
 
     const tags = {
       errored: transformationError ? true : false,
-      ...(events.length && events[0].metadata ? getMetadata(events[0].metadata) : {}),
+      ...(Object.keys(eventsMetadata).length ? getMetadata(Object.values(eventsMetadata)[0]) : {}),
       ...trTags,
     };
 

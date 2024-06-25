@@ -26,7 +26,8 @@ const throwRetryableError = (errMsg, response) => {
   throw new RetryableError(errMsg, 500, response);
 };
 
-const makeHttpRequest = async ({ method, url, payload, config, statTags, options = {} }) => handleHttpRequest(
+const makeHttpRequest = async ({ method, url, payload, config, statTags, options = {} }) =>
+  handleHttpRequest(
     method,
     url,
     payload,

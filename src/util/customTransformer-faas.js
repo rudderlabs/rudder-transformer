@@ -91,7 +91,7 @@ async function setOpenFaasUserTransform(
   trMetadata = {},
 ) {
   const tags = {
-    transformerVersionId: userTransformation.versionId,
+    transformationId: userTransformation.id,
     identifier: 'openfaas',
     testMode,
   };

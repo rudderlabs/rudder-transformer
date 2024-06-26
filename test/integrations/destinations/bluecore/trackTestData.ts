@@ -86,7 +86,7 @@ const commonOutputHeaders = {
   'Content-Type': 'application/json',
 };
 
-const eventEndPoint = 'https://api.bluecore.com/api/track/mobile/v1';
+const eventEndPoint = 'https://api.bluecore.app/api/track/mobile/v1';
 
 export const trackTestData = [
   {
@@ -140,6 +140,9 @@ export const trackTestData = [
                   customer: {
                     age: '22',
                     email: 'test@rudderstack.com',
+                    anonymousId: '9c6bd77ea9da3e68',
+                    id: 'user@1',
+                    phone: '9112340375',
                   },
                   products: [
                     {
@@ -155,9 +158,11 @@ export const trackTestData = [
                       quantity: 3,
                     },
                   ],
+                  property1: 'value1',
+                  property2: 'value2',
+                  token: 'dummy_sandbox',
                 },
                 event: 'TestEven001',
-                token: 'dummy_sandbox',
               },
               userId: '',
             }),
@@ -216,13 +221,19 @@ export const trackTestData = [
               JSON: {
                 properties: {
                   distinct_id: 'test@rudderstack.com',
+                  product_id: '123',
+                  property1: 'value1',
+                  property2: 'value2',
+                  token: 'dummy_sandbox',
                   customer: {
                     age: '22',
                     email: 'test@rudderstack.com',
+                    anonymousId: '9c6bd77ea9da3e68',
+                    id: 'user@1',
+                    phone: '9112340375',
                   },
                 },
                 event: 'TestEven001',
-                token: 'dummy_sandbox',
               },
               userId: '',
             }),
@@ -283,11 +294,17 @@ export const trackTestData = [
                   distinct_id: 'test@rudderstack.com',
                   customer: {
                     age: '22',
+                    anonymousId: '9c6bd77ea9da3e68',
                     email: 'test@rudderstack.com',
+                    id: 'user@1',
+                    phone: '9112340375',
                   },
+                  product_id: '123',
+                  property1: 'value1',
+                  property2: 'value2',
+                  token: 'dummy_sandbox',
                 },
                 event: 'optin',
-                token: 'dummy_sandbox',
               },
               userId: '',
             }),
@@ -346,13 +363,19 @@ export const trackTestData = [
               JSON: {
                 properties: {
                   distinct_id: 'test@rudderstack.com',
+                  product_id: '123',
+                  property1: 'value1',
+                  property2: 'value2',
+                  token: 'dummy_sandbox',
                   customer: {
                     age: '22',
+                    anonymousId: '9c6bd77ea9da3e68',
+                    id: 'user@1',
                     email: 'test@rudderstack.com',
+                    phone: '9112340375',
                   },
                 },
                 event: 'unsubscribe',
-                token: 'dummy_sandbox',
               },
               userId: '',
             }),
@@ -405,9 +428,12 @@ export const trackTestData = [
               JSON: {
                 properties: {
                   distinct_id: '54321',
+                  token: 'dummy_sandbox',
                   customer: {
                     age: '22',
                     email: 'abc@gmail.com',
+                    anonymousId: '9c6bd77ea9da3e68',
+                    id: 'user@1',
                   },
                   products: [
                     {
@@ -423,9 +449,10 @@ export const trackTestData = [
                       quantity: 3,
                     },
                   ],
+                  property1: 'value1',
+                  property2: 'value2',
                 },
                 event: 'TestEven001',
-                token: 'dummy_sandbox',
               },
               userId: '',
             }),

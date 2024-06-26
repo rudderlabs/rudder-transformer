@@ -1,4 +1,7 @@
-export const data = [
+import { testScenariosForV1API } from './business';
+import { otheMarketoScenariosV1 } from './other';
+
+const legacyTests = [
   {
     name: 'marketo',
     description: 'Test 0',
@@ -488,3 +491,5 @@ export const data = [
     },
   },
 ];
+
+export const data = [...legacyTests, ...testScenariosForV1API, ...otheMarketoScenariosV1];

@@ -12,7 +12,6 @@ const {
   isDefinedAndNotNull,
 } = require('../../util');
 const { RedisDB } = require('../../../util/redis/redisConnector');
-const logger = require('../../../logger');
 const {
   lineItemsMappingJSON,
   productMappingJSON,
@@ -23,13 +22,15 @@ const {
   useRedisDatabase,
   maxTimeToIdentifyRSGeneratedCall,
 } = require('./config');
+const logger = require('../../../logger');
 
 const getDataFromRedis = async (key, metricMetadata) => {
   try {
     stats.increment('shopify_redis_calls', {
       type: 'get',
       field: 'all',
-      ...metricMetadata,
+      writeKey: metricMetadata.writeKey,
+      source: metricMetadata.source,
     });
     const redisData = await RedisDB.getVal(key);
     if (
@@ -37,7 +38,8 @@ const getDataFromRedis = async (key, metricMetadata) => {
       (typeof redisData === 'object' && Object.keys(redisData).length === 0)
     ) {
       stats.increment('shopify_redis_no_val', {
-        ...metricMetadata,
+        writeKey: metricMetadata.writeKey,
+        source: metricMetadata.source,
       });
     }
     return redisData;
@@ -45,7 +47,8 @@ const getDataFromRedis = async (key, metricMetadata) => {
     logger.debug(`{{SHOPIFY::}} Get call Failed due redis error ${e}`);
     stats.increment('shopify_redis_failures', {
       type: 'get',
-      ...metricMetadata,
+      writeKey: metricMetadata.writeKey,
+      source: metricMetadata.source,
     });
   }
   return null;
@@ -166,7 +169,9 @@ const getAnonymousIdAndSessionId = async (message, metricMetadata, redisData = n
   if (isDefinedAndNotNull(anonymousId) && isDefinedAndNotNull(sessionId)) {
     stats.increment('shopify_anon_id_resolve', {
       method: 'note_attributes',
-      ...metricMetadata,
+      writeKey: metricMetadata.writeKey,
+      source: metricMetadata.source,
+      shopifyTopic: metricMetadata.shopifyTopic,
     });
     return { anonymousId, sessionId };
   }
@@ -198,7 +203,9 @@ const getAnonymousIdAndSessionId = async (message, metricMetadata, redisData = n
     // and for how many
     stats.increment('shopify_anon_id_resolve', {
       method: 'database',
-      ...metricMetadata,
+      writeKey: metricMetadata.writeKey,
+      source: metricMetadata.source,
+      shopifyTopic: metricMetadata.shopifyTopic,
     });
   }
   return { anonymousId, sessionId };
@@ -215,14 +222,16 @@ const updateCartItemsInRedis = async (cartToken, newCartItemsHash, metricMetadat
     stats.increment('shopify_redis_calls', {
       type: 'set',
       field: 'itemsHash',
-      ...metricMetadata,
+      writeKey: metricMetadata.writeKey,
+      source: metricMetadata.source,
     });
     await RedisDB.setVal(`${cartToken}`, value);
   } catch (e) {
     logger.debug(`{{SHOPIFY::}} itemsHash set call Failed due redis error ${e}`);
     stats.increment('shopify_redis_failures', {
       type: 'set',
-      ...metricMetadata,
+      writeKey: metricMetadata.writeKey,
+      source: metricMetadata.source,
     });
   }
 };

@@ -1,11 +1,11 @@
-import { NativeIntegrationDestinationService } from '../nativeIntegration';
-import { DestinationPostTransformationService } from '../postTransformation';
+import { FetchHandler } from '../../../helpers/fetchHandlers';
 import {
-  ProcessorTransformationRequest,
   ProcessorTransformationOutput,
+  ProcessorTransformationRequest,
   ProcessorTransformationResponse,
 } from '../../../types/index';
-import { FetchHandler } from '../../../helpers/fetchHandlers';
+import { NativeIntegrationDestinationService } from '../nativeIntegration';
+import { DestinationPostTransformationService } from '../postTransformation';
 
 afterEach(() => {
   jest.clearAllMocks();

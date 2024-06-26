@@ -1534,7 +1534,6 @@ export const data = [
                     firstname: 'Test Hubspot',
                     anonymousId: '12345',
                     country: 'India',
-                    email: 'testhubspot2@email.com',
                   },
                 },
                 XML: {},
@@ -5368,6 +5367,59 @@ export const data = [
             },
             statusCode: 200,
             metadata: generateMetadata(1),
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'hs',
+    description: 'if event name is anything other than string we throw error',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              channel: 'web',
+              context: {
+                traits: {
+                  email: 'testhubspot2@email.com',
+                  firstname: 'Test Hubspot',
+                },
+              },
+              type: 'track',
+              originalTimestamp: '2019-10-15T09:35:31.291Z',
+              userId: '12345',
+              event: { name: 'event' },
+              properties: {
+                user_actual_role: 'system_admin, system_user',
+                user_actual_id: 12345,
+              },
+              sentAt: '2019-10-14T11:15:53.296Z',
+            },
+            destination: destination,
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            error: 'Event is a required field and should be a string',
+            statTags: {
+              destType: 'HS',
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              feature: 'processor',
+              implementation: 'native',
+              module: 'destination',
+            },
+            statusCode: 400,
           },
         ],
       },

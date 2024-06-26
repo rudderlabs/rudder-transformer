@@ -1,3 +1,4 @@
+import { FetchHandler } from '../../helpers/fetchHandlers';
 import { SourceService } from '../../interfaces/SourceService';
 import {
   ErrorDetailer,
@@ -5,11 +6,11 @@ import {
   RudderMessage,
   SourceTransformationResponse,
 } from '../../types/index';
-import { FixMe } from '../../util/types';
-import { SourcePostTransformationService } from './postTransformation';
-import { FetchHandler } from '../../helpers/fetchHandlers';
-import tags from '../../v0/util/tags';
 import stats from '../../util/stats';
+import { FixMe } from '../../util/types';
+import tags from '../../v0/util/tags';
+import { SourcePostTransformationService } from './postTransformation';
+import logger from '../../logger';
 
 export class NativeIntegrationSourceService implements SourceService {
   public getTags(): MetaTransferObject {
@@ -33,6 +34,7 @@ export class NativeIntegrationSourceService implements SourceService {
     _requestMetadata: NonNullable<unknown>,
   ): Promise<SourceTransformationResponse[]> {
     const sourceHandler = FetchHandler.getSourceHandler(sourceType, version);
+    const metaTO = this.getTags();
     const respList: SourceTransformationResponse[] = await Promise.all<FixMe>(
       sourceEvents.map(async (sourceEvent) => {
         try {
@@ -40,10 +42,12 @@ export class NativeIntegrationSourceService implements SourceService {
             await sourceHandler.process(sourceEvent);
           return SourcePostTransformationService.handleSuccessEventsSource(respEvents);
         } catch (error: FixMe) {
-          const metaTO = this.getTags();
           stats.increment('source_transform_errors', {
             source: sourceType,
             version,
+          });
+          logger.debug(`Error during source Transform: ${error}`, {
+            ...logger.getLogMetadata(metaTO.errorDetails),
           });
           return SourcePostTransformationService.handleFailureEventsSource(error, metaTO);
         }

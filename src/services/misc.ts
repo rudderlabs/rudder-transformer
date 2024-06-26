@@ -1,10 +1,10 @@
 /* eslint-disable global-require, import/no-dynamic-require */
 import fs from 'fs';
-import path from 'path';
 import { Context } from 'koa';
+import path from 'path';
 import { DestHandlerMap } from '../constants/destinationCanonicalNames';
-import { Metadata } from '../types';
 import { getCPUProfile, getHeapProfile } from '../middleware';
+import { Metadata } from '../types';
 
 export class MiscService {
   public static getDestHandler(dest: string, version: string) {

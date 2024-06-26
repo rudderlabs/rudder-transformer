@@ -298,9 +298,6 @@ export const data = [
                           'phn::phone': {
                             n: '9112340345',
                           },
-                          'bol::gdpr': true,
-                          'bol::p': false,
-                          'bol::sp': false,
                           'str:cm:ortto-attirbute0': 'abc',
                           'str:cm:ortto-attirbute1': 'def',
                         },
@@ -385,6 +382,7 @@ export const data = [
                     activities: [
                       {
                         fields: {
+                          'bol::gdpr': false,
                           'str::first': 'John',
                           'str::last': 'Sparrow',
                           'str::email': 'identify@test.com',
@@ -404,9 +402,6 @@ export const data = [
                           'phn::phone': {
                             n: '9112340345',
                           },
-                          'bol::gdpr': false,
-                          'bol::p': false,
-                          'bol::sp': false,
                           'str:cm:ortto-attirbute0': 'abc',
                           'str:cm:ortto-attirbute1': 'def',
                         },

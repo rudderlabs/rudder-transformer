@@ -43,7 +43,7 @@ export const data = [
               Config: {
                 apiKey: 'abcde',
                 environment: 'staging',
-                trafficType: 'user',
+                trafficType: 'anonymous',
               },
             },
           },
@@ -246,7 +246,7 @@ export const data = [
               Config: {
                 apiKey: 'abcde',
                 environment: 'production',
-                trafficType: 'user',
+                trafficType: 'anonymous',
               },
             },
           },
@@ -847,6 +847,9 @@ export const data = [
                 library: {
                   name: 'http',
                 },
+                traits: {
+                  trafficTypeName: 'user',
+                },
               },
               type: 'identify',
               timestamp: '2020-01-21T00:21:34.208Z',
@@ -858,7 +861,7 @@ export const data = [
               Config: {
                 apiKey: 'abcde',
                 environment: 'staging',
-                trafficType: 'user',
+                trafficType: 'anonymous',
               },
             },
           },

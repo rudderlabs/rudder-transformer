@@ -9,6 +9,7 @@ const {
   getDynamicErrorType,
 } = require('../../../adapters/utils/networkUtils');
 const tags = require('../../../v0/util/tags');
+const logger = require('../../../logger');
 
 function isEventAbortableAndExtractErrMsg(element, proxyOutputObj) {
   let isAbortable = false;
@@ -38,7 +39,16 @@ const responseHandler = (responseParams) => {
   const { destinationResponse, rudderJobMetadata } = responseParams;
   const message = `[CAMPAIGN_MANAGER Response V1 Handler] - Request Processed Successfully`;
   const responseWithIndividualEvents = [];
-  const { response, status } = destinationResponse;
+  const { response, status, headers } = destinationResponse;
+
+  logger.responseLog('[campaign_manager] response handling', {
+    metadata: rudderJobMetadata,
+    responseDetails: {
+      headers,
+      response,
+      status,
+    },
+  });
 
   if (isHttpStatusSuccess(status)) {
     // check for Partial Event failures and Successes
@@ -69,7 +79,7 @@ const responseHandler = (responseParams) => {
   const errorMessage = response.error?.message || 'unknown error format';
   for (const metadata of rudderJobMetadata) {
     responseWithIndividualEvents.push({
-      statusCode: 500,
+      statusCode: status,
       metadata,
       error: errorMessage,
     });
@@ -77,7 +87,7 @@ const responseHandler = (responseParams) => {
 
   throw new TransformerProxyError(
     `Campaign Manager: Error transformer proxy v1 during CAMPAIGN_MANAGER response transformation`,
-    500,
+    status,
     {
       [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
     },

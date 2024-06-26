@@ -105,7 +105,7 @@ jobs:
           cd rudder-devops
           BRANCH_NAME="shared-transformer-$TAG_NAME"
           echo $BRANCH_NAME
-          if [ -n `git ls-remote --heads origin $BRANCH_NAME 2>/dev/null` ]
+          if [ -n "$(git ls-remote --heads origin $BRANCH_NAME 2>/dev/null)" ]
           then
             echo "Staging deployment branch already exists!"
           else
@@ -116,10 +116,10 @@ jobs:
             yq eval -i ".user-transformer.image.tag=\"$TAG_NAME\"" staging.yaml
             git add staging.yaml
 
-            cd ../../../../config-be-rudder-transformer
-            yq eval -i ".config-be-rudder-transformer.image.tag=\"$TAG_NAME\"" values.staging.yaml
-            yq eval -i ".config-be-user-transformer.image.tag=\"$TAG_NAME\"" values.staging.yaml
-            git add values.staging.yaml
+            cd ../../../../config-be-rudder-transformer/environment/staging
+            yq eval -i ".config-be-rudder-transformer.image.tag=\"$TAG_NAME\"" base.yaml
+            yq eval -i ".config-be-user-transformer.image.tag=\"$TAG_NAME\"" base.yaml
+            git add base.yaml
 
             git commit -m "chore: upgrade staging env transformers to \"$TAG_NAME\""
             git push -u origin $BRANCH_NAME

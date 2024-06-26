@@ -4,6 +4,7 @@ const {
   NetworkInstrumentationError,
   InstrumentationError,
   NetworkError,
+  isDefinedAndNotNull,
 } = require('@rudderstack/integrations-lib');
 const myAxios = require('../../../util/myAxios');
 
@@ -405,6 +406,9 @@ async function getUserMembershipPayload(message, headers, orgId, destinationConf
 }
 
 async function createOrganization(message, category, headers, destinationConfig, baseEndpoint) {
+  if (!isDefinedAndNotNull(message.traits)) {
+    throw new InstrumentationError('Organisation Traits are missing. Aborting.');
+  }
   await checkAndCreateUserFields(
     message.traits,
     category.organizationFieldsEndpoint,

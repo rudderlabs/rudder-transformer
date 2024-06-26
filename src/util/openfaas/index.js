@@ -4,6 +4,7 @@ const {
   deployFunction,
   invokeFunction,
   checkFunctionHealth,
+  updateFunction,
 } = require('./faasApi');
 const logger = require('../../logger');
 const { RetryRequestError, RespStatusError } = require('../utils');
@@ -11,6 +12,11 @@ const stats = require('../stats');
 const { getMetadata, getTransformationMetadata } = require('../../v0/util');
 const { HTTP_STATUS_CODES } = require('../../v0/util/constant');
 
+const FAAS_SCALE_TYPE = process.env.FAAS_SCALE_TYPE || 'capacity';
+const FAAS_SCALE_TARGET = process.env.FAAS_SCALE_TARGET || '4';
+const FAAS_SCALE_TARGET_PROPORTION = process.env.FAAS_SCALE_TARGET_PROPORTION || '0.70';
+const FAAS_SCALE_ZERO = process.env.FAAS_SCALE_ZERO || 'false';
+const FAAS_SCALE_ZERO_DURATION = process.env.FAAS_SCALE_ZERO_DURATION || '15m';
 const FAAS_BASE_IMG = process.env.FAAS_BASE_IMG || 'rudderlabs/openfaas-flask:main';
 const FAAS_MAX_PODS_IN_TEXT = process.env.FAAS_MAX_PODS_IN_TEXT || '40';
 const FAAS_MIN_PODS_IN_TEXT = process.env.FAAS_MIN_PODS_IN_TEXT || '1';
@@ -27,6 +33,8 @@ const FAAS_AST_VID = 'ast';
 const FAAS_AST_FN_NAME = 'fn-ast';
 const CUSTOM_NETWORK_POLICY_WORKSPACE_IDS = process.env.CUSTOM_NETWORK_POLICY_WORKSPACE_IDS || '';
 const customNetworkPolicyWorkspaceIds = CUSTOM_NETWORK_POLICY_WORKSPACE_IDS.split(',');
+const CUSTOMER_TIER = process.env.CUSTOMER_TIER || 'shared';
+const DISABLE_RECONCILE_FN = process.env.DISABLE_RECONCILE_FN == 'true' || false;
 
 // Initialise node cache
 const functionListCache = new NodeCache();
@@ -61,6 +69,8 @@ const awaitFunctionReadiness = async (
   maxWaitInMs = 22000,
   waitBetweenIntervalsInMs = 250,
 ) => {
+  logger.debug(`Awaiting function readiness: ${functionName}`);
+
   const executionPromise = new Promise(async (resolve) => {
     try {
       await callWithRetry(
@@ -115,6 +125,39 @@ const invalidateFnCache = () => {
   functionListCache.set(FUNC_LIST_KEY, []);
 };
 
+const updateFaasFunction = async (
+  functionName,
+  code,
+  versionId,
+  libraryVersionIDs,
+  testMode,
+  trMetadata = {},
+) => {
+  try {
+    logger.debug(`Updating faas fn: ${functionName}`);
+
+    const payload = buildOpenfaasFn(
+      functionName,
+      code,
+      versionId,
+      libraryVersionIDs,
+      testMode,
+      trMetadata,
+    );
+    await updateFunction(functionName, payload);
+    // wait for function to be ready and then set it in cache
+    await awaitFunctionReadiness(functionName);
+    setFunctionInCache(functionName);
+  } catch (error) {
+    // 404 is statuscode returned from openfaas community edition
+    // when the function don't exist, so we can safely ignore this error
+    // and let the function be created in the next step.
+    if (error.statusCode !== 404) {
+      throw error;
+    }
+  }
+};
+
 const deployFaasFunction = async (
   functionName,
   code,
@@ -124,64 +167,17 @@ const deployFaasFunction = async (
   trMetadata = {},
 ) => {
   try {
-    logger.debug('[Faas] Deploying a faas function');
-    let envProcess = 'python index.py';
+    logger.debug(`Deploying faas fn: ${functionName}`);
 
-    const lvidsString = libraryVersionIDs.join(',');
-
-    if (!testMode) {
-      envProcess = `${envProcess} --vid ${versionId} --config-backend-url ${CONFIG_BACKEND_URL} --lvids "${lvidsString}"`;
-    } else {
-      envProcess = `${envProcess} --code "${code}" --config-backend-url ${CONFIG_BACKEND_URL} --lvids "${lvidsString}"`;
-    }
-
-    const envVars = {};
-    if (FAAS_ENABLE_WATCHDOG_ENV_VARS.trim().toLowerCase() === 'true') {
-      envVars.max_inflight = FAAS_MAX_INFLIGHT;
-      envVars.exec_timeout = FAAS_EXEC_TIMEOUT;
-    }
-    if (GEOLOCATION_URL) {
-      envVars.geolocation_url = GEOLOCATION_URL;
-    }
-    // labels
-    const labels = {
-      'openfaas-fn': 'true',
-      'parent-component': 'openfaas',
-      'com.openfaas.scale.max': FAAS_MAX_PODS_IN_TEXT,
-      'com.openfaas.scale.min': FAAS_MIN_PODS_IN_TEXT,
-      transformationId: trMetadata.transformationId,
-      workspaceId: trMetadata.workspaceId,
-    };
-    if (
-      trMetadata.workspaceId &&
-      customNetworkPolicyWorkspaceIds.includes(trMetadata.workspaceId)
-    ) {
-      labels['custom-network-policy'] = 'true';
-    }
-
-    // TODO: investigate and add more required labels and annotations
-    const payload = {
-      service: functionName,
-      name: functionName,
-      image: FAAS_BASE_IMG,
-      envProcess,
-      envVars,
-      labels,
-      annotations: {
-        'prometheus.io.scrape': 'true',
-      },
-      limits: {
-        memory: FAAS_LIMITS_MEMORY,
-        cpu: FAAS_LIMITS_CPU,
-      },
-      requests: {
-        memory: FAAS_REQUESTS_MEMORY,
-        cpu: FAAS_REQUESTS_CPU,
-      },
-    };
-
+    const payload = buildOpenfaasFn(
+      functionName,
+      code,
+      versionId,
+      libraryVersionIDs,
+      testMode,
+      trMetadata,
+    );
     await deployFunction(payload);
-    logger.debug('[Faas] Deployed a faas function');
   } catch (error) {
     logger.error(`[Faas] Error while deploying ${functionName}: ${error.message}`);
     // To handle concurrent create requests,
@@ -231,6 +227,95 @@ async function setupFaasFunction(
   }
 }
 
+// reconcileFn runs everytime the service boot's up
+// trying to update the functions which are not in cache to the
+// latest label and envVars
+const reconcileFn = async (name, versionId, libraryVersionIDs, trMetadata) => {
+  if (DISABLE_RECONCILE_FN) {
+    return;
+  }
+
+  logger.debug(`Reconciling faas function: ${name}`);
+  try {
+    if (isFunctionDeployed(name)) {
+      return;
+    }
+    await updateFaasFunction(name, null, versionId, libraryVersionIDs, false, trMetadata);
+  } catch (error) {
+    logger.error(
+      `unexpected error occurred when reconciling the function ${name}: ${error.message}`,
+    );
+    throw error;
+  }
+};
+
+// buildOpenfaasFn is helper function to build openfaas fn CRUD payload
+function buildOpenfaasFn(name, code, versionId, libraryVersionIDs, testMode, trMetadata = {}) {
+  logger.debug(`Building faas fn: ${name}`);
+
+  let envProcess = 'python index.py';
+  const lvidsString = libraryVersionIDs.join(',');
+
+  if (!testMode) {
+    envProcess = `${envProcess} --vid ${versionId} --config-backend-url ${CONFIG_BACKEND_URL} --lvids "${lvidsString}"`;
+  } else {
+    envProcess = `${envProcess} --code "${code}" --config-backend-url ${CONFIG_BACKEND_URL} --lvids "${lvidsString}"`;
+  }
+
+  const envVars = {};
+
+  if (FAAS_ENABLE_WATCHDOG_ENV_VARS.trim().toLowerCase() === 'true') {
+    envVars.max_inflight = FAAS_MAX_INFLIGHT;
+    envVars.exec_timeout = FAAS_EXEC_TIMEOUT;
+  }
+
+  if (GEOLOCATION_URL) {
+    envVars.geolocation_url = GEOLOCATION_URL;
+  }
+
+  const labels = {
+    'openfaas-fn': 'true',
+    'parent-component': 'openfaas',
+    'com.openfaas.scale.max': FAAS_MAX_PODS_IN_TEXT,
+    'com.openfaas.scale.min': FAAS_MIN_PODS_IN_TEXT,
+    'com.openfaas.scale.zero': FAAS_SCALE_ZERO,
+    'com.openfaas.scale.zero-duration': FAAS_SCALE_ZERO_DURATION,
+    'com.openfaas.scale.target': FAAS_SCALE_TARGET,
+    'com.openfaas.scale.target-proportion': FAAS_SCALE_TARGET_PROPORTION,
+    'com.openfaas.scale.type': FAAS_SCALE_TYPE,
+    transformationId: trMetadata.transformationId,
+    workspaceId: trMetadata.workspaceId,
+    team: 'data-management',
+    service: 'openfaas-fn',
+    customer: 'shared',
+    'customer-tier': CUSTOMER_TIER,
+  };
+
+  if (trMetadata.workspaceId && customNetworkPolicyWorkspaceIds.includes(trMetadata.workspaceId)) {
+    labels['custom-network-policy'] = 'true';
+  }
+
+  return {
+    service: name,
+    name: name,
+    image: FAAS_BASE_IMG,
+    envProcess,
+    envVars,
+    labels,
+    annotations: {
+      'prometheus.io.scrape': 'true',
+    },
+    limits: {
+      memory: FAAS_LIMITS_MEMORY,
+      cpu: FAAS_LIMITS_CPU,
+    },
+    requests: {
+      memory: FAAS_REQUESTS_MEMORY,
+      cpu: FAAS_REQUESTS_CPU,
+    },
+  };
+}
+
 const executeFaasFunction = async (
   name,
   events,
@@ -245,7 +330,11 @@ const executeFaasFunction = async (
   let errorRaised;
 
   try {
-    if (testMode) await awaitFunctionReadiness(name);
+    if (testMode) {
+      await awaitFunctionReadiness(name);
+    } else {
+      await reconcileFn(name, versionId, libraryVersionIDs, trMetadata);
+    }
     return await invokeFunction(name, events);
   } catch (error) {
     logger.error(`Error while invoking ${name}: ${error.message}`);
@@ -253,6 +342,7 @@ const executeFaasFunction = async (
 
     if (error.statusCode === 404 && error.message.includes(`error finding function ${name}`)) {
       removeFunctionFromCache(name);
+
       await setupFaasFunction(name, null, versionId, libraryVersionIDs, testMode, trMetadata);
       throw new RetryRequestError(`${name} not found`);
     }
@@ -290,6 +380,7 @@ const executeFaasFunction = async (
 
     stats.counter('user_transform_function_input_events', events.length, tags);
     stats.timing('user_transform_function_latency', startTime, tags);
+    stats.timingSummary('user_transform_function_latency_summary', startTime, tags);
   }
 };
 
@@ -298,6 +389,8 @@ module.exports = {
   executeFaasFunction,
   setupFaasFunction,
   invalidateFnCache,
+  buildOpenfaasFn,
   FAAS_AST_VID,
   FAAS_AST_FN_NAME,
+  setFunctionInCache,
 };

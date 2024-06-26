@@ -21,7 +21,7 @@ steps:
         "batched": false,
         "destination": ^[idx].destination,
         "metadata": ^[idx].metadata[],
-        "statusCode": 200
+        "statusCode": .outputs.statusCode
       })[]
   - name: failedEvents
     template: |

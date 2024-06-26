@@ -1436,7 +1436,7 @@ export const data = [
                 traits: {
                   email: 'test@rudderstack.com',
                   birthday: '2005-01-01T23:28:56.782Z',
-                  firstName: 'test',
+                  firstName: ' test',
                   name: 'test rudderlabs',
                   address: {
                     city: 'kalkata',

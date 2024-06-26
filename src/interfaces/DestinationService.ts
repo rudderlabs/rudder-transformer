@@ -1,14 +1,14 @@
 import {
   DeliveryV0Response,
+  DeliveryV1Response,
   MetaTransferObject,
   ProcessorTransformationRequest,
   ProcessorTransformationResponse,
+  ProxyRequest,
   RouterTransformationRequestData,
   RouterTransformationResponse,
   UserDeletionRequest,
   UserDeletionResponse,
-  ProxyRequest,
-  DeliveryV1Response,
 } from '../types/index';
 
 export interface DestinationService {

@@ -3,6 +3,7 @@ import {
   destination,
   commonOutput,
   routerInstrumentationErrorStatTags,
+  context,
 } from '../commonConfig';
 import { trackProperties, pageProperties, traits } from './basicProperties';
 import { defaultMockFns } from '../mocks';
@@ -29,15 +30,6 @@ export const data = [
                 properties: trackProperties,
               },
               metadata: { jobId: 1, userId: 'u1' },
-              destination,
-            },
-            {
-              message: {
-                ...commonInput,
-                type: 'page',
-                properties: pageProperties,
-              },
-              metadata: { jobId: 2, userId: 'u1' },
               destination,
             },
             {
@@ -81,11 +73,6 @@ export const data = [
                         properties: trackProperties,
                       },
                       {
-                        ...commonOutput,
-                        type: 'page',
-                        properties: pageProperties,
-                      },
-                      {
                         type: 'identify',
                         ...commonOutput,
                         userId: 'testuserId1',
@@ -103,7 +90,6 @@ export const data = [
               },
               metadata: [
                 { jobId: 1, userId: 'u1' },
-                { jobId: 2, userId: 'u1' },
                 { jobId: 3, userId: 'u1' },
               ],
               batched: true,
@@ -142,21 +128,9 @@ export const data = [
             {
               message: {
                 ...commonInput,
-                type: 'page',
-                properties: {
-                  title: 'Sample Page',
-                  url: 'https://example.com/?utm_campaign=example_campaign&utm_content=example_content',
-                  path: '/',
-                  hash: '',
-                  search: '?utm_campaign=example_campaign&utm_content=example_content',
-                  width: '1920',
-                  height: '1080',
-                  query: {
-                    utm_campaign: 'example_campaign',
-                    utm_content: 'example_content',
-                  },
-                  referrer: '',
-                },
+                type: 'track',
+                event: 'product added',
+                properties: trackProperties,
               },
               metadata: { jobId: 2, userId: 'u1' },
               destination,
@@ -164,9 +138,14 @@ export const data = [
             {
               message: {
                 type: 'identify',
-                ...commonInput,
+                messageId: 'dummy_msg_id',
+                context,
+                channel: 'web',
+                integrations: {
+                  All: true,
+                },
+                originalTimestamp: '2021-01-25T15:32:56.409Z',
                 traits,
-                integrations: { All: true },
               },
               metadata: { jobId: 3, userId: 'u1' },
               destination,
@@ -185,7 +164,7 @@ export const data = [
             {
               batched: false,
               destination,
-              error: 'Missing required value from "userIdOnly"',
+              error: 'Missing required value from "anonymousId"',
               metadata: [{ jobId: 3, userId: 'u1' }],
               statTags: routerInstrumentationErrorStatTags,
               statusCode: 400,
@@ -210,8 +189,9 @@ export const data = [
                       },
                       {
                         ...commonOutput,
-                        type: 'page',
-                        properties: pageProperties,
+                        type: 'track',
+                        event: 'product added',
+                        properties: trackProperties,
                       },
                     ],
                   },
@@ -264,8 +244,9 @@ export const data = [
             {
               message: {
                 ...commonInput,
-                type: 'page',
-                properties: pageProperties,
+                type: 'track',
+                event: 'product added',
+                properties: trackProperties,
               },
               metadata: { jobId: 2, userId: 'u1' },
               destination,
@@ -284,9 +265,14 @@ export const data = [
             {
               message: {
                 type: 'identify',
-                ...commonInput,
+                messageId: 'dummy_msg_id',
+                context,
+                channel: 'web',
+                integrations: {
+                  All: true,
+                },
+                originalTimestamp: '2021-01-25T15:32:56.409Z',
                 traits,
-                integrations: { All: true },
               },
               metadata: { jobId: 4, userId: 'u1' },
               destination,
@@ -305,7 +291,7 @@ export const data = [
             {
               batched: false,
               destination,
-              error: 'Missing required value from "userIdOnly"',
+              error: 'Missing required value from "anonymousId"',
               metadata: [{ jobId: 4, userId: 'u1' }],
               statTags: routerInstrumentationErrorStatTags,
               statusCode: 400,
@@ -330,8 +316,9 @@ export const data = [
                       },
                       {
                         ...commonOutput,
-                        type: 'page',
-                        properties: pageProperties,
+                        type: 'track',
+                        event: 'product added',
+                        properties: trackProperties,
                       },
                     ],
                   },

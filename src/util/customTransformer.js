@@ -8,7 +8,6 @@ const { parserForImport } = require('./parser');
 const stats = require('./stats');
 const { fetchWithDnsWrapper } = require('./utils');
 const { getMetadata, getTransformationMetadata } = require('../v0/util');
-
 const ISOLATE_VM_MEMORY = parseInt(process.env.ISOLATE_VM_MEMORY || '128', 10);
 const GEOLOCATION_TIMEOUT_IN_MS = parseInt(process.env.GEOLOCATION_TIMEOUT_IN_MS || '1000', 10);
 
@@ -17,9 +16,11 @@ async function runUserTransform(
   code,
   secrets,
   eventsMetadata,
-  versionId,
+  transformationId,
+  workspaceId,
   testMode = false,
 ) {
+  const trTags = { identifier: 'v0', transformationId, workspaceId };
   // TODO: Decide on the right value for memory limit
   const isolate = new ivm.Isolate({ memoryLimit: ISOLATE_VM_MEMORY });
   const context = await isolate.createContext();
@@ -37,9 +38,9 @@ async function runUserTransform(
     new ivm.Reference(async (resolve, ...args) => {
       try {
         const fetchStartTime = new Date();
-        const res = await fetchWithDnsWrapper(versionId, ...args);
+        const res = await fetchWithDnsWrapper(trTags, ...args);
         const data = await res.json();
-        stats.timing('fetch_call_duration', fetchStartTime, { versionId });
+        stats.timing('fetch_call_duration', fetchStartTime, trTags);
         resolve.applyIgnored(undefined, [new ivm.ExternalCopy(data).copyInto()]);
       } catch (error) {
         resolve.applyIgnored(undefined, [new ivm.ExternalCopy('ERROR').copyInto()]);
@@ -52,7 +53,7 @@ async function runUserTransform(
     new ivm.Reference(async (resolve, reject, ...args) => {
       try {
         const fetchStartTime = new Date();
-        const res = await fetchWithDnsWrapper(versionId, ...args);
+        const res = await fetchWithDnsWrapper(trTags, ...args);
         const headersContent = {};
         res.headers.forEach((value, header) => {
           headersContent[header] = value;
@@ -68,7 +69,7 @@ async function runUserTransform(
           data.body = JSON.parse(data.body);
         } catch (e) {}
 
-        stats.timing('fetchV2_call_duration', fetchStartTime, { versionId });
+        stats.timing('fetchV2_call_duration', fetchStartTime, trTags);
         resolve.applyIgnored(undefined, [new ivm.ExternalCopy(data).copyInto()]);
       } catch (error) {
         const err = JSON.parse(JSON.stringify(error, Object.getOwnPropertyNames(error)));
@@ -94,7 +95,7 @@ async function runUserTransform(
           throw new Error(`request to fetch geolocation failed with status code: ${res.status}`);
         }
         const geoData = await res.json();
-        stats.timing('geo_call_duration', geoStartTime, { versionId });
+        stats.timing('geo_call_duration', geoStartTime, trTags);
         resolve.applyIgnored(undefined, [new ivm.ExternalCopy(geoData).copyInto()]);
       } catch (error) {
         const err = JSON.parse(JSON.stringify(error, Object.getOwnPropertyNames(error)));
@@ -252,14 +253,14 @@ async function runUserTransform(
     isolate.dispose();
 
     const tags = {
-      identifier: 'v0',
       errored: transformationError ? true : false,
-      ...(events.length && events[0].metadata ? getMetadata(events[0].metadata) : {}),
-      ...(events.length && events[0].metadata ? getTransformationMetadata(events[0].metadata) : {}),
+      ...(Object.keys(eventsMetadata).length ? getMetadata(Object.values(eventsMetadata)[0]) : {}),
+      ...trTags,
     };
 
     stats.counter('user_transform_function_input_events', events.length, tags);
     stats.timing('user_transform_function_latency', invokeTime, tags);
+    stats.timingSummary('user_transform_function_latency_summary', invokeTime, tags);
   }
 
   return {
@@ -285,7 +286,6 @@ async function userTransformHandler(
       events.forEach((ev) => {
         eventsMetadata[ev.message.messageId] = ev.metadata;
       });
-
       let userTransformedEvents = [];
       let result;
       if (res.codeVersion && res.codeVersion === '1') {
@@ -317,7 +317,8 @@ async function userTransformHandler(
           res.code,
           res.secrets || {},
           eventsMetadata,
-          versionId,
+          res.id,
+          res.workspaceId,
           testMode,
         );
 

@@ -14,10 +14,10 @@ import {
   UserDeletionRequest,
   UserDeletionResponse,
 } from '../types';
-import tags from '../v0/util/tags';
-import stats from '../util/stats';
-import logger from '../logger';
 import { CommonUtils } from '../util/common';
+import stats from '../util/stats';
+import tags from '../v0/util/tags';
+import logger from '../logger';
 
 const NS_PER_SEC = 1e9;
 

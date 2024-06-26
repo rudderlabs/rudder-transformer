@@ -37,6 +37,7 @@ export interface mockType {
 }
 
 export interface TestCaseData {
+  id?: string;
   name: string;
   description: string;
   scenario?: string;
@@ -77,6 +78,7 @@ export type ProcessorTestData = {
       body: ProcessorTransformationResponse[];
     };
   };
+  mockFns?: (mockAdapter: MockAdapter) => {};
 };
 export type RouterTestData = {
   id: string;

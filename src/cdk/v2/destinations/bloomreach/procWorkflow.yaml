@@ -1,0 +1,119 @@
+bindings:
+  - name: EventType
+    path: ../../../../constants
+  - path: ../../bindings/jsontemplate
+  - name: defaultRequestConfig
+    path: ../../../../v0/util
+  - name: toUnixTimestamp
+    path: ../../../../v0/util
+  - name: base64Convertor
+    path: ../../../../v0/util
+  - name: removeUndefinedAndNullValues
+    path: ../../../../v0/util
+  - name: generateExclusionList
+    path: ../../../../v0/util
+  - name: extractCustomFields
+    path: ../../../../v0/util
+  - name: constructPayload
+    path: ../../../../v0/util
+  - path: ./utils
+  - path: ./config
+
+steps:
+  - name: messageType
+    template: |
+      $.context.messageType = .message.type.toLowerCase();
+
+  - name: validateInput
+    template: |
+      let messageType = $.context.messageType;
+      $.assert(messageType, "message Type is not present. Aborting");
+      $.assert(messageType in {{$.EventType.([.IDENTIFY,.TRACK,.PAGE,.SCREEN])}}, "message type " + messageType + " is not supported");
+      $.assertConfig(.destination.Config.apiBaseUrl, "API Base URL is not present. Aborting");
+      $.assertConfig(.destination.Config.apiKey, "API Key is not present . Aborting");
+      $.assertConfig(.destination.Config.apiSecret, "API Secret is not present. Aborting");
+      $.assertConfig(.destination.Config.projectToken, "Project Token is not present. Aborting");
+      $.assertConfig(.destination.Config.hardID, "Hard ID is not present. Aborting");
+      $.assertConfig(.destination.Config.softID, "Soft ID is not present. Aborting");
+      $.assert(.message.timestamp ?? .message.originalTimestamp, "Timestamp is not present. Aborting");
+      const userId = .message.().(
+          {{{{$.getGenericPaths("userIdOnly")}}}};
+      );
+      $.assert(userId || .message.anonymousId, "Either one of userId or anonymousId is required. Aborting");
+
+  - name: prepareIdentifyPayload
+    condition: $.context.messageType === {{$.EventType.IDENTIFY}}
+    template: |
+      const customerIDs = $.prepareCustomerIDs(.message, .destination);
+      const customerProperties = $.constructPayload(.message, $.CUSTOMER_PROPERTIES_CONFIG);
+      const extraCustomerProperties = $.extractCustomFields(.message, {}, ['traits', 'context.traits'], $.EXCLUSION_FIELDS);
+      const properties = {
+        ...customerProperties,
+        ...extraCustomerProperties
+      }
+      const data = .message.().({
+        "customer_ids": customerIDs,
+        "update_timestamp": $.toUnixTimestamp({{{{$.getGenericPaths("timestamp")}}}}),
+        properties
+      });
+
+      $.context.payload = $.removeUndefinedAndNullValues({name: $.CUSTOMER_COMMAND, data})
+
+  - name: prepareEventName
+    steps:
+      - name: pageEventName
+        condition: $.context.messageType === {{$.EventType.PAGE}}
+        template: |
+          const category = .message.category || .message.properties.category;
+          const name = .message.name || .message.properties.name;
+          const eventNameArray = ["Viewed"];
+          category ? eventNameArray.push(category);
+          name ? eventNameArray.push(name);
+          eventNameArray.push("Page");
+          $.context.event = eventNameArray.join(" ");
+      - name: screenEventName
+        condition: $.context.messageType === {{$.EventType.SCREEN}}
+        template: |
+          const category = .message.category || .message.properties.category;
+          const name = .message.name || .message.properties.name;
+          const eventNameArray = ["Viewed"];
+          category ? eventNameArray.push(category);
+          name ? eventNameArray.push(name);
+          eventNameArray.push("Screen");
+          $.context.event = eventNameArray.join(" ");
+      - name: trackEventName
+        condition: $.context.messageType === {{$.EventType.TRACK}}
+        template: |
+          $.assert(.message.event, "Event name is required. Aborting");
+          $.context.event = .message.event
+
+  - name: prepareTrackPageScreenPayload
+    condition: $.context.messageType !== {{$.EventType.IDENTIFY}}
+    template: |
+      const customerIDs = $.prepareCustomerIDs(.message, .destination);
+      const data = .message.().({
+        "customer_ids": customerIDs,
+        "timestamp": $.toUnixTimestamp({{{{$.getGenericPaths("timestamp")}}}}),
+        "properties": .properties,
+        "event_type": $.context.event,
+      });
+
+      $.context.payload = $.removeUndefinedAndNullValues({name: $.CUSTOMER_EVENT_COMMAND, data})
+
+  - name: buildResponse
+    description: In batchMode we return payload directly
+    condition: $.batchMode
+    template: |
+      $.context.payload
+    else:
+      name: buildResponseForProcessTransformation
+      template: |
+        const response = $.defaultRequestConfig();
+        response.body.JSON = $.context.payload;
+        response.endpoint = $.getBatchEndpoint(.destination.Config.apiBaseUrl, .destination.Config.projectToken);
+        response.method = "POST";
+        response.headers = {
+          "Content-Type": "application/json",
+          "Authorization": "Basic " + $.base64Convertor(.destination.Config.apiKey + ":" + .destination.Config.apiSecret)
+        }
+        response;

@@ -1,4 +1,9 @@
-const { validateEventName, prepareUserProperties, removeInvalidParams } = require('./utils');
+const {
+  validateEventName,
+  removeInvalidParams,
+  prepareUserConsents,
+  prepareUserProperties,
+} = require('./utils');
 
 const userPropertyData = [
   {
@@ -445,6 +450,86 @@ describe('Google Analytics 4 utils test', () => {
 
       const result = removeInvalidParams(params);
       expect(result).toEqual(expected);
+    });
+  });
+
+  describe('prepareUserConsents function tests', () => {
+    it('Should return an empty object when no consents are given', () => {
+      const message = {};
+      const result = prepareUserConsents(message);
+      expect(result).toEqual({});
+    });
+
+    it('Should return an empty object when no consents are given', () => {
+      const message = {
+        integrations: {
+          GA4: {},
+        },
+      };
+      const result = prepareUserConsents(message);
+      expect(result).toEqual({});
+    });
+
+    it('Should return an empty object when no consents are given', () => {
+      const message = {
+        integrations: {
+          GA4: {
+            consents: {},
+          },
+        },
+      };
+      const result = prepareUserConsents(message);
+      expect(result).toEqual({});
+    });
+
+    it('Should return a consents object when consents are given', () => {
+      const message = {
+        integrations: {
+          GA4: {
+            consents: {
+              ad_personalization: 'GRANTED',
+              ad_user_data: 'GRANTED',
+            },
+          },
+        },
+      };
+      const result = prepareUserConsents(message);
+      expect(result).toEqual({
+        ad_personalization: 'GRANTED',
+        ad_user_data: 'GRANTED',
+      });
+    });
+
+    it('Should return an empty object when invalid consents are given', () => {
+      const message = {
+        integrations: {
+          GA4: {
+            consents: {
+              ad_personalization: 'NOT_SPECIFIED',
+              ad_user_data: 'NOT_SPECIFIED',
+            },
+          },
+        },
+      };
+      const result = prepareUserConsents(message);
+      expect(result).toEqual({});
+    });
+
+    it('Should return a valid consents values from consents object', () => {
+      const message = {
+        integrations: {
+          GA4: {
+            consents: {
+              ad_personalization: 'NOT_SPECIFIED',
+              ad_user_data: 'DENIED',
+            },
+          },
+        },
+      };
+      const result = prepareUserConsents(message);
+      expect(result).toEqual({
+        ad_user_data: 'DENIED',
+      });
     });
   });
 });

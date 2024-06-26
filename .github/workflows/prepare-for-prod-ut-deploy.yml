@@ -104,11 +104,10 @@ jobs:
           cd rudder-devops
           git checkout -b shared-user-transformer-$UT_TAG_NAME
 
-          cd helm-charts/config-be-rudder-transformer
+          cd helm-charts/config-be-rudder-transformer/environment/prod
 
-          yq eval -i ".config-be-user-transformer.image.tag=\"$UT_TAG_NAME\"" values.prod.yaml
-          yq eval -i ".config-be-user-transformer.image.repository=\"$TF_IMAGE_REPOSITORY\"" values.prod.yaml
-          git add values.prod.yaml
+          yq eval -i ".config-be-user-transformer.image.tag=\"$UT_TAG_NAME\"" base.yaml
+          git add base.yaml
 
           git commit -m "chore: upgrade shared user-transformers to $UT_TAG_NAME"
           git push -u origin shared-user-transformer-$UT_TAG_NAME

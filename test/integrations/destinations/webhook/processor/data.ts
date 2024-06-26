@@ -2758,4 +2758,221 @@ export const data = [
       },
     },
   },
+  {
+    name: 'webhook',
+    description: 'Test POST method with track message type',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
+              event: 'spin_result',
+              integrations: {
+                All: true,
+              },
+              message_id: 'a80f82be-9bdc-4a9f-b2a5-15621ee41df8',
+              properties: {
+                additional_bet_index: 0,
+                level: 1,
+              },
+              timestamp: '2019-09-01T15:46:51.693229+05:30',
+              type: 'track',
+            },
+            destination: {
+              Config: {
+                webhookUrl: 'http://6b0e6a60.ngrok.io',
+                headers: [
+                  {
+                    from: 'Content-Type',
+                    to: 'application/xml',
+                  },
+                  {
+                    from: 'test2',
+                    to: 'value2',
+                  },
+                ],
+              },
+              DestinationDefinition: {
+                Config: {
+                  cdkV2Enabled: true,
+                },
+              },
+            },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              body: {
+                JSON: {
+                  anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
+                  event: 'spin_result',
+                  integrations: {
+                    All: true,
+                  },
+                  message_id: 'a80f82be-9bdc-4a9f-b2a5-15621ee41df8',
+                  properties: {
+                    additional_bet_index: 0,
+                    level: 1,
+                  },
+                  timestamp: '2019-09-01T15:46:51.693229+05:30',
+                  type: 'track',
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              version: '1',
+              userId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'http://6b0e6a60.ngrok.io',
+              headers: {
+                'content-type': 'application/xml',
+                test2: 'value2',
+              },
+              params: {},
+              files: {},
+            },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'webhook',
+    description: 'Test method PATCH',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
+              context: {
+                traits: {
+                  address: {
+                    city: 'Dhaka',
+                    country: 'Bangladesh',
+                  },
+                  anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
+                },
+              },
+              event: 'spin_result',
+              integrations: {
+                All: true,
+              },
+              message_id: 'a80f82be-9bdc-4a9f-b2a5-15621ee41df8',
+              properties: {
+                prop1: 1,
+              },
+              timestamp: '2019-09-01T15:46:51.693229+05:30',
+              type: 'track',
+              user_properties: {
+                coin_balance: 9466052,
+              },
+            },
+            destination: {
+              Config: {
+                webhookUrl: 'http://6b0e6a60.ngrok.io',
+                webhookMethod: 'PATCH',
+                headers: [
+                  {
+                    from: 'test2',
+                    to: 'value2',
+                  },
+                ],
+              },
+              DestinationDefinition: {
+                Config: {
+                  cdkV2Enabled: true,
+                },
+              },
+            },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              body: {
+                JSON: {
+                  anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
+                  context: {
+                    traits: {
+                      address: {
+                        city: 'Dhaka',
+                        country: 'Bangladesh',
+                      },
+                      anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
+                    },
+                  },
+                  event: 'spin_result',
+                  integrations: {
+                    All: true,
+                  },
+                  message_id: 'a80f82be-9bdc-4a9f-b2a5-15621ee41df8',
+                  properties: {
+                    prop1: 1,
+                  },
+                  timestamp: '2019-09-01T15:46:51.693229+05:30',
+                  type: 'track',
+                  user_properties: {
+                    coin_balance: 9466052,
+                  },
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              version: '1',
+              userId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
+              type: 'REST',
+              method: 'PATCH',
+              endpoint: 'http://6b0e6a60.ngrok.io',
+              headers: {
+                'content-type': 'application/json',
+                test2: 'value2',
+              },
+              params: {},
+              files: {},
+            },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
 ];

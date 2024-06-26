@@ -1033,7 +1033,6 @@ export const data = [
                           firstname: 'Test Hubspot',
                           anonymousId: '12345',
                           country: 'India',
-                          email: 'testhubspot2@email.com',
                         },
                         id: '103605',
                       },
@@ -1662,6 +1661,147 @@ export const data = [
                   eventFilteringOption: 'disable',
                   blacklistedEvents: [{ eventName: '' }],
                   whitelistedEvents: [{ eventName: '' }],
+                },
+                secretConfig: {},
+                ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
+                name: 'Hubspot',
+                enabled: true,
+                workspaceId: '1TSN08muJTZwH8iCDmnnRt1pmLd',
+                deleted: false,
+                createdAt: '2020-12-30T08:39:32.005Z',
+                updatedAt: '2021-02-03T16:22:31.374Z',
+                destinationDefinition: {
+                  id: '1aIXqM806xAVm92nx07YwKbRrO9',
+                  name: 'HS',
+                  displayName: 'Hubspot',
+                  createdAt: '2020-04-09T09:24:31.794Z',
+                  updatedAt: '2021-01-11T11:03:28.103Z',
+                },
+                transformations: [],
+                isConnectionEnabled: true,
+                isProcessorEnabled: true,
+              },
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    name: 'hs',
+    description: 'getting duplicate records for secondary property',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    scenario: 'buisness',
+    successCriteria:
+      'should return 200 status code with contact needs to be updated and no email property',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: {
+                type: 'identify',
+                sentAt: '2024-03-19T18:46:36.348Z',
+                traits: {
+                  lastname: 'Peñarete',
+                  firstname: 'Karen',
+                },
+                userId: 'secondary@email.com',
+                channel: 'sources',
+                context: {
+                  externalId: [
+                    {
+                      id: 'secondary@email.com',
+                      type: 'HS-contacts',
+                      identifierType: 'email',
+                    },
+                  ],
+                  mappedToDestination: 'true',
+                },
+                originalTimestamp: '2024-03-19T18:46:36.348Z',
+              },
+              metadata: { jobId: 3, userId: 'u1' },
+              destination: {
+                Config: {
+                  authorizationType: 'newPrivateAppApi',
+                  accessToken: 'dummy-access-token-hs-additonal-email',
+                  hubID: 'dummy-hubId',
+                  apiKey: 'dummy-apikey',
+                  apiVersion: 'newApi',
+                  lookupField: 'email',
+                  hubspotEvents: [],
+                },
+                secretConfig: {},
+                ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
+                name: 'Hubspot',
+                enabled: true,
+                workspaceId: '1TSN08muJTZwH8iCDmnnRt1pmLd',
+                deleted: false,
+                createdAt: '2020-12-30T08:39:32.005Z',
+                updatedAt: '2021-02-03T16:22:31.374Z',
+                destinationDefinition: {
+                  id: '1aIXqM806xAVm92nx07YwKbRrO9',
+                  name: 'HS',
+                  displayName: 'Hubspot',
+                  createdAt: '2020-04-09T09:24:31.794Z',
+                  updatedAt: '2021-01-11T11:03:28.103Z',
+                },
+                transformations: [],
+                isConnectionEnabled: true,
+                isProcessorEnabled: true,
+              },
+            },
+          ],
+          destType: 'hs',
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: 'https://api.hubapi.com/crm/v3/objects/contacts/batch/update',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: 'Bearer dummy-access-token-hs-additonal-email',
+                },
+                params: {},
+                body: {
+                  JSON: {
+                    inputs: [
+                      {
+                        properties: { lastname: 'Peñarete', firstname: 'Karen' },
+                        id: '103689',
+                      },
+                    ],
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+              },
+              metadata: [{ jobId: 3, userId: 'u1' }],
+              batched: true,
+              statusCode: 200,
+              destination: {
+                Config: {
+                  authorizationType: 'newPrivateAppApi',
+                  accessToken: 'dummy-access-token-hs-additonal-email',
+                  hubID: 'dummy-hubId',
+                  apiKey: 'dummy-apikey',
+                  apiVersion: 'newApi',
+                  lookupField: 'email',
+                  hubspotEvents: [],
                 },
                 secretConfig: {},
                 ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',

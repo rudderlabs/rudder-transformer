@@ -140,29 +140,36 @@ const getResponseDetails = (clientResponse) => {
   };
 };
 
-/**
- * sends an http request with underlying client, expects request options
- * @param {*} options
- * @returns
- */
-const httpSend = async (options, statTags = {}) => {
+const getHttpMethodArgs = (method, { url, data, requestOptions }) => {
+  const requestMethod = method?.toLowerCase?.();
+  switch (requestMethod) {
+    case 'post':
+    case 'put':
+    case 'patch':
+      return [url, data, requestOptions];
+    case 'get':
+    case 'delete':
+      return [url, requestOptions];
+    default: // constructor
+      return [requestOptions];
+  }
+};
+const commonHandler = async (axiosMethod, { statTags, method, ...args }) => {
   let clientResponse;
-  // here the options argument K-Vs will take priority over the default options
-  const requestOptions = enhanceRequestOptions(options);
-
-  const { url, data, method } = requestOptions;
+  const { url, data, options, requestOptions } = args;
   const commonMsg = `[${statTags?.destType?.toUpperCase?.() || ''}] ${statTags?.endpointPath || ''}`;
+
   logger.requestLog(`${commonMsg} request`, {
     metadata: statTags?.metadata,
     requestDetails: {
-      url,
-      body: options?.data,
-      method: options?.method || statTags?.requestMethod,
+      url: url || requestOptions?.url,
+      body: data || requestOptions?.data,
+      method,
     },
   });
   const startTime = new Date();
   try {
-    const response = await axios(requestOptions);
+    const response = await axiosMethod(...getHttpMethodArgs(method, args));
     clientResponse = { success: true, response };
   } catch (err) {
     clientResponse = { success: false, response: err };
@@ -179,6 +186,16 @@ const httpSend = async (options, statTags = {}) => {
 };
 
 /**
+ * sends an http request with underlying client, expects request options
+ * @param {*} options
+ * @returns
+ */
+const httpSend = async (options, statTags = {}) => {
+  const requestOptions = enhanceRequestOptions(options);
+  return commonHandler(axios, { statTags, options, requestOptions });
+};
+
+/**
  *
  * @param {*} url
  * @param {*} options
@@ -187,34 +204,8 @@ const httpSend = async (options, statTags = {}) => {
  * handles http GET requests returns promise as a response throws error in case of non 2XX statuses
  */
 const httpGET = async (url, options, statTags = {}) => {
-  let clientResponse;
-  // here the options argument K-Vs will take priority over the default options
   const requestOptions = enhanceRequestOptions(options);
-
-  const commonMsg = `[${statTags?.destType?.toUpperCase?.() || ''}] ${statTags?.endpointPath}`;
-  logger.requestLog(`${commonMsg} request`, {
-    metadata: statTags?.metadata,
-    requestDetails: {
-      url,
-      body: requestOptions?.data,
-      method: 'get',
-    },
-  });
-  const startTime = new Date();
-  try {
-    const response = await axios.get(url, requestOptions);
-    clientResponse = { success: true, response };
-  } catch (err) {
-    clientResponse = { success: false, response: err };
-  } finally {
-    logger.responseLog(`${commonMsg} response`, {
-      metadata: statTags?.metadata,
-      responseDetails: getResponseDetails(clientResponse),
-    });
-    fireHTTPStats(clientResponse, startTime, statTags);
-  }
-  setResponsesForMockAxiosAdapter({ url, options, method: 'GET' }, clientResponse);
-  return clientResponse;
+  return commonHandler(axios.get, { statTags, method: 'get', url, options, requestOptions });
 };
 
 /**
@@ -226,34 +217,8 @@ const httpGET = async (url, options, statTags = {}) => {
  * handles http DELETE requests returns promise as a response throws error in case of non 2XX statuses
  */
 const httpDELETE = async (url, options, statTags = {}) => {
-  let clientResponse;
-  // here the options argument K-Vs will take priority over the default options
   const requestOptions = enhanceRequestOptions(options);
-
-  const commonMsg = `[${statTags?.destType?.toUpperCase?.() || ''}] ${statTags?.endpointPath}`;
-  logger.requestLog(`${commonMsg} request`, {
-    metadata: statTags?.metadata,
-    requestDetails: {
-      url,
-      body: requestOptions?.data,
-      method: 'delete',
-    },
-  });
-  const startTime = new Date();
-  try {
-    const response = await axios.delete(url, requestOptions);
-    clientResponse = { success: true, response };
-  } catch (err) {
-    clientResponse = { success: false, response: err };
-  } finally {
-    logger.responseLog(`${commonMsg} response`, {
-      metadata: statTags?.metadata,
-      responseDetails: getResponseDetails(clientResponse),
-    });
-    fireHTTPStats(clientResponse, startTime, statTags);
-  }
-  setResponsesForMockAxiosAdapter({ url, options, method: 'DELETE' }, clientResponse);
-  return clientResponse;
+  return commonHandler(axios.delete, { statTags, method: 'delete', url, options, requestOptions });
 };
 
 /**
@@ -266,34 +231,15 @@ const httpDELETE = async (url, options, statTags = {}) => {
  * handles http POST requests returns promise as a response throws error in case of non 2XX statuses
  */
 const httpPOST = async (url, data, options, statTags = {}) => {
-  let clientResponse;
-  // here the options argument K-Vs will take priority over the default options
   const requestOptions = enhanceRequestOptions(options);
-
-  const commonMsg = `[${statTags?.destType?.toUpperCase?.() || ''}] ${statTags?.endpointPath}`;
-  logger.requestLog(`${commonMsg} request`, {
-    metadata: statTags?.metadata,
-    requestDetails: {
-      url,
-      body: data,
-      method: 'post',
-    },
+  return commonHandler(axios.post, {
+    statTags,
+    url,
+    method: 'post',
+    data,
+    options,
+    requestOptions,
   });
-  const startTime = new Date();
-  try {
-    const response = await axios.post(url, data, requestOptions);
-    clientResponse = { success: true, response };
-  } catch (err) {
-    clientResponse = { success: false, response: err };
-  } finally {
-    logger.responseLog(`${commonMsg} response`, {
-      metadata: statTags?.metadata,
-      responseDetails: getResponseDetails(clientResponse),
-    });
-    fireHTTPStats(clientResponse, startTime, statTags);
-  }
-  setResponsesForMockAxiosAdapter({ url, data, options, method: 'POST' }, clientResponse);
-  return clientResponse;
 };
 
 /**
@@ -306,33 +252,8 @@ const httpPOST = async (url, data, options, statTags = {}) => {
  * handles http PUT requests returns promise as a response throws error in case of non 2XX statuses
  */
 const httpPUT = async (url, data, options, statTags = {}) => {
-  let clientResponse;
-  // here the options argument K-Vs will take priority over the default options
   const requestOptions = enhanceRequestOptions(options);
-  const commonMsg = `[${statTags?.destType?.toUpperCase?.() || ''}] ${statTags?.endpointPath}`;
-  logger.requestLog(`${commonMsg} request`, {
-    metadata: statTags?.metadata,
-    requestDetails: {
-      url,
-      body: data,
-      method: 'put',
-    },
-  });
-  const startTime = new Date();
-  try {
-    const response = await axios.put(url, data, requestOptions);
-    clientResponse = { success: true, response };
-  } catch (err) {
-    clientResponse = { success: false, response: err };
-  } finally {
-    logger.responseLog(`${commonMsg} response`, {
-      metadata: statTags?.metadata,
-      responseDetails: getResponseDetails(clientResponse),
-    });
-    fireHTTPStats(clientResponse, startTime, statTags);
-  }
-  setResponsesForMockAxiosAdapter({ url, data, options, method: 'PUT' }, clientResponse);
-  return clientResponse;
+  return commonHandler(axios.put, { statTags, url, data, method: 'put', options, requestOptions });
 };
 
 /**
@@ -345,33 +266,15 @@ const httpPUT = async (url, data, options, statTags = {}) => {
  * handles http PATCH requests returns promise as a response throws error in case of non 2XX statuses
  */
 const httpPATCH = async (url, data, options, statTags = {}) => {
-  let clientResponse;
-  // here the options argument K-Vs will take priority over the default options
   const requestOptions = enhanceRequestOptions(options);
-  const commonMsg = `[${statTags?.destType?.toUpperCase?.() || ''}] ${statTags?.endpointPath}`;
-  logger.requestLog(`${commonMsg} request`, {
-    metadata: statTags?.metadata,
-    requestDetails: {
-      url,
-      body: data,
-      method: 'patch',
-    },
+  return commonHandler(axios.patch, {
+    statTags,
+    url,
+    method: 'patch',
+    data,
+    options,
+    requestOptions,
   });
-  const startTime = new Date();
-  try {
-    const response = await axios.patch(url, data, requestOptions);
-    clientResponse = { success: true, response };
-  } catch (err) {
-    clientResponse = { success: false, response: err };
-  } finally {
-    logger.responseLog(`${commonMsg} response`, {
-      metadata: statTags?.metadata,
-      responseDetails: getResponseDetails(clientResponse),
-    });
-    fireHTTPStats(clientResponse, startTime, statTags);
-  }
-  setResponsesForMockAxiosAdapter({ url, data, options, method: 'PATCH' }, clientResponse);
-  return clientResponse;
 };
 
 const getPayloadData = (body) => {

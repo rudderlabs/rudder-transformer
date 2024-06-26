@@ -1,7 +1,7 @@
 const mockLoggerInstance = {
   info: jest.fn(),
 };
-const { getFormData, httpPOST } = require('./network');
+const { getFormData, httpPOST, httpGET, httpSend } = require('./network');
 const { getFuncTestData } = require('../../test/testHelper');
 
 jest.mock('@rudderstack/integrations-lib', () => {
@@ -11,10 +11,7 @@ jest.mock('@rudderstack/integrations-lib', () => {
   };
 });
 
-jest.mock('axios', () => ({
-  ...jest.requireActual('axios'),
-  post: jest.fn(),
-}));
+jest.mock('axios', () => jest.fn());
 
 jest.mock('../util/logger', () => ({
   ...jest.requireActual('../util/logger'),
@@ -23,6 +20,9 @@ jest.mock('../util/logger', () => ({
 
 const axios = require('axios');
 const loggerUtil = require('../util/logger');
+
+axios.post = jest.fn();
+axios.get = jest.fn();
 
 const funcName = 'getFormData';
 
@@ -44,7 +44,7 @@ describe('logging in http methods', () => {
     mockLoggerInstance.info.mockClear();
     loggerUtil.getMatchedMetadata.mockClear();
   });
-  test('when proper metadata(object) is sent should call logger without error', async () => {
+  test('post - when proper metadata(object) is sent should call logger without error', async () => {
     const statTags = {
       metadata: {
         destType: 'DT',
@@ -98,7 +98,7 @@ describe('logging in http methods', () => {
     });
   });
 
-  test('when metadata is not sent should call logger without error', async () => {
+  test('post - when metadata is not sent should call logger without error', async () => {
     const statTags = {
       destType: 'DT',
       feature: 'feat',
@@ -123,7 +123,7 @@ describe('logging in http methods', () => {
     expect(mockLoggerInstance.info).toHaveBeenCalledTimes(0);
   });
 
-  test('when metadata is string should call logger without error', async () => {
+  test('post - when metadata is string should call logger without error', async () => {
     const statTags = {
       metadata: 'random metadata',
       destType: 'DT',
@@ -149,7 +149,7 @@ describe('logging in http methods', () => {
     expect(mockLoggerInstance.info).toHaveBeenCalledTimes(0);
   });
 
-  test('when proper metadata(Array) is sent should call logger without error', async () => {
+  test('post - when proper metadata(Array) is sent should call logger without error', async () => {
     const metadata = [
       {
         destType: 'DT',
@@ -227,7 +227,7 @@ describe('logging in http methods', () => {
     });
   });
 
-  test('when proper metadata(Array of strings,numbers) is sent should call logger without error', async () => {
+  test('post - when proper metadata(Array of strings,numbers) is sent should call logger without error', async () => {
     const metadata = [1, 2, '3'];
     const statTags = {
       metadata,
@@ -250,6 +250,76 @@ describe('logging in http methods', () => {
       Error,
     );
     expect(loggerUtil.getMatchedMetadata).toHaveBeenCalledTimes(2);
+
+    expect(axios.post).toHaveBeenCalledWith(
+      'https://some.web.com/m/n/o',
+      {},
+      expect.objectContaining({}),
+    );
+
+    expect(mockLoggerInstance.info).toHaveBeenCalledTimes(0);
+  });
+
+  test('get - when proper metadata(Array of strings,numbers) is sent should call logger without error', async () => {
+    const metadata = [1, 2, '3'];
+    const statTags = {
+      metadata,
+      destType: 'DT',
+      feature: 'feat',
+      endpointPath: '/m/n/o',
+      requestMethod: 'post',
+    };
+    loggerUtil.getMatchedMetadata.mockReturnValue(statTags.metadata);
+
+    axios.get.mockResolvedValueOnce({
+      status: 200,
+      data: { a: 1, b: 2, c: 'abc' },
+      headers: {
+        'Content-Type': 'apllication/json',
+        'X-Some-Header': 'headsome',
+      },
+    });
+    await expect(httpGET('https://some.web.com/m/n/o', {}, statTags)).resolves.not.toThrow(Error);
+    expect(loggerUtil.getMatchedMetadata).toHaveBeenCalledTimes(2);
+
+    expect(axios.get).toHaveBeenCalledWith(
+      'https://some.web.com/m/n/o',
+      expect.objectContaining({}),
+    );
+
+    expect(mockLoggerInstance.info).toHaveBeenCalledTimes(0);
+  });
+
+  test('constructor - when proper metadata(Array of strings,numbers) is sent should call logger without error', async () => {
+    const metadata = [1, 2, '3'];
+    const statTags = {
+      metadata,
+      destType: 'DT',
+      feature: 'feat',
+      endpointPath: '/m/n/o',
+      requestMethod: 'post',
+    };
+    loggerUtil.getMatchedMetadata.mockReturnValue(statTags.metadata);
+
+    axios.mockResolvedValueOnce({
+      status: 200,
+      data: { a: 1, b: 2, c: 'abc' },
+      headers: {
+        'Content-Type': 'apllication/json',
+        'X-Some-Header': 'headsome',
+      },
+    });
+    await expect(
+      httpSend({ url: 'https://some.web.com/m/n/o', method: 'get' }, statTags),
+    ).resolves.not.toThrow(Error);
+    expect(loggerUtil.getMatchedMetadata).toHaveBeenCalledTimes(2);
+
+    expect(axios).toHaveBeenCalledWith(
+      expect.objectContaining({
+        url: 'https://some.web.com/m/n/o',
+        method: 'get',
+      }),
+    );
 
     expect(mockLoggerInstance.info).toHaveBeenCalledTimes(0);
   });

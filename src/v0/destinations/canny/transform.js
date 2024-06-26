@@ -122,7 +122,7 @@ const trackResponseBuilder = async (message, { Config }, metadata) => {
   return responseArray;
 };
 
-const processEvent = (message, destination, metadata) => {
+const processEvent = async (message, destination, metadata) => {
   if (!destination.Config.apiKey) {
     throw new ConfigurationError('API Key is not present. Aborting message.');
   }
@@ -145,7 +145,7 @@ const processEvent = (message, destination, metadata) => {
   return response;
 };
 
-const process = (event) => processEvent(event.message, event.destination, event.metadata);
+const process = async (event) => processEvent(event.message, event.destination, event.metadata);
 
 const processRouterDest = async (inputs, reqMetadata) => {
   const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);

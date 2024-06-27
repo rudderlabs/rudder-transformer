@@ -1,4 +1,5 @@
 const get = require('get-value');
+const feature = require('../../../features.json');
 const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const { handleRtTfSingleEventError, getDestinationExternalIDInfoForRetl } = require('../../util');
@@ -68,7 +69,7 @@ const process = async (event) => {
 // we are batching by default at routerTransform
 // eslint-disable-next-line consistent-return
 const processRouterDest = async (inputs, reqMetadata) => {
-  if (process.env.AGNOSTIC_DEST === true) {
+  if (feature.agnosticDestinations.HS === true) {
     // new part
     const tempInputs = inputs;
 

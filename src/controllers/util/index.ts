@@ -207,14 +207,14 @@ export class ControllerUtility {
     destName: string,
     eventMessage: RudderMessage,
   ) {
-    const configPath = `/Users/sudippaul/workspace/rudder-transformer/src/v0/destinations/hs/agnotstic.json`;
+    const configPath = `/Users/shrouti/workspace/rudder-transformer/src/v0/destinations/hs/agnotstic.json`;
     const agnosticConfig = JSON.parse(fs.readFileSync(configPath, 'utf8'));
-    let object
-  if (getDestinationExternalIDInfoForRetl(eventMessage, destName).objectType) {
-object = getDestinationExternalIDInfoForRetl(eventMessage, destName).objectType
-  } else {
-    object = eventTypeName
-  }
+    let object;
+    if (getDestinationExternalIDInfoForRetl(eventMessage, destName).objectType) {
+      object = getDestinationExternalIDInfoForRetl(eventMessage, destName).objectType;
+    } else {
+      object = eventTypeName;
+    }
     if (!agnosticConfig[object]) {
       throw new Error(`object not found in agnostic config`);
     }

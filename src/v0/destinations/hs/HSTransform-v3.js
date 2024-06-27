@@ -57,12 +57,10 @@ export const processSingleAgnosticEvent = (message) => {
   }
   if (action === 'update' && objectType === 'identify') {
     endPoint = 'https://api.hubapi.com/crm/v3/objects/contacts/batch/update';
-    tempPayload = [
-      {
-        properties: fields,
-        id: getDestinationLookUpId(message, 'HS-LOOKUP-ID'),
-      },
-    ];
+    tempPayload = {
+      properties: fields,
+      id: getDestinationLookUpId(message, 'HS-LOOKUP-ID'),
+    };
     operation = 'update';
   }
   return { tempPayload, endPoint, operation };

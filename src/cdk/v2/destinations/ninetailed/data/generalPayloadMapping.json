@@ -11,7 +11,9 @@
   },
   {
     "sourceKeys": "channel",
-    "required": true,
+    "metadata": {
+      "defaultValue": "server"
+    },
     "destKey": "channel"
   },
   {

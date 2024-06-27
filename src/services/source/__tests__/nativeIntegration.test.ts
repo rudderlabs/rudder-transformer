@@ -1,8 +1,8 @@
+import { FetchHandler } from '../../../helpers/fetchHandlers';
+import { RudderMessage, SourceTransformationResponse } from '../../../types/index';
+import stats from '../../../util/stats';
 import { NativeIntegrationSourceService } from '../nativeIntegration';
 import { SourcePostTransformationService } from '../postTransformation';
-import { SourceTransformationResponse, RudderMessage } from '../../../types/index';
-import stats from '../../../util/stats';
-import { FetchHandler } from '../../../helpers/fetchHandlers';
 
 afterEach(() => {
   jest.clearAllMocks();

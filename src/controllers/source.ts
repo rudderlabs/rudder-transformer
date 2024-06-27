@@ -1,16 +1,13 @@
 import { Context } from 'koa';
-import { MiscService } from '../services/misc';
 import { ServiceSelector } from '../helpers/serviceSelector';
+import { MiscService } from '../services/misc';
+import { SourcePostTransformationService } from '../services/source/postTransformation';
 import { ControllerUtility } from './util';
 import logger from '../logger';
-import { SourcePostTransformationService } from '../services/source/postTransformation';
 
 export class SourceController {
   public static async sourceTransform(ctx: Context) {
-    logger.debug(
-      'Native(Source-Transform):: Request to transformer::',
-      JSON.stringify(ctx.request.body),
-    );
+    logger.debug('Native(Source-Transform):: Request to transformer::', ctx.request.body);
     const requestMetadata = MiscService.getRequestMetadata(ctx);
     const events = ctx.request.body as object[];
     const { version, source }: { version: string; source: string } = ctx.params;
@@ -34,10 +31,11 @@ export class SourceController {
       ctx.body = [resp];
     }
     ControllerUtility.postProcess(ctx);
-    logger.debug(
-      'Native(Source-Transform):: Response from transformer::',
-      JSON.stringify(ctx.body),
-    );
+    logger.debug('Native(Source-Transform):: Response from transformer::', {
+      srcResponse: ctx.body,
+      version,
+      source,
+    });
     return ctx;
   }
 }

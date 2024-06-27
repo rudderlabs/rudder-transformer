@@ -1,6 +1,7 @@
 /* eslint-disable */
 const _ = require('lodash');
 const get = require('get-value');
+const logger = require('../../../logger');
 const stats = require('../../../util/stats');
 const { handleHttpRequest } = require('../../../adapters/network');
 const {
@@ -26,7 +27,7 @@ const {
 const { JSON_MIME_TYPE, HTTP_STATUS_CODES } = require('../../util/constant');
 const { isObject } = require('../../util');
 const { removeUndefinedValues, getIntegrationsObj } = require('../../util');
-const { InstrumentationError } = require('@rudderstack/integrations-lib');
+const { InstrumentationError, isDefined } = require('@rudderstack/integrations-lib');
 
 const getEndpointFromConfig = (destination) => {
   // Init -- mostly for test cases
@@ -284,12 +285,17 @@ const BrazeDedupUtility = {
         return true;
       });
 
-    if (keys.length === 0) {
-      return null;
+    if (keys.length > 0) {
+      keys.forEach((key) => {
+        if (!_.isEqual(userData[key], storedUserData[key])) {
+          deduplicatedUserData[key] = userData[key];
+        }
+      });
     }
 
-    keys.forEach((key) => {
-      if (!_.isEqual(userData[key], storedUserData[key])) {
+    // add non billable attributes back to the deduplicated user object
+    BRAZE_NON_BILLABLE_ATTRIBUTES.forEach((key) => {
+      if (isDefined(userData[key])) {
         deduplicatedUserData[key] = userData[key];
       }
     });
@@ -304,13 +310,6 @@ const BrazeDedupUtility = {
     };
     const identifier = external_id || user_alias?.alias_name;
     store.set(identifier, { ...storedUserData, ...deduplicatedUserData });
-
-    // add non billable attributes back to the deduplicated user object
-    BRAZE_NON_BILLABLE_ATTRIBUTES.forEach((key) => {
-      if (isDefinedAndNotNull(userData[key])) {
-        deduplicatedUserData[key] = userData[key];
-      }
-    });
 
     return removeUndefinedValues(deduplicatedUserData);
   },
@@ -520,8 +519,18 @@ function setExternalId(payload, message) {
   return payload;
 }
 
-function setAliasObjectWithAnonId(payload, message) {
-  if (message.anonymousId) {
+function setAliasObject(payload, message) {
+  const integrationsObj = getIntegrationsObj(message, 'BRAZE');
+  if (
+    isDefinedAndNotNull(integrationsObj?.alias?.alias_name) &&
+    isDefinedAndNotNull(integrationsObj?.alias?.alias_label)
+  ) {
+    const { alias_name, alias_label } = integrationsObj.alias;
+    payload.user_alias = {
+      alias_name,
+      alias_label,
+    };
+  } else if (message.anonymousId) {
     payload.user_alias = {
       alias_name: message.anonymousId,
       alias_label: 'rudder_id',
@@ -538,7 +547,7 @@ function setExternalIdOrAliasObject(payload, message) {
 
   // eslint-disable-next-line no-underscore-dangle
   payload._update_existing_only = false;
-  return setAliasObjectWithAnonId(payload, message);
+  return setAliasObject(payload, message);
 }
 
 function addMandatoryPurchaseProperties(productId, price, currencyCode, quantity, timestamp) {
@@ -561,7 +570,8 @@ function getPurchaseObjs(message, config) {
         'Invalid Order Completed event: Properties object is missing in the message',
       );
     }
-    const { products, currency: currencyCode } = properties;
+    const { currency: currencyCode } = properties;
+    let { products } = properties;
     if (!products) {
       throw new InstrumentationError(
         'Invalid Order Completed event: Products array is missing in the message',
@@ -572,6 +582,7 @@ function getPurchaseObjs(message, config) {
       throw new InstrumentationError('Invalid Order Completed event: Products is not an array');
     }
 
+    products = products.filter((product) => isDefinedAndNotNull(product));
     if (products.length === 0) {
       throw new InstrumentationError('Invalid Order Completed event: Products array is empty');
     }
@@ -657,6 +668,44 @@ function getPurchaseObjs(message, config) {
   return purchaseObjs;
 }
 
+const collectStatsForAliasFailure = (brazeResponse, destinationId) => {
+  /**
+   * Braze Response for Alias failure
+   * {
+   * "aliases_processed": 0,
+   * "message": "success",
+   * "errors": [
+   *     {
+   *         "type": "'external_id' is required",
+   *         "input_array": "user_identifiers",
+   *         "index": 0
+   *     }
+   *   ]
+   * }
+   */
+
+  /**
+   * Braze Response for Alias success
+   * {
+   *   "aliases_processed": 1,
+   *   "message": "success"
+   *   }
+   */
+
+  // Should not happen but still checking for unhandled exceptions
+  if (!isDefinedAndNotNull(brazeResponse)) {
+    return;
+  }
+  const { aliases_processed: aliasesProcessed, errors } = brazeResponse;
+  if (aliasesProcessed === 0) {
+    stats.increment('braze_alias_failure_count', { destination_id: destinationId });
+  }
+};
+
+const collectStatsForAliasMissConfigurations = (destinationId) => {
+  stats.increment('braze_alias_missconfigured_count', { destination_id: destinationId });
+};
+
 module.exports = {
   BrazeDedupUtility,
   CustomAttributeOperationUtil,
@@ -667,6 +716,8 @@ module.exports = {
   getPurchaseObjs,
   setExternalIdOrAliasObject,
   setExternalId,
-  setAliasObjectWithAnonId,
+  setAliasObject,
   addMandatoryPurchaseProperties,
+  collectStatsForAliasFailure,
+  collectStatsForAliasMissConfigurations,
 };

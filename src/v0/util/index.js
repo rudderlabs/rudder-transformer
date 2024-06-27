@@ -24,6 +24,8 @@ const {
   OAuthSecretError,
   getErrorRespEvents,
 } = require('@rudderstack/integrations-lib');
+
+const { JsonTemplateEngine, PathType } = require('@rudderstack/json-template-engine');
 const logger = require('../../logger');
 const stats = require('../../util/stats');
 const { DestCanonicalNames, DestHandlerMap } = require('../../constants/destinationCanonicalNames');
@@ -56,6 +58,18 @@ const isNull = (x) => lodash.isNull(x);
 // ========================================================================
 // GENERIC UTLITY
 // ========================================================================
+
+const removeUndefinedAndNullRecurse = (obj) => {
+  // eslint-disable-next-line no-restricted-syntax
+  for (const key in obj) {
+    if (obj[key] === null || obj[key] === undefined) {
+      // eslint-disable-next-line no-param-reassign
+      delete obj[key];
+    } else if (typeof obj[key] === 'object') {
+      removeUndefinedAndNullRecurse(obj[key]);
+    }
+  }
+};
 
 const getEventTime = (message) => {
   try {
@@ -1328,12 +1342,19 @@ const generateExclusionList = (mappingConfig) =>
  */
 function extractCustomFields(message, payload, keys, exclusionFields) {
   const mappingKeys = [];
+  // Define reserved words
+  const reservedWords = ['__proto__', 'constructor', 'prototype'];
+
+  const isReservedWord = (key) => reservedWords.includes(key);
+
   if (Array.isArray(keys)) {
     keys.forEach((key) => {
       const messageContext = get(message, key);
       if (messageContext) {
         Object.keys(messageContext).forEach((k) => {
-          if (!exclusionFields.includes(k)) mappingKeys.push(k);
+          if (!exclusionFields.includes(k) && !isReservedWord(k)) {
+            mappingKeys.push(k);
+          }
         });
         mappingKeys.forEach((mappingKey) => {
           if (!(typeof messageContext[mappingKey] === 'undefined')) {
@@ -1344,7 +1365,9 @@ function extractCustomFields(message, payload, keys, exclusionFields) {
     });
   } else if (keys === 'root') {
     Object.keys(message).forEach((k) => {
-      if (!exclusionFields.includes(k)) mappingKeys.push(k);
+      if (!exclusionFields.includes(k) && !isReservedWord(k)) {
+        mappingKeys.push(k);
+      }
     });
     mappingKeys.forEach((mappingKey) => {
       if (!(typeof message[mappingKey] === 'undefined')) {
@@ -1419,13 +1442,18 @@ function getStringValueOfJSON(json) {
   return output;
 }
 
-const getMetadata = (metadata) => ({
+const getTrackingPlanMetadata = (metadata) => ({
+  trackingPlanId: metadata.trackingPlanId,
+  workspaceId: metadata.workspaceId,
+});
+
+const getMetadata = (metadata = {}) => ({
   sourceType: metadata.sourceType,
   destinationType: metadata.destinationType,
   k8_namespace: metadata.namespace,
 });
 
-const getTransformationMetadata = (metadata) => ({
+const getTransformationMetadata = (metadata = {}) => ({
   transformationId: metadata.transformationId,
   workspaceId: metadata.workspaceId,
 });
@@ -2220,6 +2248,9 @@ const validateEventAndLowerCaseConversion = (event, isMandatory, convertToLowerC
   return convertToLowerCase ? event.toString().toLowerCase() : event.toString();
 };
 
+const applyCustomMappings = (message, mappings) =>
+  JsonTemplateEngine.createAsSync(mappings, { defaultPathType: PathType.JSON }).evaluate(message);
+
 // ========================================================================
 // EXPORTS
 // ========================================================================
@@ -2228,6 +2259,7 @@ module.exports = {
   ErrorMessage,
   addExternalIdToTraits,
   adduserIdFromExternalId,
+  applyCustomMappings,
   base64Convertor,
   batchMultiplexedEvents,
   checkEmptyStringInarray,
@@ -2267,6 +2299,7 @@ module.exports = {
   getMappingConfig,
   getMetadata,
   getTransformationMetadata,
+  getTrackingPlanMetadata,
   getParsedIP,
   getStringValueOfJSON,
   getSuccessRespEvents,
@@ -2303,6 +2336,7 @@ module.exports = {
   removeUndefinedNullEmptyExclBoolInt,
   removeUndefinedNullValuesAndEmptyObjectArray,
   removeUndefinedValues,
+  removeUndefinedAndNullRecurse,
   returnArrayOfSubarrays,
   stripTrailingSlash,
   toTitleCase,

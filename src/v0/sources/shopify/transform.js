@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 const lodash = require('lodash');
 const get = require('get-value');
+const { RedisError } = require('@rudderstack/integrations-lib');
 const stats = require('../../../util/stats');
 const {
   getShopifyTopic,
@@ -12,10 +13,10 @@ const {
   getHashLineItems,
   getDataFromRedis,
 } = require('./util');
+const logger = require('../../../logger');
 const { RedisDB } = require('../../../util/redis/redisConnector');
 const { removeUndefinedAndNullValues, isDefinedAndNotNull } = require('../../util');
 const Message = require('../message');
-const logger = require('../../../logger');
 const { EventType } = require('../../../constants');
 const {
   INTEGERATION,
@@ -143,7 +144,7 @@ const processEvent = async (inputEvent, metricMetadata) => {
       break;
     case 'carts_update':
       if (useRedisDatabase) {
-        redisData = await getDataFromRedis(event.id || event.token);
+        redisData = await getDataFromRedis(event.id || event.token, metricMetadata);
         const isValidEvent = await checkAndUpdateCartItems(inputEvent, redisData, metricMetadata);
         if (!isValidEvent) {
           return NO_OPERATION_SUCCESS;
@@ -154,8 +155,9 @@ const processEvent = async (inputEvent, metricMetadata) => {
     default:
       if (!SUPPORTED_TRACK_EVENTS.includes(shopifyTopic)) {
         stats.increment('invalid_shopify_event', {
-          event: shopifyTopic,
-          ...metricMetadata,
+          writeKey: metricMetadata.writeKey,
+          source: metricMetadata.source,
+          shopifyTopic: metricMetadata.shopifyTopic,
         });
         return NO_OPERATION_SUCCESS;
       }
@@ -215,7 +217,8 @@ const processIdentifierEvent = async (event, metricMetadata) => {
       stats.increment('shopify_redis_calls', {
         type: 'set',
         field: 'itemsHash',
-        ...metricMetadata,
+        source: metricMetadata.source,
+        writeKey: metricMetadata.writeKey,
       });
       /* cart_token: {
            anonymousId: 'anon_id1',
@@ -236,25 +239,26 @@ const processIdentifierEvent = async (event, metricMetadata) => {
       stats.increment('shopify_redis_calls', {
         type: 'set',
         field,
-        ...metricMetadata,
+        source: metricMetadata.source,
+        writeKey: metricMetadata.writeKey,
       });
       await RedisDB.setVal(`${event.cartToken}`, value);
     } catch (e) {
-      logger.debug(`{{SHOPIFY::}} cartToken map set call Failed due redis error ${e}`);
+      logger.debug(`{{SHOPIFY::}} cartToken map set call Failed due redis error ${e}`, {
+        type: 'set',
+        source: metricMetadata.source,
+        writeKey: metricMetadata.writeKey,
+      });
       stats.increment('shopify_redis_failures', {
         type: 'set',
-        ...metricMetadata,
+        source: metricMetadata.source,
+        writeKey: metricMetadata.writeKey,
       });
+      // returning 500 as status code in case of redis failure
+      throw new RedisError(`${e}`, 500);
     }
   }
-  const result = {
-    outputToSource: {
-      body: Buffer.from('OK').toString('base64'),
-      contentType: 'text/plain',
-    },
-    statusCode: 200,
-  };
-  return result;
+  return NO_OPERATION_SUCCESS;
 };
 const process = async (event) => {
   const metricMetadata = {

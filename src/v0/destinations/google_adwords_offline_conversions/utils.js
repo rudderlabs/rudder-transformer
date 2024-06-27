@@ -1,4 +1,5 @@
 const sha256 = require('sha256');
+const SqlString = require('sqlstring');
 const { get, set, cloneDeep } = require('lodash');
 const {
   AbortedError,
@@ -17,6 +18,7 @@ const {
   isDefinedAndNotNull,
   getAuthErrCategoryFromStCode,
   getAccessToken,
+  getIntegrationsObj,
 } = require('../../util');
 const {
   SEARCH_STREAM,
@@ -26,10 +28,15 @@ const {
   trackAddStoreAddressConversionsMapping,
   trackClickConversionsMapping,
   CLICK_CONVERSION,
+  trackCallConversionsMapping,
+  consentConfigMap,
+  destType,
 } = require('./config');
 const { processAxiosResponse } = require('../../../adapters/utils/networkUtils');
 const Cache = require('../../util/cache');
 const helper = require('./helper');
+const { finaliseConsent } = require('../../util/googleUtils');
+const logger = require('../../../logger');
 
 const conversionActionIdCache = new Cache(CONVERSION_ACTION_ID_CACHE_TTL);
 
@@ -50,31 +57,53 @@ const validateDestinationConfig = ({ Config }) => {
  * @param {*} headers
  * @returns
  */
-const getConversionActionId = async (headers, params) => {
+const getConversionActionId = async ({ headers, params, metadata }) => {
   const conversionActionIdKey = sha256(params.event + params.customerId).toString();
   return conversionActionIdCache.get(conversionActionIdKey, async () => {
+    const queryString = SqlString.format(
+      'SELECT conversion_action.id FROM conversion_action WHERE conversion_action.name = ?',
+      [params.event],
+    );
     const data = {
-      query: `SELECT conversion_action.id FROM conversion_action WHERE conversion_action.name = '${params.event}'`,
+      query: queryString,
     };
     const endpoint = SEARCH_STREAM.replace(':customerId', params.customerId);
     const requestOptions = {
       headers,
     };
+    logger.requestLog(`[${destType.toUpperCase()}] get conversion action id request`, {
+      metadata,
+      requestDetails: {
+        url: endpoint,
+        body: data,
+        method: 'post',
+      },
+    });
     let searchStreamResponse = await httpPOST(endpoint, data, requestOptions, {
       destType: 'google_adwords_offline_conversions',
       feature: 'transformation',
       endpointPath: `/googleAds:searchStream`,
       requestMethod: 'POST',
       module: 'dataDelivery',
+      metadata,
     });
     searchStreamResponse = processAxiosResponse(searchStreamResponse);
-    if (!isHttpStatusSuccess(searchStreamResponse.status)) {
+    const { response, status, headers: responseHeaders } = searchStreamResponse;
+    logger.responseLog(`[${destType.toUpperCase()}] get conversion action id response`, {
+      metadata,
+      responseDetails: {
+        response,
+        status,
+        headers: responseHeaders,
+      },
+    });
+    if (!isHttpStatusSuccess(status)) {
       throw new AbortedError(
         `[Google Ads Offline Conversions]:: ${JSON.stringify(
-          searchStreamResponse.response,
+          response,
         )} during google_ads_offline_conversions response transformation`,
-        searchStreamResponse.status,
-        searchStreamResponse.response,
+        status,
+        response,
         getAuthErrCategoryFromStCode(get(searchStreamResponse, 'status')),
       );
     }
@@ -131,17 +160,17 @@ const buildAndGetAddress = (message, hashUserIdentifier) => {
   const address = constructPayload(message, trackAddStoreAddressConversionsMapping);
   if (address.hashed_last_name) {
     address.hashed_last_name = hashUserIdentifier
-      ? sha256(address.hashed_last_name).toString()
+      ? sha256(address.hashed_last_name.trim()).toString()
       : address.hashed_last_name;
   }
   if (address.hashed_first_name) {
     address.hashed_first_name = hashUserIdentifier
-      ? sha256(address.hashed_first_name).toString()
+      ? sha256(address.hashed_first_name.trim()).toString()
       : address.hashed_first_name;
   }
   if (address.hashed_street_address) {
     address.hashed_street_address = hashUserIdentifier
-      ? sha256(address.hashed_street_address).toString()
+      ? sha256(address.hashed_street_address.trim()).toString()
       : address.hashed_street_address;
   }
   return Object.keys(address).length > 0 ? address : null;
@@ -216,6 +245,17 @@ function getExisitingUserIdentifier(userIdentifierInfo, defaultUserIdentifier) {
   return result;
 }
 
+const getCallConversionPayload = (message, Config, eventLevelConsentsData) => {
+  const payload = constructPayload(message, trackCallConversionsMapping);
+  // here conversions[0] should be present because there are some mandatory properties mapped in the mapping json.
+  payload.conversions[0].consent = finaliseConsent(
+    consentConfigMap,
+    eventLevelConsentsData,
+    Config,
+  );
+  return payload;
+};
+
 /**
  * This Function create the add conversion payload
  * and returns the payload
@@ -249,8 +289,10 @@ const getAddConversionPayload = (message, Config) => {
   const phone = getFieldValueFromMessage(message, 'phone');
 
   const userIdentifierInfo = {
-    email: hashUserIdentifier && isDefinedAndNotNull(email) ? sha256(email).toString() : email,
-    phone: hashUserIdentifier && isDefinedAndNotNull(phone) ? sha256(phone).toString() : phone,
+    email:
+      hashUserIdentifier && isDefinedAndNotNull(email) ? sha256(email.trim()).toString() : email,
+    phone:
+      hashUserIdentifier && isDefinedAndNotNull(phone) ? sha256(phone.trim()).toString() : phone,
     address: buildAndGetAddress(message, hashUserIdentifier),
   };
 
@@ -272,6 +314,10 @@ const getAddConversionPayload = (message, Config) => {
       set(payload, 'operations.create.userIdentifiers[0]', {});
     }
   }
+  // add consent support for store conversions. Note: No event level consent supported.
+  const consentObject = finaliseConsent(consentConfigMap, {}, Config);
+  // create property should be present because there are some mandatory properties mapped in the mapping json.
+  set(payload, 'operations.create.consent', consentObject);
   return payload;
 };
 
@@ -287,7 +333,12 @@ const getStoreConversionPayload = (message, Config, event) => {
   return payload;
 };
 
-const getClickConversionPayloadAndEndpoint = (message, Config, filteredCustomerId) => {
+const getClickConversionPayloadAndEndpoint = (
+  message,
+  Config,
+  filteredCustomerId,
+  eventLevelConsent,
+) => {
   const email = getFieldValueFromMessage(message, 'emailOnly');
   const phone = getFieldValueFromMessage(message, 'phone');
   const { hashUserIdentifier, defaultUserIdentifier, UserIdentifierSource, conversionEnvironment } =
@@ -334,8 +385,10 @@ const getClickConversionPayloadAndEndpoint = (message, Config, filteredCustomerI
   // Ref - https://developers.google.com/google-ads/api/rest/reference/rest/v11/customers/uploadClickConversions#ClickConversion
 
   const userIdentifierInfo = {
-    email: hashUserIdentifier && isDefinedAndNotNull(email) ? sha256(email).toString() : email,
-    phone: hashUserIdentifier && isDefinedAndNotNull(phone) ? sha256(phone).toString() : phone,
+    email:
+      hashUserIdentifier && isDefinedAndNotNull(email) ? sha256(email.trim()).toString() : email,
+    phone:
+      hashUserIdentifier && isDefinedAndNotNull(phone) ? sha256(phone.trim()).toString() : phone,
   };
 
   const keyName = getExisitingUserIdentifier(userIdentifierInfo, defaultUserIdentifier);
@@ -359,7 +412,17 @@ const getClickConversionPayloadAndEndpoint = (message, Config, filteredCustomerI
   if (!properties.conversionEnvironment && conversionEnvironment !== 'none') {
     set(payload, 'conversions[0].conversionEnvironment', conversionEnvironment);
   }
+
+  // add consent support for click conversions
+  const consentObject = finaliseConsent(consentConfigMap, eventLevelConsent, Config);
+  // here conversions[0] is expected to be present there are some mandatory properties mapped in the mapping json.
+  set(payload, 'conversions[0].consent', consentObject);
   return { payload, endpoint };
+};
+
+const getConsentsDataFromIntegrationObj = (message) => {
+  const integrationObj = getIntegrationsObj(message, 'GOOGLE_ADWORDS_OFFLINE_CONVERSIONS') || {};
+  return integrationObj?.consents || {};
 };
 
 module.exports = {
@@ -372,4 +435,6 @@ module.exports = {
   buildAndGetAddress,
   getClickConversionPayloadAndEndpoint,
   getExisitingUserIdentifier,
+  getConsentsDataFromIntegrationObj,
+  getCallConversionPayload,
 };

@@ -43,6 +43,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4.1.1
         with:
+          ref: ${{ github.event.pull_request.head.sha }}
           fetch-depth: 1
 
       - name: Setup Docker Buildx
@@ -94,6 +95,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4.1.1
         with:
+          ref: ${{ github.event.pull_request.head.sha }}
           fetch-depth: 1
 
       - name: Setup Docker Buildx

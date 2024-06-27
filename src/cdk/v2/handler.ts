@@ -1,9 +1,9 @@
 import {
-  WorkflowEngine,
-  WorkflowEngineFactory,
-  TemplateType,
   ExecutionBindings,
   StepOutput,
+  TemplateType,
+  WorkflowEngine,
+  WorkflowEngineFactory,
 } from '@rudderstack/workflow-engine';
 import { FixMe } from '../../util/types';
 
@@ -11,11 +11,13 @@ import tags from '../../v0/util/tags';
 
 import {
   getErrorInfo,
+  getPlatformBindingsPaths,
   getRootPathForDestination,
   getWorkflowPath,
-  getPlatformBindingsPaths,
   isCdkV2Destination,
 } from './utils';
+
+import logger from '../../logger';
 
 const defTags = {
   [tags.TAG_NAMES.IMPLEMENTATION]: tags.IMPLEMENTATIONS.CDK_V2,
@@ -86,6 +88,8 @@ export async function processCdkV2Workflow(
   bindings: Record<string, FixMe> = {},
 ) {
   try {
+    logger.debug(`Processing cdkV2 workflow`, { destType });
+
     const workflowEngine = await getCachedWorkflowEngine(destType, feature, bindings);
     return await executeWorkflow(workflowEngine, parsedEvent, requestMetadata);
   } catch (error) {

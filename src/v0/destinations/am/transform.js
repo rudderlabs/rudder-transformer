@@ -336,7 +336,6 @@ const getDefaultResponseData = (message, rawPayload, evType, groupInfo) => {
   return { groups, rawPayload };
 };
 
-
 const getResponseData = (evType, destination, rawPayload, message, groupInfo) => {
   let groups;
 
@@ -525,6 +524,9 @@ const responseBuilderSimple = (
     ...initialRef,
     ...campaign,
   };
+
+  // we are updating the payload with skip_user_properties_sync
+  AMUtils.updateWithSkipAttribute(message, rawPayload);
 
   const respData = getResponseData(evType, destination, rawPayload, message, groupInfo);
   const { groups, rawPayload: updatedRawPayload } = respData;

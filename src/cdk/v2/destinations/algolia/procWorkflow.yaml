@@ -5,7 +5,10 @@ bindings:
   - path: ../../../../v0/destinations/algolia/config
   - name: removeUndefinedAndNullValues
     path: ../../../../v0/util
+  - name: isDefinedAndNotNull
+    path: ../../../../v0/util
   - path: ../../bindings/jsontemplate
+  - path: '@rudderstack/integrations-lib'
 
 steps:
   - name: validateInput
@@ -24,6 +27,7 @@ steps:
       let eventTypeMap = $.eventTypeMapping(.destination.Config);
       let event = .message.event.trim().toLowerCase();
       let eventType = .message.properties.eventType ?? eventTypeMap[event];
+      let eventSubType = .message.properties.eventSubtype && eventType === 'conversion' && (.message.properties.eventSubtype in $.ALLOWED_EVENT_SUBTYPES) ? .message.properties.eventSubtype;
       $.assert(eventType, "eventType is mandatory for track call");
       let payload = .message.().({
         index: .properties.index,
@@ -32,11 +36,27 @@ steps:
         filters: .properties.filters,
         objectIDs: .properties.objectIds,
         positions: .properties.positions,
+        value: $.isDefinedAndNotNull(.properties.currency) ? .properties.value,
+        currency: .properties.currency,
         userToken: {{{{$.getGenericPaths("userId", "||")}}}},
         eventName: event,
-        eventType: eventType
+        eventType: eventType,
+        eventSubtype: eventSubType
       });
       $.context.payload = $.genericpayloadValidator(payload);
+
+  - name: prepareObjectDataBlock
+    condition: $.context.payload.eventType === "conversion" && $.isDefinedAndNotNull(^.message.properties.products) && Array.isArray(^.message.properties.products)
+    description: |
+      Populate list of objectData
+    template: |
+      const products = ^.message.properties.products
+      products.($.removeUndefinedAndNullValues({
+          "queryID" :  $.isDefinedAndNotNull(.queryID) ? String(.queryID) : null,
+          "price": $.isDefinedAndNotNull(.price) && $.isDefinedAndNotNull(^.message.properties.currency) ? String(.price) : null,
+          "quantity": $.isDefinedAndNotNull(.quantity)? Number(.quantity) : null,
+          "discount": $.isDefinedAndNotNull(.discount) ? String(.discount) : null
+      }))[]
 
   - name: populateProductsData
     condition: |
@@ -55,11 +75,14 @@ steps:
             const products = .message.properties.products;
             const objectIDs = ~r products.objectId;
             $.context.payload.objectIDs = Array.isArray(objectIDs) ? objectIDs[:20]:$.context.payload.objectIDs;
+            $.context.payload.objectData = $.outputs.prepareObjectDataBlock
+            $.validatePayload($.context.payload)
 
   - name: validateDestPayload
     template: |
       const filters = $.context.payload.filters;
       const objectIDs = $.context.payload.objectIDs;
+      const objectData = $.context.payload.objectData;
       $.assert(!(filters && objectIDs), "event can't have both objectIds and filters at the same time.");
       $.assert(filters.length || objectIDs.length, "Either filters or objectIds is required and must be non empty.");
 

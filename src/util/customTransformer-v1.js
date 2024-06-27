@@ -58,10 +58,16 @@ async function userTransformHandlerV1(
     return { transformedEvents: events };
   }
 
+  const credentialsMap = {};
+  (events[0]?.credentials || []).forEach((cred) => {
+    credentialsMap[cred.key] = cred.value;
+  });
   const isolatevmFactory = await getFactory(
     userTransformation.code,
     libraryVersionIds,
-    userTransformation.versionId,
+    userTransformation.id,
+    userTransformation.workspaceId,
+    credentialsMap,
     userTransformation.secrets || {},
     testMode,
   );
@@ -93,6 +99,7 @@ async function userTransformHandlerV1(
     };
     stats.counter('user_transform_function_input_events', events.length, tags);
     stats.timing('user_transform_function_latency', invokeTime, tags);
+    stats.timingSummary('user_transform_function_latency_summary', invokeTime, tags);
   }
 
   return { transformedEvents, logs };

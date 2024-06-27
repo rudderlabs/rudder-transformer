@@ -1,27 +1,27 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable class-methods-use-this */
-import groupBy from 'lodash/groupBy';
 import { TransformationError } from '@rudderstack/integrations-lib';
+import groupBy from 'lodash/groupBy';
 import { processCdkV2Workflow } from '../../cdk/v2/handler';
 import { DestinationService } from '../../interfaces/DestinationService';
 import {
   DeliveryV0Response,
+  DeliveryV1Response,
   ErrorDetailer,
   MetaTransferObject,
+  ProcessorTransformationOutput,
   ProcessorTransformationRequest,
   ProcessorTransformationResponse,
+  ProxyRequest,
   RouterTransformationRequestData,
   RouterTransformationResponse,
-  ProcessorTransformationOutput,
   UserDeletionRequest,
   UserDeletionResponse,
-  ProxyRequest,
-  DeliveryV1Response,
 } from '../../types/index';
-import tags from '../../v0/util/tags';
-import { DestinationPostTransformationService } from './postTransformation';
 import stats from '../../util/stats';
 import { CatchErr } from '../../util/types';
+import tags from '../../v0/util/tags';
+import { DestinationPostTransformationService } from './postTransformation';
 
 export class CDKV2DestinationService implements DestinationService {
   public init() {}
@@ -59,6 +59,13 @@ export class CDKV2DestinationService implements DestinationService {
     // TODO: Change the promise type
     const respList: ProcessorTransformationResponse[][] = await Promise.all(
       events.map(async (event) => {
+        const metaTo = this.getTags(
+          destinationType,
+          event.metadata.destinationId,
+          event.metadata.workspaceId,
+          tags.FEATURES.PROCESSOR,
+        );
+        metaTo.metadata = event.metadata;
         try {
           const transformedPayloads:
             | ProcessorTransformationOutput
@@ -68,7 +75,6 @@ export class CDKV2DestinationService implements DestinationService {
             tags.FEATURES.PROCESSOR,
             requestMetadata,
           );
-
           stats.increment('event_transform_success', {
             destType: destinationType,
             module: tags.MODULES.DESTINATION,
@@ -85,13 +91,6 @@ export class CDKV2DestinationService implements DestinationService {
             undefined,
           );
         } catch (error: CatchErr) {
-          const metaTo = this.getTags(
-            destinationType,
-            event.metadata.destinationId,
-            event.metadata.workspaceId,
-            tags.FEATURES.PROCESSOR,
-          );
-          metaTo.metadata = event.metadata;
           const erroredResp =
             DestinationPostTransformationService.handleProcessorTransformFailureEvents(
               error,

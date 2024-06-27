@@ -1,20 +1,15 @@
 import { Context } from 'koa';
-import logger from '../logger';
-import { UserDeletionRequest, UserDeletionResponse } from '../types';
 import { ServiceSelector } from '../helpers/serviceSelector';
-import tags from '../v0/util/tags';
-import stats from '../util/stats';
 import { DestinationPostTransformationService } from '../services/destination/postTransformation';
+import { UserDeletionRequest, UserDeletionResponse } from '../types';
+import tags from '../v0/util/tags';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { CatchErr } from '../util/types';
+import logger from '../logger';
 
 export class RegulationController {
   public static async deleteUsers(ctx: Context) {
-    logger.debug(
-      'Native(Process-Transform):: Requst to transformer::',
-      JSON.stringify(ctx.request.body),
-    );
-    const startTime = new Date();
+    logger.debug('Native(Process-Transform):: Requst to transformer::', ctx.request.body);
     let rudderDestInfo: any;
     try {
       const rudderDestInfoHeader = ctx.get('x-rudder-dest-info');
@@ -50,10 +45,6 @@ export class RegulationController {
       ctx.body = [{ error, statusCode: 500 }] as UserDeletionResponse[]; // TODO: responses array length is always 1. Is that okay?
       ctx.status = 500;
     }
-    stats.timing('dest_transform_request_latency', startTime, {
-      feature: tags.FEATURES.USER_DELETION,
-      version: 'v0',
-    });
     return ctx;
   }
 }

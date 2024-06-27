@@ -5,7 +5,8 @@
       "user_id": "rudder01",
       "id": "shopify_test_get_items_fail",
       "query_parameters": {
-        "topic": ["carts_update"]
+        "topic": ["carts_update"],
+        "writeKey": ["wr"]
       },
       "token": "shopify_test_get_items_fail",
       "email": "test@rudderstack.com",
@@ -64,11 +65,8 @@
       }
     },
     "output": {
-      "outputToSource": {
-        "body": "T0s=",
-        "contentType": "text/plain"
-      },
-      "statusCode": 200
+      "error": "Error: Error setting value in Redis due Error: Connection is Closed",
+      "statusCode": 500
     }
   },
   {
@@ -115,7 +113,8 @@
     "input": {
       "cart_token": "shopifyGetAnonymousId",
       "query_parameters": {
-        "topic": ["checkouts_delete"]
+        "topic": ["checkouts_delete"],
+        "writeKey": ["wr"]
       },
       "line_items": [],
       "note": null,
@@ -154,7 +153,8 @@
     "input": {
       "id": "shopify_test3",
       "query_parameters": {
-        "topic": ["carts_update"]
+        "topic": ["carts_update"],
+        "writeKey": ["wr"]
       },
       "token": "shopify_test3",
       "line_items": [],
@@ -252,7 +252,8 @@
       "user_id": "rudder01",
       "id": "shopify_test_cart",
       "query_parameters": {
-        "topic": ["carts_update"]
+        "topic": ["carts_update"],
+        "writeKey": ["wr"]
       },
       "token": "shopify_test_cart",
       "email": "test@rudderstack.com",
@@ -1256,7 +1257,8 @@
     "input": {
       "id": "shopify_test4",
       "query_parameters": {
-        "topic": ["carts_update"]
+        "topic": ["carts_update"],
+        "writeKey": ["wr"]
       },
       "token": "shopify_test4",
       "line_items": [],

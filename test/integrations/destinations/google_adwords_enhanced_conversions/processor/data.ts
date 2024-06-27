@@ -1255,7 +1255,7 @@ export const data = [
                 },
                 traits: {
                   phone: '912382193',
-                  firstName: 'John',
+                  firstName: ' John',
                   lastName: 'Gomes',
                   city: 'London',
                   state: 'UK',

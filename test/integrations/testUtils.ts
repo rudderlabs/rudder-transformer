@@ -1,4 +1,3 @@
-import { z } from 'zod';
 import { globSync } from 'glob';
 import { join } from 'path';
 import { MockHttpCallsData, TestCaseData } from './testTypes';
@@ -6,24 +5,18 @@ import MockAdapter from 'axios-mock-adapter';
 import isMatch from 'lodash/isMatch';
 import { OptionValues } from 'commander';
 import { removeUndefinedAndNullValues } from '@rudderstack/integrations-lib';
-import {
-  Destination,
-  Metadata,
-  ProxyMetdata,
-  ProxyV0Request,
-  ProxyV1Request,
-} from '../../src/types';
+import tags from '../../src/v0/util/tags';
+import { existsSync, mkdirSync, writeFileSync } from 'fs';
+import { Destination, ProxyMetdata, ProxyV0Request, ProxyV1Request } from '../../src/types';
 import {
   DeliveryV0ResponseSchema,
   DeliveryV0ResponseSchemaForOauth,
   DeliveryV1ResponseSchema,
   DeliveryV1ResponseSchemaForOauth,
   ProcessorTransformationResponseListSchema,
-  ProcessorTransformationResponseSchema,
   ProxyV0RequestSchema,
   ProxyV1RequestSchema,
   RouterTransformationResponseListSchema,
-  RouterTransformationResponseSchema,
 } from '../../src/types/zodTypes';
 
 const generateAlphanumericId = (size = 36) =>
@@ -104,6 +97,49 @@ export const overrideDestination = (destination: Destination, overrideConfigValu
   });
 };
 
+export const produceTestData = (testData: TestCaseData[], filterKeys = []) => {
+  const result: any = [];
+  testData.forEach((tcData) => {
+    let events;
+    try {
+      switch (tcData.feature) {
+        case tags.FEATURES.PROCESSOR:
+          events = tcData.input.request.body;
+          break;
+        case tags.FEATURES.BATCH:
+          events = tcData.input.request.body.input;
+          break;
+        case tags.FEATURES.ROUTER:
+          events = tcData.input.request.body.input;
+          break;
+      }
+    } catch (e) {
+      throw new Error(
+        `Error in producing test data for destination:${tcData.name}, id:${tcData.id}: ${e}`,
+      );
+    }
+
+    events.forEach((event) => {
+      const { message } = event;
+      // remove unwanted keys
+      filterKeys.forEach((key) => {
+        delete message[key];
+      });
+      result.push(message);
+    });
+  });
+
+  // write the data to a file
+
+  // create directory if not exists
+  const dir = join(__dirname, '../../temp');
+  if (!existsSync(dir)) {
+    mkdirSync(dir);
+  }
+  writeFileSync(join(__dirname, '../../temp/test_data.json'), JSON.stringify(result, null, 2));
+  console.log('Data generated successfully at temp/test_data.json');
+};
+
 export const generateIndentifyPayload: any = (parametersOverride: any) => {
   const payload = {
     type: 'identify',
@@ -180,6 +216,7 @@ export const generateTrackPayload: any = (parametersOverride: any) => {
       campaign: {},
       userAgent:
         'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0',
+      dataProcessingOptions: parametersOverride.context.dataProcessingOptions,
     }),
     rudderId: parametersOverride.rudderId || generateAlphanumericId(36),
     messageId: parametersOverride.messageId || generateAlphanumericId(36),
@@ -206,6 +243,9 @@ export const generateSimplifiedTrackPayload: any = (parametersOverride: any) => 
     context: removeUndefinedAndNullValues({
       externalId: parametersOverride.context.externalId,
       traits: parametersOverride.context.traits,
+      device: parametersOverride.context.device,
+      os: parametersOverride.context.os,
+      app: parametersOverride.context.app,
     }),
     anonymousId: parametersOverride.anonymousId || 'default-anonymousId',
     originalTimestamp: parametersOverride.originalTimestamp || '2021-01-03T17:02:53.193Z',
@@ -249,12 +289,14 @@ export const generatePageOrScreenPayload: any = (parametersOverride: any, eventT
       screen: {
         density: 2,
       },
+      page: parametersOverride.context.page,
       traits: parametersOverride.context.traits,
       externalId: parametersOverride.externalId,
       userAgent:
         'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36',
     }),
     event: parametersOverride.event,
+    name: parametersOverride.name,
     anonymousId: parametersOverride.anonymousId || 'default-anonymousId',
     properties: parametersOverride.properties,
     type: eventType || 'page',
@@ -274,6 +316,7 @@ export const generateSimplifiedPageOrScreenPayload: any = (
     userId: parametersOverride.userId || 'default-userId',
     type: eventType || 'page',
     event: parametersOverride.event,
+    name: parametersOverride.name,
     properties: parametersOverride.properties,
     integrations: parametersOverride.integrations,
     rudderId: parametersOverride.rudderId || generateAlphanumericId(36),
@@ -312,8 +355,9 @@ export const generateGroupPayload: any = (parametersOverride: any) => {
       screen: {
         density: 2,
       },
+      device: parametersOverride.context.device,
       traits: parametersOverride.context.traits,
-      externalId: parametersOverride.externalId,
+      externalId: parametersOverride.context.externalId,
     }),
     messageId: parametersOverride.messageId || generateAlphanumericId(36),
     session_id: parametersOverride.session_id || generateAlphanumericId(36),
@@ -446,7 +490,7 @@ export const generateProxyV1Payload = (
       workspaceId: 'default-workspaceId',
       sourceId: 'default-sourceId',
       secret: {
-        accessToken: 'default-accessToken',
+        accessToken: payloadParameters.accessToken || 'default-accessToken',
       },
       dontBatch: false,
     },

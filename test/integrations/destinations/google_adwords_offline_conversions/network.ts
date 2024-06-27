@@ -1,7 +1,7 @@
 export const networkCallsData = [
   {
     httpReq: {
-      url: 'https://googleads.googleapis.com/v14/customers/11122233331/offlineUserDataJobs:create',
+      url: 'https://googleads.googleapis.com/v16/customers/11122233331/offlineUserDataJobs:create',
       data: {
         job: {
           storeSalesMetadata: {
@@ -30,7 +30,7 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      url: 'https://googleads.googleapis.com/v14/customers/1112223333/googleAds:searchStream',
+      url: 'https://googleads.googleapis.com/v16/customers/1112223333/googleAds:searchStream',
       data: {
         query: `SELECT conversion_action.id FROM conversion_action WHERE conversion_action.name = 'Sign-up - click'`,
       },
@@ -63,7 +63,7 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      url: 'https://googleads.googleapis.com/v14/customers/11122233331/offlineUserDataJobs/OFFLINE_USER_DATA_JOB_ID_FOR_ADD_FAILURE:addOperations',
+      url: 'https://googleads.googleapis.com/v16/customers/11122233331/offlineUserDataJobs/OFFLINE_USER_DATA_JOB_ID_FOR_ADD_FAILURE:addOperations',
       data: {
         enable_partial_failure: false,
         enable_warnings: false,
@@ -108,7 +108,7 @@ export const networkCallsData = [
           status: 'INVALID_ARGUMENT',
           details: [
             {
-              '@type': 'type.googleapis.com/google.ads.googleads.v14.errors.GoogleAdsFailure',
+              '@type': 'type.googleapis.com/google.ads.googleads.v16.errors.GoogleAdsFailure',
               errors: [
                 {
                   errorCode: {
@@ -144,7 +144,7 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      url: 'https://googleads.googleapis.com/v14/customers/1112223333/offlineUserDataJobs:create',
+      url: 'https://googleads.googleapis.com/v16/customers/1112223333/offlineUserDataJobs:create',
       data: {
         job: {
           storeSalesMetadata: {
@@ -173,7 +173,7 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      url: 'https://googleads.googleapis.com/v14/customers/1112223333/offlineUserDataJobs/OFFLINE_USER_DATA_JOB_ID:addOperations',
+      url: 'https://googleads.googleapis.com/v16/customers/1112223333/offlineUserDataJobs/OFFLINE_USER_DATA_JOB_ID:addOperations',
       data: {
         enable_partial_failure: false,
         enable_warnings: false,
@@ -216,7 +216,7 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      url: 'https://googleads.googleapis.com/v14/customers/1112223333/offlineUserDataJobs/OFFLINE_USER_DATA_JOB_ID:run',
+      url: 'https://googleads.googleapis.com/v16/customers/1112223333/offlineUserDataJobs/OFFLINE_USER_DATA_JOB_ID:run',
       data: { validate_only: false },
       params: { destination: 'google_adwords_offline_conversion' },
       headers: {
@@ -235,8 +235,10 @@ export const networkCallsData = [
     },
   },
   {
+    description:
+      'Mock response from destination depicting a request with invalid authentication credentials',
     httpReq: {
-      url: 'https://googleads.googleapis.com/v14/customers/customerid/offlineUserDataJobs:create',
+      url: 'https://googleads.googleapis.com/v16/customers/customerid/offlineUserDataJobs:create',
       data: {
         job: {
           storeSalesMetadata: {
@@ -269,8 +271,43 @@ export const networkCallsData = [
     },
   },
   {
+    description:
+      'Mock response from destination depicting a request with invalid authentication scopes',
     httpReq: {
-      url: 'https://googleads.googleapis.com/v14/customers/1234567890/googleAds:searchStream',
+      url: 'https://googleads.googleapis.com/v16/customers/1234/offlineUserDataJobs:create',
+      data: {
+        job: {
+          storeSalesMetadata: {
+            custom_key: 'CUSTOM_KEY',
+            loyaltyFraction: 1,
+            transaction_upload_fraction: '1',
+          },
+          type: 'STORE_SALES_UPLOAD_FIRST_PARTY',
+        },
+      },
+      params: { destination: 'google_adwords_offline_conversion' },
+      headers: {
+        Authorization: 'Bearer abcd1234',
+        'Content-Type': 'application/json',
+        'developer-token': 'ijkl91011',
+        'login-customer-id': 'logincustomerid',
+      },
+      method: 'POST',
+    },
+    httpRes: {
+      status: 403,
+      data: {
+        error: {
+          code: 403,
+          message: 'Request had insufficient authentication scopes',
+          status: 'PERMISSION_DENIED',
+        },
+      },
+    },
+  },
+  {
+    httpReq: {
+      url: 'https://googleads.googleapis.com/v16/customers/1234567890/googleAds:searchStream',
       data: {
         query: `SELECT conversion_action.id FROM conversion_action WHERE conversion_action.name = 'Sign-up - click'`,
       },
@@ -298,7 +335,7 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      url: 'https://googleads.googleapis.com/v14/customers/1234567891/googleAds:searchStream',
+      url: 'https://googleads.googleapis.com/v16/customers/1234567891/googleAds:searchStream',
       data: {
         query:
           "SELECT conversion_action.id FROM conversion_action WHERE conversion_action.name = 'Sign-up - click'",
@@ -331,7 +368,7 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      url: 'https://googleads.googleapis.com/v14/customers/1234567891/googleAds:searchStream',
+      url: 'https://googleads.googleapis.com/v16/customers/1234567891/googleAds:searchStream',
       data: { query: 'SELECT conversion_custom_variable.name FROM conversion_custom_variable' },
       headers: {
         Authorization: 'Bearer abcd1234',
@@ -365,7 +402,7 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      url: 'https://googleads.googleapis.com/v14/customers/1234567891:uploadClickConversions',
+      url: 'https://googleads.googleapis.com/v16/customers/1234567891:uploadClickConversions',
       data: {
         conversions: [
           {
@@ -432,7 +469,7 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      url: 'https://googleads.googleapis.com/v14/customers/1234567891:uploadClickConversions',
+      url: 'https://googleads.googleapis.com/v16/customers/1234567891:uploadClickConversions',
       data: {
         conversions: [
           {
@@ -489,6 +526,123 @@ export const networkCallsData = [
         },
       ],
       status: 200,
+    },
+  },
+  {
+    httpReq: {
+      url: 'https://googleads.googleapis.com/v16/customers/1234567893/googleAds:searchStream',
+      data: {
+        query:
+          "SELECT conversion_action.id FROM conversion_action WHERE conversion_action.name = 'Sign-up - click'",
+      },
+      headers: {
+        Authorization: 'Bearer abcd1234',
+        'Content-Type': 'application/json',
+        'developer-token': 'ijkl91011',
+      },
+      method: 'POST',
+      params: { destination: 'google_adwords_offline_conversion' },
+    },
+    httpRes: {
+      data: [
+        {
+          results: [
+            {
+              conversionAction: {
+                resourceName: 'customers/1234567893/conversionActions/848898417',
+                id: '848898417',
+              },
+            },
+          ],
+          fieldMask: 'conversionAction.id',
+          requestId: 'dummyRequestId',
+        },
+      ],
+      status: 200,
+    },
+  },
+  {
+    httpReq: {
+      url: 'https://googleads.googleapis.com/v16/customers/1234567893:uploadClickConversions',
+      data: {
+        conversions: [
+          {
+            gbraid: 'gbraid',
+            wbraid: 'wbraid',
+            externalAttributionData: {
+              externalAttributionCredit: 10,
+              externalAttributionModel: 'externalAttributionModel',
+            },
+            cartData: {
+              merchantId: 9876,
+              feedCountryCode: 'feedCountryCode',
+              feedLanguageCode: 'feedLanguageCode',
+              localTransactionCost: 20,
+              items: [{ productId: '507f1f77bcf86cd799439011', quantity: 2, unitPrice: 50 }],
+            },
+            userIdentifiers: [
+              {
+                userIdentifierSource: 'FIRST_PARTY',
+                hashedPhoneNumber:
+                  '04e1dabb7c1348b72bfa87da179c9697c69af74827649266a5da8cdbb367abcd',
+              },
+            ],
+            conversionEnvironment: 'APP',
+            gclid: 'gclid',
+            conversionDateTime: '2022-01-01 12:32:45-08:00',
+            conversionValue: 1,
+            currencyCode: 'GBP',
+            orderId: 'PL-123QR',
+            conversionAction: 'customers/1234567893/conversionActions/848898417',
+          },
+        ],
+        partialFailure: true,
+      },
+      headers: {
+        Authorization: 'Bearer abcd1234',
+        'Content-Type': 'application/json',
+        'developer-token': 'ijkl91011',
+      },
+      method: 'POST',
+      params: { destination: 'google_adwords_offline_conversion' },
+    },
+    httpRes: {
+      status: 200,
+      data: {
+        partialFailureError: {
+          code: 3,
+          message:
+            'Customer is not allowlisted for accessing this feature., at conversions[0].conversion_environment',
+          details: [
+            {
+              '@type': 'type.googleapis.com/google.ads.googleads.v16.errors.GoogleAdsFailure',
+              errors: [
+                {
+                  errorCode: {
+                    notAllowlistedError: 'CUSTOMER_NOT_ALLOWLISTED_FOR_THIS_FEATURE',
+                  },
+                  message: 'Customer is not allowlisted for accessing this feature.',
+                  trigger: {
+                    int64Value: '2',
+                  },
+                  location: {
+                    fieldPathElements: [
+                      {
+                        fieldName: 'conversions',
+                        index: 0,
+                      },
+                      {
+                        fieldName: 'conversion_environment',
+                      },
+                    ],
+                  },
+                },
+              ],
+              requestId: 'dummyRequestId',
+            },
+          ],
+        },
+      },
     },
   },
 ];

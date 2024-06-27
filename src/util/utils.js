@@ -16,20 +16,21 @@ const LOCAL_HOST_NAMES_LIST = ['localhost', '127.0.0.1', '[::]', '[::1]'];
 const LOCALHOST_OCTET = '127.';
 const RECORD_TYPE_A = 4; // ipv4
 
-const staticLookup = (transformerVersionId) => async (hostname, _, cb) => {
+const staticLookup = (transformationTags) => async (hostname, _, cb) => {
   let ips;
   const resolveStartTime = new Date();
   try {
     ips = await resolver.resolve4(hostname);
   } catch (error) {
+    logger.error(`DNS Error Code: ${error.code} | Message : ${error.message}`);
     stats.timing('fetch_dns_resolve_time', resolveStartTime, {
-      transformerVersionId,
+      ...transformationTags,
       error: 'true',
     });
     cb(null, `unable to resolve IP address for ${hostname}`, RECORD_TYPE_A);
     return;
   }
-  stats.timing('fetch_dns_resolve_time', resolveStartTime, { transformerVersionId });
+  stats.timing('fetch_dns_resolve_time', resolveStartTime, transformationTags);
 
   if (ips.length === 0) {
     cb(null, `resolved empty list of IP address for ${hostname}`, RECORD_TYPE_A);
@@ -47,9 +48,9 @@ const staticLookup = (transformerVersionId) => async (hostname, _, cb) => {
   cb(null, ips[0], RECORD_TYPE_A);
 };
 
-const httpAgentWithDnsLookup = (scheme, transformerVersionId) => {
+const httpAgentWithDnsLookup = (scheme, transformationTags) => {
   const httpModule = scheme === 'http' ? http : https;
-  return new httpModule.Agent({ lookup: staticLookup(transformerVersionId) });
+  return new httpModule.Agent({ lookup: staticLookup(transformationTags) });
 };
 
 const blockLocalhostRequests = (url) => {
@@ -73,7 +74,7 @@ const blockInvalidProtocolRequests = (url) => {
   }
 };
 
-const fetchWithDnsWrapper = async (transformerVersionId, ...args) => {
+const fetchWithDnsWrapper = async (transformationTags, ...args) => {
   if (process.env.DNS_RESOLVE_FETCH_HOST !== 'true') {
     return await fetch(...args);
   }
@@ -87,7 +88,7 @@ const fetchWithDnsWrapper = async (transformerVersionId, ...args) => {
   const fetchOptions = args[1] || {};
   const schemeName = fetchURL.startsWith('https') ? 'https' : 'http';
   // assign resolved agent to fetch
-  fetchOptions.agent = httpAgentWithDnsLookup(schemeName, transformerVersionId);
+  fetchOptions.agent = httpAgentWithDnsLookup(schemeName, transformationTags);
   return await fetch(fetchURL, fetchOptions);
 };
 
@@ -169,7 +170,8 @@ function processInfo() {
 }
 
 function logProcessInfo() {
-  logger.error(`Process info: `, util.inspect(processInfo(), false, null, true));
+  const inspectedInfo = util.inspect(processInfo(), false, Infinity, true);
+  logger.error(`Process info: ${inspectedInfo}`);
 }
 
 // stringLiterals expected to be an array of strings. A line in trace should contain

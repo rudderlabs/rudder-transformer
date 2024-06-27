@@ -51,11 +51,11 @@
   },
   {
     "destKey": "conversionAdjustments[0].userIdentifiers[0].hashedEmail",
-    "sourceKeys": "email",
+    "sourceKeys": "emailOnly",
     "sourceFromGenericMap": true,
     "required": false,
     "metadata": {
-      "type": "hashToSha256"
+      "type": ["trim", "hashToSha256"]
     }
   },
   {
@@ -64,7 +64,7 @@
     "sourceFromGenericMap": true,
     "required": false,
     "metadata": {
-      "type": "hashToSha256"
+      "type": ["trim", "hashToSha256"]
     }
   },
   {
@@ -73,7 +73,7 @@
     "sourceFromGenericMap": true,
     "required": false,
     "metadata": {
-      "type": "hashToSha256"
+      "type": ["trim", "hashToSha256"]
     }
   },
   {
@@ -82,7 +82,7 @@
     "sourceFromGenericMap": true,
     "required": false,
     "metadata": {
-      "type": "hashToSha256"
+      "type": ["trim", "hashToSha256"]
     }
   },
   {
@@ -127,7 +127,7 @@
     "sourceKeys": ["context.traits.streetAddress", "context.traits.address"],
     "required": false,
     "metadata": {
-      "type": "hashToSha256"
+      "type": ["trim", "hashToSha256"]
     }
   }
 ]

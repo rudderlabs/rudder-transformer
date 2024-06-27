@@ -1,12 +1,10 @@
 [
   {
     "sourceKeys": "app.name",
-    "required": true,
     "destKey": "app.name"
   },
   {
     "sourceKeys": "app.version",
-    "required": true,
     "destKey": "app.version"
   },
   {
@@ -15,12 +13,16 @@
   },
   {
     "sourceKeys": "library.name",
-    "required": true,
-    "destKey": "library.name"
+    "destKey": "library.name",
+    "metadata": {
+      "defaultValue": "Rudderstack Ninetailed Destination"
+    }
   },
   {
     "sourceKeys": "library.version",
-    "required": true,
+    "metadata": {
+      "defaultValue": "1"
+    },
     "destKey": "library.version"
   },
   {
@@ -37,7 +39,9 @@
   },
   {
     "sourceKeys": "location",
-    "required": true,
+    "metadata": {
+      "defaultValue": {}
+    },
     "destKey": "location"
   }
 ]

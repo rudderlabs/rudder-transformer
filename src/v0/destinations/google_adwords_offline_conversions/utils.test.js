@@ -2,6 +2,8 @@ const {
   getClickConversionPayloadAndEndpoint,
   buildAndGetAddress,
   getExisitingUserIdentifier,
+  getConsentsDataFromIntegrationObj,
+  getCallConversionPayload,
 } = require('./utils');
 
 const getTestMessage = () => {
@@ -161,12 +163,16 @@ describe('getExisitingUserIdentifier util tests', () => {
 describe('getClickConversionPayloadAndEndpoint util tests', () => {
   it('getClickConversionPayloadAndEndpoint flow check when default field identifier is present', () => {
     let expectedOutput = {
-      endpoint: 'https://googleads.googleapis.com/v14/customers/9625812972:uploadClickConversions',
+      endpoint: 'https://googleads.googleapis.com/v16/customers/9625812972:uploadClickConversions',
       payload: {
         conversions: [
           {
             conversionDateTime: '2022-01-01 12:32:45-08:00',
             conversionEnvironment: 'WEB',
+            consent: {
+              adPersonalization: 'UNSPECIFIED',
+              adUserData: 'UNSPECIFIED',
+            },
             userIdentifiers: [
               {
                 hashedEmail: 'fa922cb41ff930664d4c9ced3c472ce7ecf29a0f8248b7018456e990177fff75',
@@ -187,11 +193,15 @@ describe('getClickConversionPayloadAndEndpoint util tests', () => {
     delete fittingPayload.traits.email;
     delete fittingPayload.properties.email;
     let expectedOutput = {
-      endpoint: 'https://googleads.googleapis.com/v14/customers/9625812972:uploadClickConversions',
+      endpoint: 'https://googleads.googleapis.com/v16/customers/9625812972:uploadClickConversions',
       payload: {
         conversions: [
           {
             conversionDateTime: '2022-01-01 12:32:45-08:00',
+            consent: {
+              adPersonalization: 'UNSPECIFIED',
+              adUserData: 'UNSPECIFIED',
+            },
             conversionEnvironment: 'WEB',
             userIdentifiers: [
               {
@@ -215,7 +225,7 @@ describe('getClickConversionPayloadAndEndpoint util tests', () => {
     delete fittingPayload.traits.phone;
     delete fittingPayload.properties.email;
     let expectedOutput = {
-      endpoint: 'https://googleads.googleapis.com/v14/customers/9625812972:uploadClickConversions',
+      endpoint: 'https://googleads.googleapis.com/v16/customers/9625812972:uploadClickConversions',
       payload: {
         conversions: [
           {
@@ -237,7 +247,7 @@ describe('getClickConversionPayloadAndEndpoint util tests', () => {
     ).toThrow('Either of email or phone is required for user identifier');
   });
 
-  it('getClickConversionPayloadAndEndpoint flow check when default field identifier is present and product list present', () => {
+  it('finaliseConsent', () => {
     let fittingPayload = { ...getTestMessage() };
     fittingPayload.properties.products = [
       {
@@ -251,13 +261,17 @@ describe('getClickConversionPayloadAndEndpoint util tests', () => {
       },
     ];
     let expectedOutput = {
-      endpoint: 'https://googleads.googleapis.com/v14/customers/9625812972:uploadClickConversions',
+      endpoint: 'https://googleads.googleapis.com/v16/customers/9625812972:uploadClickConversions',
       payload: {
         conversions: [
           {
             cartData: { items: [{ productId: 1234, quantity: 2, unitPrice: 10 }] },
             conversionDateTime: '2022-01-01 12:32:45-08:00',
             conversionEnvironment: 'WEB',
+            consent: {
+              adPersonalization: 'UNSPECIFIED',
+              adUserData: 'UNSPECIFIED',
+            },
             userIdentifiers: [
               {
                 hashedEmail: 'fa922cb41ff930664d4c9ced3c472ce7ecf29a0f8248b7018456e990177fff75',
@@ -271,5 +285,120 @@ describe('getClickConversionPayloadAndEndpoint util tests', () => {
     expect(getClickConversionPayloadAndEndpoint(fittingPayload, config, '9625812972')).toEqual(
       expectedOutput,
     );
+  });
+});
+
+describe('getConsentsDataFromIntegrationObj', () => {
+  it('should return an empty object when conversionType is "store"', () => {
+    const message = {};
+    const result = getConsentsDataFromIntegrationObj(message);
+    expect(result).toEqual({});
+  });
+  it('should return the consent object when conversion type is call', () => {
+    const message = {
+      integrations: {
+        GOOGLE_ADWORDS_OFFLINE_CONVERSIONS: {
+          consents: {
+            adUserData: 'GRANTED',
+            adPersonalization: 'DENIED',
+          },
+        },
+      },
+    };
+    const conversionType = 'call';
+    const result = getConsentsDataFromIntegrationObj(message, conversionType);
+    expect(result).toEqual({
+      adPersonalization: 'DENIED',
+      adUserData: 'GRANTED',
+    });
+  });
+});
+
+describe('getCallConversionPayload', () => {
+  it('should call conversion payload with consent object', () => {
+    const message = {
+      properties: {
+        callerId: '1234',
+        callStartDateTime: '2022-01-01 12:32:45-08:00',
+        conversionDateTime: '2022-01-01 12:32:45-08:00',
+      },
+    };
+    const result = getCallConversionPayload(
+      message,
+      {
+        userDataConsent: 'GRANTED',
+        personalizationConsent: 'DENIED',
+      },
+      {
+        adUserData: 'GRANTED',
+        adPersonalization: 'GRANTED',
+      },
+    );
+    expect(result).toEqual({
+      conversions: [
+        {
+          callStartDateTime: '2022-01-01 12:32:45-08:00',
+          callerId: '1234',
+          consent: {
+            adPersonalization: 'GRANTED',
+            adUserData: 'GRANTED',
+          },
+          conversionDateTime: '2022-01-01 12:32:45-08:00',
+        },
+      ],
+    });
+  });
+  it('should call conversion payload with consent object', () => {
+    const message = {
+      properties: {
+        callerId: '1234',
+        callStartDateTime: '2022-01-01 12:32:45-08:00',
+        conversionDateTime: '2022-01-01 12:32:45-08:00',
+      },
+    };
+    const result = getCallConversionPayload(
+      message,
+      {
+        userDataConsent: 'GRANTED',
+        personalizationConsent: 'DENIED',
+      },
+      {},
+    );
+    expect(result).toEqual({
+      conversions: [
+        {
+          callStartDateTime: '2022-01-01 12:32:45-08:00',
+          callerId: '1234',
+          consent: {
+            adPersonalization: 'DENIED',
+            adUserData: 'GRANTED',
+          },
+          conversionDateTime: '2022-01-01 12:32:45-08:00',
+        },
+      ],
+    });
+  });
+  it('should call conversion payload with consent object even if no consent input from UI as well as event level', () => {
+    const message = {
+      properties: {
+        callerId: '1234',
+        callStartDateTime: '2022-01-01 12:32:45-08:00',
+        conversionDateTime: '2022-01-01 12:32:45-08:00',
+      },
+    };
+    const result = getCallConversionPayload(message, {}, {});
+    expect(result).toEqual({
+      conversions: [
+        {
+          callStartDateTime: '2022-01-01 12:32:45-08:00',
+          callerId: '1234',
+          consent: {
+            adPersonalization: 'UNSPECIFIED',
+            adUserData: 'UNSPECIFIED',
+          },
+          conversionDateTime: '2022-01-01 12:32:45-08:00',
+        },
+      ],
+    });
   });
 });

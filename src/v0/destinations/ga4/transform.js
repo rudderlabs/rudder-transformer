@@ -1,25 +1,15 @@
 const get = require('get-value');
-const {
-  ConfigurationError,
-  InstrumentationError,
-  UnsupportedEventError,
-} = require('@rudderstack/integrations-lib');
+const { InstrumentationError, UnsupportedEventError } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const {
   isEmptyObject,
   constructPayload,
   getIntegrationsObj,
   isHybridModeEnabled,
-  isDefinedAndNotNull,
-  defaultRequestConfig,
-  defaultPostRequestConfig,
-  getDestinationExternalID,
   removeUndefinedAndNullValues,
 } = require('../../util');
 const {
-  ENDPOINT,
   mappingConfig,
-  DEBUG_ENDPOINT,
   ConfigCategory,
   trackCommonConfig,
   VALID_ITEM_OR_PRODUCT_PROPERTIES,
@@ -27,6 +17,7 @@ const {
 const {
   getItemsArray,
   validateEventName,
+  prepareUserConsents,
   removeInvalidParams,
   isReservedEventName,
   getGA4ExclusionList,
@@ -35,33 +26,12 @@ const {
   GA4_PARAMETERS_EXCLUSION,
   GA4_RESERVED_PARAMETER_EXCLUSION,
   removeReservedParameterPrefixNames,
+  basicValidation,
+  addClientDetails,
+  buildDeliverablePayload,
+  basicConfigvalidaiton,
 } = require('./utils');
-const { JSON_MIME_TYPE } = require('../../util/constant');
-
-/**
- * returns client_id
- * @param {*} message
- * @returns
- */
-const getGA4ClientId = (message, Config) => {
-  let clientId;
-
-  if (isHybridModeEnabled(Config)) {
-    const integrationsObj = getIntegrationsObj(message, 'ga4');
-    if (integrationsObj?.clientId) {
-      clientId = integrationsObj.clientId;
-    }
-  }
-
-  if (!clientId) {
-    clientId =
-      getDestinationExternalID(message, 'ga4ClientId') ||
-      get(message, 'anonymousId') ||
-      get(message, 'rudderId');
-  }
-
-  return clientId;
-};
+require('../../util/constant');
 
 /**
  * Returns response for GA4 destination
@@ -71,14 +41,9 @@ const getGA4ClientId = (message, Config) => {
  */
 const responseBuilder = (message, { Config }) => {
   let event = get(message, 'event');
-  if (!event) {
-    throw new InstrumentationError('Event name is required');
-  }
+  basicValidation(event);
 
   // trim and replace spaces with "_"
-  if (typeof event !== 'string') {
-    throw new InstrumentationError('track:: event name should be string');
-  }
   event = event.trim().replace(/\s+/g, '_');
 
   // reserved event names are not allowed
@@ -89,25 +54,7 @@ const responseBuilder = (message, { Config }) => {
   // get common top level rawPayload
   let rawPayload = constructPayload(message, trackCommonConfig);
 
-  switch (Config.typesOfClient) {
-    case 'gtag':
-      // gtag.js uses client_id
-      // GA4 uses it as an identifier to distinguish site visitors.
-      rawPayload.client_id = getGA4ClientId(message, Config);
-      if (!isDefinedAndNotNull(rawPayload.client_id)) {
-        throw new ConfigurationError('ga4ClientId, anonymousId or messageId must be provided');
-      }
-      break;
-    case 'firebase':
-      // firebase uses app_instance_id
-      rawPayload.app_instance_id = getDestinationExternalID(message, 'ga4AppInstanceId');
-      if (!isDefinedAndNotNull(rawPayload.app_instance_id)) {
-        throw new InstrumentationError('ga4AppInstanceId must be provided under externalId');
-      }
-      break;
-    default:
-      throw new ConfigurationError('Invalid type of client');
-  }
+  rawPayload = addClientDetails(rawPayload, message, Config);
 
   let payload = {};
   const eventConfig = ConfigCategory[`${event.toUpperCase()}`];
@@ -238,65 +185,30 @@ const responseBuilder = (message, { Config }) => {
     rawPayload.user_properties = userProperties;
   }
 
+  // Prepare GA4 consents
+  const consents = prepareUserConsents(message);
+  if (!isEmptyObject(consents)) {
+    rawPayload.consent = consents;
+  }
+
   payload = removeUndefinedAndNullValues(payload);
   rawPayload = { ...rawPayload, events: [payload] };
 
-  // build response
-  const response = defaultRequestConfig();
-  response.method = defaultPostRequestConfig.requestMethod;
-  // if debug_mode is true, we need to send the event to debug validation server
-  // ref: https://developers.google.com/analytics/devguides/collection/protocol/ga4/validating-events?client_type=firebase#sending_events_for_validation
-  if (Config.debugMode) {
-    response.endpoint = DEBUG_ENDPOINT;
-  } else {
-    response.endpoint = ENDPOINT;
-  }
-  response.headers = {
-    HOST: 'www.google-analytics.com',
-    'Content-Type': JSON_MIME_TYPE,
-  };
-  response.params = {
-    api_secret: Config.apiSecret,
-  };
-
-  // setting response params as per client type
-  switch (Config.typesOfClient) {
-    case 'gtag':
-      response.params.measurement_id = Config.measurementId;
-      break;
-    case 'firebase':
-      response.params.firebase_app_id = Config.firebaseAppId;
-      break;
-    default:
-      break;
-  }
-
-  response.body.JSON = rawPayload;
-  return response;
+  return buildDeliverablePayload(rawPayload, Config);
 };
 
 const process = (event) => {
   const { message, destination } = event;
   const { Config } = destination;
 
-  if (!Config.typesOfClient) {
-    throw new ConfigurationError('Client type not found. Aborting ');
-  }
-  if (!Config.apiSecret) {
-    throw new ConfigurationError('API Secret not found. Aborting ');
-  }
-  if (Config.typesOfClient === 'gtag' && !Config.measurementId) {
-    throw new ConfigurationError('measurementId must be provided. Aborting');
-  }
-  if (Config.typesOfClient === 'firebase' && !Config.firebaseAppId) {
-    throw new ConfigurationError('firebaseAppId must be provided. Aborting');
-  }
-
   if (!message.type) {
     throw new InstrumentationError('Message Type is not present. Aborting message.');
   }
 
+  basicConfigvalidaiton(Config);
+
   const messageType = message.type.toLowerCase();
+
   let response;
   switch (messageType) {
     case EventType.TRACK:

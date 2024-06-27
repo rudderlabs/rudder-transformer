@@ -66,7 +66,13 @@
     "REDDIT": true,
     "THE_TRADE_DESK": true,
     "INTERCOM": true,
-    "NINETAILED": true
+    "NINETAILED": true,
+    "KOALA": true,
+    "LINKEDIN_ADS": true,
+    "BLOOMREACH": true,
+    "MOVABLE_INK": true,
+    "EMARSYS": true,
+    "KODDI": true
   },
   "regulations": [
     "BRAZE",
@@ -80,8 +86,9 @@
     "ENGAGE",
     "CUSTIFY",
     "SENDGRID",
-    "SPRIG"
+    "SPRIG",
+    "EMARSYS"
   ],
   "supportSourceTransformV1": true,
-  "supportTransformerProxyV1": false
+  "supportTransformerProxyV1": true
 }

@@ -12,7 +12,6 @@ const {
   defaultPatchRequestConfig,
   getFieldValueFromMessage,
   getSuccessRespEvents,
-  addExternalIdToTraits,
   defaultBatchRequestConfig,
   removeUndefinedAndNullValues,
   getDestinationExternalID,
@@ -42,6 +41,7 @@ const {
   getEventAndPropertiesFromConfig,
   getHsSearchId,
   populateTraits,
+  addExternalIdToHSTraits,
 } = require('./util');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
@@ -110,11 +110,11 @@ const processIdentify = async (message, destination, propertyMap) => {
     GENERIC_TRUE_VALUES.includes(mappedToDestination.toString()) &&
     operation
   ) {
-    addExternalIdToTraits(message);
     if (!objectType) {
       throw new InstrumentationError('objectType not found');
     }
     if (operation === 'createObject') {
+      addExternalIdToHSTraits(message);
       endpoint = CRM_CREATE_UPDATE_ALL_OBJECTS.replace(':objectType', objectType);
     } else if (operation === 'updateObject' && getHsSearchId(message)) {
       const { hsSearchId } = getHsSearchId(message);

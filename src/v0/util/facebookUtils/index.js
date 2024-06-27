@@ -292,10 +292,17 @@ const formingFinalResponse = (
   throw new TransformationError('Payload could not be constructed');
 };
 
+const isHtmlFormat = (string) => {
+  const htmlTags = /<(?!(!doctype\s*html|html))\b[^>]*>[\S\s]*?<\/[^>]*>/i;
+  return htmlTags.test(string);
+};
+
 module.exports = {
+  isHtmlFormat,
   getContentType,
   getContentCategory,
   transformedPayloadData,
   formingFinalResponse,
   fetchUserData,
+  deduceFbcParam,
 };

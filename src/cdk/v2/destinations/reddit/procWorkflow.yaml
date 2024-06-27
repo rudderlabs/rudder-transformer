@@ -12,6 +12,7 @@ bindings:
     path: ../../../../v0/util/index
   - name: OAuthSecretError
     path: '@rudderstack/integrations-lib'
+  - path: ./utils
 
 steps:
   - name: validateInput
@@ -35,13 +36,13 @@ steps:
           const os = (.message.context.os.name)?  .message.context.os.name.toLowerCase(): null;
           const hashData = .destination.Config.hashData;
           let user = .message.().({
-            "email": hashData ? $.SHA256({{{{$.getGenericPaths("email")}}}}) : ({{{{$.getGenericPaths("email")}}}}),  
-            "external_id": hashData ? $.SHA256({{{{$.getGenericPaths("userId")}}}}) : ({{{{$.getGenericPaths("userId")}}}}),  
-            "ip_address": hashData? $.SHA256(.context.ip || .request_ip) : (.context.ip || .request_ip),
+            "email": hashData ? $.SHA256({{{{$.getGenericPaths("email")}}}}.trim()) : ({{{{$.getGenericPaths("email")}}}}),  
+            "external_id": hashData ? $.SHA256({{{{$.getGenericPaths("userId")}}}}.trim()) : ({{{{$.getGenericPaths("userId")}}}}),  
+            "ip_address": hashData? $.SHA256(.context.ip.trim() || .request_ip.trim()) : (.context.ip || .request_ip),
             "uuid": .properties.uuid,
             "user_agent": .context.userAgent,
-            "idfa": $.isAppleFamily(os)? (hashData? $.SHA256(.context.device.advertisingId): .context.device.advertisingId): null,
-            "aaid": os === "android" && .context.device ? (hashData? $.SHA256(.context.device.advertisingId): .context.device.advertisingId): null,
+            "idfa": $.isAppleFamily(os)? (hashData? $.SHA256(.context.device.advertisingId.trim()): .context.device.advertisingId): null,
+            "aaid": os === "android" && .context.device ? (hashData? $.SHA256(.context.device.advertisingId.trim()): .context.device.advertisingId): null,
             "opt_out": .properties.optOut,
             "screen_dimensions": {"width": .context.screen.width, "height":  .context.screen.height},
           });
@@ -56,14 +57,14 @@ steps:
           const event_type = (eventNames.length === 0 || eventNames[0]==="") ? ({"tracking_type": "Custom", "custom_event_name": event}): ({tracking_type: eventNames[0]});
 
       - name: customFields
-        condition: $.outputs.prepareTrackPayload.eventType.tracking_type === "Purchase"
+        condition: $.outputs.prepareTrackPayload.eventType.tracking_type in ['Purchase', 'AddToCart', 'ViewContent']
         reference: 'https://ads-api.reddit.com/docs/v2/#tag/Conversions/paths/~1api~1v2.0~1conversions~1events~1%7Baccount_id%7D/post'
         template: |
-          const revenue_in_cents = .message.properties.revenue ? Math.round(Number(.message.properties.revenue)*100)
+          const revenue_in_cents = $.populateRevenueField($.outputs.prepareTrackPayload.eventType.tracking_type,^.message.properties)
           const customFields = .message.().({
             "currency": .properties.currency,
             "value_decimal": revenue_in_cents ? revenue_in_cents / 100,
-            "item_count": (Array.isArray(.properties.products) && .properties.products.length) || (.properties.itemCount && Number(.properties.itemCount)),
+            "item_count": $.outputs.prepareTrackPayload.eventType.tracking_type === 'Purchase' ? (Array.isArray(.properties.products) && .properties.products.length) || (.properties.itemCount && Number(.properties.itemCount)) : null,
             "value": revenue_in_cents,
             "conversion_id": .properties.conversionId || .messageId,
           });

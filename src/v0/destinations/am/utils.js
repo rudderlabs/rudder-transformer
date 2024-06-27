@@ -11,6 +11,7 @@
 const get = require('get-value');
 const uaParser = require('@amplitude/ua-parser-js');
 const { InstrumentationError } = require('@rudderstack/integrations-lib');
+const set = require('set-value');
 const logger = require('../../../logger');
 const { isDefinedAndNotNull } = require('../../util');
 
@@ -110,6 +111,13 @@ const getUnsetObj = (message) => {
   return unsetObject;
 };
 
+const updateWithSkipAttribute = (message, payload) => {
+  const skipAttribute = get(message, 'integrations.Amplitude.skipUserPropertiesSync');
+  if (skipAttribute) {
+    set(payload, '$skip_user_properties_sync', true);
+  }
+};
+
 /**
  * Check for evType as in some cases, like when the page name is absent,
  * either the template depends only on the event.name or there is no template provided by user
@@ -122,7 +130,6 @@ const validateEventType = (evType) => {
     );
   }
 };
-
 
 const userPropertiesPostProcess = (rawPayload) => {
   const operationList = [
@@ -187,5 +194,6 @@ module.exports = {
   getEventId,
   getUnsetObj,
   validateEventType,
-  userPropertiesPostProcess
+  userPropertiesPostProcess,
+  updateWithSkipAttribute,
 };

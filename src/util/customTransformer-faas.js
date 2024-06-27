@@ -11,9 +11,10 @@ const {
 } = require('./openfaas');
 const { getLibraryCodeV1 } = require('./customTransforrmationsStore-v1');
 
+const HASH_SECRET = process.env.OPENFAAS_FN_HASH_SECRET || '';
 const libVersionIdsCache = new NodeCache();
 
-function generateFunctionName(userTransformation, libraryVersionIds, testMode) {
+function generateFunctionName(userTransformation, libraryVersionIds, testMode, hashSecret = '') {
   if (userTransformation.versionId === FAAS_AST_VID) return FAAS_AST_FN_NAME;
 
   if (testMode) {
@@ -21,10 +22,15 @@ function generateFunctionName(userTransformation, libraryVersionIds, testMode) {
     return funcName.substring(0, 63).toLowerCase();
   }
 
-  const ids = [userTransformation.workspaceId, userTransformation.versionId].concat(
+  let ids = [userTransformation.workspaceId, userTransformation.versionId].concat(
     (libraryVersionIds || []).sort(),
   );
 
+  if (hashSecret !== '') {
+    ids = ids.concat([hashSecret]);
+  }
+
+  // FIXME: Why the id's are sorted ?!
   const hash = crypto.createHash('md5').update(`${ids}`).digest('hex');
   return `fn-${userTransformation.workspaceId}-${hash}`.substring(0, 63).toLowerCase();
 }
@@ -85,12 +91,18 @@ async function setOpenFaasUserTransform(
   trMetadata = {},
 ) {
   const tags = {
-    transformerVersionId: userTransformation.versionId,
+    transformationId: userTransformation.id,
     identifier: 'openfaas',
     testMode,
   };
   const functionName =
-    pregeneratedFnName || generateFunctionName(userTransformation, libraryVersionIds, testMode);
+    pregeneratedFnName ||
+    generateFunctionName(
+      userTransformation,
+      libraryVersionIds,
+      testMode,
+      process.env.OPENFAAS_FN_HASH_SECRET,
+    );
   const setupTime = new Date();
 
   await setupFaasFunction(
@@ -130,7 +142,13 @@ async function runOpenFaasUserTransform(
 
   const trMetadata = events[0].metadata ? getTransformationMetadata(events[0].metadata) : {};
   // check and deploy faas function if not exists
-  const functionName = generateFunctionName(userTransformation, libraryVersionIds, testMode);
+  const functionName = generateFunctionName(
+    userTransformation,
+    libraryVersionIds,
+    testMode,
+    process.env.OPENFAAS_FN_HASH_SECRET,
+  );
+
   if (testMode) {
     await setOpenFaasUserTransform(
       userTransformation,

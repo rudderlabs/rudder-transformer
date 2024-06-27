@@ -2,7 +2,6 @@ const NodeCache = require('node-cache');
 const { fetchWithProxy } = require('./fetch');
 const logger = require('../logger');
 const { responseStatusHandler } = require('./utils');
-const stats = require('./stats');
 
 const myCache = new NodeCache({ stdTTL: 60 * 60 * 24 * 1 });
 
@@ -18,18 +17,14 @@ async function getTransformationCode(versionId) {
   if (transformation) return transformation;
   try {
     const url = `${getTransformationURL}?versionId=${versionId}`;
-    const startTime = new Date();
     const response = await fetchWithProxy(url);
 
     responseStatusHandler(response.status, 'Transformation', versionId, url);
-    stats.increment('get_transformation_code', { versionId, success: 'true' });
-    stats.timing('get_transformation_code_time', startTime, { versionId });
     const myJson = await response.json();
     myCache.set(versionId, myJson);
     return myJson;
   } catch (error) {
-    logger.error(error);
-    stats.increment('get_transformation_code', { versionId, success: 'false' });
+    logger.error(`Error fetching transformation code for versionId: ${versionId}`, error.message);
     throw error;
   }
 }

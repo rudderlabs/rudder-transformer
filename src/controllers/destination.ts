@@ -33,10 +33,10 @@ export class DestinationController {
     const integrationService = ServiceSelector.getDestinationService(events);
     try {
       integrationService.init();
-      events = DestinationPreTransformationService.preProcess(
+      events = (await DestinationPreTransformationService.preProcess(
         events,
         ctx,
-      ) as ProcessorTransformationRequest[];
+      )) as ProcessorTransformationRequest[];
       const timestampCorrectEvents = ControllerUtility.handleTimestampInEvents(events);
       events = DynamicConfigParser.process(
         timestampCorrectEvents,
@@ -102,7 +102,7 @@ export class DestinationController {
     const integrationService = ServiceSelector.getDestinationService(events);
     let resplist: RouterTransformationResponse[];
     try {
-      events = DestinationPreTransformationService.preProcess(events, ctx);
+      events = await DestinationPreTransformationService.preProcess(events, ctx);
       const timestampCorrectEvents = ControllerUtility.handleTimestampInEvents(events);
       events = DynamicConfigParser.process(timestampCorrectEvents);
       resplist = await integrationService.doRouterTransformation(
@@ -135,7 +135,7 @@ export class DestinationController {
     return ctx;
   }
 
-  public static batchProcess(ctx: Context) {
+  public static async batchProcess(ctx: Context) {
     logger.debug('Native(Process-Transform-Batch):: Requst to transformer::', ctx.request.body);
     const requestMetadata = MiscService.getRequestMetadata(ctx);
     const routerRequest = ctx.request.body as RouterTransformationRequest;
@@ -143,7 +143,7 @@ export class DestinationController {
     let events = routerRequest.input;
     const integrationService = ServiceSelector.getDestinationService(events);
     try {
-      events = DestinationPreTransformationService.preProcess(events, ctx);
+      events = await DestinationPreTransformationService.preProcess(events, ctx);
       const timestampCorrectEvents = ControllerUtility.handleTimestampInEvents(events);
       const resplist = integrationService.doBatchTransformation(
         timestampCorrectEvents,

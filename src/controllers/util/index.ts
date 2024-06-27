@@ -185,7 +185,7 @@ return eventMessage.context["externalId"];
       // get the fields from the vdm
       fields = eventTypeName == 'track' ? eventMessage.properties : eventMessage.traits;
 
-      const { identifierType, destinationExternalId } = getDestinationExternalIDInfoForRetl();
+      const { identifierType, destinationExternalId } = getDestinationExternalIDInfoForRetl(eventMessage, destName);
 
       if (identifierType && destinationExternalId) {
         fields[identifierType] = destinationExternalId;

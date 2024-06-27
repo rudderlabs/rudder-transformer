@@ -1,5 +1,5 @@
 {
-  "contacts": [
+  "identify": [
     {
       "destKey": "email",
       "sourceKeys": ["traits.email", "context.traits.email", "properties.email"],

@@ -101,4 +101,14 @@ export class ControllerUtility {
       return { ...event, message: newMsg };
     });
   }
+  public static transformToRecordEvent (events: Array<ProcessorTransformationRequest | RouterTransformationRequestData>) {
+   // is events[0].destination.Name present in feature.json
+   // if true then process this methid else return
+    events.forEach((event) => {
+  // type of event
+  // create fields from destination config
+  // then create the record events
+    });
+  }
+  // return the events
 }

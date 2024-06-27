@@ -105,6 +105,8 @@ export class DestinationController {
       events = DestinationPreTransformationService.preProcess(events, ctx);
       const timestampCorrectEvents = ControllerUtility.handleTimestampInEvents(events);
       events = DynamicConfigParser.process(timestampCorrectEvents);
+      // this is where events should be translated from any type to record event. 
+     events =  ControllerUtility.transformToRecordEvent(events);
       resplist = await integrationService.doRouterTransformation(
         events,
         destination,

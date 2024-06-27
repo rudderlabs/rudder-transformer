@@ -1,0 +1,8 @@
+{
+  "contacts" : [
+    {
+      "source" : ["rudderstackspecificfields"],
+      "destination" : ["onedestinatationspecificfield"]
+    }
+  ]
+}

@@ -85,6 +85,7 @@ export class ServiceSelector {
   public static getDestinationService(
     events: ProcessorTransformationRequest[] | RouterTransformationRequestData[],
   ): DestinationService {
+    // if agnostic destination update here
     const destinationDefinition = events[0]?.destination?.DestinationDefinition;
     const destinationDefinitionConfig = destinationDefinition?.Config;
     const primaryService = this.getPrimaryDestinationService(events);

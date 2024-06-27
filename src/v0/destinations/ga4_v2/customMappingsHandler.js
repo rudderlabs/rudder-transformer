@@ -41,7 +41,7 @@ const findGA4Events = (eventsMapping, event) => {
 const handleCustomMappings = (message, Config) => {
   const { eventsMapping } = Config;
 
-  let rsEvent = '';
+  let rsEvent = '';x
   if (message.type.toString().toLowerCase() === 'track') {
     rsEvent = get(message, 'event');
     basicValidation(rsEvent);

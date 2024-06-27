@@ -169,17 +169,20 @@ return "insert"
     const isVdmEnabled = eventMessage.context["mappedToDestination"]
     const eventTypeName = eventMessage.type
     if (isVdmEnabled) {
-      // get the fields from the vdm
       let fields: any = {};
+      // get the fields from the vdm
      fields = eventTypeName == "track" ? eventMessage.properties : eventMessage.traits
+   
     const {identifierType, destinationExternalId} = getDestinationExternalIDInfoForRetl()
 
     if(identifierType && destinationExternalId){
       fields[identifierType] = destinationExternalId 
     }
+    return fields
+  }
     // get the fields from the agnostic config
     return ControllerUtility.translateFromAgnosticConfig(eventTypeName, destName, eventMessage)
-  }
+  
 }
   public static translateFromAgnosticConfig(eventTypeName: string, destName: string, eventMessage: RudderMessage){
     const configPath = path.join(__dirname, `src/v0/destinations/${destName}/agnosticConfig.json`);

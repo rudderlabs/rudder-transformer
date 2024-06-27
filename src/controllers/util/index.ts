@@ -18,14 +18,14 @@ import { event } from '../../warehouse/config/WHExtractEventTableConfig';
 import { getDestinationExternalIDInfoForRetl } from '../../v0/util';
 
 type RECORD_EVENT = {
-  TYPE: 'record';
-  ACTION: string;
-  FIELDS: object;
-  CHANNEL: string;
-  CONTEXT: object;
-  RECORDID: string;
-  RUDDERID: string;
-  MESSAGEID: string;
+  type: 'record';
+  action: string;
+  fields: object;
+  channel: string;
+  context: object;
+  recordid: string;
+  rudderid: string;
+  messageid: string;
 };
 
 export class ControllerUtility {
@@ -131,24 +131,37 @@ export class ControllerUtility {
       const eventMessage = { ...event.message } as RudderMessage;
       const fields = ControllerUtility.getFieldFromDestConfig(eventMessage, destName);
       const action: string = ControllerUtility.getActionForRecordEvent(eventMessage);
+     
       if (!eventMessage.context['mappedToDestination'] && eventMessage.context['externalId']) {
-        fields['lookupId'] = eventMessage.context['externalId'];
+        eventMessage.context['lookupId'] = eventMessage.context['externalId'];
         // delete externalId from context
         delete eventMessage.context['externalId'];
+        const externalId = ControllerUtility.createExternalId(eventMessage, destName);
+        eventMessage.context['externalId'] = externalId;
       }
       const translatedRecord: RECORD_EVENT = {
-        TYPE: 'record',
-        ACTION: action,
-        FIELDS: fields,
-        CHANNEL: eventMessage.channel,
-        CONTEXT: eventMessage.context,
-        RECORDID: eventMessage.messageId,
-        RUDDERID: eventMessage.messageId,
-        MESSAGEID: eventMessage.messageId,
+        type: 'record',
+        action: action,
+        fields: fields,
+        channel: eventMessage.channel,
+        context: eventMessage.context,
+        recordid: eventMessage.messageId,
+        rudderid: eventMessage.messageId,
+        messageid: eventMessage.messageId,
       };
       event.message = translatedRecord;
     });
     return events;
+  }
+  public static createExternalId(eventMessage: RudderMessage, destName: string) {
+    const type = eventMessage.type;
+    if (!eventMessage.context["externalId"]) {
+      const externalId = [{
+        "type": `${destName}-${type}`,
+      }]
+return externalId;
+    }
+return eventMessage.context["externalId"];
   }
   public static getActionForRecordEvent(eventMessage: RudderMessage): string {
     const type = eventMessage.type;
@@ -187,7 +200,7 @@ export class ControllerUtility {
     destName: string,
     eventMessage: RudderMessage,
   ) {
-    const configPath = `/Users/sudippaul/workspace/rudder-transformer/src/v0/destinations/${destName}/agnotstic.json`;
+    const configPath = `/Users/ruchiramoitra/Desktop/RudderWorkspace/rudder-transformer/src/v0/destinations/${destName}/agnotstic.json`;
     const agnosticConfig = JSON.parse(fs.readFileSync(configPath, 'utf8'));
 
     if (!agnosticConfig[eventTypeName]) {

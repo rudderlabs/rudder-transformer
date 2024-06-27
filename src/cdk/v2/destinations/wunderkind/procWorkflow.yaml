@@ -10,6 +10,8 @@ bindings:
     path: ../../../../v0/util
   - name: removeUndefinedAndNullValues
     path: ../../../../v0/util
+  - name: CommonUtils
+    path: ../../../../util/common
 
 steps:
   - name: checkIfProcessed
@@ -20,7 +22,7 @@ steps:
 
   - name: messageType
     template: |
-      $.context.messageType = .message.type.toLowerCase();  
+      $.context.messageType = .message.type.toLowerCase();
 
   - name: validateInput
     template: |
@@ -29,8 +31,38 @@ steps:
       $.assert(messageType in {{$.EventType.([.TRACK])}}, "message type " + messageType + " is not supported");
       $.assertConfig(.destination.Config.accountID, "Account ID is not present. Aborting");
       $.assertConfig(.destination.Config.instanceID, "Instance ID is not present. Aborting");
+      $.assertConfig(.destination.Config.apiKey, "API Key is not present. Aborting");
+
+  - name: buildAccountPayload
+    template: |
+      {
+          account_id: .destination.Config.accountID,
+          account_settings: {
+              instance_id: .destination.Config.instanceID,
+              key: .destination.Config.apiKey
+          }
+      }
+
+  - name: buildPayload
+    template: |
+      const integrationObj = $.getIntegrationsObj(.message, "wunderkind")
+      const event = {
+        ...integrationObj.extraEventProperties,
+        attributes: .message.properties
+      }
+
+      const payload = {
+        account: $.outputs.buildAccountPayload,
+        ...integrationObj.lambdaRootLevelProperties,
+        user_attributes: .message.().(
+          {{{{$.getGenericPaths("traits")}}}}
+        ),
+        events: $.CommonUtils.toArray(event)
+      }
+
   - name: buildResponseForProcessTransformation
     template: |
-       {
-        payload: JSON.stringify(.message.properties),
-       }
+
+      {
+        payload: JSON.stringify($.outputs.buildPayload),
+      }

@@ -48,14 +48,14 @@ export const processSingleAgnosticEvent = (message) => {
   let operation;
   const { action, fields } = message;
   const { objectType } = getDestinationExternalIDInfoForRetl(message, 'HS');
-  if (action === 'insert' && objectType === 'Identify') {
+  if (action === 'insert' && objectType === 'identify') {
     endPoint = 'https://api.hubapi.com/crm/v3/objects/contacts/batch/create';
     tempPayload = {
       properties: fields,
     };
     operation = 'create';
   }
-  if (action === 'update' && objectType === 'Identify') {
+  if (action === 'update' && objectType === 'identify') {
     endPoint = 'https://api.hubapi.com/crm/v3/objects/contacts/batch/update';
     tempPayload = [
       {

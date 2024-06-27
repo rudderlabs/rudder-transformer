@@ -131,11 +131,13 @@ export class ControllerUtility {
       const eventMessage = { ...event.message } as RudderMessage;
       const fields = ControllerUtility.getFieldFromDestConfig(eventMessage, destName);
       const action: string = ControllerUtility.getActionForRecordEvent(eventMessage);
-     
-      if (!eventMessage.context['mappedToDestination'] && eventMessage.context['externalId']) {
-        eventMessage.context['lookupId'] = eventMessage.context['externalId'];
-        // delete externalId from context
-        delete eventMessage.context['externalId'];
+
+      if (!eventMessage.context['mappedToDestination']) {
+        if (eventMessage.context['externalId']) {
+          eventMessage.context['lookupId'] = eventMessage.context['externalId'];
+          // delete externalId from context
+          delete eventMessage.context['externalId'];
+        }
         const externalId = ControllerUtility.createExternalId(eventMessage, destName);
         eventMessage.context['externalId'] = externalId;
       }
@@ -155,13 +157,15 @@ export class ControllerUtility {
   }
   public static createExternalId(eventMessage: RudderMessage, destName: string) {
     const type = eventMessage.type;
-    if (!eventMessage.context["externalId"]) {
-      const externalId = [{
-        "type": `${destName}-${type}`,
-      }]
-return externalId;
+    if (!eventMessage.context['externalId']) {
+      const externalId = [
+        {
+          type: `${destName}-${type}`,
+        },
+      ];
+      return externalId;
     }
-return eventMessage.context["externalId"];
+    return eventMessage.context['externalId'];
   }
   public static getActionForRecordEvent(eventMessage: RudderMessage): string {
     const type = eventMessage.type;
@@ -185,7 +189,10 @@ return eventMessage.context["externalId"];
       // get the fields from the vdm
       fields = eventTypeName == 'track' ? eventMessage.properties : eventMessage.traits;
 
-      const { identifierType, destinationExternalId } = getDestinationExternalIDInfoForRetl(eventMessage, destName);
+      const { identifierType, destinationExternalId } = getDestinationExternalIDInfoForRetl(
+        eventMessage,
+        destName,
+      );
 
       if (identifierType && destinationExternalId) {
         fields[identifierType] = destinationExternalId;
@@ -200,7 +207,7 @@ return eventMessage.context["externalId"];
     destName: string,
     eventMessage: RudderMessage,
   ) {
-    const configPath = `/Users/ruchiramoitra/Desktop/RudderWorkspace/rudder-transformer/src/v0/destinations/${destName}/agnotstic.json`;
+    const configPath = `/Users/sudippaul/workspace/rudder-transformer/src/v0/destinations/hs/agnotstic.json`;
     const agnosticConfig = JSON.parse(fs.readFileSync(configPath, 'utf8'));
 
     if (!agnosticConfig[eventTypeName]) {

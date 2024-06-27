@@ -1,6 +1,6 @@
 const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const get = require('get-value');
-// const feature = require('../../../features.json');
+const feature = require('../../../features.json');
 
 const { EventType } = require('../../../constants');
 const { handleRtTfSingleEventError, getDestinationExternalIDInfoForRetl } = require('../../util');
@@ -19,7 +19,7 @@ const {
   validateDestinationConfig,
 } = require('./util');
 const { batchEvents2 } = require('./utilv2');
-const { processAgnosticEvent } = require('./HSTransform-v3');
+const { processSingleAgnosticEvent } = require('./HSTransform-v3');
 
 const processSingleMessage = async (message, destination, propertyMap) => {
   if (!message.type) {
@@ -75,7 +75,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
   const errorRespList = [];
   let batchedResponseList = [];
   let receivedResponse;
-  if (process.env.AGNOSTIC_DEST === true) {
+  if (feature.agnosticDestinations.HS === true) {
     // new part
     const tempInputs = inputs;
     // using the first destination config for transforming the batch
@@ -83,7 +83,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
     await Promise.all(
       tempInputs.map(async (input) => {
         try {
-          const compositePayload = await processAgnosticEvent(input.message, destination);
+          const compositePayload = await processSingleAgnosticEvent(input.message, destination);
 
           receivedResponse = Array.isArray(compositePayload)
             ? compositePayload
@@ -91,7 +91,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
 
           // received response can be in array format [{}, {}, {}, ..., {}]
           // if multiple response is being returned
-          compositePayload.forEach((element) => {
+          receivedResponse.forEach((element) => {
             successRespList.push({
               message: element,
               metadata: input.metadata,

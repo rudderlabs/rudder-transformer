@@ -72,7 +72,7 @@ const processIdentify = async (message, destination, propertyMap) => {
   const { Config } = destination;
   let traits = getFieldValueFromMessage(message, 'traits');
   const mappedToDestination = get(message, MappedToDestinationKey);
-  const operation = get(message, 'context.hubspotOperation');
+  const operation = get(message, 'context.hubspotOperation'); // to get from action field
   const externalIdObj = getDestinationExternalIDObjectForRetl(message, 'HS');
   const { objectType } = getDestinationExternalIDInfoForRetl(message, 'HS');
   // build response

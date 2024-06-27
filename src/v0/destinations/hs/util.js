@@ -812,7 +812,7 @@ const populateTraits = async (propertyMap, traits, destination) => {
     // fetch HS properties
     propertyToTypeMap = await getProperties(destination);
   }
-
+  // TODO : avoid these checks for now
   const keys = Object.keys(populatedTraits);
   keys.forEach((key) => {
     const value = populatedTraits[key];

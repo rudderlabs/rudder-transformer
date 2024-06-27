@@ -209,14 +209,19 @@ export class ControllerUtility {
   ) {
     const configPath = `/Users/sudippaul/workspace/rudder-transformer/src/v0/destinations/hs/agnotstic.json`;
     const agnosticConfig = JSON.parse(fs.readFileSync(configPath, 'utf8'));
-
-    if (!agnosticConfig[eventTypeName]) {
-      throw new Error(`object ${eventTypeName} not found in agnostic config`);
+    let object
+  if (getDestinationExternalIDInfoForRetl(eventMessage, destName).objectType) {
+object = getDestinationExternalIDInfoForRetl(eventMessage, destName).objectType
+  } else {
+    object = eventTypeName
+  }
+    if (!agnosticConfig[object]) {
+      throw new Error(`object not found in agnostic config`);
     }
 
     const mappedEvent: any = {};
 
-    agnosticConfig[eventTypeName].forEach((fieldMapping) => {
+    agnosticConfig[object].forEach((fieldMapping) => {
       for (const sourceKey of fieldMapping.sourceKeys) {
         const value = ControllerUtility.getNestedValue(eventMessage, sourceKey);
         if (value !== undefined) {

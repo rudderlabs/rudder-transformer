@@ -17,6 +17,7 @@ const {
   getProperties,
   validateDestinationConfig,
 } = require('./util');
+const { batchEvents2 } = require('./utilv2');
 const { processAgnosticEvent } = require('./HSTransform-v3');
 
 const processSingleMessage = async (message, destination, propertyMap) => {
@@ -69,26 +70,27 @@ const process = async (event) => {
 // we are batching by default at routerTransform
 // eslint-disable-next-line consistent-return
 const processRouterDest = async (inputs, reqMetadata) => {
-  if (feature.agnosticDestinations.HS === true) {
+  const successRespList = [];
+  const errorRespList = [];
+  let batchedResponseList = [];
+  let receivedResponse;
+  if (process.env.AGNOSTIC_DEST === true) {
     // new part
     const tempInputs = inputs;
-
-    const successRespList = [];
-    const errorRespList = [];
     // using the first destination config for transforming the batch
     const { destination } = tempInputs[0];
     await Promise.all(
       tempInputs.map(async (input) => {
         try {
-          let receivedResponse = await processAgnosticEvent(input.message, destination);
+          const compositePayload = await processAgnosticEvent(input.message, destination);
 
-          receivedResponse = Array.isArray(receivedResponse)
-            ? receivedResponse
-            : [receivedResponse];
+          receivedResponse = Array.isArray(compositePayload)
+            ? compositePayload
+            : [compositePayload];
 
           // received response can be in array format [{}, {}, {}, ..., {}]
           // if multiple response is being returned
-          receivedResponse.forEach((element) => {
+          compositePayload.forEach((element) => {
             successRespList.push({
               message: element,
               metadata: input.metadata,
@@ -101,11 +103,9 @@ const processRouterDest = async (inputs, reqMetadata) => {
         }
       }),
     );
+    batchedResponseList = batchEvents2(successRespList);
   } else {
     let tempInputs = inputs;
-
-    const successRespList = [];
-    const errorRespList = [];
     // using the first destination config for transforming the batch
     const { destination } = tempInputs[0];
     let propertyMap;
@@ -148,11 +148,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
             });
           } else {
             // event is not transformed
-            let receivedResponse = await processSingleMessage(
-              input.message,
-              destination,
-              propertyMap,
-            );
+            receivedResponse = await processSingleMessage(input.message, destination, propertyMap);
 
             receivedResponse = Array.isArray(receivedResponse)
               ? receivedResponse
@@ -174,9 +170,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
         }
       }),
     );
-
     // batch implementation
-    let batchedResponseList = [];
     if (successRespList.length > 0) {
       if (destination.Config.apiVersion === API_VERSION.v3) {
         batchedResponseList = batchEvents(successRespList);
@@ -184,8 +178,8 @@ const processRouterDest = async (inputs, reqMetadata) => {
         batchedResponseList = legacyBatchEvents(successRespList);
       }
     }
-    return [...batchedResponseList, ...errorRespList];
   }
+  return [...batchedResponseList, ...errorRespList];
 };
 
 module.exports = { process, processRouterDest };

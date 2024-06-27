@@ -1,3 +1,28 @@
+const {
+  BATCH_IDENTIFY_CRM_CREATE_NEW_CONTACT,
+  BATCH_IDENTIFY_CRM_UPDATE_CONTACT,
+  TRACK_CRM_ENDPOINT,
+  BATCH_CREATE_CUSTOM_OBJECTS,
+  BATCH_UPDATE_CUSTOM_OBJECTS
+} = require('./config')
+const endpointMapping = {
+  'identify': {
+    'insert': BATCH_IDENTIFY_CRM_CREATE_NEW_CONTACT,
+    'update': BATCH_IDENTIFY_CRM_UPDATE_CONTACT
+  },
+  'contacts': {
+    'insert': BATCH_IDENTIFY_CRM_CREATE_NEW_CONTACT,
+    'update': BATCH_IDENTIFY_CRM_UPDATE_CONTACT
+  },
+  'track' : {
+    'insert' : TRACK_CRM_ENDPOINT,
+    'update' : TRACK_CRM_ENDPOINT
+  },
+  'others' : {
+    'insert' : BATCH_CREATE_CUSTOM_OBJECTS,
+    'update' : BATCH_UPDATE_CUSTOM_OBJECTS
+  }
+}
 const getDestinationExternalIDInfoForRetl = (message, destination) => {
   let externalIdArray = [];
   let destinationExternalId = null;
@@ -48,15 +73,20 @@ export const processSingleAgnosticEvent = (message) => {
   let operation;
   const { action, fields } = message;
   const { objectType } = getDestinationExternalIDInfoForRetl(message, 'HS');
-  if (action === 'insert' && objectType === 'identify') {
-    endPoint = 'https://api.hubapi.com/crm/v3/objects/contacts/batch/create';
+ 
+  if (objectType === 'identify' || objectType === 'contacts' || objectType === 'track') {
+    endPoint = endpointMapping[objectType][action]
+  } else {
+    endPoint = endpointMapping['others'][action].replace(':objectType', objectType)
+  }
+  if (action === 'insert') {
+    // endPoint = 'https://api.hubapi.com/crm/v3/objects/contacts/batch/create';
     tempPayload = {
       properties: fields,
     };
     operation = 'create';
-  }
-  if (action === 'update' && objectType === 'identify') {
-    endPoint = 'https://api.hubapi.com/crm/v3/objects/contacts/batch/update';
+  } else {
+    // endPoint = 'https://api.hubapi.com/crm/v3/objects/contacts/batch/update';
     tempPayload = {
       properties: fields,
       id: getDestinationLookUpId(message, 'HS-LOOKUP-ID'),

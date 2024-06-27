@@ -1,6 +1,7 @@
-const get = require('get-value');
-const feature = require('../../../features.json');
 const { InstrumentationError } = require('@rudderstack/integrations-lib');
+const get = require('get-value');
+// const feature = require('../../../features.json');
+
 const { EventType } = require('../../../constants');
 const { handleRtTfSingleEventError, getDestinationExternalIDInfoForRetl } = require('../../util');
 const { API_VERSION } = require('./config');

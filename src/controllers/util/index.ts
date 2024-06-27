@@ -14,6 +14,20 @@ import {
 import { getValueFromMessage } from '../../v0/util';
 import genericFieldMap from '../../v0/util/data/GenericFieldMapping.json';
 import { EventType, MappedToDestinationKey } from '../../constants';
+import { event } from '../../warehouse/config/WHExtractEventTableConfig';
+import {getDestinationExternalIDInfoForRetl} from '../../v0/util';
+import { remove } from 'jszip';
+
+type RECORD_EVENT = {
+  TYPE: "record";
+  ACTION: string;
+  FIELDS: object;
+  CHANNEL: string;
+  CONTEXT: object;
+  RECORDID: string;
+  RUDDERID: string;
+  MESSAGEID: string
+}
 
 export class ControllerUtility {
   private static sourceVersionMap: Map<string, string> = new Map();
@@ -104,11 +118,98 @@ export class ControllerUtility {
   public static transformToRecordEvent (events: Array<ProcessorTransformationRequest | RouterTransformationRequestData>) {
    // is events[0].destination.Name present in feature.json
    // if true then process this methid else return
+
+  const destName = events[0].destination.Name;
+   if (!events[0].destination.DestinationDefinition.Config.isDestinationAgnostic) {
+    return events
+   }
     events.forEach((event) => {
   // type of event
   // create fields from destination config
   // then create the record events
-    });
+  const eventMessage = { ...event.message } as RudderMessage;
+  const fields = ControllerUtility.getFieldFromDestConfig(eventMessage, destName)
+  const action: string = ControllerUtility.getActionForRecordEvent(eventMessage)
+  if (!eventMessage.context["mappedToDestination"] && eventMessage.context["externalId"]){
+    fields["lookupId"] = eventMessage.context["externalId"]
+    // delete externalId from context
+    delete eventMessage.context["externalId"]
   }
-  // return the events
+  const translatedRecord: RECORD_EVENT = {
+    TYPE: "record",
+    ACTION: action,
+    FIELDS: fields,
+    CHANNEL: eventMessage.channel,
+    CONTEXT: eventMessage.context,
+    RECORDID: eventMessage.messageId,
+    RUDDERID: eventMessage.messageId,
+    MESSAGEID: eventMessage.messageId
+
+  }
+  event.message = translatedRecord
+    });
+    return events
+  }
+  public static getActionForRecordEvent(eventMessage: RudderMessage) : string{
+  const type = eventMessage.type
+  if (type === EventType.RECORD){
+    return eventMessage.action || "insert"
+  }
+  if (!eventMessage.context["mappedToDestination"])
+  { 
+    if (eventMessage.type === EventType.IDENTIFY && eventMessage.context["externalId"]){
+return "update"
+  } 
 }
+return "insert"
+  }
+
+  public static getFieldFromDestConfig(eventMessage: RudderMessage, destName: string) {
+    // go to src/v0/destinations/destName/agnoisticConfig.json
+    const isVdmEnabled = eventMessage.context["mappedToDestination"]
+    const eventTypeName = eventMessage.type
+    if (isVdmEnabled) {
+      // get the fields from the vdm
+      let fields: any = {};
+     fields = eventTypeName == "track" ? eventMessage.properties : eventMessage.traits
+    const {identifierType, destinationExternalId} = getDestinationExternalIDInfoForRetl()
+
+    if(identifierType && destinationExternalId){
+      fields[identifierType] = destinationExternalId 
+    }
+    // get the fields from the agnostic config
+    return ControllerUtility.translateFromAgnosticConfig(eventTypeName, destName, eventMessage)
+  }
+}
+  public static translateFromAgnosticConfig(eventTypeName: string, destName: string, eventMessage: RudderMessage){
+    const configPath = path.join(__dirname, `src/v0/destinations/${destName}/agnosticConfig.json`);
+    const agnosticConfig = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+  
+    if (!agnosticConfig[eventTypeName]) {
+      throw new Error(`object ${eventTypeName} not found in agnostic config`);
+    }
+  
+    const mappedEvent: any = {};
+  
+    agnosticConfig[eventTypeName].forEach(fieldMapping => {
+      for (const sourceKey of fieldMapping.sourceKeys) {
+        const value = ControllerUtility.getNestedValue(eventMessage, sourceKey);
+        if (value !== undefined) {
+          mappedEvent[fieldMapping.destKey] = value;
+          break;
+        }
+      }
+  
+      if (fieldMapping.required && mappedEvent[fieldMapping.destKey] === undefined) {
+        throw new Error(`Required field ${fieldMapping.destKey} not found in event message`);
+      }
+    });
+  
+    return mappedEvent;
+  };
+  
+  public static getNestedValue(obj: any, keyPath: string) {
+    return keyPath.split('.').reduce((acc, key) => (acc ? acc[key] : undefined), obj);
+  };
+}
+

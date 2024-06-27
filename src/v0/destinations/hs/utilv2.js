@@ -1,15 +1,12 @@
-const { TransformationError } = require('@rudderstack/integrations-lib');
+// const { TransformationError } = require('@rudderstack/integrations-lib');
 // const { get } = require('lodash');
 const lodash = require('lodash');
-const {
-  defaultBatchRequestConfig,
-  defaultPostRequestConfig,
-  getSuccessRespEvents,
-} = require('../../util');
+const { defaultBatchRequestConfig, getSuccessRespEvents } = require('../../util');
 
 const {
   BATCH_IDENTIFY_CRM_CREATE_NEW_CONTACT,
   BATCH_IDENTIFY_CRM_UPDATE_CONTACT,
+  MAX_BATCH_SIZE,
 } = require('./config');
 
 const batchIdentify2 = (
@@ -18,52 +15,19 @@ const batchIdentify2 = (
   batchOperation,
   endPoint,
   destinationObject,
+  metadaDataArray,
 ) => {
   // list of chunks [ [..], [..] ]
   arrayChunksIdentify.forEach((chunk) => {
     const identifyResponseList = [];
-    const metadata = [];
-
-    // extracting message, destination value
-    // from the first event in a batch
-    // const { message, destination } = chunk[0];
 
     let batchEventResponse = defaultBatchRequestConfig();
+    batchEventResponse.batchedRequest.endpoint = endPoint;
 
-    if (batchOperation === 'createObject') {
-      batchEventResponse.batchedRequest.endpoint = endPoint;
-
-      // create operation
-      chunk.forEach((ev) => {
-        identifyResponseList.push({ ...ev.tempPayload });
-        metadata.push(ev.metadata);
-      });
-    } else if (batchOperation === 'updateObject') {
-      batchEventResponse.batchedRequest.endpoint = endPoint;
-      // update operation
-      chunk.forEach((ev) => {
-        identifyResponseList.push(ev);
-
-        metadata.push(ev.metadata);
-      });
-    } else if (batchOperation === 'createContacts') {
-      // create operation
-      chunk.forEach((ev) => {
-        // appending unique events
-        identifyResponseList.push(ev);
-        // }
-        metadata.push(ev.metadata);
-      });
-    } else if (batchOperation === 'updateContacts') {
-      // update operation
-      chunk.forEach((ev) => {
-        identifyResponseList.push(...ev.tempPayload);
-        // }
-        metadata.push(ev.metadata);
-      });
-    } else {
-      throw new TransformationError('Unknown hubspot operation', 400);
-    }
+    // create operation
+    chunk.forEach((ev) => {
+      identifyResponseList.push(ev);
+    });
 
     batchEventResponse.batchedRequest.body.JSON = {
       inputs: identifyResponseList,
@@ -78,11 +42,10 @@ const batchIdentify2 = (
     batchEventResponse.batchedRequest.headers = {
       Authorization: `Bearer ${destinationObject.Config.accessToken}`,
     };
-    // batchEventResponse.batchedRequest.params = message.params;
 
     batchEventResponse = {
       ...batchEventResponse,
-      metadata,
+      metadata: metadaDataArray,
       destinationObject,
     };
     batchedResponseList.push(
@@ -104,41 +67,32 @@ const batchEvents2 = (destEvents) => {
   // rETL specific chunk
   const createAllObjectsEventChunk = [];
   const updateAllObjectsEventChunk = [];
-  let maxBatchSize;
+  const metadataCreateArray = [];
+  const metadataUpdateArray = [];
+  let endPoint;
 
   destEvents.forEach((event) => {
     // handler for track call
     // track call does not have batch endpoint
     const { message, metadata, destination } = event;
     staticDestObject = destination;
+
     if (message.operation === 'create') {
       createAllObjectsEventChunk.push(message.tempPayload);
+      metadataCreateArray.push(metadata);
     } else if (message.operation === 'update') {
       updateAllObjectsEventChunk.push(message.tempPayload);
+      metadataUpdateArray.push(metadata);
     }
-
-    const batchedResponse = defaultBatchRequestConfig();
-    batchedResponse.batchedRequest.headers = {
-      Authorization: `Bearer ${destination.Config.accessToken}`,
-    };
-    batchedResponse.batchedRequest.endpoint = message.endPoint;
-    batchedResponse.batchedRequest.body = message.tempPayload;
-    batchedResponse.batchedRequest.method = defaultPostRequestConfig.requestMethod;
-    batchedResponse.metadata = [metadata];
-    batchedResponse.destination = destination;
-
-    trackResponseList.push(
-      getSuccessRespEvents(
-        batchedResponse.batchedRequest,
-        batchedResponse.metadata,
-        batchedResponse.destination,
-      ),
-    );
+    // eslint-disable-next-line unicorn/consistent-destructuring
+    endPoint = event?.message?.endPoint;
   });
 
-  const arrayChunksIdentifyCreateObjects = lodash.chunk(createAllObjectsEventChunk, maxBatchSize);
+  const arrayChunksIdentifyCreateObjects = lodash.chunk(createAllObjectsEventChunk, MAX_BATCH_SIZE);
+  const arrayChunksMetadataCreateObjects = lodash.chunk(metadataCreateArray, MAX_BATCH_SIZE);
 
-  const arrayChunksIdentifyUpdateObjects = lodash.chunk(updateAllObjectsEventChunk, maxBatchSize);
+  const arrayChunksIdentifyUpdateObjects = lodash.chunk(updateAllObjectsEventChunk, MAX_BATCH_SIZE);
+  const arrayChunksMetadataUpdateObjects = lodash.chunk(metadataUpdateArray, MAX_BATCH_SIZE);
 
   // batching up 'create' all objects endpoint chunks
   if (arrayChunksIdentifyCreateObjects.length > 0) {
@@ -146,8 +100,9 @@ const batchEvents2 = (destEvents) => {
       arrayChunksIdentifyCreateObjects,
       batchedResponseList,
       'createObject',
-      BATCH_IDENTIFY_CRM_CREATE_NEW_CONTACT,
+      endPoint,
       staticDestObject,
+      arrayChunksMetadataCreateObjects,
     );
   }
 
@@ -157,8 +112,9 @@ const batchEvents2 = (destEvents) => {
       arrayChunksIdentifyUpdateObjects,
       batchedResponseList,
       'updateObject',
-      BATCH_IDENTIFY_CRM_UPDATE_CONTACT,
+      endPoint,
       staticDestObject,
+      arrayChunksMetadataUpdateObjects,
     );
   }
 

@@ -84,19 +84,10 @@ const processRouterDest = async (inputs, reqMetadata) => {
       tempInputs.map(async (input) => {
         try {
           const compositePayload = await processSingleAgnosticEvent(input.message, destination);
-
-          receivedResponse = Array.isArray(compositePayload)
-            ? compositePayload
-            : [compositePayload];
-
-          // received response can be in array format [{}, {}, {}, ..., {}]
-          // if multiple response is being returned
-          receivedResponse.forEach((element) => {
-            successRespList.push({
-              message: element,
-              metadata: input.metadata,
-              destination,
-            });
+          successRespList.push({
+            message: compositePayload,
+            metadata: input.metadata,
+            destination,
           });
         } catch (error) {
           const errRespEvent = handleRtTfSingleEventError(input, error, reqMetadata);

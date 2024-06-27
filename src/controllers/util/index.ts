@@ -11,11 +11,9 @@ import {
   RudderMessage,
   SourceInput,
 } from '../../types';
-import { getValueFromMessage } from '../../v0/util';
+import { getValueFromMessage, getDestinationExternalIDInfoForRetl } from '../../v0/util';
 import genericFieldMap from '../../v0/util/data/GenericFieldMapping.json';
 import { EventType, MappedToDestinationKey } from '../../constants';
-import { event } from '../../warehouse/config/WHExtractEventTableConfig';
-import { getDestinationExternalIDInfoForRetl } from '../../v0/util';
 
 type RECORD_EVENT = {
   type: 'record';
@@ -114,6 +112,7 @@ export class ControllerUtility {
       return { ...event, message: newMsg };
     });
   }
+
   public static transformToRecordEvent(
     events: Array<ProcessorTransformationRequest | RouterTransformationRequestData>,
   ) {
@@ -155,6 +154,7 @@ export class ControllerUtility {
     });
     return events;
   }
+
   public static createExternalId(eventMessage: RudderMessage, destName: string) {
     const type = eventMessage.type;
     if (!eventMessage.context['externalId']) {
@@ -167,6 +167,7 @@ export class ControllerUtility {
     }
     return eventMessage.context['externalId'];
   }
+
   public static getActionForRecordEvent(eventMessage: RudderMessage): string {
     const type = eventMessage.type;
     if (type === EventType.RECORD) {
@@ -202,6 +203,7 @@ export class ControllerUtility {
     // get the fields from the agnostic config
     return ControllerUtility.translateFromAgnosticConfig(eventTypeName, destName, eventMessage);
   }
+
   public static translateFromAgnosticConfig(
     eventTypeName: string,
     destName: string,
@@ -222,6 +224,7 @@ export class ControllerUtility {
     const mappedEvent: any = {};
 
     agnosticConfig[object].forEach((fieldMapping) => {
+      // eslint-disable-next-line no-restricted-syntax
       for (const sourceKey of fieldMapping.sourceKeys) {
         const value = ControllerUtility.getNestedValue(eventMessage, sourceKey);
         if (value !== undefined) {

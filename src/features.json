@@ -74,6 +74,9 @@
     "EMARSYS": true,
     "KODDI": true
   },
+  "agnosticDestinations" : {
+    "HS" :true    
+},
   "regulations": [
     "BRAZE",
     "AM",

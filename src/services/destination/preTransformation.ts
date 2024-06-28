@@ -39,7 +39,7 @@ export class DestinationPreTransformationService {
           if (event.destination?.Config?.customMappingId) {
             event.destination.Config.commonMappings =
               data[event.destination.Config.customMappingId].commonMappings;
-            event.destination.Config.eventMappings =
+            event.destination.Config.eventsMapping =
               data[event.destination.Config.customMappingId].eventMappings;
           }
         });

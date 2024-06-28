@@ -1,15 +1,17 @@
 /* eslint-disable no-nested-ternary */
+const get = require('get-value');
 const { ConfigurationError, InstrumentationError } = require('@rudderstack/integrations-lib');
 const {
     defaultRequestConfig,
     getHashFromArray,
-    simpleProcessRouterDest,
-    applyCustomMappings
+    handleRtTfSingleEventError,
+    applyCustomMappings,
+    isDefinedAndNotNull
 } = require('../../util');
-const { groupEvents } = require('./utils')
+const { groupEvents, removePrefix, handleMappings } = require('./utils')
 const { EventType } = require('../../../constants');
 
-const buildRequestPayload = (payload, method, headers, params) => {
+const buildRequestPayload = (payload, method, headers, params, endpoint) => {
     const response = defaultRequestConfig();
     response.method = method;
     if (method === 'GET') {
@@ -19,12 +21,13 @@ const buildRequestPayload = (payload, method, headers, params) => {
         response.body.JSON = payload;
     }
     response.headers = headers;
+    response.endpoint = endpoint
     return response;
 }
 
 const trackResponseBuilder = (message, destination) => {
-    const { track } = destination.Config;
-    respList = [];
+    const { track } = destination.Config.eventsMapping;
+    const respList = [];
     /*
     [
         {
@@ -56,22 +59,23 @@ const trackResponseBuilder = (message, destination) => {
         return message.event === key.trackEventName;
     });
     eventRequest.forEach(request => {
-        const { trackEndpoint, trackMethod, trackHeaders, trackQueryParams, trackPathVariables, trackParameterMapping } = request;
-        const headers = getHashFromArray(trackHeaders);
-        const params = getHashFromArray(trackQueryParams);
-        const pathVariables = getHashFromArray(trackPathVariables);
-        const endpoint = trackEndpoint.replace(/{(\w+)}/g, (_, key) => {
-            if (!pathVariables[key]) {
-                throw new InstrumentationError(`Key ${key} not found in the pathVariables`);
+        const { endpoint, method, headers, queryParams, pathVariables, mappings } = request;
+        const headersObject = handleMappings(message, headers, 'value', 'key');
+        const params = handleMappings(message, queryParams, 'value', 'key');
+        const pathVariablesObj = getHashFromArray(pathVariables, 'pathVariable', 'pathValue', false);
+        const payload = handleMappings(message, mappings);
+        const updatedEndpoint = endpoint.replace(/{(\w+)}/g, (_, key) => {
+            if (!pathVariablesObj[key]) {
+                throw new Error(`Key ${key} not found in the pathVariables`);
             }
-            return pathVariables;
+            return get(message, removePrefix(pathVariablesObj[key]));
         });
         if (endpoint.length === 0) {
             throw new ConfigurationError('Endpoint is missing');
         }
-        const payload = applyCustomMappings(message, trackParameterMapping);
-        respList.push(buildRequestPayload(endpoint, payload, trackMethod, headers, params))
+        respList.push(buildRequestPayload(payload, method, headersObject, params, updatedEndpoint))
     });
+    return respList;
 };
 const identifyResponseBuilder = (message, destination) => {
     /* 
@@ -106,26 +110,32 @@ const identifyResponseBuilder = (message, destination) => {
         ]
     }
     */
-    const { identify } = destination.Config;
-    respList = [];
+    const { identify } = destination.Config.eventsMapping;
+    const respList = [];
     identify.forEach(request => {
-        const { identifyEndpoint, identifyMethod, identifyHeaders, identifyQueryParams, identifyPathVariables, identifyParameterMapping } = request;
-        const headers = getHashFromArray(identifyHeaders);
-        const params = getHashFromArray(identifyQueryParams);
-        const pathVariables = getHashFromArray(identifyPathVariables);
-        const endpoint = identifyEndpoint.replace(/{(\w+)}/g, (_, key) => {
-            if (!pathVariables[key]) {
+        const { endpoint, method, headers, queryParams, pathVariables, mappings } = request;
+        const headersObject = handleMappings(message, headers, 'value', 'key');
+        const params = handleMappings(message, queryParams, 'value', 'key');
+        const pathVariablesObj = getHashFromArray(pathVariables, 'pathVariable', 'pathValue', false);
+        const payload = handleMappings(message, mappings);
+        const updatedEndpoint = endpoint.replace(/{(\w+)}/g, (_, key) => {
+            if (!pathVariablesObj[key]) {
                 throw new Error(`Key ${key} not found in the pathVariables`);
             }
-            return pathVariables;
+            return get(message, removePrefix(pathVariablesObj[key]));
         });
-        const payload = applyCustomMappings(message, identifyParameterMapping);
-        respList.push(buildRequestPayload(endpoint, payload, identifyMethod, headers, params))
+        if (endpoint.length === 0) {
+            throw new ConfigurationError('Endpoint is missing');
+        }
+        respList.push(buildRequestPayload(payload, method, headersObject, params, updatedEndpoint))
     });
+    return respList;
 };
 const processEvent = (event) => {
     const { message, destination } = event;
-    switch (messageType) {
+    const { type } = message;
+    let response
+    switch (type) {
         case EventType.IDENTIFY:
             response = identifyResponseBuilder(message, destination);
             break;
@@ -135,6 +145,7 @@ const processEvent = (event) => {
         default:
             throw new InstrumentationError(`Message type ${messageType} not supported`);
     }
+    return response
 };
 const process = (event) => {
     const response = processEvent(event);

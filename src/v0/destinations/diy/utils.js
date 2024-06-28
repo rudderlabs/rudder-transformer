@@ -1,10 +1,15 @@
 const crypto = require('crypto');
+const get = require('get-value');
+const set = require('set-value');
+
 const {
     getSuccessRespEvents,
     defaultBatchRequestConfig,
+    getHashFromArray,
+    applyCustomMappings
 } = require('../../util');
 /**
- * This fucntion calculates hash of incoming event
+ * This function calculates hash of incoming event
  * @param {*} event 
  * @returns 
  *  Example event : {
@@ -55,6 +60,14 @@ const generateBatchedPayloadForArray = (events) => {
     };
     return batchEventResponse;
 };
+const prefix = '$.';
+const havePrefix = (str) => str.startsWith(prefix);
+const removePrefix = (str) => {
+    if (havePrefix(str)) {
+        return str.slice(prefix.length);
+    }
+    return str;
+}
 const batchEvents = (groupedEvents, maxBatchSize) => {
     // batching and chunking logic
     Object.keys(groupedEvents).forEach(group => {
@@ -74,7 +87,6 @@ const batchEvents = (groupedEvents, maxBatchSize) => {
 }
 const groupEvents = (batch, maxBatchSize) => {
     const groupedEvents = {};
-    let batchEvents = [];
     // grouping events
     batch.forEach(event => {
         const eventHash = getHash(event);
@@ -87,4 +99,45 @@ const groupEvents = (batch, maxBatchSize) => {
     return batchEvents(groupedEvents, maxBatchSize);
 };
 
-module.exports = { groupEvents };
+const handleMappings = (message, mapArray, from = 'from', to = 'to') => {
+    const customMappings = [];
+    const normalMappings = []
+    mapArray.forEach(mapping => {
+        if (havePrefix(mapping[from])) {
+            customMappings.push(mapping)
+        } else {
+            normalMappings.push(mapping)
+        }
+    });
+    const constToConst = []; // use getHashFromArray
+    const constToJsonPath = []; // use set method
+    normalMappings.forEach(mapping => {
+        if (havePrefix(mapping[to])) {
+            constToJsonPath.push(mapping)
+        } else {
+            constToConst.push(mapping)
+        }
+    })
+    const finalMapping = {};
+    constToJsonPath.forEach(mapping => {
+        set(finalMapping, mapping[to].replace(prefix, ''), mapping[from])
+    })
+    const constToConstMapping = getHashFromArray(constToConst, from, to, false)
+    const jsonPathToJsonPath = []; // use custom mapping module for this
+    const jsonPathToConst = []; // use set and get 
+    customMappings.forEach(mapping => {
+        if (havePrefix(mapping[to])) {
+            jsonPathToJsonPath.push(mapping)
+        } else {
+            const value = get(message, mapping[from].replace(prefix, ''));
+            set(finalMapping, mapping[to], value)
+            // jsonPathToConst.push({ [`$.${mapping[to]}`]:  })
+        }
+    })
+    const jsonPathToConstMapping = applyCustomMappings(message, jsonPathToConst);
+    const jsonPathToJsonPathMapping = applyCustomMappings(message, jsonPathToJsonPath);
+    return { ...finalMapping, ...jsonPathToJsonPathMapping, ...constToConstMapping, ...jsonPathToConstMapping }
+
+}
+
+module.exports = { groupEvents, removePrefix, handleMappings };

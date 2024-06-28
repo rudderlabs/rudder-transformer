@@ -218,7 +218,11 @@ export class ControllerUtility {
     destName: string,
     eventMessage: RudderMessage,
   ) {
-    const configPath = path.join(__dirname, `../../v0/destinations/${destName}/agnotstic.json`);
+    const configPath = path.join(
+      __dirname,
+      `../../v0/destinations/${destName.toLowerCase()}/agnotstic.json`,
+    );
+    console.log(configPath);
     const agnosticConfig = JSON.parse(fs.readFileSync(configPath, 'utf8'));
     let object;
     if (getDestinationExternalIDInfoForRetl(eventMessage, destName).objectType) {

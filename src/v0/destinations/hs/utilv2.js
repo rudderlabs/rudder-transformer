@@ -46,6 +46,7 @@ const batchIdentify2 = (
 
     batchEventResponse.batchedRequest.endpoint = endPoint;
     batchEventResponse.batchedRequest.headers = {
+      'Content-Type': JSON_MIME_TYPE,
       Authorization: `Bearer ${destinationObject.Config.accessToken}`,
     };
 

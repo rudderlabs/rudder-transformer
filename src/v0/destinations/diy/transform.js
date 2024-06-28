@@ -1,12 +1,8 @@
 /* eslint-disable no-nested-ternary */
 const get = require('get-value');
 const { ConfigurationError, InstrumentationError } = require('@rudderstack/integrations-lib');
-const {
-  defaultRequestConfig,
-  getHashFromArray,
-  handleRtTfSingleEventError,
-} = require('../../util');
-const { groupEvents, removePrefix, handleMappings, removeExtraFields } = require('./utils');
+const { defaultRequestConfig, getHashFromArray, simpleProcessRouterDest } = require('../../util');
+const { removePrefix, handleMappings } = require('./utils');
 const { EventType } = require('../../../constants');
 
 const buildRequestPayload = (payload, method, headers, params, endpoint) => {
@@ -55,12 +51,11 @@ const trackResponseBuilder = (message, destination) => {
     */
   const eventRequest = track.filter((key) => message.event === key.event);
   eventRequest.forEach((request) => {
-    const { endpoint, method, headers, queryParams, pathVariables, mappings, batchSize } = request;
+    const { endpoint, method, headers, queryParams, pathVariables, mappings } = request;
     const headersObject = handleMappings(message, headers, 'value', 'key');
     const params = handleMappings(message, queryParams, 'value', 'key');
     const pathVariablesObj = getHashFromArray(pathVariables, 'pathVariable', 'pathValue', false);
     const payload = handleMappings(message, mappings);
-    payload.maxBatchSize = batchSize;
     const updatedEndpoint = endpoint.replace(/{(\w+)}/g, (_, key) => {
       if (!pathVariablesObj[key]) {
         throw new Error(`Key ${key} not found in the pathVariables`);
@@ -110,12 +105,11 @@ const identifyResponseBuilder = (message, destination) => {
   const { identify } = destination.Config?.eventsMapping || destination.config.eventsMapping;
   const respList = [];
   identify.forEach((request) => {
-    const { endpoint, method, headers, queryParams, pathVariables, mappings, batchSize } = request;
+    const { endpoint, method, headers, queryParams, pathVariables, mappings } = request;
     const headersObject = handleMappings(message, headers, 'value', 'key');
     const params = handleMappings(message, queryParams, 'value', 'key');
     const pathVariablesObj = getHashFromArray(pathVariables, 'pathVariable', 'pathValue', false);
     const payload = handleMappings(message, mappings);
-    payload.maxBatchSize = batchSize;
     const updatedEndpoint = endpoint.replace(/{(\w+)}/g, (_, key) => {
       if (!pathVariablesObj[key]) {
         throw new Error(`Key ${key} not found in the pathVariables`);
@@ -151,43 +145,8 @@ const process = (event) => {
 };
 
 const processRouterDest = (inputs, reqMetadata) => {
-  let batchResponseList = [];
-  const batchErrorRespList = [];
-  const successRespList = [];
-  const { destination } = inputs[0];
-  inputs.forEach((event) => {
-    try {
-      if (event.message.statusCode) {
-        // already transformed event
-        successRespList.push({
-          message: event.message,
-          metadata: event.metadata,
-          destination,
-        });
-      } else {
-        // if not transformed
-        const messageList = process(event);
-        messageList.forEach((message) => {
-          const transformedPayload = {
-            message,
-            metadata: event.metadata,
-            destination,
-          };
-          successRespList.push(transformedPayload);
-        });
-      }
-    } catch (error) {
-      const errRespEvent = handleRtTfSingleEventError(event, error, reqMetadata);
-      batchErrorRespList.push(errRespEvent);
-    }
-  });
-  if (successRespList.length > 0) {
-    const { enableBatching } = destination?.Config || destination.config;
-    batchResponseList = enableBatching
-      ? groupEvents(successRespList)
-      : removeExtraFields(successRespList);
-  }
-  return [...batchResponseList, ...batchErrorRespList];
+  const respList = simpleProcessRouterDest(inputs, process, reqMetadata);
+  return respList;
 };
 
 module.exports = { processEvent, process, processRouterDest };

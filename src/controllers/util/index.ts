@@ -197,7 +197,7 @@ export class ControllerUtility {
     if (isVdmEnabled) {
       let fields: any = {};
       // get the fields from the vdm
-      fields = eventTypeName == 'track' ? eventMessage.properties : eventMessage.traits;
+      fields = eventTypeName === 'track' ? eventMessage.properties : eventMessage.traits;
 
       const { identifierType, destinationExternalId } = getDestinationExternalIDInfoForRetl(
         eventMessage,
@@ -218,7 +218,10 @@ export class ControllerUtility {
     destName: string,
     eventMessage: RudderMessage,
   ) {
-    const configPath = path.join(__dirname, `../../v0/destinations/${destName}/agnotstic.json`);
+    const configPath = path.join(
+      __dirname,
+      `../../v0/destinations/${destName.toLowerCase()}/agnotstic.json`,
+    );
     const agnosticConfig = JSON.parse(fs.readFileSync(configPath, 'utf8'));
     let object;
     if (getDestinationExternalIDInfoForRetl(eventMessage, destName).objectType) {

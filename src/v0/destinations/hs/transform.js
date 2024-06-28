@@ -93,10 +93,13 @@ const processRouterDest = async (inputs, reqMetadata) => {
         eventsWithLookUpNotRequired.push(...groupByEvent[key]);
       }
     });
-    eventsWithLookUpRequired = await splitEventsForCreateUpdateV2(
-      eventsWithLookUpRequired,
-      destination,
-    );
+    if (eventsWithLookUpRequired.length > 0) {
+      eventsWithLookUpRequired = await splitEventsForCreateUpdateV2(
+        eventsWithLookUpRequired,
+        destination,
+      );
+    }
+
     tempInputs = [...eventsWithLookUpNotRequired, ...eventsWithLookUpRequired];
     await Promise.all(
       tempInputs.map(async (input) => {

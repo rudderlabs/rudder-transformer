@@ -33,7 +33,6 @@ const batchIdentify2 = (
     const identifyResponseList = [];
 
     let batchEventResponse = defaultBatchRequestConfig();
-    batchEventResponse.batchedRequest.endpoint = endPoint;
 
     // create operation
     chunk.forEach((ev) => {
@@ -47,6 +46,7 @@ const batchIdentify2 = (
     batchEventResponse.batchedRequest.endpoint = endPoint;
     batchEventResponse.batchedRequest.headers = {
       Authorization: `Bearer ${destinationObject.Config.accessToken}`,
+      'Content-Type': JSON_MIME_TYPE,
     };
 
     batchEventResponse = {
@@ -105,23 +105,36 @@ const batchEvents2 = (destEvents) => {
   // Iterate over grouped create events
   Object.entries(groupedCreateEvents).forEach(([objectType, events]) => {
     const endPointCreate = events[0].endPoint;
-    const arrayChunksIdentifyCreateObjects = lodash.chunk(
-      events.map((event) => event.tempPayload),
-      MAX_BATCH_SIZE,
-    );
-    const arrayChunksMetadataCreateObjects = lodash.chunk(
-      groupedMetadataCreate[objectType].map((item) => item.metadata),
-      MAX_BATCH_SIZE,
-    );
-
-    if (arrayChunksIdentifyCreateObjects.length > 0) {
-      batchedResponseList = batchIdentify2(
-        arrayChunksIdentifyCreateObjects,
-        batchedResponseList,
-        endPointCreate,
-        staticDestObject,
-        arrayChunksMetadataCreateObjects,
+    if (objectType !== 'track') {
+      const arrayChunksIdentifyCreateObjects = lodash.chunk(
+        events.map((event) => event.tempPayload),
+        MAX_BATCH_SIZE,
       );
+      const arrayChunksMetadataCreateObjects = lodash.chunk(
+        groupedMetadataCreate[objectType].map((item) => item.metadata),
+        MAX_BATCH_SIZE,
+      );
+      if (arrayChunksIdentifyCreateObjects.length > 0) {
+        batchedResponseList = batchIdentify2(
+          arrayChunksIdentifyCreateObjects,
+          batchedResponseList,
+          endPointCreate,
+          staticDestObject,
+          arrayChunksMetadataCreateObjects,
+        );
+      }
+    } else {
+      events.forEach((trackObject, index) => {
+        const batchEventResponse = defaultBatchRequestConfig();
+        batchEventResponse.batchedRequest.endpoint = endPointCreate;
+        batchEventResponse.batchedRequest.headers = {
+          Authorization: `Bearer ${staticDestObject.Config.accessToken}`,
+          'Content-Type': JSON_MIME_TYPE,
+        };
+        batchEventResponse.batchedRequest.body.JSON = trackObject.tempPayload;
+        batchEventResponse.metadata = [groupedMetadataCreate.track[index].metadata];
+        trackResponseList.push(batchEventResponse);
+      });
     }
   });
 

@@ -100,8 +100,7 @@
     },
     {
       "destKey": "email",
-      "sourceKeys": "email",
-      "sourceFromGenericMap": true,
+      "sourceKeys": ["traits.email", "context.traits.email", "properties.email"],
       "required": false
     },
     {
@@ -160,6 +159,11 @@
     {
       "destKey": "hs_element_id",
       "sourceKeys": ["properties.elementId", "properties.hsElementId"],
+      "required": false
+    },
+    {
+      "destKey": "initialProperty",
+      "sourceKeys": ["properties"],
       "required": false
     }
   ]

@@ -1,3 +1,11 @@
+import {
+  ConfigurationError,
+  InstrumentationError,
+  getHashFromArray,
+} from '@rudderstack/integrations-lib';
+import { extractCustomFields, isEmpty, validateEventName } from '../../util';
+
+const get = require('get-value');
 const {
   BATCH_IDENTIFY_CRM_CREATE_NEW_CONTACT,
   BATCH_IDENTIFY_CRM_UPDATE_CONTACT,
@@ -55,7 +63,61 @@ const getDestinationLookUpId = (message, type) => {
   const destinationExternalId = externalIdObj ? externalIdObj?.id?.hsSearchId : null;
   return destinationExternalId;
 };
-export const processSingleAgnosticEvent = (message) => {
+
+const getEventAndPropertiesFromConfig = (message, destination) => {
+  const { hubspotEvents } = destination.Config;
+
+  let event = get(message, 'event');
+  if (!event) {
+    throw new InstrumentationError('event name is required for track call');
+  }
+  if (!hubspotEvents) {
+    throw new InstrumentationError('Event and property mappings are required for track call');
+  }
+  validateEventName(event);
+  event = event.trim().toLowerCase();
+  let eventName;
+  let eventProperties;
+  const properties = {};
+
+  // 1. fetch event name from webapp config
+  // some will traverse through all the indexes of the array and find the event
+  const hubspotEventFound = hubspotEvents.some((hubspotEvent) => {
+    if (
+      hubspotEvent &&
+      hubspotEvent.rsEventName &&
+      hubspotEvent.rsEventName.trim().toLowerCase() === event &&
+      !isEmpty(hubspotEvent.hubspotEventName)
+    ) {
+      eventName = hubspotEvent.hubspotEventName.trim();
+      eventProperties = hubspotEvent.eventProperties;
+      return true;
+    }
+    return false;
+  });
+
+  if (!hubspotEventFound) {
+    throw new ConfigurationError(
+      `Event name '${event}' mappings are not configured in the destination`,
+    );
+  }
+
+  // 2. fetch event properties from webapp config
+  eventProperties = getHashFromArray(eventProperties, ...Array(2), false);
+
+  Object.keys(eventProperties).forEach((key) => {
+    const value = get(message, `fields.initialProperty${key}`);
+    if (value) {
+      properties[eventProperties[key]] = value;
+    }
+  });
+
+  // eslint-disable-next-line no-param-reassign
+  const payload = { eventName, properties };
+  return payload;
+};
+
+export const processSingleAgnosticEvent = (message, destination) => {
   /**
    * if message.action = insert, update
    * insert --> create contact / track event
@@ -80,10 +142,32 @@ export const processSingleAgnosticEvent = (message) => {
     endPoint = endpointMapping.others[action].replace(':objectType', objectType);
   }
   if (action === 'insert') {
-    // endPoint = 'https://api.hubapi.com/crm/v3/objects/contacts/batch/create';
-    tempPayload = {
-      properties: fields,
-    };
+    if (objectType === 'track') {
+      const { utk, email, occurredAt, objectId, initialProperty } = fields;
+      const eventPropertiesFromConfig = getEventAndPropertiesFromConfig(message, destination);
+      tempPayload = {
+        utk,
+        email,
+        occurredAt,
+        objectId,
+        eventName: eventPropertiesFromConfig.eventName,
+        properties: {
+          ...extractCustomFields(initialProperty, {}, 'root', [
+            'utk',
+            'email',
+            'occurredAt',
+            'objectId',
+          ]),
+          ...eventPropertiesFromConfig.properties,
+        },
+      };
+    } else {
+      // endPoint = 'https://api.hubapi.com/crm/v3/objects/contacts/batch/create';
+      tempPayload = {
+        properties: fields,
+      };
+    }
+
     operation = 'create';
   } else {
     // endPoint = 'https://api.hubapi.com/crm/v3/objects/contacts/batch/update';

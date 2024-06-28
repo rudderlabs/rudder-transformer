@@ -20,7 +20,7 @@ import { agnosticDestinations } from '../../features.json';
 type RECORD_EVENT = {
   type: 'record';
   action: string;
-  destinationFields?: string,
+  destinationFields?: string;
   fields: object;
   channel: string;
   context: object;
@@ -126,7 +126,7 @@ export class ControllerUtility {
     if (!Object.keys(agnosticDestinations).includes(destName.toUpperCase())) {
       return events;
     }
-    console.log('transforming to record event')
+    console.log('transforming to record event');
     events.forEach((event) => {
       // type of event
       // create fields from destination config
@@ -151,8 +151,8 @@ export class ControllerUtility {
         fields: fields,
         channel: eventMessage.channel,
         context: eventMessage.context,
-        recordid: eventMessage.recordId || "",
-        rudderid: eventMessage.rudderId || "",
+        recordid: eventMessage.recordId || '',
+        rudderid: eventMessage.rudderId || '',
         messageid: eventMessage.messageId,
       };
       event.message = translatedRecord;

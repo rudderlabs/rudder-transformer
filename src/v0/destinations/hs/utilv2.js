@@ -8,8 +8,6 @@ const {
 } = require('../../util');
 
 const {
-  BATCH_IDENTIFY_CRM_CREATE_NEW_CONTACT,
-  BATCH_IDENTIFY_CRM_UPDATE_CONTACT,
   MAX_BATCH_SIZE,
   MAX_CONTACTS_PER_REQUEST,
   SEARCH_LIMIT_VALUE,
@@ -32,7 +30,7 @@ const batchIdentify2 = (
   metadaDataArray,
 ) => {
   // list of chunks [ [..], [..] ]
-  arrayChunksIdentify.forEach((chunk) => {
+  arrayChunksIdentify.forEach((chunk, index) => {
     const identifyResponseList = [];
 
     let batchEventResponse = defaultBatchRequestConfig();
@@ -47,19 +45,14 @@ const batchIdentify2 = (
       inputs: identifyResponseList,
     };
 
-    if (batchOperation === 'createContacts') {
-      batchEventResponse.batchedRequest.endpoint = BATCH_IDENTIFY_CRM_CREATE_NEW_CONTACT;
-    } else if (batchOperation === 'updateContacts') {
-      batchEventResponse.batchedRequest.endpoint = BATCH_IDENTIFY_CRM_UPDATE_CONTACT;
-    }
-
+    batchEventResponse.batchedRequest.endpoint = endPoint;
     batchEventResponse.batchedRequest.headers = {
       Authorization: `Bearer ${destinationObject.Config.accessToken}`,
     };
 
     batchEventResponse = {
       ...batchEventResponse,
-      metadata: metadaDataArray,
+      metadata: metadaDataArray[index],
       destinationObject,
     };
     batchedResponseList.push(
@@ -94,12 +87,14 @@ const batchEvents2 = (destEvents) => {
     if (message.operation === 'create') {
       createAllObjectsEventChunk.push(message.tempPayload);
       metadataCreateArray.push(metadata);
+      // eslint-disable-next-line unicorn/consistent-destructuring
+      endPoint = event?.message?.endPoint;
     } else if (message.operation === 'update') {
       updateAllObjectsEventChunk.push(message.tempPayload);
       metadataUpdateArray.push(metadata);
+      // eslint-disable-next-line unicorn/consistent-destructuring
+      endPoint = event?.message?.endPoint;
     }
-    // eslint-disable-next-line unicorn/consistent-destructuring
-    endPoint = event?.message?.endPoint;
   });
 
   const arrayChunksIdentifyCreateObjects = lodash.chunk(createAllObjectsEventChunk, MAX_BATCH_SIZE);

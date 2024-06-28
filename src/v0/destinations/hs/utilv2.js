@@ -167,14 +167,17 @@ const getObjectAndIdentifierType = (firstMessage) => {
 const extractIDsForSearchAPI = (inputs) => {
   const values = inputs.map((input) => {
     const { message } = input;
-    const { destinationExternalId, identifierType } = getDestinationExternalIDInfoForRetl(
+    const { destinationExternalId, objectType,identifierType } = getDestinationExternalIDInfoForRetl(
       message,
       'HS',
     );
-    if (!destinationExternalId && identifierType === 'identify') {
+    if (!destinationExternalId && objectType === 'identify') {
       return message.fields?.email;
     }
+if (destinationExternalId){
     return destinationExternalId.toString().toLowerCase();
+}
+return message.fields[identifierType.toLowerCase()]
   });
 
   return Array.from(new Set(values));
@@ -316,6 +319,7 @@ const getExistingContactsData = async (inputs, destination) => {
   const { Config } = destination;
   const hsIdsToBeUpdated = [];
   const firstMessage = inputs[0].message;
+  console.log("yes")
 
   if (!firstMessage) {
     throw new InstrumentationError('rETL - objectType or identifier type not found.');
@@ -383,19 +387,23 @@ const setHsSearchId = (input, id, useSecondaryProp = false) => {
 
 const splitEventsForCreateUpdateV2 = async (inputs, destination) => {
   // get all the id and properties of already existing objects needed for update.
+  console.log("no")
   const hsIdsToBeUpdated = await getExistingContactsData(inputs, destination);
 
   const resultInput = inputs.map((input) => {
     const { message } = input;
     const inputParam = input;
+
     // eslint-disable-next-line prefer-const
     let { destinationExternalId, identifierType } = getDestinationExternalIDInfoForRetl(
       message,
       'HS',
     );
+    console.log("checkinnnnggg")
     if (!destinationExternalId) {
       destinationExternalId = message.fields.email;
     }
+    console.log("hellllooo")
     const filteredInfo = hsIdsToBeUpdated.filter(
       (update) =>
         update.property.toString().toLowerCase() ===

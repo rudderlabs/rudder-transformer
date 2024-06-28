@@ -56,6 +56,7 @@ const getDestinationLookUpId = (message, type) => {
   return destinationExternalId;
 };
 export const processSingleAgnosticEvent = (message) => {
+  console.log(message)
   /**
    * if message.action = insert, update
    * insert --> create contact / track event

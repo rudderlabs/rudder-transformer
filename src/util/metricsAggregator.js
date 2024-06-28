@@ -2,6 +2,7 @@
 const cluster = require('cluster');
 const logger = require('../logger');
 const { Worker, isMainThread } = require('worker_threads');
+
 const MESSAGE_TYPES = {
   GET_METRICS_REQ: 'rudder-transformer:getMetricsReq',
   GET_METRICS_RES: 'rudder-transformer:getMetricsRes',
@@ -9,12 +10,13 @@ const MESSAGE_TYPES = {
   AGGREGATE_METRICS_RES: 'rudder-transformer:aggregateMetricsRes',
   RESET_METRICS_REQ: 'rudder-transformer:resetMetricsReq',
 };
-const METRICS_AGGREGATOR_PERIODIC_RESET_ENABLED =
-  process.env.METRICS_AGGREGATOR_PERIODIC_RESET_ENABLED === 'true';
-const METRICS_AGGREGATOR_PERIODIC_RESET_INTERVAL_SECONDS = process.env
-  .METRICS_AGGREGATOR_PERIODIC_RESET_INTERVAL_SECONDS
-  ? parseInt(process.env.METRICS_AGGREGATOR_PERIODIC_RESET_INTERVAL_SECONDS, 10)
-  : 30 * 60;
+
+const config = {
+  isPeriodicResetEnabled: process.env.METRICS_AGGREGATOR_PERIODIC_RESET_ENABLED === 'true',
+  periodicResetInterval: process.env.METRICS_AGGREGATOR_PERIODIC_RESET_INTERVAL_SECONDS
+    ? parseInt(process.env.METRICS_AGGREGATOR_PERIODIC_RESET_INTERVAL_SECONDS, 10)
+    : 30 * 60,
+};
 
 class MetricsAggregator {
   constructor(prometheusInstance) {
@@ -56,9 +58,9 @@ class MetricsAggregator {
     if (cluster.isPrimary) {
       // register callback for master process
       cluster.on('message', this.onWorkerMessage.bind(this));
-      // register callback to reset metrics if enabled
-      if (METRICS_AGGREGATOR_PERIODIC_RESET_ENABLED) {
-        this.registerCallbackForPeriodicReset(METRICS_AGGREGATOR_PERIODIC_RESET_INTERVAL_SECONDS);
+      if (config.isPeriodicResetEnabled) {
+        // register callback to reset metrics if enabled
+        this.registerCallbackForPeriodicReset(config.periodicResetInterval);
       }
       return;
     }

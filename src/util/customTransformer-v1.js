@@ -98,7 +98,6 @@ async function userTransformHandlerV1(
       ...(events.length && events[0].metadata ? getTransformationMetadata(events[0].metadata) : {}),
     };
     stats.counter('user_transform_function_input_events', events.length, tags);
-    stats.timing('user_transform_function_latency', invokeTime, tags);
     stats.timingSummary('user_transform_function_latency_summary', invokeTime, tags);
   }
 

@@ -24,7 +24,6 @@ const { JSON_MIME_TYPE } = require('../../util/constant');
 const batchIdentify2 = (
   arrayChunksIdentify,
   batchedResponseList,
-  batchOperation,
   endPoint,
   destinationObject,
   metadaDataArray,
@@ -76,7 +75,8 @@ const batchEvents2 = (destEvents) => {
   const updateAllObjectsEventChunk = [];
   const metadataCreateArray = [];
   const metadataUpdateArray = [];
-  let endPoint;
+  let endPointUpdate;
+  let endPointCreate;
 
   destEvents.forEach((event) => {
     // handler for track call
@@ -88,12 +88,12 @@ const batchEvents2 = (destEvents) => {
       createAllObjectsEventChunk.push(message.tempPayload);
       metadataCreateArray.push(metadata);
       // eslint-disable-next-line unicorn/consistent-destructuring
-      endPoint = event?.message?.endPoint;
+      endPointCreate = event?.message?.endPoint;
     } else if (message.operation === 'update') {
       updateAllObjectsEventChunk.push(message.tempPayload);
       metadataUpdateArray.push(metadata);
       // eslint-disable-next-line unicorn/consistent-destructuring
-      endPoint = event?.message?.endPoint;
+      endPointUpdate = event?.message?.endPoint;
     }
   });
 
@@ -108,8 +108,7 @@ const batchEvents2 = (destEvents) => {
     batchedResponseList = batchIdentify2(
       arrayChunksIdentifyCreateObjects,
       batchedResponseList,
-      'createObject',
-      endPoint,
+      endPointCreate,
       staticDestObject,
       arrayChunksMetadataCreateObjects,
     );
@@ -120,8 +119,7 @@ const batchEvents2 = (destEvents) => {
     batchedResponseList = batchIdentify2(
       arrayChunksIdentifyUpdateObjects,
       batchedResponseList,
-      'updateObject',
-      endPoint,
+      endPointUpdate,
       staticDestObject,
       arrayChunksMetadataUpdateObjects,
     );

@@ -1,22 +1,12 @@
 /* eslint-disable no-nested-ternary */
-const get = require('get-value');
-const set = require('set-value');
-import { JsonTemplateEngine } from 'https://cdn.jsdelivr.net/npm/@rudderstack/json-template-engine@0.16.0/build/json-template.min.js';
-const { ConfigurationError } = require('@rudderstack/integrations-lib');
+const { ConfigurationError, InstrumentationError } = require('@rudderstack/integrations-lib');
 const {
-    defaultPostRequestConfig,
-    defaultPutRequestConfig,
-    defaultPatchRequestConfig,
-    defaultGetRequestConfig,
     defaultRequestConfig,
-    getFieldValueFromMessage,
-    flattenJson,
-    isDefinedAndNotNull,
     getHashFromArray,
     simpleProcessRouterDest,
     applyCustomMappings
 } = require('../../util');
-
+const { groupEvents } = require('./utils')
 const { EventType } = require('../../../constants');
 
 const buildRequestPayload = (payload, method, headers, params) => {
@@ -62,20 +52,23 @@ const trackResponseBuilder = (message, destination) => {
         }
     ]
     */
-   const eventRequest = track.filter((key) => {
-    return message.event === key.trackEventName;
-  });
-   eventRequest.forEach(request => {
+    const eventRequest = track.filter((key) => {
+        return message.event === key.trackEventName;
+    });
+    eventRequest.forEach(request => {
         const { trackEndpoint, trackMethod, trackHeaders, trackQueryParams, trackPathVariables, trackParameterMapping } = request;
         const headers = getHashFromArray(trackHeaders);
         const params = getHashFromArray(trackQueryParams);
         const pathVariables = getHashFromArray(trackPathVariables);
         const endpoint = trackEndpoint.replace(/{(\w+)}/g, (_, key) => {
             if (!pathVariables[key]) {
-                throw new Error(`Key ${key} not found in the pathVariables`);
+                throw new InstrumentationError(`Key ${key} not found in the pathVariables`);
             }
             return pathVariables;
         });
+        if (endpoint.length === 0) {
+            throw new ConfigurationError('Endpoint is missing');
+        }
         const payload = applyCustomMappings(message, trackParameterMapping);
         respList.push(buildRequestPayload(endpoint, payload, trackMethod, headers, params))
     });
@@ -144,14 +137,45 @@ const processEvent = (event) => {
     }
 };
 const process = (event) => {
-    const response = processEvent({ ...event, DESTINATION });
+    const response = processEvent(event);
     return response;
 };
 
-const processRouterDest = async (inputs, reqMetadata) => {
-    const destNameRichInputs = inputs.map((input) => ({ ...input, DESTINATION }));
-    const respList = simpleProcessRouterDest(destNameRichInputs, processEvent, reqMetadata);
-    return respList;
+const processRouterDest = (inputs, reqMetadata) => {
+    let batchResponseList = [];
+    const batchErrorRespList = [];
+    const successRespList = [];
+    const { destination } = inputs[0];
+    inputs.forEach((event) => {
+        try {
+            if (event.message.statusCode) {
+                // already transformed event
+                successRespList.push({
+                    message: event.message,
+                    metadata: event.metadata,
+                    destination,
+                });
+            } else {
+                // if not transformed
+                const transformedPayload = {
+                    message: process(event),
+                    metadata: event.metadata,
+                    destination,
+                };
+                successRespList.push(transformedPayload);
+            }
+        } catch (error) {
+            const errRespEvent = handleRtTfSingleEventError(event, error, reqMetadata);
+            batchErrorRespList.push(errRespEvent);
+        }
+    });
+    if (successRespList.length > 0) {
+        const { destination } = inputs[0];
+        const { enableBatching, batchMaxSize } = destination;
+        batchResponseList = enableBatching && batchMaxSize > 1 ? groupEvents(successRespList, batchMaxSize) : successRespList;
+
+    }
+    return [...batchResponseList, ...batchErrorRespList];
 };
 
 module.exports = { processEvent, process, processRouterDest };

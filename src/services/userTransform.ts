@@ -170,8 +170,6 @@ export class UserTransformService {
             ...getTransformationMetadata(eventsToProcess[0]?.metadata),
           });
         } finally {
-
-
           stats.timingSummary('user_transform_request_latency_summary', userFuncStartTime, {
             ...metaTags,
             ...getTransformationMetadata(eventsToProcess[0]?.metadata),

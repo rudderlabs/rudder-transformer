@@ -1,6 +1,7 @@
 const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const get = require('get-value');
 const feature = require('../../../features.json');
+const lodash = require('lodash');
 
 const { EventType } = require('../../../constants');
 const { handleRtTfSingleEventError, getDestinationExternalIDInfoForRetl } = require('../../util');
@@ -18,7 +19,7 @@ const {
   getProperties,
   validateDestinationConfig,
 } = require('./util');
-const { batchEvents2 } = require('./utilv2');
+const { batchEvents2, splitEventsForCreateUpdateV2 } = require('./utilv2');
 const { processSingleAgnosticEvent } = require('./HSTransform-v3');
 
 const processSingleMessage = async (message, destination, propertyMap) => {
@@ -77,9 +78,26 @@ const processRouterDest = async (inputs, reqMetadata) => {
   let receivedResponse;
   if (feature.agnosticDestinations.HS === true) {
     // new part
-    const tempInputs = inputs;
+    let tempInputs = inputs;
     // using the first destination config for transforming the batch
     const { destination } = tempInputs[0];
+    const groupByEvent = lodash.groupBy(tempInputs, (input) =>
+      input.message.context.externalId[0].type?.toLowerCase(),
+    );
+    let eventsWithLookUpRequired = [];
+    const eventsWithLookUpNotRequired = [];
+    Object.keys(groupByEvent).forEach((key) => {
+      if (!key.includes('track')) {
+        eventsWithLookUpRequired.push(...groupByEvent[key]);
+      } else {
+        eventsWithLookUpNotRequired.push(...groupByEvent[key]);
+      }
+    });
+    eventsWithLookUpRequired = await splitEventsForCreateUpdateV2(
+      eventsWithLookUpRequired,
+      destination,
+    );
+    tempInputs = [...eventsWithLookUpNotRequired, ...eventsWithLookUpRequired];
     await Promise.all(
       tempInputs.map(async (input) => {
         try {

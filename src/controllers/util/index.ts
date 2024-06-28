@@ -14,6 +14,7 @@ import {
 import { getValueFromMessage, getDestinationExternalIDInfoForRetl } from '../../v0/util';
 import genericFieldMap from '../../v0/util/data/GenericFieldMapping.json';
 import { EventType, MappedToDestinationKey } from '../../constants';
+import { EVENT_TYPE } from 'rudder-transformer-cdk/build/constants';
 
 type RECORD_EVENT = {
   type: 'record';
@@ -161,6 +162,7 @@ export class ControllerUtility {
       const externalId = [
         {
           type: `${destName}-${type}`,
+          identifierType: type,
         },
       ];
       return externalId;
@@ -209,7 +211,7 @@ export class ControllerUtility {
     destName: string,
     eventMessage: RudderMessage,
   ) {
-    const configPath = `/Users/shrouti/workspace/rudder-transformer/src/v0/destinations/hs/agnotstic.json`;
+    const configPath = path.join(__dirname, `../../v0/destinations/${destName}/agnotstic.json`);
     const agnosticConfig = JSON.parse(fs.readFileSync(configPath, 'utf8'));
     let object;
     if (getDestinationExternalIDInfoForRetl(eventMessage, destName).objectType) {

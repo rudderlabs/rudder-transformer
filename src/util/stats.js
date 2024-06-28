@@ -109,7 +109,7 @@ async function resetMetricsController(ctx) {
     return;
   }
 
-  ctx.status = 404;
+  ctx.status = 501;
   ctx.body = `Not supported`;
 }
 

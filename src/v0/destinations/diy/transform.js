@@ -5,10 +5,8 @@ const {
     defaultRequestConfig,
     getHashFromArray,
     handleRtTfSingleEventError,
-    applyCustomMappings,
-    isDefinedAndNotNull
 } = require('../../util');
-const { groupEvents, removePrefix, handleMappings } = require('./utils')
+const { groupEvents, removePrefix, handleMappings, removeExtraFields } = require('./utils')
 const { EventType } = require('../../../constants');
 
 const buildRequestPayload = (payload, method, headers, params, endpoint) => {
@@ -26,7 +24,7 @@ const buildRequestPayload = (payload, method, headers, params, endpoint) => {
 }
 
 const trackResponseBuilder = (message, destination) => {
-    const { track } = destination.Config.eventsMapping;
+    const { track } = destination.Config.eventsMapping || destination.config.eventsMapping;
     const respList = [];
     /*
     [
@@ -59,11 +57,12 @@ const trackResponseBuilder = (message, destination) => {
         return message.event === key.trackEventName;
     });
     eventRequest.forEach(request => {
-        const { endpoint, method, headers, queryParams, pathVariables, mappings } = request;
+        const { endpoint, method, headers, queryParams, pathVariables, mappings, batchSize } = request;
         const headersObject = handleMappings(message, headers, 'value', 'key');
         const params = handleMappings(message, queryParams, 'value', 'key');
         const pathVariablesObj = getHashFromArray(pathVariables, 'pathVariable', 'pathValue', false);
         const payload = handleMappings(message, mappings);
+        payload.maxBatchSize = batchSize;
         const updatedEndpoint = endpoint.replace(/{(\w+)}/g, (_, key) => {
             if (!pathVariablesObj[key]) {
                 throw new Error(`Key ${key} not found in the pathVariables`);
@@ -110,14 +109,15 @@ const identifyResponseBuilder = (message, destination) => {
         ]
     }
     */
-    const { identify } = destination.Config.eventsMapping;
+    const { identify } = destination.Config?.eventsMapping || destination.config.eventsMapping;
     const respList = [];
     identify.forEach(request => {
-        const { endpoint, method, headers, queryParams, pathVariables, mappings } = request;
+        const { endpoint, method, headers, queryParams, pathVariables, mappings, batchSize } = request;
         const headersObject = handleMappings(message, headers, 'value', 'key');
         const params = handleMappings(message, queryParams, 'value', 'key');
         const pathVariablesObj = getHashFromArray(pathVariables, 'pathVariable', 'pathValue', false);
         const payload = handleMappings(message, mappings);
+        payload.maxBatchSize = batchSize;
         const updatedEndpoint = endpoint.replace(/{(\w+)}/g, (_, key) => {
             if (!pathVariablesObj[key]) {
                 throw new Error(`Key ${key} not found in the pathVariables`);
@@ -168,12 +168,15 @@ const processRouterDest = (inputs, reqMetadata) => {
                 });
             } else {
                 // if not transformed
-                const transformedPayload = {
-                    message: process(event),
-                    metadata: event.metadata,
-                    destination,
-                };
-                successRespList.push(transformedPayload);
+                const messageList = process(event);
+                messageList.forEach((message) => {
+                    const transformedPayload = {
+                        message,
+                        metadata: event.metadata,
+                        destination,
+                    };
+                    successRespList.push(transformedPayload);
+                });
             }
         } catch (error) {
             const errRespEvent = handleRtTfSingleEventError(event, error, reqMetadata);
@@ -182,8 +185,8 @@ const processRouterDest = (inputs, reqMetadata) => {
     });
     if (successRespList.length > 0) {
         const { destination } = inputs[0];
-        const { enableBatching, batchMaxSize } = destination;
-        batchResponseList = enableBatching && batchMaxSize > 1 ? groupEvents(successRespList, batchMaxSize) : successRespList;
+        const { enableBatching } = destination?.Config || destination.config;
+        batchResponseList = enableBatching ? groupEvents(successRespList) : removeExtraFields(successRespList);
 
     }
     return [...batchResponseList, ...batchErrorRespList];

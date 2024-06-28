@@ -1,13 +1,19 @@
 const crypto = require('crypto');
 const get = require('get-value');
 const set = require('set-value');
+const lodash = require('lodash');
 
 const {
     getSuccessRespEvents,
     defaultBatchRequestConfig,
     getHashFromArray,
-    applyCustomMappings
+    applyCustomMappings,
 } = require('../../util');
+
+const removeExtraFields = (events) => {
+    events.map((ev) => delete ev.body.json.maxBatchSize)
+    return events;
+}
 /**
  * This function calculates hash of incoming event
  * @param {*} event 
@@ -23,8 +29,7 @@ const {
 };
  */
 const getHash = (event) => {
-    const { endpoint, headers, params, method } = event;
-
+    const { endpoint, headers, params, method } = event.message;
     const data = {
         endpoint,
         headers,
@@ -68,12 +73,16 @@ const removePrefix = (str) => {
     }
     return str;
 }
-const batchEvents = (groupedEvents, maxBatchSize) => {
+const getMaxBatchForBatch = (batch) => {
+    return batch?.[0].message?.body.json?.maxBatchSize || 1;
+}
+const batchEvents = (groupedEvents) => {
     // batching and chunking logic
     Object.keys(groupedEvents).forEach(group => {
+        const maxBatchSize = getMaxBatchForBatch(groupedEvents[group]);
         const eventChunks = lodash.chunk(groupedEvents[group], maxBatchSize);
         eventChunks.forEach((chunk) => {
-            const batchEventResponse = generateBatchedPayloadForArray(chunk, combination);
+            const batchEventResponse = generateBatchedPayloadForArray(chunk);
             batchedResponseList.push(
                 getSuccessRespEvents(
                     batchEventResponse.batchedRequest,
@@ -85,7 +94,7 @@ const batchEvents = (groupedEvents, maxBatchSize) => {
         });
     });
 }
-const groupEvents = (batch, maxBatchSize) => {
+const groupEvents = (batch) => {
     const groupedEvents = {};
     // grouping events
     batch.forEach(event => {
@@ -96,7 +105,7 @@ const groupEvents = (batch, maxBatchSize) => {
             groupedEvents[eventHash].push(event);
         }
     });
-    return batchEvents(groupedEvents, maxBatchSize);
+    return batchEvents(groupedEvents);
 };
 
 const handleMappings = (message, mapArray, from = 'from', to = 'to') => {
@@ -122,7 +131,7 @@ const handleMappings = (message, mapArray, from = 'from', to = 'to') => {
     constToJsonPath.forEach(mapping => {
         set(finalMapping, mapping[to].replace(prefix, ''), mapping[from])
     })
-    const constToConstMapping = getHashFromArray(constToConst, from, to, false)
+    const constToConstMapping = getHashFromArray(constToConst, to, from, false)
     const jsonPathToJsonPath = []; // use custom mapping module for this
     const jsonPathToConst = []; // use set and get 
     customMappings.forEach(mapping => {
@@ -140,4 +149,4 @@ const handleMappings = (message, mapArray, from = 'from', to = 'to') => {
 
 }
 
-module.exports = { groupEvents, removePrefix, handleMappings };
+module.exports = { groupEvents, removePrefix, handleMappings, removeExtraFields };

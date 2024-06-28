@@ -27,6 +27,7 @@ type RECORD_EVENT = {
   recordid: string;
   rudderid: string;
   messageid: string;
+  event?: string;
 };
 
 export class ControllerUtility {
@@ -155,6 +156,7 @@ export class ControllerUtility {
         recordid: eventMessage.recordId || '',
         rudderid: eventMessage.rudderId || '',
         messageid: eventMessage.messageId,
+        event: eventMessage.event,
       };
       event.message = translatedRecord;
     });

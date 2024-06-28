@@ -52,10 +52,9 @@ const getDestinationLookUpId = (message, type) => {
   if (Array.isArray(externalIdArray)) {
     externalIdObj = externalIdArray.find((extIdObj) => extIdObj?.type === type);
   }
-  const destinationExternalId = externalIdObj ? externalIdObj.id : null;
+  const destinationExternalId = externalIdObj ? externalIdObj?.id?.hsSearchId : null;
   return destinationExternalId;
 };
-
 export const processSingleAgnosticEvent = (message) => {
   /**
    * if message.action = insert, update
@@ -90,7 +89,7 @@ export const processSingleAgnosticEvent = (message) => {
     // endPoint = 'https://api.hubapi.com/crm/v3/objects/contacts/batch/update';
     tempPayload = {
       properties: fields,
-      id: getDestinationLookUpId(message, 'HS-LOOKUP-ID'),
+      id: getDestinationLookUpId(message, 'hubspotId'),
     };
     operation = 'update';
   }

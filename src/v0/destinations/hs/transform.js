@@ -1,7 +1,7 @@
+const lodash = require('lodash');
 const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const get = require('get-value');
 const feature = require('../../../features.json');
-const lodash = require('lodash');
 
 const { EventType } = require('../../../constants');
 const { handleRtTfSingleEventError, getDestinationExternalIDInfoForRetl } = require('../../util');
@@ -87,7 +87,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
     let eventsWithLookUpRequired = [];
     const eventsWithLookUpNotRequired = [];
     Object.keys(groupByEvent).forEach((key) => {
-      if (!key.includes('track')) {
+      if (!key.includes('hs-track')) {
         eventsWithLookUpRequired.push(...groupByEvent[key]);
       } else {
         eventsWithLookUpNotRequired.push(...groupByEvent[key]);

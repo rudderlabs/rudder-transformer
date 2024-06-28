@@ -1,6 +1,5 @@
-// const { TransformationError } = require('@rudderstack/integrations-lib');
-// const { get } = require('lodash');
 const lodash = require('lodash');
+const { NetworkError, InstrumentationError } = require('@rudderstack/integrations-lib');
 const tags = require('../../util/tags');
 const {
   defaultBatchRequestConfig,
@@ -23,7 +22,6 @@ const {
   getDynamicErrorType,
 } = require('../../../adapters/utils/networkUtils');
 const { JSON_MIME_TYPE } = require('../../util/constant');
-const { NetworkError } = require('@rudderstack/integrations-lib');
 
 const batchIdentify2 = (
   arrayChunksIdentify,
@@ -138,6 +136,7 @@ const batchEvents2 = (destEvents) => {
 };
 
 const getObjectAndIdentifierType = (firstMessage) => {
+  // eslint-disable-next-line prefer-const
   let { objectType, identifierType } = getDestinationExternalIDInfoForRetl(firstMessage, 'HS');
   if (objectType === 'identify') {
     identifierType = 'email';
@@ -215,6 +214,7 @@ const performHubSpotSearch = async (
   const requestData = reqdata;
   const { Config } = destination;
   if (objectType === 'identify') {
+    // eslint-disable-next-line no-param-reassign
     objectType = 'contacts';
   }
 
@@ -234,6 +234,7 @@ const performHubSpotSearch = async (
    * */
 
   while (checkAfter) {
+    // eslint-disable-next-line no-await-in-loop
     const searchResponse = await httpPOST(url, requestData, requestOptions, {
       destType: 'hs',
       feature: 'transformation',
@@ -316,6 +317,7 @@ const getExistingContactsData = async (inputs, destination) => {
   // eslint-disable-next-line no-restricted-syntax
   for (const chunk of valuesChunk) {
     const requestData = getRequestData(identifierType, chunk);
+    // eslint-disable-next-line no-await-in-loop
     const searchResults = await performHubSpotSearch(
       requestData,
       requestOptions,
@@ -332,12 +334,13 @@ const getExistingContactsData = async (inputs, destination) => {
 
 const setHsSearchId = (input, id, useSecondaryProp = false) => {
   const { message } = input;
-  const resultExternalId = [];
+  // const resultExternalId = [];
+  let extIdObjParam = {};
   const externalIdArray = message.context?.externalId;
   if (externalIdArray) {
     externalIdArray.forEach((extIdObj) => {
       const { type } = extIdObj;
-      const extIdObjParam = extIdObj;
+      extIdObjParam = { ...extIdObj };
       if (type.includes('HS')) {
         extIdObjParam.hsSearchId = id;
       }
@@ -346,10 +349,10 @@ const setHsSearchId = (input, id, useSecondaryProp = false) => {
         // then primary key shouldn't be overidden
         extIdObjParam.useSecondaryObject = useSecondaryProp;
       }
-      resultExternalId.push(extIdObjParam);
+      // resultExternalId.push(extIdObjParam);
     });
   }
-  return resultExternalId;
+  return extIdObjParam;
 };
 
 /**
@@ -368,6 +371,7 @@ const splitEventsForCreateUpdateV2 = async (inputs, destination) => {
   const resultInput = inputs.map((input) => {
     const { message } = input;
     const inputParam = input;
+    // eslint-disable-next-line prefer-const
     let { destinationExternalId, identifierType } = getDestinationExternalIDInfoForRetl(
       message,
       'HS',
@@ -382,7 +386,13 @@ const splitEventsForCreateUpdateV2 = async (inputs, destination) => {
     );
 
     if (filteredInfo.length > 0) {
-      inputParam.message.context.externalId = setHsSearchId(input, filteredInfo[0].id);
+      const searchId = setHsSearchId(input, filteredInfo[0].id);
+      message.context.lookupId = [
+        {
+          id: searchId,
+          type: 'hubspotId',
+        },
+      ];
       inputParam.message.action = 'update';
       return inputParam;
     }
@@ -413,7 +423,7 @@ const splitEventsForCreateUpdateV2 = async (inputs, destination) => {
       }
     }
     // if not found in the existing contacts, then it's a new contact
-    inputParam.message.action = 'create';
+    inputParam.message.action = 'insert';
     return inputParam;
   });
 

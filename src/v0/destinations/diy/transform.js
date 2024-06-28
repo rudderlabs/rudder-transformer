@@ -4,6 +4,7 @@ const { ConfigurationError, InstrumentationError } = require('@rudderstack/integ
 const {
   defaultRequestConfig,
   getHashFromArray,
+  simpleProcessRouterDest,
   handleRtTfSingleEventError,
 } = require('../../util');
 const { groupEvents, removePrefix, handleMappings, removeExtraFields } = require('./utils');
@@ -154,43 +155,47 @@ const process = (event) => {
 };
 
 const processRouterDest = (inputs, reqMetadata) => {
-  let batchResponseList = [];
-  const batchErrorRespList = [];
-  const successRespList = [];
   const { destination } = inputs[0];
-  inputs.forEach((event) => {
-    try {
-      if (event.message.statusCode) {
-        // already transformed event
-        successRespList.push({
-          message: event.message,
-          metadata: event.metadata,
-          destination,
-        });
-      } else {
-        // if not transformed
-        const messageList = process(event);
-        messageList.forEach((message) => {
-          const transformedPayload = {
-            message,
+  const { enableBatching } = destination?.Config || destination.config;
+  if (enableBatching === "1") {
+    let batchResponseList = [];
+    const batchErrorRespList = [];
+    const successRespList = [];
+    inputs.forEach((event) => {
+      try {
+        if (event.message.statusCode) {
+          // already transformed event
+          successRespList.push({
+            message: event.message,
             metadata: event.metadata,
             destination,
-          };
-          successRespList.push(transformedPayload);
-        });
+          });
+        } else {
+          // if not transformed
+          const messageList = process(event);
+          messageList.forEach((message) => {
+            const transformedPayload = {
+              message,
+              metadata: event.metadata,
+              destination,
+            };
+            successRespList.push(transformedPayload);
+          });
+        }
+      } catch (error) {
+        const errRespEvent = handleRtTfSingleEventError(event, error, reqMetadata);
+        batchErrorRespList.push(errRespEvent);
       }
-    } catch (error) {
-      const errRespEvent = handleRtTfSingleEventError(event, error, reqMetadata);
-      batchErrorRespList.push(errRespEvent);
+    });
+    if (successRespList.length > 0) {
+      batchResponseList = enableBatching
+        ? groupEvents(successRespList)
+        : removeExtraFields(successRespList);
     }
-  });
-  if (successRespList.length > 0) {
-    const { enableBatching } = destination?.Config || destination.config;
-    batchResponseList = enableBatching
-      ? groupEvents(successRespList)
-      : removeExtraFields(successRespList);
+    return [...batchResponseList, ...batchErrorRespList];
   }
-  return [...batchResponseList, ...batchErrorRespList];
+  const respList = simpleProcessRouterDest(inputs, process, reqMetadata);
+  return respList;
 };
 
 module.exports = { processEvent, process, processRouterDest };

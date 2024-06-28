@@ -62,7 +62,7 @@ const trackResponseBuilder = (message, destination) => {
     const { endpoint, method, headers, queryParams, pathVariables, mappings, batchSize } = request;
     const headersObject = handleMappings(message, headers, 'value', 'key');
     const params = handleMappings(message, queryParams, 'value', 'key');
-    const pathVariablesObj = getHashFromArray(pathVariables, 'pathVariable', 'pathValue', false);
+    const pathVariablesObj = getHashFromArray(pathVariables, 'name', 'pathValue', false);
     const payload = handleMappings(message, mappings);
     payload.maxBatchSize = batchSize;
     const updatedEndpoint = endpoint.replace(/{(\w+)}/g, (_, key) => {

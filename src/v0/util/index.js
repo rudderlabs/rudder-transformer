@@ -24,6 +24,8 @@ const {
   OAuthSecretError,
   getErrorRespEvents,
 } = require('@rudderstack/integrations-lib');
+
+const { JsonTemplateEngine, PathType } = require('@rudderstack/json-template-engine');
 const logger = require('../../logger');
 const stats = require('../../util/stats');
 const { DestCanonicalNames, DestHandlerMap } = require('../../constants/destinationCanonicalNames');
@@ -56,6 +58,18 @@ const isNull = (x) => lodash.isNull(x);
 // ========================================================================
 // GENERIC UTLITY
 // ========================================================================
+
+const removeUndefinedAndNullRecurse = (obj) => {
+  // eslint-disable-next-line no-restricted-syntax
+  for (const key in obj) {
+    if (obj[key] === null || obj[key] === undefined) {
+      // eslint-disable-next-line no-param-reassign
+      delete obj[key];
+    } else if (typeof obj[key] === 'object') {
+      removeUndefinedAndNullRecurse(obj[key]);
+    }
+  }
+};
 
 const getEventTime = (message) => {
   try {
@@ -1433,13 +1447,13 @@ const getTrackingPlanMetadata = (metadata) => ({
   workspaceId: metadata.workspaceId,
 });
 
-const getMetadata = (metadata) => ({
+const getMetadata = (metadata = {}) => ({
   sourceType: metadata.sourceType,
   destinationType: metadata.destinationType,
   k8_namespace: metadata.namespace,
 });
 
-const getTransformationMetadata = (metadata) => ({
+const getTransformationMetadata = (metadata = {}) => ({
   transformationId: metadata.transformationId,
   workspaceId: metadata.workspaceId,
 });
@@ -2234,6 +2248,9 @@ const validateEventAndLowerCaseConversion = (event, isMandatory, convertToLowerC
   return convertToLowerCase ? event.toString().toLowerCase() : event.toString();
 };
 
+const applyCustomMappings = (message, mappings) =>
+  JsonTemplateEngine.createAsSync(mappings, { defaultPathType: PathType.JSON }).evaluate(message);
+
 // ========================================================================
 // EXPORTS
 // ========================================================================
@@ -2242,6 +2259,7 @@ module.exports = {
   ErrorMessage,
   addExternalIdToTraits,
   adduserIdFromExternalId,
+  applyCustomMappings,
   base64Convertor,
   batchMultiplexedEvents,
   checkEmptyStringInarray,
@@ -2318,6 +2336,7 @@ module.exports = {
   removeUndefinedNullEmptyExclBoolInt,
   removeUndefinedNullValuesAndEmptyObjectArray,
   removeUndefinedValues,
+  removeUndefinedAndNullRecurse,
   returnArrayOfSubarrays,
   stripTrailingSlash,
   toTitleCase,

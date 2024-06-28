@@ -22,7 +22,7 @@ const {
   NetworkInstrumentationError,
 } = require('@rudderstack/integrations-lib');
 const { FilteredEventsError } = require('../../v0/util/errorTypes');
-const { logger } = require('../../logger');
+const logger = require('../../logger');
 const pkg = require('../../../package.json');
 
 const {

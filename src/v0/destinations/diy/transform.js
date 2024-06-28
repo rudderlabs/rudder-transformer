@@ -53,7 +53,10 @@ const trackResponseBuilder = (message, destination) => {
         }
     ]
     */
-  const eventRequest = track.filter((key) => message.event === key.event);
+  const eventRequest = track.filter((key) => message.event === key.eventName);
+  if (eventRequest.length === 0) {
+    throw new ConfigurationError(`No Configuration found for event ${message.event}`);
+  }
   eventRequest.forEach((request) => {
     const { endpoint, method, headers, queryParams, pathVariables, mappings, batchSize } = request;
     const headersObject = handleMappings(message, headers, 'value', 'key');

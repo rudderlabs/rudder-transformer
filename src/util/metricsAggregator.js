@@ -25,15 +25,35 @@ class MetricsAggregator {
     this.registerCallbacks();
   }
 
+  // onWorkerMessage is called when the master receives a message from a worker
+  async onWorkerMessage(worker, message) {
+    if (message.type === GET_METRICS_RES) {
+      logger.debug(`[MetricsAggregator] Master received metrics from worker ${worker.id}`);
+      await this.handleMetricsResponse(message);
+    }
+  }
+
+  // onMasterMessage is called when a worker receives a message from the master
+  async onMasterMessage(message) {
+    if (message.type === GET_METRICS_REQ) {
+      logger.debug(`[MetricsAggregator] Worker ${cluster.worker.id} received metrics request`);
+      try {
+        const metrics = await this.prometheusInstance.prometheusRegistry.getMetricsAsJSON();
+        cluster.worker.send({ type: GET_METRICS_RES, metrics });
+      } catch (error) {
+        cluster.worker.send({ type: GET_METRICS_RES, error: error.message });
+      }
+    } else if (message.type === RESET_METRICS_REQUEST) {
+      logger.info(`[MetricsAggregator] Worker ${cluster.worker.id} received reset metrics request`);
+      this.prometheusInstance.prometheusRegistry.resetMetrics();
+      logger.info(`[MetricsAggregator] Worker ${cluster.worker.id} reset metrics successfully`);
+    }
+  }
+
   registerCallbacks() {
     if (cluster.isPrimary) {
       // register callback for master process
-      cluster.on('message', async (worker, message) => {
-        if (message.type === GET_METRICS_RES) {
-          logger.debug(`[MetricsAggregator] Master received metrics from worker ${worker.id}`);
-          await this.handleMetricsResponse(message);
-        }
-      });
+      cluster.on('message', this.onWorkerMessage.bind(this));
       // register callback to reset metrics if enabled
       if (METRICS_AGGREGATOR_PERIODIC_RESET_ENABLED) {
         this.registerCallbackForPeriodicReset(METRICS_AGGREGATOR_PERIODIC_RESET_INTERVAL_SECONDS);
@@ -41,23 +61,7 @@ class MetricsAggregator {
       return;
     }
     // register callback for worker process
-    cluster.worker.on('message', async (message) => {
-      if (message.type === GET_METRICS_REQ) {
-        logger.debug(`[MetricsAggregator] Worker ${cluster.worker.id} received metrics request`);
-        try {
-          const metrics = await this.prometheusInstance.prometheusRegistry.getMetricsAsJSON();
-          cluster.worker.send({ type: GET_METRICS_RES, metrics });
-        } catch (error) {
-          cluster.worker.send({ type: GET_METRICS_RES, error: error.message });
-        }
-      } else if (message.type === RESET_METRICS_REQUEST) {
-        logger.info(
-          `[MetricsAggregator] Worker ${cluster.worker.id} received reset metrics request`,
-        );
-        this.prometheusInstance.prometheusRegistry.resetMetrics();
-        logger.info(`[MetricsAggregator] Worker ${cluster.worker.id} reset metrics successfully`);
-      }
-    });
+    cluster.worker.on('message', this.onMasterMessage.bind(this));
   }
 
   registerCallbackForPeriodicReset(intervalSeconds) {
@@ -164,4 +168,10 @@ class MetricsAggregator {
   }
 }
 
-module.exports = { MetricsAggregator, AGGREGATE_METRICS_REQ, AGGREGATE_METRICS_RES };
+module.exports = {
+  MetricsAggregator,
+  GET_METRICS_REQ,
+  GET_METRICS_RES,
+  AGGREGATE_METRICS_REQ,
+  AGGREGATE_METRICS_RES,
+};

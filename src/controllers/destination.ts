@@ -107,7 +107,7 @@ export class DestinationController {
       events = DynamicConfigParser.process(timestampCorrectEvents);
       // this is where events should be translated from any type to record event.
       events = ControllerUtility.transformToRecordEvent(events);
-      console.log('transformed events', events);
+      console.log('[Hubspot]:: Transformed events', JSON.stringify(events));
       // transform any event to record type
       resplist = await integrationService.doRouterTransformation(
         events,

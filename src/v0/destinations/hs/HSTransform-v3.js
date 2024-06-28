@@ -67,7 +67,7 @@ export const processSingleAgnosticEvent = (message) => {
    * if object === identify && action = update --> update contact
    * else track event
    */
-
+  console.log('[Hubspot]:: Inside transformer V3');
   let endPoint;
   let tempPayload = {};
   let operation;

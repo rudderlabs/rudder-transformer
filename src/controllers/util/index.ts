@@ -126,7 +126,8 @@ export class ControllerUtility {
     if (!Object.keys(agnosticDestinations).includes(destName.toUpperCase())) {
       return events;
     }
-    console.log('transforming to record event');
+
+    console.log('[Hubspot]:: Transforming to record event');
     events.forEach((event) => {
       // type of event
       // create fields from destination config

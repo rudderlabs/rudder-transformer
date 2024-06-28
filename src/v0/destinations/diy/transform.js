@@ -56,6 +56,7 @@ const trackResponseBuilder = (message, destination) => {
     const params = handleMappings(message, queryParams, 'value', 'key');
     const pathVariablesObj = getHashFromArray(pathVariables, 'pathVariable', 'pathValue', false);
     const payload = handleMappings(message, mappings);
+    payload.maxBatchSize = batchSize;
     const updatedEndpoint = endpoint.replace(/{(\w+)}/g, (_, key) => {
       if (!pathVariablesObj[key]) {
         throw new Error(`Key ${key} not found in the pathVariables`);

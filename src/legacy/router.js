@@ -644,7 +644,6 @@ if (startDestTransformer) {
       ctx.status = ctxStatusCode;
       ctx.set('apiVersion', API_VERSION);
 
-      stats.timing('user_transform_request_latency', startTime, {});
       stats.timingSummary('user_transform_request_latency_summary', startTime, {});
       stats.increment('user_transform_requests', {});
       stats.histogram('user_transform_output_events', transformedEvents.length, {});

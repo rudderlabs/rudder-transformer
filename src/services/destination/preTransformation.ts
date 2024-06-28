@@ -37,10 +37,8 @@ export class DestinationPreTransformationService {
       if (!isEmptyObject(data)) {
         eventsProcessed.forEach((event) => {
           if (event.destination?.Config?.customMappingId) {
-            event.destination.Config.commonMappings =
-              data[event.destination.Config.customMappingId].commonMappings;
             event.destination.Config.eventsMapping =
-              data[event.destination.Config.customMappingId].eventMappings;
+              data[event.destination.Config.customMappingId].eventsMapping;
           }
         });
       }

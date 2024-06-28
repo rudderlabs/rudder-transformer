@@ -248,6 +248,7 @@ type RudderMessage = {
   destinationFields?: string;
   recordId?: string;
 rudderId?: string;
+fields?: object;
 };
 
 type ErrorDetailer = {

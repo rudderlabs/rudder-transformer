@@ -191,6 +191,9 @@ export class ControllerUtility {
   }
 
   public static getFieldFromDestConfig(eventMessage: RudderMessage, destName: string) {
+    if (eventMessage.type === EventType.RECORD) {
+      return eventMessage.fields;
+    }
     // go to src/v0/destinations/destName/agnoisticConfig.json
     const isVdmEnabled = eventMessage.context['mappedToDestination'];
     const eventTypeName = eventMessage.type;
@@ -203,7 +206,6 @@ export class ControllerUtility {
         eventMessage,
         destName,
       );
-
       if (identifierType && destinationExternalId) {
         fields[identifierType] = destinationExternalId;
       }
@@ -225,7 +227,8 @@ export class ControllerUtility {
     console.log(configPath);
     const agnosticConfig = JSON.parse(fs.readFileSync(configPath, 'utf8'));
     let object;
-    if (getDestinationExternalIDInfoForRetl(eventMessage, destName).objectType) {
+    console.log(getDestinationExternalIDInfoForRetl(eventMessage, destName))
+        if (getDestinationExternalIDInfoForRetl(eventMessage, destName).objectType) {
       object = getDestinationExternalIDInfoForRetl(eventMessage, destName).objectType;
     } else {
       object = eventTypeName;

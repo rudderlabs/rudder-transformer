@@ -99,7 +99,7 @@ async function metricsController(ctx) {
 
 async function resetMetricsController(ctx) {
   if (!enableStats || !statsClient) {
-    ctx.status = 404;
+    ctx.status = 501;
     ctx.body = `Not supported`;
     return;
   }

@@ -1,4 +1,4 @@
-const { MetricsAggregator, AGGREGATE_METRICS_REQ, GET_METRICS_REQ, GET_METRICS_RES } = require('../../src/util/metricsAggregator');
+const { MetricsAggregator } = require('../../src/util/metricsAggregator');
 const { Worker } = require('worker_threads');
 jest.mock('cluster');
 const cluster = require('cluster');

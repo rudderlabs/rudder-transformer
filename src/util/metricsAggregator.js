@@ -2,11 +2,13 @@
 const cluster = require('cluster');
 const logger = require('../logger');
 const { Worker, isMainThread } = require('worker_threads');
-const GET_METRICS_REQ = 'rudder-transformer:getMetricsReq';
-const GET_METRICS_RES = 'rudder-transformer:getMetricsRes';
-const AGGREGATE_METRICS_REQ = 'rudder-transformer:aggregateMetricsReq';
-const AGGREGATE_METRICS_RES = 'rudder-transformer:aggregateMetricsRes';
-const RESET_METRICS_REQUEST = 'rudder-transformer:resetMetricsReq';
+const MESSAGE_TYPES = {
+  GET_METRICS_REQ: 'rudder-transformer:getMetricsReq',
+  GET_METRICS_RES: 'rudder-transformer:getMetricsRes',
+  AGGREGATE_METRICS_REQ: 'rudder-transformer:aggregateMetricsReq',
+  AGGREGATE_METRICS_RES: 'rudder-transformer:aggregateMetricsRes',
+  RESET_METRICS_REQ: 'rudder-transformer:resetMetricsReq',
+};
 const METRICS_AGGREGATOR_PERIODIC_RESET_ENABLED =
   process.env.METRICS_AGGREGATOR_PERIODIC_RESET_ENABLED === 'true';
 const METRICS_AGGREGATOR_PERIODIC_RESET_INTERVAL_SECONDS = process.env
@@ -27,7 +29,7 @@ class MetricsAggregator {
 
   // onWorkerMessage is called when the master receives a message from a worker
   async onWorkerMessage(worker, message) {
-    if (message.type === GET_METRICS_RES) {
+    if (message.type === MESSAGE_TYPES.GET_METRICS_RES) {
       logger.debug(`[MetricsAggregator] Master received metrics from worker ${worker.id}`);
       await this.handleMetricsResponse(message);
     }
@@ -35,15 +37,15 @@ class MetricsAggregator {
 
   // onMasterMessage is called when a worker receives a message from the master
   async onMasterMessage(message) {
-    if (message.type === GET_METRICS_REQ) {
+    if (message.type === MESSAGE_TYPES.GET_METRICS_REQ) {
       logger.debug(`[MetricsAggregator] Worker ${cluster.worker.id} received metrics request`);
       try {
         const metrics = await this.prometheusInstance.prometheusRegistry.getMetricsAsJSON();
-        cluster.worker.send({ type: GET_METRICS_RES, metrics });
+        cluster.worker.send({ type: MESSAGE_TYPES.GET_METRICS_RES, metrics });
       } catch (error) {
-        cluster.worker.send({ type: GET_METRICS_RES, error: error.message });
+        cluster.worker.send({ type: MESSAGE_TYPES.GET_METRICS_RES, error: error.message });
       }
-    } else if (message.type === RESET_METRICS_REQUEST) {
+    } else if (message.type === MESSAGE_TYPES.RESET_METRICS_REQ) {
       logger.info(`[MetricsAggregator] Worker ${cluster.worker.id} received reset metrics request`);
       this.prometheusInstance.prometheusRegistry.resetMetrics();
       logger.info(`[MetricsAggregator] Worker ${cluster.worker.id} reset metrics successfully`);
@@ -82,7 +84,7 @@ class MetricsAggregator {
       );
 
       this.workerThread.on('message', (message) => {
-        if ((message.type = AGGREGATE_METRICS_RES)) {
+        if (message.type === MESSAGE_TYPES.AGGREGATE_METRICS_RES) {
           if (message.error) {
             this.rejectFunc(new Error(message.error));
             this.resetAggregator();
@@ -122,13 +124,16 @@ class MetricsAggregator {
       for (const id in cluster.workers) {
         this.pendingMetricRequests++;
         logger.debug(`[MetricsAggregator] Requesting metrics from worker ${id}`);
-        cluster.workers[id].send({ type: GET_METRICS_REQ });
+        cluster.workers[id].send({ type: MESSAGE_TYPES.GET_METRICS_REQ });
       }
     });
   }
 
   async aggregateMetricsInWorkerThread() {
-    this.workerThread.postMessage({ type: AGGREGATE_METRICS_REQ, metrics: this.metricsBuffer });
+    this.workerThread.postMessage({
+      type: MESSAGE_TYPES.AGGREGATE_METRICS_REQ,
+      metrics: this.metricsBuffer,
+    });
   }
 
   async handleMetricsResponse(message) {
@@ -153,7 +158,7 @@ class MetricsAggregator {
   resetMetrics() {
     for (const id in cluster.workers) {
       logger.info(`[MetricsAggregator] Resetting metrics for worker ${id}`);
-      cluster.workers[id].send({ type: RESET_METRICS_REQUEST });
+      cluster.workers[id].send({ type: MESSAGE_TYPES.RESET_METRICS_REQ });
     }
   }
 
@@ -170,8 +175,5 @@ class MetricsAggregator {
 
 module.exports = {
   MetricsAggregator,
-  GET_METRICS_REQ,
-  GET_METRICS_RES,
-  AGGREGATE_METRICS_REQ,
-  AGGREGATE_METRICS_RES,
+  MESSAGE_TYPES,
 };

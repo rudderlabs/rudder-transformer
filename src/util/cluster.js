@@ -24,8 +24,6 @@ async function shutdownWorkers() {
     process.kill(worker.process.pid);
     logger.error(`Sent kill signal to worker ${worker.id} (pid: ${worker.process.pid})`);
   });
-  // TODO: find a better way to terminate worker thread, this is a temporary hack
-  // ideally we should put a await here, we will fix this in future
   await shutdownMetricsClient();
 }
 

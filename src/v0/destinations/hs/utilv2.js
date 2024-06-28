@@ -70,60 +70,83 @@ const batchEvents2 = (destEvents) => {
   let batchedResponseList = [];
   const trackResponseList = [];
   let staticDestObject;
-  // rETL specific chunk
+
   const createAllObjectsEventChunk = [];
   const updateAllObjectsEventChunk = [];
   const metadataCreateArray = [];
   const metadataUpdateArray = [];
-  let endPointUpdate;
-  let endPointCreate;
 
   destEvents.forEach((event) => {
-    // handler for track call
-    // track call does not have batch endpoint
     const { message, metadata, destination } = event;
     staticDestObject = destination;
 
     if (message.operation === 'create') {
-      createAllObjectsEventChunk.push(message.tempPayload);
-      metadataCreateArray.push(metadata);
-      // eslint-disable-next-line unicorn/consistent-destructuring
-      endPointCreate = event?.message?.endPoint;
+      createAllObjectsEventChunk.push({
+        tempPayload: message.tempPayload,
+        endPoint: message.endPoint,
+        objectType: message.objectType,
+      });
+      metadataCreateArray.push({ metadata, objectType: message.objectType });
     } else if (message.operation === 'update') {
-      updateAllObjectsEventChunk.push(message.tempPayload);
-      metadataUpdateArray.push(metadata);
-      // eslint-disable-next-line unicorn/consistent-destructuring
-      endPointUpdate = event?.message?.endPoint;
+      updateAllObjectsEventChunk.push({
+        tempPayload: message.tempPayload,
+        endPoint: message.endPoint,
+        objectType: message.objectType,
+      });
+      metadataUpdateArray.push({ metadata, objectType: message.objectType });
     }
   });
 
-  const arrayChunksIdentifyCreateObjects = lodash.chunk(createAllObjectsEventChunk, MAX_BATCH_SIZE);
-  const arrayChunksMetadataCreateObjects = lodash.chunk(metadataCreateArray, MAX_BATCH_SIZE);
+  const groupedCreateEvents = lodash.groupBy(createAllObjectsEventChunk, 'objectType');
+  const groupedUpdateEvents = lodash.groupBy(updateAllObjectsEventChunk, 'objectType');
+  const groupedMetadataCreate = lodash.groupBy(metadataCreateArray, 'objectType');
+  const groupedMetadataUpdate = lodash.groupBy(metadataUpdateArray, 'objectType');
 
-  const arrayChunksIdentifyUpdateObjects = lodash.chunk(updateAllObjectsEventChunk, MAX_BATCH_SIZE);
-  const arrayChunksMetadataUpdateObjects = lodash.chunk(metadataUpdateArray, MAX_BATCH_SIZE);
-
-  // batching up 'create' all objects endpoint chunks
-  if (arrayChunksIdentifyCreateObjects.length > 0) {
-    batchedResponseList = batchIdentify2(
-      arrayChunksIdentifyCreateObjects,
-      batchedResponseList,
-      endPointCreate,
-      staticDestObject,
-      arrayChunksMetadataCreateObjects,
+  // Iterate over grouped create events
+  Object.entries(groupedCreateEvents).forEach(([objectType, events]) => {
+    const endPointCreate = events[0].endPoint;
+    const arrayChunksIdentifyCreateObjects = lodash.chunk(
+      events.map((event) => event.tempPayload),
+      MAX_BATCH_SIZE,
     );
-  }
-
-  // batching up 'update' all objects endpoint chunks
-  if (arrayChunksIdentifyUpdateObjects.length > 0) {
-    batchedResponseList = batchIdentify2(
-      arrayChunksIdentifyUpdateObjects,
-      batchedResponseList,
-      endPointUpdate,
-      staticDestObject,
-      arrayChunksMetadataUpdateObjects,
+    const arrayChunksMetadataCreateObjects = lodash.chunk(
+      groupedMetadataCreate[objectType].map((item) => item.metadata),
+      MAX_BATCH_SIZE,
     );
-  }
+
+    if (arrayChunksIdentifyCreateObjects.length > 0) {
+      batchedResponseList = batchIdentify2(
+        arrayChunksIdentifyCreateObjects,
+        batchedResponseList,
+        endPointCreate,
+        staticDestObject,
+        arrayChunksMetadataCreateObjects,
+      );
+    }
+  });
+
+  // Iterate over grouped update events
+  Object.entries(groupedUpdateEvents).forEach(([objectType, events]) => {
+    const endPointUpdate = events[0].endPoint;
+    const arrayChunksIdentifyUpdateObjects = lodash.chunk(
+      events.map((event) => event.tempPayload),
+      MAX_BATCH_SIZE,
+    );
+    const arrayChunksMetadataUpdateObjects = lodash.chunk(
+      groupedMetadataUpdate[objectType].map((item) => item.metadata),
+      MAX_BATCH_SIZE,
+    );
+
+    if (arrayChunksIdentifyUpdateObjects.length > 0) {
+      batchedResponseList = batchIdentify2(
+        arrayChunksIdentifyUpdateObjects,
+        batchedResponseList,
+        endPointUpdate,
+        staticDestObject,
+        arrayChunksMetadataUpdateObjects,
+      );
+    }
+  });
 
   return batchedResponseList.concat(trackResponseList);
 };

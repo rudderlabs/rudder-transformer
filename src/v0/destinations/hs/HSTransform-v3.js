@@ -93,5 +93,5 @@ export const processSingleAgnosticEvent = (message) => {
     };
     operation = 'update';
   }
-  return { tempPayload, endPoint, operation };
+  return { tempPayload, endPoint, operation, objectType };
 };

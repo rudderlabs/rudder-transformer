@@ -75,7 +75,8 @@
     "KODDI": true
   },
   "agnosticDestinations": {
-    "HS": true
+    "HS": true,
+    "FB_CUSTOM_AUDIENCE": true
   },
   "regulations": [
     "BRAZE",

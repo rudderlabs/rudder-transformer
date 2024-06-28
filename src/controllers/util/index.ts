@@ -15,10 +15,12 @@ import { getValueFromMessage, getDestinationExternalIDInfoForRetl } from '../../
 import genericFieldMap from '../../v0/util/data/GenericFieldMapping.json';
 import { EventType, MappedToDestinationKey } from '../../constants';
 import { EVENT_TYPE } from 'rudder-transformer-cdk/build/constants';
+import { agnosticDestinations } from '../../features.json';
 
 type RECORD_EVENT = {
   type: 'record';
   action: string;
+  destinationFields?: string,
   fields: object;
   channel: string;
   context: object;
@@ -121,7 +123,7 @@ export class ControllerUtility {
     // if true then process this methid else return
 
     const destName = events[0].destination.DestinationDefinition.Name;
-    if (!events[0].destination.DestinationDefinition.Config.isDestinationAgnostic) {
+    if (!Object.keys(agnosticDestinations).includes(destName.toUpperCase())) {
       return events;
     }
     events.forEach((event) => {
@@ -144,11 +146,12 @@ export class ControllerUtility {
       const translatedRecord: RECORD_EVENT = {
         type: 'record',
         action: action,
+        destinationFields: eventMessage.destinationFields,
         fields: fields,
         channel: eventMessage.channel,
         context: eventMessage.context,
-        recordid: eventMessage.messageId,
-        rudderid: eventMessage.messageId,
+        recordid: eventMessage.recordId || "",
+        rudderid: eventMessage.rudderId || "",
         messageid: eventMessage.messageId,
       };
       event.message = translatedRecord;

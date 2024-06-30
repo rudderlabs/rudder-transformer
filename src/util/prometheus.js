@@ -930,6 +930,22 @@ class Prometheus {
           'workspaceId',
         ],
       },
+      {
+        name: 'user_transform_used_heap_size',
+        help: 'user_transform_used_heap_size',
+        type: 'summary',
+        labelNames: [
+          'identifier',
+          'testMode',
+          'sourceType',
+          'destinationType',
+          'k8_namespace',
+          'errored',
+          'statusCode',
+          'transformationId',
+          'workspaceId',
+        ],
+      },
     ];
 
     metrics.forEach((metric) => {

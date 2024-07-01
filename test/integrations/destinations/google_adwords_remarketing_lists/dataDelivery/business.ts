@@ -1,5 +1,5 @@
 import {
-  generateMetadata,
+  generateGoogleOAuthMetadata,
   generateProxyV0Payload,
   generateProxyV1Payload,
 } from '../../../testUtils';
@@ -90,7 +90,7 @@ const invalidArgumentRequestPayload = {
   ],
 };
 
-const metadataArray = [generateMetadata(1)];
+const metadataArray = [generateGoogleOAuthMetadata(1)];
 
 const expectedStatTags = {
   destType: 'GOOGLE_ADWORDS_REMARKETING_LISTS',
@@ -272,7 +272,7 @@ export const testScenariosForV1API = [
             response: [
               {
                 error: '""',
-                metadata: generateMetadata(1),
+                metadata: generateGoogleOAuthMetadata(1),
                 statusCode: 200,
               },
             ],
@@ -318,7 +318,7 @@ export const testScenariosForV1API = [
               {
                 error:
                   'Request contains an invalid argument. during ga_audience response transformation',
-                metadata: generateMetadata(1),
+                metadata: generateGoogleOAuthMetadata(1),
                 statusCode: 400,
               },
             ],
@@ -363,7 +363,7 @@ export const testScenariosForV1API = [
             response: [
               {
                 error: '""',
-                metadata: generateMetadata(1),
+                metadata: generateGoogleOAuthMetadata(1),
                 statusCode: 200,
               },
             ],

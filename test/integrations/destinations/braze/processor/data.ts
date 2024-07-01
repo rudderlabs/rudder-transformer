@@ -4111,4 +4111,218 @@ export const data = [
       },
     },
   },
+  {
+    name: 'braze',
+    description: 'Test 30',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              type: 'track',
+              event: 'Order Completed',
+              sentAt: '2020-09-14T12:09:37.491Z',
+              userId: 'Randomuser2222',
+              channel: 'web',
+              context: {
+                os: {
+                  name: '',
+                  version: '',
+                },
+                app: {
+                  name: 'RudderLabs JavaScript SDK',
+                  build: '1.0.0',
+                  version: '1.1.3',
+                  namespace: 'com.rudderlabs.javascript',
+                },
+                page: {
+                  url: 'file:///Users/manashi/Desktop/rudder-all-sdk-application-testing/Fullstory%20test%20By%20JS%20SDK/braze.html',
+                  path: '/Users/manashi/Desktop/rudder-all-sdk-application-testing/Fullstory%20test%20By%20JS%20SDK/braze.html',
+                  title: 'Fullstory Test',
+                  search: '',
+                  referrer: '',
+                },
+                locale: 'en-GB',
+                screen: {
+                  density: 2,
+                },
+                traits: {
+                  email: 'manashi@gmaiol.com',
+                },
+                library: {
+                  name: 'RudderLabs JavaScript SDK',
+                  version: '1.1.3',
+                },
+                userAgent:
+                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.102 Safari/537.36',
+              },
+              messageId: '24ecc509-ce3e-473c-8483-ba1ea2c195cb',
+              properties: {
+                products: [
+                  null,
+                  {
+                    sku: '45790-32',
+                    url: 'https://www.example.com/product/path',
+                    key1: {
+                      key11: 'value1',
+                      key22: 'value2',
+                    },
+                    name: 'Monopoly: 3rd Edition',
+                    price: 19,
+                    category: 'Games',
+                    quantity: 1,
+                    image_url: 'https:///www.example.com/product/path.jpg',
+                    currency78: 'USD',
+                    product_id: '507f1f77bcf86cd799439011',
+                  },
+                ],
+              },
+              anonymousId: 'c6ff1462-b692-43d6-8f6a-659efedc99ea',
+              integrations: {
+                All: true,
+              },
+              originalTimestamp: '2020-09-14T12:09:37.491Z',
+            },
+            destination: {
+              Config: {
+                restApiKey: 'dummyApiKey',
+                prefixProperties: true,
+                useNativeSDK: false,
+              },
+              DestinationDefinition: {
+                DisplayName: 'Braze',
+                ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
+                Name: 'BRAZE',
+              },
+              Enabled: true,
+              ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
+              Name: 'Braze',
+              Transformations: [],
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            statusCode: 400,
+            error:
+              'Invalid Order Completed event: Message properties and product at index: 0 is missing currency',
+            statTags: {
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              destType: 'BRAZE',
+              module: 'destination',
+              implementation: 'native',
+              feature: 'processor',
+            },
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'braze',
+    description: 'Test 31',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              type: 'track',
+              event: 'Order Completed',
+              sentAt: '2020-09-14T12:09:37.491Z',
+              userId: 'Randomuser2222',
+              channel: 'web',
+              context: {
+                os: {
+                  name: '',
+                  version: '',
+                },
+                app: {
+                  name: 'RudderLabs JavaScript SDK',
+                  build: '1.0.0',
+                  version: '1.1.3',
+                  namespace: 'com.rudderlabs.javascript',
+                },
+                page: {
+                  url: 'file:///Users/manashi/Desktop/rudder-all-sdk-application-testing/Fullstory%20test%20By%20JS%20SDK/braze.html',
+                  path: '/Users/manashi/Desktop/rudder-all-sdk-application-testing/Fullstory%20test%20By%20JS%20SDK/braze.html',
+                  title: 'Fullstory Test',
+                  search: '',
+                  referrer: '',
+                },
+                locale: 'en-GB',
+                screen: {
+                  density: 2,
+                },
+                traits: {
+                  email: 'manashi@gmaiol.com',
+                },
+                library: {
+                  name: 'RudderLabs JavaScript SDK',
+                  version: '1.1.3',
+                },
+                userAgent:
+                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.102 Safari/537.36',
+              },
+              messageId: '24ecc509-ce3e-473c-8483-ba1ea2c195cb',
+              properties: {
+                products: [undefined],
+              },
+              anonymousId: 'c6ff1462-b692-43d6-8f6a-659efedc99ea',
+              integrations: {
+                All: true,
+              },
+              originalTimestamp: '2020-09-14T12:09:37.491Z',
+            },
+            destination: {
+              Config: {
+                restApiKey: 'dummyApiKey',
+                prefixProperties: true,
+                useNativeSDK: false,
+              },
+              DestinationDefinition: {
+                DisplayName: 'Braze',
+                ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
+                Name: 'BRAZE',
+              },
+              Enabled: true,
+              ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
+              Name: 'Braze',
+              Transformations: [],
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            statusCode: 400,
+            error: 'Invalid Order Completed event: Products array is empty',
+            statTags: {
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              destType: 'BRAZE',
+              module: 'destination',
+              implementation: 'native',
+              feature: 'processor',
+            },
+          },
+        ],
+      },
+    },
+  },
 ];

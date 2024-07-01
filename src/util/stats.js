@@ -49,6 +49,14 @@ const timingSummary = (name, start, tags = {}) => {
   statsClient.timingSummary(name, start, tags);
 };
 
+const summary = (name, value, tags = {}) => {
+  if (!enableStats || !statsClient) {
+    return;
+  }
+
+  statsClient.summary(name, value, tags);
+};
+
 const increment = (name, tags = {}) => {
   if (!enableStats || !statsClient) {
     return;
@@ -103,6 +111,7 @@ module.exports = {
   init,
   timing,
   timingSummary,
+  summary,
   increment,
   counter,
   gauge,

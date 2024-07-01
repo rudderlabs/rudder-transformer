@@ -1,3 +1,4 @@
+import { data_v2 } from './data_v2';
 export const data = [
   {
     name: 'one_signal',
@@ -1542,4 +1543,5 @@ export const data = [
       },
     },
   },
+  ...data_v2,
 ];

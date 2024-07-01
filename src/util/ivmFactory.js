@@ -33,13 +33,13 @@ async function loadModule(isolateInternal, contextInternal, moduleName, moduleCo
 async function createIvm(
   code,
   libraryVersionIds,
-  versionId,
   transformationId,
   workspaceId,
   credentials,
   secrets,
   testMode,
 ) {
+  const trTags = { identifier: 'V1', transformationId, workspaceId };
   const createIvmStartTime = new Date();
   const logs = [];
   const libraries = await Promise.all(
@@ -187,9 +187,9 @@ async function createIvm(
     new ivm.Reference(async (resolve, ...args) => {
       try {
         const fetchStartTime = new Date();
-        const res = await fetchWithDnsWrapper(versionId, ...args);
+        const res = await fetchWithDnsWrapper(trTags, ...args);
         const data = await res.json();
-        stats.timing('fetch_call_duration', fetchStartTime, { versionId });
+        stats.timing('fetch_call_duration', fetchStartTime, trTags);
         resolve.applyIgnored(undefined, [new ivm.ExternalCopy(data).copyInto()]);
       } catch (error) {
         resolve.applyIgnored(undefined, [new ivm.ExternalCopy('ERROR').copyInto()]);
@@ -202,7 +202,7 @@ async function createIvm(
     new ivm.Reference(async (resolve, reject, ...args) => {
       try {
         const fetchStartTime = new Date();
-        const res = await fetchWithDnsWrapper(versionId, ...args);
+        const res = await fetchWithDnsWrapper(trTags, ...args);
         const headersContent = {};
         res.headers.forEach((value, header) => {
           headersContent[header] = value;
@@ -218,7 +218,7 @@ async function createIvm(
           data.body = JSON.parse(data.body);
         } catch (e) {}
 
-        stats.timing('fetchV2_call_duration', fetchStartTime, { versionId });
+        stats.timing('fetchV2_call_duration', fetchStartTime, trTags);
         resolve.applyIgnored(undefined, [new ivm.ExternalCopy(data).copyInto()]);
       } catch (error) {
         const err = JSON.parse(JSON.stringify(error, Object.getOwnPropertyNames(error)));
@@ -243,7 +243,7 @@ async function createIvm(
           throw new Error(`request to fetch geolocation failed with status code: ${res.status}`);
         }
         const geoData = await res.json();
-        stats.timing('geo_call_duration', geoStartTime, { versionId });
+        stats.timing('geo_call_duration', geoStartTime, trTags);
         resolve.applyIgnored(undefined, [new ivm.ExternalCopy(geoData).copyInto()]);
       } catch (error) {
         const err = JSON.parse(JSON.stringify(error, Object.getOwnPropertyNames(error)));
@@ -252,12 +252,12 @@ async function createIvm(
     }),
   );
 
-  await jail.set('_credential', function (key) {
+  await jail.set('_getCredential', function (key) {
     if (isNil(credentials) || !isObject(credentials)) {
       logger.error(
         `Error fetching credentials map for transformationID: ${transformationId} and workspaceId: ${workspaceId}`,
       );
-      stats.increment('credential_error_total', { transformationId, workspaceId });
+      stats.increment('credential_error_total', trTags);
       return undefined;
     }
     if (key === null || key === undefined) {
@@ -344,11 +344,11 @@ async function createIvm(
         ]);
       };
 
-      let credential = _credential;
-      delete _credential;
-      global.credential = function(...args) {
+      let getCredential = _getCredential;
+      delete _getCredential;
+      global.getCredential = function(...args) {
         const key = args[0];
-        return credential(new ivm.ExternalCopy(key).copyInto());
+        return getCredential(new ivm.ExternalCopy(key).copyInto());
       };
 
       return new ivm.Reference(function forwardMainPromise(
@@ -416,7 +416,7 @@ async function createIvm(
     reference: true,
   });
   const fName = availableFuncNames[0];
-  stats.timing('createivm_duration', createIvmStartTime);
+  stats.timing('createivm_duration', createIvmStartTime, trTags);
   // TODO : check if we can resolve this
   // eslint-disable-next-line no-async-promise-executor
 
@@ -446,7 +446,6 @@ async function getFactory(
   libraryVersionIds,
   transformationId,
   workspaceId,
-  versionId,
   credentials,
   secrets,
   testMode,
@@ -456,7 +455,6 @@ async function getFactory(
       return createIvm(
         code,
         libraryVersionIds,
-        versionId,
         transformationId,
         workspaceId,
         credentials,

@@ -573,6 +573,7 @@ export const generateMetadata = (jobId: number): any => {
     workspaceId: 'default-workspaceId',
     secret: {
       accessToken: 'default-accessToken',
+      access_token: 'default-accessToken', // applicable for google destinations
     },
     dontBatch: false,
   };

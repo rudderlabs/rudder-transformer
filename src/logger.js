@@ -4,7 +4,7 @@ const { getMatchedMetadata } = require('./util/logger');
 // LOGGER_IMPL can be `console` or `winston`
 const loggerImpl = process.env.LOGGER_IMPL ?? 'winston';
 
-let logLevel = process.env.LOG_LEVEL ?? 'error';
+let logLevel = (process.env.LOG_LEVEL ?? 'error').toLowerCase();
 
 const logger = structuredLogger({
   level: logLevel,

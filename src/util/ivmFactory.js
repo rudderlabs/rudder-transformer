@@ -252,7 +252,7 @@ async function createIvm(
     }),
   );
 
-  await jail.set('_credential', function (key) {
+  await jail.set('_getCredential', function (key) {
     if (isNil(credentials) || !isObject(credentials)) {
       logger.error(
         `Error fetching credentials map for transformationID: ${transformationId} and workspaceId: ${workspaceId}`,
@@ -344,11 +344,11 @@ async function createIvm(
         ]);
       };
 
-      let credential = _credential;
-      delete _credential;
-      global.credential = function(...args) {
+      let getCredential = _getCredential;
+      delete _getCredential;
+      global.getCredential = function(...args) {
         const key = args[0];
-        return credential(new ivm.ExternalCopy(key).copyInto());
+        return getCredential(new ivm.ExternalCopy(key).copyInto());
       };
 
       return new ivm.Reference(function forwardMainPromise(

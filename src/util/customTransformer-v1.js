@@ -89,7 +89,12 @@ async function userTransformHandlerV1(
     throw err;
   } finally {
     logger.debug(`Destroying IsolateVM`);
-    const { used_heap_size } = isolatevm.isolate?.getHeapStatisticsSync();
+    let used_heap_size = 0;
+    try {
+      used_heap_size = isolatevm.isolate.getHeapStatisticsSync()?.used_heap_size || 0;
+    } catch (err) {
+      logger.error(`Error encountered while getting heap size: ${err.message}`);
+    }
     isolatevmFactory.destroy(isolatevm);
     // send the observability stats
     const tags = {

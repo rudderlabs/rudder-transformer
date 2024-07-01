@@ -15,7 +15,7 @@ All notable changes to this project will be documented in this file. See [standa
 * onboard closeCRM source ([#3467](https://github.com/rudderlabs/rudder-transformer/issues/3467)) ([bba1a3b](https://github.com/rudderlabs/rudder-transformer/commit/bba1a3b7f09e15f5a59aeed22593751d46960ebb))
 * onboard klaviyo bulk upload destination ([#3348](https://github.com/rudderlabs/rudder-transformer/issues/3348)) ([f55c481](https://github.com/rudderlabs/rudder-transformer/commit/f55c4818155cfbbfeda761153b036563e0877329))
 * onboarding clicksend destination ([#3486](https://github.com/rudderlabs/rudder-transformer/issues/3486)) ([85c8ea7](https://github.com/rudderlabs/rudder-transformer/commit/85c8ea70d661f3692cd9dc1cef8151a474892408))
-* add ability to aggregate metrics in a thread ([#3458](https://github.com/rudderlabs/rudder-transformer/pull/3458))
+* add ability to aggregate metrics in a thread ([#3458](https://github.com/rudderlabs/rudder-transformer/pull/3458)) ([6be9d3e](https://github.com/rudderlabs/rudder-transformer/commit/6be9d3e727520ec01697d78a868d9c1a1e4ea085))
 
 
 ### Bug Fixes

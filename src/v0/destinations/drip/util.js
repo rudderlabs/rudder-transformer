@@ -54,11 +54,11 @@ const userExists = async (Config, id, metadata) => {
     );
   }
 
-  const error = httpResponse.response.response;
+  const error = httpResponse.response?.response;
   let errMsg = '';
   let errStatus = 400;
-  if (httpResponse.response.response.status) {
-    errStatus = httpResponse.response.response.status || 400;
+  if (error) {
+    errStatus = error.status || 400;
     errMsg = error.data ? JSON.stringify(error.data) : 'error response not found';
   }
   throw new NetworkError(`Error occurred while checking user : ${errMsg}`, errStatus, {
@@ -67,39 +67,39 @@ const userExists = async (Config, id, metadata) => {
 };
 
 const createUpdateUser = async (finalpayload, Config, basicAuth, metadata) => {
-  try {
-    const { httpResponse } = await handleHttpRequest(
-      'post',
-      `${ENDPOINT}/v2/${Config.accountId}/subscribers`,
-      finalpayload,
-      {
-        headers: {
-          Authorization: `Basic ${basicAuth}`,
-          'Content-Type': JSON_MIME_TYPE,
-        },
+  const { httpResponse } = await handleHttpRequest(
+    'post',
+    `${ENDPOINT}/v2/${Config.accountId}/subscribers`,
+    finalpayload,
+    {
+      headers: {
+        Authorization: `Basic ${basicAuth}`,
+        'Content-Type': JSON_MIME_TYPE,
       },
-      {
-        metadata,
-        destType: 'drip',
-        feature: 'transformation',
-        requestMethod: 'POST',
-        endpointPath: '/subscribers',
-        module: 'router',
-      },
-    );
+    },
+    {
+      metadata,
+      destType: 'drip',
+      feature: 'transformation',
+      requestMethod: 'POST',
+      endpointPath: '/subscribers',
+      module: 'router',
+    },
+  );
+  if (httpResponse.success) {
     const { response } = httpResponse;
     if (response) {
       return response.status === 200 || response.status === 201;
     }
     throw new AbortedError('Invalid response.');
-  } catch ({ destinationResponse }) {
-    const error = destinationResponse;
-    let errMsg = '';
-    if (error.response && error.response.data) {
-      errMsg = JSON.stringify(error.response.data);
-    }
-    throw new AbortedError(`Error occurred while creating or updating user : ${errMsg}`);
   }
+
+  const error = httpResponse.response;
+  let errMsg = '';
+  if (error.response && error.response.data) {
+    errMsg = JSON.stringify(error.response.data);
+  }
+  throw new AbortedError(`Error occurred while creating or updating user : ${errMsg}`);
 };
 
 const createList = (productList) => {

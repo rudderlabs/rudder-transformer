@@ -103,7 +103,6 @@ const lookupContact = async (term, destination, metadata) => {
     throw new NetworkError(
       `Inside lookupContact, failed to make request: ${httpResponse.response?.response?.statusText}`,
       status,
-
       {
         [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
       },

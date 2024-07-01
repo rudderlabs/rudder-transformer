@@ -120,7 +120,7 @@ const enhanceRequestOptions = (options) => {
 
 const getResponseDetails = (clientResponse) => {
   if (!clientResponse.success) {
-    const { response } = clientResponse;
+    const { response } = clientResponse.response;
     // non 2xx status handling for axios response
     if (response) {
       const { data, status, headers } = response;

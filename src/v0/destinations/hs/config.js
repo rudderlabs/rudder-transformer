@@ -49,6 +49,7 @@ const CRM_CREATE_UPDATE_ALL_OBJECTS = `${BASE_ENDPOINT}/crm/v3/objects/:objectTy
 // Batch for custom Objects
 // Ref - https://developers.hubspot.com/docs/api/crm/crm-custom-objects
 const BATCH_CREATE_CUSTOM_OBJECTS = `${BASE_ENDPOINT}/crm/v3/objects/:objectType/batch/create`;
+const BATCH_UPDATE_CUSTOM_OBJECTS = `${BASE_ENDPOINT}/crm/v3/objects/:objectType/batch/update`;
 
 /* CRM Association v3 */
 // Ref - https://developers.hubspot.com/docs/api/crm/associations
@@ -117,4 +118,5 @@ module.exports = {
   MAX_CONTACTS_PER_REQUEST,
   primaryToSecondaryFields,
   DESTINATION: 'HS',
+  BATCH_UPDATE_CUSTOM_OBJECTS,
 };

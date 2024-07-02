@@ -1130,6 +1130,23 @@ const getDestinationExternalID = (message, type) => {
 
 // Get id, identifierType and object type from externalId for rETL
 // type will be of the form: <DESTINATION-NAME>-<object>
+/**
+ * input : {
+        context: {
+          externalId: [
+            { type: 'destination-object', id: '123', identifierType: 'type1' },
+            { type: 'other-object', id: '456', identifierType: 'type2' }
+          ]
+        }
+      }
+
+    output : {
+        destinationExternalId: '123',
+        objectType: 'object',
+        identifierType: 'type1'
+      }
+ * 
+ */
 const getDestinationExternalIDInfoForRetl = (message, destination) => {
   let externalIdArray = [];
   let destinationExternalId = null;

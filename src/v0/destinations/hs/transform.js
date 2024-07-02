@@ -1,5 +1,8 @@
-const get = require('get-value');
+const lodash = require('lodash');
 const { InstrumentationError } = require('@rudderstack/integrations-lib');
+const get = require('get-value');
+const feature = require('../../../features.json');
+
 const { EventType } = require('../../../constants');
 const { handleRtTfSingleEventError, getDestinationExternalIDInfoForRetl } = require('../../util');
 const { API_VERSION } = require('./config');
@@ -16,6 +19,8 @@ const {
   getProperties,
   validateDestinationConfig,
 } = require('./util');
+const { batchEvents2, splitEventsForCreateUpdateV2 } = require('./utilv2');
+const { processSingleAgnosticEvent } = require('./HSTransform-v3');
 
 const processSingleMessage = async (message, destination, propertyMap) => {
   if (!message.type) {
@@ -65,85 +70,123 @@ const process = async (event) => {
 };
 
 // we are batching by default at routerTransform
+// eslint-disable-next-line consistent-return
 const processRouterDest = async (inputs, reqMetadata) => {
-  let tempInputs = inputs;
-
   const successRespList = [];
   const errorRespList = [];
-  // using the first destination config for transforming the batch
-  const { destination } = tempInputs[0];
-  let propertyMap;
-  const mappedToDestination = get(tempInputs[0].message, MappedToDestinationKey);
-  const { objectType } = getDestinationExternalIDInfoForRetl(tempInputs[0].message, 'HS');
-
-  try {
-    if (mappedToDestination && GENERIC_TRUE_VALUES.includes(mappedToDestination?.toString())) {
-      // skip splitting the batches to inserts and updates if object it is an association
-      if (objectType.toLowerCase() !== 'association') {
-        propertyMap = await getProperties(destination);
-        // get info about existing objects and splitting accordingly.
-        tempInputs = await splitEventsForCreateUpdate(tempInputs, destination);
+  let batchedResponseList = [];
+  let receivedResponse;
+  if (feature.agnosticDestinations.HS === true) {
+    // new part
+    let tempInputs = inputs;
+    // using the first destination config for transforming the batch
+    const { destination } = tempInputs[0];
+    const groupByEvent = lodash.groupBy(tempInputs, (input) =>
+      input.message.context.externalId[0].type?.toLowerCase(),
+    );
+    let eventsWithLookUpRequired = [];
+    const eventsWithLookUpNotRequired = [];
+    Object.keys(groupByEvent).forEach((key) => {
+      if (!key.includes('hs-track')) {
+        eventsWithLookUpRequired.push(...groupByEvent[key]);
+      } else {
+        eventsWithLookUpNotRequired.push(...groupByEvent[key]);
       }
-    } else {
-      // reduce the no. of calls for properties endpoint
-      const traitsFound = tempInputs.some(
-        (input) => fetchFinalSetOfTraits(input.message) !== undefined,
-      );
-      if (traitsFound) {
-        propertyMap = await getProperties(destination);
-      }
-    }
-  } catch (error) {
-    // Any error thrown from the above try block applies to all the events
-    return tempInputs.map((input) => handleRtTfSingleEventError(input, error, reqMetadata));
-  }
-
-  await Promise.all(
-    tempInputs.map(async (input) => {
-      try {
-        if (input.message.statusCode) {
-          // already transformed event
+    });
+    eventsWithLookUpRequired = await splitEventsForCreateUpdateV2(
+      eventsWithLookUpRequired,
+      destination,
+    );
+    tempInputs = [...eventsWithLookUpNotRequired, ...eventsWithLookUpRequired];
+    await Promise.all(
+      tempInputs.map(async (input) => {
+        try {
+          const compositePayload = await processSingleAgnosticEvent(input.message, destination);
           successRespList.push({
-            message: input.message,
+            message: compositePayload,
             metadata: input.metadata,
             destination,
           });
-        } else {
-          // event is not transformed
-          let receivedResponse = await processSingleMessage(
-            input.message,
-            destination,
-            propertyMap,
-          );
+        } catch (error) {
+          const errRespEvent = handleRtTfSingleEventError(input, error, reqMetadata);
+          errorRespList.push(errRespEvent);
+        }
+      }),
+    );
+    batchedResponseList = batchEvents2(successRespList);
+  } else {
+    let tempInputs = inputs;
+    // using the first destination config for transforming the batch
+    const { destination } = tempInputs[0];
+    let propertyMap;
+    const mappedToDestination = get(tempInputs[0].message, MappedToDestinationKey);
+    const { objectType } = getDestinationExternalIDInfoForRetl(tempInputs[0].message, 'HS');
 
-          receivedResponse = Array.isArray(receivedResponse)
-            ? receivedResponse
-            : [receivedResponse];
+    try {
+      if (mappedToDestination && GENERIC_TRUE_VALUES.includes(mappedToDestination?.toString())) {
+        // skip splitting the batches to inserts and updates if object it is an association
+        if (objectType.toLowerCase() !== 'association') {
+          // TODO: avoid for now
+          propertyMap = await getProperties(destination);
+          // get info about existing objects and splitting accordingly.
+          tempInputs = await splitEventsForCreateUpdate(tempInputs, destination);
+        }
+      } else {
+        // reduce the no. of calls for properties endpoint
+        const traitsFound = tempInputs.some(
+          (input) => fetchFinalSetOfTraits(input.message) !== undefined,
+        );
+        // TODO: avoid for now
+        if (traitsFound) {
+          propertyMap = await getProperties(destination);
+        }
+      }
+    } catch (error) {
+      // Any error thrown from the above try block applies to all the events
+      return tempInputs.map((input) => handleRtTfSingleEventError(input, error, reqMetadata));
+    }
 
-          // received response can be in array format [{}, {}, {}, ..., {}]
-          // if multiple response is being returned
-          receivedResponse.forEach((element) => {
+    await Promise.all(
+      tempInputs.map(async (input) => {
+        try {
+          if (input.message.statusCode) {
+            // already transformed event
             successRespList.push({
-              message: element,
+              message: input.message,
               metadata: input.metadata,
               destination,
             });
-          });
-        }
-      } catch (error) {
-        const errRespEvent = handleRtTfSingleEventError(input, error, reqMetadata);
-        errorRespList.push(errRespEvent);
-      }
-    }),
-  );
+          } else {
+            // event is not transformed
+            receivedResponse = await processSingleMessage(input.message, destination, propertyMap);
 
-  // batch implementation
-  let batchedResponseList = [];
-  if (successRespList.length > 0) {
-    if (destination.Config.apiVersion === API_VERSION.v3) {
-      batchedResponseList = batchEvents(successRespList);
-    } else {
-      batchedResponseList = legacyBatchEvents(successRespList);
+            receivedResponse = Array.isArray(receivedResponse)
+              ? receivedResponse
+              : [receivedResponse];
+
+            // received response can be in array format [{}, {}, {}, ..., {}]
+            // if multiple response is being returned
+            receivedResponse.forEach((element) => {
+              successRespList.push({
+                message: element,
+                metadata: input.metadata,
+                destination,
+              });
+            });
+          }
+        } catch (error) {
+          const errRespEvent = handleRtTfSingleEventError(input, error, reqMetadata);
+          errorRespList.push(errRespEvent);
+        }
+      }),
+    );
+    // batch implementation
+    if (successRespList.length > 0) {
+      if (destination.Config.apiVersion === API_VERSION.v3) {
+        batchedResponseList = batchEvents(successRespList);
+      } else {
+        batchedResponseList = legacyBatchEvents(successRespList);
+      }
     }
   }
   return [...batchedResponseList, ...errorRespList];

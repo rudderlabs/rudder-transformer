@@ -244,6 +244,11 @@ type RudderMessage = {
   messageId: string;
   properties?: object;
   traits?: object;
+  action?: string;
+  destinationFields?: string;
+  recordId?: string;
+rudderId?: string;
+fields?: object;
 };
 
 type ErrorDetailer = {

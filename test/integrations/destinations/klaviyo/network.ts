@@ -1,24 +1,6 @@
 export const networkCallsData = [
   {
     httpReq: {
-      url: 'https://a.klaviyo.com/api/v2/list/XUepkK/subscribe',
-      method: 'GET',
-    },
-    httpRes: {
-      status: 200,
-    },
-  },
-  {
-    httpReq: {
-      url: 'https://a.klaviyo.com/api/v2/list/XUepkK/members',
-      method: 'GET',
-    },
-    httpRes: {
-      status: 200,
-    },
-  },
-  {
-    httpReq: {
       url: 'https://a.klaviyo.com/api/profiles',
       method: 'GET',
       data: {

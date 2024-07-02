@@ -48,7 +48,6 @@ const getIdFromNewOrExistingProfile = async ({ endpoint, payload, requestOptions
       endpointPath,
       requestMethod: 'POST',
       module: 'router',
-      metadata,
     },
   );
 

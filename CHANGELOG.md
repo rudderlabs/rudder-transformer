@@ -34,6 +34,7 @@ All notable changes to this project will be documented in this file. See [standa
 * test ([3137964](https://github.com/rudderlabs/rudder-transformer/commit/31379645c33b9dc75cd839849952297fa233f2cb))
 * tests names, credentialsMap refactor ([3db810c](https://github.com/rudderlabs/rudder-transformer/commit/3db810c857017318c1979965ce653eca3b3fdadf))
 * undefined tests ([819f508](https://github.com/rudderlabs/rudder-transformer/commit/819f508b017f988e302b6e2579cb3da4030dcfa0))
+* update access token key for garl destination ([#3522](https://github.com/rudderlabs/rudder-transformer/issues/3522)) ([38946e3](https://github.com/rudderlabs/rudder-transformer/commit/38946e30fbc26896cfbb92124ba4ca8a4b8c431b))
 
 ### [1.69.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.69.0...v1.69.1) (2024-06-25)
 

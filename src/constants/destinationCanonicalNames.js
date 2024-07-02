@@ -174,6 +174,7 @@ const DestCanonicalNames = {
     'klaviyobulkupload',
   ],
   emarsys: ['EMARSYS', 'Emarsys', 'emarsys'],
+  wunderkind: ['wunderkind', 'Wunderkind', 'WUNDERKIND'],
 };
 
 module.exports = { DestHandlerMap, DestCanonicalNames };

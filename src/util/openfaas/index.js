@@ -12,7 +12,6 @@ const { RetryRequestError, RespStatusError } = require('../utils');
 const stats = require('../stats');
 const { getMetadata, getTransformationMetadata } = require('../../v0/util');
 const { HTTP_STATUS_CODES } = require('../../v0/util/constant');
-const { isNil, find } = require('lodash');
 
 const FAAS_SCALE_TYPE = process.env.FAAS_SCALE_TYPE || 'capacity';
 const FAAS_SCALE_TARGET = process.env.FAAS_SCALE_TARGET || '4';

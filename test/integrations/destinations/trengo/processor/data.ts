@@ -1529,7 +1529,7 @@ export const data = [
           {
             // though we are getting undefined as statusText through mocked response but we are getting that from actual response
             error:
-              '{"message":"Inside lookupContact, failed to make request: undefined","destinationResponse":{"message":"Unauthenticated.","errors":[]}}',
+              '{"message":"Inside lookupContact, failed to make request: undefined","destinationResponse":{"response":{"message":"Unauthenticated.","errors":[]},"status":401}}',
             statTags: {
               destType: 'TRENGO',
               errorCategory: 'network',

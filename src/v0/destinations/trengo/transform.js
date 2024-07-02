@@ -106,7 +106,7 @@ const lookupContact = async (term, destination, metadata) => {
       {
         [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
       },
-      processedResponse.response,
+      processedResponse,
     );
   }
   // check if exists err.response && err.response.status else 500

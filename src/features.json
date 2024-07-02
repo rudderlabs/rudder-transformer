@@ -72,7 +72,8 @@
     "BLOOMREACH": true,
     "MOVABLE_INK": true,
     "EMARSYS": true,
-    "KODDI": true
+    "KODDI": true,
+    "CLICKSEND": true
   },
   "regulations": [
     "BRAZE",

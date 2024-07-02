@@ -539,9 +539,7 @@ if (startDestTransformer) {
           (event) => `${event.metadata.destinationId}_${event.metadata.sourceId}`,
         );
       }
-      stats.counter('user_transform_function_group_size', Object.entries(groupedEvents).length, {
-        processSessions,
-      });
+      stats.counter('user_transform_function_group_size', Object.entries(groupedEvents).length, {});
 
       let ctxStatusCode = 200;
       const transformedEvents = [];
@@ -646,16 +644,9 @@ if (startDestTransformer) {
       ctx.status = ctxStatusCode;
       ctx.set('apiVersion', API_VERSION);
 
-      stats.timing('user_transform_request_latency', startTime, {
-        processSessions,
-      });
-      stats.timingSummary('user_transform_request_latency_summary', startTime, {
-        processSessions,
-      });
-      stats.increment('user_transform_requests', { processSessions });
-      stats.histogram('user_transform_output_events', transformedEvents.length, {
-        processSessions,
-      });
+      stats.timingSummary('user_transform_request_latency_summary', startTime, {});
+      stats.increment('user_transform_requests', {});
+      stats.histogram('user_transform_output_events', transformedEvents.length, {});
     });
   }
 }

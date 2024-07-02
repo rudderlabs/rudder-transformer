@@ -51,7 +51,7 @@ const { JSON_MIME_TYPE } = require('../../util/constant');
  * @param {*} propertyMap
  * @returns
  */
-const processLegacyIdentify = async (message, destination, propertyMap) => {
+const processLegacyIdentify = async ({ message, destination, metadata }, propertyMap) => {
   const { Config } = destination;
   let traits = getFieldValueFromMessage(message, 'traits');
   const mappedToDestination = get(message, MappedToDestinationKey);
@@ -82,7 +82,7 @@ const processLegacyIdentify = async (message, destination, propertyMap) => {
       response.method = defaultPatchRequestConfig.requestMethod;
     }
 
-    traits = await populateTraits(propertyMap, traits, destination);
+    traits = await populateTraits(propertyMap, traits, destination, metadata);
     response.body.JSON = removeUndefinedAndNullValues({ properties: traits });
     response.source = 'rETL';
     response.operation = operation;
@@ -92,7 +92,10 @@ const processLegacyIdentify = async (message, destination, propertyMap) => {
     }
     const { email } = traits;
 
-    const userProperties = await getTransformedJSON(message, destination, propertyMap);
+    const userProperties = await getTransformedJSON(
+      { message, destination, metadata },
+      propertyMap,
+    );
 
     const payload = {
       properties: formatPropertyValueForIdentify(userProperties),
@@ -134,7 +137,7 @@ const processLegacyIdentify = async (message, destination, propertyMap) => {
  * @param {*} propertyMap
  * @returns
  */
-const processLegacyTrack = async (message, destination, propertyMap) => {
+const processLegacyTrack = async ({ message, destination, metadata }, propertyMap) => {
   const { Config } = destination;
 
   if (!Config.hubID) {
@@ -151,7 +154,7 @@ const processLegacyTrack = async (message, destination, propertyMap) => {
     id: getDestinationExternalID(message, 'hubspotId'),
   };
 
-  const userProperties = await getTransformedJSON(message, destination, propertyMap);
+  const userProperties = await getTransformedJSON({ message, destination, metadata }, propertyMap);
 
   const payload = { ...parameters, ...userProperties };
   const params = removeUndefinedAndNullValues(payload);

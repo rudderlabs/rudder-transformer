@@ -31,7 +31,7 @@ const CONTACT_KEY_KEY = 'Contact Key';
 
 // DOC: https://developer.salesforce.com/docs/atlas.en-us.mc-app-development.meta/mc-app-development/access-token-s2s.htm
 
-const getToken = async (clientId, clientSecret, subdomain) => {
+const getToken = async (clientId, clientSecret, subdomain, metadata) => {
   const { processedResponse: processedResponseSfmc } = await handleHttpRequest(
     'post',
     `https://${subdomain}.${ENDPOINTS.GET_TOKEN}`,
@@ -49,6 +49,7 @@ const getToken = async (clientId, clientSecret, subdomain) => {
       endpointPath: '/token',
       requestMethod: 'POST',
       module: 'router',
+      metadata,
     },
   );
 
@@ -194,7 +195,7 @@ const responseBuilderForMessageEvent = (message, subDomain, authToken, hashMapEv
   return response;
 };
 
-const responseBuilderSimple = async (message, category, destination) => {
+const responseBuilderSimple = async ({ message, destination, metadata }, category) => {
   const {
     clientId,
     clientSecret,
@@ -213,7 +214,7 @@ const responseBuilderSimple = async (message, category, destination) => {
   // map from an event name to uuid as true or false to determine to send uuid as primary key or not.
   const hashMapUUID = getHashFromArray(eventToUUID, 'event', 'uuid');
   // token needed for authorization for subsequent calls
-  const authToken = await getToken(clientId, clientSecret, subDomain);
+  const authToken = await getToken(clientId, clientSecret, subDomain, metadata);
   // map from an event name to an event definition key.
   const hashMapEventDefinition = getHashFromArray(eventToDefinitionMapping, 'from', 'to');
   // if createOrUpdateContacts is true identify calls for create and update of contacts will not occur.
@@ -270,7 +271,7 @@ const responseBuilderSimple = async (message, category, destination) => {
   throw new ConfigurationError(`Event type '${category.type}' not supported`);
 };
 
-const processEvent = async (message, destination) => {
+const processEvent = async ({ message, destination, metadata }) => {
   if (!message.type) {
     throw new InstrumentationError('Event type is required');
   }
@@ -290,12 +291,12 @@ const processEvent = async (message, destination) => {
   }
 
   // build the response
-  const response = await responseBuilderSimple(message, category, destination);
+  const response = await responseBuilderSimple({ message, destination, metadata }, category);
   return response;
 };
 
 const process = async (event) => {
-  const response = await processEvent(event.message, event.destination);
+  const response = await processEvent(event);
   return response;
 };
 

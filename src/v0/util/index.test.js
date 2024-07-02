@@ -690,3 +690,24 @@ describe('extractCustomFields', () => {
     });
   });
 });
+
+describe('get relative path from url', () => {
+  test('valid url', () => {
+    expect(utilities.getRelativePathFromURL('https://google.com/a/b/c')).toEqual('/a/b/c');
+  });
+  test('valid url with query parameters', () => {
+    expect(utilities.getRelativePathFromURL('https://google.com/a/b/c?q=1&n=2')).toEqual('/a/b/c');
+  });
+  test('normal string', () => {
+    expect(utilities.getRelativePathFromURL('s=1&n=2')).toEqual('s=1&n=2');
+  });
+  test('undefined', () => {
+    expect(utilities.getRelativePathFromURL(undefined)).toEqual(undefined);
+  });
+  test('number', () => {
+    expect(utilities.getRelativePathFromURL(1)).toEqual(1);
+  });
+  test('null', () => {
+    expect(utilities.getRelativePathFromURL(null)).toEqual(null);
+  });
+});

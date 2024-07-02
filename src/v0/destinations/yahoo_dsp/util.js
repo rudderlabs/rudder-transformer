@@ -95,7 +95,7 @@ const createPayload = (audienceList, Config) => {
  * @param {*} destination
  * @returns
  */
-const getAccessToken = async (destination) => {
+const getAccessToken = async (destination, metadata) => {
   const { clientId, clientSecret } = destination.Config;
   const accessTokenKey = destination.ID;
 
@@ -140,6 +140,7 @@ const getAccessToken = async (destination) => {
       endpointPath: '/identity/oauth2/access_token',
       requestMethod: 'POST',
       module: 'router',
+      metadata,
     });
     // If the request fails, throwing error.
     if (dspAuthorisationData.success === false) {

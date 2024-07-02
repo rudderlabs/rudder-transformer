@@ -5,9 +5,14 @@ const lodash = require('lodash');
 const http = require('http');
 const https = require('https');
 const axios = require('axios');
-const logger = require('../logger');
+const { isDefinedAndNotNull } = require('@rudderstack/integrations-lib');
 const stats = require('../util/stats');
-const { removeUndefinedValues, isDefinedAndNotNullAndNotEmpty } = require('../v0/util');
+const {
+  removeUndefinedValues,
+  getErrorStatusCode,
+  isDefinedAndNotNullAndNotEmpty,
+} = require('../v0/util');
+const logger = require('../logger');
 const { processAxiosResponse } = require('./utils/networkUtils');
 // Only for tests
 const { setResponsesForMockAxiosAdapter } = require('../../test/testHelper');
@@ -83,7 +88,9 @@ const fireHTTPStats = (clientResponse, startTime, statTags) => {
   const endpointPath = statTags.endpointPath ? statTags.endpointPath : '';
   const requestMethod = statTags.requestMethod ? statTags.requestMethod : '';
   const module = statTags.module ? statTags.module : '';
-  const statusCode = clientResponse.success ? clientResponse.response.status : '';
+  const statusCode = clientResponse.success
+    ? clientResponse.response.status
+    : getErrorStatusCode(clientResponse.response);
   const defArgs = {
     destType,
     endpointPath,
@@ -94,9 +101,9 @@ const fireHTTPStats = (clientResponse, startTime, statTags) => {
     startTime,
     clientResponse,
   };
-  if (statTags?.metadata) {
+  if (statTags?.metadata && typeof statTags?.metadata === 'object') {
     const metadata = !Array.isArray(statTags?.metadata) ? [statTags.metadata] : statTags.metadata;
-    metadata?.forEach((m) => {
+    metadata?.filter(isDefinedAndNotNull)?.forEach((m) => {
       fireOutgoingReqStats({
         ...defArgs,
         metadata: m,
@@ -448,4 +455,5 @@ module.exports = {
   getFormData,
   handleHttpRequest,
   enhanceRequestOptions,
+  fireHTTPStats,
 };

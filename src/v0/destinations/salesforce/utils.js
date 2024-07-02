@@ -101,7 +101,7 @@ const salesforceResponseHandler = (destResponse, sourceMessage, authKey, authori
  * Utility method to construct the header to be used for SFDC API calls
  * The "Authorization: Bearer <token>" header element needs to be passed
  * for authentication for all SFDC REST API calls
- * @param {*} destination
+ * @param {destination: Record<string, any>, metadata: Record<string, object>}
  * @returns
  */
 const getAccessTokenOauth = (metadata) => ({
@@ -109,7 +109,7 @@ const getAccessTokenOauth = (metadata) => ({
   instanceUrl: metadata.secret?.instance_url,
 });
 
-const getAccessToken = async (destination) => {
+const getAccessToken = async ({ destination, metadata }) => {
   const accessTokenKey = destination.ID;
 
   return ACCESS_TOKEN_CACHE.get(accessTokenKey, async () => {
@@ -137,6 +137,7 @@ const getAccessToken = async (destination) => {
         endpointPath: '/services/oauth2/token',
         requestMethod: 'POST',
         module: 'router',
+        metadata,
       },
     );
     // If the request fails, throwing error.
@@ -173,7 +174,7 @@ const collectAuthorizationInfo = async (event) => {
     authorizationData = getAccessTokenOauth(event.metadata);
   } else {
     authorizationFlow = LEGACY;
-    authorizationData = await getAccessToken(event.destination);
+    authorizationData = await getAccessToken(event);
   }
   return { authorizationFlow, authorizationData };
 };

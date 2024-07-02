@@ -27,7 +27,7 @@ const { JSON_MIME_TYPE } = require('../../util/constant');
  * @param {*} Config
  * @api https://docs.custify.com/#tag/Company/paths/~1company/post
  */
-const createUpdateCompany = async (companyPayload, Config) => {
+const createUpdateCompany = async (companyPayload, Config, metadata) => {
   const companyResponse = await httpPOST(
     ConfigCategory.GROUP_COMPANY.endpoint,
     companyPayload,
@@ -43,6 +43,7 @@ const createUpdateCompany = async (companyPayload, Config) => {
       endpointPath: `/company`,
       requestMethod: 'POST',
       module: 'router',
+      metadata,
     },
   );
   const processedCompanyResponse = processAxiosResponse(companyResponse);
@@ -187,7 +188,7 @@ const processTrack = (message, { Config }) => {
  * @api https://docs.custify.com/#tag/People/paths/~1people/post
  * @api https://docs.custify.com/#tag/Company/paths/~1company/post
  */
-const processGroup = async (message, { Config }) => {
+const processGroup = async (message, { Config }, metadata) => {
   let companyPayload = constructPayload(message, MappingConfig[ConfigCategory.GROUP_COMPANY.name]);
   if (!companyPayload.company_id) {
     throw new InstrumentationError('groupId Id is mandatory');
@@ -205,7 +206,7 @@ const processGroup = async (message, { Config }) => {
     });
   }
   companyPayload = removeUndefinedAndNullValues(companyPayload);
-  await createUpdateCompany(companyPayload, Config);
+  await createUpdateCompany(companyPayload, Config, metadata);
   const userPayload = constructPayload(message, MappingConfig[ConfigCategory.GROUP_USER.name]);
   const { sendAnonymousId } = Config;
   if (sendAnonymousId && !userPayload.user_id) {

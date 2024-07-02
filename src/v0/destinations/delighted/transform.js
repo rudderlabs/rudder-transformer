@@ -77,7 +77,7 @@ const identifyResponseBuilder = (message, { Config }) => {
   return response;
 };
 
-const trackResponseBuilder = async (message, { Config }) => {
+const trackResponseBuilder = async (message, { Config }, metadata) => {
   // checks if the event is valid if not throws error else nothing
   const isValidEvent = eventValidity(Config, message);
   if (!isValidEvent) {
@@ -94,7 +94,7 @@ const trackResponseBuilder = async (message, { Config }) => {
   const { userIdType, userIdValue } = isValidUserIdOrError(channel, userId);
 
   // checking if user already exists or not, throw error if it doesn't
-  const check = await userValidity(channel, Config, userId);
+  const check = await userValidity({ channel, Config, userId, metadata });
 
   if (!check) {
     throw new NetworkInstrumentationError(`user ${userId} doesn't exist`);
@@ -167,7 +167,7 @@ const aliasResponseBuilder = (message, { Config }) => {
 };
 
 const process = async (event) => {
-  const { message, destination } = event;
+  const { message, destination, metadata } = event;
   if (!message.type) {
     throw new InstrumentationError('Message Type is not present. Aborting message.');
   }
@@ -184,7 +184,7 @@ const process = async (event) => {
       response = identifyResponseBuilder(message, destination);
       break;
     case EventType.TRACK:
-      response = await trackResponseBuilder(message, destination);
+      response = await trackResponseBuilder(message, destination, metadata);
       break;
     case EventType.ALIAS:
       response = aliasResponseBuilder(message, destination);

@@ -106,7 +106,7 @@ async function getSaleforceIdForRecord(
   objectType,
   identifierType,
   identifierValue,
-  destination,
+  { destination, metadata },
   authorizationFlow,
 ) {
   const objSearchUrl = `${authorizationData.instanceUrl}/services/data/v${SF_API_VERSION}/parameterizedSearch/?q=${identifierValue}&sobject=${objectType}&in=${identifierType}&${objectType}.fields=id,${identifierType}`;
@@ -117,6 +117,7 @@ async function getSaleforceIdForRecord(
       headers: getAuthHeader({ authorizationFlow, authorizationData }),
     },
     {
+      metadata,
       destType: 'salesforce',
       feature: 'transformation',
       endpointPath: '/parameterizedSearch',
@@ -156,9 +157,8 @@ async function getSaleforceIdForRecord(
 //
 // Default Object type will be "Lead" for backward compatibility
 async function getSalesforceIdFromPayload(
-  message,
+  { message, destination, metadata },
   authorizationData,
-  destination,
   authorizationFlow,
 ) {
   // define default map
@@ -201,7 +201,7 @@ async function getSalesforceIdFromPayload(
         objectType,
         identifierType,
         id,
-        destination,
+        { destination, metadata },
         authorizationFlow,
       );
     }
@@ -233,6 +233,7 @@ async function getSalesforceIdFromPayload(
         headers: getAuthHeader({ authorizationFlow, authorizationData }),
       },
       {
+        metadata,
         destType: 'salesforce',
         feature: 'transformation',
         endpointPath: '/parameterizedSearch',
@@ -283,7 +284,11 @@ async function getSalesforceIdFromPayload(
 }
 
 // Function for handling identify events
-async function processIdentify(message, authorizationData, destination, authorizationFlow) {
+async function processIdentify(
+  { message, destination, metadata },
+  authorizationData,
+  authorizationFlow,
+) {
   const mapProperty =
     destination.Config.mapProperty === undefined ? true : destination.Config.mapProperty;
   // check the traits before hand
@@ -305,9 +310,8 @@ async function processIdentify(message, authorizationData, destination, authoriz
 
   // get salesforce object map
   const salesforceMaps = await getSalesforceIdFromPayload(
-    message,
+    { message, destination, metadata },
     authorizationData,
-    destination,
     authorizationFlow,
   );
 
@@ -331,10 +335,18 @@ async function processIdentify(message, authorizationData, destination, authoriz
 
 // Generic process function which invokes specific handler functions depending on message type
 // and event type where applicable
-async function processSingleMessage(message, authorizationData, destination, authorizationFlow) {
+async function processSingleMessage(
+  { message, destination, metadata },
+  authorizationData,
+  authorizationFlow,
+) {
   let response;
   if (message.type === EventType.IDENTIFY) {
-    response = await processIdentify(message, authorizationData, destination, authorizationFlow);
+    response = await processIdentify(
+      { message, destination, metadata },
+      authorizationData,
+      authorizationFlow,
+    );
   } else {
     throw new InstrumentationError(`message type ${message.type} is not supported`);
   }
@@ -344,9 +356,8 @@ async function processSingleMessage(message, authorizationData, destination, aut
 async function process(event) {
   const authInfo = await collectAuthorizationInfo(event);
   const response = await processSingleMessage(
-    event.message,
+    event,
     authInfo.authorizationData,
-    event.destination,
     authInfo.authorizationFlow,
   );
   return response;
@@ -377,12 +388,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
 
         // unprocessed payload
         return getSuccessRespEvents(
-          await processSingleMessage(
-            input.message,
-            authInfo.authorizationData,
-            input.destination,
-            authInfo.authorizationFlow,
-          ),
+          await processSingleMessage(input, authInfo.authorizationData, authInfo.authorizationFlow),
           [input.metadata],
           input.destination,
         );

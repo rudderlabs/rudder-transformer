@@ -33,7 +33,7 @@ const responseBuilder = async (payload, listId, apiToken) => {
   throw new TransformationError('Something went wrong while constructing the payload');
 };
 
-const trackResponseBuilder = async (message, destination) => {
+const trackResponseBuilder = async (message, destination, metadata) => {
   const { apiToken, keyToCustomFieldName } = destination.Config;
   const { properties } = message;
   const externalListId = getDestinationExternalID(message, 'clickUpListId');
@@ -45,6 +45,7 @@ const trackResponseBuilder = async (message, destination) => {
     properties,
     listId,
     apiToken,
+    metadata,
   );
 
   let payload = constructPayload(message, MAPPING_CONFIG[CONFIG_CATEGORIES.TRACK.name]);
@@ -55,7 +56,7 @@ const trackResponseBuilder = async (message, destination) => {
   return responseBuilder(payload, listId, apiToken);
 };
 
-const processEvent = async (message, destination) => {
+const processEvent = async (message, destination, metadata) => {
   if (!message.type) {
     throw new InstrumentationError('Event type is required');
   }
@@ -64,13 +65,13 @@ const processEvent = async (message, destination) => {
 
   const messageType = message.type.toLowerCase();
   if (messageType === EventType.TRACK) {
-    return trackResponseBuilder(message, destination);
+    return trackResponseBuilder(message, destination, metadata);
   }
 
   throw new InstrumentationError(`Event type "${messageType}" is not supported`);
 };
 
-const process = async (event) => processEvent(event.message, event.destination);
+const process = async (event) => processEvent(event.message, event.destination, event.metadata);
 
 const processRouterDest = async (inputs, reqMetadata) => {
   const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);

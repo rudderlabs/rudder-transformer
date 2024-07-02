@@ -154,7 +154,7 @@ const validateGroupCall = (message) => {
  * It checks for lookUpfield Validation and make axios call ,if Valid, and returns the contactIDs received.
  * It Gets the contact Id using Lookup field and then email, otherwise returns null
  */
-const searchContactIds = async (message, Config, baseUrl) => {
+const searchContactIds = async ({ message, Config, metadata }, baseUrl) => {
   const { lookUpField, userName, password } = Config;
 
   const traits = getFieldValueFromMessage(message, 'traits');
@@ -186,6 +186,7 @@ const searchContactIds = async (message, Config, baseUrl) => {
       endpointPath: '/contacts',
       requestMethod: 'GET',
       module: 'router',
+      metadata,
     },
   );
   searchContactsResponse = processAxiosResponse(searchContactsResponse);

@@ -70,7 +70,7 @@ const identifyResponseBuilder = (message, { Config }) => {
  * @param {*} Config
  * @returns
  */
-const trackResponseBuilder = async (message, { Config }, event) => {
+const trackResponseBuilder = async ({ message, destination: { Config }, metadata }, event) => {
   if (!event) {
     throw new InstrumentationError('Event name is required for track call.');
   }
@@ -85,11 +85,12 @@ const trackResponseBuilder = async (message, { Config }, event) => {
         payload,
         message,
         Config,
+        metadata,
       );
       break;
     }
     case 'lifecycle_stage': {
-      response.body.JSON = await UpdateContactWithLifeCycleStage(message, Config);
+      response.body.JSON = await UpdateContactWithLifeCycleStage(message, Config, metadata);
       response.endpoint = `https://${Config.domain}${CONFIG_CATEGORIES.IDENTIFY.baseUrl}`;
       break;
     }
@@ -111,7 +112,7 @@ const trackResponseBuilder = async (message, { Config }, event) => {
  * @param {*} Config
  * @returns
  */
-const groupResponseBuilder = async (message, { Config }) => {
+const groupResponseBuilder = async ({ message, destination: { Config }, metadata }) => {
   const groupType = get(message, 'traits.groupType');
   if (!groupType) {
     throw new InstrumentationError('groupType is required for Group call');
@@ -130,7 +131,7 @@ const groupResponseBuilder = async (message, { Config }) => {
         response = updateAccountWOContact(payload, Config);
         break;
       }
-      const accountDetails = await getUserAccountDetails(payload, userEmail, Config);
+      const accountDetails = await getUserAccountDetails(payload, userEmail, Config, metadata);
       response = identifyResponseConfig(Config);
       response.body.JSON.contact = { sales_accounts: accountDetails };
       response.body.JSON.unique_identifier = { emails: userEmail };
@@ -143,7 +144,7 @@ const groupResponseBuilder = async (message, { Config }) => {
           'email is required for adding in the marketing lists. Aborting!',
         );
       }
-      const userDetails = await getContactsDetails(userEmail, Config);
+      const userDetails = await getContactsDetails(userEmail, Config, metadata);
       const userId = userDetails.response?.contact?.id;
       if (!userId) {
         throw new NetworkInstrumentationError('Failed in fetching userId. Aborting!');
@@ -153,7 +154,7 @@ const groupResponseBuilder = async (message, { Config }) => {
       if (listId) {
         response = updateContactWithList(userId, listId, Config);
       } else if (listName) {
-        listId = await createOrUpdateListDetails(listName, Config);
+        listId = await createOrUpdateListDetails(listName, Config, metadata);
         if (!listId) {
           throw new NetworkInstrumentationError('Failed in fetching listId. Aborting!');
         }
@@ -198,7 +199,7 @@ function eventMappingHandler(message, destination) {
   return [...mappedEvents];
 }
 
-const processEvent = async (message, destination) => {
+const processEvent = async ({ message, destination, metadata }) => {
   if (!message.type) {
     throw new InstrumentationError('Message Type is not present. Aborting message.');
   }
@@ -213,16 +214,19 @@ const processEvent = async (message, destination) => {
       if (mappedEvents.length > 0) {
         response = await Promise.all(
           mappedEvents.map(async (mappedEvent) =>
-            trackResponseBuilder(message, destination, mappedEvent),
+            trackResponseBuilder({ message, destination, metadata }, mappedEvent),
           ),
         );
       } else {
-        response = await trackResponseBuilder(message, destination, get(message, 'event'));
+        response = await trackResponseBuilder(
+          { message, destination, metadata },
+          get(message, 'event'),
+        );
       }
       break;
     }
     case EventType.GROUP:
-      response = await groupResponseBuilder(message, destination);
+      response = await groupResponseBuilder({ message, destination, metadata });
       break;
     default:
       throw new InstrumentationError(`message type ${messageType} not supported`);
@@ -230,7 +234,7 @@ const processEvent = async (message, destination) => {
   return response;
 };
 
-const process = async (event) => processEvent(event.message, event.destination);
+const process = async (event) => processEvent(event);
 
 const processRouterDest = async (inputs, reqMetadata) => {
   const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);

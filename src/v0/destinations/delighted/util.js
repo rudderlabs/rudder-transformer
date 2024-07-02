@@ -61,7 +61,7 @@ const getErrorStatus = (status) => {
   return errStatus;
 };
 
-const userValidity = async (channel, Config, userId) => {
+const userValidity = async ({ channel, Config, userId, metadata }) => {
   const paramsdata = {};
   if (channel === 'email') {
     paramsdata.email = userId;
@@ -81,6 +81,7 @@ const userValidity = async (channel, Config, userId) => {
       params: paramsdata,
     },
     {
+      metadata,
       destType: 'delighted',
       feature: 'transformation',
       requestMethod: 'GET',

@@ -13,7 +13,7 @@ const { JSON_MIME_TYPE } = require('../../util/constant');
  * @param message
  * @returns canny userId
  */
-const retrieveUserId = async (apiKey, message) => {
+const retrieveUserId = async (apiKey, message, metadata) => {
   const cannyId = getDestinationExternalID(message, 'cannyUserId');
   if (cannyId) {
     return cannyId;
@@ -43,6 +43,7 @@ const retrieveUserId = async (apiKey, message) => {
     qs.stringify(requestBody),
     { headers },
     {
+      metadata,
       destType: 'canny',
       feature: 'transformation',
       endpointPath: `/v1/users/retrieve`,

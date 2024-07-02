@@ -261,7 +261,7 @@ describe('dedup utility tests', () => {
       };
 
       // Call the function
-      const users = await BrazeDedupUtility.doApiLookup(identfierChunks, destination);
+      const users = await BrazeDedupUtility.doApiLookup(identfierChunks, { destination });
 
       // Check the result
       expect(users).toEqual([
@@ -399,7 +399,9 @@ describe('dedup utility tests', () => {
         },
       }));
 
-      const chunkedUserData = await BrazeDedupUtility.doApiLookup(identifierChunks, destination);
+      const chunkedUserData = await BrazeDedupUtility.doApiLookup(identifierChunks, {
+        destination,
+      });
       const result = _.flatMap(chunkedUserData);
       expect(result).toHaveLength(110);
       expect(handleHttpRequest).toHaveBeenCalledTimes(3);
@@ -455,7 +457,7 @@ describe('dedup utility tests', () => {
         },
       }));
 
-      const users = await BrazeDedupUtility.doApiLookup(chunks, destination);
+      const users = await BrazeDedupUtility.doApiLookup(chunks, { destination });
 
       expect(handleHttpRequest).toHaveBeenCalledTimes(2);
       // Assert that the first chunk was successful and the second failed
@@ -522,7 +524,7 @@ describe('dedup utility tests', () => {
           [{ alias_name: 'alias1', alias_label: 'rudder_id' }],
           [{ alias_name: 'alias2', alias_label: 'rudder_id' }],
         ],
-        { Config: { restApiKey: 'xyz' } },
+        { destination: { Config: { restApiKey: 'xyz' } } },
       );
 
       // restore the original implementation of the mocked functions

@@ -93,7 +93,7 @@ const processEvent = (event) => {
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const process = async (event, _processParams) => {
-  const token = await getAuthToken(formatConfig(event.destination));
+  const token = await getAuthToken(formatConfig(event.destination), event.metadata);
   if (!token) {
     throw new UnauthorizedError('Authorization failed');
   }
@@ -106,9 +106,9 @@ const processRouterDest = async (inputs, reqMetadata) => {
   // Token needs to be generated for marketo which will be done on input level.
   // If destination information is not present Error should be thrown
 
-  const { destination } = inputs[0];
+  const { destination, metadata } = inputs[0];
   try {
-    const token = await getAuthToken(formatConfig(destination));
+    const token = await getAuthToken(formatConfig(destination), metadata);
     if (!token) {
       throw new UnauthorizedError('Could not retrieve authorisation token');
     }

@@ -10,6 +10,7 @@ const tags = require('../../util/tags');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const proxyRequest = async (request) => {
+  const { metadata } = request;
   const { endpoint, data, method, params, headers, config } = prepareProxyRequest(request);
 
   if (!config?.advertiserSecretKey) {
@@ -43,6 +44,7 @@ const proxyRequest = async (request) => {
     endpointPath: '/track/realtimeconversion',
     requestMethod: 'POST',
     module: 'dataDelivery',
+    metadata,
   });
   return response;
 };

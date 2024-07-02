@@ -52,7 +52,7 @@ const validateEmailAndPhone = (email, phone = null) => {
  */
 const prepareEmailFromPhone = (phone) => `${phone.replace('+', '')}${EMAIL_SUFFIX}`;
 
-const checkIfContactExists = async (identifier, apiKey) => {
+const checkIfContactExists = async (identifier, apiKey, metadata) => {
   const endpoint = getContactDetailsEndpoint(identifier);
   const requestOptions = {
     headers: prepareHeader(apiKey),
@@ -63,6 +63,7 @@ const checkIfContactExists = async (identifier, apiKey) => {
     endpointPath: '/contacts',
     requestMethod: 'GET',
     module: 'router',
+    metadata,
   });
 
   const processedContactDetailsResponse = processAxiosResponse(contactDetailsResponse);

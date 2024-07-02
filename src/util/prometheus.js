@@ -1120,6 +1120,12 @@ class Prometheus {
           'workspaceId',
         ],
       },
+      {
+        name: 'user_transform_reconcile_function',
+        help: 'user_transform_reconcile_function',
+        type: 'counter',
+        labelNames: ['transformationId', 'workspaceId'],
+      },
     ];
 
     metrics.forEach((metric) => {

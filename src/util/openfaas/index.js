@@ -67,7 +67,7 @@ const callWithRetry = async (
 };
 
 const getFunctionsForWorkspace = async (workspaceId) => {
-  logger.debug(`Getting functions for workspace: ${workspaceId}`);
+  logger.info(`Getting functions for workspace: ${workspaceId}`);
 
   const workspaceFns = [];
   const upstreamFns = await getFunctionList();
@@ -94,17 +94,19 @@ const reconcileFunction = async (workspaceId, fns, migrateAll = false) => {
         continue;
       }
 
-      const payload = buildOpenfaasFn(workspaceFn.name, null, '', [], false, {
-        transformationId: workspaceFn['labels']['transformationId'],
+      const tags = {
         workspaceId: workspaceFn['labels']['workspaceId'],
-      });
+        transformationId: workspaceFn['labels']['transformationId'],
+      };
+
+      const payload = buildOpenfaasFn(workspaceFn.name, null, '', [], false, tags);
       payload['envProcess'] = workspaceFn['envProcess'];
 
-      logger.info(`Updating function ${workspaceFn.name} from workspace: ${workspaceId}`);
       await updateFunction(workspaceFn.name, payload);
-
-      logger.info(`Reconciliation finished`);
+      stats.increment('user_transform_reconcile_function', tags);
     }
+
+    logger.info(`Reconciliation finished`);
   } catch (error) {
     logger.error(`Error while reconciling function ${fnName}: ${error.message}`);
     throw new RespStatusError(error.message, error.statusCode);

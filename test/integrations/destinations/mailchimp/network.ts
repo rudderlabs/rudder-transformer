@@ -77,4 +77,42 @@ export const networkCallsData = [
       status: 200,
     },
   },
+  {
+    httpReq: {
+      url: 'https://usXX.api.mailchimp.com/3.0/lists/aud111/members/5587981bdf09024971ff9ddfb2590a6d',
+      method: 'GET',
+      headers: {
+        Authorization: 'Basic YXBpS2V5OmFwaUtleS1kdW1teUFwaUtleQ==',
+      },
+    },
+    httpRes: {
+      data: {
+        type: 'https://mailchimp.com/developer/marketing/docs/errors/',
+        title: 'API Key Invalid',
+        status: 401,
+        detail: "Your API key may be invalid, or you've attempted to access the wrong datacenter.",
+        instance: 'd2e09e5b-7c28-8585-68db-8feaf57ee0f7',
+      },
+      status: 401,
+    },
+  },
+  {
+    httpReq: {
+      url: 'https://usXX.api.mailchimp.com/3.0/lists/aud111',
+      method: 'GET',
+      headers: {
+        Authorization: 'Basic YXBpS2V5OmFwaUtleS1kdW1teUFwaUtleQ==',
+      },
+    },
+    httpRes: {
+      data: {
+        type: 'https://mailchimp.com/developer/marketing/docs/errors/',
+        title: 'API Key Invalid',
+        status: 401,
+        detail: "Your API key may be invalid, or you've attempted to access the wrong datacenter.",
+        instance: 'd2e09e5b-7c28-8585-68db-8feaf57ee0f7',
+      },
+      status: 401,
+    },
+  },
 ];

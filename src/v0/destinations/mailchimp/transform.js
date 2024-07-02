@@ -78,7 +78,7 @@ const trackResponseBuilder = (message, { Config }) => {
   return responseBuilderSimple(processedPayload, endpoint, Config, audienceId);
 };
 
-const identifyResponseBuilder = async (message, { Config }) => {
+const identifyResponseBuilder = async (message, { Config }, metadata) => {
   const { datacenterId } = Config;
   const email = getFieldValueFromMessage(message, 'email');
   if (!email) {
@@ -86,13 +86,13 @@ const identifyResponseBuilder = async (message, { Config }) => {
   }
   const audienceId = getAudienceId(message, Config);
   const endpoint = mailChimpSubscriptionEndpoint(datacenterId, audienceId, email);
-  const processedPayload = await processPayload(message, Config, audienceId);
+  const processedPayload = await processPayload(message, Config, audienceId, metadata);
   return responseBuilderSimple(processedPayload, endpoint, Config, audienceId);
 };
 
 const process = async (event) => {
   let response;
-  const { message, destination } = event;
+  const { message, destination, metadata } = event;
   const messageType = message.type.toLowerCase();
   const destConfig = destination.Config;
 
@@ -114,7 +114,7 @@ const process = async (event) => {
 
   switch (messageType) {
     case EventType.IDENTIFY:
-      response = await identifyResponseBuilder(message, destination);
+      response = await identifyResponseBuilder(message, destination, metadata);
       break;
     case EventType.TRACK:
       response = trackResponseBuilder(message, destination);

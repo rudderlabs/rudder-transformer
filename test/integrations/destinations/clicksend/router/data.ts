@@ -15,7 +15,7 @@ const commonDestination = {
     clicksendUsername: 'dummy',
     defaultCampaignSchedule: '2',
     defaultCampaignScheduleUnit: 'day',
-    defaultSenderEmail: 'abc@gmail.com',
+    defaultSenderId: 'abc@gmail.com',
     defaultSenderPhoneNumber: '+919XXXXXXXX8',
     defaultSource: 'php',
     oneTrustCookieCategories: [

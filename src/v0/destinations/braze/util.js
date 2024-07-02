@@ -1,7 +1,7 @@
 /* eslint-disable */
 const _ = require('lodash');
 const get = require('get-value');
-const { structuredLogger: logger } = require('@rudderstack/integrations-lib');
+const logger = require('../../../logger');
 const stats = require('../../../util/stats');
 const { handleHttpRequest } = require('../../../adapters/network');
 const {
@@ -519,8 +519,18 @@ function setExternalId(payload, message) {
   return payload;
 }
 
-function setAliasObjectWithAnonId(payload, message) {
-  if (message.anonymousId) {
+function setAliasObject(payload, message) {
+  const integrationsObj = getIntegrationsObj(message, 'BRAZE');
+  if (
+    isDefinedAndNotNull(integrationsObj?.alias?.alias_name) &&
+    isDefinedAndNotNull(integrationsObj?.alias?.alias_label)
+  ) {
+    const { alias_name, alias_label } = integrationsObj.alias;
+    payload.user_alias = {
+      alias_name,
+      alias_label,
+    };
+  } else if (message.anonymousId) {
     payload.user_alias = {
       alias_name: message.anonymousId,
       alias_label: 'rudder_id',
@@ -537,7 +547,7 @@ function setExternalIdOrAliasObject(payload, message) {
 
   // eslint-disable-next-line no-underscore-dangle
   payload._update_existing_only = false;
-  return setAliasObjectWithAnonId(payload, message);
+  return setAliasObject(payload, message);
 }
 
 function addMandatoryPurchaseProperties(productId, price, currencyCode, quantity, timestamp) {
@@ -560,7 +570,8 @@ function getPurchaseObjs(message, config) {
         'Invalid Order Completed event: Properties object is missing in the message',
       );
     }
-    const { products, currency: currencyCode } = properties;
+    const { currency: currencyCode } = properties;
+    let { products } = properties;
     if (!products) {
       throw new InstrumentationError(
         'Invalid Order Completed event: Products array is missing in the message',
@@ -571,6 +582,7 @@ function getPurchaseObjs(message, config) {
       throw new InstrumentationError('Invalid Order Completed event: Products is not an array');
     }
 
+    products = products.filter((product) => isDefinedAndNotNull(product));
     if (products.length === 0) {
       throw new InstrumentationError('Invalid Order Completed event: Products array is empty');
     }
@@ -687,14 +699,11 @@ const collectStatsForAliasFailure = (brazeResponse, destinationId) => {
   const { aliases_processed: aliasesProcessed, errors } = brazeResponse;
   if (aliasesProcessed === 0) {
     stats.increment('braze_alias_failure_count', { destination_id: destinationId });
-
-    if (Array.isArray(errors)) {
-      logger.info('Braze Alias Failure Errors:', {
-        destinationId,
-        errors,
-      });
-    }
   }
+};
+
+const collectStatsForAliasMissConfigurations = (destinationId) => {
+  stats.increment('braze_alias_missconfigured_count', { destination_id: destinationId });
 };
 
 module.exports = {
@@ -707,7 +716,8 @@ module.exports = {
   getPurchaseObjs,
   setExternalIdOrAliasObject,
   setExternalId,
-  setAliasObjectWithAnonId,
+  setAliasObject,
   addMandatoryPurchaseProperties,
   collectStatsForAliasFailure,
+  collectStatsForAliasMissConfigurations,
 };

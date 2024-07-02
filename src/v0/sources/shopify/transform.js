@@ -13,6 +13,7 @@ const {
   getHashLineItems,
   getDataFromRedis,
 } = require('./util');
+const logger = require('../../../logger');
 const { RedisDB } = require('../../../util/redis/redisConnector');
 const { removeUndefinedAndNullValues, isDefinedAndNotNull } = require('../../util');
 const Message = require('../message');
@@ -205,7 +206,7 @@ const processEvent = async (inputEvent, metricMetadata) => {
 };
 const isIdentifierEvent = (event) =>
   ['rudderIdentifier', 'rudderSessionIdentifier'].includes(event?.event);
-const processIdentifierEvent = async (event, metricMetadata, logger) => {
+const processIdentifierEvent = async (event, metricMetadata) => {
   if (useRedisDatabase) {
     let value;
     let field;
@@ -243,7 +244,11 @@ const processIdentifierEvent = async (event, metricMetadata, logger) => {
       });
       await RedisDB.setVal(`${event.cartToken}`, value);
     } catch (e) {
-      logger.debug(`{{SHOPIFY::}} cartToken map set call Failed due redis error ${e}`);
+      logger.debug(`{{SHOPIFY::}} cartToken map set call Failed due redis error ${e}`, {
+        type: 'set',
+        source: metricMetadata.source,
+        writeKey: metricMetadata.writeKey,
+      });
       stats.increment('shopify_redis_failures', {
         type: 'set',
         source: metricMetadata.source,
@@ -255,13 +260,13 @@ const processIdentifierEvent = async (event, metricMetadata, logger) => {
   }
   return NO_OPERATION_SUCCESS;
 };
-const process = async (event, logger) => {
+const process = async (event) => {
   const metricMetadata = {
     writeKey: event.query_parameters?.writeKey?.[0],
     source: 'SHOPIFY',
   };
   if (isIdentifierEvent(event)) {
-    return processIdentifierEvent(event, metricMetadata, logger);
+    return processIdentifierEvent(event, metricMetadata);
   }
   const response = await processEvent(event, metricMetadata);
   return response;

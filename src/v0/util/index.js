@@ -1447,13 +1447,13 @@ const getTrackingPlanMetadata = (metadata) => ({
   workspaceId: metadata.workspaceId,
 });
 
-const getMetadata = (metadata) => ({
+const getMetadata = (metadata = {}) => ({
   sourceType: metadata.sourceType,
   destinationType: metadata.destinationType,
   k8_namespace: metadata.namespace,
 });
 
-const getTransformationMetadata = (metadata) => ({
+const getTransformationMetadata = (metadata = {}) => ({
   transformationId: metadata.transformationId,
   workspaceId: metadata.workspaceId,
 });
@@ -2248,15 +2248,8 @@ const validateEventAndLowerCaseConversion = (event, isMandatory, convertToLowerC
   return convertToLowerCase ? event.toString().toLowerCase() : event.toString();
 };
 
-const applyCustomMappings = (message, mappings) => {
-  const flatMappings = mappings.map((mapping) => ({
-    input: mapping.from,
-    output: mapping.to,
-  }));
-  return JsonTemplateEngine.createAsSync(flatMappings, { defaultPathType: PathType.JSON }).evaluate(
-    message,
-  );
-};
+const applyCustomMappings = (message, mappings) =>
+  JsonTemplateEngine.createAsSync(mappings, { defaultPathType: PathType.JSON }).evaluate(message);
 
 // ========================================================================
 // EXPORTS

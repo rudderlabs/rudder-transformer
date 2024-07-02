@@ -1113,6 +1113,281 @@ describe("User transformation", () => {
     );
     expect(output).toEqual(expectedData);
   });
+
+  describe("UserTransformation With Credentials for code version 1", () => {
+    it(`successfully executes transformation with credential lookup with valid key`, async () => {
+      const versionId = randomID();
+
+      const inputData = require(`./data/${integration}_input_credentials.json`);
+
+      const respBody = {
+        versionId: versionId,
+        codeVersion: "1",
+        name,
+        code: `
+          export function transformEvent(event, metadata) {
+              event.credentialValue = getCredential('key1');
+              return event;
+            }
+            `
+      };
+      fetch.mockResolvedValue({
+        status: 200,
+        json: jest.fn().mockResolvedValue(respBody)
+      });
+
+      const output = await userTransformHandler(inputData, versionId, []);
+      expect(fetch).toHaveBeenCalledWith(
+        `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
+      );
+      expect(output[0].transformedEvent.credentialValue).toEqual("value1");
+    });
+
+    it(`throws TypeError if the key provided for credential lookup is null or undefined`, async () => {
+      const versionId = randomID();
+
+      const inputData = require(`./data/${integration}_input_credentials.json`);
+
+      const respBody = {
+        versionId: versionId,
+        codeVersion: "1",
+        name,
+        code: `
+          export function transformEvent(event, metadata) {
+              event.credentialValue = getCredential();
+              return event;
+            }
+            `
+      };
+      fetch.mockResolvedValue({
+        status: 200,
+        json: jest.fn().mockResolvedValue(respBody)
+      });
+
+      const output = await userTransformHandler(inputData, versionId, []);
+      
+      expect(fetch).toHaveBeenCalledWith(
+        `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
+      );
+      expect(output[0].error).toMatch(/Key should be valid and defined/);
+    });
+
+    it(`allows user to pass multiple arguments to functions and performs lookup with first key passed`, async () => {
+      const versionId = randomID();
+
+      const inputData = require(`./data/${integration}_input_credentials.json`);
+
+      const respBody = {
+        versionId: versionId,
+        codeVersion: "1",
+        name,
+        code: `
+          export function transformEvent(event, metadata) {
+              event.credentialValue = getCredential('key1', 'key2');
+              return event;
+            }
+            `
+      };
+      fetch.mockResolvedValue({
+        status: 200,
+        json: jest.fn().mockResolvedValue(respBody)
+      });
+
+      const output = await userTransformHandler(inputData, versionId, []);
+      
+      expect(fetch).toHaveBeenCalledWith(
+        `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
+      );
+      expect(output[0].transformedEvent.credentialValue).toEqual("value1");
+    });
+
+    it(`allows user to pass valid key of any type and performs lookup accordingly`, async () => {
+      const versionId = randomID();
+
+      const inputData = require(`./data/${integration}_input_credentials.json`);
+
+      const respBody = {
+        versionId: versionId,
+        codeVersion: "1",
+        name,
+        code: `
+          export function transformEvent(event, metadata) {
+              event.credentialValueForNumkey = getCredential(1);
+              event.credentialValueForBoolkey = getCredential(true);
+              event.credentialValueForArraykey = getCredential([]);
+              event.credentialValueForObjkey = getCredential({});
+              return event;
+            }
+            `
+      };
+      fetch.mockResolvedValue({
+        status: 200,
+        json: jest.fn().mockResolvedValue(respBody)
+      });
+
+      const output = await userTransformHandler(inputData, versionId, []);
+      
+      expect(fetch).toHaveBeenCalledWith(
+        `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
+      );
+      expect(output[0].transformedEvent.credentialValueForNumkey).toBeUndefined();
+      expect(output[0].transformedEvent.credentialValueForBoolkey).toBeUndefined();
+      expect(output[0].transformedEvent.credentialValueForArraykey).toBeUndefined();
+      expect(output[0].transformedEvent.credentialValueForObjkey).toBeUndefined();
+    });
+
+    it(`returns undefined when the key doesn't match any credential lookup`, async () => {
+      const versionId = randomID();
+
+      const inputData = require(`./data/${integration}_input_credentials.json`);
+
+      const respBody = {
+        versionId: versionId,
+        codeVersion: "1",
+        name,
+        code: `
+          export function transformEvent(event, metadata) {
+              event.credentialValue = getCredential('key3');
+              return event;
+            }
+            `
+      };
+      fetch.mockResolvedValue({
+        status: 200,
+        json: jest.fn().mockResolvedValue(respBody)
+      });
+
+      const output = await userTransformHandler(inputData, versionId, []);
+      
+      expect(fetch).toHaveBeenCalledWith(
+        `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
+      );
+      expect(output[0].transformedEvent.credentialValue).toBeUndefined();
+    });
+
+    it(`returns undefined when the credentials are not passed in the request`, async () => {
+      const versionId = randomID();
+
+      const inputData = require(`./data/${integration}_input.json`);
+
+      const respBody = {
+        versionId: versionId,
+        codeVersion: "1",
+        name,
+        code: `
+          export function transformEvent(event, metadata) {
+              event.credentialValue = getCredential('key1');
+              return event;
+            }
+            `
+      };
+      fetch.mockResolvedValue({
+        status: 200,
+        json: jest.fn().mockResolvedValue(respBody)
+      });
+
+      const output = await userTransformHandler(inputData, versionId, []);
+      
+      expect(fetch).toHaveBeenCalledWith(
+        `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
+      );
+      expect(output[0].transformedEvent.credentialValue).toBeUndefined();
+    });
+
+    describe('Batch UserTransformation with Credentials', () => {
+      it(`successfully executes transformation with credential lookup with valid key`, async () => {
+        const versionId = randomID();
+
+        const inputData = require(`./data/${integration}_input_credentials.json`);
+
+        const respBody = {
+          versionId: versionId,
+          codeVersion: "1",
+          name,
+          code: `
+            export function transformBatch(events, metadata) {
+              events.forEach((event) => {
+                event.credentialValue1 = getCredential("key1");
+                event.credentialValue2 = getCredential("key3");
+              });
+              return events;
+            }
+            `
+        };
+        fetch.mockResolvedValue({
+          status: 200,
+          json: jest.fn().mockResolvedValue(respBody)
+        });
+
+        const output = await userTransformHandler(inputData, versionId, []);
+        expect(fetch).toHaveBeenCalledWith(
+          `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
+        );
+        expect(output[0].transformedEvent.credentialValue1).toEqual("value1");
+        expect(output[0].transformedEvent.credentialValue2).toBeUndefined();
+      });
+
+      it(`throws TypeError if the key provided for credential lookup is null or undefined`, async () => {
+        const versionId = randomID();
+
+        const inputData = require(`./data/${integration}_input_credentials.json`);
+
+        const respBody = {
+          versionId: versionId,
+          codeVersion: "1",
+          name,
+          code: `
+            export function transformBatch(events, metadata) {
+              events.forEach((event) => {
+                event.credentialValue = getCredential();
+              });
+              return events;
+            }
+            `
+        };
+        fetch.mockResolvedValue({
+          status: 200,
+          json: jest.fn().mockResolvedValue(respBody)
+        });
+
+        const output = await userTransformHandler(inputData, versionId, []);
+        expect(fetch).toHaveBeenCalledWith(
+          `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
+        );
+        expect(output[0].error).toMatch(/Key should be valid and defined/);
+      });
+
+    });
+
+    it(`throws error when credentials function is used with code version 0`, async () => {
+      const versionId = randomID();
+
+      const inputData = require(`./data/${integration}_input_credentials.json`);
+
+      const respBody = {
+        versionId: versionId,
+        codeVersion: "0",
+        name,
+        code: `
+          function transform(events) {
+            events.forEach((event) => {
+              event.credentialValue = getCredential('key1');
+            });
+            return events;
+          }
+          `
+      };
+      fetch.mockResolvedValue({
+        status: 200,
+        json: jest.fn().mockResolvedValue(respBody)
+      });  
+      try {
+        await userTransformHandler(inputData, versionId, []);
+      } catch (e) {
+        expect(e).toEqual('getCredential is not defined');
+      }
+    });
+  });
 });
 
 // Running timeout tests

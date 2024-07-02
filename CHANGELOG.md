@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.69.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.69.0...v1.69.1) (2024-06-25)
+
+
+### Bug Fixes
+
+* enhancement: introduce user model for one signal ([#3499](https://github.com/rudderlabs/rudder-transformer/issues/3499)) ([1c8e950](https://github.com/rudderlabs/rudder-transformer/commit/1c8e950f3d8789b33bba69a30c9eb21c40ce3d04))
+
 ## [1.69.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.68.2...v1.69.0) (2024-06-10)
 
 

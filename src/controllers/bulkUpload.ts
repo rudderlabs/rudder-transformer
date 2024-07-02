@@ -1,5 +1,4 @@
 /* eslint-disable global-require, import/no-dynamic-require, @typescript-eslint/no-unused-vars */
-import { structuredLogger as logger } from '@rudderstack/integrations-lib';
 import { client as errNotificationClient } from '../util/errorNotifier';
 import {
   getDestFileUploadHandler,
@@ -7,6 +6,7 @@ import {
   getPollStatusHandler,
 } from '../util/fetchDestinationHandlers';
 import { CatchErr, ContextBodySimple } from '../util/types';
+import logger from '../logger';
 // TODO: To be refactored and redisgned
 
 const ERROR_MESSAGE_PROCESSOR_STRING = 'Error occurred while processing payload.';

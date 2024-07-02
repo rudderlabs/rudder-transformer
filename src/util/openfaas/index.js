@@ -379,7 +379,6 @@ const executeFaasFunction = async (
     };
 
     stats.counter('user_transform_function_input_events', events.length, tags);
-    stats.timing('user_transform_function_latency', startTime, tags);
     stats.timingSummary('user_transform_function_latency_summary', startTime, tags);
   }
 };

@@ -6,7 +6,7 @@ const {
   NetworkInstrumentationError,
   NetworkError,
 } = require('@rudderstack/integrations-lib');
-const { prepareProxyRequest, httpSend, httpPOST } = require('../../../adapters/network');
+const { prepareProxyRequest, httpPOST, handleHttpRequest } = require('../../../adapters/network');
 const {
   isHttpStatusSuccess,
   getHashFromArray,
@@ -15,31 +15,49 @@ const {
 } = require('../../util');
 const { getConversionActionId } = require('./utils');
 const Cache = require('../../util/cache');
-const { CONVERSION_CUSTOM_VARIABLE_CACHE_TTL, SEARCH_STREAM } = require('./config');
+const { CONVERSION_CUSTOM_VARIABLE_CACHE_TTL, SEARCH_STREAM, destType } = require('./config');
 const {
   processAxiosResponse,
   getDynamicErrorType,
 } = require('../../../adapters/utils/networkUtils');
 const tags = require('../../util/tags');
+const logger = require('../../../logger');
 
 const conversionCustomVariableCache = new Cache(CONVERSION_CUSTOM_VARIABLE_CACHE_TTL);
 
-const createJob = async (endpoint, headers, payload) => {
+const createJob = async ({ endpoint, headers, payload, metadata }) => {
   const endPoint = `${endpoint}:create`;
+  logger.requestLog(`[${destType.toUpperCase()}] job creation request`, {
+    metadata,
+    requestDetails: {
+      url: endpoint,
+      body: payload,
+      method: 'post',
+    },
+  });
   let createJobResponse = await httpPOST(
     endPoint,
     payload,
     { headers },
     {
-      destType: 'google_adwords_offline_conversions',
+      destType,
       feature: 'proxy',
       endpointPath: `/create`,
       requestMethod: 'POST',
       module: 'dataDelivery',
+      metadata,
     },
   );
   createJobResponse = processAxiosResponse(createJobResponse);
-  const { response, status } = createJobResponse;
+  const { response, status, headers: responseHeaders } = createJobResponse;
+  logger.responseLog(`[${destType.toUpperCase()}] create job`, {
+    metadata,
+    responseDetails: {
+      headers: responseHeaders,
+      status,
+      response,
+    },
+  });
   if (!isHttpStatusSuccess(status)) {
     throw new AbortedError(
       `[Google Ads Offline Conversions]:: ${response?.error?.message} during google_ads_offline_store_conversions Job Creation`,
@@ -51,8 +69,16 @@ const createJob = async (endpoint, headers, payload) => {
   return response.resourceName.split('/')[3];
 };
 
-const addConversionToJob = async (endpoint, headers, jobId, payload) => {
+const addConversionToJob = async ({ endpoint, headers, jobId, payload, metadata }) => {
   const endPoint = `${endpoint}/${jobId}:addOperations`;
+  logger.requestLog(`[${destType.toUpperCase()}] add conversion to job request`, {
+    metadata,
+    requestDetails: {
+      url: endpoint,
+      body: payload,
+      method: 'post',
+    },
+  });
   let addConversionToJobResponse = await httpPOST(
     endPoint,
     payload,
@@ -63,23 +89,42 @@ const addConversionToJob = async (endpoint, headers, jobId, payload) => {
       endpointPath: `/addOperations`,
       requestMethod: 'POST',
       module: 'dataDelivery',
+      metadata,
     },
   );
   addConversionToJobResponse = processAxiosResponse(addConversionToJobResponse);
-  if (!isHttpStatusSuccess(addConversionToJobResponse.status)) {
+  const { response, status, headers: responseHeaders } = addConversionToJobResponse;
+  logger.responseLog(`[${destType.toUpperCase()}] add conversion to job`, {
+    metadata,
+    responseDetails: {
+      response,
+      status,
+      headers: responseHeaders,
+    },
+  });
+  if (!isHttpStatusSuccess(status)) {
     throw new AbortedError(
-      `[Google Ads Offline Conversions]:: ${addConversionToJobResponse.response?.error?.message} during google_ads_offline_store_conversions Add Conversion`,
-      addConversionToJobResponse.status,
-      addConversionToJobResponse.response,
+      `[Google Ads Offline Conversions]:: ${response?.error?.message} during google_ads_offline_store_conversions Add Conversion`,
+      status,
+      response,
       getAuthErrCategoryFromStCode(get(addConversionToJobResponse, 'status')),
     );
   }
   return true;
 };
 
-const runTheJob = async (endpoint, headers, payload, jobId) => {
+const runTheJob = async ({ endpoint, headers, payload, jobId, metadata }) => {
   const endPoint = `${endpoint}/${jobId}:run`;
-  const executeJobResponse = await httpPOST(
+  logger.requestLog(`[${destType.toUpperCase()}] run job request`, {
+    metadata,
+    requestDetails: {
+      body: payload,
+      method: 'POST',
+      url: endPoint,
+    },
+  });
+  const { httpResponse: executeJobResponse, processedResponse } = await handleHttpRequest(
+    'post',
     endPoint,
     payload,
     { headers },
@@ -89,8 +134,18 @@ const runTheJob = async (endpoint, headers, payload, jobId) => {
       endpointPath: `/run`,
       requestMethod: 'POST',
       module: 'dataDelivery',
+      metadata,
     },
   );
+  const { headers: responseHeaders, response, status } = processedResponse;
+  logger.responseLog(`[${destType.toUpperCase()}] run job`, {
+    metadata,
+    responseDetails: {
+      response,
+      status,
+      responseHeaders,
+    },
+  });
   return executeJobResponse;
 };
 
@@ -102,7 +157,7 @@ const runTheJob = async (endpoint, headers, payload, jobId) => {
  * @param {*} headers
  * @returns
  */
-const getConversionCustomVariable = async (headers, params) => {
+const getConversionCustomVariable = async ({ headers, params, metadata }) => {
   const conversionCustomVariableKey = sha256(params.customerId).toString();
   return conversionCustomVariableCache.get(conversionCustomVariableKey, async () => {
     const data = {
@@ -112,23 +167,41 @@ const getConversionCustomVariable = async (headers, params) => {
     const requestOptions = {
       headers,
     };
+    logger.requestLog(`[${destType.toUpperCase()}] get conversion custom variable request`, {
+      metadata,
+      requestDetails: {
+        url: endpoint,
+        body: data,
+        method: 'post',
+      },
+    });
     let searchStreamResponse = await httpPOST(endpoint, data, requestOptions, {
       destType: 'google_adwords_offline_conversions',
       feature: 'proxy',
       endpointPath: `/searchStream`,
       requestMethod: 'POST',
       module: 'dataDelivery',
+      metadata,
     });
     searchStreamResponse = processAxiosResponse(searchStreamResponse);
-    if (!isHttpStatusSuccess(searchStreamResponse.status)) {
+    const { response, status, headers: responseHeaders } = searchStreamResponse;
+    logger.responseLog(`[${destType.toUpperCase()}] get conversion custom variable`, {
+      metadata,
+      responseDetails: {
+        response,
+        status,
+        headers: responseHeaders,
+      },
+    });
+    if (!isHttpStatusSuccess(status)) {
       throw new NetworkError(
-        `[Google Ads Offline Conversions]:: ${searchStreamResponse?.response?.[0]?.error?.message} during google_ads_offline_conversions response transformation`,
-        searchStreamResponse.status,
+        `[Google Ads Offline Conversions]:: ${response?.[0]?.error?.message} during google_ads_offline_conversions response transformation`,
+        status,
         {
-          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(searchStreamResponse.status),
+          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
         },
-        searchStreamResponse?.response || searchStreamResponse,
-        getAuthErrCategoryFromStCode(searchStreamResponse.status),
+        response || searchStreamResponse,
+        getAuthErrCategoryFromStCode(status),
       );
     }
     const conversionCustomVariable = get(searchStreamResponse, 'response.0.results');
@@ -195,37 +268,53 @@ const isValidCustomVariables = (customVariables) => {
  * @returns
  */
 const ProxyRequest = async (request) => {
-  const { method, endpoint, headers, params, body } = request;
+  const { method, endpoint, headers, params, body, metadata } = request;
 
   if (body.JSON?.isStoreConversion) {
-    const firstResponse = await createJob(endpoint, headers, body.JSON.createJobPayload);
+    const firstResponse = await createJob({
+      endpoint,
+      headers,
+      payload: body.JSON.createJobPayload,
+      metadata,
+    });
     const addPayload = body.JSON.addConversionPayload;
     // Mapping Conversion Action
-    const conversionId = await getConversionActionId(headers, params);
+    const conversionId = await getConversionActionId({ headers, params, metadata });
     if (Array.isArray(addPayload.operations)) {
       addPayload.operations.forEach((operation) => {
         set(operation, 'create.transaction_attribute.conversion_action', conversionId);
       });
     }
-    await addConversionToJob(endpoint, headers, firstResponse, addPayload);
-    const thirdResponse = await runTheJob(
+    await addConversionToJob({
       endpoint,
       headers,
-      body.JSON.executeJobPayload,
-      firstResponse,
-    );
+      jobId: firstResponse,
+      payload: addPayload,
+      metadata,
+    });
+    const thirdResponse = await runTheJob({
+      endpoint,
+      headers,
+      payload: body.JSON.executeJobPayload,
+      jobId: firstResponse,
+      metadata,
+    });
     return thirdResponse;
   }
   // fetch conversionAction
   // httpPOST -> myAxios.post()
   if (params?.event) {
-    const conversionActionId = await getConversionActionId(headers, params);
+    const conversionActionId = await getConversionActionId({ headers, params, metadata });
     set(body.JSON, 'conversions.0.conversionAction', conversionActionId);
   }
   // customVariables would be undefined in case of Store Conversions
   if (isValidCustomVariables(params.customVariables)) {
     // fetch all conversion custom variable in google ads
-    let conversionCustomVariable = await getConversionCustomVariable(headers, params);
+    let conversionCustomVariable = await getConversionCustomVariable({
+      headers,
+      params,
+      metadata,
+    });
 
     // convert it into hashMap
     conversionCustomVariable = getConversionCustomVariableHashMap(conversionCustomVariable);
@@ -249,16 +338,29 @@ const ProxyRequest = async (request) => {
       set(body.JSON, 'conversions.0.customVariables', resultantCustomVariables);
     }
   }
-
   const requestBody = { url: endpoint, data: body.JSON, headers, method };
-  const response = await httpSend(requestBody, {
+  logger.requestLog(`[${destType.toUpperCase()}] offline conversion creation request`, {
+    metadata,
+    requestDetails: { url: requestBody.url, body: requestBody.data, method },
+  });
+  const { httpResponse, processedResponse } = await handleHttpRequest('constructor', requestBody, {
     feature: 'proxy',
     destType: 'gogole_adwords_offline_conversions',
     endpointPath: `/proxy`,
     requestMethod: 'POST',
     module: 'dataDelivery',
+    metadata,
   });
-  return response;
+  const { headers: responseHeaders, status, response } = processedResponse;
+  logger.responseLog(`[${destType.toUpperCase()}] deliver event to destination`, {
+    metadata,
+    responseDetails: {
+      response,
+      headers: responseHeaders,
+      status,
+    },
+  });
+  return httpResponse;
 };
 
 const responseHandler = (responseParams) => {

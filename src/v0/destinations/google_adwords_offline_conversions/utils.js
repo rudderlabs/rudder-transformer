@@ -30,11 +30,13 @@ const {
   CLICK_CONVERSION,
   trackCallConversionsMapping,
   consentConfigMap,
+  destType,
 } = require('./config');
 const { processAxiosResponse } = require('../../../adapters/utils/networkUtils');
 const Cache = require('../../util/cache');
 const helper = require('./helper');
 const { finaliseConsent } = require('../../util/googleUtils');
+const logger = require('../../../logger');
 
 const conversionActionIdCache = new Cache(CONVERSION_ACTION_ID_CACHE_TTL);
 
@@ -55,7 +57,7 @@ const validateDestinationConfig = ({ Config }) => {
  * @param {*} headers
  * @returns
  */
-const getConversionActionId = async (headers, params) => {
+const getConversionActionId = async ({ headers, params, metadata }) => {
   const conversionActionIdKey = sha256(params.event + params.customerId).toString();
   return conversionActionIdCache.get(conversionActionIdKey, async () => {
     const queryString = SqlString.format(
@@ -69,21 +71,39 @@ const getConversionActionId = async (headers, params) => {
     const requestOptions = {
       headers,
     };
+    logger.requestLog(`[${destType.toUpperCase()}] get conversion action id request`, {
+      metadata,
+      requestDetails: {
+        url: endpoint,
+        body: data,
+        method: 'post',
+      },
+    });
     let searchStreamResponse = await httpPOST(endpoint, data, requestOptions, {
       destType: 'google_adwords_offline_conversions',
       feature: 'transformation',
       endpointPath: `/googleAds:searchStream`,
       requestMethod: 'POST',
       module: 'dataDelivery',
+      metadata,
     });
     searchStreamResponse = processAxiosResponse(searchStreamResponse);
-    if (!isHttpStatusSuccess(searchStreamResponse.status)) {
+    const { response, status, headers: responseHeaders } = searchStreamResponse;
+    logger.responseLog(`[${destType.toUpperCase()}] get conversion action id response`, {
+      metadata,
+      responseDetails: {
+        response,
+        status,
+        headers: responseHeaders,
+      },
+    });
+    if (!isHttpStatusSuccess(status)) {
       throw new AbortedError(
         `[Google Ads Offline Conversions]:: ${JSON.stringify(
-          searchStreamResponse.response,
+          response,
         )} during google_ads_offline_conversions response transformation`,
-        searchStreamResponse.status,
-        searchStreamResponse.response,
+        status,
+        response,
         getAuthErrCategoryFromStCode(get(searchStreamResponse, 'status')),
       );
     }

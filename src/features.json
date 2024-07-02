@@ -73,7 +73,8 @@
     "MOVABLE_INK": true,
     "EMARSYS": true,
     "KODDI": true,
-    "WUNDERKIND": true
+    "WUNDERKIND": true,
+    "CLICKSEND": true
   },
   "regulations": [
     "BRAZE",

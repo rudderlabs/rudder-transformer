@@ -1,5 +1,5 @@
 import { Destination, RouterTransformationRequest } from '../../../../../src/types';
-import { generateMetadata } from '../../../testUtils';
+import { generateGoogleOAuthMetadata } from '../../../testUtils';
 
 const destination: Destination = {
   Config: {
@@ -30,7 +30,7 @@ const destination: Destination = {
 export const rETLAudienceRouterRequest: RouterTransformationRequest = {
   input: [
     {
-      metadata: generateMetadata(1),
+      metadata: generateGoogleOAuthMetadata(1),
       destination: destination,
       message: {
         userId: 'user 1',
@@ -57,7 +57,7 @@ export const rETLAudienceRouterRequest: RouterTransformationRequest = {
       },
     },
     {
-      metadata: generateMetadata(3),
+      metadata: generateGoogleOAuthMetadata(3),
       destination: destination,
       message: {
         userId: 'user 1',
@@ -84,7 +84,7 @@ export const rETLAudienceRouterRequest: RouterTransformationRequest = {
       },
     },
     {
-      metadata: generateMetadata(4),
+      metadata: generateGoogleOAuthMetadata(4),
       destination: destination,
       message: {
         userId: 'user 1',

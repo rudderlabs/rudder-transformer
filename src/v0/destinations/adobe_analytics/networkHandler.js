@@ -1,4 +1,4 @@
-const { InstrumentationError } = require('@rudderstack/integrations-lib');
+const { InstrumentationError, RetryableError } = require('@rudderstack/integrations-lib');
 const { proxyRequest, prepareProxyRequest } = require('../../../adapters/network');
 const { processAxiosResponse } = require('../../../adapters/utils/networkUtils');
 const { DESTINATION } = require('./config');
@@ -20,6 +20,24 @@ const responseHandler = (responseParams) => {
 
   const message = `[${DESTINATION}] - Request Processed Successfully`;
   const { response, status } = destinationResponse;
+  if (status !== 200) {
+    // handle non-200 status codes as network errors
+    switch (status) {
+      case 500 || 502 || 503 || 505:
+        throw new RetryableError(
+          `[${DESTINATION} Response Handler] Request failed for destination ${destType} with status code ${status} due to ${response}`,
+        );
+      case 504:
+        throw new RetryableError(
+          `[${DESTINATION} Response Handler] Request failed for destination ${destType} with status code ${status} due to Gateway Timeout`,
+        );
+      // all other scenarios should be retried by default
+      default:
+        throw new RetryableError(
+          `[${DESTINATION} Response Handler] Request failed for destination ${destType} with status code ${status}`,
+        );
+    }
+  }
 
   // Extract values between different tags
   const responseStatus = extractContent(response, 'status');

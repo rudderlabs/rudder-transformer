@@ -95,7 +95,7 @@ const deployFunction = async (payload) => {
 };
 
 const updateFunction = async (fnName, payload) => {
-  logger.debug(`Updating function: ${fnName}`);
+  logger.info(`Updating function: ${fnName}`);
 
   return new Promise((resolve, reject) => {
     const url = `${OPENFAAS_GATEWAY_URL}/system/functions`;

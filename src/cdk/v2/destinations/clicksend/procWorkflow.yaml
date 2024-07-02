@@ -59,7 +59,7 @@ steps:
             list_id : parseInt($.getDestinationExternalID(^.message,'CLICKSEND_CONTACT_LIST_ID'), 10),
             name : String(.properties.name),
             body : String(.properties.body),
-            from : $.getDestinationExternalID(^.message,'CLICKSEND_SENDER_EMAIL') ||  ^.destination.Config.defaultSenderEmail,
+            from : $.getDestinationExternalID(^.message,'CLICKSEND_SENDER_ID') ||  ^.destination.Config.defaultSenderId,
             schedule : $.deduceSchedule(.properties.schedule,{{{{$.getGenericPaths("timestamp")}}}}, ^.destination.Config)
             });
             $.assert(!Number.isNaN(sendCampaignPayload.list_id), "list_id must be an integer");
@@ -71,7 +71,7 @@ steps:
           name: sendSmsPayload
           template: |
             const sendSmsPayload = .message.({
-            from: $.getDestinationExternalID(^.message,'CLICKSEND_SENDER_EMAIL') ||  ^.destination.Config.defaultSenderEmail,
+            from: $.getDestinationExternalID(^.message,'CLICKSEND_SENDER_ID') ||  ^.destination.Config.defaultSenderId,
             email: {{{{$.getGenericPaths("emailOnly")}}}},
             to: {{{{$.getGenericPaths("phone")}}}},
             body: .properties.body,

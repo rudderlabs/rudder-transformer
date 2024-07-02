@@ -6,10 +6,35 @@ import {
   setupUserTransformHandler,
   validateCode,
 } from '../util/customTransformer';
+
+import { reconcileFunction } from '../util/openfaas/index';
 import { ControllerUtility } from './util';
 import logger from '../logger';
 
 export class UserTransformController {
+  /**
+  reconcileFunction is a controller function to reconcile the openfaas
+  fns with the latest configuration in the service.
+  */
+  public static async reconcileFunction(ctx: Context) {
+    logger.debug(`Received a request to reconcile fns`);
+
+    const { wId } = ctx.params;
+    const { name = [], migrateAll = 'false' } = ctx.request.query;
+
+    let fns: string[] = [];
+    if (typeof name === 'string') {
+      fns = [name];
+    } else {
+      fns = fns.concat(...name);
+    }
+
+    await reconcileFunction(wId, fns, migrateAll === 'true');
+
+    ctx.body = { message: 'Reconciled' };
+    return ctx;
+  }
+
   public static async transform(ctx: Context) {
     logger.debug(
       '(User transform - router:/customTransform ):: Request to transformer',

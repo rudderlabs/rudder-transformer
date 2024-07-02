@@ -5,6 +5,7 @@ const {
   invokeFunction,
   checkFunctionHealth,
   updateFunction,
+  getFunctionList,
 } = require('./faasApi');
 const logger = require('../../logger');
 const { RetryRequestError, RespStatusError } = require('../utils');
@@ -61,6 +62,53 @@ const callWithRetry = async (
     }
     await delayInMs(delay);
     return callWithRetry(fn, count + 1, delay, retryThreshold, args);
+  }
+};
+
+const getFunctionsForWorkspace = async (workspaceId) => {
+  logger.info(`Getting functions for workspace: ${workspaceId}`);
+
+  const workspaceFns = [];
+  const upstreamFns = await getFunctionList();
+  for (const fn of upstreamFns) {
+    if (fn?.labels?.workspaceId === workspaceId) {
+      workspaceFns.push(fn);
+    }
+  }
+  return workspaceFns;
+};
+
+const reconcileFunction = async (workspaceId, fns, migrateAll = false) => {
+  logger.info(`Reconciling workspace: ${workspaceId} fns: ${fns} and migrateAll: ${migrateAll}`);
+
+  try {
+    const workspaceFns = await getFunctionsForWorkspace(workspaceId);
+    // versionId and libraryVersionIds are used in the process
+    // to create the envProcess which will be copied from the original
+    // in next step
+    for (const workspaceFn of workspaceFns) {
+      // Only update the functions that are passed in the fns array
+      // given migrateAll is false
+      if (!migrateAll && !fns.includes(workspaceFn.name)) {
+        continue;
+      }
+
+      const tags = {
+        workspaceId: workspaceFn['labels']['workspaceId'],
+        transformationId: workspaceFn['labels']['transformationId'],
+      };
+
+      const payload = buildOpenfaasFn(workspaceFn.name, null, '', [], false, tags);
+      payload['envProcess'] = workspaceFn['envProcess'];
+
+      await updateFunction(workspaceFn.name, payload);
+      stats.increment('user_transform_reconcile_function', tags);
+    }
+
+    logger.info(`Reconciliation finished`);
+  } catch (error) {
+    logger.error(`Error while reconciling function ${fnName}: ${error.message}`);
+    throw new RespStatusError(error.message, error.statusCode);
   }
 };
 
@@ -227,28 +275,6 @@ async function setupFaasFunction(
   }
 }
 
-// reconcileFn runs everytime the service boot's up
-// trying to update the functions which are not in cache to the
-// latest label and envVars
-const reconcileFn = async (name, versionId, libraryVersionIDs, trMetadata) => {
-  if (DISABLE_RECONCILE_FN) {
-    return;
-  }
-
-  logger.debug(`Reconciling faas function: ${name}`);
-  try {
-    if (isFunctionDeployed(name)) {
-      return;
-    }
-    await updateFaasFunction(name, null, versionId, libraryVersionIDs, false, trMetadata);
-  } catch (error) {
-    logger.error(
-      `unexpected error occurred when reconciling the function ${name}: ${error.message}`,
-    );
-    throw error;
-  }
-};
-
 // buildOpenfaasFn is helper function to build openfaas fn CRUD payload
 function buildOpenfaasFn(name, code, versionId, libraryVersionIDs, testMode, trMetadata = {}) {
   logger.debug(`Building faas fn: ${name}`);
@@ -332,8 +358,6 @@ const executeFaasFunction = async (
   try {
     if (testMode) {
       await awaitFunctionReadiness(name);
-    } else {
-      await reconcileFn(name, versionId, libraryVersionIDs, trMetadata);
     }
     return await invokeFunction(name, events);
   } catch (error) {
@@ -392,4 +416,5 @@ module.exports = {
   FAAS_AST_VID,
   FAAS_AST_FN_NAME,
   setFunctionInCache,
+  reconcileFunction,
 };

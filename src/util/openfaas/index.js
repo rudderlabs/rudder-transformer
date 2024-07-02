@@ -35,6 +35,7 @@ const CUSTOM_NETWORK_POLICY_WORKSPACE_IDS = process.env.CUSTOM_NETWORK_POLICY_WO
 const customNetworkPolicyWorkspaceIds = CUSTOM_NETWORK_POLICY_WORKSPACE_IDS.split(',');
 const CUSTOMER_TIER = process.env.CUSTOMER_TIER || 'shared';
 const DISABLE_RECONCILE_FN = process.env.DISABLE_RECONCILE_FN == 'true' || false;
+const gatewayRetriableStatus = [408, 429, 500, 502, 503, 504];
 
 // Initialise node cache
 const functionListCache = new NodeCache();
@@ -338,28 +339,15 @@ const executeFaasFunction = async (
     return await invokeFunction(name, events);
   } catch (error) {
     logger.error(`Error while invoking ${name}: ${error.message}`);
-    errorRaised = error;
 
+    errorRaised = error;
     if (error.statusCode === 404 && error.message.includes(`error finding function ${name}`)) {
       removeFunctionFromCache(name);
-
       await setupFaasFunction(name, null, versionId, libraryVersionIDs, testMode, trMetadata);
-      throw new RetryRequestError(`${name} not found`);
     }
 
-    if (error.statusCode === 429) {
-      throw new RetryRequestError(`Rate limit exceeded for ${name}`);
-    }
-
-    if (error.statusCode === 500 || error.statusCode === 503) {
-      throw new RetryRequestError(error.message);
-    }
-
-    if (error.statusCode === 504) {
-      throw new RespStatusError(`${name} timed out`, 504);
-    }
-
-    throw error;
+    // all unexpected errors are retried at caller
+    throw new RetryRequestError(error.message);
   } finally {
     // delete the function created, if it's called as part of testMode
     if (testMode) {

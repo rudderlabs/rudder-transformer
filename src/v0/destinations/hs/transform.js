@@ -15,6 +15,7 @@ const {
   fetchFinalSetOfTraits,
   getProperties,
   validateDestinationConfig,
+  convertToResponseFormat,
 } = require('./util');
 
 const processSingleMessage = async (message, destination, propertyMap) => {
@@ -137,16 +138,32 @@ const processRouterDest = async (inputs, reqMetadata) => {
     }),
   );
 
+  const dontBatchTrueResponses = [];
+  const dontBatchFalseOrUndefinedResponses = [];
+  // segregating successRepList depending on dontbatch value
+  successRespList.forEach((successResp) => {
+    if (successResp.metadata?.dontBatch) {
+      dontBatchTrueResponses.push(successResp);
+    } else {
+      dontBatchFalseOrUndefinedResponses.push(successResp);
+    }
+  });
+
   // batch implementation
   let batchedResponseList = [];
-  if (successRespList.length > 0) {
+  if (dontBatchFalseOrUndefinedResponses.length > 0) {
     if (destination.Config.apiVersion === API_VERSION.v3) {
-      batchedResponseList = batchEvents(successRespList);
+      batchedResponseList = batchEvents(dontBatchFalseOrUndefinedResponses);
     } else {
-      batchedResponseList = legacyBatchEvents(successRespList);
+      batchedResponseList = legacyBatchEvents(dontBatchFalseOrUndefinedResponses);
     }
   }
-  return [...batchedResponseList, ...errorRespList];
+  return [
+    ...batchedResponseList,
+    ...errorRespList,
+    // if there are any events where dontbatch set to true we need to update them according to the response format
+    ...convertToResponseFormat(dontBatchTrueResponses),
+  ];
 };
 
 module.exports = { process, processRouterDest };

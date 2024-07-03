@@ -32,7 +32,7 @@ const REVISION_CONSTANT = '2023-02-22';
  * @param {*} requestOptions
  * @returns
  */
-const getIdFromNewOrExistingProfile = async (endpoint, payload, requestOptions) => {
+const getIdFromNewOrExistingProfile = async ({ endpoint, payload, requestOptions, metadata }) => {
   let response;
   let profileId;
   const endpointPath = '/api/profiles';
@@ -47,6 +47,7 @@ const getIdFromNewOrExistingProfile = async (endpoint, payload, requestOptions) 
       endpointPath,
       requestMethod: 'POST',
       module: 'router',
+      metadata,
     },
   );
 

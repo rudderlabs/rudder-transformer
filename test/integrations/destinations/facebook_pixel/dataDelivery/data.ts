@@ -362,7 +362,7 @@ export const v0TestData = [
         body: {
           output: {
             status: 400,
-            message: 'Invalid Parameter',
+            message: 'Unsupported post request. some problem with sent parameters',
             destinationResponse: {
               error: {
                 message: 'Unsupported post request. some problem with sent parameters',

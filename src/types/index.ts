@@ -131,10 +131,19 @@ type Destination = {
   WorkspaceID: string;
   Transformations: UserTransformationInput[];
   RevisionID?: string;
+  IsProcessorEnabled?: boolean;
+  IsConnectionEnabled?: boolean;
 };
 
 type UserTransformationLibrary = {
   VersionID: string;
+};
+
+type Credential = {
+  id: string;
+  key: string;
+  value: string;
+  isSecret: boolean;
 };
 
 type ProcessorTransformationRequest = {
@@ -143,6 +152,7 @@ type ProcessorTransformationRequest = {
   metadata: Metadata;
   destination: Destination;
   libraries?: UserTransformationLibrary[];
+  credentials?: Credential[];
 };
 
 type RouterTransformationRequestData = {

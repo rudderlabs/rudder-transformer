@@ -1,6 +1,6 @@
 const _ = require('lodash');
 const { handleHttpRequest } = require('../../../adapters/network');
-const { BrazeDedupUtility, addAppId, getPurchaseObjs } = require('./util');
+const { BrazeDedupUtility, addAppId, getPurchaseObjs, setAliasObject } = require('./util');
 const { processBatch } = require('./util');
 const {
   removeUndefinedAndNullValues,
@@ -739,7 +739,7 @@ describe('dedup utility tests', () => {
       });
     });
 
-    test('returns null if all keys are in BRAZE_NON_BILLABLE_ATTRIBUTES', () => {
+    test('returns only non-billable attribute if there is key of BRAZE_NON_BILLABLE_ATTRIBUTES', () => {
       const userData = {
         external_id: '123',
         country: 'US',
@@ -757,7 +757,7 @@ describe('dedup utility tests', () => {
       };
       store.set('123', storeData);
       const result = BrazeDedupUtility.deduplicate(userData, store);
-      expect(result).toBeNull();
+      expect(result).toEqual({ country: 'US', external_id: '123', language: 'en' });
     });
 
     test('returns null if all keys have $add, $update, or $remove properties', () => {
@@ -1419,5 +1419,122 @@ describe('getPurchaseObjs', () => {
         },
       },
     ]);
+  });
+});
+
+describe('setAliasObject function', () => {
+  // Test when integrationsObj has both alias_name and alias_label
+  test('should set user_alias from integrationsObj if alias_name and alias_label are defined', () => {
+    const payload = {};
+    const result = setAliasObject(payload, {
+      anonymousId: '12345',
+      integrations: {
+        BRAZE: {
+          alias: {
+            alias_name: 'user123',
+            alias_label: 'customer_id',
+          },
+        },
+      },
+    });
+
+    expect(result).toEqual({
+      user_alias: {
+        alias_name: 'user123',
+        alias_label: 'customer_id',
+      },
+    });
+  });
+
+  // Test when integrationsObj is missing alias_name or alias_label
+  test('should set user_alias with anonymousId as alias_name and "rudder_id" as alias_label if integrationsObj does not have alias_name or alias_label', () => {
+    const message = {
+      anonymousId: '12345',
+    };
+    const payload = {};
+    const result = setAliasObject(payload, message);
+
+    expect(result).toEqual({
+      user_alias: {
+        alias_name: '12345',
+        alias_label: 'rudder_id',
+      },
+    });
+  });
+
+  // Test when message has no anonymousId and integrationsObj is missing
+  test('should return payload unchanged if message has no anonymousId and integrationsObj is missing', () => {
+    const message = {};
+    const payload = {};
+    const result = setAliasObject(payload, message);
+
+    expect(result).toEqual(payload);
+  });
+
+  test('should set user_alias from integrationsObj if alias_name and alias_label are defined', () => {
+    const payload = {};
+    const result = setAliasObject(payload, {
+      anonymousId: '12345',
+      integrations: {
+        BRAZE: {
+          alias: {
+            alias_name: 'user123',
+            alias_label: 'customer_id',
+          },
+        },
+      },
+    });
+
+    expect(result).toEqual({
+      user_alias: {
+        alias_name: 'user123',
+        alias_label: 'customer_id',
+      },
+    });
+  });
+
+  test('should set user_alias from integrationsObj if alias_name and alias_label either is not defined', () => {
+    const payload = {};
+    const result = setAliasObject(payload, {
+      anonymousId: '12345',
+      integrations: {
+        BRAZE: {
+          alias: {
+            alias_name: null,
+            alias_label: 'customer_id',
+          },
+        },
+      },
+    });
+
+    expect(result).toEqual({
+      user_alias: {
+        alias_name: '12345',
+        alias_label: 'rudder_id',
+      },
+    });
+  });
+
+  test('should set user_alias from integrationsObj if alias_name and alias_label either is not defined', () => {
+    const payload = {};
+    const result = setAliasObject(payload, {
+      anonymousId: '12345',
+      userID: 'user123',
+      integrations: {
+        BRAZE: {
+          alias: {
+            alias_name: 'rudder_id-123',
+            alias_label: 'customer_id',
+          },
+        },
+      },
+    });
+
+    expect(result).toEqual({
+      user_alias: {
+        alias_name: 'rudder_id-123',
+        alias_label: 'customer_id',
+      },
+    });
   });
 });

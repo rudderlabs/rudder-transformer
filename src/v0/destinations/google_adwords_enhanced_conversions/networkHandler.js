@@ -27,7 +27,7 @@ const ERROR_MSG_PATH = 'response[0].error.message';
  * @returns
  */
 
-const getConversionActionId = async (method, headers, params) => {
+const getConversionActionId = async ({ method, headers, params, metadata }) => {
   const conversionActionIdKey = sha256(params.event + params.customerId).toString();
   return conversionActionIdCache.get(conversionActionIdKey, async () => {
     const queryString = SqlString.format(
@@ -37,8 +37,9 @@ const getConversionActionId = async (method, headers, params) => {
     const data = {
       query: queryString,
     };
+    const searchStreamEndpoint = `${BASE_ENDPOINT}/${params.customerId}/googleAds:searchStream`;
     const requestBody = {
-      url: `${BASE_ENDPOINT}/${params.customerId}/googleAds:searchStream`,
+      url: searchStreamEndpoint,
       data,
       headers,
       method,
@@ -52,21 +53,23 @@ const getConversionActionId = async (method, headers, params) => {
         endpointPath: `/googleAds:searchStream`,
         requestMethod: 'POST',
         module: 'dataDelivery',
+        metadata,
       },
     );
-    if (!isHttpStatusSuccess(gaecConversionActionIdResponse.status)) {
+    const { status, response } = gaecConversionActionIdResponse;
+    if (!isHttpStatusSuccess(status)) {
       throw new NetworkError(
         `"${JSON.stringify(
           get(gaecConversionActionIdResponse, ERROR_MSG_PATH, '')
             ? get(gaecConversionActionIdResponse, ERROR_MSG_PATH, '')
-            : gaecConversionActionIdResponse.response,
+            : response,
         )} during Google_adwords_enhanced_conversions response transformation"`,
-        gaecConversionActionIdResponse.status,
+        status,
         {
-          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(gaecConversionActionIdResponse.status),
+          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
         },
-        gaecConversionActionIdResponse.response,
-        getAuthErrCategoryFromStCode(gaecConversionActionIdResponse.status),
+        response,
+        getAuthErrCategoryFromStCode(status),
       );
     }
     const conversionActionId = get(
@@ -90,10 +93,10 @@ const getConversionActionId = async (method, headers, params) => {
  * @returns
  */
 const ProxyRequest = async (request) => {
-  const { body, method, endpoint, params } = request;
+  const { body, method, endpoint, params, metadata } = request;
   const { headers } = request;
 
-  const conversionActionId = await getConversionActionId(method, headers, params);
+  const conversionActionId = await getConversionActionId({ method, headers, params, metadata });
 
   set(
     body.JSON,
@@ -107,6 +110,7 @@ const ProxyRequest = async (request) => {
     endpointPath: `/googleAds:uploadOfflineUserData`,
     requestMethod: 'POST',
     module: 'dataDelivery',
+    metadata,
   });
   return response;
 };

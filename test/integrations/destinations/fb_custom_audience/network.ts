@@ -523,4 +523,105 @@ export const networkCallsData = [
       status: 400,
     },
   },
+  {
+    httpReq: {
+      version: '1',
+      type: 'REST',
+      method: 'DELETE',
+      endpoint: getEndPoint('aud1'),
+      headers: {
+        'test-dest-response-key': 'htmlResponse',
+      },
+      params: {
+        access_token: 'ABC',
+        payload: {
+          is_raw: true,
+          data_source: {
+            sub_type: 'ANYTHING',
+          },
+          schema: [
+            'EMAIL',
+            'DOBM',
+            'DOBD',
+            'DOBY',
+            'PHONE',
+            'GEN',
+            'FI',
+            'MADID',
+            'ZIP',
+            'ST',
+            'COUNTRY',
+          ],
+          data: [
+            [
+              'shrouti@abc.com',
+              '2',
+              '13',
+              '2013',
+              '@09432457768',
+              'f',
+              'Ms.',
+              'ABC',
+              'ZIP ',
+              '123abc ',
+              'IN',
+            ],
+          ],
+        },
+      },
+      userId: '',
+      body: {
+        JSON: {},
+        XML: {},
+        JSON_ARRAY: {},
+        FORM: {},
+      },
+      files: {},
+    },
+    httpRes: {
+      data: '<!DOCTYPE html><html> <body> <h1>My First Heading</h1><p>My first paragraph.</p> </body></html>',
+      status: 400,
+    },
+  },
+  {
+    httpReq: {
+      version: '1',
+      type: 'REST',
+      method: 'DELETE',
+      endpoint: getEndPoint('aud-value-based'),
+      headers: {
+        'test-dest-response-key': 'validAccessToken',
+      },
+      params: {
+        access_token: 'ABC',
+        payload: {
+          is_raw: true,
+          data_source: {
+            sub_type: 'ANYTHING',
+          },
+          schema: ['DOBY', 'PHONE', 'GEN', 'FI', 'MADID', 'ZIP', 'ST', 'COUNTRY'],
+          data: [['2013', '@09432457768', 'f', 'Ms.', 'ABC', 'ZIP ', '123abc ', 'IN']],
+        },
+      },
+      userId: '',
+      body: {
+        JSON: {},
+        XML: {},
+        JSON_ARRAY: {},
+        FORM: {},
+      },
+      files: {},
+    },
+    httpRes: {
+      data: {
+        error: {
+          message: '(#100) Value-Based Custom Audience requires LOOKALIKE_VALUE attribute.',
+          type: 'OAuthException',
+          code: 100,
+          fbtrace_id: 'ADB2jAGDMC_CbfM9430kDdQ',
+        },
+      },
+      status: 400,
+    },
+  },
 ];

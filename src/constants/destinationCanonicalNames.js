@@ -166,6 +166,14 @@ const DestCanonicalNames = {
   ],
   koala: ['Koala', 'koala', 'KOALA'],
   bloomreach: ['Bloomreach', 'bloomreach', 'BLOOMREACH'],
+  KLAVIYO_BULK_UPLOAD: [
+    'klaviyo bulk upload',
+    'klaviyo_bulk_upload',
+    'klaviyoBulkUpload',
+    'Klaviyo Bulk Upload',
+    'klaviyobulkupload',
+  ],
+  emarsys: ['EMARSYS', 'Emarsys', 'emarsys'],
 };
 
 module.exports = { DestHandlerMap, DestCanonicalNames };

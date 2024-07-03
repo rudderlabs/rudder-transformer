@@ -57,6 +57,7 @@ const Event = {
 };
 
 const ENDPOINT = 'https://api2.appsflyer.com/inappevent/';
+const ENDPOINT_V2 = 'https://api3.appsflyer.com/inappevent/';
 
 const mappingConfig = getMappingConfig(ConfigCategory, __dirname);
 
@@ -69,6 +70,7 @@ events.forEach((event) => {
 module.exports = {
   ConfigCategory,
   ENDPOINT,
+  ENDPOINT_V2,
   Event,
   mappingConfig,
   nameToEventMap,

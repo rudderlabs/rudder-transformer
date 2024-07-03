@@ -1,10 +1,6 @@
 const get = require('get-value');
 const md5 = require('md5');
-const {
-  InstrumentationError,
-  NetworkError,
-  structuredLogger: logger,
-} = require('@rudderstack/integrations-lib');
+const { InstrumentationError, NetworkError } = require('@rudderstack/integrations-lib');
 const myAxios = require('../../../util/myAxios');
 const { MappedToDestinationKey } = require('../../../constants');
 const {
@@ -19,6 +15,7 @@ const {
   defaultBatchRequestConfig,
   constructPayload,
 } = require('../../util');
+const logger = require('../../../logger');
 const { MERGE_CONFIG, MERGE_ADDRESS, SUBSCRIPTION_STATUS, VALID_STATUSES } = require('./config');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const tags = require('../../util/tags');

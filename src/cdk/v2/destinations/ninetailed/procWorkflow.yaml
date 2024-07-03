@@ -23,7 +23,6 @@ steps:
     template: |
       const payload = $.constructFullPayload(.message);
       $.context.payload = $.removeUndefinedAndNullValues(payload);
-
   - name: buildResponse
     template: |
       const response = $.defaultRequestConfig();

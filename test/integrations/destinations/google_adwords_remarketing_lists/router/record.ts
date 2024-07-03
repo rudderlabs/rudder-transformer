@@ -1,5 +1,5 @@
 import { Destination, RouterTransformationRequest } from '../../../../../src/types';
-import { generateMetadata } from '../../../testUtils';
+import { generateGoogleOAuthMetadata } from '../../../testUtils';
 
 const destination: Destination = {
   Config: {
@@ -51,7 +51,7 @@ export const rETLRecordRouterRequest: RouterTransformationRequest = {
         },
         type: 'record',
       },
-      metadata: generateMetadata(2),
+      metadata: generateGoogleOAuthMetadata(2),
     },
     {
       destination: destination,
@@ -75,7 +75,7 @@ export const rETLRecordRouterRequest: RouterTransformationRequest = {
         },
         type: 'record',
       },
-      metadata: generateMetadata(4),
+      metadata: generateGoogleOAuthMetadata(4),
     },
     {
       destination: destination,
@@ -99,7 +99,7 @@ export const rETLRecordRouterRequest: RouterTransformationRequest = {
         },
         type: 'record',
       },
-      metadata: generateMetadata(1),
+      metadata: generateGoogleOAuthMetadata(1),
     },
     {
       destination: destination,
@@ -123,7 +123,7 @@ export const rETLRecordRouterRequest: RouterTransformationRequest = {
         },
         type: 'record',
       },
-      metadata: generateMetadata(5),
+      metadata: generateGoogleOAuthMetadata(5),
     },
     {
       destination: destination,
@@ -147,7 +147,7 @@ export const rETLRecordRouterRequest: RouterTransformationRequest = {
         },
         type: 'record',
       },
-      metadata: generateMetadata(3),
+      metadata: generateGoogleOAuthMetadata(3),
     },
   ],
   destType: 'google_adwords_remarketing_lists',

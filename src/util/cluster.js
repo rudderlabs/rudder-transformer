@@ -3,6 +3,7 @@ const gracefulShutdown = require('http-graceful-shutdown');
 const logger = require('../logger');
 const { logProcessInfo } = require('./utils');
 const { RedisDB } = require('./redis/redisConnector');
+const { shutdownMetricsClient } = require('./stats');
 
 const numWorkers = parseInt(process.env.NUM_PROCS || '1', 10);
 const metricsPort = parseInt(process.env.METRICS_PORT || '9091', 10);
@@ -18,11 +19,12 @@ function finalFunction() {
 
 // This function works only in master.
 // It sends SIGTERM to all the workers
-function shutdownWorkers() {
+async function shutdownWorkers() {
   Object.values(cluster.workers).forEach((worker) => {
     process.kill(worker.process.pid);
     logger.error(`Sent kill signal to worker ${worker.id} (pid: ${worker.process.pid})`);
   });
+  await shutdownMetricsClient();
 }
 
 function start(port, app, metricsApp) {
@@ -51,35 +53,35 @@ function start(port, app, metricsApp) {
     });
 
     let isShuttingDown = false;
-    cluster.on('exit', (worker) => {
+    cluster.on('exit', async (worker) => {
       if (!isShuttingDown) {
         logger.error(`Worker (pid: ${worker.process.pid}) died`);
         logger.error(`Killing other workers to avoid any side effects of the dead worker`);
         logProcessInfo();
         isShuttingDown = true;
-        shutdownWorkers();
+        await shutdownWorkers();
       }
     });
 
-    process.on('SIGTERM', () => {
+    process.on('SIGTERM', async () => {
       logger.error('SIGTERM signal received. Closing workers...');
       logProcessInfo();
       isShuttingDown = true;
-      shutdownWorkers();
+      await shutdownWorkers();
     });
 
-    process.on('SIGINT', () => {
+    process.on('SIGINT', async () => {
       logger.error('SIGINT signal received. Closing workers...');
       logProcessInfo();
       isShuttingDown = true;
-      shutdownWorkers();
+      await shutdownWorkers();
     });
 
-    process.on('SIGSEGV', () => {
+    process.on('SIGSEGV', async () => {
       logger.error('SIGSEGV - JavaScript memory error occurred. Closing workers...');
       logProcessInfo();
       isShuttingDown = true;
-      shutdownWorkers();
+      await shutdownWorkers();
     });
   } else {
     const server = app.listen(port);
@@ -90,16 +92,19 @@ function start(port, app, metricsApp) {
       finally: finalFunction,
     });
 
-    process.on('SIGTERM', () => {
+    process.on('SIGTERM', async () => {
       logger.error(`SIGTERM signal received in the worker`);
+      await shutdownMetricsClient();
     });
 
-    process.on('SIGINT', () => {
+    process.on('SIGINT', async () => {
       logger.error(`SIGINT signal received in the worker`);
+      await shutdownMetricsClient();
     });
 
-    process.on('SIGSEGV', () => {
+    process.on('SIGSEGV', async () => {
       logger.error(`SIGSEGV - JavaScript memory error occurred in the worker`);
+      await shutdownMetricsClient();
     });
 
     logger.info(`Worker (pid: ${process.pid}) has started`);

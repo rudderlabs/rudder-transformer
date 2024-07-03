@@ -19,7 +19,7 @@ const { MERGE_CONFIG, MERGE_ADDRESS, SUBSCRIPTION_STATUS, VALID_STATUSES } = req
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const tags = require('../../util/tags');
 const { JSON_MIME_TYPE } = require('../../util/constant');
-const { httpGET } = require('../../../adapters/network');
+const { handleHttpRequest } = require('../../../adapters/network');
 
 const ADDRESS_MANDATORY_FIELDS = ['addr1', 'city', 'state', 'zip'];
 
@@ -156,7 +156,8 @@ const checkIfMailExists = async (apiKey, datacenterId, audienceId, email, metada
   const url = `${mailChimpSubscriptionEndpoint(datacenterId, audienceId, email)}`;
   const basicAuth = Buffer.from(`apiKey:${apiKey}`).toString('base64');
 
-  const res = await httpGET(
+  const { processedResponse, httpResponse } = await handleHttpRequest(
+    'get',
     url,
     {
       headers: {
@@ -172,12 +173,12 @@ const checkIfMailExists = async (apiKey, datacenterId, audienceId, email, metada
       module: 'router',
     },
   );
-  if (res.response?.data?.contact_id) {
-    userStatus.exists = true;
-    userStatus.subscriptionStatus = res.response.data.status;
+  if (!httpResponse.success) {
+    logger.info(`[Mailchimp] :: Email does not exists, Error: ${httpResponse.response?.message}`);
   }
-  if (!res.status) {
-    logger.info(`[Mailchimp] :: Email does not exists, Error: ${res.response.message}`);
+  if (processedResponse.response.contact_id) {
+    userStatus.exists = true;
+    userStatus.subscriptionStatus = processedResponse.response.status;
   }
   return userStatus;
 };
@@ -192,7 +193,8 @@ const checkIfMailExists = async (apiKey, datacenterId, audienceId, email, metada
 const checkIfDoubleOptIn = async (apiKey, datacenterId, audienceId, metadata) => {
   const url = `${getMailChimpBaseEndpoint(datacenterId, audienceId)}`;
   const basicAuth = Buffer.from(`apiKey:${apiKey}`).toString('base64');
-  const res = await httpGET(
+  const { httpResponse, processedResponse } = await handleHttpRequest(
+    'get',
     url,
     {
       headers: {
@@ -208,15 +210,15 @@ const checkIfDoubleOptIn = async (apiKey, datacenterId, audienceId, metadata) =>
       module: 'router',
     },
   );
-  if (!res.success) {
-    const error = res.response;
+  if (!httpResponse.success) {
+    const error = httpResponse.response?.response;
     const status = error.status || 400;
     throw new NetworkError('User does not have access to the requested operation', status, {
       [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
     });
   }
 
-  return !!res.response?.data?.double_optin;
+  return !!processedResponse.response?.double_optin;
 };
 
 /**

@@ -42,13 +42,12 @@ const makeHttpRequest = async ({ method, url, payload, config, statTags, options
       destType: 'gainsight',
       feature: 'transformation',
       requestMethod: method.toUpperCase(),
-      endpointPath: url,
       module: 'router',
       ...statTags,
     },
   );
 
-const searchGroup = async (groupName, Config) => {
+const searchGroup = async (groupName, Config, metadata) => {
   const { processedResponse } = await makeHttpRequest({
     method: 'post',
     url: `${ENDPOINTS.groupSearchEndpoint(Config.domain)}`,
@@ -56,6 +55,7 @@ const searchGroup = async (groupName, Config) => {
     config: Config,
     statTags: {
       endpointPath: '/data/objects/query/Company',
+      metadata,
     },
   });
 
@@ -74,7 +74,7 @@ const searchGroup = async (groupName, Config) => {
   return processedResponse.response;
 };
 
-const createGroup = async (payload, Config) => {
+const createGroup = async (payload, Config, metadata) => {
   const { processedResponse } = await makeHttpRequest({
     method: 'post',
     url: `${ENDPOINTS.groupCreateEndpoint(Config.domain)}`,
@@ -82,7 +82,8 @@ const createGroup = async (payload, Config) => {
       records: [payload],
     },
     config: Config,
-    options: {
+    statTags: {
+      metadata,
       endpointPath: '/data/objects/Company',
     },
   });
@@ -102,7 +103,7 @@ const createGroup = async (payload, Config) => {
   return processedResponse.response.data.records[0].Gsid;
 };
 
-const updateGroup = async (payload, Config) => {
+const updateGroup = async (payload, Config, metadata) => {
   const { processedResponse } = await makeHttpRequest({
     method: 'put',
     url: `${ENDPOINTS.groupUpdateEndpoint(Config.domain)}`,
@@ -111,13 +112,13 @@ const updateGroup = async (payload, Config) => {
     },
     config: Config,
     options: {
-      endpointPath: '/data/objects/Company',
-    },
-
-    statTags: {
       params: {
         keys: 'Name',
       },
+    },
+    statTags: {
+      endpointPath: '/data/objects/Company',
+      metadata,
     },
   });
 

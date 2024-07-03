@@ -2248,9 +2248,29 @@ const validateEventAndLowerCaseConversion = (event, isMandatory, convertToLowerC
   return convertToLowerCase ? event.toString().toLowerCase() : event.toString();
 };
 
-const applyCustomMappings = (message, mappings) =>
-  JsonTemplateEngine.createAsSync(mappings, { defaultPathType: PathType.JSON }).evaluate(message);
+/**
+ * This function applies custom mappings to the event.
+ * @param {*} event The event to be transformed.
+ * @param {*} mappings The custom mappings to be applied.
+ * @returns {object} The transformed event.
+ */
+const applyCustomMappings = (event, mappings) =>
+  JsonTemplateEngine.createAsSync(mappings, { defaultPathType: PathType.JSON }).evaluate(event);
 
+/**
+ * This groups the events by destination ID and source ID.
+ * Note: sourceID is only used for rETL events.
+ * @param {*} events The events to be grouped.
+ * @returns {array} The array of grouped events.
+ */
+const groupRouterTransformEvents = (events) => {
+  return Object.values(
+    lodash.groupBy(events, (ev) => [
+      ev.metadata?.destinationId,
+      ev.metadata?.sourceCategory === 'warehouse' ? ev.metadata?.sourceId : 'default',
+    ]),
+  );
+};
 // ========================================================================
 // EXPORTS
 // ========================================================================
@@ -2309,6 +2329,7 @@ module.exports = {
   getValueFromMessage,
   getValueFromPropertiesOrTraits,
   getValuesAsArrayFromConfig,
+  groupRouterTransformEvents,
   handleSourceKeysOperation,
   hashToSha256,
   isAppleFamily,

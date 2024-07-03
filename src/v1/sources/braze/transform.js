@@ -12,12 +12,6 @@ const Message = require('../../../v0/sources/message');
 
 // import mapping json using JSON.parse to preserve object key order
 const mapping = JSON.parse(fs.readFileSync(path.resolve(__dirname, './mapping.json'), 'utf-8'));
-
-// // if we need to map braze event name to something else. blank as of now
-// const eventNameMap = JSON.parse(
-//   fs.readFileSync(path.resolve(__dirname, './eventMapping.json'), 'utf-8'),
-// );
-
 // ignored properties
 // to be deleted from the field `event.properties` as already mapped
 // using mapping.json

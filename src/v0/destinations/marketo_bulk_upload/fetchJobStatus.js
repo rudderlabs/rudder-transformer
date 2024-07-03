@@ -83,6 +83,7 @@ const responseHandler = async (event, type) => {
     type === 'fail'
       ? await getJobsStatus(event, 'fail', accessToken)
       : await getJobsStatus(event, 'warn', accessToken);
+  console.log('\n\n warning / failure job status', JSON.stringify(jobStatus));
   const jobStatusArr = jobStatus.toString().split('\n'); // responseArr = ['field1,field2,Import Failure Reason', 'val1,val2,reason',...]
   const { input, metadata } = event;
   let headerArr;
@@ -119,6 +120,12 @@ const responseHandler = async (event, type) => {
     for (const [key, val] of Object.entries(data)) {
       // joining the parameter values sent from marketo match it with received data from server
       if (val === `${elemArr.map((item) => item.replace(/"/g, '')).join(',')}`) {
+        console.log('\n######## Failing record ############');
+        console.log('\ninput :', JSON.stringify(val));
+        console.log(
+          '\n marketo sent response',
+          `${elemArr.map((item) => item.replace(/"/g, '')).join(',')}`,
+        );
         // add job keys if warning/failure
         if (!unsuccessfulJobIdsArr.includes(key)) {
           unsuccessfulJobIdsArr.push(key);

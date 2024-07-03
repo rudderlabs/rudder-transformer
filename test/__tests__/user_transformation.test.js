@@ -1126,7 +1126,7 @@ describe("User transformation", () => {
         name,
         code: `
           export function transformEvent(event, metadata) {
-              event.credentialValue = credential('key1');
+              event.credentialValue = getCredential('key1');
               return event;
             }
             `
@@ -1154,7 +1154,7 @@ describe("User transformation", () => {
         name,
         code: `
           export function transformEvent(event, metadata) {
-              event.credentialValue = credential();
+              event.credentialValue = getCredential();
               return event;
             }
             `
@@ -1183,7 +1183,7 @@ describe("User transformation", () => {
         name,
         code: `
           export function transformEvent(event, metadata) {
-              event.credentialValue = credential('key1', 'key2');
+              event.credentialValue = getCredential('key1', 'key2');
               return event;
             }
             `
@@ -1212,10 +1212,10 @@ describe("User transformation", () => {
         name,
         code: `
           export function transformEvent(event, metadata) {
-              event.credentialValueForNumkey = credential(1);
-              event.credentialValueForBoolkey = credential(true);
-              event.credentialValueForArraykey = credential([]);
-              event.credentialValueForObjkey = credential({});
+              event.credentialValueForNumkey = getCredential(1);
+              event.credentialValueForBoolkey = getCredential(true);
+              event.credentialValueForArraykey = getCredential([]);
+              event.credentialValueForObjkey = getCredential({});
               return event;
             }
             `
@@ -1247,7 +1247,7 @@ describe("User transformation", () => {
         name,
         code: `
           export function transformEvent(event, metadata) {
-              event.credentialValue = credential('key3');
+              event.credentialValue = getCredential('key3');
               return event;
             }
             `
@@ -1276,7 +1276,7 @@ describe("User transformation", () => {
         name,
         code: `
           export function transformEvent(event, metadata) {
-              event.credentialValue = credential('key1');
+              event.credentialValue = getCredential('key1');
               return event;
             }
             `
@@ -1307,8 +1307,8 @@ describe("User transformation", () => {
           code: `
             export function transformBatch(events, metadata) {
               events.forEach((event) => {
-                event.credentialValue1 = credential("key1");
-                event.credentialValue2 = credential("key3");
+                event.credentialValue1 = getCredential("key1");
+                event.credentialValue2 = getCredential("key3");
               });
               return events;
             }
@@ -1339,7 +1339,7 @@ describe("User transformation", () => {
           code: `
             export function transformBatch(events, metadata) {
               events.forEach((event) => {
-                event.credentialValue = credential();
+                event.credentialValue = getCredential();
               });
               return events;
             }
@@ -1371,7 +1371,7 @@ describe("User transformation", () => {
         code: `
           function transform(events) {
             events.forEach((event) => {
-              event.credentialValue = credential('key1');
+              event.credentialValue = getCredential('key1');
             });
             return events;
           }
@@ -1384,7 +1384,7 @@ describe("User transformation", () => {
       try {
         await userTransformHandler(inputData, versionId, []);
       } catch (e) {
-        expect(e).toEqual('credential is not defined');
+        expect(e).toEqual('getCredential is not defined');
       }
     });
   });

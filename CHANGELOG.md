@@ -2,6 +2,40 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.70.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.69.1...v1.70.0) (2024-07-01)
+
+
+### Features
+
+* add support in fb pixel for advertiser_tracking_enabled ([#3025](https://github.com/rudderlabs/rudder-transformer/issues/3025)) ([769161a](https://github.com/rudderlabs/rudder-transformer/commit/769161a54de03fa3d4fe9f5db9ac51c11fa89dac))
+* add tags to a company in intercom ([#3434](https://github.com/rudderlabs/rudder-transformer/issues/3434)) ([dc8eae2](https://github.com/rudderlabs/rudder-transformer/commit/dc8eae2e8d87df8bb02cdf2662a6003289599525))
+* cm360 enhanced conversions ([#3414](https://github.com/rudderlabs/rudder-transformer/issues/3414)) ([04d0783](https://github.com/rudderlabs/rudder-transformer/commit/04d078310d4b102588f35cf9eb2bc34bf18b23ca))
+* garl record event support ([#3403](https://github.com/rudderlabs/rudder-transformer/issues/3403)) ([60fee0e](https://github.com/rudderlabs/rudder-transformer/commit/60fee0e5a442c4f6c773234d88d86b447434de9b))
+* **integrations/auth0:** add Auth0 event type to event context ([#3433](https://github.com/rudderlabs/rudder-transformer/issues/3433)) ([d4d5a89](https://github.com/rudderlabs/rudder-transformer/commit/d4d5a89951414f02d02101a6582b6e9fa8f9a7a5))
+* onboard closeCRM source ([#3467](https://github.com/rudderlabs/rudder-transformer/issues/3467)) ([bba1a3b](https://github.com/rudderlabs/rudder-transformer/commit/bba1a3b7f09e15f5a59aeed22593751d46960ebb))
+* onboard klaviyo bulk upload destination ([#3348](https://github.com/rudderlabs/rudder-transformer/issues/3348)) ([f55c481](https://github.com/rudderlabs/rudder-transformer/commit/f55c4818155cfbbfeda761153b036563e0877329))
+* onboarding clicksend destination ([#3486](https://github.com/rudderlabs/rudder-transformer/issues/3486)) ([85c8ea7](https://github.com/rudderlabs/rudder-transformer/commit/85c8ea70d661f3692cd9dc1cef8151a474892408))
+* add ability to aggregate metrics in a thread ([#3458](https://github.com/rudderlabs/rudder-transformer/pull/3458)) ([6be9d3e](https://github.com/rudderlabs/rudder-transformer/commit/6be9d3e727520ec01697d78a868d9c1a1e4ea085))
+
+
+### Bug Fixes
+
+* add missing userid and anonymousid for revenuecat source ([#3485](https://github.com/rudderlabs/rudder-transformer/issues/3485)) ([a08de31](https://github.com/rudderlabs/rudder-transformer/commit/a08de31e5ac5829bc5cca7da8982c9a4156b1ed5))
+* adding actual error messgae for default code in facebook destinations ([#3490](https://github.com/rudderlabs/rudder-transformer/issues/3490)) ([dfa0cbd](https://github.com/rudderlabs/rudder-transformer/commit/dfa0cbd3608d22340c9acb5769af4173be4d4bfc))
+* credential error handling ([7eb537c](https://github.com/rudderlabs/rudder-transformer/commit/7eb537c91f40ee4802f14a088a249ebed903e7b5))
+* credential param ([c280d81](https://github.com/rudderlabs/rudder-transformer/commit/c280d81307a3c5da02f728961d7eeeabb79a7e39))
+* credentials payload fix ([e6c5098](https://github.com/rudderlabs/rudder-transformer/commit/e6c50980a12960a419f5c03e120739eea642767a))
+* fixes in javascript transformation ([67e9277](https://github.com/rudderlabs/rudder-transformer/commit/67e9277120e39402b32eac55ffa34a0053b6af61))
+* lint issues ([136ca64](https://github.com/rudderlabs/rudder-transformer/commit/136ca64b3d8b1949950f98d4431a9670e22810cf))
+* mapping changes for aifa,andi and asid ([#3465](https://github.com/rudderlabs/rudder-transformer/issues/3465)) ([a0f5c2f](https://github.com/rudderlabs/rudder-transformer/commit/a0f5c2f7fe2dc8bc983a35840e86655d0f92482b))
+* metadata tags capturing in v0 transformation ([#3492](https://github.com/rudderlabs/rudder-transformer/issues/3492)) ([8129a06](https://github.com/rudderlabs/rudder-transformer/commit/8129a06e3a12c9bca17354598849750498c72d2e))
+* onboard custom alias support for braze ([#3335](https://github.com/rudderlabs/rudder-transformer/issues/3335)) ([1a01362](https://github.com/rudderlabs/rudder-transformer/commit/1a013627d13e0dc286f55de8925bfbb12d9a462b))
+* pr comments ([46cd341](https://github.com/rudderlabs/rudder-transformer/commit/46cd3413af065b76e4f89fb5b2720cbf6213e51b))
+* test ([3137964](https://github.com/rudderlabs/rudder-transformer/commit/31379645c33b9dc75cd839849952297fa233f2cb))
+* tests names, credentialsMap refactor ([3db810c](https://github.com/rudderlabs/rudder-transformer/commit/3db810c857017318c1979965ce653eca3b3fdadf))
+* undefined tests ([819f508](https://github.com/rudderlabs/rudder-transformer/commit/819f508b017f988e302b6e2579cb3da4030dcfa0))
+* update access token key for garl destination ([#3522](https://github.com/rudderlabs/rudder-transformer/issues/3522)) ([38946e3](https://github.com/rudderlabs/rudder-transformer/commit/38946e30fbc26896cfbb92124ba4ca8a4b8c431b))
+
 ### [1.69.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.69.0...v1.69.1) (2024-06-25)
 
 

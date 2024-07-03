@@ -1,0 +1,10 @@
+[
+  "device_model",
+  "os_version",
+  "platform",
+  "email_address",
+  "user_agent",
+  "to_phone_number",
+  "ad_id",
+  "ad_tracking_enabled"
+]

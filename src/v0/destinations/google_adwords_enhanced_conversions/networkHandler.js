@@ -4,9 +4,8 @@ const { NetworkError, NetworkInstrumentationError } = require('@rudderstack/inte
 const SqlString = require('sqlstring');
 const { prepareProxyRequest, handleHttpRequest } = require('../../../adapters/network');
 const { isHttpStatusSuccess, getAuthErrCategoryFromStCode } = require('../../util/index');
-const { CONVERSION_ACTION_ID_CACHE_TTL, destType } = require('./config');
+const { CONVERSION_ACTION_ID_CACHE_TTL } = require('./config');
 const Cache = require('../../util/cache');
-const logger = require('../../../logger');
 
 const conversionActionIdCache = new Cache(CONVERSION_ACTION_ID_CACHE_TTL);
 
@@ -39,10 +38,6 @@ const getConversionActionId = async ({ method, headers, params, metadata }) => {
       query: queryString,
     };
     const searchStreamEndpoint = `${BASE_ENDPOINT}/${params.customerId}/googleAds:searchStream`;
-    logger.requestLog(`[${destType.toUpperCase()}] get conversion action id request`, {
-      metadata,
-      requestDetails: { url: searchStreamEndpoint, body: data, method },
-    });
     const requestBody = {
       url: searchStreamEndpoint,
       data,
@@ -61,15 +56,7 @@ const getConversionActionId = async ({ method, headers, params, metadata }) => {
         metadata,
       },
     );
-    const { status, response, headers: responseHeaders } = gaecConversionActionIdResponse;
-    logger.responseLog(`[${destType.toUpperCase()}] get conversion action id response`, {
-      metadata,
-      responseDetails: {
-        response,
-        status,
-        headers: responseHeaders,
-      },
-    });
+    const { status, response } = gaecConversionActionIdResponse;
     if (!isHttpStatusSuccess(status)) {
       throw new NetworkError(
         `"${JSON.stringify(
@@ -116,31 +103,14 @@ const ProxyRequest = async (request) => {
     'conversionAdjustments[0].conversionAction',
     `customers/${params.customerId}/conversionActions/${conversionActionId}`,
   );
-  logger.requestLog(`[${destType.toUpperCase()}] conversion enhancement request`, {
-    metadata,
-    requestDetails: { url: endpoint, body: body.JSON, method },
-  });
   const requestBody = { url: endpoint, data: body.JSON, headers, method };
-  const { httpResponse: response, processedResponse } = await handleHttpRequest(
-    'constructor',
-    requestBody,
-    {
-      destType: 'google_adwords_enhanced_conversions',
-      feature: 'proxy',
-      endpointPath: `/googleAds:uploadOfflineUserData`,
-      requestMethod: 'POST',
-      module: 'dataDelivery',
-      metadata,
-    },
-  );
-  const { response: processedResp, status, headers: responseHeaders } = processedResponse;
-  logger.responseLog(`[${destType.toUpperCase()}] conversion enhancement response`, {
+  const { httpResponse: response } = await handleHttpRequest('constructor', requestBody, {
+    destType: 'google_adwords_enhanced_conversions',
+    feature: 'proxy',
+    endpointPath: `/googleAds:uploadOfflineUserData`,
+    requestMethod: 'POST',
+    module: 'dataDelivery',
     metadata,
-    responseDetails: {
-      response: processedResp,
-      status,
-      headers: responseHeaders,
-    },
   });
   return response;
 };

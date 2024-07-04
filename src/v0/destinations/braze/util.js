@@ -570,7 +570,8 @@ function getPurchaseObjs(message, config) {
         'Invalid Order Completed event: Properties object is missing in the message',
       );
     }
-    const { products, currency: currencyCode } = properties;
+    const { currency: currencyCode } = properties;
+    let { products } = properties;
     if (!products) {
       throw new InstrumentationError(
         'Invalid Order Completed event: Products array is missing in the message',
@@ -581,6 +582,7 @@ function getPurchaseObjs(message, config) {
       throw new InstrumentationError('Invalid Order Completed event: Products is not an array');
     }
 
+    products = products.filter((product) => isDefinedAndNotNull(product));
     if (products.length === 0) {
       throw new InstrumentationError('Invalid Order Completed event: Products array is empty');
     }

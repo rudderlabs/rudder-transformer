@@ -1113,6 +1113,7 @@ describe("Integration options", () => {
           expect(received).toEqual(output(config, integrations[index]));
         })
       });
+
     }
   });
 });

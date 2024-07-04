@@ -831,16 +831,6 @@ function processWarehouseMessage(message, options) {
         utils,
         eventType,
         commonProps,
-        message.context ? message.context.traits : {},
-        commonColumnTypes,
-        options,
-        `${eventType + '_context_traits_'}`,
-        3,
-      );
-      setDataFromInputAndComputeColumnTypes(
-        utils,
-        eventType,
-        commonProps,
         message.traits,
         commonColumnTypes,
         options,

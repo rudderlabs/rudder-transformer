@@ -587,10 +587,6 @@ const sampleEvents = {
             table: "identifies",
             columns: {
               uuid_ts: "datetime",
-              city: "string",
-              country: "string",
-              email: "string",
-              firstname: "string",
               lastname: "string",
               context_app_build: "string",
               context_app_name: "string",
@@ -620,10 +616,6 @@ const sampleEvents = {
             receivedAt: "2020-01-24T11:59:02.403+05:30"
           },
           data: {
-            city: "Disney",
-            country: "UK",
-            email: "mickey@disney.com",
-            firstname: "Mickey",
             lastname: "Mouse",
             context_app_build: "1.0.0",
             context_app_name: "RudderLabs JavaScript SDK",
@@ -657,10 +649,6 @@ const sampleEvents = {
             table: "users",
             columns: {
               uuid_ts: "datetime",
-              city: "string",
-              country: "string",
-              email: "string",
-              firstname: "string",
               lastname: "string",
               context_app_build: "string",
               context_app_name: "string",
@@ -684,10 +672,6 @@ const sampleEvents = {
             receivedAt: "2020-01-24T11:59:02.403+05:30"
           },
           data: {
-            city: "Disney",
-            country: "UK",
-            email: "mickey@disney.com",
-            firstname: "Mickey",
             lastname: "Mouse",
             context_app_build: "1.0.0",
             context_app_name: "RudderLabs JavaScript SDK",
@@ -717,10 +701,6 @@ const sampleEvents = {
             table: "IDENTIFIES",
             columns: {
               UUID_TS: "datetime",
-              CITY: "string",
-              COUNTRY: "string",
-              EMAIL: "string",
-              FIRSTNAME: "string",
               LASTNAME: "string",
               CONTEXT_APP_BUILD: "string",
               CONTEXT_APP_NAME: "string",
@@ -750,10 +730,6 @@ const sampleEvents = {
             receivedAt: "2020-01-24T11:59:02.403+05:30"
           },
           data: {
-            CITY: "Disney",
-            COUNTRY: "UK",
-            EMAIL: "mickey@disney.com",
-            FIRSTNAME: "Mickey",
             LASTNAME: "Mouse",
             CONTEXT_APP_BUILD: "1.0.0",
             CONTEXT_APP_NAME: "RudderLabs JavaScript SDK",
@@ -787,10 +763,6 @@ const sampleEvents = {
             table: "USERS",
             columns: {
               UUID_TS: "datetime",
-              CITY: "string",
-              COUNTRY: "string",
-              EMAIL: "string",
-              FIRSTNAME: "string",
               LASTNAME: "string",
               CONTEXT_APP_BUILD: "string",
               CONTEXT_APP_NAME: "string",
@@ -814,10 +786,6 @@ const sampleEvents = {
             receivedAt: "2020-01-24T11:59:02.403+05:30"
           },
           data: {
-            CITY: "Disney",
-            COUNTRY: "UK",
-            EMAIL: "mickey@disney.com",
-            FIRSTNAME: "Mickey",
             LASTNAME: "Mouse",
             CONTEXT_APP_BUILD: "1.0.0",
             CONTEXT_APP_NAME: "RudderLabs JavaScript SDK",
@@ -847,10 +815,6 @@ const sampleEvents = {
             table: "identifies",
             columns: {
               uuid_ts: "datetime",
-              city: "string",
-              country: "string",
-              email: "string",
-              firstname: "string",
               lastname: "string",
               context_app_build: "string",
               context_app_name: "string",
@@ -880,10 +844,6 @@ const sampleEvents = {
             receivedAt: "2020-01-24T11:59:02.403+05:30"
           },
           data: {
-            city: "Disney",
-            country: "UK",
-            email: "mickey@disney.com",
-            firstname: "Mickey",
             lastname: "Mouse",
             context_app_build: "1.0.0",
             context_app_name: "RudderLabs JavaScript SDK",
@@ -917,10 +877,6 @@ const sampleEvents = {
             table: "users",
             columns: {
               uuid_ts: "datetime",
-              city: "string",
-              country: "string",
-              email: "string",
-              firstname: "string",
               lastname: "string",
               context_app_build: "string",
               context_app_name: "string",
@@ -944,10 +900,6 @@ const sampleEvents = {
             receivedAt: "2020-01-24T11:59:02.403+05:30"
           },
           data: {
-            city: "Disney",
-            country: "UK",
-            email: "mickey@disney.com",
-            firstname: "Mickey",
             lastname: "Mouse",
             context_app_build: "1.0.0",
             context_app_name: "RudderLabs JavaScript SDK",

@@ -97,45 +97,52 @@ const processBatchRouter = async (inputs, reqMetadata) => {
     }
   } catch (error) {
     // Any error thrown from the above try block applies to all the events
-    return { batchedResponseList, errorRespList: tempInputs.map((input) => handleRtTfSingleEventError(input, error, reqMetadata)) };
+    return {
+      batchedResponseList,
+      errorRespList: tempInputs.map((input) =>
+        handleRtTfSingleEventError(input, error, reqMetadata),
+      ),
+    };
   }
 
-  await Promise.all(inputs.map(async input => {
-    try {
-      if (input.message.statusCode) {
-        // already transformed event
-        successRespList.push({
-          message: input.message,
-          metadata: input.metadata,
-          destination,
-        });
-      } else {
-        // event is not transformed
-        let receivedResponse = await processSingleMessage(
-          input.message,
-          destination,
-          propertyMap,
-        );
-
-        receivedResponse = Array.isArray(receivedResponse)
-          ? receivedResponse
-          : [receivedResponse];
-
-        // received response can be in array format [{}, {}, {}, ..., {}]
-        // if multiple response is being returned
-        receivedResponse.forEach((element) => {
+  await Promise.all(
+    inputs.map(async (input) => {
+      try {
+        if (input.message.statusCode) {
+          // already transformed event
           successRespList.push({
-            message: element,
+            message: input.message,
             metadata: input.metadata,
             destination,
           });
-        });
+        } else {
+          // event is not transformed
+          let receivedResponse = await processSingleMessage(
+            input.message,
+            destination,
+            propertyMap,
+          );
+
+          receivedResponse = Array.isArray(receivedResponse)
+            ? receivedResponse
+            : [receivedResponse];
+
+          // received response can be in array format [{}, {}, {}, ..., {}]
+          // if multiple response is being returned
+          receivedResponse.forEach((element) => {
+            successRespList.push({
+              message: element,
+              metadata: input.metadata,
+              destination,
+            });
+          });
+        }
+      } catch (error) {
+        const errRespEvent = handleRtTfSingleEventError(input, error, reqMetadata);
+        errorRespList.push(errRespEvent);
       }
-    } catch (error) {
-      const errRespEvent = handleRtTfSingleEventError(input, error, reqMetadata);
-      errorRespList.push(errRespEvent);
-    }
-  }))
+    }),
+  );
 
   if (successRespList.length > 0) {
     if (destination.Config.apiVersion === API_VERSION.v3) {
@@ -144,8 +151,8 @@ const processBatchRouter = async (inputs, reqMetadata) => {
       batchedResponseList = legacyBatchEvents(successRespList);
     }
   }
-  return { batchedResponseList, errorRespList }
-}
+  return { batchedResponseList, errorRespList };
+};
 // we are batching by default at routerTransform
 const processRouterDest = async (inputs, reqMetadata) => {
   const tempNewInputs = batchEventsInOrder(inputs);

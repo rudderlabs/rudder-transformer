@@ -1,3 +1,9 @@
+import utils from '../../../../src/v0/util';
+
+const defaultMockFns = () => {
+  jest.spyOn(utils, 'generateUUID').mockReturnValue('97fcd7b2-cc24-47d7-b776-057b7b199513');
+};
+
 export const data = [
   {
     name: 'revenuecat',
@@ -144,6 +150,7 @@ export const data = [
                     type: 'TEST',
                   },
                   event: 'TEST',
+                  userId: 'f8e14f51-0c76-49ba-8d67-c229f1875dd9',
                   messageId: '8CF0CD6C-CAF3-41FB-968A-661938235AF0',
                   originalTimestamp: '2023-10-29T22:06:57.232Z',
                   sentAt: '2023-10-29T22:06:57.232Z',
@@ -153,6 +160,9 @@ export const data = [
           },
         ],
       },
+    },
+    mockFns: () => {
+      defaultMockFns();
     },
   },
   {
@@ -272,6 +282,7 @@ export const data = [
                     type: 'INITIAL_PURCHASE',
                   },
                   event: 'INITIAL_PURCHASE',
+                  userId: 'yourCustomerAppUserID',
                   messageId: 'UniqueIdentifierOfEvent',
                   originalTimestamp: '2020-06-02T18:17:35.319Z',
                   sentAt: '2020-06-02T18:17:35.319Z',
@@ -281,6 +292,132 @@ export const data = [
           },
         ],
       },
+    },
+    mockFns: () => {
+      defaultMockFns();
+    },
+  },
+  {
+    name: 'revenuecat',
+    description: 'Purchase event with anonymous user',
+    module: 'source',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            api_version: '1.0',
+            event: {
+              aliases: ['yourCustomerAliasedID', 'yourCustomerAliasedID'],
+              app_id: 'yourAppID',
+              commission_percentage: 0.3,
+              country_code: 'US',
+              currency: 'USD',
+              entitlement_id: 'pro_cat',
+              entitlement_ids: ['pro_cat'],
+              environment: 'PRODUCTION',
+              event_timestamp_ms: 1591121855319,
+              expiration_at_ms: 1591726653000,
+              id: 'UniqueIdentifierOfEvent',
+              is_family_share: false,
+              offer_code: 'free_month',
+              original_transaction_id: '1530648507000',
+              period_type: 'NORMAL',
+              presented_offering_id: 'OfferingID',
+              price: 2.49,
+              price_in_purchased_currency: 2.49,
+              product_id: 'onemonth_no_trial',
+              purchased_at_ms: 1591121853000,
+              store: 'APP_STORE',
+              subscriber_attributes: {
+                '$Favorite Cat': {
+                  updated_at_ms: 1581121853000,
+                  value: 'Garfield',
+                },
+              },
+              takehome_percentage: 0.7,
+              tax_percentage: 0.3,
+              transaction_id: '170000869511114',
+              type: 'INITIAL_PURCHASE',
+            },
+          },
+        ],
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      },
+      pathSuffix: '',
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              batch: [
+                {
+                  context: {
+                    library: {
+                      name: 'unknown',
+                      version: 'unknown',
+                    },
+                    integration: {
+                      name: 'RevenueCat',
+                    },
+                  },
+                  integrations: {
+                    RevenueCat: false,
+                  },
+                  type: 'track',
+                  properties: {
+                    aliases: ['yourCustomerAliasedID', 'yourCustomerAliasedID'],
+                    appId: 'yourAppID',
+                    commissionPercentage: 0.3,
+                    countryCode: 'US',
+                    currency: 'USD',
+                    entitlementId: 'pro_cat',
+                    entitlementIds: ['pro_cat'],
+                    environment: 'PRODUCTION',
+                    eventTimestampMs: 1591121855319,
+                    expirationAtMs: 1591726653000,
+                    id: 'UniqueIdentifierOfEvent',
+                    isFamilyShare: false,
+                    offerCode: 'free_month',
+                    originalTransactionId: '1530648507000',
+                    periodType: 'NORMAL',
+                    presentedOfferingId: 'OfferingID',
+                    price: 2.49,
+                    priceInPurchasedCurrency: 2.49,
+                    productId: 'onemonth_no_trial',
+                    purchasedAtMs: 1591121853000,
+                    store: 'APP_STORE',
+                    subscriberAttributes: {
+                      '$Favorite Cat': {
+                        updated_at_ms: 1581121853000,
+                        value: 'Garfield',
+                      },
+                    },
+                    takehomePercentage: 0.7,
+                    taxPercentage: 0.3,
+                    transactionId: '170000869511114',
+                    type: 'INITIAL_PURCHASE',
+                  },
+                  event: 'INITIAL_PURCHASE',
+                  userId: '',
+                  anonymousId: '97fcd7b2-cc24-47d7-b776-057b7b199513',
+                  messageId: 'UniqueIdentifierOfEvent',
+                  originalTimestamp: '2020-06-02T18:17:35.319Z',
+                  sentAt: '2020-06-02T18:17:35.319Z',
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    mockFns: () => {
+      defaultMockFns();
     },
   },
 ];

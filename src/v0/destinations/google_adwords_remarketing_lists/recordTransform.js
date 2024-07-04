@@ -79,7 +79,7 @@ const processRecordEventArray = (
 
 async function processRecordInputs(groupedRecordInputs) {
   const { destination, message, metadata } = groupedRecordInputs[0];
-  const accessToken = getAccessToken(metadata, 'accessToken');
+  const accessToken = getAccessToken(metadata, 'access_token');
   const developerToken = getValueFromMessage(metadata, 'secret.developer_token');
 
   const groupedRecordsByAction = lodash.groupBy(groupedRecordInputs, (record) =>

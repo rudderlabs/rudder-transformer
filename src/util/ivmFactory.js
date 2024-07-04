@@ -13,11 +13,15 @@ const RUDDER_LIBRARY_REGEX = /^@rs\/[A-Za-z]+\/v[0-9]{1,3}$/;
 const GEOLOCATION_TIMEOUT_IN_MS = parseInt(process.env.GEOLOCATION_TIMEOUT_IN_MS || '1000', 10);
 
 const SUPPORTED_FUNC_NAMES = ['transformEvent', 'transformBatch'];
+const RESTRICTED_LIBRARY_KEYWORDS = ['getCredential'];
 
 const isolateVmMem = ISOLATE_VM_MEMORY;
 async function evaluateModule(isolate, context, moduleCode) {
   const module = await isolate.compileModule(moduleCode);
   await module.instantiate(context, (specifier, referrer) => referrer);
+  if (RESTRICTED_LIBRARY_KEYWORDS.some((keyword) => moduleCode.includes(keyword))) {
+    throw new Error('Restricted keyword found in library code');
+  }
   await module.evaluate({ release: true });
   return true;
 }

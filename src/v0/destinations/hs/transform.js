@@ -151,12 +151,17 @@ const processRouterDest = async (inputs, reqMetadata) => {
   const tempNewInputs = batchEventsInOrder(inputs);
   const batchedResponseList = [];
   const errorRespList = [];
-  // using promise.all() with map() in async manner is not giving the right order of output
-  for (const inputEvents of tempNewInputs) {
-    const response = await processBatchRouter(inputEvents, reqMetadata)
-    errorRespList.push(...response.errorRespList)
-    batchedResponseList.push(...response.batchedResponseList)
-  }
+  const promises = tempNewInputs.map(async (inputEvents) => {
+    const response = await processBatchRouter(inputEvents, reqMetadata);
+    return response;
+  });
+
+  const results = await Promise.all(promises);
+
+  results.forEach((response) => {
+    errorRespList.push(...response.errorRespList);
+    batchedResponseList.push(...response.batchedResponseList);
+  });
   return [...batchedResponseList, ...errorRespList];
 };
 

@@ -38,7 +38,7 @@ const {
 } = require('./util');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
-const identifyResponseBuilder = async (message, { Config }) => {
+const identifyResponseBuilder = async (message, { Config }, metadata) => {
   const id = getDestinationExternalID(message, 'dripId');
 
   let email = getFieldValueFromMessage(message, 'email');
@@ -117,7 +117,7 @@ const identifyResponseBuilder = async (message, { Config }) => {
   response.method = defaultPostRequestConfig.requestMethod;
   const campaignId = getDestinationExternalID(message, 'dripCampaignId') || Config.campaignId;
   if (campaignId && email) {
-    const check = await createUpdateUser(finalpayload, Config, basicAuth);
+    const check = await createUpdateUser(finalpayload, Config, basicAuth, metadata);
     if (!check) {
       throw new NetworkInstrumentationError('Unable to create/update user.');
     }
@@ -139,7 +139,7 @@ const identifyResponseBuilder = async (message, { Config }) => {
   return response;
 };
 
-const trackResponseBuilder = async (message, { Config }) => {
+const trackResponseBuilder = async (message, { Config }, metadata) => {
   const id = getDestinationExternalID(message, 'dripId');
 
   let email = getValueFromMessage(message, [
@@ -162,7 +162,7 @@ const trackResponseBuilder = async (message, { Config }) => {
   event = event.trim().toLowerCase();
 
   if (!Config.enableUserCreation && !id) {
-    const check = await userExists(Config, email);
+    const check = await userExists(Config, email, metadata);
     if (!check) {
       throw new NetworkInstrumentationError(
         'User creation mode is disabled and user does not exist. Track call aborted.',
@@ -239,7 +239,7 @@ const trackResponseBuilder = async (message, { Config }) => {
 };
 
 const process = async (event) => {
-  const { message, destination } = event;
+  const { message, destination, metadata } = event;
   if (!message.type) {
     throw new InstrumentationError('Message Type is not present. Aborting message.');
   }
@@ -255,10 +255,10 @@ const process = async (event) => {
   let response;
   switch (messageType) {
     case EventType.IDENTIFY:
-      response = await identifyResponseBuilder(message, destination);
+      response = await identifyResponseBuilder(message, destination, metadata);
       break;
     case EventType.TRACK:
-      response = await trackResponseBuilder(message, destination);
+      response = await trackResponseBuilder(message, destination, metadata);
       break;
     default:
       throw new InstrumentationError(`Message type ${messageType} not supported`);

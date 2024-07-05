@@ -12,7 +12,7 @@ export const destination = {
     defaultCampaignScheduleUnit: 'day',
     defaultCampaignSchedule: '2',
     defaultSource: 'php',
-    defaultSenderEmail: 'abc@gmail.com',
+    defaultSenderId: 'abc@gmail.com',
     defaultSenderPhoneNumber: '+919XXXXXXXX8',
     oneTrustCookieCategories: [
       {

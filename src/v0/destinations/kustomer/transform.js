@@ -83,7 +83,7 @@ const constructKustomerPayload = (message, category, email) => {
 
 // Main process function responsible for building payload for all
 // type of events.
-const responseBuilderSimple = async (message, category, destination) => {
+const responseBuilderSimple = async (message, category, destination, metadata) => {
   let payload = {};
 
   // Reference for base endpoint
@@ -119,6 +119,7 @@ const responseBuilderSimple = async (message, category, destination) => {
       storedState = await fetchKustomer(
         `${BASE_ENDPOINT}/v1/customers/email=${userEmail}`,
         destination,
+        metadata,
       );
     }
     // If response.userExists flag is false
@@ -128,6 +129,7 @@ const responseBuilderSimple = async (message, category, destination) => {
       storedState = await fetchKustomer(
         `${BASE_ENDPOINT}/v1/customers/externalId=${userId}`,
         destination,
+        metadata,
       );
     }
     // If response.userExists flag is still false
@@ -137,6 +139,7 @@ const responseBuilderSimple = async (message, category, destination) => {
       storedState = await fetchKustomer(
         `${BASE_ENDPOINT}/v1/customers/externalId=${get(message, 'anonymousId')}`,
         destination,
+        metadata,
       );
     }
     // URL to use for creating new Kustomer
@@ -206,7 +209,7 @@ const responseBuilderSimple = async (message, category, destination) => {
   throw new TransformationError('Payload could not be constructed');
 };
 
-const processEvent = (message, destination) => {
+const processEvent = (message, destination, metadata) => {
   if (!message.type) {
     throw new InstrumentationError('Event type is required');
   }
@@ -227,10 +230,10 @@ const processEvent = (message, destination) => {
     default:
       throw new InstrumentationError(`Event type ${message.type} is not supported`);
   }
-  return responseBuilderSimple(message, category, destination);
+  return responseBuilderSimple(message, category, destination, metadata);
 };
 
-const process = (event) => processEvent(event.message, event.destination);
+const process = (event) => processEvent(event.message, event.destination, event.metadata);
 
 const processRouterDest = async (inputs, reqMetadata) => {
   const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);

@@ -1,0 +1,25 @@
+name: Cross repo tests
+
+on:
+  workflow_run:
+    workflows: ["Build Artifacts for PRs"]
+    types:
+      - completed
+
+jobs:
+  rudder-server-tests:
+    name: Check for formatting & lint errors
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout rudder-server
+        uses: actions/checkout@v4.1.1 
+        with:
+          repository: rudderlabs/rudder-server
+          ref: master
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: 'go.mod'
+      - run: go version
+      - run: go mod download # Not required, used to segregate module download vs test times
+      - run: go test ./gateway/webhook/integration_test.go

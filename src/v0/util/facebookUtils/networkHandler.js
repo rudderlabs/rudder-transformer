@@ -217,7 +217,7 @@ const errorDetailsMap = {
     default: new ErrorDetailsExtractorBuilder().setStatus(403).setMessageField('message').build(),
   },
   21009: {
-    default: new ErrorDetailsExtractorBuilder().setStatus(400).setMessageField('message').build(),
+    default: new ErrorDetailsExtractorBuilder().setStatus(500).setMessageField('message').build(),
   },
 };
 

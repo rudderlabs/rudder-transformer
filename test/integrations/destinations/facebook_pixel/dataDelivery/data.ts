@@ -519,10 +519,10 @@ export const v0TestData = [
     },
     output: {
       response: {
-        status: 400,
+        status: 500,
         body: {
           output: {
-            status: 400,
+            status: 500,
             message: '(#21009) The data set upload is temporarily not ready.',
             destinationResponse: {
               error: {
@@ -533,7 +533,10 @@ export const v0TestData = [
               },
               status: 400,
             },
-            statTags,
+            statTags: {
+              ...statTags,
+              errorType: 'retryable',
+            },
           },
         },
       },

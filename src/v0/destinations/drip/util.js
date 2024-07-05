@@ -1,11 +1,11 @@
 const { NetworkError, AbortedError } = require('@rudderstack/integrations-lib');
-const myAxios = require('../../../util/myAxios');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const logger = require('../../../logger');
 const { constructPayload, isDefinedAndNotNull } = require('../../util');
 const { ENDPOINT, productMapping } = require('./config');
 const tags = require('../../util/tags');
 const { JSON_MIME_TYPE } = require('../../util/constant');
+const { handleHttpRequest } = require('../../../adapters/network');
 
 const isValidEmail = (email) => {
   const re =
@@ -19,82 +19,87 @@ const isValidTimestamp = (timestamp) => {
   return re.test(String(timestamp));
 };
 
-const userExists = async (Config, id) => {
+const userExists = async (Config, id, metadata) => {
   const basicAuth = Buffer.from(Config.apiKey).toString('base64');
-  let response;
-  try {
-    response = await myAxios.get(
-      `${ENDPOINT}/v2/${Config.accountId}/subscribers/${id}`,
-      {
-        headers: {
-          Authorization: `Basic ${basicAuth}`,
-          'Content-Type': JSON_MIME_TYPE,
-        },
+
+  const { httpResponse } = await handleHttpRequest(
+    'get',
+    `${ENDPOINT}/v2/${Config.accountId}/subscribers/${id}`,
+    {
+      headers: {
+        Authorization: `Basic ${basicAuth}`,
+        'Content-Type': JSON_MIME_TYPE,
       },
-      {
-        destType: 'drip',
-        feature: 'transformation',
-        requestMethod: 'GET',
-        endpointPath: '/subscribers/id',
-        module: 'router',
-      },
-    );
-    if (response && response.status) {
-      return response.status === 200;
+    },
+    {
+      metadata,
+      destType: 'drip',
+      feature: 'transformation',
+      requestMethod: 'GET',
+      endpointPath: '/subscribers/id',
+      module: 'router',
+    },
+  );
+  if (httpResponse.success) {
+    if (httpResponse.response.status) {
+      return httpResponse.response.status === 200;
     }
     throw new NetworkError(
       'Invalid response.',
-      response?.status,
+      httpResponse.response?.status,
       {
-        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(response?.status),
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(httpResponse.response.status),
       },
-      response,
+      httpResponse.response,
     );
-  } catch (error) {
-    let errMsg = '';
-    let errStatus = 400;
-    if (error.response) {
-      errStatus = error.response.status || 400;
-      errMsg = error.response.data
-        ? JSON.stringify(error.response.data)
-        : 'error response not found';
-    }
-    throw new NetworkError(`Error occurred while checking user : ${errMsg}`, errStatus, {
-      [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(errStatus),
-    });
   }
+
+  const error = httpResponse.response?.response;
+  let errMsg = '';
+  let errStatus = 400;
+  if (error) {
+    errStatus = error.status || 400;
+    errMsg = error.data ? JSON.stringify(error.data) : 'error response not found';
+  }
+  throw new NetworkError(`Error occurred while checking user : ${errMsg}`, errStatus, {
+    [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(errStatus),
+  });
 };
 
-const createUpdateUser = async (finalpayload, Config, basicAuth) => {
-  try {
-    const response = await myAxios.post(
-      `${ENDPOINT}/v2/${Config.accountId}/subscribers`,
-      finalpayload,
-      {
-        headers: {
-          Authorization: `Basic ${basicAuth}`,
-          'Content-Type': JSON_MIME_TYPE,
-        },
+const createUpdateUser = async (finalpayload, Config, basicAuth, metadata) => {
+  const { httpResponse } = await handleHttpRequest(
+    'post',
+    `${ENDPOINT}/v2/${Config.accountId}/subscribers`,
+    finalpayload,
+    {
+      headers: {
+        Authorization: `Basic ${basicAuth}`,
+        'Content-Type': JSON_MIME_TYPE,
       },
-      {
-        destType: 'drip',
-        feature: 'transformation',
-        requestMethod: 'POST',
-        endpointPath: '/subscribers',
-        module: 'router',
-      },
-    );
+    },
+    {
+      metadata,
+      destType: 'drip',
+      feature: 'transformation',
+      requestMethod: 'POST',
+      endpointPath: '/subscribers',
+      module: 'router',
+    },
+  );
+  if (httpResponse.success) {
+    const { response } = httpResponse;
     if (response) {
       return response.status === 200 || response.status === 201;
     }
     throw new AbortedError('Invalid response.');
-  } catch (error) {
-    let errMsg = '';
-    if (error.response && error.response.data) {
-      errMsg = JSON.stringify(error.response.data);
-    }
-    throw new AbortedError(`Error occurred while creating or updating user : ${errMsg}`);
   }
+
+  const error = httpResponse.response;
+  let errMsg = '';
+  if (error.response && error.response.data) {
+    errMsg = JSON.stringify(error.response.data);
+  }
+  throw new AbortedError(`Error occurred while creating or updating user : ${errMsg}`);
 };
 
 const createList = (productList) => {

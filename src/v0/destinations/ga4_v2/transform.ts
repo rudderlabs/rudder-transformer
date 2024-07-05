@@ -8,6 +8,16 @@ export function process(event: ProcessorTransformationRequest) {
   const { message, destination } = event;
   const { Config } = destination;
 
+  const configDetails = JSON.parse(Config.configData);
+  Config.propertyId = configDetails.PROPERTY;
+  Config.typesOfClient = configDetails.DATA_STREAM.type;
+  if (Config.typesOfClient === 'gtag') {
+    Config.measurementId = configDetails.DATA_STREAM.value;
+  } else if (Config.typesOfClient === 'firebase') {
+    Config.firebaseAppId = configDetails.DATA_STREAM.value;
+  }
+  Config.apiSecret = configDetails.MEASUREMENT_PROTOCOL_SECRET;
+
   const eventPayload = message as RudderStackEvent;
 
   if (!eventPayload.type) {

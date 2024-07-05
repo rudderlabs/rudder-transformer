@@ -1,4 +1,8 @@
-import { InstrumentationError, RudderStackEvent } from '@rudderstack/integrations-lib';
+import {
+  InstrumentationError,
+  isDefinedAndNotNull,
+  RudderStackEvent,
+} from '@rudderstack/integrations-lib';
 import { ProcessorTransformationRequest } from '../../../types';
 import { handleCustomMappings } from './customMappingsHandler';
 import { process as ga4Process } from '../ga4/transform';
@@ -7,6 +11,17 @@ import { basicConfigvalidaiton } from '../ga4/utils';
 export function process(event: ProcessorTransformationRequest) {
   const { message, destination } = event;
   const { Config } = destination;
+  if (isDefinedAndNotNull(Config.configData)) {
+    const configDetails = JSON.parse(Config.configData);
+    Config.propertyId = configDetails.PROPERTY;
+    Config.typesOfClient = configDetails.DATA_STREAM.type;
+    if (Config.typesOfClient === 'gtag') {
+      Config.measurementId = configDetails.DATA_STREAM.value;
+    } else if (Config.typesOfClient === 'firebase') {
+      Config.firebaseAppId = configDetails.DATA_STREAM.value;
+    }
+    Config.apiSecret = configDetails.MEASUREMENT_PROTOCOL_SECRET;
+  }
 
   const eventPayload = message as RudderStackEvent;
 

@@ -17,7 +17,7 @@ export class UserTransformController {
   fns with the latest configuration in the service.
   */
   public static async reconcileFunction(ctx: Context) {
-    logger.debug(`Received a request to reconcile fns`);
+    logger.debug(`Received a request to reconcile fns in a particular workspace`);
 
     const { wId } = ctx.params;
     const { name = [], migrateAll = 'false' } = ctx.request.query;

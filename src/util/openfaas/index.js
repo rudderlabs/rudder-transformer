@@ -13,6 +13,8 @@ const stats = require('../stats');
 const { getMetadata, getTransformationMetadata } = require('../../v0/util');
 const { HTTP_STATUS_CODES } = require('../../v0/util/constant');
 
+const MAX_RETRY_WAIT_MS = parseInt(process.env.MAX_RETRY_WAIT_MS || '22000');
+const MAX_INTERVAL_IN_RETRIES_MS = parseInt(process.env.MAX_INTERVAL_IN_RETRIES_MS || '250');
 const FAAS_SCALE_TYPE = process.env.FAAS_SCALE_TYPE || 'capacity';
 const FAAS_SCALE_TARGET = process.env.FAAS_SCALE_TARGET || '4';
 const FAAS_SCALE_TARGET_PROPORTION = process.env.FAAS_SCALE_TARGET_PROPORTION || '0.70';
@@ -35,7 +37,6 @@ const FAAS_AST_FN_NAME = 'fn-ast';
 const CUSTOM_NETWORK_POLICY_WORKSPACE_IDS = process.env.CUSTOM_NETWORK_POLICY_WORKSPACE_IDS || '';
 const customNetworkPolicyWorkspaceIds = CUSTOM_NETWORK_POLICY_WORKSPACE_IDS.split(',');
 const CUSTOMER_TIER = process.env.CUSTOMER_TIER || 'shared';
-const DISABLE_RECONCILE_FN = process.env.DISABLE_RECONCILE_FN == 'true' || false;
 
 // Initialise node cache
 const functionListCache = new NodeCache();
@@ -66,10 +67,11 @@ const callWithRetry = async (
 };
 
 const getFunctionsForWorkspace = async (workspaceId) => {
-  logger.info(`Getting functions for workspace: ${workspaceId}`);
+  logger.error(`Getting functions for workspace: ${workspaceId}`);
 
   const workspaceFns = [];
   const upstreamFns = await getFunctionList();
+
   for (const fn of upstreamFns) {
     if (fn?.labels?.workspaceId === workspaceId) {
       workspaceFns.push(fn);
@@ -79,10 +81,12 @@ const getFunctionsForWorkspace = async (workspaceId) => {
 };
 
 const reconcileFunction = async (workspaceId, fns, migrateAll = false) => {
-  logger.info(`Reconciling workspace: ${workspaceId} fns: ${fns} and migrateAll: ${migrateAll}`);
+  logger.error(`Reconciling workspace: ${workspaceId} fns: ${fns} and migrateAll: ${migrateAll}`);
 
   try {
     const workspaceFns = await getFunctionsForWorkspace(workspaceId);
+    // console.log(`Functions for workspace: ${JSON.stringify(workspaceFns)}`);
+
     // versionId and libraryVersionIds are used in the process
     // to create the envProcess which will be copied from the original
     // in next step
@@ -101,6 +105,7 @@ const reconcileFunction = async (workspaceId, fns, migrateAll = false) => {
       const payload = buildOpenfaasFn(workspaceFn.name, null, '', [], false, tags);
       payload['envProcess'] = workspaceFn['envProcess'];
 
+      // logger.error(`payload: ${JSON.stringify(payload)}`);
       await updateFunction(workspaceFn.name, payload);
       stats.increment('user_transform_reconcile_function', tags);
     }
@@ -251,7 +256,7 @@ async function setupFaasFunction(
 ) {
   try {
     if (!testMode && isFunctionDeployed(functionName)) {
-      logger.debug(`[Faas] Function ${functionName} already deployed`);
+      logger.error(`[Faas] Function ${functionName} already deployed`);
       return;
     }
     // deploy faas function
@@ -265,7 +270,7 @@ async function setupFaasFunction(
     );
 
     // This api call is only used to check if function is spinned correctly
-    await awaitFunctionReadiness(functionName);
+    await awaitFunctionReadiness(functionName, MAX_RETRY_WAIT_MS, MAX_INTERVAL_IN_RETRIES_MS);
 
     setFunctionInCache(functionName);
     logger.debug(`[Faas] Finished deploying faas function ${functionName}`);

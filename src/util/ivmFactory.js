@@ -1,5 +1,8 @@
 const ivm = require('isolated-vm');
 const fetch = require('node-fetch');
+const esprima = require('esprima');
+const { traverse } = require('estraverse');
+
 const { isNil, isObject, camelCase } = require('lodash');
 
 const { getLibraryCodeV1, getRudderLibByImportName } = require('./customTransforrmationsStore-v1');
@@ -16,12 +19,39 @@ const SUPPORTED_FUNC_NAMES = ['transformEvent', 'transformBatch'];
 const RESTRICTED_LIBRARY_KEYWORDS = ['getCredential'];
 
 const isolateVmMem = ISOLATE_VM_MEMORY;
+
+function isRestrictedFunctionCalled(ast, restrictedKeywords, moduleCode) {
+  const comments = new Set(ast.comments.map((comment) => comment.value.trim()));
+  let restrictedCallFound = false;
+
+  traverse(ast, {
+    enter: (node) => {
+      if (node.type === 'CallExpression' && node.callee.type === 'Identifier') {
+        const functionName = node.callee.name;
+
+        if (restrictedKeywords.includes(functionName)) {
+          const codeLine = moduleCode.split('\n')[node.loc.start.line - 1].trim();
+          const isCommented = comments.has(codeLine.replace(/^\/\//, '').trim());
+
+          if (!isCommented) {
+            restrictedCallFound = true;
+          }
+        }
+      }
+    },
+  });
+
+  return restrictedCallFound;
+}
+
 async function evaluateModule(isolate, context, moduleCode) {
+  const ast = esprima.parseModule(moduleCode, { comment: true, loc: true });
+  if (isRestrictedFunctionCalled(ast, RESTRICTED_LIBRARY_KEYWORDS, moduleCode)) {
+    throw new Error('Restricted function call found in library code');
+  }
+
   const module = await isolate.compileModule(moduleCode);
   await module.instantiate(context, (specifier, referrer) => referrer);
-  if (RESTRICTED_LIBRARY_KEYWORDS.some((keyword) => moduleCode.includes(keyword))) {
-    throw new Error('Restricted keyword found in library code');
-  }
   await module.evaluate({ release: true });
   return true;
 }

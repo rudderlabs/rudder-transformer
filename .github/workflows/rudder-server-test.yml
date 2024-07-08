@@ -2,7 +2,7 @@ name: Cross repo tests
 
 on:
   workflow_run:
-    workflows: ["Build Artifacts for PRs"]
+    workflows: ['Build Artifacts for PRs']
     types:
       - completed
 
@@ -13,7 +13,7 @@ jobs:
 
     steps:
       - name: Checkout rudder-server
-        uses: actions/checkout@v4.1.1 
+        uses: actions/checkout@v4.1.1
         with:
           repository: rudderlabs/rudder-server
           ref: master

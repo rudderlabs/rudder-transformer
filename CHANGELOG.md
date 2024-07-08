@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.70.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.70.0...v1.70.1) (2024-07-03)
+
+### Bug Fixes
+
+* revert fb pixel change ([769161a](https://github.com/rudderlabs/rudder-transformer/commit/a0026152e4763569dc05693af1639e5a44d47b05))
+
 ## [1.70.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.69.1...v1.70.0) (2024-07-01)
 
 

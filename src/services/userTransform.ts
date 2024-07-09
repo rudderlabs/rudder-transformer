@@ -231,6 +231,12 @@ export class UserTransformService {
       response.body = {
         error: extractStackTraceUptoLastSubstringMatch(error.stack, SUPPORTED_FUNC_NAMES),
       };
+      const metaTags = getTransformationMetadata(events[0]?.metadata);
+
+      stats.counter('user_transform_test_errors', events.length, {
+        status: response.status,
+        ...metaTags,
+      });
     }
     return response;
   }

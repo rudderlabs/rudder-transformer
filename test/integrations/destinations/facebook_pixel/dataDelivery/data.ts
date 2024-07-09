@@ -487,6 +487,61 @@ export const v0TestData = [
       },
     },
   },
+
+  {
+    name: 'facebook_pixel',
+    description: 'Test 9: should handle error with code: 21009',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          body: {
+            XML: {},
+            FORM: testFormData,
+            JSON: {},
+            JSON_ARRAY: {},
+          },
+          type: 'REST',
+          files: {},
+          method: 'POST',
+          userId: '',
+          headers: {},
+          version: '1',
+          endpoint: `https://graph.facebook.com/${VERSION}/1234567891234567/events?access_token=unhandled_error_code_21009`,
+          params: {
+            destination: 'facebook_pixel',
+          },
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 500,
+        body: {
+          output: {
+            status: 500,
+            message: '(#21009) The data set upload is temporarily not ready.',
+            destinationResponse: {
+              error: {
+                message: '(#21009) The data set upload is temporarily not ready.',
+                type: 'OAuthException',
+                code: 21009,
+                fbtrace_id: 'dDu39o39lkeo8',
+              },
+              status: 400,
+            },
+            statTags: {
+              ...statTags,
+              errorType: 'retryable',
+            },
+          },
+        },
+      },
+    },
+  },
 ];
 
 export const data = [

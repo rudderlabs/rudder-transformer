@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.71.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.70.1...v1.71.0) (2024-07-08)
+
+
+### Features
+
+* onboard new custom destination: wunderkind ([#3456](https://github.com/rudderlabs/rudder-transformer/issues/3456)) ([7f49a01](https://github.com/rudderlabs/rudder-transformer/commit/7f49a01b04322a38c5f96199d21097a9210e80fc))
+
+
+### Bug Fixes
+
+* zapier event lower case issue ([#3535](https://github.com/rudderlabs/rudder-transformer/issues/3535)) ([277c1f0](https://github.com/rudderlabs/rudder-transformer/commit/277c1f00606b0ec5974e6bf24dae6749a1679069))
+
 ### [1.70.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.70.0...v1.70.1) (2024-07-03)
 
 ### Bug Fixes

@@ -234,7 +234,7 @@ export class UserTransformService {
       const metaTags = getTransformationMetadata(events[0]?.metadata);
 
       stats.counter('user_transform_test_errors', events.length, {
-        status: response.status,
+        status: error.statusCode,
         ...metaTags,
       });
     }

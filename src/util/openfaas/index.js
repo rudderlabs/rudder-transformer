@@ -81,12 +81,10 @@ const getFunctionsForWorkspace = async (workspaceId) => {
 };
 
 const reconcileFunction = async (workspaceId, fns, migrateAll = false) => {
-  logger.error(`Reconciling workspace: ${workspaceId} fns: ${fns} and migrateAll: ${migrateAll}`);
+  logger.info(`Reconciling workspace: ${workspaceId} fns: ${fns} and migrateAll: ${migrateAll}`);
 
   try {
     const workspaceFns = await getFunctionsForWorkspace(workspaceId);
-    // console.log(`Functions for workspace: ${JSON.stringify(workspaceFns)}`);
-
     // versionId and libraryVersionIds are used in the process
     // to create the envProcess which will be copied from the original
     // in next step
@@ -105,7 +103,6 @@ const reconcileFunction = async (workspaceId, fns, migrateAll = false) => {
       const payload = buildOpenfaasFn(workspaceFn.name, null, '', [], false, tags);
       payload['envProcess'] = workspaceFn['envProcess'];
 
-      // logger.error(`payload: ${JSON.stringify(payload)}`);
       await updateFunction(workspaceFn.name, payload);
       stats.increment('user_transform_reconcile_function', tags);
     }

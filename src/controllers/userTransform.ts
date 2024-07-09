@@ -10,6 +10,7 @@ import {
 import { reconcileFunction } from '../util/openfaas/index';
 import { ControllerUtility } from './util';
 import logger from '../logger';
+import { castArray } from 'lodash';
 
 export class UserTransformController {
   /**
@@ -17,18 +18,12 @@ export class UserTransformController {
   fns with the latest configuration in the service.
   */
   public static async reconcileFunction(ctx: Context) {
-    logger.debug(`Received a request to reconcile fns in a particular workspace`);
-
     const { wId } = ctx.params;
     const { name = [], migrateAll = 'false' } = ctx.request.query;
 
-    let fns: string[] = [];
-    if (typeof name === 'string') {
-      fns = [name];
-    } else {
-      fns = fns.concat(...name);
-    }
+    logger.info(`Received a request to reconcile fns in workspace: ${wId}`);
 
+    const fns = castArray(name);
     await reconcileFunction(wId, fns, migrateAll === 'true');
 
     ctx.body = { message: 'Reconciled' };

@@ -24,41 +24,42 @@ const dnsCache = new NodeCache({
   checkperiod: DNS_CACHE_TTL,
 });
 
-const fetchResolvedIp = async (hostname) => {
+const resolveHostName = async (hostname) => {
   // ex: [{ address: '108.157.0.0', ttl: 600 }]
   const addresses = await resolver.resolve4(hostname, { ttl: true });
   return addresses.length > 0 ? addresses[0] : {};
 };
 
+const fetchAddressFromHostName = async (hostname) => {
+  if (!DNS_CACHE_ENABLED) {
+    const { address } = await resolveHostName(hostname);
+    return { address, cacheHit: false };
+  }
+  const cachedAddress = dnsCache.get(hostname);
+  if (cachedAddress !== undefined) {
+    return { address: cachedAddress, cacheHit: true };
+  }
+  const { address, ttl } = await resolveHostName(hostname);
+  dnsCache.set(hostname, address, Math.min(ttl, DNS_CACHE_TTL));
+  return { address, cacheHit: false };
+};
+
 const staticLookup = (transformationTags) => async (hostname, _, cb) => {
   let ip;
   const resolveStartTime = new Date();
-  let dnsHit = false;
   try {
-    if (DNS_CACHE_ENABLED) {
-      ip = dnsCache.get(hostname);
-      if (ip !== undefined) {
-        dnsHit = true;
-      } else {
-        const { address, ttl } = await fetchResolvedIp(hostname);
-        ip = address;
-        dnsCache.set(hostname, ip, ttl || DNS_CACHE_TTL);
-      }
-    } else {
-      const { address } = await fetchResolvedIp(hostname);
-      ip = address;
-    }
+    const { address, cacheHit } = await fetchAddressFromHostName(hostname);
+    ip = address;
+    stats.timing('fetch_dns_resolve_time', resolveStartTime, { ...transformationTags, cacheHit });
   } catch (error) {
     logger.error(`DNS Error Code: ${error.code} | Message : ${error.message}`);
     stats.timing('fetch_dns_resolve_time', resolveStartTime, {
       ...transformationTags,
       error: 'true',
-      dnsHit,
     });
     cb(null, `unable to resolve IP address for ${hostname}`, RECORD_TYPE_A);
     return;
   }
-  stats.timing('fetch_dns_resolve_time', resolveStartTime, { ...transformationTags, dnsHit });
 
   if (!ip) {
     cb(null, `resolved empty list of IP address for ${hostname}`, RECORD_TYPE_A);

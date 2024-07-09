@@ -1,4 +1,5 @@
 import { Context } from 'koa';
+import { castArray } from 'lodash';
 import { UserTransformService } from '../services/userTransform';
 import { ProcessorTransformationRequest, UserTransformationServiceResponse } from '../types/index';
 import {
@@ -10,7 +11,6 @@ import {
 import { reconcileFunction } from '../util/openfaas/index';
 import { ControllerUtility } from './util';
 import logger from '../logger';
-import { castArray } from 'lodash';
 
 export class UserTransformController {
   /**

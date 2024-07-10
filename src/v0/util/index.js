@@ -2263,7 +2263,8 @@ const applyCustomMappings = (event, mappings) =>
  * @param {*} events The events to be grouped.
  * @returns {array} The array of grouped events.
  */
-const groupRouterTransformEvents = (events) => Object.values(
+const groupRouterTransformEvents = (events) =>
+  Object.values(
     lodash.groupBy(events, (ev) => [
       ev.metadata?.destinationId,
       ev.metadata?.sourceCategory === 'warehouse' ? ev.metadata?.sourceId : 'default',

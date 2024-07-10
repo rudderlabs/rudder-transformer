@@ -554,11 +554,11 @@ const buildDeliverablePayload = (payload, Config) => {
   return response;
 };
 
-function sanitizeUserProperties(obj) {
+function sanitizeUserProperties(userPropertiesObj) {
   const sanitizedObj = {};
   // eslint-disable-next-line no-restricted-syntax, guard-for-in
-  for (const key in obj) {
-    const { value } = obj[key];
+  for (const key in userPropertiesObj) {
+    const { value } = userPropertiesObj[key];
     if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
       sanitizedObj[key] = { value };
     }

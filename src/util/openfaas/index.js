@@ -30,6 +30,14 @@ const FAAS_LIMITS_MEMORY = process.env.FAAS_LIMITS_MEMORY || FAAS_REQUESTS_MEMOR
 const FAAS_MAX_INFLIGHT = process.env.FAAS_MAX_INFLIGHT || '4';
 const FAAS_EXEC_TIMEOUT = process.env.FAAS_EXEC_TIMEOUT || '4s';
 const FAAS_ENABLE_WATCHDOG_ENV_VARS = process.env.FAAS_ENABLE_WATCHDOG_ENV_VARS || 'true';
+const FAAS_READINESS_HTTP_PATH = process.env.FAAS_READINESS_HTTP_PATH || '/ready';
+const FAAS_READINESS_HTTP_INITIAL_DELAY_S = process.env.FAAS_READINESS_HTTP_INITIAL_DELAY_S || '2';
+const FAAS_READINESS_HTTP_PERIOD_S = process.env.FAAS_READINESS_HTTP_PERIOD_S || '2';
+const FAAS_READINESS_HTTP_FAILURE_THRESHOLD =
+  process.env.FAAS_READINESS_HTTP_FAILURE_THRESHOLD || '5';
+const FAAS_READINESS_HTTP_SUCCESS_THRESHOLD =
+  process.env.FAAS_READINESS_HTTP_SUCCESS_THRESHOLD || '1';
+
 const CONFIG_BACKEND_URL = process.env.CONFIG_BACKEND_URL || 'https://api.rudderlabs.com';
 const GEOLOCATION_URL = process.env.GEOLOCATION_URL || '';
 const FAAS_AST_VID = 'ast';
@@ -332,6 +340,11 @@ function buildOpenfaasFn(name, code, versionId, libraryVersionIDs, testMode, trM
     labels,
     annotations: {
       'prometheus.io.scrape': 'true',
+      'com.openfaas.ready.http.path': FAAS_READINESS_HTTP_PATH,
+      'com.openfaas.ready.http.initialDelaySeconds': FAAS_READINESS_HTTP_INITIAL_DELAY_S,
+      'com.openfaas.ready.http.periodSeconds': FAAS_READINESS_HTTP_PERIOD_S,
+      'com.openfaas.ready.http.successThreshold': FAAS_READINESS_HTTP_SUCCESS_THRESHOLD,
+      'com.openfaas.ready.http.failureThreshold': FAAS_READINESS_HTTP_FAILURE_THRESHOLD,
     },
     limits: {
       memory: FAAS_LIMITS_MEMORY,

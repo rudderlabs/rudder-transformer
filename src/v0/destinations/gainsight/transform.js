@@ -79,7 +79,7 @@ const identifyResponseBuilder = (message, { Config }) => {
  * Person Object.
  * https://support.gainsight.com/Gainsight_NXT/API_and_Developer_Docs/Company_API/Company_API_Documentation
  */
-const groupResponseBuilder = async (message, { Config }) => {
+const groupResponseBuilder = async (message, { Config }, metadata) => {
   const { accessKey } = getConfigOrThrowError(Config, ['accessKey'], 'group');
   const groupName = getValueFromMessage(message, 'traits.name');
   if (!groupName) {
@@ -91,7 +91,7 @@ const groupResponseBuilder = async (message, { Config }) => {
     throw new InstrumentationError('user email is required for group');
   }
 
-  const resp = await searchGroup(groupName, Config);
+  const resp = await searchGroup(groupName, Config, metadata);
 
   let payload = constructPayload(message, groupMapping);
   const defaultKeys = Object.keys(payload);
@@ -103,10 +103,10 @@ const groupResponseBuilder = async (message, { Config }) => {
   payload = removeUndefinedAndNullValues(payload);
 
   let groupGsid;
-  if (resp.data.data.records.length === 0) {
-    groupGsid = await createGroup(payload, Config);
+  if (resp.data.records.length === 0) {
+    groupGsid = await createGroup(payload, Config, metadata);
   } else {
-    groupGsid = await updateGroup(payload, Config);
+    groupGsid = await updateGroup(payload, Config, metadata);
   }
 
   const responsePayload = {
@@ -184,7 +184,7 @@ const trackResponseBuilder = (message, { Config }) => {
  * Processing Single event
  */
 const process = async (event) => {
-  const { message, destination } = event;
+  const { message, destination, metadata } = event;
   if (!message.type) {
     throw new InstrumentationError('Message Type is not present. Aborting message.');
   }
@@ -196,7 +196,7 @@ const process = async (event) => {
       response = identifyResponseBuilder(message, destination);
       break;
     case EventType.GROUP:
-      response = await groupResponseBuilder(message, destination);
+      response = await groupResponseBuilder(message, destination, metadata);
       break;
     case EventType.TRACK:
       response = trackResponseBuilder(message, destination);

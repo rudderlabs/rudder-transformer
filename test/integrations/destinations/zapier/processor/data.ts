@@ -140,7 +140,7 @@ export const data = [
         body: [
           {
             message: {
-              event: 'def',
+              event: 'Def',
               userId: 'identified user id',
               type: 'track',
               anonymousId: 'anon-id-new',
@@ -220,7 +220,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  event: 'def',
+                  event: 'Def',
                   userId: 'identified user id',
                   type: 'track',
                   anonymousId: 'anon-id-new',
@@ -279,7 +279,7 @@ export const data = [
         body: [
           {
             message: {
-              name: 'page_test',
+              name: 'Page_Test',
               userId: 'identified user id',
               type: 'page',
               anonymousId: 'anon-id-new',
@@ -368,7 +368,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  name: 'page_test',
+                  name: 'Page_Test',
                   userId: 'identified user id',
                   type: 'page',
                   anonymousId: 'anon-id-new',

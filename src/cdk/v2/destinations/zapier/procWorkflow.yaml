@@ -20,14 +20,14 @@ steps:
     condition: $.context.messageType === {{$.EventType.TRACK}}
     template: |
       const trackEventsMap = $.getHashFromArray(.destination.Config.trackEventsToZap);
-      const eventName = .message.event;
+      const eventName = .message.event.toLowerCase();
       (eventName && trackEventsMap[eventName]) ? 
         ($.context.endpoint = trackEventsMap[eventName])
     else:
       name: endpointForOthers
       template: |
         const pageScreenEventsMap = $.getHashFromArray(.destination.Config.pageScreenEventsToZap);
-        const pageName = .message.name;
+        const pageName = .message.name.toLowerCase();
         (pageName && pageScreenEventsMap[pageName]) ? 
           ($.context.endpoint = pageScreenEventsMap[pageName])
   - name: buildResponse

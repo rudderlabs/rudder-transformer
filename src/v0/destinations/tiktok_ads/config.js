@@ -39,6 +39,9 @@ const mappingConfig = getMappingConfig(ConfigCategory, __dirname);
 // tiktok docs for max batch size for events 2.0: https://business-api.tiktok.com/portal/docs?id=1771100779668482
 const maxBatchSizeV2 = 1000;
 const trackEndpointV2 = 'https://business-api.tiktok.com/open_api/v1.3/event/track/';
+// Following is the list of standard events for which some parameters are recommended
+// Ref: https://business-api.tiktok.com/portal/docs?id=1771101186666498
+const eventsWithRecommendedParams = ['AddToCart', 'CompletePayment', 'PlaceAnOrder', 'ViewContent'];
 module.exports = {
   TRACK_ENDPOINT,
   BATCH_ENDPOINT,
@@ -50,4 +53,5 @@ module.exports = {
   DESTINATION: 'TIKTOK_ADS',
   trackEndpointV2,
   maxBatchSizeV2,
+  eventsWithRecommendedParams,
 };

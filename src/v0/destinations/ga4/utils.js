@@ -554,21 +554,17 @@ const buildDeliverablePayload = (payload, Config) => {
   return response;
 };
 
-const sanitizeUserProperties = (userProperties) => {
-  Object.keys(userProperties).forEach((key) => {
-    const propetyValue = userProperties[key];
-    if (
-      typeof propetyValue === 'string' ||
-      typeof propetyValue === 'number' ||
-      typeof propetyValue === 'boolean'
-    ) {
-      delete userProperties[key];
-      userProperties[key] = {
-        value: propetyValue,
-      };
+function sanitizeUserProperties(userPropertiesObj) {
+  const sanitizedObj = {};
+  // eslint-disable-next-line no-restricted-syntax, guard-for-in
+  for (const key in userPropertiesObj) {
+    const { value } = userPropertiesObj[key];
+    if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
+      sanitizedObj[key] = { value };
     }
-  });
-};
+  }
+  return sanitizedObj;
+}
 
 const basicConfigvalidaiton = (Config) => {
   if (!Config.typesOfClient) {

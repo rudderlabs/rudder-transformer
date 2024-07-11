@@ -503,6 +503,12 @@ class Prometheus {
         labelNames: ['destination_id'],
       },
       {
+        name: 'hs_batch_size',
+        help: 'hs_batch_size',
+        type: 'gauge',
+        labelNames: ['destination_id'],
+      },
+      {
         name: 'mixpanel_batch_engage_pack_size',
         help: 'mixpanel_batch_engage_pack_size',
         type: 'gauge',

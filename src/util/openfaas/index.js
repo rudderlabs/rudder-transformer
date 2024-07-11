@@ -370,11 +370,29 @@ const executeFaasFunction = async (
   const startTime = new Date();
   let errorRaised;
 
+  const MAX_RETRIES = 5;
+  const RETRY_DELAY = 1000;
+
+  const retry = async (fn, retries, delay) => {
+    try {
+      return await fn();
+    } catch (error) {
+      if (retries <= 0) {
+        throw error;
+      }
+      logger.warn(`Retrying ${name} due to error: ${error.message}. Retries left: ${retries}`);
+      await new Promise((resolve) => setTimeout(resolve, delay));
+      return retry(fn, retries - 1, delay * 2); // Exponential backoff
+    }
+  };
+
+  const invokeWithRetry = () => retry(() => invokeFunction(name, events), MAX_RETRIES, RETRY_DELAY);
+
   try {
     if (testMode) {
       await awaitFunctionReadiness(name);
     }
-    return await invokeFunction(name, events);
+    return await invokeWithRetry();
   } catch (error) {
     logger.error(`Error while invoking ${name}: ${error.message}`);
     errorRaised = error;

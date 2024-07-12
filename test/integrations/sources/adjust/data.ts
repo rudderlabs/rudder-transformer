@@ -68,7 +68,6 @@ export const data = [
                     custom: 'custom',
                     tracker_name: 'dummy',
                   },
-                  anonymousId: '97fcd7b2-cc24-47d7-b776-057b7b199513',
                 },
               ],
             },

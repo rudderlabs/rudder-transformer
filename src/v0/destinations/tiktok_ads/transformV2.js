@@ -19,7 +19,13 @@ const {
 const { getContents, hashUserField } = require('./util');
 const config = require('./config');
 
-const { trackMappingV2, trackEndpointV2, eventNameMapping, PARTNER_NAME } = config;
+const {
+  trackMappingV2,
+  trackEndpointV2,
+  eventNameMapping,
+  PARTNER_NAME,
+  eventsWithRecommendedParams,
+} = config;
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 /**
@@ -94,7 +100,14 @@ const trackResponseBuilder = async (message, { Config }) => {
     Object.keys(standardEventsMap).forEach((key) => {
       if (key === event) {
         standardEventsMap[event].forEach((eventName) => {
-          responseList.push(getTrackResponsePayload(message, Config, eventName));
+          responseList.push(
+            getTrackResponsePayload(
+              message,
+              Config,
+              eventName,
+              eventsWithRecommendedParams.includes(eventName),
+            ),
+          );
         });
       }
     });
@@ -105,11 +118,15 @@ const trackResponseBuilder = async (message, { Config }) => {
     Doc https://ads.tiktok.com/help/article/standard-events-parameters?lang=en
     */
     event = message.event;
-    responseList.push(getTrackResponsePayload(message, Config, event, false));
+    responseList.push(
+      getTrackResponsePayload(message, Config, event, eventsWithRecommendedParams.includes(event)),
+    );
   } else {
     // incoming event name is already a standard event name
     event = eventNameMapping[event];
-    responseList.push(getTrackResponsePayload(message, Config, event));
+    responseList.push(
+      getTrackResponsePayload(message, Config, event, eventsWithRecommendedParams.includes(event)),
+    );
   }
   // set event source and event_source_id
   response.body.JSON = {

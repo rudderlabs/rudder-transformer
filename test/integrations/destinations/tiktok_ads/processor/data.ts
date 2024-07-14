@@ -5385,7 +5385,6 @@ export const data = [
                       event_id: '1616318632825_357',
                       event_time: 1600372167,
                       properties: {
-                        content_type: 'product',
                         contents: [
                           {
                             price: 8,
@@ -5550,7 +5549,6 @@ export const data = [
                       event_id: '1616318632825_357',
                       event_time: 1600372167,
                       properties: {
-                        content_type: 'product',
                         contents: [
                           {
                             price: 8,
@@ -5586,7 +5584,6 @@ export const data = [
                       event_id: '1616318632825_357',
                       event_time: 1600372167,
                       properties: {
-                        content_type: 'product',
                         contents: [
                           {
                             price: 8,
@@ -5745,7 +5742,6 @@ export const data = [
                       event_id: '1616318632825_357',
                       event_time: 1600372167,
                       properties: {
-                        content_type: 'product',
                         contents: [
                           {
                             price: 8,
@@ -5784,7 +5780,6 @@ export const data = [
                       event_id: '1616318632825_357',
                       event_time: 1600372167,
                       properties: {
-                        content_type: 'product',
                         contents: [
                           {
                             price: 8,
@@ -6627,7 +6622,6 @@ export const data = [
                       event_id: '1616318632825_357',
                       event_time: 1600372167,
                       properties: {
-                        content_type: 'product',
                         contents: [
                           {
                             price: 8,
@@ -7048,7 +7042,6 @@ export const data = [
                       event: 'Search',
                       event_id: '84e26acc-56a5-4835-8233-591137fca468',
                       event_time: 1600372167,
-                      properties: { content_type: 'product' },
                       user: {
                         locale: 'en-US',
                         email: 'dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f',

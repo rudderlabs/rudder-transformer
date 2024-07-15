@@ -187,7 +187,7 @@ const processRouterDestV2 = async (inputs, reqMetadata) => {
           // if not transformed
           getEventChunks(
             {
-              message: await process(event, reqMetadata),
+              message: await processV2(event, reqMetadata),
               metadata: event.metadata,
               destination,
             },

@@ -532,7 +532,7 @@ const deliveryCallsData = [
         Authorization: 'Bearer invalidApiKey',
         Accept: 'application/json',
         'Intercom-Version': '1.4',
-        'User-Agent': 'RudderLabs',
+        'User-Agent': 'RudderStack',
       },
       method: 'POST',
     },

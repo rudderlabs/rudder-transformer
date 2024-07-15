@@ -29,7 +29,7 @@ const { JSON_MIME_TYPE } = require('../../util/constant');
  * @param {*} destination
  * @returns
  */
-const identifyRequestHandler = async (message, category, destination) => {
+const identifyRequestHandler = (message, category, destination) => {
   // If listId property is present try to subscribe/member user in list
   const { privateApiKey, listId } = destination.Config;
   const payload = removeUndefinedAndNullValues(constructProfile(message, destination, true));
@@ -37,8 +37,8 @@ const identifyRequestHandler = async (message, category, destination) => {
   const requestOptions = {
     headers: {
       Authorization: `Klaviyo-API-Key ${privateApiKey}`,
-      accept: JSON_MIME_TYPE,
-      'content-type': JSON_MIME_TYPE,
+      Accept: JSON_MIME_TYPE,
+      'Content-Type': JSON_MIME_TYPE,
       revision,
     },
   };
@@ -96,8 +96,8 @@ const trackOrScreenRequestHandler = (message, category, destination) => {
   response.method = defaultPostRequestConfig.requestMethod;
   response.headers = {
     Authorization: `Klaviyo-API-Key ${privateApiKey}`,
-    'Content-Type': JSON_MIME_TYPE,
     Accept: JSON_MIME_TYPE,
+    'Content-Type': JSON_MIME_TYPE,
     revision,
   };
   response.body.JSON = removeUndefinedAndNullValues(payload);
@@ -124,8 +124,8 @@ const groupRequestHandler = (message, category, destination) => {
   return [subscribeUserToListV2(message, traitsInfo, destination)];
 };
 
-const processV2 = async (event, reqMetadata) => {
-  const { message, destination, metadata } = event;
+const processV2 = async (event) => {
+  const { message, destination } = event;
   if (!message.type) {
     throw new InstrumentationError('Event type is required');
   }
@@ -139,10 +139,7 @@ const processV2 = async (event, reqMetadata) => {
   switch (messageType) {
     case EventType.IDENTIFY:
       category = CONFIG_CATEGORIES.IDENTIFYV2;
-      response = await identifyRequestHandler(
-        { message, category, destination, metadata },
-        reqMetadata,
-      );
+      response = identifyRequestHandler(message, category, destination);
       break;
     case EventType.SCREEN:
     case EventType.TRACK:

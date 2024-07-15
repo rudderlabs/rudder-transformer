@@ -1,3 +1,4 @@
+const set = require('set-value');
 const { defaultRequestConfig } = require('rudder-transformer-cdk/build/utils');
 const lodash = require('lodash');
 const { NetworkError, InstrumentationError } = require('@rudderstack/integrations-lib');
@@ -332,7 +333,7 @@ const batchSubscribeEvents = (subscribeRespList, version = 'v1') => {
     integrations: {
       Klaviyo: { fieldsToUnset: ['Unset1', 'Unset2'],
       fieldsToAppend: ['appendList1', 'appendList2'],
-      fieldsToAppend: ['unappendList1', 'unappendList2']
+      fieldsToUnappend: ['unappendList1', 'unappendList2']
       },
       All: true,
     },
@@ -447,7 +448,7 @@ const constructProfile = (message, destination, isIdentifyCall) => {
   });
   if (isIdentifyCall) {
     // For identify call meta object comes inside
-    data.metadata = meta;
+    data.meta = meta;
     delete data.attributes.meta;
   }
 
@@ -463,25 +464,24 @@ const subscribeUserToListV2 = (message, traitsInfo, destination) => {
   const { privateApiKey, consent } = destination.Config;
   let { listId } = destination.Config;
   let subscribeConsent = traitsInfo?.properties?.consent || consent;
-  const subscriptions = {};
   const email = getFieldValueFromMessage(message, 'email');
   const phone = getFieldValueFromMessage(message, 'phone');
+  const profileAttributes = {
+    email,
+    phone_number: phone,
+  };
   if (subscribeConsent) {
     if (!Array.isArray(subscribeConsent)) {
       subscribeConsent = [subscribeConsent];
     }
     if (subscribeConsent.includes('email') && email) {
-      subscriptions.email.marketing.consent = 'SUBSCRIBED';
+      set(profileAttributes, 'subscriptions.email.marketing.consent', 'SUBSCRIBED');
     }
     if (subscribeConsent.includes('sms') && phone) {
-      subscriptions.sms.marketing.consent = 'SUBSCRIBED';
+      set(profileAttributes, 'subscriptions.sms.marketing.consent', 'SUBSCRIBED');
     }
   }
-  const profileAttributes = {
-    email,
-    phone_number: phone,
-    subscriptions,
-  };
+
   const profile = removeUndefinedAndNullValues({
     type: 'profile',
     id: getDestinationExternalID(message, 'klaviyo-profileId'),
@@ -520,8 +520,8 @@ const subscribeUserToListV2 = (message, traitsInfo, destination) => {
   response.endpoint = `${BASE_ENDPOINT}/api/profile-subscription-bulk-create-jobs`;
   response.headers = {
     Authorization: `Klaviyo-API-Key ${privateApiKey}`,
-    'Content-Type': JSON_MIME_TYPE,
     Accept: JSON_MIME_TYPE,
+    'Content-Type': JSON_MIME_TYPE,
     revision,
   };
   response.body.JSON = removeUndefinedAndNullValues(payload);

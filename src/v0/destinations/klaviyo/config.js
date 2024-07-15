@@ -57,7 +57,7 @@ const LIST_CONF = {
   SUBSCRIBE: 'subscribe_with_consentInfo',
   ADD_TO_LIST: 'subscribe_without_consentInfo',
 };
-
+const useUpdatedKlaviyoAPI = process.env.USE_UPDATED_KLAVIYO_API === 'true' || false;
 const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
 
 const WhiteListedTraitsV2 = [
@@ -101,4 +101,5 @@ module.exports = {
   destType,
   revision,
   WhiteListedTraitsV2,
+  useUpdatedKlaviyoAPI,
 };

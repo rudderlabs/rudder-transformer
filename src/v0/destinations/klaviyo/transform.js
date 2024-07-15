@@ -331,9 +331,9 @@ const getEventChunks = (event, subscribeRespList, nonSubscribeRespList) => {
 };
 
 const processRouterDest = async (inputs, reqMetadata) => {
-  const { destination } = inputs[0];
+  const { destination, event } = inputs[0];
   // This is used to switch to latest API version
-  if (destination.Config?.version === 'v2' || message.context.version === 'v2') {
+  if (destination.Config?.version === 'v2' || event.message.context.version === 'v2') {
     return processRouterDestV2(inputs, reqMetadata);
   }
   let batchResponseList = [];

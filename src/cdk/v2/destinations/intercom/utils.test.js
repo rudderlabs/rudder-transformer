@@ -746,6 +746,7 @@ describe('attachUserAndCompany utility test', () => {
         Authorization: 'Bearer testApiKey',
         Accept: 'application/json',
         'Intercom-Version': '1.4',
+        'User-Agent': 'RudderStack',
       },
       body: {
         FORM: {},

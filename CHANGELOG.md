@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.71.3](https://github.com/rudderlabs/rudder-transformer/compare/v1.71.2...v1.71.3) (2024-07-15)
+
+
+### Bug Fixes
+
+* fix unit test intercom ([9ba33e8](https://github.com/rudderlabs/rudder-transformer/commit/9ba33e83cdb4804559b3851c253683ae4930266d))
+
 ### [1.71.2](https://github.com/rudderlabs/rudder-transformer/compare/v1.71.1...v1.71.2) (2024-07-15)
 
 

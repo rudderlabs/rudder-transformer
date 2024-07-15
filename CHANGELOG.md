@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.71.2](https://github.com/rudderlabs/rudder-transformer/compare/v1.71.1...v1.71.2) (2024-07-15)
+
+
+### Bug Fixes
+
+* add user-agent header in api calls ([53710f9](https://github.com/rudderlabs/rudder-transformer/commit/53710f91a94a631861512093a46acf97534eb607))
+
 ### [1.71.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.71.0...v1.71.1) (2024-07-10)
 
 

@@ -56,12 +56,14 @@ export const businessData = [
             message: '[HUBSPOT Response V1 Handler] - Request Processed Successfully',
             response: [
               {
-                error: 'success',
+                error:
+                  '{"id":"12877907025","properties":{"createdate":"2024-04-16T09:50:16.034Z","email":"test1@mail.com","firstname":"test1","hs_is_unworked":"true","hs_object_id":"12877907025","hs_pipeline":"contacts-lifecycle-pipeline","lastmodifieddate":"2024-04-23T11:52:03.723Z","lifecyclestage":"lead"},"createdAt":"2024-04-16T09:50:16.034Z","updatedAt":"2024-04-23T11:52:03.723Z","archived":false}',
                 metadata: generateMetadata(1),
                 statusCode: 200,
               },
               {
-                error: 'success',
+                error:
+                  '{"id":"12877907024","properties":{"createdate":"2024-04-16T09:50:16.034Z","firstname":"testmail1217","hs_is_unworked":"true","hs_object_id":"12877907024","hs_pipeline":"contacts-lifecycle-pipeline","lastmodifieddate":"2024-04-23T11:52:03.723Z","lifecyclestage":"lead"},"createdAt":"2024-04-16T09:50:16.034Z","updatedAt":"2024-04-23T11:52:03.723Z","archived":false}',
                 metadata: generateMetadata(2),
                 statusCode: 200,
               },

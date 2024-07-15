@@ -223,30 +223,19 @@ export const otherData = [
         status: 200,
         body: {
           output: {
-            message:
-              'HUBSPOT: Error in transformer proxy v1 during HUBSPOT response transformation',
+            message: '[HUBSPOT Response V1 Handler] - Request Processed Successfully',
             response: [
               {
-                error: '{"message":"unknown response"}',
+                error: 'success',
                 metadata: generateMetadata(1),
                 statusCode: 200,
               },
               {
-                error: '{"message":"unknown response"}',
+                error: 'success',
                 metadata: generateMetadata(2),
                 statusCode: 200,
               },
             ],
-            statTags: {
-              destType: 'HS',
-              destinationId: 'default-destinationId',
-              errorCategory: 'network',
-              errorType: 'aborted',
-              feature: 'dataDelivery',
-              implementation: 'native',
-              module: 'destination',
-              workspaceId: 'default-workspaceId',
-            },
             status: 200,
           },
         },

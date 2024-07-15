@@ -14,7 +14,7 @@ const DATA_CENTRE_BASE_ENDPOINTS_MAP = {
 
 const getBaseEndpoint = (dataServer) => DATA_CENTRE_BASE_ENDPOINTS_MAP[dataServer];
 const UPSERT_RECORD_ENDPOINT = (dataCenter = 'US') =>
-  `${getBaseEndpoint(dataCenter)}crm/v6/moduleType/upsert`;
+  `${getBaseEndpoint(dataCenter)}/crm/v6/moduleType/upsert`;
 
 // const UPSERT_RECORD_ENDPOINT = 'https://www.zohoapis.in/crm/v6/moduleType/upsert';
 // const RECORD_FIELD_INFO_ENDPOINT =

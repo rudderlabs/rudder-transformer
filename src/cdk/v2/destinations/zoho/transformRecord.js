@@ -1,11 +1,5 @@
-const {
-  InstrumentationError,
-  MappedToDestinationKey,
-  getHashFromArray,
-  isDefinedAndNotNull,
-} = require('@rudderstack/integrations-lib');
+const { InstrumentationError, getHashFromArray } = require('@rudderstack/integrations-lib');
 const { BatchUtils } = require('@rudderstack/workflow-engine');
-const get = require('get-value');
 const {
   defaultPostRequestConfig,
   defaultRequestConfig,
@@ -13,32 +7,14 @@ const {
   removeUndefinedAndNullValues,
   handleRtTfSingleEventError,
   isEmptyObject,
-  getDestinationExternalIDInfoForRetl,
 } = require('../../../../v0/util');
 const zohoConfig = require('./config');
-
-// Utility to handle duplicate check
-const handleDuplicateCheck = (
-  addDefaultDuplicateCheck,
-  identifierType,
-  operationModuleType,
-  moduleWiseDuplicateCheckField,
-) => {
-  let duplicateCheckFields = [identifierType];
-
-  if (addDefaultDuplicateCheck) {
-    const moduleDuplicateCheckField = moduleWiseDuplicateCheckField[operationModuleType];
-
-    if (isDefinedAndNotNull(moduleDuplicateCheckField)) {
-      duplicateCheckFields = [...moduleDuplicateCheckField];
-      duplicateCheckFields.unshift(identifierType);
-    } else {
-      duplicateCheckFields.push('Name'); // user chosen duplicate field always carries higher priority
-    }
-  }
-
-  return duplicateCheckFields;
-};
+const {
+  deduceModuleInfo,
+  validatePresenceOfMandatoryProperties,
+  formatMultiSelectFields,
+  handleDuplicateCheck,
+} = require('./utils');
 
 // Main response builder function
 const responseBuilder = (items, config, identifierType, operationModuleType, upsertEndPoint) => {
@@ -49,7 +25,6 @@ const responseBuilder = (items, config, identifierType, operationModuleType, ups
       addDefaultDuplicateCheck,
       identifierType,
       operationModuleType,
-      zohoConfig.MODULE_WISE_DUPLICATE_CHECK_FIELD,
     ),
     data: items,
     $append_values: getHashFromArray(multiSelectFieldLevelDecision, 'from', 'to', false),
@@ -84,57 +59,6 @@ const batchResponseBuilder = (
 
   return response;
 };
-
-const deduceModuleInfo = (inputs) => {
-  const singleRecordInput = inputs[0];
-  const operationModuleInfo = {};
-  const mappedToDestination = get(singleRecordInput, MappedToDestinationKey);
-  if (mappedToDestination) {
-    const { objectType, identifierType } = getDestinationExternalIDInfoForRetl(
-      singleRecordInput,
-      'ZOHO',
-    );
-    operationModuleInfo.operationModuleType = objectType;
-    // TODO: handle other data centers
-    operationModuleInfo.upsertEndPoint = zohoConfig
-      .UPSERT_RECORD_ENDPOINT('IN')
-      .replace('moduleType', objectType);
-    operationModuleInfo.identifierType = identifierType;
-  }
-  return operationModuleInfo;
-};
-
-function validatePresenceOfMandatoryProperties(objectName, object) {
-  if (zohoConfig.MODULE_MANDATORY_FIELD_CONFIG.hasOwnProperty(objectName)) {
-    const requiredFields = zohoConfig.MODULE_MANDATORY_FIELD_CONFIG[objectName];
-    const missingFields = requiredFields.filter((field) => !object.hasOwnProperty(field));
-    if (missingFields.length > 0) {
-      throw new Error(
-        `Validation Error: ${objectName} object must have the "${missingFields.join('", "')}" property(ies).`,
-      );
-    }
-  }
-  // No mandatory check performed for custom objects
-}
-
-const formatMultiSelectFields = (config, fields) => {
-  // Convert multiSelectFieldLevelDecision array into a hash map for quick lookups
-  const multiSelectFields = getHashFromArray(
-    config.multiSelectFieldLevelDecision,
-    'from',
-    'to',
-    false,
-  );
-
-  Object.keys(fields).forEach((eachFieldKey) => {
-    if (multiSelectFields.hasOwnProperty(eachFieldKey)) {
-      // eslint-disable-next-line no-param-reassign
-      fields[eachFieldKey] = [fields[eachFieldKey]];
-    }
-  });
-  return fields;
-};
-
 const processRecordInputs = (inputs, destination) => {
   const { Config } = destination;
   const data = [];
@@ -150,7 +74,7 @@ const processRecordInputs = (inputs, destination) => {
   );
   const emptyFieldsError = new InstrumentationError('`fields` cannot be empty');
 
-  const { operationModuleType, identifierType, upsertEndPoint } = deduceModuleInfo(inputs);
+  const { operationModuleType, identifierType, upsertEndPoint } = deduceModuleInfo(inputs, Config);
 
   inputs.forEach((input) => {
     const { fields, action } = input.message;

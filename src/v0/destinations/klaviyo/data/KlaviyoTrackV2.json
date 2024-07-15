@@ -1,0 +1,31 @@
+[
+  {
+    "destKey": "value",
+    "sourceKeys": ["properties.revenue", "properties.total", "properties.value"]
+  },
+  {
+    "destKey": "value_currency",
+    "sourceKeys": "properties.currency"
+  },
+  {
+    "destKey": "time",
+    "sourceKeys": "timestamp",
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "properties",
+    "sourceKeys": "properties",
+    "metadata": {
+      "excludes": [
+        "event",
+        "email",
+        "phone",
+        "revenue",
+        "total",
+        "value",
+        "value_currency",
+        "currency"
+      ]
+    }
+  }
+]

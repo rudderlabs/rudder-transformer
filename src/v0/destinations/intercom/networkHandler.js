@@ -1,5 +1,5 @@
 const { RetryableError } = require('@rudderstack/integrations-lib');
-const { proxyRequest, prepareProxyRequest } = require('../../../adapters/network');
+const { proxyRequest, prepareProxyRequest, httpSend } = require('../../../adapters/network');
 const { processAxiosResponse } = require('../../../adapters/utils/networkUtils');
 
 const errorResponseHandler = (destinationResponse, dest) => {
@@ -29,12 +29,38 @@ const prepareIntercomProxyRequest = (request) => {
   return preparedRequest;
 };
 
+/**
+ * depricating: handles proxying requests to destinations from server, expects requsts in "defaultRequestConfig"
+ * note: needed for test api
+ * @param {*} request
+ * @returns
+ */
+const intercomProxyRequest = async (request) => {
+  const { endpoint, data, method, params, headers } = prepareIntercomProxyRequest(request);
+
+  const requestOptions = {
+    url: endpoint,
+    data,
+    params,
+    headers,
+    method,
+  };
+  const response = await httpSend(requestOptions, {
+    destType: 'intercom',
+    feature: 'proxy',
+    endpointPath: '/proxy',
+    requestMethod: 'POST',
+    module: 'router',
+  });
+  return response;
+};
+
 // eslint-disable-next-line @typescript-eslint/naming-convention
 class networkHandler {
   constructor() {
     this.responseHandler = destResponseHandler;
     this.proxy = proxyRequest;
-    this.prepareProxy = prepareIntercomProxyRequest;
+    this.prepareProxy = intercomProxyRequest;
     this.processAxiosResponse = processAxiosResponse;
   }
 }

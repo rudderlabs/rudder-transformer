@@ -78,6 +78,7 @@ const getHeaders = (destination, apiVersion) => ({
   Authorization: `Bearer ${destination.Config.apiKey}`,
   Accept: JSON_MIME_TYPE,
   'Intercom-Version': apiVersion === 'v1' ? '1.4' : '2.10',
+  'User-Agent': process.env.INTERCOM_USER_AGENT_HEADER ?? 'RudderStack',
 });
 
 /**

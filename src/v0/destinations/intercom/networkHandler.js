@@ -23,12 +23,18 @@ const destResponseHandler = (responseParams) => {
   };
 };
 
+const prepareIntercomProxyRequest = (request) => {
+  const preparedRequest = prepareProxyRequest(request);
+  preparedRequest.headers['User-Agent'] = process.env.INTERCOM_USER_AGENT_HEADER ?? 'RudderStack';
+  return preparedRequest;
+};
+
 // eslint-disable-next-line @typescript-eslint/naming-convention
 class networkHandler {
   constructor() {
     this.responseHandler = destResponseHandler;
     this.proxy = proxyRequest;
-    this.prepareProxy = prepareProxyRequest;
+    this.prepareProxy = prepareIntercomProxyRequest;
     this.processAxiosResponse = processAxiosResponse;
   }
 }

@@ -9,7 +9,7 @@ const v0VersionHeaders = {
   Authorization: 'Bearer testApiKey',
   Accept: 'application/json',
   'Intercom-Version': '1.4',
-  'User-Agent': 'RudderLabs',
+  'User-Agent': 'RudderStack',
 };
 
 const v1VersionHeaders = {
@@ -17,7 +17,7 @@ const v1VersionHeaders = {
   Authorization: 'Bearer testApiKey',
   Accept: 'application/json',
   'Intercom-Version': '2.10',
-  'User-Agent': 'RudderLabs',
+  'User-Agent': 'RudderStack',
 };
 
 const userPayload = {

@@ -1,4 +1,8 @@
-const { InstrumentationError, getHashFromArray } = require('@rudderstack/integrations-lib');
+const {
+  InstrumentationError,
+  getHashFromArray,
+  ConfigurationError,
+} = require('@rudderstack/integrations-lib');
 const { BatchUtils } = require('@rudderstack/workflow-engine');
 const {
   defaultPostRequestConfig,
@@ -28,7 +32,7 @@ const responseBuilder = (items, config, identifierType, operationModuleType, ups
     ),
     data: items,
     $append_values: getHashFromArray(multiSelectFieldLevelDecision, 'from', 'to', false),
-    trigger: [trigger],
+    trigger: trigger === 'None' ? null : [trigger],
   };
 
   const response = defaultRequestConfig();
@@ -90,7 +94,14 @@ const processRecordInputs = (inputs, destination) => {
       errorResponseList.push(handleRtTfSingleEventError(input, emptyFieldsError, {}));
       return;
     }
-    validatePresenceOfMandatoryProperties(operationModuleType, fields);
+    const eventErroneous = validatePresenceOfMandatoryProperties(operationModuleType, fields);
+
+    if (eventErroneous && eventErroneous.status) {
+      const error = new ConfigurationError(
+        `${eventErroneous.missingField} object must have the ${eventErroneous.missingField.join('", "')} property(ies).`,
+      );
+      errorResponseList.push(handleRtTfSingleEventError(input, error, {}));
+    }
 
     const formattedFields = formatMultiSelectFields(Config, fields);
 

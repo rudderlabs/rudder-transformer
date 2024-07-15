@@ -2,14 +2,13 @@ const {
   MappedToDestinationKey,
   getHashFromArray,
   isDefinedAndNotNull,
-  ConfigurationError,
 } = require('@rudderstack/integrations-lib');
 const get = require('get-value');
 const { getDestinationExternalIDInfoForRetl } = require('../../../../v0/util');
 const zohoConfig = require('./config');
 
 const deduceModuleInfo = (inputs, Config) => {
-  const singleRecordInput = inputs[0];
+  const singleRecordInput = inputs[0].message;
   const operationModuleInfo = {};
   const mappedToDestination = get(singleRecordInput, MappedToDestinationKey);
   if (mappedToDestination) {
@@ -26,15 +25,12 @@ const deduceModuleInfo = (inputs, Config) => {
   return operationModuleInfo;
 };
 
+// eslint-disable-next-line consistent-return
 function validatePresenceOfMandatoryProperties(objectName, object) {
   if (zohoConfig.MODULE_MANDATORY_FIELD_CONFIG.hasOwnProperty(objectName)) {
     const requiredFields = zohoConfig.MODULE_MANDATORY_FIELD_CONFIG[objectName];
-    const missingFields = requiredFields.filter((field) => !object.hasOwnProperty(field));
-    if (missingFields.length > 0) {
-      throw new ConfigurationError(
-        `${objectName} object must have the "${missingFields.join('", "')}" property(ies).`,
-      );
-    }
+    const missingFields = requiredFields.filter((field) => !object.hasOwnProperty(field)) || [];
+    return { status: missingFields.length > 0, missingField: missingFields };
   }
   // No mandatory check performed for custom objects
 }

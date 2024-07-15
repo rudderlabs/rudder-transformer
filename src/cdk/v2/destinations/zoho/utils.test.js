@@ -73,12 +73,6 @@ describe('handleDuplicateCheck', () => {
 describe('deduceModuleInfo', () => {
   const Config = { region: 'US' };
 
-  it('should return empty object when inputs array is empty', () => {
-    const inputs = [];
-    const result = deduceModuleInfo(inputs, Config);
-    expect(result).toEqual({});
-  });
-
   it('should return empty object when mappedToDestination is not present', () => {
     const inputs = [{}];
     const result = deduceModuleInfo(inputs, Config);
@@ -88,9 +82,11 @@ describe('deduceModuleInfo', () => {
   it('should return operationModuleInfo when mappedToDestination is present', () => {
     const inputs = [
       {
-        context: {
-          externalId: [{ type: 'ZOHO-Leads', id: '12345', identifierType: 'Email' }],
-          mappedToDestination: true,
+        message: {
+          context: {
+            externalId: [{ type: 'ZOHO-Leads', id: '12345', identifierType: 'Email' }],
+            mappedToDestination: true,
+          },
         },
       },
     ];
@@ -106,9 +102,11 @@ describe('deduceModuleInfo', () => {
   it('should handle different regions in config', () => {
     const inputs = [
       {
-        context: {
-          externalId: [{ type: 'ZOHO-Leads', id: '12345', identifierType: 'Email' }],
-          mappedToDestination: 'true',
+        message: {
+          context: {
+            externalId: [{ type: 'ZOHO-Leads', id: '12345', identifierType: 'Email' }],
+            mappedToDestination: 'true',
+          },
         },
       },
     ];

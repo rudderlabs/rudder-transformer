@@ -59,8 +59,8 @@ const intercomProxyRequest = async (request) => {
 class networkHandler {
   constructor() {
     this.responseHandler = destResponseHandler;
-    this.proxy = proxyRequest;
-    this.prepareProxy = intercomProxyRequest;
+    this.proxy = intercomProxyRequest;
+    this.prepareProxy = prepareIntercomProxyRequest;
     this.processAxiosResponse = processAxiosResponse;
   }
 }

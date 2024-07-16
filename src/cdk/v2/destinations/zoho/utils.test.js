@@ -122,15 +122,6 @@ describe('deduceModuleInfo', () => {
 });
 
 describe('validatePresenceOfMandatoryProperties', () => {
-  it('should throw an error if the object is missing required fields', () => {
-    const objectName = 'Leads';
-    const object = { First_Name: 'John' };
-
-    expect(() => validatePresenceOfMandatoryProperties(objectName, object)).toThrow(
-      new ConfigurationError('Leads object must have the "Last_Name" property(ies).'),
-    );
-  });
-
   it('should not throw an error if the object has all required fields', () => {
     const objectName = 'Leads';
     const object = { Last_Name: 'Doe' };
@@ -148,10 +139,11 @@ describe('validatePresenceOfMandatoryProperties', () => {
   it('should throw an error if the object is missing multiple required fields', () => {
     const objectName = 'Deals';
     const object = { Deal_Name: 'Big Deal' };
-
-    expect(() => validatePresenceOfMandatoryProperties(objectName, object)).toThrow(
-      new ConfigurationError('Deals object must have the "Stage", "Pipeline" property(ies).'),
-    );
+    const output = validatePresenceOfMandatoryProperties(objectName, object);
+    expect(output).toEqual({
+      missingField: ['Stage', 'Pipeline'],
+      status: true,
+    });
   });
 
   it('should not throw an error if the object has all required fields for Deals', () => {

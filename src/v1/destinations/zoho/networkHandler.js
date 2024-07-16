@@ -4,7 +4,7 @@ const {
   processAxiosResponse,
   getDynamicErrorType,
 } = require('../../../adapters/utils/networkUtils');
-const { isHttpStatusSuccess } = require('../../../v0/util/index');
+const { isHttpStatusSuccess, getAuthErrCategoryFromStCode } = require('../../../v0/util/index');
 const tags = require('../../../v0/util/tags');
 
 // {
@@ -56,7 +56,6 @@ const responseHandler = (responseParams) => {
   const message = '[ZOHO Response V1 Handler] - Request Processed Successfully';
   const responseWithIndividualEvents = [];
   const { response, status } = destinationResponse;
-
   if (isHttpStatusSuccess(status)) {
     // check for Partial Event failures and Successes
     const { data } = response;
@@ -80,6 +79,19 @@ const responseHandler = (responseParams) => {
       destinationResponse,
       response: responseWithIndividualEvents,
     };
+  }
+
+  if (response?.code === 'INVALID_TOKEN') {
+    throw new TransformerProxyError(
+      `Zoho: Error transformer proxy v1 during Zoho response transformation. ${response.message}`,
+      500,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(500),
+      },
+      destinationResponse,
+      getAuthErrCategoryFromStCode(status),
+      response.message,
+    );
   }
   throw new TransformerProxyError(
     `ZOHO: Error encountered in transformer proxy V1`,

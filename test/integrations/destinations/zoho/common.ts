@@ -5,7 +5,7 @@ const destTypeInUpperCase = 'ZOHO';
 const advertiserId = 'test-advertiser-id';
 const dataProviderId = 'rudderstack';
 const segmentName = 'test-segment';
-const firstPartyDataEndpoint = 'https://sin-data.adsrvr.org/data/advertiser';
+const leadUpsertEndpoint = 'https://www.zohoapis.in/crm/v6/Leads/upsert';
 
 const sampleDestination: Destination = {
   Config: {
@@ -53,7 +53,7 @@ const sampleContext = {
   externalId: [
     {
       identifierType: 'email',
-      type: 'ZOHO--LEADS',
+      type: 'ZOHO-LEADS',
     },
   ],
   mappedToDestination: 'true',
@@ -80,5 +80,5 @@ export {
   sampleDestination,
   sampleContext,
   proxyV1AbortableErrorStatTags,
-  firstPartyDataEndpoint,
+  leadUpsertEndpoint,
 };

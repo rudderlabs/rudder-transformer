@@ -78,6 +78,7 @@ const getHeaders = (destination, apiVersion) => ({
   Authorization: `Bearer ${destination.Config.apiKey}`,
   Accept: JSON_MIME_TYPE,
   'Intercom-Version': apiVersion === 'v1' ? '1.4' : '2.10',
+  'User-Agent': process.env.INTERCOM_USER_AGENT_HEADER ?? 'RudderStack',
 });
 
 /**
@@ -218,6 +219,7 @@ const attachUserAndCompany = (message, Config) => {
     Authorization: `Bearer ${Config.apiKey}`,
     Accept: JSON_MIME_TYPE,
     'Intercom-Version': '1.4',
+    'User-Agent': process.env.INTERCOM_USER_AGENT_HEADER ?? 'RudderStack',
   };
   response.body.JSON = requestBody;
   response.userId = anonymousId;

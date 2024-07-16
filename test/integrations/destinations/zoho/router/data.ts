@@ -153,7 +153,7 @@ export const data = [
                 version: '1',
                 type: 'REST',
                 method: 'POST',
-                endpoint: 'https://accounts.zoho.com/crm/v6/LEADS/upsert',
+                endpoint: 'https://www.zohoapis.com/crm/v6/LEADS/upsert',
                 headers: {},
                 params: {},
                 body: {
@@ -384,7 +384,7 @@ export const data = [
                 version: '1',
                 type: 'REST',
                 method: 'POST',
-                endpoint: 'https://accounts.zoho.com/crm/v6/LEADS/upsert',
+                endpoint: 'https://www.zohoapis.com/crm/v6/LEADS/upsert',
                 headers: {},
                 params: {},
                 body: {
@@ -616,7 +616,7 @@ export const data = [
                 version: '1',
                 type: 'REST',
                 method: 'POST',
-                endpoint: 'https://accounts.zoho.com/crm/v6/CUSTOM/upsert',
+                endpoint: 'https://www.zohoapis.com/crm/v6/CUSTOM/upsert',
                 headers: {},
                 params: {},
                 body: {
@@ -845,7 +845,7 @@ export const data = [
                 version: '1',
                 type: 'REST',
                 method: 'POST',
-                endpoint: 'https://accounts.zoho.com/crm/v6/Leads/upsert',
+                endpoint: 'https://www.zohoapis.com/crm/v6/Leads/upsert',
                 headers: {},
                 params: {},
                 body: {
@@ -1043,7 +1043,7 @@ export const data = [
                 version: '1',
                 type: 'REST',
                 method: 'POST',
-                endpoint: 'https://accounts.zoho.com/crm/v6/Leads/upsert',
+                endpoint: 'https://www.zohoapis.com/crm/v6/Leads/upsert',
                 headers: {},
                 params: {},
                 body: {
@@ -1282,7 +1282,7 @@ export const data = [
                 version: '1',
                 type: 'REST',
                 method: 'POST',
-                endpoint: 'https://accounts.zoho.com/crm/v6/Leads/upsert',
+                endpoint: 'https://www.zohoapis.com/crm/v6/Leads/upsert',
                 headers: {},
                 params: {},
                 body: {
@@ -1347,7 +1347,7 @@ export const data = [
                 version: '1',
                 type: 'REST',
                 method: 'POST',
-                endpoint: 'https://accounts.zoho.com/crm/v6/Leads/upsert',
+                endpoint: 'https://www.zohoapis.com/crm/v6/Leads/upsert',
                 headers: {},
                 params: {},
                 body: {

@@ -3,22 +3,22 @@ const ACTION_TYPES = ['insert', 'delete'];
 
 // https://www.zoho.com/crm/developer/docs/api/v6/access-refresh.html
 const DATA_CENTRE_BASE_ENDPOINTS_MAP = {
-  US: 'https://accounts.zoho.com',
-  AU: 'https://accounts.zoho.com.au',
-  EU: 'https://accounts.zoho.eu',
-  IN: 'https://accounts.zoho.in',
-  CN: 'https://accounts.zoho.com.cn',
-  JP: 'https://accounts.zoho.jp',
-  CA: 'https://accounts.zohocloud.ca',
+  US: 'https://www.zohoapis.com',
+  AU: 'https://www.zohoapis.com.au',
+  EU: 'https://www.zohoapis.eu',
+  IN: 'https://www.zohoapis.in',
+  CN: 'https://www.zohoapis.com.cn',
+  JP: 'https://www.zohoapis.jp',
+  CA: 'https://www.zohoapiscloud.ca',
 };
 
 const getBaseEndpoint = (dataServer) => DATA_CENTRE_BASE_ENDPOINTS_MAP[dataServer];
 const UPSERT_RECORD_ENDPOINT = (dataCenter = 'US') =>
   `${getBaseEndpoint(dataCenter)}/crm/v6/moduleType/upsert`;
 
-// const UPSERT_RECORD_ENDPOINT = 'https://www.zohoapis.in/crm/v6/moduleType/upsert';
+// const UPSERT_RECORD_ENDPOINT = 'https://www.zohoapis/crm/v6/moduleType/upsert';
 // const RECORD_FIELD_INFO_ENDPOINT =
-//   'https://www.zohoapis.in/crm/v6/settings/fields?module=moduleType';
+//   'https://www.zohoapis/crm/v6/settings/fields?module=moduleType';
 
 // ref: https://www.zoho.com/crm/developer/docs/api/v6/insert-records.html#:~:text=%2DX%20POST-,System%2Ddefined%20mandatory%20fields%20for%20each%20module,-While%20inserting%20records
 const MODULE_MANDATORY_FIELD_CONFIG = {

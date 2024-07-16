@@ -209,6 +209,7 @@ const sourceTestHandler = async (tcData) => {
 // Trigger the test suites
 describe.each(allTestDataFilePaths)('%s Tests', (testDataPath) => {
   beforeEach(() => {
+    jest.resetAllMocks();
     jest.clearAllMocks();
   });
   // add special mocks for specific destinations

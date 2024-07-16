@@ -1,9 +1,4 @@
-import { generateUUID } from '@rudderstack/integrations-lib';
 import utils from '../../../../src/v0/util';
-
-const defaultMockFns = () => {
-  jest.spyOn(utils, 'generateUUID').mockReturnValue('97fcd7b2-cc24-47d7-b776-057b7b199513');
-};
 
 export const data = [
   {
@@ -157,6 +152,7 @@ export const data = [
             output: {
               batch: [
                 {
+                  anonymousId: '97fcd7b2-cc24-47d7-b776-057b7b199513',
                   context: {
                     library: { name: 'unknown', version: 'unknown' },
                     integration: { name: 'APPCENTER' },
@@ -242,6 +238,7 @@ export const data = [
             output: {
               batch: [
                 {
+                  anonymousId: '97fcd7b2-cc24-47d7-b776-057b7b199513',
                   context: {
                     library: { name: 'unknown', version: 'unknown' },
                     integration: { name: 'APPCENTER' },
@@ -331,6 +328,7 @@ export const data = [
             output: {
               batch: [
                 {
+                  anonymousId: '97fcd7b2-cc24-47d7-b776-057b7b199513',
                   context: {
                     library: { name: 'unknown', version: 'unknown' },
                     integration: { name: 'APPCENTER' },
@@ -369,10 +367,6 @@ export const data = [
 ].map((tc) => ({
   ...tc,
   mockFns: () => {
-    // "/Users/saisankeerth/rudderstack/rudder-transformer/src/v0/util/index"
-    jest.mock('../../../../src/v0/util/index', () => ({
-      ...jest.requireActual('../../../../src/v0/util/index'),
-      generateUUID: jest.fn().mockReturnValueOnce('97fcd7b2-cc24-47d7-b776-057b7b199513'),
-    }));
+    jest.spyOn(utils, 'generateUUID').mockReturnValueOnce('97fcd7b2-cc24-47d7-b776-057b7b199513');
   },
 }));

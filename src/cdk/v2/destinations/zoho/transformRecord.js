@@ -48,22 +48,29 @@ const batchResponseBuilder = (
   identifierType,
   operationModuleType,
   upsertEndPoint,
+  successMetadata,
 ) => {
-  const response = [];
+  const responseArray = [];
   const itemsChunks = BatchUtils.chunkArrayBySizeAndLength(items, {
     // eslint-disable-next-line unicorn/consistent-destructuring
     maxItems: zohoConfig.MAX_BATCH_SIZE,
   });
 
+  const metadataChunks = BatchUtils.chunkArrayBySizeAndLength(successMetadata, {
+    // eslint-disable-next-line unicorn/consistent-destructuring
+    maxItems: zohoConfig.MAX_BATCH_SIZE,
+  });
+
   itemsChunks.items.forEach((chunk) => {
-    response.push(
+    responseArray.push(
       responseBuilder(chunk, config, identifierType, operationModuleType, upsertEndPoint),
     );
   });
 
-  return response;
+  return { responseArray, metadataChunks };
 };
 const processRecordInputs = (inputs, destination) => {
+  const response = [];
   const { Config } = destination;
   const data = [];
   const successMetadata = [];
@@ -101,29 +108,35 @@ const processRecordInputs = (inputs, destination) => {
         `${eventErroneous.missingField} object must have the ${eventErroneous.missingField.join('", "')} property(ies).`,
       );
       errorResponseList.push(handleRtTfSingleEventError(input, error, {}));
+    } else {
+      const formattedFields = formatMultiSelectFields(Config, fields);
+
+      successMetadata.push(input.metadata);
+      data.push({
+        ...formattedFields,
+      });
     }
-
-    const formattedFields = formatMultiSelectFields(Config, fields);
-
-    successMetadata.push(input.metadata);
-    data.push({
-      ...formattedFields,
-    });
   });
 
-  const payloads = batchResponseBuilder(
+  const { responseArray, metadataChunks } = batchResponseBuilder(
     data,
     Config,
     identifierType,
     operationModuleType,
     upsertEndPoint,
+    successMetadata,
   );
-  if (payloads.length === 0) {
+  if (responseArray.length === 0) {
     return errorResponseList;
   }
 
-  const response = getSuccessRespEvents(payloads, successMetadata, destination, true);
-  return [response, ...errorResponseList];
+  responseArray.forEach((batchedResponse, index) => {
+    response.push(
+      getSuccessRespEvents(batchedResponse, metadataChunks.items[index], destination, true),
+    );
+  });
+
+  return [...response, ...errorResponseList];
 };
 
 module.exports = { processRecordInputs };

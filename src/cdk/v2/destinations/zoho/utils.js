@@ -6,6 +6,7 @@ const {
 const get = require('get-value');
 const { getDestinationExternalIDInfoForRetl } = require('../../../../v0/util');
 const zohoConfig = require('./config');
+const { handleHttpRequest } = require('../../../../adapters/network');
 
 const deduceModuleInfo = (inputs, Config) => {
   const singleRecordInput = inputs[0].message;
@@ -72,9 +73,43 @@ const handleDuplicateCheck = (addDefaultDuplicateCheck, identifierType, operatio
   return [...new Set(duplicateCheckFields)];
 };
 
+function escapeAndEncode(value) {
+  return encodeURIComponent(value.replace(/([(),\\])/g, '\\$1'));
+}
+
+function transformToURLParams(fields, Config) {
+  const criteria = Object.entries(fields)
+    .map(([key, value]) => `(${key}:equals:${escapeAndEncode(value)})`)
+    .join('and');
+
+    const dataCenter = Config.region;
+    const regionBasedEndPoint = zohoConfig.DATA_CENTRE_BASE_ENDPOINTS_MAP[dataCenter];
+
+  return `${regionBasedEndPoint}/crm/v6/Leads/search?criteria=${criteria}`;
+}
+const searchRecordId = (fields, Config, metadata) => {
+  const searchURL = transformToURLParams(fields);
+  const searchResult = await handleHttpRequest(
+    'get',
+    searchURL,
+    { Authorization: `Zoho-oauthtoken ${metadata.secret.accessToken}` },
+    {
+      destType: 'zoho',
+      feature: 'deleteRecords',
+      requestMethod: 'GET',
+      endpointPath: 'crm/v6/Leads/search?criteria=',
+      module: 'router',
+    },
+  );
+  const recordIds = searchResult.response.data.map(record => record.id);
+  return recordIds;
+};
+
 module.exports = {
   deduceModuleInfo,
   validatePresenceOfMandatoryProperties,
   formatMultiSelectFields,
   handleDuplicateCheck,
+  searchRecordId,
+  transformToURLParams,
 };

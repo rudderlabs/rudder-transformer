@@ -18,6 +18,7 @@ const {
   validatePresenceOfMandatoryProperties,
   formatMultiSelectFields,
   handleDuplicateCheck,
+  searchRecordId,
 } = require('./utils');
 
 // Main response builder function
@@ -43,37 +44,82 @@ const responseBuilder = (items, config, identifierType, operationModuleType, ups
   return response;
 };
 const batchResponseBuilder = (
-  items,
+  // items,
+  transformedResponseToBeBatched,
   config,
   identifierType,
   operationModuleType,
   upsertEndPoint,
-  successMetadata,
+  // successMetadata,
 ) => {
-  const responseArray = [];
-  const itemsChunks = BatchUtils.chunkArrayBySizeAndLength(items, {
+  const upsertResponseArray = [];
+  const deletionResponseArray = [];
+  const { upsertData, deletionData, upsertSuccessMetadata, deletionSuccessMetadata } =
+    transformedResponseToBeBatched;
+
+  // const batchedDataChunks = {
+  //   upsertDataChunks: BatchUtils.chunkArrayBySizeAndLength(upsertData, {
+  //     // eslint-disable-next-line unicorn/consistent-destructuring
+  //     maxItems: zohoConfig.MAX_BATCH_SIZE,
+  //   }),
+  //   deletionDataChunks: BatchUtils.chunkArrayBySizeAndLength(deletionData, {
+  //     // eslint-disable-next-line unicorn/consistent-destructuring
+  //     maxItems: zohoConfig.MAX_BATCH_SIZE,
+  //   }),
+  // };
+
+  const upsertDataChunks = BatchUtils.chunkArrayBySizeAndLength(upsertData, {
     // eslint-disable-next-line unicorn/consistent-destructuring
     maxItems: zohoConfig.MAX_BATCH_SIZE,
   });
 
-  const metadataChunks = BatchUtils.chunkArrayBySizeAndLength(successMetadata, {
+  const deletionDataChunks = BatchUtils.chunkArrayBySizeAndLength(deletionData, {
     // eslint-disable-next-line unicorn/consistent-destructuring
     maxItems: zohoConfig.MAX_BATCH_SIZE,
   });
 
-  itemsChunks.items.forEach((chunk) => {
-    responseArray.push(
+  // TODO : have to deal metadata grouping as well.
+  const upsertmetadataChunks = BatchUtils.chunkArrayBySizeAndLength(upsertSuccessMetadata, {
+    // eslint-disable-next-line unicorn/consistent-destructuring
+    maxItems: zohoConfig.MAX_BATCH_SIZE,
+  });
+
+  const deletionmetadataChunks = BatchUtils.chunkArrayBySizeAndLength(deletionSuccessMetadata, {
+    // eslint-disable-next-line unicorn/consistent-destructuring
+    maxItems: zohoConfig.MAX_BATCH_SIZE,
+  });
+
+  upsertDataChunks.items.forEach((chunk) => {
+    upsertResponseArray.push(
       responseBuilder(chunk, config, identifierType, operationModuleType, upsertEndPoint),
     );
   });
 
-  return { responseArray, metadataChunks };
+  deletionDataChunks.items.forEach((chunk) => {
+    deletionResponseArray.push(
+      responseBuilder(chunk, config, identifierType, operationModuleType, upsertEndPoint),
+    );
+  });
+
+  return {
+    upsertResponseArray,
+    upsertmetadataChunks,
+    deletionResponseArray,
+    deletionmetadataChunks,
+  };
 };
 const processRecordInputs = (inputs, destination) => {
+  let recordIds;
   const response = [];
   const { Config } = destination;
-  const data = [];
-  const successMetadata = [];
+  const transformedResponseToBeBatched = {
+    upsertData: [],
+    upsertSuccessMetadata: [],
+    deletionSuccessMetadata: [],
+    deletionData: [],
+  };
+  // const data = [];
+  // const successMetadata = [];
   const errorResponseList = [];
 
   if (!inputs || inputs.length === 0) {
@@ -89,8 +135,7 @@ const processRecordInputs = (inputs, destination) => {
 
   inputs.forEach((input) => {
     const { fields, action } = input.message;
-    const isInsertOrDelete = action === 'insert';
-    // || action === 'delete'; // we are not supporting record deletion for now
+    const isInsertOrDelete = action === 'insert' || action === 'delete';
 
     if (!isInsertOrDelete) {
       errorResponseList.push(handleRtTfSingleEventError(input, invalidActionTypeError, {}));
@@ -101,38 +146,59 @@ const processRecordInputs = (inputs, destination) => {
       errorResponseList.push(handleRtTfSingleEventError(input, emptyFieldsError, {}));
       return;
     }
-    const eventErroneous = validatePresenceOfMandatoryProperties(operationModuleType, fields);
 
-    if (eventErroneous && eventErroneous.status) {
-      const error = new ConfigurationError(
-        `${eventErroneous.missingField} object must have the ${eventErroneous.missingField.join('", "')} property(ies).`,
-      );
-      errorResponseList.push(handleRtTfSingleEventError(input, error, {}));
+    if (action === 'insert') {
+      const eventErroneous = validatePresenceOfMandatoryProperties(operationModuleType, fields);
+
+      if (eventErroneous && eventErroneous.status) {
+        const error = new ConfigurationError(
+          `${eventErroneous.missingField} object must have the ${eventErroneous.missingField.join('", "')} property(ies).`,
+        );
+        errorResponseList.push(handleRtTfSingleEventError(input, error, {}));
+      } else {
+        const formattedFields = formatMultiSelectFields(Config, fields);
+        transformedResponseToBeBatched.upsertSuccessMetadata.push(input.metadata);
+        transformedResponseToBeBatched.upsertData.push({
+          ...formattedFields,
+        });
+        // data.push({
+        //   ...formattedFields,
+        // });
+      }
     } else {
-      const formattedFields = formatMultiSelectFields(Config, fields);
-
-      successMetadata.push(input.metadata);
-      data.push({
-        ...formattedFields,
-      });
+      // for record deletion
+      recordIds = searchRecordId(fields, Config, input.metadata);
+      transformedResponseToBeBatched.deletionData.push(...recordIds);
+      transformedResponseToBeBatched.deletionSuccessMetadata.push(input.metadata);
     }
   });
 
-  const { responseArray, metadataChunks } = batchResponseBuilder(
-    data,
+  const {
+    upsertResponseArray,
+    upsertmetadataChunks,
+    deletionResponseArray,
+    deletionmetadataChunks,
+  } = batchResponseBuilder(
+    transformedResponseToBeBatched,
     Config,
     identifierType,
     operationModuleType,
     upsertEndPoint,
-    successMetadata,
+    // successMetadata,
   );
-  if (responseArray.length === 0) {
+  if (upsertResponseArray.length === 0 && deletionResponseArray.length === 0) {
     return errorResponseList;
   }
 
-  responseArray.forEach((batchedResponse, index) => {
+  upsertResponseArray.forEach((batchedResponse, index) => {
     response.push(
-      getSuccessRespEvents(batchedResponse, metadataChunks.items[index], destination, true),
+      getSuccessRespEvents(batchedResponse, upsertmetadataChunks.items[index], destination, true),
+    );
+  });
+
+  deletionResponseArray.forEach((batchedResponse, index) => {
+    response.push(
+      getSuccessRespEvents(batchedResponse, deletionmetadataChunks.items[index], destination, true),
     );
   });
 

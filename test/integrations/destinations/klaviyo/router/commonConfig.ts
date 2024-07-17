@@ -134,13 +134,13 @@ const getRequest = (version) => {
         userId: 'user123',
         type: 'group',
         groupId: 'XUepkK',
-        traits: { subscribe: true },
+        traits: {
+          email: 'test@rudderstack.com',
+          phone: '+12 345 678 900',
+          subscribe: true,
+          consent: ['email'],
+        },
         context: {
-          traits: {
-            email: 'test@rudderstack.com',
-            phone: '+12 345 678 900',
-            consent: ['email'],
-          },
           ip: '14.5.67.21',
           library: { name: 'http' },
         },

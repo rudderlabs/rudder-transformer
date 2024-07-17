@@ -259,7 +259,6 @@ const generateBatchedPaylaodForArray = (events) => {
 /**
  * It takes list of subscribe responses and groups them on the basis of listId
  * @param {*} subscribeResponseList
- * @param {*} version this parameter to know the API and accordingly fetch listId from payload from right place
  * @returns
  */
 const groupSubscribeResponsesUsingListId = (subscribeResponseList) => {
@@ -473,7 +472,7 @@ const subscribeUserToListV2 = (message, traitsInfo, destination) => {
   // listId from message properties are preferred over Config listId
   const { consent } = destination.Config;
   let { listId } = destination.Config;
-  let subscribeConsent = traitsInfo?.properties?.consent || consent;
+  let subscribeConsent = traitsInfo.consent || traitsInfo.properties?.consent || consent;
   const email = getFieldValueFromMessage(message, 'email');
   const phone = getFieldValueFromMessage(message, 'phone');
   const profileAttributes = {
@@ -546,11 +545,11 @@ const generateBatchedSubscriptionRequest = (events, destination) => {
   const batchEventResponse = defaultBatchRequestConfig();
   const metadata = [];
   // fetching listId from first event as listId is same for all the events
-  const listId = events[0].payload?.id;
+  const listId = events[0].payload?.listId;
   const profiles = []; // list of profiles to be subscribes
   // Batch profiles into dest batch structure
   events.forEach((ev) => {
-    profiles.push(ev.payload.profile);
+    profiles.push(...ev.payload.profile);
     metadata.push(ev.metadata);
   });
 
@@ -586,13 +585,15 @@ const updateBatchEventResponseWithProfileRequests = (
   batchEventResponse,
 ) => {
   const subscriptionListJobIds = subscriptionMetadataArray.map((metadata) => metadata.jobId);
+  const profilesRequests = [];
   profileReq.forEach((profile) => {
-    if (profile.metadata.jobId in subscriptionListJobIds) {
-      batchEventResponse.batchedRequest.push(
+    if (subscriptionListJobIds.includes(profile.metadata.jobId)) {
+      profilesRequests.push(
         buildRequest(profile.payload, batchEventResponse.destination, CONFIG_CATEGORIES.IDENTIFYV2),
       );
     }
   });
+  batchEventResponse.batchedRequest.unshift(...profilesRequests);
 };
 
 /**
@@ -603,7 +604,7 @@ const updateBatchEventResponseWithProfileRequests = (
  */
 const getRemainingProfiles = (profileReq, subscriptionMetadataArray) => {
   const subscriptionListJobIds = subscriptionMetadataArray.map((metadata) => metadata.jobId);
-  return profileReq.filter((profile) => !(profile.metadata.jobId in subscriptionListJobIds));
+  return profileReq.filter((profile) => !subscriptionListJobIds.includes(profile.metadata.jobId));
 };
 /**
  * This function batches the requests. Alogorithm
@@ -668,6 +669,28 @@ const buildSubscriptionRequest = (subscription, destination) => {
   return response;
 };
 
+const getTrackRequests = (eventRespList, destination) => {
+  // building and pushing all the event requests
+  const anonymousTracking = [];
+  const identifiedTracking = [];
+  eventRespList.forEach((resp) => {
+    const { payload, metadata } = resp;
+    const { attributes: profileAttributes } = payload.data.attributes.profile.attributes;
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    const { email, phone_number, external_id } = profileAttributes;
+    const request = getSuccessRespEvents(
+      buildRequest(payload, destination, CONFIG_CATEGORIES.TRACKV2),
+      [metadata],
+      destination,
+    );
+    if (email || phone_number || external_id) {
+      identifiedTracking.push(request);
+    } else {
+      anonymousTracking.push(request);
+    }
+  });
+  return { anonymousTracking, identifiedTracking };
+};
 module.exports = {
   subscribeUserToList,
   createCustomerProperties,
@@ -682,4 +705,5 @@ module.exports = {
   batchEvents,
   buildRequest,
   buildSubscriptionRequest,
+  getTrackRequests,
 };

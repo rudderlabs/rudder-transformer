@@ -11,12 +11,12 @@ const {
   subscribeUserToListV2,
   buildRequest,
   buildSubscriptionRequest,
+  getTrackRequests,
 } = require('./util');
 const {
   constructPayload,
   getFieldValueFromMessage,
   removeUndefinedAndNullValues,
-  getSuccessRespEvents,
   handleRtTfSingleEventError,
   flattenJson,
 } = require('../../util');
@@ -200,17 +200,10 @@ const processRouterDestV2 = (inputs, reqMetadata) => {
     }
   });
   const batchedResponseList = batchEvents(subscribeRespList, profileRespList, destination);
-  // building and pushing all the event requests
-  const eventRequestList = eventRespList.map((resp) => {
-    const { payload, metadata } = resp;
-    return getSuccessRespEvents(
-      buildRequest(payload, destination, CONFIG_CATEGORIES.TRACKV2),
-      [metadata],
-      destination,
-    );
-  });
+  const { anonymousTracking, identifiedTracking } = getTrackRequests(eventRespList, destination);
 
-  batchResponseList = [...batchedResponseList, ...eventRequestList];
+  // We are doing to maintain event ordering basically once a user is identified klaviyo does not allow user tracking based upon anonymous_id only
+  batchResponseList = [...anonymousTracking, ...batchedResponseList, ...identifiedTracking];
 
   return [...batchResponseList, ...batchErrorRespList];
 };

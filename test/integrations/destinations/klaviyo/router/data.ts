@@ -211,5 +211,5 @@ export const data: RouterTestData[] = [
       },
     },
   },
-  // ...dataV2,
+  ...dataV2,
 ];

@@ -892,7 +892,7 @@ class Prometheus {
         name: 'fetch_dns_resolve_time',
         help: 'fetch_dns_resolve_time',
         type: 'histogram',
-        labelNames: ['identifier', 'transformationId', 'workspaceId', 'error'],
+        labelNames: ['identifier', 'transformationId', 'workspaceId', 'error', 'cacheHit'],
       },
       {
         name: 'geo_call_duration',

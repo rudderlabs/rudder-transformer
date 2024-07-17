@@ -268,6 +268,17 @@ const groupSubscribeResponsesUsingListId = (subscribeResponseList) => {
   );
   return subscribeEventGroups;
 };
+
+/**
+ * This function groups the subscription responses on list id
+ * @param {*} subscribeResponseList
+ * @returns
+ * Example subsribeResponseList =
+ * [
+ * { payload: {id:'list_id', profile: {}}, metadata:{} },
+ * { payload: {id:'list_id', profile: {}}, metadata:{} }
+ * ]
+ */
 const groupSubscribeResponsesUsingListIdV2 = (subscribeResponseList) => {
   const subscribeEventGroups = lodash.groupBy(
     subscribeResponseList,
@@ -515,12 +526,12 @@ const subscribeUserToListV2 = (message, traitsInfo, destination) => {
 /**
  * This Create a subscription payload to subscribe profile(s) to list listId
  * @param {*} listId
- * @param {*} profile
+ * @param {*} profiles
  */
-const getSubscriptionPayload = (listId, profile) => ({
+const getSubscriptionPayload = (listId, profiles) => ({
   data: {
     type: 'profile-subscription-bulk-create-job',
-    attributes: { profiles: { data: profile } },
+    attributes: { profiles: { data: profiles } },
     relationships: {
       list: {
         data: {
@@ -578,6 +589,16 @@ const generateBatchedSubscriptionRequest = (events, destination) => {
  * @param {*} profileReq array of profile requests
  * @param {*} metadataArray array of metadata
  * @param {*} batchEventResponse
+ * Example: /**
+ *
+ * @param {*} subscribeEventGroups
+ * @param {*} identifyResponseList
+ * @returns
+ * Example:
+ * profileReq = [
+ * { payload: {}, metadata:{} },
+ * { payload: {}, metadata:{} }
+ * ]
  */
 const updateBatchEventResponseWithProfileRequests = (
   profileReq,
@@ -593,6 +614,7 @@ const updateBatchEventResponseWithProfileRequests = (
       );
     }
   });
+  // we are keeping profiles request prior to subscription ones
   batchEventResponse.batchedRequest.unshift(...profilesRequests);
 };
 
@@ -614,15 +636,26 @@ const getRemainingProfiles = (profileReq, subscriptionMetadataArray) => {
  * @param {*} subscribeRespList
  * @param {*} profileRespList
  * @param {*} eventRespList
+ * subscribeRespList = [
+ * { payload: {id:'list_id', profile: {}}, metadata:{} },
+ * { payload: {id:'list_id', profile: {}}, metadata:{} }
+ * ]
+ * profileRespList = [
+ * { payload: {}, metadata:{} },
+ * { payload: {}, metadata:{} }
+ * ]
+ *
  */
-const batchEvents = (subscribeRespList, profileRespList, destination) => {
+const batchSubscriptionRequestV2 = (subscribeRespList, profileRespList, destination) => {
   const batchedResponseList = [];
   let remainingProfileReq = profileRespList;
+  const subscriptionMetadataArrayForAll = [];
   const subscribeEventGroups = groupSubscribeResponsesUsingListIdV2(subscribeRespList);
   Object.keys(subscribeEventGroups).forEach((listId) => {
     // eventChunks = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
     const eventChunks = lodash.chunk(subscribeEventGroups[listId], MAX_BATCH_SIZE);
-    const batchedResponse = eventChunks.map((chunk) => {
+    const batchedResponse = [];
+    eventChunks.forEach((chunk) => {
       const batchEventResponse = generateBatchedSubscriptionRequest(chunk, destination);
       const { metadata: subscriptionMetadataArray, batchedRequest } = batchEventResponse;
       updateBatchEventResponseWithProfileRequests(
@@ -630,12 +663,16 @@ const batchEvents = (subscribeRespList, profileRespList, destination) => {
         subscriptionMetadataArray,
         batchEventResponse,
       );
-      remainingProfileReq = getRemainingProfiles(remainingProfileReq, subscriptionMetadataArray);
-      return getSuccessRespEvents(batchedRequest, subscriptionMetadataArray, destination, true);
+      subscriptionMetadataArrayForAll.push(...subscriptionMetadataArray);
+      batchedResponse.push(
+        getSuccessRespEvents(batchedRequest, subscriptionMetadataArray, destination, true),
+      );
     });
     batchedResponseList.push(...batchedResponse);
   });
   const profiles = [];
+  remainingProfileReq = getRemainingProfiles(remainingProfileReq, subscriptionMetadataArrayForAll);
+
   // push profiles for which there is no subscription
   remainingProfileReq.forEach((input) => {
     profiles.push(
@@ -675,7 +712,7 @@ const getTrackRequests = (eventRespList, destination) => {
   const identifiedTracking = [];
   eventRespList.forEach((resp) => {
     const { payload, metadata } = resp;
-    const { attributes: profileAttributes } = payload.data.attributes.profile.attributes;
+    const { attributes: profileAttributes } = payload.data.attributes.profile.data;
     // eslint-disable-next-line @typescript-eslint/naming-convention
     const { email, phone_number, external_id } = profileAttributes;
     const request = getSuccessRespEvents(
@@ -702,8 +739,9 @@ module.exports = {
   constructProfile,
   subscribeUserToListV2,
   getProfileMetadataAndMetadataFields,
-  batchEvents,
+  batchSubscriptionRequestV2,
   buildRequest,
   buildSubscriptionRequest,
   getTrackRequests,
+  groupSubscribeResponsesUsingListIdV2,
 };

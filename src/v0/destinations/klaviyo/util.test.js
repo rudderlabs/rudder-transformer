@@ -1,4 +1,7 @@
-const { getProfileMetadataAndMetadataFields } = require('./util');
+const {
+  getProfileMetadataAndMetadataFields,
+  groupSubscribeResponsesUsingListIdV2,
+} = require('./util');
 
 describe('getProfileMetadataAndMetadataFields', () => {
   // Correctly generates metadata with fields to unset, append, and unappend when all fields are provided
@@ -66,5 +69,39 @@ describe('getProfileMetadataAndMetadataFields', () => {
 
     result = getProfileMetadataAndMetadataFields(undefined);
     expect(result).toEqual({ meta: { patch_properties: {} }, metadataFields: [] });
+  });
+});
+
+describe('groupSubscribeResponsesUsingListIdV2', () => {
+  // Groups subscription responses by listId correctly
+  it('should group subscription responses by listId correctly when given a valid list', () => {
+    const subscribeResponseList = [
+      { payload: { listId: 'list_1', profile: {} }, metadata: {} },
+      { payload: { listId: 'list_1', profile: {} }, metadata: {} },
+      { payload: { listId: 'list_2', profile: {} }, metadata: {} },
+    ];
+
+    const expectedOutput = {
+      list_1: [
+        { payload: { listId: 'list_1', profile: {} }, metadata: {} },
+        { payload: { listId: 'list_1', profile: {} }, metadata: {} },
+      ],
+      list_2: [{ payload: { listId: 'list_2', profile: {} }, metadata: {} }],
+    };
+
+    const result = groupSubscribeResponsesUsingListIdV2(subscribeResponseList);
+
+    expect(result).toEqual(expectedOutput);
+  });
+
+  // Handles empty subscription response list
+  it('should return an empty object when given an empty subscription response list', () => {
+    const subscribeResponseList = [];
+
+    const expectedOutput = {};
+
+    const result = groupSubscribeResponsesUsingListIdV2(subscribeResponseList);
+
+    expect(result).toEqual(expectedOutput);
   });
 });

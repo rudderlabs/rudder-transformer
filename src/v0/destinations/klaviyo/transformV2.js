@@ -6,7 +6,7 @@ const { ConfigurationError, InstrumentationError } = require('@rudderstack/integ
 const { EventType } = require('../../../constants');
 const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require('./config');
 const {
-  batchEvents,
+  batchSubscriptionRequestV2,
   constructProfile,
   subscribeUserToListV2,
   buildRequest,
@@ -133,7 +133,7 @@ const processEvent = (event) => {
   }
   return response;
 };
-
+// {subscription:{}, event:{}, profile:{}}
 const processV2 = (event) => {
   const response = processEvent(event);
   const { destination } = event;
@@ -199,7 +199,11 @@ const processRouterDestV2 = (inputs, reqMetadata) => {
       batchErrorRespList.push(errRespEvent);
     }
   });
-  const batchedResponseList = batchEvents(subscribeRespList, profileRespList, destination);
+  const batchedResponseList = batchSubscriptionRequestV2(
+    subscribeRespList,
+    profileRespList,
+    destination,
+  );
   const { anonymousTracking, identifiedTracking } = getTrackRequests(eventRespList, destination);
 
   // We are doing to maintain event ordering basically once a user is identified klaviyo does not allow user tracking based upon anonymous_id only

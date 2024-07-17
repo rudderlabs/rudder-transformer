@@ -82,12 +82,12 @@ function transformToURLParams(fields, Config) {
     .map(([key, value]) => `(${key}:equals:${escapeAndEncode(value)})`)
     .join('and');
 
-    const dataCenter = Config.region;
-    const regionBasedEndPoint = zohoConfig.DATA_CENTRE_BASE_ENDPOINTS_MAP[dataCenter];
+  const dataCenter = Config.region;
+  const regionBasedEndPoint = zohoConfig.DATA_CENTRE_BASE_ENDPOINTS_MAP[dataCenter];
 
   return `${regionBasedEndPoint}/crm/v6/Leads/search?criteria=${criteria}`;
 }
-const searchRecordId = (fields, Config, metadata) => {
+const searchRecordId = async (fields, metadata) => {
   const searchURL = transformToURLParams(fields);
   const searchResult = await handleHttpRequest(
     'get',
@@ -101,7 +101,7 @@ const searchRecordId = (fields, Config, metadata) => {
       module: 'router',
     },
   );
-  const recordIds = searchResult.response.data.map(record => record.id);
+  const recordIds = searchResult.response.data.map((record) => record.id);
   return recordIds;
 };
 

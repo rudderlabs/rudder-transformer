@@ -167,7 +167,7 @@ const processRecordInputs = (inputs, destination) => {
       }
     } else {
       // for record deletion
-      recordIds = searchRecordId(fields, Config, input.metadata);
+      recordIds = searchRecordId(fields, input.metadata);
       transformedResponseToBeBatched.deletionData.push(...recordIds);
       transformedResponseToBeBatched.deletionSuccessMetadata.push(input.metadata);
     }

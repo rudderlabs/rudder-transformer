@@ -12,7 +12,6 @@ const {
   ecomEvents,
   eventNameMapping,
   jsonNameMapping,
-  useUpdatedKlaviyoAPI,
 } = require('./config');
 const { processRouterDestV2, processV2 } = require('./transformV2');
 const {
@@ -279,7 +278,7 @@ const groupRequestHandler = (message, category, destination) => {
 // Main event processor using specific handler funcs
 const processEvent = async (event, reqMetadata) => {
   const { message, destination, metadata } = event;
-  if (destination.Config?.version === 'v2' || useUpdatedKlaviyoAPI) {
+  if (destination.Config?.version === 'v2') {
     return processV2(event, reqMetadata);
   }
   if (!message.type) {
@@ -334,7 +333,7 @@ const getEventChunks = (event, subscribeRespList, nonSubscribeRespList) => {
 const processRouterDest = async (inputs, reqMetadata) => {
   const { destination } = inputs[0];
   // This is used to switch to latest API version
-  if (destination.Config?.version === 'v2' || useUpdatedKlaviyoAPI) {
+  if (destination.Config?.version === 'v2') {
     return processRouterDestV2(inputs, reqMetadata);
   }
   let batchResponseList = [];

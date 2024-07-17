@@ -1,7 +1,7 @@
 import { Destination } from '../../../../../src/types';
 import { RouterTestData } from '../../../testTypes';
 import { routerRequestV2 } from './commonConfig';
-import { generateMetadata, generateSimplifiedTrackPayload } from '../../../testUtils';
+import { generateMetadata } from '../../../testUtils';
 
 const destination: Destination = {
   ID: '123',
@@ -14,7 +14,7 @@ const destination: Destination = {
   },
   Config: {
     privateApiKey: 'dummyPrivateApiKey',
-    version: 'v2',
+    apiVersion: 'v2',
   },
   Enabled: true,
   WorkspaceID: '123',

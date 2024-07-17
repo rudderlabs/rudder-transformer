@@ -13,7 +13,7 @@ const destination: Destination = {
   },
   Config: {
     privateApiKey: 'dummyPrivateApiKey',
-    version: 'v2',
+    apiVersion: 'v2',
   },
   Enabled: true,
   WorkspaceID: '123',

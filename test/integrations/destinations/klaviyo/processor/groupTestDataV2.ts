@@ -16,7 +16,7 @@ const destination: Destination = {
     Config: {},
   },
   Config: {
-    version: 'v2',
+    apiVersion: 'v2',
     privateApiKey: 'dummyPrivateApiKey',
     consent: ['email'],
   },

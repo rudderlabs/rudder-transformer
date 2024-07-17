@@ -27,16 +27,16 @@ const destinationV2: Destination = {
   },
   Config: {
     privateApiKey: 'dummyPrivateApiKey',
-    version: 'v2',
+    apiVersion: 'v2',
   },
   Enabled: true,
   WorkspaceID: '123',
   Transformations: [],
 };
-const getRequest = (version) => {
+const getRequest = (apiVersion) => {
   return [
     {
-      destination: version === 'v2' ? destinationV2 : destination,
+      destination: apiVersion === 'v2' ? destinationV2 : destination,
       metadata: generateMetadata(1),
       message: {
         type: 'identify',
@@ -82,7 +82,7 @@ const getRequest = (version) => {
       },
     },
     {
-      destination: version === 'v2' ? destinationV2 : destination,
+      destination: apiVersion === 'v2' ? destinationV2 : destination,
       metadata: generateMetadata(2),
       message: {
         type: 'identify',
@@ -128,7 +128,7 @@ const getRequest = (version) => {
       },
     },
     {
-      destination: version === 'v2' ? destinationV2 : destination,
+      destination: apiVersion === 'v2' ? destinationV2 : destination,
       metadata: generateMetadata(3),
       message: {
         userId: 'user123',
@@ -148,7 +148,7 @@ const getRequest = (version) => {
       },
     },
     {
-      destination: version === 'v2' ? destinationV2 : destination,
+      destination: apiVersion === 'v2' ? destinationV2 : destination,
       metadata: generateMetadata(4),
       message: {
         userId: 'user123',
@@ -168,7 +168,7 @@ const getRequest = (version) => {
       },
     },
     {
-      destination: version === 'v2' ? destinationV2 : destination,
+      destination: apiVersion === 'v2' ? destinationV2 : destination,
       metadata: generateMetadata(5),
       message: {
         userId: 'user123',

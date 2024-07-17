@@ -16,7 +16,7 @@ const tags = require('../../../v0/util/tags');
  */
 
 const findFeatureandVersion = (results, rudderJobMetadata, destinationConfig) => {
-  if (!Array.isArray(rudderJobMetadata)) {
+  if (Array.isArray(rudderJobMetadata) && rudderJobMetadata.length === 1) {
     return 'singleEvent';
   }
   if (destinationConfig?.apiVersion === 'legacyApi') {

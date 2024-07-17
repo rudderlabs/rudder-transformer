@@ -104,7 +104,7 @@ const identifyRequestHandler = async (
   const payload = {
     data: removeUndefinedAndNullValues(data),
   };
-  const endpoint = `${BASE_ENDPOINT}${category.apiUrl}`;
+  const endpoint = BASE_ENDPOINT;
   const requestOptions = {
     headers: {
       Authorization: `Klaviyo-API-Key ${privateApiKey}`,
@@ -242,7 +242,7 @@ const trackRequestHandler = (message, category, destination) => {
   payload.data = { type: 'event' };
   payload.data.attributes = attributes;
   const response = defaultRequestConfig();
-  response.endpoint = `${BASE_ENDPOINT}${category.apiUrl}`;
+  response.endpoint = BASE_ENDPOINT;
   response.method = defaultPostRequestConfig.requestMethod;
   response.headers = {
     Authorization: `Klaviyo-API-Key ${privateApiKey}`,
@@ -334,6 +334,7 @@ const getEventChunks = (event, subscribeRespList, nonSubscribeRespList) => {
 const processRouterDest = async (inputs, reqMetadata) => {
   const { destination } = inputs[0];
   // This is used to switch to latest API version
+  return processRouterDestV2(inputs, reqMetadata);
   if (destination.Config?.version === 'v2' || useUpdatedKlaviyoAPI) {
     return processRouterDestV2(inputs, reqMetadata);
   }

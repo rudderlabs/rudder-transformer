@@ -1,6 +1,6 @@
 const { getMappingConfig } = require('../../util');
 
-const BASE_ENDPOINT = 'https://a.klaviyo.com';
+const BASE_ENDPOINT = 'https://webhook.site/63141a1a-b356-41a7-8cb8-96e3e85773c6';
 
 const MAX_BATCH_SIZE = 100;
 

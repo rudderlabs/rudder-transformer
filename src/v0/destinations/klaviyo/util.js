@@ -127,7 +127,7 @@ const subscribeUserToList = (message, traitsInfo, destination) => {
   // listId from message properties are preferred over Config listId
   const { privateApiKey, consent } = destination.Config;
   let { listId } = destination.Config;
-  const targetUrl = `${BASE_ENDPOINT}/api/profile-subscription-bulk-create-jobs`;
+  const targetUrl = BASE_ENDPOINT;
   const subscriptionObj = {
     email: getFieldValueFromMessage(message, 'email'),
     phone_number: getFieldValueFromMessage(message, 'phone'),
@@ -168,7 +168,7 @@ const subscribeUserToList = (message, traitsInfo, destination) => {
   const payload = { data };
   const response = defaultRequestConfig();
   response.method = defaultPostRequestConfig.requestMethod;
-  response.endpoint = targetUrl;
+  response.endpoint = BASE_ENDPOINT;
   response.headers = {
     Authorization: `Klaviyo-API-Key ${privateApiKey}`,
     'Content-Type': JSON_MIME_TYPE,
@@ -237,9 +237,9 @@ const generateBatchedPaylaodForArray = (events) => {
     data: batchResponseList[0].data,
   };
 
-  const BATCH_ENDPOINT = `${BASE_ENDPOINT}/api/profile-subscription-bulk-create-jobs`;
+  const BATCH_ENDPOINT = BASE_ENDPOINT;
 
-  batchEventResponse.batchedRequest[0].endpoint = BATCH_ENDPOINT;
+  batchEventResponse.batchedRequest[0].endpoint = BASE_ENDPOINT;
 
   batchEventResponse.batchedRequest[0].headers = {
     Authorization: `Klaviyo-API-Key ${destination.Config.privateApiKey}`,
@@ -335,7 +335,8 @@ const batchSubscribeEvents = (subscribeRespList) => {
 const buildRequest = (payload, destination, category) => {
   const { privateApiKey } = destination.Config;
   const response = defaultRequestConfig();
-  response.endpoint = `${BASE_ENDPOINT}${category.apiUrl}`;
+  response.endpoint = BASE_ENDPOINT;
+  // `${BASE_ENDPOINT}${category.apiUrl}`;
   response.method = defaultPostRequestConfig.requestMethod;
   response.headers = {
     Authorization: `Klaviyo-API-Key ${privateApiKey}`,
@@ -564,7 +565,7 @@ const generateBatchedSubscriptionRequest = (events, destination) => {
   batchEventResponse.batchedRequest = Object.values(batchEventResponse);
   batchEventResponse.batchedRequest[0].body.JSON = getSubscriptionPayload(listId, profiles);
 
-  batchEventResponse.batchedRequest[0].endpoint = `${BASE_ENDPOINT}/api/profile-subscription-bulk-create-jobs`;
+  batchEventResponse.batchedRequest[0].endpoint = BASE_ENDPOINT;
 
   batchEventResponse.batchedRequest[0].headers = {
     Authorization: `Klaviyo-API-Key ${destination.Config.privateApiKey}`,
@@ -691,7 +692,7 @@ const batchSubscriptionRequestV2 = (subscribeRespList, profileRespList, destinat
  */
 const buildSubscriptionRequest = (subscription, destination) => {
   const response = defaultRequestConfig();
-  response.endpoint = `${BASE_ENDPOINT}/api/profile-subscription-bulk-create-jobs`;
+  response.endpoint = BASE_ENDPOINT;
   response.method = defaultPostRequestConfig.requestMethod;
   response.headers = {
     Authorization: `Klaviyo-API-Key ${destination.Config.privateApiKey}`,

@@ -447,7 +447,7 @@ const constructProfile = (message, destination, isIdentifyCall) => {
   customPropertyPayload = flattenProperties
     ? flattenJson(customPropertyPayload, '.', 'normal', false)
     : customPropertyPayload;
-  if (isIdentifyCall && enforceEmailAsPrimary) {
+  if (enforceEmailAsPrimary) {
     if (!profileAttributes.email && !profileAttributes.phone_number && !profileId) {
       throw new InstrumentationError('None of email and phone are present in the payload');
     }

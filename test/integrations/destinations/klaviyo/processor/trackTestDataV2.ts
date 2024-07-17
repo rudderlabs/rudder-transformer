@@ -47,7 +47,6 @@ const commonOutputHeaders = {
 const profileAttributes = {
   email: 'test@rudderstack.com',
   phone_number: '9112340375',
-  external_id: 'sajal12',
   anonymous_id: '9c6bd77ea9da3e68',
   properties: {
     age: '22',
@@ -128,7 +127,7 @@ export const trackTestData: ProcessorTestData[] = [
                     profile: {
                       data: {
                         type: 'profile',
-                        attributes: profileAttributes,
+                        attributes: { ...profileAttributes, external_id: 'sajal12' },
                       },
                     },
                     properties: commonProps,
@@ -151,7 +150,7 @@ export const trackTestData: ProcessorTestData[] = [
     id: 'klaviyo-track-150624-test-2',
     name: 'klaviyo',
     description:
-      "150624 -> Track event call, with make email or phone as primary identifier toggle on but it doesn't matter as this toggle is only for identify call",
+      '150624 -> Track event call, with make email or phone as primary identifier toggle on',
     scenario: 'Business',
     successCriteria:
       'Response should contain only event payload with profile object and status code should be 200, for the event payload should contain contextual traits and properties in the payload, and email should be mapped to email and userId should be mapped to external_id as usual',
@@ -213,6 +212,7 @@ export const trackTestData: ProcessorTestData[] = [
                         type: 'profile',
                         attributes: {
                           ...profileAttributes,
+                          properties: { ...profileAttributes.properties, _id: 'sajal12' },
                         },
                       },
                     },

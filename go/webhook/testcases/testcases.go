@@ -50,6 +50,7 @@ type Response struct {
 }
 
 //go:generate npx ts-node ../../../test/scripts/generateJson.ts sources ./testdata/testcases
+//go:generate npx prettier --write ./testdata/**/*.json
 
 //go:embed testdata/context.json
 var contextData []byte

@@ -24,6 +24,7 @@ const v2Headers = {
   Authorization: 'Bearer testApiKey',
   'Content-Type': 'application/json',
   'Intercom-Version': '2.10',
+  'User-Agent': 'RudderStack',
 };
 
 const v1Headers = {
@@ -31,6 +32,7 @@ const v1Headers = {
   Authorization: 'Bearer intercomApiKey',
   Accept: 'application/json',
   'Intercom-Version': '1.4',
+  'User-Agent': 'RudderStack',
 };
 
 const destination: Destination = {

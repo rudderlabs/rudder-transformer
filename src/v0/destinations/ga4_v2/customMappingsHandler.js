@@ -12,6 +12,7 @@ const {
   buildDeliverablePayload,
   GA4_PARAMETERS_EXCLUSION,
   prepareUserProperties,
+  sanitizeUserProperties,
 } = require('../ga4/utils');
 const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const {
@@ -157,6 +158,11 @@ const boilerplateOperations = (ga4Payload, message, Config, eventName) => {
   const consents = prepareUserConsents(message);
   if (!isEmptyObject(consents)) {
     ga4Payload.consent = consents;
+  }
+
+  // Prepare GA4 user properties
+  if (isDefinedAndNotNull(ga4Payload.user_properties)) {
+    ga4Payload.user_properties = sanitizeUserProperties(ga4Payload.user_properties);
   }
 };
 

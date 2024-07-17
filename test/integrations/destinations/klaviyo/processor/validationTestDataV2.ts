@@ -22,9 +22,9 @@ const destination: Destination = {
 
 export const validationTestData: ProcessorTestData[] = [
   {
-    id: 'klaviyo-validation-test-1',
+    id: 'klaviyo-validation-150624-test-1',
     name: 'klaviyo',
-    description: '[Error]: Check for unsupported message type',
+    description: '150624->[Error]: Check for unsupported message type',
     scenario: 'Framework',
     successCriteria:
       'Response should contain error message and status code should be 400, as we are sending a message type which is not supported by Klaviyo destination and the error message should be Event type random is not supported',

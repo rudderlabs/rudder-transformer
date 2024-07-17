@@ -214,7 +214,7 @@ const populateCustomFieldsFromTraits = (message) => {
   return customProperties;
 };
 
-const generateBatchedPaylaodForArray = (events, version) => {
+const generateBatchedPaylaodForArray = (events) => {
   let batchEventResponse = defaultBatchRequestConfig();
   const batchResponseList = [];
   const metadata = [];
@@ -224,10 +224,6 @@ const generateBatchedPaylaodForArray = (events, version) => {
   events.forEach((ev, index) => {
     if (index === 0) {
       batchResponseList.push(ev.message.body.JSON);
-    } else if (version === 'v2') {
-      batchResponseList[0].data.attributes.profiles.data.push(
-        ...ev.message.body.JSON.data.attributes.profiles.data,
-      );
     } else {
       batchResponseList[0].data.attributes.subscriptions.push(
         ...ev.message.body.JSON.data.attributes.subscriptions,
@@ -266,22 +262,28 @@ const generateBatchedPaylaodForArray = (events, version) => {
  * @param {*} version this parameter to know the API and accordingly fetch listId from payload from right place
  * @returns
  */
-const groupSubscribeResponsesUsingListId = (subscribeResponseList, version) => {
-  const subscribeEventGroups = lodash.groupBy(subscribeResponseList, (event) =>
-    version === 'v2'
-      ? event.message.body.JSON.data.relationships.list.data.id
-      : event.message.body.JSON.data.attributes.list_id,
+const groupSubscribeResponsesUsingListId = (subscribeResponseList) => {
+  const subscribeEventGroups = lodash.groupBy(
+    subscribeResponseList,
+    (event) => event.message.body.JSON.data.attributes.list_id,
+  );
+  return subscribeEventGroups;
+};
+const groupSubscribeResponsesUsingListIdV2 = (subscribeResponseList) => {
+  const subscribeEventGroups = lodash.groupBy(
+    subscribeResponseList,
+    (event) => event.payload.listId,
   );
   return subscribeEventGroups;
 };
 
-const getBatchedResponseList = (subscribeEventGroups, identifyResponseList, version) => {
+const getBatchedResponseList = (subscribeEventGroups, identifyResponseList) => {
   let batchedResponseList = [];
   Object.keys(subscribeEventGroups).forEach((listId) => {
     // eventChunks = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
     const eventChunks = lodash.chunk(subscribeEventGroups[listId], MAX_BATCH_SIZE);
     const batchedResponse = eventChunks.map((chunk) => {
-      const batchEventResponse = generateBatchedPaylaodForArray(chunk, version);
+      const batchEventResponse = generateBatchedPaylaodForArray(chunk);
       return getSuccessRespEvents(
         batchEventResponse.batchedRequest,
         batchEventResponse.metadata,
@@ -291,17 +293,15 @@ const getBatchedResponseList = (subscribeEventGroups, identifyResponseList, vers
     });
     batchedResponseList = [...batchedResponseList, ...batchedResponse];
   });
-
   if (identifyResponseList.length > 0) {
     identifyResponseList.forEach((response) => {
       batchedResponseList[0].batchedRequest.push(response);
     });
   }
-
   return batchedResponseList;
 };
 
-const batchSubscribeEvents = (subscribeRespList, version = 'v1') => {
+const batchSubscribeEvents = (subscribeRespList) => {
   const identifyResponseList = [];
   subscribeRespList.forEach((event) => {
     const processedEvent = event;
@@ -316,15 +316,25 @@ const batchSubscribeEvents = (subscribeRespList, version = 'v1') => {
     }
   });
 
-  const subscribeEventGroups = groupSubscribeResponsesUsingListId(subscribeRespList, version);
+  const subscribeEventGroups = groupSubscribeResponsesUsingListId(subscribeRespList);
 
-  const batchedResponseList = getBatchedResponseList(
-    subscribeEventGroups,
-    identifyResponseList,
-    version,
-  );
+  const batchedResponseList = getBatchedResponseList(subscribeEventGroups, identifyResponseList);
 
   return batchedResponseList;
+};
+const buildRequest = (payload, destination, category) => {
+  const { privateApiKey } = destination.Config;
+  const response = defaultRequestConfig();
+  response.endpoint = `${BASE_ENDPOINT}${category.apiUrl}`;
+  response.method = defaultPostRequestConfig.requestMethod;
+  response.headers = {
+    Authorization: `Klaviyo-API-Key ${privateApiKey}`,
+    Accept: JSON_MIME_TYPE,
+    'Content-Type': JSON_MIME_TYPE,
+    revision,
+  };
+  response.body.JSON = removeUndefinedAndNullValues(payload);
+  return response;
 };
 
 /**
@@ -456,12 +466,12 @@ const constructProfile = (message, destination, isIdentifyCall) => {
 };
 
 /**
- * This function is used for creating response for subscribing users to a particular list for V2
+ * This function is used for creating profile response for subscribing users to a particular list for V2
  * DOCS: https://developers.klaviyo.com/en/reference/subscribe_profiles
  */
 const subscribeUserToListV2 = (message, traitsInfo, destination) => {
   // listId from message properties are preferred over Config listId
-  const { privateApiKey, consent } = destination.Config;
+  const { consent } = destination.Config;
   let { listId } = destination.Config;
   let subscribeConsent = traitsInfo?.properties?.consent || consent;
   const email = getFieldValueFromMessage(message, 'email');
@@ -501,31 +511,160 @@ const subscribeUserToListV2 = (message, traitsInfo, destination) => {
     listId = message.groupId;
   }
 
-  const payload = {
-    data: {
-      type: 'profile-subscription-bulk-create-job',
-      attributes: { profiles: { data: [profile] } },
-      relationships: {
-        list: {
-          data: {
-            type: 'list',
-            id: listId,
-          },
+  return { listId, profile: [profile] };
+};
+/**
+ * This Create a subscription payload to subscribe profile(s) to list listId
+ * @param {*} listId
+ * @param {*} profile
+ */
+const getSubscriptionPayload = (listId, profile) => ({
+  data: {
+    type: 'profile-subscription-bulk-create-job',
+    attributes: { profiles: { data: profile } },
+    relationships: {
+      list: {
+        data: {
+          type: 'list',
+          id: listId,
         },
       },
     },
+  },
+});
+
+/**
+ * This function takes susbscriptions as input and batches them into a single request body
+ * @param {events}
+ * events= [
+ * { payload: {id:'list_id', profile: {}}, metadata:{} },
+ * { payload: {id:'list_id', profile: {}}, metadata:{} }
+ * ]
+ */
+
+const generateBatchedSubscriptionRequest = (events, destination) => {
+  const batchEventResponse = defaultBatchRequestConfig();
+  const metadata = [];
+  // fetching listId from first event as listId is same for all the events
+  const listId = events[0].payload?.id;
+  const profiles = []; // list of profiles to be subscribes
+  // Batch profiles into dest batch structure
+  events.forEach((ev) => {
+    profiles.push(ev.payload.profile);
+    metadata.push(ev.metadata);
+  });
+
+  batchEventResponse.batchedRequest = Object.values(batchEventResponse);
+  batchEventResponse.batchedRequest[0].body.JSON = getSubscriptionPayload(listId, profiles);
+
+  batchEventResponse.batchedRequest[0].endpoint = `${BASE_ENDPOINT}/api/profile-subscription-bulk-create-jobs`;
+
+  batchEventResponse.batchedRequest[0].headers = {
+    Authorization: `Klaviyo-API-Key ${destination.Config.privateApiKey}`,
+    'Content-Type': JSON_MIME_TYPE,
+    Accept: JSON_MIME_TYPE,
+    revision,
   };
+
+  return {
+    ...batchEventResponse,
+    metadata,
+    destination,
+  };
+};
+
+/**
+ * This function fetches the profileRequests with metadata present in metadata array build a request for them
+ * and add these requests batchEvent Response
+ * @param {*} profileReq array of profile requests
+ * @param {*} metadataArray array of metadata
+ * @param {*} batchEventResponse
+ */
+const updateBatchEventResponseWithProfileRequests = (
+  profileReq,
+  subscriptionMetadataArray,
+  batchEventResponse,
+) => {
+  const subscriptionListJobIds = subscriptionMetadataArray.map((metadata) => metadata.jobId);
+  profileReq.forEach((profile) => {
+    if (profile.metadata.jobId in subscriptionListJobIds) {
+      batchEventResponse.batchedRequest.push(
+        buildRequest(profile.payload, batchEventResponse.destination, CONFIG_CATEGORIES.IDENTIFYV2),
+      );
+    }
+  });
+};
+
+/**
+ * This function returns the list of profileReq which do not metadata common with subcriptionMetadataArray
+ * @param {*} profileReq
+ * @param {*} subscriptionMetadataArray
+ * @returns
+ */
+const getRemainingProfiles = (profileReq, subscriptionMetadataArray) => {
+  const subscriptionListJobIds = subscriptionMetadataArray.map((metadata) => metadata.jobId);
+  return profileReq.filter((profile) => !(profile.metadata.jobId in subscriptionListJobIds));
+};
+/**
+ * This function batches the requests. Alogorithm
+ * Batch events from Subscribe Resp List having same listId/groupId to be subscribed and  have their metadata array
+ * For this metadata array get all profileRequests and add them prior to batched Subscribe Request in the same batched Request
+ * Make another batched request for the remaning profile requests and another for all the event requests
+ * @param {*} subscribeRespList
+ * @param {*} profileRespList
+ * @param {*} eventRespList
+ */
+const batchEvents = (subscribeRespList, profileRespList, destination) => {
+  const batchedResponseList = [];
+  let remainingProfileReq = profileRespList;
+  const subscribeEventGroups = groupSubscribeResponsesUsingListIdV2(subscribeRespList);
+  Object.keys(subscribeEventGroups).forEach((listId) => {
+    // eventChunks = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
+    const eventChunks = lodash.chunk(subscribeEventGroups[listId], MAX_BATCH_SIZE);
+    const batchedResponse = eventChunks.map((chunk) => {
+      const batchEventResponse = generateBatchedSubscriptionRequest(chunk, destination);
+      const { metadata: subscriptionMetadataArray, batchedRequest } = batchEventResponse;
+      updateBatchEventResponseWithProfileRequests(
+        remainingProfileReq,
+        subscriptionMetadataArray,
+        batchEventResponse,
+      );
+      remainingProfileReq = getRemainingProfiles(remainingProfileReq, subscriptionMetadataArray);
+      return getSuccessRespEvents(batchedRequest, subscriptionMetadataArray, destination, true);
+    });
+    batchedResponseList.push(...batchedResponse);
+  });
+  const profiles = [];
+  // push profiles for which there is no subscription
+  remainingProfileReq.forEach((input) => {
+    profiles.push(
+      getSuccessRespEvents(
+        buildRequest(input.payload, destination, CONFIG_CATEGORIES.IDENTIFYV2),
+        [input.metadata],
+        destination,
+      ),
+    );
+  });
+  return [...profiles, ...batchedResponseList];
+};
+
+/**
+ * This function accepts subscriptions object and builds a request for it
+ * @param {*} subscription
+ * @param {*} destination
+ * @returns defaultRequestConfig
+ */
+const buildSubscriptionRequest = (subscription, destination) => {
   const response = defaultRequestConfig();
-  response.method = defaultPostRequestConfig.requestMethod;
   response.endpoint = `${BASE_ENDPOINT}/api/profile-subscription-bulk-create-jobs`;
+  response.method = defaultPostRequestConfig.requestMethod;
   response.headers = {
-    Authorization: `Klaviyo-API-Key ${privateApiKey}`,
+    Authorization: `Klaviyo-API-Key ${destination.Config.privateApiKey}`,
     Accept: JSON_MIME_TYPE,
     'Content-Type': JSON_MIME_TYPE,
     revision,
   };
-  response.body.JSON = removeUndefinedAndNullValues(payload);
-
+  response.body.JSON = getSubscriptionPayload(subscription.listId, subscription.profile);
   return response;
 };
 
@@ -540,4 +679,7 @@ module.exports = {
   constructProfile,
   subscribeUserToListV2,
   getProfileMetadataAndMetadataFields,
+  batchEvents,
+  buildRequest,
+  buildSubscriptionRequest,
 };

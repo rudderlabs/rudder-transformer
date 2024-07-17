@@ -4,19 +4,22 @@
 const get = require('get-value');
 const { ConfigurationError, InstrumentationError } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
-const { CONFIG_CATEGORIES, BASE_ENDPOINT, MAPPING_CONFIG, revision } = require('./config');
-const { batchSubscribeEvents, constructProfile, subscribeUserToListV2 } = require('./util');
+const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require('./config');
 const {
-  defaultRequestConfig,
+  batchEvents,
+  constructProfile,
+  subscribeUserToListV2,
+  buildRequest,
+  buildSubscriptionRequest,
+} = require('./util');
+const {
   constructPayload,
   getFieldValueFromMessage,
-  defaultPostRequestConfig,
   removeUndefinedAndNullValues,
   getSuccessRespEvents,
   handleRtTfSingleEventError,
   flattenJson,
 } = require('../../util');
-const { JSON_MIME_TYPE } = require('../../util/constant');
 
 /**
  * Main Identify request handler func
@@ -27,33 +30,20 @@ const { JSON_MIME_TYPE } = require('../../util/constant');
  * @param {*} message
  * @param {*} category
  * @param {*} destination
- * @returns
+ * @returns one object with keys profile and subscription(conditional) and values as objects
  */
 const identifyRequestHandler = (message, category, destination) => {
   // If listId property is present try to subscribe/member user in list
-  const { privateApiKey, listId } = destination.Config;
+  const { listId } = destination.Config;
   const payload = removeUndefinedAndNullValues(constructProfile(message, destination, true));
-  const endpoint = `${BASE_ENDPOINT}${category.apiUrl}`;
-  const requestOptions = {
-    headers: {
-      Authorization: `Klaviyo-API-Key ${privateApiKey}`,
-      Accept: JSON_MIME_TYPE,
-      'Content-Type': JSON_MIME_TYPE,
-      revision,
-    },
-  };
-  const profileRequest = defaultRequestConfig();
-  profileRequest.endpoint = endpoint;
-  profileRequest.body.JSON = payload;
-  profileRequest.headers = requestOptions.headers;
-  let responseList = profileRequest;
+  const response = { profile: payload };
   const traitsInfo = getFieldValueFromMessage(message, 'traits');
   // check if user wants to subscribe profile or not and listId is present or not
   if (traitsInfo?.properties?.subscribe && (traitsInfo.properties?.listId || listId)) {
-    responseList = [responseList, subscribeUserToListV2(message, traitsInfo, destination)];
+    response.subscription = subscribeUserToListV2(message, traitsInfo, destination);
   }
   // returning list if subscription to a list is to be done else returning an object to upsert profile
-  return responseList;
+  return response;
 };
 
 /**
@@ -63,11 +53,10 @@ const identifyRequestHandler = (message, category, destination) => {
  * @param {*} message
  * @param {*} category
  * @param {*} destination
- * @returns requestBody
+ * @returns event request
  */
 const trackOrScreenRequestHandler = (message, category, destination) => {
-  const payload = {};
-  const { privateApiKey, flattenProperties } = destination.Config;
+  const { flattenProperties } = destination.Config;
   // event for track and name for screen call
   const event = get(message, 'event') || get(message, 'name');
   if (event && typeof event !== 'string') {
@@ -90,18 +79,7 @@ const trackOrScreenRequestHandler = (message, category, destination) => {
       },
     },
   };
-  payload.data = { type: 'event', attributes };
-  const response = defaultRequestConfig();
-  response.endpoint = `${BASE_ENDPOINT}${category.apiUrl}`;
-  response.method = defaultPostRequestConfig.requestMethod;
-  response.headers = {
-    Authorization: `Klaviyo-API-Key ${privateApiKey}`,
-    Accept: JSON_MIME_TYPE,
-    'Content-Type': JSON_MIME_TYPE,
-    revision,
-  };
-  response.body.JSON = removeUndefinedAndNullValues(payload);
-  return response;
+  return { event: { data: { type: 'event', attributes } } };
 };
 
 /**
@@ -110,7 +88,7 @@ const trackOrScreenRequestHandler = (message, category, destination) => {
  * @param {*} message
  * @param {*} category
  * @param {*} destination
- * @returns
+ * @returns subscription object
  */
 const groupRequestHandler = (message, category, destination) => {
   if (!message.groupId) {
@@ -121,10 +99,10 @@ const groupRequestHandler = (message, category, destination) => {
     throw new InstrumentationError('Subscribe flag should be true for group call');
   }
 
-  return [subscribeUserToListV2(message, traitsInfo, destination)];
+  return { subscription: subscribeUserToListV2(message, traitsInfo, destination) };
 };
 
-const processV2 = async (event) => {
+const processEvent = (event) => {
   const { message, destination } = event;
   if (!message.type) {
     throw new InstrumentationError('Event type is required');
@@ -156,63 +134,83 @@ const processV2 = async (event) => {
   return response;
 };
 
-// This function separates subscribe response and other responses in chunks
-const getEventChunks = (event, subscribeRespList, nonSubscribeRespList) => {
-  if (Array.isArray(event.message)) {
-    // this list contains responses for subscribe endpoint
-    subscribeRespList.push(event);
-  } else {
-    // this list doesn't contain subsribe endpoint responses
-    nonSubscribeRespList.push(event);
+const processV2 = (event) => {
+  const response = processEvent(event);
+  const { destination } = event;
+  const respList = [];
+  if (response.profile) {
+    respList.push(buildRequest(response.profile, destination, CONFIG_CATEGORIES.IDENTIFYV2));
+  }
+  if (response.subscription) {
+    respList.push(
+      buildSubscriptionRequest(response.subscription, destination, CONFIG_CATEGORIES.TRACKV2),
+    );
+  }
+  if (response.event) {
+    respList.push(buildRequest(response.event, destination, CONFIG_CATEGORIES.TRACKV2));
+  }
+  return respList;
+};
+
+// This function separates subscribe, proifle and event responses from process () and other responses in chunks
+const getEventChunks = (input, subscribeRespList, profileRespList, eventRespList) => {
+  if (input.payload.subscription) {
+    subscribeRespList.push({ payload: input.payload.subscription, metadata: input.metadata });
+  }
+  if (input.payload.profile) {
+    profileRespList.push({ payload: input.payload.profile, metadata: input.metadata });
+  }
+  if (input.payload.event) {
+    eventRespList.push({ payload: input.payload.event, metadata: input.metadata });
   }
 };
 
-const processRouterDestV2 = async (inputs, reqMetadata) => {
+const processRouterDestV2 = (inputs, reqMetadata) => {
   let batchResponseList = [];
   const batchErrorRespList = [];
   const subscribeRespList = [];
-  const nonSubscribeRespList = [];
+  const profileRespList = [];
+  const eventRespList = [];
   const { destination } = inputs[0];
-  await Promise.all(
-    inputs.map(async (event) => {
-      try {
-        if (event.message.statusCode) {
-          // already transformed event
-          getEventChunks(
-            { message: event.message, metadata: event.metadata, destination },
-            subscribeRespList,
-            nonSubscribeRespList,
-          );
-        } else {
-          // if not transformed
-          getEventChunks(
-            {
-              message: await processV2(event),
-              metadata: event.metadata,
-              destination,
-            },
-            subscribeRespList,
-            nonSubscribeRespList,
-          );
-        }
-      } catch (error) {
-        const errRespEvent = handleRtTfSingleEventError(event, error, reqMetadata);
-        batchErrorRespList.push(errRespEvent);
+  inputs.map((event) => {
+    try {
+      if (event.message.statusCode) {
+        // already transformed event
+        getEventChunks(
+          { message: event.message, metadata: event.metadata, destination },
+          subscribeRespList,
+          profileRespList,
+          eventRespList,
+        );
+      } else {
+        // if not transformed
+        getEventChunks(
+          {
+            payload: processEvent(event),
+            metadata: event.metadata,
+          },
+          subscribeRespList,
+          profileRespList,
+          eventRespList,
+        );
       }
-    }),
-  );
-  const batchedSubscribeResponseList = [];
-  if (subscribeRespList.length > 0) {
-    const batchedResponseList = batchSubscribeEvents(subscribeRespList, 'v2');
-    batchedSubscribeResponseList.push(...batchedResponseList);
-  }
-  const nonSubscribeSuccessList = nonSubscribeRespList.map((resp) => {
-    const response = resp;
-    const { message, metadata, destination: eventDestination } = response;
-    return getSuccessRespEvents(message, [metadata], eventDestination);
+    } catch (error) {
+      const errRespEvent = handleRtTfSingleEventError(event, error, reqMetadata);
+      batchErrorRespList.push(errRespEvent);
+    }
+  });
+  const batchedResponseList = batchEvents(subscribeRespList, profileRespList, destination);
+  // building and pushing all the event requests
+  const eventRequestList = eventRespList.map((resp) => {
+    const { payload, metadata } = resp;
+    return getSuccessRespEvents(
+      buildRequest(payload, destination, CONFIG_CATEGORIES.TRACKV2),
+      [metadata],
+      destination,
+    );
   });
 
-  batchResponseList = [...batchedSubscribeResponseList, ...nonSubscribeSuccessList];
+  batchResponseList = [...batchedResponseList, ...eventRequestList];
 
   return [...batchResponseList, ...batchErrorRespList];
 };

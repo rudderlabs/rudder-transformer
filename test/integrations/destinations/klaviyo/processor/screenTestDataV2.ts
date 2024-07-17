@@ -26,9 +26,9 @@ const destination: Destination = {
 
 export const screenTestData: ProcessorTestData[] = [
   {
-    id: 'klaviyo-screen-test-1',
+    id: 'klaviyo-screen-150624-test-1',
     name: 'klaviyo',
-    description: 'Screen event call with properties and contextual traits',
+    description: '150624 -> Screen event call with properties and contextual traits',
     scenario: 'Business',
     successCriteria:
       'Response should contain only event payload and status code should be 200, for the event payload should contain properties and contextual traits in the payload',

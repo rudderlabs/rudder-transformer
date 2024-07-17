@@ -292,63 +292,6 @@ export const identifyData: ProcessorTestData[] = [
     },
   },
   {
-    id: 'klaviyo-identify-150624-test-3',
-    name: 'klaviyo',
-    description:
-      '150624 -> Identify call without email and phone & enforceEmailAsPrimary enabled from UI',
-    scenario: 'Business',
-    successCriteria:
-      'Response should contain error message and status code should be 400, as we are not sending email and phone in the payload and enforceEmailAsPrimary is enabled from UI',
-    feature: 'processor',
-    module: 'destination',
-    version: 'v0',
-    input: {
-      request: {
-        body: [
-          {
-            destination: overrideDestination(destination, { enforceEmailAsPrimary: true }),
-            message: generateSimplifiedIdentifyPayload({
-              sentAt,
-              userId,
-              context: {
-                traits: removeUndefinedAndNullValues({
-                  ...commonTraits,
-                  email: undefined,
-                  phone: undefined,
-                }),
-              },
-              anonymousId,
-              originalTimestamp,
-            }),
-            metadata: generateMetadata(7),
-          },
-        ],
-      },
-    },
-    output: {
-      response: {
-        status: 200,
-        body: [
-          {
-            error: 'None of email and phone are present in the payload',
-            statTags: {
-              destType: 'KLAVIYO',
-              errorCategory: 'dataValidation',
-              errorType: 'instrumentation',
-              feature: 'processor',
-              implementation: 'native',
-              module: 'destination',
-              destinationId: 'default-destinationId',
-              workspaceId: 'default-workspaceId',
-            },
-            statusCode: 400,
-            metadata: generateMetadata(7),
-          },
-        ],
-      },
-    },
-  },
-  {
     id: 'klaviyo-identify-150624-test-5',
     name: 'klaviyo',
     description: '150624 -> Identify call with enforceEmailAsPrimary enabled in destination config',

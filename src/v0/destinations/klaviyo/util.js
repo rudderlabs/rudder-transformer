@@ -448,9 +448,6 @@ const constructProfile = (message, destination, isIdentifyCall) => {
     ? flattenJson(customPropertyPayload, '.', 'normal', false)
     : customPropertyPayload;
   if (enforceEmailAsPrimary) {
-    if (!profileAttributes.email && !profileAttributes.phone_number && !profileId) {
-      throw new InstrumentationError('None of email and phone are present in the payload');
-    }
     delete profileAttributes.external_id; // so that multiple profiles are not found, one w.r.t email and one for external_id
     customPropertyPayload = {
       ...customPropertyPayload,

@@ -3,10 +3,6 @@ output:
     JSON:
       anonymousId: 'abc123'
       userId: '123'
-      traits: 
-        name: 'John Doe'
-        email: 'johndoe@gmail.com'
-        age: 25
       timestamp: '2022-01-20T13:39:21.032Z'
     JSON_ARRAY: {}
     XML: {}

@@ -1,18 +1,18 @@
-metadata: 
-  jobId: 2
-  destinationId: '2JIqVoWNvSOHa9ppKOqSoxxx' 
-  sourceId: '2ifsnRxzoONtZeIoGxgNWsr4xx'
-  sourceCategory: ''
-  attemptNum: 0
-  receivedAt: '2024-07-17T16:45:40.114+05:30'
-  createdAt: '2024-07-17T11:15:41.140Z'
-  firstAttemptedAt: ''
-  transformAt: 'router'
-  workspaceId: '2hSS1hZ8kuCpUZAAYsQucAFdxxx'
-  secret: null
-  workerAssignedTime: '2024-07-17T16:45:41.264239+05:30'
-  dontBatch: false
-  traceparent: ''
+metadata:
+  - jobId: 2
+    destinationId: '2JIqVoWNvSOHa9ppKOqSoxxx'
+    sourceId: '2ifsnRxzoONtZeIoGxgNWsr4xx'
+    sourceCategory: ''
+    attemptNum: 0
+    receivedAt: '2024-07-17T16:45:40.114+05:30'
+    createdAt: '2024-07-17T11:15:41.140Z'
+    firstAttemptedAt: ''
+    transformAt: 'router'
+    workspaceId: '2hSS1hZ8kuCpUZAAYsQucAFdxxx'
+    secret: null
+    workerAssignedTime: '2024-07-17T16:45:41.264239+05:30'
+    dontBatch: false
+    traceparent: ''
 destination:
   DestinationDefinition:
     ID: '1s0w2bMAleYngscZRgH1Exx'

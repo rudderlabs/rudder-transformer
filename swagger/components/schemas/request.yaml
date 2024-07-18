@@ -1,5 +1,5 @@
 title: request
 type: object
-properties:
+parameters:
   query:
   type: string

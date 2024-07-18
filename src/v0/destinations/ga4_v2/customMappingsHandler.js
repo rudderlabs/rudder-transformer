@@ -14,7 +14,7 @@ const {
   prepareUserProperties,
   sanitizeUserProperties,
 } = require('../ga4/utils');
-const { InstrumentationError } = require('@rudderstack/integrations-lib');
+const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const {
   removeUndefinedAndNullRecurse,
   constructPayload,
@@ -121,7 +121,7 @@ const handleCustomMappings = (message, Config) => {
     try {
       ga4MappedPayload = applyCustomMappings(message, eventPropertiesMappings);
     } catch (e) {
-      throw new InstrumentationError(`[GA4]:: Error in custom mappings: ${e.message}`);
+      throw new ConfigurationError(`[GA4]:: Error in custom mappings: ${e.message}`);
     }
 
     removeUndefinedAndNullRecurse(ga4MappedPayload);

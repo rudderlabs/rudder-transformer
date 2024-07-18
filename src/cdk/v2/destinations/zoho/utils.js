@@ -113,6 +113,12 @@ const searchRecordId = async (fields, metadata, Config) => {
       message: searchResult.processedResponse.response,
     };
   }
+  if (searchResult.processedResponse.status === 204) {
+    return {
+      erroneous: true,
+      message: 'No contact is found with record details',
+    };
+  }
   const recordIds = searchResult.processedResponse.response.data.map((record) => record.id);
   return {
     erroneous: false,

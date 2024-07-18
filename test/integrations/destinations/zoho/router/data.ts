@@ -1,7 +1,4 @@
 import { upsertData } from './upsert';
-// import { deleteData } from './deletion';
+import { deleteData } from './deletion';
 
-export const data = [
-  ...upsertData,
-  // ...deleteData
-];
+export const data = [...upsertData, ...deleteData];

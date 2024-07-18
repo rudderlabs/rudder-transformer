@@ -7,40 +7,68 @@ const {
 const { isHttpStatusSuccess, getAuthErrCategoryFromStCode } = require('../../../v0/util/index');
 const tags = require('../../../v0/util/tags');
 
-// {
-//   "data": [
-//       {
-//           "code": "INVALID_DATA",
-//           "details": {
-//               "expected_data_type": "integer",
-//               "api_name": "No_of_Employees",
-//               "json_path": "$.data[0].No_of_Employees"
-//           },
-//           "message": "invalid data",
-//           "status": "error"
-//       },
-//       {
-//           "code": "SUCCESS",
-//           "duplicate_field": "Email",
-//           "action": "update",
-//           "details": {
-//               "Modified_Time": "2024-07-14T10:54:15+05:30",
-//               "Modified_By": {
-//                   "name": "dummy user",
-//                   "id": "724445000000323001"
-//               },
-//               "Created_Time": "2024-07-01T21:25:36+05:30",
-//               "id": "724445000000349039",
-//               "Created_By": {
-//                   "name": "dummy user",
-//                   "id": "724445000000323001"
-//               }
-//           },
-//           "message": "record updated",
-//           "status": "success"
-//       }
-//   ]
-// }
+/**
+ * upsert response : 
+ 
+   {
+  "data": [
+      {
+          "code": "INVALID_DATA",
+          "details": {
+              "expected_data_type": "integer",
+              "api_name": "No_of_Employees",
+              "json_path": "$.data[0].No_of_Employees"
+          },
+          "message": "invalid data",
+          "status": "error"
+      },
+      {
+          "code": "SUCCESS",
+          "duplicate_field": "Email",
+          "action": "update",
+          "details": {
+              "Modified_Time": "2024-07-14T10:54:15+05:30",
+              "Modified_By": {
+                  "name": "dummy user",
+                  "id": "724445000000323001"
+              },
+              "Created_Time": "2024-07-01T21:25:36+05:30",
+              "id": "724445000000349039",
+              "Created_By": {
+                  "name": "dummy user",
+                  "id": "724445000000323001"
+              }
+          },
+          "message": "record updated",
+          "status": "success"
+      }
+  ]
+}
+
+* delete response :
+
+  {
+    "data": [
+        {
+            "code": "SUCCESS",
+            "details": {
+                "id": "724445000000445001"
+            },
+            "message": "record deleted",
+            "status": "success"
+        },
+        {
+            "code": "INVALID_DATA",
+            "details": {
+                "id": "724445000000323001"
+            },
+            "message": "record not deleted",
+            "status": "error"
+        }
+    ]
+}
+ */
+
 const checkIfEventIsAbortableAndExtractErrorMessage = (element) => {
   if (element.status === 'success') {
     return { isAbortable: false, errorMsg: '' };

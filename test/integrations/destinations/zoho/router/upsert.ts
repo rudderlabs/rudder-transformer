@@ -42,6 +42,9 @@ export const upsertData = [
               metadata: {
                 jobId: 1,
                 userId: 'u1',
+                secret: {
+                  accessToken: 'correct-access-token',
+                },
               },
               destination: {
                 DestinationDefinition: {
@@ -105,6 +108,9 @@ export const upsertData = [
               metadata: {
                 jobId: 2,
                 userId: 'u1',
+                secret: {
+                  accessToken: 'correct-access-token',
+                },
               },
               destination: {
                 DestinationDefinition: {
@@ -154,7 +160,9 @@ export const upsertData = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://www.zohoapis.com/crm/v6/LEADS/upsert',
-                headers: {},
+                headers: {
+                  Authorization: 'Zoho-oauthtoken correct-access-token',
+                },
                 params: {},
                 body: {
                   JSON: {
@@ -188,10 +196,16 @@ export const upsertData = [
                 {
                   jobId: 1,
                   userId: 'u1',
+                  secret: {
+                    accessToken: 'correct-access-token',
+                  },
                 },
                 {
                   jobId: 2,
                   userId: 'u1',
+                  secret: {
+                    accessToken: 'correct-access-token',
+                  },
                 },
               ],
               batched: true,
@@ -273,6 +287,9 @@ export const upsertData = [
               metadata: {
                 jobId: 1,
                 userId: 'u1',
+                secret: {
+                  accessToken: 'correct-access-token',
+                },
               },
               destination: {
                 DestinationDefinition: {
@@ -336,6 +353,9 @@ export const upsertData = [
               metadata: {
                 jobId: 2,
                 userId: 'u1',
+                secret: {
+                  accessToken: 'correct-access-token',
+                },
               },
               destination: {
                 DestinationDefinition: {
@@ -385,7 +405,9 @@ export const upsertData = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://www.zohoapis.com/crm/v6/LEADS/upsert',
-                headers: {},
+                headers: {
+                  Authorization: 'Zoho-oauthtoken correct-access-token',
+                },
                 params: {},
                 body: {
                   JSON: {
@@ -407,6 +429,7 @@ export const upsertData = [
                       'multi-language': 'true',
                       'multi class': 'false',
                     },
+                    trigger: [],
                   },
                   JSON_ARRAY: {},
                   XML: {},
@@ -418,10 +441,16 @@ export const upsertData = [
                 {
                   jobId: 1,
                   userId: 'u1',
+                  secret: {
+                    accessToken: 'correct-access-token',
+                  },
                 },
                 {
                   jobId: 2,
                   userId: 'u1',
+                  secret: {
+                    accessToken: 'correct-access-token',
+                  },
                 },
               ],
               batched: true,
@@ -504,6 +533,9 @@ export const upsertData = [
               metadata: {
                 jobId: 1,
                 userId: 'u1',
+                secret: {
+                  accessToken: 'correct-access-token',
+                },
               },
               destination: {
                 DestinationDefinition: {
@@ -568,6 +600,9 @@ export const upsertData = [
               metadata: {
                 jobId: 2,
                 userId: 'u1',
+                secret: {
+                  accessToken: 'correct-access-token',
+                },
               },
               destination: {
                 DestinationDefinition: {
@@ -617,7 +652,9 @@ export const upsertData = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://www.zohoapis.com/crm/v6/CUSTOM/upsert',
-                headers: {},
+                headers: {
+                  Authorization: 'Zoho-oauthtoken correct-access-token',
+                },
                 params: {},
                 body: {
                   JSON: {
@@ -641,6 +678,7 @@ export const upsertData = [
                       'multi-language': 'true',
                       'multi class': 'false',
                     },
+                    trigger: [],
                   },
                   JSON_ARRAY: {},
                   XML: {},
@@ -652,10 +690,16 @@ export const upsertData = [
                 {
                   jobId: 1,
                   userId: 'u1',
+                  secret: {
+                    accessToken: 'correct-access-token',
+                  },
                 },
                 {
                   jobId: 2,
                   userId: 'u1',
+                  secret: {
+                    accessToken: 'correct-access-token',
+                  },
                 },
               ],
               batched: true,
@@ -737,6 +781,9 @@ export const upsertData = [
               metadata: {
                 jobId: 1,
                 userId: 'u1',
+                secret: {
+                  accessToken: 'correct-access-token',
+                },
               },
               destination: {
                 DestinationDefinition: {
@@ -797,6 +844,9 @@ export const upsertData = [
               metadata: {
                 jobId: 2,
                 userId: 'u1',
+                secret: {
+                  accessToken: 'correct-access-token',
+                },
               },
               destination: {
                 DestinationDefinition: {
@@ -846,7 +896,9 @@ export const upsertData = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://www.zohoapis.com/crm/v6/Leads/upsert',
-                headers: {},
+                headers: {
+                  Authorization: 'Zoho-oauthtoken correct-access-token',
+                },
                 params: {},
                 body: {
                   JSON: {
@@ -875,6 +927,9 @@ export const upsertData = [
                 {
                   jobId: 1,
                   userId: 'u1',
+                  secret: {
+                    accessToken: 'correct-access-token',
+                  },
                 },
               ],
               batched: true,
@@ -915,6 +970,9 @@ export const upsertData = [
                 {
                   jobId: 2,
                   userId: 'u1',
+                  secret: {
+                    accessToken: 'correct-access-token',
+                  },
                 },
               ],
               batched: false,
@@ -1005,6 +1063,9 @@ export const upsertData = [
               metadata: {
                 jobId: 1,
                 userId: 'u1',
+                secret: {
+                  accessToken: 'correct-access-token',
+                },
               },
               destination: {
                 DestinationDefinition: {
@@ -1044,7 +1105,9 @@ export const upsertData = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://www.zohoapis.com/crm/v6/Leads/upsert',
-                headers: {},
+                headers: {
+                  Authorization: 'Zoho-oauthtoken correct-access-token',
+                },
                 params: {},
                 body: {
                   JSON: {
@@ -1069,6 +1132,9 @@ export const upsertData = [
                 {
                   jobId: 1,
                   userId: 'u1',
+                  secret: {
+                    accessToken: 'correct-access-token',
+                  },
                 },
               ],
               batched: true,
@@ -1140,6 +1206,9 @@ export const upsertData = [
               metadata: {
                 jobId: 1,
                 userId: 'u1',
+                secret: {
+                  accessToken: 'correct-access-token',
+                },
               },
               destination: {
                 DestinationDefinition: {
@@ -1192,6 +1261,9 @@ export const upsertData = [
               metadata: {
                 jobId: 2,
                 userId: 'u1',
+                secret: {
+                  accessToken: 'correct-access-token',
+                },
               },
               destination: {
                 DestinationDefinition: {
@@ -1244,6 +1316,9 @@ export const upsertData = [
               metadata: {
                 jobId: 3,
                 userId: 'u1',
+                secret: {
+                  accessToken: 'correct-access-token',
+                },
               },
               destination: {
                 DestinationDefinition: {
@@ -1283,7 +1358,9 @@ export const upsertData = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://www.zohoapis.com/crm/v6/Leads/upsert',
-                headers: {},
+                headers: {
+                  Authorization: 'Zoho-oauthtoken correct-access-token',
+                },
                 params: {},
                 body: {
                   JSON: {
@@ -1313,10 +1390,16 @@ export const upsertData = [
                 {
                   jobId: 1,
                   userId: 'u1',
+                  secret: {
+                    accessToken: 'correct-access-token',
+                  },
                 },
                 {
                   jobId: 2,
                   userId: 'u1',
+                  secret: {
+                    accessToken: 'correct-access-token',
+                  },
                 },
               ],
               batched: true,
@@ -1348,7 +1431,9 @@ export const upsertData = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://www.zohoapis.com/crm/v6/Leads/upsert',
-                headers: {},
+                headers: {
+                  Authorization: 'Zoho-oauthtoken correct-access-token',
+                },
                 params: {},
                 body: {
                   JSON: {
@@ -1373,6 +1458,9 @@ export const upsertData = [
                 {
                   jobId: 3,
                   userId: 'u1',
+                  secret: {
+                    accessToken: 'correct-access-token',
+                  },
                 },
               ],
               batched: true,

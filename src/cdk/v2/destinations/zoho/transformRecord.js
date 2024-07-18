@@ -2,6 +2,7 @@ const {
   InstrumentationError,
   getHashFromArray,
   ConfigurationError,
+  RetryableError,
 } = require('@rudderstack/integrations-lib');
 const { BatchUtils } = require('@rudderstack/workflow-engine');
 const {
@@ -11,6 +12,7 @@ const {
   removeUndefinedAndNullValues,
   handleRtTfSingleEventError,
   isEmptyObject,
+  defaultDeleteRequestConfig,
 } = require('../../../../v0/util');
 const zohoConfig = require('./config');
 const {
@@ -19,85 +21,102 @@ const {
   formatMultiSelectFields,
   handleDuplicateCheck,
   searchRecordId,
+  calculateTrigger,
 } = require('./utils');
+const { REFRESH_TOKEN } = require('../../../../adapters/networkhandler/authConstants');
 
 // Main response builder function
-const responseBuilder = (items, config, identifierType, operationModuleType, upsertEndPoint) => {
+const responseBuilder = (
+  items,
+  config,
+  identifierType,
+  operationModuleType,
+  commonEndPoint,
+  action,
+  metadata,
+) => {
   const { trigger, addDefaultDuplicateCheck, multiSelectFieldLevelDecision } = config;
 
-  const payload = {
-    duplicate_check_fields: handleDuplicateCheck(
-      addDefaultDuplicateCheck,
-      identifierType,
-      operationModuleType,
-    ),
-    data: items,
-    $append_values: getHashFromArray(multiSelectFieldLevelDecision, 'from', 'to', false),
-    trigger: trigger === 'None' ? null : [trigger],
+  const response = defaultRequestConfig();
+  response.headers = {
+    Authorization: `Zoho-oauthtoken ${metadata[0].secret.accessToken}`,
   };
 
-  const response = defaultRequestConfig();
-  response.endpoint = upsertEndPoint;
-  response.method = defaultPostRequestConfig.requestMethod;
-  response.body.JSON = removeUndefinedAndNullValues(payload);
+  if (action === 'insert' || action === 'update') {
+    const payload = {
+      duplicate_check_fields: handleDuplicateCheck(
+        addDefaultDuplicateCheck,
+        identifierType,
+        operationModuleType,
+      ),
+      data: items,
+      $append_values: getHashFromArray(multiSelectFieldLevelDecision, 'from', 'to', false),
+      trigger: calculateTrigger(trigger),
+    };
+    response.method = defaultPostRequestConfig.requestMethod;
+    response.body.JSON = removeUndefinedAndNullValues(payload);
+    response.endpoint = `${commonEndPoint}/upsert`;
+  } else {
+    response.endpoint = `${commonEndPoint}?ids=${items.join(',')}&wf_trigger=${trigger !== 'None'}`;
+    response.method = defaultDeleteRequestConfig.requestMethod;
+  }
 
   return response;
 };
 const batchResponseBuilder = (
-  // items,
   transformedResponseToBeBatched,
   config,
   identifierType,
   operationModuleType,
   upsertEndPoint,
-  // successMetadata,
+  action,
 ) => {
   const upsertResponseArray = [];
   const deletionResponseArray = [];
   const { upsertData, deletionData, upsertSuccessMetadata, deletionSuccessMetadata } =
     transformedResponseToBeBatched;
 
-  // const batchedDataChunks = {
-  //   upsertDataChunks: BatchUtils.chunkArrayBySizeAndLength(upsertData, {
-  //     // eslint-disable-next-line unicorn/consistent-destructuring
-  //     maxItems: zohoConfig.MAX_BATCH_SIZE,
-  //   }),
-  //   deletionDataChunks: BatchUtils.chunkArrayBySizeAndLength(deletionData, {
-  //     // eslint-disable-next-line unicorn/consistent-destructuring
-  //     maxItems: zohoConfig.MAX_BATCH_SIZE,
-  //   }),
-  // };
-
   const upsertDataChunks = BatchUtils.chunkArrayBySizeAndLength(upsertData, {
-    // eslint-disable-next-line unicorn/consistent-destructuring
     maxItems: zohoConfig.MAX_BATCH_SIZE,
   });
 
   const deletionDataChunks = BatchUtils.chunkArrayBySizeAndLength(deletionData, {
-    // eslint-disable-next-line unicorn/consistent-destructuring
     maxItems: zohoConfig.MAX_BATCH_SIZE,
   });
 
-  // TODO : have to deal metadata grouping as well.
   const upsertmetadataChunks = BatchUtils.chunkArrayBySizeAndLength(upsertSuccessMetadata, {
-    // eslint-disable-next-line unicorn/consistent-destructuring
     maxItems: zohoConfig.MAX_BATCH_SIZE,
   });
 
   const deletionmetadataChunks = BatchUtils.chunkArrayBySizeAndLength(deletionSuccessMetadata, {
-    // eslint-disable-next-line unicorn/consistent-destructuring
     maxItems: zohoConfig.MAX_BATCH_SIZE,
   });
 
   upsertDataChunks.items.forEach((chunk) => {
     upsertResponseArray.push(
-      responseBuilder(chunk, config, identifierType, operationModuleType, upsertEndPoint),
+      responseBuilder(
+        chunk,
+        config,
+        identifierType,
+        operationModuleType,
+        upsertEndPoint,
+        action,
+        upsertmetadataChunks.items[0],
+      ),
     );
   });
 
   deletionDataChunks.items.forEach((chunk) => {
     deletionResponseArray.push(
-      responseBuilder(chunk, config, identifierType, operationModuleType, upsertEndPoint),
+      responseBuilder(
+        chunk,
+        config,
+        identifierType,
+        operationModuleType,
+        upsertEndPoint,
+        action,
+        deletionmetadataChunks.items[0],
+      ),
     );
   });
 
@@ -108,8 +127,7 @@ const batchResponseBuilder = (
     deletionmetadataChunks,
   };
 };
-const processRecordInputs = (inputs, destination) => {
-  let recordIds;
+const processRecordInputs = async (inputs, destination) => {
   const response = [];
   const { Config } = destination;
   const transformedResponseToBeBatched = {
@@ -118,36 +136,27 @@ const processRecordInputs = (inputs, destination) => {
     deletionSuccessMetadata: [],
     deletionData: [],
   };
-  // const data = [];
-  // const successMetadata = [];
+
+  const { action } = inputs[0].message;
   const errorResponseList = [];
 
   if (!inputs || inputs.length === 0) {
     return [];
   }
 
-  const invalidActionTypeError = new InstrumentationError(
-    'Invalid action type. You can only add or remove IDs from the audience/segment',
-  );
   const emptyFieldsError = new InstrumentationError('`fields` cannot be empty');
 
   const { operationModuleType, identifierType, upsertEndPoint } = deduceModuleInfo(inputs, Config);
 
-  inputs.forEach((input) => {
-    const { fields, action } = input.message;
-    const isInsertOrDelete = action === 'insert' || action === 'delete';
-
-    if (!isInsertOrDelete) {
-      errorResponseList.push(handleRtTfSingleEventError(input, invalidActionTypeError, {}));
-      return;
-    }
+  const processInput = async (input) => {
+    const { fields } = input.message;
 
     if (isEmptyObject(fields)) {
       errorResponseList.push(handleRtTfSingleEventError(input, emptyFieldsError, {}));
       return;
     }
 
-    if (action === 'insert') {
+    if (action === 'insert' || action === 'update') {
       const eventErroneous = validatePresenceOfMandatoryProperties(operationModuleType, fields);
 
       if (eventErroneous && eventErroneous.status) {
@@ -161,17 +170,33 @@ const processRecordInputs = (inputs, destination) => {
         transformedResponseToBeBatched.upsertData.push({
           ...formattedFields,
         });
-        // data.push({
-        //   ...formattedFields,
-        // });
       }
     } else {
       // for record deletion
-      recordIds = searchRecordId(fields, input.metadata);
-      transformedResponseToBeBatched.deletionData.push(...recordIds);
-      transformedResponseToBeBatched.deletionSuccessMetadata.push(input.metadata);
+      let error;
+      const searchResponse = await searchRecordId(fields, input.metadata, Config);
+      if (searchResponse.erroneous) {
+        if (searchResponse.message.code === 'INVALID_TOKEN') {
+          error = new RetryableError(
+            `[Zoho]:: ${JSON.stringify(searchResponse.message)} during zoho record search`,
+            500,
+            response,
+            REFRESH_TOKEN,
+          );
+        } else {
+          error = new ConfigurationError(
+            `failed to fetch zoho id for record for ${JSON.stringify(searchResponse.message)}`,
+          );
+        }
+        errorResponseList.push(handleRtTfSingleEventError(input, error, {}));
+      } else {
+        transformedResponseToBeBatched.deletionData.push(...searchResponse.message);
+        transformedResponseToBeBatched.deletionSuccessMetadata.push(input.metadata);
+      }
     }
-  });
+  };
+
+  await Promise.all(inputs.map(processInput));
 
   const {
     upsertResponseArray,
@@ -184,8 +209,9 @@ const processRecordInputs = (inputs, destination) => {
     identifierType,
     operationModuleType,
     upsertEndPoint,
-    // successMetadata,
+    action,
   );
+
   if (upsertResponseArray.length === 0 && deletionResponseArray.length === 0) {
     return errorResponseList;
   }

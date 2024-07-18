@@ -4,7 +4,7 @@ const {
   isDefinedAndNotNull,
 } = require('@rudderstack/integrations-lib');
 const get = require('get-value');
-const { getDestinationExternalIDInfoForRetl } = require('../../../../v0/util');
+const { getDestinationExternalIDInfoForRetl, isHttpStatusSuccess } = require('../../../../v0/util');
 const zohoConfig = require('./config');
 const { handleHttpRequest } = require('../../../../adapters/network');
 
@@ -19,7 +19,7 @@ const deduceModuleInfo = (inputs, Config) => {
     );
     operationModuleInfo.operationModuleType = objectType;
     operationModuleInfo.upsertEndPoint = zohoConfig
-      .UPSERT_RECORD_ENDPOINT(Config.region)
+      .COMMON_RECORD_ENDPOINT(Config.region)
       .replace('moduleType', objectType);
     operationModuleInfo.identifierType = identifierType;
   }
@@ -87,12 +87,18 @@ function transformToURLParams(fields, Config) {
 
   return `${regionBasedEndPoint}/crm/v6/Leads/search?criteria=${criteria}`;
 }
-const searchRecordId = async (fields, metadata) => {
-  const searchURL = transformToURLParams(fields);
+
+// ref : https://www.zoho.com/crm/developer/docs/api/v6/search-records.html
+const searchRecordId = async (fields, metadata, Config) => {
+  const searchURL = transformToURLParams(fields, Config);
   const searchResult = await handleHttpRequest(
     'get',
     searchURL,
-    { Authorization: `Zoho-oauthtoken ${metadata.secret.accessToken}` },
+    {
+      headers: {
+        Authorization: `Zoho-oauthtoken ${metadata.secret.accessToken}`,
+      },
+    },
     {
       destType: 'zoho',
       feature: 'deleteRecords',
@@ -101,10 +107,29 @@ const searchRecordId = async (fields, metadata) => {
       module: 'router',
     },
   );
-  const recordIds = searchResult.response.data.map((record) => record.id);
-  return recordIds;
+  if (!isHttpStatusSuccess(searchResult.processedResponse.status)) {
+    return {
+      erroneous: true,
+      message: searchResult.processedResponse.response,
+    };
+  }
+  const recordIds = searchResult.processedResponse.response.data.map((record) => record.id);
+  return {
+    erroneous: false,
+    message: recordIds,
+  };
 };
 
+// ref : https://www.zoho.com/crm/developer/docs/api/v6/upsert-records.html#:~:text=The%20trigger%20input%20can%20be%20workflow%2C%20approval%2C%20or%20blueprint.%20If%20the%20trigger%20is%20not%20mentioned%2C%20the%20workflows%2C%20approvals%20and%20blueprints%20related%20to%20the%20API%20will%20get%20executed.%20Enter%20the%20trigger%20value%20as%20%5B%5D%20to%20not%20execute%20the%20workflows.
+const calculateTrigger = (trigger) => {
+  if (trigger === 'Default') {
+    return null;
+  }
+  if (trigger === 'None') {
+    return [];
+  }
+  return [trigger];
+};
 module.exports = {
   deduceModuleInfo,
   validatePresenceOfMandatoryProperties,
@@ -112,4 +137,5 @@ module.exports = {
   handleDuplicateCheck,
   searchRecordId,
   transformToURLParams,
+  calculateTrigger,
 };

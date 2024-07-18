@@ -13,10 +13,10 @@ const DATA_CENTRE_BASE_ENDPOINTS_MAP = {
 };
 
 const getBaseEndpoint = (dataServer) => DATA_CENTRE_BASE_ENDPOINTS_MAP[dataServer];
-const UPSERT_RECORD_ENDPOINT = (dataCenter = 'US') =>
-  `${getBaseEndpoint(dataCenter)}/crm/v6/moduleType/upsert`;
+const COMMON_RECORD_ENDPOINT = (dataCenter = 'US') =>
+  `${getBaseEndpoint(dataCenter)}/crm/v6/moduleType`;
 
-// const UPSERT_RECORD_ENDPOINT = 'https://www.zohoapis/crm/v6/moduleType/upsert';
+// const COMMON_RECORD_ENDPOINT = 'https://www.zohoapis/crm/v6/moduleType/upsert';
 // const RECORD_FIELD_INFO_ENDPOINT =
 //   'https://www.zohoapis/crm/v6/settings/fields?module=moduleType';
 
@@ -64,7 +64,7 @@ module.exports = {
   ACTION_TYPES,
   MAX_BATCH_SIZE: 100,
   DATA_CENTRE_BASE_ENDPOINTS_MAP,
-  UPSERT_RECORD_ENDPOINT,
+  COMMON_RECORD_ENDPOINT,
   MODULE_MANDATORY_FIELD_CONFIG,
   MODULE_WISE_DUPLICATE_CHECK_FIELD,
 };

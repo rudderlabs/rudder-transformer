@@ -117,7 +117,12 @@ const handleCustomMappings = (message, Config) => {
 
     const eventPropertiesMappings = mapping.eventProperties || [];
 
-    const ga4MappedPayload = applyCustomMappings(message, eventPropertiesMappings);
+    let ga4MappedPayload = {};
+    try {
+      ga4MappedPayload = applyCustomMappings(message, eventPropertiesMappings);
+    } catch (e) {
+      throw new InstrumentationError(`[GA4]:: Error in custom mappings: ${e.message}`);
+    }
 
     removeUndefinedAndNullRecurse(ga4MappedPayload);
 

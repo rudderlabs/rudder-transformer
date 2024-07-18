@@ -20,6 +20,7 @@ const {
   batchSubscribeEvents,
   getIdFromNewOrExistingProfile,
   profileUpdateResponseBuilder,
+  addSubcribeFlagToTraits,
 } = require('./util');
 const {
   defaultRequestConfig,
@@ -58,11 +59,13 @@ const identifyRequestHandler = async (
   // If listId property is present try to subscribe/member user in list
   const { privateApiKey, enforceEmailAsPrimary, listId, flattenProperties } = destination.Config;
   const mappedToDestination = get(message, MappedToDestinationKey);
+  let traitsInfo = getFieldValueFromMessage(message, 'traits');
   if (mappedToDestination) {
     addExternalIdToTraits(message);
     adduserIdFromExternalId(message);
+    traitsInfo = addSubcribeFlagToTraits(traitsInfo);
   }
-  const traitsInfo = getFieldValueFromMessage(message, 'traits');
+
   let propertyPayload = constructPayload(message, MAPPING_CONFIG[category.name]);
   // Extract other K-V property from traits about user custom properties
   let customPropertyPayload = {};

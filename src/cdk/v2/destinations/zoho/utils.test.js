@@ -94,7 +94,7 @@ describe('deduceModuleInfo', () => {
     const result = deduceModuleInfo(inputs, Config);
     expect(result).toEqual({
       operationModuleType: 'Leads',
-      upsertEndPoint: 'https://www.zohoapis.com/crm/v6/Leads/upsert',
+      upsertEndPoint: 'https://www.zohoapis.com/crm/v6/Leads',
       identifierType: 'Email',
     });
   });
@@ -115,7 +115,7 @@ describe('deduceModuleInfo', () => {
     const result = deduceModuleInfo(inputs, Config);
     expect(result).toEqual({
       operationModuleType: 'Leads',
-      upsertEndPoint: 'https://www.zohoapis.eu/crm/v6/Leads/upsert',
+      upsertEndPoint: 'https://www.zohoapis.eu/crm/v6/Leads',
       identifierType: 'Email',
     });
   });

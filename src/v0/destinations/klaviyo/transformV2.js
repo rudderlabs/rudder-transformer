@@ -3,7 +3,7 @@
 /* eslint-disable  array-callback-return */
 const get = require('get-value');
 const { ConfigurationError, InstrumentationError } = require('@rudderstack/integrations-lib');
-const { EventType } = require('../../../constants');
+const { EventType, MappedToDestinationKey } = require('../../../constants');
 const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require('./config');
 const {
   batchSubscriptionRequestV2,
@@ -13,12 +13,15 @@ const {
   buildSubscriptionRequest,
   getTrackRequests,
   fetchTransformedEvents,
+  addSubcribeFlagToTraits,
 } = require('./util');
 const {
   constructPayload,
   getFieldValueFromMessage,
   removeUndefinedAndNullValues,
   handleRtTfSingleEventError,
+  addExternalIdToTraits,
+  adduserIdFromExternalId,
   flattenJson,
 } = require('../../util');
 
@@ -38,7 +41,13 @@ const identifyRequestHandler = (message, category, destination) => {
   const { listId } = destination.Config;
   const payload = removeUndefinedAndNullValues(constructProfile(message, destination, true));
   const response = { profile: payload };
-  const traitsInfo = getFieldValueFromMessage(message, 'traits');
+  let traitsInfo = getFieldValueFromMessage(message, 'traits');
+  const mappedToDestination = get(message, MappedToDestinationKey);
+  if (mappedToDestination) {
+    addExternalIdToTraits(message);
+    adduserIdFromExternalId(message);
+    traitsInfo = addSubcribeFlagToTraits(traitsInfo);
+  }
   // check if user wants to subscribe profile or not and listId is present or not
   if (traitsInfo?.properties?.subscribe && (traitsInfo.properties?.listId || listId)) {
     response.subscription = subscribeUserToListV2(message, traitsInfo, destination);

@@ -1,7 +1,7 @@
 import { Destination } from '../../../../../src/types';
 import { RouterTestData } from '../../../testTypes';
 import { routerRequestV2 } from './commonConfig';
-import { generateMetadata } from '../../../testUtils';
+import { generateMetadata, transformResultBuilder } from '../../../testUtils';
 
 const destination: Destination = {
   ID: '123',
@@ -35,6 +35,44 @@ const subscriptionRelations = {
       id: 'XUepkK',
     },
   },
+};
+
+const commonOutputSubscriptionProps = {
+  profiles: {
+    data: [
+      {
+        type: 'profile',
+        attributes: {
+          email: 'test@rudderstack.com',
+          phone_number: '+12 345 678 900',
+          subscriptions: {
+            email: { marketing: { consent: 'SUBSCRIBED' } },
+          },
+        },
+      },
+    ],
+  },
+};
+
+const alreadyTransformedEvent = {
+  message: {
+    output: transformResultBuilder({
+      JSON: {
+        data: {
+          type: 'profile-subscription-bulk-create-job',
+          attributes: commonOutputSubscriptionProps,
+          relationships: subscriptionRelations,
+        },
+      },
+      endpoint: 'https://a.klaviyo.com/api/profile-subscription-bulk-create-jobs',
+      headers: headers,
+      method: 'POST',
+      userId: '',
+    }),
+    statusCode: 200,
+  },
+  metadata: generateMetadata(10),
+  destination,
 };
 
 export const dataV2: RouterTestData[] = [
@@ -250,6 +288,7 @@ export const dataV2: RouterTestData[] = [
       request: {
         body: {
           input: [
+            alreadyTransformedEvent,
             {
               message: {
                 // user 1 track call with userId and anonymousId
@@ -386,6 +425,25 @@ export const dataV2: RouterTestData[] = [
         status: 200,
         body: {
           output: [
+            {
+              batchedRequest: transformResultBuilder({
+                JSON: {
+                  data: {
+                    type: 'profile-subscription-bulk-create-job',
+                    attributes: commonOutputSubscriptionProps,
+                    relationships: subscriptionRelations,
+                  },
+                },
+                endpoint: 'https://a.klaviyo.com/api/profile-subscription-bulk-create-jobs',
+                headers: headers,
+                method: 'POST',
+                userId: '',
+              }),
+              metadata: [generateMetadata(10)],
+              batched: false,
+              statusCode: 200,
+              destination,
+            },
             {
               batchedRequest: {
                 version: '1',

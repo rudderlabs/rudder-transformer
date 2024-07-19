@@ -109,17 +109,6 @@ export const groupTestData: ProcessorTestData[] = [
                   relationships: subscriptionRelations,
                 },
               },
-              a: {
-                data: {
-                  attributes: {
-                    list_id: 'XUepkK',
-                    subscriptions: [
-                      { email: 'test@rudderstack.com', phone_number: '+12 345 678 900' },
-                    ],
-                  },
-                  type: 'profile-subscription-bulk-create-job',
-                },
-              },
               endpoint: endpoint,
               headers: headers,
               method: 'POST',

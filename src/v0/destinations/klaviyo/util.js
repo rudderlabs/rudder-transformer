@@ -725,6 +725,21 @@ const getTrackRequests = (eventRespList, destination) => {
   });
   return { anonymousTracking, identifiedTracking };
 };
+
+/**
+ * This function checks for the transformed event structure and accordingly send back the batched responses
+ * @param {*} event
+ */
+const fetchTransformedEvents = (event) => {
+  const { message, destination, metadata } = event;
+  // checking if we have any output field if yes then we return message.output
+  return getSuccessRespEvents(
+    message.output || message,
+    Array.isArray(metadata) ? metadata : [metadata],
+    destination,
+  );
+};
+
 module.exports = {
   subscribeUserToList,
   createCustomerProperties,
@@ -741,4 +756,5 @@ module.exports = {
   buildSubscriptionRequest,
   getTrackRequests,
   groupSubscribeResponsesUsingListIdV2,
+  fetchTransformedEvents,
 };

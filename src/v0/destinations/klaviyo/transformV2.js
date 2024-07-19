@@ -12,6 +12,7 @@ const {
   buildRequest,
   buildSubscriptionRequest,
   getTrackRequests,
+  fetchTransformedEvents,
 } = require('./util');
 const {
   constructPayload,
@@ -42,7 +43,6 @@ const identifyRequestHandler = (message, category, destination) => {
   if (traitsInfo?.properties?.subscribe && (traitsInfo.properties?.listId || listId)) {
     response.subscription = subscribeUserToListV2(message, traitsInfo, destination);
   }
-  // returning list if subscription to a list is to be done else returning an object to upsert profile
   return response;
 };
 
@@ -166,7 +166,7 @@ const getEventChunks = (input, subscribeRespList, profileRespList, eventRespList
 };
 
 const processRouterDestV2 = (inputs, reqMetadata) => {
-  let batchResponseList = [];
+  const batchResponseList = [];
   const batchErrorRespList = [];
   const subscribeRespList = [];
   const profileRespList = [];
@@ -176,12 +176,7 @@ const processRouterDestV2 = (inputs, reqMetadata) => {
     try {
       if (event.message.statusCode) {
         // already transformed event
-        getEventChunks(
-          { message: event.message, metadata: event.metadata, destination },
-          subscribeRespList,
-          profileRespList,
-          eventRespList,
-        );
+        batchResponseList.push(fetchTransformedEvents(event));
       } else {
         // if not transformed
         getEventChunks(
@@ -207,7 +202,7 @@ const processRouterDestV2 = (inputs, reqMetadata) => {
   const { anonymousTracking, identifiedTracking } = getTrackRequests(eventRespList, destination);
 
   // We are doing to maintain event ordering basically once a user is identified klaviyo does not allow user tracking based upon anonymous_id only
-  batchResponseList = [...anonymousTracking, ...batchedResponseList, ...identifiedTracking];
+  batchResponseList.push(...anonymousTracking, ...batchedResponseList, ...identifiedTracking);
 
   return [...batchResponseList, ...batchErrorRespList];
 };

@@ -365,7 +365,6 @@ export const data = [
     },
     mockFns: (_) => {
       jest.spyOn(Date, 'now').mockImplementation(() => {
-        console.log('Now date in pagerduty!!');
         return new Date('2022-11-12T15:46:51.000Z').valueOf();
       });
     },

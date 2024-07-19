@@ -1,8 +1,6 @@
-const {
-  getProfileMetadataAndMetadataFields,
-  groupSubscribeResponsesUsingListIdV2,
-} = require('./util');
+const { getProfileMetadataAndMetadataFields } = require('./util');
 
+const { groupSubscribeResponsesUsingListIdV2 } = require('./batchUtil');
 describe('getProfileMetadataAndMetadataFields', () => {
   // Correctly generates metadata with fields to unset, append, and unappend when all fields are provided
   it('should generate metadata with fields to unset, append, and unappend when all fields are provided', () => {

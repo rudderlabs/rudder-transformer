@@ -797,4 +797,225 @@ export const dataV2: RouterTestData[] = [
       },
     },
   },
+  {
+    id: 'klaviyo-router-150624-test-3',
+    name: 'klaviyo',
+    description: '150624 -> Retl Router tests to have retl ',
+    scenario: 'Framework',
+    successCriteria:
+      'All the subscription events should be batched and respective profile requests should also be placed in same batched request',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: {
+                channel: 'web',
+                context: {
+                  mappedToDestination: 'true',
+                  externalId: [
+                    {
+                      id: 'testklaviyo1@email.com',
+                      identifierType: 'email',
+                      type: 'KLAVIYO-profile_v2',
+                    },
+                  ],
+                  traits: {
+                    properties: {
+                      subscribe: false,
+                    },
+                    email: 'testklaviyo1@email.com',
+                    firstname: 'Test Klaviyo 1',
+                  },
+                },
+                type: 'identify',
+                anonymousId: 'anonTestKlaviyo1',
+                userId: 'testKlaviyo1',
+              },
+              metadata: generateMetadata(1),
+              destination,
+            },
+            {
+              message: {
+                channel: 'web',
+                traits: {
+                  email: 'testklaviyo2@rs.com',
+                  firstname: 'Test Klaviyo 2',
+                  properties: {
+                    subscribe: true,
+                    listId: 'configListId',
+                    consent: ['email'],
+                  },
+                },
+                context: {
+                  mappedToDestination: 'true',
+                  externalId: [
+                    {
+                      id: 'testklaviyo2@rs.com',
+                      identifierType: 'email',
+                      type: 'KLAVIYO-profile_v2',
+                    },
+                  ],
+                },
+                anonymousId: 'anonTestKlaviyo2',
+                type: 'identify',
+                userId: 'testKlaviyo2',
+                integrations: {
+                  All: true,
+                },
+              },
+              metadata: generateMetadata(2),
+              destination,
+            },
+          ],
+          destType: 'klaviyo',
+        },
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: 'https://a.klaviyo.com/api/profile-import',
+                headers: {
+                  Authorization: 'Klaviyo-API-Key dummyPrivateApiKey',
+                  Accept: 'application/json',
+                  'Content-Type': 'application/json',
+                  revision: '2024-06-15',
+                },
+                params: {},
+                body: {
+                  JSON: {
+                    data: {
+                      type: 'profile',
+                      attributes: {
+                        external_id: 'testklaviyo1@email.com',
+                        anonymous_id: 'anonTestKlaviyo1',
+                        email: 'testklaviyo1@email.com',
+                        first_name: 'Test Klaviyo 1',
+                        properties: {},
+                      },
+                      meta: {
+                        patch_properties: {},
+                      },
+                    },
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+              },
+              metadata: [generateMetadata(1)],
+              batched: false,
+              statusCode: 200,
+              destination,
+            },
+            {
+              batchedRequest: [
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint: 'https://a.klaviyo.com/api/profile-import',
+                  headers: {
+                    Authorization: 'Klaviyo-API-Key dummyPrivateApiKey',
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    revision: '2024-06-15',
+                  },
+                  params: {},
+                  body: {
+                    JSON: {
+                      data: {
+                        type: 'profile',
+                        attributes: {
+                          external_id: 'testklaviyo2@rs.com',
+                          anonymous_id: 'anonTestKlaviyo2',
+                          email: 'testklaviyo2@rs.com',
+                          first_name: 'Test Klaviyo 2',
+                          properties: {},
+                        },
+                        meta: {
+                          patch_properties: {},
+                        },
+                      },
+                    },
+                    JSON_ARRAY: {},
+                    XML: {},
+                    FORM: {},
+                  },
+                  files: {},
+                },
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint: 'https://a.klaviyo.com/api/profile-subscription-bulk-create-jobs',
+                  headers: {
+                    Authorization: 'Klaviyo-API-Key dummyPrivateApiKey',
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json',
+                    revision: '2024-06-15',
+                  },
+                  params: {},
+                  body: {
+                    JSON: {
+                      data: {
+                        type: 'profile-subscription-bulk-create-job',
+                        attributes: {
+                          profiles: {
+                            data: [
+                              {
+                                type: 'profile',
+                                attributes: {
+                                  email: 'testklaviyo2@rs.com',
+                                  subscriptions: {
+                                    email: {
+                                      marketing: {
+                                        consent: 'SUBSCRIBED',
+                                      },
+                                    },
+                                  },
+                                },
+                              },
+                            ],
+                          },
+                        },
+                        relationships: {
+                          list: {
+                            data: {
+                              type: 'list',
+                              id: 'configListId',
+                            },
+                          },
+                        },
+                      },
+                    },
+                    JSON_ARRAY: {},
+                    XML: {},
+                    FORM: {},
+                  },
+                  files: {},
+                },
+              ],
+              metadata: [generateMetadata(2)],
+              batched: true,
+              statusCode: 200,
+              destination,
+            },
+          ],
+        },
+      },
+    },
+  },
 ];

@@ -269,24 +269,6 @@ const groupSubscribeResponsesUsingListId = (subscribeResponseList) => {
   return subscribeEventGroups;
 };
 
-/**
- * This function groups the subscription responses on list id
- * @param {*} subscribeResponseList
- * @returns
- * Example subsribeResponseList =
- * [
- * { payload: {id:'list_id', profile: {}}, metadata:{} },
- * { payload: {id:'list_id', profile: {}}, metadata:{} }
- * ]
- */
-const groupSubscribeResponsesUsingListIdV2 = (subscribeResponseList) => {
-  const subscribeEventGroups = lodash.groupBy(
-    subscribeResponseList,
-    (event) => event.payload.listId,
-  );
-  return subscribeEventGroups;
-};
-
 const getBatchedResponseList = (subscribeEventGroups, identifyResponseList) => {
   let batchedResponseList = [];
   Object.keys(subscribeEventGroups).forEach((listId) => {
@@ -541,149 +523,6 @@ const getSubscriptionPayload = (listId, profiles) => ({
 });
 
 /**
- * This function takes susbscriptions as input and batches them into a single request body
- * @param {events}
- * events= [
- * { payload: {id:'list_id', profile: {}}, metadata:{} },
- * { payload: {id:'list_id', profile: {}}, metadata:{} }
- * ]
- */
-
-const generateBatchedSubscriptionRequest = (events, destination) => {
-  const batchEventResponse = defaultBatchRequestConfig();
-  const metadata = [];
-  // fetching listId from first event as listId is same for all the events
-  const listId = events[0].payload?.listId;
-  const profiles = []; // list of profiles to be subscribes
-  // Batch profiles into dest batch structure
-  events.forEach((ev) => {
-    profiles.push(...ev.payload.profile);
-    metadata.push(ev.metadata);
-  });
-
-  batchEventResponse.batchedRequest = Object.values(batchEventResponse);
-  batchEventResponse.batchedRequest[0].body.JSON = getSubscriptionPayload(listId, profiles);
-
-  batchEventResponse.batchedRequest[0].endpoint = `${BASE_ENDPOINT}/api/profile-subscription-bulk-create-jobs`;
-
-  batchEventResponse.batchedRequest[0].headers = {
-    Authorization: `Klaviyo-API-Key ${destination.Config.privateApiKey}`,
-    'Content-Type': JSON_MIME_TYPE,
-    Accept: JSON_MIME_TYPE,
-    revision,
-  };
-
-  return {
-    ...batchEventResponse,
-    metadata,
-    destination,
-  };
-};
-
-/**
- * This function fetches the profileRequests with metadata present in metadata array build a request for them
- * and add these requests batchEvent Response
- * @param {*} profileReq array of profile requests
- * @param {*} metadataArray array of metadata
- * @param {*} batchEventResponse
- * Example: /**
- *
- * @param {*} subscribeEventGroups
- * @param {*} identifyResponseList
- * @returns
- * Example:
- * profileReq = [
- * { payload: {}, metadata:{} },
- * { payload: {}, metadata:{} }
- * ]
- */
-const updateBatchEventResponseWithProfileRequests = (
-  profileReq,
-  subscriptionMetadataArray,
-  batchEventResponse,
-) => {
-  const subscriptionListJobIds = subscriptionMetadataArray.map((metadata) => metadata.jobId);
-  const profilesRequests = [];
-  profileReq.forEach((profile) => {
-    if (subscriptionListJobIds.includes(profile.metadata.jobId)) {
-      profilesRequests.push(
-        buildRequest(profile.payload, batchEventResponse.destination, CONFIG_CATEGORIES.IDENTIFYV2),
-      );
-    }
-  });
-  // we are keeping profiles request prior to subscription ones
-  batchEventResponse.batchedRequest.unshift(...profilesRequests);
-};
-
-/**
- * This function returns the list of profileReq which do not metadata common with subcriptionMetadataArray
- * @param {*} profileReq
- * @param {*} subscriptionMetadataArray
- * @returns
- */
-const getRemainingProfiles = (profileReq, subscriptionMetadataArray) => {
-  const subscriptionListJobIds = subscriptionMetadataArray.map((metadata) => metadata.jobId);
-  return profileReq.filter((profile) => !subscriptionListJobIds.includes(profile.metadata.jobId));
-};
-/**
- * This function batches the requests. Alogorithm
- * Batch events from Subscribe Resp List having same listId/groupId to be subscribed and  have their metadata array
- * For this metadata array get all profileRequests and add them prior to batched Subscribe Request in the same batched Request
- * Make another batched request for the remaning profile requests and another for all the event requests
- * @param {*} subscribeRespList
- * @param {*} profileRespList
- * @param {*} eventRespList
- * subscribeRespList = [
- * { payload: {id:'list_id', profile: {}}, metadata:{} },
- * { payload: {id:'list_id', profile: {}}, metadata:{} }
- * ]
- * profileRespList = [
- * { payload: {}, metadata:{} },
- * { payload: {}, metadata:{} }
- * ]
- *
- */
-const batchSubscriptionRequestV2 = (subscribeRespList, profileRespList, destination) => {
-  const batchedResponseList = [];
-  let remainingProfileReq = profileRespList;
-  const subscriptionMetadataArrayForAll = [];
-  const subscribeEventGroups = groupSubscribeResponsesUsingListIdV2(subscribeRespList);
-  Object.keys(subscribeEventGroups).forEach((listId) => {
-    // eventChunks = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
-    const eventChunks = lodash.chunk(subscribeEventGroups[listId], MAX_BATCH_SIZE);
-    const batchedResponse = [];
-    eventChunks.forEach((chunk) => {
-      const batchEventResponse = generateBatchedSubscriptionRequest(chunk, destination);
-      const { metadata: subscriptionMetadataArray, batchedRequest } = batchEventResponse;
-      updateBatchEventResponseWithProfileRequests(
-        remainingProfileReq,
-        subscriptionMetadataArray,
-        batchEventResponse,
-      );
-      subscriptionMetadataArrayForAll.push(...subscriptionMetadataArray);
-      batchedResponse.push(
-        getSuccessRespEvents(batchedRequest, subscriptionMetadataArray, destination, true),
-      );
-    });
-    batchedResponseList.push(...batchedResponse);
-  });
-  const profiles = [];
-  remainingProfileReq = getRemainingProfiles(remainingProfileReq, subscriptionMetadataArrayForAll);
-
-  // push profiles for which there is no subscription
-  remainingProfileReq.forEach((input) => {
-    profiles.push(
-      getSuccessRespEvents(
-        buildRequest(input.payload, destination, CONFIG_CATEGORIES.IDENTIFYV2),
-        [input.metadata],
-        destination,
-      ),
-    );
-  });
-  return [...profiles, ...batchedResponseList];
-};
-
-/**
  * This function accepts subscriptions object and builds a request for it
  * @param {*} subscription
  * @param {*} destination
@@ -773,11 +612,10 @@ module.exports = {
   constructProfile,
   subscribeUserToListV2,
   getProfileMetadataAndMetadataFields,
-  batchSubscriptionRequestV2,
   buildRequest,
   buildSubscriptionRequest,
   getTrackRequests,
-  groupSubscribeResponsesUsingListIdV2,
   fetchTransformedEvents,
   addSubscribeFlagToTraits,
+  getSubscriptionPayload,
 };

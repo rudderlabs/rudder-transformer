@@ -6,15 +6,15 @@ const { ConfigurationError, InstrumentationError } = require('@rudderstack/integ
 const { EventType, MappedToDestinationKey } = require('../../../constants');
 const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require('./config');
 const {
-  batchSubscriptionRequestV2,
   constructProfile,
   subscribeUserToListV2,
   buildRequest,
   buildSubscriptionRequest,
   getTrackRequests,
   fetchTransformedEvents,
-  addSubcribeFlagToTraits,
+  addSubscribeFlagToTraits,
 } = require('./util');
+const { batchSubscriptionRequestV2 } = require('./batchUtil');
 const {
   constructPayload,
   getFieldValueFromMessage,
@@ -39,15 +39,15 @@ const {
 const identifyRequestHandler = (message, category, destination) => {
   // If listId property is present try to subscribe/member user in list
   const { listId } = destination.Config;
-  const payload = removeUndefinedAndNullValues(constructProfile(message, destination, true));
-  const response = { profile: payload };
   let traitsInfo = getFieldValueFromMessage(message, 'traits');
   const mappedToDestination = get(message, MappedToDestinationKey);
   if (mappedToDestination) {
     addExternalIdToTraits(message);
     adduserIdFromExternalId(message);
-    traitsInfo = addSubcribeFlagToTraits(traitsInfo);
+    traitsInfo = addSubscribeFlagToTraits(traitsInfo);
   }
+  const payload = removeUndefinedAndNullValues(constructProfile(message, destination, true));
+  const response = { profile: payload };
   // check if user wants to subscribe profile or not and listId is present or not
   if (traitsInfo?.properties?.subscribe && (traitsInfo.properties?.listId || listId)) {
     response.subscription = subscribeUserToListV2(message, traitsInfo, destination);

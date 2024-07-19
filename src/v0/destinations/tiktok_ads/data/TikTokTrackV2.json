@@ -130,11 +130,17 @@
   {
     "destKey": "user.first_name",
     "sourceKeys": "firstName",
+    "metadata": {
+      "type": ["trim", "toLower", "hashToSha256"]
+    },
     "sourceFromGenericMap": true
   },
   {
     "destKey": "user.last_name",
     "sourceKeys": "lastName",
+    "metadata": {
+      "type": ["trim", "toLower", "hashToSha256"]
+    },
     "sourceFromGenericMap": true
   },
   {
@@ -164,6 +170,9 @@
       "properties.postalcode",
       "properties.postalCode",
       "properties.zip_code"
-    ]
+    ],
+    "metadata": {
+      "type": ["removeSpacesAndDashes", "hashToSha256"]
+    }
   }
 ]

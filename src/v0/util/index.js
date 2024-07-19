@@ -844,6 +844,11 @@ function formatValues(formattedVal, formattingType, typeFormat, integrationsObj)
         curFormattedVal = formattedVal.trim();
       }
     },
+    removeSpacesAndDashes: () => {
+      if (typeof formattedVal === 'string') {
+        curFormattedVal = formattedVal.replace(/ /g, '').replace(/-/g, '');
+      }
+    },
   };
 
   if (formattingType in formattingFunctions) {

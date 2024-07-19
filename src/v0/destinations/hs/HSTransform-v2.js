@@ -236,7 +236,7 @@ const processTrack = async (message, destination) => {
 
 const batchIdentify = (arrayChunksIdentify, batchedResponseList, batchOperation) => {
   // list of chunks [ [..], [..] ]
-  const { destinationId } = arrayChunksIdentify[0][0]?.destination;
+  const { destinationId } = arrayChunksIdentify[0][0].destination;
   arrayChunksIdentify.forEach((chunk) => {
     const identifyResponseList = [];
     const metadata = [];

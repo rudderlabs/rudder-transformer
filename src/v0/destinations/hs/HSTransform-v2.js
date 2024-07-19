@@ -20,6 +20,7 @@ const {
   getDestinationExternalIDInfoForRetl,
   getDestinationExternalIDObjectForRetl,
 } = require('../../util');
+const stats = require('../../../util/stats');
 const {
   IDENTIFY_CRM_UPDATE_CONTACT,
   IDENTIFY_CRM_CREATE_NEW_CONTACT,
@@ -235,10 +236,14 @@ const processTrack = async (message, destination) => {
 
 const batchIdentify = (arrayChunksIdentify, batchedResponseList, batchOperation) => {
   // list of chunks [ [..], [..] ]
+  const { destinationId } = arrayChunksIdentify[0][0].destination;
   arrayChunksIdentify.forEach((chunk) => {
     const identifyResponseList = [];
     const metadata = [];
-
+    // add metric for batch size
+    stats.gauge('hs_batch_size', chunk.length, {
+      destination_id: destinationId,
+    });
     // extracting message, destination value
     // from the first event in a batch
     const { message, destination } = chunk[0];

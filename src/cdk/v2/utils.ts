@@ -10,6 +10,7 @@ import { CatchErr } from '../../util/types';
 const CDK_V2_ROOT_DIR = __dirname;
 
 export async function getWorkflowPath(destDir, feature) {
+  console.log('feature assigned', feature);
   // The values are of array type to support aliases
   const featureWorkflowMap = {
     // Didn't add any prefix as processor transformation is the default
@@ -21,9 +22,11 @@ export async function getWorkflowPath(destDir, feature) {
   };
 
   const workflowFilenames = featureWorkflowMap[feature];
+  console.log('workflow file names ', JSON.stringify(workflowFilenames));
   // Find the first workflow file that exists
   const files = await fs.readdir(destDir);
   const matchedFilename = workflowFilenames?.find((filename) => files.includes(filename));
+  console.log('matched file name', matchedFilename);
   let validWorkflowFilepath;
   if (matchedFilename) {
     validWorkflowFilepath = path.join(destDir, matchedFilename);

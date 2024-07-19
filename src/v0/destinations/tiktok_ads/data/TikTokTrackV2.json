@@ -157,20 +157,8 @@
   },
   {
     "destKey": "user.zip_code",
-    "sourceKeys": [
-      "context.traits.zip",
-      "context.traits.zip_code",
-      "context.traits.postalcode",
-      "context.traits.postalCode",
-      "context.traits.address.zip",
-      "context.traits.address.zip_code",
-      "context.traits.address.postalcode",
-      "context.traits.address.postalCode",
-      "properties.zip",
-      "properties.postalcode",
-      "properties.postalCode",
-      "properties.zip_code"
-    ],
+    "sourceKeys":"zipcode",
+    "sourceFromGenericMap": true,
     "metadata": {
       "type": ["removeSpacesAndDashes", "hashToSha256"]
     }

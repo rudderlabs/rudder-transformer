@@ -1,11 +1,7 @@
 const set = require('set-value');
 const { defaultRequestConfig } = require('rudder-transformer-cdk/build/utils');
 const lodash = require('lodash');
-const {
-  NetworkError,
-  InstrumentationError,
-  isDefinedAndNotNull,
-} = require('@rudderstack/integrations-lib');
+const { NetworkError, InstrumentationError } = require('@rudderstack/integrations-lib');
 const { WhiteListedTraits } = require('../../../constants');
 const {
   constructPayload,

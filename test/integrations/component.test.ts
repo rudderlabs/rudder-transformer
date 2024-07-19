@@ -36,7 +36,7 @@ import _ from 'lodash';
 const command = new Command();
 command
   .allowUnknownOption()
-  .option('-d, --destination <string>', 'Enter Destination Name', 'intercom')
+  .option('-d, --destination <string>', 'Enter Destination Name')
   .option('-f, --feature <string>', 'Enter Feature Name(processor, router)')
   .option('-i, --index <number>', 'Enter Test index')
   .option('-g, --generate <string>', 'Enter "true" If you want to generate network file')

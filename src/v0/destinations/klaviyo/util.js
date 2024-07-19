@@ -1,7 +1,11 @@
 const set = require('set-value');
 const { defaultRequestConfig } = require('rudder-transformer-cdk/build/utils');
 const lodash = require('lodash');
-const { NetworkError, InstrumentationError } = require('@rudderstack/integrations-lib');
+const {
+  NetworkError,
+  InstrumentationError,
+  isDefinedAndNotNull,
+} = require('@rudderstack/integrations-lib');
 const { WhiteListedTraits } = require('../../../constants');
 const {
   constructPayload,
@@ -740,6 +744,28 @@ const fetchTransformedEvents = (event) => {
   );
 };
 
+const addSubscribeFlagToTraits = (traitsInfo) => {
+  let traits = traitsInfo;
+  if (!isDefinedAndNotNull(traits)) {
+    return traits;
+  }
+  // check if properties already contains subscribe flag
+
+  if (traits.properties) {
+    if (traits.properties.subscribe === undefined) {
+      traits.properties.subscribe = true;
+    } else {
+      // return if subscribe flag is already present
+      return traits;
+    }
+  } else {
+    traits = {
+      properties: { subscribe: true },
+    };
+  }
+  return traits;
+};
+
 module.exports = {
   subscribeUserToList,
   createCustomerProperties,
@@ -757,4 +783,5 @@ module.exports = {
   getTrackRequests,
   groupSubscribeResponsesUsingListIdV2,
   fetchTransformedEvents,
+  addSubscribeFlagToTraits,
 };

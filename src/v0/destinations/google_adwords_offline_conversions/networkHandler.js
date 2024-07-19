@@ -11,7 +11,6 @@ const {
   isHttpStatusSuccess,
   getHashFromArray,
   isDefinedAndNotNullAndNotEmpty,
-  getAuthErrCategoryFromStCode,
 } = require('../../util');
 const { getConversionActionId } = require('./utils');
 const Cache = require('../../util/cache');
@@ -21,6 +20,7 @@ const {
   getDynamicErrorType,
 } = require('../../../adapters/utils/networkUtils');
 const tags = require('../../util/tags');
+const { getAuthErrCategory } = require('../../util/googleUtils');
 
 const conversionCustomVariableCache = new Cache(CONVERSION_CUSTOM_VARIABLE_CACHE_TTL);
 
@@ -46,7 +46,7 @@ const createJob = async ({ endpoint, headers, payload, metadata }) => {
       `[Google Ads Offline Conversions]:: ${response?.error?.message} during google_ads_offline_store_conversions Job Creation`,
       status,
       response,
-      getAuthErrCategoryFromStCode(status),
+      getAuthErrCategory(createJobResponse),
     );
   }
   return response.resourceName.split('/')[3];
@@ -74,7 +74,7 @@ const addConversionToJob = async ({ endpoint, headers, jobId, payload, metadata 
       `[Google Ads Offline Conversions]:: ${response?.error?.message} during google_ads_offline_store_conversions Add Conversion`,
       status,
       response,
-      getAuthErrCategoryFromStCode(get(addConversionToJobResponse, 'status')),
+      getAuthErrCategory(addConversionToJobResponse),
     );
   }
   return true;
@@ -135,7 +135,7 @@ const getConversionCustomVariable = async ({ headers, params, metadata }) => {
           [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
         },
         response || searchStreamResponse,
-        getAuthErrCategoryFromStCode(status),
+        getAuthErrCategory(searchStreamResponse),
       );
     }
     const conversionCustomVariable = get(searchStreamResponse, 'response.0.results');
@@ -318,7 +318,7 @@ const responseHandler = (responseParams) => {
     `[Google Ads Offline Conversions]:: ${response?.error?.message} during google_ads_offline_conversions response transformation`,
     status,
     response,
-    getAuthErrCategoryFromStCode(status),
+    getAuthErrCategory(destinationResponse),
   );
 };
 

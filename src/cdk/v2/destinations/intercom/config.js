@@ -66,7 +66,7 @@ const ReservedAttributes = {
   ],
 };
 
-const ReservedCompanyProperties = ['id', 'name', 'industry'];
+const ReservedCompanyProperties = ['id', 'name', 'industry', 'remove'];
 
 const MetadataTypes = { richLink: ['url', 'value'], monetaryAmount: ['amount', 'currency'] };
 

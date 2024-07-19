@@ -157,7 +157,7 @@
   },
   {
     "destKey": "user.zip_code",
-    "sourceKeys":"zipcode",
+    "sourceKeys": "zipcode",
     "sourceFromGenericMap": true,
     "metadata": {
       "type": ["removeSpacesAndDashes", "hashToSha256"]

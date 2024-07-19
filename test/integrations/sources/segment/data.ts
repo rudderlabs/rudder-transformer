@@ -1,10 +1,11 @@
 import utils from '../../../../src/v0/util';
+import { SrcTestCaseData } from '../../testTypes';
 
 const defaultMockFns = () => {
   jest.spyOn(utils, 'generateUUID').mockReturnValue('97fcd7b2-cc24-47d7-b776-057b7b199513');
 };
 
-export const data : TestCaseData[] = [
+export const data: SrcTestCaseData[] = [
   {
     name: 'segment',
     description: 'test-0',
@@ -233,7 +234,7 @@ export const data : TestCaseData[] = [
   },
 ].map((tc) => ({
   ...tc,
-  mockFns: () => {
+  mockFns(_) {
     defaultMockFns();
   },
 }));

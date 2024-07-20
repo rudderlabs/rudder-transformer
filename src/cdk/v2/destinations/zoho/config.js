@@ -16,10 +16,6 @@ const getBaseEndpoint = (dataServer) => DATA_CENTRE_BASE_ENDPOINTS_MAP[dataServe
 const COMMON_RECORD_ENDPOINT = (dataCenter = 'US') =>
   `${getBaseEndpoint(dataCenter)}/crm/v6/moduleType`;
 
-// const COMMON_RECORD_ENDPOINT = 'https://www.zohoapis/crm/v6/moduleType/upsert';
-// const RECORD_FIELD_INFO_ENDPOINT =
-//   'https://www.zohoapis/crm/v6/settings/fields?module=moduleType';
-
 // ref: https://www.zoho.com/crm/developer/docs/api/v6/insert-records.html#:~:text=%2DX%20POST-,System%2Ddefined%20mandatory%20fields%20for%20each%20module,-While%20inserting%20records
 const MODULE_MANDATORY_FIELD_CONFIG = {
   Leads: ['Last_Name'],

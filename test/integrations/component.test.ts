@@ -27,8 +27,8 @@ import _ from 'lodash';
 
 // To run single destination test cases
 // npm run test:ts -- component  --destination=adobe_analytics
-// npm run test:ts -- component  --destination=zoho --feature=router
-// npm run test:ts -- component  --destination=zoho --feature=dataDelivery --index=0
+// npm run test:ts -- component  --destination=adobe_analytics --feature=router
+// npm run test:ts -- component  --destination=adobe_analytics --feature=dataDelivery --index=0
 
 // Use below command to generate mocks
 // npm run test:ts -- component --destination=zendesk --generate=true

@@ -7,7 +7,170 @@ const dataProviderId = 'rudderstack';
 const segmentName = 'test-segment';
 const leadUpsertEndpoint = 'https://www.zohoapis.in/crm/v6/Leads/upsert';
 
-const sampleDestination: Destination = {
+const deletionPayload1 = {
+  action: 'delete',
+  context: {
+    externalId: [
+      {
+        type: 'ZOHO-Leads',
+        identifierType: 'email',
+      },
+    ],
+    mappedToDestination: 'true',
+    sources: {
+      job_run_id: 'cgiiurt8um7k7n5dq480',
+      task_run_id: 'cgiiurt8um7k7n5dq48g',
+      job_id: '2MUWghI7u85n91dd1qzGyswpZan',
+      version: '895/merge',
+    },
+  },
+  recordId: '2',
+  rudderId: '2',
+  fields: {
+    Email: 'tobedeleted@gmail.com',
+    First_Name: 'subcribed',
+    Last_Name: ' User',
+  },
+  type: 'record',
+};
+
+const commonDeletionDestConfig: Destination = {
+  ID: '345',
+  Name: 'Test',
+  Enabled: true,
+  WorkspaceID: '',
+  Transformations: [],
+  DestinationDefinition: {
+    ID: '345',
+    Name: 'Test',
+    DisplayName: 'ZOHO',
+    Config: {
+      cdkV2Enabled: true,
+      excludeKeys: [],
+      includeKeys: [],
+    },
+  },
+  Config: {
+    region: 'IN',
+    module: 'Leads',
+    trigger: 'None',
+    addDefaultDuplicateCheck: true,
+    multiSelectFieldLevelDecision: [
+      {
+        from: 'multi-language',
+        to: 'true',
+      },
+      {
+        from: 'multi class',
+        to: 'false',
+      },
+    ],
+    oneTrustCookieCategories: [
+      {
+        oneTrustCookieCategory: 'Marketing',
+      },
+    ],
+  },
+};
+
+const upsertPayload1 = {
+  action: 'insert',
+  context: {
+    externalId: [
+      {
+        type: 'ZOHO-LEADS',
+        identifierType: 'email',
+      },
+    ],
+    mappedToDestination: 'true',
+    sources: {
+      job_run_id: 'cgiiurt8um7k7n5dq480',
+      task_run_id: 'cgiiurt8um7k7n5dq48g',
+      job_id: '2MUWghI7u85n91dd1qzGyswpZan',
+      version: '895/merge',
+    },
+  },
+  recordId: '2',
+  rudderId: '2',
+  fields: {
+    Email: 'subscribed@eewrfrd.com',
+    First_Name: 'subcribed',
+    Last_Name: ' User',
+  },
+  type: 'record',
+};
+
+const upsertPayload2 = {
+  action: 'insert',
+  context: {
+    externalId: [
+      {
+        type: 'ZOHO-Leads',
+        identifierType: 'email',
+      },
+    ],
+    mappedToDestination: 'true',
+    sources: {
+      job_run_id: 'cgiiurt8um7k7n5dq480',
+      task_run_id: 'cgiiurt8um7k7n5dq48g',
+      job_id: '2MUWghI7u85n91dd1qzGyswpZan',
+      version: '895/merge',
+    },
+  },
+  recordId: '2',
+  rudderId: '2',
+  fields: {
+    Email: 'subscribed@eewrfrd.com',
+    First_Name: 'subcribed',
+    Last_Name: ' User',
+    'multi-language': 'Bengali',
+  },
+  type: 'record',
+};
+
+const upsertPayload3 = {
+  action: 'insert',
+  context: {
+    externalId: [
+      {
+        type: 'ZOHO-Leads',
+        identifierType: 'Email',
+      },
+    ],
+    mappedToDestination: 'true',
+    sources: {
+      job_run_id: 'cgiiurt8um7k7n5dq480',
+      task_run_id: 'cgiiurt8um7k7n5dq48g',
+      job_id: '2MUWghI7u85n91dd1qzGyswpZan',
+      version: '895/merge',
+    },
+  },
+  recordId: '2',
+  rudderId: '2',
+  fields: {
+    Email: 'subscribed@eewrfrd.com',
+    First_Name: 'subcribed',
+    Last_Name: ' User',
+  },
+  type: 'record',
+};
+
+const commonUpsertDestConfig: Destination = {
+  ID: '345',
+  Name: 'Test',
+  Enabled: true,
+  WorkspaceID: '',
+  Transformations: [],
+  DestinationDefinition: {
+    ID: '345',
+    Name: 'Test',
+    DisplayName: 'ZOHO',
+    Config: {
+      cdkV2Enabled: true,
+      excludeKeys: [],
+      includeKeys: [],
+    },
+  },
   Config: {
     region: 'US',
     module: 'Leads',
@@ -29,46 +192,87 @@ const sampleDestination: Destination = {
       },
     ],
   },
-  DestinationDefinition: {
-    Config: { cdkV2Enabled: true },
-    ID: '123',
-    Name: 'ZOHO',
-    DisplayName: 'Zoho',
-  },
+};
+
+const commonUpsertDestConfig2: Destination = {
   ID: '345',
   Name: 'Test',
   Enabled: true,
   WorkspaceID: '',
   Transformations: [],
+  DestinationDefinition: {
+    ID: '345',
+    Name: 'Test',
+    DisplayName: 'ZOHO',
+    Config: {
+      cdkV2Enabled: true,
+      excludeKeys: [],
+      includeKeys: [],
+    },
+  },
+  Config: {
+    region: 'US',
+    module: 'Leads',
+    trigger: 'None',
+    addDefaultDuplicateCheck: true,
+    multiSelectFieldLevelDecision: [
+      {
+        from: 'multi-language',
+        to: 'true',
+      },
+      {
+        from: 'multi class',
+        to: 'false',
+      },
+    ],
+    oneTrustCookieCategories: [
+      {
+        oneTrustCookieCategory: 'Marketing',
+      },
+    ],
+  },
 };
 
-const sampleSource = {
-  job_id: 'test-job-id',
-  job_run_id: 'test-job-run-id',
-  task_run_id: 'test-task-run-id',
-  version: 'v1.40.4',
+const commonUpsertDestConfig3: Destination = {
+  ID: '345',
+  Name: 'Test',
+  Enabled: true,
+  WorkspaceID: '',
+  Transformations: [],
+  DestinationDefinition: {
+    ID: '345',
+    Name: 'Test',
+    DisplayName: 'ZOHO',
+    Config: {
+      cdkV2Enabled: true,
+      excludeKeys: [],
+      includeKeys: [],
+    },
+  },
+  Config: {
+    region: 'US',
+    module: 'Leads',
+    trigger: 'workflow',
+    addDefaultDuplicateCheck: true,
+    oneTrustCookieCategories: [
+      {
+        oneTrustCookieCategory: 'Marketing',
+      },
+    ],
+  },
 };
 
-const sampleContext = {
-  externalId: [
+const commonOutput1 = {
+  duplicate_check_fields: ['Email'],
+  data: [
     {
-      identifierType: 'email',
-      type: 'ZOHO-LEADS',
+      Email: 'subscribed@eewrfrd.com',
+      First_Name: 'subcribed',
+      Last_Name: ' User',
     },
   ],
-  mappedToDestination: 'true',
-  sources: sampleSource,
-};
-
-const proxyV1AbortableErrorStatTags = {
-  destType: destTypeInUpperCase,
-  destinationId: 'default-destinationId',
-  errorCategory: 'network',
-  errorType: 'aborted',
-  feature: 'dataDelivery',
-  implementation: 'native',
-  module: 'destination',
-  workspaceId: 'default-workspaceId',
+  $append_values: {},
+  trigger: ['workflow'],
 };
 
 export {
@@ -77,8 +281,14 @@ export {
   advertiserId,
   dataProviderId,
   segmentName,
-  sampleDestination,
-  sampleContext,
-  proxyV1AbortableErrorStatTags,
   leadUpsertEndpoint,
+  deletionPayload1,
+  commonDeletionDestConfig,
+  upsertPayload1,
+  upsertPayload2,
+  upsertPayload3,
+  commonUpsertDestConfig,
+  commonUpsertDestConfig2,
+  commonOutput1,
+  commonUpsertDestConfig3,
 };

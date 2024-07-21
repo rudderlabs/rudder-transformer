@@ -1,5 +1,5 @@
 import { defaultMockFns } from '../mocks';
-import { destType } from '../common';
+import { commonDeletionDestConfig, deletionPayload1, destType } from '../common';
 
 export const deleteData = [
   {
@@ -14,32 +14,7 @@ export const deleteData = [
         body: {
           input: [
             {
-              message: {
-                action: 'delete',
-                context: {
-                  externalId: [
-                    {
-                      type: 'ZOHO-Leads',
-                      identifierType: 'email',
-                    },
-                  ],
-                  mappedToDestination: 'true',
-                  sources: {
-                    job_run_id: 'cgiiurt8um7k7n5dq480',
-                    task_run_id: 'cgiiurt8um7k7n5dq48g',
-                    job_id: '2MUWghI7u85n91dd1qzGyswpZan',
-                    version: '895/merge',
-                  },
-                },
-                recordId: '2',
-                rudderId: '2',
-                fields: {
-                  Email: 'tobedeleted@gmail.com',
-                  First_Name: 'subcribed',
-                  Last_Name: ' User',
-                },
-                type: 'record',
-              },
+              message: deletionPayload1,
               metadata: {
                 jobId: 1,
                 userId: 'u1',
@@ -47,36 +22,7 @@ export const deleteData = [
                   accessToken: 'correct-access-token',
                 },
               },
-              destination: {
-                DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                    excludeKeys: [],
-                    includeKeys: [],
-                  },
-                },
-                Config: {
-                  region: 'IN',
-                  module: 'Leads',
-                  trigger: 'None',
-                  addDefaultDuplicateCheck: true,
-                  multiSelectFieldLevelDecision: [
-                    {
-                      from: 'multi-language',
-                      to: 'true',
-                    },
-                    {
-                      from: 'multi class',
-                      to: 'false',
-                    },
-                  ],
-                  oneTrustCookieCategories: [
-                    {
-                      oneTrustCookieCategory: 'Marketing',
-                    },
-                  ],
-                },
-              },
+              destination: commonDeletionDestConfig,
             },
             {
               message: {
@@ -112,36 +58,7 @@ export const deleteData = [
                   accessToken: 'correct-access-token',
                 },
               },
-              destination: {
-                DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                    excludeKeys: [],
-                    includeKeys: [],
-                  },
-                },
-                Config: {
-                  region: 'IN',
-                  module: 'Leads',
-                  trigger: 'None',
-                  addDefaultDuplicateCheck: true,
-                  multiSelectFieldLevelDecision: [
-                    {
-                      from: 'multi-language',
-                      to: 'true',
-                    },
-                    {
-                      from: 'multi class',
-                      to: 'false',
-                    },
-                  ],
-                  oneTrustCookieCategories: [
-                    {
-                      oneTrustCookieCategory: 'Marketing',
-                    },
-                  ],
-                },
-              },
+              destination: commonDeletionDestConfig,
             },
           ],
           destType,
@@ -191,36 +108,7 @@ export const deleteData = [
               ],
               batched: true,
               statusCode: 200,
-              destination: {
-                DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                    excludeKeys: [],
-                    includeKeys: [],
-                  },
-                },
-                Config: {
-                  region: 'IN',
-                  module: 'Leads',
-                  trigger: 'None',
-                  addDefaultDuplicateCheck: true,
-                  multiSelectFieldLevelDecision: [
-                    {
-                      from: 'multi-language',
-                      to: 'true',
-                    },
-                    {
-                      from: 'multi class',
-                      to: 'false',
-                    },
-                  ],
-                  oneTrustCookieCategories: [
-                    {
-                      oneTrustCookieCategory: 'Marketing',
-                    },
-                  ],
-                },
-              },
+              destination: commonDeletionDestConfig,
             },
           ],
         },
@@ -240,32 +128,7 @@ export const deleteData = [
         body: {
           input: [
             {
-              message: {
-                action: 'delete',
-                context: {
-                  externalId: [
-                    {
-                      type: 'ZOHO-Leads',
-                      identifierType: 'email',
-                    },
-                  ],
-                  mappedToDestination: 'true',
-                  sources: {
-                    job_run_id: 'cgiiurt8um7k7n5dq480',
-                    task_run_id: 'cgiiurt8um7k7n5dq48g',
-                    job_id: '2MUWghI7u85n91dd1qzGyswpZan',
-                    version: '895/merge',
-                  },
-                },
-                recordId: '2',
-                rudderId: '2',
-                fields: {
-                  Email: 'tobedeleted@gmail.com',
-                  First_Name: 'subcribed',
-                  Last_Name: ' User',
-                },
-                type: 'record',
-              },
+              message: deletionPayload1,
               metadata: {
                 jobId: 1,
                 userId: 'u1',
@@ -273,36 +136,7 @@ export const deleteData = [
                   accessToken: 'correct-access-token',
                 },
               },
-              destination: {
-                DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                    excludeKeys: [],
-                    includeKeys: [],
-                  },
-                },
-                Config: {
-                  region: 'IN',
-                  module: 'Leads',
-                  trigger: 'None',
-                  addDefaultDuplicateCheck: true,
-                  multiSelectFieldLevelDecision: [
-                    {
-                      from: 'multi-language',
-                      to: 'true',
-                    },
-                    {
-                      from: 'multi class',
-                      to: 'false',
-                    },
-                  ],
-                  oneTrustCookieCategories: [
-                    {
-                      oneTrustCookieCategory: 'Marketing',
-                    },
-                  ],
-                },
-              },
+              destination: commonDeletionDestConfig,
             },
             {
               message: {
@@ -338,36 +172,7 @@ export const deleteData = [
                   accessToken: 'correct-access-token',
                 },
               },
-              destination: {
-                DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                    excludeKeys: [],
-                    includeKeys: [],
-                  },
-                },
-                Config: {
-                  region: 'IN',
-                  module: 'Leads',
-                  trigger: 'None',
-                  addDefaultDuplicateCheck: true,
-                  multiSelectFieldLevelDecision: [
-                    {
-                      from: 'multi-language',
-                      to: 'true',
-                    },
-                    {
-                      from: 'multi class',
-                      to: 'false',
-                    },
-                  ],
-                  oneTrustCookieCategories: [
-                    {
-                      oneTrustCookieCategory: 'Marketing',
-                    },
-                  ],
-                },
-              },
+              destination: commonDeletionDestConfig,
             },
           ],
           destType,
@@ -409,36 +214,7 @@ export const deleteData = [
               ],
               batched: true,
               statusCode: 200,
-              destination: {
-                DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                    excludeKeys: [],
-                    includeKeys: [],
-                  },
-                },
-                Config: {
-                  region: 'IN',
-                  module: 'Leads',
-                  trigger: 'None',
-                  addDefaultDuplicateCheck: true,
-                  multiSelectFieldLevelDecision: [
-                    {
-                      from: 'multi-language',
-                      to: 'true',
-                    },
-                    {
-                      from: 'multi class',
-                      to: 'false',
-                    },
-                  ],
-                  oneTrustCookieCategories: [
-                    {
-                      oneTrustCookieCategory: 'Marketing',
-                    },
-                  ],
-                },
-              },
+              destination: commonDeletionDestConfig,
             },
             {
               metadata: [
@@ -462,36 +238,7 @@ export const deleteData = [
                 implementation: 'cdkV2',
                 feature: 'router',
               },
-              destination: {
-                DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                    excludeKeys: [],
-                    includeKeys: [],
-                  },
-                },
-                Config: {
-                  region: 'IN',
-                  module: 'Leads',
-                  trigger: 'None',
-                  addDefaultDuplicateCheck: true,
-                  multiSelectFieldLevelDecision: [
-                    {
-                      from: 'multi-language',
-                      to: 'true',
-                    },
-                    {
-                      from: 'multi class',
-                      to: 'false',
-                    },
-                  ],
-                  oneTrustCookieCategories: [
-                    {
-                      oneTrustCookieCategory: 'Marketing',
-                    },
-                  ],
-                },
-              },
+              destination: commonDeletionDestConfig,
             },
           ],
         },

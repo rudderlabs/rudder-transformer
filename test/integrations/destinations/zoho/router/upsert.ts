@@ -1,5 +1,14 @@
 import { defaultMockFns } from '../mocks';
-import { destType } from '../common';
+import {
+  commonOutput1,
+  commonUpsertDestConfig,
+  commonUpsertDestConfig2,
+  commonUpsertDestConfig3,
+  destType,
+  upsertPayload1,
+  upsertPayload2,
+  upsertPayload3,
+} from '../common';
 
 export const upsertData = [
   {
@@ -13,32 +22,7 @@ export const upsertData = [
         body: {
           input: [
             {
-              message: {
-                action: 'insert',
-                context: {
-                  externalId: [
-                    {
-                      type: 'ZOHO-LEADS',
-                      identifierType: 'email',
-                    },
-                  ],
-                  mappedToDestination: 'true',
-                  sources: {
-                    job_run_id: 'cgiiurt8um7k7n5dq480',
-                    task_run_id: 'cgiiurt8um7k7n5dq48g',
-                    job_id: '2MUWghI7u85n91dd1qzGyswpZan',
-                    version: '895/merge',
-                  },
-                },
-                recordId: '2',
-                rudderId: '2',
-                fields: {
-                  Email: 'subscribed@eewrfrd.com',
-                  First_Name: 'subcribed',
-                  Last_Name: ' User',
-                },
-                type: 'record',
-              },
+              message: upsertPayload1,
               metadata: {
                 jobId: 1,
                 userId: 'u1',
@@ -46,65 +30,10 @@ export const upsertData = [
                   accessToken: 'correct-access-token',
                 },
               },
-              destination: {
-                DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                    excludeKeys: [],
-                    includeKeys: [],
-                  },
-                },
-                Config: {
-                  region: 'US',
-                  module: 'Leads',
-                  trigger: 'workflow',
-                  addDefaultDuplicateCheck: true,
-                  multiSelectFieldLevelDecision: [
-                    {
-                      from: 'multi-language',
-                      to: 'true',
-                    },
-                    {
-                      from: 'multi class',
-                      to: 'false',
-                    },
-                  ],
-                  oneTrustCookieCategories: [
-                    {
-                      oneTrustCookieCategory: 'Marketing',
-                    },
-                  ],
-                },
-              },
+              destination: commonUpsertDestConfig,
             },
             {
-              message: {
-                action: 'insert',
-                context: {
-                  externalId: [
-                    {
-                      type: 'ZOHO-Leads',
-                      identifierType: 'email',
-                    },
-                  ],
-                  mappedToDestination: 'true',
-                  sources: {
-                    job_run_id: 'cgiiurt8um7k7n5dq480',
-                    task_run_id: 'cgiiurt8um7k7n5dq48g',
-                    job_id: '2MUWghI7u85n91dd1qzGyswpZan',
-                    version: '895/merge',
-                  },
-                },
-                recordId: '2',
-                rudderId: '2',
-                fields: {
-                  Email: 'subscribed@eewrfrd.com',
-                  First_Name: 'subcribed',
-                  Last_Name: ' User',
-                  'multi-language': 'Bengali',
-                },
-                type: 'record',
-              },
+              message: upsertPayload2,
               metadata: {
                 jobId: 2,
                 userId: 'u1',
@@ -112,36 +41,7 @@ export const upsertData = [
                   accessToken: 'correct-access-token',
                 },
               },
-              destination: {
-                DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                    excludeKeys: [],
-                    includeKeys: [],
-                  },
-                },
-                Config: {
-                  region: 'US',
-                  module: 'Leads',
-                  trigger: 'workflow',
-                  addDefaultDuplicateCheck: true,
-                  multiSelectFieldLevelDecision: [
-                    {
-                      from: 'multi-language',
-                      to: 'true',
-                    },
-                    {
-                      from: 'multi class',
-                      to: 'false',
-                    },
-                  ],
-                  oneTrustCookieCategories: [
-                    {
-                      oneTrustCookieCategory: 'Marketing',
-                    },
-                  ],
-                },
-              },
+              destination: commonUpsertDestConfig,
             },
           ],
           destType,
@@ -210,36 +110,7 @@ export const upsertData = [
               ],
               batched: true,
               statusCode: 200,
-              destination: {
-                DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                    excludeKeys: [],
-                    includeKeys: [],
-                  },
-                },
-                Config: {
-                  region: 'US',
-                  module: 'Leads',
-                  trigger: 'workflow',
-                  addDefaultDuplicateCheck: true,
-                  multiSelectFieldLevelDecision: [
-                    {
-                      from: 'multi-language',
-                      to: 'true',
-                    },
-                    {
-                      from: 'multi class',
-                      to: 'false',
-                    },
-                  ],
-                  oneTrustCookieCategories: [
-                    {
-                      oneTrustCookieCategory: 'Marketing',
-                    },
-                  ],
-                },
-              },
+              destination: commonUpsertDestConfig,
             },
           ],
         },
@@ -258,32 +129,7 @@ export const upsertData = [
         body: {
           input: [
             {
-              message: {
-                action: 'insert',
-                context: {
-                  externalId: [
-                    {
-                      type: 'ZOHO-LEADS',
-                      identifierType: 'email',
-                    },
-                  ],
-                  mappedToDestination: 'true',
-                  sources: {
-                    job_run_id: 'cgiiurt8um7k7n5dq480',
-                    task_run_id: 'cgiiurt8um7k7n5dq48g',
-                    job_id: '2MUWghI7u85n91dd1qzGyswpZan',
-                    version: '895/merge',
-                  },
-                },
-                recordId: '2',
-                rudderId: '2',
-                fields: {
-                  Email: 'subscribed@eewrfrd.com',
-                  First_Name: 'subcribed',
-                  Last_Name: ' User',
-                },
-                type: 'record',
-              },
+              message: upsertPayload1,
               metadata: {
                 jobId: 1,
                 userId: 'u1',
@@ -291,65 +137,10 @@ export const upsertData = [
                   accessToken: 'correct-access-token',
                 },
               },
-              destination: {
-                DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                    excludeKeys: [],
-                    includeKeys: [],
-                  },
-                },
-                Config: {
-                  region: 'US',
-                  module: 'Leads',
-                  trigger: 'None',
-                  addDefaultDuplicateCheck: true,
-                  multiSelectFieldLevelDecision: [
-                    {
-                      from: 'multi-language',
-                      to: 'true',
-                    },
-                    {
-                      from: 'multi class',
-                      to: 'false',
-                    },
-                  ],
-                  oneTrustCookieCategories: [
-                    {
-                      oneTrustCookieCategory: 'Marketing',
-                    },
-                  ],
-                },
-              },
+              destination: commonUpsertDestConfig2,
             },
             {
-              message: {
-                action: 'insert',
-                context: {
-                  externalId: [
-                    {
-                      type: 'ZOHO-Leads',
-                      identifierType: 'email',
-                    },
-                  ],
-                  mappedToDestination: 'true',
-                  sources: {
-                    job_run_id: 'cgiiurt8um7k7n5dq480',
-                    task_run_id: 'cgiiurt8um7k7n5dq48g',
-                    job_id: '2MUWghI7u85n91dd1qzGyswpZan',
-                    version: '895/merge',
-                  },
-                },
-                recordId: '2',
-                rudderId: '2',
-                fields: {
-                  Email: 'subscribed@eewrfrd.com',
-                  First_Name: 'subcribed',
-                  Last_Name: ' User',
-                  'multi-language': 'Bengali',
-                },
-                type: 'record',
-              },
+              message: upsertPayload2,
               metadata: {
                 jobId: 2,
                 userId: 'u1',
@@ -357,36 +148,7 @@ export const upsertData = [
                   accessToken: 'correct-access-token',
                 },
               },
-              destination: {
-                DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                    excludeKeys: [],
-                    includeKeys: [],
-                  },
-                },
-                Config: {
-                  region: 'US',
-                  module: 'Leads',
-                  trigger: 'None',
-                  addDefaultDuplicateCheck: true,
-                  multiSelectFieldLevelDecision: [
-                    {
-                      from: 'multi-language',
-                      to: 'true',
-                    },
-                    {
-                      from: 'multi class',
-                      to: 'false',
-                    },
-                  ],
-                  oneTrustCookieCategories: [
-                    {
-                      oneTrustCookieCategory: 'Marketing',
-                    },
-                  ],
-                },
-              },
+              destination: commonUpsertDestConfig2,
             },
           ],
           destType,
@@ -455,36 +217,7 @@ export const upsertData = [
               ],
               batched: true,
               statusCode: 200,
-              destination: {
-                DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                    excludeKeys: [],
-                    includeKeys: [],
-                  },
-                },
-                Config: {
-                  region: 'US',
-                  module: 'Leads',
-                  trigger: 'None',
-                  addDefaultDuplicateCheck: true,
-                  multiSelectFieldLevelDecision: [
-                    {
-                      from: 'multi-language',
-                      to: 'true',
-                    },
-                    {
-                      from: 'multi class',
-                      to: 'false',
-                    },
-                  ],
-                  oneTrustCookieCategories: [
-                    {
-                      oneTrustCookieCategory: 'Marketing',
-                    },
-                  ],
-                },
-              },
+              destination: commonUpsertDestConfig2,
             },
           ],
         },
@@ -537,36 +270,7 @@ export const upsertData = [
                   accessToken: 'correct-access-token',
                 },
               },
-              destination: {
-                DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                    excludeKeys: [],
-                    includeKeys: [],
-                  },
-                },
-                Config: {
-                  region: 'US',
-                  module: 'Leads',
-                  trigger: 'None',
-                  addDefaultDuplicateCheck: true,
-                  multiSelectFieldLevelDecision: [
-                    {
-                      from: 'multi-language',
-                      to: 'true',
-                    },
-                    {
-                      from: 'multi class',
-                      to: 'false',
-                    },
-                  ],
-                  oneTrustCookieCategories: [
-                    {
-                      oneTrustCookieCategory: 'Marketing',
-                    },
-                  ],
-                },
-              },
+              destination: commonUpsertDestConfig2,
             },
             {
               message: {
@@ -604,36 +308,7 @@ export const upsertData = [
                   accessToken: 'correct-access-token',
                 },
               },
-              destination: {
-                DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                    excludeKeys: [],
-                    includeKeys: [],
-                  },
-                },
-                Config: {
-                  region: 'US',
-                  module: 'Leads',
-                  trigger: 'None',
-                  addDefaultDuplicateCheck: true,
-                  multiSelectFieldLevelDecision: [
-                    {
-                      from: 'multi-language',
-                      to: 'true',
-                    },
-                    {
-                      from: 'multi class',
-                      to: 'false',
-                    },
-                  ],
-                  oneTrustCookieCategories: [
-                    {
-                      oneTrustCookieCategory: 'Marketing',
-                    },
-                  ],
-                },
-              },
+              destination: commonUpsertDestConfig2,
             },
           ],
           destType,
@@ -704,36 +379,7 @@ export const upsertData = [
               ],
               batched: true,
               statusCode: 200,
-              destination: {
-                DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                    excludeKeys: [],
-                    includeKeys: [],
-                  },
-                },
-                Config: {
-                  region: 'US',
-                  module: 'Leads',
-                  trigger: 'None',
-                  addDefaultDuplicateCheck: true,
-                  multiSelectFieldLevelDecision: [
-                    {
-                      from: 'multi-language',
-                      to: 'true',
-                    },
-                    {
-                      from: 'multi class',
-                      to: 'false',
-                    },
-                  ],
-                  oneTrustCookieCategories: [
-                    {
-                      oneTrustCookieCategory: 'Marketing',
-                    },
-                  ],
-                },
-              },
+              destination: commonUpsertDestConfig2,
             },
           ],
         },
@@ -785,36 +431,7 @@ export const upsertData = [
                   accessToken: 'correct-access-token',
                 },
               },
-              destination: {
-                DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                    excludeKeys: [],
-                    includeKeys: [],
-                  },
-                },
-                Config: {
-                  region: 'US',
-                  module: 'Leads',
-                  trigger: 'workflow',
-                  addDefaultDuplicateCheck: true,
-                  multiSelectFieldLevelDecision: [
-                    {
-                      from: 'multi-language',
-                      to: 'true',
-                    },
-                    {
-                      from: 'multi class',
-                      to: 'false',
-                    },
-                  ],
-                  oneTrustCookieCategories: [
-                    {
-                      oneTrustCookieCategory: 'Marketing',
-                    },
-                  ],
-                },
-              },
+              destination: commonUpsertDestConfig,
             },
             {
               message: {
@@ -848,36 +465,7 @@ export const upsertData = [
                   accessToken: 'correct-access-token',
                 },
               },
-              destination: {
-                DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                    excludeKeys: [],
-                    includeKeys: [],
-                  },
-                },
-                Config: {
-                  region: 'US',
-                  module: 'Leads',
-                  trigger: 'workflow',
-                  addDefaultDuplicateCheck: true,
-                  multiSelectFieldLevelDecision: [
-                    {
-                      from: 'multi-language',
-                      to: 'true',
-                    },
-                    {
-                      from: 'multi class',
-                      to: 'false',
-                    },
-                  ],
-                  oneTrustCookieCategories: [
-                    {
-                      oneTrustCookieCategory: 'Marketing',
-                    },
-                  ],
-                },
-              },
+              destination: commonUpsertDestConfig,
             },
           ],
           destType,
@@ -934,36 +522,7 @@ export const upsertData = [
               ],
               batched: true,
               statusCode: 200,
-              destination: {
-                DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                    excludeKeys: [],
-                    includeKeys: [],
-                  },
-                },
-                Config: {
-                  region: 'US',
-                  module: 'Leads',
-                  trigger: 'workflow',
-                  addDefaultDuplicateCheck: true,
-                  multiSelectFieldLevelDecision: [
-                    {
-                      from: 'multi-language',
-                      to: 'true',
-                    },
-                    {
-                      from: 'multi class',
-                      to: 'false',
-                    },
-                  ],
-                  oneTrustCookieCategories: [
-                    {
-                      oneTrustCookieCategory: 'Marketing',
-                    },
-                  ],
-                },
-              },
+              destination: commonUpsertDestConfig,
             },
             {
               metadata: [
@@ -986,36 +545,7 @@ export const upsertData = [
                 implementation: 'cdkV2',
                 feature: 'router',
               },
-              destination: {
-                DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                    excludeKeys: [],
-                    includeKeys: [],
-                  },
-                },
-                Config: {
-                  region: 'US',
-                  module: 'Leads',
-                  trigger: 'workflow',
-                  addDefaultDuplicateCheck: true,
-                  multiSelectFieldLevelDecision: [
-                    {
-                      from: 'multi-language',
-                      to: 'true',
-                    },
-                    {
-                      from: 'multi class',
-                      to: 'false',
-                    },
-                  ],
-                  oneTrustCookieCategories: [
-                    {
-                      oneTrustCookieCategory: 'Marketing',
-                    },
-                  ],
-                },
-              },
+              destination: commonUpsertDestConfig,
             },
           ],
         },
@@ -1034,32 +564,7 @@ export const upsertData = [
         body: {
           input: [
             {
-              message: {
-                action: 'insert',
-                context: {
-                  externalId: [
-                    {
-                      type: 'ZOHO-Leads',
-                      identifierType: 'Email',
-                    },
-                  ],
-                  mappedToDestination: 'true',
-                  sources: {
-                    job_run_id: 'cgiiurt8um7k7n5dq480',
-                    task_run_id: 'cgiiurt8um7k7n5dq48g',
-                    job_id: '2MUWghI7u85n91dd1qzGyswpZan',
-                    version: '895/merge',
-                  },
-                },
-                recordId: '2',
-                rudderId: '2',
-                fields: {
-                  Email: 'subscribed@eewrfrd.com',
-                  First_Name: 'subcribed',
-                  Last_Name: ' User',
-                },
-                type: 'record',
-              },
+              message: upsertPayload3,
               metadata: {
                 jobId: 1,
                 userId: 'u1',
@@ -1067,26 +572,7 @@ export const upsertData = [
                   accessToken: 'correct-access-token',
                 },
               },
-              destination: {
-                DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                    excludeKeys: [],
-                    includeKeys: [],
-                  },
-                },
-                Config: {
-                  region: 'US',
-                  module: 'Leads',
-                  trigger: 'workflow',
-                  addDefaultDuplicateCheck: true,
-                  oneTrustCookieCategories: [
-                    {
-                      oneTrustCookieCategory: 'Marketing',
-                    },
-                  ],
-                },
-              },
+              destination: commonUpsertDestConfig3,
             },
           ],
           destType,
@@ -1110,18 +596,7 @@ export const upsertData = [
                 },
                 params: {},
                 body: {
-                  JSON: {
-                    duplicate_check_fields: ['Email'],
-                    data: [
-                      {
-                        Email: 'subscribed@eewrfrd.com',
-                        First_Name: 'subcribed',
-                        Last_Name: ' User',
-                      },
-                    ],
-                    $append_values: {},
-                    trigger: ['workflow'],
-                  },
+                  JSON: commonOutput1,
                   JSON_ARRAY: {},
                   XML: {},
                   FORM: {},
@@ -1139,26 +614,7 @@ export const upsertData = [
               ],
               batched: true,
               statusCode: 200,
-              destination: {
-                DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                    excludeKeys: [],
-                    includeKeys: [],
-                  },
-                },
-                Config: {
-                  region: 'US',
-                  module: 'Leads',
-                  trigger: 'workflow',
-                  addDefaultDuplicateCheck: true,
-                  oneTrustCookieCategories: [
-                    {
-                      oneTrustCookieCategory: 'Marketing',
-                    },
-                  ],
-                },
-              },
+              destination: commonUpsertDestConfig3,
             },
           ],
         },
@@ -1177,32 +633,7 @@ export const upsertData = [
         body: {
           input: [
             {
-              message: {
-                action: 'insert',
-                context: {
-                  externalId: [
-                    {
-                      type: 'ZOHO-Leads',
-                      identifierType: 'Email',
-                    },
-                  ],
-                  mappedToDestination: 'true',
-                  sources: {
-                    job_run_id: 'cgiiurt8um7k7n5dq480',
-                    task_run_id: 'cgiiurt8um7k7n5dq48g',
-                    job_id: '2MUWghI7u85n91dd1qzGyswpZan',
-                    version: '895/merge',
-                  },
-                },
-                recordId: '2',
-                rudderId: '2',
-                fields: {
-                  Email: 'subscribed@eewrfrd.com',
-                  First_Name: 'subcribed',
-                  Last_Name: ' User',
-                },
-                type: 'record',
-              },
+              message: upsertPayload3,
               metadata: {
                 jobId: 1,
                 userId: 'u1',
@@ -1210,54 +641,10 @@ export const upsertData = [
                   accessToken: 'correct-access-token',
                 },
               },
-              destination: {
-                DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                    excludeKeys: [],
-                    includeKeys: [],
-                  },
-                },
-                Config: {
-                  region: 'US',
-                  module: 'Leads',
-                  trigger: 'workflow',
-                  addDefaultDuplicateCheck: true,
-                  oneTrustCookieCategories: [
-                    {
-                      oneTrustCookieCategory: 'Marketing',
-                    },
-                  ],
-                },
-              },
+              destination: commonUpsertDestConfig3,
             },
             {
-              message: {
-                action: 'insert',
-                context: {
-                  externalId: [
-                    {
-                      type: 'ZOHO-Leads',
-                      identifierType: 'Email',
-                    },
-                  ],
-                  mappedToDestination: 'true',
-                  sources: {
-                    job_run_id: 'cgiiurt8um7k7n5dq480',
-                    task_run_id: 'cgiiurt8um7k7n5dq48g',
-                    job_id: '2MUWghI7u85n91dd1qzGyswpZan',
-                    version: '895/merge',
-                  },
-                },
-                recordId: '2',
-                rudderId: '2',
-                fields: {
-                  Email: 'subscribed@eewrfrd.com',
-                  First_Name: 'subcribed',
-                  Last_Name: ' User',
-                },
-                type: 'record',
-              },
+              message: upsertPayload3,
               metadata: {
                 jobId: 2,
                 userId: 'u1',
@@ -1265,54 +652,10 @@ export const upsertData = [
                   accessToken: 'correct-access-token',
                 },
               },
-              destination: {
-                DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                    excludeKeys: [],
-                    includeKeys: [],
-                  },
-                },
-                Config: {
-                  region: 'US',
-                  module: 'Leads',
-                  trigger: 'workflow',
-                  addDefaultDuplicateCheck: true,
-                  oneTrustCookieCategories: [
-                    {
-                      oneTrustCookieCategory: 'Marketing',
-                    },
-                  ],
-                },
-              },
+              destination: commonUpsertDestConfig3,
             },
             {
-              message: {
-                action: 'insert',
-                context: {
-                  externalId: [
-                    {
-                      type: 'ZOHO-Leads',
-                      identifierType: 'Email',
-                    },
-                  ],
-                  mappedToDestination: 'true',
-                  sources: {
-                    job_run_id: 'cgiiurt8um7k7n5dq480',
-                    task_run_id: 'cgiiurt8um7k7n5dq48g',
-                    job_id: '2MUWghI7u85n91dd1qzGyswpZan',
-                    version: '895/merge',
-                  },
-                },
-                recordId: '2',
-                rudderId: '2',
-                fields: {
-                  Email: 'subscribed@eewrfrd.com',
-                  First_Name: 'subcribed',
-                  Last_Name: ' User',
-                },
-                type: 'record',
-              },
+              message: upsertPayload3,
               metadata: {
                 jobId: 3,
                 userId: 'u1',
@@ -1320,26 +663,7 @@ export const upsertData = [
                   accessToken: 'correct-access-token',
                 },
               },
-              destination: {
-                DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                    excludeKeys: [],
-                    includeKeys: [],
-                  },
-                },
-                Config: {
-                  region: 'US',
-                  module: 'Leads',
-                  trigger: 'workflow',
-                  addDefaultDuplicateCheck: true,
-                  oneTrustCookieCategories: [
-                    {
-                      oneTrustCookieCategory: 'Marketing',
-                    },
-                  ],
-                },
-              },
+              destination: commonUpsertDestConfig3,
             },
           ],
           destType,
@@ -1404,26 +728,7 @@ export const upsertData = [
               ],
               batched: true,
               statusCode: 200,
-              destination: {
-                DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                    excludeKeys: [],
-                    includeKeys: [],
-                  },
-                },
-                Config: {
-                  region: 'US',
-                  module: 'Leads',
-                  trigger: 'workflow',
-                  addDefaultDuplicateCheck: true,
-                  oneTrustCookieCategories: [
-                    {
-                      oneTrustCookieCategory: 'Marketing',
-                    },
-                  ],
-                },
-              },
+              destination: commonUpsertDestConfig3,
             },
             {
               batchedRequest: {
@@ -1436,18 +741,7 @@ export const upsertData = [
                 },
                 params: {},
                 body: {
-                  JSON: {
-                    duplicate_check_fields: ['Email'],
-                    data: [
-                      {
-                        Email: 'subscribed@eewrfrd.com',
-                        First_Name: 'subcribed',
-                        Last_Name: ' User',
-                      },
-                    ],
-                    $append_values: {},
-                    trigger: ['workflow'],
-                  },
+                  JSON: commonOutput1,
                   JSON_ARRAY: {},
                   XML: {},
                   FORM: {},
@@ -1465,26 +759,7 @@ export const upsertData = [
               ],
               batched: true,
               statusCode: 200,
-              destination: {
-                DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                    excludeKeys: [],
-                    includeKeys: [],
-                  },
-                },
-                Config: {
-                  region: 'US',
-                  module: 'Leads',
-                  trigger: 'workflow',
-                  addDefaultDuplicateCheck: true,
-                  oneTrustCookieCategories: [
-                    {
-                      oneTrustCookieCategory: 'Marketing',
-                    },
-                  ],
-                },
-              },
+              destination: commonUpsertDestConfig3,
             },
           ],
         },

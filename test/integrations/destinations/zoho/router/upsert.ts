@@ -536,7 +536,7 @@ export const upsertData = [
               ],
               batched: false,
               statusCode: 400,
-              error: 'Last_Name object must have the Last_Name property(ies).',
+              error: 'Leads object must have the Last_Name property(ies).',
               statTags: {
                 errorCategory: 'dataValidation',
                 errorType: 'configuration',

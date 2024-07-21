@@ -152,7 +152,7 @@ const handleUpsert = async (
 
   if (eventErroneous?.status) {
     const error = new ConfigurationError(
-      `${eventErroneous.missingField} object must have the ${eventErroneous.missingField.join('", "')} property(ies).`,
+      `${operationModuleType} object must have the ${eventErroneous.missingField.join('", "')} property(ies).`,
     );
     errorResponseList.push(handleRtTfSingleEventError(input, error, {}));
   } else {

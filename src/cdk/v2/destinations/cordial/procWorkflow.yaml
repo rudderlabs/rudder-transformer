@@ -62,7 +62,6 @@ steps:
         template: |
           const integrationObj = $.getIntegrationsObj(.message, "cordial");
           let payload = $.constructPayload(.message, $.IDENTIFY_CONFIG);
-          payload.invalid = integrationObj.emailOptIn;
           const traits = .message.().(
               {{{{$.getGenericPaths("traits")}}}};
           );

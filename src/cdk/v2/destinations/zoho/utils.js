@@ -2,6 +2,7 @@ const {
   MappedToDestinationKey,
   getHashFromArray,
   isDefinedAndNotNull,
+  ConfigurationError,
 } = require('@rudderstack/integrations-lib');
 const get = require('get-value');
 const { getDestinationExternalIDInfoForRetl, isHttpStatusSuccess } = require('../../../../v0/util');
@@ -136,6 +137,25 @@ const calculateTrigger = (trigger) => {
   }
   return [trigger];
 };
+
+const validateConfigurationIssue = (Config, operationModuleType, action) => {
+  const hashMapMultiselect = getHashFromArray(
+    Config.multiSelectFieldLevelDecision,
+    'from',
+    'to',
+    false,
+  );
+  if (
+    Object.keys(hashMapMultiselect).length > 0 &&
+    Config.module !== operationModuleType &&
+    action !== 'delete'
+  ) {
+    throw new ConfigurationError(
+      'Object Chosen in Visual Data Mapper is not consistent with Module type selected in destination configuration. Aborting Events.',
+    );
+  }
+};
+
 module.exports = {
   deduceModuleInfo,
   validatePresenceOfMandatoryProperties,
@@ -144,4 +164,5 @@ module.exports = {
   searchRecordId,
   transformToURLParams,
   calculateTrigger,
+  validateConfigurationIssue,
 };

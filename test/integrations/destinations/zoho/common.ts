@@ -78,7 +78,7 @@ const upsertPayload1 = {
   context: {
     externalId: [
       {
-        type: 'ZOHO-LEADS',
+        type: 'ZOHO-Leads',
         identifierType: 'email',
       },
     ],
@@ -233,6 +233,45 @@ const commonUpsertDestConfig2: Destination = {
   },
 };
 
+const commonUpsertDestConfig2CustomModule: Destination = {
+  ID: '345',
+  Name: 'Test',
+  Enabled: true,
+  WorkspaceID: '',
+  Transformations: [],
+  DestinationDefinition: {
+    ID: '345',
+    Name: 'Test',
+    DisplayName: 'ZOHO',
+    Config: {
+      cdkV2Enabled: true,
+      excludeKeys: [],
+      includeKeys: [],
+    },
+  },
+  Config: {
+    region: 'US',
+    module: 'CUSTOM',
+    trigger: 'None',
+    addDefaultDuplicateCheck: true,
+    multiSelectFieldLevelDecision: [
+      {
+        from: 'multi-language',
+        to: 'true',
+      },
+      {
+        from: 'multi class',
+        to: 'false',
+      },
+    ],
+    oneTrustCookieCategories: [
+      {
+        oneTrustCookieCategory: 'Marketing',
+      },
+    ],
+  },
+};
+
 const commonUpsertDestConfig3: Destination = {
   ID: '345',
   Name: 'Test',
@@ -291,4 +330,5 @@ export {
   commonUpsertDestConfig2,
   commonOutput1,
   commonUpsertDestConfig3,
+  commonUpsertDestConfig2CustomModule,
 };

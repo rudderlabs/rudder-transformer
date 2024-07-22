@@ -22,6 +22,7 @@ const {
   handleDuplicateCheck,
   searchRecordId,
   calculateTrigger,
+  validateConfigurationIssue,
 } = require('./utils');
 const { REFRESH_TOKEN } = require('../../../../adapters/networkhandler/authConstants');
 
@@ -294,6 +295,8 @@ const processRecordInputs = async (inputs, destination) => {
   };
 
   const { operationModuleType, identifierType, upsertEndPoint } = deduceModuleInfo(inputs, Config);
+
+  validateConfigurationIssue(Config, operationModuleType, action);
 
   await Promise.all(
     inputs.map((input) =>

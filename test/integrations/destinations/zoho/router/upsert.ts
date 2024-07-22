@@ -3,6 +3,7 @@ import {
   commonOutput1,
   commonUpsertDestConfig,
   commonUpsertDestConfig2,
+  commonUpsertDestConfig2CustomModule,
   commonUpsertDestConfig3,
   destType,
   upsertPayload1,
@@ -59,14 +60,14 @@ export const upsertData = [
                 version: '1',
                 type: 'REST',
                 method: 'POST',
-                endpoint: 'https://www.zohoapis.com/crm/v6/LEADS/upsert',
+                endpoint: 'https://www.zohoapis.com/crm/v6/Leads/upsert',
                 headers: {
                   Authorization: 'Zoho-oauthtoken correct-access-token',
                 },
                 params: {},
                 body: {
                   JSON: {
-                    duplicate_check_fields: ['email', 'Name'],
+                    duplicate_check_fields: ['email', 'Email'],
                     data: [
                       {
                         Email: 'subscribed@eewrfrd.com',
@@ -166,14 +167,14 @@ export const upsertData = [
                 version: '1',
                 type: 'REST',
                 method: 'POST',
-                endpoint: 'https://www.zohoapis.com/crm/v6/LEADS/upsert',
+                endpoint: 'https://www.zohoapis.com/crm/v6/Leads/upsert',
                 headers: {
                   Authorization: 'Zoho-oauthtoken correct-access-token',
                 },
                 params: {},
                 body: {
                   JSON: {
-                    duplicate_check_fields: ['email', 'Name'],
+                    duplicate_check_fields: ['email', 'Email'],
                     data: [
                       {
                         Email: 'subscribed@eewrfrd.com',
@@ -242,7 +243,7 @@ export const upsertData = [
                   externalId: [
                     {
                       type: 'ZOHO-CUSTOM',
-                      identifierType: 'email',
+                      identifierType: 'Email',
                     },
                   ],
                   mappedToDestination: 'true',
@@ -270,7 +271,7 @@ export const upsertData = [
                   accessToken: 'correct-access-token',
                 },
               },
-              destination: commonUpsertDestConfig2,
+              destination: commonUpsertDestConfig2CustomModule,
             },
             {
               message: {
@@ -279,7 +280,7 @@ export const upsertData = [
                   externalId: [
                     {
                       type: 'ZOHO-CUSTOM',
-                      identifierType: 'email',
+                      identifierType: 'Email',
                     },
                   ],
                   mappedToDestination: 'true',
@@ -333,7 +334,7 @@ export const upsertData = [
                 params: {},
                 body: {
                   JSON: {
-                    duplicate_check_fields: ['email', 'Name'],
+                    duplicate_check_fields: ['Email', 'Name'],
                     data: [
                       {
                         Email: 'subscribed@eewrfrd.com',
@@ -379,7 +380,7 @@ export const upsertData = [
               ],
               batched: true,
               statusCode: 200,
-              destination: commonUpsertDestConfig2,
+              destination: commonUpsertDestConfig2CustomModule,
             },
           ],
         },
@@ -404,7 +405,7 @@ export const upsertData = [
                   externalId: [
                     {
                       type: 'ZOHO-Leads',
-                      identifierType: 'email',
+                      identifierType: 'Email',
                     },
                   ],
                   mappedToDestination: 'true',
@@ -440,7 +441,7 @@ export const upsertData = [
                   externalId: [
                     {
                       type: 'ZOHO-Leads',
-                      identifierType: 'email',
+                      identifierType: 'Email',
                     },
                   ],
                   mappedToDestination: 'true',
@@ -490,7 +491,7 @@ export const upsertData = [
                 params: {},
                 body: {
                   JSON: {
-                    duplicate_check_fields: ['email', 'Email'],
+                    duplicate_check_fields: ['Email'],
                     data: [
                       {
                         Email: 'subscribed@eewrfrd.com',

@@ -4,10 +4,18 @@ const reservedANSIKeywordsMap = require('../config/ReservedKeywords.json');
 const { isDataLakeProvider } = require('../config/helpers');
 const { TransformationError } = require('@rudderstack/integrations-lib');
 
+let eventNameTableMap = JSON.parse(process.env.WAREHOUSE_EVENT_NAME_TABLE_MAP ?? '{}');
+
 function safeTableName(options, name = '') {
   const { provider } = options;
   const skipReservedKeywordsEscaping =
     options.integrationOptions?.skipReservedKeywordsEscaping || false;
+
+  let customTableName = eventNameTableMap[options.destinationId]?.[name];
+  if (customTableName) {
+    return customTableName;
+  }
+
   let tableName = name;
   if (tableName === '') {
     throw new TransformationError('Table name cannot be empty.');

@@ -47,6 +47,7 @@ function process(event) {
     chEnableArraySupport,
     sourceCategory: event.metadata ? event.metadata.sourceCategory : null,
     destConfig: event.destination?.Config,
+    destinationId: event.destination.ID,
   });
 }
 

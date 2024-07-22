@@ -40,6 +40,11 @@ const integrations = [
 const transformers = integrations.map(integration =>
   require(`../../src/${version}/destinations/${integration}/transform`)
 );
+
+const loadTransformers = () => integrations.map(integration =>
+  require(`../../src/${version}/destinations/${integration}/transform`)
+)
+
 const eventTypes = ["track", "identify", "page", "screen", "group", "alias"];
 // get key of user set properties in the event
 // eg. for identify call, user sets the custom properties inside traits
@@ -142,6 +147,16 @@ describe("event types", () => {
 });
 
 describe("column & table names", () => {
+
+  let originalEnv = process.env;
+  beforeEach(() => {
+    originalEnv = process.env
+  });
+  afterEach(() => {
+    process.env = originalEnv
+  });
+
+
   it("should handle special character, spacing, snake case etc.", () => {
     let i = input("track");
 
@@ -170,6 +185,46 @@ describe("column & table names", () => {
       }
     });
   });
+
+  it("should use custom table name if provided", () => {
+
+    let i = input("track");
+
+    const expectedMapping = {
+      "omega": "custom_track_table"
+    }
+
+    process.env = {
+      ...originalEnv,
+      WAREHOUSE_EVENT_NAME_TABLE_MAP: JSON.stringify({
+        [i.destination.ID]: {
+          "omega": "custom_track_table"
+        },
+
+        ["other-destination-id"]: {
+          "omega v2": "should_not_happen"
+        },
+      })
+    };
+    jest.resetModules();
+
+    loadTransformers().forEach((transformer, index) => {
+      const provider =
+        integrations[index] === "snowflake" ? "snowflake" : "default";
+
+      for (let tableName in names.input.properties) {
+        i.message.event = tableName;
+        let out = transformer.process(i);
+
+        if (expectedMapping[tableName] !== undefined) {
+          expect(out[1].metadata.table).toEqual(expectedMapping[tableName]);
+        } else {
+          expect(out[1].metadata.table).toEqual(names.output.namesMap[provider][tableName])
+        }
+      }
+    })
+  })
+
   it("should trim column names in postgres", () => {
     let i = input("track");
     names.input.properties[
@@ -280,6 +335,8 @@ describe("column & table names", () => {
       //KEY should be trimmed to 127
     });
   });
+
+
 });
 
 // tests case where properties set by user match the columns set by rudder(id, recevied etc)

@@ -1,3 +1,5 @@
+import { commonSourceConfigProperties, commonSourceDefinition } from './common';
+
 export const data = [
   {
     name: 'braze',
@@ -26,12 +28,7 @@ export const data = [
               ID: '2hgvYyU5TYaFvVzBge6tF2UKoeG',
               OriginalID: '',
               Name: 'Braze source',
-              SourceDefinition: {
-                ID: '1lh9senY3vrBg4JQXswWzyYBTOO',
-                Name: 'Braze',
-                Category: 'webhook',
-                Type: 'cloud',
-              },
+              SourceDefinition: commonSourceDefinition,
               Config: {
                 customMapping: [
                   {
@@ -39,28 +36,8 @@ export const data = [
                     to: 'In-App Message Clicked',
                   },
                 ],
-                eventUpload: true,
-                eventUploadTS: 1719979696938,
               },
-              Enabled: true,
-              WorkspaceID: '2hSS1hZ8kuCpUZAAYsQucAFdob9',
-              Destinations: null,
-              WriteKey: '2hgvYykpvMaE5Eg47Au8RWC9Yza',
-              DgSourceTrackingPlanConfig: {
-                sourceId: '',
-                version: 0,
-                config: null,
-                mergedConfig: null,
-                deleted: false,
-                trackingPlan: {
-                  id: '',
-                  version: 0,
-                },
-              },
-              Transient: false,
-              GeoEnrichment: {
-                Enabled: false,
-              },
+              ...commonSourceConfigProperties,
             },
           },
         ],
@@ -133,12 +110,7 @@ export const data = [
               ID: '2hgvYyU5TYaFvVzBge6tF2UKoeG',
               OriginalID: '',
               Name: 'Braze source',
-              SourceDefinition: {
-                ID: '1lh9senY3vrBg4JQXswWzyYBTOO',
-                Name: 'Braze',
-                Category: 'webhook',
-                Type: 'cloud',
-              },
+              SourceDefinition: commonSourceDefinition,
               Config: {
                 customMapping: [
                   {
@@ -146,28 +118,8 @@ export const data = [
                     to: 'In-App Message Clicked',
                   },
                 ],
-                eventUpload: true,
-                eventUploadTS: 1719979696938,
               },
-              Enabled: true,
-              WorkspaceID: '2hSS1hZ8kuCpUZAAYsQucAFdob9',
-              Destinations: null,
-              WriteKey: '2hgvYykpvMaE5Eg47Au8RWC9Yza',
-              DgSourceTrackingPlanConfig: {
-                sourceId: '',
-                version: 0,
-                config: null,
-                mergedConfig: null,
-                deleted: false,
-                trackingPlan: {
-                  id: '',
-                  version: 0,
-                },
-              },
-              Transient: false,
-              GeoEnrichment: {
-                Enabled: false,
-              },
+              ...commonSourceConfigProperties,
             },
           },
         ],
@@ -252,12 +204,7 @@ export const data = [
               ID: '2hgvYyU5TYaFvVzBge6tF2UKoeG',
               OriginalID: '',
               Name: 'Braze source',
-              SourceDefinition: {
-                ID: '1lh9senY3vrBg4JQXswWzyYBTOO',
-                Name: 'Braze',
-                Category: 'webhook',
-                Type: 'cloud',
-              },
+              SourceDefinition: commonSourceDefinition,
               Config: {
                 customMapping: [
                   {
@@ -265,28 +212,8 @@ export const data = [
                     to: 'In-App Message Clicked',
                   },
                 ],
-                eventUpload: true,
-                eventUploadTS: 1719979696938,
               },
-              Enabled: true,
-              WorkspaceID: '2hSS1hZ8kuCpUZAAYsQucAFdob9',
-              Destinations: null,
-              WriteKey: '2hgvYykpvMaE5Eg47Au8RWC9Yza',
-              DgSourceTrackingPlanConfig: {
-                sourceId: '',
-                version: 0,
-                config: null,
-                mergedConfig: null,
-                deleted: false,
-                trackingPlan: {
-                  id: '',
-                  version: 0,
-                },
-              },
-              Transient: false,
-              GeoEnrichment: {
-                Enabled: false,
-              },
+              ...commonSourceConfigProperties,
             },
           },
         ],
@@ -375,12 +302,7 @@ export const data = [
               ID: '2hgvYyU5TYaFvVzBge6tF2UKoeG',
               OriginalID: '',
               Name: 'Braze source',
-              SourceDefinition: {
-                ID: '1lh9senY3vrBg4JQXswWzyYBTOO',
-                Name: 'Braze',
-                Category: 'webhook',
-                Type: 'cloud',
-              },
+              SourceDefinition: commonSourceDefinition,
               Config: {
                 customMapping: [
                   {
@@ -388,28 +310,8 @@ export const data = [
                     to: 'In-App Message Clicked',
                   },
                 ],
-                eventUpload: true,
-                eventUploadTS: 1719979696938,
               },
-              Enabled: true,
-              WorkspaceID: '2hSS1hZ8kuCpUZAAYsQucAFdob9',
-              Destinations: null,
-              WriteKey: '2hgvYykpvMaE5Eg47Au8RWC9Yza',
-              DgSourceTrackingPlanConfig: {
-                sourceId: '',
-                version: 0,
-                config: null,
-                mergedConfig: null,
-                deleted: false,
-                trackingPlan: {
-                  id: '',
-                  version: 0,
-                },
-              },
-              Transient: false,
-              GeoEnrichment: {
-                Enabled: false,
-              },
+              ...commonSourceConfigProperties,
             },
           },
         ],
@@ -495,12 +397,7 @@ export const data = [
               ID: '2hgvYyU5TYaFvVzBge6tF2UKoeG',
               OriginalID: '',
               Name: 'Braze source',
-              SourceDefinition: {
-                ID: '1lh9senY3vrBg4JQXswWzyYBTOO',
-                Name: 'Braze',
-                Category: 'webhook',
-                Type: 'cloud',
-              },
+              SourceDefinition: commonSourceDefinition,
               Config: {
                 customMapping: [
                   {
@@ -508,28 +405,8 @@ export const data = [
                     to: 'In-App Message Clicked',
                   },
                 ],
-                eventUpload: true,
-                eventUploadTS: 1719979696938,
               },
-              Enabled: true,
-              WorkspaceID: '2hSS1hZ8kuCpUZAAYsQucAFdob9',
-              Destinations: null,
-              WriteKey: '2hgvYykpvMaE5Eg47Au8RWC9Yza',
-              DgSourceTrackingPlanConfig: {
-                sourceId: '',
-                version: 0,
-                config: null,
-                mergedConfig: null,
-                deleted: false,
-                trackingPlan: {
-                  id: '',
-                  version: 0,
-                },
-              },
-              Transient: false,
-              GeoEnrichment: {
-                Enabled: false,
-              },
+              ...commonSourceConfigProperties,
             },
           },
         ],
@@ -614,12 +491,7 @@ export const data = [
               ID: '2hgvYyU5TYaFvVzBge6tF2UKoeG',
               OriginalID: '',
               Name: 'Braze source',
-              SourceDefinition: {
-                ID: '1lh9senY3vrBg4JQXswWzyYBTOO',
-                Name: 'Braze',
-                Category: 'webhook',
-                Type: 'cloud',
-              },
+              SourceDefinition: commonSourceDefinition,
               Config: {
                 customMapping: [
                   {
@@ -627,28 +499,8 @@ export const data = [
                     to: 'In-App Message Clicked',
                   },
                 ],
-                eventUpload: true,
-                eventUploadTS: 1719979696938,
               },
-              Enabled: true,
-              WorkspaceID: '2hSS1hZ8kuCpUZAAYsQucAFdob9',
-              Destinations: null,
-              WriteKey: '2hgvYykpvMaE5Eg47Au8RWC9Yza',
-              DgSourceTrackingPlanConfig: {
-                sourceId: '',
-                version: 0,
-                config: null,
-                mergedConfig: null,
-                deleted: false,
-                trackingPlan: {
-                  id: '',
-                  version: 0,
-                },
-              },
-              Transient: false,
-              GeoEnrichment: {
-                Enabled: false,
-              },
+              ...commonSourceConfigProperties,
             },
           },
         ],
@@ -736,12 +588,7 @@ export const data = [
               ID: '2hgvYyU5TYaFvVzBge6tF2UKoeG',
               OriginalID: '',
               Name: 'Braze source',
-              SourceDefinition: {
-                ID: '1lh9senY3vrBg4JQXswWzyYBTOO',
-                Name: 'Braze',
-                Category: 'webhook',
-                Type: 'cloud',
-              },
+              SourceDefinition: commonSourceDefinition,
               Config: {
                 customMapping: [
                   {
@@ -749,28 +596,8 @@ export const data = [
                     to: 'In-App Message Clicked',
                   },
                 ],
-                eventUpload: true,
-                eventUploadTS: 1719979696938,
               },
-              Enabled: true,
-              WorkspaceID: '2hSS1hZ8kuCpUZAAYsQucAFdob9',
-              Destinations: null,
-              WriteKey: '2hgvYykpvMaE5Eg47Au8RWC9Yza',
-              DgSourceTrackingPlanConfig: {
-                sourceId: '',
-                version: 0,
-                config: null,
-                mergedConfig: null,
-                deleted: false,
-                trackingPlan: {
-                  id: '',
-                  version: 0,
-                },
-              },
-              Transient: false,
-              GeoEnrichment: {
-                Enabled: false,
-              },
+              ...commonSourceConfigProperties,
             },
           },
         ],
@@ -861,12 +688,7 @@ export const data = [
               ID: '2hgvYyU5TYaFvVzBge6tF2UKoeG',
               OriginalID: '',
               Name: 'Braze source',
-              SourceDefinition: {
-                ID: '1lh9senY3vrBg4JQXswWzyYBTOO',
-                Name: 'Braze',
-                Category: 'webhook',
-                Type: 'cloud',
-              },
+              SourceDefinition: commonSourceDefinition,
               Config: {
                 customMapping: [
                   {
@@ -874,28 +696,8 @@ export const data = [
                     to: 'In-App Message Clicked',
                   },
                 ],
-                eventUpload: true,
-                eventUploadTS: 1719979696938,
               },
-              Enabled: true,
-              WorkspaceID: '2hSS1hZ8kuCpUZAAYsQucAFdob9',
-              Destinations: null,
-              WriteKey: '2hgvYykpvMaE5Eg47Au8RWC9Yza',
-              DgSourceTrackingPlanConfig: {
-                sourceId: '',
-                version: 0,
-                config: null,
-                mergedConfig: null,
-                deleted: false,
-                trackingPlan: {
-                  id: '',
-                  version: 0,
-                },
-              },
-              Transient: false,
-              GeoEnrichment: {
-                Enabled: false,
-              },
+              ...commonSourceConfigProperties,
             },
           },
         ],
@@ -983,12 +785,7 @@ export const data = [
               ID: '2hgvYyU5TYaFvVzBge6tF2UKoeG',
               OriginalID: '',
               Name: 'Braze source',
-              SourceDefinition: {
-                ID: '1lh9senY3vrBg4JQXswWzyYBTOO',
-                Name: 'Braze',
-                Category: 'webhook',
-                Type: 'cloud',
-              },
+              SourceDefinition: commonSourceDefinition,
               Config: {
                 customMapping: [
                   {
@@ -996,28 +793,8 @@ export const data = [
                     to: 'In-App Message Clicked',
                   },
                 ],
-                eventUpload: true,
-                eventUploadTS: 1719979696938,
               },
-              Enabled: true,
-              WorkspaceID: '2hSS1hZ8kuCpUZAAYsQucAFdob9',
-              Destinations: null,
-              WriteKey: '2hgvYykpvMaE5Eg47Au8RWC9Yza',
-              DgSourceTrackingPlanConfig: {
-                sourceId: '',
-                version: 0,
-                config: null,
-                mergedConfig: null,
-                deleted: false,
-                trackingPlan: {
-                  id: '',
-                  version: 0,
-                },
-              },
-              Transient: false,
-              GeoEnrichment: {
-                Enabled: false,
-              },
+              ...commonSourceConfigProperties,
             },
           },
         ],
@@ -1104,12 +881,7 @@ export const data = [
               ID: '2hgvYyU5TYaFvVzBge6tF2UKoeG',
               OriginalID: '',
               Name: 'Braze source',
-              SourceDefinition: {
-                ID: '1lh9senY3vrBg4JQXswWzyYBTOO',
-                Name: 'Braze',
-                Category: 'webhook',
-                Type: 'cloud',
-              },
+              SourceDefinition: commonSourceDefinition,
               Config: {
                 customMapping: [
                   {
@@ -1117,28 +889,8 @@ export const data = [
                     to: 'In-App Message Clicked',
                   },
                 ],
-                eventUpload: true,
-                eventUploadTS: 1719979696938,
               },
-              Enabled: true,
-              WorkspaceID: '2hSS1hZ8kuCpUZAAYsQucAFdob9',
-              Destinations: null,
-              WriteKey: '2hgvYykpvMaE5Eg47Au8RWC9Yza',
-              DgSourceTrackingPlanConfig: {
-                sourceId: '',
-                version: 0,
-                config: null,
-                mergedConfig: null,
-                deleted: false,
-                trackingPlan: {
-                  id: '',
-                  version: 0,
-                },
-              },
-              Transient: false,
-              GeoEnrichment: {
-                Enabled: false,
-              },
+              ...commonSourceConfigProperties,
             },
           },
         ],
@@ -1230,12 +982,7 @@ export const data = [
               ID: '2hgvYyU5TYaFvVzBge6tF2UKoeG',
               OriginalID: '',
               Name: 'Braze source',
-              SourceDefinition: {
-                ID: '1lh9senY3vrBg4JQXswWzyYBTOO',
-                Name: 'Braze',
-                Category: 'webhook',
-                Type: 'cloud',
-              },
+              SourceDefinition: commonSourceDefinition,
               Config: {
                 customMapping: [
                   {
@@ -1243,28 +990,8 @@ export const data = [
                     to: 'In-App Message Clicked',
                   },
                 ],
-                eventUpload: true,
-                eventUploadTS: 1719979696938,
               },
-              Enabled: true,
-              WorkspaceID: '2hSS1hZ8kuCpUZAAYsQucAFdob9',
-              Destinations: null,
-              WriteKey: '2hgvYykpvMaE5Eg47Au8RWC9Yza',
-              DgSourceTrackingPlanConfig: {
-                sourceId: '',
-                version: 0,
-                config: null,
-                mergedConfig: null,
-                deleted: false,
-                trackingPlan: {
-                  id: '',
-                  version: 0,
-                },
-              },
-              Transient: false,
-              GeoEnrichment: {
-                Enabled: false,
-              },
+              ...commonSourceConfigProperties,
             },
           },
         ],
@@ -1365,12 +1092,7 @@ export const data = [
               ID: '2hgvYyU5TYaFvVzBge6tF2UKoeG',
               OriginalID: '',
               Name: 'Braze source',
-              SourceDefinition: {
-                ID: '1lh9senY3vrBg4JQXswWzyYBTOO',
-                Name: 'Braze',
-                Category: 'webhook',
-                Type: 'cloud',
-              },
+              SourceDefinition: commonSourceDefinition,
               Config: {
                 customMapping: [
                   {
@@ -1378,28 +1100,8 @@ export const data = [
                     to: 'In-App Message Clicked',
                   },
                 ],
-                eventUpload: true,
-                eventUploadTS: 1719979696938,
               },
-              Enabled: true,
-              WorkspaceID: '2hSS1hZ8kuCpUZAAYsQucAFdob9',
-              Destinations: null,
-              WriteKey: '2hgvYykpvMaE5Eg47Au8RWC9Yza',
-              DgSourceTrackingPlanConfig: {
-                sourceId: '',
-                version: 0,
-                config: null,
-                mergedConfig: null,
-                deleted: false,
-                trackingPlan: {
-                  id: '',
-                  version: 0,
-                },
-              },
-              Transient: false,
-              GeoEnrichment: {
-                Enabled: false,
-              },
+              ...commonSourceConfigProperties,
             },
           },
         ],
@@ -1491,12 +1193,7 @@ export const data = [
               ID: '2hgvYyU5TYaFvVzBge6tF2UKoeG',
               OriginalID: '',
               Name: 'Braze source',
-              SourceDefinition: {
-                ID: '1lh9senY3vrBg4JQXswWzyYBTOO',
-                Name: 'Braze',
-                Category: 'webhook',
-                Type: 'cloud',
-              },
+              SourceDefinition: commonSourceDefinition,
               Config: {
                 customMapping: [
                   {
@@ -1504,28 +1201,8 @@ export const data = [
                     to: 'In-App Message Clicked',
                   },
                 ],
-                eventUpload: true,
-                eventUploadTS: 1719979696938,
               },
-              Enabled: true,
-              WorkspaceID: '2hSS1hZ8kuCpUZAAYsQucAFdob9',
-              Destinations: null,
-              WriteKey: '2hgvYykpvMaE5Eg47Au8RWC9Yza',
-              DgSourceTrackingPlanConfig: {
-                sourceId: '',
-                version: 0,
-                config: null,
-                mergedConfig: null,
-                deleted: false,
-                trackingPlan: {
-                  id: '',
-                  version: 0,
-                },
-              },
-              Transient: false,
-              GeoEnrichment: {
-                Enabled: false,
-              },
+              ...commonSourceConfigProperties,
             },
           },
         ],

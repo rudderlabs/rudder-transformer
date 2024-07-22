@@ -91,20 +91,6 @@ const checkIfContactExists = async (identifier, apiKey) => {
 };
 
 /**
- * Function to remove empty key ("") from payload
- * @param {*} payload {"key1":"a","":{"id":1}}
- * @returns // {"key1":"a"}
- */
-const removeEmptyKey = (payload) => {
-  const rawPayload = payload;
-  const key = '';
-  if (Object.prototype.hasOwnProperty.call(rawPayload, key)) {
-    delete rawPayload[''];
-  }
-  return rawPayload;
-};
-
-/**
  * Function to remove duplicate traits from user traits
  * @param {*} userTraits {"location":"San Francisco","LOCATION":"San Francisco"}
  * @param {*} attributeMap {"area_code":"AREA","location":"LOCATION"}
@@ -171,7 +157,6 @@ module.exports = {
   validateEmailAndPhone,
   checkIfContactExists,
   prepareHeader,
-  removeEmptyKey,
   transformUserTraits,
   prepareTrackEventData,
   getListIds,

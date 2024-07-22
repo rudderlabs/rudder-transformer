@@ -255,6 +255,7 @@ describe('getHeaders utility test', () => {
       Authorization: `Bearer ${destination.Config.apiKey}`,
       Accept: 'application/json',
       'Intercom-Version': '2.10',
+      'User-Agent': 'RudderStack',
     };
     const headers = getHeaders(destination, 'v2');
     expect(headers).toEqual(expectedHeaders);
@@ -745,6 +746,7 @@ describe('attachUserAndCompany utility test', () => {
         Authorization: 'Bearer testApiKey',
         Accept: 'application/json',
         'Intercom-Version': '1.4',
+        'User-Agent': 'RudderStack',
       },
       body: {
         FORM: {},

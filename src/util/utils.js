@@ -5,6 +5,7 @@ const { Resolver } = require('dns').promises;
 const fetch = require('node-fetch');
 
 const util = require('util');
+const NodeCache = require('node-cache');
 const logger = require('../logger');
 const stats = require('./stats');
 
@@ -15,12 +16,41 @@ const BLOCK_HOST_NAMES_LIST = BLOCK_HOST_NAMES.split(',');
 const LOCAL_HOST_NAMES_LIST = ['localhost', '127.0.0.1', '[::]', '[::1]'];
 const LOCALHOST_OCTET = '127.';
 const RECORD_TYPE_A = 4; // ipv4
+const DNS_CACHE_ENABLED = process.env.DNS_CACHE_ENABLED === 'true';
+const DNS_CACHE_TTL = process.env.DNS_CACHE_TTL ? parseInt(process.env.DNS_CACHE_TTL, 10) : 300;
+const dnsCache = new NodeCache({
+  useClones: false,
+  stdTTL: DNS_CACHE_TTL,
+  checkperiod: DNS_CACHE_TTL,
+});
+
+const resolveHostName = async (hostname) => {
+  // ex: [{ address: '108.157.0.0', ttl: 600 }]
+  const addresses = await resolver.resolve4(hostname, { ttl: true });
+  return addresses.length > 0 ? addresses[0] : {};
+};
+
+const fetchAddressFromHostName = async (hostname) => {
+  if (!DNS_CACHE_ENABLED) {
+    const { address } = await resolveHostName(hostname);
+    return { address, cacheHit: false };
+  }
+  const cachedAddress = dnsCache.get(hostname);
+  if (cachedAddress !== undefined) {
+    return { address: cachedAddress, cacheHit: true };
+  }
+  const { address, ttl } = await resolveHostName(hostname);
+  dnsCache.set(hostname, address, Math.min(ttl, DNS_CACHE_TTL));
+  return { address, cacheHit: false };
+};
 
 const staticLookup = (transformationTags) => async (hostname, _, cb) => {
-  let ips;
+  let ip;
   const resolveStartTime = new Date();
   try {
-    ips = await resolver.resolve4(hostname);
+    const { address, cacheHit } = await fetchAddressFromHostName(hostname);
+    ip = address;
+    stats.timing('fetch_dns_resolve_time', resolveStartTime, { ...transformationTags, cacheHit });
   } catch (error) {
     logger.error(`DNS Error Code: ${error.code} | Message : ${error.message}`);
     stats.timing('fetch_dns_resolve_time', resolveStartTime, {
@@ -30,22 +60,18 @@ const staticLookup = (transformationTags) => async (hostname, _, cb) => {
     cb(null, `unable to resolve IP address for ${hostname}`, RECORD_TYPE_A);
     return;
   }
-  stats.timing('fetch_dns_resolve_time', resolveStartTime, transformationTags);
 
-  if (ips.length === 0) {
+  if (!ip) {
     cb(null, `resolved empty list of IP address for ${hostname}`, RECORD_TYPE_A);
     return;
   }
 
-  // eslint-disable-next-line no-restricted-syntax
-  for (const ip of ips) {
-    if (ip.startsWith(LOCALHOST_OCTET)) {
-      cb(null, `cannot use ${ip} as IP address`, RECORD_TYPE_A);
-      return;
-    }
+  if (ip.startsWith(LOCALHOST_OCTET)) {
+    cb(null, `cannot use ${ip} as IP address`, RECORD_TYPE_A);
+    return;
   }
 
-  cb(null, ips[0], RECORD_TYPE_A);
+  cb(null, ip, RECORD_TYPE_A);
 };
 
 const httpAgentWithDnsLookup = (scheme, transformationTags) => {

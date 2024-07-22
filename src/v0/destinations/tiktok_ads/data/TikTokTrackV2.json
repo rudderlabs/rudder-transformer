@@ -126,5 +126,41 @@
     "destKey": "user.user_agent",
     "sourceKeys": ["properties.context.user.userAgent", "context.userAgent"],
     "required": false
+  },
+  {
+    "destKey": "user.first_name",
+    "sourceKeys": "firstName",
+    "metadata": {
+      "type": ["trim", "toLower", "hashToSha256"]
+    },
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "user.last_name",
+    "sourceKeys": "lastName",
+    "metadata": {
+      "type": ["trim", "toLower", "hashToSha256"]
+    },
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "user.city",
+    "sourceKeys": ["context.traits.city", "context.traits.address.city", "properties.city"]
+  },
+  {
+    "destKey": "user.country",
+    "sourceKeys": ["context.traits.country", "context.traits.address.country", "properties.country"]
+  },
+  {
+    "destKey": "user.state",
+    "sourceKeys": ["context.traits.address.state", "context.traits.state", "properties.state"]
+  },
+  {
+    "destKey": "user.zip_code",
+    "sourceKeys": "zipcode",
+    "sourceFromGenericMap": true,
+    "metadata": {
+      "type": ["removeSpacesAndDashes", "hashToSha256"]
+    }
   }
 ]

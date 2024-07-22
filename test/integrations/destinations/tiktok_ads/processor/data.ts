@@ -4619,6 +4619,7 @@ export const data = [
                         content_name: 'Monopoly',
                         price: 14,
                         quantity: 1,
+                        brand: 'brand_name',
                       },
                       {
                         content_type: 'product_group',
@@ -6354,6 +6355,12 @@ export const data = [
               context: {
                 traits: {
                   email: 'abc@xyz.com',
+                  firstName: ' test',
+                  lastName: 'user ',
+                  country: 'dummycountry',
+                  city: 'dummycity',
+                  state: 'dummystate',
+                  zip: ' US - 1234-',
                 },
                 page: {
                   url: 'http://demo.mywebsite.com/purchase',
@@ -6474,6 +6481,7 @@ export const data = [
                           {
                             price: 14,
                             quantity: 1,
+                            brand: 'adidas',
                             content_category: 'Games',
                             content_id: '123',
                             content_name: 'Monopoly',
@@ -6493,6 +6501,15 @@ export const data = [
                         referrer: 'http://demo.mywebsite.com',
                       },
                       user: {
+                        first_name:
+                          '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08',
+                        last_name:
+                          '04f8996da763b7a969b1028ee3007569eaf3a635486ddab211d512c85b9df8fb',
+                        country: 'dummycountry',
+                        zip_code:
+                          '2a29b91aca86ff48c3defb1bbc2d33bf1da5ee5a235391322478fe7ff4503b77',
+                        city: 'dummycity',
+                        state: 'dummystate',
                         email: 'ee278943de84e5d6243578ee1a1057bcce0e50daad9755f45dfa64b60b13bc5d',
                         external_id: [
                           '3e0c7a51acd326b87f29596e38c22cbeb732df37bc5c8f5f524c14b55d3472db',

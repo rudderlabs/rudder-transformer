@@ -27,6 +27,16 @@ jobs:
       - name: Run Lint Checks
         run: |
           npm run lint
+      
+      - id: files
+        uses: Ana06/get-changed-files@v1.2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - run: |
+          for changed_file in ${{ steps.files.outputs.all }}; do
+            echo "Do something with this ${changed_file}."
+          done
 
       - run: git diff --exit-code
 

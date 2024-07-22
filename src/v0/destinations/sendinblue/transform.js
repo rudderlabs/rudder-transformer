@@ -13,6 +13,7 @@ const {
   defaultPutRequestConfig,
   getIntegrationsObj,
   ErrorMessage,
+  removeEmptyKey,
 } = require('../../util');
 const { CONFIG_CATEGORIES, MAPPING_CONFIG, getUnlinkContactEndpoint } = require('./config');
 const {
@@ -21,7 +22,6 @@ const {
   validateEmailAndPhone,
   checkIfContactExists,
   prepareHeader,
-  removeEmptyKey,
   transformUserTraits,
   prepareTrackEventData,
   getListIds,

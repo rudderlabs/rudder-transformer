@@ -1,6 +1,3 @@
-const SUPPORTED_EVENT_TYPE = ['record'];
-const ACTION_TYPES = ['insert', 'delete'];
-
 // https://www.zoho.com/crm/developer/docs/api/v6/access-refresh.html
 const DATA_CENTRE_BASE_ENDPOINTS_MAP = {
   US: 'https://www.zohoapis.com',
@@ -56,8 +53,6 @@ const MODULE_WISE_DUPLICATE_CHECK_FIELD = {
 };
 
 module.exports = {
-  SUPPORTED_EVENT_TYPE,
-  ACTION_TYPES,
   MAX_BATCH_SIZE: 100,
   DATA_CENTRE_BASE_ENDPOINTS_MAP,
   COMMON_RECORD_ENDPOINT,

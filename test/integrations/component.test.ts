@@ -104,7 +104,6 @@ const rootDir = __dirname;
 console.log('rootDir', rootDir);
 console.log('opts', opts);
 const allTestDataFilePaths = getTestDataFilePaths(rootDir, opts);
-console.log('All test data file paths:', allTestDataFilePaths);
 const DEFAULT_VERSION = 'v0';
 
 const testRoute = async (route, tcData: TestCaseData) => {

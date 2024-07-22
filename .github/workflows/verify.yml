@@ -42,7 +42,7 @@ jobs:
 
       - name: Run eslint Checks
         run: |
-          npx eslint ${{steps.files.outputs.added_modified}} --write
+          npx eslint ${{steps.files.outputs.added_modified}} --fix
 
       - run: git diff --exit-code
 

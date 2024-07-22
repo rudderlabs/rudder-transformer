@@ -54,7 +54,7 @@ const responseBuilder = (message, { Config }) => {
   // get common top level rawPayload
   let rawPayload = constructPayload(message, trackCommonConfig);
 
-  rawPayload = addClientDetails(rawPayload, message, Config);
+  rawPayload = addClientDetails(rawPayload, message, Config, 'ga4');
 
   let payload = {};
   const eventConfig = ConfigCategory[`${event.toUpperCase()}`];

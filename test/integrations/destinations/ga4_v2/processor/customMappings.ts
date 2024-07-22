@@ -540,6 +540,7 @@ export const customMappingTestCases = [
               },
               body: {
                 JSON: {
+                  client_id: 'root_anonId',
                   user_id: 'root_user',
                   timestamp_micros: 1651105389000000,
                   non_personalized_ads: false,

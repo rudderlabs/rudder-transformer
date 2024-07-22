@@ -13,6 +13,7 @@ const {
   GA4_PARAMETERS_EXCLUSION,
   prepareUserProperties,
   sanitizeUserProperties,
+  addSessionDetailsForHybridMode,
 } = require('../ga4/utils');
 const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const {
@@ -71,6 +72,7 @@ const handleCustomMappings = (message, Config) => {
     // Default mapping
 
     let rawPayload = constructPayload(message, trackCommonConfig);
+    rawPayload = addClientDetails(rawPayload, message, Config, 'ga4_v2');
 
     const ga4EventPayload = {};
 
@@ -113,7 +115,7 @@ const handleCustomMappings = (message, Config) => {
 
     // Add common top level payload
     let ga4BasicPayload = constructPayload(message, trackCommonConfig);
-    ga4BasicPayload = addClientDetails(ga4BasicPayload, message, Config);
+    ga4BasicPayload = addClientDetails(ga4BasicPayload, message, Config, 'ga4_v2');
 
     const eventPropertiesMappings = mapping.eventProperties || [];
 
@@ -164,6 +166,8 @@ const boilerplateOperations = (ga4Payload, message, Config, eventName) => {
   if (isDefinedAndNotNull(ga4Payload.user_properties)) {
     ga4Payload.user_properties = sanitizeUserProperties(ga4Payload.user_properties);
   }
+
+  addSessionDetailsForHybridMode(ga4Payload, message, Config, 'ga4_v2');
 };
 
 module.exports = {

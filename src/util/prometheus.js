@@ -836,8 +836,8 @@ class Prometheus {
         ],
       },
       {
-        name: 'user_transform_test_errors',
-        help: 'user_transform_test_errors',
+        name: 'user_transform_test_count_total',
+        help: 'user_transform_test_count_total',
         type: 'counter',
         labelNames: ['workspaceId', 'transformationId', 'status'],
       },

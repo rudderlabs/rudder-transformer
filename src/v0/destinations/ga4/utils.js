@@ -478,17 +478,7 @@ const getGA4ClientId = (message, Config, destType) => {
   let clientId;
 
   if (isHybridModeEnabled(Config)) {
-    let integrationsObj = {};
-    switch (destType) {
-      case 'ga4':
-        integrationsObj = getIntegrationsObj(message, 'ga4');
-        break;
-      case 'ga4_v2':
-        integrationsObj = getIntegrationsObj(message, 'ga4_v2');
-        break;
-      default:
-        integrationsObj = getIntegrationsObj(message, 'ga4');
-    }
+    const integrationsObj = getIntegrationsObj(message, destType);
     if (integrationsObj?.clientId) {
       clientId = integrationsObj.clientId;
     }

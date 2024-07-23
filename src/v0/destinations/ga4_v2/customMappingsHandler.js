@@ -140,11 +140,7 @@ const handleCustomMappings = (message, Config) => {
 const boilerplateOperations = (ga4Payload, message, Config, eventName) => {
   removeReservedParameterPrefixNames(ga4Payload.events[0].params);
   ga4Payload.events[0].name = eventName;
-  const integrationsObj = getIntegrationsObj(message, 'ga4');
-
-  if (isHybridModeEnabled(Config) && integrationsObj?.sessionId) {
-    ga4Payload.events[0].params.session_id = integrationsObj.sessionId;
-  }
+  const integrationsObj = getIntegrationsObj(message, 'ga4_v2');
 
   if (ga4Payload.events[0].params) {
     ga4Payload.events[0].params = removeInvalidParams(
@@ -157,7 +153,7 @@ const boilerplateOperations = (ga4Payload, message, Config, eventName) => {
   }
 
   // Prepare GA4 consents
-  const consents = prepareUserConsents(message);
+  const consents = prepareUserConsents(message, 'ga4_v2');
   if (!isEmptyObject(consents)) {
     ga4Payload.consent = consents;
   }

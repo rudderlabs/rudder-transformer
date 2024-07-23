@@ -448,8 +448,8 @@ const prepareUserProperties = (message, piiPropertiesToIgnore = []) => {
  * @param {*} message
  * @returns
  */
-const prepareUserConsents = (message) => {
-  const integrationObj = getIntegrationsObj(message, 'ga4') || {};
+const prepareUserConsents = (message, destType = 'ga4') => {
+  const integrationObj = getIntegrationsObj(message, destType) || {};
   const eventLevelConsentsData = integrationObj?.consents || {};
   const consentConfigMap = {
     analyticsPersonalizationConsent: 'ad_user_data',

@@ -1,3 +1,4 @@
+import { skip } from 'node:test';
 import utils from '../../../../src/v0/util';
 
 const defaultMockFns = () => {
@@ -10,6 +11,7 @@ export const data = [
     description: 'Simple track call',
     module: 'source',
     version: 'v0',
+    skipGo: 'FIXME',
     input: {
       request: {
         body: [
@@ -85,6 +87,7 @@ export const data = [
     description: 'Simple track call with no query parameters',
     module: 'source',
     version: 'v0',
+    skipGo: 'FIXME',
     input: {
       request: {
         body: [

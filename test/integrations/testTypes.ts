@@ -18,6 +18,8 @@ export interface requestType {
 
 export interface responseType {
   status: number;
+  statusCode?: number;
+  error?: any;
   body?: any;
   headers?: Record<string, string>;
 }
@@ -40,6 +42,7 @@ export interface TestCaseData {
   id?: string;
   name: string;
   description: string;
+  skipGo?: string;
   scenario?: string;
   successCriteria?: string;
   comment?: string;

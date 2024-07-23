@@ -544,25 +544,17 @@ const buildSubscriptionRequest = (subscription, destination) => {
 
 const getTrackRequests = (eventRespList, destination) => {
   // building and pushing all the event requests
-  const anonymousTracking = [];
-  const identifiedTracking = [];
-  eventRespList.forEach((resp) => {
-    const { payload, metadata } = resp;
-    const { attributes: profileAttributes } = payload.data.attributes.profile.data;
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    const { email, phone_number, external_id } = profileAttributes;
-    const request = getSuccessRespEvents(
-      buildRequest(payload, destination, CONFIG_CATEGORIES.TRACKV2),
-      [metadata],
-      destination,
-    );
-    if (email || phone_number || external_id) {
-      identifiedTracking.push(request);
-    } else {
-      anonymousTracking.push(request);
-    }
-  });
-  return { anonymousTracking, identifiedTracking };
+  const respList = [];
+  eventRespList.forEach((resp) =>
+    respList.push(
+      getSuccessRespEvents(
+        buildRequest(resp.payload, destination, CONFIG_CATEGORIES.TRACKV2),
+        [resp.metadata],
+        destination,
+      ),
+    ),
+  );
+  return respList;
 };
 
 /**

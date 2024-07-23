@@ -76,211 +76,506 @@ const alreadyTransformedEvent = {
 };
 
 export const dataV2: RouterTestData[] = [
+  // {
+  //   id: 'klaviyo-router-150624-test-1',
+  //   name: 'klaviyo',
+  //   description: '150624 -> Basic Router Test to test multiple payloads',
+  //   scenario: 'Framework',
+  //   successCriteria:
+  //     'All the subscription events from same type of call should be batched. This case does not contain any events which can be batched',
+  //   feature: 'router',
+  //   module: 'destination',
+  //   version: 'v0',
+  //   input: {
+  //     request: {
+  //       body: routerRequestV2,
+  //     },
+  //   },
+  //   output: {
+  //     response: {
+  //       status: 200,
+  //       body: {
+  //         output: [
+  //           {
+  //             // identify 1
+  //             batchedRequest: {
+  //               version: '1',
+  //               type: 'REST',
+  //               method: 'POST',
+  //               endpoint: userProfileCommonEndpoint,
+  //               headers,
+  //               params: {},
+  //               body: {
+  //                 JSON: {
+  //                   data: {
+  //                     type: 'profile',
+  //                     attributes: {
+  //                       external_id: 'test',
+  //                       email: 'test_1@rudderstack.com',
+  //                       first_name: 'Test',
+  //                       last_name: 'Rudderlabs',
+  //                       phone_number: '+12 345 578 900',
+  //                       anonymous_id: '97c46c81-3140-456d-b2a9-690d70aaca35',
+  //                       title: 'Developer',
+  //                       organization: 'Rudder',
+  //                       location: {
+  //                         city: 'Tokyo',
+  //                         region: 'Kanto',
+  //                         country: 'JP',
+  //                         zip: '100-0001',
+  //                       },
+  //                       properties: { Flagged: false, Residence: 'Shibuya' },
+  //                     },
+  //                     meta: {
+  //                       patch_properties: {},
+  //                     },
+  //                   },
+  //                 },
+  //                 JSON_ARRAY: {},
+  //                 XML: {},
+  //                 FORM: {},
+  //               },
+  //               files: {},
+  //             },
+  //             metadata: [generateMetadata(1)],
+  //             batched: false,
+  //             statusCode: 200,
+  //             destination,
+  //           },
+  //           {
+  //             // identify 2 with subscriptipon request
+  //             batchedRequest: [
+  //               {
+  //                 version: '1',
+  //                 type: 'REST',
+  //                 method: 'POST',
+  //                 endpoint: userProfileCommonEndpoint,
+  //                 headers,
+  //                 params: {},
+  //                 body: {
+  //                   JSON: {
+  //                     data: {
+  //                       type: 'profile',
+  //                       attributes: {
+  //                         external_id: 'test',
+  //                         email: 'test@rudderstack.com',
+  //                         first_name: 'Test',
+  //                         last_name: 'Rudderlabs',
+  //                         phone_number: '+12 345 578 900',
+  //                         anonymous_id: '97c46c81-3140-456d-b2a9-690d70aaca35',
+  //                         title: 'Developer',
+  //                         organization: 'Rudder',
+  //                         location: {
+  //                           city: 'Tokyo',
+  //                           region: 'Kanto',
+  //                           country: 'JP',
+  //                           zip: '100-0001',
+  //                         },
+  //                         properties: { Flagged: false, Residence: 'Shibuya' },
+  //                       },
+  //                       meta: {
+  //                         patch_properties: {},
+  //                       },
+  //                     },
+  //                   },
+  //                   JSON_ARRAY: {},
+  //                   XML: {},
+  //                   FORM: {},
+  //                 },
+  //                 files: {},
+  //               },
+  //               {
+  //                 version: '1',
+  //                 type: 'REST',
+  //                 method: 'POST',
+  //                 endpoint: 'https://a.klaviyo.com/api/profile-subscription-bulk-create-jobs',
+  //                 headers,
+  //                 params: {},
+  //                 body: {
+  //                   JSON: {
+  //                     data: {
+  //                       type: 'profile-subscription-bulk-create-job',
+  //                       attributes: {
+  //                         profiles: {
+  //                           data: [
+  //                             {
+  //                               type: 'profile',
+  //                               attributes: {
+  //                                 email: 'test@rudderstack.com',
+  //                                 phone_number: '+12 345 578 900',
+  //                                 subscriptions: {
+  //                                   email: { marketing: { consent: 'SUBSCRIBED' } },
+  //                                   sms: { marketing: { consent: 'SUBSCRIBED' } },
+  //                                 },
+  //                               },
+  //                             },
+  //                           ],
+  //                         },
+  //                       },
+  //                       relationships: subscriptionRelations,
+  //                     },
+  //                   },
+  //                   JSON_ARRAY: {},
+  //                   XML: {},
+  //                   FORM: {},
+  //                 },
+  //                 files: {},
+  //               },
+  //             ],
+  //             metadata: [generateMetadata(2)],
+  //             batched: true,
+  //             statusCode: 200,
+  //             destination,
+  //           },
+  //           {
+  //             // group call subscription request
+  //             batchedRequest: [
+  //               {
+  //                 version: '1',
+  //                 type: 'REST',
+  //                 method: 'POST',
+  //                 endpoint: 'https://a.klaviyo.com/api/profile-subscription-bulk-create-jobs',
+  //                 headers,
+  //                 params: {},
+  //                 body: {
+  //                   JSON: {
+  //                     data: {
+  //                       type: 'profile-subscription-bulk-create-job',
+  //                       attributes: {
+  //                         profiles: {
+  //                           data: [
+  //                             {
+  //                               type: 'profile',
+  //                               attributes: {
+  //                                 email: 'test@rudderstack.com',
+  //                                 phone_number: '+12 345 678 900',
+  //                                 subscriptions: {
+  //                                   email: { marketing: { consent: 'SUBSCRIBED' } },
+  //                                 },
+  //                               },
+  //                             },
+  //                           ],
+  //                         },
+  //                       },
+  //                       relationships: subscriptionRelations,
+  //                     },
+  //                   },
+  //                   JSON_ARRAY: {},
+  //                   XML: {},
+  //                   FORM: {},
+  //                 },
+  //                 files: {},
+  //               },
+  //             ],
+  //             metadata: [generateMetadata(3)],
+  //             batched: true,
+  //             statusCode: 200,
+  //             destination,
+  //           },
+  //           {
+  //             metadata: [generateMetadata(4)],
+  //             batched: false,
+  //             statusCode: 400,
+  //             error: 'Event type random is not supported',
+  //             statTags: {
+  //               destType: 'KLAVIYO',
+  //               errorCategory: 'dataValidation',
+  //               errorType: 'instrumentation',
+  //               feature: 'router',
+  //               implementation: 'native',
+  //               module: 'destination',
+  //               destinationId: 'default-destinationId',
+  //               workspaceId: 'default-workspaceId',
+  //             },
+  //             destination,
+  //           },
+  //           {
+  //             metadata: [generateMetadata(5)],
+  //             batched: false,
+  //             statusCode: 400,
+  //             error: 'groupId is a required field for group events',
+  //             statTags: {
+  //               destType: 'KLAVIYO',
+  //               errorCategory: 'dataValidation',
+  //               errorType: 'instrumentation',
+  //               feature: 'router',
+  //               implementation: 'native',
+  //               module: 'destination',
+  //               destinationId: 'default-destinationId',
+  //               workspaceId: 'default-workspaceId',
+  //             },
+  //             destination,
+  //           },
+  //         ],
+  //       },
+  //     },
+  //   },
+  // },
+  // {
+  //   id: 'klaviyo-router-150624-test-2',
+  //   name: 'klaviyo',
+  //   description: '150624 -> Router Test to test batching based upon same message type',
+  //   scenario: 'Framework',
+  //   successCriteria:
+  //     'All the subscription events from same type of call should be batched. This case does not contain any events which can be batched',
+  //   feature: 'router',
+  //   module: 'destination',
+  //   version: 'v0',
+  //   input: {
+  //     request: {
+  //       body: {
+  //         input: [
+  //           {
+  //             destination,
+  //             metadata: generateMetadata(1),
+  //             message: {
+  //               type: 'identify',
+  //               sentAt: '2021-01-03T17:02:53.195Z',
+  //               userId: 'test',
+  //               channel: 'web',
+  //               context: {
+  //                 os: { name: '', version: '' },
+  //                 app: {
+  //                   name: 'RudderLabs JavaScript SDK',
+  //                   build: '1.0.0',
+  //                   version: '1.1.11',
+  //                   namespace: 'com.rudderlabs.javascript',
+  //                 },
+  //                 traits: {
+  //                   firstName: 'Test',
+  //                   lastName: 'Rudderlabs',
+  //                   email: 'test_1@rudderstack.com',
+  //                   phone: '+12 345 578 900',
+  //                   userId: 'Testc',
+  //                   title: 'Developer',
+  //                   organization: 'Rudder',
+  //                   city: 'Tokyo',
+  //                   region: 'Kanto',
+  //                   country: 'JP',
+  //                   zip: '100-0001',
+  //                   Flagged: false,
+  //                   Residence: 'Shibuya',
+  //                   properties: { listId: 'XUepkK', subscribe: true, consent: ['email'] },
+  //                 },
+  //                 locale: 'en-US',
+  //                 screen: { density: 2 },
+  //                 library: { name: 'RudderLabs JavaScript SDK', version: '1.1.11' },
+  //                 campaign: {},
+  //                 userAgent:
+  //                   'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0',
+  //               },
+  //               rudderId: '8f8fa6b5-8e24-489c-8e22-61f23f2e364f',
+  //               messageId: '2116ef8c-efc3-4ca4-851b-02ee60dad6ff',
+  //               anonymousId: '97c46c81-3140-456d-b2a9-690d70aaca35',
+  //               integrations: { All: true },
+  //               originalTimestamp: '2021-01-03T17:02:53.193Z',
+  //             },
+  //           },
+  //           {
+  //             destination,
+  //             metadata: generateMetadata(2),
+  //             message: {
+  //               type: 'identify',
+  //               sentAt: '2021-01-03T17:02:53.195Z',
+  //               userId: 'test',
+  //               channel: 'web',
+  //               context: {
+  //                 os: { name: '', version: '' },
+  //                 app: {
+  //                   name: 'RudderLabs JavaScript SDK',
+  //                   build: '1.0.0',
+  //                   version: '1.1.11',
+  //                   namespace: 'com.rudderlabs.javascript',
+  //                 },
+  //                 traits: {
+  //                   firstName: 'Test',
+  //                   lastName: 'Rudderlabs',
+  //                   email: 'test@rudderstack.com',
+  //                   phone: '+12 345 578 900',
+  //                   userId: 'test',
+  //                   title: 'Developer',
+  //                   organization: 'Rudder',
+  //                   city: 'Tokyo',
+  //                   region: 'Kanto',
+  //                   country: 'JP',
+  //                   zip: '100-0001',
+  //                   Flagged: false,
+  //                   Residence: 'Shibuya',
+  //                   properties: { listId: 'XUepkK', subscribe: true, consent: ['email', 'sms'] },
+  //                 },
+  //                 locale: 'en-US',
+  //                 screen: { density: 2 },
+  //                 library: { name: 'RudderLabs JavaScript SDK', version: '1.1.11' },
+  //                 campaign: {},
+  //                 userAgent:
+  //                   'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0',
+  //               },
+  //               rudderId: '8f8fa6b5-8e24-489c-8e22-61f23f2e364f',
+  //               messageId: '2116ef8c-efc3-4ca4-851b-02ee60dad6ff',
+  //               anonymousId: '97c46c81-3140-456d-b2a9-690d70aaca35',
+  //               integrations: { All: true },
+  //               originalTimestamp: '2021-01-03T17:02:53.193Z',
+  //             },
+  //           },
+  //         ],
+  //         destType: 'klaviyo',
+  //       },
+  //     },
+  //   },
+  //   output: {
+  //     response: {
+  //       status: 200,
+  //       body: {
+  //         output: [
+  //           {
+  //             // profile for identify 1
+  //             batchedRequest: [
+  //               {
+  //                 version: '1',
+  //                 type: 'REST',
+  //                 method: 'POST',
+  //                 endpoint: userProfileCommonEndpoint,
+  //                 headers,
+  //                 params: {},
+  //                 body: {
+  //                   JSON: {
+  //                     data: {
+  //                       type: 'profile',
+  //                       attributes: {
+  //                         external_id: 'test',
+  //                         email: 'test_1@rudderstack.com',
+  //                         first_name: 'Test',
+  //                         last_name: 'Rudderlabs',
+  //                         phone_number: '+12 345 578 900',
+  //                         anonymous_id: '97c46c81-3140-456d-b2a9-690d70aaca35',
+  //                         title: 'Developer',
+  //                         organization: 'Rudder',
+  //                         location: {
+  //                           city: 'Tokyo',
+  //                           region: 'Kanto',
+  //                           country: 'JP',
+  //                           zip: '100-0001',
+  //                         },
+  //                         properties: { Flagged: false, Residence: 'Shibuya' },
+  //                       },
+  //                       meta: {
+  //                         patch_properties: {},
+  //                       },
+  //                     },
+  //                   },
+  //                   JSON_ARRAY: {},
+  //                   XML: {},
+  //                   FORM: {},
+  //                 },
+  //                 files: {},
+  //               },
+  //               // profile for identify 2
+  //               {
+  //                 version: '1',
+  //                 type: 'REST',
+  //                 method: 'POST',
+  //                 endpoint: userProfileCommonEndpoint,
+  //                 headers,
+  //                 params: {},
+  //                 body: {
+  //                   JSON: {
+  //                     data: {
+  //                       type: 'profile',
+  //                       attributes: {
+  //                         external_id: 'test',
+  //                         email: 'test@rudderstack.com',
+  //                         first_name: 'Test',
+  //                         last_name: 'Rudderlabs',
+  //                         phone_number: '+12 345 578 900',
+  //                         anonymous_id: '97c46c81-3140-456d-b2a9-690d70aaca35',
+  //                         title: 'Developer',
+  //                         organization: 'Rudder',
+  //                         location: {
+  //                           city: 'Tokyo',
+  //                           region: 'Kanto',
+  //                           country: 'JP',
+  //                           zip: '100-0001',
+  //                         },
+  //                         properties: { Flagged: false, Residence: 'Shibuya' },
+  //                       },
+  //                       meta: {
+  //                         patch_properties: {},
+  //                       },
+  //                     },
+  //                   },
+  //                   JSON_ARRAY: {},
+  //                   XML: {},
+  //                   FORM: {},
+  //                 },
+  //                 files: {},
+  //               },
+  //               // subscriptiopn for both identify 1 and 2
+  //               {
+  //                 version: '1',
+  //                 type: 'REST',
+  //                 method: 'POST',
+  //                 endpoint: 'https://a.klaviyo.com/api/profile-subscription-bulk-create-jobs',
+  //                 headers,
+  //                 params: {},
+  //                 body: {
+  //                   JSON: {
+  //                     data: {
+  //                       type: 'profile-subscription-bulk-create-job',
+  //                       attributes: {
+  //                         profiles: {
+  //                           data: [
+  //                             {
+  //                               type: 'profile',
+  //                               attributes: {
+  //                                 email: 'test_1@rudderstack.com',
+  //                                 phone_number: '+12 345 578 900',
+  //                                 subscriptions: {
+  //                                   email: { marketing: { consent: 'SUBSCRIBED' } },
+  //                                 },
+  //                               },
+  //                             },
+  //                             {
+  //                               type: 'profile',
+  //                               attributes: {
+  //                                 email: 'test@rudderstack.com',
+  //                                 phone_number: '+12 345 578 900',
+  //                                 subscriptions: {
+  //                                   email: { marketing: { consent: 'SUBSCRIBED' } },
+  //                                   sms: { marketing: { consent: 'SUBSCRIBED' } },
+  //                                 },
+  //                               },
+  //                             },
+  //                           ],
+  //                         },
+  //                       },
+  //                       relationships: subscriptionRelations,
+  //                     },
+  //                   },
+  //                   JSON_ARRAY: {},
+  //                   XML: {},
+  //                   FORM: {},
+  //                 },
+  //                 files: {},
+  //               },
+  //             ],
+  //             metadata: [generateMetadata(1), generateMetadata(2)],
+  //             batched: true,
+  //             statusCode: 200,
+  //             destination,
+  //           },
+  //         ],
+  //       },
+  //     },
+  //   },
+  // },
   {
-    id: 'klaviyo-router-150624-test-1',
-    name: 'klaviyo',
-    description: '150624 -> Basic Router Test to test multiple payloads',
-    scenario: 'Framework',
-    successCriteria: 'All the subscription events should be batched',
-    feature: 'router',
-    module: 'destination',
-    version: 'v0',
-    input: {
-      request: {
-        body: routerRequestV2,
-      },
-    },
-    output: {
-      response: {
-        status: 200,
-        body: {
-          output: [
-            {
-              batchedRequest: {
-                version: '1',
-                type: 'REST',
-                method: 'POST',
-                endpoint: userProfileCommonEndpoint,
-                headers,
-                params: {},
-                body: {
-                  JSON: {
-                    data: {
-                      type: 'profile',
-                      attributes: {
-                        external_id: 'test',
-                        email: 'test_1@rudderstack.com',
-                        first_name: 'Test',
-                        last_name: 'Rudderlabs',
-                        phone_number: '+12 345 578 900',
-                        anonymous_id: '97c46c81-3140-456d-b2a9-690d70aaca35',
-                        title: 'Developer',
-                        organization: 'Rudder',
-                        location: {
-                          city: 'Tokyo',
-                          region: 'Kanto',
-                          country: 'JP',
-                          zip: '100-0001',
-                        },
-                        properties: { Flagged: false, Residence: 'Shibuya' },
-                      },
-                      meta: {
-                        patch_properties: {},
-                      },
-                    },
-                  },
-                  JSON_ARRAY: {},
-                  XML: {},
-                  FORM: {},
-                },
-                files: {},
-              },
-              metadata: [generateMetadata(1)],
-              batched: false,
-              statusCode: 200,
-              destination,
-            },
-            {
-              batchedRequest: [
-                {
-                  version: '1',
-                  type: 'REST',
-                  method: 'POST',
-                  endpoint: userProfileCommonEndpoint,
-                  headers,
-                  params: {},
-                  body: {
-                    JSON: {
-                      data: {
-                        type: 'profile',
-                        attributes: {
-                          external_id: 'test',
-                          email: 'test@rudderstack.com',
-                          first_name: 'Test',
-                          last_name: 'Rudderlabs',
-                          phone_number: '+12 345 578 900',
-                          anonymous_id: '97c46c81-3140-456d-b2a9-690d70aaca35',
-                          title: 'Developer',
-                          organization: 'Rudder',
-                          location: {
-                            city: 'Tokyo',
-                            region: 'Kanto',
-                            country: 'JP',
-                            zip: '100-0001',
-                          },
-                          properties: { Flagged: false, Residence: 'Shibuya' },
-                        },
-                        meta: {
-                          patch_properties: {},
-                        },
-                      },
-                    },
-                    JSON_ARRAY: {},
-                    XML: {},
-                    FORM: {},
-                  },
-                  files: {},
-                },
-                {
-                  version: '1',
-                  type: 'REST',
-                  method: 'POST',
-                  endpoint: 'https://a.klaviyo.com/api/profile-subscription-bulk-create-jobs',
-                  headers,
-                  params: {},
-                  body: {
-                    JSON: {
-                      data: {
-                        type: 'profile-subscription-bulk-create-job',
-                        attributes: {
-                          profiles: {
-                            data: [
-                              {
-                                type: 'profile',
-                                attributes: {
-                                  email: 'test@rudderstack.com',
-                                  phone_number: '+12 345 578 900',
-                                  subscriptions: {
-                                    email: { marketing: { consent: 'SUBSCRIBED' } },
-                                    sms: { marketing: { consent: 'SUBSCRIBED' } },
-                                  },
-                                },
-                              },
-                              {
-                                type: 'profile',
-                                attributes: {
-                                  email: 'test@rudderstack.com',
-                                  phone_number: '+12 345 678 900',
-                                  subscriptions: {
-                                    email: { marketing: { consent: 'SUBSCRIBED' } },
-                                  },
-                                },
-                              },
-                            ],
-                          },
-                        },
-                        relationships: subscriptionRelations,
-                      },
-                    },
-                    JSON_ARRAY: {},
-                    XML: {},
-                    FORM: {},
-                  },
-                  files: {},
-                },
-              ],
-              metadata: [generateMetadata(2), generateMetadata(3)],
-              batched: true,
-              statusCode: 200,
-              destination,
-            },
-            {
-              metadata: [generateMetadata(4)],
-              batched: false,
-              statusCode: 400,
-              error: 'Event type random is not supported',
-              statTags: {
-                destType: 'KLAVIYO',
-                errorCategory: 'dataValidation',
-                errorType: 'instrumentation',
-                feature: 'router',
-                implementation: 'native',
-                module: 'destination',
-                destinationId: 'default-destinationId',
-                workspaceId: 'default-workspaceId',
-              },
-              destination,
-            },
-            {
-              metadata: [generateMetadata(5)],
-              batched: false,
-              statusCode: 400,
-              error: 'groupId is a required field for group events',
-              statTags: {
-                destType: 'KLAVIYO',
-                errorCategory: 'dataValidation',
-                errorType: 'instrumentation',
-                feature: 'router',
-                implementation: 'native',
-                module: 'destination',
-                destinationId: 'default-destinationId',
-                workspaceId: 'default-workspaceId',
-              },
-              destination,
-            },
-          ],
-        },
-      },
-    },
-  },
-  {
-    id: 'klaviyo-router-150624-test-2',
+    id: 'klaviyo-router-150624-test-3',
     name: 'klaviyo',
     description:
       '150624 -> Router tests to have some anonymous track event, some identify events with subscription and some identified track event',
     scenario: 'Framework',
     successCriteria:
-      'All the subscription events should be batched and respective profile requests should also be placed in same batched request',
+      'All the subscription events under same message type should be batched and respective profile requests should also be placed in same batched request',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -307,7 +602,7 @@ export const dataV2: RouterTestData[] = [
                   price: '12',
                 },
               },
-              metadata: generateMetadata(1),
+              metadata: generateMetadata(1, 'testKlaviyo1'),
               destination,
             },
             {
@@ -348,7 +643,7 @@ export const dataV2: RouterTestData[] = [
                   All: true,
                 },
               },
-              metadata: generateMetadata(3),
+              metadata: generateMetadata(3, 'testKlaviyo2'),
               destination,
             },
             {
@@ -368,7 +663,7 @@ export const dataV2: RouterTestData[] = [
                   price: '120',
                 },
               },
-              metadata: generateMetadata(4),
+              metadata: generateMetadata(4, 'testKlaviyo2'),
               destination,
             },
             {
@@ -391,28 +686,7 @@ export const dataV2: RouterTestData[] = [
                   All: true,
                 },
               },
-              metadata: generateMetadata(5),
-              destination,
-            },
-            {
-              message: {
-                channel: 'web',
-                context: {
-                  traits: {
-                    email: 'testklaviyo3@email.com',
-                    firstname: 'Test klaviyo3',
-                    anonymousId: '1111',
-                  },
-                },
-                type: 'identify',
-                anonymousId: '',
-                userId: 'testKlaviyo3',
-                integrations: {
-                  All: true,
-                },
-                sentAt: '2019-10-14T09:03:22.563Z',
-              },
-              metadata: generateMetadata(6),
+              metadata: generateMetadata(5, 'testKlaviyo3'),
               destination,
             },
           ],
@@ -445,6 +719,66 @@ export const dataV2: RouterTestData[] = [
               destination,
             },
             {
+              // user 1 track call with userId and anonymousId
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: 'https://a.klaviyo.com/api/events',
+                headers: {
+                  Authorization: 'Klaviyo-API-Key dummyPrivateApiKey',
+                  Accept: 'application/json',
+                  'Content-Type': 'application/json',
+                  revision: '2024-06-15',
+                },
+                params: {},
+                body: {
+                  JSON: {
+                    data: {
+                      type: 'event',
+                      attributes: {
+                        properties: {
+                          price: '12',
+                        },
+                        profile: {
+                          data: {
+                            type: 'profile',
+                            attributes: {
+                              external_id: 'testKlaviyo1',
+                              anonymous_id: 'anonTestKlaviyo1',
+                              email: 'testklaviyo1@email.com',
+                              first_name: 'Test Klaviyo 1',
+                              properties: {},
+                              meta: {
+                                patch_properties: {},
+                              },
+                            },
+                          },
+                        },
+                        metric: {
+                          data: {
+                            type: 'metric',
+                            attributes: {
+                              name: 'purchase',
+                            },
+                          },
+                        },
+                      },
+                    },
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+              },
+              metadata: [generateMetadata(1, 'testKlaviyo1')],
+              batched: false,
+              statusCode: 200,
+              destination,
+            },
+            {
+              // anonn event for user 2
               batchedRequest: {
                 version: '1',
                 type: 'REST',
@@ -500,45 +834,7 @@ export const dataV2: RouterTestData[] = [
               destination,
             },
             {
-              batchedRequest: {
-                version: '1',
-                type: 'REST',
-                method: 'POST',
-                endpoint: 'https://a.klaviyo.com/api/profile-import',
-                headers: {
-                  Authorization: 'Klaviyo-API-Key dummyPrivateApiKey',
-                  Accept: 'application/json',
-                  'Content-Type': 'application/json',
-                  revision: '2024-06-15',
-                },
-                params: {},
-                body: {
-                  JSON: {
-                    data: {
-                      type: 'profile',
-                      attributes: {
-                        external_id: 'testKlaviyo3',
-                        email: 'testklaviyo3@email.com',
-                        first_name: 'Test klaviyo3',
-                        properties: {},
-                      },
-                      meta: {
-                        patch_properties: {},
-                      },
-                    },
-                  },
-                  JSON_ARRAY: {},
-                  XML: {},
-                  FORM: {},
-                },
-                files: {},
-              },
-              metadata: [generateMetadata(6)],
-              batched: false,
-              statusCode: 200,
-              destination,
-            },
-            {
+              // identify call for user 2 and user 3 with subscription
               batchedRequest: [
                 {
                   version: '1',
@@ -672,66 +968,8 @@ export const dataV2: RouterTestData[] = [
                   files: {},
                 },
               ],
-              metadata: [generateMetadata(3), generateMetadata(5)],
+              metadata: [generateMetadata(3, 'testKlaviyo2'), generateMetadata(5, 'testKlaviyo3')],
               batched: true,
-              statusCode: 200,
-              destination,
-            },
-            {
-              batchedRequest: {
-                version: '1',
-                type: 'REST',
-                method: 'POST',
-                endpoint: 'https://a.klaviyo.com/api/events',
-                headers: {
-                  Authorization: 'Klaviyo-API-Key dummyPrivateApiKey',
-                  Accept: 'application/json',
-                  'Content-Type': 'application/json',
-                  revision: '2024-06-15',
-                },
-                params: {},
-                body: {
-                  JSON: {
-                    data: {
-                      type: 'event',
-                      attributes: {
-                        properties: {
-                          price: '12',
-                        },
-                        profile: {
-                          data: {
-                            type: 'profile',
-                            attributes: {
-                              external_id: 'testKlaviyo1',
-                              anonymous_id: 'anonTestKlaviyo1',
-                              email: 'testklaviyo1@email.com',
-                              first_name: 'Test Klaviyo 1',
-                              properties: {},
-                              meta: {
-                                patch_properties: {},
-                              },
-                            },
-                          },
-                        },
-                        metric: {
-                          data: {
-                            type: 'metric',
-                            attributes: {
-                              name: 'purchase',
-                            },
-                          },
-                        },
-                      },
-                    },
-                  },
-                  JSON_ARRAY: {},
-                  XML: {},
-                  FORM: {},
-                },
-                files: {},
-              },
-              metadata: [generateMetadata(1)],
-              batched: false,
               statusCode: 200,
               destination,
             },
@@ -787,7 +1025,7 @@ export const dataV2: RouterTestData[] = [
                 },
                 files: {},
               },
-              metadata: [generateMetadata(4)],
+              metadata: [generateMetadata(4, 'testKlaviyo2')],
               batched: false,
               statusCode: 200,
               destination,
@@ -803,7 +1041,7 @@ export const dataV2: RouterTestData[] = [
     description: '150624 -> Retl Router tests to have retl ',
     scenario: 'Framework',
     successCriteria:
-      'All the subscription events should be batched and respective profile requests should also be placed in same batched request',
+      'All the subscription events with same message type should be batched and respective profile requests should also be placed in same batched request',
     feature: 'router',
     module: 'destination',
     version: 'v0',

@@ -22,6 +22,7 @@ const {
   handleRtTfSingleEventError,
   addExternalIdToTraits,
   adduserIdFromExternalId,
+  groupEventsByType,
   flattenJson,
 } = require('../../util');
 
@@ -174,7 +175,7 @@ const getEventChunks = (input, subscribeRespList, profileRespList, eventRespList
   }
 };
 
-const processRouterDestV2 = (inputs, reqMetadata) => {
+const processRouter = (inputs, reqMetadata) => {
   const batchResponseList = [];
   const batchErrorRespList = [];
   const subscribeRespList = [];
@@ -208,12 +209,31 @@ const processRouterDestV2 = (inputs, reqMetadata) => {
     profileRespList,
     destination,
   );
-  const { anonymousTracking, identifiedTracking } = getTrackRequests(eventRespList, destination);
+  const trackRespList = getTrackRequests(eventRespList, destination);
 
   // We are doing to maintain event ordering basically once a user is identified klaviyo does not allow user tracking based upon anonymous_id only
-  batchResponseList.push(...anonymousTracking, ...batchedResponseList, ...identifiedTracking);
+  batchResponseList.push(...trackRespList, ...batchedResponseList);
 
-  return [...batchResponseList, ...batchErrorRespList];
+  return { successEvents: batchResponseList, errorEvents: batchErrorRespList };
+};
+
+const processRouterDestV2 = (inputs, reqMetadata) => {
+  /**
+  We are doing this to maintain the order of events not only fo transformation but for delivery as well
+  Job Id:       1                 2                 3                  4                  5                6
+  Input : ['user1 track1', 'user1 identify 1', 'user1 track 2', 'user2 identify 1', 'user2 track 1', 'user1 track 3']
+  Output after batching : [['user1 track1'],['user1 identify 1', 'user2 identify 1'], [ 'user1 track 2', 'user2 track 1', 'user1 track 3']]
+  Output after transformation: [1, [2,4], [3,5,6]]
+  */
+  const inputsGroupedByType = groupEventsByType(inputs);
+  const respList = [];
+  const errList = [];
+  inputsGroupedByType.forEach((typedEventList) => {
+    const { successEvents, errorEvents } = processRouter(typedEventList, reqMetadata);
+    respList.push(...successEvents);
+    errList.push(...errorEvents);
+  });
+  return [...respList, ...errList];
 };
 
 module.exports = { processV2, processRouterDestV2 };

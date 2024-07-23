@@ -503,6 +503,12 @@ class Prometheus {
         labelNames: ['destination_id'],
       },
       {
+        name: 'hs_batch_size',
+        help: 'hs_batch_size',
+        type: 'gauge',
+        labelNames: ['destination_id'],
+      },
+      {
         name: 'mixpanel_batch_engage_pack_size',
         help: 'mixpanel_batch_engage_pack_size',
         type: 'gauge',
@@ -892,7 +898,7 @@ class Prometheus {
         name: 'fetch_dns_resolve_time',
         help: 'fetch_dns_resolve_time',
         type: 'histogram',
-        labelNames: ['identifier', 'transformationId', 'workspaceId', 'error'],
+        labelNames: ['identifier', 'transformationId', 'workspaceId', 'error', 'cacheHit'],
       },
       {
         name: 'geo_call_duration',
@@ -970,6 +976,12 @@ class Prometheus {
           'transformationId',
           'workspaceId',
         ],
+      },
+      {
+        name: 'user_transform_reconcile_function',
+        help: 'user_transform_reconcile_function',
+        type: 'counter',
+        labelNames: ['transformationId', 'workspaceId'],
       },
     ];
 

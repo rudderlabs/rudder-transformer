@@ -118,6 +118,7 @@ const prepareProxyReq = (request) => {
  * @returns
  */
 const pardotProxyRequest = async (request) => {
+  const { metadata } = request;
   const { endpoint, data, method, params, headers } = prepareProxyReq(request);
 
   const requestOptions = {
@@ -130,6 +131,7 @@ const pardotProxyRequest = async (request) => {
   const response = await httpSend(requestOptions, {
     feature: 'proxy',
     destType: 'pardot',
+    metadata,
   });
   return response;
 };

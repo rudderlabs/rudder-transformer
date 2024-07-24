@@ -2270,6 +2270,22 @@ const validateEventAndLowerCaseConversion = (event, isMandatory, convertToLowerC
 const applyCustomMappings = (message, mappings) =>
   JsonTemplateEngine.createAsSync(mappings, { defaultPathType: PathType.JSON }).evaluate(message);
 
+/**
+ * Gets url path omitting the hostname & protocol
+ *
+ * **Note**:
+ * - This should only be used when there are no dynamic paths in URL
+ * @param {*} inputUrl
+ * @returns
+ */
+const getRelativePathFromURL = (inputUrl) => {
+  if (isValidUrl(inputUrl)) {
+    const url = new URL(inputUrl);
+    return url.pathname;
+  }
+  return inputUrl;
+};
+
 // ========================================================================
 // EXPORTS
 // ========================================================================
@@ -2390,5 +2406,6 @@ module.exports = {
   removeDuplicateMetadata,
   combineBatchRequestsWithSameJobIds,
   validateEventAndLowerCaseConversion,
+  getRelativePathFromURL,
   removeEmptyKey,
 };

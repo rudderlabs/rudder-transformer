@@ -56,7 +56,7 @@ const responseBuilder = async (payload, endpoint, method, messageType, Config) =
  * @param {*} endPoint
  * @returns build response for group call
  */
-const groupResponseBuilder = async (message, Config, endPoint) => {
+const groupResponseBuilder = async ({ message, Config, metadata }, endPoint) => {
   let groupClass;
   validateGroupCall(message);
   switch (message.traits?.type?.toLowerCase()) {
@@ -76,7 +76,7 @@ const groupResponseBuilder = async (message, Config, endPoint) => {
   }
   let contactId = getDestinationExternalID(message, 'mauticContactId');
   if (!contactId) {
-    const contacts = await searchContactIds(message, Config, endPoint);
+    const contacts = await searchContactIds({ message, Config, metadata }, endPoint);
     if (!contacts || contacts.length === 0) {
       throw new ConfigurationError('Could not find any contact ID on lookup');
     }
@@ -117,7 +117,7 @@ const groupResponseBuilder = async (message, Config, endPoint) => {
  * @param {*} endPoint
  * @returns build response for identify call
  */
-const identifyResponseBuilder = async (message, Config, endpoint) => {
+const identifyResponseBuilder = async ({ message, Config, metadata }, endpoint) => {
   let method;
   let endPoint;
   // constructing payload from mapping JSONs
@@ -135,7 +135,7 @@ const identifyResponseBuilder = async (message, Config, endpoint) => {
   let contactId = getDestinationExternalID(message, 'mauticContactId');
 
   if (!contactId) {
-    const contacts = await searchContactIds(message, Config, endpoint);
+    const contacts = await searchContactIds({ message, Config, metadata }, endpoint);
     if (contacts?.length === 1) {
       const [first] = contacts;
       contactId = first;
@@ -154,7 +154,7 @@ const identifyResponseBuilder = async (message, Config, endpoint) => {
 };
 
 const process = async (event) => {
-  const { message, destination } = event;
+  const { message, destination, metadata } = event;
   const { password, userName } = destination.Config;
   if (!password) {
     throw new ConfigurationError(
@@ -178,10 +178,16 @@ const process = async (event) => {
   let response;
   switch (messageType) {
     case EventType.IDENTIFY:
-      response = await identifyResponseBuilder(message, destination.Config, endpoint);
+      response = await identifyResponseBuilder(
+        { message, Config: destination.Config, metadata },
+        endpoint,
+      );
       break;
     case EventType.GROUP:
-      response = await groupResponseBuilder(message, destination.Config, endpoint);
+      response = await groupResponseBuilder(
+        { message, Config: destination.Config, metadata },
+        endpoint,
+      );
       break;
     default:
       throw new InstrumentationError(`Event type "${messageType}" is not supported`);

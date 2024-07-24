@@ -203,7 +203,7 @@ function getUserAttributesObject(message, mappingJson, destination) {
  * @param {*} message
  * @param {*} destination
  */
-async function processIdentify(message, destination) {
+async function processIdentify({ message, destination, metadata }) {
   const identifyPayload = getIdentifyPayload(message);
   const identifyEndpoint = getIdentifyEndpoint(getEndpointFromConfig(destination));
   const { processedResponse: brazeIdentifyResp } = await handleHttpRequest(
@@ -223,6 +223,7 @@ async function processIdentify(message, destination) {
       requestMethod: 'POST',
       module: 'router',
       endpointPath: '/users/identify',
+      metadata,
     },
   );
 
@@ -517,7 +518,7 @@ async function process(event, processParams = { userStore: new Map() }, reqMetad
       const brazeExternalID =
         getDestinationExternalID(message, 'brazeExternalId') || message.userId;
       if (message.anonymousId && brazeExternalID) {
-        await processIdentify(message, destination);
+        await processIdentify(event);
       } else {
         collectStatsForAliasMissConfigurations(destination.ID);
       }

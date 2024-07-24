@@ -59,8 +59,13 @@ function generateSources(outputFolder: string, options: OptionValues) {
       let responseBody: any = 'OK';
       if (statusCode == 200) {
         if (testCase.output.response?.body[0]?.outputToSource?.body) {
-          let rawBody = Buffer.from(testCase.output.response?.body[0]?.outputToSource?.body, 'base64').toString();
-          if (testCase.output.response?.body[0]?.outputToSource?.contentType === 'application/json') {
+          let rawBody = Buffer.from(
+            testCase.output.response?.body[0]?.outputToSource?.body,
+            'base64',
+          ).toString();
+          if (
+            testCase.output.response?.body[0]?.outputToSource?.contentType === 'application/json'
+          ) {
             responseBody = JSON.parse(rawBody);
           } else {
             responseBody = rawBody;
@@ -107,7 +112,9 @@ function generateSources(outputFolder: string, options: OptionValues) {
         },
       };
       const dirPath = path.join(outputFolder, goTest.name);
-      const safeName = toSnakeCase(goTest.description).replace(/[^a-z0-9]/gi, '_').toLowerCase();
+      const safeName = toSnakeCase(goTest.description)
+        .replace(/[^a-z0-9]/gi, '_')
+        .toLowerCase();
       const filePath = path.join(dirPath, `${safeName}.json`);
 
       if (testCase.skipGo) {

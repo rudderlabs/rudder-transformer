@@ -1,4 +1,3 @@
-const md5 = require('md5');
 const Message = require('../../../v0/sources/message');
 const { CommonUtils } = require('../../../util/common');
 const { generateUUID, isDefinedAndNotNull } = require('../../../v0/util');
@@ -26,11 +25,6 @@ const processEvent = (event) => {
   }
   message.context.externalId = externalId;
 
-  if (!message.userId && event.email) {
-    // Treating userId as unique identifier
-    // If userId is not present, then generating it from email using md5 hash function
-    message.userId = md5(event.email);
-  }
   if (!isDefinedAndNotNull(message.userId)) {
     message.anonymousId = generateUUID();
   }

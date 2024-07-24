@@ -1,0 +1,21 @@
+{
+  "name": "auth0",
+  "description": "empty batch",
+  "input": {
+    "request": {
+      "body": [],
+      "headers": {
+        "Content-Type": "application/json"
+      }
+    }
+  },
+  "output": {
+    "response": {
+      "status": 200,
+      "body": "OK"
+    },
+    "queue": [],
+    "errQueue": []
+  },
+  "skip": "dynamic anonymousId"
+}

@@ -196,21 +196,6 @@ export const data = [
                   last_name: 'doe',
                   lastUpdateSource: 'cordial',
                   lastModified: '2024-07-24T07:52:46+0000',
-                  cart: {
-                    cartitems: [
-                      {
-                        productID: '1094269',
-                        sku: '191142111316',
-                        category: 'allproducts',
-                        name: 'wtp ab',
-                        qty: 1,
-                        itemPrice: 150,
-                        amount: 150,
-                      },
-                    ],
-                    totalAmount: 150,
-                    lm: '2024-07-24T07:52:46+0000',
-                  },
                   cID: '633b2fd70a12be027e0b0xxx',
                 },
                 event: {
@@ -274,21 +259,6 @@ export const data = [
                   last_name: 'doe',
                   lastUpdateSource: 'cordial',
                   lastModified: '2024-07-24T07:52:46+0000',
-                  cart: {
-                    cartitems: [
-                      {
-                        productID: '1094269',
-                        sku: '191142738316',
-                        category: 'allproducts',
-                        name: 'wtp ab',
-                        qty: 1,
-                        itemPrice: 150,
-                        amount: 150,
-                      },
-                    ],
-                    totalAmount: 150,
-                    lm: '2024-07-24T07:52:46+0000',
-                  },
                   cID: '633b2fd12312be027e0b0xxx',
                 },
                 event: {
@@ -380,21 +350,6 @@ export const data = [
                       last_name: 'doe',
                       lastUpdateSource: 'cordial',
                       lastModified: '2024-07-24T07:52:46+0000',
-                      cart: {
-                        cartitems: [
-                          {
-                            productID: '1094269',
-                            sku: '191142111316',
-                            category: 'allproducts',
-                            name: 'wtp ab',
-                            qty: 1,
-                            itemPrice: 150,
-                            amount: 150,
-                          },
-                        ],
-                        totalAmount: 150,
-                        lm: '2024-07-24T07:52:46+0000',
-                      },
                       cID: '633b2fd70a12be027e0b0xxx',
                     },
                     device: {
@@ -486,21 +441,6 @@ export const data = [
                       last_name: 'doe',
                       lastUpdateSource: 'cordial',
                       lastModified: '2024-07-24T07:52:46+0000',
-                      cart: {
-                        cartitems: [
-                          {
-                            productID: '1094269',
-                            sku: '191142738316',
-                            category: 'allproducts',
-                            name: 'wtp ab',
-                            qty: 1,
-                            itemPrice: 150,
-                            amount: 150,
-                          },
-                        ],
-                        totalAmount: 150,
-                        lm: '2024-07-24T07:52:46+0000',
-                      },
                       cID: '633b2fd12312be027e0b0xxx',
                     },
                     device: {

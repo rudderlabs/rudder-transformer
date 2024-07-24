@@ -5,22 +5,22 @@ const { eventsMapping } = require('./config');
 
 const mapping = require('./mapping.json');
 
-const processEvent = (event) => {
+const processEvent = (inputPaylaod) => {
   const message = new Message(`Cordial`);
-  let eventName = event.event?.a || event.event?.action;
+  let eventName = inputPaylaod.event?.a || inputPaylaod.event?.action;
   if (eventName in eventsMapping) {
     eventName = eventsMapping[eventName];
   }
   message.setEventType('track');
   message.setEventName(eventName);
-  message.setPropertiesV2(event, mapping);
+  message.setPropertiesV2(inputPaylaod, mapping);
 
   const externalId = [];
   // setting up cordial contact_id to externalId
-  if (event.cID) {
+  if (inputPaylaod.contact.cID) {
     externalId.push({
       type: 'cordialContactId',
-      id: event.cID,
+      id: inputPaylaod.contact.cID,
     });
   }
   message.context.externalId = externalId;
@@ -29,8 +29,12 @@ const processEvent = (event) => {
     message.anonymousId = generateUUID();
   }
   // Due to multiple mappings to the same destination path object some are not showing up due to which we are doing the following
-  message.context.traits = { ...message.context.traits, ...event.contact };
-  message.properties = { ...message.properties, ...event.event.properties, ...event.event };
+  message.context.traits = { ...message.context.traits, ...inputPaylaod.contact };
+  message.properties = {
+    ...message.properties,
+    ...inputPaylaod.event.properties,
+    ...inputPaylaod.event,
+  };
   delete message.properties.properties;
   return message;
 };

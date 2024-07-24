@@ -17,6 +17,6 @@
   },
   {
     "sourceKeys": "contact.channels.email.address",
-    "destKeys": ["context.traits.email", "properties.email"]
+    "destKeys": ["context.traits.email"]
   }
 ]

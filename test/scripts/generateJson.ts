@@ -39,7 +39,7 @@ jsonGenerator
   .command('sources')
   .description('generator JSON test cases for source')
   .argument('<string>', 'output path')
-  .option('-s, --source <char>', 'source', ',')
+  .option('-s, --source <char>', 'source', '')
   .action(generateSources);
 
 jsonGenerator.parse();
@@ -59,11 +59,12 @@ function generateSources(outputFolder: string, options: OptionValues) {
       let responseBody: any = 'OK';
       if (statusCode == 200) {
         if (testCase.output.response?.body[0]?.outputToSource?.body) {
-          responseBody = JSON.parse(
-            Buffer.from(testCase.output.response?.body[0]?.outputToSource?.body, 'base64').toString(
-              'utf-8',
-            ),
-          );
+          let rawBody = Buffer.from(testCase.output.response?.body[0]?.outputToSource?.body, 'base64').toString();
+          if (testCase.output.response?.body[0]?.outputToSource?.contentType === 'application/json') {
+            responseBody = JSON.parse(rawBody);
+          } else {
+            responseBody = rawBody;
+          }
         }
       } else {
         responseBody = testCase.output.response?.error;
@@ -106,7 +107,8 @@ function generateSources(outputFolder: string, options: OptionValues) {
         },
       };
       const dirPath = path.join(outputFolder, goTest.name);
-      const filePath = path.join(dirPath, `${toSnakeCase(goTest.description)}.json`);
+      const safeName = toSnakeCase(goTest.description).replace(/[^a-z0-9]/gi, '_').toLowerCase();
+      const filePath = path.join(dirPath, `${safeName}.json`);
 
       if (testCase.skipGo) {
         goTest.skip = testCase.skipGo;

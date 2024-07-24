@@ -1,14 +1,9 @@
 {
   "name": "shopify",
-  "description": "Invalid topic",
+  "description": "No Query Parameters",
   "input": {
     "request": {
-      "body": {
-        "query_parameters": {
-          "signature": ["rudderstack"],
-          "writeKey": ["sample-write-key"]
-        }
-      },
+      "body": {},
       "headers": {
         "Content-Type": "application/json"
       }
@@ -17,7 +12,7 @@
   "output": {
     "response": {
       "status": 400,
-      "body": "Invalid topic in query_parameters"
+      "body": "Query_parameters is missing"
     },
     "queue": [],
     "errQueue": [null]

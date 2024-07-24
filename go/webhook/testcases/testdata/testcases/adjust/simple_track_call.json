@@ -29,6 +29,7 @@
     },
     "queue": [
       {
+        "anonymousId": "97fcd7b2-cc24-47d7-b776-057b7b199513",
         "context": {
           "library": {
             "name": "unknown",
@@ -54,7 +55,6 @@
           "custom": "custom",
           "tracker_name": "dummy"
         },
-        "anonymousId": "97fcd7b2-cc24-47d7-b776-057b7b199513",
         "receivedAt": "2024-03-03T04:48:29.000Z",
         "request_ip": "192.0.2.30",
         "messageId": "00000000-0000-0000-0000-000000000000"

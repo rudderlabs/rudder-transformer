@@ -40,7 +40,7 @@ steps:
       $.assertConfig(.destination.Config.apiKey, "API Key is not present. Aborting");
       $.assertConfig(.destination.Config.apiBaseUrl, "API Base URl is not present. Aborting");
 
-  - name: validateMessageType  
+  - name: validateMessageType
     template: |
       let messageType = $.context.messageType;
       $.assert(messageType, "message Type is not present. Aborting");
@@ -56,7 +56,7 @@ steps:
 
   - name: validateEventPayload
     template: |
-      $.assert($.outputs.getContactId || $.outputs.getContactEmail, "Either one of cordial contact id or email is required. Aborting");   
+      $.assert($.outputs.getContactId || $.outputs.getContactEmail, "Either one of cordial contact id or email is required. Aborting");
 
   - name: buildIdentifyPayload
     condition: $.context.messageType in [{{$.EventType.IDENTIFY}}]

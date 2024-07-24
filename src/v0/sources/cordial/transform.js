@@ -1,17 +1,15 @@
-const path = require('path');
-const fs = require('fs');
 const md5 = require('md5');
 const Message = require('../message');
 const { CommonUtils } = require('../../../util/common');
 const { generateUUID, isDefinedAndNotNull } = require('../../util');
 const { eventsMapping } = require('./config');
 
-const mapping = JSON.parse(fs.readFileSync(path.resolve(__dirname, './mapping.json'), 'utf-8'));
+const mapping = require('./mapping.json');
 
 const processEvent = (event) => {
   const message = new Message(`Cordial`);
   let eventName = event.event?.a || event.event?.action;
-  if (Object.keys(eventsMapping).includes(eventName)) {
+  if (eventName in eventsMapping) {
     eventName = eventsMapping[eventName];
   }
   message.setEventType('track');

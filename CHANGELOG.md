@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.72.3](https://github.com/rudderlabs/rudder-transformer/compare/v1.72.2...v1.72.3) (2024-07-24)
+
+
+### Bug Fixes
+
+* add validation for cordial destination ([#3599](https://github.com/rudderlabs/rudder-transformer/issues/3599)) ([b7860a5](https://github.com/rudderlabs/rudder-transformer/commit/b7860a5b2b87fb61aaff8c68a904ac996d63efd3))
+* update getConversionActionId function for gaoc ([#3594](https://github.com/rudderlabs/rudder-transformer/issues/3594)) ([68367f5](https://github.com/rudderlabs/rudder-transformer/commit/68367f5227c96f2700a773018b991b1e87a0774d))
+
 ### [1.72.2](https://github.com/rudderlabs/rudder-transformer/compare/v1.72.1...v1.72.2) (2024-07-23)
 
 ### [1.72.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.72.0...v1.72.1) (2024-07-23)

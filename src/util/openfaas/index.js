@@ -16,6 +16,7 @@ const { HTTP_STATUS_CODES } = require('../../v0/util/constant');
 const MAX_RETRY_WAIT_MS = parseInt(process.env.MAX_RETRY_WAIT_MS || '22000');
 const MAX_INTERVAL_IN_RETRIES_MS = parseInt(process.env.MAX_INTERVAL_IN_RETRIES_MS || '250');
 const FAAS_SCALE_TYPE = process.env.FAAS_SCALE_TYPE || 'capacity';
+const FAAS_SCALE_FACTOR = process.env.FAAS_SCALE_FACTOR || '100';
 const FAAS_SCALE_TARGET = process.env.FAAS_SCALE_TARGET || '4';
 const FAAS_SCALE_TARGET_PROPORTION = process.env.FAAS_SCALE_TARGET_PROPORTION || '0.70';
 const FAAS_SCALE_ZERO = process.env.FAAS_SCALE_ZERO || 'false';
@@ -319,6 +320,7 @@ function buildOpenfaasFn(name, code, versionId, libraryVersionIDs, testMode, trM
     'com.openfaas.scale.target': FAAS_SCALE_TARGET,
     'com.openfaas.scale.target-proportion': FAAS_SCALE_TARGET_PROPORTION,
     'com.openfaas.scale.type': FAAS_SCALE_TYPE,
+    'com.openfaas.scale.factor': FAAS_SCALE_FACTOR,
     transformationId: trMetadata.transformationId,
     workspaceId: trMetadata.workspaceId,
     team: 'data-management',

@@ -296,7 +296,7 @@ export const data = [
                 type: 'identify',
                 userId: 'lynnanderson@smith.net',
               },
-              metadata: { jobId: 5, userId: 'u1' },
+              metadata: { jobId: 5, userId: 'u1', destinationId: '1zia9wKshXt80YksLmUdJnr7IHI' },
               destination: {
                 ID: '1zia9wKshXt80YksLmUdJnr7IHI',
                 Name: 'test_iterable',
@@ -807,7 +807,7 @@ export const data = [
                 },
                 files: {},
               },
-              metadata: [{ jobId: 5, userId: 'u1' }],
+              metadata: [{ jobId: 5, userId: 'u1', destinationId: '1zia9wKshXt80YksLmUdJnr7IHI' }],
               batched: true,
               statusCode: 200,
               destination: {

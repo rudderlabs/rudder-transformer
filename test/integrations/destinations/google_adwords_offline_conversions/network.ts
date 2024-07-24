@@ -1,28 +1,30 @@
 const commonResponse = {
   status: 401,
-  data: {
-    error: {
-      code: 401,
-      details: [
-        {
-          '@type': 'type.googleapis.com/google.ads.googleads.v16.errors.GoogleAdsFailure',
-          errors: [
-            {
-              errorCode: {
-                authenticationError: 'TWO_STEP_VERIFICATION_NOT_ENROLLED',
+  data: [
+    {
+      error: {
+        code: 401,
+        details: [
+          {
+            '@type': 'type.googleapis.com/google.ads.googleads.v16.errors.GoogleAdsFailure',
+            errors: [
+              {
+                errorCode: {
+                  authenticationError: 'TWO_STEP_VERIFICATION_NOT_ENROLLED',
+                },
+                message:
+                  "An account administrator changed this account's authentication settings. To access this Google Ads account, enable 2-Step Verification in your Google account at https://www.google.com/landing/2step.",
               },
-              message:
-                "An account administrator changed this account's authentication settings. To access this Google Ads account, enable 2-Step Verification in your Google account at https://www.google.com/landing/2step.",
-            },
-          ],
-          requestId: 'wy4ZYbsjWcgh6uC2Ruc_Zg',
-        },
-      ],
-      message:
-        'Request is missing required authentication credential. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.',
-      status: 'UNAUTHENTICATED',
+            ],
+            requestId: 'wy4ZYbsjWcgh6uC2Ruc_Zg',
+          },
+        ],
+        message:
+          'Request is missing required authentication credential. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.',
+        status: 'UNAUTHENTICATED',
+      },
     },
-  },
+  ],
 };
 
 export const networkCallsData = [

@@ -118,7 +118,9 @@ const getAuthErrCategory = ({ response, status }) => {
     if (!Array.isArray(response)) {
       respArr = [response];
     }
-    const authenticationError = respArr.map((resp) => get(resp, 'error.details.0.errors.0.errorCode.authenticationError'));
+    const authenticationError = respArr.map((resp) =>
+      get(resp, 'error.details.0.errors.0.errorCode.authenticationError'),
+    );
     if (authenticationError.includes('TWO_STEP_VERIFICATION_NOT_ENROLLED')) {
       // https://developers.google.com/google-ads/api/docs/oauth/2sv
       return AUTH_STATUS_INACTIVE;

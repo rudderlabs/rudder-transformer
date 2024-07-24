@@ -1,7 +1,7 @@
 const md5 = require('md5');
-const Message = require('../message');
+const Message = require('../../../v0/sources/message');
 const { CommonUtils } = require('../../../util/common');
-const { generateUUID, isDefinedAndNotNull } = require('../../util');
+const { generateUUID, isDefinedAndNotNull } = require('../../../v0/util');
 const { eventsMapping } = require('./config');
 
 const mapping = require('./mapping.json');
@@ -41,9 +41,10 @@ const processEvent = (event) => {
   return message;
 };
 
-const process = (events) => {
+const process = (inputEvent) => {
+  const { event: events } = inputEvent;
   const eventsArray = CommonUtils.toArray(events);
   return eventsArray.map(processEvent);
 };
 
-module.exports = { process };
+exports.process = process;

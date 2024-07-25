@@ -52,7 +52,7 @@ const validateEmailAndPhone = (email, phone = null) => {
  */
 const prepareEmailFromPhone = (phone) => `${phone.replace('+', '')}${EMAIL_SUFFIX}`;
 
-const checkIfContactExists = async (identifier, apiKey) => {
+const checkIfContactExists = async (identifier, apiKey, metadata) => {
   const endpoint = getContactDetailsEndpoint(identifier);
   const requestOptions = {
     headers: prepareHeader(apiKey),
@@ -63,6 +63,7 @@ const checkIfContactExists = async (identifier, apiKey) => {
     endpointPath: '/contacts',
     requestMethod: 'GET',
     module: 'router',
+    metadata,
   });
 
   const processedContactDetailsResponse = processAxiosResponse(contactDetailsResponse);
@@ -88,20 +89,6 @@ const checkIfContactExists = async (identifier, apiKey) => {
 
   // for status code 404 (contact not found)
   return false;
-};
-
-/**
- * Function to remove empty key ("") from payload
- * @param {*} payload {"key1":"a","":{"id":1}}
- * @returns // {"key1":"a"}
- */
-const removeEmptyKey = (payload) => {
-  const rawPayload = payload;
-  const key = '';
-  if (Object.prototype.hasOwnProperty.call(rawPayload, key)) {
-    delete rawPayload[''];
-  }
-  return rawPayload;
 };
 
 /**
@@ -171,7 +158,6 @@ module.exports = {
   validateEmailAndPhone,
   checkIfContactExists,
   prepareHeader,
-  removeEmptyKey,
   transformUserTraits,
   prepareTrackEventData,
   getListIds,

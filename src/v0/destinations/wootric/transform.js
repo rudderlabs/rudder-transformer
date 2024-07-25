@@ -37,17 +37,17 @@ const responseBuilder = async (payload, endpoint, method, accessToken) => {
   throw new TransformationError('Something went wrong while constructing the payload');
 };
 
-const identifyResponseBuilder = async (message, destination) => {
+const identifyResponseBuilder = async ({ message, destination, metadata }) => {
   let payload;
   let endpoint;
   let method;
   let builder;
 
-  const accessToken = await getAccessToken(destination);
+  const accessToken = await getAccessToken(destination, metadata);
 
   const rawEndUserId = getDestinationExternalID(message, 'wootricEndUserId');
   const userId = getFieldValueFromMessage(message, 'userIdOnly');
-  const userDetails = await retrieveUserDetails(rawEndUserId, userId, accessToken);
+  const userDetails = await retrieveUserDetails(rawEndUserId, userId, accessToken, metadata);
   const wootricEndUserId = userDetails?.id;
 
   // If user already exist we will update it else creates a new user
@@ -132,7 +132,7 @@ const trackResponseBuilder = async (message, destination) => {
   return responseBuilder(payload, endpoint, method, accessToken);
 };
 
-const processEvent = async (message, destination) => {
+const processEvent = async ({ message, destination, metadata }) => {
   if (!message.type) {
     throw new InstrumentationError('Event type is required');
   }
@@ -140,7 +140,7 @@ const processEvent = async (message, destination) => {
   let response;
   switch (messageType) {
     case EventType.IDENTIFY:
-      response = await identifyResponseBuilder(message, destination);
+      response = await identifyResponseBuilder({ message, destination, metadata });
       break;
     case EventType.TRACK:
       response = await trackResponseBuilder(message, destination);
@@ -151,7 +151,7 @@ const processEvent = async (message, destination) => {
   return response;
 };
 
-const process = async (event) => processEvent(event.message, event.destination);
+const process = async (event) => processEvent(event);
 
 const processRouterDest = async (inputs, reqMetadata) => {
   const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);

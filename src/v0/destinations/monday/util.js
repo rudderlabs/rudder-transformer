@@ -179,7 +179,7 @@ const mapColumnValues = (properties, columnToPropertyMapping, board) => {
  * @param {*} apiToken
  * @returns
  */
-const getBoardDetails = async (url, boardID, apiToken) => {
+const getBoardDetails = async (url, boardID, apiToken, metadata) => {
   const clientResponse = await httpPOST(
     url,
     {
@@ -197,6 +197,7 @@ const getBoardDetails = async (url, boardID, apiToken) => {
       endpointPath: '/v2',
       requestMethod: 'POST',
       module: 'router',
+      metadata,
     },
   );
   const boardDetailsResponse = processAxiosResponse(clientResponse);

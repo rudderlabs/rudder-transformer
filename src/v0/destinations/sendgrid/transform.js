@@ -57,15 +57,15 @@ const responseBuilder = (payload, method, endpoint, apiKey) => {
   throw new TransformationError(ErrorMessage.FailedToConstructPayload);
 };
 
-const identifyResponseBuilder = async (message, destination) => {
+const identifyResponseBuilder = async ({ message, destination, metadata }) => {
   validateIdentifyPayload(message);
-  const builder = await createOrUpdateContactPayloadBuilder(message, destination);
+  const builder = await createOrUpdateContactPayloadBuilder({ message, destination, metadata });
   const { payload, method, endpoint } = builder;
   const { apiKey } = destination.Config;
   return responseBuilder(payload, method, endpoint, apiKey);
 };
 
-const trackResponseBuilder = async (message, { Config }) => {
+const trackResponseBuilder = async ({ message, destination: { Config } }) => {
   validateTrackPayload(message, Config);
   let payload = {};
   payload = constructPayload(message, MAPPING_CONFIG[CONFIG_CATEGORIES.TRACK.name]);
@@ -123,7 +123,8 @@ const trackResponseBuilder = async (message, { Config }) => {
   return responseBuilder(payload, method, endpoint, apiKey);
 };
 
-const processEvent = async (message, destination) => {
+const processEvent = async (event) => {
+  const { message, destination } = event;
   // Validating if message type is even given or not
   if (!message.type) {
     throw new InstrumentationError('Event type is required');
@@ -137,10 +138,10 @@ const processEvent = async (message, destination) => {
   let response;
   switch (messageType) {
     case EventType.IDENTIFY:
-      response = await identifyResponseBuilder(message, destination);
+      response = await identifyResponseBuilder(event);
       break;
     case EventType.TRACK:
-      response = await trackResponseBuilder(message, destination);
+      response = await trackResponseBuilder(event);
       break;
     default:
       throw new InstrumentationError(`Event type ${messageType} is not supported`);
@@ -148,7 +149,7 @@ const processEvent = async (message, destination) => {
   return response;
 };
 
-const process = (event) => processEvent(event.message, event.destination);
+const process = (event) => processEvent(event);
 
 const generateBatchedPaylaodForArray = (events, combination) => {
   let batchEventResponse = defaultBatchRequestConfig();

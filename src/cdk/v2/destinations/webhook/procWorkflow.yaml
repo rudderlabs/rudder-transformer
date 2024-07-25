@@ -27,7 +27,7 @@ steps:
     template: |
       let defaultHeaders = $.context.method in ['POST', 'PUT', 'PATCH'] ? {"content-type": "application/json"} : {}
       let configHeaders = $.getHashFromArray(.destination.Config.headers)  
-      let messageHeader = typeof .message.header === "object" ? Object.assign(...Object.entries(.message.header).{typeof .[1] === 'string'}[].({[.[0]]: .[1]})[]) : {}  
+      let messageHeader = typeof .message.header === "object" ? Object.assign(...Object.entries(.message.header).({[.[0]]:typeof .[1] === 'string' ? .[1] : JSON.stringify(.[1])})[]) : {}  
       $.context.finalHeaders = {
         ...defaultHeaders,
         ...configHeaders,

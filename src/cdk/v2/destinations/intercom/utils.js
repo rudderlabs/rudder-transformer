@@ -529,7 +529,7 @@ const getCompanyId = async (company, destination) => {
     destType: 'intercom',
     feature: 'transformation',
     endpointPath: '/companies',
-    requestMethod: 'POST',
+    requestMethod: 'GET',
     module: 'router',
   };
 
@@ -572,8 +572,8 @@ const detachContactAndCompany = async (contactId, message, destination) => {
   const statTags = {
     destType: 'intercom',
     feature: 'transformation',
-    endpointPath: 'contacts/{contact_id}/companies/{id}',
-    requestMethod: 'POST',
+    endpointPath: 'contacts/companies',
+    requestMethod: 'DELETE',
     module: 'router',
   };
 

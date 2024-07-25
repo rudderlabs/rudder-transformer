@@ -267,7 +267,7 @@ const filterCustomAttributes = (payload, type, destination) => {
  * @param {*} destination
  * @returns
  */
-const searchContact = async (message, destination) => {
+const searchContact = async (message, destination, metadata) => {
   const lookupField = getLookUpField(message);
   const lookupFieldValue = getFieldValueFromMessage(message, lookupField);
   const data = JSON.stringify({
@@ -298,6 +298,7 @@ const searchContact = async (message, destination) => {
       endpointPath: '/contacts/search',
       requestMethod: 'POST',
       module: 'router',
+      metadata,
     },
   );
   const processedUserResponse = processAxiosResponse(response);
@@ -324,7 +325,7 @@ const searchContact = async (message, destination) => {
  * @param {*} destination
  * @returns
  */
-const createOrUpdateCompany = async (payload, destination) => {
+const createOrUpdateCompany = async (payload, destination, metadata) => {
   const { apiVersion } = destination.Config;
   const headers = getHeaders(destination, apiVersion);
   const finalPayload = JSON.stringify(removeUndefinedAndNullValues(payload));
@@ -337,6 +338,7 @@ const createOrUpdateCompany = async (payload, destination) => {
       headers,
     },
     {
+      metadata,
       destType: 'intercom',
       feature: 'transformation',
       endpointPath: '/companies',
@@ -418,7 +420,7 @@ const addMetadataToPayload = (payload) => {
  * @param {*} endpoint
  * @param {*} destination
  */
-const attachContactToCompany = async (payload, endpoint, destination) => {
+const attachContactToCompany = async (payload, endpoint, { destination, metadata }) => {
   let { apiVersion } = destination.Config;
   apiVersion = isDefinedAndNotNull(apiVersion) ? apiVersion : 'v2';
   let endpointPath = '/contact/{id}/companies';
@@ -442,6 +444,7 @@ const attachContactToCompany = async (payload, endpoint, destination) => {
     {
       ...commonStatTags,
       endpointPath,
+      metadata,
     },
   );
 
@@ -460,7 +463,7 @@ const attachContactToCompany = async (payload, endpoint, destination) => {
  * @param id
  * @returns
  */
-const addOrUpdateTagsToCompany = async (message, destination, id) => {
+const addOrUpdateTagsToCompany = async ({ message, destination, metadata }, id) => {
   const companyTags = message?.context?.traits?.tags;
   if (!companyTags) return;
   const { apiVersion } = destination.Config;
@@ -473,6 +476,7 @@ const addOrUpdateTagsToCompany = async (message, destination, id) => {
     endpointPath: '/tags',
     requestMethod: 'POST',
     module: 'router',
+    metadata,
   };
   await Promise.all(
     companyTags.map(async (tag) => {

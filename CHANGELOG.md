@@ -2,6 +2,46 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.72.3](https://github.com/rudderlabs/rudder-transformer/compare/v1.72.2...v1.72.3) (2024-07-24)
+
+
+### Bug Fixes
+
+* add validation for cordial destination ([#3599](https://github.com/rudderlabs/rudder-transformer/issues/3599)) ([b7860a5](https://github.com/rudderlabs/rudder-transformer/commit/b7860a5b2b87fb61aaff8c68a904ac996d63efd3))
+* update getConversionActionId function for gaoc ([#3594](https://github.com/rudderlabs/rudder-transformer/issues/3594)) ([68367f5](https://github.com/rudderlabs/rudder-transformer/commit/68367f5227c96f2700a773018b991b1e87a0774d))
+
+### [1.72.2](https://github.com/rudderlabs/rudder-transformer/compare/v1.72.1...v1.72.2) (2024-07-23)
+
+### [1.72.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.72.0...v1.72.1) (2024-07-23)
+
+
+### Bug Fixes
+
+* garl get auth err category ([#3590](https://github.com/rudderlabs/rudder-transformer/issues/3590)) ([475ebc1](https://github.com/rudderlabs/rudder-transformer/commit/475ebc104c69a52eaa425a9ed564ea9aca1ecd9c))
+
+## [1.72.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.71.3...v1.72.0) (2024-07-22)
+
+
+### Features
+
+* add support for subscribing for RETL flow ([#3195](https://github.com/rudderlabs/rudder-transformer/issues/3195)) ([cc56004](https://github.com/rudderlabs/rudder-transformer/commit/cc560044ceb769da1f0090da4f690933552b6347))
+* braze source event mapping ([#3527](https://github.com/rudderlabs/rudder-transformer/issues/3527)) ([e357141](https://github.com/rudderlabs/rudder-transformer/commit/e357141d22e5296b6d1cda2e763ac24abfcb66e6))
+* introduces new user fields in titkok ads ([#3575](https://github.com/rudderlabs/rudder-transformer/issues/3575)) ([6304abb](https://github.com/rudderlabs/rudder-transformer/commit/6304abb2346f331b78e927b73e7c2ca17e94f4cf))
+* onboard cordial destination ([#3581](https://github.com/rudderlabs/rudder-transformer/issues/3581)) ([fbcdcd6](https://github.com/rudderlabs/rudder-transformer/commit/fbcdcd609888150efa0da33eec60a4cc7b436d06))
+* onboarding new destination zoho ([#3555](https://github.com/rudderlabs/rudder-transformer/issues/3555)) ([20aa7f3](https://github.com/rudderlabs/rudder-transformer/commit/20aa7f35e13ad89e8a43fbbb743df73b0c103975)), closes [#3566](https://github.com/rudderlabs/rudder-transformer/issues/3566)
+* update webhook destination to support all datatypes ([#3541](https://github.com/rudderlabs/rudder-transformer/issues/3541)) ([448f574](https://github.com/rudderlabs/rudder-transformer/commit/448f57484c57d4a55147e9566149c8b714a191c9))
+
+
+### Bug Fixes
+
+* add optional chaining to webengage page event ([#3570](https://github.com/rudderlabs/rudder-transformer/issues/3570)) ([20205d6](https://github.com/rudderlabs/rudder-transformer/commit/20205d66298f5633d3971888f0866db2c38a50e2))
+* add validation for type in google pubsub ([#3578](https://github.com/rudderlabs/rudder-transformer/issues/3578)) ([1bef212](https://github.com/rudderlabs/rudder-transformer/commit/1bef2126a75324598c2af0ecaffcf582f038af11))
+* adding readiness probe annotations for openfaas ([#3529](https://github.com/rudderlabs/rudder-transformer/issues/3529)) ([2eb92e3](https://github.com/rudderlabs/rudder-transformer/commit/2eb92e3332ef0e8b2f83621fe0130fbc1356fa91))
+* **gainsight:** replace myAxios utility with handleHttpRequest utility ([#3241](https://github.com/rudderlabs/rudder-transformer/issues/3241)) ([04be1aa](https://github.com/rudderlabs/rudder-transformer/commit/04be1aaf438f824ddf61fc2f4d13eb7d8a223a9d))
+* job ordering for hs ([#3319](https://github.com/rudderlabs/rudder-transformer/issues/3319)) ([f840d54](https://github.com/rudderlabs/rudder-transformer/commit/f840d54dcbdc011eeb716dce74f2ecb36e99d0e9))
+* update authErrorCategory for 2 step verification issue for google ads destinations ([#3552](https://github.com/rudderlabs/rudder-transformer/issues/3552)) ([5a0392e](https://github.com/rudderlabs/rudder-transformer/commit/5a0392ee24301486b7973531be28f8178ef03eab))
+* update python transformation fn ([#3491](https://github.com/rudderlabs/rudder-transformer/issues/3491)) ([f363f35](https://github.com/rudderlabs/rudder-transformer/commit/f363f3512f690e0745165f46587efdbe88f48683))
+
 ### [1.71.3](https://github.com/rudderlabs/rudder-transformer/compare/v1.71.2...v1.71.3) (2024-07-15)
 
 

@@ -4,20 +4,20 @@ import {
   generateProxyV1Payload,
 } from '../../../testUtils';
 
-const commonHeaders = {
+export const commonHeaders = {
   Authorization: 'Bearer dummy-access',
   'Content-Type': 'application/json',
   'developer-token': 'dummy-dev-token',
 };
 
-const commonParams = {
+export const commonParams = {
   destination: 'google_adwords_remarketing_lists',
   listId: '709078448',
   customerId: '7693729833',
   consent: { adPersonalization: 'UNSPECIFIED', adUserData: 'UNSPECIFIED' },
 };
 
-const validRequestPayload1 = {
+export const validRequestPayload1 = {
   enablePartialFailure: true,
   operations: [
     {
@@ -92,7 +92,7 @@ const invalidArgumentRequestPayload = {
 
 const metadataArray = [generateGoogleOAuthMetadata(1)];
 
-const expectedStatTags = {
+export const expectedStatTags = {
   destType: 'GOOGLE_ADWORDS_REMARKETING_LISTS',
   destinationId: 'default-destinationId',
   errorCategory: 'network',

@@ -10,6 +10,7 @@ const { HTTP_STATUS_CODES } = require('../../util/constant');
 const DESTINATION = 'RAKUTEN';
 const prepareProxyRequest = (request) => request;
 const proxyRequest = async (request, destType) => {
+  const { metadata } = request;
   const { endpoint, data, method, params, headers } = prepareProxyRequest(request);
   const requestOptions = {
     url: endpoint,
@@ -21,6 +22,7 @@ const proxyRequest = async (request, destType) => {
   const response = await httpSend(requestOptions, {
     feature: 'proxy',
     destType,
+    metadata,
     endpointPath: '/ep',
     requestMethod: 'GET',
     module: 'dataDelivery',

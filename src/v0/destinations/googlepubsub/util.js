@@ -1,3 +1,4 @@
+const { ConfigurationAuthError } = require('@rudderstack/integrations-lib');
 const {
   getHashFromArray,
   getValueFromMessage,
@@ -17,6 +18,10 @@ const getTopic = (event) => {
   const { message, destination } = event;
   const { eventToTopicMap } = destination.Config;
   const hashMap = getHashFromArray(eventToTopicMap, 'from', 'to');
+
+  if (!message.type) {
+    throw new ConfigurationAuthError('type is required for event');
+  }
 
   return (
     (message.event ? hashMap[message.event.toLowerCase()] : null) ||

@@ -14,7 +14,7 @@ const {
   fetchTransformedEvents,
   addSubscribeFlagToTraits,
 } = require('./util');
-const { batchSubscriptionRequestV2 } = require('./batchUtil');
+const { batchRequestV2 } = require('./batchUtil');
 const {
   constructPayload,
   getFieldValueFromMessage,
@@ -108,7 +108,7 @@ const groupRequestHandler = (message, category, destination) => {
   if (!traitsInfo?.subscribe) {
     throw new InstrumentationError('Subscribe flag should be true for group call');
   }
-
+  // throwing error for subscribe flag
   return { subscription: subscribeUserToListV2(message, traitsInfo, destination) };
 };
 
@@ -204,14 +204,9 @@ const processRouter = (inputs, reqMetadata) => {
       batchErrorRespList.push(errRespEvent);
     }
   });
-  const batchedResponseList = batchSubscriptionRequestV2(
-    subscribeRespList,
-    profileRespList,
-    destination,
-  );
+  const batchedResponseList = batchRequestV2(subscribeRespList, profileRespList, destination);
   const trackRespList = getTrackRequests(eventRespList, destination);
 
-  // We are doing to maintain event ordering basically once a user is identified klaviyo does not allow user tracking based upon anonymous_id only
   batchResponseList.push(...trackRespList, ...batchedResponseList);
 
   return { successEvents: batchResponseList, errorEvents: batchErrorRespList };

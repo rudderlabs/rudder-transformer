@@ -33,7 +33,7 @@ describe('responseBuilderSimple', () => {
       name: 'Identify',
     };
 
-    const response = await responseBuilderSimple(message, category, destination);
+    const response = await responseBuilderSimple({ message, destination }, category);
 
     expect(response).toHaveLength(2);
     expect(response[0]).toHaveProperty('endpoint');
@@ -58,7 +58,7 @@ describe('responseBuilderSimple', () => {
     };
 
     try {
-      await responseBuilderSimple(message, category, destination);
+      await responseBuilderSimple({ message, destination }, category);
     } catch (e) {
       expect(e).toBeInstanceOf(ConfigurationError);
       expect(e.message).toBe('Event name is required for track events');
@@ -77,7 +77,7 @@ describe('responseBuilderSimple', () => {
       name: 'Track',
     };
     try {
-      await responseBuilderSimple(message, category, destination);
+      await responseBuilderSimple({ message, destination }, category);
     } catch (e) {
       expect(e).toBeInstanceOf(ConfigurationError);
       expect(e.message).toBe('Event not mapped for this track call');
@@ -96,7 +96,7 @@ describe('responseBuilderSimple', () => {
     };
 
     try {
-      await responseBuilderSimple(message, category, destination);
+      await responseBuilderSimple({ message, destination }, category);
     } catch (e) {
       expect(e).toBeInstanceOf(ConfigurationError);
       expect(e.message).toBe("Event type 'unsupported' not supported");
@@ -116,7 +116,7 @@ describe('responseBuilderSimple', () => {
       name: 'Track',
     };
 
-    const response = await responseBuilderSimple(message, category, destination);
+    const response = await responseBuilderSimple({ message, destination }, category);
     expect(response).toHaveProperty('endpoint');
     expect(response).toHaveProperty('method');
     expect(response).toHaveProperty('body.JSON');

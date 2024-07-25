@@ -20,6 +20,7 @@ const {
   getDestinationExternalIDInfoForRetl,
   getDestinationExternalIDObjectForRetl,
 } = require('../../util');
+const stats = require('../../../util/stats');
 const {
   IDENTIFY_CRM_UPDATE_CONTACT,
   IDENTIFY_CRM_CREATE_NEW_CONTACT,
@@ -68,7 +69,7 @@ const addHsAuthentication = (response, Config) => {
  * @param {*} propertyMap
  * @returns
  */
-const processIdentify = async (message, destination, propertyMap) => {
+const processIdentify = async ({ message, destination, metadata }, propertyMap) => {
   const { Config } = destination;
   let traits = getFieldValueFromMessage(message, 'traits');
   const mappedToDestination = get(message, MappedToDestinationKey);
@@ -125,7 +126,7 @@ const processIdentify = async (message, destination, propertyMap) => {
       response.method = defaultPatchRequestConfig.requestMethod;
     }
 
-    traits = await populateTraits(propertyMap, traits, destination);
+    traits = await populateTraits(propertyMap, traits, destination, metadata);
     response.body.JSON = removeUndefinedAndNullValues({ properties: traits });
     response.source = 'rETL';
     response.operation = operation;
@@ -138,10 +139,10 @@ const processIdentify = async (message, destination, propertyMap) => {
 
     // if contactId is not provided then search
     if (!contactId) {
-      contactId = await searchContacts(message, destination);
+      contactId = await searchContacts(message, destination, metadata);
     }
 
-    const properties = await getTransformedJSON(message, destination, propertyMap);
+    const properties = await getTransformedJSON({ message, destination, metadata }, propertyMap);
 
     const payload = {
       properties,
@@ -187,7 +188,7 @@ const processIdentify = async (message, destination, propertyMap) => {
  * @param {*} destination
  * @returns
  */
-const processTrack = async (message, destination) => {
+const processTrack = async ({ message, destination }) => {
   const { Config } = destination;
 
   let payload = constructPayload(message, mappingConfig[ConfigCategory.TRACK.name]);
@@ -235,10 +236,14 @@ const processTrack = async (message, destination) => {
 
 const batchIdentify = (arrayChunksIdentify, batchedResponseList, batchOperation) => {
   // list of chunks [ [..], [..] ]
+  const { destinationId } = arrayChunksIdentify[0][0].destination;
   arrayChunksIdentify.forEach((chunk) => {
     const identifyResponseList = [];
     const metadata = [];
-
+    // add metric for batch size
+    stats.gauge('hs_batch_size', chunk.length, {
+      destination_id: destinationId,
+    });
     // extracting message, destination value
     // from the first event in a batch
     const { message, destination } = chunk[0];

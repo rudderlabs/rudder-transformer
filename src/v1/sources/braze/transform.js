@@ -3,17 +3,15 @@ const get = require('get-value');
 const path = require('path');
 const fs = require('fs');
 const { TransformationError } = require('@rudderstack/integrations-lib');
-const { formatTimeStamp, removeUndefinedAndNullValues } = require('../../util');
-const Message = require('../message');
+const {
+  formatTimeStamp,
+  removeUndefinedAndNullValues,
+  getHashFromArray,
+} = require('../../../v0/util');
+const Message = require('../../../v0/sources/message');
 
 // import mapping json using JSON.parse to preserve object key order
 const mapping = JSON.parse(fs.readFileSync(path.resolve(__dirname, './mapping.json'), 'utf-8'));
-
-// if we need to map braze event name to something else. blank as of now
-const eventNameMap = JSON.parse(
-  fs.readFileSync(path.resolve(__dirname, './eventMapping.json'), 'utf-8'),
-);
-
 // ignored properties
 // to be deleted from the field `event.properties` as already mapped
 // using mapping.json
@@ -21,7 +19,7 @@ const ignoredProperties = JSON.parse(
   fs.readFileSync(path.resolve(__dirname, './ignore.json'), 'utf-8'),
 );
 
-const processEvent = (event) => {
+const processEvent = (event, eventMapping) => {
   const messageType = 'track';
 
   if (event.event_type) {
@@ -32,7 +30,7 @@ const processEvent = (event) => {
     message.setEventType(messageType);
 
     // set event name
-    const eventName = eventNameMap[eventType] || eventType;
+    const eventName = eventMapping[eventType] || eventType;
     message.setEventName(eventName);
 
     // map event properties based on mapping.json
@@ -68,14 +66,17 @@ const processEvent = (event) => {
   throw new TransformationError('Unknown event type from Braze');
 };
 
-const process = (events) => {
+const process = (inputEvent) => {
+  const { event, source } = inputEvent;
+  const { customMapping } = source.Config;
+  const eventMapping = getHashFromArray(customMapping, 'from', 'to', false);
   const responses = [];
 
   // Ref: Custom Currents Connector Partner Dev Documentation.pdf
-  const eventList = Array.isArray(events) && events.length > 0 ? events[0].events : events.events;
-  eventList.forEach((event) => {
+  const eventList = Array.isArray(event) && event.length > 0 ? event[0].events : event.events;
+  eventList.forEach((singleEvent) => {
     try {
-      const resp = processEvent(event);
+      const resp = processEvent(singleEvent, eventMapping);
       if (resp) {
         responses.push(removeUndefinedAndNullValues(resp));
       }

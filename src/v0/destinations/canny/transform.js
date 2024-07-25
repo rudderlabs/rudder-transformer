@@ -55,7 +55,7 @@ const identifyResponseBuilder = (message, { Config }) => {
   return responseBuilder(responseConfgs);
 };
 
-const getTrackResponse = async (apiKey, message, operationType) => {
+const getTrackResponse = async (apiKey, message, operationType, metadata) => {
   let endpoint;
   let responseBody;
   let contentType;
@@ -70,7 +70,7 @@ const getTrackResponse = async (apiKey, message, operationType) => {
     }
 
     payload.apiKey = apiKey;
-    const voterID = await retrieveUserId(apiKey, message);
+    const voterID = await retrieveUserId(apiKey, message, metadata);
     payload.voterID = voterID;
     endpoint = ConfigCategory.CREATE_VOTE.endpoint;
   } else if (operationType === 'createPost') {
@@ -82,7 +82,7 @@ const getTrackResponse = async (apiKey, message, operationType) => {
     validateCreatePostFields(payload);
 
     payload.apiKey = apiKey;
-    payload.authorID = await retrieveUserId(apiKey, message);
+    payload.authorID = await retrieveUserId(apiKey, message, metadata);
 
     endpoint = ConfigCategory.CREATE_POST.endpoint;
   }
@@ -97,7 +97,7 @@ const getTrackResponse = async (apiKey, message, operationType) => {
   return responseBuilder(responseConfgs);
 };
 
-const trackResponseBuilder = async (message, { Config }) => {
+const trackResponseBuilder = async (message, { Config }, metadata) => {
   const { apiKey, eventsToEvents } = Config;
   const configuredEventsMap = getHashFromArrayWithDuplicate(eventsToEvents);
 
@@ -113,7 +113,7 @@ const trackResponseBuilder = async (message, { Config }) => {
       // eslint-disable-next-line no-restricted-syntax
       for (const destinationEvent of destinationEvents) {
         // eslint-disable-next-line no-await-in-loop
-        const response = await getTrackResponse(apiKey, message, destinationEvent);
+        const response = await getTrackResponse(apiKey, message, destinationEvent, metadata);
         responseArray.push(response);
       }
     }
@@ -122,7 +122,7 @@ const trackResponseBuilder = async (message, { Config }) => {
   return responseArray;
 };
 
-const processEvent = (message, destination) => {
+const processEvent = async (message, destination, metadata) => {
   if (!destination.Config.apiKey) {
     throw new ConfigurationError('API Key is not present. Aborting message.');
   }
@@ -137,7 +137,7 @@ const processEvent = (message, destination) => {
       response = identifyResponseBuilder(message, destination);
       break;
     case EventType.TRACK:
-      response = trackResponseBuilder(message, destination);
+      response = await trackResponseBuilder(message, destination, metadata);
       break;
     default:
       throw new InstrumentationError('Message type not supported');
@@ -145,7 +145,7 @@ const processEvent = (message, destination) => {
   return response;
 };
 
-const process = (event) => processEvent(event.message, event.destination);
+const process = async (event) => processEvent(event.message, event.destination, event.metadata);
 
 const processRouterDest = async (inputs, reqMetadata) => {
   const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);

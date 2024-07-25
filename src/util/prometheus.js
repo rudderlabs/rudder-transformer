@@ -1,7 +1,9 @@
 const prometheusClient = require('prom-client');
 const logger = require('../logger');
+const { MetricsAggregator } = require('./metricsAggregator');
 
 const clusterEnabled = process.env.CLUSTER_ENABLED !== 'false';
+const useMetricsAggregator = process.env.USE_METRICS_AGGREGATOR === 'true';
 const instanceID = process.env.INSTANCE_ID || 'localhost';
 const prefix = 'transformer';
 const defaultLabels = { instanceName: instanceID };
@@ -12,6 +14,9 @@ function appendPrefix(name) {
 
 class Prometheus {
   constructor(enableSummaryMetrics = true) {
+    if (clusterEnabled && useMetricsAggregator) {
+      this.metricsAggregator = new MetricsAggregator(this);
+    }
     this.prometheusRegistry = new prometheusClient.Registry();
     this.prometheusRegistry.setDefaultLabels(defaultLabels);
     prometheusClient.collectDefaultMetrics({
@@ -27,12 +32,26 @@ class Prometheus {
   async metricsController(ctx) {
     ctx.status = 200;
     if (clusterEnabled) {
-      ctx.type = this.aggregatorRegistry.contentType;
-      ctx.body = await this.aggregatorRegistry.clusterMetrics();
+      if (useMetricsAggregator) {
+        ctx.type = this.prometheusRegistry.contentType;
+        ctx.body = await this.metricsAggregator.aggregateMetrics();
+      } else {
+        ctx.type = this.aggregatorRegistry.contentType;
+        ctx.body = await this.aggregatorRegistry.clusterMetrics();
+      }
     } else {
       ctx.type = this.prometheusRegistry.contentType;
       ctx.body = await this.prometheusRegistry.metrics();
     }
+    return ctx.body;
+  }
+
+  async resetMetricsController(ctx) {
+    ctx.status = 200;
+    if (clusterEnabled && useMetricsAggregator) {
+      this.metricsAggregator.resetMetrics();
+    }
+    ctx.body = 'Metrics reset';
     return ctx.body;
   }
 
@@ -189,6 +208,12 @@ class Prometheus {
       metric.set(tags, value);
     } catch (e) {
       logger.error(`Prometheus: Gauge metric ${name} failed with error ${e}. Value: ${value}`);
+    }
+  }
+
+  async shutdown() {
+    if (this.metricsAggregator) {
+      await this.metricsAggregator.shutdown();
     }
   }
 
@@ -475,6 +500,12 @@ class Prometheus {
         name: 'braze_alias_missconfigured_count',
         help: 'braze_alias_missconfigured_count',
         type: 'counter',
+        labelNames: ['destination_id'],
+      },
+      {
+        name: 'hs_batch_size',
+        help: 'hs_batch_size',
+        type: 'gauge',
         labelNames: ['destination_id'],
       },
       {
@@ -811,6 +842,12 @@ class Prometheus {
         ],
       },
       {
+        name: 'user_transform_test_count_total',
+        help: 'user_transform_test_count_total',
+        type: 'counter',
+        labelNames: ['workspaceId', 'transformationId', 'status'],
+      },
+      {
         name: 'user_transform_requests',
         help: 'user_transform_requests',
         type: 'counter',
@@ -867,7 +904,7 @@ class Prometheus {
         name: 'fetch_dns_resolve_time',
         help: 'fetch_dns_resolve_time',
         type: 'histogram',
-        labelNames: ['identifier', 'transformationId', 'workspaceId', 'error'],
+        labelNames: ['identifier', 'transformationId', 'workspaceId', 'error', 'cacheHit'],
       },
       {
         name: 'geo_call_duration',
@@ -929,6 +966,28 @@ class Prometheus {
           'transformationId',
           'workspaceId',
         ],
+      },
+      {
+        name: 'user_transform_used_heap_size',
+        help: 'user_transform_used_heap_size',
+        type: 'summary',
+        labelNames: [
+          'identifier',
+          'testMode',
+          'sourceType',
+          'destinationType',
+          'k8_namespace',
+          'errored',
+          'statusCode',
+          'transformationId',
+          'workspaceId',
+        ],
+      },
+      {
+        name: 'user_transform_reconcile_function',
+        help: 'user_transform_reconcile_function',
+        type: 'counter',
+        labelNames: ['transformationId', 'workspaceId'],
       },
     ];
 

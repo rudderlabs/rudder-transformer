@@ -58,12 +58,13 @@ const salesforceResponseHandler = (destResponse, sourceMessage, authKey, authori
     } else if (
       status === 400 &&
       matchErrorCode('CANNOT_INSERT_UPDATE_ACTIVATE_ENTITY') &&
-      response?.message?.includes('UNABLE_TO_LOCK_ROW')
+      (response?.message?.includes('UNABLE_TO_LOCK_ROW') ||
+        response?.message?.includes('Too many SOQL queries'))
     ) {
       // handling the error case where the record is locked by another background job
       // this is a retryable error
       throw new RetryableError(
-        `${DESTINATION} Request Failed - "Row locked due to another background running on the same object", (Retryable) ${sourceMessage}`,
+        `${DESTINATION} Request Failed - "${response.message}", (Retryable) ${sourceMessage}`,
         500,
         destResponse,
       );
@@ -100,7 +101,7 @@ const salesforceResponseHandler = (destResponse, sourceMessage, authKey, authori
  * Utility method to construct the header to be used for SFDC API calls
  * The "Authorization: Bearer <token>" header element needs to be passed
  * for authentication for all SFDC REST API calls
- * @param {*} destination
+ * @param {destination: Record<string, any>, metadata: Record<string, object>}
  * @returns
  */
 const getAccessTokenOauth = (metadata) => ({
@@ -108,7 +109,7 @@ const getAccessTokenOauth = (metadata) => ({
   instanceUrl: metadata.secret?.instance_url,
 });
 
-const getAccessToken = async (destination) => {
+const getAccessToken = async ({ destination, metadata }) => {
   const accessTokenKey = destination.ID;
 
   return ACCESS_TOKEN_CACHE.get(accessTokenKey, async () => {
@@ -136,6 +137,7 @@ const getAccessToken = async (destination) => {
         endpointPath: '/services/oauth2/token',
         requestMethod: 'POST',
         module: 'router',
+        metadata,
       },
     );
     // If the request fails, throwing error.
@@ -172,7 +174,7 @@ const collectAuthorizationInfo = async (event) => {
     authorizationData = getAccessTokenOauth(event.metadata);
   } else {
     authorizationFlow = LEGACY;
-    authorizationData = await getAccessToken(event.destination);
+    authorizationData = await getAccessToken(event);
   }
   return { authorizationFlow, authorizationData };
 };

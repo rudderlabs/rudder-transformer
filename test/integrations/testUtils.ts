@@ -24,8 +24,10 @@ const generateAlphanumericId = (size = 36) =>
 export const getTestDataFilePaths = (dirPath: string, opts: OptionValues): string[] => {
   const globPattern = join(dirPath, '**', 'data.ts');
   let testFilePaths = globSync(globPattern);
-  if (opts.destination) {
-    testFilePaths = testFilePaths.filter((testFile) => testFile.includes(opts.destination));
+  if (opts.destination || opts.source) {
+    testFilePaths = testFilePaths.filter((testFile) =>
+      testFile.includes(opts.destination || opts.source),
+    );
   }
   if (opts.feature) {
     testFilePaths = testFilePaths.filter((testFile) => testFile.includes(opts.feature));
@@ -573,6 +575,20 @@ export const generateMetadata = (jobId: number): any => {
     workspaceId: 'default-workspaceId',
     secret: {
       accessToken: 'default-accessToken',
+    },
+    dontBatch: false,
+  };
+};
+export const generateGoogleOAuthMetadata = (jobId: number): any => {
+  return {
+    jobId,
+    attemptNum: 1,
+    userId: 'default-userId',
+    sourceId: 'default-sourceId',
+    destinationId: 'default-destinationId',
+    workspaceId: 'default-workspaceId',
+    secret: {
+      access_token: 'default-accessToken', // applicable for google destinations
     },
     dontBatch: false,
   };

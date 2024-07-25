@@ -3,7 +3,11 @@ const GA4_ALLOWED_CONSENT_STATUS = ['GRANTED', 'DENIED'];
 
 const UNSPECIFIED_CONSENT = 'UNSPECIFIED';
 const UNKNOWN_CONSENT = 'UNKNOWN';
-
+const get = require('get-value');
+const {
+  AUTH_STATUS_INACTIVE,
+  REFRESH_TOKEN,
+} = require('../../../adapters/networkhandler/authConstants');
 /**
  * Populates the consent object based on the provided configuration and consent mapping.
  *
@@ -108,6 +112,28 @@ const finaliseAnalyticsConsents = (consentConfigMap, eventLevelConsent = {}) => 
   return consentObj;
 };
 
+const getAuthErrCategory = ({ response, status }) => {
+  if (status === 401) {
+    let respArr = response;
+    if (!Array.isArray(response)) {
+      respArr = [response];
+    }
+    const authenticationError = respArr.map((resp) =>
+      get(resp, 'error.details.0.errors.0.errorCode.authenticationError'),
+    );
+    if (authenticationError.includes('TWO_STEP_VERIFICATION_NOT_ENROLLED')) {
+      // https://developers.google.com/google-ads/api/docs/oauth/2sv
+      return AUTH_STATUS_INACTIVE;
+    }
+    return REFRESH_TOKEN;
+  }
+  if (status === 403) {
+    // ACCESS_DENIED
+    return AUTH_STATUS_INACTIVE;
+  }
+  return '';
+};
+
 module.exports = {
   populateConsentFromConfig,
   UNSPECIFIED_CONSENT,
@@ -115,4 +141,5 @@ module.exports = {
   GOOGLE_ALLOWED_CONSENT_STATUS,
   finaliseConsent,
   finaliseAnalyticsConsents,
+  getAuthErrCategory,
 };

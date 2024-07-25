@@ -21,7 +21,7 @@ const { JSON_MIME_TYPE } = require('../../util/constant');
  * @param {*} destination
  * @returns
  */
-const responseBuilder = async (message, destination) => {
+const responseBuilder = async (message, destination, metadata) => {
   let dspListPayload = {};
   const { Config } = destination;
   const { listData } = message.properties;
@@ -72,7 +72,7 @@ const responseBuilder = async (message, destination) => {
   response.endpoint = `${BASE_ENDPOINT}/traffic/audiences/${ENDPOINTS[audienceType]}/${audienceId}`;
   response.body.JSON = removeUndefinedAndNullValues(dspListPayload);
   response.method = defaultPutRequestConfig.requestMethod;
-  const accessToken = await getAccessToken(destination);
+  const accessToken = await getAccessToken(destination, metadata);
   response.headers = {
     'X-Auth-Token': accessToken,
     'X-Auth-Method': 'OAuth2',
@@ -81,7 +81,7 @@ const responseBuilder = async (message, destination) => {
   return response;
 };
 
-const processEvent = async (message, destination) => {
+const processEvent = async ({ message, destination, metadata }) => {
   let response;
   if (!message.type) {
     throw new InstrumentationError('Event type is required');
@@ -93,14 +93,14 @@ const processEvent = async (message, destination) => {
     throw new InstrumentationError('listData is not present inside properties. Aborting message');
   }
   if (message.type.toLowerCase() === 'audiencelist') {
-    response = await responseBuilder(message, destination);
+    response = await responseBuilder(message, destination, metadata);
   } else {
     throw new InstrumentationError(`Event type ${message.type} is not supported`, 400);
   }
   return response;
 };
 
-const process = async (event) => processEvent(event.message, event.destination);
+const process = async (event) => processEvent(event);
 
 const processRouterDest = async (inputs, reqMetadata) => {
   const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);

@@ -448,8 +448,8 @@ const prepareUserProperties = (message, piiPropertiesToIgnore = []) => {
  * @param {*} message
  * @returns
  */
-const prepareUserConsents = (message) => {
-  const integrationObj = getIntegrationsObj(message, 'ga4') || {};
+const prepareUserConsents = (message, destType = 'ga4') => {
+  const integrationObj = getIntegrationsObj(message, destType) || {};
   const eventLevelConsentsData = integrationObj?.consents || {};
   const consentConfigMap = {
     analyticsPersonalizationConsent: 'ad_user_data',
@@ -474,11 +474,11 @@ const basicValidation = (event) => {
  * @param {*} message
  * @returns
  */
-const getGA4ClientId = (message, Config) => {
+const getGA4ClientId = (message, Config, destType) => {
   let clientId;
 
   if (isHybridModeEnabled(Config)) {
-    const integrationsObj = getIntegrationsObj(message, 'ga4');
+    const integrationsObj = getIntegrationsObj(message, destType);
     if (integrationsObj?.clientId) {
       clientId = integrationsObj.clientId;
     }
@@ -494,14 +494,14 @@ const getGA4ClientId = (message, Config) => {
   return clientId;
 };
 
-const addClientDetails = (payload, message, Config) => {
+const addClientDetails = (payload, message, Config, destType = 'ga4') => {
   const { typesOfClient } = Config;
   const rawPayload = cloneDeep(payload);
   switch (typesOfClient) {
     case 'gtag':
       // gtag.js uses client_id
       // GA4 uses it as an identifier to distinguish site visitors.
-      rawPayload.client_id = getGA4ClientId(message, Config);
+      rawPayload.client_id = getGA4ClientId(message, Config, destType);
       if (!isDefinedAndNotNull(rawPayload.client_id)) {
         throw new ConfigurationError('ga4ClientId, anonymousId or messageId must be provided');
       }
@@ -581,6 +581,16 @@ const basicConfigvalidaiton = (Config) => {
   }
 };
 
+const addSessionDetailsForHybridMode = (ga4Payload, message, Config, destType = 'ga4') => {
+  const integrationsObj = getIntegrationsObj(message, destType);
+  if (isHybridModeEnabled(Config) && integrationsObj?.sessionId) {
+    ga4Payload.events[0].params.session_id = `${integrationsObj.sessionId}`;
+  }
+  if (integrationsObj?.sessionNumber) {
+    ga4Payload.events[0].params.session_number = integrationsObj.sessionNumber;
+  }
+};
+
 module.exports = {
   addClientDetails,
   basicValidation,
@@ -603,4 +613,5 @@ module.exports = {
   GA4_RESERVED_PARAMETER_EXCLUSION,
   removeReservedParameterPrefixNames,
   GA4_RESERVED_USER_PROPERTY_EXCLUSION,
+  addSessionDetailsForHybridMode,
 };

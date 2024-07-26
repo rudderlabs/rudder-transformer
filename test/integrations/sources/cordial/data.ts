@@ -35,6 +35,7 @@ export const data = [
                 cID: '6690fe3655e334xx028xxx',
               },
               event: {
+                _id: '669141857b8cxxx1ba0da2xx',
                 cID: '6690fe3655e334xx028xxx',
                 ts: '2024-07-12T14:45:25+00:00',
                 ats: '2024-07-12T14:45:25+0000',
@@ -112,6 +113,7 @@ export const data = [
                   event: 'browse',
                   originalTimestamp: '2024-07-12T14:45:25+00:00',
                   properties: {
+                    event_id: '669141857b8cxxx1ba0da2xx',
                     category: 'Shirts',
                     url: 'http://example.com/shirts',
                     description: 'A really cool khaki shirt.',
@@ -174,6 +176,7 @@ export const data = [
                   cID: '633b2fd70a12be027e0b0xxx',
                 },
                 event: {
+                  _id: '66a0b2ce5344b55fxxxc5a64',
                   cID: '633b2fd70a12be027e0b0xxx',
                   ts: '2024-07-24T07:52:46+00:00',
                   ats: '2024-07-24T07:52:39+0000',
@@ -188,6 +191,13 @@ export const data = [
                       lon: 21.009017944335938,
                     },
                     tz: 'Europe/Warsaw',
+                  },
+                  d: {
+                    type: 'computer',
+                    device: 'Macintosh',
+                    platform: 'OS X',
+                    browser: 'Chrome',
+                    robot: false,
                   },
                   a: 'browse',
                   UID: '471af949fffe749c2ebfxxx950ea73c',
@@ -229,6 +239,7 @@ export const data = [
                   cID: '633b2fd12312be027e0b0xxx',
                 },
                 event: {
+                  _id: '66aku0b2ce527b55fx1xc5a64',
                   cID: '633b2fd12312be027e0b0xxx',
                   ts: '2024-07-24T07:52:46+00:00',
                   ats: '2024-07-24T07:52:39+0000',
@@ -243,6 +254,13 @@ export const data = [
                       lon: 21.009017944335938,
                     },
                     tz: 'Europe/Warsaw',
+                  },
+                  d: {
+                    type: 'computer',
+                    device: 'Macintosh',
+                    platform: 'OS X',
+                    browser: 'Chrome',
+                    robot: false,
                   },
                   a: 'browse',
                   UID: '471af949fffe74sdh382ebfxxx950ea73c',
@@ -311,6 +329,13 @@ export const data = [
                       lastModified: '2024-07-24T07:52:46+0000',
                       cID: '633b2fd70a12be027e0b0xxx',
                     },
+                    device: {
+                      type: 'computer',
+                      device: 'Macintosh',
+                      platform: 'OS X',
+                      browser: 'Chrome',
+                      robot: false,
+                    },
                     externalId: [{ id: '633b2fd70a12be027e0b0xxx', type: 'cordialContactId' }],
                   },
                   integrations: {
@@ -319,6 +344,7 @@ export const data = [
                   type: 'track',
                   event: 'browse',
                   properties: {
+                    event_id: '66a0b2ce5344b55fxxxc5a64',
                     url: 'https://aaff-008.dx.commercecloud.salesforce.com/s/UGG-US/cart',
                     product_item_group_id: ['1094269'],
                     product_category: ['allproducts'],
@@ -385,6 +411,13 @@ export const data = [
                       lastModified: '2024-07-24T07:52:46+0000',
                       cID: '633b2fd12312be027e0b0xxx',
                     },
+                    device: {
+                      type: 'computer',
+                      device: 'Macintosh',
+                      platform: 'OS X',
+                      browser: 'Chrome',
+                      robot: false,
+                    },
                     externalId: [{ id: '633b2fd12312be027e0b0xxx', type: 'cordialContactId' }],
                   },
                   integrations: {
@@ -393,6 +426,7 @@ export const data = [
                   type: 'track',
                   event: 'browse',
                   properties: {
+                    event_id: '66aku0b2ce527b55fx1xc5a64',
                     url: 'https://aaff-008.dx.commercecloud.salesforce.com/s/UGG-US/cart',
                     product_item_group_id: ['1094269'],
                     product_category: ['allproducts'],
@@ -469,8 +503,16 @@ export const data = [
                 lastModified: '2024-07-12T13:00:49+0000',
               },
               event: {
+                _id: '669141857b8cxxx1ba0da2x1',
                 ts: '2024-07-12T14:45:25+00:00',
                 ats: '2024-07-12T14:45:25+0000',
+                d: {
+                  type: 'computer',
+                  device: false,
+                  platform: false,
+                  browser: false,
+                  robot: true,
+                },
                 a: 'browse',
                 tzo: -7,
                 rl: 'a',
@@ -535,6 +577,13 @@ export const data = [
                       lastUpdateSource: 'api',
                       lastModified: '2024-07-12T13:00:49+0000',
                     },
+                    device: {
+                      type: 'computer',
+                      device: false,
+                      platform: false,
+                      browser: false,
+                      robot: true,
+                    },
                     externalId: [],
                   },
                   integrations: {
@@ -544,6 +593,7 @@ export const data = [
                   event: 'browse',
                   originalTimestamp: '2024-07-12T14:45:25+00:00',
                   properties: {
+                    event_id: '669141857b8cxxx1ba0da2x1',
                     category: 'Shirts',
                     url: 'http://example.com/shirts',
                     description: 'A really cool khaki shirt.',

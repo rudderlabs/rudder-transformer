@@ -36,6 +36,9 @@ const processEvent = (inputPaylaod) => {
     ...inputPaylaod.event,
   };
   delete message.properties.properties;
+  delete message.properties.d;
+  // eslint-disable-next-line no-underscore-dangle
+  delete message.properties._id;
   return message;
 };
 

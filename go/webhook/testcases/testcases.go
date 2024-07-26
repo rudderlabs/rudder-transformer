@@ -33,7 +33,7 @@ type Input struct {
 }
 type Request struct {
 	Method   string
-	RawQuery string `json:"query"`
+	RawQuery string `json:"query_parameters"`
 	Headers  map[string]string
 	Body     json.RawMessage
 }

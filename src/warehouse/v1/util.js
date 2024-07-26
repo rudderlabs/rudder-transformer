@@ -159,7 +159,6 @@ function toBlendoCase(name = '') {
 }
 
 function transformTableName(options, name = '') {
-
   let customTableName = eventNameTableMap[options.destinationId]?.[name];
   if (customTableName) {
     return customTableName;
@@ -170,6 +169,11 @@ function transformTableName(options, name = '') {
 }
 
 function transformColumnName(options, name = '') {
+  let customTableName = eventNameTableMap[options.destinationId]?.[name];
+  if (customTableName) {
+    return customTableName;
+  }
+
   const { provider } = options;
   const useBlendoCasing = options.integrationOptions?.useBlendoCasing || false;
   return useBlendoCasing

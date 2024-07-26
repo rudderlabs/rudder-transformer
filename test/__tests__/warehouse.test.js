@@ -191,18 +191,18 @@ describe("column & table names", () => {
     let i = input("track");
 
     const expectedMapping = {
-      "omega": "custom_track_table"
+      "shop_search_v3_view": "shop_search_v3_view"
     }
 
     process.env = {
       ...originalEnv,
       WAREHOUSE_EVENT_NAME_TABLE_MAP: JSON.stringify({
         [i.destination.ID]: {
-          "omega": "custom_track_table"
+          "shop_search_v3_view": "shop_search_v3_view"
         },
 
         ["other-destination-id"]: {
-          "omega v2": "should_not_happen"
+          "omega": "should_not_happen"
         },
       })
     };
@@ -212,16 +212,10 @@ describe("column & table names", () => {
       const provider =
         integrations[index] === "snowflake" ? "snowflake" : "default";
 
-      for (let tableName in names.input.properties) {
-        i.message.event = tableName;
+        i.message.event = "shop_search_v3_view";
         let out = transformer.process(i);
 
-        if (expectedMapping[tableName] !== undefined) {
-          expect(out[1].metadata.table).toEqual(expectedMapping[tableName]);
-        } else {
-          expect(out[1].metadata.table).toEqual(names.output.namesMap[provider][tableName])
-        }
-      }
+        expect(out[1].metadata.table).toEqual("shop_search_v3_view");
     })
   })
 

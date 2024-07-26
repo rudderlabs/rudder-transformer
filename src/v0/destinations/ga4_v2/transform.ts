@@ -5,7 +5,7 @@ import {
 } from '@rudderstack/integrations-lib';
 import { ProcessorTransformationRequest } from '../../../types';
 import { handleCustomMappings } from './customMappingsHandler';
-import { process as ga4Process } from '../ga4/transform';
+import { processEvents as ga4Process } from '../ga4/transform';
 import { basicConfigvalidaiton } from '../ga4/utils';
 
 export function process(event: ProcessorTransformationRequest) {
@@ -30,7 +30,7 @@ export function process(event: ProcessorTransformationRequest) {
   }
 
   if (eventPayload.type !== 'track') {
-    return ga4Process(event);
+    return ga4Process({ event, destType: 'ga4_v2' });
   }
 
   basicConfigvalidaiton(Config);

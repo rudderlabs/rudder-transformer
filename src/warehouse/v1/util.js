@@ -6,6 +6,8 @@ const { TransformationError } = require('@rudderstack/integrations-lib');
 
 let eventNameTableMap = JSON.parse(process.env.WAREHOUSE_EVENT_NAME_TABLE_MAP ?? '{}');
 
+console.log('load eventNameTableMap', eventNameTableMap);
+
 function safeTableName(options, name = '') {
   const { provider } = options;
   const skipReservedKeywordsEscaping =

@@ -159,6 +159,12 @@ function toBlendoCase(name = '') {
 }
 
 function transformTableName(options, name = '') {
+
+  let customTableName = eventNameTableMap[options.destinationId]?.[name];
+  if (customTableName) {
+    return customTableName;
+  }
+
   const useBlendoCasing = options.integrationOptions?.useBlendoCasing || false;
   return useBlendoCasing ? toBlendoCase(name) : transformName('', name);
 }

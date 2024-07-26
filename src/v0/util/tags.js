@@ -24,7 +24,6 @@ const MODULES = {
 
 const IMPLEMENTATIONS = {
   NATIVE: 'native',
-  CDK_V1: 'cdkV1',
   CDK_V2: 'cdkV2',
 };
 

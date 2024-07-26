@@ -77,7 +77,7 @@
           "Name": "ZAPIER",
           "DisplayName": "Zapier",
           "Config": {
-            "cdkEnabled": true,
+            "cdkV2Enabled": true,
             "destConfig": {
               "defaultConfig": ["zapUrl", "trackEventsToZap", "pageScreenEventsToZap"]
             },

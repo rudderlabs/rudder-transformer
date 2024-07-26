@@ -7,7 +7,6 @@ export type ContextBodySimple = {
   destType: string;
 };
 export interface Config {
-  cdkEnabled?: boolean;
   cdkV2Enabled?: boolean;
   comparisonTestEnabeld?: boolean;
   comparisonService?: string;

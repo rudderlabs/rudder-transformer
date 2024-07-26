@@ -25,7 +25,9 @@ export const getTestDataFilePaths = (dirPath: string, opts: OptionValues): strin
   const globPattern = join(dirPath, '**', 'data.ts');
   let testFilePaths = globSync(globPattern);
   if (opts.destination) {
-    testFilePaths = testFilePaths.filter((testFile) => testFile.includes(opts.destination));
+    testFilePaths = testFilePaths.filter((testFile) =>
+      testFile.includes(`/destinations/${opts.destination}/`),
+    );
   }
   if (opts.feature) {
     testFilePaths = testFilePaths.filter((testFile) => testFile.includes(opts.feature));

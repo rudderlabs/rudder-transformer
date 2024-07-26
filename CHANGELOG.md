@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.72.4](https://github.com/rudderlabs/rudder-transformer/compare/v1.72.3...v1.72.4) (2024-07-25)
+
+
+### Bug Fixes
+
+* added support for ga4 v2 hybrid mode ([#3586](https://github.com/rudderlabs/rudder-transformer/issues/3586)) ([dedca07](https://github.com/rudderlabs/rudder-transformer/commit/dedca0796ee12478d57e020ef3c254afabc6e105))
+
 ### [1.72.3](https://github.com/rudderlabs/rudder-transformer/compare/v1.72.2...v1.72.3) (2024-07-24)
 
 

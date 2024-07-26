@@ -69,7 +69,7 @@ const addHsAuthentication = (response, Config) => {
  * @param {*} propertyMap
  * @returns
  */
-const processIdentify = async (message, destination, propertyMap) => {
+const processIdentify = async ({ message, destination, metadata }, propertyMap) => {
   const { Config } = destination;
   let traits = getFieldValueFromMessage(message, 'traits');
   const mappedToDestination = get(message, MappedToDestinationKey);
@@ -126,7 +126,7 @@ const processIdentify = async (message, destination, propertyMap) => {
       response.method = defaultPatchRequestConfig.requestMethod;
     }
 
-    traits = await populateTraits(propertyMap, traits, destination);
+    traits = await populateTraits(propertyMap, traits, destination, metadata);
     response.body.JSON = removeUndefinedAndNullValues({ properties: traits });
     response.source = 'rETL';
     response.operation = operation;
@@ -139,10 +139,10 @@ const processIdentify = async (message, destination, propertyMap) => {
 
     // if contactId is not provided then search
     if (!contactId) {
-      contactId = await searchContacts(message, destination);
+      contactId = await searchContacts(message, destination, metadata);
     }
 
-    const properties = await getTransformedJSON(message, destination, propertyMap);
+    const properties = await getTransformedJSON({ message, destination, metadata }, propertyMap);
 
     const payload = {
       properties,
@@ -188,7 +188,7 @@ const processIdentify = async (message, destination, propertyMap) => {
  * @param {*} destination
  * @returns
  */
-const processTrack = async (message, destination) => {
+const processTrack = async ({ message, destination }) => {
   const { Config } = destination;
 
   let payload = constructPayload(message, mappingConfig[ConfigCategory.TRACK.name]);

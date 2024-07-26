@@ -179,7 +179,7 @@ const CURRENCY_CODES = [
   'zwl',
 ];
 
-const getSubscriptionHistory = async (endpoint, options) => {
+const getSubscriptionHistory = async (endpoint, options, metadata) => {
   const requestOptions = {
     method: 'get',
     ...options,
@@ -191,6 +191,7 @@ const getSubscriptionHistory = async (endpoint, options) => {
     endpointPath: '/users/userId',
     requestMethod: 'GET',
     module: 'router',
+    metadata,
   });
   return res;
 };

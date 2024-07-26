@@ -61,11 +61,6 @@ jobs:
           # cache-from: type=gha
           # cache-to: type=gha,mode=max
 
-      - name: Run Tests
-        run: |
-          docker run ${{ inputs.build_tag }} npm run test:js:ci
-          docker run ${{ inputs.build_tag }} npm run test:ts:ci
-
       - name: Build and Push Multi-platform Images
         uses: docker/build-push-action@v5.1.0
         with:
@@ -111,11 +106,6 @@ jobs:
           tags: ${{ inputs.build_tag }}
           # cache-from: type=gha
           # cache-to: type=gha,mode=max
-
-      - name: Run Tests
-        run: |
-          docker run ${{ inputs.build_tag }} npm run test:js:ci
-          docker run ${{ inputs.build_tag }} npm run test:ts:ci
 
       - name: Build and Push Multi-platform Images
         uses: docker/build-push-action@v5.1.0

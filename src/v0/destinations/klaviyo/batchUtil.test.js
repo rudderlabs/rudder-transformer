@@ -46,7 +46,10 @@ describe('populateArrWithRespectiveProfileData', () => {
       { profiles: [], metadataList: [{ jobId: '1' }], subscriptions: [] },
       { profiles: [], metadataList: [{ jobId: '2' }], subscriptions: [] },
     ];
-    const metadataIndexMap = { 1: 0, 2: 1 };
+    const metadataIndexMap = new Map([
+      ['1', 0],
+      ['2', 1],
+    ]);
     const profiles = [
       { payload: { name: 'John' }, metadata: { jobId: '1' } },
       { payload: { name: 'Doe' }, metadata: { jobId: '2' } },
@@ -65,7 +68,7 @@ describe('populateArrWithRespectiveProfileData', () => {
   // Handles empty profileSubscriptionAndMetadataArr input
   it('should handle empty profileSubscriptionAndMetadataArr input', () => {
     const profileSubscriptionAndMetadataArr = [];
-    const metadataIndexMap = {};
+    const metadataIndexMap = new Map();
     const profiles = [{ payload: { name: 'John' }, metadata: { jobId: '1' } }];
 
     const result = populateArrWithRespectiveProfileData(

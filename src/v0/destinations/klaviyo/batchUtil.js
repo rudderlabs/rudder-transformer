@@ -1,9 +1,5 @@
 const lodash = require('lodash');
-const {
-  defaultBatchRequestConfig,
-  getSuccessRespEvents,
-  isDefinedAndNotNull,
-} = require('../../util');
+const { defaultRequestConfig, getSuccessRespEvents, isDefinedAndNotNull } = require('../../util');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 const { BASE_ENDPOINT, CONFIG_CATEGORIES, MAX_BATCH_SIZE, revision } = require('./config');
 const { buildRequest, getSubscriptionPayload } = require('./util');
@@ -32,53 +28,49 @@ const groupSubscribeResponsesUsingListIdV2 = (subscribeResponseList) => {
  * subscription= {listId, subscriptionProfileList}
  */
 const generateBatchedSubscriptionRequest = (subscription, destination) => {
-  const batchEventResponse = defaultBatchRequestConfig();
-  // if( !isDefinedAndNotNull(subscription) )
+  const subscriptionPayloadResponse = defaultRequestConfig();
   // fetching listId from first event as listId is same for all the events
   const profiles = []; // list of profiles to be subscribed
   const { listId, subscriptionProfileList } = subscription;
   subscriptionProfileList.forEach((profileList) => profiles.push(...profileList));
-  batchEventResponse.batchedRequest.body.JSON = getSubscriptionPayload(listId, profiles);
-  batchEventResponse.batchedRequest.endpoint = `${BASE_ENDPOINT}/api/profile-subscription-bulk-create-jobs`;
-  batchEventResponse.batchedRequest.headers = {
+  subscriptionPayloadResponse.body.JSON = getSubscriptionPayload(listId, profiles);
+  subscriptionPayloadResponse.endpoint = `${BASE_ENDPOINT}/api/profile-subscription-bulk-create-jobs`;
+  subscriptionPayloadResponse.headers = {
     Authorization: `Klaviyo-API-Key ${destination.Config.privateApiKey}`,
     'Content-Type': JSON_MIME_TYPE,
     Accept: JSON_MIME_TYPE,
     revision,
   };
-  return batchEventResponse.batchedRequest;
+  return subscriptionPayloadResponse;
 };
 
 /**
- * This function updates batchedRequest with profile requests
+ * This function generates requests using profiles array and returns an array of all these requests
  * @param {*} profiles
- * @param {*} batchedRequest
  * @param {*} destination
  */
-const updateBatchEventResponseWithProfileRequests = (profiles, batchedRequest, destination) => {
-  const profilesRequests = [];
-  profiles.forEach((profile) => {
-    profilesRequests.push(buildRequest(profile, destination, CONFIG_CATEGORIES.IDENTIFYV2));
-  });
-  // we are keeping profiles request prior to subscription ones as first profile creation and then subscription should happen
-  batchedRequest.unshift(...profilesRequests);
+const getProfileRequests = (profiles, destination) => {
+  const profilePayloadResponses = profiles.map((profile) =>
+    buildRequest(profile, destination, CONFIG_CATEGORIES.IDENTIFYV2),
+  );
+  return profilePayloadResponses;
 };
 
 /**
  * this function populates profileSubscriptionAndMetadataArr with respective profiles based upon common metadata
  * @param {*} profileSubscriptionAndMetadataArr
- * @param {*} metadataIndexMap
+ * @param {*} metaDataIndexMap
  * @param {*} profiles
  * @returns updated profileSubscriptionAndMetadataArr obj
  */
 const populateArrWithRespectiveProfileData = (
   profileSubscriptionAndMetadataArr,
-  metadataIndexMap,
+  metaDataIndexMap,
   profiles,
 ) => {
-  const updatedPSMArr = profileSubscriptionAndMetadataArr;
+  const updatedPSMArr = lodash.cloneDeep(profileSubscriptionAndMetadataArr);
   profiles.forEach((profile) => {
-    const index = metadataIndexMap[profile.metadata.jobId];
+    const index = metaDataIndexMap.get(profile.metadata.jobId);
     if (isDefinedAndNotNull(index)) {
       // using isDefinedAndNotNull as index can be 0
       updatedPSMArr[index].profiles.push(profile.payload);
@@ -119,24 +111,31 @@ const buildRequestsForProfileSubscriptionAndMetadataArr = (
   profileSubscriptionAndMetadataArr,
   destination,
 ) => {
-  const batchedResponseList = [];
-  profileSubscriptionAndMetadataArr.forEach((input) => {
+  const finalResponseList = [];
+  profileSubscriptionAndMetadataArr.forEach((profileSubscriptionData) => {
     const batchedRequest = [];
-    if (input.subscription) {
-      batchedRequest.push(generateBatchedSubscriptionRequest(input.subscription, destination));
+    // we are keeping profiles request prior to subscription ones as first profile creation and then subscription should happen
+    if (profileSubscriptionData.profiles.length > 0) {
+      batchedRequest.push(...getProfileRequests(profileSubscriptionData.profiles, destination));
     }
-    updateBatchEventResponseWithProfileRequests(input.profiles, batchedRequest, destination);
-    batchedResponseList.push(
-      getSuccessRespEvents(batchedRequest, input.metadataList, destination, true),
+
+    if (profileSubscriptionData.subscription?.subscriptionProfileList?.length > 0) {
+      batchedRequest.push(
+        generateBatchedSubscriptionRequest(profileSubscriptionData.subscription, destination),
+      );
+    }
+
+    finalResponseList.push(
+      getSuccessRespEvents(batchedRequest, profileSubscriptionData.metadataList, destination, true),
     );
   });
-  return batchedResponseList;
+  return finalResponseList;
 };
 
 const batchRequestV2 = (subscribeRespList, profileRespList, destination) => {
   const subscribeEventGroups = groupSubscribeResponsesUsingListIdV2(subscribeRespList);
   let profileSubscriptionAndMetadataArr = [];
-  const metadataIndexMap = {};
+  const metaDataIndexMap = new Map();
   Object.keys(subscribeEventGroups).forEach((listId) => {
     // eventChunks = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
     const eventChunks = lodash.chunk(subscribeEventGroups[listId], MAX_BATCH_SIZE);
@@ -149,7 +148,7 @@ const batchRequestV2 = (subscribeRespList, profileRespList, destination) => {
       const jobIdList = metadataList.map((metadata) => metadata.jobId);
       // push the jobId: index to metadataIndex mapping which let us know the metadata respective payload index position in batched request
       jobIdList.forEach((jobId) => {
-        metadataIndexMap[jobId] = index;
+        metaDataIndexMap.set(jobId, index);
       });
       profileSubscriptionAndMetadataArr.push({
         subscription: { subscriptionProfileList, listId },
@@ -160,7 +159,7 @@ const batchRequestV2 = (subscribeRespList, profileRespList, destination) => {
   });
   profileSubscriptionAndMetadataArr = populateArrWithRespectiveProfileData(
     profileSubscriptionAndMetadataArr,
-    metadataIndexMap,
+    metaDataIndexMap,
     profileRespList,
   );
   /* Till this point I have a profileSubscriptionAndMetadataArr 

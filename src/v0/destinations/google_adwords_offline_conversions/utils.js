@@ -16,7 +16,6 @@ const {
   getFieldValueFromMessage,
   isDefinedAndNotNullAndNotEmpty,
   isDefinedAndNotNull,
-  getAuthErrCategoryFromStCode,
   getAccessToken,
   getIntegrationsObj,
 } = require('../../util');
@@ -34,7 +33,7 @@ const {
 const { processAxiosResponse } = require('../../../adapters/utils/networkUtils');
 const Cache = require('../../util/cache');
 const helper = require('./helper');
-const { finaliseConsent } = require('../../util/googleUtils');
+const { finaliseConsent, getAuthErrCategory } = require('../../util/googleUtils');
 
 const conversionActionIdCache = new Cache(CONVERSION_ACTION_ID_CACHE_TTL);
 
@@ -86,7 +85,7 @@ const getConversionActionId = async ({ headers, params, metadata }) => {
         )} during google_ads_offline_conversions response transformation`,
         status,
         response,
-        getAuthErrCategoryFromStCode(get(searchStreamResponse, 'status')),
+        getAuthErrCategory(searchStreamResponse),
       );
     }
     const conversionAction = get(

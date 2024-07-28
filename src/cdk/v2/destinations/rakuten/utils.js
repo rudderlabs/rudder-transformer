@@ -57,7 +57,11 @@ const constructLineItems = (properties) => {
     if (!product?.amount && !product?.price) {
       throw new InstrumentationError('Either amount or price is required for every product');
     }
-    return product.amount * 100 || (product.quantity || 1) * 100 * product.price;
+
+    if (product.price) {
+      return product.quantity * product.price * 100;
+    }
+    return product.amount * 100;
   });
   productList.amtlist = amountList.join('|');
   return productList;

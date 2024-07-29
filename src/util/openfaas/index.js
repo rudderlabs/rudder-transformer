@@ -47,6 +47,7 @@ const FAAS_AST_FN_NAME = 'fn-ast';
 const CUSTOM_NETWORK_POLICY_WORKSPACE_IDS = process.env.CUSTOM_NETWORK_POLICY_WORKSPACE_IDS || '';
 const customNetworkPolicyWorkspaceIds = CUSTOM_NETWORK_POLICY_WORKSPACE_IDS.split(',');
 const CUSTOMER_TIER = process.env.CUSTOMER_TIER || 'shared';
+const FAAS_DNS_RESOLVER = process.env.FAAS_DNS_RESOLVER || 'false';
 
 // Initialise node cache
 const functionListCache = new NodeCache();
@@ -304,6 +305,7 @@ function buildOpenfaasFn(name, code, versionId, libraryVersionIDs, testMode, trM
   const envVars = {
     GUNICORN_WORKER_COUNT: FAAS_GUNICORN_WORKERS,
     GUNICORN_THREAD_COUNT: FAAS_GUNICORN_THREADS,
+    dns_resolver: FAAS_DNS_RESOLVER,
   };
 
   if (FAAS_ENABLE_WATCHDOG_ENV_VARS.trim().toLowerCase() === 'true') {

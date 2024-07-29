@@ -553,15 +553,11 @@ const getCompanyId = async (company, destination) => {
  * Api call to detach contact and company for intercom api version v2 (version 2.10)
  * Ref doc: https://developers.intercom.com/docs/references/2.10/rest-api/api.intercom.io/contacts/detachcontactfromacompany
  * @param {*} contactId
- * @param {*} message
+ * @param {*} company
  * @param {*} destination
  * @returns
  */
-const detachContactAndCompany = async (contactId, message, destination) => {
-  const company = message?.traits?.company || message?.context?.traits?.company;
-  if (!company || !company.remove) return;
-
-  // Detaching company when company.remove : true
+const detachContactAndCompany = async (contactId, company, destination) => {
   const companyId = await getCompanyId(company, destination);
   if (!companyId) return;
 

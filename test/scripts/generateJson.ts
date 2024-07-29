@@ -64,6 +64,17 @@ function getErrorResponse(outputResponse?: responseType) {
   return errorResponse;
 }
 
+function getSourceRequestBody(testCase: any, version?: string) {
+  const bodyElement =
+    testCase.input.request.body.length === 1
+      ? testCase.input.request.body[0]
+      : testCase.input.request.body;
+  if (version === 'v0') {
+    return bodyElement;
+  }
+  return { ...bodyElement.event, source: bodyElement.source };
+}
+
 function generateSources(outputFolder: string, options: OptionValues) {
   const rootDir = __dirname;
   const resolvedpath = path.resolve(rootDir, '../integrations/sources');
@@ -71,8 +82,8 @@ function generateSources(outputFolder: string, options: OptionValues) {
   const files = getTestDataFilePaths(resolvedpath, options);
 
   files.forEach((testDataPath) => {
-    let testData = getTestData(testDataPath);
-    testData.forEach((testCase) => {
+    const testData = getTestData(testDataPath);
+    testData.forEach(({ version, ...testCase }) => {
       let statusCode: number = getStatusCode(testCase.output.response);
 
       let responseBody: any = 'OK';
@@ -112,10 +123,7 @@ function generateSources(outputFolder: string, options: OptionValues) {
         input: {
           request: {
             query: JSON.stringify(testCase.input.request.params),
-            body:
-              testCase.input.request.body.length === 1
-                ? testCase.input.request.body[0]
-                : testCase.input.request.body,
+            body: getSourceRequestBody(testCase, version),
             headers: testCase.input.request.headers || {
               'Content-Type': 'application/json',
             },

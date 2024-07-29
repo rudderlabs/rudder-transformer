@@ -11,7 +11,7 @@ export const data = [
     description: 'event mapping done in UI',
     module: 'source',
     version: 'v1',
-    skipGo: 'FIXME',
+    skipGo: 'Custom source config',
     input: {
       request: {
         body: [
@@ -94,7 +94,7 @@ export const data = [
     description: 'The event is not mapped in the UI',
     module: 'source',
     version: 'v1',
-    skipGo: 'FIXME',
+
     input: {
       request: {
         body: [
@@ -177,7 +177,7 @@ export const data = [
     description: 'users.messages.inappmessage.Click event',
     module: 'source',
     version: 'v1',
-    skipGo: 'FIXME',
+
     input: {
       request: {
         body: [
@@ -278,7 +278,7 @@ export const data = [
     description: 'users.messages.pushnotification.Send event',
     module: 'source',
     version: 'v1',
-    skipGo: 'FIXME',
+
     input: {
       request: {
         body: [
@@ -374,7 +374,7 @@ export const data = [
     description: 'users.messages.email.Open event',
     module: 'source',
     version: 'v1',
-    skipGo: 'FIXME',
+
     input: {
       request: {
         body: [
@@ -470,7 +470,7 @@ export const data = [
     description: 'users.messages.sms.Delivery send',
     module: 'source',
     version: 'v1',
-    skipGo: 'FIXME',
+
     input: {
       request: {
         body: [
@@ -564,7 +564,7 @@ export const data = [
     description: 'users.messages.inappmessage.Click event',
     module: 'source',
     version: 'v1',
-    skipGo: 'FIXME',
+
     input: {
       request: {
         body: [
@@ -667,7 +667,7 @@ export const data = [
     description: 'users.messages.pushnotification.Send event',
     module: 'source',
     version: 'v1',
-    skipGo: 'FIXME',
+
     input: {
       request: {
         body: [
@@ -765,7 +765,7 @@ export const data = [
     description: 'users.messages.email.Open event',
     module: 'source',
     version: 'v1',
-    skipGo: 'FIXME',
+
     input: {
       request: {
         body: [
@@ -863,7 +863,7 @@ export const data = [
     description: 'users.messages.sms.Delivery event',
     module: 'source',
     version: 'v1',
-    skipGo: 'FIXME',
+
     input: {
       request: {
         body: [
@@ -959,7 +959,7 @@ export const data = [
     description: 'users.behaviors.CustomEvent any custom event',
     module: 'source',
     version: 'v1',
-    skipGo: 'FIXME',
+
     input: {
       request: {
         body: [
@@ -1068,7 +1068,7 @@ export const data = [
     description: 'users.behaviors.Purchase event',
     module: 'source',
     version: 'v1',
-    skipGo: 'FIXME',
+
     input: {
       request: {
         body: [
@@ -1181,7 +1181,7 @@ export const data = [
     description: 'users.behaviors.app.SessionStart event',
     module: 'source',
     version: 'v1',
-    skipGo: 'FIXME',
+
     input: {
       request: {
         body: [

@@ -6,7 +6,7 @@ const {
   InstrumentationError,
 } = require('@rudderstack/integrations-lib');
 const tags = require('../../../../v0/util/tags');
-const { httpPOST, httpGET, httpDELETE } = require('../../../../adapters/network');
+const { httpPOST, handleHttpRequest } = require('../../../../adapters/network');
 const {
   processAxiosResponse,
   getDynamicErrorType,
@@ -533,7 +533,8 @@ const getCompanyId = async (company, destination) => {
     module: 'router',
   };
 
-  const response = await httpGET(
+  const { processedResponse: response } = await handleHttpRequest(
+    'GET',
     endpoint,
     {
       headers,
@@ -541,11 +542,10 @@ const getCompanyId = async (company, destination) => {
     statTags,
   );
 
-  const processedResponse = processAxiosResponse(response);
-  if (isHttpStatusSuccess(processedResponse.status)) {
-    return processedResponse.response.id;
+  if (isHttpStatusSuccess(response.status)) {
+    return response.response.id;
   }
-  intercomErrorHandler('Unable to get company id due to', processedResponse);
+  intercomErrorHandler('Unable to get company id due to', response);
   return undefined;
 };
 
@@ -577,7 +577,8 @@ const detachContactAndCompany = async (contactId, message, destination) => {
     module: 'router',
   };
 
-  const response = await httpDELETE(
+  const { processedResponse: response } = await handleHttpRequest(
+    'DELETE',
     endpoint,
     {
       headers,
@@ -585,9 +586,8 @@ const detachContactAndCompany = async (contactId, message, destination) => {
     statTags,
   );
 
-  const processedResponse = processAxiosResponse(response);
-  if (!isHttpStatusSuccess(processedResponse.status)) {
-    intercomErrorHandler('Unable to detach contact and company due to', processedResponse);
+  if (!isHttpStatusSuccess(response.status)) {
+    intercomErrorHandler('Unable to detach contact and company due to', response);
   }
 };
 

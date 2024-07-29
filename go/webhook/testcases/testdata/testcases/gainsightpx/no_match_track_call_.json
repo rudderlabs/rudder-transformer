@@ -26,7 +26,7 @@
   "output": {
     "response": {
       "status": 400,
-      "body": "Event type Unavailable not supported"
+      "body": "Event type Unavailable not supported\n"
     },
     "queue": [],
     "errQueue": [

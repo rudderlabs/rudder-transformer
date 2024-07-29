@@ -29,10 +29,7 @@
               "purchase_properties": {
                 "stringpropertyname": "a",
                 "numberpropertyname": 1,
-                "listpropertyname": [
-                  "a",
-                  "b"
-                ]
+                "listpropertyname": ["a", "b"]
               }
             }
           }
@@ -125,10 +122,7 @@
           "purchase_properties": {
             "stringpropertyname": "a",
             "numberpropertyname": 1,
-            "listpropertyname": [
-              "a",
-              "b"
-            ]
+            "listpropertyname": ["a", "b"]
           }
         },
         "timestamp": "2016-10-26T17:26:23.000Z",

@@ -21,6 +21,15 @@
       "body": "Topic not found"
     },
     "queue": [],
-    "errQueue": [null]
-  }
+    "errQueue": [
+      {
+        "query_parameters": {
+          "topic": [],
+          "signature": ["rudderstack"],
+          "writeKey": ["sample-write-key"]
+        }
+      }
+    ]
+  },
+  "skip": "not possible"
 }

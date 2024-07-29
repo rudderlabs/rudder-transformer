@@ -501,6 +501,5 @@
       }
     ],
     "errQueue": []
-  },
-  "skip": "dynamic anonymousId"
+  }
 }

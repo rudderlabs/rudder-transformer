@@ -28,7 +28,9 @@
                 }
               },
               "body": {
-                "members": ["auth0|123456"]
+                "members": [
+                  "auth0|123456"
+                ]
               },
               "path": "/api/v2/organizations/org_eoe8p2atZ7furBxg/members",
               "query": {},
@@ -93,7 +95,9 @@
                 }
               },
               "body": {
-                "members": ["auth0|123456"]
+                "members": [
+                  "auth0|123456"
+                ]
               },
               "path": "/api/v2/organizations/org_eoe8p2atZ7furBxg/members",
               "query": {},
@@ -121,6 +125,5 @@
       }
     ],
     "errQueue": []
-  },
-  "skip": "dynamic anonymousId"
+  }
 }

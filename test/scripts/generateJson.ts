@@ -1,8 +1,11 @@
 import { Command, OptionValues } from 'commander';
 import path from 'path';
 import fs from 'fs';
+import get from 'get-value';
 import { getTestData, getTestDataFilePaths, produceTestData } from '../integrations/testUtils';
-import { head } from 'lodash';
+import { head, isNumber } from 'lodash';
+import { responseType } from '../integrations/testTypes';
+import { isDefinedAndNotNull } from '@rudderstack/integrations-lib';
 
 interface TestCaseData {
   name: string;
@@ -17,6 +20,7 @@ interface Input {
     query: string;
     body: any;
     headers?: Record<string, string>;
+    method?: string;
   };
 }
 
@@ -44,6 +48,22 @@ jsonGenerator
 
 jsonGenerator.parse();
 
+function getStatusCode(outputResponse?: responseType): number {
+  const statusCodeKeys = ['body.0.statusCode', 'statusCode', 'status'];
+  const stCode = statusCodeKeys
+    .map((statusKey) => get(outputResponse, statusKey))
+    .find((stCode) => isNumber(stCode));
+  return stCode || 200;
+}
+
+function getErrorResponse(outputResponse?: responseType) {
+  const bodyKeys = ['body.0.error', 'error'];
+  const errorResponse = bodyKeys
+    .map((statusKey) => get(outputResponse, statusKey))
+    .find(isDefinedAndNotNull);
+  return errorResponse;
+}
+
 function generateSources(outputFolder: string, options: OptionValues) {
   const rootDir = __dirname;
   const resolvedpath = path.resolve(rootDir, '../integrations/sources');
@@ -53,8 +73,7 @@ function generateSources(outputFolder: string, options: OptionValues) {
   files.forEach((testDataPath) => {
     let testData = getTestData(testDataPath);
     testData.forEach((testCase) => {
-      let statusCode: number =
-        testCase.output.response?.statusCode || testCase.output.response?.status || 200;
+      let statusCode: number = getStatusCode(testCase.output.response);
 
       let responseBody: any = 'OK';
       if (statusCode == 200) {
@@ -72,13 +91,20 @@ function generateSources(outputFolder: string, options: OptionValues) {
           }
         }
       } else {
-        responseBody = testCase.output.response?.error;
+        responseBody = getErrorResponse(testCase.output.response);
       }
 
       testCase.input.request.body.forEach((body) => {
         delete body['receivedAt'];
         delete body['request_ip'];
       });
+
+      let errorQueue: any[] = [];
+      if (statusCode !== 200) {
+        errorQueue = Array.isArray(testCase.input.request?.body)
+          ? testCase.input.request?.body
+          : [testCase.input.request?.body];
+      }
 
       let goTest: TestCaseData = {
         name: testCase.name,
@@ -108,9 +134,12 @@ function generateSources(outputFolder: string, options: OptionValues) {
                   .map((i) => i.output.batch)
                   .flat()
               : [],
-          errQueue: statusCode != 200 ? [testCase.output.response?.body] : [],
+          errQueue: errorQueue,
         },
       };
+      if (testCase.input.request.method && testCase.input.request.method.toLowerCase() !== 'post') {
+        goTest.input.request.method = testCase.input.request.method;
+      }
       const dirPath = path.join(outputFolder, goTest.name);
       const safeName = toSnakeCase(goTest.description)
         .replace(/[^a-z0-9]/gi, '_')
@@ -122,7 +151,9 @@ function generateSources(outputFolder: string, options: OptionValues) {
       }
 
       goTest.output.queue.forEach((queueItem) => {
-        queueItem['receivedAt'] = '2024-03-03T04:48:29.000Z';
+        queueItem['receivedAt'] =
+          testCase.output.response?.body?.[0]?.output?.batch?.[0]?.receivedAt ??
+          '2024-03-03T04:48:29.000Z';
         queueItem['request_ip'] = '192.0.2.30';
         if (!queueItem['messageId']) {
           queueItem['messageId'] = '00000000-0000-0000-0000-000000000000';

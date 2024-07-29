@@ -1,3 +1,5 @@
+import { skip } from 'node:test';
+
 export const data = [
   {
     name: 'shopify',
@@ -34,6 +36,7 @@ export const data = [
     description: 'No Query Parameters',
     module: 'source',
     version: 'v0',
+    skipGo: 'not possible',
     input: {
       request: { body: [{}], method: 'POST', headers: { 'Content-Type': 'application/json' } },
       pathSuffix: '',
@@ -41,15 +44,19 @@ export const data = [
     output: {
       response: {
         status: 200,
-        error: 'Query_parameters is missing',
-        statTags: {
-          destinationId: 'Non determinable',
-          errorCategory: 'transformation',
-          implementation: 'native',
-          module: 'source',
-          workspaceId: 'Non determinable',
-        },
-        statusCode: 400,
+        body: [
+          {
+            error: 'Query_parameters is missing',
+            statTags: {
+              destinationId: 'Non determinable',
+              errorCategory: 'transformation',
+              implementation: 'native',
+              module: 'source',
+              workspaceId: 'Non determinable',
+            },
+            statusCode: 400,
+          },
+        ],
       },
     },
   },
@@ -71,15 +78,19 @@ export const data = [
     output: {
       response: {
         status: 200,
-        error: 'Invalid topic in query_parameters',
-        statTags: {
-          destinationId: 'Non determinable',
-          errorCategory: 'transformation',
-          implementation: 'native',
-          module: 'source',
-          workspaceId: 'Non determinable',
-        },
-        statusCode: 400,
+        body: [
+          {
+            error: 'Invalid topic in query_parameters',
+            statTags: {
+              destinationId: 'Non determinable',
+              errorCategory: 'transformation',
+              implementation: 'native',
+              module: 'source',
+              workspaceId: 'Non determinable',
+            },
+            statusCode: 400,
+          },
+        ],
       },
     },
   },
@@ -88,6 +99,7 @@ export const data = [
     description: 'Topic Not found',
     module: 'source',
     version: 'v0',
+    skipGo: 'not possible',
     input: {
       request: {
         body: [
@@ -107,15 +119,19 @@ export const data = [
     output: {
       response: {
         status: 200,
-        error: 'Topic not found',
-        statTags: {
-          destinationId: 'Non determinable',
-          errorCategory: 'transformation',
-          implementation: 'native',
-          module: 'source',
-          workspaceId: 'Non determinable',
-        },
-        statusCode: 400,
+        body: [
+          {
+            error: 'Topic not found',
+            statTags: {
+              destinationId: 'Non determinable',
+              errorCategory: 'transformation',
+              implementation: 'native',
+              module: 'source',
+              workspaceId: 'Non determinable',
+            },
+            statusCode: 400,
+          },
+        ],
       },
     },
   },

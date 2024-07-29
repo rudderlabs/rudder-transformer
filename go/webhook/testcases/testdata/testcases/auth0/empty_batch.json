@@ -11,11 +11,10 @@
   },
   "output": {
     "response": {
-      "status": 200,
-      "body": "OK"
+      "status": 400,
+      "body": "Empty batch payload\n"
     },
     "queue": [],
-    "errQueue": []
-  },
-  "skip": "dynamic anonymousId"
+    "errQueue": [[]]
+  }
 }

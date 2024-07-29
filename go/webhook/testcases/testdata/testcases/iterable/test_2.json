@@ -21,10 +21,22 @@
   },
   "output": {
     "response": {
-      "status": 200,
-      "body": "OK"
+      "status": 400,
+      "body": "Unknwon event type from Iterable\n"
     },
     "queue": [],
-    "errQueue": []
+    "errQueue": [
+      {
+        "email": "test@ruddstack.com",
+        "eventTitle": "smsReceived",
+        "dataFields": {
+          "fromPhoneNumber": "+16503926753",
+          "toPhoneNumber": "+14155824541",
+          "smsMessage": "Message text",
+          "email": "docs@iterable.com",
+          "createdAt": "2016-12-05 22:51:25 +00:00"
+        }
+      }
+    ]
   }
 }

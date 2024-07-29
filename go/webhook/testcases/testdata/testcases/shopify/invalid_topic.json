@@ -20,6 +20,13 @@
       "body": "Invalid topic in query_parameters"
     },
     "queue": [],
-    "errQueue": [null]
+    "errQueue": [
+      {
+        "query_parameters": {
+          "signature": ["rudderstack"],
+          "writeKey": ["sample-write-key"]
+        }
+      }
+    ]
   }
 }

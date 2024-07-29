@@ -845,15 +845,19 @@ export const data = [
     output: {
       response: {
         status: 200,
-        error: 'Event type Unavailable not supported',
-        statTags: {
-          destinationId: 'Non determinable',
-          errorCategory: 'transformation',
-          implementation: 'native',
-          module: 'source',
-          workspaceId: 'Non determinable',
-        },
-        statusCode: 400,
+        body: [
+          {
+            error: 'Event type Unavailable not supported',
+            statTags: {
+              destinationId: 'Non determinable',
+              errorCategory: 'transformation',
+              implementation: 'native',
+              module: 'source',
+              workspaceId: 'Non determinable',
+            },
+            statusCode: 400,
+          },
+        ],
       },
     },
   },

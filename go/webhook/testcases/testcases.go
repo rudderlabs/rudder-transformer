@@ -41,7 +41,7 @@ type Request struct {
 type Output struct {
 	Response Response
 	Queue    []json.RawMessage
-	ErrQueue []json.RawMessage `json:"err_queue"`
+	ErrQueue []json.RawMessage `json:"errQueue"`
 }
 
 type Response struct {

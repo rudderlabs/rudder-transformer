@@ -11,7 +11,6 @@ export const data = [
     description: 'Simple track call',
     module: 'source',
     version: 'v0',
-    skipGo: 'FIXME',
     input: {
       request: {
         body: [
@@ -30,7 +29,7 @@ export const data = [
             created_at: '2023-02-10T12:05:04.402Z',
           },
         ],
-        method: 'POST',
+        method: 'GET',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -97,7 +96,7 @@ export const data = [
             created_at: '2023-02-10T12:05:04.402Z',
           },
         ],
-        method: 'POST',
+        method: 'GET',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -107,15 +106,19 @@ export const data = [
     output: {
       response: {
         status: 200,
-        error: 'Query_parameters is missing',
-        statTags: {
-          destinationId: 'Non determinable',
-          errorCategory: 'transformation',
-          implementation: 'native',
-          module: 'source',
-          workspaceId: 'Non determinable',
-        },
-        statusCode: 400,
+        body: [
+          {
+            error: 'Query_parameters is missing',
+            statTags: {
+              destinationId: 'Non determinable',
+              errorCategory: 'transformation',
+              implementation: 'native',
+              module: 'source',
+              workspaceId: 'Non determinable',
+            },
+            statusCode: 400,
+          },
+        ],
       },
     },
     mockFns: () => {

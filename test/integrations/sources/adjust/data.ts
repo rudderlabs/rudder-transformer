@@ -29,7 +29,7 @@ export const data = [
             created_at: '2023-02-10T12:05:04.402Z',
           },
         ],
-        method: 'GET',
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -96,7 +96,7 @@ export const data = [
             created_at: '2023-02-10T12:05:04.402Z',
           },
         ],
-        method: 'GET',
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },

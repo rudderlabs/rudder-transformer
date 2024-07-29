@@ -189,9 +189,7 @@
                   "support_url": "",
                   "friendly_name": "mecro-action",
                   "support_email": "support@test.com",
-                  "enabled_locales": [
-                    "en"
-                  ],
+                  "enabled_locales": ["en"],
                   "sandbox_version": "16",
                   "universal_login": {}
                 },
@@ -461,9 +459,7 @@
                 "support_url": "",
                 "friendly_name": "mecro-action",
                 "support_email": "support@test.com",
-                "enabled_locales": [
-                  "en"
-                ],
+                "enabled_locales": ["en"],
                 "sandbox_version": "16",
                 "universal_login": {}
               },

@@ -38,9 +38,7 @@
               "longitude": 0
             }
           },
-          "propertyKeys": [
-            "AP-EOXPSEZGC5LA-2-1"
-          ],
+          "propertyKeys": ["AP-EOXPSEZGC5LA-2-1"],
           "createDate": 1665582808376,
           "lastModifiedDate": 1665582808717,
           "customAttributes": null,
@@ -80,9 +78,7 @@
             }
           },
           "numberOfUsers": 0,
-          "propertyKeys": [
-            "AP-EOXPSEZGC5LA-2-1"
-          ],
+          "propertyKeys": ["AP-EOXPSEZGC5LA-2-1"],
           "createDate": 1665578567565,
           "lastModifiedDate": 1665582808669,
           "customAttributes": null,
@@ -158,9 +154,7 @@
             "globalUnsubscribe": false,
             "accountId": "IBM",
             "numberOfVisits": 1,
-            "propertyKeys": [
-              "AP-EOXPSEZGC5LA-2-1"
-            ],
+            "propertyKeys": ["AP-EOXPSEZGC5LA-2-1"],
             "score": 0,
             "id": "New!",
             "country": "India",

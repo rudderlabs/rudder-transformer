@@ -1,5 +1,4 @@
 const set = require('set-value');
-const { defaultRequestConfig } = require('rudder-transformer-cdk/build/utils');
 const lodash = require('lodash');
 const { NetworkError, InstrumentationError } = require('@rudderstack/integrations-lib');
 const { WhiteListedTraits } = require('../../../constants');
@@ -16,6 +15,7 @@ const {
   isDefinedAndNotNull,
   getDestinationExternalID,
   getIntegrationsObj,
+  defaultRequestConfig,
 } = require('../../util');
 const tags = require('../../util/tags');
 const { handleHttpRequest } = require('../../../adapters/network');

@@ -184,6 +184,7 @@ const DestCanonicalNames = {
   emarsys: ['EMARSYS', 'Emarsys', 'emarsys'],
   wunderkind: ['wunderkind', 'Wunderkind', 'WUNDERKIND'],
   cordial: ['cordial', 'Cordial', 'CORDIAL'],
+  clevertap: ['clevertap', 'Clevertap', 'CleverTap', 'CLEVERTAP'],
 };
 
 module.exports = { DestHandlerMap, DestCanonicalNames };

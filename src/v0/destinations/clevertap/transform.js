@@ -23,7 +23,7 @@ const {
   batchMultiplexedEvents,
   getSuccessRespEvents,
 } = require('../../util');
-const { generateClevertapBatchedPayload } = require('./utils');
+const { generateClevertapBatchedPayload, deduceTokenType } = require('./utils');
 
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
@@ -268,7 +268,8 @@ const responseBuilderSimple = (message, category, destination) => {
         deviceToken &&
         (deviceOS === 'android' || isAppleFamily(deviceOS))
       ) {
-        const tokenType = deviceOS === 'android' ? 'fcm' : 'apns';
+        // const tokenType = deviceOS === 'android' ? 'fcm' : 'apns';
+        const tokenType = deduceTokenType(message, deviceOS);
         const payloadForDeviceToken = {
           d: [
             {

@@ -21,7 +21,7 @@ const {
   batchSubscribeEvents,
   getIdFromNewOrExistingProfile,
   profileUpdateResponseBuilder,
-  addSubcribeFlagToTraits,
+  addSubscribeFlagToTraits,
 } = require('./util');
 const {
   defaultRequestConfig,
@@ -64,7 +64,7 @@ const identifyRequestHandler = async (
   if (mappedToDestination) {
     addExternalIdToTraits(message);
     adduserIdFromExternalId(message);
-    traitsInfo = addSubcribeFlagToTraits(traitsInfo);
+    traitsInfo = addSubscribeFlagToTraits(traitsInfo);
   }
 
   let propertyPayload = constructPayload(message, MAPPING_CONFIG[category.name]);

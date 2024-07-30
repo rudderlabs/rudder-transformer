@@ -172,6 +172,20 @@ const isDefinedNotNullNotEmpty = (value) =>
 const removeUndefinedNullEmptyExclBoolInt = (obj) => lodash.pickBy(obj, isDefinedNotNullNotEmpty);
 
 /**
+ * Function to remove empty key ("") from payload
+ * @param {*} payload {"key1":"a","":{"id":1}}
+ * @returns // {"key1":"a"}
+ */
+const removeEmptyKey = (payload) => {
+  const rawPayload = payload;
+  const key = '';
+  if (Object.prototype.hasOwnProperty.call(rawPayload, key)) {
+    delete rawPayload[''];
+  }
+  return rawPayload;
+};
+
+/**
  * Recursively removes undefined, null, empty objects, and empty arrays from the given object at all levels.
  * @param {*} obj
  * @returns
@@ -850,6 +864,9 @@ function formatValues(formattedVal, formattingType, typeFormat, integrationsObj)
         if (Number.isNaN(curFormattedVal)) {
           throw new InstrumentationError('Invalid float value');
         }
+    removeSpacesAndDashes: () => {
+      if (typeof formattedVal === 'string') {
+        curFormattedVal = formattedVal.replace(/ /g, '').replace(/-/g, '');
       }
     },
   };
@@ -2259,6 +2276,22 @@ const validateEventAndLowerCaseConversion = (event, isMandatory, convertToLowerC
 const applyCustomMappings = (message, mappings) =>
   JsonTemplateEngine.createAsSync(mappings, { defaultPathType: PathType.JSON }).evaluate(message);
 
+/**
+ * Gets url path omitting the hostname & protocol
+ *
+ * **Note**:
+ * - This should only be used when there are no dynamic paths in URL
+ * @param {*} inputUrl
+ * @returns
+ */
+const getRelativePathFromURL = (inputUrl) => {
+  if (isValidUrl(inputUrl)) {
+    const url = new URL(inputUrl);
+    return url.pathname;
+  }
+  return inputUrl;
+};
+
 // ========================================================================
 // EXPORTS
 // ========================================================================
@@ -2379,4 +2412,6 @@ module.exports = {
   removeDuplicateMetadata,
   combineBatchRequestsWithSameJobIds,
   validateEventAndLowerCaseConversion,
+  getRelativePathFromURL,
+  removeEmptyKey,
 };

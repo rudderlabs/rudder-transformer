@@ -1,3 +1,4 @@
+import { destination } from './config';
 export const data = [
   {
     name: 'hs',
@@ -93,331 +94,6 @@ export const data = [
                   accessToken: 'pat-123',
                   apiVersion: 'newApi',
                 },
-              },
-            },
-          ],
-        },
-      },
-    },
-  },
-  {
-    name: 'hs',
-    description: 'legacy router tests',
-    feature: 'router',
-    module: 'destination',
-    version: 'v0',
-    input: {
-      request: {
-        body: {
-          input: [
-            {
-              message: {
-                channel: 'web',
-                context: {
-                  app: {
-                    build: '1.0.0',
-                    name: 'RudderLabs JavaScript SDK',
-                    namespace: 'com.rudderlabs.javascript',
-                    version: '1.0.0',
-                  },
-                  traits: {
-                    email: 'testhubspot1@email.com',
-                    firstname: 'Test Hubspot1',
-                    anonymousId: '1111',
-                  },
-                  library: { name: 'RudderLabs JavaScript SDK', version: '1.0.0' },
-                  userAgent:
-                    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
-                  locale: 'en-GB',
-                  ip: '0.0.0.0',
-                  os: { name: '', version: '' },
-                  screen: { density: 2 },
-                  page: { path: '', referrer: '', search: '', title: '', url: '' },
-                },
-                type: 'identify',
-                messageId: '50360b9c-ea8d-409c-b672-c9230f91cce5',
-                originalTimestamp: '2019-10-15T09:35:31.288Z',
-                anonymousId: '00000000000000000000000000',
-                userId: '12345',
-                integrations: { All: true },
-                sentAt: '2019-10-14T09:03:22.563Z',
-              },
-              metadata: { jobId: 1, userId: 'u1' },
-              destination: {
-                Config: { apiKey: 'dummy-apikey', hubID: 'dummy-hubId' },
-                secretConfig: {},
-                ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
-                name: 'Hubspot',
-                enabled: true,
-                workspaceId: '1TSN08muJTZwH8iCDmnnRt1pmLd',
-                deleted: false,
-                createdAt: '2020-12-30T08:39:32.005Z',
-                updatedAt: '2021-02-03T16:22:31.374Z',
-                destinationDefinition: {
-                  id: '1aIXqM806xAVm92nx07YwKbRrO9',
-                  name: 'HS',
-                  displayName: 'Hubspot',
-                  createdAt: '2020-04-09T09:24:31.794Z',
-                  updatedAt: '2021-01-11T11:03:28.103Z',
-                },
-                transformations: [],
-                isConnectionEnabled: true,
-                isProcessorEnabled: true,
-              },
-            },
-            {
-              message: {
-                channel: 'web',
-                context: {
-                  app: {
-                    build: '1.0.0',
-                    name: 'RudderLabs JavaScript SDK',
-                    namespace: 'com.rudderlabs.javascript',
-                    version: '1.0.0',
-                  },
-                  traits: { email: 'testhubspot2@email.com', firstname: 'Test Hubspot2' },
-                  library: { name: 'RudderLabs JavaScript SDK', version: '1.0.0' },
-                  userAgent:
-                    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
-                  locale: 'en-GB',
-                  ip: '0.0.0.0',
-                  os: { name: '', version: '' },
-                  screen: { density: 2 },
-                },
-                type: 'track',
-                messageId: '08829772-d991-427c-b976-b4c4f4430b4e',
-                originalTimestamp: '2019-10-15T09:35:31.291Z',
-                anonymousId: '00000000000000000000000000',
-                userId: '12345',
-                event: 'test track event HS',
-                properties: {
-                  user_actual_role: 'system_admin, system_user',
-                  user_actual_id: 12345,
-                },
-                sentAt: '2019-10-14T11:15:53.296Z',
-              },
-              metadata: { jobId: 2, userId: 'u1' },
-              destination: {
-                Config: { apiKey: 'dummy-apikey', hubID: 'dummy-hubId' },
-                secretConfig: {},
-                ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
-                name: 'Hubspot',
-                enabled: true,
-                workspaceId: '1TSN08muJTZwH8iCDmnnRt1pmLd',
-                deleted: false,
-                createdAt: '2020-12-30T08:39:32.005Z',
-                updatedAt: '2021-02-03T16:22:31.374Z',
-                destinationDefinition: {
-                  id: '1aIXqM806xAVm92nx07YwKbRrO9',
-                  name: 'HS',
-                  displayName: 'Hubspot',
-                  createdAt: '2020-04-09T09:24:31.794Z',
-                  updatedAt: '2021-01-11T11:03:28.103Z',
-                },
-                transformations: [],
-                isConnectionEnabled: true,
-                isProcessorEnabled: true,
-              },
-            },
-            {
-              message: {
-                version: '1',
-                type: 'REST',
-                method: 'POST',
-                endpoint:
-                  'https://api.hubapi.com/contacts/v1/contact/createOrUpdate/email/testhubspot2@email.com',
-                headers: { 'Content-Type': 'application/json' },
-                userId: '00000000000000000000000000',
-                params: { hapikey: 'dummy-apikey' },
-                body: {
-                  JSON: {
-                    properties: [
-                      { property: 'email', value: 'testhubspot3@email.com' },
-                      { property: 'firstname', value: 'Test Hubspot3' },
-                    ],
-                  },
-                  XML: {},
-                  FORM: {},
-                },
-                files: {},
-                statusCode: 200,
-              },
-              metadata: { jobId: 3, userId: 'u1' },
-              destination: {
-                Config: { apiKey: 'dummy-apikey', hubID: 'dummy-hubId' },
-                secretConfig: {},
-                ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
-                name: 'Hubspot',
-                enabled: true,
-                workspaceId: '1TSN08muJTZwH8iCDmnnRt1pmLd',
-                deleted: false,
-                createdAt: '2020-12-30T08:39:32.005Z',
-                updatedAt: '2021-02-03T16:22:31.374Z',
-                destinationDefinition: {
-                  id: '1aIXqM806xAVm92nx07YwKbRrO9',
-                  name: 'HS',
-                  displayName: 'Hubspot',
-                  createdAt: '2020-04-09T09:24:31.794Z',
-                  updatedAt: '2021-01-11T11:03:28.103Z',
-                },
-                transformations: [],
-                isConnectionEnabled: true,
-                isProcessorEnabled: true,
-              },
-            },
-            {
-              message: {
-                channel: 'web',
-                context: {
-                  app: {
-                    build: '1.0.0',
-                    name: 'RudderLabs JavaScript SDK',
-                    namespace: 'com.rudderlabs.javascript',
-                    version: '1.0.0',
-                  },
-                  traits: {
-                    email: 'testhubspot4@email.com',
-                    firstname: 'Test Hubspot4',
-                    anonymousId: '4444',
-                  },
-                  library: { name: 'RudderLabs JavaScript SDK', version: '1.0.0' },
-                  userAgent:
-                    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
-                  locale: 'en-GB',
-                  ip: '0.0.0.0',
-                  os: { name: '', version: '' },
-                  screen: { density: 2 },
-                  page: { path: '', referrer: '', search: '', title: '', url: '' },
-                },
-                type: 'identify',
-                messageId: '50360b9c-ea8d-409c-b672-c9230f91cce5',
-                originalTimestamp: '2019-10-15T09:35:31.288Z',
-                anonymousId: '00000000000000000000000000',
-                userId: '12345',
-                integrations: { All: true },
-                sentAt: '2019-10-14T09:03:22.563Z',
-              },
-              metadata: { jobId: 4, userId: 'u1' },
-              destination: {
-                Config: { apiKey: 'rate-limit-id', hubID: 'dummy-hubId' },
-                secretConfig: {},
-                ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
-                name: 'Hubspot',
-                enabled: true,
-                workspaceId: '1TSN08muJTZwH8iCDmnnRt1pmLd',
-                deleted: false,
-                createdAt: '2020-12-30T08:39:32.005Z',
-                updatedAt: '2021-02-03T16:22:31.374Z',
-                destinationDefinition: {
-                  id: '1aIXqM806xAVm92nx07YwKbRrO9',
-                  name: 'HS',
-                  displayName: 'Hubspot',
-                  createdAt: '2020-04-09T09:24:31.794Z',
-                  updatedAt: '2021-01-11T11:03:28.103Z',
-                },
-                transformations: [],
-                isConnectionEnabled: true,
-                isProcessorEnabled: true,
-              },
-            },
-          ],
-          destType: 'hs',
-        },
-        method: 'POST',
-      },
-    },
-    output: {
-      response: {
-        status: 200,
-        body: {
-          output: [
-            {
-              batchedRequest: {
-                version: '1',
-                type: 'REST',
-                method: 'POST',
-                endpoint: 'https://api.hubapi.com/contacts/v1/contact/batch/',
-                headers: { 'Content-Type': 'application/json' },
-                params: { hapikey: 'dummy-apikey' },
-                body: {
-                  JSON: {},
-                  JSON_ARRAY: {
-                    batch:
-                      '[{"email":"testhubspot3@email.com","properties":[{"property":"firstname","value":"Test Hubspot3"}]},{"email":"testhubspot1@email.com","properties":[{"property":"firstname","value":"Test Hubspot1"}]},{"email":"testhubspot4@email.com","properties":[{"property":"firstname","value":"Test Hubspot4"}]}]',
-                  },
-                  XML: {},
-                  FORM: {},
-                },
-                files: {},
-              },
-              metadata: [
-                { jobId: 3, userId: 'u1' },
-                { jobId: 1, userId: 'u1' },
-                { jobId: 4, userId: 'u1' },
-              ],
-              batched: true,
-              statusCode: 200,
-              destination: {
-                Config: { apiKey: 'dummy-apikey', hubID: 'dummy-hubId' },
-                secretConfig: {},
-                ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
-                name: 'Hubspot',
-                enabled: true,
-                workspaceId: '1TSN08muJTZwH8iCDmnnRt1pmLd',
-                deleted: false,
-                createdAt: '2020-12-30T08:39:32.005Z',
-                updatedAt: '2021-02-03T16:22:31.374Z',
-                destinationDefinition: {
-                  id: '1aIXqM806xAVm92nx07YwKbRrO9',
-                  name: 'HS',
-                  displayName: 'Hubspot',
-                  createdAt: '2020-04-09T09:24:31.794Z',
-                  updatedAt: '2021-01-11T11:03:28.103Z',
-                },
-                transformations: [],
-                isConnectionEnabled: true,
-                isProcessorEnabled: true,
-              },
-            },
-            {
-              batchedRequest: {
-                version: '1',
-                type: 'REST',
-                method: 'GET',
-                endpoint: 'https://track.hubspot.com/v1/event',
-                headers: { 'Content-Type': 'application/json' },
-                params: {
-                  _a: 'dummy-hubId',
-                  _n: 'test track event HS',
-                  email: 'testhubspot2@email.com',
-                  firstname: 'Test Hubspot2',
-                },
-                body: { JSON: {}, JSON_ARRAY: {}, XML: {}, FORM: {} },
-                files: {},
-              },
-              metadata: [{ jobId: 2, userId: 'u1' }],
-              batched: false,
-              statusCode: 200,
-              destination: {
-                Config: { apiKey: 'dummy-apikey', hubID: 'dummy-hubId' },
-                secretConfig: {},
-                ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
-                name: 'Hubspot',
-                enabled: true,
-                workspaceId: '1TSN08muJTZwH8iCDmnnRt1pmLd',
-                deleted: false,
-                createdAt: '2020-12-30T08:39:32.005Z',
-                updatedAt: '2021-02-03T16:22:31.374Z',
-                destinationDefinition: {
-                  id: '1aIXqM806xAVm92nx07YwKbRrO9',
-                  name: 'HS',
-                  displayName: 'Hubspot',
-                  createdAt: '2020-04-09T09:24:31.794Z',
-                  updatedAt: '2021-01-11T11:03:28.103Z',
-                },
-                transformations: [],
-                isConnectionEnabled: true,
-                isProcessorEnabled: true,
               },
             },
           ],
@@ -625,6 +301,415 @@ export const data = [
                 files: {},
               },
               metadata: [{ jobId: 2, userId: 'u1' }],
+              batched: true,
+              statusCode: 200,
+              destination: {
+                Config: { apiKey: 'dummy-apikey', hubID: 'dummy-hubId' },
+                secretConfig: {},
+                ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
+                name: 'Hubspot',
+                enabled: true,
+                workspaceId: '1TSN08muJTZwH8iCDmnnRt1pmLd',
+                deleted: false,
+                createdAt: '2020-12-30T08:39:32.005Z',
+                updatedAt: '2021-02-03T16:22:31.374Z',
+                destinationDefinition: {
+                  id: '1aIXqM806xAVm92nx07YwKbRrO9',
+                  name: 'HS',
+                  displayName: 'Hubspot',
+                  createdAt: '2020-04-09T09:24:31.794Z',
+                  updatedAt: '2021-01-11T11:03:28.103Z',
+                },
+                transformations: [],
+                isConnectionEnabled: true,
+                isProcessorEnabled: true,
+              },
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    name: 'hs',
+    description: 'legacy router tests',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: {
+                channel: 'web',
+                context: {
+                  app: {
+                    build: '1.0.0',
+                    name: 'RudderLabs JavaScript SDK',
+                    namespace: 'com.rudderlabs.javascript',
+                    version: '1.0.0',
+                  },
+                  traits: {
+                    email: 'testhubspot1@email.com',
+                    firstname: 'Test Hubspot1',
+                    anonymousId: '1111',
+                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.0.0' },
+                  userAgent:
+                    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
+                  locale: 'en-GB',
+                  ip: '0.0.0.0',
+                  os: { name: '', version: '' },
+                  screen: { density: 2 },
+                  page: { path: '', referrer: '', search: '', title: '', url: '' },
+                },
+                type: 'identify',
+                messageId: '50360b9c-ea8d-409c-b672-c9230f91cce5',
+                originalTimestamp: '2019-10-15T09:35:31.288Z',
+                anonymousId: '00000000000000000000000000',
+                userId: '12345',
+                integrations: { All: true },
+                sentAt: '2019-10-14T09:03:22.563Z',
+              },
+              metadata: { jobId: 1, userId: 'u1' },
+              destination: {
+                Config: { apiKey: 'dummy-apikey', hubID: 'dummy-hubId' },
+                secretConfig: {},
+                ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
+                name: 'Hubspot',
+                enabled: true,
+                workspaceId: '1TSN08muJTZwH8iCDmnnRt1pmLd',
+                deleted: false,
+                createdAt: '2020-12-30T08:39:32.005Z',
+                updatedAt: '2021-02-03T16:22:31.374Z',
+                destinationDefinition: {
+                  id: '1aIXqM806xAVm92nx07YwKbRrO9',
+                  name: 'HS',
+                  displayName: 'Hubspot',
+                  createdAt: '2020-04-09T09:24:31.794Z',
+                  updatedAt: '2021-01-11T11:03:28.103Z',
+                },
+                transformations: [],
+                isConnectionEnabled: true,
+                isProcessorEnabled: true,
+              },
+            },
+            {
+              message: {
+                channel: 'web',
+                context: {
+                  app: {
+                    build: '1.0.0',
+                    name: 'RudderLabs JavaScript SDK',
+                    namespace: 'com.rudderlabs.javascript',
+                    version: '1.0.0',
+                  },
+                  traits: { email: 'testhubspot2@email.com', firstname: 'Test Hubspot2' },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.0.0' },
+                  userAgent:
+                    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
+                  locale: 'en-GB',
+                  ip: '0.0.0.0',
+                  os: { name: '', version: '' },
+                  screen: { density: 2 },
+                },
+                type: 'track',
+                messageId: '08829772-d991-427c-b976-b4c4f4430b4e',
+                originalTimestamp: '2019-10-15T09:35:31.291Z',
+                anonymousId: '00000000000000000000000000',
+                userId: '12345',
+                event: 'test track event HS',
+                properties: {
+                  user_actual_role: 'system_admin, system_user',
+                  user_actual_id: 12345,
+                },
+                sentAt: '2019-10-14T11:15:53.296Z',
+              },
+              metadata: { jobId: 2, userId: 'u1' },
+              destination: {
+                Config: { apiKey: 'dummy-apikey', hubID: 'dummy-hubId' },
+                secretConfig: {},
+                ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
+                name: 'Hubspot',
+                enabled: true,
+                workspaceId: '1TSN08muJTZwH8iCDmnnRt1pmLd',
+                deleted: false,
+                createdAt: '2020-12-30T08:39:32.005Z',
+                updatedAt: '2021-02-03T16:22:31.374Z',
+                destinationDefinition: {
+                  id: '1aIXqM806xAVm92nx07YwKbRrO9',
+                  name: 'HS',
+                  displayName: 'Hubspot',
+                  createdAt: '2020-04-09T09:24:31.794Z',
+                  updatedAt: '2021-01-11T11:03:28.103Z',
+                },
+                transformations: [],
+                isConnectionEnabled: true,
+                isProcessorEnabled: true,
+              },
+            },
+            {
+              message: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint:
+                  'https://api.hubapi.com/contacts/v1/contact/createOrUpdate/email/testhubspot2@email.com',
+                headers: { 'Content-Type': 'application/json' },
+                userId: '00000000000000000000000000',
+                params: { hapikey: 'dummy-apikey' },
+                body: {
+                  JSON: {
+                    properties: [
+                      { property: 'email', value: 'testhubspot3@email.com' },
+                      { property: 'firstname', value: 'Test Hubspot3' },
+                    ],
+                  },
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+                statusCode: 200,
+              },
+              metadata: { jobId: 3, userId: 'u1' },
+              destination: {
+                Config: { apiKey: 'dummy-apikey', hubID: 'dummy-hubId' },
+                secretConfig: {},
+                ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
+                name: 'Hubspot',
+                enabled: true,
+                workspaceId: '1TSN08muJTZwH8iCDmnnRt1pmLd',
+                deleted: false,
+                createdAt: '2020-12-30T08:39:32.005Z',
+                updatedAt: '2021-02-03T16:22:31.374Z',
+                destinationDefinition: {
+                  id: '1aIXqM806xAVm92nx07YwKbRrO9',
+                  name: 'HS',
+                  displayName: 'Hubspot',
+                  createdAt: '2020-04-09T09:24:31.794Z',
+                  updatedAt: '2021-01-11T11:03:28.103Z',
+                },
+                transformations: [],
+                isConnectionEnabled: true,
+                isProcessorEnabled: true,
+              },
+            },
+            {
+              message: {
+                channel: 'web',
+                context: {
+                  app: {
+                    build: '1.0.0',
+                    name: 'RudderLabs JavaScript SDK',
+                    namespace: 'com.rudderlabs.javascript',
+                    version: '1.0.0',
+                  },
+                  traits: {
+                    email: 'testhubspot4@email.com',
+                    firstname: 'Test Hubspot4',
+                    anonymousId: '4444',
+                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.0.0' },
+                  userAgent:
+                    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
+                  locale: 'en-GB',
+                  ip: '0.0.0.0',
+                  os: { name: '', version: '' },
+                  screen: { density: 2 },
+                  page: { path: '', referrer: '', search: '', title: '', url: '' },
+                },
+                type: 'identify',
+                messageId: '50360b9c-ea8d-409c-b672-c9230f91cce5',
+                originalTimestamp: '2019-10-15T09:35:31.288Z',
+                anonymousId: '00000000000000000000000000',
+                userId: '12345',
+                integrations: { All: true },
+                sentAt: '2019-10-14T09:03:22.563Z',
+              },
+              metadata: { jobId: 4, userId: 'u1' },
+              destination: {
+                Config: { apiKey: 'dummy-apikey', hubID: 'dummy-hubId' },
+                secretConfig: {},
+                ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
+                name: 'Hubspot',
+                enabled: true,
+                workspaceId: '1TSN08muJTZwH8iCDmnnRt1pmLd',
+                deleted: false,
+                createdAt: '2020-12-30T08:39:32.005Z',
+                updatedAt: '2021-02-03T16:22:31.374Z',
+                destinationDefinition: {
+                  id: '1aIXqM806xAVm92nx07YwKbRrO9',
+                  name: 'HS',
+                  displayName: 'Hubspot',
+                  createdAt: '2020-04-09T09:24:31.794Z',
+                  updatedAt: '2021-01-11T11:03:28.103Z',
+                },
+                transformations: [],
+                isConnectionEnabled: true,
+                isProcessorEnabled: true,
+              },
+            },
+          ],
+          destType: 'hs',
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: 'https://api.hubapi.com/contacts/v1/contact/batch/',
+                headers: { 'Content-Type': 'application/json' },
+                params: { hapikey: 'dummy-apikey' },
+                body: {
+                  JSON: {},
+                  JSON_ARRAY: {
+                    batch:
+                      '[{"email":"testhubspot1@email.com","properties":[{"property":"firstname","value":"Test Hubspot1"}]}]',
+                  },
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+              },
+              metadata: [{ jobId: 1, userId: 'u1' }],
+              batched: true,
+              statusCode: 200,
+              destination: {
+                Config: { apiKey: 'dummy-apikey', hubID: 'dummy-hubId' },
+                secretConfig: {},
+                ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
+                name: 'Hubspot',
+                enabled: true,
+                workspaceId: '1TSN08muJTZwH8iCDmnnRt1pmLd',
+                deleted: false,
+                createdAt: '2020-12-30T08:39:32.005Z',
+                updatedAt: '2021-02-03T16:22:31.374Z',
+                destinationDefinition: {
+                  id: '1aIXqM806xAVm92nx07YwKbRrO9',
+                  name: 'HS',
+                  displayName: 'Hubspot',
+                  createdAt: '2020-04-09T09:24:31.794Z',
+                  updatedAt: '2021-01-11T11:03:28.103Z',
+                },
+                transformations: [],
+                isConnectionEnabled: true,
+                isProcessorEnabled: true,
+              },
+            },
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'GET',
+                endpoint: 'https://track.hubspot.com/v1/event',
+                headers: { 'Content-Type': 'application/json' },
+                params: {
+                  _a: 'dummy-hubId',
+                  _n: 'test track event HS',
+                  email: 'testhubspot2@email.com',
+                  firstname: 'Test Hubspot2',
+                },
+                body: { JSON: {}, JSON_ARRAY: {}, XML: {}, FORM: {} },
+                files: {},
+              },
+              metadata: [{ jobId: 2, userId: 'u1' }],
+              batched: false,
+              statusCode: 200,
+              destination: {
+                Config: { apiKey: 'dummy-apikey', hubID: 'dummy-hubId' },
+                secretConfig: {},
+                ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
+                name: 'Hubspot',
+                enabled: true,
+                workspaceId: '1TSN08muJTZwH8iCDmnnRt1pmLd',
+                deleted: false,
+                createdAt: '2020-12-30T08:39:32.005Z',
+                updatedAt: '2021-02-03T16:22:31.374Z',
+                destinationDefinition: {
+                  id: '1aIXqM806xAVm92nx07YwKbRrO9',
+                  name: 'HS',
+                  displayName: 'Hubspot',
+                  createdAt: '2020-04-09T09:24:31.794Z',
+                  updatedAt: '2021-01-11T11:03:28.103Z',
+                },
+                transformations: [],
+                isConnectionEnabled: true,
+                isProcessorEnabled: true,
+              },
+            },
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: 'https://api.hubapi.com/contacts/v1/contact/batch/',
+                headers: { 'Content-Type': 'application/json' },
+                params: { hapikey: 'dummy-apikey' },
+                body: {
+                  JSON: {},
+                  JSON_ARRAY: {
+                    batch:
+                      '[{"email":"testhubspot3@email.com","properties":[{"property":"firstname","value":"Test Hubspot3"}]}]',
+                  },
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+              },
+              metadata: [{ jobId: 3, userId: 'u1' }],
+              batched: true,
+              statusCode: 200,
+              destination: {
+                Config: { apiKey: 'dummy-apikey', hubID: 'dummy-hubId' },
+                secretConfig: {},
+                ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
+                name: 'Hubspot',
+                enabled: true,
+                workspaceId: '1TSN08muJTZwH8iCDmnnRt1pmLd',
+                deleted: false,
+                createdAt: '2020-12-30T08:39:32.005Z',
+                updatedAt: '2021-02-03T16:22:31.374Z',
+                destinationDefinition: {
+                  id: '1aIXqM806xAVm92nx07YwKbRrO9',
+                  name: 'HS',
+                  displayName: 'Hubspot',
+                  createdAt: '2020-04-09T09:24:31.794Z',
+                  updatedAt: '2021-01-11T11:03:28.103Z',
+                },
+                transformations: [],
+                isConnectionEnabled: true,
+                isProcessorEnabled: true,
+              },
+            },
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: 'https://api.hubapi.com/contacts/v1/contact/batch/',
+                headers: { 'Content-Type': 'application/json' },
+                params: { hapikey: 'dummy-apikey' },
+                body: {
+                  JSON: {},
+                  JSON_ARRAY: {
+                    batch:
+                      '[{"email":"testhubspot4@email.com","properties":[{"property":"firstname","value":"Test Hubspot4"}]}]',
+                  },
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+              },
+              metadata: [{ jobId: 4, userId: 'u1' }],
               batched: true,
               statusCode: 200,
               destination: {
@@ -1280,73 +1365,6 @@ export const data = [
             },
             {
               message: {
-                type: 'track',
-                traits: {},
-                context: {
-                  externalId: [
-                    {
-                      id: 'osvaldocostaferreira98@gmail.com',
-                      type: 'HS-contacts',
-                      identifierType: 'email',
-                    },
-                  ],
-                },
-                event: 'Purchase',
-                properties: { Revenue: 'name1' },
-              },
-              metadata: { jobId: 3, userId: 'u1' },
-              destination: {
-                Config: {
-                  authorizationType: 'newPrivateAppApi',
-                  accessToken: 'dummy-access-token',
-                  hubID: 'dummy-hubId',
-                  apiKey: 'dummy-apikey',
-                  apiVersion: 'newApi',
-                  lookupField: 'lookupField',
-                  hubspotEvents: [
-                    {
-                      rsEventName: 'Purchase',
-                      hubspotEventName: 'pedummy-hubId_rs_hub_test',
-                      eventProperties: [
-                        { from: 'Revenue', to: 'value' },
-                        { from: 'Price', to: 'cost' },
-                      ],
-                    },
-                    {
-                      rsEventName: 'Order Complete',
-                      hubspotEventName: 'pedummy-hubId_rs_hub_chair',
-                      eventProperties: [
-                        { from: 'firstName', to: 'first_name' },
-                        { from: 'lastName', to: 'last_name' },
-                      ],
-                    },
-                  ],
-                  eventFilteringOption: 'disable',
-                  blacklistedEvents: [{ eventName: '' }],
-                  whitelistedEvents: [{ eventName: '' }],
-                },
-                secretConfig: {},
-                ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
-                name: 'Hubspot',
-                enabled: true,
-                workspaceId: '1TSN08muJTZwH8iCDmnnRt1pmLd',
-                deleted: false,
-                createdAt: '2020-12-30T08:39:32.005Z',
-                updatedAt: '2021-02-03T16:22:31.374Z',
-                destinationDefinition: {
-                  id: '1aIXqM806xAVm92nx07YwKbRrO9',
-                  name: 'HS',
-                  displayName: 'Hubspot',
-                  createdAt: '2020-04-09T09:24:31.794Z',
-                  updatedAt: '2021-01-11T11:03:28.103Z',
-                },
-                transformations: [],
-                isConnectionEnabled: true,
-                isProcessorEnabled: true,
-              },
-            },
-            {
-              message: {
                 channel: 'web',
                 context: {
                   app: {
@@ -1469,6 +1487,73 @@ export const data = [
                   apiKey: 'dummy-apikey',
                   apiVersion: 'newApi',
                   lookupField: 'email',
+                  hubspotEvents: [
+                    {
+                      rsEventName: 'Purchase',
+                      hubspotEventName: 'pedummy-hubId_rs_hub_test',
+                      eventProperties: [
+                        { from: 'Revenue', to: 'value' },
+                        { from: 'Price', to: 'cost' },
+                      ],
+                    },
+                    {
+                      rsEventName: 'Order Complete',
+                      hubspotEventName: 'pedummy-hubId_rs_hub_chair',
+                      eventProperties: [
+                        { from: 'firstName', to: 'first_name' },
+                        { from: 'lastName', to: 'last_name' },
+                      ],
+                    },
+                  ],
+                  eventFilteringOption: 'disable',
+                  blacklistedEvents: [{ eventName: '' }],
+                  whitelistedEvents: [{ eventName: '' }],
+                },
+                secretConfig: {},
+                ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
+                name: 'Hubspot',
+                enabled: true,
+                workspaceId: '1TSN08muJTZwH8iCDmnnRt1pmLd',
+                deleted: false,
+                createdAt: '2020-12-30T08:39:32.005Z',
+                updatedAt: '2021-02-03T16:22:31.374Z',
+                destinationDefinition: {
+                  id: '1aIXqM806xAVm92nx07YwKbRrO9',
+                  name: 'HS',
+                  displayName: 'Hubspot',
+                  createdAt: '2020-04-09T09:24:31.794Z',
+                  updatedAt: '2021-01-11T11:03:28.103Z',
+                },
+                transformations: [],
+                isConnectionEnabled: true,
+                isProcessorEnabled: true,
+              },
+            },
+            {
+              message: {
+                type: 'track',
+                traits: {},
+                context: {
+                  externalId: [
+                    {
+                      id: 'osvaldocostaferreira98@gmail.com',
+                      type: 'HS-contacts',
+                      identifierType: 'email',
+                    },
+                  ],
+                },
+                event: 'Purchase',
+                properties: { Revenue: 'name1' },
+              },
+              metadata: { jobId: 3, userId: 'u1' },
+              destination: {
+                Config: {
+                  authorizationType: 'newPrivateAppApi',
+                  accessToken: 'dummy-access-token',
+                  hubID: 'dummy-hubId',
+                  apiKey: 'dummy-apikey',
+                  apiVersion: 'newApi',
+                  lookupField: 'lookupField',
                   hubspotEvents: [
                     {
                       rsEventName: 'Purchase',
@@ -1639,7 +1724,7 @@ export const data = [
                   hubID: 'dummy-hubId',
                   apiKey: 'dummy-apikey',
                   apiVersion: 'newApi',
-                  lookupField: 'email',
+                  lookupField: 'lookupField',
                   hubspotEvents: [
                     {
                       rsEventName: 'Purchase',
@@ -1822,6 +1907,556 @@ export const data = [
                 isConnectionEnabled: true,
                 isProcessorEnabled: true,
               },
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    name: 'hs',
+    description: 'router job ordering ',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: {
+                channel: 'web',
+                context: {
+                  traits: {
+                    email: 'testhubspot1@email.com',
+                    firstname: 'Test Hubspot1',
+                  },
+                },
+                type: 'identify',
+                userId: 'user1',
+                integrations: {
+                  All: true,
+                },
+                sentAt: '2019-10-14T09:03:22.563Z',
+              },
+              metadata: {
+                jobId: 1,
+                userId: 'user1',
+              },
+              destination,
+            },
+            {
+              message: {
+                channel: 'web',
+                context: {
+                  traits: { email: 'user1@a.com' },
+                },
+                type: 'track',
+                anonymousId: '',
+                userId: 'user1',
+                event: 'purchase',
+                properties: {
+                  user_actual_role: 'system_admin, system_user',
+                  user_actual_id: 12345,
+                },
+                sentAt: '2019-10-14T11:15:53.296Z',
+              },
+              metadata: {
+                jobId: 2,
+                userId: 'user1',
+              },
+              destination,
+            },
+            {
+              message: {
+                channel: 'web',
+                context: { traits: { email: 'user2@a.com' } },
+                type: 'track',
+                anonymousId: '',
+                userId: 'user2',
+                event: 'purchase2',
+                properties: {
+                  user_actual_role: 'system_admin_2, system_user',
+                  user_actual_id: 12345,
+                },
+                sentAt: '2019-10-14T11:15:53.296Z',
+              },
+              metadata: {
+                jobId: 3,
+                userId: 'user2',
+              },
+              destination,
+            },
+            {
+              message: {
+                channel: 'web',
+                context: {
+                  traits: {
+                    email: 'testhubspot2@email.com',
+                    firstname: 'Test Hubspot1',
+                    anonymousId: '1111',
+                  },
+                },
+                type: 'identify',
+                anonymousId: '',
+                userId: 'user2',
+                integrations: {
+                  All: true,
+                },
+                sentAt: '2019-10-14T09:03:22.563Z',
+              },
+              metadata: {
+                jobId: 4,
+                userId: 'user2',
+              },
+              destination,
+            },
+            {
+              message: {
+                channel: 'web',
+                context: { traits: { email: 'user3@a.com' } },
+                type: 'track',
+                anonymousId: '',
+                userId: 'user3',
+                event: 'purchase',
+                properties: {
+                  user_actual_role: 'system_admin, system_user',
+                  user_actual_id: 12345,
+                },
+                sentAt: '2019-10-14T11:15:53.296Z',
+              },
+              metadata: {
+                jobId: 5,
+                userId: 'user3',
+              },
+              destination,
+            },
+            {
+              message: {
+                channel: 'web',
+                context: {
+                  traits: {
+                    email: 'testhubspot3@email.com',
+                    firstname: 'Test Hubspot1',
+                    anonymousId: '1111',
+                  },
+                },
+                type: 'identify',
+                anonymousId: '',
+                userId: 'user3',
+                integrations: {
+                  All: true,
+                },
+                sentAt: '2019-10-14T09:03:22.563Z',
+              },
+              metadata: {
+                jobId: 6,
+                userId: 'user3',
+              },
+              destination,
+            },
+            {
+              message: {
+                channel: 'web',
+                context: { traits: { email: 'user4@a.com' } },
+                type: 'track',
+                anonymousId: '',
+                userId: 'user4',
+                event: 'purchase',
+                properties: {
+                  user_actual_role: 'system_admin, system_user',
+                  user_actual_id: 12345,
+                },
+                sentAt: '2019-10-14T11:15:53.296Z',
+              },
+              metadata: {
+                jobId: 7,
+                userId: 'user4',
+              },
+              destination,
+            },
+            {
+              message: {
+                channel: 'web',
+                context: {
+                  traits: {
+                    email: 'testhubspot4@email.com',
+                    firstname: 'Test Hubspot4',
+                    anonymousId: '1111',
+                  },
+                },
+                type: 'identify',
+                anonymousId: '',
+                userId: 'user4',
+                integrations: {
+                  All: true,
+                },
+                sentAt: '2019-10-14T09:03:22.563Z',
+              },
+              metadata: {
+                jobId: 8,
+                userId: 'user4',
+              },
+              destination,
+            },
+            {
+              message: {
+                channel: 'web',
+                context: {
+                  traits: {
+                    email: 'testhubspot5@email.com',
+                    firstname: 'Test Hubspot51',
+                    anonymousId: '1111',
+                  },
+                },
+                type: 'identify',
+                anonymousId: '',
+                userId: 'user5',
+                integrations: {
+                  All: true,
+                },
+                sentAt: '2019-10-14T09:03:22.563Z',
+              },
+              metadata: {
+                jobId: 9,
+                userId: 'user5',
+              },
+              destination,
+            },
+            {
+              message: {
+                channel: 'web',
+                context: { traits: { email: 'user5@a.com' } },
+                type: 'track',
+                anonymousId: '',
+                userId: 'user5',
+                event: 'purchase',
+                properties: {
+                  user_actual_role: 'system_admin, system_user',
+                  user_actual_id: 12345,
+                },
+                sentAt: '2019-10-14T11:15:53.296Z',
+              },
+              metadata: {
+                jobId: 10,
+                userId: 'user5',
+              },
+              destination,
+            },
+            {
+              message: {
+                channel: 'web',
+                context: {
+                  traits: {
+                    email: 'testhubspot5@email.com',
+                    firstname: 'Test Hubspot5',
+                    anonymousId: '1111',
+                  },
+                },
+                type: 'identify',
+                anonymousId: '',
+                userId: 'user5',
+                integrations: {
+                  All: true,
+                },
+                sentAt: '2019-10-14T09:03:22.563Z',
+              },
+              metadata: {
+                jobId: 11,
+                userId: 'user5',
+              },
+              destination,
+            },
+          ],
+          destType: 'hs',
+        },
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: 'https://api.hubapi.com/crm/v3/objects/contacts/batch/create',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: 'Bearer dummy-access-token',
+                },
+                params: {},
+                body: {
+                  JSON: {
+                    inputs: [
+                      {
+                        properties: {
+                          email: 'testhubspot1@email.com',
+                          firstname: 'Test Hubspot1',
+                        },
+                      },
+                      {
+                        properties: {
+                          email: 'testhubspot5@email.com',
+                          firstname: 'Test Hubspot51',
+                        },
+                      },
+                    ],
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+              },
+              metadata: [
+                {
+                  jobId: 1,
+                  userId: 'user1',
+                },
+                {
+                  jobId: 9,
+                  userId: 'user5',
+                },
+              ],
+              batched: true,
+              statusCode: 200,
+              destination,
+            },
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: 'https://api.hubapi.com/events/v3/send',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: 'Bearer dummy-access-token',
+                },
+                params: {},
+                body: {
+                  JSON: {
+                    email: 'user1@a.com',
+                    eventName: 'pedummy-hubId_rs_hub_test',
+                    properties: {},
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+              },
+              metadata: [
+                {
+                  jobId: 2,
+                  userId: 'user1',
+                },
+              ],
+              batched: false,
+              statusCode: 200,
+              destination,
+            },
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: 'https://api.hubapi.com/events/v3/send',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: 'Bearer dummy-access-token',
+                },
+                params: {},
+                body: {
+                  JSON: {
+                    email: 'user2@a.com',
+                    eventName: 'pedummy-hubId_rs_hub_test',
+                    properties: {},
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+              },
+              metadata: [
+                {
+                  jobId: 3,
+                  userId: 'user2',
+                },
+              ],
+              batched: false,
+              statusCode: 200,
+              destination,
+            },
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: 'https://api.hubapi.com/events/v3/send',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: 'Bearer dummy-access-token',
+                },
+                params: {},
+                body: {
+                  JSON: {
+                    email: 'user3@a.com',
+                    eventName: 'pedummy-hubId_rs_hub_test',
+                    properties: {},
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+              },
+              metadata: [
+                {
+                  jobId: 5,
+                  userId: 'user3',
+                },
+              ],
+              batched: false,
+              statusCode: 200,
+              destination,
+            },
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: 'https://api.hubapi.com/events/v3/send',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: 'Bearer dummy-access-token',
+                },
+                params: {},
+                body: {
+                  JSON: {
+                    email: 'user4@a.com',
+                    eventName: 'pedummy-hubId_rs_hub_test',
+                    properties: {},
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+              },
+              metadata: [
+                {
+                  jobId: 7,
+                  userId: 'user4',
+                },
+              ],
+              batched: false,
+              statusCode: 200,
+              destination,
+            },
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: 'https://api.hubapi.com/events/v3/send',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: 'Bearer dummy-access-token',
+                },
+                params: {},
+                body: {
+                  JSON: {
+                    email: 'user5@a.com',
+                    eventName: 'pedummy-hubId_rs_hub_test',
+                    properties: {},
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+              },
+              metadata: [
+                {
+                  jobId: 10,
+                  userId: 'user5',
+                },
+              ],
+              batched: false,
+              statusCode: 200,
+              destination,
+            },
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: 'https://api.hubapi.com/crm/v3/objects/contacts/batch/create',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: 'Bearer dummy-access-token',
+                },
+                params: {},
+                body: {
+                  JSON: {
+                    inputs: [
+                      {
+                        properties: {
+                          email: 'testhubspot2@email.com',
+                          firstname: 'Test Hubspot1',
+                        },
+                      },
+                      {
+                        properties: {
+                          email: 'testhubspot3@email.com',
+                          firstname: 'Test Hubspot1',
+                        },
+                      },
+                      {
+                        properties: {
+                          email: 'testhubspot4@email.com',
+                          firstname: 'Test Hubspot4',
+                        },
+                      },
+                      {
+                        properties: {
+                          email: 'testhubspot5@email.com',
+                          firstname: 'Test Hubspot5',
+                        },
+                      },
+                    ],
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+              },
+              metadata: [
+                {
+                  jobId: 4,
+                  userId: 'user2',
+                },
+                {
+                  jobId: 6,
+                  userId: 'user3',
+                },
+                {
+                  jobId: 8,
+                  userId: 'user4',
+                },
+                {
+                  jobId: 11,
+                  userId: 'user5',
+                },
+              ],
+              batched: true,
+              statusCode: 200,
+              destination,
             },
           ],
         },

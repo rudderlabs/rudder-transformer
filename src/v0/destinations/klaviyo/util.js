@@ -53,12 +53,12 @@ const getIdFromNewOrExistingProfile = async ({ endpoint, payload, requestOptions
     payload,
     requestOptions,
     {
+      metadata,
       destType: 'klaviyo',
       feature: 'transformation',
       endpointPath,
       requestMethod: 'POST',
       module: 'router',
-      metadata,
     },
   );
 

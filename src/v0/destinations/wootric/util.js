@@ -20,7 +20,7 @@ const ACCESS_TOKEN_CACHE = new Cache(ACCESS_TOKEN_CACHE_TTL_SECONDS);
  * @param {*} destination
  * @returns
  */
-const getAccessToken = async (destination) => {
+const getAccessToken = async (destination, metadata) => {
   const { username, password, accountToken } = destination.Config;
   const accessTokenKey = destination.ID;
 
@@ -49,6 +49,7 @@ const getAccessToken = async (destination) => {
       endpointPath: `/oauth/token`,
       requestMethod: 'POST',
       module: 'router',
+      metadata,
     });
     const processedAuthResponse = processAxiosResponse(wootricAuthResponse);
     // If the request fails, throwing error.
@@ -79,7 +80,7 @@ const getAccessToken = async (destination) => {
  * @returns
  */
 
-const retrieveUserDetails = async (endUserId, externalId, accessToken) => {
+const retrieveUserDetails = async (endUserId, externalId, accessToken, metadata) => {
   let endpoint;
   if (isDefinedAndNotNullAndNotEmpty(endUserId)) {
     endpoint = `${BASE_ENDPOINT}/${VERSION}/end_users/${endUserId}`;
@@ -104,6 +105,7 @@ const retrieveUserDetails = async (endUserId, externalId, accessToken) => {
     endpointPath: `/v1/end_users/`,
     requestMethod: 'GET',
     module: 'router',
+    metadata,
   });
   const processedUserResponse = processAxiosResponse(userResponse);
 

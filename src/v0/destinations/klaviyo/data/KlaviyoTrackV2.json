@@ -1,7 +1,20 @@
 [
   {
     "destKey": "value",
-    "sourceKeys": ["properties.revenue", "properties.total", "properties.value"]
+    "sourceKeys": ["properties.revenue", "properties.total", "properties.value"],
+    "metadata": {
+      "excludes": [
+        "event",
+        "email",
+        "phone",
+        "revenue",
+        "total",
+        "value",
+        "value_currency",
+        "currency"
+      ],
+      "type": "isFloat"
+    }
   },
   {
     "destKey": "value_currency",

@@ -115,7 +115,7 @@ const buildRequestsForProfileSubscriptionAndMetadataArr = (
   profileSubscriptionAndMetadataArr.forEach((profileSubscriptionData) => {
     const batchedRequest = [];
     // we are keeping profiles request prior to subscription ones as first profile creation and then subscription should happen
-    if (profileSubscriptionData.profiles.length > 0) {
+    if (profileSubscriptionData.profiles?.length > 0) {
       batchedRequest.push(...getProfileRequests(profileSubscriptionData.profiles, destination));
     }
 

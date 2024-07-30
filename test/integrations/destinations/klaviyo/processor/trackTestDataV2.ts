@@ -229,4 +229,65 @@ export const trackTestData: ProcessorTestData[] = [
       },
     },
   },
+  {
+    id: 'klaviyo-track-150624-test-3',
+    name: 'klaviyo',
+    description: '150624 -> Invalid `value` Field Format',
+    scenario: 'Business',
+    successCriteria:
+      'Response should contain only event payload with vallue field as object and status code should be 200',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: overrideDestination(destination, { enforceEmailAsPrimary: true }),
+            message: generateSimplifiedTrackPayload({
+              type: 'track',
+              event: 'TestEven001',
+              sentAt: '2021-01-25T16:12:02.048Z',
+              userId: 'sajal12',
+              context: {
+                traits: {
+                  ...commonTraits,
+                  description: 'Sample description',
+                  name: 'Test',
+                  email: 'test@rudderstack.com',
+                  phone: '9112340375',
+                },
+              },
+              properties: { ...commonProps, value: { price: 9.99 } },
+              anonymousId: '9c6bd77ea9da3e68',
+              originalTimestamp: '2021-01-25T15:32:56.409Z',
+            }),
+            metadata: generateMetadata(1),
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            error: 'Invalid float value',
+            statTags: {
+              destType: 'KLAVIYO',
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              feature: 'processor',
+              implementation: 'native',
+              module: 'destination',
+              destinationId: 'default-destinationId',
+              workspaceId: 'default-workspaceId',
+            },
+            statusCode: 400,
+            metadata: generateMetadata(1),
+          },
+        ],
+      },
+    },
+  },
 ];

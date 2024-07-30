@@ -93,7 +93,7 @@ const fetchFinalSetOfTraits = (message) => {
  * @param {*} destination
  * @returns
  */
-const getProperties = async (destination) => {
+const getProperties = async (destination, metadata) => {
   let hubspotPropertyMap = {};
   let hubspotPropertyMapResponse;
   const { Config } = destination;
@@ -113,6 +113,7 @@ const getProperties = async (destination) => {
       endpointPath: `/properties/v1/contacts/properties`,
       requestMethod: 'GET',
       module: 'router',
+      metadata,
     });
     hubspotPropertyMapResponse = processAxiosResponse(hubspotPropertyMapResponse);
   } else {
@@ -127,6 +128,7 @@ const getProperties = async (destination) => {
         endpointPath: `/properties/v1/contacts/properties?hapikey`,
         requestMethod: 'GET',
         module: 'router',
+        metadata,
       },
     );
     hubspotPropertyMapResponse = processAxiosResponse(hubspotPropertyMapResponse);
@@ -211,7 +213,7 @@ const getUTCMidnightTimeStampValue = (propValue) => {
  * @param {*} propertyMap
  * @returns
  */
-const getTransformedJSON = async (message, destination, propertyMap) => {
+const getTransformedJSON = async ({ message, destination, metadata }, propertyMap) => {
   let rawPayload = {};
   const traits = fetchFinalSetOfTraits(message);
 
@@ -220,7 +222,7 @@ const getTransformedJSON = async (message, destination, propertyMap) => {
     if (!propertyMap) {
       // fetch HS properties
       // eslint-disable-next-line no-param-reassign
-      propertyMap = await getProperties(destination);
+      propertyMap = await getProperties(destination, metadata);
     }
     rawPayload = constructPayload(message, hsCommonConfigJson);
 
@@ -328,7 +330,7 @@ const getLookupFieldValue = (message, lookupField) => {
  * @param {*} destination
  * @returns
  */
-const searchContacts = async (message, destination) => {
+const searchContacts = async (message, destination, metadata) => {
   const { Config } = destination;
   let searchContactsResponse;
   let contactId;
@@ -380,6 +382,7 @@ const searchContacts = async (message, destination) => {
         endpointPath,
         requestMethod: 'POST',
         module: 'router',
+        metadata,
       },
     );
     searchContactsResponse = processAxiosResponse(searchContactsResponse);
@@ -392,6 +395,7 @@ const searchContacts = async (message, destination) => {
       endpointPath,
       requestMethod: 'POST',
       module: 'router',
+      metadata,
     });
     searchContactsResponse = processAxiosResponse(searchContactsResponse);
   }
@@ -531,6 +535,7 @@ const performHubSpotSearch = async (
   objectType,
   identifierType,
   destination,
+  metadata,
 ) => {
   let checkAfter = 1;
   const searchResults = [];
@@ -559,6 +564,7 @@ const performHubSpotSearch = async (
       endpointPath,
       requestMethod: 'POST',
       module: 'router',
+      metadata,
     });
 
     const processedResponse = processAxiosResponse(searchResponse);
@@ -658,7 +664,7 @@ const getRequestData = (identifierType, chunk) => {
  * @param {*} inputs
  * @param {*} destination
  */
-const getExistingContactsData = async (inputs, destination) => {
+const getExistingContactsData = async (inputs, destination, metadata) => {
   const { Config } = destination;
   const hsIdsToBeUpdated = [];
   const firstMessage = inputs[0].message;
@@ -686,6 +692,7 @@ const getExistingContactsData = async (inputs, destination) => {
       objectType,
       identifierType,
       destination,
+      metadata,
     );
     if (searchResults.length > 0) {
       hsIdsToBeUpdated.push(...searchResults);
@@ -731,9 +738,9 @@ const setHsSearchId = (input, id, useSecondaryProp = false) => {
  * For email as primary key we use `hs_additional_emails` as well property to search existing contacts
  * */
 
-const splitEventsForCreateUpdate = async (inputs, destination) => {
+const splitEventsForCreateUpdate = async (inputs, destination, metadata) => {
   // get all the id and properties of already existing objects needed for update.
-  const hsIdsToBeUpdated = await getExistingContactsData(inputs, destination);
+  const hsIdsToBeUpdated = await getExistingContactsData(inputs, destination, metadata);
 
   const resultInput = inputs.map((input) => {
     const { message } = input;
@@ -808,12 +815,12 @@ const getHsSearchId = (message) => {
  * @param {*} traits
  * @param {*} destination
  */
-const populateTraits = async (propertyMap, traits, destination) => {
+const populateTraits = async (propertyMap, traits, destination, metadata) => {
   const populatedTraits = traits;
   let propertyToTypeMap = propertyMap;
   if (!propertyToTypeMap) {
     // fetch HS properties
-    propertyToTypeMap = await getProperties(destination);
+    propertyToTypeMap = await getProperties(destination, metadata);
   }
 
   const keys = Object.keys(populatedTraits);

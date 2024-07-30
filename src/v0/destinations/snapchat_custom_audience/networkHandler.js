@@ -31,6 +31,7 @@ const prepareProxyReq = (request) => {
 };
 
 const scAudienceProxyRequest = async (request) => {
+  const { metadata } = request;
   const { endpoint, data, method, params, headers } = prepareProxyReq(request);
 
   const requestOptions = {
@@ -46,6 +47,7 @@ const scAudienceProxyRequest = async (request) => {
     endpointPath: '/segments/segmentId/users',
     requestMethod: requestOptions?.method,
     module: 'dataDelivery',
+    metadata,
   });
   return response;
 };

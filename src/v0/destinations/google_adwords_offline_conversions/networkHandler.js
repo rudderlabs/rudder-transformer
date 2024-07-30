@@ -43,7 +43,7 @@ const createJob = async ({ endpoint, headers, payload, metadata }) => {
   const { response, status } = createJobResponse;
   if (!isHttpStatusSuccess(status)) {
     throw new AbortedError(
-      `[Google Ads Offline Conversions]:: ${response?.error?.message} during google_ads_offline_store_conversions Job Creation`,
+      `[Google Ads Offline Conversions]:: ${response?.error?.message || response?.[0]?.error?.message} during google_ads_offline_store_conversions Job Creation`,
       status,
       response,
       getAuthErrCategory(createJobResponse),

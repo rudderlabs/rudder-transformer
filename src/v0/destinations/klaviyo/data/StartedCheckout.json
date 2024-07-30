@@ -8,7 +8,7 @@
     "destKey": "$value",
     "sourceKeys": "value",
     "required": false,
-    "metadata":{"type": "isFloat"}
+    "metadata": { "type": "isFloat" }
   },
   {
     "destKey": "Categories",

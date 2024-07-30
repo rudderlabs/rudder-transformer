@@ -29,37 +29,36 @@ steps:
       .message.context.mappedToDestination || false;
 
   - name: validateInput
-    condition: $.outputs.mappedToDestination
     template: |
       let messageType = $.context.messageType;
       $.assert(messageType, "message Type is not present. Aborting");
-      $.assert(messageType in {{$.EventType.([.RECORD])}}, "message type " + messageType + " is not supported");
       $.assertConfig(.destination.Config.apiBaseUrl, "API Base URL is not present. Aborting");
       $.assertConfig(.destination.Config.apiKey, "API Key is not present . Aborting");
       $.assertConfig(.destination.Config.apiSecret, "API Secret is not present. Aborting");
       $.assertConfig(.destination.Config.projectToken, "Project Token is not present. Aborting");
-      $.assertConfig(.destination.Config.catalogId, "Catalog Id is not present. Aborting");
-      const action = .message.action;
-      const item_id = .message.fields.item_id;
-      $.assert(action in {{$.RecordAction.([.INSERT,.UPDATE,.DELETE])}}, "message action " + action + " is not supported");
-      $.assert(item_id, "Item Id is required. Aborting");
-    else:
-      name: validateOtherInput
-      template: |
-        let messageType = $.context.messageType;
-        $.assert(messageType, "message Type is not present. Aborting");
-        $.assert(messageType in {{$.EventType.([.IDENTIFY,.TRACK,.PAGE,.SCREEN])}}, "message type " + messageType + " is not supported");
-        $.assertConfig(.destination.Config.apiBaseUrl, "API Base URL is not present. Aborting");
-        $.assertConfig(.destination.Config.apiKey, "API Key is not present . Aborting");
-        $.assertConfig(.destination.Config.apiSecret, "API Secret is not present. Aborting");
-        $.assertConfig(.destination.Config.projectToken, "Project Token is not present. Aborting");
-        $.assertConfig(.destination.Config.hardID, "Hard ID is not present. Aborting");
-        $.assertConfig(.destination.Config.softID, "Soft ID is not present. Aborting");
-        $.assert(.message.timestamp ?? .message.originalTimestamp, "Timestamp is not present. Aborting");
-        const userId = .message.().(
-        {{{{$.getGenericPaths("userIdOnly")}}}};
-        );
-        $.assert(userId || .message.anonymousId, "Either one of userId or anonymousId is required. Aborting");
+    steps:
+      - name: validateContactAndEventsInput
+        condition: $.outputs.mappedToDestination === false
+        template: |
+          let messageType = $.context.messageType;
+          $.assert(messageType in {{$.EventType.([.IDENTIFY,.TRACK,.PAGE,.SCREEN])}}, "message type " + messageType + " is not supported");
+          $.assertConfig(.destination.Config.hardID, "Hard ID is not present. Aborting");
+          $.assertConfig(.destination.Config.softID, "Soft ID is not present. Aborting");
+          $.assert(.message.timestamp ?? .message.originalTimestamp, "Timestamp is not present. Aborting");
+          const userId = .message.().(
+          {{{{$.getGenericPaths("userIdOnly")}}}};
+          );
+          $.assert(userId || .message.anonymousId, "Either one of userId or anonymousId is required. Aborting");
+      - name: validateCatalogInput
+        condition: $.outputs.mappedToDestination
+        template: |
+          let messageType = $.context.messageType;
+          $.assert(messageType in {{$.EventType.([.RECORD])}}, "message type " + messageType + " is not supported");
+          $.assertConfig(.destination.Config.catalogID, "Catalog Id is not present. Aborting");
+          const action = .message.action;
+          const item_id = .message.fields.item_id;
+          $.assert(action in {{$.RecordAction.([.INSERT,.UPDATE,.DELETE])}}, "message action " + action + " is not supported");
+          $.assert(item_id, "Item Id is required. Aborting");
 
   - name: prepareIdentifyPayload
     condition: $.context.messageType === {{$.EventType.IDENTIFY}}
@@ -130,37 +129,27 @@ steps:
       - name: prepareInsertActionPayload
         condition: .message.action === {{$.RecordAction.INSERT}}
         template: |
-          const fields = .message.fields;
-          const item_id = fields.item_id;
-          fields.item_id = null;
-          const properties = $.removeUndefinedAndNullValues(fields);
-          $.context.payload = {item_id, properties};
-          $.context.endpoint = $.getCreateBulkCatalogItemEndpoint(.destination.Config.apiBaseUrl, .destination.Config.projectToken, .destination.Config.catalogId);
+          $.context.payload = $.prepareRecordInsertOrUpdatePayload(.message.fields);
+          $.context.endpoint = $.getCreateBulkCatalogItemEndpoint(.destination.Config.apiBaseUrl, .destination.Config.projectToken, .destination.Config.catalogID);
           $.context.method = 'PUT';
       - name: prepareUpdateActionPayload
         condition: .message.action === {{$.RecordAction.UPDATE}}
         template: |
-          const fields = .message.fields;
-          const item_id = fields.item_id;
-          fields.item_id = null;
-          const properties = $.removeUndefinedAndNullValues(fields);
-          $.context.payload = {item_id, properties};
-          $.context.endpoint = $.getUpdateBulkCatalogItemEndpoint(.destination.Config.apiBaseUrl, .destination.Config.projectToken, .destination.Config.catalogId);
+          $.context.payload = $.prepareRecordInsertOrUpdatePayload(.message.fields);
+          $.context.endpoint = $.getUpdateBulkCatalogItemEndpoint(.destination.Config.apiBaseUrl, .destination.Config.projectToken, .destination.Config.catalogID);
           $.context.method = 'POST';
       - name: prepareDeleteActionPayload
         condition: .message.action === {{$.RecordAction.DELETE}}
         template: |
-          const fields = .message.fields;
-          const item_id = fields.item_id;
-          $.context.payload = item_id;
-          $.context.endpoint = $.getDeleteBulkCatalogItemEndpoint(.destination.Config.apiBaseUrl, .destination.Config.projectToken, .destination.Config.catalogId);
+          $.context.payload = .message.fields.item_id;
+          $.context.endpoint = $.getDeleteBulkCatalogItemEndpoint(.destination.Config.apiBaseUrl, .destination.Config.projectToken, .destination.Config.catalogID);
           $.context.method = 'DELETE';
 
   - name: buildResponse
     template: |
       const response = $.defaultRequestConfig();
       response.body.JSON = $.context.payload;
-      response.endpoint = $.context.endpoint
+      response.endpoint = $.context.endpoint;
       response.method = $.context.method;
       response.headers = {
         "Content-Type": "application/json",

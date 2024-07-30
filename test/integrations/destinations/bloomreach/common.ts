@@ -12,7 +12,7 @@ const destination: Destination = {
     projectToken: 'test-project-token',
     hardID: 'registered',
     softID: 'cookie',
-    catalogId: 'test-catalog-id',
+    catalogID: 'test-catalog-id',
   },
   DestinationDefinition: {
     DisplayName: displayName,

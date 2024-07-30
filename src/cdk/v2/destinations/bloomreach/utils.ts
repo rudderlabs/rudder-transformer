@@ -33,6 +33,12 @@ export const prepareCustomerIDs = (message: RudderMessage, destination: Destinat
   return customerIDs;
 };
 
+export const prepareRecordInsertOrUpdatePayload = (fields: any): any => {
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  const { item_id, ...properties } = fields;
+  return { item_id, properties };
+};
+
 const mergeMetadata = (batch: any[]) => batch.map((event) => event.metadata);
 
 const getMergedEvents = (batch: any[]) => batch.map((event) => event.message[0].body.JSON);

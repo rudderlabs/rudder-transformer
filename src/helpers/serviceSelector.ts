@@ -1,28 +1,22 @@
 import { PlatformError } from '@rudderstack/integrations-lib';
-import { ProcessorTransformationRequest, RouterTransformationRequestData } from '../types/index';
-import { INTEGRATION_SERVICE } from '../routes/utils/constants';
-import { CDKV1DestinationService } from '../services/destination/cdkV1Integration';
-import { CDKV2DestinationService } from '../services/destination/cdkV2Integration';
 import { DestinationService } from '../interfaces/DestinationService';
-import { NativeIntegrationDestinationService } from '../services/destination/nativeIntegration';
 import { SourceService } from '../interfaces/SourceService';
-import { NativeIntegrationSourceService } from '../services/source/nativeIntegration';
+import { INTEGRATION_SERVICE } from '../routes/utils/constants';
 import { ComparatorService } from '../services/comparator';
+import { CDKV2DestinationService } from '../services/destination/cdkV2Integration';
+import { NativeIntegrationDestinationService } from '../services/destination/nativeIntegration';
+import { NativeIntegrationSourceService } from '../services/source/nativeIntegration';
+import { ProcessorTransformationRequest, RouterTransformationRequestData } from '../types/index';
 import { FixMe } from '../util/types';
 
 export class ServiceSelector {
   private static serviceMap: Map<string, any> = new Map();
 
   private static services = {
-    [INTEGRATION_SERVICE.CDK_V1_DEST]: CDKV1DestinationService,
     [INTEGRATION_SERVICE.CDK_V2_DEST]: CDKV2DestinationService,
     [INTEGRATION_SERVICE.NATIVE_DEST]: NativeIntegrationDestinationService,
     [INTEGRATION_SERVICE.NATIVE_SOURCE]: NativeIntegrationSourceService,
   };
-
-  private static isCdkDestination(destinationDefinitionConfig: FixMe) {
-    return !!destinationDefinitionConfig?.cdkEnabled;
-  }
 
   private static isCdkV2Destination(destinationDefinitionConfig: FixMe) {
     return Boolean(destinationDefinitionConfig?.cdkV2Enabled);
@@ -68,9 +62,6 @@ export class ServiceSelector {
   ): DestinationService {
     const destinationDefinitionConfig: FixMe =
       events[0]?.destination?.DestinationDefinition?.Config;
-    if (this.isCdkDestination(destinationDefinitionConfig)) {
-      return this.fetchCachedService(INTEGRATION_SERVICE.CDK_V1_DEST);
-    }
     if (this.isCdkV2Destination(destinationDefinitionConfig)) {
       return this.fetchCachedService(INTEGRATION_SERVICE.CDK_V2_DEST);
     }

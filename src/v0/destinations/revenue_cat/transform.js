@@ -1,5 +1,4 @@
 const set = require('set-value');
-const { defaultRequestConfig } = require('rudder-transformer-cdk/build/utils');
 const {
   ConfigurationError,
   TransformationError,
@@ -13,6 +12,7 @@ const {
   extractCustomFields,
   defaultGetRequestConfig,
   getFieldValueFromMessage,
+  defaultRequestConfig,
 } = require('../../util');
 const {
   CONFIG_CATEGORIES,

@@ -1,5 +1,4 @@
-const { InstrumentationError } = require('@rudderstack/integrations-lib');
-const { isDefinedAndNotNull } = require('rudder-transformer-cdk/build/utils');
+const { InstrumentationError, isDefinedAndNotNull } = require('@rudderstack/integrations-lib');
 const {
   mappingConfig,
   ConfigCategories,

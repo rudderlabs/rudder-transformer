@@ -12,6 +12,7 @@ const destination: Destination = {
     projectToken: 'test-project-token',
     hardID: 'registered',
     softID: 'cookie',
+    catalogId: 'test-catalog-id',
   },
   DestinationDefinition: {
     DisplayName: displayName,
@@ -55,6 +56,12 @@ const properties = {
   key1: 'value1',
 };
 const endpoint = 'https://demoapp-api.bloomreach.com/track/v2/projects/test-project-token/batch';
+const insertEndpoint =
+  'https://demoapp-api.bloomreach.com/data/v2/projects/test-project-token/catalogs/test-catalog-id/items';
+const updateEndpoint =
+  'https://demoapp-api.bloomreach.com/data/v2/projects/test-project-token/catalogs/test-catalog-id/items/partial-update';
+const deleteEndpoint =
+  'https://demoapp-api.bloomreach.com/data/v2/projects/test-project-token/catalogs/test-catalog-id/items/bulk-delete';
 
 const processorInstrumentationErrorStatTags = {
   destType: destTypeInUpperCase,
@@ -85,6 +92,11 @@ const headers = {
   Authorization: 'Basic dGVzdC1hcGkta2V5OnRlc3QtYXBpLXNlY3JldA==',
 };
 
+const sampleContext = {
+  destinationFields: 'item_id, title, status, unprinted',
+  mappedToDestination: 'true',
+};
+
 export {
   destType,
   channel,
@@ -96,4 +108,8 @@ export {
   properties,
   endpoint,
   proxyV1RetryableErrorStatTags,
+  insertEndpoint,
+  updateEndpoint,
+  deleteEndpoint,
+  sampleContext,
 };

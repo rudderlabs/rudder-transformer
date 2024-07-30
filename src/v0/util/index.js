@@ -864,6 +864,8 @@ function formatValues(formattedVal, formattingType, typeFormat, integrationsObj)
         if (Number.isNaN(curFormattedVal)) {
           throw new InstrumentationError('Invalid float value');
         }
+      }
+    },
     removeSpacesAndDashes: () => {
       if (typeof formattedVal === 'string') {
         curFormattedVal = formattedVal.replace(/ /g, '').replace(/-/g, '');

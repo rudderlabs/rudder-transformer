@@ -1,4 +1,3 @@
-const { defaultRequestConfig } = require('rudder-transformer-cdk/build/utils');
 const lodash = require('lodash');
 const {
   NetworkError,
@@ -16,6 +15,7 @@ const {
   defaultBatchRequestConfig,
   getSuccessRespEvents,
   defaultPatchRequestConfig,
+  defaultRequestConfig,
 } = require('../../util');
 const tags = require('../../util/tags');
 const { handleHttpRequest } = require('../../../adapters/network');

@@ -566,11 +566,11 @@ export const validateTestWithZOD = (testPayload: TestCaseData, response: any) =>
 // -----------------------------
 // Helper functions
 
-export const generateMetadata = (jobId: number): any => {
+export const generateMetadata = (jobId: number, userId?: string): any => {
   return {
     jobId,
     attemptNum: 1,
-    userId: 'default-userId',
+    userId: userId || 'default-userId',
     sourceId: 'default-sourceId',
     destinationId: 'default-destinationId',
     workspaceId: 'default-workspaceId',

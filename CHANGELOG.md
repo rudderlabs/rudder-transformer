@@ -7,18 +7,9 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### Features
 
-* onboard cordial source ([#3593](https://github.com/rudderlabs/rudder-transformer/issues/3593)) ([cdea69c](https://github.com/rudderlabs/rudder-transformer/commit/cdea69c1ad368c236c5a6fba5f475e491e692280))
-
 
 ### Bug Fixes
 
-* add validation for cordial destination ([#3599](https://github.com/rudderlabs/rudder-transformer/issues/3599)) ([b7860a5](https://github.com/rudderlabs/rudder-transformer/commit/b7860a5b2b87fb61aaff8c68a904ac996d63efd3))
-* added support for ga4 v2 hybrid mode ([#3586](https://github.com/rudderlabs/rudder-transformer/issues/3586)) ([dedca07](https://github.com/rudderlabs/rudder-transformer/commit/dedca0796ee12478d57e020ef3c254afabc6e105))
-* codeowners file ([#3601](https://github.com/rudderlabs/rudder-transformer/issues/3601)) ([3ddf9e2](https://github.com/rudderlabs/rudder-transformer/commit/3ddf9e208702f27cbba80b032c3ed681a70c518f))
-* lint error ([1f9b83f](https://github.com/rudderlabs/rudder-transformer/commit/1f9b83ff6cc24a604c2373f10a1fedb5f879ea3c))
-* queryID aloglia discrepancy ([#3597](https://github.com/rudderlabs/rudder-transformer/issues/3597)) ([ebf9e3f](https://github.com/rudderlabs/rudder-transformer/commit/ebf9e3fa785a2372e680cec65a9a27187d7f0415))
-* update getConversionActionId function for gaoc ([#3594](https://github.com/rudderlabs/rudder-transformer/issues/3594)) ([68367f5](https://github.com/rudderlabs/rudder-transformer/commit/68367f5227c96f2700a773018b991b1e87a0774d))
-* update response handler for array type response ([d74178f](https://github.com/rudderlabs/rudder-transformer/commit/d74178f81911f029d897eed6d33939a0115829ae))
 
 ### [1.72.4](https://github.com/rudderlabs/rudder-transformer/compare/v1.72.3...v1.72.4) (2024-07-25)
 

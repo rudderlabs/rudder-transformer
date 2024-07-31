@@ -959,5 +959,87 @@ const deliveryCallsData = [
       },
     },
   },
+  {
+    httpReq: {
+      method: 'get',
+      url: 'https://api.eu.intercom.io/companies?company_id=company id',
+      data: {},
+      headers: commonHeaders,
+    },
+    httpRes: {
+      status: 200,
+      data: {
+        id: '123',
+      },
+    },
+  },
+  {
+    httpReq: {
+      method: 'delete',
+      url: 'https://api.eu.intercom.io/contacts/70701240741e45d040/companies/123',
+      data: {},
+      headers: commonHeaders,
+    },
+    httpRes: {
+      status: 200,
+      data: {},
+    },
+  },
+  {
+    httpReq: {
+      method: 'get',
+      url: 'https://api.eu.intercom.io/companies?company_id=unavailable company id',
+      data: {},
+      headers: commonHeaders,
+    },
+    httpRes: {
+      status: 404,
+      data: {
+        type: 'error.list',
+        request_id: 'req123',
+        errors: [
+          {
+            code: 'company_not_found',
+            message: 'Company Not Found',
+          },
+        ],
+      },
+    },
+  },
+  {
+    httpReq: {
+      method: 'get',
+      url: 'https://api.eu.intercom.io/companies?company_id=other company id',
+      data: {},
+      headers: commonHeaders,
+    },
+    httpRes: {
+      status: 200,
+      data: {
+        id: 'other123',
+      },
+    },
+  },
+  {
+    httpReq: {
+      method: 'delete',
+      url: 'https://api.eu.intercom.io/contacts/70701240741e45d040/companies/other123',
+      data: {},
+      headers: commonHeaders,
+    },
+    httpRes: {
+      status: 404,
+      data: {
+        type: 'error.list',
+        request_id: 'req123',
+        errors: [
+          {
+            code: 'company_not_found',
+            message: 'Company Not Found',
+          },
+        ],
+      },
+    },
+  },
 ];
 export const networkCallsData = [...deleteNwData, ...deliveryCallsData];

@@ -6,7 +6,7 @@ const {
   InstrumentationError,
 } = require('@rudderstack/integrations-lib');
 const tags = require('../../../../v0/util/tags');
-const { httpPOST } = require('../../../../adapters/network');
+const { httpPOST, handleHttpRequest } = require('../../../../adapters/network');
 const {
   processAxiosResponse,
   getDynamicErrorType,
@@ -164,6 +164,7 @@ const getCompaniesList = (payload) => {
       custom_attributes: removeUndefinedAndNullValues(customAttributes),
       name: company.name,
       industry: company.industry,
+      remove: company.remove,
     });
   }
   return companiesList;
@@ -507,6 +508,85 @@ const addOrUpdateTagsToCompany = async ({ message, destination, metadata }, id) 
   );
 };
 
+/**
+ * Api call to get company id provided by intercom
+ * Ref doc v1: https://developers.intercom.com/docs/references/1.4/rest-api/companies/view-a-company
+ * Ref doc v2: https://developers.intercom.com/docs/references/2.10/rest-api/api.intercom.io/companies/retrievecompany
+ * @param {*} company
+ * @param {*} destination
+ * @returns
+ */
+const getCompanyId = async (company, destination) => {
+  if (!company.id && !company.name) return undefined;
+  const { apiVersion } = destination.Config;
+  const headers = getHeaders(destination, apiVersion);
+  const baseEndPoint = getBaseEndpoint(destination);
+
+  const queryParam = company.id ? `company_id=${company.id}` : `name=${company.name}`;
+  const endpoint = `${baseEndPoint}/companies?${queryParam}`;
+
+  const statTags = {
+    destType: 'intercom',
+    feature: 'transformation',
+    endpointPath: '/companies',
+    requestMethod: 'GET',
+    module: 'router',
+  };
+
+  const { processedResponse: response } = await handleHttpRequest(
+    'GET',
+    endpoint,
+    {
+      headers,
+    },
+    statTags,
+  );
+
+  if (isHttpStatusSuccess(response.status)) {
+    return response.response.id;
+  }
+  intercomErrorHandler('Unable to get company id due to', response);
+  return undefined;
+};
+
+/**
+ * Api call to detach contact and company for intercom api version v2 (version 2.10)
+ * Ref doc: https://developers.intercom.com/docs/references/2.10/rest-api/api.intercom.io/contacts/detachcontactfromacompany
+ * @param {*} contactId
+ * @param {*} company
+ * @param {*} destination
+ * @returns
+ */
+const detachContactAndCompany = async (contactId, company, destination) => {
+  const companyId = await getCompanyId(company, destination);
+  if (!companyId) return;
+
+  const headers = getHeaders(destination);
+  const baseEndPoint = getBaseEndpoint(destination);
+  const endpoint = `${baseEndPoint}/contacts/${contactId}/companies/${companyId}`;
+
+  const statTags = {
+    destType: 'intercom',
+    feature: 'transformation',
+    endpointPath: 'contacts/companies',
+    requestMethod: 'DELETE',
+    module: 'router',
+  };
+
+  const { processedResponse: response } = await handleHttpRequest(
+    'DELETE',
+    endpoint,
+    {
+      headers,
+    },
+    statTags,
+  );
+
+  if (!isHttpStatusSuccess(response.status)) {
+    intercomErrorHandler('Unable to detach contact and company due to', response);
+  }
+};
+
 module.exports = {
   getName,
   getHeaders,
@@ -522,4 +602,5 @@ module.exports = {
   separateReservedAndRestMetadata,
   attachContactToCompany,
   addOrUpdateTagsToCompany,
+  detachContactAndCompany,
 };

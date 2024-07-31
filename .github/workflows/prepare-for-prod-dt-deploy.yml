@@ -53,6 +53,7 @@ jobs:
       load_target: development
       push_target: production
       build_type: dt
+      use_merge_sha: true
     secrets:
       DOCKERHUB_PROD_TOKEN: ${{ secrets.DOCKERHUB_PROD_TOKEN }}
 

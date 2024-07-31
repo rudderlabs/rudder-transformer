@@ -919,4 +919,153 @@ export const networkCallsData = [
       },
     },
   },
+  {
+    httpReq: {
+      url: 'https://track.hubspot.com/v1/event',
+      method: 'GET',
+      params: {
+        _a: 'dummy-hubId',
+        _n: 'test track event HS',
+        _m: 4.99,
+        email: 'testhubspot2@email.com',
+        firstname: 'Test Hubspot',
+      },
+    },
+    httpRes: {
+      status: 200,
+      data: {},
+    },
+  },
+  {
+    httpReq: {
+      url: 'https://api.hubapi.com/crm/v3/objects/contacts/batch/create',
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer validAccessToken',
+      },
+    },
+    httpRes: {
+      status: 200,
+      data: {
+        status: 'COMPLETE',
+        results: [
+          {
+            id: '44188066992',
+            properties: {
+              createdate: '2024-07-31T03:21:03.176Z',
+              email: 'testuser31848@testmail.com',
+              hs_all_contact_vids: '44188066992',
+              hs_email_domain: 'testmail.com',
+              hs_is_contact: 'true',
+              hs_is_unworked: 'true',
+              hs_lifecyclestage_lead_date: '2024-07-31T03:21:03.176Z',
+              hs_membership_has_accessed_private_content: '0',
+              hs_object_id: '44188066992',
+              hs_object_source: 'INTEGRATION',
+              hs_object_source_id: '3209723',
+              hs_object_source_label: 'INTEGRATION',
+              hs_pipeline: 'contacts-lifecycle-pipeline',
+              hs_registered_member: '0',
+              lastmodifieddate: '2024-07-31T03:21:03.176Z',
+              lifecyclestage: 'lead',
+            },
+            createdAt: '2024-07-31T03:21:03.176Z',
+            updatedAt: '2024-07-31T03:21:03.176Z',
+            archived: false,
+          },
+          {
+            id: '44188066993',
+            properties: {
+              createdate: '2024-07-31T03:21:03.176Z',
+              email: 'testuser31847@testmail.com',
+              hs_all_contact_vids: '44188066993',
+              hs_email_domain: 'testmail.com',
+              hs_is_contact: 'true',
+              hs_is_unworked: 'true',
+              hs_lifecyclestage_lead_date: '2024-07-31T03:21:03.176Z',
+              hs_membership_has_accessed_private_content: '0',
+              hs_object_id: '44188066993',
+              hs_object_source: 'INTEGRATION',
+              hs_object_source_id: '3209723',
+              hs_object_source_label: 'INTEGRATION',
+              hs_pipeline: 'contacts-lifecycle-pipeline',
+              hs_registered_member: '0',
+              lastmodifieddate: '2024-07-31T03:21:03.176Z',
+              lifecyclestage: 'lead',
+            },
+            createdAt: '2024-07-31T03:21:03.176Z',
+            updatedAt: '2024-07-31T03:21:03.176Z',
+            archived: false,
+          },
+        ],
+        startedAt: '2024-07-31T03:21:03.133Z',
+        completedAt: '2024-07-31T03:21:03.412Z',
+      },
+    },
+  },
+  {
+    httpReq: {
+      url: 'https://api.hubapi.com/events/v3/send',
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer dummy-access-token',
+      },
+    },
+    httpRes: {
+      status: 200,
+      data: {},
+    },
+  },
+  {
+    httpReq: {
+      url: 'https://api.hubapi.com/events/v3/send',
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer invalid-dummy-access-token',
+      },
+    },
+    httpRes: {
+      status: 401,
+      data: {
+        status: 'error',
+        message:
+          'Authentication credentials not found. This API supports OAuth 2.0 authentication and you can find more details at https://developers.hubspot.com/docs/methods/auth/oauth-overview',
+        correlationId: '501651f6-bb90-40f1-b0db-349f62916993',
+        category: 'INVALID_AUTHENTICATION',
+      },
+    },
+  },
+  {
+    httpReq: {
+      url: 'https://api.hubapi.com/crm/v3/associations/companies/contacts/batch/create',
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer dummy-access-token',
+      },
+    },
+    httpRes: {
+      status: 201,
+      data: {
+        completedAt: '2024-07-31T04:46:34.391Z',
+        requestedAt: '2024-07-31T04:46:34.391Z',
+        startedAt: '2024-07-31T04:46:34.391Z',
+        results: [
+          {
+            from: {
+              id: '9405415215',
+            },
+            to: {
+              id: '1',
+            },
+            type: 'contact_to_company',
+          },
+        ],
+        status: 'PENDING',
+      },
+    },
+  },
 ];

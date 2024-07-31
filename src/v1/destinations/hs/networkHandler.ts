@@ -15,7 +15,8 @@ const tags = require('../../../v0/util/tags');
  * @returns boolean
  */
 
-const findFeatureandVersion = (results, rudderJobMetadata, destinationConfig) => {
+const findFeatureandVersion = (response, rudderJobMetadata, destinationConfig) => {
+  const { results, errors } = response;
   if (Array.isArray(rudderJobMetadata) && rudderJobMetadata.length === 1) {
     return 'singleEvent';
   }
@@ -25,7 +26,13 @@ const findFeatureandVersion = (results, rudderJobMetadata, destinationConfig) =>
   if (destinationConfig?.apiVersion === 'newApi') {
     if (Array.isArray(results) && results.length === rudderJobMetadata.length)
       return 'newApiWithMultipleEvents';
-    return 'newApiWithMultipleEventsWrongLength';
+
+    if (
+      Array.isArray(results) &&
+      results.length !== rudderJobMetadata.length &&
+      results.length + errors.length === rudderJobMetadata.length
+    )
+      return 'newApiWithMultipleEventsAndErrors';
   }
   return 'unableToFindVersionWithMultipleEvents';
 };
@@ -44,9 +51,10 @@ const populateResponseWithDontBatch = (rudderJobMetadata, response) => {
   return responseWithIndividualEvents;
 };
 
-type Result = {
+type Response = {
   status?: string;
   results?: Array<object>;
+  errors?: Array<object>;
   startedAt?: Date;
   completedAt?: Date;
   message?: string;
@@ -64,10 +72,10 @@ const responseHandler = (responseParams) => {
 
   if (isHttpStatusSuccess(status)) {
     // populate different response for each event
-    const results = (response as Result)?.results;
+    const destResponse = response as Response;
     let proxyOutputObj: DeliveryJobState;
     const featureAndVersion = findFeatureandVersion(
-      results,
+      destResponse,
       rudderJobMetadata,
       destinationRequest?.destinationConfig,
     );
@@ -75,17 +83,17 @@ const responseHandler = (responseParams) => {
       case 'singleEvent':
         proxyOutputObj = {
           statusCode: status,
-          metadata: rudderJobMetadata,
-          error: response,
+          metadata: rudderJobMetadata[0],
+          error: JSON.stringify(destResponse),
         };
         responseWithIndividualEvents.push(proxyOutputObj);
         break;
       case 'newApiWithMultipleEvents':
-        rudderJobMetadata.forEach((metadata, index) => {
+        rudderJobMetadata.forEach((metadata: any, index: string | number) => {
           proxyOutputObj = {
             statusCode: 200,
             metadata,
-            error: JSON.stringify(results?.[index]),
+            error: JSON.stringify(destResponse.results?.[index]),
           };
           responseWithIndividualEvents.push(proxyOutputObj);
         });

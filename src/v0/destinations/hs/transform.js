@@ -192,6 +192,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
     batchedResponseList.push(...response.batchedResponseList);
     dontBatchEvents.push(...response.dontBatchEvents);
   });
+  console.log(JSON.stringify([...batchedResponseList, ...errorRespList, ...dontBatchEvents]));
   return [...batchedResponseList, ...errorRespList, ...dontBatchEvents];
 };
 

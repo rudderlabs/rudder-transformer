@@ -785,7 +785,7 @@ describe('attachContactToCompany utility test', () => {
       },
     });
 
-    await attachContactToCompany(payload, endpoint, destination);
+    await attachContactToCompany(payload, endpoint, { destination });
 
     expect(axios.post).toHaveBeenCalledWith(
       endpoint,
@@ -828,7 +828,7 @@ describe('attachContactToCompany utility test', () => {
       },
     });
 
-    await attachContactToCompany(payload, endpoint, destination);
+    await attachContactToCompany(payload, endpoint, { destination });
 
     expect(axios.post).toHaveBeenCalledWith(
       endpoint,
@@ -863,7 +863,7 @@ describe('attachContactToCompany utility test', () => {
     });
 
     try {
-      await attachContactToCompany(payload, endpoint, destination);
+      await attachContactToCompany(payload, endpoint, { destination });
     } catch (error) {
       expect(error.message).toEqual(
         'Unable to attach Contact or User to Company due to : {"type":"error.list","request_id":"123","errors":[{"code":"company_not_found","message":"Company Not Found"}]}',
@@ -893,7 +893,7 @@ describe('attachContactToCompany utility test', () => {
     });
 
     try {
-      await attachContactToCompany(payload, endpoint, destination);
+      await attachContactToCompany(payload, endpoint, { destination });
     } catch (error) {
       expect(error.message).toEqual(
         'Unable to attach Contact or User to Company due to : {"type":"error.list","request_id":"123","errors":[{"code":"parameter_not_found","message":"company not specified"}]}',
@@ -925,7 +925,7 @@ describe('addOrUpdateTagsToCompany utility test', () => {
       });
 
     axios.post.mockClear();
-    await addOrUpdateTagsToCompany(message, destination, id);
+    await addOrUpdateTagsToCompany({ message, destination }, id);
 
     expect(axios.post).toHaveBeenCalledTimes(2);
 
@@ -973,7 +973,7 @@ describe('addOrUpdateTagsToCompany utility test', () => {
 
     try {
       axios.post.mockClear();
-      await addOrUpdateTagsToCompany(message, destination, id);
+      await addOrUpdateTagsToCompany({ message, destination }, id);
     } catch (error) {
       expect(error.message).toEqual(
         `Unable to Add or Update the Tag to Company due to : {"type":"error.list","request_id":"request_401","errors":[{"code":"unauthorized","message":"Access Token Invalid"}]}`,
@@ -1008,7 +1008,7 @@ describe('addOrUpdateTagsToCompany utility test', () => {
 
     try {
       axios.post.mockClear();
-      await addOrUpdateTagsToCompany(message, destination, id);
+      await addOrUpdateTagsToCompany({ message, destination }, id);
     } catch (error) {
       expect(error.message).toEqual(
         `Unable to Add or Update the Tag to Company due to : {"type":"error.list","request_id":"request_429","errors":[{"code":"rate_limit_exceeded","message":"You have exceeded the rate limit. Please try again later."}]}`,
@@ -1022,7 +1022,7 @@ describe('addOrUpdateTagsToCompany utility test', () => {
     const id = 'companyId';
 
     axios.post.mockClear();
-    await addOrUpdateTagsToCompany(message, destination, id);
+    await addOrUpdateTagsToCompany({ message, destination }, id);
 
     expect(axios.post).not.toHaveBeenCalled();
   });

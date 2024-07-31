@@ -196,6 +196,7 @@ export class UserTransformService {
 
   public static async testTransformRoutine(events, trRevCode, libraryVersionIDs, credentials) {
     const response: FixMe = {};
+    let errorCode: number | undefined;
     try {
       if (!trRevCode || !trRevCode.code || !trRevCode.codeVersion) {
         throw new Error('Invalid Request. Missing parameters in transformation code block');
@@ -231,6 +232,13 @@ export class UserTransformService {
       response.body = {
         error: extractStackTraceUptoLastSubstringMatch(error.stack, SUPPORTED_FUNC_NAMES),
       };
+      errorCode = error.statusCode;
+    } finally {
+      const metaTags = getTransformationMetadata(events[0]?.metadata);
+      stats.counter('user_transform_test_count_total', events.length, {
+        status: errorCode || response.status,
+        ...metaTags,
+      });
     }
     return response;
   }

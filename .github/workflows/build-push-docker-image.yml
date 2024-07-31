@@ -42,9 +42,9 @@ jobs:
         id: getSHA
         run: |
           if ${{inputs.use_merge_sha}} == true; then
-            sha=$(${{github.sha}})
+            sha=$(echo ${{github.sha}})
           else
-            sha=$(${{ github.event.pull_request.head.sha }})
+            sha=$(echo ${{ github.event.pull_request.head.sha }})
           fi
           echo "SHA: $sha"
           echo "SHA=$sha" >> $GITHUB_OUTPUT

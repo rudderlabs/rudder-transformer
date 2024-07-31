@@ -84,6 +84,9 @@ steps:
       $.assert($.context.payload.external_id || $.context.payload.email, "Either email or userId is required for Identify call");
       const endpoint = $.getBaseEndpoint(.destination) + "/" + "contacts";
       $.context.requestMethod = $.outputs.searchContact ? 'PUT' : 'POST';
+      const company = .message.traits.company || .message.context.traits.company;
+      const shouldDetachUserAndCompany = $.outputs.searchContact && company.remove;
+      shouldDetachUserAndCompany ? await $.detachContactAndCompany($.outputs.searchContact, company, .destination);
       $.context.endpoint = $.outputs.searchContact ? endpoint + "/" + $.outputs.searchContact : endpoint;
       $.context.payload = $.removeUndefinedAndNullValues($.context.payload);
 

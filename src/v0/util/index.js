@@ -858,6 +858,14 @@ function formatValues(formattedVal, formattingType, typeFormat, integrationsObj)
         curFormattedVal = formattedVal.trim();
       }
     },
+    isFloat: () => {
+      if (isDefinedAndNotNull(formattedVal)) {
+        curFormattedVal = parseFloat(formattedVal);
+        if (Number.isNaN(curFormattedVal)) {
+          throw new InstrumentationError('Invalid float value');
+        }
+      }
+    },
     removeSpacesAndDashes: () => {
       if (typeof formattedVal === 'string') {
         curFormattedVal = formattedVal.replace(/ /g, '').replace(/-/g, '');

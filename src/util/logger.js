@@ -6,6 +6,7 @@ console.log('logWspIds', logWspIds);
 
 const isMetadataMatching = (m) => {
   const isDestIdConfigured = logDestIds?.find?.((envDId) => envDId && envDId === m?.destinationId);
+  console.log(JSON.stringify(m));
   const isWspIdConfigured = logWspIds?.find?.(
     (envWspId) => envWspId && envWspId === m?.workspaceId,
   );

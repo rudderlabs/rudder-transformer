@@ -3,6 +3,10 @@ name: Verify
 on:
   pull_request:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.sha }}
+  cancel-in-progress: true
+
 jobs:
   formatting-lint:
     name: Check for formatting & lint errors

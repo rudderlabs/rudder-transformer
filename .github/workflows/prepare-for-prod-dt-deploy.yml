@@ -58,6 +58,7 @@ jobs:
       push_target: production
       build_type: dt
       use_merge_sha: true
+      skip_tests: ${{startsWith(github.event.pull_request.head.ref, 'hotfix-release/')}}
     secrets:
       DOCKERHUB_PROD_TOKEN: ${{ secrets.DOCKERHUB_PROD_TOKEN }}
 

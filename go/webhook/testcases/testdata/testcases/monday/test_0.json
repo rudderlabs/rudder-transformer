@@ -1,0 +1,82 @@
+{
+  "name": "monday",
+  "description": "test-0",
+  "input": {
+    "request": {
+      "body": {
+        "event": {
+          "userId": 33556506,
+          "originalTriggerUuid": null,
+          "boardId": 3139815405,
+          "pulseId": 3160188786,
+          "pulseName": "New Sprint Item",
+          "groupId": "topics",
+          "groupName": "Group Title",
+          "groupColor": "#579bfc",
+          "isTopGroup": true,
+          "columnValues": {},
+          "app": "monday",
+          "type": "create_pulse",
+          "triggerTime": "2022-08-30T09:02:39.191Z",
+          "subscriptionId": 150881106,
+          "triggerUuid": "049869226bf6711705c62e301a2c3eee"
+        }
+      },
+      "headers": {
+        "Content-Type": "application/json"
+      }
+    }
+  },
+  "output": {
+    "response": {
+      "status": 200,
+      "body": "OK"
+    },
+    "queue": [
+      {
+        "type": "track",
+        "event": "Create Pulse",
+        "context": {
+          "library": {
+            "name": "unknown",
+            "version": "unknown"
+          },
+          "externalId": [
+            {
+              "id": 33556506,
+              "type": "mondayUserId"
+            }
+          ],
+          "integration": {
+            "name": "MONDAY"
+          }
+        },
+        "timestamp": "2022-08-30T09:02:39.191Z",
+        "properties": {
+          "app": "monday",
+          "type": "create_pulse",
+          "boardId": 3139815405,
+          "groupId": "topics",
+          "pulseId": 3160188786,
+          "groupName": "Group Title",
+          "pulseName": "New Sprint Item",
+          "groupColor": "#579bfc",
+          "isTopGroup": true,
+          "triggerUuid": "049869226bf6711705c62e301a2c3eee",
+          "columnValues": {},
+          "subscriptionId": 150881106,
+          "originalTriggerUuid": null
+        },
+        "anonymousId": "6f0a3dc76a335860e17fa1d8ab779742e2ca",
+        "integrations": {
+          "MONDAY": false
+        },
+        "originalTimestamp": "2022-08-30T09:02:39.191Z",
+        "receivedAt": "2024-03-03T04:48:29.000Z",
+        "request_ip": "192.0.2.30",
+        "messageId": "00000000-0000-0000-0000-000000000000"
+      }
+    ],
+    "errQueue": []
+  }
+}

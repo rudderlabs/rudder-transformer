@@ -211,7 +211,7 @@ const validateGroupPayload = (message) => {
  * @param {*} destination
  * @returns
  */
-const createCompany = async (message, destination) => {
+const createCompany = async (message, destination, metadata) => {
   const commonCompanyPropertiesPayload = constructPayload(
     message,
     MAPPING_CONFIG[CONFIG_CATEGORIES.CREATE_COMPANY.name],
@@ -240,6 +240,7 @@ const createCompany = async (message, destination) => {
     endpointPath: `/companies/`,
     requestMethod: 'POST',
     module: 'router',
+    metadata,
   });
   const data = processAxiosResponse(response);
   return data.response;
@@ -253,7 +254,7 @@ const createCompany = async (message, destination) => {
  * @param {*} company
  * @returns
  */
-const updateCompany = async (message, destination, company) => {
+const updateCompany = async (message, destination, company, metadata) => {
   const commonCompanyPropertiesPayload = constructPayload(
     message,
     MAPPING_CONFIG[CONFIG_CATEGORIES.UPDATE_COMPANY.name],
@@ -283,6 +284,7 @@ const updateCompany = async (message, destination, company) => {
     endpointPath: `/companies/`,
     requestMethod: 'PUT',
     module: 'router',
+    metadata,
   });
   const data = processAxiosResponse(response);
   return data.response;
@@ -296,7 +298,7 @@ const updateCompany = async (message, destination, company) => {
  * @param {*} appSubdomain
  * @returns
  */
-const getUserByUserKey = async (apiKey, userKey, appSubdomain) => {
+const getUserByUserKey = async (apiKey, userKey, appSubdomain, metadata) => {
   const endpoint = prepareUrl(`${BASE_ENDPOINT}/users/search/?key=${userKey}`, appSubdomain);
   const requestOptions = {
     headers: {
@@ -312,6 +314,7 @@ const getUserByUserKey = async (apiKey, userKey, appSubdomain) => {
     endpointPath: `/users/search`,
     requestMethod: 'GET',
     module: 'router',
+    metadata,
   });
   const processedUserResponse = processAxiosResponse(userResponse);
   if (processedUserResponse.status === 200) {
@@ -328,7 +331,7 @@ const getUserByUserKey = async (apiKey, userKey, appSubdomain) => {
  * @param {*} appSubdomain
  * @returns
  */
-const getUserByEmail = async (apiKey, email, appSubdomain) => {
+const getUserByEmail = async (apiKey, email, appSubdomain, metadata) => {
   if (!email) {
     throw new InstrumentationError('Lookup field : email value is not present');
   }
@@ -348,6 +351,7 @@ const getUserByEmail = async (apiKey, email, appSubdomain) => {
     endpointPath: `/users/search/?email`,
     requestMethod: 'GET',
     module: 'router',
+    metadata,
   });
   const processedUserResponse = processAxiosResponse(userResponse);
 
@@ -366,7 +370,7 @@ const getUserByEmail = async (apiKey, email, appSubdomain) => {
  * @param {*} appSubdomain
  * @returns
  */
-const getUserByPhoneNumber = async (apiKey, phoneNumber, appSubdomain) => {
+const getUserByPhoneNumber = async (apiKey, phoneNumber, appSubdomain, metadata) => {
   if (!phoneNumber) {
     throw new InstrumentationError('Lookup field : phone value is not present');
   }
@@ -389,6 +393,7 @@ const getUserByPhoneNumber = async (apiKey, phoneNumber, appSubdomain) => {
     endpointPath: `/users/search/?phone_number`,
     requestMethod: 'GET',
     module: 'router',
+    metadata,
   });
   const processedUserResponse = processAxiosResponse(userResponse);
 
@@ -415,7 +420,7 @@ const getUserByPhoneNumber = async (apiKey, phoneNumber, appSubdomain) => {
  * @param {*} destination
  * @returns
  */
-const getUserByCustomId = async (message, destination) => {
+const getUserByCustomId = async (message, destination, metadata) => {
   const { Config } = destination;
   const { appSubdomain, apiKey } = Config;
   const userCustomId = getFieldValueFromMessage(message, 'userId');
@@ -436,6 +441,7 @@ const getUserByCustomId = async (message, destination) => {
     endpointPath: `/users-by-id/`,
     requestMethod: 'GET',
     module: 'router',
+    metadata,
   });
   const processedUserResponse = processAxiosResponse(userResponse);
 
@@ -453,7 +459,7 @@ const getUserByCustomId = async (message, destination) => {
  * @param {*} destination
  * @returns
  */
-const getCompanyByCustomId = async (message, destination) => {
+const getCompanyByCustomId = async (message, destination, metadata) => {
   const { Config } = destination;
   const { appSubdomain, apiKey } = Config;
   const companyCustomId = getFieldValueFromMessage(message, 'groupId');
@@ -474,6 +480,7 @@ const getCompanyByCustomId = async (message, destination) => {
     endpointPath: `/companies-by-id/`,
     requestMethod: 'GET',
     module: 'router',
+    metadata,
   });
   const processedUserResponse = processAxiosResponse(response);
   if (processedUserResponse.status === 200) {
@@ -490,12 +497,12 @@ const getCompanyByCustomId = async (message, destination) => {
  * @param {*} destination
  * @returns
  */
-const retrieveUserFromLookup = async (message, destination) => {
+const retrieveUserFromLookup = async ({ message, destination, metadata }) => {
   const { Config } = destination;
   const { appSubdomain, apiKey } = Config;
   const userKey = getDestinationExternalID(message, 'userKey');
   if (isDefinedAndNotNullAndNotEmpty(userKey)) {
-    return getUserByUserKey(apiKey, userKey, appSubdomain);
+    return getUserByUserKey(apiKey, userKey, appSubdomain, metadata);
   }
 
   const integrationsObj = getIntegrationsObj(message, 'user');
@@ -504,11 +511,11 @@ const retrieveUserFromLookup = async (message, destination) => {
     const lookupFieldValue = getFieldValueFromMessage(message, lookupField);
 
     if (lookupField === 'email') {
-      return getUserByEmail(apiKey, lookupFieldValue, appSubdomain);
+      return getUserByEmail(apiKey, lookupFieldValue, appSubdomain, metadata);
     }
 
     if (lookupField === 'phone') {
-      return getUserByPhoneNumber(apiKey, lookupFieldValue, appSubdomain);
+      return getUserByPhoneNumber(apiKey, lookupFieldValue, appSubdomain, metadata);
     }
 
     throw new InstrumentationError(
@@ -517,11 +524,11 @@ const retrieveUserFromLookup = async (message, destination) => {
   } else {
     const userId = getValueFromMessage(message, 'userId');
     if (userId) {
-      return getUserByCustomId(message, destination);
+      return getUserByCustomId(message, destination, metadata);
     }
     const email = getFieldValueFromMessage(message, 'email');
     if (isDefinedAndNotNullAndNotEmpty(email)) {
-      return getUserByEmail(apiKey, email, appSubdomain);
+      return getUserByEmail(apiKey, email, appSubdomain, metadata);
     }
 
     throw new InstrumentationError('Default lookup field : email value is empty');
@@ -535,7 +542,7 @@ const retrieveUserFromLookup = async (message, destination) => {
  * @param {*} id
  * @returns
  */
-const createOrUpdateUserPayloadBuilder = (message, destination, id = null) => {
+const createOrUpdateUserPayloadBuilder = ({ message, destination }, id = null) => {
   const { appSubdomain } = destination.Config;
   const commonUserPropertiesPayload = constructPayload(
     message,

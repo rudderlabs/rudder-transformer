@@ -24,6 +24,7 @@ const generateAlphanumericId = (size = 36) =>
 export const getTestDataFilePaths = (dirPath: string, opts: OptionValues): string[] => {
   const globPattern = join(dirPath, '**', 'data.ts');
   let testFilePaths = globSync(globPattern);
+
   if (opts.destination || opts.source) {
     testFilePaths = testFilePaths.filter((testFile) =>
       testFile.includes(opts.destination || opts.source),
@@ -565,11 +566,11 @@ export const validateTestWithZOD = (testPayload: TestCaseData, response: any) =>
 // -----------------------------
 // Helper functions
 
-export const generateMetadata = (jobId: number): any => {
+export const generateMetadata = (jobId: number, userId?: string): any => {
   return {
     jobId,
     attemptNum: 1,
-    userId: 'default-userId',
+    userId: userId || 'default-userId',
     sourceId: 'default-sourceId',
     destinationId: 'default-destinationId',
     workspaceId: 'default-workspaceId',

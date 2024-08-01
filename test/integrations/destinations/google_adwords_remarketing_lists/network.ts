@@ -207,4 +207,38 @@ export const networkCallsData = [
       data: {},
     },
   },
+  {
+    httpReq: {
+      url: 'https://googleads.googleapis.com/v16/customers/customerid/offlineUserDataJobs:create',
+      data: {
+        job: {
+          type: 'CUSTOMER_MATCH_USER_LIST',
+          customerMatchUserListMetadata: {
+            userList: 'customers/7693729833/userLists/709078448',
+            consent: {
+              adPersonalization: 'UNSPECIFIED',
+              adUserData: 'UNSPECIFIED',
+            },
+          },
+        },
+      },
+      headers: {
+        Authorization: 'Bearer dummy-access',
+        'Content-Type': 'application/json',
+        'developer-token': 'dummy-dev-token',
+      },
+      method: 'POST',
+    },
+    httpRes: {
+      status: 401,
+      data: {
+        error: {
+          code: 401,
+          message:
+            'Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.',
+          status: 'UNAUTHENTICATED',
+        },
+      },
+    },
+  },
 ];

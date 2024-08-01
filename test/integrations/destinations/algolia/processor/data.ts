@@ -2429,4 +2429,145 @@ export const data = [
       },
     },
   },
+  {
+    name: 'algolia',
+    description: 'queryID and queryId inconsistency test',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              channel: 'web',
+              context: {
+                app: {
+                  build: '1.0.0',
+                  name: 'RudderLabs JavaScript SDK',
+                  namespace: 'com.rudderlabs.javascript',
+                  version: '1.0.0',
+                },
+                traits: {
+                  email: 'testone@gmail.com',
+                  firstName: 'test',
+                  lastName: 'one',
+                },
+                library: {
+                  name: 'RudderLabs JavaScript SDK',
+                  version: '1.0.0',
+                },
+                userAgent:
+                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
+                locale: 'en-US',
+                ip: '0.0.0.0',
+                os: {
+                  name: '',
+                  version: '',
+                },
+                screen: {
+                  density: 2,
+                },
+                page: {
+                  path: '/destinations/ometria',
+                  referrer: '',
+                  search: '',
+                  title: '',
+                  url: 'https://docs.rudderstack.com/destinations/ometria',
+                  category: 'destination',
+                  initial_referrer: 'https://docs.rudderstack.com',
+                  initial_referring_domain: 'docs.rudderstack.com',
+                },
+              },
+              type: 'track',
+              messageId: '84e26acc-56a5-4835-8233-591137fca468',
+              session_id: '3049dc4c-5a95-4ccd-a3e7-d74a7e411f22',
+              originalTimestamp: '2019-10-14T09:03:17.562Z',
+              anonymousId: '123456',
+              event: 'product list viewed',
+              userId: 'testuserId1',
+              properties: {
+                index: 'products',
+                eventSubtype: 'purchase',
+                filters: ['field1:hello', 'val1:val2'],
+                queryId: '43b15df305339e827f0ac0bdc5ebcaa7',
+              },
+              integrations: {
+                All: true,
+              },
+              sentAt: '2019-10-14T09:03:22.563Z',
+            },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
+            destination: {
+              DestinationDefinition: {
+                Config: {
+                  cdkV2Enabled: true,
+                  excludeKeys: [],
+                  includeKeys: [],
+                },
+              },
+              Config: {
+                apiKey: 'dummyApiKey',
+                applicationId: 'O2YARRI15I',
+                eventTypeSettings: [
+                  {
+                    from: 'product list viewed',
+                    to: 'conversion',
+                  },
+                ],
+              },
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              body: {
+                JSON: {
+                  events: [
+                    {
+                      index: 'products',
+                      queryID: '43b15df305339e827f0ac0bdc5ebcaa7',
+                      filters: ['field1:hello', 'val1:val2'],
+                      userToken: 'testuserId1',
+                      eventName: 'product list viewed',
+                      eventType: 'conversion',
+                      eventSubtype: 'purchase',
+                    },
+                  ],
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://insights.algolia.io/1/events',
+              headers: {
+                'X-Algolia-Application-Id': 'O2YARRI15I',
+                'X-Algolia-API-Key': 'dummyApiKey',
+              },
+              params: {},
+              files: {},
+              userId: '',
+            },
+            statusCode: 200,
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
+          },
+        ],
+      },
+    },
+  },
 ];

@@ -1,0 +1,132 @@
+{
+  "name": "mailjet",
+  "description": "MailJet Multiple payloads in single request",
+  "input": {
+    "request": {
+      "body": [
+        {
+          "event": "open",
+          "time": 1704458040,
+          "MessageID": 987654,
+          "Message_GUID": "876r-oihugyf-7tfygh",
+          "email": "abc@r.com",
+          "mj_campaign_id": 321,
+          "mj_contact_id": 123,
+          "customcampaign": "test_campaign",
+          "url": "https://www.example.com/",
+          "ip": "ip_info",
+          "geo": "some geo info",
+          "agent": "mailjet api test"
+        },
+        {
+          "event": "click",
+          "time": 1704458041,
+          "MessageID": 12345234567,
+          "Message_GUID": "12345-kjhgfd-2efv",
+          "email": "abc@r.com",
+          "mj_campaign_id": 12,
+          "mj_contact_id": 32532,
+          "customcampaign": "test_campaign",
+          "url": "https://www.example.com/",
+          "ip": "ip_info",
+          "geo": "some geo info",
+          "agent": "mailjet api test"
+        }
+      ],
+      "headers": {
+        "Content-Type": "application/json"
+      }
+    }
+  },
+  "output": {
+    "response": {
+      "status": 200,
+      "body": "OK"
+    },
+    "queue": [
+      {
+        "context": {
+          "library": {
+            "name": "unknown",
+            "version": "unknown"
+          },
+          "ip": "ip_info",
+          "integration": {
+            "name": "MailJet"
+          },
+          "traits": {
+            "email": "abc@r.com"
+          },
+          "page": {
+            "url": "https://www.example.com/"
+          },
+          "userAgent": "mailjet api test",
+          "externalId": [
+            {
+              "type": "mailjetContactId",
+              "id": 123
+            }
+          ]
+        },
+        "integrations": {
+          "MailJet": false
+        },
+        "type": "track",
+        "event": "open",
+        "properties": {
+          "customcampaign": "test_campaign",
+          "mj_campaign_id": 321,
+          "ip": "ip_info",
+          "url": "https://www.example.com/"
+        },
+        "userId": "593a5aff0b445b3b77a6d9676b7ec86e",
+        "originalTimestamp": "2024-01-05T12:34:00.000Z",
+        "receivedAt": "2024-03-03T04:48:29.000Z",
+        "request_ip": "192.0.2.30",
+        "messageId": "00000000-0000-0000-0000-000000000000"
+      },
+      {
+        "context": {
+          "library": {
+            "name": "unknown",
+            "version": "unknown"
+          },
+          "page": {
+            "url": "https://www.example.com/"
+          },
+          "integration": {
+            "name": "MailJet"
+          },
+          "traits": {
+            "email": "abc@r.com"
+          },
+          "userAgent": "mailjet api test",
+          "ip": "ip_info",
+          "externalId": [
+            {
+              "type": "mailjetContactId",
+              "id": 32532
+            }
+          ]
+        },
+        "integrations": {
+          "MailJet": false
+        },
+        "type": "track",
+        "event": "click",
+        "properties": {
+          "customcampaign": "test_campaign",
+          "mj_campaign_id": 12,
+          "ip": "ip_info",
+          "url": "https://www.example.com/"
+        },
+        "userId": "593a5aff0b445b3b77a6d9676b7ec86e",
+        "originalTimestamp": "2024-01-05T12:34:01.000Z",
+        "receivedAt": "2024-03-03T04:48:29.000Z",
+        "request_ip": "192.0.2.30",
+        "messageId": "00000000-0000-0000-0000-000000000000"
+      }
+    ],
+    "errQueue": []
+  }
+}

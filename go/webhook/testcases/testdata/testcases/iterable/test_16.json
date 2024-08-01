@@ -1,0 +1,96 @@
+{
+  "name": "iterable",
+  "description": "test-16",
+  "input": {
+    "request": {
+      "body": {
+        "email": "docs@iterable.com",
+        "eventName": "inAppSendSkip",
+        "dataFields": {
+          "messageContext": {
+            "saveToInbox": false,
+            "trigger": "immediate"
+          },
+          "campaignId": 732678,
+          "contentId": 18997,
+          "messageId": "vA16d48VVi4LQ5hMuZuquKzL0BXTdQJJUMJRjKnL1",
+          "workflowName": null,
+          "emailId": "c732678:t1032729:docs@iterable.com",
+          "locale": null,
+          "templateId": 1032729,
+          "inAppBody": "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML",
+          "expiresAt": "2019-08-08 22:37:40 +00:00",
+          "labels": [],
+          "createdAt": "2019-08-07 22:37:40 +00:00",
+          "templateName": "My template name",
+          "messageTypeId": 14381,
+          "experimentId": null,
+          "campaignName": "My campaign name",
+          "workflowId": null,
+          "channelId": 13353,
+          "email": "docs@iterable.com"
+        }
+      },
+      "headers": {
+        "Content-Type": "application/json"
+      }
+    }
+  },
+  "output": {
+    "response": {
+      "status": 200,
+      "body": "OK"
+    },
+    "queue": [
+      {
+        "userId": "0e13848b1c7e27eb5d88c5d35b70783e",
+        "context": {
+          "integration": {
+            "name": "Iterable",
+            "version": "1.0.0"
+          },
+          "library": {
+            "name": "unknown",
+            "version": "unknown"
+          },
+          "traits": {
+            "email": "docs@iterable.com"
+          }
+        },
+        "event": "inAppSendSkip",
+        "integrations": {
+          "Iterable": false
+        },
+        "properties": {
+          "messageContext": {
+            "saveToInbox": false,
+            "trigger": "immediate"
+          },
+          "campaignId": 732678,
+          "contentId": 18997,
+          "messageId": "vA16d48VVi4LQ5hMuZuquKzL0BXTdQJJUMJRjKnL1",
+          "workflowName": null,
+          "emailId": "c732678:t1032729:docs@iterable.com",
+          "locale": null,
+          "templateId": 1032729,
+          "inAppBody": "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML",
+          "expiresAt": "2019-08-08 22:37:40 +00:00",
+          "labels": [],
+          "createdAt": "2019-08-07 22:37:40 +00:00",
+          "templateName": "My template name",
+          "messageTypeId": 14381,
+          "experimentId": null,
+          "campaignName": "My campaign name",
+          "workflowId": null,
+          "channelId": 13353
+        },
+        "receivedAt": "2019-08-07T22:37:40.000Z",
+        "timestamp": "2019-08-07T22:37:40.000Z",
+        "type": "track",
+        "request_ip": "192.0.2.30",
+        "messageId": "00000000-0000-0000-0000-000000000000"
+      }
+    ],
+    "errQueue": []
+  }
+}

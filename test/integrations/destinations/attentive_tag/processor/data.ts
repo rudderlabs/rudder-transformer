@@ -1,5 +1,5 @@
 export const mockFns = (_) => {
-  jest.useFakeTimers().setSystemTime(new Date('2023-10-14'));
+  jest.spyOn(Date, 'now').mockReturnValue(new Date('2023-10-14T00:00:00.000Z').valueOf());
 };
 
 export const data = [
@@ -1678,4 +1678,4 @@ export const data = [
       },
     },
   },
-];
+].map((d) => ({ ...d, mockFns }));

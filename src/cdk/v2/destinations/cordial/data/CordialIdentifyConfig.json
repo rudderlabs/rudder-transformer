@@ -1,0 +1,11 @@
+[
+  {
+    "destKey": "channels.email.address",
+    "sourceKeys": "emailOnly",
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "channels.email.subscribeStatus",
+    "sourceKeys": ["traits.subscribeStatus", "context.traits.subscribeStatus"]
+  }
+]

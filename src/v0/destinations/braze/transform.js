@@ -204,7 +204,7 @@ function getUserAttributesObject(message, mappingJson, destination) {
  * @param {*} message
  * @param {*} destination
  */
-async function processIdentify(message, destination) {
+async function processIdentify({ message, destination, metadata }) {
   const identifyPayload = getIdentifyPayload(message);
   const identifyEndpoint = getIdentifyEndpoint(getEndpointFromConfig(destination));
   const { processedResponse: brazeIdentifyResp } = await handleHttpRequest(
@@ -224,6 +224,7 @@ async function processIdentify(message, destination) {
       requestMethod: 'POST',
       module: 'router',
       endpointPath: '/users/identify',
+      metadata,
     },
   );
 

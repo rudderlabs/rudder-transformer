@@ -33,7 +33,7 @@ type Input struct {
 }
 type Request struct {
 	Method   string
-	RawQuery string `json:"query"`
+	RawQuery string `json:"query_parameters"`
 	Headers  map[string]string
 	Body     json.RawMessage
 }
@@ -41,7 +41,7 @@ type Request struct {
 type Output struct {
 	Response Response
 	Queue    []json.RawMessage
-	ErrQueue []json.RawMessage `json:"err_queue"`
+	ErrQueue []json.RawMessage `json:"errQueue"`
 }
 
 type Response struct {

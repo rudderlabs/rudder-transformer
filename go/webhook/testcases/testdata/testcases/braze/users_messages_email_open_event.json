@@ -1,0 +1,117 @@
+{
+  "name": "braze",
+  "description": "users.messages.email.Open event",
+  "input": {
+    "request": {
+      "body": {
+        "events": [
+          {
+            "event_type": "users.messages.email.Open",
+            "id": "a1234567-89ab-cdef-0123-456789abcdef",
+            "time": 1477502783,
+            "user": {
+              "user_id": "0123456789abcdef01234567",
+              "external_user_id": "user_id",
+              "timezone": "America/Chicago"
+            },
+            "properties": {
+              "canvas_id": "11234567-89ab-cdef-0123-456789abcdef",
+              "canvas_name": "My Cool Canvas",
+              "canvas_variation_id": "31234567-89ab-cdef-0123-456789abcdef",
+              "canvas_step_id": "41234567-89ab-cdef-0123-456789abcdef",
+              "dispatch_id": "12345qwert",
+              "email_address": "test@test.com",
+              "send_id": "f123456789abcdef01234567",
+              "user_agent": "Mozilla/5.0(Macintosh;IntelMacOSX10_13_5)AppleWebKit/537.36(KHTML,likeGecko)Chrome/67.0.3396.99Safari/537.36"
+            }
+          }
+        ],
+        "source": {
+          "ID": "2hgvYyU5TYaFvVzBge6tF2UKoeG",
+          "OriginalID": "",
+          "Name": "Braze source",
+          "SourceDefinition": {
+            "ID": "1lh9senY3vrBg4JQXswWzyYBTOO",
+            "Name": "Braze",
+            "Category": "webhook",
+            "Type": "cloud"
+          },
+          "Config": {
+            "customMapping": [
+              {
+                "from": "randomEvent",
+                "to": "In-App Message Clicked"
+              }
+            ]
+          },
+          "Enabled": true,
+          "WorkspaceID": "2hSS1hZ8kuCpUZAAYsQucAFdob9",
+          "Destinations": null,
+          "WriteKey": "2hgvYykpvMaE5Eg47Au8RWC9Yza",
+          "DgSourceTrackingPlanConfig": {
+            "sourceId": "",
+            "version": 0,
+            "config": null,
+            "mergedConfig": null,
+            "deleted": false,
+            "trackingPlan": {
+              "id": "",
+              "version": 0
+            }
+          },
+          "Transient": false,
+          "GeoEnrichment": {
+            "Enabled": false
+          }
+        }
+      },
+      "headers": {
+        "Content-Type": "application/json"
+      }
+    }
+  },
+  "output": {
+    "response": {
+      "status": 200,
+      "body": "OK"
+    },
+    "queue": [
+      {
+        "context": {
+          "library": {
+            "name": "unknown",
+            "version": "unknown"
+          },
+          "integration": {
+            "name": "Braze"
+          },
+          "timezone": "America/Chicago",
+          "userAgent": "Mozilla/5.0(Macintosh;IntelMacOSX10_13_5)AppleWebKit/537.36(KHTML,likeGecko)Chrome/67.0.3396.99Safari/537.36"
+        },
+        "integrations": {
+          "Braze": false
+        },
+        "type": "track",
+        "event": "users.messages.email.Open",
+        "messageId": "a1234567-89ab-cdef-0123-456789abcdef",
+        "anonymousId": "0123456789abcdef01234567",
+        "userId": "user_id",
+        "traits": {
+          "email": "test@test.com"
+        },
+        "properties": {
+          "canvas_id": "11234567-89ab-cdef-0123-456789abcdef",
+          "canvas_name": "My Cool Canvas",
+          "canvas_variation_id": "31234567-89ab-cdef-0123-456789abcdef",
+          "canvas_step_id": "41234567-89ab-cdef-0123-456789abcdef",
+          "dispatch_id": "12345qwert",
+          "send_id": "f123456789abcdef01234567"
+        },
+        "timestamp": "2016-10-26T17:26:23.000Z",
+        "receivedAt": "2024-03-03T04:48:29.000Z",
+        "request_ip": "192.0.2.30"
+      }
+    ],
+    "errQueue": []
+  }
+}

@@ -465,4 +465,10 @@ export const data = [
       },
     },
   },
-];
+].map((tc) => ({
+  ...tc,
+  mockFns: (_) => {
+    jest.spyOn(Date.prototype, 'toISOString').mockReturnValue('2015-02-23T22:28:55Z');
+    // jest.spyOn(Date, 'now').mockReturnValue(new Date('2023-10-14T12:34:56.789Z').valueOf());
+  },
+}));

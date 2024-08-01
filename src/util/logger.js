@@ -1,6 +1,9 @@
 const logDestIds = (process.env.LOG_DEST_IDS ?? '').split(',')?.map?.((s) => s?.trim?.()); // should be comma separated
 const logWspIds = (process.env.LOG_WSP_IDS ?? '').split(',')?.map?.((s) => s?.trim?.()); // should be comma separated
 
+console.log('logDestIds', logDestIds);
+console.log('logWspIds', logWspIds);
+
 const isMetadataMatching = (m) => {
   const isDestIdConfigured = logDestIds?.find?.((envDId) => envDId && envDId === m?.destinationId);
   const isWspIdConfigured = logWspIds?.find?.(

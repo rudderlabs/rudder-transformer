@@ -53,13 +53,13 @@ const commonDestination = {
   Enabled: true,
 };
 
+const buf = Buffer.from('5398e214ae99c2e50afb709a3bc423f9', 'hex');
+
 export const mockFns = (_) => {
   // @ts-ignore
-  jest.useFakeTimers().setSystemTime(new Date('2019-10-14'));
-  jest.mock('crypto', () => ({
-    ...jest.requireActual('crypto'),
-    randomBytes: jest.fn().mockReturnValue(Buffer.from('5398e214ae99c2e50afb709a3bc423f9', 'hex')),
-  }));
+  jest.spyOn(Date.prototype, 'toISOString').mockReturnValueOnce('2019-10-14T00:00:00.000Z');
+  // @ts-ignore
+  jest.spyOn(crypto, 'randomBytes').mockReturnValue(buf);
 };
 
 export const data = [

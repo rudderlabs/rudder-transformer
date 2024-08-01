@@ -2,7 +2,7 @@ import { skip } from 'node:test';
 import utils from '../../../../src/v0/util';
 
 const defaultMockFns = () => {
-  jest.spyOn(utils, 'generateUUID').mockReturnValue('97fcd7b2-cc24-47d7-b776-057b7b199513');
+  jest.spyOn(utils, 'generateUUID').mockReturnValueOnce('97fcd7b2-cc24-47d7-b776-057b7b199513');
 };
 
 export const data = [
@@ -11,7 +11,6 @@ export const data = [
     description: 'Simple track call',
     module: 'source',
     version: 'v0',
-    skipGo: 'FIXME',
     input: {
       request: {
         body: [
@@ -45,6 +44,7 @@ export const data = [
             output: {
               batch: [
                 {
+                  anonymousId: '97fcd7b2-cc24-47d7-b776-057b7b199513',
                   context: {
                     library: {
                       name: 'unknown',
@@ -70,7 +70,6 @@ export const data = [
                     custom: 'custom',
                     tracker_name: 'dummy',
                   },
-                  anonymousId: '97fcd7b2-cc24-47d7-b776-057b7b199513',
                 },
               ],
             },
@@ -107,15 +106,19 @@ export const data = [
     output: {
       response: {
         status: 200,
-        error: 'Query_parameters is missing',
-        statTags: {
-          destinationId: 'Non determinable',
-          errorCategory: 'transformation',
-          implementation: 'native',
-          module: 'source',
-          workspaceId: 'Non determinable',
-        },
-        statusCode: 400,
+        body: [
+          {
+            error: 'Query_parameters is missing',
+            statTags: {
+              destinationId: 'Non determinable',
+              errorCategory: 'transformation',
+              implementation: 'native',
+              module: 'source',
+              workspaceId: 'Non determinable',
+            },
+            statusCode: 400,
+          },
+        ],
       },
     },
     mockFns: () => {

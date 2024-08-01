@@ -3670,6 +3670,9 @@ export const data = [
         ],
       },
     },
+    mockFns: (_) => {
+      jest.spyOn(Date, 'now').mockReturnValueOnce(new Date('2018-12-20T10:26:33.451Z').valueOf());
+    },
   },
   {
     name: 'mp',

@@ -3,20 +3,28 @@
   "description": "Invalid topic",
   "input": {
     "request": {
-      "query": "signature=rudderstack"
+      "body": {
+        "query_parameters": {
+          "signature": ["rudderstack"],
+          "writeKey": ["sample-write-key"]
+        }
+      },
+      "headers": {
+        "Content-Type": "application/json"
+      }
     }
   },
   "output": {
     "response": {
       "status": 400,
-      "contentType": "text/plain",
-      "body": "Invalid topic in query_parameters\n"
+      "body": "Invalid topic in query_parameters"
     },
-    "err_queue": [
+    "queue": [],
+    "errQueue": [
       {
         "query_parameters": {
-          "writeKey": ["{{.WriteKey}}"],
-          "signature": ["rudderstack"]
+          "signature": ["rudderstack"],
+          "writeKey": ["sample-write-key"]
         }
       }
     ]

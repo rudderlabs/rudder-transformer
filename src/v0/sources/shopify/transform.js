@@ -208,6 +208,7 @@ const isIdentifierEvent = (event) =>
   ['rudderIdentifier', 'rudderSessionIdentifier'].includes(event?.event);
 const processIdentifierEvent = async (event, metricMetadata) => {
   if (useRedisDatabase) {
+    const cartToken = event.cartToken.split('?')[0];
     let value;
     let field;
     if (event.event === 'rudderIdentifier') {
@@ -242,7 +243,7 @@ const processIdentifierEvent = async (event, metricMetadata) => {
         source: metricMetadata.source,
         writeKey: metricMetadata.writeKey,
       });
-      await RedisDB.setVal(`${event.cartToken}`, value);
+      await RedisDB.setVal(`${cartToken}`, value);
     } catch (e) {
       logger.debug(`{{SHOPIFY::}} cartToken map set call Failed due redis error ${e}`, {
         type: 'set',

@@ -181,6 +181,7 @@ const DestCanonicalNames = {
     'Klaviyo Bulk Upload',
     'klaviyobulkupload',
   ],
+  Klaviyo: ['KLAVIYO', 'Klaviyo', 'klaviyo'],
   emarsys: ['EMARSYS', 'Emarsys', 'emarsys'],
   wunderkind: ['wunderkind', 'Wunderkind', 'WUNDERKIND'],
   cordial: ['cordial', 'Cordial', 'CORDIAL'],

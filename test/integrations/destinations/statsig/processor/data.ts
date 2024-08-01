@@ -312,7 +312,7 @@ export const data = [
             destination: {
               DestinationDefinition: {
                 Config: {
-                  cdkEnabled: true,
+                  cdkV2Enabled: true,
                 },
               },
               Config: {
@@ -734,7 +734,7 @@ export const data = [
             destination: {
               DestinationDefinition: {
                 Config: {
-                  cdkEnabled: true,
+                  cdkV2Enabled: true,
                 },
               },
               Config: {
@@ -1142,7 +1142,7 @@ export const data = [
             destination: {
               DestinationDefinition: {
                 Config: {
-                  cdkEnabled: true,
+                  cdkV2Enabled: true,
                 },
               },
               Config: {
@@ -1466,7 +1466,7 @@ export const data = [
             destination: {
               DestinationDefinition: {
                 Config: {
-                  cdkEnabled: true,
+                  cdkV2Enabled: true,
                 },
               },
               Config: {
@@ -1488,13 +1488,13 @@ export const data = [
           {
             statusCode: 400,
             error:
-              'Bad event. Original error: message type "NOT_A_TYPE" not supported for "statsig"',
+              'message type NOT_A_TYPE is not supported: Workflow: procWorkflow, Step: validateInput, ChildStep: undefined, OriginalError: message type NOT_A_TYPE is not supported',
             statTags: {
               errorCategory: 'dataValidation',
               errorType: 'instrumentation',
               destType: 'STATSIG',
               module: 'destination',
-              implementation: 'cdkV1',
+              implementation: 'cdkV2',
               destinationId: 'd1',
               workspaceId: 'w1',
               feature: 'processor',

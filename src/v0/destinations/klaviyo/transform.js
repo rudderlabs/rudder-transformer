@@ -13,6 +13,7 @@ const {
   eventNameMapping,
   jsonNameMapping,
 } = require('./config');
+const { processRouterDestV2, processV2 } = require('./transformV2');
 const {
   createCustomerProperties,
   subscribeUserToList,
@@ -280,6 +281,9 @@ const groupRequestHandler = (message, category, destination) => {
 // Main event processor using specific handler funcs
 const processEvent = async (event, reqMetadata) => {
   const { message, destination, metadata } = event;
+  if (destination.Config?.apiVersion === 'v2') {
+    return processV2(event, reqMetadata);
+  }
   if (!message.type) {
     throw new InstrumentationError('Event type is required');
   }
@@ -330,11 +334,15 @@ const getEventChunks = (event, subscribeRespList, nonSubscribeRespList) => {
 };
 
 const processRouterDest = async (inputs, reqMetadata) => {
+  const { destination } = inputs[0];
+  // This is used to switch to latest API version
+  if (destination.Config?.apiVersion === 'v2') {
+    return processRouterDestV2(inputs, reqMetadata);
+  }
   let batchResponseList = [];
   const batchErrorRespList = [];
   const subscribeRespList = [];
   const nonSubscribeRespList = [];
-  const { destination } = inputs[0];
   await Promise.all(
     inputs.map(async (event) => {
       try {

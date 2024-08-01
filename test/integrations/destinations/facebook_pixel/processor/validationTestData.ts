@@ -444,7 +444,7 @@ export const validationTestData = [
                 JSON_ARRAY: {},
                 XML: {},
               },
-              endpoint: 'https://graph.facebook.com/v18.0/dummyPixelId/events?access_token=09876',
+              endpoint: 'https://graph.facebook.com/v20.0/dummyPixelId/events?access_token=09876',
               files: {},
               headers: {},
               method: 'POST',

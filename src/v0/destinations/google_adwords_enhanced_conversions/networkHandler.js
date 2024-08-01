@@ -98,7 +98,7 @@ const ProxyRequest = async (request) => {
   const { headers } = request;
 
   const conversionActionId = await getConversionActionId({ method, headers, params, metadata });
-
+  console.log('Inside networkHandler, printing metadata: ', JSON.stringify(metadata));
   set(
     body.JSON,
     'conversionAdjustments[0].conversionAction',

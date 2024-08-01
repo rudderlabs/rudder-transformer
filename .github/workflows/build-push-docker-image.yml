@@ -26,6 +26,9 @@ on:
       use_merge_sha:
         type: boolean
         default: false
+      skip_tests:
+        type: boolean
+        default: false
     secrets:
       DOCKERHUB_PROD_TOKEN:
         required: true
@@ -75,6 +78,7 @@ jobs:
           # cache-to: type=gha,mode=max
 
       - name: Run Tests
+        if: ${{ inputs.skip_tests != true }}
         run: |
           docker run ${{ inputs.build_tag }} npm run test:js:ci
           docker run ${{ inputs.build_tag }} npm run test:ts:ci
@@ -124,6 +128,12 @@ jobs:
           tags: ${{ inputs.build_tag }}
           # cache-from: type=gha
           # cache-to: type=gha,mode=max
+
+      - name: Run Tests
+        if: ${{ inputs.skip_tests != true }}
+        run: |
+          docker run ${{ inputs.build_tag }} npm run test:js:ci
+          docker run ${{ inputs.build_tag }} npm run test:ts:ci
 
       - name: Build and Push Multi-platform Images
         uses: docker/build-push-action@v6.4.1

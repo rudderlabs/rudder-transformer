@@ -52,6 +52,7 @@ jobs:
       dockerfile: Dockerfile
       load_target: development
       push_target: production
+      skip_tests: ${{startsWith(github.event.pull_request.head.ref, 'hotfix-release/')}}
     secrets:
       DOCKERHUB_PROD_TOKEN: ${{ secrets.DOCKERHUB_PROD_TOKEN }}
 
@@ -68,5 +69,6 @@ jobs:
       dockerfile: Dockerfile-ut-func
       load_target: development
       push_target: production
+      skip_tests: ${{startsWith(github.event.pull_request.head.ref, 'hotfix-release/')}}
     secrets:
       DOCKERHUB_PROD_TOKEN: ${{ secrets.DOCKERHUB_PROD_TOKEN }}

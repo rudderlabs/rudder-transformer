@@ -29,6 +29,7 @@ on:
       skip_tests:
         type: boolean
         default: false
+        description: if this option is true, we would skip tests while building docker image
     secrets:
       DOCKERHUB_PROD_TOKEN:
         required: true
@@ -37,9 +38,11 @@ env:
   DOCKERHUB_USERNAME: rudderlabs
 
 jobs:
-  build-transformer-image-arm64:
-    name: Build Transformer Docker Image ARM64
-    runs-on: [self-hosted, Linux, ARM64]
+  get_sha:
+    runs-on: ubuntu-latest
+    name: Get SHA information
+    outputs:
+      sha: ${{steps.getSHA.outputs.SHA}}
     steps:
       - name: Checkout SHA
         id: getSHA
@@ -51,10 +54,45 @@ jobs:
           fi
           echo "SHA: $sha"
           echo "SHA=$sha" >> $GITHUB_OUTPUT
+
+  get_changed_files:
+    runs-on: ubuntu-latest
+    name: Get Changed files
+    outputs:
+      should_execute_tests: ${{ steps.processing.outputs.should_execute_tests }}
+    steps:
       - name: Checkout
         uses: actions/checkout@v4.1.1
         with:
-          ref: ${{ steps.getSHA.outputs.SHA }}
+          fetch-depth: 1
+      - id: files
+        uses: Ana06/get-changed-files@v1.2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          format: 'json'
+      - id: processing
+        run: |
+          readarray -t modified_files <<<"$(jq -r '.[]' <<<'${{ steps.files.outputs.modified }}')"
+          echo "Modified files: $modified_files"
+          found=false
+          for modified_file in "${modified_files[@]}"; do
+            if [[ "$modified_file" == "Dockerfile" || "$modified_file" == "package.json" || "$modified_file" == "package-lock.json" ]]; then
+              found=true
+              break
+            fi
+          done
+          echo "Match Found: $found"
+          echo "::set-output name=should_execute_tests::$found"
+
+  build-transformer-image-arm64:
+    name: Build Transformer Docker Image ARM64
+    runs-on: [self-hosted, Linux, ARM64]
+    needs: [get_sha, get_changed_files]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.1.1
+        with:
+          ref: ${{ needs.get_sha.outputs.sha }}
           fetch-depth: 1
 
       - name: Setup Docker Buildx
@@ -78,7 +116,7 @@ jobs:
           # cache-to: type=gha,mode=max
 
       - name: Run Tests
-        if: ${{ inputs.skip_tests != true }}
+        if: ${{ inputs.skip_tests != true || needs.get_changed_files.outputs.should_execute_tests == true }}
         run: |
           docker run ${{ inputs.build_tag }} npm run test:js:ci
           docker run ${{ inputs.build_tag }} npm run test:ts:ci
@@ -102,11 +140,12 @@ jobs:
   build-transformer-image-amd64:
     name: Build Transformer Docker Image AMD64
     runs-on: [self-hosted, Linux, X64]
+    needs: [get_sha, get_changed_files]
     steps:
       - name: Checkout
         uses: actions/checkout@v4.1.1
         with:
-          ref: ${{ github.event.pull_request.head.sha }}
+          ref: ${{ needs.get_sha.outputs.sha }}
           fetch-depth: 1
 
       - name: Setup Docker Buildx
@@ -130,7 +169,7 @@ jobs:
           # cache-to: type=gha,mode=max
 
       - name: Run Tests
-        if: ${{ inputs.skip_tests != true }}
+        if: ${{ inputs.skip_tests != true || needs.get_changed_files.outputs.should_execute_tests == true }}
         run: |
           docker run ${{ inputs.build_tag }} npm run test:js:ci
           docker run ${{ inputs.build_tag }} npm run test:ts:ci

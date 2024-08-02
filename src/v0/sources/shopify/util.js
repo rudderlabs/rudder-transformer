@@ -245,11 +245,11 @@ const updateCartItemsInRedis = async (cartToken, newCartItemsHash, metricMetadat
  * @param {*} metricMetadata
  * @returns boolean
  */
-const checkAndUpdateCartItems = async (inputEvent, redisData, metricMetadata) => {
+const checkAndUpdateCartItems = async (inputEvent, redisData, metricMetadata, shopifyTopic) => {
   const cartToken = inputEvent.token || inputEvent.id;
   if (!isDefinedAndNotNull(redisData)) {
     // eslint-disable-next-line no-param-reassign
-    redisData = await getDataFromRedis(cartToken, metricMetadata, 'Cart Update');
+    redisData = await getDataFromRedis(cartToken, metricMetadata, SHOPIFY_TRACK_MAP[shopifyTopic]);
   }
   const itemsHash = redisData?.itemsHash;
   if (isDefinedAndNotNull(itemsHash)) {

@@ -145,7 +145,12 @@ const processEvent = async (inputEvent, metricMetadata) => {
     case 'carts_update':
       if (useRedisDatabase) {
         redisData = await getDataFromRedis(event.id || event.token, metricMetadata, 'Cart Update');
-        const isValidEvent = await checkAndUpdateCartItems(inputEvent, redisData, metricMetadata);
+        const isValidEvent = await checkAndUpdateCartItems(
+          inputEvent,
+          redisData,
+          metricMetadata,
+          shopifyTopic,
+        );
         if (!isValidEvent) {
           return NO_OPERATION_SUCCESS;
         }
@@ -212,7 +217,7 @@ const processIdentifierEvent = async (event, metricMetadata) => {
     if (typeof cartToken === 'string') {
       [cartToken] = cartToken.split('?');
     }
-    logger.debug(`{{SHOPIFY::}} writeKey: ${metricMetadata.writeKey}, cartToken: ${cartToken}`, {
+    logger.info(`{{SHOPIFY::}} writeKey: ${metricMetadata.writeKey}, cartToken: ${cartToken}`, {
       type: 'set',
       source: metricMetadata.source,
       writeKey: metricMetadata.writeKey,

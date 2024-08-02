@@ -165,6 +165,7 @@ const commonHandler = async (axiosMethod, { statTags, method, ...args }) => {
   let clientResponse;
   const { url, data, options, requestOptions } = args;
   const commonMsg = `[${statTags?.destType?.toUpperCase?.() || ''}] ${statTags?.endpointPath || ''}`;
+
   logger.requestLog(`${commonMsg} request`, {
     metadata: statTags?.metadata,
     requestDetails: {

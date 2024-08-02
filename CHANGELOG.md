@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.73.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.73.0...v1.73.1) (2024-08-02)
+
+
+### Bug Fixes
+
+* update getAuthErrCategory and update error message for garl ([#3629](https://github.com/rudderlabs/rudder-transformer/issues/3629)) ([feadfcf](https://github.com/rudderlabs/rudder-transformer/commit/feadfcf6009ccc9b972634347448ba9428696ebb))
+
 ## [1.73.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.72.2...v1.73.0) (2024-07-31)
 
 

@@ -98,6 +98,7 @@ const ProxyRequest = async (request) => {
   const { headers } = request;
 
   const conversionActionId = await getConversionActionId({ method, headers, params, metadata });
+
   set(
     body.JSON,
     'conversionAdjustments[0].conversionAction',

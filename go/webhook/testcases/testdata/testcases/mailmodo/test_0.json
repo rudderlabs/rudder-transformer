@@ -1,0 +1,66 @@
+{
+  "name": "mailmodo",
+  "description": "test-0",
+  "input": {
+    "request": {
+      "body": {
+        "triggerData": {
+          "data": {},
+          "triggerSource": "CsvList",
+          "email": "gouhgc@mailmodo.com",
+          "triggerDetails": "file:1a69df39hfbfg4e0b-8b5c-73776157aa37/7647792f-4ebc-4f9d-ac79-05fb0356137e",
+          "userId": "d3775892hvh4f2f-b9d5-e49810eb2cae",
+          "journeyId": "1a69df39hgvh4e0b-8b5c-73776157aa37",
+          "eventProperty": {}
+        }
+      },
+      "headers": {
+        "Content-Type": "application/json"
+      }
+    }
+  },
+  "output": {
+    "response": {
+      "status": 200,
+      "body": "OK"
+    },
+    "queue": [
+      {
+        "anonymousId": "f43848cce166e51b097cbed2851adc16ed9d4c341928f1c790215c50cefb59b0",
+        "context": {
+          "externalId": [
+            {
+              "id": "d3775892hvh4f2f-b9d5-e49810eb2cae",
+              "type": "mailmodoUserId"
+            }
+          ],
+          "traits": {
+            "email": "gouhgc@mailmodo.com"
+          },
+          "integration": {
+            "name": "Mailmodo",
+            "version": "1.0.0"
+          },
+          "library": {
+            "name": "unknown",
+            "version": "unknown"
+          }
+        },
+        "event": "CsvList",
+        "integrations": {
+          "Mailmodo": false
+        },
+        "properties": {
+          "triggerData.triggerSource": "CsvList",
+          "triggerData.triggerDetails": "file:1a69df39hfbfg4e0b-8b5c-73776157aa37/7647792f-4ebc-4f9d-ac79-05fb0356137e",
+          "triggerData.journeyId": "1a69df39hgvh4e0b-8b5c-73776157aa37"
+        },
+        "type": "track",
+        "receivedAt": "2024-03-03T04:48:29.000Z",
+        "request_ip": "192.0.2.30",
+        "messageId": "00000000-0000-0000-0000-000000000000"
+      }
+    ],
+    "errQueue": []
+  }
+}

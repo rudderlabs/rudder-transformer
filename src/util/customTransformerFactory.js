@@ -7,6 +7,7 @@ const UserTransformHandlerFactory = (userTransformation) => {
     setUserTransform: async (libraryVersionIds) => {
       switch (userTransformation.language) {
         case 'pythonfaas':
+        case 'python':
           return setOpenFaasUserTransform(userTransformation, libraryVersionIds);
         default:
           return setUserTransformHandlerV1();

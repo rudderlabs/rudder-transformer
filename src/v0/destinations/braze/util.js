@@ -142,7 +142,7 @@ const BrazeDedupUtility = {
     return identfierChunks;
   },
 
-  async doApiLookup(identfierChunks, destination) {
+  async doApiLookup(identfierChunks, { destination, metadata }) {
     return Promise.all(
       identfierChunks.map(async (ids) => {
         const externalIdentifiers = ids.filter((id) => id.external_id);
@@ -167,6 +167,7 @@ const BrazeDedupUtility = {
             requestMethod: 'POST',
             module: 'router',
             endpointPath: '/users/export/ids',
+            metadata,
           },
         );
         stats.counter('braze_lookup_failure_count', 1, {
@@ -189,10 +190,10 @@ const BrazeDedupUtility = {
    */
   async doLookup(inputs) {
     const lookupStartTime = new Date();
-    const { destination } = inputs[0];
+    const { destination, metadata } = inputs[0];
     const { externalIdsToQuery, aliasIdsToQuery } = this.prepareInputForDedup(inputs);
     const identfierChunks = this.prepareChunksForDedup(externalIdsToQuery, aliasIdsToQuery);
-    const chunkedUserData = await this.doApiLookup(identfierChunks, destination);
+    const chunkedUserData = await this.doApiLookup(identfierChunks, { destination, metadata });
     stats.timing('braze_lookup_time', lookupStartTime, {
       destination_id: destination.Config.destinationId,
     });
@@ -570,7 +571,8 @@ function getPurchaseObjs(message, config) {
         'Invalid Order Completed event: Properties object is missing in the message',
       );
     }
-    const { products, currency: currencyCode } = properties;
+    const { currency: currencyCode } = properties;
+    let { products } = properties;
     if (!products) {
       throw new InstrumentationError(
         'Invalid Order Completed event: Products array is missing in the message',
@@ -581,6 +583,7 @@ function getPurchaseObjs(message, config) {
       throw new InstrumentationError('Invalid Order Completed event: Products is not an array');
     }
 
+    products = products.filter((product) => isDefinedAndNotNull(product));
     if (products.length === 0) {
       throw new InstrumentationError('Invalid Order Completed event: Products array is empty');
     }

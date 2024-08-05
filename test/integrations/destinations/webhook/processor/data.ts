@@ -1684,6 +1684,8 @@ export const data = [
                 'content-type': 'application/json',
                 test2: 'value2',
                 dynamic_header_key_string: 'dynamic_header_value_string',
+                dynamic_header_key_num: '10',
+                dynamic_header_key_object: '{"k1":"v1"}',
               },
               params: {},
               files: {},
@@ -2968,6 +2970,149 @@ export const data = [
             metadata: {
               destinationId: 'destId',
               workspaceId: 'wspId',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'webhook',
+    description: 'Test with different datatype on headers',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    id: 'webhook-headers',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              type: 'track',
+              userId: 'testUser273421',
+              anonymousId: 'anon-testUser27342',
+              event: 'Submit',
+              header: {
+                key1: 'abcd',
+                key2: {
+                  key1: '',
+                  key2: '',
+                },
+                ijkl: {
+                  int: 1234,
+                  string: 'abcd',
+                  array: [1, 2, 'a', true],
+                  object: { key1: 'value' },
+                },
+                key3: true,
+                key4: null,
+                key5: 'undefined',
+                key6: function log() {
+                  console.log('abcd');
+                },
+              },
+              properties: {
+                name: 'Shirt',
+                revenue: 4.99,
+              },
+              context: {
+                traits: {
+                  email: 'testuser@testmail.com',
+                },
+                ip: '14.5.67.21',
+                library: {
+                  name: 'http',
+                },
+              },
+            },
+            destination: {
+              id: '1uNlE1KpXEzslgnehFArr9cMf7g',
+              Config: {
+                webhookUrl: 'https://webhook.site/81dc2730-807f-4bbc-8914-5b37d21c8a55',
+                webhookMethod: 'POST',
+                oneTrustCookieCategories: [],
+                connectionMode: 'cloud',
+                eventDelivery: false,
+                eventDeliveryTS: 1720497286192,
+              },
+              DestinationDefinition: {
+                Config: {
+                  secretKeys: ['headers.to'],
+                  excludeKeys: [],
+                  includeKeys: ['oneTrustCookieCategories', 'consentManagement'],
+                  cdkV2Enabled: true,
+                  transformAtV1: 'processor',
+                  isAudienceSupported: true,
+                },
+                configSchema: {},
+                responseRules: null,
+                options: null,
+                uiConfig: {},
+                id: '1aIXpUrvpGno4gEuF2GvI3O9dOe',
+                name: 'WEBHOOK',
+                displayName: 'Webhook',
+                category: null,
+                createdAt: '2020-04-09T09:24:24.089Z',
+                updatedAt: '2024-05-30T11:57:04.889Z',
+              },
+            },
+            metadata: {
+              destinationId: '1234',
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            metadata: {
+              destinationId: '1234',
+            },
+            output: {
+              body: {
+                FORM: {},
+                JSON: {
+                  anonymousId: 'anon-testUser27342',
+                  context: {
+                    ip: '14.5.67.21',
+                    library: {
+                      name: 'http',
+                    },
+                    traits: {
+                      email: 'testuser@testmail.com',
+                    },
+                  },
+                  event: 'Submit',
+                  properties: {
+                    name: 'Shirt',
+                    revenue: 4.99,
+                  },
+                  type: 'track',
+                  userId: 'testUser273421',
+                },
+                JSON_ARRAY: {},
+                XML: {},
+              },
+              endpoint: 'https://webhook.site/81dc2730-807f-4bbc-8914-5b37d21c8a55',
+              files: {},
+              headers: {
+                'content-type': 'application/json',
+                ijkl: '{"int":1234,"string":"abcd","array":[1,2,"a",true],"object":{"key1":"value"}}',
+                key1: 'abcd',
+                key2: '{"key1":"","key2":""}',
+                key3: 'true',
+                key4: 'null',
+                key5: 'undefined',
+              },
+              method: 'POST',
+              params: {},
+              type: 'REST',
+              userId: 'anon-testUser27342',
+              version: '1',
             },
             statusCode: 200,
           },

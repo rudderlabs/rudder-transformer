@@ -26,6 +26,11 @@ class Statsd {
     this.statsdClient.timing(name, start, tags);
   }
 
+  // summary is just a wrapper around timing for statsd.For prometheus, we will have to implement a different function.
+  summary(name, value, tags = {}) {
+    this.statsdClient.timing(name, value, tags);
+  }
+
   increment(name, tags = {}) {
     this.statsdClient.increment(name, 1, tags);
   }

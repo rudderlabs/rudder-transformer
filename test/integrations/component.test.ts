@@ -28,7 +28,7 @@ import _ from 'lodash';
 // To run single destination test cases
 // npm run test:ts -- component  --destination=adobe_analytics
 // npm run test:ts -- component  --destination=adobe_analytics --feature=router
-// npm run test:ts -- component  --destination=adobe_analytics --feature=router --index=0
+// npm run test:ts -- component  --destination=adobe_analytics --feature=dataDelivery --index=0
 
 // Use below command to generate mocks
 // npm run test:ts -- component --destination=zendesk --generate=true
@@ -101,6 +101,8 @@ if (!opts.generate || opts.generate === 'false') {
 
 // END
 const rootDir = __dirname;
+console.log('rootDir', rootDir);
+console.log('opts', opts);
 const allTestDataFilePaths = getTestDataFilePaths(rootDir, opts);
 const DEFAULT_VERSION = 'v0';
 
@@ -209,6 +211,7 @@ const sourceTestHandler = async (tcData) => {
 // Trigger the test suites
 describe.each(allTestDataFilePaths)('%s Tests', (testDataPath) => {
   beforeEach(() => {
+    jest.resetAllMocks();
     jest.clearAllMocks();
   });
   // add special mocks for specific destinations

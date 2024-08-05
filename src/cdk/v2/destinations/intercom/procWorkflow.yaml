@@ -52,7 +52,7 @@ steps:
   - name: searchContact
     condition: ($.outputs.messageType === {{$.EventType.IDENTIFY}} || $.outputs.messageType === {{$.EventType.GROUP}}) && $.outputs.apiVersion !== "v1"
     template: |
-      const contactId = await $.searchContact(.message, .destination);
+      const contactId = await $.searchContact(.message, .destination, .metadata);
       contactId;
 
   - name: identifyTransformationForLatestVersion
@@ -84,6 +84,9 @@ steps:
       $.assert($.context.payload.external_id || $.context.payload.email, "Either email or userId is required for Identify call");
       const endpoint = $.getBaseEndpoint(.destination) + "/" + "contacts";
       $.context.requestMethod = $.outputs.searchContact ? 'PUT' : 'POST';
+      const company = .message.traits.company || .message.context.traits.company;
+      const shouldDetachUserAndCompany = $.outputs.searchContact && company.remove;
+      shouldDetachUserAndCompany ? await $.detachContactAndCompany($.outputs.searchContact, company, .destination);
       $.context.endpoint = $.outputs.searchContact ? endpoint + "/" + $.outputs.searchContact : endpoint;
       $.context.payload = $.removeUndefinedAndNullValues($.context.payload);
 
@@ -178,7 +181,7 @@ steps:
         condition: $.isDefinedAndNotNull($.outputs.searchContact)
         template: |
           const contactId = $.outputs.searchContact;
-          const companyId = await $.createOrUpdateCompany($.context.payload, .destination);
+          const companyId = await $.createOrUpdateCompany($.context.payload, .destination, .metadata);
           $.assert(companyId, "Unable to create or update company");
           $.context.payload = {
             id: companyId,
@@ -186,15 +189,16 @@ steps:
           $.context.endpoint = $.getBaseEndpoint(.destination) + "/" + "contacts" + "/" + contactId + "/" + "companies";
           const payload = $.context.payload;
           const endpoint = $.context.endpoint;
-          await $.attachContactToCompany(payload, endpoint, .destination);
-          await $.addOrUpdateTagsToCompany(.message, .destination, companyId);
+          const eventData = {metadata: .metadata, destination: .destination}
+          await $.attachContactToCompany(payload, endpoint, eventData);
+          await $.addOrUpdateTagsToCompany({metadata: .metadata, destination: .destination, message: .message}, companyId);
         else:
           name: whenSearchContactNotFound
           template: |
-            const companyId = await $.createOrUpdateCompany($.context.payload, .destination);
+            const companyId = await $.createOrUpdateCompany($.context.payload, .destination, .metadata);
             $.assert(companyId, "Unable to create or update company");
             $.context.endpoint = $.getBaseEndpoint(.destination) + "/" + "companies";
-            await $.addOrUpdateTagsToCompany(.message, .destination, companyId);
+            await $.addOrUpdateTagsToCompany({metadata: .metadata, destination: .destination, message: .message}, companyId);
       - name: prepareFinalPayload
         template: |
           $.context.requestMethod = 'POST';
@@ -218,15 +222,16 @@ steps:
       response.userId = .message.anonymousId;
       $.context.response.push(response);
       payload = response.body.JSON;
-      const companyId = await $.createOrUpdateCompany(payload, .destination);
+      const companyId = await $.createOrUpdateCompany(payload, .destination, .metadata);
       $.assert(companyId, "Unable to create or update company");
       const attachUserAndCompanyResponse = $.attachUserAndCompany(.message, .destination.Config);
       attachUserAndCompanyResponse ? attachUserAndCompanyResponse.userId = .message.anonymousId;
       attachUserAndCompanyResponse ? $.context.response.push(attachUserAndCompanyResponse);
       payload = attachUserAndCompanyResponse.body.JSON;
       let endpoint = attachUserAndCompanyResponse.endpoint;
-      attachUserAndCompanyResponse ? await $.attachContactToCompany(payload, endpoint, .destination);
-      await $.addOrUpdateTagsToCompany(.message, .destination, companyId);
+      const eventData = {metadata: .metadata, destination: .destination}
+      attachUserAndCompanyResponse ? await $.attachContactToCompany(payload, endpoint, eventData);
+      await $.addOrUpdateTagsToCompany({metadata: .metadata, destination: .destination, message: .message}, companyId);
 
   - name: statusCode
     condition: $.outputs.messageType === {{$.EventType.GROUP}}

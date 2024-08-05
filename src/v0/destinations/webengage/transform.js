@@ -79,8 +79,8 @@ const processEvent = (message, destination) => {
       return responseBuilder(message, CONFIG_CATEGORIES.EVENT, destination);
     case EventType.PAGE:
     case EventType.SCREEN:
-      name = message.name || message.properties.name;
-      category = message.properties.category;
+      name = message.name || message.properties?.name;
+      category = message.properties?.category;
       if (name && category) {
         eventName = `Viewed ${category} ${name} ${messageType}`;
       } else if (name) {

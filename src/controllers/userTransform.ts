@@ -1,4 +1,5 @@
 import { Context } from 'koa';
+import { castArray } from 'lodash';
 import { UserTransformService } from '../services/userTransform';
 import { ProcessorTransformationRequest, UserTransformationServiceResponse } from '../types/index';
 import {
@@ -6,10 +7,29 @@ import {
   setupUserTransformHandler,
   validateCode,
 } from '../util/customTransformer';
+
+import { reconcileFunction } from '../util/openfaas/index';
 import { ControllerUtility } from './util';
 import logger from '../logger';
 
 export class UserTransformController {
+  /**
+  reconcileFunction is a controller function to reconcile the openfaas
+  fns with the latest configuration in the service.
+  */
+  public static async reconcileFunction(ctx: Context) {
+    const { wId } = ctx.params;
+    const { name = [], migrateAll = 'false' } = ctx.request.query;
+
+    logger.info(`Received a request to reconcile fns in workspace: ${wId}`);
+
+    const fns = castArray(name);
+    await reconcileFunction(wId, fns, migrateAll === 'true');
+
+    ctx.body = { message: 'Reconciled' };
+    return ctx;
+  }
+
   public static async transform(ctx: Context) {
     logger.debug(
       '(User transform - router:/customTransform ):: Request to transformer',

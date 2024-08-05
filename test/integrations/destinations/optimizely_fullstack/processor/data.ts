@@ -1,7 +1,7 @@
 import utils from '../../../../../src/v0/util';
 export const mockFns = (_) => {
   // @ts-ignore
-  jest.spyOn(utils, 'generateUUID').mockImplementation(() => 'generated_uuid');
+  jest.spyOn(utils, 'generateUUID').mockReturnValueOnce('generated_uuid');
 };
 export const data = [
   {

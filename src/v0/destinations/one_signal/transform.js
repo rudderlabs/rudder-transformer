@@ -4,6 +4,7 @@ const {
   TransformationError,
   InstrumentationError,
 } = require('@rudderstack/integrations-lib');
+const { process: processV2 } = require('./transformV2');
 const { EventType } = require('../../../constants');
 const { ConfigCategory, mappingConfig, BASE_URL, ENDPOINTS } = require('./config');
 const {
@@ -186,10 +187,16 @@ const groupResponseBuilder = (message, { Config }) => {
 };
 
 const processEvent = (message, destination) => {
+  const { Config } = destination;
+  const { version, appId } = Config;
+  if (version === 'V2') {
+    // This version is used to direct the request to user centric model
+    return processV2(message, destination);
+  }
   if (!message.type) {
     throw new InstrumentationError('Event type is required');
   }
-  if (!destination.Config.appId) {
+  if (!appId) {
     throw new ConfigurationError('appId is a required field');
   }
   const messageType = message.type.toLowerCase();

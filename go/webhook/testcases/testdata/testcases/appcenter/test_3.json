@@ -1,0 +1,98 @@
+{
+  "name": "appcenter",
+  "description": "test-3",
+  "input": {
+    "request": {
+      "body": {
+        "app_name": "MSAppCenterTesting",
+        "app_display_name": "MSAppCenterTesting",
+        "release_id": "1",
+        "platform": "Android",
+        "uploaded_at": "2021-03-02T17:49:35.463Z",
+        "fingerprint": "9cbdc86d96c5359d2af3972fdda46624",
+        "release_notes": "Degraded to 4.0.0",
+        "version": "1614707021",
+        "short_version": "1.0",
+        "min_os": "7.1",
+        "mandatory_update": true,
+        "size": 2919106,
+        "provisioning_profile_name": null,
+        "provisioning_profile_type": null,
+        "bundle_identifier": "tech.desusai.msappcentertesting",
+        "install_link": "https://install.appcenter.ms/users/venkat-rudderstack.com/apps/MSAppCenterTesting/releases/1?source=email",
+        "icon_link": "https://appcenter-filemanagement-distrib2ede6f06e.azureedge.net/dbbd3d57-9c09-448b-9782-0d57200f7c9b/ic_launcher.png?sv=2019-02-02&sr=c&sig=BNzQcMcvTbwf4fv59ByGiYXsr%2BA9PYDFyGJCqsE2RO0%3D&se=2021-03-09T17%3A49%3A35Z&sp=r",
+        "distribution_group_id": "00000000-0000-0000-0000-000000000000",
+        "installable": true,
+        "sent_at": "2021-03-02T17:49:37.127635Z",
+        "app_id": "ce8b5280-4605-4c1c-8c48-bd54c8fdda31"
+      },
+      "headers": {
+        "Content-Type": "application/json"
+      }
+    }
+  },
+  "output": {
+    "response": {
+      "status": 200,
+      "body": "OK"
+    },
+    "queue": [
+      {
+        "anonymousId": "97fcd7b2-cc24-47d7-b776-057b7b199513",
+        "context": {
+          "library": {
+            "name": "unknown",
+            "version": "unknown"
+          },
+          "integration": {
+            "name": "APPCENTER"
+          },
+          "app": {
+            "name": "MSAppCenterTesting",
+            "version": "1.0",
+            "namespace": "tech.desusai.msappcentertesting"
+          },
+          "device": {
+            "type": "Android"
+          },
+          "os": {
+            "name": "Android"
+          }
+        },
+        "integrations": {
+          "APPCENTER": false
+        },
+        "properties": {
+          "app_name": "MSAppCenterTesting",
+          "app_display_name": "MSAppCenterTesting",
+          "release_id": "1",
+          "platform": "Android",
+          "uploaded_at": "2021-03-02T17:49:35.463Z",
+          "fingerprint": "9cbdc86d96c5359d2af3972fdda46624",
+          "release_notes": "Degraded to 4.0.0",
+          "version": "1614707021",
+          "short_version": "1.0",
+          "min_os": "7.1",
+          "mandatory_update": true,
+          "size": 2919106,
+          "provisioning_profile_name": null,
+          "provisioning_profile_type": null,
+          "bundle_identifier": "tech.desusai.msappcentertesting",
+          "install_link": "https://install.appcenter.ms/users/venkat-rudderstack.com/apps/MSAppCenterTesting/releases/1?source=email",
+          "icon_link": "https://appcenter-filemanagement-distrib2ede6f06e.azureedge.net/dbbd3d57-9c09-448b-9782-0d57200f7c9b/ic_launcher.png?sv=2019-02-02&sr=c&sig=BNzQcMcvTbwf4fv59ByGiYXsr%2BA9PYDFyGJCqsE2RO0%3D&se=2021-03-09T17%3A49%3A35Z&sp=r",
+          "distribution_group_id": "00000000-0000-0000-0000-000000000000",
+          "installable": true,
+          "sent_at": "2021-03-02T17:49:37.127635Z",
+          "app_id": "ce8b5280-4605-4c1c-8c48-bd54c8fdda31"
+        },
+        "type": "track",
+        "event": "Released Version 1.0",
+        "sentAt": "2021-03-02T17:49:37.127635Z",
+        "receivedAt": "2024-03-03T04:48:29.000Z",
+        "request_ip": "192.0.2.30",
+        "messageId": "00000000-0000-0000-0000-000000000000"
+      }
+    ],
+    "errQueue": []
+  }
+}

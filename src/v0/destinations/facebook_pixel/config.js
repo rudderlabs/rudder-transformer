@@ -1,6 +1,6 @@
 const { getMappingConfig } = require('../../util');
 
-const VERSION = 'v18.0';
+const VERSION = 'v20.0';
 
 const CONFIG_CATEGORIES = {
   USERDATA: {

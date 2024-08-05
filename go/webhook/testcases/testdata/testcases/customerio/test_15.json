@@ -1,0 +1,73 @@
+{
+  "name": "customerio",
+  "description": "test-15",
+  "input": {
+    "request": {
+      "body": {
+        "data": {
+          "action_id": 39,
+          "broadcast_id": 9,
+          "customer_id": "0200102",
+          "identifiers": {
+            "id": "0200102"
+          },
+          "delivery_id": "RPILAgQBcRhocpCJE3mFfwvRzNe6",
+          "href": "http://bing.com",
+          "link_id": 1,
+          "recipient": "#signups"
+        },
+        "event_id": "01E4C6HJTBNDX18XC4B88M3Y2G",
+        "object_type": "slack",
+        "metric": "clicked",
+        "timestamp": 1585252451
+      },
+      "headers": {
+        "Content-Type": "application/json"
+      }
+    }
+  },
+  "output": {
+    "response": {
+      "status": 200,
+      "body": "OK"
+    },
+    "queue": [
+      {
+        "context": {
+          "library": {
+            "name": "unknown",
+            "version": "unknown"
+          },
+          "integration": {
+            "name": "Customer.io"
+          },
+          "traits": {
+            "email": "#signups"
+          }
+        },
+        "integrations": {
+          "Customer.io": false
+        },
+        "type": "track",
+        "event": "Slack Message Link Clicked",
+        "properties": {
+          "eventId": "01E4C6HJTBNDX18XC4B88M3Y2G",
+          "deliveryId": "RPILAgQBcRhocpCJE3mFfwvRzNe6",
+          "actionId": 39,
+          "broadcastId": 9,
+          "link": {
+            "url": "http://bing.com",
+            "id": 1
+          }
+        },
+        "userId": "0200102",
+        "originalTimestamp": "2020-03-26T19:54:11.000Z",
+        "sentAt": "2020-03-26T19:54:11.000Z",
+        "receivedAt": "2024-03-03T04:48:29.000Z",
+        "request_ip": "192.0.2.30",
+        "messageId": "00000000-0000-0000-0000-000000000000"
+      }
+    ],
+    "errQueue": []
+  }
+}

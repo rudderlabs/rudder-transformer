@@ -1,3 +1,7 @@
+const mockFns = (_) => {
+  jest.spyOn(Date, 'now').mockReturnValueOnce(new Date('2023-10-14T00:00:00.000Z').valueOf());
+};
+
 export const data = [
   {
     name: 'moengage',
@@ -432,5 +436,6 @@ export const data = [
         },
       },
     },
+    mockFns,
   },
 ];

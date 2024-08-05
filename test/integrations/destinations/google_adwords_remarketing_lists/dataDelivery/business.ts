@@ -166,7 +166,7 @@ export const testScenariosForV0API = [
           output: {
             status: 400,
             message:
-              'Request contains an invalid argument. during ga_audience response transformation',
+              '{"error":{"code":400,"details":[{"@type":"type.googleapis.com/google.ads.googleads.v9.errors.GoogleAdsFailure","errors":[{"errorCode":{"offlineUserDataJobError":"INVALID_SHA256_FORMAT"},"message":"The SHA256 encoded value is malformed.","location":{"fieldPathElements":[{"fieldName":"operations","index":0},{"fieldName":"remove"},{"fieldName":"user_identifiers","index":0},{"fieldName":"hashed_email"}]}}]}],"message":"Request contains an invalid argument.","status":"INVALID_ARGUMENT"}} during ga_audience response transformation',
             destinationResponse: {
               error: {
                 code: 400,
@@ -313,11 +313,11 @@ export const testScenariosForV1API = [
         body: {
           output: {
             message:
-              'Request contains an invalid argument. during ga_audience response transformation',
+              '{"error":{"code":400,"details":[{"@type":"type.googleapis.com/google.ads.googleads.v9.errors.GoogleAdsFailure","errors":[{"errorCode":{"offlineUserDataJobError":"INVALID_SHA256_FORMAT"},"message":"The SHA256 encoded value is malformed.","location":{"fieldPathElements":[{"fieldName":"operations","index":0},{"fieldName":"remove"},{"fieldName":"user_identifiers","index":0},{"fieldName":"hashed_email"}]}}]}],"message":"Request contains an invalid argument.","status":"INVALID_ARGUMENT"}} during ga_audience response transformation',
             response: [
               {
                 error:
-                  'Request contains an invalid argument. during ga_audience response transformation',
+                  '{"error":{"code":400,"details":[{"@type":"type.googleapis.com/google.ads.googleads.v9.errors.GoogleAdsFailure","errors":[{"errorCode":{"offlineUserDataJobError":"INVALID_SHA256_FORMAT"},"message":"The SHA256 encoded value is malformed.","location":{"fieldPathElements":[{"fieldName":"operations","index":0},{"fieldName":"remove"},{"fieldName":"user_identifiers","index":0},{"fieldName":"hashed_email"}]}}]}],"message":"Request contains an invalid argument.","status":"INVALID_ARGUMENT"}} during ga_audience response transformation',
                 metadata: generateGoogleOAuthMetadata(1),
                 statusCode: 400,
               },

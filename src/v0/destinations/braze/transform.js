@@ -523,7 +523,7 @@ async function process(event, processParams = { userStore: new Map() }, reqMetad
       const brazeExternalID =
         getDestinationExternalID(message, 'brazeExternalId') || message.userId;
       if ((message.anonymousId || isAliasPresent) && brazeExternalID) {
-        await processIdentify(message, destination);
+        await processIdentify({ message, destination });
       } else {
         collectStatsForAliasMissConfigurations(destination.ID);
       }

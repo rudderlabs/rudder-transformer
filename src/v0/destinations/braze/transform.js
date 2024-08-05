@@ -30,6 +30,7 @@ const {
   simpleProcessRouterDest,
   isNewStatusCodesAccepted,
   getDestinationExternalID,
+  getIntegrationsObj,
 } = require('../../util');
 const {
   ConfigCategory,
@@ -498,10 +499,14 @@ async function process(event, processParams = { userStore: new Map() }, reqMetad
       if (mappedToDestination) {
         adduserIdFromExternalId(message);
       }
+
+      const integrationsObj = getIntegrationsObj(message, 'BRAZE');
+      const isAliasPresent = isDefinedAndNotNull(integrationsObj?.alias);
+
       const brazeExternalID =
         getDestinationExternalID(message, 'brazeExternalId') || message.userId;
-      if (message.anonymousId && brazeExternalID) {
-        await processIdentify(event);
+      if ((message.anonymousId || isAliasPresent) && brazeExternalID) {
+        await processIdentify({ message, destination });
       } else {
         collectStatsForAliasMissConfigurations(destination.ID);
       }

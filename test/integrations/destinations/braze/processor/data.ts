@@ -4045,7 +4045,6 @@ export const data = [
               Transformations: [],
             },
             message: {
-              anonymousId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
               channel: 'web',
               context: {
                 traits: {

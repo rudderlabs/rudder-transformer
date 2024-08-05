@@ -213,10 +213,8 @@ const isIdentifierEvent = (event) =>
   ['rudderIdentifier', 'rudderSessionIdentifier'].includes(event?.event);
 const processIdentifierEvent = async (event, metricMetadata) => {
   if (useRedisDatabase) {
-    let { cartToken } = event;
-    if (typeof cartToken === 'string') {
-      [cartToken] = cartToken.split('?');
-    }
+    const cartToken =
+      typeof event.cartToken === 'string' ? event.cartToken.split('?')[0] : event.cartToken;
     logger.info(`{{SHOPIFY::}} writeKey: ${metricMetadata.writeKey}, cartToken: ${cartToken}`, {
       type: 'set',
       source: metricMetadata.source,

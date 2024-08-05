@@ -774,6 +774,7 @@ export const data = [
               properties: {
                 currency: 'USD',
                 revenue: 50,
+                event_name: 'braze revenue test 2',
               },
               receivedAt: '2020-01-24T11:59:02.403+05:30',
               request_ip: '[::1]:53710',

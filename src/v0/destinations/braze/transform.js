@@ -15,6 +15,7 @@ const {
   setAliasObject,
   collectStatsForAliasFailure,
   collectStatsForAliasMissConfigurations,
+  handleReservedProperties,
 } = require('./util');
 const tags = require('../../util/tags');
 const { EventType, MappedToDestinationKey } = require('../../../constants');
@@ -277,16 +278,6 @@ function processTrackWithUserAttributes(
     );
   }
   throw new InstrumentationError('No attributes found to update the user profile');
-}
-
-function handleReservedProperties(props) {
-  // remove reserved keys from custom event properties
-  const reserved = ['time', 'event_name'];
-
-  reserved.forEach((element) => {
-    delete props[element];
-  });
-  return props;
 }
 
 function addMandatoryEventProperties(payload, message) {

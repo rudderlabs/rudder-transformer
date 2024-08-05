@@ -15,6 +15,7 @@ const {
   setAliasObject,
   collectStatsForAliasFailure,
   collectStatsForAliasMissConfigurations,
+  handleReservedProperties,
 } = require('./util');
 const tags = require('../../util/tags');
 const { EventType, MappedToDestinationKey } = require('../../../constants');
@@ -280,17 +281,6 @@ function processTrackWithUserAttributes(
   throw new InstrumentationError('No attributes found to update the user profile');
 }
 
-function handleReservedProperties(props) {
-  // remove reserved keys from custom event properties
-  // https://www.appboy.com/documentation/Platform_Wide/#reserved-keys
-  const reserved = ['time', 'product_id', 'quantity', 'event_name', 'price', 'currency'];
-
-  reserved.forEach((element) => {
-    delete props[element];
-  });
-  return props;
-}
-
 function addMandatoryEventProperties(payload, message) {
   payload.name = message.event;
   payload.time = message.timestamp;
@@ -332,13 +322,6 @@ function processTrackEvent(messageType, message, destination, mappingJson, proce
     eventName.toLowerCase() === 'order completed'
   ) {
     const purchaseObjs = getPurchaseObjs(message, destination.Config);
-
-    // del used properties
-    delete properties.products;
-    delete properties.currency;
-
-    const payload = { properties };
-    setExternalIdOrAliasObject(payload, message);
     return buildResponse(
       message,
       destination,

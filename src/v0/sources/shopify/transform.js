@@ -144,8 +144,13 @@ const processEvent = async (inputEvent, metricMetadata) => {
       break;
     case 'carts_update':
       if (useRedisDatabase) {
-        redisData = await getDataFromRedis(event.id || event.token, metricMetadata);
-        const isValidEvent = await checkAndUpdateCartItems(inputEvent, redisData, metricMetadata);
+        redisData = await getDataFromRedis(event.id || event.token, metricMetadata, 'Cart Update');
+        const isValidEvent = await checkAndUpdateCartItems(
+          inputEvent,
+          redisData,
+          metricMetadata,
+          shopifyTopic,
+        );
         if (!isValidEvent) {
           return NO_OPERATION_SUCCESS;
         }
@@ -208,11 +213,20 @@ const isIdentifierEvent = (event) =>
   ['rudderIdentifier', 'rudderSessionIdentifier'].includes(event?.event);
 const processIdentifierEvent = async (event, metricMetadata) => {
   if (useRedisDatabase) {
+    const cartToken =
+      typeof event.cartToken === 'string' ? event.cartToken.split('?')[0] : event.cartToken;
+    logger.info(`{{SHOPIFY::}} writeKey: ${metricMetadata.writeKey}, cartToken: ${cartToken}`, {
+      type: 'set',
+      source: metricMetadata.source,
+      writeKey: metricMetadata.writeKey,
+    });
     let value;
     let field;
     if (event.event === 'rudderIdentifier') {
       field = 'anonymousId';
+      // eslint-disable-next-line unicorn/consistent-destructuring
       const lineItemshash = getHashLineItems(event.cart);
+      // eslint-disable-next-line unicorn/consistent-destructuring
       value = ['anonymousId', event.anonymousId, 'itemsHash', lineItemshash];
       stats.increment('shopify_redis_calls', {
         type: 'set',
@@ -227,6 +241,7 @@ const processIdentifierEvent = async (event, metricMetadata) => {
       */
     } else {
       field = 'sessionId';
+      // eslint-disable-next-line unicorn/consistent-destructuring
       value = ['sessionId', event.sessionId];
       /* cart_token: {
           anonymousId:'anon_id1',
@@ -242,7 +257,7 @@ const processIdentifierEvent = async (event, metricMetadata) => {
         source: metricMetadata.source,
         writeKey: metricMetadata.writeKey,
       });
-      await RedisDB.setVal(`${event.cartToken}`, value);
+      await RedisDB.setVal(`${cartToken}`, value);
     } catch (e) {
       logger.debug(`{{SHOPIFY::}} cartToken map set call Failed due redis error ${e}`, {
         type: 'set',

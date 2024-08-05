@@ -431,7 +431,7 @@ class Prometheus {
         name: 'shopify_redis_no_val',
         help: 'shopify_redis_no_val',
         type: 'counter',
-        labelNames: ['writeKey', 'source'],
+        labelNames: ['writeKey', 'source', 'event'],
       },
       {
         name: 'invalid_shopify_event',

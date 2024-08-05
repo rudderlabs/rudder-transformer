@@ -207,4 +207,86 @@ export const networkCallsData = [
       data: {},
     },
   },
+  {
+    httpReq: {
+      url: 'https://googleads.googleapis.com/v16/customers/customerid/offlineUserDataJobs:create',
+      data: {
+        job: {
+          type: 'CUSTOMER_MATCH_USER_LIST',
+          customerMatchUserListMetadata: {
+            userList: 'customers/7693729833/userLists/709078448',
+            consent: {
+              adPersonalization: 'UNSPECIFIED',
+              adUserData: 'UNSPECIFIED',
+            },
+          },
+        },
+      },
+      headers: {
+        Authorization: 'Bearer dummy-access',
+        'Content-Type': 'application/json',
+        'developer-token': 'dummy-dev-token',
+      },
+      method: 'POST',
+    },
+    httpRes: {
+      status: 401,
+      data: {
+        error: {
+          code: 401,
+          message:
+            'Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.',
+          status: 'UNAUTHENTICATED',
+        },
+      },
+    },
+  },
+  {
+    httpReq: {
+      url: 'https://googleads.googleapis.com/v16/customers/customerid/offlineUserDataJobs:create',
+      data: {
+        job: {
+          type: 'CUSTOMER_MATCH_USER_LIST',
+          customerMatchUserListMetadata: {
+            userList: 'customers/wrongCustomerID/userLists/709078448',
+            consent: {
+              adPersonalization: 'UNSPECIFIED',
+              adUserData: 'UNSPECIFIED',
+            },
+          },
+        },
+      },
+      headers: {
+        Authorization: 'Bearer wrongCustomerID',
+        'Content-Type': 'application/json',
+        'developer-token': 'dummy-dev-token',
+      },
+      method: 'POST',
+    },
+    httpRes: {
+      status: 401,
+      data: {
+        error: {
+          code: 401,
+          message:
+            'Request is missing required authentication credential. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.',
+          status: 'UNAUTHENTICATED',
+          details: [
+            {
+              '@type': 'type.googleapis.com/google.ads.googleads.v16.errors.GoogleAdsFailure',
+              errors: [
+                {
+                  errorCode: {
+                    authenticationError: 'CUSTOMER_NOT_FOUND',
+                  },
+                  message: 'No customer found for the provided customer id.',
+                },
+              ],
+              requestId: 'lvB3KOjGHsgduHjt0wCglQ',
+            },
+          ],
+        },
+      },
+    },
+  },
 ];

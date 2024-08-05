@@ -1,23 +1,23 @@
 import {
-  generateMetadata,
+  generateGoogleOAuthMetadata,
   generateProxyV0Payload,
   generateProxyV1Payload,
 } from '../../../testUtils';
 
-const commonHeaders = {
+export const commonHeaders = {
   Authorization: 'Bearer dummy-access',
   'Content-Type': 'application/json',
   'developer-token': 'dummy-dev-token',
 };
 
-const commonParams = {
+export const commonParams = {
   destination: 'google_adwords_remarketing_lists',
   listId: '709078448',
   customerId: '7693729833',
   consent: { adPersonalization: 'UNSPECIFIED', adUserData: 'UNSPECIFIED' },
 };
 
-const validRequestPayload1 = {
+export const validRequestPayload1 = {
   enablePartialFailure: true,
   operations: [
     {
@@ -90,9 +90,9 @@ const invalidArgumentRequestPayload = {
   ],
 };
 
-const metadataArray = [generateMetadata(1)];
+const metadataArray = [generateGoogleOAuthMetadata(1)];
 
-const expectedStatTags = {
+export const expectedStatTags = {
   destType: 'GOOGLE_ADWORDS_REMARKETING_LISTS',
   destinationId: 'default-destinationId',
   errorCategory: 'network',
@@ -166,7 +166,7 @@ export const testScenariosForV0API = [
           output: {
             status: 400,
             message:
-              'Request contains an invalid argument. during ga_audience response transformation',
+              '{"error":{"code":400,"details":[{"@type":"type.googleapis.com/google.ads.googleads.v9.errors.GoogleAdsFailure","errors":[{"errorCode":{"offlineUserDataJobError":"INVALID_SHA256_FORMAT"},"message":"The SHA256 encoded value is malformed.","location":{"fieldPathElements":[{"fieldName":"operations","index":0},{"fieldName":"remove"},{"fieldName":"user_identifiers","index":0},{"fieldName":"hashed_email"}]}}]}],"message":"Request contains an invalid argument.","status":"INVALID_ARGUMENT"}} during ga_audience response transformation',
             destinationResponse: {
               error: {
                 code: 400,
@@ -272,7 +272,7 @@ export const testScenariosForV1API = [
             response: [
               {
                 error: '""',
-                metadata: generateMetadata(1),
+                metadata: generateGoogleOAuthMetadata(1),
                 statusCode: 200,
               },
             ],
@@ -313,12 +313,12 @@ export const testScenariosForV1API = [
         body: {
           output: {
             message:
-              'Request contains an invalid argument. during ga_audience response transformation',
+              '{"error":{"code":400,"details":[{"@type":"type.googleapis.com/google.ads.googleads.v9.errors.GoogleAdsFailure","errors":[{"errorCode":{"offlineUserDataJobError":"INVALID_SHA256_FORMAT"},"message":"The SHA256 encoded value is malformed.","location":{"fieldPathElements":[{"fieldName":"operations","index":0},{"fieldName":"remove"},{"fieldName":"user_identifiers","index":0},{"fieldName":"hashed_email"}]}}]}],"message":"Request contains an invalid argument.","status":"INVALID_ARGUMENT"}} during ga_audience response transformation',
             response: [
               {
                 error:
-                  'Request contains an invalid argument. during ga_audience response transformation',
-                metadata: generateMetadata(1),
+                  '{"error":{"code":400,"details":[{"@type":"type.googleapis.com/google.ads.googleads.v9.errors.GoogleAdsFailure","errors":[{"errorCode":{"offlineUserDataJobError":"INVALID_SHA256_FORMAT"},"message":"The SHA256 encoded value is malformed.","location":{"fieldPathElements":[{"fieldName":"operations","index":0},{"fieldName":"remove"},{"fieldName":"user_identifiers","index":0},{"fieldName":"hashed_email"}]}}]}],"message":"Request contains an invalid argument.","status":"INVALID_ARGUMENT"}} during ga_audience response transformation',
+                metadata: generateGoogleOAuthMetadata(1),
                 statusCode: 400,
               },
             ],
@@ -363,7 +363,7 @@ export const testScenariosForV1API = [
             response: [
               {
                 error: '""',
-                metadata: generateMetadata(1),
+                metadata: generateGoogleOAuthMetadata(1),
                 statusCode: 200,
               },
             ],

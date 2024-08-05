@@ -24,18 +24,19 @@ const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const tags = require('../../util/tags');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
-const identifyResponseBuilder = async (message, { Config }) => {
+const identifyResponseBuilder = async ({ message, destination: { Config }, metadata }) => {
   const { userId, userAlias, subscriptionId, subscriptionAlias } =
     validatePayloadAndRetunImpIds(message);
   let finalSubscriptionId = subscriptionId;
   let finalSubscriptionAlias = subscriptionAlias;
-
-  const targetUrl = `${BASE_ENDPOINT}/v2/users/${userId || userAlias}/`;
-  const res = await getSubscriptionHistory(targetUrl, {
+  const options = {
     headers: {
       Authorization: Config.privateApiKey,
     },
-  });
+  };
+
+  const targetUrl = `${BASE_ENDPOINT}/v2/users/${userId || userAlias}/`;
+  const res = await getSubscriptionHistory(targetUrl, options, metadata);
 
   let payload;
   const response = defaultRequestConfig();
@@ -159,7 +160,7 @@ const process = async (event) => {
 
   let response;
   if (messageType === EventType.IDENTIFY) {
-    response = await identifyResponseBuilder(message, destination);
+    response = await identifyResponseBuilder(event);
   } else {
     throw new InstrumentationError(`Event type ${messageType} is not supported`);
   }

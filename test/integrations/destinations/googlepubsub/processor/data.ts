@@ -1314,4 +1314,72 @@ export const data = [
       },
     },
   },
+  {
+    name: 'googlepubsub',
+    description: 'Test 13',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              sentAt: '2020-08-28T15:11:56.167Z',
+              category: 'Food',
+              messageId:
+                'node-cfc5fb7ec83b82bc29e16336a11331e2-0ba97212-0f6e-44cd-a0f1-c20b8b7a7cba',
+              anonymousId: 'abcdeeeeeeeexxxx111',
+              originalTimestamp: '2020-08-28T15:11:56.162Z',
+              name: 'Pizza',
+              _metadata: {
+                nodeVersion: '10.22.0',
+              },
+            },
+            destination: {
+              Config: {
+                credentials: 'abc',
+                eventToTopicMap: [
+                  {
+                    from: 'track',
+                    to: 'Test-Topic',
+                  },
+                  {
+                    from: '*',
+                    to: 'test',
+                  },
+                ],
+                eventToAttributesMap: [
+                  {
+                    from: 'track',
+                    to: 'properties.nestedObject.this',
+                  },
+                ],
+              },
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            error: 'type is required for event',
+            statTags: {
+              destType: 'GOOGLEPUBSUB',
+              errorCategory: 'dataValidation',
+              errorType: 'configuration',
+              feature: 'processor',
+              implementation: 'native',
+              meta: 'accessTokenExpired',
+              module: 'destination',
+            },
+            statusCode: 400,
+          },
+        ],
+      },
+    },
+  },
 ];

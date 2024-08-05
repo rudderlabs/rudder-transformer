@@ -13,6 +13,7 @@ const {
   eventNameMapping,
   jsonNameMapping,
 } = require('./config');
+const { processRouterDestV2, processV2 } = require('./transformV2');
 const {
   createCustomerProperties,
   subscribeUserToList,
@@ -20,6 +21,7 @@ const {
   batchSubscribeEvents,
   getIdFromNewOrExistingProfile,
   profileUpdateResponseBuilder,
+  addSubscribeFlagToTraits,
 } = require('./util');
 const {
   defaultRequestConfig,
@@ -58,11 +60,13 @@ const identifyRequestHandler = async (
   // If listId property is present try to subscribe/member user in list
   const { privateApiKey, enforceEmailAsPrimary, listId, flattenProperties } = destination.Config;
   const mappedToDestination = get(message, MappedToDestinationKey);
+  let traitsInfo = getFieldValueFromMessage(message, 'traits');
   if (mappedToDestination) {
     addExternalIdToTraits(message);
     adduserIdFromExternalId(message);
+    traitsInfo = addSubscribeFlagToTraits(traitsInfo);
   }
-  const traitsInfo = getFieldValueFromMessage(message, 'traits');
+
   let propertyPayload = constructPayload(message, MAPPING_CONFIG[category.name]);
   // Extract other K-V property from traits about user custom properties
   let customPropertyPayload = {};
@@ -277,6 +281,9 @@ const groupRequestHandler = (message, category, destination) => {
 // Main event processor using specific handler funcs
 const processEvent = async (event, reqMetadata) => {
   const { message, destination, metadata } = event;
+  if (destination.Config?.apiVersion === 'v2') {
+    return processV2(event, reqMetadata);
+  }
   if (!message.type) {
     throw new InstrumentationError('Event type is required');
   }
@@ -327,11 +334,15 @@ const getEventChunks = (event, subscribeRespList, nonSubscribeRespList) => {
 };
 
 const processRouterDest = async (inputs, reqMetadata) => {
+  const { destination } = inputs[0];
+  // This is used to switch to latest API version
+  if (destination.Config?.apiVersion === 'v2') {
+    return processRouterDestV2(inputs, reqMetadata);
+  }
   let batchResponseList = [];
   const batchErrorRespList = [];
   const subscribeRespList = [];
   const nonSubscribeRespList = [];
-  const { destination } = inputs[0];
   await Promise.all(
     inputs.map(async (event) => {
       try {

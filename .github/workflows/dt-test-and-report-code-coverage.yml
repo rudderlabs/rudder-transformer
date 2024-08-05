@@ -8,6 +8,10 @@ on:
   pull_request:
     types: ['opened', 'reopened', 'synchronize']
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.sha }}
+  cancel-in-progress: true
+
 jobs:
   coverage:
     name: Code Coverage
@@ -20,7 +24,7 @@ jobs:
           fetch-depth: 1
 
       - name: Setup Node
-        uses: actions/setup-node@v4.0.2
+        uses: actions/setup-node@v4.0.3
         with:
           node-version-file: '.nvmrc'
           cache: 'npm'

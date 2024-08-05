@@ -26,23 +26,29 @@ const parseAxiosError = (error) => {
   return error;
 };
 
-const deleteFunction = async (functionName) =>
-  new Promise((resolve, reject) => {
+const deleteFunction = async (functionName) => {
+  logger.debug(`Deleting function: ${functionName}`);
+
+  return new Promise((resolve, reject) => {
     const url = `${OPENFAAS_GATEWAY_URL}/system/functions`;
     axios
       .delete(url, { data: { functionName }, auth: basicAuth })
       .then(() => resolve())
       .catch((err) => reject(parseAxiosError(err)));
   });
+};
 
-const getFunction = async (functionName) =>
-  new Promise((resolve, reject) => {
+const getFunction = async (functionName) => {
+  logger.debug(`Getting function: ${functionName}`);
+
+  return new Promise((resolve, reject) => {
     const url = `${OPENFAAS_GATEWAY_URL}/system/function/${functionName}`;
     axios
       .get(url, { auth: basicAuth })
       .then((resp) => resolve(resp.data))
       .catch((err) => reject(parseAxiosError(err)));
   });
+};
 
 const getFunctionList = async () =>
   new Promise((resolve, reject) => {

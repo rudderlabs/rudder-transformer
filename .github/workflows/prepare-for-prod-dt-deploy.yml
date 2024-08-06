@@ -43,11 +43,21 @@ jobs:
           echo "Tag Name: $tag_name"
           echo "tag_name=$tag_name" >> $GITHUB_OUTPUT
 
+  get_workflow_url:
+    runs-on: ubuntu-latest
+    steps:
+      - id: get_url
+        run: |
+          curl -s https://api.github.com/repos/${{ github.repository }}/actions/workflows/${{ github.workflow }}/runs/${{ github.run_id }} | jq -r .html_url >> workflow_url.txt
+          echo "::set-output name=workflow_url::$(cat workflow_url.txt)"
+    outputs:
+      url: ${{ steps.get_url.outputs.workflow_url }}
+
   build-transformer-image:
     name: Build Transformer Docker Image - Prod
     # Only merged pull requests from release candidate branches must trigger
     if: ((startsWith(github.event.pull_request.head.ref, 'release/') || startsWith(github.event.pull_request.head.ref, 'hotfix-release/')) && github.event.pull_request.merged == true)
-    needs: [generate-tag-names]
+    needs: [generate-tag-names, get_workflow_url]
     uses: ./.github/workflows/build-push-docker-image.yml
     with:
       build_tag: rudderstack/rudder-transformer:${{ needs.generate-tag-names.outputs.tag_name }}
@@ -59,6 +69,7 @@ jobs:
       build_type: dt
       use_merge_sha: true
       skip_tests: ${{startsWith(github.event.pull_request.head.ref, 'hotfix-release/')}}
+      workflow_url: ${{needs.get_workflow_url.outputs.url}}
     secrets:
       DOCKERHUB_PROD_TOKEN: ${{ secrets.DOCKERHUB_PROD_TOKEN }}
 

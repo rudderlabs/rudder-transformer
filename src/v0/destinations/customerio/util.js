@@ -286,6 +286,9 @@ const defaultResponseBuilder = (message, evName, userId, evType, destination, me
       // 100 - len(`Viewed  Screen`) = 86
       trimmedEvName = `Viewed ${truncate(message.event || message.properties.name, 86)} Screen`;
     } else {
+      if (typeof evName !== 'string') {
+        throw new InstrumentationError('Event Name type should be a string');
+      } // validating evName here as well as message.name could be undefined as well
       trimmedEvName = truncate(evName, 100);
     }
     // anonymous_id needs to be sent for anon track calls to provide information on which anon user is being tracked

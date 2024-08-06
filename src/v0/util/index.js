@@ -858,6 +858,14 @@ function formatValues(formattedVal, formattingType, typeFormat, integrationsObj)
         curFormattedVal = formattedVal.trim();
       }
     },
+    isFloat: () => {
+      if (isDefinedAndNotNull(formattedVal)) {
+        curFormattedVal = parseFloat(formattedVal);
+        if (Number.isNaN(curFormattedVal)) {
+          throw new InstrumentationError('Invalid float value');
+        }
+      }
+    },
     removeSpacesAndDashes: () => {
       if (typeof formattedVal === 'string') {
         curFormattedVal = formattedVal.replace(/ /g, '').replace(/-/g, '');
@@ -1160,7 +1168,7 @@ const getDestinationExternalIDInfoForRetl = (message, destination) => {
   if (externalIdArray) {
     externalIdArray.forEach((extIdObj) => {
       const { type, id } = extIdObj;
-      if (type.includes(`${destination}-`)) {
+      if (type && type.includes(`${destination}-`)) {
         destinationExternalId = id;
         objectType = type.replace(`${destination}-`, '');
         identifierType = extIdObj.identifierType;
@@ -1187,7 +1195,7 @@ const getDestinationExternalIDObjectForRetl = (message, destination) => {
     // some stops the execution when the element is found
     externalIdArray.some((extIdObj) => {
       const { type } = extIdObj;
-      if (type.includes(`${destination}-`)) {
+      if (type && type.includes(`${destination}-`)) {
         obj = extIdObj;
         return true;
       }
@@ -1623,16 +1631,6 @@ function isAppleFamily(platform) {
 
 function removeHyphens(str) {
   return str.replace(/-/g, '');
-}
-
-function isCdkDestination(event) {
-  // TODO: maybe dont need all these checks in place
-  return (
-    event.destination &&
-    event.destination.DestinationDefinition &&
-    event.destination.DestinationDefinition.Config &&
-    event.destination.DestinationDefinition.Config.cdkEnabled
-  );
 }
 
 /**
@@ -2348,7 +2346,6 @@ module.exports = {
   hashToSha256,
   isAppleFamily,
   isBlank,
-  isCdkDestination,
   isDefined,
   isDefinedAndNotNull,
   isDefinedAndNotNullAndNotEmpty,

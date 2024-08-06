@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.74.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.73.1...v1.74.0) (2024-08-05)
+
+
+### Features
+
+* detach user and company in intercom identify call ([#3580](https://github.com/rudderlabs/rudder-transformer/issues/3580)) ([286c44a](https://github.com/rudderlabs/rudder-transformer/commit/286c44a47e8451486bde281b8c938df59945cdfc))
+* onboard new api for klaviyo 15-06-2024 ([#3574](https://github.com/rudderlabs/rudder-transformer/issues/3574)) ([44baab9](https://github.com/rudderlabs/rudder-transformer/commit/44baab9298d171efe1209b3ec360d15e84a4190c))
+* supporting device token type using integrations object ([#3620](https://github.com/rudderlabs/rudder-transformer/issues/3620)) ([14e776e](https://github.com/rudderlabs/rudder-transformer/commit/14e776e659b745c814d31cd049fc4051c1e6735d))
+* updated examples for swagger ([#3526](https://github.com/rudderlabs/rudder-transformer/issues/3526)) ([5e22fa0](https://github.com/rudderlabs/rudder-transformer/commit/5e22fa0555b98e83ca1b11f16e87f367d1f85ca8))
+
+
+### Bug Fixes
+
+* customerio page undefined name ([#3613](https://github.com/rudderlabs/rudder-transformer/issues/3613)) ([adc2a4a](https://github.com/rudderlabs/rudder-transformer/commit/adc2a4a6650c9d9add26be51999f5b3078c59f15))
+* facebook conversion version upgrade ([#3607](https://github.com/rudderlabs/rudder-transformer/issues/3607)) ([9d06546](https://github.com/rudderlabs/rudder-transformer/commit/9d065467f376a047d1cebb095de0b33be6e32206))
+* fb custom audience version upgrade from v18 to v20 ([#3604](https://github.com/rudderlabs/rudder-transformer/issues/3604)) ([c2d7555](https://github.com/rudderlabs/rudder-transformer/commit/c2d7555dcea5e476f276eec5926d392f58dbd7fa))
+* fb pixel and fb app events version upgrade ([#3606](https://github.com/rudderlabs/rudder-transformer/issues/3606)) ([7caf476](https://github.com/rudderlabs/rudder-transformer/commit/7caf4762be2c527725a2bdfb090a626d40723c36))
+* rakuten for amount list ([#3612](https://github.com/rudderlabs/rudder-transformer/issues/3612)) ([2fb7e6b](https://github.com/rudderlabs/rudder-transformer/commit/2fb7e6b4bc2b7524f6fa86a54596f7c6550fa51a))
+* shopify: incorporate new shopify cart token format ([#3626](https://github.com/rudderlabs/rudder-transformer/issues/3626)) ([0d3c042](https://github.com/rudderlabs/rudder-transformer/commit/0d3c0426571f14e88b5b8a703065935713ce8198))
+
 ### [1.73.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.73.0...v1.73.1) (2024-08-02)
 
 

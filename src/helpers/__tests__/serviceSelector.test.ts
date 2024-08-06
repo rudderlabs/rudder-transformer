@@ -1,9 +1,8 @@
-import { ServiceSelector } from '../serviceSelector';
 import { INTEGRATION_SERVICE } from '../../routes/utils/constants';
-import { ProcessorTransformationRequest } from '../../types/index';
-import { CDKV1DestinationService } from '../../services/destination/cdkV1Integration';
 import { CDKV2DestinationService } from '../../services/destination/cdkV2Integration';
 import { NativeIntegrationDestinationService } from '../../services/destination/nativeIntegration';
+import { ProcessorTransformationRequest } from '../../types/index';
+import { ServiceSelector } from '../serviceSelector';
 
 afterEach(() => {
   jest.clearAllMocks();
@@ -27,20 +26,6 @@ describe('ServiceSelector Service', () => {
     );
   });
 
-  test('isCdkDestination should return true', async () => {
-    const destinationDefinitionConfig = {
-      cdkEnabled: true,
-    };
-    expect(ServiceSelector['isCdkDestination'](destinationDefinitionConfig)).toBe(true);
-  });
-
-  test('isCdkDestination should return false', async () => {
-    const destinationDefinitionConfig = {
-      cdkEnabledXYZ: true,
-    };
-    expect(ServiceSelector['isCdkDestination'](destinationDefinitionConfig)).toBe(false);
-  });
-
   test('isCdkV2Destination should return true', async () => {
     const destinationDefinitionConfig = {
       cdkV2Enabled: true,
@@ -53,23 +38,6 @@ describe('ServiceSelector Service', () => {
       cdkV2EnabledXYZ: true,
     };
     expect(ServiceSelector['isCdkV2Destination'](destinationDefinitionConfig)).toBe(false);
-  });
-
-  test('getPrimaryDestinationService should return cdk v1 dest service', async () => {
-    const events = [
-      {
-        destination: {
-          DestinationDefinition: {
-            Config: {
-              cdkEnabled: true,
-            },
-          },
-        },
-      },
-    ] as ProcessorTransformationRequest[];
-    expect(ServiceSelector['getPrimaryDestinationService'](events)).toBeInstanceOf(
-      CDKV1DestinationService,
-    );
   });
 
   test('getPrimaryDestinationService should return cdk v2 dest service', async () => {

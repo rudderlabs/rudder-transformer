@@ -58,8 +58,8 @@ const buildBatchedRequest = (
 ) => ({
   batchedRequest: {
     body: {
-      JSON: batchEvent ? { commands: getMergedEvents(batch) } : getMergedEvents(batch),
-      JSON_ARRAY: {},
+      JSON: batchEvent ? { commands: getMergedEvents(batch) } : {},
+      JSON_ARRAY: batchEvent ? {} : { batch: getMergedEvents(batch) },
       XML: {},
       FORM: {},
     },
@@ -116,7 +116,11 @@ export const batchResponseBuilder = (events: any): any => {
         },
       );
       bathesOfEvents.items.forEach((batch) => {
-        response.push(buildBatchedRequest(batch, constants, eventEndPoint, batchEvent));
+        const requests: any = buildBatchedRequest(batch, constants, eventEndPoint, batchEvent);
+        requests.batchedRequest.body.JSON_ARRAY.batch = JSON.stringify(
+          requests.batchedRequest.body.JSON_ARRAY.batch,
+        );
+        response.push(requests);
       });
     }
   });

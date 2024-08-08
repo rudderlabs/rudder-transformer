@@ -42,7 +42,7 @@ export const validation: ProcessorTestData[] = [
         body: [
           {
             error:
-              'Either one of userId or anonymousId is required. Aborting: Workflow: procWorkflow, Step: validateInput, ChildStep: undefined, OriginalError: Either one of userId or anonymousId is required. Aborting',
+              'Either one of userId or anonymousId is required. Aborting: Workflow: procWorkflow, Step: validateInput, ChildStep: validateContactAndEventsInput, OriginalError: Either one of userId or anonymousId is required. Aborting',
             metadata: generateMetadata(1),
             statTags: processorInstrumentationErrorStatTags,
             statusCode: 400,
@@ -86,7 +86,7 @@ export const validation: ProcessorTestData[] = [
         body: [
           {
             error:
-              'message type group is not supported: Workflow: procWorkflow, Step: validateInput, ChildStep: undefined, OriginalError: message type group is not supported',
+              'message type group is not supported: Workflow: procWorkflow, Step: validateInput, ChildStep: validateContactAndEventsInput, OriginalError: message type group is not supported',
             metadata: generateMetadata(1),
             statTags: processorInstrumentationErrorStatTags,
             statusCode: 400,
@@ -126,7 +126,7 @@ export const validation: ProcessorTestData[] = [
         body: [
           {
             error:
-              'Timestamp is not present. Aborting: Workflow: procWorkflow, Step: validateInput, ChildStep: undefined, OriginalError: Timestamp is not present. Aborting',
+              'Timestamp is not present. Aborting: Workflow: procWorkflow, Step: validateInput, ChildStep: validateContactAndEventsInput, OriginalError: Timestamp is not present. Aborting',
             metadata: generateMetadata(1),
             statTags: processorInstrumentationErrorStatTags,
             statusCode: 400,
@@ -197,6 +197,47 @@ export const validation: ProcessorTestData[] = [
             }),
             statusCode: 200,
             metadata: generateMetadata(1),
+          },
+        ],
+      },
+    },
+  },
+  {
+    id: 'bloomreach-validation-test-5',
+    name: destType,
+    description: 'Missing message action for record event type',
+    scenario: 'Framework',
+    successCriteria: 'Instrumentation Error',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination,
+            message: {
+              type: 'record',
+              integrations: {
+                All: true,
+              },
+              originalTimestamp: '2024-03-04T15:32:56.409Z',
+            },
+            metadata: generateMetadata(1),
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            error:
+              'message type record is not supported: Workflow: procWorkflow, Step: validateInput, ChildStep: validateContactAndEventsInput, OriginalError: message type record is not supported',
+            metadata: generateMetadata(1),
+            statTags: processorInstrumentationErrorStatTags,
+            statusCode: 400,
           },
         ],
       },

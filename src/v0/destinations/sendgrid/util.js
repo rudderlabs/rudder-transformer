@@ -478,7 +478,7 @@ const fetchCustomFields = async ({ destination, metadata }) => {
  */
 const getCustomFields = async ({ message, destination, metadata }) => {
   const customFields = {};
-  const payload = get(message, 'context.traits');
+  const payload = get(message, 'context.traits') || get(message, 'traits');
   const { customFieldsMapping } = destination.Config;
   const fieldsMapping = getHashFromArray(customFieldsMapping, 'from', 'to', false);
   const fields = Object.keys(fieldsMapping);

@@ -288,6 +288,8 @@ const BrazeDedupUtility = {
 
     if (keys.length > 0) {
       keys.forEach((key) => {
+        // ref: https://www.braze.com/docs/user_guide/data_and_analytics/custom_data/custom_attributes/#adding-descriptions
+        // null is a valid value in braze for unsetting, so we need to compare the values only if the key is present in the stored user data
         // in case of keys having null values only compare if the key is present in the stored user data
         if (userData[key] === null) {
           if (isDefinedAndNotNull(storedUserData[key])) {

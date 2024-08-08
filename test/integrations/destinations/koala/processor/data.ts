@@ -159,6 +159,7 @@ export const data = [
                     {
                       type: 'identify',
                       sent_at: '2024-01-23T08:35:17.342Z',
+                      source: 'rudderstack-cloud',
                       traits: {
                         FirstName: 'John',
                         LastName: 'Doe',

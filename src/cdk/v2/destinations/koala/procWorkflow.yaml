@@ -29,7 +29,8 @@ steps:
         identifies: [{
           type: $.context.messageType,
           sent_at: .message.().({{{{$.getGenericPaths("timestamp")}}}}),
-          traits: koTraits 
+          traits: koTraits,
+          source: "rudderstack-cloud"
         }]
       };
 

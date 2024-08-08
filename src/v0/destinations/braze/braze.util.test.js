@@ -892,7 +892,7 @@ describe('dedup utility tests', () => {
       expect(result).toEqual(null);
     });
 
-    test('deduplicates user data correctly when user data is undefined and it is same in stored data', () => {
+    test('deduplicates user data correctly when user data is undefined and it is defined in stored data', () => {
       const userData = {
         external_id: '123',
         undefinedProperty: undefined,

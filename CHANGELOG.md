@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.74.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.74.0...v1.74.1) (2024-08-08)
+
+
+### Bug Fixes
+
+* sendgrid read root traits ([#3642](https://github.com/rudderlabs/rudder-transformer/issues/3642)) ([5acad70](https://github.com/rudderlabs/rudder-transformer/commit/5acad707d3125f3d50380d886f5fecb1406836cd))
+
 ## [1.74.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.73.1...v1.74.0) (2024-08-05)
 
 

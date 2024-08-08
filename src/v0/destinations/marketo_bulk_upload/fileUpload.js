@@ -138,7 +138,7 @@ const getFileData = async (inputEvents, config, headerArr) => {
     startTime = Date.now();
     fs.writeFileSync(MARKETO_FILE_PATH, csv.join('\n'));
     const readStream = fs.readFileSync(MARKETO_FILE_PATH);
-    fs.unlinkSync(MARKETO_FILE_PATH);
+    // fs.unlinkSync(MARKETO_FILE_PATH);
     endTime = Date.now();
     requestTime = endTime - startTime;
     stats.histogram('marketo_bulk_upload_create_file_time', requestTime);

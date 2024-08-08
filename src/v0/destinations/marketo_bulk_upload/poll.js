@@ -85,6 +85,18 @@ const responseHandler = async (event) => {
         HasWarning: numOfRowsWithWarning > 0,
         WarningJobURLs: numOfRowsWithWarning > 0 ? '/getWarningJobs' : undefined,
       };
+
+      if (numOfRowsWithWarning === 0 && numOfRowsFailed === 0) {
+        console.log(`\n\n Import ID ${event.importId} is successful`);
+      }
+
+      if (numOfRowsFailed > 0) {
+        console.log('\n Failing Import ID', event.importId);
+      }
+
+      if (numOfRowsWithWarning > 0) {
+        console('\nWarning Import ID', event.importId);
+      }
       return removeUndefinedValues(response);
     }
     if (status === 'Importing' || status === 'Queued') {

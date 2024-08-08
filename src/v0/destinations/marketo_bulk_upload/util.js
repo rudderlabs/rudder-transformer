@@ -322,6 +322,7 @@ const handleFileUploadResponse = (resp, successfulJobs, unsuccessfulJobs, reques
     resp.response?.result[0]?.importId
   ) {
     const { importId } = resp.response.result[0];
+    console.log('\n This upload has import ID', importId);
     stats.histogram('marketo_bulk_upload_upload_file_time', requestTime);
 
     stats.increment(UPLOAD_FILE, {
@@ -416,6 +417,9 @@ const checkEventStatusViaSchemaMatching = (event, fieldMap) => {
         !mismatchedFields[job_id] &&
         actualDataType !== expectedDataType
       ) {
+        console.log('\n ######### Failed for param mismatch ##########');
+        console.log('\n param name ', paramName);
+        console.log('\n param value', paramValue);
         mismatchedFields[job_id] = `invalid ${paramName}`;
       }
     });

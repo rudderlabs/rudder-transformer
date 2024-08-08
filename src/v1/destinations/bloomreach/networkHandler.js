@@ -23,12 +23,33 @@ const tags = require('../../../v0/util/tags');
 //   "end_time": 1710750816.8518236,
 //   "success": true
 // }
+// Catalog response =>
+// [
+//   {
+//     "errors": {
+//       "properties": [
+//         "Fields [field1, field2] are not properly defined."
+//       ]
+//     },
+//     "queued": false,
+//     "success": false
+//   },
+//   {
+//     "success" : "True",
+//     "queued" : "True",
+//   },
+// ]
 const checkIfEventIsAbortableAndExtractErrorMessage = (element) => {
   if (element.success) {
     return { isAbortable: false, errorMsg: '' };
   }
 
-  const errorMsg = element.errors.join(', ');
+  const errorMsg = Array.isArray(element.errors)
+    ? element.errors.join(', ')
+    : Object.values(element.errors || {})
+        .flat()
+        .join(', ');
+
   return { isAbortable: true, errorMsg };
 };
 
@@ -41,7 +62,11 @@ const responseHandler = (responseParams) => {
 
   if (isHttpStatusSuccess(status)) {
     // check for Partial Event failures and Successes
-    const { results } = response;
+    let { results } = response;
+    // in case of catalog response
+    if (Array.isArray(response)) {
+      results = response;
+    }
     results.forEach((event, idx) => {
       const proxyOutput = {
         statusCode: 200,

@@ -159,7 +159,7 @@ const platformWisePayloadGenerator = (message, sessionEvent, Config) => {
       payload.c = 'carrier';
     }
   } else if (Config.match_id === 'advertisingId') {
-    payload.match_id = clonedMessage.context.device.advertisingId;
+    payload.match_id = clonedMessage?.context?.device?.advertisingId;
   } else if (message.properties.match_id) {
     payload.match_id = message.properties.match_id;
   }

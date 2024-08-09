@@ -33,6 +33,7 @@ export class ComparatorService implements DestinationService {
 
   public init(): void {
     this.primaryService.init();
+
     this.secondaryService.init();
   }
 

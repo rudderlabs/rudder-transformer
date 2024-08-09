@@ -60,6 +60,7 @@ jobs:
       dockerfile: Dockerfile
       load_target: development
       push_target: production
+      use_merge_sha: true
     secrets:
       DOCKERHUB_PROD_TOKEN: ${{ secrets.DOCKERHUB_PROD_TOKEN }}
 

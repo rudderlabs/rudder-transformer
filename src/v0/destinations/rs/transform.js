@@ -31,6 +31,7 @@ function process(event) {
     sourceCategory: event.metadata ? event.metadata.sourceCategory : null,
     destJsonPaths,
     destConfig: event.destination?.Config,
+    destinationId: event.destination.ID,
   });
 }
 

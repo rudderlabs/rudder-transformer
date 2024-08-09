@@ -15,6 +15,7 @@ function process(event) {
     provider,
     sourceCategory: event.metadata ? event.metadata.sourceCategory : null,
     destConfig: event.destination?.Config,
+    destinationId: event.destination.ID,
   });
 }
 

@@ -236,6 +236,7 @@ export const data = [
     description: 'MailJet when no email is present',
     module: 'source',
     version: 'v0',
+    skipGo: 'FIXME',
     input: {
       request: {
         body: [

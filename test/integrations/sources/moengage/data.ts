@@ -264,6 +264,8 @@ const data = [
     description: 'Batch of events',
     module: 'source',
     version: 'v0',
+    overrideReceivedAt: true,
+    overrideRequestIP: true,
     input: {
       request: {
         body: [

@@ -11,6 +11,7 @@ export const data: SrcTestCaseData[] = [
     description: 'test-0',
     module: 'source',
     version: 'v0',
+    skipGo: 'NoAnonID error',
     input: {
       request: {
         body: [

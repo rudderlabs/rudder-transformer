@@ -61,6 +61,9 @@ function getErrorResponse(outputResponse?: responseType) {
   const errorResponse = bodyKeys
     .map((statusKey) => get(outputResponse, statusKey))
     .find(isDefinedAndNotNull);
+  if (errorResponse) {
+    return errorResponse + '\n';
+  }
   return errorResponse;
 }
 
@@ -71,6 +74,9 @@ function getSourceRequestBody(testCase: any, version?: string) {
       : testCase.input.request.body;
   if (version === 'v0') {
     return bodyElement;
+  }
+  if (Array.isArray(bodyElement?.event)) {
+    return bodyElement.event.map((e) => ({ ...e, source: bodyElement.source }));
   }
   return { ...bodyElement.event, source: bodyElement.source };
 }
@@ -158,11 +164,17 @@ function generateSources(outputFolder: string, options: OptionValues) {
         goTest.skip = testCase.skipGo;
       }
 
-      goTest.output.queue.forEach((queueItem) => {
+      goTest.output.queue.forEach((queueItem, i) => {
         queueItem['receivedAt'] =
-          testCase.output.response?.body?.[0]?.output?.batch?.[0]?.receivedAt ??
-          '2024-03-03T04:48:29.000Z';
-        queueItem['request_ip'] = '192.0.2.30';
+          testCase?.overrideReceivedAt &&
+          testCase.output.response?.body?.[0]?.output?.batch?.[i]?.receivedAt
+            ? testCase.output.response?.body?.[0]?.output?.batch?.[i]?.receivedAt
+            : '2024-03-03T04:48:29.000Z';
+        queueItem['request_ip'] =
+          testCase?.overrideRequestIP &&
+          testCase.output.response?.body?.[0]?.output?.batch?.[i]?.request_ip
+            ? testCase.output.response?.body?.[0]?.output?.batch?.[i]?.request_ip
+            : '192.0.2.30';
         if (!queueItem['messageId']) {
           queueItem['messageId'] = '00000000-0000-0000-0000-000000000000';
         }

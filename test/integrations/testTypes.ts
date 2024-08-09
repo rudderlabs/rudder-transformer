@@ -52,6 +52,8 @@ export interface TestCaseData {
   input: inputType;
   output: outputType;
   mock?: mockType[];
+  overrideReceivedAt?: string;
+  overrideRequestIP?: string;
   mockFns?: (mockAdapter: MockAdapter) => {};
 }
 

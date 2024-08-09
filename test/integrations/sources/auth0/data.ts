@@ -1508,6 +1508,7 @@ export const data = [
     description: 'empty batch',
     module: 'source',
     version: 'v0',
+    skipGo: 'Created this case manually',
     input: {
       request: {
         body: [],

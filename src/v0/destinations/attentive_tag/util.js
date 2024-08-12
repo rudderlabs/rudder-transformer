@@ -19,11 +19,13 @@ const { mappingConfig, ConfigCategory } = require('./config');
  */
 const getPropertiesKeyValidation = (payload) => {
   const validationArray = [`'`, `"`, `{`, `}`, `[`, `]`, ',', `,`];
-  const keys = Object.keys(payload.properties);
-  for (const key of keys) {
-    for (const validationChar of validationArray) {
-      if (key.includes(validationChar)) {
-        return false;
+  if (payload.properties) {
+    const keys = Object.keys(payload.properties);
+    for (const key of keys) {
+      for (const validationChar of validationArray) {
+        if (key.includes(validationChar)) {
+          return false;
+        }
       }
     }
   }

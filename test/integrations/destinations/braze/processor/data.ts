@@ -309,6 +309,7 @@ export const data = [
                       name: 'braze revenue test',
                       time: '2020-01-24T11:59:02.403+05:30',
                       properties: {
+                        currency: 'USD',
                         revenue: 50,
                       },
                       external_id: 'mickeyMouse',
@@ -437,6 +438,7 @@ export const data = [
                       time: '2020-01-24T11:59:02.403+05:30',
                       properties: {
                         revenue: 50,
+                        currency: 'USD',
                       },
                       external_id: 'mickeyMouse',
                     },
@@ -772,6 +774,7 @@ export const data = [
               properties: {
                 currency: 'USD',
                 revenue: 50,
+                event_name: 'braze revenue test 2',
               },
               receivedAt: '2020-01-24T11:59:02.403+05:30',
               request_ip: '[::1]:53710',
@@ -823,6 +826,7 @@ export const data = [
                       time: '2020-01-24T11:59:02.403+05:30',
                       properties: {
                         revenue: 50,
+                        currency: 'USD',
                       },
                       _update_existing_only: false,
                       user_alias: {
@@ -993,6 +997,7 @@ export const data = [
                         affiliation: 'Google Store',
                         checkout_id: 'fksdjfsdjfisjf9sdfjsd9f',
                         coupon: 'hasbros',
+                        currency: 'USD',
                         discount: 2.5,
                         order_id: '50314b8e9bcf000000000000',
                         products: [
@@ -1976,6 +1981,7 @@ export const data = [
                       properties: {
                         mergeObjectsUpdateOperation: false,
                         revenue: 50,
+                        currency: 'USD',
                       },
                       external_id: 'finalUserTestCA',
                     },
@@ -2192,6 +2198,7 @@ export const data = [
                       properties: {
                         mergeObjectsUpdateOperation: false,
                         revenue: 50,
+                        currency: 'USD',
                       },
                       external_id: 'finalUserTestCA',
                     },
@@ -3398,6 +3405,7 @@ export const data = [
                       time: '2020-01-24T11:59:02.403+05:30',
                       properties: {
                         revenue: 50,
+                        currency: 'USD',
                       },
                       external_id: 'mickeyMouse',
                       app_id: '123',
@@ -3985,6 +3993,7 @@ export const data = [
                         subtotal: 22.5,
                         tax: 2,
                         total: 27.5,
+                        currency: 'USD',
                       },
                       _update_existing_only: false,
                       user_alias: {
@@ -4036,7 +4045,6 @@ export const data = [
               Transformations: [],
             },
             message: {
-              anonymousId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
               channel: 'web',
               context: {
                 traits: {

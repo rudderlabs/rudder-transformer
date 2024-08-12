@@ -210,14 +210,7 @@ export const businessProxyV1: ProxyV1TestData[] = [
             params: {},
             JSON: {},
             JSON_ARRAY: {
-              batch: [
-                {
-                  item_id: 'test-item-id-faulty',
-                  properties: {
-                    unprinted1: '1',
-                  },
-                },
-              ],
+              batch: '[{"item_id":"test-item-id-faulty","properties":{"unprinted1":"1"}}]',
             },
             endpoint: updateEndpoint,
           },

@@ -53,7 +53,7 @@
     "input": {
       "event": "rudderSessionIdentifier",
       "sessionId": "session_id",
-      "cartToken": "shopify_test_set_map_fail",
+      "cartToken": "shopify_test_set_map_fail?key=abcd13234",
       "query_parameters": {
         "writeKey": ["Shopify Write Key"]
       },
@@ -1298,7 +1298,7 @@
     "input": {
       "event": "rudderIdentifier",
       "anonymousId": "b9993cc5-9e60-4e69-be0e-4e38c228314b",
-      "cartToken": "shopify_test1",
+      "cartToken": "shopify_test1?key=abcd1234",
       "query_parameters": {
         "writeKey": ["Shopify Write Key"]
       },

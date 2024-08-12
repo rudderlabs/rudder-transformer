@@ -32,12 +32,29 @@ const getCustomMappings = (message, mapping) => {
 // TODO: write a func to evaluate json path template
 const addPathParams = (message, webhookUrl) => webhookUrl;
 
-const excludeMappedFields = (message, mapping) => {
-  const payload = message;
-  mapping.forEach((field) => {
-    delete payload[field];
+const excludeMappedFields = (payload, mapping) => {
+  const rawPayload = { ...payload };
+  mapping.forEach(({ from }) => {
+    // Remove the '$.' prefix and split the remaining string by '.'
+    const keys = from.replace(/^\$\./, '').split('.');
+    let current = rawPayload;
+
+    // Traverse to the parent of the key to be removed
+    keys.slice(0, -1).forEach((key) => {
+      if (current && current[key]) {
+        current = current[key];
+      } else {
+        current = null;
+      }
+    });
+
+    if (current) {
+      // Remove the 'from' field from input payload
+      delete current[keys[keys.length - 1]];
+    }
   });
-  return message;
+
+  return rawPayload;
 };
 
 module.exports = { getAuthHeaders, getCustomMappings, addPathParams, excludeMappedFields };

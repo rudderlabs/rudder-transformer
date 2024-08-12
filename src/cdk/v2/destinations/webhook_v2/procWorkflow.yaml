@@ -68,7 +68,7 @@ steps:
         payload.context = payload.context || {};
         payload.context.ip = ip;
       )
-      $.context.payload = $.removeUndefinedAndNullValues(payload)
+      $.context.payload = $.removeUndefinedAndNullValues($.excludeMappedFields(payload, .destination.Config.eventsMapping))
 
   - name: buildResponseForProcessTransformation
     template: |

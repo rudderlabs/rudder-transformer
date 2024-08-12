@@ -17,7 +17,7 @@
   "output": {
     "response": {
       "status": 400,
-      "body": "Invalid topic in query_parameters"
+      "body": "Invalid topic in query_parameters\n"
     },
     "queue": [],
     "errQueue": [

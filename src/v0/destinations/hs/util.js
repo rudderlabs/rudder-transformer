@@ -22,6 +22,9 @@ const {
   getValueFromMessage,
   isNull,
   validateEventName,
+  defaultBatchRequestConfig,
+  defaultPostRequestConfig,
+  getSuccessRespEvents,
 } = require('../../util');
 const {
   CONTACT_PROPERTY_MAP_ENDPOINT,
@@ -844,6 +847,34 @@ const addExternalIdToHSTraits = (message) => {
   set(getFieldValueFromMessage(message, 'traits'), externalIdObj.identifierType, externalIdObj.id);
 };
 
+const convertToResponseFormat = (successRespListWithDontBatchTrue) => {
+  const response = [];
+  if (Array.isArray(successRespListWithDontBatchTrue)) {
+    successRespListWithDontBatchTrue.forEach((event) => {
+      const { message, metadata, destination } = event;
+      const endpoint = get(message, 'endpoint');
+
+      const batchedResponse = defaultBatchRequestConfig();
+      batchedResponse.batchedRequest.headers = message.headers;
+      batchedResponse.batchedRequest.endpoint = endpoint;
+      batchedResponse.batchedRequest.body = message.body;
+      batchedResponse.batchedRequest.params = message.params;
+      batchedResponse.batchedRequest.method = defaultPostRequestConfig.requestMethod;
+      batchedResponse.metadata = [metadata];
+      batchedResponse.destination = destination;
+
+      response.push(
+        getSuccessRespEvents(
+          batchedResponse.batchedRequest,
+          batchedResponse.metadata,
+          batchedResponse.destination,
+        ),
+      );
+    });
+  }
+  return response;
+};
+
 module.exports = {
   validateDestinationConfig,
   addExternalIdToHSTraits,
@@ -863,4 +894,5 @@ module.exports = {
   getObjectAndIdentifierType,
   extractIDsForSearchAPI,
   getRequestData,
+  convertToResponseFormat,
 };

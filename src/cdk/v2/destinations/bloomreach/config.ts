@@ -4,7 +4,7 @@ export const CUSTOMER_COMMAND = 'customers';
 export const CUSTOMER_EVENT_COMMAND = 'customers/events';
 export const MAX_BATCH_SIZE = 50;
 export const MAX_PAYLOAD_SIZE = 10000000;
-export const MAX_ITEMS = 10000;
+export const MAX_ITEMS = 5000;
 
 // ref:- https://documentation.bloomreach.com/engagement/reference/batch-commands-2
 export const getBatchEndpoint = (apiBaseUrl: string, projectToken: string): string =>

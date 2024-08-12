@@ -13,10 +13,20 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  get_workflow_url:
+    runs-on: ubuntu-latest
+    steps:
+      - id: get_url
+        run: |
+          curl -s https://api.github.com/repos/${{ github.repository }}/actions/workflows/${{ github.workflow }}/runs/${{ github.run_id }} | jq -r .html_url >> workflow_url.txt
+          echo "::set-output name=workflow_url::$(cat workflow_url.txt)"
+    outputs:
+      url: ${{ steps.get_url.outputs.workflow_url }}
+
   coverage:
     name: Code Coverage
     runs-on: ubuntu-latest
-
+    needs: [get_workflow_url]
     steps:
       - name: Checkout
         uses: actions/checkout@v4.1.1
@@ -37,6 +47,11 @@ jobs:
           # Supress logging in tests
           LOG_LEVEL=100 npm run test:js:ci
           LOG_LEVEL=100 npm run test:ts:ci
+
+      - uses: ./.github/workflows/slack-notify.yml
+        if: failure() && ${{startsWith(github.event.pull_request.head.ref, 'hotfix-release/')}}
+        with:
+          workflow_url: ${{ needs.get_workflow_url.outputs.url }}
 
       - name: Run Lint Checks
         run: |

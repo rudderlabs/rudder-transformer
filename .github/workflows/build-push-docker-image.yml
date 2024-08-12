@@ -78,7 +78,7 @@ jobs:
           echo "Modified files: $modified_files"
           found=false
           for modified_file in "${modified_files[@]}"; do
-            if [[ "$modified_file" == "Dockerfile" || "$modified_file" == "package.json" || "$modified_file" == "package-lock.json" ]]; then
+            if [[ "$modified_file" == "Dockerfile" || "$modified_file" == "docker-compose.yml" || "$modified_file" == "Dockerfile" || "$modified_file" == "Dockerfile-ut-func" ]]; then
               found=true
               break
             fi
@@ -122,40 +122,6 @@ jobs:
         run: |
           docker run ${{ inputs.build_tag }} npm run test:js:ci
           docker run ${{ inputs.build_tag }} npm run test:ts:ci
-
-      - name: Notify Slack Channel
-        if: ${{ inputs.skip_tests != true || needs.get_changed_files.outputs.should_execute_tests == true }} && failure()
-        id: slack
-        uses: slackapi/slack-github-action@v1.25.0
-        continue-on-error: true
-        env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
-          PROJECT_NAME: 'Rudder Transformer'
-        with:
-          channel-id: ${{ secrets.SLACK_RELEASE_CHANNEL_ID }}
-          payload: |
-            {
-              "text": "*<${{inputs.build_type}} release tests failed>*\nCC: <@U03KG4BK1L1> <@U024YF8CR53> <@U03JWRHH1NJ>",
-              "blocks": [
-                {
-                  "type": "header",
-                  "text": {
-                    "type": "plain_text",
-                    "text": ":siren2:  ${{inputs.build_type}} release tests - Failed  :siren2:"
-                  }
-                },
-                {
-                  "type": "divider"
-                },
-                {
-                  "type": "section",
-                  "text": {
-                    "type": "mrkdwn",
-                    "text": "*<${{inputs.workflow_url}}|failed workflow>*\nCC: <@U03KG4BK1L1> <@U024YF8CR53> <@U03JWRHH1NJ>"
-                  }
-                }
-              ]
-            }
 
       - name: Build and Push Multi-platform Images
         uses: docker/build-push-action@v6.5.0

@@ -19,6 +19,7 @@ const {
   fetchFinalSetOfTraits,
   getProperties,
   validateDestinationConfig,
+  convertToResponseFormat,
 } = require('./util');
 
 const processSingleMessage = async ({ message, destination, metadata }, propertyMap) => {
@@ -147,20 +148,38 @@ const processBatchRouter = async (inputs, reqMetadata) => {
     }),
   );
 
-  if (successRespList.length > 0) {
-    if (destination.Config.apiVersion === API_VERSION.v3) {
-      batchedResponseList = batchEvents(successRespList);
+  const dontBatchTrueResponses = [];
+  const dontBatchFalseOrUndefinedResponses = [];
+  // segregating successRepList depending on dontbatch value
+  successRespList.forEach((successResp) => {
+    if (successResp.metadata?.dontBatch) {
+      dontBatchTrueResponses.push(successResp);
     } else {
-      batchedResponseList = legacyBatchEvents(successRespList);
+      dontBatchFalseOrUndefinedResponses.push(successResp);
+    }
+  });
+
+  // batch implementation
+  if (dontBatchFalseOrUndefinedResponses.length > 0) {
+    if (destination.Config.apiVersion === API_VERSION.v3) {
+      batchedResponseList = batchEvents(dontBatchFalseOrUndefinedResponses);
+    } else {
+      batchedResponseList = legacyBatchEvents(dontBatchFalseOrUndefinedResponses);
     }
   }
-  return { batchedResponseList, errorRespList };
+  return {
+    batchedResponseList,
+    errorRespList,
+    // if there are any events where dontbatch set to true we need to update them according to the response format
+    dontBatchEvents: convertToResponseFormat(dontBatchTrueResponses),
+  };
 };
 // we are batching by default at routerTransform
 const processRouterDest = async (inputs, reqMetadata) => {
   const tempNewInputs = batchEventsInOrder(inputs);
   const batchedResponseList = [];
   const errorRespList = [];
+  const dontBatchEvents = [];
   const promises = tempNewInputs.map(async (inputEvents) => {
     const response = await processBatchRouter(inputEvents, reqMetadata);
     return response;
@@ -171,8 +190,10 @@ const processRouterDest = async (inputs, reqMetadata) => {
   results.forEach((response) => {
     errorRespList.push(...response.errorRespList);
     batchedResponseList.push(...response.batchedResponseList);
+    dontBatchEvents.push(...response.dontBatchEvents);
   });
-  return [...batchedResponseList, ...errorRespList];
+  console.log(JSON.stringify([...batchedResponseList, ...errorRespList, ...dontBatchEvents]));
+  return [...batchedResponseList, ...errorRespList, ...dontBatchEvents];
 };
 
 module.exports = { process, processRouterDest };

@@ -4,11 +4,14 @@ const { base64Convertor, applyCustomMappings } = require('../../../../v0/util');
 const getAuthHeaders = (config) => {
   let headers;
   switch (config.auth) {
-    case 'basicAuth':
+    case 'basicAuth': {
+      const credentials = `${config.username}:${config.password}`;
+      const encodedCredentials = base64Convertor(credentials);
       headers = {
-        Authorization: `Basic ${base64Convertor(`${config.username}:${config.password}`)}`,
+        Authorization: `Basic ${encodedCredentials}`,
       };
       break;
+    }
     case 'bearerTokenAuth':
       headers = { Authorization: `Bearer ${config.bearerToken}` };
       break;

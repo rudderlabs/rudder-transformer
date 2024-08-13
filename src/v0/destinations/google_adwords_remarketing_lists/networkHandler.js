@@ -151,7 +151,6 @@ const gaAudienceRespHandler = (destResponse, stageMsg) => {
   let { status } = destResponse;
   const { response } = destResponse;
 
-  console.log(get(response, 'error.details.0.errors.0.errorCode.databaseError'));
   if (
     status === 400 &&
     get(response, 'error.details.0.errors.0.errorCode.databaseError') === 'CONCURRENT_MODIFICATION'

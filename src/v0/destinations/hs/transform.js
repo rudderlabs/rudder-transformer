@@ -20,7 +20,6 @@ const {
   getProperties,
   validateDestinationConfig,
   convertToResponseFormat,
-  isIterable,
 } = require('./util');
 
 const processSingleMessage = async ({ message, destination, metadata }, propertyMap) => {
@@ -108,6 +107,7 @@ const processBatchRouter = async (inputs, reqMetadata) => {
       errorRespList: tempInputs.map((input) =>
         handleRtTfSingleEventError(input, error, reqMetadata),
       ),
+      dontBatchEvents: [],
     };
   }
 
@@ -189,15 +189,9 @@ const processRouterDest = async (inputs, reqMetadata) => {
   const results = await Promise.all(promises);
 
   results.forEach((response) => {
-    if (isIterable(response?.errorRespList)) {
-      errorRespList.push(...response.errorRespList);
-    }
-    if (isIterable(response?.batchedResponseList)) {
-      batchedResponseList.push(...response.batchedResponseList);
-    }
-    if (isIterable(response?.dontBatchEvents)) {
-      dontBatchEvents.push(...response.dontBatchEvents);
-    }
+    errorRespList.push(...response.errorRespList);
+    batchedResponseList.push(...response.batchedResponseList);
+    dontBatchEvents.push(...response.dontBatchEvents);
   });
   return [...batchedResponseList, ...errorRespList, ...dontBatchEvents];
 };

@@ -86,7 +86,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   notify:
-    name: notify in slack
+    name: slack notification on failure
     needs: [get_workflow_url, coverage]
     if: needs.coverage.outputs.tests_run_outcome == 'failure' || failure()
     uses: ./.github/workflows/slack-notify.yml

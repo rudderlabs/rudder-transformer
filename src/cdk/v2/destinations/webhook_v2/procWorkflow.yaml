@@ -13,6 +13,8 @@ bindings:
   - name: defaultRequestConfig
     path: ../../../../v0/util
   - path: ./utils
+  - name: jsonxml
+    path: jsontoxml
 
 steps:
   - name: checkIfProcessed
@@ -50,7 +52,6 @@ steps:
       }
 
   - name: prepareParams
-    condition: $.context.method in ['get', 'delete']
     template: |
       $.context.params = $.getCustomMappings(.message, .destination.Config.queryParams)
 
@@ -59,7 +60,6 @@ steps:
       $.context.endpoint = $.addPathParams(.message, .destination.Config.webhookUrl);
 
   - name: prepareBody
-    condition: $.context.method in ['post', 'put', 'patch']
     template: |
       let payload = .message;
       payload = {...payload, ...$.getCustomMappings(.message, .destination.Config.eventsMapping)};
@@ -73,7 +73,7 @@ steps:
   - name: buildResponseForProcessTransformation
     template: |
       const response = $.defaultRequestConfig();
-      response.body.JSON = $.context.payload;
+      .destination.Config.format === "xml" ? response.body.XML = $.jsonxml({$.context.payload}): response.body.JSON = $.context.payload;
       response.endpoint = $.context.endpoint;
       response.headers = $.context.headers;
       response.params = $.context.params;

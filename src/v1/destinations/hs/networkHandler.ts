@@ -30,6 +30,7 @@ const findFeatureandVersion = (response, rudderJobMetadata, destinationConfig) =
     if (
       Array.isArray(results) &&
       results.length !== rudderJobMetadata.length &&
+      Array.isArray(errors) &&
       results.length + errors.length === rudderJobMetadata.length
     )
       return 'newApiWithMultipleEventsAndErrors';

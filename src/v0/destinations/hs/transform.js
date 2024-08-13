@@ -20,6 +20,7 @@ const {
   getProperties,
   validateDestinationConfig,
   convertToResponseFormat,
+  isIterable,
 } = require('./util');
 
 const processSingleMessage = async ({ message, destination, metadata }, propertyMap) => {
@@ -188,11 +189,16 @@ const processRouterDest = async (inputs, reqMetadata) => {
   const results = await Promise.all(promises);
 
   results.forEach((response) => {
-    errorRespList.push(...response.errorRespList);
-    batchedResponseList.push(...response.batchedResponseList);
-    dontBatchEvents.push(...response.dontBatchEvents);
+    if (isIterable(response?.errorRespList)) {
+      errorRespList.push(...response.errorRespList);
+    }
+    if (isIterable(response?.batchedResponseList)) {
+      batchedResponseList.push(...response.batchedResponseList);
+    }
+    if (isIterable(response?.dontBatchEvents)) {
+      dontBatchEvents.push(...response.dontBatchEvents);
+    }
   });
-  console.log(JSON.stringify([...batchedResponseList, ...errorRespList, ...dontBatchEvents]));
   return [...batchedResponseList, ...errorRespList, ...dontBatchEvents];
 };
 

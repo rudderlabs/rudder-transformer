@@ -86,10 +86,11 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   notify:
-    runs-on: ubuntu-latest
+    name: notify in slack
     needs: [get_workflow_url, coverage]
-    steps:
-      - uses: ./.github/workflows/slack-notify.yml
-        if: (${{needs.coverage.outputs.tests_run_outcome == 'failure'}} || failure()) && ${{startsWith(github.event.pull_request.head.ref, 'hotfix-release/')}}
-        with:
-          workflow_url: ${{ needs.get_workflow_url.outputs.url }}
+    if: needs.coverage.outputs.tests_run_outcome == 'failure' || failure()
+    uses: ./.github/workflows/slack-notify.yml
+    with:
+      workflow_url: ${{ needs.get_workflow_url.outputs.url }}
+      should_notify: ${{startsWith(github.event.pull_request.head.ref, 'hotfix-release/')}}
+    secrets: inherit

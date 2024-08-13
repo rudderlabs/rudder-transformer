@@ -5,8 +5,7 @@ on:
     inputs:
       should_notify:
         type: boolean
-        required: true
-        default: false
+        default: true
       workflow_url:
         type: string
         required: true

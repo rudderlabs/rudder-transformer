@@ -64,7 +64,8 @@
               "product_name": ["wtp ab"],
               "product_group": ["women"]
             }
-          }
+          },
+          "source": {}
         },
         {
           "contact": {
@@ -126,7 +127,8 @@
               "product_name": ["wtp ab"],
               "product_group": ["women"]
             }
-          }
+          },
+          "source": {}
         }
       ],
       "headers": {

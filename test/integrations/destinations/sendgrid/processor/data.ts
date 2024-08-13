@@ -1541,4 +1541,137 @@ export const data = [
       },
     },
   },
+  {
+    name: 'sendgrid',
+    description: 'Identify call traits at root and listId given',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: {
+              ID: '2HOQOO6wWKaKjeQrEABXgiH6cmU',
+              Config: {
+                IPPoolName: '',
+                apiKey: 'apikey',
+                attachments: [
+                  {
+                    content: '',
+                    contentId: '',
+                    disposition: '',
+                    filename: '',
+                    type: '',
+                  },
+                ],
+                clickTracking: true,
+                listId: 'list123',
+                clickTrackingEnableText: true,
+                contents: [
+                  {
+                    type: 'text/html',
+                    value:
+                      '<p>Hello from Twilio SendGrid!</p><p>Sending with the email service trusted by developers and marketers for <strong>time-savings</strong>, <strong>scalability</strong>, and <strong>delivery expertise</strong>.</p><p>%open-track%</p>',
+                  },
+                ],
+                customFieldsMapping: [
+                  {
+                    from: 'name',
+                    to: 'user_name',
+                  },
+                ],
+                eventDelivery: false,
+                eventDeliveryTS: 1668424218224,
+                eventNamesSettings: [
+                  {
+                    event: 'open',
+                  },
+                ],
+                footer: false,
+                fromEmail: 'a@g.com',
+                fromName: '',
+                ganalytics: false,
+                group: '',
+                groupsToDisplay: [
+                  {
+                    groupId: '',
+                  },
+                ],
+                html: '',
+                mailFromTraits: false,
+                openTracking: false,
+                openTrackingSubstitutionTag: '',
+                replyToEmail: '',
+                replyToName: '',
+                sandboxMode: false,
+                subject: 'hello there from webflow',
+                subscriptionTracking: false,
+                substitutionTag: '',
+                templateId: '',
+                text: '',
+              },
+            },
+            message: {
+              type: 'identify',
+              userId: 'user@1',
+              context: {
+                traits: {
+                  age: '25',
+                  city: 'Surat',
+                  name: 'rudder test',
+                  email: 'test@rudderstack.com',
+                  phone: '+91 9876543210',
+                  lastName: 'test',
+                  firstName: 'rudder',
+                  state: 'Gujarat',
+                },
+              },
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              body: {
+                XML: {},
+                FORM: {},
+                JSON: {
+                  contactDetails: {
+                    email: 'test@rudderstack.com',
+                    last_name: 'test',
+                    first_name: 'rudder',
+                    unique_name: 'rudder test',
+                    phone_number: '+91 9876543210',
+                    custom_fields: {
+                      w1_T: 'rudder test',
+                    },
+                  },
+                  contactListIds: 'list123',
+                },
+                JSON_ARRAY: {},
+              },
+              type: 'REST',
+              userId: '',
+              files: {},
+              method: 'PUT',
+              params: {},
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer apikey',
+              },
+              version: '1',
+              endpoint: 'https://api.sendgrid.com/v3/marketing/contacts',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
 ];

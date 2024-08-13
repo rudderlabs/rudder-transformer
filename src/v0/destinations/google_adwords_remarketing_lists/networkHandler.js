@@ -153,7 +153,7 @@ const gaAudienceRespHandler = (destResponse, stageMsg) => {
   // const { stat, err_code: errorCode } = respAttributes;
 
   throw new NetworkError(
-    `${response?.error?.message} ${stageMsg}`,
+    `${JSON.stringify(response)} ${stageMsg}`,
     status,
     {
       [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),

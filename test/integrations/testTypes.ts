@@ -52,7 +52,27 @@ export interface TestCaseData {
   input: inputType;
   output: outputType;
   mock?: mockType[];
+  overrideReceivedAt?: string;
+  overrideRequestIP?: string;
   mockFns?: (mockAdapter: MockAdapter) => {};
+}
+
+export type MockFns = (mockAdapter: MockAdapter) => void;
+
+export interface SrcTestCaseData {
+  id?: string;
+  name: string;
+  description: string;
+  scenario?: string;
+  successCriteria?: string;
+  comment?: string;
+  feature?: string;
+  module: string;
+  version?: string;
+  input: inputType;
+  output: outputType;
+  mock?: mockType[];
+  mockFns?: MockFns;
 }
 
 export type MockHttpCallsData = {

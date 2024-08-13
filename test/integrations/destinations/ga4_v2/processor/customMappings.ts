@@ -1,3 +1,5 @@
+import { Destination } from '../../../../../src/types';
+import { overrideDestination } from '../../../testUtils';
 import { defaultMockFns } from '../mocks';
 
 const traits = {
@@ -65,7 +67,10 @@ const properties = {
 };
 
 const integrations = {
-  GA4: {
+  'Google Analytics 4 (GA4) V2': {
+    clientId: '6d374e5d-78d3-4169-991d-2573ec0d1c67',
+    sessionId: '123',
+    sessionNumber: 3,
     consents: {
       ad_personalization: 'GRANTED',
       ad_user_data: 'DENIED',
@@ -212,7 +217,7 @@ const eventsMapping = [
   },
 ];
 
-const destination = {
+const destination: Destination = {
   Config: {
     apiSecret: 'dummyApiSecret',
     measurementId: 'G-T40PE6KET4',
@@ -224,6 +229,19 @@ const destination = {
     eventFilteringOption: 'disable',
     eventsMapping,
   },
+  ID: 'ga4_v2',
+  Name: 'Google Analytics 4',
+  Enabled: true,
+  WorkspaceID: '123',
+  DestinationDefinition: {
+    ID: '123',
+    Name: 'Google Analytics 4',
+    DisplayName: 'Google Analytics 4',
+    Config: {},
+  },
+  IsProcessorEnabled: true,
+  Transformations: [],
+  IsConnectionEnabled: true,
 };
 export const customMappingTestCases = [
   {
@@ -297,6 +315,7 @@ export const customMappingTestCases = [
                           },
                         ],
                         prices: 456,
+                        session_number: 3,
                       },
                     },
                   ],
@@ -398,6 +417,7 @@ export const customMappingTestCases = [
                           },
                         ],
                         prices: 456,
+                        session_number: 3,
                       },
                     },
                   ],
@@ -461,6 +481,7 @@ export const customMappingTestCases = [
                           },
                         ],
                         prices: 456,
+                        session_number: 3,
                       },
                     },
                   ],
@@ -540,6 +561,7 @@ export const customMappingTestCases = [
               },
               body: {
                 JSON: {
+                  client_id: 'root_anonId',
                   user_id: 'root_user',
                   timestamp_micros: 1651105389000000,
                   non_personalized_ads: false,
@@ -594,6 +616,7 @@ export const customMappingTestCases = [
                         products_1_item_category2: 'regulars',
                         products_1_item_category3: 'grocery',
                         products_1_some_data: 'someValue',
+                        session_number: 3,
                       },
                     },
                   ],
@@ -677,8 +700,115 @@ export const customMappingTestCases = [
                         firstName: 'John',
                         group: 'test group',
                         lastName: 'Gomes',
+                        session_number: 3,
                         state: 'UK',
                         streetAddress: '71 Cherry Court SOUTHAMPTON SO53 5PD UK',
+                      },
+                    },
+                  ],
+                  user_properties: {
+                    firstName: {
+                      value: 'John',
+                    },
+                    lastName: {
+                      value: 'Gomes',
+                    },
+                    city: {
+                      value: 'London',
+                    },
+                    state: {
+                      value: 'UK',
+                    },
+                    group: {
+                      value: 'test group',
+                    },
+                  },
+                  consent: {
+                    ad_user_data: 'DENIED',
+                    ad_personalization: 'GRANTED',
+                  },
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: '',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+    mockFns: defaultMockFns,
+  },
+  {
+    name: 'ga4_v2',
+    id: 'ga4_custom_mapping_test_4',
+    description: 'Custom Mapping Test For Hybrid mode',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              type: 'group',
+              userId: 'root_user',
+              anonymousId: 'root_anonId',
+              context: {
+                device,
+                traits,
+              },
+              properties,
+              originalTimestamp: '2022-04-28T00:23:09.544Z',
+              integrations,
+            },
+            destination: overrideDestination(destination, {
+              connectionMode: 'hybrid',
+            }),
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://www.google-analytics.com/mp/collect',
+              headers: {
+                HOST: 'www.google-analytics.com',
+                'Content-Type': 'application/json',
+              },
+              params: {
+                api_secret: 'dummyApiSecret',
+                measurement_id: 'G-T40PE6KET4',
+              },
+              body: {
+                JSON: {
+                  user_id: 'root_user',
+                  timestamp_micros: 1651105389000000,
+                  non_personalized_ads: false,
+                  client_id: '6d374e5d-78d3-4169-991d-2573ec0d1c67',
+                  events: [
+                    {
+                      name: 'join_group',
+                      params: {
+                        city: 'London',
+                        engagement_time_msec: 1,
+                        firstName: 'John',
+                        group: 'test group',
+                        lastName: 'Gomes',
+                        state: 'UK',
+                        streetAddress: '71 Cherry Court SOUTHAMPTON SO53 5PD UK',
+                        session_id: '123',
+                        session_number: 3,
                       },
                     },
                   ],

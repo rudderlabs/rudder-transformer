@@ -8275,4 +8275,58 @@ export const data = [
       },
     },
   },
+  {
+    name: 'customerio',
+    description: 'Test 66 -> Invalid Page call',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              channel: 'web',
+              context: {
+                userAgent:
+                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
+                locale: 'en-US',
+              },
+              type: 'page',
+              anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
+              integrations: {
+                All: true,
+              },
+            },
+            destination: {
+              Config: {
+                datacenter: 'US',
+                siteID: '46be54768e7d49ab2628',
+                apiKey: 'dummyApiKey',
+              },
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            error: 'Event Name type should be a string',
+            statTags: {
+              destType: 'CUSTOMERIO',
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              feature: 'processor',
+              implementation: 'native',
+              module: 'destination',
+            },
+            statusCode: 400,
+          },
+        ],
+      },
+    },
+  },
 ];

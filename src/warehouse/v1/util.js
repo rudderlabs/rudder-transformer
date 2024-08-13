@@ -4,10 +4,20 @@ const reservedANSIKeywordsMap = require('../config/ReservedKeywords.json');
 const { isDataLakeProvider } = require('../config/helpers');
 const { TransformationError } = require('@rudderstack/integrations-lib');
 
+let eventNameTableMap = JSON.parse(process.env.WAREHOUSE_EVENT_NAME_TABLE_MAP ?? '{}');
+
+console.log('load eventNameTableMap', eventNameTableMap);
+
 function safeTableName(options, name = '') {
   const { provider } = options;
   const skipReservedKeywordsEscaping =
     options.integrationOptions?.skipReservedKeywordsEscaping || false;
+
+  let customTableName = eventNameTableMap[options.destinationId]?.[name];
+  if (customTableName) {
+    return customTableName;
+  }
+
   let tableName = name;
   if (tableName === '') {
     throw new TransformationError('Table name cannot be empty.');
@@ -149,11 +159,21 @@ function toBlendoCase(name = '') {
 }
 
 function transformTableName(options, name = '') {
+  let customTableName = eventNameTableMap[options.destinationId]?.[name];
+  if (customTableName) {
+    return customTableName;
+  }
+
   const useBlendoCasing = options.integrationOptions?.useBlendoCasing || false;
   return useBlendoCasing ? toBlendoCase(name) : transformName('', name);
 }
 
 function transformColumnName(options, name = '') {
+  let customTableName = eventNameTableMap[options.destinationId]?.[name];
+  if (customTableName) {
+    return customTableName;
+  }
+
   const { provider } = options;
   const useBlendoCasing = options.integrationOptions?.useBlendoCasing || false;
   return useBlendoCasing

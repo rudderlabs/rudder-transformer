@@ -6,6 +6,9 @@ const {
   InstrumentationError,
   isDefinedAndNotNull,
   isEmpty,
+  MappedToDestinationKey,
+  GENERIC_TRUE_VALUES,
+  PlatformError,
 } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const { handleHttpRequest } = require('../../../adapters/network');
@@ -21,11 +24,13 @@ const {
   toTitleCase,
   getHashFromArray,
   simpleProcessRouterDest,
+  getDestinationExternalIDInfoForRetl,
 } = require('../../util');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const { isHttpStatusSuccess } = require('../../util');
 const tags = require('../../util/tags');
 const { JSON_MIME_TYPE } = require('../../util/constant');
+const get = require('get-value');
 
 const CONTACT_KEY_KEY = 'Contact Key';
 
@@ -271,11 +276,39 @@ const responseBuilderSimple = async ({ message, destination, metadata }, categor
   throw new ConfigurationError(`Event type '${category.type}' not supported`);
 };
 
+const retlResponseBuilder = async (message, destination, metadata) => {
+  const { clientId, clientSecret, subDomain, externalKey } = destination.Config;
+  const token = await getToken(clientId, clientSecret, subDomain, metadata);
+  const { destinationExternalId, objectType, identifierType } = getDestinationExternalIDInfoForRetl(
+    message,
+    'SFMC',
+  );
+  if (objectType.toLowerCase() === 'data extension') {
+    const response = defaultRequestConfig();
+    response.method = defaultPutRequestConfig.requestMethod;
+    response.endpoint = `https://${subDomain}.${ENDPOINTS.INSERT_CONTACTS}${externalKey}/rows/${identifierType}:${destinationExternalId}`;
+    response.headers = {
+      'Content-Type': JSON_MIME_TYPE,
+      Authorization: `Bearer ${token}`,
+    };
+    response.body.JSON = {
+      values: {
+        ...message.traits,
+      },
+    };
+    return response;
+  }
+  throw new PlatformError('Unsupported object type for rETL use case');
+};
+
 const processEvent = async ({ message, destination, metadata }) => {
   if (!message.type) {
     throw new InstrumentationError('Event type is required');
   }
-
+  const mappedToDestination = get(message, MappedToDestinationKey);
+  if (mappedToDestination && GENERIC_TRUE_VALUES.includes(mappedToDestination?.toString())) {
+    return await retlResponseBuilder(message, destination, metadata);
+  }
   const messageType = message.type.toLowerCase();
   let category;
   // only accept track and identify calls

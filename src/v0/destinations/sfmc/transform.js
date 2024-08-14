@@ -10,9 +10,15 @@ const {
   GENERIC_TRUE_VALUES,
   PlatformError,
 } = require('@rudderstack/integrations-lib');
+const get = require('get-value');
 const { EventType } = require('../../../constants');
 const { handleHttpRequest } = require('../../../adapters/network');
-const { CONFIG_CATEGORIES, MAPPING_CONFIG, ENDPOINTS } = require('./config');
+const {
+  CONFIG_CATEGORIES,
+  MAPPING_CONFIG,
+  ENDPOINTS,
+  ACCESS_TOKEN_CACHE_TTL,
+} = require('./config');
 const {
   removeUndefinedAndNullValues,
   getFieldValueFromMessage,
@@ -30,8 +36,9 @@ const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const { isHttpStatusSuccess } = require('../../util');
 const tags = require('../../util/tags');
 const { JSON_MIME_TYPE } = require('../../util/constant');
-const get = require('get-value');
+const Cache = require('../../util/cache');
 
+const accessTokenCache = new Cache(ACCESS_TOKEN_CACHE_TTL);
 const CONTACT_KEY_KEY = 'Contact Key';
 
 // DOC: https://developer.salesforce.com/docs/atlas.en-us.mc-app-development.meta/mc-app-development/access-token-s2s.htm
@@ -278,7 +285,9 @@ const responseBuilderSimple = async ({ message, destination, metadata }, categor
 
 const retlResponseBuilder = async (message, destination, metadata) => {
   const { clientId, clientSecret, subDomain, externalKey } = destination.Config;
-  const token = await getToken(clientId, clientSecret, subDomain, metadata);
+  const token = await accessTokenCache.get(metadata.destinationId, () =>
+    getToken(clientId, clientSecret, subDomain, metadata),
+  );
   const { destinationExternalId, objectType, identifierType } = getDestinationExternalIDInfoForRetl(
     message,
     'SFMC',
@@ -307,7 +316,7 @@ const processEvent = async ({ message, destination, metadata }) => {
   }
   const mappedToDestination = get(message, MappedToDestinationKey);
   if (mappedToDestination && GENERIC_TRUE_VALUES.includes(mappedToDestination?.toString())) {
-    return await retlResponseBuilder(message, destination, metadata);
+    return retlResponseBuilder(message, destination, metadata);
   }
   const messageType = message.type.toLowerCase();
   let category;

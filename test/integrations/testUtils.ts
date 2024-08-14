@@ -27,7 +27,7 @@ export const getTestDataFilePaths = (dirPath: string, opts: OptionValues): strin
 
   if (opts.destination || opts.source) {
     testFilePaths = testFilePaths.filter((testFile) =>
-      testFile.includes(opts.destination || opts.source),
+      testFile.includes(`${opts.destination}/` || opts.source),
     );
   }
   if (opts.feature) {

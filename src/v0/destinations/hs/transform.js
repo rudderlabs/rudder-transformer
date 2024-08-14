@@ -107,6 +107,7 @@ const processBatchRouter = async (inputs, reqMetadata) => {
       errorRespList: tempInputs.map((input) =>
         handleRtTfSingleEventError(input, error, reqMetadata),
       ),
+      dontBatchEvents: [],
     };
   }
 
@@ -192,7 +193,6 @@ const processRouterDest = async (inputs, reqMetadata) => {
     batchedResponseList.push(...response.batchedResponseList);
     dontBatchEvents.push(...response.dontBatchEvents);
   });
-  console.log(JSON.stringify([...batchedResponseList, ...errorRespList, ...dontBatchEvents]));
   return [...batchedResponseList, ...errorRespList, ...dontBatchEvents];
 };
 

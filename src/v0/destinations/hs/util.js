@@ -875,6 +875,14 @@ const convertToResponseFormat = (successRespListWithDontBatchTrue) => {
   return response;
 };
 
+const isIterable = (obj) => {
+  // checks for null and undefined
+  if (obj == null) {
+    return false;
+  }
+  return typeof obj[Symbol.iterator] === 'function';
+};
+
 module.exports = {
   validateDestinationConfig,
   addExternalIdToHSTraits,
@@ -895,4 +903,5 @@ module.exports = {
   extractIDsForSearchAPI,
   getRequestData,
   convertToResponseFormat,
+  isIterable,
 };

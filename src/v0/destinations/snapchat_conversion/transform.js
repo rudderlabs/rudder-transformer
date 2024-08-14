@@ -179,7 +179,7 @@ const getEventConversionType = (message) => {
 // Returns the response for the track event after constructing the payload and setting necessary fields
 const trackResponseBuilder = (message, { Config }, mappedEvent) => {
   let payload = {};
-  const event = mappedEvent.toString().trim().replace(/\s+/g, '_');
+  const event = mappedEvent?.toString().trim().replace(/\s+/g, '_');
   const eventConversionType = getEventConversionType(message);
   const { apiKey, pixelId, snapAppId, appId, deduplicationKey, enableDeduplication } = Config;
   validateEventConfiguration(eventConversionType, pixelId, snapAppId, appId);

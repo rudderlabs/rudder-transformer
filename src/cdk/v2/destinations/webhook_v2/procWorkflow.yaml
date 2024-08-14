@@ -13,21 +13,12 @@ bindings:
   - name: defaultRequestConfig
     path: ../../../../v0/util
   - path: ./utils
-  - name: jsonxml
-    path: jsontoxml
 
 steps:
-  - name: checkIfProcessed
-    condition: .message.statusCode
-    template: |
-      $.batchMode ? .message.body.JSON : .message
-    onComplete: return
-
   - name: validateInput
     template: |
       $.assertConfig(.destination.Config.webhookUrl, "Webhook URL required. Aborting");
       $.assertConfig(!(.destination.Config.auth === "basicAuth" && !(.destination.Config.username)), "Username is required for Basic Authentication. Aborting");
-      $.assertConfig(!(.destination.Config.auth === "basicAuth" && !(.destination.Config.password)), "Password is required for Basic Authentication. Aborting");
       $.assertConfig(!(.destination.Config.auth === "bearerTokenAuth" && !(.destination.Config.bearerToken)), "Token is required for Bearer Token Authentication. Aborting");
       $.assertConfig(!(.destination.Config.auth === "apiKeyAuth" && !(.destination.Config.apiKeyName)), "API Key Name is required for API Key Authentication. Aborting");
             $.assertConfig(!(.destination.Config.auth === "apiKeyAuth" && !(.destination.Config.apiKeyValue)), "API Key Value is required for API Key Authentication. Aborting");
@@ -61,21 +52,16 @@ steps:
 
   - name: prepareBody
     template: |
-      let payload = .message;
-      payload = {...payload, ...$.getCustomMappings(.message, .destination.Config.eventsMapping)};
-      let ip = .message.context.ip ?? .message.request_ip;
-      ip && (
-        payload.context = payload.context || {};
-        payload.context.ip = ip;
-      )
+      const payload = $.getCustomMappings(.message, .destination.Config.eventsMapping);
       $.context.payload = $.removeUndefinedAndNullValues($.excludeMappedFields(payload, .destination.Config.eventsMapping))
 
   - name: buildResponseForProcessTransformation
     template: |
       const response = $.defaultRequestConfig();
-      .destination.Config.format === "xml" ? response.body.XML = $.jsonxml({$.context.payload}): response.body.JSON = $.context.payload;
+      response.body.JSON = $.context.payload;
       response.endpoint = $.context.endpoint;
       response.headers = $.context.headers;
       response.params = $.context.params;
       response.method = $.context.method;
+      console.log("response ", JSON.stringify(response));
       response

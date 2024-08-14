@@ -1,6 +1,10 @@
 bindings:
   - name: handleRtTfSingleEventError
     path: ../../../../v0/util/index
+  - path: ./utils
+    exportAll: true
+  - name: BatchUtils
+    path: '@rudderstack/workflow-engine'
 
 steps:
   - name: validateInput
@@ -18,14 +22,57 @@ steps:
         "batchedRequest": .,
         "batched": false,
         "destination": ^[idx].destination,
-        "metadata": ^[idx].metadata[],
+        "metadata": ^[idx].metadata,
         "statusCode": 200
       })[]
+
   - name: failedEvents
     template: |
       $.outputs.transform#idx.error.(
         $.handleRtTfSingleEventError(^[idx], .originalError ?? ., {})
       )[]
-  - name: finalPayload
+
+  - name: batchingEnabled
     template: |
-      [...$.outputs.failedEvents, ...$.outputs.successfulEvents]
+      $.outputs.successfulEvents[0].destination.Config.isBatchingEnabled;
+
+  - name: batchSize
+    template: |
+      $.outputs.successfulEvents[0].destination.Config.maxBatchSize;
+
+  - name: batchSuccessfulEvents
+    description: Batches the successfulEvents
+    template: |
+      let batches = $.BatchUtils.chunkArrayBySizeAndLength(
+      $.outputs.successfulEvents, {maxItems: $.outputs.batchSize}).items;
+
+      batches@batch.({
+        "batchedRequest": {
+          "body": {
+            "JSON": {},
+            "JSON_ARRAY": {"batch": JSON.stringify(~r batch.batchedRequest.body.JSON[])},
+            "XML": {},
+            "FORM": {}
+          },
+          "version": "1",
+          "type": "REST",
+          "method": "POST",
+          "endpoint": batch[0].batchedRequest.endpoint,
+          "headers": batch[0].batchedRequest.headers,
+          "params": batch[0].batchedRequest.params,
+          "files": {}
+        },
+        "metadata": ~r batch.metadata[],
+        "batched": true,
+        "statusCode": 200,
+        "destination": batch[0].destination
+      })[];
+
+  - name: finalPayloadWithBatching
+    condition: $.outputs.batchingEnabled
+    template: |
+      [...$.outputs.batchSuccessfulEvents, ...$.outputs.failedEvents]
+    else:
+      name: finalPayloadWithoutBatching
+      template: |
+        [...$.outputs.successfulEvents, ...$.outputs.failedEvents]

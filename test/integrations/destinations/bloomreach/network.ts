@@ -1,4 +1,4 @@
-import { destType, headers, properties, endpoint, updateEndpoint } from './common';
+import { destType, headers, properties, endpoint } from './common';
 
 export const networkCallsData = [
   {
@@ -117,35 +117,6 @@ export const networkCallsData = [
         end_time: 1710771351.9891083,
         success: true,
       },
-      status: 200,
-      statusText: 'Ok',
-    },
-  },
-  {
-    httpReq: {
-      url: updateEndpoint,
-      data: [
-        {
-          item_id: 'test-item-id-faulty',
-          properties: {
-            unprinted1: '1',
-          },
-        },
-      ],
-      params: { destination: destType },
-      headers,
-      method: 'POST',
-    },
-    httpRes: {
-      data: [
-        {
-          success: false,
-          queued: false,
-          errors: {
-            properties: ['Fields [unprinted1] are not properly defined.'],
-          },
-        },
-      ],
       status: 200,
       statusText: 'Ok',
     },

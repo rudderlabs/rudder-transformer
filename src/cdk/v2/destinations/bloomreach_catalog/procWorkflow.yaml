@@ -1,0 +1,63 @@
+bindings:
+  - name: EventType
+    path: ../../../../constants
+  - path: ../../bindings/jsontemplate
+  - name: defaultRequestConfig
+    path: ../../../../v0/util
+  - name: base64Convertor
+    path: ../../../../v0/util
+  - path: ./utils
+  - path: ./config
+
+steps:
+  - name: messageType
+    template: |
+      $.context.messageType = .message.type.toLowerCase();
+
+  - name: validateInput
+    template: |
+      let messageType = $.context.messageType;
+      $.assert(messageType, "message Type is not present. Aborting");
+      $.assert(messageType in {{$.EventType.([.RECORD])}}, "message type " + messageType + " is not supported");
+      $.assertConfig(.destination.Config.apiBaseUrl, "API Base URL is not present. Aborting");
+      $.assertConfig(.destination.Config.apiKey, "API Key is not present . Aborting");
+      $.assertConfig(.destination.Config.apiSecret, "API Secret is not present. Aborting");
+      $.assertConfig(.destination.Config.projectToken, "Project Token is not present. Aborting");
+      $.assertConfig(.destination.Config.catalogID, "Catalog Id is not present. Aborting");
+      const action = .message.action;
+      const item_id = .message.fields.item_id;
+      $.assert(action in {{$.RecordAction.([.INSERT,.UPDATE,.DELETE])}}, "message action " + action + " is not supported");
+      $.assert(item_id, "Item Id is required. Aborting");
+
+  - name: prepareInsertActionPayload
+    condition: .message.action === {{$.RecordAction.INSERT}}
+    template: |
+      $.context.payload = $.prepareRecordInsertOrUpdatePayload(.message.fields);
+      $.context.endpoint = $.getCreateBulkCatalogItemEndpoint(.destination.Config.apiBaseUrl, .destination.Config.projectToken, .destination.Config.catalogID);
+      $.context.method = 'PUT';
+
+  - name: prepareUpdateActionPayload
+    condition: .message.action === {{$.RecordAction.UPDATE}}
+    template: |
+      $.context.payload = $.prepareRecordInsertOrUpdatePayload(.message.fields);
+      $.context.endpoint = $.getUpdateBulkCatalogItemEndpoint(.destination.Config.apiBaseUrl, .destination.Config.projectToken, .destination.Config.catalogID);
+      $.context.method = 'POST';
+
+  - name: prepareDeleteActionPayload
+    condition: .message.action === {{$.RecordAction.DELETE}}
+    template: |
+      $.context.payload = .message.fields.item_id;
+      $.context.endpoint = $.getDeleteBulkCatalogItemEndpoint(.destination.Config.apiBaseUrl, .destination.Config.projectToken, .destination.Config.catalogID);
+      $.context.method = 'DELETE';
+
+  - name: buildResponse
+    template: |
+      const response = $.defaultRequestConfig();
+      response.body.JSON = $.context.payload;
+      response.endpoint = $.context.endpoint;
+      response.method = $.context.method;
+      response.headers = {
+        "Content-Type": "application/json",
+        "Authorization": "Basic " + $.base64Convertor(.destination.Config.apiKey + ":" + .destination.Config.apiSecret)
+      }
+      response;

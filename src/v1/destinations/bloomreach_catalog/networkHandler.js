@@ -7,41 +7,46 @@ const {
 const { isHttpStatusSuccess } = require('../../../v0/util/index');
 const tags = require('../../../v0/util/tags');
 
-// {
-//   "results": [
-//       {
-//           "success": true
-//       },
-//       {
-//           "success": false,
-//           "errors": [
-//               "At least one id should be specified."
-//           ]
-//       }
-//   ],
-//   "start_time": 1710750816.8504393,
-//   "end_time": 1710750816.8518236,
-//   "success": true
-// }
+// Catalog response
+// [
+//   {
+//     "errors": {
+//       "properties": [
+//         "Fields [field1, field2] are not properly defined."
+//       ]
+//     },
+//     "queued": false,
+//     "success": false
+//   },
+//   {
+//     "success" : "True",
+//     "queued" : "True",
+//   },
+// ]
 const checkIfEventIsAbortableAndExtractErrorMessage = (element) => {
   if (element.success) {
     return { isAbortable: false, errorMsg: '' };
   }
 
-  const errorMsg = element.errors.join(', ');
+  const errorMsg = Array.isArray(element.errors)
+    ? element.errors.join(', ')
+    : Object.values(element.errors || {})
+        .flat()
+        .join(', ');
+
   return { isAbortable: true, errorMsg };
 };
 
 const responseHandler = (responseParams) => {
   const { destinationResponse, rudderJobMetadata } = responseParams;
 
-  const message = '[BLOOMREACH Response V1 Handler] - Request Processed Successfully';
+  const message = '[BLOOMREACH_CATALOG Response V1 Handler] - Request Processed Successfully';
   const responseWithIndividualEvents = [];
   const { response, status } = destinationResponse;
 
   if (isHttpStatusSuccess(status)) {
     // check for Partial Event failures and Successes
-    const { results } = response;
+    const results = response;
     results.forEach((event, idx) => {
       const proxyOutput = {
         statusCode: 200,
@@ -64,7 +69,7 @@ const responseHandler = (responseParams) => {
     };
   }
   throw new TransformerProxyError(
-    `BLOOMREACH: Error encountered in transformer proxy V1`,
+    `BLOOMREACH_CATALOG: Error encountered in transformer proxy V1`,
     status,
     {
       [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),

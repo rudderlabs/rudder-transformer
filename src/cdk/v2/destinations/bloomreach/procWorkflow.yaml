@@ -24,41 +24,22 @@ steps:
     template: |
       $.context.messageType = .message.type.toLowerCase();
 
-  - name: mappedToDestination
-    template: |
-      .message.context.mappedToDestination || false;
-
   - name: validateInput
     template: |
       let messageType = $.context.messageType;
       $.assert(messageType, "message Type is not present. Aborting");
+      $.assert(messageType in {{$.EventType.([.IDENTIFY,.TRACK,.PAGE,.SCREEN])}}, "message type " + messageType + " is not supported");
       $.assertConfig(.destination.Config.apiBaseUrl, "API Base URL is not present. Aborting");
       $.assertConfig(.destination.Config.apiKey, "API Key is not present . Aborting");
       $.assertConfig(.destination.Config.apiSecret, "API Secret is not present. Aborting");
       $.assertConfig(.destination.Config.projectToken, "Project Token is not present. Aborting");
-    steps:
-      - name: validateContactAndEventsInput
-        condition: $.outputs.mappedToDestination === false
-        template: |
-          let messageType = $.context.messageType;
-          $.assert(messageType in {{$.EventType.([.IDENTIFY,.TRACK,.PAGE,.SCREEN])}}, "message type " + messageType + " is not supported");
-          $.assertConfig(.destination.Config.hardID, "Hard ID is not present. Aborting");
-          $.assertConfig(.destination.Config.softID, "Soft ID is not present. Aborting");
-          $.assert(.message.timestamp ?? .message.originalTimestamp, "Timestamp is not present. Aborting");
-          const userId = .message.().(
+      $.assertConfig(.destination.Config.hardID, "Hard ID is not present. Aborting");
+      $.assertConfig(.destination.Config.softID, "Soft ID is not present. Aborting");
+      $.assert(.message.timestamp ?? .message.originalTimestamp, "Timestamp is not present. Aborting");
+      const userId = .message.().(
           {{{{$.getGenericPaths("userIdOnly")}}}};
-          );
-          $.assert(userId || .message.anonymousId, "Either one of userId or anonymousId is required. Aborting");
-      - name: validateCatalogInput
-        condition: $.outputs.mappedToDestination
-        template: |
-          let messageType = $.context.messageType;
-          $.assert(messageType in {{$.EventType.([.RECORD])}}, "message type " + messageType + " is not supported");
-          $.assertConfig(.destination.Config.catalogID, "Catalog Id is not present. Aborting");
-          const action = .message.action;
-          const item_id = .message.fields.item_id;
-          $.assert(action in {{$.RecordAction.([.INSERT,.UPDATE,.DELETE])}}, "message action " + action + " is not supported");
-          $.assert(item_id, "Item Id is required. Aborting");
+      );
+      $.assert(userId || .message.anonymousId, "Either one of userId or anonymousId is required. Aborting");
 
   - name: prepareIdentifyPayload
     condition: $.context.messageType === {{$.EventType.IDENTIFY}}
@@ -76,9 +57,7 @@ steps:
         properties
       });
 
-      $.context.payload = $.removeUndefinedAndNullValues({name: $.CUSTOMER_COMMAND, data});
-      $.context.endpoint = $.getBatchEndpoint(.destination.Config.apiBaseUrl, .destination.Config.projectToken);
-      $.context.method = 'POST';
+      $.context.payload = $.removeUndefinedAndNullValues({name: $.CUSTOMER_COMMAND, data})
 
   - name: prepareEventName
     steps:
@@ -109,7 +88,7 @@ steps:
           $.context.event = .message.event
 
   - name: prepareTrackPageScreenPayload
-    condition: $.context.messageType !== {{$.EventType.IDENTIFY}} && $.context.messageType !== {{$.EventType.RECORD}}
+    condition: $.context.messageType !== {{$.EventType.IDENTIFY}}
     template: |
       const customerIDs = $.prepareCustomerIDs(.message, .destination);
       const data = .message.().({
@@ -119,40 +98,22 @@ steps:
         "event_type": $.context.event,
       });
 
-      $.context.payload = $.removeUndefinedAndNullValues({name: $.CUSTOMER_EVENT_COMMAND, data});
-      $.context.endpoint = $.getBatchEndpoint(.destination.Config.apiBaseUrl, .destination.Config.projectToken);
-      $.context.method = 'POST';
-
-  - name: prepareRecordPayload
-    condition: $.context.messageType === {{$.EventType.RECORD}}
-    steps:
-      - name: prepareInsertActionPayload
-        condition: .message.action === {{$.RecordAction.INSERT}}
-        template: |
-          $.context.payload = $.prepareRecordInsertOrUpdatePayload(.message.fields);
-          $.context.endpoint = $.getCreateBulkCatalogItemEndpoint(.destination.Config.apiBaseUrl, .destination.Config.projectToken, .destination.Config.catalogID);
-          $.context.method = 'PUT';
-      - name: prepareUpdateActionPayload
-        condition: .message.action === {{$.RecordAction.UPDATE}}
-        template: |
-          $.context.payload = $.prepareRecordInsertOrUpdatePayload(.message.fields);
-          $.context.endpoint = $.getUpdateBulkCatalogItemEndpoint(.destination.Config.apiBaseUrl, .destination.Config.projectToken, .destination.Config.catalogID);
-          $.context.method = 'POST';
-      - name: prepareDeleteActionPayload
-        condition: .message.action === {{$.RecordAction.DELETE}}
-        template: |
-          $.context.payload = .message.fields.item_id;
-          $.context.endpoint = $.getDeleteBulkCatalogItemEndpoint(.destination.Config.apiBaseUrl, .destination.Config.projectToken, .destination.Config.catalogID);
-          $.context.method = 'DELETE';
+      $.context.payload = $.removeUndefinedAndNullValues({name: $.CUSTOMER_EVENT_COMMAND, data})
 
   - name: buildResponse
+    description: In batchMode we return payload directly
+    condition: $.batchMode
     template: |
-      const response = $.defaultRequestConfig();
-      response.body.JSON = $.context.payload;
-      response.endpoint = $.context.endpoint;
-      response.method = $.context.method;
-      response.headers = {
-        "Content-Type": "application/json",
-        "Authorization": "Basic " + $.base64Convertor(.destination.Config.apiKey + ":" + .destination.Config.apiSecret)
-      }
-      response;
+      $.context.payload
+    else:
+      name: buildResponseForProcessTransformation
+      template: |
+        const response = $.defaultRequestConfig();
+        response.body.JSON = $.context.payload;
+        response.endpoint = $.getBatchEndpoint(.destination.Config.apiBaseUrl, .destination.Config.projectToken);
+        response.method = "POST";
+        response.headers = {
+          "Content-Type": "application/json",
+          "Authorization": "Basic " + $.base64Convertor(.destination.Config.apiKey + ":" + .destination.Config.apiSecret)
+        }
+        response;

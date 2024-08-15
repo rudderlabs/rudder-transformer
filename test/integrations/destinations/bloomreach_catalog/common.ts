@@ -1,8 +1,8 @@
 import { Destination } from '../../../../src/types';
 
-const destType = 'bloomreach';
-const destTypeInUpperCase = 'BLOOMREACH';
-const displayName = 'bloomreach';
+const destType = 'bloomreach_catalog';
+const destTypeInUpperCase = 'BLOOMREACH_CATALOG';
+const displayName = 'bloomreach catalog';
 const channel = 'web';
 const destination: Destination = {
   Config: {
@@ -10,8 +10,7 @@ const destination: Destination = {
     apiKey: 'test-api-key',
     apiSecret: 'test-api-secret',
     projectToken: 'test-project-token',
-    hardID: 'registered',
-    softID: 'cookie',
+    catalogID: 'test-catalog-id',
   },
   DestinationDefinition: {
     DisplayName: displayName,
@@ -26,35 +25,12 @@ const destination: Destination = {
   WorkspaceID: 'test-workspace-id',
 };
 
-const traits = {
-  email: 'test@example.com',
-  firstName: 'John',
-  lastName: 'Doe',
-  phone: '1234567890',
-  address: {
-    city: 'New York',
-    country: 'USA',
-    pinCode: '123456',
-  },
-};
-
-const properties = {
-  product_id: '622c6f5d5cf86a4c77358033',
-  sku: '8472-998-0112',
-  category: 'Games',
-  name: 'Cones of Dunshire',
-  brand: 'Wyatt Games',
-  variant: 'expansion pack',
-  price: 49.99,
-  quantity: 5,
-  coupon: 'PREORDER15',
-  currency: 'USD',
-  position: 1,
-  url: 'https://www.website.com/product/path',
-  image_url: 'https://www.website.com/product/path.webp',
-  key1: 'value1',
-};
-const endpoint = 'https://demoapp-api.bloomreach.com/track/v2/projects/test-project-token/batch';
+const insertEndpoint =
+  'https://demoapp-api.bloomreach.com/data/v2/projects/test-project-token/catalogs/test-catalog-id/items';
+const updateEndpoint =
+  'https://demoapp-api.bloomreach.com/data/v2/projects/test-project-token/catalogs/test-catalog-id/items/partial-update';
+const deleteEndpoint =
+  'https://demoapp-api.bloomreach.com/data/v2/projects/test-project-token/catalogs/test-catalog-id/items/bulk-delete';
 
 const processorInstrumentationErrorStatTags = {
   destType: destTypeInUpperCase,
@@ -84,15 +60,22 @@ const headers = {
   'Content-Type': 'application/json',
   Authorization: 'Basic dGVzdC1hcGkta2V5OnRlc3QtYXBpLXNlY3JldA==',
 };
+
+const sampleContext = {
+  destinationFields: 'item_id, title, status, unprinted',
+  mappedToDestination: 'true',
+};
+
 export {
   destType,
   channel,
   destination,
   processorInstrumentationErrorStatTags,
   RouterInstrumentationErrorStatTags,
-  traits,
   headers,
-  properties,
-  endpoint,
   proxyV1RetryableErrorStatTags,
+  insertEndpoint,
+  updateEndpoint,
+  deleteEndpoint,
+  sampleContext,
 };

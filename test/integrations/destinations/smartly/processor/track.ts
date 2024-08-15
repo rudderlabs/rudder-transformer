@@ -16,7 +16,7 @@ export const trackTestData = [
               event: 'Add to cart',
               properties: {
                 platform: 'meta',
-                ad_unit_id: '228287',
+                ad_unit_id: 228287,
                 ad_interaction_time: '1650626278',
                 email: 'eventIdn01@sample.com',
               },
@@ -49,15 +49,11 @@ export const trackTestData = [
               params: {},
               body: {
                 JSON: {
-                  events: [
-                    {
-                      platform: 'meta',
-                      ad_unit_id: '228287',
-                      ad_interaction_time: '1650626278',
-                      conversions: '1',
-                      event: 'Add to cart',
-                    },
-                  ],
+                  platform: 'meta',
+                  ad_unit_id: 228287,
+                  ad_interaction_time: '1650626278',
+                  conversions: '1',
+                  event: 'Add to cart',
                 },
                 JSON_ARRAY: {},
                 XML: {},

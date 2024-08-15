@@ -72,6 +72,7 @@ export const validationFailures = [
             destination,
             message: {
               type: 'group',
+              event: 'purchase',
               sentAt: '2021-01-25T16:12:02.048Z',
               userId: 'john67',
               channel: 'mobile',
@@ -102,6 +103,63 @@ export const validationFailures = [
           {
             error:
               'message type group is not supported: Workflow: procWorkflow, Step: validateInput, ChildStep: undefined, OriginalError: message type group is not supported',
+            metadata: {
+              destinationId: 'dummyDestId',
+              jobId: '1',
+            },
+            statTags: processInstrumentationErrorStatTags,
+            statusCode: 400,
+          },
+        ],
+      },
+    },
+  },
+  {
+    id: 'Smartly-test-3',
+    name: 'smartly',
+    description: 'Event name not defined',
+    scenario: 'Framework',
+    successCriteria: 'Transformationn Error for Undefined Event',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination,
+            message: {
+              type: 'track',
+              sentAt: '2021-01-25T16:12:02.048Z',
+              userId: 'john67',
+              channel: 'mobile',
+              rudderId: 'b7b24f86-cccx-46d8-b2b4-ccaxxx80239c',
+              messageId: 'dummy_msg_id',
+              properties: {
+                platform: 'snapchat',
+                ad_unit_id: '2653387',
+                ad_interaction_time: '1650646278',
+              },
+              anonymousId: 'anon_123',
+              integrations: {
+                All: true,
+              },
+            },
+            metadata: {
+              destinationId: 'dummyDestId',
+              jobId: '1',
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            error:
+              'Event is not defined or is not String: Workflow: procWorkflow, Step: preparePayload, ChildStep: undefined, OriginalError: Event is not defined or is not String',
             metadata: {
               destinationId: 'dummyDestId',
               jobId: '1',

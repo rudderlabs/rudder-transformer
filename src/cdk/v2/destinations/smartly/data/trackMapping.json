@@ -1,10 +1,5 @@
 [
   {
-    "sourceKeys": "event",
-    "required": true,
-    "destKey": "event"
-  },
-  {
     "destKey": "value",
     "sourceKeys": [
       "properties.total",
@@ -49,16 +44,25 @@
   {
     "sourceKeys": ["properties.adInteractionTime", "properties.ad_interaction_time"],
     "required": true,
+    "metadata": {
+      "type": "secondTimestamp"
+    },
     "destKey": "ad_interaction_time"
   },
   {
     "sourceKeys": ["properties.installTime"],
     "required": false,
+    "metadata": {
+      "type": "secondTimestamp"
+    },
     "destKey": "installTime"
   },
   {
     "sourceKeys": ["originalTimestamp", "timestamp"],
     "required": false,
+    "metadata": {
+      "type": "secondTimestamp"
+    },
     "destKey": "event_time"
   },
   {

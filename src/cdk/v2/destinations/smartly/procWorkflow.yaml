@@ -9,7 +9,7 @@ bindings:
   - name: constructPayload
     path: ../../../../v0/util
   - path: ./config
-
+  - path: ./utils
 steps:
   - name: messageType
     template: |
@@ -22,12 +22,8 @@ steps:
       $.assertConfig(.destination.Config.apiToken, "API Token is not present. Aborting");
   - name: preparePayload
     template: |
-      const payload = $.constructPayload(.message, $.TRACK_CONFIG);
-      $.context.payload = $.removeUndefinedAndNullValues(payload);
+      const payload = $.removeUndefinedAndNullValues($.constructPayload(.message, $.TRACK_CONFIG));
+      $.context.payloadList = $.getPayloads(.message.event, .destination.Config.eventsMapping, payload)
   - name: buildResponse
     template: |
-      const response = $.defaultRequestConfig();
-      response.body.JSON.events = [$.context.payload];
-      response.endpoint = $.singleEventEndpoint;
-      response.method = "POST";
-      response
+      $.buildResponseList($.context.payloadList)

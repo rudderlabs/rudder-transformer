@@ -8,6 +8,16 @@ export const destination = {
   },
   Config: {
     apiToken: 'testAuthToken',
+    eventsMapping: [
+      {
+        from: 'product list viewed',
+        to: 'event1',
+      },
+      {
+        from: 'product list viewed',
+        to: 'event2',
+      },
+    ],
   },
 };
 

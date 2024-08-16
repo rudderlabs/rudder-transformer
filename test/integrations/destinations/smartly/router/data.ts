@@ -1,10 +1,11 @@
-import { destination } from '../commonConfig';
+import { destination, routerInstrumentationErrorStatTags } from '../commonConfig';
+import { defaultMockFns } from '../mocks';
 
 export const data = [
   {
     name: 'smartly',
     id: 'Test 0 - router',
-    description: 'Simple Batch call for track',
+    description: 'Track call with multiplexing and batching',
     scenario: 'Framework+Buisness',
     successCriteria: 'All events should be transformed successfully and status code should be 200',
     feature: 'router',
@@ -20,21 +21,7 @@ export const data = [
                 event: 'product list viewed',
                 properties: {
                   platform: 'meta',
-                  conversions: '1',
-                  ad_unit_id: 221187,
-                  ad_interaction_time: '1652826278',
-                },
-              },
-              metadata: { jobId: 1, userId: 'u1' },
-              destination,
-            },
-            {
-              message: {
-                type: 'track',
-                event: 'product list viewed',
-                properties: {
-                  platform: 'meta',
-                  conversions: '1',
+                  conversions: 1,
                   ad_unit_id: 221187,
                   ad_interaction_time: '1652826278',
                 },
@@ -45,9 +32,7 @@ export const data = [
             {
               message: {
                 type: 'track',
-                event: 'purchase',
-                userId: 'testuserId1',
-                integrations: { All: true },
+                event: 'add to cart',
                 properties: {
                   conversions: 3,
                   platform: 'snapchat',
@@ -55,7 +40,7 @@ export const data = [
                   ad_interaction_time: '2752826278',
                 },
               },
-              metadata: { jobId: 3, userId: 'u3' },
+              metadata: { jobId: 3, userId: 'u2' },
               destination,
             },
           ],
@@ -71,7 +56,7 @@ export const data = [
           output: [
             {
               batchedRequest: {
-                version: '1',
+                version: '0',
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://s2s.smartly.io/events/batch',
@@ -82,21 +67,21 @@ export const data = [
                     events: [
                       {
                         platform: 'meta',
-                        conversions: '1',
+                        conversions: 1,
                         event: 'event1',
                         ad_unit_id: 221187,
                         ad_interaction_time: '1652826278',
                       },
                       {
                         platform: 'meta',
-                        conversions: '1',
+                        conversions: 1,
                         event: 'event2',
                         ad_unit_id: 221187,
                         ad_interaction_time: '1652826278',
                       },
                       {
                         conversions: 3,
-                        event: 'purchase',
+                        event: 'add to cart',
                         platform: 'snapchat',
                         ad_unit_id: 77187,
                         ad_interaction_time: '2752826278',
@@ -112,9 +97,9 @@ export const data = [
                 files: {},
               },
               metadata: [
-                { jobId: 1, userId: 'u1' },
                 { jobId: 2, userId: 'u2' },
-                { jobId: 3, userId: 'u3' },
+                { jobId: 2, userId: 'u2' },
+                { jobId: 3, userId: 'u2' },
               ],
               batched: true,
               statusCode: 200,
@@ -124,5 +109,213 @@ export const data = [
         },
       },
     },
+  },
+  {
+    name: 'smartly',
+    id: 'Test 0 - router',
+    description: 'Batch calls with 4 succesfull events including multiplexing and 2 failed events',
+    scenario: 'Framework+Buisness',
+    successCriteria: 'All events should be transformed successfully and status code should be 200',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: {
+                type: 'track',
+                event: 'product list viewed',
+                properties: {
+                  platform: 'meta',
+                  conversions: 1,
+                  ad_unit_id: 221187,
+                  ad_interaction_time: '1652826278',
+                },
+              },
+              metadata: { jobId: 11, userId: 'u1' },
+              destination,
+            },
+            {
+              message: {
+                type: 'track',
+                event: 'purchase',
+                userId: 'testuserId1',
+                integrations: { All: true },
+                properties: {
+                  conversions: 3,
+                  platform: 'snapchat',
+                  ad_unit_id: 77187,
+                  ad_interaction_time: '2752826278',
+                },
+              },
+              metadata: { jobId: 13, userId: 'u1' },
+              destination,
+            },
+            {
+              message: {
+                type: 'track',
+                userId: 'testuserId1',
+                integrations: { All: true },
+                properties: {
+                  conversions: 3,
+                  platform: 'snapchat',
+                  ad_unit_id: 12387,
+                  ad_interaction_time: '2752826278',
+                },
+              },
+              metadata: { jobId: 14, userId: 'u1' },
+              destination,
+            },
+            {
+              message: {
+                type: 'track',
+                event: 'random event',
+                userId: 'testuserId1',
+                integrations: { All: true },
+                properties: {
+                  conversions: 3,
+                  ad_unit_id: 77187,
+                  ad_interaction_time: '2752826278',
+                },
+              },
+              metadata: { jobId: 15, userId: 'u1' },
+              destination,
+            },
+            {
+              message: {
+                type: 'track',
+                event: 'add to cart',
+                userId: 'testuserId1',
+                integrations: { All: true },
+                properties: {
+                  conversions: 3,
+                  platform: 'tiktok',
+                  ad_unit_id: 789187,
+                  ad_interaction_time: '2752826278',
+                },
+              },
+              metadata: { jobId: 16, userId: 'u1' },
+              destination,
+            },
+          ],
+          destType: 'smartly',
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batched: false,
+              destination,
+              error: 'Event is not defined or is not String',
+              metadata: { jobId: 14, userId: 'u1' },
+              statTags: routerInstrumentationErrorStatTags,
+              statusCode: 400,
+            },
+            {
+              batched: false,
+              destination,
+              error: 'Missing required value from ["properties.platform"]',
+              metadata: { jobId: 15, userId: 'u1' },
+              statTags: routerInstrumentationErrorStatTags,
+              statusCode: 400,
+            },
+            {
+              batchedRequest: {
+                version: '0',
+                type: 'REST',
+                method: 'POST',
+                endpoint: 'https://s2s.smartly.io/events/batch',
+                params: {},
+                body: {
+                  FORM: {},
+                  JSON: {
+                    events: [
+                      {
+                        platform: 'meta',
+                        conversions: 1,
+                        event: 'event1',
+                        ad_unit_id: 221187,
+                        ad_interaction_time: '1652826278',
+                      },
+                      {
+                        platform: 'meta',
+                        conversions: 1,
+                        event: 'event2',
+                        ad_unit_id: 221187,
+                        ad_interaction_time: '1652826278',
+                      },
+                    ],
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                },
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                files: {},
+              },
+              metadata: [
+                { jobId: 11, userId: 'u1' },
+                { jobId: 11, userId: 'u1' },
+              ],
+              batched: true,
+              statusCode: 200,
+              destination,
+            },
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: 'https://s2s.smartly.io/events/batch',
+                params: {},
+                body: {
+                  FORM: {},
+                  JSON: {
+                    events: [
+                      {
+                        conversions: 3,
+                        event: 'purchase',
+                        platform: 'snapchat',
+                        ad_unit_id: 77187,
+                        ad_interaction_time: '2752826278',
+                      },
+                      {
+                        conversions: 3,
+                        event: 'add to cart',
+                        platform: 'tiktok',
+                        ad_unit_id: 789187,
+                        ad_interaction_time: '2752826278',
+                      },
+                    ],
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                },
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                files: {},
+              },
+              metadata: [
+                { jobId: 13, userId: 'u1' },
+                { jobId: 16, userId: 'u1' },
+              ],
+              batched: true,
+              statusCode: 200,
+              destination,
+            },
+          ],
+        },
+      },
+    },
+    mockFns: defaultMockFns,
   },
 ];

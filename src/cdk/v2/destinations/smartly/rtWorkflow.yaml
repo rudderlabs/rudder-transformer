@@ -16,7 +16,7 @@ steps:
   - name: successfulEvents
     template: |
       $.outputs.transform#idx.output.({
-        "output": .body.JSON.events[0],
+        "output": .body.JSON,
         "destination": ^[idx].destination,
         "metadata": ^[idx].metadata
       })[]

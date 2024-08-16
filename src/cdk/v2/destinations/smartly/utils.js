@@ -23,7 +23,10 @@ const getPayloads = (event, eventsMapping, payload) => {
   }
   const eventsMap = getHashFromArrayWithDuplicate(eventsMapping);
   // eventsMap = hashmap {"prop1":["val1","val2"],"prop2":["val2"]}
-  const eventList = eventsMap?.[event?.toLowerCase()] || [event];
+  const eventList = Array.isArray(eventsMap[event.toLowerCase()])
+    ? eventsMap[event.toLowerCase()]
+    : Array.from(eventsMap[event.toLowerCase()] || [event]);
+
   const payloadLists = eventList.map((ev) => ({ ...payload, event: ev }));
   return payloadLists;
 };
@@ -36,20 +39,6 @@ const buildResponseList = (payloadList) =>
     response.method = 'POST';
     return response;
   });
-
-const getSuccessfulEvents = (events) => {
-  const sucessfulEvents = [];
-  events.forEach((event) => {
-    event.forEach((ev) => {
-      sucessfulEvents.push({
-        output: ev.body.JSON,
-        destination: ev.destination,
-        metadata: ev.metadata,
-      });
-    });
-  });
-  return sucessfulEvents;
-};
 
 const batchBuilder = (batch) => ({
   batchedRequest: {
@@ -90,4 +79,4 @@ const batchResponseBuilder = (events) => {
   return response;
 };
 
-module.exports = { batchResponseBuilder, getPayloads, buildResponseList, getSuccessfulEvents };
+module.exports = { batchResponseBuilder, getPayloads, buildResponseList };

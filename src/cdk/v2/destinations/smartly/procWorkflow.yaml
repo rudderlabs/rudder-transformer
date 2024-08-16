@@ -26,4 +26,5 @@ steps:
       $.context.payloadList = $.getPayloads(.message.event, .destination.Config.eventsMapping, payload)
   - name: buildResponse
     template: |
-      $.buildResponseList($.context.payloadList)
+      const response = $.buildResponseList($.context.payloadList)
+      response

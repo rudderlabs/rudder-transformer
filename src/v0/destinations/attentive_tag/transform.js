@@ -137,7 +137,7 @@ const trackResponseBuilder = (message, { Config }) => {
       payload = constructPayload(message, mappingConfig[ConfigCategory.TRACK.name]);
       endpoint = ConfigCategory.TRACK.endpoint;
       payload.type = get(message, 'event');
-      if (!getPropertiesKeyValidation(payload)) {
+      if (!getPropertiesKeyValidation(payload.properties)) {
         throw new InstrumentationError(
           '[Attentive Tag]:The event name contains characters which is not allowed',
         );

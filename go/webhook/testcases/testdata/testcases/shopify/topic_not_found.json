@@ -18,7 +18,7 @@
   "output": {
     "response": {
       "status": 400,
-      "body": "Topic not found"
+      "body": "Topic not found\n"
     },
     "queue": [],
     "errQueue": [

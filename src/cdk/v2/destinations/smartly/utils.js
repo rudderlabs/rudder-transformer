@@ -58,7 +58,9 @@ const batchBuilder = (batch) => ({
     params: {},
     files: {},
   },
-  metadata: batch.map((event) => event.metadata),
+  metadata: batch
+    .map((event) => event.metadata)
+    .filter((metadata, index, self) => self.findIndex((m) => m.jobId === metadata.jobId) === index), // handling jobId duplication for multiplexed events
   batched: true,
   statusCode: 200,
   destination: batch[0].destination,

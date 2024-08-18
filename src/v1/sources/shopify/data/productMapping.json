@@ -1,0 +1,18 @@
+[
+  {
+    "sourceKeys": "id",
+    "destKey": "order_id"
+  },
+  {
+    "sourceKeys": "total_price",
+    "destKey": "value"
+  },
+  {
+    "sourceKeys": "total_tax",
+    "destKey": "tax"
+  },
+  {
+    "sourceKeys": "currency",
+    "destKey": "currency"
+  }
+]

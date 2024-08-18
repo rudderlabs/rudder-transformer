@@ -24,7 +24,7 @@ export const getDeleteBulkCatalogItemEndpoint = (
 ): string =>
   `${apiBaseUrl}/data/v2/projects/${projectToken}/catalogs/${catalogId}/items/bulk-delete`;
 
-export const RecordAction = {
+export const CatalogAction = {
   INSERT: 'insert',
   UPDATE: 'update',
   DELETE: 'delete',

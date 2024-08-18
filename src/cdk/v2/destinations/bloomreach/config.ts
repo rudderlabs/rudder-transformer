@@ -7,6 +7,7 @@ export const MAX_BATCH_SIZE = 50;
 // ref:- https://documentation.bloomreach.com/engagement/reference/batch-commands-2
 export const getBatchEndpoint = (apiBaseUrl: string, projectToken: string): string =>
   `${apiBaseUrl}/track/v2/projects/${projectToken}/batch`;
+
 const CONFIG_CATEGORIES = {
   CUSTOMER_PROPERTIES_CONFIG: { name: 'BloomreachCustomerPropertiesConfig' },
 };

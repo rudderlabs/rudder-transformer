@@ -147,6 +147,34 @@ const routerRequest = {
       metadata: generateMetadata(8),
       destination,
     },
+    {
+      message: {
+        type: 'record',
+        action: 'dummy-action',
+        fields: {
+          item_id: 'test-item-id',
+        },
+        channel: 'sources',
+        context: sampleContext,
+        recordId: '9',
+      },
+      metadata: generateMetadata(9),
+      destination,
+    },
+    {
+      message: {
+        type: 'record',
+        action: 'insert',
+        fields: {
+          item_id: null,
+        },
+        channel: 'sources',
+        context: sampleContext,
+        recordId: '10',
+      },
+      metadata: generateMetadata(10),
+      destination,
+    },
   ],
   destType,
 };
@@ -270,7 +298,24 @@ export const data = [
               metadata: [generateMetadata(8)],
               batched: false,
               statusCode: 400,
-              error: 'Item Id is required. Aborting',
+              error: '`fields` cannot be empty',
+              statTags: RouterInstrumentationErrorStatTags,
+              destination,
+            },
+            {
+              metadata: [generateMetadata(9)],
+              batched: false,
+              statusCode: 400,
+              error:
+                'Invalid action type. You can only add, update or remove items from the catalog',
+              statTags: RouterInstrumentationErrorStatTags,
+              destination,
+            },
+            {
+              metadata: [generateMetadata(10)],
+              batched: false,
+              statusCode: 400,
+              error: '`item_id` cannot be empty',
               statTags: RouterInstrumentationErrorStatTags,
               destination,
             },

@@ -1,48 +1,42 @@
 bindings:
+  - name: EventType
+    path: ../../../../constants
+  - name: processRecordInputs
+    path: ./transformRecord
   - name: handleRtTfSingleEventError
     path: ../../../../v0/util/index
-  - path: ./utils
-    exportAll: true
-  - name: base64Convertor
-    path: ../../../../v0/util
-  - name: toUnixTimestamp
-    path: ../../../../v0/util
-  - name: BatchUtils
-    path: '@rudderstack/workflow-engine'
-  - path: ./config
+  - name: InstrumentationError
+    path: '@rudderstack/integrations-lib'
 
 steps:
+  - name: validateConfig
+    template: |
+      const config = ^[0].destination.Config
+      $.assertConfig(config.apiBaseUrl, "API Base URL is not present. Aborting");
+      $.assertConfig(config.apiKey, "API Key is not present . Aborting");
+      $.assertConfig(config.apiSecret, "API Secret is not present. Aborting");
+      $.assertConfig(config.projectToken, "Project Token is not present. Aborting");
+      $.assertConfig(config.catalogID, "Catalog Id is not present. Aborting");
+
   - name: validateInput
     template: |
       $.assert(Array.isArray(^) && ^.length > 0, "Invalid event array")
 
-  - name: transform
-    externalWorkflow:
-      path: ./procWorkflow.yaml
-      bindings:
-        - name: batchMode
-          value: true
-    loopOverInput: true
-
-  - name: successfulEvents
+  - name: processRecordEvents
     template: |
-      $.outputs.transform#idx.output.({
-        "message": .[],
-        "destination": ^ [idx].destination,
-        "metadata": ^ [idx].metadata
-      })[]
+      $.processRecordInputs(^.{.message.type === $.EventType.RECORD}[], ^[0].destination)
 
-  - name: failedEvents
+  - name: failOtherEvents
     template: |
-      $.outputs.transform#idx.error.(
-        $.handleRtTfSingleEventError(^[idx], .originalError ?? ., {})
-      )[]
-
-  - name: batchSuccessfulEvents
-    description: Batches the successfulEvents
-    template: |
-      $.batchResponseBuilder($.outputs.successfulEvents);
+      const otherEvents = ^.{.message.type !== $.EventType.RECORD}[]
+      let failedEvents = otherEvents.map(
+        function(event) {
+        const error = new $.InstrumentationError("Event type " + event.message.type + " is not supported");
+          $.handleRtTfSingleEventError(event, error, {})
+        }
+      )
+      failedEvents ?? []
 
   - name: finalPayload
     template: |
-      [...$.outputs.batchSuccessfulEvents, ...$.outputs.failedEvents]
+      [...$.outputs.processRecordEvents, ...$.outputs.failOtherEvents]

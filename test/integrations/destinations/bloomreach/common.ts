@@ -84,6 +84,7 @@ const headers = {
   'Content-Type': 'application/json',
   Authorization: 'Basic dGVzdC1hcGkta2V5OnRlc3QtYXBpLXNlY3JldA==',
 };
+
 export {
   destType,
   channel,

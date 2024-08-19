@@ -47,14 +47,14 @@ const responseHandler = (responseParams) => {
     response.forEach((event, idx) => {
       const proxyOutput = {
         statusCode: 200,
-        metadata: rudderJobMetadata[idx],
         error: 'success',
+        metadata: rudderJobMetadata[idx],
       };
       // update status of partial event if abortable
       const { isAbortable, errorMsg } = checkIfEventIsAbortableAndExtractErrorMessage(event);
       if (isAbortable) {
-        proxyOutput.statusCode = 400;
         proxyOutput.error = errorMsg;
+        proxyOutput.statusCode = 400;
       }
       responseWithIndividualEvents.push(proxyOutput);
     });

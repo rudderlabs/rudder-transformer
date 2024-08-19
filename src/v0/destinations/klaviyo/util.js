@@ -454,6 +454,24 @@ const constructProfile = (message, destination, isIdentifyCall) => {
   return { data };
 };
 
+/** This function update profile with consents for subscribing to email and/or phone
+ * @param {*} profileAttributes
+ * @param {*} subscribeConsent
+ * @param {*} email
+ * @param {*} phone
+ */
+const updateProfileWithConsents = (profileAttributes, subscribeConsent, email, phone) => {
+  let consent = subscribeConsent;
+  if (!Array.isArray(consent)) {
+    consent = [consent];
+  }
+  if (consent.includes('email') && email) {
+    set(profileAttributes, 'subscriptions.email.marketing.consent', 'SUBSCRIBED');
+  }
+  if (consent.includes('sms') && phone) {
+    set(profileAttributes, 'subscriptions.sms.marketing.consent', 'SUBSCRIBED');
+  }
+};
 /**
  * This function is used for creating profile response for subscribing users to a particular list for V2
  * DOCS: https://developers.klaviyo.com/en/reference/subscribe_profiles
@@ -463,7 +481,7 @@ const subscribeOrUnsubscribeUserToListV2 = (message, traitsInfo, destination, op
   // listId from message properties are preferred over Config listId
   const { consent } = destination.Config;
   let { listId } = destination.Config;
-  let subscribeConsent = traitsInfo.consent || traitsInfo.properties?.consent || consent;
+  const subscribeConsent = traitsInfo.consent || traitsInfo.properties?.consent || consent;
   const email = getFieldValueFromMessage(message, 'email');
   const phone = getFieldValueFromMessage(message, 'phone');
   const profileAttributes = {
@@ -473,15 +491,7 @@ const subscribeOrUnsubscribeUserToListV2 = (message, traitsInfo, destination, op
 
   // used only for subscription and not for unsubscription
   if (operation === 'subscribe' && subscribeConsent) {
-    if (!Array.isArray(subscribeConsent)) {
-      subscribeConsent = [subscribeConsent];
-    }
-    if (subscribeConsent.includes('email') && email) {
-      set(profileAttributes, 'subscriptions.email.marketing.consent', 'SUBSCRIBED');
-    }
-    if (subscribeConsent.includes('sms') && phone) {
-      set(profileAttributes, 'subscriptions.sms.marketing.consent', 'SUBSCRIBED');
-    }
+    updateProfileWithConsents(profileAttributes, subscribeConsent, email, phone);
   }
 
   const profile = removeUndefinedAndNullValues({

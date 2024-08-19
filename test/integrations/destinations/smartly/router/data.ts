@@ -92,6 +92,7 @@ export const data = [
                 endpoint: 'https://s2s.smartly.io/events/batch',
                 headers: {
                   'Content-Type': 'application/json',
+                  Authorization: `Bearer testAuthToken`,
                 },
                 params: {},
                 files: {},
@@ -263,6 +264,7 @@ export const data = [
                 },
                 headers: {
                   'Content-Type': 'application/json',
+                  Authorization: `Bearer testAuthToken`,
                 },
                 files: {},
               },
@@ -303,6 +305,7 @@ export const data = [
                 },
                 headers: {
                   'Content-Type': 'application/json',
+                  Authorization: `Bearer testAuthToken`,
                 },
                 files: {},
               },

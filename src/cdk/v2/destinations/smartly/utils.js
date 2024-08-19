@@ -18,7 +18,7 @@ const {
  * @returns
  */
 const getPayloads = (event, eventsMapping, payload) => {
-  if (!isDefinedAndNotNull(event) || !typeof event === 'string') {
+  if (!isDefinedAndNotNull(event) || typeof event !== 'string') {
     throw new InstrumentationError('Event is not defined or is not String');
   }
   const eventsMap = getHashFromArrayWithDuplicate(eventsMapping);
@@ -40,7 +40,7 @@ const buildResponseList = (payloadList) =>
     return response;
   });
 
-const batchBuilder = (batch) => ({
+const batchBuilder = (batch, destination) => ({
   batchedRequest: {
     body: {
       JSON: { events: batch.map((event) => event.output) },
@@ -54,6 +54,7 @@ const batchBuilder = (batch) => ({
     endpoint: config.batchEndpoint,
     headers: {
       'Content-Type': 'application/json',
+      Authorization: `Bearer ${destination.Config.apiToken}`,
     },
     params: {},
     files: {},
@@ -73,10 +74,11 @@ const batchBuilder = (batch) => ({
  * @returns
  */
 const batchResponseBuilder = (events) => {
+  const { destination } = events[0];
   const batches = BatchUtils.chunkArrayBySizeAndLength(events, { maxItems: config.MAX_BATCH_SIZE });
   const response = [];
   batches.items.forEach((batch) => {
-    response.push(batchBuilder(batch));
+    response.push(batchBuilder(batch, destination));
   });
   return response;
 };

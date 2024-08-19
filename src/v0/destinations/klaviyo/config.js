@@ -19,6 +19,11 @@ const CONFIG_CATEGORIES = {
   VIEWED_PRODUCT: { name: 'ViewedProduct' },
   ADDED_TO_CART: { name: 'AddedToCart' },
   ITEMS: { name: 'Items' },
+  SUBSCRIBE: { name: 'KlaviyoProfileV2', apiUrl: '/api/profile-subscription-bulk-create-jobs' },
+  UNSUBSCRIBE: {
+    name: 'KlaviyoProfileV2',
+    apiUrl: '/api/profile-subscription-bulk-delete-jobs',
+  },
 };
 const ecomExclusionKeys = [
   'name',

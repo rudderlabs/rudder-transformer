@@ -18,7 +18,7 @@ const { mappingConfig, ConfigCategory } = require('./config');
  * @param {*} payload
  * @returns
  */
-const getPropertiesKeyValidation = (properties) => {
+const arePropertiesValid = (properties) => {
   if (!isDefinedAndNotNullAndNotEmpty(properties)) {
     return true;
   }
@@ -141,6 +141,6 @@ const getDestinationItemProperties = (message, isItemsRequired) => {
 module.exports = {
   getDestinationItemProperties,
   getExternalIdentifiersMapping,
-  getPropertiesKeyValidation,
+  arePropertiesValid,
   validateTimestamp,
 };

@@ -1,17 +1,17 @@
-const { getPropertiesKeyValidation } = require('./util');
+const { arePropertiesValid } = require('./util');
 
-describe('getPropertiesKeyValidation', () => {
+describe('arePropertiesValid', () => {
   // returns true for valid properties object with no special characters in keys
   it('should return true when properties object has no special characters in keys', () => {
     const properties = { key1: 'value1', key2: 'value2' };
-    const result = getPropertiesKeyValidation(properties);
+    const result = arePropertiesValid(properties);
     expect(result).toBe(true);
   });
 
   // returns true for null properties input
   it('should return true when properties input is null', () => {
     const properties = null;
-    const result = getPropertiesKeyValidation(properties);
+    const result = arePropertiesValid(properties);
     expect(result).toBe(true);
   });
 
@@ -22,24 +22,24 @@ describe('getPropertiesKeyValidation', () => {
       'key,2': 'value2',
       key3: 'value3',
     };
-    expect(getPropertiesKeyValidation(properties)).toBe(false);
+    expect(arePropertiesValid(properties)).toBe(false);
   });
 
   // returns true for empty properties object
   it('should return true for empty properties object', () => {
     const properties = {};
-    expect(getPropertiesKeyValidation(properties)).toBe(true);
+    expect(arePropertiesValid(properties)).toBe(true);
   });
 
   // returns true for undefined properties input
   it('should return true for undefined properties input', () => {
-    const result = getPropertiesKeyValidation(undefined);
+    const result = arePropertiesValid(undefined);
     expect(result).toBe(true);
   });
 
   // returns true for empty string properties input
   it('should return true for empty string properties input', () => {
-    const result = getPropertiesKeyValidation('');
+    const result = arePropertiesValid('');
     expect(result).toBe(true);
   });
 });

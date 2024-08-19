@@ -23,7 +23,7 @@ steps:
   - name: preparePayload
     template: |
       const payload = $.removeUndefinedAndNullValues($.constructPayload(.message, $.TRACK_CONFIG));
-      $.context.payloadList = $.getPayloads(.message.event, .destination.Config.eventsMapping, payload)
+      $.context.payloadList = $.getPayloads(.message.event, .destination.Config, payload)
   - name: buildResponse
     template: |
       const response = $.buildResponseList($.context.payloadList)

@@ -34,7 +34,10 @@
   {
     "sourceKeys": ["properties.adUnitId", "properties.ad_unit_id"],
     "required": true,
-    "destKey": "ad_unit_id"
+    "destKey": "ad_unit_id",
+    "metadata": {
+      "type": "toString"
+    }
   },
   {
     "sourceKeys": ["properties.platform"],

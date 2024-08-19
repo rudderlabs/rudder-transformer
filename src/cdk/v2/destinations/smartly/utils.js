@@ -17,17 +17,17 @@ const {
  * @param {*} payload
  * @returns
  */
-const getPayloads = (event, eventsMapping, payload) => {
+const getPayloads = (event, Config, payload) => {
   if (!isDefinedAndNotNull(event) || typeof event !== 'string') {
     throw new InstrumentationError('Event is not defined or is not String');
   }
-  const eventsMap = getHashFromArrayWithDuplicate(eventsMapping);
+  const eventsMap = getHashFromArrayWithDuplicate(Config.eventsMapping);
   // eventsMap = hashmap {"prop1":["val1","val2"],"prop2":["val2"]}
   const eventList = Array.isArray(eventsMap[event.toLowerCase()])
     ? eventsMap[event.toLowerCase()]
     : Array.from(eventsMap[event.toLowerCase()] || [event]);
 
-  const payloadLists = eventList.map((ev) => ({ ...payload, event: ev }));
+  const payloadLists = eventList.map((ev) => ({ ...payload, event_name: ev }));
   return payloadLists;
 };
 
@@ -35,7 +35,7 @@ const buildResponseList = (payloadList) =>
   payloadList.map((payload) => {
     const response = defaultRequestConfig();
     response.body.JSON = payload;
-    response.endpoint = config.singleEventEndpoint;
+    response.endpoint = config.batchEndpoint;
     response.method = 'POST';
     return response;
   });
@@ -78,7 +78,8 @@ const batchResponseBuilder = (events) => {
   const batches = BatchUtils.chunkArrayBySizeAndLength(events, { maxItems: config.MAX_BATCH_SIZE });
   const response = [];
   batches.items.forEach((batch) => {
-    response.push(batchBuilder(batch, destination));
+    const batchedResponse = batchBuilder(batch, destination);
+    response.push(batchedResponse);
   });
   return response;
 };

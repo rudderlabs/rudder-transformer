@@ -28,11 +28,9 @@ const checkIfEventIsAbortableAndExtractErrorMessage = (element) => {
     return { isAbortable: false, errorMsg: '' };
   }
 
-  const errorMsg = Array.isArray(element.errors)
-    ? element.errors.join(', ')
-    : Object.values(element.errors || {})
-        .flat()
-        .join(', ');
+  const errorMsg = Object.values(element.errors || {})
+    .flat()
+    .join(', ');
 
   return { isAbortable: true, errorMsg };
 };
@@ -46,8 +44,7 @@ const responseHandler = (responseParams) => {
 
   if (isHttpStatusSuccess(status)) {
     // check for Partial Event failures and Successes
-    const results = response;
-    results.forEach((event, idx) => {
+    response.forEach((event, idx) => {
       const proxyOutput = {
         statusCode: 200,
         metadata: rudderJobMetadata[idx],

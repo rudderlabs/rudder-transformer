@@ -1,104 +1,93 @@
-import { base64Convertor, InstrumentationError } from '@rudderstack/integrations-lib';
-import {
-  CatalogAction,
-  getCreateBulkCatalogItemEndpoint,
-  getDeleteBulkCatalogItemEndpoint,
-  getUpdateBulkCatalogItemEndpoint,
-} from './config';
+import { InstrumentationError } from '@rudderstack/integrations-lib';
+import { CatalogAction } from './config';
 import { batchResponseBuilder } from './utils';
 
-const {
-  defaultRequestConfig,
-  handleRtTfSingleEventError,
-  isEmptyObject,
-} = require('../../../../v0/util');
+import { handleRtTfSingleEventError, isEmptyObject } from '../../../../v0/util';
 
-export const prepareRecordInsertOrUpdatePayload = (fields: any): any => {
+const prepareCatalogInsertOrUpdatePayload = (fields: any): any => {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   const { item_id, ...properties } = fields;
   return { item_id, properties };
 };
 
+const processEvent = (event: any) => {
+  const { message } = event;
+  const { fields, action } = message;
+  const response = {
+    action,
+    payload: null,
+  };
+  if (isEmptyObject(fields)) {
+    throw new InstrumentationError('`fields` cannot be empty');
+  }
+  if (!fields.item_id) {
+    throw new InstrumentationError('`item_id` cannot be empty');
+  }
+  if (action === CatalogAction.INSERT || action === CatalogAction.UPDATE) {
+    response.payload = prepareCatalogInsertOrUpdatePayload(fields);
+  } else if (action === CatalogAction.DELETE) {
+    response.payload = fields.item_id;
+  } else {
+    throw new InstrumentationError(
+      `Invalid action type ${action}. You can only add, update or remove items from the catalog`,
+    );
+  }
+  return response;
+};
+
+const getEventChunks = (
+  input: any,
+  insertItemRespList: any[],
+  updateItemRespList: any[],
+  deleteItemRespList: any[],
+) => {
+  switch (input.response.action) {
+    case CatalogAction.INSERT:
+      insertItemRespList.push({ payload: input.response.payload, metadata: input.metadata });
+      break;
+    case CatalogAction.UPDATE:
+      updateItemRespList.push({ payload: input.response.payload, metadata: input.metadata });
+      break;
+    case CatalogAction.DELETE:
+      deleteItemRespList.push({ payload: input.response.payload, metadata: input.metadata });
+      break;
+    default:
+      throw new InstrumentationError(`Invalid action type ${input.response.action}`);
+  }
+};
+
 export const processRecordInputs = (inputs: any[], destination: any) => {
-  const { Config } = destination;
-  const events: any[] = [];
-  const errorResponseList: any[] = [];
+  const insertItemRespList: any[] = [];
+  const updateItemRespList: any[] = [];
+  const deleteItemRespList: any[] = [];
+  const batchErrorRespList: any[] = [];
 
   if (!inputs || inputs.length === 0) {
     return [];
   }
 
-  const invalidActionTypeError = new InstrumentationError(
-    'Invalid action type. You can only add, update or remove items from the catalog',
-  );
-
-  const emptyFieldsError = new InstrumentationError('`fields` cannot be empty');
-
-  const itemIdError = new InstrumentationError('`item_id` cannot be empty');
-
-  const headers = {
-    'Content-Type': 'application/json',
-    Authorization: `Basic ${base64Convertor(`${Config.apiKey}:${Config.apiSecret}`)}`,
-  };
-
-  const insertEndpoint = getCreateBulkCatalogItemEndpoint(
-    Config.apiBaseUrl,
-    Config.projectToken,
-    Config.catalogID,
-  );
-  const updateEndpoint = getUpdateBulkCatalogItemEndpoint(
-    Config.apiBaseUrl,
-    Config.projectToken,
-    Config.catalogID,
-  );
-  const deleteEndpoint = getDeleteBulkCatalogItemEndpoint(
-    Config.apiBaseUrl,
-    Config.projectToken,
-    Config.catalogID,
-  );
-
   inputs.forEach((input) => {
-    const { fields, action } = input.message;
-
-    if (isEmptyObject(fields)) {
-      errorResponseList.push(handleRtTfSingleEventError(input, emptyFieldsError, {}));
-      return;
+    try {
+      getEventChunks(
+        {
+          response: processEvent(input),
+          metadata: input.metadata,
+        },
+        insertItemRespList,
+        updateItemRespList,
+        deleteItemRespList,
+      );
+    } catch (error) {
+      const errRespEvent = handleRtTfSingleEventError(input, error, {});
+      batchErrorRespList.push(errRespEvent);
     }
-
-    if (!fields.item_id) {
-      errorResponseList.push(handleRtTfSingleEventError(input, itemIdError, {}));
-      return;
-    }
-
-    const response = defaultRequestConfig();
-    response.headers = headers;
-    switch (action) {
-      case CatalogAction.INSERT:
-        response.body.JSON = prepareRecordInsertOrUpdatePayload(fields);
-        response.endpoint = insertEndpoint;
-        response.method = 'PUT';
-        break;
-      case CatalogAction.UPDATE:
-        response.body.JSON = prepareRecordInsertOrUpdatePayload(fields);
-        response.endpoint = updateEndpoint;
-        response.method = 'POST';
-        break;
-      case CatalogAction.DELETE:
-        response.body.JSON = fields.item_id;
-        response.endpoint = deleteEndpoint;
-        response.method = 'DELETE';
-        break;
-      default:
-        errorResponseList.push(handleRtTfSingleEventError(input, invalidActionTypeError, {}));
-        return;
-    }
-    const event = {
-      message: response,
-      destination,
-      metadata: input.metadata,
-    };
-    events.push(event);
   });
-  const response = batchResponseBuilder(events);
-  return [...response, ...errorResponseList];
+
+  const batchSuccessfulRespList = batchResponseBuilder(
+    insertItemRespList,
+    updateItemRespList,
+    deleteItemRespList,
+    destination,
+  );
+  return [...batchSuccessfulRespList, ...batchErrorRespList];
 };

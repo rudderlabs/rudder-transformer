@@ -307,7 +307,7 @@ export const data = [
               batched: false,
               statusCode: 400,
               error:
-                'Invalid action type. You can only add, update or remove items from the catalog',
+                'Invalid action type dummy-action. You can only add, update or remove items from the catalog',
               statTags: RouterInstrumentationErrorStatTags,
               destination,
             },

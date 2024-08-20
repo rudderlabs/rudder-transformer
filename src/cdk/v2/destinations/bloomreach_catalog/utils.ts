@@ -1,78 +1,147 @@
-import lodash from 'lodash';
 import { BatchUtils } from '@rudderstack/workflow-engine';
-import { MAX_ITEMS, MAX_PAYLOAD_SIZE } from './config';
-
-const mergeMetadata = (batch: any[]) => batch.map((event) => event.metadata);
-
-const getMergedEvents = (batch: any[]) => batch.map((event) => event.message.body.JSON);
+import { base64Convertor } from '@rudderstack/integrations-lib';
+import {
+  getCreateBulkCatalogItemEndpoint,
+  getDeleteBulkCatalogItemEndpoint,
+  getUpdateBulkCatalogItemEndpoint,
+  MAX_ITEMS,
+  MAX_PAYLOAD_SIZE,
+} from './config';
 
 const buildBatchedRequest = (
-  batch: any[],
-  constants: {
-    version: any;
-    type: any;
-    method: any;
-    headers: any;
-    destination: any;
-    endPoint: any;
-  } | null,
+  payload: string,
+  method: string,
   endpoint: string,
+  headers: any,
+  metadata: any,
+  destination: any,
 ) => ({
   batchedRequest: {
     body: {
       JSON: {},
-      JSON_ARRAY: { batch: getMergedEvents(batch) },
+      JSON_ARRAY: { batch: payload },
       XML: {},
       FORM: {},
     },
     version: '1',
     type: 'REST',
-    method: constants?.method,
+    method,
     endpoint,
-    headers: constants?.headers,
+    headers,
     params: {},
     files: {},
   },
-  metadata: mergeMetadata(batch),
+  metadata,
   batched: true,
   statusCode: 200,
-  destination: batch[0].destination,
+  destination,
 });
 
-const initializeConstants = (successfulEvents: any[]) => {
-  if (successfulEvents.length === 0) return null;
-  return {
-    version: successfulEvents[0].message.version,
-    type: successfulEvents[0].message.type,
-    method: successfulEvents[0].message.method,
-    headers: successfulEvents[0].message.headers,
-    destination: successfulEvents[0].destination,
-    endPoint: successfulEvents[0].message.endpoint,
-  };
+const getHeaders = (destination: any) => ({
+  'Content-Type': 'application/json',
+  Authorization: `Basic ${base64Convertor(`${destination.Config.apiKey}:${destination.Config.apiSecret}`)}`,
+});
+
+// returns merged metadata for a batch
+const getMergedMetadata = (batch: any[]) => batch.map((input) => input.metadata);
+
+// returns merged payload for a batch
+const getMergedEvents = (batch: any[]) => batch.map((input) => input.payload);
+
+// builds final batched response for insert action records
+const insertItemBatchResponseBuilder = (insertItemRespList: any[], destination: any) => {
+  const insertItemBatchedResponse: any[] = [];
+
+  const method = 'PUT';
+  const endpoint = getCreateBulkCatalogItemEndpoint(
+    destination.Config.apiBaseUrl,
+    destination.Config.projectToken,
+    destination.Config.catalogID,
+  );
+  const headers = getHeaders(destination);
+
+  const batchesOfEvents = BatchUtils.chunkArrayBySizeAndLength(insertItemRespList, {
+    maxSizeInBytes: MAX_PAYLOAD_SIZE,
+    maxItems: MAX_ITEMS,
+  });
+  batchesOfEvents.items.forEach((batch: any) => {
+    const mergedPayload = JSON.stringify(getMergedEvents(batch));
+    const mergedMetadata = getMergedMetadata(batch);
+    insertItemBatchedResponse.push(
+      buildBatchedRequest(mergedPayload, method, endpoint, headers, mergedMetadata, destination),
+    );
+  });
+  return insertItemBatchedResponse;
 };
 
-export const batchResponseBuilder = (events: any): any => {
-  const response: any[] = [];
-  let constants = initializeConstants(events);
-  if (!constants) return [];
-  const eventsGroupByEndpoint = lodash.groupBy(events, (event) => event.message.endpoint);
+// builds final batched response for update action records
+const updateItemBatchResponseBuilder = (updateItemRespList: any[], destination: any) => {
+  const updateItemBatchedResponse: any[] = [];
 
-  Object.keys(eventsGroupByEndpoint).forEach((eventEndPoint) => {
-    constants = initializeConstants(eventsGroupByEndpoint[eventEndPoint]);
-    const bathesOfEvents = BatchUtils.chunkArrayBySizeAndLength(
-      eventsGroupByEndpoint[eventEndPoint],
-      {
-        maxSizeInBytes: MAX_PAYLOAD_SIZE,
-        maxItems: MAX_ITEMS,
-      },
-    );
-    bathesOfEvents.items.forEach((batch) => {
-      const requests: any = buildBatchedRequest(batch, constants, eventEndPoint);
-      requests.batchedRequest.body.JSON_ARRAY.batch = JSON.stringify(
-        requests.batchedRequest.body.JSON_ARRAY.batch,
-      );
-      response.push(requests);
-    });
+  const method = 'POST';
+  const endpoint = getUpdateBulkCatalogItemEndpoint(
+    destination.Config.apiBaseUrl,
+    destination.Config.projectToken,
+    destination.Config.catalogID,
+  );
+  const headers = getHeaders(destination);
+
+  const batchesOfEvents = BatchUtils.chunkArrayBySizeAndLength(updateItemRespList, {
+    maxSizeInBytes: MAX_PAYLOAD_SIZE,
+    maxItems: MAX_ITEMS,
   });
+  batchesOfEvents.items.forEach((batch: any) => {
+    const mergedPayload = JSON.stringify(getMergedEvents(batch));
+    const mergedMetadata = getMergedMetadata(batch);
+    updateItemBatchedResponse.push(
+      buildBatchedRequest(mergedPayload, method, endpoint, headers, mergedMetadata, destination),
+    );
+  });
+  return updateItemBatchedResponse;
+};
+
+// builds final batched response for delete action records
+const deleteItemBatchResponseBuilder = (deleteItemRespList: any[], destination: any) => {
+  const deleteItemBatchedResponse: any[] = [];
+
+  const method = 'DELETE';
+  const endpoint = getDeleteBulkCatalogItemEndpoint(
+    destination.Config.apiBaseUrl,
+    destination.Config.projectToken,
+    destination.Config.catalogID,
+  );
+  const headers = getHeaders(destination);
+
+  const batchesOfEvents = BatchUtils.chunkArrayBySizeAndLength(deleteItemRespList, {
+    maxSizeInBytes: MAX_PAYLOAD_SIZE,
+    maxItems: MAX_ITEMS,
+  });
+  batchesOfEvents.items.forEach((batch: any) => {
+    const mergedPayload = JSON.stringify(getMergedEvents(batch));
+    const mergedMetadata = getMergedMetadata(batch);
+    deleteItemBatchedResponse.push(
+      buildBatchedRequest(mergedPayload, method, endpoint, headers, mergedMetadata, destination),
+    );
+  });
+  return deleteItemBatchedResponse;
+};
+
+// returns final batched response
+export const batchResponseBuilder = (
+  insertItemRespList: any,
+  updateItemRespList: any,
+  deleteItemRespList: any,
+  destination: any,
+) => {
+  const response: any[] = [];
+  if (insertItemRespList.length > 0) {
+    response.push(...insertItemBatchResponseBuilder(insertItemRespList, destination));
+  }
+  if (updateItemRespList.length > 0) {
+    response.push(...updateItemBatchResponseBuilder(updateItemRespList, destination));
+  }
+  if (deleteItemRespList.length > 0) {
+    response.push(...deleteItemBatchResponseBuilder(deleteItemRespList, destination));
+  }
   return response;
 };

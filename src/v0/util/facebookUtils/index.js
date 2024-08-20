@@ -150,9 +150,8 @@ const getContentType = (message, defaultValue, categoryToContent, destinationNam
   let { category } = properties || {};
   if (
     !category &&
-    properties?.products &&
-    properties?.products.length > 0 &&
     Array.isArray(properties?.products) &&
+    properties?.products.length > 0 &&
     isObject(properties?.products[0])
   ) {
     category = properties?.products[0].category;

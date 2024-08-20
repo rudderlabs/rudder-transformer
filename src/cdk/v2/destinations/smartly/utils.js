@@ -107,8 +107,12 @@ const batchBuilder = (batch, destination) => ({
  * @returns
  */
 const batchResponseBuilder = (events) => {
+  if (events.length === 0) {
+    return [];
+  }
   const { destination } = events[0];
   const batches = BatchUtils.chunkArrayBySizeAndLength(events, { maxItems: config.MAX_BATCH_SIZE });
+
   const response = [];
   batches.items.forEach((batch) => {
     const batchedResponse = batchBuilder(batch, destination);

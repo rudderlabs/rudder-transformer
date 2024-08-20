@@ -115,6 +115,9 @@ export const data = [
         },
       },
     },
+    mockFns: () => {
+      jest.useFakeTimers().setSystemTime(new Date('2024-02-01'));
+    },
   },
   {
     name: 'smartly',

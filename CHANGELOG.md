@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.75.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.75.0...v1.75.1) (2024-08-14)
+
+
+### Bug Fixes
+
+* add validation for concurrent_modification error ([#3654](https://github.com/rudderlabs/rudder-transformer/issues/3654)) ([62cdc46](https://github.com/rudderlabs/rudder-transformer/commit/62cdc4641d44d79e21949722660173df4c749f24))
+* clevertap bugsnag issue ([#3656](https://github.com/rudderlabs/rudder-transformer/issues/3656)) ([6c51487](https://github.com/rudderlabs/rudder-transformer/commit/6c51487183b6b0b755620aac6cd51c2ffc966102))
+* snapchat conversion bugsnag issue ([#3657](https://github.com/rudderlabs/rudder-transformer/issues/3657)) ([31b03fc](https://github.com/rudderlabs/rudder-transformer/commit/31b03fc022ace0cda8df798c50e4764a9703c23b))
+* validation for iterable object of HS ([#3653](https://github.com/rudderlabs/rudder-transformer/issues/3653)) ([1cb3f86](https://github.com/rudderlabs/rudder-transformer/commit/1cb3f86c894f30bdf04df870484c6df3a956f36e))
+
+## [1.75.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.74.1...v1.75.0) (2024-08-12)
+
+
+### Features
+
+* move hubspot to transformer proxy to enable partial batch handling ([#3308](https://github.com/rudderlabs/rudder-transformer/issues/3308)) ([8450021](https://github.com/rudderlabs/rudder-transformer/commit/8450021672c51ac798ec0aeab422f5fceea5e53e))
+
+
+### Bug Fixes
+
+* handle attentive tag null, undefined properties ([#3647](https://github.com/rudderlabs/rudder-transformer/issues/3647)) ([9327925](https://github.com/rudderlabs/rudder-transformer/commit/932792561c98833baf9881a83ee36ae5000e37b4))
+* handle null values for braze dedupe ([#3638](https://github.com/rudderlabs/rudder-transformer/issues/3638)) ([0a9b681](https://github.com/rudderlabs/rudder-transformer/commit/0a9b68118241158623d45ee28896377296bafd91))
+
 ### [1.74.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.74.0...v1.74.1) (2024-08-08)
 
 

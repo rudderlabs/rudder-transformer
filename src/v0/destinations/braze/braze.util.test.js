@@ -791,6 +791,136 @@ describe('dedup utility tests', () => {
       const result = BrazeDedupUtility.deduplicate(userData, store);
       expect(result).toBeNull();
     });
+
+    test('deduplicates user data correctly when user data is null and it doesnt exist in stored data', () => {
+      const userData = {
+        external_id: '123',
+        nullProperty: null,
+        color: 'green',
+        age: 30,
+      };
+      const storeData = {
+        external_id: '123',
+        custom_attributes: {
+          color: 'green',
+          age: 30,
+        },
+      };
+      store.set('123', storeData);
+      const result = BrazeDedupUtility.deduplicate(userData, store);
+      expect(store.size).toBe(1);
+      expect(result).toEqual(null);
+    });
+
+    test('deduplicates user data correctly when user data is null and it is same in stored data', () => {
+      const userData = {
+        external_id: '123',
+        nullProperty: null,
+        color: 'green',
+        age: 30,
+      };
+      const storeData = {
+        external_id: '123',
+        custom_attributes: {
+          color: 'green',
+          age: 30,
+          nullProperty: null,
+        },
+      };
+      store.set('123', storeData);
+      const result = BrazeDedupUtility.deduplicate(userData, store);
+      expect(store.size).toBe(1);
+      expect(result).toEqual(null);
+    });
+
+    test('deduplicates user data correctly when user data is null and it is different in stored data', () => {
+      const userData = {
+        external_id: '123',
+        nullProperty: null,
+        color: 'green',
+        age: 30,
+      };
+      const storeData = {
+        external_id: '123',
+        custom_attributes: {
+          color: 'green',
+          age: 30,
+          nullProperty: 'valid data',
+        },
+      };
+      store.set('123', storeData);
+      const result = BrazeDedupUtility.deduplicate(userData, store);
+      expect(store.size).toBe(1);
+      expect(result).toEqual({
+        external_id: '123',
+        nullProperty: null,
+      });
+    });
+
+    test('deduplicates user data correctly when user data is undefined and it doesnt exist in stored data', () => {
+      const userData = {
+        external_id: '123',
+        undefinedProperty: undefined,
+        color: 'green',
+        age: 30,
+      };
+      const storeData = {
+        external_id: '123',
+        custom_attributes: {
+          color: 'green',
+          age: 30,
+        },
+      };
+      store.set('123', storeData);
+      const result = BrazeDedupUtility.deduplicate(userData, store);
+      expect(store.size).toBe(1);
+      expect(result).toEqual(null);
+    });
+
+    test('deduplicates user data correctly when user data is undefined and it is same in stored data', () => {
+      const userData = {
+        external_id: '123',
+        undefinedProperty: undefined,
+        color: 'green',
+        age: 30,
+      };
+      const storeData = {
+        external_id: '123',
+        custom_attributes: {
+          color: 'green',
+          undefinedProperty: undefined,
+          age: 30,
+        },
+      };
+      store.set('123', storeData);
+      const result = BrazeDedupUtility.deduplicate(userData, store);
+      expect(store.size).toBe(1);
+      expect(result).toEqual(null);
+    });
+
+    test('deduplicates user data correctly when user data is undefined and it is defined in stored data', () => {
+      const userData = {
+        external_id: '123',
+        undefinedProperty: undefined,
+        color: 'green',
+        age: 30,
+      };
+      const storeData = {
+        external_id: '123',
+        custom_attributes: {
+          color: 'green',
+          undefinedProperty: 'defined data',
+          age: 30,
+        },
+      };
+      store.set('123', storeData);
+      const result = BrazeDedupUtility.deduplicate(userData, store);
+      expect(store.size).toBe(1);
+      expect(result).toEqual({
+        external_id: '123',
+        undefinedProperty: undefined,
+      });
+    });
   });
 });
 

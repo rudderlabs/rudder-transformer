@@ -42,4 +42,10 @@ describe('arePropertiesValid', () => {
     const result = arePropertiesValid('');
     expect(result).toBe(true);
   });
+
+  // returns false for empty string properties input
+  it('should return false for non object properties input', () => {
+    const result = arePropertiesValid('1234');
+    expect(result).toBe(false);
+  });
 });

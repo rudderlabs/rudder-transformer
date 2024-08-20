@@ -138,7 +138,7 @@ export const validationFailures = [
               properties: {
                 platform: 'snapchat',
                 ad_unit_id: '2653387',
-                ad_interaction_time: '1675094400',
+                ad_interaction_time: 1675094400,
               },
               anonymousId: 'anon_123',
               integrations: {

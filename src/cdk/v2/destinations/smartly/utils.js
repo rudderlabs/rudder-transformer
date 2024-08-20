@@ -1,5 +1,6 @@
 const { BatchUtils } = require('@rudderstack/workflow-engine');
 const { InstrumentationError } = require('@rudderstack/integrations-lib');
+const moment = require('moment');
 const config = require('./config');
 const {
   getHashFromArrayWithDuplicate,
@@ -29,6 +30,38 @@ const getPayloads = (event, Config, payload) => {
 
   const payloadLists = eventList.map((ev) => ({ ...payload, event_name: ev }));
   return payloadLists;
+};
+
+const verifyAdInteractionTime = (adInteractionTime) => {
+  if (isDefinedAndNotNull(adInteractionTime)) {
+    let adInteractionTimeMoment;
+
+    // Handle both UNIX timestamps and UTC date strings
+    if (typeof adInteractionTime === 'number') {
+      adInteractionTimeMoment = moment.unix(adInteractionTime); // Parse as UNIX timestamp
+    } else {
+      adInteractionTimeMoment = moment.utc(adInteractionTime); // Parse as UTC date string
+    }
+
+    const currentMoment = moment.utc(); // Current time in UTC
+
+    // Calculate the time difference in days
+    const diffDaysPast = currentMoment.diff(adInteractionTimeMoment, 'days');
+    const diffDaysFuture = adInteractionTimeMoment.diff(currentMoment, 'days');
+
+    // Define the day range: 3 years (1095 days) in the past and 1 year (365 days) in the future
+    const maxDaysPast = 3 * 365 + 1; // 1095 days + 1 day for a leap year
+    const maxDaysFuture = 1 * 365 + 1; // 365 days + 1 day for a leap year
+
+    // Check if adInteractionTime is within the allowed range
+    const isWithinAllowedRange = diffDaysPast <= maxDaysPast && diffDaysFuture <= maxDaysFuture;
+
+    if (!isWithinAllowedRange) {
+      throw new InstrumentationError(
+        'ad_interaction_time must be within one year in the future and three years in the past.',
+      );
+    }
+  }
 };
 
 const buildResponseList = (payloadList) =>
@@ -84,4 +117,4 @@ const batchResponseBuilder = (events) => {
   return response;
 };
 
-module.exports = { batchResponseBuilder, getPayloads, buildResponseList };
+module.exports = { batchResponseBuilder, getPayloads, buildResponseList, verifyAdInteractionTime };

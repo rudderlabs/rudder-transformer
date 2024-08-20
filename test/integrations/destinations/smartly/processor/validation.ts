@@ -17,13 +17,13 @@ export const validationFailures = [
             destination,
             message: {
               type: 'track',
-              event: 'product purchased',
+              event_name: 'product purchased',
               sentAt: '2021-01-25T16:12:02.048Z',
               userId: 'john123',
               properties: {
                 products: [{}],
                 ad_unit_id: '22123387',
-                ad_interaction_time: '1650626278',
+                ad_interaction_time: '1690867200',
               },
               integrations: {
                 All: true,
@@ -72,7 +72,7 @@ export const validationFailures = [
             destination,
             message: {
               type: 'group',
-              event: 'purchase',
+              event_name: 'purchase',
               sentAt: '2021-01-25T16:12:02.048Z',
               userId: 'john67',
               channel: 'mobile',
@@ -81,7 +81,7 @@ export const validationFailures = [
               properties: {
                 platform: 'snapchat',
                 ad_unit_id: '2653387',
-                ad_interaction_time: '1650646278',
+                ad_interaction_time: '1690867200',
               },
               anonymousId: 'anon_123',
               integrations: {
@@ -138,7 +138,7 @@ export const validationFailures = [
               properties: {
                 platform: 'snapchat',
                 ad_unit_id: '2653387',
-                ad_interaction_time: '1650646278',
+                ad_interaction_time: '1675094400',
               },
               anonymousId: 'anon_123',
               integrations: {

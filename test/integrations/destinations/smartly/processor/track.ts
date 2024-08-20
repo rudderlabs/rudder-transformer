@@ -1,3 +1,5 @@
+const moment = require('moment');
+import { verifyAdInteractionTime } from '../../../../../src/cdk/v2/destinations/smartly/utils';
 import { destination } from '../commonConfig';
 
 export const trackTestData = [
@@ -13,11 +15,11 @@ export const trackTestData = [
           {
             destination,
             message: {
-              event: 'Add to cart',
+              event_name: 'Add to cart',
               properties: {
                 platform: 'meta',
-                ad_unit_id: 228287,
-                ad_interaction_time: '1650626278',
+                ad_unit_id: '228287',
+                ad_interaction_time: '1612137600',
                 email: 'eventIdn01@sample.com',
               },
               type: 'track',
@@ -44,16 +46,16 @@ export const trackTestData = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://s2s.smartly.io/events',
+              endpoint: 'https://s2s.smartly.io/events/batch',
               headers: {},
               params: {},
               body: {
                 JSON: {
                   platform: 'meta',
-                  ad_unit_id: 228287,
-                  ad_interaction_time: '1650626278',
+                  ad_unit_id: '228287',
+                  ad_interaction_time: '1612137600',
                   conversions: '1',
-                  event: 'Add to cart',
+                  event_name: 'Add to cart',
                 },
                 JSON_ARRAY: {},
                 XML: {},

@@ -18,12 +18,12 @@ export const data = [
             {
               message: {
                 type: 'track',
-                event: 'product list viewed',
+                event_name: 'product list viewed',
                 properties: {
                   platform: 'meta',
                   conversions: 1,
-                  ad_unit_id: 221187,
-                  ad_interaction_time: '1652826278',
+                  ad_unit_id: "221187",
+                  ad_interaction_time: '1690867200',
                 },
               },
               metadata: { jobId: 2, userId: 'u2' },
@@ -32,12 +32,12 @@ export const data = [
             {
               message: {
                 type: 'track',
-                event: 'add to cart',
+                event_name: 'add to cart',
                 properties: {
                   conversions: 3,
                   platform: 'snapchat',
-                  ad_unit_id: 77187,
-                  ad_interaction_time: '2752826278',
+                  ad_unit_id: "77187",
+                  ad_interaction_time: '1690867200',
                 },
               },
               metadata: { jobId: 3, userId: 'u3' },
@@ -61,24 +61,24 @@ export const data = [
                     events: [
                       {
                         conversions: 1,
-                        ad_unit_id: 221187,
+                        ad_unit_id: "221187",
                         platform: 'meta',
-                        ad_interaction_time: '1652826278',
-                        event: 'event1',
+                        ad_interaction_time: '1690867200',
+                        event_name: 'event1',
                       },
                       {
                         conversions: 1,
-                        ad_unit_id: 221187,
+                        ad_unit_id: "221187",
                         platform: 'meta',
-                        ad_interaction_time: '1652826278',
-                        event: 'event2',
+                        ad_interaction_time: '1690867200',
+                        event_name: 'event2',
                       },
                       {
                         conversions: 3,
-                        ad_unit_id: 77187,
+                        ad_unit_id: "77187",
                         platform: 'snapchat',
-                        ad_interaction_time: '2752826278',
-                        event: 'add to cart',
+                        ad_interaction_time: '1690867200',
+                        event_name: 'add to cart',
                       },
                     ],
                   },
@@ -132,12 +132,12 @@ export const data = [
             {
               message: {
                 type: 'track',
-                event: 'product list viewed',
+                event_name: 'product list viewed',
                 properties: {
                   platform: 'meta',
                   conversions: 1,
-                  ad_unit_id: 221187,
-                  ad_interaction_time: '1652826278',
+                  ad_unit_id: "221187",
+                  ad_interaction_time: '1690867200',
                 },
               },
               metadata: { jobId: 11, userId: 'u1' },
@@ -146,14 +146,14 @@ export const data = [
             {
               message: {
                 type: 'track',
-                event: 'purchase',
+                event_name: 'purchase',
                 userId: 'testuserId1',
                 integrations: { All: true },
                 properties: {
                   conversions: 3,
                   platform: 'snapchat',
-                  ad_unit_id: 77187,
-                  ad_interaction_time: '2752826278',
+                  ad_unit_id: "77187",
+                  ad_interaction_time: '1690867200',
                 },
               },
               metadata: { jobId: 13, userId: 'u1' },
@@ -167,8 +167,8 @@ export const data = [
                 properties: {
                   conversions: 3,
                   platform: 'snapchat',
-                  ad_unit_id: 12387,
-                  ad_interaction_time: '2752826278',
+                  ad_unit_id: "12387",
+                  ad_interaction_time: '1690867200',
                 },
               },
               metadata: { jobId: 14, userId: 'u1' },
@@ -177,13 +177,13 @@ export const data = [
             {
               message: {
                 type: 'track',
-                event: 'random event',
+                event_name: 'random event',
                 userId: 'testuserId1',
                 integrations: { All: true },
                 properties: {
                   conversions: 3,
-                  ad_unit_id: 77187,
-                  ad_interaction_time: '2752826278',
+                  ad_unit_id: "77187",
+                  ad_interaction_time: '1690867200',
                 },
               },
               metadata: { jobId: 15, userId: 'u1' },
@@ -192,14 +192,14 @@ export const data = [
             {
               message: {
                 type: 'track',
-                event: 'add to cart',
+                event_name: 'add to cart',
                 userId: 'testuserId1',
                 integrations: { All: true },
                 properties: {
                   conversions: 3,
                   platform: 'tiktok',
-                  ad_unit_id: 789187,
-                  ad_interaction_time: '2752826278',
+                  ad_unit_id: "789187",
+                  ad_interaction_time: '1690867200',
                 },
               },
               metadata: { jobId: 16, userId: 'u1' },
@@ -246,16 +246,16 @@ export const data = [
                       {
                         platform: 'meta',
                         conversions: 1,
-                        event: 'event1',
-                        ad_unit_id: 221187,
-                        ad_interaction_time: '1652826278',
+                        event_name: 'event1',
+                        ad_unit_id: "221187",
+                        ad_interaction_time: '1690867200',
                       },
                       {
                         platform: 'meta',
                         conversions: 1,
-                        event: 'event2',
-                        ad_unit_id: 221187,
-                        ad_interaction_time: '1652826278',
+                        event_name: 'event2',
+                        ad_unit_id: "221187",
+                        ad_interaction_time: '1690867200',
                       },
                     ],
                   },
@@ -286,17 +286,17 @@ export const data = [
                     events: [
                       {
                         conversions: 3,
-                        event: 'purchase',
+                        event_name: 'purchase',
                         platform: 'snapchat',
-                        ad_unit_id: 77187,
-                        ad_interaction_time: '2752826278',
+                        ad_unit_id: "77187",
+                        ad_interaction_time: '1690867200',
                       },
                       {
                         conversions: 3,
-                        event: 'add to cart',
+                        event_name: 'add to cart',
                         platform: 'tiktok',
-                        ad_unit_id: 789187,
-                        ad_interaction_time: '2752826278',
+                        ad_unit_id: "789187",
+                        ad_interaction_time: '1690867200',
                       },
                     ],
                   },

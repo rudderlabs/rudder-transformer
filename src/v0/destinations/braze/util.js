@@ -246,6 +246,9 @@ const BrazeDedupUtility = {
    * @returns {Object | undefined} user object from the store
    */
   getUserDataFromStore(store, identifier) {
+    if (!store) {
+      return undefined;
+    }
     return store.get(identifier);
   },
 

@@ -209,7 +209,7 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      url: 'https://googleads.googleapis.com/v16/customers/customerid/offlineUserDataJobs:create',
+      url: 'https://googleads.googleapis.com/v17/customers/customerid/offlineUserDataJobs:create',
       data: {
         job: {
           type: 'CUSTOMER_MATCH_USER_LIST',
@@ -243,7 +243,7 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      url: 'https://googleads.googleapis.com/v16/customers/customerid/offlineUserDataJobs:create',
+      url: 'https://googleads.googleapis.com/v17/customers/customerid/offlineUserDataJobs:create',
       data: {
         job: {
           type: 'CUSTOMER_MATCH_USER_LIST',

@@ -26,7 +26,7 @@ export const data = [
                   type: 'REST',
                   method: 'POST',
                   endpoint:
-                    'https://googleads.googleapis.com/v16/customers/7693729833/offlineUserDataJobs',
+                    'https://googleads.googleapis.com/v17/customers/7693729833/offlineUserDataJobs',
                   headers: {
                     Authorization: 'Bearer default-accessToken',
                     'Content-Type': 'application/json',
@@ -122,7 +122,7 @@ export const data = [
                   type: 'REST',
                   method: 'POST',
                   endpoint:
-                    'https://googleads.googleapis.com/v16/customers/7693729833/offlineUserDataJobs',
+                    'https://googleads.googleapis.com/v17/customers/7693729833/offlineUserDataJobs',
                   headers: {
                     Authorization: 'Bearer default-accessToken',
                     'Content-Type': 'application/json',
@@ -218,7 +218,7 @@ export const data = [
                   type: 'REST',
                   method: 'POST',
                   endpoint:
-                    'https://googleads.googleapis.com/v16/customers/7693729833/offlineUserDataJobs',
+                    'https://googleads.googleapis.com/v17/customers/7693729833/offlineUserDataJobs',
                   headers: {
                     Authorization: 'Bearer default-accessToken',
                     'Content-Type': 'application/json',
@@ -269,7 +269,7 @@ export const data = [
                   type: 'REST',
                   method: 'POST',
                   endpoint:
-                    'https://googleads.googleapis.com/v16/customers/7693729833/offlineUserDataJobs',
+                    'https://googleads.googleapis.com/v17/customers/7693729833/offlineUserDataJobs',
                   headers: {
                     Authorization: 'Bearer default-accessToken',
                     'Content-Type': 'application/json',
@@ -387,7 +387,7 @@ export const data = [
                   type: 'REST',
                   method: 'POST',
                   endpoint:
-                    'https://googleads.googleapis.com/v16/customers/7693729833/offlineUserDataJobs',
+                    'https://googleads.googleapis.com/v17/customers/7693729833/offlineUserDataJobs',
                   headers: {
                     Authorization: 'Bearer default-accessToken',
                     'Content-Type': 'application/json',
@@ -485,7 +485,7 @@ export const data = [
                   type: 'REST',
                   method: 'POST',
                   endpoint:
-                    'https://googleads.googleapis.com/v16/customers/7693729833/offlineUserDataJobs',
+                    'https://googleads.googleapis.com/v17/customers/7693729833/offlineUserDataJobs',
                   headers: {
                     Authorization: 'Bearer default-accessToken',
                     'Content-Type': 'application/json',
@@ -613,7 +613,7 @@ export const data = [
                   type: 'REST',
                   method: 'POST',
                   endpoint:
-                    'https://googleads.googleapis.com/v16/customers/7693729833/offlineUserDataJobs',
+                    'https://googleads.googleapis.com/v17/customers/7693729833/offlineUserDataJobs',
                   headers: {
                     Authorization: 'Bearer default-accessToken',
                     'Content-Type': 'application/json',

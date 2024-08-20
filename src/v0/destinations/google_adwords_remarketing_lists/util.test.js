@@ -66,7 +66,7 @@ const expectedResponse = {
   version: '1',
   type: 'REST',
   method: 'POST',
-  endpoint: 'https://googleads.googleapis.com/v16/customers/7693729833/offlineUserDataJobs',
+  endpoint: 'https://googleads.googleapis.com/v17/customers/7693729833/offlineUserDataJobs',
   headers: {
     Authorization: 'Bearer abcd1234',
     'Content-Type': 'application/json',

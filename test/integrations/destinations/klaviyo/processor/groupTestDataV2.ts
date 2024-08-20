@@ -32,7 +32,7 @@ const headers = {
   revision: '2024-06-15',
 };
 
-const endpoint = 'https://a.klaviyo.com/api/profile-subscription-bulk-create-jobs';
+const subscriptionEndpoint = 'https://a.klaviyo.com/api/profile-subscription-bulk-create-jobs';
 
 const commonOutputSubscriptionProps = {
   profiles: {
@@ -50,6 +50,19 @@ const commonOutputSubscriptionProps = {
     ],
   },
 };
+const commonOutputUnsubscriptionProps = {
+  profiles: {
+    data: [
+      {
+        type: 'profile',
+        attributes: {
+          email: 'test@rudderstack.com',
+          phone_number: '+12 345 678 900',
+        },
+      },
+    ],
+  },
+};
 
 const subscriptionRelations = {
   list: {
@@ -59,12 +72,13 @@ const subscriptionRelations = {
     },
   },
 };
+const unsubscriptionEndpoint = 'https://a.klaviyo.com/api/profile-subscription-bulk-delete-jobs';
 
 export const groupTestData: ProcessorTestData[] = [
   {
     id: 'klaviyo-group-test-1',
     name: 'klaviyo',
-    description: 'Simple group call',
+    description: 'Simple group call for subscription',
     scenario: 'Business',
     successCriteria:
       'Response should contain only group payload and status code should be 200, for the group payload a subscription payload should be present in the final payload with email and phone',
@@ -109,7 +123,7 @@ export const groupTestData: ProcessorTestData[] = [
                   relationships: subscriptionRelations,
                 },
               },
-              endpoint: endpoint,
+              endpoint: subscriptionEndpoint,
               headers: headers,
               method: 'POST',
               userId: '',
@@ -122,7 +136,67 @@ export const groupTestData: ProcessorTestData[] = [
     },
   },
   {
-    id: 'klaviyo-group-test-2',
+    id: 'klaviyo-group-test-1',
+    name: 'klaviyo',
+    description: 'Simple group call for subscription',
+    scenario: 'Business',
+    successCriteria:
+      'Response should contain only group payload and status code should be 200, for the group payload a unsubscription payload should be present in the final payload with email and phone',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination,
+            message: generateSimplifiedGroupPayload({
+              userId: 'user123',
+              groupId: 'group_list_id',
+              traits: {
+                subscribe: false,
+              },
+              context: {
+                traits: {
+                  email: 'test@rudderstack.com',
+                  phone: '+12 345 678 900',
+                  consent: ['email'],
+                },
+              },
+              timestamp: '2020-01-21T00:21:34.208Z',
+            }),
+            metadata: generateMetadata(1),
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: transformResultBuilder({
+              JSON: {
+                data: {
+                  type: 'profile-subscription-bulk-delete-job',
+                  attributes: commonOutputUnsubscriptionProps,
+                  relationships: subscriptionRelations,
+                },
+              },
+              endpoint: unsubscriptionEndpoint,
+              headers: headers,
+              method: 'POST',
+              userId: '',
+            }),
+            statusCode: 200,
+            metadata: generateMetadata(1),
+          },
+        ],
+      },
+    },
+  },
+  {
+    id: 'klaviyo-group-test-3',
     name: 'klaviyo',
     description: 'Simple group call without groupId',
     scenario: 'Business',

@@ -1458,7 +1458,7 @@ export const data = [
         body: [
           {
             statusCode: 400,
-            error: '[Attentive Tag]:The event name contains characters which is not allowed',
+            error: '[Attentive Tag]:The properties contains characters which is not allowed',
             statTags: {
               destType: 'ATTENTIVE_TAG',
               errorCategory: 'dataValidation',

@@ -292,7 +292,7 @@ const retlResponseBuilder = async (message, destination, metadata) => {
     message,
     'SFMC',
   );
-  if (objectType.toLowerCase() === 'data extension') {
+  if (objectType?.toLowerCase() === 'data extension') {
     const response = defaultRequestConfig();
     response.method = defaultPutRequestConfig.requestMethod;
     response.endpoint = `https://${subDomain}.${ENDPOINTS.INSERT_CONTACTS}${externalKey}/rows/${identifierType}:${destinationExternalId}`;

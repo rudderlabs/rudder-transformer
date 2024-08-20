@@ -139,7 +139,7 @@ const trackResponseBuilder = (message, { Config }) => {
       payload.type = get(message, 'event');
       if (!arePropertiesValid(payload.properties)) {
         throw new InstrumentationError(
-          '[Attentive Tag]:The event name contains characters which is not allowed',
+          '[Attentive Tag]:The properties contains characters which is not allowed',
         );
       }
   }

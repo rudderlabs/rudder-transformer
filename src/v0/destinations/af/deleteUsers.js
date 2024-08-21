@@ -10,7 +10,7 @@ const {
   processAxiosResponse,
   getDynamicErrorType,
 } = require('../../../adapters/utils/networkUtils');
-const { generateUUID, isHttpStatusSuccess } = require('../../util');
+const utils = require('../../util');
 const tags = require('../../util/tags');
 const { executeCommonValidations } = require('../../util/regulation-api');
 
@@ -23,7 +23,7 @@ const { executeCommonValidations } = require('../../util/regulation-api');
  * @returns
  */
 const deleteUser = async (config, endpoint, body, identityType, identityValue) => {
-  body.subject_request_id = generateUUID();
+  body.subject_request_id = utils.generateUUID();
   body.submitted_time = new Date().toISOString();
   body.subject_identities[0].identity_type = identityType;
   body.subject_identities[0].identity_value = identityValue;
@@ -44,7 +44,7 @@ const deleteUser = async (config, endpoint, body, identityType, identityValue) =
     },
   );
   const handledDelResponse = processAxiosResponse(response);
-  if (!isHttpStatusSuccess(handledDelResponse.status)) {
+  if (!utils.isHttpStatusSuccess(handledDelResponse.status)) {
     throw new NetworkError(
       'User deletion request failed',
       handledDelResponse.status,

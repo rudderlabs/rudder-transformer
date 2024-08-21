@@ -35,13 +35,16 @@ steps:
     template: |
       $.context.messageType = .message.type.toLowerCase();
 
-  - name: validateInput
+  - name: validateConfig
+    template: |
+      $.assertConfig(.destination.Config.apiKey, "API Key is not present. Aborting");
+      $.assertConfig(.destination.Config.apiBaseUrl, "API Base URl is not present. Aborting");
+
+  - name: validateMessageType
     template: |
       let messageType = $.context.messageType;
       $.assert(messageType, "message Type is not present. Aborting");
       $.assert(messageType in {{$.EventType.([.TRACK, .IDENTIFY])}}, "message type " + messageType + " is not supported");
-      $.assertConfig(.destination.Config.apiKey, "API Key is not present. Aborting");
-      $.assertConfig(.destination.Config.apiBaseUrl, "API Base URl is not present. Aborting");
 
   - name: getContactId
     template: |
@@ -49,7 +52,11 @@ steps:
 
   - name: getContactEmail
     template: |
-      .message.().({{{{$.getGenericPaths("email")}}}};);
+      .message.().({{{{$.getGenericPaths("emailOnly")}}}});
+
+  - name: validateEventPayload
+    template: |
+      $.assert($.outputs.getContactId || $.outputs.getContactEmail, "Either one of cordial contact id or email is required. Aborting");
 
   - name: buildIdentifyPayload
     condition: $.context.messageType in [{{$.EventType.IDENTIFY}}]

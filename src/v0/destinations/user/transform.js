@@ -43,23 +43,24 @@ const responseBuilder = async (payload, endpoint, method, apiKey) => {
   throw new TransformationError('Something went wrong while constructing the payload');
 };
 
-const identifyResponseBuilder = async (message, destination) => {
+const identifyResponseBuilder = async (event) => {
+  const { destination } = event;
   let builder;
-  const user = await retrieveUserFromLookup(message, destination);
+  const user = await retrieveUserFromLookup(event);
   const { Config } = destination;
   const { apiKey } = Config;
   // If user already exist we will update it else creates a new user
   if (!user) {
-    builder = createOrUpdateUserPayloadBuilder(message, destination);
+    builder = createOrUpdateUserPayloadBuilder(event);
   } else {
     const { id } = user;
-    builder = createOrUpdateUserPayloadBuilder(message, destination, id);
+    builder = createOrUpdateUserPayloadBuilder(event, id);
   }
   const { payload, endpoint, method } = builder;
   return responseBuilder(payload, endpoint, method, apiKey);
 };
 
-const trackResponseBuilder = async (message, destination) => {
+const trackResponseBuilder = async ({ message, destination, metadata }) => {
   if (!message.event) {
     throw new InstrumentationError('Parameter event is required');
   }
@@ -68,7 +69,7 @@ const trackResponseBuilder = async (message, destination) => {
   let endpoint;
   let method;
   let builder;
-  const user = await retrieveUserFromLookup(message, destination);
+  const user = await retrieveUserFromLookup({ message, destination, metadata });
   const { Config } = destination;
   const { apiKey, appSubdomain } = Config;
   if (user) {
@@ -85,12 +86,12 @@ const trackResponseBuilder = async (message, destination) => {
   );
 };
 
-const pageResponseBuilder = async (message, destination) => {
+const pageResponseBuilder = async ({ message, destination, metadata }) => {
   let payload;
   let endpoint;
   let method;
   let builder;
-  const user = await retrieveUserFromLookup(message, destination);
+  const user = await retrieveUserFromLookup({ message, destination, metadata });
   const { Config } = destination;
   const { apiKey, appSubdomain } = Config;
   if (user) {
@@ -106,14 +107,14 @@ const pageResponseBuilder = async (message, destination) => {
   );
 };
 
-const groupResponseBuilder = async (message, destination) => {
+const groupResponseBuilder = async ({ message, destination, metadata }) => {
   validateGroupPayload(message);
 
   let payload;
   let endpoint;
   let method;
   let builder;
-  const user = await getUserByCustomId(message, destination);
+  const user = await getUserByCustomId(message, destination, metadata);
   const { Config } = destination;
   const { apiKey, appSubdomain } = Config;
   /*
@@ -121,11 +122,11 @@ const groupResponseBuilder = async (message, destination) => {
    * user does not exist -> throw an error
    */
   if (user) {
-    let company = await getCompanyByCustomId(message, destination);
+    let company = await getCompanyByCustomId(message, destination, metadata);
     if (!company) {
-      company = await createCompany(message, destination);
+      company = await createCompany(message, destination, metadata);
     } else {
-      company = await updateCompany(message, destination, company);
+      company = await updateCompany(message, destination, company, metadata);
     }
     builder = addUserToCompanyPayloadBuilder(user, company);
     payload = builder.payload;
@@ -137,7 +138,8 @@ const groupResponseBuilder = async (message, destination) => {
   throw new NetworkInstrumentationError('No user found with given userId');
 };
 
-const processEvent = async (message, destination) => {
+const processEvent = async (event) => {
+  const { message } = event;
   // Validating if message type is even given or not
   if (!message.type) {
     throw new InstrumentationError('Event type is required');
@@ -146,16 +148,16 @@ const processEvent = async (message, destination) => {
   let response;
   switch (messageType) {
     case EventType.IDENTIFY:
-      response = await identifyResponseBuilder(message, destination);
+      response = await identifyResponseBuilder(event);
       break;
     case EventType.GROUP:
-      response = await groupResponseBuilder(message, destination);
+      response = await groupResponseBuilder(event);
       break;
     case EventType.TRACK:
-      response = await trackResponseBuilder(message, destination);
+      response = await trackResponseBuilder(event);
       break;
     case EventType.PAGE:
-      response = await pageResponseBuilder(message, destination);
+      response = await pageResponseBuilder(event);
       break;
     default:
       throw new InstrumentationError(`Event type ${messageType} is not supported`);
@@ -163,7 +165,7 @@ const processEvent = async (message, destination) => {
   return response;
 };
 
-const process = async (event) => processEvent(event.message, event.destination);
+const process = async (event) => processEvent(event);
 
 const processRouterDest = async (inputs, reqMetadata) => {
   const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);

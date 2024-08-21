@@ -431,7 +431,7 @@ const getContactListIds = (message, destination) => {
  * @param {*} destination
  * @returns
  */
-const fetchCustomFields = async (destination) => {
+const fetchCustomFields = async ({ destination, metadata }) => {
   const { apiKey } = destination.Config;
   return customFieldsCache.get(destination.ID, async () => {
     const requestOptions = {
@@ -448,6 +448,7 @@ const fetchCustomFields = async (destination) => {
       endpointPath: '/marketing/field_definitions',
       requestMethod: 'GET',
       module: 'router',
+      metadata,
     });
     const processedResponse = processAxiosResponse(resonse);
     if (isHttpStatusSuccess(processedResponse.status)) {
@@ -475,14 +476,14 @@ const fetchCustomFields = async (destination) => {
  * @param {*} contactDetails
  * @returns
  */
-const getCustomFields = async (message, destination) => {
+const getCustomFields = async ({ message, destination, metadata }) => {
   const customFields = {};
-  const payload = get(message, 'context.traits');
+  const payload = get(message, 'context.traits') || get(message, 'traits');
   const { customFieldsMapping } = destination.Config;
   const fieldsMapping = getHashFromArray(customFieldsMapping, 'from', 'to', false);
   const fields = Object.keys(fieldsMapping);
   if (fields.length > 0) {
-    const destinationCustomFields = await fetchCustomFields(destination);
+    const destinationCustomFields = await fetchCustomFields({ destination, metadata });
     const customFieldNameToIdMapping = {};
     const customFieldNamesArray = destinationCustomFields.map((destinationCustomField) => {
       const { id, name } = destinationCustomField;
@@ -511,13 +512,13 @@ const getCustomFields = async (message, destination) => {
  * @param {*} destination
  * @returns
  */
-const createOrUpdateContactPayloadBuilder = async (message, destination) => {
+const createOrUpdateContactPayloadBuilder = async ({ message, destination, metadata }) => {
   const contactDetails = constructPayload(message, MAPPING_CONFIG[CONFIG_CATEGORIES.IDENTIFY.name]);
   if (contactDetails.address_line_1) {
     contactDetails.address_line_1 = flattenAddress(contactDetails.address_line_1);
   }
   const contactListIds = getContactListIds(message, destination);
-  contactDetails.custom_fields = await getCustomFields(message, destination);
+  contactDetails.custom_fields = await getCustomFields({ message, destination, metadata });
   const payload = { contactDetails, contactListIds };
   const { endpoint } = CONFIG_CATEGORIES.IDENTIFY;
   const method = defaultPutRequestConfig.requestMethod;

@@ -552,6 +552,5 @@
       }
     ],
     "errQueue": []
-  },
-  "skip": "dynamic anonymousId"
+  }
 }

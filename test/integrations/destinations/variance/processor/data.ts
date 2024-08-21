@@ -350,7 +350,7 @@ export const data = [
             destination: {
               DestinationDefinition: {
                 Config: {
-                  cdkEnabled: true,
+                  cdkV2Enabled: true,
                 },
               },
               Config: {
@@ -819,7 +819,7 @@ export const data = [
             destination: {
               DestinationDefinition: {
                 Config: {
-                  cdkEnabled: true,
+                  cdkV2Enabled: true,
                 },
               },
               Config: {

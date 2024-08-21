@@ -1,0 +1,107 @@
+{
+  "name": "pagerduty",
+  "description": "Incident Responder Added",
+  "input": {
+    "request": {
+      "body": {
+        "event": {
+          "id": "01DFU6Z1ZCLMV9SEK3X5JZ5WLW",
+          "event_type": "incident.responder.added",
+          "resource_type": "incident",
+          "occurred_at": "2022-12-20T11:46:44.213Z",
+          "agent": {
+            "html_url": "https://rudderlabs-com.pagerduty.com/users/PXZZD2E",
+            "id": "PXZZD2E",
+            "self": "https://api.pagerduty.com/users/user@1",
+            "summary": "rudder test",
+            "type": "user_reference"
+          },
+          "client": null,
+          "data": {
+            "incident": {
+              "html_url": "https://rudderlabs-com.pagerduty.com/incidents/Q1KRTY75EUMGM0",
+              "id": "Q1KRTY75EUMGM0",
+              "self": "https://api.pagerduty.com/incidents/Q1KRTY75EUMGM0",
+              "summary": "Event Stream Failure",
+              "type": "incident_reference"
+            },
+            "user": {
+              "html_url": "https://rudderlabs-com.pagerduty.com/users/PXZZD2E",
+              "id": "PXZZD2E",
+              "self": "https://api.pagerduty.com/users/user@1",
+              "summary": "rudder test",
+              "type": "user_reference"
+            },
+            "escalation_policy": null,
+            "message": "Please help with \"Event Stream Failure\"",
+            "state": "pending",
+            "type": "incident_responder"
+          }
+        }
+      },
+      "headers": {
+        "Content-Type": "application/json"
+      }
+    }
+  },
+  "output": {
+    "response": {
+      "status": 200,
+      "body": "OK"
+    },
+    "queue": [
+      {
+        "type": "track",
+        "event": "Incident Responder Added",
+        "userId": "PXZZD2E",
+        "context": {
+          "traits": {
+            "id": "PXZZD2E",
+            "self": "https://api.pagerduty.com/users/user@1",
+            "type": "user_reference",
+            "summary": "rudder test",
+            "html_url": "https://rudderlabs-com.pagerduty.com/users/PXZZD2E"
+          },
+          "library": {
+            "name": "unknown",
+            "version": "unknown"
+          },
+          "integration": {
+            "name": "PagerDuty"
+          }
+        },
+        "messageId": "01DFU6Z1ZCLMV9SEK3X5JZ5WLW",
+        "properties": {
+          "data": {
+            "type": "incident_responder",
+            "user": {
+              "id": "PXZZD2E",
+              "self": "https://api.pagerduty.com/users/user@1",
+              "type": "user_reference",
+              "summary": "rudder test",
+              "html_url": "https://rudderlabs-com.pagerduty.com/users/PXZZD2E"
+            },
+            "state": "pending",
+            "message": "Please help with \"Event Stream Failure\"",
+            "incident": {
+              "id": "Q1KRTY75EUMGM0",
+              "self": "https://api.pagerduty.com/incidents/Q1KRTY75EUMGM0",
+              "type": "incident_reference",
+              "summary": "Event Stream Failure",
+              "html_url": "https://rudderlabs-com.pagerduty.com/incidents/Q1KRTY75EUMGM0"
+            },
+            "escalation_policy": null
+          },
+          "resourceType": "incident"
+        },
+        "integrations": {
+          "PagerDuty": false
+        },
+        "originalTimestamp": "2022-12-20T11:46:44.000Z",
+        "receivedAt": "2024-03-03T04:48:29.000Z",
+        "request_ip": "192.0.2.30"
+      }
+    ],
+    "errQueue": []
+  }
+}

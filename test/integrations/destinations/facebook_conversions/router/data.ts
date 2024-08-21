@@ -112,7 +112,7 @@ export const data = [
                 version: '1',
                 type: 'REST',
                 method: 'POST',
-                endpoint: 'https://graph.facebook.com/v18.0/dummyID/events?access_token=09876',
+                endpoint: 'https://graph.facebook.com/v20.0/dummyID/events?access_token=09876',
                 headers: {},
                 params: {},
                 body: {
@@ -150,7 +150,7 @@ export const data = [
                 version: '1',
                 type: 'REST',
                 method: 'POST',
-                endpoint: 'https://graph.facebook.com/v18.0/dummyID/events?access_token=09876',
+                endpoint: 'https://graph.facebook.com/v20.0/dummyID/events?access_token=09876',
                 headers: {},
                 params: {},
                 body: {

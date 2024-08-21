@@ -1,0 +1,69 @@
+{
+  "name": "signl4",
+  "description": "test-3",
+  "input": {
+    "request": {
+      "body": {
+        "eventType": 202,
+        "eventRaisedUtc": "2020-01-10T12:27:19Z",
+        "subscription": {
+          "id": "b8fdd850-e2ad-45ff-924d-9c332a063200"
+        },
+        "team": {
+          "id": "0e8979f7-0c6a-472d-8918-ecfd339252f8"
+        },
+        "alert": {
+          "statusCode": 1,
+          "eventId": "2518236416806594587_0e67b746-6c88-4ddf-8872-99690b0457d9",
+          "externalEventId": "INC091210",
+          "acknowledgedUserIds": [],
+          "id": "2518236416804564453_12ea0f6f-948c-43d0-9034-f9565d7b6bd2"
+        },
+        "id": "27283793-47c8-4da2-9767-d37be224338d"
+      },
+      "headers": {
+        "Content-Type": "application/json"
+      }
+    }
+  },
+  "output": {
+    "response": {
+      "status": 200,
+      "body": "OK"
+    },
+    "queue": [
+      {
+        "context": {
+          "library": {
+            "name": "unknown",
+            "version": "unknown"
+          },
+          "integration": {
+            "name": "Signl4"
+          }
+        },
+        "integrations": {
+          "Signl4": false
+        },
+        "type": "track",
+        "messageId": "27283793-47c8-4da2-9767-d37be224338d",
+        "originalTimestamp": "2020-01-10T12:27:19.000Z",
+        "event": "Alert Escalated",
+        "properties": {
+          "eventType": 202,
+          "subscription.id": "b8fdd850-e2ad-45ff-924d-9c332a063200",
+          "team.id": "0e8979f7-0c6a-472d-8918-ecfd339252f8",
+          "alert.statusCode": 1,
+          "alert.eventId": "2518236416806594587_0e67b746-6c88-4ddf-8872-99690b0457d9",
+          "alert.externalEventId": "INC091210",
+          "alert.id": "2518236416804564453_12ea0f6f-948c-43d0-9034-f9565d7b6bd2",
+          "alert.acknowledgedUserIds": []
+        },
+        "anonymousId": "97fcd7b2-cc24-47d7-b776-057b7b199513",
+        "receivedAt": "2024-03-03T04:48:29.000Z",
+        "request_ip": "192.0.2.30"
+      }
+    ],
+    "errQueue": []
+  }
+}

@@ -114,12 +114,19 @@ const finaliseAnalyticsConsents = (consentConfigMap, eventLevelConsent = {}) => 
 
 const getAuthErrCategory = ({ response, status }) => {
   if (status === 401) {
-    const authenticationError = get(
-      response,
-      'error.details.0.errors.0.errorCode.authenticationError',
+    let respArr = response;
+    if (!Array.isArray(response)) {
+      respArr = [response];
+    }
+    const authenticationError = respArr.map((resp) =>
+      get(resp, 'error.details.0.errors.0.errorCode.authenticationError'),
     );
-    if (authenticationError === 'TWO_STEP_VERIFICATION_NOT_ENROLLED') {
+    if (
       // https://developers.google.com/google-ads/api/docs/oauth/2sv
+      authenticationError.includes('TWO_STEP_VERIFICATION_NOT_ENROLLED') ||
+      // https://developers.google.com/google-ads/api/docs/common-errors#:~:text=this%20for%20you.-,CUSTOMER_NOT_FOUND,-Summary
+      authenticationError.includes('CUSTOMER_NOT_FOUND')
+    ) {
       return AUTH_STATUS_INACTIVE;
     }
     return REFRESH_TOKEN;

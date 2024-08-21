@@ -52,7 +52,7 @@ const buildResponseList = (payloadList) =>
   payloadList.map((payload) => {
     const response = defaultRequestConfig();
     response.body.JSON = payload;
-    response.endpoint = config.batchEndpoint;
+    response.endpoint = config.singleEventEndpoint;
     response.method = 'POST';
     return response;
   });

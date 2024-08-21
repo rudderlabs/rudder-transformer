@@ -44,7 +44,7 @@ export const trackTestData = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://s2s.smartly.io/events/batch',
+              endpoint: 'https://s2s.smartly.io/events',
               headers: {},
               params: {},
               body: {

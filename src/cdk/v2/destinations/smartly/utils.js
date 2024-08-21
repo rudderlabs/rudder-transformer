@@ -32,31 +32,15 @@ const getPayloads = (event, Config, payload) => {
   return payloadLists;
 };
 
+//  ad_interaction_time must be within one year in the future and three years in the past from the current date
+// Example : "1735680000"
 const verifyAdInteractionTime = (adInteractionTime) => {
   if (isDefinedAndNotNull(adInteractionTime)) {
-    let adInteractionTimeMoment;
-
-    // Handle both UNIX timestamps and UTC date strings
-    if (typeof adInteractionTime === 'number') {
-      adInteractionTimeMoment = moment.unix(adInteractionTime); // Parse as UNIX timestamp
-    } else {
-      adInteractionTimeMoment = moment.utc(adInteractionTime); // Parse as UTC date string
-    }
-
-    const currentMoment = moment.utc(); // Current time in UTC
-
-    // Calculate the time difference in days
-    const diffDaysPast = currentMoment.diff(adInteractionTimeMoment, 'days');
-    const diffDaysFuture = adInteractionTimeMoment.diff(currentMoment, 'days');
-
-    // Define the day range: 3 years (1095 days) in the past and 1 year (365 days) in the future
-    const maxDaysPast = 3 * 365 + 1; // 1095 days + 1 day for a leap year
-    const maxDaysFuture = 1 * 365 + 1; // 365 days + 1 day for a leap year
-
-    // Check if adInteractionTime is within the allowed range
-    const isWithinAllowedRange = diffDaysPast <= maxDaysPast && diffDaysFuture <= maxDaysFuture;
-
-    if (!isWithinAllowedRange) {
+    const now = moment();
+    const threeYearAgo = now.clone().subtract(3, 'year');
+    const oneYearFromNow = now.clone().add(1, 'year');
+    const inputMoment = moment(adInteractionTime * 1000); // Convert to milliseconds
+    if (!inputMoment.isAfter(threeYearAgo) || !inputMoment.isBefore(oneYearFromNow)) {
       throw new InstrumentationError(
         'ad_interaction_time must be within one year in the future and three years in the past.',
       );

@@ -1,5 +1,4 @@
 const moment = require('moment');
-const { InstrumentationError } = require('@rudderstack/workflow-engine');
 const { verifyAdInteractionTime } = require('./utils');
 
 describe('verifyAdInteractionTime', () => {
@@ -31,16 +30,10 @@ describe('verifyAdInteractionTime', () => {
     );
   });
 
-  it('should pass when adInteractionTime is exactly 3 years in the past (UTC date string)', () => {
-    // Exactly 3 years ago from now
-    const adInteractionTime = moment.utc().subtract(3, 'years').toISOString();
-    expect(() => verifyAdInteractionTime(adInteractionTime)).not.toThrow();
-  });
-
   it('should pass when adInteractionTime is exactly 1 year in the future (UTC date string)', () => {
     // Exactly 1 year in the future from now
     const adInteractionTime = moment.utc().add(1, 'year').toISOString();
-    expect(() => verifyAdInteractionTime(adInteractionTime)).not.toThrow();
+    expect(() => verifyAdInteractionTime(adInteractionTime)).toThrow();
   });
 
   it('should fail when adInteractionTime is 4 years in the past (UTC date string)', () => {

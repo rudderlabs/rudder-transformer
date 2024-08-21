@@ -17,7 +17,7 @@ export const validationFailures = [
             destination,
             message: {
               type: 'track',
-              event_name: 'product purchased',
+              event: 'product purchased',
               sentAt: '2021-01-25T16:12:02.048Z',
               userId: 'john123',
               properties: {

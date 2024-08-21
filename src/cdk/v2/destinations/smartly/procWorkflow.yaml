@@ -24,7 +24,7 @@ steps:
     template: |
       const payload = $.removeUndefinedAndNullValues($.constructPayload(.message, $.TRACK_CONFIG));
       $.verifyAdInteractionTime(payload.ad_interaction_time);
-      $.context.payloadList = $.getPayloads(.message.event_name, .destination.Config, payload)
+      $.context.payloadList = $.getPayloads(.message.event, .destination.Config, payload)
   - name: buildResponse
     template: |
       const response = $.buildResponseList($.context.payloadList)

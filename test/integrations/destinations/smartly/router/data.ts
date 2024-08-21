@@ -18,7 +18,7 @@ export const data = [
             {
               message: {
                 type: 'track',
-                event_name: 'product list viewed',
+                event: 'product list viewed',
                 properties: {
                   platform: 'meta',
                   conversions: 1,
@@ -32,7 +32,7 @@ export const data = [
             {
               message: {
                 type: 'track',
-                event_name: 'add to cart',
+                event: 'add to cart',
                 properties: {
                   conversions: 3,
                   platform: 'snapchat',
@@ -135,7 +135,7 @@ export const data = [
             {
               message: {
                 type: 'track',
-                event_name: 'product list viewed',
+                event: 'product list viewed',
                 properties: {
                   platform: 'meta',
                   conversions: 1,
@@ -149,7 +149,7 @@ export const data = [
             {
               message: {
                 type: 'track',
-                event_name: 'purchase',
+                event: 'purchase',
                 userId: 'testuserId1',
                 integrations: { All: true },
                 properties: {
@@ -180,7 +180,7 @@ export const data = [
             {
               message: {
                 type: 'track',
-                event_name: 'random event',
+                event: 'random event',
                 userId: 'testuserId1',
                 integrations: { All: true },
                 properties: {
@@ -195,7 +195,7 @@ export const data = [
             {
               message: {
                 type: 'track',
-                event_name: 'add to cart',
+                event: 'add to cart',
                 userId: 'testuserId1',
                 integrations: { All: true },
                 properties: {

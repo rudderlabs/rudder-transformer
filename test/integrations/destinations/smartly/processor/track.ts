@@ -13,11 +13,11 @@ export const trackTestData = [
           {
             destination,
             message: {
-              event_name: 'Add to cart',
+              event: 'Add to cart',
               properties: {
                 platform: 'meta',
                 ad_unit_id: '228287',
-                ad_interaction_time: 1612137600,
+                ad_interaction_time: 1735680000,
                 email: 'eventIdn01@sample.com',
               },
               type: 'track',
@@ -51,7 +51,7 @@ export const trackTestData = [
                 JSON: {
                   platform: 'meta',
                   ad_unit_id: '228287',
-                  ad_interaction_time: 1612137600,
+                  ad_interaction_time: 1735680000,
                   conversions: '1',
                   event_name: 'Add to cart',
                 },

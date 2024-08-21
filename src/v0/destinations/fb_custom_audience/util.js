@@ -49,7 +49,7 @@ const batchingWithPayloadSize = (payload) => {
 };
 
 const getSchemaForEventMappedToDest = (message) => {
-  const mappedSchema = get(message, 'identifiers');
+  const mappedSchema = get(message, 'fields');
   if (!mappedSchema) {
     throw new InstrumentationError(
       'identifiers is required property for events mapped to destination ',

@@ -77,7 +77,8 @@
     "CLICKSEND": true,
     "ZOHO": true,
     "CORDIAL": true,
-    "BLOOMREACH_CATALOG": true
+    "BLOOMREACH_CATALOG": true,
+    "SMARTLY": true
   },
   "regulations": [
     "BRAZE",

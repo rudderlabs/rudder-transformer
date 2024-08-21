@@ -16,6 +16,13 @@ export const data = [
       request: {
         body: [
           {
+            connection: {
+              Config: {
+                destination: {
+                  audienceId: 'aud1',
+                },
+              },
+            },
             message: {
               userId: 'user 1',
               anonymousId: 'anon-id-new',
@@ -128,6 +135,13 @@ export const data = [
       request: {
         body: [
           {
+            connection: {
+              Config: {
+                destination: {
+                  audienceId: 'aud1',
+                },
+              },
+            },
             message: {
               userId: 'user 1',
               anonymousId: 'anon-id-new',
@@ -241,6 +255,13 @@ export const data = [
       request: {
         body: [
           {
+            connection: {
+              Config: {
+                destination: {
+                  audienceId: 'aud1',
+                },
+              },
+            },
             message: {
               userId: 'user 1',
               anonymousId: 'anon-id-new',
@@ -354,6 +375,13 @@ export const data = [
       request: {
         body: [
           {
+            connection: {
+              Config: {
+                destination: {
+                  audienceId: '',
+                },
+              },
+            },
             message: {
               userId: 'user 1',
               anonymousId: 'anon-id-new',
@@ -467,6 +495,13 @@ export const data = [
       request: {
         body: [
           {
+            connection: {
+              Config: {
+                destination: {
+                  audienceId: 'aud1',
+                },
+              },
+            },
             message: {
               userId: 'user 1',
               anonymousId: 'anon-id-new',
@@ -678,6 +713,13 @@ export const data = [
       request: {
         body: [
           {
+            connection: {
+              Config: {
+                destination: {
+                  audienceId: 'aud1',
+                },
+              },
+            },
             message: {
               userId: 'user 1',
               anonymousId: 'anon-id-new',
@@ -889,6 +931,13 @@ export const data = [
       request: {
         body: [
           {
+            connection: {
+              Config: {
+                destination: {
+                  audienceId: 'aud1',
+                },
+              },
+            },
             message: {
               userId: 'user 1',
               anonymousId: 'anon-id-new',
@@ -1038,6 +1087,13 @@ export const data = [
       request: {
         body: [
           {
+            connection: {
+              Config: {
+                destination: {
+                  audienceId: 'aud1',
+                },
+              },
+            },
             message: {
               userId: 'user 1',
               anonymousId: 'anon-id-new',
@@ -1251,6 +1307,13 @@ export const data = [
       request: {
         body: [
           {
+            connection: {
+              Config: {
+                destination: {
+                  audienceId: 'aud1',
+                },
+              },
+            },
             message: {
               userId: 'user 1',
               anonymousId: 'anon-id-new',
@@ -1506,6 +1569,13 @@ export const data = [
       request: {
         body: [
           {
+            connection: {
+              Config: {
+                destination: {
+                  audienceId: 'aud1',
+                },
+              },
+            },
             message: {
               userId: 'user 1',
               anonymousId: 'anon-id-new',
@@ -1717,6 +1787,13 @@ export const data = [
       request: {
         body: [
           {
+            connection: {
+              Config: {
+                destination: {
+                  audienceId: 'aud1',
+                },
+              },
+            },
             message: {
               userId: 'user 1',
               anonymousId: 'anon-id-new',
@@ -1928,6 +2005,13 @@ export const data = [
       request: {
         body: [
           {
+            connection: {
+              Config: {
+                destination: {
+                  audienceId: 'aud1',
+                },
+              },
+            },
             message: {
               userId: 'user 1',
               anonymousId: 'anon-id-new',
@@ -2071,6 +2155,13 @@ export const data = [
       request: {
         body: [
           {
+            connection: {
+              Config: {
+                destination: {
+                  audienceId: 'aud1',
+                },
+              },
+            },
             message: {
               userId: 'user 1',
               anonymousId: 'anon-id-new',
@@ -2199,6 +2290,13 @@ export const data = [
       request: {
         body: [
           {
+            connection: {
+              Config: {
+                destination: {
+                  audienceId: 'aud1',
+                },
+              },
+            },
             message: {
               userId: 'user 1',
               anonymousId: 'anon-id-new',
@@ -2341,6 +2439,13 @@ export const data = [
       request: {
         body: [
           {
+            connection: {
+              Config: {
+                destination: {
+                  audienceId: 'aud1',
+                },
+              },
+            },
             message: {
               userId: 'user 1',
               anonymousId: 'anon-id-new',
@@ -54479,6 +54584,13 @@ export const data = [
       request: {
         body: [
           {
+            connection: {
+              Config: {
+                destination: {
+                  audienceId: 'aud1',
+                },
+              },
+            },
             message: {
               userId: 'user 1',
               anonymousId: 'anon-id-new',

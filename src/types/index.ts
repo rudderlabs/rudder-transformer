@@ -160,6 +160,7 @@ type RouterTransformationRequestData = {
   message: object;
   metadata: Metadata;
   destination: Destination;
+  connection?: Record<string, unknown>;
 };
 
 type RouterTransformationRequest = {

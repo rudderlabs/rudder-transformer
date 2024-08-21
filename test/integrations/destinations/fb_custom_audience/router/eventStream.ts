@@ -42,6 +42,13 @@ const destination: Destination = {
 export const eventStreamRouterRequest: RouterTransformationRequest = {
   input: [
     {
+      connection: {
+        Config: {
+          destination: {
+            audienceId: 'aud1',
+          },
+        },
+      },
       message: {
         userId: 'user 1',
         anonymousId: 'anon-id-new',
@@ -88,6 +95,13 @@ export const eventStreamRouterRequest: RouterTransformationRequest = {
       destination: destination,
     },
     {
+      connection: {
+        Config: {
+          destination: {
+            audienceId: 'aud1',
+          },
+        },
+      },
       message: {
         userId: 'user 1',
         anonymousId: 'anon-id-new',

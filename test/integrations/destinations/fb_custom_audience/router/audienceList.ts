@@ -39,7 +39,10 @@ export const rETLAudienceRouterRequest: RouterTransformationRequest = {
         messageId: '4d906837-031d-4d34-b97a-62fdf51b4d3a',
         event: 'Add_Audience',
         context: {
-          destinationFields: 'EMAIL, FN',
+          fields: {
+            EMAIL: 'subscribed@eewrfrd.com',
+            FN: 'dfgdfg',
+          },
           externalId: [{ type: 'FB_CUSTOM_AUDIENCE-23848494844100489', identifierType: 'EMAIL' }],
           mappedToDestination: 'true',
           sources: {

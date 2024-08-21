@@ -159,7 +159,7 @@ const processEvent = (message, destination, connection) => {
   let toSendEvents = [];
   let { userSchema } = destination.Config;
   const { isHashRequired, maxUserCount } = destination.Config;
-  const { audienceId } = connection.Config.destination;
+  const audienceId = get(connection, 'Config.destination.audienceId');
   if (!message.type) {
     throw new InstrumentationError('Message Type is not present. Aborting message.');
   }

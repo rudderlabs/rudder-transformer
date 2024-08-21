@@ -52,7 +52,7 @@ const getSchemaForEventMappedToDest = (message) => {
   const mappedSchema = get(message, 'fields');
   if (!mappedSchema) {
     throw new InstrumentationError(
-      'identifiers is required property for events mapped to destination ',
+      'event.fields is required property for events mapped to destination ',
     );
   }
   let userSchema = Object.keys(mappedSchema);

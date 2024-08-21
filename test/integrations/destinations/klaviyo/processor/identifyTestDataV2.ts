@@ -87,6 +87,19 @@ const commonOutputSubscriptionProps = {
     ],
   },
 };
+const commonOutputUnsubscriptionProps = {
+  profiles: {
+    data: [
+      {
+        type: 'profile',
+        attributes: {
+          email: 'test@rudderstack.com',
+          phone_number: '+12 345 578 900',
+        },
+      },
+    ],
+  },
+};
 const subscriptionRelations = {
   list: {
     data: {
@@ -109,6 +122,7 @@ const sentAt = '2021-01-03T17:02:53.195Z';
 const originalTimestamp = '2021-01-03T17:02:53.193Z';
 const userProfileCommonEndpoint = 'https://a.klaviyo.com/api/profile-import';
 const subscribeEndpoint = 'https://a.klaviyo.com/api/profile-subscription-bulk-create-jobs';
+const unsubscribeEndpoint = 'https://a.klaviyo.com/api/profile-subscription-bulk-delete-jobs';
 
 export const identifyData: ProcessorTestData[] = [
   {
@@ -206,7 +220,99 @@ export const identifyData: ProcessorTestData[] = [
     id: 'klaviyo-identify-150624-test-2',
     name: 'klaviyo',
     description:
-      '150624 -> Profile without subscribing the user and get klaviyo id from externalId',
+      '150624 -> Identify call with flattenProperties enabled in destination config and unsubscribe',
+    scenario: 'Business',
+    successCriteria:
+      'The profile response should contain the flattened properties of the friend object and one request object for subscribe',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: overrideDestination(destination, { flattenProperties: true }),
+            message: generateSimplifiedIdentifyPayload({
+              sentAt,
+              userId,
+              context: {
+                traits: {
+                  ...commonTraits,
+                  properties: { ...commonTraits.properties, subscribe: false },
+                  friend: {
+                    names: {
+                      first: 'Alice',
+                      last: 'Smith',
+                    },
+                    age: 25,
+                  },
+                },
+              },
+              anonymousId,
+              originalTimestamp,
+            }),
+            metadata: generateMetadata(2),
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: transformResultBuilder({
+              userId: '',
+              method: 'POST',
+              endpoint: userProfileCommonEndpoint,
+              headers: commonOutputHeaders,
+              JSON: {
+                data: {
+                  type: 'profile',
+                  attributes: {
+                    ...commonOutputUserProps,
+                    properties: {
+                      ...commonOutputUserProps.properties,
+                      'friend.age': 25,
+                      'friend.names.first': 'Alice',
+                      'friend.names.last': 'Smith',
+                    },
+                  },
+                  meta: {
+                    patch_properties: {},
+                  },
+                },
+              },
+            }),
+            statusCode: 200,
+            metadata: generateMetadata(2),
+          },
+          {
+            output: transformResultBuilder({
+              userId: '',
+              method: 'POST',
+              endpoint: unsubscribeEndpoint,
+              headers: commonOutputHeaders,
+              JSON: {
+                data: {
+                  type: 'profile-subscription-bulk-delete-job',
+                  attributes: commonOutputUnsubscriptionProps,
+                  relationships: subscriptionRelations,
+                },
+              },
+            }),
+            statusCode: 200,
+            metadata: generateMetadata(2),
+          },
+        ],
+      },
+    },
+  },
+  {
+    id: 'klaviyo-identify-150624-test-3',
+    name: 'klaviyo',
+    description:
+      '150624 -> Profile without subscribing/unsubscribing the user and get klaviyo id from externalId',
     scenario: 'Business',
     successCriteria:
       'Response should contain only profile update payload and status code should be 200 as subscribe is set to false in the payload',
@@ -234,7 +340,7 @@ export const identifyData: ProcessorTestData[] = [
                   appendList2: 'New Value 2',
                   unappendList1: 'Old Value 1',
                   unappendList2: 'Old Value 2',
-                  properties: { ...commonTraits.properties, subscribe: false },
+                  properties: { ...commonTraits.properties, subscribe: undefined },
                 },
               },
               integrations: {
@@ -292,7 +398,7 @@ export const identifyData: ProcessorTestData[] = [
     },
   },
   {
-    id: 'klaviyo-identify-150624-test-5',
+    id: 'klaviyo-identify-150624-test-4',
     name: 'klaviyo',
     description: '150624 -> Identify call with enforceEmailAsPrimary enabled in destination config',
     scenario: 'Business',

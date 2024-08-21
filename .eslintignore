@@ -23,3 +23,6 @@ test/integrations/destinations/testTypes.d.ts
 scripts/skipPrepareScript.js
 *.yaml
 *.yml
+.eslintignore
+.prettierignore
+*.json

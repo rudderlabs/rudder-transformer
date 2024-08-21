@@ -1,4 +1,4 @@
-const { TAG_NAMES, InstrumentationError } = require('@rudderstack/integrations-lib');
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const utilities = require('.');
 const { getFuncTestData } = require('../../../test/testHelper');
 const { FilteredEventsError } = require('./errorTypes');
@@ -8,6 +8,7 @@ const {
   generateExclusionList,
   combineBatchRequestsWithSameJobIds,
   validateEventAndLowerCaseConversion,
+  groupRouterTransformEvents,
 } = require('./index');
 
 // Names of the utility functions to test
@@ -688,6 +689,250 @@ describe('extractCustomFields', () => {
     expect(result).toEqual({
       email: 'john.doe@example.com',
     });
+  });
+});
+
+describe('groupRouterTransformEvents', () => {
+  // groups events correctly by destination ID
+  it('should group events correctly by destination ID and source ID', () => {
+    const events = [
+      {
+        message: {
+          eventID: 'evt001',
+          eventName: 'OrderReceived',
+        },
+        metadata: {
+          sourceId: 'SRC001',
+          destinationId: 'DEST001',
+          sourceCategory: 'warehouse',
+        },
+      },
+      {
+        message: {
+          eventID: 'evt002',
+          eventName: 'InventoryUpdate',
+        },
+        metadata: {
+          sourceId: 'SRC002',
+          destinationId: 'DEST002',
+          sourceCategory: 'cloud',
+        },
+      },
+      {
+        message: {
+          eventID: 'evt003',
+          eventName: 'UserLogin',
+        },
+        metadata: {
+          sourceId: 'SRC003',
+          destinationId: 'DEST003',
+          sourceCategory: 'webhook',
+        },
+      },
+      {
+        message: {
+          eventID: 'evt004',
+          eventName: 'PaymentProcessed',
+        },
+        metadata: {
+          sourceId: 'SRC001',
+          destinationId: 'DEST002',
+          sourceCategory: 'warehouse',
+        },
+      },
+      {
+        message: {
+          eventID: 'evt005',
+          eventName: 'ShipmentDispatched',
+        },
+        metadata: {
+          sourceId: 'SRC002',
+          destinationId: 'DEST003',
+          sourceCategory: 'cloud',
+        },
+      },
+      {
+        message: {
+          eventID: 'evt006',
+          eventName: 'ProductReturn',
+        },
+        metadata: {
+          sourceId: 'SRC003',
+          destinationId: 'DEST001',
+          sourceCategory: 'webhook',
+        },
+      },
+      {
+        message: {
+          eventID: 'evt007',
+          eventName: 'StockAlert',
+        },
+        metadata: {
+          sourceId: 'SRC001',
+          destinationId: 'DEST003',
+          sourceCategory: 'warehouse',
+        },
+      },
+      {
+        message: {
+          eventID: 'evt008',
+          eventName: 'UserRegistration',
+        },
+        metadata: {
+          sourceId: 'SRC002',
+          destinationId: 'DEST001',
+          sourceCategory: 'cloud',
+        },
+      },
+      {
+        message: {
+          eventID: 'evt009',
+          eventName: 'ReviewSubmitted',
+        },
+        metadata: {
+          sourceId: 'SRC003',
+          destinationId: 'DEST002',
+          sourceCategory: 'webhook',
+        },
+      },
+      {
+        message: {
+          eventID: 'evt010',
+          eventName: 'DiscountApplied',
+        },
+        metadata: {
+          sourceId: 'SRC001',
+          destinationId: 'DEST001',
+          sourceCategory: 'warehouse',
+        },
+      },
+    ];
+
+    const groupedEvents = groupRouterTransformEvents(events);
+    expect(groupedEvents).toEqual([
+      [
+        {
+          message: {
+            eventID: 'evt001',
+            eventName: 'OrderReceived',
+          },
+          metadata: {
+            sourceId: 'SRC001',
+            destinationId: 'DEST001',
+            sourceCategory: 'warehouse',
+          },
+        },
+        {
+          message: {
+            eventID: 'evt010',
+            eventName: 'DiscountApplied',
+          },
+          metadata: {
+            sourceId: 'SRC001',
+            destinationId: 'DEST001',
+            sourceCategory: 'warehouse',
+          },
+        },
+      ],
+      [
+        {
+          message: {
+            eventID: 'evt002',
+            eventName: 'InventoryUpdate',
+          },
+          metadata: {
+            sourceId: 'SRC002',
+            destinationId: 'DEST002',
+            sourceCategory: 'cloud',
+          },
+        },
+        {
+          message: {
+            eventID: 'evt009',
+            eventName: 'ReviewSubmitted',
+          },
+          metadata: {
+            sourceId: 'SRC003',
+            destinationId: 'DEST002',
+            sourceCategory: 'webhook',
+          },
+        },
+      ],
+      [
+        {
+          message: {
+            eventID: 'evt003',
+            eventName: 'UserLogin',
+          },
+          metadata: {
+            sourceId: 'SRC003',
+            destinationId: 'DEST003',
+            sourceCategory: 'webhook',
+          },
+        },
+        {
+          message: {
+            eventID: 'evt005',
+            eventName: 'ShipmentDispatched',
+          },
+          metadata: {
+            sourceId: 'SRC002',
+            destinationId: 'DEST003',
+            sourceCategory: 'cloud',
+          },
+        },
+      ],
+      [
+        {
+          message: {
+            eventID: 'evt004',
+            eventName: 'PaymentProcessed',
+          },
+          metadata: {
+            sourceId: 'SRC001',
+            destinationId: 'DEST002',
+            sourceCategory: 'warehouse',
+          },
+        },
+      ],
+      [
+        {
+          message: {
+            eventID: 'evt006',
+            eventName: 'ProductReturn',
+          },
+          metadata: {
+            sourceId: 'SRC003',
+            destinationId: 'DEST001',
+            sourceCategory: 'webhook',
+          },
+        },
+        {
+          message: {
+            eventID: 'evt008',
+            eventName: 'UserRegistration',
+          },
+          metadata: {
+            sourceId: 'SRC002',
+            destinationId: 'DEST001',
+            sourceCategory: 'cloud',
+          },
+        },
+      ],
+      [
+        {
+          message: {
+            eventID: 'evt007',
+            eventName: 'StockAlert',
+          },
+          metadata: {
+            sourceId: 'SRC001',
+            destinationId: 'DEST003',
+            sourceCategory: 'warehouse',
+          },
+        },
+      ],
+    ]);
   });
 });
 

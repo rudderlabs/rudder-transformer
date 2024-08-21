@@ -714,6 +714,16 @@ const collectStatsForAliasMissConfigurations = (destinationId) => {
   stats.increment('braze_alias_missconfigured_count', { destination_id: destinationId });
 };
 
+function handleReservedProperties(props) {
+  if (typeof props !== 'object') {
+    throw new InstrumentationError('Invalid event properties');
+  }
+  // remove reserved keys from custom event properties
+  const reserved = ['time', 'event_name'];
+
+  return _.omit(props, reserved);
+}
+
 module.exports = {
   BrazeDedupUtility,
   CustomAttributeOperationUtil,
@@ -728,4 +738,5 @@ module.exports = {
   addMandatoryPurchaseProperties,
   collectStatsForAliasFailure,
   collectStatsForAliasMissConfigurations,
+  handleReservedProperties,
 };

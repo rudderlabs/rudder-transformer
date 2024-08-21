@@ -1,6 +1,12 @@
 const _ = require('lodash');
 const { handleHttpRequest } = require('../../../adapters/network');
-const { BrazeDedupUtility, addAppId, getPurchaseObjs, setAliasObject } = require('./util');
+const {
+  BrazeDedupUtility,
+  addAppId,
+  getPurchaseObjs,
+  setAliasObject,
+  handleReservedProperties,
+} = require('./util');
 const { processBatch } = require('./util');
 const {
   removeUndefinedAndNullValues,
@@ -1667,6 +1673,67 @@ describe('setAliasObject function', () => {
         alias_name: 'rudder_id-123',
         alias_label: 'customer_id',
       },
+    });
+  });
+});
+
+describe('handleReservedProperties', () => {
+  // Removes 'time' and 'event_name' keys from the input object
+  it('should remove "time" and "event_name" keys when they are present in the input object', () => {
+    const props = { time: '2023-10-01T00:00:00Z', event_name: 'test_event', other_key: 'value' };
+    const result = handleReservedProperties(props);
+    expect(result).toEqual({ other_key: 'value' });
+  });
+
+  // Input object is empty
+  it('should return an empty object when the input object is empty', () => {
+    const props = {};
+    const result = handleReservedProperties(props);
+    expect(result).toEqual({});
+  });
+
+  // Works correctly with an object that has no reserved keys
+  it('should remove reserved keys when present in the input object', () => {
+    const props = { time_stamp: '2023-10-01T00:00:00Z', event: 'test_event', other_key: 'value' };
+    const result = handleReservedProperties(props);
+    expect(result).toEqual({
+      time_stamp: '2023-10-01T00:00:00Z',
+      event: 'test_event',
+      other_key: 'value',
+    });
+  });
+
+  // Input object is null or undefined
+  it('should return an empty object when input object is null', () => {
+    const props = null;
+    const result = handleReservedProperties(props);
+    expect(result).toEqual({});
+  });
+
+  // Handles non-object inputs gracefully
+  it('should return an empty object when a non-object input is provided', () => {
+    const props = 'not an object';
+    try {
+      handleReservedProperties(props);
+    } catch (e) {
+      expect(e.message).toBe('Invalid event properties');
+    }
+  });
+
+  // Input object has only reserved keys
+  it('should remove "time" and "event_name" keys when they are present in the input object', () => {
+    const props = { time: '2023-10-01T00:00:00Z', event_name: 'test_event', other_key: 'value' };
+    const result = handleReservedProperties(props);
+    expect(result).toEqual({ other_key: 'value' });
+  });
+
+  // Works with objects having special characters in keys
+  it('should not remove special characters keys when they are present in the input object', () => {
+    const props = { 'special!@#$%^&*()_+-={}[]|\\;:\'",.<>?/`~': 'value', other_key: 'value' };
+    const result = handleReservedProperties(props);
+    expect(result).toEqual({
+      other_key: 'value',
+      'special!@#$%^&*()_+-={}[]|\\;:\'",.<>?/`~': 'value',
     });
   });
 });

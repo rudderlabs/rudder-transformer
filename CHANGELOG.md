@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.76.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.75.1...v1.76.0) (2024-08-20)
+
+
+### Features
+
+* klaviyo onboard unsubscribe profile support ([#3646](https://github.com/rudderlabs/rudder-transformer/issues/3646)) ([474f2bd](https://github.com/rudderlabs/rudder-transformer/commit/474f2bddc58e1962206e39d92514827f29f84c83))
+* onboard sfmc with vdm for rETL ([#3655](https://github.com/rudderlabs/rudder-transformer/issues/3655)) ([d987d1f](https://github.com/rudderlabs/rudder-transformer/commit/d987d1fc9afb9e1dc7482b2fe1458573f0f2699e))
+* onboard smartly destination ([#3660](https://github.com/rudderlabs/rudder-transformer/issues/3660)) ([474a36e](https://github.com/rudderlabs/rudder-transformer/commit/474a36ec385abf9ff83596b062d4d8e4c24469b8))
+* add bloomreach retl support ([#3619](https://github.com/rudderlabs/rudder-transformer/issues/3619)) ([6b1a23a](https://github.com/rudderlabs/rudder-transformer/commit/6b1a23af845084d6f2f5fd14656e4a1d11a7e34b))
+
+
+### Bug Fixes
+
+* add alias support in case alias details are present  ([#3579](https://github.com/rudderlabs/rudder-transformer/issues/3579)) ([cb67262](https://github.com/rudderlabs/rudder-transformer/commit/cb672628b312f20ea0fcc27a60ec8ab5692f8b06))
+* attentive tag bugsnag issue ([#3663](https://github.com/rudderlabs/rudder-transformer/issues/3663)) ([866dbf3](https://github.com/rudderlabs/rudder-transformer/commit/866dbf3e81754e71ff8ac08b258b359ec5cc6889))
+* fixing facebook utils ([#3664](https://github.com/rudderlabs/rudder-transformer/issues/3664)) ([1a61675](https://github.com/rudderlabs/rudder-transformer/commit/1a6167584a5780ab50beda13cc5ef6bf4e283e38))
+* reserved properties for braze ([#3573](https://github.com/rudderlabs/rudder-transformer/issues/3573)) ([413e9ce](https://github.com/rudderlabs/rudder-transformer/commit/413e9ce56f8f6569bbeb188bff4f43d400ea71b1))
+* source transformation integration test generation ([#3645](https://github.com/rudderlabs/rudder-transformer/issues/3645)) ([23196ec](https://github.com/rudderlabs/rudder-transformer/commit/23196ec42acf35f314e1953f339f6acbb72edd70))
+
 ### [1.75.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.75.0...v1.75.1) (2024-08-14)
 
 

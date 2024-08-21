@@ -12,7 +12,7 @@
   "output": {
     "response": {
       "status": 400,
-      "body": "Query_parameters is missing"
+      "body": "Query_parameters is missing\n"
     },
     "queue": [],
     "errQueue": [{}]

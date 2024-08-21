@@ -1,7 +1,7 @@
 const { NetworkError } = require('@rudderstack/integrations-lib');
+const get = require('get-value');
 const { prepareProxyRequest, handleHttpRequest } = require('../../../adapters/network');
 const { isHttpStatusSuccess } = require('../../util/index');
-
 const {
   processAxiosResponse,
   getDynamicErrorType,
@@ -148,9 +148,15 @@ const gaAudienceProxyRequest = async (request) => {
 };
 
 const gaAudienceRespHandler = (destResponse, stageMsg) => {
-  const { status, response } = destResponse;
-  // const respAttributes = response["@attributes"] || null;
-  // const { stat, err_code: errorCode } = respAttributes;
+  let { status } = destResponse;
+  const { response } = destResponse;
+
+  if (
+    status === 400 &&
+    get(response, 'error.details.0.errors.0.errorCode.databaseError') === 'CONCURRENT_MODIFICATION'
+  ) {
+    status = 500;
+  }
 
   throw new NetworkError(
     `${JSON.stringify(response)} ${stageMsg}`,

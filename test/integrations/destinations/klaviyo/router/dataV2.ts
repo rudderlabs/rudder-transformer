@@ -1260,4 +1260,788 @@ export const dataV2: RouterTestData[] = [
       },
     },
   },
+  {
+    id: 'klaviyo-router-150624-test-5',
+    name: 'klaviyo',
+    description: '150624 -> Only Identify calls with some subcribe and some unsubscribe operation',
+    scenario: 'Framework',
+    successCriteria:
+      'All the subscription events with same listId should be batched and same for unsubscribe as well.',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: {
+                // user 1 idenitfy call with anonymousId and subscription as true
+                channel: 'web',
+                traits: {
+                  email: 'testklaviyo1@rs.com',
+                  firstname: 'Test Klaviyo 1',
+                  properties: {
+                    subscribe: true,
+                    listId: 'configListId',
+                    consent: ['email'],
+                  },
+                },
+                context: {},
+                anonymousId: 'anonTestKlaviyo1',
+                type: 'identify',
+                userId: 'testKlaviyo1',
+                integrations: {
+                  All: true,
+                },
+              },
+              metadata: generateMetadata(1, 'testKlaviyo1'),
+              destination,
+            },
+            {
+              message: {
+                // user 2 idenitfy call with no anonymousId and subscription as true
+                channel: 'web',
+                traits: {
+                  email: 'testklaviyo2@rs.com',
+                  firstname: 'Test Klaviyo 2',
+                  properties: {
+                    subscribe: true,
+                    listId: 'configListId',
+                    consent: ['email'],
+                  },
+                },
+                context: {},
+                type: 'identify',
+                userId: 'testKlaviyo2',
+                integrations: {
+                  All: true,
+                },
+              },
+              metadata: generateMetadata(2, 'testKlaviyo2'),
+              destination,
+            },
+            {
+              message: {
+                // user 3 idenitfy call with no anonymousId and subscription as false
+                channel: 'web',
+                traits: {
+                  email: 'testklaviyo3@rs.com',
+                  firstname: 'Test Klaviyo 3',
+                  properties: {
+                    subscribe: false,
+                    listId: 'configListId',
+                    consent: ['email'],
+                  },
+                },
+                context: {},
+                type: 'identify',
+                userId: 'testKlaviyo3',
+                integrations: {
+                  All: true,
+                },
+              },
+              metadata: generateMetadata(3, 'testKlaviyo3'),
+              destination,
+            },
+            {
+              message: {
+                // user 4 idenitfy call with anonymousId and subscription as false
+                channel: 'web',
+                traits: {
+                  email: 'testklaviyo4@rs.com',
+                  firstname: 'Test Klaviyo 4',
+                  properties: {
+                    subscribe: false,
+                    listId: 'configListId',
+                    consent: ['email'],
+                  },
+                },
+                context: {},
+                type: 'identify',
+                anonymousId: 'anon id 4',
+                userId: 'testKlaviyo4',
+                integrations: {
+                  All: true,
+                },
+              },
+              metadata: generateMetadata(4, 'testKlaviyo4'),
+              destination,
+            },
+          ],
+          destType: 'klaviyo',
+        },
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              // 2 identify calls and one batched subscription request for user 1 and user 2
+              batchedRequest: [
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint: userProfileCommonEndpoint,
+                  headers,
+                  params: {},
+                  body: {
+                    JSON: {
+                      data: {
+                        type: 'profile',
+                        attributes: {
+                          external_id: 'testKlaviyo1',
+                          email: 'testklaviyo1@rs.com',
+                          first_name: 'Test Klaviyo 1',
+                          anonymous_id: 'anonTestKlaviyo1',
+                          properties: {},
+                        },
+                        meta: {
+                          patch_properties: {},
+                        },
+                      },
+                    },
+                    JSON_ARRAY: {},
+                    XML: {},
+                    FORM: {},
+                  },
+                  files: {},
+                },
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint: userProfileCommonEndpoint,
+                  headers,
+                  params: {},
+                  body: {
+                    JSON: {
+                      data: {
+                        type: 'profile',
+                        attributes: {
+                          external_id: 'testKlaviyo2',
+                          email: 'testklaviyo2@rs.com',
+                          first_name: 'Test Klaviyo 2',
+                          properties: {},
+                        },
+                        meta: {
+                          patch_properties: {},
+                        },
+                      },
+                    },
+                    JSON_ARRAY: {},
+                    XML: {},
+                    FORM: {},
+                  },
+                  files: {},
+                },
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint: 'https://a.klaviyo.com/api/profile-subscription-bulk-create-jobs',
+                  headers,
+                  params: {},
+                  body: {
+                    JSON: {
+                      data: {
+                        type: 'profile-subscription-bulk-create-job',
+                        attributes: {
+                          profiles: {
+                            data: [
+                              {
+                                type: 'profile',
+                                attributes: {
+                                  email: 'testklaviyo1@rs.com',
+                                  subscriptions: {
+                                    email: { marketing: { consent: 'SUBSCRIBED' } },
+                                  },
+                                },
+                              },
+                              {
+                                type: 'profile',
+                                attributes: {
+                                  email: 'testklaviyo2@rs.com',
+                                  subscriptions: {
+                                    email: { marketing: { consent: 'SUBSCRIBED' } },
+                                  },
+                                },
+                              },
+                            ],
+                          },
+                        },
+                        relationships: {
+                          list: {
+                            data: {
+                              type: 'list',
+                              id: 'configListId',
+                            },
+                          },
+                        },
+                      },
+                    },
+                    JSON_ARRAY: {},
+                    XML: {},
+                    FORM: {},
+                  },
+                  files: {},
+                },
+              ],
+              metadata: [generateMetadata(1, 'testKlaviyo1'), generateMetadata(2, 'testKlaviyo2')],
+              batched: true,
+              statusCode: 200,
+              destination,
+            },
+            {
+              // 2 identify calls and one batched unsubscription request for user 3 and user 4
+              batchedRequest: [
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint: userProfileCommonEndpoint,
+                  headers,
+                  params: {},
+                  body: {
+                    JSON: {
+                      data: {
+                        type: 'profile',
+                        attributes: {
+                          external_id: 'testKlaviyo3',
+                          email: 'testklaviyo3@rs.com',
+                          first_name: 'Test Klaviyo 3',
+                          properties: {},
+                        },
+                        meta: {
+                          patch_properties: {},
+                        },
+                      },
+                    },
+                    JSON_ARRAY: {},
+                    XML: {},
+                    FORM: {},
+                  },
+                  files: {},
+                },
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint: userProfileCommonEndpoint,
+                  headers,
+                  params: {},
+                  body: {
+                    JSON: {
+                      data: {
+                        type: 'profile',
+                        attributes: {
+                          external_id: 'testKlaviyo4',
+                          email: 'testklaviyo4@rs.com',
+                          first_name: 'Test Klaviyo 4',
+                          anonymous_id: 'anon id 4',
+                          properties: {},
+                        },
+                        meta: {
+                          patch_properties: {},
+                        },
+                      },
+                    },
+                    JSON_ARRAY: {},
+                    XML: {},
+                    FORM: {},
+                  },
+                  files: {},
+                },
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint: 'https://a.klaviyo.com/api/profile-subscription-bulk-delete-jobs',
+                  headers,
+                  params: {},
+                  body: {
+                    JSON: {
+                      data: {
+                        type: 'profile-subscription-bulk-delete-job',
+                        attributes: {
+                          profiles: {
+                            data: [
+                              {
+                                type: 'profile',
+                                attributes: {
+                                  email: 'testklaviyo3@rs.com',
+                                },
+                              },
+                              {
+                                type: 'profile',
+                                attributes: {
+                                  email: 'testklaviyo4@rs.com',
+                                },
+                              },
+                            ],
+                          },
+                        },
+                        relationships: {
+                          list: {
+                            data: {
+                              type: 'list',
+                              id: 'configListId',
+                            },
+                          },
+                        },
+                      },
+                    },
+                    JSON_ARRAY: {},
+                    XML: {},
+                    FORM: {},
+                  },
+                  files: {},
+                },
+              ],
+              metadata: [generateMetadata(3, 'testKlaviyo3'), generateMetadata(4, 'testKlaviyo4')],
+              batched: true,
+              statusCode: 200,
+              destination,
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    id: 'klaviyo-router-150624-test-6',
+    name: 'klaviyo',
+    description:
+      '150624 -> Router tests to have some anonymous track event, some identify events with unsubscription and some identified track event',
+    scenario: 'Framework',
+    successCriteria:
+      'All the unsubscription events under same message type should be batched and respective profile requests should also be placed in same batched request',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: {
+                // user 1 track call with userId and anonymousId
+                channel: 'web',
+                context: {
+                  traits: {
+                    email: 'testklaviyo1@email.com',
+                    firstname: 'Test Klaviyo 1',
+                  },
+                },
+                type: 'track',
+                anonymousId: 'anonTestKlaviyo1',
+                userId: 'testKlaviyo1',
+                event: 'purchase',
+                properties: {
+                  price: '12',
+                },
+              },
+              metadata: generateMetadata(1, 'testKlaviyo1'),
+              destination,
+            },
+            {
+              message: {
+                // Anonymous Tracking -> user 2 track call with anonymousId only
+                channel: 'web',
+                context: {
+                  traits: {},
+                },
+                type: 'track',
+                anonymousId: 'anonTestKlaviyo2',
+                event: 'viewed product',
+                properties: {
+                  price: '120',
+                },
+              },
+              metadata: generateMetadata(2),
+              destination,
+            },
+            {
+              message: {
+                // user 2 idenitfy call with anonymousId and subscription
+                channel: 'web',
+                traits: {
+                  email: 'testklaviyo2@rs.com',
+                  firstname: 'Test Klaviyo 2',
+                  properties: {
+                    subscribe: false,
+                    listId: 'configListId',
+                    consent: ['email'],
+                  },
+                },
+                context: {},
+                anonymousId: 'anonTestKlaviyo2',
+                type: 'identify',
+                userId: 'testKlaviyo2',
+                integrations: {
+                  All: true,
+                },
+              },
+              metadata: generateMetadata(3, 'testKlaviyo2'),
+              destination,
+            },
+            {
+              message: {
+                // user 2 track call with email only
+                channel: 'web',
+                context: {
+                  traits: {
+                    email: 'testklaviyo2@email.com',
+                    firstname: 'Test Klaviyo 2',
+                  },
+                },
+                type: 'track',
+                userId: 'testKlaviyo2',
+                event: 'purchase',
+                properties: {
+                  price: '120',
+                },
+              },
+              metadata: generateMetadata(4, 'testKlaviyo2'),
+              destination,
+            },
+            {
+              message: {
+                // for user 3 identify call without anonymousId and subscriptiontraits:
+                channel: 'web',
+                traits: {
+                  email: 'testklaviyo3@rs.com',
+                  firstname: 'Test Klaviyo 3',
+                  properties: {
+                    subscribe: false,
+                    listId: 'configListId',
+                    consent: ['email', 'sms'],
+                  },
+                },
+                context: {},
+                type: 'identify',
+                userId: 'testKlaviyo3',
+                integrations: {
+                  All: true,
+                },
+              },
+              metadata: generateMetadata(5, 'testKlaviyo3'),
+              destination,
+            },
+          ],
+          destType: 'klaviyo',
+        },
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              // user 1 track call with userId and anonymousId
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: 'https://a.klaviyo.com/api/events',
+                headers: {
+                  Authorization: 'Klaviyo-API-Key dummyPrivateApiKey',
+                  Accept: 'application/json',
+                  'Content-Type': 'application/json',
+                  revision: '2024-06-15',
+                },
+                params: {},
+                body: {
+                  JSON: {
+                    data: {
+                      type: 'event',
+                      attributes: {
+                        properties: {
+                          price: '12',
+                        },
+                        profile: {
+                          data: {
+                            type: 'profile',
+                            attributes: {
+                              external_id: 'testKlaviyo1',
+                              anonymous_id: 'anonTestKlaviyo1',
+                              email: 'testklaviyo1@email.com',
+                              first_name: 'Test Klaviyo 1',
+                              properties: {},
+                              meta: {
+                                patch_properties: {},
+                              },
+                            },
+                          },
+                        },
+                        metric: {
+                          data: {
+                            type: 'metric',
+                            attributes: {
+                              name: 'purchase',
+                            },
+                          },
+                        },
+                      },
+                    },
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+              },
+              metadata: [generateMetadata(1, 'testKlaviyo1')],
+              batched: false,
+              statusCode: 200,
+              destination,
+            },
+            {
+              // anonn event for user 2
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: 'https://a.klaviyo.com/api/events',
+                headers: {
+                  Authorization: 'Klaviyo-API-Key dummyPrivateApiKey',
+                  Accept: 'application/json',
+                  'Content-Type': 'application/json',
+                  revision: '2024-06-15',
+                },
+                params: {},
+                body: {
+                  JSON: {
+                    data: {
+                      type: 'event',
+                      attributes: {
+                        properties: {
+                          price: '120',
+                        },
+                        profile: {
+                          data: {
+                            type: 'profile',
+                            attributes: {
+                              anonymous_id: 'anonTestKlaviyo2',
+                              properties: {},
+                              meta: {
+                                patch_properties: {},
+                              },
+                            },
+                          },
+                        },
+                        metric: {
+                          data: {
+                            type: 'metric',
+                            attributes: {
+                              name: 'viewed product',
+                            },
+                          },
+                        },
+                      },
+                    },
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+              },
+              metadata: [generateMetadata(2)],
+              batched: false,
+              statusCode: 200,
+              destination,
+            },
+            {
+              // identify call for user 2 and user 3 with subscription
+              batchedRequest: [
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint: 'https://a.klaviyo.com/api/profile-import',
+                  headers: {
+                    Authorization: 'Klaviyo-API-Key dummyPrivateApiKey',
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    revision: '2024-06-15',
+                  },
+                  params: {},
+                  body: {
+                    JSON: {
+                      data: {
+                        type: 'profile',
+                        attributes: {
+                          external_id: 'testKlaviyo2',
+                          anonymous_id: 'anonTestKlaviyo2',
+                          email: 'testklaviyo2@rs.com',
+                          first_name: 'Test Klaviyo 2',
+                          properties: {},
+                        },
+                        meta: {
+                          patch_properties: {},
+                        },
+                      },
+                    },
+                    JSON_ARRAY: {},
+                    XML: {},
+                    FORM: {},
+                  },
+                  files: {},
+                },
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint: 'https://a.klaviyo.com/api/profile-import',
+                  headers: {
+                    Authorization: 'Klaviyo-API-Key dummyPrivateApiKey',
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    revision: '2024-06-15',
+                  },
+                  params: {},
+                  body: {
+                    JSON: {
+                      data: {
+                        type: 'profile',
+                        attributes: {
+                          external_id: 'testKlaviyo3',
+                          email: 'testklaviyo3@rs.com',
+                          first_name: 'Test Klaviyo 3',
+                          properties: {},
+                        },
+                        meta: {
+                          patch_properties: {},
+                        },
+                      },
+                    },
+                    JSON_ARRAY: {},
+                    XML: {},
+                    FORM: {},
+                  },
+                  files: {},
+                },
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint: 'https://a.klaviyo.com/api/profile-subscription-bulk-delete-jobs',
+                  headers: {
+                    Authorization: 'Klaviyo-API-Key dummyPrivateApiKey',
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json',
+                    revision: '2024-06-15',
+                  },
+                  params: {},
+                  body: {
+                    JSON: {
+                      data: {
+                        type: 'profile-subscription-bulk-delete-job',
+                        attributes: {
+                          profiles: {
+                            data: [
+                              {
+                                type: 'profile',
+                                attributes: {
+                                  email: 'testklaviyo2@rs.com',
+                                },
+                              },
+                              {
+                                type: 'profile',
+                                attributes: {
+                                  email: 'testklaviyo3@rs.com',
+                                },
+                              },
+                            ],
+                          },
+                        },
+                        relationships: {
+                          list: {
+                            data: {
+                              type: 'list',
+                              id: 'configListId',
+                            },
+                          },
+                        },
+                      },
+                    },
+                    JSON_ARRAY: {},
+                    XML: {},
+                    FORM: {},
+                  },
+                  files: {},
+                },
+              ],
+              metadata: [generateMetadata(3, 'testKlaviyo2'), generateMetadata(5, 'testKlaviyo3')],
+              batched: true,
+              statusCode: 200,
+              destination,
+            },
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: 'https://a.klaviyo.com/api/events',
+                headers: {
+                  Authorization: 'Klaviyo-API-Key dummyPrivateApiKey',
+                  Accept: 'application/json',
+                  'Content-Type': 'application/json',
+                  revision: '2024-06-15',
+                },
+                params: {},
+                body: {
+                  JSON: {
+                    data: {
+                      type: 'event',
+                      attributes: {
+                        properties: {
+                          price: '120',
+                        },
+                        profile: {
+                          data: {
+                            type: 'profile',
+                            attributes: {
+                              external_id: 'testKlaviyo2',
+                              email: 'testklaviyo2@email.com',
+                              first_name: 'Test Klaviyo 2',
+                              properties: {},
+                              meta: {
+                                patch_properties: {},
+                              },
+                            },
+                          },
+                        },
+                        metric: {
+                          data: {
+                            type: 'metric',
+                            attributes: {
+                              name: 'purchase',
+                            },
+                          },
+                        },
+                      },
+                    },
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+              },
+              metadata: [generateMetadata(4, 'testKlaviyo2')],
+              batched: false,
+              statusCode: 200,
+              destination,
+            },
+          ],
+        },
+      },
+    },
+  },
 ];

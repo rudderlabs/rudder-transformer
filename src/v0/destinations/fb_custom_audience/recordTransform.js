@@ -100,18 +100,11 @@ const processRecordEventArray = (
 };
 
 async function processRecordInputs(groupedRecordInputs) {
-  const { destination } = groupedRecordInputs[0];
+  const { destination, connection } = groupedRecordInputs[0];
   const { message } = groupedRecordInputs[0];
-  const {
-    isHashRequired,
-    accessToken,
-    disableFormat,
-    type,
-    subType,
-    isRaw,
-    maxUserCount,
-    audienceId,
-  } = destination.Config;
+  const { isHashRequired, accessToken, disableFormat, type, subType, isRaw, maxUserCount } =
+    destination.Config;
+  const { audienceId } = connection.Config.destination;
   const prepareParams = {
     access_token: accessToken,
   };

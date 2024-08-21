@@ -49,14 +49,13 @@ const batchingWithPayloadSize = (payload) => {
 };
 
 const getSchemaForEventMappedToDest = (message) => {
-  const mappedSchema = get(message, 'context.destinationFields');
+  const mappedSchema = get(message, 'identifiers');
   if (!mappedSchema) {
     throw new InstrumentationError(
-      'context.destinationFields is required property for events mapped to destination ',
+      'identifiers is required property for events mapped to destination ',
     );
   }
-  // context.destinationFields has 2 possible values. An Array of fields or Comma seperated string with field names
-  let userSchema = Array.isArray(mappedSchema) ? mappedSchema : mappedSchema.split(',');
+  let userSchema = Object.keys(mappedSchema);
   userSchema = userSchema.map((field) => field.trim());
   return userSchema;
 };

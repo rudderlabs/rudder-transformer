@@ -154,11 +154,12 @@ const prepareToSendEvents = (
   });
   return toSendEvents;
 };
-const processEvent = (message, destination) => {
+const processEvent = (message, destination, connection) => {
   const respList = [];
   let toSendEvents = [];
   let { userSchema } = destination.Config;
-  const { isHashRequired, audienceId, maxUserCount } = destination.Config;
+  const { isHashRequired, maxUserCount } = destination.Config;
+  const { audienceId } = connection.Config.destination;
   if (!message.type) {
     throw new InstrumentationError('Message Type is not present. Aborting message.');
   }
@@ -236,7 +237,7 @@ const processEvent = (message, destination) => {
   return respList;
 };
 
-const process = (event) => processEvent(event.message, event.destination);
+const process = (event) => processEvent(event.message, event.destination, event.connection);
 
 const processRouterDest = async (inputs, reqMetadata) => {
   const respList = [];

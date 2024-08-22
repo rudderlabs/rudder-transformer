@@ -21,6 +21,7 @@ const {
   responseBuilderSimple,
   getDataSource,
 } = require('./util');
+const logger = require('../../../logger');
 
 const processRecordEventArray = (
   recordChunksArray,
@@ -116,6 +117,8 @@ async function processRecordInputs(groupedRecordInputs) {
   }
 
   // audience id validation
+  logger.debug('Connection_object', JSON.stringify(connection));
+  logger.debug('Event_object', JSON.stringify(message));
   let operationAudienceId = audienceId;
   const mappedToDestination = get(message, MappedToDestinationKey);
   if (mappedToDestination) {

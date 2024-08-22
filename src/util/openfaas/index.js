@@ -48,6 +48,7 @@ const CUSTOM_NETWORK_POLICY_WORKSPACE_IDS = process.env.CUSTOM_NETWORK_POLICY_WO
 const customNetworkPolicyWorkspaceIds = CUSTOM_NETWORK_POLICY_WORKSPACE_IDS.split(',');
 const CUSTOMER_TIER = process.env.CUSTOMER_TIER || 'shared';
 const FAAS_DNS_RESOLVER = process.env.FAAS_DNS_RESOLVER || 'false';
+const FAAS_SCALE_DOWN_WINDOW = process.env.FAAS_SCALE_DOWN_WINDOW || ''; // Go time values are supported ( max 5m or 300s )
 
 // Initialise node cache
 const functionListCache = new NodeCache();
@@ -334,6 +335,10 @@ function buildOpenfaasFn(name, code, versionId, libraryVersionIDs, testMode, trM
     customer: 'shared',
     'customer-tier': CUSTOMER_TIER,
   };
+
+  if (FAAS_SCALE_DOWN_WINDOW !== '') {
+    labels['com.openfaas.scale.down.window'] = FAAS_SCALE_DOWN_WINDOW;
+  }
 
   if (trMetadata.workspaceId && customNetworkPolicyWorkspaceIds.includes(trMetadata.workspaceId)) {
     labels['custom-network-policy'] = 'true';

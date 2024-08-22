@@ -454,42 +454,62 @@ const constructProfile = (message, destination, isIdentifyCall) => {
   return { data };
 };
 
+/** This function update profile with consents for subscribing to email and/or phone
+ * @param {*} profileAttributes
+ * @param {*} subscribeConsent
+ * @param {*} email
+ * @param {*} phone
+ */
+const updateProfileWithConsents = (profileAttributes, subscribeConsent, email, phone) => {
+  let consent = subscribeConsent;
+  if (!Array.isArray(consent)) {
+    consent = [consent];
+  }
+  if (consent.includes('email') && email) {
+    set(profileAttributes, 'subscriptions.email.marketing.consent', 'SUBSCRIBED');
+  }
+  if (consent.includes('sms') && phone) {
+    set(profileAttributes, 'subscriptions.sms.marketing.consent', 'SUBSCRIBED');
+  }
+};
 /**
  * This function is used for creating profile response for subscribing users to a particular list for V2
  * DOCS: https://developers.klaviyo.com/en/reference/subscribe_profiles
+ * Return an object with listId, profiles and operation
  */
-const subscribeUserToListV2 = (message, traitsInfo, destination) => {
+const subscribeOrUnsubscribeUserToListV2 = (message, traitsInfo, destination, operation) => {
   // listId from message properties are preferred over Config listId
   const { consent } = destination.Config;
   let { listId } = destination.Config;
-  let subscribeConsent = traitsInfo.consent || traitsInfo.properties?.consent || consent;
+  const subscribeConsent = traitsInfo.consent || traitsInfo.properties?.consent || consent;
   const email = getFieldValueFromMessage(message, 'email');
   const phone = getFieldValueFromMessage(message, 'phone');
   const profileAttributes = {
     email,
     phone_number: phone,
   };
-  if (subscribeConsent) {
-    if (!Array.isArray(subscribeConsent)) {
-      subscribeConsent = [subscribeConsent];
-    }
-    if (subscribeConsent.includes('email') && email) {
-      set(profileAttributes, 'subscriptions.email.marketing.consent', 'SUBSCRIBED');
-    }
-    if (subscribeConsent.includes('sms') && phone) {
-      set(profileAttributes, 'subscriptions.sms.marketing.consent', 'SUBSCRIBED');
-    }
+
+  // used only for subscription and not for unsubscription
+  if (operation === 'subscribe' && subscribeConsent) {
+    updateProfileWithConsents(profileAttributes, subscribeConsent, email, phone);
   }
 
   const profile = removeUndefinedAndNullValues({
     type: 'profile',
-    id: getDestinationExternalID(message, 'klaviyo-profileId'),
+    id:
+      operation === 'subscribe'
+        ? getDestinationExternalID(message, 'klaviyo-profileId')
+        : undefined, // id is not applicable for unsubscription
     attributes: removeUndefinedAndNullValues(profileAttributes),
   });
   if (!email && !phone && profile.id) {
-    throw new InstrumentationError(
-      'Profile Id, Email or/and Phone are required to subscribe to a list',
-    );
+    if (operation === 'subscribe') {
+      throw new InstrumentationError(
+        'Profile Id, Email or/and Phone are required to subscribe to a list',
+      );
+    } else {
+      throw new InstrumentationError('Email or/and Phone are required to unsubscribe from a list');
+    }
   }
   // fetch list id from message
   if (traitsInfo?.properties?.listId) {
@@ -499,17 +519,20 @@ const subscribeUserToListV2 = (message, traitsInfo, destination) => {
   if (message.type === 'group') {
     listId = message.groupId;
   }
-
-  return { listId, profile: [profile] };
+  return { listId, profile: [profile], operation };
 };
 /**
  * This Create a subscription payload to subscribe profile(s) to list listId
  * @param {*} listId
  * @param {*} profiles
+ * @param {*} operation can be either subscribe or unsubscribe
  */
-const getSubscriptionPayload = (listId, profiles) => ({
+const getSubscriptionPayload = (listId, profiles, operation) => ({
   data: {
-    type: 'profile-subscription-bulk-create-job',
+    type:
+      operation === 'subscribe'
+        ? 'profile-subscription-bulk-create-job'
+        : 'profile-subscription-bulk-delete-job',
     attributes: { profiles: { data: profiles } },
     relationships: {
       list: {
@@ -523,14 +546,15 @@ const getSubscriptionPayload = (listId, profiles) => ({
 });
 
 /**
- * This function accepts subscriptions object and builds a request for it
+ * This function accepts subscriptions/ unsubscription object and builds a request for it
  * @param {*} subscription
  * @param {*} destination
+ * @param {*} operation can be either subscription or unsubscription
  * @returns defaultRequestConfig
  */
-const buildSubscriptionRequest = (subscription, destination) => {
+const buildSubscriptionOrUnsubscriptionPayload = (subscription, destination) => {
   const response = defaultRequestConfig();
-  response.endpoint = `${BASE_ENDPOINT}/api/profile-subscription-bulk-create-jobs`;
+  response.endpoint = `${BASE_ENDPOINT}${CONFIG_CATEGORIES[subscription.operation.toUpperCase()].apiUrl}`;
   response.method = defaultPostRequestConfig.requestMethod;
   response.headers = {
     Authorization: `Klaviyo-API-Key ${destination.Config.privateApiKey}`,
@@ -538,7 +562,11 @@ const buildSubscriptionRequest = (subscription, destination) => {
     'Content-Type': JSON_MIME_TYPE,
     revision,
   };
-  response.body.JSON = getSubscriptionPayload(subscription.listId, subscription.profile);
+  response.body.JSON = getSubscriptionPayload(
+    subscription.listId,
+    subscription.profile,
+    subscription.operation,
+  );
   return response;
 };
 
@@ -602,10 +630,10 @@ module.exports = {
   profileUpdateResponseBuilder,
   getIdFromNewOrExistingProfile,
   constructProfile,
-  subscribeUserToListV2,
+  subscribeOrUnsubscribeUserToListV2,
   getProfileMetadataAndMetadataFields,
   buildRequest,
-  buildSubscriptionRequest,
+  buildSubscriptionOrUnsubscriptionPayload,
   getTrackRequests,
   fetchTransformedEvents,
   addSubscribeFlagToTraits,

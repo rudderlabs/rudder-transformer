@@ -4734,6 +4734,120 @@ export const data = [
       },
     },
   },
+  {
+    name: 'snapchat_conversion',
+    description: "Test case non string event doesn't match with snapchat events",
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              messageId: 'ec5481b6-a926-4d2e-b293-0b3a77c4d3be',
+              originalTimestamp: '2022-04-22T10:57:58Z',
+              anonymousId: 'ea5cfab2-3961-4d8a-8187-3d1858c99090',
+              context: {
+                traits: {
+                  email: 'test@email.com',
+                  phone: '+91 2111111 ',
+                },
+                app: {
+                  build: '1.0.0',
+                  name: 'RudderLabs JavaScript SDK',
+                  namespace: 'com.rudderlabs.javascript',
+                  version: '1.0.0',
+                },
+                device: {
+                  advertisingId: 'T0T0T072-5e28-45a1-9eda-ce22a3e36d1a',
+                  id: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
+                  manufacturer: 'Google',
+                  name: 'generic_x86_arm',
+                  type: 'ios',
+                  attTrackingStatus: 3,
+                },
+                library: {
+                  name: 'RudderLabs JavaScript SDK',
+                  version: '1.0.0',
+                },
+                locale: 'en-US',
+                os: {
+                  name: 'iOS',
+                  version: '14.4.1',
+                },
+                screen: {
+                  density: 2,
+                },
+                externalId: [
+                  {
+                    type: 'ga4AppInstanceId',
+                    id: 'f0dd99v4f979fb997ce453373900f891',
+                  },
+                ],
+                userAgent:
+                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36',
+              },
+              type: 'track',
+              event: 1234,
+              properties: {
+                query: 't-shirts',
+                event_conversion_type: 'web',
+              },
+              integrations: {
+                All: true,
+              },
+              sentAt: '2022-04-22T10:57:58Z',
+            },
+            destination: {
+              DestinationDefinition: {
+                Config: {
+                  cdkV2Enabled: false,
+                },
+              },
+              Config: {
+                pixelId: 'dummyPixelId',
+                apiKey: 'dummyApiKey',
+                rudderEventsToSnapEvents: [],
+              },
+            },
+            metadata: {
+              jobId: 45,
+              destinationId: 'd2',
+              workspaceId: 'w2',
+            },
+          },
+        ],
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            metadata: {
+              jobId: 45,
+              destinationId: 'd2',
+              workspaceId: 'w2',
+            },
+            error: "Event 1234 doesn't match with Snapchat Events!",
+            statTags: {
+              destType: 'SNAPCHAT_CONVERSION',
+              destinationId: 'd2',
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              feature: 'processor',
+              implementation: 'native',
+              module: 'destination',
+              workspaceId: 'w2',
+            },
+            statusCode: 400,
+          },
+        ],
+      },
+    },
+  },
 ].map((tc) => ({
   ...tc,
   mockFns: (_) => {

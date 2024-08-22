@@ -14,12 +14,19 @@ const { mappingConfig, ConfigCategory } = require('./config');
  * The keys should not contain any of the values inside the validationArray.
  * STEP 1: Storing keys in the array.
  * Checking for the non-valid characters inside the keys of properties.
+ * ref: https://docs.attentivemobile.com/openapi/reference/tag/Custom-Events/
  * @param {*} payload
  * @returns
  */
-const getPropertiesKeyValidation = (payload) => {
+const arePropertiesValid = (properties) => {
+  if (!isDefinedAndNotNullAndNotEmpty(properties)) {
+    return true;
+  }
+  if (typeof properties !== 'object') {
+    return false;
+  }
   const validationArray = [`'`, `"`, `{`, `}`, `[`, `]`, ',', `,`];
-  const keys = Object.keys(payload.properties);
+  const keys = Object.keys(properties);
   for (const key of keys) {
     for (const validationChar of validationArray) {
       if (key.includes(validationChar)) {
@@ -134,6 +141,6 @@ const getDestinationItemProperties = (message, isItemsRequired) => {
 module.exports = {
   getDestinationItemProperties,
   getExternalIdentifiersMapping,
-  getPropertiesKeyValidation,
+  arePropertiesValid,
   validateTimestamp,
 };

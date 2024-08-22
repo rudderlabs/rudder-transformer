@@ -17,7 +17,7 @@ export const data = [
         body: [
           {
             connection: {
-              Config: {
+              config: {
                 destination: {
                   audienceId: 'aud1',
                 },
@@ -496,7 +496,7 @@ export const data = [
         body: [
           {
             connection: {
-              Config: {
+              config: {
                 destination: {
                   audienceId: 'aud1',
                 },
@@ -714,7 +714,7 @@ export const data = [
         body: [
           {
             connection: {
-              Config: {
+              config: {
                 destination: {
                   audienceId: 'aud1',
                 },
@@ -932,7 +932,7 @@ export const data = [
         body: [
           {
             connection: {
-              Config: {
+              config: {
                 destination: {
                   audienceId: 'aud1',
                 },
@@ -1088,7 +1088,7 @@ export const data = [
         body: [
           {
             connection: {
-              Config: {
+              config: {
                 destination: {
                   audienceId: 'aud1',
                 },
@@ -1308,7 +1308,7 @@ export const data = [
         body: [
           {
             connection: {
-              Config: {
+              config: {
                 destination: {
                   audienceId: 'aud1',
                 },
@@ -1570,7 +1570,7 @@ export const data = [
         body: [
           {
             connection: {
-              Config: {
+              config: {
                 destination: {
                   audienceId: 'aud1',
                 },
@@ -1788,7 +1788,7 @@ export const data = [
         body: [
           {
             connection: {
-              Config: {
+              config: {
                 destination: {
                   audienceId: 'aud1',
                 },
@@ -2006,7 +2006,7 @@ export const data = [
         body: [
           {
             connection: {
-              Config: {
+              config: {
                 destination: {
                   audienceId: 'aud1',
                 },
@@ -2156,7 +2156,7 @@ export const data = [
         body: [
           {
             connection: {
-              Config: {
+              config: {
                 destination: {
                   audienceId: 'aud1',
                 },
@@ -2291,7 +2291,7 @@ export const data = [
         body: [
           {
             connection: {
-              Config: {
+              config: {
                 destination: {
                   audienceId: 'aud1',
                 },
@@ -2440,7 +2440,7 @@ export const data = [
         body: [
           {
             connection: {
-              Config: {
+              config: {
                 destination: {
                   audienceId: 'aud1',
                 },
@@ -54585,7 +54585,7 @@ export const data = [
         body: [
           {
             connection: {
-              Config: {
+              config: {
                 destination: {
                   audienceId: 'aud1',
                 },

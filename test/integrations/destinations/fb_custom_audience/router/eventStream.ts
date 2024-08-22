@@ -43,7 +43,7 @@ export const eventStreamRouterRequest: RouterTransformationRequest = {
   input: [
     {
       connection: {
-        Config: {
+        config: {
           destination: {
             audienceId: 'aud1',
           },
@@ -96,7 +96,7 @@ export const eventStreamRouterRequest: RouterTransformationRequest = {
     },
     {
       connection: {
-        Config: {
+        config: {
           destination: {
             audienceId: 'aud1',
           },

@@ -21,7 +21,6 @@ const {
   responseBuilderSimple,
   getDataSource,
 } = require('./util');
-const logger = require('../../../logger');
 
 const processRecordEventArray = (
   recordChunksArray,
@@ -105,7 +104,7 @@ async function processRecordInputs(groupedRecordInputs) {
   const { message } = groupedRecordInputs[0];
   const { isHashRequired, accessToken, disableFormat, type, subType, isRaw, maxUserCount } =
     destination.Config;
-  const audienceId = get(connection, 'Config.destination.audienceId');
+  const audienceId = get(connection, 'config.destination.audienceId');
   const prepareParams = {
     access_token: accessToken,
   };
@@ -117,11 +116,9 @@ async function processRecordInputs(groupedRecordInputs) {
   }
 
   // audience id validation
-  logger.debug('Connection_object', JSON.stringify(connection));
-  logger.debug('Event_object', JSON.stringify(message));
   let operationAudienceId = audienceId;
   const mappedToDestination = get(message, MappedToDestinationKey);
-  if (mappedToDestination) {
+  if (mappedToDestination && !operationAudienceId) {
     const { objectType } = getDestinationExternalIDInfoForRetl(message, 'FB_CUSTOM_AUDIENCE');
     operationAudienceId = objectType;
   }

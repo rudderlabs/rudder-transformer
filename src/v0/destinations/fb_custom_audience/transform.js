@@ -159,7 +159,7 @@ const processEvent = (message, destination, connection) => {
   let toSendEvents = [];
   let { userSchema } = destination.Config;
   const { isHashRequired, maxUserCount } = destination.Config;
-  const audienceId = get(connection, 'Config.destination.audienceId');
+  const audienceId = get(connection, 'config.destination.audienceId');
   if (!message.type) {
     throw new InstrumentationError('Message Type is not present. Aborting message.');
   }
@@ -248,7 +248,6 @@ const processRouterDest = async (inputs, reqMetadata) => {
   const eventTypes = ['record', 'audiencelist'];
   const unsupportedEventList = checkForUnsupportedEventTypes(groupedInputs, eventTypes);
   if (unsupportedEventList.length > 0) {
-    logger.info(`unsupported events found ${unsupportedEventList}`);
     throw new ConfigurationError('unsupported events present in the event');
   }
 

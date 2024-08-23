@@ -22,7 +22,7 @@ steps:
         "batchedRequest": .,
         "batched": false,
         "destination": ^[idx].destination,
-        "metadata": ^[idx].metadata,
+        "metadata": ^[idx].metadata[],
         "statusCode": 200
       })[]
 

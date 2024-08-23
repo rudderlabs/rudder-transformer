@@ -42,7 +42,10 @@ const addPathParams = (message, webhookUrl) => webhookUrl;
 const excludeMappedFields = (payload, mapping) => {
   const rawPayload = { ...payload };
   if (mapping) {
-    mapping.forEach(({ from }) => {
+    mapping.forEach(({ from, to }) => {
+      // continue when from === to
+      if (from === to) return;
+
       // Remove the '$.' prefix and split the remaining string by '.'
       const keys = from.replace(/^\$\./, '').split('.');
       let current = rawPayload;
@@ -78,7 +81,7 @@ const getMergedEvents = (batch) => {
   return events;
 };
 
-const mergeMetadata = (batch) => batch.map((event) => event.metadata);
+const mergeMetadata = (batch) => batch.map((event) => event.metadata[0]);
 
 const createHashKey = (endpoint, headers, params) => {
   const hash = createHash('md5');

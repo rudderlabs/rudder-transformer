@@ -692,4 +692,380 @@ export const networkCallsData = [
       status: 200,
     },
   },
+  {
+    httpReq: {
+      url: 'https://api.hubapi.com/crm/v3/objects/contacts/batch/update',
+      method: 'POST',
+      data: {
+        inputs: [
+          {
+            properties: {
+              firstname: 'testmail1217',
+            },
+            id: '12877907024',
+          },
+          {
+            properties: {
+              firstname: 'test1',
+              email: 'test1@mail.com',
+            },
+            id: '12877907025',
+          },
+        ],
+      },
+    },
+    httpRes: {
+      status: 200,
+      data: {
+        status: 'COMPLETE',
+        results: [
+          {
+            id: '12877907025',
+            properties: {
+              createdate: '2024-04-16T09:50:16.034Z',
+              email: 'test1@mail.com',
+              firstname: 'test1',
+              hs_is_unworked: 'true',
+              hs_object_id: '12877907025',
+              hs_pipeline: 'contacts-lifecycle-pipeline',
+              lastmodifieddate: '2024-04-23T11:52:03.723Z',
+              lifecyclestage: 'lead',
+            },
+            createdAt: '2024-04-16T09:50:16.034Z',
+            updatedAt: '2024-04-23T11:52:03.723Z',
+            archived: false,
+          },
+          {
+            id: '12877907024',
+            properties: {
+              createdate: '2024-04-16T09:50:16.034Z',
+              firstname: 'testmail1217',
+              hs_is_unworked: 'true',
+              hs_object_id: '12877907024',
+              hs_pipeline: 'contacts-lifecycle-pipeline',
+              lastmodifieddate: '2024-04-23T11:52:03.723Z',
+              lifecyclestage: 'lead',
+            },
+            createdAt: '2024-04-16T09:50:16.034Z',
+            updatedAt: '2024-04-23T11:52:03.723Z',
+            archived: false,
+          },
+        ],
+        startedAt: '2024-04-24T05:11:51.090Z',
+        completedAt: '2024-04-24T05:11:51.190Z',
+      },
+    },
+  },
+  {
+    httpReq: {
+      url: 'https://api.hubapi.com/crm/v3/objects/contacts/batch/update',
+      method: 'POST',
+      data: {
+        inputs: [
+          {
+            properties: {
+              firstname: 'test5',
+              email: 'test1@mail.com',
+            },
+            id: '12877907025',
+          },
+          {
+            properties: {
+              firstname: 'testmail1217',
+              email: 'test1@mail.com',
+            },
+            id: '12877907025',
+          },
+        ],
+      },
+    },
+    httpRes: {
+      status: 400,
+      data: {
+        status: 'error',
+        message: 'Duplicate IDs found in batch input: [12877907025]. IDs must be unique',
+        correlationId: 'd24ec5cd-8998-4674-a928-59603ae6b0eb',
+        context: {
+          ids: ['12877907025'],
+        },
+        category: 'VALIDATION_ERROR',
+      },
+    },
+  },
+  {
+    httpReq: {
+      url: 'https://api.hubapi.com/crm/v3/objects/contacts/batch/update',
+      method: 'POST',
+      data: {
+        inputs: [
+          [
+            {
+              properties: {
+                firstname: 'test1',
+                email: 'test1@mail.com',
+              },
+            },
+            {
+              properties: {
+                firstname: 'testmail1217',
+                email: 'testmail1217@testmail.com',
+              },
+            },
+            {
+              properties: {
+                firstname: 'test5',
+                email: 'test5@xmail.con',
+              },
+            },
+          ],
+        ],
+      },
+    },
+    httpRes: {
+      status: 400,
+      data: {
+        status: 'error',
+        message:
+          'Invalid input JSON on line 3, column 9: Cannot deserialize value of type `com.hubspot.inbounddb.publicobject.core.v2.SimplePublicObjectBatchInput$Json` from Array value (token `JsonToken.START_ARRAY`)',
+        correlationId: '99df04b9-da11-4504-bd97-2c15f58d0943',
+      },
+    },
+  },
+  {
+    httpReq: {
+      url: 'https://api.hubapi.com/crm/v3/objects/contacts/batch/update',
+      method: 'POST',
+      data: {
+        inputs: [
+          {
+            properties: {
+              firstname: 'testmail12178',
+            },
+            id: '12877907024',
+          },
+          {
+            properties: {
+              firstname: 'test1',
+              email: 'test1@mail.com',
+            },
+            id: '12877907025',
+          },
+        ],
+      },
+    },
+    httpRes: {
+      status: 200,
+      data: {
+        message: 'unknown response',
+      },
+    },
+  },
+  {
+    httpReq: {
+      url: 'https://api.hubapi.com/crm/v3/objects/contacts/search',
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer dontbatchtrueaccesstoken',
+      },
+    },
+    httpRes: {
+      data: {
+        total: 0,
+        results: [],
+      },
+      status: 200,
+    },
+  },
+  {
+    httpReq: {
+      url: 'https://api.hubapi.com/contacts/v1/contact/batch/',
+      method: 'POST',
+      headers: {
+        'User-Agent': 'RudderLabs',
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer validApiKey',
+      },
+    },
+    httpRes: {
+      status: 200,
+    },
+  },
+  {
+    httpReq: {
+      url: 'https://api.hubapi.com/contacts/v1/contact/batch/',
+      method: 'POST',
+      headers: {
+        'User-Agent': 'RudderLabs',
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer inValidApiKey',
+      },
+    },
+    httpRes: {
+      status: 400,
+      data: {
+        status: 'error',
+        message: 'Errors found processing batch update',
+        correlationId: 'a716ef20-79df-44d4-98bd-9136af7bdefc',
+        invalidEmails: ['identify111052@test.con'],
+        failureMessages: [
+          {
+            index: 1,
+            error: {
+              status: 'error',
+              message: 'Email address identify111052@test.con is invalid',
+            },
+          },
+        ],
+      },
+    },
+  },
+  {
+    httpReq: {
+      url: 'https://track.hubspot.com/v1/event',
+      method: 'GET',
+      params: {
+        _a: 'dummy-hubId',
+        _n: 'test track event HS',
+        _m: 4.99,
+        email: 'testhubspot2@email.com',
+        firstname: 'Test Hubspot',
+      },
+    },
+    httpRes: {
+      status: 200,
+      data: {},
+    },
+  },
+  {
+    httpReq: {
+      url: 'https://api.hubapi.com/crm/v3/objects/contacts/batch/create',
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer validAccessToken',
+      },
+    },
+    httpRes: {
+      status: 200,
+      data: {
+        status: 'COMPLETE',
+        results: [
+          {
+            id: '44188066992',
+            properties: {
+              createdate: '2024-07-31T03:21:03.176Z',
+              email: 'testuser31848@testmail.com',
+              hs_all_contact_vids: '44188066992',
+              hs_email_domain: 'testmail.com',
+              hs_is_contact: 'true',
+              hs_is_unworked: 'true',
+              hs_lifecyclestage_lead_date: '2024-07-31T03:21:03.176Z',
+              hs_membership_has_accessed_private_content: '0',
+              hs_object_id: '44188066992',
+              hs_object_source: 'INTEGRATION',
+              hs_object_source_id: '3209723',
+              hs_object_source_label: 'INTEGRATION',
+              hs_pipeline: 'contacts-lifecycle-pipeline',
+              hs_registered_member: '0',
+              lastmodifieddate: '2024-07-31T03:21:03.176Z',
+              lifecyclestage: 'lead',
+            },
+            createdAt: '2024-07-31T03:21:03.176Z',
+            updatedAt: '2024-07-31T03:21:03.176Z',
+            archived: false,
+          },
+          {
+            id: '44188066993',
+            properties: {
+              createdate: '2024-07-31T03:21:03.176Z',
+              email: 'testuser31847@testmail.com',
+              hs_all_contact_vids: '44188066993',
+              hs_email_domain: 'testmail.com',
+              hs_is_contact: 'true',
+              hs_is_unworked: 'true',
+              hs_lifecyclestage_lead_date: '2024-07-31T03:21:03.176Z',
+              hs_membership_has_accessed_private_content: '0',
+              hs_object_id: '44188066993',
+              hs_object_source: 'INTEGRATION',
+              hs_object_source_id: '3209723',
+              hs_object_source_label: 'INTEGRATION',
+              hs_pipeline: 'contacts-lifecycle-pipeline',
+              hs_registered_member: '0',
+              lastmodifieddate: '2024-07-31T03:21:03.176Z',
+              lifecyclestage: 'lead',
+            },
+            createdAt: '2024-07-31T03:21:03.176Z',
+            updatedAt: '2024-07-31T03:21:03.176Z',
+            archived: false,
+          },
+        ],
+        startedAt: '2024-07-31T03:21:03.133Z',
+        completedAt: '2024-07-31T03:21:03.412Z',
+      },
+    },
+  },
+  {
+    httpReq: {
+      url: 'https://api.hubapi.com/events/v3/send',
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer dummy-access-token',
+      },
+    },
+    httpRes: {
+      status: 200,
+      data: {},
+    },
+  },
+  {
+    httpReq: {
+      url: 'https://api.hubapi.com/events/v3/send',
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer invalid-dummy-access-token',
+      },
+    },
+    httpRes: {
+      status: 401,
+      data: {
+        status: 'error',
+        message:
+          'Authentication credentials not found. This API supports OAuth 2.0 authentication and you can find more details at https://developers.hubspot.com/docs/methods/auth/oauth-overview',
+        correlationId: '501651f6-bb90-40f1-b0db-349f62916993',
+        category: 'INVALID_AUTHENTICATION',
+      },
+    },
+  },
+  {
+    httpReq: {
+      url: 'https://api.hubapi.com/crm/v3/associations/companies/contacts/batch/create',
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer dummy-access-token',
+      },
+    },
+    httpRes: {
+      status: 201,
+      data: {
+        completedAt: '2024-07-31T04:46:34.391Z',
+        requestedAt: '2024-07-31T04:46:34.391Z',
+        startedAt: '2024-07-31T04:46:34.391Z',
+        results: [
+          {
+            from: {
+              id: '9405415215',
+            },
+            to: {
+              id: '1',
+            },
+            type: 'contact_to_company',
+          },
+        ],
+        status: 'PENDING',
+      },
+    },
+  },
 ];

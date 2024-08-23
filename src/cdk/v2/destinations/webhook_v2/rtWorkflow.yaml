@@ -32,6 +32,10 @@ steps:
         $.handleRtTfSingleEventError(^[idx], .originalError ?? ., {})
       )[]
 
+  - name: bodyFormat
+    template: |
+      $.outputs.successfulEvents[0].destination.Config.format ?? "JSON";
+
   - name: batchingEnabled
     template: |
       $.outputs.successfulEvents[0].destination.Config.isBatchingEnabled;
@@ -42,34 +46,12 @@ steps:
 
   - name: batchSuccessfulEvents
     description: Batches the successfulEvents
+    condition: $.outputs.batchingEnabled && $.outputs.bodyFormat === "JSON"
     template: |
-      let batches = $.BatchUtils.chunkArrayBySizeAndLength(
-      $.outputs.successfulEvents, {maxItems: $.outputs.batchSize}).items;
-
-      batches@batch.({
-        "batchedRequest": {
-          "body": {
-            "JSON": {},
-            "JSON_ARRAY": {"batch": JSON.stringify(~r batch.batchedRequest.body.JSON[])},
-            "XML": {},
-            "FORM": {}
-          },
-          "version": "1",
-          "type": "REST",
-          "method": "POST",
-          "endpoint": batch[0].batchedRequest.endpoint,
-          "headers": batch[0].batchedRequest.headers,
-          "params": batch[0].batchedRequest.params,
-          "files": {}
-        },
-        "metadata": ~r batch.metadata[],
-        "batched": true,
-        "statusCode": 200,
-        "destination": batch[0].destination
-      })[];
+      $.batchSuccessfulEvents($.outputs.successfulEvents, $.outputs.batchSize);
 
   - name: finalPayloadWithBatching
-    condition: $.outputs.batchingEnabled
+    condition: $.outputs.batchingEnabled && $.outputs.bodyFormat === "JSON"
     template: |
       [...$.outputs.batchSuccessfulEvents, ...$.outputs.failedEvents]
     else:

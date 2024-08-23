@@ -1,5 +1,9 @@
+const jsonxml = require('jsontoxml');
+const { groupBy } = require('lodash');
+const { createHash } = require('crypto');
 const { ConfigurationError } = require('@rudderstack/integrations-lib');
-const { base64Convertor, applyCustomMappings } = require('../../../../v0/util');
+const { BatchUtils } = require('@rudderstack/workflow-engine');
+const { base64Convertor, applyCustomMappings, isEmptyObject } = require('../../../../v0/util');
 
 const getAuthHeaders = (config) => {
   let headers;
@@ -62,4 +66,77 @@ const excludeMappedFields = (payload, mapping) => {
   return rawPayload;
 };
 
-module.exports = { getAuthHeaders, getCustomMappings, addPathParams, excludeMappedFields };
+const getXMLPayload = (payload) => jsonxml(payload, true);
+
+const getMergedEvents = (batch) => {
+  const events = [];
+  batch.forEach((event) => {
+    if (!isEmptyObject(event.batchedRequest.body.JSON)) {
+      events.push(event.batchedRequest.body.JSON);
+    }
+  });
+  return events;
+};
+
+const mergeMetadata = (batch) => batch.map((event) => event.metadata);
+
+const createHashKey = (endpoint, headers, params) => {
+  const hash = createHash('md5');
+  hash.update(endpoint);
+  hash.update(JSON.stringify(headers));
+  hash.update(JSON.stringify(params));
+  return hash.digest('hex');
+};
+
+const buildBatchedRequest = (batch) => ({
+  batchedRequest: {
+    body: {
+      JSON: {},
+      JSON_ARRAY: { batch: JSON.stringify(getMergedEvents(batch)) },
+      XML: {},
+      FORM: {},
+    },
+    version: '1',
+    type: 'REST',
+    method: batch[0].batchedRequest.method,
+    endpoint: batch[0].batchedRequest.endpoint,
+    headers: batch[0].batchedRequest.headers,
+    params: batch[0].batchedRequest.params,
+    files: {},
+  },
+  metadata: mergeMetadata(batch),
+  batched: true,
+  statusCode: 200,
+  destination: batch[0].destination,
+});
+
+const batchSuccessfulEvents = (events, batchSize) => {
+  console.log('hee');
+  const response = [];
+  // group events by endpoint, headers and query params
+  const groupedEvents = groupBy(events, (event) => {
+    const { endpoint, headers, params } = event.batchedRequest;
+    return createHashKey(endpoint, headers, params);
+  });
+
+  // batch the each grouped event
+  Object.keys(groupedEvents).forEach((groupKey) => {
+    const batches = BatchUtils.chunkArrayBySizeAndLength(groupedEvents[groupKey], {
+      maxItems: batchSize,
+    }).items;
+    batches.forEach((batch) => {
+      response.push(buildBatchedRequest(batch));
+    });
+  });
+  console.log(JSON.stringify(response));
+  return response;
+};
+
+module.exports = {
+  getAuthHeaders,
+  getCustomMappings,
+  addPathParams,
+  excludeMappedFields,
+  getXMLPayload,
+  batchSuccessfulEvents,
+};

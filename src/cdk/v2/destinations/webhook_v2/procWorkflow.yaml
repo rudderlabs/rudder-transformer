@@ -12,6 +12,8 @@ bindings:
     path: ../../../../v0/util
   - name: defaultRequestConfig
     path: ../../../../v0/util
+  - name: isEmptyObject
+    path: ../../../../v0/util
   - path: ./utils
 
 steps:
@@ -33,11 +35,9 @@ steps:
 
   - name: buildHeaders
     template: |
-      const defaultHeaders = $.context.method in ['POST', 'PUT', 'PATCH'] ? {"content-type": "application/json"} : {};
       const configAuthHeaders = $.getAuthHeaders(.destination.Config);
       const additionalConfigHeaders = $.getCustomMappings(.message, .destination.Config.headers);   
       $.context.headers = {
-        ...defaultHeaders,
         ...configAuthHeaders,
         ...additionalConfigHeaders
       }
@@ -52,16 +52,16 @@ steps:
 
   - name: prepareBody
     template: |
-      const payload = $.getCustomMappings(.message, .destination.Config.eventsMapping);
-      $.context.payload = $.removeUndefinedAndNullValues($.excludeMappedFields(payload, .destination.Config.eventsMapping))
+      const payload = $.getCustomMappings(.message, .destination.Config.propertiesMapping);
+      $.context.payload = $.removeUndefinedAndNullValues($.excludeMappedFields(payload, .destination.Config.propertiesMapping))
+      $.context.format === "XML" &&  !$.isEmptyObject($.context.payload) ?  $.context.payload = {payload: $.getXMLPayload($.context.payload)};
 
   - name: buildResponseForProcessTransformation
     template: |
       const response = $.defaultRequestConfig();
-      response.body.JSON = $.context.payload;
+      $.context.format === "JSON" ? response.body.JSON = $.context.payload: response.body.XML = $.context.payload;
       response.endpoint = $.context.endpoint;
       response.headers = $.context.headers;
-      response.params = $.context.params;
       response.method = $.context.method;
-      console.log("response ", JSON.stringify(response));
+      response.params = $.context.params ?? {};
       response

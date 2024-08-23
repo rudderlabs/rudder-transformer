@@ -111,7 +111,6 @@ const buildBatchedRequest = (batch) => ({
 });
 
 const batchSuccessfulEvents = (events, batchSize) => {
-  console.log('hee');
   const response = [];
   // group events by endpoint, headers and query params
   const groupedEvents = groupBy(events, (event) => {
@@ -128,7 +127,6 @@ const batchSuccessfulEvents = (events, batchSize) => {
       response.push(buildBatchedRequest(batch));
     });
   });
-  console.log(JSON.stringify(response));
   return response;
 };
 

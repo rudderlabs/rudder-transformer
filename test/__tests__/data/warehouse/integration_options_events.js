@@ -859,6 +859,8 @@ const sampleEvents = {
         },
         {
           "data": {
+            "anonymous_id": "97c46c81-3140-456d-b2a9-690d70aaca35",
+            "channel": "web",
             "context_app_build": "1.0.0",
             "context_app_name": "RudderLabs JavaScript SDK",
             "context_app_namespace": "com.rudderlabs.javascript",
@@ -879,11 +881,16 @@ const sampleEvents = {
             "context_user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0",
             "email": "user123@email.com",
             "id": "user123",
+            "original_timestamp": "2020-01-24T06:29:02.364Z",
             "phone": "+917836362334",
-            "received_at": "2020-01-24T06:29:02.403Z"
+            "received_at": "2020-01-24T06:29:02.403Z",
+            "sent_at": "2021-01-03T17:02:53.195Z",
+            "timestamp": "2020-01-24T06:29:02.403Z"
           },
           "metadata": {
             "columns": {
+              "anonymous_id": "string",
+              "channel": "string",
               "context_app_build": "string",
               "context_app_name": "string",
               "context_app_namespace": "string",
@@ -904,8 +911,11 @@ const sampleEvents = {
               "context_user_agent": "string",
               "email": "string",
               "id": "string",
+              "original_timestamp": "datetime",
               "phone": "string",
               "received_at": "datetime",
+              "sent_at": "datetime",
+              "timestamp": "datetime",
               "uuid_ts": "datetime"
             },
             "receivedAt": "2020-01-24T11:59:02.403+05:30",
@@ -1053,6 +1063,8 @@ const sampleEvents = {
         },
         {
           "data": {
+            "anonymous_id": "97c46c81-3140-456d-b2a9-690d70aaca35",
+            "channel": "web",
             "context_app_build": "1.0.0",
             "context_app_name": "RudderLabs JavaScript SDK",
             "context_app_namespace": "com.rudderlabs.javascript",
@@ -1073,11 +1085,16 @@ const sampleEvents = {
             "context_user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0",
             "email": "user123@email.com",
             "id": "user123",
+            "original_timestamp": "2020-01-24T06:29:02.364Z",
             "phone": "+917836362334",
-            "received_at": "2020-01-24T06:29:02.403Z"
+            "received_at": "2020-01-24T06:29:02.403Z",
+            "sent_at": "2021-01-03T17:02:53.195Z",
+            "timestamp": "2020-01-24T06:29:02.403Z"
           },
           "metadata": {
             "columns": {
+              "anonymous_id": "string",
+              "channel": "string",
               "context_app_build": "string",
               "context_app_name": "string",
               "context_app_namespace": "string",
@@ -1099,8 +1116,11 @@ const sampleEvents = {
               "email": "string",
               "id": "string",
               "loaded_at": "datetime",
+              "original_timestamp": "datetime",
               "phone": "string",
               "received_at": "datetime",
+              "sent_at": "datetime",
+              "timestamp": "datetime",
               "uuid_ts": "datetime"
             },
             "receivedAt": "2020-01-24T11:59:02.403+05:30",
@@ -1178,6 +1198,8 @@ const sampleEvents = {
         },
         {
           "data": {
+            "ANONYMOUS_ID": "97c46c81-3140-456d-b2a9-690d70aaca35",
+            "CHANNEL": "web",
             "CONTEXT_APP_BUILD": "1.0.0",
             "CONTEXT_APP_NAME": "RudderLabs JavaScript SDK",
             "CONTEXT_APP_NAMESPACE": "com.rudderlabs.javascript",
@@ -1198,11 +1220,16 @@ const sampleEvents = {
             "CONTEXT_USER_AGENT": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0",
             "EMAIL": "user123@email.com",
             "ID": "user123",
+            "ORIGINAL_TIMESTAMP": "2020-01-24T06:29:02.364Z",
             "PHONE": "+917836362334",
-            "RECEIVED_AT": "2020-01-24T06:29:02.403Z"
+            "RECEIVED_AT": "2020-01-24T06:29:02.403Z",
+            "SENT_AT": "2021-01-03T17:02:53.195Z",
+            "TIMESTAMP": "2020-01-24T06:29:02.403Z"
           },
           "metadata": {
             "columns": {
+              "ANONYMOUS_ID": "string",
+              "CHANNEL": "string",
               "CONTEXT_APP_BUILD": "string",
               "CONTEXT_APP_NAME": "string",
               "CONTEXT_APP_NAMESPACE": "string",
@@ -1223,8 +1250,11 @@ const sampleEvents = {
               "CONTEXT_USER_AGENT": "string",
               "EMAIL": "string",
               "ID": "string",
+              "ORIGINAL_TIMESTAMP": "datetime",
               "PHONE": "string",
               "RECEIVED_AT": "datetime",
+              "SENT_AT": "datetime",
+              "TIMESTAMP": "datetime",
               "UUID_TS": "datetime"
             },
             "receivedAt": "2020-01-24T11:59:02.403+05:30",
@@ -1302,6 +1332,9 @@ const sampleEvents = {
         },
         {
           "data": {
+            "_timestamp": "2020-01-24T06:29:02.403Z",
+            "anonymous_id": "97c46c81-3140-456d-b2a9-690d70aaca35",
+            "channel": "web",
             "context_app_build": "1.0.0",
             "context_app_name": "RudderLabs JavaScript SDK",
             "context_app_namespace": "com.rudderlabs.javascript",
@@ -1322,11 +1355,16 @@ const sampleEvents = {
             "context_user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0",
             "email": "user123@email.com",
             "id": "user123",
+            "original_timestamp": "2020-01-24T06:29:02.364Z",
             "phone": "+917836362334",
-            "received_at": "2020-01-24T06:29:02.403Z"
+            "received_at": "2020-01-24T06:29:02.403Z",
+            "sent_at": "2021-01-03T17:02:53.195Z"
           },
           "metadata": {
             "columns": {
+              "_timestamp": "datetime",
+              "anonymous_id": "string",
+              "channel": "string",
               "context_app_build": "string",
               "context_app_name": "string",
               "context_app_namespace": "string",
@@ -1347,8 +1385,10 @@ const sampleEvents = {
               "context_user_agent": "string",
               "email": "string",
               "id": "string",
+              "original_timestamp": "datetime",
               "phone": "string",
               "received_at": "datetime",
+              "sent_at": "datetime",
               "uuid_ts": "datetime"
             },
             "receivedAt": "2020-01-24T11:59:02.403+05:30",

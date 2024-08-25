@@ -204,6 +204,8 @@ module.exports = {
             },
             {
                 "data": {
+                    "anonymous_id": "97c46c81-3140-456d-b2a9-690d70aaca35",
+                    "channel": "web",
                     "context_app_build": "1.0.0",
                     "context_app_name": "RudderLabs JavaScript SDK",
                     "context_app_namespace": "com.rudderlabs.javascript",
@@ -227,13 +229,18 @@ module.exports = {
                     "ct_map_nested_map_n_1": "nested prop 1",
                     "email": "user123@email.com",
                     "id": "user123",
+                    "original_timestamp": "2020-01-24T06:29:02.364Z",
                     "phone": "+917836362334",
                     "received_at": "2020-01-24T06:29:02.403Z",
+                    "sent_at": "2021-01-03T17:02:53.195Z",
                     "t_map_nested_map_n_1": "nested prop 1",
+                    "timestamp": "2020-01-24T06:29:02.403Z",
                     "up_map_nested_map_n_1": "nested prop 1"
                 },
                 "metadata": {
                     "columns": {
+                        "anonymous_id": "string",
+                        "channel": "string",
                         "context_app_build": "string",
                         "context_app_name": "string",
                         "context_app_namespace": "string",
@@ -257,9 +264,12 @@ module.exports = {
                         "ct_map_nested_map_n_1": "string",
                         "email": "string",
                         "id": "string",
+                        "original_timestamp": "datetime",
                         "phone": "string",
                         "received_at": "datetime",
+                        "sent_at": "datetime",
                         "t_map_nested_map_n_1": "string",
+                        "timestamp": "datetime",
                         "up_map_nested_map_n_1": "string",
                         "uuid_ts": "datetime"
                     },
@@ -348,6 +358,8 @@ module.exports = {
             },
             {
                 "data": {
+                    "anonymous_id": "97c46c81-3140-456d-b2a9-690d70aaca35",
+                    "channel": "web",
                     "context_app_build": "1.0.0",
                     "context_app_name": "RudderLabs JavaScript SDK",
                     "context_app_namespace": "com.rudderlabs.javascript",
@@ -371,13 +383,18 @@ module.exports = {
                     "ct_map_nested_map_n_1": "nested prop 1",
                     "email": "user123@email.com",
                     "id": "user123",
+                    "original_timestamp": "2020-01-24T06:29:02.364Z",
                     "phone": "+917836362334",
                     "received_at": "2020-01-24T06:29:02.403Z",
+                    "sent_at": "2021-01-03T17:02:53.195Z",
                     "t_map_nested_map_n_1": "nested prop 1",
+                    "timestamp": "2020-01-24T06:29:02.403Z",
                     "up_map_nested_map_n_1": "nested prop 1"
                 },
                 "metadata": {
                     "columns": {
+                        "anonymous_id": "string",
+                        "channel": "string",
                         "context_app_build": "string",
                         "context_app_name": "string",
                         "context_app_namespace": "string",
@@ -401,9 +418,12 @@ module.exports = {
                         "ct_map_nested_map_n_1": "string",
                         "email": "string",
                         "id": "string",
+                        "original_timestamp": "datetime",
                         "phone": "string",
                         "received_at": "datetime",
+                        "sent_at": "datetime",
                         "t_map_nested_map_n_1": "string",
+                        "timestamp": "datetime",
                         "up_map_nested_map_n_1": "string",
                         "uuid_ts": "datetime"
                     },
@@ -493,6 +513,8 @@ module.exports = {
             },
             {
                 "data": {
+                    "anonymous_id": "97c46c81-3140-456d-b2a9-690d70aaca35",
+                    "channel": "web",
                     "context_app_build": "1.0.0",
                     "context_app_name": "RudderLabs JavaScript SDK",
                     "context_app_namespace": "com.rudderlabs.javascript",
@@ -516,13 +538,18 @@ module.exports = {
                     "ct_map_nested_map_n_1": "nested prop 1",
                     "email": "user123@email.com",
                     "id": "user123",
+                    "original_timestamp": "2020-01-24T06:29:02.364Z",
                     "phone": "+917836362334",
                     "received_at": "2020-01-24T06:29:02.403Z",
+                    "sent_at": "2021-01-03T17:02:53.195Z",
                     "t_map_nested_map_n_1": "nested prop 1",
+                    "timestamp": "2020-01-24T06:29:02.403Z",
                     "up_map_nested_map_n_1": "nested prop 1"
                 },
                 "metadata": {
                     "columns": {
+                        "anonymous_id": "string",
+                        "channel": "string",
                         "context_app_build": "string",
                         "context_app_name": "string",
                         "context_app_namespace": "string",
@@ -547,9 +574,12 @@ module.exports = {
                         "email": "string",
                         "id": "string",
                         "loaded_at": "datetime",
+                        "original_timestamp": "datetime",
                         "phone": "string",
                         "received_at": "datetime",
+                        "sent_at": "datetime",
                         "t_map_nested_map_n_1": "string",
+                        "timestamp": "datetime",
                         "up_map_nested_map_n_1": "string",
                         "uuid_ts": "datetime"
                     },
@@ -638,6 +668,8 @@ module.exports = {
             },
             {
                 "data": {
+                    "anonymous_id": "97c46c81-3140-456d-b2a9-690d70aaca35",
+                    "channel": "web",
                     "context_app_build": "1.0.0",
                     "context_app_name": "RudderLabs JavaScript SDK",
                     "context_app_namespace": "com.rudderlabs.javascript",
@@ -661,13 +693,18 @@ module.exports = {
                     "ct_map_nested_map_n_1": "nested prop 1",
                     "email": "user123@email.com",
                     "id": "user123",
+                    "original_timestamp": "2020-01-24T06:29:02.364Z",
                     "phone": "+917836362334",
                     "received_at": "2020-01-24T06:29:02.403Z",
+                    "sent_at": "2021-01-03T17:02:53.195Z",
                     "t_map_nested_map_n_1": "nested prop 1",
+                    "timestamp": "2020-01-24T06:29:02.403Z",
                     "up_map_nested_map_n_1": "nested prop 1"
                 },
                 "metadata": {
                     "columns": {
+                        "anonymous_id": "string",
+                        "channel": "string",
                         "context_app_build": "string",
                         "context_app_name": "string",
                         "context_app_namespace": "string",
@@ -691,9 +728,12 @@ module.exports = {
                         "ct_map_nested_map_n_1": "string",
                         "email": "string",
                         "id": "string",
+                        "original_timestamp": "datetime",
                         "phone": "string",
                         "received_at": "datetime",
+                        "sent_at": "datetime",
                         "t_map_nested_map_n_1": "string",
+                        "timestamp": "datetime",
                         "up_map_nested_map_n_1": "string",
                         "uuid_ts": "datetime"
                     },
@@ -782,6 +822,8 @@ module.exports = {
             },
             {
                 "data": {
+                    "ANONYMOUS_ID": "97c46c81-3140-456d-b2a9-690d70aaca35",
+                    "CHANNEL": "web",
                     "CONTEXT_APP_BUILD": "1.0.0",
                     "CONTEXT_APP_NAME": "RudderLabs JavaScript SDK",
                     "CONTEXT_APP_NAMESPACE": "com.rudderlabs.javascript",
@@ -805,13 +847,18 @@ module.exports = {
                     "CT_MAP_NESTED_MAP_N_1": "nested prop 1",
                     "EMAIL": "user123@email.com",
                     "ID": "user123",
+                    "ORIGINAL_TIMESTAMP": "2020-01-24T06:29:02.364Z",
                     "PHONE": "+917836362334",
                     "RECEIVED_AT": "2020-01-24T06:29:02.403Z",
+                    "SENT_AT": "2021-01-03T17:02:53.195Z",
+                    "TIMESTAMP": "2020-01-24T06:29:02.403Z",
                     "T_MAP_NESTED_MAP_N_1": "nested prop 1",
                     "UP_MAP_NESTED_MAP_N_1": "nested prop 1"
                 },
                 "metadata": {
                     "columns": {
+                        "ANONYMOUS_ID": "string",
+                        "CHANNEL": "string",
                         "CONTEXT_APP_BUILD": "string",
                         "CONTEXT_APP_NAME": "string",
                         "CONTEXT_APP_NAMESPACE": "string",
@@ -835,8 +882,11 @@ module.exports = {
                         "CT_MAP_NESTED_MAP_N_1": "string",
                         "EMAIL": "string",
                         "ID": "string",
+                        "ORIGINAL_TIMESTAMP": "datetime",
                         "PHONE": "string",
                         "RECEIVED_AT": "datetime",
+                        "SENT_AT": "datetime",
+                        "TIMESTAMP": "datetime",
                         "T_MAP_NESTED_MAP_N_1": "string",
                         "UP_MAP_NESTED_MAP_N_1": "string",
                         "UUID_TS": "datetime"

@@ -289,4 +289,52 @@ export const networkCallsData = [
       },
     },
   },
+  {
+    httpReq: {
+      url: 'https://googleads.googleapis.com/v15/customers/wrongCustomerId/offlineUserDataJobs:create',
+      data: {
+        job: {
+          type: 'CUSTOMER_MATCH_USER_LIST',
+          customerMatchUserListMetadata: {
+            userList: 'customers/wrongCustomerId/userLists/709078448',
+            consent: {
+              adPersonalization: 'UNSPECIFIED',
+              adUserData: 'UNSPECIFIED',
+            },
+          },
+        },
+      },
+      headers: {
+        Authorization: 'Bearer dummy-access',
+        'Content-Type': 'application/json',
+        'developer-token': 'dummy-dev-token',
+      },
+      method: 'POST',
+    },
+    httpRes: {
+      status: 400,
+      data: {
+        error: {
+          code: 400,
+          message: 'Request contains an invalid argument.',
+          status: 'INVALID_ARGUMENT',
+          details: [
+            {
+              '@type': 'type.googleapis.com/google.ads.googleads.v16.errors.GoogleAdsFailure',
+              errors: [
+                {
+                  errorCode: {
+                    databaseError: 'CONCURRENT_MODIFICATION',
+                  },
+                  message:
+                    'Multiple requests were attempting to modify the same resource at once. Retry the request.',
+                },
+              ],
+              requestId: '08X6xmM1WJPf_lW1ppYfsA',
+            },
+          ],
+        },
+      },
+    },
+  },
 ];

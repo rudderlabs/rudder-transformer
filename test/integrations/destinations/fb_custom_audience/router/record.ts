@@ -32,6 +32,13 @@ const destination: Destination = {
 export const rETLRecordRouterRequest: RouterTransformationRequest = {
   input: [
     {
+      connection: {
+        config: {
+          destination: {
+            isHashRequired: true,
+          },
+        },
+      },
       destination: destination,
       message: {
         action: 'insert',
@@ -62,6 +69,13 @@ export const rETLRecordRouterRequest: RouterTransformationRequest = {
       metadata: generateMetadata(3),
     },
     {
+      connection: {
+        config: {
+          destination: {
+            isHashRequired: true,
+          },
+        },
+      },
       destination: destination,
       message: {
         action: 'update',
@@ -92,6 +106,13 @@ export const rETLRecordRouterRequest: RouterTransformationRequest = {
       metadata: generateMetadata(4),
     },
     {
+      connection: {
+        config: {
+          destination: {
+            isHashRequired: true,
+          },
+        },
+      },
       destination: destination,
       message: {
         action: 'delete',
@@ -122,6 +143,13 @@ export const rETLRecordRouterRequest: RouterTransformationRequest = {
       metadata: generateMetadata(1),
     },
     {
+      connection: {
+        config: {
+          destination: {
+            isHashRequired: true,
+          },
+        },
+      },
       destination: destination,
       message: {
         action: 'delete',
@@ -152,6 +180,13 @@ export const rETLRecordRouterRequest: RouterTransformationRequest = {
       metadata: generateMetadata(2),
     },
     {
+      connection: {
+        config: {
+          destination: {
+            isHashRequired: true,
+          },
+        },
+      },
       destination: destination,
       message: {
         action: 'update',
@@ -182,6 +217,13 @@ export const rETLRecordRouterRequest: RouterTransformationRequest = {
       metadata: generateMetadata(5),
     },
     {
+      connection: {
+        config: {
+          destination: {
+            isHashRequired: true,
+          },
+        },
+      },
       destination: destination,
       message: {
         action: 'update',
@@ -212,6 +254,13 @@ export const rETLRecordRouterRequest: RouterTransformationRequest = {
       metadata: generateMetadata(6),
     },
     {
+      connection: {
+        config: {
+          destination: {
+            isHashRequired: true,
+          },
+        },
+      },
       destination: destination,
       message: {
         action: 'lol',

@@ -32,6 +32,13 @@ const destination: Destination = {
 export const rETLBatchingRouterRequest: RouterTransformationRequest = {
   input: [
     {
+      connection: {
+        config: {
+          destination: {
+            isHashRequired: true,
+          },
+        },
+      },
       destination: destination,
       message: {
         action: 'insert',
@@ -62,6 +69,13 @@ export const rETLBatchingRouterRequest: RouterTransformationRequest = {
       metadata: generateMetadata(1),
     },
     {
+      connection: {
+        config: {
+          destination: {
+            isHashRequired: true,
+          },
+        },
+      },
       destination: destination,
       message: {
         action: 'insert',
@@ -92,6 +106,13 @@ export const rETLBatchingRouterRequest: RouterTransformationRequest = {
       metadata: generateMetadata(2),
     },
     {
+      connection: {
+        config: {
+          destination: {
+            isHashRequired: true,
+          },
+        },
+      },
       destination: destination,
       message: {
         action: 'insert',

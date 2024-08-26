@@ -373,4 +373,71 @@ export const testScenariosForV1API = [
       },
     },
   },
+  {
+    id: 'garl_v1_scenario_4',
+    name: 'google_adwords_remarketing_lists',
+    description:
+      '[Proxy v1 API] :: getting concurrent_modification error code while sending request to GA audience API',
+    successCriteria: 'Should return 500 with destination response',
+    scenario: 'Business',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v1',
+    input: {
+      request: {
+        body: generateProxyV1Payload(
+          {
+            headers: commonHeaders,
+            params: { ...commonParams, customerId: 'wrongCustomerId' },
+            JSON: validRequestPayload2,
+            endpoint:
+              'https://googleads.googleapis.com/v15/customers/wrongCustomerId/offlineUserDataJobs',
+          },
+          metadataArray,
+        ),
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: {
+            message:
+              '{"error":{"code":400,"message":"Request contains an invalid argument.","status":"INVALID_ARGUMENT","details":[{"@type":"type.googleapis.com/google.ads.googleads.v16.errors.GoogleAdsFailure","errors":[{"errorCode":{"databaseError":"CONCURRENT_MODIFICATION"},"message":"Multiple requests were attempting to modify the same resource at once. Retry the request."}],"requestId":"08X6xmM1WJPf_lW1ppYfsA"}]}} during ga_audience response transformation',
+            response: [
+              {
+                error:
+                  '{"error":{"code":400,"message":"Request contains an invalid argument.","status":"INVALID_ARGUMENT","details":[{"@type":"type.googleapis.com/google.ads.googleads.v16.errors.GoogleAdsFailure","errors":[{"errorCode":{"databaseError":"CONCURRENT_MODIFICATION"},"message":"Multiple requests were attempting to modify the same resource at once. Retry the request."}],"requestId":"08X6xmM1WJPf_lW1ppYfsA"}]}} during ga_audience response transformation',
+                metadata: {
+                  attemptNum: 1,
+                  destinationId: 'default-destinationId',
+                  dontBatch: false,
+                  jobId: 1,
+                  secret: {
+                    access_token: 'default-accessToken',
+                  },
+                  sourceId: 'default-sourceId',
+                  userId: 'default-userId',
+                  workspaceId: 'default-workspaceId',
+                },
+                statusCode: 500,
+              },
+            ],
+            statTags: {
+              destType: 'GOOGLE_ADWORDS_REMARKETING_LISTS',
+              destinationId: 'default-destinationId',
+              errorCategory: 'network',
+              errorType: 'retryable',
+              feature: 'dataDelivery',
+              implementation: 'native',
+              module: 'destination',
+              workspaceId: 'default-workspaceId',
+            },
+            status: 500,
+          },
+        },
+      },
+    },
+  },
 ];

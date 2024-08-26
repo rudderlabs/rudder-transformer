@@ -29,12 +29,6 @@ jobs:
         with:
           fetch-depth: 1
 
-      - name: Login to Dockerhub
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-
       - name: Setup Node
         uses: actions/setup-node@v4.0.3
         with:
@@ -81,8 +75,8 @@ jobs:
       - name: Patch default service account in openfaas-fn
         run: 'kubectl patch serviceaccount default -n openfaas-fn -p ''{"imagePullSecrets": [{"name": "regcred"}]}'''
 
-      - name: Patch Gateway Deployment with ImagePullSecret
-        run: 'kubectl patch deployment gateway -n openfaas -p=''{"spec": {"template": {"spec": {"imagePullSecrets": [{"name": "regcred"}]}}}}'''
+      - name: Patch deployment "gateway"
+        run: 'kubectl patch deployment gateway -n openfaas -p ''{"spec": {"template": {"spec": {"imagePullSecrets": [{"name": "regcred"}]}}}}'''
 
       - name: Wait for deployment "gateway" rollout
         run: kubectl rollout status deploy/gateway --timeout 120s -n openfaas

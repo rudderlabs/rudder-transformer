@@ -72,6 +72,12 @@ jobs:
             --set gateway.image=rudderlabs/rudder-openfaas-gateway:0.25.2 \
             --set faasnetes.image=rudderlabs/rudder-openfaas-faas-netes:0.15.4
 
+      - name: Create regcred secret
+        run: kubectl create secret docker-registry regcred --docker-server=https://index.docker.io/v1/ --docker-username=$DOCKERHUB_USERNAME --docker-password=$DOCKERHUB_TOKEN --docker-email=$DOCKERHUB_EMAIL -n openfaas
+
+      - name: Patch Gateway Deployment with ImagePullSecret
+        run: 'kubectl patch deployment gateway -n openfaas -p=''{"spec": {"template": {"spec": {"imagePullSecrets": [{"name": "regcred"}]}}}}'''
+
       - name: Wait for deployment "gateway" rollout
         run: kubectl rollout status deploy/gateway --timeout 120s -n openfaas
 

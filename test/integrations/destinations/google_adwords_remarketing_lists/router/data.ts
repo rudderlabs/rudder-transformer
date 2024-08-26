@@ -1,5 +1,6 @@
 import { rETLAudienceRouterRequest } from './audience';
 import { rETLRecordRouterRequest } from './record';
+import { API_VERSION } from '../../../../../src/v0/destinations/google_adwords_remarketing_lists/config';
 
 export const data = [
   {
@@ -25,8 +26,7 @@ export const data = [
                   version: '1',
                   type: 'REST',
                   method: 'POST',
-                  endpoint:
-                    'https://googleads.googleapis.com/v17/customers/7693729833/offlineUserDataJobs',
+                  endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
                   headers: {
                     Authorization: 'Bearer default-accessToken',
                     'Content-Type': 'application/json',
@@ -121,8 +121,7 @@ export const data = [
                   version: '1',
                   type: 'REST',
                   method: 'POST',
-                  endpoint:
-                    'https://googleads.googleapis.com/v17/customers/7693729833/offlineUserDataJobs',
+                  endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
                   headers: {
                     Authorization: 'Bearer default-accessToken',
                     'Content-Type': 'application/json',
@@ -217,8 +216,7 @@ export const data = [
                   version: '1',
                   type: 'REST',
                   method: 'POST',
-                  endpoint:
-                    'https://googleads.googleapis.com/v17/customers/7693729833/offlineUserDataJobs',
+                  endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
                   headers: {
                     Authorization: 'Bearer default-accessToken',
                     'Content-Type': 'application/json',
@@ -268,8 +266,7 @@ export const data = [
                   version: '1',
                   type: 'REST',
                   method: 'POST',
-                  endpoint:
-                    'https://googleads.googleapis.com/v17/customers/7693729833/offlineUserDataJobs',
+                  endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
                   headers: {
                     Authorization: 'Bearer default-accessToken',
                     'Content-Type': 'application/json',
@@ -386,8 +383,7 @@ export const data = [
                   version: '1',
                   type: 'REST',
                   method: 'POST',
-                  endpoint:
-                    'https://googleads.googleapis.com/v17/customers/7693729833/offlineUserDataJobs',
+                  endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
                   headers: {
                     Authorization: 'Bearer default-accessToken',
                     'Content-Type': 'application/json',
@@ -484,8 +480,7 @@ export const data = [
                   version: '1',
                   type: 'REST',
                   method: 'POST',
-                  endpoint:
-                    'https://googleads.googleapis.com/v17/customers/7693729833/offlineUserDataJobs',
+                  endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
                   headers: {
                     Authorization: 'Bearer default-accessToken',
                     'Content-Type': 'application/json',
@@ -612,8 +607,7 @@ export const data = [
                   version: '1',
                   type: 'REST',
                   method: 'POST',
-                  endpoint:
-                    'https://googleads.googleapis.com/v17/customers/7693729833/offlineUserDataJobs',
+                  endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
                   headers: {
                     Authorization: 'Bearer default-accessToken',
                     'Content-Type': 'application/json',

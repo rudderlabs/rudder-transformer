@@ -1,9 +1,9 @@
-import { enhanceRequestOptions, getFormData } from '../../../../src/adapters/network';
+import { API_VERSION } from '../../../../src/v0/destinations/google_adwords_remarketing_lists/config';
 
 export const networkCallsData = [
   {
     httpReq: {
-      url: 'https://googleads.googleapis.com/v15/customers/7693729833/offlineUserDataJobs:create',
+      url: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs:create`,
       data: {
         job: {
           type: 'CUSTOMER_MATCH_USER_LIST',
@@ -29,7 +29,7 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      url: 'https://googleads.googleapis.com/v15/customers/7693729833/offlineUserDataJobs/18025019461:addOperations',
+      url: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs/18025019461:addOperations`,
       data: {
         enablePartialFailure: true,
         operations: [
@@ -71,7 +71,7 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      url: 'https://googleads.googleapis.com/v15/customers/7693729833/offlineUserDataJobs/18025019461:run',
+      url: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs/18025019461:run`,
       headers: {
         Authorization: 'Bearer dummy-access',
         'Content-Type': 'application/json',
@@ -85,7 +85,7 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      url: 'https://googleads.googleapis.com/v15/customers/7693729834/offlineUserDataJobs:create',
+      url: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729834/offlineUserDataJobs:create`,
       data: {
         job: {
           type: 'CUSTOMER_MATCH_USER_LIST',
@@ -111,7 +111,7 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      url: 'https://googleads.googleapis.com/v15/customers/7693729834/offlineUserDataJobs/18025019462:addOperations',
+      url: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729834/offlineUserDataJobs/18025019462:addOperations`,
       data: {
         enablePartialFailure: true,
         operations: [{ create: { userIdentifiers: [{ hashedEmail: 'abcd@testmail.com' }] } }],
@@ -167,7 +167,7 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      url: 'https://googleads.googleapis.com/v15/customers/7693729833/offlineUserDataJobs/18025019461:addOperations',
+      url: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs/18025019461:addOperations`,
       data: {
         enablePartialFailure: true,
         operations: [
@@ -209,7 +209,7 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      url: 'https://googleads.googleapis.com/v17/customers/customerid/offlineUserDataJobs:create',
+      url: `https://googleads.googleapis.com/${API_VERSION}/customers/customerid/offlineUserDataJobs:create`,
       data: {
         job: {
           type: 'CUSTOMER_MATCH_USER_LIST',
@@ -243,7 +243,7 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      url: 'https://googleads.googleapis.com/v17/customers/customerid/offlineUserDataJobs:create',
+      url: `https://googleads.googleapis.com/${API_VERSION}/customers/customerid/offlineUserDataJobs:create`,
       data: {
         job: {
           type: 'CUSTOMER_MATCH_USER_LIST',

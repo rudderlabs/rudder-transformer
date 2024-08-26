@@ -139,7 +139,7 @@
         "ID": "1WTbl0l5GjOQKOvfmcGwk0T49kV",
         "Name": "HEAP",
         "Config": {
-          "cdkEnabled": true
+          "cdkV2Enabled": true
         }
       },
       "Enabled": true,
@@ -153,7 +153,7 @@
       "errorCategory": "dataValidation",
       "errorType": "instrumentation",
       "feature": "processor",
-      "implementation": "cdkV1",
+      "implementation": "cdkV",
       "module": "destination",
       "destType": "HEAP"
     }
@@ -171,7 +171,7 @@
         "ID": "1WTbl0l5GjOQKOvfmcGwk0T49kV",
         "Name": "HEAP",
         "Config": {
-          "cdkEnabled": true
+          "cdkV2Enabled": true
         }
       },
       "Enabled": true,
@@ -184,7 +184,7 @@
     "statTags": {
       "errorCategory": "transformation",
       "feature": "processor",
-      "implementation": "cdkV1",
+      "implementation": "cdkV2",
       "module": "destination",
       "destType": "HEAP"
     }

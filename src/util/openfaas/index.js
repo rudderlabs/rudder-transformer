@@ -38,8 +38,8 @@ const FAAS_READINESS_HTTP_FAILURE_THRESHOLD =
 const FAAS_READINESS_HTTP_SUCCESS_THRESHOLD =
   process.env.FAAS_READINESS_HTTP_SUCCESS_THRESHOLD || '1';
 
-const PARENT_NAMESPACE = process.env.PARENT_NAMESPACE || 'default';
-const PARENT_CLUSTER = process.env.PARENT_CLUSTER || 'default';
+const PARENT_NAMESPACE = process.env.NAMESPACE || 'default';
+const PARENT_CLUSTER = process.env.FAAS_FN_PARENT_CLUSTER || 'default';
 
 const CONFIG_BACKEND_URL = process.env.CONFIG_BACKEND_URL || 'https://api.rudderlabs.com';
 const GEOLOCATION_URL = process.env.GEOLOCATION_URL || '';

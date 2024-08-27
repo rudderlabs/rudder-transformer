@@ -1,7 +1,8 @@
+import { API_VERSION } from '../../../../src/v0/destinations/google_adwords_enhanced_conversions/config';
 export const networkCallsData = [
   {
     httpReq: {
-      url: 'https://googleads.googleapis.com/v15/customers/1234567890/googleAds:searchStream',
+      url: `https://googleads.googleapis.com/${API_VERSION}/customers/1234567890/googleAds:searchStream`,
       data: {
         query: `SELECT conversion_action.id FROM conversion_action WHERE conversion_action.name = 'Product Added'`,
       },
@@ -29,7 +30,7 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      url: 'https://googleads.googleapis.com/v15/customers/1234567899/googleAds:searchStream',
+      url: `https://googleads.googleapis.com/${API_VERSION}/customers/1234567899/googleAds:searchStream`,
       data: {
         query: `SELECT conversion_action.id FROM conversion_action WHERE conversion_action.name = 'Product Added'`,
       },
@@ -59,7 +60,7 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      url: 'https://googleads.googleapis.com/v15/customers/1234567899:uploadConversionAdjustments',
+      url: `https://googleads.googleapis.com/${API_VERSION}/customers/1234567899:uploadConversionAdjustments`,
       data: {
         conversionAdjustments: [
           {
@@ -123,7 +124,7 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      url: 'https://googleads.googleapis.com/v15/customers/1234567891/googleAds:searchStream',
+      url: `https://googleads.googleapis.com/${API_VERSION}/customers/1234567891/googleAds:searchStream`,
       data: {
         query: `SELECT conversion_action.id FROM conversion_action WHERE conversion_action.name = 'Product Added'`,
       },
@@ -153,7 +154,7 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      url: 'https://googleads.googleapis.com/v15/customers/1234567891:uploadConversionAdjustments',
+      url: `https://googleads.googleapis.com/${API_VERSION}/customers/1234567891:uploadConversionAdjustments`,
       data: {
         conversionAdjustments: [
           {
@@ -214,7 +215,7 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      url: 'https://googleads.googleapis.com/v15/customers/1234567891:uploadClickConversions',
+      url: `https://googleads.googleapis.com/${API_VERSION}/customers/1234567891:uploadClickConversions`,
       data: {
         conversionAdjustments: [
           {
@@ -275,7 +276,7 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      url: 'https://googleads.googleapis.com/v15/customers/1234567888/googleAds:searchStream',
+      url: `https://googleads.googleapis.com/${API_VERSION}/customers/1234567888/googleAds:searchStream`,
       data: {
         query: `SELECT conversion_action.id FROM conversion_action WHERE conversion_action.name = 'Product Added'`,
       },
@@ -305,7 +306,7 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      url: 'https://googleads.googleapis.com/v15/customers/1234567888:uploadConversionAdjustments',
+      url: `https://googleads.googleapis.com/${API_VERSION}/customers/1234567888:uploadConversionAdjustments`,
       data: {
         conversionAdjustments: [
           {
@@ -382,7 +383,7 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      url: 'https://googleads.googleapis.com/v15/customers/1234567910/googleAds:searchStream',
+      url: `https://googleads.googleapis.com/${API_VERSION}/customers/1234567910/googleAds:searchStream`,
       data: {
         query: `SELECT conversion_action.id FROM conversion_action WHERE conversion_action.name = 'Product Added'`,
       },

@@ -127,7 +127,7 @@ const trackPayloadBuilder = (event, shopifyTopic) => {
 
 const processEvent = async (inputEvent, metricMetadata) => {
   let message;
-  const event = lodash.cloneDeep(inputEvent.event);
+  const event = lodash.cloneDeep(inputEvent);
   let redisData;
   const shopifyTopic = getShopifyTopic(event);
   delete event.query_parameters;
@@ -276,20 +276,41 @@ const processIdentifierEvent = async (event, metricMetadata) => {
   return NO_OPERATION_SUCCESS;
 };
 
-const processEventV2 = async (event) => event;
-const process = async (event) => {
-  const { source } = event;
-  if (source) {
-    const { version } = source.Config;
-    if (version === 'v2') {
-      const responseV2 = await processEventV2(event);
-      return responseV2;
-    }
+function processPixelEvent(inputEvent) {
+  const { name, data, context, clientId } = inputEvent;
+  const payload = {
+    type: 'track',
+    event: name,
+    properties: data,
+    anonymousId: clientId,
+    context,
+  };
+  return payload;
+}
+
+const processEventV2 = async (event, metricMetadata) => {
+  const { pixelEventLabel } = event;
+  if (pixelEventLabel) {
+    // this is a web pixel event fired from the browser
+    const pixelEvent = processPixelEvent(event);
+    return removeUndefinedAndNullValues(pixelEvent);
   }
+  return processEvent(event, metricMetadata);
+};
+const process = async (inputEvent) => {
+  const { event, source } = inputEvent;
   const metricMetadata = {
+    // eslint-disable-next-line unicorn/consistent-destructuring
     writeKey: event.query_parameters?.writeKey?.[0],
     source: 'SHOPIFY',
   };
+  if (source) {
+    const { version } = source.Config;
+    if (version === 'v2') {
+      const responseV2 = await processEventV2(event, metricMetadata);
+      return responseV2;
+    }
+  }
   if (isIdentifierEvent(event)) {
     return processIdentifierEvent(event, metricMetadata);
   }

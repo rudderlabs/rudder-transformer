@@ -4,6 +4,7 @@ import {
   generateProxyV1Payload,
 } from '../../../testUtils';
 import { ProxyV1TestData } from '../../../testTypes';
+import { API_VERSION } from '../../../../../src/v0/destinations/google_adwords_enhanced_conversions/config';
 
 const headers = {
   Authorization: 'Bearer abcd1234',
@@ -82,8 +83,7 @@ export const testScenariosForV0API = [
       request: {
         body: generateProxyV0Payload({
           ...commonRequestParameters,
-          endpoint:
-            'https://googleads.googleapis.com/v15/customers/1234567899:uploadConversionAdjustments',
+          endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/1234567899:uploadConversionAdjustments`,
         }),
         method: 'POST',
       },
@@ -138,8 +138,7 @@ export const testScenariosForV0API = [
             customerId: '1234567888',
             destination: 'google_adwords_enhanced_conversions',
           },
-          endpoint:
-            'https://googleads.googleapis.com/v15/customers/1234567888:uploadConversionAdjustments',
+          endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/1234567888:uploadConversionAdjustments`,
         }),
         method: 'POST',
       },
@@ -203,8 +202,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
         body: generateProxyV1Payload(
           {
             ...commonRequestParameters,
-            endpoint:
-              'https://googleads.googleapis.com/v15/customers/1234567899:uploadConversionAdjustments',
+            endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/1234567899:uploadConversionAdjustments`,
           },
           [generateMetadata(1)],
         ),
@@ -251,8 +249,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
               customerId: '1234567888',
               destination: 'google_adwords_enhanced_conversions',
             },
-            endpoint:
-              'https://googleads.googleapis.com/v15/customers/1234567888:uploadConversionAdjustments',
+            endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/1234567888:uploadConversionAdjustments`,
           },
           [generateMetadata(1)],
         ),

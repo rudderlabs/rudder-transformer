@@ -1,3 +1,4 @@
+import { API_VERSION } from '../../../../../src/v0/destinations/google_adwords_enhanced_conversions/config';
 export const data = [
   {
     name: 'google_adwords_enhanced_conversions',
@@ -128,8 +129,7 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint:
-                'https://googleads.googleapis.com/v15/customers/1234567890:uploadConversionAdjustments',
+              endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/1234567890:uploadConversionAdjustments`,
               headers: {
                 Authorization: 'Bearer abcd1234',
                 'Content-Type': 'application/json',
@@ -616,8 +616,7 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint:
-                'https://googleads.googleapis.com/v15/customers/1234567890:uploadConversionAdjustments',
+              endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/1234567890:uploadConversionAdjustments`,
               headers: {
                 Authorization: 'Bearer abcd1234',
                 'Content-Type': 'application/json',
@@ -1328,8 +1327,7 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint:
-                'https://googleads.googleapis.com/v15/customers/1234567890:uploadConversionAdjustments',
+              endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/1234567890:uploadConversionAdjustments`,
               headers: {
                 Authorization: 'Bearer abcd1234',
                 'Content-Type': 'application/json',
@@ -1519,8 +1517,7 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint:
-                'https://googleads.googleapis.com/v15/customers/1234567890:uploadConversionAdjustments',
+              endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/1234567890:uploadConversionAdjustments`,
               headers: {
                 Authorization: 'Bearer abcd1234',
                 'Content-Type': 'application/json',

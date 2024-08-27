@@ -38,9 +38,12 @@ export class NativeIntegrationSourceService implements SourceService {
     const respList: SourceTransformationResponse[] = await Promise.all<FixMe>(
       sourceEvents.map(async (sourceEvent) => {
         try {
+          const newSourceEvent = sourceEvent as { headers: any };
+          const { headers } = newSourceEvent;
+          delete newSourceEvent.headers;
           const respEvents: RudderMessage | RudderMessage[] | SourceTransformationResponse =
-            await sourceHandler.process(sourceEvent);
-          return SourcePostTransformationService.handleSuccessEventsSource(respEvents);
+            await sourceHandler.process(newSourceEvent);
+          return SourcePostTransformationService.handleSuccessEventsSource(respEvents, { headers });
         } catch (error: FixMe) {
           stats.increment('source_transform_errors', {
             source: sourceType,

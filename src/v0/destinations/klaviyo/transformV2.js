@@ -7,9 +7,9 @@ const { EventType, MappedToDestinationKey } = require('../../../constants');
 const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require('./config');
 const {
   constructProfile,
-  subscribeUserToListV2,
+  subscribeOrUnsubscribeUserToListV2,
   buildRequest,
-  buildSubscriptionRequest,
+  buildSubscriptionOrUnsubscriptionPayload,
   getTrackRequests,
   fetchTransformedEvents,
   addSubscribeFlagToTraits,
@@ -24,6 +24,7 @@ const {
   adduserIdFromExternalId,
   groupEventsByType,
   flattenJson,
+  isDefinedAndNotNull,
 } = require('../../util');
 
 /**
@@ -49,9 +50,17 @@ const identifyRequestHandler = (message, category, destination) => {
   }
   const payload = removeUndefinedAndNullValues(constructProfile(message, destination, true));
   const response = { profile: payload };
-  // check if user wants to subscribe profile or not and listId is present or not
-  if (traitsInfo?.properties?.subscribe && (traitsInfo.properties?.listId || listId)) {
-    response.subscription = subscribeUserToListV2(message, traitsInfo, destination);
+  // check if user wants to subscribe/unsubscribe profile or do nothing and listId is present or not
+  if (
+    isDefinedAndNotNull(traitsInfo?.properties?.subscribe) &&
+    (traitsInfo.properties?.listId || listId)
+  ) {
+    response.subscription = subscribeOrUnsubscribeUserToListV2(
+      message,
+      traitsInfo,
+      destination,
+      traitsInfo.properties.subscribe ? 'subscribe' : 'unsubscribe',
+    );
   }
   return response;
 };
@@ -93,7 +102,7 @@ const trackOrScreenRequestHandler = (message, category, destination) => {
 };
 
 /**
- * Main handlerfunc for group request  add/subscribe users to the list based on property sent
+ * Main handlerfunc for group request add/subscribe to or remove/delete users to the list based on property sent
  * DOCS:https://developers.klaviyo.com/en/reference/subscribe_profiles
  * @param {*} message
  * @param {*} category
@@ -105,11 +114,17 @@ const groupRequestHandler = (message, category, destination) => {
     throw new InstrumentationError('groupId is a required field for group events');
   }
   const traitsInfo = getFieldValueFromMessage(message, 'traits');
-  if (!traitsInfo?.subscribe) {
-    throw new InstrumentationError('Subscribe flag should be true for group call');
+  if (!isDefinedAndNotNull(traitsInfo?.subscribe)) {
+    throw new InstrumentationError('Subscribe flag should be included in group call');
   }
-  // throwing error for subscribe flag
-  return { subscription: subscribeUserToListV2(message, traitsInfo, destination) };
+  return {
+    subscription: subscribeOrUnsubscribeUserToListV2(
+      message,
+      traitsInfo,
+      destination,
+      traitsInfo.subscribe ? 'subscribe' : 'unsubscribe',
+    ),
+  };
 };
 
 const processEvent = (event) => {
@@ -152,9 +167,7 @@ const processV2 = (event) => {
     respList.push(buildRequest(response.profile, destination, CONFIG_CATEGORIES.IDENTIFYV2));
   }
   if (response.subscription) {
-    respList.push(
-      buildSubscriptionRequest(response.subscription, destination, CONFIG_CATEGORIES.TRACKV2),
-    );
+    respList.push(buildSubscriptionOrUnsubscriptionPayload(response.subscription, destination));
   }
   if (response.event) {
     respList.push(buildRequest(response.event, destination, CONFIG_CATEGORIES.TRACKV2));
@@ -163,9 +176,19 @@ const processV2 = (event) => {
 };
 
 // This function separates subscribe, proifle and event responses from process () and other responses in chunks
-const getEventChunks = (input, subscribeRespList, profileRespList, eventRespList) => {
+const getEventChunks = (
+  input,
+  subscribeRespList,
+  profileRespList,
+  eventRespList,
+  unsubscriptionList,
+) => {
   if (input.payload.subscription) {
-    subscribeRespList.push({ payload: input.payload.subscription, metadata: input.metadata });
+    if (input.payload.subscription.operation === 'subscribe') {
+      subscribeRespList.push({ payload: input.payload.subscription, metadata: input.metadata });
+    } else {
+      unsubscriptionList.push({ payload: input.payload.subscription, metadata: input.metadata });
+    }
   }
   if (input.payload.profile) {
     profileRespList.push({ payload: input.payload.profile, metadata: input.metadata });
@@ -179,6 +202,7 @@ const processRouter = (inputs, reqMetadata) => {
   const batchResponseList = [];
   const batchErrorRespList = [];
   const subscribeRespList = [];
+  const unsubscriptionList = [];
   const profileRespList = [];
   const eventRespList = [];
   const { destination } = inputs[0];
@@ -197,6 +221,7 @@ const processRouter = (inputs, reqMetadata) => {
           subscribeRespList,
           profileRespList,
           eventRespList,
+          unsubscriptionList,
         );
       }
     } catch (error) {
@@ -204,7 +229,12 @@ const processRouter = (inputs, reqMetadata) => {
       batchErrorRespList.push(errRespEvent);
     }
   });
-  const batchedResponseList = batchRequestV2(subscribeRespList, profileRespList, destination);
+  const batchedResponseList = batchRequestV2(
+    subscribeRespList,
+    unsubscriptionList,
+    profileRespList,
+    destination,
+  );
   const trackRespList = getTrackRequests(eventRespList, destination);
 
   batchResponseList.push(...trackRespList, ...batchedResponseList);

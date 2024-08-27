@@ -316,7 +316,7 @@ const responseBuilderSimple = (message, category, destination) => {
     // For 'Order Completed' type of events we are mapping it as 'Charged'
     // Special event in Clevertap.
     // Source: https://developer.clevertap.com/docs/concepts-events#recording-customer-purchases
-    if (get(message.event) && get(message.event).toLowerCase() === 'order completed') {
+    if (get(message.event) && get(message.event).toString().toLowerCase() === 'order completed') {
       eventPayload = {
         evtName: 'Charged',
         evtData: constructPayload(message, MAPPING_CONFIG[CONFIG_CATEGORIES.ECOM.name]),

@@ -1,4 +1,5 @@
 const { RetryableError } = require('@rudderstack/integrations-lib');
+const isString = require('lodash/isString');
 const { prepareProxyRequest, proxyRequest } = require('../../../adapters/network');
 const { isHttpStatusSuccess } = require('../../util/index');
 const { REFRESH_TOKEN } = require('../../../adapters/networkhandler/authConstants');
@@ -9,7 +10,7 @@ const redditRespHandler = (destResponse) => {
   const { status, response } = destResponse;
 
   // to handle the case when authorization-token is invalid
-  if (status === 401 && response.includes('Authorization Required')) {
+  if (status === 401 && isString(response) && response.includes('Authorization Required')) {
     throw new RetryableError(
       `Request failed due to ${response} 'during reddit response transformation'`,
       500,

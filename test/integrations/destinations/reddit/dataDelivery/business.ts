@@ -103,7 +103,7 @@ export const testScenariosForV1API = [
         body: generateProxyV1Payload(
           {
             ...commonRequestParameters,
-            endpoint: 'https://dfareporting.googleapis.com/test_url_for_valid_request',
+            endpoint: 'https://ads-api.reddit.com/api/v2.0/conversions/events/a2_fsddXXXfsfd',
           },
           [generateMetadata(1)],
         ),
@@ -119,10 +119,10 @@ export const testScenariosForV1API = [
             response: [
               {
                 metadata: generateMetadata(1),
-                statusCode: 500,
+                statusCode: 200,
               },
             ],
-            status: 500,
+            status: 200,
           },
         },
       },

@@ -1431,6 +1431,59 @@ export const data = [
       },
     },
   },
+  {
+    name: 'customerio',
+    description: 'test-23: email subscribed',
+    module: 'source',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            data: {
+              customer_id: '0200102',
+              identifiers: { id: '0200102' },
+              email_address: 'test@example.com',
+            },
+            event_id: '01E4C4C6P79C12J5A6KPE6XNFD',
+            object_type: 'email',
+            metric: 'subscribed',
+            timestamp: 1585250179,
+          },
+        ],
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      },
+      pathSuffix: '',
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              batch: [
+                {
+                  context: {
+                    library: { name: 'unknown', version: 'unknown' },
+                    integration: { name: 'Customer.io' },
+                    traits: { email: 'test@example.com' },
+                  },
+                  integrations: { 'Customer.io': false },
+                  type: 'track',
+                  event: 'Email Subscribed',
+                  properties: { eventId: '01E4C4C6P79C12J5A6KPE6XNFD' },
+                  userId: '0200102',
+                  originalTimestamp: '2020-03-26T19:16:19.000Z',
+                  sentAt: '2020-03-26T19:16:19.000Z',
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  },
 ].map((tc) => ({
   ...tc,
   mockFns: () => {

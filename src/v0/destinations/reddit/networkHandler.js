@@ -3,6 +3,7 @@ const isString = require('lodash/isString');
 const { prepareProxyRequest, proxyRequest } = require('../../../adapters/network');
 const { isHttpStatusSuccess } = require('../../util/index');
 const { REFRESH_TOKEN } = require('../../../adapters/networkhandler/authConstants');
+const logger = require('../../../logger');
 
 const { processAxiosResponse } = require('../../../adapters/utils/networkUtils');
 
@@ -29,6 +30,7 @@ const redditRespHandler = (destResponse) => {
       authErrorCategory,
     );
   }
+  logger.error(`Error in Reddit response transformation: ${JSON.stringify(destResponse)}`);
 };
 const responseHandler = (responseParams) => {
   const { destinationResponse } = responseParams;

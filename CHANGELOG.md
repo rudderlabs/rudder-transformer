@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.76.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.76.0...v1.76.1) (2024-08-29)
+
+
+### Bug Fixes
+
+* reddit authorisation failed case handling ([#3690](https://github.com/rudderlabs/rudder-transformer/issues/3690)) ([f24759a](https://github.com/rudderlabs/rudder-transformer/commit/f24759aebbeb560f0de9d4920ae2ed0cdc7bfa3f))
+
 ## [1.76.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.75.1...v1.76.0) (2024-08-20)
 
 

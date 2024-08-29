@@ -103,8 +103,8 @@ async function processRecordInputs(groupedRecordInputs) {
   const { destination, connection } = groupedRecordInputs[0];
   const { message } = groupedRecordInputs[0];
   const { accessToken, disableFormat, type, subType, isRaw, maxUserCount } = destination.Config;
-  const audienceId = get(connection, 'config.destination.audienceId');
-  const isHashRequired = get(connection, 'config.destination.isHashRequired');
+  const audienceId = connection?.config?.destination?.audienceId;
+  const isHashRequired = connection?.config?.destination?.isHashRequired;
   const prepareParams = {
     access_token: accessToken,
   };

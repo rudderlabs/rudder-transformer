@@ -21,7 +21,6 @@ const { schemaFields, USER_ADD, USER_DELETE } = require('./config');
 
 const { MappedToDestinationKey } = require('../../../constants');
 const { processRecordInputs } = require('./recordTransform');
-const logger = require('../../../logger');
 
 function checkForUnsupportedEventTypes(dictionary, keyList) {
   const unsupportedEventTypes = [];

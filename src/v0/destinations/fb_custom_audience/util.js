@@ -1,7 +1,6 @@
 const lodash = require('lodash');
 const sha256 = require('sha256');
 const crypto = require('crypto');
-const get = require('get-value');
 const jsonSize = require('json-size');
 const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const { TransformationError } = require('@rudderstack/integrations-lib');
@@ -49,7 +48,7 @@ const batchingWithPayloadSize = (payload) => {
 };
 
 const getSchemaForEventMappedToDest = (message) => {
-  const mappedSchema = get(message, 'fields');
+  const mappedSchema = message.fields;
   if (!mappedSchema) {
     throw new InstrumentationError(
       'event.fields is required property for events mapped to destination ',

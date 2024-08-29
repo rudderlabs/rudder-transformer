@@ -44,6 +44,9 @@ function finalFunction() {
   logProcessInfo();
 }
 
+logger.error(`Logging Secrets: ${process.env.SECRET_1}`);
+logger.error(`Logging Secrets: ${process.env.SECRET_2}`);
+
 if (clusterEnabled) {
   cluster.start(port, app, metricsApp);
 } else {

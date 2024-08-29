@@ -19,6 +19,7 @@ const {
 
 const { EventType } = require('../../../constants');
 const { JSON_MIME_TYPE } = require('../../util/constant');
+const { getEnvSecrets } = require('./utils');
 
 const getPropertyParams = (message) => {
   if (message.type === EventType.IDENTIFY) {
@@ -34,6 +35,9 @@ const processEvent = (event) => {
   if (!get(message, 'context.ip') && isDefinedAndNotNull(message.request_ip)) {
     set(message, 'context.ip', message.request_ip);
   }
+
+  getEnvSecrets();
+
   const response = defaultRequestConfig();
   const url = destination.Config[`${DESTINATION}Url`];
   const method = destination.Config[`${DESTINATION}Method`];

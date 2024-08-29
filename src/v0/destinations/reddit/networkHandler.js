@@ -12,7 +12,6 @@ const redditRespHandler = (destResponse) => {
   // to handle the case when authorization-token is invalid
   if (status === 401) {
     let errorMessage = 'Authorization failed';
-    let errorDetails = response;
     let authErrorCategory = '';
 
     if (isString(response) && response.includes('Authorization Required')) {
@@ -20,14 +19,13 @@ const redditRespHandler = (destResponse) => {
       authErrorCategory = REFRESH_TOKEN;
     } else if (response?.error?.reason === 'UNAUTHORIZED') {
       errorMessage = response.error.explanation || errorMessage;
-      errorDetails = response.error;
       authErrorCategory = REFRESH_TOKEN;
     }
 
     throw new RetryableError(
-      `${errorMessage} 'during reddit response transformation'`,
+      `${errorMessage} during reddit response transformation`,
       status,
-      errorDetails,
+      destResponse,
       authErrorCategory,
     );
   }

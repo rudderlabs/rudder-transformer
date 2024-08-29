@@ -10,12 +10,25 @@ const redditRespHandler = (destResponse) => {
   const { status, response } = destResponse;
 
   // to handle the case when authorization-token is invalid
-  if (status === 401 && isString(response) && response.includes('Authorization Required')) {
+  if (status === 401) {
+    let errorMessage = 'Authorization failed';
+    let errorDetails = response;
+    let authErrorCategory = '';
+
+    if (isString(response) && response.includes('Authorization Required')) {
+      errorMessage = `Request failed due to ${response}`;
+      authErrorCategory = REFRESH_TOKEN;
+    } else if (response?.error?.reason === 'UNAUTHORIZED') {
+      errorMessage = response.error.explanation || errorMessage;
+      errorDetails = response.error;
+      authErrorCategory = REFRESH_TOKEN;
+    }
+
     throw new RetryableError(
-      `Request failed due to ${response} 'during reddit response transformation'`,
-      500,
-      destResponse,
-      REFRESH_TOKEN,
+      `${errorMessage} 'during reddit response transformation'`,
+      status,
+      errorDetails,
+      authErrorCategory,
     );
   }
 };

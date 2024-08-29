@@ -76,7 +76,8 @@
     "WUNDERKIND": true,
     "CLICKSEND": true,
     "ZOHO": true,
-    "CORDIAL": true
+    "CORDIAL": true,
+    "WEBHOOK_V2": true
   },
   "regulations": [
     "BRAZE",

@@ -45,7 +45,7 @@ export const data = [
                 action: 'insert',
                 fields: {
                   DAID: 'test-daid-2',
-                  UID2: null,
+                  UID2: 'test-uid2-2',
                 },
                 channel: 'sources',
                 context: sampleContext,
@@ -102,6 +102,35 @@ export const data = [
                         },
                         {
                           DAID: 'test-daid-2',
+                          Data: [
+                            {
+                              Name: segmentName,
+                              TTLInMinutes: 43200,
+                            },
+                          ],
+                        },
+                      ],
+                    },
+                    JSON_ARRAY: {},
+                    XML: {},
+                    FORM: {},
+                  },
+                  files: {},
+                },
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint: 'https://sin-data.adsrvr.org/data/advertiser',
+                  headers: {},
+                  params: {},
+                  body: {
+                    JSON: {
+                      DataProviderId: dataProviderId,
+                      AdvertiserId: advertiserId,
+                      Items: [
+                        {
+                          UID2: 'test-uid2-2',
                           Data: [
                             {
                               Name: segmentName,
@@ -727,6 +756,8 @@ export const data = [
                 action: 'insert',
                 fields: {
                   DAID: 'test-daid-1',
+                  UID2: 'test-uid2-1',
+                  EUID: 'test-euid-1',
                 },
                 channel: 'sources',
                 context: sampleContext,
@@ -735,6 +766,24 @@ export const data = [
               destination: sampleDestination,
               metadata: {
                 jobId: 2,
+              },
+            },
+            {
+              message: {
+                type: 'record',
+                action: 'insert',
+                fields: {
+                  DAID: 'test-daid-2',
+                  UID2: null,
+                  EUID: null,
+                },
+                channel: 'sources',
+                context: sampleContext,
+                recordId: '3',
+              },
+              destination: sampleDestination,
+              metadata: {
+                jobId: 3,
               },
             },
           ],
@@ -771,6 +820,24 @@ export const data = [
                             },
                           ],
                         },
+                        {
+                          UID2: 'test-uid2-1',
+                          Data: [
+                            {
+                              Name: segmentName,
+                              TTLInMinutes: 43200,
+                            },
+                          ],
+                        },
+                        {
+                          EUID: 'test-euid-1',
+                          Data: [
+                            {
+                              Name: segmentName,
+                              TTLInMinutes: 43200,
+                            },
+                          ],
+                        },
                       ],
                     },
                     JSON_ARRAY: {},
@@ -792,6 +859,21 @@ export const data = [
             {
               batched: false,
               metadata: [{ jobId: 1 }],
+              statusCode: 400,
+              error: '`fields` cannot be empty',
+              statTags: {
+                destType: destTypeInUpperCase,
+                implementation: 'cdkV2',
+                feature: 'router',
+                module: 'destination',
+                errorCategory: 'dataValidation',
+                errorType: 'instrumentation',
+              },
+              destination: sampleDestination,
+            },
+            {
+              batched: false,
+              metadata: [{ jobId: 3 }],
               statusCode: 400,
               error: '`fields` cannot be empty',
               statTags: {

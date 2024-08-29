@@ -241,8 +241,9 @@ const deployFaasFunction = async (
     // To handle concurrent create requests,
     // throw retry error if deployment or service already exists so that request can be retried
     if (
-      (error.statusCode === 500 || error.statusCode === 400) &&
-      error.message.includes('already exists')
+      ((error.statusCode === 500 || error.statusCode === 400) &&
+        error.message.includes('already exists')) ||
+      (error.statusCode === 409 && error.message.includes('Conflict change already made'))
     ) {
       setFunctionInCache(functionName);
       throw new RetryRequestError(`${functionName} already exists`);

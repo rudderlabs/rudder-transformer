@@ -1,4 +1,4 @@
-const jsonxml = require('jsontoxml');
+const { toXML } = require('jstoxml');
 const { groupBy } = require('lodash');
 const { createHash } = require('crypto');
 const { ConfigurationError } = require('@rudderstack/integrations-lib');
@@ -69,7 +69,10 @@ const excludeMappedFields = (payload, mapping) => {
   return rawPayload;
 };
 
-const getXMLPayload = (payload) => jsonxml(payload, true);
+const getXMLPayload = (payload) =>
+  toXML(payload, {
+    header: true,
+  });
 
 const getMergedEvents = (batch) => {
   const events = [];

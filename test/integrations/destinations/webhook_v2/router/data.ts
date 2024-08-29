@@ -82,39 +82,43 @@ const routerRequest2 = {
   destType,
 };
 
-// const routerRequest3 = {
-//   input: [
-//     {
-//       message: {
-//         type: 'identify',
-//         userId: 'userId1',
-//         traits,
-//       },
-//       metadata: generateMetadata(1),
-//       destination: destinations[0],
-//     },
-//     {
-//       message: {
-//         type: 'track',
-//         userId: 'userId1',
-//         context: { traits },
-//         properties,
-//       },
-//       metadata: generateMetadata(2),
-//       destination: destinations[0],
-//     },
-//     {
-//       message: {
-//         type: 'identify',
-//         userId: 'userId2',
-//         traits: { ...traits, firstName: 'Alex', lastName: 'T', email: 'alex.t@example.com' },
-//       },
-//       metadata: generateMetadata(3),
-//       destination: destinations[0],
-//     },
-//   ],
-//   destType,
-// };
+const routerRequest3 = {
+  input: [
+    {
+      message: {
+        type: 'track',
+        userId: 'userId1',
+        event: 'Product Viewed',
+        context: { traits },
+      },
+      metadata: generateMetadata(1, 'userId1'),
+      destination: destinations[5],
+    },
+    {
+      message: {
+        type: 'track',
+        userId: 'userId2',
+        event: 'Order Completed',
+        context: { traits },
+        properties,
+      },
+      metadata: generateMetadata(2, 'userId2'),
+      destination: destinations[5],
+    },
+    {
+      message: {
+        type: 'track',
+        userId: 'userId3',
+        event: 'Product Added',
+        context: { traits },
+        properties,
+      },
+      metadata: generateMetadata(3, 'userId3'),
+      destination: destinations[5],
+    },
+  ],
+  destType,
+};
 
 // TODO: add failure testcases
 export const data = [
@@ -282,6 +286,61 @@ export const data = [
               batched: true,
               statusCode: 200,
               destination: destinations[1],
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    id: 'webhook_v2-router-test-3',
+    name: destType,
+    description: 'Batch multiple POST requests with properties mappings',
+    scenario: 'Framework',
+    successCriteria: 'All events should be transformed successfully and status code should be 200',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: routerRequest3,
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: 'http://abc.com/events',
+                params: {},
+                headers: {
+                  'content-type': 'application/json',
+                },
+                body: {
+                  JSON: {},
+                  JSON_ARRAY: {
+                    batch:
+                      '[{"event":"Product Viewed","userId":"userId1","properties":{"items":[]}},{"event":"Order Completed","currency":"USD","userId":"userId2","properties":{"items":[{"item_id":"622c6f5d5cf86a4c77358033","name":"Cones of Dunshire","price":40},{"item_id":"577c6f5d5cf86a4c7735ba03","name":"Five Crowns","price":5}]}},{"event":"Product Added","currency":"USD","userId":"userId3","properties":{"items":[{"item_id":"622c6f5d5cf86a4c77358033","name":"Cones of Dunshire","price":40},{"item_id":"577c6f5d5cf86a4c7735ba03","name":"Five Crowns","price":5}]}}]',
+                  },
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+              },
+              metadata: [
+                generateMetadata(1, 'userId1'),
+                generateMetadata(2, 'userId2'),
+                generateMetadata(3, 'userId3'),
+              ],
+              batched: true,
+              statusCode: 200,
+              destination: destinations[5],
             },
           ],
         },

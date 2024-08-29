@@ -157,8 +157,81 @@ const destinations: Destination[] = [
       ],
       propertiesMapping: [
         {
+          from: '$.event',
+          to: '$.event',
+        },
+        {
+          from: '$.properties.currency',
+          to: '$.currency',
+        },
+        {
+          from: '$.userId',
+          to: '$.userId',
+        },
+        {
           from: '$.properties.products[*].product_id',
-          to: '$.events.items[*].item_id',
+          to: '$.properties.items[*].item_id',
+        },
+        {
+          from: '$.properties.products[*].name',
+          to: '$.properties.items[*].name',
+        },
+        {
+          from: '$.properties.products[*].price',
+          to: '$.properties.items[*].price',
+        },
+      ],
+    },
+    DestinationDefinition: {
+      DisplayName: displayName,
+      ID: '123',
+      Name: destTypeInUpperCase,
+      Config: { cdkV2Enabled: true },
+    },
+    Enabled: true,
+    ID: '123',
+    Name: destTypeInUpperCase,
+    Transformations: [],
+    WorkspaceID: 'test-workspace-id',
+  },
+  {
+    Config: {
+      webhookUrl: 'http://abc.com/events',
+      auth: 'noAuth',
+      method: 'POST',
+      format: 'JSON',
+      isBatchingEnabled: true,
+      maxBatchSize: '4',
+      headers: [
+        {
+          to: "$.'content-type'",
+          from: "'application/json'",
+        },
+      ],
+      propertiesMapping: [
+        {
+          from: '$.event',
+          to: '$.event',
+        },
+        {
+          from: '$.properties.currency',
+          to: '$.currency',
+        },
+        {
+          from: '$.userId',
+          to: '$.userId',
+        },
+        {
+          from: '$.properties.products[*].product_id',
+          to: '$.properties.items[*].item_id',
+        },
+        {
+          from: '$.properties.products[*].name',
+          to: '$.properties.items[*].name',
+        },
+        {
+          from: '$.properties.products[*].price',
+          to: '$.properties.items[*].price',
         },
       ],
     },

@@ -193,7 +193,7 @@ export const configuration: ProcessorTestData[] = [
               },
               XML: {
                 payload:
-                  '<?xml version="1.0" encoding="utf-8"?><events><items><item_id>622c6f5d5cf86a4c77358033</item_id><item_id>577c6f5d5cf86a4c7735ba03</item_id></items></events>',
+                  '<?xml version="1.0" encoding="UTF-8"?><event>Order Completed</event><currency>USD</currency><userId>userId123</userId><properties><items><item_id>622c6f5d5cf86a4c77358033</item_id><name>Cones of Dunshire</name><price>40</price><item_id>577c6f5d5cf86a4c7735ba03</item_id><name>Five Crowns</name><price>5</price></items></properties>',
               },
             }),
             statusCode: 200,

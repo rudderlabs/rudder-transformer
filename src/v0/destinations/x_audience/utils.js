@@ -1,21 +1,12 @@
 /* eslint-disable @typescript-eslint/naming-convention */
+const sha256 = require('sha256');
 const lodash = require('lodash');
 const jsonSize = require('json-size');
-const { InstrumentationError, OAuthSecretError } = require('@rudderstack/integrations-lib');
-const {
-  defaultRequestConfig,
-  defaultPostRequestConfig,
-  getSuccessRespEvents,
-} = require('../../util');
-const { BASE_URL, MAX_PAYLOAD_SIZE_IN_BYTES, MAX_OPERATIONS } = require('./config');
-const { getAuthHeaderForRequest } = require('../twitter_ads/util');
-const { JSON_MIME_TYPE } = require('../../util/constant');
+const { OAuthSecretError } = require('@rudderstack/integrations-lib');
+const { getSuccessRespEvents, removeUndefinedAndNullAndEmptyValues } = require('../../util');
+const { MAX_PAYLOAD_SIZE_IN_BYTES, MAX_OPERATIONS } = require('./config');
+const { buildResponseWithJSON } = require('./transform');
 
-const validateRequest = (message) => {
-  if (message.type !== 'record') {
-    throw new InstrumentationError(`[X AUDIENCE]: ${message.type} is not supported`);
-  }
-};
 const getOAuthFields = ({ secret }) => {
   if (!secret) {
     throw new OAuthSecretError('[TWITTER ADS]:: OAuth - access keys not found');
@@ -27,30 +18,6 @@ const getOAuthFields = ({ secret }) => {
     accessTokenSecret: secret.accessTokenSecret,
   };
   return oAuthObject;
-};
-
-const buildResponseWithJSON = (JSON, config, metadata) => {
-  const response = defaultRequestConfig();
-  response.endpoint = BASE_URL.replace(':account_id', config.accountId).replace(
-    ':custom_audience_id',
-    config.customAudienceId,
-  );
-  response.method = defaultPostRequestConfig.requestMethod;
-  response.body.JSON = JSON;
-  // required to be in accordance with oauth package
-  const request = {
-    url: response.endpoint,
-    method: response.method,
-    body: response.body.JSON,
-  };
-
-  const oAuthObject = getOAuthFields(metadata);
-  const authHeader = getAuthHeaderForRequest(request, oAuthObject).Authorization;
-  response.headers = {
-    Authorization: authHeader,
-    'Content-Type': JSON_MIME_TYPE,
-  };
-  return response;
 };
 
 /**
@@ -181,7 +148,7 @@ const getOperationObjectList = (eventGroups) => {
         }]
  * @param {*} responseList 
  */
-const batchEvents = (responseList) => {
+const batchEvents = (responseList, destination) => {
   const eventGroups = groupResponsesUsingOperationAndTime(responseList);
   const operationObjectList = getOperationObjectList(eventGroups);
   /* at this point we will a list of json payloads in the following format 
@@ -201,6 +168,36 @@ const batchEvents = (responseList) => {
         }
       ]
   */
-  return getFinalResponseList(operationObjectList);
+  return getFinalResponseList(operationObjectList, destination);
 };
-module.exports = { validateRequest, buildResponseWithJSON, batchEvents };
+
+const getUserDetails = (fields, config) => {
+  const { enableHash } = config;
+  const { email, phone_number, handle, device_id, twitter_id, partner_user_id } = fields;
+  const user = {};
+  if (email) {
+    const emailList = email.split(',');
+    user.email = enableHash ? emailList.map(sha256) : emailList;
+  }
+  if (phone_number) {
+    const phone_numberList = phone_number.split(',');
+    user.phone_number = enableHash ? phone_numberList.map(sha256) : phone_numberList;
+  }
+  if (handle) {
+    const handleList = handle.split(',');
+    user.handle = enableHash ? handleList.map(sha256) : handleList;
+  }
+  if (device_id) {
+    const device_idList = device_id.split(',');
+    user.device_id = enableHash ? device_idList.map(sha256) : device_idList;
+  }
+  if (twitter_id) {
+    const twitter_idList = twitter_id.split(',');
+    user.twitter_id = enableHash ? twitter_idList.map(sha256) : twitter_idList;
+  }
+  if (partner_user_id) {
+    user.partner_user_id = partner_user_id.split(',');
+  }
+  return removeUndefinedAndNullAndEmptyValues(user);
+};
+module.exports = { getOAuthFields, batchEvents, getUserDetails };

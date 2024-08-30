@@ -22,7 +22,6 @@ const {
   handleRtTfSingleEventError,
   addExternalIdToTraits,
   adduserIdFromExternalId,
-  groupEventsByType,
   flattenJson,
   isDefinedAndNotNull,
 } = require('../../util');
@@ -242,23 +241,4 @@ const processRouter = (inputs, reqMetadata) => {
   return { successEvents: batchResponseList, errorEvents: batchErrorRespList };
 };
 
-const processRouterDestV2 = (inputs, reqMetadata) => {
-  /**
-  We are doing this to maintain the order of events not only fo transformation but for delivery as well
-  Job Id:       1                 2                 3                  4                  5                6
-  Input : ['user1 track1', 'user1 identify 1', 'user1 track 2', 'user2 identify 1', 'user2 track 1', 'user1 track 3']
-  Output after batching : [['user1 track1'],['user1 identify 1', 'user2 identify 1'], [ 'user1 track 2', 'user2 track 1', 'user1 track 3']]
-  Output after transformation: [1, [2,4], [3,5,6]]
-  */
-  const inputsGroupedByType = groupEventsByType(inputs);
-  const respList = [];
-  const errList = [];
-  inputsGroupedByType.forEach((typedEventList) => {
-    const { successEvents, errorEvents } = processRouter(typedEventList, reqMetadata);
-    respList.push(...successEvents);
-    errList.push(...errorEvents);
-  });
-  return [...respList, ...errList];
-};
-
-module.exports = { processV2, processRouterDestV2 };
+module.exports = { processV2, processRouter };

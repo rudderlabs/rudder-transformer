@@ -3,13 +3,19 @@ const sha256 = require('sha256');
 const lodash = require('lodash');
 const jsonSize = require('json-size');
 const { OAuthSecretError } = require('@rudderstack/integrations-lib');
-const { getSuccessRespEvents, removeUndefinedAndNullAndEmptyValues } = require('../../util');
-const { MAX_PAYLOAD_SIZE_IN_BYTES, MAX_OPERATIONS } = require('./config');
-const { buildResponseWithJSON } = require('./transform');
+const {
+  defaultRequestConfig,
+  defaultPostRequestConfig,
+  getSuccessRespEvents,
+  removeUndefinedAndNullAndEmptyValues,
+} = require('../../util');
+const { MAX_PAYLOAD_SIZE_IN_BYTES, BASE_URL, MAX_OPERATIONS } = require('./config');
+const { getAuthHeaderForRequest } = require('../twitter_ads/util');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const getOAuthFields = ({ secret }) => {
   if (!secret) {
-    throw new OAuthSecretError('[TWITTER ADS]:: OAuth - access keys not found');
+    throw new OAuthSecretError('[X Audience]:: OAuth - access keys not found');
   }
   const oAuthObject = {
     consumerKey: secret.consumerKey,
@@ -18,6 +24,31 @@ const getOAuthFields = ({ secret }) => {
     accessTokenSecret: secret.accessTokenSecret,
   };
   return oAuthObject;
+};
+
+// Docs: https://developer.x.com/en/docs/x-ads-api/audiences/api-reference/custom-audience-user
+const buildResponseWithJSON = (JSON, config, metadata) => {
+  const response = defaultRequestConfig();
+  response.endpoint = BASE_URL.replace(':account_id', config.accountId).replace(
+    ':audience_id',
+    config.audienceId,
+  );
+  response.method = defaultPostRequestConfig.requestMethod;
+  response.body.JSON = JSON;
+  // required to be in accordance with oauth package
+  const request = {
+    url: response.endpoint,
+    method: response.method,
+    body: response.body.JSON,
+  };
+
+  const oAuthObject = getOAuthFields(metadata);
+  const authHeader = getAuthHeaderForRequest(request, oAuthObject).Authorization;
+  response.headers = {
+    Authorization: authHeader,
+    'Content-Type': JSON_MIME_TYPE,
+  };
+  return response;
 };
 
 /**
@@ -50,7 +81,7 @@ const getFinalResponseList = (operationObjectList, destination) => {
     const { payload, metadataList } = operationObject;
     metadataWithSecret = { secret: metadataList[0].secret };
     if (
-      currentBatchedRequest.length > MAX_OPERATIONS ||
+      currentBatchedRequest.length >= MAX_OPERATIONS ||
       jsonSize([...currentBatchedRequest, payload]) > MAX_PAYLOAD_SIZE_IN_BYTES
     ) {
       respList.push(
@@ -61,7 +92,7 @@ const getFinalResponseList = (operationObjectList, destination) => {
           true,
         ),
       );
-      currentBatchedRequest = [operationObject];
+      currentBatchedRequest = [payload];
       currentMetadataList = metadataList;
     } else {
       currentBatchedRequest.push(payload);
@@ -91,41 +122,41 @@ const getFinalResponseList = (operationObjectList, destination) => {
 const getOperationObjectList = (eventGroups) => {
   const operationList = [];
   Object.keys(eventGroups).forEach((group) => {
-    const { operation, params } = group[0].message;
+    const { operation_type, params } = eventGroups[group][0].message;
     const { effective_at, expires_at } = params;
     let currentUserList = [];
     let currentMetadata = [];
-    group.forEach((event) => {
+    eventGroups[group].forEach((event) => {
       const newUsers = event.message.params.users;
       // calculating size before appending the user and metadata list
-      if (jsonSize([...currentUserList, ...newUsers]).length > MAX_PAYLOAD_SIZE_IN_BYTES) {
+      if (jsonSize([...currentUserList, ...newUsers]) < MAX_PAYLOAD_SIZE_IN_BYTES) {
         currentUserList.push(...event.message.params.users);
         currentMetadata.push(event.metadata);
       } else {
         operationList.push({
           payload: {
-            operation_type: operation,
-            params: {
+            operation_type,
+            params: removeUndefinedAndNullAndEmptyValues({
               effective_at,
               expires_at,
               users: currentUserList,
-            },
+            }),
           },
           metadataList: currentMetadata,
         });
+        currentUserList = event.message.params.users;
+        currentMetadata = event.metadata;
       }
-      currentUserList = event.message.params.users;
-      currentMetadata = event.metadata;
     });
     // all the remaining user and metadata list used in one list
     operationList.push({
       payload: {
-        operation_type: operation,
-        params: {
+        operation_type,
+        params: removeUndefinedAndNullAndEmptyValues({
           effective_at,
           expires_at,
           users: currentUserList,
-        },
+        }),
       },
       metadataList: currentMetadata,
     });
@@ -200,4 +231,4 @@ const getUserDetails = (fields, config) => {
   }
   return removeUndefinedAndNullAndEmptyValues(user);
 };
-module.exports = { getOAuthFields, batchEvents, getUserDetails };
+module.exports = { getOAuthFields, batchEvents, getUserDetails, buildResponseWithJSON };

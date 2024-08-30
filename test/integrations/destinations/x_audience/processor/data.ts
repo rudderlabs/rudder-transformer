@@ -1,35 +1,13 @@
-import { getOAuthFields, batchEvents } from '../../../../../src/v0/destinations/x_audience/utils';
+import { destination, authHeaderConstant, generateMetadata } from '../common';
 
-const authHeaderConstant =
-  '"OAuth oauth_consumer_key="validConsumerKey", oauth_nonce="j8kZvaJQRTaLX8h460CgHNs6rCEArNOW", oauth_signature="uAu%2FGdA6qPGW88pjVd7%2FgnAlHtM%3D", oauth_signature_method="HMAC-SHA1", oauth_timestamp="1725014809", oauth_token="validAccessToken", oauth_version="1.0"';
+const fields = {
+  email: 'abc@xyz.com,a+1@xyz.com',
+  phone_number: '98765433232,21323',
+  handle: '@abc,@xyz',
+  twitter_id: 'tid1,tid2',
+  partner_user_id: 'puid1,puid2',
+};
 
-const destination = {
-  config: {
-    username: 'wootricfakeuser@example.com',
-    password: 'password@123',
-    accountToken: 'NPS-dummyToken12',
-    accountId: '1234',
-    audienceId: 'dummyId',
-  },
-  ID: 'wootric-1234',
-};
-const generateMetadata = (jobId: number, userId?: string): any => {
-  return {
-    jobId,
-    attemptNum: 1,
-    userId: userId || 'default-userId',
-    sourceId: 'default-sourceId',
-    destinationId: 'default-destinationId',
-    workspaceId: 'default-workspaceId',
-    secret: {
-      consumerKey: 'validConsumerKey',
-      consumerSecret: 'validConsumerSecret',
-      accessToken: 'validAccessToken',
-      accessTokenSecret: 'validAccessTokenSecret',
-    },
-    dontBatch: false,
-  };
-};
 export const data = [
   {
     name: 'x_audience',
@@ -47,16 +25,11 @@ export const data = [
               type: 'record',
               action: 'insert',
               fields: {
-                email: 'abc@xyz.com,a+1@xyz.com',
-                phone_number: '98765433232,21323',
-                handle: '@abc,@xyz',
+                ...fields,
                 device_id: 'did123,did456',
-                twitter_id: 'tid1,tid2',
-                partner_user_id: 'puid1,puid2',
                 effective_at: '2024-05-15T00:00:00Z',
                 expires_at: '2025-05-15T00:00:00Z',
               },
-              channel: 'sources',
               context: {},
               recordId: '1',
             },
@@ -145,13 +118,7 @@ export const data = [
             message: {
               type: 'record',
               action: 'delete',
-              fields: {
-                email: 'abc@xyz.com,a+1@xyz.com',
-                phone_number: '98765433232,21323',
-                handle: '@abc,@xyz',
-                twitter_id: 'tid1,tid2',
-                partner_user_id: 'puid1,puid2',
-              },
+              fields,
               channel: 'sources',
               context: {},
               recordId: '1',
@@ -219,7 +186,7 @@ export const data = [
       request: {
         body: [
           {
-            destination: { ...destination, config: { ...destination.config, enableHash: true } },
+            destination,
             message: {
               type: 'identify',
               context: {},

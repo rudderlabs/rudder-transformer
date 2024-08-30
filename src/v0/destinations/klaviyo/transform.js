@@ -338,8 +338,7 @@ const processRouter = async (inputs, reqMetadata) => {
   const { destination } = inputs[0];
   // This is used to switch to latest API version
   if (destination.Config?.apiVersion === 'v2') {
-    const a = processRouterV2(inputs, reqMetadata);
-    return a;
+    return processRouterV2(inputs, reqMetadata);
   }
   let batchResponseList = [];
   const batchErrorRespList = [];

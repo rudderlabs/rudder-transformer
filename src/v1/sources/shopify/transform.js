@@ -12,6 +12,7 @@ const {
   checkAndUpdateCartItems,
   getHashLineItems,
   getDataFromRedis,
+  mapObjectKeys,
 } = require('./util');
 const logger = require('../../../logger');
 const { RedisDB } = require('../../../util/redis/redisConnector');
@@ -26,6 +27,14 @@ const {
   RUDDER_ECOM_MAP,
   SUPPORTED_TRACK_EVENTS,
   SHOPIFY_TRACK_MAP,
+  PIXEL_EVENT_TOPICS,
+  PIXEL_EVENT_MAPPING,
+  contextualFieldMapping,
+  cartViewedEventMapping,
+  productListViewedEventMapping,
+  productViewedEventMapping,
+  productToCartEventMapping,
+  checkoutStartedCompletedEventMapping,
   useRedisDatabase,
 } = require('./config');
 
@@ -122,6 +131,148 @@ const trackPayloadBuilder = (event, shopifyTopic) => {
   if (!message.userId && user_id) {
     message.setProperty('userId', user_id);
   }
+  return message;
+};
+
+const pageViewedEventBuilder = (inputEvent) => {
+  const { data, context } = inputEvent;
+  const pageEventContextValues = mapObjectKeys(context, contextualFieldMapping);
+  const message = new Message(INTEGERATION);
+  message.name = 'Page View';
+  message.setEventType(EventType.PAGE);
+  message.properties = { ...data };
+  message.context = { ...pageEventContextValues };
+  return message;
+};
+
+const cartViewedEventBuilder = (inputEvent) => {
+  const lines = inputEvent?.data?.cart?.lines;
+  const products = [];
+  if (lines) {
+    lines.forEach((line) => {
+      const product = mapObjectKeys(line, cartViewedEventMapping);
+      products.push(product);
+    });
+  }
+
+  const properties = {
+    products,
+    cart_id: inputEvent.data.cart.id,
+  };
+  const contextualPayload = mapObjectKeys(inputEvent.context, contextualFieldMapping);
+  const message = new Message(INTEGERATION);
+  message.setEventType(EventType.TRACK);
+  message.setEventName('Cart Viewed');
+  message.properties = properties;
+  message.context = contextualPayload;
+  return message;
+};
+
+const productListViewedEventBuilder = (inputEvent) => {
+  const productVariants = inputEvent?.data?.collection?.productVariants;
+  const products = [];
+
+  productVariants.forEach((productVariant) => {
+    const mappedProduct = mapObjectKeys(productVariant, productListViewedEventMapping);
+    products.push(mappedProduct);
+  });
+
+  const properties = {
+    cart_id: inputEvent.clientId,
+    list_id: inputEvent.id,
+    products,
+  };
+
+  const contextualPayload = mapObjectKeys(inputEvent.context, contextualFieldMapping);
+
+  const message = new Message(INTEGERATION);
+  message.setEventType(EventType.TRACK);
+  message.setEventName('Product List Viewed');
+  message.properties = properties;
+  message.context = contextualPayload;
+  return message;
+};
+
+const productViewedEventBuilder = (inputEvent) => {
+  const properties = {
+    ...mapObjectKeys(inputEvent.data, productViewedEventMapping),
+  };
+  const contextualPayload = mapObjectKeys(inputEvent.context, contextualFieldMapping);
+  const message = new Message(INTEGERATION);
+  message.setEventType(EventType.TRACK);
+  message.setEventName('Product Viewed');
+  message.properties = properties;
+  message.context = contextualPayload;
+  return message;
+};
+
+const productToCartEventBuilder = (inputEvent) => {
+  const properties = {
+    ...mapObjectKeys(inputEvent.data, productToCartEventMapping),
+  };
+  const contextualPayload = mapObjectKeys(inputEvent.context, contextualFieldMapping);
+  const message = new Message(INTEGERATION);
+  message.setEventType(EventType.TRACK);
+  message.setEventName(PIXEL_EVENT_MAPPING[inputEvent.name]);
+  message.properties = properties;
+  message.context = contextualPayload;
+  return message;
+};
+
+const checkoutEventBuilder = (inputEvent) => {
+  const lineItems = inputEvent?.data?.checkout?.lineItems;
+  const products = [];
+
+  lineItems.forEach((lineItem) => {
+    const mappedProduct = mapObjectKeys(lineItem, checkoutStartedCompletedEventMapping);
+    products.push(mappedProduct);
+  });
+
+  const properties = {
+    products,
+    order_id: inputEvent.id,
+    checkout_id: inputEvent?.data?.checkout?.token,
+    total: inputEvent?.data?.checkout?.totalPrice?.amount,
+    currency: inputEvent?.data?.checkout?.currencyCode,
+    discount: inputEvent?.data?.checkout?.discountsAmount?.amount,
+    shipping: inputEvent?.data?.checkout?.shippingLine?.price?.amount,
+    revenue: inputEvent?.data?.checkout?.subtotalPrice?.amount,
+    value: inputEvent?.data?.checkout?.totalPrice?.amount,
+    tax: inputEvent?.data?.checkout?.totalTax?.amount,
+  };
+  const contextualPayload = mapObjectKeys(inputEvent.context, contextualFieldMapping);
+
+  const message = new Message(INTEGERATION);
+  message.setEventType(EventType.TRACK);
+  message.setEventName(PIXEL_EVENT_MAPPING[inputEvent.name]);
+  message.properties = properties;
+  message.context = contextualPayload;
+  return message;
+};
+
+const checkoutStepEventBuilder = (inputEvent) => {
+  const contextualPayload = mapObjectKeys(inputEvent.context, contextualFieldMapping);
+  const properties = {
+    ...inputEvent.data.checkout,
+  };
+  const message = new Message(INTEGERATION);
+  message.setEventType(EventType.TRACK);
+  message.setEventName(PIXEL_EVENT_MAPPING[inputEvent.name]);
+  message.properties = properties;
+  message.context = contextualPayload;
+  return message;
+};
+
+const searchEventBuilder = (inputEvent) => {
+  const properties = {
+    query: inputEvent.data.searchResult.query,
+  };
+  const contextualPayload = mapObjectKeys(inputEvent.context, contextualFieldMapping);
+  const message = new Message(INTEGERATION);
+  message.setEventType(EventType.TRACK);
+  message.setEventName(PIXEL_EVENT_MAPPING[inputEvent.name]);
+  message.properties = properties;
+  message.context = contextualPayload;
   return message;
 };
 
@@ -277,15 +428,58 @@ const processIdentifierEvent = async (event, metricMetadata) => {
 };
 
 function processPixelEvent(inputEvent) {
-  const { name, data, context, clientId } = inputEvent;
-  const payload = {
-    type: 'track',
-    event: name,
-    properties: data,
-    anonymousId: clientId,
-    context,
-  };
-  return payload;
+  const { name, query_parameters, clientId, data } = inputEvent;
+  let message;
+  switch (name) {
+    case PIXEL_EVENT_TOPICS.PAGE_VIEWED:
+      message = pageViewedEventBuilder(inputEvent);
+      break;
+    case PIXEL_EVENT_TOPICS.CART_VIEWED:
+      message = cartViewedEventBuilder(inputEvent);
+      break;
+    case PIXEL_EVENT_TOPICS.COLLECTION_VIEWED:
+      message = productListViewedEventBuilder(inputEvent);
+      break;
+    case PIXEL_EVENT_TOPICS.PRODUCT_VIEWED:
+      message = productViewedEventBuilder(inputEvent);
+      break;
+    case PIXEL_EVENT_TOPICS.PRODUCT_ADDED_TO_CART:
+    case PIXEL_EVENT_TOPICS.PRODUCT_REMOVED_FROM_CART:
+      message = productToCartEventBuilder(inputEvent);
+      break;
+    case PIXEL_EVENT_TOPICS.CHECKOUT_STARTED:
+    case PIXEL_EVENT_TOPICS.CHECKOUT_COMPLETED:
+      message.userId = data?.checkout?.order?.customer?.id || '';
+      message = checkoutEventBuilder(inputEvent);
+      break;
+    case PIXEL_EVENT_TOPICS.CHECKOUT_ADDRESS_INFO_SUBMITTED:
+    case PIXEL_EVENT_TOPICS.CHECKOUT_CONTACT_INFO_SUBMITTED:
+    case PIXEL_EVENT_TOPICS.CHECKOUT_SHIPPING_INFO_SUBMITTED:
+    case PIXEL_EVENT_TOPICS.PAYMENT_INFO_SUBMITTED:
+      message.userId = data?.checkout?.order?.customer?.id || '';
+      message = checkoutStepEventBuilder(inputEvent);
+      break;
+    case PIXEL_EVENT_TOPICS.SEARCH_SUBMITTED:
+      message = searchEventBuilder(inputEvent);
+      break;
+    default:
+      logger.debug(`{{SHOPIFY::}} Invalid pixel event ${name}`);
+      stats.increment('invalid_shopify_event', {
+        writeKey: query_parameters.writeKey,
+        source: 'SHOPIFY',
+        shopifyTopic: name,
+      });
+      return NO_OPERATION_SUCCESS;
+  }
+  message.anonymousId = clientId;
+  message.setProperty(`integrations.${INTEGERATION}`, true);
+  message.setProperty('context.library', {
+    name: 'RudderStack Shopify Cloud',
+    version: '2.0.0',
+  });
+  message.setProperty('context.topic', name);
+  message = removeUndefinedAndNullValues(message);
+  return message;
 }
 
 const processEventV2 = async (event, metricMetadata) => {

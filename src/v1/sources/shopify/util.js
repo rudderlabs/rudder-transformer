@@ -272,6 +272,59 @@ const checkAndUpdateCartItems = async (inputEvent, redisData, metricMetadata, sh
   return true;
 };
 
+function getNestedValue(obj, path) {
+  const parts = path.split('.');
+  return parts.reduce((acc, part) => acc && acc[part], obj);
+}
+
+function setNestedValue(obj, path, value) {
+  const parts = path.split('.');
+  const lastIndex = parts.length - 1;
+  parts.reduce((acc, part, index) => {
+    if (index === lastIndex) {
+      acc[part] = value;
+    } else if (!acc[part]) {
+      acc[part] = {};
+    }
+    return acc[part];
+  }, obj);
+}
+
+function mapObjectKeys(obj, mapping) {
+  if (!Array.isArray(mapping)) {
+    throw new TypeError('mapping should be an array');
+  }
+  const acc = { ...obj };
+
+  return mapping.reduce((accumulator, { shopifyField, rudderField }) => {
+    const value = getNestedValue(obj, shopifyField);
+    if (value !== undefined) {
+      setNestedValue(accumulator, rudderField, value);
+    }
+    return acc;
+  }, acc);
+}
+
+const pixelEventBuilder = (inputEvent) => {
+  const { event: eventName, properties } = inputEvent;
+  const { currency, value, content_ids, content_type } = properties;
+  const { value: propValue, currency: propCurrency } = properties;
+  const eventValue = isDefinedAndNotNull(value) ? value : propValue;
+  const eventCurrency = isDefinedAndNotNull(currency) ? currency : propCurrency;
+  const pixelEvent = {
+    event_name: eventName,
+    currency: eventCurrency,
+    value: eventValue,
+  };
+  if (content_ids) {
+    pixelEvent.content_ids = content_ids;
+  }
+  if (content_type) {
+    pixelEvent.content_type = content_type;
+  }
+  return pixelEvent;
+};
+
 module.exports = {
   getShopifyTopic,
   getProductsListFromLineItems,
@@ -281,4 +334,6 @@ module.exports = {
   checkAndUpdateCartItems,
   getHashLineItems,
   getDataFromRedis,
+  pixelEventBuilder,
+  mapObjectKeys,
 };

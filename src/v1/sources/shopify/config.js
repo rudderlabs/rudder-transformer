@@ -38,6 +38,201 @@ const SHOPIFY_TRACK_MAP = {
   orders_partially_fullfilled: 'Order Partially Fulfilled',
 };
 
+const PIXEL_EVENT_TOPICS = {
+  CART_VIEWED: 'cart_viewed',
+  PRODUCT_ADDED_TO_CART: 'product_added_to_cart',
+  PRODUCT_REMOVED_FROM_CART: 'product_removed_from_cart',
+  PAGE_VIEWED: 'page_viewed',
+  PRODUCT_VIEWED: 'product_viewed',
+  COLLECTION_VIEWED: 'collection_viewed',
+  CHECKOUT_STARTED: 'checkout_started',
+  CHECKOUT_COMPLETED: 'checkout_completed',
+  CHECKOUT_ADDRESS_INFO_SUBMITTED: 'checkout_address_info_submitted',
+  CHECKOUT_CONTACT_INFO_SUBMITTED: 'checkout_contact_info_submitted',
+  CHECKOUT_SHIPPING_INFO_SUBMITTED: 'checkout_shipping_info_submitted',
+  PAYMENT_INFO_SUBMITTED: 'payment_info_submitted',
+  SEARCH_SUBMITTED: 'search_submitted',
+};
+
+const PIXEL_EVENT_MAPPING = {
+  cart_viewed: 'Cart Viewed',
+  product_added_to_cart: 'Product Added',
+  product_removed_from_cart: 'Product Removed',
+  page_viewed: 'Page Viewed',
+  product_viewed: 'Product Viewed',
+  collection_viewed: 'Collection Viewed',
+  checkout_started: 'Checkout Started',
+  checkout_completed: 'Checkout Completed',
+  checkout_address_info_submitted: 'Checkout Address Info Submitted',
+  checkout_contact_info_submitted: 'Checkout Contact Info Submitted',
+  checkout_shipping_info_submitted: 'Checkout Shipping Info Submitted',
+  payment_info_submitted: 'Payment Info Submitted',
+  search_submitted: 'Search Submitted',
+};
+
+const contextualFieldMapping = [
+  {
+    shopifyField: 'context.document.referrer',
+    rudderField: 'page.referrer',
+  },
+  {
+    shopifyField: 'document.title',
+    rudderField: 'page.title',
+  },
+  {
+    shopifyField: 'navigator.userAgent',
+    rudderField: 'userAgent',
+  },
+  {
+    shopifyField: 'window.location.href',
+    rudderField: 'page.url',
+  },
+  {
+    shopifyField: 'window.location.pathname',
+    rudderField: 'page.path',
+  },
+  {
+    shopifyField: 'window.location.search',
+    rudderField: 'page.search',
+  },
+  {
+    shopifyField: 'window.screen.height',
+    rudderField: 'screen.height',
+  },
+  {
+    shopifyField: 'window.screen.width',
+    rudderField: 'screen.width',
+  },
+];
+
+const cartViewedEventMapping = [
+  { shopifyField: 'merchandise.product.id', rudderField: 'product_id' },
+  { shopifyField: 'merchandise.product.title', rudderField: 'variant' },
+  { shopifyField: 'merchandise.image.src', rudderField: 'image_url' },
+  { shopifyField: 'merchandise.price.amount', rudderField: 'price' },
+  { shopifyField: 'merchandise.product.type', rudderField: 'category' },
+  { shopifyField: 'merchandise.product.url', rudderField: 'url' },
+  { shopifyField: 'merchandise.product.vendor', rudderField: 'brand' },
+  { shopifyField: 'merchandise.sku', rudderField: 'sku' },
+  { shopifyField: 'merchandise.title', rudderField: 'name' },
+  { shopifyField: 'quantity', rudderField: 'quantity' },
+];
+
+const productListViewedEventMapping = [
+  { shopifyField: 'image.src', rudderField: 'image_url' },
+  { shopifyField: 'price.amount', rudderField: 'price' },
+  { shopifyField: 'product.id', rudderField: 'product_id' },
+  { shopifyField: 'product.title', rudderField: 'variant' },
+  { shopifyField: 'product.type', rudderField: 'category' },
+  { shopifyField: 'product.url', rudderField: 'url' },
+  { shopifyField: 'product.vendor', rudderField: 'brand' },
+  { shopifyField: 'sku', rudderField: 'sku' },
+  { shopifyField: 'title', rudderField: 'name' },
+];
+
+const productViewedEventMapping = [
+  {
+    shopifyField: 'productVariant.product.id',
+    rudderField: 'product_id',
+  },
+  {
+    shopifyField: 'productVariant.product.title',
+    rudderField: 'variant',
+  },
+  {
+    shopifyField: 'productVariant.product.vendor',
+    rudderField: 'brand',
+  },
+  {
+    shopifyField: 'productVariant.product.type',
+    rudderField: 'category',
+  },
+  {
+    shopifyField: 'productVariant.product.image.src',
+    rudderField: 'image_url',
+  },
+  {
+    shopifyField: 'productVariant.price.amount',
+    rudderField: 'price',
+  },
+  {
+    shopifyField: 'productVariant.price.currencyCode',
+    rudderField: 'currency',
+  },
+  {
+    shopifyField: 'productVariant.product.url',
+    rudderField: 'url',
+  },
+  {
+    shopifyField: 'productVariant.product.sku',
+    rudderField: 'sku',
+  },
+  {
+    shopifyField: 'productVariant.product.title',
+    rudderField: 'name',
+  },
+  {
+    shopifyField: 'cartLine.quantity',
+    rudderField: 'quantity',
+  },
+];
+
+const productToCartEventMapping = [
+  {
+    shopifyField: 'cartLine.merchandise.image.src',
+    rudderField: 'image_url',
+  },
+  {
+    shopifyField: 'cartLine.merchandise.price.amount',
+    rudderField: 'price',
+  },
+  {
+    shopifyField: 'cartLine.merchandise.product.id',
+    rudderField: 'product_id',
+  },
+  {
+    shopifyField: 'cartLine.merchandise.product.title',
+    rudderField: 'variant',
+  },
+  {
+    shopifyField: 'cartLine.merchandise.product.type',
+    rudderField: 'category',
+  },
+  {
+    shopifyField: 'cartLine.merchandise.product.vendor',
+    rudderField: 'brand',
+  },
+  {
+    shopifyField: 'cartLine.merchandise.product.url',
+    rudderField: 'url',
+  },
+  {
+    shopifyField: 'cartLine.merchandise.sku',
+    rudderField: 'sku',
+  },
+  {
+    shopifyField: 'cartLine.merchandise.title',
+    rudderField: 'name',
+  },
+  {
+    shopifyField: 'cartLine.quantity',
+    rudderField: 'quantity',
+  },
+];
+
+const checkoutStartedCompletedEventMapping = [
+  { shopifyField: 'quantity', rudderField: 'quantity' },
+  { shopifyField: 'title', rudderField: 'name' },
+  { shopifyField: 'variant.image.src', rudderField: 'image_url' },
+  { shopifyField: 'variant.price.amount', rudderField: 'price' },
+  { shopifyField: 'variant.sku', rudderField: 'sku' },
+  { shopifyField: 'variant.product.id', rudderField: 'product_id' },
+  { shopifyField: 'variant.product.title', rudderField: 'variant' },
+  { shopifyField: 'variant.product.type', rudderField: 'category' },
+  { shopifyField: 'variant.product.url', rudderField: 'url' },
+  { shopifyField: 'variant.product.vendor', rudderField: 'brand' },
+];
+
 const identifyMappingJSON = JSON.parse(
   fs.readFileSync(path.resolve(__dirname, 'data', 'identifyMapping.json')),
 );
@@ -117,6 +312,14 @@ module.exports = {
   PRODUCT_MAPPING_EXCLUSION_FIELDS,
   SUPPORTED_TRACK_EVENTS,
   SHOPIFY_TRACK_MAP,
+  PIXEL_EVENT_TOPICS,
+  PIXEL_EVENT_MAPPING,
+  contextualFieldMapping,
+  cartViewedEventMapping,
+  productListViewedEventMapping,
+  productViewedEventMapping,
+  productToCartEventMapping,
+  checkoutStartedCompletedEventMapping,
   useRedisDatabase,
   SHOPIFY_ADMIN_ONLY_EVENTS,
   maxTimeToIdentifyRSGeneratedCall,

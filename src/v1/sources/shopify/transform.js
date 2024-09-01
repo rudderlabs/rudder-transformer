@@ -429,6 +429,9 @@ const processIdentifierEvent = async (event, metricMetadata) => {
 
 function processPixelEvent(inputEvent) {
   const { name, query_parameters, clientId, data } = inputEvent;
+  const { checkout } = data;
+  const { order } = checkout;
+  const { customer } = order;
   let message;
   switch (name) {
     case PIXEL_EVENT_TOPICS.PAGE_VIEWED:
@@ -449,14 +452,14 @@ function processPixelEvent(inputEvent) {
       break;
     case PIXEL_EVENT_TOPICS.CHECKOUT_STARTED:
     case PIXEL_EVENT_TOPICS.CHECKOUT_COMPLETED:
-      message.userId = data?.checkout?.order?.customer?.id || '';
+      if (customer.id) message.userId = customer.id || '';
       message = checkoutEventBuilder(inputEvent);
       break;
     case PIXEL_EVENT_TOPICS.CHECKOUT_ADDRESS_INFO_SUBMITTED:
     case PIXEL_EVENT_TOPICS.CHECKOUT_CONTACT_INFO_SUBMITTED:
     case PIXEL_EVENT_TOPICS.CHECKOUT_SHIPPING_INFO_SUBMITTED:
     case PIXEL_EVENT_TOPICS.PAYMENT_INFO_SUBMITTED:
-      message.userId = data?.checkout?.order?.customer?.id || '';
+      if (customer.id) message.userId = customer.id || '';
       message = checkoutStepEventBuilder(inputEvent);
       break;
     case PIXEL_EVENT_TOPICS.SEARCH_SUBMITTED:

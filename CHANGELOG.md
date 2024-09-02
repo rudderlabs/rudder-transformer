@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.77.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.76.1...v1.77.0) (2024-09-02)
+
+
+### Features
+
+* add support for customerio source email subscribed event ([#3679](https://github.com/rudderlabs/rudder-transformer/issues/3679)) ([4cb2799](https://github.com/rudderlabs/rudder-transformer/commit/4cb27998f2c1e2a2a7b535666a54621fd1d43ef0))
+* add support for headers to source transformation flows ([#3683](https://github.com/rudderlabs/rudder-transformer/issues/3683)) ([f8cd6bd](https://github.com/rudderlabs/rudder-transformer/commit/f8cd6bda158654501555554ac0d284af8ba058fd))
+* include source attribute for identify messages for koala ([#3667](https://github.com/rudderlabs/rudder-transformer/issues/3667)) ([b1d0d08](https://github.com/rudderlabs/rudder-transformer/commit/b1d0d08b91273fd3b8fa2e87381c5ae090e1cb21)), closes [#3603](https://github.com/rudderlabs/rudder-transformer/issues/3603)
+* webhook v2 ([#3651](https://github.com/rudderlabs/rudder-transformer/issues/3651)) ([e21ebd0](https://github.com/rudderlabs/rudder-transformer/commit/e21ebd0085aadfe61cb6442da6689e32be33f52f))
+
+
+### Bug Fixes
+
+* adding a new condition for retrying the function creation in python transformation ([#3684](https://github.com/rudderlabs/rudder-transformer/issues/3684)) ([9fb463e](https://github.com/rudderlabs/rudder-transformer/commit/9fb463e7661c225077b11a0196b3190c15741058))
+* handle trade desk null, undefined fields ([#3661](https://github.com/rudderlabs/rudder-transformer/issues/3661)) ([2d8b315](https://github.com/rudderlabs/rudder-transformer/commit/2d8b315a5f2e681bc256128032e4ee066f9177fc))
+* klaviyo jobs order ([#3686](https://github.com/rudderlabs/rudder-transformer/issues/3686)) ([26926c4](https://github.com/rudderlabs/rudder-transformer/commit/26926c40fcbf4c146a37ac16c2cc7280e110a6e6))
+* login using docker creds on the node to allow to pull the desired image ([#3682](https://github.com/rudderlabs/rudder-transformer/issues/3682)) ([fc6bcf7](https://github.com/rudderlabs/rudder-transformer/commit/fc6bcf7eda690d82cfe2d381753948058efbcd3d))
+* npm vulnerabilities ([c305974](https://github.com/rudderlabs/rudder-transformer/commit/c3059746f25677eae739468c3a4b7496aa82f4da))
+* npm vulnerabilities ([#3695](https://github.com/rudderlabs/rudder-transformer/issues/3695)) ([494df08](https://github.com/rudderlabs/rudder-transformer/commit/494df08bc992632ebc405c88a3f23ed5e1262553))
+
 ### [1.76.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.76.0...v1.76.1) (2024-08-29)
 
 

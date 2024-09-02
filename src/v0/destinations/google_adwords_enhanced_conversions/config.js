@@ -1,6 +1,8 @@
 const { getMappingConfig } = require('../../util');
 
-const BASE_ENDPOINT = 'https://googleads.googleapis.com/v15/customers';
+const API_VERSION = 'v17';
+
+const BASE_ENDPOINT = 'https://googleads.googleapis.com/v17/customers';
 
 const CONFIG_CATEGORIES = {
   TRACK_CONFIG: { type: 'track', name: 'trackConfig' },
@@ -17,4 +19,5 @@ module.exports = {
   hashAttributes,
   CONVERSION_ACTION_ID_CACHE_TTL,
   destType: 'google_adwords_enhanced_conversions',
+  API_VERSION,
 };

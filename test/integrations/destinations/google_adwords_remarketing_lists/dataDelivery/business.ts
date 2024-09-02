@@ -4,6 +4,8 @@ import {
   generateProxyV1Payload,
 } from '../../../testUtils';
 
+import { API_VERSION } from '../../../../../src/v0/destinations/google_adwords_remarketing_lists/config';
+
 export const commonHeaders = {
   Authorization: 'Bearer dummy-access',
   'Content-Type': 'application/json',
@@ -120,7 +122,7 @@ export const testScenariosForV0API = [
           headers: commonHeaders,
           params: commonParams,
           JSON: validRequestPayload1,
-          endpoint: 'https://googleads.googleapis.com/v15/customers/7693729833/offlineUserDataJobs',
+          endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
         }),
         method: 'POST',
       },
@@ -154,7 +156,7 @@ export const testScenariosForV0API = [
           headers: commonHeaders,
           params: commonParams,
           JSON: invalidArgumentRequestPayload,
-          endpoint: 'https://googleads.googleapis.com/v15/customers/7693729834/offlineUserDataJobs',
+          endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729834/offlineUserDataJobs`,
         }),
         method: 'POST',
       },
@@ -217,7 +219,7 @@ export const testScenariosForV0API = [
           headers: commonHeaders,
           params: commonParams,
           JSON: validRequestPayload2,
-          endpoint: 'https://googleads.googleapis.com/v15/customers/7693729833/offlineUserDataJobs',
+          endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
         }),
         method: 'POST',
       },
@@ -255,8 +257,7 @@ export const testScenariosForV1API = [
             headers: commonHeaders,
             params: commonParams,
             JSON: validRequestPayload1,
-            endpoint:
-              'https://googleads.googleapis.com/v15/customers/7693729833/offlineUserDataJobs',
+            endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
           },
           metadataArray,
         ),
@@ -299,8 +300,7 @@ export const testScenariosForV1API = [
             headers: commonHeaders,
             params: commonParams,
             JSON: invalidArgumentRequestPayload,
-            endpoint:
-              'https://googleads.googleapis.com/v15/customers/7693729834/offlineUserDataJobs',
+            endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729834/offlineUserDataJobs`,
           },
           metadataArray,
         ),
@@ -346,8 +346,7 @@ export const testScenariosForV1API = [
             headers: commonHeaders,
             params: commonParams,
             JSON: validRequestPayload2,
-            endpoint:
-              'https://googleads.googleapis.com/v15/customers/7693729833/offlineUserDataJobs',
+            endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
           },
           metadataArray,
         ),

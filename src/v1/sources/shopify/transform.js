@@ -429,9 +429,9 @@ const processIdentifierEvent = async (event, metricMetadata) => {
 
 function processPixelEvent(inputEvent) {
   const { name, query_parameters, clientId, data } = inputEvent;
-  const { checkout } = data;
-  const { order } = checkout;
-  const { customer } = order;
+  const { checkout } = data ?? {};
+  const { order } = checkout ?? {};
+  const { customer } = order ?? {};
   let message;
   switch (name) {
     case PIXEL_EVENT_TOPICS.PAGE_VIEWED:

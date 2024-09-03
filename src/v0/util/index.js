@@ -1168,7 +1168,7 @@ const getDestinationExternalIDInfoForRetl = (message, destination) => {
   if (externalIdArray) {
     externalIdArray.forEach((extIdObj) => {
       const { type, id } = extIdObj;
-      if (type && type.includes(`${destination}-`)) {
+      if (type?.includes(`${destination}-`)) {
         destinationExternalId = id;
         objectType = type.replace(`${destination}-`, '');
         identifierType = extIdObj.identifierType;
@@ -1195,7 +1195,7 @@ const getDestinationExternalIDObjectForRetl = (message, destination) => {
     // some stops the execution when the element is found
     externalIdArray.some((extIdObj) => {
       const { type } = extIdObj;
-      if (type && type.includes(`${destination}-`)) {
+      if (type?.includes(`${destination}-`)) {
         obj = extIdObj;
         return true;
       }
@@ -2268,6 +2268,11 @@ const validateEventAndLowerCaseConversion = (event, isMandatory, convertToLowerC
 const applyCustomMappings = (message, mappings) =>
   JsonTemplateEngine.createAsSync(mappings, { defaultPathType: PathType.JSON }).evaluate(message);
 
+const applyJSONStringTemplate = (message, template) =>
+  JsonTemplateEngine.createAsSync(template.replace(/{{/g, '${').replace(/}}/g, '}'), {
+    defaultPathType: PathType.JSON,
+  }).evaluate(message);
+
 /**
  * Gets url path omitting the hostname & protocol
  *
@@ -2293,6 +2298,7 @@ module.exports = {
   addExternalIdToTraits,
   adduserIdFromExternalId,
   applyCustomMappings,
+  applyJSONStringTemplate,
   base64Convertor,
   batchMultiplexedEvents,
   checkEmptyStringInarray,

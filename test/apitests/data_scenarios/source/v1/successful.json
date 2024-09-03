@@ -29,7 +29,8 @@
                 "fulfillment_id": "1234567890",
                 "status": "pending"
               }
-            }
+            },
+            "context": {}
           }
         ]
       }

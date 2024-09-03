@@ -1,5 +1,5 @@
 const { populateIdentifiers, responseBuilder } = require('./util');
-
+const { API_VERSION } = require('./config');
 const accessToken = 'abcd1234';
 const developerToken = 'ijkl9101';
 const body = {
@@ -66,7 +66,7 @@ const expectedResponse = {
   version: '1',
   type: 'REST',
   method: 'POST',
-  endpoint: 'https://googleads.googleapis.com/v16/customers/7693729833/offlineUserDataJobs',
+  endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
   headers: {
     Authorization: 'Bearer abcd1234',
     'Content-Type': 'application/json',

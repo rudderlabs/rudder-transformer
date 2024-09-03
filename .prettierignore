@@ -9,3 +9,4 @@ src/util/lodash-es-core.js
 src/util/url-search-params.min.js
 dist
 .eslintignore
+.prettierignore

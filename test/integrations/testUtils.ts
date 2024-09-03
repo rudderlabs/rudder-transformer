@@ -24,16 +24,17 @@ const generateAlphanumericId = (size = 36) =>
 export const getTestDataFilePaths = (dirPath: string, opts: OptionValues): string[] => {
   const globPattern = join(dirPath, '**', 'data.ts');
   let testFilePaths = globSync(globPattern);
+  let filteredTestFilePaths: string[] = [];
 
   if (opts.destination || opts.source) {
-    testFilePaths = testFilePaths.filter((testFile) =>
-      testFile.includes(`${opts.destination}/` || opts.source),
+    filteredTestFilePaths = testFilePaths.filter((testFile) =>
+      testFile.includes(`${opts.destination || opts.source}/`),
     );
   }
   if (opts.feature) {
-    testFilePaths = testFilePaths.filter((testFile) => testFile.includes(opts.feature));
+    filteredTestFilePaths = testFilePaths.filter((testFile) => testFile.includes(opts.feature));
   }
-  return testFilePaths;
+  return filteredTestFilePaths;
 };
 
 export const getTestData = (filePath): TestCaseData[] => {

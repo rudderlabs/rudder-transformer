@@ -1,10 +1,13 @@
-const { RetryableError } = require('@rudderstack/integrations-lib');
+const { RetryableError, TAG_NAMES, NetworkError } = require('@rudderstack/integrations-lib');
 const isString = require('lodash/isString');
 const { prepareProxyRequest, proxyRequest } = require('../../../adapters/network');
 const { isHttpStatusSuccess } = require('../../util/index');
 const { REFRESH_TOKEN } = require('../../../adapters/networkhandler/authConstants');
 
-const { processAxiosResponse } = require('../../../adapters/utils/networkUtils');
+const {
+  processAxiosResponse,
+  getDynamicErrorType,
+} = require('../../../adapters/utils/networkUtils');
 
 const redditRespHandler = (destResponse) => {
   const { status, response } = destResponse;
@@ -29,6 +32,14 @@ const redditRespHandler = (destResponse) => {
       authErrorCategory,
     );
   }
+  throw new NetworkError(
+    `${JSON.stringify(response)} during reddit response transformation`,
+    status,
+    {
+      [TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
+    },
+    destResponse,
+  );
 };
 const responseHandler = (responseParams) => {
   const { destinationResponse } = responseParams;

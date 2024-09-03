@@ -1,5 +1,6 @@
 const sha256 = require('sha256');
 const SqlString = require('sqlstring');
+const isString = require('lodash/isString');
 const { get, set, cloneDeep } = require('lodash');
 const {
   AbortedError,
@@ -271,7 +272,9 @@ const getAddConversionPayload = (message, Config) => {
 
   const userIdentifierInfo = {
     email:
-      hashUserIdentifier && isDefinedAndNotNull(email) ? sha256(email.trim()).toString() : email,
+      hashUserIdentifier && isString(email) && isDefinedAndNotNull(email)
+        ? sha256(email.trim()).toString()
+        : email,
     phone:
       hashUserIdentifier && isDefinedAndNotNull(phone) ? sha256(phone.trim()).toString() : phone,
     address: buildAndGetAddress(message, hashUserIdentifier),
@@ -367,7 +370,9 @@ const getClickConversionPayloadAndEndpoint = (
 
   const userIdentifierInfo = {
     email:
-      hashUserIdentifier && isDefinedAndNotNull(email) ? sha256(email.trim()).toString() : email,
+      hashUserIdentifier && isString(email) && isDefinedAndNotNull(email)
+        ? sha256(email.trim()).toString()
+        : email,
     phone:
       hashUserIdentifier && isDefinedAndNotNull(phone) ? sha256(phone.trim()).toString() : phone,
   };

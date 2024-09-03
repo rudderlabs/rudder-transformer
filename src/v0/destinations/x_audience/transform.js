@@ -2,6 +2,7 @@
 const {
   removeUndefinedAndNullAndEmptyValues,
   InstrumentationError,
+  ConfigurationError,
 } = require('@rudderstack/integrations-lib');
 const { handleRtTfSingleEventError } = require('../../util');
 const { batchEvents, buildResponseWithJSON, getUserDetails } = require('./utils');
@@ -15,6 +16,13 @@ const processRecordEvent = (message, config) => {
   const { fields, action, type } = message;
   if (type !== 'record') {
     throw new InstrumentationError(`[X AUDIENCE]: ${type} is not supported`);
+  }
+  const { accountId, audienceId } = { config };
+  if (accountId) {
+    throw new ConfigurationError('[X AUDIENCE]: Account Id not found');
+  }
+  if (audienceId) {
+    throw new ConfigurationError('[X AUDIENCE]: Audience Id not found');
   }
   const { effective_at, expires_at } = fields;
   const users = [getUserDetails(fields, config)];
@@ -30,14 +38,16 @@ const processRecordEvent = (message, config) => {
 };
 const process = (event) => {
   const { message, destination, metadata } = event;
-  const { config } = destination;
-  const payload = [processRecordEvent(message, config)];
-  return buildResponseWithJSON(payload, config, metadata);
+  const { Config } = destination;
+
+  const payload = [processRecordEvent(message, Config)];
+  return buildResponseWithJSON(payload, Config, metadata);
 };
 const processRouterDest = async (inputs, reqMetadata) => {
   const responseList = []; // list containing single track event payload
   const errorRespList = []; // list of error
   const { destination } = inputs[0];
+  const { Config } = destination;
   inputs.map(async (event) => {
     try {
       if (event.message.statusCode) {
@@ -46,7 +56,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
       } else {
         // if not transformed
         responseList.push({
-          message: processRecordEvent(event.message, destination?.config),
+          message: processRecordEvent(event.message, Config),
           metadata: event.metadata,
           destination,
         });

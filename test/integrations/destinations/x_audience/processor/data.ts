@@ -20,7 +20,7 @@ export const data = [
       request: {
         body: [
           {
-            destination: { ...destination, config: { ...destination.config, enableHash: true } },
+            destination: { ...destination, Config: { ...destination.Config, enableHash: true } },
             message: {
               type: 'record',
               action: 'insert',

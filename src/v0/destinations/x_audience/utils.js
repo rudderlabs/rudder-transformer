@@ -27,14 +27,15 @@ const getOAuthFields = ({ secret }) => {
 };
 
 // Docs: https://developer.x.com/en/docs/x-ads-api/audiences/api-reference/custom-audience-user
-const buildResponseWithJSON = (JSON, config, metadata) => {
+const buildResponseWithJSON = (payload, config, metadata) => {
   const response = defaultRequestConfig();
-  response.endpoint = BASE_URL.replace(':account_id', config.accountId).replace(
+  const accountId = Object.values(JSON.parse(config.accountId))[0];
+  response.endpoint = BASE_URL.replace(':account_id', accountId).replace(
     ':audience_id',
     config.audienceId,
   );
   response.method = defaultPostRequestConfig.requestMethod;
-  response.body.JSON = JSON;
+  response.body.JSON = payload;
   // required to be in accordance with oauth package
   const request = {
     url: response.endpoint,
@@ -86,7 +87,7 @@ const getFinalResponseList = (operationObjectList, destination) => {
     ) {
       respList.push(
         getSuccessRespEvents(
-          buildResponseWithJSON(currentBatchedRequest, destination.config, metadataWithSecret),
+          buildResponseWithJSON(currentBatchedRequest, destination.Config, metadataWithSecret),
           currentMetadataList,
           destination,
           true,
@@ -102,7 +103,7 @@ const getFinalResponseList = (operationObjectList, destination) => {
   // pushing the remainder operation payloads as well
   respList.push(
     getSuccessRespEvents(
-      buildResponseWithJSON(currentBatchedRequest, destination.config, metadataWithSecret),
+      buildResponseWithJSON(currentBatchedRequest, destination.Config, metadataWithSecret),
       currentMetadataList,
       destination,
       true,

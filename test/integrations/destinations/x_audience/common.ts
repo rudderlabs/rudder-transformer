@@ -2,8 +2,8 @@ export const authHeaderConstant =
   '"OAuth oauth_consumer_key="validConsumerKey", oauth_nonce="j8kZvaJQRTaLX8h460CgHNs6rCEArNOW", oauth_signature="uAu%2FGdA6qPGW88pjVd7%2FgnAlHtM%3D", oauth_signature_method="HMAC-SHA1", oauth_timestamp="1725014809", oauth_token="validAccessToken", oauth_version="1.0"';
 
 export const destination = {
-  config: {
-    accountId: '1234',
+  Config: {
+    accountId: '{"Dummy Name":"1234"}',
     audienceId: 'dummyId',
   },
   ID: 'xpixel-1234',

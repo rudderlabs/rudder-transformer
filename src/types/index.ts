@@ -185,6 +185,12 @@ type RouterTransformationResponse = {
   statTags?: object;
 };
 
+type SourceTransformationEvent = {
+  headers?: Record<string, string>;
+  query_params?: Record<string, string>;
+  [key: string]: any;
+};
+
 type SourceTransformationOutput = {
   batch: RudderMessage[];
 };
@@ -360,6 +366,7 @@ export {
   RouterTransformationRequestData,
   RouterTransformationResponse,
   RudderMessage,
+  SourceTransformationEvent,
   SourceTransformationResponse,
   UserDeletionRequest,
   UserDeletionResponse,

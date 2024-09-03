@@ -8,22 +8,23 @@ afterEach(() => {
   jest.clearAllMocks();
 });
 
+const headers = {
+  'x-rudderstack-source': 'test',
+};
+
 describe('NativeIntegration Source Service', () => {
   test('sourceTransformRoutine - success', async () => {
     const sourceType = '__rudder_test__';
     const version = 'v0';
     const requestMetadata = {};
 
-    const event = { message: { a: 'b' } };
+    const event = { message: { a: 'b' }, headers };
     const events = [event, event];
 
-    const tevent = { anonymousId: 'test' } as RudderMessage;
+    const tevent = { anonymousId: 'test', context: { headers } } as RudderMessage;
     const tresp = { output: { batch: [tevent] }, statusCode: 200 } as SourceTransformationResponse;
 
-    const tresponse = [
-      { output: { batch: [{ anonymousId: 'test' }] }, statusCode: 200 },
-      { output: { batch: [{ anonymousId: 'test' }] }, statusCode: 200 },
-    ];
+    const tresponse = [tresp, tresp];
 
     FetchHandler.getSourceHandler = jest.fn().mockImplementationOnce((d, v) => {
       expect(d).toEqual(sourceType);

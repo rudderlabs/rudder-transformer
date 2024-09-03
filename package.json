@@ -107,7 +107,7 @@
     "object-hash": "^3.0.0",
     "parse-static-imports": "^1.1.0",
     "prom-client": "^14.2.0",
-    "qs": "^6.11.1",
+    "qs": "^6.13.0",
     "rs-jsonpath": "^1.1.2",
     "set-value": "^4.1.0",
     "sha256": "^0.2.0",

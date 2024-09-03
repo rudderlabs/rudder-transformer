@@ -9,6 +9,7 @@ const {
   combineBatchRequestsWithSameJobIds,
   validateEventAndLowerCaseConversion,
 } = require('./index');
+const exp = require('constants');
 
 // Names of the utility functions to test
 const functionNames = [
@@ -688,5 +689,49 @@ describe('extractCustomFields', () => {
     expect(result).toEqual({
       email: 'john.doe@example.com',
     });
+  });
+});
+
+describe('applyJSONStringTemplate', () => {
+  it('should apply JSON string template to the payload', () => {
+    const payload = {
+      domain: 'abc',
+    };
+    const template = '`https://{{$.domain}}.com`';
+
+    const result = utilities.applyJSONStringTemplate(payload, template);
+    expect(result).toEqual('https://abc.com');
+  });
+
+  it('should apply JSON string template to the payload multiple times', () => {
+    const payload = {
+      domain: 'abc',
+      subdomain: 'def',
+    };
+    const template = '`https://{{$.subdomain}}.{{$.domain}}.com`';
+
+    const result = utilities.applyJSONStringTemplate(payload, template);
+    expect(result).toEqual('https://def.abc.com');
+  });
+});
+
+describe('get relative path from url', () => {
+  test('valid url', () => {
+    expect(utilities.getRelativePathFromURL('https://google.com/a/b/c')).toEqual('/a/b/c');
+  });
+  test('valid url with query parameters', () => {
+    expect(utilities.getRelativePathFromURL('https://google.com/a/b/c?q=1&n=2')).toEqual('/a/b/c');
+  });
+  test('normal string', () => {
+    expect(utilities.getRelativePathFromURL('s=1&n=2')).toEqual('s=1&n=2');
+  });
+  test('undefined', () => {
+    expect(utilities.getRelativePathFromURL(undefined)).toEqual(undefined);
+  });
+  test('number', () => {
+    expect(utilities.getRelativePathFromURL(1)).toEqual(1);
+  });
+  test('null', () => {
+    expect(utilities.getRelativePathFromURL(null)).toEqual(null);
   });
 });

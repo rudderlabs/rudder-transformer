@@ -260,4 +260,148 @@ export const v1oauthScenarios = [
       },
     },
   },
+  {
+    id: 'gaoc_v1_oauth_scenario_3',
+    name: 'google_adwords_offline_conversions',
+    description:
+      "[Proxy v1 API] :: Oauth when the user doesn't enabled 2 factor authentication but the google ads account has it enabled",
+    successCriteria: 'The proxy should return 401 with authErrorCategory as AUTH_STATUS_INACTIVE',
+    scenario: 'Oauth',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v1',
+    input: {
+      request: {
+        body: generateProxyV1Payload(
+          {
+            ...commonRequestParameters,
+            headers: {
+              Authorization: 'Bearer invalidabcd1234',
+              'Content-Type': 'application/json',
+              'developer-token': 'ijkl91011',
+              'login-customer-id': 'logincustomerid',
+            },
+            endpoint:
+              'https://googleads.googleapis.com/v16/customers/customerid/offlineUserDataJobs',
+          },
+          metadataArray,
+        ),
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 401,
+        body: {
+          output: {
+            authErrorCategory: 'AUTH_STATUS_INACTIVE',
+            message:
+              '[Google Ads Offline Conversions]:: Request is missing required authentication credential. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project. during google_ads_offline_store_conversions Job Creation',
+            response: [
+              {
+                error:
+                  '[Google Ads Offline Conversions]:: Request is missing required authentication credential. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project. during google_ads_offline_store_conversions Job Creation',
+                metadata: {
+                  attemptNum: 1,
+                  destinationId: 'default-destinationId',
+                  dontBatch: false,
+                  jobId: 1,
+                  secret: {
+                    accessToken: 'default-accessToken',
+                  },
+                  sourceId: 'default-sourceId',
+                  userId: 'default-userId',
+                  workspaceId: 'default-workspaceId',
+                },
+                statusCode: 401,
+              },
+            ],
+            statTags: {
+              destType: 'GOOGLE_ADWORDS_OFFLINE_CONVERSIONS',
+              destinationId: 'default-destinationId',
+              errorCategory: 'network',
+              errorType: 'aborted',
+              feature: 'dataDelivery',
+              implementation: 'native',
+              module: 'destination',
+              workspaceId: 'default-workspaceId',
+            },
+            status: 401,
+          },
+        },
+      },
+    },
+  },
+  {
+    id: 'gaoc_v1_oauth_scenario_4',
+    name: 'google_adwords_offline_conversions',
+    description:
+      "[Proxy v1 API] :: Oauth when the user doesn't enabled 2 factor authentication but the google ads account has it enabled for not store sales conversion",
+    successCriteria: 'The proxy should return 401 with authErrorCategory as AUTH_STATUS_INACTIVE',
+    scenario: 'Oauth',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v1',
+    input: {
+      request: {
+        body: generateProxyV1Payload(
+          {
+            ...{ ...commonRequestParameters, JSON: { isStoreConversion: false } },
+            headers: {
+              Authorization: 'Bearer invalidabcd1234',
+              'Content-Type': 'application/json',
+              'developer-token': 'ijkl91011',
+              'login-customer-id': 'logincustomerid',
+            },
+            endpoint:
+              'https://googleads.googleapis.com/v16/customers/customerid/offlineUserDataJobs',
+          },
+          metadataArray,
+        ),
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 401,
+        body: {
+          output: {
+            authErrorCategory: 'AUTH_STATUS_INACTIVE',
+            message:
+              '[Google Ads Offline Conversions]:: [{"error":{"code":401,"details":[{"@type":"type.googleapis.com/google.ads.googleads.v16.errors.GoogleAdsFailure","errors":[{"errorCode":{"authenticationError":"TWO_STEP_VERIFICATION_NOT_ENROLLED"},"message":"An account administrator changed this account\'s authentication settings. To access this Google Ads account, enable 2-Step Verification in your Google account at https://www.google.com/landing/2step."}],"requestId":"wy4ZYbsjWcgh6uC2Ruc_Zg"}],"message":"Request is missing required authentication credential. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.","status":"UNAUTHENTICATED"}}] during google_ads_offline_conversions response transformation',
+            response: [
+              {
+                error:
+                  '[Google Ads Offline Conversions]:: [{"error":{"code":401,"details":[{"@type":"type.googleapis.com/google.ads.googleads.v16.errors.GoogleAdsFailure","errors":[{"errorCode":{"authenticationError":"TWO_STEP_VERIFICATION_NOT_ENROLLED"},"message":"An account administrator changed this account\'s authentication settings. To access this Google Ads account, enable 2-Step Verification in your Google account at https://www.google.com/landing/2step."}],"requestId":"wy4ZYbsjWcgh6uC2Ruc_Zg"}],"message":"Request is missing required authentication credential. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.","status":"UNAUTHENTICATED"}}] during google_ads_offline_conversions response transformation',
+                metadata: {
+                  attemptNum: 1,
+                  destinationId: 'default-destinationId',
+                  dontBatch: false,
+                  jobId: 1,
+                  secret: {
+                    accessToken: 'default-accessToken',
+                  },
+                  sourceId: 'default-sourceId',
+                  userId: 'default-userId',
+                  workspaceId: 'default-workspaceId',
+                },
+                statusCode: 401,
+              },
+            ],
+            statTags: {
+              destType: 'GOOGLE_ADWORDS_OFFLINE_CONVERSIONS',
+              destinationId: 'default-destinationId',
+              errorCategory: 'network',
+              errorType: 'aborted',
+              feature: 'dataDelivery',
+              implementation: 'native',
+              module: 'destination',
+              workspaceId: 'default-workspaceId',
+            },
+            status: 401,
+          },
+        },
+      },
+    },
+  },
 ];

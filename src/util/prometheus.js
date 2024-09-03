@@ -431,7 +431,7 @@ class Prometheus {
         name: 'shopify_redis_no_val',
         help: 'shopify_redis_no_val',
         type: 'counter',
-        labelNames: ['writeKey', 'source'],
+        labelNames: ['writeKey', 'source', 'event'],
       },
       {
         name: 'invalid_shopify_event',
@@ -500,6 +500,12 @@ class Prometheus {
         name: 'braze_alias_missconfigured_count',
         help: 'braze_alias_missconfigured_count',
         type: 'counter',
+        labelNames: ['destination_id'],
+      },
+      {
+        name: 'hs_batch_size',
+        help: 'hs_batch_size',
+        type: 'gauge',
         labelNames: ['destination_id'],
       },
       {
@@ -834,6 +840,12 @@ class Prometheus {
           'destinationType',
           'k8_namespace',
         ],
+      },
+      {
+        name: 'user_transform_test_count_total',
+        help: 'user_transform_test_count_total',
+        type: 'counter',
+        labelNames: ['workspaceId', 'transformationId', 'status'],
       },
       {
         name: 'user_transform_requests',

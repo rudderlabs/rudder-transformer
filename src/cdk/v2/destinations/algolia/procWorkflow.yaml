@@ -52,7 +52,7 @@ steps:
     template: |
       const products = ^.message.properties.products
       products.($.removeUndefinedAndNullValues({
-          "queryID" :  $.isDefinedAndNotNull(.queryID) ? String(.queryID) : null,
+          "queryID" : $.isDefinedAndNotNull(.queryID || .queryId) ? String(.queryID || .queryId) : null,
           "price": $.isDefinedAndNotNull(.price) && $.isDefinedAndNotNull(^.message.properties.currency) ? String(.price) : null,
           "quantity": $.isDefinedAndNotNull(.quantity)? Number(.quantity) : null,
           "discount": $.isDefinedAndNotNull(.discount) ? String(.discount) : null

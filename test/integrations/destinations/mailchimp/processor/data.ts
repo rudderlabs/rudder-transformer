@@ -345,7 +345,7 @@ export const data = [
               implementation: 'native',
               module: 'destination',
             },
-            statusCode: 400,
+            statusCode: 401,
           },
         ],
       },

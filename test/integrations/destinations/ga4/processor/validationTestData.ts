@@ -151,6 +151,7 @@ export const validationTestData: ProcessorTestData[] = [
         ],
       },
     },
+    // @ts-ignore
     mockFns: defaultMockFns,
   },
   {
@@ -208,7 +209,11 @@ export const validationTestData: ProcessorTestData[] = [
         ],
       },
     },
-    mockFns: defaultMockFns,
+    mockFns: (_) => {
+      return jest
+        .spyOn(Date, 'now')
+        .mockReturnValueOnce(new Date('2012-04-29T05:17:09Z').valueOf());
+    },
   },
   {
     id: 'ga4-validation-test-3',
@@ -756,6 +761,11 @@ export const validationTestData: ProcessorTestData[] = [
         ],
       },
     },
+    mockFns: (_) => {
+      return jest
+        .spyOn(Date, 'now')
+        .mockReturnValueOnce(new Date('2023-04-29T05:17:09Z').valueOf());
+    },
   },
   {
     id: 'ga4-validation-test-14',
@@ -800,6 +810,11 @@ export const validationTestData: ProcessorTestData[] = [
           },
         ],
       },
+    },
+    mockFns: (_) => {
+      return jest
+        .spyOn(Date, 'now')
+        .mockReturnValueOnce(new Date('2021-04-29T05:17:09Z').valueOf());
     },
   },
   {

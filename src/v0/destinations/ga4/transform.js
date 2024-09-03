@@ -39,7 +39,7 @@ require('../../util/constant');
  * @param {*} Config
  * @returns
  */
-const responseBuilder = (message, { Config }) => {
+const responseBuilder = (message, { Config }, destType) => {
   let event = get(message, 'event');
   basicValidation(event);
 
@@ -54,7 +54,7 @@ const responseBuilder = (message, { Config }) => {
   // get common top level rawPayload
   let rawPayload = constructPayload(message, trackCommonConfig);
 
-  rawPayload = addClientDetails(rawPayload, message, Config);
+  rawPayload = addClientDetails(rawPayload, message, Config, destType);
 
   let payload = {};
   const eventConfig = ConfigCategory[`${event.toUpperCase()}`];
@@ -162,7 +162,7 @@ const responseBuilder = (message, { Config }) => {
   }
 
   removeReservedParameterPrefixNames(payload.params);
-  const integrationsObj = getIntegrationsObj(message, 'ga4');
+  const integrationsObj = getIntegrationsObj(message, destType);
   if (isHybridModeEnabled(Config) && integrationsObj && integrationsObj.sessionId) {
     payload.params.session_id = integrationsObj.sessionId;
   }
@@ -186,7 +186,7 @@ const responseBuilder = (message, { Config }) => {
   }
 
   // Prepare GA4 consents
-  const consents = prepareUserConsents(message);
+  const consents = prepareUserConsents(message, destType);
   if (!isEmptyObject(consents)) {
     rawPayload.consent = consents;
   }
@@ -197,7 +197,7 @@ const responseBuilder = (message, { Config }) => {
   return buildDeliverablePayload(rawPayload, Config);
 };
 
-const process = (event) => {
+const processEvents = ({ event, destType = 'ga4' }) => {
   const { message, destination } = event;
   const { Config } = destination;
 
@@ -212,13 +212,13 @@ const process = (event) => {
   let response;
   switch (messageType) {
     case EventType.TRACK:
-      response = responseBuilder(message, destination);
+      response = responseBuilder(message, destination, destType);
       break;
     case EventType.PAGE:
       // GA4 custom event 'page_view' is fired for page
       if (!isHybridModeEnabled(Config)) {
         message.event = 'page_view';
-        response = responseBuilder(message, destination);
+        response = responseBuilder(message, destination, destType);
       } else {
         throw new UnsupportedEventError(
           'GA4 Hybrid mode is enabled, page calls will be sent through device mode',
@@ -228,7 +228,7 @@ const process = (event) => {
     case EventType.GROUP:
       // GA4 standard event 'join_group' is fired for group
       message.event = 'join_group';
-      response = responseBuilder(message, destination);
+      response = responseBuilder(message, destination, destType);
       break;
     default:
       throw new InstrumentationError(`Message type ${messageType} not supported`);
@@ -236,4 +236,7 @@ const process = (event) => {
   return response;
 };
 
-module.exports = { process };
+// Keeping this for other params which comes as part of process args
+const process = (event) => processEvents({ event });
+
+module.exports = { process, processEvents };

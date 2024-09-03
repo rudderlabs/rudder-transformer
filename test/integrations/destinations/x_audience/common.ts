@@ -1,6 +1,5 @@
 export const authHeaderConstant =
-  '"OAuth oauth_consumer_key="validConsumerKey", oauth_nonce="j8kZvaJQRTaLX8h460CgHNs6rCEArNOW", oauth_signature="uAu%2FGdA6qPGW88pjVd7%2FgnAlHtM%3D", oauth_signature_method="HMAC-SHA1", oauth_timestamp="1725014809", oauth_token="validAccessToken", oauth_version="1.0"';
-
+  'OAuth oauth_consumer_key="qwe", oauth_nonce="V1kMh028kZLLhfeYozuL0B45Pcx6LvuW", oauth_signature="Di4cuoGv4PnCMMEeqfWTcqhvdwc%3D", oauth_signature_method="HMAC-SHA1", oauth_timestamp="1685603652", oauth_token="dummyAccessToken", oauth_version="1.0"';
 export const destination = {
   Config: {
     accountId: '{"Dummy Name":"1234"}',

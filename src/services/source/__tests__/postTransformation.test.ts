@@ -5,6 +5,10 @@ import {
 } from '../../../types/index';
 import { SourcePostTransformationService } from '../../source/postTransformation';
 
+const headers = {
+  'x-rudderstack-source': 'test',
+};
+
 describe('Source PostTransformation Service', () => {
   test('should handleFailureEventsSource', async () => {
     const e = new Error('test error');
@@ -26,24 +30,32 @@ describe('Source PostTransformation Service', () => {
       output: { batch: [{ anonymousId: 'test' }] },
     } as SourceTransformationResponse;
 
-    const result = SourcePostTransformationService.handleSuccessEventsSource(event);
+    const postProcessedEvents = {
+      outputToSource: {},
+      output: { batch: [{ anonymousId: 'test', context: { headers } }] },
+    } as SourceTransformationResponse;
 
-    expect(result).toEqual(event);
+    const result = SourcePostTransformationService.handleSuccessEventsSource(event, { headers });
+
+    expect(result).toEqual(postProcessedEvents);
   });
 
   test('should return the events as batch in SourceTransformationResponse if it is an array', () => {
+    const headers = {
+      'x-rudderstack-source': 'test',
+    };
     const events = [{ anonymousId: 'test' }, { anonymousId: 'test' }] as RudderMessage[];
+    const postProcessedEvents = events.map((event) => ({ ...event, context: { headers } }));
+    const result = SourcePostTransformationService.handleSuccessEventsSource(events, { headers });
 
-    const result = SourcePostTransformationService.handleSuccessEventsSource(events);
-
-    expect(result).toEqual({ output: { batch: events } });
+    expect(result).toEqual({ output: { batch: postProcessedEvents } });
   });
 
   test('should return the event as batch in SourceTransformationResponse if it is a single object', () => {
     const event = { anonymousId: 'test' } as RudderMessage;
 
-    const result = SourcePostTransformationService.handleSuccessEventsSource(event);
+    const result = SourcePostTransformationService.handleSuccessEventsSource(event, { headers });
 
-    expect(result).toEqual({ output: { batch: [event] } });
+    expect(result).toEqual({ output: { batch: [{ ...event, context: { headers } }] } });
   });
 });

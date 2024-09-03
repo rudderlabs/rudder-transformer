@@ -63,6 +63,43 @@ export const data: RouterTestData[] = [
                           list_id: 'XUepkK',
                           subscriptions: [
                             { email: 'test@rudderstack.com', phone_number: '+12 345 678 900' },
+                          ],
+                        },
+                      },
+                    },
+                    JSON_ARRAY: {},
+                    XML: {},
+                    FORM: {},
+                  },
+                  files: {},
+                },
+              ],
+              metadata: [generateMetadata(3)],
+              batched: true,
+              statusCode: 200,
+              destination,
+            },
+            {
+              batchedRequest: [
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint: 'https://a.klaviyo.com/api/profile-subscription-bulk-create-jobs',
+                  headers: {
+                    Authorization: 'Klaviyo-API-Key dummyPrivateApiKey',
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json',
+                    revision: '2023-02-22',
+                  },
+                  params: {},
+                  body: {
+                    JSON: {
+                      data: {
+                        type: 'profile-subscription-bulk-create-job',
+                        attributes: {
+                          list_id: 'XUepkK',
+                          subscriptions: [
                             {
                               email: 'test@rudderstack.com',
                               phone_number: '+12 345 578 900',
@@ -120,7 +157,7 @@ export const data: RouterTestData[] = [
                   files: {},
                 },
               ],
-              metadata: [generateMetadata(3), generateMetadata(2)],
+              metadata: [generateMetadata(2)],
               batched: true,
               statusCode: 200,
               destination,

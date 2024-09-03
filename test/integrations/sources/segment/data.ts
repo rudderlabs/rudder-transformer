@@ -124,6 +124,7 @@ export const data: SrcTestCaseData[] = [
                     elapsedTime: null,
                     session_id: '**************_***************',
                   },
+                  context: {},
                   hostname: '************.us.auth0.com',
                   user_id: 'auth0|************************',
                   user_name: 'example@test.com',
@@ -145,6 +146,7 @@ export const data: SrcTestCaseData[] = [
                 {
                   date: '2020-07-10T07:43:09.620Z',
                   type: 'seacft',
+                  context: {},
                   description: '',
                   connection_id: '',
                   client_id: '********************************',
@@ -176,6 +178,7 @@ export const data: SrcTestCaseData[] = [
                   client_id: '********************************',
                   client_name: 'My App',
                   ip: '47.15.6.58',
+                  context: {},
                   user_agent: 'Chrome Mobile 69.0.3497 / Android 0.0.0',
                   details: {
                     prompts: [],
@@ -207,6 +210,7 @@ export const data: SrcTestCaseData[] = [
                   client_id: '********************************',
                   client_name: 'My App',
                   ip: '47.15.6.58',
+                  context: {},
                   user_agent: 'Chrome Mobile 69.0.3497 / Android 0.0.0',
                   details: {
                     prompts: [],

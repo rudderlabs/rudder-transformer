@@ -9,6 +9,7 @@ const {
   combineBatchRequestsWithSameJobIds,
   validateEventAndLowerCaseConversion,
 } = require('./index');
+const exp = require('constants');
 
 // Names of the utility functions to test
 const functionNames = [
@@ -688,6 +689,29 @@ describe('extractCustomFields', () => {
     expect(result).toEqual({
       email: 'john.doe@example.com',
     });
+  });
+});
+
+describe('applyJSONStringTemplate', () => {
+  it('should apply JSON string template to the payload', () => {
+    const payload = {
+      domain: 'abc',
+    };
+    const template = '`https://{{$.domain}}.com`';
+
+    const result = utilities.applyJSONStringTemplate(payload, template);
+    expect(result).toEqual('https://abc.com');
+  });
+
+  it('should apply JSON string template to the payload multiple times', () => {
+    const payload = {
+      domain: 'abc',
+      subdomain: 'def',
+    };
+    const template = '`https://{{$.subdomain}}.{{$.domain}}.com`';
+
+    const result = utilities.applyJSONStringTemplate(payload, template);
+    expect(result).toEqual('https://def.abc.com');
   });
 });
 

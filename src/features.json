@@ -77,7 +77,10 @@
     "CLICKSEND": true,
     "ZOHO": true,
     "CORDIAL": true,
-    "X_AUDIENCE": true
+    "X_AUDIENCE": true,
+    "BLOOMREACH_CATALOG": true,
+    "SMARTLY": true,
+    "WEBHOOK_V2": true
   },
   "regulations": [
     "BRAZE",

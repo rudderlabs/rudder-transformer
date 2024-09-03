@@ -36,9 +36,9 @@ const SHOPIFY_TRACK_MAP = {
   orders_fulfilled: 'Order Fulfilled',
   orders_paid: 'Order Paid',
   orders_partially_fullfilled: 'Order Partially Fulfilled',
-  'customer.tags_added': 'Customer Tags Added',
-  'customer.tags_removed': 'Customer Tags Removed',
-  'customer.email_updated': 'Customer Email Updated',
+  customer_tags_added: 'Customer Tags Added',
+  customer_tags_removed: 'Customer Tags Removed',
+  customer_email_updated: 'Customer Email Updated',
   collections_create: 'Collection Created',
   collections_update: 'Collection Updated',
   collections_delete: 'Collection Deleted',
@@ -306,9 +306,9 @@ const PRODUCT_MAPPING_EXCLUSION_FIELDS = [
  * be discarded.
  */
 const SUPPORTED_TRACK_EVENTS = [
-  'customer.tags_added',
-  'customer.tags_removed',
-  'customer.email_updated',
+  'customer_tags_added',
+  'customer_tags_removed',
+  'customer_email_updated',
   'checkouts_delete',
   'checkouts_update',
   'customers_disable',

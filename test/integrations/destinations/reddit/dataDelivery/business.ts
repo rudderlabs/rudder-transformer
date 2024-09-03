@@ -103,7 +103,7 @@ export const testScenariosForV1API = [
         body: generateProxyV1Payload(
           {
             ...commonRequestParameters,
-            endpoint: 'https://dfareporting.googleapis.com/test_url_for_valid_request',
+            endpoint: 'https://ads-api.reddit.com/api/v2.0/conversions/events/a2_fsddXXXfsfd',
           },
           [generateMetadata(1)],
         ),
@@ -119,10 +119,62 @@ export const testScenariosForV1API = [
             response: [
               {
                 metadata: generateMetadata(1),
-                statusCode: 500,
+                statusCode: 200,
               },
             ],
-            status: 500,
+            status: 200,
+          },
+        },
+      },
+    },
+  },
+  {
+    id: 'reddit_v1_scenario_2',
+    name: 'reddit',
+    description:
+      '[Proxy v1 API] :: Test for a valid request with a failed 403 response from the destination',
+    scenario: 'Business',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v1',
+    input: {
+      request: {
+        body: generateProxyV1Payload(
+          {
+            ...commonRequestParameters,
+            endpoint: 'https://ads-api.reddit.com/api/v2.0/conversions/events/403_event',
+          },
+          [generateMetadata(1)],
+        ),
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: {
+            message:
+              '{"success":false,"error":{"reason":"UNAUTHORIZED","explanation":"JSON error unexpected type number on field events event_metadata value"}} during reddit response transformation',
+            response: [
+              {
+                metadata: generateMetadata(1),
+                statusCode: 403,
+                error:
+                  '{"success":false,"error":{"reason":"UNAUTHORIZED","explanation":"JSON error unexpected type number on field events event_metadata value"}}',
+              },
+            ],
+            statTags: {
+              destType: 'REDDIT',
+              destinationId: 'default-destinationId',
+              errorCategory: 'network',
+              errorType: 'aborted',
+              feature: 'dataDelivery',
+              implementation: 'native',
+              module: 'destination',
+              workspaceId: 'default-workspaceId',
+            },
+            status: 403,
           },
         },
       },

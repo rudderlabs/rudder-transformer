@@ -62,7 +62,7 @@ const excludeMappedFields = (payload, mapping) => {
 
       // Traverse to the parent of the key to be removed
       keys.slice(0, -1).forEach((key) => {
-        if (current && current[key]) {
+        if (current?.[key]) {
           current = current[key];
         } else {
           current = null;

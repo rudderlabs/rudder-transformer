@@ -8,6 +8,8 @@ const {
   executeFaasFunction,
   FAAS_AST_FN_NAME,
   FAAS_AST_VID,
+  PARENT_NAMESPACE,
+  PARENT_CLUSTER,
 } = require('./openfaas');
 const { getLibraryCodeV1 } = require('./customTransforrmationsStore-v1');
 
@@ -29,6 +31,8 @@ function generateFunctionName(userTransformation, libraryVersionIds, testMode, h
   if (hashSecret !== '') {
     ids = ids.concat([hashSecret]);
   }
+
+  ids = ids.concat([PARENT_NAMESPACE, PARENT_CLUSTER]);
 
   // FIXME: Why the id's are sorted ?!
   const hash = crypto.createHash('md5').update(`${ids}`).digest('hex');

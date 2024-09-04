@@ -95,6 +95,7 @@ const pyfaasFuncName = (workspaceId, versionId, libraryVersionIds=[], hashSecret
   if (hashSecret !== "") {
     ids = ids.concat([hashSecret]);
   }
+  ids = ids.concat(["default", "default"]);
 
   const hash = crypto.createHash('md5').update(`${ids}`).digest('hex');
 
@@ -119,7 +120,7 @@ describe("User transformation utils", () => {
       [],
       false,
       'hash-secret');
-    expect(fnName).toEqual('fn-workspaceid-34a32ade07ebbc7bc5ea795b8200de9f');
+    expect(fnName).toEqual('fn-workspaceid-c9345699beabf6de99a764cdb1a349e5');
   });
 
 });

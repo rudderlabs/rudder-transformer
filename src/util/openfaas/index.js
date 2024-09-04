@@ -436,6 +436,8 @@ module.exports = {
   buildOpenfaasFn,
   FAAS_AST_VID,
   FAAS_AST_FN_NAME,
+  PARENT_NAMESPACE,
+  PARENT_CLUSTER,
   setFunctionInCache,
   reconcileFunction,
 };

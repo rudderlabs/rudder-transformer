@@ -359,8 +359,8 @@ describe('Api tests with a mock source/destination', () => {
       .send(getData());
 
     const expected = [
-      { output: { batch: [{ event: 'clicked', type: 'track' }] } },
-      { output: { batch: [{ event: 'clicked', type: 'track' }] } },
+      { output: { batch: [{ event: 'clicked', type: 'track', context: {} }] } },
+      { output: { batch: [{ event: 'clicked', type: 'track', context: {} }] } },
     ];
 
     expect(response.status).toEqual(200);
@@ -398,8 +398,8 @@ describe('Api tests with a mock source/destination', () => {
       .send(getData());
 
     const expected = [
-      { output: { batch: [{ event: 'clicked', type: 'track' }] } },
-      { output: { batch: [{ event: 'clicked', type: 'track' }] } },
+      { output: { batch: [{ event: 'clicked', type: 'track', context: {} }] } },
+      { output: { batch: [{ event: 'clicked', type: 'track', context: {} }] } },
     ];
 
     expect(response.status).toEqual(200);

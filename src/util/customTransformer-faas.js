@@ -28,11 +28,11 @@ function generateFunctionName(userTransformation, libraryVersionIds, testMode, h
     (libraryVersionIds || []).sort(),
   );
 
+  ids = ids.concat([PARENT_NAMESPACE, PARENT_CLUSTER]);
+
   if (hashSecret !== '') {
     ids = ids.concat([hashSecret]);
   }
-
-  ids = ids.concat([PARENT_NAMESPACE, PARENT_CLUSTER]);
 
   // FIXME: Why the id's are sorted ?!
   const hash = crypto.createHash('md5').update(`${ids}`).digest('hex');

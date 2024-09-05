@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.77.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.77.0...v1.77.1) (2024-09-05)
+
+
+### Bug Fixes
+
+* add namespace and cluster labels to python transformation functions ([255f3e5](https://github.com/rudderlabs/rudder-transformer/commit/255f3e52fb66ae6cb55e24938fff60ec6e28b285))
+
 ## [1.77.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.76.1...v1.77.0) (2024-09-02)
 
 

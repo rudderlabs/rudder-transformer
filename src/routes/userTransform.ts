@@ -2,6 +2,7 @@ import Router from '@koa/router';
 import { RouteActivationMiddleware } from '../middlewares/routeActivation';
 import { FeatureFlagMiddleware } from '../middlewares/featureFlag';
 import { UserTransformController } from '../controllers/userTransform';
+import { CircularStructureMiddleWare } from '../middlewares/circularStructure';
 
 const router = new Router();
 
@@ -15,11 +16,13 @@ router.post(
   '/customTransform',
   RouteActivationMiddleware.isUserTransformRouteActive,
   FeatureFlagMiddleware.handle,
+  CircularStructureMiddleWare.handle,
   UserTransformController.transform,
 );
 router.post(
   '/transformation/test',
   RouteActivationMiddleware.isUserTransformTestRouteActive,
+  CircularStructureMiddleWare.handle,
   UserTransformController.testTransform,
 );
 router.post(

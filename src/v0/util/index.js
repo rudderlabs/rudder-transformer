@@ -1554,11 +1554,8 @@ const getErrorStatusCode = (error, defaultStatusCode = HTTP_STATUS_CODES.INTERNA
 
 function isAxiosError(err) {
   return (
-    !!err?.config &&
     Array.isArray(err?.config?.adapter) &&
-    err?.config?.adapter.length > 1 &&
-    !!err?.request &&
-    !!err?.request?.socket &&
+    err?.config?.adapter?.length > 1 &&
     typeof err?.request?.socket === 'object' &&
     !!err?.request?.protocol &&
     !!err?.request?.method &&

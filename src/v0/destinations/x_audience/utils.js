@@ -87,7 +87,11 @@ const getFinalResponseList = (operationObjectList, destination) => {
     ) {
       respList.push(
         getSuccessRespEvents(
-          buildResponseWithJSON(currentBatchedRequest, destination.Config, metadataWithSecret),
+          buildResponseWithJSON(
+            currentBatchedRequest,
+            destination.Config || destination.config,
+            metadataWithSecret,
+          ),
           currentMetadataList,
           destination,
           true,
@@ -103,7 +107,11 @@ const getFinalResponseList = (operationObjectList, destination) => {
   // pushing the remainder operation payloads as well
   respList.push(
     getSuccessRespEvents(
-      buildResponseWithJSON(currentBatchedRequest, destination.Config, metadataWithSecret),
+      buildResponseWithJSON(
+        currentBatchedRequest,
+        destination.Config || destination.config,
+        metadataWithSecret,
+      ),
       currentMetadataList,
       destination,
       true,

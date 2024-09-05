@@ -38,7 +38,7 @@ const processRecordEvent = (message, config) => {
 };
 const process = (event) => {
   const { message, destination, metadata } = event;
-  const { Config } = destination;
+  const Config = destination.Config || destination.config;
 
   const payload = [processRecordEvent(message, Config)];
   return buildResponseWithJSON(payload, Config, metadata);
@@ -47,7 +47,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
   const responseList = []; // list containing single track event payload
   const errorRespList = []; // list of error
   const { destination } = inputs[0];
-  const { Config } = destination;
+  const Config = destination.Config || destination.config;
   inputs.map(async (event) => {
     try {
       if (event.message.statusCode) {

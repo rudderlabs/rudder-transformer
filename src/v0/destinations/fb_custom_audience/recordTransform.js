@@ -2,7 +2,7 @@
 const lodash = require('lodash');
 const get = require('get-value');
 const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
-const { schemaFields } = require('./config');
+const { schemaFields, VDM_V2_SCHEMA_VERSION } = require('./config');
 const { MappedToDestinationKey } = require('../../../constants');
 const stats = require('../../../util/stats');
 const {
@@ -17,6 +17,7 @@ const {
   ensureApplicableFormat,
   getUpdatedDataElement,
   getSchemaForEventMappedToDest,
+  getSchemaForEventMappedToDestForVDMv2,
   batchingWithPayloadSize,
   responseBuilderSimple,
   getDataSource,
@@ -103,8 +104,15 @@ async function processRecordInputs(groupedRecordInputs) {
   const { destination, connection } = groupedRecordInputs[0];
   const { message } = groupedRecordInputs[0];
   const { accessToken, disableFormat, type, subType, isRaw, maxUserCount } = destination.Config;
-  const audienceId = connection?.config?.destination?.audienceId;
-  const isHashRequired = connection?.config?.destination?.isHashRequired;
+  let audienceId;
+  let isHashRequired;
+  if (connection?.config?.destination?.schemaVersion === VDM_V2_SCHEMA_VERSION) {
+    audienceId = connection?.config?.destination?.audienceId;
+    isHashRequired = connection?.config?.destination?.isHashRequired;
+  } else {
+    audienceId = destination.Config?.audienceId;
+    isHashRequired = destination.Config?.isHashRequired;
+  }
   const prepareParams = {
     access_token: accessToken,
   };
@@ -129,7 +137,11 @@ async function processRecordInputs(groupedRecordInputs) {
   // user schema validation
   let { userSchema } = destination.Config;
   if (mappedToDestination) {
-    userSchema = getSchemaForEventMappedToDest(message);
+    if (connection?.config?.destination?.schemaVersion === VDM_V2_SCHEMA_VERSION) {
+      userSchema = getSchemaForEventMappedToDestForVDMv2(message);
+    } else {
+      userSchema = getSchemaForEventMappedToDest(message);
+    }
   }
   if (!Array.isArray(userSchema)) {
     userSchema = [userSchema];

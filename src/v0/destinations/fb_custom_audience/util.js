@@ -1,6 +1,7 @@
 const lodash = require('lodash');
 const sha256 = require('sha256');
 const crypto = require('crypto');
+const get = require('get-value');
 const jsonSize = require('json-size');
 const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const { TransformationError } = require('@rudderstack/integrations-lib');
@@ -48,6 +49,19 @@ const batchingWithPayloadSize = (payload) => {
 };
 
 const getSchemaForEventMappedToDest = (message) => {
+  const mappedSchema = get(message, 'context.destinationFields');
+  if (!mappedSchema) {
+    throw new InstrumentationError(
+      'context.destinationFields is required property for events mapped to destination ',
+    );
+  }
+  // context.destinationFields has 2 possible values. An Array of fields or Comma seperated string with field names
+  let userSchema = Array.isArray(mappedSchema) ? mappedSchema : mappedSchema.split(',');
+  userSchema = userSchema.map((field) => field.trim());
+  return userSchema;
+};
+
+const getSchemaForEventMappedToDestForVDMv2 = (message) => {
   const mappedSchema = message.fields;
   if (!mappedSchema) {
     throw new InstrumentationError(
@@ -259,6 +273,7 @@ const responseBuilderSimple = (payload, audienceId) => {
 module.exports = {
   prepareDataField,
   getSchemaForEventMappedToDest,
+  getSchemaForEventMappedToDestForVDMv2,
   batchingWithPayloadSize,
   ensureApplicableFormat,
   getUpdatedDataElement,

@@ -12,12 +12,13 @@ const {
 const {
   prepareDataField,
   getSchemaForEventMappedToDest,
+  getSchemaForEventMappedToDestForVDMv2,
   batchingWithPayloadSize,
   generateAppSecretProof,
   responseBuilderSimple,
   getDataSource,
 } = require('./util');
-const { schemaFields, USER_ADD, USER_DELETE } = require('./config');
+const { schemaFields, USER_ADD, USER_DELETE, VDM_V2_SCHEMA_VERSION } = require('./config');
 
 const { MappedToDestinationKey } = require('../../../constants');
 const { processRecordInputs } = require('./recordTransform');
@@ -157,8 +158,16 @@ const processEvent = (message, destination, connection) => {
   const respList = [];
   let toSendEvents = [];
   let { userSchema } = destination.Config;
-  const { isHashRequired, maxUserCount } = destination.Config;
-  const audienceId = get(connection, 'config.destination.audienceId');
+  const { maxUserCount } = destination.Config;
+  let audienceId;
+  let isHashRequired;
+  if (connection?.config?.destination?.schemaVersion === VDM_V2_SCHEMA_VERSION) {
+    audienceId = connection?.config?.destination?.audienceId;
+    isHashRequired = connection?.config?.destination?.isHashRequired;
+  } else {
+    audienceId = destination.Config?.audienceId;
+    isHashRequired = destination.Config?.isHashRequired;
+  }
   if (!message.type) {
     throw new InstrumentationError('Message Type is not present. Aborting message.');
   }
@@ -182,7 +191,11 @@ const processEvent = (message, destination, connection) => {
 
   // If mapped to destination, use the mapped fields instead of destination userschema
   if (mappedToDestination) {
-    userSchema = getSchemaForEventMappedToDest(message);
+    if (connection?.config?.destination?.schemaVersion === VDM_V2_SCHEMA_VERSION) {
+      userSchema = getSchemaForEventMappedToDestForVDMv2(message);
+    } else {
+      userSchema = getSchemaForEventMappedToDest(message);
+    }
   }
 
   // When one single schema field is added in the webapp, it does not appear to be an array

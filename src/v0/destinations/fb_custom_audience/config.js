@@ -4,6 +4,8 @@ function getEndPoint(audienceId) {
   return `${BASE_URL}/${audienceId}/users`;
 }
 
+const VDM_V2_SCHEMA_VERSION = '1.1';
+
 const schemaFields = [
   'EXTERN_ID',
   'EMAIL',
@@ -105,4 +107,5 @@ module.exports = {
   typeFields,
   subTypeFields,
   maxPayloadSize,
+  VDM_V2_SCHEMA_VERSION,
 };

@@ -3,7 +3,12 @@ const { groupBy } = require('lodash');
 const { createHash } = require('crypto');
 const { ConfigurationError } = require('@rudderstack/integrations-lib');
 const { BatchUtils } = require('@rudderstack/workflow-engine');
-const { base64Convertor, applyCustomMappings, isEmptyObject } = require('../../../../v0/util');
+const {
+  base64Convertor,
+  applyCustomMappings,
+  isEmptyObject,
+  applyJSONStringTemplate,
+} = require('../../../../v0/util');
 
 const getAuthHeaders = (config) => {
   let headers;
@@ -36,8 +41,13 @@ const getCustomMappings = (message, mapping) => {
   }
 };
 
-// TODO: write a func to evaluate json path template
-const addPathParams = (message, webhookUrl) => webhookUrl;
+const addPathParams = (message, webhookUrl) => {
+  try {
+    return applyJSONStringTemplate(message, `\`${webhookUrl}\``);
+  } catch (e) {
+    throw new ConfigurationError(`[Webhook]:: Error in url template: ${e.message}`);
+  }
+};
 
 const excludeMappedFields = (payload, mapping) => {
   const rawPayload = { ...payload };

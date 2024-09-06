@@ -87,7 +87,7 @@ export const configuration: ProcessorTestData[] = [
             output: transformResultBuilder({
               method: 'DELETE',
               userId: '',
-              endpoint: 'http://abc.com/contacts/$.traits.userId/',
+              endpoint: 'http://abc.com/contacts/john.doe@example.com/',
               headers: {
                 'x-api-key': 'test-api-key',
               },

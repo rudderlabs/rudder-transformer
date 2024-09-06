@@ -41,7 +41,7 @@ const destinations: Destination[] = [
   },
   {
     Config: {
-      webhookUrl: 'http://abc.com/contact/$traits.userId',
+      webhookUrl: 'http://abc.com/contacts',
       auth: 'basicAuth',
       username: 'test-user',
       password: '',
@@ -92,7 +92,7 @@ const destinations: Destination[] = [
   },
   {
     Config: {
-      webhookUrl: 'http://abc.com/contacts/$.traits.userId/',
+      webhookUrl: 'http://abc.com/contacts/{{$.traits.email}}/',
       auth: 'apiKeyAuth',
       apiKeyName: 'x-api-key',
       apiKeyValue: 'test-api-key',
@@ -114,7 +114,7 @@ const destinations: Destination[] = [
   },
   {
     Config: {
-      webhookUrl: 'http://abc.com/contacts/$.traits.userId/',
+      webhookUrl: 'http://abc.com/contacts/{{$.traits.email}}/',
       auth: 'apiKeyAuth',
       apiKeyName: 'x-api-key',
       apiKeyValue: 'test-api-key',
@@ -232,6 +232,37 @@ const destinations: Destination[] = [
         {
           from: '$.properties.products[*].price',
           to: '$.properties.items[*].price',
+        },
+      ],
+    },
+    DestinationDefinition: {
+      DisplayName: displayName,
+      ID: '123',
+      Name: destTypeInUpperCase,
+      Config: { cdkV2Enabled: true },
+    },
+    Enabled: true,
+    ID: '123',
+    Name: destTypeInUpperCase,
+    Transformations: [],
+    WorkspaceID: 'test-workspace-id',
+  },
+  {
+    Config: {
+      webhookUrl: 'http://abc.com/contacts/{{$.traits.phone}}',
+      auth: 'noAuth',
+      method: 'POST',
+      format: 'JSON',
+      isBatchingEnabled: true,
+      maxBatchSize: 4,
+      headers: [
+        {
+          to: "$.'content-type'",
+          from: "'application/json'",
+        },
+        {
+          to: '$.key',
+          from: '.traits.key',
         },
       ],
     },

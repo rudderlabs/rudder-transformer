@@ -283,29 +283,66 @@ const responseBuilderSimple = async ({ message, destination, metadata }, categor
   throw new ConfigurationError(`Event type '${category.type}' not supported`);
 };
 
+const addResponseBuilder = ({
+  traits,
+  destinationExternalId,
+  identifierType,
+  subDomain,
+  externalKey,
+  token,
+}) => {
+  const response = defaultRequestConfig();
+  response.method = defaultPutRequestConfig.requestMethod;
+  response.endpoint = `https://${subDomain}.${ENDPOINTS.INSERT_CONTACTS}${externalKey}/rows/${identifierType}:${destinationExternalId}`;
+  response.headers = {
+    'Content-Type': JSON_MIME_TYPE,
+    Authorization: `Bearer ${token}`,
+  };
+  response.body.JSON = {
+    values: {
+      ...traits,
+    },
+  };
+  return response;
+};
+
 const retlResponseBuilder = async (message, destination, metadata) => {
   const { clientId, clientSecret, subDomain, externalKey } = destination.Config;
   const token = await accessTokenCache.get(metadata.destinationId, () =>
     getToken(clientId, clientSecret, subDomain, metadata),
   );
+
   const { destinationExternalId, objectType, identifierType } = getDestinationExternalIDInfoForRetl(
     message,
     'SFMC',
   );
+
+  // This part will handle the mirror mode
+  const { type, action } = message;
+  if (type === 'record') {
+    if (action === 'insert') {
+      return addResponseBuilder({
+        traits: message.fields,
+        destinationExternalId: message.fields[identifierType],
+        identifierType,
+        subDomain,
+        externalKey,
+        token,
+      });
+    }
+  }
+
+  // This part will handle the upsert mode
+
   if (objectType?.toLowerCase() === 'data extension') {
-    const response = defaultRequestConfig();
-    response.method = defaultPutRequestConfig.requestMethod;
-    response.endpoint = `https://${subDomain}.${ENDPOINTS.INSERT_CONTACTS}${externalKey}/rows/${identifierType}:${destinationExternalId}`;
-    response.headers = {
-      'Content-Type': JSON_MIME_TYPE,
-      Authorization: `Bearer ${token}`,
-    };
-    response.body.JSON = {
-      values: {
-        ...message.traits,
-      },
-    };
-    return response;
+    return addResponseBuilder({
+      traits: message.traits,
+      destinationExternalId,
+      identifierType,
+      subDomain,
+      externalKey,
+      token,
+    });
   }
   throw new PlatformError('Unsupported object type for rETL use case');
 };
@@ -344,6 +381,7 @@ const process = async (event) => {
 
 const processRouterDest = async (inputs, reqMetadata) => {
   const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
+  console.log(JSON.stringify(respList));
   return respList;
 };
 

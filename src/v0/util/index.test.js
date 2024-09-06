@@ -8,6 +8,7 @@ const {
   generateExclusionList,
   combineBatchRequestsWithSameJobIds,
   validateEventAndLowerCaseConversion,
+  isAxiosError,
 } = require('./index');
 const exp = require('constants');
 
@@ -733,5 +734,128 @@ describe('get relative path from url', () => {
   });
   test('null', () => {
     expect(utilities.getRelativePathFromURL(null)).toEqual(null);
+  });
+});
+
+describe('isAxiosError', () => {
+  const validAxiosError = {
+    config: {
+      adapter: ['xhr', 'fetch'],
+    },
+    request: {
+      socket: {},
+      protocol: 'https:',
+      headers: {},
+      method: 'GET',
+      path: '/api/data',
+    },
+    status: 404,
+    statusText: 'Not Found',
+  };
+
+  it('should return true for a valid Axios error object', () => {
+    expect(isAxiosError(validAxiosError)).toBe(true);
+  });
+
+  it('should return false for null', () => {
+    expect(isAxiosError(null)).toBe(false);
+  });
+
+  it('should return false for undefined', () => {
+    expect(isAxiosError(undefined)).toBe(false);
+  });
+
+  it('should return false for non-object types', () => {
+    expect(isAxiosError('string')).toBe(false);
+    expect(isAxiosError(123)).toBe(false);
+    expect(isAxiosError(true)).toBe(false);
+    expect(isAxiosError([])).toBe(false);
+  });
+
+  it('should return false for an empty object', () => {
+    expect(isAxiosError({})).toBe(false);
+  });
+
+  it('should return false when config is missing', () => {
+    const { config, ...errorWithoutConfig } = validAxiosError;
+    expect(isAxiosError(errorWithoutConfig)).toBe(false);
+  });
+
+  it('should return false when config.adapter is not an array', () => {
+    const error = { ...validAxiosError, config: { adapter: 'not an array' } };
+    expect(isAxiosError(error)).toBe(false);
+  });
+
+  it('should return false when config.adapter has length <= 1', () => {
+    const error = { ...validAxiosError, config: { adapter: ['some'] } };
+    expect(isAxiosError(error)).toBe(false);
+  });
+
+  it('should return false when request is missing', () => {
+    const { request, ...errorWithoutRequest } = validAxiosError;
+    expect(isAxiosError(errorWithoutRequest)).toBe(false);
+  });
+
+  it('should return false when request.socket is missing', () => {
+    const error = {
+      ...validAxiosError,
+      request: { ...validAxiosError.request, socket: undefined },
+    };
+    expect(isAxiosError(error)).toBe(false);
+  });
+
+  it('should return false when request.socket is not an object', () => {
+    const error = {
+      ...validAxiosError,
+      request: { ...validAxiosError.request, socket: 'not an object' },
+    };
+    expect(isAxiosError(error)).toBe(false);
+  });
+
+  it('should return false when request.protocol is missing', () => {
+    const error = {
+      ...validAxiosError,
+      request: { ...validAxiosError.request, protocol: undefined },
+    };
+    expect(isAxiosError(error)).toBe(false);
+  });
+
+  it('should return false when request.method is missing', () => {
+    const error = {
+      ...validAxiosError,
+      request: { ...validAxiosError.request, method: undefined },
+    };
+    expect(isAxiosError(error)).toBe(false);
+  });
+
+  it('should return false when request.path is missing', () => {
+    const error = {
+      ...validAxiosError,
+      request: { ...validAxiosError.request, path: undefined },
+    };
+    expect(isAxiosError(error)).toBe(false);
+  });
+
+  it('should return false when status is missing', () => {
+    const { status, ...errorWithoutStatus } = validAxiosError;
+    expect(isAxiosError(errorWithoutStatus)).toBe(false);
+  });
+
+  it('should return true when all required properties are present and valid, even with extra properties', () => {
+    const errorWithExtraProps = {
+      ...validAxiosError,
+      extraProp: 'some value',
+    };
+    expect(isAxiosError(errorWithExtraProps)).toBe(true);
+  });
+
+  it('should return false when config.adapter is an empty array', () => {
+    const error = { ...validAxiosError, config: { adapter: [] } };
+    expect(isAxiosError(error)).toBe(false);
+  });
+
+  it('should return false when status is 0', () => {
+    const error = { ...validAxiosError, status: 0 };
+    expect(isAxiosError(error)).toBe(false);
   });
 });

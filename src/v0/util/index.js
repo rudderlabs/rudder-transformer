@@ -1552,6 +1552,18 @@ const getErrorStatusCode = (error, defaultStatusCode = HTTP_STATUS_CODES.INTERNA
   }
 };
 
+function isAxiosError(err) {
+  return (
+    Array.isArray(err?.config?.adapter) &&
+    err?.config?.adapter?.length > 1 &&
+    typeof err?.request?.socket === 'object' &&
+    !!err?.request?.protocol &&
+    !!err?.request?.method &&
+    !!err?.request?.path &&
+    !!err?.status
+  );
+}
+
 /**
  * Used for generating error response with stats from native and built errors
  */
@@ -1567,11 +1579,15 @@ function generateErrorObject(error, defTags = {}, shouldEnrichErrorMessage = tru
     error.authErrorCategory,
   );
   let errorMessage = error.message;
+  if (isAxiosError(errObject.destinationResponse)) {
+    delete errObject?.destinationResponse.config;
+    delete errObject?.destinationResponse.request;
+  }
   if (shouldEnrichErrorMessage) {
-    if (error.destinationResponse) {
+    if (errObject.destinationResponse) {
       errorMessage = JSON.stringify({
         message: errorMessage,
-        destinationResponse: error.destinationResponse,
+        destinationResponse: errObject.destinationResponse,
       });
     }
     errObject.message = errorMessage;
@@ -2411,4 +2427,5 @@ module.exports = {
   validateEventAndLowerCaseConversion,
   getRelativePathFromURL,
   removeEmptyKey,
+  isAxiosError,
 };

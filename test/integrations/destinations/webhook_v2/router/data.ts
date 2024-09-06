@@ -120,7 +120,48 @@ const routerRequest3 = {
   destType,
 };
 
-// TODO: add failure testcases
+const routerRequest4 = {
+  input: [
+    {
+      message: {
+        type: 'identify',
+        userId: 'userId1',
+        traits: { ...traits, key: 'value1' },
+      },
+      metadata: generateMetadata(1),
+      destination: destinations[6],
+    },
+    {
+      message: {
+        type: 'identify',
+        userId: 'userId1',
+        traits: { ...traits, key: 'value1' },
+      },
+      metadata: generateMetadata(2),
+      destination: destinations[6],
+    },
+    {
+      message: {
+        type: 'identify',
+        userId: 'userId1',
+        traits,
+      },
+      metadata: generateMetadata(3),
+      destination: destinations[6],
+    },
+    {
+      message: {
+        type: 'identify',
+        userId: 'userId1',
+        traits: { ...traits, phone: '2234567890' },
+      },
+      metadata: generateMetadata(4),
+      destination: destinations[6],
+    },
+  ],
+  destType,
+};
+
 export const data = [
   {
     id: 'webhook_v2-router-test-1',
@@ -147,7 +188,7 @@ export const data = [
                 version: '1',
                 type: 'REST',
                 method: 'GET',
-                endpoint: 'http://abc.com/contacts/$.traits.userId/',
+                endpoint: 'http://abc.com/contacts/john.doe@example.com/',
                 headers: {
                   'x-api-key': 'test-api-key',
                 },
@@ -196,7 +237,7 @@ export const data = [
                 version: '1',
                 type: 'REST',
                 method: 'GET',
-                endpoint: 'http://abc.com/contact/$traits.userId',
+                endpoint: 'http://abc.com/contacts',
                 headers: {
                   Authorization: 'Basic dGVzdC11c2VyOg==',
                   'content-type': 'application/json',
@@ -228,7 +269,7 @@ export const data = [
                 version: '1',
                 type: 'REST',
                 method: 'GET',
-                endpoint: 'http://abc.com/contact/$traits.userId',
+                endpoint: 'http://abc.com/contacts',
                 headers: {
                   Authorization: 'Basic dGVzdC11c2VyOg==',
                   'content-type': 'application/json',
@@ -260,7 +301,7 @@ export const data = [
                 version: '1',
                 type: 'REST',
                 method: 'GET',
-                endpoint: 'http://abc.com/contact/$traits.userId',
+                endpoint: 'http://abc.com/contacts',
                 headers: {
                   Authorization: 'Basic dGVzdC11c2VyOg==',
                   'content-type': 'application/json',
@@ -341,6 +382,101 @@ export const data = [
               batched: true,
               statusCode: 200,
               destination: destinations[5],
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    id: 'webhook_v2-router-test-4',
+    name: destType,
+    description: 'Batch multiple requests based on webhook url and headers',
+    scenario: 'Framework',
+    successCriteria: 'All events should be transformed successfully and status code should be 200',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: routerRequest4,
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: 'http://abc.com/contacts/1234567890',
+                headers: {
+                  'content-type': 'application/json',
+                  key: 'value1',
+                },
+                params: {},
+                body: {
+                  JSON: {},
+                  JSON_ARRAY: { batch: '[]' },
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+              },
+              metadata: [generateMetadata(1), generateMetadata(2)],
+              batched: true,
+              statusCode: 200,
+              destination: destinations[6],
+            },
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: 'http://abc.com/contacts/1234567890',
+                headers: {
+                  'content-type': 'application/json',
+                },
+                params: {},
+                body: {
+                  JSON: {},
+                  JSON_ARRAY: { batch: '[]' },
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+              },
+              metadata: [generateMetadata(3)],
+              batched: true,
+              statusCode: 200,
+              destination: destinations[6],
+            },
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: 'http://abc.com/contacts/2234567890',
+                headers: {
+                  'content-type': 'application/json',
+                },
+                params: {},
+                body: {
+                  JSON: {},
+                  JSON_ARRAY: { batch: '[]' },
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+              },
+              metadata: [generateMetadata(4)],
+              batched: true,
+              statusCode: 200,
+              destination: destinations[6],
             },
           ],
         },

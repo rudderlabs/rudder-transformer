@@ -329,6 +329,46 @@ const retlResponseBuilder = async (message, destination, metadata) => {
         externalKey,
         token,
       });
+    } else if (action === 'delete') {
+      let data = `<s:Envelope\n
+      xmlns:s="http://www.w3.org/2003/05/soap-envelope"\n
+      xmlns:a="http://schemas.xmlsoap.org/ws/2004/08/addressing"\n
+      xmlns:u="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd">\n    
+      <s:Header>\n        
+        <fueloauth>ACCESS_TOKEN</fueloauth>\n    
+      </s:Header>\n    
+      <s:Body\n
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"\n
+        xmlns:xsd="http://www.w3.org/2001/XMLSchema">\n        
+        <DeleteRequest
+          xmlns="http://exacttarget.com/wsdl/partnerAPI">\n            
+          <Objects xsi:type="DataExtensionObject">\n                
+            <CustomerKey>CUSTOMER_KEY</CustomerKey>\n                
+            <Keys>\n                    
+              <Key>\n                        
+                <Name>FIELD_NAME</Name>\n                        
+                <Value>FIELD_VALUE</Value>\n                    
+              </Key>\n                
+            </Keys>\n            
+          </Objects>\n        
+        </DeleteRequest>\n    
+      </s:Body>\n
+    </s:Envelope>`;
+      data = data.replace('ACCESS_TOKEN', token);
+      data = data.replace('CUSTOMER_KEY', externalKey);
+      data = data.replace('FIELD_NAME', destinationExternalId);
+      data = data.replace('FIELD_VALUE', message.fields[identifierType]);
+      const response = defaultRequestConfig();
+      response.method = defaultPostRequestConfig.requestMethod;
+      response.endpoint = `https://${subDomain}.soap.marketingcloudapis.com/Service.asmx`;
+      response.headers = {
+        soapaction: 'Delete',
+        'Content-Type': 'text/xml; charset="UTF-8"',
+      };
+      response.body.XML = {
+        payload: data,
+      };
+      return response;
     }
   }
 

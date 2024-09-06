@@ -62,10 +62,10 @@ const getSchemaForEventMappedToDest = (message) => {
 };
 
 const getSchemaForEventMappedToDestForVDMv2 = (message) => {
-  const mappedSchema = message.fields;
+  const mappedSchema = message?.identifierMappings;
   if (!mappedSchema) {
     throw new InstrumentationError(
-      'event.fields is required property for events mapped to destination ',
+      'event.identifierMappings is required property for events mapped to destination ',
     );
   }
   let userSchema = Object.keys(mappedSchema);

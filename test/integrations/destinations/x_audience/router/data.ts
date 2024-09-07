@@ -115,32 +115,34 @@ export const data = [
                 },
                 params: {},
                 body: {
-                  JSON: [
-                    {
-                      operation_type: 'Delete',
-                      params: {
-                        users: [
-                          {
-                            email: ['email1@abc.com'],
-                          },
-                        ],
+                  JSON: {},
+                  JSON_ARRAY: {
+                    batch: JSON.stringify([
+                      {
+                        operation_type: 'Delete',
+                        params: {
+                          users: [
+                            {
+                              email: ['email1@abc.com'],
+                            },
+                          ],
+                        },
                       },
-                    },
-                    {
-                      operation_type: 'Update',
-                      params: {
-                        users: [
-                          {
-                            email: ['email2@abc.com'],
-                          },
-                          {
-                            email: ['email3@abc.com'],
-                          },
-                        ],
+                      {
+                        operation_type: 'Update',
+                        params: {
+                          users: [
+                            {
+                              email: ['email2@abc.com'],
+                            },
+                            {
+                              email: ['email3@abc.com'],
+                            },
+                          ],
+                        },
                       },
-                    },
-                  ],
-                  JSON_ARRAY: {},
+                    ]),
+                  },
                   XML: {},
                   FORM: {},
                 },
@@ -164,24 +166,26 @@ export const data = [
                 },
                 params: {},
                 body: {
-                  JSON: [
-                    {
-                      operation_type: 'Update',
-                      params: {
-                        expires_at: 'some date',
-                        effective_at: 'some effective date',
-                        users: [
-                          {
-                            email: ['email4@abc.com'],
-                          },
-                          {
-                            email: ['email5@abc.com'],
-                          },
-                        ],
+                  JSON: {},
+                  JSON_ARRAY: {
+                    batch: JSON.stringify([
+                      {
+                        operation_type: 'Update',
+                        params: {
+                          effective_at: 'some effective date',
+                          expires_at: 'some date',
+                          users: [
+                            {
+                              email: ['email4@abc.com'],
+                            },
+                            {
+                              email: ['email5@abc.com'],
+                            },
+                          ],
+                        },
                       },
-                    },
-                  ],
-                  JSON_ARRAY: {},
+                    ]),
+                  },
                   XML: {},
                   FORM: {},
                 },

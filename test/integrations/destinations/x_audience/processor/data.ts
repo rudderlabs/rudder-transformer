@@ -55,41 +55,43 @@ export const data = [
               },
               params: {},
               body: {
-                JSON: [
-                  {
-                    operation_type: 'Update',
-                    params: {
-                      effective_at: '2024-05-15T00:00:00Z',
-                      expires_at: '2025-05-15T00:00:00Z',
-                      users: [
-                        {
-                          email: [
-                            'ee278943de84e5d6243578ee1a1057bcce0e50daad9755f45dfa64b60b13bc5d',
-                            '27a1b87036e9b0f43235026e7cb1493f1838b6fe41965ea04486d82e499f8401',
-                          ],
-                          handle: [
-                            '771c7b0ff2eff313009a81739307c3f7cde375acd7902b11061266a899a375f6',
-                            '7bde3c2d41eab9043df37c9adf4f5f7591c632340d1cabc894e438e881fdd5f6',
-                          ],
-                          device_id: [
-                            '85a598fd6c8834f2d4da3d6886bb53d0032021e137307ec91d3f0da78e9bfa5b',
-                            '936444046bea8b5d9de6bcae59b6f196ea4bb59945bc93e84bc9533dbf3e01c0',
-                          ],
-                          phone_number: [
-                            '76742d946d9f6d0c844da5648e461896227782ccf1cd0db64573f39dbd92e05f',
-                            '69c3bf36e0476c08a883fd6a995f67fc6d362c865549312fb5170737945fd073',
-                          ],
-                          partner_user_id: ['puid1', 'puid2'],
-                          twitter_id: [
-                            'a70d41727df61f21ce0ec81cca51c58f516b6151275d9293d7437bf15fa22e0d',
-                            'e39994d056999d79ff5a35b02cf2af946fc14bd7bd1b799b58619796584af02f',
-                          ],
-                        },
-                      ],
+                JSON: {},
+                JSON_ARRAY: {
+                  batch: JSON.stringify([
+                    {
+                      operation_type: 'Update',
+                      params: {
+                        effective_at: '2024-05-15T00:00:00Z',
+                        expires_at: '2025-05-15T00:00:00Z',
+                        users: [
+                          {
+                            email: [
+                              'ee278943de84e5d6243578ee1a1057bcce0e50daad9755f45dfa64b60b13bc5d',
+                              '27a1b87036e9b0f43235026e7cb1493f1838b6fe41965ea04486d82e499f8401',
+                            ],
+                            phone_number: [
+                              '76742d946d9f6d0c844da5648e461896227782ccf1cd0db64573f39dbd92e05f',
+                              '69c3bf36e0476c08a883fd6a995f67fc6d362c865549312fb5170737945fd073',
+                            ],
+                            handle: [
+                              '771c7b0ff2eff313009a81739307c3f7cde375acd7902b11061266a899a375f6',
+                              '7bde3c2d41eab9043df37c9adf4f5f7591c632340d1cabc894e438e881fdd5f6',
+                            ],
+                            device_id: [
+                              '85a598fd6c8834f2d4da3d6886bb53d0032021e137307ec91d3f0da78e9bfa5b',
+                              '936444046bea8b5d9de6bcae59b6f196ea4bb59945bc93e84bc9533dbf3e01c0',
+                            ],
+                            twitter_id: [
+                              'a70d41727df61f21ce0ec81cca51c58f516b6151275d9293d7437bf15fa22e0d',
+                              'e39994d056999d79ff5a35b02cf2af946fc14bd7bd1b799b58619796584af02f',
+                            ],
+                            partner_user_id: ['puid1', 'puid2'],
+                          },
+                        ],
+                      },
                     },
-                  },
-                ],
-                JSON_ARRAY: {},
+                  ]),
+                },
                 XML: {},
                 FORM: {},
               },
@@ -145,23 +147,25 @@ export const data = [
               },
               params: {},
               body: {
-                JSON: [
-                  {
-                    operation_type: 'Delete',
-                    params: {
-                      users: [
-                        {
-                          email: ['abc@xyz.com', 'a+1@xyz.com'],
-                          handle: ['@abc', '@xyz'],
-                          partner_user_id: ['puid1', 'puid2'],
-                          phone_number: ['98765433232', '21323'],
-                          twitter_id: ['tid1', 'tid2'],
-                        },
-                      ],
+                JSON: {},
+                JSON_ARRAY: {
+                  batch: JSON.stringify([
+                    {
+                      operation_type: 'Delete',
+                      params: {
+                        users: [
+                          {
+                            email: ['abc@xyz.com', 'a+1@xyz.com'],
+                            phone_number: ['98765433232', '21323'],
+                            handle: ['@abc', '@xyz'],
+                            twitter_id: ['tid1', 'tid2'],
+                            partner_user_id: ['puid1', 'puid2'],
+                          },
+                        ],
+                      },
                     },
-                  },
-                ],
-                JSON_ARRAY: {},
+                  ]),
+                },
                 XML: {},
                 FORM: {},
               },

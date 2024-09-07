@@ -5,7 +5,6 @@ const jsonSize = require('json-size');
 const { OAuthSecretError } = require('@rudderstack/integrations-lib');
 const {
   defaultRequestConfig,
-  defaultPostRequestConfig,
   getSuccessRespEvents,
   removeUndefinedAndNullAndEmptyValues,
 } = require('../../util');
@@ -34,8 +33,7 @@ const buildResponseWithJSON = (payload, config, metadata) => {
     ':audience_id',
     config.audienceId,
   );
-  response.method = defaultPostRequestConfig.requestMethod;
-  response.body.JSON = payload;
+  response.body.JSON_ARRAY = { batch: JSON.stringify(payload) };
   // required to be in accordance with oauth package
   const request = {
     url: response.endpoint,

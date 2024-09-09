@@ -1,11 +1,5 @@
 import { generateMetadata } from '../../../testUtils';
-import {
-  destType,
-  destinations,
-  traits,
-  properties,
-  RouterInstrumentationErrorStatTags,
-} from '../common';
+import { destType, destinations, traits, properties } from '../common';
 
 const routerRequest1 = {
   input: [
@@ -164,7 +158,7 @@ const routerRequest4 = {
 
 export const data = [
   {
-    id: 'webhook_v2-router-test-1',
+    id: 'http-router-test-1',
     name: destType,
     description: 'Batch multiple GET requests in a single batch with given batch size',
     scenario: 'Framework',
@@ -212,7 +206,7 @@ export const data = [
     },
   },
   {
-    id: 'webhook_v2-router-test-2',
+    id: 'http-router-test-2',
     name: destType,
     description:
       'Batch multiple GET requests in multiple batches when number of requests are greater then given batch size',
@@ -334,7 +328,7 @@ export const data = [
     },
   },
   {
-    id: 'webhook_v2-router-test-3',
+    id: 'http-router-test-3',
     name: destType,
     description: 'Batch multiple POST requests with properties mappings',
     scenario: 'Framework',
@@ -389,9 +383,9 @@ export const data = [
     },
   },
   {
-    id: 'webhook_v2-router-test-4',
+    id: 'http-router-test-4',
     name: destType,
-    description: 'Batch multiple requests based on webhook url and headers',
+    description: 'Batch multiple requests based on api url and headers',
     scenario: 'Framework',
     successCriteria: 'All events should be transformed successfully and status code should be 200',
     feature: 'router',

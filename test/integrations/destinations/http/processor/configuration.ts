@@ -4,7 +4,7 @@ import { destType, destinations, properties, traits } from '../common';
 
 export const configuration: ProcessorTestData[] = [
   {
-    id: 'webhook_v2-configuration-test-1',
+    id: 'http-configuration-test-1',
     name: destType,
     description: 'Identify call with properties mapping',
     scenario: 'Business',
@@ -36,7 +36,7 @@ export const configuration: ProcessorTestData[] = [
             output: transformResultBuilder({
               method: 'POST',
               userId: '',
-              endpoint: destinations[0].Config.webhookUrl,
+              endpoint: destinations[0].Config.apiUrl,
               JSON: {
                 contacts: {
                   first_name: 'John',
@@ -55,7 +55,7 @@ export const configuration: ProcessorTestData[] = [
     },
   },
   {
-    id: 'webhook_v2-configuration-test-2',
+    id: 'http-configuration-test-2',
     name: destType,
     description: 'Identify call with api key auth, delete method and path params',
     scenario: 'Business',
@@ -100,7 +100,7 @@ export const configuration: ProcessorTestData[] = [
     },
   },
   {
-    id: 'webhook_v2-configuration-test-3',
+    id: 'http-configuration-test-3',
     name: destType,
     description: 'Track call with basic auth, get method, headers and query params mapping',
     scenario: 'Business',
@@ -132,7 +132,7 @@ export const configuration: ProcessorTestData[] = [
             output: transformResultBuilder({
               method: 'GET',
               userId: '',
-              endpoint: destinations[1].Config.webhookUrl,
+              endpoint: destinations[1].Config.apiUrl,
               headers: {
                 Authorization: 'Basic dGVzdC11c2VyOg==',
                 h1: 'val1',
@@ -151,7 +151,7 @@ export const configuration: ProcessorTestData[] = [
     },
   },
   {
-    id: 'webhook_v2-configuration-test-4',
+    id: 'http-configuration-test-4',
     name: destType,
     description:
       'Track call with bearer token, xml format, post method, additional headers and properties mapping',
@@ -185,7 +185,7 @@ export const configuration: ProcessorTestData[] = [
             output: transformResultBuilder({
               method: 'POST',
               userId: '',
-              endpoint: destinations[4].Config.webhookUrl,
+              endpoint: destinations[4].Config.apiUrl,
               headers: {
                 Authorization: 'Bearer test-token',
                 h1: 'val1',

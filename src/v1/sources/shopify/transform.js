@@ -12,13 +12,22 @@ const {
   checkAndUpdateCartItems,
   getHashLineItems,
   getDataFromRedis,
-  mapObjectKeys,
 } = require('./util');
 const logger = require('../../../logger');
 const { RedisDB } = require('../../../util/redis/redisConnector');
 const { removeUndefinedAndNullValues, isDefinedAndNotNull } = require('../../../v0/util');
 const Message = require('../../../v0/sources/message');
 const { EventType } = require('../../../constants');
+const {
+  pageViewedEventBuilder,
+  cartViewedEventBuilder,
+  productListViewedEventBuilder,
+  productViewedEventBuilder,
+  productToCartEventBuilder,
+  checkoutEventBuilder,
+  checkoutStepEventBuilder,
+  searchEventBuilder,
+} = require('./utilsV2');
 const {
   INTEGERATION,
   MAPPING_CATEGORIES,
@@ -28,13 +37,6 @@ const {
   SUPPORTED_TRACK_EVENTS,
   SHOPIFY_TRACK_MAP,
   PIXEL_EVENT_TOPICS,
-  PIXEL_EVENT_MAPPING,
-  contextualFieldMapping,
-  cartViewedEventMapping,
-  productListViewedEventMapping,
-  productViewedEventMapping,
-  productToCartEventMapping,
-  checkoutStartedCompletedEventMapping,
   useRedisDatabase,
 } = require('./config');
 
@@ -131,148 +133,6 @@ const trackPayloadBuilder = (event, shopifyTopic) => {
   if (!message.userId && user_id) {
     message.setProperty('userId', user_id);
   }
-  return message;
-};
-
-const pageViewedEventBuilder = (inputEvent) => {
-  const { data, context } = inputEvent;
-  const pageEventContextValues = mapObjectKeys(context, contextualFieldMapping);
-  const message = new Message(INTEGERATION);
-  message.name = 'Page View';
-  message.setEventType(EventType.PAGE);
-  message.properties = { ...data };
-  message.context = { ...pageEventContextValues };
-  return message;
-};
-
-const cartViewedEventBuilder = (inputEvent) => {
-  const lines = inputEvent?.data?.cart?.lines;
-  const products = [];
-  if (lines) {
-    lines.forEach((line) => {
-      const product = mapObjectKeys(line, cartViewedEventMapping);
-      products.push(product);
-    });
-  }
-
-  const properties = {
-    products,
-    cart_id: inputEvent.data.cart.id,
-  };
-  const contextualPayload = mapObjectKeys(inputEvent.context, contextualFieldMapping);
-  const message = new Message(INTEGERATION);
-  message.setEventType(EventType.TRACK);
-  message.setEventName('Cart Viewed');
-  message.properties = properties;
-  message.context = contextualPayload;
-  return message;
-};
-
-const productListViewedEventBuilder = (inputEvent) => {
-  const productVariants = inputEvent?.data?.collection?.productVariants;
-  const products = [];
-
-  productVariants.forEach((productVariant) => {
-    const mappedProduct = mapObjectKeys(productVariant, productListViewedEventMapping);
-    products.push(mappedProduct);
-  });
-
-  const properties = {
-    cart_id: inputEvent.clientId,
-    list_id: inputEvent.id,
-    products,
-  };
-
-  const contextualPayload = mapObjectKeys(inputEvent.context, contextualFieldMapping);
-
-  const message = new Message(INTEGERATION);
-  message.setEventType(EventType.TRACK);
-  message.setEventName('Product List Viewed');
-  message.properties = properties;
-  message.context = contextualPayload;
-  return message;
-};
-
-const productViewedEventBuilder = (inputEvent) => {
-  const properties = {
-    ...mapObjectKeys(inputEvent.data, productViewedEventMapping),
-  };
-  const contextualPayload = mapObjectKeys(inputEvent.context, contextualFieldMapping);
-  const message = new Message(INTEGERATION);
-  message.setEventType(EventType.TRACK);
-  message.setEventName('Product Viewed');
-  message.properties = properties;
-  message.context = contextualPayload;
-  return message;
-};
-
-const productToCartEventBuilder = (inputEvent) => {
-  const properties = {
-    ...mapObjectKeys(inputEvent.data, productToCartEventMapping),
-  };
-  const contextualPayload = mapObjectKeys(inputEvent.context, contextualFieldMapping);
-  const message = new Message(INTEGERATION);
-  message.setEventType(EventType.TRACK);
-  message.setEventName(PIXEL_EVENT_MAPPING[inputEvent.name]);
-  message.properties = properties;
-  message.context = contextualPayload;
-  return message;
-};
-
-const checkoutEventBuilder = (inputEvent) => {
-  const lineItems = inputEvent?.data?.checkout?.lineItems;
-  const products = [];
-
-  lineItems.forEach((lineItem) => {
-    const mappedProduct = mapObjectKeys(lineItem, checkoutStartedCompletedEventMapping);
-    products.push(mappedProduct);
-  });
-
-  const properties = {
-    products,
-    order_id: inputEvent.id,
-    checkout_id: inputEvent?.data?.checkout?.token,
-    total: inputEvent?.data?.checkout?.totalPrice?.amount,
-    currency: inputEvent?.data?.checkout?.currencyCode,
-    discount: inputEvent?.data?.checkout?.discountsAmount?.amount,
-    shipping: inputEvent?.data?.checkout?.shippingLine?.price?.amount,
-    revenue: inputEvent?.data?.checkout?.subtotalPrice?.amount,
-    value: inputEvent?.data?.checkout?.totalPrice?.amount,
-    tax: inputEvent?.data?.checkout?.totalTax?.amount,
-  };
-  const contextualPayload = mapObjectKeys(inputEvent.context, contextualFieldMapping);
-
-  const message = new Message(INTEGERATION);
-  message.setEventType(EventType.TRACK);
-  message.setEventName(PIXEL_EVENT_MAPPING[inputEvent.name]);
-  message.properties = properties;
-  message.context = contextualPayload;
-  return message;
-};
-
-const checkoutStepEventBuilder = (inputEvent) => {
-  const contextualPayload = mapObjectKeys(inputEvent.context, contextualFieldMapping);
-  const properties = {
-    ...inputEvent.data.checkout,
-  };
-  const message = new Message(INTEGERATION);
-  message.setEventType(EventType.TRACK);
-  message.setEventName(PIXEL_EVENT_MAPPING[inputEvent.name]);
-  message.properties = properties;
-  message.context = contextualPayload;
-  return message;
-};
-
-const searchEventBuilder = (inputEvent) => {
-  const properties = {
-    query: inputEvent.data.searchResult.query,
-  };
-  const contextualPayload = mapObjectKeys(inputEvent.context, contextualFieldMapping);
-  const message = new Message(INTEGERATION);
-  message.setEventType(EventType.TRACK);
-  message.setEventName(PIXEL_EVENT_MAPPING[inputEvent.name]);
-  message.properties = properties;
-  message.context = contextualPayload;
   return message;
 };
 

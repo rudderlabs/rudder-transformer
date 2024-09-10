@@ -41,12 +41,23 @@ const getCustomMappings = (message, mapping) => {
   }
 };
 
+const validateUrl = (url) => {
+  const regex =
+    /(^\{\{.*\|\|.*\}\}$)|(^env\..+)|^(?!.*\.ngrok\.io)(https?:\/\/)?[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=]+$|^$/u;
+  if (!regex.test(url)) {
+    throw new ConfigurationError('Invalid URL provided');
+  }
+};
+
 const addPathParams = (message, apiUrl) => {
+  let url;
   try {
-    return applyJSONStringTemplate(message, `\`${apiUrl}\``);
+    url = applyJSONStringTemplate(message, `\`${apiUrl}\``);
   } catch (e) {
     throw new ConfigurationError(`Error in api url template: ${e.message}`);
   }
+  validateUrl(url);
+  return url;
 };
 
 const excludeMappedFields = (payload, mapping) => {
@@ -149,6 +160,7 @@ const batchSuccessfulEvents = (events, batchSize) => {
 module.exports = {
   getAuthHeaders,
   getCustomMappings,
+  validateUrl,
   addPathParams,
   excludeMappedFields,
   getXMLPayload,

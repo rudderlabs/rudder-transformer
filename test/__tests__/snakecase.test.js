@@ -1,5 +1,4 @@
-const lodashStable = require('lodash');
-
+const _ = require('lodash');
 const {words, wordsWithNumbers, snakeCase, snakeCaseWithNumbers} = require("../../src/warehouse/snakecase/snakecase");
 
 const burredLetters = [
@@ -212,8 +211,8 @@ const stubString = function () {
 
 describe('words', () => {
     it('should match words containing Latin Unicode letters', () => {
-        const expected = lodashStable.map(burredLetters, (letter) => [letter]);
-        const actual = lodashStable.map(burredLetters, (letter) => words(letter));
+        const expected = _.map(burredLetters, (letter) => [letter]);
+        const actual = _.map(burredLetters, (letter) => words(letter));
         expect(actual).toEqual(expected);
     });
 
@@ -241,15 +240,15 @@ describe('words', () => {
     it('should not treat contractions as separate words', () => {
         const postfixes = ['d', 'll', 'm', 're', 's', 't', 've'];
 
-        lodashStable.each(["'", '\u2019'], (apos) => {
-            lodashStable.times(2, (index) => {
-                const actual = lodashStable.map(postfixes, (postfix) => {
+        _.each(["'", '\u2019'], (apos) => {
+            _.times(2, (index) => {
+                const actual = _.map(postfixes, (postfix) => {
                     const string = `a b${apos}${postfix} c`;
                     return words(string[index ? 'toUpperCase' : 'toLowerCase']());
                 });
-                const expected = lodashStable.map(postfixes, (postfix) => {
+                const expected = _.map(postfixes, (postfix) => {
                     const words = ['a', `b${apos}${postfix}`, 'c'];
-                    return lodashStable.map(words, (word) =>
+                    return _.map(words, (word) =>
                         word[index ? 'toUpperCase' : 'toLowerCase'](),
                     );
                 });
@@ -261,11 +260,11 @@ describe('words', () => {
     it('should not treat ordinal numbers as separate words', () => {
         const ordinals = ['1st', '2nd', '3rd', '4th'];
 
-        lodashStable.times(2, (index) => {
-            const expected = lodashStable.map(ordinals, (ordinal) => [
+        _.times(2, (index) => {
+            const expected = _.map(ordinals, (ordinal) => [
                 ordinal[index ? 'toUpperCase' : 'toLowerCase'](),
             ]);
-            const actual = lodashStable.map(expected, (expectedWords) => words(expectedWords[0]));
+            const actual = _.map(expected, (expectedWords) => words(expectedWords[0]));
             expect(actual).toEqual(expected);
         });
     });
@@ -274,11 +273,11 @@ describe('words', () => {
         const largeWordLen = 50000;
         const largeWord = 'A'.repeat(largeWordLen);
         const maxMs = 1000;
-        const startTime = lodashStable.now();
+        const startTime = _.now();
 
         expect(words(`${largeWord}ÆiouAreVowels`)).toEqual([largeWord, 'Æiou', 'Are', 'Vowels']);
 
-        const endTime = lodashStable.now();
+        const endTime = _.now();
         const timeSpent = endTime - startTime;
 
         expect(timeSpent).toBeLessThan(maxMs);
@@ -311,8 +310,8 @@ describe('words', () => {
 
 describe('wordsWithoutNumbers', () => {
     it('should match words containing Latin Unicode letters', () => {
-        const expected = lodashStable.map(burredLetters, (letter) => [letter]);
-        const actual = lodashStable.map(burredLetters, (letter) => wordsWithNumbers(letter));
+        const expected = _.map(burredLetters, (letter) => [letter]);
+        const actual = _.map(burredLetters, (letter) => wordsWithNumbers(letter));
         expect(actual).toEqual(expected);
     });
 
@@ -340,15 +339,15 @@ describe('wordsWithoutNumbers', () => {
     it('should not treat contractions as separate words', () => {
         const postfixes = ['d', 'll', 'm', 're', 's', 't', 've'];
 
-        lodashStable.each(["'", '\u2019'], (apos) => {
-            lodashStable.times(2, (index) => {
-                const actual = lodashStable.map(postfixes, (postfix) => {
+        _.each(["'", '\u2019'], (apos) => {
+            _.times(2, (index) => {
+                const actual = _.map(postfixes, (postfix) => {
                     const string = `a b${apos}${postfix} c`;
                     return wordsWithNumbers(string[index ? 'toUpperCase' : 'toLowerCase']());
                 });
-                const expected = lodashStable.map(postfixes, (postfix) => {
+                const expected = _.map(postfixes, (postfix) => {
                     const words = ['a', `b${apos}${postfix}`, 'c'];
-                    return lodashStable.map(words, (word) =>
+                    return _.map(words, (word) =>
                         word[index ? 'toUpperCase' : 'toLowerCase'](),
                     );
                 });
@@ -360,11 +359,11 @@ describe('wordsWithoutNumbers', () => {
     it('should not treat ordinal numbers as separate words', () => {
         const ordinals = ['1st', '2nd', '3rd', '4th'];
 
-        lodashStable.times(2, (index) => {
-            const expected = lodashStable.map(ordinals, (ordinal) => [
+        _.times(2, (index) => {
+            const expected = _.map(ordinals, (ordinal) => [
                 ordinal[index ? 'toUpperCase' : 'toLowerCase'](),
             ]);
-            const actual = lodashStable.map(expected, (expectedWords) => wordsWithNumbers(expectedWords[0]));
+            const actual = _.map(expected, (expectedWords) => wordsWithNumbers(expectedWords[0]));
             expect(actual).toEqual(expected);
         });
     });
@@ -373,11 +372,11 @@ describe('wordsWithoutNumbers', () => {
         const largeWordLen = 50000;
         const largeWord = 'A'.repeat(largeWordLen);
         const maxMs = 1000;
-        const startTime = lodashStable.now();
+        const startTime = _.now();
 
         expect(wordsWithNumbers(`${largeWord}ÆiouAreVowels`)).toEqual([largeWord, 'Æiou', 'Are', 'Vowels']);
 
-        const endTime = lodashStable.now();
+        const endTime = _.now();
         const timeSpent = endTime - startTime;
 
         expect(timeSpent).toBeLessThan(maxMs);
@@ -414,7 +413,7 @@ describe('snakeCase snakeCaseWithNumbers', () => {
         snakeCaseWithNumbers,
     };
 
-    lodashStable.each(['snakeCase', 'snakeCaseWithNumbers'], (caseName) => {
+    _.each(['snakeCase', 'snakeCaseWithNumbers'], (caseName) => {
         const methodName = caseName;
         const func = caseMethods[methodName];
 
@@ -439,29 +438,29 @@ describe('snakeCase snakeCaseWithNumbers', () => {
         })();
 
         it(`\`_.${methodName}\` should convert \`string\` to ${caseName} case`, () => {
-            const actual = lodashStable.map(strings, (string) => {
+            const actual = _.map(strings, (string) => {
                 const expected = caseName === 'start' && string === 'FOO BAR' ? string : converted;
                 return func(string) === expected;
             });
-            expect(actual).toEqual(lodashStable.map(strings, stubTrue));
+            expect(actual).toEqual(_.map(strings, stubTrue));
         });
 
         it(`\`_.${methodName}\` should handle double-converting strings`, () => {
-            const actual = lodashStable.map(strings, (string) => {
+            const actual = _.map(strings, (string) => {
                 const expected = caseName === 'start' && string === 'FOO BAR' ? string : converted;
                 return func(func(string)) === expected;
             });
-            expect(actual).toEqual(lodashStable.map(strings, stubTrue));
+            expect(actual).toEqual(_.map(strings, stubTrue));
         });
 
         it(`\`_.${methodName}\` should remove contraction apostrophes`, () => {
             const postfixes = ['d', 'll', 'm', 're', 's', 't', 've'];
 
-            lodashStable.each(["'", '\u2019'], (apos) => {
-                const actual = lodashStable.map(postfixes, (postfix) =>
+            _.each(["'", '\u2019'], (apos) => {
+                const actual = _.map(postfixes, (postfix) =>
                     func(`a b${apos}${postfix} c`),
                 );
-                const expected = lodashStable.map(postfixes, (postfix) => {
+                const expected = _.map(postfixes, (postfix) => {
                     switch (caseName) {
                         case 'snakeCase':
                             return `a_b${postfix}_c`;
@@ -474,21 +473,21 @@ describe('snakeCase snakeCaseWithNumbers', () => {
         });
 
         it(`\`_.${methodName}\` should remove Latin mathematical operators`, () => {
-            const actual = lodashStable.map(['\xd7', '\xf7'], func);
+            const actual = _.map(['\xd7', '\xf7'], func);
             expect(actual).toEqual(['', '']);
         });
 
         it(`\`_.${methodName}\` should coerce \`string\` to a string`, () => {
             const string = 'foo bar';
             expect(func(Object(string))).toBe(converted);
-            expect(func({toString: lodashStable.constant(string)})).toBe(converted);
+            expect(func({toString: _.constant(string)})).toBe(converted);
         });
 
         it(`\`_.${methodName}\` should return an empty string for empty values`, () => {
             const values = [, null, undefined, ''];
-            const expected = lodashStable.map(values, stubString);
+            const expected = _.map(values, stubString);
 
-            const actual = lodashStable.map(values, (value, index) =>
+            const actual = _.map(values, (value, index) =>
                 index ? func(value) : func(),
             );
 

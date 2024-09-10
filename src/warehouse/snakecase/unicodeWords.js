@@ -91,4 +91,4 @@ function unicodeWordsWithNumbers(string) {
   return string.match(reUnicodeWordsWithNumbers);
 }
 
-export { unicodeWords, unicodeWordsWithNumbers };
+module.exports = { unicodeWords, unicodeWordsWithNumbers };

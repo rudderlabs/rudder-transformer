@@ -1,5 +1,5 @@
-import { toString } from 'lodash';
-import { unicodeWords, unicodeWordsWithNumbers } from './unicodeWords';
+const { toString } = require('lodash');
+const { unicodeWords, unicodeWordsWithNumbers } = require('./unicodeWords');
 
 const hasUnicodeWord = RegExp.prototype.test.bind(
   /[a-z][A-Z]|[A-Z]{2}[a-z]|[0-9][a-zA-Z]|[a-zA-Z][0-9]|[^a-zA-Z0-9 ]/,
@@ -34,4 +34,4 @@ const snakeCaseWithNumbers = (string) =>
     '',
   );
 
-export { words, wordsWithNumbers, snakeCase, snakeCaseWithNumbers };
+module.exports = { words, wordsWithNumbers, snakeCase, snakeCaseWithNumbers };

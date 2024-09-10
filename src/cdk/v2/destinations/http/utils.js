@@ -37,15 +37,15 @@ const getCustomMappings = (message, mapping) => {
   try {
     return applyCustomMappings(message, mapping);
   } catch (e) {
-    throw new ConfigurationError(`[Webhook]:: Error in custom mappings: ${e.message}`);
+    throw new ConfigurationError(`Error in custom mappings: ${e.message}`);
   }
 };
 
-const addPathParams = (message, webhookUrl) => {
+const addPathParams = (message, apiUrl) => {
   try {
-    return applyJSONStringTemplate(message, `\`${webhookUrl}\``);
+    return applyJSONStringTemplate(message, `\`${apiUrl}\``);
   } catch (e) {
-    throw new ConfigurationError(`[Webhook]:: Error in url template: ${e.message}`);
+    throw new ConfigurationError(`Error in api url template: ${e.message}`);
   }
 };
 

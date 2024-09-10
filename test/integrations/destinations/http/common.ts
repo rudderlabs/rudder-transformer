@@ -1,12 +1,12 @@
 import { Destination } from '../../../../src/types';
 
-const destType = 'webhook_v2';
-const destTypeInUpperCase = 'WEBHOOK_V2';
-const displayName = 'Webhook V2';
+const destType = 'http';
+const destTypeInUpperCase = 'HTTP';
+const displayName = 'HTTP';
 const destinations: Destination[] = [
   {
     Config: {
-      webhookUrl: 'http://abc.com/contacts',
+      apiUrl: 'http://abc.com/contacts',
       auth: 'noAuth',
       method: 'POST',
       format: 'JSON',
@@ -41,7 +41,7 @@ const destinations: Destination[] = [
   },
   {
     Config: {
-      webhookUrl: 'http://abc.com/contacts',
+      apiUrl: 'http://abc.com/contacts',
       auth: 'basicAuth',
       username: 'test-user',
       password: '',
@@ -92,7 +92,7 @@ const destinations: Destination[] = [
   },
   {
     Config: {
-      webhookUrl: 'http://abc.com/contacts/{{$.traits.email}}/',
+      apiUrl: 'http://abc.com/contacts/{{$.traits.email}}/',
       auth: 'apiKeyAuth',
       apiKeyName: 'x-api-key',
       apiKeyValue: 'test-api-key',
@@ -114,7 +114,7 @@ const destinations: Destination[] = [
   },
   {
     Config: {
-      webhookUrl: 'http://abc.com/contacts/{{$.traits.email}}/',
+      apiUrl: 'http://abc.com/contacts/{{$.traits.email}}/',
       auth: 'apiKeyAuth',
       apiKeyName: 'x-api-key',
       apiKeyValue: 'test-api-key',
@@ -136,7 +136,7 @@ const destinations: Destination[] = [
   },
   {
     Config: {
-      webhookUrl: 'http://abc.com/events',
+      apiUrl: 'http://abc.com/events',
       auth: 'bearerTokenAuth',
       bearerToken: 'test-token',
       method: 'POST',
@@ -196,7 +196,7 @@ const destinations: Destination[] = [
   },
   {
     Config: {
-      webhookUrl: 'http://abc.com/events',
+      apiUrl: 'http://abc.com/events',
       auth: 'noAuth',
       method: 'POST',
       format: 'JSON',
@@ -249,7 +249,7 @@ const destinations: Destination[] = [
   },
   {
     Config: {
-      webhookUrl: 'http://abc.com/contacts/{{$.traits.phone}}',
+      apiUrl: 'http://abc.com/contacts/{{$.traits.phone}}',
       auth: 'noAuth',
       method: 'POST',
       format: 'JSON',

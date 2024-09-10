@@ -1,8 +1,7 @@
-const _ = require('lodash');
-
 const reservedANSIKeywordsMap = require('../config/ReservedKeywords.json');
 const { isDataLakeProvider } = require('../config/helpers');
 const { TransformationError } = require('@rudderstack/integrations-lib');
+const { snakeCase, snakeCaseWithNumbers } = require('../snakecase/snakecase');
 
 function safeTableName(options, name = '') {
   const { provider } = options;
@@ -104,14 +103,17 @@ function transformName(options, provider, name = '') {
   if (extractedValue !== '') {
     extractedValues.push(extractedValue);
   }
+  const underscoreDivideNumbers = options?.underscoreDivideNumbers || false;
+  const snakeCaseFn = underscoreDivideNumbers ? snakeCase : snakeCaseWithNumbers;
+
   let key = extractedValues.join('_');
   if (name.startsWith('_')) {
     // do not remove leading underscores to allow esacaping rudder keywords with underscore
     // _timestamp -> _timestamp
     // __timestamp -> __timestamp
-    key = name.match(/^_*/)[0] + _.snakeCase(key.replace(/^_*/, ''));
+    key = name.match(/^_*/)[0] + snakeCaseFn(key.replace(/^_*/, ''));
   } else {
-    key = _.snakeCase(key);
+    key = snakeCaseFn(key);
   }
 
   if (key !== '' && key.charCodeAt(0) >= 48 && key.charCodeAt(0) <= 57) {
@@ -119,9 +121,6 @@ function transformName(options, provider, name = '') {
   }
   if (provider === 'postgres') {
     key = key.substr(0, 63);
-  }
-  if (!options?.underscoreDivideNumbers) {
-    key = key.replace(/(\w)_(\d+)/g, '$1$2');
   }
   return key;
 }

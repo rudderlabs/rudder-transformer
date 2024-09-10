@@ -22,7 +22,6 @@ const sampleEvents = {
         Config: {
           jsonPaths: " testMap.nestedMap, testArray",
           allowUsersContextTraits: true,
-          allowEventContextTraits: true,
           underscoreDivideNumbers: true
         }
       },
@@ -736,7 +735,6 @@ const sampleEvents = {
       destination: {
         Config: {
           allowUsersContextTraits: true,
-          allowEventContextTraits: true,
           underscoreDivideNumbers: true
         }
       },

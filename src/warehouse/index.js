@@ -634,7 +634,6 @@ function processWarehouseMessage(message, options) {
     message.integrations && message.integrations[options.provider.toUpperCase()]
       ? message.integrations[options.provider.toUpperCase()].options
       : {};
-
   const responses = [];
   const eventType = message.type?.toLowerCase();
   const skipTracksTable =
@@ -655,13 +654,6 @@ function processWarehouseMessage(message, options) {
   // e.g., for context.traits.name, only context_traits_name will be added to the user's table.
   // For older destinations, it will come as true, and for new destinations this config will not be present, which means we will treat it as false.
   const allowUsersContextTraits = options.destConfig?.allowUsersContextTraits || false;
-
-  // allowEventContextTraits when set to true, if context.traits.* is present, it will be added as context_traits_* in the events table,
-  // e.g., for context.traits.name, context_traits_name will be added to the events table.
-  // allowEventContextTraits when set to false, if context.traits.* is present, nothing will be added in the events table.
-  // e.g., for context.traits.name, nothing will be added to the events table.
-  // For older destinations, it will come as true, and for new destinations this config will not be present, which means we will treat it as false.
-  const allowEventContextTraits = options.destConfig?.allowEventContextTraits || false;
 
   addJsonKeysToOptions(options);
 
@@ -876,14 +868,6 @@ function processWarehouseMessage(message, options) {
         ...trackProps,
         ...commonProps,
       };
-      if (!allowEventContextTraits) {
-        // remove all context traits from eventTableEvent
-        Object.keys(eventTableEvent).forEach((key) => {
-          if (key.toLowerCase().startsWith('context_traits_')) {
-            delete eventTableEvent[key];
-          }
-        });
-      }
       const eventTableMetadata = {
         table: excludeRudderCreatedTableNames(
           utils.safeTableName(

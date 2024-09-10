@@ -10,7 +10,6 @@ const sampleEvents = {
           prefixProperties: true,
           useNativeSDK: false,
           allowUsersContextTraits: true,
-          allowEventContextTraits: true,
           underscoreDivideNumbers: true
         },
         DestinationDefinition: {
@@ -519,7 +518,6 @@ const sampleEvents = {
           prefixProperties: true,
           useNativeSDK: false,
           allowUsersContextTraits: true,
-          allowEventContextTraits: true,
           underscoreDivideNumbers: true
         },
         DestinationDefinition: {
@@ -1034,7 +1032,6 @@ const sampleEvents = {
           prefixProperties: true,
           useNativeSDK: false,
           allowUsersContextTraits: true,
-          allowEventContextTraits: true,
           underscoreDivideNumbers: true
         },
         DestinationDefinition: {
@@ -1294,7 +1291,6 @@ const sampleEvents = {
           trackCategorisedPages: true,
           trackNamedPages: false,
           allowUsersContextTraits: true,
-          allowEventContextTraits: true,
           underscoreDivideNumbers: true
         },
         Enabled: true
@@ -1546,7 +1542,6 @@ const sampleEvents = {
           trackCategorisedPages: false,
           trackNamedPages: false,
           allowUsersContextTraits: true,
-          allowEventContextTraits: true,
           underscoreDivideNumbers: true
         },
         Enabled: true
@@ -1769,7 +1764,6 @@ const sampleEvents = {
           prefixProperties: true,
           useNativeSDK: false,
           allowUsersContextTraits: true,
-          allowEventContextTraits: true,
           underscoreDivideNumbers: true
         },
         DestinationDefinition: {
@@ -2036,7 +2030,6 @@ const sampleEvents = {
           prefixProperties: true,
           useNativeSDK: false,
           allowUsersContextTraits: true,
-          allowEventContextTraits: true,
           underscoreDivideNumbers: true
         },
         DestinationDefinition: {

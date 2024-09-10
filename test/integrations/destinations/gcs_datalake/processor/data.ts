@@ -63,7 +63,6 @@ export const data = [
                 tableSuffix: '',
                 timeWindowLayout: '2006/01/02/15',
                 allowUsersContextTraits: true,
-                allowEventContextTraits: true,
                 underscoreDivideNumbers: true,
               },
               Enabled: true,

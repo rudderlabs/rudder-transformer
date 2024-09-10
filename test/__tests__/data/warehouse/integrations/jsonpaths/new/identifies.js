@@ -3,7 +3,6 @@ module.exports = {
         destination: {
             Config: {
                 allowUsersContextTraits: true,
-                allowEventContextTraits: true,
                 underscoreDivideNumbers: true
             }
         },

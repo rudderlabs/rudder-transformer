@@ -14,37 +14,39 @@ const {isBlank} = require("../../src/warehouse/config/helpers.js");
 
 const version = "v0";
 const integrations = [
-    "rs",
-    "bq",
-    "postgres",
-    "clickhouse",
-    "snowflake",
-    "mssql",
-    "azure_synapse",
-    "deltalake",
-    "azure_datalake",
-    "s3_datalake",
-    "gcs_datalake",
+  "rs",
+  "bq",
+  "postgres",
+  "clickhouse",
+  "snowflake",
+  "mssql",
+  "azure_synapse",
+  "deltalake",
+  "azure_datalake",
+  "s3_datalake",
+  "gcs_datalake",
 ];
 const transformers = integrations.map(integration =>
-    require(`../../src/${version}/destinations/${integration}/transform`)
+  require(`../../src/${version}/destinations/${integration}/transform`)
 );
 const eventTypes = ["track", "identify", "page", "screen", "group", "alias"];
 // get key of user set properties in the event
 // eg. for identify call, user sets the custom properties inside traits
 const propsKeyMap = {
-    track: "properties",
-    page: "properties",
-    screen: "properties",
-    identify: "traits",
-    group: "traits",
-    alias: "traits"
+  track: "properties",
+  page: "properties",
+  screen: "properties",
+
+  identify: "traits",
+  group: "traits",
+  alias: "traits"
 };
+
 const integrationCasedString = (integration, str) => {
-    if (integration === "snowflake") {
-        return str.toUpperCase();
-    }
-    return str;
+  if (integration === "snowflake") {
+    return str.toUpperCase();
+  }
+  return str;
 };
 
 describe("event types", () => {
@@ -1224,53 +1226,8 @@ describe("Destination config", () => {
         });
     });
 
-    describe('allowUsersContextTraits, allowEventContextTraits, underscoreDivideNumbers', () => {
+    describe('allowUsersContextTraits, underscoreDivideNumbers', () => {
         describe("old destinations", () => {
-            it('without allowEventContextTraits', () => {
-                transformers.forEach((transformer, index) => {
-                    const event = {
-                        destination: {
-                            Config: {
-                                allowEventContextTraits: true
-                            },
-                        },
-                        message: {
-                            context: {
-                                traits: {
-                                    city: "Disney",
-                                    country: "USA",
-                                    email: "mickey@disney.com",
-                                    firstname: "Mickey"
-                                }
-                            },
-                            event: "button clicked",
-                            type: "track",
-                        },
-                        request: {
-                            query: {
-                                whSchemaVersion: "v1"
-                            }
-                        }
-                    }
-                    const output = transformer.process(event);
-                    const events = [output[0], output[1]];
-                    const traitsToCheck = {
-                        'city': 'Disney',
-                        'country': 'USA',
-                        'email': 'mickey@disney.com',
-                        'firstname': 'Mickey'
-                    };
-                    events.forEach(event => {
-                        Object.entries(traitsToCheck).forEach(([trait, value]) => {
-                            expect(output[0].data[integrationCasedString(integrations[index], `context_traits_${trait}`)]).toEqual(value);
-                            expect(output[0].metadata.columns).toHaveProperty(integrationCasedString(integrations[index], `context_traits_${trait}`));
-                            expect(output[1].data[integrationCasedString(integrations[index], `context_traits_${trait}`)]).toEqual(value);
-                            expect(output[1].metadata.columns).toHaveProperty(integrationCasedString(integrations[index], `context_traits_${trait}`));
-                        });
-                    });
-                });
-            });
-
             it('with allowUsersContextTraits', () => {
                 transformers.forEach((transformer, index) => {
                     const event = {
@@ -1352,47 +1309,7 @@ describe("Destination config", () => {
             });
         });
         describe("new destinations", () => {
-            it('without allowEventContextTraits', () => {
-                transformers.forEach((transformer, index) => {
-                    const event = {
-                        destination: {
-                            Config: {},
-                        },
-                        message: {
-                            context: {
-                                traits: {
-                                    city: "Disney",
-                                    country: "USA",
-                                    email: "mickey@disney.com",
-                                    firstname: "Mickey"
-                                }
-                            },
-                            event: "button clicked",
-                            type: "track",
-                        },
-                        request: {
-                            query: {
-                                whSchemaVersion: "v1"
-                            }
-                        }
-                    }
-                    const output = transformer.process(event);
-                    const traitsToCheck = {
-                        'city': 'Disney',
-                        'country': 'USA',
-                        'email': 'mickey@disney.com',
-                        'firstname': 'Mickey'
-                    };
-                    Object.entries(traitsToCheck).forEach(([trait, value]) => {
-                        expect(output[0].data[integrationCasedString(integrations[index], `context_traits_${trait}`)]).toEqual(value);
-                        expect(output[0].metadata.columns).toHaveProperty(integrationCasedString(integrations[index], `context_traits_${trait}`));
-                        expect(output[1].data).not.toHaveProperty(integrationCasedString(integrations[index], `context_traits_${trait}`));
-                        expect(output[1].metadata.columns).not.toHaveProperty(integrationCasedString(integrations[index], `context_traits_${trait}`));
-                    });
-                });
-            });
-
-            it('without allowUsersContextTraits', () => {
+          it('without allowUsersContextTraits', () => {
                 transformers.forEach((transformer, index) => {
                     const event = {
                         destination: {
@@ -1773,421 +1690,649 @@ describe("group traits", () => {
 })
 
 describe("transformColumnName", () => {
-    describe('with Blendo Casing', () => {
-        const testCases = [
-            {
-                description: 'should convert special characters other than "\\" or "$" to underscores',
-                options: {integrationOptions: {useBlendoCasing: true}, provider: 'postgres'},
-                input: 'column@Name#1',
-                expected: 'column_name_1',
-            },
-            {
-                description: 'should add underscore if name does not start with an alphabet or underscore',
-                options: {integrationOptions: {useBlendoCasing: true}, provider: 'postgres'},
-                input: '1CComega',
-                expected: '_1ccomega',
-            },
-            {
-                description: 'should handle non-ASCII characters by converting to underscores',
-                options: {integrationOptions: {useBlendoCasing: true}, provider: 'postgres'},
-                input: 'Cízǔ',
-                expected: 'c_z_',
-            },
-            {
-                description: 'should preserve "\\" and "$" characters',
-                options: {integrationOptions: {useBlendoCasing: true}, provider: 'postgres'},
-                input: 'path_to_$1,00,000',
-                expected: 'path_to_$1_00_000',
-            },
-            {
-                description: 'should transform CamelCase123Key to camelcase123key',
-                options: {integrationOptions: {useBlendoCasing: true}, provider: 'postgres'},
-                input: 'CamelCase123Key',
-                expected: 'camelcase123key',
-            },
-            {
-                description: 'should handle a mix of characters, numbers, and special characters',
-                options: {integrationOptions: {useBlendoCasing: true}, provider: 'postgres'},
-                input: 'CamelCase123Key_with$special\\chars',
-                expected: 'camelcase123key_with$special\\chars',
-            },
-            {
-                description: 'should handle names starting with a number',
-                options: {integrationOptions: {useBlendoCasing: true}, provider: 'postgres'},
-                input: '1Column',
-                expected: '_1column',
-            },
-            {
-                description: 'should limit length to 63 characters for postgres provider',
-                options: {integrationOptions: {useBlendoCasing: true}, provider: 'postgres'},
-                input: 'a'.repeat(70),
-                expected: 'a'.repeat(63),
-            },
-        ];
-        testCases.forEach(({description, options, input, expected}) => {
-            it(description, () => {
-                const result = transformColumnName(options, input);
-                expect(result).toBe(expected);
-            });
-        });
+  describe('with Blendo Casing', () => {
+    const testCases = [
+      {
+        description: 'should convert special characters other than "\\" or "$" to underscores',
+        options: {integrationOptions: {useBlendoCasing: true}, provider: 'postgres'},
+        input: 'column@Name$1',
+        expected: 'column_name$1',
+      },
+      {
+        description: 'should add underscore if name does not start with an alphabet or underscore',
+        options: {integrationOptions: {useBlendoCasing: true}, provider: 'postgres'},
+        input: '1CComega',
+        expected: '_1ccomega',
+      },
+      {
+        description: 'should handle non-ASCII characters by converting to underscores',
+        options: {integrationOptions: {useBlendoCasing: true}, provider: 'postgres'},
+        input: 'Cízǔ',
+        expected: 'c_z_',
+      },
+      {
+        description: 'should transform CamelCase123Key to camelcase123key',
+        options: {integrationOptions: {useBlendoCasing: true}, provider: 'postgres'},
+        input: 'CamelCase123Key',
+        expected: 'camelcase123key',
+      },
+      {
+        description: 'should preserve "\\" and "$" characters',
+        options: {integrationOptions: {useBlendoCasing: true}, provider: 'postgres'},
+        input: 'path to $1,00,000',
+        expected: 'path_to_$1_00_000',
+      },
+      {
+        description: 'should handle a mix of characters, numbers, and special characters',
+        options: {integrationOptions: {useBlendoCasing: true}, provider: 'postgres'},
+        input: 'CamelCase123Key_with$special\\chars',
+        expected: 'camelcase123key_with$special\\chars',
+      },
+      {
+        description: 'should limit length to 63 characters for postgres provider',
+        options: {integrationOptions: {useBlendoCasing: true}, provider: 'postgres'},
+        input: 'a'.repeat(70),
+        expected: 'a'.repeat(63),
+      },
+    ];
+    testCases.forEach(({description, options, input, expected}) => {
+      it(description, () => {
+        const result = transformColumnName(options, input);
+        expect(result).toBe(expected);
+      });
     });
+  });
 
-    describe('without Blendo Casing', () => {
-        const testCases = [
-            {
-                description: 'should remove symbols and join continuous letters and numbers with a single underscore',
-                options: {
-                    integrationOptions: {useBlendoCasing: false},
-                    provider: 'postgres',
-                    underscoreDivideNumbers: true
-                },
-                input: '&4yasdfa(84224_fs9##_____*3q',
-                expected: '_4_yasdfa_84224_fs_9_3_q',
-            },
-            {
-                description: 'should transform "omega" to "omega"',
-                options: {
-                    integrationOptions: {useBlendoCasing: false},
-                    provider: 'postgres',
-                    underscoreDivideNumbers: true
-                },
-                input: 'omega',
-                expected: 'omega',
-            },
-            {
-                description: 'should transform "omega v2" to "omega_v_2"',
-                options: {
-                    integrationOptions: {useBlendoCasing: false},
-                    provider: 'postgres',
-                    underscoreDivideNumbers: true
-                },
-                input: 'omega v2',
-                expected: 'omega_v_2',
-            },
-            {
-                description: 'should prepend underscore if name starts with a number',
-                options: {
-                    integrationOptions: {useBlendoCasing: false},
-                    provider: 'postgres',
-                    underscoreDivideNumbers: true
-                },
-                input: '9mega',
-                expected: '_9_mega',
-            },
-            {
-                description: 'should remove trailing special characters',
-                options: {
-                    integrationOptions: {useBlendoCasing: false},
-                    provider: 'postgres',
-                    underscoreDivideNumbers: true
-                },
-                input: 'mega&',
-                expected: 'mega',
-            },
-            {
-                description: 'should replace special character in the middle with underscore',
-                options: {
-                    integrationOptions: {useBlendoCasing: false},
-                    provider: 'postgres',
-                    underscoreDivideNumbers: true
-                },
-                input: 'ome$ga',
-                expected: 'ome_ga',
-            },
-            {
-                description: 'should not remove trailing $ character',
-                options: {
-                    integrationOptions: {useBlendoCasing: false},
-                    provider: 'postgres',
-                    underscoreDivideNumbers: true
-                },
-                input: 'omega$',
-                expected: 'omega',
-            },
-            {
-                description: 'should handle spaces and special characters by converting to underscores',
-                options: {
-                    integrationOptions: {useBlendoCasing: false},
-                    provider: 'postgres',
-                    underscoreDivideNumbers: true
-                },
-                input: 'ome_ ga',
-                expected: 'ome_ga',
-            },
-            {
-                description: 'should handle multiple underscores and hyphens by reducing to single underscores',
-                options: {
-                    integrationOptions: {useBlendoCasing: false},
-                    provider: 'postgres',
-                    underscoreDivideNumbers: true
-                },
-                input: '9mega________-________90',
-                expected: '_9_mega_90',
-            },
-            {
-                description: 'should handle non-ASCII characters by converting them to underscores',
-                options: {
-                    integrationOptions: {useBlendoCasing: false},
-                    provider: 'postgres',
-                    underscoreDivideNumbers: true
-                },
-                input: 'Cízǔ',
-                expected: 'c_z',
-            },
-            {
-                description: 'should transform CamelCase123Key to camel_case_123_key',
-                options: {
-                    integrationOptions: {useBlendoCasing: false},
-                    provider: 'postgres',
-                    underscoreDivideNumbers: true
-                },
-                input: 'CamelCase123Key',
-                expected: 'camel_case_123_key',
-            },
-            {
-                description: 'should handle numbers and commas in the input',
-                options: {
-                    integrationOptions: {useBlendoCasing: false},
-                    provider: 'postgres',
-                    underscoreDivideNumbers: true
-                },
-                input: 'path to $1,00,000',
-                expected: 'path_to_1_00_000',
-            },
-            {
-                description: 'should return an empty string if input contains no valid characters',
-                options: {
-                    integrationOptions: {useBlendoCasing: false},
-                    provider: 'postgres',
-                    underscoreDivideNumbers: true
-                },
-                input: '@#$%',
-                expected: '',
-            },
-            {
-                description: 'should remove underscores between letters and numbers when underscoreDivideNumbers is false',
-                options: {
-                    integrationOptions: {useBlendoCasing: false},
-                    provider: 'postgres',
-                    underscoreDivideNumbers: false
-                },
-                input: 'test123',
-                expected: 'test123',
-            },
-            {
-                description: 'should keep underscores between letters and numbers when underscoreDivideNumbers is true',
-                options: {
-                    integrationOptions: {useBlendoCasing: false},
-                    provider: 'postgres',
-                    underscoreDivideNumbers: true
-                },
-                input: 'test123',
-                expected: 'test_123',
-            },
-            {
-                description: 'should correctly handle multiple underscore-number sequences when underscoreDivideNumbers is false',
-                options: {
-                    integrationOptions: {useBlendoCasing: false},
-                    provider: 'postgres',
-                    underscoreDivideNumbers: false
-                },
-                input: 'abc123def456',
-                expected: 'abc123_def456',
-            },
-            {
-                description: 'should avoid adding extra underscores when underscoreDivideNumbers is false',
-                options: {
-                    integrationOptions: {useBlendoCasing: false},
-                    provider: 'postgres',
-                    underscoreDivideNumbers: false
-                },
-                input: 'abc_123_def_456',
-                expected: 'abc123_def456',
-            },
-            {
-                description: 'should keep multiple underscore-number sequences when underscoreDivideNumbers is true',
-                options: {
-                    integrationOptions: {useBlendoCasing: false},
-                    provider: 'postgres',
-                    underscoreDivideNumbers: true
-                },
-                input: 'abc123def456',
-                expected: 'abc_123_def_456',
-            },
-        ];
-        testCases.forEach(({description, options, input, expected}) => {
-            it(description, () => {
-                const result = transformColumnName(options, input);
-                expect(result).toBe(expected);
-            });
-        });
+  describe('without Blendo Casing (underscoreDivideNumbers=true)', () => {
+    const testCases = [
+      {
+        description: 'should remove symbols and join continuous letters and numbers with a single underscore',
+        options: {
+          integrationOptions: {useBlendoCasing: false},
+          provider: 'postgres',
+          underscoreDivideNumbers: true
+        },
+        input: '&4yasdfa(84224_fs9##_____*3q',
+        expected: '_4_yasdfa_84224_fs_9_3_q',
+      },
+      {
+        description: 'should transform "omega" to "omega"',
+        options: {
+          integrationOptions: {useBlendoCasing: false},
+          provider: 'postgres',
+          underscoreDivideNumbers: true
+        },
+        input: 'omega',
+        expected: 'omega',
+      },
+      {
+        description: 'should transform "omega v2" to "omega_v_2"',
+        options: {
+          integrationOptions: {useBlendoCasing: false},
+          provider: 'postgres',
+          underscoreDivideNumbers: true
+        },
+        input: 'omega v2',
+        expected: 'omega_v_2',
+      },
+      {
+        description: 'should prepend underscore if name starts with a number',
+        options: {
+          integrationOptions: {useBlendoCasing: false},
+          provider: 'postgres',
+          underscoreDivideNumbers: true
+        },
+        input: '9mega',
+        expected: '_9_mega',
+      },
+      {
+        description: 'should remove trailing special characters',
+        options: {
+          integrationOptions: {useBlendoCasing: false},
+          provider: 'postgres',
+          underscoreDivideNumbers: true
+        },
+        input: 'mega&',
+        expected: 'mega',
+      },
+      {
+        description: 'should replace special character in the middle with underscore',
+        options: {
+          integrationOptions: {useBlendoCasing: false},
+          provider: 'postgres',
+          underscoreDivideNumbers: true
+        },
+        input: 'ome$ga',
+        expected: 'ome_ga',
+      },
+      {
+        description: 'should not remove trailing $ character',
+        options: {
+          integrationOptions: {useBlendoCasing: false},
+          provider: 'postgres',
+          underscoreDivideNumbers: true
+        },
+        input: 'omega$',
+        expected: 'omega',
+      },
+      {
+        description: 'should handle spaces and special characters by converting to underscores',
+        options: {
+          integrationOptions: {useBlendoCasing: false},
+          provider: 'postgres',
+          underscoreDivideNumbers: true
+        },
+        input: 'ome_ ga',
+        expected: 'ome_ga',
+      },
+      {
+        description: 'should handle multiple underscores and hyphens by reducing to single underscores',
+        options: {
+          integrationOptions: {useBlendoCasing: false},
+          provider: 'postgres',
+          underscoreDivideNumbers: true
+        },
+        input: '9mega________-________90',
+        expected: '_9_mega_90',
+      },
+      {
+        description: 'should handle non-ASCII characters by converting them to underscores',
+        options: {
+          integrationOptions: {useBlendoCasing: false},
+          provider: 'postgres',
+          underscoreDivideNumbers: true
+        },
+        input: 'Cízǔ',
+        expected: 'c_z',
+      },
+      {
+        description: 'should transform CamelCase123Key to camel_case_123_key',
+        options: {
+          integrationOptions: {useBlendoCasing: false},
+          provider: 'postgres',
+          underscoreDivideNumbers: true
+        },
+        input: 'CamelCase123Key',
+        expected: 'camel_case_123_key',
+      },
+      {
+        description: 'should handle numbers and commas in the input',
+        options: {
+          integrationOptions: {useBlendoCasing: false},
+          provider: 'postgres',
+          underscoreDivideNumbers: true
+        },
+        input: 'path to $1,00,000',
+        expected: 'path_to_1_00_000',
+      },
+      {
+        description: 'should return an empty string if input contains no valid characters',
+        options: {
+          integrationOptions: {useBlendoCasing: false},
+          provider: 'postgres',
+          underscoreDivideNumbers: true
+        },
+        input: '@#$%',
+        expected: '',
+      },
+      {
+        description: 'should keep underscores between letters and numbers',
+        options: {
+          integrationOptions: {useBlendoCasing: false},
+          provider: 'postgres',
+          underscoreDivideNumbers: true
+        },
+        input: 'test123',
+        expected: 'test_123',
+      },
+      {
+        description: 'should keep multiple underscore-number sequences',
+        options: {
+          integrationOptions: {useBlendoCasing: false},
+          provider: 'postgres',
+          underscoreDivideNumbers: true
+        },
+        input: 'abc123def456',
+        expected: 'abc_123_def_456',
+      },
+      {
+        description: 'should keep multiple underscore-number sequences',
+        options: {
+          integrationOptions: {useBlendoCasing: false},
+          provider: 'postgres',
+          underscoreDivideNumbers: true
+        },
+        input: 'abc_123_def_456',
+        expected: 'abc_123_def_456',
+      },
+    ];
+    testCases.forEach(({description, options, input, expected}) => {
+      it(description, () => {
+        const result = transformColumnName(options, input);
+        expect(result).toBe(expected);
+      });
     });
+  });
+
+  describe('without Blendo Casing (underscoreDivideNumbers=false)', () => {
+    const testCases = [
+      {
+        description: 'should remove symbols and join continuous letters and numbers with a single underscore',
+        options: {
+          integrationOptions: {useBlendoCasing: false},
+          provider: 'postgres',
+          underscoreDivideNumbers: false
+        },
+        input: '&4yasdfa(84224_fs9##_____*3q',
+        expected: '_4yasdfa_84224_fs9_3q',
+      },
+      {
+        description: 'should transform "omega" to "omega"',
+        options: {
+          integrationOptions: {useBlendoCasing: false},
+          provider: 'postgres',
+          underscoreDivideNumbers: false
+        },
+        input: 'omega',
+        expected: 'omega',
+      },
+      {
+        description: 'should transform "omega v2" to "omega_v_2"',
+        options: {
+          integrationOptions: {useBlendoCasing: false},
+          provider: 'postgres',
+          underscoreDivideNumbers: false
+        },
+        input: 'omega v2',
+        expected: 'omega_v2',
+      },
+      {
+        description: 'should prepend underscore if name starts with a number',
+        options: {
+          integrationOptions: {useBlendoCasing: false},
+          provider: 'postgres',
+          underscoreDivideNumbers: false
+        },
+        input: '9mega',
+        expected: '_9mega',
+      },
+      {
+        description: 'should remove trailing special characters',
+        options: {
+          integrationOptions: {useBlendoCasing: false},
+          provider: 'postgres',
+          underscoreDivideNumbers: false
+        },
+        input: 'mega&',
+        expected: 'mega',
+      },
+      {
+        description: 'should replace special character in the middle with underscore',
+        options: {
+          integrationOptions: {useBlendoCasing: false},
+          provider: 'postgres',
+          underscoreDivideNumbers: false
+        },
+        input: 'ome$ga',
+        expected: 'ome_ga',
+      },
+      {
+        description: 'should not remove trailing $ character',
+        options: {
+          integrationOptions: {useBlendoCasing: false},
+          provider: 'postgres',
+          underscoreDivideNumbers: true
+        },
+        input: 'omega$',
+        expected: 'omega',
+      },
+      {
+        description: 'should handle spaces and special characters by converting to underscores',
+        options: {
+          integrationOptions: {useBlendoCasing: false},
+          provider: 'postgres',
+          underscoreDivideNumbers: false
+        },
+        input: 'ome_ ga',
+        expected: 'ome_ga',
+      },
+      {
+        description: 'should handle multiple underscores and hyphens by reducing to single underscores',
+        options: {
+          integrationOptions: {useBlendoCasing: false},
+          provider: 'postgres',
+          underscoreDivideNumbers: false
+        },
+        input: '9mega________-________90',
+        expected: '_9mega_90',
+      },
+      {
+        description: 'should handle non-ASCII characters by converting them to underscores',
+        options: {
+          integrationOptions: {useBlendoCasing: false},
+          provider: 'postgres',
+          underscoreDivideNumbers: false
+        },
+        input: 'Cízǔ',
+        expected: 'c_z',
+      },
+      {
+        description: 'should transform CamelCase123Key to camel_case_123_key',
+        options: {
+          integrationOptions: {useBlendoCasing: false},
+          provider: 'postgres',
+          underscoreDivideNumbers: false
+        },
+        input: 'CamelCase123Key',
+        expected: 'camel_case123_key',
+      },
+      {
+        description: 'should handle numbers and commas in the input',
+        options: {
+          integrationOptions: {useBlendoCasing: false},
+          provider: 'postgres',
+          underscoreDivideNumbers: false
+        },
+        input: 'path to $1,00,000',
+        expected: 'path_to_1_00_000',
+      },
+      {
+        description: 'should return an empty string if input contains no valid characters',
+        options: {
+          integrationOptions: {useBlendoCasing: false},
+          provider: 'postgres',
+          underscoreDivideNumbers: false
+        },
+        input: '@#$%',
+        expected: '',
+      },
+      {
+        description: 'should keep underscores between letters and numbers',
+        options: {
+          integrationOptions: {useBlendoCasing: false},
+          provider: 'postgres',
+          underscoreDivideNumbers: false
+        },
+        input: 'test123',
+        expected: 'test123',
+      },
+      {
+        description: 'should keep multiple underscore-number sequences',
+        options: {
+          integrationOptions: {useBlendoCasing: false},
+          provider: 'postgres',
+          underscoreDivideNumbers: false
+        },
+        input: 'abc123def456',
+        expected: 'abc123_def456',
+      },
+      {
+        description: 'should keep multiple underscore-number sequences',
+        options: {
+          integrationOptions: {useBlendoCasing: false},
+          provider: 'postgres',
+          underscoreDivideNumbers: false
+        },
+        input: 'abc_123_def_456',
+        expected: 'abc_123_def_456',
+      },
+    ];
+    testCases.forEach(({description, options, input, expected}) => {
+      it(description, () => {
+        const result = transformColumnName(options, input);
+        expect(result).toBe(expected);
+      });
+    });
+  });
 })
 
 describe("transformTableName", () => {
-    describe('with Blendo Casing', () => {
-        const testCases = [
-            {
-                description: 'should convert name to Blendo casing (lowercase) when Blendo casing is enabled',
-                options: {integrationOptions: {useBlendoCasing: true}},
-                input: 'TableName123',
-                expected: 'tablename123',
-            },
-            {
-                description: 'should trim spaces and convert to Blendo casing (lowercase) when Blendo casing is enabled',
-                options: {integrationOptions: {useBlendoCasing: true}},
-                input: '   TableName   ',
-                expected: 'tablename',
-            },
-            {
-                description: 'should return an empty string when input is empty and Blendo casing is enabled',
-                options: {integrationOptions: {useBlendoCasing: true}},
-                input: '',
-                expected: '',
-            },
-            {
-                description: 'should handle names with special characters and convert to Blendo casing (lowercase)',
-                options: {integrationOptions: {useBlendoCasing: true}},
-                input: 'Table@Name!',
-                expected: 'table@name!',
-            },
-            {
-                description: 'should convert a mixed-case name to Blendo casing (lowercase) when Blendo casing is enabled',
-                options: {integrationOptions: {useBlendoCasing: true}},
-                input: 'CaMeLcAsE',
-                expected: 'camelcase',
-            },
-            {
-                description: 'should keep an already lowercase name unchanged with Blendo casing enabled',
-                options: {integrationOptions: {useBlendoCasing: true}},
-                input: 'lowercase',
-                expected: 'lowercase',
-            },
-        ];
-        testCases.forEach(({description, options, input, expected}) => {
-            it(description, () => {
-                const result = transformTableName(options, input);
-                expect(result).toBe(expected);
-            });
-        });
+  describe('with Blendo Casing', () => {
+    const testCases = [
+      {
+        description: 'should convert name to Blendo casing (lowercase) when Blendo casing is enabled',
+        options: {integrationOptions: {useBlendoCasing: true}},
+        input: 'TableName123',
+        expected: 'tablename123',
+      },
+      {
+        description: 'should trim spaces and convert to Blendo casing (lowercase) when Blendo casing is enabled',
+        options: {integrationOptions: {useBlendoCasing: true}},
+        input: '   TableName   ',
+        expected: 'tablename',
+      },
+      {
+        description: 'should return an empty string when input is empty and Blendo casing is enabled',
+        options: {integrationOptions: {useBlendoCasing: true}},
+        input: '',
+        expected: '',
+      },
+      {
+        description: 'should handle names with special characters and convert to Blendo casing (lowercase)',
+        options: {integrationOptions: {useBlendoCasing: true}},
+        input: 'Table@Name!',
+        expected: 'table@name!',
+      },
+      {
+        description: 'should convert a mixed-case name to Blendo casing (lowercase) when Blendo casing is enabled',
+        options: {integrationOptions: {useBlendoCasing: true}},
+        input: 'CaMeLcAsE',
+        expected: 'camelcase',
+      },
+      {
+        description: 'should keep an already lowercase name unchanged with Blendo casing enabled',
+        options: {integrationOptions: {useBlendoCasing: true}},
+        input: 'lowercase',
+        expected: 'lowercase',
+      },
+    ];
+    testCases.forEach(({description, options, input, expected}) => {
+      it(description, () => {
+        const result = transformTableName(options, input);
+        expect(result).toBe(expected);
+      });
     });
+  });
 
-    describe('without Blendo Casing', () => {
-        const testCases = [
-            {
-                description: 'should remove symbols and join continuous letters and numbers with a single underscore',
-                options: {integrationOptions: {useBlendoCasing: false}, underscoreDivideNumbers: true},
-                input: '&4yasdfa(84224_fs9##_____*3q',
-                expected: '_4_yasdfa_84224_fs_9_3_q',
-            },
-            {
-                description: 'should transform "omega" to "omega"',
-                options: {integrationOptions: {useBlendoCasing: false}, underscoreDivideNumbers: true},
-                input: 'omega',
-                expected: 'omega',
-            },
-            {
-                description: 'should transform "omega v2" to "omega_v_2"',
-                options: {integrationOptions: {useBlendoCasing: false}, underscoreDivideNumbers: true},
-                input: 'omega v2',
-                expected: 'omega_v_2',
-            },
-            {
-                description: 'should prepend underscore if name starts with a number',
-                options: {integrationOptions: {useBlendoCasing: false}, underscoreDivideNumbers: true},
-                input: '9mega',
-                expected: '_9_mega',
-            },
-            {
-                description: 'should remove trailing special characters',
-                options: {integrationOptions: {useBlendoCasing: false}, underscoreDivideNumbers: true},
-                input: 'mega&',
-                expected: 'mega',
-            },
-            {
-                description: 'should replace special character in the middle with underscore',
-                options: {integrationOptions: {useBlendoCasing: false}, underscoreDivideNumbers: true},
-                input: 'ome$ga',
-                expected: 'ome_ga',
-            },
-            {
-                description: 'should not remove trailing $ character',
-                options: {integrationOptions: {useBlendoCasing: false}, underscoreDivideNumbers: true},
-                input: 'omega$',
-                expected: 'omega',
-            },
-            {
-                description: 'should handle spaces and special characters by converting to underscores',
-                options: {integrationOptions: {useBlendoCasing: false}, underscoreDivideNumbers: true},
-                input: 'ome_ ga',
-                expected: 'ome_ga',
-            },
-            {
-                description: 'should handle multiple underscores and hyphens by reducing to single underscores',
-                options: {integrationOptions: {useBlendoCasing: false}, underscoreDivideNumbers: true},
-                input: '9mega________-________90',
-                expected: '_9_mega_90',
-            },
-            {
-                description: 'should handle non-ASCII characters by converting them to underscores',
-                options: {integrationOptions: {useBlendoCasing: false}, underscoreDivideNumbers: true},
-                input: 'Cízǔ',
-                expected: 'c_z',
-            },
-            {
-                description: 'should transform CamelCase123Key to camel_case_123_key',
-                options: {integrationOptions: {useBlendoCasing: false}, underscoreDivideNumbers: true},
-                input: 'CamelCase123Key',
-                expected: 'camel_case_123_key',
-            },
-            {
-                description: 'should handle numbers and commas in the input',
-                options: {integrationOptions: {useBlendoCasing: false}, underscoreDivideNumbers: true},
-                input: 'path to $1,00,000',
-                expected: 'path_to_1_00_000',
-            },
-            {
-                description: 'should return an empty string if input contains no valid characters',
-                options: {integrationOptions: {useBlendoCasing: false}, underscoreDivideNumbers: true},
-                input: '@#$%',
-                expected: '',
-            },
-            {
-                description: 'should remove underscores between letters and numbers when underscoreDivideNumbers is false',
-                options: {integrationOptions: {useBlendoCasing: false}, underscoreDivideNumbers: false},
-                input: 'test123',
-                expected: 'test123',
-            },
-            {
-                description: 'should keep underscores between letters and numbers when underscoreDivideNumbers is true',
-                options: {integrationOptions: {useBlendoCasing: false}, underscoreDivideNumbers: true},
-                input: 'test123',
-                expected: 'test_123',
-            },
-            {
-                description: 'should correctly handle multiple underscore-number sequences when underscoreDivideNumbers is false',
-                options: {integrationOptions: {useBlendoCasing: false}, underscoreDivideNumbers: false},
-                input: 'abc123def456',
-                expected: 'abc123_def456',
-            },
-            {
-                description: 'should avoid adding extra underscores when underscoreDivideNumbers is false',
-                options: {integrationOptions: {useBlendoCasing: false}, underscoreDivideNumbers: false},
-                input: 'abc_123_def_456',
-                expected: 'abc123_def456',
-            },
-            {
-                description: 'should keep multiple underscore-number sequences when underscoreDivideNumbers is true',
-                options: {integrationOptions: {useBlendoCasing: false}, underscoreDivideNumbers: true},
-                input: 'abc123def456',
-                expected: 'abc_123_def_456',
-            },
-        ];
-        testCases.forEach(({description, options, input, expected}) => {
-            it(description, () => {
-                const result = transformTableName(options, input);
-                expect(result).toBe(expected);
-            });
-        });
+  describe('without Blendo Casing (underscoreDivideNumbers=true)', () => {
+    const testCases = [
+      {
+        description: 'should remove symbols and join continuous letters and numbers with a single underscore',
+        options: {integrationOptions: {useBlendoCasing: false}, underscoreDivideNumbers: true},
+        input: '&4yasdfa(84224_fs9##_____*3q',
+        expected: '_4_yasdfa_84224_fs_9_3_q',
+      },
+      {
+        description: 'should transform "omega" to "omega"',
+        options: {integrationOptions: {useBlendoCasing: false}, underscoreDivideNumbers: true},
+        input: 'omega',
+        expected: 'omega',
+      },
+      {
+        description: 'should transform "omega v2" to "omega_v_2"',
+        options: {integrationOptions: {useBlendoCasing: false}, underscoreDivideNumbers: true},
+        input: 'omega v2',
+        expected: 'omega_v_2',
+      },
+      {
+        description: 'should prepend underscore if name starts with a number',
+        options: {integrationOptions: {useBlendoCasing: false}, underscoreDivideNumbers: true},
+        input: '9mega',
+        expected: '_9_mega',
+      },
+      {
+        description: 'should remove trailing special characters',
+        options: {integrationOptions: {useBlendoCasing: false}, underscoreDivideNumbers: true},
+        input: 'mega&',
+        expected: 'mega',
+      },
+      {
+        description: 'should replace special character in the middle with underscore',
+        options: {integrationOptions: {useBlendoCasing: false}, underscoreDivideNumbers: true},
+        input: 'ome$ga',
+        expected: 'ome_ga',
+      },
+      {
+        description: 'should not remove trailing $ character',
+        options: {integrationOptions: {useBlendoCasing: false}, underscoreDivideNumbers: true},
+        input: 'omega$',
+        expected: 'omega',
+      },
+      {
+        description: 'should handle spaces and special characters by converting to underscores',
+        options: {integrationOptions: {useBlendoCasing: false}, underscoreDivideNumbers: true},
+        input: 'ome_ ga',
+        expected: 'ome_ga',
+      },
+      {
+        description: 'should handle multiple underscores and hyphens by reducing to single underscores',
+        options: {integrationOptions: {useBlendoCasing: false}, underscoreDivideNumbers: true},
+        input: '9mega________-________90',
+        expected: '_9_mega_90',
+      },
+      {
+        description: 'should handle non-ASCII characters by converting them to underscores',
+        options: {integrationOptions: {useBlendoCasing: false}, underscoreDivideNumbers: true},
+        input: 'Cízǔ',
+        expected: 'c_z',
+      },
+      {
+        description: 'should transform CamelCase123Key to camel_case_123_key',
+        options: {integrationOptions: {useBlendoCasing: false}, underscoreDivideNumbers: true},
+        input: 'CamelCase123Key',
+        expected: 'camel_case_123_key',
+      },
+      {
+        description: 'should handle numbers and commas in the input',
+        options: {integrationOptions: {useBlendoCasing: false}, underscoreDivideNumbers: true},
+        input: 'path to $1,00,000',
+        expected: 'path_to_1_00_000',
+      },
+      {
+        description: 'should return an empty string if input contains no valid characters',
+        options: {integrationOptions: {useBlendoCasing: false}, underscoreDivideNumbers: true},
+        input: '@#$%',
+        expected: '',
+      },
+      {
+        description: 'should keep underscores between letters and numbers',
+        options: {integrationOptions: {useBlendoCasing: false}, underscoreDivideNumbers: true},
+        input: 'test123',
+        expected: 'test_123',
+      },
+      {
+        description: 'should keep multiple underscore-number sequences',
+        options: {integrationOptions: {useBlendoCasing: false}, underscoreDivideNumbers: true},
+        input: 'abc123def456',
+        expected: 'abc_123_def_456',
+      },
+    ];
+    testCases.forEach(({description, options, input, expected}) => {
+      it(description, () => {
+        const result = transformTableName(options, input);
+        expect(result).toBe(expected);
+      });
     });
+  });
+
+  describe('without Blendo Casing (underscoreDivideNumbers=false)', () => {
+    const testCases = [
+      {
+        description: 'should remove symbols and join continuous letters and numbers with a single underscore',
+        options: {integrationOptions: {useBlendoCasing: false}, underscoreDivideNumbers: false},
+        input: '&4yasdfa(84224_fs9##_____*3q',
+        expected: '_4yasdfa_84224_fs9_3q',
+      },
+      {
+        description: 'should transform "omega" to "omega"',
+        options: {integrationOptions: {useBlendoCasing: false}, underscoreDivideNumbers: false},
+        input: 'omega',
+        expected: 'omega',
+      },
+      {
+        description: 'should transform "omega v2" to "omega_v_2"',
+        options: {integrationOptions: {useBlendoCasing: false}, underscoreDivideNumbers: false},
+        input: 'omega v2',
+        expected: 'omega_v2',
+      },
+      {
+        description: 'should prepend underscore if name starts with a number',
+        options: {integrationOptions: {useBlendoCasing: false}, underscoreDivideNumbers: false},
+        input: '9mega',
+        expected: '_9mega',
+      },
+      {
+        description: 'should remove trailing special characters',
+        options: {integrationOptions: {useBlendoCasing: false}, underscoreDivideNumbers: false},
+        input: 'mega&',
+        expected: 'mega',
+      },
+      {
+        description: 'should replace special character in the middle with underscore',
+        options: {integrationOptions: {useBlendoCasing: false}, underscoreDivideNumbers: false},
+        input: 'ome$ga',
+        expected: 'ome_ga',
+      },
+      {
+        description: 'should not remove trailing $ character',
+        options: {integrationOptions: {useBlendoCasing: false}, underscoreDivideNumbers: true},
+        input: 'omega$',
+        expected: 'omega',
+      },
+      {
+        description: 'should handle spaces and special characters by converting to underscores',
+        options: {integrationOptions: {useBlendoCasing: false}, underscoreDivideNumbers: false},
+        input: 'ome_ ga',
+        expected: 'ome_ga',
+      },
+      {
+        description: 'should handle multiple underscores and hyphens by reducing to single underscores',
+        options: {integrationOptions: {useBlendoCasing: false}, underscoreDivideNumbers: false},
+        input: '9mega________-________90',
+        expected: '_9mega_90',
+      },
+      {
+        description: 'should handle non-ASCII characters by converting them to underscores',
+        options: {integrationOptions: {useBlendoCasing: false}, underscoreDivideNumbers: false},
+        input: 'Cízǔ',
+        expected: 'c_z',
+      },
+      {
+        description: 'should transform CamelCase123Key to camel_case_123_key',
+        options: {integrationOptions: {useBlendoCasing: false}, underscoreDivideNumbers: false},
+        input: 'CamelCase123Key',
+        expected: 'camel_case123_key',
+      },
+      {
+        description: 'should handle numbers and commas in the input',
+        options: {integrationOptions: {useBlendoCasing: false}, underscoreDivideNumbers: false},
+        input: 'path to $1,00,000',
+        expected: 'path_to_1_00_000',
+      },
+      {
+        description: 'should return an empty string if input contains no valid characters',
+        options: {integrationOptions: {useBlendoCasing: false}, underscoreDivideNumbers: false},
+        input: '@#$%',
+        expected: '',
+      },
+      {
+        description: 'should keep underscores between letters and numbers',
+        options: {integrationOptions: {useBlendoCasing: false}, underscoreDivideNumbers: false},
+        input: 'test123',
+        expected: 'test123',
+      },
+      {
+        description: 'should keep multiple underscore-number sequences',
+        options: {integrationOptions: {useBlendoCasing: false}, underscoreDivideNumbers: false},
+        input: 'abc123def456',
+        expected: 'abc123_def456',
+      },
+    ];
+    testCases.forEach(({description, options, input, expected}) => {
+      it(description, () => {
+        const result = transformTableName(options, input);
+        expect(result).toBe(expected);
+      });
+    });
+  });
 });

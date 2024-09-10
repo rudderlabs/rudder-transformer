@@ -1,4 +1,4 @@
-import lodashStable from 'lodash';
+const lodashStable = require('lodash');
 
 const {words, wordsWithNumbers, snakeCase, snakeCaseWithNumbers} = require("../../src/warehouse/snakecase/snakecase");
 

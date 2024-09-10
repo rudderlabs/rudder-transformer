@@ -27,16 +27,19 @@ const pageViewedEventBuilder = (inputEvent) => {
 const cartViewedEventBuilder = (inputEvent) => {
   const lines = inputEvent?.data?.cart?.lines;
   const products = [];
+  let total;
   if (lines) {
     lines.forEach((line) => {
       const product = mapObjectKeys(line, cartViewedEventMapping);
       products.push(product);
+      total = line.cost.totalAmount.amount;
     });
   }
 
   const properties = {
     products,
     cart_id: inputEvent.data.cart.id,
+    total,
   };
   const contextualPayload = mapObjectKeys(inputEvent.context, contextualFieldMapping);
   const message = new Message(INTEGERATION);

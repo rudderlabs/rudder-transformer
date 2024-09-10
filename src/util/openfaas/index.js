@@ -20,6 +20,8 @@ const FAAS_SCALE_TARGET = process.env.FAAS_SCALE_TARGET || '4';
 const FAAS_SCALE_TARGET_PROPORTION = process.env.FAAS_SCALE_TARGET_PROPORTION || '0.70';
 const FAAS_SCALE_ZERO = process.env.FAAS_SCALE_ZERO || 'false';
 const FAAS_SCALE_ZERO_DURATION = process.env.FAAS_SCALE_ZERO_DURATION || '15m';
+const FAAS_GUNICORN_WORKERS = process.env.FAAS_GUNICORN_WORKERS || '1';
+const FAAS_GUNICORN_THREADS = process.env.FAAS_GUNICORN_THREADS || '1';
 const FAAS_BASE_IMG = process.env.FAAS_BASE_IMG || 'rudderlabs/openfaas-flask:main';
 const FAAS_MAX_PODS_IN_TEXT = process.env.FAAS_MAX_PODS_IN_TEXT || '40';
 const FAAS_MIN_PODS_IN_TEXT = process.env.FAAS_MIN_PODS_IN_TEXT || '1';
@@ -45,6 +47,8 @@ const FAAS_AST_FN_NAME = 'fn-ast';
 const CUSTOM_NETWORK_POLICY_WORKSPACE_IDS = process.env.CUSTOM_NETWORK_POLICY_WORKSPACE_IDS || '';
 const customNetworkPolicyWorkspaceIds = CUSTOM_NETWORK_POLICY_WORKSPACE_IDS.split(',');
 const CUSTOMER_TIER = process.env.CUSTOMER_TIER || 'shared';
+const FAAS_DNS_RESOLVER = process.env.FAAS_DNS_RESOLVER || 'false';
+const FAAS_SCALE_DOWN_WINDOW = process.env.FAAS_SCALE_DOWN_WINDOW || ''; // Go time values are supported ( max 5m or 300s )
 
 // Initialise node cache
 const functionListCache = new NodeCache();
@@ -205,6 +209,7 @@ const updateFaasFunction = async (
     await updateFunction(functionName, payload);
     // wait for function to be ready and then set it in cache
     await awaitFunctionReadiness(functionName);
+    // set the function in cache
     setFunctionInCache(functionName);
   } catch (error) {
     // 404 is statuscode returned from openfaas community edition
@@ -299,7 +304,11 @@ function buildOpenfaasFn(name, code, versionId, libraryVersionIDs, testMode, trM
     envProcess = `${envProcess} --code "${code}" --config-backend-url ${CONFIG_BACKEND_URL} --lvids "${lvidsString}"`;
   }
 
-  const envVars = {};
+  const envVars = {
+    GUNICORN_WORKER_COUNT: FAAS_GUNICORN_WORKERS,
+    GUNICORN_THREAD_COUNT: FAAS_GUNICORN_THREADS,
+    dns_resolver: FAAS_DNS_RESOLVER,
+  };
 
   if (FAAS_ENABLE_WATCHDOG_ENV_VARS.trim().toLowerCase() === 'true') {
     envVars.max_inflight = FAAS_MAX_INFLIGHT;
@@ -327,6 +336,10 @@ function buildOpenfaasFn(name, code, versionId, libraryVersionIDs, testMode, trM
     customer: 'shared',
     'customer-tier': CUSTOMER_TIER,
   };
+
+  if (FAAS_SCALE_DOWN_WINDOW !== '') {
+    labels['com.openfaas.scale.down.window'] = FAAS_SCALE_DOWN_WINDOW;
+  }
 
   if (trMetadata.workspaceId && customNetworkPolicyWorkspaceIds.includes(trMetadata.workspaceId)) {
     labels['custom-network-policy'] = 'true';
@@ -382,7 +395,6 @@ const executeFaasFunction = async (
 
     if (error.statusCode === 404 && error.message.includes(`error finding function ${name}`)) {
       removeFunctionFromCache(name);
-
       await setupFaasFunction(name, null, versionId, libraryVersionIDs, testMode, trMetadata);
       throw new RetryRequestError(`${name} not found`);
     }

@@ -154,7 +154,8 @@ const prepareToSendEvents = (
   });
   return toSendEvents;
 };
-const processEvent = (message, destination, connection) => {
+const processEvent = (event) => {
+  const { message, destination, connection } = event;
   const respList = [];
   let toSendEvents = [];
   let { userSchema } = destination.Config;
@@ -249,7 +250,7 @@ const processEvent = (message, destination, connection) => {
   return respList;
 };
 
-const process = (event) => processEvent(event.message, event.destination, event.connection);
+const process = (event) => processEvent(event);
 
 const processRouterDest = async (inputs, reqMetadata) => {
   const respList = [];

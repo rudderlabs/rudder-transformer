@@ -1,14 +1,24 @@
 const _ = require("lodash");
 
-const {input, output} = require(`./data/warehouse/events.js`);
-const {opInput, opOutput} = require(`./data/warehouse/integration_options_events.js`);
-const {names} = require(`./data/warehouse/names.js`);
+const { input, output } = require(`./data/warehouse/events.js`);
+const {
+  opInput,
+  opOutput
+} = require(`./data/warehouse/integration_options_events.js`);
+const { names } = require(`./data/warehouse/names.js`);
 const destConfig = require(`./data/warehouse/dest_config_scenarios.js`);
-const {largeNoOfColumnsevent} = require(`./data/warehouse/event_columns_length`);
-const {rudderProperties} = require(`./data/warehouse/props.js`);
+const {
+  largeNoOfColumnsevent
+} = require(`./data/warehouse/event_columns_length`);
+const { rudderProperties } = require(`./data/warehouse/props.js`);
 const reservedANSIKeywordsMap = require("../../src/warehouse/config/ReservedKeywords.json");
-const {fullEventColumnTypeByProvider} = require("../../src/warehouse/index.js");
-const {validTimestamp} = require("../../src/warehouse/util.js");
+const {
+  fullEventColumnTypeByProvider
+} = require("../../src/warehouse/index.js");
+
+const {
+  validTimestamp
+} = require("../../src/warehouse/util.js");
 const {transformTableName, transformColumnName} = require("../../src/warehouse/v1/util");
 const {isBlank} = require("../../src/warehouse/config/helpers.js");
 
@@ -1276,7 +1286,7 @@ describe("Destination config", () => {
                 });
             });
 
-            it('without underscoreDivideNumbers', () => {
+            it('with underscoreDivideNumbers', () => {
                 transformers.forEach((transformer, index) => {
                     const event = {
                         destination: {

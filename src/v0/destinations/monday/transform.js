@@ -38,7 +38,7 @@ const responseBuilder = (payload, endpoint, apiToken) => {
  * @param {*} param1
  * @returns
  */
-const trackResponseBuilder = async (message, { Config }) => {
+const trackResponseBuilder = async ({ message, destination: { Config }, metadata }) => {
   const { apiToken } = Config;
   let boardId = getDestinationExternalID(message, 'boardId');
   const event = get(message, 'event');
@@ -54,14 +54,14 @@ const trackResponseBuilder = async (message, { Config }) => {
   }
   const endpoint = ENDPOINT;
 
-  const processedResponse = await getBoardDetails(endpoint, boardId, apiToken);
+  const processedResponse = await getBoardDetails(endpoint, boardId, apiToken, metadata);
 
   const payload = populatePayload(message, Config, processedResponse);
 
   return responseBuilder(payload, endpoint, apiToken);
 };
 
-const processEvent = async (message, destination) => {
+const processEvent = async ({ message, destination, metadata }) => {
   if (!message.type) {
     throw new InstrumentationError('Event type is required');
   }
@@ -71,14 +71,14 @@ const processEvent = async (message, destination) => {
   const messageType = message.type.toLowerCase();
   let response;
   if (messageType === EventType.TRACK) {
-    response = await trackResponseBuilder(message, destination);
+    response = await trackResponseBuilder({ message, destination, metadata });
   } else {
     throw new InstrumentationError(`Event type ${messageType} is not supported`);
   }
   return response;
 };
 
-const process = async (event) => processEvent(event.message, event.destination);
+const process = async (event) => processEvent(event);
 
 const processRouterDest = async (inputs, reqMetadata) => {
   const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);

@@ -267,5 +267,10 @@ export const data = [
         },
       },
     },
+    mockFns: (_) => {
+      jest.spyOn(Date, 'now').mockImplementation(() => {
+        return new Date('2023-12-20T10:26:33.451Z').valueOf();
+      });
+    },
   },
 ];

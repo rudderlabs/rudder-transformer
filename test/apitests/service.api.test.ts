@@ -359,8 +359,8 @@ describe('Api tests with a mock source/destination', () => {
       .send(getData());
 
     const expected = [
-      { output: { batch: [{ event: 'clicked', type: 'track' }] } },
-      { output: { batch: [{ event: 'clicked', type: 'track' }] } },
+      { output: { batch: [{ event: 'clicked', type: 'track', context: {} }] } },
+      { output: { batch: [{ event: 'clicked', type: 'track', context: {} }] } },
     ];
 
     expect(response.status).toEqual(200);
@@ -398,8 +398,8 @@ describe('Api tests with a mock source/destination', () => {
       .send(getData());
 
     const expected = [
-      { output: { batch: [{ event: 'clicked', type: 'track' }] } },
-      { output: { batch: [{ event: 'clicked', type: 'track' }] } },
+      { output: { batch: [{ event: 'clicked', type: 'track', context: {} }] } },
+      { output: { batch: [{ event: 'clicked', type: 'track', context: {} }] } },
     ];
 
     expect(response.status).toEqual(200);
@@ -597,28 +597,6 @@ describe('Source api tests', () => {
     const data = getDataFromPath('./data_scenarios/source/v1/pipedream.json');
     const response = await request(server)
       .post('/v1/sources/pipedream')
-      .set('Accept', 'application/json')
-      .send(data.input);
-    expect(response.status).toEqual(200);
-    expect(JSON.parse(response.text)).toEqual(data.output);
-  });
-});
-
-describe('CDK V1 api tests', () => {
-  test('(zapier) successful transform', async () => {
-    const data = getDataFromPath('./data_scenarios/cdk_v1/success.json');
-    const response = await request(server)
-      .post('/v0/destinations/zapier')
-      .set('Accept', 'application/json')
-      .send(data.input);
-    expect(response.status).toEqual(200);
-    expect(JSON.parse(response.text)).toEqual(data.output);
-  });
-
-  test('(zapier) failure transform', async () => {
-    const data = getDataFromPath('./data_scenarios/cdk_v1/failure.json');
-    const response = await request(server)
-      .post('/v0/destinations/zapier')
       .set('Accept', 'application/json')
       .send(data.input);
     expect(response.status).toEqual(200);

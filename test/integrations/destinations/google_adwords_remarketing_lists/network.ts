@@ -1,9 +1,9 @@
-import { enhanceRequestOptions, getFormData } from '../../../../src/adapters/network';
+import { API_VERSION } from '../../../../src/v0/destinations/google_adwords_remarketing_lists/config';
 
 export const networkCallsData = [
   {
     httpReq: {
-      url: 'https://googleads.googleapis.com/v15/customers/7693729833/offlineUserDataJobs:create',
+      url: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs:create`,
       data: {
         job: {
           type: 'CUSTOMER_MATCH_USER_LIST',
@@ -29,7 +29,7 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      url: 'https://googleads.googleapis.com/v15/customers/7693729833/offlineUserDataJobs/18025019461:addOperations',
+      url: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs/18025019461:addOperations`,
       data: {
         enablePartialFailure: true,
         operations: [
@@ -71,7 +71,7 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      url: 'https://googleads.googleapis.com/v15/customers/7693729833/offlineUserDataJobs/18025019461:run',
+      url: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs/18025019461:run`,
       headers: {
         Authorization: 'Bearer dummy-access',
         'Content-Type': 'application/json',
@@ -85,7 +85,7 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      url: 'https://googleads.googleapis.com/v15/customers/7693729834/offlineUserDataJobs:create',
+      url: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729834/offlineUserDataJobs:create`,
       data: {
         job: {
           type: 'CUSTOMER_MATCH_USER_LIST',
@@ -111,7 +111,7 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      url: 'https://googleads.googleapis.com/v15/customers/7693729834/offlineUserDataJobs/18025019462:addOperations',
+      url: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729834/offlineUserDataJobs/18025019462:addOperations`,
       data: {
         enablePartialFailure: true,
         operations: [{ create: { userIdentifiers: [{ hashedEmail: 'abcd@testmail.com' }] } }],
@@ -167,7 +167,7 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      url: 'https://googleads.googleapis.com/v15/customers/7693729833/offlineUserDataJobs/18025019461:addOperations',
+      url: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs/18025019461:addOperations`,
       data: {
         enablePartialFailure: true,
         operations: [
@@ -205,6 +205,136 @@ export const networkCallsData = [
     httpRes: {
       status: 200,
       data: {},
+    },
+  },
+  {
+    httpReq: {
+      url: `https://googleads.googleapis.com/${API_VERSION}/customers/customerid/offlineUserDataJobs:create`,
+      data: {
+        job: {
+          type: 'CUSTOMER_MATCH_USER_LIST',
+          customerMatchUserListMetadata: {
+            userList: 'customers/7693729833/userLists/709078448',
+            consent: {
+              adPersonalization: 'UNSPECIFIED',
+              adUserData: 'UNSPECIFIED',
+            },
+          },
+        },
+      },
+      headers: {
+        Authorization: 'Bearer dummy-access',
+        'Content-Type': 'application/json',
+        'developer-token': 'dummy-dev-token',
+      },
+      method: 'POST',
+    },
+    httpRes: {
+      status: 401,
+      data: {
+        error: {
+          code: 401,
+          message:
+            'Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.',
+          status: 'UNAUTHENTICATED',
+        },
+      },
+    },
+  },
+  {
+    httpReq: {
+      url: `https://googleads.googleapis.com/${API_VERSION}/customers/customerid/offlineUserDataJobs:create`,
+      data: {
+        job: {
+          type: 'CUSTOMER_MATCH_USER_LIST',
+          customerMatchUserListMetadata: {
+            userList: 'customers/wrongCustomerID/userLists/709078448',
+            consent: {
+              adPersonalization: 'UNSPECIFIED',
+              adUserData: 'UNSPECIFIED',
+            },
+          },
+        },
+      },
+      headers: {
+        Authorization: 'Bearer wrongCustomerID',
+        'Content-Type': 'application/json',
+        'developer-token': 'dummy-dev-token',
+      },
+      method: 'POST',
+    },
+    httpRes: {
+      status: 401,
+      data: {
+        error: {
+          code: 401,
+          message:
+            'Request is missing required authentication credential. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.',
+          status: 'UNAUTHENTICATED',
+          details: [
+            {
+              '@type': 'type.googleapis.com/google.ads.googleads.v16.errors.GoogleAdsFailure',
+              errors: [
+                {
+                  errorCode: {
+                    authenticationError: 'CUSTOMER_NOT_FOUND',
+                  },
+                  message: 'No customer found for the provided customer id.',
+                },
+              ],
+              requestId: 'lvB3KOjGHsgduHjt0wCglQ',
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    httpReq: {
+      url: 'https://googleads.googleapis.com/v15/customers/wrongCustomerId/offlineUserDataJobs:create',
+      data: {
+        job: {
+          type: 'CUSTOMER_MATCH_USER_LIST',
+          customerMatchUserListMetadata: {
+            userList: 'customers/wrongCustomerId/userLists/709078448',
+            consent: {
+              adPersonalization: 'UNSPECIFIED',
+              adUserData: 'UNSPECIFIED',
+            },
+          },
+        },
+      },
+      headers: {
+        Authorization: 'Bearer dummy-access',
+        'Content-Type': 'application/json',
+        'developer-token': 'dummy-dev-token',
+      },
+      method: 'POST',
+    },
+    httpRes: {
+      status: 400,
+      data: {
+        error: {
+          code: 400,
+          message: 'Request contains an invalid argument.',
+          status: 'INVALID_ARGUMENT',
+          details: [
+            {
+              '@type': 'type.googleapis.com/google.ads.googleads.v16.errors.GoogleAdsFailure',
+              errors: [
+                {
+                  errorCode: {
+                    databaseError: 'CONCURRENT_MODIFICATION',
+                  },
+                  message:
+                    'Multiple requests were attempting to modify the same resource at once. Retry the request.',
+                },
+              ],
+              requestId: '08X6xmM1WJPf_lW1ppYfsA',
+            },
+          ],
+        },
+      },
     },
   },
 ];

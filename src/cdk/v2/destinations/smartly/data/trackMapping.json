@@ -1,0 +1,76 @@
+[
+  {
+    "destKey": "value",
+    "sourceKeys": [
+      "properties.total",
+      "properties.value",
+      "properties.revenue",
+      {
+        "operation": "multiplication",
+        "args": [
+          {
+            "sourceKeys": "properties.price"
+          },
+          {
+            "sourceKeys": "properties.quantity",
+            "default": 1
+          }
+        ]
+      }
+    ],
+    "metadata": {
+      "type": "toNumber"
+    },
+    "required": false
+  },
+  {
+    "sourceKeys": ["properties.conversions", "properties.products.length"],
+    "required": false,
+    "metadata": {
+      "defaultValue": "1"
+    },
+    "destKey": "conversions"
+  },
+  {
+    "sourceKeys": ["properties.adUnitId", "properties.ad_unit_id"],
+    "required": true,
+    "destKey": "ad_unit_id",
+    "metadata": {
+      "type": "toString"
+    }
+  },
+  {
+    "sourceKeys": ["properties.platform"],
+    "required": true,
+    "destKey": "platform"
+  },
+  {
+    "sourceKeys": ["properties.adInteractionTime", "properties.ad_interaction_time"],
+    "required": true,
+    "metadata": {
+      "type": "secondTimestamp"
+    },
+    "destKey": "ad_interaction_time"
+  },
+  {
+    "sourceKeys": ["properties.installTime"],
+    "required": false,
+    "metadata": {
+      "type": "secondTimestamp"
+    },
+    "destKey": "installTime"
+  },
+  {
+    "sourceKeys": ["originalTimestamp", "timestamp"],
+    "required": false,
+    "metadata": {
+      "type": "secondTimestamp"
+    },
+    "destKey": "event_time"
+  },
+  {
+    "sourceKeys": ["properties.currency"],
+    "required": false,
+    "destKey": "value_currency"
+  }
+]

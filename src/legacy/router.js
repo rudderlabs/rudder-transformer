@@ -18,7 +18,6 @@ const {
   isNonFuncObject,
   getMetadata,
   generateErrorObject,
-  isCdkDestination,
   checkAndCorrectUserId,
 } = require('../v0/util');
 const { processDynamicConfig } = require('../util/dynamicConfig');
@@ -35,11 +34,8 @@ const {
   sendViolationMetrics,
   constructValidationErrors,
 } = require('../util/utils');
-const { processCdkV1 } = require('../cdk/v1/handler');
 const { extractLibraries } = require('../util/customTransformer');
 const { getCompatibleStatusCode } = require('../adapters/utils/networkUtils');
-
-const CDK_V1_DEST_PATH = 'cdk/v1';
 
 const transformerMode = process.env.TRANSFORMER_MODE;
 
@@ -157,14 +153,11 @@ async function handleDest(ctx, version, destination) {
         parsedEvent.request = { query: reqParams };
         parsedEvent = processDynamicConfig(parsedEvent);
         let respEvents;
-        if (isCdkDestination(parsedEvent)) {
-          respEvents = await processCdkV1(destination, parsedEvent);
-        } else {
-          if (destHandler === null) {
-            destHandler = getDestHandler(version, destination);
-          }
-          respEvents = await handleV0Destination(destHandler.process, [parsedEvent]);
+        if (destHandler === null) {
+          destHandler = getDestHandler(version, destination);
         }
+        respEvents = await handleV0Destination(destHandler.process, [parsedEvent]);
+
         if (respEvents) {
           if (!Array.isArray(respEvents)) {
             respEvents = [respEvents];
@@ -185,12 +178,8 @@ async function handleDest(ctx, version, destination) {
       } catch (error) {
         logger.error(error);
 
-        let implementation = tags.IMPLEMENTATIONS.NATIVE;
-        let errCtx = 'Processor Transformation';
-        if (isCdkDestination(event)) {
-          errCtx = `CDK - ${errCtx}`;
-          implementation = tags.IMPLEMENTATIONS.CDK_V1;
-        }
+        const implementation = tags.IMPLEMENTATIONS.NATIVE;
+        const errCtx = 'Processor Transformation';
 
         const errObj = generateErrorObject(error, {
           [tags.TAG_NAMES.DEST_TYPE]: destination.toUpperCase(),
@@ -432,7 +421,6 @@ async function routerHandleDest(ctx) {
 if (startDestTransformer) {
   SUPPORTED_VERSIONS.forEach((version) => {
     const destinations = getIntegrations(path.resolve(__dirname, `../${version}/destinations`));
-    destinations.push(...getIntegrations(path.resolve(__dirname, `../${CDK_V1_DEST_PATH}`)));
     destinations.forEach((destination) => {
       // eg. v0/destinations/ga
       router.post(`/${version}/destinations/${destination}`, async (ctx) => {

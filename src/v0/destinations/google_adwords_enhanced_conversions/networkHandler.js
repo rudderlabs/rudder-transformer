@@ -3,7 +3,7 @@ const sha256 = require('sha256');
 const { NetworkError, NetworkInstrumentationError } = require('@rudderstack/integrations-lib');
 const SqlString = require('sqlstring');
 const { prepareProxyRequest, handleHttpRequest } = require('../../../adapters/network');
-const { isHttpStatusSuccess, getAuthErrCategoryFromStCode } = require('../../util/index');
+const { isHttpStatusSuccess } = require('../../util/index');
 const { CONVERSION_ACTION_ID_CACHE_TTL } = require('./config');
 const Cache = require('../../util/cache');
 
@@ -16,6 +16,7 @@ const {
 const { BASE_ENDPOINT } = require('./config');
 
 const tags = require('../../util/tags');
+const { getAuthErrCategory } = require('../../util/googleUtils');
 
 const ERROR_MSG_PATH = 'response[0].error.message';
 
@@ -69,7 +70,7 @@ const getConversionActionId = async ({ method, headers, params, metadata }) => {
           [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
         },
         response,
-        getAuthErrCategoryFromStCode(status),
+        getAuthErrCategory(gaecConversionActionIdResponse),
       );
     }
     const conversionActionId = get(
@@ -126,9 +127,7 @@ const responseHandler = (responseParams) => {
     // Ref - https://github.com/googleapis/googleapis/blob/master/google/rpc/code.proto
     if (partialFailureError && partialFailureError.code !== 0) {
       throw new NetworkError(
-        `[Google Adwords Enhanced Conversions]:: partialFailureError - ${JSON.stringify(
-          partialFailureError,
-        )}`,
+        JSON.stringify(partialFailureError),
         400,
         {
           [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(400),
@@ -153,7 +152,7 @@ const responseHandler = (responseParams) => {
       [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
     },
     response,
-    getAuthErrCategoryFromStCode(status),
+    getAuthErrCategory(destinationResponse),
   );
 };
 

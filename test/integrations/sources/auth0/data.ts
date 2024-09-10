@@ -10,6 +10,7 @@ export const data = [
     description: 'successful signup',
     module: 'source',
     version: 'v0',
+
     input: {
       request: {
         body: [
@@ -532,6 +533,7 @@ export const data = [
     description: 'add member to an organization',
     module: 'source',
     version: 'v0',
+
     input: {
       request: {
         body: [
@@ -671,6 +673,7 @@ export const data = [
     description: 'update tenant settings',
     module: 'source',
     version: 'v0',
+
     input: {
       request: {
         body: [
@@ -1242,6 +1245,7 @@ export const data = [
     description: 'missing userId',
     module: 'source',
     version: 'v0',
+
     input: {
       request: {
         body: [
@@ -1348,6 +1352,7 @@ export const data = [
     description: 'missing userId for all the requests in a batch',
     module: 'source',
     version: 'v0',
+
     input: {
       request: {
         body: [
@@ -1503,6 +1508,7 @@ export const data = [
     description: 'empty batch',
     module: 'source',
     version: 'v0',
+    skipGo: 'Created this case manually',
     input: {
       request: {
         body: [],

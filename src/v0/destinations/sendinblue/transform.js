@@ -13,6 +13,7 @@ const {
   defaultPutRequestConfig,
   getIntegrationsObj,
   ErrorMessage,
+  removeEmptyKey,
 } = require('../../util');
 const { CONFIG_CATEGORIES, MAPPING_CONFIG, getUnlinkContactEndpoint } = require('./config');
 const {
@@ -21,7 +22,6 @@ const {
   validateEmailAndPhone,
   checkIfContactExists,
   prepareHeader,
-  removeEmptyKey,
   transformUserTraits,
   prepareTrackEventData,
   getListIds,
@@ -176,7 +176,7 @@ const updateDOIContactResponseBuilder = (message, destination, identifier) => {
   );
 };
 
-const createOrUpdateDOIContactResponseBuilder = async (message, destination) => {
+const createOrUpdateDOIContactResponseBuilder = async ({ message, destination, metadata }) => {
   let email = getFieldValueFromMessage(message, 'emailOnly');
   const phone = getFieldValueFromMessage(message, 'phone');
 
@@ -196,7 +196,7 @@ const createOrUpdateDOIContactResponseBuilder = async (message, destination) => 
   }
 
   const { apiKey } = destination.Config;
-  const contactExists = await checkIfContactExists(identifier, apiKey);
+  const contactExists = await checkIfContactExists(identifier, apiKey, metadata);
 
   if (contactExists) {
     return updateDOIContactResponseBuilder(message, destination, identifier);
@@ -205,7 +205,7 @@ const createOrUpdateDOIContactResponseBuilder = async (message, destination) => 
   return createDOIContactResponseBuilder(message, destination);
 };
 
-const identifyResponseBuilder = async (message, destination) => {
+const identifyResponseBuilder = async ({ message, destination, metadata }) => {
   const { doi } = destination.Config;
   if (!doi) {
     const unlinkListIds = getListIds(message, 'sendinblueUnlinkListIds');
@@ -215,7 +215,7 @@ const identifyResponseBuilder = async (message, destination) => {
     return createOrUpdateContactResponseBuilder(message, destination);
   }
 
-  return createOrUpdateDOIContactResponseBuilder(message, destination);
+  return createOrUpdateDOIContactResponseBuilder({ message, destination, metadata });
 };
 
 // ref:- https://tracker-doc.sendinblue.com/reference/trackevent-3
@@ -305,7 +305,8 @@ const pageResponseBuilder = (message, destination) => {
   return responseBuilder(payload, endpoint, destination, true);
 };
 
-const processEvent = async (message, destination) => {
+const processEvent = async (event) => {
+  const { message, destination } = event;
   if (!message.type) {
     throw new InstrumentationError('Event type is required');
   }
@@ -314,7 +315,7 @@ const processEvent = async (message, destination) => {
   let response;
   switch (messageType) {
     case EventType.IDENTIFY:
-      response = await identifyResponseBuilder(message, destination);
+      response = await identifyResponseBuilder(event);
       break;
     case EventType.TRACK:
       response = trackResponseBuilder(message, destination);
@@ -328,7 +329,7 @@ const processEvent = async (message, destination) => {
   return response;
 };
 
-const process = (event) => processEvent(event.message, event.destination);
+const process = (event) => processEvent(event);
 
 const processRouterDest = async (inputs) => {
   const respList = await simpleProcessRouterDest(inputs, process, process);

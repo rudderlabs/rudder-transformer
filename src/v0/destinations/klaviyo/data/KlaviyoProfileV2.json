@@ -1,0 +1,128 @@
+[
+  {
+    "destKey": "external_id",
+    "sourceKeys": "userIdOnly",
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "anonymous_id",
+    "sourceKeys": "anonymousId"
+  },
+  {
+    "destKey": "email",
+    "sourceKeys": "emailOnly",
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "first_name",
+    "sourceKeys": "firstName",
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "last_name",
+    "sourceKeys": "lastName",
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "phone_number",
+    "sourceKeys": "phone",
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "title",
+    "sourceKeys": ["traits.title", "context.traits.title", "properties.title"]
+  },
+  {
+    "destKey": "organization",
+    "sourceKeys": ["traits.organization", "context.traits.organization", "properties.organization"]
+  },
+  {
+    "destKey": "location.city",
+    "sourceKeys": [
+      "traits.city",
+      "traits.address.city",
+      "context.traits.city",
+      "context.traits.address.city",
+      "properties.city"
+    ]
+  },
+  {
+    "destKey": "location.region",
+    "sourceKeys": [
+      "traits.region",
+      "traits.address.region",
+      "context.traits.region",
+      "context.traits.address.region",
+      "properties.region",
+      "traits.state",
+      "traits.address.state",
+      "context.traits.address.state",
+      "context.traits.state",
+      "properties.state"
+    ]
+  },
+  {
+    "destKey": "location.country",
+    "sourceKeys": [
+      "traits.country",
+      "traits.address.country",
+      "context.traits.country",
+      "context.traits.address.country",
+      "properties.country"
+    ]
+  },
+  {
+    "destKey": "location.zip",
+    "sourceKeys": [
+      "traits.zip",
+      "traits.postalcode",
+      "traits.postalCode",
+      "traits.address.zip",
+      "traits.address.postalcode",
+      "traits.address.postalCode",
+      "context.traits.zip",
+      "context.traits.postalcode",
+      "context.traits.postalCode",
+      "context.traits.address.zip",
+      "context.traits.address.postalcode",
+      "context.traits.address.postalCode",
+      "properties.zip",
+      "properties.postalcode",
+      "properties.postalCode"
+    ]
+  },
+  {
+    "destKey": "location.ip",
+    "sourceKeys": ["context.ip", "request_ip"]
+  },
+  {
+    "destKey": "_kx",
+    "sourceKeys": ["traits._kx", "context.traits._kx"]
+  },
+  {
+    "destKey": "image",
+    "sourceKeys": ["traits.image", "context.traits.image", "properties.image"]
+  },
+  {
+    "destKey": "location.timezone",
+    "sourceKeys": ["traits.timezone", "context.traits.timezone", "properties.timezone"]
+  },
+  {
+    "destKey": "location.latitude",
+    "sourceKeys": ["latitude", "context.address.latitude", "context.location.latitude"]
+  },
+  {
+    "destKey": "location.longitude",
+    "sourceKeys": ["longitude", "context.address.longitude", "context.location.longitude"]
+  },
+  {
+    "destKey": "location.address1",
+    "sourceKeys": [
+      "traits.street",
+      "traits.address.street",
+      "context.traits.street",
+      "context.traits.address.street",
+      "properties.street"
+    ]
+  }
+]

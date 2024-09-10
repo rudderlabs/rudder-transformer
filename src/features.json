@@ -74,7 +74,12 @@
     "EMARSYS": true,
     "KODDI": true,
     "WUNDERKIND": true,
-    "CLICKSEND": true
+    "CLICKSEND": true,
+    "ZOHO": true,
+    "CORDIAL": true,
+    "BLOOMREACH_CATALOG": true,
+    "SMARTLY": true,
+    "WEBHOOK_V2": true
   },
   "regulations": [
     "BRAZE",

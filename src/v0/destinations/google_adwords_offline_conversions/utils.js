@@ -1,5 +1,6 @@
 const sha256 = require('sha256');
 const SqlString = require('sqlstring');
+const isString = require('lodash/isString');
 const { get, set, cloneDeep } = require('lodash');
 const {
   AbortedError,
@@ -16,7 +17,6 @@ const {
   getFieldValueFromMessage,
   isDefinedAndNotNullAndNotEmpty,
   isDefinedAndNotNull,
-  getAuthErrCategoryFromStCode,
   getAccessToken,
   getIntegrationsObj,
 } = require('../../util');
@@ -34,7 +34,7 @@ const {
 const { processAxiosResponse } = require('../../../adapters/utils/networkUtils');
 const Cache = require('../../util/cache');
 const helper = require('./helper');
-const { finaliseConsent } = require('../../util/googleUtils');
+const { finaliseConsent, getAuthErrCategory } = require('../../util/googleUtils');
 
 const conversionActionIdCache = new Cache(CONVERSION_ACTION_ID_CACHE_TTL);
 
@@ -86,7 +86,7 @@ const getConversionActionId = async ({ headers, params, metadata }) => {
         )} during google_ads_offline_conversions response transformation`,
         status,
         response,
-        getAuthErrCategoryFromStCode(get(searchStreamResponse, 'status')),
+        getAuthErrCategory(searchStreamResponse),
       );
     }
     const conversionAction = get(
@@ -272,7 +272,9 @@ const getAddConversionPayload = (message, Config) => {
 
   const userIdentifierInfo = {
     email:
-      hashUserIdentifier && isDefinedAndNotNull(email) ? sha256(email.trim()).toString() : email,
+      hashUserIdentifier && isString(email) && isDefinedAndNotNull(email)
+        ? sha256(email.trim()).toString()
+        : email,
     phone:
       hashUserIdentifier && isDefinedAndNotNull(phone) ? sha256(phone.trim()).toString() : phone,
     address: buildAndGetAddress(message, hashUserIdentifier),
@@ -368,7 +370,9 @@ const getClickConversionPayloadAndEndpoint = (
 
   const userIdentifierInfo = {
     email:
-      hashUserIdentifier && isDefinedAndNotNull(email) ? sha256(email.trim()).toString() : email,
+      hashUserIdentifier && isString(email) && isDefinedAndNotNull(email)
+        ? sha256(email.trim()).toString()
+        : email,
     phone:
       hashUserIdentifier && isDefinedAndNotNull(phone) ? sha256(phone.trim()).toString() : phone,
   };

@@ -1,12 +1,13 @@
 const { NetworkError } = require('@rudderstack/integrations-lib');
+const get = require('get-value');
 const { prepareProxyRequest, handleHttpRequest } = require('../../../adapters/network');
-const { isHttpStatusSuccess, getAuthErrCategoryFromStCode } = require('../../util/index');
-
+const { isHttpStatusSuccess } = require('../../util/index');
 const {
   processAxiosResponse,
   getDynamicErrorType,
 } = require('../../../adapters/utils/networkUtils');
 const tags = require('../../util/tags');
+const { getAuthErrCategory } = require('../../util/googleUtils');
 /**
  * This function helps to create a offlineUserDataJobs
  * @param endpoint
@@ -147,18 +148,24 @@ const gaAudienceProxyRequest = async (request) => {
 };
 
 const gaAudienceRespHandler = (destResponse, stageMsg) => {
-  const { status, response } = destResponse;
-  // const respAttributes = response["@attributes"] || null;
-  // const { stat, err_code: errorCode } = respAttributes;
+  let { status } = destResponse;
+  const { response } = destResponse;
+
+  if (
+    status === 400 &&
+    get(response, 'error.details.0.errors.0.errorCode.databaseError') === 'CONCURRENT_MODIFICATION'
+  ) {
+    status = 500;
+  }
 
   throw new NetworkError(
-    `${response?.error?.message} ${stageMsg}`,
+    `${JSON.stringify(response)} ${stageMsg}`,
     status,
     {
       [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
     },
     response,
-    getAuthErrCategoryFromStCode(status),
+    getAuthErrCategory(destResponse),
   );
 };
 

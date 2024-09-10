@@ -1,0 +1,71 @@
+{
+  "name": "customerio",
+  "description": "test-5",
+  "input": {
+    "request": {
+      "body": {
+        "data": {
+          "content_id": 1146,
+          "customer_id": "0200102",
+          "identifiers": {
+            "id": "0200102"
+          },
+          "delivery_id": "RMehBAAAAXE7r_ONUGXly9DBGkpq1JS31=",
+          "failure_message": "550 5.5.0 Requested action not taken: mailbox unavailable",
+          "newsletter_id": 736,
+          "recipient": "test@example.com",
+          "subject": "Thanks for joining!"
+        },
+        "event_id": "12ASDG7S9P6MAZPTJ78DAND9GDC",
+        "object_type": "email",
+        "metric": "bounced",
+        "timestamp": 1234567890
+      },
+      "headers": {
+        "Content-Type": "application/json"
+      }
+    }
+  },
+  "output": {
+    "response": {
+      "status": 200,
+      "body": "OK"
+    },
+    "queue": [
+      {
+        "context": {
+          "library": {
+            "name": "unknown",
+            "version": "unknown"
+          },
+          "integration": {
+            "name": "Customer.io"
+          },
+          "traits": {
+            "email": "test@example.com"
+          }
+        },
+        "integrations": {
+          "Customer.io": false
+        },
+        "type": "track",
+        "event": "Email Bounced",
+        "properties": {
+          "eventId": "12ASDG7S9P6MAZPTJ78DAND9GDC",
+          "deliveryId": "RMehBAAAAXE7r_ONUGXly9DBGkpq1JS31=",
+          "contentId": 1146,
+          "emailSubject": "Thanks for joining!",
+          "reason": "550 5.5.0 Requested action not taken: mailbox unavailable",
+          "newsletterId": 736
+        },
+        "userId": "0200102",
+        "originalTimestamp": "2009-02-13T23:31:30.000Z",
+        "sentAt": "2009-02-13T23:31:30.000Z",
+        "receivedAt": "2024-03-03T04:48:29.000Z",
+        "request_ip": "192.0.2.30",
+        "messageId": "00000000-0000-0000-0000-000000000000"
+      }
+    ],
+    "errQueue": []
+  }
+}

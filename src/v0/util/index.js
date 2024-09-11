@@ -1168,7 +1168,7 @@ const getDestinationExternalIDInfoForRetl = (message, destination) => {
   if (externalIdArray) {
     externalIdArray.forEach((extIdObj) => {
       const { type, id } = extIdObj;
-      if (type && type.includes(`${destination}-`)) {
+      if (type?.includes(`${destination}-`)) {
         destinationExternalId = id;
         objectType = type.replace(`${destination}-`, '');
         identifierType = extIdObj.identifierType;
@@ -1195,7 +1195,7 @@ const getDestinationExternalIDObjectForRetl = (message, destination) => {
     // some stops the execution when the element is found
     externalIdArray.some((extIdObj) => {
       const { type } = extIdObj;
-      if (type && type.includes(`${destination}-`)) {
+      if (type?.includes(`${destination}-`)) {
         obj = extIdObj;
         return true;
       }
@@ -1552,6 +1552,18 @@ const getErrorStatusCode = (error, defaultStatusCode = HTTP_STATUS_CODES.INTERNA
   }
 };
 
+function isAxiosError(err) {
+  return (
+    Array.isArray(err?.config?.adapter) &&
+    err?.config?.adapter?.length > 1 &&
+    typeof err?.request?.socket === 'object' &&
+    !!err?.request?.protocol &&
+    !!err?.request?.method &&
+    !!err?.request?.path &&
+    !!err?.status
+  );
+}
+
 /**
  * Used for generating error response with stats from native and built errors
  */
@@ -1567,11 +1579,15 @@ function generateErrorObject(error, defTags = {}, shouldEnrichErrorMessage = tru
     error.authErrorCategory,
   );
   let errorMessage = error.message;
+  if (isAxiosError(errObject.destinationResponse)) {
+    delete errObject?.destinationResponse.config;
+    delete errObject?.destinationResponse.request;
+  }
   if (shouldEnrichErrorMessage) {
-    if (error.destinationResponse) {
+    if (errObject.destinationResponse) {
       errorMessage = JSON.stringify({
         message: errorMessage,
-        destinationResponse: error.destinationResponse,
+        destinationResponse: errObject.destinationResponse,
       });
     }
     errObject.message = errorMessage;
@@ -2274,6 +2290,11 @@ const validateEventAndLowerCaseConversion = (event, isMandatory, convertToLowerC
 const applyCustomMappings = (event, mappings) =>
   JsonTemplateEngine.createAsSync(mappings, { defaultPathType: PathType.JSON }).evaluate(event);
 
+const applyJSONStringTemplate = (message, template) =>
+  JsonTemplateEngine.createAsSync(template.replace(/{{/g, '${').replace(/}}/g, '}'), {
+    defaultPathType: PathType.JSON,
+  }).evaluate(message);
+
 /**
  * This groups the events by destination ID and source ID.
  * Note: sourceID is only used for rETL events.
@@ -2283,8 +2304,10 @@ const applyCustomMappings = (event, mappings) =>
 const groupRouterTransformEvents = (events) =>
   Object.values(
     lodash.groupBy(events, (ev) => [
-      ev.metadata?.destinationId,
-      ev.metadata?.sourceCategory === 'warehouse' ? ev.metadata?.sourceId : 'default',
+      ev.metadata?.destinationId || ev.destination?.ID,
+      ev.metadata?.sourceCategory === 'warehouse'
+        ? ev.metadata?.sourceId || ev.connection?.sourceId
+        : 'default',
     ]),
   );
 
@@ -2313,6 +2336,7 @@ module.exports = {
   addExternalIdToTraits,
   adduserIdFromExternalId,
   applyCustomMappings,
+  applyJSONStringTemplate,
   base64Convertor,
   batchMultiplexedEvents,
   checkEmptyStringInarray,
@@ -2426,4 +2450,5 @@ module.exports = {
   validateEventAndLowerCaseConversion,
   getRelativePathFromURL,
   removeEmptyKey,
+  isAxiosError,
 };

@@ -75,7 +75,7 @@ export const data = [
                 integrations: { All: true },
                 originalTimestamp: '2021-10-25T09:40:08.879Z',
               },
-              metadata: { jobId: 1, userId: 'u1', destinationId: '1zzHtStW2ZPlullmz6L7DGnmk9V' },
+              metadata: { jobId: 1, userId: 'u1' },
               destination: {
                 ID: '1zzHtStW2ZPlullmz6L7DGnmk9V',
                 Name: 'algolia-dev',
@@ -178,7 +178,7 @@ export const data = [
                 integrations: { All: true },
                 originalTimestamp: '2021-10-25T09:40:08.886Z',
               },
-              metadata: { jobId: 2, userId: 'u1', destinationId: '1zzHtStW2ZPlullmz6L7DGnmk9V' },
+              metadata: { jobId: 2, userId: 'u1' },
               destination: {
                 ID: '1zzHtStW2ZPlullmz6L7DGnmk9V',
                 Name: 'algolia-dev',
@@ -317,8 +317,8 @@ export const data = [
                 files: {},
               },
               metadata: [
-                { jobId: 1, userId: 'u1', destinationId: '1zzHtStW2ZPlullmz6L7DGnmk9V' },
-                { jobId: 2, userId: 'u1', destinationId: '1zzHtStW2ZPlullmz6L7DGnmk9V' },
+                { jobId: 1, userId: 'u1' },
+                { jobId: 2, userId: 'u1' },
               ],
               batched: true,
               statusCode: 200,

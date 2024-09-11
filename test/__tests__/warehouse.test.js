@@ -1234,3 +1234,70 @@ describe("isBlank", () => {
     });
   }
 });
+
+describe("context traits", () => {
+
+  let i = input("identify");
+  i.message.context= {"traits": {1: "f", 2: "o"}};
+  i.message.traits = "bar";
+
+
+  i.message.context.traits = stringLikeObjectToString(i.message.context.traits);
+
+  console.log(JSON.stringify(i.message));
+  if (i.metadata) delete i.metadata.sourceCategory;
+  transformers.forEach((transformer, index) => {
+    const received = transformer.process(i);
+    expect(received[0].metadata.columns["context_traits"]).toEqual("string");
+    expect(received[0].data["context_traits"]).toEqual("fo");
+  });
+
+})
+
+function isNonNegativeInteger(str) {
+  if (str.length === 0) return false;
+  for (let i = 0; i < str.length; i++) {
+    const charCode = str.charCodeAt(i);
+    if (charCode < 48 || charCode > 57) return false;
+  }
+  return true;
+}
+
+function isStringLikeObject(obj) {
+  if (typeof obj !== 'object' || obj === null) return false;
+
+  const keys = Object.keys(obj);
+  if (keys.length === 0) return false;
+
+  let minKey = Infinity;
+  let maxKey = -Infinity;
+
+  for (let i = 0; i < keys.length; i++) {
+    const key = keys[i];
+    const value = obj[key];
+
+    if (!isNonNegativeInteger(key)) return false;
+    if (typeof value !== 'string' || value.length !== 1) return false;
+
+    const numKey = parseInt(key, 10);
+    if (numKey < minKey) minKey = numKey;
+    if (numKey > maxKey) maxKey = numKey;
+  }
+
+  return (minKey === 0 || minKey === 1) && (maxKey - minKey + 1 === keys.length);
+}
+
+function stringLikeObjectToString(obj) {
+  if (!isStringLikeObject(obj)) {
+    return obj; // Return the original input if it's not a valid string-like object
+  }
+
+  const keys = Object.keys(obj).map(Number).sort((a, b) => a - b);
+  let result = '';
+
+  for (let i = 0; i < keys.length; i++) {
+    result += obj[keys[i].toString()];
+  }
+
+  return result;
+}

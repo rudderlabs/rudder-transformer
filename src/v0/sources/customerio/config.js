@@ -8,6 +8,7 @@ const emailEventNameMap = {
   spammed: 'Email Marked as Spam',
   dropped: 'Email Dropped',
   bounced: 'Email Bounced',
+  subscribed: 'Email Subscribed',
   unsubscribed: 'Email Unsubscribed',
   converted: 'Email Converted',
   clicked: 'Email Link Clicked',

@@ -695,245 +695,109 @@ describe('extractCustomFields', () => {
 });
 
 describe('groupRouterTransformEvents', () => {
-  // groups events correctly by destination ID
-  it('should group events correctly by destination ID and source ID', () => {
+  it('should group events by destination.ID and context.sources.job_id', () => {
     const events = [
       {
-        message: {
-          eventID: 'evt001',
-          eventName: 'OrderReceived',
-        },
-        metadata: {
-          sourceId: 'SRC001',
-          destinationId: 'DEST001',
-          sourceCategory: 'warehouse',
-        },
+        destination: { ID: 'dest1' },
+        context: { sources: { job_id: 'job1' } },
       },
       {
-        message: {
-          eventID: 'evt002',
-          eventName: 'InventoryUpdate',
-        },
-        metadata: {
-          sourceId: 'SRC002',
-          destinationId: 'DEST002',
-          sourceCategory: 'cloud',
-        },
+        destination: { ID: 'dest1' },
+        context: { sources: { job_id: 'job2' } },
       },
       {
-        message: {
-          eventID: 'evt003',
-          eventName: 'UserLogin',
-        },
-        metadata: {
-          sourceId: 'SRC003',
-          destinationId: 'DEST003',
-          sourceCategory: 'webhook',
-        },
-      },
-      {
-        message: {
-          eventID: 'evt004',
-          eventName: 'PaymentProcessed',
-        },
-        metadata: {
-          sourceId: 'SRC001',
-          destinationId: 'DEST002',
-          sourceCategory: 'warehouse',
-        },
-      },
-      {
-        message: {
-          eventID: 'evt005',
-          eventName: 'ShipmentDispatched',
-        },
-        metadata: {
-          sourceId: 'SRC002',
-          destinationId: 'DEST003',
-          sourceCategory: 'cloud',
-        },
-      },
-      {
-        message: {
-          eventID: 'evt006',
-          eventName: 'ProductReturn',
-        },
-        metadata: {
-          sourceId: 'SRC003',
-          destinationId: 'DEST001',
-          sourceCategory: 'webhook',
-        },
-      },
-      {
-        message: {
-          eventID: 'evt007',
-          eventName: 'StockAlert',
-        },
-        metadata: {
-          sourceId: 'SRC001',
-          destinationId: 'DEST003',
-          sourceCategory: 'warehouse',
-        },
-      },
-      {
-        message: {
-          eventID: 'evt008',
-          eventName: 'UserRegistration',
-        },
-        metadata: {
-          sourceId: 'SRC002',
-          destinationId: 'DEST001',
-          sourceCategory: 'cloud',
-        },
-      },
-      {
-        message: {
-          eventID: 'evt009',
-          eventName: 'ReviewSubmitted',
-        },
-        metadata: {
-          sourceId: 'SRC003',
-          destinationId: 'DEST002',
-          sourceCategory: 'webhook',
-        },
-      },
-      {
-        message: {
-          eventID: 'evt010',
-          eventName: 'DiscountApplied',
-        },
-        metadata: {
-          sourceId: 'SRC001',
-          destinationId: 'DEST001',
-          sourceCategory: 'warehouse',
-        },
+        destination: { ID: 'dest2' },
+        context: { sources: { job_id: 'job1' } },
       },
     ];
+    const result = groupRouterTransformEvents(events);
 
-    const groupedEvents = groupRouterTransformEvents(events);
-    expect(groupedEvents).toEqual([
-      [
-        {
-          message: {
-            eventID: 'evt001',
-            eventName: 'OrderReceived',
-          },
-          metadata: {
-            sourceId: 'SRC001',
-            destinationId: 'DEST001',
-            sourceCategory: 'warehouse',
-          },
-        },
-        {
-          message: {
-            eventID: 'evt010',
-            eventName: 'DiscountApplied',
-          },
-          metadata: {
-            sourceId: 'SRC001',
-            destinationId: 'DEST001',
-            sourceCategory: 'warehouse',
-          },
-        },
-      ],
-      [
-        {
-          message: {
-            eventID: 'evt002',
-            eventName: 'InventoryUpdate',
-          },
-          metadata: {
-            sourceId: 'SRC002',
-            destinationId: 'DEST002',
-            sourceCategory: 'cloud',
-          },
-        },
-        {
-          message: {
-            eventID: 'evt009',
-            eventName: 'ReviewSubmitted',
-          },
-          metadata: {
-            sourceId: 'SRC003',
-            destinationId: 'DEST002',
-            sourceCategory: 'webhook',
-          },
-        },
-      ],
-      [
-        {
-          message: {
-            eventID: 'evt003',
-            eventName: 'UserLogin',
-          },
-          metadata: {
-            sourceId: 'SRC003',
-            destinationId: 'DEST003',
-            sourceCategory: 'webhook',
-          },
-        },
-        {
-          message: {
-            eventID: 'evt005',
-            eventName: 'ShipmentDispatched',
-          },
-          metadata: {
-            sourceId: 'SRC002',
-            destinationId: 'DEST003',
-            sourceCategory: 'cloud',
-          },
-        },
-      ],
-      [
-        {
-          message: {
-            eventID: 'evt004',
-            eventName: 'PaymentProcessed',
-          },
-          metadata: {
-            sourceId: 'SRC001',
-            destinationId: 'DEST002',
-            sourceCategory: 'warehouse',
-          },
-        },
-      ],
-      [
-        {
-          message: {
-            eventID: 'evt006',
-            eventName: 'ProductReturn',
-          },
-          metadata: {
-            sourceId: 'SRC003',
-            destinationId: 'DEST001',
-            sourceCategory: 'webhook',
-          },
-        },
-        {
-          message: {
-            eventID: 'evt008',
-            eventName: 'UserRegistration',
-          },
-          metadata: {
-            sourceId: 'SRC002',
-            destinationId: 'DEST001',
-            sourceCategory: 'cloud',
-          },
-        },
-      ],
-      [
-        {
-          message: {
-            eventID: 'evt007',
-            eventName: 'StockAlert',
-          },
-          metadata: {
-            sourceId: 'SRC001',
-            destinationId: 'DEST003',
-            sourceCategory: 'warehouse',
-          },
-        },
-      ],
+    expect(result.length).toBe(3); // 3 unique groups
+    expect(result).toEqual([
+      [{ destination: { ID: 'dest1' }, context: { sources: { job_id: 'job1' } } }],
+      [{ destination: { ID: 'dest1' }, context: { sources: { job_id: 'job2' } } }],
+      [{ destination: { ID: 'dest2' }, context: { sources: { job_id: 'job1' } } }],
+    ]);
+  });
+
+  it('should group events by default job_id if context.sources.job_id is missing', () => {
+    const events = [
+      {
+        destination: { ID: 'dest1' },
+        context: { sources: {} },
+      },
+      {
+        destination: { ID: 'dest1' },
+        context: { sources: { job_id: 'job1' } },
+      },
+    ];
+    const result = groupRouterTransformEvents(events);
+
+    expect(result.length).toBe(2); // 2 unique groups
+    expect(result).toEqual([
+      [{ destination: { ID: 'dest1' }, context: { sources: {} } }],
+      [{ destination: { ID: 'dest1' }, context: { sources: { job_id: 'job1' } } }],
+    ]);
+  });
+
+  it('should group events by default job_id if context or context.sources is missing', () => {
+    const events = [
+      {
+        destination: { ID: 'dest1' },
+      },
+      {
+        destination: { ID: 'dest1' },
+        context: { sources: { job_id: 'job1' } },
+      },
+    ];
+    const result = groupRouterTransformEvents(events);
+
+    expect(result.length).toBe(2); // 2 unique groups
+    expect(result).toEqual([
+      [{ destination: { ID: 'dest1' } }],
+      [{ destination: { ID: 'dest1' }, context: { sources: { job_id: 'job1' } } }],
+    ]);
+  });
+
+  it('should use "default" when destination.ID is missing', () => {
+    const events = [
+      {
+        context: { sources: { job_id: 'job1' } },
+      },
+      {
+        destination: { ID: 'dest1' },
+        context: { sources: { job_id: 'job1' } },
+      },
+    ];
+    const result = groupRouterTransformEvents(events);
+
+    expect(result.length).toBe(2); // 2 unique groups
+    expect(result).toEqual([
+      [{ context: { sources: { job_id: 'job1' } } }],
+      [{ destination: { ID: 'dest1' }, context: { sources: { job_id: 'job1' } } }],
+    ]);
+  });
+
+  it('should return an empty array when there are no events', () => {
+    const events = [];
+    const result = groupRouterTransformEvents(events);
+
+    expect(result).toEqual([]);
+  });
+
+  it('should handle events with completely missing context and destination', () => {
+    const events = [
+      {},
+      { destination: { ID: 'dest1' } },
+      { context: { sources: { job_id: 'job1' } } },
+    ];
+    const result = groupRouterTransformEvents(events);
+
+    expect(result.length).toBe(3); // 3 unique groups
+    expect(result).toEqual([
+      [{}],
+      [{ destination: { ID: 'dest1' } }],
+      [{ context: { sources: { job_id: 'job1' } } }],
     ]);
   });
 });

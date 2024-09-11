@@ -2303,12 +2303,7 @@ const applyJSONStringTemplate = (message, template) =>
  */
 const groupRouterTransformEvents = (events) =>
   Object.values(
-    lodash.groupBy(events, (ev) => [
-      ev.metadata?.destinationId || ev.destination?.ID,
-      ev.metadata?.sourceCategory === 'warehouse'
-        ? ev.metadata?.sourceId || ev.connection?.sourceId
-        : 'default',
-    ]),
+    lodash.groupBy(events, (ev) => [ev.destination?.ID, ev.context?.sources?.job_id || 'default']),
   );
 
 /*

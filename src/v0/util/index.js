@@ -2281,8 +2281,14 @@ const validateEventAndLowerCaseConversion = (event, isMandatory, convertToLowerC
   return convertToLowerCase ? event.toString().toLowerCase() : event.toString();
 };
 
-const applyCustomMappings = (message, mappings) =>
-  JsonTemplateEngine.createAsSync(mappings, { defaultPathType: PathType.JSON }).evaluate(message);
+/**
+ * This function applies custom mappings to the event.
+ * @param {*} event The event to be transformed.
+ * @param {*} mappings The custom mappings to be applied.
+ * @returns {object} The transformed event.
+ */
+const applyCustomMappings = (event, mappings) =>
+  JsonTemplateEngine.createAsSync(mappings, { defaultPathType: PathType.JSON }).evaluate(event);
 
 const applyJSONStringTemplate = (message, template) =>
   JsonTemplateEngine.createAsSync(template.replace(/{{/g, '${').replace(/}}/g, '}'), {
@@ -2290,6 +2296,17 @@ const applyJSONStringTemplate = (message, template) =>
   }).evaluate(message);
 
 /**
+ * This groups the events by destination ID and source ID.
+ * Note: sourceID is only used for rETL events.
+ * @param {*} events The events to be grouped.
+ * @returns {array} The array of grouped events.
+ */
+const groupRouterTransformEvents = (events) =>
+  Object.values(
+    lodash.groupBy(events, (ev) => [ev.destination?.ID, ev.context?.sources?.job_id || 'default']),
+  );
+
+/*
  * Gets url path omitting the hostname & protocol
  *
  * **Note**:
@@ -2364,6 +2381,7 @@ module.exports = {
   getValueFromMessage,
   getValueFromPropertiesOrTraits,
   getValuesAsArrayFromConfig,
+  groupRouterTransformEvents,
   handleSourceKeysOperation,
   hashToSha256,
   isAppleFamily,

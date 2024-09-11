@@ -1,4 +1,4 @@
-const { TAG_NAMES, InstrumentationError } = require('@rudderstack/integrations-lib');
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const utilities = require('.');
 const { getFuncTestData } = require('../../../test/testHelper');
 const { FilteredEventsError } = require('./errorTypes');
@@ -8,6 +8,7 @@ const {
   generateExclusionList,
   combineBatchRequestsWithSameJobIds,
   validateEventAndLowerCaseConversion,
+  groupRouterTransformEvents,
   isAxiosError,
 } = require('./index');
 const exp = require('constants');
@@ -690,6 +691,114 @@ describe('extractCustomFields', () => {
     expect(result).toEqual({
       email: 'john.doe@example.com',
     });
+  });
+});
+
+describe('groupRouterTransformEvents', () => {
+  it('should group events by destination.ID and context.sources.job_id', () => {
+    const events = [
+      {
+        destination: { ID: 'dest1' },
+        context: { sources: { job_id: 'job1' } },
+      },
+      {
+        destination: { ID: 'dest1' },
+        context: { sources: { job_id: 'job2' } },
+      },
+      {
+        destination: { ID: 'dest2' },
+        context: { sources: { job_id: 'job1' } },
+      },
+    ];
+    const result = groupRouterTransformEvents(events);
+
+    expect(result.length).toBe(3); // 3 unique groups
+    expect(result).toEqual([
+      [{ destination: { ID: 'dest1' }, context: { sources: { job_id: 'job1' } } }],
+      [{ destination: { ID: 'dest1' }, context: { sources: { job_id: 'job2' } } }],
+      [{ destination: { ID: 'dest2' }, context: { sources: { job_id: 'job1' } } }],
+    ]);
+  });
+
+  it('should group events by default job_id if context.sources.job_id is missing', () => {
+    const events = [
+      {
+        destination: { ID: 'dest1' },
+        context: { sources: {} },
+      },
+      {
+        destination: { ID: 'dest1' },
+        context: { sources: { job_id: 'job1' } },
+      },
+    ];
+    const result = groupRouterTransformEvents(events);
+
+    expect(result.length).toBe(2); // 2 unique groups
+    expect(result).toEqual([
+      [{ destination: { ID: 'dest1' }, context: { sources: {} } }],
+      [{ destination: { ID: 'dest1' }, context: { sources: { job_id: 'job1' } } }],
+    ]);
+  });
+
+  it('should group events by default job_id if context or context.sources is missing', () => {
+    const events = [
+      {
+        destination: { ID: 'dest1' },
+      },
+      {
+        destination: { ID: 'dest1' },
+        context: { sources: { job_id: 'job1' } },
+      },
+    ];
+    const result = groupRouterTransformEvents(events);
+
+    expect(result.length).toBe(2); // 2 unique groups
+    expect(result).toEqual([
+      [{ destination: { ID: 'dest1' } }],
+      [{ destination: { ID: 'dest1' }, context: { sources: { job_id: 'job1' } } }],
+    ]);
+  });
+
+  it('should use "default" when destination.ID is missing', () => {
+    const events = [
+      {
+        context: { sources: { job_id: 'job1' } },
+      },
+      {
+        destination: { ID: 'dest1' },
+        context: { sources: { job_id: 'job1' } },
+      },
+    ];
+    const result = groupRouterTransformEvents(events);
+
+    expect(result.length).toBe(2); // 2 unique groups
+    expect(result).toEqual([
+      [{ context: { sources: { job_id: 'job1' } } }],
+      [{ destination: { ID: 'dest1' }, context: { sources: { job_id: 'job1' } } }],
+    ]);
+  });
+
+  it('should return an empty array when there are no events', () => {
+    const events = [];
+    const result = groupRouterTransformEvents(events);
+
+    expect(result).toEqual([]);
+  });
+
+  it('should handle events with completely missing context and destination', () => {
+    const events = [
+      {},
+      { destination: { ID: 'dest1' } },
+      { context: { sources: { job_id: 'job1' } } },
+    ];
+    const result = groupRouterTransformEvents(events);
+
+    expect(result.length).toBe(3); // 3 unique groups
+    expect(result).toEqual([
+      [{}],
+      [{ destination: { ID: 'dest1' } }],
+      [{ context: { sources: { job_id: 'job1' } } }],
+    ]);
   });
 });
 

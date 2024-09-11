@@ -244,7 +244,7 @@ const deployFaasFunction = async (
     if (
       ((error.statusCode === 500 || error.statusCode === 400) &&
         error.message.includes('already exists')) ||
-      (error.statusCode === 409 && error.message.includes('Conflict change already made'))
+      (error.statusCode === 409 && error.message.includes('Conflicting change already made'))
     ) {
       setFunctionInCache(functionName);
       throw new RetryRequestError(`${functionName} already exists`);

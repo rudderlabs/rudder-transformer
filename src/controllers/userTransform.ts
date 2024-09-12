@@ -39,12 +39,19 @@ export class UserTransformController {
     const events = ctx.request.body as ProcessorTransformationRequest[];
     const processedRespone: UserTransformationServiceResponse =
       await UserTransformService.transformRoutine(events, ctx.state.features, requestSize);
-    ctx.body = processedRespone.transformedEvents;
-    ControllerUtility.postProcess(ctx, processedRespone.retryStatus);
-    logger.debug(
-      '(User transform - router:/customTransform ):: Response from transformer',
-      ctx.response.body,
-    );
+    try {
+      ctx.body = JSON.stringify(processedRespone.transformedEvents);
+      ControllerUtility.postProcess(ctx, processedRespone.retryStatus);
+      logger.debug(
+        '(User transform - router:/customTransform ):: Response from transformer',
+        ctx.response.body,
+      );
+    } catch (err: any) {
+      logger.error(`Error while stringifying response: ${err.message}`);
+      ctx.body = events.map((e) => ({ statusCode: 400, metadata: e.metadata, error: err.message }));
+      ctx.status = 200;
+    }
+    ctx.set('Content-Type', 'application/json');
     return ctx;
   }
 

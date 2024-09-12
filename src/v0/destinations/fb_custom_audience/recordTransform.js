@@ -286,7 +286,7 @@ async function processRecordInputs(groupedRecordInputs) {
   if (isEventSentByVDMV2Flow(event)) {
     return processRecordInputsV2(groupedRecordInputs);
   }
-  throw new PlatformError('unsupported event format');
+  throw new PlatformError('unsupported record event format');
 }
 
 module.exports = {

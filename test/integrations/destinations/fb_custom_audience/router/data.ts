@@ -1,7 +1,11 @@
 import { eventStreamRouterRequest } from './eventStream';
 import { rETLAudienceRouterRequest } from './audienceList';
-import { rETLRecordV1RouterRequest } from './recordV1';
-import { rETLRecordV2RouterRequest } from './recordV2';
+import {
+  rETLRecordV1RouterRequest,
+  rETLRecordV2RouterRequest,
+  rETLRecordV2RouterInvalidRequest,
+  rETLRecordInvalidRequest,
+} from './record';
 import { mockFns } from '../mocks';
 
 export const data = [
@@ -870,7 +874,7 @@ export const data = [
     name: 'fb_custom_audience',
     description: 'rETL record V2 tests',
     scenario: 'Framework',
-    successCriteria: 'All the record V2 events should be batched',
+    successCriteria: 'all record events should be transformed correctly based on their operation',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -985,6 +989,109 @@ export const data = [
                 Transformations: [],
                 IsConnectionEnabled: true,
                 IsProcessorEnabled: true,
+              },
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    name: 'fb_custom_audience',
+    description: 'rETL record V2 invalid connection tests',
+    scenario: 'Framework',
+    successCriteria: 'All the record V2 events should fail',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: rETLRecordV2RouterInvalidRequest,
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              metadata: [
+                {
+                  jobId: 1,
+                  attemptNum: 1,
+                  userId: 'default-userId',
+                  sourceId: 'default-sourceId',
+                  destinationId: 'default-destinationId',
+                  workspaceId: 'default-workspaceId',
+                  secret: {
+                    accessToken: 'default-accessToken',
+                  },
+                  dontBatch: false,
+                },
+              ],
+              batched: false,
+              statusCode: 400,
+              error: 'Audience ID is a mandatory field',
+              statTags: {
+                errorCategory: 'dataValidation',
+                errorType: 'configuration',
+                destType: 'FB_CUSTOM_AUDIENCE',
+                module: 'destination',
+                implementation: 'native',
+                feature: 'router',
+                destinationId: 'default-destinationId',
+                workspaceId: 'default-workspaceId',
+              },
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    name: 'fb_custom_audience',
+    description: 'rETL invalid format event tests',
+    scenario: 'Framework',
+    successCriteria: 'All events should fail',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: rETLRecordInvalidRequest,
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              metadata: [
+                {
+                  jobId: 1,
+                  attemptNum: 1,
+                  userId: 'default-userId',
+                  sourceId: 'default-sourceId',
+                  destinationId: 'default-destinationId',
+                  workspaceId: 'default-workspaceId',
+                  secret: {
+                    accessToken: 'default-accessToken',
+                  },
+                  dontBatch: false,
+                },
+              ],
+              batched: false,
+              statusCode: 400,
+              error: 'unsupported record event format',
+              statTags: {
+                errorCategory: 'platform',
+                destType: 'FB_CUSTOM_AUDIENCE',
+                module: 'destination',
+                implementation: 'native',
+                feature: 'router',
+                destinationId: 'default-destinationId',
+                workspaceId: 'default-workspaceId',
               },
             },
           ],

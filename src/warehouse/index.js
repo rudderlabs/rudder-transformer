@@ -316,6 +316,10 @@ function isStringLikeObject(obj) {
     if (numKey > maxKey) maxKey = numKey;
   }
 
+  for (let i = minKey; i <= maxKey; i++) {
+    if (!keys.includes(i.toString())) return false;
+  }
+
   return (minKey === 0 || minKey === 1) && maxKey - minKey + 1 === keys.length;
 }
 

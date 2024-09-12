@@ -4,6 +4,10 @@
     "sourceKeys": "context.os.name"
   },
   {
+    "destKey": "$referrer",
+    "sourceKeys": "context.page.referrer"
+  },
+  {
     "destKey": "$current_url",
     "sourceKeys": "context.page.url"
   },

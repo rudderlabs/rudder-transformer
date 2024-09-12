@@ -1234,3 +1234,19 @@ describe("isBlank", () => {
     });
   }
 });
+
+describe("context traits", () => {
+  for (const e of eventTypes) {
+    let i = input(e);
+    i.message.context= {"traits": {1: "f", 2: "o"}};
+    i.message.traits = "bar";
+    if (i.metadata) delete i.metadata.sourceCategory;
+    transformers.forEach((transformer, index) => {
+      const received = transformer.process(i);
+      let columns = Object.keys(received[0].metadata.columns);
+      console.log(columns);
+      expect(received[0].metadata.columns[integrationCasedString(integrations[index], "context_traits")]).toEqual("string");
+      expect(received[0].data[integrationCasedString(integrations[index], "context_traits")]).toEqual("fo");
+    });
+  }
+})

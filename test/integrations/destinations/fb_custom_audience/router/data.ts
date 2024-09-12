@@ -1,7 +1,8 @@
 import { eventStreamRouterRequest } from './eventStream';
 import { rETLAudienceRouterRequest } from './audienceList';
-import { rETLBatchingRouterRequest } from './batchingRecord';
-import { rETLRecordRouterRequest } from './record';
+import { rETLRecordV1RouterRequest } from './recordV1';
+import { rETLRecordV2RouterRequest } from './recordV2';
+import { mockFns } from '../mocks';
 
 export const data = [
   {
@@ -536,7 +537,7 @@ export const data = [
   },
   {
     name: 'fb_custom_audience',
-    description: 'rETL record tests',
+    description: 'rETL record V1 tests',
     scenario: 'business',
     successCriteria: 'all record events should be transformed correctly based on their operation',
     feature: 'router',
@@ -544,7 +545,7 @@ export const data = [
     version: 'v0',
     input: {
       request: {
-        body: rETLRecordRouterRequest,
+        body: rETLRecordV1RouterRequest,
       },
     },
     output: {
@@ -562,6 +563,9 @@ export const data = [
                   headers: {},
                   params: {
                     access_token: 'ABC',
+                    appsecret_proof:
+                      'd103874f3b5f01f57c4f84edfb96ac94055da8f83c2b45e6f26dafca9188ff4d',
+                    appsecret_time: 1697328000,
                     payload: {
                       schema: ['EMAIL', 'FI'],
                       data: [
@@ -616,6 +620,7 @@ export const data = [
               destination: {
                 Config: {
                   accessToken: 'ABC',
+                  appSecret: 'dummySecret',
                   disableFormat: false,
                   isHashRequired: true,
                   isRaw: false,
@@ -651,6 +656,9 @@ export const data = [
                   headers: {},
                   params: {
                     access_token: 'ABC',
+                    appsecret_proof:
+                      'd103874f3b5f01f57c4f84edfb96ac94055da8f83c2b45e6f26dafca9188ff4d',
+                    appsecret_time: 1697328000,
                     payload: {
                       schema: ['EMAIL', 'FI'],
                       data: [
@@ -689,6 +697,7 @@ export const data = [
               destination: {
                 Config: {
                   accessToken: 'ABC',
+                  appSecret: 'dummySecret',
                   disableFormat: false,
                   isHashRequired: true,
                   isRaw: false,
@@ -724,6 +733,9 @@ export const data = [
                   headers: {},
                   params: {
                     access_token: 'ABC',
+                    appsecret_proof:
+                      'd103874f3b5f01f57c4f84edfb96ac94055da8f83c2b45e6f26dafca9188ff4d',
+                    appsecret_time: 1697328000,
                     payload: {
                       schema: ['EMAIL', 'FI'],
                       data: [
@@ -794,6 +806,7 @@ export const data = [
               destination: {
                 Config: {
                   accessToken: 'ABC',
+                  appSecret: 'dummySecret',
                   disableFormat: false,
                   isHashRequired: true,
                   isRaw: false,
@@ -855,15 +868,15 @@ export const data = [
   },
   {
     name: 'fb_custom_audience',
-    description: 'rETL record batching tests',
+    description: 'rETL record V2 tests',
     scenario: 'Framework',
-    successCriteria: 'All the record events should be batched',
+    successCriteria: 'All the record V2 events should be batched',
     feature: 'router',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
-        body: rETLBatchingRouterRequest,
+        body: rETLRecordV2RouterRequest,
       },
     },
     output: {
@@ -892,28 +905,6 @@ export const data = [
                           'b100c2ec0718fe6b4805b623aeec6710719d042ceea55f5c8135b010ec1c7b36',
                           '1e14a2f476f7611a8b22bc85d14237fdc88aac828737e739416c32c5bce3bd16',
                         ],
-                      ],
-                    },
-                  },
-                  body: {
-                    JSON: {},
-                    JSON_ARRAY: {},
-                    XML: {},
-                    FORM: {},
-                  },
-                  files: {},
-                },
-                {
-                  version: '1',
-                  type: 'REST',
-                  method: 'POST',
-                  endpoint: 'https://graph.facebook.com/v20.0/23848494844100489/users',
-                  headers: {},
-                  params: {
-                    access_token: 'ABC',
-                    payload: {
-                      schema: ['EMAIL', 'FI'],
-                      data: [
                         [
                           'b100c2ec0718fe6b4805b623aeec6710719d042ceea55f5c8135b010ec1c7b36',
                           '1e14a2f476f7611a8b22bc85d14237fdc88aac828737e739416c32c5bce3bd16',
@@ -976,12 +967,10 @@ export const data = [
                   disableFormat: false,
                   isHashRequired: true,
                   isRaw: false,
-                  maxUserCount: '2',
                   oneTrustCookieCategories: [],
                   skipVerify: false,
                   subType: 'NA',
                   type: 'NA',
-                  userSchema: ['EMAIL'],
                 },
                 Name: 'FB_CUSTOM_AUDIENCE',
                 Enabled: true,
@@ -1003,4 +992,4 @@ export const data = [
       },
     },
   },
-];
+].map((d) => ({ ...d, mockFns }));

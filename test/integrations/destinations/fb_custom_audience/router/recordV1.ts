@@ -1,9 +1,10 @@
 import { Destination, RouterTransformationRequest } from '../../../../../src/types';
 import { generateMetadata } from '../../../testUtils';
 
-const destination: Destination = {
+export const destination: Destination = {
   Config: {
     accessToken: 'ABC',
+    appSecret: 'dummySecret',
     disableFormat: false,
     isHashRequired: true,
     isRaw: false,
@@ -29,7 +30,7 @@ const destination: Destination = {
   IsProcessorEnabled: true,
 };
 
-export const rETLRecordRouterRequest: RouterTransformationRequest = {
+export const rETLRecordV1RouterRequest: RouterTransformationRequest = {
   input: [
     {
       destination: destination,
@@ -246,5 +247,5 @@ export const rETLRecordRouterRequest: RouterTransformationRequest = {
 };
 
 module.exports = {
-  rETLRecordRouterRequest,
+  rETLRecordV1RouterRequest,
 };

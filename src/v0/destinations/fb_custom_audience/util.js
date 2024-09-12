@@ -14,7 +14,7 @@ const {
 const stats = require('../../../util/stats');
 
 const { isDefinedAndNotNull } = require('../../util');
-const { maxPayloadSize } = require('./config');
+const config = require('./config');
 
 /**
  * Example payload ={
@@ -35,9 +35,9 @@ const { maxPayloadSize } = require('./config');
 } */
 const batchingWithPayloadSize = (payload) => {
   const payloadSize = jsonSize(payload);
-  if (payloadSize > maxPayloadSize) {
+  if (payloadSize > config.maxPayloadSize) {
     const revisedPayloadArray = [];
-    const noOfBatches = Math.ceil(payloadSize / maxPayloadSize);
+    const noOfBatches = Math.ceil(payloadSize / config.maxPayloadSize);
     const revisedRecordsPerPayload = Math.floor(payload.data.length / noOfBatches);
     const revisedDataArray = lodash.chunk(payload.data, revisedRecordsPerPayload);
     revisedDataArray.forEach((data) => {

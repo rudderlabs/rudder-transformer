@@ -1,4 +1,5 @@
-import { Destination, RouterTransformationRequest } from '../../../../../src/types';
+import { Connection, Destination, RouterTransformationRequest } from '../../../../../src/types';
+import { VDM_V2_SCHEMA_VERSION } from '../../../../../src/v0/util/constant';
 import { generateMetadata } from '../../../testUtils';
 
 const destination: Destination = {
@@ -7,12 +8,10 @@ const destination: Destination = {
     disableFormat: false,
     isHashRequired: true,
     isRaw: false,
-    maxUserCount: '2',
     oneTrustCookieCategories: [],
     skipVerify: false,
     subType: 'NA',
     type: 'NA',
-    userSchema: ['EMAIL'],
   },
   ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
   Name: 'FB_CUSTOM_AUDIENCE',
@@ -29,21 +28,31 @@ const destination: Destination = {
   IsProcessorEnabled: true,
 };
 
-export const rETLBatchingRouterRequest: RouterTransformationRequest = {
+const connection: Connection = {
+  sourceId: '2MUWghI7u85n91dd1qzGyswpZan',
+  destinationId: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
+  enabled: true,
+  config: {
+    destination: {
+      schemaVersion: VDM_V2_SCHEMA_VERSION,
+      disableFormat: false,
+      isHashRequired: true,
+      isRaw: false,
+      subType: 'NA',
+      type: 'NA',
+      audienceId: '23848494844100489',
+    },
+  },
+};
+
+export const rETLRecordV2RouterRequest: RouterTransformationRequest = {
   input: [
     {
       destination: destination,
+      connection: connection,
       message: {
         action: 'insert',
         context: {
-          destinationFields: 'EMAIL, FI',
-          externalId: [
-            {
-              type: 'FB_CUSTOM_AUDIENCE-23848494844100489',
-              identifierType: 'EMAIL',
-            },
-          ],
-          mappedToDestination: 'true',
           sources: {
             job_run_id: 'cgiiurt8um7k7n5dq480',
             task_run_id: 'cgiiurt8um7k7n5dq48g',
@@ -53,7 +62,7 @@ export const rETLBatchingRouterRequest: RouterTransformationRequest = {
         },
         recordId: '2',
         rudderId: '2',
-        fields: {
+        identifiers: {
           EMAIL: 'subscribed@eewrfrd.com',
           FI: 'ghui',
         },
@@ -63,17 +72,10 @@ export const rETLBatchingRouterRequest: RouterTransformationRequest = {
     },
     {
       destination: destination,
+      connection: connection,
       message: {
         action: 'insert',
         context: {
-          destinationFields: 'EMAIL, FI',
-          externalId: [
-            {
-              type: 'FB_CUSTOM_AUDIENCE-23848494844100489',
-              identifierType: 'EMAIL',
-            },
-          ],
-          mappedToDestination: 'true',
           sources: {
             job_run_id: 'cgiiurt8um7k7n5dq480',
             task_run_id: 'cgiiurt8um7k7n5dq48g',
@@ -83,7 +85,7 @@ export const rETLBatchingRouterRequest: RouterTransformationRequest = {
         },
         recordId: '2',
         rudderId: '2',
-        fields: {
+        identifiers: {
           EMAIL: 'subscribed@eewrfrd.com',
           FI: 'ghui',
         },
@@ -93,17 +95,10 @@ export const rETLBatchingRouterRequest: RouterTransformationRequest = {
     },
     {
       destination: destination,
+      connection: connection,
       message: {
         action: 'insert',
         context: {
-          destinationFields: 'EMAIL, FI',
-          externalId: [
-            {
-              type: 'FB_CUSTOM_AUDIENCE-23848494844100489',
-              identifierType: 'EMAIL',
-            },
-          ],
-          mappedToDestination: 'true',
           sources: {
             job_run_id: 'cgiiurt8um7k7n5dq480',
             task_run_id: 'cgiiurt8um7k7n5dq48g',
@@ -113,7 +108,7 @@ export const rETLBatchingRouterRequest: RouterTransformationRequest = {
         },
         recordId: '2',
         rudderId: '2',
-        fields: {
+        identifiers: {
           EMAIL: 'subscribed@eewrfrd.com',
           FI: 'ghui',
         },
@@ -126,5 +121,5 @@ export const rETLBatchingRouterRequest: RouterTransformationRequest = {
 };
 
 module.exports = {
-  rETLBatchingRouterRequest,
+  rETLRecordV2RouterRequest,
 };

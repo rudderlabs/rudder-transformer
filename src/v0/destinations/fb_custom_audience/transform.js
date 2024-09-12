@@ -17,7 +17,7 @@ const {
   responseBuilderSimple,
   getDataSource,
 } = require('./util');
-const { schemaFields, USER_ADD, USER_DELETE } = require('./config');
+const { schemaFields, USER_ADD, USER_DELETE, MAX_USER_COUNT } = require('./config');
 
 const { MappedToDestinationKey } = require('../../../constants');
 const { processRecordInputs } = require('./recordTransform');
@@ -158,15 +158,11 @@ const processEvent = (message, destination) => {
   const respList = [];
   let toSendEvents = [];
   let { userSchema } = destination.Config;
-  const { isHashRequired, audienceId, maxUserCount } = destination.Config;
+  const { isHashRequired, audienceId } = destination.Config;
   if (!message.type) {
     throw new InstrumentationError('Message Type is not present. Aborting message.');
   }
-  const maxUserCountNumber = parseInt(maxUserCount, 10);
 
-  if (Number.isNaN(maxUserCountNumber)) {
-    throw new ConfigurationError('Batch size must be an Integer.');
-  }
   if (message.type.toLowerCase() !== 'audiencelist') {
     throw new InstrumentationError(` ${message.type} call is not supported `);
   }
@@ -198,7 +194,7 @@ const processEvent = (message, destination) => {
 
   // when "remove" is present in the payload
   if (isDefinedAndNotNullAndNotEmpty(listData[USER_DELETE])) {
-    const audienceChunksArray = returnArrayOfSubarrays(listData[USER_DELETE], maxUserCountNumber);
+    const audienceChunksArray = returnArrayOfSubarrays(listData[USER_DELETE], MAX_USER_COUNT);
     toSendEvents = prepareToSendEvents(
       message,
       destination,
@@ -211,7 +207,7 @@ const processEvent = (message, destination) => {
 
   // When "add" is present in the payload
   if (isDefinedAndNotNullAndNotEmpty(listData[USER_ADD])) {
-    const audienceChunksArray = returnArrayOfSubarrays(listData[USER_ADD], maxUserCountNumber);
+    const audienceChunksArray = returnArrayOfSubarrays(listData[USER_ADD], MAX_USER_COUNT);
     toSendEvents.push(
       ...prepareToSendEvents(
         message,
@@ -252,7 +248,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
   }
 
   if (groupedInputs.record) {
-    transformedRecordEvent = await processRecordInputs(groupedInputs.record, reqMetadata);
+    transformedRecordEvent = await processRecordInputs(groupedInputs.record);
   }
 
   if (groupedInputs.audiencelist) {

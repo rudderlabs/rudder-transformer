@@ -26,6 +26,7 @@ import {
 import stats from '../../util/stats';
 import tags from '../../v0/util/tags';
 import { DestinationPostTransformationService } from './postTransformation';
+import { groupRouterTransformEvents } from '../../v0/util';
 
 export class NativeIntegrationDestinationService implements DestinationService {
   public init() {}
@@ -99,11 +100,7 @@ export class NativeIntegrationDestinationService implements DestinationService {
     requestMetadata: NonNullable<unknown>,
   ): Promise<RouterTransformationResponse[]> {
     const destHandler = FetchHandler.getDestHandler(destinationType, version);
-    const allDestEvents: NonNullable<unknown> = groupBy(
-      events,
-      (ev: RouterTransformationRequestData) => ev.destination?.ID,
-    );
-    const groupedEvents: RouterTransformationRequestData[][] = Object.values(allDestEvents);
+    const groupedEvents: RouterTransformationRequestData[][] = groupRouterTransformEvents(events);
     const response: RouterTransformationResponse[][] = await Promise.all(
       groupedEvents.map(async (destInputArray: RouterTransformationRequestData[]) => {
         const metaTO = this.getTags(

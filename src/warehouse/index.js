@@ -208,8 +208,11 @@ function setDataFromInputAndComputeColumnTypes(
   level = 0,
 ) {
   if (!input || !isObject(input)) return;
-  if ((completePrefix.endsWith('context_traits_') || completePrefix === 'group_traits_') && isStringLikeObject(input)) {
-    if (prefix === 'context_traits_' || completePrefix === 'group_traits_') {
+  if (
+    (completePrefix.endsWith('context_traits_') || completePrefix === 'group_traits_') &&
+    isStringLikeObject(input)
+  ) {
+    if (prefix === 'context_traits_') {
       appendColumnNameAndType(
         utils,
         eventType,

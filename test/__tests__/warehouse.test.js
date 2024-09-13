@@ -1235,18 +1235,18 @@ describe("isBlank", () => {
   }
 });
 
-describe("context traits", () => {
+describe("context/group traits", () => {
   const testCases = [
     {
-      name: "context traits with string like object",
+      name: "traits with string like object",
       input: {"1":"f","2":"o", "3":"o"},
       expectedData: "foo",
       expectedMetadata: "string",
       expectedColumns: ["context_traits"],
-      groupTypeColumns: ["group_traits"]
+      groupTypeColumns: []
     },
     {
-      name: "context traits with string like object with missing keys",
+      name: "traits with string like object with missing keys",
       input: {"1":"a","3":"a"},
       expectedData: "a",
       expectedMetadata: "string",
@@ -1254,14 +1254,14 @@ describe("context traits", () => {
       groupTypeColumns: ["_1", "_3"]
     },
     {
-      name: "context traits with empty object",
+      name: "traits with empty object",
       input: {},
       expectedData: {},
       expectedColumns: [],
       groupTypeColumns: []
     },
     {
-      name: "context traits with empty array",
+      name: "traits with empty array",
       input: [],
       expectedData: [],
       expectedMetadata: "array",
@@ -1269,7 +1269,7 @@ describe("context traits", () => {
       groupTypeColumns: []
     },
     {
-      name: "context traits with null",
+      name: "traits with null",
       input: null,
       expectedData: null,
       expectedMetadata: "null",
@@ -1277,7 +1277,7 @@ describe("context traits", () => {
       groupTypeColumns: []
     },
     {
-      name: "context traits with undefined",
+      name: "traits with undefined",
       input: undefined,
       expectedData: undefined,
       expectedMetadata: "undefined",
@@ -1285,7 +1285,7 @@ describe("context traits", () => {
       groupTypeColumns: []
     },
     {
-      name: "context traits with string",
+      name: "traits with string",
       input: "already a string",
       expectedData: "already a string",
       expectedMetadata: "string",
@@ -1293,7 +1293,7 @@ describe("context traits", () => {
       groupTypeColumns: []
     },
     {
-      name: "context traits with number",
+      name: "traits with number",
       input: 42,
       expectedData: 42,
       expectedMetadata: "int",
@@ -1301,7 +1301,7 @@ describe("context traits", () => {
       groupTypeColumns: []
     },
     {
-      name: "context traits with boolean",
+      name: "traits with boolean",
       input: true,
       expectedData: true,
       expectedMetadata: "boolean",
@@ -1309,7 +1309,7 @@ describe("context traits", () => {
       groupTypeColumns: []
     },
     {
-      name: "context traits with array",
+      name: "traits with array",
       input: ["a", "b", "cd"],
       expectedData: ["a", "b", "cd"],
       expectedMetadata: "string",

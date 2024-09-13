@@ -1242,69 +1242,79 @@ describe("context traits", () => {
       input: {"1":"f","2":"o", "3":"o"},
       expectedData: "foo",
       expectedMetadata: "string",
-      expectedColumns: ["context_traits"]
+      expectedColumns: ["context_traits"],
+      groupTypeColumns: ["group_traits"]
     },
     {
       name: "context traits with string like object with missing keys",
       input: {"1":"a","3":"a"},
       expectedData: "a",
       expectedMetadata: "string",
-      expectedColumns: ["context_traits_1", "context_traits_3"]
+      expectedColumns: ["context_traits_1", "context_traits_3"],
+      groupTypeColumns: ["_1", "_3"]
     },
     {
       name: "context traits with empty object",
       input: {},
       expectedData: {},
       expectedColumns: [],
+      groupTypeColumns: []
     },
     {
       name: "context traits with empty array",
       input: [],
       expectedData: [],
       expectedMetadata: "array",
-      expectedColumns: []
+      expectedColumns: [],
+      groupTypeColumns: []
     },
     {
       name: "context traits with null",
       input: null,
       expectedData: null,
       expectedMetadata: "null",
-      expectedColumns: []
+      expectedColumns: [],
+      groupTypeColumns: []
     },
     {
       name: "context traits with undefined",
       input: undefined,
       expectedData: undefined,
       expectedMetadata: "undefined",
-      expectedColumns: []
+      expectedColumns: [],
+      groupTypeColumns: []
     },
     {
       name: "context traits with string",
       input: "already a string",
       expectedData: "already a string",
       expectedMetadata: "string",
-      expectedColumns: ["context_traits"]
+      expectedColumns: ["context_traits"],
+      groupTypeColumns: []
     },
     {
       name: "context traits with number",
       input: 42,
       expectedData: 42,
       expectedMetadata: "int",
-      expectedColumns: ["context_traits"]
+      expectedColumns: ["context_traits"],
+      groupTypeColumns: []
     },
     {
       name: "context traits with boolean",
       input: true,
       expectedData: true,
       expectedMetadata: "boolean",
-      expectedColumns: ["context_traits"]
+      expectedColumns: ["context_traits"],
+      groupTypeColumns: []
     },
     {
       name: "context traits with array",
       input: ["a", "b", "cd"],
       expectedData: ["a", "b", "cd"],
       expectedMetadata: "string",
-      expectedColumns: ["context_traits"]
+      expectedColumns: ["context_traits"],
+      groupTypeColumns: []
     }
   ];
   for (const t of testCases) {
@@ -1312,6 +1322,7 @@ describe("context traits", () => {
       for (const e of eventTypes) {
         let i = input(e);
         i.message.context = {"traits": t.input};
+        i.message.traits = t.input;
         if (i.metadata) delete i.metadata.sourceCategory;
         transformers.forEach((transformer, index) => {
           const received = transformer.process(i);
@@ -1322,6 +1333,16 @@ describe("context traits", () => {
           for (const column of t.expectedColumns) {
             expect(received[0].metadata.columns[integrationCasedString(integrations[index], column)]).toEqual(t.expectedMetadata);
             expect(received[0].data[integrationCasedString(integrations[index], column)]).toEqual(t.expectedData);
+          }
+          if(e==="group") {
+            if(t.groupTypeColumns.length === 0) {
+              expect(received[0].metadata.columns[integrationCasedString(integrations[index], "group_traits")]).toEqual(undefined);
+              expect(received[0].metadata.columns[integrationCasedString(integrations[index], "group_traits")]).toEqual(undefined);
+            }
+            for (const column of t.groupTypeColumns) {
+              expect(received[0].metadata.columns[integrationCasedString(integrations[index], column)]).toEqual(t.expectedMetadata);
+              expect(received[0].data[integrationCasedString(integrations[index], column)]).toEqual(t.expectedData);
+            }
           }
         });
       }

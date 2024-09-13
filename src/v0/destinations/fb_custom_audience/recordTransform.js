@@ -1,13 +1,7 @@
 /* eslint-disable no-const-assign */
 const lodash = require('lodash');
-const get = require('get-value');
-const {
-  InstrumentationError,
-  ConfigurationError,
-  PlatformError,
-} = require('@rudderstack/integrations-lib');
+const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const { schemaFields, MAX_USER_COUNT } = require('./config');
-const { MappedToDestinationKey } = require('../../../constants');
 const stats = require('../../../util/stats');
 const {
   getDestinationExternalIDInfoForRetl,
@@ -220,23 +214,17 @@ function preparePayload(events, config) {
   return finalResponse;
 }
 
-async function processRecordInputsV1(groupedRecordInputs) {
+function processRecordInputsV1(groupedRecordInputs) {
   const { destination } = groupedRecordInputs[0];
   const { message } = groupedRecordInputs[0];
   const { isHashRequired, disableFormat, type, subType, isRaw, audienceId, userSchema } =
     destination.Config;
 
-  // mapped to destination
-  const mappedToDestination = get(message, MappedToDestinationKey);
   let operationAudienceId = audienceId;
-  if (mappedToDestination) {
+  let updatedUserSchema = userSchema;
+  if (isEventSentByVDMV1Flow(groupedRecordInputs[0])) {
     const { objectType } = getDestinationExternalIDInfoForRetl(message, 'FB_CUSTOM_AUDIENCE');
     operationAudienceId = objectType;
-  }
-
-  // user schema override
-  let updatedUserSchema = userSchema;
-  if (mappedToDestination) {
     updatedUserSchema = getSchemaForEventMappedToDest(message);
   }
 
@@ -251,7 +239,7 @@ async function processRecordInputsV1(groupedRecordInputs) {
   });
 }
 
-const processRecordInputsV2 = async (groupedRecordInputs) => {
+const processRecordInputsV2 = (groupedRecordInputs) => {
   const { connection, message } = groupedRecordInputs[0];
   const { isHashRequired, disableFormat, type, subType, isRaw, audienceId } =
     connection.config.destination;
@@ -278,15 +266,12 @@ const processRecordInputsV2 = async (groupedRecordInputs) => {
   });
 };
 
-async function processRecordInputs(groupedRecordInputs) {
+function processRecordInputs(groupedRecordInputs) {
   const event = groupedRecordInputs[0];
-  if (isEventSentByVDMV1Flow(event)) {
-    return processRecordInputsV1(groupedRecordInputs);
-  }
   if (isEventSentByVDMV2Flow(event)) {
     return processRecordInputsV2(groupedRecordInputs);
   }
-  throw new PlatformError('unsupported record event format');
+  return processRecordInputsV1(groupedRecordInputs);
 }
 
 module.exports = {

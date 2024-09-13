@@ -1,5 +1,4 @@
 const lodash = require('lodash');
-const get = require('get-value');
 const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const {
   checkSubsetOfArray,
@@ -7,11 +6,9 @@ const {
   returnArrayOfSubarrays,
   flattenMap,
   simpleProcessRouterDest,
-  getDestinationExternalIDInfoForRetl,
 } = require('../../util');
 const {
   prepareDataField,
-  getSchemaForEventMappedToDest,
   batchingWithPayloadSize,
   generateAppSecretProof,
   responseBuilderSimple,
@@ -19,7 +16,6 @@ const {
 } = require('./util');
 const { schemaFields, USER_ADD, USER_DELETE, MAX_USER_COUNT } = require('./config');
 
-const { MappedToDestinationKey } = require('../../../constants');
 const { processRecordInputs } = require('./recordTransform');
 const logger = require('../../../logger');
 
@@ -70,14 +66,6 @@ const prepareResponse = (
   isHashRequired = true,
 ) => {
   const { accessToken, disableFormat, type, subType, isRaw, appSecret } = destination.Config;
-
-  const mappedToDestination = get(message, MappedToDestinationKey);
-
-  // If mapped to destination, use the mapped fields instead of destination userschema
-  if (mappedToDestination) {
-    // eslint-disable-next-line no-param-reassign
-    userSchema = getSchemaForEventMappedToDest(message);
-  }
 
   const prepareParams = {};
   // creating the parameters field
@@ -166,19 +154,9 @@ const processEvent = (message, destination) => {
   if (message.type.toLowerCase() !== 'audiencelist') {
     throw new InstrumentationError(` ${message.type} call is not supported `);
   }
-  let operationAudienceId = audienceId;
-  const mappedToDestination = get(message, MappedToDestinationKey);
-  if (!operationAudienceId && mappedToDestination) {
-    const { objectType } = getDestinationExternalIDInfoForRetl(message, 'FB_CUSTOM_AUDIENCE');
-    operationAudienceId = objectType;
-  }
-  if (!isDefinedAndNotNullAndNotEmpty(operationAudienceId)) {
-    throw new ConfigurationError('Audience ID is a mandatory field');
-  }
 
-  // If mapped to destination, use the mapped fields instead of destination userschema
-  if (mappedToDestination) {
-    userSchema = getSchemaForEventMappedToDest(message);
+  if (!isDefinedAndNotNullAndNotEmpty(audienceId)) {
+    throw new ConfigurationError('Audience ID is a mandatory field');
   }
 
   // When one single schema field is added in the webapp, it does not appear to be an array
@@ -221,7 +199,7 @@ const processEvent = (message, destination) => {
   }
 
   toSendEvents.forEach((sendEvent) => {
-    respList.push(responseBuilderSimple(sendEvent, operationAudienceId));
+    respList.push(responseBuilderSimple(sendEvent, audienceId));
   });
   // When userListAdd or userListDelete is absent or both passed as empty arrays
   if (respList.length === 0) {
@@ -248,7 +226,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
   }
 
   if (groupedInputs.record) {
-    transformedRecordEvent = await processRecordInputs(groupedInputs.record);
+    transformedRecordEvent = processRecordInputs(groupedInputs.record);
   }
 
   if (groupedInputs.audiencelist) {

@@ -56,13 +56,6 @@ const missingAudienceIDConnection: Connection = {
   },
 };
 
-const invalidV2Connection: Connection = {
-  sourceId: '2MUWghI7u85n91dd1qzGyswpZan',
-  destinationId: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
-  enabled: true,
-  config: {},
-};
-
 export const rETLRecordV2RouterRequest: RouterTransformationRequest = {
   input: [
     {
@@ -167,35 +160,6 @@ export const rETLRecordV2RouterInvalidRequest: RouterTransformationRequest = {
   destType: 'fb_custom_audience',
 };
 
-export const rETLRecordInvalidRequest: RouterTransformationRequest = {
-  input: [
-    {
-      destination: destinationV2,
-      connection: invalidV2Connection,
-      message: {
-        action: 'insert',
-        context: {
-          sources: {
-            job_run_id: 'cgiiurt8um7k7n5dq480',
-            task_run_id: 'cgiiurt8um7k7n5dq48g',
-            job_id: '2MUWghI7u85n91dd1qzGyswpZan',
-            version: '895/merge',
-          },
-        },
-        recordId: '2',
-        rudderId: '2',
-        identifiers: {
-          EMAIL: 'subscribed@eewrfrd.com',
-          FI: 'ghui',
-        },
-        type: 'record',
-      },
-      metadata: generateMetadata(1),
-    },
-  ],
-  destType: 'fb_custom_audience',
-};
-
 export const destinationV1: Destination = {
   Config: {
     accessToken: 'ABC',
@@ -203,7 +167,6 @@ export const destinationV1: Destination = {
     disableFormat: false,
     isHashRequired: true,
     isRaw: false,
-    maxUserCount: '3',
     oneTrustCookieCategories: [],
     skipVerify: false,
     subType: 'NA',

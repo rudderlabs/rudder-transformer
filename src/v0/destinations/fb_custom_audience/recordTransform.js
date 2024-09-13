@@ -243,7 +243,7 @@ const processRecordInputsV2 = (groupedRecordInputs) => {
   const { connection, message } = groupedRecordInputs[0];
   const { isHashRequired, disableFormat, type, subType, isRaw, audienceId } =
     connection.config.destination;
-  //Ref: https://www.notion.so/rudderstacks/VDM-V2-Final-Config-and-Record-EventPayload-8cc80f3d88ad46c7bc43df4b87a0bbff
+  // Ref: https://www.notion.so/rudderstacks/VDM-V2-Final-Config-and-Record-EventPayload-8cc80f3d88ad46c7bc43df4b87a0bbff
   const identifiers = message?.identifiers;
   let userSchema;
   if (identifiers) {

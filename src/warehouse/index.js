@@ -216,7 +216,7 @@ function setDataFromInputAndComputeColumnTypes(
       appendColumnNameAndType(
         utils,
         eventType,
-        `${prefix.length > 0 ? prefix : completePrefix}`,
+        `${prefix}`,
         stringLikeObjectToString(input),
         output,
         columnTypes,

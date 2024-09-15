@@ -82,7 +82,7 @@ function safeColumnName(options, name = '') {
   path to $1,00,000 to path_to_1_00_000
   return an empty string if it couldn't find a char if its ascii value doesnt belong to numbers or english alphabets
 */
-function transformName(provider, name = '') {
+function transformName(options, provider, name = '') {
   const extractedValues = [];
   let extractedValue = '';
   for (let i = 0; i < name.length; i += 1) {
@@ -120,6 +120,9 @@ function transformName(provider, name = '') {
   if (provider === 'postgres') {
     key = key.substr(0, 63);
   }
+  if (!options?.underscoreDivideNumbers) {
+    key = key.replace(/(\w)_(\d+)/g, '$1$2');
+  }
   return key;
 }
 
@@ -150,7 +153,7 @@ function toBlendoCase(name = '') {
 
 function transformTableName(options, name = '') {
   const useBlendoCasing = options.integrationOptions?.useBlendoCasing || false;
-  return useBlendoCasing ? toBlendoCase(name) : transformName('', name);
+  return useBlendoCasing ? toBlendoCase(name) : transformName(options, '', name);
 }
 
 function transformColumnName(options, name = '') {
@@ -158,7 +161,7 @@ function transformColumnName(options, name = '') {
   const useBlendoCasing = options.integrationOptions?.useBlendoCasing || false;
   return useBlendoCasing
     ? transformNameToBlendoCase(provider, name)
-    : transformName(provider, name);
+    : transformName(options, provider, name);
 }
 
 module.exports = {

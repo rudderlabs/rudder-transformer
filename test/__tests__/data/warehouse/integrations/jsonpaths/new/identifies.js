@@ -1,7 +1,11 @@
 module.exports = {
     input: {
         destination: {
-            Config: {}
+            Config: {
+                allowUsersContextTraits: true,
+                allowEventContextTraits: true,
+                underscoreDivideNumbers: true
+            }
         },
         message: {
             type: "identify",

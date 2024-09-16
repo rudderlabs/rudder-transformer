@@ -92,8 +92,7 @@ export const data = [
                   endpoint: 'https://ap15.salesforce.com/services/data/v50.0/sobjects/Lead',
                   headers: {
                     'Content-Type': 'application/json',
-                    Authorization:
-                      'Bearer 00D2v000002lXbX!ARcAQJBSGNA1Rq.MbUdtmlREscrN_nO3ckBz6kc4jRQGxqAzNkhT1XZIF0yPqyCQSnezWO3osMw1ewpjToO7q41E9.LvedWY',
+                    Authorization: 'Bearer dummy.access.token',
                   },
                   params: {},
                   body: {
@@ -239,8 +238,7 @@ export const data = [
                     'https://ap15.salesforce.com/services/data/v50.0/sobjects/Lead/leadId?_HttpMethod=PATCH',
                   headers: {
                     'Content-Type': 'application/json',
-                    Authorization:
-                      'Bearer 00D2v000002lXbX!ARcAQJBSGNA1Rq.MbUdtmlREscrN_nO3ckBz6kc4jRQGxqAzNkhT1XZIF0yPqyCQSnezWO3osMw1ewpjToO7q41E9.LvedWY',
+                    Authorization: 'Bearer dummy.access.token',
                   },
                   params: {},
                   body: {
@@ -385,8 +383,7 @@ export const data = [
                   endpoint: 'https://ap15.salesforce.com/services/data/v50.0/sobjects/Lead',
                   headers: {
                     'Content-Type': 'application/json',
-                    Authorization:
-                      'Bearer 00D2v000002lXbX!ARcAQJBSGNA1Rq.MbUdtmlREscrN_nO3ckBz6kc4jRQGxqAzNkhT1XZIF0yPqyCQSnezWO3osMw1ewpjToO7q41E9.LvedWY',
+                    Authorization: 'Bearer dummy.access.token',
                   },
                   params: {},
                   body: {
@@ -456,8 +453,7 @@ export const data = [
                 endpoint: 'https://ap15.salesforce.com/services/data/v50.0/sobjects/Lead',
                 headers: {
                   'Content-Type': 'application/json',
-                  Authorization:
-                    'Bearer 00D2v000002lXbX!ARcAQJBSGNA1Rq.MbUdtmlREscrN_nO3ckBz6kc4jRQGxqAzNkhT1XZIF0yPqyCQSnezWO3osMw1ewpjToO7q41E9.LvedWY',
+                  Authorization: 'Bearer dummy.access.token',
                 },
                 params: {},
                 body: {
@@ -519,8 +515,7 @@ export const data = [
                 endpoint: 'https://ap15.salesforce.com/services/data/v50.0/sobjects/Lead',
                 headers: {
                   'Content-Type': 'application/json',
-                  Authorization:
-                    'Bearer 00D2v000002lXbX!ARcAQJBSGNA1Rq.MbUdtmlREscrN_nO3ckBz6kc4jRQGxqAzNkhT1XZIF0yPqyCQSnezWO3osMw1ewpjToO7q41E9.LvedWY',
+                  Authorization: 'Bearer dummy.access.token',
                 },
                 params: {},
                 body: {
@@ -673,13 +668,12 @@ export const data = [
                   endpoint: 'https://ap15.salesforce.com/services/data/v50.0/sobjects/customobject',
                   headers: {
                     'Content-Type': 'application/json',
-                    Authorization:
-                      'Bearer 00D2v000002lXbX!ARcAQJBSGNA1Rq.MbUdtmlREscrN_nO3ckBz6kc4jRQGxqAzNkhT1XZIF0yPqyCQSnezWO3osMw1ewpjToO7q41E9.LvedWY',
+                    Authorization: 'Bearer dummy.access.token',
                   },
                   params: {},
                   body: {
                     JSON: {
-                      "CustomObject__c": 72727,
+                      CustomObject__c: 72727,
                       address: {
                         postalCode: '94115',
                         city: 'east greenwich',
@@ -687,13 +681,13 @@ export const data = [
                         state: 'California',
                         street: '19123 forest lane',
                       },
-                      "anonymousId": "1e7673da-9473-49c6-97f7-da848ecafa76",
-                      "company": "Initech",
-                      "email": "peter.gibbons@initech.com",
-                      "name": "Peter Gibbons",
-                      "phone": "570-690-4150",
-                      "rating": "Hot",
-                      "title": "VP of Derp",
+                      anonymousId: '1e7673da-9473-49c6-97f7-da848ecafa76',
+                      company: 'Initech',
+                      email: 'peter.gibbons@initech.com',
+                      name: 'Peter Gibbons',
+                      phone: '570-690-4150',
+                      rating: 'Hot',
+                      title: 'VP of Derp',
                     },
                     XML: {},
                     JSON_ARRAY: {},

@@ -15,6 +15,7 @@ const {
   setAliasObject,
   collectStatsForAliasFailure,
   collectStatsForAliasMissConfigurations,
+  handleReservedProperties,
 } = require('./util');
 const tags = require('../../util/tags');
 const { EventType, MappedToDestinationKey } = require('../../../constants');
@@ -29,6 +30,7 @@ const {
   simpleProcessRouterDest,
   isNewStatusCodesAccepted,
   getDestinationExternalID,
+  getIntegrationsObj,
 } = require('../../util');
 const {
   ConfigCategory,
@@ -203,7 +205,7 @@ function getUserAttributesObject(message, mappingJson, destination) {
  * @param {*} message
  * @param {*} destination
  */
-async function processIdentify(message, destination) {
+async function processIdentify({ message, destination, metadata }) {
   const identifyPayload = getIdentifyPayload(message);
   const identifyEndpoint = getIdentifyEndpoint(getEndpointFromConfig(destination));
   const { processedResponse: brazeIdentifyResp } = await handleHttpRequest(
@@ -223,6 +225,7 @@ async function processIdentify(message, destination) {
       requestMethod: 'POST',
       module: 'router',
       endpointPath: '/users/identify',
+      metadata,
     },
   );
 
@@ -279,17 +282,6 @@ function processTrackWithUserAttributes(
   throw new InstrumentationError('No attributes found to update the user profile');
 }
 
-function handleReservedProperties(props) {
-  // remove reserved keys from custom event properties
-  // https://www.appboy.com/documentation/Platform_Wide/#reserved-keys
-  const reserved = ['time', 'product_id', 'quantity', 'event_name', 'price', 'currency'];
-
-  reserved.forEach((element) => {
-    delete props[element];
-  });
-  return props;
-}
-
 function addMandatoryEventProperties(payload, message) {
   payload.name = message.event;
   payload.time = message.timestamp;
@@ -331,13 +323,6 @@ function processTrackEvent(messageType, message, destination, mappingJson, proce
     eventName.toLowerCase() === 'order completed'
   ) {
     const purchaseObjs = getPurchaseObjs(message, destination.Config);
-
-    // del used properties
-    delete properties.products;
-    delete properties.currency;
-
-    const payload = { properties };
-    setExternalIdOrAliasObject(payload, message);
     return buildResponse(
       message,
       destination,
@@ -514,10 +499,14 @@ async function process(event, processParams = { userStore: new Map() }, reqMetad
       if (mappedToDestination) {
         adduserIdFromExternalId(message);
       }
+
+      const integrationsObj = getIntegrationsObj(message, 'BRAZE');
+      const isAliasPresent = isDefinedAndNotNull(integrationsObj?.alias);
+
       const brazeExternalID =
         getDestinationExternalID(message, 'brazeExternalId') || message.userId;
-      if (message.anonymousId && brazeExternalID) {
-        await processIdentify(message, destination);
+      if ((message.anonymousId || isAliasPresent) && brazeExternalID) {
+        await processIdentify({ message, destination });
       } else {
         collectStatsForAliasMissConfigurations(destination.ID);
       }

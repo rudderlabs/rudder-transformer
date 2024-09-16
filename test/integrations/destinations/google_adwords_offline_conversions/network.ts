@@ -1,3 +1,32 @@
+const commonResponse = {
+  status: 401,
+  data: [
+    {
+      error: {
+        code: 401,
+        details: [
+          {
+            '@type': 'type.googleapis.com/google.ads.googleads.v16.errors.GoogleAdsFailure',
+            errors: [
+              {
+                errorCode: {
+                  authenticationError: 'TWO_STEP_VERIFICATION_NOT_ENROLLED',
+                },
+                message:
+                  "An account administrator changed this account's authentication settings. To access this Google Ads account, enable 2-Step Verification in your Google account at https://www.google.com/landing/2step.",
+              },
+            ],
+            requestId: 'wy4ZYbsjWcgh6uC2Ruc_Zg',
+          },
+        ],
+        message:
+          'Request is missing required authentication credential. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.',
+        status: 'UNAUTHENTICATED',
+      },
+    },
+  ],
+};
+
 export const networkCallsData = [
   {
     httpReq: {
@@ -644,5 +673,50 @@ export const networkCallsData = [
         },
       },
     },
+  },
+  {
+    description:
+      'Mock response from destination depicting a request from user who has not enabled 2 factor authentication',
+    httpReq: {
+      url: 'https://googleads.googleapis.com/v16/customers/customerid/offlineUserDataJobs:create',
+      data: {
+        job: {
+          storeSalesMetadata: {
+            custom_key: 'CUSTOM_KEY',
+            loyaltyFraction: 1,
+            transaction_upload_fraction: '1',
+          },
+          type: 'STORE_SALES_UPLOAD_FIRST_PARTY',
+        },
+      },
+      params: { destination: 'google_adwords_offline_conversion' },
+      headers: {
+        Authorization: 'Bearer invalidabcd1234',
+        'Content-Type': 'application/json',
+        'developer-token': 'ijkl91011',
+        'login-customer-id': 'logincustomerid',
+      },
+      method: 'POST',
+    },
+    httpRes: commonResponse,
+  },
+  {
+    description:
+      'Mock response from destination depicting a request from user who has not enabled 2 factor authentication',
+    httpReq: {
+      url: 'https://googleads.googleapis.com/v16/customers/1112223333/googleAds:searchStream',
+      data: {
+        query:
+          "SELECT conversion_action.id FROM conversion_action WHERE conversion_action.name = 'Sign-up - click'",
+      },
+      headers: {
+        Authorization: 'Bearer invalidabcd1234',
+        'Content-Type': 'application/json',
+        'developer-token': 'ijkl91011',
+        'login-customer-id': 'logincustomerid',
+      },
+      method: 'POST',
+    },
+    httpRes: commonResponse,
   },
 ];

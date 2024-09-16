@@ -24,13 +24,18 @@ const generateAlphanumericId = (size = 36) =>
 export const getTestDataFilePaths = (dirPath: string, opts: OptionValues): string[] => {
   const globPattern = join(dirPath, '**', 'data.ts');
   let testFilePaths = globSync(globPattern);
-  if (opts.destination) {
-    testFilePaths = testFilePaths.filter((testFile) => testFile.includes(opts.destination));
+  let filteredTestFilePaths: string[] = testFilePaths;
+
+  const destinationOrSource = opts.destination || opts.source;
+  if (destinationOrSource) {
+    filteredTestFilePaths = testFilePaths.filter(
+      (testFile) => destinationOrSource && testFile.includes(`${destinationOrSource}/`),
+    );
   }
   if (opts.feature) {
-    testFilePaths = testFilePaths.filter((testFile) => testFile.includes(opts.feature));
+    filteredTestFilePaths = testFilePaths.filter((testFile) => testFile.includes(opts.feature));
   }
-  return testFilePaths;
+  return filteredTestFilePaths;
 };
 
 export const getTestData = (filePath): TestCaseData[] => {
@@ -563,7 +568,21 @@ export const validateTestWithZOD = (testPayload: TestCaseData, response: any) =>
 // -----------------------------
 // Helper functions
 
-export const generateMetadata = (jobId: number): any => {
+export const generateMetadata = (jobId: number, userId?: string): any => {
+  return {
+    jobId,
+    attemptNum: 1,
+    userId: userId || 'default-userId',
+    sourceId: 'default-sourceId',
+    destinationId: 'default-destinationId',
+    workspaceId: 'default-workspaceId',
+    secret: {
+      accessToken: 'default-accessToken',
+    },
+    dontBatch: false,
+  };
+};
+export const generateGoogleOAuthMetadata = (jobId: number): any => {
   return {
     jobId,
     attemptNum: 1,
@@ -572,7 +591,7 @@ export const generateMetadata = (jobId: number): any => {
     destinationId: 'default-destinationId',
     workspaceId: 'default-workspaceId',
     secret: {
-      accessToken: 'default-accessToken',
+      access_token: 'default-accessToken', // applicable for google destinations
     },
     dontBatch: false,
   };

@@ -10,6 +10,10 @@ on:
     branches:
       - master
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.sha }}
+  cancel-in-progress: true
+
 jobs:
   report-coverage:
     name: Report Code Coverage
@@ -53,6 +57,8 @@ jobs:
       load_target: development
       push_target: production
       build_type: dt
+      use_merge_sha: true
+      skip_tests: ${{startsWith(github.event.pull_request.head.ref, 'hotfix-release/')}}
     secrets:
       DOCKERHUB_PROD_TOKEN: ${{ secrets.DOCKERHUB_PROD_TOKEN }}
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}

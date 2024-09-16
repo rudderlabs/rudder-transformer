@@ -72,7 +72,14 @@
     "BLOOMREACH": true,
     "MOVABLE_INK": true,
     "EMARSYS": true,
-    "KODDI": true
+    "KODDI": true,
+    "WUNDERKIND": true,
+    "CLICKSEND": true,
+    "ZOHO": true,
+    "CORDIAL": true,
+    "BLOOMREACH_CATALOG": true,
+    "SMARTLY": true,
+    "WEBHOOK_V2": true
   },
   "regulations": [
     "BRAZE",

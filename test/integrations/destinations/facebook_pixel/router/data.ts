@@ -126,7 +126,7 @@ export const data = [
                 version: '1',
                 type: 'REST',
                 method: 'POST',
-                endpoint: 'https://graph.facebook.com/v18.0/dummyPixelId/events?access_token=09876',
+                endpoint: 'https://graph.facebook.com/v20.0/dummyPixelId/events?access_token=09876',
                 headers: {},
                 params: {},
                 body: {
@@ -165,7 +165,7 @@ export const data = [
                 version: '1',
                 type: 'REST',
                 method: 'POST',
-                endpoint: 'https://graph.facebook.com/v18.0/dummyPixelId/events?access_token=09876',
+                endpoint: 'https://graph.facebook.com/v20.0/dummyPixelId/events?access_token=09876',
                 headers: {},
                 params: {},
                 body: {
@@ -192,116 +192,6 @@ export const data = [
                   eventCustomProperties: [{ eventCustomProperties: '' }],
                   valueFieldIdentifier: '',
                   advancedMapping: true,
-                  whitelistPiiProperties: [{ whitelistPiiProperties: '' }],
-                },
-                Enabled: true,
-              },
-            },
-          ],
-        },
-      },
-    },
-  },
-  {
-    name: 'facebook_pixel',
-    description:
-      'Test 1 : adTrackingEnabled is passed in context, advertiser_tracking_enabled set to true',
-    feature: 'router',
-    module: 'destination',
-    version: 'v0',
-    input: {
-      request: {
-        body: {
-          input: [
-            {
-              message: {
-                anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
-                destination_props: { Fb: { app_id: 'RudderFbApp' } },
-                context: {
-                  device: {
-                    id: 'df16bffa-5c3d-4fbb-9bce-3bab098129a7R',
-                    manufacturer: 'Xiaomi',
-                    model: 'Redmi 6',
-                    name: 'xiaomi',
-                    adTrackingEnabled: true,
-                  },
-                  network: { carrier: 'Banglalink' },
-                  os: { name: 'android', version: '8.1.0' },
-                  screen: { height: '100', density: 50 },
-                  traits: {
-                    email: 'abc@gmail.com',
-                    anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
-                  },
-                },
-                event: 'spin_result',
-                integrations: { All: true },
-                message_id: 'a80f82be-9bdc-4a9f-b2a5-15621ee41df8',
-                properties: { revenue: 400, additional_bet_index: 0 },
-                timestamp: '2023-10-14T15:46:51.693229+05:30',
-                type: 'track',
-              },
-              metadata: { jobId: 1, userId: 'u1' },
-              destination: {
-                Config: {
-                  limitedDataUsage: true,
-                  blacklistPiiProperties: [{ blacklistPiiProperties: '', blacklistPiiHash: false }],
-                  removeExternalId: true,
-                  accessToken: '09876',
-                  pixelId: 'dummyPixelId',
-                  eventsToEvents: [{ from: '', to: '' }],
-                  eventCustomProperties: [{ eventCustomProperties: '' }],
-                  valueFieldIdentifier: '',
-                  advancedMapping: false,
-                  whitelistPiiProperties: [{ whitelistPiiProperties: '' }],
-                },
-                Enabled: true,
-              },
-            },
-          ],
-          destType: 'facebook_pixel',
-        },
-        method: 'POST',
-      },
-    },
-    output: {
-      response: {
-        status: 200,
-        body: {
-          output: [
-            {
-              batchedRequest: {
-                version: '1',
-                type: 'REST',
-                method: 'POST',
-                endpoint: 'https://graph.facebook.com/v18.0/dummyPixelId/events?access_token=09876',
-                headers: {},
-                params: {},
-                body: {
-                  JSON: {},
-                  XML: {},
-                  JSON_ARRAY: {},
-                  FORM: {
-                    data: [
-                      '{"user_data":{"em":"48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08"},"event_name":"spin_result","event_time":1697278611,"advertiser_tracking_enabled":true,"action_source":"other","custom_data":{"additional_bet_index":0,"value":400}}',
-                    ],
-                  },
-                },
-                files: {},
-              },
-              metadata: [{ jobId: 1, userId: 'u1' }],
-              batched: false,
-              statusCode: 200,
-              destination: {
-                Config: {
-                  limitedDataUsage: true,
-                  blacklistPiiProperties: [{ blacklistPiiProperties: '', blacklistPiiHash: false }],
-                  removeExternalId: true,
-                  accessToken: '09876',
-                  pixelId: 'dummyPixelId',
-                  eventsToEvents: [{ from: '', to: '' }],
-                  eventCustomProperties: [{ eventCustomProperties: '' }],
-                  valueFieldIdentifier: '',
-                  advancedMapping: false,
                   whitelistPiiProperties: [{ whitelistPiiProperties: '' }],
                 },
                 Enabled: true,

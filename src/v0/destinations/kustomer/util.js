@@ -2,12 +2,12 @@
 const lodash = require('lodash');
 const set = require('set-value');
 const get = require('get-value');
-const { NetworkError, AbortedError } = require('@rudderstack/integrations-lib');
-const myAxios = require('../../../util/myAxios');
+const { NetworkError } = require('@rudderstack/integrations-lib');
 const { DEFAULT_BASE_ENDPOINT } = require('./config');
 const { getType, isDefinedAndNotNull, isObject } = require('../../util');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const tags = require('../../util/tags');
+const { handleHttpRequest } = require('../../../adapters/network');
 
 /**
  * RegExp to test a string for a ISO 8601 Date spec
@@ -97,8 +97,8 @@ const handleAdvancedtransformations = (event) => {
   return cloneEvent;
 };
 
-const handleResponse = (response) => {
-  const { status, data } = response;
+const handleResponse = (processedResponse) => {
+  const { status, response: data } = processedResponse;
   switch (status) {
     case 200:
       if (data && data.data && data.data.id) {
@@ -113,7 +113,7 @@ const handleResponse = (response) => {
         {
           [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
         },
-        response,
+        processedResponse,
       );
     case 404:
       return { userExists: false };
@@ -124,36 +124,30 @@ const handleResponse = (response) => {
         {
           [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status || 400),
         },
-        response,
+        processedResponse,
       );
   }
 };
 
-const fetchKustomer = async (url, destination) => {
-  let response;
-  try {
-    response = await myAxios.get(
-      url,
-      {
-        headers: {
-          Authorization: `Bearer ${destination.Config.apiKey}`,
-        },
+const fetchKustomer = async (url, destination, metadata) => {
+  const { processedResponse } = await handleHttpRequest(
+    'get',
+    url,
+    {
+      headers: {
+        Authorization: `Bearer ${destination.Config.apiKey}`,
       },
-      {
-        destType: 'kustomer',
-        feature: 'transformation',
-        endpointPath: '/customers/email',
-        requestMethod: 'GET',
-        module: 'processor',
-      },
-    );
-  } catch (err) {
-    if (err.response) {
-      return handleResponse(err.response);
-    }
-    throw new AbortedError(err.message);
-  }
-  return handleResponse(response);
+    },
+    {
+      metadata,
+      destType: 'kustomer',
+      feature: 'transformation',
+      endpointPath: '/customers/email',
+      requestMethod: 'GET',
+      module: 'processor',
+    },
+  );
+  return handleResponse(processedResponse);
 };
 
 module.exports = {

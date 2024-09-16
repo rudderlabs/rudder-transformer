@@ -1,23 +1,25 @@
 import {
-  generateMetadata,
+  generateGoogleOAuthMetadata,
   generateProxyV0Payload,
   generateProxyV1Payload,
 } from '../../../testUtils';
 
-const commonHeaders = {
+import { API_VERSION } from '../../../../../src/v0/destinations/google_adwords_remarketing_lists/config';
+
+export const commonHeaders = {
   Authorization: 'Bearer dummy-access',
   'Content-Type': 'application/json',
   'developer-token': 'dummy-dev-token',
 };
 
-const commonParams = {
+export const commonParams = {
   destination: 'google_adwords_remarketing_lists',
   listId: '709078448',
   customerId: '7693729833',
   consent: { adPersonalization: 'UNSPECIFIED', adUserData: 'UNSPECIFIED' },
 };
 
-const validRequestPayload1 = {
+export const validRequestPayload1 = {
   enablePartialFailure: true,
   operations: [
     {
@@ -90,9 +92,9 @@ const invalidArgumentRequestPayload = {
   ],
 };
 
-const metadataArray = [generateMetadata(1)];
+const metadataArray = [generateGoogleOAuthMetadata(1)];
 
-const expectedStatTags = {
+export const expectedStatTags = {
   destType: 'GOOGLE_ADWORDS_REMARKETING_LISTS',
   destinationId: 'default-destinationId',
   errorCategory: 'network',
@@ -120,7 +122,7 @@ export const testScenariosForV0API = [
           headers: commonHeaders,
           params: commonParams,
           JSON: validRequestPayload1,
-          endpoint: 'https://googleads.googleapis.com/v15/customers/7693729833/offlineUserDataJobs',
+          endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
         }),
         method: 'POST',
       },
@@ -154,7 +156,7 @@ export const testScenariosForV0API = [
           headers: commonHeaders,
           params: commonParams,
           JSON: invalidArgumentRequestPayload,
-          endpoint: 'https://googleads.googleapis.com/v15/customers/7693729834/offlineUserDataJobs',
+          endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729834/offlineUserDataJobs`,
         }),
         method: 'POST',
       },
@@ -166,7 +168,7 @@ export const testScenariosForV0API = [
           output: {
             status: 400,
             message:
-              'Request contains an invalid argument. during ga_audience response transformation',
+              '{"error":{"code":400,"details":[{"@type":"type.googleapis.com/google.ads.googleads.v9.errors.GoogleAdsFailure","errors":[{"errorCode":{"offlineUserDataJobError":"INVALID_SHA256_FORMAT"},"message":"The SHA256 encoded value is malformed.","location":{"fieldPathElements":[{"fieldName":"operations","index":0},{"fieldName":"remove"},{"fieldName":"user_identifiers","index":0},{"fieldName":"hashed_email"}]}}]}],"message":"Request contains an invalid argument.","status":"INVALID_ARGUMENT"}} during ga_audience response transformation',
             destinationResponse: {
               error: {
                 code: 400,
@@ -217,7 +219,7 @@ export const testScenariosForV0API = [
           headers: commonHeaders,
           params: commonParams,
           JSON: validRequestPayload2,
-          endpoint: 'https://googleads.googleapis.com/v15/customers/7693729833/offlineUserDataJobs',
+          endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
         }),
         method: 'POST',
       },
@@ -255,8 +257,7 @@ export const testScenariosForV1API = [
             headers: commonHeaders,
             params: commonParams,
             JSON: validRequestPayload1,
-            endpoint:
-              'https://googleads.googleapis.com/v15/customers/7693729833/offlineUserDataJobs',
+            endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
           },
           metadataArray,
         ),
@@ -272,7 +273,7 @@ export const testScenariosForV1API = [
             response: [
               {
                 error: '""',
-                metadata: generateMetadata(1),
+                metadata: generateGoogleOAuthMetadata(1),
                 statusCode: 200,
               },
             ],
@@ -299,8 +300,7 @@ export const testScenariosForV1API = [
             headers: commonHeaders,
             params: commonParams,
             JSON: invalidArgumentRequestPayload,
-            endpoint:
-              'https://googleads.googleapis.com/v15/customers/7693729834/offlineUserDataJobs',
+            endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729834/offlineUserDataJobs`,
           },
           metadataArray,
         ),
@@ -313,12 +313,12 @@ export const testScenariosForV1API = [
         body: {
           output: {
             message:
-              'Request contains an invalid argument. during ga_audience response transformation',
+              '{"error":{"code":400,"details":[{"@type":"type.googleapis.com/google.ads.googleads.v9.errors.GoogleAdsFailure","errors":[{"errorCode":{"offlineUserDataJobError":"INVALID_SHA256_FORMAT"},"message":"The SHA256 encoded value is malformed.","location":{"fieldPathElements":[{"fieldName":"operations","index":0},{"fieldName":"remove"},{"fieldName":"user_identifiers","index":0},{"fieldName":"hashed_email"}]}}]}],"message":"Request contains an invalid argument.","status":"INVALID_ARGUMENT"}} during ga_audience response transformation',
             response: [
               {
                 error:
-                  'Request contains an invalid argument. during ga_audience response transformation',
-                metadata: generateMetadata(1),
+                  '{"error":{"code":400,"details":[{"@type":"type.googleapis.com/google.ads.googleads.v9.errors.GoogleAdsFailure","errors":[{"errorCode":{"offlineUserDataJobError":"INVALID_SHA256_FORMAT"},"message":"The SHA256 encoded value is malformed.","location":{"fieldPathElements":[{"fieldName":"operations","index":0},{"fieldName":"remove"},{"fieldName":"user_identifiers","index":0},{"fieldName":"hashed_email"}]}}]}],"message":"Request contains an invalid argument.","status":"INVALID_ARGUMENT"}} during ga_audience response transformation',
+                metadata: generateGoogleOAuthMetadata(1),
                 statusCode: 400,
               },
             ],
@@ -346,8 +346,7 @@ export const testScenariosForV1API = [
             headers: commonHeaders,
             params: commonParams,
             JSON: validRequestPayload2,
-            endpoint:
-              'https://googleads.googleapis.com/v15/customers/7693729833/offlineUserDataJobs',
+            endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
           },
           metadataArray,
         ),
@@ -363,11 +362,78 @@ export const testScenariosForV1API = [
             response: [
               {
                 error: '""',
-                metadata: generateMetadata(1),
+                metadata: generateGoogleOAuthMetadata(1),
                 statusCode: 200,
               },
             ],
             status: 200,
+          },
+        },
+      },
+    },
+  },
+  {
+    id: 'garl_v1_scenario_4',
+    name: 'google_adwords_remarketing_lists',
+    description:
+      '[Proxy v1 API] :: getting concurrent_modification error code while sending request to GA audience API',
+    successCriteria: 'Should return 500 with destination response',
+    scenario: 'Business',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v1',
+    input: {
+      request: {
+        body: generateProxyV1Payload(
+          {
+            headers: commonHeaders,
+            params: { ...commonParams, customerId: 'wrongCustomerId' },
+            JSON: validRequestPayload2,
+            endpoint:
+              'https://googleads.googleapis.com/v15/customers/wrongCustomerId/offlineUserDataJobs',
+          },
+          metadataArray,
+        ),
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: {
+            message:
+              '{"error":{"code":400,"message":"Request contains an invalid argument.","status":"INVALID_ARGUMENT","details":[{"@type":"type.googleapis.com/google.ads.googleads.v16.errors.GoogleAdsFailure","errors":[{"errorCode":{"databaseError":"CONCURRENT_MODIFICATION"},"message":"Multiple requests were attempting to modify the same resource at once. Retry the request."}],"requestId":"08X6xmM1WJPf_lW1ppYfsA"}]}} during ga_audience response transformation',
+            response: [
+              {
+                error:
+                  '{"error":{"code":400,"message":"Request contains an invalid argument.","status":"INVALID_ARGUMENT","details":[{"@type":"type.googleapis.com/google.ads.googleads.v16.errors.GoogleAdsFailure","errors":[{"errorCode":{"databaseError":"CONCURRENT_MODIFICATION"},"message":"Multiple requests were attempting to modify the same resource at once. Retry the request."}],"requestId":"08X6xmM1WJPf_lW1ppYfsA"}]}} during ga_audience response transformation',
+                metadata: {
+                  attemptNum: 1,
+                  destinationId: 'default-destinationId',
+                  dontBatch: false,
+                  jobId: 1,
+                  secret: {
+                    access_token: 'default-accessToken',
+                  },
+                  sourceId: 'default-sourceId',
+                  userId: 'default-userId',
+                  workspaceId: 'default-workspaceId',
+                },
+                statusCode: 500,
+              },
+            ],
+            statTags: {
+              destType: 'GOOGLE_ADWORDS_REMARKETING_LISTS',
+              destinationId: 'default-destinationId',
+              errorCategory: 'network',
+              errorType: 'retryable',
+              feature: 'dataDelivery',
+              implementation: 'native',
+              module: 'destination',
+              workspaceId: 'default-workspaceId',
+            },
+            status: 500,
           },
         },
       },

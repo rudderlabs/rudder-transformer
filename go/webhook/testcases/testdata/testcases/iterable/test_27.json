@@ -1,0 +1,88 @@
+{
+  "name": "iterable",
+  "description": "test-27",
+  "input": {
+    "request": {
+      "body": {
+        "email": "docs@iterable.com",
+        "eventName": "emailSend",
+        "dataFields": {
+          "contentId": 274222,
+          "email": "docs@iterable.com",
+          "createdAt": "2016-12-02 18:51:40 +00:00",
+          "campaignId": 49313,
+          "transactionalData": {
+            "__comment": "transactionalData lists the fields contained in the dataFields property of the API call or event used to trigger the email, campaign, or workflow. transactionalData must contain no more than 12k characters in total."
+          },
+          "templateId": 79190,
+          "messageId": "210badf49fe54f2591d64ad0d055f4fb",
+          "emailSubject": "My subject",
+          "campaignName": "My campaign name",
+          "workflowId": null,
+          "workflowName": null,
+          "templateName": "My template name",
+          "channelId": 3420,
+          "messageTypeId": 3866,
+          "experimentId": null,
+          "emailId": "c49313:t79190:docs@iterable.com"
+        }
+      },
+      "headers": {
+        "Content-Type": "application/json"
+      }
+    }
+  },
+  "output": {
+    "response": {
+      "status": 200,
+      "body": "OK"
+    },
+    "queue": [
+      {
+        "userId": "0e13848b1c7e27eb5d88c5d35b70783e",
+        "context": {
+          "integration": {
+            "name": "Iterable",
+            "version": "1.0.0"
+          },
+          "library": {
+            "name": "unknown",
+            "version": "unknown"
+          },
+          "traits": {
+            "email": "docs@iterable.com"
+          }
+        },
+        "event": "emailSend",
+        "integrations": {
+          "Iterable": false
+        },
+        "properties": {
+          "contentId": 274222,
+          "createdAt": "2016-12-02 18:51:40 +00:00",
+          "campaignId": 49313,
+          "transactionalData": {
+            "__comment": "transactionalData lists the fields contained in the dataFields property of the API call or event used to trigger the email, campaign, or workflow. transactionalData must contain no more than 12k characters in total."
+          },
+          "templateId": 79190,
+          "messageId": "210badf49fe54f2591d64ad0d055f4fb",
+          "emailSubject": "My subject",
+          "campaignName": "My campaign name",
+          "workflowId": null,
+          "workflowName": null,
+          "templateName": "My template name",
+          "channelId": 3420,
+          "messageTypeId": 3866,
+          "experimentId": null,
+          "emailId": "c49313:t79190:docs@iterable.com"
+        },
+        "receivedAt": "2016-12-02T18:51:40.000Z",
+        "timestamp": "2016-12-02T18:51:40.000Z",
+        "type": "track",
+        "request_ip": "192.0.2.30",
+        "messageId": "00000000-0000-0000-0000-000000000000"
+      }
+    ],
+    "errQueue": []
+  }
+}

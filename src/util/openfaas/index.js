@@ -5,6 +5,7 @@ const {
   invokeFunction,
   checkFunctionHealth,
   updateFunction,
+  getFunctionList,
 } = require('./faasApi');
 const logger = require('../../logger');
 const { RetryRequestError, RespStatusError } = require('../utils');
@@ -12,6 +13,8 @@ const stats = require('../stats');
 const { getMetadata, getTransformationMetadata } = require('../../v0/util');
 const { HTTP_STATUS_CODES } = require('../../v0/util/constant');
 
+const MAX_RETRY_WAIT_MS = parseInt(process.env.MAX_RETRY_WAIT_MS || '22000');
+const MAX_INTERVAL_IN_RETRIES_MS = parseInt(process.env.MAX_INTERVAL_IN_RETRIES_MS || '250');
 const FAAS_SCALE_TYPE = process.env.FAAS_SCALE_TYPE || 'capacity';
 const FAAS_SCALE_TARGET = process.env.FAAS_SCALE_TARGET || '4';
 const FAAS_SCALE_TARGET_PROPORTION = process.env.FAAS_SCALE_TARGET_PROPORTION || '0.70';
@@ -27,6 +30,14 @@ const FAAS_LIMITS_MEMORY = process.env.FAAS_LIMITS_MEMORY || FAAS_REQUESTS_MEMOR
 const FAAS_MAX_INFLIGHT = process.env.FAAS_MAX_INFLIGHT || '4';
 const FAAS_EXEC_TIMEOUT = process.env.FAAS_EXEC_TIMEOUT || '4s';
 const FAAS_ENABLE_WATCHDOG_ENV_VARS = process.env.FAAS_ENABLE_WATCHDOG_ENV_VARS || 'true';
+const FAAS_READINESS_HTTP_PATH = process.env.FAAS_READINESS_HTTP_PATH || '/ready';
+const FAAS_READINESS_HTTP_INITIAL_DELAY_S = process.env.FAAS_READINESS_HTTP_INITIAL_DELAY_S || '2';
+const FAAS_READINESS_HTTP_PERIOD_S = process.env.FAAS_READINESS_HTTP_PERIOD_S || '2';
+const FAAS_READINESS_HTTP_FAILURE_THRESHOLD =
+  process.env.FAAS_READINESS_HTTP_FAILURE_THRESHOLD || '5';
+const FAAS_READINESS_HTTP_SUCCESS_THRESHOLD =
+  process.env.FAAS_READINESS_HTTP_SUCCESS_THRESHOLD || '1';
+
 const CONFIG_BACKEND_URL = process.env.CONFIG_BACKEND_URL || 'https://api.rudderlabs.com';
 const GEOLOCATION_URL = process.env.GEOLOCATION_URL || '';
 const FAAS_AST_VID = 'ast';
@@ -34,7 +45,6 @@ const FAAS_AST_FN_NAME = 'fn-ast';
 const CUSTOM_NETWORK_POLICY_WORKSPACE_IDS = process.env.CUSTOM_NETWORK_POLICY_WORKSPACE_IDS || '';
 const customNetworkPolicyWorkspaceIds = CUSTOM_NETWORK_POLICY_WORKSPACE_IDS.split(',');
 const CUSTOMER_TIER = process.env.CUSTOMER_TIER || 'shared';
-const DISABLE_RECONCILE_FN = process.env.DISABLE_RECONCILE_FN == 'true' || false;
 
 // Initialise node cache
 const functionListCache = new NodeCache();
@@ -61,6 +71,54 @@ const callWithRetry = async (
     }
     await delayInMs(delay);
     return callWithRetry(fn, count + 1, delay, retryThreshold, args);
+  }
+};
+
+const getFunctionsForWorkspace = async (workspaceId) => {
+  logger.error(`Getting functions for workspace: ${workspaceId}`);
+
+  const workspaceFns = [];
+  const upstreamFns = await getFunctionList();
+
+  for (const fn of upstreamFns) {
+    if (fn?.labels?.workspaceId === workspaceId) {
+      workspaceFns.push(fn);
+    }
+  }
+  return workspaceFns;
+};
+
+const reconcileFunction = async (workspaceId, fns, migrateAll = false) => {
+  logger.info(`Reconciling workspace: ${workspaceId} fns: ${fns} and migrateAll: ${migrateAll}`);
+
+  try {
+    const workspaceFns = await getFunctionsForWorkspace(workspaceId);
+    // versionId and libraryVersionIds are used in the process
+    // to create the envProcess which will be copied from the original
+    // in next step
+    for (const workspaceFn of workspaceFns) {
+      // Only update the functions that are passed in the fns array
+      // given migrateAll is false
+      if (!migrateAll && !fns.includes(workspaceFn.name)) {
+        continue;
+      }
+
+      const tags = {
+        workspaceId: workspaceFn['labels']['workspaceId'],
+        transformationId: workspaceFn['labels']['transformationId'],
+      };
+
+      const payload = buildOpenfaasFn(workspaceFn.name, null, '', [], false, tags);
+      payload['envProcess'] = workspaceFn['envProcess'];
+
+      await updateFunction(workspaceFn.name, payload);
+      stats.increment('user_transform_reconcile_function', tags);
+    }
+
+    logger.info(`Reconciliation finished`);
+  } catch (error) {
+    logger.error(`Error while reconciling function ${fnName}: ${error.message}`);
+    throw new RespStatusError(error.message, error.statusCode);
   }
 };
 
@@ -183,8 +241,9 @@ const deployFaasFunction = async (
     // To handle concurrent create requests,
     // throw retry error if deployment or service already exists so that request can be retried
     if (
-      (error.statusCode === 500 || error.statusCode === 400) &&
-      error.message.includes('already exists')
+      ((error.statusCode === 500 || error.statusCode === 400) &&
+        error.message.includes('already exists')) ||
+      (error.statusCode === 409 && error.message.includes('Conflict change already made'))
     ) {
       setFunctionInCache(functionName);
       throw new RetryRequestError(`${functionName} already exists`);
@@ -203,7 +262,7 @@ async function setupFaasFunction(
 ) {
   try {
     if (!testMode && isFunctionDeployed(functionName)) {
-      logger.debug(`[Faas] Function ${functionName} already deployed`);
+      logger.error(`[Faas] Function ${functionName} already deployed`);
       return;
     }
     // deploy faas function
@@ -217,7 +276,7 @@ async function setupFaasFunction(
     );
 
     // This api call is only used to check if function is spinned correctly
-    await awaitFunctionReadiness(functionName);
+    await awaitFunctionReadiness(functionName, MAX_RETRY_WAIT_MS, MAX_INTERVAL_IN_RETRIES_MS);
 
     setFunctionInCache(functionName);
     logger.debug(`[Faas] Finished deploying faas function ${functionName}`);
@@ -226,28 +285,6 @@ async function setupFaasFunction(
     throw error;
   }
 }
-
-// reconcileFn runs everytime the service boot's up
-// trying to update the functions which are not in cache to the
-// latest label and envVars
-const reconcileFn = async (name, versionId, libraryVersionIDs, trMetadata) => {
-  if (DISABLE_RECONCILE_FN) {
-    return;
-  }
-
-  logger.debug(`Reconciling faas function: ${name}`);
-  try {
-    if (isFunctionDeployed(name)) {
-      return;
-    }
-    await updateFaasFunction(name, null, versionId, libraryVersionIDs, false, trMetadata);
-  } catch (error) {
-    logger.error(
-      `unexpected error occurred when reconciling the function ${name}: ${error.message}`,
-    );
-    throw error;
-  }
-};
 
 // buildOpenfaasFn is helper function to build openfaas fn CRUD payload
 function buildOpenfaasFn(name, code, versionId, libraryVersionIDs, testMode, trMetadata = {}) {
@@ -304,6 +341,11 @@ function buildOpenfaasFn(name, code, versionId, libraryVersionIDs, testMode, trM
     labels,
     annotations: {
       'prometheus.io.scrape': 'true',
+      'com.openfaas.ready.http.path': FAAS_READINESS_HTTP_PATH,
+      'com.openfaas.ready.http.initialDelaySeconds': FAAS_READINESS_HTTP_INITIAL_DELAY_S,
+      'com.openfaas.ready.http.periodSeconds': FAAS_READINESS_HTTP_PERIOD_S,
+      'com.openfaas.ready.http.successThreshold': FAAS_READINESS_HTTP_SUCCESS_THRESHOLD,
+      'com.openfaas.ready.http.failureThreshold': FAAS_READINESS_HTTP_FAILURE_THRESHOLD,
     },
     limits: {
       memory: FAAS_LIMITS_MEMORY,
@@ -332,8 +374,6 @@ const executeFaasFunction = async (
   try {
     if (testMode) {
       await awaitFunctionReadiness(name);
-    } else {
-      await reconcileFn(name, versionId, libraryVersionIDs, trMetadata);
     }
     return await invokeFunction(name, events);
   } catch (error) {
@@ -379,7 +419,6 @@ const executeFaasFunction = async (
     };
 
     stats.counter('user_transform_function_input_events', events.length, tags);
-    stats.timing('user_transform_function_latency', startTime, tags);
     stats.timingSummary('user_transform_function_latency_summary', startTime, tags);
   }
 };
@@ -393,4 +432,5 @@ module.exports = {
   FAAS_AST_VID,
   FAAS_AST_FN_NAME,
   setFunctionInCache,
+  reconcileFunction,
 };

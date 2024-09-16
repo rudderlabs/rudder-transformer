@@ -1,4 +1,4 @@
-import { ProxyV1TestData } from '../../../testTypes';
+import { API_VERSION } from '../../../../../src/v0/destinations/google_adwords_enhanced_conversions/config';
 import {
   generateProxyV1Payload,
   generateProxyV0Payload,
@@ -83,8 +83,7 @@ export const v0oauthScenarios = [
       request: {
         body: generateProxyV0Payload({
           ...commonRequestParameters,
-          endpoint:
-            'https://googleads.googleapis.com/v15/customers/1234567890:uploadConversionAdjustments',
+          endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/1234567890:uploadConversionAdjustments`,
         }),
         method: 'POST',
       },
@@ -137,8 +136,7 @@ export const v0oauthScenarios = [
             customerId: '1234567910',
             destination: 'google_adwords_enhanced_conversions',
           },
-          endpoint:
-            'https://googleads.googleapis.com/v15/customers/1234567910/googleAds:searchStream',
+          endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/1234567910/googleAds:searchStream`,
         }),
         method: 'POST',
       },
@@ -192,8 +190,7 @@ export const v1oauthScenarios = [
       request: {
         body: generateProxyV1Payload({
           ...commonRequestParameters,
-          endpoint:
-            'https://googleads.googleapis.com/v15/customers/1234567890:uploadConversionAdjustments',
+          endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/1234567890:uploadConversionAdjustments`,
         }),
         method: 'POST',
       },
@@ -244,8 +241,7 @@ export const v1oauthScenarios = [
             customerId: '1234567910',
             destination: 'google_adwords_enhanced_conversions',
           },
-          endpoint:
-            'https://googleads.googleapis.com/v15/customers/1234567910/googleAds:searchStream',
+          endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/1234567910/googleAds:searchStream`,
         }),
         method: 'POST',
       },

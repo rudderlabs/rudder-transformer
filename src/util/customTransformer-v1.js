@@ -89,6 +89,12 @@ async function userTransformHandlerV1(
     throw err;
   } finally {
     logger.debug(`Destroying IsolateVM`);
+    let used_heap_size = 0;
+    try {
+      used_heap_size = isolatevm.isolate.getHeapStatisticsSync()?.used_heap_size || 0;
+    } catch (err) {
+      logger.error(`Error encountered while getting heap size: ${err.message}`);
+    }
     isolatevmFactory.destroy(isolatevm);
     // send the observability stats
     const tags = {
@@ -98,8 +104,8 @@ async function userTransformHandlerV1(
       ...(events.length && events[0].metadata ? getTransformationMetadata(events[0].metadata) : {}),
     };
     stats.counter('user_transform_function_input_events', events.length, tags);
-    stats.timing('user_transform_function_latency', invokeTime, tags);
     stats.timingSummary('user_transform_function_latency_summary', invokeTime, tags);
+    stats.summary('user_transform_used_heap_size', used_heap_size, tags);
   }
 
   return { transformedEvents, logs };

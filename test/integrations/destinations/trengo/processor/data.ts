@@ -1461,4 +1461,87 @@ export const data = [
       },
     },
   },
+  {
+    name: 'trengo',
+    description: 'Test 16',
+    feature: 'processor',
+    module: 'destination',
+    id: 'processor_trengo',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: {
+              Config: {
+                apiToken: 'wrong_trengo_integration_test_api_token',
+                channelId: 'trengo_phone_channel',
+                channelIdentifier: 'email',
+                enableDedup: false,
+                eventTemplateMap: [
+                  { from: 'Product Purchased', to: '{{event}} from Rudderstack' },
+                  { from: 'checkedOut', to: 'Total cart value {{value}} shipped' },
+                  { from: 'Order Completed', to: 'Completed Order' },
+                  { from: 'Stress Test' },
+                  { from: 'Stress test2', to: '' },
+                  { from: 'Stress test3', to: '{event} Stress test' },
+                ],
+              },
+            },
+            message: {
+              userId: 'randomUserId',
+              type: 'track',
+              event: 'Stress test2',
+              properties: { name: 'Random_Track_call', value: 5000 },
+              context: {
+                ip: '14.5.67.21',
+                app: {
+                  build: '1',
+                  name: 'RudderAndroidClient',
+                  namespace: 'com.rudderstack.demo.android',
+                  version: '1.0',
+                },
+                device: {
+                  id: '7e32188a4dab669f',
+                  manufacturer: 'Google',
+                  model: 'Android SDK built for x86',
+                  name: 'generic_x86',
+                  type: 'android',
+                },
+                library: { name: 'com.rudderstack.android.sdk.core', version: '0.1.4' },
+                locale: 'en-US',
+                network: { carrier: 'Android', bluetooth: false, cellular: true, wifi: true },
+                os: { name: 'Android', version: '9' },
+                screen: { density: 420, height: 1794, width: 1080 },
+                timezone: 'Asia/Kolkata',
+              },
+              timestamp: '2020-02-02T00:23:09.544Z',
+            },
+          },
+        ],
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            // though we are getting undefined as statusText through mocked response but we are getting that from actual response
+            error:
+              '{"message":"Inside lookupContact, failed to make request: undefined","destinationResponse":{"response":{"message":"Unauthenticated.","errors":[]},"status":401}}',
+            statTags: {
+              destType: 'TRENGO',
+              errorCategory: 'network',
+              errorType: 'aborted',
+              feature: 'processor',
+              implementation: 'native',
+              module: 'destination',
+            },
+            statusCode: 401,
+          },
+        ],
+      },
+    },
+  },
 ];

@@ -172,6 +172,20 @@ const isDefinedNotNullNotEmpty = (value) =>
 const removeUndefinedNullEmptyExclBoolInt = (obj) => lodash.pickBy(obj, isDefinedNotNullNotEmpty);
 
 /**
+ * Function to remove empty key ("") from payload
+ * @param {*} payload {"key1":"a","":{"id":1}}
+ * @returns // {"key1":"a"}
+ */
+const removeEmptyKey = (payload) => {
+  const rawPayload = payload;
+  const key = '';
+  if (Object.prototype.hasOwnProperty.call(rawPayload, key)) {
+    delete rawPayload[''];
+  }
+  return rawPayload;
+};
+
+/**
  * Recursively removes undefined, null, empty objects, and empty arrays from the given object at all levels.
  * @param {*} obj
  * @returns
@@ -844,6 +858,19 @@ function formatValues(formattedVal, formattingType, typeFormat, integrationsObj)
         curFormattedVal = formattedVal.trim();
       }
     },
+    isFloat: () => {
+      if (isDefinedAndNotNull(formattedVal)) {
+        curFormattedVal = parseFloat(formattedVal);
+        if (Number.isNaN(curFormattedVal)) {
+          throw new InstrumentationError('Invalid float value');
+        }
+      }
+    },
+    removeSpacesAndDashes: () => {
+      if (typeof formattedVal === 'string') {
+        curFormattedVal = formattedVal.replace(/ /g, '').replace(/-/g, '');
+      }
+    },
   };
 
   if (formattingType in formattingFunctions) {
@@ -1141,7 +1168,7 @@ const getDestinationExternalIDInfoForRetl = (message, destination) => {
   if (externalIdArray) {
     externalIdArray.forEach((extIdObj) => {
       const { type, id } = extIdObj;
-      if (type.includes(`${destination}-`)) {
+      if (type?.includes(`${destination}-`)) {
         destinationExternalId = id;
         objectType = type.replace(`${destination}-`, '');
         identifierType = extIdObj.identifierType;
@@ -1168,7 +1195,7 @@ const getDestinationExternalIDObjectForRetl = (message, destination) => {
     // some stops the execution when the element is found
     externalIdArray.some((extIdObj) => {
       const { type } = extIdObj;
-      if (type.includes(`${destination}-`)) {
+      if (type?.includes(`${destination}-`)) {
         obj = extIdObj;
         return true;
       }
@@ -1604,16 +1631,6 @@ function isAppleFamily(platform) {
 
 function removeHyphens(str) {
   return str.replace(/-/g, '');
-}
-
-function isCdkDestination(event) {
-  // TODO: maybe dont need all these checks in place
-  return (
-    event.destination &&
-    event.destination.DestinationDefinition &&
-    event.destination.DestinationDefinition.Config &&
-    event.destination.DestinationDefinition.Config.cdkEnabled
-  );
 }
 
 /**
@@ -2251,6 +2268,27 @@ const validateEventAndLowerCaseConversion = (event, isMandatory, convertToLowerC
 const applyCustomMappings = (message, mappings) =>
   JsonTemplateEngine.createAsSync(mappings, { defaultPathType: PathType.JSON }).evaluate(message);
 
+const applyJSONStringTemplate = (message, template) =>
+  JsonTemplateEngine.createAsSync(template.replace(/{{/g, '${').replace(/}}/g, '}'), {
+    defaultPathType: PathType.JSON,
+  }).evaluate(message);
+
+/**
+ * Gets url path omitting the hostname & protocol
+ *
+ * **Note**:
+ * - This should only be used when there are no dynamic paths in URL
+ * @param {*} inputUrl
+ * @returns
+ */
+const getRelativePathFromURL = (inputUrl) => {
+  if (isValidUrl(inputUrl)) {
+    const url = new URL(inputUrl);
+    return url.pathname;
+  }
+  return inputUrl;
+};
+
 // ========================================================================
 // EXPORTS
 // ========================================================================
@@ -2260,6 +2298,7 @@ module.exports = {
   addExternalIdToTraits,
   adduserIdFromExternalId,
   applyCustomMappings,
+  applyJSONStringTemplate,
   base64Convertor,
   batchMultiplexedEvents,
   checkEmptyStringInarray,
@@ -2313,7 +2352,6 @@ module.exports = {
   hashToSha256,
   isAppleFamily,
   isBlank,
-  isCdkDestination,
   isDefined,
   isDefinedAndNotNull,
   isDefinedAndNotNullAndNotEmpty,
@@ -2371,4 +2409,6 @@ module.exports = {
   removeDuplicateMetadata,
   combineBatchRequestsWithSameJobIds,
   validateEventAndLowerCaseConversion,
+  getRelativePathFromURL,
+  removeEmptyKey,
 };

@@ -1,7 +1,11 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-nested-ternary */
 const get = require('get-value');
-const { InstrumentationError, TransformationError } = require('@rudderstack/integrations-lib');
+const {
+  InstrumentationError,
+  TransformationError,
+  isDefinedAndNotNull,
+} = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const {
   getEndpoint,
@@ -22,8 +26,10 @@ const {
   handleRtTfSingleEventError,
   batchMultiplexedEvents,
   getSuccessRespEvents,
+  getIntegrationsObj,
+  removeUndefinedNullValuesAndEmptyObjectArray,
 } = require('../../util');
-const { generateClevertapBatchedPayload } = require('./utils');
+const { generateClevertapBatchedPayload, deduceTokenType } = require('./utils');
 
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
@@ -268,7 +274,9 @@ const responseBuilderSimple = (message, category, destination) => {
         deviceToken &&
         (deviceOS === 'android' || isAppleFamily(deviceOS))
       ) {
-        const tokenType = deviceOS === 'android' ? 'fcm' : 'apns';
+        const tokenType = deduceTokenType(message, deviceOS);
+        const integObject = getIntegrationsObj(message, 'clevertap');
+        const chromeKeys = integObject?.chromeKeys;
         const payloadForDeviceToken = {
           d: [
             {
@@ -276,6 +284,7 @@ const responseBuilderSimple = (message, category, destination) => {
               tokenData: {
                 id: deviceToken,
                 type: tokenType,
+                keys: isDefinedAndNotNull(chromeKeys) ? chromeKeys : null,
               },
               objectId: get(message, 'anonymousId'),
             },
@@ -283,7 +292,12 @@ const responseBuilderSimple = (message, category, destination) => {
         };
         const respArr = [];
         respArr.push(responseWrapper(payload, destination)); // identify
-        respArr.push(responseWrapper(payloadForDeviceToken, destination)); // device token
+        respArr.push(
+          responseWrapper(
+            removeUndefinedNullValuesAndEmptyObjectArray(payloadForDeviceToken),
+            destination,
+          ),
+        ); // device token
         return respArr;
       }
     } else {
@@ -302,7 +316,7 @@ const responseBuilderSimple = (message, category, destination) => {
     // For 'Order Completed' type of events we are mapping it as 'Charged'
     // Special event in Clevertap.
     // Source: https://developer.clevertap.com/docs/concepts-events#recording-customer-purchases
-    if (get(message.event) && get(message.event).toLowerCase() === 'order completed') {
+    if (get(message.event) && get(message.event).toString().toLowerCase() === 'order completed') {
       eventPayload = {
         evtName: 'Charged',
         evtData: constructPayload(message, MAPPING_CONFIG[CONFIG_CATEGORIES.ECOM.name]),

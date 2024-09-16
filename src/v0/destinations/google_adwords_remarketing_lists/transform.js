@@ -108,7 +108,7 @@ const processEvent = async (metadata, message, destination) => {
       );
     }
 
-    const accessToken = getAccessToken(metadata, 'accessToken');
+    const accessToken = getAccessToken(metadata, 'access_token');
     const developerToken = getValueFromMessage(metadata, 'secret.developer_token');
 
     Object.values(createdPayload).forEach((data) => {

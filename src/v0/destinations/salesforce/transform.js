@@ -190,8 +190,9 @@ async function getSalesforceIdFromPayload(
         'Invalid externalId. id, type, identifierType must be provided',
       );
     }
-
-    const objectType = type.toLowerCase().replace('salesforce-', '');
+    const objectType = type
+      .toLowerCase()
+      .replace(`${destination.DestinationDefinition.Name.toLowerCase()}-`, '');
     let salesforceId = id;
 
     // Fetch the salesforce Id if the identifierType is not ID

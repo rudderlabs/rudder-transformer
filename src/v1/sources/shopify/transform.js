@@ -126,7 +126,7 @@ const trackPayloadBuilder = (event, shopifyTopic) => {
   return message;
 };
 
-const processEvent = async (inputEvent, metricMetadata) => {
+const processEvent = async (inputEvent, metricMetadata, source) => {
   let message;
   const event = lodash.cloneDeep(inputEvent);
   let redisData;
@@ -196,10 +196,17 @@ const processEvent = async (inputEvent, metricMetadata) => {
     }
   }
   message.setProperty(`integrations.${INTEGERATION}`, true);
-  message.setProperty('context.library', {
-    name: 'RudderStack Shopify Cloud',
-    version: '1.0.0',
-  });
+  if (source && source.Config && source.Config.version === 'v2') {
+    message.setProperty('context.library', {
+      name: 'RudderStack Shopify Cloud',
+      version: '2.0.0',
+    });
+  } else {
+    message.setProperty('context.library', {
+      name: 'RudderStack Shopify Cloud',
+      version: '1.0.0',
+    });
+  }
   message.setProperty('context.topic', shopifyTopic);
   // attaching cart, checkout and order tokens in context object
   message.setProperty(`context.cart_token`, event.cart_token);
@@ -287,14 +294,21 @@ const process = async (inputEvent) => {
   // check on the source Config to identify the event is from the tracker-based (legacy)
   // or the pixel-based (latest) implementation.
   if (source && isDefinedAndNotNull(source.Config) && source?.Config?.version === 'v2') {
-    const responseV2 = await processEventV2(event, metricMetadata);
-    return responseV2;
+    const { pixelEventLabel } = event;
+    if (pixelEventLabel) {
+      // this is a event fired from the web pixel loaded on the browser
+      // by the user interactions with the store.
+      const responseV2 = await processEventV2(event, metricMetadata);
+      return responseV2;
+    }
+    const webhookEvent = processEvent(event, metricMetadata, source);
+    return webhookEvent;
   }
   if (isIdentifierEvent(event)) {
     return processIdentifierEvent(event, metricMetadata);
   }
-  const response = await processEvent(event, metricMetadata);
+  const response = await processEvent(event, metricMetadata, source);
   return response;
 };
 
-module.exports = { process, processEvent };
+module.exports = { process };

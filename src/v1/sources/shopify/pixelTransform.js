@@ -1,6 +1,5 @@
 const stats = require('../../../util/stats');
 const logger = require('../../../logger');
-const { processEvent } = require('./transform');
 const { removeUndefinedAndNullValues } = require('../../../v0/util');
 const {
   pageViewedEventBuilder,
@@ -81,15 +80,10 @@ function processPixelEvent(inputEvent) {
   return message;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const processEventV2 = async (event, metricMetadata) => {
-  const { pixelEventLabel } = event;
-  if (pixelEventLabel) {
-    // this is a event fired from the web pixel loaded on the browser
-    // by the user interactions with the store.
-    const pixelEvent = processPixelEvent(event);
-    return removeUndefinedAndNullValues(pixelEvent);
-  }
-  return processEvent(event, metricMetadata);
+  const pixelEvent = processPixelEvent(event);
+  return removeUndefinedAndNullValues(pixelEvent);
 };
 
 module.exports = {

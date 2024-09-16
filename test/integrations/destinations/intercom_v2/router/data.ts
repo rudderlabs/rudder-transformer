@@ -2,11 +2,17 @@ import { RouterTransformationRequest } from '../../../../../src/types';
 import { generateMetadata } from '../../../testUtils';
 import {
   anonymousId,
-  channel, companyTraits,
-  destination, destinationApiServerAU,
+  channel,
+  companyTraits,
+  destination,
+  destinationApiServerAU,
   destinationApiServerEU,
-  detachUserCompanyUserTraits, headers, originalTimestamp,
-  properties, RouterInstrumentationErrorStatTags, timestamp,
+  detachUserCompanyUserTraits,
+  headers,
+  originalTimestamp,
+  properties,
+  RouterInstrumentationErrorStatTags,
+  timestamp,
   userTraits,
 } from '../common';
 import { RouterTestData } from '../../../testTypes';
@@ -98,8 +104,8 @@ const routerRequest1: RouterTransformationRequest = {
       metadata: {
         ...generateMetadata(5),
         secret: {
-          accessToken: 'revoked-accessToken'
-        }
+          accessToken: 'revoked-accessToken',
+        },
       },
     },
     {
@@ -201,7 +207,7 @@ const routerRequest3: RouterTransformationRequest = {
         channel,
         traits: {
           ...companyTraits,
-          email: "known-user-2-company@gmail.com"
+          email: 'known-user-2-company@gmail.com',
         },
         type: 'group',
         originalTimestamp,
@@ -346,7 +352,7 @@ const routerRequest5: RouterTransformationRequest = {
         channel,
         context: {
           traits: {
-            ...companyTraits
+            ...companyTraits,
           },
         },
         type: 'group',
@@ -362,7 +368,7 @@ const routerRequest5: RouterTransformationRequest = {
         channel,
         context: {
           traits: {
-            ...companyTraits
+            ...companyTraits,
           },
         },
         type: 'dummyGroupType',
@@ -373,17 +379,17 @@ const routerRequest5: RouterTransformationRequest = {
       metadata: generateMetadata(5),
     },
     {
-      destination:{
+      destination: {
         ...destination,
-        Config:{
+        Config: {
           apiVersion: 'v1',
-        }
+        },
       },
       message: {
         channel,
         context: {
           traits: {
-            ...companyTraits
+            ...companyTraits,
           },
         },
         type: 'group',
@@ -531,15 +537,17 @@ export const data: RouterTestData[] = [
                 'Unable to search contact due to : {"type":"error.list","request_id":"request_id-1","errors":[{"code":"unauthorized","message":"Access Token Invalid"}]}',
               statTags: {
                 ...RouterInstrumentationErrorStatTags,
-                errorType: "configuration",
+                errorType: 'configuration',
               },
               destination,
-              metadata: [{
-                ...generateMetadata(5),
-                secret: {
-                  accessToken: 'revoked-accessToken'
-                }
-              }],
+              metadata: [
+                {
+                  ...generateMetadata(5),
+                  secret: {
+                    accessToken: 'revoked-accessToken',
+                  },
+                },
+              ],
               statusCode: 400,
             },
             {
@@ -561,10 +569,10 @@ export const data: RouterTestData[] = [
   {
     id: 'INTERCOM-V2-router-test-2',
     scenario: 'Framework',
-    successCriteria:
-      'Events should be transformed successfully for apiVersion v2',
+    successCriteria: 'Events should be transformed successfully for apiVersion v2',
     name: 'intercom_v2',
-    description: 'INTERCOM V2 router tests with sendAnonymousId true for apiVersion v2 and eu apiServer',
+    description:
+      'INTERCOM V2 router tests with sendAnonymousId true for apiVersion v2 and eu apiServer',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -654,8 +662,7 @@ export const data: RouterTestData[] = [
   {
     id: 'INTERCOM-V2-router-test-3',
     scenario: 'Framework',
-    successCriteria:
-      'Events should be transformed successfully for apiVersion v2',
+    successCriteria: 'Events should be transformed successfully for apiVersion v2',
     name: 'intercom_v2',
     description:
       'INTERCOM V2 router tests when contact is found in intercom for au apiServer and apiVersion v2',
@@ -691,7 +698,8 @@ export const data: RouterTestData[] = [
                   FORM: {},
                   JSON_ARRAY: {},
                 },
-                endpoint: 'https://api.au.intercom.io/contacts/contact-id-by-intercom-known-user-id-1',
+                endpoint:
+                  'https://api.au.intercom.io/contacts/contact-id-by-intercom-known-user-id-1',
                 files: {},
                 headers,
                 method: 'PUT',
@@ -708,13 +716,14 @@ export const data: RouterTestData[] = [
               batchedRequest: {
                 body: {
                   JSON: {
-                    id: 'au-company-id-by-intercom'
+                    id: 'au-company-id-by-intercom',
                   },
                   XML: {},
                   FORM: {},
                   JSON_ARRAY: {},
                 },
-                endpoint: 'https://api.au.intercom.io/contacts/au-contact-id-by-intercom-known-email/companies',
+                endpoint:
+                  'https://api.au.intercom.io/contacts/au-contact-id-by-intercom-known-email/companies',
                 files: {},
                 headers,
                 method: 'POST',
@@ -782,7 +791,8 @@ export const data: RouterTestData[] = [
                   FORM: {},
                   JSON_ARRAY: {},
                 },
-                endpoint: 'https://api.intercom.io/contacts/contact-id-by-intercom-detached-from-company',
+                endpoint:
+                  'https://api.intercom.io/contacts/contact-id-by-intercom-detached-from-company',
                 files: {},
                 headers,
                 method: 'PUT',
@@ -820,8 +830,7 @@ export const data: RouterTestData[] = [
   {
     id: 'INTERCOM-V2-router-test-5',
     scenario: 'Framework',
-    successCriteria:
-      'validation should pass for apiVersion v2',
+    successCriteria: 'validation should pass for apiVersion v2',
     name: 'intercom_v2',
     description: 'INTERCOM V2 router validation tests',
     feature: 'router',
@@ -839,8 +848,7 @@ export const data: RouterTestData[] = [
           output: [
             {
               batched: false,
-              error:
-                'Either email or userId is required for Identify call',
+              error: 'Either email or userId is required for Identify call',
               statTags: RouterInstrumentationErrorStatTags,
               destination,
               metadata: [generateMetadata(1)],
@@ -848,8 +856,7 @@ export const data: RouterTestData[] = [
             },
             {
               batched: false,
-              error:
-                'Either email or userId is required for Track call',
+              error: 'Either email or userId is required for Track call',
               statTags: RouterInstrumentationErrorStatTags,
               destination,
               metadata: [generateMetadata(2)],
@@ -857,8 +864,7 @@ export const data: RouterTestData[] = [
             },
             {
               batched: false,
-              error:
-                'Missing required value from "event"',
+              error: 'Missing required value from "event"',
               statTags: RouterInstrumentationErrorStatTags,
               destination,
               metadata: [generateMetadata(3)],
@@ -866,8 +872,7 @@ export const data: RouterTestData[] = [
             },
             {
               batched: false,
-              error:
-                'Missing required value from "groupId"',
+              error: 'Missing required value from "groupId"',
               statTags: RouterInstrumentationErrorStatTags,
               destination,
               metadata: [generateMetadata(4)],
@@ -875,8 +880,7 @@ export const data: RouterTestData[] = [
             },
             {
               batched: false,
-              error:
-                'message type dummygrouptype is not supported.',
+              error: 'message type dummygrouptype is not supported.',
               statTags: RouterInstrumentationErrorStatTags,
               destination,
               metadata: [generateMetadata(5)],
@@ -884,14 +888,13 @@ export const data: RouterTestData[] = [
             },
             {
               batched: false,
-              error:
-                'apiVersion v1 is not supported.',
+              error: 'apiVersion v1 is not supported.',
               statTags: RouterInstrumentationErrorStatTags,
               destination: {
                 ...destination,
-                Config:{
+                Config: {
                   apiVersion: 'v1',
-                }
+                },
               },
               metadata: [generateMetadata(6)],
               statusCode: 400,

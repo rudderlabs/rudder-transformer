@@ -79,7 +79,8 @@
     "CORDIAL": true,
     "BLOOMREACH_CATALOG": true,
     "SMARTLY": true,
-    "WEBHOOK_V2": true
+    "WEBHOOK_V2": true,
+    "INTERCOM_V2": true
   },
   "regulations": [
     "BRAZE",

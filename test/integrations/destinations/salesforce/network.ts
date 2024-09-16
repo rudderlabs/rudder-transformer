@@ -247,6 +247,18 @@ const transformationMocksData = [
   },
   {
     httpReq: {
+      url: 'https://ap15.salesforce.com/services/data/v50.0/parameterizedSearch/?q=72727&sobject=customobject&in=CustomObject__c&customobject.fields=id,CustomObject__c',
+      method: 'GET',
+    },
+    httpRes: {
+      status: 200,
+      data: {
+        searchRecords: [],
+      },
+    },
+  },
+  {
+    httpReq: {
       url: 'https://ap15.salesforce.com/services/data/v50.0/parameterizedSearch/?q=peter.gibbons1%40initech.com&sobject=Lead&Lead.fields=id',
       method: 'GET',
     },

@@ -38,6 +38,9 @@ const FAAS_READINESS_HTTP_FAILURE_THRESHOLD =
 const FAAS_READINESS_HTTP_SUCCESS_THRESHOLD =
   process.env.FAAS_READINESS_HTTP_SUCCESS_THRESHOLD || '1';
 
+const PARENT_NAMESPACE = process.env.NAMESPACE || 'default';
+const PARENT_CLUSTER = process.env.FAAS_FN_PARENT_CLUSTER || 'default';
+
 const CONFIG_BACKEND_URL = process.env.CONFIG_BACKEND_URL || 'https://api.rudderlabs.com';
 const GEOLOCATION_URL = process.env.GEOLOCATION_URL || '';
 const FAAS_AST_VID = 'ast';
@@ -45,6 +48,7 @@ const FAAS_AST_FN_NAME = 'fn-ast';
 const CUSTOM_NETWORK_POLICY_WORKSPACE_IDS = process.env.CUSTOM_NETWORK_POLICY_WORKSPACE_IDS || '';
 const customNetworkPolicyWorkspaceIds = CUSTOM_NETWORK_POLICY_WORKSPACE_IDS.split(',');
 const CUSTOMER_TIER = process.env.CUSTOMER_TIER || 'shared';
+const FAAS_SCALE_DOWN_WINDOW = process.env.FAAS_SCALE_DOWN_WINDOW || ''; // Go time values are supported ( max 5m or 300s )
 
 // Initialise node cache
 const functionListCache = new NodeCache();
@@ -243,7 +247,7 @@ const deployFaasFunction = async (
     if (
       ((error.statusCode === 500 || error.statusCode === 400) &&
         error.message.includes('already exists')) ||
-      (error.statusCode === 409 && error.message.includes('Conflict change already made'))
+      (error.statusCode === 409 && error.message.includes('Conflicting change already made'))
     ) {
       setFunctionInCache(functionName);
       throw new RetryRequestError(`${functionName} already exists`);
@@ -313,6 +317,8 @@ function buildOpenfaasFn(name, code, versionId, libraryVersionIDs, testMode, trM
   const labels = {
     'openfaas-fn': 'true',
     'parent-component': 'openfaas',
+    'parent-namespace': PARENT_NAMESPACE,
+    'parent-cluster': PARENT_CLUSTER,
     'com.openfaas.scale.max': FAAS_MAX_PODS_IN_TEXT,
     'com.openfaas.scale.min': FAAS_MIN_PODS_IN_TEXT,
     'com.openfaas.scale.zero': FAAS_SCALE_ZERO,
@@ -327,6 +333,10 @@ function buildOpenfaasFn(name, code, versionId, libraryVersionIDs, testMode, trM
     customer: 'shared',
     'customer-tier': CUSTOMER_TIER,
   };
+
+  if (FAAS_SCALE_DOWN_WINDOW !== '') {
+    labels['com.openfaas.scale.down.window'] = FAAS_SCALE_DOWN_WINDOW;
+  }
 
   if (trMetadata.workspaceId && customNetworkPolicyWorkspaceIds.includes(trMetadata.workspaceId)) {
     labels['custom-network-policy'] = 'true';
@@ -431,6 +441,8 @@ module.exports = {
   buildOpenfaasFn,
   FAAS_AST_VID,
   FAAS_AST_FN_NAME,
+  PARENT_NAMESPACE,
+  PARENT_CLUSTER,
   setFunctionInCache,
   reconcileFunction,
 };

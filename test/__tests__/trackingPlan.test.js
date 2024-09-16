@@ -614,7 +614,7 @@ const eventValidationTestCases = [
     trackingPlan,
     output: [
       {
-        type: "Unknown-Violation",
+        type: "Advance-Rules-Violation",
         message: "must be <= 4",
         meta: {
           instancePath: "/properties/revenue",
@@ -665,7 +665,7 @@ const eventValidationTestCases = [
           instancePath: "/properties/dateString",
           schemaPath: "#/properties/properties/properties/dateString/format",
         },
-        type: "Unknown-Violation",
+        type: "Advance-Rules-Violation",
       }
     ]
   },

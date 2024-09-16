@@ -1,0 +1,134 @@
+{
+  "name": "cordial",
+  "description": "Simple Single object Input event with normal channel and action",
+  "input": {
+    "request": {
+      "body": {
+        "contact": {
+          "_id": "6690fe3655e334xx028xxx",
+          "channels": {
+            "email": {
+              "address": "jondoe@example.com",
+              "subscribeStatus": "subscribed",
+              "subscribedAt": "2024-07-12T09:58:14+0000"
+            }
+          },
+          "createdAt": "2024-07-12T09:58:14+0000",
+          "address": {
+            "city": "San Miego"
+          },
+          "first_name": "John",
+          "last_name": "Doe",
+          "lastUpdateSource": "api",
+          "lastModified": "2024-07-12T13:00:49+0000",
+          "cID": "6690fe3655e334xx028xxx"
+        },
+        "event": {
+          "_id": "669141857b8cxxx1ba0da2xx",
+          "cID": "6690fe3655e334xx028xxx",
+          "ts": "2024-07-12T14:45:25+00:00",
+          "ats": "2024-07-12T14:45:25+0000",
+          "a": "browse",
+          "tzo": -7,
+          "rl": "a",
+          "UID": "4934ee07118197xx3f74d5xxxx7b0076",
+          "time": "2024-07-12T14:45:25+0000",
+          "action": "browse",
+          "bmID": "",
+          "first": 0,
+          "properties": {
+            "category": "Shirts",
+            "url": "http://example.com/shirts",
+            "description": "A really cool khaki shirt.",
+            "price": 9.99,
+            "title": "Khaki Shirt",
+            "test_key": "value"
+          }
+        },
+        "source": {}
+      },
+      "headers": {
+        "Content-Type": "application/json"
+      }
+    }
+  },
+  "output": {
+    "response": {
+      "status": 200,
+      "body": "OK"
+    },
+    "queue": [
+      {
+        "context": {
+          "library": {
+            "name": "unknown",
+            "version": "unknown"
+          },
+          "integration": {
+            "name": "Cordial"
+          },
+          "traits": {
+            "userId": "6690fe3655e334xx028xxx",
+            "email": "jondoe@example.com",
+            "_id": "6690fe3655e334xx028xxx",
+            "channels": {
+              "email": {
+                "address": "jondoe@example.com",
+                "subscribeStatus": "subscribed",
+                "subscribedAt": "2024-07-12T09:58:14+0000"
+              }
+            },
+            "createdAt": "2024-07-12T09:58:14+0000",
+            "address": {
+              "city": "San Miego"
+            },
+            "first_name": "John",
+            "last_name": "Doe",
+            "lastUpdateSource": "api",
+            "lastModified": "2024-07-12T13:00:49+0000",
+            "cID": "6690fe3655e334xx028xxx"
+          },
+          "externalId": [
+            {
+              "id": "6690fe3655e334xx028xxx",
+              "type": "cordialContactId"
+            }
+          ]
+        },
+        "integrations": {
+          "Cordial": false
+        },
+        "type": "track",
+        "event": "browse",
+        "originalTimestamp": "2024-07-12T14:45:25+00:00",
+        "properties": {
+          "event_id": "669141857b8cxxx1ba0da2xx",
+          "category": "Shirts",
+          "url": "http://example.com/shirts",
+          "description": "A really cool khaki shirt.",
+          "price": 9.99,
+          "title": "Khaki Shirt",
+          "test_key": "value",
+          "cID": "6690fe3655e334xx028xxx",
+          "ts": "2024-07-12T14:45:25+00:00",
+          "ats": "2024-07-12T14:45:25+0000",
+          "a": "browse",
+          "tzo": -7,
+          "rl": "a",
+          "UID": "4934ee07118197xx3f74d5xxxx7b0076",
+          "time": "2024-07-12T14:45:25+0000",
+          "action": "browse",
+          "bmID": "",
+          "first": 0
+        },
+        "userId": "6690fe3655e334xx028xxx",
+        "timestamp": "2024-07-12T14:45:25+00:00",
+        "sentAt": "2024-07-12T14:45:25+00:00",
+        "receivedAt": "2024-03-03T04:48:29.000Z",
+        "request_ip": "192.0.2.30",
+        "messageId": "00000000-0000-0000-0000-000000000000"
+      }
+    ],
+    "errQueue": []
+  }
+}

@@ -2381,4 +2381,9 @@ export const data = [
       },
     },
   },
-];
+].map((tc) => ({
+  ...tc,
+  mockFns: (_) => {
+    jest.spyOn(Date.prototype, 'toISOString').mockReturnValue('2015-02-23T22:28:55Z');
+  },
+}));

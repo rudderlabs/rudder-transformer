@@ -40,6 +40,9 @@ const batchResponseBuilder = (items, config) => {
   return response;
 };
 
+const checkNullUndefinedEmptyFields = (fields) =>
+  !!Object.entries(fields).some(([, value]) => !value);
+
 const processRecordInputs = (inputs, destination) => {
   const { Config } = destination;
   const items = [];
@@ -68,6 +71,11 @@ const processRecordInputs = (inputs, destination) => {
       return;
     }
 
+    if (checkNullUndefinedEmptyFields(fields)) {
+      errorResponseList.push(handleRtTfSingleEventError(input, emptyFieldsError, {}));
+      return;
+    }
+
     successMetadata.push(input.metadata);
     const data = [
       {
@@ -78,10 +86,7 @@ const processRecordInputs = (inputs, destination) => {
 
     Object.keys(fields).forEach((id) => {
       const value = fields[id];
-      if (value) {
-        // adding only non empty ID's
-        items.push({ [id]: value, Data: data });
-      }
+      items.push({ [id]: value, Data: data });
     });
   });
 

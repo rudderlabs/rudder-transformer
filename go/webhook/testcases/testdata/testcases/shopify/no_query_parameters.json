@@ -1,0 +1,21 @@
+{
+  "name": "shopify",
+  "description": "No Query Parameters",
+  "input": {
+    "request": {
+      "body": {},
+      "headers": {
+        "Content-Type": "application/json"
+      }
+    }
+  },
+  "output": {
+    "response": {
+      "status": 400,
+      "body": "Query_parameters is missing\n"
+    },
+    "queue": [],
+    "errQueue": [{}]
+  },
+  "skip": "not possible"
+}

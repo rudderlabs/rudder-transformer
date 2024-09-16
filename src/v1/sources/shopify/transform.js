@@ -18,16 +18,7 @@ const { RedisDB } = require('../../../util/redis/redisConnector');
 const { removeUndefinedAndNullValues, isDefinedAndNotNull } = require('../../../v0/util');
 const Message = require('../../../v0/sources/message');
 const { EventType } = require('../../../constants');
-const {
-  pageViewedEventBuilder,
-  cartViewedEventBuilder,
-  productListViewedEventBuilder,
-  productViewedEventBuilder,
-  productToCartEventBuilder,
-  checkoutEventBuilder,
-  checkoutStepEventBuilder,
-  searchEventBuilder,
-} = require('./utilsV2');
+const { processEventV2 } = require('./pixelTransform');
 const {
   INTEGERATION,
   MAPPING_CATEGORIES,
@@ -36,7 +27,6 @@ const {
   RUDDER_ECOM_MAP,
   SUPPORTED_TRACK_EVENTS,
   SHOPIFY_TRACK_MAP,
-  PIXEL_EVENT_TOPICS,
   useRedisDatabase,
 } = require('./config');
 
@@ -287,73 +277,6 @@ const processIdentifierEvent = async (event, metricMetadata) => {
   return NO_OPERATION_SUCCESS;
 };
 
-function processPixelEvent(inputEvent) {
-  const { name, query_parameters, clientId, data } = inputEvent;
-  const { checkout } = data ?? {};
-  const { order } = checkout ?? {};
-  const { customer } = order ?? {};
-  let message;
-  switch (name) {
-    case PIXEL_EVENT_TOPICS.PAGE_VIEWED:
-      message = pageViewedEventBuilder(inputEvent);
-      break;
-    case PIXEL_EVENT_TOPICS.CART_VIEWED:
-      message = cartViewedEventBuilder(inputEvent);
-      break;
-    case PIXEL_EVENT_TOPICS.COLLECTION_VIEWED:
-      message = productListViewedEventBuilder(inputEvent);
-      break;
-    case PIXEL_EVENT_TOPICS.PRODUCT_VIEWED:
-      message = productViewedEventBuilder(inputEvent);
-      break;
-    case PIXEL_EVENT_TOPICS.PRODUCT_ADDED_TO_CART:
-    case PIXEL_EVENT_TOPICS.PRODUCT_REMOVED_FROM_CART:
-      message = productToCartEventBuilder(inputEvent);
-      break;
-    case PIXEL_EVENT_TOPICS.CHECKOUT_STARTED:
-    case PIXEL_EVENT_TOPICS.CHECKOUT_COMPLETED:
-      if (customer.id) message.userId = customer.id || '';
-      message = checkoutEventBuilder(inputEvent);
-      break;
-    case PIXEL_EVENT_TOPICS.CHECKOUT_ADDRESS_INFO_SUBMITTED:
-    case PIXEL_EVENT_TOPICS.CHECKOUT_CONTACT_INFO_SUBMITTED:
-    case PIXEL_EVENT_TOPICS.CHECKOUT_SHIPPING_INFO_SUBMITTED:
-    case PIXEL_EVENT_TOPICS.PAYMENT_INFO_SUBMITTED:
-      if (customer.id) message.userId = customer.id || '';
-      message = checkoutStepEventBuilder(inputEvent);
-      break;
-    case PIXEL_EVENT_TOPICS.SEARCH_SUBMITTED:
-      message = searchEventBuilder(inputEvent);
-      break;
-    default:
-      logger.debug(`{{SHOPIFY::}} Invalid pixel event ${name}`);
-      stats.increment('invalid_shopify_event', {
-        writeKey: query_parameters.writeKey,
-        source: 'SHOPIFY',
-        shopifyTopic: name,
-      });
-      return NO_OPERATION_SUCCESS;
-  }
-  message.anonymousId = clientId;
-  message.setProperty(`integrations.${INTEGERATION}`, true);
-  message.setProperty('context.library', {
-    name: 'RudderStack Shopify Cloud',
-    version: '2.0.0',
-  });
-  message.setProperty('context.topic', name);
-  message = removeUndefinedAndNullValues(message);
-  return message;
-}
-
-const processEventV2 = async (event, metricMetadata) => {
-  const { pixelEventLabel } = event;
-  if (pixelEventLabel) {
-    // this is a web pixel event fired from the browser
-    const pixelEvent = processPixelEvent(event);
-    return removeUndefinedAndNullValues(pixelEvent);
-  }
-  return processEvent(event, metricMetadata);
-};
 const process = async (inputEvent) => {
   const { event, source } = inputEvent;
   const metricMetadata = {
@@ -361,12 +284,11 @@ const process = async (inputEvent) => {
     writeKey: event.query_parameters?.writeKey?.[0],
     source: 'SHOPIFY',
   };
-  if (source) {
-    const { version } = source.Config;
-    if (version === 'v2') {
-      const responseV2 = await processEventV2(event, metricMetadata);
-      return responseV2;
-    }
+  // check on the source Config to identify the event is from the tracker-based (legacy)
+  // or the pixel-based (latest) implementation.
+  if (source && isDefinedAndNotNull(source.Config) && source?.Config?.version === 'v2') {
+    const responseV2 = await processEventV2(event, metricMetadata);
+    return responseV2;
   }
   if (isIdentifierEvent(event)) {
     return processIdentifierEvent(event, metricMetadata);
@@ -375,4 +297,4 @@ const process = async (inputEvent) => {
   return response;
 };
 
-exports.process = process;
+module.exports = { process, processEvent };

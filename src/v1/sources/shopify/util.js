@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 /* eslint-disable camelcase */
 /* eslint-disable @typescript-eslint/naming-convention */
 const { v5 } = require('uuid');
@@ -272,39 +273,6 @@ const checkAndUpdateCartItems = async (inputEvent, redisData, metricMetadata, sh
   return true;
 };
 
-function getNestedValue(obj, path) {
-  const parts = path.split('.');
-  return parts.reduce((acc, part) => acc && acc[part], obj);
-}
-
-function setNestedValue(obj, path, value) {
-  const parts = path.split('.');
-  const lastIndex = parts.length - 1;
-  parts.reduce((acc, part, index) => {
-    if (index === lastIndex) {
-      acc[part] = value;
-    } else if (!acc[part]) {
-      acc[part] = {};
-    }
-    return acc[part];
-  }, obj);
-}
-
-function mapObjectKeys(obj, mapping) {
-  if (!Array.isArray(mapping)) {
-    throw new TypeError('mapping should be an array');
-  }
-  const acc = { ...obj };
-
-  return mapping.reduce((accumulator, { shopifyField, rudderField }) => {
-    const value = getNestedValue(obj, shopifyField);
-    if (value !== undefined) {
-      setNestedValue(accumulator, rudderField, value);
-    }
-    return acc;
-  }, acc);
-}
-
 const pixelEventBuilder = (inputEvent) => {
   const { event: eventName, properties } = inputEvent;
   const { currency, value, content_ids, content_type } = properties;
@@ -335,5 +303,4 @@ module.exports = {
   getHashLineItems,
   getDataFromRedis,
   pixelEventBuilder,
-  mapObjectKeys,
 };

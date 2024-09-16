@@ -3,7 +3,6 @@ bindings:
     path: ../../../../constants
   - path: ../../bindings/jsontemplate
     exportAll: true
-  - path: ../../../../v0/destinations/webhook/utils
   - name: getHashFromArray
     path: ../../../../v0/util
   - name: getIntegrationsObj
@@ -19,7 +18,7 @@ bindings:
 steps:
   - name: validateInput
     template: |
-      $.assertConfig(.destination.Config.webhookUrl, "Webhook URL required. Aborting");
+      $.assertConfig(.destination.Config.apiUrl, "API URL is required. Aborting");
       $.assertConfig(!(.destination.Config.auth === "basicAuth" && !(.destination.Config.username)), "Username is required for Basic Authentication. Aborting");
       $.assertConfig(!(.destination.Config.auth === "bearerTokenAuth" && !(.destination.Config.bearerToken)), "Token is required for Bearer Token Authentication. Aborting");
       $.assertConfig(!(.destination.Config.auth === "apiKeyAuth" && !(.destination.Config.apiKeyName)), "API Key Name is required for API Key Authentication. Aborting");
@@ -48,7 +47,7 @@ steps:
 
   - name: deduceEndPoint
     template: |
-      $.context.endpoint = $.addPathParams(.message, .destination.Config.webhookUrl);
+      $.context.endpoint = $.addPathParams(.message, .destination.Config.apiUrl);
 
   - name: prepareBody
     template: |

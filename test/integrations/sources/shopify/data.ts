@@ -4473,6 +4473,109 @@ const pixelEventsTestScenarios = [
       },
     },
   },
+  {
+    name: 'shopify',
+    description: 'Track Call -> unknown event from web pixel, should not be sent to Shopify',
+    module: 'source',
+    version: 'v1',
+    input: {
+      request: {
+        body: [
+          {
+            event: {
+              id: 'sh-f7d599b4-D80F-4D05-C4CE-B980D5444596',
+              name: 'unknown_event',
+              data: {
+                searchResult: {
+                  query: 'skate',
+                  productVariants: [],
+                },
+              },
+              type: 'standard',
+              clientId: 'c7b3f99b-4d34-463b-835f-c879482a7750',
+              timestamp: '2024-09-15T22:37:35.869Z',
+              context: {
+                document: {
+                  location: {
+                    href: 'https://store.myshopify.com/search?q=skate&options%5Bprefix%5D=last',
+                    hash: '',
+                    host: 'store.myshopify.com',
+                    hostname: 'store.myshopify.com',
+                    origin: 'https://store.myshopify.com',
+                    pathname: '/search',
+                    port: '',
+                    protocol: 'https:',
+                    search: '?q=skate&options%5Bprefix%5D=last',
+                  },
+                  referrer: 'https://store.myshopify.com/',
+                  characterSet: 'UTF-8',
+                  title: 'Search: 0 results found for "skate" – pixel-testing-rs',
+                },
+                navigator: {
+                  language: 'en-US',
+                  cookieEnabled: true,
+                  languages: ['en-US', 'en'],
+                  userAgent:
+                    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36',
+                },
+                window: {
+                  innerHeight: 1028,
+                  innerWidth: 1362,
+                  outerHeight: 1080,
+                  outerWidth: 1728,
+                  pageXOffset: 0,
+                  pageYOffset: 0,
+                  location: {
+                    href: 'https://store.myshopify.com/search?q=skate&options%5Bprefix%5D=last',
+                    hash: '',
+                    host: 'store.myshopify.com',
+                    hostname: 'store.myshopify.com',
+                    origin: 'https://store.myshopify.com',
+                    pathname: '/search',
+                    port: '',
+                    protocol: 'https:',
+                    search: '?q=skate&options%5Bprefix%5D=last',
+                  },
+                  origin: 'https://store.myshopify.com',
+                  screen: {
+                    height: 1117,
+                    width: 1728,
+                  },
+                  screenX: 0,
+                  screenY: 37,
+                  scrollX: 0,
+                  scrollY: 0,
+                },
+              },
+              pixelEventLabel: true,
+              query_parameters: {
+                topic: ['search_submitted'],
+                writeKey: ['dummy-write-key'],
+              },
+            },
+            source: dummySourceConfig,
+          },
+        ],
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      },
+      pathSuffix: '',
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            outputToSource: {
+              body: 'T0s=',
+              contentType: 'text/plain',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
 ];
 
 const serverSideEventsScenarios = [
@@ -5443,6 +5546,218 @@ const v1ServerSideEventsScenarios = [
                     },
                   },
                   timestamp: '2024-09-17T07:29:02.000Z',
+                  anonymousId: '5d3e2cb6-4011-5c9c-b7ee-11bc1e905097',
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'shopify',
+    description: 'Track Call -> Cart Update event',
+    module: 'source',
+    version: 'v1',
+    input: {
+      request: {
+        body: [
+          {
+            event: {
+              id: 'Z2NwLXVzLWVhc3QxOjAxSjdXRjdOQjY0NlFFNFdQVEg0MTRFM1E2',
+              token: 'Z2NwLXVzLWVhc3QxOjAxSjdXRjdOQjY0NlFFNFdQVEg0MTRFM1E2',
+              line_items: [
+                {
+                  id: 41327143059569,
+                  properties: null,
+                  quantity: 3,
+                  variant_id: 41327143059569,
+                  key: '41327143059569:90562f18109e0e6484b0c297e7981b30',
+                  discounted_price: '729.95',
+                  discounts: [],
+                  gift_card: false,
+                  grams: 0,
+                  line_price: '2189.85',
+                  original_line_price: '2189.85',
+                  original_price: '729.95',
+                  price: '729.95',
+                  product_id: 7234590638193,
+                  sku: '',
+                  taxable: true,
+                  title: 'The Multi-location Snowboard',
+                  total_discount: '0.00',
+                  vendor: 'pixel-testing-rs',
+                  discounted_price_set: {
+                    shop_money: {
+                      amount: '729.95',
+                      currency_code: 'USD',
+                    },
+                    presentment_money: {
+                      amount: '729.95',
+                      currency_code: 'USD',
+                    },
+                  },
+                  line_price_set: {
+                    shop_money: {
+                      amount: '2189.85',
+                      currency_code: 'USD',
+                    },
+                    presentment_money: {
+                      amount: '2189.85',
+                      currency_code: 'USD',
+                    },
+                  },
+                  original_line_price_set: {
+                    shop_money: {
+                      amount: '2189.85',
+                      currency_code: 'USD',
+                    },
+                    presentment_money: {
+                      amount: '2189.85',
+                      currency_code: 'USD',
+                    },
+                  },
+                  price_set: {
+                    shop_money: {
+                      amount: '729.95',
+                      currency_code: 'USD',
+                    },
+                    presentment_money: {
+                      amount: '729.95',
+                      currency_code: 'USD',
+                    },
+                  },
+                  total_discount_set: {
+                    shop_money: {
+                      amount: '0.0',
+                      currency_code: 'USD',
+                    },
+                    presentment_money: {
+                      amount: '0.0',
+                      currency_code: 'USD',
+                    },
+                  },
+                },
+              ],
+              note: '',
+              updated_at: '2024-09-17T08:15:13.280Z',
+              created_at: '2024-09-16T03:50:15.478Z',
+              query_parameters: {
+                topic: ['carts_update'],
+                writeKey: ['2l9QoM7KRMJLMcYhXNUVDT0Mqbd'],
+              },
+            },
+            source: dummySourceConfig,
+          },
+        ],
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      },
+      pathSuffix: '',
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              batch: [
+                {
+                  context: {
+                    library: {
+                      name: 'RudderStack Shopify Cloud',
+                      version: '2.0.0',
+                    },
+                    integration: {
+                      name: 'SHOPIFY',
+                    },
+                    topic: 'carts_update',
+                  },
+                  integrations: {
+                    SHOPIFY: true,
+                  },
+                  type: 'track',
+                  event: 'Cart Update',
+                  properties: {
+                    id: 'Z2NwLXVzLWVhc3QxOjAxSjdXRjdOQjY0NlFFNFdQVEg0MTRFM1E2',
+                    token: 'Z2NwLXVzLWVhc3QxOjAxSjdXRjdOQjY0NlFFNFdQVEg0MTRFM1E2',
+                    note: '',
+                    updated_at: '2024-09-17T08:15:13.280Z',
+                    created_at: '2024-09-16T03:50:15.478Z',
+                    products: [
+                      {
+                        product_id: 7234590638193,
+                        price: '729.95',
+                        brand: 'pixel-testing-rs',
+                        quantity: 3,
+                        id: 41327143059569,
+                        properties: null,
+                        key: '41327143059569:90562f18109e0e6484b0c297e7981b30',
+                        discounted_price: '729.95',
+                        discounts: [],
+                        gift_card: false,
+                        grams: 0,
+                        line_price: '2189.85',
+                        original_line_price: '2189.85',
+                        original_price: '729.95',
+                        taxable: true,
+                        title: 'The Multi-location Snowboard',
+                        total_discount: '0.00',
+                        discounted_price_set: {
+                          shop_money: {
+                            amount: '729.95',
+                            currency_code: 'USD',
+                          },
+                          presentment_money: {
+                            amount: '729.95',
+                            currency_code: 'USD',
+                          },
+                        },
+                        line_price_set: {
+                          shop_money: {
+                            amount: '2189.85',
+                            currency_code: 'USD',
+                          },
+                          presentment_money: {
+                            amount: '2189.85',
+                            currency_code: 'USD',
+                          },
+                        },
+                        original_line_price_set: {
+                          shop_money: {
+                            amount: '2189.85',
+                            currency_code: 'USD',
+                          },
+                          presentment_money: {
+                            amount: '2189.85',
+                            currency_code: 'USD',
+                          },
+                        },
+                        price_set: {
+                          shop_money: {
+                            amount: '729.95',
+                            currency_code: 'USD',
+                          },
+                          presentment_money: {
+                            amount: '729.95',
+                            currency_code: 'USD',
+                          },
+                        },
+                        total_discount_set: {
+                          shop_money: {
+                            amount: '0.0',
+                            currency_code: 'USD',
+                          },
+                          presentment_money: {
+                            amount: '0.0',
+                            currency_code: 'USD',
+                          },
+                        },
+                        variant: '41327143059569  ',
+                      },
+                    ],
+                  },
                   anonymousId: '5d3e2cb6-4011-5c9c-b7ee-11bc1e905097',
                 },
               ],

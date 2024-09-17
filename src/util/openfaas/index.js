@@ -48,6 +48,7 @@ const FAAS_AST_FN_NAME = 'fn-ast';
 const CUSTOM_NETWORK_POLICY_WORKSPACE_IDS = process.env.CUSTOM_NETWORK_POLICY_WORKSPACE_IDS || '';
 const customNetworkPolicyWorkspaceIds = CUSTOM_NETWORK_POLICY_WORKSPACE_IDS.split(',');
 const CUSTOMER_TIER = process.env.CUSTOMER_TIER || 'shared';
+const FAAS_SCALE_DOWN_WINDOW = process.env.FAAS_SCALE_DOWN_WINDOW || ''; // Go time values are supported ( max 5m or 300s )
 
 // Initialise node cache
 const functionListCache = new NodeCache();
@@ -246,7 +247,7 @@ const deployFaasFunction = async (
     if (
       ((error.statusCode === 500 || error.statusCode === 400) &&
         error.message.includes('already exists')) ||
-      (error.statusCode === 409 && error.message.includes('Conflict change already made'))
+      (error.statusCode === 409 && error.message.includes('Conflicting change already made'))
     ) {
       setFunctionInCache(functionName);
       throw new RetryRequestError(`${functionName} already exists`);
@@ -332,6 +333,10 @@ function buildOpenfaasFn(name, code, versionId, libraryVersionIDs, testMode, trM
     customer: 'shared',
     'customer-tier': CUSTOMER_TIER,
   };
+
+  if (FAAS_SCALE_DOWN_WINDOW !== '') {
+    labels['com.openfaas.scale.down.window'] = FAAS_SCALE_DOWN_WINDOW;
+  }
 
   if (trMetadata.workspaceId && customNetworkPolicyWorkspaceIds.includes(trMetadata.workspaceId)) {
     labels['custom-network-policy'] = 'true';

@@ -3,7 +3,12 @@ const { groupBy } = require('lodash');
 const { createHash } = require('crypto');
 const { ConfigurationError } = require('@rudderstack/integrations-lib');
 const { BatchUtils } = require('@rudderstack/workflow-engine');
-const { base64Convertor, applyCustomMappings, isEmptyObject } = require('../../../../v0/util');
+const {
+  base64Convertor,
+  applyCustomMappings,
+  isEmptyObject,
+  applyJSONStringTemplate,
+} = require('../../../../v0/util');
 
 const getAuthHeaders = (config) => {
   let headers;
@@ -32,12 +37,17 @@ const getCustomMappings = (message, mapping) => {
   try {
     return applyCustomMappings(message, mapping);
   } catch (e) {
-    throw new ConfigurationError(`[Webhook]:: Error in custom mappings: ${e.message}`);
+    throw new ConfigurationError(`Error in custom mappings: ${e.message}`);
   }
 };
 
-// TODO: write a func to evaluate json path template
-const addPathParams = (message, webhookUrl) => webhookUrl;
+const addPathParams = (message, apiUrl) => {
+  try {
+    return applyJSONStringTemplate(message, `\`${apiUrl}\``);
+  } catch (e) {
+    throw new ConfigurationError(`Error in api url template: ${e.message}`);
+  }
+};
 
 const excludeMappedFields = (payload, mapping) => {
   const rawPayload = { ...payload };
@@ -52,7 +62,7 @@ const excludeMappedFields = (payload, mapping) => {
 
       // Traverse to the parent of the key to be removed
       keys.slice(0, -1).forEach((key) => {
-        if (current && current[key]) {
+        if (current?.[key]) {
           current = current[key];
         } else {
           current = null;

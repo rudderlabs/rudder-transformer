@@ -1552,6 +1552,18 @@ const getErrorStatusCode = (error, defaultStatusCode = HTTP_STATUS_CODES.INTERNA
   }
 };
 
+function isAxiosError(err) {
+  return (
+    Array.isArray(err?.config?.adapter) &&
+    err?.config?.adapter?.length > 1 &&
+    typeof err?.request?.socket === 'object' &&
+    !!err?.request?.protocol &&
+    !!err?.request?.method &&
+    !!err?.request?.path &&
+    !!err?.status
+  );
+}
+
 /**
  * Used for generating error response with stats from native and built errors
  */
@@ -1567,11 +1579,15 @@ function generateErrorObject(error, defTags = {}, shouldEnrichErrorMessage = tru
     error.authErrorCategory,
   );
   let errorMessage = error.message;
+  if (isAxiosError(errObject.destinationResponse)) {
+    delete errObject?.destinationResponse.config;
+    delete errObject?.destinationResponse.request;
+  }
   if (shouldEnrichErrorMessage) {
-    if (error.destinationResponse) {
+    if (errObject.destinationResponse) {
       errorMessage = JSON.stringify({
         message: errorMessage,
-        destinationResponse: error.destinationResponse,
+        destinationResponse: errObject.destinationResponse,
       });
     }
     errObject.message = errorMessage;
@@ -2265,10 +2281,32 @@ const validateEventAndLowerCaseConversion = (event, isMandatory, convertToLowerC
   return convertToLowerCase ? event.toString().toLowerCase() : event.toString();
 };
 
-const applyCustomMappings = (message, mappings) =>
-  JsonTemplateEngine.createAsSync(mappings, { defaultPathType: PathType.JSON }).evaluate(message);
+/**
+ * This function applies custom mappings to the event.
+ * @param {*} event The event to be transformed.
+ * @param {*} mappings The custom mappings to be applied.
+ * @returns {object} The transformed event.
+ */
+const applyCustomMappings = (event, mappings) =>
+  JsonTemplateEngine.createAsSync(mappings, { defaultPathType: PathType.JSON }).evaluate(event);
+
+const applyJSONStringTemplate = (message, template) =>
+  JsonTemplateEngine.createAsSync(template.replace(/{{/g, '${').replace(/}}/g, '}'), {
+    defaultPathType: PathType.JSON,
+  }).evaluate(message);
 
 /**
+ * This groups the events by destination ID and source ID.
+ * Note: sourceID is only used for rETL events.
+ * @param {*} events The events to be grouped.
+ * @returns {array} The array of grouped events.
+ */
+const groupRouterTransformEvents = (events) =>
+  Object.values(
+    lodash.groupBy(events, (ev) => [ev.destination?.ID, ev.context?.sources?.job_id || 'default']),
+  );
+
+/*
  * Gets url path omitting the hostname & protocol
  *
  * **Note**:
@@ -2293,6 +2331,7 @@ module.exports = {
   addExternalIdToTraits,
   adduserIdFromExternalId,
   applyCustomMappings,
+  applyJSONStringTemplate,
   base64Convertor,
   batchMultiplexedEvents,
   checkEmptyStringInarray,
@@ -2342,6 +2381,7 @@ module.exports = {
   getValueFromMessage,
   getValueFromPropertiesOrTraits,
   getValuesAsArrayFromConfig,
+  groupRouterTransformEvents,
   handleSourceKeysOperation,
   hashToSha256,
   isAppleFamily,
@@ -2405,4 +2445,5 @@ module.exports = {
   validateEventAndLowerCaseConversion,
   getRelativePathFromURL,
   removeEmptyKey,
+  isAxiosError,
 };

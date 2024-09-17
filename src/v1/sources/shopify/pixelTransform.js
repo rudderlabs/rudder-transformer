@@ -80,8 +80,7 @@ function processPixelEvent(inputEvent) {
   return message;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const processEventV2 = async (event, metricMetadata) => {
+const processEventV2 = async (event) => {
   const pixelEvent = processPixelEvent(event);
   return removeUndefinedAndNullValues(pixelEvent);
 };

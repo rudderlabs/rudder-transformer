@@ -2,6 +2,7 @@
 /* eslint-disable camelcase */
 /* eslint-disable @typescript-eslint/naming-convention */
 const { v5 } = require('uuid');
+const get = require('get-value');
 const sha256 = require('sha256');
 const { TransformationError } = require('@rudderstack/integrations-lib');
 const stats = require('../../../util/stats');
@@ -12,8 +13,10 @@ const {
   generateUUID,
   isDefinedAndNotNull,
 } = require('../../../v0/util');
+const { EventType } = require('../../../constants');
 const { RedisDB } = require('../../../util/redis/redisConnector');
 const {
+  MAPPING_CATEGORIES,
   lineItemsMappingJSON,
   productMappingJSON,
   LINE_ITEM_EXCLUSION_FIELDS,
@@ -273,24 +276,28 @@ const checkAndUpdateCartItems = async (inputEvent, redisData, metricMetadata, sh
   return true;
 };
 
-const pixelEventBuilder = (inputEvent) => {
-  const { event: eventName, properties } = inputEvent;
-  const { currency, value, content_ids, content_type } = properties;
-  const { value: propValue, currency: propCurrency } = properties;
-  const eventValue = isDefinedAndNotNull(value) ? value : propValue;
-  const eventCurrency = isDefinedAndNotNull(currency) ? currency : propCurrency;
-  const pixelEvent = {
-    event_name: eventName,
-    currency: eventCurrency,
-    value: eventValue,
-  };
-  if (content_ids) {
-    pixelEvent.content_ids = content_ids;
+const mapCustomerDetails = (event, message) => {
+  const customerDetails = get(event, 'customer');
+  if (customerDetails) {
+    message.setPropertiesV2(customerDetails, MAPPING_CATEGORIES[EventType.IDENTIFY]);
   }
-  if (content_type) {
-    pixelEvent.content_type = content_type;
+  if (event.updated_at) {
+    // TODO: look for created_at for checkout_create?
+    // converting shopify updated_at timestamp to rudder timestamp format
+    message.setTimestamp(new Date(event.updated_at).toISOString());
   }
-  return pixelEvent;
+  if (event.customer) {
+    message.setPropertiesV2(event.customer, MAPPING_CATEGORIES[EventType.IDENTIFY]);
+  }
+  if (event.shipping_address) {
+    message.setProperty('traits.shippingAddress', event.shipping_address);
+  }
+  if (event.billing_address) {
+    message.setProperty('traits.billingAddress', event.billing_address);
+  }
+  if (!message.userId && event.user_id) {
+    message.setProperty('userId', event.user_id);
+  }
 };
 
 module.exports = {
@@ -302,5 +309,5 @@ module.exports = {
   checkAndUpdateCartItems,
   getHashLineItems,
   getDataFromRedis,
-  pixelEventBuilder,
+  mapCustomerDetails,
 };

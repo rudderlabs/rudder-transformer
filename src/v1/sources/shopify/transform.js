@@ -12,6 +12,7 @@ const {
   checkAndUpdateCartItems,
   getHashLineItems,
   getDataFromRedis,
+  mapCustomerDetails,
 } = require('./util');
 const logger = require('../../../logger');
 const { RedisDB } = require('../../../util/redis/redisConnector');
@@ -60,27 +61,7 @@ const ecomPayloadBuilder = (event, shopifyTopic) => {
     message.setProperty(`properties.${key}`, properties[key]),
   );
   // Map Customer details if present
-  const customerDetails = get(event, 'customer');
-  if (customerDetails) {
-    message.setPropertiesV2(customerDetails, MAPPING_CATEGORIES[EventType.IDENTIFY]);
-  }
-  if (event.updated_at) {
-    // TODO: look for created_at for checkout_create?
-    // converting shopify updated_at timestamp to rudder timestamp format
-    message.setTimestamp(new Date(event.updated_at).toISOString());
-  }
-  if (event.customer) {
-    message.setPropertiesV2(event.customer, MAPPING_CATEGORIES[EventType.IDENTIFY]);
-  }
-  if (event.shipping_address) {
-    message.setProperty('traits.shippingAddress', event.shipping_address);
-  }
-  if (event.billing_address) {
-    message.setProperty('traits.billingAddress', event.billing_address);
-  }
-  if (!message.userId && event.user_id) {
-    message.setProperty('userId', event.user_id);
-  }
+  mapCustomerDetails(event, message);
   return message;
 };
 
@@ -288,7 +269,8 @@ const process = async (inputEvent) => {
   const { event, source } = inputEvent;
   const metricMetadata = {
     // eslint-disable-next-line unicorn/consistent-destructuring
-    writeKey: event.query_parameters?.writeKey?.[0],
+    writeKey: source?.WriteKey || event.query_parameters?.writeKey?.[0],
+    sourceId: source?.ID,
     source: 'SHOPIFY',
   };
   // check on the source Config to identify the event is from the tracker-based (legacy)
@@ -298,7 +280,7 @@ const process = async (inputEvent) => {
     if (pixelEventLabel) {
       // this is a event fired from the web pixel loaded on the browser
       // by the user interactions with the store.
-      const responseV2 = await processEventV2(event, metricMetadata);
+      const responseV2 = await processEventV2(event);
       return responseV2;
     }
     const webhookEvent = processEvent(event, metricMetadata, source);

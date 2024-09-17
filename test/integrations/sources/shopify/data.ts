@@ -7,7 +7,7 @@ const dummySourceConfig = {
   Config: {
     disableClientSideIdentifier: false,
     eventUpload: false,
-    version: 'v2',
+    version: 'pixel',
   },
   Enabled: true,
   WorkspaceID: 'dummy-workspace-id',

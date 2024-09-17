@@ -177,7 +177,7 @@ const processEvent = async (inputEvent, metricMetadata, source) => {
     }
   }
   message.setProperty(`integrations.${INTEGERATION}`, true);
-  if (source && source.Config && source.Config.version === 'v2') {
+  if (source && source.Config && source.Config.version === 'pixel') {
     message.setProperty('context.library', {
       name: 'RudderStack Shopify Cloud',
       version: '2.0.0',
@@ -275,7 +275,7 @@ const process = async (inputEvent) => {
   };
   // check on the source Config to identify the event is from the tracker-based (legacy)
   // or the pixel-based (latest) implementation.
-  if (source && isDefinedAndNotNull(source.Config) && source?.Config?.version === 'v2') {
+  if (source && isDefinedAndNotNull(source.Config) && source?.Config?.version === 'pixel') {
     const { pixelEventLabel } = event;
     if (pixelEventLabel) {
       // this is a event fired from the web pixel loaded on the browser

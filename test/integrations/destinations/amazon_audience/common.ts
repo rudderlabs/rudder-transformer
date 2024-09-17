@@ -21,5 +21,10 @@ export const generateMetadata = (jobId: number, userId?: string): any => {
     destinationId: 'default-destinationId',
     workspaceId: 'default-workspaceId',
     dontBatch: false,
+    secret: {
+      accessToken: 'dummyAccessToken',
+      refreshToken: 'dummyRefreshToken',
+      clientId: 'dummyClientId',
+    },
   };
 };

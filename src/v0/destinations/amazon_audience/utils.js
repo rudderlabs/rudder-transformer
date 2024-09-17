@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 const sha256 = require('sha256');
 const lodash = require('lodash');
-const { ConfigurationError } = require('@rudderstack/integrations-lib');
+const { ConfigurationError, OAuthSecretError } = require('@rudderstack/integrations-lib');
 const {
   defaultRequestConfig,
   defaultPostRequestConfig,
@@ -10,15 +10,26 @@ const {
 } = require('../../util');
 
 // Docs: https://developer.x.com/en/docs/x-ads-api/audiences/api-reference/custom-audience-user
-const buildResponseWithUsers = (users, action, config, jobIdList) => {
+const buildResponseWithUsers = (users, action, config, jobIdList, secret) => {
   const { audienceId } = config;
   if (!audienceId) {
     throw new ConfigurationError('[AMAZON AUDIENCE]: Audience Id not found');
+  }
+  if (!secret?.accessToken) {
+    throw new OAuthSecretError('OAuth - access token not found');
+  }
+  if (!secret?.clientId) {
+    throw new OAuthSecretError('OAuth - Client Id not found');
   }
   const externalId = `Rudderstack_${sha256(`${jobIdList}`)}`;
   const response = defaultRequestConfig();
   response.endpoint = '';
   response.method = defaultPostRequestConfig.requestMethod;
+  response.headers = {
+    'Amazon-Advertising-API-ClientId': `${secret.clientId}`,
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${secret.accessToken}`,
+  };
   response.body.JSON = {
     createUsers: {
       records: [
@@ -64,8 +75,10 @@ const groupResponsesUsingOperation = (respList) => {
  * @param {*} responseList 
  */
 const batchEvents = (responseList, destination) => {
+  const { secret } = responseList[0].metadata;
   const eventGroups = groupResponsesUsingOperation(responseList);
   const respList = [];
+
   Object.keys(eventGroups).forEach((op) => {
     const { userList, jobIdList, metadataList } = eventGroups[op].reduce(
       (acc, event) => ({
@@ -77,7 +90,13 @@ const batchEvents = (responseList, destination) => {
     );
     respList.push(
       getSuccessRespEvents(
-        buildResponseWithUsers(userList, op, destination.config || destination.Config, jobIdList),
+        buildResponseWithUsers(
+          userList,
+          op,
+          destination.config || destination.Config,
+          jobIdList,
+          secret,
+        ),
         metadataList,
         destination,
         true,

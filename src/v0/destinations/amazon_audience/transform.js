@@ -22,7 +22,7 @@ const process = (event) => {
   const { message, destination, metadata } = event;
   const { Config } = destination;
   const { user, action } = processRecord(message, Config);
-  return buildResponseWithUsers([user], action, Config, [metadata.jobId]);
+  return buildResponseWithUsers([user], action, Config, [metadata.jobId], metadata.secret);
 };
 // This function is used to process multiple records
 const processRouterDest = async (inputs, reqMetadata) => {

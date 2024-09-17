@@ -91,7 +91,11 @@ export const data = [
               },
               endpoint: '',
               files: {},
-              headers: {},
+              headers: {
+                'Amazon-Advertising-API-ClientId': 'dummyClientId',
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer dummyAccessToken',
+              },
               method: 'POST',
               params: {},
               type: 'REST',
@@ -141,7 +145,11 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: '',
-              headers: {},
+              headers: {
+                'Amazon-Advertising-API-ClientId': 'dummyClientId',
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer dummyAccessToken',
+              },
               params: {},
               body: {
                 JSON: {

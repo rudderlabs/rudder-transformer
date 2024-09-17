@@ -80,7 +80,7 @@
     "X_AUDIENCE": true,
     "BLOOMREACH_CATALOG": true,
     "SMARTLY": true,
-    "WEBHOOK_V2": true
+    "HTTP": true
   },
   "regulations": [
     "BRAZE",

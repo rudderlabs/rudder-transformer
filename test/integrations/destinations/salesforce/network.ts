@@ -277,6 +277,48 @@ const transformationMocksData = [
   },
   {
     httpReq: {
+      url: 'https://ap15.salesforce.com/services/data/v50.0/parameterizedSearch/?q=72728&sobject=customobject2&in=CustomObject2__c&customobject2.fields=id,CustomObject2__c',
+      method: 'GET',
+    },
+    httpRes: {
+      status: 200,
+      data: {
+        searchRecords: [
+          {
+            attributes: {
+              type: 'CustomObject2__c',
+              url: '/services/data/v50.0/CustomObject2__c/id1101',
+            },
+            Id: 'id1101',
+            CustomObject2__c: 72728,
+          },
+        ],
+      },
+    },
+  },
+  {
+    httpReq: {
+      url: 'https://ap15.salesforce.com/services/data/v50.0/parameterizedSearch/?q=72729&sobject=customobject2&in=CustomObject2__c&customobject2.fields=id,CustomObject2__c',
+      method: 'GET',
+    },
+    httpRes: {
+      status: 200,
+      data: {
+        searchRecords: [
+          {
+            attributes: {
+              type: 'CustomObject2__c',
+              url: '/services/data/v50.0/CustomObject2__c/id1102',
+            },
+            Id: 'id1102',
+            CustomObject2__c: '72729',
+          },
+        ],
+      },
+    },
+  },
+  {
+    httpReq: {
       url: 'https://ap15.salesforce.com/services/data/v50.0/parameterizedSearch/?q=ddv_ua%2B%7B%7B1234*245%7D%7D%40bugFix.com&sobject=Lead&Lead.fields=id,IsConverted,ConvertedContactId,IsDeleted',
       method: 'GET',
     },

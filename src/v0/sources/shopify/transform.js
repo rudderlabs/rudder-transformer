@@ -287,4 +287,9 @@ const process = async (event) => {
   return response;
 };
 
-exports.process = process;
+module.exports = {
+  process,
+  processEvent,
+  isIdentifierEvent,
+  processIdentifierEvent,
+};

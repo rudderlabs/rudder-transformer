@@ -13,6 +13,7 @@ const {
   eventNameMapping,
   jsonNameMapping,
 } = require('./config');
+const { processRouter: processRouterV2, processV2 } = require('./transformV2');
 const {
   createCustomerProperties,
   subscribeUserToList,
@@ -20,6 +21,7 @@ const {
   batchSubscribeEvents,
   getIdFromNewOrExistingProfile,
   profileUpdateResponseBuilder,
+  addSubscribeFlagToTraits,
 } = require('./util');
 const {
   defaultRequestConfig,
@@ -33,6 +35,7 @@ const {
   adduserIdFromExternalId,
   getSuccessRespEvents,
   handleRtTfSingleEventError,
+  groupEventsByType,
   flattenJson,
   isNewStatusCodesAccepted,
 } = require('../../util');
@@ -58,11 +61,13 @@ const identifyRequestHandler = async (
   // If listId property is present try to subscribe/member user in list
   const { privateApiKey, enforceEmailAsPrimary, listId, flattenProperties } = destination.Config;
   const mappedToDestination = get(message, MappedToDestinationKey);
+  let traitsInfo = getFieldValueFromMessage(message, 'traits');
   if (mappedToDestination) {
     addExternalIdToTraits(message);
     adduserIdFromExternalId(message);
+    traitsInfo = addSubscribeFlagToTraits(traitsInfo);
   }
-  const traitsInfo = getFieldValueFromMessage(message, 'traits');
+
   let propertyPayload = constructPayload(message, MAPPING_CONFIG[category.name]);
   // Extract other K-V property from traits about user custom properties
   let customPropertyPayload = {};
@@ -277,6 +282,9 @@ const groupRequestHandler = (message, category, destination) => {
 // Main event processor using specific handler funcs
 const processEvent = async (event, reqMetadata) => {
   const { message, destination, metadata } = event;
+  if (destination.Config?.apiVersion === 'v2') {
+    return processV2(event, reqMetadata);
+  }
   if (!message.type) {
     throw new InstrumentationError('Event type is required');
   }
@@ -326,12 +334,16 @@ const getEventChunks = (event, subscribeRespList, nonSubscribeRespList) => {
   }
 };
 
-const processRouterDest = async (inputs, reqMetadata) => {
+const processRouter = async (inputs, reqMetadata) => {
+  const { destination } = inputs[0];
+  // This is used to switch to latest API version
+  if (destination.Config?.apiVersion === 'v2') {
+    return processRouterV2(inputs, reqMetadata);
+  }
   let batchResponseList = [];
   const batchErrorRespList = [];
   const subscribeRespList = [];
   const nonSubscribeRespList = [];
-  const { destination } = inputs[0];
   await Promise.all(
     inputs.map(async (event) => {
       try {
@@ -392,7 +404,26 @@ const processRouterDest = async (inputs, reqMetadata) => {
 
   batchResponseList = [...batchedSubscribeResponseList, ...nonSubscribeSuccessList];
 
-  return [...batchResponseList, ...batchErrorRespList];
+  return { successEvents: batchResponseList, errorEvents: batchErrorRespList };
 };
-
+const processRouterDest = async (inputs, reqMetadata) => {
+  /**
+  We are doing this to maintain the order of events not only fo transformation but for delivery as well
+  Job Id:       1                 2                 3                  4                  5                6
+  Input : ['user1 track1', 'user1 identify 1', 'user1 track 2', 'user2 identify 1', 'user2 track 1', 'user1 track 3']
+  Output after batching : [['user1 track1'],['user1 identify 1', 'user2 identify 1'], [ 'user1 track 2', 'user2 track 1', 'user1 track 3']]
+  Output after transformation: [1, [2,4], [3,5,6]]
+  */
+  const inputsGroupedByType = groupEventsByType(inputs);
+  const respList = [];
+  const errList = [];
+  await Promise.all(
+    inputsGroupedByType.map(async (typedEventList) => {
+      const { successEvents, errorEvents } = await processRouter(typedEventList, reqMetadata);
+      respList.push(...successEvents);
+      errList.push(...errorEvents);
+    }),
+  );
+  return [...respList, ...errList];
+};
 module.exports = { process, processRouterDest };

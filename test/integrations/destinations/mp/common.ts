@@ -1,7 +1,7 @@
 import { Destination } from '../../../../src/types';
 
 const defaultMockFns = () => {
-  jest.spyOn(Date, 'now').mockImplementation(() => new Date(Date.UTC(2020, 0, 25)).valueOf());
+  jest.spyOn(Date, 'now').mockReturnValue(new Date(Date.UTC(2020, 0, 25)).valueOf());
 };
 
 const sampleDestination: Destination = {

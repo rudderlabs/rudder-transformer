@@ -1,9 +1,5 @@
 /* eslint-disable no-param-reassign */
 const Bugsnag = require('@bugsnag/js');
-const {
-  CustomError: CDKCustomError,
-  DataValidationError,
-} = require('rudder-transformer-cdk/build/error/index');
 const stackTraceParser = require('stacktrace-parser');
 const {
   BaseError,
@@ -46,8 +42,6 @@ const errorTypesDenyList = [
   UnhandledStatusCodeError,
   UnauthorizedError,
   NetworkInstrumentationError,
-  CDKCustomError,
-  DataValidationError,
   FilteredEventsError,
 ];
 

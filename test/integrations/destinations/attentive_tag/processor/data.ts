@@ -1,5 +1,5 @@
 export const mockFns = (_) => {
-  jest.useFakeTimers().setSystemTime(new Date('2023-10-14'));
+  jest.spyOn(Date, 'now').mockReturnValue(new Date('2023-10-14T00:00:00.000Z').valueOf());
 };
 
 export const data = [
@@ -1458,7 +1458,7 @@ export const data = [
         body: [
           {
             statusCode: 400,
-            error: '[Attentive Tag]:The event name contains characters which is not allowed',
+            error: '[Attentive Tag]:The properties contains characters which is not allowed',
             statTags: {
               destType: 'ATTENTIVE_TAG',
               errorCategory: 'dataValidation',
@@ -1678,4 +1678,95 @@ export const data = [
       },
     },
   },
-];
+  {
+    name: 'attentive_tag',
+    description: 'Test 16',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              channel: 'web',
+              context: {
+                app: {
+                  build: '1.0.0',
+                  name: 'RudderLabs JavaScript SDK',
+                  namespace: 'com.rudderlabs.javascript',
+                  version: '1.0.0',
+                },
+                traits: {},
+                library: {
+                  name: 'RudderLabs JavaScript SDK',
+                  version: '1.0.0',
+                },
+                userAgent:
+                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
+                locale: 'en-US',
+                ip: '0.0.0.0',
+                os: {
+                  id: '72e528f869711c3d',
+                  manufacturer: 'Google',
+                  model: 'sdk_gphone_x86',
+                  name: 'generic_x86_arm',
+                  token: 'some_device_token',
+                  type: 'android',
+                },
+                screen: {
+                  density: 2,
+                },
+              },
+              type: 'track',
+              event: 'Application Backgrounded',
+              anonymousId: '00000000000000000000000000',
+              userId: '123456',
+              integrations: {
+                All: true,
+              },
+            },
+            destination: {
+              Config: {
+                apiKey: 'dummyApiKey',
+                signUpSourceId: '240654',
+              },
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              userId: '',
+              endpoint: 'https://api.attentivemobile.com/v1/events/custom',
+              headers: {
+                Authorization: 'Bearer dummyApiKey',
+                'Content-Type': 'application/json',
+              },
+              params: {},
+              body: {
+                JSON: {
+                  user: {},
+                  type: 'Application Backgrounded',
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
+].map((d) => ({ ...d, mockFns }));

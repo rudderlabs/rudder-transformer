@@ -1,0 +1,31 @@
+bindings:
+  - name: EventType
+    path: ../../../../constants
+  - path: ../../bindings/jsontemplate
+  - name: defaultRequestConfig
+    path: ../../../../v0/util
+  - name: removeUndefinedAndNullValues
+    path: ../../../../v0/util
+  - name: constructPayload
+    path: ../../../../v0/util
+  - path: ./config
+  - path: ./utils
+steps:
+  - name: messageType
+    template: |
+      .message.type.toLowerCase();
+  - name: validateInput
+    template: |
+      let messageType = $.outputs.messageType;
+      $.assert(messageType, "message Type is not present. Aborting");
+      $.assert(messageType in {{$.EventType.([.TRACK])}}, "message type " + messageType + " is not supported");
+      $.assertConfig(.destination.Config.apiToken, "API Token is not present. Aborting");
+  - name: preparePayload
+    template: |
+      const payload = $.removeUndefinedAndNullValues($.constructPayload(.message, $.TRACK_CONFIG));
+      $.verifyAdInteractionTime(payload.ad_interaction_time);
+      $.context.payloadList = $.getPayloads(.message.event, .destination.Config, payload)
+  - name: buildResponse
+    template: |
+      const response = $.buildResponseList($.context.payloadList)
+      response

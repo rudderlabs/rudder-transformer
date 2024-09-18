@@ -1,0 +1,51 @@
+name: Notify workflow failure
+
+on:
+  workflow_call:
+    inputs:
+      should_notify:
+        type: boolean
+        default: true
+      workflow_url:
+        type: string
+        required: true
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    if: ${{ inputs.should_notify }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.1.1
+
+      - name: notify
+        uses: slackapi/slack-github-action@v1.27.0
+        continue-on-error: true
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          PROJECT_NAME: 'Rudder Transformer'
+        with:
+          channel-id: ${{ secrets.SLACK_INTEGRATION_DEV_CHANNEL_ID }}
+          payload: |
+            {
+              "text": "*<prod release tests failed>*\nCC: <!subteam^S02AEQL26CT>",
+              "blocks": [
+                {
+                  "type": "header",
+                  "text": {
+                    "type": "plain_text",
+                    "text": ":siren2:  prod release tests - Failed  :siren2:"
+                  }
+                },
+                {
+                  "type": "divider"
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*<${{inputs.workflow_url}}|failed workflow>*\nCC: <!subteam^S02AEQL26CT>"
+                  }
+                }
+              ]
+            }

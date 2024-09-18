@@ -1,6 +1,12 @@
 const _ = require('lodash');
 const { handleHttpRequest } = require('../../../adapters/network');
-const { BrazeDedupUtility, addAppId, getPurchaseObjs, setAliasObject } = require('./util');
+const {
+  BrazeDedupUtility,
+  addAppId,
+  getPurchaseObjs,
+  setAliasObject,
+  handleReservedProperties,
+} = require('./util');
 const { processBatch } = require('./util');
 const {
   removeUndefinedAndNullValues,
@@ -261,7 +267,7 @@ describe('dedup utility tests', () => {
       };
 
       // Call the function
-      const users = await BrazeDedupUtility.doApiLookup(identfierChunks, destination);
+      const users = await BrazeDedupUtility.doApiLookup(identfierChunks, { destination });
 
       // Check the result
       expect(users).toEqual([
@@ -399,7 +405,9 @@ describe('dedup utility tests', () => {
         },
       }));
 
-      const chunkedUserData = await BrazeDedupUtility.doApiLookup(identifierChunks, destination);
+      const chunkedUserData = await BrazeDedupUtility.doApiLookup(identifierChunks, {
+        destination,
+      });
       const result = _.flatMap(chunkedUserData);
       expect(result).toHaveLength(110);
       expect(handleHttpRequest).toHaveBeenCalledTimes(3);
@@ -455,7 +463,7 @@ describe('dedup utility tests', () => {
         },
       }));
 
-      const users = await BrazeDedupUtility.doApiLookup(chunks, destination);
+      const users = await BrazeDedupUtility.doApiLookup(chunks, { destination });
 
       expect(handleHttpRequest).toHaveBeenCalledTimes(2);
       // Assert that the first chunk was successful and the second failed
@@ -522,7 +530,7 @@ describe('dedup utility tests', () => {
           [{ alias_name: 'alias1', alias_label: 'rudder_id' }],
           [{ alias_name: 'alias2', alias_label: 'rudder_id' }],
         ],
-        { Config: { restApiKey: 'xyz' } },
+        { destination: { Config: { restApiKey: 'xyz' } } },
       );
 
       // restore the original implementation of the mocked functions
@@ -782,6 +790,136 @@ describe('dedup utility tests', () => {
       store.set('123', storeData);
       const result = BrazeDedupUtility.deduplicate(userData, store);
       expect(result).toBeNull();
+    });
+
+    test('deduplicates user data correctly when user data is null and it doesnt exist in stored data', () => {
+      const userData = {
+        external_id: '123',
+        nullProperty: null,
+        color: 'green',
+        age: 30,
+      };
+      const storeData = {
+        external_id: '123',
+        custom_attributes: {
+          color: 'green',
+          age: 30,
+        },
+      };
+      store.set('123', storeData);
+      const result = BrazeDedupUtility.deduplicate(userData, store);
+      expect(store.size).toBe(1);
+      expect(result).toEqual(null);
+    });
+
+    test('deduplicates user data correctly when user data is null and it is same in stored data', () => {
+      const userData = {
+        external_id: '123',
+        nullProperty: null,
+        color: 'green',
+        age: 30,
+      };
+      const storeData = {
+        external_id: '123',
+        custom_attributes: {
+          color: 'green',
+          age: 30,
+          nullProperty: null,
+        },
+      };
+      store.set('123', storeData);
+      const result = BrazeDedupUtility.deduplicate(userData, store);
+      expect(store.size).toBe(1);
+      expect(result).toEqual(null);
+    });
+
+    test('deduplicates user data correctly when user data is null and it is different in stored data', () => {
+      const userData = {
+        external_id: '123',
+        nullProperty: null,
+        color: 'green',
+        age: 30,
+      };
+      const storeData = {
+        external_id: '123',
+        custom_attributes: {
+          color: 'green',
+          age: 30,
+          nullProperty: 'valid data',
+        },
+      };
+      store.set('123', storeData);
+      const result = BrazeDedupUtility.deduplicate(userData, store);
+      expect(store.size).toBe(1);
+      expect(result).toEqual({
+        external_id: '123',
+        nullProperty: null,
+      });
+    });
+
+    test('deduplicates user data correctly when user data is undefined and it doesnt exist in stored data', () => {
+      const userData = {
+        external_id: '123',
+        undefinedProperty: undefined,
+        color: 'green',
+        age: 30,
+      };
+      const storeData = {
+        external_id: '123',
+        custom_attributes: {
+          color: 'green',
+          age: 30,
+        },
+      };
+      store.set('123', storeData);
+      const result = BrazeDedupUtility.deduplicate(userData, store);
+      expect(store.size).toBe(1);
+      expect(result).toEqual(null);
+    });
+
+    test('deduplicates user data correctly when user data is undefined and it is same in stored data', () => {
+      const userData = {
+        external_id: '123',
+        undefinedProperty: undefined,
+        color: 'green',
+        age: 30,
+      };
+      const storeData = {
+        external_id: '123',
+        custom_attributes: {
+          color: 'green',
+          undefinedProperty: undefined,
+          age: 30,
+        },
+      };
+      store.set('123', storeData);
+      const result = BrazeDedupUtility.deduplicate(userData, store);
+      expect(store.size).toBe(1);
+      expect(result).toEqual(null);
+    });
+
+    test('deduplicates user data correctly when user data is undefined and it is defined in stored data', () => {
+      const userData = {
+        external_id: '123',
+        undefinedProperty: undefined,
+        color: 'green',
+        age: 30,
+      };
+      const storeData = {
+        external_id: '123',
+        custom_attributes: {
+          color: 'green',
+          undefinedProperty: 'defined data',
+          age: 30,
+        },
+      };
+      store.set('123', storeData);
+      const result = BrazeDedupUtility.deduplicate(userData, store);
+      expect(store.size).toBe(1);
+      expect(result).toEqual({
+        external_id: '123',
+        undefinedProperty: undefined,
+      });
     });
   });
 });
@@ -1535,6 +1673,67 @@ describe('setAliasObject function', () => {
         alias_name: 'rudder_id-123',
         alias_label: 'customer_id',
       },
+    });
+  });
+});
+
+describe('handleReservedProperties', () => {
+  // Removes 'time' and 'event_name' keys from the input object
+  it('should remove "time" and "event_name" keys when they are present in the input object', () => {
+    const props = { time: '2023-10-01T00:00:00Z', event_name: 'test_event', other_key: 'value' };
+    const result = handleReservedProperties(props);
+    expect(result).toEqual({ other_key: 'value' });
+  });
+
+  // Input object is empty
+  it('should return an empty object when the input object is empty', () => {
+    const props = {};
+    const result = handleReservedProperties(props);
+    expect(result).toEqual({});
+  });
+
+  // Works correctly with an object that has no reserved keys
+  it('should remove reserved keys when present in the input object', () => {
+    const props = { time_stamp: '2023-10-01T00:00:00Z', event: 'test_event', other_key: 'value' };
+    const result = handleReservedProperties(props);
+    expect(result).toEqual({
+      time_stamp: '2023-10-01T00:00:00Z',
+      event: 'test_event',
+      other_key: 'value',
+    });
+  });
+
+  // Input object is null or undefined
+  it('should return an empty object when input object is null', () => {
+    const props = null;
+    const result = handleReservedProperties(props);
+    expect(result).toEqual({});
+  });
+
+  // Handles non-object inputs gracefully
+  it('should return an empty object when a non-object input is provided', () => {
+    const props = 'not an object';
+    try {
+      handleReservedProperties(props);
+    } catch (e) {
+      expect(e.message).toBe('Invalid event properties');
+    }
+  });
+
+  // Input object has only reserved keys
+  it('should remove "time" and "event_name" keys when they are present in the input object', () => {
+    const props = { time: '2023-10-01T00:00:00Z', event_name: 'test_event', other_key: 'value' };
+    const result = handleReservedProperties(props);
+    expect(result).toEqual({ other_key: 'value' });
+  });
+
+  // Works with objects having special characters in keys
+  it('should not remove special characters keys when they are present in the input object', () => {
+    const props = { 'special!@#$%^&*()_+-={}[]|\\;:\'",.<>?/`~': 'value', other_key: 'value' };
+    const result = handleReservedProperties(props);
+    expect(result).toEqual({
+      other_key: 'value',
+      'special!@#$%^&*()_+-={}[]|\\;:\'",.<>?/`~': 'value',
     });
   });
 });

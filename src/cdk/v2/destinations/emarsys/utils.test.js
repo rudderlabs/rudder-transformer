@@ -1,4 +1,3 @@
-const { EVENT_TYPE } = require('rudder-transformer-cdk/build/constants');
 const {
   buildIdentifyPayload,
   buildGroupPayload,
@@ -92,7 +91,7 @@ describe('Emarsys utils', () => {
 
       const result = buildIdentifyPayload(message, destination);
 
-      expect(result.eventType).toBe(EVENT_TYPE.IDENTIFY);
+      expect(result.eventType).toBe('identify');
       expect(result.destinationPayload).toEqual(expectedPayload);
     });
 
@@ -185,7 +184,7 @@ describe('Emarsys utils', () => {
 
       const result = buildIdentifyPayload(message, destination);
 
-      expect(result.eventType).toBe(EVENT_TYPE.IDENTIFY);
+      expect(result.eventType).toBe('identify');
       expect(result.destinationPayload).toEqual(expectedPayload);
     });
   });

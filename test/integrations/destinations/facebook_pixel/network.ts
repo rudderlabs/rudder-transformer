@@ -50,6 +50,26 @@ export const networkCallsData = [
   },
   {
     httpReq: {
+      url: `https://graph.facebook.com/${VERSION}/1234567891234567/events?access_token=unhandled_error_code_21009`,
+      data: getFormData(testFormData).toString(),
+      params: { destination: 'facebook_pixel' },
+      headers: { 'User-Agent': 'RudderLabs' },
+      method: 'POST',
+    },
+    httpRes: {
+      data: {
+        error: {
+          message: '(#21009) The data set upload is temporarily not ready.',
+          type: 'OAuthException',
+          code: 21009,
+          fbtrace_id: 'dDu39o39lkeo8',
+        },
+      },
+      status: 400,
+    },
+  },
+  {
+    httpReq: {
       url: `https://graph.facebook.com/${VERSION}/1234567891234567/events?access_token=throttled_valid_access_token`,
       data: getFormData(testFormData).toString(),
       params: { destination: 'facebook_pixel' },

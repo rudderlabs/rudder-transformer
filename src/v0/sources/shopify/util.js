@@ -24,7 +24,7 @@ const {
 } = require('./config');
 const logger = require('../../../logger');
 
-const getDataFromRedis = async (key, metricMetadata) => {
+const getDataFromRedis = async (key, metricMetadata, event) => {
   try {
     stats.increment('shopify_redis_calls', {
       type: 'get',
@@ -40,6 +40,7 @@ const getDataFromRedis = async (key, metricMetadata) => {
       stats.increment('shopify_redis_no_val', {
         writeKey: metricMetadata.writeKey,
         source: metricMetadata.source,
+        event,
       });
     }
     return redisData;
@@ -187,8 +188,9 @@ const getAnonymousIdAndSessionId = async (message, metricMetadata, redisData = n
   }
   if (useRedisDatabase) {
     if (!isDefinedAndNotNull(redisData)) {
+      const { event } = message;
       // eslint-disable-next-line no-param-reassign
-      redisData = await getDataFromRedis(cartToken, metricMetadata);
+      redisData = await getDataFromRedis(cartToken, metricMetadata, event);
     }
     anonymousId = redisData?.anonymousId;
     sessionId = redisData?.sessionId;
@@ -243,11 +245,11 @@ const updateCartItemsInRedis = async (cartToken, newCartItemsHash, metricMetadat
  * @param {*} metricMetadata
  * @returns boolean
  */
-const checkAndUpdateCartItems = async (inputEvent, redisData, metricMetadata) => {
+const checkAndUpdateCartItems = async (inputEvent, redisData, metricMetadata, shopifyTopic) => {
   const cartToken = inputEvent.token || inputEvent.id;
   if (!isDefinedAndNotNull(redisData)) {
     // eslint-disable-next-line no-param-reassign
-    redisData = await getDataFromRedis(cartToken, metricMetadata);
+    redisData = await getDataFromRedis(cartToken, metricMetadata, SHOPIFY_TRACK_MAP[shopifyTopic]);
   }
   const itemsHash = redisData?.itemsHash;
   if (isDefinedAndNotNull(itemsHash)) {

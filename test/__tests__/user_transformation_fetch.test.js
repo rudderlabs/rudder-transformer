@@ -91,11 +91,11 @@ describe("User transformation fetch tests", () => {
     };
     const errMsg = "ERROR";
 
-    mockResolver.mockResolvedValue([ '127.0.0.1' ]);
+    mockResolver.mockResolvedValue([{ address: '127.0.0.1', ttl: 300 } ]);
     const output = await userTransformHandler(inputData, versionId, [], trRevCode, true);
     
     expect(mockResolver).toHaveBeenCalledTimes(inputData.length);
-    expect(mockResolver).toHaveBeenCalledWith('abc.xyz.com');
+    expect(mockResolver).toHaveBeenCalledWith('abc.xyz.com', { ttl: true });
     output.transformedEvents.forEach(ev => {
       expect(ev.errMsg).toEqual(errMsg);
     });
@@ -155,7 +155,7 @@ describe("User transformation fetch tests", () => {
     const output = await userTransformHandler(inputData, versionId, [], trRevCode, true);
     
     expect(mockResolver).toHaveBeenCalledTimes(inputData.length);
-    expect(mockResolver).toHaveBeenCalledWith('abc.xyz.com');
+    expect(mockResolver).toHaveBeenCalledWith('abc.xyz.com', { ttl: true });
     output.transformedEvents.forEach(ev => {
       expect(ev.errMsg).toEqual(errMsg);
     });
@@ -253,7 +253,7 @@ describe("User transformation fetch tests", () => {
     const output = await userTransformHandler(inputData, versionId, [], trRevCode, true);
     
     expect(mockResolver).toHaveBeenCalledTimes(inputData.length);
-    expect(mockResolver).toHaveBeenCalledWith('abc.xyz.com');
+    expect(mockResolver).toHaveBeenCalledWith('abc.xyz.com', { ttl: true });
     output.transformedEvents.forEach(ev => {
       expect(ev.errMsg).toEqual(errMsg);
     });
@@ -307,11 +307,11 @@ describe("User transformation fetch tests", () => {
     };
     const errMsg = "request to https://abc.xyz.com/dummyUrl failed, reason: Invalid IP address: cannot use 127.0.0.1 as IP address";
     
-    mockResolver.mockResolvedValue(['3.122.122.122', '127.0.0.1']);
+    mockResolver.mockResolvedValue([{ address: '127.0.0.1', ttl: 100 }, { address: '3.122.122.122', ttl: 600 }]);
     const output = await userTransformHandler(inputData, versionId, [], trRevCode, true);
     
     expect(mockResolver).toHaveBeenCalledTimes(inputData.length);
-    expect(mockResolver).toHaveBeenCalledWith('abc.xyz.com');
+    expect(mockResolver).toHaveBeenCalledWith('abc.xyz.com', { ttl: true });
     output.transformedEvents.forEach(ev => {
       expect(ev.errMsg).toEqual(errMsg);
     });

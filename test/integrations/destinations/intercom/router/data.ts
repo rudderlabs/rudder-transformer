@@ -466,6 +466,78 @@ const routerRequest2: RouterTransformationRequest = {
       },
       metadata: generateMetadata(3),
     },
+    {
+      destination: destination4,
+      message: {
+        anonymousId: '58b21c2d-f8d5-4410-a2d0-b268a26b7e33',
+        channel: 'mobile',
+        context: {
+          app: {
+            build: '1.0',
+            name: 'Test_Example',
+            namespace: 'com.example.testapp',
+            version: '1.0',
+          },
+          device: {
+            id: '58b21c2d-f8d5-4410-a2d0-b268a26b7e33',
+            manufacturer: 'Apple',
+            model: 'iPhone',
+            name: 'iPod touch (7th generation)',
+            type: 'iOS',
+          },
+          library: {
+            name: 'test-ios-library',
+            version: '1.0.7',
+          },
+          locale: 'en-US',
+          network: {
+            bluetooth: false,
+            carrier: 'unavailable',
+            cellular: false,
+            wifi: true,
+          },
+          os: {
+            name: 'iOS',
+            version: '14.0',
+          },
+          screen: {
+            density: 2,
+            height: 320,
+            width: 568,
+          },
+          timezone: 'Asia/Kolkata',
+          traits: {
+            anonymousId: '58b21c2d-f8d5-4410-a2d0-b268a26b7e33',
+            name: 'Test Name',
+            firstName: 'Test',
+            lastName: 'Name',
+            createdAt: '2020-09-30T19:11:00.337Z',
+            userId: 'test_user_id_1',
+            email: 'test_1@test.com',
+            phone: '9876543210',
+            key1: 'value1',
+            company: {
+              id: 'company id',
+              name: 'Test Company',
+              remove: true,
+            },
+          },
+          userAgent: 'unknown',
+        },
+        event: 'Test Event 2',
+        integrations: {
+          All: true,
+        },
+        messageId: '1601493060-39010c49-e6e4-4626-a75c-0dbf1925c9e8',
+        originalTimestamp: '2020-09-30T19:11:00.337Z',
+        receivedAt: '2020-10-01T00:41:11.369+05:30',
+        request_ip: '2405:201:8005:9856:7911:25e7:5603:5e18',
+        sentAt: '2020-09-30T19:11:10.382Z',
+        timestamp: '2020-10-01T00:41:01.324+05:30',
+        type: 'identify',
+      },
+      metadata: generateMetadata(4),
+    },
   ],
   destType: 'intercom',
 };
@@ -636,6 +708,96 @@ const routerRequest3: RouterTransformationRequest = {
   destType: 'intercom',
 };
 
+const routerRequest4: RouterTransformationRequest = {
+  input: [
+    {
+      destination: destination3,
+      message: {
+        userId: 'user@1',
+        channel: 'web',
+        context: {
+          traits: {
+            age: 23,
+            email: 'test+5@rudderlabs.com',
+            phone: '+91 9599999999',
+            firstName: 'John',
+            lastName: 'Snow',
+            address: 'california usa',
+            ownerId: '13',
+            company: {
+              id: 'company id',
+              name: 'Test Company',
+              remove: true,
+            },
+          },
+        },
+        type: 'identify',
+        integrations: { All: true },
+        originalTimestamp: '2023-11-10T14:42:44.724Z',
+        timestamp: '2023-11-22T10:12:44.757+05:30',
+      },
+      metadata: generateMetadata(1),
+    },
+    {
+      destination: destination3,
+      message: {
+        userId: 'user@1',
+        channel: 'web',
+        context: {
+          traits: {
+            age: 23,
+            email: 'test+5@rudderlabs.com',
+            phone: '+91 9599999999',
+            firstName: 'John',
+            lastName: 'Snow',
+            address: 'california usa',
+            ownerId: '13',
+            company: {
+              id: 'unavailable company id',
+              name: 'Test Company',
+              remove: true,
+            },
+          },
+        },
+        type: 'identify',
+        integrations: { All: true },
+        originalTimestamp: '2023-11-10T14:42:44.724Z',
+        timestamp: '2023-11-22T10:12:44.757+05:30',
+      },
+      metadata: generateMetadata(2),
+    },
+    {
+      destination: destination3,
+      message: {
+        userId: 'user@1',
+        channel: 'web',
+        context: {
+          traits: {
+            age: 23,
+            email: 'test+5@rudderlabs.com',
+            phone: '+91 9599999999',
+            firstName: 'John',
+            lastName: 'Snow',
+            address: 'california usa',
+            ownerId: '13',
+            company: {
+              id: 'other company id',
+              name: 'Test Company',
+              remove: true,
+            },
+          },
+        },
+        type: 'identify',
+        integrations: { All: true },
+        originalTimestamp: '2023-11-10T14:42:44.724Z',
+        timestamp: '2023-11-22T10:12:44.757+05:30',
+      },
+      metadata: generateMetadata(3),
+    },
+  ],
+  destType: 'intercom',
+};
+
 export const data: RouterTestData[] = [
   {
     id: 'Intercom-router-test-1',
@@ -683,6 +845,7 @@ export const data: RouterTestData[] = [
                   'Content-Type': 'application/json',
                   Accept: 'application/json',
                   'Intercom-Version': '2.10',
+                  'User-Agent': 'RudderStack',
                 },
                 method: 'POST',
                 params: {},
@@ -725,6 +888,7 @@ export const data: RouterTestData[] = [
                   'Content-Type': 'application/json',
                   Accept: 'application/json',
                   'Intercom-Version': '2.10',
+                  'User-Agent': 'RudderStack',
                 },
                 method: 'POST',
                 params: {},
@@ -753,6 +917,7 @@ export const data: RouterTestData[] = [
                   'Content-Type': 'application/json',
                   Accept: 'application/json',
                   'Intercom-Version': '2.10',
+                  'User-Agent': 'RudderStack',
                 },
                 method: 'POST',
                 params: {},
@@ -781,6 +946,7 @@ export const data: RouterTestData[] = [
                   'Content-Type': 'application/json',
                   Accept: 'application/json',
                   'Intercom-Version': '2.10',
+                  'User-Agent': 'RudderStack',
                 },
                 method: 'POST',
                 params: {},
@@ -845,6 +1011,7 @@ export const data: RouterTestData[] = [
                   Authorization: 'Bearer testApiKey',
                   Accept: 'application/json',
                   'Intercom-Version': '1.4',
+                  'User-Agent': 'RudderStack',
                 },
                 params: {},
                 body: {
@@ -884,6 +1051,7 @@ export const data: RouterTestData[] = [
                   Authorization: 'Bearer testApiKey',
                   Accept: 'application/json',
                   'Intercom-Version': '1.4',
+                  'User-Agent': 'RudderStack',
                 },
                 params: {},
                 body: {
@@ -935,6 +1103,7 @@ export const data: RouterTestData[] = [
                     Authorization: 'Bearer testApiKey',
                     'Content-Type': 'application/json',
                     'Intercom-Version': '1.4',
+                    'User-Agent': 'RudderStack',
                   },
                   method: 'POST',
                   params: {},
@@ -964,6 +1133,7 @@ export const data: RouterTestData[] = [
                     Authorization: 'Bearer testApiKey',
                     'Content-Type': 'application/json',
                     'Intercom-Version': '1.4',
+                    'User-Agent': 'RudderStack',
                   },
                   method: 'POST',
                   params: {},
@@ -975,31 +1145,6 @@ export const data: RouterTestData[] = [
               metadata: [generateMetadata(3)],
               statusCode: 299,
             },
-          ],
-        },
-      },
-    },
-  },
-  {
-    id: 'Intercom-router-test-3',
-    scenario: 'Framework',
-    successCriteria:
-      'Events should be transformed successfully for apiVersion v1 and cdk v2 not enabled',
-    name: 'intercom',
-    description: 'Intercom router tests for apiVersion v1 and cdk v2 not enabled',
-    feature: 'router',
-    module: 'destination',
-    version: 'v0',
-    input: {
-      request: {
-        body: routerRequest3,
-      },
-    },
-    output: {
-      response: {
-        status: 200,
-        body: {
-          output: [
             {
               batchedRequest: {
                 version: '1',
@@ -1011,6 +1156,7 @@ export const data: RouterTestData[] = [
                   Authorization: 'Bearer testApiKey',
                   Accept: 'application/json',
                   'Intercom-Version': '1.4',
+                  'User-Agent': 'RudderStack',
                 },
                 params: {},
                 body: {
@@ -1022,6 +1168,14 @@ export const data: RouterTestData[] = [
                     last_seen_user_agent: 'unknown',
                     update_last_request_at: false,
                     user_id: 'test_user_id_1',
+                    companies: [
+                      {
+                        company_id: 'company id',
+                        custom_attributes: {},
+                        name: 'Test Company',
+                        remove: true,
+                      },
+                    ],
                     custom_attributes: {
                       anonymousId: '58b21c2d-f8d5-4410-a2d0-b268a26b7e33',
                       key1: 'value1',
@@ -1034,112 +1188,109 @@ export const data: RouterTestData[] = [
                 files: {},
                 userId: '58b21c2d-f8d5-4410-a2d0-b268a26b7e33',
               },
-              metadata: [generateMetadata(1)],
+              metadata: [generateMetadata(4)],
               batched: false,
               statusCode: 200,
-              destination: destination6,
+              destination: destination4,
             },
+          ],
+        },
+      },
+    },
+  },
+  {
+    id: 'Intercom-router-test-3',
+    scenario: 'Framework',
+    successCriteria:
+      'Some identify events should be transformed successfully and some should fail for apiVersion v2',
+    name: 'intercom',
+    description:
+      'Intercom router tests for detaching contact from company in intercom for apiVersion v2',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: routerRequest4,
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
             {
+              batched: false,
               batchedRequest: {
-                version: '1',
-                type: 'REST',
-                method: 'POST',
-                endpoint: 'https://api.intercom.io/users',
-                headers: {
-                  'Content-Type': 'application/json',
-                  Authorization: 'Bearer testApiKey',
-                  Accept: 'application/json',
-                  'Intercom-Version': '1.4',
-                },
-                params: {},
                 body: {
                   JSON: {
-                    email: 'test_1@test.com',
-                    phone: '9876543210',
-                    signed_up_at: 1601493060,
-                    name: 'Test Name',
-                    last_seen_user_agent: 'unknown',
-                    update_last_request_at: false,
+                    email: 'test+5@rudderlabs.com',
+                    external_id: 'user@1',
+                    name: 'John Snow',
+                    owner_id: 13,
+                    phone: '+91 9599999999',
                     custom_attributes: {
-                      anonymousId: '58b21c2d-f8d5-4410-a2d0-b268a26b7e33',
-                      key1: 'value1',
+                      address: 'california usa',
+                      age: 23,
                     },
                   },
                   XML: {},
-                  JSON_ARRAY: {},
                   FORM: {},
+                  JSON_ARRAY: {},
                 },
+                endpoint: 'https://api.eu.intercom.io/contacts/70701240741e45d040',
                 files: {},
-                userId: '58b21c2d-f8d5-4410-a2d0-b268a26b7e33',
+                headers: {
+                  Authorization: 'Bearer testApiKey',
+                  'Content-Type': 'application/json',
+                  Accept: 'application/json',
+                  'Intercom-Version': '2.10',
+                  'User-Agent': 'RudderStack',
+                },
+                method: 'PUT',
+                params: {},
+                type: 'REST',
+                version: '1',
               },
-              metadata: [generateMetadata(2)],
-              batched: false,
+              destination: destination3,
+              metadata: [generateMetadata(1)],
               statusCode: 200,
-              destination: destination6,
             },
             {
               batched: false,
-              batchedRequest: [
-                {
-                  body: {
-                    FORM: {},
-                    JSON: {
-                      company_id: 'rudderlabs',
-                      industry: 'CDP',
-                      name: 'RudderStack',
-                      plan: 'enterprise',
-                      size: 500,
-                      website: 'www.rudderstack.com',
-                    },
-                    JSON_ARRAY: {},
-                    XML: {},
-                  },
-                  endpoint: 'https://api.intercom.io/companies',
-                  files: {},
-                  headers: {
-                    Accept: 'application/json',
-                    Authorization: 'Bearer testApiKey',
-                    'Content-Type': 'application/json',
-                    'Intercom-Version': '1.4',
-                  },
-                  method: 'POST',
-                  params: {},
-                  type: 'REST',
-                  version: '1',
-                },
-                {
-                  body: {
-                    FORM: {},
-                    JSON: {
-                      companies: [
-                        {
-                          company_id: 'rudderlabs',
-                          name: 'RudderStack',
-                        },
-                      ],
-                      email: 'test+5@rudderlabs.com',
-                      user_id: 'user@5',
-                    },
-                    JSON_ARRAY: {},
-                    XML: {},
-                  },
-                  endpoint: 'https://api.intercom.io/users',
-                  files: {},
-                  headers: {
-                    Accept: 'application/json',
-                    Authorization: 'Bearer testApiKey',
-                    'Content-Type': 'application/json',
-                    'Intercom-Version': '1.4',
-                  },
-                  method: 'POST',
-                  params: {},
-                  type: 'REST',
-                  version: '1',
-                },
-              ],
-              destination: destination7,
+              error:
+                'Unable to get company id due to : {"type":"error.list","request_id":"req123","errors":[{"code":"company_not_found","message":"Company Not Found"}]}',
+              statTags: {
+                destType: 'INTERCOM',
+                errorCategory: 'dataValidation',
+                errorType: 'instrumentation',
+                feature: 'router',
+                implementation: 'cdkV2',
+                module: 'destination',
+                destinationId: 'default-destinationId',
+                workspaceId: 'default-workspaceId',
+              },
+              destination: destination3,
+              metadata: [generateMetadata(2)],
+              statusCode: 400,
+            },
+            {
+              batched: false,
+              error:
+                'Unable to detach contact and company due to : {"type":"error.list","request_id":"req123","errors":[{"code":"company_not_found","message":"Company Not Found"}]}',
+              statTags: {
+                destType: 'INTERCOM',
+                errorCategory: 'dataValidation',
+                errorType: 'instrumentation',
+                feature: 'router',
+                implementation: 'cdkV2',
+                module: 'destination',
+                destinationId: 'default-destinationId',
+                workspaceId: 'default-workspaceId',
+              },
+              destination: destination3,
               metadata: [generateMetadata(3)],
-              statusCode: 200,
+              statusCode: 400,
             },
           ],
         },

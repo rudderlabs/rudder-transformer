@@ -1,5 +1,6 @@
 const sha256 = require('sha256');
 const SqlString = require('sqlstring');
+const isString = require('lodash/isString');
 const { get, set, cloneDeep } = require('lodash');
 const {
   AbortedError,
@@ -16,7 +17,6 @@ const {
   getFieldValueFromMessage,
   isDefinedAndNotNullAndNotEmpty,
   isDefinedAndNotNull,
-  getAuthErrCategoryFromStCode,
   getAccessToken,
   getIntegrationsObj,
 } = require('../../util');
@@ -30,13 +30,11 @@ const {
   CLICK_CONVERSION,
   trackCallConversionsMapping,
   consentConfigMap,
-  destType,
 } = require('./config');
 const { processAxiosResponse } = require('../../../adapters/utils/networkUtils');
 const Cache = require('../../util/cache');
 const helper = require('./helper');
-const { finaliseConsent } = require('../../util/googleUtils');
-const logger = require('../../../logger');
+const { finaliseConsent, getAuthErrCategory } = require('../../util/googleUtils');
 
 const conversionActionIdCache = new Cache(CONVERSION_ACTION_ID_CACHE_TTL);
 
@@ -71,14 +69,6 @@ const getConversionActionId = async ({ headers, params, metadata }) => {
     const requestOptions = {
       headers,
     };
-    logger.requestLog(`[${destType.toUpperCase()}] get conversion action id request`, {
-      metadata,
-      requestDetails: {
-        url: endpoint,
-        body: data,
-        method: 'post',
-      },
-    });
     let searchStreamResponse = await httpPOST(endpoint, data, requestOptions, {
       destType: 'google_adwords_offline_conversions',
       feature: 'transformation',
@@ -88,15 +78,7 @@ const getConversionActionId = async ({ headers, params, metadata }) => {
       metadata,
     });
     searchStreamResponse = processAxiosResponse(searchStreamResponse);
-    const { response, status, headers: responseHeaders } = searchStreamResponse;
-    logger.responseLog(`[${destType.toUpperCase()}] get conversion action id response`, {
-      metadata,
-      responseDetails: {
-        response,
-        status,
-        headers: responseHeaders,
-      },
-    });
+    const { response, status } = searchStreamResponse;
     if (!isHttpStatusSuccess(status)) {
       throw new AbortedError(
         `[Google Ads Offline Conversions]:: ${JSON.stringify(
@@ -104,7 +86,7 @@ const getConversionActionId = async ({ headers, params, metadata }) => {
         )} during google_ads_offline_conversions response transformation`,
         status,
         response,
-        getAuthErrCategoryFromStCode(get(searchStreamResponse, 'status')),
+        getAuthErrCategory(searchStreamResponse),
       );
     }
     const conversionAction = get(
@@ -290,7 +272,9 @@ const getAddConversionPayload = (message, Config) => {
 
   const userIdentifierInfo = {
     email:
-      hashUserIdentifier && isDefinedAndNotNull(email) ? sha256(email.trim()).toString() : email,
+      hashUserIdentifier && isString(email) && isDefinedAndNotNull(email)
+        ? sha256(email.trim()).toString()
+        : email,
     phone:
       hashUserIdentifier && isDefinedAndNotNull(phone) ? sha256(phone.trim()).toString() : phone,
     address: buildAndGetAddress(message, hashUserIdentifier),
@@ -386,7 +370,9 @@ const getClickConversionPayloadAndEndpoint = (
 
   const userIdentifierInfo = {
     email:
-      hashUserIdentifier && isDefinedAndNotNull(email) ? sha256(email.trim()).toString() : email,
+      hashUserIdentifier && isString(email) && isDefinedAndNotNull(email)
+        ? sha256(email.trim()).toString()
+        : email,
     phone:
       hashUserIdentifier && isDefinedAndNotNull(phone) ? sha256(phone.trim()).toString() : phone,
   };

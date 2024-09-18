@@ -2550,4 +2550,886 @@ export const data = [
       },
     },
   },
+  {
+    name: 'clevertap',
+    description: 'Test 22: device token type via integrations object takes precedence over os type',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: {
+              Config: {
+                passcode: 'sample_passcode',
+                accountId: '476550467',
+                trackAnonymous: true,
+                enableObjectIdMapping: true,
+              },
+            },
+            message: {
+              type: 'identify',
+              event: 'identify',
+              sentAt: '2021-05-24T08:53:38.762Z',
+              userId: 'useran4',
+              channel: 'mobile',
+              context: {
+                os: {
+                  name: 'Android',
+                  version: '10',
+                },
+                app: {
+                  name: 'myfirstapp',
+                  build: '1',
+                  version: '1.0',
+                  namespace: 'com.example.myfirstapp',
+                },
+                device: {
+                  id: 'f54bb572361c4fd1',
+                  name: 'whyred',
+                  type: 'Android',
+                  model: 'Redmi Note 5 Pro',
+                  manufacturer: 'Xiaomi',
+                  token: 'frfsgvrwe:APfdsafsgdfsgghfgfgjkhfsfgdhjhbvcvnetry767456fxsasdf',
+                },
+                locale: 'en-IN',
+                screen: {
+                  width: 1080,
+                  height: 2118,
+                  density: 420,
+                },
+                traits: {
+                  id: 'useran4',
+                  email: 'tony4an@testmail.com',
+                  phone: '4444457700',
+                  userId: 'useran4',
+                  lastname: 'Stark',
+                  firstname: 'Tony4AN',
+                  anonymousId: 'f54bb572361c4fd1',
+                },
+                library: {
+                  name: 'com.rudderstack.android.sdk.core',
+                  version: '1.0.12',
+                },
+                network: {
+                  wifi: true,
+                  carrier: 'airtel',
+                  cellular: true,
+                  bluetooth: false,
+                },
+                timezone: 'Asia/Kolkata',
+                userAgent:
+                  'Dalvik/2.1.0 (Linux; U; Android 10; Redmi Note 5 Pro Build/QQ3A.200805.001)',
+              },
+              rudderId: 'd8dd4917-bdb2-4c17-8f62-24c79d87a937',
+              messageId: '1621846417928-7fbb739f-5f96-48ca-9ebb-5bfc4076a687',
+              anonymousId: 'f54bb572361c4fd1',
+              integrations: {
+                All: true,
+                clevertap: {
+                  deviceTokenType: 'chrome',
+                },
+              },
+              originalTimestamp: '2021-05-24T08:53:37.929Z',
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://api.clevertap.com/1/upload',
+              headers: {
+                'X-CleverTap-Account-Id': '476550467',
+                'X-CleverTap-Passcode': 'sample_passcode',
+                'Content-Type': 'application/json',
+              },
+              params: {},
+              body: {
+                JSON: {
+                  d: [
+                    {
+                      type: 'profile',
+                      profileData: {
+                        Email: 'tony4an@testmail.com',
+                        Phone: '4444457700',
+                        Name: 'Tony4AN Stark',
+                        identity: 'useran4',
+                      },
+                      objectId: 'f54bb572361c4fd1',
+                    },
+                  ],
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: '',
+            },
+            statusCode: 200,
+          },
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://api.clevertap.com/1/upload',
+              headers: {
+                'X-CleverTap-Account-Id': '476550467',
+                'X-CleverTap-Passcode': 'sample_passcode',
+                'Content-Type': 'application/json',
+              },
+              params: {},
+              body: {
+                JSON: {
+                  d: [
+                    {
+                      type: 'token',
+                      tokenData: {
+                        id: 'frfsgvrwe:APfdsafsgdfsgghfgfgjkhfsfgdhjhbvcvnetry767456fxsasdf',
+                        type: 'chrome',
+                      },
+                      objectId: 'f54bb572361c4fd1',
+                    },
+                  ],
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: '',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'clevertap',
+    description:
+      'Test 23: device token type via integrations object does not take precedence over os type when the token type is not within the allowed types ',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: {
+              Config: {
+                passcode: 'sample_passcode',
+                accountId: '476550467',
+                trackAnonymous: true,
+                enableObjectIdMapping: true,
+              },
+            },
+            message: {
+              type: 'identify',
+              event: 'identify',
+              sentAt: '2021-05-24T08:53:38.762Z',
+              userId: 'useran4',
+              channel: 'mobile',
+              context: {
+                os: {
+                  name: 'Android',
+                  version: '10',
+                },
+                app: {
+                  name: 'myfirstapp',
+                  build: '1',
+                  version: '1.0',
+                  namespace: 'com.example.myfirstapp',
+                },
+                device: {
+                  id: 'f54bb572361c4fd1',
+                  name: 'whyred',
+                  type: 'Android',
+                  model: 'Redmi Note 5 Pro',
+                  manufacturer: 'Xiaomi',
+                  token: 'frfsgvrwe:APfdsafsgdfsgghfgfgjkhfsfgdhjhbvcvnetry767456fxsasdf',
+                },
+                locale: 'en-IN',
+                screen: {
+                  width: 1080,
+                  height: 2118,
+                  density: 420,
+                },
+                traits: {
+                  id: 'useran4',
+                  email: 'tony4an@testmail.com',
+                  phone: '4444457700',
+                  userId: 'useran4',
+                  lastname: 'Stark',
+                  firstname: 'Tony4AN',
+                  anonymousId: 'f54bb572361c4fd1',
+                },
+                library: {
+                  name: 'com.rudderstack.android.sdk.core',
+                  version: '1.0.12',
+                },
+                network: {
+                  wifi: true,
+                  carrier: 'airtel',
+                  cellular: true,
+                  bluetooth: false,
+                },
+                timezone: 'Asia/Kolkata',
+                userAgent:
+                  'Dalvik/2.1.0 (Linux; U; Android 10; Redmi Note 5 Pro Build/QQ3A.200805.001)',
+              },
+              rudderId: 'd8dd4917-bdb2-4c17-8f62-24c79d87a937',
+              messageId: '1621846417928-7fbb739f-5f96-48ca-9ebb-5bfc4076a687',
+              anonymousId: 'f54bb572361c4fd1',
+              integrations: {
+                All: true,
+                clevertap: {
+                  deviceTokenType: 'random',
+                },
+              },
+              originalTimestamp: '2021-05-24T08:53:37.929Z',
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://api.clevertap.com/1/upload',
+              headers: {
+                'X-CleverTap-Account-Id': '476550467',
+                'X-CleverTap-Passcode': 'sample_passcode',
+                'Content-Type': 'application/json',
+              },
+              params: {},
+              body: {
+                JSON: {
+                  d: [
+                    {
+                      type: 'profile',
+                      profileData: {
+                        Email: 'tony4an@testmail.com',
+                        Phone: '4444457700',
+                        Name: 'Tony4AN Stark',
+                        identity: 'useran4',
+                      },
+                      objectId: 'f54bb572361c4fd1',
+                    },
+                  ],
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: '',
+            },
+            statusCode: 200,
+          },
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://api.clevertap.com/1/upload',
+              headers: {
+                'X-CleverTap-Account-Id': '476550467',
+                'X-CleverTap-Passcode': 'sample_passcode',
+                'Content-Type': 'application/json',
+              },
+              params: {},
+              body: {
+                JSON: {
+                  d: [
+                    {
+                      type: 'token',
+                      tokenData: {
+                        id: 'frfsgvrwe:APfdsafsgdfsgghfgfgjkhfsfgdhjhbvcvnetry767456fxsasdf',
+                        type: 'fcm',
+                      },
+                      objectId: 'f54bb572361c4fd1',
+                    },
+                  ],
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: '',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'clevertap',
+    description: 'Test 24: chrome auth keys to be mapped via integrations object',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: {
+              Config: {
+                passcode: 'sample_passcode',
+                accountId: '476550467',
+                trackAnonymous: true,
+                enableObjectIdMapping: true,
+              },
+            },
+            message: {
+              type: 'identify',
+              event: 'identify',
+              sentAt: '2021-05-24T08:53:38.762Z',
+              userId: 'useran4',
+              channel: 'mobile',
+              context: {
+                os: { name: 'Android', version: '10' },
+                app: {
+                  name: 'myfirstapp',
+                  build: '1',
+                  version: '1.0',
+                  namespace: 'com.example.myfirstapp',
+                },
+                device: {
+                  id: 'f54bb572361c4fd1',
+                  name: 'whyred',
+                  type: 'Android',
+                  model: 'Redmi Note 5 Pro',
+                  manufacturer: 'Xiaomi',
+                  token:
+                    'dR7jSUNlQ_qr_maG7Qd4R-:APA91bEuIZUlyF2Or7FzDp9slk2LTVoUIucV4hL7dvUqJzl6yWAfIFTBaU2uec9broasHAHAvga9ha1tszSEJobuAC-Zbh6l3DoXO4vnSrN4LcllybmGr_lIw5k8CgFoNuvSb8BWEb90',
+                },
+                locale: 'en-IN',
+                screen: { width: 1080, height: 2118, density: 420 },
+                traits: {
+                  id: 'useran4',
+                  email: 'tony4an@testmail.com',
+                  phone: '+919432240789',
+                  userId: 'useran4',
+                  lastname: 'Stark',
+                  firstname: 'Tony4AN',
+                  anonymousId: 'f54bb572361c4fd1',
+                },
+                library: { name: 'com.rudderstack.android.sdk.core', version: '1.0.12' },
+                network: { wifi: true, carrier: 'airtel', cellular: true, bluetooth: false },
+                timezone: 'Asia/Kolkata',
+                userAgent:
+                  'Dalvik/2.1.0 (Linux; U; Android 10; Redmi Note 5 Pro Build/QQ3A.200805.001)',
+              },
+              rudderId: 'd8dd4917-bdb2-4c17-8f62-24c79d87a937',
+              messageId: '1621846417928-7fbb739f-5f96-48ca-9ebb-5bfc4076a687',
+              anonymousId: 'f54bb572361c4fd1',
+              integrations: {
+                All: true,
+                clevertap: {
+                  deviceTokenType: 'chrome',
+                  chromeKeys: { auth: '5I2Bu2oKdyy9CwL8QVF0NQ==' },
+                },
+              },
+              originalTimestamp: '2021-05-24T08:53:37.929Z',
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://api.clevertap.com/1/upload',
+              headers: {
+                'X-CleverTap-Account-Id': '476550467',
+                'X-CleverTap-Passcode': 'sample_passcode',
+                'Content-Type': 'application/json',
+              },
+              params: {},
+              body: {
+                JSON: {
+                  d: [
+                    {
+                      type: 'profile',
+                      profileData: {
+                        Email: 'tony4an@testmail.com',
+                        Phone: '+919432240789',
+                        Name: 'Tony4AN Stark',
+                        identity: 'useran4',
+                      },
+                      objectId: 'f54bb572361c4fd1',
+                    },
+                  ],
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: '',
+            },
+            statusCode: 200,
+          },
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              userId: '',
+              method: 'POST',
+              endpoint: 'https://api.clevertap.com/1/upload',
+              headers: {
+                'X-CleverTap-Account-Id': '476550467',
+                'X-CleverTap-Passcode': 'sample_passcode',
+                'Content-Type': 'application/json',
+              },
+              params: {},
+              body: {
+                JSON: {
+                  d: [
+                    {
+                      type: 'token',
+                      tokenData: {
+                        id: 'dR7jSUNlQ_qr_maG7Qd4R-:APA91bEuIZUlyF2Or7FzDp9slk2LTVoUIucV4hL7dvUqJzl6yWAfIFTBaU2uec9broasHAHAvga9ha1tszSEJobuAC-Zbh6l3DoXO4vnSrN4LcllybmGr_lIw5k8CgFoNuvSb8BWEb90',
+                        type: 'chrome',
+                        keys: {
+                          auth: '5I2Bu2oKdyy9CwL8QVF0NQ==',
+                        },
+                      },
+                      objectId: 'f54bb572361c4fd1',
+                    },
+                  ],
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'clevertap',
+    description:
+      'Test 25: chrome auth key with only p256dh key to be mapped via integrations object',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: {
+              Config: {
+                passcode: 'sample_passcode',
+                accountId: '476550467',
+                trackAnonymous: true,
+                enableObjectIdMapping: true,
+              },
+            },
+            message: {
+              type: 'identify',
+              event: 'identify',
+              sentAt: '2021-05-24T08:53:38.762Z',
+              userId: 'useran4',
+              channel: 'mobile',
+              context: {
+                os: { name: 'Android', version: '10' },
+                app: {
+                  name: 'myfirstapp',
+                  build: '1',
+                  version: '1.0',
+                  namespace: 'com.example.myfirstapp',
+                },
+                device: {
+                  id: 'f54bb572361c4fd1',
+                  name: 'whyred',
+                  type: 'Android',
+                  model: 'Redmi Note 5 Pro',
+                  manufacturer: 'Xiaomi',
+                  token:
+                    'dR7jSUNlQ_qr_maG7Qd4R-:APA91bEuIZUlyF2Or7FzDp9slk2LTVoUIucV4hL7dvUqJzl6yWAfIFTBaU2uec9broasHAHAvga9ha1tszSEJobuAC-Zbh6l3DoXO4vnSrN4LcllybmGr_lIw5k8CgFoNuvSb8BWEb90',
+                },
+                locale: 'en-IN',
+                screen: { width: 1080, height: 2118, density: 420 },
+                traits: {
+                  id: 'useran4',
+                  email: 'tony4an@testmail.com',
+                  phone: '+919432240789',
+                  userId: 'useran4',
+                  lastname: 'Stark',
+                  firstname: 'Tony4AN',
+                  anonymousId: 'f54bb572361c4fd1',
+                },
+                library: { name: 'com.rudderstack.android.sdk.core', version: '1.0.12' },
+                network: { wifi: true, carrier: 'airtel', cellular: true, bluetooth: false },
+                timezone: 'Asia/Kolkata',
+                userAgent:
+                  'Dalvik/2.1.0 (Linux; U; Android 10; Redmi Note 5 Pro Build/QQ3A.200805.001)',
+              },
+              rudderId: 'd8dd4917-bdb2-4c17-8f62-24c79d87a937',
+              messageId: '1621846417928-7fbb739f-5f96-48ca-9ebb-5bfc4076a687',
+              anonymousId: 'f54bb572361c4fd1',
+              integrations: {
+                All: true,
+                clevertap: {
+                  deviceTokenType: 'chrome',
+                  chromeKeys: {
+                    p256dh:
+                      'BLc4xRzKlKORKWlbdgFaBrrPK3ydWAHo4M0gs0i1oEKgPpWC5cW8OCzVrOQRv-1npXRWk8udnW3oYhIO4475rds=',
+                  },
+                },
+              },
+              originalTimestamp: '2021-05-24T08:53:37.929Z',
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://api.clevertap.com/1/upload',
+              headers: {
+                'X-CleverTap-Account-Id': '476550467',
+                'X-CleverTap-Passcode': 'sample_passcode',
+                'Content-Type': 'application/json',
+              },
+              params: {},
+              body: {
+                JSON: {
+                  d: [
+                    {
+                      type: 'profile',
+                      profileData: {
+                        Email: 'tony4an@testmail.com',
+                        Phone: '+919432240789',
+                        Name: 'Tony4AN Stark',
+                        identity: 'useran4',
+                      },
+                      objectId: 'f54bb572361c4fd1',
+                    },
+                  ],
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: '',
+            },
+            statusCode: 200,
+          },
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              userId: '',
+              method: 'POST',
+              endpoint: 'https://api.clevertap.com/1/upload',
+              headers: {
+                'X-CleverTap-Account-Id': '476550467',
+                'X-CleverTap-Passcode': 'sample_passcode',
+                'Content-Type': 'application/json',
+              },
+              params: {},
+              body: {
+                JSON: {
+                  d: [
+                    {
+                      type: 'token',
+                      tokenData: {
+                        id: 'dR7jSUNlQ_qr_maG7Qd4R-:APA91bEuIZUlyF2Or7FzDp9slk2LTVoUIucV4hL7dvUqJzl6yWAfIFTBaU2uec9broasHAHAvga9ha1tszSEJobuAC-Zbh6l3DoXO4vnSrN4LcllybmGr_lIw5k8CgFoNuvSb8BWEb90',
+                        type: 'chrome',
+                        keys: {
+                          p256dh:
+                            'BLc4xRzKlKORKWlbdgFaBrrPK3ydWAHo4M0gs0i1oEKgPpWC5cW8OCzVrOQRv-1npXRWk8udnW3oYhIO4475rds=',
+                        },
+                      },
+                      objectId: 'f54bb572361c4fd1',
+                    },
+                  ],
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'clevertap',
+    description:
+      'Test 25: chrome auth key object can have any random field and to be mapped via integrations object',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: {
+              Config: {
+                passcode: 'sample_passcode',
+                accountId: '476550467',
+                trackAnonymous: true,
+                enableObjectIdMapping: true,
+              },
+            },
+            message: {
+              type: 'identify',
+              event: 'identify',
+              sentAt: '2021-05-24T08:53:38.762Z',
+              userId: 'useran4',
+              channel: 'mobile',
+              context: {
+                os: { name: 'Android', version: '10' },
+                app: {
+                  name: 'myfirstapp',
+                  build: '1',
+                  version: '1.0',
+                  namespace: 'com.example.myfirstapp',
+                },
+                device: {
+                  id: 'f54bb572361c4fd1',
+                  name: 'whyred',
+                  type: 'Android',
+                  model: 'Redmi Note 5 Pro',
+                  manufacturer: 'Xiaomi',
+                  token:
+                    'dR7jSUNlQ_qr_maG7Qd4R-:APA91bEuIZUlyF2Or7FzDp9slk2LTVoUIucV4hL7dvUqJzl6yWAfIFTBaU2uec9broasHAHAvga9ha1tszSEJobuAC-Zbh6l3DoXO4vnSrN4LcllybmGr_lIw5k8CgFoNuvSb8BWEb90',
+                },
+                locale: 'en-IN',
+                screen: { width: 1080, height: 2118, density: 420 },
+                traits: {
+                  id: 'useran4',
+                  email: 'tony4an@testmail.com',
+                  phone: '+919432240789',
+                  userId: 'useran4',
+                  lastname: 'Stark',
+                  firstname: 'Tony4AN',
+                  anonymousId: 'f54bb572361c4fd1',
+                },
+                library: { name: 'com.rudderstack.android.sdk.core', version: '1.0.12' },
+                network: { wifi: true, carrier: 'airtel', cellular: true, bluetooth: false },
+                timezone: 'Asia/Kolkata',
+                userAgent:
+                  'Dalvik/2.1.0 (Linux; U; Android 10; Redmi Note 5 Pro Build/QQ3A.200805.001)',
+              },
+              rudderId: 'd8dd4917-bdb2-4c17-8f62-24c79d87a937',
+              messageId: '1621846417928-7fbb739f-5f96-48ca-9ebb-5bfc4076a687',
+              anonymousId: 'f54bb572361c4fd1',
+              integrations: {
+                All: true,
+                clevertap: {
+                  deviceTokenType: 'chrome',
+                  chromeKeys: {
+                    random: 'random key',
+                  },
+                },
+              },
+              originalTimestamp: '2021-05-24T08:53:37.929Z',
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://api.clevertap.com/1/upload',
+              headers: {
+                'X-CleverTap-Account-Id': '476550467',
+                'X-CleverTap-Passcode': 'sample_passcode',
+                'Content-Type': 'application/json',
+              },
+              params: {},
+              body: {
+                JSON: {
+                  d: [
+                    {
+                      type: 'profile',
+                      profileData: {
+                        Email: 'tony4an@testmail.com',
+                        Phone: '+919432240789',
+                        Name: 'Tony4AN Stark',
+                        identity: 'useran4',
+                      },
+                      objectId: 'f54bb572361c4fd1',
+                    },
+                  ],
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: '',
+            },
+            statusCode: 200,
+          },
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              userId: '',
+              method: 'POST',
+              endpoint: 'https://api.clevertap.com/1/upload',
+              headers: {
+                'X-CleverTap-Account-Id': '476550467',
+                'X-CleverTap-Passcode': 'sample_passcode',
+                'Content-Type': 'application/json',
+              },
+              params: {},
+              body: {
+                JSON: {
+                  d: [
+                    {
+                      type: 'token',
+                      tokenData: {
+                        id: 'dR7jSUNlQ_qr_maG7Qd4R-:APA91bEuIZUlyF2Or7FzDp9slk2LTVoUIucV4hL7dvUqJzl6yWAfIFTBaU2uec9broasHAHAvga9ha1tszSEJobuAC-Zbh6l3DoXO4vnSrN4LcllybmGr_lIw5k8CgFoNuvSb8BWEb90',
+                        type: 'chrome',
+                        keys: {
+                          random: 'random key',
+                        },
+                      },
+                      objectId: 'f54bb572361c4fd1',
+                    },
+                  ],
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'clevertap',
+    description: 'Should not throw bugsnag error if event is not of type string',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: {
+              Config: {
+                passcode: 'sample_passcode',
+                accountId: '476550467',
+                trackAnonymous: true,
+                enableObjectIdMapping: false,
+              },
+            },
+            message: {
+              type: 'track',
+              userId: 'user123',
+              event: 'Product Purchased',
+              properties: {
+                name: "Rubik's Cube",
+                revenue: 4.99,
+              },
+              context: {
+                ip: '14.5.67.21',
+              },
+              timestamp: '2020-02-02T00:23:09.544Z',
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://api.clevertap.com/1/upload',
+              headers: {
+                'X-CleverTap-Account-Id': '476550467',
+                'X-CleverTap-Passcode': 'sample_passcode',
+                'Content-Type': 'application/json',
+              },
+              params: {},
+              body: {
+                JSON: {
+                  d: [
+                    {
+                      evtName: 'Product Purchased',
+                      evtData: {
+                        name: "Rubik's Cube",
+                        revenue: 4.99,
+                      },
+                      type: 'event',
+                      identity: 'user123',
+                    },
+                  ],
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: '',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
 ];

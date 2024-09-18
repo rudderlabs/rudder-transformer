@@ -1,14 +1,13 @@
 const { NetworkError } = require('@rudderstack/integrations-lib');
+const get = require('get-value');
 const { prepareProxyRequest, handleHttpRequest } = require('../../../adapters/network');
-const { isHttpStatusSuccess, getAuthErrCategoryFromStCode } = require('../../util/index');
-const logger = require('../../../logger');
-
+const { isHttpStatusSuccess } = require('../../util/index');
 const {
   processAxiosResponse,
   getDynamicErrorType,
 } = require('../../../adapters/utils/networkUtils');
 const tags = require('../../util/tags');
-const { destType } = require('./config');
+const { getAuthErrCategory } = require('../../util/googleUtils');
 /**
  * This function helps to create a offlineUserDataJobs
  * @param endpoint
@@ -39,29 +38,13 @@ const createJob = async ({ endpoint, headers, method, params, metadata }) => {
     headers,
     method,
   };
-  logger.requestLog(`[${destType.toUpperCase()}] job creation request`, {
+  const { httpResponse } = await handleHttpRequest('constructor', jobCreatingRequest, {
+    destType: 'google_adwords_remarketing_lists',
+    feature: 'proxy',
+    endpointPath: '/customers/create',
+    requestMethod: 'POST',
+    module: 'dataDelivery',
     metadata,
-    requestDetails: {
-      url: jobCreatingRequest.url,
-      body: jobCreatingRequest.data,
-      method: jobCreatingRequest.method,
-    },
-  });
-  const { httpResponse, processedResponse } = await handleHttpRequest(
-    'constructor',
-    jobCreatingRequest,
-    {
-      destType: 'google_adwords_remarketing_lists',
-      feature: 'proxy',
-      endpointPath: '/customers/create',
-      requestMethod: 'POST',
-      module: 'dataDelivery',
-      metadata,
-    },
-  );
-  logger.responseLog(`[${destType.toUpperCase()}] job creation response`, {
-    metadata,
-    responseDetails: processedResponse,
   });
   return httpResponse;
 };
@@ -82,29 +65,13 @@ const addUserToJob = async ({ endpoint, headers, method, jobId, body, metadata }
     headers,
     method,
   };
-  logger.requestLog(`[${destType.toUpperCase()}] add user to job request`, {
+  const { httpResponse: response } = await handleHttpRequest('constructor', secondRequest, {
+    destType: 'google_adwords_remarketing_lists',
+    feature: 'proxy',
+    endpointPath: '/addOperations',
+    requestMethod: 'POST',
+    module: 'dataDelivery',
     metadata,
-    requestDetails: {
-      url: secondRequest.url,
-      body: secondRequest.data,
-      method: secondRequest.method,
-    },
-  });
-  const { httpResponse: response, processedResponse } = await handleHttpRequest(
-    'constructor',
-    secondRequest,
-    {
-      destType: 'google_adwords_remarketing_lists',
-      feature: 'proxy',
-      endpointPath: '/addOperations',
-      requestMethod: 'POST',
-      module: 'dataDelivery',
-      metadata,
-    },
-  );
-  logger.responseLog(`[${destType.toUpperCase()}] add user to job response`, {
-    metadata,
-    responseDetails: processedResponse,
   });
   return response;
 };
@@ -123,28 +90,13 @@ const runTheJob = async ({ endpoint, headers, method, jobId, metadata }) => {
     headers,
     method,
   };
-  logger.requestLog(`[${destType.toUpperCase()}] run job request`, {
+  const { httpResponse: response } = await handleHttpRequest('constructor', thirdRequest, {
+    destType: 'google_adwords_remarketing_lists',
+    feature: 'proxy',
+    endpointPath: '/run',
+    requestMethod: 'POST',
+    module: 'dataDelivery',
     metadata,
-    requestDetails: {
-      url: thirdRequest.url,
-      body: thirdRequest.data,
-      method: thirdRequest.method,
-    },
-  });
-  const { httpResponse: response, processedResponse } = await handleHttpRequest(
-    'constructor',
-    thirdRequest,
-    {
-      destType: 'google_adwords_remarketing_lists',
-      feature: 'proxy',
-      endpointPath: '/run',
-      requestMethod: 'POST',
-      module: 'dataDelivery',
-    },
-  );
-  logger.responseLog(`[${destType.toUpperCase()}] run job response`, {
-    metadata,
-    responseDetails: processedResponse,
   });
   return response;
 };
@@ -196,18 +148,24 @@ const gaAudienceProxyRequest = async (request) => {
 };
 
 const gaAudienceRespHandler = (destResponse, stageMsg) => {
-  const { status, response } = destResponse;
-  // const respAttributes = response["@attributes"] || null;
-  // const { stat, err_code: errorCode } = respAttributes;
+  let { status } = destResponse;
+  const { response } = destResponse;
+
+  if (
+    status === 400 &&
+    get(response, 'error.details.0.errors.0.errorCode.databaseError') === 'CONCURRENT_MODIFICATION'
+  ) {
+    status = 500;
+  }
 
   throw new NetworkError(
-    `${response?.error?.message} ${stageMsg}`,
+    `${JSON.stringify(response)} ${stageMsg}`,
     status,
     {
       [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
     },
     response,
-    getAuthErrCategoryFromStCode(status),
+    getAuthErrCategory(destResponse),
   );
 };
 

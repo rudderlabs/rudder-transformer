@@ -142,7 +142,7 @@ const BrazeDedupUtility = {
     return identfierChunks;
   },
 
-  async doApiLookup(identfierChunks, destination) {
+  async doApiLookup(identfierChunks, { destination, metadata }) {
     return Promise.all(
       identfierChunks.map(async (ids) => {
         const externalIdentifiers = ids.filter((id) => id.external_id);
@@ -167,6 +167,7 @@ const BrazeDedupUtility = {
             requestMethod: 'POST',
             module: 'router',
             endpointPath: '/users/export/ids',
+            metadata,
           },
         );
         stats.counter('braze_lookup_failure_count', 1, {
@@ -189,10 +190,10 @@ const BrazeDedupUtility = {
    */
   async doLookup(inputs) {
     const lookupStartTime = new Date();
-    const { destination } = inputs[0];
+    const { destination, metadata } = inputs[0];
     const { externalIdsToQuery, aliasIdsToQuery } = this.prepareInputForDedup(inputs);
     const identfierChunks = this.prepareChunksForDedup(externalIdsToQuery, aliasIdsToQuery);
-    const chunkedUserData = await this.doApiLookup(identfierChunks, destination);
+    const chunkedUserData = await this.doApiLookup(identfierChunks, { destination, metadata });
     stats.timing('braze_lookup_time', lookupStartTime, {
       destination_id: destination.Config.destinationId,
     });
@@ -287,7 +288,14 @@ const BrazeDedupUtility = {
 
     if (keys.length > 0) {
       keys.forEach((key) => {
-        if (!_.isEqual(userData[key], storedUserData[key])) {
+        // ref: https://www.braze.com/docs/user_guide/data_and_analytics/custom_data/custom_attributes/#adding-descriptions
+        // null is a valid value in braze for unsetting, so we need to compare the values only if the key is present in the stored user data
+        // in case of keys having null values only compare if the key is present in the stored user data
+        if (userData[key] === null) {
+          if (isDefinedAndNotNull(storedUserData[key])) {
+            deduplicatedUserData[key] = userData[key];
+          }
+        } else if (!_.isEqual(userData[key], storedUserData[key])) {
           deduplicatedUserData[key] = userData[key];
         }
       });
@@ -706,6 +714,16 @@ const collectStatsForAliasMissConfigurations = (destinationId) => {
   stats.increment('braze_alias_missconfigured_count', { destination_id: destinationId });
 };
 
+function handleReservedProperties(props) {
+  if (typeof props !== 'object') {
+    throw new InstrumentationError('Invalid event properties');
+  }
+  // remove reserved keys from custom event properties
+  const reserved = ['time', 'event_name'];
+
+  return _.omit(props, reserved);
+}
+
 module.exports = {
   BrazeDedupUtility,
   CustomAttributeOperationUtil,
@@ -720,4 +738,5 @@ module.exports = {
   addMandatoryPurchaseProperties,
   collectStatsForAliasFailure,
   collectStatsForAliasMissConfigurations,
+  handleReservedProperties,
 };

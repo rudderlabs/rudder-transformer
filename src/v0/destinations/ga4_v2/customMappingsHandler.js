@@ -12,8 +12,10 @@ const {
   buildDeliverablePayload,
   GA4_PARAMETERS_EXCLUSION,
   prepareUserProperties,
+  sanitizeUserProperties,
+  addSessionDetailsForHybridMode,
 } = require('../ga4/utils');
-const { InstrumentationError } = require('@rudderstack/integrations-lib');
+const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const {
   removeUndefinedAndNullRecurse,
   constructPayload,
@@ -70,6 +72,7 @@ const handleCustomMappings = (message, Config) => {
     // Default mapping
 
     let rawPayload = constructPayload(message, trackCommonConfig);
+    rawPayload = addClientDetails(rawPayload, message, Config, 'ga4_v2');
 
     const ga4EventPayload = {};
 
@@ -112,11 +115,16 @@ const handleCustomMappings = (message, Config) => {
 
     // Add common top level payload
     let ga4BasicPayload = constructPayload(message, trackCommonConfig);
-    ga4BasicPayload = addClientDetails(ga4BasicPayload, message, Config);
+    ga4BasicPayload = addClientDetails(ga4BasicPayload, message, Config, 'ga4_v2');
 
     const eventPropertiesMappings = mapping.eventProperties || [];
 
-    const ga4MappedPayload = applyCustomMappings(message, eventPropertiesMappings);
+    let ga4MappedPayload = {};
+    try {
+      ga4MappedPayload = applyCustomMappings(message, eventPropertiesMappings);
+    } catch (e) {
+      throw new ConfigurationError(`[GA4]:: Error in custom mappings: ${e.message}`);
+    }
 
     removeUndefinedAndNullRecurse(ga4MappedPayload);
 
@@ -137,11 +145,7 @@ const handleCustomMappings = (message, Config) => {
 const boilerplateOperations = (ga4Payload, message, Config, eventName) => {
   removeReservedParameterPrefixNames(ga4Payload.events[0].params);
   ga4Payload.events[0].name = eventName;
-  const integrationsObj = getIntegrationsObj(message, 'ga4');
-
-  if (isHybridModeEnabled(Config) && integrationsObj?.sessionId) {
-    ga4Payload.events[0].params.session_id = integrationsObj.sessionId;
-  }
+  const integrationsObj = getIntegrationsObj(message, 'ga4_v2');
 
   if (ga4Payload.events[0].params) {
     ga4Payload.events[0].params = removeInvalidParams(
@@ -154,10 +158,17 @@ const boilerplateOperations = (ga4Payload, message, Config, eventName) => {
   }
 
   // Prepare GA4 consents
-  const consents = prepareUserConsents(message);
+  const consents = prepareUserConsents(message, 'ga4_v2');
   if (!isEmptyObject(consents)) {
     ga4Payload.consent = consents;
   }
+
+  // Prepare GA4 user properties
+  if (isDefinedAndNotNull(ga4Payload.user_properties)) {
+    ga4Payload.user_properties = sanitizeUserProperties(ga4Payload.user_properties);
+  }
+
+  addSessionDetailsForHybridMode(ga4Payload, message, Config, 'ga4_v2');
 };
 
 module.exports = {

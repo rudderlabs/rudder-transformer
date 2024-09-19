@@ -27,7 +27,7 @@ function processPixelEvent(inputEvent) {
   const { checkout } = data ?? {};
   const { order } = checkout ?? {};
   const { customer } = order ?? {};
-  let message;
+  let message = {};
   switch (name) {
     case PIXEL_EVENT_TOPICS.PAGE_VIEWED:
       message = pageViewedEventBuilder(inputEvent);

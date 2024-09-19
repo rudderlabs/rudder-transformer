@@ -1058,7 +1058,7 @@ describe("Integration options", () => {
   });
 
   describe("json paths", () => {
-    const output = (config, provider) => {
+    const output = (eventType, config, provider) => {
       switch (provider) {
         case "rs":
           return _.cloneDeep(config.output.rs);
@@ -1068,6 +1068,14 @@ describe("Integration options", () => {
           return _.cloneDeep(config.output.postgres);
         case "snowflake":
           return _.cloneDeep(config.output.snowflake);
+        case "s3_datalake":
+        case "gcs_datalake":
+        case "azure_datalake":
+          if (eventType === 'identifies') {
+            return _.cloneDeep(config.output.datalake);
+          } else {
+            return _.cloneDeep(config.output.default);
+          }
         default:
           return _.cloneDeep(config.output.default);
       }
@@ -1103,14 +1111,14 @@ describe("Integration options", () => {
           const config = require("./data/warehouse/integrations/jsonpaths/new/" + testCase.eventType);
           const input = _.cloneDeep(config.input);
           const received = transformer.process(input);
-          expect(received).toEqual(output(config, integrations[index]));
+          expect(received).toEqual(output(testCase.eventType, config, integrations[index]));
         })
 
         it(`legacy ${testCase.eventType} for ${integrations[index]}`, () => {
           const config = require("./data/warehouse/integrations/jsonpaths/legacy/" + testCase.eventType);
           const input = _.cloneDeep(config.input);
           const received = transformer.process(input);
-          expect(received).toEqual(output(config, integrations[index]));
+          expect(received).toEqual(output(testCase.eventType, config, integrations[index]));
         })
       });
     }

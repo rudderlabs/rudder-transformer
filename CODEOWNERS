@@ -7,3 +7,5 @@ src/features.json @rudderlabs/integrations
 constants/ @rudderlabs/integrations
 warehouse/ @rudderlabs/warehouse
 src/util/ @rudderlabs/integrations @rudderlabs/data-management
+**/trackingPlan.ts @rudderlabs/data-management
+**/userTransform.ts @rudderlabs/data-management

@@ -8,11 +8,27 @@ on:
   pull_request:
     types: ['opened', 'reopened', 'synchronize']
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.sha }}
+  cancel-in-progress: true
+
 jobs:
+  get_workflow_url:
+    runs-on: ubuntu-latest
+    steps:
+      - id: get_url
+        run: |
+          curl -s https://api.github.com/repos/${{ github.repository }}/actions/workflows/${{ github.workflow }}/runs/${{ github.run_id }} | jq -r .html_url >> workflow_url.txt
+          echo "::set-output name=workflow_url::$(cat workflow_url.txt)"
+    outputs:
+      url: ${{ steps.get_url.outputs.workflow_url }}
+
   coverage:
     name: Code Coverage
     runs-on: ubuntu-latest
-
+    needs: [get_workflow_url]
+    outputs:
+      tests_run_outcome: ${{steps.run_tests.outcome}}
     steps:
       - name: Checkout
         uses: actions/checkout@v4.1.1
@@ -20,7 +36,7 @@ jobs:
           fetch-depth: 1
 
       - name: Setup Node
-        uses: actions/setup-node@v4.0.2
+        uses: actions/setup-node@v4.0.3
         with:
           node-version-file: '.nvmrc'
           cache: 'npm'
@@ -29,6 +45,8 @@ jobs:
         run: npm ci
 
       - name: Run Tests
+        id: run_tests
+        continue-on-error: true
         run: |
           # Supress logging in tests
           LOG_LEVEL=100 npm run test:js:ci
@@ -62,7 +80,17 @@ jobs:
 
       - name: SonarCloud Scan
         if: always()
-        uses: SonarSource/sonarcloud-github-action@v2.1.1
+        uses: SonarSource/sonarcloud-github-action@v3.0.0
         env:
           GITHUB_TOKEN: ${{ secrets.PAT }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+  notify:
+    name: slack notification on failure
+    needs: [get_workflow_url, coverage]
+    if: needs.coverage.outputs.tests_run_outcome == 'failure' || failure()
+    uses: ./.github/workflows/slack-notify.yml
+    with:
+      workflow_url: ${{ needs.get_workflow_url.outputs.url }}
+      should_notify: ${{startsWith(github.event.pull_request.head.ref, 'hotfix-release/')}}
+    secrets: inherit

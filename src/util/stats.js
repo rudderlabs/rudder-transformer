@@ -49,6 +49,14 @@ const timingSummary = (name, start, tags = {}) => {
   statsClient.timingSummary(name, start, tags);
 };
 
+const summary = (name, value, tags = {}) => {
+  if (!enableStats || !statsClient) {
+    return;
+  }
+
+  statsClient.summary(name, value, tags);
+};
+
 const increment = (name, tags = {}) => {
   if (!enableStats || !statsClient) {
     return;
@@ -97,15 +105,44 @@ async function metricsController(ctx) {
   ctx.body = `Not supported`;
 }
 
+async function resetMetricsController(ctx) {
+  if (!enableStats || !statsClient) {
+    ctx.status = 501;
+    ctx.body = `Not supported`;
+    return;
+  }
+
+  if (statsClientType === 'prometheus') {
+    await statsClient.resetMetricsController(ctx);
+    return;
+  }
+
+  ctx.status = 501;
+  ctx.body = `Not supported`;
+}
+
+async function shutdownMetricsClient() {
+  if (!enableStats || !statsClient) {
+    return;
+  }
+
+  if (statsClientType === 'prometheus') {
+    await statsClient.shutdown();
+  }
+}
+
 init();
 
 module.exports = {
   init,
   timing,
   timingSummary,
+  summary,
   increment,
   counter,
   gauge,
   histogram,
   metricsController,
+  resetMetricsController,
+  shutdownMetricsClient,
 };

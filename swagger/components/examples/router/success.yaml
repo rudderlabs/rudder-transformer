@@ -1,71 +1,42 @@
 body:
   JSON:
-    event_time: 1672564081
-    event_source_url: 'https://www.website.com/product/path'
-    action_source: offline
-    event_id: '6ee69cf1-ce37-4287-9a0f-8b8453219082'
-    app_id: ''
-    advertiser_id: 'advertiserId123'
-    user_data:
-      em:
-        - 'b9ecbd1d999a0f17d442a08971caeea92d770dba89ac900688ecede233d652df'
-      ph:
-        - '92b5072176e723878b5e06ff3ca61898e4eb74e8c46642a0f2db800b17364ab0'
-      ge:
-        - '62c66a7a5dd70c3146618063c344e531e6d4b59e379808443ce962b3abd63c5a'
-      ln:
-        - 'dcf000c2386fb76d22cefc0d118a8511bb75999019cd373df52044bccd1bd251'
-      fn:
-        - '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08'
-      client_ip_address: '[::1]'
-    custom_data:
-      num_items: 11
-      content_ids:
-        - '123'
-      contents:
-        - quantity: 11
-          item_price: '13.49'
-    event_name: add_to_cart
+    anonymousId: 'ab12'
+    timestamp: '2022-01-20T13:39:21.032Z'
+    traits:
+      age: 25
+      email: 'johndoe@gmail.com'
+      name: 'John Doe'
+    userId: '12'
   JSON_ARRAY: {}
   XML: {}
   FORM: {}
 version: '1'
 type: REST
 method: POST
-endpoint: 'https://ct.pinterest.com/events/v3'
+endpoint: 'https://api.june.so/api/identify'
 headers:
   Content-Type: 'application/json'
 params: {}
 files: {}
 userId: ''
+destination:
+  Config:
+    apiKey: '93AEyDLvfpbRxxx'
+  ID: 'june123'
 metadata:
-  sourceId: '27O0bmEEx3GgfmEhZHUcPwJQVWC'
-  workspaceId: '27O0bhB6p5ehfOWeeZlOSsSDTLg'
-  namespace: ''
-  instanceId: '1'
-  sourceType: HTTP
-  sourceCategory: ''
-  trackingPlanId: ''
-  trackingPlanVersion: 0
-  sourceTpConfig: null
-  mergedTpConfig: null
-  destinationId: '2JIqVoWNvSOHa9ppKOqSo4hPuc0'
-  jobRunId: ''
+  userId: '<<>>123456<<>>123456'
   jobId: 1
-  sourceBatchId: ''
-  sourceJobId: ''
-  sourceJobRunId: ''
-  sourceTaskId: ''
-  sourceTaskRunId: ''
-  recordId: null
-  destinationType: PINTEREST_TAG
-  messageId: '6ee69cf1-ce37-4287-9a0f-8b8453219082'
-  oauthAccessToken: ''
-  messageIds: null
-  rudderId: '<<>>anon-id<<>>testUser'
-  receivedAt: '2023-01-01T14:38:01.482+05:30'
-  eventName: Product Added
-  eventType: track
-  sourceDefinitionId: '1b6gJdqOPOCadT3cddw8eidV591'
-  destinationDefinitionId: ''
+  sourceId: '2ifsnRxzoONtZeIoGxgNWsr4xx'
+  sourceCategory: ''
+  destinationId: '2JIqVoWNvSOHa9ppKOqSoxxx'
+  attemptNum: 0
+  receivedAt: '2024-07-17T16:45:40.114+05:30'
+  createdAt: '2024-07-17T11:15:41.140Z'
+  firstAttemptedAt: ''
+  transformAt: 'router'
+  workspaceId: '2hSS1hZ8kuCpUZAAYsQucAFdxxx'
+  secret: null
+  workerAssignedTime: '2024-07-17T16:45:41.264239+05:30'
+  dontBatch: false
+  traceparent: ''
 statusCode: 200

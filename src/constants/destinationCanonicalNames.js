@@ -101,6 +101,14 @@ const DestCanonicalNames = {
   awin: ['awin', 'Awin', 'AWIN'],
   sendinblue: ['sendinblue', 'SENDINBLUE', 'Sendinblue', 'SendinBlue'],
   ga4: ['GA4', 'ga4', 'Ga4', 'Google Analytics 4', 'googleAnalytics4', 'Google Analytics 4 (GA4)'],
+  ga4_v2: [
+    'GA4_V2',
+    'ga4_v2',
+    'Ga4_v2',
+    'Google Analytics 4 V2',
+    'googleAnalytics4V2',
+    'Google Analytics 4 (GA4) V2',
+  ],
   pipedream: ['Pipedream', 'PipeDream', 'pipedream', 'PIPEDREAM'],
   pagerduty: ['pagerduty', 'PAGERDUTY', 'PagerDuty', 'Pagerduty', 'pagerDuty'],
   adobe_analytics: [
@@ -173,7 +181,11 @@ const DestCanonicalNames = {
     'Klaviyo Bulk Upload',
     'klaviyobulkupload',
   ],
+  Klaviyo: ['KLAVIYO', 'Klaviyo', 'klaviyo'],
   emarsys: ['EMARSYS', 'Emarsys', 'emarsys'],
+  wunderkind: ['wunderkind', 'Wunderkind', 'WUNDERKIND'],
+  cordial: ['cordial', 'Cordial', 'CORDIAL'],
+  clevertap: ['clevertap', 'Clevertap', 'CleverTap', 'CLEVERTAP'],
 };
 
 module.exports = { DestHandlerMap, DestCanonicalNames };

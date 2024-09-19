@@ -9,6 +9,7 @@ const commonHeaders = {
   Authorization: 'Bearer testApiKey',
   Accept: 'application/json',
   'Intercom-Version': '1.4',
+  'User-Agent': 'RudderStack',
 };
 
 const unauthorizedResponseHeaders = {
@@ -16,6 +17,7 @@ const unauthorizedResponseHeaders = {
   Authorization: 'Bearer invalidApiKey',
   Accept: 'application/json',
   'Intercom-Version': '1.4',
+  'User-Agent': 'RudderStack',
 };
 
 const createUserPayload = {

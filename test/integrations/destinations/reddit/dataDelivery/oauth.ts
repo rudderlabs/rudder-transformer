@@ -81,7 +81,7 @@ export const v0oauthScenarios = [
     },
     output: {
       response: {
-        status: 500,
+        status: 401,
         body: {
           output: {
             authErrorCategory: 'REFRESH_TOKEN',
@@ -90,9 +90,53 @@ export const v0oauthScenarios = [
               status: 401,
             },
             message:
-              "Request failed due to Authorization Required 'during reddit response transformation'",
+              'Request failed due to Authorization Required during reddit response transformation',
             statTags: expectedStatTags,
-            status: 500,
+            status: 401,
+          },
+        },
+      },
+    },
+  },
+  {
+    id: 'reddit_v0_oauth_scenario_2',
+    name: 'reddit',
+    description: '[Proxy v0 API] :: Oauth where error response is an object from destination',
+    successCriteria: 'Should return 401 with authErrorCategory as REFRESH_TOKEN',
+    scenario: 'Oauth',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: generateProxyV0Payload({
+          ...commonRequestParameters,
+          endpoint: 'https://ads-api.reddit.com/api/v2.0/conversions/events/a2_objResp_401',
+        }),
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 401,
+        body: {
+          output: {
+            authErrorCategory: 'REFRESH_TOKEN',
+            destinationResponse: {
+              response: {
+                success: false,
+                error: {
+                  reason: 'UNAUTHORIZED',
+                  explanation:
+                    'This server could not verify that you are authorized to access the document you requested.',
+                },
+              },
+              status: 401,
+            },
+            message:
+              'This server could not verify that you are authorized to access the document you requested. during reddit response transformation',
+            statTags: expectedStatTags,
+            status: 401,
           },
         },
       },
@@ -124,21 +168,65 @@ export const v1oauthScenarios = [
     },
     output: {
       response: {
-        status: 500,
+        status: 401,
         body: {
           output: {
             authErrorCategory: 'REFRESH_TOKEN',
             message:
-              "Request failed due to Authorization Required 'during reddit response transformation'",
+              'Request failed due to Authorization Required during reddit response transformation',
             response: [
               {
                 error: '"Authorization Required"',
                 metadata: generateMetadata(1),
-                statusCode: 500,
+                statusCode: 401,
               },
             ],
             statTags: expectedStatTags,
-            status: 500,
+            status: 401,
+          },
+        },
+      },
+    },
+  },
+  {
+    id: 'reddit_v1_oauth_scenario_2',
+    name: 'reddit',
+    description: '[Proxy v1 API] :: Oauth where error response is an object from destination',
+    successCriteria: 'Should return 401 with authErrorCategory as REFRESH_TOKEN',
+    scenario: 'Oauth',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v1',
+    input: {
+      request: {
+        body: generateProxyV1Payload(
+          {
+            ...commonRequestParameters,
+            endpoint: 'https://ads-api.reddit.com/api/v2.0/conversions/events/a2_objResp_401',
+          },
+          [generateMetadata(1)],
+        ),
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 401,
+        body: {
+          output: {
+            authErrorCategory: 'REFRESH_TOKEN',
+            message:
+              'This server could not verify that you are authorized to access the document you requested. during reddit response transformation',
+            response: [
+              {
+                error:
+                  '{"success":false,"error":{"reason":"UNAUTHORIZED","explanation":"This server could not verify that you are authorized to access the document you requested."}}',
+                metadata: generateMetadata(1),
+                statusCode: 401,
+              },
+            ],
+            statTags: expectedStatTags,
+            status: 401,
           },
         },
       },

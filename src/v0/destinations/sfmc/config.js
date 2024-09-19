@@ -7,6 +7,10 @@ const ENDPOINTS = {
   EVENT: 'rest.marketingcloudapis.com/interaction/v1/events',
 };
 
+const ACCESS_TOKEN_CACHE_TTL = process.env.SFMC_ACCESS_TOKEN_CACHE_TTL
+  ? parseInt(process.env.SFMC_ACCESS_TOKEN_CACHE_TTL, 10)
+  : 1000;
+
 const CONFIG_CATEGORIES = {
   IDENTIFY: {
     type: 'identify',
@@ -24,4 +28,5 @@ module.exports = {
   ENDPOINTS,
   MAPPING_CONFIG,
   CONFIG_CATEGORIES,
+  ACCESS_TOKEN_CACHE_TTL,
 };

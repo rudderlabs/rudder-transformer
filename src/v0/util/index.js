@@ -30,7 +30,7 @@ const logger = require('../../logger');
 const stats = require('../../util/stats');
 const { DestCanonicalNames, DestHandlerMap } = require('../../constants/destinationCanonicalNames');
 const { client: errNotificationClient } = require('../../util/errorNotifier');
-const { HTTP_STATUS_CODES } = require('./constant');
+const { HTTP_STATUS_CODES, VDM_V2_SCHEMA_VERSION } = require('./constant');
 const {
   REFRESH_TOKEN,
   AUTH_STATUS_INACTIVE,
@@ -170,6 +170,20 @@ const isDefinedNotNullNotEmpty = (value) =>
   );
 
 const removeUndefinedNullEmptyExclBoolInt = (obj) => lodash.pickBy(obj, isDefinedNotNullNotEmpty);
+
+/**
+ * Function to remove empty key ("") from payload
+ * @param {*} payload {"key1":"a","":{"id":1}}
+ * @returns // {"key1":"a"}
+ */
+const removeEmptyKey = (payload) => {
+  const rawPayload = payload;
+  const key = '';
+  if (Object.prototype.hasOwnProperty.call(rawPayload, key)) {
+    delete rawPayload[''];
+  }
+  return rawPayload;
+};
 
 /**
  * Recursively removes undefined, null, empty objects, and empty arrays from the given object at all levels.
@@ -844,6 +858,19 @@ function formatValues(formattedVal, formattingType, typeFormat, integrationsObj)
         curFormattedVal = formattedVal.trim();
       }
     },
+    isFloat: () => {
+      if (isDefinedAndNotNull(formattedVal)) {
+        curFormattedVal = parseFloat(formattedVal);
+        if (Number.isNaN(curFormattedVal)) {
+          throw new InstrumentationError('Invalid float value');
+        }
+      }
+    },
+    removeSpacesAndDashes: () => {
+      if (typeof formattedVal === 'string') {
+        curFormattedVal = formattedVal.replace(/ /g, '').replace(/-/g, '');
+      }
+    },
   };
 
   if (formattingType in formattingFunctions) {
@@ -1141,7 +1168,7 @@ const getDestinationExternalIDInfoForRetl = (message, destination) => {
   if (externalIdArray) {
     externalIdArray.forEach((extIdObj) => {
       const { type, id } = extIdObj;
-      if (type.includes(`${destination}-`)) {
+      if (type?.includes(`${destination}-`)) {
         destinationExternalId = id;
         objectType = type.replace(`${destination}-`, '');
         identifierType = extIdObj.identifierType;
@@ -1168,7 +1195,7 @@ const getDestinationExternalIDObjectForRetl = (message, destination) => {
     // some stops the execution when the element is found
     externalIdArray.some((extIdObj) => {
       const { type } = extIdObj;
-      if (type.includes(`${destination}-`)) {
+      if (type?.includes(`${destination}-`)) {
         obj = extIdObj;
         return true;
       }
@@ -1525,6 +1552,18 @@ const getErrorStatusCode = (error, defaultStatusCode = HTTP_STATUS_CODES.INTERNA
   }
 };
 
+function isAxiosError(err) {
+  return (
+    Array.isArray(err?.config?.adapter) &&
+    err?.config?.adapter?.length > 1 &&
+    typeof err?.request?.socket === 'object' &&
+    !!err?.request?.protocol &&
+    !!err?.request?.method &&
+    !!err?.request?.path &&
+    !!err?.status
+  );
+}
+
 /**
  * Used for generating error response with stats from native and built errors
  */
@@ -1540,11 +1579,15 @@ function generateErrorObject(error, defTags = {}, shouldEnrichErrorMessage = tru
     error.authErrorCategory,
   );
   let errorMessage = error.message;
+  if (isAxiosError(errObject.destinationResponse)) {
+    delete errObject?.destinationResponse.config;
+    delete errObject?.destinationResponse.request;
+  }
   if (shouldEnrichErrorMessage) {
-    if (error.destinationResponse) {
+    if (errObject.destinationResponse) {
       errorMessage = JSON.stringify({
         message: errorMessage,
-        destinationResponse: error.destinationResponse,
+        destinationResponse: errObject.destinationResponse,
       });
     }
     errObject.message = errorMessage;
@@ -1604,16 +1647,6 @@ function isAppleFamily(platform) {
 
 function removeHyphens(str) {
   return str.replace(/-/g, '');
-}
-
-function isCdkDestination(event) {
-  // TODO: maybe dont need all these checks in place
-  return (
-    event.destination &&
-    event.destination.DestinationDefinition &&
-    event.destination.DestinationDefinition.Config &&
-    event.destination.DestinationDefinition.Config.cdkEnabled
-  );
 }
 
 /**
@@ -2248,9 +2281,51 @@ const validateEventAndLowerCaseConversion = (event, isMandatory, convertToLowerC
   return convertToLowerCase ? event.toString().toLowerCase() : event.toString();
 };
 
-const applyCustomMappings = (message, mappings) =>
-  JsonTemplateEngine.createAsSync(mappings, { defaultPathType: PathType.JSON }).evaluate(message);
+/**
+ * This function applies custom mappings to the event.
+ * @param {*} event The event to be transformed.
+ * @param {*} mappings The custom mappings to be applied.
+ * @returns {object} The transformed event.
+ */
+const applyCustomMappings = (event, mappings) =>
+  JsonTemplateEngine.createAsSync(mappings, { defaultPathType: PathType.JSON }).evaluate(event);
 
+const applyJSONStringTemplate = (message, template) =>
+  JsonTemplateEngine.createAsSync(template.replace(/{{/g, '${').replace(/}}/g, '}'), {
+    defaultPathType: PathType.JSON,
+  }).evaluate(message);
+
+/**
+ * This groups the events by destination ID and source ID.
+ * Note: sourceID is only used for rETL events.
+ * @param {*} events The events to be grouped.
+ * @returns {array} The array of grouped events.
+ */
+const groupRouterTransformEvents = (events) =>
+  Object.values(
+    lodash.groupBy(events, (ev) => [ev.destination?.ID, ev.context?.sources?.job_id || 'default']),
+  );
+
+/*
+ * Gets url path omitting the hostname & protocol
+ *
+ * **Note**:
+ * - This should only be used when there are no dynamic paths in URL
+ * @param {*} inputUrl
+ * @returns
+ */
+const getRelativePathFromURL = (inputUrl) => {
+  if (isValidUrl(inputUrl)) {
+    const url = new URL(inputUrl);
+    return url.pathname;
+  }
+  return inputUrl;
+};
+
+const isEventSentByVDMV1Flow = (event) => event?.message?.context?.mappedToDestination;
+
+const isEventSentByVDMV2Flow = (event) =>
+  event?.connection?.config?.destination?.schemaVersion === VDM_V2_SCHEMA_VERSION;
 // ========================================================================
 // EXPORTS
 // ========================================================================
@@ -2260,6 +2335,7 @@ module.exports = {
   addExternalIdToTraits,
   adduserIdFromExternalId,
   applyCustomMappings,
+  applyJSONStringTemplate,
   base64Convertor,
   batchMultiplexedEvents,
   checkEmptyStringInarray,
@@ -2309,15 +2385,17 @@ module.exports = {
   getValueFromMessage,
   getValueFromPropertiesOrTraits,
   getValuesAsArrayFromConfig,
+  groupRouterTransformEvents,
   handleSourceKeysOperation,
   hashToSha256,
   isAppleFamily,
   isBlank,
-  isCdkDestination,
   isDefined,
   isDefinedAndNotNull,
   isDefinedAndNotNullAndNotEmpty,
   isEmpty,
+  isEventSentByVDMV1Flow,
+  isEventSentByVDMV2Flow,
   isNotEmpty,
   isNull,
   isEmptyObject,
@@ -2371,4 +2449,7 @@ module.exports = {
   removeDuplicateMetadata,
   combineBatchRequestsWithSameJobIds,
   validateEventAndLowerCaseConversion,
+  getRelativePathFromURL,
+  removeEmptyKey,
+  isAxiosError,
 };

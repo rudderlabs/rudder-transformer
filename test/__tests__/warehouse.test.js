@@ -1234,3 +1234,190 @@ describe("isBlank", () => {
     });
   }
 });
+
+describe("context traits", () => {
+  const testCases = [
+    {
+      name: "traits with string like object",
+      input: {"1":"f","2":"o", "3":"o"},
+      expectedData: "foo",
+      expectedMetadata: "string",
+      expectedColumns: ["context_traits"],
+    },
+    {
+      name: "traits with string like object with missing keys",
+      input: {"1":"a","3":"a"},
+      expectedData: "a",
+      expectedMetadata: "string",
+      expectedColumns: ["context_traits_1", "context_traits_3"],
+    },
+    {
+      name: "traits with empty object",
+      input: {},
+      expectedData: {},
+      expectedColumns: [],
+    },
+    {
+      name: "traits with empty array",
+      input: [],
+      expectedData: [],
+      expectedMetadata: "array",
+      expectedColumns: [],
+    },
+    {
+      name: "traits with null",
+      input: null,
+      expectedData: null,
+      expectedMetadata: "null",
+      expectedColumns: [],
+    },
+    {
+      name: "traits with undefined",
+      input: undefined,
+      expectedData: undefined,
+      expectedMetadata: "undefined",
+      expectedColumns: [],
+      groupTypeColumns: []
+    },
+    {
+      name: "traits with string",
+      input: "already a string",
+      expectedData: "already a string",
+      expectedMetadata: "string",
+      expectedColumns: ["context_traits"],
+    },
+    {
+      name: "traits with number",
+      input: 42,
+      expectedData: 42,
+      expectedMetadata: "int",
+      expectedColumns: ["context_traits"],
+    },
+    {
+      name: "traits with boolean",
+      input: true,
+      expectedData: true,
+      expectedMetadata: "boolean",
+      expectedColumns: ["context_traits"],
+    },
+    {
+      name: "traits with array",
+      input: ["a", "b", "cd"],
+      expectedData: ["a", "b", "cd"],
+      expectedMetadata: "string",
+      expectedColumns: ["context_traits"],
+    }
+  ];
+  for (const t of testCases) {
+    it(`should return ${t.expectedData} for ${t.name}`, () => {
+      for (const e of eventTypes) {
+        let i = input(e);
+        i.message.context = {"traits": t.input};
+        if (i.metadata) delete i.metadata.sourceCategory;
+        transformers.forEach((transformer, index) => {
+          const received = transformer.process(i);
+          if(t.expectedColumns.length === 0) {
+            expect(Object.keys(received[0].metadata.columns).join()).not.toMatch(/context_traits/g);
+            expect(Object.keys(received[0].data).join()).not.toMatch(/context_traits/g);
+          }
+          for (const column of t.expectedColumns) {
+            expect(received[0].metadata.columns[integrationCasedString(integrations[index], column)]).toEqual(t.expectedMetadata);
+            expect(received[0].data[integrationCasedString(integrations[index], column)]).toEqual(t.expectedData);
+          }
+        });
+      }
+    });
+  }
+})
+
+describe("group traits", () => {
+  const testCases = [
+    {
+      name: "traits with string like object",
+      input: {"1":"f","2":"o", "3":"o"},
+      expectedData: "foo",
+      expectedMetadata: "string",
+      expectedColumns: [],
+    },
+    {
+      name: "traits with string like object with missing keys",
+      input: {"1":"a","3":"a"},
+      expectedData: "a",
+      expectedMetadata: "string",
+      expectedColumns: ["_1", "_3"],
+    },
+    {
+      name: "traits with empty object",
+      input: {},
+      expectedData: {},
+      expectedColumns: [],
+    },
+    {
+      name: "traits with empty array",
+      input: [],
+      expectedData: [],
+      expectedMetadata: "array",
+      expectedColumns: [],
+    },
+    {
+      name: "traits with null",
+      input: null,
+      expectedData: null,
+      expectedMetadata: "null",
+      expectedColumns: [],
+    },
+    {
+      name: "traits with undefined",
+      input: undefined,
+      expectedData: undefined,
+      expectedMetadata: "undefined",
+      expectedColumns: [],
+    },
+    {
+      name: "traits with string",
+      input: "already a string",
+      expectedData: "already a string",
+      expectedMetadata: "string",
+      expectedColumns: [],
+    },
+    {
+      name: "traits with number",
+      input: 42,
+      expectedData: 42,
+      expectedMetadata: "int",
+      expectedColumns: [],
+    },
+    {
+      name: "traits with boolean",
+      input: true,
+      expectedData: true,
+      expectedMetadata: "boolean",
+      expectedColumns: [],
+    },
+    {
+      name: "traits with array",
+      input: ["a", "b", "cd"],
+      expectedData: ["a", "b", "cd"],
+      expectedMetadata: "string",
+      expectedColumns: [],
+    }
+  ];
+  for (const t of testCases){
+    it(`should return ${t.expectedData} for ${t.name}`, () => {
+      let i = input("group");
+      i.message.traits = t.input;
+      if (i.metadata) delete i.metadata.sourceCategory;
+      transformers.forEach((transformer, index) => {
+        const received = transformer.process(i);
+        if(t.expectedColumns.length === 0) {
+          expect(Object.keys(received[0].metadata.columns).join()).not.toMatch(/group_traits/g);
+          expect(Object.keys(received[0].data).join()).not.toMatch(/group_traits/g);
+        }
+        for (const column of t.expectedColumns) {
+          expect(received[0].metadata.columns[integrationCasedString(integrations[index], column)]).toEqual(t.expectedMetadata);
+          expect(received[0].data[integrationCasedString(integrations[index], column)]).toEqual(t.expectedData);
+        }
+      });
+    });
+  }
+})

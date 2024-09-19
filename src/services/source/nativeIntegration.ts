@@ -4,6 +4,7 @@ import {
   ErrorDetailer,
   MetaTransferObject,
   RudderMessage,
+  SourceTransformationEvent,
   SourceTransformationResponse,
 } from '../../types/index';
 import stats from '../../util/stats';
@@ -27,7 +28,7 @@ export class NativeIntegrationSourceService implements SourceService {
   }
 
   public async sourceTransformRoutine(
-    sourceEvents: NonNullable<unknown>[],
+    sourceEvents: NonNullable<SourceTransformationEvent>[],
     sourceType: string,
     version: string,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -38,9 +39,12 @@ export class NativeIntegrationSourceService implements SourceService {
     const respList: SourceTransformationResponse[] = await Promise.all<FixMe>(
       sourceEvents.map(async (sourceEvent) => {
         try {
+          const newSourceEvent = sourceEvent;
+          const { headers } = newSourceEvent;
+          delete newSourceEvent.headers;
           const respEvents: RudderMessage | RudderMessage[] | SourceTransformationResponse =
-            await sourceHandler.process(sourceEvent);
-          return SourcePostTransformationService.handleSuccessEventsSource(respEvents);
+            await sourceHandler.process(newSourceEvent);
+          return SourcePostTransformationService.handleSuccessEventsSource(respEvents, { headers });
         } catch (error: FixMe) {
           stats.increment('source_transform_errors', {
             source: sourceType,

@@ -42,6 +42,7 @@ const CLEVERTAP_DEFAULT_EXCLUSION = [
   'ts',
   'overrideFields',
 ];
+const ALLOWED_DEVICE_TOKEN_TYPES = ['chrome', 'fcm', 'gcm', 'apns', 'wns', 'mpns'];
 // ref : https://developer.clevertap.com/docs/disassociate-api
 const DEL_MAX_BATCH_SIZE = 100;
 
@@ -54,4 +55,5 @@ module.exports = {
   CONFIG_CATEGORIES,
   CLEVERTAP_DEFAULT_EXCLUSION,
   DESTINATION: 'CLEVERTAP',
+  ALLOWED_DEVICE_TOKEN_TYPES,
 };

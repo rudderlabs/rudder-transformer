@@ -639,6 +639,21 @@ describe('getContentType', () => {
 
     expect(result).toBe(defaultValue);
   });
+
+  it('should return default value when no product array or categoryToContent is provided', () => {
+    const message = {
+      properties: {
+        revenue: 1234,
+      },
+    };
+    const defaultValue = 'product';
+    const categoryToContent = [];
+    const destinationName = 'fb_pixel';
+
+    const result = getContentType(message, defaultValue, categoryToContent, destinationName);
+
+    expect(result).toBe(defaultValue);
+  });
 });
 
 describe('isHtmlFormat', () => {

@@ -6,6 +6,7 @@ const logger = require('../logger');
 const stats = require('./stats');
 
 const userTransformTimeout = parseInt(process.env.USER_TRANSFORM_TIMEOUT || '600000', 10);
+const ivmExecutionTimeout = parseInt(process.env.IVM_EXECUTION_TIMEOUT || '4000', 10);
 
 async function transform(isolatevm, events) {
   const transformationPayload = {};
@@ -24,7 +25,7 @@ async function transform(isolatevm, events) {
           new ivm.Reference(reject),
           sharedTransformationPayload,
         ],
-        { timeout: 4000 },
+        { timeout: ivmExecutionTimeout },
       );
     } catch (error) {
       reject(error.message);
@@ -89,6 +90,12 @@ async function userTransformHandlerV1(
     throw err;
   } finally {
     logger.debug(`Destroying IsolateVM`);
+    let used_heap_size = 0;
+    try {
+      used_heap_size = isolatevm.isolate.getHeapStatisticsSync()?.used_heap_size || 0;
+    } catch (err) {
+      logger.error(`Error encountered while getting heap size: ${err.message}`);
+    }
     isolatevmFactory.destroy(isolatevm);
     // send the observability stats
     const tags = {
@@ -98,8 +105,8 @@ async function userTransformHandlerV1(
       ...(events.length && events[0].metadata ? getTransformationMetadata(events[0].metadata) : {}),
     };
     stats.counter('user_transform_function_input_events', events.length, tags);
-    stats.timing('user_transform_function_latency', invokeTime, tags);
     stats.timingSummary('user_transform_function_latency_summary', invokeTime, tags);
+    stats.summary('user_transform_used_heap_size', used_heap_size, tags);
   }
 
   return { transformedEvents, logs };

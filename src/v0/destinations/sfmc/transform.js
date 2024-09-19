@@ -6,10 +6,19 @@ const {
   InstrumentationError,
   isDefinedAndNotNull,
   isEmpty,
+  MappedToDestinationKey,
+  GENERIC_TRUE_VALUES,
+  PlatformError,
 } = require('@rudderstack/integrations-lib');
+const get = require('get-value');
 const { EventType } = require('../../../constants');
 const { handleHttpRequest } = require('../../../adapters/network');
-const { CONFIG_CATEGORIES, MAPPING_CONFIG, ENDPOINTS } = require('./config');
+const {
+  CONFIG_CATEGORIES,
+  MAPPING_CONFIG,
+  ENDPOINTS,
+  ACCESS_TOKEN_CACHE_TTL,
+} = require('./config');
 const {
   removeUndefinedAndNullValues,
   getFieldValueFromMessage,
@@ -21,17 +30,20 @@ const {
   toTitleCase,
   getHashFromArray,
   simpleProcessRouterDest,
+  getDestinationExternalIDInfoForRetl,
 } = require('../../util');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const { isHttpStatusSuccess } = require('../../util');
 const tags = require('../../util/tags');
 const { JSON_MIME_TYPE } = require('../../util/constant');
+const Cache = require('../../util/cache');
 
+const accessTokenCache = new Cache(ACCESS_TOKEN_CACHE_TTL);
 const CONTACT_KEY_KEY = 'Contact Key';
 
 // DOC: https://developer.salesforce.com/docs/atlas.en-us.mc-app-development.meta/mc-app-development/access-token-s2s.htm
 
-const getToken = async (clientId, clientSecret, subdomain) => {
+const getToken = async (clientId, clientSecret, subdomain, metadata) => {
   const { processedResponse: processedResponseSfmc } = await handleHttpRequest(
     'post',
     `https://${subdomain}.${ENDPOINTS.GET_TOKEN}`,
@@ -49,6 +61,7 @@ const getToken = async (clientId, clientSecret, subdomain) => {
       endpointPath: '/token',
       requestMethod: 'POST',
       module: 'router',
+      metadata,
     },
   );
 
@@ -194,7 +207,7 @@ const responseBuilderForMessageEvent = (message, subDomain, authToken, hashMapEv
   return response;
 };
 
-const responseBuilderSimple = async (message, category, destination) => {
+const responseBuilderSimple = async ({ message, destination, metadata }, category) => {
   const {
     clientId,
     clientSecret,
@@ -213,7 +226,7 @@ const responseBuilderSimple = async (message, category, destination) => {
   // map from an event name to uuid as true or false to determine to send uuid as primary key or not.
   const hashMapUUID = getHashFromArray(eventToUUID, 'event', 'uuid');
   // token needed for authorization for subsequent calls
-  const authToken = await getToken(clientId, clientSecret, subDomain);
+  const authToken = await getToken(clientId, clientSecret, subDomain, metadata);
   // map from an event name to an event definition key.
   const hashMapEventDefinition = getHashFromArray(eventToDefinitionMapping, 'from', 'to');
   // if createOrUpdateContacts is true identify calls for create and update of contacts will not occur.
@@ -270,11 +283,41 @@ const responseBuilderSimple = async (message, category, destination) => {
   throw new ConfigurationError(`Event type '${category.type}' not supported`);
 };
 
-const processEvent = async (message, destination) => {
+const retlResponseBuilder = async (message, destination, metadata) => {
+  const { clientId, clientSecret, subDomain, externalKey } = destination.Config;
+  const token = await accessTokenCache.get(metadata.destinationId, () =>
+    getToken(clientId, clientSecret, subDomain, metadata),
+  );
+  const { destinationExternalId, objectType, identifierType } = getDestinationExternalIDInfoForRetl(
+    message,
+    'SFMC',
+  );
+  if (objectType?.toLowerCase() === 'data extension') {
+    const response = defaultRequestConfig();
+    response.method = defaultPutRequestConfig.requestMethod;
+    response.endpoint = `https://${subDomain}.${ENDPOINTS.INSERT_CONTACTS}${externalKey}/rows/${identifierType}:${destinationExternalId}`;
+    response.headers = {
+      'Content-Type': JSON_MIME_TYPE,
+      Authorization: `Bearer ${token}`,
+    };
+    response.body.JSON = {
+      values: {
+        ...message.traits,
+      },
+    };
+    return response;
+  }
+  throw new PlatformError('Unsupported object type for rETL use case');
+};
+
+const processEvent = async ({ message, destination, metadata }) => {
   if (!message.type) {
     throw new InstrumentationError('Event type is required');
   }
-
+  const mappedToDestination = get(message, MappedToDestinationKey);
+  if (mappedToDestination && GENERIC_TRUE_VALUES.includes(mappedToDestination?.toString())) {
+    return retlResponseBuilder(message, destination, metadata);
+  }
   const messageType = message.type.toLowerCase();
   let category;
   // only accept track and identify calls
@@ -290,12 +333,12 @@ const processEvent = async (message, destination) => {
   }
 
   // build the response
-  const response = await responseBuilderSimple(message, category, destination);
+  const response = await responseBuilderSimple({ message, destination, metadata }, category);
   return response;
 };
 
 const process = async (event) => {
-  const response = await processEvent(event.message, event.destination);
+  const response = await processEvent(event);
   return response;
 };
 

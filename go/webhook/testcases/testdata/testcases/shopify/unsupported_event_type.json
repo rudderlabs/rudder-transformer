@@ -1,0 +1,26 @@
+{
+  "name": "shopify",
+  "description": "Unsupported Event Type",
+  "input": {
+    "request": {
+      "body": {
+        "query_parameters": {
+          "topic": ["random_event"],
+          "signature": ["rudderstack"],
+          "writeKey": ["sample-write-key"]
+        }
+      },
+      "headers": {
+        "Content-Type": "application/json"
+      }
+    }
+  },
+  "output": {
+    "response": {
+      "status": 200,
+      "body": "OK"
+    },
+    "queue": [],
+    "errQueue": []
+  }
+}

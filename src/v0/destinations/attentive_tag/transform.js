@@ -16,7 +16,7 @@ const {
 const {
   getDestinationItemProperties,
   getExternalIdentifiersMapping,
-  getPropertiesKeyValidation,
+  arePropertiesValid,
   validateTimestamp,
 } = require('./util');
 const { JSON_MIME_TYPE } = require('../../util/constant');
@@ -137,9 +137,9 @@ const trackResponseBuilder = (message, { Config }) => {
       payload = constructPayload(message, mappingConfig[ConfigCategory.TRACK.name]);
       endpoint = ConfigCategory.TRACK.endpoint;
       payload.type = get(message, 'event');
-      if (!getPropertiesKeyValidation(payload)) {
+      if (!arePropertiesValid(payload.properties)) {
         throw new InstrumentationError(
-          '[Attentive Tag]:The event name contains characters which is not allowed',
+          '[Attentive Tag]:The properties contains characters which is not allowed',
         );
       }
   }

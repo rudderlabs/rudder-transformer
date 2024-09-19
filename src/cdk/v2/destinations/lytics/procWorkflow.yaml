@@ -28,7 +28,8 @@ steps:
         ...flattenTraits,
         first_name: {{{{$.getGenericPaths("firstName")}}}},
         last_name: {{{{$.getGenericPaths("lastName")}}}},
-        user_id: {{{{$.getGenericPaths("userId")}}}}
+        user_id: {{{{$.getGenericPaths("userIdOnly")}}}},
+        anonymous_id: .anonymousId
       })
     else:
       name: payloadForOthers

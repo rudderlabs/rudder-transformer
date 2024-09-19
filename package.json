@@ -131,6 +131,7 @@
     "@types/koa-bodyparser": "^4.3.10",
     "@types/lodash": "^4.14.197",
     "@types/node": "^20.2.5",
+    "@types/supertest": "^6.0.2",
     "@typescript-eslint/eslint-plugin": "^5.61.0",
     "@typescript-eslint/parser": "^5.59.2",
     "axios-mock-adapter": "^1.22.0",

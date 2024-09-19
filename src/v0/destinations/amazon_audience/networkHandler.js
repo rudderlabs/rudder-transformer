@@ -69,32 +69,32 @@ const responseHandler = (responseParams) => {
   };
 };
 
-const makeRequest = async (url, data, headers, metadata, method) => {
-  const { httpResponse } = await handleHttpRequest(
-    method,
-    url,
-    data,
-    { headers },
-    {
-      destType: 'amazon_audience',
-      feature: 'proxy',
-      endpointPath: '/records/hashed',
-      requestMethod: 'POST',
-      module: 'dataDelivery',
-      metadata,
-    },
-  );
+const makeRequest = async (url, data, headers, metadata, method, args) => {
+  const { httpResponse } = await handleHttpRequest(method, url, data, { headers }, args);
   return httpResponse;
 };
 
 const amazonAudienceProxyRequest = async (request) => {
   const { body, metadata } = request;
   const { headers } = request;
-  const { JSON } = body;
-  const { createUsers, associateUsers } = JSON;
+  const { createUsers, associateUsers } = body.JSON;
 
   // step 1: Create users
-  const firstResponse = await makeRequest(CREATE_USERS_URL, createUsers, headers, metadata, 'post');
+  const firstResponse = await makeRequest(
+    CREATE_USERS_URL,
+    createUsers,
+    headers,
+    metadata,
+    'post',
+    {
+      destType: 'amazon_audience',
+      feature: 'proxy',
+      requestMethod: 'POST',
+      module: 'dataDelivery',
+      endpointPath: '/records/hashed',
+      metadata,
+    },
+  );
   // validate response success
   if (!firstResponse.success && !isHttpStatusSuccess(firstResponse?.response?.status)) {
     amazonAudienceRespHandler(
@@ -107,7 +107,22 @@ const amazonAudienceProxyRequest = async (request) => {
   }
   // we are returning above in case of failure because if first step is not executed then there is no sense of executing second step
   // step2: Associate Users to Audience Id
-  return makeRequest(ASSOCIATE_USERS_URL, associateUsers, headers, metadata, 'patch');
+  const secondResponse = await makeRequest(
+    ASSOCIATE_USERS_URL,
+    associateUsers,
+    headers,
+    metadata,
+    'patch',
+    {
+      destType: 'amazon_audience',
+      feature: 'proxy',
+      requestMethod: 'PATCH',
+      module: 'dataDelivery',
+      endpointPath: '/v2/dp/audience',
+      metadata,
+    },
+  );
+  return secondResponse;
 };
 // eslint-disable-next-line @typescript-eslint/naming-convention
 class networkHandler {

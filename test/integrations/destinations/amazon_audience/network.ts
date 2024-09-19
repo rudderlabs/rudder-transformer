@@ -32,7 +32,6 @@ export const networkCallsData = [
     httpRes: {
       data: {
         requestId: 'dummy request id',
-        jobId: 'dummy job id',
       },
       status: 200,
     },
@@ -40,7 +39,7 @@ export const networkCallsData = [
   {
     description: 'successful step 2',
     httpReq: {
-      url: 'https://advertising-api.amazon.com/dp/records/hashed/',
+      url: 'https://advertising-api.amazon.com/v2/dp/audience',
       data: {
         patches: [
           {
@@ -69,7 +68,7 @@ export const networkCallsData = [
   {
     description: 'unsuccessful step 2',
     httpReq: {
-      url: 'https://advertising-api.amazon.com/dp/records/hashed/',
+      url: 'https://advertising-api.amazon.com/v2/dp/audience',
       data: {
         patches: [
           {

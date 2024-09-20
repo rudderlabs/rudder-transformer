@@ -1,5 +1,6 @@
 const lodash = require('lodash');
 const get = require('get-value');
+const { isDefinedNotNullNotEmpty } = require('@rudderstack/integrations-lib');
 const stats = require('../../../util/stats');
 const { getShopifyTopic, extractEmailFromPayload } = require('../../../v0/sources/shopify/util');
 const {
@@ -56,8 +57,8 @@ const processPixelWebhookEvent = async (inputEvent, metricMetadata) => {
       break;
   }
 
-  if (message.userId) {
-    message.userId = String(message.userId);
+  if (event.customer && isDefinedNotNullNotEmpty(event?.customer?.id)) {
+    message.userId = String(event.customer.id);
   }
   message.anonymousId = generateUUID();
 

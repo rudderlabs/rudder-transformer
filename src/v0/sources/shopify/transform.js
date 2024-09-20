@@ -290,8 +290,6 @@ const process = async (event) => {
 module.exports = {
   process,
   processEvent,
-  isIdentifierEvent,
-  processIdentifierEvent,
   identifyPayloadBuilder,
   ecomPayloadBuilder,
   trackPayloadBuilder,

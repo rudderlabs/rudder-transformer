@@ -2,11 +2,7 @@
 const { isDefinedAndNotNull } = require('../../../v0/util');
 const { processEventFromPixel } = require('./pixelTransform');
 const { processPixelWebhookEvent } = require('./pixelWebhookEventTransform');
-const {
-  processEvent,
-  isIdentifierEvent,
-  processIdentifierEvent,
-} = require('../../../v0/sources/shopify/transform');
+const { process: processLegacyEvents } = require('../../../v0/sources/shopify/transform');
 
 const process = async (inputEvent) => {
   const { event, source } = inputEvent;
@@ -29,11 +25,8 @@ const process = async (inputEvent) => {
     const webhookEventResponse = await processPixelWebhookEvent(event, metricMetadata, source);
     return webhookEventResponse;
   }
-  if (isIdentifierEvent(event)) {
-    return processIdentifierEvent(event, metricMetadata);
-  }
   // this is for default legacy tracker based server-side events processing
-  const response = await processEvent(event, metricMetadata, source);
+  const response = await processLegacyEvents(event);
   return response;
 };
 

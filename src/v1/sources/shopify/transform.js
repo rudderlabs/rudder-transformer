@@ -35,6 +35,7 @@ const process = async (inputEvent) => {
   if (isIdentifierEvent(event)) {
     return processIdentifierEvent(event, metricMetadata);
   }
+  // this is for default legacy tracker based server-side events processing
   const response = await processEvent(event, metricMetadata, source);
   return response;
 };

@@ -10,7 +10,7 @@ const {
   checkoutEventBuilder,
   checkoutStepEventBuilder,
   searchEventBuilder,
-} = require('./utilV2');
+} = require('./pixelUtils');
 const { INTEGERATION, PIXEL_EVENT_TOPICS } = require('./config');
 
 const NO_OPERATION_SUCCESS = {

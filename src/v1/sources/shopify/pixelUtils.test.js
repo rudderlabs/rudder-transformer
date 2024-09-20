@@ -7,7 +7,7 @@ const {
   checkoutEventBuilder,
   checkoutStepEventBuilder,
   searchEventBuilder,
-} = require('./utilV2');
+} = require('./pixelUtils');
 const { EventType } = require('../../../constants');
 const Message = require('../../../v0/sources/message');
 jest.mock('ioredis', () => require('../../../../test/__mocks__/redis'));

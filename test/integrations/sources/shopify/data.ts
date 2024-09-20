@@ -1,4 +1,8 @@
 import { skip } from 'node:test';
+import utils from '../../../../src/v0/util';
+const defaultMockFns = () => {
+  jest.spyOn(utils, 'generateUUID').mockReturnValue('97fcd7b2-cc24-47d7-b776-057b7b199513');
+};
 
 const dummySourceConfig = {
   ID: 'dummy-source-id',
@@ -5546,13 +5550,16 @@ const v1ServerSideEventsScenarios = [
                     },
                   },
                   timestamp: '2024-09-17T07:29:02.000Z',
-                  anonymousId: '5d3e2cb6-4011-5c9c-b7ee-11bc1e905097',
+                  anonymousId: '97fcd7b2-cc24-47d7-b776-057b7b199513',
                 },
               ],
             },
           },
         ],
       },
+    },
+    mockFns: () => {
+      defaultMockFns();
     },
   },
   {
@@ -5758,13 +5765,16 @@ const v1ServerSideEventsScenarios = [
                       },
                     ],
                   },
-                  anonymousId: '5d3e2cb6-4011-5c9c-b7ee-11bc1e905097',
+                  anonymousId: '97fcd7b2-cc24-47d7-b776-057b7b199513',
                 },
               ],
             },
           },
         ],
       },
+    },
+    mockFns: () => {
+      defaultMockFns();
     },
   },
 ];

@@ -292,4 +292,7 @@ module.exports = {
   processEvent,
   isIdentifierEvent,
   processIdentifierEvent,
+  identifyPayloadBuilder,
+  ecomPayloadBuilder,
+  trackPayloadBuilder,
 };

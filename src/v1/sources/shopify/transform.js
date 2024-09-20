@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 const { isDefinedAndNotNull } = require('../../../v0/util');
-const { processEventV2 } = require('./pixelTransform');
+const { processEventFromPixel } = require('./pixelTransform');
+const { processPixelWebhookEvent } = require('./pixelWebhookEventTransform');
 const {
   processEvent,
   isIdentifierEvent,
@@ -22,14 +23,10 @@ const process = async (inputEvent) => {
     if (pixelEventLabel) {
       // this is a event fired from the web pixel loaded on the browser
       // by the user interactions with the store.
-      const responseV2 = await processEventV2(event);
+      const responseV2 = await processEventFromPixel(event);
       return responseV2;
     }
-    const webhookEventResponse = await processEvent(event, metricMetadata, source);
-    webhookEventResponse.context.library = {
-      name: 'RudderStack Shopify Cloud',
-      version: '2.0.0',
-    };
+    const webhookEventResponse = await processPixelWebhookEvent(event, metricMetadata, source);
     return webhookEventResponse;
   }
   if (isIdentifierEvent(event)) {

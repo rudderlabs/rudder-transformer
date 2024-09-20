@@ -80,12 +80,11 @@ function processPixelEvent(inputEvent) {
   return message;
 }
 
-const processEventV2 = async (event) => {
+const processEventFromPixel = async (event) => {
   const pixelEvent = processPixelEvent(event);
   return removeUndefinedAndNullValues(pixelEvent);
 };
 
 module.exports = {
-  processEventV2,
-  processPixelEvent,
+  processEventFromPixel,
 };

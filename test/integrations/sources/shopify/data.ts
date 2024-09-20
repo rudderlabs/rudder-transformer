@@ -178,6 +178,7 @@ const pixelEventsTestScenarios = [
                     },
                     library: {
                       name: 'RudderStack Shopify Cloud',
+                      eventOrigin: 'client',
                       version: '2.0.0',
                     },
                     topic: 'page_viewed',
@@ -376,6 +377,7 @@ const pixelEventsTestScenarios = [
                     },
                     library: {
                       name: 'RudderStack Shopify Cloud',
+                      eventOrigin: 'client',
                       version: '2.0.0',
                     },
                     topic: 'product_viewed',
@@ -626,6 +628,7 @@ const pixelEventsTestScenarios = [
                     },
                     library: {
                       name: 'RudderStack Shopify Cloud',
+                      eventOrigin: 'client',
                       version: '2.0.0',
                     },
                     topic: 'cart_viewed',
@@ -917,6 +920,7 @@ const pixelEventsTestScenarios = [
                     },
                     library: {
                       name: 'RudderStack Shopify Cloud',
+                      eventOrigin: 'client',
                       version: '2.0.0',
                     },
                     topic: 'collection_viewed',
@@ -1207,6 +1211,7 @@ const pixelEventsTestScenarios = [
                     },
                     library: {
                       name: 'RudderStack Shopify Cloud',
+                      eventOrigin: 'client',
                       version: '2.0.0',
                     },
                     topic: 'product_added_to_cart',
@@ -1456,6 +1461,7 @@ const pixelEventsTestScenarios = [
                     },
                     library: {
                       name: 'RudderStack Shopify Cloud',
+                      eventOrigin: 'client',
                       version: '2.0.0',
                     },
                     topic: 'product_removed_from_cart',
@@ -1827,6 +1833,7 @@ const pixelEventsTestScenarios = [
                     },
                     library: {
                       name: 'RudderStack Shopify Cloud',
+                      eventOrigin: 'client',
                       version: '2.0.0',
                     },
                     topic: 'checkout_started',
@@ -2227,6 +2234,7 @@ const pixelEventsTestScenarios = [
                     },
                     library: {
                       name: 'RudderStack Shopify Cloud',
+                      eventOrigin: 'client',
                       version: '2.0.0',
                     },
                     topic: 'checkout_address_info_submitted',
@@ -2721,6 +2729,7 @@ const pixelEventsTestScenarios = [
                     },
                     library: {
                       name: 'RudderStack Shopify Cloud',
+                      eventOrigin: 'client',
                       version: '2.0.0',
                     },
                     topic: 'checkout_contact_info_submitted',
@@ -3214,6 +3223,7 @@ const pixelEventsTestScenarios = [
                     },
                     library: {
                       name: 'RudderStack Shopify Cloud',
+                      eventOrigin: 'client',
                       version: '2.0.0',
                     },
                     topic: 'checkout_shipping_info_submitted',
@@ -3725,6 +3735,7 @@ const pixelEventsTestScenarios = [
                     },
                     library: {
                       name: 'RudderStack Shopify Cloud',
+                      eventOrigin: 'client',
                       version: '2.0.0',
                     },
                     topic: 'payment_info_submitted',
@@ -4219,6 +4230,7 @@ const pixelEventsTestScenarios = [
                     },
                     library: {
                       name: 'RudderStack Shopify Cloud',
+                      eventOrigin: 'client',
                       version: '2.0.0',
                     },
                     topic: 'checkout_completed',
@@ -4456,6 +4468,7 @@ const pixelEventsTestScenarios = [
                     },
                     library: {
                       name: 'RudderStack Shopify Cloud',
+                      eventOrigin: 'client',
                       version: '2.0.0',
                     },
                     topic: 'search_submitted',
@@ -5391,6 +5404,7 @@ const v1ServerSideEventsScenarios = [
                   context: {
                     library: {
                       name: 'RudderStack Shopify Cloud',
+                      eventOrigin: 'server',
                       version: '2.0.0',
                     },
                     integration: {
@@ -5674,6 +5688,7 @@ const v1ServerSideEventsScenarios = [
                   context: {
                     library: {
                       name: 'RudderStack Shopify Cloud',
+                      eventOrigin: 'server',
                       version: '2.0.0',
                     },
                     integration: {

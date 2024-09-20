@@ -73,6 +73,7 @@ function processPixelEvent(inputEvent) {
   message.setProperty(`integrations.${INTEGERATION}`, true);
   message.setProperty('context.library', {
     name: 'RudderStack Shopify Cloud',
+    eventOrigin: 'client',
     version: '2.0.0',
   });
   message.setProperty('context.topic', name);

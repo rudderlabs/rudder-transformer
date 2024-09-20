@@ -71,6 +71,7 @@ const processPixelWebhookEvent = async (inputEvent, metricMetadata) => {
   message.setProperty(`integrations.${INTEGERATION}`, true);
   message.setProperty('context.library', {
     name: 'RudderStack Shopify Cloud',
+    eventOrigin: 'server',
     version: '2.0.0',
   });
   message.setProperty('context.topic', shopifyTopic);

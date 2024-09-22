@@ -13,6 +13,8 @@ const JSON_MIME_TYPE = 'application/json';
 const FEATURE_FILTER_CODE = 'filter-code';
 const FEATURE_GZIP_SUPPORT = 'gzip-support';
 
+const VDM_V2_SCHEMA_VERSION = '1.1';
+
 const HTTP_STATUS_CODES = {
   // 1xx Informational
   CONTINUE: 100,
@@ -91,4 +93,5 @@ module.exports = {
   USER_LEAD_CACHE_TTL,
   FEATURE_FILTER_CODE,
   FEATURE_GZIP_SUPPORT,
+  VDM_V2_SCHEMA_VERSION,
 };

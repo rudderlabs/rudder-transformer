@@ -1,7 +1,6 @@
 const lodash = require('lodash');
 const sha256 = require('sha256');
 const crypto = require('crypto');
-const get = require('get-value');
 const jsonSize = require('json-size');
 const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const { TransformationError } = require('@rudderstack/integrations-lib');
@@ -14,7 +13,7 @@ const {
 const stats = require('../../../util/stats');
 
 const { isDefinedAndNotNull } = require('../../util');
-const { maxPayloadSize } = require('./config');
+const config = require('./config');
 
 /**
  * Example payload ={
@@ -35,9 +34,9 @@ const { maxPayloadSize } = require('./config');
 } */
 const batchingWithPayloadSize = (payload) => {
   const payloadSize = jsonSize(payload);
-  if (payloadSize > maxPayloadSize) {
+  if (payloadSize > config.maxPayloadSize) {
     const revisedPayloadArray = [];
-    const noOfBatches = Math.ceil(payloadSize / maxPayloadSize);
+    const noOfBatches = Math.ceil(payloadSize / config.maxPayloadSize);
     const revisedRecordsPerPayload = Math.floor(payload.data.length / noOfBatches);
     const revisedDataArray = lodash.chunk(payload.data, revisedRecordsPerPayload);
     revisedDataArray.forEach((data) => {
@@ -49,7 +48,7 @@ const batchingWithPayloadSize = (payload) => {
 };
 
 const getSchemaForEventMappedToDest = (message) => {
-  const mappedSchema = get(message, 'context.destinationFields');
+  const mappedSchema = message?.context?.destinationFields;
   if (!mappedSchema) {
     throw new InstrumentationError(
       'context.destinationFields is required property for events mapped to destination ',

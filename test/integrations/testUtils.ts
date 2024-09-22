@@ -33,7 +33,9 @@ export const getTestDataFilePaths = (dirPath: string, opts: OptionValues): strin
     );
   }
   if (opts.feature) {
-    filteredTestFilePaths = testFilePaths.filter((testFile) => testFile.includes(opts.feature));
+    filteredTestFilePaths = filteredTestFilePaths.filter((testFile) =>
+      testFile.includes(opts.feature),
+    );
   }
   return filteredTestFilePaths;
 };

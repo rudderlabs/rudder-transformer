@@ -135,6 +135,14 @@ type Destination = {
   IsConnectionEnabled?: boolean;
 };
 
+type Connection = {
+  sourceId: string;
+  destinationId: string;
+  enabled: boolean;
+  config: Record<string, unknown>;
+  processorEnabled?: boolean;
+};
+
 type UserTransformationLibrary = {
   VersionID: string;
 };
@@ -151,6 +159,7 @@ type ProcessorTransformationRequest = {
   message: object;
   metadata: Metadata;
   destination: Destination;
+  connection?: Connection;
   libraries?: UserTransformationLibrary[];
   credentials?: Credential[];
 };
@@ -160,6 +169,7 @@ type RouterTransformationRequestData = {
   message: object;
   metadata: Metadata;
   destination: Destination;
+  connection?: Connection;
 };
 
 type RouterTransformationRequest = {
@@ -350,6 +360,7 @@ export {
   DeliveryJobState,
   DeliveryV0Response,
   DeliveryV1Response,
+  Connection,
   Destination,
   ErrorDetailer,
   MessageIdMetadataMap,

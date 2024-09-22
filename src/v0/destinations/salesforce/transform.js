@@ -134,7 +134,10 @@ async function getSaleforceIdForRecord(
     );
   }
   const searchRecord = processedsfSearchResponse.response?.searchRecords?.find(
-    (rec) => typeof identifierValue !== 'undefined' && rec[identifierType] === `${identifierValue}`,
+    (rec) =>
+      typeof identifierValue !== 'undefined' &&
+      // eslint-disable-next-line eqeqeq
+      rec[identifierType] == identifierValue,
   );
 
   return searchRecord?.Id;
@@ -190,8 +193,9 @@ async function getSalesforceIdFromPayload(
         'Invalid externalId. id, type, identifierType must be provided',
       );
     }
-
-    const objectType = type.toLowerCase().replace('salesforce-', '');
+    const objectType = type
+      .toLowerCase()
+      .replace(`${destination.DestinationDefinition.Name.toLowerCase()}-`, '');
     let salesforceId = id;
 
     // Fetch the salesforce Id if the identifierType is not ID

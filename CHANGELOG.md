@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.78.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.77.1...v1.78.0) (2024-09-16)
+
+
+### Features
+
+* add source id isolation for reverse etl ([#3496](https://github.com/rudderlabs/rudder-transformer/issues/3496)) ([b4f4dd1](https://github.com/rudderlabs/rudder-transformer/commit/b4f4dd1c43f8fd4b4f744413d79cfe8f5f77708b))
+* add util for applying json string template ([#3699](https://github.com/rudderlabs/rudder-transformer/issues/3699)) ([b2f5654](https://github.com/rudderlabs/rudder-transformer/commit/b2f56540148066a40770e1506faadb4f3f5a296b))
+* onboard X(Twiiter) Audience ([#3696](https://github.com/rudderlabs/rudder-transformer/issues/3696)) ([f77d2ab](https://github.com/rudderlabs/rudder-transformer/commit/f77d2ab4125a1a44bba95bebbee25bb4fac032da))
+* webhook v2 path variables support ([#3705](https://github.com/rudderlabs/rudder-transformer/issues/3705)) ([f7783d8](https://github.com/rudderlabs/rudder-transformer/commit/f7783d8fb30093a847f450ee7ddd9449f272b112))
+
+
+### Bug Fixes
+
+* added support for window stabilization fix through envs ([#3720](https://github.com/rudderlabs/rudder-transformer/issues/3720)) ([8dcf1b3](https://github.com/rudderlabs/rudder-transformer/commit/8dcf1b3c5aff424d39bece8c9912ec4a1eb221ea))
+* circular json bugsnag ([#3713](https://github.com/rudderlabs/rudder-transformer/issues/3713)) ([263d075](https://github.com/rudderlabs/rudder-transformer/commit/263d0758be828402068278c7c5356b65119e7e9a))
+* error messages in gaec ([#3702](https://github.com/rudderlabs/rudder-transformer/issues/3702)) ([441fb57](https://github.com/rudderlabs/rudder-transformer/commit/441fb57a537592cc1cc45dc8f31fa8be98e18320))
+* gaoc bugsnag alert for email.trim ([#3693](https://github.com/rudderlabs/rudder-transformer/issues/3693)) ([6ba16f6](https://github.com/rudderlabs/rudder-transformer/commit/6ba16f6e5d9bb0de773ebcb8be13a78af325a4a1))
+
 ### [1.77.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.77.0...v1.77.1) (2024-09-05)
 
 

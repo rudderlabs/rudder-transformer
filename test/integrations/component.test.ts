@@ -228,7 +228,7 @@ describe.each(allTestDataFilePaths)('%s Tests', (testDataPath) => {
     });
   }
   describe(`${testData[0].name} ${testData[0].module}`, () => {
-    test.each(testData)('$feature -> $description', async (tcData) => {
+    test.each(testData)('$feature -> $description (index: $#)', async (tcData) => {
       tcData?.mockFns?.(mockAdapter);
 
       switch (tcData.module) {

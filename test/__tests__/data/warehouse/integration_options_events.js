@@ -20,7 +20,9 @@ const sampleEvents = {
     input: {
       destination: {
         Config: {
-          jsonPaths: " testMap.nestedMap, testArray"
+          jsonPaths: " testMap.nestedMap, testArray",
+          allowUsersContextTraits: true,
+          underscoreDivideNumbers: true
         }
       },
       message: {
@@ -731,7 +733,10 @@ const sampleEvents = {
   users: {
     input: {
       destination: {
-        Config: {}
+        Config: {
+          allowUsersContextTraits: true,
+          underscoreDivideNumbers: true
+        }
       },
       message: {
         type: "identify",

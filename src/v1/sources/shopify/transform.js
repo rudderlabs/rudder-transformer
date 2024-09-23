@@ -15,8 +15,8 @@ const process = async (inputEvent) => {
   // check on the source Config to identify the event is from the tracker-based (legacy)
   // or the pixel-based (latest) implementation.
   if (source && isDefinedAndNotNull(source.Config) && source?.Config?.version === 'pixel') {
-    const { pixelEventLabel } = event;
-    if (pixelEventLabel) {
+    const { pixelEventLabel: pixelClientEventLabel } = event;
+    if (pixelClientEventLabel) {
       // this is a event fired from the web pixel loaded on the browser
       // by the user interactions with the store.
       const responseV2 = await processEventFromPixel(event);

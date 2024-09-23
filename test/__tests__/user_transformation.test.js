@@ -92,6 +92,7 @@ const pyLibCode = (name, versionId) => {
 
 const pyfaasFuncName = (workspaceId, versionId, libraryVersionIds=[], hashSecret="") => {
   let ids = [workspaceId, versionId].concat(libraryVersionIds.sort());
+  ids = ids.concat(["default", "default"]);
   if (hashSecret !== "") {
     ids = ids.concat([hashSecret]);
   }
@@ -119,7 +120,7 @@ describe("User transformation utils", () => {
       [],
       false,
       'hash-secret');
-    expect(fnName).toEqual('fn-workspaceid-34a32ade07ebbc7bc5ea795b8200de9f');
+    expect(fnName).toEqual('fn-workspaceid-91d66b4cea6f0ed16cd41258d138d0a8');
   });
 
 });

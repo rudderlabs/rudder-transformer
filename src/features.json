@@ -76,7 +76,11 @@
     "WUNDERKIND": true,
     "CLICKSEND": true,
     "ZOHO": true,
-    "CORDIAL": true
+    "CORDIAL": true,
+    "X_AUDIENCE": true,
+    "BLOOMREACH_CATALOG": true,
+    "SMARTLY": true,
+    "HTTP": true
   },
   "regulations": [
     "BRAZE",

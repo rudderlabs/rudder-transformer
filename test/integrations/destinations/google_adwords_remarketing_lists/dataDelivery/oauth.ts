@@ -1,5 +1,6 @@
 import { generateMetadata, generateProxyV1Payload } from '../../../testUtils';
 import { commonHeaders, commonParams, validRequestPayload1 } from './business';
+import { API_VERSION } from '../../../../../src/v0/destinations/google_adwords_remarketing_lists/config';
 
 const commonStatTags = {
   destType: 'GOOGLE_ADWORDS_REMARKETING_LISTS',
@@ -29,7 +30,7 @@ export const oauthError = [
           headers: commonHeaders,
           params: commonParams,
           JSON: validRequestPayload1,
-          endpoint: 'https://googleads.googleapis.com/v16/customers/customerid/offlineUserDataJobs',
+          endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/customerid/offlineUserDataJobs`,
           accessToken: 'dummy-access',
         }),
         method: 'POST',
@@ -84,7 +85,7 @@ export const oauthError = [
           headers: { ...commonHeaders, Authorization: 'Bearer wrongCustomerID' },
           params: { ...commonParams, customerId: 'wrongCustomerID' },
           JSON: validRequestPayload1,
-          endpoint: 'https://googleads.googleapis.com/v16/customers/customerid/offlineUserDataJobs',
+          endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/customerid/offlineUserDataJobs`,
           accessToken: 'wrongCustomerID',
         }),
         method: 'POST',

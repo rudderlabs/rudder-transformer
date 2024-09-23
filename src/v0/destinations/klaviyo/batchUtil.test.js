@@ -1,3 +1,4 @@
+const { OperatorType } = require('@rudderstack/json-template-engine');
 const {
   groupSubscribeResponsesUsingListIdV2,
   populateArrWithRespectiveProfileData,
@@ -94,6 +95,7 @@ describe('generateBatchedSubscriptionRequest', () => {
     const subscription = {
       listId: 'test-list-id',
       subscriptionProfileList: [[{ id: 'profile1' }, { id: 'profile2' }], [{ id: 'profile3' }]],
+      operation: 'subscribe',
     };
     const destination = {
       Config: {
@@ -144,6 +146,7 @@ describe('generateBatchedSubscriptionRequest', () => {
     const subscription = {
       listId: 'test-list-id',
       subscriptionProfileList: [],
+      operation: 'subscribe',
     };
     const destination = {
       Config: {

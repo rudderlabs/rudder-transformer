@@ -5,9 +5,12 @@ bindings:
     path: ../../../../v0/util
   - name: removeUndefinedAndNullValues
     path: ../../../../v0/util
+  - name: constructPayload
+    path: ../../../../v0/util
   - path: ../../bindings/jsontemplate
   - name: defaultRequestConfig
     path: ../../../../v0/util
+  - path: ./config
 
 steps:
   - name: validateInput
@@ -24,13 +27,11 @@ steps:
     condition: $.context.messageType === {{$.EventType.IDENTIFY}}
     template: |
       const flattenTraits = $.flattenJson(.message.traits ?? .message.context.traits);
-      $.context.payload = .message.({
+      const payload = $.constructPayload(.message, $.CUSTOMER_PROPERTIES_CONFIG);
+      $.context.payload = {
         ...flattenTraits,
-        first_name: {{{{$.getGenericPaths("firstName")}}}},
-        last_name: {{{{$.getGenericPaths("lastName")}}}},
-        user_id: {{{{$.getGenericPaths("userIdOnly")}}}},
-        anonymous_id: .anonymousId
-      })
+        ...payload,
+      }
     else:
       name: payloadForOthers
       template: |

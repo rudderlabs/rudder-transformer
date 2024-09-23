@@ -30,7 +30,7 @@ const logger = require('../../logger');
 const stats = require('../../util/stats');
 const { DestCanonicalNames, DestHandlerMap } = require('../../constants/destinationCanonicalNames');
 const { client: errNotificationClient } = require('../../util/errorNotifier');
-const { HTTP_STATUS_CODES } = require('./constant');
+const { HTTP_STATUS_CODES, VDM_V2_SCHEMA_VERSION } = require('./constant');
 const {
   REFRESH_TOKEN,
   AUTH_STATUS_INACTIVE,
@@ -2322,6 +2322,10 @@ const getRelativePathFromURL = (inputUrl) => {
   return inputUrl;
 };
 
+const isEventSentByVDMV1Flow = (event) => event?.message?.context?.mappedToDestination;
+
+const isEventSentByVDMV2Flow = (event) =>
+  event?.connection?.config?.destination?.schemaVersion === VDM_V2_SCHEMA_VERSION;
 // ========================================================================
 // EXPORTS
 // ========================================================================
@@ -2390,6 +2394,8 @@ module.exports = {
   isDefinedAndNotNull,
   isDefinedAndNotNullAndNotEmpty,
   isEmpty,
+  isEventSentByVDMV1Flow,
+  isEventSentByVDMV2Flow,
   isNotEmpty,
   isNull,
   isEmptyObject,

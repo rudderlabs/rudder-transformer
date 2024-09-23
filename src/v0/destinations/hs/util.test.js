@@ -3,6 +3,7 @@ const {
   extractIDsForSearchAPI,
   validatePayloadDataTypes,
   getObjectAndIdentifierType,
+  isIterable,
 } = require('./util');
 const { primaryToSecondaryFields } = require('./config');
 
@@ -237,5 +238,23 @@ describe('getRequestDataAndRequestOptions utility test cases', () => {
 
     const requestData = getRequestData(identifierType, chunk, accessToken);
     expect(requestData).toEqual(expectedRequestData);
+  });
+});
+
+describe('isIterable utility test cases', () => {
+  it('should return true when the input is an array', () => {
+    const input = [1, 2, 3];
+    const result = isIterable(input);
+    expect(result).toBe(true);
+  });
+  it('should return false when the input is null', () => {
+    const input = null;
+    const result = isIterable(input);
+    expect(result).toBe(false);
+  });
+  it('should return false when the input is undefined', () => {
+    const input = undefined;
+    const result = isIterable(input);
+    expect(result).toBe(false);
   });
 });

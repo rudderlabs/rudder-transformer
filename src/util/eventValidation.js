@@ -30,6 +30,7 @@ const violationTypes = {
   AdditionalProperties: 'Additional-Properties',
   UnknownViolation: 'Unknown-Violation',
   UnplannedEvent: 'Unplanned-Event',
+  AdvanceRulesViolation: 'Advance-Rules-Violation',
 };
 
 const supportedEventTypes = {
@@ -221,6 +222,28 @@ async function validate(event) {
             type: violationTypes.AdditionalProperties,
             message: `${error.message} '${error.params.additionalProperty}'`,
             property: error.params.additionalProperty,
+            meta: {
+              instancePath: error.instancePath,
+              schemaPath: error.schemaPath,
+            },
+          };
+          break;
+        case 'minLength':
+        case 'maxLength':
+        case 'pattern':
+        case 'format':
+        case 'multipleOf':
+        case 'minimum':
+        case 'maximum':
+        case 'exclusiveMinimum':
+        case 'exclusiveMaximum':
+        case 'minItems':
+        case 'maxItems':
+        case 'uniqueItems':
+        case 'enum':
+          rudderValidationError = {
+            type: violationTypes.AdvanceRulesViolation,
+            message: error.message,
             meta: {
               instancePath: error.instancePath,
               schemaPath: error.schemaPath,

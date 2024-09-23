@@ -2216,4 +2216,182 @@ export const data = [
       },
     },
   },
+  {
+    name: 'sfmc',
+    description: 'success scenario for rETL use case',
+    feature: 'processor',
+    id: 'sfmcRetlTestCase-1',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              type: 'identify',
+              traits: {
+                key2: 'value2',
+                key3: 'value3',
+                key4: 'value4',
+              },
+              userId: 'someRandomEmail@test.com',
+              channel: 'sources',
+              context: {
+                sources: {
+                  job_id: '2kbW13URkJ6jfeo5SbFcC7ecP6d',
+                  version: 'v1.53.1',
+                  job_run_id: 'cqtl6pfqskjtoh6t24i0',
+                  task_run_id: 'cqtl6pfqskjtoh6t24ig',
+                },
+                externalId: [
+                  {
+                    id: 'someRandomEmail@test.com',
+                    type: 'SFMC-data extension',
+                    identifierType: 'key1',
+                  },
+                ],
+                mappedToDestination: 'true',
+              },
+              recordId: '3',
+              rudderId: 'c5741aa5-b038-4079-99ec-e4169eb0d9e2',
+              messageId: '95a1b214-03d9-4824-8ada-bc6ef2398100',
+            },
+            destination: {
+              ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
+              Name: 'SFMC',
+              Config: {
+                clientId: 'dummyClientId',
+                clientSecret: 'dummyClientSecret',
+                subDomain: 'vcn7AQ2W9GGIAZSsN6Mfq',
+                createOrUpdateContacts: false,
+                externalKey: 'externalKey',
+              },
+              Enabled: true,
+              Transformations: [],
+            },
+            metadata: {
+              destinationId: 'destId',
+              jobId: 'jobid1',
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            metadata: {
+              destinationId: 'destId',
+              jobId: 'jobid1',
+            },
+            output: {
+              body: {
+                FORM: {},
+                JSON: {
+                  values: {
+                    key2: 'value2',
+                    key3: 'value3',
+                    key4: 'value4',
+                  },
+                },
+                JSON_ARRAY: {},
+                XML: {},
+              },
+              endpoint:
+                'https://vcn7AQ2W9GGIAZSsN6Mfq.rest.marketingcloudapis.com/hub/v1/dataevents/key:externalKey/rows/key1:someRandomEmail@test.com',
+              files: {},
+              headers: {
+                Authorization: 'Bearer yourAuthToken',
+                'Content-Type': 'application/json',
+              },
+              method: 'PUT',
+              params: {},
+              type: 'REST',
+              userId: '',
+              version: '1',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'sfmc',
+    description: 'failure scenario for rETL use case when wrong object type is used',
+    feature: 'processor',
+    id: 'sfmcRetlTestCase-2',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              type: 'identify',
+              traits: {
+                key2: 'value2',
+                key3: 'value3',
+                key4: 'value4',
+              },
+              userId: 'someRandomEmail@test.com',
+              channel: 'sources',
+              context: {
+                externalId: [
+                  {
+                    id: 'someRandomEmail@test.com',
+                    type: 'SFMC-contacts',
+                    identifierType: 'key1',
+                  },
+                ],
+                mappedToDestination: 'true',
+              },
+            },
+            destination: {
+              ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
+              Name: 'SFMC',
+              Config: {
+                clientId: 'dummyClientId',
+                clientSecret: 'dummyClientSecret',
+                subDomain: 'vcn7AQ2W9GGIAZSsN6Mfq',
+                createOrUpdateContacts: false,
+                externalKey: 'externalKey',
+              },
+              Enabled: true,
+              Transformations: [],
+            },
+            metadata: {
+              destinationId: 'destId',
+              jobId: 'jobid1',
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            error: 'Unsupported object type for rETL use case',
+            metadata: {
+              destinationId: 'destId',
+              jobId: 'jobid1',
+            },
+            statTags: {
+              destType: 'SFMC',
+              destinationId: 'destId',
+              errorCategory: 'platform',
+              feature: 'processor',
+              implementation: 'native',
+              module: 'destination',
+            },
+            statusCode: 400,
+          },
+        ],
+      },
+    },
+  },
 ];

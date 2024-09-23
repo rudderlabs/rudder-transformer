@@ -3354,4 +3354,82 @@ export const data = [
       },
     },
   },
+  {
+    name: 'clevertap',
+    description: 'Should not throw bugsnag error if event is not of type string',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: {
+              Config: {
+                passcode: 'sample_passcode',
+                accountId: '476550467',
+                trackAnonymous: true,
+                enableObjectIdMapping: false,
+              },
+            },
+            message: {
+              type: 'track',
+              userId: 'user123',
+              event: 'Product Purchased',
+              properties: {
+                name: "Rubik's Cube",
+                revenue: 4.99,
+              },
+              context: {
+                ip: '14.5.67.21',
+              },
+              timestamp: '2020-02-02T00:23:09.544Z',
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://api.clevertap.com/1/upload',
+              headers: {
+                'X-CleverTap-Account-Id': '476550467',
+                'X-CleverTap-Passcode': 'sample_passcode',
+                'Content-Type': 'application/json',
+              },
+              params: {},
+              body: {
+                JSON: {
+                  d: [
+                    {
+                      evtName: 'Product Purchased',
+                      evtData: {
+                        name: "Rubik's Cube",
+                        revenue: 4.99,
+                      },
+                      type: 'event',
+                      identity: 'user123',
+                    },
+                  ],
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: '',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
 ];

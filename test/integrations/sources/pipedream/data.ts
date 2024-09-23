@@ -199,6 +199,7 @@ export const data = [
                 {
                   userId: '1',
                   originalTimestamp: '2020-09-28T19:53:31.900Z',
+                  context: {},
                   traits: {
                     firstName: 'John',
                     lastName: 'doe',
@@ -336,7 +337,11 @@ export const data = [
         status: 200,
         body: [
           {
-            output: { batch: [{ type: 'alias', previousId: 'name@surname.com', userId: '12345' }] },
+            output: {
+              batch: [
+                { type: 'alias', previousId: 'name@surname.com', userId: '12345', context: {} },
+              ],
+            },
           },
         ],
       },

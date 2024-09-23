@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.79.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.78.0...v1.79.0) (2024-09-20)
+
+
+### Features
+
+* add support for vdm next to fb custom audiences ([#3729](https://github.com/rudderlabs/rudder-transformer/issues/3729)) ([f33f525](https://github.com/rudderlabs/rudder-transformer/commit/f33f52503679be9271751aaa2fdca0661fed62e9))
+
+
+### Bug Fixes
+
+* use destination definition name in place of string for custom object ([#3746](https://github.com/rudderlabs/rudder-transformer/issues/3746)) ([27040b0](https://github.com/rudderlabs/rudder-transformer/commit/27040b06276c2bd1c1a6bd535172b50848a97261))
+
 ## [1.78.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.77.1...v1.78.0) (2024-09-16)
 
 

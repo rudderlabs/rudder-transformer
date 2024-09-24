@@ -1001,11 +1001,23 @@ function processWarehouseMessage(message, options) {
 
       const usersEvent = { ...commonProps };
       const usersColumnTypes = {};
+      let userColumnMappingRules = whUserColumnMappingRules;
+      if (!isDataLakeProvider(options.provider)) {
+        userColumnMappingRules = {
+          ...userColumnMappingRules,
+          ...{
+            sent_at: 'sentAt',
+            timestamp: 'timestamp',
+            original_timestamp: 'originalTimestamp',
+          },
+        };
+      }
+
       setDataFromColumnMappingAndComputeColumnTypes(
         utils,
         usersEvent,
         message,
-        whUserColumnMappingRules,
+        userColumnMappingRules,
         usersColumnTypes,
         options,
       );

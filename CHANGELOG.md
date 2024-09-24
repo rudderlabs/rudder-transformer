@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.79.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.79.0...v1.79.1) (2024-09-24)
+
+
+### Bug Fixes
+
+* allow users context traits and underscore divide numbers configuration ([#3752](https://github.com/rudderlabs/rudder-transformer/issues/3752)) ([386d2ab](https://github.com/rudderlabs/rudder-transformer/commit/386d2ab88c0fe72dc47ba119be08ad1c0cd6d51b))
+* populate users fields for sentAt, timestamp and originalTimestamp ([#3753](https://github.com/rudderlabs/rudder-transformer/issues/3753)) ([f50effe](https://github.com/rudderlabs/rudder-transformer/commit/f50effeeabdb888f82451c225a80971dbe6532b6))
+* prefer event check vs config check for vdm ([#3754](https://github.com/rudderlabs/rudder-transformer/issues/3754)) ([b2c1a18](https://github.com/rudderlabs/rudder-transformer/commit/b2c1a1893dfb957ac7a24c000b33cd254ef54b6c))
+* support different lookup fields and custom_attributes for rETL events  ([#3751](https://github.com/rudderlabs/rudder-transformer/issues/3751)) ([10d914e](https://github.com/rudderlabs/rudder-transformer/commit/10d914e25203bd6ae95801c2a98c17690bd2d6ef))
+
 ## [1.79.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.78.0...v1.79.0) (2024-09-20)
 
 

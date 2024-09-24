@@ -269,10 +269,11 @@ const processRecordInputsV2 = (groupedRecordInputs) => {
 
 function processRecordInputs(groupedRecordInputs) {
   const event = groupedRecordInputs[0];
-  if (isEventSentByVDMV2Flow(event)) {
-    return processRecordInputsV2(groupedRecordInputs);
+  // First check for rETL flow and second check for ES flow
+  if (isEventSentByVDMV1Flow(event) || !isEventSentByVDMV2Flow(event)) {
+    return processRecordInputsV1(groupedRecordInputs);
   }
-  return processRecordInputsV1(groupedRecordInputs);
+  return processRecordInputsV2(groupedRecordInputs);
 }
 
 module.exports = {

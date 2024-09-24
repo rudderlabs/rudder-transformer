@@ -77,7 +77,7 @@ steps:
     template: |
       const payload = .message.context.mappedToDestination ? $.outputs.rEtlPayload : $.outputs.identifyTransformationForLatestVersion;
       payload.name = $.getName(.message);
-      payload.custom_attributes = !.message.context.mappedToDestination ? .message.context.traits || {} : .message.traits.custom_attributes || {};
+      payload.custom_attributes = (.message.context.mappedToDestination ? .message.traits.custom_attributes : .message.context.traits) || {};
       payload.custom_attributes = $.filterCustomAttributes(payload, "user", .destination, .message);
       payload.external_id = !payload.external_id && .destination.Config.sendAnonymousId && .message.anonymousId ? .message.anonymousId : payload.external_id;
       $.context.payload = payload;

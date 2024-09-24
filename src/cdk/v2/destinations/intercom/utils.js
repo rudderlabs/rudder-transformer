@@ -278,7 +278,7 @@ const searchContact = async (message, destination, metadata) => {
   const lookupField = getLookUpField(message);
   let lookupFieldValue = getFieldValueFromMessage(message, lookupField);
   if (!lookupFieldValue) {
-    lookupFieldValue = get(message, `context.traits.${lookupField}`);
+    lookupFieldValue = message?.context?.traits?.[lookupField];
   }
   const data = JSON.stringify({
     query: {

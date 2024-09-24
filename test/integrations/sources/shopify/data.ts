@@ -1,6 +1,10 @@
 import { skip } from 'node:test';
+import { pixelCheckoutEventsTestScenarios } from './pixelTestScenarios/CheckoutEventsTests';
+import { pixelCheckoutStepsScenarios } from './pixelTestScenarios/CheckoutStepsTests';
+import { pixelEventsTestScenarios } from './pixelTestScenarios/ProductEventsTests';
+import { v1ServerSideEventsScenarios } from './v1ServerSideEventsTests';
 
-export const data = [
+const serverSideEventsScenarios = [
   {
     name: 'shopify',
     description: 'Track Call -> carts_create ',
@@ -606,4 +610,12 @@ export const data = [
       },
     },
   },
+];
+
+export const data = [
+  ...pixelCheckoutEventsTestScenarios,
+  ...pixelCheckoutStepsScenarios,
+  ...pixelEventsTestScenarios,
+  ...serverSideEventsScenarios,
+  ...v1ServerSideEventsScenarios,
 ];

@@ -643,6 +643,18 @@ function processWarehouseMessage(message, options) {
   const skipReservedKeywordsEscaping =
     options.integrationOptions.skipReservedKeywordsEscaping || false;
 
+  // underscoreDivideNumbers when set to false, if a column has a format like "_v_3_", it will be formatted to "_v3_"
+  // underscoreDivideNumbers when set to true, if a column has a format like "_v_3_", we keep it like that
+  // For older destinations, it will come as true and for new destinations this config will not be present which means we will treat it as false.
+  options.underscoreDivideNumbers = options.destConfig?.underscoreDivideNumbers || false;
+
+  // allowUsersContextTraits when set to true, if context.traits.* is present, it will be added as context_traits_* and *,
+  // e.g., for context.traits.name, context_traits_name and name will be added to the user's table.
+  // allowUsersContextTraits when set to false, if context.traits.* is present, it will be added only as context_traits_*
+  // e.g., for context.traits.name, only context_traits_name will be added to the user's table.
+  // For older destinations, it will come as true, and for new destinations this config will not be present, which means we will treat it as false.
+  const allowUsersContextTraits = options.destConfig?.allowUsersContextTraits || false;
+
   addJsonKeysToOptions(options);
 
   if (isBlank(message.messageId)) {
@@ -898,16 +910,18 @@ function processWarehouseMessage(message, options) {
         `${eventType + '_userProperties_'}`,
         2,
       );
-      setDataFromInputAndComputeColumnTypes(
-        utils,
-        eventType,
-        commonProps,
-        message.context ? message.context.traits : {},
-        commonColumnTypes,
-        options,
-        `${eventType + '_context_traits_'}`,
-        3,
-      );
+      if (allowUsersContextTraits) {
+        setDataFromInputAndComputeColumnTypes(
+          utils,
+          eventType,
+          commonProps,
+          message.context ? message.context.traits : {},
+          commonColumnTypes,
+          options,
+          `${eventType + '_context_traits_'}`,
+          3,
+        );
+      }
       setDataFromInputAndComputeColumnTypes(
         utils,
         eventType,

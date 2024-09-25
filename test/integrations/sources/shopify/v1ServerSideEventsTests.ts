@@ -2,7 +2,7 @@
 // the v1 transformation flow
 import utils from '../../../../src/v0/util';
 const defaultMockFns = () => {
-  jest.spyOn(utils, 'generateUUID').mockReturnValue('97fcd7b2-cc24-47d7-b776-057b7b199513');
+  jest.spyOn(utils, 'generateUUID').mockReturnValue('5d3e2cb6-4011-5c9c-b7ee-11bc1e905097');
 };
 import { dummySourceConfig } from './constants';
 
@@ -207,8 +207,7 @@ export const v1ServerSideEventsScenarios = [
                   context: {
                     library: {
                       name: 'RudderStack Shopify Cloud',
-                      eventOrigin: 'server',
-                      version: '2.0.0',
+                      version: '1.0.0',
                     },
                     integration: {
                       name: 'SHOPIFY',
@@ -367,7 +366,7 @@ export const v1ServerSideEventsScenarios = [
                     },
                   },
                   timestamp: '2024-09-17T07:29:02.000Z',
-                  anonymousId: '97fcd7b2-cc24-47d7-b776-057b7b199513',
+                  anonymousId: '5d3e2cb6-4011-5c9c-b7ee-11bc1e905097',
                 },
               ],
             },
@@ -491,8 +490,7 @@ export const v1ServerSideEventsScenarios = [
                   context: {
                     library: {
                       name: 'RudderStack Shopify Cloud',
-                      eventOrigin: 'server',
-                      version: '2.0.0',
+                      version: '1.0.0',
                     },
                     integration: {
                       name: 'SHOPIFY',
@@ -583,7 +581,7 @@ export const v1ServerSideEventsScenarios = [
                       },
                     ],
                   },
-                  anonymousId: '97fcd7b2-cc24-47d7-b776-057b7b199513',
+                  anonymousId: '5d3e2cb6-4011-5c9c-b7ee-11bc1e905097',
                 },
               ],
             },

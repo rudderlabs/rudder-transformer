@@ -81,7 +81,13 @@ const validateProductSearchedData = (eventTypeCustomData) => {
 
 const getProducts = (message, category) => {
   let products = message.properties?.products;
-  if (['payment info entered'].includes(category.type) && !Array.isArray(products)) {
+  if (['product added', 'product viewed', 'products searched'].includes(category.type)) {
+    return [message.properties];
+  }
+  if (
+    ['payment info entered', 'product added to wishlist'].includes(category.type) &&
+    !Array.isArray(products)
+  ) {
     products = [message.properties];
   }
   return products;
@@ -128,9 +134,7 @@ const populateCustomDataBasedOnCategory = (customData, message, category, catego
     }
     case 'product added':
     case 'product viewed':
-    case 'products searched':
-    case 'payment info entered':
-    case 'product added to wishlist': {
+    case 'products searched': {
       const contentCategory = eventTypeCustomData.content_category;
       const contentType =
         message.properties?.content_type ||
@@ -151,6 +155,8 @@ const populateCustomDataBasedOnCategory = (customData, message, category, catego
       validateProductSearchedData(eventTypeCustomData);
       break;
     }
+    case 'payment info entered':
+    case 'product added to wishlist':
     case 'order completed':
     case 'checkout started': {
       const { contentIds, contents } = populateContentsAndContentIDs(

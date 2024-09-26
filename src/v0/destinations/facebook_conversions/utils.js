@@ -79,16 +79,25 @@ const validateProductSearchedData = (eventTypeCustomData) => {
   }
 };
 
+const getProducts = (message, category) => {
+  let products = message.properties?.products;
+  if (['payment info entered'].includes(category.type) && !Array.isArray(products)) {
+    products = [message.properties];
+  }
+  return products;
+};
+
 const populateCustomDataBasedOnCategory = (customData, message, category, categoryToContent) => {
   let eventTypeCustomData = {};
   if (category.name) {
     eventTypeCustomData = constructPayload(message, MAPPING_CONFIG[category.name]);
   }
+  const products = getProducts(message, category);
 
   switch (category.type) {
     case 'product list viewed': {
       const { contentIds, contents } = populateContentsAndContentIDs(
-        message.properties?.products,
+        products,
         message.properties?.quantity,
       );
 
@@ -131,7 +140,7 @@ const populateCustomDataBasedOnCategory = (customData, message, category, catego
           categoryToContent,
           DESTINATION.toLowerCase(),
         );
-      const { contentIds, contents } = populateContentsAndContentIDs([message.properties]);
+      const { contentIds, contents } = populateContentsAndContentIDs(products);
       eventTypeCustomData = {
         ...eventTypeCustomData,
         content_ids: contentIds.length === 1 ? contentIds[0] : contentIds,
@@ -145,7 +154,7 @@ const populateCustomDataBasedOnCategory = (customData, message, category, catego
     case 'order completed':
     case 'checkout started': {
       const { contentIds, contents } = populateContentsAndContentIDs(
-        message.properties?.products,
+        products,
         message.properties?.quantity,
         message.properties?.delivery_category,
       );

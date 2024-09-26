@@ -1104,8 +1104,18 @@ export const data = [
               },
               message_id: 'a80f82be-9bdc-4a9f-b2a5-15621ee41df8',
               properties: {
-                revenue: 400,
-                additional_bet_index: 0,
+                application_tracking_enabled: 1,
+                content_name: 'Checkout',
+                content_type: 'product',
+                num_items: 1,
+                products: [
+                  {
+                    id: '12809',
+                    price: 80,
+                    quantity: 1,
+                  },
+                ],
+                revenue: 93.99,
               },
               timestamp: '2023-11-12T15:46:51.693229+05:30',
               type: 'track',
@@ -1164,7 +1174,7 @@ export const data = [
                 JSON_ARRAY: {},
                 FORM: {
                   data: [
-                    '{"user_data":{"em":"48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08","zp":"03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4"},"event_name":"AddPaymentInfo","event_time":1699784211,"action_source":"website","custom_data":{"revenue":400,"additional_bet_index":0,"content_ids":[],"contents":[],"currency":"USD","value":400}}',
+                    '{"user_data":{"em":"48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08","zp":"03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4"},"event_name":"AddPaymentInfo","event_time":1699784211,"action_source":"website","custom_data":{"application_tracking_enabled":1,"content_name":"Checkout","content_type":"product","num_items":1,"products":[{"id":"12809","price":80,"quantity":1}],"revenue":93.99,"content_ids":"12809","contents":[{"id":"12809","quantity":1,"item_price":80}],"currency":"USD","value":93.99}}',
                   ],
                 },
               },

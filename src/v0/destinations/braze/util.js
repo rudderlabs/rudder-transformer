@@ -154,6 +154,7 @@ const BrazeDedupUtility = {
       'phone',
       'time_zone',
       'external_id',
+      'user_aliases',
       // 'country' and 'language' not needed because it is not billable so we don't use it
     ];
   },

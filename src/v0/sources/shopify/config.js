@@ -35,7 +35,7 @@ const SHOPIFY_TRACK_MAP = {
   orders_cancelled: 'Order Cancelled',
   orders_fulfilled: 'Order Fulfilled',
   orders_paid: 'Order Paid',
-  orders_partially_fullfilled: 'Order Partially Fulfilled',
+  orders_partially_fulfilled: 'Order Partially Fulfilled',
   // following are the events that supported by rudderstack pixel app as generic track events
   customer_tags_added: 'Customer Tags Added',
   customer_tags_removed: 'Customer Tags Removed',
@@ -125,7 +125,7 @@ const SUPPORTED_TRACK_EVENTS = [
   'orders_cancelled',
   'orders_fulfilled',
   'orders_paid',
-  'orders_partially_fullfilled',
+  'orders_partially_fulfilled',
   // following are the events that supported by rudderstack pixel app as generic track events
   'customer_tags_added',
   'customer_tags_removed',

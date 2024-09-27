@@ -318,6 +318,12 @@ describe('filterCustomAttributes utility test', () => {
     expect(result).toBeUndefined();
   });
 
+  it('Should filter out custom attributes that are reserved attributes and that are falsey', () => {
+    const payload = { custom_attributes: { unsubscribedFromEmails: false } };
+    const result = filterCustomAttributes(payload, 'user', { Config: { apiVersion: 'v2' } });
+    expect(result).toBeUndefined();
+  });
+
   it('Should return a flattened object when custom attributes are not null, not reserved attributes and nested', () => {
     const payload = {
       custom_attributes: { source: 'rudder-js-sdk', data: { nestedAttribute: 'nestedValue' } },

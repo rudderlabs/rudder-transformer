@@ -36,10 +36,10 @@ steps:
       name: payloadForOthers
       template: |
         const flattenProperties = $.flattenJson(.message.properties);
+        const customerPropertiesInfo = $.constructPayload(.message, $.CUSTOMER_PROPERTIES_CONFIG);
         $.context.payload = .message.({
           ...flattenProperties,
-          first_name: .properties.firstName ?? .properties.firstname,
-          last_name: .properties.lastName ?? .properties.lastname
+          ...customerPropertiesInfo
         })
   - name: trackPayload
     condition: $.context.messageType === {{$.EventType.TRACK}}

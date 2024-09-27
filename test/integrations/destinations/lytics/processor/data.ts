@@ -143,6 +143,7 @@ export const data = [
               body: {
                 JSON: {
                   _e: 'Order Completed',
+                  anonymous_id: '4eb021e9-a2af-4926-ae82-fe996d12f3c5',
                   checkout_id: 'what is checkout id here??',
                   coupon: 'APPARELSALE',
                   currency: 'GBP',
@@ -190,6 +191,7 @@ export const data = [
                   'products[2].url': 'https://www.example.com/product/offer-t-shirt',
                   'products[2].value': 12.99,
                   'products[2].variant': 'Black',
+                  user_id: 'rudder123',
                   revenue: 31.98,
                   shipping: 4,
                   value: 31.98,
@@ -1121,6 +1123,7 @@ export const data = [
                   revenue: 31.98,
                   shipping: 4,
                   value: 31.98,
+                  user_id: 'rudder123',
                 },
                 XML: {},
                 JSON_ARRAY: {},
@@ -1214,11 +1217,13 @@ export const data = [
               body: {
                 JSON: {
                   event: 'ApplicationLoaded',
+                  anonymous_id: '00000000000000000000000000',
                   path: '',
                   referrer: '',
                   search: '',
                   title: '',
                   url: '',
+                  user_id: '12345',
                 },
                 XML: {},
                 JSON_ARRAY: {},
@@ -1312,11 +1317,13 @@ export const data = [
               body: {
                 JSON: {
                   event: 'ApplicationLoaded',
+                  anonymous_id: '00000000000000000000000000',
                   path: '',
                   referrer: '',
                   search: '',
                   title: '',
                   url: '',
+                  user_id: '12345',
                 },
                 XML: {},
                 JSON_ARRAY: {},

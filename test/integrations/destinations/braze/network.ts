@@ -418,6 +418,7 @@ const deleteNwData = [
           'phone',
           'time_zone',
           'external_id',
+          'user_aliases',
         ],
       },
       headers: { Authorization: 'Bearer dummyApiKey' },

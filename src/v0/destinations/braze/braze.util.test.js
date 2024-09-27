@@ -316,6 +316,7 @@ describe('dedup utility tests', () => {
             'phone',
             'time_zone',
             'external_id',
+            'user_aliases',
           ],
         },
         {

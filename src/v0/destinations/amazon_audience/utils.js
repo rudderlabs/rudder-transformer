@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 const sha256 = require('sha256');
+const { phone } = require('phone');
 const lodash = require('lodash');
 const { ConfigurationError, OAuthSecretError } = require('@rudderstack/integrations-lib');
 const {
@@ -9,7 +10,6 @@ const {
   removeUndefinedAndNullAndEmptyValues,
 } = require('../../util');
 
-// Docs: https://developer.x.com/en/docs/x-ads-api/audiences/api-reference/custom-audience-user
 const buildResponseWithUsers = (users, action, config, jobIdList, secret) => {
   const { audienceId } = config;
   if (!audienceId) {
@@ -78,30 +78,32 @@ const batchEvents = (responseList, destination) => {
   const { secret } = responseList[0].metadata;
   const eventGroups = groupResponsesUsingOperation(responseList);
   const respList = [];
-
-  Object.keys(eventGroups).forEach((op) => {
-    const { userList, jobIdList, metadataList } = eventGroups[op].reduce(
-      (acc, event) => ({
-        userList: acc.userList.concat(event.message.user),
-        jobIdList: acc.jobIdList.concat(event.metadata.jobId),
-        metadataList: acc.metadataList.concat(event.metadata),
-      }),
-      { userList: [], metadataList: [], jobIdList: [] },
-    );
-    respList.push(
-      getSuccessRespEvents(
-        buildResponseWithUsers(
-          userList,
-          op,
-          destination.config || destination.Config,
-          jobIdList,
-          secret,
+  const opList = ['remove', 'add'];
+  Object.keys(opList).forEach((op) => {
+    if (eventGroups?.[op]) {
+      const { userList, jobIdList, metadataList } = eventGroups[op].reduce(
+        (acc, event) => ({
+          userList: acc.userList.concat(event.message.user),
+          jobIdList: acc.jobIdList.concat(event.metadata.jobId),
+          metadataList: acc.metadataList.concat(event.metadata),
+        }),
+        { userList: [], metadataList: [], jobIdList: [] },
+      );
+      respList.push(
+        getSuccessRespEvents(
+          buildResponseWithUsers(
+            userList,
+            op,
+            destination.config || destination.Config,
+            jobIdList,
+            secret,
+          ),
+          metadataList,
+          destination,
+          true,
         ),
-        metadataList,
-        destination,
-        true,
-      ),
-    );
+      );
+    }
   });
   return respList;
 };
@@ -115,7 +117,16 @@ const batchEvents = (responseList, destination) => {
  */
 const getUserDetails = (fields, config) => {
   const { enableHash } = config;
-  const { email, phone, firstName, lastName, address, city, state, postalCode } = fields;
+  const {
+    email,
+    phone: phone_number,
+    firstName,
+    lastName,
+    address,
+    city,
+    state,
+    postalCode,
+  } = fields;
   const user = {};
   // formating guidelines https://advertising.amazon.com/help/GCCXMZYCK4RXWS6C
   // using undefined as fallback so in case properties are not string
@@ -127,9 +138,11 @@ const getUserDetails = (fields, config) => {
         ?.toLowerCase() || undefined;
     user.email = enableHash ? sha256(em) : em;
   }
-  if (phone) {
-    const phoneNumber = phone.replace(/\D/g, '').replace(/^0+/, '');
-    user.phone = enableHash ? sha256(phoneNumber) : phoneNumber;
+  if (phone_number) {
+    const updated_phone_number = phone(phone_number);
+    if (updated_phone_number.isValid()) {
+      user.phone = enableHash ? sha256(updated_phone_number.phoneNumber()) : updated_phone_number.phoneNumber();
+    }
   }
   if (state) {
     const st =

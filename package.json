@@ -72,6 +72,7 @@
     "ajv-draft-04": "^1.0.0",
     "ajv-formats": "^2.1.1",
     "axios": "^1.7.3",
+    "phone": "^3.1.50",
     "btoa": "^1.2.1",
     "component-each": "^0.2.6",
     "crypto-js": "^4.2.0",

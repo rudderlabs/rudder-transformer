@@ -141,7 +141,9 @@ const getUserDetails = (fields, config) => {
   if (phone_number) {
     const updated_phone_number = phone(phone_number);
     if (updated_phone_number.isValid) {
-      user.phone = enableHash ? sha256(updated_phone_number.phoneNumber) : updated_phone_number.phoneNumber;
+      user.phone = enableHash
+        ? sha256(updated_phone_number.phoneNumber)
+        : updated_phone_number.phoneNumber;
     }
   }
   if (state) {

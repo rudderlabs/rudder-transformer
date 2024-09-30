@@ -141,19 +141,36 @@ const BrazeDedupUtility = {
     const identfierChunks = _.chunk(identifiers, 50);
     return identfierChunks;
   },
-
+  getFieldsToExport() {
+    return [
+      'created_at',
+      'custom_attributes',
+      'dob',
+      'email',
+      'first_name',
+      'gender',
+      'home_city',
+      'last_name',
+      'phone',
+      'time_zone',
+      'external_id',
+      'user_aliases',
+      // 'country' and 'language' not needed because it is not billable so we don't use it
+    ];
+  },
   async doApiLookup(identfierChunks, { destination, metadata }) {
     return Promise.all(
       identfierChunks.map(async (ids) => {
         const externalIdentifiers = ids.filter((id) => id.external_id);
         const aliasIdentifiers = ids.filter((id) => id.alias_name !== undefined);
-
+        const fieldsToExport = this.getFieldsToExport();
         const { processedResponse: lookUpResponse } = await handleHttpRequest(
           'post',
           `${getEndpointFromConfig(destination)}/users/export/ids`,
           {
             external_ids: externalIdentifiers.map((extId) => extId.external_id),
             user_aliases: aliasIdentifiers,
+            fields_to_export: fieldsToExport,
           },
           {
             headers: {

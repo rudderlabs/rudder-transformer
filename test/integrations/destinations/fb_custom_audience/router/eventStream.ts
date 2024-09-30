@@ -1,7 +1,7 @@
 import { Destination, RouterTransformationRequest } from '../../../../../src/types';
 import { generateMetadata } from '../../../testUtils';
 
-const destination: Destination = {
+export const esDestinationAudience: Destination = {
   Config: {
     accessToken: 'ABC',
     userSchema: [
@@ -23,7 +23,6 @@ const destination: Destination = {
     isRaw: true,
     type: 'NA',
     subType: 'ANYTHING',
-    maxUserCount: '50',
   },
   Enabled: true,
   Transformations: [],
@@ -39,7 +38,7 @@ const destination: Destination = {
   WorkspaceID: '123',
 };
 
-export const eventStreamRouterRequest: RouterTransformationRequest = {
+export const eventStreamAudienceListRouterRequest: RouterTransformationRequest = {
   input: [
     {
       message: {
@@ -85,7 +84,7 @@ export const eventStreamRouterRequest: RouterTransformationRequest = {
         timestamp: '2020-02-02T00:23:09.544Z',
       },
       metadata: generateMetadata(1),
-      destination: destination,
+      destination: esDestinationAudience,
     },
     {
       message: {
@@ -131,13 +130,137 @@ export const eventStreamRouterRequest: RouterTransformationRequest = {
         timestamp: '2020-02-02T00:23:09.544Z',
       },
       metadata: generateMetadata(2),
-      destination: destination,
+      destination: esDestinationAudience,
       request: { query: {} },
     },
   ],
   destType: 'fb_custom_audience',
 };
 
-module.exports = {
-  eventStreamRouterRequest,
+export const esDestinationRecord: Destination = {
+  Config: {
+    accessToken: 'ABC',
+    userSchema: ['EMAIL', 'FI'],
+    isHashRequired: true,
+    disableFormat: false,
+    audienceId: '23848494844100489',
+    isRaw: false,
+    type: 'NA',
+    subType: 'NA',
+  },
+  Enabled: true,
+  Transformations: [],
+  IsProcessorEnabled: true,
+  ID: '123',
+  Name: 'fb_custom_audience',
+  DestinationDefinition: {
+    ID: '123',
+    Name: 'fb_custom_audience',
+    DisplayName: 'fb_custom_audience',
+    Config: {},
+  },
+  WorkspaceID: '123',
+};
+export const eventStreamRecordV1RouterRequest: RouterTransformationRequest = {
+  input: [
+    {
+      destination: esDestinationRecord,
+      message: {
+        action: 'insert',
+        recordId: '2',
+        rudderId: '2',
+        fields: {
+          EMAIL: 'subscribed@eewrfrd.com',
+          FI: 'ghui',
+        },
+        type: 'record',
+      },
+      metadata: generateMetadata(3),
+    },
+    {
+      destination: esDestinationRecord,
+      message: {
+        action: 'update',
+        recordId: '2',
+        rudderId: '2',
+        fields: {
+          EMAIL: 'subscribed@eewrfrd.com',
+          FI: 'ghui',
+        },
+        type: 'record',
+      },
+      metadata: generateMetadata(4),
+    },
+    {
+      destination: esDestinationRecord,
+      message: {
+        action: 'delete',
+        recordId: '2',
+        rudderId: '2',
+        fields: {
+          EMAIL: 'subscribed@eewrfrd.com',
+          FI: 'ghui',
+        },
+        type: 'record',
+      },
+      metadata: generateMetadata(1),
+    },
+    {
+      destination: esDestinationRecord,
+      message: {
+        action: 'delete',
+        recordId: '2',
+        rudderId: '2',
+        fields: {
+          EMAIL: 'subscribed@eewrfrd.com',
+          FI: 'ghui',
+        },
+        type: 'record',
+      },
+      metadata: generateMetadata(2),
+    },
+    {
+      destination: esDestinationRecord,
+      message: {
+        action: 'update',
+        recordId: '2',
+        rudderId: '2',
+        fields: {
+          EMAIL: 'subscribed@eewrfrd.com',
+          FI: 'ghui',
+        },
+        type: 'record',
+      },
+      metadata: generateMetadata(5),
+    },
+    {
+      destination: esDestinationRecord,
+      message: {
+        action: 'update',
+        recordId: '2',
+        rudderId: '2',
+        fields: {
+          EMAIL: 'subscribed@eewrfrd.com',
+          FI: 'ghui',
+        },
+        type: 'record',
+      },
+      metadata: generateMetadata(6),
+    },
+    {
+      destination: esDestinationRecord,
+      message: {
+        action: 'lol',
+        recordId: '2',
+        rudderId: '2',
+        fields: {
+          EMAIL: 'subscribed@eewrfrd.com',
+          FI: 'ghui',
+        },
+        type: 'record',
+      },
+      metadata: generateMetadata(7),
+    },
+  ],
+  destType: 'fb_custom_audience',
 };

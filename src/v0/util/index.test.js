@@ -1,4 +1,4 @@
-const { TAG_NAMES, InstrumentationError } = require('@rudderstack/integrations-lib');
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const utilities = require('.');
 const { getFuncTestData } = require('../../../test/testHelper');
 const { FilteredEventsError } = require('./errorTypes');
@@ -8,7 +8,10 @@ const {
   generateExclusionList,
   combineBatchRequestsWithSameJobIds,
   validateEventAndLowerCaseConversion,
+  groupRouterTransformEvents,
+  isAxiosError,
 } = require('./index');
+const exp = require('constants');
 
 // Names of the utility functions to test
 const functionNames = [
@@ -691,6 +694,137 @@ describe('extractCustomFields', () => {
   });
 });
 
+describe('groupRouterTransformEvents', () => {
+  it('should group events by destination.ID and context.sources.job_id', () => {
+    const events = [
+      {
+        destination: { ID: 'dest1' },
+        context: { sources: { job_id: 'job1' } },
+      },
+      {
+        destination: { ID: 'dest1' },
+        context: { sources: { job_id: 'job2' } },
+      },
+      {
+        destination: { ID: 'dest2' },
+        context: { sources: { job_id: 'job1' } },
+      },
+    ];
+    const result = groupRouterTransformEvents(events);
+
+    expect(result.length).toBe(3); // 3 unique groups
+    expect(result).toEqual([
+      [{ destination: { ID: 'dest1' }, context: { sources: { job_id: 'job1' } } }],
+      [{ destination: { ID: 'dest1' }, context: { sources: { job_id: 'job2' } } }],
+      [{ destination: { ID: 'dest2' }, context: { sources: { job_id: 'job1' } } }],
+    ]);
+  });
+
+  it('should group events by default job_id if context.sources.job_id is missing', () => {
+    const events = [
+      {
+        destination: { ID: 'dest1' },
+        context: { sources: {} },
+      },
+      {
+        destination: { ID: 'dest1' },
+        context: { sources: { job_id: 'job1' } },
+      },
+    ];
+    const result = groupRouterTransformEvents(events);
+
+    expect(result.length).toBe(2); // 2 unique groups
+    expect(result).toEqual([
+      [{ destination: { ID: 'dest1' }, context: { sources: {} } }],
+      [{ destination: { ID: 'dest1' }, context: { sources: { job_id: 'job1' } } }],
+    ]);
+  });
+
+  it('should group events by default job_id if context or context.sources is missing', () => {
+    const events = [
+      {
+        destination: { ID: 'dest1' },
+      },
+      {
+        destination: { ID: 'dest1' },
+        context: { sources: { job_id: 'job1' } },
+      },
+    ];
+    const result = groupRouterTransformEvents(events);
+
+    expect(result.length).toBe(2); // 2 unique groups
+    expect(result).toEqual([
+      [{ destination: { ID: 'dest1' } }],
+      [{ destination: { ID: 'dest1' }, context: { sources: { job_id: 'job1' } } }],
+    ]);
+  });
+
+  it('should use "default" when destination.ID is missing', () => {
+    const events = [
+      {
+        context: { sources: { job_id: 'job1' } },
+      },
+      {
+        destination: { ID: 'dest1' },
+        context: { sources: { job_id: 'job1' } },
+      },
+    ];
+    const result = groupRouterTransformEvents(events);
+
+    expect(result.length).toBe(2); // 2 unique groups
+    expect(result).toEqual([
+      [{ context: { sources: { job_id: 'job1' } } }],
+      [{ destination: { ID: 'dest1' }, context: { sources: { job_id: 'job1' } } }],
+    ]);
+  });
+
+  it('should return an empty array when there are no events', () => {
+    const events = [];
+    const result = groupRouterTransformEvents(events);
+
+    expect(result).toEqual([]);
+  });
+
+  it('should handle events with completely missing context and destination', () => {
+    const events = [
+      {},
+      { destination: { ID: 'dest1' } },
+      { context: { sources: { job_id: 'job1' } } },
+    ];
+    const result = groupRouterTransformEvents(events);
+
+    expect(result.length).toBe(3); // 3 unique groups
+    expect(result).toEqual([
+      [{}],
+      [{ destination: { ID: 'dest1' } }],
+      [{ context: { sources: { job_id: 'job1' } } }],
+    ]);
+  });
+});
+
+describe('applyJSONStringTemplate', () => {
+  it('should apply JSON string template to the payload', () => {
+    const payload = {
+      domain: 'abc',
+    };
+    const template = '`https://{{$.domain}}.com`';
+
+    const result = utilities.applyJSONStringTemplate(payload, template);
+    expect(result).toEqual('https://abc.com');
+  });
+
+  it('should apply JSON string template to the payload multiple times', () => {
+    const payload = {
+      domain: 'abc',
+      subdomain: 'def',
+    };
+    const template = '`https://{{$.subdomain}}.{{$.domain}}.com`';
+
+    const result = utilities.applyJSONStringTemplate(payload, template);
+    expect(result).toEqual('https://def.abc.com');
+  });
+});
+
 describe('get relative path from url', () => {
   test('valid url', () => {
     expect(utilities.getRelativePathFromURL('https://google.com/a/b/c')).toEqual('/a/b/c');
@@ -709,5 +843,128 @@ describe('get relative path from url', () => {
   });
   test('null', () => {
     expect(utilities.getRelativePathFromURL(null)).toEqual(null);
+  });
+});
+
+describe('isAxiosError', () => {
+  const validAxiosError = {
+    config: {
+      adapter: ['xhr', 'fetch'],
+    },
+    request: {
+      socket: {},
+      protocol: 'https:',
+      headers: {},
+      method: 'GET',
+      path: '/api/data',
+    },
+    status: 404,
+    statusText: 'Not Found',
+  };
+
+  it('should return true for a valid Axios error object', () => {
+    expect(isAxiosError(validAxiosError)).toBe(true);
+  });
+
+  it('should return false for null', () => {
+    expect(isAxiosError(null)).toBe(false);
+  });
+
+  it('should return false for undefined', () => {
+    expect(isAxiosError(undefined)).toBe(false);
+  });
+
+  it('should return false for non-object types', () => {
+    expect(isAxiosError('string')).toBe(false);
+    expect(isAxiosError(123)).toBe(false);
+    expect(isAxiosError(true)).toBe(false);
+    expect(isAxiosError([])).toBe(false);
+  });
+
+  it('should return false for an empty object', () => {
+    expect(isAxiosError({})).toBe(false);
+  });
+
+  it('should return false when config is missing', () => {
+    const { config, ...errorWithoutConfig } = validAxiosError;
+    expect(isAxiosError(errorWithoutConfig)).toBe(false);
+  });
+
+  it('should return false when config.adapter is not an array', () => {
+    const error = { ...validAxiosError, config: { adapter: 'not an array' } };
+    expect(isAxiosError(error)).toBe(false);
+  });
+
+  it('should return false when config.adapter has length <= 1', () => {
+    const error = { ...validAxiosError, config: { adapter: ['some'] } };
+    expect(isAxiosError(error)).toBe(false);
+  });
+
+  it('should return false when request is missing', () => {
+    const { request, ...errorWithoutRequest } = validAxiosError;
+    expect(isAxiosError(errorWithoutRequest)).toBe(false);
+  });
+
+  it('should return false when request.socket is missing', () => {
+    const error = {
+      ...validAxiosError,
+      request: { ...validAxiosError.request, socket: undefined },
+    };
+    expect(isAxiosError(error)).toBe(false);
+  });
+
+  it('should return false when request.socket is not an object', () => {
+    const error = {
+      ...validAxiosError,
+      request: { ...validAxiosError.request, socket: 'not an object' },
+    };
+    expect(isAxiosError(error)).toBe(false);
+  });
+
+  it('should return false when request.protocol is missing', () => {
+    const error = {
+      ...validAxiosError,
+      request: { ...validAxiosError.request, protocol: undefined },
+    };
+    expect(isAxiosError(error)).toBe(false);
+  });
+
+  it('should return false when request.method is missing', () => {
+    const error = {
+      ...validAxiosError,
+      request: { ...validAxiosError.request, method: undefined },
+    };
+    expect(isAxiosError(error)).toBe(false);
+  });
+
+  it('should return false when request.path is missing', () => {
+    const error = {
+      ...validAxiosError,
+      request: { ...validAxiosError.request, path: undefined },
+    };
+    expect(isAxiosError(error)).toBe(false);
+  });
+
+  it('should return false when status is missing', () => {
+    const { status, ...errorWithoutStatus } = validAxiosError;
+    expect(isAxiosError(errorWithoutStatus)).toBe(false);
+  });
+
+  it('should return true when all required properties are present and valid, even with extra properties', () => {
+    const errorWithExtraProps = {
+      ...validAxiosError,
+      extraProp: 'some value',
+    };
+    expect(isAxiosError(errorWithExtraProps)).toBe(true);
+  });
+
+  it('should return false when config.adapter is an empty array', () => {
+    const error = { ...validAxiosError, config: { adapter: [] } };
+    expect(isAxiosError(error)).toBe(false);
+  });
+
+  it('should return false when status is 0', () => {
+    const error = { ...validAxiosError, status: 0 };
+    expect(isAxiosError(error)).toBe(false);
   });
 });

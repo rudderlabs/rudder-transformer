@@ -21,5 +21,8 @@ src/v0/destinations/personalize/scripts/
 test/integrations/destinations/testTypes.d.ts
 *.config*.js
 scripts/skipPrepareScript.js
-package-lock.json
-package.json
+*.yaml
+*.yml
+.eslintignore
+.prettierignore
+*.json

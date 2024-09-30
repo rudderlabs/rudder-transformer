@@ -266,7 +266,8 @@ const validationErrorsTestCases = [
     validationErrors: [
       { type: "Datatype-Mismatch" },
       { type: "Unplanned-Event" },
-      { type: "Additional-Properties" }
+      { type: "Additional-Properties" },
+      { type: "Advance-Rules-Violation" }
     ],
     output: true
   },
@@ -283,7 +284,8 @@ const validationErrorsTestCases = [
     validationErrors: [
       { type: "Datatype-Mismatch" },
       { type: "Unplanned-Event" },
-      { type: "Additional-Properties" }
+      { type: "Additional-Properties" },
+      { type: "Advance-Rules-Violation" }
     ],
     output: true
   },

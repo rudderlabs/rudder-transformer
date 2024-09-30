@@ -77,8 +77,8 @@ steps:
     template: |
       const payload = .message.context.mappedToDestination ? $.outputs.rEtlPayload : $.outputs.identifyTransformationForLatestVersion;
       payload.name = $.getName(.message);
-      payload.custom_attributes = .message.context.traits || {};
-      payload.custom_attributes = $.filterCustomAttributes(payload, "user", .destination);
+      payload.custom_attributes = (.message.context.mappedToDestination ? .message.traits.custom_attributes : .message.context.traits) || {};
+      payload.custom_attributes = $.filterCustomAttributes(payload, "user", .destination, .message);
       payload.external_id = !payload.external_id && .destination.Config.sendAnonymousId && .message.anonymousId ? .message.anonymousId : payload.external_id;
       $.context.payload = payload;
       $.assert($.context.payload.external_id || $.context.payload.email, "Either email or userId is required for Identify call");
@@ -114,7 +114,7 @@ steps:
        update_last_request_at: typeof .destination.Config.updateLastRequestAt === 'boolean' ? .destination.Config.updateLastRequestAt : true
       }
       payload.companies = $.getCompaniesList(payload);
-      payload.custom_attributes = !.message.context.mappedToDestination ? $.filterCustomAttributes(payload, "user", .destination);
+      payload.custom_attributes = !.message.context.mappedToDestination ? $.filterCustomAttributes(payload, "user", .destination,.message);
       payload.user_id = !payload.user_id && .destination.Config.sendAnonymousId && .message.anonymousId ? .message.anonymousId : payload.user_id;
       $.context.payload = payload;
       $.assert($.context.payload.user_id || $.context.payload.email, "Either of `email` or `userId` is required for Identify call");
@@ -175,7 +175,7 @@ steps:
           $.assert(.message.groupId, "groupId is required for group call");
           const payload = .message.context.mappedToDestination ? $.outputs.rEtlPayload : $.outputs.groupTransformation;
           payload.custom_attributes = .message.traits || {};
-          payload.custom_attributes = $.filterCustomAttributes(payload, "company", .destination);
+          payload.custom_attributes = $.filterCustomAttributes(payload, "company", .destination,.message);
           $.context.payload = payload;
       - name: whenSearchContactFound
         condition: $.isDefinedAndNotNull($.outputs.searchContact)
@@ -214,7 +214,7 @@ steps:
         ...payload,
         custom_attributes : $.getFieldValueFromMessage(.message, "traits") || {}
       }
-      payload.custom_attributes = $.filterCustomAttributes(payload, "company", .destination);
+      payload.custom_attributes = $.filterCustomAttributes(payload, "company", .destination, .message);
       response.body.JSON = $.removeUndefinedAndNullValues(payload);
       response.endpoint = $.getBaseEndpoint(.destination) + "/" + "companies";
       response.headers = $.getHeaders(.destination, $.outputs.apiVersion);

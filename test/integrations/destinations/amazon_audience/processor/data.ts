@@ -3,7 +3,7 @@ const sha256 = require('sha256');
 
 const fields = {
   email: 'abc@xyz.com',
-  phone: '98765433232',
+  phone: '+919876543323',
   firstName: 'test',
   lastName: 'user',
   address: '   Été très chaud!  ',
@@ -65,7 +65,7 @@ export const data = [
                             lastName:
                               '04f8996da763b7a969b1028ee3007569eaf3a635486ddab211d512c85b9df8fb',
                             phone:
-                              '76742d946d9f6d0c844da5648e461896227782ccf1cd0db64573f39dbd92e05f',
+                              '7f2cd894bf36c7b92ec4eee9ef5885d6fd7a53a1100ac76d491e9b23957cab0c',
                             postalCode:
                               '6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b',
                             state:
@@ -159,7 +159,7 @@ export const data = [
                         hashedRecords: [
                           {
                             email: 'abc@xyz.com',
-                            phone: '98765433232',
+                            phone: '+919876543323',
                             firstName: 'test',
                             lastName: 'user',
                             address: 'etetreschaud',

@@ -1,0 +1,112 @@
+[
+  {
+    "destKey": "p",
+    "sourceKeys": "context.os.name",
+    "required": true
+  },
+  {
+    "destKey": "i",
+    "sourceKeys": "context.app.namespace",
+    "required": true
+  },
+  {
+    "destKey": "sdid",
+    "sourceKeys": "context.device.id",
+    "required": false
+  },
+  {
+    "destKey": "is_revenue_event",
+    "sourceKeys": "properties.is_revenue_event",
+    "required": false
+  },
+  {
+    "destKey": "n",
+    "sourceKeys": "event",
+    "required": true
+  },
+  {
+    "destKey": "av",
+    "sourceKeys": "context.app.version",
+    "required": false
+  },
+  {
+    "destKey": "ve",
+    "sourceKeys": "context.os.version",
+    "required": false
+  },
+  {
+    "destKey": "os",
+    "sourceKeys": "properties.os",
+    "required": true
+  },
+  {
+    "destKey": "ip",
+    "sourceKeys": ["context.ip", "request_ip"],
+    "required": true
+  },
+  {
+    "destKey": "use_ip",
+    "sourceKeys": "properties.use_ip",
+    "required": false
+  },
+  {
+    "destKey": "install_source",
+    "sourceKeys": "properties.install_source",
+    "required": true
+  },
+  {
+    "destKey": "data_sharing_options",
+    "sourceKeys": "properties.data_sharing_options",
+    "required": false
+  },
+  {
+    "destKey": "amt",
+    "sourceKeys": [
+      "properties.total",
+      "properties.value",
+      "properties.revenue",
+      {
+        "operation": "multiplication",
+        "args": [
+          {
+            "sourceKeys": "properties.price"
+          },
+          {
+            "sourceKeys": "properties.quantity",
+            "default": 1
+          }
+        ]
+      }
+    ],
+    "required": false
+  },
+  {
+    "destKey": "cur",
+    "sourceKeys": "properties.currency",
+    "required": false
+  },
+  {
+    "destKey": "ua",
+    "sourceKeys": "context.userAgent",
+    "required": false
+  },
+  {
+    "destKey": "utime",
+    "sourceKeys": "timestamp",
+    "sourceFromGenericMap": true,
+    "required": false,
+    "metadata": {
+      "type": "secondTimestamp"
+    }
+  },
+  {
+    "destKey": "custom_user_id",
+    "sourceKeys": "properties.custom_user_id",
+    "required": false
+  },
+  {
+    "destKey": "install",
+    "sourceKeys": "properties.install",
+    "required": false
+  }
+]

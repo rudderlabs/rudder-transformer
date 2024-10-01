@@ -16,13 +16,11 @@ export const data = [
               destination,
               message: {
                 type: 'record',
-                action: 'update',
-                fields: {
-                  email: 'email1@abc.com',
-                },
+                action: 'delete',
+                fields: { email: 'email4@abc.com' },
                 channel: 'sources',
                 context: {},
-                recordId: '1',
+                recordId: '4',
               },
               metadata: generateMetadata(1),
             },
@@ -30,11 +28,13 @@ export const data = [
               destination,
               message: {
                 type: 'record',
-                action: 'insert',
-                fields: { email: 'email2@abc.com' },
+                action: 'delete',
+                fields: {
+                  email: 'email5@abc.com',
+                },
                 channel: 'sources',
                 context: {},
-                recordId: '2',
+                recordId: '5',
               },
               metadata: generateMetadata(2),
             },
@@ -54,11 +54,13 @@ export const data = [
               destination,
               message: {
                 type: 'record',
-                action: 'delete',
-                fields: { email: 'email4@abc.com' },
+                action: 'update',
+                fields: {
+                  email: 'email1@abc.com',
+                },
                 channel: 'sources',
                 context: {},
-                recordId: '4',
+                recordId: '1',
               },
               metadata: generateMetadata(4),
             },
@@ -66,13 +68,11 @@ export const data = [
               destination,
               message: {
                 type: 'record',
-                action: 'delete',
-                fields: {
-                  email: 'email5@abc.com',
-                },
+                action: 'insert',
+                fields: { email: 'email2@abc.com' },
                 channel: 'sources',
                 context: {},
-                recordId: '5',
+                recordId: '2',
               },
               metadata: generateMetadata(5),
             },
@@ -114,8 +114,8 @@ export const data = [
                     associateUsers: {
                       patches: [
                         {
-                          op: 'add',
-                          path: '/EXTERNAL_USER_ID-Rudderstack_8a6ae15122001229edb8866f56e342af12ae8187203c3e3b33931743e7c0c48d/audiences',
+                          op: 'remove',
+                          path: '/EXTERNAL_USER_ID-Rudderstack_17f8af97ad4a7f7639a4c9171d5185cbafb85462877a4746c21bdb0a4f940ca0/audiences',
                           value: ['dummyId'],
                         },
                       ],
@@ -124,16 +124,13 @@ export const data = [
                       records: [
                         {
                           externalId:
-                            'Rudderstack_8a6ae15122001229edb8866f56e342af12ae8187203c3e3b33931743e7c0c48d',
+                            'Rudderstack_17f8af97ad4a7f7639a4c9171d5185cbafb85462877a4746c21bdb0a4f940ca0',
                           hashedRecords: [
                             {
-                              email: 'email1@abc.com',
+                              email: 'email4@abc.com',
                             },
                             {
-                              email: 'email2@abc.com',
-                            },
-                            {
-                              email: 'email3@abc.com',
+                              email: 'email5@abc.com',
                             },
                           ],
                         },
@@ -147,7 +144,7 @@ export const data = [
                 files: {},
               },
               destination,
-              metadata: [generateMetadata(1), generateMetadata(2), generateMetadata(3)],
+              metadata: [generateMetadata(1), generateMetadata(2)],
               statusCode: 200,
             },
             {
@@ -168,8 +165,8 @@ export const data = [
                     associateUsers: {
                       patches: [
                         {
-                          op: 'remove',
-                          path: '/EXTERNAL_USER_ID-Rudderstack_c73bcaadd94985269eeafd457c9f395135874dad5536cf1f6d75c132f602a14c/audiences',
+                          op: 'add',
+                          path: '/EXTERNAL_USER_ID-Rudderstack_a752d8ffaabe4c4d8a7a10cbdb2ee1525130a56a8290eef5d8a695434c49928f/audiences',
                           value: ['dummyId'],
                         },
                       ],
@@ -178,13 +175,16 @@ export const data = [
                       records: [
                         {
                           externalId:
-                            'Rudderstack_c73bcaadd94985269eeafd457c9f395135874dad5536cf1f6d75c132f602a14c',
+                            'Rudderstack_a752d8ffaabe4c4d8a7a10cbdb2ee1525130a56a8290eef5d8a695434c49928f',
                           hashedRecords: [
                             {
-                              email: 'email4@abc.com',
+                              email: 'email3@abc.com',
                             },
                             {
-                              email: 'email5@abc.com',
+                              email: 'email1@abc.com',
+                            },
+                            {
+                              email: 'email2@abc.com',
                             },
                           ],
                         },
@@ -198,7 +198,7 @@ export const data = [
                 files: {},
               },
               destination,
-              metadata: [generateMetadata(4), generateMetadata(5)],
+              metadata: [generateMetadata(3), generateMetadata(4), generateMetadata(5)],
               statusCode: 200,
             },
             {

@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 const sha256 = require('sha256');
+const path = require('path');
+const fs = require('fs');
 const { phone } = require('phone');
 const lodash = require('lodash');
 const { ConfigurationError, OAuthSecretError } = require('@rudderstack/integrations-lib');
@@ -8,6 +10,7 @@ const {
   defaultPostRequestConfig,
   getSuccessRespEvents,
   removeUndefinedAndNullAndEmptyValues,
+  isDefinedAndNotNull,
 } = require('../../util');
 
 const buildResponseWithUsers = (users, action, config, jobIdList, secret) => {
@@ -79,7 +82,7 @@ const batchEvents = (responseList, destination) => {
   const eventGroups = groupResponsesUsingOperation(responseList);
   const respList = [];
   const opList = ['remove', 'add'];
-  Object.keys(opList).forEach((op) => {
+  opList.forEach((op) => {
     if (eventGroups?.[op]) {
       const { userList, jobIdList, metadataList } = eventGroups[op].reduce(
         (acc, event) => ({
@@ -147,11 +150,7 @@ const getUserDetails = (fields, config) => {
     }
   }
   if (state) {
-    const st =
-      state
-        ?.replace(/[^\dA-Za-z]/g, '')
-        ?.trim()
-        ?.toLowerCase() || undefined;
+    const st = getState(state);
     user.state = enableHash ? sha256(st) : st;
   }
   if (city) {
@@ -179,14 +178,7 @@ const getUserDetails = (fields, config) => {
     user.lastName = enableHash ? sha256(ln) : ln;
   }
   if (address) {
-    // removing extra whitespaces, non alphanumeric char, accents and doing lowercasing of the result string
-    const add =
-      address
-        ?.normalize('NFD')
-        ?.replace(/[\u0300-\u036f]/g, '')
-        ?.trim()
-        ?.toLowerCase()
-        .replace(/[^\dA-Za-z]/g, '') || undefined;
+    const add = getAddress(address);
     user.address = enableHash ? sha256(add) : add;
   }
   if (postalCode) {
@@ -200,5 +192,44 @@ const getUserDetails = (fields, config) => {
   }
 
   return removeUndefinedAndNullAndEmptyValues(user);
+};
+
+/* removing extra whitespaces, non alphanumeric char, accents and 
+doing lowercasing of the result string
+*/
+const getAddress = (add) => {
+  const address =
+    add
+      ?.normalize('NFD')
+      ?.replace(/[\u0300-\u036f]/g, '')
+      ?.trim()
+      ?.toLowerCase()
+      .replace(/[^\dA-Za-z]/g, '') || undefined;
+  if (!isDefinedAndNotNull(address)) return undefined;
+  const addressKeys = address.split(',');
+  const addressMap = JSON.parse(
+    fs.readFileSync(path.resolve(__dirname, './data/addressMap.json'), 'utf-8'),
+  );
+  let updated_address = '';
+  addressKeys.forEach((key) => {
+    updated_address += addressMap[key] || key;
+  });
+  return updated_address;
+};
+
+/* removing extra whitespaces, non alphanumeric char, accents and 
+doing lowercasing of the result string
+*/
+const getState = (st) => {
+  const state =
+    st
+      ?.replace(/[^\dA-Za-z]/g, '')
+      ?.trim()
+      ?.toLowerCase() || undefined;
+  if (!isDefinedAndNotNull(state)) return undefined;
+  const stateMap = JSON.parse(
+    fs.readFileSync(path.resolve(__dirname, './data/statesMap.json'), 'utf-8'),
+  );
+  return stateMap[state] || state;
 };
 module.exports = { batchEvents, getUserDetails, buildResponseWithUsers };

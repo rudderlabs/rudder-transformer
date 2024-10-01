@@ -16,8 +16,7 @@ const destination: Destination = {
     Config: {},
   },
   Config: {
-    apiServer: 'standard',
-    apiVersion: 'v2',
+    apiServer: 'US',
     sendAnonymousId: false,
   },
   Enabled: true,
@@ -35,8 +34,7 @@ const destinationApiServerEU: Destination = {
     Config: {},
   },
   Config: {
-    apiVersion: 'v2',
-    apiServer: 'eu',
+    apiServer: 'Europe',
     sendAnonymousId: true,
   },
   Enabled: true,
@@ -54,9 +52,7 @@ const destinationApiServerAU: Destination = {
     Config: {},
   },
   Config: {
-    apiKey: 'testApiKey',
-    apiVersion: 'v2',
-    apiServer: 'au',
+    apiServer: 'Australia',
     sendAnonymousId: true,
   },
   Enabled: true,

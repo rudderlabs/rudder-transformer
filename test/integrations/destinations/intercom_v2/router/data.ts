@@ -12,6 +12,7 @@ import {
   originalTimestamp,
   properties,
   RouterInstrumentationErrorStatTags,
+  RouterNetworkErrorStatTags,
   timestamp,
   userTraits,
 } from '../common';
@@ -378,27 +379,6 @@ const routerRequest5: RouterTransformationRequest = {
       },
       metadata: generateMetadata(5),
     },
-    {
-      destination: {
-        ...destination,
-        Config: {
-          apiVersion: 'v1',
-        },
-      },
-      message: {
-        channel,
-        context: {
-          traits: {
-            ...companyTraits,
-          },
-        },
-        type: 'group',
-        integrations: { All: true },
-        originalTimestamp,
-        timestamp,
-      },
-      metadata: generateMetadata(6),
-    },
   ],
   destType: 'intercom_v2',
 };
@@ -534,10 +514,11 @@ export const data: RouterTestData[] = [
             {
               batched: false,
               error:
-                'Unable to search contact due to : {"type":"error.list","request_id":"request_id-1","errors":[{"code":"unauthorized","message":"Access Token Invalid"}]}',
+                '{"message":"Unable to search contact due to","destinationResponse":"{\\"type\\":\\"error.list\\",\\"request_id\\":\\"request_id-1\\",\\"errors\\":[{\\"code\\":\\"unauthorized\\",\\"message\\":\\"Access Token Invalid\\"}]}"}',
               statTags: {
-                ...RouterInstrumentationErrorStatTags,
-                errorType: 'configuration',
+                ...RouterNetworkErrorStatTags,
+                errorType: 'retryable',
+                meta: 'invalidAuthToken',
               },
               destination,
               metadata: [
@@ -884,19 +865,6 @@ export const data: RouterTestData[] = [
               statTags: RouterInstrumentationErrorStatTags,
               destination,
               metadata: [generateMetadata(5)],
-              statusCode: 400,
-            },
-            {
-              batched: false,
-              error: 'apiVersion v1 is not supported.',
-              statTags: RouterInstrumentationErrorStatTags,
-              destination: {
-                ...destination,
-                Config: {
-                  apiVersion: 'v1',
-                },
-              },
-              metadata: [generateMetadata(6)],
               statusCode: 400,
             },
           ],

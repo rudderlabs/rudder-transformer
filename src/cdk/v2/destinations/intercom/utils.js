@@ -612,5 +612,4 @@ module.exports = {
   attachContactToCompany,
   addOrUpdateTagsToCompany,
   detachContactAndCompany,
-  intercomErrorHandler,
 };

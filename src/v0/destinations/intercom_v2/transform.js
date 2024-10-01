@@ -7,7 +7,6 @@ const {
 } = require('../../util');
 const { EventType } = require('../../../constants');
 const {
-  getApiVersion,
   getHeaders,
   searchContact,
   handleDetachUserAndCompany,
@@ -16,9 +15,9 @@ const {
   attachContactToCompany,
   addOrUpdateTagsToCompany,
   getStatusCode,
+  getBaseEndpoint,
 } = require('./utils');
 const {
-  getBaseEndpoint,
   getName,
   filterCustomAttributes,
   addMetadataToPayload,
@@ -68,13 +67,12 @@ const transformGroupPayload = (event) => {
 
 const constructIdentifyResponse = async (event) => {
   const { destination, metadata } = event;
-  const apiVersion = getApiVersion(destination);
 
   const payload = transformIdentifyPayload(event);
 
   let method = 'POST';
   let endpoint = `${getBaseEndpoint(destination)}/contacts`;
-  const headers = getHeaders(metadata, apiVersion);
+  const headers = getHeaders(metadata);
 
   // when contact is found in intercom
   const contactId = await searchContact(event);
@@ -91,23 +89,21 @@ const constructIdentifyResponse = async (event) => {
 
 const constructTrackResponse = (event) => {
   const { destination, metadata } = event;
-  const apiVersion = getApiVersion(destination);
   const payload = transformTrackPayload(event);
   const method = 'POST';
   const endpoint = `${getBaseEndpoint(destination)}/events`;
-  const headers = getHeaders(metadata, apiVersion);
+  const headers = getHeaders(metadata);
 
   return getResponse(method, endpoint, headers, payload);
 };
 
 const constructGroupResponse = async (event) => {
   const { destination, metadata } = event;
-  const apiVersion = getApiVersion(destination);
   const payload = transformGroupPayload(event);
 
   const method = 'POST';
   let endpoint = `${getBaseEndpoint(destination)}/companies`;
-  const headers = getHeaders(metadata, apiVersion);
+  const headers = getHeaders(metadata);
   let finalPayload = payload;
 
   // create or update company
@@ -151,14 +147,7 @@ const processEvent = async (event) => {
 };
 
 const process = async (event) => {
-  const { destination } = event;
-  const apiVersion = getApiVersion(destination);
-  let response;
-  if (apiVersion === 'v2') {
-    response = await processEvent(event);
-  } else {
-    throw new InstrumentationError(`apiVersion ${apiVersion} is not supported.`);
-  }
+  const response = await processEvent(event);
   return response;
 };
 

@@ -1,6 +1,12 @@
-const { removeUndefinedAndNullValues } = require('@rudderstack/integrations-lib');
+const {
+  removeUndefinedAndNullValues,
+  InstrumentationError,
+  NetworkError,
+  InvalidAuthTokenError,
+} = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const { JSON_MIME_TYPE } = require('../../util/constant');
+const tags = require('../../util/tags');
 const {
   getFieldValueFromMessage,
   isHttpStatusSuccess,
@@ -12,24 +18,65 @@ const {
   SEARCH_CONTACT_ENDPOINT,
   CREATE_OR_UPDATE_COMPANY_ENDPOINT,
   TAGS_ENDPOINT,
+  BASE_ENDPOINT,
+  BASE_EU_ENDPOINT,
+  BASE_AU_ENDPOINT,
 } = require('../../../cdk/v2/destinations/intercom/config');
-const {
-  intercomErrorHandler,
-  getLookUpField,
-  getBaseEndpoint,
-} = require('../../../cdk/v2/destinations/intercom/utils');
+const { getLookUpField } = require('../../../cdk/v2/destinations/intercom/utils');
 const { handleHttpRequest } = require('../../../adapters/network');
 const { getAccessToken } = require('../../util');
 const { ApiVersions, destType } = require('./config');
+const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 
-const getApiVersion = (destination) => destination?.Config?.apiVersion;
+/**
+ * method to handle error during api call
+ * ref docs: https://developers.intercom.com/docs/references/rest-api/errors/http-responses/
+ * e.g.
+ * 400 - code: parameter_not_found (or parameter_invalid), message: company not specified
+ * 401 - code: unauthorized, message: Access Token Invalid
+ * 404 - code: company_not_found, message: Company Not Found
+ * @param {*} message
+ * @param {*} processedResponse
+ */
+const intercomErrorHandler = (message, processedResponse) => {
+  const errorMessages = JSON.stringify(processedResponse.response);
+  if (processedResponse.status === 400) {
+    throw new InstrumentationError(`${message} : ${errorMessages}`);
+  }
+  if (processedResponse.status === 401) {
+    throw new InvalidAuthTokenError(message, 400, errorMessages);
+  }
+  if (processedResponse.status === 404) {
+    throw new InstrumentationError(`${message} : ${errorMessages}`);
+  }
+  throw new NetworkError(
+    `${message} : ${errorMessages}`,
+    processedResponse.status,
+    {
+      [tags]: getDynamicErrorType(processedResponse.status),
+    },
+    processedResponse,
+  );
+};
 
-const getHeaders = (metadata, apiVersion) => ({
+const getHeaders = (metadata) => ({
   Authorization: `Bearer ${getAccessToken(metadata, 'accessToken')}`,
   Accept: JSON_MIME_TYPE,
   'Content-Type': JSON_MIME_TYPE,
-  'Intercom-Version': ApiVersions[apiVersion],
+  'Intercom-Version': ApiVersions.v2,
 });
+
+const getBaseEndpoint = (destination) => {
+  const { apiServer } = destination.Config;
+  switch (apiServer) {
+    case 'Europe':
+      return BASE_EU_ENDPOINT;
+    case 'Australia':
+      return BASE_AU_ENDPOINT;
+    default:
+      return BASE_ENDPOINT;
+  }
+};
 
 const getStatusCode = (event) => {
   const { message } = event;
@@ -52,9 +99,11 @@ const getResponse = (method, endpoint, headers, payload) => {
 
 const searchContact = async (event) => {
   const { message, destination, metadata } = event;
-  const apiVersion = getApiVersion(destination);
   const lookupField = getLookUpField(message);
-  const lookupFieldValue = getFieldValueFromMessage(message, lookupField);
+  let lookupFieldValue = getFieldValueFromMessage(message, lookupField);
+  if (!lookupFieldValue) {
+    lookupFieldValue = message?.context?.traits?.[lookupField];
+  }
   const data = JSON.stringify({
     query: {
       operator: 'AND',
@@ -68,7 +117,7 @@ const searchContact = async (event) => {
     },
   });
 
-  const headers = getHeaders(metadata, apiVersion);
+  const headers = getHeaders(metadata);
   const endpoint = `${getBaseEndpoint(destination)}/${SEARCH_CONTACT_ENDPOINT}`;
   const statTags = {
     destType,
@@ -97,8 +146,7 @@ const searchContact = async (event) => {
 
 const getCompanyId = async (company, destination, metadata) => {
   if (!company.id && !company.name) return undefined;
-  const apiVersion = getApiVersion(destination);
-  const headers = getHeaders(metadata, apiVersion);
+  const headers = getHeaders(metadata);
 
   const queryParam = company.id ? `company_id=${company.id}` : `name=${company.name}`;
   const endpoint = `${getBaseEndpoint(destination)}/companies?${queryParam}`;
@@ -132,8 +180,7 @@ const detachContactAndCompany = async (contactId, company, destination, metadata
   const companyId = await getCompanyId(company, destination, metadata);
   if (!companyId) return;
 
-  const apiVersion = getApiVersion(destination);
-  const headers = getHeaders(metadata, apiVersion);
+  const headers = getHeaders(metadata);
   const endpoint = `${getBaseEndpoint(destination)}/contacts/${contactId}/companies/${companyId}`;
 
   const statTags = {
@@ -169,8 +216,7 @@ const handleDetachUserAndCompany = async (contactId, event) => {
 };
 
 const createOrUpdateCompany = async (payload, destination, metadata) => {
-  const apiVersion = getApiVersion(destination);
-  const headers = getHeaders(metadata, apiVersion);
+  const headers = getHeaders(metadata);
   const endpoint = `${getBaseEndpoint(destination)}/${CREATE_OR_UPDATE_COMPANY_ENDPOINT}`;
 
   const finalPayload = JSON.stringify(removeUndefinedAndNullValues(payload));
@@ -202,8 +248,7 @@ const createOrUpdateCompany = async (payload, destination, metadata) => {
 };
 
 const attachContactToCompany = async (payload, endpoint, destination, metadata) => {
-  const apiVersion = getApiVersion(destination);
-  const headers = getHeaders(metadata, apiVersion);
+  const headers = getHeaders(metadata);
   const finalPayload = JSON.stringify(removeUndefinedAndNullValues(payload));
 
   const statTags = {
@@ -235,8 +280,7 @@ const addOrUpdateTagsToCompany = async (id, event) => {
   const companyTags = message?.traits?.tags || message?.context?.traits?.tags;
   if (!companyTags) return;
 
-  const apiVersion = getApiVersion(destination);
-  const headers = getHeaders(metadata, apiVersion);
+  const headers = getHeaders(metadata);
   const endpoint = `${getBaseEndpoint(destination)}/${TAGS_ENDPOINT}`;
 
   const statTags = {
@@ -277,7 +321,6 @@ const addOrUpdateTagsToCompany = async (id, event) => {
 
 module.exports = {
   getStatusCode,
-  getApiVersion,
   getHeaders,
   searchContact,
   handleDetachUserAndCompany,
@@ -285,4 +328,5 @@ module.exports = {
   createOrUpdateCompany,
   attachContactToCompany,
   addOrUpdateTagsToCompany,
+  getBaseEndpoint,
 };

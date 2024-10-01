@@ -26,6 +26,7 @@ const SF_TOKEN_REQUEST_URL_SANDBOX = 'https://test.salesforce.com/services/oauth
 const DESTINATION = 'Salesforce';
 const OAUTH = 'oauth';
 const LEGACY = 'legacy';
+const SALESFORCE_OAUTH = 'SALESFORCE_OAUTH';
 
 const mappingConfig = getMappingConfig(ConfigCategory, __dirname);
 
@@ -41,4 +42,5 @@ module.exports = {
   DESTINATION,
   OAUTH,
   LEGACY,
+  SALESFORCE_OAUTH,
 };

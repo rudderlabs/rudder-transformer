@@ -130,11 +130,17 @@ function getEventValueForUnIdentifiedTrackEvent(message) {
 
 function getEventValueMapFromMappingJson(message, mappingJson, isMultiSupport, config) {
   let eventValue = {};
-  const { addPropertiesAtRoot, afCurrencyAtRoot } = config;
+  const { addPropertiesAtRoot, afCurrencyAtRoot, listOfProps } = config;
 
   if (addPropertiesAtRoot) {
     eventValue = message.properties;
   } else {
+    if (Array.isArray(listOfProps) && listOfProps.length > 0) {
+      listOfProps.forEach((prop) => {
+        set(eventValue, prop.property, get(message, `properties.${prop.property}`));
+        delete message.properties[prop.property];
+      });
+    }
     set(eventValue, 'properties', message.properties);
   }
 

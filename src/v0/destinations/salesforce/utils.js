@@ -19,6 +19,18 @@ const {
 
 const ACCESS_TOKEN_CACHE = new Cache(ACCESS_TOKEN_CACHE_TTL);
 
+// ref: https://developer.salesforce.com/docs/atlas.en-us.api_rest.meta/api_rest/errorcodes.htm?q=error%20code
+/**
+ * 
+ * @param {*} response is of structure
+ * [
+ * {
+ *  "message" : "The requested resource does not exist",
+ *  "errorCode" : "NOT_FOUND"
+}
+]
+ * @returns error message
+ */
 const getErrorMessage = (response) => {
   if (response && Array.isArray(response) && response[0]?.message?.length > 0) {
     return response[0].message;
@@ -79,6 +91,18 @@ const handleCommonAbortableError = (destResponse, sourceMessage, status) => {
 const salesforceResponseHandler = (destResponse, sourceMessage, authKey, authorizationFlow) => {
   const { status, response } = destResponse;
 
+  /**
+   *
+   * @param {*} errorCode
+   * response is of structure
+   * [
+   * {
+   *  "message" : "Request limit exceeded",
+   *  "errorCode" : "REQUEST_LIMIT_EXCEEDED"
+   * }
+   * ]
+   * @returns true if errorCode is found in the response
+   */
   const matchErrorCode = (errorCode) =>
     response && Array.isArray(response) && response.some((resp) => resp?.errorCode === errorCode);
 

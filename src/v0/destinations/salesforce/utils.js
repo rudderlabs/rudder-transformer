@@ -1,4 +1,9 @@
-const { RetryableError, ThrottledError, AbortedError } = require('@rudderstack/integrations-lib');
+const {
+  RetryableError,
+  ThrottledError,
+  AbortedError,
+  // isDefinedAndNotNull,
+} = require('@rudderstack/integrations-lib');
 const { handleHttpRequest } = require('../../../adapters/network');
 const { getAuthErrCategoryFromStCode } = require('../../util');
 const Cache = require('../../util/cache');
@@ -14,6 +19,55 @@ const {
 
 const ACCESS_TOKEN_CACHE = new Cache(ACCESS_TOKEN_CACHE_TTL);
 
+const getErrorMessage = (response) => {
+  if (response && Array.isArray(response) && response[0]?.message?.length > 0) {
+    return response[0].message;
+  }
+  return JSON.stringify(response);
+};
+
+const handleAuthError = (
+  errorCode,
+  authKey,
+  authorizationFlow,
+  sourceMessage,
+  destResponse,
+  status,
+) => {
+  // eslint-disable-next-line sonarjs/no-small-switch
+  switch (errorCode) {
+    case 'INVALID_SESSION_ID':
+      if (authorizationFlow === OAUTH) {
+        throw new RetryableError(
+          `${DESTINATION} Request Failed - due to "INVALID_SESSION_ID", (Retryable) ${sourceMessage}`,
+          500,
+          destResponse,
+          getAuthErrCategoryFromStCode(status),
+        );
+      }
+      ACCESS_TOKEN_CACHE.del(authKey);
+      throw new RetryableError(
+        `${DESTINATION} Request Failed - due to "INVALID_SESSION_ID", (Retryable) ${sourceMessage}`,
+        500,
+        destResponse,
+      );
+    default:
+      throw new AbortedError(
+        `${DESTINATION} Request Failed: "${status}" due to "${getErrorMessage(destResponse.response)}", (Aborted) ${sourceMessage}`,
+        400,
+        destResponse,
+      );
+  }
+};
+
+const handleCommonAbortableError = (destResponse, sourceMessage, status) => {
+  throw new AbortedError(
+    `${DESTINATION} Request Failed: "${status}" due to "${getErrorMessage(destResponse.response)}", (Aborted) ${sourceMessage}`,
+    400,
+    destResponse,
+  );
+};
+
 /**
  * ref: https://developer.salesforce.com/docs/atlas.en-us.api_rest.meta/api_rest/errorcodes.htm
  * handles Salesforce application level failures
@@ -28,33 +82,20 @@ const salesforceResponseHandler = (destResponse, sourceMessage, authKey, authori
   const matchErrorCode = (errorCode) =>
     response && Array.isArray(response) && response.some((resp) => resp?.errorCode === errorCode);
 
-  const getErrorMessage = () => {
-    if (response && Array.isArray(response) && response[0]?.message?.length > 0) {
-      return response[0].message;
-    }
-    return JSON.stringify(response);
-  };
-
   switch (status) {
     case 401:
       if (authKey && matchErrorCode('INVALID_SESSION_ID')) {
-        if (authorizationFlow === OAUTH) {
-          throw new RetryableError(
-            `${DESTINATION} Request Failed - due to "INVALID_SESSION_ID", (Retryable) ${sourceMessage}`,
-            500,
-            destResponse,
-            getAuthErrCategoryFromStCode(status),
-          );
-        }
-        ACCESS_TOKEN_CACHE.del(authKey);
-        throw new RetryableError(
-          `${DESTINATION} Request Failed - due to "INVALID_SESSION_ID", (Retryable) ${sourceMessage}`,
-          500,
+        handleAuthError(
+          'INVALID_SESSION_ID',
+          authKey,
+          authorizationFlow,
+          sourceMessage,
           destResponse,
+          status,
         );
       }
+      handleAuthError('DEFAULT', authKey, authorizationFlow, sourceMessage, destResponse, status);
       break;
-
     case 403:
       if (matchErrorCode('REQUEST_LIMIT_EXCEEDED')) {
         throw new ThrottledError(
@@ -76,12 +117,13 @@ const salesforceResponseHandler = (destResponse, sourceMessage, authKey, authori
           destResponse,
         );
       }
+      handleCommonAbortableError(destResponse, sourceMessage, status);
       break;
 
     case 503:
     case 500:
       throw new RetryableError(
-        `${DESTINATION} Request Failed - due to "${getErrorMessage()}", (Retryable) ${sourceMessage}`,
+        `${DESTINATION} Request Failed - due to "${getErrorMessage(response)}", (Retryable) ${sourceMessage}`,
         500,
         destResponse,
       );
@@ -89,7 +131,7 @@ const salesforceResponseHandler = (destResponse, sourceMessage, authKey, authori
     default:
       // Default case: aborting for all other error codes
       throw new AbortedError(
-        `${DESTINATION} Request Failed: "${status}" due to "${getErrorMessage()}", (Aborted) ${sourceMessage}`,
+        `${DESTINATION} Request Failed: "${status}" due to "${getErrorMessage(response)}", (Aborted) ${sourceMessage}`,
         400,
         destResponse,
       );

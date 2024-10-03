@@ -1476,10 +1476,10 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint:
-                'http://dummyurl.com/services/data/v50.0/sobjects/custom_object__c/a005g0000383kmUAAQ?_HttpMethod=PATCH',
+                'https://ap15.salesforce.com/services/data/v50.0/sobjects/custom_object__c/a005g0000383kmUAAQ?_HttpMethod=PATCH',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Bearer dummyAccessToken',
+                Authorization: 'Bearer dummy.access.token',
               },
               params: {},
               body: {

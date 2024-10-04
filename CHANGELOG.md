@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.81.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.79.1...v1.81.0) (2024-10-04)
+
+
+### Features
+
+* add unity source support in Singular ([#3634](https://github.com/rudderlabs/rudder-transformer/issues/3634)) ([12996d7](https://github.com/rudderlabs/rudder-transformer/commit/12996d7a7ce23de7c150c1c1e012d4dda8668977))
+* onboard shopify to v1 ([#3665](https://github.com/rudderlabs/rudder-transformer/issues/3665)) ([d40e772](https://github.com/rudderlabs/rudder-transformer/commit/d40e772f1a3741c1c4e9ab2365ed464b3988812e))
+
+
+### Bug Fixes
+
+* add correct validation for purchase events ([#3766](https://github.com/rudderlabs/rudder-transformer/issues/3766)) ([9cc72f2](https://github.com/rudderlabs/rudder-transformer/commit/9cc72f2288f99ee394977ffeb209faaae657f6d2))
+* braze include fields_to_export to lookup users ([#3761](https://github.com/rudderlabs/rudder-transformer/issues/3761)) ([173b989](https://github.com/rudderlabs/rudder-transformer/commit/173b9895fb2a0bed615f6e3a9c670abe42d5754f))
+* correct typo for order fulfillment event, add test ([#3764](https://github.com/rudderlabs/rudder-transformer/issues/3764)) ([6f92bd3](https://github.com/rudderlabs/rudder-transformer/commit/6f92bd31b60caaa07d18bb86ce5939cd7cc9a416))
+* fixing lytics user_id and anonymousId mapping ([#3745](https://github.com/rudderlabs/rudder-transformer/issues/3745)) ([45b1067](https://github.com/rudderlabs/rudder-transformer/commit/45b1067d81f3883e19d35634ffec52434fef452f))
+* npm start command to include exec ([9f5140b](https://github.com/rudderlabs/rudder-transformer/commit/9f5140b194384295c0a56147fed16273b2b7805b))
+* payment info entered event in facebook_conversions ([#3762](https://github.com/rudderlabs/rudder-transformer/issues/3762)) ([7fa7c8d](https://github.com/rudderlabs/rudder-transformer/commit/7fa7c8d3a4f6aefb580cf0de2e64e2f8aef5b5ce))
+* posthog alias mapping swap ([#3765](https://github.com/rudderlabs/rudder-transformer/issues/3765)) ([b6240d0](https://github.com/rudderlabs/rudder-transformer/commit/b6240d06a9d1f7f3bc8f245807f72a72ab40f170)), closes [#3507](https://github.com/rudderlabs/rudder-transformer/issues/3507)
+
 ## [1.80.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.79.1...v1.80.0) (2024-09-30)
 
 

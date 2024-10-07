@@ -1373,7 +1373,7 @@ export const data = [
   },
   {
     name: 'salesforce',
-    description: 'Test 10',
+    description: 'Test 11',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -1389,9 +1389,9 @@ export const data = [
                 sandbox: true,
               },
               DestinationDefinition: {
-                DisplayName: 'Salesforce',
+                DisplayName: 'Salesforce Sandbox',
                 ID: '1T96GHZ0YZ1qQSLULHCoJkow9KC',
-                Name: 'SALESFORCE',
+                Name: 'salesforce_oauth_sandbox',
               },
               Enabled: true,
               ID: '1ut7LcVW1QC56y2EoTNo7ZwBWSY',
@@ -1412,7 +1412,7 @@ export const data = [
                 externalId: [
                   {
                     id: 'a005g0000383kmUAAQ',
-                    type: 'SALESFORCE-custom_object__c',
+                    type: 'SALESFORCE_OAUTH_SANDBOX-custom_object__c',
                     identifierType: 'Id',
                   },
                 ],

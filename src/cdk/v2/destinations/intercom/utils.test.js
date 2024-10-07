@@ -318,8 +318,14 @@ describe('filterCustomAttributes utility test', () => {
     expect(result).toBeUndefined();
   });
 
-  it('Should filter out custom attributes that are reserved attributes and that are falsey', () => {
+  it('Should filter out custom attributes that are reserved attributes and that are false', () => {
     const payload = { custom_attributes: { unsubscribedFromEmails: false } };
+    const result = filterCustomAttributes(payload, 'user', { Config: { apiVersion: 'v2' } });
+    expect(result).toBeUndefined();
+  });
+
+  it('Should filter out custom attributes that are reserved attributes and that are null', () => {
+    const payload = { custom_attributes: { unsubscribedFromEmails: null } };
     const result = filterCustomAttributes(payload, 'user', { Config: { apiVersion: 'v2' } });
     expect(result).toBeUndefined();
   });

@@ -169,6 +169,7 @@ const getAccessToken = async ({ destination, metadata }) => {
 const collectAuthorizationInfo = async (event) => {
   let authorizationFlow;
   let authorizationData;
+  console.log(JSON.stringify(event));
   if (isDefinedAndNotNull(event.metadata?.secret)) {
     authorizationFlow = OAUTH;
     authorizationData = getAccessTokenOauth(event.metadata);

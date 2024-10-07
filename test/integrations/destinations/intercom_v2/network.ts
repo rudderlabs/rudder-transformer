@@ -40,6 +40,7 @@ const deliveryCallsData = [
         plan: 'enterprise',
         size: 500,
         industry: 'CDP',
+        remote_created_at: 1726132233,
       },
       headers,
     },
@@ -144,6 +145,7 @@ const deliveryCallsData = [
         plan: 'enterprise',
         size: 500,
         industry: 'CDP',
+        remote_created_at: 1726132233,
         custom_attributes: {
           isOpenSource: true,
         },
@@ -240,6 +242,7 @@ const deliveryCallsData = [
         plan: 'enterprise',
         size: 500,
         industry: 'CDP',
+        remote_created_at: 1726132233,
       },
       headers,
     },

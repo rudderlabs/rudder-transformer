@@ -41,7 +41,7 @@
     "destKey": "remote_created_at",
     "sourceKeys": ["traits.remoteCreatedAt", "context.traits.remoteCreatedAt"],
     "metadata": {
-      "type": "toNumber"
+      "type": "secondTimestamp"
     }
   }
 ]

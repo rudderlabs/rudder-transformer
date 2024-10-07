@@ -1,4 +1,4 @@
-const { RetryableError } = require('@rudderstack/integrations-lib');
+const { RetryableError, NetworkError } = require('@rudderstack/integrations-lib');
 const {
   processAxiosResponse,
   getDynamicErrorType,
@@ -7,6 +7,7 @@ const { AUTH_STATUS_INACTIVE } = require('../../../adapters/networkhandler/authC
 const { prepareProxyRequest, proxyRequest } = require('../../../adapters/network');
 const { TransformerProxyError } = require('../../util/errorTypes');
 const tags = require('../../util/tags');
+const { isHttpStatusSuccess } = require('../../util');
 
 // ref: https://github.com/intercom/oauth2-intercom
 // Intercom's OAuth implementation does not use refresh tokens. Access tokens are valid until a user revokes access manually, or until an app deauthorizes itself.
@@ -33,6 +34,16 @@ const errorResponseHandler = (destinationResponse, dest) => {
   }
   if (status === 408) {
     throw new RetryableError(message, 500, destinationResponse, getAuthErrCategory(status));
+  }
+  if (!isHttpStatusSuccess(status)) {
+    throw new NetworkError(
+      `${message}. ${JSON.stringify(response)}`,
+      status,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
+      },
+      destinationResponse,
+    );
   }
 };
 

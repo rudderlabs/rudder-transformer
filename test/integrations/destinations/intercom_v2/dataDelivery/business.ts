@@ -54,17 +54,25 @@ export const testScenariosForV0API = [
         body: {
           output: {
             destinationResponse: {
-              errors: [
-                {
-                  code: 'parameter_invalid',
-                  message: "Custom attribute 'isOpenSource' does not exist",
-                },
-              ],
-              request_id: 'request_1',
-              type: 'error.list',
+              response: {
+                errors: [
+                  {
+                    code: 'parameter_invalid',
+                    message: "Custom attribute 'isOpenSource' does not exist",
+                  },
+                ],
+                request_id: 'request_1',
+                type: 'error.list',
+              },
+              status: 400,
             },
-            message: 'Request Processed Successfully',
+            message:
+              '[Intercom V2 Response Handler] Request failed for destination intercom_v2 with status: 400. {"request_id":"request_1","type":"error.list","errors":[{"code":"parameter_invalid","message":"Custom attribute \'isOpenSource\' does not exist"}]}',
             status: 400,
+            statTags: {
+              ...statTags,
+              errorType: 'aborted',
+            },
           },
         },
       },
@@ -97,17 +105,25 @@ export const testScenariosForV0API = [
         body: {
           output: {
             destinationResponse: {
-              errors: [
-                {
-                  code: 'rate_limit_exceeded',
-                  message: 'The rate limit for the App has been exceeded',
-                },
-              ],
-              request_id: 'request125',
-              type: 'error.list',
+              response: {
+                errors: [
+                  {
+                    code: 'rate_limit_exceeded',
+                    message: 'The rate limit for the App has been exceeded',
+                  },
+                ],
+                request_id: 'request125',
+                type: 'error.list',
+              },
+              status: 429,
             },
-            message: 'Request Processed Successfully',
+            message:
+              '[Intercom V2 Response Handler] Request failed for destination intercom_v2 with status: 429. {"errors":[{"code":"rate_limit_exceeded","message":"The rate limit for the App has been exceeded"}],"request_id":"request125","type":"error.list"}',
             status: 429,
+            statTags: {
+              ...statTags,
+              errorType: 'throttled',
+            },
           },
         },
       },
@@ -138,17 +154,25 @@ export const testScenariosForV0API = [
         body: {
           output: {
             destinationResponse: {
-              errors: [
-                {
-                  code: 'conflict',
-                  message: 'A contact matching those details already exists with id=test',
-                },
-              ],
-              request_id: 'request126',
-              type: 'error.list',
+              response: {
+                errors: [
+                  {
+                    code: 'conflict',
+                    message: 'A contact matching those details already exists with id=test',
+                  },
+                ],
+                request_id: 'request126',
+                type: 'error.list',
+              },
+              status: 409,
             },
-            message: 'Request Processed Successfully',
+            message:
+              '[Intercom V2 Response Handler] Request failed for destination intercom_v2 with status: 409. {"errors":[{"code":"conflict","message":"A contact matching those details already exists with id=test"}],"request_id":"request126","type":"error.list"}',
             status: 409,
+            statTags: {
+              ...statTags,
+              errorType: 'aborted',
+            },
           },
         },
       },
@@ -183,16 +207,24 @@ export const testScenariosForV0API = [
         body: {
           output: {
             destinationResponse: {
-              errors: [
-                {
-                  code: 'media_type_not_acceptable',
-                  message: 'The Accept header should send a media type of application/json',
-                },
-              ],
-              type: 'error.list',
+              response: {
+                errors: [
+                  {
+                    code: 'media_type_not_acceptable',
+                    message: 'The Accept header should send a media type of application/json',
+                  },
+                ],
+                type: 'error.list',
+              },
+              status: 406,
             },
-            message: 'Request Processed Successfully',
+            message:
+              '[Intercom V2 Response Handler] Request failed for destination intercom_v2 with status: 406. {"errors":[{"code":"media_type_not_acceptable","message":"The Accept header should send a media type of application/json"}],"type":"error.list"}',
             status: 406,
+            statTags: {
+              ...statTags,
+              errorType: 'aborted',
+            },
           },
         },
       },
@@ -287,8 +319,13 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
                 metadata: generateMetadata(1),
               },
             ],
-            message: 'Request Processed Successfully',
+            message:
+              '[Intercom V2 Response Handler] Request failed for destination intercom_v2 with status: 400. {"request_id":"request_1","type":"error.list","errors":[{"code":"parameter_invalid","message":"Custom attribute \'isOpenSource\' does not exist"}]}',
             status: 400,
+            statTags: {
+              ...statTags,
+              errorType: 'aborted',
+            },
           },
         },
       },
@@ -329,8 +366,13 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
                 metadata: generateMetadata(1),
               },
             ],
-            message: 'Request Processed Successfully',
+            message:
+              '[Intercom V2 Response Handler] Request failed for destination intercom_v2 with status: 429. {"errors":[{"code":"rate_limit_exceeded","message":"The rate limit for the App has been exceeded"}],"request_id":"request125","type":"error.list"}',
             status: 429,
+            statTags: {
+              ...statTags,
+              errorType: 'throttled',
+            },
           },
         },
       },
@@ -368,8 +410,13 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
                 metadata: generateMetadata(1),
               },
             ],
-            message: 'Request Processed Successfully',
+            message:
+              '[Intercom V2 Response Handler] Request failed for destination intercom_v2 with status: 409. {"errors":[{"code":"conflict","message":"A contact matching those details already exists with id=test"}],"request_id":"request126","type":"error.list"}',
             status: 409,
+            statTags: {
+              ...statTags,
+              errorType: 'aborted',
+            },
           },
         },
       },
@@ -411,8 +458,13 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
                 metadata: generateMetadata(1),
               },
             ],
-            message: 'Request Processed Successfully',
+            message:
+              '[Intercom V2 Response Handler] Request failed for destination intercom_v2 with status: 406. {"errors":[{"code":"media_type_not_acceptable","message":"The Accept header should send a media type of application/json"}],"type":"error.list"}',
             status: 406,
+            statTags: {
+              ...statTags,
+              errorType: 'aborted',
+            },
           },
         },
       },

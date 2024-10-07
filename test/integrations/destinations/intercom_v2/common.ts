@@ -87,6 +87,7 @@ const companyTraits = {
   website: 'www.rudderstack.com',
   industry: 'CDP',
   plan: 'enterprise',
+  remoteCreatedAt: '2024-09-12T14:40:33.996+05:30',
 };
 
 const properties = {

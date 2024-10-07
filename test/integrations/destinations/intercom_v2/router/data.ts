@@ -483,6 +483,7 @@ export const data: RouterTestData[] = [
                     website: 'www.rudderstack.com',
                     industry: 'CDP',
                     plan: 'enterprise',
+                    remote_created_at: 1726132233,
                   },
                   XML: {},
                   FORM: {},

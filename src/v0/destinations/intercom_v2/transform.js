@@ -4,6 +4,7 @@ const {
   getSuccessRespEvents,
   getEventType,
   constructPayload,
+  getIntegrationsObj,
 } = require('../../util');
 const { EventType } = require('../../../constants');
 const {
@@ -47,6 +48,10 @@ const transformTrackPayload = (event) => {
   let payload = constructPayload(message, MappingConfig[category.name]);
   if (!(payload.user_id || payload.email)) {
     throw new InstrumentationError('Either email or userId is required for Track call');
+  }
+  if (!payload.id) {
+    const integrationsObj = getIntegrationsObj(message, 'INTERCOM');
+    payload.id = integrationsObj?.id;
   }
   const shouldSendAnonymousId = destination.Config.sendAnonymousId;
   if (!payload.user_id && shouldSendAnonymousId) {

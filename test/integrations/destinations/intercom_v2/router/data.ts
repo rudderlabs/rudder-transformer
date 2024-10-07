@@ -54,6 +54,12 @@ const routerRequest1: RouterTransformationRequest = {
         type: 'track',
         originalTimestamp,
         timestamp,
+        integrations: {
+          All: true,
+          intercom: {
+            id: 'id-by-intercom',
+          },
+        },
       },
       metadata: generateMetadata(2),
     },
@@ -456,6 +462,7 @@ export const data: RouterTestData[] = [
                       },
                     },
                     user_id: 'user-id-1',
+                    id: 'id-by-intercom',
                   },
                   JSON_ARRAY: {},
                   XML: {},

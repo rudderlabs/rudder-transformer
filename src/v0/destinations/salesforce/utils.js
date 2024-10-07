@@ -183,7 +183,8 @@ const collectAuthorizationInfo = async (event) => {
   let authorizationData;
   console.log(JSON.stringify(event));
   const { Name } = event.destination.DestinationDefinition;
-  if (Name === SALESFORCE_OAUTH || Name === SALESFORCE_OAUTH_SANDBOX) {
+  const lowerCaseName = Name?.toLowerCase?.();
+  if (isDefinedAndNotNull(event?.metadata?.secret) || lowerCaseName === SALESFORCE_OAUTH_SANDBOX) {
     authorizationFlow = OAUTH;
     authorizationData = getAccessTokenOauth(event.metadata);
   } else {

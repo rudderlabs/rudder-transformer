@@ -23,7 +23,7 @@
     "lint:fix:json": "eslint --ext .json --fix .",
     "lint": "npm run format && npm run lint:fix",
     "check:merge": "npm run verify || exit 1; codecov",
-    "start": "cd dist;node ./src/index.js;cd ..",
+    "start": "cd dist;exec node ./src/index.js;cd ..",
     "build:start": "npm run build && npm run start",
     "build:ci": "tsc -p tsconfig.json",
     "build:swagger": "npm run build && npm run setup:swagger",

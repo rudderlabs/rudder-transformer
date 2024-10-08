@@ -26,7 +26,7 @@ const calculateProductAmount = (product) => {
   if (!product?.amount && !product?.price) {
     throw new InstrumentationError('Either amount or price is required for every product');
   }
-  return Math.round(product.amount) * 100 || (product.quantity || 1) * 100 * product.price;
+  return Math.round(product.amount * 100 || (product.quantity || 1) * 100 * product.price);
 };
 
 /**

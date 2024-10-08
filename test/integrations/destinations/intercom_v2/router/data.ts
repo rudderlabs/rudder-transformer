@@ -845,7 +845,7 @@ export const data: RouterTestData[] = [
             },
             {
               batched: false,
-              error: 'Either email or userId is required for Track call',
+              error: 'Either email or userId or id is required for Track call',
               statTags: RouterInstrumentationErrorStatTags,
               destination,
               metadata: [generateMetadata(2)],

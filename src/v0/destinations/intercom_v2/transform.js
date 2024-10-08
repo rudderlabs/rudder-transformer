@@ -29,16 +29,16 @@ const transformIdentifyPayload = (event) => {
   const { message, destination } = event;
   const category = ConfigCategory.IDENTIFY;
   const payload = constructPayload(message, MappingConfig[category.name]);
+  const shouldSendAnonymousId = destination.Config.sendAnonymousId;
+  if (!payload.external_id && shouldSendAnonymousId) {
+    payload.external_id = message.anonymousId;
+  }
   if (!(payload.external_id || payload.email)) {
     throw new InstrumentationError('Either email or userId is required for Identify call');
   }
   payload.name = getName(message);
   payload.custom_attributes = message.traits || message.context.traits || {};
   payload.custom_attributes = filterCustomAttributes(payload, 'user', destination);
-  const shouldSendAnonymousId = destination.Config.sendAnonymousId;
-  if (!payload.external_id && shouldSendAnonymousId) {
-    payload.external_id = message.anonymousId;
-  }
   return payload;
 };
 
@@ -46,9 +46,6 @@ const transformTrackPayload = (event) => {
   const { message, destination } = event;
   const category = ConfigCategory.TRACK;
   let payload = constructPayload(message, MappingConfig[category.name]);
-  if (!(payload.user_id || payload.email)) {
-    throw new InstrumentationError('Either email or userId is required for Track call');
-  }
   if (!payload.id) {
     const integrationsObj = getIntegrationsObj(message, 'INTERCOM');
     payload.id = integrationsObj?.id;
@@ -56,6 +53,9 @@ const transformTrackPayload = (event) => {
   const shouldSendAnonymousId = destination.Config.sendAnonymousId;
   if (!payload.user_id && shouldSendAnonymousId) {
     payload.user_id = message.anonymousId;
+  }
+  if (!(payload.user_id || payload.email || payload.id)) {
+    throw new InstrumentationError('Either email or userId or id is required for Track call');
   }
   payload = addMetadataToPayload(payload);
   return payload;

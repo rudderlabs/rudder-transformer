@@ -180,7 +180,6 @@ const getAccessToken = async ({ destination, metadata }) => {
 const collectAuthorizationInfo = async (event) => {
   let authorizationFlow;
   let authorizationData;
-  console.log(JSON.stringify(event));
   const { Name } = event.destination.DestinationDefinition;
   const lowerCaseName = Name?.toLowerCase?.();
   if (isDefinedAndNotNull(event?.metadata?.secret) || lowerCaseName === SALESFORCE_OAUTH_SANDBOX) {

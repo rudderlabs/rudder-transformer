@@ -82,6 +82,7 @@
     "BLOOMREACH_CATALOG": true,
     "SMARTLY": true,
     "HTTP": true,
+    "AMAZON_AUDIENCE": true,
     "INTERCOM_V2": true
   },
   "regulations": [

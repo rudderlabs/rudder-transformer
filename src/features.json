@@ -80,7 +80,8 @@
     "X_AUDIENCE": true,
     "BLOOMREACH_CATALOG": true,
     "SMARTLY": true,
-    "HTTP": true
+    "HTTP": true,
+    "INTERCOM_V2": true
   },
   "regulations": [
     "BRAZE",

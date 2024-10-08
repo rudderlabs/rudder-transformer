@@ -197,50 +197,50 @@ export const data = [
       },
     },
   },
-  // {
-  //   name: 'amazon_audience',
-  //   id: 'Test 3',
-  //   description: 'Type Validation case',
-  //   successCriteria: 'It should be passed with 200 Ok giving validation error',
-  //   feature: 'processor',
-  //   module: 'destination',
-  //   version: 'v0',
-  //   input: {
-  //     request: {
-  //       body: [
-  //         {
-  //           destination,
-  //           message: {
-  //             type: 'identify',
-  //             context: {},
-  //             recordId: '1',
-  //           },
-  //           metadata: generateMetadata(1),
-  //         },
-  //       ],
-  //     },
-  //   },
-  //   output: {
-  //     response: {
-  //       status: 200,
-  //       body: [
-  //         {
-  //           metadata: generateMetadata(1),
-  //           statusCode: 400,
-  //           error: '[AMAZON AUDIENCE]: identify is not supported',
-  //           statTags: {
-  //             errorCategory: 'dataValidation',
-  //             destinationId: 'default-destinationId',
-  //             errorType: 'instrumentation',
-  //             destType: 'AMAZON_AUDIENCE',
-  //             module: 'destination',
-  //             implementation: 'native',
-  //             workspaceId: 'default-workspaceId',
-  //             feature: 'processor',
-  //           },
-  //         },
-  //       ],
-  //     },
-  //   },
-  // },
+  {
+    name: 'amazon_audience',
+    id: 'Test 3',
+    description: 'Type Validation case',
+    successCriteria: 'It should be passed with 200 Ok giving validation error',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination,
+            message: {
+              type: 'identify',
+              context: {},
+              recordId: '1',
+            },
+            metadata: generateMetadata(1),
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            metadata: generateMetadata(1),
+            statusCode: 400,
+            error: '[AMAZON AUDIENCE]: identify is not supported',
+            statTags: {
+              errorCategory: 'dataValidation',
+              destinationId: 'default-destinationId',
+              errorType: 'instrumentation',
+              destType: 'AMAZON_AUDIENCE',
+              module: 'destination',
+              implementation: 'native',
+              workspaceId: 'default-workspaceId',
+              feature: 'processor',
+            },
+          },
+        ],
+      },
+    },
+  },
 ];

@@ -107,7 +107,6 @@
     "oauth-1.0a": "^2.2.6",
     "object-hash": "^3.0.0",
     "parse-static-imports": "^1.1.0",
-    "phone": "^3.1.50",
     "prom-client": "^14.2.0",
     "qs": "^6.11.1",
     "rs-jsonpath": "^1.1.2",

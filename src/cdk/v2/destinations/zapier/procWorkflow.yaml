@@ -36,5 +36,5 @@ steps:
     else:
       name: buildResponseForProcessTransformation
       template: |
-        const responseList = $.buildResponseList(.message, $.context.endpoint, { "content-type": "application/json" })
+        const responseList = $.buildResponseList(.message, $.context.endpoint)
         responseList

@@ -128,38 +128,36 @@ const getUserDetails = (fields, config) => {
     state,
     postalCode,
   } = fields;
+  if (!enableHash) {
+    return removeUndefinedAndNullAndEmptyValues({
+      email,
+      phone: phone_number,
+      firstName,
+      lastName,
+      address,
+      country,
+      city,
+      state,
+      postalCode,
+    });
+  }
   // Since all fields are optional hence notusing formatRecord function from formatter but doing it for every parameter
   const formatter = new AmazonAdsFormatter();
-  const user = {};
+  const user = {
+    email: sha256(formatter.formatEmail(email)),
+    firstName: sha256(formatter.formatName(firstName)),
+    lastName: sha256(formatter.formatName(lastName)),
+    city: sha256(formatter.formatCity(city)),
+    state: sha256(formatter.formatState(state, country)),
+    postalCode: sha256(formatter.formatPostal(postalCode)),
+  };
   // formating guidelines https://advertising.amazon.com/help/GCCXMZYCK4RXWS6C
   if (country) {
     const country_code = formatter.formatCountry(country);
-    user.country = enableHash ? sha256(country_code) : country;
+    user.country = sha256(country_code);
     if (phone_number) {
-      user.phone = enableHash
-        ? sha256(formatter.formatPhone(phone_number, country_code))
-        : phone_number;
+      user.phone = sha256(formatter.formatPhone(phone_number, country_code));
     }
-  }
-  // in case phone_number is present in hashed format and no country is available
-  if (phone_number && !enableHash) {
-    user.phone = phone_number;
-  }
-  if (email) {
-    user.email = enableHash ? sha256(formatter.formatEmail(email)) : email;
-  }
-
-  if (state) {
-    user.state = enableHash ? sha256(formatter.formatState(state, country)) : state;
-  }
-  if (city) {
-    user.city = enableHash ? sha256(formatter.formatCity(city)) : city;
-  }
-  if (firstName) {
-    user.firstName = enableHash ? sha256(formatter.formatName(firstName)) : firstName;
-  }
-  if (lastName) {
-    user.lastName = enableHash ? sha256(formatter.formatName(lastName)) : lastName;
   }
   if (address) {
     const formatted_address =
@@ -169,14 +167,8 @@ const getUserDetails = (fields, config) => {
         ?.trim()
         ?.toLowerCase()
         .replace(/[^\dA-Za-z]/g, '') || undefined;
-    user.address = enableHash
-      ? sha256(formatter.formatAddress(formatted_address, country))
-      : address;
+    user.address = sha256(formatter.formatAddress(formatted_address, country));
   }
-  if (postalCode) {
-    user.postalCode = enableHash ? sha256(formatter.formatPostal(postalCode)) : postalCode;
-  }
-
   return removeUndefinedAndNullAndEmptyValues(user);
 };
 

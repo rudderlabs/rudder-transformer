@@ -1,8 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 const sha256 = require('sha256');
-const path = require('path');
-const fs = require('fs');
-const { phone } = require('phone');
+const AmazonAdsFormatter = require('amazon-dsp-formatter');
 const lodash = require('lodash');
 const { ConfigurationError, OAuthSecretError } = require('@rudderstack/integrations-lib');
 const {
@@ -10,7 +8,6 @@ const {
   defaultPostRequestConfig,
   getSuccessRespEvents,
   removeUndefinedAndNullAndEmptyValues,
-  isDefinedAndNotNull,
 } = require('../../util');
 
 const buildResponseWithUsers = (users, action, config, jobIdList, secret) => {
@@ -126,110 +123,61 @@ const getUserDetails = (fields, config) => {
     firstName,
     lastName,
     address,
+    country,
     city,
     state,
     postalCode,
   } = fields;
+  // Since all fields are optional hence notusing formatRecord function from formatter but doing it for every parameter
+  const formatter = new AmazonAdsFormatter();
   const user = {};
   // formating guidelines https://advertising.amazon.com/help/GCCXMZYCK4RXWS6C
-  // using undefined as fallback so in case properties are not string
-  if (email) {
-    const em =
-      email
-        ?.replace(/[^\d.@A-Za-z-]/g, '')
-        ?.trim()
-        ?.toLowerCase() || undefined;
-    user.email = enableHash ? sha256(em) : em;
-  }
-  if (phone_number) {
-    const updated_phone_number = phone(phone_number);
-    if (updated_phone_number.isValid) {
+  if (country) {
+    const country_code = formatter.formatCountry(country);
+    user.country = enableHash ? sha256(country_code) : country;
+    if (phone_number) {
       user.phone = enableHash
-        ? sha256(updated_phone_number.phoneNumber)
-        : updated_phone_number.phoneNumber;
+        ? sha256(formatter.formatPhone(phone_number, country_code))
+        : phone_number;
     }
   }
+  // in case phone_number is present in hashed format and no country is available
+  if (phone_number && !enableHash) {
+    user.phone = phone_number;
+  }
+  if (email) {
+    user.email = enableHash ? sha256(formatter.formatEmail(email)) : email;
+  }
+
   if (state) {
-    const st = getState(state);
-    user.state = enableHash ? sha256(st) : st;
+    user.state = enableHash ? sha256(formatter.formatState(state, country)) : state;
   }
   if (city) {
-    const ct =
-      city
-        ?.replace(/[^\dA-Za-z]/g, '')
-        ?.trim()
-        ?.toLowerCase() || undefined;
-    user.city = enableHash ? sha256(ct) : ct;
+    user.city = enableHash ? sha256(formatter.formatCity(city)) : city;
   }
   if (firstName) {
-    const fn =
-      firstName
-        ?.replace(/[^\dA-Za-z]/g, '')
-        ?.trim()
-        ?.toLowerCase() || undefined;
-    user.firstName = enableHash ? sha256(fn) : fn;
+    user.firstName = enableHash ? sha256(formatter.formatName(firstName)) : firstName;
   }
   if (lastName) {
-    const ln =
-      lastName
-        ?.replace(/[^\dA-Za-z]/g, '')
-        ?.trim()
-        ?.toLowerCase() || undefined;
-    user.lastName = enableHash ? sha256(ln) : ln;
+    user.lastName = enableHash ? sha256(formatter.formatName(lastName)) : lastName;
   }
   if (address) {
-    const add = getAddress(address);
-    user.address = enableHash ? sha256(add) : add;
-  }
-  if (postalCode) {
-    const zip =
-      postalCode
-        ?.replace(/[^\dA-Za-z]/g, '')
+    const formatted_address =
+      address
+        ?.normalize('NFD')
+        ?.replace(/[\u0300-\u036f]/g, '')
         ?.trim()
         ?.toLowerCase()
-        ?.substring(0, postalCode.length - 4) || undefined;
-    user.postalCode = enableHash ? sha256(zip) : zip;
+        .replace(/[^\dA-Za-z]/g, '') || undefined;
+    user.address = enableHash
+      ? sha256(formatter.formatAddress(formatted_address, country))
+      : address;
+  }
+  if (postalCode) {
+    user.postalCode = enableHash ? sha256(formatter.formatPostal(postalCode)) : postalCode;
   }
 
   return removeUndefinedAndNullAndEmptyValues(user);
 };
 
-/* removing extra whitespaces, non alphanumeric char, accents and 
-doing lowercasing of the result string
-*/
-const getAddress = (add) => {
-  const address =
-    add
-      ?.normalize('NFD')
-      ?.replace(/[\u0300-\u036f]/g, '')
-      ?.trim()
-      ?.toLowerCase()
-      .replace(/[^\dA-Za-z]/g, '') || undefined;
-  if (!isDefinedAndNotNull(address)) return undefined;
-  const addressKeys = address.split(',');
-  const addressMap = JSON.parse(
-    fs.readFileSync(path.resolve(__dirname, './data/addressMap.json'), 'utf-8'),
-  );
-  let updated_address = '';
-  addressKeys.forEach((key) => {
-    updated_address += addressMap[key] || key;
-  });
-  return updated_address;
-};
-
-/* removing extra whitespaces, non alphanumeric char, accents and 
-doing lowercasing of the result string
-*/
-const getState = (st) => {
-  const state =
-    st
-      ?.replace(/[^\dA-Za-z]/g, '')
-      ?.trim()
-      ?.toLowerCase() || undefined;
-  if (!isDefinedAndNotNull(state)) return undefined;
-  const stateMap = JSON.parse(
-    fs.readFileSync(path.resolve(__dirname, './data/statesMap.json'), 'utf-8'),
-  );
-  return stateMap[state] || state;
-};
 module.exports = { batchEvents, getUserDetails, buildResponseWithUsers };

@@ -19,7 +19,7 @@ const amazonAudienceRespHandler = (destResponse, stageMsg) => {
 
   // to handle the case when authorization-token is invalid
   // docs for error codes: https://advertising.amazon.com/API/docs/en-us/reference/concepts/errors#tag/Audiences/operation/dspCreateAudiencesPost
-  if (status === 401 && response.message == 'Unauthorized') {
+  if (status === 401 && response.message === 'Unauthorized') {
     // 401 takes place in case of authorization isue meaning token is epxired or access is not enough.
     // Since acces is configured from dashboard only refresh token makes sense
     throw new NetworkError(

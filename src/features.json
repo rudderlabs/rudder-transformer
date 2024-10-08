@@ -80,7 +80,8 @@
     "X_AUDIENCE": true,
     "BLOOMREACH_CATALOG": true,
     "SMARTLY": true,
-    "HTTP": true
+    "HTTP": true,
+    "AMAZON_AUDIENCE": true
   },
   "regulations": [
     "BRAZE",

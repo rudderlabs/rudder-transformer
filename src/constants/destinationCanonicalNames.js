@@ -1,6 +1,7 @@
 const DestHandlerMap = {
   ga360: 'ga',
   salesforce_oauth: 'salesforce',
+  salesforce_oauth_sandbox: 'salesforce',
 };
 
 const DestCanonicalNames = {

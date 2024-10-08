@@ -760,8 +760,10 @@ export const data = [
     },
   },
   {
+    id: 'Test 5',
     name: 'zapier',
-    description: 'Test 5',
+    description: 'Track call with Multiplexing',
+    scenario: 'Framework+Business',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -827,6 +829,125 @@ export const data = [
                   userId: 'identified user id',
                   type: 'track',
                   anonymousId: 'anon-id-new',
+                  timestamp: '2020-02-02T00:23:09.544Z',
+                  originalTimestamp: '2020-04-17T14:42:44.724Z',
+                  sentAt: '2020-04-17T14:42:44.724Z',
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: '',
+            },
+            statusCode: 200,
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
+          },
+        ],
+      },
+    },
+  },
+  {
+    id: 'Test 6',
+    name: 'zapier',
+    description: 'Page call with Multiplexing',
+    scenario: 'Framework+Business',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              name: 'abc_page_test',
+              userId: 'identified user id',
+              type: 'page',
+              anonymousId: 'anon-id-new',
+              properties: {
+                abc: '123',
+                key: {
+                  abc: 123,
+                },
+                array: [
+                  {
+                    abc: 123,
+                  },
+                  {
+                    def: 123,
+                  },
+                ],
+              },
+              timestamp: '2020-02-02T00:23:09.544Z',
+              originalTimestamp: '2020-04-17T14:42:44.724Z',
+              sentAt: '2020-04-17T14:42:44.724Z',
+            },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
+            destination: {
+              DestinationDefinition: {
+                Config: {
+                  cdkV2Enabled: true,
+                },
+              },
+              Config: {
+                zapUrl: 'abcd.zap-hook',
+                trackEventsToZap: [{}],
+                pageScreenEventsToZap: [
+                  {
+                    from: 'abc_page_test',
+                    to: ['page.zap-hook', 'ghi.zap-hook'],
+                  },
+                ],
+              },
+              Enabled: true,
+              Transformations: [],
+              IsProcessorEnabled: true,
+            },
+          },
+        ],
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: ['page.zap-hook', 'ghi.zap-hook'],
+              headers: {
+                'content-type': 'application/json',
+              },
+              params: {},
+              body: {
+                JSON: {
+                  name: 'abc_page_test',
+                  userId: 'identified user id',
+                  type: 'page',
+                  anonymousId: 'anon-id-new',
+                  properties: {
+                    abc: '123',
+                    key: {
+                      abc: 123,
+                    },
+                    array: [
+                      {
+                        abc: 123,
+                      },
+                      {
+                        def: 123,
+                      },
+                    ],
+                  },
                   timestamp: '2020-02-02T00:23:09.544Z',
                   originalTimestamp: '2020-04-17T14:42:44.724Z',
                   sentAt: '2020-04-17T14:42:44.724Z',

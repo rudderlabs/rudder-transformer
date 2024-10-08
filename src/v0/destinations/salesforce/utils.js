@@ -18,7 +18,6 @@ const {
   DESTINATION,
   LEGACY,
   OAUTH,
-  SALESFORCE_OAUTH,
   SALESFORCE_OAUTH_SANDBOX,
 } = require('./config');
 

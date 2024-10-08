@@ -304,6 +304,20 @@ describe('dedup utility tests', () => {
         {
           external_ids: ['user1', 'user2'],
           user_aliases: [{ alias_name: 'user3', alias_label: 'rudder_id' }],
+          fields_to_export: [
+            'created_at',
+            'custom_attributes',
+            'dob',
+            'email',
+            'first_name',
+            'gender',
+            'home_city',
+            'last_name',
+            'phone',
+            'time_zone',
+            'external_id',
+            'user_aliases',
+          ],
         },
         {
           headers: {

@@ -141,7 +141,7 @@ function getEventValueMapFromMappingJson(message, mappingJson, isMultiSupport, c
         delete clonedProp[prop.property];
       });
     }
-    set(eventValue, 'properties', clonedProp);
+    eventValue.properties = clonedProp;
   }
 
   const sourceKeys = Object.keys(mappingJson);

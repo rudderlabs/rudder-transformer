@@ -2,7 +2,7 @@
 
 const get = require('get-value');
 const { cloneDeep } = require('lodash');
-const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
+const { InstrumentationError, ConfigurationError, isDefinedAndNotNull } = require('@rudderstack/integrations-lib');
 const {
   constructPayload,
   defaultRequestConfig,
@@ -57,6 +57,15 @@ const responseBuilder = async (metadata, message, { Config }, payload) => {
 const processTrackEvent = async (metadata, message, destination) => {
   let flag = 0;
   const { Config } = destination;
+
+  if (Config.fetchCustomerIdUsingOAuth && isDefinedAndNotNull(Config.configData)) {
+    const configDetails = JSON.parse(Config.configData);
+    Config.customerId = configDetails.customerId;
+    if (configDetails.loginCustomerId) {
+      Config.loginCustomerId = configDetails.loginCustomerId;
+    }
+  }
+
   const { event } = message;
   const { listOfConversions } = Config;
   if (listOfConversions.some((i) => i.conversions === event)) {

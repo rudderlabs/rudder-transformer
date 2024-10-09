@@ -1,6 +1,6 @@
 const get = require('get-value');
 const set = require('set-value');
-
+const _ = require('lodash');
 const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const {
@@ -131,13 +131,13 @@ function getEventValueForUnIdentifiedTrackEvent(message) {
 function getEventValueMapFromMappingJson(message, mappingJson, isMultiSupport, config) {
   let eventValue = {};
   const { addPropertiesAtRoot, afCurrencyAtRoot, listOfProps } = config;
-  const clonedProp = message.properties && JSON.parse(JSON.stringify(message.properties));
+  const clonedProp = message.properties && _.cloneDeep(message.properties);
   if (addPropertiesAtRoot) {
     eventValue = clonedProp;
   } else {
     if (Array.isArray(listOfProps) && listOfProps.length > 0) {
       listOfProps.forEach((prop) => {
-        set(eventValue, prop.property, get(message, `properties.${prop.property}`));
+        eventValue[prop.property] = clonedProp[prop.property];
         delete clonedProp[prop.property];
       });
     }

@@ -62,6 +62,8 @@ export const data = [
                 syncFrequency: '30',
                 tableSuffix: '',
                 timeWindowLayout: '2006/01/02/15',
+                allowUsersContextTraits: true,
+                underscoreDivideNumbers: true,
               },
               Enabled: true,
             },

@@ -1,7 +1,10 @@
 module.exports = {
     input: {
         destination: {
-            Config: {}
+            Config: {
+                allowUsersContextTraits: true,
+                underscoreDivideNumbers: true
+            }
         },
         message: {
             anonymousId: "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",

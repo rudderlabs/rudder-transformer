@@ -91,7 +91,7 @@
     "isMobile": true
   },
   {
-    "destKey": "$useragent",
+    "destKey": "$raw_user_agent",
     "sourceKeys": "context.userAgent",
     "isMobile": true
   },

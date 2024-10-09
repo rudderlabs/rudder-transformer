@@ -1,0 +1,46 @@
+[
+  {
+    "sourceKeys": "productVariant.product.id",
+    "destKeys": "product_id"
+  },
+  {
+    "sourceKeys": "productVariant.product.title",
+    "destKeys": "variant"
+  },
+  {
+    "sourceKeys": "productVariant.product.vendor",
+    "destKeys": "brand"
+  },
+  {
+    "sourceKeys": "productVariant.product.type",
+    "destKeys": "category"
+  },
+  {
+    "sourceKeys": "productVariant.product.image.src",
+    "destKeys": "image_url"
+  },
+  {
+    "sourceKeys": "productVariant.price.amount",
+    "destKeys": "price"
+  },
+  {
+    "sourceKeys": "productVariant.price.currencyCode",
+    "destKeys": "currency"
+  },
+  {
+    "sourceKeys": "productVariant.product.url",
+    "destKeys": "url"
+  },
+  {
+    "sourceKeys": "productVariant.product.sku",
+    "destKeys": "sku"
+  },
+  {
+    "sourceKeys": "productVariant.product.title",
+    "destKeys": "name"
+  },
+  {
+    "sourceKeys": "cartLine.quantity",
+    "destKeys": "quantity"
+  }
+]

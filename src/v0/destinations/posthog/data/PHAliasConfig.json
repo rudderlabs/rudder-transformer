@@ -1,12 +1,12 @@
 [
   {
-    "destKey": "properties.alias",
+    "destKey": "properties.distinct_id",
     "sourceKeys": "userId",
     "sourceFromGenericMap": true,
     "required": true
   },
   {
-    "destKey": "properties.distinct_id",
+    "destKey": "properties.alias",
     "sourceKeys": "previousId",
     "required": true
   },

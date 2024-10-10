@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.82.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.81.0...v1.82.0) (2024-10-09)
+
+
+### Features
+
+* onboard Amazon Audience ([#3727](https://github.com/rudderlabs/rudder-transformer/issues/3727)) ([5ac8186](https://github.com/rudderlabs/rudder-transformer/commit/5ac81860c51f9971343df8c61bfd0b2de8161735))
+* onboard intercom v2 destination ([#3721](https://github.com/rudderlabs/rudder-transformer/issues/3721)) ([f8cde8c](https://github.com/rudderlabs/rudder-transformer/commit/f8cde8c072eb9415368fb97f53a3070027a3943b))
+
+
+### Bug Fixes
+
+* add list of the props, which need to be placed at the root ([#3777](https://github.com/rudderlabs/rudder-transformer/issues/3777)) ([b357dd4](https://github.com/rudderlabs/rudder-transformer/commit/b357dd4e8a49ed66576f731a6aac84da55397475))
+* rakuten amount value rounded up to nearest integer ([#3784](https://github.com/rudderlabs/rudder-transformer/issues/3784)) ([f3046f0](https://github.com/rudderlabs/rudder-transformer/commit/f3046f0ae37c113c1239d988d056fc204f2776a0))
+* webhook proc workflow object assign bug ([#3775](https://github.com/rudderlabs/rudder-transformer/issues/3775)) ([de8e503](https://github.com/rudderlabs/rudder-transformer/commit/de8e503524c1e8e3320f7458c66b8581f121b9bb))
+
 ## [1.81.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.79.1...v1.81.0) (2024-10-04)
 
 

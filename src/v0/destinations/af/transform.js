@@ -1,6 +1,6 @@
 const get = require('get-value');
 const set = require('set-value');
-
+const lodash = require('lodash');
 const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const {
@@ -130,28 +130,29 @@ function getEventValueForUnIdentifiedTrackEvent(message) {
 
 function getEventValueMapFromMappingJson(message, mappingJson, isMultiSupport, config) {
   let eventValue = {};
-  const { addPropertiesAtRoot, afCurrencyAtRoot } = config;
-
+  const { addPropertiesAtRoot, afCurrencyAtRoot, listOfProps } = config;
+  const clonedProp = message.properties && lodash.cloneDeep(message.properties);
   if (addPropertiesAtRoot) {
-    eventValue = message.properties;
+    eventValue = clonedProp;
   } else {
-    set(eventValue, 'properties', message.properties);
+    if (Array.isArray(listOfProps) && listOfProps.length > 0) {
+      listOfProps.forEach((prop) => {
+        eventValue[prop.property] = clonedProp[prop.property];
+        delete clonedProp[prop.property];
+      });
+    }
+    eventValue.properties = clonedProp;
   }
 
   const sourceKeys = Object.keys(mappingJson);
   sourceKeys.forEach((sourceKey) => {
     set(eventValue, mappingJson[sourceKey], get(message, sourceKey));
   });
-  if (
-    isMultiSupport &&
-    message.properties &&
-    message.properties.products &&
-    message.properties.products.length > 0
-  ) {
+  if (isMultiSupport && clonedProp && clonedProp.products && clonedProp.products.length > 0) {
     const contentIds = [];
     const quantities = [];
     const prices = [];
-    message.properties.products.forEach((product) => {
+    clonedProp.products.forEach((product) => {
       contentIds.push(product.product_id);
       quantities.push(product.quantity);
       prices.push(product.price);
@@ -164,7 +165,7 @@ function getEventValueMapFromMappingJson(message, mappingJson, isMultiSupport, c
     };
   }
   if (afCurrencyAtRoot) {
-    eventValue.af_currency = message.properties.currency;
+    eventValue.af_currency = clonedProp.currency;
   }
   eventValue = removeUndefinedValues(eventValue);
   if (Object.keys(eventValue).length > 0) {

@@ -23,7 +23,7 @@ const NO_OPERATION_SUCCESS = {
 
 function processPixelEvent(inputEvent) {
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  const { name, query_parameters, clientId, data } = inputEvent;
+  const { name, query_parameters, clientId, data, id } = inputEvent;
   const { checkout } = data ?? {};
   const { order } = checkout ?? {};
   const { customer } = order ?? {};
@@ -77,6 +77,7 @@ function processPixelEvent(inputEvent) {
     version: '2.0.0',
   });
   message.setProperty('context.topic', name);
+  message.messageId = id;
   message = removeUndefinedAndNullValues(message);
   return message;
 }

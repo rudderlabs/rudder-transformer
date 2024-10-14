@@ -77,6 +77,7 @@ function processPixelEvent(inputEvent) {
     version: '2.0.0',
   });
   message.setProperty('context.topic', name);
+  message.setProperty('context.shopifyDetails', data);
   message.messageId = id;
   message = removeUndefinedAndNullValues(message);
   return message;

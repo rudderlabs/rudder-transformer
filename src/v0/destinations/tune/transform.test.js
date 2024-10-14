@@ -1,5 +1,5 @@
-import { InstrumentationError } from '@rudderstack/integrations-lib';
-import { responseBuilder, processEvent } from './transform';
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
+const { responseBuilder, processEvent } = require('./transform');
 describe('responseBuilder', () => {
   // Correctly maps properties to destination keys based on eventsMapping
   it('should map properties to destination keys when eventsMapping is provided', () => {

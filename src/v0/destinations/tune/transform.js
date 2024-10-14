@@ -66,6 +66,8 @@ const processRouterDest = async (inputs, reqMetadata) => {
 };
 
 module.exports = {
+  responseBuilder,
+  processEvent,
   process,
   processRouterDest,
 };

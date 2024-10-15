@@ -1622,7 +1622,7 @@ function isHttpStatusRetryable(status) {
 function generateUUID() {
   return crypto.randomUUID({
     disableEntropyCache: true,
-  }); /* using disableEntropyCache as true to not cache the generated uuids. 
+  }); /* using disableEntropyCache as true to not cache the generated uuids.
   For more Info https://nodejs.org/api/crypto.html#cryptorandomuuidoptions:~:text=options%20%3CObject%3E-,disableEntropyCache,-%3Cboolean%3E%20By
   */
 }
@@ -1646,6 +1646,9 @@ function isAppleFamily(platform) {
 }
 
 function removeHyphens(str) {
+  if (typeof str !== 'string') {
+    return str;
+  }
   return str.replace(/-/g, '');
 }
 

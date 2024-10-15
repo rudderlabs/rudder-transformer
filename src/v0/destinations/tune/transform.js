@@ -1,5 +1,6 @@
+const get = require('get-value');
 const { InstrumentationError } = require('@rudderstack/integrations-lib');
-const { defaultRequestConfig, simpleProcessRouterDest } = require('../../util');
+const { defaultRequestConfig, simpleProcessRouterDest, getHashFromArray } = require('../../util');
 
 const responseBuilder = (message, { Config }) => {
   const { tuneEvents } = Config; // Extract tuneEvents from config
@@ -9,14 +10,37 @@ const responseBuilder = (message, { Config }) => {
   const tuneEvent = tuneEvents.find((event) => event.eventName === messageEvent);
 
   if (tuneEvent) {
-    const params = {};
+    const standardHashMap = getHashFromArray(tuneEvent.standardMapping);
+    const advSubIdHashMap = getHashFromArray(tuneEvent.advSubIdMapping);
+    const advUniqueIdHashMap = getHashFromArray(tuneEvent.advUniqueIdMapping);
 
-    // Map the properties to their corresponding destination keys
-    tuneEvent.eventsMapping.forEach((mapping) => {
-      if (properties && properties[mapping.from] !== undefined) {
-        params[mapping.to] = properties[mapping.from]; // Map the property to the destination key
-      }
-    });
+    const mapPropertiesWithNestedSupport = (msg, mappings) => {
+      const newParams = {}; // Create a new object for parameters
+      Object.entries(mappings).forEach(([key, value]) => {
+        let data; // Declare data variable
+
+        if (key.split('.').length > 1) {
+          // Handle nested keys
+          data = get(msg, key); // Use `get` to retrieve nested data
+          if (data) {
+            newParams[value] = data; // Map to the corresponding destination key
+          }
+        } else {
+          // Handle non-nested keys
+          data = get(properties, key); // Retrieve data from properties directly
+          if (data) {
+            newParams[value] = data; // Map to the corresponding destination key
+          }
+        }
+      });
+      return newParams; // Return the new params object
+    };
+
+    const params = {
+      ...mapPropertiesWithNestedSupport(message, standardHashMap),
+      ...mapPropertiesWithNestedSupport(message, advSubIdHashMap),
+      ...mapPropertiesWithNestedSupport(message, advUniqueIdHashMap),
+    };
 
     // Prepare the response
     const response = defaultRequestConfig();

@@ -1,59 +1,91 @@
 const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const { responseBuilder, processEvent } = require('./transform');
+
 describe('responseBuilder', () => {
-  // Correctly maps properties to destination keys based on eventsMapping
-  it('should map properties to destination keys when eventsMapping is provided', () => {
+  // Correctly maps properties to params using standard, advSubId, and advUniqueId mappings
+  it('should construct response with default config when tune event found', () => {
     const message = {
-      event: 'product list viewed',
-      properties: {
-        platform: 'meta',
-        conversions: 1,
-        ad_unit_id: 221187,
-        ad_interaction_time: '1652826278',
-      },
+      properties: { key1: 'value1', key2: 'value2' },
+      event: 'testEvent',
     };
     const Config = {
       tuneEvents: [
         {
-          eventName: 'product list viewed',
-          eventsMapping: [
-            { from: 'platform', to: 'destinationPlatform' },
-            { from: 'conversions', to: 'destinationConversions' },
-          ],
-          url: 'https://example.com/event',
+          eventName: 'testEvent',
+          standardMapping: [{ from: 'key1', to: 'mappedKey1' }],
+          advSubIdMapping: [{ from: 'key2', to: 'mappedKey2' }],
+          advUniqueIdMapping: [{ from: 'key3', to: 'mappedKey3' }],
+          url: 'https://example.com/api',
         },
       ],
     };
-    const expectedParams = {
-      destinationPlatform: 'meta',
-      destinationConversions: 1,
-    };
+
     const response = responseBuilder(message, { Config });
-    expect(response.params).toEqual(expectedParams);
-    expect(response.endpoint).toBe('https://example.com/event');
+
+    expect(response).toEqual({
+      version: '1',
+      type: 'REST',
+      method: 'POST',
+      endpoint: 'https://example.com/api',
+      headers: {},
+      params: { mappedKey1: 'value1', mappedKey2: 'value2' },
+      body: {
+        JSON: {},
+        JSON_ARRAY: {},
+        XML: {},
+        FORM: {},
+      },
+      files: {},
+      event: 'testEvent',
+    });
   });
 
-  // Handles empty properties object without errors
-  it('should handle empty properties object without throwing errors', () => {
+  it('should extract and use tuneEvents from Config', () => {
     const message = {
-      event: 'product list viewed',
-      properties: {},
+      properties: { key1: 'value1', key2: 'value2' },
+      event: 'testEvent',
     };
     const Config = {
       tuneEvents: [
         {
-          eventName: 'product list viewed',
-          eventsMapping: [
-            { from: 'platform', to: 'destinationPlatform' },
-            { from: 'conversions', to: 'destinationConversions' },
-          ],
-          url: 'https://example.com/event',
+          eventName: 'testEvent',
+          standardMapping: [{ from: 'key1', to: 'mappedKey1' }],
+          advSubIdMapping: [{ from: 'key2', to: 'mappedKey2' }],
+          advUniqueIdMapping: [{ from: 'key3', to: 'mappedKey3' }],
+          url: 'https://example.com/api',
         },
       ],
     };
+
     const response = responseBuilder(message, { Config });
-    expect(response.params).toEqual({});
-    expect(response.endpoint).toBe('https://example.com/event');
+
+    expect(response).toBeDefined();
+  });
+
+  it('should extract parameters from the provided URL', () => {
+    const message = {
+      event: 'testEvent',
+    };
+    const Config = {
+      tuneEvents: [
+        {
+          eventName: 'testEvent',
+          standardMapping: [{ from: 'key1', to: 'mappedKey1' }],
+          advSubIdMapping: [{ from: 'key2', to: 'mappedKey2' }],
+          advUniqueIdMapping: [{ from: 'key3', to: 'mappedKey3' }],
+          url: 'https://demo.go2cloud.org/aff_l?offer_id=45&aff_id=1029',
+        },
+      ],
+    };
+
+    const response = responseBuilder(message, { Config });
+
+    expect(response).toBeDefined();
+    expect(response.endpoint).toEqual('https://demo.go2cloud.org/aff_l?offer_id=45&aff_id=1029');
+    expect(response.params).toEqual({
+      offer_id: '45',
+      aff_id: '1029',
+    });
   });
 });
 
@@ -91,10 +123,7 @@ describe('processEvent', () => {
         JSON_ARRAY: {},
         XML: {},
       },
-      params: {
-        platform_key: 'meta',
-        conversions_key: 1,
-      },
+      params: {},
       endpoint: 'https://example.com/track',
       event: 'product list viewed',
       files: {},

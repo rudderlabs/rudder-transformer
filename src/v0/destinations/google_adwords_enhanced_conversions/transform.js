@@ -3,6 +3,7 @@
 const get = require('get-value');
 const { cloneDeep } = require('lodash');
 const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
+const isString = require('lodash/isString');
 const {
   constructPayload,
   defaultRequestConfig,
@@ -58,7 +59,10 @@ const processTrackEvent = async (metadata, message, destination) => {
   let flag = 0;
   const { Config } = destination;
   const { event } = message;
-  const { listOfConversions } = Config;
+  const { customerId, loginCustomerId, listOfConversions } = Config;
+  if (!isString(customerId) || !isString(loginCustomerId)) {
+    throw new InstrumentationError('customerId and loginCustomerId should be a string');
+  }
   if (listOfConversions.some((i) => i.conversions === event)) {
     flag = 1;
   }

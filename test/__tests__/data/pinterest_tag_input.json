@@ -47,6 +47,7 @@
         "optOutType": "LDP",
         "products": [
           {
+            "brand": "testBrand",
             "sku": "45790-32",
             "url": "https://www.example.com/product/path",
             "name": "Monopoly: 3rd Edition",
@@ -57,6 +58,7 @@
             "product_id": "507f1f77bcf86cd799439011"
           },
           {
+            "brand": "testBrand",
             "sku": "46493-32",
             "name": "Uno Card Game",
             "price": 3,
@@ -153,6 +155,7 @@
         "requestIP": "123.0.0.0",
         "products": [
           {
+            "brand": "testBrand",
             "sku": "45790-32",
             "url": "https://www.example.com/product/path",
             "name": "Monopoly: 3rd Edition",
@@ -163,6 +166,7 @@
             "product_id": "507f1f77bcf86cd799439011"
           },
           {
+            "brand": "testBrand",
             "sku": "46493-32",
             "name": "Uno Card Game",
             "price": 3,
@@ -554,6 +558,7 @@
         "numOfItems": 2,
         "products": [
           {
+            "brand": "testBrand",
             "sku": "45790-32",
             "url": "https://www.example.com/product/path",
             "name": "Monopoly: 3rd Edition",
@@ -564,6 +569,7 @@
             "product_id": "507f1f77bcf86cd799439011"
           },
           {
+            "brand": "testBrand",
             "sku": "46493-32",
             "name": "Uno Card Game",
             "price": 3,
@@ -981,6 +987,7 @@
         "numOfItems": 2,
         "products": [
           {
+            "brand": "testBrand",
             "sku": "45790-32",
             "url": "https://www.example.com/product/path",
             "name": "Monopoly: 3rd Edition",
@@ -991,6 +998,7 @@
             "product_id": "507f1f77bcf86cd799439011"
           },
           {
+            "brand": "testBrand",
             "sku": "46493-32",
             "name": "Uno Card Game",
             "price": 3,
@@ -1773,6 +1781,7 @@
         "checkout_id": "fksdjfsdjfisjf9sdfjsd9f",
         "products": [
           {
+            "brand": "testBrand",
             "sku": "45790-32",
             "url": "https://www.example.com/product/path",
             "name": "Monopoly: 3rd Edition",
@@ -1954,6 +1963,7 @@
         "optOutType": "LDP",
         "products": [
           {
+            "brand": "testBrand",
             "sku": "45790-32",
             "url": "https://www.example.com/product/path",
             "name": "Monopoly: 3rd Edition",
@@ -1964,6 +1974,7 @@
             "product_id": "507f1f77bcf86cd799439011"
           },
           {
+            "brand": "testBrand",
             "sku": "46493-32",
             "name": "Uno Card Game",
             "price": 3,
@@ -2065,6 +2076,7 @@
         "optOutType": "LDP",
         "products": [
           {
+            "brand": "testBrand",
             "sku": "45790-32",
             "url": "https://www.example.com/product/path",
             "name": "Monopoly: 3rd Edition",
@@ -2075,6 +2087,7 @@
             "product_id": "507f1f77bcf86cd799439011"
           },
           {
+            "brand": "testBrand",
             "sku": "46493-32",
             "name": "Uno Card Game",
             "price": 3,
@@ -2176,6 +2189,7 @@
         "optOutType": "LDP",
         "products": [
           {
+            "brand": "testBrand",
             "sku": "45790-32",
             "url": "https://www.example.com/product/path",
             "name": "Monopoly: 3rd Edition",
@@ -2186,6 +2200,7 @@
             "product_id": "507f1f77bcf86cd799439011"
           },
           {
+            "brand": "testBrand",
             "sku": "46493-32",
             "name": "Uno Card Game",
             "price": 3,

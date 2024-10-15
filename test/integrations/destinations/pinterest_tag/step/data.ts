@@ -140,18 +140,10 @@ export const data = [
                     content_ids: ['507f1f77bcf86cd799439011', '505bd76785ebb509fc183733'],
                     contents: [
                       {
-                        id: '507f1f77bcf86cd799439011',
-                        item_brand: undefined,
-                        item_category: 'Games',
-                        item_name: 'Monopoly: 3rd Edition',
                         quantity: 1,
                         item_price: '19',
                       },
                       {
-                        id: '505bd76785ebb509fc183733',
-                        item_brand: undefined,
-                        item_category: 'Games',
-                        item_name: 'Uno Card Game',
                         quantity: 2,
                         item_price: '3',
                       },
@@ -309,18 +301,10 @@ export const data = [
                     content_ids: ['507f1f77bcf86cd799439011', '505bd76785ebb509fc183733'],
                     contents: [
                       {
-                        id: '507f1f77bcf86cd799439011',
-                        item_brand: undefined,
-                        item_category: 'Games',
-                        item_name: 'Monopoly: 3rd Edition',
                         quantity: 1,
                         item_price: '19',
                       },
                       {
-                        id: '505bd76785ebb509fc183733',
-                        item_brand: undefined,
-                        item_category: 'Games',
-                        item_name: 'Uno Card Game',
                         quantity: 2,
                         item_price: '3',
                       },
@@ -842,18 +826,10 @@ export const data = [
                     content_ids: ['507f1f77bcf86cd799439011', '505bd76785ebb509fc183733'],
                     contents: [
                       {
-                        id: '507f1f77bcf86cd799439011',
-                        item_brand: undefined,
-                        item_category: 'Games',
-                        item_name: 'Monopoly: 3rd Edition',
                         quantity: 1,
                         item_price: '19',
                       },
                       {
-                        id: '505bd76785ebb509fc183733',
-                        item_brand: undefined,
-                        item_category: 'Games',
-                        item_name: 'Uno Card Game',
                         quantity: 2,
                         item_price: '3',
                       },
@@ -1363,18 +1339,10 @@ export const data = [
                     content_ids: ['507f1f77bcf86cd799439011', '505bd76785ebb509fc183733'],
                     contents: [
                       {
-                        id: '507f1f77bcf86cd799439011',
-                        item_brand: undefined,
-                        item_category: 'Games',
-                        item_name: 'Monopoly: 3rd Edition',
                         quantity: 1,
                         item_price: '19',
                       },
                       {
-                        id: '505bd76785ebb509fc183733',
-                        item_brand: undefined,
-                        item_category: 'Games',
-                        item_name: 'Uno Card Game',
                         quantity: 2,
                         item_price: '3',
                       },
@@ -2772,18 +2740,10 @@ export const data = [
                     content_ids: ['507f1f77bcf86cd799439011', '505bd76785ebb509fc183733'],
                     contents: [
                       {
-                        id: '507f1f77bcf86cd799439011',
-                        item_brand: undefined,
-                        item_category: 'Games',
-                        item_name: 'Monopoly: 3rd Edition',
                         quantity: 1,
                         item_price: '19',
                       },
                       {
-                        id: '505bd76785ebb509fc183733',
-                        item_brand: undefined,
-                        item_category: 'Games',
-                        item_name: 'Uno Card Game',
                         quantity: 2,
                         item_price: '3',
                       },
@@ -2949,18 +2909,10 @@ export const data = [
                     content_ids: ['507f1f77bcf86cd799439011', '505bd76785ebb509fc183733'],
                     contents: [
                       {
-                        id: '507f1f77bcf86cd799439011',
-                        item_brand: undefined,
-                        item_category: 'Games',
-                        item_name: 'Monopoly: 3rd Edition',
                         quantity: 1,
                         item_price: '19',
                       },
                       {
-                        id: '505bd76785ebb509fc183733',
-                        item_brand: undefined,
-                        item_category: 'Games',
-                        item_name: 'Uno Card Game',
                         quantity: 2,
                         item_price: '3',
                       },
@@ -3156,18 +3108,10 @@ export const data = [
                     content_ids: ['507f1f77bcf86cd799439011', '505bd76785ebb509fc183733'],
                     contents: [
                       {
-                        id: '507f1f77bcf86cd799439011',
-                        item_brand: undefined,
-                        item_category: 'Games',
-                        item_name: 'Monopoly: 3rd Edition',
                         quantity: 1,
                         item_price: '19',
                       },
                       {
-                        id: '505bd76785ebb509fc183733',
-                        item_brand: undefined,
-                        item_category: 'Games',
-                        item_name: 'Uno Card Game',
                         quantity: 2,
                         item_price: '3',
                       },

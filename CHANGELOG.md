@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.82.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.82.0...v1.82.1) (2024-10-16)
+
+
+### Bug Fixes
+
+* heap userId extraction ([fa620e0](https://github.com/rudderlabs/rudder-transformer/commit/fa620e00db13b7bcdc599cb99966395cfbe53f96))
+
 ## [1.82.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.81.0...v1.82.0) (2024-10-09)
 
 

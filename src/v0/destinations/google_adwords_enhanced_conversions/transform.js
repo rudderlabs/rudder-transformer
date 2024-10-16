@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 
 const get = require('get-value');
-const { cloneDeep } = require('lodash');
+const { cloneDeep, isNumber } = require('lodash');
 const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const isString = require('lodash/isString');
 const {
@@ -36,7 +36,18 @@ const updateMappingJson = (mapping) => {
 const responseBuilder = async (metadata, message, { Config }, payload) => {
   const response = defaultRequestConfig();
   const { event } = message;
-  const filteredCustomerId = removeHyphens(Config.customerId);
+  const { subAccount } = Config;
+  let { customerId, loginCustomerId } = Config;
+  if (isNumber(customerId)) {
+    customerId = customerId.toString();
+  }
+  if (isNumber(loginCustomerId)) {
+    loginCustomerId = loginCustomerId.toString();
+  }
+  if (!isString(customerId) || !isString(loginCustomerId)) {
+    throw new InstrumentationError('customerId and loginCustomerId should be a string or number');
+  }
+  const filteredCustomerId = removeHyphens(customerId);
   response.endpoint = `${BASE_ENDPOINT}/${filteredCustomerId}:uploadConversionAdjustments`;
   response.body.JSON = payload;
   const accessToken = getAccessToken(metadata, 'access_token');
@@ -46,9 +57,9 @@ const responseBuilder = async (metadata, message, { Config }, payload) => {
     'developer-token': getValueFromMessage(metadata, 'secret.developer_token'),
   };
   response.params = { event, customerId: filteredCustomerId };
-  if (Config.subAccount)
-    if (Config.loginCustomerId) {
-      const filteredLoginCustomerId = removeHyphens(Config.loginCustomerId);
+  if (subAccount)
+    if (loginCustomerId) {
+      const filteredLoginCustomerId = removeHyphens(loginCustomerId);
       response.headers['login-customer-id'] = filteredLoginCustomerId;
     } else throw new ConfigurationError(`LoginCustomerId is required as subAccount is true.`);
 
@@ -59,10 +70,7 @@ const processTrackEvent = async (metadata, message, destination) => {
   let flag = 0;
   const { Config } = destination;
   const { event } = message;
-  const { customerId, loginCustomerId, listOfConversions } = Config;
-  if (!isString(customerId) || !isString(loginCustomerId)) {
-    throw new InstrumentationError('customerId and loginCustomerId should be a string');
-  }
+  const { listOfConversions } = Config;
   if (listOfConversions.some((i) => i.conversions === event)) {
     flag = 1;
   }

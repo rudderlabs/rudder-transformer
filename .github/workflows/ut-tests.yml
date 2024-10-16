@@ -25,7 +25,7 @@ jobs:
         run: go install sigs.k8s.io/kind@v0.17.0
 
       - name: Checkout
-        uses: actions/checkout@v4.1.1
+        uses: actions/checkout@v4.2.1
         with:
           fetch-depth: 1
 

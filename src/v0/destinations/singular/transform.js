@@ -20,7 +20,7 @@ const responseBuilderSimple = (message, { Config }) => {
   }
 
   const sessionEvent = isSessionEvent(Config, eventName);
-  const { eventAttributes, payload } = platformWisePayloadGenerator(message, sessionEvent);
+  const { eventAttributes, payload } = platformWisePayloadGenerator(message, sessionEvent, Config);
   const endpoint = sessionEvent ? `${BASE_URL}/launch` : `${BASE_URL}/evt`;
 
   // If we have an event where we have an array of Products, example Order Completed

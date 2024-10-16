@@ -287,4 +287,10 @@ const process = async (event) => {
   return response;
 };
 
-exports.process = process;
+module.exports = {
+  process,
+  processEvent,
+  identifyPayloadBuilder,
+  ecomPayloadBuilder,
+  trackPayloadBuilder,
+};

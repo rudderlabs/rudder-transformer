@@ -1,16 +1,13 @@
 /* eslint-disable no-param-reassign */
 const sha256 = require('sha256');
 const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
-const { EventType } = require('../../../constants');
 const {
-  constructPayload,
   isDefinedAndNotNull,
   isDefined,
   getHashFromArrayWithDuplicate,
-  removeUndefinedAndNullValues,
   validateEventName,
-} = require('../../util');
-const { COMMON_CONFIGS, CUSTOM_CONFIGS, API_VERSION } = require('./config');
+} = require('../../../../v0/util');
+const { API_VERSION } = require('./config');
 
 const VALID_ACTION_SOURCES = ['app_android', 'app_ios', 'web', 'offline'];
 
@@ -79,51 +76,6 @@ const processUserPayload = (userPayload) => {
     userPayload[key] = getHashedValue(key, userPayload[key]);
   });
   return userPayload;
-};
-
-/**
- *
- * @param {*} message
- * @returns opt_out status
- *
- */
-
-const deduceOptOutStatus = (message) => {
-  const adTrackingEnabled = message.context?.device?.adTrackingEnabled;
-  let optOut;
-
-  // for ios
-  if (isDefinedAndNotNull(adTrackingEnabled)) {
-    if (adTrackingEnabled === true) {
-      optOut = false;
-    } else if (adTrackingEnabled === false) {
-      optOut = true;
-    }
-  }
-
-  return optOut;
-};
-
-/**
- *
- * @param {*} message
- * @returns
- * Maps the required common parameters accross event types. Checks for the correct
- * action source types and deduces opt_out status
- * Ref: https://s.pinimg.com/ct/docs/conversions_api/dist/v3.html
- */
-const processCommonPayload = (message) => {
-  const commonPayload = constructPayload(message, COMMON_CONFIGS);
-  const presentActionSource = commonPayload.action_source;
-  if (presentActionSource && !VALID_ACTION_SOURCES.includes(presentActionSource.toLowerCase())) {
-    throw new InstrumentationError(
-      `Action source must be one of ${VALID_ACTION_SOURCES.join(', ')}`,
-    );
-  }
-
-  commonPayload.opt_out = deduceOptOutStatus(message);
-
-  return commonPayload;
 };
 
 /**
@@ -220,33 +172,6 @@ const deduceTrackScreenEventName = (message, Config) => {
 
 /**
  *
- * @param {*} message event.message
- * @param {*} Config event.destination.Config
- * @returns
- * Returns the appropriate event name for each event types
- * For identify : "identify".
- * For page : "ViewCategory" in case category is present, "PageVisit" otherwise.
- * For track : Depends on the event name
- */
-const deduceEventName = (message, Config) => {
-  const { type, category } = message;
-  let eventName = [];
-  switch (type) {
-    case EventType.PAGE:
-      eventName = isDefinedAndNotNull(category) ? ['view_category'] : ['page_visit'];
-      break;
-    case EventType.TRACK:
-    case EventType.SCREEN:
-      eventName = deduceTrackScreenEventName(message, Config);
-      break;
-    default:
-      throw new InstrumentationError(`The event of type ${type} is not supported`);
-  }
-  return eventName;
-};
-
-/**
- *
  * @param {*} rootObject object from where the price, quantity and ids will be fetched
  * @param {*} message event.message
  * @returns
@@ -262,19 +187,6 @@ const setIdPriceQuantity = (rootObject, message) => {
     contentId: rootObject.product_id || rootObject.sku || rootObject.id,
     content: contentObj,
   };
-};
-
-/**
- * @param {*} userPayload Payload mapped from user fields
- * @returns returns true if at least one of: em, hashed_maids or combination of client_ip_address and
- * client_user_agent is present. And false otherwise.
- */
-const checkUserPayloadValidity = (userPayload) => {
-  const userFields = Object.keys(userPayload);
-  if (userFields.includes('em') || userFields.includes('hashed_maids')) {
-    return true;
-  }
-  return userFields.includes('client_ip_address') && userFields.includes('client_user_agent');
 };
 
 /**
@@ -309,77 +221,6 @@ const processHashedUserPayload = (userPayload, message) => {
   return processedHashedUserPayload;
 };
 
-/**
- * This function will process the ecommerce fields and return the final payload
- * @param {*} message
- * @param {*} mandatoryPayload
- * @returns
- */
-const postProcessEcomFields = (message, mandatoryPayload) => {
-  let totalQuantity = 0;
-  let quantityInconsistent = false;
-  const contentArray = [];
-  const contentIds = [];
-  const { properties } = message;
-  // ref: https://s.pinimg.com/ct/docs/conversions_api/dist/v3.html
-  let customPayload = constructPayload(message, CUSTOM_CONFIGS);
-
-  // if product array is present will look for the product level information
-  if (properties.products && Array.isArray(properties.products) && properties.products.length > 0) {
-    const { products, quantity } = properties;
-    products.forEach((product) => {
-      const prodParams = setIdPriceQuantity(product, message);
-      if (prodParams.contentId) {
-        contentIds.push(prodParams.contentId);
-      }
-      contentArray.push(prodParams.content);
-      if (!product.quantity) {
-        quantityInconsistent = true;
-      }
-      totalQuantity = product.quantity ? totalQuantity + product.quantity : totalQuantity;
-    });
-
-    if (totalQuantity === 0) {
-      /*
-      in case any of the products inside product array does not have quantity,
-       will map the quantity of root level
-      */
-      totalQuantity = quantity;
-    }
-  } else {
-    /*
-    for the events where product array is not present, root level id, price and
-    quantity are taken into consideration
-    */
-    const prodParams = setIdPriceQuantity(properties, message);
-    if (prodParams.contentId) {
-      contentIds.push(prodParams.contentId);
-    }
-    contentArray.push(prodParams.content);
-    totalQuantity = properties.quantity ? totalQuantity + properties.quantity : totalQuantity;
-  }
-  /*
-    if properties.numOfItems is not provided by the user, the total quantity of the products
-    will be sent as num_items
-  */
-  if (!isDefinedAndNotNull(customPayload.num_items) && quantityInconsistent === false) {
-    customPayload.num_items = parseInt(totalQuantity, 10);
-  }
-  customPayload = {
-    ...customPayload,
-    contents: contentArray,
-  };
-
-  if (contentIds.length > 0) {
-    customPayload.content_ids = contentIds;
-  }
-
-  return {
-    ...mandatoryPayload,
-    custom_data: { ...removeUndefinedAndNullValues(customPayload) },
-  };
-};
-
 const validateInput = (message, { Config }) => {
   const { apiVersion = API_VERSION.v3, advertiserId, adAccountId, conversionToken } = Config;
   if (apiVersion === API_VERSION.v3 && !advertiserId) {
@@ -403,13 +244,8 @@ const validateInput = (message, { Config }) => {
 
 module.exports = {
   processUserPayload,
-  processCommonPayload,
-  deduceEventName,
-  setIdPriceQuantity,
-  checkUserPayloadValidity,
   processHashedUserPayload,
   VALID_ACTION_SOURCES,
-  postProcessEcomFields,
   ecomEventMaps,
   convertToSnakeCase,
   validateInput,

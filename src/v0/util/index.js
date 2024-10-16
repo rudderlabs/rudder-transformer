@@ -26,6 +26,7 @@ const {
 } = require('@rudderstack/integrations-lib');
 
 const { JsonTemplateEngine, PathType } = require('@rudderstack/json-template-engine');
+const isString = require('lodash/isString');
 const logger = require('../../logger');
 const stats = require('../../util/stats');
 const { DestCanonicalNames, DestHandlerMap } = require('../../constants/destinationCanonicalNames');
@@ -1646,7 +1647,7 @@ function isAppleFamily(platform) {
 }
 
 function removeHyphens(str) {
-  if (typeof str !== 'string') {
+  if (!isString(str)) {
     return str;
   }
   return str.replace(/-/g, '');

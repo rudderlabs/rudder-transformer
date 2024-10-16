@@ -3,8 +3,8 @@ bindings:
     path: ../../../../constants
   - path: ../../bindings/jsontemplate
     exportAll: true
-  - path: ../../../../v0/destinations/pinterest_tag/utils
-  - path: ../../../../v0/destinations/pinterest_tag/config
+  - path: ./utils
+  - path: ./config
   - name: removeUndefinedValues
     path: ../../../../v0/util
   - name: removeUndefinedAndNullAndEmptyValues

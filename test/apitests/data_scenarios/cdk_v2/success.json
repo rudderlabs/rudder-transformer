@@ -79,6 +79,7 @@
           "Config": {
             "cdkV2TestThreshold": 1,
             "cdkV2Enabled": true,
+            "cdkV2Enabled": true,
             "destConfig": {
               "defaultConfig": [
                 "tagId",
@@ -256,6 +257,7 @@
           "Config": {
             "cdkV2TestThreshold": 1,
             "cdkV2Enabled": true,
+            "cdkV2Enabled": true,
             "destConfig": {
               "defaultConfig": [
                 "tagId",
@@ -432,6 +434,7 @@
           "DisplayName": "Pinterest Tag",
           "Config": {
             "cdkV2TestThreshold": 1,
+            "cdkV2Enabled": true,
             "cdkV2Enabled": true,
             "destConfig": {
               "defaultConfig": [

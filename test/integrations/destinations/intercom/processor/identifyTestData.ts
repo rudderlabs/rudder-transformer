@@ -80,6 +80,10 @@ const user3Traits = {
   name: 'Test Rudderlabs',
   phone: '+91 9999999999',
   email: 'test@rudderlabs.com',
+  custom_attributes: {
+    ca1: 'value1',
+    ca2: 'value2',
+  },
 };
 
 const user4Traits = {
@@ -170,6 +174,10 @@ const expectedUser3Traits = {
   name: 'Test Rudderlabs',
   phone: '+91 9999999999',
   email: 'test@rudderlabs.com',
+  custom_attributes: {
+    ca1: 'value1',
+    ca2: 'value2',
+  },
 };
 
 const expectedUser4Traits = {
@@ -231,6 +239,17 @@ const expectedUser6Traits = {
       },
     },
   ],
+};
+
+const expectedUser7Traits = {
+  custom_attributes: {
+    anonymousId: '58b21c2d-f8d5-4410-a2d0-b268a26b7e33',
+    key1: 'value1',
+  },
+  email: 'test_1@test.com',
+  name: 'Test Name',
+  phone: '9876543210',
+  signed_up_at: 1601493060,
 };
 
 const timestamp = '2023-11-22T10:12:44.757+05:30';
@@ -1016,6 +1035,65 @@ export const identifyTestData = [
                 name: 'Test Name',
                 update_last_request_at: true,
               },
+            }),
+            statusCode: 200,
+            metadata: generateMetadata(1),
+          },
+        ],
+      },
+    },
+  },
+  {
+    id: 'intercom-identify-test-16',
+    name: 'intercom',
+    description: 'V1 version : Identify test with different lookup field than email',
+    scenario: 'Business',
+    successCriteria:
+      'Response status code should be 200 and response should contain update user payload with all traits',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: v2Destination,
+            message: {
+              context: {
+                externalId: [
+                  {
+                    id: '10156',
+                    type: 'INTERCOM-customer',
+                    identifierType: 'user_id',
+                  },
+                ],
+                traits: { ...user5Traits, external_id: '10156' },
+              },
+              type: 'identify',
+              timestamp,
+              originalTimestamp,
+              integrations: {
+                INTERCOM: {
+                  lookup: 'external_id',
+                },
+              },
+            },
+            metadata: generateMetadata(1),
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: transformResultBuilder({
+              userId: '',
+              endpoint: `${v2Endpoint}/7070129940741e45d040`,
+              headers: v2Headers,
+              method: 'PUT',
+              JSON: expectedUser7Traits,
             }),
             statusCode: 200,
             metadata: generateMetadata(1),

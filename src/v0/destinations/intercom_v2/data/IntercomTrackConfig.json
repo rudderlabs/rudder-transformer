@@ -1,0 +1,33 @@
+[
+  {
+    "destKey": "user_id",
+    "sourceKeys": "userIdOnly",
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "email",
+    "sourceKeys": "email",
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "event_name",
+    "sourceKeys": "event",
+    "required": true
+  },
+  {
+    "destKey": "created_at",
+    "sourceKeys": "timestamp",
+    "sourceFromGenericMap": true,
+    "metadata": {
+      "type": "secondTimestamp"
+    }
+  },
+  {
+    "destKey": "id",
+    "sourceKeys": ["message.properties.id", "message.traits.id"]
+  },
+  {
+    "destKey": "metadata",
+    "sourceKeys": "properties"
+  }
+]

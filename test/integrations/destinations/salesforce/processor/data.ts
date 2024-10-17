@@ -1373,7 +1373,7 @@ export const data = [
   },
   {
     name: 'salesforce',
-    description: 'Test 10',
+    description: 'Test 11',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -1389,9 +1389,9 @@ export const data = [
                 sandbox: true,
               },
               DestinationDefinition: {
-                DisplayName: 'Salesforce',
+                DisplayName: 'Salesforce Sandbox',
                 ID: '1T96GHZ0YZ1qQSLULHCoJkow9KC',
-                Name: 'SALESFORCE',
+                Name: 'SALESFORCE_OAUTH_SANDBOX',
               },
               Enabled: true,
               ID: '1ut7LcVW1QC56y2EoTNo7ZwBWSY',
@@ -1412,7 +1412,7 @@ export const data = [
                 externalId: [
                   {
                     id: 'a005g0000383kmUAAQ',
-                    type: 'SALESFORCE-custom_object__c',
+                    type: 'SALESFORCE_OAUTH_SANDBOX-custom_object__c',
                     identifierType: 'Id',
                   },
                 ],
@@ -1493,6 +1493,114 @@ export const data = [
               },
               files: {},
               userId: '',
+            },
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'salesforce',
+    description: 'Test 12 : Retry happens when no secret information is found',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: {
+              Config: {
+                initialAccessToken: '7fiy1FKcO9sohsxq1v6J88sg',
+                password: 'dummyPassword2',
+                userName: 'test.c97-qvpd@force.com.test',
+                sandbox: true,
+              },
+              DestinationDefinition: {
+                DisplayName: 'Salesforce Sandbox',
+                ID: '1T96GHZ0YZ1qQSLULHCoJkow9KC',
+                Name: 'SALESFORCE_OAUTH_SANDBOX',
+              },
+              Enabled: true,
+              ID: '1ut7LcVW1QC56y2EoTNo7ZwBWSY',
+              Name: 'Test SF',
+              Transformations: [],
+            },
+            metadata: {
+              jobId: 1,
+            },
+            message: {
+              anonymousId: '1e7673da-9473-49c6-97f7-da848ecafa76',
+              channel: 'web',
+              context: {
+                mappedToDestination: true,
+                externalId: [
+                  {
+                    id: 'a005g0000383kmUAAQ',
+                    type: 'SALESFORCE_OAUTH_SANDBOX-custom_object__c',
+                    identifierType: 'Id',
+                  },
+                ],
+                app: {
+                  build: '1.0.0',
+                  name: 'RudderLabs JavaScript SDK',
+                  namespace: 'com.rudderlabs.javascript',
+                  version: '1.0.0',
+                },
+                ip: '0.0.0.0',
+                library: {
+                  name: 'RudderLabs JavaScript SDK',
+                  version: '1.0.0',
+                },
+                locale: 'en-US',
+                os: {
+                  name: '',
+                  version: '',
+                },
+                screen: {
+                  density: 2,
+                },
+                traits: {
+                  email: 'john@rs.com',
+                  firstname: 'john doe',
+                  Id: 'some-id',
+                },
+                userAgent:
+                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36',
+              },
+              integrations: {
+                All: true,
+              },
+              messageId: 'f19c35da-e9de-4c6e-b6e5-9e60cccc12c8',
+              originalTimestamp: '2020-01-27T12:20:55.301Z',
+              receivedAt: '2020-01-27T17:50:58.657+05:30',
+              request_ip: '14.98.244.60',
+              sentAt: '2020-01-27T12:20:56.849Z',
+              timestamp: '2020-01-27T17:50:57.109+05:30',
+              type: 'identify',
+              userId: '1e7673da-9473-49c6-97f7-da848ecafa76',
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            statusCode: 500,
+            error: 'secret is undefined/null',
+            metadata: {
+              jobId: 1,
+            },
+            statTags: {
+              errorCategory: 'platform',
+              errorType: 'oAuthSecret',
+              destType: 'SALESFORCE',
+              module: 'destination',
+              implementation: 'native',
+              feature: 'processor',
             },
           },
         ],

@@ -31,12 +31,12 @@ jobs:
       tests_run_outcome: ${{steps.run_tests.outcome}}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4.1.1
+        uses: actions/checkout@v4.2.1
         with:
           fetch-depth: 1
 
       - name: Setup Node
-        uses: actions/setup-node@v4.0.3
+        uses: actions/setup-node@v4.0.4
         with:
           node-version-file: '.nvmrc'
           cache: 'npm'

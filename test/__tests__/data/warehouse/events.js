@@ -8,7 +8,9 @@ const sampleEvents = {
         Config: {
           restApiKey: "dummyApiKey",
           prefixProperties: true,
-          useNativeSDK: false
+          useNativeSDK: false,
+          allowUsersContextTraits: true,
+          underscoreDivideNumbers: true
         },
         DestinationDefinition: {
           DisplayName: "Braze",
@@ -514,7 +516,9 @@ const sampleEvents = {
         Config: {
           restApiKey: "dummyApiKey",
           prefixProperties: true,
-          useNativeSDK: false
+          useNativeSDK: false,
+          allowUsersContextTraits: true,
+          underscoreDivideNumbers: true
         },
         DestinationDefinition: {
           DisplayName: "Braze",
@@ -1026,7 +1030,9 @@ const sampleEvents = {
         Config: {
           restApiKey: "dummyApiKey",
           prefixProperties: true,
-          useNativeSDK: false
+          useNativeSDK: false,
+          allowUsersContextTraits: true,
+          underscoreDivideNumbers: true
         },
         DestinationDefinition: {
           DisplayName: "Braze",
@@ -1283,7 +1289,9 @@ const sampleEvents = {
           mapToSingleEvent: false,
           trackAllPages: false,
           trackCategorisedPages: true,
-          trackNamedPages: false
+          trackNamedPages: false,
+          allowUsersContextTraits: true,
+          underscoreDivideNumbers: true
         },
         Enabled: true
       },
@@ -1532,7 +1540,9 @@ const sampleEvents = {
           mapToSingleEvent: false,
           trackAllPages: true,
           trackCategorisedPages: false,
-          trackNamedPages: false
+          trackNamedPages: false,
+          allowUsersContextTraits: true,
+          underscoreDivideNumbers: true
         },
         Enabled: true
       },
@@ -1752,7 +1762,9 @@ const sampleEvents = {
         Config: {
           apiKey: "dummyApiKey",
           prefixProperties: true,
-          useNativeSDK: false
+          useNativeSDK: false,
+          allowUsersContextTraits: true,
+          underscoreDivideNumbers: true
         },
         DestinationDefinition: {
           DisplayName: "Kiss Metrics",
@@ -2016,7 +2028,9 @@ const sampleEvents = {
         Config: {
           restApiKey: "dummyApiKey",
           prefixProperties: true,
-          useNativeSDK: false
+          useNativeSDK: false,
+          allowUsersContextTraits: true,
+          underscoreDivideNumbers: true
         },
         DestinationDefinition: {
           DisplayName: "Braze",

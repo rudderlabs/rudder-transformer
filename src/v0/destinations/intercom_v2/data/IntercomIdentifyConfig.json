@@ -1,0 +1,51 @@
+[
+  {
+    "destKey": "external_id",
+    "sourceKeys": "userIdOnly",
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "email",
+    "sourceKeys": "email",
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "phone",
+    "sourceKeys": "phone",
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "avatar",
+    "sourceKeys": "avatar",
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "last_seen_at",
+    "sourceKeys": ["context.traits.lastSeenAt", "last_seen_at"],
+    "metadata": {
+      "type": "secondTimestamp"
+    }
+  },
+  {
+    "destKey": "role",
+    "sourceKeys": ["traits.role", "context.traits.role"]
+  },
+  {
+    "destKey": "signed_up_at",
+    "sourceKeys": ["traits.createdAt", "context.traits.createdAt"],
+    "metadata": {
+      "type": "secondTimestamp"
+    }
+  },
+  {
+    "destKey": "owner_id",
+    "sourceKeys": ["traits.ownerId", "context.traits.ownerId"],
+    "metadata": {
+      "type": "toNumber"
+    }
+  },
+  {
+    "destKey": "unsubscribed_from_emails",
+    "sourceKeys": ["traits.unsubscribedFromEmails", "context.traits.unsubscribedFromEmails"]
+  }
+]

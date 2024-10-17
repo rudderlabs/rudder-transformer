@@ -119,6 +119,124 @@ export const data = [
   },
   {
     name: 'heap',
+    description: 'Blank user id',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: {
+              Config: {
+                appId: '<app id>',
+              },
+              DestinationDefinition: {
+                Config: {
+                  cdkV2Enabled: true,
+                },
+                DisplayName: 'Heap.io',
+                ID: '1WTbl0l5GjOQKOvfmcGwk0T49kV',
+                Name: 'HEAP',
+              },
+              Enabled: true,
+              ID: '1WTcDSEOE437e4ePH10BJNELXmE',
+              Name: 'heap test',
+              Transformations: [],
+            },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
+            message: {
+              userId: '',
+              anonymousId: 'sampath',
+              channel: 'web',
+              context: {
+                app: {
+                  build: '1.0.0',
+                  name: 'RudderLabs JavaScript SDK',
+                  namespace: 'com.rudderlabs.javascript',
+                  version: '1.0.0',
+                },
+                ip: '0.0.0.0',
+                library: {
+                  name: 'RudderLabs JavaScript SDK',
+                  version: '1.0.0',
+                },
+                locale: 'en-US',
+                os: {
+                  name: '',
+                  version: '',
+                },
+                screen: {
+                  density: 2,
+                },
+                userAgent:
+                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36',
+              },
+              integrations: {
+                All: true,
+              },
+              traits: {
+                anonymousId: 'sampath',
+                email: 'sampath@gmail.com',
+              },
+              messageId: 'fca2e71a-5d30-48e1-ba45-761c16e3820f',
+              originalTimestamp: '2020-01-16T13:21:59.076Z',
+              receivedAt: '2020-01-16T18:52:03.871+05:30',
+              request_ip: '[::1]:62312',
+              sentAt: '2020-01-16T13:22:03.85Z',
+              timestamp: '2020-01-16T18:51:59.097+05:30',
+              type: 'identify',
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://heapanalytics.com/api/add_user_properties',
+              headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+              },
+              params: {},
+              body: {
+                JSON: {
+                  identity: 'sampath',
+                  properties: {
+                    anonymousId: 'sampath',
+                    email: 'sampath@gmail.com',
+                  },
+                  app_id: '<app id>',
+                },
+                XML: {},
+                JSON_ARRAY: {},
+                FORM: {},
+              },
+              files: {},
+              userId: 'sampath',
+            },
+            statusCode: 200,
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'heap',
     description: 'Test 1',
     feature: 'processor',
     module: 'destination',

@@ -79,16 +79,31 @@ const validateProductSearchedData = (eventTypeCustomData) => {
   }
 };
 
+const getProducts = (message, category) => {
+  let products = message.properties?.products;
+  if (['product added', 'product viewed', 'products searched'].includes(category.type)) {
+    return [message.properties];
+  }
+  if (
+    ['payment info entered', 'product added to wishlist'].includes(category.type) &&
+    !Array.isArray(products)
+  ) {
+    products = [message.properties];
+  }
+  return products;
+};
+
 const populateCustomDataBasedOnCategory = (customData, message, category, categoryToContent) => {
   let eventTypeCustomData = {};
   if (category.name) {
     eventTypeCustomData = constructPayload(message, MAPPING_CONFIG[category.name]);
   }
+  const products = getProducts(message, category);
 
   switch (category.type) {
     case 'product list viewed': {
       const { contentIds, contents } = populateContentsAndContentIDs(
-        message.properties?.products,
+        products,
         message.properties?.quantity,
       );
 
@@ -119,9 +134,7 @@ const populateCustomDataBasedOnCategory = (customData, message, category, catego
     }
     case 'product added':
     case 'product viewed':
-    case 'products searched':
-    case 'payment info entered':
-    case 'product added to wishlist': {
+    case 'products searched': {
       const contentCategory = eventTypeCustomData.content_category;
       const contentType =
         message.properties?.content_type ||
@@ -131,7 +144,7 @@ const populateCustomDataBasedOnCategory = (customData, message, category, catego
           categoryToContent,
           DESTINATION.toLowerCase(),
         );
-      const { contentIds, contents } = populateContentsAndContentIDs([message.properties]);
+      const { contentIds, contents } = populateContentsAndContentIDs(products);
       eventTypeCustomData = {
         ...eventTypeCustomData,
         content_ids: contentIds.length === 1 ? contentIds[0] : contentIds,
@@ -142,10 +155,12 @@ const populateCustomDataBasedOnCategory = (customData, message, category, catego
       validateProductSearchedData(eventTypeCustomData);
       break;
     }
+    case 'payment info entered':
+    case 'product added to wishlist':
     case 'order completed':
     case 'checkout started': {
       const { contentIds, contents } = populateContentsAndContentIDs(
-        message.properties?.products,
+        products,
         message.properties?.quantity,
         message.properties?.delivery_category,
       );

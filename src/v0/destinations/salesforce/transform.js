@@ -293,6 +293,7 @@ async function processIdentify(
   authorizationData,
   authorizationFlow,
 ) {
+  const { Name } = destination.DestinationDefinition;
   const mapProperty =
     destination.Config.mapProperty === undefined ? true : destination.Config.mapProperty;
   // check the traits before hand
@@ -304,7 +305,7 @@ async function processIdentify(
   // Append external ID to traits if event is mapped to destination and only if identifier type is not id
   // If identifier type is id, then it should not be added to traits, else saleforce will throw an error
   const mappedToDestination = get(message, MappedToDestinationKey);
-  const externalId = getDestinationExternalIDObjectForRetl(message, 'SALESFORCE');
+  const externalId = getDestinationExternalIDObjectForRetl(message, Name);
   if (mappedToDestination && externalId?.identifierType?.toLowerCase() !== 'id') {
     addExternalIdToTraits(message);
   }

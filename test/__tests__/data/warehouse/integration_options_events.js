@@ -20,7 +20,9 @@ const sampleEvents = {
     input: {
       destination: {
         Config: {
-          jsonPaths: " testMap.nestedMap, testArray"
+          jsonPaths: " testMap.nestedMap, testArray",
+          allowUsersContextTraits: true,
+          underscoreDivideNumbers: true
         }
       },
       message: {
@@ -731,7 +733,10 @@ const sampleEvents = {
   users: {
     input: {
       destination: {
-        Config: {}
+        Config: {
+          allowUsersContextTraits: true,
+          underscoreDivideNumbers: true
+        }
       },
       message: {
         type: "identify",
@@ -880,6 +885,9 @@ const sampleEvents = {
             "email": "user123@email.com",
             "id": "user123",
             "phone": "+917836362334",
+            "sent_at": "2021-01-03T17:02:53.195Z",
+            "original_timestamp": "2020-01-24T06:29:02.364Z",
+            "timestamp": "2020-01-24T06:29:02.403Z",
             "received_at": "2020-01-24T06:29:02.403Z"
           },
           "metadata": {
@@ -906,6 +914,9 @@ const sampleEvents = {
               "id": "string",
               "phone": "string",
               "received_at": "datetime",
+              "sent_at": "datetime",
+              "timestamp": "datetime",
+              "original_timestamp": "datetime",
               "uuid_ts": "datetime"
             },
             "receivedAt": "2020-01-24T11:59:02.403+05:30",
@@ -1074,6 +1085,9 @@ const sampleEvents = {
             "email": "user123@email.com",
             "id": "user123",
             "phone": "+917836362334",
+            "sent_at": "2021-01-03T17:02:53.195Z",
+            "original_timestamp": "2020-01-24T06:29:02.364Z",
+            "timestamp": "2020-01-24T06:29:02.403Z",
             "received_at": "2020-01-24T06:29:02.403Z"
           },
           "metadata": {
@@ -1101,6 +1115,9 @@ const sampleEvents = {
               "loaded_at": "datetime",
               "phone": "string",
               "received_at": "datetime",
+              "sent_at": "datetime",
+              "timestamp": "datetime",
+              "original_timestamp": "datetime",
               "uuid_ts": "datetime"
             },
             "receivedAt": "2020-01-24T11:59:02.403+05:30",
@@ -1199,6 +1216,9 @@ const sampleEvents = {
             "EMAIL": "user123@email.com",
             "ID": "user123",
             "PHONE": "+917836362334",
+            "SENT_AT": "2021-01-03T17:02:53.195Z",
+            "ORIGINAL_TIMESTAMP": "2020-01-24T06:29:02.364Z",
+            "TIMESTAMP": "2020-01-24T06:29:02.403Z",
             "RECEIVED_AT": "2020-01-24T06:29:02.403Z"
           },
           "metadata": {
@@ -1225,6 +1245,9 @@ const sampleEvents = {
               "ID": "string",
               "PHONE": "string",
               "RECEIVED_AT": "datetime",
+              "SENT_AT": "datetime",
+              "TIMESTAMP": "datetime",
+              "ORIGINAL_TIMESTAMP": "datetime",
               "UUID_TS": "datetime"
             },
             "receivedAt": "2020-01-24T11:59:02.403+05:30",
@@ -1355,6 +1378,254 @@ const sampleEvents = {
             "table": "users"
           }
         }
+      ],
+      gcs_datalake: [
+        {
+          "data": {
+            "timestamp": "2020-01-24T06:29:02.403Z",
+            "anonymous_id": "97c46c81-3140-456d-b2a9-690d70aaca35",
+            "channel": "web",
+            "context_app_build": "1.0.0",
+            "context_app_name": "RudderLabs JavaScript SDK",
+            "context_app_namespace": "com.rudderlabs.javascript",
+            "context_app_version": "1.1.11",
+            "context_device_id": "id",
+            "context_device_token": "token",
+            "context_device_type": "ios",
+            "context_ip": "[::1]:53708",
+            "context_library_name": "RudderLabs JavaScript SDK",
+            "context_library_version": "1.1.11",
+            "context_locale": "en-US",
+            "context_os_name": "android",
+            "context_os_version": "1.12.3",
+            "context_request_ip": "[::1]:53708",
+            "context_traits_email": "user123@email.com",
+            "context_traits_phone": "+917836362334",
+            "context_traits_user_id": "user123",
+            "context_user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0",
+            "email": "user123@email.com",
+            "id": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff",
+            "original_timestamp": "2020-01-24T06:29:02.364Z",
+            "phone": "+917836362334",
+            "received_at": "2020-01-24T06:29:02.403Z",
+            "sent_at": "2021-01-03T17:02:53.195Z",
+            "user_id": "user123"
+          },
+          "metadata": {
+            "columns": {
+              "timestamp": "datetime",
+              "anonymous_id": "string",
+              "channel": "string",
+              "context_app_build": "string",
+              "context_app_name": "string",
+              "context_app_namespace": "string",
+              "context_app_version": "string",
+              "context_device_id": "string",
+              "context_device_token": "string",
+              "context_device_type": "string",
+              "context_ip": "string",
+              "context_library_name": "string",
+              "context_library_version": "string",
+              "context_locale": "string",
+              "context_os_name": "string",
+              "context_os_version": "string",
+              "context_request_ip": "string",
+              "context_traits_email": "string",
+              "context_traits_phone": "string",
+              "context_traits_user_id": "string",
+              "context_user_agent": "string",
+              "email": "string",
+              "id": "string",
+              "original_timestamp": "datetime",
+              "phone": "string",
+              "received_at": "datetime",
+              "sent_at": "datetime",
+              "user_id": "string",
+              "uuid_ts": "datetime"
+            },
+            "receivedAt": "2020-01-24T11:59:02.403+05:30",
+            "table": "identifies"
+          }
+        },
+        {
+          "data": {
+            "context_app_build": "1.0.0",
+            "context_app_name": "RudderLabs JavaScript SDK",
+            "context_app_namespace": "com.rudderlabs.javascript",
+            "context_app_version": "1.1.11",
+            "context_device_id": "id",
+            "context_device_token": "token",
+            "context_device_type": "ios",
+            "context_ip": "[::1]:53708",
+            "context_library_name": "RudderLabs JavaScript SDK",
+            "context_library_version": "1.1.11",
+            "context_locale": "en-US",
+            "context_os_name": "android",
+            "context_os_version": "1.12.3",
+            "context_request_ip": "[::1]:53708",
+            "context_traits_email": "user123@email.com",
+            "context_traits_phone": "+917836362334",
+            "context_traits_user_id": "user123",
+            "context_user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0",
+            "email": "user123@email.com",
+            "id": "user123",
+            "phone": "+917836362334",
+            "received_at": "2020-01-24T06:29:02.403Z"
+          },
+          "metadata": {
+            "columns": {
+              "context_app_build": "string",
+              "context_app_name": "string",
+              "context_app_namespace": "string",
+              "context_app_version": "string",
+              "context_device_id": "string",
+              "context_device_token": "string",
+              "context_device_type": "string",
+              "context_ip": "string",
+              "context_library_name": "string",
+              "context_library_version": "string",
+              "context_locale": "string",
+              "context_os_name": "string",
+              "context_os_version": "string",
+              "context_request_ip": "string",
+              "context_traits_email": "string",
+              "context_traits_phone": "string",
+              "context_traits_user_id": "string",
+              "context_user_agent": "string",
+              "email": "string",
+              "id": "string",
+              "phone": "string",
+              "received_at": "datetime",
+              "uuid_ts": "datetime"
+            },
+            "receivedAt": "2020-01-24T11:59:02.403+05:30",
+            "table": "users"
+          }
+        }
+      ],
+      azure_datalake: [
+        {
+          "data": {
+            "timestamp": "2020-01-24T06:29:02.403Z",
+            "anonymous_id": "97c46c81-3140-456d-b2a9-690d70aaca35",
+            "channel": "web",
+            "context_app_build": "1.0.0",
+            "context_app_name": "RudderLabs JavaScript SDK",
+            "context_app_namespace": "com.rudderlabs.javascript",
+            "context_app_version": "1.1.11",
+            "context_device_id": "id",
+            "context_device_token": "token",
+            "context_device_type": "ios",
+            "context_ip": "[::1]:53708",
+            "context_library_name": "RudderLabs JavaScript SDK",
+            "context_library_version": "1.1.11",
+            "context_locale": "en-US",
+            "context_os_name": "android",
+            "context_os_version": "1.12.3",
+            "context_request_ip": "[::1]:53708",
+            "context_traits_email": "user123@email.com",
+            "context_traits_phone": "+917836362334",
+            "context_traits_user_id": "user123",
+            "context_user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0",
+            "email": "user123@email.com",
+            "id": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff",
+            "original_timestamp": "2020-01-24T06:29:02.364Z",
+            "phone": "+917836362334",
+            "received_at": "2020-01-24T06:29:02.403Z",
+            "sent_at": "2021-01-03T17:02:53.195Z",
+            "user_id": "user123"
+          },
+          "metadata": {
+            "columns": {
+              "timestamp": "datetime",
+              "anonymous_id": "string",
+              "channel": "string",
+              "context_app_build": "string",
+              "context_app_name": "string",
+              "context_app_namespace": "string",
+              "context_app_version": "string",
+              "context_device_id": "string",
+              "context_device_token": "string",
+              "context_device_type": "string",
+              "context_ip": "string",
+              "context_library_name": "string",
+              "context_library_version": "string",
+              "context_locale": "string",
+              "context_os_name": "string",
+              "context_os_version": "string",
+              "context_request_ip": "string",
+              "context_traits_email": "string",
+              "context_traits_phone": "string",
+              "context_traits_user_id": "string",
+              "context_user_agent": "string",
+              "email": "string",
+              "id": "string",
+              "original_timestamp": "datetime",
+              "phone": "string",
+              "received_at": "datetime",
+              "sent_at": "datetime",
+              "user_id": "string",
+              "uuid_ts": "datetime"
+            },
+            "receivedAt": "2020-01-24T11:59:02.403+05:30",
+            "table": "identifies"
+          }
+        },
+        {
+          "data": {
+            "context_app_build": "1.0.0",
+            "context_app_name": "RudderLabs JavaScript SDK",
+            "context_app_namespace": "com.rudderlabs.javascript",
+            "context_app_version": "1.1.11",
+            "context_device_id": "id",
+            "context_device_token": "token",
+            "context_device_type": "ios",
+            "context_ip": "[::1]:53708",
+            "context_library_name": "RudderLabs JavaScript SDK",
+            "context_library_version": "1.1.11",
+            "context_locale": "en-US",
+            "context_os_name": "android",
+            "context_os_version": "1.12.3",
+            "context_request_ip": "[::1]:53708",
+            "context_traits_email": "user123@email.com",
+            "context_traits_phone": "+917836362334",
+            "context_traits_user_id": "user123",
+            "context_user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0",
+            "email": "user123@email.com",
+            "id": "user123",
+            "phone": "+917836362334",
+            "received_at": "2020-01-24T06:29:02.403Z"
+          },
+          "metadata": {
+            "columns": {
+              "context_app_build": "string",
+              "context_app_name": "string",
+              "context_app_namespace": "string",
+              "context_app_version": "string",
+              "context_device_id": "string",
+              "context_device_token": "string",
+              "context_device_type": "string",
+              "context_ip": "string",
+              "context_library_name": "string",
+              "context_library_version": "string",
+              "context_locale": "string",
+              "context_os_name": "string",
+              "context_os_version": "string",
+              "context_request_ip": "string",
+              "context_traits_email": "string",
+              "context_traits_phone": "string",
+              "context_traits_user_id": "string",
+              "context_user_agent": "string",
+              "email": "string",
+              "id": "string",
+              "phone": "string",
+              "received_at": "datetime",
+              "uuid_ts": "datetime"
+            },
+            "receivedAt": "2020-01-24T11:59:02.403+05:30",
+            "table": "users"
+          }
+        }
       ]
     }
   }
@@ -1374,6 +1645,18 @@ function opOutput(eventType, provider) {
       return _.cloneDeep(sampleEvents[eventType].output.rs);
     case "bq":
       return _.cloneDeep(sampleEvents[eventType].output.bq);
+    case "gcs_datalake":
+      if (eventType === 'users') {
+        return _.cloneDeep(sampleEvents[eventType].output.gcs_datalake);
+      } else {
+        return _.cloneDeep(sampleEvents[eventType].output.default);
+      }
+    case "azure_datalake":
+      if (eventType === 'users') {
+        return _.cloneDeep(sampleEvents[eventType].output.azure_datalake);
+      } else {
+        return _.cloneDeep(sampleEvents[eventType].output.default);
+      }
     default:
       return _.cloneDeep(sampleEvents[eventType].output.default);
   }

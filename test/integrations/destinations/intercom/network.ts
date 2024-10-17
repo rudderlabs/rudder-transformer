@@ -1041,5 +1041,42 @@ const deliveryCallsData = [
       },
     },
   },
+  {
+    httpReq: {
+      method: 'post',
+      url: 'https://api.intercom.io/contacts/search',
+      data: {
+        query: {
+          operator: 'AND',
+          value: [{ field: 'external_id', operator: '=', value: '10156' }],
+        },
+      },
+      headers: { ...commonHeaders, 'Intercom-Version': '2.10', 'User-Agent': 'RudderStack' },
+    },
+    httpRes: {
+      status: 200,
+      statusText: 'ok',
+      data: {
+        type: 'list',
+        total_count: 1,
+        pages: {
+          type: 'pages',
+          page: 1,
+          per_page: 50,
+          total_pages: 1,
+        },
+        data: [
+          {
+            type: 'contact',
+            id: '7070129940741e45d040',
+            workspace_id: 'rudderWorkspace',
+            external_id: 'user@2',
+            role: 'user',
+            email: 'test+2@rudderlabs.com',
+          },
+        ],
+      },
+    },
+  },
 ];
 export const networkCallsData = [...deleteNwData, ...deliveryCallsData];

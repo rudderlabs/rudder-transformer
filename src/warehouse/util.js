@@ -1,7 +1,5 @@
-const _ = require('lodash');
 const get = require('get-value');
 
-const v0 = require('./v0/util');
 const v1 = require('./v1/util');
 const { PlatformError, InstrumentationError } = require('@rudderstack/integrations-lib');
 const { isBlank } = require('./config/helpers');
@@ -112,14 +110,7 @@ function validTimestamp(input) {
 }
 
 function getVersionedUtils(schemaVersion) {
-  switch (schemaVersion) {
-    case 'v0':
-      return v0;
-    case 'v1':
-      return v1;
-    default:
-      return v1;
-  }
+  return v1;
 }
 
 function isRudderSourcesEvent(event) {

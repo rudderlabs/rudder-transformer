@@ -11,12 +11,12 @@ jobs:
     if: (github.ref == 'refs/heads/develop' || startsWith(github.ref, 'refs/heads/hotfix/')) && (github.actor == 'ItsSudip' || github.actor == 'krishna2020' || github.actor == 'saikumarrs' || github.actor == 'sandeepdsvs' || github.actor == 'koladilip' || github.actor == 'shrouti1507' || github.actor == 'anantjain45823'  || github.actor == 'chandumlg' || github.actor == 'mihir-4116' || github.actor == 'yashasvibajpai' || github.actor == 'sanpj2292' || github.actor == 'utsabc') &&  (github.triggering_actor == 'ItsSudip' || github.triggering_actor == 'krishna2020' || github.triggering_actor == 'koladilip' || github.triggering_actor == 'saikumarrs' || github.triggering_actor == 'sandeepdsvs' || github.triggering_actor == 'shrouti1507' || github.triggering_actor == 'anantjain45823' || github.triggering_actor == 'chandumlg' || github.triggering_actor == 'mihir-4116' || github.triggering_actor == 'yashasvibajpai' || github.triggering_actor == 'sanpj2292' || github.triggering_actor == 'utsabc')
     steps:
       - name: Checkout
-        uses: actions/checkout@v4.1.1
+        uses: actions/checkout@v4.2.1
         with:
           fetch-depth: 0
 
       - name: Setup Node
-        uses: actions/setup-node@v4.0.3
+        uses: actions/setup-node@v4.0.4
         with:
           node-version-file: '.nvmrc'
           cache: 'npm'

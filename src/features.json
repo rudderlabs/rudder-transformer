@@ -26,6 +26,7 @@
     "PROFITWELL": true,
     "SALESFORCE": true,
     "SALESFORCE_OAUTH": true,
+    "SALESFORCE_OAUTH_SANDBOX": true,
     "SFMC": true,
     "SNAPCHAT_CONVERSION": true,
     "TIKTOK_ADS": true,
@@ -80,7 +81,9 @@
     "X_AUDIENCE": true,
     "BLOOMREACH_CATALOG": true,
     "SMARTLY": true,
-    "HTTP": true
+    "HTTP": true,
+    "AMAZON_AUDIENCE": true,
+    "INTERCOM_V2": true
   },
   "regulations": [
     "BRAZE",

@@ -1,0 +1,42 @@
+[
+  {
+    "sourceKeys": "cartLine.merchandise.image.src",
+    "destKeys": "image_url"
+  },
+  {
+    "sourceKeys": "cartLine.merchandise.price.amount",
+    "destKeys": "price"
+  },
+  {
+    "sourceKeys": "cartLine.merchandise.product.id",
+    "destKeys": "product_id"
+  },
+  {
+    "sourceKeys": "cartLine.merchandise.product.title",
+    "destKeys": "variant"
+  },
+  {
+    "sourceKeys": "cartLine.merchandise.product.type",
+    "destKeys": "category"
+  },
+  {
+    "sourceKeys": "cartLine.merchandise.product.vendor",
+    "destKeys": "brand"
+  },
+  {
+    "sourceKeys": "cartLine.merchandise.product.url",
+    "destKeys": "url"
+  },
+  {
+    "sourceKeys": "cartLine.merchandise.sku",
+    "destKeys": "sku"
+  },
+  {
+    "sourceKeys": "cartLine.merchandise.title",
+    "destKeys": "name"
+  },
+  {
+    "sourceKeys": "cartLine.quantity",
+    "destKeys": "quantity"
+  }
+]

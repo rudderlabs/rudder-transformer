@@ -46,12 +46,12 @@ const verifyPayload = (payload, message) => {
       }
       break;
     case 'purchase':
-      if (!payload?.properties?.order_id) {
+      if (!isDefinedAndNotNull(payload?.properties?.order_id)) {
         throw new InstrumentationError(
           '[Bluecore] property:: order_id is required for purchase event',
         );
       }
-      if (!payload?.properties?.total) {
+      if (!isDefinedAndNotNull(payload?.properties?.total)) {
         throw new InstrumentationError(
           '[Bluecore] property:: total is required for purchase event',
         );

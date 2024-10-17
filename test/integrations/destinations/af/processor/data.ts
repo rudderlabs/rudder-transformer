@@ -1716,6 +1716,98 @@ export const existingTestCases = [
       },
     },
   },
+  {
+    name: 'af',
+    description: 'Place selected properties at root track call with af data',
+    id: 'selectedPropsAtRoot',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              type: 'track',
+              event: 'Order Completed',
+              sentAt: '2020-08-14T05:30:30.118Z',
+              context: commonContextWithExternalId,
+              messageId: '7208bbb6-2c4e-45bb-bf5b-ad426f3593e9',
+              timestamp: '2020-08-14T05:30:30.118Z',
+              properties: {
+                ...commonPropertiesWithProduct,
+                prop1: 'value1',
+                prop2: 'value2',
+                Prop3: 'value3',
+              },
+              anonymousId: '50be5c78-6c3f-4b60-be84-97805a316fb1',
+              integrations: { AF: { af_uid: 'afUid' } },
+            },
+            destination: {
+              Config: {
+                devKey: 'abcde',
+                androidAppId: 'com.rudderlabs.javascript',
+                groupTypeTrait: 'email',
+                groupValueTrait: 'age',
+                trackProductsOnce: false,
+                trackRevenuePerProduct: false,
+                addPropertiesAtRoot: false,
+                listOfProps: [
+                  {
+                    property: 'prop1',
+                  },
+                  {
+                    property: 'prop2',
+                  },
+                  {
+                    property: 'prop3',
+                  },
+                  {
+                    property: 'prop4',
+                  },
+                ],
+              },
+            },
+          },
+        ],
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: commonV1EndPoint,
+              headers: commonHeader,
+              params: {},
+              body: {
+                JSON: {
+                  bundleIdentifier: 'com.rudderlabs.javascript',
+                  eventValue:
+                    '{"prop1":"value1","prop2":"value2","properties":{"tax":2,"total":27.5,"coupon":"hasbros","revenue":48,"price":25,"quantity":2,"currency":"ZAR","discount":2.5,"order_id":"50314b8e9bcf000000000000","products":[{"sku":"45790-32","url":"https://www.example.com/product/path","name":"Monopoly: 3rd Edition","price":19,"category":"Games","quantity":1,"image_url":"https:///www.example.com/product/path.jpg","product_id":"507f1f77bcf86cd799439011"},{"sku":"46493-32","name":"Uno Card Game","price":3,"category":"Games","quantity":2,"product_id":"505bd76785ebb509fc183733"}],"shipping":3,"subtotal":22.5,"affiliation":"Google Store","checkout_id":"fksdjfsdjfisjf9sdfjsd9f","Prop3":"value3"},"af_revenue":48,"af_price":[19,3],"af_quantity":[1,2],"af_order_id":"50314b8e9bcf000000000000","af_content_id":["507f1f77bcf86cd799439011","505bd76785ebb509fc183733"]}',
+                  eventName: 'Order Completed',
+                  eventCurrency: 'ZAR',
+                  eventTime: '2020-08-14T05:30:30.118Z',
+                  appsflyer_id: 'afUid',
+                },
+                XML: {},
+                JSON_ARRAY: {},
+                FORM: {},
+              },
+              files: {},
+              userId: '',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
 ];
 
 export const data = [...existingTestCases, ...newConfigValidationTests];

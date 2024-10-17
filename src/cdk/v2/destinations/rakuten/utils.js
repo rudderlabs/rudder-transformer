@@ -18,6 +18,18 @@ const constructProperties = (message) => {
 };
 
 /**
+ * Calculates the amount for a single product
+ * @param {Object} product
+ * @returns {number}
+ */
+const calculateProductAmount = (product) => {
+  if (!product?.amount && !product?.price) {
+    throw new InstrumentationError('Either amount or price is required for every product');
+  }
+  return Math.round(product.amount * 100 || (product.quantity || 1) * 100 * product.price);
+};
+
+/**
  * This fucntion build the item level list
  * @param {*} properties
  * @returns
@@ -52,14 +64,8 @@ const constructLineItems = (properties) => {
   });
 
   // Map 'amountList' by evaluating 'amount' or deriving it from 'price' and 'quantity'
-  const amountList = products.map((product) => {
-    if (!product?.amount && !product?.price) {
-      throw new InstrumentationError('Either amount or price is required for every product');
-    }
-    return product.amount * 100 || (product.quantity || 1) * 100 * product.price;
-  });
-  productList.amtlist = amountList.join('|');
+  productList.amtlist = products.map(calculateProductAmount).join('|');
   return productList;
 };
 
-module.exports = { constructProperties, constructLineItems };
+module.exports = { constructProperties, constructLineItems, calculateProductAmount };

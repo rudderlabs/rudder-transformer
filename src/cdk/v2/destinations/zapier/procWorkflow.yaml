@@ -1,10 +1,9 @@
 bindings:
   - name: EventType
     path: ../../../../constants
-  - name: getHashFromArray
+  - name: getHashFromArrayWithDuplicate
     path: ../../../../v0/util/index
-  - name: defaultRequestConfig
-    path: ../../../../v0/util
+  - path: ./utils
 
 steps:
   - name: validateInput
@@ -15,18 +14,18 @@ steps:
   - name: prepareContext
     template: |
       $.context.messageType = .message.type.toLowerCase();
-      $.context.endpoint = .destination.Config.zapUrl;
+      $.context.endpoint = [.destination.Config.zapUrl];
   - name: trackEndpoint
     condition: $.context.messageType === {{$.EventType.TRACK}}
     template: |
-      const trackEventsMap = $.getHashFromArray(.destination.Config.trackEventsToZap);
+      const trackEventsMap = $.getHashFromArrayWithDuplicate(.destination.Config.trackEventsToZap);
       const eventName = .message.event.toLowerCase();
       (eventName && trackEventsMap[eventName]) ? 
         ($.context.endpoint = trackEventsMap[eventName])
     else:
       name: endpointForOthers
       template: |
-        const pageScreenEventsMap = $.getHashFromArray(.destination.Config.pageScreenEventsToZap);
+        const pageScreenEventsMap = $.getHashFromArrayWithDuplicate(.destination.Config.pageScreenEventsToZap);
         const pageName = .message.name.toLowerCase();
         (pageName && pageScreenEventsMap[pageName]) ? 
           ($.context.endpoint = pageScreenEventsMap[pageName])
@@ -37,10 +36,5 @@ steps:
     else:
       name: buildResponseForProcessTransformation
       template: |
-        const response = $.defaultRequestConfig();
-        response.body.JSON = .message;
-        response.endpoint = $.context.endpoint;
-        response.headers = {
-          "content-type": "application/json"
-        };
-        response
+        const responseList = $.buildResponseList(.message, $.context.endpoint)
+        responseList

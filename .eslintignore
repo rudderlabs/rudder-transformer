@@ -10,6 +10,8 @@ dist/
 *.md
 *.test.js
 *.test.ts
+*.yaml
+*.yml
 src/util/lodash-es-core.js
 **/ivm*.js
 **/custom*.js

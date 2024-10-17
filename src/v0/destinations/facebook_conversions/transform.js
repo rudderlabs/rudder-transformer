@@ -102,6 +102,10 @@ const responseBuilderSimple = (message, category, destination) => {
   let appData = {};
   if (commonData.action_source === 'app') {
     appData = fetchAppData(message);
+    // Facebook uses the installId as the anon_id in app events
+    if (integrationsObj.installId) {
+      appData.anon_id = integrationsObj.installId;
+    }
   }
 
   return formingFinalResponse(

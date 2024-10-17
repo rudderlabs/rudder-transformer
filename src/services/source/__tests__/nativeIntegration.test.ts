@@ -44,7 +44,15 @@ describe('NativeIntegration Source Service', () => {
       });
 
     const service = new NativeIntegrationSourceService();
-    const resp = await service.sourceTransformRoutine(events, sourceType, version, requestMetadata);
+    const adapterConvertedEvents = events.map((eventInstance) => {
+      return { output: eventInstance };
+    });
+    const resp = await service.sourceTransformRoutine(
+      adapterConvertedEvents,
+      sourceType,
+      version,
+      requestMetadata,
+    );
 
     expect(resp).toEqual(tresponse);
 
@@ -81,7 +89,15 @@ describe('NativeIntegration Source Service', () => {
     jest.spyOn(stats, 'increment').mockImplementation(() => {});
 
     const service = new NativeIntegrationSourceService();
-    const resp = await service.sourceTransformRoutine(events, sourceType, version, requestMetadata);
+    const adapterConvertedEvents = events.map((eventInstance) => {
+      return { output: eventInstance };
+    });
+    const resp = await service.sourceTransformRoutine(
+      adapterConvertedEvents,
+      sourceType,
+      version,
+      requestMetadata,
+    );
 
     expect(resp).toEqual(tresponse);
 

@@ -101,5 +101,6 @@
     "EMARSYS"
   ],
   "supportSourceTransformV1": true,
-  "supportTransformerProxyV1": true
+  "supportTransformerProxyV1": true,
+  "upgradedToSourceTransformV2": true
 }

@@ -122,6 +122,7 @@ dist
 
 # Stores VSCode versions used for testing VSCode extensions
 .vscode-test
+.vscode
 
 # yarn v2
 .yarn/cache
@@ -133,7 +134,7 @@ dist
 # Others
 **/.DS_Store
 .dccache
-
+.python-version
 .idea
 
 # component test report

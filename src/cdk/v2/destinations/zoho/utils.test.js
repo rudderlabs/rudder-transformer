@@ -130,6 +130,24 @@ describe('validatePresenceOfMandatoryProperties', () => {
     expect(() => validatePresenceOfMandatoryProperties(objectName, object)).not.toThrow();
   });
 
+  it('should return missing field if mandatory field contains empty string', () => {
+    const objectName = 'Leads';
+    const object = { Last_Name: '' };
+
+    const result = validatePresenceOfMandatoryProperties(objectName, object);
+
+    expect(result).toEqual({ missingField: ['Last_Name'], status: true });
+  });
+
+  it('should return missing field if mandatory field contains empty null', () => {
+    const objectName = 'Leads';
+    const object = { Last_Name: null };
+
+    const result = validatePresenceOfMandatoryProperties(objectName, object);
+
+    expect(result).toEqual({ missingField: ['Last_Name'], status: true });
+  });
+
   it('should not throw an error if the objectName is not in MODULE_MANDATORY_FIELD_CONFIG', () => {
     const objectName = 'CustomObject';
     const object = { Some_Field: 'Some Value' };

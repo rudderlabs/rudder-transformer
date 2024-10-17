@@ -10,6 +10,7 @@ const {
   validateEventAndLowerCaseConversion,
   groupRouterTransformEvents,
   isAxiosError,
+  removeHyphens,
 } = require('./index');
 const exp = require('constants');
 
@@ -966,5 +967,20 @@ describe('isAxiosError', () => {
   it('should return false when status is 0', () => {
     const error = { ...validAxiosError, status: 0 };
     expect(isAxiosError(error)).toBe(false);
+  });
+});
+
+describe('removeHyphens', () => {
+  const data = [
+    { input: 'hello-w--orld', expected: 'helloworld' },
+    { input: '', expected: '' },
+    { input: null, expected: null },
+    { input: undefined, expected: undefined },
+    { input: 12345, expected: 12345 },
+  ];
+  it('should remove hyphens from string else return the input as it is', () => {
+    data.forEach(({ input, expected }) => {
+      expect(removeHyphens(input)).toBe(expected);
+    });
   });
 });

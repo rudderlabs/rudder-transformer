@@ -15,6 +15,8 @@ const process = async (inputEvent) => {
   }
   // this is for common logic for server-side events processing for both pixel and tracker apps.
   const response = await processWebhookEvents(event);
+  // attach everything that is part of webhook event to the context inside a key called shopifyDetails
+  response.context.shopifyDetails = { ...event };
   return response;
 };
 

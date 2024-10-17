@@ -236,7 +236,7 @@ async function createIvm(
           throw new Error('ip address is required');
         }
         if (!process.env.GEOLOCATION_URL) throw new Error('geolocation is not available right now');
-        const res = await fetch(`${process.env.GEOLOCATION_URL}/geoip/${args[0]}`, {
+        const res = await fetchWithDnsWrapper(`${process.env.GEOLOCATION_URL}/geoip/${args[0]}`, {
           timeout: GEOLOCATION_TIMEOUT_IN_MS,
         });
         if (res.status !== 200) {

@@ -430,10 +430,51 @@ describe('Destination api tests', () => {
       expect(JSON.parse(response.text)).toEqual(data.output);
     });
 
+    test('(pinterest) success scenario with multiplex events', async () => {
+      const data = getDataFromPath('./data_scenarios/destination/proc/multiplex_success.json');
+      const response = await request(server)
+        .post('/v0/destinations/pinterest_tag')
+        .set('Accept', 'application/json')
+        .send(data.input);
+      expect(response.status).toEqual(200);
+      expect(JSON.parse(response.text)).toEqual(data.output);
+    });
+
+    test('(pinterest) failure scneario for multiplex but event fails at validation', async () => {
+      const data = getDataFromPath('./data_scenarios/destination/proc/multiplex_failure.json');
+      const response = await request(server)
+        .post('/v0/destinations/pinterest_tag')
+        .set('Accept', 'application/json')
+        .send(data.input);
+      expect(response.status).toEqual(200);
+      expect(JSON.parse(response.text)).toEqual(data.output);
+    });
     test('(webhook) success snceario for batch of input', async () => {
       const data = getDataFromPath('./data_scenarios/destination/proc/batch_input.json');
       const response = await request(server)
         .post('/v0/destinations/webhook')
+        .set('Accept', 'application/json')
+        .send(data.input);
+      expect(response.status).toEqual(200);
+      expect(JSON.parse(response.text)).toEqual(data.output);
+    });
+
+    test('(webhook) success snceario for batch of input of 2 events and expect 3 output events', async () => {
+      const data = getDataFromPath('./data_scenarios/destination/proc/batch_input_multiplex.json');
+      const response = await request(server)
+        .post('/v0/destinations/pinterest_tag')
+        .set('Accept', 'application/json')
+        .send(data.input);
+      expect(response.status).toEqual(200);
+      expect(JSON.parse(response.text)).toEqual(data.output);
+    });
+
+    test('(pinterest) partial success scenario for multiplex with 2 events and expect 3 output events with 3rd one failing', async () => {
+      const data = getDataFromPath(
+        './data_scenarios/destination/proc/multiplex_partial_failure.json',
+      );
+      const response = await request(server)
+        .post('/v0/destinations/pinterest_tag')
         .set('Accept', 'application/json')
         .send(data.input);
       expect(response.status).toEqual(200);
@@ -466,6 +507,16 @@ describe('Destination api tests', () => {
   describe('Router transform tests', () => {
     test('(webhook) successful router transform', async () => {
       const data = getDataFromPath('./data_scenarios/destination/router/successful_test.json');
+      const response = await request(server)
+        .post('/routerTransform')
+        .set('Accept', 'application/json')
+        .send(data.input);
+      expect(response.status).toEqual(200);
+      expect(JSON.parse(response.text)).toEqual(data.output);
+    });
+
+    test('(pinterest_tag) failure router transform(partial failure)', async () => {
+      const data = getDataFromPath('./data_scenarios/destination/router/failure_test.json');
       const response = await request(server)
         .post('/routerTransform')
         .set('Accept', 'application/json')
@@ -552,8 +603,45 @@ describe('Source api tests', () => {
   });
 });
 
+describe('CDK V2 api tests', () => {
+  test('(pinterest_tag) successful transform', async () => {
+    const data = getDataFromPath('./data_scenarios/cdk_v2/success.json');
+    const response = await request(server)
+      .post('/v0/destinations/pinterest_tag')
+      .set('Accept', 'application/json')
+      .send(data.input);
+    expect(response.status).toEqual(200);
+    expect(JSON.parse(response.text)).toEqual(data.output);
+  });
+
+  test('(pinterest_tag) partial failure scenario', async () => {
+    const data = getDataFromPath('./data_scenarios/cdk_v2/failure.json');
+    const response = await request(server)
+      .post('/v0/destinations/pinterest_tag')
+      .set('Accept', 'application/json')
+      .send(data.input);
+    expect(response.status).toEqual(200);
+    expect(JSON.parse(response.text)).toEqual(data.output);
+  });
+});
+
 jest.setTimeout(100000);
 describe('Comparsion service tests', () => {
+  test('compare cdk v2 and native', async () => {
+    process.env.COMPARATOR_ENABLED = 'true';
+    const data = getDataFromPath('./data_scenarios/cdk_v2/success.json');
+    data.input.forEach((input) => {
+      setValue(input, 'destination.DestinationDefinition.Config.comparisonTestEnabeld', true);
+      setValue(input, 'destination.DestinationDefinition.Config.comparisonService', 'native_dest');
+    });
+    const response = await request(server)
+      .post('/v0/destinations/pinterest_tag')
+      .set('Accept', 'application/json')
+      .send(data.input);
+    expect(response.status).toEqual(200);
+    expect(JSON.parse(response.text)).toEqual(data.output);
+  });
+
   test('compare native and cdk v2', async () => {
     process.env.COMPARATOR_ENABLED = 'true';
     const data = getDataFromPath('./data_scenarios/destination/router/successful_test.json');

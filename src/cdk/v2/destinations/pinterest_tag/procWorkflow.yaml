@@ -3,8 +3,8 @@ bindings:
     path: ../../../../constants
   - path: ../../bindings/jsontemplate
     exportAll: true
-  - path: ../../../../v0/destinations/pinterest_tag/utils
-  - path: ../../../../v0/destinations/pinterest_tag/config
+  - path: ./utils
+  - path: ./config
   - name: removeUndefinedValues
     path: ../../../../v0/util
   - name: removeUndefinedAndNullAndEmptyValues
@@ -66,7 +66,10 @@ steps:
         "opt_out": .context.device.adTrackingEnabled !== undefined ? !.context.device.adTrackingEnabled,
         "event_id": $.getOneByPaths(., ^.destination.Config.deduplicationKey) ?? .messageId,
         "app_id": ^.destination.Config.appId,
-        "advertiser_id": ^.destination.Config.advertiserId
+        "advertiser_id": ^.destination.Config.advertiserId,
+        "partner_name": .properties.partnerName,
+        "device_carrier": .context.network.carrier,
+        "wifi": .context.network.wifi
       });
       $.outputs.apiVersion === {{$.API_VERSION.v5}} ?  commonFields = commonFields{~["advertiser_id"]};
       $.removeUndefinedValues(commonFields)
@@ -103,7 +106,8 @@ steps:
         "client_ip_address": .context.ip ?? .request_ip,
         "client_user_agent": .context.userAgent,
         "external_id": {{{{$.getGenericPaths("userId")}}}},
-        "click_id": .properties.clickId
+        "click_id": .properties.clickId,
+        "partner_id": .traits.partnerId ?? .context.traits.partnerId
       });
       !.destination.Config.sendExternalId ?  userFields = userFields{~["external_id"]} : null;
       userFields = $.removeUndefinedAndNullAndEmptyValues(userFields);
@@ -129,7 +133,11 @@ steps:
             "num_items": .properties.numOfItems && Number(.properties.numOfItems),
             "order_id": .properties.order_id,
             "search_string": .properties.query,
-            "opt_out_type": .properties.optOutType
+            "opt_out_type": .properties.optOutType,
+            "content_name": .properties.contentName,
+            "content_category": .properties.contentCategory,
+            "content_brand": .properties.contentBrand,
+            "np": .properties.np
           });
           $.removeUndefinedValues(customFields)
 
@@ -143,7 +151,11 @@ steps:
             "content_ids": products.(.product_id ?? .sku ?? .id)[],
             "contents": .message.properties@prop.products.({
               "quantity": Number(.quantity ?? prop.quantity ?? 1),
-              "item_price": String(.price ?? prop.price)
+              "item_price": String(.price ?? prop.price),
+              "item_name": String(.name),
+              "id": .product_id ?? .sku,
+              "item_category": .category,
+              "item_brand": .brand
             })[]
           }
         else:

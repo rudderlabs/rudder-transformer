@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.83.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.82.1...v1.83.0) (2024-10-18)
+
+
+### Features
+
+* add missing fields on the pinterest_tag mapping ([#3798](https://github.com/rudderlabs/rudder-transformer/issues/3798)) ([eed35d3](https://github.com/rudderlabs/rudder-transformer/commit/eed35d30fbd6c51bec07d38edbc7026391ab146a)), closes [#3796](https://github.com/rudderlabs/rudder-transformer/issues/3796)
+
 ### [1.82.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.82.0...v1.82.1) (2024-10-16)
 
 

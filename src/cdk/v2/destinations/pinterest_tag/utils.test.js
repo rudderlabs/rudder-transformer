@@ -1,4 +1,4 @@
-const { processUserPayload } = require('../../../../src/v0/destinations/pinterest_tag/utils');
+const { processUserPayload } = require('./utils');
 
 const userFields = [
   {

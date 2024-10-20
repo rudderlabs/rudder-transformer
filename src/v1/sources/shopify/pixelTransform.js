@@ -1,6 +1,9 @@
+// eslint-disable-next-line @typescript-eslint/naming-convention
+const _ = require('lodash');
 const stats = require('../../../util/stats');
 const logger = require('../../../logger');
 const { removeUndefinedAndNullValues } = require('../../../v0/util');
+const { RedisDB } = require('../../../util/redis/redisConnector');
 const {
   pageViewedEventBuilder,
   cartViewedEventBuilder,
@@ -11,7 +14,7 @@ const {
   checkoutStepEventBuilder,
   searchEventBuilder,
 } = require('./pixelUtils');
-const { INTEGERATION, PIXEL_EVENT_TOPICS } = require('./config');
+const { INTEGERATION, PIXEL_EVENT_TOPICS, eventToCartTokenLocationMapping } = require('./config');
 
 const NO_OPERATION_SUCCESS = {
   outputToSource: {
@@ -20,6 +23,15 @@ const NO_OPERATION_SUCCESS = {
   },
   statusCode: 200,
 };
+
+function handleRedisOperations(inputEvent) {
+  const cartTokenLocation = eventToCartTokenLocationMapping[inputEvent.name];
+  const cartToken = _.get(inputEvent, cartTokenLocation);
+  if (cartTokenLocation && cartToken) {
+    // const cartToken = _.get(inputEvent, cartTokenLocation);
+    await RedisDB.set(cartToken, inputEvent.anonymousId);
+  }
+}
 
 function processPixelEvent(inputEvent) {
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -48,6 +60,7 @@ function processPixelEvent(inputEvent) {
     case PIXEL_EVENT_TOPICS.CHECKOUT_STARTED:
     case PIXEL_EVENT_TOPICS.CHECKOUT_COMPLETED:
       if (customer.id) message.userId = customer.id || '';
+      handleRedisOperations(inputEvent);
       message = checkoutEventBuilder(inputEvent);
       break;
     case PIXEL_EVENT_TOPICS.CHECKOUT_ADDRESS_INFO_SUBMITTED:
@@ -55,6 +68,7 @@ function processPixelEvent(inputEvent) {
     case PIXEL_EVENT_TOPICS.CHECKOUT_SHIPPING_INFO_SUBMITTED:
     case PIXEL_EVENT_TOPICS.PAYMENT_INFO_SUBMITTED:
       if (customer.id) message.userId = customer.id || '';
+      handleRedisOperations(inputEvent);
       message = checkoutStepEventBuilder(inputEvent);
       break;
     case PIXEL_EVENT_TOPICS.SEARCH_SUBMITTED:

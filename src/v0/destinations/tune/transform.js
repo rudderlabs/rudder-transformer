@@ -1,6 +1,28 @@
 const get = require('get-value');
 const { InstrumentationError } = require('@rudderstack/integrations-lib');
-const { defaultRequestConfig, simpleProcessRouterDest, getHashFromArray } = require('../../util');
+const {
+  defaultRequestConfig,
+  simpleProcessRouterDest,
+  getHashFromArray,
+  isDefinedAndNotNull,
+} = require('../../util');
+
+const mapPropertiesWithNestedSupport = (msg, properties, mappings) => {
+  const mappedObj = {}; // Create a new object for parameters
+  Object.entries(mappings).forEach(([key, value]) => {
+    const keyStr = `${key}`;
+    const args = { object: properties, key: keyStr };
+    if (key.split('.').length > 1) {
+      // Handle nested keys
+      args.object = msg; // This line modifies the object property of args
+    }
+    const data = get(args.object, args.key);
+    if (isDefinedAndNotNull(data)) {
+      mappedObj[value] = data; // Map to the corresponding destination key
+    }
+  });
+  return mappedObj; // Return the new params object
+};
 
 const responseBuilder = (message, { Config }) => {
   const { tuneEvents } = Config; // Extract tuneEvents from config
@@ -10,50 +32,20 @@ const responseBuilder = (message, { Config }) => {
   const tuneEvent = tuneEvents.find((event) => event.eventName === messageEvent);
 
   if (tuneEvent) {
-    const standardHashMap = getHashFromArray(tuneEvent.standardMapping);
-    const advSubIdHashMap = getHashFromArray(tuneEvent.advSubIdMapping);
-    const advUniqueIdHashMap = getHashFromArray(tuneEvent.advUniqueIdMapping);
-
-    const mapPropertiesWithNestedSupport = (msg, mappings) => {
-      const newParams = {}; // Create a new object for parameters
-      Object.entries(mappings).forEach(([key, value]) => {
-        let data; // Declare data variable
-
-        if (key.split('.').length > 1) {
-          // Handle nested keys
-          data = get(msg, key); // Use `get` to retrieve nested data
-          if (data) {
-            newParams[value] = data; // Map to the corresponding destination key
-          }
-        } else {
-          // Handle non-nested keys
-          data = get(properties, key); // Retrieve data from properties directly
-          if (data) {
-            newParams[value] = data; // Map to the corresponding destination key
-          }
-        }
-      });
-      return newParams; // Return the new params object
-    };
+    const standardHashMap = getHashFromArray(tuneEvent.standardMapping, 'from', 'to', false);
+    const advSubIdHashMap = getHashFromArray(tuneEvent.advSubIdMapping, 'from', 'to', false);
+    const advUniqueIdHashMap = getHashFromArray(tuneEvent.advUniqueIdMapping, 'from', 'to', false);
 
     const params = {
-      ...mapPropertiesWithNestedSupport(message, standardHashMap),
-      ...mapPropertiesWithNestedSupport(message, advSubIdHashMap),
-      ...mapPropertiesWithNestedSupport(message, advUniqueIdHashMap),
+      ...mapPropertiesWithNestedSupport(message, properties, standardHashMap),
+      ...mapPropertiesWithNestedSupport(message, properties, advSubIdHashMap),
+      ...mapPropertiesWithNestedSupport(message, properties, advUniqueIdHashMap),
     };
 
     // Prepare the response
     const response = defaultRequestConfig();
     response.params = params; // Set only the mapped params
     response.endpoint = tuneEvent.url; // Use the user-defined URL
-
-    // Add query parameters from the URL to params
-    const urlParams = new URLSearchParams(new URL(tuneEvent.url).search);
-    urlParams.forEach((value, key) => {
-      params[key] = value; // Add each query parameter to params
-    });
-
-    // Include the event name in the response, not in params
     response.event = tuneEvent.eventName;
 
     return response;
@@ -64,7 +56,7 @@ const responseBuilder = (message, { Config }) => {
 
 const processEvent = (message, destination) => {
   // Validate message type
-  if (!message.type) {
+  if (!isDefinedAndNotNull(message.type)) {
     throw new InstrumentationError('Message Type is not present. Aborting message.', 400);
   }
   const messageType = message.type.toLowerCase();

@@ -1,16 +1,9 @@
-
 const {
   RetryableError,
   ThrottledError,
   AbortedError,
   OAuthSecretError,
-} = require('@rudderstack/integrations-lib');
-const { handleHttpRequest } = require('../../../adapters/network');
-const {
-  RetryableError,
-  ThrottledError,
-  AbortedError,
-  // isDefinedAndNotNull,
+  isDefinedAndNotNull,
 } = require('@rudderstack/integrations-lib');
 const { handleHttpRequest } = require('../../../adapters/network');
 const { getAuthErrCategoryFromStCode } = require('../../util');
@@ -250,7 +243,7 @@ const collectAuthorizationInfo = async (event) => {
   let authorizationData;
   const { Name } = event.destination.DestinationDefinition;
   const lowerCaseName = Name?.toLowerCase?.();
-  if (lowerCaseName === SALESFORCE_OAUTH_SANDBOX || lowerCaseName === SALESFORCE_OAUTH ) {
+  if (lowerCaseName === SALESFORCE_OAUTH_SANDBOX || lowerCaseName === SALESFORCE_OAUTH) {
     authorizationFlow = OAUTH;
     authorizationData = getAccessTokenOauth(metadata);
   } else {

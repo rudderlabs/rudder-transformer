@@ -900,7 +900,7 @@ export const data = [
   },
   {
     name: 'twitter_ads',
-    description: 'Test 6',
+    description: 'Test case for track event with ip_address as an identifier',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -1022,7 +1022,7 @@ export const data = [
   },
   {
     name: 'twitter_ads',
-    description: 'Test 7',
+    description: 'Test case for track event with user_agent as an identifier',
     feature: 'processor',
     module: 'destination',
     version: 'v0',

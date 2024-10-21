@@ -245,7 +245,7 @@ const collectAuthorizationInfo = async (event) => {
   const lowerCaseName = Name?.toLowerCase?.();
   if (lowerCaseName === SALESFORCE_OAUTH_SANDBOX || lowerCaseName === SALESFORCE_OAUTH) {
     authorizationFlow = OAUTH;
-    authorizationData = getAccessTokenOauth(metadata);
+    authorizationData = getAccessTokenOauth(event.metadata);
   } else {
     authorizationFlow = LEGACY;
     authorizationData = await getAccessToken(event);

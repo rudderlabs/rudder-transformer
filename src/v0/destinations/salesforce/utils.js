@@ -1,3 +1,11 @@
+
+const {
+  RetryableError,
+  ThrottledError,
+  AbortedError,
+  OAuthSecretError,
+} = require('@rudderstack/integrations-lib');
+const { handleHttpRequest } = require('../../../adapters/network');
 const {
   RetryableError,
   ThrottledError,
@@ -15,6 +23,7 @@ const {
   LEGACY,
   OAUTH,
   SALESFORCE_OAUTH,
+  SALESFORCE_OAUTH_SANDBOX,
 } = require('./config');
 
 const ACCESS_TOKEN_CACHE = new Cache(ACCESS_TOKEN_CACHE_TTL);
@@ -169,10 +178,15 @@ const salesforceResponseHandler = (destResponse, sourceMessage, authKey, authori
  * @param {destination: Record<string, any>, metadata: Record<string, object>}
  * @returns
  */
-const getAccessTokenOauth = (metadata) => ({
-  token: metadata.secret?.access_token,
-  instanceUrl: metadata.secret?.instance_url,
-});
+const getAccessTokenOauth = (metadata) => {
+  if (!isDefinedAndNotNull(metadata?.secret)) {
+    throw new OAuthSecretError('secret is undefined/null');
+  }
+  return {
+    token: metadata.secret?.access_token,
+    instanceUrl: metadata.secret?.instance_url,
+  };
+};
 
 const getAccessToken = async ({ destination, metadata }) => {
   const accessTokenKey = destination.ID;
@@ -234,10 +248,9 @@ const getAccessToken = async ({ destination, metadata }) => {
 const collectAuthorizationInfo = async (event) => {
   let authorizationFlow;
   let authorizationData;
-
-  const { destination, metadata } = event;
-  const { Name } = destination.DestinationDefinition;
-  if (Name === SALESFORCE_OAUTH) {
+  const { Name } = event.destination.DestinationDefinition;
+  const lowerCaseName = Name?.toLowerCase?.();
+  if (lowerCaseName === SALESFORCE_OAUTH_SANDBOX || lowerCaseName === SALESFORCE_OAUTH ) {
     authorizationFlow = OAUTH;
     authorizationData = getAccessTokenOauth(metadata);
   } else {

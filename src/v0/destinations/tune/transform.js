@@ -5,6 +5,7 @@ const {
   simpleProcessRouterDest,
   getHashFromArray,
   isDefinedAndNotNull,
+  isNotEmpty,
 } = require('../../util');
 
 const mapPropertiesWithNestedSupport = (msg, properties, mappings) => {
@@ -17,7 +18,7 @@ const mapPropertiesWithNestedSupport = (msg, properties, mappings) => {
       args.object = msg; // This line modifies the object property of args
     }
     const data = get(args.object, args.key);
-    if (isDefinedAndNotNull(data)) {
+    if (isDefinedAndNotNull(data) && isNotEmpty(data)) {
       mappedObj[value] = data; // Map to the corresponding destination key
     }
   });

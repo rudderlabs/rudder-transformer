@@ -46,7 +46,6 @@ const responseBuilder = (message, { Config }) => {
     const response = defaultRequestConfig();
     response.params = params; // Set only the mapped params
     response.endpoint = tuneEvent.url; // Use the user-defined URL
-    response.event = tuneEvent.eventName;
 
     return response;
   }

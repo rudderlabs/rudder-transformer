@@ -171,6 +171,9 @@ describe('utilV2.js', () => {
               { id: 'product123', name: 'Product 123' },
               { id: 'product456', name: 'Product 456' },
             ],
+            order: {
+              id: 'order123',
+            },
             token: 'checkout123',
             totalPrice: { amount: 200 },
             currencyCode: 'USD',

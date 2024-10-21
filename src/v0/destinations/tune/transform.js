@@ -56,8 +56,11 @@ const responseBuilder = (message, { Config }) => {
 
 const processEvent = (message, destination) => {
   // Validate message type
-  if (!isDefinedAndNotNull(message.type)) {
-    throw new InstrumentationError('Message Type is not present. Aborting message.', 400);
+  if (!isDefinedAndNotNull(message.type) || typeof message.type !== 'string') {
+    throw new InstrumentationError(
+      'Message Type is not present or is not a string. Aborting message.',
+      400,
+    );
   }
   const messageType = message.type.toLowerCase();
 
@@ -82,8 +85,6 @@ const processRouterDest = async (inputs, reqMetadata) => {
 };
 
 module.exports = {
-  responseBuilder,
-  processEvent,
   process,
   processRouterDest,
 };

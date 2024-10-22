@@ -3,8 +3,6 @@ bindings:
     path: ../../../../constants
   - name: getHashFromArrayWithDuplicate
     path: ../../../../v0/util/index
-  - name: defaultRequestConfig
-    path: ../../../../v0/util
   - path: ./utils
 
 steps:

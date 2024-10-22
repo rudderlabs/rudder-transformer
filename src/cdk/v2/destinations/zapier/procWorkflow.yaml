@@ -16,7 +16,7 @@ steps:
   - name: prepareContext
     template: |
       $.context.messageType = .message.type.toLowerCase();
-      $.context.endpoint = .destination.Config.zapUrl;
+      $.context.endpoint = [.destination.Config.zapUrl];
   - name: trackEndpoint
     condition: $.context.messageType === {{$.EventType.TRACK}}
     template: |

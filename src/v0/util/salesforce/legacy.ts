@@ -1,6 +1,5 @@
 import { handleHttpRequest } from '../../../adapters/network';
 import {
-  LEGACY,
   SF_TOKEN_REQUEST_URL,
   SF_TOKEN_REQUEST_URL_SANDBOX,
 } from '../../destinations/salesforce/config';
@@ -75,7 +74,7 @@ export default class Legacy implements Salesforce {
   async collectAuthorizationInfo(event: any): Promise<AuthInfo> {
     const tokenInfo = await this.getAccessToken(event);
     return {
-      authorizationFlow: LEGACY,
+      authorizationFlow: event.destination.DestinationDefinition.Name.toLowerCase(),
       authorizationData: tokenInfo,
     };
   }

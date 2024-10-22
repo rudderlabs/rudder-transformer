@@ -1,10 +1,9 @@
 import Legacy from './legacy';
 import OAuth from './oauth';
 import {
-  LEGACY,
-  OAUTH,
   SALESFORCE_OAUTH,
   SALESFORCE_OAUTH_SANDBOX,
+  SALESFORCE,
   ACCESS_TOKEN_CACHE_TTL,
 } from '../../destinations/salesforce/config';
 
@@ -20,4 +19,9 @@ const getAuthInfo = async (event: { destination: { DestinationDefinition: { Name
   return legacy.collectAuthorizationInfo(event);
 };
 
-export default { [OAUTH]: oauth, [LEGACY]: legacy, getAuthInfo };
+export default {
+  [SALESFORCE_OAUTH_SANDBOX]: oauth,
+  [SALESFORCE_OAUTH]: oauth,
+  [SALESFORCE]: legacy,
+  getAuthInfo,
+};

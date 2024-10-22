@@ -1,6 +1,5 @@
 import { isDefinedAndNotNull, OAuthSecretError } from '@rudderstack/integrations-lib';
 import { AuthInfo, Salesforce } from './types';
-import { OAUTH } from '../../destinations/salesforce/config';
 import * as common from './common';
 import { getAuthErrCategoryFromStCode } from '..';
 
@@ -36,7 +35,7 @@ export default class OAuth implements Salesforce {
   async collectAuthorizationInfo(event: any): Promise<AuthInfo> {
     const tokenInfo = await this.getAccessToken(event);
     return {
-      authorizationFlow: OAUTH,
+      authorizationFlow: event.destination.DestinationDefinition.Name.toLowerCase(),
       authorizationData: tokenInfo,
     };
   }

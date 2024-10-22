@@ -1,7 +1,7 @@
 const { proxyRequest, prepareProxyRequest } = require('../../../adapters/network');
 const { processAxiosResponse } = require('../../../adapters/utils/networkUtils');
 const { isHttpStatusSuccess } = require('../../util');
-const { LEGACY } = require('./config');
+const { SALESFORCE } = require('./config');
 // const { salesforceResponseHandler } = require('./utils');
 const { default: salesforceFactory } = require('../../util/salesforce/factory');
 
@@ -11,7 +11,7 @@ const responseHandler = (responseParams) => {
   const { status } = destinationResponse;
 
   if (!isHttpStatusSuccess(status) && status >= 400) {
-    salesforceFactory[LEGACY].responseHandler(
+    salesforceFactory[SALESFORCE].responseHandler(
       destinationResponse,
       'during Salesforce Response Handling',
       rudderJobMetadata?.destInfo?.authKey,

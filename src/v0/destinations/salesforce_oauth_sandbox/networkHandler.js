@@ -1,13 +1,13 @@
 const { proxyRequest, prepareProxyRequest } = require('../../../adapters/network');
 const { processAxiosResponse } = require('../../../adapters/utils/networkUtils');
-const { OAUTH } = require('../salesforce/config');
+const { SALESFORCE_OAUTH_SANDBOX } = require('../salesforce/config');
 const { default: salesforceFactory } = require('../../util/salesforce/factory');
 
 const responseHandler = (responseParams) => {
   const { destinationResponse, destType, rudderJobMetadata } = responseParams;
   const message = `Request for destination: ${destType} Processed Successfully`;
 
-  salesforceFactory[OAUTH].responseHandler(
+  salesforceFactory[SALESFORCE_OAUTH_SANDBOX].responseHandler(
     destinationResponse,
     'during Salesforce Response Handling',
     rudderJobMetadata?.destInfo?.authKey,

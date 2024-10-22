@@ -25,12 +25,29 @@ const NO_OPERATION_SUCCESS = {
 };
 
 const handleRedisOperations = async (inputEvent) => {
-  const cartTokenLocation = eventToCartTokenLocationMapping[inputEvent.name];
-  const cartToken = _.get(inputEvent, cartTokenLocation);
-  const storedAnonymousIdInRedis = await RedisDB.getVal(cartToken);
-  if (cartTokenLocation && cartToken && !storedAnonymousIdInRedis) {
-    const anonymousId = generateUUID();
-    await RedisDB.setVal(cartToken, anonymousId);
+  try {
+    const cartTokenLocation = eventToCartTokenLocationMapping[inputEvent.name];
+    if (!cartTokenLocation) {
+      logger.info(`Cart token location not found for event: ${inputEvent.name}`);
+      return;
+    }
+
+    const cartToken = _.get(inputEvent, cartTokenLocation);
+    if (!cartToken) {
+      logger.info(`Cart token not found in input event: ${inputEvent.name}`);
+      return;
+    }
+
+    const storedAnonymousIdInRedis = await RedisDB.getVal(cartToken);
+    if (!storedAnonymousIdInRedis) {
+      const anonymousId = generateUUID();
+      await RedisDB.setVal(cartToken, anonymousId);
+      logger.info(`New anonymousId set in Redis for cartToken: ${cartToken}`);
+    } else {
+      logger.info(`AnonymousId already exists in Redis for cartToken: ${cartToken}`);
+    }
+  } catch (error) {
+    logger.error(`Error handling Redis operations for event: ${inputEvent.name}`, error);
   }
 };
 

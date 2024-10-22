@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 const _ = require('lodash');
+const logger = require('../../../logger');
 const { processEventFromPixel } = require('./pixelTransform');
 const { process: processWebhookEvents } = require('../../../v0/sources/shopify/transform');
 const { RedisDB } = require('../../../util/redis/redisConnector');
@@ -9,8 +10,16 @@ const enrichServerSideResponseWithAnonymousId = async (response) => {
   if (serverEventToCartTokenLocationMapping[response.event]) {
     const cartTokenLocation = serverEventToCartTokenLocationMapping[response.event];
     const cartToken = _.get(response, cartTokenLocation);
-    const anonymousId = await RedisDB.getVal(cartToken); // commented out to prevent the code from running
-    response.anonymousId = anonymousId;
+    if (cartToken) {
+      try {
+        const anonymousId = await RedisDB.getVal(cartToken);
+        response.anonymousId = anonymousId;
+      } catch (error) {
+        logger.error(`Error getting value from Redis: ${error.message}`, error);
+      }
+    } else {
+      logger.info(`Cart token not found for event: ${response.event}`);
+    }
   }
 };
 

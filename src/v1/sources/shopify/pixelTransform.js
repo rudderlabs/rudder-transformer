@@ -123,4 +123,5 @@ const processEventFromPixel = async (event) => {
 
 module.exports = {
   processEventFromPixel,
+  handleCartTokenRedisOperations,
 };

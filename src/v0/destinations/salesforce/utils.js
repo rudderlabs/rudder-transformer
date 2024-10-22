@@ -48,30 +48,26 @@ const handleAuthError = (
   destResponse,
   status,
 ) => {
-  // eslint-disable-next-line sonarjs/no-small-switch
-  switch (errorCode) {
-    case 'INVALID_SESSION_ID':
-      if (authorizationFlow === OAUTH) {
-        throw new RetryableError(
-          `${DESTINATION} Request Failed - due to "INVALID_SESSION_ID", (Retryable) ${sourceMessage}`,
-          500,
-          destResponse,
-          getAuthErrCategoryFromStCode(status),
-        );
-      }
+  if (errorCode === 'INVALID_SESSION_ID') {
+    let authErrCategory = '';
+    if (authorizationFlow === OAUTH) {
+      authErrCategory = getAuthErrCategoryFromStCode(status);
+    } else {
       ACCESS_TOKEN_CACHE.del(authKey);
-      throw new RetryableError(
-        `${DESTINATION} Request Failed - due to "INVALID_SESSION_ID", (Retryable) ${sourceMessage}`,
-        500,
-        destResponse,
-      );
-    default:
-      throw new AbortedError(
-        `${DESTINATION} Request Failed: "${status}" due to "${getErrorMessage(destResponse.response)}", (Aborted) ${sourceMessage}`,
-        400,
-        destResponse,
-      );
+    }
+    throw new RetryableError(
+      `${DESTINATION} Request Failed - due to "INVALID_SESSION_ID", (${authErrCategory}) ${sourceMessage}`,
+      500,
+      destResponse,
+      authErrCategory,
+    );
   }
+
+  throw new AbortedError(
+    `${DESTINATION} Request Failed: "${status}" due to "${getErrorMessage(destResponse.response)}", (Aborted) ${sourceMessage}`,
+    400,
+    destResponse,
+  );
 };
 
 const handleCommonAbortableError = (destResponse, sourceMessage, status) => {
@@ -110,13 +106,13 @@ const salesforceResponseHandler = (destResponse, sourceMessage, authKey, authori
 
   switch (status) {
     case 401: {
-        let errorCode = 'DEFAULT';
-        if (authKey && matchErrorCode('INVALID_SESSION_ID')) {
-          errorCode = 'INVALID_SESSION_ID';
-        }
-        handleAuthError(errorCode, authKey, authorizationFlow, sourceMessage, destResponse, status);
-        break;
+      let errorCode = 'DEFAULT';
+      if (authKey && matchErrorCode('INVALID_SESSION_ID')) {
+        errorCode = 'INVALID_SESSION_ID';
       }
+      handleAuthError(errorCode, authKey, authorizationFlow, sourceMessage, destResponse, status);
+      break;
+    }
     case 403:
       if (matchErrorCode('REQUEST_LIMIT_EXCEEDED')) {
         throw new ThrottledError(

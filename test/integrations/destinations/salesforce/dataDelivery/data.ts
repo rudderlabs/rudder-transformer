@@ -112,7 +112,7 @@ const legacyTests = [
           output: {
             status: 500,
             message:
-              'Salesforce Request Failed - due to "INVALID_SESSION_ID", (Retryable) during Salesforce Response Handling',
+              'Salesforce Request Failed - due to "INVALID_SESSION_ID", () during Salesforce Response Handling',
             destinationResponse: {
               response: [
                 {

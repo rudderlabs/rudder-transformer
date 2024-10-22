@@ -5,11 +5,11 @@ const { process: processWebhookEvents } = require('../../../v0/sources/shopify/t
 const { RedisDB } = require('../../../util/redis/redisConnector');
 const { serverEventToCartTokenLocationMapping } = require('./config');
 
-const enrichServerSideResponseWithAnonymousId = (event, response) => {
+const enrichServerSideResponseWithAnonymousId = async (response) => {
   if (serverEventToCartTokenLocationMapping[response.event]) {
     const cartTokenLocation = serverEventToCartTokenLocationMapping[response.event];
     const cartToken = _.get(response, cartTokenLocation);
-    const anonymousId = RedisDB.get(cartToken);
+    const anonymousId = await RedisDB.getVal(cartToken); // commented out to prevent the code from running
     response.anonymousId = anonymousId;
   }
 };

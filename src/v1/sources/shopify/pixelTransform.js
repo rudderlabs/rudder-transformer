@@ -2,7 +2,7 @@
 const _ = require('lodash');
 const stats = require('../../../util/stats');
 const logger = require('../../../logger');
-const { removeUndefinedAndNullValues } = require('../../../v0/util');
+const { generateUUID, removeUndefinedAndNullValues } = require('../../../v0/util');
 const { RedisDB } = require('../../../util/redis/redisConnector');
 const {
   pageViewedEventBuilder,
@@ -24,14 +24,15 @@ const NO_OPERATION_SUCCESS = {
   statusCode: 200,
 };
 
-function handleRedisOperations(inputEvent) {
+const handleRedisOperations = async (inputEvent) => {
   const cartTokenLocation = eventToCartTokenLocationMapping[inputEvent.name];
   const cartToken = _.get(inputEvent, cartTokenLocation);
-  if (cartTokenLocation && cartToken) {
-    // const cartToken = _.get(inputEvent, cartTokenLocation);
-    await RedisDB.set(cartToken, inputEvent.anonymousId);
+  const storedAnonymousIdInRedis = await RedisDB.getVal(cartToken);
+  if (cartTokenLocation && cartToken && !storedAnonymousIdInRedis) {
+    const anonymousId = generateUUID();
+    await RedisDB.setVal(cartToken, anonymousId);
   }
-}
+};
 
 function processPixelEvent(inputEvent) {
   // eslint-disable-next-line @typescript-eslint/naming-convention

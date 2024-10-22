@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.82.3](https://github.com/rudderlabs/rudder-transformer/compare/v1.82.2...v1.82.3) (2024-10-22)
+
+
+### Bug Fixes
+
+* heap userId extraction ([#3801](https://github.com/rudderlabs/rudder-transformer/issues/3801)) ([e578413](https://github.com/rudderlabs/rudder-transformer/commit/e57841396ad666d716e195fbd4e9b74a63bf5191))
+* not allowing empty string or null values for mandatory fields in zoho ([#3800](https://github.com/rudderlabs/rudder-transformer/issues/3800)) ([fcd8d99](https://github.com/rudderlabs/rudder-transformer/commit/fcd8d997fe815d61d21ffff235b0799e69b7ded9))
+* populate source destination info env set properly ([#3806](https://github.com/rudderlabs/rudder-transformer/issues/3806)) ([d730daf](https://github.com/rudderlabs/rudder-transformer/commit/d730dafbbd2de30b67c35db8ca05396a98a8d2e0))
+* update order_id in checkout events, messageId in pixel events ([#3794](https://github.com/rudderlabs/rudder-transformer/issues/3794)) ([427be71](https://github.com/rudderlabs/rudder-transformer/commit/427be71a91df8495f81b42d2b58aa490db439b23))
+
 ### [1.82.2](https://github.com/rudderlabs/rudder-transformer/compare/v1.82.1...v1.82.2) (2024-10-18)
 
 

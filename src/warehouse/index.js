@@ -30,7 +30,7 @@ const whExtractEventTableColumnMappingRules = require('./config/WHExtractEventTa
 const maxColumnsInEvent = parseInt(process.env.WH_MAX_COLUMNS_IN_EVENT || '200', 10);
 
 const WH_POPULATE_SRC_DEST_INFO_IN_CONTEXT =
-  process.env.WH_POPULATE_SRC_DEST_INFO_IN_CONTEXT || true;
+  process.env.WH_POPULATE_SRC_DEST_INFO_IN_CONTEXT !== 'false';
 
 const getDataType = (key, val, options, jsonKey = false) => {
   const type = typeof val;

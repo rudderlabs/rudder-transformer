@@ -1,5 +1,5 @@
 bindings:
-  - path: ../../../../v0/destinations/pinterest_tag/config
+  - path: ./config
   - name: batchMultiplexedEvents
     path: ../../../../v0/util/index
 steps:

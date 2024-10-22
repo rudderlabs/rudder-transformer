@@ -449,7 +449,6 @@ describe('Destination api tests', () => {
       expect(response.status).toEqual(200);
       expect(JSON.parse(response.text)).toEqual(data.output);
     });
-
     test('(webhook) success snceario for batch of input', async () => {
       const data = getDataFromPath('./data_scenarios/destination/proc/batch_input.json');
       const response = await request(server)

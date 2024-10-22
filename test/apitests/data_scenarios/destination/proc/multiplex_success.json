@@ -78,6 +78,7 @@
           "DisplayName": "Pinterest Tag",
           "Config": {
             "cdkV2TestThreshold": 1,
+            "cdkV2Enabled": true,
             "destConfig": {
               "defaultConfig": [
                 "tagId",

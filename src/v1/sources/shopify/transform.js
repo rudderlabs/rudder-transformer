@@ -1,27 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-const _ = require('lodash');
-const logger = require('../../../logger');
 const { processEventFromPixel } = require('./pixelTransform');
 const { process: processWebhookEvents } = require('../../../v0/sources/shopify/transform');
-const { RedisDB } = require('../../../util/redis/redisConnector');
-const { serverEventToCartTokenLocationMapping } = require('./config');
-
-const enrichServerSideResponseWithAnonymousId = async (response) => {
-  if (serverEventToCartTokenLocationMapping[response.event]) {
-    const cartTokenLocation = serverEventToCartTokenLocationMapping[response.event];
-    const cartToken = _.get(response, cartTokenLocation);
-    if (cartToken) {
-      try {
-        const anonymousId = await RedisDB.getVal(cartToken);
-        response.anonymousId = anonymousId;
-      } catch (error) {
-        logger.error(`Error getting value from Redis: ${error.message}`, error);
-      }
-    } else {
-      logger.info(`Cart token not found for event: ${response.event}`);
-    }
-  }
-};
 
 const process = async (inputEvent) => {
   const { event } = inputEvent;
@@ -36,8 +15,6 @@ const process = async (inputEvent) => {
   }
   // this is for common logic for server-side events processing for both pixel and tracker apps.
   const response = await processWebhookEvents(event);
-  // get value for anonymousId to enrich the event coming from the webhook.
-  enrichServerSideResponseWithAnonymousId(response);
   return response;
 };
 

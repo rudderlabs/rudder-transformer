@@ -2,7 +2,6 @@ const path = require('path');
 const fs = require('fs');
 
 const commonCartTokenLocation = 'context.document.location.pathname';
-const commonCartTokenLocationContextual = 'context.cart_token';
 
 const PIXEL_EVENT_TOPICS = {
   CART_VIEWED: 'cart_viewed',
@@ -74,15 +73,6 @@ const pixelEventToCartTokenLocationMapping = {
   checkout_completed: commonCartTokenLocation,
 };
 
-const serverEventToCartTokenLocationMapping = {
-  'Cart Update': 'properties.token',
-  'Checkout Started': commonCartTokenLocationContextual,
-  'Checkout Updated': commonCartTokenLocationContextual,
-  'Order Created': commonCartTokenLocationContextual,
-  'Order Fulfilled': commonCartTokenLocationContextual,
-  'Order Cancelled': commonCartTokenLocationContextual,
-};
-
 const INTEGERATION = 'SHOPIFY';
 
 module.exports = {
@@ -96,5 +86,4 @@ module.exports = {
   productToCartEventMappingJSON,
   checkoutStartedCompletedEventMappingJSON,
   pixelEventToCartTokenLocationMapping,
-  serverEventToCartTokenLocationMapping,
 };

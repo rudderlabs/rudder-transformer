@@ -24,7 +24,7 @@ const NO_OPERATION_SUCCESS = {
   statusCode: 200,
 };
 
-const handleRedisOperations = async (inputEvent) => {
+const handleCartTokenRedisOperations = async (inputEvent) => {
   try {
     const cartTokenLocation = eventToCartTokenLocationMapping[inputEvent.name];
     if (!cartTokenLocation) {
@@ -78,7 +78,7 @@ function processPixelEvent(inputEvent) {
     case PIXEL_EVENT_TOPICS.CHECKOUT_STARTED:
     case PIXEL_EVENT_TOPICS.CHECKOUT_COMPLETED:
       if (customer.id) message.userId = customer.id || '';
-      handleRedisOperations(inputEvent);
+      handleCartTokenRedisOperations(inputEvent);
       message = checkoutEventBuilder(inputEvent);
       break;
     case PIXEL_EVENT_TOPICS.CHECKOUT_ADDRESS_INFO_SUBMITTED:
@@ -86,7 +86,7 @@ function processPixelEvent(inputEvent) {
     case PIXEL_EVENT_TOPICS.CHECKOUT_SHIPPING_INFO_SUBMITTED:
     case PIXEL_EVENT_TOPICS.PAYMENT_INFO_SUBMITTED:
       if (customer.id) message.userId = customer.id || '';
-      handleRedisOperations(inputEvent);
+      handleCartTokenRedisOperations(inputEvent);
       message = checkoutStepEventBuilder(inputEvent);
       break;
     case PIXEL_EVENT_TOPICS.SEARCH_SUBMITTED:

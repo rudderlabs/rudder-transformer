@@ -2,19 +2,17 @@ const { proxyRequest, prepareProxyRequest } = require('../../../adapters/network
 const { processAxiosResponse } = require('../../../adapters/utils/networkUtils');
 const { isHttpStatusSuccess } = require('../../util');
 const { OAUTH } = require('../salesforce/config');
-const { salesforceResponseHandler } = require('../salesforce/utils');
+const { default: salesforceFactory } = require('../../util/salesforce/factory');
 
 const responseHandler = (responseParams) => {
-  const { destinationResponse, destType, rudderJobMetadata } = responseParams;
+  const { destinationResponse, destType } = responseParams;
   const message = `Request for destination: ${destType} Processed Successfully`;
   const { status } = destinationResponse;
 
   if (!isHttpStatusSuccess(status) && status >= 400) {
-    salesforceResponseHandler(
+    salesforceFactory[OAUTH].responseHandler(
       destinationResponse,
       'during Salesforce Response Handling',
-      rudderJobMetadata?.destInfo?.authKey,
-      OAUTH,
     );
   }
 

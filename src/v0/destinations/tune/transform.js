@@ -13,7 +13,7 @@ const mapPropertiesWithNestedSupport = (msg, properties, mappings) => {
   Object.entries(mappings).forEach(([key, value]) => {
     const keyStr = `${key}`;
     const args = { object: properties, key: keyStr };
-    if (key.split('.').length > 1) {
+    if (args.key.split('.').length > 1) {
       // Handle nested keys
       args.object = msg; // This line modifies the object property of args
     }

@@ -3,7 +3,7 @@
 const _ = require('lodash');
 const stats = require('../../../util/stats');
 const logger = require('../../../logger');
-const { generateUUID, removeUndefinedAndNullValues } = require('../../../v0/util');
+const { removeUndefinedAndNullValues } = require('../../../v0/util');
 const { RedisDB } = require('../../../util/redis/redisConnector');
 const {
   pageViewedEventBuilder,
@@ -25,25 +25,22 @@ const NO_OPERATION_SUCCESS = {
   statusCode: 200,
 };
 
-const handleCartTokenRedisOperations = async (inputEvent) => {
+const handleCartTokenRedisOperations = async (inputEvent, clientId) => {
   try {
     const cartTokenLocation = eventToCartTokenLocationMapping[inputEvent.name];
     if (!cartTokenLocation) {
       logger.info(`Cart token location not found for event: ${inputEvent.name}`);
       return;
     }
-
     const cartToken = _.get(inputEvent, cartTokenLocation);
     if (!cartToken) {
       logger.info(`Cart token not found in input event: ${inputEvent.name}`);
       return;
     }
-
     const storedAnonymousIdInRedis = await RedisDB.getVal(cartToken);
     if (!storedAnonymousIdInRedis) {
-      const generatedAnonymousId = generateUUID();
-      inputEvent.anonymousId = generatedAnonymousId;
-      await RedisDB.setVal(cartToken, generatedAnonymousId);
+      inputEvent.anonymousId = clientId;
+      await RedisDB.setVal(cartToken, clientId);
       logger.info(`New anonymousId set in Redis for cartToken: ${cartToken}`);
     } else {
       logger.info(`AnonymousId already exists in Redis for cartToken: ${cartToken}`);
@@ -89,7 +86,7 @@ function processPixelEvent(inputEvent) {
     case PIXEL_EVENT_TOPICS.CHECKOUT_SHIPPING_INFO_SUBMITTED:
     case PIXEL_EVENT_TOPICS.PAYMENT_INFO_SUBMITTED:
       if (customer.id) message.userId = customer.id || '';
-      handleCartTokenRedisOperations(inputEvent);
+      handleCartTokenRedisOperations(inputEvent, clientId);
       message = checkoutStepEventBuilder(inputEvent);
       break;
     case PIXEL_EVENT_TOPICS.SEARCH_SUBMITTED:

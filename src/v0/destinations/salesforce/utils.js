@@ -110,17 +110,11 @@ const salesforceResponseHandler = (destResponse, sourceMessage, authKey, authori
 
   switch (status) {
     case 401:
+      let errorCode = 'DEFAULT';
       if (authKey && matchErrorCode('INVALID_SESSION_ID')) {
-        handleAuthError(
-          'INVALID_SESSION_ID',
-          authKey,
-          authorizationFlow,
-          sourceMessage,
-          destResponse,
-          status,
-        );
+        errorCode = 'INVALID_SESSION_ID';
       }
-      handleAuthError('DEFAULT', authKey, authorizationFlow, sourceMessage, destResponse, status);
+      handleAuthError(errorCode, authKey, authorizationFlow, sourceMessage, destResponse, status);
       break;
     case 403:
       if (matchErrorCode('REQUEST_LIMIT_EXCEEDED')) {
@@ -129,6 +123,7 @@ const salesforceResponseHandler = (destResponse, sourceMessage, authKey, authori
           destResponse,
         );
       }
+      handleCommonAbortableError(destResponse, sourceMessage, status);
       break;
 
     case 400:

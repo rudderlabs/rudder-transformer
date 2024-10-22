@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 // eslint-disable-next-line @typescript-eslint/naming-convention
 const _ = require('lodash');
 const stats = require('../../../util/stats');
@@ -40,11 +41,13 @@ const handleCartTokenRedisOperations = async (inputEvent) => {
 
     const storedAnonymousIdInRedis = await RedisDB.getVal(cartToken);
     if (!storedAnonymousIdInRedis) {
-      const anonymousId = generateUUID();
-      await RedisDB.setVal(cartToken, anonymousId);
+      const generatedAnonymousId = generateUUID();
+      inputEvent.anonymousId = generatedAnonymousId;
+      await RedisDB.setVal(cartToken, generatedAnonymousId);
       logger.info(`New anonymousId set in Redis for cartToken: ${cartToken}`);
     } else {
       logger.info(`AnonymousId already exists in Redis for cartToken: ${cartToken}`);
+      inputEvent.anonymousId = storedAnonymousIdInRedis;
     }
   } catch (error) {
     logger.error(`Error handling Redis operations for event: ${inputEvent.name}`, error);

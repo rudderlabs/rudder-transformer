@@ -150,7 +150,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
           output: {
             status: 500,
             message:
-              'Salesforce Request Failed - due to "Session expired or invalid", (Retryable) during Salesforce Response Handling',
+              'Salesforce Request Failed: 500 - due to "Session expired or invalid", (Retryable) during Salesforce Response Handling',
             response: [
               {
                 error:
@@ -277,7 +277,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
         body: {
           output: {
             message:
-              'Salesforce Request Failed - due to "Server Unavailable", (Retryable) during Salesforce Response Handling',
+              'Salesforce Request Failed: 503 - due to "Server Unavailable", (Retryable) during Salesforce Response Handling',
             response: [
               {
                 error: '[{"message":"Server Unavailable","errorCode":"SERVER_UNAVAILABLE"}]',

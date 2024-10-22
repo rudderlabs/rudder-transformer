@@ -110,6 +110,7 @@ const salesforceResponseHandler = (destResponse, sourceMessage, authKey, authori
 
   switch (status) {
     case 401:
+      // eslint-disable-next-line no-case-declarations
       let errorCode = 'DEFAULT';
       if (authKey && matchErrorCode('INVALID_SESSION_ID')) {
         errorCode = 'INVALID_SESSION_ID';
@@ -144,7 +145,7 @@ const salesforceResponseHandler = (destResponse, sourceMessage, authKey, authori
     case 503:
     case 500:
       throw new RetryableError(
-        `${DESTINATION} Request Failed - due to "${getErrorMessage(response)}", (Retryable) ${sourceMessage}`,
+        `${DESTINATION} Request Failed: ${status} - due to "${getErrorMessage(response)}", (Retryable) ${sourceMessage}`,
         500,
         destResponse,
       );

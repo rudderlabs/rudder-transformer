@@ -109,14 +109,14 @@ const salesforceResponseHandler = (destResponse, sourceMessage, authKey, authori
     response && Array.isArray(response) && response.some((resp) => resp?.errorCode === errorCode);
 
   switch (status) {
-    case 401:
-      // eslint-disable-next-line no-case-declarations
-      let errorCode = 'DEFAULT';
-      if (authKey && matchErrorCode('INVALID_SESSION_ID')) {
-        errorCode = 'INVALID_SESSION_ID';
+    case 401: {
+        let errorCode = 'DEFAULT';
+        if (authKey && matchErrorCode('INVALID_SESSION_ID')) {
+          errorCode = 'INVALID_SESSION_ID';
+        }
+        handleAuthError(errorCode, authKey, authorizationFlow, sourceMessage, destResponse, status);
+        break;
       }
-      handleAuthError(errorCode, authKey, authorizationFlow, sourceMessage, destResponse, status);
-      break;
     case 403:
       if (matchErrorCode('REQUEST_LIMIT_EXCEEDED')) {
         throw new ThrottledError(

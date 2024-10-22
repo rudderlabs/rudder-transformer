@@ -5,11 +5,11 @@ import {
   OAUTH,
   SALESFORCE_OAUTH,
   SALESFORCE_OAUTH_SANDBOX,
+  ACCESS_TOKEN_CACHE_TTL,
 } from '../../destinations/salesforce/config';
-import { ACCESS_TOKEN_CACHE_TTL_SECONDS } from '../../destinations/wootric/config';
 
 const oauth = new OAuth();
-const legacy = new Legacy(ACCESS_TOKEN_CACHE_TTL_SECONDS);
+const legacy = new Legacy(ACCESS_TOKEN_CACHE_TTL);
 
 const getAuthInfo = async (event: { destination: { DestinationDefinition: { Name: string } } }) => {
   const { Name } = event.destination.DestinationDefinition;

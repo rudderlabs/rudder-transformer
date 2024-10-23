@@ -141,6 +141,7 @@
             "DisplayName": "Pinterest Tag",
             "Config": {
               "cdkV2TestThreshold": 1,
+              "cdkV2Enabled": true,
               "destConfig": {
                 "defaultConfig": [
                   "tagId",
@@ -378,6 +379,7 @@
             "DisplayName": "Pinterest Tag",
             "Config": {
               "cdkV2TestThreshold": 1,
+              "cdkV2Enabled": true,
               "destConfig": {
                 "defaultConfig": [
                   "tagId",
@@ -615,6 +617,7 @@
             "DisplayName": "Pinterest Tag",
             "Config": {
               "cdkV2TestThreshold": 1,
+              "cdkV2Enabled": true,
               "destConfig": {
                 "defaultConfig": [
                   "tagId",
@@ -991,6 +994,7 @@
             "DisplayName": "Pinterest Tag",
             "Config": {
               "cdkV2TestThreshold": 1,
+              "cdkV2Enabled": true,
               "destConfig": {
                 "defaultConfig": [
                   "tagId",
@@ -1192,7 +1196,7 @@
           "errorType": "instrumentation",
           "destType": "PINTEREST_TAG",
           "module": "destination",
-          "implementation": "native",
+          "implementation": "cdkV2",
           "feature": "router",
           "destinationId": "2JIqVoWNvSOHa9ppKOqSo4hPuc0",
           "workspaceId": "27O0bhB6p5ehfOWeeZlOSsSDTLg"
@@ -1206,6 +1210,7 @@
             "DisplayName": "Pinterest Tag",
             "Config": {
               "cdkV2TestThreshold": 1,
+              "cdkV2Enabled": true,
               "destConfig": {
                 "defaultConfig": [
                   "tagId",

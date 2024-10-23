@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.82.2](https://github.com/rudderlabs/rudder-transformer/compare/v1.82.1...v1.82.2) (2024-10-18)
+
+
+### Bug Fixes
+
+* add missing fields to pinterest_tag mapping ([#3814](https://github.com/rudderlabs/rudder-transformer/issues/3814)) ([88c6175](https://github.com/rudderlabs/rudder-transformer/commit/88c6175391cf4575a57936aced898465ad78b55e))
+
+### [1.82.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.82.0...v1.82.1) (2024-10-16)
+
+
+### Bug Fixes
+
+* heap userId extraction ([fa620e0](https://github.com/rudderlabs/rudder-transformer/commit/fa620e00db13b7bcdc599cb99966395cfbe53f96))
+
 ## [1.82.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.81.0...v1.82.0) (2024-10-09)
 
 

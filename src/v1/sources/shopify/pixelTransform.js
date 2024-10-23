@@ -1,6 +1,7 @@
 /* eslint-disable no-param-reassign */
 // eslint-disable-next-line @typescript-eslint/naming-convention
 const _ = require('lodash');
+const { isDefinedNotNullNotEmpty } = require('@rudderstack/integrations-lib');
 const stats = require('../../../util/stats');
 const logger = require('../../../logger');
 const { removeUndefinedAndNullValues } = require('../../../v0/util');
@@ -15,7 +16,11 @@ const {
   checkoutStepEventBuilder,
   searchEventBuilder,
 } = require('./pixelUtils');
-const { INTEGERATION, PIXEL_EVENT_TOPICS, eventToCartTokenLocationMapping } = require('./config');
+const {
+  INTEGERATION,
+  PIXEL_EVENT_TOPICS,
+  pixelEventToCartTokenLocationMapping,
+} = require('./config');
 
 const NO_OPERATION_SUCCESS = {
   outputToSource: {
@@ -25,13 +30,17 @@ const NO_OPERATION_SUCCESS = {
   statusCode: 200,
 };
 const extractCartToken = (cartToken) => {
+  if (typeof cartToken !== 'string') {
+    logger.error(`Cart token is not a string`);
+    return undefined;
+  }
   const cartTokenParts = cartToken.split('/');
-  return cartTokenParts[2];
+  return cartTokenParts[3];
 };
 
 const handleCartTokenRedisOperations = async (inputEvent, clientId) => {
   try {
-    const cartTokenLocation = eventToCartTokenLocationMapping[inputEvent.name];
+    const cartTokenLocation = pixelEventToCartTokenLocationMapping[inputEvent.name];
     if (!cartTokenLocation) {
       stats.increment('shopify_pixel_cart_token_not_found', {
         event: inputEvent.name,
@@ -41,19 +50,14 @@ const handleCartTokenRedisOperations = async (inputEvent, clientId) => {
     }
     const unparsedCartToken = _.get(inputEvent, cartTokenLocation);
     const cartToken = extractCartToken(unparsedCartToken);
-    if (!unparsedCartToken) {
-      stats.increment('shopify_pixel_cart_token_not_found', {
+    inputEvent.anonymousId = clientId;
+    if (isDefinedNotNullNotEmpty(clientId)) {
+      await RedisDB.setVal(cartToken, ['anonymousId', clientId]);
+      stats.increment('shopify_pixel_cart_token_set', {
         event: inputEvent.name,
         writeKey: inputEvent.query_parameters.writeKey,
       });
-      return;
     }
-    inputEvent.anonymousId = clientId;
-    await RedisDB.setVal(cartToken, clientId);
-    stats.increment('shopify_pixel_cart_token_set', {
-      event: inputEvent.name,
-      writeKey: inputEvent.query_parameters.writeKey,
-    });
   } catch (error) {
     logger.error(`Error handling Redis operations for event: ${inputEvent.name}`, error);
     stats.increment('shopify_pixel_cart_token_redis_error', {
@@ -90,7 +94,7 @@ function processPixelEvent(inputEvent) {
     case PIXEL_EVENT_TOPICS.CHECKOUT_STARTED:
     case PIXEL_EVENT_TOPICS.CHECKOUT_COMPLETED:
       if (customer.id) message.userId = customer.id || '';
-      handleCartTokenRedisOperations(inputEvent);
+      handleCartTokenRedisOperations(inputEvent, clientId);
       message = checkoutEventBuilder(inputEvent);
       break;
     case PIXEL_EVENT_TOPICS.CHECKOUT_ADDRESS_INFO_SUBMITTED:

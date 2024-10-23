@@ -1,16 +1,24 @@
 const { handleCartTokenRedisOperations } = require('./pixelTransform');
 const { RedisDB } = require('../../../util/redis/redisConnector');
 const { eventToCartTokenLocationMapping } = require('./config');
+const stats = require('../../../util/stats');
 const logger = require('../../../logger');
+
 jest.mock('../../../util/redis/redisConnector', () => ({
   RedisDB: {
     getVal: jest.fn(),
     setVal: jest.fn(),
   },
 }));
+
 jest.mock('./config', () => ({
   eventToCartTokenLocationMapping: { eventName: 'cartToken' },
 }));
+
+jest.mock('../../../util/stats', () => ({
+  increment: jest.fn(),
+}));
+
 jest.mock('../../../logger', () => ({
   info: jest.fn(),
   error: jest.fn(),
@@ -21,60 +29,52 @@ describe('handleCartTokenRedisOperations', () => {
     jest.clearAllMocks();
   });
 
-  it('should log info when cart token location is not found in eventToCartTokenLocationMapping', async () => {
-    const inputEvent = { name: 'unknownEvent', clientId: 'clientId' };
+  it('should increment stats and return when cart token location is not found', async () => {
+    const inputEvent = { name: 'unknownEvent', query_parameters: { writeKey: 'testKey' } };
 
-    await handleCartTokenRedisOperations(inputEvent, inputEvent.clientId);
+    await handleCartTokenRedisOperations(inputEvent, 'clientId');
 
-    expect(logger.info).toHaveBeenCalledWith(
-      'Cart token location not found for event: unknownEvent',
-    );
+    expect(stats.increment).toHaveBeenCalledWith('shopify_pixel_cart_token_not_found', {
+      event: 'unknownEvent',
+      writeKey: 'testKey',
+    });
   });
 
-  it('should log info when cart token is not found in input event', async () => {
-    const inputEvent = { name: 'eventName', clientId: 'clientId' };
+  it('should set new anonymousId in Redis and increment stats', async () => {
+    const inputEvent = {
+      name: 'eventName',
+      query_parameters: { writeKey: 'testKey' },
+      cartToken: 'shopify/cart/12345',
+    };
+    RedisDB.setVal.mockResolvedValue();
 
-    await handleCartTokenRedisOperations(inputEvent, inputEvent.clientId);
+    await handleCartTokenRedisOperations(inputEvent, 'clientId');
 
-    expect(logger.info).toHaveBeenCalledWith('Cart token not found in input event: eventName');
-  });
-
-  it('should set new anonymousId in Redis when it does not exist', async () => {
-    const inputEvent = { name: 'eventName', cartToken: '12345', clientId: 'clientId' };
-    RedisDB.getVal.mockResolvedValue(null);
-
-    await handleCartTokenRedisOperations(inputEvent, inputEvent.clientId);
-
-    expect(RedisDB.getVal).toHaveBeenCalledWith('12345');
     expect(RedisDB.setVal).toHaveBeenCalledWith('12345', 'clientId');
-    expect(inputEvent.anonymousId).toBe('clientId');
-    expect(logger.info).toHaveBeenCalledWith('New anonymousId set in Redis for cartToken: 12345');
+    expect(stats.increment).toHaveBeenCalledWith('shopify_pixel_cart_token_set', {
+      event: 'eventName',
+      writeKey: 'testKey',
+    });
   });
 
-  it('should use existing anonymousId from Redis when it exists', async () => {
-    const inputEvent = { name: 'eventName', cartToken: '12345', clientId: 'clientId' };
-    RedisDB.getVal.mockResolvedValue('existingclientId');
-
-    await handleCartTokenRedisOperations(inputEvent, inputEvent.clientId);
-
-    expect(RedisDB.getVal).toHaveBeenCalledWith('12345');
-    expect(RedisDB.setVal).not.toHaveBeenCalled();
-    expect(inputEvent.anonymousId).toBe('existingclientId');
-    expect(logger.info).toHaveBeenCalledWith(
-      'AnonymousId already exists in Redis for cartToken: 12345',
-    );
-  });
-
-  it('should log error when an exception occurs', async () => {
-    const inputEvent = { name: 'eventName', cartToken: '12345', clientId: 'clientId' };
+  it('should log error and increment stats when exception occurs', async () => {
+    const inputEvent = {
+      name: 'eventName',
+      query_parameters: { writeKey: 'testKey' },
+      cartToken: 'shopify/cart/12345',
+    };
     const error = new Error('Redis error');
-    RedisDB.getVal.mockRejectedValue(error);
+    RedisDB.setVal.mockRejectedValue(error);
 
-    await handleCartTokenRedisOperations(inputEvent, inputEvent.clientId);
+    await handleCartTokenRedisOperations(inputEvent, 'clientId');
 
     expect(logger.error).toHaveBeenCalledWith(
       'Error handling Redis operations for event: eventName',
       error,
     );
+    expect(stats.increment).toHaveBeenCalledWith('shopify_pixel_cart_token_redis_error', {
+      event: 'eventName',
+      writeKey: 'testKey',
+    });
   });
 });

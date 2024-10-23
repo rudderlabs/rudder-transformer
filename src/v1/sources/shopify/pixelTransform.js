@@ -24,30 +24,42 @@ const NO_OPERATION_SUCCESS = {
   },
   statusCode: 200,
 };
+const extractCartToken = (cartToken) => {
+  const cartTokenParts = cartToken.split('/');
+  return cartTokenParts[2];
+};
 
 const handleCartTokenRedisOperations = async (inputEvent, clientId) => {
   try {
     const cartTokenLocation = eventToCartTokenLocationMapping[inputEvent.name];
     if (!cartTokenLocation) {
-      logger.info(`Cart token location not found for event: ${inputEvent.name}`);
+      stats.increment('shopify_pixel_cart_token_not_found', {
+        event: inputEvent.name,
+        writeKey: inputEvent.query_parameters.writeKey,
+      });
       return;
     }
-    const cartToken = _.get(inputEvent, cartTokenLocation);
-    if (!cartToken) {
-      logger.info(`Cart token not found in input event: ${inputEvent.name}`);
+    const unparsedCartToken = _.get(inputEvent, cartTokenLocation);
+    const cartToken = extractCartToken(unparsedCartToken);
+    if (!unparsedCartToken) {
+      stats.increment('shopify_pixel_cart_token_not_found', {
+        event: inputEvent.name,
+        writeKey: inputEvent.query_parameters.writeKey,
+      });
       return;
     }
-    const storedAnonymousIdInRedis = await RedisDB.getVal(cartToken);
-    if (!storedAnonymousIdInRedis) {
-      inputEvent.anonymousId = clientId;
-      await RedisDB.setVal(cartToken, clientId);
-      logger.info(`New anonymousId set in Redis for cartToken: ${cartToken}`);
-    } else {
-      logger.info(`AnonymousId already exists in Redis for cartToken: ${cartToken}`);
-      inputEvent.anonymousId = storedAnonymousIdInRedis;
-    }
+    inputEvent.anonymousId = clientId;
+    await RedisDB.setVal(cartToken, clientId);
+    stats.increment('shopify_pixel_cart_token_set', {
+      event: inputEvent.name,
+      writeKey: inputEvent.query_parameters.writeKey,
+    });
   } catch (error) {
     logger.error(`Error handling Redis operations for event: ${inputEvent.name}`, error);
+    stats.increment('shopify_pixel_cart_token_redis_error', {
+      event: inputEvent.name,
+      writeKey: inputEvent.query_parameters.writeKey,
+    });
   }
 };
 

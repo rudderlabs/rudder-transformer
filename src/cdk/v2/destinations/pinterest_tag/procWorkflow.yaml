@@ -167,7 +167,11 @@ steps:
               "content_ids": (props.product_id ?? props.sku ?? props.id)[],
               "contents": {
                 "quantity": Number(props.quantity) || 1,
-                "item_price": String(props.price)
+                "item_price": String(props.price),
+                "item_name": String(props.name),
+                "id": props.product_id ?? props.sku,
+                "item_category": props.category,
+                "item_brand": props.brand
               }[]
             };
       - name: combineAllEcomFields

@@ -39,6 +39,7 @@ const extractCartTokenAndConfigureAnonymousId = async (inputEvent, clientId) => 
       });
       return;
     }
+    // the unparsedCartToken is a string like '/checkout/cn/1234'
     const unparsedCartToken = _.get(inputEvent, cartTokenLocation);
     if (typeof unparsedCartToken !== 'string') {
       logger.error(`Cart token is not a string`);
@@ -51,7 +52,7 @@ const extractCartTokenAndConfigureAnonymousId = async (inputEvent, clientId) => 
     const cartTokenParts = unparsedCartToken.split('/');
     const cartToken = cartTokenParts[3];
 
-    if (isDefinedNotNullNotEmpty(clientId)) {
+    if (isDefinedNotNullNotEmpty(clientId) && isDefinedNotNullNotEmpty(cartToken)) {
       await RedisDB.setVal(cartToken, ['anonymousId', clientId]);
       stats.increment('shopify_pixel_cart_token_set', {
         event: inputEvent.name,

@@ -14,10 +14,10 @@ const {
   ConfigCategory,
   mappingConfig,
   TRACK_MAX_BATCH_SIZE,
-  TRACK_BATCH_ENDPOINT,
   IDENTIFY_MAX_BATCH_SIZE,
-  IDENTIFY_BATCH_ENDPOINT,
   IDENTIFY_MAX_BODY_SIZE_IN_BYTES,
+  constructEndpoint,
+  getBatchEndpoints,
 } = require('./config');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 const { EventType, MappedToDestinationKey } = require('../../../constants');
@@ -54,9 +54,10 @@ const getMergeNestedObjects = (config) => {
  * @param {*} message
  * @returns
  */
-const getCatalogEndpoint = (category, message) => {
+const getCatalogEndpoint = (dataCenter, category, message) => {
   const externalIdInfo = getDestinationExternalIDInfoForRetl(message, 'ITERABLE');
-  return `${category.endpoint}/${externalIdInfo.objectType}/items`;
+  const baseEndpoint = constructEndpoint(dataCenter, category);
+  return `${baseEndpoint}/${externalIdInfo.objectType}/items`;
 };
 
 /**
@@ -444,8 +445,8 @@ const processUpdateUserBatch = (chunk, registerDeviceOrBrowserTokenEvents) => {
     batchEventResponse.batchedRequest.body.JSON = { users: batch.users };
 
     const { destination, metadata, nonBatchedRequests } = batch;
-    const { apiKey } = destination.Config;
-
+    const { apiKey, dataCenter } = destination.Config;
+    const { IDENTIFY_BATCH_ENDPOINT } = getBatchEndpoints(dataCenter);
     const batchedResponse = combineBatchedAndNonBatchedEvents(
       apiKey,
       metadata,
@@ -552,8 +553,8 @@ const processTrackBatch = (chunk) => {
   const metadata = [];
 
   const { destination } = chunk[0];
-  const { apiKey } = destination.Config;
-
+  const { apiKey, dataCenter } = destination.Config;
+  const { TRACK_BATCH_ENDPOINT } = getBatchEndpoints(dataCenter);
   chunk.forEach((event) => {
     metadata.push(event.metadata);
     events.push(get(event, `${MESSAGE_JSON_PATH}`));

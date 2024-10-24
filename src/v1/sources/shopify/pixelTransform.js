@@ -60,7 +60,7 @@ function extractCartToken(inputEvent) {
 }
 
 /**
- * Handles storing cart token and anonymousId (clientId) in Redis, and updating the event with the anonymousId
+ * Handles storing cart token and anonymousId (clientId) in Redis
  * @param {Object} inputEvent
  * @param {String} clientId
  */
@@ -74,7 +74,6 @@ const handleCartTokenRedisOperations = async (inputEvent, clientId) => {
         writeKey: inputEvent.query_parameters.writeKey,
       });
     }
-    inputEvent.anonymousId = clientId;
   } catch (error) {
     logger.error(`Error handling Redis operations for event: ${inputEvent.name}`, error);
     stats.increment('shopify_pixel_cart_token_redis_error', {

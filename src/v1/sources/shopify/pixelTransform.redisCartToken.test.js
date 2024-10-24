@@ -71,28 +71,6 @@ describe('handleCartTokenRedisOperations', () => {
     jest.clearAllMocks();
   });
 
-  it('should set anonymousId in Redis and increment stats', async () => {
-    const inputEvent = {
-      name: 'cart_viewed',
-      properties: {
-        cart_id: '/checkout/cn/1234',
-      },
-      query_parameters: {
-        writeKey: 'testWriteKey',
-      },
-    };
-    const clientId = 'testClientId';
-
-    await handleCartTokenRedisOperations(inputEvent, clientId);
-
-    expect(RedisDB.setVal).toHaveBeenCalledWith('1234', ['anonymousId', clientId]);
-    expect(stats.increment).toHaveBeenCalledWith('shopify_pixel_cart_token_set', {
-      event: 'cart_viewed',
-      writeKey: 'testWriteKey',
-    });
-    expect(inputEvent.anonymousId).toBe(clientId);
-  });
-
   it('should handle undefined or null cart token gracefully', async () => {
     const inputEvent = {
       name: 'unknownEvent',

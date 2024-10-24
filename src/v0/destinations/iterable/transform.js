@@ -25,7 +25,7 @@ const {
   groupEventsByType: batchEvents,
 } = require('../../util');
 const { JSON_MIME_TYPE } = require('../../util/constant');
-const { mappingConfig, ConfigCategory } = require('./config');
+const { mappingConfig, ConfigCategory, constructEndpoint } = require('./config');
 const { EventType, MappedToDestinationKey } = require('../../../constants');
 
 /**
@@ -89,8 +89,11 @@ const constructPayloadItem = (message, category, destination) => {
  */
 const responseBuilder = (message, category, destination) => {
   const response = defaultRequestConfig();
+  const dataCenter = destination.Config.dataCenter || 'USDC';
   response.endpoint =
-    category.action === 'catalogs' ? getCatalogEndpoint(category, message) : category.endpoint;
+    category.action === 'catalogs'
+      ? getCatalogEndpoint(dataCenter, category, message)
+      : constructEndpoint(dataCenter, category);
   response.method = defaultPostRequestConfig.requestMethod;
   response.body.JSON = constructPayloadItem(message, category, destination);
   response.headers = {

@@ -3,6 +3,7 @@ const {
   getHashFromArray,
   isDefinedAndNotNull,
   ConfigurationError,
+  isDefinedAndNotNullAndNotEmpty,
 } = require('@rudderstack/integrations-lib');
 const get = require('get-value');
 const { getDestinationExternalIDInfoForRetl, isHttpStatusSuccess } = require('../../../../v0/util');
@@ -31,7 +32,10 @@ const deduceModuleInfo = (inputs, Config) => {
 function validatePresenceOfMandatoryProperties(objectName, object) {
   if (zohoConfig.MODULE_MANDATORY_FIELD_CONFIG.hasOwnProperty(objectName)) {
     const requiredFields = zohoConfig.MODULE_MANDATORY_FIELD_CONFIG[objectName];
-    const missingFields = requiredFields.filter((field) => !object.hasOwnProperty(field)) || [];
+    const missingFields =
+      requiredFields.filter(
+        (field) => !object.hasOwnProperty(field) || !isDefinedAndNotNullAndNotEmpty(object[field]),
+      ) || [];
     return { status: missingFields.length > 0, missingField: missingFields };
   }
   // No mandatory check performed for custom objects

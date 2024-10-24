@@ -138,7 +138,7 @@ const checkoutEventBuilder = (inputEvent) => {
 
   const properties = {
     products,
-    order_id: inputEvent.id,
+    order_id: inputEvent.data?.checkout?.order?.id,
     checkout_id: inputEvent?.data?.checkout?.token,
     total: inputEvent?.data?.checkout?.totalPrice?.amount,
     currency: inputEvent?.data?.checkout?.currencyCode,

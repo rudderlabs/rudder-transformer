@@ -4,6 +4,7 @@ import {
   ErrorDetailer,
   MetaTransferObject,
   RudderMessage,
+  SourceInputConversionResult,
   SourceTransformationEvent,
   SourceTransformationResponse,
 } from '../../types/index';
@@ -28,7 +29,7 @@ export class NativeIntegrationSourceService implements SourceService {
   }
 
   public async sourceTransformRoutine(
-    sourceEvents: NonNullable<SourceTransformationEvent>[],
+    sourceEvents: SourceInputConversionResult<NonNullable<SourceTransformationEvent>>[],
     sourceType: string,
     version: string,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -39,7 +40,20 @@ export class NativeIntegrationSourceService implements SourceService {
     const respList: SourceTransformationResponse[] = await Promise.all<FixMe>(
       sourceEvents.map(async (sourceEvent) => {
         try {
-          const newSourceEvent = sourceEvent;
+          if (sourceEvent.conversionError) {
+            stats.increment('source_transform_errors', {
+              source: sourceType,
+              version,
+            });
+            logger.debug(`Error during source Transform: ${sourceEvent.conversionError}`, {
+              ...logger.getLogMetadata(metaTO.errorDetails),
+            });
+            return SourcePostTransformationService.handleFailureEventsSource(
+              sourceEvent.conversionError,
+              metaTO,
+            );
+          }
+          const newSourceEvent = sourceEvent.output;
           const { headers } = newSourceEvent;
           delete newSourceEvent.headers;
           const respEvents: RudderMessage | RudderMessage[] | SourceTransformationResponse =

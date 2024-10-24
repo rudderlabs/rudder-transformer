@@ -106,4 +106,19 @@ export class RouteActivationMiddleware {
       RouteActivationMiddleware.shouldActivateRoute(destination, deliveryFilterList),
     );
   }
+
+  // This middleware will be used by source endpoint when we completely deprecate v0, v1 versions.
+  public static isVersionAllowed(ctx: Context, next: Next) {
+    const { version } = ctx.params;
+    if (version === 'v0' || version === 'v1') {
+      ctx.status = 500;
+      ctx.body =
+        '/v0, /v1 versioned endpoints are deprecated. Use /v2 version endpoint. This is probably caused because of source transformation call from an outdated rudder-server version. Please upgrade rudder-server to a minimum of 1.xx.xx version.';
+    } else if (version === 'v2') {
+      next();
+    } else {
+      ctx.status = 404;
+      ctx.body = 'Path not found. Verify the version of your api call.';
+    }
+  }
 }

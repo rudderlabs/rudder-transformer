@@ -10,6 +10,8 @@ import {
   RouterTransformationRequestData,
   RudderMessage,
   SourceInput,
+  SourceInputConversionResult,
+  SourceInputV2,
 } from '../../types';
 import { getValueFromMessage } from '../../v0/util';
 import genericFieldMap from '../../v0/util/data/GenericFieldMapping.json';
@@ -45,28 +47,72 @@ export class ControllerUtility {
     return this.sourceVersionMap;
   }
 
-  private static convertSourceInputv1Tov0(sourceEvents: SourceInput[]): NonNullable<unknown>[] {
-    return sourceEvents.map((sourceEvent) => sourceEvent.event);
+  private static convertSourceInputv1Tov0(
+    sourceEvents: SourceInput[],
+  ): SourceInputConversionResult<NonNullable<unknown>>[] {
+    return sourceEvents.map((sourceEvent) => ({
+      output: sourceEvent.event as NonNullable<unknown>,
+    }));
   }
 
-  private static convertSourceInputv0Tov1(sourceEvents: unknown[]): SourceInput[] {
-    return sourceEvents.map(
-      (sourceEvent) => ({ event: sourceEvent, source: undefined }) as SourceInput,
-    );
+  private static convertSourceInputv0Tov1(
+    sourceEvents: unknown[],
+  ): SourceInputConversionResult<SourceInput>[] {
+    return sourceEvents.map((sourceEvent) => ({
+      output: { event: sourceEvent, source: undefined } as SourceInput,
+    }));
+  }
+
+  private static convertSourceInputv2Tov0(
+    sourceEvents: SourceInputV2[],
+  ): SourceInputConversionResult<NonNullable<unknown>>[] {
+    return sourceEvents.map((sourceEvent) => {
+      try {
+        const v0Event = JSON.parse(sourceEvent.request.body);
+        v0Event.query_parameters = sourceEvent.request.query_parameters;
+        return { output: v0Event };
+      } catch (err) {
+        const conversionError =
+          err instanceof Error ? err : new Error('error converting v2 to v0 spec');
+        return { output: {} as NonNullable<unknown>, conversionError };
+      }
+    });
+  }
+
+  private static convertSourceInputv2Tov1(
+    sourceEvents: SourceInputV2[],
+  ): SourceInputConversionResult<SourceInput>[] {
+    return sourceEvents.map((sourceEvent) => {
+      try {
+        const v1Event = { event: JSON.parse(sourceEvent.request.body), source: sourceEvent.source };
+        v1Event.event.query_parameters = sourceEvent.request.query_parameters;
+        return { output: v1Event };
+      } catch (err) {
+        const conversionError =
+          err instanceof Error ? err : new Error('error converting v2 to v1 spec');
+        return { output: {} as SourceInput, conversionError };
+      }
+    });
   }
 
   public static adaptInputToVersion(
     sourceType: string,
     requestVersion: string,
     input: NonNullable<unknown>[],
-  ): { implementationVersion: string; input: NonNullable<unknown>[] } {
+  ): { implementationVersion: string; input: SourceInputConversionResult<NonNullable<unknown>>[] } {
     const sourceToVersionMap = this.getSourceVersionsMap();
     const implementationVersion = sourceToVersionMap.get(sourceType);
-    let updatedInput: NonNullable<unknown>[] = input;
+    let updatedInput: SourceInputConversionResult<NonNullable<unknown>>[] = input.map((event) => ({
+      output: event,
+    }));
     if (requestVersion === 'v0' && implementationVersion === 'v1') {
       updatedInput = this.convertSourceInputv0Tov1(input);
     } else if (requestVersion === 'v1' && implementationVersion === 'v0') {
       updatedInput = this.convertSourceInputv1Tov0(input as SourceInput[]);
+    } else if (requestVersion === 'v2' && implementationVersion === 'v0') {
+      updatedInput = this.convertSourceInputv2Tov0(input as SourceInputV2[]);
+    } else if (requestVersion === 'v2' && implementationVersion === 'v1') {
+      updatedInput = this.convertSourceInputv2Tov1(input as SourceInputV2[]);
     }
     return { implementationVersion, input: updatedInput };
   }

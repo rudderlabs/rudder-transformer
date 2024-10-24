@@ -1,4 +1,4 @@
-const { extractCartTokenAndConfigureAnonymousId } = require('./pixelTransform');
+const { extractCartToken, handleCartTokenRedisOperations } = require('./pixelTransform');
 const { RedisDB } = require('../../../util/redis/redisConnector');
 const stats = require('../../../util/stats');
 const logger = require('../../../logger');
@@ -23,12 +23,55 @@ jest.mock('./config', () => ({
   pixelEventToCartTokenLocationMapping: { cart_viewed: 'properties.cart_id' },
 }));
 
-describe('extractCartTokenAndConfigureAnonymousId', () => {
+describe('extractCartToken', () => {
+  it('should return undefined if cart token location is not found', () => {
+    const inputEvent = { name: 'unknownEvent', query_parameters: { writeKey: 'testWriteKey' } };
+
+    const result = extractCartToken(inputEvent);
+
+    expect(result).toBeUndefined();
+    expect(stats.increment).toHaveBeenCalledWith('shopify_pixel_cart_token_not_found', {
+      event: 'unknownEvent',
+      writeKey: 'testWriteKey',
+    });
+  });
+
+  it('should return undefined if cart token is not a string', () => {
+    const inputEvent = {
+      name: 'cart_viewed',
+      properties: { cart_id: 12345 },
+      query_parameters: { writeKey: 'testWriteKey' },
+    };
+
+    const result = extractCartToken(inputEvent);
+
+    expect(result).toBeUndefined();
+    expect(logger.error).toHaveBeenCalledWith('Cart token is not a string');
+    expect(stats.increment).toHaveBeenCalledWith('shopify_pixel_cart_token_not_found', {
+      event: 'cart_viewed',
+      writeKey: 'testWriteKey',
+    });
+  });
+
+  it('should return the cart token if it is a valid string', () => {
+    const inputEvent = {
+      name: 'cart_viewed',
+      properties: { cart_id: '/checkout/cn/1234' },
+      query_parameters: { writeKey: 'testWriteKey' },
+    };
+
+    const result = extractCartToken(inputEvent);
+
+    expect(result).toBe('1234');
+  });
+});
+
+describe('handleCartTokenRedisOperations', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  it('should map inputEvent name to correct cart token location', async () => {
+  it('should set anonymousId in Redis and increment stats', async () => {
     const inputEvent = {
       name: 'cart_viewed',
       properties: {
@@ -40,54 +83,38 @@ describe('extractCartTokenAndConfigureAnonymousId', () => {
     };
     const clientId = 'testClientId';
 
-    await extractCartTokenAndConfigureAnonymousId(inputEvent, clientId);
+    await handleCartTokenRedisOperations(inputEvent, clientId);
 
     expect(RedisDB.setVal).toHaveBeenCalledWith('1234', ['anonymousId', clientId]);
     expect(stats.increment).toHaveBeenCalledWith('shopify_pixel_cart_token_set', {
       event: 'cart_viewed',
       writeKey: 'testWriteKey',
     });
+    expect(inputEvent.anonymousId).toBe(clientId);
   });
 
-  it('should handle inputEvent with undefined or null name gracefully', async () => {
+  it('should handle undefined or null cart token gracefully', async () => {
     const inputEvent = {
-      name: null,
+      name: 'unknownEvent',
       query_parameters: {
         writeKey: 'testWriteKey',
       },
     };
     const clientId = 'testClientId';
 
-    await extractCartTokenAndConfigureAnonymousId(inputEvent, clientId);
+    await handleCartTokenRedisOperations(inputEvent, clientId);
 
     expect(stats.increment).toHaveBeenCalledWith('shopify_pixel_cart_token_not_found', {
-      event: null,
+      event: 'unknownEvent',
       writeKey: 'testWriteKey',
     });
-  });
-
-  it('should log error when cart token is not a string', async () => {
-    const inputEvent = {
-      name: 'cart_viewed',
-      properties: {
-        cart_id: 12345,
-      },
-      query_parameters: {
-        writeKey: 'testWriteKey',
-      },
-    };
-    const clientId = 'testClientId';
-
-    await extractCartTokenAndConfigureAnonymousId(inputEvent, clientId);
-
-    expect(logger.error).toHaveBeenCalledWith('Cart token is not a string');
   });
 
   it('should log error and increment stats when exception occurs', async () => {
     const inputEvent = {
       name: 'cart_viewed',
       properties: {
-        cart_id: 'shopify/cart/1234',
+        cart_id: '/checkout/cn/1234',
       },
       query_parameters: {
         writeKey: 'testWriteKey',
@@ -97,7 +124,7 @@ describe('extractCartTokenAndConfigureAnonymousId', () => {
     const error = new Error('Redis error');
     RedisDB.setVal.mockRejectedValue(error);
 
-    await extractCartTokenAndConfigureAnonymousId(inputEvent, clientId);
+    await handleCartTokenRedisOperations(inputEvent, clientId);
 
     expect(logger.error).toHaveBeenCalledWith(
       'Error handling Redis operations for event: cart_viewed',

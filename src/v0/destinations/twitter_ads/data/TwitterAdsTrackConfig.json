@@ -44,5 +44,13 @@
     "destKey": "contents",
     "sourceKeys": "properties.contents",
     "required": false
+  },
+  {
+    "destKey": "ip_address",
+    "sourceKeys": ["context.ip", "request_ip"]
+  },
+  {
+    "destKey": "user_agent",
+    "sourceKeys": "context.userAgent"
   }
 ]

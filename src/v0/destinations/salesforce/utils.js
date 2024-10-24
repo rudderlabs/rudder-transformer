@@ -3,13 +3,10 @@ const {
   ThrottledError,
   AbortedError,
   OAuthSecretError,
+  isDefinedAndNotNull,
 } = require('@rudderstack/integrations-lib');
 const { handleHttpRequest } = require('../../../adapters/network');
-const {
-  isHttpStatusSuccess,
-  getAuthErrCategoryFromStCode,
-  isDefinedAndNotNull,
-} = require('../../util');
+const { getAuthErrCategoryFromStCode } = require('../../util');
 const Cache = require('../../util/cache');
 const {
   ACCESS_TOKEN_CACHE_TTL,
@@ -18,10 +15,68 @@ const {
   DESTINATION,
   LEGACY,
   OAUTH,
+  SALESFORCE_OAUTH,
   SALESFORCE_OAUTH_SANDBOX,
 } = require('./config');
 
 const ACCESS_TOKEN_CACHE = new Cache(ACCESS_TOKEN_CACHE_TTL);
+
+// ref: https://developer.salesforce.com/docs/atlas.en-us.api_rest.meta/api_rest/errorcodes.htm?q=error%20code
+/**
+ * 
+ * @param {*} response is of structure
+ * [
+ * {
+ *  "message" : "The requested resource does not exist",
+ *  "errorCode" : "NOT_FOUND"
+}
+]
+ * @returns error message
+ */
+const getErrorMessage = (response) => {
+  if (response && Array.isArray(response) && response[0]?.message?.length > 0) {
+    return response[0].message;
+  }
+  return JSON.stringify(response);
+};
+
+const handleAuthError = (
+  errorCode,
+  authKey,
+  authorizationFlow,
+  sourceMessage,
+  destResponse,
+  status,
+) => {
+  if (errorCode === 'INVALID_SESSION_ID') {
+    let authErrCategory = '';
+    if (authorizationFlow === OAUTH) {
+      authErrCategory = getAuthErrCategoryFromStCode(status);
+    } else {
+      ACCESS_TOKEN_CACHE.del(authKey);
+    }
+    throw new RetryableError(
+      `${DESTINATION} Request Failed - due to "INVALID_SESSION_ID", (${authErrCategory}) ${sourceMessage}`,
+      500,
+      destResponse,
+      authErrCategory,
+    );
+  }
+
+  throw new AbortedError(
+    `${DESTINATION} Request Failed: "${status}" due to "${getErrorMessage(destResponse.response)}", (Aborted) ${sourceMessage}`,
+    400,
+    destResponse,
+  );
+};
+
+const handleCommonAbortableError = (destResponse, sourceMessage, status) => {
+  throw new AbortedError(
+    `${DESTINATION} Request Failed: "${status}" due to "${getErrorMessage(destResponse.response)}", (Aborted) ${sourceMessage}`,
+    400,
+    destResponse,
+  );
+};
 
 /**
  * ref: https://developer.salesforce.com/docs/atlas.en-us.api_rest.meta/api_rest/errorcodes.htm
@@ -34,72 +89,70 @@ const ACCESS_TOKEN_CACHE = new Cache(ACCESS_TOKEN_CACHE_TTL);
 const salesforceResponseHandler = (destResponse, sourceMessage, authKey, authorizationFlow) => {
   const { status, response } = destResponse;
 
-  // if the response from destination is not a success case build an explicit error
-  if (!isHttpStatusSuccess(status) && status >= 400) {
-    const matchErrorCode = (errorCode) =>
-      response && Array.isArray(response) && response.some((resp) => resp?.errorCode === errorCode);
-    if (status === 401 && authKey && matchErrorCode('INVALID_SESSION_ID')) {
-      if (authorizationFlow === OAUTH) {
-        throw new RetryableError(
-          `${DESTINATION} Request Failed - due to "INVALID_SESSION_ID", (Retryable) ${sourceMessage}`,
-          500,
+  /**
+   *
+   * @param {*} errorCode
+   * response is of structure
+   * [
+   * {
+   *  "message" : "Request limit exceeded",
+   *  "errorCode" : "REQUEST_LIMIT_EXCEEDED"
+   * }
+   * ]
+   * @returns true if errorCode is found in the response
+   */
+  const matchErrorCode = (errorCode) =>
+    response && Array.isArray(response) && response.some((resp) => resp?.errorCode === errorCode);
+
+  switch (status) {
+    case 401: {
+      let errorCode = 'DEFAULT';
+      if (authKey && matchErrorCode('INVALID_SESSION_ID')) {
+        errorCode = 'INVALID_SESSION_ID';
+      }
+      handleAuthError(errorCode, authKey, authorizationFlow, sourceMessage, destResponse, status);
+      break;
+    }
+    case 403:
+      if (matchErrorCode('REQUEST_LIMIT_EXCEEDED')) {
+        throw new ThrottledError(
+          `${DESTINATION} Request Failed - due to "REQUEST_LIMIT_EXCEEDED", (Throttled) ${sourceMessage}`,
           destResponse,
-          getAuthErrCategoryFromStCode(status),
         );
       }
-      // checking for invalid/expired token errors and evicting cache in that case
-      // rudderJobMetadata contains some destination info which is being used to evict the cache
-      ACCESS_TOKEN_CACHE.del(authKey);
+      handleCommonAbortableError(destResponse, sourceMessage, status);
+      break;
+
+    case 400:
+      if (
+        matchErrorCode('CANNOT_INSERT_UPDATE_ACTIVATE_ENTITY') &&
+        (response?.message?.includes('UNABLE_TO_LOCK_ROW') ||
+          response?.message?.includes('Too many SOQL queries'))
+      ) {
+        throw new RetryableError(
+          `${DESTINATION} Request Failed - "${response.message}", (Retryable) ${sourceMessage}`,
+          500,
+          destResponse,
+        );
+      }
+      handleCommonAbortableError(destResponse, sourceMessage, status);
+      break;
+
+    case 503:
+    case 500:
       throw new RetryableError(
-        `${DESTINATION} Request Failed - due to "INVALID_SESSION_ID", (Retryable) ${sourceMessage}`,
+        `${DESTINATION} Request Failed: ${status} - due to "${getErrorMessage(response)}", (Retryable) ${sourceMessage}`,
         500,
         destResponse,
       );
-    } else if (status === 403 && matchErrorCode('REQUEST_LIMIT_EXCEEDED')) {
-      // If the error code is REQUEST_LIMIT_EXCEEDED, you’ve exceeded API request limits in your org.
-      throw new ThrottledError(
-        `${DESTINATION} Request Failed - due to "REQUEST_LIMIT_EXCEEDED", (Throttled) ${sourceMessage}`,
+
+    default:
+      // Default case: aborting for all other error codes
+      throw new AbortedError(
+        `${DESTINATION} Request Failed: "${status}" due to "${getErrorMessage(response)}", (Aborted) ${sourceMessage}`,
+        400,
         destResponse,
       );
-    } else if (
-      status === 400 &&
-      matchErrorCode('CANNOT_INSERT_UPDATE_ACTIVATE_ENTITY') &&
-      (response?.message?.includes('UNABLE_TO_LOCK_ROW') ||
-        response?.message?.includes('Too many SOQL queries'))
-    ) {
-      // handling the error case where the record is locked by another background job
-      // this is a retryable error
-      throw new RetryableError(
-        `${DESTINATION} Request Failed - "${response.message}", (Retryable) ${sourceMessage}`,
-        500,
-        destResponse,
-      );
-    } else if (status === 503 || status === 500) {
-      // The salesforce server is unavailable to handle the request. Typically this occurs if the server is down
-      // for maintenance or is currently overloaded.
-      throw new RetryableError(
-        `${DESTINATION} Request Failed - due to "${
-          response && Array.isArray(response) && response[0]?.message?.length > 0
-            ? response[0].message
-            : JSON.stringify(response)
-        }", (Retryable) ${sourceMessage}`,
-        500,
-        destResponse,
-      );
-    }
-    // check the error message
-    let errorMessage = '';
-    if (response && Array.isArray(response)) {
-      errorMessage = response[0].message;
-    }
-    // aborting for all other error codes
-    throw new AbortedError(
-      `${DESTINATION} Request Failed: "${status}" due to "${
-        errorMessage || JSON.stringify(response)
-      }", (Aborted) ${sourceMessage}`,
-      400,
-      destResponse,
-    );
   }
 };
 
@@ -182,7 +235,7 @@ const collectAuthorizationInfo = async (event) => {
   let authorizationData;
   const { Name } = event.destination.DestinationDefinition;
   const lowerCaseName = Name?.toLowerCase?.();
-  if (isDefinedAndNotNull(event?.metadata?.secret) || lowerCaseName === SALESFORCE_OAUTH_SANDBOX) {
+  if (lowerCaseName === SALESFORCE_OAUTH_SANDBOX || lowerCaseName === SALESFORCE_OAUTH) {
     authorizationFlow = OAUTH;
     authorizationData = getAccessTokenOauth(event.metadata);
   } else {

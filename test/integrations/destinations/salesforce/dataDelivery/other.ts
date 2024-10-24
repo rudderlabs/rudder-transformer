@@ -58,7 +58,7 @@ export const otherSalesforceScenariosV1: ProxyV1TestData[] = [
             ],
             statTags,
             message:
-              'Salesforce Request Failed - due to "{"error":{"message":"Service Unavailable","description":"The server is currently unable to handle the request due to temporary overloading or maintenance of the server. Please try again later."}}", (Retryable) during Salesforce Response Handling',
+              'Salesforce Request Failed: 503 - due to "{"error":{"message":"Service Unavailable","description":"The server is currently unable to handle the request due to temporary overloading or maintenance of the server. Please try again later."}}", (Retryable) during Salesforce Response Handling',
             status: 500,
           },
         },
@@ -96,7 +96,7 @@ export const otherSalesforceScenariosV1: ProxyV1TestData[] = [
             ],
             statTags,
             message:
-              'Salesforce Request Failed - due to ""Internal Server Error"", (Retryable) during Salesforce Response Handling',
+              'Salesforce Request Failed: 500 - due to ""Internal Server Error"", (Retryable) during Salesforce Response Handling',
             status: 500,
           },
         },

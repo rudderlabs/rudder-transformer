@@ -12,10 +12,12 @@ import {
   SourceInput,
   SourceInputConversionResult,
   SourceInputV2,
+  SourceRequestV2,
 } from '../../types';
 import { getValueFromMessage } from '../../v0/util';
 import genericFieldMap from '../../v0/util/data/GenericFieldMapping.json';
 import { EventType, MappedToDestinationKey } from '../../constants';
+import { versionConversionFactory } from './versionConversion';
 
 export class ControllerUtility {
   private static sourceVersionMap: Map<string, string> = new Map();
@@ -53,6 +55,36 @@ export class ControllerUtility {
     return sourceEvents.map((sourceEvent) => ({
       output: sourceEvent.event as NonNullable<unknown>,
     }));
+  }
+
+  private static convertSourceInputv1Tov2(
+    sourceEvents: SourceInput[],
+  ): SourceInputConversionResult<SourceInputV2>[] {
+    // Currently this is not being used
+    // Hold off on testing this until atleast one v2 source has been implemented
+    return sourceEvents.map((sourceEvent) => {
+      try {
+        const sourceRequest: SourceRequestV2 = {
+          method: '',
+          url: '',
+          proto: '',
+          headers: {},
+          query_parameters: {},
+          body: JSON.stringify(sourceEvent.event),
+        };
+        const sourceInputV2: SourceInputV2 = {
+          request: sourceRequest,
+          source: sourceEvent.source,
+        };
+        return {
+          output: sourceInputV2,
+        };
+      } catch (err) {
+        const conversionError =
+          err instanceof Error ? err : new Error('error converting v1 to v2 spec');
+        return { output: {} as SourceInputV2, conversionError };
+      }
+    });
   }
 
   private static convertSourceInputv0Tov1(
@@ -102,19 +134,28 @@ export class ControllerUtility {
   ): { implementationVersion: string; input: SourceInputConversionResult<NonNullable<unknown>>[] } {
     const sourceToVersionMap = this.getSourceVersionsMap();
     const implementationVersion = sourceToVersionMap.get(sourceType);
-    let updatedInput: SourceInputConversionResult<NonNullable<unknown>>[] = input.map((event) => ({
-      output: event,
-    }));
-    if (requestVersion === 'v0' && implementationVersion === 'v1') {
-      updatedInput = this.convertSourceInputv0Tov1(input);
-    } else if (requestVersion === 'v1' && implementationVersion === 'v0') {
-      updatedInput = this.convertSourceInputv1Tov0(input as SourceInput[]);
-    } else if (requestVersion === 'v2' && implementationVersion === 'v0') {
-      updatedInput = this.convertSourceInputv2Tov0(input as SourceInputV2[]);
-    } else if (requestVersion === 'v2' && implementationVersion === 'v1') {
-      updatedInput = this.convertSourceInputv2Tov1(input as SourceInputV2[]);
-    }
-    return { implementationVersion, input: updatedInput };
+
+    const conversionStrategy = versionConversionFactory.getStrategy(
+      requestVersion,
+      implementationVersion,
+    );
+    return { implementationVersion, input: conversionStrategy.convert(input) };
+
+    // let updatedInput: SourceInputConversionResult<NonNullable<unknown>>[] = input.map((event) => ({
+    //   output: event,
+    // }));
+    // if (requestVersion === 'v0' && implementationVersion === 'v1') {
+    //   updatedInput = this.convertSourceInputv0Tov1(input);
+    // } else if (requestVersion === 'v1' && implementationVersion === 'v0') {
+    //   updatedInput = this.convertSourceInputv1Tov0(input as SourceInput[]);
+    // } else if (requestVersion === 'v1' && implementationVersion === 'v2') {
+    //   updatedInput = this.convertSourceInputv1Tov2(input as SourceInput[]);
+    // } else if (requestVersion === 'v2' && implementationVersion === 'v0') {
+    //   updatedInput = this.convertSourceInputv2Tov0(input as SourceInputV2[]);
+    // } else if (requestVersion === 'v2' && implementationVersion === 'v1') {
+    //   updatedInput = this.convertSourceInputv2Tov1(input as SourceInputV2[]);
+    // }
+    // return { implementationVersion, input: updatedInput };
   }
 
   private static getCompatibleStatusCode(status: number): number {

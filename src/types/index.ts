@@ -403,6 +403,7 @@ export {
   UserDeletionResponse,
   SourceInput,
   SourceInputV2,
+  SourceRequestV2,
   Source,
   SourceInputConversionResult,
   UserTransformationLibrary,

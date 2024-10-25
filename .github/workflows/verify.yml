@@ -32,7 +32,7 @@ jobs:
         uses: Ana06/get-changed-files@v1.2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-      
+
       - name: Filter JS/TS Files
         run: |
           echo "${{ steps.files.outputs.added_modified }}" | tr ' ' '\n' | grep -E '\.(js|ts|jsx|tsx)$' > changed_files.txt
@@ -45,7 +45,6 @@ jobs:
         run: |
           npx prettier --write $(cat changed_files.txt)
       - run: git diff --exit-code
-
       - name: Formatting Error message
         if: ${{ failure() }}
         run: |

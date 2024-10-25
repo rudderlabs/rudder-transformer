@@ -79,9 +79,11 @@ const constructEndpoint = (dataCenter, category) => {
 // Function to get the batch endpoints based on the selected data center
 const getBatchEndpoints = (dataCenter) => {
   const baseUrl = BASE_URL[dataCenter];
+  const identifyEndpoint = `${baseUrl}users/bulkUpdate`;
+  const trackEndpoint = `${baseUrl}events/trackBulk`;
   return {
-    IDENTIFY_BATCH_ENDPOINT: `${baseUrl}users/bulkUpdate`,
-    TRACK_BATCH_ENDPOINT: `${baseUrl}events/trackBulk`,
+    IDENTIFY_BATCH_ENDPOINT: identifyEndpoint,
+    TRACK_BATCH_ENDPOINT: trackEndpoint,
   };
 };
 

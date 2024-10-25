@@ -54,10 +54,9 @@ const getMergeNestedObjects = (config) => {
  * @param {*} message
  * @returns
  */
-const getCatalogEndpoint = (dataCenter, category, message) => {
+const getCatalogEndpoint = (category, message) => {
   const externalIdInfo = getDestinationExternalIDInfoForRetl(message, 'ITERABLE');
-  const baseEndpoint = constructEndpoint(dataCenter, category);
-  return `${baseEndpoint}/${externalIdInfo.objectType}/items`;
+  return `${category.endpoint}/${externalIdInfo.objectType}/items`;
 };
 
 /**
@@ -89,12 +88,18 @@ const hasMultipleResponses = (message, category, config) => {
   return isIdentifyEvent && isIdentifyCategory && hasToken && hasRegisterDeviceOrBrowserKey;
 };
 
+const getCategoryWithEndpoint = (categoryConfig, dataCenter) => {
+  const category = { ...categoryConfig }; // Create a copy of the category
+  category.endpoint = constructEndpoint(dataCenter, category); // Set the correct endpoint
+  return category; // Return the updated category
+};
+
 /**
  * Returns category value
  * @param {*} message
  * @returns
  */
-const getCategoryUsingEventName = (message) => {
+const getCategoryUsingEventName = (message, dataCenter) => {
   let { event } = message;
   if (typeof event === 'string') {
     event = event.toLowerCase();
@@ -102,12 +107,12 @@ const getCategoryUsingEventName = (message) => {
 
   switch (event) {
     case 'order completed':
-      return ConfigCategory.TRACK_PURCHASE;
+      return getCategoryWithEndpoint(ConfigCategory.TRACK_PURCHASE, dataCenter);
     case 'product added':
     case 'product removed':
-      return ConfigCategory.UPDATE_CART;
+      return getCategoryWithEndpoint(ConfigCategory.UPDATE_CART, dataCenter);
     default:
-      return ConfigCategory.TRACK;
+      return getCategoryWithEndpoint(ConfigCategory.TRACK, dataCenter);
   }
 };
 
@@ -754,4 +759,5 @@ module.exports = {
   filterEventsAndPrepareBatchRequests,
   registerDeviceTokenEventPayloadBuilder,
   registerBrowserTokenEventPayloadBuilder,
+  getCategoryWithEndpoint,
 };

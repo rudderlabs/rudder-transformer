@@ -14,6 +14,7 @@ const {
   filterEventsAndPrepareBatchRequests,
   registerDeviceTokenEventPayloadBuilder,
   registerBrowserTokenEventPayloadBuilder,
+  getCategoryWithEndpoint,
 } = require('./util');
 const {
   constructPayload,
@@ -25,7 +26,7 @@ const {
   groupEventsByType: batchEvents,
 } = require('../../util');
 const { JSON_MIME_TYPE } = require('../../util/constant');
-const { mappingConfig, ConfigCategory, constructEndpoint } = require('./config');
+const { mappingConfig, ConfigCategory } = require('./config');
 const { EventType, MappedToDestinationKey } = require('../../../constants');
 
 /**
@@ -89,11 +90,8 @@ const constructPayloadItem = (message, category, destination) => {
  */
 const responseBuilder = (message, category, destination) => {
   const response = defaultRequestConfig();
-  const dataCenter = destination.Config.dataCenter || 'USDC';
   response.endpoint =
-    category.action === 'catalogs'
-      ? getCatalogEndpoint(dataCenter, category, message)
-      : constructEndpoint(dataCenter, category);
+    category.action === 'catalogs' ? getCatalogEndpoint(category, message) : category.endpoint;
   response.method = defaultPostRequestConfig.requestMethod;
   response.body.JSON = constructPayloadItem(message, category, destination);
   response.headers = {
@@ -123,7 +121,7 @@ const responseBuilderForRegisterDeviceOrBrowserTokenEvents = (message, destinati
  * @param {*} message
  * @returns
  */
-const getCategory = (messageType, message) => {
+const getCategory = (messageType, message, dataCenter) => {
   const eventType = messageType.toLowerCase();
 
   switch (eventType) {
@@ -132,17 +130,17 @@ const getCategory = (messageType, message) => {
         get(message, MappedToDestinationKey) &&
         getDestinationExternalIDInfoForRetl(message, 'ITERABLE').objectType !== 'users'
       ) {
-        return ConfigCategory.CATALOG;
+        return getCategoryWithEndpoint(ConfigCategory.CATALOG, dataCenter);
       }
-      return ConfigCategory.IDENTIFY;
+      return getCategoryWithEndpoint(ConfigCategory.IDENTIFY, dataCenter);
     case EventType.PAGE:
-      return ConfigCategory.PAGE;
+      return getCategoryWithEndpoint(ConfigCategory.PAGE, dataCenter);
     case EventType.SCREEN:
-      return ConfigCategory.SCREEN;
+      return getCategoryWithEndpoint(ConfigCategory.SCREEN, dataCenter);
     case EventType.TRACK:
-      return getCategoryUsingEventName(message);
+      return getCategoryUsingEventName(message, dataCenter);
     case EventType.ALIAS:
-      return ConfigCategory.ALIAS;
+      return getCategoryWithEndpoint(ConfigCategory.ALIAS, dataCenter);
     default:
       throw new InstrumentationError(`Message type ${eventType} not supported`);
   }
@@ -154,7 +152,7 @@ const process = (event) => {
     throw new InstrumentationError('Event type is required');
   }
   const messageType = message.type.toLowerCase();
-  const category = getCategory(messageType, message);
+  const category = getCategory(messageType, message, destination.Config.dataCenter);
   const response = responseBuilder(message, category, destination);
 
   if (hasMultipleResponses(message, category, destination.Config)) {

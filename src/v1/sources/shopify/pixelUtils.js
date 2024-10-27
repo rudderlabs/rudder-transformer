@@ -31,9 +31,6 @@ function setNestedValue(object, path, value) {
 }
 
 function mapContextLineObjectKeys(sourceObject, keyMappings) {
-  if (!Array.isArray(keyMappings)) {
-    throw new TypeError('keyMappings should be an array');
-  }
   const resultObject = { ...sourceObject };
 
   // eslint-disable-next-line @typescript-eslint/no-shadow
@@ -47,9 +44,6 @@ function mapContextLineObjectKeys(sourceObject, keyMappings) {
 }
 
 function mapObjectKeys(sourceObject, keyMappings) {
-  if (!Array.isArray(keyMappings)) {
-    throw new TypeError('mapping should be an array');
-  }
   const trackProperties = {};
 
   keyMappings.forEach(({ sourceKeys, destKeys }) => {

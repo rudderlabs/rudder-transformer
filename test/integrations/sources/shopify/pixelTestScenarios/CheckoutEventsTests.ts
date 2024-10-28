@@ -342,17 +342,8 @@ export const pixelCheckoutEventsTestScenarios = [
                   properties: {
                     products: [
                       {
-                        discountAllocations: [],
-                        id: '41327143321713',
                         quantity: 2,
-                        title: 'The Collection Snowboard: Liquid',
                         variant: 'The Collection Snowboard: Liquid',
-                        finalLinePrice: {
-                          amount: 1499.9,
-                          currencyCode: 'USD',
-                        },
-                        sellingPlanAllocation: null,
-                        properties: [],
                         name: 'The Collection Snowboard: Liquid',
                         image_url:
                           'https://cdn.shopify.com/s/files/1/0590/2696/4593/files/Main_b13ad453-477c-4ed1-9b43-81f3345adfd6_64x64.jpg?v=1724736600',
@@ -786,21 +777,12 @@ export const pixelCheckoutEventsTestScenarios = [
                     SHOPIFY: true,
                   },
                   type: 'track',
-                  event: 'Checkout Completed',
+                  event: 'Order Completed',
                   properties: {
                     products: [
                       {
-                        discountAllocations: [],
-                        id: '41327143321713',
                         quantity: 2,
-                        title: 'The Collection Snowboard: Liquid',
                         variant: 'The Collection Snowboard: Liquid',
-                        finalLinePrice: {
-                          amount: 1499.9,
-                          currencyCode: 'USD',
-                        },
-                        sellingPlanAllocation: null,
-                        properties: [],
                         name: 'The Collection Snowboard: Liquid',
                         image_url:
                           'https://cdn.shopify.com/s/files/1/0590/2696/4593/files/Main_b13ad453-477c-4ed1-9b43-81f3345adfd6_64x64.jpg?v=1724736600',
@@ -812,17 +794,8 @@ export const pixelCheckoutEventsTestScenarios = [
                         brand: 'Hydrogen Vendor',
                       },
                       {
-                        discountAllocations: [],
-                        id: '41327143157873',
                         quantity: 2,
-                        title: 'The Multi-managed Snowboard',
                         variant: 'The Multi-managed Snowboard',
-                        finalLinePrice: {
-                          amount: 1259.9,
-                          currencyCode: 'USD',
-                        },
-                        sellingPlanAllocation: null,
-                        properties: [],
                         name: 'The Multi-managed Snowboard',
                         image_url:
                           'https://cdn.shopify.com/s/files/1/0590/2696/4593/files/Main_9129b69a-0c7b-4f66-b6cf-c4222f18028a_64x64.jpg?v=1724736597',

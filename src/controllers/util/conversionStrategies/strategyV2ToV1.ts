@@ -6,7 +6,9 @@ export class StrategyV2ToV1 extends VersionConversionStrategy<SourceInputV2, Sou
     return sourceEvents.map((sourceEvent) => {
       try {
         const v1Event = { event: JSON.parse(sourceEvent.request.body), source: sourceEvent.source };
-        v1Event.event.query_parameters = sourceEvent.request.query_parameters;
+        if (sourceEvent.request) {
+          v1Event.event.query_parameters = sourceEvent.request.query_parameters;
+        }
         return { output: v1Event };
       } catch (err) {
         const conversionError =

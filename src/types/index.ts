@@ -352,17 +352,20 @@ type Source = {
 };
 
 type SourceInput = {
-  event: NonNullable<unknown>[];
+  event: {
+    query_parameters?: any;
+    [key: string]: any;
+  };
   source?: Source;
 };
 
 type SourceRequestV2 = {
-  method: string;
-  url: string;
-  proto: string;
+  method?: string;
+  url?: string;
+  proto?: string;
   body: string;
-  headers: NonNullable<unknown>;
-  query_parameters: NonNullable<unknown>;
+  headers?: Record<string, unknown>;
+  query_parameters?: Record<string, unknown>;
 };
 
 type SourceInputV2 = {

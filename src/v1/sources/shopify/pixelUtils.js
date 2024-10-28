@@ -37,7 +37,7 @@ function setNestedValue(object, path, value) {
  * @param {Array} keyMappings
  * @returns {Object} resultObject
  */
-function mapContextLineObjectKeys(sourceObject, keyMappings) {
+function mapContextObjectKeys(sourceObject, keyMappings) {
   const resultObject = { ...sourceObject };
 
   // eslint-disable-next-line @typescript-eslint/no-shadow
@@ -73,7 +73,8 @@ function mapObjectKeys(sourceObject, keyMappings) {
 const createMessage = (eventType, eventName, properties, context) => {
   const message = new Message(INTEGERATION);
   message.setEventType(eventType);
-  message.setEventName(eventName);
+  if (eventType === EventType.TRACK) message.setEventName(eventName);
+  else message.name = eventName;
   message.properties = properties;
   message.context = context;
   return message;
@@ -81,13 +82,8 @@ const createMessage = (eventType, eventName, properties, context) => {
 
 const pageViewedEventBuilder = (inputEvent) => {
   const { data, context } = inputEvent;
-  const pageEventContextValues = mapContextLineObjectKeys(context, contextualFieldMappingJSON);
-  const message = new Message(INTEGERATION);
-  message.name = 'Page View';
-  message.setEventType(EventType.PAGE);
-  message.properties = { ...data };
-  message.context = { ...pageEventContextValues };
-  return message;
+  const pageEventContextValues = mapContextObjectKeys(context, contextualFieldMappingJSON);
+  return createMessage(EventType.PAGE, 'Page View', { ...data }, pageEventContextValues);
 };
 
 const cartViewedEventBuilder = (inputEvent) => {
@@ -107,10 +103,7 @@ const cartViewedEventBuilder = (inputEvent) => {
     cart_id: inputEvent.data.cart.id,
     total,
   };
-  const contextualPayload = mapContextLineObjectKeys(
-    inputEvent.context,
-    contextualFieldMappingJSON,
-  );
+  const contextualPayload = mapContextObjectKeys(inputEvent.context, contextualFieldMappingJSON);
   return createMessage(EventType.TRACK, 'Cart Viewed', properties, contextualPayload);
 };
 
@@ -129,10 +122,7 @@ const productListViewedEventBuilder = (inputEvent) => {
     products,
   };
 
-  const contextualPayload = mapContextLineObjectKeys(
-    inputEvent.context,
-    contextualFieldMappingJSON,
-  );
+  const contextualPayload = mapContextObjectKeys(inputEvent.context, contextualFieldMappingJSON);
   return createMessage(EventType.TRACK, 'Product List Viewed', properties, contextualPayload);
 };
 
@@ -140,10 +130,7 @@ const productViewedEventBuilder = (inputEvent) => {
   const properties = {
     ...mapObjectKeys(inputEvent.data, productViewedEventMappingJSON),
   };
-  const contextualPayload = mapContextLineObjectKeys(
-    inputEvent.context,
-    contextualFieldMappingJSON,
-  );
+  const contextualPayload = mapContextObjectKeys(inputEvent.context, contextualFieldMappingJSON);
   return createMessage(EventType.TRACK, 'Product Viewed', properties, contextualPayload);
 };
 
@@ -151,10 +138,7 @@ const productToCartEventBuilder = (inputEvent) => {
   const properties = {
     ...mapObjectKeys(inputEvent.data, productToCartEventMappingJSON),
   };
-  const contextualPayload = mapContextLineObjectKeys(
-    inputEvent.context,
-    contextualFieldMappingJSON,
-  );
+  const contextualPayload = mapContextObjectKeys(inputEvent.context, contextualFieldMappingJSON);
   return createMessage(
     EventType.TRACK,
     PIXEL_EVENT_MAPPING[inputEvent.name],
@@ -184,10 +168,7 @@ const checkoutEventBuilder = (inputEvent) => {
     value: inputEvent?.data?.checkout?.totalPrice?.amount,
     tax: inputEvent?.data?.checkout?.totalTax?.amount,
   };
-  const contextualPayload = mapContextLineObjectKeys(
-    inputEvent.context,
-    contextualFieldMappingJSON,
-  );
+  const contextualPayload = mapContextObjectKeys(inputEvent.context, contextualFieldMappingJSON);
   return createMessage(
     EventType.TRACK,
     PIXEL_EVENT_MAPPING[inputEvent.name],
@@ -197,10 +178,7 @@ const checkoutEventBuilder = (inputEvent) => {
 };
 
 const checkoutStepEventBuilder = (inputEvent) => {
-  const contextualPayload = mapContextLineObjectKeys(
-    inputEvent.context,
-    contextualFieldMappingJSON,
-  );
+  const contextualPayload = mapContextObjectKeys(inputEvent.context, contextualFieldMappingJSON);
   const properties = {
     ...inputEvent.data.checkout,
   };
@@ -216,10 +194,7 @@ const searchEventBuilder = (inputEvent) => {
   const properties = {
     query: inputEvent.data.searchResult.query,
   };
-  const contextualPayload = mapContextLineObjectKeys(
-    inputEvent.context,
-    contextualFieldMappingJSON,
-  );
+  const contextualPayload = mapContextObjectKeys(inputEvent.context, contextualFieldMappingJSON);
   return createMessage(
     EventType.TRACK,
     PIXEL_EVENT_MAPPING[inputEvent.name],

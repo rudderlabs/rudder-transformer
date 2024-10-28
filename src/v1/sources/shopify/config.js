@@ -27,7 +27,7 @@ const PIXEL_EVENT_MAPPING = {
   product_viewed: 'Product Viewed',
   collection_viewed: 'Collection Viewed',
   checkout_started: 'Checkout Started',
-  checkout_completed: 'Checkout Completed',
+  checkout_completed: 'Order Completed',
   checkout_address_info_submitted: 'Checkout Address Info Submitted',
   checkout_contact_info_submitted: 'Checkout Contact Info Submitted',
   checkout_shipping_info_submitted: 'Checkout Shipping Info Submitted',

@@ -30,6 +30,13 @@ function setNestedValue(object, path, value) {
   }, object);
 }
 
+/*
+ * Creates a copy of the source object with the keys mapped to the destination keys
+ * Keys that are not present in the mapping will be copied as is
+ * @param {Object} sourceObject
+ * @param {Array} keyMappings
+ * @returns {Object} resultObject
+ */
 function mapContextLineObjectKeys(sourceObject, keyMappings) {
   const resultObject = { ...sourceObject };
 
@@ -43,6 +50,13 @@ function mapContextLineObjectKeys(sourceObject, keyMappings) {
   }, resultObject);
 }
 
+/*
+ * Maps the keys of the source object to the destination object
+ * Only the keys that are present in the mapping will be copied
+ * @param {Object} sourceObject
+ * @param {Array} keyMappings
+ * @returns {Object} trackProperties
+ */
 function mapObjectKeys(sourceObject, keyMappings) {
   const trackProperties = {};
 

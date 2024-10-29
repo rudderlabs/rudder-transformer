@@ -1,6 +1,6 @@
 {
   "name": "rudder-transformer",
-  "version": "1.82.2",
+  "version": "1.83.0",
   "description": "",
   "homepage": "https://github.com/rudderlabs/rudder-transformer#readme",
   "bugs": {
@@ -92,7 +92,7 @@
     "json-size": "^1.0.0",
     "jsontoxml": "^1.0.1",
     "jstoxml": "^5.0.2",
-    "koa": "^2.14.1",
+    "koa": "^2.15.3",
     "koa-bodyparser": "^4.4.0",
     "koa2-swagger-ui": "^5.7.0",
     "libphonenumber-js": "^1.11.1",
@@ -128,7 +128,7 @@
     "@types/fast-json-stable-stringify": "^2.1.0",
     "@types/jest": "^29.5.1",
     "@types/jsonpath": "^0.2.4",
-    "@types/koa": "^2.13.6",
+    "@types/koa": "^2.15.0",
     "@types/koa-bodyparser": "^4.3.10",
     "@types/lodash": "^4.14.197",
     "@types/node": "^20.2.5",

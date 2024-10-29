@@ -20,12 +20,12 @@ const destination: Destination = {
     connectionMode: {
       web: 'cloud',
     },
+    subdomain: 'demo',
     consentManagement: {},
     oneTrustCookieCategories: {},
     ketchConsentPurposes: {},
     tuneEvents: [
       {
-        url: 'https://demo.go2cloud.org/aff_l?offer_id=45&aff_id=1029',
         eventName: 'Product added',
         standardMapping: [
           { to: 'aff_id', from: 'affId' },
@@ -89,7 +89,8 @@ export const trackTestdata: ProcessorTestData[] = [
           {
             output: transformResultBuilder({
               method: 'POST',
-              endpoint: 'https://demo.go2cloud.org/aff_l?offer_id=45&aff_id=1029',
+              endpoint:
+                'https://demo.go2cloud.org/aff_l?security_token=1123&transaction_id=test-123&adv_sub2=0.0.0.0&adv_unique1=customValue',
               event: 'Product added',
               headers: {},
               params: {

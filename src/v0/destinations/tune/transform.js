@@ -10,11 +10,6 @@ const {
 
 const getTuneEndpoint = (subdomain) => `https://${subdomain}.go2cloud.org/aff_l`;
 
-const toQueryString = (params) =>
-  Object.entries(params)
-    .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
-    .join('&');
-
 const mapPropertiesWithNestedSupport = (msg, properties, mappings) => {
   const mappedObj = {}; // Create a new object for parameters
   Object.entries(mappings).forEach(([key, value]) => {
@@ -51,12 +46,11 @@ const responseBuilder = (message, { Config }) => {
     };
 
     const endpoint = getTuneEndpoint(subdomain);
-    const queryString = toQueryString(params);
-    const finalEndpoint = queryString ? `${endpoint}?${queryString}` : endpoint;
+
     // Prepare the response
     const response = defaultRequestConfig();
     response.params = params; // Set only the mapped params
-    response.endpoint = finalEndpoint;
+    response.endpoint = endpoint;
 
     return response;
   }

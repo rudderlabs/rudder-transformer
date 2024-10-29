@@ -89,8 +89,7 @@ export const trackTestdata: ProcessorTestData[] = [
           {
             output: transformResultBuilder({
               method: 'POST',
-              endpoint:
-                'https://demo.go2cloud.org/aff_l?security_token=1123&transaction_id=test-123&adv_sub2=0.0.0.0&adv_unique1=customValue',
+              endpoint: 'https://demo.go2cloud.org/aff_l',
               event: 'Product added',
               headers: {},
               params: {

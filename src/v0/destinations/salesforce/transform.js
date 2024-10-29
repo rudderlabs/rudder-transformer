@@ -29,7 +29,7 @@ const {
 } = require('../../util');
 const { handleHttpRequest } = require('../../../adapters/network');
 const { JSON_MIME_TYPE } = require('../../util/constant');
-const { default: salesforceFactory } = require('../../util/salesforce/factory');
+const { default: salesforceRegistry } = require('../../util/salesforce/registry');
 
 // Basic response builder
 // We pass the parameterMap with any processing-specific key-value pre-populated
@@ -92,7 +92,7 @@ function responseBuilderSimple(
   response.method = defaultPostRequestConfig.requestMethod;
   response.headers = {
     'Content-Type': JSON_MIME_TYPE,
-    ...salesforceFactory[authorizationFlow].getAuthHeader(authorizationData),
+    ...salesforceRegistry[authorizationFlow].getAuthHeader(authorizationData),
   };
   response.body.JSON = removeUndefinedValues(rawPayload);
   response.endpoint = targetEndpoint;
@@ -114,7 +114,7 @@ async function getSaleforceIdForRecord(
     'get',
     objSearchUrl,
     {
-      headers: salesforceFactory[authorizationFlow].getAuthHeader(authorizationData),
+      headers: salesforceRegistry[authorizationFlow].getAuthHeader(authorizationData),
     },
     {
       metadata,
@@ -126,7 +126,7 @@ async function getSaleforceIdForRecord(
     },
   );
   if (!isHttpStatusSuccess(processedsfSearchResponse.status)) {
-    salesforceFactory[authorizationFlow].responseHandler(
+    salesforceRegistry[authorizationFlow].responseHandler(
       processedsfSearchResponse,
       `:- SALESFORCE SEARCH BY ID`,
       destination.ID,
@@ -233,7 +233,7 @@ async function getSalesforceIdFromPayload(
       'get',
       leadQueryUrl,
       {
-        headers: salesforceFactory[authorizationFlow].getAuthHeader(authorizationData),
+        headers: salesforceRegistry[authorizationFlow].getAuthHeader(authorizationData),
       },
       {
         metadata,
@@ -246,7 +246,7 @@ async function getSalesforceIdFromPayload(
     );
 
     if (!isHttpStatusSuccess(processedLeadQueryResponse.status)) {
-      salesforceFactory[authorizationFlow].responseHandler(
+      salesforceRegistry[authorizationFlow].responseHandler(
         processedLeadQueryResponse,
         `:- during Lead Query`,
         destination.ID,
@@ -357,7 +357,7 @@ async function processSingleMessage(
 }
 
 async function process(event) {
-  const authInfo = await salesforceFactory.getAuthInfo(event);
+  const authInfo = await salesforceRegistry.getAuthInfo(event);
   const response = await processSingleMessage(
     event,
     authInfo.authorizationData,
@@ -369,7 +369,7 @@ async function process(event) {
 const processRouterDest = async (inputs, reqMetadata) => {
   let authInfo;
   try {
-    authInfo = await salesforceFactory.getAuthInfo(inputs[0]);
+    authInfo = await salesforceRegistry.getAuthInfo(inputs[0]);
   } catch (error) {
     const errObj = generateErrorObject(error);
     const respEvents = getErrorRespEvents(

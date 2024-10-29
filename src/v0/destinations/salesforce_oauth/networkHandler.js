@@ -2,7 +2,7 @@ const { proxyRequest, prepareProxyRequest } = require('../../../adapters/network
 const { processAxiosResponse } = require('../../../adapters/utils/networkUtils');
 const { isHttpStatusSuccess } = require('../../util');
 const { SALESFORCE_OAUTH } = require('../salesforce/config');
-const { default: salesforceFactory } = require('../../util/salesforce/factory');
+const { default: salesforceRegistry } = require('../../util/salesforce/registry');
 
 const responseHandler = (responseParams) => {
   const { destinationResponse, destType } = responseParams;
@@ -10,7 +10,7 @@ const responseHandler = (responseParams) => {
   const { status } = destinationResponse;
 
   if (!isHttpStatusSuccess(status) && status >= 400) {
-    salesforceFactory[SALESFORCE_OAUTH].responseHandler(
+    salesforceRegistry[SALESFORCE_OAUTH].responseHandler(
       destinationResponse,
       'during Salesforce Response Handling',
     );

@@ -11,7 +11,7 @@ const {
 } = require('../../util');
 const logger = require('../../../logger');
 const { MappedToDestinationKey } = require('../../../constants');
-const { JSON_MIME_TYPE } = require('../../util/constant');
+const { JSON_MIME_TYPE, VDM_V2_SCHEMA_VERSION } = require('../../util/constant');
 const {
   addressInfoMapping,
   attributeMapping,
@@ -29,20 +29,33 @@ const hashEncrypt = (object) => {
   });
 };
 
-const responseBuilder = (accessToken, developerToken, body, { Config }, message, consentBlock) => {
+const responseBuilder = (
+  accessToken,
+  developerToken,
+  body,
+  { Config },
+  connection,
+  message,
+  consentBlock,
+) => {
   const payload = body;
   const response = defaultRequestConfig();
   const filteredCustomerId = removeHyphens(Config.customerId);
   response.endpoint = `${BASE_ENDPOINT}/${filteredCustomerId}/offlineUserDataJobs`;
   response.body.JSON = removeUndefinedAndNullValues(payload);
-  let operationAudienceId = Config.audienceId || Config.listId;
-  const mappedToDestination = get(message, MappedToDestinationKey);
-  if (!operationAudienceId && mappedToDestination) {
-    const { objectType } = getDestinationExternalIDInfoForRetl(
-      message,
-      'GOOGLE_ADWORDS_REMARKETING_LISTS',
-    );
-    operationAudienceId = objectType;
+  let operationAudienceId;
+  if (connection?.config?.destination?.schemaVersion === VDM_V2_SCHEMA_VERSION) {
+    operationAudienceId = connection.config.audienceId;
+  } else {
+    operationAudienceId = Config.audienceId || Config.listId;
+    const mappedToDestination = get(message, MappedToDestinationKey);
+    if (!operationAudienceId && mappedToDestination) {
+      const { objectType } = getDestinationExternalIDInfoForRetl(
+        message,
+        'GOOGLE_ADWORDS_REMARKETING_LISTS',
+      );
+      operationAudienceId = objectType;
+    }
   }
   if (!isDefinedAndNotNullAndNotEmpty(operationAudienceId)) {
     throw new ConfigurationError('List ID is a mandatory field');
@@ -73,7 +86,7 @@ const responseBuilder = (accessToken, developerToken, body, { Config }, message,
  * @param {rudder event destination} Config
  * @returns
  */
-const populateIdentifiers = (attributeArray, { Config }) => {
+const populateIdentifiers = (attributeArray, { Config }, connection) => {
   const userIdentifier = [];
   const { typeOfList } = Config;
   const { isHashRequired, userSchema } = Config;

@@ -17,6 +17,7 @@ const processRecordEventArray = (
   records,
   message,
   destination,
+  connection,
   accessToken,
   developerToken,
   operationType,
@@ -31,7 +32,7 @@ const processRecordEventArray = (
     metadata.push(record.metadata);
   });
 
-  const userIdentifiersList = populateIdentifiers(fieldsArray, destination);
+  const userIdentifiersList = populateIdentifiers(fieldsArray, destination, connection);
 
   const outputPayload = constructPayload(message, offlineDataJobsMapping);
   outputPayload.operations = [];
@@ -68,7 +69,15 @@ const processRecordEventArray = (
   Object.values(outputPayloads).forEach((data) => {
     const consentObj = populateConsentFromConfig(destination.Config, consentConfigMap);
     toSendEvents.push(
-      responseBuilder(accessToken, developerToken, data, destination, message, consentObj),
+      responseBuilder(
+        accessToken,
+        developerToken,
+        data,
+        destination,
+        connection,
+        message,
+        consentObj,
+      ),
     );
   });
 
@@ -78,7 +87,7 @@ const processRecordEventArray = (
 };
 
 async function processRecordInputs(groupedRecordInputs) {
-  const { destination, message, metadata } = groupedRecordInputs[0];
+  const { destination, message, metadata, connection } = groupedRecordInputs[0];
   const accessToken = getAccessToken(metadata, 'access_token');
   const developerToken = getValueFromMessage(metadata, 'secret.developer_token');
 
@@ -95,6 +104,7 @@ async function processRecordInputs(groupedRecordInputs) {
       groupedRecordsByAction.delete,
       message,
       destination,
+      connection,
       accessToken,
       developerToken,
       'remove',
@@ -106,6 +116,7 @@ async function processRecordInputs(groupedRecordInputs) {
       groupedRecordsByAction.insert,
       message,
       destination,
+      connection,
       accessToken,
       developerToken,
       'add',
@@ -117,6 +128,7 @@ async function processRecordInputs(groupedRecordInputs) {
       groupedRecordsByAction.update,
       message,
       destination,
+      connection,
       accessToken,
       developerToken,
       'add',

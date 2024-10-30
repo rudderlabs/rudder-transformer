@@ -17,7 +17,6 @@ const {
   IDENTIFY_MAX_BATCH_SIZE,
   IDENTIFY_MAX_BODY_SIZE_IN_BYTES,
   constructEndpoint,
-  getBatchEndpoints,
 } = require('./config');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 const { EventType, MappedToDestinationKey } = require('../../../constants');
@@ -88,11 +87,10 @@ const hasMultipleResponses = (message, category, config) => {
   return isIdentifyEvent && isIdentifyCategory && hasToken && hasRegisterDeviceOrBrowserKey;
 };
 
-const getCategoryWithEndpoint = (categoryConfig, dataCenter) => {
-  const category = { ...categoryConfig }; // Create a copy of the category
-  category.endpoint = constructEndpoint(dataCenter, category); // Set the correct endpoint
-  return category; // Return the updated category
-};
+const getCategoryWithEndpoint = (categoryConfig, dataCenter) => ({
+  ...categoryConfig,
+  endpoint: constructEndpoint(dataCenter, categoryConfig),
+});
 
 /**
  * Returns category value
@@ -451,7 +449,7 @@ const processUpdateUserBatch = (chunk, registerDeviceOrBrowserTokenEvents) => {
 
     const { destination, metadata, nonBatchedRequests } = batch;
     const { apiKey, dataCenter } = destination.Config;
-    const { IDENTIFY_BATCH_ENDPOINT } = getBatchEndpoints(dataCenter);
+    const IDENTIFY_BATCH_ENDPOINT = constructEndpoint(dataCenter, { endpoint: 'users/bulkUpdate' });
     const batchedResponse = combineBatchedAndNonBatchedEvents(
       apiKey,
       metadata,
@@ -559,7 +557,7 @@ const processTrackBatch = (chunk) => {
 
   const { destination } = chunk[0];
   const { apiKey, dataCenter } = destination.Config;
-  const { TRACK_BATCH_ENDPOINT } = getBatchEndpoints(dataCenter);
+  const TRACK_BATCH_ENDPOINT = constructEndpoint(dataCenter, { endpoint: 'users/bulkUpdate' });
   chunk.forEach((event) => {
     metadata.push(event.metadata);
     events.push(get(event, `${MESSAGE_JSON_PATH}`));

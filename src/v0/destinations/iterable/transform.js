@@ -117,12 +117,11 @@ const responseBuilderForRegisterDeviceOrBrowserTokenEvents = (message, destinati
 
 /**
  * Function to find category value
- * @param {*} messageType
  * @param {*} message
  * @returns
  */
-const getCategory = (messageType, message, dataCenter) => {
-  const eventType = messageType.toLowerCase();
+const getCategory = (message, dataCenter) => {
+  const eventType = message.type.toLowerCase();
 
   switch (eventType) {
     case EventType.IDENTIFY:
@@ -151,8 +150,7 @@ const process = (event) => {
   if (!message.type) {
     throw new InstrumentationError('Event type is required');
   }
-  const messageType = message.type.toLowerCase();
-  const category = getCategory(messageType, message, destination.Config.dataCenter);
+  const category = getCategory(message, destination.Config.dataCenter);
   const response = responseBuilder(message, category, destination);
 
   if (hasMultipleResponses(message, category, destination.Config)) {

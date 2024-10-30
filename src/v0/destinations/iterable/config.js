@@ -76,17 +76,6 @@ const constructEndpoint = (dataCenter, category) => {
   return `${baseUrl}${category.endpoint}`;
 };
 
-// Function to get the batch endpoints based on the selected data center
-const getBatchEndpoints = (dataCenter) => {
-  const baseUrl = BASE_URL[dataCenter];
-  const identifyEndpoint = `${baseUrl}users/bulkUpdate`;
-  const trackEndpoint = `${baseUrl}events/trackBulk`;
-  return {
-    IDENTIFY_BATCH_ENDPOINT: identifyEndpoint,
-    TRACK_BATCH_ENDPOINT: trackEndpoint,
-  };
-};
-
 const IDENTIFY_MAX_BATCH_SIZE = 1000;
 const IDENTIFY_MAX_BODY_SIZE_IN_BYTES = 4000000;
 
@@ -96,7 +85,6 @@ module.exports = {
   mappingConfig,
   ConfigCategory,
   constructEndpoint,
-  getBatchEndpoints,
   TRACK_MAX_BATCH_SIZE,
   IDENTIFY_MAX_BATCH_SIZE,
   IDENTIFY_MAX_BODY_SIZE_IN_BYTES,

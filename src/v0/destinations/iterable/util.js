@@ -657,12 +657,13 @@ const mapRegisterDeviceOrBrowserTokenEventsWithJobId = (events) => {
  */
 const categorizeEvent = (event) => {
   const { message, metadata, destination, error } = event;
+  const { dataCenter } = destination.Config;
 
   if (error) {
     return { type: 'error', data: event };
   }
 
-  if (message.endpoint === ConfigCategory.IDENTIFY.endpoint) {
+  if (message.endpoint === constructEndpoint(dataCenter, ConfigCategory.IDENTIFY)) {
     return { type: 'updateUser', data: { message, metadata, destination } };
   }
 
@@ -671,8 +672,8 @@ const categorizeEvent = (event) => {
   }
 
   if (
-    message.endpoint === ConfigCategory.IDENTIFY_BROWSER.endpoint ||
-    message.endpoint === ConfigCategory.IDENTIFY_DEVICE.endpoint
+    message.endpoint === constructEndpoint(dataCenter, ConfigCategory.IDENTIFY_BROWSER) ||
+    message.endpoint === constructEndpoint(dataCenter, ConfigCategory.IDENTIFY_DEVICE)
   ) {
     return { type: 'registerDeviceOrBrowser', data: { message, metadata, destination } };
   }

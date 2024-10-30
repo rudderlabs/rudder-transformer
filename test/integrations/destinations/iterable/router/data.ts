@@ -550,7 +550,7 @@ export const data = [
                 version: '1',
                 type: 'REST',
                 method: 'POST',
-                endpoint: 'https://api.iterable.com/api/users/update',
+                endpoint: 'https://api.iterable.com/api/users/bulkUpdate',
                 headers: {
                   'Content-Type': 'application/json',
                   api_key: '62d12498c37c4fd8a1a546c2d35c2f60',
@@ -558,16 +558,20 @@ export const data = [
                 params: {},
                 body: {
                   JSON: {
-                    email: 'manashi@website.com',
-                    dataFields: {
-                      city: 'Bangalore',
-                      name: 'manashi',
-                      email: 'manashi@website.com',
-                      country: 'India',
-                    },
-                    userId: 'abcdeeeeeeeexxxx102',
-                    preferUserId: true,
-                    mergeNestedObjects: true,
+                    users: [
+                      {
+                        email: 'manashi@website.com',
+                        dataFields: {
+                          city: 'Bangalore',
+                          name: 'manashi',
+                          email: 'manashi@website.com',
+                          country: 'India',
+                        },
+                        userId: 'abcdeeeeeeeexxxx102',
+                        preferUserId: true,
+                        mergeNestedObjects: true,
+                      },
+                    ],
                   },
                   JSON_ARRAY: {},
                   XML: {},
@@ -576,7 +580,7 @@ export const data = [
                 files: {},
               },
               metadata: [{ jobId: 3, userId: 'u1' }],
-              batched: false,
+              batched: true,
               statusCode: 200,
               destination: {
                 Config: {
@@ -793,19 +797,23 @@ export const data = [
                 params: {},
                 body: {
                   JSON: {
-                    email: 'lynnanderson@smith.net',
-                    dataFields: {
-                      administrative_unit: 'Minnesota',
-                      am_pm: 'AM',
-                      boolean: true,
-                      firstname: 'Jacqueline',
-                      pPower: 'AM',
-                      userId: 'Jacqueline',
-                      email: 'lynnanderson@smith.net',
-                    },
-                    userId: 'lynnanderson@smith.net',
-                    preferUserId: true,
-                    mergeNestedObjects: true,
+                    users: [
+                      {
+                        email: 'lynnanderson@smith.net',
+                        dataFields: {
+                          administrative_unit: 'Minnesota',
+                          am_pm: 'AM',
+                          boolean: true,
+                          firstname: 'Jacqueline',
+                          pPower: 'AM',
+                          userId: 'Jacqueline',
+                          email: 'lynnanderson@smith.net',
+                        },
+                        userId: 'lynnanderson@smith.net',
+                        preferUserId: true,
+                        mergeNestedObjects: true,
+                      },
+                    ],
                   },
                   JSON_ARRAY: {},
                   XML: {},
@@ -814,7 +822,7 @@ export const data = [
                 files: {},
               },
               metadata: [{ jobId: 5, userId: 'u1' }],
-              batched: false,
+              batched: true,
               statusCode: 200,
               destination: {
                 ID: '1zia9wKshXt80YksLmUdJnr7IHI',

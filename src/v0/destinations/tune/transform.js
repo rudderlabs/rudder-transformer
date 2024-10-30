@@ -8,6 +8,8 @@ const {
   isNotEmpty,
 } = require('../../util');
 
+const getTuneEndpoint = (subdomain) => `https://${subdomain}.go2cloud.org/aff_l`;
+
 const mapPropertiesWithNestedSupport = (msg, properties, mappings) => {
   const mappedObj = {}; // Create a new object for parameters
   Object.entries(mappings).forEach(([key, value]) => {
@@ -26,7 +28,7 @@ const mapPropertiesWithNestedSupport = (msg, properties, mappings) => {
 };
 
 const responseBuilder = (message, { Config }) => {
-  const { tuneEvents } = Config; // Extract tuneEvents from config
+  const { tuneEvents, subdomain } = Config; // Extract tuneEvents from config
   const { properties, event: messageEvent } = message; // Destructure properties and event from message
 
   // Find the relevant tune event based on the message's event name
@@ -43,10 +45,12 @@ const responseBuilder = (message, { Config }) => {
       ...mapPropertiesWithNestedSupport(message, properties, advUniqueIdHashMap),
     };
 
+    const endpoint = getTuneEndpoint(subdomain);
+
     // Prepare the response
     const response = defaultRequestConfig();
     response.params = params; // Set only the mapped params
-    response.endpoint = tuneEvent.url; // Use the user-defined URL
+    response.endpoint = endpoint;
 
     return response;
   }

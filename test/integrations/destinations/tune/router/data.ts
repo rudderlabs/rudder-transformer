@@ -15,12 +15,12 @@ const destination: Destination = {
     connectionMode: {
       web: 'cloud',
     },
+    subdomain: 'demo',
     consentManagement: {},
     oneTrustCookieCategories: {},
     ketchConsentPurposes: {},
     tuneEvents: [
       {
-        url: 'https://demo.go2cloud.org/aff_l?offer_id=45&aff_id=1029',
         eventName: 'Product added',
         standardMapping: [
           { to: 'aff_id', from: 'affId' },
@@ -92,7 +92,7 @@ export const data: RouterTestData[] = [
                 version: '1',
                 type: 'REST',
                 method: 'POST',
-                endpoint: 'https://demo.go2cloud.org/aff_l?offer_id=45&aff_id=1029',
+                endpoint: 'https://demo.go2cloud.org/aff_l',
                 headers: {},
                 params: {
                   security_token: '1123',

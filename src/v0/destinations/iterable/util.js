@@ -557,7 +557,7 @@ const processTrackBatch = (chunk) => {
 
   const { destination } = chunk[0];
   const { apiKey, dataCenter } = destination.Config;
-  const TRACK_BATCH_ENDPOINT = constructEndpoint(dataCenter, { endpoint: 'users/bulkUpdate' });
+  const TRACK_BATCH_ENDPOINT = constructEndpoint(dataCenter, { endpoint: 'events/trackBulk' });
   chunk.forEach((event) => {
     metadata.push(event.metadata);
     events.push(get(event, `${MESSAGE_JSON_PATH}`));

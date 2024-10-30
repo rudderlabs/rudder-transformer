@@ -503,7 +503,7 @@ export const data = [
                 version: '1',
                 type: 'REST',
                 method: 'POST',
-                endpoint: 'https://api.iterable.com/api/users/bulkUpdate',
+                endpoint: 'https://api.iterable.com/api/events/trackBulk',
                 headers: {
                   'Content-Type': 'application/json',
                   api_key: '62d12498c37c4fd8a1a546c2d35c2f60',
@@ -595,7 +595,7 @@ export const data = [
                 version: '1',
                 type: 'REST',
                 method: 'POST',
-                endpoint: 'https://api.iterable.com/api/users/bulkUpdate',
+                endpoint: 'https://api.iterable.com/api/events/trackBulk',
                 headers: { 'Content-Type': 'application/json', api_key: '12345' },
                 params: {},
                 body: {
@@ -707,7 +707,7 @@ export const data = [
                 version: '1',
                 type: 'REST',
                 method: 'POST',
-                endpoint: 'https://api.iterable.com/api/users/bulkUpdate',
+                endpoint: 'https://api.iterable.com/api/events/trackBulk',
                 headers: {
                   'Content-Type': 'application/json',
                   api_key: '62d12498c37c4fd8a1a546c2d35c2f60',
@@ -788,7 +788,7 @@ export const data = [
                 version: '1',
                 type: 'REST',
                 method: 'POST',
-                endpoint: 'https://api.iterable.com/api/users/update',
+                endpoint: 'https://api.iterable.com/api/users/bulkUpdate',
                 headers: { 'Content-Type': 'application/json', api_key: '12345' },
                 params: {},
                 body: {

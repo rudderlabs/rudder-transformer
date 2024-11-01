@@ -1,9 +1,8 @@
 /* eslint-disable no-param-reassign */
 
 const get = require('get-value');
-const { cloneDeep, isNumber } = require('lodash');
+const { cloneDeep } = require('lodash');
 const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
-const isString = require('lodash/isString');
 const {
   constructPayload,
   defaultRequestConfig,
@@ -36,18 +35,7 @@ const updateMappingJson = (mapping) => {
 const responseBuilder = async (metadata, message, { Config }, payload) => {
   const response = defaultRequestConfig();
   const { event } = message;
-  const { subAccount } = Config;
-  let { customerId, loginCustomerId } = Config;
-  if (isNumber(customerId)) {
-    customerId = customerId.toString();
-  }
-  if (isNumber(loginCustomerId)) {
-    loginCustomerId = loginCustomerId.toString();
-  }
-  if (!isString(customerId) || !isString(loginCustomerId)) {
-    throw new InstrumentationError('customerId and loginCustomerId should be a string or number');
-  }
-  const filteredCustomerId = removeHyphens(customerId);
+  const filteredCustomerId = removeHyphens(Config.customerId);
   response.endpoint = `${BASE_ENDPOINT}/${filteredCustomerId}:uploadConversionAdjustments`;
   response.body.JSON = payload;
   const accessToken = getAccessToken(metadata, 'access_token');
@@ -57,9 +45,9 @@ const responseBuilder = async (metadata, message, { Config }, payload) => {
     'developer-token': getValueFromMessage(metadata, 'secret.developer_token'),
   };
   response.params = { event, customerId: filteredCustomerId };
-  if (subAccount)
-    if (loginCustomerId) {
-      const filteredLoginCustomerId = removeHyphens(loginCustomerId);
+  if (Config.subAccount)
+    if (Config.loginCustomerId) {
+      const filteredLoginCustomerId = removeHyphens(Config.loginCustomerId);
       response.headers['login-customer-id'] = filteredLoginCustomerId;
     } else throw new ConfigurationError(`LoginCustomerId is required as subAccount is true.`);
 

@@ -21,11 +21,12 @@ const userDeletionHandler = async (userAttributes, config) => {
   }
   // Endpoints different for different data centers.
   // DOC: https://www.braze.com/docs/user_guide/administrative/access_braze/braze_instances/
+  // Example Data Center: "EU-01", "US-01"
   let endPoint;
   const endpointPath = '/users/delete';
   const dataCenterArr = dataCenter.trim().split('-');
   if (dataCenterArr[0].toLowerCase() === 'eu') {
-    endPoint = 'https://rest.fra-01.braze.eu/users/delete';
+    endPoint = `https://rest.fra-${dataCenterArr[1]}.braze.eu/users/delete`;
   } else {
     endPoint = `https://rest.iad-${dataCenterArr[1]}.braze.com/users/delete`;
   }

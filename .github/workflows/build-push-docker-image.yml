@@ -64,7 +64,7 @@ jobs:
       should_execute_tests: ${{ steps.processing.outputs.should_execute_tests }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4.1.1
+        uses: actions/checkout@v4.2.1
         with:
           fetch-depth: 1
       - id: files
@@ -92,7 +92,7 @@ jobs:
     needs: [get_sha, get_changed_files]
     steps:
       - name: Checkout
-        uses: actions/checkout@v4.1.1
+        uses: actions/checkout@v4.2.1
         with:
           ref: ${{ needs.get_sha.outputs.sha }}
           fetch-depth: 1
@@ -145,7 +145,7 @@ jobs:
     needs: [get_sha, get_changed_files]
     steps:
       - name: Checkout
-        uses: actions/checkout@v4.1.1
+        uses: actions/checkout@v4.2.1
         with:
           ref: ${{ needs.get_sha.outputs.sha }}
           fetch-depth: 1

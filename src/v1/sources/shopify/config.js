@@ -1,6 +1,8 @@
 const path = require('path');
 const fs = require('fs');
 
+const commonCartTokenLocation = 'context.document.location.pathname';
+
 const PIXEL_EVENT_TOPICS = {
   CART_VIEWED: 'cart_viewed',
   PRODUCT_ADDED_TO_CART: 'product_added_to_cart',
@@ -25,7 +27,7 @@ const PIXEL_EVENT_MAPPING = {
   product_viewed: 'Product Viewed',
   collection_viewed: 'Collection Viewed',
   checkout_started: 'Checkout Started',
-  checkout_completed: 'Checkout Completed',
+  checkout_completed: 'Order Completed',
   checkout_address_info_submitted: 'Checkout Address Info Submitted',
   checkout_contact_info_submitted: 'Checkout Contact Info Submitted',
   checkout_shipping_info_submitted: 'Checkout Shipping Info Submitted',
@@ -61,6 +63,16 @@ const checkoutStartedCompletedEventMappingJSON = JSON.parse(
   ),
 );
 
+const pixelEventToCartTokenLocationMapping = {
+  cart_viewed: 'properties.cart_id',
+  checkout_address_info_submitted: commonCartTokenLocation,
+  checkout_contact_info_submitted: commonCartTokenLocation,
+  checkout_shipping_info_submitted: commonCartTokenLocation,
+  payment_info_submitted: commonCartTokenLocation,
+  checkout_started: commonCartTokenLocation,
+  checkout_completed: commonCartTokenLocation,
+};
+
 const INTEGERATION = 'SHOPIFY';
 
 module.exports = {
@@ -73,4 +85,5 @@ module.exports = {
   productViewedEventMappingJSON,
   productToCartEventMappingJSON,
   checkoutStartedCompletedEventMappingJSON,
+  pixelEventToCartTokenLocationMapping,
 };

@@ -26,7 +26,6 @@ const {
 } = require('@rudderstack/integrations-lib');
 
 const { JsonTemplateEngine, PathType } = require('@rudderstack/json-template-engine');
-const isString = require('lodash/isString');
 const logger = require('../../logger');
 const stats = require('../../util/stats');
 const { DestCanonicalNames, DestHandlerMap } = require('../../constants/destinationCanonicalNames');
@@ -1623,7 +1622,7 @@ function isHttpStatusRetryable(status) {
 function generateUUID() {
   return crypto.randomUUID({
     disableEntropyCache: true,
-  }); /* using disableEntropyCache as true to not cache the generated uuids.
+  }); /* using disableEntropyCache as true to not cache the generated uuids. 
   For more Info https://nodejs.org/api/crypto.html#cryptorandomuuidoptions:~:text=options%20%3CObject%3E-,disableEntropyCache,-%3Cboolean%3E%20By
   */
 }
@@ -1647,9 +1646,6 @@ function isAppleFamily(platform) {
 }
 
 function removeHyphens(str) {
-  if (!isString(str)) {
-    return str;
-  }
   return str.replace(/-/g, '');
 }
 

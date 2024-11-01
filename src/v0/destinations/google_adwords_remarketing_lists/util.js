@@ -88,8 +88,16 @@ const responseBuilder = (
  */
 const populateIdentifiers = (attributeArray, { Config }, connection) => {
   const userIdentifier = [];
-  const { typeOfList } = Config;
-  const { isHashRequired, userSchema } = Config;
+  let typeOfList;
+  let isHashRequired;
+  const { userSchema } = Config;
+  if (connection?.config?.destination?.schemaVersion === VDM_V2_SCHEMA_VERSION) {
+    typeOfList = connection.config.typeOfList;
+    isHashRequired = connection.config.isHashRequired;
+  } else {
+    typeOfList = Config.typeOfList;
+    isHashRequired = Config.isHashRequired;
+  }
   let attribute;
   if (TYPEOFLIST[typeOfList]) {
     attribute = TYPEOFLIST[typeOfList];

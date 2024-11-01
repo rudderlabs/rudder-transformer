@@ -29,6 +29,7 @@ const integrations = [
   "postgres",
   "clickhouse",
   "snowflake",
+  "snowpipe_streaming",
   "mssql",
   "azure_synapse",
   "deltalake",
@@ -36,6 +37,14 @@ const integrations = [
   "s3_datalake",
   "gcs_datalake",
 ];
+
+const integration = (index ) => {
+    const it = integrations[index];
+    if (it === "snowflake" || it === "snowpipe_streaming") {
+        return "snowflake";
+    }
+    return it;
+}
 const transformers = integrations.map(integration =>
   require(`../../src/${version}/destinations/${integration}/transform`)
 );
@@ -65,7 +74,7 @@ describe("event types", () => {
       const i = input("track");
       transformers.forEach((transformer, index) => {
         const received = transformer.process(i);
-        expect(received).toMatchObject(output("track", integrations[index]));
+        expect(received).toMatchObject(output("track", integration(index)));
       });
     });
   });
@@ -76,7 +85,7 @@ describe("event types", () => {
       // also verfies priority order between traits and context.traits
       transformers.forEach((transformer, index) => {
         const received = transformer.process(i);
-        expect(received).toMatchObject(output("identify", integrations[index]));
+        expect(received).toMatchObject(output("identify", integration(index)));
       });
     });
   });
@@ -86,7 +95,7 @@ describe("event types", () => {
       const i = input("page");
       transformers.forEach((transformer, index) => {
         const received = transformer.process(i);
-        expect(received).toMatchObject(output("page", integrations[index]));
+        expect(received).toMatchObject(output("page", integration(index)));
       });
     });
     it("should take name from properties if top-level name is missing", () => {
@@ -95,7 +104,7 @@ describe("event types", () => {
       delete i.message.name;
       transformers.forEach((transformer, index) => {
         const received = transformer.process(i);
-        expect(received).toMatchObject(output("page", integrations[index]));
+        expect(received).toMatchObject(output("page", integration(index)));
       });
     });
   });
@@ -105,7 +114,7 @@ describe("event types", () => {
       const i = input("screen");
       transformers.forEach((transformer, index) => {
         const received = transformer.process(i);
-        expect(received).toMatchObject(output("screen", integrations[index]));
+        expect(received).toMatchObject(output("screen", integration(index)));
       });
     });
     it("should take name from properties if top-level name is missing", () => {
@@ -114,7 +123,7 @@ describe("event types", () => {
       delete i.message.name;
       transformers.forEach((transformer, index) => {
         const received = transformer.process(i);
-        expect(received).toMatchObject(output("screen", integrations[index]));
+        expect(received).toMatchObject(output("screen", integration(index)));
       });
     });
   });
@@ -124,7 +133,7 @@ describe("event types", () => {
       const i = input("alias");
       transformers.forEach((transformer, index) => {
         const received = transformer.process(i);
-        expect(received).toMatchObject(output("alias", integrations[index]));
+        expect(received).toMatchObject(output("alias", integration(index)));
       });
     });
   });
@@ -134,7 +143,7 @@ describe("event types", () => {
       const i = input("extract");
       transformers.forEach((transformer, index) => {
         const received = transformer.process(i);
-        expect(received).toMatchObject(output("extract", integrations[index]));
+        expect(received).toMatchObject(output("extract", integration(index)));
       });
     });
   });
@@ -153,7 +162,7 @@ describe("column & table names", () => {
       const received = transformer.process(i);
 
       const provider =
-        integrations[index] === "snowflake" ? "snowflake" : "default";
+          (integration(index) === "snowflake" || integration(index) == "snowpipe_streaming") ? "snowflake" : "default";
 
       expect(received[1].metadata.columns).toMatchObject(
         names.output.columns[provider]
@@ -186,7 +195,7 @@ describe("column & table names", () => {
 
     transformers.forEach((transformer, index) => {
       const received = transformer.process(i);
-      if (integrations[index] === "postgres") {
+      if (integration(index) === "postgres") {
         expect(received[1].metadata).toHaveProperty(
           "table",
           "a_1_a_2_a_3_a_4_a_5_b_1_b_2_b_3_b_4_b_5_c_1_c_2_c_3_c_4_c_5_d_1"
@@ -210,7 +219,7 @@ describe("column & table names", () => {
         //KEY should be trimmed to 63
         return;
       }
-      if (integrations[index] === "snowflake") {
+      if (integration(index) === "snowflake") {
         expect(received[1].metadata).toHaveProperty(
           "table",
           "A_1_A_2_A_3_A_4_A_5_B_1_B_2_B_3_B_4_B_5_C_1_C_2_C_3_C_4_C_5_D_1_D_2_D_3_D_4_D_5_E_1_E_2_E_3_E_4_E_5_F_1_F_2_F_3_F_4_F_5_G_1_G_2"
@@ -233,7 +242,7 @@ describe("column & table names", () => {
         );
         return;
       }
-      if (integrations[index] === "s3_datalake" || integrations[index] === "gcs_datalake" || integrations[index] === "azure_datalake") {
+      if (integration(index) === "s3_datalake" || integration(index) === "gcs_datalake" || integration(index) === "azure_datalake") {
         expect(received[1].metadata).toHaveProperty(
           "table",
           "a_1_a_2_a_3_a_4_a_5_b_1_b_2_b_3_b_4_b_5_c_1_c_2_c_3_c_4_c_5_d_1_d_2_d_3_d_4_d_5_e_1_e_2_e_3_e_4_e_5_f_1_f_2_f_3_f_4_f_5_g_1_g_2_g_3_g_4_g_5"
@@ -316,7 +325,7 @@ describe("conflict between rudder set props and user set props", () => {
       const propsKey = propsKeyMap[evType];
       transformers.forEach((transformer, index) => {
         let sampleRudderPropKey = "id";
-        if (integrations[index] === "snowflake") {
+        if (integration(index) === "snowflake") {
           sampleRudderPropKey = "ID";
         }
 
@@ -354,7 +363,7 @@ describe("handle reserved words", () => {
       const propsKey = propsKeyMap[evType];
       transformers.forEach((transformer, index) => {
         const reserverdKeywordsMap =
-          reservedANSIKeywordsMap[integrations[index].toUpperCase()];
+          reservedANSIKeywordsMap[integration(index).toUpperCase()];
 
         i.message[propsKey] = Object.assign(
           i.message[propsKey] || {},
@@ -377,7 +386,7 @@ describe("handle reserved words", () => {
           } else {
             k = snakeCasedKey;
           }
-          if (integrations[index] === "snowflake") {
+          if (integration(index) === "snowflake") {
             expect(out.metadata.columns).toHaveProperty(k);
           } else {
             expect(out.metadata.columns).toHaveProperty(k.toLowerCase());
@@ -461,24 +470,24 @@ describe("context ip", () => {
         const received = transformer.process(i);
         expect(
           received[0].metadata.columns[
-            integrationCasedString(integrations[index], "context_ip")
+            integrationCasedString(integration(index), "context_ip")
           ]
         ).toBe("string");
         expect(
           received[0].data[
-            integrationCasedString(integrations[index], "context_ip")
+            integrationCasedString(integration(index), "context_ip")
           ]
         ).toEqual("new_ip");
 
         if (received[1]) {
           expect(
             received[1].metadata.columns[
-              integrationCasedString(integrations[index], "context_ip")
+              integrationCasedString(integration(index), "context_ip")
             ]
           ).toBe("string");
           expect(
             received[1].data[
-              integrationCasedString(integrations[index], "context_ip")
+              integrationCasedString(integration(index), "context_ip")
             ]
           ).toEqual("new_ip");
         }
@@ -496,23 +505,23 @@ describe("context ip", () => {
         const received = transformer.process(i);
         expect(
           received[0].metadata.columns[
-            integrationCasedString(integrations[index], "context_ip")
+            integrationCasedString(integration(index), "context_ip")
           ]
         ).toBe("string");
         expect(
           received[0].data[
-            integrationCasedString(integrations[index], "context_ip")
+            integrationCasedString(integration(index), "context_ip")
           ]
         ).toEqual("requested_ip");
         if (received[1]) {
           expect(
             received[1].metadata.columns[
-              integrationCasedString(integrations[index], "context_ip")
+              integrationCasedString(integration(index), "context_ip")
             ]
           ).toBe("string");
           expect(
             received[1].data[
-              integrationCasedString(integrations[index], "context_ip")
+              integrationCasedString(integration(index), "context_ip")
             ]
           ).toEqual("requested_ip");
         }
@@ -533,10 +542,10 @@ describe("remove rudder property if rudder property is null", () => {
       transformers.forEach((transformer, index) => {
         const received = transformer.process(i);
         expect(received[0].metadata.columns).not.toHaveProperty(
-          integrationCasedString(integrations[index], "context_ip")
+          integrationCasedString(integration(index), "context_ip")
         );
         expect(received[0].data).not.toHaveProperty(
-          integrationCasedString(integrations[index], "context_ip")
+          integrationCasedString(integration(index), "context_ip")
         );
       });
     });
@@ -551,29 +560,29 @@ describe("remove any property if event is object ", () => {
       transformers.forEach((transformer, index) => {
         const received = transformer.process(i);
         expect(received[0].metadata.columns).not.toHaveProperty(
-          integrationCasedString(integrations[index], "channel")
+          integrationCasedString(integration(index), "channel")
         );
         expect(received[0].data).not.toHaveProperty(
-          integrationCasedString(integrations[index], "channel")
+          integrationCasedString(integration(index), "channel")
         );
       });
       transformers.forEach((transformer, index) => {
         const received = transformer.process(i);
         expect(received[0].metadata.columns).not.toHaveProperty(
-          integrationCasedString(integrations[index], "event_text")
+          integrationCasedString(integration(index), "event_text")
         );
         expect(received[0].data).not.toHaveProperty(
-          integrationCasedString(integrations[index], "event_text")
+          integrationCasedString(integration(index), "event_text")
         );
       });
       i.message.channel = { channel: "android" };
       transformers.forEach((transformer, index) => {
         const received = transformer.process(i);
         expect(received[0].metadata.columns).not.toHaveProperty(
-          integrationCasedString(integrations[index], "channel")
+          integrationCasedString(integration(index), "channel")
         );
         expect(received[0].data).not.toHaveProperty(
-          integrationCasedString(integrations[index], "channel")
+          integrationCasedString(integration(index), "channel")
         );
       });
     });
@@ -589,13 +598,13 @@ describe("store full rudder event", () => {
       transformers.forEach((transformer, index) => {
         const received = transformer.process(i);
         const columnName = integrationCasedString(
-          integrations[index],
+          integration(index),
           "rudder_event"
         );
 
         expect(received[0].metadata.columns).toHaveProperty(columnName);
         expect(received[0].metadata.columns[columnName]).toEqual(
-          fullEventColumnTypeByProvider[integrations[index]]
+          fullEventColumnTypeByProvider[integration(index)]
         );
         expect(received[0].data[columnName]).toEqual(JSON.stringify(i.message));
 
@@ -635,7 +644,7 @@ describe("rudder reserved columns", () => {
       transformers.forEach((transformer, index) => {
         const received = transformer.process(i);
         checkProps.forEach(k => {
-          k = integrationCasedString(integrations[index], k);
+          k = integrationCasedString(integration(index), k);
           expect(received[0].metadata.columns).not.toHaveProperty(k);
           expect(received[0].data).not.toHaveProperty(k);
           if (received[1]) {
@@ -657,12 +666,12 @@ describe("id column datatype for users table", () => {
       const received = transformer.process(i);
       expect(
         received[0].metadata.columns[
-          integrationCasedString(integrations[index], "user_id")
+          integrationCasedString(integration(index), "user_id")
         ]
       ).toEqual("int");
       expect(
         received[1].metadata.columns[
-          integrationCasedString(integrations[index], "id")
+          integrationCasedString(integration(index), "id")
         ]
       ).toEqual("int");
     });
@@ -674,12 +683,12 @@ describe("id column datatype for users table", () => {
       const received = transformer.process(i);
       expect(
         received[0].metadata.columns[
-          integrationCasedString(integrations[index], "user_id")
+          integrationCasedString(integration(index), "user_id")
         ]
       ).toEqual("float");
       expect(
         received[1].metadata.columns[
-          integrationCasedString(integrations[index], "id")
+          integrationCasedString(integration(index), "id")
         ]
       ).toEqual("float");
     });
@@ -698,22 +707,22 @@ describe("handle leading underscores in properties", () => {
     transformers.forEach((transformer, index) => {
       const received = transformer.process(i);
       expect(received[1].metadata.columns).toHaveProperty(
-        integrationCasedString(integrations[index], "_timestamp")
+        integrationCasedString(integration(index), "_timestamp")
       );
       expect(received[1].metadata.columns).toHaveProperty(
-        integrationCasedString(integrations[index], "__timestamp")
+        integrationCasedString(integration(index), "__timestamp")
       );
       expect(received[1].metadata.columns).toHaveProperty(
-        integrationCasedString(integrations[index], "__timestamp_new")
+        integrationCasedString(integration(index), "__timestamp_new")
       );
       expect(received[1].data).toHaveProperty(
-        integrationCasedString(integrations[index], "_timestamp")
+        integrationCasedString(integration(index), "_timestamp")
       );
       expect(received[1].data).toHaveProperty(
-        integrationCasedString(integrations[index], "__timestamp")
+        integrationCasedString(integration(index), "__timestamp")
       );
       expect(received[1].data).toHaveProperty(
-        integrationCasedString(integrations[index], "__timestamp_new")
+        integrationCasedString(integration(index), "__timestamp_new")
       );
     });
   });
@@ -727,22 +736,22 @@ describe("handle recordId from cloud sources", () => {
     transformers.forEach((transformer, index) => {
       const received = transformer.process(i);
       expect(received[0].metadata.columns).not.toHaveProperty(
-        integrationCasedString(integrations[index], "record_id")
+        integrationCasedString(integration(index), "record_id")
       );
       expect(received[0].data).not.toHaveProperty(
-        integrationCasedString(integrations[index], "record_id")
+        integrationCasedString(integration(index), "record_id")
       );
       expect(
-        received[0].data[integrationCasedString(integrations[index], "id")]
+        received[0].data[integrationCasedString(integration(index), "id")]
       ).toEqual(i.message.messageId);
       expect(received[1].metadata.columns).not.toHaveProperty(
-        integrationCasedString(integrations[index], "record_id")
+        integrationCasedString(integration(index), "record_id")
       );
       expect(received[1].data).not.toHaveProperty(
-        integrationCasedString(integrations[index], "record_id")
+        integrationCasedString(integration(index), "record_id")
       );
       expect(
-        received[1].data[integrationCasedString(integrations[index], "id")]
+        received[1].data[integrationCasedString(integration(index), "id")]
       ).toEqual(i.message.messageId);
     });
   });
@@ -755,22 +764,22 @@ describe("handle recordId from cloud sources", () => {
     transformers.forEach((transformer, index) => {
       const received = transformer.process(i);
       expect(received[0].metadata.columns).not.toHaveProperty(
-        integrationCasedString(integrations[index], "record_id")
+        integrationCasedString(integration(index), "record_id")
       );
       expect(received[0].data).not.toHaveProperty(
-        integrationCasedString(integrations[index], "record_id")
+        integrationCasedString(integration(index), "record_id")
       );
       expect(
-        received[0].data[integrationCasedString(integrations[index], "id")]
+        received[0].data[integrationCasedString(integration(index), "id")]
       ).toEqual(i.message.messageId);
       expect(received[1].metadata.columns).not.toHaveProperty(
-        integrationCasedString(integrations[index], "record_id")
+        integrationCasedString(integration(index), "record_id")
       );
       expect(received[1].data).not.toHaveProperty(
-        integrationCasedString(integrations[index], "record_id")
+        integrationCasedString(integration(index), "record_id")
       );
       expect(
-        received[1].data[integrationCasedString(integrations[index], "id")]
+        received[1].data[integrationCasedString(integration(index), "id")]
       ).toEqual(i.message.messageId);
     });
   });
@@ -783,17 +792,17 @@ describe("handle recordId from cloud sources", () => {
     transformers.forEach((transformer, index) => {
       const received = transformer.process(i);
       expect(received[0].metadata.columns).not.toHaveProperty(
-        integrationCasedString(integrations[index], "record_id")
+        integrationCasedString(integration(index), "record_id")
       );
       expect(received[0].data).not.toHaveProperty(
-        integrationCasedString(integrations[index], "record_id")
+        integrationCasedString(integration(index), "record_id")
       );
       expect(
-        received[0].data[integrationCasedString(integrations[index], "id")]
+        received[0].data[integrationCasedString(integration(index), "id")]
       ).toEqual(i.message.messageId);
       expect(
         received[0].metadata.columns[
-          integrationCasedString(integrations[index], "id")
+          integrationCasedString(integration(index), "id")
         ]
       ).toEqual("string");
     });
@@ -809,28 +818,28 @@ describe("handle recordId from cloud sources", () => {
       const received = transformer.process(i);
       expect(
         received[0].metadata.columns[
-          integrationCasedString(integrations[index], "record_id")
+          integrationCasedString(integration(index), "record_id")
         ]
       ).toEqual("string");
       expect(
         received[0].data[
-          integrationCasedString(integrations[index], "record_id")
+          integrationCasedString(integration(index), "record_id")
         ]
       ).toBe("42");
 
       expect(
         received[1].metadata.columns[
-          integrationCasedString(integrations[index], "id")
+          integrationCasedString(integration(index), "id")
         ]
       ).toEqual("int");
       expect(
-        received[1].data[integrationCasedString(integrations[index], "id")]
+        received[1].data[integrationCasedString(integration(index), "id")]
       ).toBe(42);
       expect(received[1].metadata.columns).not.toHaveProperty(
-        integrationCasedString(integrations[index], "record_id")
+        integrationCasedString(integration(index), "record_id")
       );
       expect(received[1].data).not.toHaveProperty(
-        integrationCasedString(integrations[index], "record_id")
+        integrationCasedString(integration(index), "record_id")
       );
     });
   });
@@ -845,28 +854,28 @@ describe("handle recordId from cloud sources", () => {
       const received = transformer.process(i);
       expect(
         received[0].metadata.columns[
-          integrationCasedString(integrations[index], "record_id")
+          integrationCasedString(integration(index), "record_id")
         ]
       ).toEqual("string");
       expect(
         received[0].data[
-          integrationCasedString(integrations[index], "record_id")
+          integrationCasedString(integration(index), "record_id")
         ]
       ).toBe("42");
 
       expect(
         received[1].metadata.columns[
-          integrationCasedString(integrations[index], "id")
+          integrationCasedString(integration(index), "id")
         ]
       ).toEqual("int");
       expect(
-        received[1].data[integrationCasedString(integrations[index], "id")]
+        received[1].data[integrationCasedString(integration(index), "id")]
       ).toBe(42);
       expect(received[1].metadata.columns).not.toHaveProperty(
-        integrationCasedString(integrations[index], "record_id")
+        integrationCasedString(integration(index), "record_id")
       );
       expect(received[1].data).not.toHaveProperty(
-        integrationCasedString(integrations[index], "record_id")
+        integrationCasedString(integration(index), "record_id")
       );
     });
   });
@@ -906,10 +915,10 @@ describe("handle level three nested events from sources", () => {
     transformers.forEach((transformer, index) => {
       const received = transformer.process(i);
       expect(received[1].metadata.columns).not.toHaveProperty(
-        integrationCasedString(integrations[index], "n_0_n_1_n_2_n_3_prop_3")
+        integrationCasedString(integration(index), "n_0_n_1_n_2_n_3_prop_3")
       );
       expect(received[1].data).not.toHaveProperty(
-        integrationCasedString(integrations[index], "n_0_n_1_n_2_n_3_prop_3")
+        integrationCasedString(integration(index), "n_0_n_1_n_2_n_3_prop_3")
       );
     });
   });
@@ -934,10 +943,10 @@ describe("handle level three nested events from sources", () => {
     transformers.forEach((transformer, index) => {
       const received = transformer.process(i);
       expect(received[1].metadata.columns).toHaveProperty(
-        integrationCasedString(integrations[index], "n_0_n_1_n_2_n_3_prop_3")
+        integrationCasedString(integration(index), "n_0_n_1_n_2_n_3_prop_3")
       );
       expect(received[1].data).toHaveProperty(
-        integrationCasedString(integrations[index], "n_0_n_1_n_2_n_3_prop_3")
+        integrationCasedString(integration(index), "n_0_n_1_n_2_n_3_prop_3")
       );
     });
   });
@@ -947,7 +956,7 @@ describe("Handle no of columns in an event", () => {
   it("should throw an error if no of columns are more than 200", () => {
     const i = input("track");
     transformers
-      .filter((transformer, index) => integrations[index] !== "s3_datalake" && integrations[index] !== "gcs_datalake" && integrations[index] !== "azure_datalake")
+      .filter((transformer, index) => integration(index) !== "s3_datalake" && integration(index) !== "gcs_datalake" && integration(index) !== "azure_datalake")
       .forEach((transformer, index) => {
         i.message.properties = largeNoOfColumnsevent;
         expect(() => transformer.process(i)).toThrow(
@@ -975,13 +984,13 @@ describe("Add auto generated messageId for events missing it", () => {
       transformers.forEach((transformer, index) => {
         const received = transformer.process(i);
         expect(received[0].metadata.columns).toHaveProperty(
-          integrationCasedString(integrations[index], "id")
+          integrationCasedString(integration(index), "id")
         );
         expect(received[0].data).toHaveProperty(
-          integrationCasedString(integrations[index], "id")
+          integrationCasedString(integration(index), "id")
         );
         expect(
-          received[0].data[integrationCasedString(integrations[index], "id")]
+          received[0].data[integrationCasedString(integration(index), "id")]
         ).toMatch(/auto-.*/);
       });
     });
@@ -998,10 +1007,10 @@ describe("Add receivedAt for events missing it", () => {
       transformers.forEach((transformer, index) => {
         const received = transformer.process(i);
         expect(received[0].metadata.columns).toHaveProperty(
-          integrationCasedString(integrations[index], "received_at")
+          integrationCasedString(integration(index), "received_at")
         );
         expect(received[0].data).toHaveProperty(
-          integrationCasedString(integrations[index], "received_at")
+          integrationCasedString(integration(index), "received_at")
         );
       });
     });
@@ -1014,12 +1023,12 @@ describe("Integration options", () => {
       const i = opInput("track");
       transformers.forEach((transformer, index) => {
         const {jsonPaths} = i.destination.Config;
-        if (integrations[index] === "postgres") {
+        if (integration(index) === "postgres") {
           delete i.destination.Config.jsonPaths;
         }
         const received = transformer.process(i);
         i.destination.Config.jsonPaths = jsonPaths;
-        expect(received).toEqual(opOutput("track", integrations[index]));
+        expect(received).toEqual(opOutput("track", integration(index)));
       });
     });
   });
@@ -1029,7 +1038,7 @@ describe("Integration options", () => {
       const i = opInput("users");
       transformers.forEach((transformer, index) => {
         const received = transformer.process(i);
-        expect(received).toEqual(opOutput("users", integrations[index]));
+        expect(received).toEqual(opOutput("users", integration(index)));
       });
     });
   });
@@ -1084,18 +1093,18 @@ describe("Integration options", () => {
 
     for (const testCase of testCases) {
       transformers.forEach((transformer, index) => {
-        it(`new ${testCase.eventType} for ${integrations[index]}`, () => {
+        it(`new ${testCase.eventType} for ${integration(index)}`, () => {
           const config = require("./data/warehouse/integrations/jsonpaths/new/" + testCase.eventType);
           const input = _.cloneDeep(config.input);
           const received = transformer.process(input);
-          expect(received).toEqual(output(testCase.eventType, config, integrations[index]));
+          expect(received).toEqual(output(testCase.eventType, config, integration(index)));
         })
 
-        it(`legacy ${testCase.eventType} for ${integrations[index]}`, () => {
+        it(`legacy ${testCase.eventType} for ${integration(index)}`, () => {
           const config = require("./data/warehouse/integrations/jsonpaths/legacy/" + testCase.eventType);
           const input = _.cloneDeep(config.input);
           const received = transformer.process(input);
-          expect(received).toEqual(output(testCase.eventType, config, integrations[index]));
+          expect(received).toEqual(output(testCase.eventType, config, integration(index)));
         })
       });
     }
@@ -1285,10 +1294,10 @@ describe("Destination config", () => {
                     };
                     events.forEach(event => {
                         Object.entries(traitsToCheck).forEach(([trait, value]) => {
-                            expect(event.data[integrationCasedString(integrations[index], trait)]).toEqual(value);
-                            expect(event.data[integrationCasedString(integrations[index], `context_traits_${trait}`)]).toEqual(value);
-                            expect(event.metadata.columns).toHaveProperty(integrationCasedString(integrations[index], trait));
-                            expect(event.metadata.columns).toHaveProperty(integrationCasedString(integrations[index], `context_traits_${trait}`));
+                            expect(event.data[integrationCasedString(integration(index), trait)]).toEqual(value);
+                            expect(event.data[integrationCasedString(integration(index), `context_traits_${trait}`)]).toEqual(value);
+                            expect(event.metadata.columns).toHaveProperty(integrationCasedString(integration(index), trait));
+                            expect(event.metadata.columns).toHaveProperty(integrationCasedString(integration(index), `context_traits_${trait}`));
                         });
                     });
                 });
@@ -1316,13 +1325,13 @@ describe("Destination config", () => {
                         }
                     }
                     const output = transformer.process(event);
-                    expect(output[0].data[integrationCasedString(integrations[index], `event`)]).toEqual('button_clicked_v_2');
-                    expect(output[0].data[integrationCasedString(integrations[index], `context_attribute_v_3`)]).toEqual('some-value');
-                    expect(output[0].metadata.columns).toHaveProperty(integrationCasedString(integrations[index], `context_attribute_v_3`));
-                    expect(output[1].data[integrationCasedString(integrations[index], `event`)]).toEqual('button_clicked_v_2');
-                    expect(output[1].data[integrationCasedString(integrations[index], `context_attribute_v_3`)]).toEqual('some-value');
-                    expect(output[1].metadata.table).toEqual(integrationCasedString(integrations[index], 'button_clicked_v_2'));
-                    expect(output[1].metadata.columns).toHaveProperty(integrationCasedString(integrations[index], `context_attribute_v_3`));
+                    expect(output[0].data[integrationCasedString(integration(index), `event`)]).toEqual('button_clicked_v_2');
+                    expect(output[0].data[integrationCasedString(integration(index), `context_attribute_v_3`)]).toEqual('some-value');
+                    expect(output[0].metadata.columns).toHaveProperty(integrationCasedString(integration(index), `context_attribute_v_3`));
+                    expect(output[1].data[integrationCasedString(integration(index), `event`)]).toEqual('button_clicked_v_2');
+                    expect(output[1].data[integrationCasedString(integration(index), `context_attribute_v_3`)]).toEqual('some-value');
+                    expect(output[1].metadata.table).toEqual(integrationCasedString(integration(index), 'button_clicked_v_2'));
+                    expect(output[1].metadata.columns).toHaveProperty(integrationCasedString(integration(index), `context_attribute_v_3`));
                 });
             });
         });
@@ -1364,10 +1373,10 @@ describe("Destination config", () => {
                     };
                     events.forEach(event => {
                         Object.entries(traitsToCheck).forEach(([trait, value]) => {
-                            expect(event.data).not.toHaveProperty(integrationCasedString(integrations[index], trait));
-                            expect(event.data[integrationCasedString(integrations[index], `context_traits_${trait}`)]).toEqual(value);
-                            expect(event.metadata.columns).not.toHaveProperty(integrationCasedString(integrations[index], trait));
-                            expect(event.metadata.columns).toHaveProperty(integrationCasedString(integrations[index], `context_traits_${trait}`));
+                            expect(event.data).not.toHaveProperty(integrationCasedString(integration(index), trait));
+                            expect(event.data[integrationCasedString(integration(index), `context_traits_${trait}`)]).toEqual(value);
+                            expect(event.metadata.columns).not.toHaveProperty(integrationCasedString(integration(index), trait));
+                            expect(event.metadata.columns).toHaveProperty(integrationCasedString(integration(index), `context_traits_${trait}`));
                         });
                     });
                 });
@@ -1393,13 +1402,13 @@ describe("Destination config", () => {
                         }
                     }
                     const output = transformer.process(event);
-                    expect(output[0].data[integrationCasedString(integrations[index], `event`)]).toEqual('button_clicked_v2');
-                    expect(output[0].data[integrationCasedString(integrations[index], `context_attribute_v3`)]).toEqual('some-value');
-                    expect(output[0].metadata.columns).toHaveProperty(integrationCasedString(integrations[index], `context_attribute_v3`));
-                    expect(output[1].data[integrationCasedString(integrations[index], `event`)]).toEqual('button_clicked_v2');
-                    expect(output[1].data[integrationCasedString(integrations[index], `context_attribute_v3`)]).toEqual('some-value');
-                    expect(output[1].metadata.table).toEqual(integrationCasedString(integrations[index], 'button_clicked_v2'));
-                    expect(output[1].metadata.columns).toHaveProperty(integrationCasedString(integrations[index], `context_attribute_v3`));
+                    expect(output[0].data[integrationCasedString(integration(index), `event`)]).toEqual('button_clicked_v2');
+                    expect(output[0].data[integrationCasedString(integration(index), `context_attribute_v3`)]).toEqual('some-value');
+                    expect(output[0].metadata.columns).toHaveProperty(integrationCasedString(integration(index), `context_attribute_v3`));
+                    expect(output[1].data[integrationCasedString(integration(index), `event`)]).toEqual('button_clicked_v2');
+                    expect(output[1].data[integrationCasedString(integration(index), `context_attribute_v3`)]).toEqual('some-value');
+                    expect(output[1].metadata.table).toEqual(integrationCasedString(integration(index), 'button_clicked_v2'));
+                    expect(output[1].metadata.columns).toHaveProperty(integrationCasedString(integration(index), `context_attribute_v3`));
                 });
             });
         });
@@ -1606,8 +1615,8 @@ describe("context traits", () => {
             expect(Object.keys(received[0].data).join()).not.toMatch(/context_traits/g);
           }
           for (const column of t.expectedColumns) {
-            expect(received[0].metadata.columns[integrationCasedString(integrations[index], column)]).toEqual(t.expectedMetadata);
-            expect(received[0].data[integrationCasedString(integrations[index], column)]).toEqual(t.expectedData);
+            expect(received[0].metadata.columns[integrationCasedString(integration(index), column)]).toEqual(t.expectedMetadata);
+            expect(received[0].data[integrationCasedString(integration(index), column)]).toEqual(t.expectedData);
           }
         });
       }
@@ -1699,8 +1708,8 @@ describe("group traits", () => {
           expect(Object.keys(received[0].data).join()).not.toMatch(/group_traits/g);
         }
         for (const column of t.expectedColumns) {
-          expect(received[0].metadata.columns[integrationCasedString(integrations[index], column)]).toEqual(t.expectedMetadata);
-          expect(received[0].data[integrationCasedString(integrations[index], column)]).toEqual(t.expectedData);
+          expect(received[0].metadata.columns[integrationCasedString(integration(index), column)]).toEqual(t.expectedMetadata);
+          expect(received[0].data[integrationCasedString(integration(index), column)]).toEqual(t.expectedData);
         }
       });
     });

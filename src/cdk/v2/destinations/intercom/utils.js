@@ -257,7 +257,7 @@ const filterCustomAttributes = (payload, type, destination, message) => {
   let customAttributes = { ...get(payload, 'custom_attributes') };
   if (customAttributes) {
     ReservedAttributesList.forEach((trait) => {
-      if (customAttributes[trait]) delete customAttributes[trait];
+      if (trait in customAttributes) delete customAttributes[trait];
     });
     if (isDefinedAndNotNull(customAttributes) && Object.keys(customAttributes).length > 0) {
       customAttributes =

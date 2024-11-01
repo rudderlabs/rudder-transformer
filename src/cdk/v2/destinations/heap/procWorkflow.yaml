@@ -22,7 +22,7 @@ steps:
       $.assert(.message.traits ?? .message.context.traits, "traits are required");
       $.context.endpoint = 'https://heapanalytics.com/api/add_user_properties';
       $.context.payload = .message.({
-        identity: {{{{$.getGenericPaths("userId")}}}},
+        identity: {{{{$.getGenericPaths("userId", "||")}}}},
         properties: $.flattenJson(.traits ?? .context.traits){~["idempotencyKey"]},
         app_id: ^.destination.Config.appId
       })
@@ -32,7 +32,7 @@ steps:
       $.assert(.message.event, "event is required");
       $.context.endpoint = 'https://heapanalytics.com/api/track';
       $.context.payload = .message.({
-        identity: {{{{$.getGenericPaths("userId")}}}},
+        identity: {{{{$.getGenericPaths("userId", "||")}}}},
         properties: $.flattenJson(.properties){~["idempotencyKey"]},
         app_id: ^.destination.Config.appId,
         event: .event,

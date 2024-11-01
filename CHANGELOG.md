@@ -2,6 +2,56 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.83.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.82.2...v1.83.0) (2024-10-25)
+
+
+### Features
+
+* add support for identity stitching for shopify pixel flow ([#3818](https://github.com/rudderlabs/rudder-transformer/issues/3818)) ([3a09181](https://github.com/rudderlabs/rudder-transformer/commit/3a091810bff12ae893c16b514c07d17e6374062a))
+* onboard tune destination ([#3795](https://github.com/rudderlabs/rudder-transformer/issues/3795)) ([741f0c6](https://github.com/rudderlabs/rudder-transformer/commit/741f0c6d6714cf760ce98cc9354b61f7b5ce4684))
+* snowpipe streaming ([#3740](https://github.com/rudderlabs/rudder-transformer/issues/3740)) ([21b1039](https://github.com/rudderlabs/rudder-transformer/commit/21b1039c26067b4896a15adf8b10a044e69cb495))
+* support for multiple zap urls ([#3825](https://github.com/rudderlabs/rudder-transformer/issues/3825)) ([f79dfe7](https://github.com/rudderlabs/rudder-transformer/commit/f79dfe74b447b8ccd80287e143ff771688c510be))
+
+
+### Bug Fixes
+
+* add missing field for pinterest_tag single product events ([f781a84](https://github.com/rudderlabs/rudder-transformer/commit/f781a84ade98649d68cebf4da13c2ceff8df2df2))
+* add missing field for pinterest_tag single product events ([#3826](https://github.com/rudderlabs/rudder-transformer/issues/3826)) ([4a63277](https://github.com/rudderlabs/rudder-transformer/commit/4a63277efd0b4357d8321618640d1a0ba2a47d71))
+* heap userId extraction ([#3801](https://github.com/rudderlabs/rudder-transformer/issues/3801)) ([e578413](https://github.com/rudderlabs/rudder-transformer/commit/e57841396ad666d716e195fbd4e9b74a63bf5191))
+* not allowing empty string or null values for mandatory fields in zoho ([#3800](https://github.com/rudderlabs/rudder-transformer/issues/3800)) ([fcd8d99](https://github.com/rudderlabs/rudder-transformer/commit/fcd8d997fe815d61d21ffff235b0799e69b7ded9))
+* populate source destination info env set properly ([#3806](https://github.com/rudderlabs/rudder-transformer/issues/3806)) ([d730daf](https://github.com/rudderlabs/rudder-transformer/commit/d730dafbbd2de30b67c35db8ca05396a98a8d2e0))
+* str replace is not a function error ([#3799](https://github.com/rudderlabs/rudder-transformer/issues/3799)) ([8f18e1a](https://github.com/rudderlabs/rudder-transformer/commit/8f18e1aca70ab68e3f157a4632d63ae7cec0e87b))
+* update order_id in checkout events, messageId in pixel events ([#3794](https://github.com/rudderlabs/rudder-transformer/issues/3794)) ([427be71](https://github.com/rudderlabs/rudder-transformer/commit/427be71a91df8495f81b42d2b58aa490db439b23))
+
+### [1.82.2](https://github.com/rudderlabs/rudder-transformer/compare/v1.82.1...v1.82.2) (2024-10-18)
+
+
+### Bug Fixes
+
+* add missing fields to pinterest_tag mapping ([#3814](https://github.com/rudderlabs/rudder-transformer/issues/3814)) ([88c6175](https://github.com/rudderlabs/rudder-transformer/commit/88c6175391cf4575a57936aced898465ad78b55e))
+
+### [1.82.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.82.0...v1.82.1) (2024-10-16)
+
+
+### Bug Fixes
+
+* heap userId extraction ([fa620e0](https://github.com/rudderlabs/rudder-transformer/commit/fa620e00db13b7bcdc599cb99966395cfbe53f96))
+
+## [1.82.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.81.0...v1.82.0) (2024-10-09)
+
+
+### Features
+
+* onboard Amazon Audience ([#3727](https://github.com/rudderlabs/rudder-transformer/issues/3727)) ([5ac8186](https://github.com/rudderlabs/rudder-transformer/commit/5ac81860c51f9971343df8c61bfd0b2de8161735))
+* onboard intercom v2 destination ([#3721](https://github.com/rudderlabs/rudder-transformer/issues/3721)) ([f8cde8c](https://github.com/rudderlabs/rudder-transformer/commit/f8cde8c072eb9415368fb97f53a3070027a3943b))
+
+
+### Bug Fixes
+
+* add list of the props, which need to be placed at the root ([#3777](https://github.com/rudderlabs/rudder-transformer/issues/3777)) ([b357dd4](https://github.com/rudderlabs/rudder-transformer/commit/b357dd4e8a49ed66576f731a6aac84da55397475))
+* rakuten amount value rounded up to nearest integer ([#3784](https://github.com/rudderlabs/rudder-transformer/issues/3784)) ([f3046f0](https://github.com/rudderlabs/rudder-transformer/commit/f3046f0ae37c113c1239d988d056fc204f2776a0))
+* webhook proc workflow object assign bug ([#3775](https://github.com/rudderlabs/rudder-transformer/issues/3775)) ([de8e503](https://github.com/rudderlabs/rudder-transformer/commit/de8e503524c1e8e3320f7458c66b8581f121b9bb))
+
 ## [1.81.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.79.1...v1.81.0) (2024-10-04)
 
 

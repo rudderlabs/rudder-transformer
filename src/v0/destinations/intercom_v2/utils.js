@@ -28,6 +28,8 @@ const { getAccessToken } = require('../../util');
 const { ApiVersions, destType } = require('./config');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 
+const getRecordAction = (message) => message?.action?.toLowerCase();
+
 /**
  * method to handle error during api call
  * ref docs: https://developers.intercom.com/docs/references/rest-api/errors/http-responses/
@@ -99,10 +101,18 @@ const getResponse = (method, endpoint, headers, payload) => {
 
 const searchContact = async (event) => {
   const { message, destination, metadata } = event;
-  const lookupField = getLookUpField(message);
-  let lookupFieldValue = getFieldValueFromMessage(message, lookupField);
-  if (!lookupFieldValue) {
-    lookupFieldValue = message?.context?.traits?.[lookupField];
+  const messageType = getEventType(message);
+  let lookupField = null;
+  let lookupFieldValue = null;
+  if (messageType === EventType.RECORD) {
+    const { identifiers } = message;
+    [[lookupField, lookupFieldValue]] = Object.entries(identifiers);
+  } else {
+    lookupField = getLookUpField(message);
+    lookupFieldValue = getFieldValueFromMessage(message, lookupField);
+    if (!lookupFieldValue) {
+      lookupFieldValue = message?.context?.traits?.[lookupField];
+    }
   }
   const data = JSON.stringify({
     query: {
@@ -329,4 +339,5 @@ module.exports = {
   attachContactToCompany,
   addOrUpdateTagsToCompany,
   getBaseEndpoint,
+  getRecordAction,
 };

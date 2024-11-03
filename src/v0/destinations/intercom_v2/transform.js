@@ -1,4 +1,4 @@
-const { InstrumentationError } = require('@rudderstack/integrations-lib');
+const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const {
   handleRtTfSingleEventError,
   getSuccessRespEvents,
@@ -17,13 +17,14 @@ const {
   addOrUpdateTagsToCompany,
   getStatusCode,
   getBaseEndpoint,
+  getRecordAction,
 } = require('./utils');
 const {
   getName,
   filterCustomAttributes,
   addMetadataToPayload,
 } = require('../../../cdk/v2/destinations/intercom/utils');
-const { MappingConfig, ConfigCategory } = require('./config');
+const { MappingConfig, ConfigCategory, RecordAction } = require('./config');
 
 const transformIdentifyPayload = (event) => {
   const { message, destination } = event;
@@ -131,6 +132,45 @@ const constructGroupResponse = async (event) => {
   return getResponse(method, endpoint, headers, finalPayload);
 };
 
+const constructRecordResponse = async (event) => {
+  const { message, destination, metadata } = event;
+  const { identifiers, fields } = message;
+
+  let method = 'POST';
+  let endpoint = `${getBaseEndpoint(destination)}/contacts`;
+  let payload = {};
+
+  const action = getRecordAction(message);
+  let contactId = null;
+  if (action === RecordAction.UPDATE || action === RecordAction.DELETE) {
+    contactId = await searchContact(event);
+  }
+
+  switch (action) {
+    case RecordAction.INSERT:
+      payload = { ...identifiers, ...fields };
+      break;
+    case RecordAction.UPDATE:
+      if (!contactId) {
+        throw new ConfigurationError('Contact is not present. Aborting.');
+      }
+      endpoint += `/${contactId}`;
+      payload = { ...fields };
+      method = 'PUT';
+      break;
+    case RecordAction.DELETE:
+      if (!contactId) {
+        throw new ConfigurationError('Contact is not present. Aborting.');
+      }
+      endpoint += `/${contactId}`;
+      method = 'DELETE';
+      break;
+    default:
+      throw new InstrumentationError(`action ${action} is not supported.`);
+  }
+  return getResponse(method, endpoint, getHeaders(metadata), payload);
+};
+
 const processEvent = async (event) => {
   const { message } = event;
   const messageType = getEventType(message);
@@ -144,6 +184,9 @@ const processEvent = async (event) => {
       break;
     case EventType.GROUP:
       response = await constructGroupResponse(event);
+      break;
+    case EventType.RECORD:
+      response = constructRecordResponse(event);
       break;
     default:
       throw new InstrumentationError(`message type ${messageType} is not supported.`);

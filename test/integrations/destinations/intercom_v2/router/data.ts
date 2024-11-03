@@ -17,6 +17,7 @@ import {
   userTraits,
 } from '../common';
 import { RouterTestData } from '../../../testTypes';
+import { rETLRecordV2RouterRequest } from './rETL';
 
 const routerRequest1: RouterTransformationRequest = {
   input: [
@@ -873,6 +874,109 @@ export const data: RouterTestData[] = [
               statTags: RouterInstrumentationErrorStatTags,
               destination,
               metadata: [generateMetadata(5)],
+              statusCode: 400,
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    id: 'INTERCOM-V2-router-test-6',
+    scenario: 'Framework',
+    successCriteria: 'Some events should be transformed successfully and some should fail for rETL',
+    name: 'intercom_v2',
+    description: 'INTERCOM V2 rETL tests',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: rETLRecordV2RouterRequest,
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batched: false,
+              batchedRequest: {
+                body: {
+                  JSON: {
+                    email: 'test-rETL@gmail.com',
+                    external_id: 'rEtl_external_id',
+                  },
+                  XML: {},
+                  FORM: {},
+                  JSON_ARRAY: {},
+                },
+                endpoint: 'https://api.intercom.io/contacts',
+                files: {},
+                headers,
+                method: 'POST',
+                params: {},
+                type: 'REST',
+                version: '1',
+              },
+              destination: destination,
+              metadata: [generateMetadata(1)],
+              statusCode: 200,
+            },
+            {
+              batched: false,
+              batchedRequest: {
+                body: {
+                  JSON: {
+                    external_id: 'rEtl_external_id',
+                  },
+                  XML: {},
+                  FORM: {},
+                  JSON_ARRAY: {},
+                },
+                endpoint: 'https://api.intercom.io/contacts/retl-available-contact-id',
+                files: {},
+                headers,
+                method: 'PUT',
+                params: {},
+                type: 'REST',
+                version: '1',
+              },
+              destination: destination,
+              metadata: [generateMetadata(2)],
+              statusCode: 200,
+            },
+            {
+              batched: false,
+              batchedRequest: {
+                body: {
+                  JSON: {},
+                  XML: {},
+                  FORM: {},
+                  JSON_ARRAY: {},
+                },
+                endpoint: 'https://api.intercom.io/contacts/retl-available-contact-id',
+                files: {},
+                headers,
+                method: 'DELETE',
+                params: {},
+                type: 'REST',
+                version: '1',
+              },
+              destination: destination,
+              metadata: [generateMetadata(3)],
+              statusCode: 200,
+            },
+            {
+              batched: false,
+              error: 'Contact is not present. Aborting.',
+              statTags: {
+                ...RouterInstrumentationErrorStatTags,
+                errorType: 'configuration',
+              },
+              destination,
+              metadata: [generateMetadata(4)],
               statusCode: 400,
             },
           ],

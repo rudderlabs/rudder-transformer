@@ -746,6 +746,71 @@ const deliveryCallsData = [
       },
     },
   },
+  {
+    httpReq: {
+      method: 'post',
+      url: 'https://api.intercom.io/contacts/search',
+      data: {
+        query: {
+          operator: 'AND',
+          value: [{ field: 'email', operator: '=', value: 'test-rETL-available@gmail.com' }],
+        },
+      },
+      headers,
+    },
+    httpRes: {
+      status: 200,
+      statusText: 'ok',
+      data: {
+        type: 'list',
+        total_count: 0,
+        pages: {
+          type: 'pages',
+          page: 1,
+          per_page: 50,
+          total_pages: 0,
+        },
+        data: [
+          {
+            type: 'contact',
+            id: 'retl-available-contact-id',
+            workspace_id: 'rudderWorkspace',
+            external_id: 'detach-company-user-id',
+            role: 'user',
+            email: 'test-rETL-available@gmail.com',
+          },
+        ],
+      },
+    },
+  },
+  {
+    httpReq: {
+      method: 'post',
+      url: 'https://api.intercom.io/contacts/search',
+      data: {
+        query: {
+          operator: 'AND',
+          value: [{ field: 'email', operator: '=', value: 'test-rETL-unavailable@gmail.com' }],
+        },
+      },
+      headers,
+    },
+    httpRes: {
+      status: 200,
+      statusText: 'ok',
+      data: {
+        type: 'list',
+        total_count: 0,
+        pages: {
+          type: 'pages',
+          page: 1,
+          per_page: 50,
+          total_pages: 0,
+        },
+        data: [],
+      },
+    },
+  },
 ];
 
 export const networkCallsData = [...deliveryCallsData];

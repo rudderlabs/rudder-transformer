@@ -6,7 +6,7 @@ const ApiVersions = {
   v2: '2.10',
 };
 
-export const RecordAction = {
+const RecordAction = {
   INSERT: 'insert',
   UPDATE: 'update',
   DELETE: 'delete',

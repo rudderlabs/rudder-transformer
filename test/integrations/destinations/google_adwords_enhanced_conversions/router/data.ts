@@ -903,11 +903,11 @@ export const data = [
             {
               batched: false,
               statusCode: 400,
-              error: 'loginCustomerId should be a string or number',
+              error: 'LoginCustomerId is required as subAccount is true.',
               statTags: {
                 destType: 'GOOGLE_ADWORDS_ENHANCED_CONVERSIONS',
                 errorCategory: 'dataValidation',
-                errorType: 'instrumentation',
+                errorType: 'configuration',
                 feature: 'router',
                 implementation: 'native',
                 module: 'destination',

@@ -2,12 +2,7 @@
 
 const get = require('get-value');
 const { cloneDeep, isNumber } = require('lodash');
-const {
-  InstrumentationError,
-  ConfigurationError,
-  isDefinedAndNotNull,
-  isDefinedAndNotNullAndNotEmpty,
-} = require('@rudderstack/integrations-lib');
+const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const isString = require('lodash/isString');
 const {
   constructPayload,

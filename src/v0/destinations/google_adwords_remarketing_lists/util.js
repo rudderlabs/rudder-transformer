@@ -1,3 +1,4 @@
+const get = require('get-value');
 const sha256 = require('sha256');
 const { ConfigurationError } = require('@rudderstack/integrations-lib');
 const {
@@ -6,8 +7,10 @@ const {
   defaultRequestConfig,
   removeHyphens,
   removeUndefinedAndNullValues,
+  getDestinationExternalIDInfoForRetl,
 } = require('../../util');
 const logger = require('../../../logger');
+const { MappedToDestinationKey } = require('../../../constants');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 const {
   addressInfoMapping,
@@ -112,7 +115,21 @@ const populateIdentifiers = (attributeArray, { Config }, typeOfList, isHashRequi
   return userIdentifier;
 };
 
+const getOperationAudienceId = (audienceId, message) => {
+  let operationAudienceId = audienceId;
+  const mappedToDestination = get(message, MappedToDestinationKey);
+  if (!operationAudienceId && mappedToDestination) {
+    const { objectType } = getDestinationExternalIDInfoForRetl(
+      message,
+      'GOOGLE_ADWORDS_REMARKETING_LISTS',
+    );
+    operationAudienceId = objectType;
+  }
+  return operationAudienceId;
+};
+
 module.exports = {
   populateIdentifiers,
   responseBuilder,
+  getOperationAudienceId,
 };

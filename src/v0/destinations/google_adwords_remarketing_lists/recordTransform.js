@@ -1,7 +1,6 @@
 /* eslint-disable no-const-assign */
 const lodash = require('lodash');
 const { InstrumentationError } = require('@rudderstack/integrations-lib');
-const get = require('get-value');
 const {
   getValueFromMessage,
   getAccessToken,
@@ -10,13 +9,11 @@ const {
   getSuccessRespEvents,
   isEventSentByVDMV1Flow,
   isEventSentByVDMV2Flow,
-  getDestinationExternalIDInfoForRetl,
 } = require('../../util');
 const { populateConsentFromConfig } = require('../../util/googleUtils');
-const { populateIdentifiers, responseBuilder } = require('./util');
+const { populateIdentifiers, responseBuilder, getOperationAudienceId } = require('./util');
 const { getErrorResponse, createFinalResponse } = require('../../util/recordUtils');
 const { offlineDataJobsMapping, consentConfigMap } = require('./config');
-const { MappedToDestinationKey } = require('../../../constants');
 
 const processRecordEventArray = (
   records,
@@ -81,15 +78,7 @@ const processRecordEventArray = (
   Object.values(outputPayloads).forEach((data) => {
     const consentObj = populateConsentFromConfig(destination.Config, consentConfigMap);
     toSendEvents.push(
-      responseBuilder(
-        accessToken,
-        developerToken,
-        data,
-        destination,
-        audienceId,
-        message,
-        consentObj,
-      ),
+      responseBuilder(accessToken, developerToken, data, destination, audienceId, consentObj),
     );
   });
 
@@ -174,18 +163,8 @@ function processRecordInputsV0(groupedRecordInputs) {
   const { destination, message } = groupedRecordInputs[0];
   const { audienceId, typeOfList, isHashRequired } = destination.Config;
 
-  let operationAudienceId = audienceId;
-  const mappedToDestination = get(message, MappedToDestinationKey);
-  if (!operationAudienceId && mappedToDestination) {
-    const { objectType } = getDestinationExternalIDInfoForRetl(
-      message,
-      'GOOGLE_ADWORDS_REMARKETING_LISTS',
-    );
-    operationAudienceId = objectType;
-  }
-
   return preparepayload(groupedRecordInputs, {
-    audienceId: operationAudienceId,
+    audienceId: getOperationAudienceId(audienceId, message),
     typeOfList,
     isHashRequired,
   });

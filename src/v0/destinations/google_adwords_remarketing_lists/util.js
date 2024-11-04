@@ -1,4 +1,3 @@
-const get = require('get-value');
 const sha256 = require('sha256');
 const { ConfigurationError } = require('@rudderstack/integrations-lib');
 const {
@@ -7,11 +6,9 @@ const {
   defaultRequestConfig,
   removeHyphens,
   removeUndefinedAndNullValues,
-  getDestinationExternalIDInfoForRetl,
 } = require('../../util');
 const logger = require('../../../logger');
-const { MappedToDestinationKey } = require('../../../constants');
-const { JSON_MIME_TYPE, VDM_V2_SCHEMA_VERSION } = require('../../util/constant');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 const {
   addressInfoMapping,
   attributeMapping,
@@ -34,8 +31,7 @@ const responseBuilder = (
   developerToken,
   body,
   { Config },
-  connection,
-  message,
+  audienceId,
   consentBlock,
 ) => {
   const payload = body;
@@ -43,25 +39,11 @@ const responseBuilder = (
   const filteredCustomerId = removeHyphens(Config.customerId);
   response.endpoint = `${BASE_ENDPOINT}/${filteredCustomerId}/offlineUserDataJobs`;
   response.body.JSON = removeUndefinedAndNullValues(payload);
-  let operationAudienceId;
-  if (connection?.config?.destination?.schemaVersion === VDM_V2_SCHEMA_VERSION) {
-    operationAudienceId = connection.config.audienceId;
-  } else {
-    operationAudienceId = Config.audienceId || Config.listId;
-    const mappedToDestination = get(message, MappedToDestinationKey);
-    if (!operationAudienceId && mappedToDestination) {
-      const { objectType } = getDestinationExternalIDInfoForRetl(
-        message,
-        'GOOGLE_ADWORDS_REMARKETING_LISTS',
-      );
-      operationAudienceId = objectType;
-    }
-  }
-  if (!isDefinedAndNotNullAndNotEmpty(operationAudienceId)) {
+  if (!isDefinedAndNotNullAndNotEmpty(audienceId)) {
     throw new ConfigurationError('List ID is a mandatory field');
   }
   response.params = {
-    listId: operationAudienceId,
+    listId: audienceId,
     customerId: filteredCustomerId,
     consent: consentBlock,
   };
@@ -82,22 +64,15 @@ const responseBuilder = (
  * This function helps creates an array with proper mapping for userIdentiFier.
  * Logics: Here we are creating an array with all the attributes provided in the add/remove array
  * inside listData.
- * @param {rudder event message properties listData add} attributeArray
- * @param {rudder event destination} Config
+ * @param {Array} attributeArray rudder event message properties listData add
+ * @param {object} Config rudder event destination
+ * @param {string} typeOfList
+ * @param {boolean} isHashRequired
  * @returns
  */
-const populateIdentifiers = (attributeArray, { Config }, connection) => {
+const populateIdentifiers = (attributeArray, { Config }, typeOfList, isHashRequired) => {
   const userIdentifier = [];
-  let typeOfList;
-  let isHashRequired;
   const { userSchema } = Config;
-  if (connection?.config?.destination?.schemaVersion === VDM_V2_SCHEMA_VERSION) {
-    typeOfList = connection.config.typeOfList;
-    isHashRequired = connection.config.isHashRequired;
-  } else {
-    typeOfList = Config.typeOfList;
-    isHashRequired = Config.isHashRequired;
-  }
   let attribute;
   if (TYPEOFLIST[typeOfList]) {
     attribute = TYPEOFLIST[typeOfList];

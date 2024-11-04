@@ -1,25 +1,32 @@
 /* eslint-disable no-const-assign */
 const lodash = require('lodash');
 const { InstrumentationError } = require('@rudderstack/integrations-lib');
+const get = require('get-value');
 const {
   getValueFromMessage,
   getAccessToken,
   constructPayload,
   returnArrayOfSubarrays,
   getSuccessRespEvents,
+  isEventSentByVDMV1Flow,
+  isEventSentByVDMV2Flow,
+  getDestinationExternalIDInfoForRetl,
 } = require('../../util');
 const { populateConsentFromConfig } = require('../../util/googleUtils');
 const { populateIdentifiers, responseBuilder } = require('./util');
 const { getErrorResponse, createFinalResponse } = require('../../util/recordUtils');
 const { offlineDataJobsMapping, consentConfigMap } = require('./config');
+const { MappedToDestinationKey } = require('../../../constants');
 
 const processRecordEventArray = (
   records,
   message,
   destination,
-  connection,
   accessToken,
   developerToken,
+  audienceId,
+  typeOfList,
+  isHashRequired,
   operationType,
 ) => {
   let outputPayloads = {};
@@ -32,7 +39,12 @@ const processRecordEventArray = (
     metadata.push(record.metadata);
   });
 
-  const userIdentifiersList = populateIdentifiers(fieldsArray, destination, connection);
+  const userIdentifiersList = populateIdentifiers(
+    fieldsArray,
+    destination,
+    typeOfList,
+    isHashRequired,
+  );
 
   const outputPayload = constructPayload(message, offlineDataJobsMapping);
   outputPayload.operations = [];
@@ -74,7 +86,7 @@ const processRecordEventArray = (
         developerToken,
         data,
         destination,
-        connection,
+        audienceId,
         message,
         consentObj,
       ),
@@ -86,12 +98,13 @@ const processRecordEventArray = (
   return successResponse;
 };
 
-async function processRecordInputs(groupedRecordInputs) {
-  const { destination, message, metadata, connection } = groupedRecordInputs[0];
+function preparepayload(events, config) {
+  const { destination, message, metadata } = events[0];
   const accessToken = getAccessToken(metadata, 'access_token');
   const developerToken = getValueFromMessage(metadata, 'secret.developer_token');
+  const { audienceId, typeOfList, isHashRequired } = config;
 
-  const groupedRecordsByAction = lodash.groupBy(groupedRecordInputs, (record) =>
+  const groupedRecordsByAction = lodash.groupBy(events, (record) =>
     record.message.action?.toLowerCase(),
   );
 
@@ -104,9 +117,11 @@ async function processRecordInputs(groupedRecordInputs) {
       groupedRecordsByAction.delete,
       message,
       destination,
-      connection,
       accessToken,
       developerToken,
+      audienceId,
+      typeOfList,
+      isHashRequired,
       'remove',
     );
   }
@@ -116,9 +131,11 @@ async function processRecordInputs(groupedRecordInputs) {
       groupedRecordsByAction.insert,
       message,
       destination,
-      connection,
       accessToken,
       developerToken,
+      audienceId,
+      typeOfList,
+      isHashRequired,
       'add',
     );
   }
@@ -128,9 +145,11 @@ async function processRecordInputs(groupedRecordInputs) {
       groupedRecordsByAction.update,
       message,
       destination,
-      connection,
       accessToken,
       developerToken,
+      audienceId,
+      typeOfList,
+      isHashRequired,
       'add',
     );
   }
@@ -149,6 +168,55 @@ async function processRecordInputs(groupedRecordInputs) {
   }
 
   return finalResponse;
+}
+
+function processRecordInputsV0(groupedRecordInputs) {
+  const { destination, message } = groupedRecordInputs[0];
+  const { audienceId, typeOfList, isHashRequired } = destination.Config;
+
+  let operationAudienceId = audienceId;
+  const mappedToDestination = get(message, MappedToDestinationKey);
+  if (!operationAudienceId && mappedToDestination) {
+    const { objectType } = getDestinationExternalIDInfoForRetl(
+      message,
+      'GOOGLE_ADWORDS_REMARKETING_LISTS',
+    );
+    operationAudienceId = objectType;
+  }
+
+  return preparepayload(groupedRecordInputs, {
+    audienceId: operationAudienceId,
+    typeOfList,
+    isHashRequired,
+  });
+}
+
+function processRecordInputsV1(groupedRecordInputs) {
+  const { connection } = groupedRecordInputs[0];
+  const { audienceId, typeOfList, isHashRequired } = connection.config.destination;
+
+  const events = groupedRecordInputs.map((record) => ({
+    ...record,
+    message: {
+      ...record.message,
+      fields: record.message.identifiers,
+    },
+  }));
+
+  return preparepayload(events, {
+    audienceId,
+    typeOfList,
+    isHashRequired,
+  });
+}
+
+function processRecordInputs(groupedRecordInputs) {
+  const event = groupedRecordInputs[0];
+  // First check for rETL flow and second check for ES flow
+  if (isEventSentByVDMV1Flow(event) || !isEventSentByVDMV2Flow(event)) {
+    return processRecordInputsV0(groupedRecordInputs);
+  }
+  return processRecordInputsV1(groupedRecordInputs);
 }
 
 module.exports = {

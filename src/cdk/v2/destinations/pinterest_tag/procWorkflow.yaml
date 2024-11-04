@@ -67,9 +67,9 @@ steps:
         "event_id": $.getOneByPaths(., ^.destination.Config.deduplicationKey) ?? .messageId,
         "app_id": ^.destination.Config.appId,
         "advertiser_id": ^.destination.Config.advertiserId,
-        "partner_name": .properties.partnerName,
-        "device_carrier": .context.network.carrier,
-        "wifi": .context.network.wifi
+        "partner_name": .properties.partnerName ? String(.properties.partnerName) : undefined,
+        "device_carrier": .properties.partnerName ? String(.context.network.carrier) : undefined,
+        "wifi": .context.network.wifi ? Boolean(.context.network.wifi) : undefined
       });
       $.outputs.apiVersion === {{$.API_VERSION.v5}} ?  commonFields = commonFields{~["advertiser_id"]};
       $.removeUndefinedValues(commonFields)
@@ -107,7 +107,7 @@ steps:
         "client_user_agent": .context.userAgent,
         "external_id": {{{{$.getGenericPaths("userId")}}}},
         "click_id": .properties.clickId,
-        "partner_id": .traits.partnerId ?? .context.traits.partnerId
+        "partner_id": .traits.partnerId ?? .context.traits.partnerId ? String(.traits.partnerId ?? .context.traits.partnerId) : undefined
       });
       !.destination.Config.sendExternalId ?  userFields = userFields{~["external_id"]} : null;
       userFields = $.removeUndefinedAndNullAndEmptyValues(userFields);
@@ -134,10 +134,10 @@ steps:
             "order_id": .properties.order_id,
             "search_string": .properties.query,
             "opt_out_type": .properties.optOutType,
-            "content_name": .properties.contentName,
-            "content_category": .properties.contentCategory,
-            "content_brand": .properties.contentBrand,
-            "np": .properties.np
+            "content_name": .properties.contentName ? String(.properties.contentName) : undefined,
+            "content_category": .properties.contentCategory ? String(.properties.contentCategory) : undefined,
+            "content_brand": .properties.contentBrand ? String(.properties.contentBrand) : undefined,
+            "np": .properties.np ? String(.properties.np) : undefined
           });
           $.removeUndefinedValues(customFields)
 
@@ -153,9 +153,9 @@ steps:
               "quantity": Number(.quantity ?? prop.quantity ?? 1),
               "item_price": String(.price ?? prop.price),
               "item_name": String(.name),
-              "id": .product_id ?? .sku,
-              "item_category": .category,
-              "item_brand": .brand
+              "id": .product_id ?? .sku ? String(.product_id ?? .sku) : undefined,
+              "item_category": .category ? String(.category) : undefined,
+              "item_brand": .brand ? String(.brand) : undefined
             })[]
           }
         else:
@@ -169,9 +169,9 @@ steps:
                 "quantity": Number(props.quantity) || 1,
                 "item_price": String(props.price),
                 "item_name": String(props.name),
-                "id": props.product_id ?? props.sku,
-                "item_category": props.category,
-                "item_brand": props.brand
+                "id": props.product_id ?? props.sku ? String(props.product_id ?? props.sku) : undefined,
+                "item_category": props.category ? String(props.category) : undefined,
+                "item_brand": props.brand ? String(props.brand) : undefined
               }[]
             };
       - name: combineAllEcomFields

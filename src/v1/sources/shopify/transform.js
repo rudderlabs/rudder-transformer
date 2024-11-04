@@ -15,7 +15,7 @@ const process = async (inputEvent) => {
     const responseV2 = await processEventFromPixel(event);
     return responseV2;
   }
-  if (query_parameters && query_parameters.version[0] === 'pixel') {
+  if (query_parameters && query_parameters?.version?.[0] === 'pixel') {
     // this is a server-side event from the webhook subscription made by the pixel app.
     const responseV2 = await processWebhookEventsV2(event);
     return responseV2;

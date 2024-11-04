@@ -193,6 +193,11 @@ export const v1ServerSideEventsScenarios = [
         ],
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        query_parameters: {
+          topic: ['checkouts_update'],
+          writeKey: ['2l9QoM7KRMJLMcYhXNUVDT0Mqbd'],
+          version: 'pixel',
+        },
       },
       pathSuffix: '',
     },
@@ -476,6 +481,11 @@ export const v1ServerSideEventsScenarios = [
         ],
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        query_parameters: {
+          topic: ['carts_update'],
+          writeKey: ['2l9QoM7KRMJLMcYhXNUVDT0Mqbd'],
+          version: 'pixel',
+        },
       },
       pathSuffix: '',
     },

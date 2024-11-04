@@ -41,11 +41,14 @@ const responseBuilder = async (metadata, message, { Config }, payload) => {
   if (isNumber(customerId)) {
     customerId = customerId.toString();
   }
-  if (isNumber(loginCustomerId)) {
+  if (subAccount && isNumber(loginCustomerId)) {
     loginCustomerId = loginCustomerId.toString();
   }
-  if (!isString(customerId) || !isString(loginCustomerId)) {
-    throw new InstrumentationError('customerId and loginCustomerId should be a string or number');
+  if (!isString(customerId)) {
+    throw new InstrumentationError('customerId should be a string or number');
+  }
+  if (subAccount && !isString(loginCustomerId)) {
+    throw new InstrumentationError('loginCustomerId should be a string or number');
   }
   const filteredCustomerId = removeHyphens(customerId);
   response.endpoint = `${BASE_ENDPOINT}/${filteredCustomerId}:uploadConversionAdjustments`;

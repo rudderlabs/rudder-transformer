@@ -281,4 +281,5 @@ module.exports = {
   checkAndUpdateCartItems,
   getHashLineItems,
   getDataFromRedis,
+  getVariantString,
 };

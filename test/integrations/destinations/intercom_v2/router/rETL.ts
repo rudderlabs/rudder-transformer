@@ -24,7 +24,7 @@ export const rETLRecordV2RouterRequest: RouterTransformationRequest = {
         recordId: '1',
         rudderId: '1',
         identifiers: {
-          email: 'test-rETL@gmail.com',
+          email: 'test-rETL-unavailable@gmail.com',
         },
       },
       metadata: generateMetadata(1),
@@ -103,6 +103,31 @@ export const rETLRecordV2RouterRequest: RouterTransformationRequest = {
         },
       },
       metadata: generateMetadata(4),
+    },
+    {
+      destination,
+      message: {
+        type: 'record',
+        action: 'insert',
+        fields: {
+          external_id: 'rEtl_external_id',
+        },
+        channel: 'sources',
+        context: {
+          sources: {
+            job_id: 'job-id',
+            version: 'local',
+            job_run_id: 'job_run_id',
+            task_run_id: 'job_run_id',
+          },
+        },
+        recordId: '1',
+        rudderId: '1',
+        identifiers: {
+          email: 'test-rETL-available@gmail.com',
+        },
+      },
+      metadata: generateMetadata(5),
     },
   ],
   destType: 'intercom_v2',

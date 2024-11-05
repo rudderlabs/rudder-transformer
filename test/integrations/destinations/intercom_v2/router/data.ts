@@ -905,7 +905,7 @@ export const data: RouterTestData[] = [
               batchedRequest: {
                 body: {
                   JSON: {
-                    email: 'test-rETL@gmail.com',
+                    email: 'test-rETL-unavailable@gmail.com',
                     external_id: 'rEtl_external_id',
                   },
                   XML: {},
@@ -978,6 +978,29 @@ export const data: RouterTestData[] = [
               destination,
               metadata: [generateMetadata(4)],
               statusCode: 400,
+            },
+            {
+              batched: false,
+              batchedRequest: {
+                body: {
+                  JSON: {
+                    external_id: 'rEtl_external_id',
+                  },
+                  XML: {},
+                  FORM: {},
+                  JSON_ARRAY: {},
+                },
+                endpoint: 'https://api.intercom.io/contacts/retl-available-contact-id',
+                files: {},
+                headers,
+                method: 'PUT',
+                params: {},
+                type: 'REST',
+                version: '1',
+              },
+              destination: destination,
+              metadata: [generateMetadata(5)],
+              statusCode: 200,
             },
           ],
         },

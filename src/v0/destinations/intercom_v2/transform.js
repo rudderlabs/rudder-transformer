@@ -141,27 +141,31 @@ const constructRecordResponse = async (event) => {
   let payload = {};
 
   const action = getRecordAction(message);
-  let contactId = null;
-  if (action === RecordAction.UPDATE || action === RecordAction.DELETE) {
-    contactId = await searchContact(event);
+  const contactId = await searchContact(event);
+
+  if ((action === RecordAction.UPDATE || action === RecordAction.DELETE) && !contactId) {
+    throw new ConfigurationError('Contact is not present. Aborting.');
+  }
+
+  if (action === RecordAction.INSERT && !contactId) {
+    payload = { ...identifiers, ...fields };
   }
 
   switch (action) {
     case RecordAction.INSERT:
       payload = { ...identifiers, ...fields };
+      if (contactId) {
+        endpoint += `/${contactId}`;
+        payload = { ...fields };
+        method = 'PUT';
+      }
       break;
     case RecordAction.UPDATE:
-      if (!contactId) {
-        throw new ConfigurationError('Contact is not present. Aborting.');
-      }
       endpoint += `/${contactId}`;
       payload = { ...fields };
       method = 'PUT';
       break;
     case RecordAction.DELETE:
-      if (!contactId) {
-        throw new ConfigurationError('Contact is not present. Aborting.');
-      }
       endpoint += `/${contactId}`;
       method = 'DELETE';
       break;

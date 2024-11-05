@@ -65,7 +65,7 @@ export const proxyMetdata: ProxyMetdata = {
 
 export const reqMetadataArray = [proxyMetdata];
 
-const commonRequestParameters = {
+export const commonRequestParameters = {
   headers: commonHeaders,
   JSON: users[0],
   params,
@@ -372,6 +372,92 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
               },
             ],
             status: 200,
+          },
+        },
+      },
+    },
+  },
+  {
+    id: 'salesforce_v1_scenario_8',
+    name: 'salesforce',
+    description: '[Proxy v1 API] :: Test for CANNOT_INSERT_UPDATE_ACTIVATE_ENTITY scenario',
+    successCriteria: 'Should return 500 with error message "CANNOT_INSERT_UPDATE_ACTIVATE_ENTITY"',
+    scenario: 'Business',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v1',
+    input: {
+      request: {
+        body: generateProxyV1Payload(
+          {
+            ...commonRequestParameters,
+            endpoint: 'https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/9',
+          },
+          reqMetadataArray,
+        ),
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: {
+            message:
+              'Salesforce Request Failed - "UNABLE_TO_LOCK_ROW", (Retryable) during Salesforce Response Handling',
+            response: [
+              {
+                error:
+                  '[{"message":"UNABLE_TO_LOCK_ROW","errorCode":"CANNOT_INSERT_UPDATE_ACTIVATE_ENTITY"}]',
+                metadata: proxyMetdata,
+                statusCode: 500,
+              },
+            ],
+            statTags: statTags.retryable,
+            status: 500,
+          },
+        },
+      },
+    },
+  },
+  {
+    id: 'salesforce_v1_scenario_9',
+    name: 'salesforce',
+    description: '[Proxy v1 API] :: Test for CANNOT_INSERT_UPDATE_ACTIVATE_ENTITY scenario',
+    successCriteria: 'Should return 500 with error message "CANNOT_INSERT_UPDATE_ACTIVATE_ENTITY"',
+    scenario: 'Business',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v1',
+    input: {
+      request: {
+        body: generateProxyV1Payload(
+          {
+            ...commonRequestParameters,
+            endpoint: 'https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/10',
+          },
+          reqMetadataArray,
+        ),
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: {
+            message:
+              'Salesforce Request Failed - "Too many SOQL queries", (Retryable) during Salesforce Response Handling',
+            response: [
+              {
+                error:
+                  '[{"message":"Too many SOQL queries","errorCode":"CANNOT_INSERT_UPDATE_ACTIVATE_ENTITY"}]',
+                metadata: proxyMetdata,
+                statusCode: 500,
+              },
+            ],
+            statTags: statTags.retryable,
+            status: 500,
           },
         },
       },

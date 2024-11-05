@@ -135,6 +135,42 @@ const tfProxyMocksData = [
   },
   {
     httpReq: {
+      url: 'https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/9',
+      data: dataValue,
+      params: { destination: 'salesforce' },
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer token',
+        'User-Agent': 'RudderLabs',
+      },
+      method: 'POST',
+    },
+    httpRes: {
+      data: [{ message: 'UNABLE_TO_LOCK_ROW', errorCode: 'CANNOT_INSERT_UPDATE_ACTIVATE_ENTITY' }],
+      status: 400,
+    },
+  },
+  {
+    httpReq: {
+      url: 'https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/10',
+      data: dataValue,
+      params: { destination: 'salesforce' },
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer token',
+        'User-Agent': 'RudderLabs',
+      },
+      method: 'POST',
+    },
+    httpRes: {
+      data: [
+        { message: 'Too many SOQL queries', errorCode: 'CANNOT_INSERT_UPDATE_ACTIVATE_ENTITY' },
+      ],
+      status: 400,
+    },
+  },
+  {
+    httpReq: {
       url: 'https://rudderstack.my.salesforce.com/services/data/v50.0/parameterizedSearch/?q=123&sobject=object_name&in=External_ID__c&object_name.fields=id,External_ID__c',
       data: { Planning_Categories__c: 'pc', External_ID__c: 123 },
       params: { destination: 'salesforce' },

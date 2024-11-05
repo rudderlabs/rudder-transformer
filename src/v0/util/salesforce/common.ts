@@ -54,6 +54,10 @@ export const responseHandler = (destResponse: any, sourceMessage: string) => {
   const { response, status } = destResponse;
   const matchErrorCode = (errorCode) =>
     response && Array.isArray(response) && response.some((resp) => resp?.errorCode === errorCode);
+  const matchErrorMessage = (messageCode) =>
+    response &&
+    Array.isArray(response) &&
+    response.some((resp) => resp?.message?.includes(messageCode));
   switch (status) {
     case 403:
       if (matchErrorCode('REQUEST_LIMIT_EXCEEDED')) {
@@ -67,12 +71,12 @@ export const responseHandler = (destResponse: any, sourceMessage: string) => {
 
     case 400:
       if (
-        matchErrorCode('CANNOT_INSERT_UPDATE_ACTIVATE_ENTITY') &&
-        (response?.message?.includes('UNABLE_TO_LOCK_ROW') ||
-          response?.message?.includes('Too many SOQL queries'))
+        (matchErrorCode('CANNOT_INSERT_UPDATE_ACTIVATE_ENTITY') &&
+          matchErrorMessage('UNABLE_TO_LOCK_ROW')) ||
+        matchErrorMessage('Too many SOQL queries')
       ) {
         throw new RetryableError(
-          `${DESTINATION} Request Failed - "${response.message}", (Retryable) ${sourceMessage}`,
+          `${DESTINATION} Request Failed - "${response[0].message}", (Retryable) ${sourceMessage}`,
           500,
           destResponse,
         );

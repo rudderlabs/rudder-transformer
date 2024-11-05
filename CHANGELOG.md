@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.83.2](https://github.com/rudderlabs/rudder-transformer/compare/v1.83.1...v1.83.2) (2024-11-05)
+
+
+### Bug Fixes
+
+* update gaec destination with config validation ([#3847](https://github.com/rudderlabs/rudder-transformer/issues/3847)) ([e5c5b0a](https://github.com/rudderlabs/rudder-transformer/commit/e5c5b0a28070ff5ca89a274c3998b96780139149))
+
 ### [1.83.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.83.0...v1.83.1) (2024-11-01)
 
 ## [1.83.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.82.2...v1.83.0) (2024-10-25)

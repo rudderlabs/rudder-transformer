@@ -32,7 +32,7 @@ export const data = [
                 library: { name: 'rudder-sdk-ruby-sync', version: '1.0.6' },
                 network: {
                   carrier: 'VI',
-                  wifi: true,
+                  wifi: 'true',
                 },
               },
               messageId: '7208bbb6-2c4e-45bb-bf5b-ad426f3593e9',
@@ -62,7 +62,7 @@ export const data = [
                     category: 'Games',
                     quantity: 1,
                     image_url: 'https:///www.example.com/product/path.jpg',
-                    product_id: '507f1f77bcf86cd799439011',
+                    product_id: 1234,
                   },
                   {
                     sku: '46493-32',
@@ -122,11 +122,11 @@ export const data = [
                   app_id: '429047995',
                   custom_data: {
                     content_brand: 'LV',
-                    content_ids: ['507f1f77bcf86cd799439011', '505bd76785ebb509fc183733'],
+                    content_ids: ['1234', '505bd76785ebb509fc183733'],
                     content_name: 'testContent',
                     contents: [
                       {
-                        id: '507f1f77bcf86cd799439011',
+                        id: '1234',
                         item_category: 'Games',
                         item_name: 'Monopoly: 3rd Edition',
                         item_price: '19',

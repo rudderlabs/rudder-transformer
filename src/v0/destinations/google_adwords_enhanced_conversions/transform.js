@@ -57,7 +57,7 @@ const responseBuilder = async (metadata, message, { Config }, payload) => {
   response.params = { event, customerId: filteredCustomerId };
   if (subAccount) {
     if (!loginCustomerId) {
-      throw new ConfigurationError(`LoginCustomerId is required as subAccount is true.`);
+      throw new ConfigurationError(`loginCustomerId is required as subAccount is true.`);
     }
     if (isNumber(loginCustomerId)) {
       loginCustomerId = loginCustomerId.toString();

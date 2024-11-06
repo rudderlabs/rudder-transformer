@@ -161,7 +161,6 @@ export const data = [
               destination: {
                 Config: {
                   apiKey: '62d12498c37c4fd8a1a546c2d35c2f60',
-                  dataCenter: 'USDC',
                   mapToSingleEvent: false,
                   trackAllPages: true,
                   trackCategorisedPages: false,
@@ -200,7 +199,6 @@ export const data = [
               destination: {
                 Config: {
                   apiKey: '62d12498c37c4fd8a1a546c2d35c2f60',
-                  dataCenter: 'USDC',
                   mapToSingleEvent: false,
                   trackAllPages: true,
                   trackCategorisedPages: false,
@@ -536,7 +534,6 @@ export const data = [
               destination: {
                 Config: {
                   apiKey: '62d12498c37c4fd8a1a546c2d35c2f60',
-                  dataCenter: 'USDC',
                   mapToSingleEvent: false,
                   trackAllPages: true,
                   trackCategorisedPages: false,
@@ -585,7 +582,6 @@ export const data = [
               destination: {
                 Config: {
                   apiKey: '62d12498c37c4fd8a1a546c2d35c2f60',
-                  dataCenter: 'USDC',
                   mapToSingleEvent: false,
                   trackAllPages: true,
                   trackCategorisedPages: false,

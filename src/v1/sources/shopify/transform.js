@@ -4,7 +4,8 @@ const { process: processWebhookEvents } = require('../../../v0/sources/shopify/t
 const { process: processWebhookEventsV2 } = require('./serverSideTransform');
 
 const process = async (inputEvent) => {
-  const { event, query_parameters } = inputEvent;
+  const { event } = inputEvent;
+  const { query_parameters } = event;
   // check on the source Config to identify the event is from the tracker-based (legacy)
   // or the pixel-based (latest) implementation.
   const { pixelEventLabel: pixelClientEventLabel } = event;

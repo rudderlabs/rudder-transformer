@@ -160,18 +160,13 @@ const processEvent = async (inputEvent, metricMetadata) => {
     }
   }
   if (message.type !== EventType.IDENTIFY) {
-    const { anonymousId, sessionId } = await getAnonymousIdAndSessionId(
+    const { anonymousId } = await getAnonymousIdAndSessionId(
       message,
       { shopifyTopic, ...metricMetadata },
       redisData,
     );
     if (isDefinedAndNotNull(anonymousId)) {
       message.setProperty('anonymousId', anonymousId);
-    } else if (!message.userId) {
-      message.setProperty('userId', 'shopify-admin');
-    }
-    if (isDefinedAndNotNull(sessionId)) {
-      message.setProperty('context.sessionId', sessionId);
     }
   }
   message.setProperty(`integrations.${INTEGERATION}`, true);
@@ -192,80 +187,11 @@ const processEvent = async (inputEvent, metricMetadata) => {
   message = removeUndefinedAndNullValues(message);
   return message;
 };
-// const isIdentifierEvent = (event) =>
-//   ['rudderIdentifier', 'rudderSessionIdentifier'].includes(event?.event);
-// const processIdentifierEvent = async (event, metricMetadata) => {
-//   if (useRedisDatabase) {
-//     const cartToken =
-//       typeof event.cartToken === 'string' ? event.cartToken.split('?')[0] : event.cartToken;
-//     logger.info(`{{SHOPIFY::}} writeKey: ${metricMetadata.writeKey}, cartToken: ${cartToken}`, {
-//       type: 'set',
-//       source: metricMetadata.source,
-//       writeKey: metricMetadata.writeKey,
-//     });
-//     let value;
-//     let field;
-//     if (event.event === 'rudderIdentifier') {
-//       field = 'anonymousId';
-//       // eslint-disable-next-line unicorn/consistent-destructuring
-//       const lineItemshash = getHashLineItems(event.cart);
-//       // eslint-disable-next-line unicorn/consistent-destructuring
-//       value = ['anonymousId', event.anonymousId, 'itemsHash', lineItemshash];
-//       stats.increment('shopify_redis_calls', {
-//         type: 'set',
-//         field: 'itemsHash',
-//         source: metricMetadata.source,
-//         writeKey: metricMetadata.writeKey,
-//       });
-//       /* cart_token: {
-//            anonymousId: 'anon_id1',
-//            lineItemshash: '0943gh34pg'
-//           }
-//       */
-//     } else {
-//       field = 'sessionId';
-//       // eslint-disable-next-line unicorn/consistent-destructuring
-//       value = ['sessionId', event.sessionId];
-//       /* cart_token: {
-//           anonymousId:'anon_id1',
-//           lineItemshash:'90fg348fg83497u',
-//           sessionId: 'session_id1'
-//          }
-//        */
-//     }
-//     try {
-//       stats.increment('shopify_redis_calls', {
-//         type: 'set',
-//         field,
-//         source: metricMetadata.source,
-//         writeKey: metricMetadata.writeKey,
-//       });
-//       await RedisDB.setVal(`${cartToken}`, value);
-//     } catch (e) {
-//       logger.debug(`{{SHOPIFY::}} cartToken map set call Failed due redis error ${e}`, {
-//         type: 'set',
-//         source: metricMetadata.source,
-//         writeKey: metricMetadata.writeKey,
-//       });
-//       stats.increment('shopify_redis_failures', {
-//         type: 'set',
-//         source: metricMetadata.source,
-//         writeKey: metricMetadata.writeKey,
-//       });
-//       // returning 500 as status code in case of redis failure
-//       throw new RedisError(`${e}`, 500);
-//     }
-//   }
-//   return NO_OPERATION_SUCCESS;
-// };
 const process = async (event) => {
   const metricMetadata = {
     writeKey: event.query_parameters?.writeKey?.[0],
     source: 'SHOPIFY',
   };
-  // if (isIdentifierEvent(event)) {
-  //   return processIdentifierEvent(event, metricMetadata);
-  // }
   const response = await processEvent(event, metricMetadata);
   return response;
 };

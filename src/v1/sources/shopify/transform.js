@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-const { processEventFromPixel } = require('./pixelTransform');
+const { processEventFromPixel } = require('./webpixelTransformations/pixelTransform');
 const { process: processWebhookEvents } = require('../../../v0/sources/shopify/transform');
-const { process: processWebhookEventsV2 } = require('./serverSideTransform');
+const { process: processWebhookEventsV2 } = require('./webhookTransformations/serverSideTransform');
 
 const process = async (inputEvent) => {
   const { event } = inputEvent;

@@ -2,7 +2,7 @@
 const lodash = require('lodash');
 const get = require('get-value');
 // const { RedisError } = require('@rudderstack/integrations-lib');
-const stats = require('../../../util/stats');
+const stats = require('../../../../util/stats');
 const {
   getShopifyTopic,
   // createPropertiesForEcomEvent,
@@ -11,12 +11,12 @@ const {
   checkAndUpdateCartItems,
   // getHashLineItems,
   getDataFromRedis,
-} = require('../../../v0/sources/shopify/util');
+} = require('../../../../v0/sources/shopify/util');
 // const logger = require('../../../logger');
-const { removeUndefinedAndNullValues, isDefinedAndNotNull } = require('../../../v0/util');
+const { removeUndefinedAndNullValues, isDefinedAndNotNull } = require('../../../../v0/util');
 // const { RedisDB } = require('../../../util/redis/redisConnector');
-const Message = require('../../../v0/sources/message');
-const { EventType } = require('../../../constants');
+const Message = require('../../../../v0/sources/message');
+const { EventType } = require('../../../../constants');
 const {
   INTEGERATION,
   MAPPING_CATEGORIES,
@@ -27,7 +27,7 @@ const {
   SHOPIFY_TRACK_MAP,
   useRedisDatabase,
   lineItemsMappingJSON,
-} = require('../../../v0/sources/shopify/config');
+} = require('../../../../v0/sources/shopify/config');
 const { createPropertiesForV2EcomEvent, getProductsFromLineItems } = require('./serverSideUtlis');
 
 const NO_OPERATION_SUCCESS = {

@@ -1,21 +1,9 @@
-const {
-  constructPayload,
-  //   extractCustomFields,
-  //   flattenJson,
-  //   generateUUID,
-  //   isDefinedAndNotNull,
-} = require('../../../v0/util');
+const { constructPayload } = require('../../../../v0/util');
 
 const {
   lineItemsMappingJSON,
   productMappingJSON,
-  //   LINE_ITEM_EXCLUSION_FIELDS,
-  //   PRODUCT_MAPPING_EXCLUSION_FIELDS,
-  //   SHOPIFY_TRACK_MAP,
-  //   SHOPIFY_ADMIN_ONLY_EVENTS,
-  //   useRedisDatabase,
-  //   maxTimeToIdentifyRSGeneratedCall,
-} = require('../../../v0/sources/shopify/config');
+} = require('../../../../v0/sources/shopify/config');
 
 const getProductsFromLineItems = (lineItems, mapping) => {
   if (!lineItems || lineItems.length === 0) {

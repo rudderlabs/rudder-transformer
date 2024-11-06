@@ -1,8 +1,13 @@
 /* eslint-disable no-param-reassign */
 
 const get = require('get-value');
-const { cloneDeep } = require('lodash');
-const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
+const { cloneDeep, isNumber } = require('lodash');
+const {
+  InstrumentationError,
+  ConfigurationError,
+  isDefinedAndNotNull,
+} = require('@rudderstack/integrations-lib');
+const isString = require('lodash/isString');
 const {
   constructPayload,
   defaultRequestConfig,
@@ -10,6 +15,7 @@ const {
   removeHyphens,
   simpleProcessRouterDest,
   getAccessToken,
+  isDefined,
 } = require('../../util');
 
 const { trackMapping, BASE_ENDPOINT } = require('./config');
@@ -35,7 +41,28 @@ const updateMappingJson = (mapping) => {
 const responseBuilder = async (metadata, message, { Config }, payload) => {
   const response = defaultRequestConfig();
   const { event } = message;
-  const filteredCustomerId = removeHyphens(Config.customerId);
+  const { subAccount } = Config;
+  let { customerId, loginCustomerId } = Config;
+  const { configData } = Config;
+
+  if (isDefinedAndNotNull(configData)) {
+    const configDetails = JSON.parse(configData);
+    customerId = configDetails.customerId;
+    if (isDefined(configDetails.loginCustomerId)) {
+      loginCustomerId = configDetails.loginCustomerId;
+    }
+  }
+
+  if (isNumber(customerId)) {
+    customerId = customerId.toString();
+  }
+  if (isNumber(loginCustomerId)) {
+    loginCustomerId = loginCustomerId.toString();
+  }
+  if (!isString(customerId) || !isString(loginCustomerId)) {
+    throw new InstrumentationError('customerId and loginCustomerId should be a string or number');
+  }
+  const filteredCustomerId = removeHyphens(customerId);
   response.endpoint = `${BASE_ENDPOINT}/${filteredCustomerId}:uploadConversionAdjustments`;
   response.body.JSON = payload;
   const accessToken = getAccessToken(metadata, 'access_token');
@@ -45,11 +72,16 @@ const responseBuilder = async (metadata, message, { Config }, payload) => {
     'developer-token': getValueFromMessage(metadata, 'secret.developer_token'),
   };
   response.params = { event, customerId: filteredCustomerId };
-  if (Config.subAccount)
-    if (Config.loginCustomerId) {
-      const filteredLoginCustomerId = removeHyphens(Config.loginCustomerId);
+  if (subAccount)
+    if (loginCustomerId) {
+      const filteredLoginCustomerId = removeHyphens(loginCustomerId);
       response.headers['login-customer-id'] = filteredLoginCustomerId;
     } else throw new ConfigurationError(`LoginCustomerId is required as subAccount is true.`);
+
+  if (loginCustomerId) {
+    const filteredLoginCustomerId = removeHyphens(loginCustomerId);
+    response.headers['login-customer-id'] = filteredLoginCustomerId;
+  }
 
   return response;
 };
@@ -59,8 +91,14 @@ const processTrackEvent = async (metadata, message, destination) => {
   const { Config } = destination;
   const { event } = message;
   const { listOfConversions } = Config;
-  if (listOfConversions.some((i) => i.conversions === event)) {
-    flag = 1;
+  if (listOfConversions && listOfConversions.length > 0) {
+    if (typeof listOfConversions[0] === 'string') {
+      if (listOfConversions.includes(event)) {
+        flag = 1;
+      }
+    } else if (listOfConversions.some((i) => i.conversions === event)) {
+      flag = 1;
+    }
   }
   if (event === undefined || event === '' || flag === 0) {
     throw new ConfigurationError(

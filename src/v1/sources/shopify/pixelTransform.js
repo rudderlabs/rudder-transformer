@@ -1,6 +1,11 @@
+/* eslint-disable no-param-reassign */
+// eslint-disable-next-line @typescript-eslint/naming-convention
+const _ = require('lodash');
+const { isDefinedNotNullNotEmpty } = require('@rudderstack/integrations-lib');
 const stats = require('../../../util/stats');
 const logger = require('../../../logger');
 const { removeUndefinedAndNullValues } = require('../../../v0/util');
+const { RedisDB } = require('../../../util/redis/redisConnector');
 const {
   pageViewedEventBuilder,
   cartViewedEventBuilder,
@@ -11,7 +16,11 @@ const {
   checkoutStepEventBuilder,
   searchEventBuilder,
 } = require('./pixelUtils');
-const { INTEGERATION, PIXEL_EVENT_TOPICS } = require('./config');
+const {
+  INTEGERATION,
+  PIXEL_EVENT_TOPICS,
+  pixelEventToCartTokenLocationMapping,
+} = require('./config');
 
 const NO_OPERATION_SUCCESS = {
   outputToSource: {
@@ -19,6 +28,59 @@ const NO_OPERATION_SUCCESS = {
     contentType: 'text/plain',
   },
   statusCode: 200,
+};
+
+/**
+ * Parses and extracts cart token value from the input event
+ * @param {Object} inputEvent
+ * @returns {String} cartToken
+ */
+function extractCartToken(inputEvent) {
+  const cartTokenLocation = pixelEventToCartTokenLocationMapping[inputEvent.name];
+  if (!cartTokenLocation) {
+    stats.increment('shopify_pixel_cart_token_not_found', {
+      event: inputEvent.name,
+      writeKey: inputEvent.query_parameters.writeKey,
+    });
+    return undefined;
+  }
+  // the unparsedCartToken is a string like '/checkout/cn/1234'
+  const unparsedCartToken = _.get(inputEvent, cartTokenLocation);
+  if (typeof unparsedCartToken !== 'string') {
+    logger.error(`Cart token is not a string`);
+    stats.increment('shopify_pixel_cart_token_not_found', {
+      event: inputEvent.name,
+      writeKey: inputEvent.query_parameters.writeKey,
+    });
+    return undefined;
+  }
+  const cartTokenParts = unparsedCartToken.split('/');
+  const cartToken = cartTokenParts[3];
+  return cartToken;
+}
+
+/**
+ * Handles storing cart token and anonymousId (clientId) in Redis
+ * @param {Object} inputEvent
+ * @param {String} clientId
+ */
+const handleCartTokenRedisOperations = async (inputEvent, clientId) => {
+  const cartToken = extractCartToken(inputEvent);
+  try {
+    if (isDefinedNotNullNotEmpty(clientId) && isDefinedNotNullNotEmpty(cartToken)) {
+      await RedisDB.setVal(cartToken, ['anonymousId', clientId]);
+      stats.increment('shopify_pixel_cart_token_set', {
+        event: inputEvent.name,
+        writeKey: inputEvent.query_parameters.writeKey,
+      });
+    }
+  } catch (error) {
+    logger.error(`Error handling Redis operations for event: ${inputEvent.name}`, error);
+    stats.increment('shopify_pixel_cart_token_redis_error', {
+      event: inputEvent.name,
+      writeKey: inputEvent.query_parameters.writeKey,
+    });
+  }
 };
 
 function processPixelEvent(inputEvent) {
@@ -37,6 +99,7 @@ function processPixelEvent(inputEvent) {
       message = pageViewedEventBuilder(inputEvent);
       break;
     case PIXEL_EVENT_TOPICS.CART_VIEWED:
+      handleCartTokenRedisOperations(inputEvent, clientId);
       message = cartViewedEventBuilder(inputEvent);
       break;
     case PIXEL_EVENT_TOPICS.COLLECTION_VIEWED:
@@ -52,6 +115,7 @@ function processPixelEvent(inputEvent) {
     case PIXEL_EVENT_TOPICS.CHECKOUT_STARTED:
     case PIXEL_EVENT_TOPICS.CHECKOUT_COMPLETED:
       if (customer.id) message.userId = customer.id || '';
+      handleCartTokenRedisOperations(inputEvent, clientId);
       message = checkoutEventBuilder(inputEvent);
       break;
     case PIXEL_EVENT_TOPICS.CHECKOUT_ADDRESS_INFO_SUBMITTED:
@@ -59,6 +123,7 @@ function processPixelEvent(inputEvent) {
     case PIXEL_EVENT_TOPICS.CHECKOUT_SHIPPING_INFO_SUBMITTED:
     case PIXEL_EVENT_TOPICS.PAYMENT_INFO_SUBMITTED:
       if (customer.id) message.userId = customer.id || '';
+      handleCartTokenRedisOperations(inputEvent, clientId);
       message = checkoutStepEventBuilder(inputEvent);
       break;
     case PIXEL_EVENT_TOPICS.SEARCH_SUBMITTED:
@@ -94,4 +159,6 @@ const processEventFromPixel = async (event) => {
 
 module.exports = {
   processEventFromPixel,
+  handleCartTokenRedisOperations,
+  extractCartToken,
 };

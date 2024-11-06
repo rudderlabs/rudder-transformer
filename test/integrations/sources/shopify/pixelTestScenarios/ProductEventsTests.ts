@@ -170,27 +170,6 @@ export const pixelEventsTestScenarios = [
                   type: 'track',
                   event: 'Product Viewed',
                   properties: {
-                    productVariant: {
-                      price: {
-                        amount: 749.95,
-                        currencyCode: 'USD',
-                      },
-                      product: {
-                        title: 'The Collection Snowboard: Liquid',
-                        vendor: 'Hydrogen Vendor',
-                        id: '7234590834801',
-                        untranslatedTitle: 'The Collection Snowboard: Liquid',
-                        url: '/products/the-collection-snowboard-liquid',
-                        type: 'snowboard',
-                      },
-                      id: '41327143321713',
-                      image: {
-                        src: '//store.myshopify.com/cdn/shop/files/Main_b13ad453-477c-4ed1-9b43-81f3345adfd6.jpg?v=1724736600',
-                      },
-                      sku: '',
-                      title: 'Default Title',
-                      untranslatedTitle: 'Default Title',
-                    },
                     product_id: '7234590834801',
                     variant: 'The Collection Snowboard: Liquid',
                     brand: 'Hydrogen Vendor',
@@ -357,33 +336,6 @@ export const pixelEventsTestScenarios = [
                   properties: {
                     products: [
                       {
-                        cost: {
-                          totalAmount: {
-                            amount: 1259.9,
-                            currencyCode: 'USD',
-                          },
-                        },
-                        merchandise: {
-                          price: {
-                            amount: 629.95,
-                            currencyCode: 'USD',
-                          },
-                          product: {
-                            title: 'The Multi-managed Snowboard',
-                            vendor: 'Multi-managed Vendor',
-                            id: '7234590736497',
-                            untranslatedTitle: 'The Multi-managed Snowboard',
-                            url: '/products/the-multi-managed-snowboard',
-                            type: 'snowboard',
-                          },
-                          id: '41327143157873',
-                          image: {
-                            src: '//store.myshopify.com/cdn/shop/files/Main_9129b69a-0c7b-4f66-b6cf-c4222f18028a.jpg?v=1724736597',
-                          },
-                          sku: 'sku-managed-1',
-                          title: 'Default Title',
-                          untranslatedTitle: 'Default Title',
-                        },
                         quantity: 2,
                         product_id: '7234590736497',
                         variant: 'The Multi-managed Snowboard',
@@ -612,21 +564,7 @@ export const pixelEventsTestScenarios = [
                     products: [
                       {
                         price: 10,
-                        product: {
-                          title: 'Gift Card',
-                          vendor: 'Snowboard Vendor',
-                          id: '7234590605425',
-                          untranslatedTitle: 'Gift Card',
-                          url: '/products/gift-card',
-                          type: 'giftcard',
-                        },
-                        id: '41327142895729',
-                        image: {
-                          src: '//store.myshopify.com/cdn/shop/files/gift_card.png?v=1724736596',
-                        },
                         sku: '',
-                        title: '$10',
-                        untranslatedTitle: '$10',
                         image_url:
                           '//store.myshopify.com/cdn/shop/files/gift_card.png?v=1724736596',
                         product_id: '7234590605425',
@@ -638,21 +576,7 @@ export const pixelEventsTestScenarios = [
                       },
                       {
                         price: 24.95,
-                        product: {
-                          title: 'Selling Plans Ski Wax',
-                          vendor: 'pixel-testing-rs',
-                          id: '7234590802033',
-                          untranslatedTitle: 'Selling Plans Ski Wax',
-                          url: '/products/selling-plans-ski-wax',
-                          type: 'accessories',
-                        },
-                        id: '41327143223409',
-                        image: {
-                          src: '//store.myshopify.com/cdn/shop/files/snowboard_wax.png?v=1724736599',
-                        },
                         sku: '',
-                        title: 'Selling Plans Ski Wax',
-                        untranslatedTitle: 'Selling Plans Ski Wax',
                         image_url:
                           '//store.myshopify.com/cdn/shop/files/snowboard_wax.png?v=1724736599',
                         product_id: '7234590802033',
@@ -664,21 +588,7 @@ export const pixelEventsTestScenarios = [
                       },
                       {
                         price: 2629.95,
-                        product: {
-                          title: 'The 3p Fulfilled Snowboard',
-                          vendor: 'pixel-testing-rs',
-                          id: '7234590703729',
-                          untranslatedTitle: 'The 3p Fulfilled Snowboard',
-                          url: '/products/the-3p-fulfilled-snowboard',
-                          type: 'snowboard',
-                        },
-                        id: '41327143125105',
-                        image: {
-                          src: '//store.myshopify.com/cdn/shop/files/Main_b9e0da7f-db89-4d41-83f0-7f417b02831d.jpg?v=1724736597',
-                        },
                         sku: 'sku-hosted-1',
-                        title: 'Default Title',
-                        untranslatedTitle: 'Default Title',
                         image_url:
                           '//store.myshopify.com/cdn/shop/files/Main_b9e0da7f-db89-4d41-83f0-7f417b02831d.jpg?v=1724736597',
                         product_id: '7234590703729',
@@ -819,36 +729,6 @@ export const pixelEventsTestScenarios = [
                   type: 'track',
                   event: 'Product Added',
                   properties: {
-                    cartLine: {
-                      cost: {
-                        totalAmount: {
-                          amount: 749.95,
-                          currencyCode: 'USD',
-                        },
-                      },
-                      merchandise: {
-                        id: '41327143321713',
-                        image: {
-                          src: 'https://cdn.shopify.com/s/files/1/0590/2696/4593/files/Main_b13ad453-477c-4ed1-9b43-81f3345adfd6.jpg?v=1724736600',
-                        },
-                        price: {
-                          amount: 749.95,
-                          currencyCode: 'USD',
-                        },
-                        product: {
-                          id: '7234590834801',
-                          title: 'The Collection Snowboard: Liquid',
-                          vendor: 'Hydrogen Vendor',
-                          type: 'snowboard',
-                          untranslatedTitle: 'The Collection Snowboard: Liquid',
-                          url: '/products/the-collection-snowboard-liquid?variant=41327143321713',
-                        },
-                        sku: '',
-                        title: null,
-                        untranslatedTitle: null,
-                      },
-                      quantity: 1,
-                    },
                     image_url:
                       'https://cdn.shopify.com/s/files/1/0590/2696/4593/files/Main_b13ad453-477c-4ed1-9b43-81f3345adfd6.jpg?v=1724736600',
                     price: 749.95,
@@ -990,36 +870,6 @@ export const pixelEventsTestScenarios = [
                   type: 'track',
                   event: 'Product Removed',
                   properties: {
-                    cartLine: {
-                      cost: {
-                        totalAmount: {
-                          amount: 749.95,
-                          currencyCode: 'USD',
-                        },
-                      },
-                      merchandise: {
-                        id: '41327143321713',
-                        image: {
-                          src: 'https://cdn.shopify.com/s/files/1/0590/2696/4593/files/Main_b13ad453-477c-4ed1-9b43-81f3345adfd6.jpg?v=1724736600',
-                        },
-                        price: {
-                          amount: 749.95,
-                          currencyCode: 'USD',
-                        },
-                        product: {
-                          id: '7234590834801',
-                          title: 'The Collection Snowboard: Liquid',
-                          vendor: 'Hydrogen Vendor',
-                          type: 'snowboard',
-                          untranslatedTitle: 'The Collection Snowboard: Liquid',
-                          url: '/products/the-collection-snowboard-liquid?variant=41327143321713',
-                        },
-                        sku: '',
-                        title: null,
-                        untranslatedTitle: null,
-                      },
-                      quantity: 1,
-                    },
                     image_url:
                       'https://cdn.shopify.com/s/files/1/0590/2696/4593/files/Main_b13ad453-477c-4ed1-9b43-81f3345adfd6.jpg?v=1724736600',
                     price: 749.95,

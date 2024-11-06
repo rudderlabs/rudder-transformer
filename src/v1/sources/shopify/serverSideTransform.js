@@ -84,24 +84,9 @@ const trackPayloadBuilder = (event, shopifyTopic) => {
   message.setEventType(EventType.TRACK);
   message.setEventName(SHOPIFY_TRACK_MAP[shopifyTopic]);
   // eslint-disable-next-line camelcase
-  const { line_items: lineItems, billing_address, user_id, shipping_address, customer } = event;
+  const { line_items: lineItems } = event;
   const productsList = getProductsFromLineItems(lineItems, lineItemsMappingJSON);
   message.setProperty('properties.products', productsList);
-  if (customer) {
-    message.setPropertiesV2(customer, MAPPING_CATEGORIES[EventType.IDENTIFY]);
-  }
-  // eslint-disable-next-line camelcase
-  if (shipping_address) {
-    message.setProperty('traits.shippingAddress', shipping_address);
-  }
-  // eslint-disable-next-line camelcase
-  if (billing_address) {
-    message.setProperty('traits.billingAddress', billing_address);
-  }
-  // eslint-disable-next-line camelcase
-  if (!message.userId && user_id) {
-    message.setProperty('userId', user_id);
-  }
   return message;
 };
 

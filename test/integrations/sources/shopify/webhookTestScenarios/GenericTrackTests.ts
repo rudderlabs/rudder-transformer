@@ -136,94 +136,24 @@ export const genericTrackTestScenarios = [
             event: {
               id: 5778367414385,
               admin_graphql_api_id: 'gid://shopify/Order/5778367414385',
-              app_id: 580111,
-              browser_ip: '139.5.255.205',
-              buyer_accepts_marketing: false,
-              cancel_reason: null,
-              cancelled_at: null,
               cart_token: 'Z2NwLXVzLWVhc3QxOjAxSkJaTUVRSjgzNUJUN1BTNjEzRFdRUFFQ',
               checkout_id: 35550298931313,
               checkout_token: '84ad78572dae52a8cbea7d55371afe89',
-              client_details: {
-                accept_language: 'en-US',
-                browser_height: null,
-                browser_ip: '139.5.255.205',
-                browser_width: null,
-                session_hash: null,
-                user_agent:
-                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36',
-              },
-              closed_at: null,
-              company: null,
-              confirmation_number: 'DPPARQ8UJ',
-              confirmed: true,
               contact_email: 'henry@wfls.com',
               created_at: '2024-11-05T21:54:49-05:00',
               currency: 'USD',
               current_subtotal_price: '600.00',
-              current_subtotal_price_set: {
-                shop_money: {
-                  amount: '600.00',
-                  currency_code: 'USD',
-                },
-                presentment_money: {
-                  amount: '600.00',
-                  currency_code: 'USD',
-                },
-              },
               current_total_additional_fees_set: null,
               current_total_discounts: '0.00',
-              current_total_discounts_set: {
-                shop_money: {
-                  amount: '0.00',
-                  currency_code: 'USD',
-                },
-                presentment_money: {
-                  amount: '0.00',
-                  currency_code: 'USD',
-                },
-              },
               current_total_duties_set: null,
               current_total_price: '600.00',
-              current_total_price_set: {
-                shop_money: {
-                  amount: '600.00',
-                  currency_code: 'USD',
-                },
-                presentment_money: {
-                  amount: '600.00',
-                  currency_code: 'USD',
-                },
-              },
               current_total_tax: '0.00',
-              current_total_tax_set: {
-                shop_money: {
-                  amount: '0.00',
-                  currency_code: 'USD',
-                },
-                presentment_money: {
-                  amount: '0.00',
-                  currency_code: 'USD',
-                },
-              },
-              customer_locale: 'en-US',
-              device_id: null,
-              discount_codes: [],
               email: 'henry@wfls.com',
-              estimated_taxes: false,
-              financial_status: 'paid',
-              fulfillment_status: null,
-              landing_site: '/',
-              landing_site_ref: null,
-              location_id: null,
               merchant_of_record_app_id: null,
               name: '#1017',
               note: null,
               note_attributes: [],
-              number: 17,
               order_number: 1017,
-              order_status_url:
-                'https://pixel-testing-rs.myshopify.com/59026964593/orders/676613a0027fc8240e16d67fdc9f5ac8/authenticate?key=a70bbe7ec8abcc46b77e4331e4df8c60',
               original_total_additional_fees_set: null,
               original_total_duties_set: null,
               payment_gateway_names: ['bogus'],
@@ -234,8 +164,6 @@ export const genericTrackTestScenarios = [
               reference: '4d92cf60cc24a1bd95929e17ead9845f',
               referring_site: '',
               source_identifier: '4d92cf60cc24a1bd95929e17ead9845f',
-              source_name: 'web',
-              source_url: null,
               subtotal_price: '600.00',
               subtotal_price_set: {
                 shop_money: {
@@ -247,68 +175,12 @@ export const genericTrackTestScenarios = [
                   currency_code: 'USD',
                 },
               },
-              tags: '',
-              tax_exempt: false,
-              tax_lines: [],
-              taxes_included: false,
-              test: true,
               token: '676613a0027fc8240e16d67fdc9f5ac8',
               total_discounts: '0.00',
-              total_discounts_set: {
-                shop_money: {
-                  amount: '0.00',
-                  currency_code: 'USD',
-                },
-                presentment_money: {
-                  amount: '0.00',
-                  currency_code: 'USD',
-                },
-              },
               total_line_items_price: '600.00',
-              total_line_items_price_set: {
-                shop_money: {
-                  amount: '600.00',
-                  currency_code: 'USD',
-                },
-                presentment_money: {
-                  amount: '600.00',
-                  currency_code: 'USD',
-                },
-              },
               total_outstanding: '0.00',
               total_price: '600.00',
-              total_price_set: {
-                shop_money: {
-                  amount: '600.00',
-                  currency_code: 'USD',
-                },
-                presentment_money: {
-                  amount: '600.00',
-                  currency_code: 'USD',
-                },
-              },
-              total_shipping_price_set: {
-                shop_money: {
-                  amount: '0.00',
-                  currency_code: 'USD',
-                },
-                presentment_money: {
-                  amount: '0.00',
-                  currency_code: 'USD',
-                },
-              },
               total_tax: '0.00',
-              total_tax_set: {
-                shop_money: {
-                  amount: '0.00',
-                  currency_code: 'USD',
-                },
-                presentment_money: {
-                  amount: '0.00',
-                  currency_code: 'USD',
-                },
-              },
-              total_tip_received: '0.00',
               total_weight: 0,
               updated_at: '2024-11-05T21:54:50-05:00',
               user_id: null,
@@ -372,8 +244,6 @@ export const genericTrackTestScenarios = [
                   default: true,
                 },
               },
-              discount_applications: [],
-              fulfillments: [],
               line_items: [
                 {
                   id: 14234727743601,
@@ -425,7 +295,6 @@ export const genericTrackTestScenarios = [
                   discount_allocations: [],
                 },
               ],
-              payment_terms: null,
               refunds: [],
               shipping_address: {
                 first_name: 'henry',
@@ -444,42 +313,6 @@ export const genericTrackTestScenarios = [
                 country_code: 'US',
                 province_code: 'TN',
               },
-              shipping_lines: [
-                {
-                  id: 4897138081905,
-                  carrier_identifier: null,
-                  code: 'Economy',
-                  discounted_price: '0.00',
-                  discounted_price_set: {
-                    shop_money: {
-                      amount: '0.00',
-                      currency_code: 'USD',
-                    },
-                    presentment_money: {
-                      amount: '0.00',
-                      currency_code: 'USD',
-                    },
-                  },
-                  is_removed: false,
-                  phone: null,
-                  price: '0.00',
-                  price_set: {
-                    shop_money: {
-                      amount: '0.00',
-                      currency_code: 'USD',
-                    },
-                    presentment_money: {
-                      amount: '0.00',
-                      currency_code: 'USD',
-                    },
-                  },
-                  requested_fulfillment_service_id: null,
-                  source: 'shopify',
-                  title: 'Economy',
-                  tax_lines: [],
-                  discount_allocations: [],
-                },
-              ],
               query_parameters: {
                 topic: ['orders_paid'],
                 version: ['pixel'],
@@ -517,94 +350,24 @@ export const genericTrackTestScenarios = [
                     shopifyDetails: {
                       id: 5778367414385,
                       admin_graphql_api_id: 'gid://shopify/Order/5778367414385',
-                      app_id: 580111,
-                      browser_ip: '139.5.255.205',
-                      buyer_accepts_marketing: false,
-                      cancel_reason: null,
-                      cancelled_at: null,
                       cart_token: 'Z2NwLXVzLWVhc3QxOjAxSkJaTUVRSjgzNUJUN1BTNjEzRFdRUFFQ',
                       checkout_id: 35550298931313,
                       checkout_token: '84ad78572dae52a8cbea7d55371afe89',
-                      client_details: {
-                        accept_language: 'en-US',
-                        browser_height: null,
-                        browser_ip: '139.5.255.205',
-                        browser_width: null,
-                        session_hash: null,
-                        user_agent:
-                          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36',
-                      },
-                      closed_at: null,
-                      company: null,
-                      confirmation_number: 'DPPARQ8UJ',
-                      confirmed: true,
                       contact_email: 'henry@wfls.com',
                       created_at: '2024-11-05T21:54:49-05:00',
                       currency: 'USD',
                       current_subtotal_price: '600.00',
-                      current_subtotal_price_set: {
-                        shop_money: {
-                          amount: '600.00',
-                          currency_code: 'USD',
-                        },
-                        presentment_money: {
-                          amount: '600.00',
-                          currency_code: 'USD',
-                        },
-                      },
                       current_total_additional_fees_set: null,
                       current_total_discounts: '0.00',
-                      current_total_discounts_set: {
-                        shop_money: {
-                          amount: '0.00',
-                          currency_code: 'USD',
-                        },
-                        presentment_money: {
-                          amount: '0.00',
-                          currency_code: 'USD',
-                        },
-                      },
                       current_total_duties_set: null,
                       current_total_price: '600.00',
-                      current_total_price_set: {
-                        shop_money: {
-                          amount: '600.00',
-                          currency_code: 'USD',
-                        },
-                        presentment_money: {
-                          amount: '600.00',
-                          currency_code: 'USD',
-                        },
-                      },
                       current_total_tax: '0.00',
-                      current_total_tax_set: {
-                        shop_money: {
-                          amount: '0.00',
-                          currency_code: 'USD',
-                        },
-                        presentment_money: {
-                          amount: '0.00',
-                          currency_code: 'USD',
-                        },
-                      },
-                      customer_locale: 'en-US',
-                      device_id: null,
-                      discount_codes: [],
                       email: 'henry@wfls.com',
-                      estimated_taxes: false,
-                      financial_status: 'paid',
-                      fulfillment_status: null,
-                      landing_site: '/',
-                      landing_site_ref: null,
-                      location_id: null,
                       merchant_of_record_app_id: null,
                       name: '#1017',
                       note: null,
                       note_attributes: [],
-                      number: 17,
                       order_number: 1017,
-                      order_status_url:
-                        'https://pixel-testing-rs.myshopify.com/59026964593/orders/676613a0027fc8240e16d67fdc9f5ac8/authenticate?key=a70bbe7ec8abcc46b77e4331e4df8c60',
                       original_total_additional_fees_set: null,
                       original_total_duties_set: null,
                       payment_gateway_names: ['bogus'],
@@ -615,8 +378,6 @@ export const genericTrackTestScenarios = [
                       reference: '4d92cf60cc24a1bd95929e17ead9845f',
                       referring_site: '',
                       source_identifier: '4d92cf60cc24a1bd95929e17ead9845f',
-                      source_name: 'web',
-                      source_url: null,
                       subtotal_price: '600.00',
                       subtotal_price_set: {
                         shop_money: {
@@ -628,68 +389,12 @@ export const genericTrackTestScenarios = [
                           currency_code: 'USD',
                         },
                       },
-                      tags: '',
-                      tax_exempt: false,
-                      tax_lines: [],
-                      taxes_included: false,
-                      test: true,
                       token: '676613a0027fc8240e16d67fdc9f5ac8',
                       total_discounts: '0.00',
-                      total_discounts_set: {
-                        shop_money: {
-                          amount: '0.00',
-                          currency_code: 'USD',
-                        },
-                        presentment_money: {
-                          amount: '0.00',
-                          currency_code: 'USD',
-                        },
-                      },
                       total_line_items_price: '600.00',
-                      total_line_items_price_set: {
-                        shop_money: {
-                          amount: '600.00',
-                          currency_code: 'USD',
-                        },
-                        presentment_money: {
-                          amount: '600.00',
-                          currency_code: 'USD',
-                        },
-                      },
                       total_outstanding: '0.00',
                       total_price: '600.00',
-                      total_price_set: {
-                        shop_money: {
-                          amount: '600.00',
-                          currency_code: 'USD',
-                        },
-                        presentment_money: {
-                          amount: '600.00',
-                          currency_code: 'USD',
-                        },
-                      },
-                      total_shipping_price_set: {
-                        shop_money: {
-                          amount: '0.00',
-                          currency_code: 'USD',
-                        },
-                        presentment_money: {
-                          amount: '0.00',
-                          currency_code: 'USD',
-                        },
-                      },
                       total_tax: '0.00',
-                      total_tax_set: {
-                        shop_money: {
-                          amount: '0.00',
-                          currency_code: 'USD',
-                        },
-                        presentment_money: {
-                          amount: '0.00',
-                          currency_code: 'USD',
-                        },
-                      },
-                      total_tip_received: '0.00',
                       total_weight: 0,
                       updated_at: '2024-11-05T21:54:50-05:00',
                       user_id: null,
@@ -753,8 +458,6 @@ export const genericTrackTestScenarios = [
                           default: true,
                         },
                       },
-                      discount_applications: [],
-                      fulfillments: [],
                       line_items: [
                         {
                           id: 14234727743601,
@@ -806,7 +509,6 @@ export const genericTrackTestScenarios = [
                           discount_allocations: [],
                         },
                       ],
-                      payment_terms: null,
                       refunds: [],
                       shipping_address: {
                         first_name: 'henry',
@@ -825,42 +527,6 @@ export const genericTrackTestScenarios = [
                         country_code: 'US',
                         province_code: 'TN',
                       },
-                      shipping_lines: [
-                        {
-                          id: 4897138081905,
-                          carrier_identifier: null,
-                          code: 'Economy',
-                          discounted_price: '0.00',
-                          discounted_price_set: {
-                            shop_money: {
-                              amount: '0.00',
-                              currency_code: 'USD',
-                            },
-                            presentment_money: {
-                              amount: '0.00',
-                              currency_code: 'USD',
-                            },
-                          },
-                          is_removed: false,
-                          phone: null,
-                          price: '0.00',
-                          price_set: {
-                            shop_money: {
-                              amount: '0.00',
-                              currency_code: 'USD',
-                            },
-                            presentment_money: {
-                              amount: '0.00',
-                              currency_code: 'USD',
-                            },
-                          },
-                          requested_fulfillment_service_id: null,
-                          source: 'shopify',
-                          title: 'Economy',
-                          tax_lines: [],
-                          discount_allocations: [],
-                        },
-                      ],
                     },
                   },
                   integrations: {

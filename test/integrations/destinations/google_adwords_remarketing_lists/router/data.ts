@@ -92,7 +92,7 @@ export const data = [
               destination: {
                 Config: {
                   rudderAccountId: '258Yea7usSKNpbkIaesL9oJ9iYw',
-                  listId: '7090784486',
+                  audienceId: '7090784486',
                   customerId: '7693729833',
                   loginCustomerId: '',
                   subAccount: false,
@@ -187,7 +187,7 @@ export const data = [
               destination: {
                 Config: {
                   rudderAccountId: '258Yea7usSKNpbkIaesL9oJ9iYw',
-                  listId: '7090784486',
+                  audienceId: '7090784486',
                   customerId: '7693729833',
                   loginCustomerId: '',
                   subAccount: false,
@@ -332,7 +332,7 @@ export const data = [
               destination: {
                 Config: {
                   rudderAccountId: '258Yea7usSKNpbkIaesL9oJ9iYw',
-                  listId: '7090784486',
+                  audienceId: '7090784486',
                   customerId: '7693729833',
                   loginCustomerId: '',
                   subAccount: false,
@@ -451,7 +451,7 @@ export const data = [
               destination: {
                 Config: {
                   rudderAccountId: '258Yea7usSKNpbkIaesL9oJ9iYw',
-                  listId: '7090784486',
+                  audienceId: '7090784486',
                   customerId: '7693729833',
                   loginCustomerId: '',
                   subAccount: false,
@@ -578,7 +578,7 @@ export const data = [
               destination: {
                 Config: {
                   rudderAccountId: '258Yea7usSKNpbkIaesL9oJ9iYw',
-                  listId: '7090784486',
+                  audienceId: '7090784486',
                   customerId: '7693729833',
                   loginCustomerId: '',
                   subAccount: false,
@@ -675,7 +675,7 @@ export const data = [
               destination: {
                 Config: {
                   rudderAccountId: '258Yea7usSKNpbkIaesL9oJ9iYw',
-                  listId: '7090784486',
+                  audienceId: '7090784486',
                   customerId: '7693729833',
                   loginCustomerId: '',
                   subAccount: false,

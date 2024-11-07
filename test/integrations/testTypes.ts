@@ -92,6 +92,7 @@ export type ProcessorTestData = {
   version: string;
   input: {
     request: {
+      method: string;
       body: ProcessorTransformationRequest[];
     };
   };

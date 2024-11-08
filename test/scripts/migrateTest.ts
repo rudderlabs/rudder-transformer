@@ -122,15 +122,15 @@ async function migrateTestFiles(): Promise<void> {
       const testCases = readTestFile(filePath);
       if (!testCases) continue;
 
-      const migratedTests = testCases.map((testCase: any) => {
+      const migratedTests = testCases.map((testCase: any, index: number) => {
         try {
           switch (feature.toLowerCase()) {
             case 'processor':
-              return migrateProcessorTestCase(testCase);
+              return migrateProcessorTestCase(testCase, index);
             case 'router':
-              return migrateRouterTestCase(testCase);
+              return migrateRouterTestCase(testCase, index);
             case 'proxy':
-              return migrateProxyTestCase(testCase);
+              return migrateProxyTestCase(testCase, index);
             default:
               throw new Error(`Unsupported feature type: ${feature}`);
           }

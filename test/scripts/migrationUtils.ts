@@ -1,3 +1,4 @@
+import { removeUndefinedValues } from '@rudderstack/integrations-lib';
 import {
   Metadata,
   Destination,
@@ -14,6 +15,7 @@ import {
   RouterTestData,
   ProxyV1TestData,
 } from '../integrations/testTypes';
+import { method } from 'lodash';
 
 // Default metadata to fill in missing fields
 const defaultMetadata: Metadata = {
@@ -100,7 +102,7 @@ export function migrateTestCase(oldTestCase: any): TestCaseData {
 }
 
 // Utility function to migrate processor test cases
-export function migrateProcessorTestCase(oldTestCase: any): ProcessorTestData {
+export function migrateProcessorTestCase(oldTestCase: any, index: number): ProcessorTestData {
   const processorRequest: ProcessorTransformationRequest = {
     message: oldTestCase.input?.request?.body[0]?.message || {},
     metadata: { ...defaultMetadata, ...oldTestCase.input?.request?.body[0]?.metadata },
@@ -108,12 +110,14 @@ export function migrateProcessorTestCase(oldTestCase: any): ProcessorTestData {
   };
 
   const processorResponse: ProcessorTransformationResponse = {
-    output: oldTestCase.output?.response?.body[0]?.output || {},
+    output: oldTestCase.output?.response?.body[0]?.output,
     metadata: { ...defaultMetadata, ...oldTestCase.output?.response?.body[0]?.metadata },
     statusCode: oldTestCase.output?.response?.status || 200,
+    error: oldTestCase.output?.response?.body[0]?.error,
+    statTags: oldTestCase.output?.response?.body[0]?.statTags,
   };
 
-  return {
+  return removeUndefinedValues({
     id: oldTestCase.id || `processor-${Date.now()}`,
     name: oldTestCase.name || 'Processor Test Case',
     description: oldTestCase.description || 'Migrated processor test case',
@@ -134,30 +138,46 @@ export function migrateProcessorTestCase(oldTestCase: any): ProcessorTestData {
         body: [processorResponse],
       },
     },
-  };
+    mockFns: oldTestCase.mockFns ? `Add mock of index ${index}` : undefined,
+  }) as ProcessorTestData;
 }
 
 // Utility function to migrate router test cases
-export function migrateRouterTestCase(oldTestCase: any): RouterTestData {
+export function migrateRouterTestCase(oldTestCase: any, index: number): RouterTestData {
+  const input = Array.isArray(oldTestCase.input.request.body.input)
+    ? oldTestCase.input.request.body.input.map((item: any) => ({
+        message: item.message || {},
+        metadata: { ...defaultMetadata, ...item.metadata },
+        destination: { ...defaultDestination, ...item.destination },
+      }))
+    : {
+        message: oldTestCase.input.request.body.input?.message || {},
+        metadata: { ...defaultMetadata, ...oldTestCase.input.request.body.input?.metadata },
+        destination: {
+          ...defaultDestination,
+          ...oldTestCase.input.request.body.input?.destination,
+        },
+      };
   const routerRequest: RouterTransformationRequest = {
-    input: [
-      {
-        message: oldTestCase.input?.request?.body?.message || {},
-        metadata: { ...defaultMetadata, ...oldTestCase.input?.request?.body?.metadata },
-        destination: { ...defaultDestination, ...oldTestCase.input?.request?.body?.destination },
-      },
-    ],
+    input: input,
     destType: oldTestCase.input?.request?.body?.destType || 'default-destination-type',
   };
 
-  const routerResponse: RouterTransformationResponse = {
-    metadata: [{ ...defaultMetadata, ...oldTestCase.output?.response?.body?.metadata }],
-    destination: { ...defaultDestination, ...oldTestCase.output?.response?.body?.destination },
-    batched: false,
-    statusCode: oldTestCase.output?.response?.status || 200,
-  };
+  const routerResponse: RouterTransformationResponse = oldTestCase.output.response.body.output.map(
+    (op) => {
+      return removeUndefinedValues({
+        batchedRequest: op.batchedRequest,
+        metadata: op.metadata.map((m: any) => ({ ...defaultMetadata, ...m })),
+        statusCode: op.statusCode || 200,
+        destination: { ...defaultDestination, ...op.destination },
+        batched: op.batched || false,
+        error: op.error,
+        statTags: op.statTags,
+      });
+    },
+  );
 
-  return {
+  return removeUndefinedValues({
     id: oldTestCase.id || `router-${Date.now()}`,
     name: oldTestCase.name || 'Router Test Case',
     description: oldTestCase.description || 'Migrated router test case',
@@ -169,21 +189,23 @@ export function migrateRouterTestCase(oldTestCase: any): RouterTestData {
     input: {
       request: {
         body: routerRequest,
+        method: oldTestCase.input?.request?.method || 'POST',
       },
     },
     output: {
       response: {
         status: 200,
         body: {
-          output: [routerResponse],
+          output: routerResponse,
         },
       },
     },
-  };
+    mockFns: oldTestCase.mockFns ? `Add mock of index ${index}` : undefined,
+  }) as RouterTestData;
 }
 
 // Utility function to migrate proxy test cases
-export function migrateProxyTestCase(oldTestCase: any): ProxyV1TestData {
+export function migrateProxyTestCase(oldTestCase: any, index: number): ProxyV1TestData {
   const proxyRequest: ProxyV1Request = {
     version: oldTestCase.input?.request?.body?.version || '1.0.0',
     type: oldTestCase.input?.request?.body?.type || 'default-type',
@@ -360,29 +382,57 @@ const baseDestination: Destination = ${JSON.stringify(commonValues.destination, 
     const processedCase = { ...testCase };
 
     if (commonValues.metadata && testCase.input?.request?.body) {
+      // Handle input metadata
       if (Array.isArray(testCase.input.request.body)) {
         processedCase.input.request.body = testCase.input.request.body.map((item: any) => ({
           ...item,
-          metadata: { _ref: 'baseMetadata' }, // special marker
+          metadata: 'baseMetadata', // special marker
         }));
       } else {
-        processedCase.input.request.body.metadata = { __ref: 'baseMetadata' }; // special marker
+        processedCase.input.request.body.metadata = 'baseMetadata'; // special marker
+        processedCase.output.metadata = 'baseMetadata'; // special marker
+      }
+      // Handle output metadata
+      if (Array.isArray(testCase.output.response.body)) {
+        processedCase.output.response.body = testCase.output.response.body.map((item: any) => ({
+          ...item,
+          metadata: 'baseMetadata', // special marker
+        }));
+      } else {
+        processedCase.output.response.body.metadata = 'baseMetadata'; // special marker
       }
     }
 
     if (commonValues.destination && testCase.input?.request?.body) {
+      // Handle input destination
       if (Array.isArray(testCase.input.request.body)) {
         processedCase.input.request.body = testCase.input.request.body.map((item: any) => ({
           ...item,
-          destination: { _ref: 'baseDestination' }, // special marker
+          destination: 'baseDestination', // special marker
         }));
       } else {
-        processedCase.input.request.body.destination = { _ref: 'baseDestination' }; // special marker
+        processedCase.input.request.body.destination = 'baseDestination'; // special marker
+      }
+      // Handle output destination
+      if (Array.isArray(testCase.output.response.body)) {
+        processedCase.output.response.body = testCase.output.response.body.map((item: any) => ({
+          ...item,
+          metadata: 'baseMetadata', // special marker
+        }));
+      } else {
+        processedCase.output.response.body.metadata = 'baseMetadata'; // special marker
       }
     }
 
     return processedCase;
   });
+
+  // const functionReplacer = (key, value) => {
+  //   if (typeof value === 'function') {
+  //     return value.toString();
+  //   }
+  //   return value;
+  // };
 
   // Generate the final file content
   const content = `/**
@@ -395,12 +445,11 @@ const baseDestination: Destination = ${JSON.stringify(commonValues.destination, 
 
   ${variables.join('\n')}
 
-  export const testData: TestCaseData[] = ${JSON.stringify(processedTests, null, 2)};
+  export const data: TestCaseData[] = ${JSON.stringify(processedTests, null, 2)};
   `;
 
   // Replace our special markers with actual variable references
-  return content.replace(
-    /{\s*"__reference":\s*"(baseMetadata|baseDestination)"\s*}/g,
-    (_, varName) => varName,
-  );
+  return content
+    .replaceAll('"baseMetadata"', 'baseMetadata')
+    .replaceAll('"baseDestination"', 'baseDestination');
 }

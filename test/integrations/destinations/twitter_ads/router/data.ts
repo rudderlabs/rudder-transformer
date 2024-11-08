@@ -146,6 +146,7 @@ export const data = [
                         ],
                         number_items: 2,
                         price_currency: 'USD',
+                        user_agent: 'chrome',
                         value: '25',
                       },
                     ],

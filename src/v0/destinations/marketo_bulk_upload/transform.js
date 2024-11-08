@@ -35,8 +35,12 @@ function responseBuilderSimple(message, destination) {
   Object.keys(fieldHashmap).forEach((key) => {
     const val = traits[fieldHashmap[key]];
     if (isDefined(val)) {
+      let newVal = val;
+      if (typeof val === 'string') {
+        newVal = val.toString().replaceAll(/,/g, '\\,').replaceAll(/\n/g, '\\n');
+      }
       // If value contains comma or newline then we need to escape it
-      const newVal = val.toString().replaceAll(/,/g, '\\,').replaceAll(/\n/g, '\\n');
+
       payload[key] = newVal;
     }
   });

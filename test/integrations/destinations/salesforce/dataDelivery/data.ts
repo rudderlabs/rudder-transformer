@@ -314,12 +314,12 @@ const legacyTests = [
     },
     output: {
       response: {
-        status: 500,
+        status: 429,
         body: {
           output: {
-            status: 500,
+            status: 429,
             message:
-              'Salesforce Request Failed: 503 - due to "Server Unavailable", (Retryable) during Salesforce Response Handling',
+              'Salesforce Request Failed: 503 - due to Search unavailable, during Salesforce Response Handling',
             destinationResponse: {
               response: [
                 {
@@ -334,7 +334,7 @@ const legacyTests = [
               errorCategory: 'network',
               destinationId: 'Non-determininable',
               workspaceId: 'Non-determininable',
-              errorType: 'retryable',
+              errorType: 'throttled',
               feature: 'dataDelivery',
               implementation: 'native',
               module: 'destination',

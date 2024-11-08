@@ -277,16 +277,16 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
         body: {
           output: {
             message:
-              'Salesforce Request Failed: 503 - due to "Server Unavailable", (Retryable) during Salesforce Response Handling',
+              'Salesforce Request Failed: 503 - due to Search unavailable, during Salesforce Response Handling',
             response: [
               {
                 error: '[{"message":"Server Unavailable","errorCode":"SERVER_UNAVAILABLE"}]',
                 metadata: proxyMetdata,
-                statusCode: 500,
+                statusCode: 429,
               },
             ],
-            statTags: statTags.retryable,
-            status: 500,
+            statTags: statTags.throttled,
+            status: 429,
           },
         },
       },
@@ -458,6 +458,48 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
             ],
             statTags: statTags.retryable,
             status: 500,
+          },
+        },
+      },
+    },
+  },
+  {
+    id: 'salesforce_v1_scenario_10',
+    name: 'salesforce',
+    description: '[Proxy v1 API] :: Test for CANNOT_INSERT_UPDATE_ACTIVATE_ENTITY scenario',
+    successCriteria: 'Should return 500 with error message "CANNOT_INSERT_UPDATE_ACTIVATE_ENTITY"',
+    scenario: 'Business',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v1',
+    input: {
+      request: {
+        body: generateProxyV1Payload(
+          {
+            ...commonRequestParameters,
+            endpoint: 'https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/11',
+          },
+          reqMetadataArray,
+        ),
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: {
+            message:
+              'Salesforce Request Failed: 503 - due to Search unavailable, during Salesforce Response Handling',
+            response: [
+              {
+                error: '[{"message":"Search unavailable","errorCode":"SERVER_UNAVAILABLE"}]',
+                metadata: proxyMetdata,
+                statusCode: 429,
+              },
+            ],
+            statTags: statTags.throttled,
+            status: 429,
           },
         },
       },

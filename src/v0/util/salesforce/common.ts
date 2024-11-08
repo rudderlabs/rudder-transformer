@@ -69,6 +69,22 @@ export const responseHandler = (destResponse: any, sourceMessage: string) => {
       handleCommonAbortableError(destResponse, sourceMessage, status);
       break;
 
+    case 503:
+      if (matchErrorCode('SERVER_UNAVAILABLE')) {
+        throw new ThrottledError(
+          `${DESTINATION} Request Failed: ${status} - due to Search unavailable, ${sourceMessage}`,
+          destResponse,
+        );
+      } else {
+        throw new RetryableError(
+          `${DESTINATION} Request Failed: ${status} - due to "${getErrorMessage(response)}", (Retryable) ${sourceMessage}`,
+          500,
+          destResponse,
+        );
+      }
+
+      break;
+
     case 400:
       if (
         (matchErrorCode('CANNOT_INSERT_UPDATE_ACTIVATE_ENTITY') &&
@@ -84,7 +100,6 @@ export const responseHandler = (destResponse: any, sourceMessage: string) => {
       handleCommonAbortableError(destResponse, sourceMessage, status);
       break;
 
-    case 503:
     case 500:
       throw new RetryableError(
         `${DESTINATION} Request Failed: ${status} - due to "${getErrorMessage(response)}", (Retryable) ${sourceMessage}`,

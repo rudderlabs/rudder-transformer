@@ -82,6 +82,23 @@ const tfProxyMocksData = [
   },
   {
     httpReq: {
+      url: 'https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/11',
+      data: dataValue,
+      params: { destination: 'salesforce' },
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer token',
+        'User-Agent': 'RudderLabs',
+      },
+      method: 'POST',
+    },
+    httpRes: {
+      data: [{ message: 'Search unavailable', errorCode: 'SERVER_UNAVAILABLE' }],
+      status: 503,
+    },
+  },
+  {
+    httpReq: {
       url: 'https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/5',
       data: dataValue,
       params: { destination: 'salesforce' },

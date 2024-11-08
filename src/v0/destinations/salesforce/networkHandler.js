@@ -2,7 +2,6 @@ const { proxyRequest, prepareProxyRequest } = require('../../../adapters/network
 const { processAxiosResponse } = require('../../../adapters/utils/networkUtils');
 const { isHttpStatusSuccess } = require('../../util');
 const { SALESFORCE } = require('./config');
-// const { salesforceResponseHandler } = require('./utils');
 const { default: salesforceRegistry } = require('../../util/salesforce/registry');
 
 const responseHandler = (responseParams) => {

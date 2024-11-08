@@ -50,7 +50,7 @@ export const handleAuthError = (
   handleCommonAbortableError(destResponse, sourceMessage, status);
 };
 
-export const responseHandler = (destResponse: any, sourceMessage: string) => {
+export const errorResponseHandler = (destResponse: any, sourceMessage: string) => {
   const { response, status } = destResponse;
   const matchErrorCode = (errorCode) =>
     response && Array.isArray(response) && response.some((resp) => resp?.errorCode === errorCode);
@@ -75,15 +75,12 @@ export const responseHandler = (destResponse: any, sourceMessage: string) => {
           `${DESTINATION} Request Failed: ${status} - due to Search unavailable, ${sourceMessage}`,
           destResponse,
         );
-      } else {
-        throw new RetryableError(
-          `${DESTINATION} Request Failed: ${status} - due to "${getErrorMessage(response)}", (Retryable) ${sourceMessage}`,
-          500,
-          destResponse,
-        );
       }
-
-      break;
+      throw new RetryableError(
+        `${DESTINATION} Request Failed: ${status} - due to "${getErrorMessage(response)}", (Retryable) ${sourceMessage}`,
+        500,
+        destResponse,
+      );
 
     case 400:
       if (

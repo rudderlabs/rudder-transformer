@@ -5,14 +5,14 @@ const { SALESFORCE_OAUTH } = require('../salesforce/config');
 const { default: salesforceRegistry } = require('../../util/salesforce/registry');
 
 const responseHandler = (responseParams) => {
-  const { destinationResponse, destType } = responseParams;
-  const message = `Request for destination: ${destType} Processed Successfully`;
+  const { destinationResponse } = responseParams;
+  const message = `Request for destination: ${SALESFORCE_OAUTH} Processed Successfully`;
   const { status } = destinationResponse;
 
   if (!isHttpStatusSuccess(status) && status >= 400) {
-    salesforceRegistry[SALESFORCE_OAUTH].responseHandler(
+    salesforceRegistry[SALESFORCE_OAUTH].errorResponseHandler(
       destinationResponse,
-      'during Salesforce Response Handling',
+      `during ${SALESFORCE_OAUTH} Response Handling`,
     );
   }
 

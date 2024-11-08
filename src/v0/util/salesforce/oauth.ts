@@ -4,7 +4,7 @@ import * as common from './common';
 import { getAuthErrCategoryFromStCode } from '..';
 
 export default class OAuth implements Salesforce {
-  responseHandler(destResponse: any, sourceMessage: string) {
+  errorResponseHandler(destResponse: any, sourceMessage: string) {
     const { response, status } = destResponse;
     const matchErrorCode = (errorCode) =>
       response && Array.isArray(response) && response.some((resp) => resp?.errorCode === errorCode);
@@ -19,7 +19,7 @@ export default class OAuth implements Salesforce {
       );
       return;
     }
-    common.responseHandler(destResponse, sourceMessage);
+    common.errorResponseHandler(destResponse, sourceMessage);
   }
 
   async getAccessToken({ metadata }: { metadata: any }) {

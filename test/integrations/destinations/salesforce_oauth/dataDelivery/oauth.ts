@@ -114,7 +114,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
             status: 500,
             authErrorCategory: 'REFRESH_TOKEN',
             message:
-              'Salesforce Request Failed - due to "INVALID_SESSION_ID", (REFRESH_TOKEN) during Salesforce Response Handling',
+              'Salesforce Request Failed - due to "INVALID_SESSION_ID", (REFRESH_TOKEN) during salesforce_oauth Response Handling',
             response: [
               {
                 error:

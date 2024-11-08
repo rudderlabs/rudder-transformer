@@ -126,7 +126,7 @@ async function getSaleforceIdForRecord(
     },
   );
   if (!isHttpStatusSuccess(processedsfSearchResponse.status)) {
-    salesforceRegistry[authorizationFlow].responseHandler(
+    salesforceRegistry[authorizationFlow].errorResponseHandler(
       processedsfSearchResponse,
       `:- SALESFORCE SEARCH BY ID`,
       destination.ID,
@@ -246,7 +246,7 @@ async function getSalesforceIdFromPayload(
     );
 
     if (!isHttpStatusSuccess(processedLeadQueryResponse.status)) {
-      salesforceRegistry[authorizationFlow].responseHandler(
+      salesforceRegistry[authorizationFlow].errorResponseHandler(
         processedLeadQueryResponse,
         `:- during Lead Query`,
         destination.ID,

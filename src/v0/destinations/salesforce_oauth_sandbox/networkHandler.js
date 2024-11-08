@@ -2,16 +2,19 @@ const { proxyRequest, prepareProxyRequest } = require('../../../adapters/network
 const { processAxiosResponse } = require('../../../adapters/utils/networkUtils');
 const { SALESFORCE_OAUTH_SANDBOX } = require('../salesforce/config');
 const { default: salesforceRegistry } = require('../../util/salesforce/registry');
+const { isHttpStatusSuccess } = require('../../util');
 
 const responseHandler = (responseParams) => {
-  const { destinationResponse, destType, rudderJobMetadata } = responseParams;
-  const message = `Request for destination: ${destType} Processed Successfully`;
+  const { destinationResponse } = responseParams;
+  const message = `Request for destination: ${SALESFORCE_OAUTH_SANDBOX} Processed Successfully`;
+  const { status } = destinationResponse;
 
-  salesforceRegistry[SALESFORCE_OAUTH_SANDBOX].responseHandler(
-    destinationResponse,
-    'during Salesforce Response Handling',
-    rudderJobMetadata?.destInfo?.authKey,
-  );
+  if (!isHttpStatusSuccess(status) && status >= 400) {
+    salesforceRegistry[SALESFORCE_OAUTH_SANDBOX].errorResponseHandler(
+      destinationResponse,
+      `during ${SALESFORCE_OAUTH_SANDBOX} Response Handling`,
+    );
+  }
 
   // else successfully return status as 200, message and original destination response
   return {

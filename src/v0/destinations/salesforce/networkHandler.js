@@ -11,7 +11,7 @@ const responseHandler = (responseParams) => {
   const { status } = destinationResponse;
 
   if (!isHttpStatusSuccess(status) && status >= 400) {
-    salesforceRegistry[SALESFORCE].responseHandler(
+    salesforceRegistry[SALESFORCE].errorResponseHandler(
       destinationResponse,
       'during Salesforce Response Handling',
       rudderJobMetadata?.destInfo?.authKey,

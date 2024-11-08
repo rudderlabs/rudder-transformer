@@ -48,7 +48,7 @@ export default class Legacy implements Salesforce {
       // @ts-expect-error: types not defined
       // If the request fails, throwing error.
       if (!httpResponse.success) {
-        this.responseHandler(
+        this.errorResponseHandler(
           processedResponse,
           `:- authentication failed during fetching access token.`,
           accessTokenKey,
@@ -58,7 +58,7 @@ export default class Legacy implements Salesforce {
       const token = httpResponse.response.data;
       // If the httpResponse.success is true it will not come, It's an extra security for developer's.
       if (!token.access_token || !token.instance_url) {
-        this.responseHandler(
+        this.errorResponseHandler(
           processedResponse,
           `:- authentication failed could not retrieve authorization token.`,
           accessTokenKey,
@@ -85,7 +85,7 @@ export default class Legacy implements Salesforce {
     };
   }
 
-  responseHandler(destResponse: any, sourceMessage: string, authKey?: string): any {
+  errorResponseHandler(destResponse: any, sourceMessage: string, authKey?: string): any {
     const { response, status } = destResponse;
     const matchErrorCode = (errorCode) =>
       response && Array.isArray(response) && response.some((resp) => resp?.errorCode === errorCode);
@@ -94,6 +94,6 @@ export default class Legacy implements Salesforce {
       common.handleAuthError('INVALID_SESSION_ID', '', sourceMessage, destResponse, status);
       return;
     }
-    common.responseHandler(destResponse, sourceMessage);
+    common.errorResponseHandler(destResponse, sourceMessage);
   }
 }

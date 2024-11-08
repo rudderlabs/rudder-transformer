@@ -114,7 +114,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
             status: 500,
             authErrorCategory: 'REFRESH_TOKEN',
             message:
-              'Salesforce Request Failed - due to "INVALID_SESSION_ID", (REFRESH_TOKEN) during Salesforce Response Handling',
+              'Salesforce Request Failed - due to "INVALID_SESSION_ID", (REFRESH_TOKEN) during salesforce_oauth_sandbox Response Handling',
             response: [
               {
                 error:
@@ -131,7 +131,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
   },
   {
     id: 'salesforce_v1_scenario_2',
-    name: 'salesforce',
+    name: 'salesforce_oauth_sandbox',
     description:
       '[Proxy v1 API] :: Test for a valid request - Lead creation with existing unchanged leadId and unchanged data',
     successCriteria: 'Should return 200 with no error with destination response',
@@ -158,7 +158,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
         body: {
           output: {
             status: 200,
-            message: 'Request for destination: salesforce Processed Successfully',
+            message: 'Request for destination: salesforce_oauth_sandbox Processed Successfully',
             response: [
               {
                 error: '{"statusText":"No Content"}',

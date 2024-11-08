@@ -68,7 +68,7 @@ export const testScenarios: ProxyV1TestData[] = [
         body: {
           output: {
             message:
-              'Salesforce Request Failed: "400" due to "{"error":"invalid_grant","error_description":"authentication failure"}", (Aborted) during Salesforce Response Handling',
+              'Salesforce Request Failed: "400" due to "{"error":"invalid_grant","error_description":"authentication failure"}", (Aborted) during salesforce_oauth Response Handling',
             response: [
               {
                 error: '{"error":"invalid_grant","error_description":"authentication failure"}',

@@ -28,7 +28,10 @@ const {
   useRedisDatabase,
   lineItemsMappingJSON,
 } = require('../../../../v0/sources/shopify/config');
-const { createPropertiesForV2EcomEvent, getProductsFromLineItems } = require('./serverSideUtlis');
+const {
+  createPropertiesForEcomEventFromWebhook,
+  getProductsFromLineItems,
+} = require('./serverSideUtlis');
 
 const NO_OPERATION_SUCCESS = {
   outputToSource: {
@@ -54,7 +57,7 @@ const ecomPayloadBuilder = (event, shopifyTopic) => {
   message.setEventType(EventType.TRACK);
   message.setEventName(RUDDER_ECOM_MAP[shopifyTopic]);
 
-  const properties = createPropertiesForV2EcomEvent(event);
+  const properties = createPropertiesForEcomEventFromWebhook(event);
   message.properties = removeUndefinedAndNullValues(properties);
   // Map Customer details if present
   const customerDetails = get(event, 'customer');

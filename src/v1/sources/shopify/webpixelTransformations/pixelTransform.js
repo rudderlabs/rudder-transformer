@@ -152,13 +152,13 @@ function processPixelEvent(inputEvent) {
   return message;
 }
 
-const processEventFromPixel = async (event) => {
+const processPixelWebEvents = async (event) => {
   const pixelEvent = processPixelEvent(event);
   return removeUndefinedAndNullValues(pixelEvent);
 };
 
 module.exports = {
-  processEventFromPixel,
+  processPixelWebEvents,
   handleCartTokenRedisOperations,
   extractCartToken,
 };

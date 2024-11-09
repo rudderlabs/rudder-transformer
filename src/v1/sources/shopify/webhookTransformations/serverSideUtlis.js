@@ -5,6 +5,12 @@ const {
   productMappingJSON,
 } = require('../../../../v0/sources/shopify/config');
 
+/**
+ * Returns an array of products from the lineItems array received from the webhook event
+ * @param {Array} lineItems
+ * @param {Object} mapping
+ * @returns {Array} products
+ */
 const getProductsFromLineItems = (lineItems, mapping) => {
   if (!lineItems || lineItems.length === 0) {
     return [];
@@ -18,7 +24,12 @@ const getProductsFromLineItems = (lineItems, mapping) => {
   return products;
 };
 
-const createPropertiesForV2EcomEvent = (message) => {
+/**
+ * Creates properties for the ecommerce webhook events received from the pixel based app
+ * @param {Object} message
+ * @returns {Object} properties
+ */
+const createPropertiesForEcomEventFromWebhook = (message) => {
   const { line_items: lineItems } = message;
   if (!lineItems || lineItems.length === 0) {
     return [];
@@ -29,6 +40,6 @@ const createPropertiesForV2EcomEvent = (message) => {
 };
 
 module.exports = {
-  createPropertiesForV2EcomEvent,
+  createPropertiesForEcomEventFromWebhook,
   getProductsFromLineItems,
 };

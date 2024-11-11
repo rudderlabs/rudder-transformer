@@ -43,11 +43,23 @@ const processEvent = (inputEvent) => {
   message.properties = { ...message.properties, ...customProperties };
 
   if (formattedPayload.created_at) {
-    const ts = new Date(formattedPayload.created_at * 1000).toISOString();
-    message.setProperty('originalTimestamp', ts);
-    message.setProperty('timestamp', ts);
+    try {
+      const createdAt = Number(formattedPayload.created_at);
+      if (Number.isFinite(createdAt) && createdAt > 0) {
+        const ts = new Date(createdAt * 1000).toISOString();
+        message.setProperty('originalTimestamp', ts);
+        message.setProperty('timestamp', ts);
+      } else {
+        throw new TransformationError(
+          `[Adjust] Error processing timestamp ${formattedPayload.created_at}.`,
+        );
+      }
+    } catch (error) {
+      throw new TransformationError(
+        `[Adjust] Error processing timestamp ${formattedPayload.created_at}: ${error.message}`,
+      );
+    }
   }
-
   // adjust does not has the concept of user but we need to set some random anonymousId in order to make the server accept the message
   message.anonymousId = generateUUID();
   return message;

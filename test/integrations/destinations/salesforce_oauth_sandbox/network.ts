@@ -46,6 +46,27 @@ const businessMockData = [
       status: 204,
     },
   },
+  {
+    description: 'Mock response from destination depicting unallowed state',
+    httpReq: {
+      method: 'post',
+      url: 'https://rudderstack.my.salesforce_oauth_sandbox.com/services/data/v50.0/sobjects/Lead/21',
+      headers: headerWithWrongAccessToken,
+      data: { ...dataValue, State: 'San Francisco' },
+      params: { destination: 'salesforce_oauth_sandbox' },
+    },
+    httpRes: {
+      data: [
+        {
+          errorCode: 'FIELD_INTEGRITY_EXCEPTION',
+          fields: ['State'],
+          message:
+            'A country/territory must be specified before specifying a state value for field: State/Province',
+        },
+      ],
+      status: 400,
+    },
+  },
 ];
 
 export const networkCallsData = [...businessMockData];

@@ -22,6 +22,15 @@ const users = [
     LeadSource: 'App Signup',
     account_type__c: 'free_trial',
   },
+  {
+    Email: 'danis.archurav@sbermarket.ru',
+    Company: 'itus.ru',
+    LastName: 'Danis',
+    FirstName: 'Archurav',
+    LeadSource: 'App Signup',
+    account_type__c: 'free_trial',
+    State: 'San Francisco',
+  },
 ];
 
 const statTags = {
@@ -35,6 +44,27 @@ const statTags = {
     module: 'destination',
     workspaceId: 'dummyWorkspaceId',
   },
+  aborted: {
+    destType: 'SALESFORCE_OAUTH_SANDBOX',
+    destinationId: 'dummyDestinationId',
+    errorCategory: 'network',
+    errorType: 'aborted',
+    feature: 'dataDelivery',
+    implementation: 'native',
+    module: 'destination',
+    workspaceId: 'dummyWorkspaceId',
+  },
+};
+
+export const proxyMetdata: ProxyMetdata = {
+  jobId: 1,
+  attemptNum: 1,
+  userId: 'dummyUserId',
+  sourceId: 'dummySourceId',
+  destinationId: 'dummyDestinationId',
+  workspaceId: 'dummyWorkspaceId',
+  secret: {},
+  dontBatch: false,
 };
 
 const commonRequestParametersWithWrongToken = {
@@ -46,6 +76,12 @@ const commonRequestParametersWithWrongToken = {
 const commonRequestParametersWithRightToken = {
   headers: commonHeadersForRightToken,
   JSON: users[0],
+  params,
+};
+
+const commonRequestParametersWithWrongState = {
+  headers: commonHeadersForRightToken,
+  JSON: users[1],
   params,
 };
 
@@ -84,7 +120,7 @@ export const reqMetadataArray = [proxyMetdataWithSecretWithRightAccessToken];
 
 export const testScenariosForV1API: ProxyV1TestData[] = [
   {
-    id: 'salesforce_v1_scenario_1',
+    id: 'salesforce_sandbox_v1_scenario_1',
     name: 'salesforce_oauth_sandbox',
     description: '[Proxy v1 API] :: Test with expired access token scenario',
     successCriteria:
@@ -130,7 +166,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
     },
   },
   {
-    id: 'salesforce_v1_scenario_2',
+    id: 'salesforce_sandbox_v1_scenario_2',
     name: 'salesforce_oauth_sandbox',
     description:
       '[Proxy v1 API] :: Test for a valid request - Lead creation with existing unchanged leadId and unchanged data',
@@ -166,6 +202,50 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
                 statusCode: 200,
               },
             ],
+          },
+        },
+      },
+    },
+  },
+  {
+    id: 'salesforce_sandbox_v1_scenario_1',
+    name: 'salesforce_oauth_sandbox',
+    description: '[Proxy v1 API] :: Test with wrong state change',
+    successCriteria: 'Should return 400 with FIELD_INTEGRITY_EXCEPTION',
+    scenario: 'Business',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v1',
+    input: {
+      request: {
+        body: generateProxyV1Payload(
+          {
+            ...commonRequestParametersWithWrongState,
+            endpoint:
+              'https://rudderstack.my.salesforce_oauth_sandbox.com/services/data/v50.0/sobjects/Lead/21',
+          },
+          reqMetadataArray,
+        ),
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 400,
+        body: {
+          output: {
+            message:
+              'Salesforce Request Failed: 400 - due to A country/territory must be specified before specifying a state value for field: State/Province, during Salesforce Response Handling',
+            response: [
+              {
+                error:
+                  '[{"message":"A country/territory must be specified before specifying a state value for field: State/Province","errorCode":"FIELD_INTEGRITY_EXCEPTION"}]',
+                metadata: proxyMetdata,
+                statusCode: 400,
+              },
+            ],
+            statTags: statTags.aborted,
+            status: 400,
           },
         },
       },

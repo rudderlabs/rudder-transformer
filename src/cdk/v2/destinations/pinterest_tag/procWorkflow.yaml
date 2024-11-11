@@ -69,8 +69,8 @@ steps:
         "event_id": $.getOneByPaths(., ^.destination.Config.deduplicationKey) ?? .messageId,
         "app_id": ^.destination.Config.appId,
         "advertiser_id": ^.destination.Config.advertiserId,
-        "partner_name": .properties.partnerName ? $.toString(.properties.partnerName) : undefined,
-        "device_carrier": .properties.partnerName ? $.toString(.context.network.carrier) : undefined,
+        "partner_name": .properties.partnerName ? $.convertToString(.properties.partnerName) : undefined,
+        "device_carrier": .properties.partnerName ? $.convertToString(.context.network.carrier) : undefined,
         "wifi": .context.network.wifi ? Boolean(.context.network.wifi) : undefined
       });
       $.outputs.apiVersion === {{$.API_VERSION.v5}} ?  commonFields = commonFields{~["advertiser_id"]};
@@ -109,7 +109,7 @@ steps:
         "client_user_agent": .context.userAgent,
         "external_id": {{{{$.getGenericPaths("userId")}}}},
         "click_id": .properties.clickId,
-        "partner_id": .traits.partnerId ?? .context.traits.partnerId ? $.toString(.traits.partnerId ?? .context.traits.partnerId) : undefined
+        "partner_id": .traits.partnerId ?? .context.traits.partnerId ? $.convertToString(.traits.partnerId ?? .context.traits.partnerId) : undefined
       });
       !.destination.Config.sendExternalId ?  userFields = userFields{~["external_id"]} : null;
       userFields = $.removeUndefinedAndNullAndEmptyValues(userFields);
@@ -127,20 +127,19 @@ steps:
     steps:
       - name: customFields
         template: |
-          console.log('Stringified contentName',toString)
           const customFields = .message.().({
             "currency": .properties.currency,
-              "value": .properties.value !== undefined ? $.toString(.properties.value) :
-                       .properties.total !== undefined ? $.toString(.properties.total) :
-                       .properties.revenue !== undefined ? $.toString(.properties.revenue) : undefined,
+              "value": .properties.value !== undefined ? $.convertToString(.properties.value) :
+                       .properties.total !== undefined ? $.convertToString(.properties.total) :
+                       .properties.revenue !== undefined ? $.convertToString(.properties.revenue) : undefined,
             "num_items": .properties.numOfItems && Number(.properties.numOfItems),
             "order_id": .properties.order_id,
             "search_string": .properties.query,
             "opt_out_type": .properties.optOutType,
-            "content_name": .properties.contentName ? $.toString(.properties.contentName) : undefined,
-            "content_category": .properties.contentCategory ? $.toString(.properties.contentCategory) : undefined,
-            "content_brand": .properties.contentBrand ? $.toString(.properties.contentBrand) : undefined,
-            "np": .properties.np ? $.toString(.properties.np) : undefined
+            "content_name": .properties.contentName ? $.convertToString(.properties.contentName) : undefined,
+            "content_category": .properties.contentCategory ? $.convertToString(.properties.contentCategory) : undefined,
+            "content_brand": .properties.contentBrand ? $.convertToString(.properties.contentBrand) : undefined,
+            "np": .properties.np ? $.convertToString(.properties.np) : undefined
           });
           $.removeUndefinedValues(customFields)
 
@@ -154,11 +153,11 @@ steps:
             "content_ids": products.(.product_id ?? .sku ?? .id)[],
             "contents": .message.properties@prop.products.({
               "quantity": Number(.quantity ?? prop.quantity ?? 1),
-              "item_price":  $.toString(.price ?? prop.price),
-              "item_name": $.toString(.name),
-              "id": .product_id ?? .sku ? $.toString(.product_id ?? .sku) : undefined,
-              "item_category": .category ? $.toString(.category) : undefined,
-              "item_brand": .brand ? $.toString(.brand) : undefined
+              "item_price":  $.convertToString(.price ?? prop.price),
+              "item_name": $.convertToString(.name),
+              "id": .product_id ?? .sku ? $.convertToString(.product_id ?? .sku) : undefined,
+              "item_category": .category ? $.convertToString(.category) : undefined,
+              "item_brand": .brand ? $.convertToString(.brand) : undefined
             })[]
           }
         else:
@@ -170,11 +169,11 @@ steps:
               "content_ids": (props.product_id ?? props.sku ?? props.id)[],
               "contents": {
                 "quantity": Number(props.quantity) || 1,
-                "item_price": props.price ? $.toString(props.price),
-                "item_name": props.name ? $.toString(props.name),
-                "id": props.product_id ?? props.sku ? $.toString(props.product_id ?? props.sku) : undefined,
-                "item_category": props.category ? $.toString(props.category) : undefined,
-                "item_brand": props.brand ? $.toString(props.brand) : undefined
+                "item_price": props.price ? $.convertToString(props.price),
+                "item_name": props.name ? $.convertToString(props.name),
+                "id": props.product_id ?? props.sku ? $.convertToString(props.product_id ?? props.sku) : undefined,
+                "item_category": props.category ? $.convertToString(props.category) : undefined,
+                "item_brand": props.brand ? $.convertToString(props.brand) : undefined
               }[]
             };
       - name: combineAllEcomFields

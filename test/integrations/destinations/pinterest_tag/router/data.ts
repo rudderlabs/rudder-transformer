@@ -815,9 +815,7 @@ export const data = [
                           order_id: '50314b8e9bcf000000000000',
                           num_items: 2,
                           content_ids: ['123'],
-                          contents: [
-                            { id: '123', item_name: 'undefined', quantity: 2, item_price: '25' },
-                          ],
+                          contents: [{ quantity: 2, item_price: '25' }],
                         },
                       },
                       {

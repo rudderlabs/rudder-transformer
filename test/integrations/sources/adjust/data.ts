@@ -161,8 +161,7 @@ export const data = [
         status: 200,
         body: [
           {
-            error:
-              '[Adjust] Error processing timestamp test: [Adjust] Error processing timestamp test.',
+            error: '[Adjust] Invalid timestamp "test": Invalid time value',
             statTags: {
               destinationId: 'Non determinable',
               errorCategory: 'transformation',

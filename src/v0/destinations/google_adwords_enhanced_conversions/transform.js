@@ -87,20 +87,16 @@ const responseBuilder = async (metadata, message, { Config }, payload) => {
 };
 
 const processTrackEvent = async (metadata, message, destination) => {
-  let flag = 0;
   const { Config } = destination;
   const { event } = message;
   const { listOfConversions } = Config;
-  if (listOfConversions && listOfConversions.length > 0) {
-    if (typeof listOfConversions[0] === 'string') {
-      if (listOfConversions.includes(event)) {
-        flag = 1;
-      }
-    } else if (listOfConversions.some((i) => i.conversions === event)) {
-      flag = 1;
-    }
-  }
-  if (event === undefined || event === '' || flag === 0) {
+  const flag = Boolean(
+    Array.isArray(listOfConversions) &&
+      listOfConversions.some(
+        (i) => (typeof i === 'string' && i === event) || i?.conversions === event,
+      ),
+  );
+  if (event === undefined || event === '' || !flag) {
     throw new ConfigurationError(
       `Conversion named "${event}" was not specified in the RudderStack destination configuration`,
     );

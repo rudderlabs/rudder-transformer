@@ -595,4 +595,90 @@ export const data = [
       },
     },
   },
+  {
+    name: 'marketo_bulk_upload',
+    description: 'Test 6: Any comma or new line should be escaped through transform payload',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              type: 'identify',
+              userId: 'nicholas003',
+              anonymousId: 'anonId_003',
+              context: {
+                traits: {
+                  firstName: 'Test',
+                  lastName: 'hello\\world,new\nline',
+                  email: 'badRecord.email.com',
+                  city: '776 Elm St.\nRt. ,101',
+                },
+              },
+              request_ip: '192.168.10.106',
+            },
+            destination: {
+              ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
+              Config: {
+                munchkinId: 'XXXX',
+                clientId: 'YYYY',
+                clientSecret: 'ZZZZ',
+                columnFieldsMapping: [
+                  {
+                    to: 'firstName',
+                    from: 'firstName',
+                  },
+                  {
+                    to: 'lastName',
+                    from: 'lastName',
+                  },
+                  {
+                    to: 'email',
+                    from: 'email',
+                  },
+                  {
+                    to: 'city',
+                    from: 'city',
+                  },
+                ],
+              },
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: '/fileUpload',
+              headers: {},
+              params: {},
+              body: {
+                JSON: {
+                  firstName: 'Test',
+                  lastName: 'hello\\\\world\\,new\\nline',
+                  email: 'badRecord.email.com',
+                  city: '776 Elm St.\\nRt. \\,101',
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: '',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
 ];

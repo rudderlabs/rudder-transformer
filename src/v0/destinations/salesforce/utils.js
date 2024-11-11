@@ -84,6 +84,7 @@ const salesforceResponseHandler = (destResponse, sourceMessage, authKey, authori
     } else if (status === 503 || status === 500) {
       // The salesforce server is unavailable to handle the request. Typically this occurs if the server is down
       // for maintenance or is currently overloaded.
+      // ref : https://help.salesforce.com/s/articleView?id=000387190&type=1
       if (matchErrorCode('SERVER_UNAVAILABLE')) {
         throw new ThrottledError(
           `${DESTINATION} Request Failed: ${status} - due to Search unavailable, ${sourceMessage}`,

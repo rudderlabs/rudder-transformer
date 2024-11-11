@@ -977,6 +977,7 @@ describe('removeHyphens', () => {
     { input: null, expected: null },
     { input: undefined, expected: undefined },
     { input: 12345, expected: 12345 },
+    { input: '123-12-241', expected: '12312241' },
   ];
   it('should remove hyphens from string else return the input as it is', () => {
     data.forEach(({ input, expected }) => {

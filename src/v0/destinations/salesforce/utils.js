@@ -23,6 +23,13 @@ const {
 
 const ACCESS_TOKEN_CACHE = new Cache(ACCESS_TOKEN_CACHE_TTL);
 
+const getErrorMessage = (response) => {
+  if (Array.isArray(response) && response?.[0]?.message && response?.[0]?.message?.length > 0) {
+    return response[0].message;
+  }
+  return JSON.stringify(response);
+};
+
 /**
  * ref: https://developer.salesforce.com/docs/atlas.en-us.api_rest.meta/api_rest/errorcodes.htm
  * handles Salesforce application level failures
@@ -77,15 +84,18 @@ const salesforceResponseHandler = (destResponse, sourceMessage, authKey, authori
     } else if (status === 503 || status === 500) {
       // The salesforce server is unavailable to handle the request. Typically this occurs if the server is down
       // for maintenance or is currently overloaded.
-      throw new RetryableError(
-        `${DESTINATION} Request Failed - due to "${
-          response && Array.isArray(response) && response[0]?.message?.length > 0
-            ? response[0].message
-            : JSON.stringify(response)
-        }", (Retryable) ${sourceMessage}`,
-        500,
-        destResponse,
-      );
+      if (matchErrorCode('SERVER_UNAVAILABLE')) {
+        throw new ThrottledError(
+          `${DESTINATION} Request Failed: ${status} - due to Search unavailable, ${sourceMessage}`,
+          destResponse,
+        );
+      } else {
+        throw new RetryableError(
+          `${DESTINATION} Request Failed: ${status} - due to "${getErrorMessage(response)}", (Retryable) ${sourceMessage}`,
+          500,
+          destResponse,
+        );
+      }
     }
     // check the error message
     let errorMessage = '';

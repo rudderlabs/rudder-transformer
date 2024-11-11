@@ -1182,6 +1182,80 @@ export const data = [
                 },
               },
             },
+            {
+              batched: false,
+              statusCode: 400,
+              error: 'loginCustomerId is required as subAccount is true.',
+              statTags: {
+                destType: 'GOOGLE_ADWORDS_ENHANCED_CONVERSIONS',
+                errorCategory: 'dataValidation',
+                errorType: 'configuration',
+                feature: 'router',
+                implementation: 'native',
+                module: 'destination',
+              },
+              metadata: [
+                {
+                  secret: {
+                    access_token: 'abcd1234',
+                    refresh_token: 'efgh5678',
+                    developer_token: 'ijkl91011',
+                  },
+                  jobId: 6,
+                  userId: 'u1',
+                },
+              ],
+              destination: {
+                Config: {
+                  rudderAccountId: '25u5whFH7gVTnCiAjn4ykoCLGoC',
+                  customerId: '1234567890',
+                  subAccount: true,
+                  listOfConversions: [
+                    { conversions: 'Page View' },
+                    { conversions: 'Product Added' },
+                  ],
+                  authStatus: 'active',
+                },
+              },
+            },
+            {
+              batched: false,
+              statusCode: 400,
+              error: 'loginCustomerId should be a string or number',
+              statTags: {
+                destType: 'GOOGLE_ADWORDS_ENHANCED_CONVERSIONS',
+                errorCategory: 'dataValidation',
+                errorType: 'instrumentation',
+                feature: 'router',
+                implementation: 'native',
+                module: 'destination',
+              },
+              metadata: [
+                {
+                  secret: {
+                    access_token: 'abcd1234',
+                    refresh_token: 'efgh5678',
+                    developer_token: 'ijkl91011',
+                  },
+                  jobId: 7,
+                  userId: 'u1',
+                },
+              ],
+              destination: {
+                Config: {
+                  loginCustomerId: {
+                    id: '1234567890',
+                  },
+                  customerId: '1234567890',
+                  subAccount: true,
+                  listOfConversions: [
+                    { conversions: 'Page View' },
+                    { conversions: 'Product Added' },
+                  ],
+                  authStatus: 'active',
+                },
+              },
+            },
           ],
         },
       },

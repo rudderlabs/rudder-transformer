@@ -314,12 +314,12 @@ const legacyTests = [
     },
     output: {
       response: {
-        status: 500,
+        status: 429,
         body: {
           output: {
-            status: 500,
+            status: 429,
             message:
-              'Salesforce Request Failed - due to "Server Unavailable", (Retryable) during Salesforce Response Handling',
+              'Salesforce Request Failed: 503 - due to Server Unavailable, during Salesforce Response Handling',
             destinationResponse: {
               response: [
                 {
@@ -334,7 +334,7 @@ const legacyTests = [
               errorCategory: 'network',
               destinationId: 'Non-determininable',
               workspaceId: 'Non-determininable',
-              errorType: 'retryable',
+              errorType: 'throttled',
               feature: 'dataDelivery',
               implementation: 'native',
               module: 'destination',
@@ -461,7 +461,7 @@ const legacyTests = [
               status: 503,
             },
             message:
-              'Salesforce Request Failed - due to "{"message":"Server Unavailable","errorCode":"SERVER_UNAVAILABLE"}", (Retryable) during Salesforce Response Handling',
+              'Salesforce Request Failed: 503 - due to "{"message":"Server Unavailable","errorCode":"SERVER_UNAVAILABLE"}", (Retryable) during Salesforce Response Handling',
             statTags: {
               destType: 'SALESFORCE',
               errorCategory: 'network',
@@ -603,7 +603,7 @@ const legacyTests = [
           output: {
             status: 500,
             message:
-              'Salesforce Request Failed - due to ""[ECONNABORTED] :: Connection aborted"", (Retryable) during Salesforce Response Handling',
+              'Salesforce Request Failed: 500 - due to ""[ECONNABORTED] :: Connection aborted"", (Retryable) during Salesforce Response Handling',
             destinationResponse: {
               response: '[ECONNABORTED] :: Connection aborted',
               status: 500,
@@ -696,7 +696,7 @@ const legacyTests = [
           output: {
             status: 500,
             message:
-              'Salesforce Request Failed - due to ""[EAI_AGAIN] :: Temporary failure in name resolution"", (Retryable) during Salesforce Response Handling',
+              'Salesforce Request Failed: 500 - due to ""[EAI_AGAIN] :: Temporary failure in name resolution"", (Retryable) during Salesforce Response Handling',
             destinationResponse: {
               response: '[EAI_AGAIN] :: Temporary failure in name resolution',
               status: 500,

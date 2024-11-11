@@ -68,14 +68,13 @@ const responseBuilder = (
  * Logics: Here we are creating an array with all the attributes provided in the add/remove array
  * inside listData.
  * @param {Array} attributeArray rudder event message properties listData add
- * @param {object} Config rudder event destination
  * @param {string} typeOfList
+ * @param {Array<string>} userSchema
  * @param {boolean} isHashRequired
  * @returns
  */
-const populateIdentifiers = (attributeArray, { Config }, typeOfList, isHashRequired) => {
+const populateIdentifiers = (attributeArray, typeOfList, userSchema, isHashRequired) => {
   const userIdentifier = [];
-  const { userSchema } = Config;
   let attribute;
   if (TYPEOFLIST[typeOfList]) {
     attribute = TYPEOFLIST[typeOfList];

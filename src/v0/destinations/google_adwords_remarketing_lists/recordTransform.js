@@ -23,6 +23,7 @@ const processRecordEventArray = (
   developerToken,
   audienceId,
   typeOfList,
+  userSchema,
   isHashRequired,
   operationType,
 ) => {
@@ -38,8 +39,8 @@ const processRecordEventArray = (
 
   const userIdentifiersList = populateIdentifiers(
     fieldsArray,
-    destination,
     typeOfList,
+    userSchema,
     isHashRequired,
   );
 
@@ -91,7 +92,7 @@ function preparepayload(events, config) {
   const { destination, message, metadata } = events[0];
   const accessToken = getAccessToken(metadata, 'access_token');
   const developerToken = getValueFromMessage(metadata, 'secret.developer_token');
-  const { audienceId, typeOfList, isHashRequired } = config;
+  const { audienceId, typeOfList, isHashRequired, userSchema } = config;
 
   const groupedRecordsByAction = lodash.groupBy(events, (record) =>
     record.message.action?.toLowerCase(),
@@ -110,6 +111,7 @@ function preparepayload(events, config) {
       developerToken,
       audienceId,
       typeOfList,
+      userSchema,
       isHashRequired,
       'remove',
     );
@@ -124,6 +126,7 @@ function preparepayload(events, config) {
       developerToken,
       audienceId,
       typeOfList,
+      userSchema,
       isHashRequired,
       'add',
     );
@@ -138,6 +141,7 @@ function preparepayload(events, config) {
       developerToken,
       audienceId,
       typeOfList,
+      userSchema,
       isHashRequired,
       'add',
     );
@@ -161,18 +165,25 @@ function preparepayload(events, config) {
 
 function processRecordInputsV0(groupedRecordInputs) {
   const { destination, message } = groupedRecordInputs[0];
-  const { audienceId, typeOfList, isHashRequired } = destination.Config;
+  const { audienceId, typeOfList, isHashRequired, userSchema } = destination.Config;
 
   return preparepayload(groupedRecordInputs, {
     audienceId: getOperationAudienceId(audienceId, message),
     typeOfList,
+    userSchema,
     isHashRequired,
   });
 }
 
 function processRecordInputsV1(groupedRecordInputs) {
-  const { connection } = groupedRecordInputs[0];
+  const { connection, message } = groupedRecordInputs[0];
   const { audienceId, typeOfList, isHashRequired } = connection.config.destination;
+
+  const identifiers = message?.identifiers;
+  let userSchema;
+  if (identifiers) {
+    userSchema = Object.keys(identifiers);
+  }
 
   const events = groupedRecordInputs.map((record) => ({
     ...record,
@@ -185,6 +196,7 @@ function processRecordInputsV1(groupedRecordInputs) {
   return preparepayload(events, {
     audienceId,
     typeOfList,
+    userSchema,
     isHashRequired,
   });
 }

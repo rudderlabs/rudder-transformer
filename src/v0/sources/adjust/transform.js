@@ -42,7 +42,6 @@ const processEvent = (inputEvent) => {
   );
   message.properties = { ...message.properties, ...customProperties };
 
-  // ... existing code ...
   if (formattedPayload.created_at) {
     const rawTimestamp = formattedPayload.created_at;
     try {
@@ -56,7 +55,6 @@ const processEvent = (inputEvent) => {
       );
     }
   }
-  // ... existing code ...
   // adjust does not has the concept of user but we need to set some random anonymousId in order to make the server accept the message
   message.anonymousId = generateUUID();
   return message;

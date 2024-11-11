@@ -19,42 +19,25 @@ import {
   RouterTransformationResponseListSchema,
 } from '../../src/types/zodTypes';
 
-const getDataFilesFromDir = (dir: string): string[] => {
-  // Look for data.ts files recursively in the directory
-  return globSync('**/data.ts', {
-    cwd: dir,
-    absolute: true,
-  });
-};
-
-const getNetworkFilesFromDir = (dir: string): string[] => {
-  // Look for network.ts files recursively in the directory
-  return globSync('**/network.ts', {
-    cwd: dir,
-    absolute: true,
-  });
-};
-
 const generateAlphanumericId = (size = 36) =>
   [...Array(size)].map(() => ((Math.random() * size) | 0).toString(size)).join('');
-export const getTestDataFilePaths = (rootDir: string, opts: any) => {
-  const paths: string[] = [];
-  if (opts.destination) {
-    // Existing destination logic
-    const destinationPath = join(rootDir, 'destinations', opts.destination);
-    paths.push(...getDataFilesFromDir(destinationPath));
-  } else if (opts.source) {
-    // New source logic
-    const sourcePath = join(rootDir, 'sources', opts.source);
-    paths.push(...getDataFilesFromDir(sourcePath));
-  } else {
-    // Get all test files if no specific integration is specified
-    const destinationsPath = join(rootDir, 'destinations');
-    const sourcesPath = join(rootDir, 'sources');
-    paths.push(...getDataFilesFromDir(destinationsPath));
-    paths.push(...getDataFilesFromDir(sourcesPath));
+export const getTestDataFilePaths = (dirPath: string, opts: OptionValues): string[] => {
+  const globPattern = join(dirPath, '**', 'data.ts');
+  let testFilePaths = globSync(globPattern);
+  let filteredTestFilePaths: string[] = testFilePaths;
+
+  const destinationOrSource = opts.destination || opts.source;
+  if (destinationOrSource) {
+    filteredTestFilePaths = testFilePaths.filter(
+      (testFile) => destinationOrSource && testFile.includes(`${destinationOrSource}/`),
+    );
   }
-  return paths;
+  if (opts.feature) {
+    filteredTestFilePaths = filteredTestFilePaths.filter((testFile) =>
+      testFile.includes(opts.feature),
+    );
+  }
+  return filteredTestFilePaths;
 };
 
 export const getTestData = (filePath): TestCaseData[] => {
@@ -65,22 +48,17 @@ export const getMockHttpCallsData = (filePath): MockHttpCallsData[] => {
   return require(filePath).networkCallsData as MockHttpCallsData[];
 };
 
-export const getAllTestMockDataFilePaths = (
-  rootDir: string,
-  destination?: string,
-  source?: string,
-) => {
-  const paths: string[] = [];
+export const getAllTestMockDataFilePaths = (dirPath: string, destination: string): string[] => {
+  const globPattern = join(dirPath, '**', 'network.ts');
+  let testFilePaths = globSync(globPattern);
   if (destination) {
-    // Existing destination logic
-    const destinationPath = join(rootDir, 'destinations', destination);
-    paths.push(...getNetworkFilesFromDir(destinationPath));
-  } else if (source) {
-    // New source logic
-    const sourcePath = join(rootDir, 'sources', source);
-    paths.push(...getNetworkFilesFromDir(sourcePath));
+    const commonTestFilePaths = testFilePaths.filter((testFile) =>
+      testFile.includes('test/integrations/common'),
+    );
+    testFilePaths = testFilePaths.filter((testFile) => testFile.includes(destination));
+    testFilePaths = [...commonTestFilePaths, ...testFilePaths];
   }
-  return paths;
+  return testFilePaths;
 };
 
 export const addMock = (mock: MockAdapter, axiosMock: MockHttpCallsData) => {

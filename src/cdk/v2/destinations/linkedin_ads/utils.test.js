@@ -29,12 +29,13 @@ describe('formatEmail', () => {
 });
 
 describe('calculateConversionObject', () => {
-  // Returns a conversion object with currency code 'USD' and amount 0 when message properties are empty
-  it('should throw instrumentation error when message properties are empty', () => {
+  // Returns empty object when message properties are empty
+  it('should return empty object when message properties are empty', () => {
     const message = { properties: {} };
     expect(() => {
-      fetchUserIds(calculateConversionObject(message));
-    }).toThrow(InstrumentationError);
+      const conversionObject = calculateConversionObject(message);
+      expect(conversionObject).toEqual({});
+    });
   });
 
   // Returns a conversion object with currency code 'USD' and amount 0 when message properties price is defined but quantity is 0

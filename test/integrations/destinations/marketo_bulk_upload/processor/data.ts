@@ -612,7 +612,7 @@ export const data = [
               context: {
                 traits: {
                   firstName: 'Test',
-                  lastName: 'User',
+                  lastName: 'hello\\world,new\nline',
                   email: 'badRecord.email.com',
                   city: '776 Elm St.\nRt. ,101',
                 },
@@ -664,7 +664,7 @@ export const data = [
               body: {
                 JSON: {
                   firstName: 'Test',
-                  lastName: 'User',
+                  lastName: 'hello\\\\world\\,new\\nline',
                   email: 'badRecord.email.com',
                   city: '776 Elm St.\\nRt. \\,101',
                 },

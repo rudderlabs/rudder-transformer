@@ -38,7 +38,11 @@ function responseBuilderSimple(message, destination) {
       let newVal = val;
       // If value contains comma or newline then we need to escape it
       if (typeof val === 'string') {
-        newVal = val.toString().replaceAll(/,/g, '\\,').replaceAll(/\n/g, '\\n');
+        newVal = val
+          .toString()
+          .replaceAll(/\\/g, '\\\\')
+          .replaceAll(/,/g, '\\,')
+          .replaceAll(/\n/g, '\\n');
       }
       payload[key] = newVal;
     }

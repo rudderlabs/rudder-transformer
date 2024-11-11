@@ -21,7 +21,7 @@ export class MiscController {
   }
 
   public static features(ctx: Context) {
-    ctx.body = MiscService.getFetaures();
+    ctx.body = MiscService.getFeatures();
     ctx.status = 200;
     return ctx;
   }

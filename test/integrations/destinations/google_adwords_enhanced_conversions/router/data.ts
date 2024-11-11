@@ -543,6 +543,41 @@ const events = [
       },
     },
   },
+  {
+    metadata: {
+      secret: {
+        access_token: 'abcd1234',
+        refresh_token: 'efgh5678',
+        developer_token: 'ijkl91011',
+      },
+      jobId: 8,
+      userId: 'u1',
+    },
+    destination: {
+      Config: {
+        customerId: '1234567890',
+        subAccount: true,
+        listOfConversions: [{ conversions: 'Page View' }, { conversions: 'Product Added' }],
+        authStatus: 'active',
+      },
+    },
+    message: {
+      event: 'Page View',
+      type: 'track',
+      userId: '12345',
+      context: {
+        traits: {
+          email: 'user@testmail.com',
+        },
+      },
+      properties: {
+        gclid: 'gclid1234',
+        conversionDateTime: '2022-01-01 12:32:45-08:00',
+        order_id: 10000,
+        total: 1000,
+      },
+    },
+  },
 ];
 
 const invalidRtTfCases = [
@@ -967,6 +1002,7 @@ export const data = [
                   userId: 'u1',
                 },
               ],
+              statusCode: 400,
               statTags: {
                 destType: 'GOOGLE_ADWORDS_ENHANCED_CONVERSIONS',
                 errorCategory: 'dataValidation',
@@ -975,7 +1011,6 @@ export const data = [
                 implementation: 'native',
                 module: 'destination',
               },
-              statusCode: 400,
             },
             {
               batched: false,
@@ -1111,6 +1146,41 @@ export const data = [
                 module: 'destination',
               },
               statusCode: 400,
+            },
+            {
+              batched: false,
+              statusCode: 400,
+              error: 'loginCustomerId is required as subAccount is true.',
+              statTags: {
+                destType: 'GOOGLE_ADWORDS_ENHANCED_CONVERSIONS',
+                errorCategory: 'dataValidation',
+                errorType: 'configuration',
+                feature: 'router',
+                implementation: 'native',
+                module: 'destination',
+              },
+              metadata: [
+                {
+                  secret: {
+                    access_token: 'abcd1234',
+                    refresh_token: 'efgh5678',
+                    developer_token: 'ijkl91011',
+                  },
+                  jobId: 8,
+                  userId: 'u1',
+                },
+              ],
+              destination: {
+                Config: {
+                  customerId: '1234567890',
+                  subAccount: true,
+                  listOfConversions: [
+                    { conversions: 'Page View' },
+                    { conversions: 'Product Added' },
+                  ],
+                  authStatus: 'active',
+                },
+              },
             },
           ],
         },

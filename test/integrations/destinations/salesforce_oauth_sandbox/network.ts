@@ -51,7 +51,7 @@ const businessMockData = [
     httpReq: {
       method: 'post',
       url: 'https://rudderstack.my.salesforce_oauth_sandbox.com/services/data/v50.0/sobjects/Lead/21',
-      headers: headerWithWrongAccessToken,
+      headers: headerWithRightAccessToken,
       data: { ...dataValue, State: 'San Francisco' },
       params: { destination: 'salesforce_oauth_sandbox' },
     },

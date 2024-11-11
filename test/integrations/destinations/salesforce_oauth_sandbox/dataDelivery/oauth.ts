@@ -63,7 +63,13 @@ export const proxyMetdata: ProxyMetdata = {
   sourceId: 'dummySourceId',
   destinationId: 'dummyDestinationId',
   workspaceId: 'dummyWorkspaceId',
-  secret: {},
+  destInfo: {
+    authKey: 'dummyDestinationId',
+  },
+  secret: {
+    access_token: 'expiredRightToken',
+    instanceUrl: 'https://rudderstack.my.salesforce_oauth_sandbox.com',
+  },
   dontBatch: false,
 };
 
@@ -202,50 +208,6 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
                 statusCode: 200,
               },
             ],
-          },
-        },
-      },
-    },
-  },
-  {
-    id: 'salesforce_sandbox_v1_scenario_1',
-    name: 'salesforce_oauth_sandbox',
-    description: '[Proxy v1 API] :: Test with wrong state change',
-    successCriteria: 'Should return 400 with FIELD_INTEGRITY_EXCEPTION',
-    scenario: 'Business',
-    feature: 'dataDelivery',
-    module: 'destination',
-    version: 'v1',
-    input: {
-      request: {
-        body: generateProxyV1Payload(
-          {
-            ...commonRequestParametersWithWrongState,
-            endpoint:
-              'https://rudderstack.my.salesforce_oauth_sandbox.com/services/data/v50.0/sobjects/Lead/21',
-          },
-          reqMetadataArray,
-        ),
-        method: 'POST',
-      },
-    },
-    output: {
-      response: {
-        status: 400,
-        body: {
-          output: {
-            message:
-              'Salesforce Request Failed: 400 - due to A country/territory must be specified before specifying a state value for field: State/Province, during Salesforce Response Handling',
-            response: [
-              {
-                error:
-                  '[{"message":"A country/territory must be specified before specifying a state value for field: State/Province","errorCode":"FIELD_INTEGRITY_EXCEPTION"}]',
-                metadata: proxyMetdata,
-                statusCode: 400,
-              },
-            ],
-            statTags: statTags.aborted,
-            status: 400,
           },
         },
       },

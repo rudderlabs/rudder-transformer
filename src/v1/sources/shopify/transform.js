@@ -1,7 +1,9 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 const { processPixelWebEvents } = require('./webpixelTransformations/pixelTransform');
 const { process: processWebhookEvents } = require('../../../v0/sources/shopify/transform');
-const { process: processWebhookEventsV2 } = require('./webhookTransformations/serverSideTransform');
+const {
+  process: processPixelWebhookEvents,
+} = require('./webhookTransformations/serverSideTransform');
 
 const process = async (inputEvent) => {
   const { event } = inputEvent;
@@ -16,7 +18,7 @@ const process = async (inputEvent) => {
   }
   if (query_parameters && query_parameters?.version?.[0] === 'pixel') {
     // this is a server-side event from the webhook subscription made by the pixel app.
-    const pixelWebhookEventResponse = await processWebhookEventsV2(event);
+    const pixelWebhookEventResponse = await processPixelWebhookEvents(event);
     return pixelWebhookEventResponse;
   }
   // this is a server-side event from the webhook subscription made by the legacy tracker-based app.

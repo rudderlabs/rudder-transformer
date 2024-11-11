@@ -11,8 +11,8 @@ bindings:
     path: ../../../../v0/util
   - name: validateEventName
     path: ../../../../v0/util
-  - path: lodash
-    name: toString
+  - path: '@rudderstack/integrations-lib'
+
 steps:
   - name: checkIfProcessed
     condition: .message.statusCode

@@ -3486,7 +3486,7 @@ export const data = [
               timestamp: '2020-08-14T05:30:30.118Z',
               properties: {
                 tax: 2,
-                total: 27.5,
+                total: [27.5, 123],
                 coupon: 'hasbros',
                 revenue: 48,
                 currency: 'USD',
@@ -3565,7 +3565,7 @@ export const data = [
                       },
                     ],
                     currency: 'USD',
-                    value: '27.5',
+                    value: '[27.5,123]',
                     order_id: '50314b8e9bcf000000000000',
                   },
                   event_name: 'custom event',

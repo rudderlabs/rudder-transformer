@@ -103,7 +103,7 @@ const salesforceResponseHandler = (destResponse, sourceMessage, authKey, authori
       // ref : https://help.salesforce.com/s/articleView?id=000387190&type=1
       if (matchErrorCode('SERVER_UNAVAILABLE')) {
         throw new ThrottledError(
-          `${DESTINATION} Request Failed: ${status} - due to Search unavailable, ${sourceMessage}`,
+          `${DESTINATION} Request Failed: ${status} - due to ${getErrorMessage(response)}, ${sourceMessage}`,
           destResponse,
         );
       } else {

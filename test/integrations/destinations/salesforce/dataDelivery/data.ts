@@ -319,7 +319,7 @@ const legacyTests = [
           output: {
             status: 429,
             message:
-              'Salesforce Request Failed: 503 - due to Search unavailable, during Salesforce Response Handling',
+              'Salesforce Request Failed: 503 - due to Server Unavailable, during Salesforce Response Handling',
             destinationResponse: {
               response: [
                 {

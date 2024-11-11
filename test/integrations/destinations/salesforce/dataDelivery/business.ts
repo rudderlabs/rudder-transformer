@@ -277,7 +277,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
         body: {
           output: {
             message:
-              'Salesforce Request Failed: 503 - due to Search unavailable, during Salesforce Response Handling',
+              'Salesforce Request Failed: 503 - due to Server Unavailable, during Salesforce Response Handling',
             response: [
               {
                 error: '[{"message":"Server Unavailable","errorCode":"SERVER_UNAVAILABLE"}]',

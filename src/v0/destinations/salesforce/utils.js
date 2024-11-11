@@ -23,6 +23,22 @@ const {
 
 const ACCESS_TOKEN_CACHE = new Cache(ACCESS_TOKEN_CACHE_TTL);
 
+/**
+ * Extracts and returns the error message from a response object.
+ * If the response is an array and contains a message in the first element,
+ * it returns that message. Otherwise, it returns the stringified response.
+ * Error Message Format Example: ref: https://developer.salesforce.com/docs/atlas.en-us.api_rest.meta/api_rest/errorcodes.htm#:~:text=Incorrect%20ID%20example
+        [
+        {
+          "fields" : [ "Id" ],
+          "message" : "Account ID: id value of incorrect type: 001900K0001pPuOAAU",
+          "errorCode" : "MALFORMED_ID"
+        }
+        ]
+ * @param {Object|Array} response - The response object or array to extract the message from.
+ * @returns {string} The extracted error message or the stringified response.
+ */
+
 const getErrorMessage = (response) => {
   if (Array.isArray(response) && response?.[0]?.message && response?.[0]?.message?.length > 0) {
     return response[0].message;

@@ -131,6 +131,7 @@ export const data = [
                       conversion_time: '2023-06-01T06:03:08.739Z',
                       number_items: 2,
                       price_currency: 'USD',
+                      user_agent: 'chrome',
                       value: '25',
                       conversion_id: '213123',
                       contents: [
@@ -290,7 +291,8 @@ export const data = [
               },
             },
             statusCode: 400,
-            error: '[TWITTER ADS]: one of twclid, phone or email must be present in properties.',
+            error:
+              '[TWITTER ADS]: one of twclid, phone, email, ip_address or user_agent must be present in properties.',
             statTags: {
               errorCategory: 'dataValidation',
               errorType: 'instrumentation',
@@ -424,6 +426,7 @@ export const data = [
                       conversion_time: '2023-06-01T06:03:08.739Z',
                       number_items: 2,
                       price_currency: 'USD',
+                      user_agent: 'chrome',
                       value: '25.55',
                       conversion_id: '213123',
                       identifiers: [
@@ -842,6 +845,7 @@ export const data = [
                       conversion_time: '2023-06-01T06:03:08.739Z',
                       number_items: 2,
                       price_currency: 'USD',
+                      user_agent: 'chrome',
                       value: '25',
                       conversion_id: '213123',
                       contents: [
@@ -885,6 +889,233 @@ export const data = [
                 consumerKey: 'qwe',
                 consumerSecret: 'fdghv',
                 accessToken: 'dummyAccessToken',
+                accessTokenSecret: 'testAccessTokenSecret',
+              },
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'twitter_ads',
+    description: 'Test case for track event with ip_address as an identifier',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              type: 'track',
+              event: 'Home Page Viewed',
+              channel: 'web',
+              context: {
+                source: 'test',
+                userAgent: 'chrome',
+                traits: {
+                  anonymousId: '50be5c78-6c3f-4b60-be84-97805a316fb1',
+                  email: 'abc@gmail.com',
+                  phone: '+1234589947',
+                  ge: 'male',
+                },
+                device: {
+                  advertisingId: 'abc123',
+                },
+                library: {
+                  name: 'rudder-sdk-ruby-sync',
+                  version: '1.0.6',
+                },
+              },
+              messageId: '7208bbb6-2c4e-45bb-bf5b-ad426f3593e9',
+              timestamp: '2020-08-14T05:30:30.118Z',
+              properties: {
+                affiliation: 'Google Store',
+                checkout_id: 'fksdjfsdjfisjf9sdfjsd9f',
+                ip_address: '8.25.197.25',
+              },
+              anonymousId: '50be5c78-6c3f-4b60-be84-97805a316fb1',
+              integrations: {
+                All: true,
+              },
+            },
+            metadata: {
+              secret: {
+                consumerKey: 'qwe',
+                consumerSecret: 'fdghv',
+                accessToken: 'dummyAccessToken',
+                accessTokenSecret: 'testAccessTokenSecret',
+              },
+            },
+            destination: {
+              Config: {
+                pixelId: 'dummyPixelId',
+                rudderAccountId: '2EOknn1JNH7WK1MfNku4fGYKkRK',
+                twitterAdsEventNames: [
+                  {
+                    rudderEventName: 'ABC Searched',
+                    twitterEventId: 'tw-234234324234',
+                  },
+                  {
+                    rudderEventName: 'Home Page Viewed',
+                    twitterEventId: 'tw-odt2o-odt2q',
+                  },
+                ],
+              },
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://ads-api.twitter.com/12/measurement/conversions/dummyPixelId',
+              headers: {
+                Authorization: authHeaderConstant,
+                'Content-Type': 'application/json',
+              },
+              params: {},
+              body: {
+                JSON: {
+                  conversions: [
+                    {
+                      conversion_time: '2020-08-14T05:30:30.118Z',
+                      user_agent: 'chrome',
+                      event_id: 'tw-odt2o-odt2q',
+                      identifiers: [
+                        {
+                          ip_address: '8.25.197.25',
+                        },
+                      ],
+                    },
+                  ],
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: '',
+            },
+            metadata: {
+              secret: {
+                consumerKey: 'qwe',
+                consumerSecret: 'fdghv',
+                accessToken: 'dummyAccessToken',
+                accessTokenSecret: 'testAccessTokenSecret',
+              },
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'twitter_ads',
+    description: 'Test case for track event with user_agent as an identifier',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              type: 'track',
+              event: 'Home Page Viewed',
+              channel: 'web',
+              context: {
+                source: 'test',
+                traits: {
+                  anonymousId: '50be5c78-6c3f-4b60-be84-97805a316fb1',
+                  email: 'abc@gmail.com',
+                  phone: '+1234589947',
+                  ge: 'male',
+                },
+              },
+              properties: {
+                affiliation: 'Google Store',
+                user_agent:
+                  '    Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36.',
+              },
+              anonymousId: '50be5c78-6c3f-4b60-be84-97805a316fb1',
+              integrations: {
+                All: true,
+              },
+            },
+            metadata: {
+              secret: {
+                accessTokenSecret: 'testAccessTokenSecret',
+              },
+            },
+            destination: {
+              Config: {
+                pixelId: 'dummyPixelId',
+                rudderAccountId: '2EOknn1JNH7WK1MfNku4fGYKkRK',
+                twitterAdsEventNames: [
+                  {
+                    rudderEventName: 'ABC Searched',
+                    twitterEventId: 'tw-234234324234',
+                  },
+                  {
+                    rudderEventName: 'Home Page Viewed',
+                    twitterEventId: 'tw-odt2o-odt2q',
+                  },
+                ],
+              },
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://ads-api.twitter.com/12/measurement/conversions/dummyPixelId',
+              headers: {
+                Authorization: authHeaderConstant,
+                'Content-Type': 'application/json',
+              },
+              params: {},
+              body: {
+                JSON: {
+                  conversions: [
+                    {
+                      event_id: 'tw-odt2o-odt2q',
+                      identifiers: [
+                        {
+                          user_agent:
+                            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36.',
+                        },
+                      ],
+                    },
+                  ],
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: '',
+            },
+            metadata: {
+              secret: {
                 accessTokenSecret: 'testAccessTokenSecret',
               },
             },

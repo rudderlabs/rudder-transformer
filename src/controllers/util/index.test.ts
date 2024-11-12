@@ -190,9 +190,9 @@ describe('adaptInputToVersion', () => {
     const expected = {
       implementationVersion: 'v0',
       input: [
-        { output: { key: 'value', query_parameters: { paramkey: ['paramvalue'] } } },
-        { output: { key: 'value', query_parameters: { paramkey: ['paramvalue'] } } },
-        { output: { key: 'value', query_parameters: { paramkey: ['paramvalue'] } } },
+        { output: { key: 'value' } },
+        { output: { key: 'value' } },
+        { output: { key: 'value' } },
       ],
     };
 
@@ -277,19 +277,19 @@ describe('adaptInputToVersion', () => {
       input: [
         {
           output: {
-            event: { key: 'value', query_parameters: { paramkey: ['paramvalue'] } },
+            event: { key: 'value' },
             source: { id: 'source_id', config: { configField1: 'configVal1' } },
           },
         },
         {
           output: {
-            event: { key: 'value', query_parameters: { paramkey: ['paramvalue'] } },
+            event: { key: 'value' },
             source: { id: 'source_id', config: { configField1: 'configVal1' } },
           },
         },
         {
           output: {
-            event: { key: 'value', query_parameters: { paramkey: ['paramvalue'] } },
+            event: { key: 'value' },
             source: { id: 'source_id', config: { configField1: 'configVal1' } },
           },
         },

@@ -102,4 +102,8 @@ module.exports = {
   getUsersEndpoint,
   getCustomEventsEndpoint,
   getAccountsEndpoint,
+  BASE_ENDPOINT,
+  BASE_EU_ENDPOINT,
+  BASE_US2_ENDPOINT,
+  getBaseEndpoint,
 };

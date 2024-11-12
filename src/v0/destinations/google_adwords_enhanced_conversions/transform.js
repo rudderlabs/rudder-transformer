@@ -2,7 +2,11 @@
 
 const get = require('get-value');
 const { cloneDeep, isNumber } = require('lodash');
-const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
+const {
+  InstrumentationError,
+  ConfigurationError,
+  isDefinedAndNotNull,
+} = require('@rudderstack/integrations-lib');
 const isString = require('lodash/isString');
 const {
   constructPayload,
@@ -11,6 +15,7 @@ const {
   removeHyphens,
   simpleProcessRouterDest,
   getAccessToken,
+  isDefined,
 } = require('../../util');
 
 const { trackMapping, BASE_ENDPOINT } = require('./config');
@@ -38,6 +43,16 @@ const responseBuilder = async (metadata, message, { Config }, payload) => {
   const { event } = message;
   const { subAccount } = Config;
   let { customerId, loginCustomerId } = Config;
+  const { configData } = Config;
+
+  if (isDefinedAndNotNull(configData)) {
+    const configDetails = JSON.parse(configData);
+    customerId = configDetails.customerId;
+    if (isDefined(configDetails.loginCustomerId)) {
+      loginCustomerId = configDetails.loginCustomerId;
+    }
+  }
+
   if (isNumber(customerId)) {
     customerId = customerId.toString();
   }
@@ -69,6 +84,11 @@ const responseBuilder = async (metadata, message, { Config }, payload) => {
     response.headers['login-customer-id'] = filteredLoginCustomerId;
   }
 
+  if (loginCustomerId) {
+    const filteredLoginCustomerId = removeHyphens(loginCustomerId);
+    response.headers['login-customer-id'] = filteredLoginCustomerId;
+  }
+
   return response;
 };
 
@@ -77,8 +97,14 @@ const processTrackEvent = async (metadata, message, destination) => {
   const { Config } = destination;
   const { event } = message;
   const { listOfConversions } = Config;
-  if (listOfConversions.some((i) => i.conversions === event)) {
-    flag = 1;
+  if (listOfConversions && listOfConversions.length > 0) {
+    if (typeof listOfConversions[0] === 'string') {
+      if (listOfConversions.includes(event)) {
+        flag = 1;
+      }
+    } else if (listOfConversions.some((i) => i.conversions === event)) {
+      flag = 1;
+    }
   }
   if (event === undefined || event === '' || flag === 0) {
     throw new ConfigurationError(

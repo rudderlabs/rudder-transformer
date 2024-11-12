@@ -199,8 +199,8 @@ describe('GARL utils test', () => {
       const { typeOfList, isHashRequired } = baseDestination.Config;
       const identifier = populateIdentifiers(
         attributeArray,
-        baseDestination,
         typeOfList,
+        baseDestination.Config.userSchema,
         isHashRequired,
       );
       expect(identifier).toEqual(hashedArray);

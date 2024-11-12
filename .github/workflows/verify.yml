@@ -43,8 +43,12 @@ jobs:
 
       - name: Run format Checks
         run: |
-          npx prettier --write $(cat changed_files.txt)
+          if [ -s changed_files.txt ]; then
+              npx prettier --write $(cat changed_files.txt)
+          fi
+
       - run: git diff --exit-code
+
       - name: Formatting Error message
         if: ${{ failure() }}
         run: |

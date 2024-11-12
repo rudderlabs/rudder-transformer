@@ -20,7 +20,7 @@ export const data = [
             destination: {
               Config: {
                 rudderAccountId: 'rudder-acc-id',
-                listId: 'list111',
+                audienceId: 'list111',
                 customerId: '7693729833',
                 loginCustomerId: '',
                 subAccount: false,
@@ -151,7 +151,7 @@ export const data = [
             destination: {
               Config: {
                 rudderAccountId: 'rudder-acc-id',
-                listId: 'list111',
+                audienceId: 'list111',
                 customerId: '769-372-9833',
                 loginCustomerId: '870-483-0944',
                 subAccount: true,
@@ -269,7 +269,7 @@ export const data = [
             destination: {
               Config: {
                 rudderAccountId: 'rudder-acc-id',
-                listId: 'list111',
+                audienceId: 'list111',
                 customerId: '7693729833',
                 loginCustomerId: '',
                 subAccount: false,
@@ -387,7 +387,7 @@ export const data = [
             destination: {
               Config: {
                 rudderAccountId: 'rudder-acc-id',
-                listId: 'list111',
+                audienceId: 'list111',
                 customerId: '7693729833',
                 loginCustomerId: '',
                 subAccount: false,
@@ -495,7 +495,7 @@ export const data = [
             destination: {
               Config: {
                 rudderAccountId: 'rudder-acc-id',
-                listId: 'list111',
+                audienceId: 'list111',
                 customerId: '7693729833',
                 loginCustomerId: '',
                 subAccount: false,
@@ -585,7 +585,7 @@ export const data = [
             destination: {
               Config: {
                 rudderAccountId: 'rudder-acc-id',
-                listId: 'list111',
+                audienceId: 'list111',
                 customerId: '7693729833',
                 loginCustomerId: '',
                 subAccount: false,
@@ -673,7 +673,7 @@ export const data = [
             destination: {
               Config: {
                 rudderAccountId: 'rudder-acc-id',
-                listId: 'list111',
+                audienceId: 'list111',
                 customerId: '7693729833',
                 loginCustomerId: '',
                 subAccount: false,
@@ -749,7 +749,7 @@ export const data = [
             destination: {
               Config: {
                 rudderAccountId: 'rudder-acc-id',
-                listId: 'list111',
+                audienceId: 'list111',
                 customerId: '7693729833',
                 loginCustomerId: '',
                 subAccount: true,
@@ -845,7 +845,7 @@ export const data = [
             destination: {
               Config: {
                 rudderAccountId: 'rudder-acc-id',
-                listId: 'list111',
+                audienceId: 'list111',
                 customerId: '7693729833',
                 loginCustomerId: '',
                 subAccount: false,
@@ -2740,7 +2740,7 @@ export const data = [
             destination: {
               Config: {
                 rudderAccountId: 'rudder-acc-id',
-                listId: 'list111',
+                audienceId: 'list111',
                 customerId: '7693729833',
                 loginCustomerId: '',
                 subAccount: false,
@@ -2993,7 +2993,7 @@ export const data = [
             destination: {
               Config: {
                 rudderAccountId: 'rudder-acc-id',
-                listId: 'list111',
+                audienceId: 'list111',
                 customerId: '7693729833',
                 loginCustomerId: '',
                 subAccount: false,
@@ -6724,7 +6724,7 @@ export const data = [
             destination: {
               Config: {
                 rudderAccountId: 'rudder-acc-id',
-                listId: 'list111',
+                audienceId: 'list111',
                 customerId: '7693729833',
                 loginCustomerId: '',
                 subAccount: false,
@@ -6880,7 +6880,7 @@ export const data = [
             destination: {
               Config: {
                 rudderAccountId: 'rudder-acc-id',
-                listId: 'list111',
+                audienceId: 'list111',
                 customerId: '7693729833',
                 loginCustomerId: '',
                 subAccount: false,
@@ -6977,7 +6977,7 @@ export const data = [
             destination: {
               Config: {
                 rudderAccountId: 'rudder-acc-id',
-                listId: 'list111',
+                audienceId: 'list111',
                 customerId: '7693729833',
                 loginCustomerId: '',
                 subAccount: false,
@@ -10708,7 +10708,7 @@ export const data = [
             destination: {
               Config: {
                 rudderAccountId: 'rudder-acc-id',
-                listId: 'list111',
+                audienceId: 'list111',
                 customerId: '7693729833',
                 loginCustomerId: '',
                 subAccount: false,
@@ -10961,7 +10961,7 @@ export const data = [
             destination: {
               Config: {
                 rudderAccountId: 'rudder-acc-id',
-                listId: 'list111',
+                audienceId: 'list111',
                 customerId: '7693729833',
                 loginCustomerId: '',
                 subAccount: false,
@@ -11207,7 +11207,7 @@ export const data = [
             destination: {
               Config: {
                 rudderAccountId: 'rudder-acc-id',
-                listId: 'list111',
+                audienceId: 'list111',
                 customerId: '7693729833',
                 loginCustomerId: '',
                 subAccount: false,
@@ -11328,7 +11328,7 @@ export const data = [
             destination: {
               Config: {
                 rudderAccountId: 'rudder-acc-id',
-                listId: 'list111',
+                audienceId: 'list111',
                 customerId: '7693729833',
                 loginCustomerId: '',
                 subAccount: false,
@@ -11412,7 +11412,6 @@ export const data = [
             destination: {
               Config: {
                 rudderAccountId: 'rudder-acc-id',
-                listId: 'list111',
                 customerId: '7693729833',
                 loginCustomerId: '',
                 subAccount: false,

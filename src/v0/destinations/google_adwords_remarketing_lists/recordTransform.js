@@ -11,7 +11,11 @@ const {
   isEventSentByVDMV2Flow,
 } = require('../../util');
 const { populateConsentFromConfig } = require('../../util/googleUtils');
-const { populateIdentifiers, responseBuilder, getOperationAudienceId } = require('./util');
+const {
+  populateIdentifiersForRecordEvent,
+  responseBuilder,
+  getOperationAudienceId,
+} = require('./util');
 const { getErrorResponse, createFinalResponse } = require('../../util/recordUtils');
 const { offlineDataJobsMapping, consentConfigMap } = require('./config');
 
@@ -37,7 +41,7 @@ const processRecordEventArray = (
     metadata.push(record.metadata);
   });
 
-  const userIdentifiersList = populateIdentifiers(
+  const userIdentifiersList = populateIdentifiersForRecordEvent(
     fieldsArray,
     typeOfList,
     userSchema,

@@ -18,6 +18,7 @@ const {
   TYPEOFLIST,
   BASE_ENDPOINT,
   hashAttributes,
+  ADDRESS_INFO_ATTRIBUTES,
 } = require('./config');
 
 const hashEncrypt = (object) => {
@@ -114,6 +115,40 @@ const populateIdentifiers = (attributeArray, typeOfList, userSchema, isHashRequi
   return userIdentifier;
 };
 
+const populateIdentifiersForRecordEvent = (
+  identifiersArray,
+  typeOfList,
+  userSchema,
+  isHashRequired,
+) => {
+  const userIdentifiers = [];
+
+  if (isDefinedAndNotNullAndNotEmpty(identifiersArray)) {
+    // traversing through every element in the add array
+    identifiersArray.forEach((identifiers) => {
+      if (isHashRequired) {
+        hashEncrypt(identifiers);
+      }
+      if (TYPEOFLIST[typeOfList] && identifiers[TYPEOFLIST[typeOfList]]) {
+        userIdentifiers.push({ [TYPEOFLIST[typeOfList]]: identifiers[TYPEOFLIST[typeOfList]] });
+      } else {
+        Object.entries(attributeMapping).forEach(([key, mappedKey]) => {
+          if (identifiers[key] && userSchema.includes(key))
+            userIdentifiers.push({ [mappedKey]: identifiers[key] });
+        });
+        const addressInfo = constructPayload(identifiers, addressInfoMapping);
+        if (
+          isDefinedAndNotNullAndNotEmpty(addressInfo) &&
+          (userSchema.includes('addressInfo') ||
+            userSchema.some((schema) => ADDRESS_INFO_ATTRIBUTES.includes(schema)))
+        )
+          userIdentifiers.push({ addressInfo });
+      }
+    });
+  }
+  return userIdentifiers;
+};
+
 const getOperationAudienceId = (audienceId, message) => {
   let operationAudienceId = audienceId;
   const mappedToDestination = get(message, MappedToDestinationKey);
@@ -131,4 +166,5 @@ module.exports = {
   populateIdentifiers,
   responseBuilder,
   getOperationAudienceId,
+  populateIdentifiersForRecordEvent,
 };

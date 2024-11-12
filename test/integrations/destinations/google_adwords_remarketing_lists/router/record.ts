@@ -51,7 +51,7 @@ const destination2: Destination = {
   IsProcessorEnabled: true,
 };
 
-const connection: Connection = {
+const connection1: Connection = {
   sourceId: '2MUWghI7u85n91dd1qzGyswpZan',
   destinationId: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
   enabled: true,
@@ -60,6 +60,20 @@ const connection: Connection = {
       schemaVersion: VDM_V2_SCHEMA_VERSION,
       isHashRequired: true,
       typeOfList: 'General',
+      audienceId: '7090784486',
+    },
+  },
+};
+
+const connection2: Connection = {
+  sourceId: '2MUWghI7u85n91dd1qzGyswpZan',
+  destinationId: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
+  enabled: true,
+  config: {
+    destination: {
+      schemaVersion: VDM_V2_SCHEMA_VERSION,
+      isHashRequired: true,
+      typeOfList: 'userID',
       audienceId: '7090784486',
     },
   },
@@ -191,11 +205,11 @@ export const rETLRecordRouterRequest: RouterTransformationRequest = {
   destType: 'google_adwords_remarketing_lists',
 };
 
-export const rETLRecordRouterRequestVDMv2: RouterTransformationRequest = {
+export const rETLRecordRouterRequestVDMv2General: RouterTransformationRequest = {
   input: [
     {
       destination: destination2,
-      connection: connection,
+      connection: connection1,
       message: {
         action: 'insert',
         context: {
@@ -222,7 +236,40 @@ export const rETLRecordRouterRequestVDMv2: RouterTransformationRequest = {
   destType: 'google_adwords_remarketing_lists',
 };
 
+export const rETLRecordRouterRequestVDMv2UserId: RouterTransformationRequest = {
+  input: [
+    {
+      destination: destination2,
+      connection: connection2,
+      message: {
+        action: 'insert',
+        context: {
+          ip: '14.5.67.21',
+          library: {
+            name: 'http',
+          },
+        },
+        recordId: '2',
+        rudderId: '2',
+        identifiers: {
+          email: 'test@abc.com',
+          phone: '@09876543210',
+          firstName: 'test',
+          lastName: 'rudderlabs',
+          country: 'US',
+          postalCode: '1245',
+          thirdPartyUserId: 'useri1234',
+        },
+        type: 'record',
+      },
+      metadata: generateGoogleOAuthMetadata(2),
+    },
+  ],
+  destType: 'google_adwords_remarketing_lists',
+};
+
 module.exports = {
   rETLRecordRouterRequest,
-  rETLRecordRouterRequestVDMv2,
+  rETLRecordRouterRequestVDMv2General,
+  rETLRecordRouterRequestVDMv2UserId,
 };

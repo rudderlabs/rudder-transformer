@@ -1,5 +1,9 @@
 import { rETLAudienceRouterRequest } from './audience';
-import { rETLRecordRouterRequest, rETLRecordRouterRequestVDMv2 } from './record';
+import {
+  rETLRecordRouterRequest,
+  rETLRecordRouterRequestVDMv2General,
+  rETLRecordRouterRequestVDMv2UserId,
+} from './record';
 import { API_VERSION } from '../../../../../src/v0/destinations/google_adwords_remarketing_lists/config';
 
 export const data = [
@@ -733,14 +737,14 @@ export const data = [
     },
   },
   {
-    name: 'google_adwords_remarketing_lists record event tests VDMv2',
-    description: 'Test 1',
+    name: 'google_adwords_remarketing_lists record event tests VDMv2 General typeOfList',
+    description: 'Test 2',
     feature: 'router',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
-        body: rETLRecordRouterRequestVDMv2,
+        body: rETLRecordRouterRequestVDMv2General,
         method: 'POST',
       },
     },
@@ -816,6 +820,107 @@ export const data = [
                   userId: 'default-userId',
                   workspaceId: 'default-workspaceId',
                   jobId: 1,
+                },
+              ],
+              batched: true,
+              statusCode: 200,
+              destination: {
+                Config: {
+                  rudderAccountId: '258Yea7usSKNpbkIaesL9oJ9iYw',
+                  audienceId: '7090784486',
+                  customerId: '7693729833',
+                  loginCustomerId: '',
+                  subAccount: false,
+                },
+                DestinationDefinition: {
+                  Config: {},
+                  DisplayName: 'GOOGLE_ADWORDS_REMARKETING_LISTS',
+                  ID: '1aIXqM806xAVm92nx07YwKbRrO9',
+                  Name: 'GOOGLE_ADWORDS_REMARKETING_LISTS',
+                },
+                Enabled: true,
+                ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
+                IsConnectionEnabled: true,
+                IsProcessorEnabled: true,
+                Name: 'GOOGLE_ADWORDS_REMARKETING_LISTS',
+                Transformations: [],
+                WorkspaceID: '1TSN08muJTZwH8iCDmnnRt1pmLd',
+              },
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    name: 'google_adwords_remarketing_lists record event tests VDMv2 UserId typeOfList',
+    description: 'Test 3',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: rETLRecordRouterRequestVDMv2UserId,
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batchedRequest: [
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
+                  headers: {
+                    Authorization: 'Bearer default-accessToken',
+                    'Content-Type': 'application/json',
+                  },
+                  params: {
+                    listId: '7090784486',
+                    customerId: '7693729833',
+                    consent: {
+                      adPersonalization: 'UNSPECIFIED',
+                      adUserData: 'UNSPECIFIED',
+                    },
+                  },
+                  body: {
+                    JSON: {
+                      operations: [
+                        {
+                          create: {
+                            userIdentifiers: [
+                              {
+                                thirdPartyUserId: 'useri1234',
+                              },
+                            ],
+                          },
+                        },
+                      ],
+                    },
+                    JSON_ARRAY: {},
+                    XML: {},
+                    FORM: {},
+                  },
+                  files: {},
+                },
+              ],
+              metadata: [
+                {
+                  attemptNum: 1,
+                  destinationId: 'default-destinationId',
+                  dontBatch: false,
+                  secret: {
+                    access_token: 'default-accessToken',
+                  },
+                  sourceId: 'default-sourceId',
+                  userId: 'default-userId',
+                  workspaceId: 'default-workspaceId',
+                  jobId: 2,
                 },
               ],
               batched: true,

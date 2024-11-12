@@ -8,6 +8,7 @@ import request from 'supertest';
 import networkHandlerFactory from '../../src/adapters/networkHandlerFactory';
 import { FetchHandler } from '../../src/helpers/fetchHandlers';
 import { applicationRoutes } from '../../src/routes';
+import defaultFeaturesConfig from '../../src/features';
 
 let server: any;
 const OLD_ENV = process.env;
@@ -43,12 +44,9 @@ const getDataFromPath = (pathInput) => {
 
 describe('features tests', () => {
   test('successful features response', async () => {
-    const expectedData = JSON.parse(
-      fs.readFileSync(path.resolve(__dirname, '../../src/features.json'), 'utf8'),
-    );
     const response = await request(server).get('/features');
     expect(response.status).toEqual(200);
-    expect(JSON.parse(response.text)).toEqual(expectedData);
+    expect(JSON.parse(response.text)).toEqual(defaultFeaturesConfig);
   });
 
   test('features regulations should be array', async () => {

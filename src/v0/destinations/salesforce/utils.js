@@ -24,6 +24,29 @@ const {
 const ACCESS_TOKEN_CACHE = new Cache(ACCESS_TOKEN_CACHE_TTL);
 
 /**
+ * Extracts and returns the error message from a response object.
+ * If the response is an array and contains a message in the first element,
+ * it returns that message. Otherwise, it returns the stringified response.
+ * Error Message Format Example: ref: https://developer.salesforce.com/docs/atlas.en-us.api_rest.meta/api_rest/errorcodes.htm#:~:text=Incorrect%20ID%20example
+        [
+        {
+          "fields" : [ "Id" ],
+          "message" : "Account ID: id value of incorrect type: 001900K0001pPuOAAU",
+          "errorCode" : "MALFORMED_ID"
+        }
+        ]
+ * @param {Object|Array} response - The response object or array to extract the message from.
+ * @returns {string} The extracted error message or the stringified response.
+ */
+
+const getErrorMessage = (response) => {
+  if (Array.isArray(response) && response?.[0]?.message && response?.[0]?.message?.length > 0) {
+    return response[0].message;
+  }
+  return JSON.stringify(response);
+};
+
+/**
  * ref: https://developer.salesforce.com/docs/atlas.en-us.api_rest.meta/api_rest/errorcodes.htm
  * handles Salesforce application level failures
  * @param {*} destResponse
@@ -77,15 +100,19 @@ const salesforceResponseHandler = (destResponse, sourceMessage, authKey, authori
     } else if (status === 503 || status === 500) {
       // The salesforce server is unavailable to handle the request. Typically this occurs if the server is down
       // for maintenance or is currently overloaded.
-      throw new RetryableError(
-        `${DESTINATION} Request Failed - due to "${
-          response && Array.isArray(response) && response[0]?.message?.length > 0
-            ? response[0].message
-            : JSON.stringify(response)
-        }", (Retryable) ${sourceMessage}`,
-        500,
-        destResponse,
-      );
+      // ref : https://help.salesforce.com/s/articleView?id=000387190&type=1
+      if (matchErrorCode('SERVER_UNAVAILABLE')) {
+        throw new ThrottledError(
+          `${DESTINATION} Request Failed: ${status} - due to ${getErrorMessage(response)}, ${sourceMessage}`,
+          destResponse,
+        );
+      } else {
+        throw new RetryableError(
+          `${DESTINATION} Request Failed: ${status} - due to "${getErrorMessage(response)}", (Retryable) ${sourceMessage}`,
+          500,
+          destResponse,
+        );
+      }
     }
     // check the error message
     let errorMessage = '';

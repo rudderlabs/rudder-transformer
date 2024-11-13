@@ -1,4 +1,4 @@
-const lodash = require('lodash');
+import lodash from 'lodash';
 import { hashToSha256 } from '@rudderstack/integrations-lib';
 import { createHash } from 'crypto';
 import { BASE_ENDPOINT, COMPANY_ENDPOINT, FIELD_MAP, USER_ENDPOINT } from './config';

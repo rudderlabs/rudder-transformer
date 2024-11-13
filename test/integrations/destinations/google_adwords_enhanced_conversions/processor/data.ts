@@ -814,7 +814,7 @@ export const data = [
               },
             },
             statusCode: 400,
-            error: 'LoginCustomerId is required as subAccount is true.',
+            error: 'loginCustomerId is required as subAccount is true.',
             statTags: {
               errorCategory: 'dataValidation',
               errorType: 'configuration',

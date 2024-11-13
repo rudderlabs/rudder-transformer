@@ -72,7 +72,7 @@ export const errorResponseHandler = (destResponse: any, sourceMessage: string) =
     case 503:
       if (matchErrorCode('SERVER_UNAVAILABLE')) {
         throw new ThrottledError(
-          `${DESTINATION} Request Failed: ${status} - due to Search unavailable, ${sourceMessage}`,
+          `${DESTINATION} Request Failed: ${status} - due to ${getErrorMessage(response)}, ${sourceMessage}`,
           destResponse,
         );
       }

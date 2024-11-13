@@ -2,6 +2,7 @@ import {
   generateMetadata,
   transformResultBuilder,
   generateIndentifyPayload,
+  overrideDestination,
 } from './../../../testUtils';
 import { Destination } from '../../../../../src/types';
 import { ProcessorTestData } from '../../../testTypes';
@@ -19,6 +20,7 @@ const destination: Destination = {
   Transformations: [],
   Config: {
     apiKey: 'testApiKey',
+    dataCenter: 'USDC',
     preferUserId: false,
     trackAllPages: true,
     trackNamedPages: false,
@@ -55,6 +57,7 @@ const sentAt = '2020-08-28T16:26:16.473Z';
 const originalTimestamp = '2020-08-28T16:26:06.468Z';
 
 const updateUserEndpoint = 'https://api.iterable.com/api/users/update';
+const updateUserEndpointEUDC = 'https://api.eu.iterable.com/api/users/update';
 
 export const identifyTestData: ProcessorTestData[] = [
   {
@@ -393,6 +396,60 @@ export const identifyTestData: ProcessorTestData[] = [
               JSON: {
                 userId: 'Matthew',
                 dataFields: { ...user2Traits, userId: 'Matthew' },
+                preferUserId: false,
+                mergeNestedObjects: true,
+              },
+            }),
+            statusCode: 200,
+            metadata: generateMetadata(1),
+          },
+        ],
+      },
+    },
+  },
+  {
+    id: 'iterable-identify-test-7',
+    name: 'iterable',
+    description: 'Indentify call to update user in iterable with EUDC dataCenter',
+    scenario: 'Business',
+    successCriteria:
+      'Response should contain status code 200 and it should contain update user payload with all user traits and updateUserEndpointEUDC',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: overrideDestination(destination, { dataCenter: 'EUDC' }),
+            message: {
+              anonymousId,
+              context: {
+                traits: user1Traits,
+              },
+              traits: user1Traits,
+              type: 'identify',
+              sentAt,
+              originalTimestamp,
+            },
+            metadata: generateMetadata(1),
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: transformResultBuilder({
+              userId: '',
+              headers,
+              endpoint: updateUserEndpointEUDC,
+              JSON: {
+                email: user1Traits.email,
+                userId: anonymousId,
+                dataFields: user1Traits,
                 preferUserId: false,
                 mergeNestedObjects: true,
               },

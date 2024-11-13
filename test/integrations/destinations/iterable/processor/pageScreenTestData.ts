@@ -1,4 +1,8 @@
-import { generateMetadata, transformResultBuilder } from './../../../testUtils';
+import {
+  generateMetadata,
+  overrideDestination,
+  transformResultBuilder,
+} from './../../../testUtils';
 import { Destination } from '../../../../../src/types';
 import { ProcessorTestData } from '../../../testTypes';
 
@@ -15,6 +19,7 @@ const destination: Destination = {
   Transformations: [],
   Config: {
     apiKey: 'testApiKey',
+    dataCenter: 'USDC',
     preferUserId: false,
     trackAllPages: true,
     trackNamedPages: false,
@@ -43,6 +48,7 @@ const sentAt = '2020-08-28T16:26:16.473Z';
 const originalTimestamp = '2020-08-28T16:26:06.468Z';
 
 const pageEndpoint = 'https://api.iterable.com/api/events/track';
+const pageEndpointEUDC = 'https://api.eu.iterable.com/api/events/track';
 
 export const pageScreenTestData: ProcessorTestData[] = [
   {
@@ -397,6 +403,63 @@ export const pageScreenTestData: ProcessorTestData[] = [
                 createdAt: 1598631966468,
                 eventName: 'ApplicationLoaded screen',
                 dataFields: properties,
+              },
+            }),
+            statusCode: 200,
+            metadata: generateMetadata(1),
+          },
+        ],
+      },
+    },
+  },
+  {
+    id: 'iterable-page-test-4',
+    name: 'iterable',
+    description: 'Page call with dataCenter as EUDC',
+    scenario: 'Business',
+    successCriteria:
+      'Response should contain status code 200 and it should contain endpoint as pageEndpointEUDC',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: overrideDestination(destination, { dataCenter: 'EUDC' }),
+            message: {
+              anonymousId,
+              name: 'ApplicationLoaded',
+              context: {
+                traits: {
+                  email: 'sayan@gmail.com',
+                },
+              },
+              properties,
+              type: 'page',
+              sentAt,
+              originalTimestamp,
+            },
+            metadata: generateMetadata(1),
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: transformResultBuilder({
+              userId: '',
+              headers,
+              endpoint: pageEndpointEUDC,
+              JSON: {
+                userId: anonymousId,
+                dataFields: properties,
+                email: 'sayan@gmail.com',
+                createdAt: 1598631966468,
+                eventName: 'ApplicationLoaded page',
               },
             }),
             statusCode: 200,

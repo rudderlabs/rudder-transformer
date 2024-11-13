@@ -29,6 +29,8 @@ const processRecordEventArray = (
   typeOfList,
   userSchema,
   isHashRequired,
+  userDataConsent,
+  personalizationConsent,
   operationType,
 ) => {
   let outputPayloads = {};
@@ -81,7 +83,10 @@ const processRecordEventArray = (
 
   const toSendEvents = [];
   Object.values(outputPayloads).forEach((data) => {
-    const consentObj = populateConsentFromConfig(destination.Config, consentConfigMap);
+    const consentObj = populateConsentFromConfig(
+      { userDataConsent, personalizationConsent },
+      consentConfigMap,
+    );
     toSendEvents.push(
       responseBuilder(accessToken, developerToken, data, destination, audienceId, consentObj),
     );
@@ -96,7 +101,14 @@ function preparepayload(events, config) {
   const { destination, message, metadata } = events[0];
   const accessToken = getAccessToken(metadata, 'access_token');
   const developerToken = getValueFromMessage(metadata, 'secret.developer_token');
-  const { audienceId, typeOfList, isHashRequired, userSchema } = config;
+  const {
+    audienceId,
+    typeOfList,
+    isHashRequired,
+    userSchema,
+    userDataConsent,
+    personalizationConsent,
+  } = config;
 
   const groupedRecordsByAction = lodash.groupBy(events, (record) =>
     record.message.action?.toLowerCase(),
@@ -117,6 +129,8 @@ function preparepayload(events, config) {
       typeOfList,
       userSchema,
       isHashRequired,
+      userDataConsent,
+      personalizationConsent,
       'remove',
     );
   }
@@ -132,6 +146,8 @@ function preparepayload(events, config) {
       typeOfList,
       userSchema,
       isHashRequired,
+      userDataConsent,
+      personalizationConsent,
       'add',
     );
   }
@@ -147,6 +163,8 @@ function preparepayload(events, config) {
       typeOfList,
       userSchema,
       isHashRequired,
+      userDataConsent,
+      personalizationConsent,
       'add',
     );
   }
@@ -169,19 +187,29 @@ function preparepayload(events, config) {
 
 function processRecordInputsV0(groupedRecordInputs) {
   const { destination, message } = groupedRecordInputs[0];
-  const { audienceId, typeOfList, isHashRequired, userSchema } = destination.Config;
+  const {
+    audienceId,
+    typeOfList,
+    isHashRequired,
+    userSchema,
+    userDataConsent,
+    personalizationConsent,
+  } = destination.Config;
 
   return preparepayload(groupedRecordInputs, {
     audienceId: getOperationAudienceId(audienceId, message),
     typeOfList,
     userSchema,
     isHashRequired,
+    userDataConsent,
+    personalizationConsent,
   });
 }
 
 function processRecordInputsV1(groupedRecordInputs) {
   const { connection, message } = groupedRecordInputs[0];
-  const { audienceId, typeOfList, isHashRequired } = connection.config.destination;
+  const { audienceId, typeOfList, isHashRequired, userDataConsent, personalizationConsent } =
+    connection.config.destination;
 
   const identifiers = message?.identifiers;
   let userSchema;
@@ -202,6 +230,8 @@ function processRecordInputsV1(groupedRecordInputs) {
     typeOfList,
     userSchema,
     isHashRequired,
+    userDataConsent,
+    personalizationConsent,
   });
 }
 

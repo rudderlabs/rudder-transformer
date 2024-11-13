@@ -884,8 +884,8 @@ export const data = [
                     listId: '7090784486',
                     customerId: '7693729833',
                     consent: {
-                      adPersonalization: 'UNSPECIFIED',
-                      adUserData: 'UNSPECIFIED',
+                      adPersonalization: 'GRANTED',
+                      adUserData: 'GRANTED',
                     },
                   },
                   body: {

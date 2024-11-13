@@ -45,13 +45,9 @@ const responseBuilder = async (metadata, message, { Config }, payload) => {
   let { customerId, loginCustomerId } = Config;
   const { configData } = Config;
 
-  let configDetails = {};
-  if (isDefinedAndNotNull(configData)) {
-    configDetails = JSON.parse(configData);
+  const configDetails = isDefinedAndNotNull(configData) ? JSON.parse(configData) : {};
+  if (configDetails.customerId) {
     customerId = configDetails.customerId;
-    if (isDefined(configDetails.loginCustomerId)) {
-      loginCustomerId = configDetails.loginCustomerId;
-    }
   }
 
   if (isNumber(customerId)) {
@@ -72,7 +68,7 @@ const responseBuilder = async (metadata, message, { Config }, payload) => {
   };
   response.params = { event, customerId: filteredCustomerId };
 
-  if (subAccount) {
+  if (subAccount && !isDefined(configDetails.loginCustomerId)) {
     if (!loginCustomerId) {
       throw new ConfigurationError(`loginCustomerId is required as subAccount is true.`);
     }

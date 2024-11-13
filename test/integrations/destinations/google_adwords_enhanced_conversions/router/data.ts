@@ -1,5 +1,3 @@
-import { API_VERSION } from '../../../../../src/v0/destinations/google_adwords_enhanced_conversions/config';
-
 const events = [
   {
     metadata: {
@@ -429,6 +427,7 @@ const events = [
         configData: '{"customerId":"1234567890", "loginCustomerId":"65656565"}',
         customerId: '1234567890',
         subAccount: true,
+        loginCustomerId: '65656565',
         listOfConversions: [{ conversions: 'Page View' }, { conversions: 'Product Added' }],
         authStatus: 'active',
       },
@@ -1080,6 +1079,7 @@ export const data = [
                   authStatus: 'active',
                   configData: '{"customerId":"1234567890", "loginCustomerId":"65656565"}',
                   customerId: '1234567890',
+                  loginCustomerId: '65656565',
                   listOfConversions: [
                     {
                       conversions: 'Page View',

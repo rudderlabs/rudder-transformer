@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.84.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.83.2...v1.84.0) (2024-11-11)
+
+
+### Features
+
+* gaec migration ([#3855](https://github.com/rudderlabs/rudder-transformer/issues/3855)) ([7a26459](https://github.com/rudderlabs/rudder-transformer/commit/7a264590b61d3d31d5559c8ac53fd572b40cddec))
+* **GARL:** support vdm next for GARL ([#3835](https://github.com/rudderlabs/rudder-transformer/issues/3835)) ([f4b38eb](https://github.com/rudderlabs/rudder-transformer/commit/f4b38eba3ca8dff602915853fda5cd7ca284bba3))
+* update on twitter_ads ([#3856](https://github.com/rudderlabs/rudder-transformer/issues/3856)) ([adc8976](https://github.com/rudderlabs/rudder-transformer/commit/adc8976990fa98c5b874472aee180cadfabb0088))
+
+
+### Bug Fixes
+
+* adding throttled status code for server unavailable error in salesforce ([#3862](https://github.com/rudderlabs/rudder-transformer/issues/3862)) ([fa93f09](https://github.com/rudderlabs/rudder-transformer/commit/fa93f0917d4f75fc197a6ea4c574d37faa0a3f77))
+* linkedin ads conversionValue object as well as price is not mandatory ([#3860](https://github.com/rudderlabs/rudder-transformer/issues/3860)) ([bfd7edc](https://github.com/rudderlabs/rudder-transformer/commit/bfd7edc5608c60a39644a1d4ad6e15e5dbcbea0e))
+* marketo bulk upload handle special chars ([#3859](https://github.com/rudderlabs/rudder-transformer/issues/3859)) ([f959a7d](https://github.com/rudderlabs/rudder-transformer/commit/f959a7dc2487dc7e36377f5f2e265014f692f476))
+* unsafe property getting set via set value library ([#3853](https://github.com/rudderlabs/rudder-transformer/issues/3853)) ([80d7b41](https://github.com/rudderlabs/rudder-transformer/commit/80d7b417be7a0e459de49caca25aba43ffdba337))
+
 ### [1.83.2](https://github.com/rudderlabs/rudder-transformer/compare/v1.83.1...v1.83.2) (2024-11-05)
 
 

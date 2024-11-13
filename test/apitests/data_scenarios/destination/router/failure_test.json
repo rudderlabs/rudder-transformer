@@ -754,10 +754,6 @@
                     "content_ids": ["123"],
                     "contents": [
                       {
-                        "id": "123",
-                        "item_brand": "Gamepro",
-                        "item_category": "Games",
-                        "item_name": "Game",
                         "quantity": 11,
                         "item_price": "13.49"
                       }
@@ -785,10 +781,6 @@
                     "content_ids": ["123"],
                     "contents": [
                       {
-                        "id": "123",
-                        "item_brand": "Gamepro",
-                        "item_category": "Games",
-                        "item_name": "Game",
                         "quantity": 11,
                         "item_price": "13.49"
                       }

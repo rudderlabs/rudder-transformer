@@ -37,7 +37,7 @@ function extraKeysPresent(dictionary, keyList) {
 const createPayload = (message, destination) => {
   const { listData } = message.properties;
   const properties = ['add', 'remove'];
-  const { typeOfList, isHashRequired } = destination.Config;
+  const { typeOfList, userSchema, isHashRequired } = destination.Config;
 
   let outputPayloads = {};
   const typeOfOperation = Object.keys(listData);
@@ -45,8 +45,8 @@ const createPayload = (message, destination) => {
     if (properties.includes(key)) {
       const userIdentifiersList = populateIdentifiers(
         listData[key],
-        destination,
         typeOfList,
+        userSchema,
         isHashRequired,
       );
       if (userIdentifiersList.length === 0) {

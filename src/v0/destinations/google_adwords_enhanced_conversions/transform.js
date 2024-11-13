@@ -56,13 +56,11 @@ const responseBuilder = async (metadata, message, { Config }, payload) => {
   if (isNumber(customerId)) {
     customerId = customerId.toString();
   }
-  if (isNumber(loginCustomerId)) {
-    loginCustomerId = loginCustomerId.toString();
-  }
-  if (!isString(customerId) || !isString(loginCustomerId)) {
-    throw new InstrumentationError('customerId and loginCustomerId should be a string or number');
+  if (!isString(customerId)) {
+    throw new InstrumentationError('customerId should be a string or number');
   }
   const filteredCustomerId = removeHyphens(customerId);
+
   response.endpoint = `${BASE_ENDPOINT}/${filteredCustomerId}:uploadConversionAdjustments`;
   response.body.JSON = payload;
   const accessToken = getAccessToken(metadata, 'access_token');
@@ -72,11 +70,19 @@ const responseBuilder = async (metadata, message, { Config }, payload) => {
     'developer-token': getValueFromMessage(metadata, 'secret.developer_token'),
   };
   response.params = { event, customerId: filteredCustomerId };
-  if (subAccount)
-    if (loginCustomerId) {
-      const filteredLoginCustomerId = removeHyphens(loginCustomerId);
-      response.headers['login-customer-id'] = filteredLoginCustomerId;
-    } else throw new ConfigurationError(`LoginCustomerId is required as subAccount is true.`);
+  if (subAccount) {
+    if (!loginCustomerId) {
+      throw new ConfigurationError(`loginCustomerId is required as subAccount is true.`);
+    }
+    if (isNumber(loginCustomerId)) {
+      loginCustomerId = loginCustomerId.toString();
+    }
+    if (loginCustomerId && !isString(loginCustomerId)) {
+      throw new InstrumentationError('loginCustomerId should be a string or number');
+    }
+    const filteredLoginCustomerId = removeHyphens(loginCustomerId);
+    response.headers['login-customer-id'] = filteredLoginCustomerId;
+  }
 
   if (loginCustomerId) {
     const filteredLoginCustomerId = removeHyphens(loginCustomerId);

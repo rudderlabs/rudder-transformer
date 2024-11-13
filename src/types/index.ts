@@ -374,7 +374,7 @@ type SourceInputV2 = {
 };
 
 type SourceInputConversionResult<T> = {
-  output: T;
+  output?: T;
   conversionError?: Error;
 };
 

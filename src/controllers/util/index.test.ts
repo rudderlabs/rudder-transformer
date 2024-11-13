@@ -222,7 +222,6 @@ describe('adaptInputToVersion', () => {
       implementationVersion: 'v0',
       input: [
         {
-          output: {},
           conversionError: new SyntaxError('Unexpected end of JSON input'),
         },
       ],
@@ -322,7 +321,6 @@ describe('adaptInputToVersion', () => {
       implementationVersion: 'v1',
       input: [
         {
-          output: {},
           conversionError: new SyntaxError('Unexpected end of JSON input'),
         },
       ],

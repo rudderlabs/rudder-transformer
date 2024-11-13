@@ -35,7 +35,7 @@ export class StrategyV1ToV2 extends VersionConversionStrategy<SourceInput, Sourc
       } catch (err) {
         const conversionError =
           err instanceof Error ? err : new Error('error converting v1 to v2 spec');
-        return { output: {} as SourceInputV2, conversionError };
+        return { conversionError };
       }
     });
   }

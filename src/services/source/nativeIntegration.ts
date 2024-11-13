@@ -53,12 +53,25 @@ export class NativeIntegrationSourceService implements SourceService {
               metaTO,
             );
           }
-          const newSourceEvent = sourceEvent.output;
-          const { headers } = newSourceEvent;
-          delete newSourceEvent.headers;
-          const respEvents: RudderMessage | RudderMessage[] | SourceTransformationResponse =
-            await sourceHandler.process(newSourceEvent);
-          return SourcePostTransformationService.handleSuccessEventsSource(respEvents, { headers });
+
+          if (sourceEvent.output) {
+            const newSourceEvent = sourceEvent.output;
+
+            const { headers } = newSourceEvent;
+            if (headers) {
+              delete newSourceEvent.headers;
+            }
+
+            const respEvents: RudderMessage | RudderMessage[] | SourceTransformationResponse =
+              await sourceHandler.process(newSourceEvent);
+            return SourcePostTransformationService.handleSuccessEventsSource(respEvents, {
+              headers,
+            });
+          }
+          return SourcePostTransformationService.handleFailureEventsSource(
+            new Error('Error post version converstion, converstion output is undefined'),
+            metaTO,
+          );
         } catch (error: FixMe) {
           stats.increment('source_transform_errors', {
             source: sourceType,

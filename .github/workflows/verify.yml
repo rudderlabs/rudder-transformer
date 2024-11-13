@@ -33,9 +33,19 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Filter JS/TS Files
+        run: |
+          echo "${{ steps.files.outputs.added_modified }}" | tr ' ' '\n' | grep -E '\.(js|ts|jsx|tsx)$' > changed_files.txt
+          if [ ! -s changed_files.txt ]; then
+            echo "No JS/TS files to format or lint."
+            exit 0
+          fi
+
       - name: Run format Checks
         run: |
-          npx prettier ${{steps.files.outputs.added_modified}} --write
+          if [ -s changed_files.txt ]; then
+              npx prettier --write $(cat changed_files.txt)
+          fi
 
       - run: git diff --exit-code
 

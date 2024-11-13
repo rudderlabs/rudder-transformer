@@ -402,6 +402,47 @@ describe('adaptInputToVersion', () => {
 
     expect(result).toEqual(expected);
   });
+
+  it('should fail trying to convert input from v1 to v2 format when the request version is v1 and the implementation version is v2', () => {
+    const sourceType = 'someSourceType';
+    const requestVersion = 'v1';
+
+    // Mock return value for getSourceVersionsMap
+    jest
+      .spyOn(ControllerUtility as any, 'getSourceVersionsMap')
+      .mockReturnValue(new Map([['someSourceType', 'v2']]));
+
+    const input = [
+      {
+        event: {
+          key: 'value',
+          query_parameters: { paramkey: ['paramvalue'] },
+          largeNumber: BigInt(12345678901234567890n),
+        },
+        source: { id: 'source_id', config: { configField1: 'configVal1' } },
+      },
+      {
+        event: { key: 'value', largeNumber: BigInt(12345678901234567890n) },
+        source: { id: 'source_id', config: { configField1: 'configVal1' } },
+      },
+    ];
+
+    const expected = {
+      implementationVersion: 'v2',
+      input: [
+        {
+          conversionError: new TypeError('Do not know how to serialize a BigInt'),
+        },
+        {
+          conversionError: new TypeError('Do not know how to serialize a BigInt'),
+        },
+      ],
+    };
+
+    const result = ControllerUtility.adaptInputToVersion(sourceType, requestVersion, input);
+
+    expect(result).toEqual(expected);
+  });
 });
 
 type timestampTestCases = {

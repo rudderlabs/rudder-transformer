@@ -45,8 +45,9 @@ const responseBuilder = async (metadata, message, { Config }, payload) => {
   let { customerId, loginCustomerId } = Config;
   const { configData } = Config;
 
+  let configDetails = {};
   if (isDefinedAndNotNull(configData)) {
-    const configDetails = JSON.parse(configData);
+    configDetails = JSON.parse(configData);
     customerId = configDetails.customerId;
     if (isDefined(configDetails.loginCustomerId)) {
       loginCustomerId = configDetails.loginCustomerId;
@@ -70,6 +71,7 @@ const responseBuilder = async (metadata, message, { Config }, payload) => {
     'developer-token': getValueFromMessage(metadata, 'secret.developer_token'),
   };
   response.params = { event, customerId: filteredCustomerId };
+
   if (subAccount) {
     if (!loginCustomerId) {
       throw new ConfigurationError(`loginCustomerId is required as subAccount is true.`);
@@ -84,7 +86,9 @@ const responseBuilder = async (metadata, message, { Config }, payload) => {
     response.headers['login-customer-id'] = filteredLoginCustomerId;
   }
 
-  if (loginCustomerId) {
+  // isDefined and non empty loginCustomerId
+  if (isDefined(configDetails.loginCustomerId) && configDetails.loginCustomerId) {
+    loginCustomerId = configDetails.loginCustomerId;
     const filteredLoginCustomerId = removeHyphens(loginCustomerId);
     response.headers['login-customer-id'] = filteredLoginCustomerId;
   }

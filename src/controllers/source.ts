@@ -12,6 +12,7 @@ export class SourceController {
     const events = ctx.request.body as object[];
     const { version, source }: { version: string; source: string } = ctx.params;
     const integrationService = ServiceSelector.getNativeSourceService();
+
     try {
       const { implementationVersion, input } = ControllerUtility.adaptInputToVersion(
         source,

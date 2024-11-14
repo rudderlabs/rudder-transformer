@@ -745,16 +745,35 @@ const filterEventsAndPrepareBatchRequests = (transformedEvents) => {
   return prepareBatchRequests(filteredEvents);
 };
 
+/**
+ * Determines if an event should be aborted based on the response from a destination
+ * and extracts an error message if applicable.
+ * ref:
+ * 1) https://api.iterable.com/api/docs#users_updateEmail
+ * 2) https://api.iterable.com/api/docs#events_track
+ * 3) https://api.iterable.com/api/docs#users_bulkUpdateUser
+ * 4) https://api.iterable.com/api/docs#events_trackBulk
+ *
+ * @param {Object} event - The event object containing various event properties.
+ * @param {Object} destinationResponse - The response object from the destination.
+ * @returns {Object} An object containing a boolean `isAbortable` indicating if the event
+ * should be aborted, and an `errorMsg` string with the error message if applicable.
+ */
 function checkIfEventIsAbortableAndExtractErrorMessage(event, destinationResponse) {
-  const { failCount } = destinationResponse.response.data;
+  const { failCount } = destinationResponse.response;
 
   if (failCount === 0) {
     return { isAbortable: false, errorMsg: '' };
   }
 
+  // Flatten dataFields values into a single array
+  const dataFieldsValues = event.dataFields ? Object.values(event.dataFields).flat() : [];
+
   const eventValues = new Set(
     [
       event.email,
+      event.preferUserId,
+      event.mergeNestedObjects,
       event.userId,
       event.eventName,
       event.id,
@@ -762,14 +781,14 @@ function checkIfEventIsAbortableAndExtractErrorMessage(event, destinationRespons
       event.campaignId,
       event.templateId,
       event.createNewFields,
-      ...(event.dataFields ? Object.values(event.dataFields) : []),
+      ...dataFieldsValues, // Spread the flattened dataFields values
     ].filter((value) => value !== undefined),
   );
 
   const matchingPath = API_RESPONSE_PATHS.find((path) => {
     const responseArray = path
       .split('.')
-      .reduce((obj, key) => obj?.[key], destinationResponse.response.data);
+      .reduce((obj, key) => obj?.[key], destinationResponse.response);
 
     return Array.isArray(responseArray) && responseArray.some((value) => eventValues.has(value));
   });
@@ -777,7 +796,7 @@ function checkIfEventIsAbortableAndExtractErrorMessage(event, destinationRespons
   if (matchingPath) {
     const responseArray = matchingPath
       .split('.')
-      .reduce((obj, key) => obj?.[key], destinationResponse.response.data);
+      .reduce((obj, key) => obj?.[key], destinationResponse.response);
 
     const matchingValue = responseArray.find((value) => eventValues.has(value));
 

@@ -40,8 +40,8 @@ const responseHandler = (responseParams) => {
   if (isHttpStatusSuccess(status)) {
     // check for Partial Event failures and Successes
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    const { events } = destinationRequest.body.JSON;
-    const finalData = events;
+    const { events, users } = destinationRequest.body.JSON;
+    const finalData = events || users;
     finalData.forEach((event, idx) => {
       const proxyOutput = {
         statusCode: 200,

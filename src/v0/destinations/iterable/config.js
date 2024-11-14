@@ -85,8 +85,6 @@ const API_RESPONSE_PATHS = [
   'invalidEmails',
   'invalidUserIds',
   'disallowedEventNames',
-  'filteredOutFields',
-  'createdFields',
   'failedUpdates.invalidEmails',
   'failedUpdates.invalidUserIds',
   'failedUpdates.notFoundEmails',

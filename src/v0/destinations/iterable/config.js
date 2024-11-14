@@ -74,6 +74,24 @@ const IDENTIFY_BATCH_ENDPOINT = 'https://api.iterable.com/api/users/bulkUpdate';
 const TRACK_MAX_BATCH_SIZE = 8000;
 const TRACK_BATCH_ENDPOINT = 'https://api.iterable.com/api/events/trackBulk';
 
+const API_RESPONSE_PATHS = [
+  'invalidEmails',
+  'invalidUserIds',
+  'disallowedEventNames',
+  'filteredOutFields',
+  'createdFields',
+  'failedUpdates.invalidEmails',
+  'failedUpdates.invalidUserIds',
+  'failedUpdates.notFoundEmails',
+  'failedUpdates.notFoundUserIds',
+  'failedUpdates.forgottenEmails',
+  'failedUpdates.forgottenUserIds',
+  'failedUpdates.conflictUserIds',
+  'failedUpdates.conflictEmails',
+  'failedUpdates.invalidDataUserIds',
+  'failedUpdates.invalidDataEmails',
+];
+
 module.exports = {
   mappingConfig,
   ConfigCategory,
@@ -82,4 +100,5 @@ module.exports = {
   IDENTIFY_MAX_BATCH_SIZE,
   IDENTIFY_BATCH_ENDPOINT,
   IDENTIFY_MAX_BODY_SIZE_IN_BYTES,
+  API_RESPONSE_PATHS,
 };

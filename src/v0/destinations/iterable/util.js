@@ -18,6 +18,7 @@ const {
   IDENTIFY_MAX_BATCH_SIZE,
   IDENTIFY_BATCH_ENDPOINT,
   IDENTIFY_MAX_BODY_SIZE_IN_BYTES,
+  API_RESPONSE_PATHS,
 } = require('./config');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 const { EventType, MappedToDestinationKey } = require('../../../constants');
@@ -739,6 +740,52 @@ const filterEventsAndPrepareBatchRequests = (transformedEvents) => {
   return prepareBatchRequests(filteredEvents);
 };
 
+function checkIfEventIsAbortableAndExtractErrorMessage(event, destinationResponse) {
+  const { failCount } = destinationResponse.response.data;
+
+  if (failCount === 0) {
+    return { isAbortable: false, errorMsg: '' };
+  }
+
+  const eventValues = new Set(
+    [
+      event.email,
+      event.userId,
+      event.eventName,
+      event.id,
+      event.createdAt,
+      event.campaignId,
+      event.templateId,
+      event.createNewFields,
+      ...(event.dataFields ? Object.values(event.dataFields) : []),
+    ].filter((value) => value !== undefined),
+  );
+
+  const matchingPath = API_RESPONSE_PATHS.find((path) => {
+    const responseArray = path
+      .split('.')
+      .reduce((obj, key) => obj?.[key], destinationResponse.response.data);
+
+    return Array.isArray(responseArray) && responseArray.some((value) => eventValues.has(value));
+  });
+
+  if (matchingPath) {
+    const responseArray = matchingPath
+      .split('.')
+      .reduce((obj, key) => obj?.[key], destinationResponse.response.data);
+
+    const matchingValue = responseArray.find((value) => eventValues.has(value));
+
+    return {
+      isAbortable: true,
+      errorMsg: `Request failed for value "${matchingValue}" because it is "${matchingPath}".`,
+    };
+  }
+
+  // Return false and an empty error message if no error is found
+  return { isAbortable: false, errorMsg: '' };
+}
+
 module.exports = {
   getCatalogEndpoint,
   hasMultipleResponses,
@@ -753,4 +800,5 @@ module.exports = {
   filterEventsAndPrepareBatchRequests,
   registerDeviceTokenEventPayloadBuilder,
   registerBrowserTokenEventPayloadBuilder,
+  checkIfEventIsAbortableAndExtractErrorMessage,
 };

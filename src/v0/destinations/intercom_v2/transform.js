@@ -39,7 +39,7 @@ const transformIdentifyPayload = (event) => {
   }
   payload.name = getName(message);
   payload.custom_attributes = message.traits || message.context.traits || {};
-  payload.custom_attributes = filterCustomAttributes(payload, 'user', destination);
+  payload.custom_attributes = filterCustomAttributes(payload, 'user', destination, message);
   return payload;
 };
 
@@ -67,7 +67,7 @@ const transformGroupPayload = (event) => {
   const category = ConfigCategory.GROUP;
   const payload = constructPayload(message, MappingConfig[category.name]);
   payload.custom_attributes = message.traits || message.context.traits || {};
-  payload.custom_attributes = filterCustomAttributes(payload, 'company', destination);
+  payload.custom_attributes = filterCustomAttributes(payload, 'company', destination, message);
   return payload;
 };
 
@@ -145,10 +145,6 @@ const constructRecordResponse = async (event) => {
 
   if ((action === RecordAction.UPDATE || action === RecordAction.DELETE) && !contactId) {
     throw new ConfigurationError('Contact is not present. Aborting.');
-  }
-
-  if (action === RecordAction.INSERT && !contactId) {
-    payload = { ...identifiers, ...fields };
   }
 
   switch (action) {

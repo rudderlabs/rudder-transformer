@@ -223,6 +223,26 @@ const routerRequest3: RouterTransformationRequest = {
       },
       metadata: generateMetadata(3),
     },
+    {
+      destination: destinationApiServerAU,
+      message: {
+        userId: 'known-user-id-1',
+        channel,
+        context: {
+          traits: { ...userTraits, external_id: 'known-user-id-1' },
+        },
+        type: 'identify',
+        integrations: {
+          All: true,
+          Intercom: {
+            lookup: 'external_id',
+          },
+        },
+        originalTimestamp,
+        timestamp,
+      },
+      metadata: generateMetadata(4),
+    },
   ],
   destType: 'intercom_v2',
 };
@@ -736,6 +756,38 @@ export const data: RouterTestData[] = [
               metadata: [generateMetadata(3)],
               statusCode: 400,
             },
+            {
+              batched: false,
+              batchedRequest: {
+                body: {
+                  JSON: {
+                    email: 'test@rudderlabs.com',
+                    external_id: 'known-user-id-1',
+                    name: 'John Snow',
+                    owner_id: 13,
+                    phone: '+91 9999999999',
+                    custom_attributes: {
+                      address: 'california usa',
+                      age: 23,
+                    },
+                  },
+                  XML: {},
+                  FORM: {},
+                  JSON_ARRAY: {},
+                },
+                endpoint:
+                  'https://api.au.intercom.io/contacts/contact-id-by-intercom-known-user-id-1',
+                files: {},
+                headers,
+                method: 'PUT',
+                params: {},
+                type: 'REST',
+                version: '1',
+              },
+              destination: destinationApiServerAU,
+              metadata: [generateMetadata(4)],
+              statusCode: 200,
+            },
           ],
         },
       },
@@ -1001,6 +1053,16 @@ export const data: RouterTestData[] = [
               destination: destination,
               metadata: [generateMetadata(5)],
               statusCode: 200,
+            },
+            {
+              batched: false,
+              error: 'action dummyaction is not supported.',
+              statTags: {
+                ...RouterInstrumentationErrorStatTags,
+              },
+              destination,
+              metadata: [generateMetadata(6)],
+              statusCode: 400,
             },
           ],
         },

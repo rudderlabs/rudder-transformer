@@ -811,6 +811,43 @@ const deliveryCallsData = [
       },
     },
   },
+  {
+    httpReq: {
+      method: 'post',
+      url: 'https://api.au.intercom.io/contacts/search',
+      data: {
+        query: {
+          operator: 'AND',
+          value: [{ field: 'external_id', operator: '=', value: 'known-user-id-1' }],
+        },
+      },
+      headers,
+    },
+    httpRes: {
+      status: 200,
+      statusText: 'ok',
+      data: {
+        type: 'list',
+        total_count: 0,
+        pages: {
+          type: 'pages',
+          page: 1,
+          per_page: 50,
+          total_pages: 0,
+        },
+        data: [
+          {
+            type: 'contact',
+            id: 'contact-id-by-intercom-known-user-id-1',
+            workspace_id: 'rudderWorkspace',
+            external_id: 'user-id-1',
+            role: 'user',
+            email: 'test@rudderlabs.com',
+          },
+        ],
+      },
+    },
+  },
 ];
 
 export const networkCallsData = [...deliveryCallsData];

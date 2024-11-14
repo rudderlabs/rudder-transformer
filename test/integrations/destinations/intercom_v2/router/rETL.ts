@@ -129,6 +129,31 @@ export const rETLRecordV2RouterRequest: RouterTransformationRequest = {
       },
       metadata: generateMetadata(5),
     },
+    {
+      destination,
+      message: {
+        type: 'record',
+        action: 'dummyAction',
+        fields: {
+          external_id: 'rEtl_external_id',
+        },
+        channel: 'sources',
+        context: {
+          sources: {
+            job_id: 'job-id',
+            version: 'local',
+            job_run_id: 'job_run_id',
+            task_run_id: 'job_run_id',
+          },
+        },
+        recordId: '1',
+        rudderId: '1',
+        identifiers: {
+          email: 'test-rETL-available@gmail.com',
+        },
+      },
+      metadata: generateMetadata(6),
+    },
   ],
   destType: 'intercom_v2',
 };

@@ -78,6 +78,13 @@ describe('features tests', () => {
     const supportTransformerProxyV1 = JSON.parse(response.text).supportTransformerProxyV1;
     expect(typeof supportTransformerProxyV1).toBe('boolean');
   });
+
+  test('features upgradedToSourceTransformV2 to be boolean', async () => {
+    const response = await request(server).get('/features');
+    expect(response.status).toEqual(200);
+    const upgradedToSourceTransformV2 = JSON.parse(response.text).upgradedToSourceTransformV2;
+    expect(typeof upgradedToSourceTransformV2).toBe('boolean');
+  });
 });
 
 describe('Api tests with a mock source/destination', () => {

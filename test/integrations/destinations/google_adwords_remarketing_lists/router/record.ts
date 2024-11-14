@@ -75,6 +75,8 @@ const connection2: Connection = {
       isHashRequired: true,
       typeOfList: 'userID',
       audienceId: '7090784486',
+      personalizationConsent: 'GRANTED',
+      userDataConsent: 'GRANTED',
     },
   },
 };

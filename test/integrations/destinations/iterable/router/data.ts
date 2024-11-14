@@ -247,6 +247,7 @@ export const data = [
               destination: {
                 Config: {
                   apiKey: '12345',
+                  dataCenter: 'USDC',
                   mapToSingleEvent: false,
                   trackAllPages: false,
                   trackCategorisedPages: true,
@@ -308,6 +309,7 @@ export const data = [
                     destConfig: {
                       defaultConfig: [
                         'apiKey',
+                        'dataCenter',
                         'mapToSingleEvent',
                         'trackAllPages',
                         'trackCategorisedPages',
@@ -339,6 +341,7 @@ export const data = [
                 },
                 Config: {
                   apiKey: '12345',
+                  dataCenter: 'USDC',
                   mapToSingleEvent: true,
                   trackAllPages: false,
                   trackCategorisedPages: true,
@@ -414,6 +417,7 @@ export const data = [
               destination: {
                 Config: {
                   apiKey: '62d12498c37c4fd8a1a546c2d35c2f60',
+                  dataCenter: 'USDC',
                   mapToSingleEvent: false,
                   trackAllPages: true,
                   trackCategorisedPages: false,
@@ -442,6 +446,7 @@ export const data = [
               destination: {
                 Config: {
                   apiKey: '62d12498c37c4fd8a1a546c2d35c2f60',
+                  dataCenter: 'USDC',
                   mapToSingleEvent: false,
                   trackAllPages: true,
                   trackCategorisedPages: false,
@@ -472,6 +477,7 @@ export const data = [
               destination: {
                 Config: {
                   apiKey: '62d12498c37c4fd8a1a546c2d35c2f60',
+                  dataCenter: 'USDC',
                   mapToSingleEvent: false,
                   trackAllPages: false,
                   trackCategorisedPages: true,
@@ -623,6 +629,7 @@ export const data = [
               destination: {
                 Config: {
                   apiKey: '12345',
+                  dataCenter: 'USDC',
                   mapToSingleEvent: false,
                   trackAllPages: false,
                   trackCategorisedPages: true,
@@ -686,6 +693,7 @@ export const data = [
               destination: {
                 Config: {
                   apiKey: '62d12498c37c4fd8a1a546c2d35c2f60',
+                  dataCenter: 'USDC',
                   mapToSingleEvent: false,
                   trackAllPages: true,
                   trackCategorisedPages: false,
@@ -732,6 +740,7 @@ export const data = [
               destination: {
                 Config: {
                   apiKey: '62d12498c37c4fd8a1a546c2d35c2f60',
+                  dataCenter: 'USDC',
                   mapToSingleEvent: false,
                   trackAllPages: true,
                   trackCategorisedPages: false,
@@ -765,6 +774,7 @@ export const data = [
               destination: {
                 Config: {
                   apiKey: '62d12498c37c4fd8a1a546c2d35c2f60',
+                  dataCenter: 'USDC',
                   mapToSingleEvent: false,
                   trackAllPages: false,
                   trackCategorisedPages: true,
@@ -821,6 +831,7 @@ export const data = [
                     destConfig: {
                       defaultConfig: [
                         'apiKey',
+                        'dataCenter',
                         'mapToSingleEvent',
                         'trackAllPages',
                         'trackCategorisedPages',
@@ -852,6 +863,7 @@ export const data = [
                 },
                 Config: {
                   apiKey: '12345',
+                  dataCenter: 'USDC',
                   mapToSingleEvent: true,
                   trackAllPages: false,
                   trackCategorisedPages: true,
@@ -860,6 +872,149 @@ export const data = [
                 Enabled: true,
                 Transformations: [],
                 IsProcessorEnabled: true,
+              },
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    name: 'iterable',
+    description: 'Simple identify call with EUDC dataCenter',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: {
+                receivedAt: '2022-09-27T11:12:59.080Z',
+                sentAt: '2022-09-27T11:13:03.777Z',
+                messageId: '9ad41366-8060-4c9f-b181-f6bea67d5469',
+                originalTimestamp: '2022-09-27T11:13:03.777Z',
+                traits: { ruchira: 'donaldbaker@ellis.com', new_field2: 'GB' },
+                channel: 'sources',
+                rudderId: '3d51640c-ab09-42c1-b7b2-db6ab433b35e',
+                context: {
+                  sources: {
+                    version: 'feat.SupportForTrack',
+                    job_run_id: 'ccpdlajh6cfi19mr1vs0',
+                    task_run_id: 'ccpdlajh6cfi19mr1vsg',
+                    batch_id: '4917ad78-280b-40d2-a30d-119434152a0f',
+                    job_id: '2FLKJDcTdjPHQpq7pUjB34dQ5w6/Syncher',
+                    task_id: 'rows_100',
+                  },
+                  mappedToDestination: 'true',
+                  externalId: [
+                    { id: 'Tiffany', type: 'ITERABLE-test-ruchira', identifierType: 'itemId' },
+                  ],
+                },
+                timestamp: '2022-09-27T11:12:59.079Z',
+                type: 'identify',
+                userId: 'Tiffany',
+                recordId: '10',
+                request_ip: '10.1.86.248',
+              },
+              metadata: { jobId: 2, userId: 'u1' },
+              destination: {
+                Config: {
+                  apiKey: '583af2f8-15ba-49c0-8511-76383e7de07e',
+                  dataCenter: 'EUDC',
+                  hubID: '22066036',
+                },
+                Enabled: true,
+              },
+            },
+            {
+              message: {
+                receivedAt: '2022-09-27T11:12:59.080Z',
+                sentAt: '2022-09-27T11:13:03.777Z',
+                messageId: '9ad41366-8060-4c9f-b181-f6bea67d5469',
+                originalTimestamp: '2022-09-27T11:13:03.777Z',
+                traits: { ruchira: 'abc@ellis.com', new_field2: 'GB1' },
+                channel: 'sources',
+                rudderId: '3d51640c-ab09-42c1-b7b2-db6ab433b35e',
+                context: {
+                  sources: {
+                    version: 'feat.SupportForTrack',
+                    job_run_id: 'ccpdlajh6cfi19mr1vs0',
+                    task_run_id: 'ccpdlajh6cfi19mr1vsg',
+                    batch_id: '4917ad78-280b-40d2-a30d-119434152a0f',
+                    job_id: '2FLKJDcTdjPHQpq7pUjB34dQ5w6/Syncher',
+                    task_id: 'rows_100',
+                  },
+                  mappedToDestination: 'true',
+                  externalId: [
+                    { id: 'ABC', type: 'ITERABLE-test-ruchira', identifierType: 'itemId' },
+                  ],
+                },
+                timestamp: '2022-09-27T11:12:59.079Z',
+                type: 'identify',
+                userId: 'Tiffany',
+                recordId: '10',
+                request_ip: '10.1.86.248',
+              },
+              metadata: { jobId: 2, userId: 'u1' },
+              destination: {
+                Config: {
+                  apiKey: '583af2f8-15ba-49c0-8511-76383e7de07e',
+                  dataCenter: 'EUDC',
+                  hubID: '22066036',
+                },
+                Enabled: true,
+              },
+            },
+          ],
+          destType: 'iterable',
+        },
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: 'https://api.eu.iterable.com/api/catalogs/test-ruchira/items',
+                headers: {
+                  'Content-Type': 'application/json',
+                  api_key: '583af2f8-15ba-49c0-8511-76383e7de07e',
+                },
+                params: {},
+                body: {
+                  JSON: {
+                    documents: {
+                      Tiffany: { ruchira: 'donaldbaker@ellis.com', new_field2: 'GB' },
+                      ABC: { ruchira: 'abc@ellis.com', new_field2: 'GB1' },
+                    },
+                    replaceUploadedFieldsOnly: true,
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+              },
+              metadata: [
+                { jobId: 2, userId: 'u1' },
+                { jobId: 2, userId: 'u1' },
+              ],
+              batched: true,
+              statusCode: 200,
+              destination: {
+                Config: {
+                  apiKey: '583af2f8-15ba-49c0-8511-76383e7de07e',
+                  dataCenter: 'EUDC',
+                  hubID: '22066036',
+                },
+                Enabled: true,
               },
             },
           ],

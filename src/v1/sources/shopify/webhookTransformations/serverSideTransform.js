@@ -106,9 +106,6 @@ const processEvent = async (inputEvent, metricMetadata) => {
     case ECOM_TOPICS.CHECKOUTS_UPDATE:
       message = ecomPayloadBuilder(event, shopifyTopic);
       break;
-    case 'carts_update':
-      message = trackPayloadBuilder(event, shopifyTopic);
-      break;
     default:
       if (!SUPPORTED_TRACK_EVENTS.includes(shopifyTopic)) {
         stats.increment('invalid_shopify_event', {

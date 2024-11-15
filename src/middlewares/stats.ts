@@ -1,9 +1,9 @@
 import { Context, Next } from 'koa';
 
 export class StatsMiddleware {
-  private static instanceID: string = process.env.INSTANCE_ID || 'unknown';
+  private static instanceID: string = process.env.INSTANCE_ID || 'default';
 
-  private static workerID: string = process.env.WORKER_ID || 'unknown';
+  private static workerID: string = process.env.WORKER_ID || 'master';
 
   public static async executionStats(ctx: Context, next: Next) {
     const start = Date.now();

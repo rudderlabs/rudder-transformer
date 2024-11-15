@@ -101,19 +101,25 @@ const getResponse = (method, endpoint, headers, payload) => {
 
 const searchContact = async (event) => {
   const { message, destination, metadata } = event;
-  const messageType = getEventType(message);
-  let lookupField = null;
-  let lookupFieldValue = null;
-  if (messageType === EventType.RECORD) {
-    const { identifiers } = message;
-    [[lookupField, lookupFieldValue]] = Object.entries(identifiers);
-  } else {
-    lookupField = getLookUpField(message);
-    lookupFieldValue = getFieldValueFromMessage(message, lookupField);
-    if (!lookupFieldValue) {
-      lookupFieldValue = message?.context?.traits?.[lookupField];
+
+  const extractLookupFieldAndValue = () => {
+    const messageType = getEventType(message);
+    if (messageType === EventType.RECORD) {
+      const { identifiers } = message;
+      return Object.entries(identifiers ?? {})[0] ?? [null, null];
     }
+    const lookupField = getLookUpField(message);
+    const lookupFieldValue =
+      getFieldValueFromMessage(message, lookupField) || message?.context?.traits?.[lookupField];
+    return [lookupField, lookupFieldValue];
+  };
+
+  const [lookupField, lookupFieldValue] = extractLookupFieldAndValue();
+
+  if (!lookupField || !lookupFieldValue) {
+    throw new InstrumentationError('Missing lookup field or lookup field value for searchContact');
   }
+
   const data = JSON.stringify({
     query: {
       operator: 'AND',

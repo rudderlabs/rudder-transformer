@@ -1064,6 +1064,16 @@ export const data: RouterTestData[] = [
               metadata: [generateMetadata(6)],
               statusCode: 400,
             },
+            {
+              batched: false,
+              error: 'Missing lookup field or lookup field value for searchContact',
+              statTags: {
+                ...RouterInstrumentationErrorStatTags,
+              },
+              destination,
+              metadata: [generateMetadata(7)],
+              statusCode: 400,
+            },
           ],
         },
       },

@@ -63,7 +63,7 @@ Before starting to work on your first RudderStack integration, it is highly reco
 * When developing a **source integration**, you’ll be transforming your events data received from the source to this specification.
 * When developing a **destination integration**, you’ll be parsing the event data according to this event spec and transforming it to your destination’s data spec.
 
-Follow through the next sections to learn about developing a "source integration"
+Follow through the next sections to learn about developing a new **source integration**
 
 * [Overview of integration development journey](#overview-of-integration-development-journey)
 * [1. Setup rudder-transformer and understand the code structure](#1-setup-rudder-transformer-and-understand-the-code-structure)
@@ -395,6 +395,15 @@ Before diving into this tutorial, it is highly recommended to get a high-level o
 
 In this tutorial, we will specifically focus on developing a destination integration.
 
+Follow through the next sections to learn about developing a new **source integration**
+
+* [Overview of integration development journey](#overview-of-integration-development-journey)
+* [1. Setup rudder-transformer and understand the code structure](#1-setup-rudder-transformer-and-understand-the-code-structure)
+* [2. Write code for a destination integrationn](#2-write-code-for-a-destination-integration)
+* [3. Test your destination integration](#3-test-your-destination-integration)
+* [4. Write automated tests](#4-write-automated-tests)
+* [5. Add RudderStack UI configurations in integrations-config](#5-add-rudderstack-ui-configurations-in-integrations-config)
+* [6. Run the transformer locally](#6-run-the-transformer-locally)
 
 ### Overview of integration development journey
 
@@ -636,7 +645,7 @@ For a successful event processing in such case, you should receive HTTP 200 OK r
 You can customize the response to the HTTP request from the source beyond the standard event response format sent by RudderStack. You can customize the response body, content type header, status code, etc. Such customization is useful in some cases when you do not want to receive the standard response from RudderStack e.g. you want a custom response body and the HTTP response status code.
 
 
-### 4. Write automated tests for your destination integration {#4-write-automated-tests-for-your-destination-integration}
+### 4. Write automated tests for your destination integration
 
 Follow the test structure similar to other integrations in `test/integrations/destinations`. Here’s an overview of the test code structure which you will be creating
 

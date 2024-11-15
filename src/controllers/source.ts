@@ -28,6 +28,11 @@ export class SourceController {
       );
       ctx.body = resplist;
     } catch (err: any) {
+      logger.error(`[source transformation] ${err?.message || 'error in source transformation'}`, {
+        source,
+        version,
+        events,
+      });
       const metaTO = integrationService.getTags();
       const resp = SourcePostTransformationService.handleFailureEventsSource(err, metaTO);
       ctx.body = [resp];

@@ -7,6 +7,7 @@ const Message = require('../message');
 const { CommonUtils } = require('../../../util/common');
 const { excludedFieldList } = require('./config');
 const { extractCustomFields, generateUUID } = require('../../util');
+const { processTimestamp } = require('./utils');
 
 // ref : https://help.adjust.com/en/article/global-callbacks#general-recommended-placeholders
 // import mapping json using JSON.parse to preserve object key order
@@ -43,17 +44,9 @@ const processEvent = (inputEvent) => {
   message.properties = { ...message.properties, ...customProperties };
 
   if (formattedPayload.created_at) {
-    const rawTimestamp = formattedPayload.created_at;
-    try {
-      const createdAt = Number(rawTimestamp);
-      const ts = new Date(createdAt * 1000).toISOString();
-      message.setProperty('originalTimestamp', ts);
-      message.setProperty('timestamp', ts);
-    } catch (error) {
-      throw new TransformationError(
-        `[Adjust] Invalid timestamp "${rawTimestamp}": ${error.message}`,
-      );
-    }
+    const ts = processTimestamp(formattedPayload.created_at);
+    message.setProperty('originalTimestamp', ts);
+    message.setProperty('timestamp', ts);
   }
   // adjust does not has the concept of user but we need to set some random anonymousId in order to make the server accept the message
   message.anonymousId = generateUUID();

@@ -2,19 +2,26 @@
 
 Thanks for taking the time and for your help improving this project!
 
+**Table of content**
+
+* [Getting Help](#getting-help)
+* [Committing](#committing)
+* [Submitting a Pull Request](#submitting-a-pull-request)
+* [Contributor License Agreement](#contributor-license-agreement)
+* [Guide to build your first custom RudderStack source integration](#building-your-first-custom-rudderStack-source-integration)
+* [Guide to build your first custom RudderStack destination integration](#building-your-first-custom-rudderStack-destination-integration)
+
 ## Getting Help
 
 If you have a question about rudder or have encountered problems using it,
 start by asking a question on [Slack][slack].
 
-## Rudder Labs Contributor Agreement
+## Committing
 
-To contribute to this project, we need you to sign to [Contributor License Agreement (“CLA”)][cla] for the first commit you make. By agreeing to the [CLA][cla]
-we can add you to list of approved contributors and review the changes proposed by you.
-
-## Installing and Setting Up rudder-transformer
-
-See the project's [README](README.md) for further information about working in this repository.
+We prefer squash or rebase commits so that all changes from a branch are
+committed to main branch as a single commit. All pull requests are squashed when
+merged, but rebasing prior to merge gives you better control over the commit
+message.
 
 ## Submitting a Pull Request
 
@@ -35,13 +42,13 @@ See the project's [README](README.md) for further information about working in t
    - Include instructions on how to test your changes.
 3. Your branch may be merged once all configured checks pass, including:
    - A review from appropriate maintainers
+  
+Detailed instructions can be found in the later sections of this document to develop a new integration.
 
-## Committing
+## Contributor License Agreement
 
-We prefer squash or rebase commits so that all changes from a branch are
-committed to main branch as a single commit. All pull requests are squashed when
-merged, but rebasing prior to merge gives you better control over the commit
-message.
+To contribute to this project, we need you to sign to [Contributor License Agreement (“CLA”)][cla] for the first commit you make. By agreeing to the [CLA][cla]
+we can add you to list of approved contributors and review the changes proposed by you.
 
 ----
 

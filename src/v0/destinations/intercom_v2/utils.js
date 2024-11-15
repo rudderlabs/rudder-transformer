@@ -106,7 +106,7 @@ const searchContact = async (event) => {
     const messageType = getEventType(message);
     if (messageType === EventType.RECORD) {
       const { identifiers } = message;
-      return Object.entries(identifiers ?? {})[0] ?? [null, null];
+      return Object.entries(identifiers || {})[0] || [null, null];
     }
     const lookupField = getLookUpField(message);
     const lookupFieldValue =

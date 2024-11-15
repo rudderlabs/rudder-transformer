@@ -6,6 +6,12 @@ const ApiVersions = {
   v2: '2.10',
 };
 
+const RecordAction = {
+  INSERT: 'insert',
+  UPDATE: 'update',
+  DELETE: 'delete',
+};
+
 const ConfigCategory = {
   IDENTIFY: {
     name: 'IntercomIdentifyConfig',
@@ -25,4 +31,5 @@ module.exports = {
   ConfigCategory,
   MappingConfig,
   ApiVersions,
+  RecordAction,
 };

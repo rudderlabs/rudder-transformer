@@ -28,6 +28,8 @@ async function shutdownWorkers() {
 }
 
 function start(port, app, metricsApp) {
+  console.log(numWorkers);
+
   if (cluster.isMaster) {
     logger.info(`Master (pid: ${process.pid}) has started`);
 
@@ -44,7 +46,9 @@ function start(port, app, metricsApp) {
 
     // Fork workers.
     for (let i = 0; i < numWorkers; i += 1) {
-      cluster.fork();
+      cluster.fork({
+        WORKER_ID: `worker-${i + 1}`,
+      });
     }
 
     cluster.on('online', (worker) => {

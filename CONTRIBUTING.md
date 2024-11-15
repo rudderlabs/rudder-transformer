@@ -63,6 +63,15 @@ Before starting to work on your first RudderStack integration, it is highly reco
 * When developing a **source integration**, you’ll be transforming your events data received from the source to this specification.
 * When developing a **destination integration**, you’ll be parsing the event data according to this event spec and transforming it to your destination’s data spec.
 
+Follow through the next sections to learn about developing a "source integration"
+
+* [Overview of integration development journey](#overview-of-integration-development-journey)
+* [1. Setup rudder-transformer and understand the code structure](#1-setup-rudder-transformer-and-understand-the-code-structure)
+* [2. Write code for a v0 source integration](#2-write-code-for-a-v0-source-integration)
+* [3. Test your v0 source integration](#3-test-your-v0-source-integration)
+* [4. Write automated tests](#4-write-automated-tests)
+* [5. Add RudderStack UI configurations in integrations-config](#5-add-rudderstack-ui-configurations-in-integrations-config)
+* [6. Run the transformer locally](#6-run-the-transformer-locally)
 
 ### Overview of integration development journey
 
@@ -100,7 +109,7 @@ Understand the code structure
 * `test/integrations/destinations` - Integration tests for destination integrations
 
 
-### 2. Write code for a v0 source integration {#2-write-code-for-a-v0-source-integration}
+### 2. Write code for a v0 source integration
 
 Here, we will explain the code for a v0 source integration but most of the learning will apply to other integrations as well (destination and v1).
 

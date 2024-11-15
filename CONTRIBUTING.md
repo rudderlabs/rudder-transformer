@@ -467,37 +467,10 @@ In the [rudder-transformer](https://github.com/rudderlabs/rudder-transformer/) s
 
 **To develop an integration, how much do I need to understand about RudderStack Workflow Engine?**
 
-Not more than what can not be covered in 10 mins. The RudderStack Workflow Engine will convert the `yaml` file to `javascript` for transformation. The key question is - how to write this `yaml` file? And the answer lies in the `keys` you can use in the `yaml`. Get familiar following keys, and you should be able to write your first integration
+Not more than what can not be covered in 10 mins. The RudderStack Workflow Engine converts a `yaml` file to `javascript` for the transformation logic.
+A sample of such `yaml` file is shown below, which can be intimidating at first but getting familiar with only 10-15 keys will be enough for you to write your first integration.
 
-
-
-1. `bindings` - To import external javascript functions and data
-    1. `path` - The file path where we want to import from e.g. `./config` (can omit the extension `.js`)
-    2. `name` - The name by which we want import e.g. `Config` (can be accessed as `$Config` or `$Config.something`)
-    3. `exportAll` - If `true`, imports everything from the file. Default: `false` i.e. imports only the object matching the `name`
-2. **`steps` - To express the destination transformation logic as a series of steps. If you have used GitHub action, this will sound familiar.**
-    4. `name` (mandatory) - A name to track outputs
-    5. `description` - Mention what does this step do
-    6. `functionName` - The function we want to execute in this step. This function must be defined in the bindings and must have following definition \
-        ```javascript
-            (input: any, bindings: Record&lt;string, any>) => {
-            error?: any,
-            output?: any
-          }
-        ```
-
-    7. `condition` - The step will get executed only when this condition is satisfied
-    8. `inputTemplate` - To customize the input. Passed while executing the step. By default, all steps receive the same input as the workflow input, but when we want to modify the input before executing the step, we can use this feature.
-    9. `contextTemplate` - By default, all steps receive the current context, but we can use this feature when we want to modify the context before executing the step. This is useful when using external workflows, workflow steps, or template paths.
-    10. `loopOverInput` - We can use this feature when the input is an array, and we want to execute the step logic for each element independently. This is mainly used for batch processing.
-    11. `steps` - You may define a series of steps inside a step. We will call such a step a `WorkflowStep` as opposed to `SimpleStep`.
-    12. `workflowStepPath` - We can import the steps from another `yaml` file
-    13. `batches` - To batch the inputs using filter and by length
-        1. `key` - The input name e.g. “heroes”
-        2. `filter` - The filter logic e.g. `.type === “hero”`
-        3. `size` - The size of the batch
-
-A simple example of `procWorkflow.yaml` looks like this:
+Just skim through the example `procWorkflow.yaml` below and then we will introduce what each key-value pair does
 
 ```yaml
 bindings:
@@ -602,6 +575,33 @@ steps:
          "files": {}
        })
 ```
+
+
+1. `bindings` - To import external javascript functions and data
+    1. `path` - The file path where we want to import from e.g. `./config` (can omit the extension `.js`)
+    2. `name` - The name by which we want import e.g. `Config` (can be accessed as `$Config` or `$Config.something`)
+    3. `exportAll` - If `true`, imports everything from the file. Default: `false` i.e. imports only the object matching the `name`
+2. **`steps` - To express the destination transformation logic as a series of steps. If you have used GitHub action, this will sound familiar.**
+    4. `name` (mandatory) - A name to track outputs
+    5. `description` - Mention what does this step do
+    6. `functionName` - The function we want to execute in this step. This function must be defined in the bindings and must have following definition \
+        ```javascript
+            (input: any, bindings: Record&lt;string, any>) => {
+            error?: any,
+            output?: any
+          }
+        ```
+
+    7. `condition` - The step will get executed only when this condition is satisfied
+    8. `inputTemplate` - To customize the input. Passed while executing the step. By default, all steps receive the same input as the workflow input, but when we want to modify the input before executing the step, we can use this feature.
+    9. `contextTemplate` - By default, all steps receive the current context, but we can use this feature when we want to modify the context before executing the step. This is useful when using external workflows, workflow steps, or template paths.
+    10. `loopOverInput` - We can use this feature when the input is an array, and we want to execute the step logic for each element independently. This is mainly used for batch processing.
+    11. `steps` - You may define a series of steps inside a step. We will call such a step a `WorkflowStep` as opposed to `SimpleStep`.
+    12. `workflowStepPath` - We can import the steps from another `yaml` file
+    13. `batches` - To batch the inputs using filter and by length
+        1. `key` - The input name e.g. “heroes”
+        2. `filter` - The filter logic e.g. `.type === “hero”`
+        3. `size` - The size of the batch
 
 ### 3. Test your destination integration
 

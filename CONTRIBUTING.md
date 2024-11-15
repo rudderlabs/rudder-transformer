@@ -468,7 +468,7 @@ In the [rudder-transformer](https://github.com/rudderlabs/rudder-transformer/) s
 **To develop an integration, how much do I need to understand about RudderStack Workflow Engine?**
 
 Not more than what can not be covered in 10 mins. The RudderStack Workflow Engine converts a `yaml` file to `javascript` for the transformation logic.
-A sample of such `yaml` file is shown below, which can be intimidating at first but getting familiar with only 10-15 keys will be enough for you to write your first integration.
+A sample of such `yaml` file is shown below, which can be intimidating at first but getting familiar with few key-value pairs under the two top-level keys (`bindings` and `steps`) will be enough for you to write your first integration. They might also look familiar to you if you have used GitHub Actions.
 
 Just skim through the example `procWorkflow.yaml` below and then we will introduce what each key-value pair does
 

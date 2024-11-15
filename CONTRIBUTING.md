@@ -397,15 +397,15 @@ In this tutorial, we will specifically focus on developing a destination integra
 
 Follow through the next sections to learn about developing a new **source integration**
 
-* [Overview of integration development journey](#overview-of-integration-development-journey)
-* [1. Setup rudder-transformer and understand the code structure](#1-setup-rudder-transformer-and-understand-the-code-structure)
-* [2. Write code for a destination integrationn](#2-write-code-for-a-destination-integration)
+* [Overview of integration development journey](#overview-of-integration-development-journey-for-a-destination-integration)
+* [1. Setup rudder-transformer and understand the code structure](#1-setup-rudder-transformer-and-understand-the-code-structure-for-a-destination-integration)
+* [2. Write code for your destination integrationn](#2-write-code-for-your-destination-integration)
 * [3. Test your destination integration](#3-test-your-destination-integration)
-* [4. Write automated tests](#4-write-automated-tests)
-* [5. Add RudderStack UI configurations in integrations-config](#5-add-rudderstack-ui-configurations-in-integrations-config)
-* [6. Run the transformer locally](#6-run-the-transformer-locally)
+* [4. Write automated tests](#4-write-automated-tests-for-your-destination-integration)
+* [5. Add RudderStack UI configurations in integrations-config](#5-add-rudderstack-ui-configurations-in-integrations-config-for-your-destination-integration)
+* [6. Run the transformer locally](#6-run-the-transformer-locally-for-your-destination-integration)
 
-### Overview of integration development journey
+### Overview of integration development journey for a destination integration
 
 
 1. Add integration code to [rudder-transformer](https://github.com/rudderlabs/rudder-transformer) `src/cdk/v2/destinations` folder. This is the codebase that controls how raw event data from [RudderStack Event Data Specification](https://www.rudderstack.com/docs/event-spec/standard-events/) to destination specific data format
@@ -417,7 +417,7 @@ This enables your integration users to setup/configure the integration via Rudde
 RudderStack team will be available to help you by giving feedback and answering questions either directly on your GitHub PR or the [RudderStack Slack community](https://www.rudderstack.com/join-rudderstack-slack-community/). Before diving into code, writing an integration plan document helps a lot, here’s an [example document](https://rudderstacks.notion.site/Integration-planning-document-example-Slack-Source-integration-46863d6041ec48258f9c5433eab93b28?pvs=25).
 
 
-### 1. Setup rudder-transformer and understand the code structure
+### 1. Setup rudder-transformer and understand the code structure for a destination integration
 
 Setup [rudder-transformer](https://github.com/rudderlabs/rudder-transformer) on your local machine
 
@@ -438,7 +438,7 @@ Understand the code structure
 * `test/integrations/destinations` - Integration tests for destination integrations
 
 
-### 2. Write code for a destination integration
+### 2. Write code for your destination integration
 
 Here, we will explain the code for a destination integration for single event processing as well as batch events processing.
 
@@ -1138,7 +1138,7 @@ You can run tests only for the specific integration, for example
 These tests will automatically be run on each commit, making sure that any new development does not break the existing integrations.
 
 
-### 5. Add RudderStack UI configurations in integrations-config
+### 5. Add RudderStack UI configurations in integrations-config for your destination integration
 
 Add configuration for your destination integration in [rudder-integrations-config](https://github.com/rudderlabs/rudder-integrations-config) repo under `src.configurations/destinations`. At bare minimum, a db-config file is needed, here’s [an example](https://github.com/rudderlabs/rudder-integrations-config/blob/develop/src/configurations/destinations/fullstory/db-config.json) of the same for FullStory destination. Duplicate it in the directory for your integration config folder and change the relevant values for your integration.
 
@@ -1149,7 +1149,7 @@ Alternatively, the easier path to do this is by running a script which will gene
 Run this command from the root directory of the rudder-integrations-config repo. The PR can then be raised after checking if everything looks good.
 
 
-### 6. Run the transformer locally
+### 6. Run the transformer locally for your destination integration
 
 ```bash
 

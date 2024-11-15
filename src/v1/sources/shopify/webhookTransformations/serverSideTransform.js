@@ -8,9 +8,7 @@ const {
   // createPropertiesForEcomEvent,
   extractEmailFromPayload,
   getAnonymousIdAndSessionId,
-  checkAndUpdateCartItems,
   // getHashLineItems,
-  getDataFromRedis,
 } = require('../../../../v0/sources/shopify/util');
 // const logger = require('../../../logger');
 const { removeUndefinedAndNullValues, isDefinedAndNotNull } = require('../../../../v0/util');
@@ -25,7 +23,6 @@ const {
   RUDDER_ECOM_MAP,
   SUPPORTED_TRACK_EVENTS,
   SHOPIFY_TRACK_MAP,
-  useRedisDatabase,
   lineItemsMappingJSON,
 } = require('../../../../v0/sources/shopify/config');
 const {
@@ -96,7 +93,6 @@ const trackPayloadBuilder = (event, shopifyTopic) => {
 const processEvent = async (inputEvent, metricMetadata) => {
   let message;
   const event = lodash.cloneDeep(inputEvent);
-  let redisData;
   const shopifyTopic = getShopifyTopic(event);
   delete event.query_parameters;
   switch (shopifyTopic) {
@@ -111,18 +107,6 @@ const processEvent = async (inputEvent, metricMetadata) => {
       message = ecomPayloadBuilder(event, shopifyTopic);
       break;
     case 'carts_update':
-      if (useRedisDatabase) {
-        redisData = await getDataFromRedis(event.id || event.token, metricMetadata, 'Cart Update');
-        const isValidEvent = await checkAndUpdateCartItems(
-          inputEvent,
-          redisData,
-          metricMetadata,
-          shopifyTopic,
-        );
-        if (!isValidEvent) {
-          return NO_OPERATION_SUCCESS;
-        }
-      }
       message = trackPayloadBuilder(event, shopifyTopic);
       break;
     default:
@@ -151,7 +135,7 @@ const processEvent = async (inputEvent, metricMetadata) => {
     const { anonymousId } = await getAnonymousIdAndSessionId(
       message,
       { shopifyTopic, ...metricMetadata },
-      redisData,
+      null,
     );
     if (isDefinedAndNotNull(anonymousId)) {
       message.setProperty('anonymousId', anonymousId);

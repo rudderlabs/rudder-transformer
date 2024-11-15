@@ -1,8 +1,10 @@
-import { skip } from 'node:test';
 import { pixelCheckoutEventsTestScenarios } from './pixelTestScenarios/CheckoutEventsTests';
 import { pixelCheckoutStepsScenarios } from './pixelTestScenarios/CheckoutStepsTests';
 import { pixelEventsTestScenarios } from './pixelTestScenarios/ProductEventsTests';
-import { v1ServerSideEventsScenarios } from './v1ServerSideEventsTests';
+import { checkoutEventsTestScenarios } from './webhookTestScenarios/CheckoutEventsTests';
+import { genericTrackTestScenarios } from './webhookTestScenarios/GenericTrackTests';
+import { identityTestScenarios } from './webhookTestScenarios/IdentifyTests';
+import { mockFns } from './mocks';
 
 const serverSideEventsScenarios = [
   {
@@ -1422,6 +1424,7 @@ const serverSideEventsScenarios = [
                     verifiedEmail: true,
                   },
                   type: 'track',
+                  anonymousId: '5d3e2cb6-4011-5c9c-b7ee-11bc1e905097',
                   userId: '115310627314723950',
                 },
               ],
@@ -1430,13 +1433,16 @@ const serverSideEventsScenarios = [
         ],
       },
     },
+    mockFns,
   },
 ];
 
 export const data = [
+  ...serverSideEventsScenarios,
+  ...checkoutEventsTestScenarios,
+  ...genericTrackTestScenarios,
+  ...identityTestScenarios,
   ...pixelCheckoutEventsTestScenarios,
   ...pixelCheckoutStepsScenarios,
   ...pixelEventsTestScenarios,
-  ...serverSideEventsScenarios,
-  ...v1ServerSideEventsScenarios,
 ];

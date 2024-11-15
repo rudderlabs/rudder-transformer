@@ -8,10 +8,9 @@ const {
   checkoutStepEventBuilder,
   searchEventBuilder,
 } = require('./pixelUtils');
-const { EventType } = require('../../../constants');
-const Message = require('../../../v0/sources/message');
+const Message = require('../../../../v0/sources/message');
 jest.mock('ioredis', () => require('../../../../test/__mocks__/redis'));
-jest.mock('../../../v0/sources/message');
+jest.mock('../../../../v0/sources/message');
 
 describe('utilV2.js', () => {
   beforeEach(() => {

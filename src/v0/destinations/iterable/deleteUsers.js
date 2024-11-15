@@ -6,13 +6,14 @@ const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const { executeCommonValidations } = require('../../util/regulation-api');
 const tags = require('../../util/tags');
 const { JSON_MIME_TYPE } = require('../../util/constant');
+const { constructEndpoint } = require('./config');
 
-// Ref-> https://developers.intercom.com/intercom-api-reference/v1.3/reference/permanently-delete-a-user
+// Ref-> https://support.iterable.com/hc/en-us/articles/360032290032-Deleting-Users
 const userDeletionHandler = async (userAttributes, config) => {
   if (!config) {
     throw new ConfigurationError('Config for deletion not present');
   }
-  const { apiKey } = config;
+  const { apiKey, dataCenter } = config;
   if (!apiKey) {
     throw new ConfigurationError('api key for deletion not present');
   }
@@ -26,7 +27,8 @@ const userDeletionHandler = async (userAttributes, config) => {
   const failedUserDeletions = [];
   await Promise.all(
     validUserIds.map(async (uId) => {
-      const url = `https://api.iterable.com/api/users/byUserId/${uId}`;
+      const endpointCategory = { endpoint: `users/byUserId/${uId}` };
+      const url = constructEndpoint(dataCenter, endpointCategory);
       const requestOptions = {
         headers: {
           'Content-Type': JSON_MIME_TYPE,

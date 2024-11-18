@@ -11,6 +11,11 @@ export class SourceController {
     const requestMetadata = MiscService.getRequestMetadata(ctx);
     const events = ctx.request.body as object[];
     const { version, source }: { version: string; source: string } = ctx.params;
+    const enrichedMetadata = {
+      ...requestMetadata,
+      source,
+      version,
+    };
     const integrationService = ServiceSelector.getNativeSourceService();
 
     try {
@@ -28,6 +33,7 @@ export class SourceController {
       );
       ctx.body = resplist;
     } catch (err: any) {
+      logger.error(err?.message || 'error in source transformation', enrichedMetadata);
       const metaTO = integrationService.getTags();
       const resp = SourcePostTransformationService.handleFailureEventsSource(err, metaTO);
       ctx.body = [resp];

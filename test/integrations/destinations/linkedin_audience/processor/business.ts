@@ -93,7 +93,7 @@ export const businessTestData: ProcessorTestData[] = [
         body: [
           {
             error:
-              'The "string" argument must be of type string. Received type number (12345): Workflow: procWorkflow, Step: hashIdentifiers, ChildStep: undefined, OriginalError: The "string" argument must be of type string. Received type number (12345)',
+              'The "string" argument must be of type string. Received type number (12345): Workflow: procWorkflow, Step: prepareUserTypeBasePayload, ChildStep: prepareUserIds, OriginalError: The "string" argument must be of type string. Received type number (12345)',
             metadata: generateMetadata(1),
             statTags: {
               destType: 'LINKEDIN_AUDIENCE',

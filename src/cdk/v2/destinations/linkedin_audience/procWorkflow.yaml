@@ -17,7 +17,7 @@ steps:
       $.assertConfig(secret.accessToken, "Access Token is not present. Aborting");
       $.assertConfig(config.audienceType, "audienceType is not present. Aborting");
       $.assert(messageType, "Message Type is not present. Aborting message.");
-      $.assert(messageType.toLowerCase() === $.SUPPORTED_EVENT_TYPE, "Event type " + .message.type.toLowerCase() + " is not supported. Aborting message.");
+      $.assert(messageType.toLowerCase() === $.SUPPORTED_EVENT_TYPE, `Event type ${.message.type.toLowerCase()} is not supported. Aborting message.`);
       $.assert(.message.fields, "`fields` is not present. Aborting message.");
       $.assert(.message.identifiers, "`identifiers` is not present inside properties. Aborting message.");
       $.assert($.containsAll([.message.action], $.ACTION_TYPES), "Unsupported action type. Aborting message.")
@@ -26,45 +26,37 @@ steps:
     description: This step fetches the configs from different places and combines them.
     template: |
       const config = .connection.config.destination;
-      const secret = .metadata.secret;
-      const audienceType = config.audienceType;
-      const audienceId = config.audienceId;
-      const accessToken = secret.accessToken;
       {
-        audienceType,
-        audienceId,
-        accessToken,
+        audienceType: config.audienceType,
+        audienceId: config.audienceId,
+        accessToken: .metadata.secret.accessToken,
         isHashRequired: config.isHashRequired,
       }
 
-  - name: hashIdentifiers
-    description: Hash identifiers
-    condition: $.outputs.getConfigs.isHashRequired === true && $.outputs.getConfigs.audienceType === 'user'
-    template: |
-      const hashedIdentifiers = $.hashIdentifiers(.message.identifiers);
-      hashedIdentifiers;
-
-  - name: prepareUserIds
-    description: Prepare user ids for user audience type
-    condition: $.outputs.getConfigs.audienceType === 'user'
-    template: |
-      const userIds = $.outputs.getConfigs.isHashRequired ? $.prepareUserIds($.outputs.hashIdentifiers) : $.prepareUserIds(.message.identifiers);
-      userIds;
-
   - name: prepareUserTypeBasePayload
-    description: Prepare base payload for user audiences
     condition: $.outputs.getConfigs.audienceType === 'user'
-    template: |
-      const payload = {
-        'elements': [
-          {
-            'action': $.generateActionType(.message.action),
-            'userIds': $.outputs.prepareUserIds,
-            ....message.fields
+    steps:
+      - name: prepareUserIds
+        description: Prepare user ids for user audience type
+        template: |
+          const identifiers = $.outputs.getConfigs.isHashRequired === true ? 
+            $.hashIdentifiers(.message.identifiers) :
+            .message.identifiers;
+          $.prepareUserIds(identifiers)
+
+      - name: preparePayload
+        description: Prepare base payload for user audiences
+        template: |
+          const payload = {
+            'elements': [
+              {
+                'action': $.generateActionType(.message.action),
+                'userIds': $.outputs.prepareUserTypeBasePayload.prepareUserIds,
+                ....message.fields
+              }
+            ]
           }
-        ]
-      }
-      payload;
+          payload;
 
   - name: prepareCompanyTypeBasePayload
     description: Prepare base payload for company audiences

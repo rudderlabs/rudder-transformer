@@ -1,3 +1,4 @@
+const { v5 } = require('uuid');
 const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 
@@ -120,6 +121,12 @@ const identifyResponseBuilder = (message, { Config }) => {
   return arrayPayload;
 };
 
+const transformSessionId = (rawSessionId) => {
+  const NAMESPACE = v5.DNS;
+  const uuidV5 = v5(rawSessionId, NAMESPACE);
+  return uuidV5;
+};
+
 const trackResponseBuilder = async (message, { Config }) => {
   let name = message.event;
   if (!name) {
@@ -128,6 +135,9 @@ const trackResponseBuilder = async (message, { Config }) => {
 
   name = name.toLowerCase();
   const payload = constructPayload(message, trackMapping);
+  if (isDefinedAndNotNullAndNotEmpty(payload.session_id)) {
+    payload.session_id = transformSessionId(payload.session_id);
+  }
   let properties = {};
   properties = extractCustomFields(message, properties, ['properties'], AIRSHIP_TRACK_EXCLUSION);
   if (!isEmptyObject(properties)) {

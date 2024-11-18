@@ -4,27 +4,18 @@ import { MiscService } from '../services/misc';
 import { SourcePostTransformationService } from '../services/source/postTransformation';
 import { ControllerUtility } from './util';
 import logger from '../logger';
-import { FixMe } from '../util/types';
 
 export class SourceController {
-  private static enrichMetadata(
-    metadata: { namespace: string; cluster: string; features: FixMe },
-    source: string,
-    version: string,
-  ) {
-    return {
-      ...metadata,
-      source,
-      version,
-    };
-  }
-
   public static async sourceTransform(ctx: Context) {
     logger.debug('Native(Source-Transform):: Request to transformer::', ctx.request.body);
     const requestMetadata = MiscService.getRequestMetadata(ctx);
     const events = ctx.request.body as object[];
     const { version, source }: { version: string; source: string } = ctx.params;
-    const enrichedMetadata = this.enrichMetadata(requestMetadata, source, version);
+    const enrichedMetadata = {
+      ...requestMetadata,
+      source,
+      version,
+    };
     const integrationService = ServiceSelector.getNativeSourceService();
 
     try {

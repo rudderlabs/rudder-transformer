@@ -2296,7 +2296,7 @@ export const data = [
   },
   {
     name: 'airship',
-    description: 'Test 22',
+    description: 'Test 22 : session id gets converted to v5 uuid format',
     feature: 'processor',
     module: 'destination',
     version: 'v0',

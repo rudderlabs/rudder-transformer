@@ -1,4 +1,3 @@
-const { v5 } = require('uuid');
 const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 
@@ -25,6 +24,7 @@ const {
   simpleProcessRouterDest,
 } = require('../../util');
 const { JSON_MIME_TYPE } = require('../../util/constant');
+const { transformSessionId } = require('./utils');
 
 const DEFAULT_ACCEPT_HEADER = 'application/vnd.urbanairship+json; version=3';
 
@@ -119,12 +119,6 @@ const identifyResponseBuilder = (message, { Config }) => {
   }
 
   return arrayPayload;
-};
-
-const transformSessionId = (rawSessionId) => {
-  const NAMESPACE = v5.DNS;
-  const uuidV5 = v5(rawSessionId, NAMESPACE);
-  return uuidV5;
 };
 
 const trackResponseBuilder = async (message, { Config }) => {

@@ -31,7 +31,6 @@ export class SourceController {
       logger.error(`[source transformation] ${err?.message || 'error in source transformation'}`, {
         source,
         version,
-        events,
       });
       const metaTO = integrationService.getTags();
       const resp = SourcePostTransformationService.handleFailureEventsSource(err, metaTO);

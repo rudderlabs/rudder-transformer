@@ -161,7 +161,7 @@ export const data = [
         status: 200,
         body: [
           {
-            error: '[Adjust] Invalid timestamp "test": Invalid time value',
+            error: '[Adjust] Invalid timestamp "test": cannot be converted to a valid number.',
             statTags: {
               destinationId: 'Non determinable',
               errorCategory: 'transformation',

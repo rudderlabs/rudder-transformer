@@ -7,7 +7,7 @@ const Message = require('../message');
 const { CommonUtils } = require('../../../util/common');
 const { excludedFieldList } = require('./config');
 const { extractCustomFields, generateUUID } = require('../../util');
-const { processTimestamp } = require('./utils');
+const { convertToISODate } = require('./utils');
 
 // ref : https://help.adjust.com/en/article/global-callbacks#general-recommended-placeholders
 // import mapping json using JSON.parse to preserve object key order
@@ -44,7 +44,7 @@ const processEvent = (inputEvent) => {
   message.properties = { ...message.properties, ...customProperties };
 
   if (formattedPayload.created_at) {
-    const ts = processTimestamp(formattedPayload.created_at);
+    const ts = convertToISODate(formattedPayload.created_at);
     message.setProperty('originalTimestamp', ts);
     message.setProperty('timestamp', ts);
   }

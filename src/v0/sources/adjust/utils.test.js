@@ -29,4 +29,9 @@ describe('convertToISODate', () => {
     expect(() => convertToISODate(null)).toThrow(TransformationError);
     expect(() => convertToISODate(undefined)).toThrow(TransformationError);
   });
+
+  it('should throw error for timestamp that results in invalid date when multiplied', () => {
+    const hugeTimestamp = 999999999999999; // This will become invalid when multiplied by 1000
+    expect(() => convertToISODate(hugeTimestamp)).toThrow(TransformationError);
+  });
 });

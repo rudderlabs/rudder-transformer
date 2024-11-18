@@ -3,24 +3,20 @@ const { TransformationError } = require('@rudderstack/integrations-lib');
 const convertToISODate = (rawTimestamp) => {
   if (typeof rawTimestamp !== 'number' && typeof rawTimestamp !== 'string') {
     throw new TransformationError(
-      `[Adjust] Invalid timestamp "${rawTimestamp}": must be a number or numeric string.`,
+      `Invalid timestamp type: expected number or string, received ${typeof rawTimestamp}`,
     );
   }
 
   const createdAt = Number(rawTimestamp);
 
   if (Number.isNaN(createdAt)) {
-    throw new TransformationError(
-      `[Adjust] Invalid timestamp "${rawTimestamp}": cannot be converted to a valid number.`,
-    );
+    throw new TransformationError(`Failed to parse timestamp: "${rawTimestamp}"`);
   }
 
   const date = new Date(createdAt * 1000);
 
   if (Number.isNaN(date.getTime())) {
-    throw new TransformationError(
-      `[Adjust] Invalid timestamp "${rawTimestamp}": results in an invalid date.`,
-    );
+    throw new TransformationError(`Failed to create valid date for timestamp "${rawTimestamp}"`);
   }
 
   return date.toISOString();

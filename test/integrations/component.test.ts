@@ -41,6 +41,7 @@ command
   .option('-i, --index <number>', 'Enter Test index')
   .option('-g, --generate <string>', 'Enter "true" If you want to generate network file')
   .option('-id, --id <string>', 'Enter unique "Id" of the test case you want to run')
+  .option('-s, --source <string>', 'Enter Source Name')
   .parse();
 
 const opts = command.opts();

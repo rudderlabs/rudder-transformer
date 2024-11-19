@@ -1,6 +1,7 @@
 import {
   generateMetadata,
   generateTrackPayload,
+  overrideDestination,
   transformResultBuilder,
 } from './../../../testUtils';
 import { Destination } from '../../../../../src/types';
@@ -19,6 +20,7 @@ const destination: Destination = {
   Transformations: [],
   Config: {
     apiKey: 'testApiKey',
+    dataCenter: 'USDC',
     preferUserId: false,
     trackAllPages: true,
     trackNamedPages: false,
@@ -126,6 +128,7 @@ const sentAt = '2020-08-28T16:26:16.473Z';
 const originalTimestamp = '2020-08-28T16:26:06.468Z';
 
 const endpoint = 'https://api.iterable.com/api/events/track';
+const endpointEUDC = 'https://api.eu.iterable.com/api/events/track';
 const updateCartEndpoint = 'https://api.iterable.com/api/commerce/updateCart';
 const trackPurchaseEndpoint = 'https://api.iterable.com/api/commerce/trackPurchase';
 
@@ -704,6 +707,58 @@ export const trackTestData: ProcessorTestData[] = [
               JSON: {
                 userId,
                 createdAt: 1598631966468,
+                dataFields: properties,
+              },
+            }),
+            statusCode: 200,
+            metadata: generateMetadata(1),
+          },
+        ],
+      },
+    },
+  },
+  {
+    id: 'iterable-track-test-9',
+    name: 'iterable',
+    description: 'Track call to add event with user with EUDC dataCenter',
+    scenario: 'Business',
+    successCriteria:
+      'Response should contain status code 200 and it should contain event properties, event name and endpointEUDC',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: overrideDestination(destination, { dataCenter: 'EUDC' }),
+            message: {
+              anonymousId,
+              event: 'Email Opened',
+              type: 'track',
+              context: {},
+              properties,
+              sentAt,
+              originalTimestamp,
+            },
+            metadata: generateMetadata(1),
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: transformResultBuilder({
+              userId: '',
+              headers,
+              endpoint: endpointEUDC,
+              JSON: {
+                userId: 'anonId',
+                createdAt: 1598631966468,
+                eventName: 'Email Opened',
                 dataFields: properties,
               },
             }),

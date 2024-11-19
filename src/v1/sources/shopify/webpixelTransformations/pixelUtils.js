@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
-const Message = require('../../../v0/sources/message');
-const { EventType } = require('../../../constants');
+const Message = require('../../../../v0/sources/message');
+const { EventType } = require('../../../../constants');
 const {
   INTEGERATION,
   PIXEL_EVENT_MAPPING,
@@ -10,7 +10,7 @@ const {
   productViewedEventMappingJSON,
   productToCartEventMappingJSON,
   checkoutStartedCompletedEventMappingJSON,
-} = require('./config');
+} = require('../config');
 
 function getNestedValue(object, path) {
   const keys = path.split('.');

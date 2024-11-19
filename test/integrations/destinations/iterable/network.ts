@@ -105,5 +105,22 @@ const deleteNwData = [
       status: 200,
     },
   },
+  {
+    httpReq: {
+      method: 'delete',
+      url: 'https://api.eu.iterable.com/api/users/byUserId/rudder7',
+      headers: {
+        api_key: 'dummyApiKey',
+      },
+    },
+    httpRes: {
+      data: {
+        msg: 'All users associated with rudder7 were successfully deleted',
+        code: 'Success',
+        params: null,
+      },
+      status: 200,
+    },
+  },
 ];
 export const networkCallsData = [...deleteNwData];

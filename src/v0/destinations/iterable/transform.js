@@ -14,6 +14,7 @@ const {
   filterEventsAndPrepareBatchRequests,
   registerDeviceTokenEventPayloadBuilder,
   registerBrowserTokenEventPayloadBuilder,
+  getCategoryWithEndpoint,
 } = require('./util');
 const {
   constructPayload,
@@ -116,12 +117,11 @@ const responseBuilderForRegisterDeviceOrBrowserTokenEvents = (message, destinati
 
 /**
  * Function to find category value
- * @param {*} messageType
  * @param {*} message
  * @returns
  */
-const getCategory = (messageType, message) => {
-  const eventType = messageType.toLowerCase();
+const getCategory = (message, dataCenter) => {
+  const eventType = message.type.toLowerCase();
 
   switch (eventType) {
     case EventType.IDENTIFY:
@@ -129,17 +129,17 @@ const getCategory = (messageType, message) => {
         get(message, MappedToDestinationKey) &&
         getDestinationExternalIDInfoForRetl(message, 'ITERABLE').objectType !== 'users'
       ) {
-        return ConfigCategory.CATALOG;
+        return getCategoryWithEndpoint(ConfigCategory.CATALOG, dataCenter);
       }
-      return ConfigCategory.IDENTIFY;
+      return getCategoryWithEndpoint(ConfigCategory.IDENTIFY, dataCenter);
     case EventType.PAGE:
-      return ConfigCategory.PAGE;
+      return getCategoryWithEndpoint(ConfigCategory.PAGE, dataCenter);
     case EventType.SCREEN:
-      return ConfigCategory.SCREEN;
+      return getCategoryWithEndpoint(ConfigCategory.SCREEN, dataCenter);
     case EventType.TRACK:
-      return getCategoryUsingEventName(message);
+      return getCategoryUsingEventName(message, dataCenter);
     case EventType.ALIAS:
-      return ConfigCategory.ALIAS;
+      return getCategoryWithEndpoint(ConfigCategory.ALIAS, dataCenter);
     default:
       throw new InstrumentationError(`Message type ${eventType} not supported`);
   }
@@ -150,8 +150,7 @@ const process = (event) => {
   if (!message.type) {
     throw new InstrumentationError('Event type is required');
   }
-  const messageType = message.type.toLowerCase();
-  const category = getCategory(messageType, message);
+  const category = getCategory(message, destination.Config.dataCenter);
   const response = responseBuilder(message, category, destination);
 
   if (hasMultipleResponses(message, category, destination.Config)) {

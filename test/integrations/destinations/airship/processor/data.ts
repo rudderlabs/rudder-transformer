@@ -2296,7 +2296,7 @@ export const data = [
   },
   {
     name: 'airship',
-    description: 'Test 22',
+    description: 'Test 22 : session id gets converted to v5 uuid format',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -2321,7 +2321,7 @@ export const data = [
                 ip: '0.0.0.0',
                 os: { name: '', version: '' },
                 screen: { density: 2 },
-                sessionId: '3049dc4c-5a95-4ccd-a3e7-d74a7e411f22',
+                sessionId: '1731403898',
               },
               type: 'track',
               messageId: '84e26acc-56a5-4835-8233-591137fca468',
@@ -2365,7 +2365,7 @@ export const data = [
                   user: { named_user_id: 'testuserId1' },
                   body: {
                     name: 'product_clicked',
-                    session_id: '3049dc4c-5a95-4ccd-a3e7-d74a7e411f22',
+                    session_id: 'd5627eac-795d-5005-9bb4-2c7c0af6cab0',
                   },
                 },
                 JSON_ARRAY: {},

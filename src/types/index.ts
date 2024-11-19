@@ -352,9 +352,32 @@ type Source = {
 };
 
 type SourceInput = {
-  event: NonNullable<unknown>[];
+  event: {
+    query_parameters?: any;
+    [key: string]: any;
+  };
   source?: Source;
 };
+
+type SourceRequestV2 = {
+  method?: string;
+  url?: string;
+  proto?: string;
+  body: string;
+  headers?: Record<string, unknown>;
+  query_parameters?: Record<string, unknown>;
+};
+
+type SourceInputV2 = {
+  request: SourceRequestV2;
+  source?: Source;
+};
+
+type SourceInputConversionResult<T> = {
+  output?: T;
+  conversionError?: Error;
+};
+
 export {
   ComparatorInput,
   DeliveryJobState,
@@ -382,7 +405,10 @@ export {
   UserDeletionRequest,
   UserDeletionResponse,
   SourceInput,
+  SourceInputV2,
+  SourceRequestV2,
   Source,
+  SourceInputConversionResult,
   UserTransformationLibrary,
   UserTransformationResponse,
   UserTransformationServiceResponse,

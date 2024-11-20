@@ -4,11 +4,6 @@ const {
 } = require('../../../v0/destinations/iterable/util');
 
 class TrackIdentifyStrategy extends ResponseStrategy {
-  constructor() {
-    super();
-    this.filterFn = checkIfEventIsAbortableAndExtractErrorMessage;
-  }
-
   handleSuccess(responseParams) {
     const { destinationResponse, rudderJobMetadata, destinationRequest } = responseParams;
     const { status } = destinationResponse;
@@ -24,7 +19,10 @@ class TrackIdentifyStrategy extends ResponseStrategy {
         error: 'success',
       };
 
-      const { isAbortable, errorMsg } = this.filterFn(event, destinationResponse);
+      const { isAbortable, errorMsg } = checkIfEventIsAbortableAndExtractErrorMessage(
+        event,
+        destinationResponse,
+      );
       if (isAbortable) {
         proxyOutput.statusCode = 400;
         proxyOutput.error = errorMsg;

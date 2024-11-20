@@ -53,7 +53,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
     id: 'ITERABLE_v1_other_scenario_1',
     name: 'iterable',
     description:
-      '[Proxy v1 API] :: Scenario to test correct Payload Response Handling from Destination',
+      '[Proxy API] :: Scenario to test correct Payload Response Handling from Destination',
     successCriteria: 'Should return 200 status code with success',
     scenario: 'Business',
     feature: 'dataDelivery',
@@ -78,7 +78,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
         body: {
           output: {
             status: 200,
-            message: '[ITERABLE Response V1 Handler] - Request Processed Successfully',
+            message: '[ITERABLE Response Handler] - Request Processed Successfully',
             destinationResponse: {
               status: 200,
               response: {
@@ -120,7 +120,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
     id: 'ITERABLE_v1_other_scenario_2',
     name: 'iterable',
     description:
-      '[Proxy v1 API] :: Scenario to test Malformed Payload Response Handling from Destination',
+      '[Proxy API] :: Scenario to test Malformed Payload Response Handling from Destination',
     successCriteria: 'Should return 400 status code with error message',
     scenario: 'Business',
     feature: 'dataDelivery',
@@ -147,7 +147,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
             status: 400,
             statTags,
             message:
-              'ITERABLE: Error transformer proxy v1 during ITERABLE response transformation. {"obj.events[1].createdAt":"Number value expected"}',
+              'ITERABLE: Error transformer proxy during ITERABLE response transformation. {"obj.events[1].createdAt":"Number value expected"}',
             response: [
               {
                 statusCode: 400,
@@ -171,7 +171,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
     id: 'ITERABLE_v1_other_scenario_3',
     name: 'iterable',
     description:
-      '[Proxy v1 API] :: Scenario to test partially successful Response Handling from Destination',
+      '[Proxy API] :: Scenario to test partially successful Response Handling from Destination',
     successCriteria: 'Should return 400 status code with error message',
     scenario: 'Business',
     feature: 'dataDelivery',
@@ -196,7 +196,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
         body: {
           output: {
             status: 200,
-            message: '[ITERABLE Response V1 Handler] - Request Processed Successfully',
+            message: '[ITERABLE Response Handler] - Request Processed Successfully',
             destinationResponse: {
               status: 200,
               response: {
@@ -240,7 +240,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
     id: 'ITERABLE_v1_other_scenario_1',
     name: 'iterable',
     description:
-      '[Proxy v1 API] :: Scenario to test correct identify Payload Response Handling from Destination',
+      '[Proxy API] :: Scenario to test correct identify Payload Response Handling from Destination',
     successCriteria: 'Should return 200 status code with success',
     scenario: 'Business',
     feature: 'dataDelivery',
@@ -265,7 +265,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
         body: {
           output: {
             status: 200,
-            message: '[ITERABLE Response V1 Handler] - Request Processed Successfully',
+            message: '[ITERABLE Response Handler] - Request Processed Successfully',
             destinationResponse: {
               status: 200,
               response: {
@@ -312,7 +312,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
     id: 'ITERABLE_v1_other_scenario_2',
     name: 'iterable',
     description:
-      '[Proxy v1 API] :: Scenario to test Malformed identify Payload Response Handling from Destination',
+      '[Proxy API] :: Scenario to test Malformed identify Payload Response Handling from Destination',
     successCriteria: 'Should return 400 status code with error message',
     scenario: 'Business',
     feature: 'dataDelivery',
@@ -339,7 +339,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
             status: 400,
             statTags,
             message:
-              'ITERABLE: Error transformer proxy v1 during ITERABLE response transformation. {"obj.users[1].preferUserId":"Boolean value expected"}',
+              'ITERABLE: Error transformer proxy during ITERABLE response transformation. {"obj.users[1].preferUserId":"Boolean value expected"}',
             response: [
               {
                 statusCode: 400,
@@ -363,7 +363,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
     id: 'ITERABLE_v1_other_scenario_3',
     name: 'iterable',
     description:
-      '[Proxy v1 API] :: Scenario to test partially successful identify Response Handling from Destination',
+      '[Proxy API] :: Scenario to test partially successful identify Response Handling from Destination',
     successCriteria: 'Should return 400 status code with error message',
     scenario: 'Business',
     feature: 'dataDelivery',
@@ -388,7 +388,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
         body: {
           output: {
             status: 200,
-            message: '[ITERABLE Response V1 Handler] - Request Processed Successfully',
+            message: '[ITERABLE Response Handler] - Request Processed Successfully',
             destinationResponse: {
               status: 200,
               response: {

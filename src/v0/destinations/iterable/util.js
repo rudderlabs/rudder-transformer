@@ -484,6 +484,7 @@ const batchUpdateUserEvents = (updateUserEvents, registerDeviceOrBrowserTokenEve
 
 /**
  * Processes chunks of catalog events, extracts the necessary data, and prepares batched requests for further processing
+ * ref : https://api.iterable.com/api/docs#catalogs_bulkUpdateCatalogItems
  * @param {*} catalogEventsChunks
  * @returns
  */
@@ -601,12 +602,12 @@ const batchTrackEvents = (trackEvents) => {
  */
 const prepareBatchRequests = (filteredEvents) => {
   const {
-    trackEvents,
-    catalogEvents,
-    errorRespList,
-    updateUserEvents,
-    eventResponseList,
-    registerDeviceOrBrowserTokenEvents,
+    trackEvents, // track
+    catalogEvents, // identify
+    errorRespList, // track
+    updateUserEvents, // identify
+    eventResponseList, // track
+    registerDeviceOrBrowserTokenEvents, // identify
   } = filteredEvents;
 
   const updateUserBatchedResponseList =
@@ -753,6 +754,11 @@ const filterEventsAndPrepareBatchRequests = (transformedEvents) => {
  * 2) https://api.iterable.com/api/docs#events_track
  * 3) https://api.iterable.com/api/docs#users_bulkUpdateUser
  * 4) https://api.iterable.com/api/docs#events_trackBulk
+ * 5) https://api.iterable.com/api/docs#catalogs_bulkUpdateCatalogItems
+ * 6) https://api.iterable.com/api/docs#users_registerDeviceToken
+ * 7) https://api.iterable.com/api/docs#users_registerBrowserToken
+ * 8) https://api.iterable.com/api/docs#commerce_trackPurchase
+ * 9) https://api.iterable.com/api/docs#commerce_updateCart
  *
  * @param {Object} event - The event object containing various event properties.
  * @param {Object} destinationResponse - The response object from the destination.

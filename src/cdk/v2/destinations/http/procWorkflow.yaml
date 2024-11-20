@@ -47,7 +47,7 @@ steps:
 
   - name: deduceEndPoint
     template: |
-      $.context.endpoint = $.addPathParams(.message, .destination.Config.apiUrl);
+      $.context.endpoint = $.addPathParams(.message, .destination.Config);
 
   - name: prepareBody
     template: |

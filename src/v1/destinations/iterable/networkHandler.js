@@ -1,15 +1,12 @@
 const { prepareProxyRequest, proxyRequest } = require('../../../adapters/network');
 const { processAxiosResponse } = require('../../../adapters/utils/networkUtils');
 const { BULK_ENDPOINTS } = require('../../../v0/destinations/iterable/config');
-const {
-  checkIfEventIsAbortableAndExtractErrorMessage,
-} = require('../../../v0/destinations/iterable/util');
 const { CommonStrategy } = require('./commonStrategy');
 const { TrackIdentifyStrategy } = require('./trackIdentifyStrategy');
 
 const getResponseStrategy = (endpoint) => {
   if (BULK_ENDPOINTS.some((path) => endpoint.includes(path))) {
-    return new TrackIdentifyStrategy(checkIfEventIsAbortableAndExtractErrorMessage);
+    return new TrackIdentifyStrategy();
   }
   return new CommonStrategy();
 };

@@ -1,9 +1,12 @@
 const { ResponseStrategy } = require('./responseStrategy');
+const {
+  checkIfEventIsAbortableAndExtractErrorMessage,
+} = require('../../../v0/destinations/iterable/util');
 
 class TrackIdentifyStrategy extends ResponseStrategy {
-  constructor(filterFn) {
+  constructor() {
     super();
-    this.filterFn = filterFn;
+    this.filterFn = checkIfEventIsAbortableAndExtractErrorMessage;
   }
 
   handleSuccess(responseParams) {

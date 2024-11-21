@@ -2332,25 +2332,13 @@ const isEventSentByVDMV1Flow = (event) => event?.message?.context?.mappedToDesti
 const isEventSentByVDMV2Flow = (event) =>
   event?.connection?.config?.destination?.schemaVersion === VDM_V2_SCHEMA_VERSION;
 
-const validateSessionId = (rawSessionId) => {
-  const sessionId = String(rawSessionId).trim(); // Attempt conversion to string and trim whitespace
-  if (!sessionId) {
-    throw new InstrumentationError(
-      'Invalid session ID: must be a non-empty string after conversion to string.',
-    );
-  }
-  return sessionId; // Return the validated and converted session ID
-};
-
-const transformSessionId = (rawSessionId) => {
+const convertToUuid = (input) => {
+  const NAMESPACE = v5.DNS;
   try {
-    const sessionId = validateSessionId(rawSessionId);
-
-    const NAMESPACE = v5.DNS;
-    const uuidV5 = v5(sessionId, NAMESPACE);
-    return uuidV5;
+    return v5(input, NAMESPACE);
   } catch (error) {
-    throw new InstrumentationError(`Failed to transform session ID: ${error.message}`);
+    const errorMessage = `Failed to transform input to uuid: ${error.message}`;
+    throw new InstrumentationError(errorMessage);
   }
 };
 // ========================================================================
@@ -2479,5 +2467,5 @@ module.exports = {
   getRelativePathFromURL,
   removeEmptyKey,
   isAxiosError,
-  transformSessionId,
+  convertToUuid,
 };

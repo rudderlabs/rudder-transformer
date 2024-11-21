@@ -2335,7 +2335,15 @@ const isEventSentByVDMV2Flow = (event) =>
 const convertToUuid = (input) => {
   const NAMESPACE = v5.DNS;
   try {
-    return v5(input, NAMESPACE);
+    // Stringify and trim the input
+    const trimmedInput = String(input).trim();
+
+    // Check for empty input after trimming
+    if (!trimmedInput) {
+      throw new InstrumentationError('Input is empty or invalid.');
+    }
+    // Generate and return UUID
+    return v5(trimmedInput, NAMESPACE);
   } catch (error) {
     const errorMessage = `Failed to transform input to uuid: ${error.message}`;
     throw new InstrumentationError(errorMessage);

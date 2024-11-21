@@ -29,13 +29,11 @@ const { JSON_MIME_TYPE } = require('../../util/constant');
 const DEFAULT_ACCEPT_HEADER = 'application/vnd.urbanairship+json; version=3';
 
 const transformSessionId = (rawSessionId) => {
-  const sessionId = String(rawSessionId).trim(); // Attempt conversion to string and trim whitespace
-  if (!sessionId) {
-    throw new InstrumentationError(
-      'Invalid session ID: must be a non-empty string after conversion to string.',
-    );
+  try {
+    return convertToUuid(rawSessionId);
+  } catch (error) {
+    throw new InstrumentationError(`Failed to transform session ID: ${error.message}`);
   }
-  return convertToUuid(sessionId); // Return the validated and converted session ID
 };
 
 const identifyResponseBuilder = (message, { Config }) => {

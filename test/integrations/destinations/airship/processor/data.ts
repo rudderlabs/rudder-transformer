@@ -2383,7 +2383,7 @@ export const data = [
   },
   {
     name: 'airship',
-    description: 'Test 22 : session id from mobile SDK gets converted to v5 uuid format',
+    description: 'Test 23 : session id from mobile SDK gets converted to v5 uuid format',
     feature: 'processor',
     module: 'destination',
     version: 'v0',

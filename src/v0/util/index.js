@@ -16,6 +16,7 @@ const uaParser = require('ua-parser-js');
 const moment = require('moment-timezone');
 const sha256 = require('sha256');
 const crypto = require('crypto');
+const { v5 } = require('uuid');
 const {
   InstrumentationError,
   BaseError,
@@ -2330,6 +2331,29 @@ const isEventSentByVDMV1Flow = (event) => event?.message?.context?.mappedToDesti
 
 const isEventSentByVDMV2Flow = (event) =>
   event?.connection?.config?.destination?.schemaVersion === VDM_V2_SCHEMA_VERSION;
+
+const convertToUuid = (input) => {
+  const NAMESPACE = v5.DNS;
+
+  if (!isDefinedAndNotNull(input)) {
+    throw new InstrumentationError('Input is undefined or null.');
+  }
+
+  try {
+    // Stringify and trim the input
+    const trimmedInput = String(input).trim();
+
+    // Check for empty input after trimming
+    if (!trimmedInput) {
+      throw new InstrumentationError('Input is empty or invalid.');
+    }
+    // Generate and return UUID
+    return v5(trimmedInput, NAMESPACE);
+  } catch (error) {
+    const errorMessage = `Failed to transform input to uuid: ${error.message}`;
+    throw new InstrumentationError(errorMessage);
+  }
+};
 // ========================================================================
 // EXPORTS
 // ========================================================================
@@ -2456,4 +2480,5 @@ module.exports = {
   getRelativePathFromURL,
   removeEmptyKey,
   isAxiosError,
+  convertToUuid,
 };

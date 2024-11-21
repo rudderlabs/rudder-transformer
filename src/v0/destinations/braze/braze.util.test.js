@@ -982,7 +982,7 @@ describe('processBatch', () => {
     expect(result[0].batchedRequest[1].body.JSON.events.length).toBe(25); // Second batch contains remaining 25 events
     expect(result[0].batchedRequest[1].body.JSON.purchases.length).toBe(25); // Second batch contains remaining 25 purchases
     expect(result[0].batchedRequest[2].body.JSON.subscription_groups.length).toBe(50); // First batch contains 50 subscription group
-    expect(result[0].batchedRequest[3].body.JSON.subscription_groups.length).toBe(50); // First batch contains 25 subscription group
+    expect(result[0].batchedRequest[3].body.JSON.subscription_groups.length).toBe(50);
     expect(result[0].batchedRequest[4].body.JSON.merge_updates.length).toBe(50); // First batch contains 50 merge_updates
     expect(result[0].batchedRequest[5].body.JSON.merge_updates.length).toBe(50); // First batch contains 25 merge_updates
   });
@@ -1104,8 +1104,8 @@ describe('processBatch', () => {
     expect(result[0].batchedRequest[1].body.JSON.purchases.length).toBe(75); // Second batch contains remaining 75 purchases
     expect(result[0].batchedRequest[2].body.JSON.purchases.length).toBe(10); // Third batch contains remaining 10 purchases
     expect(result[0].batchedRequest[3].body.JSON.subscription_groups.length).toBe(50); // First batch contains 50 subscription group
-    expect(result[0].batchedRequest[4].body.JSON.subscription_groups.length).toBe(20); // First batch contains 20 subscription group
-    expect(result[0].batchedRequest[5].body.JSON.merge_updates.length).toBe(40); // First batch contains 50 merge_updates
+    expect(result[0].batchedRequest[4].body.JSON.subscription_groups.length).toBe(20); // Second batch contains 20 subscription group
+    expect(result[0].batchedRequest[5].body.JSON.merge_updates.length).toBe(40); // First batch contains 40 merge_updates
   });
 
   test('check success and failure scenarios both for processBatch', () => {

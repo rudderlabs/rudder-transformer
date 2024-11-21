@@ -2,6 +2,7 @@ const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const utilities = require('.');
 const { getFuncTestData } = require('../../../test/testHelper');
 const { FilteredEventsError } = require('./errorTypes');
+const { v5 } = require('uuid');
 const {
   hasCircularReference,
   flattenJson,
@@ -11,6 +12,7 @@ const {
   groupRouterTransformEvents,
   isAxiosError,
   removeHyphens,
+  convertToUuid,
 } = require('./index');
 const exp = require('constants');
 
@@ -983,5 +985,67 @@ describe('removeHyphens', () => {
     data.forEach(({ input, expected }) => {
       expect(removeHyphens(input)).toBe(expected);
     });
+  });
+});
+
+describe('convertToUuid', () => {
+  const NAMESPACE = v5.DNS;
+
+  test('should generate UUID for valid string input', () => {
+    const input = 'testInput';
+    const expectedUuid = '7ba1e88f-acf9-5528-9c1c-0c897ed80e1e';
+    const result = convertToUuid(input);
+    expect(result).toBe(expectedUuid);
+  });
+
+  test('should generate UUID for valid numeric input', () => {
+    const input = 123456;
+    const expectedUuid = 'a52b2702-9bcf-5701-852a-2f4edc640fe1';
+    const result = convertToUuid(input);
+    expect(result).toBe(expectedUuid);
+  });
+
+  test('should trim spaces and generate UUID', () => {
+    const input = '   testInput   ';
+    const expectedUuid = '7ba1e88f-acf9-5528-9c1c-0c897ed80e1e';
+    const result = convertToUuid(input);
+    expect(result).toBe(expectedUuid);
+  });
+
+  test('should throw an error for empty input', () => {
+    const input = '';
+    expect(() => convertToUuid(input)).toThrow(InstrumentationError);
+    expect(() => convertToUuid(input)).toThrow('Input is empty or invalid.');
+  });
+
+  test('to throw an error for null input', () => {
+    const input = null;
+    expect(() => convertToUuid(input)).toThrow(InstrumentationError);
+    expect(() => convertToUuid(input)).toThrow('Input is undefined or null');
+  });
+
+  test('to throw an error for undefined input', () => {
+    const input = undefined;
+    expect(() => convertToUuid(input)).toThrow(InstrumentationError);
+    expect(() => convertToUuid(input)).toThrow('Input is undefined or null');
+  });
+
+  test('should throw an error for input that is whitespace only', () => {
+    const input = '   ';
+    expect(() => convertToUuid(input)).toThrow(InstrumentationError);
+    expect(() => convertToUuid(input)).toThrow('Input is empty or invalid.');
+  });
+
+  test('should handle long string input gracefully', () => {
+    const input = 'a'.repeat(1000);
+    const expectedUuid = v5(input, NAMESPACE);
+    const result = convertToUuid(input);
+    expect(result).toBe(expectedUuid);
+  });
+
+  test('any invalid input if stringified does not throw error', () => {
+    const input = {};
+    const result = convertToUuid(input);
+    expect(result).toBe('672ca00c-37f4-5d71-b8c3-6ae0848080ec');
   });
 });

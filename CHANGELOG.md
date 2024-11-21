@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.85.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.85.0...v1.85.1) (2024-11-21)
+
+
+### Bug Fixes
+
+* braze subscription batch size ([#3897](https://github.com/rudderlabs/rudder-transformer/issues/3897)) ([ca71a31](https://github.com/rudderlabs/rudder-transformer/commit/ca71a318e4d8d098116fe539964b699254f58617))
+* stringifying session ID for airship ([#3896](https://github.com/rudderlabs/rudder-transformer/issues/3896)) ([bb0b9dc](https://github.com/rudderlabs/rudder-transformer/commit/bb0b9dc1e5a56e8141c6cb56e89835ba61ee7761))
+
 ## [1.85.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.84.0...v1.85.0) (2024-11-18)
 
 

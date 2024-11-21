@@ -2334,6 +2334,11 @@ const isEventSentByVDMV2Flow = (event) =>
 
 const convertToUuid = (input) => {
   const NAMESPACE = v5.DNS;
+
+  if (!isDefinedAndNotNull(input)) {
+    throw new InstrumentationError('Input is undefined or null.');
+  }
+
   try {
     // Stringify and trim the input
     const trimmedInput = String(input).trim();

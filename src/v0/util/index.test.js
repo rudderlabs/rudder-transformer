@@ -993,21 +993,21 @@ describe('convertToUuid', () => {
 
   test('should generate UUID for valid string input', () => {
     const input = 'testInput';
-    const expectedUuid = v5(input, NAMESPACE);
+    const expectedUuid = '7ba1e88f-acf9-5528-9c1c-0c897ed80e1e';
     const result = convertToUuid(input);
     expect(result).toBe(expectedUuid);
   });
 
   test('should generate UUID for valid numeric input', () => {
     const input = 123456;
-    const expectedUuid = v5(String(input), NAMESPACE);
+    const expectedUuid = 'a52b2702-9bcf-5701-852a-2f4edc640fe1';
     const result = convertToUuid(input);
     expect(result).toBe(expectedUuid);
   });
 
   test('should trim spaces and generate UUID', () => {
     const input = '   testInput   ';
-    const expectedUuid = v5('testInput', NAMESPACE);
+    const expectedUuid = '7ba1e88f-acf9-5528-9c1c-0c897ed80e1e';
     const result = convertToUuid(input);
     expect(result).toBe(expectedUuid);
   });
@@ -1018,16 +1018,16 @@ describe('convertToUuid', () => {
     expect(() => convertToUuid(input)).toThrow('Input is empty or invalid.');
   });
 
-  test('does not throw an error for null input', () => {
+  test('to throw an error for null input', () => {
     const input = null;
-    const result = convertToUuid(input);
-    expect(result).toBe('14fe171b-730d-5a16-8d75-fccfea2e4267');
+    expect(() => convertToUuid(input)).toThrow(InstrumentationError);
+    expect(() => convertToUuid(input)).toThrow('Input is undefined or null');
   });
 
-  test('does not throw an error for undefined input', () => {
+  test('to throw an error for undefined input', () => {
     const input = undefined;
-    const result = convertToUuid(input);
-    expect(result).toBe('fb6fdadc-7f92-59fe-9a2c-87b5b3b62522');
+    expect(() => convertToUuid(input)).toThrow(InstrumentationError);
+    expect(() => convertToUuid(input)).toThrow('Input is undefined or null');
   });
 
   test('should throw an error for input that is whitespace only', () => {

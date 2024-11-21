@@ -16,6 +16,7 @@ const uaParser = require('ua-parser-js');
 const moment = require('moment-timezone');
 const sha256 = require('sha256');
 const crypto = require('crypto');
+const { v5 } = require('uuid');
 const {
   InstrumentationError,
   BaseError,
@@ -2330,6 +2331,28 @@ const isEventSentByVDMV1Flow = (event) => event?.message?.context?.mappedToDesti
 
 const isEventSentByVDMV2Flow = (event) =>
   event?.connection?.config?.destination?.schemaVersion === VDM_V2_SCHEMA_VERSION;
+
+const validateSessionId = (rawSessionId) => {
+  const sessionId = String(rawSessionId).trim(); // Attempt conversion to string and trim whitespace
+  if (!sessionId) {
+    throw new InstrumentationError(
+      '[TransformSessionId] Invalid session ID: must be a non-empty string after conversion to string.',
+    );
+  }
+  return sessionId; // Return the validated and converted session ID
+};
+
+const transformSessionId = (rawSessionId) => {
+  try {
+    const sessionId = validateSessionId(rawSessionId);
+
+    const NAMESPACE = v5.DNS;
+    const uuidV5 = v5(sessionId, NAMESPACE);
+    return uuidV5;
+  } catch (error) {
+    throw new InstrumentationError(`Failed to transform session ID: ${error.message}`);
+  }
+};
 // ========================================================================
 // EXPORTS
 // ========================================================================
@@ -2456,4 +2479,5 @@ module.exports = {
   getRelativePathFromURL,
   removeEmptyKey,
   isAxiosError,
+  transformSessionId,
 };

@@ -22,9 +22,9 @@ const {
   extractCustomFields,
   isEmptyObject,
   simpleProcessRouterDest,
+  transformSessionId,
 } = require('../../util');
 const { JSON_MIME_TYPE } = require('../../util/constant');
-const { transformSessionId } = require('./utils');
 
 const DEFAULT_ACCEPT_HEADER = 'application/vnd.urbanairship+json; version=3';
 
@@ -129,6 +129,8 @@ const trackResponseBuilder = async (message, { Config }) => {
 
   name = name.toLowerCase();
   const payload = constructPayload(message, trackMapping);
+
+  // ref : https://docs.airship.com/api/ua/#operation-api-custom-events-post
   if (isDefinedAndNotNullAndNotEmpty(payload.session_id)) {
     payload.session_id = transformSessionId(payload.session_id);
   }

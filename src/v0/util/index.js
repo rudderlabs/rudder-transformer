@@ -2336,7 +2336,7 @@ const validateSessionId = (rawSessionId) => {
   const sessionId = String(rawSessionId).trim(); // Attempt conversion to string and trim whitespace
   if (!sessionId) {
     throw new InstrumentationError(
-      '[TransformSessionId] Invalid session ID: must be a non-empty string after conversion to string.',
+      'Invalid session ID: must be a non-empty string after conversion to string.',
     );
   }
   return sessionId; // Return the validated and converted session ID

@@ -1043,7 +1043,7 @@ describe('convertToUuid', () => {
     expect(result).toBe(expectedUuid);
   });
 
-  test('should throw an error and log the correct message for invalid input', () => {
+  test('any invalid input if stringified does not throw error', () => {
     const input = {};
     const result = convertToUuid(input);
     expect(result).toBe('672ca00c-37f4-5d71-b8c3-6ae0848080ec');

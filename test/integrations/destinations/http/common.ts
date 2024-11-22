@@ -77,6 +77,12 @@ const destinations: Destination[] = [
           from: '$.traits.email',
         },
       ],
+      pathParams: [
+        { path: 'users' },
+        { path: '$.userId' },
+        { path: 'update//' },
+        { path: '$.type' },
+      ],
     },
     DestinationDefinition: {
       DisplayName: displayName,

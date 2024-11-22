@@ -41,9 +41,25 @@ const getCustomMappings = (message, mapping) => {
   }
 };
 
-const addPathParams = (message, apiUrl) => {
+const addPathParams = (message, config) => {
   try {
-    return applyJSONStringTemplate(message, `\`${apiUrl}\``);
+    if (!config || !config.pathParams) {
+      return applyJSONStringTemplate(message, `\`${config.apiUrl}\``);
+    }
+    const baseUrl = config.apiUrl.replace(/\/+$/, '') || '';
+    const pathSegments = config.pathParams
+      .map((p) => {
+        const path = p?.path || '';
+        // Clean multiple slashes and trim
+        const cleanPath = path.replace(/\/+/g, '/').replace(/^\/|\/$/g, '');
+        return cleanPath.startsWith('$.') ? `{{${cleanPath}}}` : cleanPath;
+      })
+      .filter(Boolean)
+      .join('/');
+    const url = pathSegments ? `${baseUrl}/${pathSegments}` : baseUrl;
+
+    const a = applyJSONStringTemplate(message, `\`${url}\``);
+    return a;
   } catch (e) {
     throw new ConfigurationError(`Error in api url template: ${e.message}`);
   }

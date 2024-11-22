@@ -1,5 +1,5 @@
 import { generateMetadata } from '../../../testUtils';
-import { destType, destinations, traits, properties } from '../common';
+import { destinations, destType, properties, traits } from '../common';
 
 const routerRequest1 = {
   input: [
@@ -231,7 +231,7 @@ export const data = [
                 version: '1',
                 type: 'REST',
                 method: 'GET',
-                endpoint: 'http://abc.com/contacts',
+                endpoint: 'http://abc.com/contacts/users/userId1/update/identify',
                 headers: {
                   Authorization: 'Basic dGVzdC11c2VyOg==',
                   'content-type': 'application/json',
@@ -263,7 +263,7 @@ export const data = [
                 version: '1',
                 type: 'REST',
                 method: 'GET',
-                endpoint: 'http://abc.com/contacts',
+                endpoint: 'http://abc.com/contacts/users/userId1/update/identify',
                 headers: {
                   Authorization: 'Basic dGVzdC11c2VyOg==',
                   'content-type': 'application/json',
@@ -295,7 +295,7 @@ export const data = [
                 version: '1',
                 type: 'REST',
                 method: 'GET',
-                endpoint: 'http://abc.com/contacts',
+                endpoint: 'http://abc.com/contacts/users/userId2/update/identify',
                 headers: {
                   Authorization: 'Basic dGVzdC11c2VyOg==',
                   'content-type': 'application/json',

@@ -1,6 +1,6 @@
 import { ProcessorTestData } from '../../../testTypes';
 import { generateMetadata, transformResultBuilder } from '../../../testUtils';
-import { destType, destinations, properties, traits } from '../common';
+import { destinations, destType, properties, traits } from '../common';
 
 export const configuration: ProcessorTestData[] = [
   {
@@ -132,7 +132,7 @@ export const configuration: ProcessorTestData[] = [
             output: transformResultBuilder({
               method: 'GET',
               userId: '',
-              endpoint: destinations[1].Config.apiUrl,
+              endpoint: 'http://abc.com/contacts/users/userId123/update/track',
               headers: {
                 Authorization: 'Basic dGVzdC11c2VyOg==',
                 h1: 'val1',

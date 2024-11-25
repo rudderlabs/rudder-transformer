@@ -237,6 +237,8 @@ const getTransformedJSON = async ({ message, destination, metadata }, propertyMa
         let propValue = isNull(traits[traitsKey]) ? '' : traits[traitsKey];
         if (propertyMap[hsSupportedKey] === 'date') {
           propValue = getUTCMidnightTimeStampValue(propValue);
+        } else if (propertyMap[hsSupportedKey] === 'datetime') {
+          propValue = new Date(propValue).getTime();
         }
 
         rawPayload[hsSupportedKey] = validatePayloadDataTypes(
@@ -828,6 +830,8 @@ const populateTraits = async (propertyMap, traits, destination, metadata) => {
     const value = populatedTraits[key];
     if (propertyToTypeMap[key] === 'date') {
       populatedTraits[key] = getUTCMidnightTimeStampValue(value);
+    } else if (propertyToTypeMap[key] === 'datetime') {
+      populatedTraits[key] = new Date(value).getTime();
     }
   });
 

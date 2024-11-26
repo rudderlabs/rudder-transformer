@@ -490,6 +490,66 @@ export const v0TestData = [
 
   {
     name: 'facebook_pixel',
+    description: 'Test 10: should handle error with code: 100 & subcode: 2804009',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          body: {
+            XML: {},
+            FORM: testFormData,
+            JSON: {},
+            JSON_ARRAY: {},
+          },
+          type: 'REST',
+          files: {},
+          method: 'POST',
+          userId: '',
+          headers: {},
+          version: '1',
+          endpoint: `https://graph.facebook.com/${VERSION}/12345678912804009/events?access_token=2804009_valid_access_token`,
+          params: {
+            destination: 'facebook_pixel',
+          },
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 400,
+        body: {
+          output: {
+            status: 400,
+            message:
+              'Your purchase event doesn’t include a value parameter. Enter a value. For example: 1.99',
+            destinationResponse: {
+              error: {
+                message: 'Invalid parameter',
+                type: 'OAuthException',
+                code: 100,
+                error_user_msg:
+                  'Your purchase event doesn’t include a value parameter. Enter a value. For example: 1.99',
+                error_user_title: 'Missing Value for Purchase Event',
+                error_subcode: 2804009,
+                is_transient: false,
+                fbtrace_id: 'AP4G-xxxxxxxx',
+              },
+              status: 400,
+            },
+            statTags: {
+              ...statTags,
+              errorType: 'aborted',
+            },
+          },
+        },
+      },
+    },
+  },
+  {
+    name: 'facebook_pixel',
     description: 'Test 9: should handle error with code: 21009',
     feature: 'dataDelivery',
     module: 'destination',

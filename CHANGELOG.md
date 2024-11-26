@@ -2,6 +2,38 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.85.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.85.0...v1.85.1) (2024-11-21)
+
+
+### Bug Fixes
+
+* braze subscription batch size ([#3897](https://github.com/rudderlabs/rudder-transformer/issues/3897)) ([ca71a31](https://github.com/rudderlabs/rudder-transformer/commit/ca71a318e4d8d098116fe539964b699254f58617))
+* stringifying session ID for airship ([#3896](https://github.com/rudderlabs/rudder-transformer/issues/3896)) ([bb0b9dc](https://github.com/rudderlabs/rudder-transformer/commit/bb0b9dc1e5a56e8141c6cb56e89835ba61ee7761))
+
+## [1.85.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.84.0...v1.85.0) (2024-11-18)
+
+
+### Features
+
+* added support to eu/us2 datacenter for gainsight px destination ([#3871](https://github.com/rudderlabs/rudder-transformer/issues/3871)) ([12ac3de](https://github.com/rudderlabs/rudder-transformer/commit/12ac3de6e7cc91a6cd52c33bc342f74bbaa8a631))
+* iterable EUDC ([#3828](https://github.com/rudderlabs/rudder-transformer/issues/3828)) ([1c134f8](https://github.com/rudderlabs/rudder-transformer/commit/1c134f84601aaea78581078137cb9955de576f9e))
+* iterable EUDC deleteUsers ([#3881](https://github.com/rudderlabs/rudder-transformer/issues/3881)) ([becb4fa](https://github.com/rudderlabs/rudder-transformer/commit/becb4fa54e9093ed69779f54c36864cb9d28d321))
+* moved userSchema to connection config in GARL vdmv2 ([#3870](https://github.com/rudderlabs/rudder-transformer/issues/3870)) ([640a11e](https://github.com/rudderlabs/rudder-transformer/commit/640a11eb3dca5735fed3ad9ad5bd058974b069d6))
+* now getting consent related fields from connection config from retl for GARL ([#3877](https://github.com/rudderlabs/rudder-transformer/issues/3877)) ([51bbc02](https://github.com/rudderlabs/rudder-transformer/commit/51bbc02d5b00ce1b8fe8c91b4a7041e926bae9bd))
+* onboard linkedin audience destination ([#3857](https://github.com/rudderlabs/rudder-transformer/issues/3857)) ([f3ff409](https://github.com/rudderlabs/rudder-transformer/commit/f3ff4092d455508dd3354ffb22d345fa97f4d1f2))
+* onboarding intercom v2 retl support ([#3843](https://github.com/rudderlabs/rudder-transformer/issues/3843)) ([3d7db73](https://github.com/rudderlabs/rudder-transformer/commit/3d7db7366e30df31c37cc473e344da82b49ed885))
+* sources v2 spec support along with adapters ([04c0694](https://github.com/rudderlabs/rudder-transformer/commit/04c069486bdd3c101906fa6c621e983090fcab25))
+* sources v2 spec support along with adapters ([#3810](https://github.com/rudderlabs/rudder-transformer/issues/3810)) ([c51cfbb](https://github.com/rudderlabs/rudder-transformer/commit/c51cfbb4664a8531dce23b2d06fe40997f95697e))
+* update pinterest_tag single product events with new mapping ([#3858](https://github.com/rudderlabs/rudder-transformer/issues/3858)) ([8520278](https://github.com/rudderlabs/rudder-transformer/commit/85202781de3464bd46fe910159d2b143cd4209e8))
+
+
+### Bug Fixes
+
+* adding logger for undefined source event ([#3879](https://github.com/rudderlabs/rudder-transformer/issues/3879)) ([79e5979](https://github.com/rudderlabs/rudder-transformer/commit/79e597907eee126b4187e4534b2aa2253d1431da))
+* adding uuid transformation for airship ([#3884](https://github.com/rudderlabs/rudder-transformer/issues/3884)) ([a80f874](https://github.com/rudderlabs/rudder-transformer/commit/a80f87486dc93b423e4fe6efbee6f4cb8330ba02))
+* handling invalid timestamp for adjust source ([#3866](https://github.com/rudderlabs/rudder-transformer/issues/3866)) ([d57f48e](https://github.com/rudderlabs/rudder-transformer/commit/d57f48e989d18d469bea0de94293bc685300945b))
+* revert gaec changes ([#3885](https://github.com/rudderlabs/rudder-transformer/issues/3885)) ([0aeaa39](https://github.com/rudderlabs/rudder-transformer/commit/0aeaa391b025fc68de6e3d63a6721f067c5be318))
+
 ## [1.84.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.83.2...v1.84.0) (2024-11-11)
 
 

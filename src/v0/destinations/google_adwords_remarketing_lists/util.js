@@ -18,6 +18,7 @@ const {
   TYPEOFLIST,
   BASE_ENDPOINT,
   hashAttributes,
+  ADDRESS_INFO_ATTRIBUTES,
 } = require('./config');
 
 const hashEncrypt = (object) => {
@@ -29,26 +30,24 @@ const hashEncrypt = (object) => {
   });
 };
 
-const responseBuilder = (accessToken, developerToken, body, { Config }, message, consentBlock) => {
+const responseBuilder = (
+  accessToken,
+  developerToken,
+  body,
+  { Config },
+  audienceId,
+  consentBlock,
+) => {
   const payload = body;
   const response = defaultRequestConfig();
   const filteredCustomerId = removeHyphens(Config.customerId);
   response.endpoint = `${BASE_ENDPOINT}/${filteredCustomerId}/offlineUserDataJobs`;
   response.body.JSON = removeUndefinedAndNullValues(payload);
-  let operationAudienceId = Config.audienceId || Config.listId;
-  const mappedToDestination = get(message, MappedToDestinationKey);
-  if (!operationAudienceId && mappedToDestination) {
-    const { objectType } = getDestinationExternalIDInfoForRetl(
-      message,
-      'GOOGLE_ADWORDS_REMARKETING_LISTS',
-    );
-    operationAudienceId = objectType;
-  }
-  if (!isDefinedAndNotNullAndNotEmpty(operationAudienceId)) {
+  if (!isDefinedAndNotNullAndNotEmpty(audienceId)) {
     throw new ConfigurationError('List ID is a mandatory field');
   }
   response.params = {
-    listId: operationAudienceId,
+    listId: audienceId,
     customerId: filteredCustomerId,
     consent: consentBlock,
   };
@@ -69,14 +68,14 @@ const responseBuilder = (accessToken, developerToken, body, { Config }, message,
  * This function helps creates an array with proper mapping for userIdentiFier.
  * Logics: Here we are creating an array with all the attributes provided in the add/remove array
  * inside listData.
- * @param {rudder event message properties listData add} attributeArray
- * @param {rudder event destination} Config
+ * @param {Array} attributeArray rudder event message properties listData add
+ * @param {string} typeOfList
+ * @param {Array<string>} userSchema
+ * @param {boolean} isHashRequired
  * @returns
  */
-const populateIdentifiers = (attributeArray, { Config }) => {
+const populateIdentifiers = (attributeArray, typeOfList, userSchema, isHashRequired) => {
   const userIdentifier = [];
-  const { typeOfList } = Config;
-  const { isHashRequired, userSchema } = Config;
   let attribute;
   if (TYPEOFLIST[typeOfList]) {
     attribute = TYPEOFLIST[typeOfList];
@@ -116,7 +115,56 @@ const populateIdentifiers = (attributeArray, { Config }) => {
   return userIdentifier;
 };
 
+const populateIdentifiersForRecordEvent = (
+  identifiersArray,
+  typeOfList,
+  userSchema,
+  isHashRequired,
+) => {
+  const userIdentifiers = [];
+
+  if (isDefinedAndNotNullAndNotEmpty(identifiersArray)) {
+    // traversing through every element in the add array
+    identifiersArray.forEach((identifiers) => {
+      if (isHashRequired) {
+        hashEncrypt(identifiers);
+      }
+      if (TYPEOFLIST[typeOfList] && identifiers[TYPEOFLIST[typeOfList]]) {
+        userIdentifiers.push({ [TYPEOFLIST[typeOfList]]: identifiers[TYPEOFLIST[typeOfList]] });
+      } else {
+        Object.entries(attributeMapping).forEach(([key, mappedKey]) => {
+          if (identifiers[key] && userSchema.includes(key))
+            userIdentifiers.push({ [mappedKey]: identifiers[key] });
+        });
+        const addressInfo = constructPayload(identifiers, addressInfoMapping);
+        if (
+          isDefinedAndNotNullAndNotEmpty(addressInfo) &&
+          (userSchema.includes('addressInfo') ||
+            userSchema.some((schema) => ADDRESS_INFO_ATTRIBUTES.includes(schema)))
+        )
+          userIdentifiers.push({ addressInfo });
+      }
+    });
+  }
+  return userIdentifiers;
+};
+
+const getOperationAudienceId = (audienceId, message) => {
+  let operationAudienceId = audienceId;
+  const mappedToDestination = get(message, MappedToDestinationKey);
+  if (!operationAudienceId && mappedToDestination) {
+    const { objectType } = getDestinationExternalIDInfoForRetl(
+      message,
+      'GOOGLE_ADWORDS_REMARKETING_LISTS',
+    );
+    operationAudienceId = objectType;
+  }
+  return operationAudienceId;
+};
+
 module.exports = {
   populateIdentifiers,
   responseBuilder,
+  getOperationAudienceId,
+  populateIdentifiersForRecordEvent,
 };

@@ -19,9 +19,9 @@ describe('adaptInputToVersion', () => {
     const expected = {
       implementationVersion: undefined,
       input: [
-        { key1: 'val1', key2: 'val2' },
-        { key1: 'val1', key2: 'val2' },
-        { key1: 'val1', key2: 'val2' },
+        { output: { key1: 'val1', key2: 'val2' } },
+        { output: { key1: 'val1', key2: 'val2' } },
+        { output: { key1: 'val1', key2: 'val2' } },
       ],
     };
 
@@ -40,9 +40,9 @@ describe('adaptInputToVersion', () => {
     const expected = {
       implementationVersion: 'v0',
       input: [
-        { key1: 'val1', key2: 'val2' },
-        { key1: 'val1', key2: 'val2' },
-        { key1: 'val1', key2: 'val2' },
+        { output: { key1: 'val1', key2: 'val2' } },
+        { output: { key1: 'val1', key2: 'val2' } },
+        { output: { key1: 'val1', key2: 'val2' } },
       ],
     };
 
@@ -71,16 +71,22 @@ describe('adaptInputToVersion', () => {
       implementationVersion: 'v1',
       input: [
         {
-          event: { key1: 'val1', key2: 'val2' },
-          source: { id: 'source_id', config: { configField1: 'configVal1' } },
+          output: {
+            event: { key1: 'val1', key2: 'val2' },
+            source: { id: 'source_id', config: { configField1: 'configVal1' } },
+          },
         },
         {
-          event: { key1: 'val1', key2: 'val2' },
-          source: { id: 'source_id', config: { configField1: 'configVal1' } },
+          output: {
+            event: { key1: 'val1', key2: 'val2' },
+            source: { id: 'source_id', config: { configField1: 'configVal1' } },
+          },
         },
         {
-          event: { key1: 'val1', key2: 'val2' },
-          source: { id: 'source_id', config: { configField1: 'configVal1' } },
+          output: {
+            event: { key1: 'val1', key2: 'val2' },
+            source: { id: 'source_id', config: { configField1: 'configVal1' } },
+          },
         },
       ],
     };
@@ -100,9 +106,9 @@ describe('adaptInputToVersion', () => {
     const expected = {
       implementationVersion: 'v1',
       input: [
-        { event: { key1: 'val1', key2: 'val2' }, source: undefined },
-        { event: { key1: 'val1', key2: 'val2' }, source: undefined },
-        { event: { key1: 'val1', key2: 'val2' }, source: undefined },
+        { output: { event: { key1: 'val1', key2: 'val2' }, source: undefined } },
+        { output: { event: { key1: 'val1', key2: 'val2' }, source: undefined } },
+        { output: { event: { key1: 'val1', key2: 'val2' }, source: undefined } },
       ],
     };
 
@@ -131,9 +137,192 @@ describe('adaptInputToVersion', () => {
     const expected = {
       implementationVersion: 'v0',
       input: [
-        { key1: 'val1', key2: 'val2' },
-        { key1: 'val1', key2: 'val2' },
-        { key1: 'val1', key2: 'val2' },
+        { output: { key1: 'val1', key2: 'val2' } },
+        { output: { key1: 'val1', key2: 'val2' } },
+        { output: { key1: 'val1', key2: 'val2' } },
+      ],
+    };
+
+    const result = ControllerUtility.adaptInputToVersion(sourceType, requestVersion, input);
+
+    expect(result).toEqual(expected);
+  });
+
+  it('should convert input from v2 to v0 format when the request version is v2 and the implementation version is v0', () => {
+    const sourceType = 'pipedream';
+    const requestVersion = 'v2';
+
+    const input = [
+      {
+        request: {
+          method: 'POST',
+          url: 'http://example.com',
+          proto: 'HTTP/2',
+          headers: { headerkey: ['headervalue'] },
+          body: '{"key": "value"}',
+          query_parameters: { paramkey: ['paramvalue'] },
+        },
+        source: { id: 'source_id', config: { configField1: 'configVal1' } },
+      },
+      {
+        request: {
+          method: 'POST',
+          url: 'http://example.com',
+          proto: 'HTTP/2',
+          headers: { headerkey: ['headervalue'] },
+          body: '{"key": "value"}',
+          query_parameters: { paramkey: ['paramvalue'] },
+        },
+        source: { id: 'source_id', config: { configField1: 'configVal1' } },
+      },
+      {
+        request: {
+          method: 'POST',
+          url: 'http://example.com',
+          proto: 'HTTP/2',
+          headers: { headerkey: ['headervalue'] },
+          body: '{"key": "value"}',
+          query_parameters: { paramkey: ['paramvalue'] },
+        },
+        source: { id: 'source_id', config: { configField1: 'configVal1' } },
+      },
+    ];
+    const expected = {
+      implementationVersion: 'v0',
+      input: [
+        { output: { key: 'value' } },
+        { output: { key: 'value' } },
+        { output: { key: 'value' } },
+      ],
+    };
+
+    const result = ControllerUtility.adaptInputToVersion(sourceType, requestVersion, input);
+
+    expect(result).toEqual(expected);
+  });
+
+  it('should fail trying to convert input from v2 to v0 format when the request version is v2 and the implementation version is v0', () => {
+    const sourceType = 'pipedream';
+    const requestVersion = 'v2';
+
+    const input = [
+      {
+        request: {
+          method: 'POST',
+          url: 'http://example.com',
+          proto: 'HTTP/2',
+          headers: { headerkey: ['headervalue'] },
+          body: '{"key": "value',
+          query_parameters: { paramkey: ['paramvalue'] },
+        },
+        source: { id: 'source_id', config: { configField1: 'configVal1' } },
+      },
+    ];
+    const expected = {
+      implementationVersion: 'v0',
+      input: [
+        {
+          conversionError: new SyntaxError('Unexpected end of JSON input'),
+        },
+      ],
+    };
+
+    const result = ControllerUtility.adaptInputToVersion(sourceType, requestVersion, input);
+
+    expect(result).toEqual(expected);
+  });
+
+  it('should convert input from v2 to v1 format when the request version is v2 and the implementation version is v1', () => {
+    const sourceType = 'webhook';
+    const requestVersion = 'v2';
+
+    const input = [
+      {
+        request: {
+          method: 'POST',
+          url: 'http://example.com',
+          proto: 'HTTP/2',
+          headers: { headerkey: ['headervalue'] },
+          body: '{"key": "value"}',
+          query_parameters: { paramkey: ['paramvalue'] },
+        },
+        source: { id: 'source_id', config: { configField1: 'configVal1' } },
+      },
+      {
+        request: {
+          method: 'POST',
+          url: 'http://example.com',
+          proto: 'HTTP/2',
+          headers: { headerkey: ['headervalue'] },
+          body: '{"key": "value"}',
+          query_parameters: { paramkey: ['paramvalue'] },
+        },
+        source: { id: 'source_id', config: { configField1: 'configVal1' } },
+      },
+      {
+        request: {
+          method: 'POST',
+          url: 'http://example.com',
+          proto: 'HTTP/2',
+          headers: { headerkey: ['headervalue'] },
+          body: '{"key": "value"}',
+          query_parameters: { paramkey: ['paramvalue'] },
+        },
+        source: { id: 'source_id', config: { configField1: 'configVal1' } },
+      },
+    ];
+    const expected = {
+      implementationVersion: 'v1',
+      input: [
+        {
+          output: {
+            event: { key: 'value' },
+            source: { id: 'source_id', config: { configField1: 'configVal1' } },
+          },
+        },
+        {
+          output: {
+            event: { key: 'value' },
+            source: { id: 'source_id', config: { configField1: 'configVal1' } },
+          },
+        },
+        {
+          output: {
+            event: { key: 'value' },
+            source: { id: 'source_id', config: { configField1: 'configVal1' } },
+          },
+        },
+      ],
+    };
+
+    const result = ControllerUtility.adaptInputToVersion(sourceType, requestVersion, input);
+
+    expect(result).toEqual(expected);
+  });
+
+  it('should fail trying to convert input from v2 to v1 format when the request version is v2 and the implementation version is v1', () => {
+    const sourceType = 'webhook';
+    const requestVersion = 'v2';
+
+    const input = [
+      {
+        request: {
+          method: 'POST',
+          url: 'http://example.com',
+          proto: 'HTTP/2',
+          headers: { headerkey: ['headervalue'] },
+          body: '{"key": "value"',
+          query_parameters: { paramkey: ['paramvalue'] },
+        },
+        source: { id: 'source_id', config: { configField1: 'configVal1' } },
+      },
+    ];
+    const expected = {
+      implementationVersion: 'v1',
+      input: [
+        {
+          conversionError: new SyntaxError('Unexpected end of JSON input'),
+        },
       ],
     };
 
@@ -148,6 +337,107 @@ describe('adaptInputToVersion', () => {
     const requestVersion = 'v1';
     const input = [];
     const expected = { implementationVersion: 'v0', input: [] };
+
+    const result = ControllerUtility.adaptInputToVersion(sourceType, requestVersion, input);
+
+    expect(result).toEqual(expected);
+  });
+
+  it('should convert input from v1 to v2 format when the request version is v1 and the implementation version is v2', () => {
+    const sourceType = 'someSourceType';
+    const requestVersion = 'v1';
+
+    // Mock return value for getSourceVersionsMap
+    jest
+      .spyOn(ControllerUtility as any, 'getSourceVersionsMap')
+      .mockReturnValue(new Map([['someSourceType', 'v2']]));
+
+    const input = [
+      {
+        event: { key: 'value', query_parameters: { paramkey: ['paramvalue'] } },
+        source: { id: 'source_id', config: { configField1: 'configVal1' } },
+      },
+      {
+        event: { key: 'value' },
+        source: { id: 'source_id', config: { configField1: 'configVal1' } },
+      },
+      {
+        event: {},
+        source: { id: 'source_id', config: { configField1: 'configVal1' } },
+      },
+    ];
+
+    const expected = {
+      implementationVersion: 'v2',
+      input: [
+        {
+          output: {
+            request: {
+              body: '{"key":"value"}',
+              query_parameters: { paramkey: ['paramvalue'] },
+            },
+            source: { id: 'source_id', config: { configField1: 'configVal1' } },
+          },
+        },
+        {
+          output: {
+            request: {
+              body: '{"key":"value"}',
+            },
+            source: { id: 'source_id', config: { configField1: 'configVal1' } },
+          },
+        },
+        {
+          output: {
+            request: {
+              body: '{}',
+            },
+            source: { id: 'source_id', config: { configField1: 'configVal1' } },
+          },
+        },
+      ],
+    };
+
+    const result = ControllerUtility.adaptInputToVersion(sourceType, requestVersion, input);
+
+    expect(result).toEqual(expected);
+  });
+
+  it('should fail trying to convert input from v1 to v2 format when the request version is v1 and the implementation version is v2', () => {
+    const sourceType = 'someSourceType';
+    const requestVersion = 'v1';
+
+    // Mock return value for getSourceVersionsMap
+    jest
+      .spyOn(ControllerUtility as any, 'getSourceVersionsMap')
+      .mockReturnValue(new Map([['someSourceType', 'v2']]));
+
+    const input = [
+      {
+        event: {
+          key: 'value',
+          query_parameters: { paramkey: ['paramvalue'] },
+          largeNumber: BigInt(12345678901234567890n),
+        },
+        source: { id: 'source_id', config: { configField1: 'configVal1' } },
+      },
+      {
+        event: { key: 'value', largeNumber: BigInt(12345678901234567890n) },
+        source: { id: 'source_id', config: { configField1: 'configVal1' } },
+      },
+    ];
+
+    const expected = {
+      implementationVersion: 'v2',
+      input: [
+        {
+          conversionError: new TypeError('Do not know how to serialize a BigInt'),
+        },
+        {
+          conversionError: new TypeError('Do not know how to serialize a BigInt'),
+        },
+      ],
+    };
 
     const result = ControllerUtility.adaptInputToVersion(sourceType, requestVersion, input);
 

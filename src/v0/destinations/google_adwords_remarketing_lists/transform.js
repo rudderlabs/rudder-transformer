@@ -12,7 +12,7 @@ const {
 const { populateConsentFromConfig } = require('../../util/googleUtils');
 const { offlineDataJobsMapping, consentConfigMap } = require('./config');
 const { processRecordInputs } = require('./recordTransform');
-const { populateIdentifiers, responseBuilder } = require('./util');
+const { populateIdentifiers, responseBuilder, getOperationAudienceId } = require('./util');
 
 function extraKeysPresent(dictionary, keyList) {
   // eslint-disable-next-line no-restricted-syntax
@@ -37,12 +37,18 @@ function extraKeysPresent(dictionary, keyList) {
 const createPayload = (message, destination) => {
   const { listData } = message.properties;
   const properties = ['add', 'remove'];
+  const { typeOfList, userSchema, isHashRequired } = destination.Config;
 
   let outputPayloads = {};
   const typeOfOperation = Object.keys(listData);
   typeOfOperation.forEach((key) => {
     if (properties.includes(key)) {
-      const userIdentifiersList = populateIdentifiers(listData[key], destination);
+      const userIdentifiersList = populateIdentifiers(
+        listData[key],
+        typeOfList,
+        userSchema,
+        isHashRequired,
+      );
       if (userIdentifiersList.length === 0) {
         logger.info(
           `Google_adwords_remarketing_list]:: No attributes are present in the '${key}' property.`,
@@ -113,8 +119,16 @@ const processEvent = async (metadata, message, destination) => {
 
     Object.values(createdPayload).forEach((data) => {
       const consentObj = populateConsentFromConfig(destination.Config, consentConfigMap);
+      const { audienceId } = destination.Config;
       response.push(
-        responseBuilder(accessToken, developerToken, data, destination, message, consentObj),
+        responseBuilder(
+          accessToken,
+          developerToken,
+          data,
+          destination,
+          getOperationAudienceId(audienceId, message),
+          consentObj,
+        ),
       );
     });
     return response;

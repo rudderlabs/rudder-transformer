@@ -2,10 +2,10 @@
 // eslint-disable-next-line @typescript-eslint/naming-convention
 const _ = require('lodash');
 const { isDefinedNotNullNotEmpty } = require('@rudderstack/integrations-lib');
-const stats = require('../../../util/stats');
-const logger = require('../../../logger');
-const { removeUndefinedAndNullValues } = require('../../../v0/util');
-const { RedisDB } = require('../../../util/redis/redisConnector');
+const stats = require('../../../../util/stats');
+const logger = require('../../../../logger');
+const { removeUndefinedAndNullValues } = require('../../../../v0/util');
+const { RedisDB } = require('../../../../util/redis/redisConnector');
 const {
   pageViewedEventBuilder,
   cartViewedEventBuilder,
@@ -20,7 +20,7 @@ const {
   INTEGERATION,
   PIXEL_EVENT_TOPICS,
   pixelEventToCartTokenLocationMapping,
-} = require('./config');
+} = require('../config');
 
 const NO_OPERATION_SUCCESS = {
   outputToSource: {
@@ -152,13 +152,13 @@ function processPixelEvent(inputEvent) {
   return message;
 }
 
-const processEventFromPixel = async (event) => {
+const processPixelWebEvents = async (event) => {
   const pixelEvent = processPixelEvent(event);
   return removeUndefinedAndNullValues(pixelEvent);
 };
 
 module.exports = {
-  processEventFromPixel,
+  processPixelWebEvents,
   handleCartTokenRedisOperations,
   extractCartToken,
 };

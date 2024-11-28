@@ -15,6 +15,7 @@ export const networkCallsData = [
       data: {
         error: {
           message: 'The access token could not be decrypted',
+          error_user_msg: 'The access token could not be decrypted',
           type: 'OAuthException',
           code: 190,
           fbtrace_id: 'fbpixel_trace_id',

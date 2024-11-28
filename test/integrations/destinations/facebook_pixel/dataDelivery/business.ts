@@ -42,7 +42,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
         body: {
           output: {
             status: 400,
-            message: 'Invalid OAuth 2.0 access token',
+            message: 'The access token could not be decrypted',
             statTags: {
               ...statTags,
               errorCategory: 'dataValidation',
@@ -51,7 +51,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
             },
             response: [
               {
-                error: 'Invalid OAuth 2.0 access token',
+                error: 'The access token could not be decrypted',
                 statusCode: 400,
                 metadata: generateMetadata(1),
               },

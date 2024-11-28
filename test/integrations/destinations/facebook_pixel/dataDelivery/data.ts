@@ -45,12 +45,13 @@ export const v0TestData = [
         body: {
           output: {
             status: 400,
-            message: 'Invalid OAuth 2.0 access token',
+            message: 'The access token could not be decrypted',
             destinationResponse: {
               error: {
                 code: 190,
                 fbtrace_id: 'fbpixel_trace_id',
                 message: 'The access token could not be decrypted',
+                error_user_msg: 'The access token could not be decrypted',
                 type: 'OAuthException',
               },
               status: 500,
@@ -202,7 +203,7 @@ export const v0TestData = [
         body: {
           output: {
             status: 429,
-            message: 'API User Too Many Calls',
+            message: 'User request limit reached',
             destinationResponse: {
               error: {
                 message: 'User request limit reached',
@@ -414,7 +415,7 @@ export const v0TestData = [
         body: {
           output: {
             status: 400,
-            message: 'Capability or permissions issue.',
+            message: 'Some error in permission',
             destinationResponse: {
               error: {
                 message: 'Some error in permission',
@@ -466,7 +467,8 @@ export const v0TestData = [
         body: {
           output: {
             status: 500,
-            message: 'Unhandled random error',
+            message:
+              '{"message":"Unhandled random error","type":"RandomException","code":5,"error_subcode":12,"fbtrace_id":"facebook_px_trace_id_10"}',
             destinationResponse: {
               error: {
                 message: 'Unhandled random error',

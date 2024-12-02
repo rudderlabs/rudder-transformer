@@ -356,13 +356,17 @@ const getClickConversionPayloadAndEndpoint = (
   // userIdentifierSource
   // if userIdentifierSource doesn't exist in properties
   // then it is taken from the webapp config
+  const { gbraid, wbraid, gclid } = payload.conversions[0];
   if (!properties.userIdentifierSource && UserIdentifierSource !== 'none') {
     set(payload, 'conversions[0].userIdentifiers[0].userIdentifierSource', UserIdentifierSource);
-
-    // one of email or phone must be provided
-    if (!email && !phone) {
+    // one of email or phone must be provided when none of gclid, wbraid and gbraid provided
+    if (!email && !phone && !(gclid || wbraid || gbraid)) {
       throw new InstrumentationError(`Either of email or phone is required for user identifier`);
     }
+  }
+  // we are deleting userIdentifiers if any one of gclid, wbraid and gbraid is there but email or phone is not present
+  if ((gclid || wbraid || gbraid) && !email && !phone) {
+    delete payload.conversions[0].userIdentifiers;
   }
   // either of email or phone should be passed
   // defaultUserIdentifier depends on the webapp configuration
@@ -411,6 +415,25 @@ const getConsentsDataFromIntegrationObj = (message) => {
   return integrationObj?.consents || {};
 };
 
+/**
+ * remove redundant ids
+ * @param {*} conversionCopy
+ */
+const updateConversion = (conversion) => {
+  const conversionCopy = cloneDeep(conversion);
+  if (conversionCopy.gclid) {
+    delete conversionCopy.wbraid;
+    delete conversionCopy.gbraid;
+  }
+  if (conversionCopy.wbraid && conversionCopy.gbraid) {
+    throw new InstrumentationError(`You can't use both wbraid and gbraid.`);
+  }
+  if (conversionCopy.wbraid || conversionCopy.gbraid) {
+    delete conversionCopy.userIdentifiers;
+  }
+  return conversionCopy;
+};
+
 module.exports = {
   validateDestinationConfig,
   generateItemListFromProducts,
@@ -423,4 +446,5 @@ module.exports = {
   getExisitingUserIdentifier,
   getConsentsDataFromIntegrationObj,
   getCallConversionPayload,
+  updateConversion,
 };

@@ -1,35 +1,41 @@
-const lodash = require('lodash');
 const path = require('path');
 const fs = require('fs');
 const { TransformationError } = require('@rudderstack/integrations-lib');
 const logger = require('../../../logger');
-const Message = require('../message');
+const Message = require('../../../v0/sources/message');
 const { CommonUtils } = require('../../../util/common');
 const { excludedFieldList } = require('./config');
-const { extractCustomFields, generateUUID } = require('../../util');
+const { extractCustomFields, generateUUID } = require('../../../v0/util');
 const { convertToISODate } = require('./utils');
 
 // ref : https://help.adjust.com/en/article/global-callbacks#general-recommended-placeholders
 // import mapping json using JSON.parse to preserve object key order
 const mapping = JSON.parse(fs.readFileSync(path.resolve(__dirname, './mapping.json'), 'utf-8'));
 
-const formatProperties = (input) => {
-  const { query_parameters: qParams } = input;
+const formatProperties = (qParams) => {
+  // const { query_parameters: qParams } = input;
   logger.debug(`[Adjust] Input event: query_params: ${JSON.stringify(qParams)}`);
   if (!qParams) {
-    throw new TransformationError('Query_parameters is missing');
+    throw new TransformationError('query parameters are missing');
   }
+
+  if (qParams.writeKey !== undefined && Object.keys(qParams).length === 1) {
+    throw new TransformationError('query parameters are missing');
+  }
+
   const formattedOutput = {};
   Object.entries(qParams).forEach(([key, [value]]) => {
-    formattedOutput[key] = value;
+    if (key !== 'writeKey') {
+      formattedOutput[key] = value;
+    }
   });
   return formattedOutput;
 };
 
 const processEvent = (inputEvent) => {
   const message = new Message(`Adjust`);
-  const event = lodash.cloneDeep(inputEvent);
-  const formattedPayload = formatProperties(event);
+  const formattedPayload = formatProperties(inputEvent.request.query_parameters);
+
   // event type is always track
   const eventType = 'track';
   message.setEventType(eventType);

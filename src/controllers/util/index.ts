@@ -33,7 +33,7 @@ export class ControllerUtility {
     if (this.sourceVersionMap?.size > 0) {
       return this.sourceVersionMap;
     }
-    const versions = ['v0', 'v1'];
+    const versions = ['v0', 'v1', 'v2'];
     versions.forEach((version) => {
       const files = fs.readdirSync(path.resolve(__dirname, `../../${version}/sources`), {
         withFileTypes: true,

@@ -46,8 +46,8 @@ const createPropertiesForEcomEventFromWebhook = (message) => {
  */
 const getAnonymousIdFromAttributes = async (event) => {
   let anonymousId = null;
-  const noteAttributes = event.note_attributes;
-  if (isDefinedAndNotNull(event) && isDefinedAndNotNull(noteAttributes)) {
+  if (isDefinedAndNotNull(event) && isDefinedAndNotNull(event.note_attributes)) {
+    const noteAttributes = event.note_attributes;
     const rudderAnonymousIdObject = noteAttributes.find(
       (attr) => attr.name === 'rudderAnonymousId',
     );

@@ -958,7 +958,9 @@ describe('processBatch', () => {
               attributes: [{ id: i, name: 'test', xyz: 'abc' }],
               events: [{ id: i, event: 'test', xyz: 'abc' }],
               purchases: [{ id: i, purchase: 'test', xyz: 'abc' }],
-              subscription_groups: [{ id: i, group: 'test', xyz: 'abc' }],
+              subscription_groups: [
+                { subscription_group_id: i, group: 'test', subscription_state: 'abc' },
+              ],
               merge_updates: [{ id: i, alias: 'test', xyz: 'abc' }],
             },
           },
@@ -981,10 +983,10 @@ describe('processBatch', () => {
     expect(result[0].batchedRequest[1].body.JSON.attributes.length).toBe(25); // Second batch contains remaining 25 attributes
     expect(result[0].batchedRequest[1].body.JSON.events.length).toBe(25); // Second batch contains remaining 25 events
     expect(result[0].batchedRequest[1].body.JSON.purchases.length).toBe(25); // Second batch contains remaining 25 purchases
-    expect(result[0].batchedRequest[2].body.JSON.subscription_groups.length).toBe(25); // First batch contains 50 subscription group
-    expect(result[0].batchedRequest[3].body.JSON.subscription_groups.length).toBe(25);
-    expect(result[0].batchedRequest[4].body.JSON.subscription_groups.length).toBe(25); // First batch contains 50 subscription group
-    expect(result[0].batchedRequest[5].body.JSON.subscription_groups.length).toBe(25); // First batch contains 25 subscription group
+    expect(result[0].batchedRequest[2].body.JSON.subscription_groups.length).toBe(25); // First batch contains 25 subscription group
+    expect(result[0].batchedRequest[3].body.JSON.subscription_groups.length).toBe(25); // Second batch contains 25 subscription group
+    expect(result[0].batchedRequest[4].body.JSON.subscription_groups.length).toBe(25); // Third batch contains 25 subscription group
+    expect(result[0].batchedRequest[5].body.JSON.subscription_groups.length).toBe(25); // Fourth batch contains 25 subscription group
     expect(result[0].batchedRequest[6].body.JSON.merge_updates.length).toBe(50); // First batch contains 50 merge_updates
     expect(result[0].batchedRequest[7].body.JSON.merge_updates.length).toBe(50); // First batch contains 25 merge_updates
   });
@@ -1057,7 +1059,9 @@ describe('processBatch', () => {
       batchedRequest: {
         body: {
           JSON: {
-            subscription_groups: [{ id: i, group: 'test', xyz: 'abc' }],
+            subscription_groups: [
+              { subscription_group_id: i, group: 'test', subscription_state: 'abc' },
+            ],
           },
         },
       },

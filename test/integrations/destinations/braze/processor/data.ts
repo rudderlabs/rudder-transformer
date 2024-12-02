@@ -3160,7 +3160,7 @@ export const data = [
                     {
                       subscription_group_id: '1234',
                       subscription_state: 'subscribed',
-                      external_id: ['Randomuser2222'],
+                      external_ids: ['Randomuser2222'],
                       phones: ['5055077683'],
                     },
                   ],
@@ -3281,7 +3281,7 @@ export const data = [
                     {
                       subscription_group_id: '1234',
                       subscription_state: 'unsubscribed',
-                      external_id: ['Randomuser2222'],
+                      external_ids: ['Randomuser2222'],
                       emails: ['abc@test.com'],
                     },
                   ],

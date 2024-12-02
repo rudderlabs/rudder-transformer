@@ -45,6 +45,26 @@ const getEndpointFromConfig = (destination) => {
   return endpoint;
 };
 
+// Merges the external_ids with the same group id and state
+const deduplicateSubscriptionGroups = (subscriptionGroups) => {
+  const uniqueGroups = {};
+  subscriptionGroups.forEach((group) => {
+    const key = `${group.subscription_group_id}-${group.subscription_state}`;
+    if (!uniqueGroups[key]) {
+      uniqueGroups[key] = {
+        ...group,
+        external_ids: [...(group.external_ids || [])],
+      };
+    } else {
+      uniqueGroups[key].external_ids.push(...(group.external_ids || []));
+    }
+  });
+  return Object.values(uniqueGroups).map((group) => ({
+    ...group,
+    external_ids: [...new Set(group.external_ids)],
+  }));
+};
+
 const CustomAttributeOperationUtil = {
   customAttributeUpdateOperation(key, data, traits, mergeObjectsUpdateOperation) {
     data[key] = {};
@@ -381,8 +401,16 @@ function prepareGroupAndAliasBatch(arrayChunks, responseArray, destination, type
     } else if (type === 'subscription') {
       response.endpoint = getSubscriptionGroupEndPoint(getEndpointFromConfig(destination));
       const subscription_groups = chunk;
+      // maketool transformed event
+      if (destination.ID == '2oRdG2shHukATE89DiUovc8wZ3P') {
+        logger.info(`braze subscription chunk ${JSON.stringify(subscription_groups)}`);
+      }
+
+      // Deduplicate the subscription groups before constructing the response body
+      const deduplicatedSubscriptionGroups = deduplicateSubscriptionGroups(subscription_groups);
+
       response.body.JSON = removeUndefinedAndNullValues({
-        subscription_groups,
+        subscription_groups: deduplicatedSubscriptionGroups,
       });
     }
     responseArray.push({
@@ -490,6 +518,10 @@ const processBatch = (transformedEvents) => {
   prepareGroupAndAliasBatch(mergeUsersArrayChunks, responseArray, destination, 'merge');
 
   if (successMetadata.length > 0) {
+    // maketool transformed event
+    if (destination.ID == '2oRdG2shHukATE89DiUovc8wZ3P') {
+      logger.info(`Response 1 batchRequest ${JSON.stringify(responseArray)}`);
+    }
     finalResponse.push({
       batchedRequest: responseArray,
       metadata: successMetadata,
@@ -504,6 +536,11 @@ const processBatch = (transformedEvents) => {
 
   if (filteredResponses.length > 0) {
     finalResponse.push(...filteredResponses);
+  }
+
+  // maketool transformed event
+  if (destination.ID == '2oRdG2shHukATE89DiUovc8wZ3P') {
+    logger.info(`final Response : ${JSON.stringify(finalResponse)}`);
   }
 
   return finalResponse;

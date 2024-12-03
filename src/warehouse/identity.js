@@ -2,7 +2,7 @@ const _ = require('lodash');
 const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const { getVersionedUtils } = require('./util');
 
-const identityEnabledWarehouses = ['snowflake', 'snowpipe_streaming', 'bq'];
+const identityEnabledWarehouses = ['snowflake', 'bq'];
 const versionedMergePropColumns = {};
 const versionedMergeRuleTableNames = {};
 

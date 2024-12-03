@@ -357,7 +357,11 @@ export function extractCommonValues(testCases: any[]): CommonValues {
   return commonValues;
 }
 
-export function generateOptimizedTestFile(testCases: any[], commonValues: CommonValues): string {
+export function generateOptimizedTestFile(
+  testCases: any[],
+  commonValues: CommonValues,
+  feature: string,
+): string {
   const variables: string[] = [];
   const imports: Set<string> = new Set([]);
 
@@ -434,18 +438,25 @@ const baseDestination: Destination = ${JSON.stringify(commonValues.destination, 
   //   return value;
   // };
 
+  let type = '';
+  if (feature === 'processor') {
+    type = 'ProcessorTestData';
+  } else if (feature === 'router') {
+    type = 'RouterTestData';
+  }
+
   // Generate the final file content
   const content = `/**
   * Auto-migrated and optimized test cases
   * Generated on: ${new Date().toISOString()}
   */
 
-  import { TestCaseData } from '../../../testTypes';
+  import { ${type} } from '../../../testTypes';
   import { ${Array.from(imports).join(', ')} } from '../../../../../src/types';
 
   ${variables.join('\n')}
 
-  export const data: TestCaseData[] = ${JSON.stringify(processedTests, null, 2)};
+  export const data: ${type}[] = ${JSON.stringify(processedTests, null, 2)};
   `;
 
   // Replace our special markers with actual variable references

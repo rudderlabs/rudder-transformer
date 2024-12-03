@@ -75,13 +75,17 @@ async function writeTestFile(filePath: string, data: any): Promise<void> {
   }
 }
 
-async function enhwriteTestFile(filePath: string, testCases: any[]): Promise<void> {
+async function enhwriteTestFile(
+  filePath: string,
+  testCases: any[],
+  feature: string,
+): Promise<void> {
   try {
     // Extract common values
     const commonValues = extractCommonValues(testCases);
 
     // Generate optimized content
-    const content = generateOptimizedTestFile(testCases, commonValues);
+    const content = generateOptimizedTestFile(testCases, commonValues, feature);
 
     // Format with prettier
     const formattedContent = await formatWithPrettier(content, filePath);
@@ -146,7 +150,7 @@ async function migrateTestFiles(): Promise<void> {
       console.log(`Created backup at: ${backupPath}`);
 
       // Write migrated tests
-      await enhwriteTestFile(filePath, migratedTests);
+      await enhwriteTestFile(filePath, migratedTests, feature.toLowerCase());
       console.log(`Successfully migrated ${migratedTests.length} test cases in ${filePath}`);
       migratedCount += migratedTests.length;
     } catch (error) {

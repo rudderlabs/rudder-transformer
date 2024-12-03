@@ -102,7 +102,7 @@ export type ProcessorTestData = {
       body: ProcessorTransformationResponse[];
     };
   };
-  mockFns?: (mockAdapter: MockAdapter) => {};
+  mockFns?: (mockAdapter: MockAdapter) => void;
 };
 export type RouterTestData = {
   id: string;

@@ -4,11 +4,16 @@ const { BULK_ENDPOINTS } = require('../../../v0/destinations/iterable/config');
 const { CommonStrategy } = require('./commonStrategy');
 const { TrackIdentifyStrategy } = require('./trackIdentifyStrategy');
 
+const strategyRegistry = {
+  [TrackIdentifyStrategy.name]: new TrackIdentifyStrategy(),
+  [CommonStrategy.name]: new CommonStrategy(),
+};
+
 const getResponseStrategy = (endpoint) => {
   if (BULK_ENDPOINTS.some((path) => endpoint.includes(path))) {
-    return new TrackIdentifyStrategy();
+    return strategyRegistry[TrackIdentifyStrategy.name];
   }
-  return new CommonStrategy();
+  return strategyRegistry[CommonStrategy.name];
 };
 
 const responseHandler = (responseParams) => {

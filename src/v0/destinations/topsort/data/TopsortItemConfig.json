@@ -1,28 +1,12 @@
 [
   {
-    "destKey": "products.product_id",
-    "sourceKeys": "productId",
-    "required": true
-  },
-  {
-    "destKey": "products.quantity",
-    "sourceKeys": "quantity",
-    "metadata": {
-      "type": "toNumber"
-    },
+    "destKey": "properties.position",
+    "sourceKeys": "position",
     "required": false
   },
   {
-    "destKey": "products.price",
-    "sourceKeys": "unitPrice",
-    "metadata": {
-      "type": "toNumber"
-    },
-    "required": true
-  },
-  {
-    "destKey": "products.vendorId",
-    "sourceKeys": "vendorId",
+    "destKey": "properties.product_id",
+    "sourceKeys": "productId",
     "required": false
   }
 ]

@@ -1,43 +1,109 @@
-const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
-const { BASE_URL, ConfigCategory, mappingConfig } = require('./config');
+const {
+  InstrumentationError,
+  ConfigurationError,
+  getHashFromArray,
+} = require('@rudderstack/integrations-lib');
+const {
+  BASE_URL,
+  ConfigCategory,
+  mappingConfig,
+  ECOMM_EVENTS_WITH_PRODUCT_ARRAY,
+} = require('./config');
 const { defaultRequestConfig, constructPayload, simpleProcessRouterDest } = require('../../util');
 
 const responseBuilder = (message, { Config }) => {
   const { apiKey, topsortEvents } = Config; // Fetch the API Key and event mappings
-  const { event } = message;
+  const { event, properties } = message;
 
-  let finalParams = {};
+  // // Construct the payload based on the message
+  // const payload = constructPayload(message, mappingConfig[ConfigCategory.TRACK.name]);
 
-  // Construct the payload based on the message
-  const payload = constructPayload(message, mappingConfig[ConfigCategory.TRACK.name]);
+  /*
+    {
+      product_added : click
+      product_added: impression
+      product_removed : click
+      product_viewed : view
+      product_clicked : click
+    }
+*/
+  const parsedTopsortEventMappings = getHashFromArray(topsortEvents);
+  console.log(parsedTopsortEventMappings);
+
+  let mappedEventName;
 
   // Use topsortEvents to map the incoming event to a Topsort event
-  const mappedEvent = topsortEvents.find((mapping) => mapping.from === event);
-  if (!mappedEvent) {
+  // eslint-disable-next-line no-restricted-syntax
+  for (const [key, value] of Object.entries(parsedTopsortEventMappings)) {
+    if (key === event) {
+      mappedEventName = value;
+      break;
+    }
+  }
+
+  if (!mappedEventName) {
     throw new InstrumentationError("Event not mapped in 'topsortEvents'. Dropping the event.");
   }
 
   // If the event is valid and mapped, get the corresponding Topsort event
-  const topsortEvent = mappedEvent.to;
+  const topsortEvent = mappedEventName;
 
-  // Add the mapped event into the payload (you can choose to modify the payload as needed)
-  finalParams = {
-    ...payload.params, // Include existing parameters from the payload
-    event: topsortEvent, // Add the mapped Topsort event to the final parameters
-  };
+  const basepayload = constructPayload(message, mappingConfig[ConfigCategory.TRACK.name]);
+  const placementPayload = constructPayload(message, mappingConfig[ConfigCategory.PLACEMENT.name]);
 
-  // Prepare the response
-  const response = defaultRequestConfig();
-  response.params = finalParams; // Attach the parameters to the response
-  response.endpoint = BASE_URL; // Set the appropriate API endpoint
+  let isProductArrayAvailable = ECOMM_EVENTS_WITH_PRODUCT_ARRAY.includes(event);
+  const { products } = properties;
+  if (!Array.isArray(products)) {
+    isProductArrayAvailable = false; // or we can throw error
+  }
 
-  // Set the headers, including the API key for authentication
-  response.headers = {
-    'Content-Type': 'application/json',
-    api_key: apiKey, // Add the API key here for authentication
-  };
+  const finalPayloads = [];
 
-  return response;
+  if (isProductArrayAvailable) {
+    const topsortItems = products.map((product) => {
+      const itemPayload = constructPayload(product, mappingConfig[ConfigCategory.ITEM.name]);
+      return itemPayload;
+    });
+
+    data = {
+      ...basepayload,
+      items: topsortItems,
+    };
+
+    topsortItems.forEach((item) => {
+      const data = {
+        ...basepayload,
+        placement: {
+          ...placementPayload,
+          ...item,
+        },
+        id: 'id', // generate
+      };
+
+      finalPayloads.push({
+        data,
+        event: topsortEvent,
+      });
+    });
+  } else {
+    const topsortItem = constructPayload(message, mappingConfig[ConfigCategory.ITEM.name]);
+
+    const data = {
+      ...basepayload,
+      placement: {
+        ...placementPayload,
+        ...topsortItem,
+      },
+      id: 'messageID', // generate
+    };
+
+    finalPayloads.push({
+      data,
+      event: topsortEvent,
+    });
+  }
+
+  return finalPayloads;
 };
 
 // Function to validate and process incoming event

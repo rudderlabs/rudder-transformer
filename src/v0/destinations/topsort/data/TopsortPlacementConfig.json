@@ -1,37 +1,31 @@
 [
   {
-    "destKey": "context.page.path",
-    "sourceKeys": "path",
+    "destKey": "path",
+    "sourceKeys": "context.page.path",
     "required": true
   },
+
   {
-    "destKey": "properties.position",
-    "sourceKeys": "position",
+    "destKey": "searchQuery",
+    "sourceKeys": "properties.query",
     "required": false
   },
   {
-    "destKey": "properties.product_id",
-    "sourceKeys": "productId",
+    "destKey": "page",
+    "sourceKeys": "properties.pageNumber",
     "required": false
   },
   {
-    "destKey": "properties.query",
-    "sourceKeys": "searchQuery",
+    "destKey": "pageSize",
+    "sourceKeys": "properties.pageSize",
     "required": false
   },
   {
-    "destKey": "properties.pageNumber",
-    "sourceKeys": "page",
-    "required": false
-  },
-  {
-    "destKey": "properties.pageSize",
-    "sourceKeys": "pageSize",
-    "required": false
-  },
-  {
-    "destKey": "[properties.category_id]",
-    "sourceKeys": "categoryIds",
-    "required": false
+    "destKey": "categoryIds",
+    "sourceKeys": "properties.category_id",
+    "required": false,
+    "metadata": {
+      "toArray": true
+    }
   }
 ]

@@ -1,0 +1,6 @@
+[
+  {
+    "destKey": "productId",
+    "sourceKeys": ["productId", "properties.productId"]
+  }
+]

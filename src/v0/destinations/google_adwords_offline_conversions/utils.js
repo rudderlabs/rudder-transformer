@@ -361,7 +361,9 @@ const getClickConversionPayloadAndEndpoint = (
     set(payload, 'conversions[0].userIdentifiers[0].userIdentifierSource', UserIdentifierSource);
     // one of email or phone must be provided when none of gclid, wbraid and gbraid provided
     if (!email && !phone && !(gclid || wbraid || gbraid)) {
-      throw new InstrumentationError(`Either of email or phone is required for user identifier`);
+      throw new InstrumentationError(
+        `Either an email address or a phone number is required for user identification when none of gclid, wbraid, or gbraid is provided.`,
+      );
     }
   }
   // we are deleting userIdentifiers if any one of gclid, wbraid and gbraid is there but email or phone is not present

@@ -1,0 +1,45 @@
+[
+  {
+    "destKey": "messageId",
+    "sourceKeys": "id",
+    "required": true
+  },
+  {
+    "destKey": "occurredAt",
+    "sourceKeys": ["originalTimestamp", "timestamp"],
+    "metadata": {
+      "type": "timestamp"
+    },
+    "required": true
+  },
+  {
+    "destKey": "anonymousId",
+    "sourceKeys": "opaqueUserId",
+    "required": true
+  },
+  {
+    "destKey": "items",
+    "sourceKeys": "products",
+    "required": true
+  },
+  {
+    "destKey": "resolvedBidId",
+    "sourceKeys": "properties.resolvedBidId",
+    "required": false
+  },
+  {
+    "destKey": "entity",
+    "sourceKeys": "properties.entity",
+    "required": false
+  },
+  {
+    "destKey": "placement",
+    "sourceKeys": "properties.placement",
+    "required": false
+  },
+  {
+    "destKey": "additionalAttribution",
+    "sourceKeys": "properties.additionalAttribution",
+    "required": false
+  }
+]

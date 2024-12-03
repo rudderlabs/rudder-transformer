@@ -317,6 +317,11 @@ const getStoreConversionPayload = (message, Config, event) => {
   return payload;
 };
 
+const hasClickId = (conversion) => {
+  const { gbraid, wbraid, gclid } = conversion;
+  return gclid || wbraid || gbraid;
+};
+
 const getClickConversionPayloadAndEndpoint = (
   message,
   Config,
@@ -356,18 +361,18 @@ const getClickConversionPayloadAndEndpoint = (
   // userIdentifierSource
   // if userIdentifierSource doesn't exist in properties
   // then it is taken from the webapp config
-  const { gbraid, wbraid, gclid } = payload.conversions[0];
+
   if (!properties.userIdentifierSource && UserIdentifierSource !== 'none') {
     set(payload, 'conversions[0].userIdentifiers[0].userIdentifierSource', UserIdentifierSource);
     // one of email or phone must be provided when none of gclid, wbraid and gbraid provided
-    if (!email && !phone && !(gclid || wbraid || gbraid)) {
+    if (!email && !phone && !hasClickId(payload.conversions[0])) {
       throw new InstrumentationError(
         `Either an email address or a phone number is required for user identification when none of gclid, wbraid, or gbraid is provided.`,
       );
     }
   }
   // we are deleting userIdentifiers if any one of gclid, wbraid and gbraid is there but email or phone is not present
-  if ((gclid || wbraid || gbraid) && !email && !phone) {
+  if (hasClickId(payload.conversions[0]) && !email && !phone) {
     delete payload.conversions[0].userIdentifiers;
   }
   // either of email or phone should be passed

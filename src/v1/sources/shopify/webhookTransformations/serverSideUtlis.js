@@ -45,15 +45,14 @@ const createPropertiesForEcomEventFromWebhook = (message) => {
  * @returns {String} anonymousId
  */
 const getAnonymousIdFromAttributes = async (event) => {
-  let anonymousId = null;
-  if (isDefinedAndNotNull(event) && isDefinedAndNotNull(event.note_attributes)) {
-    const noteAttributes = event.note_attributes;
-    const rudderAnonymousIdObject = noteAttributes.find(
-      (attr) => attr.name === 'rudderAnonymousId',
-    );
-    anonymousId = rudderAnonymousIdObject ? rudderAnonymousIdObject.value : null;
+  if (!isDefinedAndNotNull(event) || !isDefinedAndNotNull(event.note_attributes)) {
+    return null; // Return early if event or note_attributes is invalid
   }
-  return anonymousId;
+
+  const noteAttributes = event.note_attributes;
+  const rudderAnonymousIdObject = noteAttributes.find((attr) => attr.name === 'rudderAnonymousId');
+
+  return rudderAnonymousIdObject ? rudderAnonymousIdObject.value : null;
 };
 
 module.exports = {

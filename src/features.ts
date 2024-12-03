@@ -92,6 +92,7 @@ const defaultFeaturesConfig: FeaturesConfig = {
     HTTP: true,
     AMAZON_AUDIENCE: true,
     INTERCOM_V2: true,
+    LINKEDIN_AUDIENCE: true,
   },
   regulations: [
     'BRAZE',

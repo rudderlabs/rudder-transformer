@@ -27,12 +27,13 @@ const {
   formatEventProps,
 } = require('./util');
 const {
-  ENDPOINTS,
   USER_EXCLUSION_FIELDS,
   ACCOUNT_EXCLUSION_FIELDS,
   trackMapping,
   groupMapping,
   identifyMapping,
+  getUsersEndpoint,
+  getCustomEventsEndpoint,
 } = require('./config');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
@@ -92,7 +93,7 @@ const identifyResponseBuilder = async (message, { Config }, metadata) => {
   if (isUserPresent) {
     // update user
     response.method = defaultPutRequestConfig.requestMethod;
-    response.endpoint = `${ENDPOINTS.USERS_ENDPOINT}/${userId}`;
+    response.endpoint = `${getUsersEndpoint(Config)}/${userId}`;
     response.body.JSON = removeUndefinedAndNullValues(payload);
     return response;
   }
@@ -100,7 +101,7 @@ const identifyResponseBuilder = async (message, { Config }, metadata) => {
   // create new user
   payload.identifyId = userId;
   response.method = defaultPostRequestConfig.requestMethod;
-  response.endpoint = ENDPOINTS.USERS_ENDPOINT;
+  response.endpoint = getUsersEndpoint(Config);
   response.body.JSON = removeUndefinedAndNullValues(payload);
   return response;
 };
@@ -162,7 +163,7 @@ const newGroupResponseBuilder = async (message, { Config }, metadata) => {
     'X-APTRINSIC-API-KEY': Config.apiKey,
     'Content-Type': JSON_MIME_TYPE,
   };
-  response.endpoint = `${ENDPOINTS.USERS_ENDPOINT}/${userId}`;
+  response.endpoint = `${getUsersEndpoint(Config)}/${userId}`;
   response.body.JSON = {
     accountId: groupId,
   };
@@ -230,7 +231,7 @@ const groupResponseBuilder = async (message, { Config }, metadata) => {
     'X-APTRINSIC-API-KEY': Config.apiKey,
     'Content-Type': JSON_MIME_TYPE,
   };
-  response.endpoint = `${ENDPOINTS.USERS_ENDPOINT}/${userId}`;
+  response.endpoint = `${getUsersEndpoint(Config)}/${userId}`;
   response.body.JSON = {
     accountId: groupId,
   };
@@ -271,7 +272,7 @@ const trackResponseBuilder = (message, { Config }) => {
     'X-APTRINSIC-API-KEY': Config.apiKey,
     'Content-Type': JSON_MIME_TYPE,
   };
-  response.endpoint = ENDPOINTS.CUSTOM_EVENTS_ENDPOINT;
+  response.endpoint = getCustomEventsEndpoint(Config);
   return response;
 };
 

@@ -35,8 +35,8 @@ jobs:
 
       - name: Filter JS/TS Files
         run: |
-          echo "${{ steps.files.outputs.added_modified }}" | tr ' ' '\n' | grep -E '\.(js|ts|jsx|tsx)$' > changed_files.txt
-          if [ ! -s changed_files.txt ]; then
+          changed_files=$(echo "${{ steps.files.outputs.added_modified }}" | tr ' ' '\n' | grep -E '\.(js|ts|jsx|tsx)$' || true)
+          if [ -z "$changed_files" ]; then
             echo "No JS/TS files to format or lint."
             exit 0
           fi

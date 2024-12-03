@@ -2296,7 +2296,7 @@ export const data = [
   },
   {
     name: 'airship',
-    description: 'Test 22',
+    description: 'Test 22 : session id from Web SDK gets converted to v5 uuid format',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -2321,7 +2321,7 @@ export const data = [
                 ip: '0.0.0.0',
                 os: { name: '', version: '' },
                 screen: { density: 2 },
-                sessionId: '3049dc4c-5a95-4ccd-a3e7-d74a7e411f22',
+                sessionId: '1731403898',
               },
               type: 'track',
               messageId: '84e26acc-56a5-4835-8233-591137fca468',
@@ -2365,7 +2365,268 @@ export const data = [
                   user: { named_user_id: 'testuserId1' },
                   body: {
                     name: 'product_clicked',
-                    session_id: '3049dc4c-5a95-4ccd-a3e7-d74a7e411f22',
+                    session_id: 'd5627eac-795d-5005-9bb4-2c7c0af6cab0',
+                  },
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: '',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'airship',
+    description: 'Test 23 : session id from mobile SDK gets converted to v5 uuid format',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              channel: 'web',
+              context: {
+                app: {
+                  build: '1.0.0',
+                  name: 'RudderLabs JavaScript SDK',
+                  namespace: 'com.rudderlabs.javascript',
+                  version: '1.0.0',
+                },
+                traits: { email: 'testone@gmail.com', firstName: 'test', lastName: 'one' },
+                library: { name: 'RudderLabs JavaScript SDK', version: '1.0.0' },
+                userAgent:
+                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
+                locale: 'en-US',
+                ip: '0.0.0.0',
+                os: { name: '', version: '' },
+                screen: { density: 2 },
+                sessionId: 1731403898,
+              },
+              type: 'track',
+              messageId: '84e26acc-56a5-4835-8233-591137fca468',
+              anonymousId: '123456',
+              event: 'Product    Clicked',
+              userId: 'testuserId1',
+              properties: {},
+              integrations: { All: true },
+            },
+            destination: {
+              Config: {
+                apiKey: 'dummyApiKey',
+                appKey: 'ffdf',
+                dataCenter: false,
+              },
+            },
+          },
+        ],
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://go.urbanairship.com/api/custom-events',
+              headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/vnd.urbanairship+json; version=3',
+                'X-UA-Appkey': 'ffdf',
+                Authorization: 'Bearer dummyApiKey',
+              },
+              params: {},
+              body: {
+                JSON: {
+                  user: { named_user_id: 'testuserId1' },
+                  body: {
+                    name: 'product_clicked',
+                    session_id: 'd5627eac-795d-5005-9bb4-2c7c0af6cab0',
+                  },
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: '',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'airship',
+    description: 'Test 24 : session id null gets ignored',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              channel: 'web',
+              context: {
+                app: {
+                  build: '1.0.0',
+                  name: 'RudderLabs JavaScript SDK',
+                  namespace: 'com.rudderlabs.javascript',
+                  version: '1.0.0',
+                },
+                traits: { email: 'testone@gmail.com', firstName: 'test', lastName: 'one' },
+                library: { name: 'RudderLabs JavaScript SDK', version: '1.0.0' },
+                userAgent:
+                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
+                locale: 'en-US',
+                ip: '0.0.0.0',
+                os: { name: '', version: '' },
+                screen: { density: 2 },
+              },
+              type: 'track',
+              messageId: '84e26acc-56a5-4835-8233-591137fca468',
+              anonymousId: '123456',
+              event: 'Product    Clicked',
+              userId: 'testuserId1',
+              properties: {
+                sessionId: null,
+              },
+              integrations: { All: true },
+            },
+            destination: {
+              Config: {
+                apiKey: 'dummyApiKey',
+                appKey: 'ffdf',
+                dataCenter: false,
+              },
+            },
+          },
+        ],
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://go.urbanairship.com/api/custom-events',
+              headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/vnd.urbanairship+json; version=3',
+                'X-UA-Appkey': 'ffdf',
+                Authorization: 'Bearer dummyApiKey',
+              },
+              params: {},
+              body: {
+                JSON: {
+                  user: { named_user_id: 'testuserId1' },
+                  body: {
+                    name: 'product_clicked',
+                  },
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: '',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'airship',
+    description: 'Test 24 : session id undefined gets ignored',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              channel: 'web',
+              context: {
+                app: {
+                  build: '1.0.0',
+                  name: 'RudderLabs JavaScript SDK',
+                  namespace: 'com.rudderlabs.javascript',
+                  version: '1.0.0',
+                },
+                traits: { email: 'testone@gmail.com', firstName: 'test', lastName: 'one' },
+                library: { name: 'RudderLabs JavaScript SDK', version: '1.0.0' },
+                userAgent:
+                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
+                locale: 'en-US',
+                ip: '0.0.0.0',
+                os: { name: '', version: '' },
+                screen: { density: 2 },
+              },
+              type: 'track',
+              messageId: '84e26acc-56a5-4835-8233-591137fca468',
+              anonymousId: '123456',
+              event: 'Product    Clicked',
+              userId: 'testuserId1',
+              properties: {
+                sessionId: undefined,
+              },
+              integrations: { All: true },
+            },
+            destination: {
+              Config: {
+                apiKey: 'dummyApiKey',
+                appKey: 'ffdf',
+                dataCenter: false,
+              },
+            },
+          },
+        ],
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://go.urbanairship.com/api/custom-events',
+              headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/vnd.urbanairship+json; version=3',
+                'X-UA-Appkey': 'ffdf',
+                Authorization: 'Bearer dummyApiKey',
+              },
+              params: {},
+              body: {
+                JSON: {
+                  user: { named_user_id: 'testuserId1' },
+                  body: {
+                    name: 'product_clicked',
                   },
                 },
                 JSON_ARRAY: {},

@@ -22,10 +22,19 @@ const {
   extractCustomFields,
   isEmptyObject,
   simpleProcessRouterDest,
+  convertToUuid,
 } = require('../../util');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const DEFAULT_ACCEPT_HEADER = 'application/vnd.urbanairship+json; version=3';
+
+const transformSessionId = (rawSessionId) => {
+  try {
+    return convertToUuid(rawSessionId);
+  } catch (error) {
+    throw new InstrumentationError(`Failed to transform session ID: ${error.message}`);
+  }
+};
 
 const identifyResponseBuilder = (message, { Config }) => {
   const tagPayload = constructPayload(message, identifyMapping);
@@ -128,6 +137,11 @@ const trackResponseBuilder = async (message, { Config }) => {
 
   name = name.toLowerCase();
   const payload = constructPayload(message, trackMapping);
+
+  // ref : https://docs.airship.com/api/ua/#operation-api-custom-events-post
+  if (isDefinedAndNotNullAndNotEmpty(payload.session_id)) {
+    payload.session_id = transformSessionId(payload.session_id);
+  }
   let properties = {};
   properties = extractCustomFields(message, properties, ['properties'], AIRSHIP_TRACK_EXCLUSION);
   if (!isEmptyObject(properties)) {

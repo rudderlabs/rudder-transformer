@@ -468,7 +468,7 @@ export const data = [
                     order_id: '50314b8e9bcf000000000000',
                     num_items: 2,
                     content_ids: ['123'],
-                    contents: [{ quantity: 2, item_price: '25' }],
+                    contents: [{ id: '123', quantity: 2, item_price: '25' }],
                   },
                 },
                 JSON_ARRAY: {},
@@ -2420,7 +2420,7 @@ export const data = [
                     order_id: '50314b8e9bcf000000000000',
                     num_items: 0,
                     content_ids: ['1234'],
-                    contents: [{ quantity: 1, item_price: 'undefined' }],
+                    contents: [{ id: '1234', quantity: 1 }],
                   },
                 },
                 JSON_ARRAY: {},
@@ -2685,7 +2685,7 @@ export const data = [
                   advertiser_id: '123456',
                   app_id: '429047995',
                   custom_data: {
-                    contents: [{ item_price: 'undefined', quantity: 1 }],
+                    contents: [{ quantity: 1 }],
                     currency: 'USD',
                     num_items: 0,
                     order_id: '50314b8e9bcf000000000000',
@@ -3606,7 +3606,6 @@ export const data = [
                     contents: [
                       {
                         quantity: 1,
-                        item_price: 'undefined',
                       },
                     ],
                   },

@@ -365,16 +365,18 @@ const getClickConversionPayloadAndEndpoint = (
   if (!properties.userIdentifierSource && UserIdentifierSource !== 'none') {
     set(payload, 'conversions[0].userIdentifiers[0].userIdentifierSource', UserIdentifierSource);
     // one of email or phone must be provided when none of gclid, wbraid and gbraid provided
-    if (!email && !phone && !hasClickId(payload.conversions[0])) {
+  }
+  if (!email && !phone) {
+    if (!hasClickId(payload.conversions[0])) {
       throw new InstrumentationError(
         `Either an email address or a phone number is required for user identification when none of gclid, wbraid, or gbraid is provided.`,
       );
+    } else {
+      // we are deleting userIdentifiers if any one of gclid, wbraid and gbraid is there but email or phone is not present
+      delete payload.conversions[0].userIdentifiers;
     }
   }
-  // we are deleting userIdentifiers if any one of gclid, wbraid and gbraid is there but email or phone is not present
-  if (hasClickId(payload.conversions[0]) && !email && !phone) {
-    delete payload.conversions[0].userIdentifiers;
-  }
+
   // either of email or phone should be passed
   // defaultUserIdentifier depends on the webapp configuration
   // Ref - https://developers.google.com/google-ads/api/rest/reference/rest/v11/customers/uploadClickConversions#ClickConversion

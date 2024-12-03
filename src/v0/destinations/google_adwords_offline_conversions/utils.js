@@ -322,7 +322,7 @@ const hasClickId = (conversion) => {
   return gclid || wbraid || gbraid;
 };
 const populateUserIdentifier = ({ email, phone, properties, payload, UserIdentifierSource }) => {
-  let copiedPayload = cloneDeep(payload);
+  const copiedPayload = cloneDeep(payload);
   // userIdentifierSource
   // if userIdentifierSource doesn't exist in properties
   // then it is taken from the webapp config

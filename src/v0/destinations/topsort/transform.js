@@ -1,112 +1,102 @@
 const {
   InstrumentationError,
   ConfigurationError,
-  getHashFromArray,
+  getHashFromArrayWithDuplicate,
 } = require('@rudderstack/integrations-lib');
+const { ConfigCategory, mappingConfig, ECOMM_EVENTS_WITH_PRODUCT_ARRAY } = require('./config');
+const { constructPayload, simpleProcessRouterDest } = require('../../util');
 const {
-  BASE_URL,
-  ConfigCategory,
-  mappingConfig,
-  ECOMM_EVENTS_WITH_PRODUCT_ARRAY,
-} = require('./config');
-const { defaultRequestConfig, constructPayload, simpleProcessRouterDest } = require('../../util');
+  constructItemPayloads,
+  createEventData,
+  isProductArrayValid,
+  getMappedEventName,
+  addFinalPayload,
+} = require('./utils');
+
+// Function to process events with a product array
+const processProductArray = (
+  products,
+  basePayload,
+  placementPayload,
+  topsortEvent,
+  apiKey,
+  finalPayloads,
+) => {
+  const itemPayloads = constructItemPayloads(products, mappingConfig[ConfigCategory.ITEM.name]);
+  itemPayloads.forEach((itemPayload) => {
+    const eventData = createEventData(basePayload, placementPayload, itemPayload, topsortEvent);
+    addFinalPayload(eventData, apiKey, finalPayloads);
+  });
+};
+
+// Function to process events with a single product or no product data
+const processSingleProduct = (
+  basePayload,
+  placementPayload,
+  message,
+  topsortEvent,
+  apiKey,
+  finalPayloads,
+  messageId,
+) => {
+  const itemPayload = constructPayload(message, mappingConfig[ConfigCategory.ITEM.name]);
+  const eventData = createEventData(basePayload, placementPayload, itemPayload, topsortEvent);
+
+  // Ensure messageId is used instead of generating a UUID for single product events
+  eventData.data.id = messageId;
+
+  // Add final payload with appropriate ID and other headers
+  addFinalPayload(eventData, apiKey, finalPayloads);
+};
 
 const responseBuilder = (message, { Config }) => {
-  const { apiKey, topsortEvents } = Config; // Fetch the API Key and event mappings
+  const { apiKey, topsortEvents } = Config;
   const { event, properties } = message;
 
-  // // Construct the payload based on the message
-  // const payload = constructPayload(message, mappingConfig[ConfigCategory.TRACK.name]);
-
-  /*
-    {
-      product_added : click
-      product_added: impression
-      product_removed : click
-      product_viewed : view
-      product_clicked : click
-    }
-*/
-  const parsedTopsortEventMappings = getHashFromArray(topsortEvents);
-  console.log(parsedTopsortEventMappings);
-
-  let mappedEventName;
-
-  // Use topsortEvents to map the incoming event to a Topsort event
-  // eslint-disable-next-line no-restricted-syntax
-  for (const [key, value] of Object.entries(parsedTopsortEventMappings)) {
-    if (key === event) {
-      mappedEventName = value;
-      break;
-    }
-  }
+  // Parse Topsort event mappings
+  const parsedTopsortEventMappings = getHashFromArrayWithDuplicate(topsortEvents);
+  const mappedEventName = getMappedEventName(parsedTopsortEventMappings, event);
 
   if (!mappedEventName) {
     throw new InstrumentationError("Event not mapped in 'topsortEvents'. Dropping the event.");
   }
 
-  // If the event is valid and mapped, get the corresponding Topsort event
   const topsortEvent = mappedEventName;
 
-  const basepayload = constructPayload(message, mappingConfig[ConfigCategory.TRACK.name]);
+  // Construct base and placement payloads
+  const basePayload = constructPayload(message, mappingConfig[ConfigCategory.TRACK.name]);
   const placementPayload = constructPayload(message, mappingConfig[ConfigCategory.PLACEMENT.name]);
 
-  let isProductArrayAvailable = ECOMM_EVENTS_WITH_PRODUCT_ARRAY.includes(event);
-  const { products } = properties;
-  if (!Array.isArray(products)) {
-    isProductArrayAvailable = false; // or we can throw error
-  }
+  // Check if the event involves a product array (using ECOMM_EVENTS_WITH_PRODUCT_ARRAY)
+  const isProductArrayAvailable =
+    ECOMM_EVENTS_WITH_PRODUCT_ARRAY.includes(event) && isProductArrayValid(event, properties);
 
   const finalPayloads = [];
 
+  // Handle events based on the presence of a product array
   if (isProductArrayAvailable) {
-    const topsortItems = products.map((product) => {
-      const itemPayload = constructPayload(product, mappingConfig[ConfigCategory.ITEM.name]);
-      return itemPayload;
-    });
-
-    data = {
-      ...basepayload,
-      items: topsortItems,
-    };
-
-    topsortItems.forEach((item) => {
-      const data = {
-        ...basepayload,
-        placement: {
-          ...placementPayload,
-          ...item,
-        },
-        id: 'id', // generate
-      };
-
-      finalPayloads.push({
-        data,
-        event: topsortEvent,
-      });
-    });
+    processProductArray(
+      properties.products,
+      basePayload,
+      placementPayload,
+      topsortEvent,
+      apiKey,
+      finalPayloads,
+    );
   } else {
-    const topsortItem = constructPayload(message, mappingConfig[ConfigCategory.ITEM.name]);
-
-    const data = {
-      ...basepayload,
-      placement: {
-        ...placementPayload,
-        ...topsortItem,
-      },
-      id: 'messageID', // generate
-    };
-
-    finalPayloads.push({
-      data,
-      event: topsortEvent,
-    });
+    processSingleProduct(
+      basePayload,
+      placementPayload,
+      message,
+      topsortEvent,
+      apiKey,
+      finalPayloads,
+    );
   }
 
   return finalPayloads;
 };
 
-// Function to validate and process incoming event
 const processEvent = (message, destination) => {
   // Check for missing API Key or missing Advertiser ID
   if (!destination.Config.apiKey) {

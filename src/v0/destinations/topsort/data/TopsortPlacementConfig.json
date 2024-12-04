@@ -4,7 +4,6 @@
     "sourceKeys": "context.page.path",
     "required": true
   },
-
   {
     "destKey": "searchQuery",
     "sourceKeys": "properties.query",

@@ -11,7 +11,14 @@ const ConfigCategories = {
   ITEM: { name: 'TopsortItemConfig' },
 };
 
-const ECOMM_EVENTS_WITH_PRODUCT_ARRAY = ['Order Completed'];
+const ECOMM_EVENTS_WITH_PRODUCT_ARRAY = [
+  'Product Clicked',
+  'Product added',
+  'Product Viewed',
+  'Product Removed',
+  'Checkout Started',
+  'Payment Info Entered',
+];
 
 const mappingConfig = getMappingConfig(ConfigCategories, __dirname);
 

@@ -1,0 +1,12 @@
+[
+  {
+    "destKey": "properties.position",
+    "sourceKeys": "position",
+    "required": false
+  },
+  {
+    "destKey": "properties.product_id",
+    "sourceKeys": "productId",
+    "required": false
+  }
+]

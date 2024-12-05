@@ -122,7 +122,7 @@ const processEvent = async (inputEvent, metricMetadata) => {
   }
   // attach anonymousId if the event is track event using note_attributes
   if (message.type !== EventType.IDENTIFY) {
-    const anonymousId = await getAnonymousIdFromAttributes(event);
+    const anonymousId = getAnonymousIdFromAttributes(event);
     if (isDefinedAndNotNull(anonymousId)) {
       message.setProperty('anonymousId', anonymousId);
     }

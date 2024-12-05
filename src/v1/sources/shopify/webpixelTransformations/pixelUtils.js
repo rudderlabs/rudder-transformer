@@ -14,7 +14,7 @@ const {
 
 function getNestedValue(object, path) {
   const keys = path.split('.');
-  return keys.reduce((nestedObject, key) => nestedObject && nestedObject[key], object);
+  return keys.reduce((nestedObject, key) => nestedObject?.[key], object);
 }
 
 function setNestedValue(object, path, value) {

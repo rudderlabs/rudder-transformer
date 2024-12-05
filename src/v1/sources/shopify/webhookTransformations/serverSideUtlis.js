@@ -17,7 +17,6 @@ const getProductsFromLineItems = (lineItems, mapping) => {
   }
   const products = [];
   lineItems.forEach((lineItem) => {
-    // const product = constructPayload(lineItem, lineItemsMappingJSON);
     const product = constructPayload(lineItem, mapping);
     products.push(product);
   });
@@ -44,7 +43,7 @@ const createPropertiesForEcomEventFromWebhook = (message) => {
  * @param {Object} event
  * @returns {String} anonymousId
  */
-const getAnonymousIdFromAttributes = async (event) => {
+const getAnonymousIdFromAttributes = (event) => {
   if (!isDefinedAndNotNull(event) || !isDefinedAndNotNull(event.note_attributes)) {
     return null; // Return early if event or note_attributes is invalid
   }

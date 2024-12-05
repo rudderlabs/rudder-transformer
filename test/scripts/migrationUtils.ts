@@ -112,7 +112,7 @@ export function migrateProcessorTestCase(oldTestCase: any, index: number): Proce
   const processorResponse: ProcessorTransformationResponse = {
     output: oldTestCase.output?.response?.body[0]?.output,
     metadata: { ...defaultMetadata, ...oldTestCase.output?.response?.body[0]?.metadata },
-    statusCode: oldTestCase.output?.response?.status || 200,
+    statusCode: oldTestCase.output?.response?.body[0]?.statusCode || 200,
     error: oldTestCase.output?.response?.body[0]?.error,
     statTags: oldTestCase.output?.response?.body[0]?.statTags,
   };

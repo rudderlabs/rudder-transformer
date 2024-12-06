@@ -49,7 +49,7 @@ function responseBuilderSimple(message, category, destination) {
     // using base64 and prepends it with the string 'Basic '.
     Authorization: `Basic ${btoa(`${apiId}:${apiKey}`)}`,
   };
-  response.userId = message.anonymousId || message.userId;
+  response.userId = message.userId || message.anonymousId;
   if (payload) {
     switch (category.type) {
       case 'identify':

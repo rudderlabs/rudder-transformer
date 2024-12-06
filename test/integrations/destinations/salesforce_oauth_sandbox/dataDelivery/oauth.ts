@@ -22,6 +22,15 @@ const users = [
     LeadSource: 'App Signup',
     account_type__c: 'free_trial',
   },
+  {
+    Email: 'danis.archurav@sbermarket.ru',
+    Company: 'itus.ru',
+    LastName: 'Danis',
+    FirstName: 'Archurav',
+    LeadSource: 'App Signup',
+    account_type__c: 'free_trial',
+    State: 'San Francisco',
+  },
 ];
 
 const statTags = {
@@ -35,6 +44,33 @@ const statTags = {
     module: 'destination',
     workspaceId: 'dummyWorkspaceId',
   },
+  aborted: {
+    destType: 'SALESFORCE_OAUTH_SANDBOX',
+    destinationId: 'dummyDestinationId',
+    errorCategory: 'network',
+    errorType: 'aborted',
+    feature: 'dataDelivery',
+    implementation: 'native',
+    module: 'destination',
+    workspaceId: 'dummyWorkspaceId',
+  },
+};
+
+export const proxyMetdata: ProxyMetdata = {
+  jobId: 1,
+  attemptNum: 1,
+  userId: 'dummyUserId',
+  sourceId: 'dummySourceId',
+  destinationId: 'dummyDestinationId',
+  workspaceId: 'dummyWorkspaceId',
+  destInfo: {
+    authKey: 'dummyDestinationId',
+  },
+  secret: {
+    access_token: 'expiredRightToken',
+    instanceUrl: 'https://rudderstack.my.salesforce_oauth_sandbox.com',
+  },
+  dontBatch: false,
 };
 
 const commonRequestParametersWithWrongToken = {
@@ -46,6 +82,12 @@ const commonRequestParametersWithWrongToken = {
 const commonRequestParametersWithRightToken = {
   headers: commonHeadersForRightToken,
   JSON: users[0],
+  params,
+};
+
+const commonRequestParametersWithWrongState = {
+  headers: commonHeadersForRightToken,
+  JSON: users[1],
   params,
 };
 
@@ -84,7 +126,7 @@ export const reqMetadataArray = [proxyMetdataWithSecretWithRightAccessToken];
 
 export const testScenariosForV1API: ProxyV1TestData[] = [
   {
-    id: 'salesforce_v1_scenario_1',
+    id: 'salesforce_sandbox_v1_scenario_1',
     name: 'salesforce_oauth_sandbox',
     description: '[Proxy v1 API] :: Test with expired access token scenario',
     successCriteria:
@@ -114,7 +156,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
             status: 500,
             authErrorCategory: 'REFRESH_TOKEN',
             message:
-              'Salesforce Request Failed - due to "INVALID_SESSION_ID", (Retryable) during Salesforce Response Handling',
+              'Salesforce Request Failed - due to "INVALID_SESSION_ID", (REFRESH_TOKEN) during salesforce_oauth_sandbox Response Handling',
             response: [
               {
                 error:
@@ -130,8 +172,8 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
     },
   },
   {
-    id: 'salesforce_v1_scenario_2',
-    name: 'salesforce',
+    id: 'salesforce_sandbox_v1_scenario_2',
+    name: 'salesforce_oauth_sandbox',
     description:
       '[Proxy v1 API] :: Test for a valid request - Lead creation with existing unchanged leadId and unchanged data',
     successCriteria: 'Should return 200 with no error with destination response',
@@ -158,7 +200,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
         body: {
           output: {
             status: 200,
-            message: 'Request for destination: salesforce Processed Successfully',
+            message: 'Request for destination: salesforce_oauth_sandbox Processed Successfully',
             response: [
               {
                 error: '{"statusText":"No Content"}',

@@ -46,6 +46,24 @@ const businessMockData = [
       status: 204,
     },
   },
+
+  {
+    httpReq: {
+      url: 'https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/6',
+      data: dataValue,
+      params: { destination: 'salesforce_oauth' },
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer token',
+        'User-Agent': 'RudderLabs',
+      },
+      method: 'POST',
+    },
+    httpRes: {
+      data: { error: 'invalid_grant', error_description: 'authentication failure' },
+      status: 400,
+    },
+  },
 ];
 
 export const networkCallsData = [...businessMockData];

@@ -370,6 +370,206 @@ const businessMockData = [
       status: 400,
     },
   },
+  {
+    description: 'Mock response from destination depicting update email request with a wrong data',
+    httpReq: {
+      method: 'POST',
+      url: 'https://api.iterable.com/api/users/updateEmail',
+      headers: headerBlockWithCorrectAccessToken,
+      data: {
+        currentEmail: 'sayan',
+        currentUserId: 'abcdeeeeeeeexxxx102',
+        newEmail: 'sayan@gmail.com',
+      },
+    },
+    httpRes: {
+      data: {
+        msg: 'Invalid currentEmail sayan',
+        code: 'InvalidEmailAddressError',
+        params: null,
+      },
+      status: 400,
+    },
+  },
+  {
+    description:
+      'Mock response from destination depicting request with a correct single track payload',
+    httpReq: {
+      method: 'POST',
+      url: 'https://api.iterable.com/api/events/track',
+      headers: headerBlockWithCorrectAccessToken,
+      data: {
+        email: 'sayan@gmail.com',
+        userId: 'abcdeeeeeeeexxxx102',
+        eventName: 'Email Opened',
+        id: '1234',
+        createdAt: 1598631966468,
+        dataFields: {
+          subject: 'resume validate',
+          sendtime: '2020-01-01',
+          sendlocation: 'akashdeep@gmail.com',
+        },
+        campaignId: 0,
+        templateId: 0,
+        createNewFields: true,
+      },
+    },
+    httpRes: {
+      data: {
+        msg: 'Event with id: 1234 tracked.',
+        code: 'Success',
+        params: {
+          id: '1234',
+        },
+      },
+      status: 200,
+      statusText: 'OK',
+    },
+  },
+  {
+    description:
+      'Mock response from destination depicting request with a wrong email single track payload',
+    httpReq: {
+      method: 'POST',
+      url: 'https://api.iterable.com/api/events/track',
+      headers: headerBlockWithCorrectAccessToken,
+      data: {
+        email: 'sayan',
+        userId: 'abcdeeeeeeeexxxx102',
+        eventName: 'Email Opened',
+        id: '1234',
+        createdAt: 1598631966468,
+        dataFields: {
+          subject: 'resume validate',
+          sendtime: '2020-01-01',
+          sendlocation: 'akashdeep@gmail.com',
+        },
+        campaignId: 0,
+        templateId: 0,
+        createNewFields: true,
+      },
+    },
+    httpRes: {
+      data: {
+        msg: 'Invalid email: sayan',
+        code: 'InvalidEmailAddressError',
+        params: null,
+      },
+      status: 400,
+    },
+  },
+  {
+    description:
+      'Mock response from destination depicting request with a correct catalog bulk payload',
+    httpReq: {
+      method: 'POST',
+      url: 'https://api.iterable.com/api/catalogs/rudder-test/items',
+      headers: headerBlockWithCorrectAccessToken,
+      data: {
+        documents: {
+          Tiffany: { ruchira: 'donaldbaker@ellis.com', new_field2: 'GB' },
+          ABC: { ruchira: 'abc@ellis.com', new_field2: 'GB1' },
+        },
+        replaceUploadedFieldsOnly: true,
+      },
+    },
+    httpRes: {
+      data: {
+        error: 'NotFound',
+        message: 'Catalog not found: rudder-test',
+        code: 'error.catalogs.notFound',
+        data: {
+          args: ['rudder-test'],
+        },
+      },
+      status: 404,
+    },
+  },
+  {
+    description:
+      'Mock response from destination depicting request with a correct catalog track payload',
+    httpReq: {
+      method: 'POST',
+      url: 'https://api.iterable.com/api/catalogs/test-ruchira/items',
+      headers: headerBlockWithCorrectAccessToken,
+      data: {
+        documents: {
+          Tiffany: { ruchira: 'donaldbaker@ellis.com', new_field2: 'GB' },
+          ABC: { ruchira: 'abc@ellis.com', new_field2: 'GB1' },
+        },
+        replaceUploadedFieldsOnly: true,
+      },
+    },
+    httpRes: {
+      data: {
+        msg: 'Request to bulk-upload documents into test-ruchira processed successfully',
+        code: 'Success',
+        params: null,
+      },
+      status: 200,
+      statusText: 'OK',
+    },
+  },
+  {
+    description:
+      'Mock response from destination depicting request with a correct register device token payload with insufficient permission',
+    httpReq: {
+      method: 'POST',
+      url: 'https://api.iterable.com/api/users/registerDeviceToken',
+      headers: headerBlockWithCorrectAccessToken,
+      data: {
+        email: 'sayan@gmail.com',
+        device: {
+          token: '1234',
+          platform: 'APNS',
+          applicationName: 'rudder',
+          dataFields: {},
+        },
+        userId: 'abcdeeeeeeeexxxx102',
+        preferUserId: true,
+      },
+    },
+    httpRes: {
+      data: {
+        msg: 'Disabled API key or insufficient privileges',
+        code: 'BadApiKey',
+        params: {
+          ip: '103.189.130.133',
+          endpoint: '/api/users/registerDeviceToken',
+          apiKeyIdentifier: 'af831922',
+          apiKeyType: 'ServerSide',
+        },
+      },
+      status: 401,
+    },
+  },
+  {
+    description:
+      'Mock response from destination depicting request with a correct registerbrowswer token payload with insufficient permission',
+    httpReq: {
+      method: 'POST',
+      url: 'https://api.iterable.com/api/users/registerBrowserToken',
+      headers: headerBlockWithCorrectAccessToken,
+      data: {
+        email: 'sayan@gmail.com',
+        browserToken: '1234567',
+        userId: 'abcdeeeeeeeexxxx102',
+      },
+    },
+    httpRes: {
+      data: {
+        msg: 'Disabled API key or insufficient privileges',
+        code: 'BadApiKey',
+        params: {
+          ip: '103.189.130.129',
+          endpoint: '/api/users/registerBrowserToken',
+          apiKeyIdentifier: 'af831922',
+          apiKeyType: 'ServerSide',
+        },
+      },
+      status: 401,
+    },
+  },
 ];
 
 export const networkCallsData = [...businessMockData];

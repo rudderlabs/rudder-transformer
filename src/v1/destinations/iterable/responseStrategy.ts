@@ -25,7 +25,11 @@ class ResponseStrategy {
   handleError(responseParams): void {
     const { destinationResponse, rudderJobMetadata } = responseParams;
     const { response, status } = destinationResponse;
-    const errorMessage = JSON.stringify(response.params) || 'unknown error format';
+    const errorMessage =
+      JSON.stringify(response.params) ||
+      JSON.stringify(response.msg) ||
+      JSON.stringify(response.message) ||
+      'unknown error format';
 
     const responseWithIndividualEvents = rudderJobMetadata.map((metadata) => ({
       statusCode: status,

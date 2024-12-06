@@ -1,5 +1,5 @@
+const { isDefinedAndNotNull } = require('@rudderstack/integrations-lib');
 const { constructPayload } = require('../../../../v0/util');
-
 const {
   lineItemsMappingJSON,
   productMappingJSON,
@@ -17,7 +17,6 @@ const getProductsFromLineItems = (lineItems, mapping) => {
   }
   const products = [];
   lineItems.forEach((lineItem) => {
-    // const product = constructPayload(lineItem, lineItemsMappingJSON);
     const product = constructPayload(lineItem, mapping);
     products.push(product);
   });
@@ -39,7 +38,24 @@ const createPropertiesForEcomEventFromWebhook = (message) => {
   return mappedPayload;
 };
 
+/**
+ * Returns the anonymousId from the noteAttributes array in the webhook event
+ * @param {Object} event
+ * @returns {String} anonymousId
+ */
+const getAnonymousIdFromAttributes = (event) => {
+  if (!isDefinedAndNotNull(event) || !isDefinedAndNotNull(event.note_attributes)) {
+    return null; // Return early if event or note_attributes is invalid
+  }
+
+  const noteAttributes = event.note_attributes;
+  const rudderAnonymousIdObject = noteAttributes.find((attr) => attr.name === 'rudderAnonymousId');
+
+  return rudderAnonymousIdObject ? rudderAnonymousIdObject.value : null;
+};
+
 module.exports = {
   createPropertiesForEcomEventFromWebhook,
   getProductsFromLineItems,
+  getAnonymousIdFromAttributes,
 };

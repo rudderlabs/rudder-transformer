@@ -1,5 +1,6 @@
 const lodash = require('lodash');
 const { TransformationError, InstrumentationError } = require('@rudderstack/integrations-lib');
+const stats = require('../../../util/stats');
 const {
   getSuccessRespEvents,
   defaultRequestConfig,
@@ -105,6 +106,9 @@ const batchEvents = (successRespList) => {
     const eventChunks = lodash.chunk(eventGroups[combination], MAX_BATCH_SIZE);
     // eventChunks = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
     eventChunks.forEach((chunk) => {
+      stats.gauge('mailjet_packing_size', chunk.length, {
+        group: combination,
+      });
       const batchEventResponse = generateBatchedPaylaodForArray(chunk, combination);
       batchedResponseList.push(
         getSuccessRespEvents(

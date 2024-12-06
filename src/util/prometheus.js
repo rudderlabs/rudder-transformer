@@ -521,6 +521,12 @@ class Prometheus {
         labelNames: ['destination_id'],
       },
       {
+        name: 'mailjet_packing_size',
+        help: 'mailjet_packing_size',
+        type: 'gauge',
+        labelNames: ['group'],
+      },
+      {
         name: 'hs_batch_size',
         help: 'hs_batch_size',
         type: 'gauge',

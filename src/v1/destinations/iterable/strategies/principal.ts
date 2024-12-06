@@ -4,6 +4,7 @@ import { isHttpStatusSuccess } from '../../../../v0/util';
 import { TransformerProxyError } from '../../../../v0/util/errorTypes';
 import { DestinationResponse, ResponseParams } from '../types';
 
+// Principal strategy is the base class for all strategies in Iterable destination
 class PrincipalStrategy {
   handleResponse(responseParams: { destinationResponse: DestinationResponse }): void {
     const { destinationResponse } = responseParams;

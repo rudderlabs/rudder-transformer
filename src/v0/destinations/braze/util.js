@@ -45,24 +45,40 @@ const getEndpointFromConfig = (destination) => {
   return endpoint;
 };
 
-// Merges the external_ids with the same group id and state
-const deduplicateSubscriptionGroups = (subscriptionGroups) => {
+// Merges external_ids, emails, and phones for entries with the same subscription_group_id and subscription_state
+const combineSubscriptionGroups = (subscriptionGroups) => {
   const uniqueGroups = {};
+
   subscriptionGroups.forEach((group) => {
     const key = `${group.subscription_group_id}-${group.subscription_state}`;
     if (!uniqueGroups[key]) {
       uniqueGroups[key] = {
         ...group,
         external_ids: [...(group.external_ids || [])],
+        emails: [...(group.emails || [])],
+        phones: [...(group.phones || [])],
       };
     } else {
       uniqueGroups[key].external_ids.push(...(group.external_ids || []));
+      uniqueGroups[key].emails.push(...(group.emails || []));
+      uniqueGroups[key].phones.push(...(group.phones || []));
     }
   });
-  return Object.values(uniqueGroups).map((group) => ({
-    ...group,
-    external_ids: [...new Set(group.external_ids)],
-  }));
+
+  return Object.values(uniqueGroups).map((group) => {
+    const result = {
+      subscription_group_id: group.subscription_group_id,
+      subscription_state: group.subscription_state,
+      external_ids: [...new Set(group.external_ids)],
+    };
+    if (group.emails?.length) {
+      result.emails = [...new Set(group.emails)];
+    }
+    if (group.phones?.length) {
+      result.phones = [...new Set(group.phones)];
+    }
+    return result;
+  });
 };
 
 const CustomAttributeOperationUtil = {
@@ -407,7 +423,7 @@ function prepareGroupAndAliasBatch(arrayChunks, responseArray, destination, type
       }
 
       // Deduplicate the subscription groups before constructing the response body
-      const deduplicatedSubscriptionGroups = deduplicateSubscriptionGroups(subscription_groups);
+      const deduplicatedSubscriptionGroups = combineSubscriptionGroups(subscription_groups);
 
       response.body.JSON = removeUndefinedAndNullValues({
         subscription_groups: deduplicatedSubscriptionGroups,
@@ -793,4 +809,5 @@ module.exports = {
   collectStatsForAliasFailure,
   collectStatsForAliasMissConfigurations,
   handleReservedProperties,
+  combineSubscriptionGroups,
 };

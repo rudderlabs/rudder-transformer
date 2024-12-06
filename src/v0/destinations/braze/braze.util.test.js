@@ -6,6 +6,7 @@ const {
   getPurchaseObjs,
   setAliasObject,
   handleReservedProperties,
+  combineSubscriptionGroups,
 } = require('./util');
 const { processBatch } = require('./util');
 const {
@@ -1756,5 +1757,126 @@ describe('handleReservedProperties', () => {
       other_key: 'value',
       'special!@#$%^&*()_+-={}[]|\\;:\'",.<>?/`~': 'value',
     });
+  });
+});
+
+describe('combineSubscriptionGroups', () => {
+  it('should merge external_ids, emails, and phones for the same subscription_group_id and subscription_state', () => {
+    const input = [
+      {
+        subscription_group_id: 'group1',
+        subscription_state: 'Subscribed',
+        external_ids: ['id1', 'id2'],
+        emails: ['email1@example.com', 'email2@example.com'],
+        phones: ['+1234567890', '+0987654321'],
+      },
+      {
+        subscription_group_id: 'group1',
+        subscription_state: 'Subscribed',
+        external_ids: ['id2', 'id3'],
+        emails: ['email2@example.com', 'email3@example.com'],
+        phones: ['+1234567890', '+1122334455'],
+      },
+    ];
+
+    const expectedOutput = [
+      {
+        subscription_group_id: 'group1',
+        subscription_state: 'Subscribed',
+        external_ids: ['id1', 'id2', 'id3'],
+        emails: ['email1@example.com', 'email2@example.com', 'email3@example.com'],
+        phones: ['+1234567890', '+0987654321', '+1122334455'],
+      },
+    ];
+
+    const result = combineSubscriptionGroups(input);
+    expect(result).toEqual(expectedOutput);
+  });
+
+  it('should handle groups with missing external_ids, emails, or phones', () => {
+    const input = [
+      {
+        subscription_group_id: 'group1',
+        subscription_state: 'Subscribed',
+        external_ids: ['id1'],
+      },
+      {
+        subscription_group_id: 'group1',
+        subscription_state: 'Subscribed',
+        emails: ['email1@example.com'],
+      },
+      {
+        subscription_group_id: 'group1',
+        subscription_state: 'Subscribed',
+        phones: ['+1234567890'],
+      },
+    ];
+
+    const expectedOutput = [
+      {
+        subscription_group_id: 'group1',
+        subscription_state: 'Subscribed',
+        external_ids: ['id1'],
+        emails: ['email1@example.com'],
+        phones: ['+1234567890'],
+      },
+    ];
+
+    const result = combineSubscriptionGroups(input);
+    expect(result).toEqual(expectedOutput);
+  });
+
+  it('should handle multiple unique subscription groups', () => {
+    const input = [
+      {
+        subscription_group_id: 'group1',
+        subscription_state: 'Subscribed',
+        external_ids: ['id1'],
+      },
+      {
+        subscription_group_id: 'group2',
+        subscription_state: 'Unsubscribed',
+        external_ids: ['id2'],
+        emails: ['email2@example.com'],
+      },
+    ];
+
+    const expectedOutput = [
+      {
+        subscription_group_id: 'group1',
+        subscription_state: 'Subscribed',
+        external_ids: ['id1'],
+      },
+      {
+        subscription_group_id: 'group2',
+        subscription_state: 'Unsubscribed',
+        external_ids: ['id2'],
+        emails: ['email2@example.com'],
+      },
+    ];
+
+    const result = combineSubscriptionGroups(input);
+    expect(result).toEqual(expectedOutput);
+  });
+
+  it('should not include undefined fields in the output', () => {
+    const input = [
+      {
+        subscription_group_id: 'group1',
+        subscription_state: 'Subscribed',
+        external_ids: ['id1'],
+      },
+    ];
+
+    const expectedOutput = [
+      {
+        subscription_group_id: 'group1',
+        subscription_state: 'Subscribed',
+        external_ids: ['id1'],
+      },
+    ];
+
+    const result = combineSubscriptionGroups(input);
+    expect(result).toEqual(expectedOutput);
   });
 });

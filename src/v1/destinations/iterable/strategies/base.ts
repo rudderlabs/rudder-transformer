@@ -23,7 +23,7 @@ class BaseStrategy {
   handleError(responseParams: ResponseParams): void {
     const { destinationResponse, rudderJobMetadata } = responseParams;
     const { response, status } = destinationResponse;
-    // @ts-expect-error: not sure if this is correct or needed
+    // @ts-expect-error: not sure if `response.message` is correct or needed
     const responseMessage = response.params || response.msg || response.message;
     const errorMessage = JSON.stringify(responseMessage) || 'unknown error format';
 

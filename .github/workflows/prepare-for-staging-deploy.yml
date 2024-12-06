@@ -119,7 +119,6 @@ jobs:
             git add staging.yaml
 
             cd ../../../../config-be-rudder-transformer/environment/staging
-            yq eval -i ".rudder-transformer.image.repository=\"$TF_IMAGE_REPOSITORY\"" base.yaml
             yq eval -i ".config-be-rudder-transformer.image.tag=\"$TAG_NAME\"" base.yaml
             yq eval -i ".config-be-user-transformer.image.tag=\"$TAG_NAME\"" base.yaml
             git add base.yaml

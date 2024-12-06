@@ -1,7 +1,7 @@
 // This file contains the test scenarios for the server-side events from the Shopify GraphQL API for
 // the v1 transformation flow
 import { mockFns } from '../mocks';
-import { dummySourceConfig } from '../constants';
+import { dummySourceConfig, note_attributes } from '../constants';
 
 export const genericTrackTestScenarios = [
   {
@@ -24,6 +24,7 @@ export const genericTrackTestScenarios = [
               token: 'Z2NwLXVzLWVhc3QxOjAxSjdXRjdOQjY0NlFFNFdQVEg0MTRFM1E2',
               line_items: [],
               note: '',
+              note_attributes,
               updated_at: '2024-09-17T08:15:13.280Z',
               created_at: '2024-09-16T03:50:15.478Z',
             },
@@ -43,7 +44,7 @@ export const genericTrackTestScenarios = [
             output: {
               batch: [
                 {
-                  anonymousId: '5d3e2cb6-4011-5c9c-b7ee-11bc1e905097',
+                  anonymousId: '50ead33e-d763-4854-b0ab-765859ef05cb',
                   context: {
                     integration: {
                       name: 'SHOPIFY',
@@ -58,6 +59,7 @@ export const genericTrackTestScenarios = [
                       id: 'Z2NwLXVzLWVhc3QxOjAxSjdXRjdOQjY0NlFFNFdQVEg0MTRFM1E2',
                       line_items: [],
                       note: '',
+                      note_attributes,
                       token: 'Z2NwLXVzLWVhc3QxOjAxSjdXRjdOQjY0NlFFNFdQVEg0MTRFM1E2',
                       updated_at: '2024-09-17T08:15:13.280Z',
                     },
@@ -149,7 +151,7 @@ export const genericTrackTestScenarios = [
               merchant_of_record_app_id: null,
               name: '#1017',
               note: null,
-              note_attributes: [],
+              note_attributes,
               order_number: 1017,
               original_total_additional_fees_set: null,
               original_total_duties_set: null,
@@ -363,7 +365,7 @@ export const genericTrackTestScenarios = [
                       merchant_of_record_app_id: null,
                       name: '#1017',
                       note: null,
-                      note_attributes: [],
+                      note_attributes,
                       order_number: 1017,
                       original_total_additional_fees_set: null,
                       original_total_duties_set: null,
@@ -545,7 +547,7 @@ export const genericTrackTestScenarios = [
                   traits: {
                     email: 'henry@wfls.com',
                   },
-                  anonymousId: '5d3e2cb6-4011-5c9c-b7ee-11bc1e905097',
+                  anonymousId: '50ead33e-d763-4854-b0ab-765859ef05cb',
                 },
               ],
             },

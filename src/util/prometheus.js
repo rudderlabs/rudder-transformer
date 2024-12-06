@@ -521,6 +521,18 @@ class Prometheus {
         labelNames: ['destination_id'],
       },
       {
+        name: 'braze_batch_subscription_size',
+        help: 'braze_batch_subscription_size',
+        type: 'gauge',
+        labelNames: ['destination_id'],
+      },
+      {
+        name: 'braze_batch_subscription_combined_size',
+        help: 'braze_batch_subscription_combined_size',
+        type: 'gauge',
+        labelNames: ['destination_id'],
+      },
+      {
         name: 'hs_batch_size',
         help: 'hs_batch_size',
         type: 'gauge',

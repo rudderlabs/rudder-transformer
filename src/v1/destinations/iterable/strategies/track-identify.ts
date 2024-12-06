@@ -1,8 +1,8 @@
-import { PrincipalStrategy } from './principal';
+import { BaseStrategy } from './base';
 import { DestinationResponse, ResponseParams, Response } from '../types';
 import { checkIfEventIsAbortableAndExtractErrorMessage } from '../../../../v0/destinations/iterable/util';
 
-class TrackIdentifyStrategy extends PrincipalStrategy {
+class TrackIdentifyStrategy extends BaseStrategy {
   handleSuccess(responseParams: ResponseParams): {
     status: number;
     message: string;

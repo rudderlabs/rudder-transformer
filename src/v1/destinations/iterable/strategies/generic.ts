@@ -1,7 +1,7 @@
-import { PrincipalStrategy } from './principal';
+import { BaseStrategy } from './base';
 import { DestinationResponse, SuccessResponse } from '../types';
 
-class GenericStrategy extends PrincipalStrategy {
+class GenericStrategy extends BaseStrategy {
   handleSuccess(responseParams: {
     destinationResponse: DestinationResponse;
     rudderJobMetadata: any[];

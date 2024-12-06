@@ -78,6 +78,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [generate-tag-names, build-transformer-image, build-user-transformer-image]
     env:
+      TF_IMAGE_REPOSITORY: rudderstack/rudder-transformer
       TAG_NAME: ${{ needs.generate-tag-names.outputs.tag_name }}
       UT_TAG_NAME: ${{ needs.generate-tag-names.outputs.tag_name_ut }}
     steps:

@@ -1,25 +1,25 @@
 import { prepareProxyRequest, proxyRequest } from '../../../adapters/network';
 import { processAxiosResponse } from '../../../adapters/utils/networkUtils';
 import { BULK_ENDPOINTS } from '../../../v0/destinations/iterable/config';
-import { CommonStrategy } from './commonStrategy';
-import { TrackIdentifyStrategy } from './trackIdentifyStrategy';
+import { GenericStrategy } from './strategies/generic';
+import { TrackIdentifyStrategy } from './strategies/track-identify';
 
-interface ResponseParams {
+type ResponseParams = {
   destinationRequest: {
     endpoint: string;
   };
-}
+};
 
 const strategyRegistry: { [key: string]: any } = {
   [TrackIdentifyStrategy.name]: new TrackIdentifyStrategy(),
-  [CommonStrategy.name]: new CommonStrategy(),
+  [GenericStrategy.name]: new GenericStrategy(),
 };
 
 const getResponseStrategy = (endpoint: string) => {
   if (BULK_ENDPOINTS.some((path) => endpoint.includes(path))) {
     return strategyRegistry[TrackIdentifyStrategy.name];
   }
-  return strategyRegistry[CommonStrategy.name];
+  return strategyRegistry[GenericStrategy.name];
 };
 
 const responseHandler = (responseParams: ResponseParams) => {

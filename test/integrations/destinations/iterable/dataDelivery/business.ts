@@ -499,7 +499,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
             status: 400,
             statTags,
             message:
-              'ITERABLE: Error transformer proxy during ITERABLE response transformation. null',
+              'ITERABLE: Error transformer proxy during ITERABLE response transformation. "Invalid currentEmail sayan"',
             response: [
               {
                 statusCode: 400,
@@ -596,7 +596,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
             status: 400,
             statTags,
             message:
-              'ITERABLE: Error transformer proxy during ITERABLE response transformation. null',
+              'ITERABLE: Error transformer proxy during ITERABLE response transformation. "Invalid email: sayan"',
             response: [
               {
                 statusCode: 400,

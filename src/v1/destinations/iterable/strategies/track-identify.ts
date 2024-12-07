@@ -1,36 +1,19 @@
-import { ResponseStrategy } from './responseStrategy';
-import { checkIfEventIsAbortableAndExtractErrorMessage } from '../../../v0/destinations/iterable/util';
-import { CommonResponse } from './type';
+import { BaseStrategy } from './base';
+import { DestinationResponse, ResponseParams, Response } from '../types';
+import { checkIfEventIsAbortableAndExtractErrorMessage } from '../../../../v0/destinations/iterable/util';
 
-interface ResponseParams {
-  destinationResponse: { status: number; response: CommonResponse };
-  rudderJobMetadata: any[];
-  destinationRequest: {
-    body: {
-      JSON: {
-        events?: any[];
-        users?: any[];
-      };
-    };
-  };
-}
-
-class TrackIdentifyStrategy extends ResponseStrategy {
+class TrackIdentifyStrategy extends BaseStrategy {
   handleSuccess(responseParams: ResponseParams): {
     status: number;
     message: string;
-    destinationResponse: { status: number; response: CommonResponse };
-    response: Array<{ statusCode: number; metadata: any; error: string }>;
+    destinationResponse: DestinationResponse;
+    response: Response[];
   } {
     const { destinationResponse, rudderJobMetadata, destinationRequest } = responseParams;
     const { status } = destinationResponse;
-    const responseWithIndividualEvents: Array<{
-      statusCode: number;
-      metadata: any;
-      error: string;
-    }> = [];
+    const responseWithIndividualEvents: Response[] = [];
 
-    const { events, users } = destinationRequest.body.JSON;
+    const { events, users } = destinationRequest?.body.JSON || {};
     const finalData = events || users;
 
     if (finalData) {

@@ -1,17 +1,11 @@
-import { CommonResponse } from './type';
+import { BaseStrategy } from './base';
+import { DestinationResponse, SuccessResponse } from '../types';
 
-const { ResponseStrategy } = require('./responseStrategy');
-
-class CommonStrategy extends ResponseStrategy {
+class GenericStrategy extends BaseStrategy {
   handleSuccess(responseParams: {
-    destinationResponse: { status: number; response: CommonResponse };
+    destinationResponse: DestinationResponse;
     rudderJobMetadata: any[];
-  }): {
-    status: number;
-    message: string;
-    destinationResponse: { status: number; response: CommonResponse };
-    response: { statusCode: number; metadata: any; error: string }[];
-  } {
+  }): SuccessResponse {
     const { destinationResponse, rudderJobMetadata } = responseParams;
     const { status } = destinationResponse;
 
@@ -30,4 +24,4 @@ class CommonStrategy extends ResponseStrategy {
   }
 }
 
-export { CommonStrategy };
+export { GenericStrategy };

@@ -117,6 +117,7 @@ export type RouterTestData = {
   input: {
     request: {
       body: RouterTransformationRequest;
+      method: string;
     };
   };
   output: {

@@ -1,6 +1,7 @@
 const { toXML } = require('jstoxml');
 const { groupBy } = require('lodash');
 const { createHash } = require('crypto');
+const querystring = require('querystring');
 const { ConfigurationError } = require('@rudderstack/integrations-lib');
 const { BatchUtils } = require('@rudderstack/workflow-engine');
 const {
@@ -146,6 +147,18 @@ const batchSuccessfulEvents = (events, batchSize) => {
   return response;
 };
 
+/**
+ * Converts JSON payload to application/x-www-form-urlencoded format.
+ * @param {Object} payload - The JSON payload to be converted.
+ * @returns {string} - The payload in application/x-www-form-urlencoded format.
+ */
+const getFORMPayload = (payload) => {
+  if (!payload) {
+    throw new ConfigurationError('Invalid payload for FORM format');
+  }
+  return querystring.stringify(payload);
+};
+
 module.exports = {
   getAuthHeaders,
   getCustomMappings,
@@ -153,4 +166,5 @@ module.exports = {
   excludeMappedFields,
   getXMLPayload,
   batchSuccessfulEvents,
+  getFORMPayload,
 };

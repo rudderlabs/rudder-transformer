@@ -1,6 +1,6 @@
 import { ProcessorTestData } from '../../../testTypes';
 import { generateMetadata, transformResultBuilder } from '../../../testUtils';
-import { destType, destinations, properties, traits } from '../common';
+import { destinations, destType, properties, traits } from '../common';
 
 export const configuration: ProcessorTestData[] = [
   {
@@ -194,6 +194,58 @@ export const configuration: ProcessorTestData[] = [
               XML: {
                 payload:
                   '<?xml version="1.0" encoding="UTF-8"?><event>Order Completed</event><currency>USD</currency><userId>userId123</userId><properties><items><item_id>622c6f5d5cf86a4c77358033</item_id><name>Cones of Dunshire</name><price>40</price><item_id>577c6f5d5cf86a4c7735ba03</item_id><name>Five Crowns</name><price>5</price></items></properties>',
+              },
+            }),
+            statusCode: 200,
+            metadata: generateMetadata(1),
+          },
+        ],
+      },
+    },
+  },
+  {
+    id: 'http-configuration-test-4',
+    name: destType,
+    description:
+      'Track call with bearer token, form format, post method, additional headers and properties mapping',
+    scenario: 'Business',
+    successCriteria:
+      'Response should be in form format with post method, headers and properties mapping',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: destinations[7],
+            message: {
+              type: 'track',
+              userId: 'userId123',
+              event: 'Order Completed',
+              properties,
+            },
+            metadata: generateMetadata(1),
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: transformResultBuilder({
+              method: 'POST',
+              userId: '',
+              endpoint: destinations[7].Config.apiUrl,
+              headers: {
+                Authorization: 'Bearer test-token',
+                h1: 'val1',
+                'content-type': 'application/json',
+              },
+              FORM: {
+                payload: 'event=Order%20Completed&currency=USD&userId=userId123&properties=',
               },
             }),
             statusCode: 200,

@@ -32,7 +32,6 @@ const processRecordEventArray = (records, context, operationType) => {
     personalizationConsent,
   } = context;
 
-  const outputPayloads = {};
   const fieldsArray = records.map((record) => record.message.fields);
   const metadata = records.map((record) => record.metadata);
 
@@ -44,24 +43,18 @@ const processRecordEventArray = (records, context, operationType) => {
   );
 
   const outputPayload = constructPayload(message, offlineDataJobsMapping);
-  outputPayload.operations = [];
 
   const userIdentifierChunks = returnArrayOfSubarrays(userIdentifiersList, 20);
-  userIdentifierChunks.forEach((chunk) => {
-    const operation = {
-      [operationType]: { userIdentifiers: chunk },
-    };
-    outputPayload.operations.push(operation);
-  });
-
-  outputPayloads[operationType] = outputPayload;
+  outputPayload.operations = userIdentifierChunks.map((chunk) => ({
+    [operationType]: { userIdentifiers: chunk },
+  }));
 
   const consentObj = populateConsentFromConfig(
     { userDataConsent, personalizationConsent },
     consentConfigMap,
   );
 
-  const toSendEvents = Object.values(outputPayloads).map((data) =>
+  const toSendEvents = [outputPayload].map((data) =>
     responseBuilder(accessToken, developerToken, data, destination, audienceId, consentObj),
   );
 

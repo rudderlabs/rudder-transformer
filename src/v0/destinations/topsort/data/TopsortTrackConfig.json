@@ -8,8 +8,8 @@
     "required": true
   },
   {
-    "destKey": "anonymousId",
-    "sourceKeys": "opaqueUserId",
+    "destKey": "opaqueUserId",
+    "sourceKeys": "anonymousId",
     "required": true
   },
   {

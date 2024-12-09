@@ -3,58 +3,22 @@ const {
   ConfigurationError,
   getHashFromArray,
 } = require('@rudderstack/integrations-lib');
-const { ConfigCategory, mappingConfig, ECOMM_EVENTS_WITH_PRODUCT_ARRAY } = require('./config');
+const { mappingConfig, ECOMM_EVENTS_WITH_PRODUCT_ARRAY, ConfigCategory } = require('./config');
 const { constructPayload, simpleProcessRouterDest } = require('../../util');
 const {
-  constructItemPayloads,
-  createEventData,
   isProductArrayValid,
   getMappedEventName,
-  addFinalPayload,
+  processImpressionsAndClicksUtility,
+  processPurchaseEventUtility,
 } = require('./utils');
-
-// Function to process events with a product array
-const processProductArray = ({
-  products,
-  basePayload,
-  placementPayload,
-  topsortEvent,
-  finalPayloads,
-}) => {
-  const itemPayloads = constructItemPayloads(products, mappingConfig[ConfigCategory.ITEM.name]);
-  itemPayloads.forEach((itemPayload) => {
-    const eventData = createEventData(basePayload, placementPayload, itemPayload, topsortEvent);
-    addFinalPayload(eventData, finalPayloads);
-  });
-};
-
-// Function to process events with a single product or no product data
-const processSingleProduct = ({
-  basePayload,
-  placementPayload,
-  message,
-  topsortEvent,
-  finalPayloads,
-  messageId,
-}) => {
-  const itemPayload = constructPayload(message, mappingConfig[ConfigCategory.ITEM.name]);
-  const eventData = createEventData(basePayload, placementPayload, itemPayload, topsortEvent);
-
-  // Ensure messageId is used instead of generating a UUID for single product events
-  eventData.data.id = messageId;
-
-  // Add final payload with appropriate ID and other headers
-  addFinalPayload(eventData, finalPayloads);
-};
 
 const responseBuilder = (message, { Config }) => {
   const { topsortEvents } = Config;
   const { event, properties } = message;
-  const { products, messageId } = properties;
+  const { products } = properties;
 
   // Parse Topsort event mappings
-  const parsedTopsortEventMappings = getHashFromArray(topsortEvents);
-  const mappedEventName = getMappedEventName(parsedTopsortEventMappings, event);
+  const mappedEventName = getMappedEventName(getHashFromArray(topsortEvents), event);
 
   if (!mappedEventName) {
     throw new InstrumentationError("Event not mapped in 'topsortEvents'. Dropping the event.");
@@ -64,32 +28,44 @@ const responseBuilder = (message, { Config }) => {
 
   // Construct base and placement payloads
   const basePayload = constructPayload(message, mappingConfig[ConfigCategory.TRACK.name]);
-  const placementPayload = constructPayload(message, mappingConfig[ConfigCategory.PLACEMENT.name]);
 
-  // Check if the event involves a product array (using ECOMM_EVENTS_WITH_PRODUCT_ARRAY)
-  const isProductArrayAvailable =
-    ECOMM_EVENTS_WITH_PRODUCT_ARRAY.includes(event) && isProductArrayValid(event, properties);
-
-  const finalPayloads = [];
+  const finalPayloads = {
+    impressions: [],
+    clicks: [],
+    purchases: [],
+  };
 
   const commonArgs = {
     basePayload,
-    placementPayload,
     topsortEventName,
     finalPayloads,
+    products,
+    message,
+    isProductArrayAvailable:
+      ECOMM_EVENTS_WITH_PRODUCT_ARRAY.includes(event) && isProductArrayValid(event, properties),
   };
 
-  if (isProductArrayAvailable) {
-    processProductArray({
+  // Process events based on type and construct payload within each logic block
+  if (topsortEventName === 'impressions' || topsortEventName === 'clicks') {
+    const placementPayload = constructPayload(
+      message,
+      mappingConfig[ConfigCategory.PLACEMENT.name],
+    );
+    processImpressionsAndClicksUtility.processImpressionsAndClicks({
       ...commonArgs,
-      products, // Directly use destructured products
+      placementPayload, // Only pass placementPayload for impressions and clicks
+    });
+  } else if (topsortEventName === 'purchases') {
+    const purchasePayload = constructPayload(
+      message,
+      mappingConfig[ConfigCategory.PURCHASE_ITEM.name],
+    );
+    processPurchaseEventUtility.processPurchaseEvent({
+      ...commonArgs,
+      purchasePayload, // Only pass purchasePayload for purchase events
     });
   } else {
-    processSingleProduct({
-      ...commonArgs,
-      message,
-      messageId, // Add 'messageId' for single product event
-    });
+    throw new InstrumentationError(`Unknown event type: ${topsortEventName}`);
   }
 
   return finalPayloads;

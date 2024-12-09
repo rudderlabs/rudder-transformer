@@ -2,13 +2,14 @@ const { getMappingConfig } = require('../../util');
 
 const BASE_URL = 'https://api.topsort.com/v2/events';
 
-const ConfigCategories = {
+const ConfigCategory = {
   TRACK: {
     type: 'track',
     name: 'TopsortTrackConfig',
   },
   PLACEMENT: { name: 'TopsortPlacementConfig' },
   ITEM: { name: 'TopsortItemConfig' },
+  PURCHASE_ITEM: { name: 'TopSortPurchaseProductConfig' },
 };
 
 const ECOMM_EVENTS_WITH_PRODUCT_ARRAY = [
@@ -20,11 +21,11 @@ const ECOMM_EVENTS_WITH_PRODUCT_ARRAY = [
   'Order Cancelled',
 ];
 
-const mappingConfig = getMappingConfig(ConfigCategories, __dirname);
+const mappingConfig = getMappingConfig(ConfigCategory, __dirname);
 
 module.exports = {
   mappingConfig,
-  ConfigCategories,
+  ConfigCategory,
   BASE_URL,
   ECOMM_EVENTS_WITH_PRODUCT_ARRAY,
 };

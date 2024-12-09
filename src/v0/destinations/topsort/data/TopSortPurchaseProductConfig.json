@@ -1,7 +1,7 @@
 [
   {
     "destKey": "productId",
-    "sourceKeys": ["productId", "properties.productId"]
+    "sourceKeys": ["product_id", "properties.product_id"]
   },
   {
     "destKey": "unitPrice",

@@ -14,14 +14,14 @@ const {
 } = require('./utils');
 
 // Function to process events with a product array
-const processProductArray = (
+const processProductArray = ({
   products,
   basePayload,
   placementPayload,
   topsortEvent,
   apiKey,
   finalPayloads,
-) => {
+}) => {
   const itemPayloads = constructItemPayloads(products, mappingConfig[ConfigCategory.ITEM.name]);
   itemPayloads.forEach((itemPayload) => {
     const eventData = createEventData(basePayload, placementPayload, itemPayload, topsortEvent);
@@ -30,7 +30,7 @@ const processProductArray = (
 };
 
 // Function to process events with a single product or no product data
-const processSingleProduct = (
+const processSingleProduct = ({
   basePayload,
   placementPayload,
   message,
@@ -38,7 +38,7 @@ const processSingleProduct = (
   apiKey,
   finalPayloads,
   messageId,
-) => {
+}) => {
   const itemPayload = constructPayload(message, mappingConfig[ConfigCategory.ITEM.name]);
   const eventData = createEventData(basePayload, placementPayload, itemPayload, topsortEvent);
 
@@ -61,11 +61,14 @@ const responseBuilder = (message, { Config }) => {
     throw new InstrumentationError("Event not mapped in 'topsortEvents'. Dropping the event.");
   }
 
-  const topsortEvent = mappedEventName;
+  const topsortEventName = mappedEventName;
 
   // Construct base and placement payloads
   const basePayload = constructPayload(message, mappingConfig[ConfigCategory.TRACK.name]);
   const placementPayload = constructPayload(message, mappingConfig[ConfigCategory.PLACEMENT.name]);
+
+  // Destructure products from properties (if available)
+  const { products, messageId } = properties;
 
   // Check if the event involves a product array (using ECOMM_EVENTS_WITH_PRODUCT_ARRAY)
   const isProductArrayAvailable =
@@ -73,25 +76,25 @@ const responseBuilder = (message, { Config }) => {
 
   const finalPayloads = [];
 
-  // Handle events based on the presence of a product array
+  const commonArgs = {
+    basePayload,
+    placementPayload,
+    topsortEventName,
+    apiKey,
+    finalPayloads,
+  };
+
   if (isProductArrayAvailable) {
-    processProductArray(
-      properties.products,
-      basePayload,
-      placementPayload,
-      topsortEvent,
-      apiKey,
-      finalPayloads,
-    );
+    processProductArray({
+      ...commonArgs,
+      products, // Directly use destructured products
+    });
   } else {
-    processSingleProduct(
-      basePayload,
-      placementPayload,
+    processSingleProduct({
+      ...commonArgs,
       message,
-      topsortEvent,
-      apiKey,
-      finalPayloads,
-    );
+      messageId, // Add 'messageId' for single product event
+    });
   }
 
   return finalPayloads;

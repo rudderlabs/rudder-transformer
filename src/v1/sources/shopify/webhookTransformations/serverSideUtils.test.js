@@ -1,6 +1,7 @@
 const {
   getProductsFromLineItems,
   createPropertiesForEcomEventFromWebhook,
+  getAnonymousIdFromAttributes,
 } = require('./serverSideUtlis');
 
 const { constructPayload } = require('../../../../v0/util');
@@ -107,6 +108,23 @@ describe('serverSideUtils.js', () => {
           },
         ],
       });
+    });
+  });
+
+  describe('getAnonymousIdFromAttributes', () => {
+    // Handles empty note_attributes array gracefully
+    it('should return null when note_attributes is an empty array', async () => {
+      const event = { note_attributes: [] };
+      const result = await getAnonymousIdFromAttributes(event);
+      expect(result).toBeNull();
+    });
+
+    it('get anonymousId from noteAttributes', async () => {
+      const event = {
+        note_attributes: [{ name: 'rudderAnonymousId', value: '123456' }],
+      };
+      const result = await getAnonymousIdFromAttributes(event);
+      expect(result).toEqual('123456');
     });
   });
 });

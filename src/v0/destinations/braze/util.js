@@ -45,6 +45,42 @@ const getEndpointFromConfig = (destination) => {
   return endpoint;
 };
 
+// Merges external_ids, emails, and phones for entries with the same subscription_group_id and subscription_state
+const combineSubscriptionGroups = (subscriptionGroups) => {
+  const uniqueGroups = {};
+
+  subscriptionGroups.forEach((group) => {
+    const key = `${group.subscription_group_id}-${group.subscription_state}`;
+    if (!uniqueGroups[key]) {
+      uniqueGroups[key] = {
+        ...group,
+        external_ids: [...(group.external_ids || [])],
+        emails: [...(group.emails || [])],
+        phones: [...(group.phones || [])],
+      };
+    } else {
+      uniqueGroups[key].external_ids.push(...(group.external_ids || []));
+      uniqueGroups[key].emails.push(...(group.emails || []));
+      uniqueGroups[key].phones.push(...(group.phones || []));
+    }
+  });
+
+  return Object.values(uniqueGroups).map((group) => {
+    const result = {
+      subscription_group_id: group.subscription_group_id,
+      subscription_state: group.subscription_state,
+      external_ids: [...new Set(group.external_ids)],
+    };
+    if (group.emails?.length) {
+      result.emails = [...new Set(group.emails)];
+    }
+    if (group.phones?.length) {
+      result.phones = [...new Set(group.phones)];
+    }
+    return result;
+  });
+};
+
 const CustomAttributeOperationUtil = {
   customAttributeUpdateOperation(key, data, traits, mergeObjectsUpdateOperation) {
     data[key] = {};
@@ -381,8 +417,22 @@ function prepareGroupAndAliasBatch(arrayChunks, responseArray, destination, type
     } else if (type === 'subscription') {
       response.endpoint = getSubscriptionGroupEndPoint(getEndpointFromConfig(destination));
       const subscription_groups = chunk;
+      // maketool transformed event
+      logger.info(`braze subscription chunk ${JSON.stringify(subscription_groups)}`);
+
+      stats.gauge('braze_batch_subscription_size', subscription_groups.length, {
+        destination_id: destination.ID,
+      });
+
+      // Deduplicate the subscription groups before constructing the response body
+      const deduplicatedSubscriptionGroups = combineSubscriptionGroups(subscription_groups);
+
+      stats.gauge('braze_batch_subscription_combined_size', deduplicatedSubscriptionGroups.length, {
+        destination_id: destination.ID,
+      });
+
       response.body.JSON = removeUndefinedAndNullValues({
-        subscription_groups,
+        subscription_groups: deduplicatedSubscriptionGroups,
       });
     }
     responseArray.push({
@@ -490,6 +540,7 @@ const processBatch = (transformedEvents) => {
   prepareGroupAndAliasBatch(mergeUsersArrayChunks, responseArray, destination, 'merge');
 
   if (successMetadata.length > 0) {
+    console.log(`Response 1 batchRequest ${JSON.stringify(responseArray)}`);
     finalResponse.push({
       batchedRequest: responseArray,
       metadata: successMetadata,
@@ -756,4 +807,5 @@ module.exports = {
   collectStatsForAliasFailure,
   collectStatsForAliasMissConfigurations,
   handleReservedProperties,
+  combineSubscriptionGroups,
 };

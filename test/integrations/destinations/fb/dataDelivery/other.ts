@@ -31,14 +31,14 @@ export const otherScenariosV1: ProxyV1TestData[] = [
         body: {
           output: {
             status: 429,
-            message: 'API User Too Many Calls',
+            message: 'User request limit reached',
             statTags: {
               ...statTags,
               errorType: 'throttled',
             },
             response: [
               {
-                error: 'API User Too Many Calls',
+                error: 'User request limit reached',
                 statusCode: 429,
                 metadata: generateMetadata(1),
               },

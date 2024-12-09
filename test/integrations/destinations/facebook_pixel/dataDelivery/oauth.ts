@@ -28,11 +28,11 @@ export const oauthScenariosV1: ProxyV1TestData[] = [
         body: {
           output: {
             status: 400,
-            message: 'Capability or permissions issue.',
+            message: 'Some error in permission',
             statTags,
             response: [
               {
-                error: 'Capability or permissions issue.',
+                error: 'Some error in permission',
                 statusCode: 400,
                 metadata: generateMetadata(1),
               },

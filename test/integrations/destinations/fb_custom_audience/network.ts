@@ -514,6 +514,8 @@ export const networkCallsData = [
         error: {
           message:
             'Error validating access token: Session has expired on Tuesday, 01-Aug-23 10:12:14 PDT. The current time is Sunday, 28-Jan-24 16:01:17 PST.',
+          error_user_msg:
+            'Error validating access token: Session has expired on Tuesday, 01-Aug-23 10:12:14 PDT. The current time is Sunday, 28-Jan-24 16:01:17 PST.',
           type: 'OAuthException',
           code: 190,
           error_subcode: 463,

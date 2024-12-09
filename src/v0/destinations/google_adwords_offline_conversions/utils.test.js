@@ -244,7 +244,9 @@ describe('getClickConversionPayloadAndEndpoint util tests', () => {
     };
     expect(() =>
       getClickConversionPayloadAndEndpoint(fittingPayload, config, '9625812972'),
-    ).toThrow('Either of email or phone is required for user identifier');
+    ).toThrow(
+      'Either an email address or a phone number is required for user identification when none of gclid, wbraid, or gbraid is provided.',
+    );
   });
 
   it('finaliseConsent', () => {

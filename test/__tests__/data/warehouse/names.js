@@ -41,6 +41,19 @@ const names = {
         C_Z: "string",
         CAMEL_CASE_123_KEY: "string",
         _1_C_COMEGA: "string"
+      },
+      snowpipe_streaming: {
+        OMEGA: "string",
+        OMEGA_V_2: "string",
+        _9_MEGA: "string",
+        MEGA: "string",
+        OME_GA: "string",
+        ALPHA: "string",
+        OME_GA: "string",
+        _9_MEGA_90: "string",
+        C_Z: "string",
+        CAMEL_CASE_123_KEY: "string",
+        _1_C_COMEGA: "string"
       }
     },
     data: {
@@ -69,6 +82,19 @@ const names = {
         C_Z: "test",
         CAMEL_CASE_123_KEY: "test",
         _1_C_COMEGA: "test"
+      },
+      snowpipe_streaming: {
+        OMEGA: "test",
+        OMEGA_V_2: "test",
+        _9_MEGA: "test",
+        MEGA: "test",
+        OME_GA: "test",
+        ALPHA: "test",
+        OME_GA: "test",
+        _9_MEGA_90: "test",
+        C_Z: "test",
+        CAMEL_CASE_123_KEY: "test",
+        _1_C_COMEGA: "test"
       }
     },
     namesMap: {
@@ -86,6 +112,19 @@ const names = {
         "1CComega": "_1_c_comega"
       },
       snowflake: {
+        omega: "OMEGA",
+        "omega v2": "OMEGA_V_2",
+        "9mega": "_9_MEGA",
+        "mega&": "MEGA",
+        ome$ga: "OME_GA",
+        alpha$: "ALPHA",
+        "ome_ ga": "OME_GA",
+        "9mega________-________90": "_9_MEGA_90",
+        Cízǔ: "C_Z",
+        CamelCase123Key: "CAMEL_CASE_123_KEY",
+        "1CComega": "_1_C_COMEGA"
+      },
+      snowpipe_streaming: {
         omega: "OMEGA",
         "omega v2": "OMEGA_V_2",
         "9mega": "_9_MEGA",

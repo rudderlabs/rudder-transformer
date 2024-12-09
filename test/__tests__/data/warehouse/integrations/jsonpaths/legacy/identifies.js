@@ -53,6 +53,16 @@ module.exports = {
                         ]
                     }
                 },
+                SNOWPIPE_STREAMING: {
+                    options: {
+                        jsonPaths: [
+                            "UPMap.nestedMap",
+                            "CTMap.nestedMap",
+                            "TMap.nestedMap",
+                            "CMap.nestedMap",
+                        ]
+                    }
+                },
                 S3_DATALAKE: {
                     options: {
                         skipReservedKeywordsEscaping: true
@@ -878,6 +888,85 @@ module.exports = {
                     "table": "USERS"
                 }
             }
+        ],
+        snowpipe_streaming: [
+            {
+                "data": {
+                    "ANONYMOUS_ID": "97c46c81-3140-456d-b2a9-690d70aaca35",
+                    "CHANNEL": "web",
+                    "CONTEXT_APP_BUILD": "1.0.0",
+                    "CONTEXT_APP_NAME": "RudderLabs JavaScript SDK",
+                    "CONTEXT_APP_NAMESPACE": "com.rudderlabs.javascript",
+                    "CONTEXT_APP_VERSION": "1.1.11",
+                    "CONTEXT_C_MAP_NESTED_MAP_N_1": "context nested prop 1",
+                    "CONTEXT_DEVICE_ID": "id",
+                    "CONTEXT_DEVICE_TOKEN": "token",
+                    "CONTEXT_DEVICE_TYPE": "ios",
+                    "CONTEXT_IP": "[::1]:53708",
+                    "CONTEXT_LIBRARY_NAME": "RudderLabs JavaScript SDK",
+                    "CONTEXT_LIBRARY_VERSION": "1.1.11",
+                    "CONTEXT_LOCALE": "en-US",
+                    "CONTEXT_OS_NAME": "android",
+                    "CONTEXT_OS_VERSION": "1.12.3",
+                    "CONTEXT_REQUEST_IP": "[::1]:53708",
+                    "CONTEXT_TRAITS_CT_MAP_NESTED_MAP_N_1": "nested prop 1",
+                    "CONTEXT_TRAITS_EMAIL": "user123@email.com",
+                    "CONTEXT_TRAITS_PHONE": "+917836362334",
+                    "CONTEXT_TRAITS_USER_ID": "user123",
+                    "CONTEXT_USER_AGENT": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0",
+                    "CT_MAP_NESTED_MAP_N_1": "nested prop 1",
+                    "EMAIL": "user123@email.com",
+                    "ID": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff",
+                    "ORIGINAL_TIMESTAMP": "2020-01-24T06:29:02.364Z",
+                    "PHONE": "+917836362334",
+                    "RECEIVED_AT": "2020-01-24T06:29:02.403Z",
+                    "SENT_AT": "2021-01-03T17:02:53.195Z",
+                    "TIMESTAMP": "2020-01-24T06:29:02.403Z",
+                    "T_MAP_NESTED_MAP_N_1": "nested prop 1",
+                    "UP_MAP_NESTED_MAP_N_1": "nested prop 1",
+                    "USER_ID": "user123"
+                },
+                "metadata": {
+                    "columns": {
+                        "ANONYMOUS_ID": "string",
+                        "CHANNEL": "string",
+                        "CONTEXT_APP_BUILD": "string",
+                        "CONTEXT_APP_NAME": "string",
+                        "CONTEXT_APP_NAMESPACE": "string",
+                        "CONTEXT_APP_VERSION": "string",
+                        "CONTEXT_C_MAP_NESTED_MAP_N_1": "string",
+                        "CONTEXT_DEVICE_ID": "string",
+                        "CONTEXT_DEVICE_TOKEN": "string",
+                        "CONTEXT_DEVICE_TYPE": "string",
+                        "CONTEXT_IP": "string",
+                        "CONTEXT_LIBRARY_NAME": "string",
+                        "CONTEXT_LIBRARY_VERSION": "string",
+                        "CONTEXT_LOCALE": "string",
+                        "CONTEXT_OS_NAME": "string",
+                        "CONTEXT_OS_VERSION": "string",
+                        "CONTEXT_REQUEST_IP": "string",
+                        "CONTEXT_TRAITS_CT_MAP_NESTED_MAP_N_1": "string",
+                        "CONTEXT_TRAITS_EMAIL": "string",
+                        "CONTEXT_TRAITS_PHONE": "string",
+                        "CONTEXT_TRAITS_USER_ID": "string",
+                        "CONTEXT_USER_AGENT": "string",
+                        "CT_MAP_NESTED_MAP_N_1": "string",
+                        "EMAIL": "string",
+                        "ID": "string",
+                        "ORIGINAL_TIMESTAMP": "datetime",
+                        "PHONE": "string",
+                        "RECEIVED_AT": "datetime",
+                        "SENT_AT": "datetime",
+                        "TIMESTAMP": "datetime",
+                        "T_MAP_NESTED_MAP_N_1": "string",
+                        "UP_MAP_NESTED_MAP_N_1": "string",
+                        "USER_ID": "string",
+                        "UUID_TS": "datetime"
+                    },
+                    "receivedAt": "2020-01-24T11:59:02.403+05:30",
+                    "table": "IDENTIFIES"
+                }
+            },
         ],
         datalake: [
             {

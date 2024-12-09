@@ -11,7 +11,7 @@ function safeTableName(options, name = '') {
   if (tableName === '') {
     throw new TransformationError('Table name cannot be empty.');
   }
-  if (provider === 'snowflake') {
+  if (provider === 'snowflake' || provider === 'snowpipe_streaming') {
     tableName = tableName.toUpperCase();
   } else if (provider === 'postgres') {
     tableName = tableName.substr(0, 63);
@@ -41,7 +41,7 @@ function safeColumnName(options, name = '') {
   if (columnName === '') {
     throw new TransformationError('Column name cannot be empty.');
   }
-  if (provider === 'snowflake') {
+  if (provider === 'snowflake' || provider === 'snowpipe_streaming') {
     columnName = columnName.toUpperCase();
   } else if (provider === 'postgres') {
     columnName = columnName.substr(0, 63);

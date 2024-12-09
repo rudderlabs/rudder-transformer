@@ -85,7 +85,10 @@ const errorDetailsMap = {
         "Object with ID 'PIXEL_ID' / 'DATASET_ID' / 'AUDIENCE_ID' does not exist, cannot be loaded due to missing permissions, or does not support this operation",
       )
       .build(),
-    default: new ErrorDetailsExtractorBuilder().setStatus(400).setMessageField('message').build(),
+    default: new ErrorDetailsExtractorBuilder()
+      .setStatus(400)
+      .setMessageField('error_user_msg')
+      .build(),
   },
   1: {
     // An unknown error occurred.
@@ -107,9 +110,7 @@ const errorDetailsMap = {
       .setStat({
         [TAG_NAMES.ERROR_TYPE]: ERROR_TYPES.AUTH,
       })
-      .setMessage(
-        'The session has been invalidated because the user changed their password or Facebook has changed the session for security reasons',
-      )
+      .setMessageField('error_user_msg')
       .build(),
 
     463: new ErrorDetailsExtractorBuilder()
@@ -117,56 +118,56 @@ const errorDetailsMap = {
       .setStat({
         [TAG_NAMES.ERROR_TYPE]: ERROR_TYPES.AUTH,
       })
-      .setMessageField('message')
+      .setMessageField('error_user_msg')
       .build(),
     default: new ErrorDetailsExtractorBuilder()
       .setStatus(400)
       .setStat({
         [TAG_NAMES.ERROR_TYPE]: ERROR_TYPES.AUTH,
       })
-      .setMessage('Invalid OAuth 2.0 access token')
+      .setMessageField('error_user_msg')
       .build(),
   },
   3: {
     default: new ErrorDetailsExtractorBuilder()
       .setStatus(400)
-      .setMessage('Capability or permissions issue.')
+      .setMessageField('error_user_msg')
       .build(),
   },
   2: {
     default: new ErrorDetailsExtractorBuilder()
       .setStatus(500)
-      .setMessage('Temporary issue due to downtime.')
+      .setMessageField('error_user_msg')
       .build(),
   },
   341: {
     default: new ErrorDetailsExtractorBuilder()
       .setStatus(500)
-      .setMessage('Application limit reached: Temporary issue due to downtime or throttling')
+      .setMessageField('error_user_msg')
       .build(),
   },
   368: {
     default: new ErrorDetailsExtractorBuilder()
       .setStatus(500)
-      .setMessage('Temporarily blocked for policies violations.')
+      .setMessageField('error_user_msg')
       .build(),
   },
   5000: {
     default: new ErrorDetailsExtractorBuilder()
       .setStatus(500)
-      .setMessage('Unknown Error Code')
+      .setMessageField('error_user_msg')
       .build(),
   },
   4: {
     default: new ErrorDetailsExtractorBuilder()
       .setStatus(429)
-      .setMessage('API Too Many Calls')
+      .setMessageField('error_user_msg')
       .build(),
   },
   17: {
     default: new ErrorDetailsExtractorBuilder()
       .setStatus(429)
-      .setMessage('API User Too Many Calls')
+      .setMessageField('error_user_msg')
       .build(),
   },
   // facebook custom audience related error codes
@@ -176,9 +177,7 @@ const errorDetailsMap = {
   294: {
     default: new ErrorDetailsExtractorBuilder()
       .setStatus(400)
-      .setMessage(
-        'Missing permission. Please make sure you have ads_management permission and the application is included in the allowlist',
-      )
+      .setMessageField('error_user_msg')
       .build(),
   },
   1487301: {
@@ -214,7 +213,10 @@ const errorDetailsMap = {
       .build(),
   },
   200: {
-    default: new ErrorDetailsExtractorBuilder().setStatus(403).setMessageField('message').build(),
+    default: new ErrorDetailsExtractorBuilder()
+      .setStatus(403)
+      .setMessageField('error_user_msg')
+      .build(),
   },
   21009: {
     default: new ErrorDetailsExtractorBuilder().setStatus(500).setMessageField('message').build(),
@@ -236,9 +238,11 @@ const getStatus = (error) => {
   const isErrorDetailEmpty = isEmpty(errorDetail);
   if (isErrorDetailEmpty) {
     // Unhandled error response
+    const errorMessage = get(error?.error || error, 'error_user_msg');
     return {
       status: errorStatus,
       stats: { [TAG_NAMES.META]: METADATA.UNHANDLED_STATUS_CODE },
+      errorMessage: errorMessage || JSON.stringify(error),
     };
   }
   errorStatus = errorDetail.status;

@@ -1,7 +1,6 @@
 // This file contains the test scenarios for the server-side events from the Shopify GraphQL API for
 // the v1 transformation flow
-import { mockFns } from '../mocks';
-import { dummySourceConfig } from '../constants';
+import { dummySourceConfig, note_attributes } from '../constants';
 
 export const checkoutEventsTestScenarios = [
   {
@@ -27,7 +26,7 @@ export const checkoutEventsTestScenarios = [
               updated_at: '2024-11-05T21:22:02-05:00',
               landing_site: '/',
               note: '',
-              note_attributes: [],
+              note_attributes,
               referring_site: '',
               shipping_lines: [],
               shipping_address: [],
@@ -145,7 +144,7 @@ export const checkoutEventsTestScenarios = [
                       updated_at: '2024-11-05T21:22:02-05:00',
                       landing_site: '/',
                       note: '',
-                      note_attributes: [],
+                      note_attributes,
                       referring_site: '',
                       shipping_lines: [],
                       shipping_address: [],
@@ -237,7 +236,7 @@ export const checkoutEventsTestScenarios = [
                   traits: {
                     shippingAddress: [],
                   },
-                  anonymousId: '5d3e2cb6-4011-5c9c-b7ee-11bc1e905097',
+                  anonymousId: '50ead33e-d763-4854-b0ab-765859ef05cb',
                 },
               ],
             },
@@ -269,7 +268,7 @@ export const checkoutEventsTestScenarios = [
               created_at: '2024-09-16T03:50:1500:00',
               updated_at: '2024-09-17T03:29:02-04:00',
               note: '',
-              note_attributes: [],
+              note_attributes,
               shipping_address: {
                 first_name: 'testuser',
                 address1: 'oakwood bridge',
@@ -396,7 +395,7 @@ export const checkoutEventsTestScenarios = [
             output: {
               batch: [
                 {
-                  anonymousId: '5d3e2cb6-4011-5c9c-b7ee-11bc1e905097',
+                  anonymousId: '50ead33e-d763-4854-b0ab-765859ef05cb',
                   context: {
                     cart_token: 'Z2NwLXVzLWVhc3QxOjAxSjdXRjdOQjY0NlFFNFdQVEg0MTRFM1E2',
                     integration: {
@@ -415,7 +414,7 @@ export const checkoutEventsTestScenarios = [
                       created_at: '2024-09-16T03:50:1500:00',
                       updated_at: '2024-09-17T03:29:02-04:00',
                       note: '',
-                      note_attributes: [],
+                      note_attributes,
                       shipping_address: {
                         first_name: 'testuser',
                         address1: 'oakwood bridge',
@@ -680,7 +679,7 @@ export const checkoutEventsTestScenarios = [
               merchant_of_record_app_id: null,
               name: '#1017',
               note: null,
-              note_attributes: [],
+              note_attributes,
               number: 17,
               order_number: 1017,
               order_status_url:
@@ -988,7 +987,7 @@ export const checkoutEventsTestScenarios = [
                       merchant_of_record_app_id: null,
                       name: '#1017',
                       note: null,
-                      note_attributes: [],
+                      note_attributes,
                       number: 17,
                       order_number: 1017,
                       order_status_url:
@@ -1289,7 +1288,7 @@ export const checkoutEventsTestScenarios = [
                     },
                   },
                   timestamp: '2024-11-06T02:54:50.000Z',
-                  anonymousId: '5d3e2cb6-4011-5c9c-b7ee-11bc1e905097',
+                  anonymousId: '50ead33e-d763-4854-b0ab-765859ef05cb',
                 },
               ],
             },
@@ -1326,6 +1325,7 @@ export const checkoutEventsTestScenarios = [
               current_total_tax: '0.00',
               email: 'henry@wfls.com',
               name: '#1017',
+              note_attributes,
               order_number: 1017,
               order_status_url:
                 'https://pixel-testing-rs.myshopify.com/59026964593/orders/676613a0027fc8240e16d67fdc9f5ac8/authenticate?key=a70bbe7ec8abcc46b77e4331e4df8c60',
@@ -1486,6 +1486,7 @@ export const checkoutEventsTestScenarios = [
                       current_total_tax: '0.00',
                       email: 'henry@wfls.com',
                       name: '#1017',
+                      note_attributes,
                       order_number: 1017,
                       order_status_url:
                         'https://pixel-testing-rs.myshopify.com/59026964593/orders/676613a0027fc8240e16d67fdc9f5ac8/authenticate?key=a70bbe7ec8abcc46b77e4331e4df8c60',
@@ -1675,7 +1676,7 @@ export const checkoutEventsTestScenarios = [
                     },
                   },
                   timestamp: '2024-11-06T02:54:50.000Z',
-                  anonymousId: '5d3e2cb6-4011-5c9c-b7ee-11bc1e905097',
+                  anonymousId: '50ead33e-d763-4854-b0ab-765859ef05cb',
                 },
               ],
             },
@@ -1684,4 +1685,4 @@ export const checkoutEventsTestScenarios = [
       },
     },
   },
-].map((d1) => ({ ...d1, mockFns }));
+];

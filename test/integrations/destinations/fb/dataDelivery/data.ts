@@ -59,6 +59,7 @@ export const existingTestData = [
             message: 'Invalid OAuth 2.0 access token',
             destinationResponse: {
               error: {
+                error_user_msg: 'Invalid OAuth 2.0 access token',
                 code: 190,
                 fbtrace_id: 'fbpixel_trace_id',
                 message: 'The access token could not be decrypted',
@@ -274,7 +275,7 @@ export const existingTestData = [
         body: {
           output: {
             status: 429,
-            message: 'API User Too Many Calls',
+            message: 'User request limit reached',
             destinationResponse: {
               error: {
                 message: 'User request limit reached',

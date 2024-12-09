@@ -12,12 +12,12 @@ const ConfigCategories = {
 };
 
 const ECOMM_EVENTS_WITH_PRODUCT_ARRAY = [
-  'Product Clicked',
-  'Product added',
-  'Product Viewed',
-  'Product Removed',
+  'Cart Viewed',
   'Checkout Started',
-  'Payment Info Entered',
+  'Order Updated',
+  'Order Completed',
+  'Order Refunded',
+  'Order Cancelled',
 ];
 
 const mappingConfig = getMappingConfig(ConfigCategories, __dirname);

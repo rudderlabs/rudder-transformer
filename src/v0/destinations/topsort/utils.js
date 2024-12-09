@@ -1,6 +1,5 @@
 const { generateUUID } = require('@rudderstack/integrations-lib');
 const { constructPayload } = require('../../util');
-const { BASE_URL } = require('./config');
 
 // Function to check if a product array is valid
 const isProductArrayValid = (event, properties) =>
@@ -24,15 +23,8 @@ const createEventData = (basePayload, placementPayload, itemPayload, event) => (
 });
 
 // Function to add the structured event data to the final payloads array
-const addFinalPayload = (eventData, apiKey, finalPayloads) => {
-  finalPayloads.push({
-    ...eventData,
-    endpoint: BASE_URL, // Set the destination API URL
-    headers: {
-      'Content-Type': 'application/json',
-      api_key: apiKey, // Add the API key here for authentication
-    },
-  });
+const addFinalPayload = (eventData, finalPayloads) => {
+  finalPayloads.push(JSON.stringify(eventData)); // Only push the eventData as JSON
 };
 
 // Function to retrieve mapped event name from Topsort event mappings.

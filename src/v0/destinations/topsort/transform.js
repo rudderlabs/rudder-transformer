@@ -1,7 +1,7 @@
 const {
   InstrumentationError,
   ConfigurationError,
-  getHashFromArrayWithDuplicate,
+  getHashFromArray,
 } = require('@rudderstack/integrations-lib');
 const { ConfigCategory, mappingConfig, ECOMM_EVENTS_WITH_PRODUCT_ARRAY } = require('./config');
 const { constructPayload, simpleProcessRouterDest } = require('../../util');
@@ -19,13 +19,12 @@ const processProductArray = ({
   basePayload,
   placementPayload,
   topsortEvent,
-  apiKey,
   finalPayloads,
 }) => {
   const itemPayloads = constructItemPayloads(products, mappingConfig[ConfigCategory.ITEM.name]);
   itemPayloads.forEach((itemPayload) => {
     const eventData = createEventData(basePayload, placementPayload, itemPayload, topsortEvent);
-    addFinalPayload(eventData, apiKey, finalPayloads);
+    addFinalPayload(eventData, finalPayloads);
   });
 };
 
@@ -35,7 +34,6 @@ const processSingleProduct = ({
   placementPayload,
   message,
   topsortEvent,
-  apiKey,
   finalPayloads,
   messageId,
 }) => {
@@ -46,15 +44,16 @@ const processSingleProduct = ({
   eventData.data.id = messageId;
 
   // Add final payload with appropriate ID and other headers
-  addFinalPayload(eventData, apiKey, finalPayloads);
+  addFinalPayload(eventData, finalPayloads);
 };
 
 const responseBuilder = (message, { Config }) => {
-  const { apiKey, topsortEvents } = Config;
+  const { topsortEvents } = Config;
   const { event, properties } = message;
+  const { products, messageId } = properties;
 
   // Parse Topsort event mappings
-  const parsedTopsortEventMappings = getHashFromArrayWithDuplicate(topsortEvents);
+  const parsedTopsortEventMappings = getHashFromArray(topsortEvents);
   const mappedEventName = getMappedEventName(parsedTopsortEventMappings, event);
 
   if (!mappedEventName) {
@@ -67,9 +66,6 @@ const responseBuilder = (message, { Config }) => {
   const basePayload = constructPayload(message, mappingConfig[ConfigCategory.TRACK.name]);
   const placementPayload = constructPayload(message, mappingConfig[ConfigCategory.PLACEMENT.name]);
 
-  // Destructure products from properties (if available)
-  const { products, messageId } = properties;
-
   // Check if the event involves a product array (using ECOMM_EVENTS_WITH_PRODUCT_ARRAY)
   const isProductArrayAvailable =
     ECOMM_EVENTS_WITH_PRODUCT_ARRAY.includes(event) && isProductArrayValid(event, properties);
@@ -80,7 +76,6 @@ const responseBuilder = (message, { Config }) => {
     basePayload,
     placementPayload,
     topsortEventName,
-    apiKey,
     finalPayloads,
   };
 
@@ -111,15 +106,12 @@ const processEvent = (message, destination) => {
 
   const messageType = message.type.toLowerCase();
 
-  let response;
   // Handle 'track' event type
-  if (messageType === 'track') {
-    response = responseBuilder(message, destination); // Call responseBuilder to handle the event
-  } else {
+  if (messageType !== 'track') {
     throw new InstrumentationError('Only "track" events are supported. Dropping event.', 400);
   }
 
-  return response;
+  return responseBuilder(message, destination);
 };
 
 // Process function that is called per event

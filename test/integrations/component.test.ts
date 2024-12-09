@@ -24,6 +24,7 @@ import { appendFileSync } from 'fs';
 import { assertRouterOutput, responses } from '../testHelper';
 import { generateTestReport, initaliseReport } from '../test_reporter/reporter';
 import _ from 'lodash';
+import defaultFeaturesConfig from '../../src/features';
 
 // To run single destination test cases
 // npm run test:ts -- component  --destination=adobe_analytics
@@ -228,6 +229,7 @@ describe.each(allTestDataFilePaths)('%s Tests', (testDataPath) => {
       return false;
     });
   }
+
   describe(`${testData[0].name} ${testData[0].module}`, () => {
     test.each(testData)('$feature -> $description (index: $#)', async (tcData) => {
       tcData?.mockFns?.(mockAdapter);
@@ -237,6 +239,12 @@ describe.each(allTestDataFilePaths)('%s Tests', (testDataPath) => {
           await destinationTestHandler(tcData);
           break;
         case tags.MODULES.SOURCE:
+          defaultFeaturesConfig.upgradedToSourceTransformV2 = false;
+          await sourceTestHandler(tcData);
+
+          // run the same tests for sources only with upgradedToSourceTransformV2 flag as true
+          tcData?.mockFns?.(mockAdapter);
+          defaultFeaturesConfig.upgradedToSourceTransformV2 = true;
           await sourceTestHandler(tcData);
           break;
         default:

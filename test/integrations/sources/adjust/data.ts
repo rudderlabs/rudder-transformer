@@ -10,23 +10,26 @@ export const data = [
     name: 'adjust',
     description: 'Simple track call',
     module: 'source',
-    version: 'v0',
+    version: 'v1',
     input: {
       request: {
         body: [
           {
-            id: 'adjust',
-            query_parameters: {
-              gps_adid: ['38400000-8cf0-11bd-b23e-10b96e40000d'],
-              adid: ['18546f6171f67e29d1cb983322ad1329'],
-              tracker_token: ['abc'],
-              custom: ['custom'],
-              tracker_name: ['dummy'],
-              created_at: ['1404214665'],
-              event_name: ['Click'],
+            event: {
+              id: 'adjust',
+              query_parameters: {
+                gps_adid: ['38400000-8cf0-11bd-b23e-10b96e40000d'],
+                adid: ['18546f6171f67e29d1cb983322ad1329'],
+                tracker_token: ['abc'],
+                custom: ['custom'],
+                tracker_name: ['dummy'],
+                created_at: ['1404214665'],
+                event_name: ['Click'],
+              },
+              updated_at: '2023-02-10T12:16:07.251Z',
+              created_at: '2023-02-10T12:05:04.402Z',
             },
-            updated_at: '2023-02-10T12:16:07.251Z',
-            created_at: '2023-02-10T12:05:04.402Z',
+            source: {},
           },
         ],
         method: 'POST',
@@ -85,15 +88,18 @@ export const data = [
     name: 'adjust',
     description: 'Simple track call with no query parameters',
     module: 'source',
-    version: 'v0',
+    version: 'v1',
     skipGo: 'FIXME',
     input: {
       request: {
         body: [
           {
-            id: 'adjust',
-            updated_at: '2023-02-10T12:16:07.251Z',
-            created_at: '2023-02-10T12:05:04.402Z',
+            event: {
+              id: 'adjust',
+              updated_at: '2023-02-10T12:16:07.251Z',
+              created_at: '2023-02-10T12:05:04.402Z',
+            },
+            source: {},
           },
         ],
         method: 'POST',
@@ -129,24 +135,27 @@ export const data = [
     name: 'adjust',
     description: 'Simple track call with wrong created at',
     module: 'source',
-    version: 'v0',
+    version: 'v1',
     skipGo: 'FIXME',
     input: {
       request: {
         body: [
           {
-            id: 'adjust',
-            query_parameters: {
-              gps_adid: ['38400000-8cf0-11bd-b23e-10b96e40000d'],
-              adid: ['18546f6171f67e29d1cb983322ad1329'],
-              tracker_token: ['abc'],
-              custom: ['custom'],
-              tracker_name: ['dummy'],
-              created_at: ['test'],
-              event_name: ['Click'],
+            event: {
+              id: 'adjust',
+              query_parameters: {
+                gps_adid: ['38400000-8cf0-11bd-b23e-10b96e40000d'],
+                adid: ['18546f6171f67e29d1cb983322ad1329'],
+                tracker_token: ['abc'],
+                custom: ['custom'],
+                tracker_name: ['dummy'],
+                created_at: ['test'],
+                event_name: ['Click'],
+              },
+              updated_at: '2023-02-10T12:16:07.251Z',
+              created_at: 'test',
             },
-            updated_at: '2023-02-10T12:16:07.251Z',
-            created_at: 'test',
+            source: {},
           },
         ],
         method: 'POST',

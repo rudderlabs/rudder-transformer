@@ -59,4 +59,4 @@ const process = (events) => {
   return eventsArray.map(processEvent);
 };
 
-module.exports = { process };
+module.exports = { process, processEvent };

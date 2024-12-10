@@ -83,6 +83,21 @@ export const dummyContext = {
   },
 };
 
+export const note_attributes = [
+  {
+    name: 'cartId',
+    value: '9c623f099fc8819aa4d6a958b65dfe7d',
+  },
+  {
+    name: 'cartToken',
+    value: 'Z2NwLXVzLWVhc3QxOjAxSkQzNUFXVEI4VkVUNUpTTk1LSzBCMzlF',
+  },
+  {
+    name: 'rudderAnonymousId',
+    value: '50ead33e-d763-4854-b0ab-765859ef05cb',
+  },
+];
+
 export const responseDummyContext = {
   document: {
     location: {

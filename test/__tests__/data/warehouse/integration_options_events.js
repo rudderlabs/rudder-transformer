@@ -74,6 +74,13 @@ const sampleEvents = {
               jsonPaths: ["tMap"]
             }
           },
+          SNOWPIPE_STREAMING: {
+            options: {
+              skipTracksTable: true,
+              useBlendoCasing: true,
+              jsonPaths: ["tMap"]
+            }
+          },
           S3_DATALAKE: {
             options: {
               skipReservedKeywordsEscaping: true
@@ -351,6 +358,88 @@ const sampleEvents = {
         }
       ],
       snowflake: [
+        {
+          metadata: {
+            table: "_GROUPS",
+            columns: {
+              UUID_TS: "datetime",
+              CURRENCY: "string",
+              REVENUE: "int",
+              PATH_TO_$1_000_000: "string",
+              _9OMEGA: "boolean",
+              CAMELCASE123KEY: "string",
+              TESTMAP_NESTEDMAP: "json",
+              TMAP: "json",
+              TESTARRAY: "json",
+              CONTEXT_APP_BUILD: "string",
+              CONTEXT_APP_NAME: "string",
+              CONTEXT_APP_NAMESPACE: "string",
+              CONTEXT_APP_VERSION: "string",
+              CONTEXT_LIBRARY_NAME: "string",
+              CONTEXT_LIBRARY_VERSION: "string",
+              CONTEXT_LOCALE: "string",
+              CONTEXT_SCREEN_DENSITY: "int",
+              CONTEXT_TRAITS_CITY: "string",
+              CONTEXT_TRAITS_COUNTRY: "string",
+              CONTEXT_TRAITS_EMAIL: "string",
+              CONTEXT_TRAITS_FIRSTNAME: "string",
+              CONTEXT_USERAGENT: "string",
+              EVENT_TEXT: "string",
+              ID: "string",
+              ANONYMOUS_ID: "string",
+              USER_ID: "string",
+              SENT_AT: "datetime",
+              TIMESTAMP: "datetime",
+              RECEIVED_AT: "datetime",
+              ORIGINAL_TIMESTAMP: "datetime",
+              CHANNEL: "string",
+              CONTEXT_IP: "string",
+              CONTEXT_REQUEST_IP: "string",
+              CONTEXT_PASSED_IP: "string",
+              EVENT: "string"
+            },
+            receivedAt: "2020-01-24T11:59:02.403+05:30"
+          },
+          data: {
+            CURRENCY: "USD",
+            REVENUE: 50,
+            PATH_TO_$1_000_000: "None",
+            _9OMEGA: true,
+            CAMELCASE123KEY: "camel case",
+            TESTMAP_NESTEDMAP: '{"n1":"nested prop 1"}',
+            TMAP: '{"t1":10,"t2":20}',
+            TESTARRAY: '["This is","an","array"]',
+            CONTEXT_APP_BUILD: "1.0.0",
+            CONTEXT_APP_NAME: "RudderLabs JavaScript SDK",
+            CONTEXT_APP_NAMESPACE: "com.rudderlabs.javascript",
+            CONTEXT_APP_VERSION: "1.0.5",
+            CONTEXT_LIBRARY_NAME: "RudderLabs JavaScript SDK",
+            CONTEXT_LIBRARY_VERSION: "1.0.5",
+            CONTEXT_LOCALE: "en-GB",
+            CONTEXT_SCREEN_DENSITY: 2,
+            CONTEXT_TRAITS_CITY: "Disney",
+            CONTEXT_TRAITS_COUNTRY: "USA",
+            CONTEXT_TRAITS_EMAIL: "mickey@disney.com",
+            CONTEXT_TRAITS_FIRSTNAME: "Mickey",
+            CONTEXT_USERAGENT:
+                "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36",
+            EVENT_TEXT: "groups",
+            ID: "a6a0ad5a-bd26-4f19-8f75-38484e580fc7",
+            ANONYMOUS_ID: "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+            USER_ID: "9bb5d4c2-a7aa-4a36-9efb-dd2b1aec5d33",
+            SENT_AT: "2020-01-24T06:29:02.364Z",
+            TIMESTAMP: "2020-01-24T06:29:02.403Z",
+            RECEIVED_AT: "2020-01-24T06:29:02.403Z",
+            ORIGINAL_TIMESTAMP: "2020-01-24T06:29:02.364Z",
+            CHANNEL: "web",
+            CONTEXT_IP: "0.0.0.0",
+            CONTEXT_REQUEST_IP: "[::1]:53708",
+            CONTEXT_PASSED_IP: "0.0.0.0",
+            EVENT: "groups"
+          }
+        }
+      ],
+      snowpipe_streaming: [
         {
           metadata: {
             table: "_GROUPS",
@@ -730,7 +819,7 @@ const sampleEvents = {
       ]
     }
   },
-  users: {
+  identify: {
     input: {
       destination: {
         Config: {
@@ -1255,6 +1344,75 @@ const sampleEvents = {
           }
         }
       ],
+      snowpipe_streaming: [
+        {
+          "data": {
+            "ANONYMOUS_ID": "97c46c81-3140-456d-b2a9-690d70aaca35",
+            "CHANNEL": "web",
+            "CONTEXT_APP_BUILD": "1.0.0",
+            "CONTEXT_APP_NAME": "RudderLabs JavaScript SDK",
+            "CONTEXT_APP_NAMESPACE": "com.rudderlabs.javascript",
+            "CONTEXT_APP_VERSION": "1.1.11",
+            "CONTEXT_DEVICE_ID": "id",
+            "CONTEXT_DEVICE_TOKEN": "token",
+            "CONTEXT_DEVICE_TYPE": "ios",
+            "CONTEXT_IP": "[::1]:53708",
+            "CONTEXT_LIBRARY_NAME": "RudderLabs JavaScript SDK",
+            "CONTEXT_LIBRARY_VERSION": "1.1.11",
+            "CONTEXT_LOCALE": "en-US",
+            "CONTEXT_OS_NAME": "android",
+            "CONTEXT_OS_VERSION": "1.12.3",
+            "CONTEXT_REQUEST_IP": "[::1]:53708",
+            "CONTEXT_TRAITS_EMAIL": "user123@email.com",
+            "CONTEXT_TRAITS_PHONE": "+917836362334",
+            "CONTEXT_TRAITS_USER_ID": "user123",
+            "CONTEXT_USER_AGENT": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0",
+            "EMAIL": "user123@email.com",
+            "ID": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff",
+            "ORIGINAL_TIMESTAMP": "2020-01-24T06:29:02.364Z",
+            "PHONE": "+917836362334",
+            "RECEIVED_AT": "2020-01-24T06:29:02.403Z",
+            "SENT_AT": "2021-01-03T17:02:53.195Z",
+            "TIMESTAMP": "2020-01-24T06:29:02.403Z",
+            "USER_ID": "user123"
+          },
+          "metadata": {
+            "columns": {
+              "ANONYMOUS_ID": "string",
+              "CHANNEL": "string",
+              "CONTEXT_APP_BUILD": "string",
+              "CONTEXT_APP_NAME": "string",
+              "CONTEXT_APP_NAMESPACE": "string",
+              "CONTEXT_APP_VERSION": "string",
+              "CONTEXT_DEVICE_ID": "string",
+              "CONTEXT_DEVICE_TOKEN": "string",
+              "CONTEXT_DEVICE_TYPE": "string",
+              "CONTEXT_IP": "string",
+              "CONTEXT_LIBRARY_NAME": "string",
+              "CONTEXT_LIBRARY_VERSION": "string",
+              "CONTEXT_LOCALE": "string",
+              "CONTEXT_OS_NAME": "string",
+              "CONTEXT_OS_VERSION": "string",
+              "CONTEXT_REQUEST_IP": "string",
+              "CONTEXT_TRAITS_EMAIL": "string",
+              "CONTEXT_TRAITS_PHONE": "string",
+              "CONTEXT_TRAITS_USER_ID": "string",
+              "CONTEXT_USER_AGENT": "string",
+              "EMAIL": "string",
+              "ID": "string",
+              "ORIGINAL_TIMESTAMP": "datetime",
+              "PHONE": "string",
+              "RECEIVED_AT": "datetime",
+              "SENT_AT": "datetime",
+              "TIMESTAMP": "datetime",
+              "USER_ID": "string",
+              "UUID_TS": "datetime"
+            },
+            "receivedAt": "2020-01-24T11:59:02.403+05:30",
+            "table": "IDENTIFIES"
+          }
+        },
+      ],
       s3_datalake: [
         {
           "data": {
@@ -1639,6 +1797,8 @@ function opOutput(eventType, provider) {
   switch (provider) {
     case "snowflake":
       return _.cloneDeep(sampleEvents[eventType].output.snowflake);
+    case "snowpipe_streaming":
+      return _.cloneDeep(sampleEvents[eventType].output.snowpipe_streaming);
     case "s3_datalake":
       return _.cloneDeep(sampleEvents[eventType].output.s3_datalake);
     case "rs":
@@ -1646,13 +1806,13 @@ function opOutput(eventType, provider) {
     case "bq":
       return _.cloneDeep(sampleEvents[eventType].output.bq);
     case "gcs_datalake":
-      if (eventType === 'users') {
+      if (eventType === 'identify') {
         return _.cloneDeep(sampleEvents[eventType].output.gcs_datalake);
       } else {
         return _.cloneDeep(sampleEvents[eventType].output.default);
       }
     case "azure_datalake":
-      if (eventType === 'users') {
+      if (eventType === 'identify') {
         return _.cloneDeep(sampleEvents[eventType].output.azure_datalake);
       } else {
         return _.cloneDeep(sampleEvents[eventType].output.default);

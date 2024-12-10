@@ -18,6 +18,7 @@ const {
   getClickConversionPayloadAndEndpoint,
   getConsentsDataFromIntegrationObj,
   getCallConversionPayload,
+  updateConversion,
 } = require('./utils');
 const helper = require('./helper');
 
@@ -47,6 +48,9 @@ const getConversions = (message, metadata, { Config }, event, conversionType) =>
       Config,
       filteredCustomerId,
       eventLevelConsentsData,
+    );
+    convertedPayload.payload.conversions[0] = updateConversion(
+      convertedPayload.payload.conversions[0],
     );
     payload = convertedPayload.payload;
     endpoint = convertedPayload.endpoint;

@@ -1,25 +1,20 @@
+const { isFeatureEnabled } = require('feature-flag-sdk');
 const { getXMLPayload, getFORMPayload } = require('../../../cdk/v2/destinations/http/utils');
 const { EventType } = require('../../../constants');
 const { getFieldValueFromMessage, flattenJson } = require('../../util');
-const { isFeatureEnabled, setDefaultTraits } = require('feature-flag-sdk')
 
-
-const JSON = 'JSON',
-  XML = 'XML',
-  FORM = 'FORM';
+const JSON = 'JSON';
+const XML = 'XML';
+const FORM = 'FORM';
 
 const ContentTypeConstants = {
   'application/json': JSON,
   'application/xml': XML,
   'text/xml': XML,
-  'application/x-www-form-urlencoded': FORM
-}
+  'application/x-www-form-urlencoded': FORM,
+};
 
-const isFormattedBodyFeatureEnabled = async (workspaceId) => {
-  return await isFeatureEnabled(workspaceId, 'dest_transformer_webhook_form_support');
-}
-
-const getFormatedPayload = (headers, payload) => {
+const getFormattedPayload = (headers, payload) => {
   const normalizedHeaders = Object.keys(headers).reduce((acc, key) => {
     acc[key.toLowerCase()] = headers[key];
     return acc;
@@ -46,7 +41,6 @@ const getPropertyParams = (message) => {
 
 module.exports = {
   getPropertyParams,
-  getFormatedPayload,
-  isFormattedBodyFeatureEnabled,
-  ContentTypeConstants
+  getFormattedPayload,
+  isFeatureEnabled,
 };

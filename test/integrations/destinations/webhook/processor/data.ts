@@ -115,8 +115,8 @@ export const data = [
                   },
                   {
                     from: 'content-type',
-                    to: 'application/x-www-form-urlencoded'
-                  }
+                    to: 'application/x-www-form-urlencoded',
+                  },
                 ],
               },
               DestinationDefinition: {
@@ -3479,6 +3479,7 @@ export const data = [
             },
             metadata: {
               destinationId: '1234',
+              workspaceId: 'wspId',
             },
           },
         ],
@@ -3491,6 +3492,7 @@ export const data = [
           {
             metadata: {
               destinationId: '1234',
+              workspaceId: 'wspId',
             },
             output: {
               body: {
@@ -3539,5 +3541,5 @@ export const data = [
         ],
       },
     },
-  }
+  },
 ];

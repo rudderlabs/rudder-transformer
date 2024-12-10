@@ -21,7 +21,8 @@ const buildResponseWithUsers = (users, action, config, jobIdList, secret) => {
   if (!secret?.clientId) {
     throw new OAuthSecretError('OAuth - Client Id not found');
   }
-  const externalId = `Rudderstack_${sha256(`${jobIdList}`)}`;
+  const jobIdHash = sha256(String(jobIdList));
+  const externalId = `Rudderstack_${jobIdHash}`;
   const response = defaultRequestConfig();
   response.endpoint = '';
   response.method = defaultPostRequestConfig.requestMethod;

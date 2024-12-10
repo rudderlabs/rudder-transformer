@@ -7,6 +7,7 @@ const {
   updateUserEventPayloadBuilder,
   registerDeviceTokenEventPayloadBuilder,
   registerBrowserTokenEventPayloadBuilder,
+  checkIfEventIsAbortableAndExtractErrorMessage,
 } = require('./util');
 
 const { ConfigCategory } = require('./config');
@@ -797,6 +798,94 @@ describe('iterable utils test', () => {
       expect(updateCartEventPayloadBuilder(fittingPayload, ConfigCategory.UPDATE_CART)).toEqual(
         expectedOutput,
       );
+    });
+  });
+  describe('checkIfEventIsAbortableAndExtractErrorMessage', () => {
+    // Returns non-abortable and empty error message when failCount is 0
+    it('should return non-abortable and empty error message when failCount is 0', () => {
+      const event = {
+        email: 'test@example.com',
+        userId: 'user123',
+        eventName: 'testEvent',
+      };
+      const destinationResponse = {
+        response: {
+          failCount: 0,
+        },
+      };
+
+      const result = checkIfEventIsAbortableAndExtractErrorMessage(event, destinationResponse);
+      expect(result).toEqual({ isAbortable: false, errorMsg: '' });
+    });
+
+    // Handles undefined or null event fields gracefully
+    it('should handle undefined or null event fields gracefully', () => {
+      const event = {
+        email: null,
+        userId: undefined,
+        eventName: 'testEvent',
+      };
+      const destinationResponse = {
+        response: {
+          failCount: 1,
+          invalidEmails: ['test@example.com'],
+        },
+      };
+      const result = checkIfEventIsAbortableAndExtractErrorMessage(event, destinationResponse);
+      expect(result).toEqual({ isAbortable: false, errorMsg: '' });
+    });
+
+    // Handles events with all expected fields present
+    it('should handle events with all expected fields present and return non-abortable when no match', () => {
+      const event = {
+        email: 'test@example.com',
+        userId: 'user123',
+        eventName: 'purchase',
+        id: 'event123',
+        createdAt: '2023-10-01T00:00:00Z',
+        campaignId: 'campaign123',
+        templateId: 'template123',
+        createNewFields: true,
+        dataFields: { field1: 'value1' },
+      };
+
+      const destinationResponse = {
+        response: {
+          failCount: 1,
+          invalidEmails: ['another@example.com'],
+        },
+      };
+
+      const result = checkIfEventIsAbortableAndExtractErrorMessage(event, destinationResponse);
+
+      expect(result.isAbortable).toBe(false);
+      expect(result.errorMsg).toBe('');
+    });
+
+    // Returns appropriate error message for abortable event
+
+    // Processes events with additional dataFields correctly
+    it('should process events with additional dataFields correctly', () => {
+      const event = {
+        email: 'test@example.com',
+        userId: 'user123',
+        eventName: 'purchase',
+        dataFields: { customField1: 'value1', customField2: 'value2' },
+      };
+      const destinationResponse = {
+        response: {
+          failCount: 1,
+          failedUpdates: {
+            invalidDataEmails: ['value1'],
+          },
+        },
+      };
+      const result = checkIfEventIsAbortableAndExtractErrorMessage(event, destinationResponse);
+      expect(result).toEqual({
+        isAbortable: true,
+        errorMsg:
+          'Request failed for value "value1" because it is "failedUpdates.invalidDataEmails".',
+      });
     });
   });
 });

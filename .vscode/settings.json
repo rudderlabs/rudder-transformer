@@ -2,7 +2,7 @@
   "prettier.requireConfig": true,
   "prettier.configPath": ".prettierrc",
   "[typescript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.defaultFormatter": "vscode.typescript-language-features",
     "editor.formatOnSave": true
   },
   "[javascript]": {

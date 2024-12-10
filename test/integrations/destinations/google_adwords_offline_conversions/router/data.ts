@@ -738,8 +738,6 @@ export const data = [
                           adPersonalization: 'UNSPECIFIED',
                           adUserData: 'UNSPECIFIED',
                         },
-                        gbraid: 'gbraid',
-                        wbraid: 'wbraid',
                         externalAttributionData: {
                           externalAttributionCredit: 10,
                           externalAttributionModel: 'externalAttributionModel',

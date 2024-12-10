@@ -4,6 +4,7 @@ bindings:
   - path: ../../bindings/jsontemplate
     exportAll: true
   - path: ../../../../v0/destinations/webhook/utils
+    exportAll: true
   - name: getHashFromArray
     path: ../../../../v0/util
   - name: getIntegrationsObj
@@ -60,7 +61,32 @@ steps:
         payload.context.ip = ip;
       )
       $.context.payload = $.removeUndefinedAndNullValues(payload)
-  - name: buildResponseForProcessTransformation
+  - name: buildResponseForProcessTransformationWithBodyFormatting
+    condition: await $.isFormattedBodyFeatureEnabled(.metadata.workspaceId) === true
+    template: |
+      const finalPayload = {
+        body: {
+          JSON: {},
+          JSON_ARRAY: {},
+          XML: {},
+          FORM: {},
+        },
+        version: '1',
+        userId: ^.message.anonymousId,
+        type: 'REST',
+        method: $.context.method,
+        endpoint: $.context.finalEndpoint,
+        headers: $.context.finalHeaders,
+        params: $.context.params,
+        files: {},
+      };
+
+      const formattedPayload = $.getFormatedPayload($.context.finalHeaders, $.context.payload);
+      finalPayload.body[formattedPayload.contentTypeSimplified] = formattedPayload.payload || {};
+      $.context.payload = finalPayload;
+      $.context.payload
+  - name: buildResponseForProcessTransformationWithDefaultBodyFormat
+    condition: await $.isFormattedBodyFeatureEnabled(.metadata.workspaceId) !== true
     template: |
       $.context.payload.({
          "body": {

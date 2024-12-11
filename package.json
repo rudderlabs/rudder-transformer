@@ -138,7 +138,7 @@
     "axios-mock-adapter": "^1.22.0",
     "benchmark-suite": "^0.1.8",
     "commander": "^10.0.1",
-    "commitizen": "^4.3.0",
+    "commitizen": "^4.3.1",
     "commitlint": "^17.6.3",
     "conventional-github-releaser": "^3.1.5",
     "eslint": "^8.40.0",

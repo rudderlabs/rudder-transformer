@@ -14,6 +14,7 @@ const {
   handleRtTfSingleEventError,
   defaultRequestConfig,
   defaultPostRequestConfig,
+  getSuccessRespEvents,
 } = require('../../util');
 const {
   isProductArrayValid,
@@ -71,15 +72,7 @@ const processTopsortEvents = (message, { Config }, finalPayloads) => {
   return finalPayloads;
 };
 
-const processEvent = (
-  message,
-  destination,
-  finalPayloads = {
-    impressions: [],
-    clicks: [],
-    purchases: [],
-  },
-) => {
+const processEvent = (message, destination, finalPayloads) => {
   // Check for missing API Key or missing Advertiser ID
   if (!destination.Config.apiKey) {
     throw new ConfigurationError('API Key is missing. Aborting message.', 400);
@@ -96,16 +89,26 @@ const processEvent = (
   }
 
   processTopsortEvents(message, destination, finalPayloads);
+};
 
-  // prepare the finalPayload and then return the finalPyaload
+// Process function that is called per event
+const process = (event) => {
+  const finalPayloads = {
+    impressions: [],
+    clicks: [],
+    purchases: [],
+  };
+
+  processEvent(event.message, event.destination, finalPayloads);
+
   const response = defaultRequestConfig();
-  const { apiKey } = destination.Config;
+  const { apiKey } = event.destination.Config;
 
   response.method = defaultPostRequestConfig.requestMethod;
   response.body.JSON = finalPayloads;
   response.headers = {
     'content-type': JSON_MIME_TYPE,
-    api_key: apiKey,
+    Authorization: `Bearer ${apiKey}`,
   };
 
   response.endpoint = ENDPOINT;
@@ -113,19 +116,15 @@ const processEvent = (
   return response;
 };
 
-// Process function that is called per event
-const process = (event) => processEvent(event.message, event.destination);
-
 // Router destination handler to process a batch of events
 const processRouterDest = async (inputs, reqMetadata) => {
-
   const finalPayloads = {
     impressions: [],
     clicks: [],
     purchases: [],
   };
 
-  const errors = [];
+  const failureResponses = [];
   const successMetadatas = [];
 
   inputs.forEach((input) => {
@@ -136,12 +135,27 @@ const processRouterDest = async (inputs, reqMetadata) => {
       successMetadatas.append(input.metadata);
     } catch (error) {
       // Handle error and store the error details
-      const err = handleRtTfSingleEventError(input, error, reqMetadata);
-      errors.append(err);
+      const failureResponse = handleRtTfSingleEventError(input, error, reqMetadata);
+      failureResponses.append(failureResponse);
     }
   });
 
-  return finalPayloads;
+  const response = defaultRequestConfig();
+  const { destination } = inputs[0];
+  const { apiKey } = destination.Config;
+
+  response.method = defaultPostRequestConfig.requestMethod;
+  response.body.JSON = finalPayloads;
+  response.headers = {
+    'content-type': JSON_MIME_TYPE,
+    Authorization: `Bearer ${apiKey}`,
+  };
+
+  response.endpoint = ENDPOINT;
+
+  const successResponses = getSuccessRespEvents(response, successMetadatas, destination, true);
+
+  return [...successResponses, failureResponses];
 };
 
 module.exports = { process, processRouterDest };

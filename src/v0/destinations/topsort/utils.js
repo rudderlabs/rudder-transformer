@@ -35,7 +35,7 @@ const getMappedEventName = (parsedTopsortEventMappings, event) => {
 
   // Check if mapping exists
   if (!mappedEventNames) {
-    throw new Error(`Event '${eventName}' not found in Topsort event mappings`);
+    throw new ConfigurationError(`Event '${eventName}' not found in Topsort event mappings`);
   }
 
   // If there are multiple mappings, pick the first one or apply your logic

@@ -72,7 +72,7 @@
     "ajv-draft-04": "^1.0.0",
     "ajv-formats": "^2.1.1",
     "amazon-dsp-formatter": "^1.0.2",
-    "axios": "^1.7.3",
+    "axios": "^1.7.9",
     "btoa": "^1.2.1",
     "component-each": "^0.2.6",
     "crypto-js": "^4.2.0",

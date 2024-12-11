@@ -970,6 +970,7 @@ const handleMetadataForValue = (value, metadata, destKey, integrationsObj = null
     strictMultiMap,
     validateTimestamp,
     allowedKeyCheck,
+    toArray,
   } = metadata;
 
   // if value is null and defaultValue is supplied - use that
@@ -1035,6 +1036,13 @@ const handleMetadataForValue = (value, metadata, destKey, integrationsObj = null
     if (!foundVal) {
       formattedVal = undefined;
     }
+  }
+
+  if (toArray) {
+    if (Array.isArray(formattedVal)) {
+      return formattedVal;
+    }
+    return [formattedVal];
   }
 
   return formattedVal;

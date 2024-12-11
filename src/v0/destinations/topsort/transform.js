@@ -56,16 +56,11 @@ const responseBuilder = (message, { Config }) => {
       placementPayload, // Only pass placementPayload for impressions and clicks
     });
   } else if (topsortEventName === 'purchases') {
-    const purchasePayload = constructPayload(
-      message,
-      mappingConfig[ConfigCategory.PURCHASE_ITEM.name],
-    );
     processPurchaseEventUtility.processPurchaseEvent({
       ...commonArgs,
-      purchasePayload, // Only pass purchasePayload for purchase events
     });
   } else {
-    throw new InstrumentationError(`Unknown event type: ${topsortEventName}`);
+    throw new InstrumentationError(`Event not mapped: ${topsortEventName}`);
   }
 
   return finalPayloads;

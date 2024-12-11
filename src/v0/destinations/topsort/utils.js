@@ -7,7 +7,7 @@ const isProductArrayValid = (event, properties) =>
   Array.isArray(properties?.products) && properties?.products.length > 0;
 
 // Function to construct item payloads for each product
-const constructItemPayloads = (products, mappingConfigs) =>
+const getItemPayloads = (products, mappingConfigs) =>
   products.map((product) => constructPayload(product, mappingConfigs));
 
 // Function to add the structured event data to the final payloads array
@@ -70,7 +70,7 @@ const processImpressionsAndClicksUtility = {
     topsortEventName,
     finalPayloads,
   }) {
-    const itemPayloads = constructItemPayloads(products, mappingConfig[ConfigCategory.ITEM.name]);
+    const itemPayloads = getItemPayloads(products, mappingConfig[ConfigCategory.ITEM.name]);
     itemPayloads.forEach((itemPayload) => {
       const eventData = this.createEventData(
         basePayload,
@@ -138,14 +138,11 @@ const processImpressionsAndClicksUtility = {
 
 const processPurchaseEventUtility = {
   // Create event data object for purchase events
-  createEventData(basePayload, purchasePayload, itemPayload, event) {
+  createEventData(basePayload, items, event) {
     return {
       topsortPayload: {
         ...basePayload,
-        items: {
-          ...purchasePayload,
-          ...itemPayload,
-        },
+        items,
         id: generateUUID(),
       },
       event,
@@ -153,31 +150,21 @@ const processPurchaseEventUtility = {
   },
 
   // Function to process events with a product array for purchase events
-  processProductArray({ products, basePayload, purchasePayload, topsortEventName, finalPayloads }) {
-    const itemPayloads = constructItemPayloads(
+  processProductArray(args) {
+    const { products, basePayload, topsortEventName, finalPayloads } = args;
+    const itemPayloads = getItemPayloads(
       products,
       mappingConfig[ConfigCategory.PURCHASE_ITEM.name],
     );
-    itemPayloads.forEach((itemPayload) => {
-      const eventData = this.createEventData(
-        basePayload,
-        purchasePayload,
-        itemPayload,
-        topsortEventName,
-      );
-      addFinalPayload(eventData, finalPayloads);
-    });
+    const eventData = this.createEventData(basePayload, itemPayloads, topsortEventName);
+    addFinalPayload(eventData, finalPayloads);
   },
 
   // Function to process events with a single product for purchase events
-  processSingleProduct({ basePayload, purchasePayload, message, topsortEventName, finalPayloads }) {
+  processSingleProduct(args) {
+    const { basePayload, message, topsortEventName, finalPayloads } = args;
     const itemPayload = constructPayload(message, mappingConfig[ConfigCategory.PURCHASE_ITEM.name]);
-    const eventData = this.createEventData(
-      basePayload,
-      purchasePayload,
-      itemPayload,
-      topsortEventName,
-    );
+    const eventData = this.createEventData(basePayload, [itemPayload], topsortEventName);
 
     // Ensure messageId is used instead of generating a UUID for single product events
     eventData.topsortPayload.id = message.messageId;
@@ -187,17 +174,19 @@ const processPurchaseEventUtility = {
   },
 
   // Function to process purchase events (either with a product array or single product)
-  processPurchaseEvent({
-    isProductArrayAvailable,
-    basePayload,
-    topsortEventName,
-    finalPayloads,
-    products,
-    message,
-    purchasePayload,
-  }) {
+  processPurchaseEvent(args) {
+    const {
+      isProductArrayAvailable,
+      basePayload,
+      topsortEventName,
+      finalPayloads,
+      products,
+      message,
+      purchasePayload,
+    } = args;
+
     if (isProductArrayAvailable) {
-      // If product array is available, process the purchase event with multiple products
+      // Process the event with multiple products (product array)
       this.processProductArray({
         basePayload,
         topsortEventName,
@@ -206,7 +195,7 @@ const processPurchaseEventUtility = {
         purchasePayload,
       });
     } else {
-      // Otherwise, process the purchase event with a single product
+      // Process the event with a single product
       this.processSingleProduct({
         basePayload,
         topsortEventName,
@@ -220,7 +209,7 @@ const processPurchaseEventUtility = {
 
 module.exports = {
   isProductArrayValid,
-  constructItemPayloads,
+  getItemPayloads,
   addFinalPayload,
   getMappedEventName,
   processImpressionsAndClicksUtility,

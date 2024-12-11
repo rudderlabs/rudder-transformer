@@ -65,11 +65,6 @@ const commonDeletionDestConfig: Destination = {
         to: 'false',
       },
     ],
-    oneTrustCookieCategories: [
-      {
-        oneTrustCookieCategory: 'Marketing',
-      },
-    ],
   },
 };
 
@@ -186,11 +181,6 @@ const commonUpsertDestConfig: Destination = {
         to: 'false',
       },
     ],
-    oneTrustCookieCategories: [
-      {
-        oneTrustCookieCategory: 'Marketing',
-      },
-    ],
   },
 };
 
@@ -223,11 +213,6 @@ const commonUpsertDestConfig2: Destination = {
       {
         from: 'multi class',
         to: 'false',
-      },
-    ],
-    oneTrustCookieCategories: [
-      {
-        oneTrustCookieCategory: 'Marketing',
       },
     ],
   },
@@ -264,11 +249,6 @@ const commonUpsertDestConfig2CustomModule: Destination = {
         to: 'false',
       },
     ],
-    oneTrustCookieCategories: [
-      {
-        oneTrustCookieCategory: 'Marketing',
-      },
-    ],
   },
 };
 
@@ -293,11 +273,6 @@ const commonUpsertDestConfig3: Destination = {
     module: 'Leads',
     trigger: 'workflow',
     addDefaultDuplicateCheck: true,
-    oneTrustCookieCategories: [
-      {
-        oneTrustCookieCategory: 'Marketing',
-      },
-    ],
   },
 };
 

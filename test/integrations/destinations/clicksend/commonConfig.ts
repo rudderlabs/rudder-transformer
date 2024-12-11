@@ -14,11 +14,6 @@ export const destination = {
     defaultSource: 'php',
     defaultSenderId: 'abc@gmail.com',
     defaultSenderPhoneNumber: '+919XXXXXXXX8',
-    oneTrustCookieCategories: [
-      {
-        oneTrustCookieCategory: 'Marketing',
-      },
-    ],
   },
 };
 

@@ -1,6 +1,6 @@
 const { getMappingConfig } = require('../../util');
 
-const BASE_URL = 'https://api.topsort.com/v2/events';
+const ENDPOINT = 'https://api.topsort.com/v2/events';
 
 const ConfigCategory = {
   TRACK: {
@@ -26,6 +26,6 @@ const mappingConfig = getMappingConfig(ConfigCategory, __dirname);
 module.exports = {
   mappingConfig,
   ConfigCategory,
-  BASE_URL,
+  ENDPOINT,
   ECOMM_EVENTS_WITH_PRODUCT_ARRAY,
 };

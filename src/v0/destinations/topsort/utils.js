@@ -175,34 +175,12 @@ const processPurchaseEventUtility = {
 
   // Function to process purchase events (either with a product array or single product)
   processPurchaseEvent(args) {
-    const {
-      isProductArrayAvailable,
-      basePayload,
-      topsortEventName,
-      finalPayloads,
-      products,
-      message,
-      purchasePayload,
-    } = args;
-
-    if (isProductArrayAvailable) {
+    if (args.isProductArrayAvailable) {
       // Process the event with multiple products (product array)
-      this.processProductArray({
-        basePayload,
-        topsortEventName,
-        finalPayloads,
-        products,
-        purchasePayload,
-      });
+      this.processProductArray(args);
     } else {
       // Process the event with a single product
-      this.processSingleProduct({
-        basePayload,
-        topsortEventName,
-        finalPayloads,
-        message,
-        purchasePayload,
-      });
+      this.processSingleProduct(args);
     }
   },
 };

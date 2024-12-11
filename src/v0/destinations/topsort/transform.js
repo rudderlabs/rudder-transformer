@@ -3,16 +3,27 @@ const {
   ConfigurationError,
   getHashFromArray,
 } = require('@rudderstack/integrations-lib');
-const { mappingConfig, ECOMM_EVENTS_WITH_PRODUCT_ARRAY, ConfigCategory } = require('./config');
-const { constructPayload, simpleProcessRouterDest } = require('../../util');
+const {
+  mappingConfig,
+  ECOMM_EVENTS_WITH_PRODUCT_ARRAY,
+  ConfigCategory,
+  ENDPOINT,
+} = require('./config');
+const {
+  constructPayload,
+  handleRtTfSingleEventError,
+  defaultRequestConfig,
+  defaultPostRequestConfig,
+} = require('../../util');
 const {
   isProductArrayValid,
   getMappedEventName,
   processImpressionsAndClicksUtility,
   processPurchaseEventUtility,
 } = require('./utils');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
-const responseBuilder = (message, { Config }) => {
+const processTopsortEvents = (message, { Config }, finalPayloads) => {
   const { topsortEvents } = Config;
   const { event, properties } = message;
   const { products } = properties;
@@ -28,12 +39,6 @@ const responseBuilder = (message, { Config }) => {
 
   // Construct base and placement payloads
   const basePayload = constructPayload(message, mappingConfig[ConfigCategory.TRACK.name]);
-
-  const finalPayloads = {
-    impressions: [],
-    clicks: [],
-    purchases: [],
-  };
 
   const commonArgs = {
     basePayload,
@@ -66,7 +71,15 @@ const responseBuilder = (message, { Config }) => {
   return finalPayloads;
 };
 
-const processEvent = (message, destination) => {
+const processEvent = (
+  message,
+  destination,
+  finalPayloads = {
+    impressions: [],
+    clicks: [],
+    purchases: [],
+  },
+) => {
   // Check for missing API Key or missing Advertiser ID
   if (!destination.Config.apiKey) {
     throw new ConfigurationError('API Key is missing. Aborting message.', 400);
@@ -82,7 +95,22 @@ const processEvent = (message, destination) => {
     throw new InstrumentationError('Only "track" events are supported. Dropping event.', 400);
   }
 
-  return responseBuilder(message, destination);
+  processTopsortEvents(message, destination, finalPayloads);
+
+  // prepare the finalPayload and then return the finalPyaload
+  const response = defaultRequestConfig();
+  const { apiKey } = destination.Config;
+
+  response.method = defaultPostRequestConfig.requestMethod;
+  response.body.JSON = finalPayloads;
+  response.headers = {
+    'content-type': JSON_MIME_TYPE,
+    api_key: apiKey,
+  };
+
+  response.endpoint = ENDPOINT;
+
+  return response;
 };
 
 // Process function that is called per event
@@ -90,9 +118,30 @@ const process = (event) => processEvent(event.message, event.destination);
 
 // Router destination handler to process a batch of events
 const processRouterDest = async (inputs, reqMetadata) => {
-  // Process all events through the simpleProcessRouterDest utility
-  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
-  return respList;
+
+  const finalPayloads = {
+    impressions: [],
+    clicks: [],
+    purchases: [],
+  };
+
+  const errors = [];
+  const successMetadatas = [];
+
+  inputs.forEach((input) => {
+    try {
+      // Process the event
+      processEvent(input.message, input.destination, finalPayloads);
+      // Add to successMetadatas array
+      successMetadatas.append(input.metadata);
+    } catch (error) {
+      // Handle error and store the error details
+      const err = handleRtTfSingleEventError(input, error, reqMetadata);
+      errors.append(err);
+    }
+  });
+
+  return finalPayloads;
 };
 
 module.exports = { process, processRouterDest };

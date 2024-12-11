@@ -1,10 +1,7 @@
 [
   {
     "destKey": "occurredAt",
-    "sourceKeys": ["originalTimestamp", "timestamp"],
-    "metadata": {
-      "type": "timestamp"
-    },
+    "sourceKeys": ["timestamp", "originalTimestamp"],
     "required": true
   },
   {

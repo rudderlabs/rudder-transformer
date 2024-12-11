@@ -17,8 +17,6 @@ const destination: Destination = {
     },
     subdomain: 'demo',
     consentManagement: {},
-    oneTrustCookieCategories: {},
-    ketchConsentPurposes: {},
     tuneEvents: [
       {
         eventName: 'Product added',

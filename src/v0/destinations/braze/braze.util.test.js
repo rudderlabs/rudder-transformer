@@ -255,7 +255,6 @@ describe('dedup utility tests', () => {
           enableNestedArrayOperations: false,
           enableSubscriptionGroupInGroupCall: false,
           eventFilteringOption: 'disable',
-          oneTrustCookieCategories: [],
           restApiKey: 'test-rest-api-key',
           supportDedup: true,
           trackAnonymousUser: true,

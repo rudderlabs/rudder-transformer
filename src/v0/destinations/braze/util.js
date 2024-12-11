@@ -540,7 +540,6 @@ const processBatch = (transformedEvents) => {
   prepareGroupAndAliasBatch(mergeUsersArrayChunks, responseArray, destination, 'merge');
 
   if (successMetadata.length > 0) {
-    console.log(`Response 1 batchRequest ${JSON.stringify(responseArray)}`);
     finalResponse.push({
       batchedRequest: responseArray,
       metadata: successMetadata,

@@ -90,7 +90,7 @@ export const data = [
                   versionSessionCount: 2,
                 },
               },
-              metadata: { jobId: 2, userId: 'u1' },
+              metadata: { jobId: 2, userId: 'u1', workspaceId: 'wkspid' },
               destination: {
                 Config: {
                   webhookUrl: 'http://6b0e6a60.ngrok.io',
@@ -183,7 +183,7 @@ export const data = [
                   versionSessionCount: 2,
                 },
               },
-              metadata: { jobId: 3, userId: 'u1' },
+              metadata: { jobId: 3, userId: 'u1', workspaceId: 'wkspid' },
               destination: {
                 Config: { webhookUrl: 'https://6b0e6a60.ngrok.io/n' },
                 DestinationDefinition: { Config: { cdkV2Enabled: true } },
@@ -296,7 +296,7 @@ export const data = [
                 type: 'REST',
                 method: 'POST',
               },
-              metadata: [{ jobId: 2, userId: 'u1' }],
+              metadata: [{ jobId: 2, userId: 'u1', workspaceId: 'wkspid' }],
               batched: false,
               statusCode: 200,
               destination: {
@@ -406,7 +406,7 @@ export const data = [
                 type: 'REST',
                 method: 'POST',
               },
-              metadata: [{ jobId: 3, userId: 'u1' }],
+              metadata: [{ jobId: 3, userId: 'u1', workspaceId: 'wkspid' }],
               batched: false,
               statusCode: 200,
               destination: {
@@ -505,7 +505,7 @@ export const data = [
                 type: 'identify',
                 userId: 'sample_user_id',
               },
-              metadata: { jobId: 2, userId: 'u1' },
+              metadata: { jobId: 2, userId: 'u1', workspaceId: 'wkspid' },
               destination: {
                 Config: {
                   webhookUrl: 'http://6b0e6a60.ngrok.io',
@@ -558,7 +558,7 @@ export const data = [
                 type: 'identify',
                 userId: 'sample_user_id',
               },
-              metadata: { jobId: 3, userId: 'u1' },
+              metadata: { jobId: 3, userId: 'u1', workspaceId: 'wkspid' },
               destination: {
                 Config: { webhookUrl: 'https://6b0e6a60.ngrok.io/n' },
                 DestinationDefinition: { Config: { cdkV2Enabled: true } },
@@ -576,7 +576,7 @@ export const data = [
                 type: 'identify',
                 userId: 'sample_user_id',
               },
-              metadata: { jobId: 4, userId: 'u1' },
+              metadata: { jobId: 4, userId: 'u1', workspaceId: 'wkspid' },
               destination: {
                 Config: { webhookUrl: 'https://6b0e6a60.ngrok.io/n' },
                 DestinationDefinition: { Config: { cdkV2Enabled: true } },
@@ -684,7 +684,7 @@ export const data = [
                 type: 'REST',
                 method: 'POST',
               },
-              metadata: [{ jobId: 2, userId: 'u1' }],
+              metadata: [{ jobId: 2, userId: 'u1', workspaceId: 'wkspid' }],
               batched: false,
               statusCode: 200,
               destination: {
@@ -754,7 +754,7 @@ export const data = [
                 type: 'REST',
                 method: 'POST',
               },
-              metadata: [{ jobId: 3, userId: 'u1' }],
+              metadata: [{ jobId: 3, userId: 'u1', workspaceId: 'wkspid' }],
               batched: false,
               statusCode: 200,
               destination: {
@@ -791,7 +791,7 @@ export const data = [
                 type: 'REST',
                 method: 'POST',
               },
-              metadata: [{ jobId: 4, userId: 'u1' }],
+              metadata: [{ jobId: 4, userId: 'u1', workspaceId: 'wkspid' }],
               batched: false,
               statusCode: 200,
               destination: {

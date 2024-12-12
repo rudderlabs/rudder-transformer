@@ -16,13 +16,10 @@ const {
   defaultPostRequestConfig,
   getSuccessRespEvents,
 } = require('../../util');
-const {
-  isProductArrayValid,
-  getMappedEventName,
-  processImpressionsAndClicksUtility,
-  processPurchaseEventUtility,
-} = require('./utils');
+const { isProductArrayValid, getMappedEventName } = require('./utils');
 const { JSON_MIME_TYPE } = require('../../util/constant');
+const { processPurchaseEventUtility } = require('./purchase');
+const { processImpressionsAndClicksUtility } = require('./impressions-and-clicks');
 
 const processTopsortEvents = (message, { Config }, finalPayloads) => {
   const { topsortEvents } = Config;
@@ -154,9 +151,8 @@ const processRouterDest = async (inputs, reqMetadata) => {
   response.endpoint = ENDPOINT;
 
   const successResponses = getSuccessRespEvents(response, successMetadatas, destination, true);
-  
+
   return [successResponses, ...failureResponses];
-  
 };
 
 module.exports = { process, processRouterDest };

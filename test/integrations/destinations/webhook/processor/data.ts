@@ -3687,7 +3687,7 @@ export const data = [
               Config: {
                 webhookUrl: 'https://webhook.site/81dc2730-807f-4bbc-8914-5b37d21c8a55',
                 webhookMethod: 'POST',
-                oneTrustCookieCategories: [],
+
                 connectionMode: 'cloud',
                 eventDelivery: false,
                 eventDeliveryTS: 1720497286192,
@@ -3696,7 +3696,7 @@ export const data = [
                 Config: {
                   secretKeys: ['headers.to'],
                   excludeKeys: [],
-                  includeKeys: ['oneTrustCookieCategories', 'consentManagement'],
+                  includeKeys: ['consentManagement'],
                   cdkV2Enabled: true,
                   transformAtV1: 'processor',
                   isAudienceSupported: true,

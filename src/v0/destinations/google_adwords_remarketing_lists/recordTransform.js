@@ -1,4 +1,3 @@
-/* eslint-disable no-const-assign */
 const lodash = require('lodash');
 const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const {
@@ -19,29 +18,22 @@ const {
 const { getErrorResponse, createFinalResponse } = require('../../util/recordUtils');
 const { offlineDataJobsMapping, consentConfigMap } = require('./config');
 
-const processRecordEventArray = (
-  records,
-  message,
-  destination,
-  accessToken,
-  developerToken,
-  audienceId,
-  typeOfList,
-  userSchema,
-  isHashRequired,
-  userDataConsent,
-  personalizationConsent,
-  operationType,
-) => {
-  let outputPayloads = {};
-  // ** only send it if identifier > 0
+const processRecordEventArray = (records, context, operationType) => {
+  const {
+    message,
+    destination,
+    accessToken,
+    developerToken,
+    audienceId,
+    typeOfList,
+    userSchema,
+    isHashRequired,
+    userDataConsent,
+    personalizationConsent,
+  } = context;
 
-  const fieldsArray = [];
-  const metadata = [];
-  records.forEach((record) => {
-    fieldsArray.push(record.message.fields);
-    metadata.push(record.metadata);
-  });
+  const fieldsArray = records.map((record) => record.message.fields);
+  const metadata = records.map((record) => record.metadata);
 
   const userIdentifiersList = populateIdentifiersForRecordEvent(
     fieldsArray,
@@ -51,131 +43,60 @@ const processRecordEventArray = (
   );
 
   const outputPayload = constructPayload(message, offlineDataJobsMapping);
-  outputPayload.operations = [];
-  // breaking the userIdentiFier array in chunks of 20
+
   const userIdentifierChunks = returnArrayOfSubarrays(userIdentifiersList, 20);
-  // putting each chunk in different create/remove operations
-  switch (operationType) {
-    case 'add':
-      // for add operation
-      userIdentifierChunks.forEach((element) => {
-        const operations = {
-          create: {},
-        };
-        operations.create.userIdentifiers = element;
-        outputPayload.operations.push(operations);
-      });
-      outputPayloads = { ...outputPayloads, create: outputPayload };
-      break;
-    case 'remove':
-      // for remove operation
-      userIdentifierChunks.forEach((element) => {
-        const operations = {
-          remove: {},
-        };
-        operations.remove.userIdentifiers = element;
-        outputPayload.operations.push(operations);
-      });
-      outputPayloads = { ...outputPayloads, remove: outputPayload };
-      break;
-    default:
-  }
+  outputPayload.operations = userIdentifierChunks.map((chunk) => ({
+    [operationType]: { userIdentifiers: chunk },
+  }));
 
-  const toSendEvents = [];
-  Object.values(outputPayloads).forEach((data) => {
-    const consentObj = populateConsentFromConfig(
-      { userDataConsent, personalizationConsent },
-      consentConfigMap,
-    );
-    toSendEvents.push(
-      responseBuilder(accessToken, developerToken, data, destination, audienceId, consentObj),
-    );
-  });
+  const consentObj = populateConsentFromConfig(
+    { userDataConsent, personalizationConsent },
+    consentConfigMap,
+  );
 
-  const successResponse = getSuccessRespEvents(toSendEvents, metadata, destination, true);
+  const toSendEvents = [outputPayload].map((data) =>
+    responseBuilder(accessToken, developerToken, data, destination, audienceId, consentObj),
+  );
 
-  return successResponse;
+  return getSuccessRespEvents(toSendEvents, metadata, destination, true);
 };
 
-function preparepayload(events, config) {
+function preparePayload(events, config) {
   const { destination, message, metadata } = events[0];
   const accessToken = getAccessToken(metadata, 'access_token');
   const developerToken = getValueFromMessage(metadata, 'secret.developer_token');
-  const {
-    audienceId,
-    typeOfList,
-    isHashRequired,
-    userSchema,
-    userDataConsent,
-    personalizationConsent,
-  } = config;
+
+  const context = {
+    message,
+    destination,
+    accessToken,
+    developerToken,
+    ...config,
+  };
 
   const groupedRecordsByAction = lodash.groupBy(events, (record) =>
     record.message.action?.toLowerCase(),
   );
 
-  let insertResponse;
-  let deleteResponse;
-  let updateResponse;
-
-  if (groupedRecordsByAction.delete) {
-    deleteResponse = processRecordEventArray(
-      groupedRecordsByAction.delete,
-      message,
-      destination,
-      accessToken,
-      developerToken,
-      audienceId,
-      typeOfList,
-      userSchema,
-      isHashRequired,
-      userDataConsent,
-      personalizationConsent,
-      'remove',
-    );
-  }
-
-  if (groupedRecordsByAction.insert) {
-    insertResponse = processRecordEventArray(
-      groupedRecordsByAction.insert,
-      message,
-      destination,
-      accessToken,
-      developerToken,
-      audienceId,
-      typeOfList,
-      userSchema,
-      isHashRequired,
-      userDataConsent,
-      personalizationConsent,
-      'add',
-    );
-  }
-
-  if (groupedRecordsByAction.update) {
-    updateResponse = processRecordEventArray(
-      groupedRecordsByAction.update,
-      message,
-      destination,
-      accessToken,
-      developerToken,
-      audienceId,
-      typeOfList,
-      userSchema,
-      isHashRequired,
-      userDataConsent,
-      personalizationConsent,
-      'add',
-    );
-  }
+  const actionResponses = ['delete', 'insert', 'update'].reduce((responses, action) => {
+    const operationType = action === 'delete' ? 'remove' : 'create';
+    if (groupedRecordsByAction[action]) {
+      return {
+        ...responses,
+        [action]: processRecordEventArray(groupedRecordsByAction[action], context, operationType),
+      };
+    }
+    return responses;
+  }, {});
 
   const errorResponse = getErrorResponse(groupedRecordsByAction);
   const finalResponse = createFinalResponse(
-    deleteResponse,
-    insertResponse,
-    updateResponse,
+    actionResponses.delete,
+    actionResponses.insert,
+    actionResponses.update,
     errorResponse,
   );
+
   if (finalResponse.length === 0) {
     throw new InstrumentationError(
       'Missing valid parameters, unable to generate transformed payload',
@@ -196,14 +117,16 @@ function processRecordInputsV0(groupedRecordInputs) {
     personalizationConsent,
   } = destination.Config;
 
-  return preparepayload(groupedRecordInputs, {
+  const config = {
     audienceId: getOperationAudienceId(audienceId, message),
     typeOfList,
     userSchema,
     isHashRequired,
     userDataConsent,
     personalizationConsent,
-  });
+  };
+
+  return preparePayload(groupedRecordInputs, config);
 }
 
 function processRecordInputsV1(groupedRecordInputs) {
@@ -211,11 +134,7 @@ function processRecordInputsV1(groupedRecordInputs) {
   const { audienceId, typeOfList, isHashRequired, userDataConsent, personalizationConsent } =
     connection.config.destination;
 
-  const identifiers = message?.identifiers;
-  let userSchema;
-  if (identifiers) {
-    userSchema = Object.keys(identifiers);
-  }
+  const userSchema = message?.identifiers ? Object.keys(message.identifiers) : undefined;
 
   const events = groupedRecordInputs.map((record) => ({
     ...record,
@@ -225,23 +144,23 @@ function processRecordInputsV1(groupedRecordInputs) {
     },
   }));
 
-  return preparepayload(events, {
+  const config = {
     audienceId,
     typeOfList,
     userSchema,
     isHashRequired,
     userDataConsent,
     personalizationConsent,
-  });
+  };
+
+  return preparePayload(events, config);
 }
 
 function processRecordInputs(groupedRecordInputs) {
   const event = groupedRecordInputs[0];
-  // First check for rETL flow and second check for ES flow
-  if (isEventSentByVDMV1Flow(event) || !isEventSentByVDMV2Flow(event)) {
-    return processRecordInputsV0(groupedRecordInputs);
-  }
-  return processRecordInputsV1(groupedRecordInputs);
+  return isEventSentByVDMV1Flow(event) || !isEventSentByVDMV2Flow(event)
+    ? processRecordInputsV0(groupedRecordInputs)
+    : processRecordInputsV1(groupedRecordInputs);
 }
 
 module.exports = {

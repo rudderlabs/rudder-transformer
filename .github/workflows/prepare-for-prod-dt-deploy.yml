@@ -181,7 +181,7 @@ jobs:
             git add $customer
           done
 
-          git commit -m "chore: upgrade dedicated transformers to $TAG_NAME"
+          git commit -m "chore: upgrade dedicated dt transformers to $TAG_NAME"
           git push -u origin dedicated-transformer-$TAG_NAME
 
           gh pr create --fill

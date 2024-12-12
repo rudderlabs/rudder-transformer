@@ -26,7 +26,7 @@ const getFormattedPayload = (headers, payload) => {
     case XML:
       return { payload: { payload: getXMLPayload(payload) }, contentTypeSimplified };
     case FORM:
-      return { payload, contentTypeSimplified };
+      return { payload: flattenJson(payload), contentTypeSimplified };
     default:
       return { payload, contentTypeSimplified };
   }

@@ -1,5 +1,5 @@
 const { isFeatureEnabled } = require('feature-flag-sdk');
-const { getXMLPayload, getFORMPayload } = require('../../../cdk/v2/destinations/http/utils');
+const { getXMLPayload } = require('../../../cdk/v2/destinations/http/utils');
 const { EventType } = require('../../../constants');
 const { getFieldValueFromMessage, flattenJson } = require('../../util');
 
@@ -24,9 +24,9 @@ const getFormattedPayload = (headers, payload) => {
 
   switch (contentTypeSimplified) {
     case XML:
-      return { payload: getXMLPayload(payload), contentTypeSimplified };
+      return { payload: { payload: getXMLPayload(payload) }, contentTypeSimplified };
     case FORM:
-      return { payload: getFORMPayload(payload), contentTypeSimplified };
+      return { payload, contentTypeSimplified };
     default:
       return { payload, contentTypeSimplified };
   }

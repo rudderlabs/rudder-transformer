@@ -142,7 +142,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.PAT }}
         run: |
           cd rudder-devops
-          git checkout -b dedicated-transformer-$TAG_NAME
+          git checkout -b dedicated-transformer-ut-$TAG_NAME
 
           cd customer-objects
 
@@ -168,7 +168,7 @@ jobs:
             git add $customer
           done
 
-          git commit -m "chore: upgrade dedicated transformers to $TAG_NAME"
-          git push -u origin dedicated-transformer-$TAG_NAME
+          git commit -m "chore: upgrade dedicated ut transformers to $TAG_NAME"
+          git push -u origin dedicated-transformer-ut-$TAG_NAME
 
           gh pr create --fill

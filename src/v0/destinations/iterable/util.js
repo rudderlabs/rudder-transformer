@@ -748,6 +748,22 @@ const filterEventsAndPrepareBatchRequests = (transformedEvents) => {
   return prepareBatchRequests(filteredEvents);
 };
 
+// Helper function to get value from response using a path
+const getValueFromResponse = (path, response) =>
+  path.split('.').reduce((obj, key) => obj?.[key], response);
+
+/**
+ * Checks if a value is present in a response array based on a given path.
+ * @param {string} path - The path to the response array.
+ * @param {any} value - The value to check for in the array.
+ * @param {Object} response - The response object to search within.
+ * @returns {boolean} - True if the value is in the array, otherwise false.
+ */
+const isValueInResponseArray = (path, value, response) => {
+  const responseValueArray = getValueFromResponse(path, response);
+  return Array.isArray(responseValueArray) && responseValueArray.includes(value);
+};
+
 /**
  * Determines if an event should be aborted based on the response from a destination
  * and extracts an error message if applicable.
@@ -767,7 +783,7 @@ const filterEventsAndPrepareBatchRequests = (transformedEvents) => {
  * @returns {Object} An object containing a boolean `isAbortable` indicating if the event
  * should be aborted, and an `errorMsg` string with the error message if applicable.
  */
-function checkIfEventIsAbortableAndExtractErrorMessage(event, destinationResponse) {
+const checkIfEventIsAbortableAndExtractErrorMessage = (event, destinationResponse) => {
   const { failCount } = destinationResponse.response;
 
   if (failCount === 0) {
@@ -780,27 +796,22 @@ function checkIfEventIsAbortableAndExtractErrorMessage(event, destinationRespons
     eventName: event.eventName,
   };
 
-  const isValueInResponseArray = (path, value) => {
-    const responseArray = path
-      .split('.')
-      .reduce((obj, key) => obj?.[key], destinationResponse.response);
-    return Array.isArray(responseArray) && responseArray.includes(value);
-  };
-
   const matchingPath =
     ITERABLE_RESPONSE_USER_ID_PATHS.find((userIdPath) =>
-      isValueInResponseArray(userIdPath, eventValues.userId),
+      isValueInResponseArray(userIdPath, eventValues.userId, destinationResponse.response),
     ) ||
     ITERABLE_RESPONSE_EMAIL_PATHS.find((emailPath) =>
-      isValueInResponseArray(emailPath, eventValues.email),
+      isValueInResponseArray(emailPath, eventValues.email, destinationResponse.response),
     ) ||
-    isValueInResponseArray('disallowedEventNames', eventValues.eventName);
+    isValueInResponseArray(
+      'disallowedEventNames',
+      eventValues.eventName,
+      destinationResponse.response,
+    );
 
   if (matchingPath) {
-    const responseArray = matchingPath
-      .split('.')
-      .reduce((obj, key) => obj?.[key], destinationResponse.response);
-    const matchingValue = responseArray.find((value) => {
+    const responseValueArray = getValueFromResponse(matchingPath, destinationResponse.response);
+    const matchingValue = responseValueArray.find((value) => {
       if (ITERABLE_RESPONSE_EMAIL_PATHS.some((emailPath) => matchingPath.includes(emailPath))) {
         return value === eventValues.email;
       }
@@ -820,7 +831,7 @@ function checkIfEventIsAbortableAndExtractErrorMessage(event, destinationRespons
   }
 
   return { isAbortable: false, errorMsg: '' };
-}
+};
 
 module.exports = {
   getCatalogEndpoint,

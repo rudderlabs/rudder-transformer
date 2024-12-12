@@ -1988,13 +1988,7 @@ export const data = [
                       rsEventName: 'Order Complete',
                     },
                   ],
-                  ketchConsentPurposes: [
-                    {
-                      purpose: '',
-                    },
-                  ],
                   lookupField: 'email',
-                  oneTrustCookieCategories: [],
                   useNativeSDK: false,
                   whitelistedEvents: [],
                 },
@@ -2070,13 +2064,7 @@ export const data = [
                       rsEventName: 'Order Complete',
                     },
                   ],
-                  ketchConsentPurposes: [
-                    {
-                      purpose: '',
-                    },
-                  ],
                   lookupField: 'email',
-                  oneTrustCookieCategories: [],
                   useNativeSDK: false,
                   whitelistedEvents: [],
                 },
@@ -2150,13 +2138,7 @@ export const data = [
                       rsEventName: 'Order Complete',
                     },
                   ],
-                  ketchConsentPurposes: [
-                    {
-                      purpose: '',
-                    },
-                  ],
                   lookupField: 'email',
-                  oneTrustCookieCategories: [],
                   useNativeSDK: false,
                   whitelistedEvents: [],
                 },
@@ -2231,13 +2213,7 @@ export const data = [
                       rsEventName: 'Order Complete',
                     },
                   ],
-                  ketchConsentPurposes: [
-                    {
-                      purpose: '',
-                    },
-                  ],
                   lookupField: 'email',
-                  oneTrustCookieCategories: [],
                   useNativeSDK: false,
                   whitelistedEvents: [],
                 },
@@ -2330,13 +2306,7 @@ export const data = [
                       rsEventName: 'Order Complete',
                     },
                   ],
-                  ketchConsentPurposes: [
-                    {
-                      purpose: '',
-                    },
-                  ],
                   lookupField: 'email',
-                  oneTrustCookieCategories: [],
                   useNativeSDK: false,
                   whitelistedEvents: [],
                 },
@@ -2425,13 +2395,7 @@ export const data = [
                       rsEventName: 'Order Complete',
                     },
                   ],
-                  ketchConsentPurposes: [
-                    {
-                      purpose: '',
-                    },
-                  ],
                   lookupField: 'email',
-                  oneTrustCookieCategories: [],
                   useNativeSDK: false,
                   whitelistedEvents: [],
                 },
@@ -2511,13 +2475,7 @@ export const data = [
                       rsEventName: 'Order Complete',
                     },
                   ],
-                  ketchConsentPurposes: [
-                    {
-                      purpose: '',
-                    },
-                  ],
                   lookupField: 'email',
-                  oneTrustCookieCategories: [],
                   useNativeSDK: false,
                   whitelistedEvents: [],
                 },
@@ -2621,13 +2579,7 @@ export const data = [
                       rsEventName: 'Order Complete',
                     },
                   ],
-                  ketchConsentPurposes: [
-                    {
-                      purpose: '',
-                    },
-                  ],
                   lookupField: 'email',
-                  oneTrustCookieCategories: [],
                   useNativeSDK: false,
                   whitelistedEvents: [],
                 },
@@ -2702,13 +2654,7 @@ export const data = [
                       rsEventName: 'Order Complete',
                     },
                   ],
-                  ketchConsentPurposes: [
-                    {
-                      purpose: '',
-                    },
-                  ],
                   lookupField: 'email',
-                  oneTrustCookieCategories: [],
                   useNativeSDK: false,
                   whitelistedEvents: [],
                 },
@@ -2801,13 +2747,7 @@ export const data = [
                       rsEventName: 'Order Complete',
                     },
                   ],
-                  ketchConsentPurposes: [
-                    {
-                      purpose: '',
-                    },
-                  ],
                   lookupField: 'email',
-                  oneTrustCookieCategories: [],
                   useNativeSDK: false,
                   whitelistedEvents: [],
                 },

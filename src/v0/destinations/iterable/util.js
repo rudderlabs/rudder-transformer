@@ -16,8 +16,10 @@ const {
   TRACK_MAX_BATCH_SIZE,
   IDENTIFY_MAX_BATCH_SIZE,
   IDENTIFY_MAX_BODY_SIZE_IN_BYTES,
-  API_RESPONSE_PATHS,
+  // API_RESPONSE_PATHS,
   constructEndpoint,
+  ITERABLE_RESPONSE_USER_ID_PATHS,
+  ITERABLE_RESPONSE_EMAIL_PATHS,
 } = require('./config');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 const { EventType, MappedToDestinationKey } = require('../../../constants');
@@ -772,39 +774,44 @@ function checkIfEventIsAbortableAndExtractErrorMessage(event, destinationRespons
     return { isAbortable: false, errorMsg: '' };
   }
 
-  // Flatten dataFields values into a single array
-  const dataFieldsValues = event.dataFields ? Object.values(event.dataFields).flat() : [];
+  const eventValues = {
+    email: event.email,
+    userId: event.userId,
+    eventName: event.eventName,
+  };
 
-  const eventValues = new Set(
-    [
-      event.email,
-      event.preferUserId,
-      event.mergeNestedObjects,
-      event.userId,
-      event.eventName,
-      event.id,
-      event.createdAt,
-      event.campaignId,
-      event.templateId,
-      event.createNewFields,
-      ...dataFieldsValues, // Spread the flattened dataFields values
-    ].filter((value) => value !== undefined),
-  );
-
-  const matchingPath = API_RESPONSE_PATHS.find((path) => {
+  const isValueInResponseArray = (path, value) => {
     const responseArray = path
       .split('.')
       .reduce((obj, key) => obj?.[key], destinationResponse.response);
+    return Array.isArray(responseArray) && responseArray.includes(value);
+  };
 
-    return Array.isArray(responseArray) && responseArray.some((value) => eventValues.has(value));
-  });
+  const matchingPath =
+    ITERABLE_RESPONSE_USER_ID_PATHS.find((userIdPath) =>
+      isValueInResponseArray(userIdPath, eventValues.userId),
+    ) ||
+    ITERABLE_RESPONSE_EMAIL_PATHS.find((emailPath) =>
+      isValueInResponseArray(emailPath, eventValues.email),
+    ) ||
+    isValueInResponseArray('disallowedEventNames', eventValues.eventName);
 
   if (matchingPath) {
     const responseArray = matchingPath
       .split('.')
       .reduce((obj, key) => obj?.[key], destinationResponse.response);
-
-    const matchingValue = responseArray.find((value) => eventValues.has(value));
+    const matchingValue = responseArray.find((value) => {
+      if (ITERABLE_RESPONSE_EMAIL_PATHS.some((emailPath) => matchingPath.includes(emailPath))) {
+        return value === eventValues.email;
+      }
+      if (ITERABLE_RESPONSE_USER_ID_PATHS.some((userIdPath) => matchingPath.includes(userIdPath))) {
+        return value === eventValues.userId;
+      }
+      if (matchingPath.includes('disallowedEventNames')) {
+        return value === eventValues.eventName;
+      }
+      return false;
+    });
 
     return {
       isAbortable: true,
@@ -812,7 +819,6 @@ function checkIfEventIsAbortableAndExtractErrorMessage(event, destinationRespons
     };
   }
 
-  // Return false and an empty error message if no error is found
   return { isAbortable: false, errorMsg: '' };
 }
 

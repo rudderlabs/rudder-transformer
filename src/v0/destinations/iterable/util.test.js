@@ -864,10 +864,9 @@ describe('iterable utils test', () => {
 
     // Returns appropriate error message for abortable event
 
-    // Processes events with additional dataFields correctly
-    it('should process events with additional dataFields correctly', () => {
+    it('should find the right value for which it should fail and passes otherwise', () => {
       const event = {
-        email: 'test@example.com',
+        email: 'test',
         userId: 'user123',
         eventName: 'purchase',
         dataFields: { customField1: 'value1', customField2: 'value2' },
@@ -876,16 +875,35 @@ describe('iterable utils test', () => {
         response: {
           failCount: 1,
           failedUpdates: {
-            invalidDataEmails: ['value1'],
+            invalidEmails: ['test'],
           },
         },
       };
       const result = checkIfEventIsAbortableAndExtractErrorMessage(event, destinationResponse);
       expect(result).toEqual({
         isAbortable: true,
-        errorMsg:
-          'Request failed for value "value1" because it is "failedUpdates.invalidDataEmails".',
+        errorMsg: 'Request failed for value "test" because it is "failedUpdates.invalidEmails".',
       });
+    });
+
+    it('should find the right value for which it should fail', () => {
+      const event = {
+        email: 'test@gmail.com',
+        userId: 'user123',
+        eventName: 'purchase',
+        dataFields: { customField1: 'test', customField2: 'value2' },
+      };
+      const destinationResponse = {
+        response: {
+          failCount: 1,
+          failedUpdates: {
+            invalidEmails: ['test'],
+          },
+        },
+      };
+      const result = checkIfEventIsAbortableAndExtractErrorMessage(event, destinationResponse);
+      expect(result.isAbortable).toBe(false);
+      expect(result.errorMsg).toBe('');
     });
   });
 });

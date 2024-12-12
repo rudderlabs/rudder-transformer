@@ -7,7 +7,7 @@ import axios from 'axios';
 import bodyParser from 'koa-bodyparser';
 import { Command } from 'commander';
 import { createHttpTerminator } from 'http-terminator';
-import { MockHttpCallsData, TestCaseData } from './testTypes';
+import { ExtendedTestCaseData, MockHttpCallsData, TestCaseData } from './testTypes';
 import { applicationRoutes } from '../../src/routes/index';
 import MockAxiosAdapter from 'axios-mock-adapter';
 import {
@@ -25,6 +25,8 @@ import { assertRouterOutput, responses } from '../testHelper';
 import { generateTestReport, initaliseReport } from '../test_reporter/reporter';
 import _ from 'lodash';
 import defaultFeaturesConfig from '../../src/features';
+import { ControllerUtility } from '../../src/controllers/util';
+import { FetchHandler } from '../../src/helpers/fetchHandlers';
 
 // To run single destination test cases
 // npm run test:ts -- component  --destination=adobe_analytics
@@ -230,29 +232,52 @@ describe.each(allTestDataFilePaths)('%s Tests', (testDataPath) => {
     });
   }
 
+  const extendedTestData: ExtendedTestCaseData[] = testData.flatMap((tcData) => {
+    if (tcData.module === tags.MODULES.SOURCE) {
+      return [
+        {
+          tcData,
+          sourceTransformV2Flag: false,
+          descriptionSuffix: ' (sourceTransformV2Flag: false)',
+        },
+        {
+          tcData,
+          sourceTransformV2Flag: true,
+          descriptionSuffix: ' (sourceTransformV2Flag: true)',
+        },
+      ];
+    }
+    return [{ tcData }];
+  });
+
   describe(`${testData[0].name} ${testData[0].module}`, () => {
-    test.each(testData)('$feature -> $description (index: $#)', async (tcData) => {
-      tcData?.mockFns?.(mockAdapter);
+    test.each(extendedTestData)(
+      '$feature -> $description$descriptionSuffix (index: $#)',
+      async ({ tcData, sourceTransformV2Flag }) => {
+        tcData?.mockFns?.(mockAdapter);
 
-      switch (tcData.module) {
-        case tags.MODULES.DESTINATION:
-          await destinationTestHandler(tcData);
-          break;
-        case tags.MODULES.SOURCE:
-          defaultFeaturesConfig.upgradedToSourceTransformV2 = false;
-          await sourceTestHandler(tcData);
-
-          // run the same tests for sources only with upgradedToSourceTransformV2 flag as true
-          tcData?.mockFns?.(mockAdapter);
-          defaultFeaturesConfig.upgradedToSourceTransformV2 = true;
-          await sourceTestHandler(tcData);
-          break;
-        default:
-          console.log('Invalid module');
-          // Intentionally fail the test case
-          expect(true).toEqual(false);
-          break;
-      }
-    });
+        switch (tcData.module) {
+          case tags.MODULES.DESTINATION:
+            await destinationTestHandler(tcData);
+            break;
+          case tags.MODULES.SOURCE:
+            tcData?.mockFns?.(mockAdapter);
+            testSetupSourceTransformV2(sourceTransformV2Flag);
+            await sourceTestHandler(tcData);
+            break;
+          default:
+            console.log('Invalid module');
+            // Intentionally fail the test case
+            expect(true).toEqual(false);
+            break;
+        }
+      },
+    );
   });
 });
+
+const testSetupSourceTransformV2 = (flag) => {
+  defaultFeaturesConfig.upgradedToSourceTransformV2 = flag;
+  ControllerUtility['sourceVersionMap'] = new Map();
+  FetchHandler['sourceHandlerMap'] = new Map();
+};

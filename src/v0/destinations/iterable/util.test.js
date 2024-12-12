@@ -864,7 +864,7 @@ describe('iterable utils test', () => {
 
     // Returns appropriate error message for abortable event
 
-    it('should find the right value for which it should fail and passes otherwise', () => {
+    it('should find the right value for which it should fail and passes otherwise for emails', () => {
       const event = {
         email: 'test',
         userId: 'user123',
@@ -904,6 +904,52 @@ describe('iterable utils test', () => {
       const result = checkIfEventIsAbortableAndExtractErrorMessage(event, destinationResponse);
       expect(result.isAbortable).toBe(false);
       expect(result.errorMsg).toBe('');
+    });
+
+    it('should find the right value for which it should fail and passes otherwise for userIds', () => {
+      const event = {
+        email: 'test',
+        userId: 'user123',
+        eventName: 'purchase',
+        dataFields: { customField1: 'value1', customField2: 'value2' },
+      };
+      const destinationResponse = {
+        response: {
+          failCount: 1,
+          failedUpdates: {
+            invalidUserIds: ['user123'],
+          },
+        },
+      };
+      const result = checkIfEventIsAbortableAndExtractErrorMessage(event, destinationResponse);
+      expect(result).toEqual({
+        isAbortable: true,
+        errorMsg:
+          'Request failed for value "user123" because it is "failedUpdates.invalidUserIds".',
+      });
+    });
+
+    it('should find the right value for which it should fail and passes otherwise for disallowed events', () => {
+      const event = {
+        email: 'test',
+        userId: 'user123',
+        eventName: 'purchase',
+        dataFields: { customField1: 'value1', customField2: 'value2' },
+      };
+      const destinationResponse = {
+        response: {
+          failCount: 1,
+          disallowedEventNames: ['purchase'],
+          failedUpdates: {
+            invalidUserIds: [],
+          },
+        },
+      };
+      const result = checkIfEventIsAbortableAndExtractErrorMessage(event, destinationResponse);
+      expect(result).toEqual({
+        isAbortable: true,
+        errorMsg: 'Request failed for value "purchase" because it is "disallowedEventNames".',
+      });
     });
   });
 });

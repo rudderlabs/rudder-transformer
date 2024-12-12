@@ -803,11 +803,13 @@ const checkIfEventIsAbortableAndExtractErrorMessage = (event, destinationRespons
     ITERABLE_RESPONSE_EMAIL_PATHS.find((emailPath) =>
       isValueInResponseArray(emailPath, eventValues.email, destinationResponse.response),
     ) ||
-    isValueInResponseArray(
+    (isValueInResponseArray(
       'disallowedEventNames',
       eventValues.eventName,
       destinationResponse.response,
-    );
+    )
+      ? 'disallowedEventNames'
+      : null);
 
   if (matchingPath) {
     const responseValueArray = getValueFromResponse(matchingPath, destinationResponse.response);
@@ -818,7 +820,7 @@ const checkIfEventIsAbortableAndExtractErrorMessage = (event, destinationRespons
       if (ITERABLE_RESPONSE_USER_ID_PATHS.some((userIdPath) => matchingPath.includes(userIdPath))) {
         return value === eventValues.userId;
       }
-      if (matchingPath.includes('disallowedEventNames')) {
+      if (matchingPath === 'disallowedEventNames') {
         return value === eventValues.eventName;
       }
       return false;

@@ -349,7 +349,10 @@ function stringLikeObjectToString(obj) {
  */
 function getColumns(options, event, columnTypes) {
   const columns = {};
-  const uuidTS = options.provider === 'snowflake' ? 'UUID_TS' : 'uuid_ts';
+  const uuidTS =
+    options.provider === 'snowflake' || options.provider === 'snowpipe_streaming'
+      ? 'UUID_TS'
+      : 'uuid_ts';
   columns[uuidTS] = 'datetime';
   // add loaded_at for bq to be segment compatible
   if (options.provider === 'bq') {
@@ -377,6 +380,7 @@ function getColumns(options, event, columnTypes) {
 
 const fullEventColumnTypeByProvider = {
   snowflake: 'json',
+  snowpipe_streaming: 'json',
   rs: 'text',
   bq: 'string',
   postgres: 'json',
@@ -613,6 +617,15 @@ function enhanceContextWithSourceDestInfo(message, metadata) {
   message.context = context;
 }
 
+function shouldSkipUsersTable(options) {
+  return (
+    options.provider === 'snowpipe_streaming' ||
+    options.destConfig?.skipUsersTable ||
+    options.integrationOptions?.skipUsersTable ||
+    false
+  );
+}
+
 function processWarehouseMessage(message, options) {
   const utils = getVersionedUtils(options.whSchemaVersion);
   options.utils = utils;
@@ -638,8 +651,7 @@ function processWarehouseMessage(message, options) {
   const eventType = message.type?.toLowerCase();
   const skipTracksTable =
     options.destConfig?.skipTracksTable || options.integrationOptions.skipTracksTable || false;
-  const skipUsersTable =
-    options.destConfig?.skipUsersTable || options.integrationOptions.skipUsersTable || false;
+  const skipUsersTable = shouldSkipUsersTable(options);
   const skipReservedKeywordsEscaping =
     options.integrationOptions.skipReservedKeywordsEscaping || false;
 

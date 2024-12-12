@@ -1,6 +1,8 @@
-const { generateUUID, ConfigurationError } = require('@rudderstack/integrations-lib');
+const lib = require('@rudderstack/integrations-lib');
 const { constructPayload } = require('../../util');
 const { ConfigCategory, mappingConfig } = require('./config');
+
+const { ConfigurationError } = lib;
 
 // Function to check if a product array is valid
 const isProductArrayValid = (event, properties) =>
@@ -56,7 +58,7 @@ const processImpressionsAndClicksUtility = {
           ...placementPayload,
           ...itemPayload,
         },
-        id: generateUUID(),
+        id: lib.generateUUID(),
       },
       event,
     };
@@ -143,7 +145,7 @@ const processPurchaseEventUtility = {
       topsortPayload: {
         ...basePayload,
         items,
-        id: generateUUID(),
+        id: lib.generateUUID(),
       },
       event,
     };

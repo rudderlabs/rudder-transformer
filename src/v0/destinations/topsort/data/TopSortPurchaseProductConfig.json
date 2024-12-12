@@ -12,7 +12,10 @@
   },
   {
     "destKey": "quantity",
-    "sourceKeys": ["quantity", "properties.quantity"]
+    "sourceKeys": ["quantity", "properties.quantity"],
+    "metadata": {
+      "toInt": true
+    }
   },
   {
     "destKey": "vendorId",

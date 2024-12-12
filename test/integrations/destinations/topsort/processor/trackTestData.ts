@@ -1,5 +1,6 @@
 import { Destination } from '../../../../../src/types';
 import { ProcessorTestData } from '../../../testTypes';
+import { defaultMockFns } from '../mocks';
 import {
   generateMetadata,
   generateSimplifiedTrackPayload,
@@ -27,16 +28,16 @@ const destination: Destination = {
     ketchConsentPurposes: {},
     topsortEvents: [
       {
-        from: 'product clicked',
-        to: 'click',
+        from: 'Product Clicked',
+        to: 'clicks',
       },
       {
-        from: 'product viewed',
-        to: 'impression',
+        from: 'Product Viewed',
+        to: 'impressions',
       },
       {
-        from: 'order completed',
-        to: 'purchase',
+        from: 'Order Completed',
+        to: 'purchases',
       },
     ],
   },
@@ -49,7 +50,7 @@ export const trackTestdata: ProcessorTestData[] = [
   {
     id: 'Test 0',
     name: 'topsort',
-    description: 'Track call with standard properties mapping according to Topsort',
+    description: 'Track call with standard properties mapping',
     scenario: 'Business',
     successCriteria:
       'The response should have a status code of 200 and correctly map the properties to the specified parameters.',
@@ -62,17 +63,30 @@ export const trackTestdata: ProcessorTestData[] = [
           {
             message: generateSimplifiedTrackPayload({
               type: 'track',
-              event: 'product clicked', // The RudderStack event
+              event: 'Product Clicked', // The RudderStack event
+              originalTimestamp: '2024-11-05T15:19:08+00:00',
               properties: {
-                securityToken: '1123', // Example of custom property
-                mytransactionId: 'test-123', // Custom transaction ID
+                product_id: '622c6f5d5cf86a4c77358033',
+                price: 49.99,
+                quantity: 5,
+                position: 1,
+                resolvedBidId: '13841873482r7903r823',
+                page: 1,
+                pageSize: 15,
+                category_id: '9BLIe',
+                url: 'https://www.website.com/product/path',
+                additionalAttribution: {
+                  id: 'a13362',
+                  type: 'product',
+                },
+                entity: {
+                  id: '235',
+                  type: 'product',
+                },
               },
               context: {
-                traits: {
-                  customProperty1: 'customValue', // Custom property
-                  firstName: 'David',
-                  logins: 2,
-                  ip: '0.0.0.0', // Example IP for advSubIdMapping
+                page: {
+                  path: '/categories/dairy',
                 },
               },
               anonymousId: 'david_bowie_anonId',
@@ -91,19 +105,42 @@ export const trackTestdata: ProcessorTestData[] = [
             output: transformResultBuilder({
               method: 'POST',
               endpoint: 'https://api.topsort.com/v2/events',
-              event: 'click', // Correct event mapping (from "Product Clicked" to "click")
               headers: {
-                'Content-Type': 'application/json',
-                api_key: 'test-api',
+                'content-type': 'application/json',
+                Authorization: 'Bearer test-api',
               },
-              params: {
-                security_token: '1123',
-                transaction_id: 'test-123',
-                adv_sub2: '0.0.0.0',
-                adv_unique1: 'customValue',
-              },
+              params: {},
               userId: '',
-              JSON: {},
+              JSON: {
+                impressions: [],
+                clicks: [
+                  {
+                    occurredAt: '2024-11-05T15:19:08+00:00',
+                    opaqueUserId: 'david_bowie_anonId',
+                    resolvedBidId: '13841873482r7903r823',
+                    entity: {
+                      id: '235',
+                      type: 'product',
+                    },
+                    additionalAttribution: {
+                      id: 'a13362',
+                      type: 'product',
+                    },
+                    placement: {
+                      path: '/categories/dairy',
+                      pageSize: 15,
+                      categoryIds: ['9BLIe'],
+                      position: 1,
+                      productId: '622c6f5d5cf86a4c77358033',
+                    },
+                    id: '8zrxk16wn66fl1w7zd2f9bzmjhx6r515gxx',
+                  },
+                ],
+                purchases: [],
+              },
+              JSON_ARRAY: {},
+              XML: {},
+              FORM: {},
             }),
             metadata: generateMetadata(1),
             statusCode: 200,
@@ -111,5 +148,6 @@ export const trackTestdata: ProcessorTestData[] = [
         ],
       },
     },
+    mockFns: defaultMockFns,
   },
 ];

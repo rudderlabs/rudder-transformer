@@ -132,11 +132,11 @@ const processRouterDest = async (inputs, reqMetadata) => {
       // Process the event
       processEvent(input.message, input.destination, finalPayloads);
       // Add to successMetadatas array
-      successMetadatas.append(input.metadata);
+      successMetadatas.push(input.metadata);
     } catch (error) {
       // Handle error and store the error details
       const failureResponse = handleRtTfSingleEventError(input, error, reqMetadata);
-      failureResponses.append(failureResponse);
+      failureResponses.push(failureResponse);
     }
   });
 
@@ -154,8 +154,9 @@ const processRouterDest = async (inputs, reqMetadata) => {
   response.endpoint = ENDPOINT;
 
   const successResponses = getSuccessRespEvents(response, successMetadatas, destination, true);
-
-  return [...successResponses, failureResponses];
+  
+  return [successResponses, ...failureResponses];
+  
 };
 
 module.exports = { process, processRouterDest };

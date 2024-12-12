@@ -8,9 +8,26 @@ const {
   processAxiosResponse,
   getDynamicErrorType,
 } = require('../../../adapters/utils/networkUtils');
+const { TransformerProxyError } = require('../../util/errorTypes');
+const tags = require('../../util/tags');
 
-const redditRespHandler = (destResponse) => {
-  const { status, response } = destResponse;
+const populateResponseWithDontBatch = (rudderJobMetadata, response) => {
+  const errorMessage = JSON.stringify(response);
+  const responseWithIndividualEvents = [];
+
+  rudderJobMetadata.forEach((metadata) => {
+    responseWithIndividualEvents.push({
+      statusCode: 500,
+      metadata: { ...metadata, dontBatch: true },
+      error: errorMessage,
+    });
+  });
+  return responseWithIndividualEvents;
+};
+
+const redditRespHandler = (responseParams) => {
+  const { destinationResponse, destinationRequest } = responseParams;
+  const { status, response } = destinationResponse;
 
   // to handle the case when authorization-token is invalid
   if (status === 401) {
@@ -28,17 +45,35 @@ const redditRespHandler = (destResponse) => {
     throw new RetryableError(
       `${errorMessage} during reddit response transformation`,
       status,
-      destResponse,
+      destinationResponse,
       authErrorCategory,
     );
   }
+  if (Array.isArray(destinationRequest.metadata) && destinationRequest.metadata.length > 1) {
+    // sending back 500 for retry only when events came in a batch
+    const responseWithDontBatch = populateResponseWithDontBatch(
+      destinationRequest.metadata,
+      response,
+    );
+    throw new TransformerProxyError(
+      `REDDIT: Error transformer proxy during REDDIT response transformation`,
+      500,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(500),
+      },
+      destinationResponse,
+      '',
+      responseWithDontBatch,
+    );
+  }
+
   throw new NetworkError(
     `${JSON.stringify(response)} during reddit response transformation`,
     status,
     {
       [TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
     },
-    destResponse,
+    destinationResponse,
   );
 };
 const responseHandler = (responseParams) => {
@@ -47,7 +82,7 @@ const responseHandler = (responseParams) => {
   const { status } = destinationResponse;
   if (!isHttpStatusSuccess(status)) {
     // if error, successfully return status, message and original destination response
-    redditRespHandler(destinationResponse);
+    redditRespHandler(responseParams);
   }
   const { response } = destinationResponse;
   const errorMessage =

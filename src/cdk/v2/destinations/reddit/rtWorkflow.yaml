@@ -41,7 +41,6 @@ steps:
       const dontBatchTrueEventsChunks = $.chunk(dontBatchTrueEvents, 1);
       
       let batches = [...$.batchEvents(dontBatchFalseEvents), ...$.batchEventChunks(dontBatchTrueEventsChunks)];
-      console.log(batches);
       batches@batch.({
         "batchedRequest": {
           "body": {

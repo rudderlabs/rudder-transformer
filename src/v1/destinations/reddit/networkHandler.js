@@ -12,7 +12,7 @@ const { TransformerProxyError } = require('../../../v0/util/errorTypes');
 
 const populateResponseWithDontBatch = (rudderJobMetadata, response) => {
   const errorMessage = JSON.stringify(response);
-  return rudderJobMetadata.map(metadata => {
+  return rudderJobMetadata.map((metadata) => {
     // eslint-disable-next-line no-param-reassign
     metadata.dontBatch = true;
     return {
@@ -98,13 +98,10 @@ const responseHandler = (responseParams) => {
     response: responseWithIndividualEvents,
   };
 };
-// eslint-disable-next-line @typescript-eslint/naming-convention
-class networkHandler {
-  constructor() {
-    this.responseHandler = responseHandler;
-    this.proxy = proxyRequest;
-    this.prepareProxy = prepareProxyRequest;
-    this.processAxiosResponse = processAxiosResponse;
-  }
+function networkHandler() {
+  this.proxy = proxyRequest;
+  this.processAxiosResponse = processAxiosResponse;
+  this.prepareProxy = prepareProxyRequest;
+  this.responseHandler = responseHandler;
 }
 module.exports = { networkHandler };

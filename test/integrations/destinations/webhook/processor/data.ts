@@ -1,6 +1,408 @@
-import { head } from 'lodash';
+import { defaultMockFns } from '../mocks';
 
 export const data = [
+  {
+    name: 'webhook',
+    description:
+      'Feature Flag is enabled for formatted body based on content-type | Content type: json',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
+              context: {
+                device: {
+                  id: 'df16bffa-5c3d-4fbb-9bce-3bab098129a7R',
+                },
+                network: {
+                  carrier: 'Banglalink',
+                },
+                os: {
+                  name: 'android',
+                  version: '8.1.0',
+                },
+                traits: {
+                  address: {
+                    city: 'Dhaka',
+                    country: 'Bangladesh',
+                  },
+                  anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
+                },
+              },
+              event: 'spin_result',
+              integrations: {
+                All: true,
+              },
+              message_id: 'a80f82be-9bdc-4a9f-b2a5-15621ee41df8',
+              properties: {
+                additional_bet_index: 0,
+                battle_id: 'N/A',
+              },
+              timestamp: '2019-09-01T15:46:51.693229+05:30',
+              type: 'track',
+              user_properties: {
+                coin_balance: 9466052,
+                current_module_name: 'CasinoGameModule',
+              },
+            },
+            destination: {
+              Config: {
+                webhookUrl: 'http://6b0e6a60.ngrok.io',
+                headers: [
+                  {
+                    from: '',
+                    to: '',
+                  },
+                  {
+                    from: 'test2',
+                    to: 'value2',
+                  },
+                  {
+                    from: 'content-type',
+                    to: 'application/json',
+                  },
+                ],
+              },
+              DestinationDefinition: {
+                Config: {
+                  cdkV2Enabled: true,
+                },
+              },
+            },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              body: {
+                JSON: {
+                  anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
+                  context: {
+                    device: {
+                      id: 'df16bffa-5c3d-4fbb-9bce-3bab098129a7R',
+                    },
+                    network: {
+                      carrier: 'Banglalink',
+                    },
+                    os: {
+                      name: 'android',
+                      version: '8.1.0',
+                    },
+                    traits: {
+                      address: {
+                        city: 'Dhaka',
+                        country: 'Bangladesh',
+                      },
+                      anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
+                    },
+                  },
+                  event: 'spin_result',
+                  integrations: {
+                    All: true,
+                  },
+                  message_id: 'a80f82be-9bdc-4a9f-b2a5-15621ee41df8',
+                  properties: {
+                    additional_bet_index: 0,
+                    battle_id: 'N/A',
+                  },
+                  timestamp: '2019-09-01T15:46:51.693229+05:30',
+                  type: 'track',
+                  user_properties: {
+                    coin_balance: 9466052,
+                    current_module_name: 'CasinoGameModule',
+                  },
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              version: '1',
+              userId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'http://6b0e6a60.ngrok.io',
+              headers: {
+                'content-type': 'application/json',
+                test2: 'value2',
+              },
+              params: {},
+              files: {},
+            },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+    mockFns: defaultMockFns,
+  },
+  {
+    name: 'webhook',
+    description:
+      'Feature Flag is enabled for formatted body based on content-type | Content type: x-www-form-urlencoded',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
+              context: {
+                device: {
+                  id: 'df16bffa-5c3d-4fbb-9bce-3bab098129a7R',
+                },
+                network: {
+                  carrier: 'Banglalink',
+                },
+                os: {
+                  name: 'android',
+                  version: '8.1.0',
+                },
+                traits: {
+                  address: {
+                    city: 'Dhaka',
+                    country: 'Bangladesh',
+                  },
+                  anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
+                },
+              },
+              event: 'spin_result',
+              integrations: {
+                All: true,
+              },
+              message_id: 'a80f82be-9bdc-4a9f-b2a5-15621ee41df8',
+              properties: {
+                additional_bet_index: 0,
+                battle_id: 'N/A',
+              },
+              timestamp: '2019-09-01T15:46:51.693229+05:30',
+              type: 'track',
+              user_properties: {
+                coin_balance: 9466052,
+                current_module_name: 'CasinoGameModule',
+              },
+            },
+            destination: {
+              Config: {
+                webhookUrl: 'http://6b0e6a60.ngrok.io',
+                headers: [
+                  {
+                    from: '',
+                    to: '',
+                  },
+                  {
+                    from: 'test2',
+                    to: 'value2',
+                  },
+                  {
+                    from: 'content-type',
+                    to: 'application/x-www-form-urlencoded',
+                  },
+                ],
+              },
+              DestinationDefinition: {
+                Config: {
+                  cdkV2Enabled: true,
+                },
+              },
+            },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              body: {
+                JSON: {},
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {
+                  anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
+                  'context.device.id': 'df16bffa-5c3d-4fbb-9bce-3bab098129a7R',
+                  'context.network.carrier': 'Banglalink',
+                  'context.os.name': 'android',
+                  'context.os.version': '8.1.0',
+                  'context.traits.address.city': 'Dhaka',
+                  'context.traits.address.country': 'Bangladesh',
+                  'context.traits.anonymousId': 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
+                  event: 'spin_result',
+                  'integrations.All': true,
+                  message_id: 'a80f82be-9bdc-4a9f-b2a5-15621ee41df8',
+                  'properties.additional_bet_index': 0,
+                  'properties.battle_id': 'N/A',
+                  timestamp: '2019-09-01T15:46:51.693229+05:30',
+                  type: 'track',
+                  'user_properties.coin_balance': 9466052,
+                  'user_properties.current_module_name': 'CasinoGameModule',
+                },
+              },
+              version: '1',
+              userId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'http://6b0e6a60.ngrok.io',
+              headers: {
+                'content-type': 'application/x-www-form-urlencoded',
+                test2: 'value2',
+              },
+              params: {},
+              files: {},
+            },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+    mockFns: defaultMockFns,
+  },
+  {
+    name: 'webhook',
+    description:
+      'Feature Flag is enabled for formatted body based on content-type | Content type: xml',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
+              context: {
+                device: {
+                  id: 'df16bffa-5c3d-4fbb-9bce-3bab098129a7R',
+                },
+                network: {
+                  carrier: 'Banglalink',
+                },
+                os: {
+                  name: 'android',
+                  version: '8.1.0',
+                },
+                traits: {
+                  address: {
+                    city: 'Dhaka',
+                    country: 'Bangladesh',
+                  },
+                  anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
+                },
+              },
+              event: 'spin_result',
+              integrations: {
+                All: true,
+              },
+              message_id: 'a80f82be-9bdc-4a9f-b2a5-15621ee41df8',
+              properties: {
+                additional_bet_index: 0,
+                battle_id: 'N/A',
+              },
+              timestamp: '2019-09-01T15:46:51.693229+05:30',
+              type: 'track',
+              user_properties: {
+                coin_balance: 9466052,
+                current_module_name: 'CasinoGameModule',
+              },
+            },
+            destination: {
+              Config: {
+                webhookUrl: 'http://6b0e6a60.ngrok.io',
+                headers: [
+                  {
+                    from: '',
+                    to: '',
+                  },
+                  {
+                    from: 'test2',
+                    to: 'value2',
+                  },
+                  {
+                    from: 'content-type',
+                    to: 'application/xml',
+                  },
+                ],
+              },
+              DestinationDefinition: {
+                Config: {
+                  cdkV2Enabled: true,
+                },
+              },
+            },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              body: {
+                JSON: {},
+                JSON_ARRAY: {},
+                XML: {
+                  payload:
+                    '<?xml version="1.0" encoding="UTF-8"?><anonymousId>c82cbdff-e5be-4009-ac78-cdeea09ab4b1</anonymousId><context><device><id>df16bffa-5c3d-4fbb-9bce-3bab098129a7R</id></device><network><carrier>Banglalink</carrier></network><os><name>android</name><version>8.1.0</version></os><traits><address><city>Dhaka</city><country>Bangladesh</country></address><anonymousId>c82cbdff-e5be-4009-ac78-cdeea09ab4b1</anonymousId></traits></context><event>spin_result</event><integrations><All>true</All></integrations><message_id>a80f82be-9bdc-4a9f-b2a5-15621ee41df8</message_id><properties><additional_bet_index>0</additional_bet_index><battle_id>N/A</battle_id></properties><timestamp>2019-09-01T15:46:51.693229+05:30</timestamp><type>track</type><user_properties><coin_balance>9466052</coin_balance><current_module_name>CasinoGameModule</current_module_name></user_properties>',
+                },
+                FORM: {},
+              },
+              version: '1',
+              userId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'http://6b0e6a60.ngrok.io',
+              headers: {
+                'content-type': 'application/xml',
+                test2: 'value2',
+              },
+              params: {},
+              files: {},
+            },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+    mockFns: defaultMockFns,
+  },
   {
     name: 'webhook',
     description: 'Test 0',
@@ -3313,6 +3715,7 @@ export const data = [
             },
             metadata: {
               destinationId: '1234',
+              workspaceId: 'wspId',
             },
           },
         ],
@@ -3325,6 +3728,7 @@ export const data = [
           {
             metadata: {
               destinationId: '1234',
+              workspaceId: 'wspId',
             },
             output: {
               body: {

@@ -3,6 +3,11 @@ bindings:
     path: ../../../../constants
   - path: ../../bindings/jsontemplate
     exportAll: true
+  - name: getPropertyParams
+  - path: ../../../../v0/destinations/webhook/utils
+  - name: getFormattedPayload
+  - path: ../../../../v0/destinations/webhook/utils
+  - name: isFeatureEnabled
   - path: ../../../../v0/destinations/webhook/utils
   - name: getHashFromArray
     path: ../../../../v0/util
@@ -33,7 +38,6 @@ steps:
         ...configHeaders,
         ...messageHeader
       }
-
   - name: deduceEndPoint
     template: |
       let integrationsObjects = $.getIntegrationsObj(.message, "webhook");
@@ -60,7 +64,34 @@ steps:
         payload.context.ip = ip;
       )
       $.context.payload = $.removeUndefinedAndNullValues(payload)
-  - name: buildResponseForProcessTransformation
+
+  - name: buildResponseForProcessTransformationWithBodyFormatting
+    condition: await $.isFeatureEnabled(.metadata.workspaceId, 'dest_transformer_webhook_form_support')
+    template: |
+      const finalPayload = {
+        body: {
+          JSON: {},
+          JSON_ARRAY: {},
+          XML: {},
+          FORM: {},
+        },
+        version: '1',
+        userId: ^.message.anonymousId,
+        type: 'REST',
+        method: $.context.method,
+        endpoint: $.context.finalEndpoint,
+        headers: $.context.finalHeaders,
+        params: $.context.params,
+        files: {},
+      };
+
+      const formattedPayload = $.getFormattedPayload($.context.finalHeaders, $.context.payload);
+      finalPayload.body[formattedPayload.contentTypeSimplified] = formattedPayload.payload || {};
+      $.context.payload = finalPayload;
+      $.context.payload
+
+  - name: buildResponseForProcessTransformationWithDefaultBodyFormat
+    condition: await $.isFeatureEnabled(.metadata.workspaceId, 'dest_transformer_webhook_form_support') !== true
     template: |
       $.context.payload.({
          "body": {

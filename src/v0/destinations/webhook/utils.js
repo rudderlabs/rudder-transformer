@@ -1,4 +1,4 @@
-const { isFeatureEnabled } = require('feature-flag-sdk');
+const { isFeatureEnabled } = require('@rudderlabs/featureflag-sdk-node');
 const { getXMLPayload } = require('../../../cdk/v2/destinations/http/utils');
 const { EventType } = require('../../../constants');
 const { getFieldValueFromMessage, flattenJson } = require('../../util');

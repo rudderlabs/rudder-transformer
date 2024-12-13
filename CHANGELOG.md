@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.86.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.85.1...v1.86.0) (2024-12-09)
+
+
+### Features
+
+* add support for getting anonymousId by note attributes array ([53d2bef](https://github.com/rudderlabs/rudder-transformer/commit/53d2bef38ad5d7bc5504111ec797b3c3973546dd))
+* add support for getting anonymousId by note attributes array ([#3893](https://github.com/rudderlabs/rudder-transformer/issues/3893)) ([d7f390c](https://github.com/rudderlabs/rudder-transformer/commit/d7f390cb471e44afb276484b8b804d1f257c539c))
+
+
+### Bug Fixes
+
+* braze subscription group fixes ([#3901](https://github.com/rudderlabs/rudder-transformer/issues/3901)) ([ebcf84e](https://github.com/rudderlabs/rudder-transformer/commit/ebcf84e07bf121d882c99df973af265a915a1ce1))
+* remove redundant ids and userIdentifier when gbraid or wbraid are there ([#3910](https://github.com/rudderlabs/rudder-transformer/issues/3910)) ([313710c](https://github.com/rudderlabs/rudder-transformer/commit/313710ca725538e5ffe357216d9c88e444f995c8))
+* skipping users events for snowpipe streaming ([#3836](https://github.com/rudderlabs/rudder-transformer/issues/3836)) ([12621c8](https://github.com/rudderlabs/rudder-transformer/commit/12621c8eee641f5a03a997e95ed016cff0eefde7))
+
 ### [1.85.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.85.0...v1.85.1) (2024-11-21)
 
 

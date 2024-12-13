@@ -18,11 +18,6 @@ const commonDestination = {
     defaultSenderId: 'abc@gmail.com',
     defaultSenderPhoneNumber: '+919XXXXXXXX8',
     defaultSource: 'php',
-    oneTrustCookieCategories: [
-      {
-        oneTrustCookieCategory: 'Marketing',
-      },
-    ],
   },
   DestinationDefinition: {
     Config: {

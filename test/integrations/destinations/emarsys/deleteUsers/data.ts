@@ -64,11 +64,6 @@ export const data = [
               defaultContactList: 'dummy',
               eventsMapping: commonEventMap,
               fieldMapping: commonFieldMap,
-              oneTrustCookieCategories: [
-                {
-                  oneTrustCookieCategory: 'Marketing',
-                },
-              ],
             },
           },
         ],
@@ -113,11 +108,6 @@ export const data = [
               defaultContactList: undefined,
               eventsMapping: commonEventMap,
               fieldMapping: commonFieldMap,
-              oneTrustCookieCategories: [
-                {
-                  oneTrustCookieCategory: 'Marketing',
-                },
-              ],
             },
           },
         ],
@@ -161,11 +151,6 @@ export const data = [
               defaultContactList: 'dummy',
               eventsMapping: commonEventMap,
               fieldMapping: commonFieldMap,
-              oneTrustCookieCategories: [
-                {
-                  oneTrustCookieCategory: 'Marketing',
-                },
-              ],
             },
           },
         ],
@@ -210,11 +195,6 @@ export const data = [
               defaultContactList: 'dummy',
               eventsMapping: commonEventMap,
               fieldMapping: commonFieldMap,
-              oneTrustCookieCategories: [
-                {
-                  oneTrustCookieCategory: 'Marketing',
-                },
-              ],
             },
           },
         ],

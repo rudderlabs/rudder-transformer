@@ -138,13 +138,14 @@ export const testScenariosForV0API = [
         status: 200,
         body: {
           output: {
-            destResp: {
+            destinationResponse: {
               response: {
                 message: 'Successfully processed 1 conversion events.',
               },
               status: 200,
             },
-            message: 'Request Processed Successfully',
+            message:
+              '[Generic Response Handler] Request for destination: reddit Processed Successfully',
             status: 200,
           },
         },
@@ -181,8 +182,15 @@ export const testScenariosForV1API = [
         body: {
           output: {
             message: 'Request Processed Successfully',
+            destinationResponse: {
+              response: {
+                message: 'Successfully processed 1 conversion events.',
+              },
+              status: 200,
+            },
             response: [
               {
+                error: 'success',
                 metadata: generateMetadata(1),
                 statusCode: 200,
               },

@@ -1,8 +1,5 @@
-import * as lib from '@rudderstack/integrations-lib'
-// import * as lib from '@rudderstack/integrations-lib'
-import MockAdapter from 'axios-mock-adapter';
+import utils from '../../../../src/v0/util';
 
-export const defaultMockFns = (_: MockAdapter) => {
-  const mockGenerateUUID = jest.fn().mockReturnValue('mocked-uuid')
-  jest.spyOn(Object.getPrototypeOf(lib), 'generateUUID').mockImplementation(mockGenerateUUID)
+export const defaultMockFns = () => {
+  jest.spyOn(utils, 'generateUUID').mockReturnValue('test-id-123-123-123');
 };

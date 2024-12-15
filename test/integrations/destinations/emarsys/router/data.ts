@@ -29,11 +29,6 @@ const config = {
       emersysProperty: '2',
     },
   ],
-  oneTrustCookieCategories: [
-    {
-      oneTrustCookieCategory: 'Marketing',
-    },
-  ],
 };
 
 const commonDestination = {

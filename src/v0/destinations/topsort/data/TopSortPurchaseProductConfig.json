@@ -1,0 +1,24 @@
+[
+  {
+    "destKey": "productId",
+    "sourceKeys": ["product_id", "properties.product_id"]
+  },
+  {
+    "destKey": "unitPrice",
+    "sourceKeys": ["price", "properties.price"],
+    "metadata": {
+      "type": "toNumber"
+    }
+  },
+  {
+    "destKey": "quantity",
+    "sourceKeys": ["quantity", "properties.quantity"],
+    "metadata": {
+      "toInt": true
+    }
+  },
+  {
+    "destKey": "vendorId",
+    "sourceKeys": "properties.vendorId"
+  }
+]

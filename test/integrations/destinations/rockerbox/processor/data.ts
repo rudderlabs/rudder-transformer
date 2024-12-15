@@ -85,13 +85,6 @@ export const data = [
                 clientAuthId: {
                   web: 'test-client-auth-id',
                 },
-                oneTrustCookieCategories: {
-                  web: [
-                    {
-                      oneTrustCookieCategory: 'Marketing Sample',
-                    },
-                  ],
-                },
                 customDomain: {
                   web: 'https://cookiedomain.com',
                 },
@@ -205,13 +198,6 @@ export const data = [
                 },
                 clientAuthId: {
                   web: 'test-client-auth-id',
-                },
-                oneTrustCookieCategories: {
-                  web: [
-                    {
-                      oneTrustCookieCategory: 'Marketing Sample',
-                    },
-                  ],
                 },
                 customDomain: {
                   web: 'https://cookiedomain.com',
@@ -338,13 +324,6 @@ export const data = [
                 },
                 clientAuthId: {
                   web: 'test-client-auth-id',
-                },
-                oneTrustCookieCategories: {
-                  web: [
-                    {
-                      oneTrustCookieCategory: 'Marketing Sample',
-                    },
-                  ],
                 },
                 customDomain: {
                   web: 'https://cookiedomain.com',
@@ -500,13 +479,6 @@ export const data = [
                 },
                 clientAuthId: {
                   web: '',
-                },
-                oneTrustCookieCategories: {
-                  web: [
-                    {
-                      oneTrustCookieCategory: '',
-                    },
-                  ],
                 },
                 customDomain: {
                   web: '',

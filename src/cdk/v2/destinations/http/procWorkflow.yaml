@@ -36,10 +36,13 @@ steps:
     template: |
       const configAuthHeaders = $.getAuthHeaders(.destination.Config);
       const additionalConfigHeaders = $.getCustomMappings(.message, .destination.Config.headers);   
+      const contentTypeHeader = $.context.format === "FORM-URLENCODED" ? { 'Content-Type': 'application/x-www-form-urlencoded' } : {};
+
       $.context.headers = {
         ...configAuthHeaders,
-        ...additionalConfigHeaders
-      }
+        ...additionalConfigHeaders,
+        ...contentTypeHeader
+      };
 
   - name: prepareParams
     template: |
@@ -55,6 +58,7 @@ steps:
       $.context.payload = $.removeUndefinedAndNullValues($.excludeMappedFields(payload, .destination.Config.propertiesMapping))
       $.context.format === "XML" &&  !$.isEmptyObject($.context.payload) ?  $.context.payload = {payload: $.getXMLPayload($.context.payload)};
       $.context.format === "FORM" &&  !$.isEmptyObject($.context.payload) ?  $.context.payload = {payload: $.getFORMPayload($.context.payload)};
+      $.context.format === "FORM-URLENCODED" &&  !$.isEmptyObject($.context.payload) ?  payload;
 
   - name: buildResponseForProcessTransformation
     template: |

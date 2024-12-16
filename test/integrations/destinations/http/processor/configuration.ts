@@ -245,8 +245,105 @@ export const configuration: ProcessorTestData[] = [
                 'content-type': 'application/json',
               },
               FORM: {
-                payload: 'event=Order%20Completed&currency=USD&userId=userId123&properties=',
+                payload: 'event=Order%20Completed&currency=USD&userId=userId123',
               },
+            }),
+            statusCode: 200,
+            metadata: generateMetadata(1),
+          },
+        ],
+      },
+    },
+  },
+  {
+    id: 'http-configuration-test-5',
+    name: destType,
+    description: 'Track call with bearer token, form url encoded format',
+    scenario: 'Business',
+    successCriteria:
+      'Response should be in form format with post method, headers and properties mapping',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: destinations[8],
+            message: {
+              type: 'track',
+              userId: 'userId123',
+              event: 'Order Completed',
+              properties,
+            },
+            metadata: generateMetadata(1),
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: transformResultBuilder({
+              method: 'POST',
+              userId: '',
+              endpoint: destinations[7].Config.apiUrl,
+              headers: {
+                Authorization: 'Bearer test-token',
+                h1: 'val1',
+                'Content-Type': 'application/x-www-form-urlencoded',
+              },
+              FORM: {
+                currency: 'USD',
+                event: 'Order Completed',
+                userId: 'userId123',
+              },
+            }),
+            statusCode: 200,
+            metadata: generateMetadata(1),
+          },
+        ],
+      },
+    },
+  },
+  {
+    id: 'http-configuration-test-6',
+    name: destType,
+    description: 'empty body',
+    scenario: 'Business',
+    successCriteria:
+      'Response should be in form format with post method, headers and properties mapping',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: destinations[9],
+            message: {},
+            metadata: generateMetadata(1),
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: transformResultBuilder({
+              method: 'POST',
+              userId: '',
+              endpoint: destinations[9].Config.apiUrl,
+              headers: {
+                Authorization: 'Bearer test-token',
+                h1: 'val1',
+                'Content-Type': 'application/x-www-form-urlencoded',
+              },
+              FORM: {},
             }),
             statusCode: 200,
             metadata: generateMetadata(1),

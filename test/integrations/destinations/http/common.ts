@@ -312,17 +312,93 @@ const destinations: Destination[] = [
           from: '$.userId',
           to: '$.userId',
         },
+      ],
+    },
+    DestinationDefinition: {
+      DisplayName: displayName,
+      ID: '123',
+      Name: destTypeInUpperCase,
+      Config: { cdkV2Enabled: true },
+    },
+    Enabled: true,
+    ID: '123',
+    Name: destTypeInUpperCase,
+    Transformations: [],
+    WorkspaceID: 'test-workspace-id',
+  },
+  {
+    Config: {
+      apiUrl: 'http://abc.com/events',
+      auth: 'bearerTokenAuth',
+      bearerToken: 'test-token',
+      method: 'POST',
+      format: 'FORM-URLENCODED',
+      headers: [
         {
-          from: '$.properties.products[*].product_id',
-          to: '$.properties.items[*].item_id',
+          to: '$.h1',
+          from: "'val1'",
         },
         {
-          from: '$.properties.products[*].name',
-          to: '$.properties.items[*].name',
+          to: '$.h2',
+          from: '$.key1',
+        },
+      ],
+      propertiesMapping: [
+        {
+          from: '$.event',
+          to: '$.event',
         },
         {
-          from: '$.properties.products[*].price',
-          to: '$.properties.items[*].price',
+          from: '$.properties.currency',
+          to: '$.currency',
+        },
+        {
+          from: '$.userId',
+          to: '$.userId',
+        },
+      ],
+    },
+    DestinationDefinition: {
+      DisplayName: displayName,
+      ID: '123',
+      Name: destTypeInUpperCase,
+      Config: { cdkV2Enabled: true },
+    },
+    Enabled: true,
+    ID: '123',
+    Name: destTypeInUpperCase,
+    Transformations: [],
+    WorkspaceID: 'test-workspace-id',
+  },
+  {
+    Config: {
+      apiUrl: 'http://abc.com/events',
+      auth: 'bearerTokenAuth',
+      bearerToken: 'test-token',
+      method: 'POST',
+      format: 'FORM-URLENCODED',
+      headers: [
+        {
+          to: '$.h1',
+          from: "'val1'",
+        },
+        {
+          to: '$.h2',
+          from: '$.key1',
+        },
+      ],
+      propertiesMapping: [
+        {
+          from: '$.event',
+          to: '$.event',
+        },
+        {
+          from: '$.properties.currency',
+          to: '$.currency',
+        },
+        {
+          from: '$.userId',
+          to: '$.userId',
         },
       ],
     },

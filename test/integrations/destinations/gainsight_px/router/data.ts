@@ -57,7 +57,7 @@ const destination2 = {
       { from: 'inboxready_signup_date', to: 'inboxready_signup_date' },
       { from: 'gpt_setup', to: 'gpt_setup' },
     ],
-    oneTrustCookieCategories: [],
+
     apiKey: 'sample-api-key',
     eventDelivery: false,
     eventDeliveryTS: 1624472902670,

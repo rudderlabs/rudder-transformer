@@ -277,6 +277,7 @@ export const generateSimplifiedTrackPayload: any = (parametersOverride: any) => 
       device: parametersOverride.context.device,
       os: parametersOverride.context.os,
       app: parametersOverride.context.app,
+      page: parametersOverride.context.page,
     }),
     anonymousId: parametersOverride.anonymousId || 'default-anonymousId',
     originalTimestamp: parametersOverride.originalTimestamp || '2021-01-03T17:02:53.193Z',

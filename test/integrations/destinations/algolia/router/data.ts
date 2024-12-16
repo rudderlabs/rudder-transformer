@@ -2007,7 +2007,6 @@ export const data = [
                     { from: 'Order Completed', to: 'conversion' },
                     { from: 'Product Added', to: 'click' },
                   ],
-                  oneTrustCookieCategories: [],
                   eventDelivery: false,
                   eventDeliveryTS: 1687213909459,
                 },
@@ -2017,16 +2016,11 @@ export const data = [
                 DestinationDefinition: {
                   Config: {
                     destConfig: {
-                      defaultConfig: [
-                        'apiKey',
-                        'applicationId',
-                        'eventTypeSettings',
-                        'oneTrustCookieCategories',
-                      ],
+                      defaultConfig: ['apiKey', 'applicationId', 'eventTypeSettings'],
                     },
                     secretKeys: ['apiKey', 'applicationId'],
                     excludeKeys: [],
-                    includeKeys: ['oneTrustCookieCategories'],
+                    includeKeys: [],
                     transformAt: 'router',
                     cdkV2Enabled: true,
                     transformAtV1: 'router',
@@ -2146,21 +2140,15 @@ export const data = [
                     { from: 'Order Completed', to: 'conversion' },
                     { from: 'Product Added', to: 'click' },
                   ],
-                  oneTrustCookieCategories: [],
                 },
                 DestinationDefinition: {
                   Config: {
                     cdkV2Enabled: true,
                     destConfig: {
-                      defaultConfig: [
-                        'apiKey',
-                        'applicationId',
-                        'eventTypeSettings',
-                        'oneTrustCookieCategories',
-                      ],
+                      defaultConfig: ['apiKey', 'applicationId', 'eventTypeSettings'],
                     },
                     excludeKeys: [],
-                    includeKeys: ['oneTrustCookieCategories'],
+                    includeKeys: [],
                     saveDestinationResponse: true,
                     secretKeys: ['apiKey', 'applicationId'],
                     supportedMessageTypes: ['track'],

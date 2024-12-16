@@ -882,7 +882,7 @@ describe('iterable utils test', () => {
       const result = checkIfEventIsAbortableAndExtractErrorMessage(event, destinationResponse);
       expect(result).toEqual({
         isAbortable: true,
-        errorMsg: 'Request failed for value "test" because it is "failedUpdates.invalidEmails".',
+        errorMsg: 'email error:"test" in "failedUpdates.invalidEmails".',
       });
     });
 
@@ -924,8 +924,7 @@ describe('iterable utils test', () => {
       const result = checkIfEventIsAbortableAndExtractErrorMessage(event, destinationResponse);
       expect(result).toEqual({
         isAbortable: true,
-        errorMsg:
-          'Request failed for value "user123" because it is "failedUpdates.invalidUserIds".',
+        errorMsg: 'userId error:"user123" in "failedUpdates.invalidUserIds".',
       });
     });
 
@@ -948,7 +947,7 @@ describe('iterable utils test', () => {
       const result = checkIfEventIsAbortableAndExtractErrorMessage(event, destinationResponse);
       expect(result).toEqual({
         isAbortable: true,
-        errorMsg: 'Request failed for value "purchase" because it is "disallowedEventNames".',
+        errorMsg: 'eventName error:"purchase" in "disallowedEventNames".',
       });
     });
   });

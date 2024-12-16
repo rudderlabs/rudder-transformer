@@ -796,17 +796,25 @@ const checkIfEventIsAbortableAndExtractErrorMessage = (event, destinationRespons
   const userIdMatchPath = ITERABLE_RESPONSE_USER_ID_PATHS.filter((userIdPath) =>
     isValueInResponseArray(destinationResponse.response, userIdPath, eventValues.userId),
   );
-  errorMsg += `userId error:"${eventValues.userId}" in "${userIdMatchPath}".`;
+  if (userIdMatchPath.length > 0) {
+    errorMsg += `userId error:"${eventValues.userId}" in "${userIdMatchPath}".`;
+  }
 
   const emailMatchPath = ITERABLE_RESPONSE_EMAIL_PATHS.filter((emailPath) =>
     isValueInResponseArray(destinationResponse.response, emailPath, eventValues.email),
   );
-  errorMsg += `email error:"${eventValues.email}" in "${emailMatchPath}".`;
+
+  if (emailMatchPath.length > 0) {
+    errorMsg += `email error:"${eventValues.email}" in "${emailMatchPath}".`;
+  }
 
   const eventNameMatchPath = ['disallowedEventNames'].filter((eventNamePath) =>
     isValueInResponseArray(destinationResponse.response, eventNamePath, eventValues.eventName),
   );
-  errorMsg += `eventName error:"${eventValues.eventName}" in "${eventNameMatchPath}".`;
+
+  if (eventNameMatchPath.length > 0) {
+    errorMsg += `eventName error:"${eventValues.eventName}" in "${eventNameMatchPath}".`;
+  }
 
   if (errorMsg) {
     return {

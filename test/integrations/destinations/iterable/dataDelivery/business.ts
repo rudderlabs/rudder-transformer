@@ -260,7 +260,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
               {
                 statusCode: 400,
                 metadata: generateMetadata(1),
-                error: 'Request failed for value "sayan" because it is "invalidEmails".',
+                error: 'email error:"sayan" in "invalidEmails,failedUpdates.invalidEmails".',
               },
               {
                 statusCode: 200,
@@ -460,7 +460,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
               {
                 statusCode: 400,
                 metadata: generateMetadata(2),
-                error: 'Request failed for value "shrouti" because it is "invalidEmails".',
+                error: 'email error:"shrouti" in "invalidEmails,failedUpdates.invalidEmails".',
               },
             ],
           },

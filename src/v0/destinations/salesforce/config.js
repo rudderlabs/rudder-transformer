@@ -27,6 +27,8 @@ const DESTINATION = 'Salesforce';
 const SALESFORCE_OAUTH_SANDBOX = 'salesforce_oauth_sandbox';
 const OAUTH = 'oauth';
 const LEGACY = 'legacy';
+const SALESFORCE_OAUTH = 'salesforce_oauth';
+const SALESFORCE = 'salesforce';
 
 const mappingConfig = getMappingConfig(ConfigCategory, __dirname);
 
@@ -42,5 +44,7 @@ module.exports = {
   DESTINATION,
   OAUTH,
   LEGACY,
+  SALESFORCE_OAUTH,
   SALESFORCE_OAUTH_SANDBOX,
+  SALESFORCE,
 };

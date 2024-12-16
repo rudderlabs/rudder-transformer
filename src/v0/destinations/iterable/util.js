@@ -748,20 +748,16 @@ const filterEventsAndPrepareBatchRequests = (transformedEvents) => {
   return prepareBatchRequests(filteredEvents);
 };
 
-// Helper function to get value from response using a path
-const getValueFromResponse = (path, response) =>
-  path.split('.').reduce((obj, key) => obj?.[key], response);
-
 /**
  * Checks if a value is present in a response array based on a given path.
+ * @param {Object} response - The response object to search within.
  * @param {string} path - The path to the response array.
  * @param {any} value - The value to check for in the array.
- * @param {Object} response - The response object to search within.
  * @returns {boolean} - True if the value is in the array, otherwise false.
  */
-const isValueInResponseArray = (path, value, response) => {
-  const responseValueArray = getValueFromResponse(path, response);
-  return Array.isArray(responseValueArray) && responseValueArray.includes(value);
+const isValueInResponseArray = (response, path, value) => {
+  const respArr = get(response, path);
+  return Array.isArray(respArr) && respArr.includes(value);
 };
 
 /**
@@ -796,39 +792,26 @@ const checkIfEventIsAbortableAndExtractErrorMessage = (event, destinationRespons
     eventName: event.eventName,
   };
 
-  const matchingPath =
-    ITERABLE_RESPONSE_USER_ID_PATHS.find((userIdPath) =>
-      isValueInResponseArray(userIdPath, eventValues.userId, destinationResponse.response),
-    ) ||
-    ITERABLE_RESPONSE_EMAIL_PATHS.find((emailPath) =>
-      isValueInResponseArray(emailPath, eventValues.email, destinationResponse.response),
-    ) ||
-    (isValueInResponseArray(
-      'disallowedEventNames',
-      eventValues.eventName,
-      destinationResponse.response,
-    )
-      ? 'disallowedEventNames'
-      : null);
+  let errorMsg = '';
+  const userIdMatchPath = ITERABLE_RESPONSE_USER_ID_PATHS.filter((userIdPath) =>
+    isValueInResponseArray(destinationResponse.response, userIdPath, eventValues.userId),
+  );
+  errorMsg += `userId error:"${eventValues.userId}" in "${userIdMatchPath}".`;
 
-  if (matchingPath) {
-    const responseValueArray = getValueFromResponse(matchingPath, destinationResponse.response);
-    const matchingValue = responseValueArray.find((value) => {
-      if (ITERABLE_RESPONSE_EMAIL_PATHS.some((emailPath) => matchingPath.includes(emailPath))) {
-        return value === eventValues.email;
-      }
-      if (ITERABLE_RESPONSE_USER_ID_PATHS.some((userIdPath) => matchingPath.includes(userIdPath))) {
-        return value === eventValues.userId;
-      }
-      if (matchingPath === 'disallowedEventNames') {
-        return value === eventValues.eventName;
-      }
-      return false;
-    });
+  const emailMatchPath = ITERABLE_RESPONSE_EMAIL_PATHS.filter((emailPath) =>
+    isValueInResponseArray(destinationResponse.response, emailPath, eventValues.email),
+  );
+  errorMsg += `email error:"${eventValues.email}" in "${emailMatchPath}".`;
 
+  const eventNameMatchPath = ['disallowedEventNames'].filter((eventNamePath) =>
+    isValueInResponseArray(destinationResponse.response, eventNamePath, eventValues.eventName),
+  );
+  errorMsg += `eventName error:"${eventValues.eventName}" in "${eventNameMatchPath}".`;
+
+  if (errorMsg) {
     return {
       isAbortable: true,
-      errorMsg: `Request failed for value "${matchingValue}" because it is "${matchingPath}".`,
+      errorMsg,
     };
   }
 

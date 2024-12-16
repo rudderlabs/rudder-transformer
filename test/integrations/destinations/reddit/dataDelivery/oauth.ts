@@ -84,14 +84,13 @@ export const v0oauthScenarios = [
         status: 401,
         body: {
           output: {
-            authErrorCategory: 'REFRESH_TOKEN',
             destinationResponse: {
               response: 'Authorization Required',
               status: 401,
             },
             message:
-              'Request failed due to Authorization Required during reddit response transformation',
-            statTags: expectedStatTags,
+              '[Generic Response Handler] Request failed for destination reddit with status: 401',
+            statTags: { ...expectedStatTags, errorType: 'aborted' },
             status: 401,
           },
         },
@@ -121,7 +120,6 @@ export const v0oauthScenarios = [
         status: 401,
         body: {
           output: {
-            authErrorCategory: 'REFRESH_TOKEN',
             destinationResponse: {
               response: {
                 success: false,
@@ -134,8 +132,8 @@ export const v0oauthScenarios = [
               status: 401,
             },
             message:
-              'This server could not verify that you are authorized to access the document you requested. during reddit response transformation',
-            statTags: expectedStatTags,
+              '[Generic Response Handler] Request failed for destination reddit with status: 401',
+            statTags: { ...expectedStatTags, errorType: 'aborted' },
             status: 401,
           },
         },

@@ -906,6 +906,30 @@ describe('iterable utils test', () => {
       expect(result.errorMsg).toBe('');
     });
 
+    it('should find all the matching paths it failed for and curate error message', () => {
+      const event = {
+        email: 'test',
+        userId: 'user123',
+        eventName: 'purchase',
+        dataFields: { customField1: 'test', customField2: 'value2' },
+      };
+      const destinationResponse = {
+        response: {
+          failCount: 1,
+          invalidEmails: ['test'],
+          failedUpdates: {
+            invalidEmails: ['test'],
+            conflictEmails: ['test'],
+          },
+        },
+      };
+      const result = checkIfEventIsAbortableAndExtractErrorMessage(event, destinationResponse);
+      expect(result.isAbortable).toBe(true);
+      expect(result.errorMsg).toBe(
+        'email error:"test" in "invalidEmails,failedUpdates.invalidEmails,failedUpdates.conflictEmails".',
+      );
+    });
+
     it('should find the right value for which it should fail and passes otherwise for userIds', () => {
       const event = {
         email: 'test',

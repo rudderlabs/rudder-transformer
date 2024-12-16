@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.87.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.86.0...v1.87.0) (2024-12-13)
+
+
+### Features
+
+* onboard topsort destination ([#3913](https://github.com/rudderlabs/rudder-transformer/issues/3913)) ([227419f](https://github.com/rudderlabs/rudder-transformer/commit/227419f1ff618f96aafa849862828e2315e4ac55))
+
+
+### Bug Fixes
+
+* handling partial error in a batch for reddit destination ([#3935](https://github.com/rudderlabs/rudder-transformer/issues/3935)) ([d40db6c](https://github.com/rudderlabs/rudder-transformer/commit/d40db6c1e7f71c5ab5fc3a3659d1fc51b6d527fa))
+
 ## [1.86.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.85.1...v1.86.0) (2024-12-09)
 
 

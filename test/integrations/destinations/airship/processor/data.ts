@@ -1936,6 +1936,77 @@ export const data = [
   },
   {
     name: 'airship',
+    description: 'Test 16',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              type: 'track',
+              messageId: '84e26acc-56a5-4835-8233-591137fca468',
+              session_id: '3049dc4c-5a95-4ccd-a3e7-d74a7e411f22',
+              originalTimestamp: '2019-10-14T09:03:17.562Z',
+              anonymousId: '123456',
+              event: 'Product Clicked',
+              userId: 'testuserId1',
+              properties: { value: 55 },
+              integrations: { All: true },
+              sentAt: '2019-10-14T09:03:22.563Z',
+            },
+            destination: {
+              Config: {
+                apiKey: 'dummyApiKey',
+                appKey: 'ffdf',
+                appSecret: 'fhf',
+                dataCenter: false,
+              },
+            },
+          },
+        ],
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://go.urbanairship.com/api/custom-events',
+              headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/vnd.urbanairship+json; version=3',
+                'X-UA-Appkey': 'ffdf',
+                Authorization: 'Bearer dummyApiKey',
+              },
+              params: {},
+              body: {
+                JSON: {
+                  occured: '2019-10-14T09:03:17.562Z',
+                  user: { named_user_id: 'testuserId1' },
+                  body: { name: 'product_clicked', value: 55 },
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: '',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'airship',
     description: 'Test 17',
     feature: 'processor',
     module: 'destination',

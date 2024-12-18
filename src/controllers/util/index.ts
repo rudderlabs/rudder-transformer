@@ -15,6 +15,7 @@ import { getValueFromMessage } from '../../v0/util';
 import genericFieldMap from '../../v0/util/data/GenericFieldMapping.json';
 import { EventType, MappedToDestinationKey } from '../../constants';
 import { versionConversionFactory } from './versionConversion';
+import defaultFeaturesConfig from '../../features';
 
 export class ControllerUtility {
   private static sourceVersionMap: Map<string, string> = new Map();
@@ -29,15 +30,29 @@ export class ControllerUtility {
     [EventType.TRACK]: [`properties.${RETL_TIMESTAMP}`, ...genericFieldMap.timestamp],
   };
 
+  private static getSourceDirPath(version: string): string {
+    if (version === 'v2') {
+      return path.resolve(__dirname, `../../sources`);
+    }
+    return path.resolve(__dirname, `../../${version}/sources`);
+  }
+
   private static getSourceVersionsMap(): Map<string, any> {
     if (this.sourceVersionMap?.size > 0) {
       return this.sourceVersionMap;
     }
+
     const versions = ['v0', 'v1'];
+    if (defaultFeaturesConfig.upgradedToSourceTransformV2) {
+      // this makes it easy to revert to v0,v1 spec if something doesn't work out using ENV variables
+      versions.push('v2');
+    }
+
     versions.forEach((version) => {
-      const files = fs.readdirSync(path.resolve(__dirname, `../../${version}/sources`), {
+      const files = fs.readdirSync(this.getSourceDirPath(version), {
         withFileTypes: true,
       });
+
       const sources = files.filter((file) => file.isDirectory()).map((folder) => folder.name);
       sources.forEach((source) => {
         this.sourceVersionMap.set(source, version);

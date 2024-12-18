@@ -98,11 +98,11 @@ describe('serverSideUtils.js', () => {
       const result = createPropertiesForEcomEventFromWebhook(message);
       expect(result).toEqual({
         products: [
-          { brand: 'Hydrogen Vendor', price: '600.00', product_id: 7234590408818, quantity: 1 },
+          { brand: 'Hydrogen Vendor', price: 600.0, product_id: '7234590408818', quantity: 1 },
           {
             brand: 'Hydrogen Vendor',
-            price: '600.00',
-            product_id: 7234590408817,
+            price: 600.0,
+            product_id: '7234590408817',
             quantity: 1,
             title: 'The Collection Snowboard: Nitrogen',
           },

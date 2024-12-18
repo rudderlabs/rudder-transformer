@@ -2037,7 +2037,7 @@ export const pixelCheckoutStepsScenarios = [
                     SHOPIFY: true,
                   },
                   type: 'track',
-                  event: 'Payment Info Submitted',
+                  event: 'Payment Info Entered',
                   properties: {
                     buyerAcceptsEmailMarketing: false,
                     buyerAcceptsSmsMarketing: false,

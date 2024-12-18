@@ -1,0 +1,10 @@
+[
+  {
+    "sourceKeys": "line_items",
+    "destKeys": "products"
+  },
+  {
+    "sourceKeys": "id",
+    "destKeys": "properties.order_id"
+  }
+]

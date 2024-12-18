@@ -6,6 +6,7 @@ const {
 } = require('../../../adapters/utils/networkUtils');
 const { isHttpStatusSuccess, getAuthErrCategoryFromStCode } = require('../../../v0/util/index');
 const tags = require('../../../v0/util/tags');
+const { REFRESH_TOKEN } = require('../../../adapters/networkhandler/authConstants');
 
 /**
  * upsert response : 
@@ -69,44 +70,54 @@ const tags = require('../../../v0/util/tags');
 }
  */
 
-const checkIfEventIsAbortableAndExtractErrorMessage = (element) => {
-  if (element.status === 'success') {
-    return { isAbortable: false, errorMsg: '' };
-  }
+// const checkIfEventIsAbortableAndExtractErrorMessage = (element) => {
+//   if (element.status === 'success') {
+//     return { isAbortable: false, errorMsg: '' };
+//   }
 
-  const errorMsg = `message: ${element.messaege} ${JSON.stringify(element.details)}`;
-  return { isAbortable: true, errorMsg };
-};
+//   const errorMsg = `message: ${element.messaege} ${JSON.stringify(element.details)}`;
+//   return { isAbortable: true, errorMsg };
+// };
 
 const responseHandler = (responseParams) => {
-  const { destinationResponse, rudderJobMetadata } = responseParams;
+  const { destinationResponse } = responseParams;
 
-  const message = '[ZOHO Response V1 Handler] - Request Processed Successfully';
-  const responseWithIndividualEvents = [];
+  // const message = '[ZOHO Response V1 Handler] - Request Processed Successfully';
+  // const responseWithIndividualEvents = [];
   const { response, status } = destinationResponse;
   if (isHttpStatusSuccess(status)) {
     // check for Partial Event failures and Successes
-    const { data } = response;
-    data.forEach((event, idx) => {
-      const proxyOutput = {
-        statusCode: 200,
-        metadata: rudderJobMetadata[idx],
-        error: 'success',
-      };
-      // update status of partial event if abortable
-      const { isAbortable, errorMsg } = checkIfEventIsAbortableAndExtractErrorMessage(event);
-      if (isAbortable) {
-        proxyOutput.statusCode = 400;
-        proxyOutput.error = errorMsg;
-      }
-      responseWithIndividualEvents.push(proxyOutput);
-    });
-    return {
-      status,
-      message,
+    // const { data } = response;
+    // data.forEach((event, idx) => {
+    //   const proxyOutput = {
+    //     statusCode: 200,
+    //     metadata: rudderJobMetadata[idx],
+    //     error: 'success',
+    //   };
+    //   // update status of partial event if abortable
+    //   const { isAbortable, errorMsg } = checkIfEventIsAbortableAndExtractErrorMessage(event);
+    //   if (isAbortable) {
+    //     proxyOutput.statusCode = 400;
+    //     proxyOutput.error = errorMsg;
+    //   }
+    //   responseWithIndividualEvents.push(proxyOutput);
+    // });
+    // return {
+    //   status,
+    //   message,
+    //   destinationResponse,
+    //   response: responseWithIndividualEvents,
+    // };
+    throw new TransformerProxyError(
+      `Zoho: Error transformer proxy v1 during Zoho response transformation. ${response.message}`,
+      500,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(500),
+      },
       destinationResponse,
-      response: responseWithIndividualEvents,
-    };
+      REFRESH_TOKEN,
+      response.message,
+    );
   }
 
   if (response?.code === 'INVALID_TOKEN') {
@@ -122,14 +133,14 @@ const responseHandler = (responseParams) => {
     );
   }
   throw new TransformerProxyError(
-    `ZOHO: Error encountered in transformer proxy V1`,
-    status,
+    `Zoho: Error transformer proxy v1 during Zoho response transformation. ${response.message}`,
+    500,
     {
-      [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
+      [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(500),
     },
     destinationResponse,
-    '',
-    responseWithIndividualEvents,
+    REFRESH_TOKEN,
+    response.message,
   );
 };
 function networkHandler() {

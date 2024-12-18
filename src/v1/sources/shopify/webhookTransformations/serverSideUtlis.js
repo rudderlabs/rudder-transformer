@@ -1,9 +1,6 @@
 const { isDefinedAndNotNull } = require('@rudderstack/integrations-lib');
 const { constructPayload } = require('../../../../v0/util');
-const {
-  lineItemsMappingJSON,
-  productMappingJSON,
-} = require('../../../../v0/sources/shopify/config');
+const { lineItemsMappingJSON, productMappingJSON } = require('../config');
 
 /**
  * Returns an array of products from the lineItems array received from the webhook event

@@ -377,7 +377,7 @@ npm run build:start
 ### References
 
 
-* [Contributing.md](https://github.com/rudderlabs/rudder-server/blob/master/CONTRIBUTING.md\) in all github repositories
+* [Contributing.md](https://github.com/rudderlabs/rudder-server/blob/master/CONTRIBUTING.md) in all github repositories
 * [https://www.rudderstack.com/docs/resources/community/](https://www.rudderstack.com/docs/resources/community/)
 * [https://www.rudderstack.com/docs/event-spec/standard-events/](https://www.rudderstack.com/docs/event-spec/standard-events/)
 * [Recording of the community event for new contributors](https://youtu.be/OD2vCYG-P7k?feature=shared)

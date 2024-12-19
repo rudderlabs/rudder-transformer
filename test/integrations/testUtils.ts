@@ -33,7 +33,9 @@ export const getTestDataFilePaths = (dirPath: string, opts: OptionValues): strin
     );
   }
   if (opts.feature) {
-    filteredTestFilePaths = testFilePaths.filter((testFile) => testFile.includes(opts.feature));
+    filteredTestFilePaths = filteredTestFilePaths.filter((testFile) =>
+      testFile.includes(opts.feature),
+    );
   }
   return filteredTestFilePaths;
 };
@@ -235,6 +237,30 @@ export const generateTrackPayload: any = (parametersOverride: any) => {
   return removeUndefinedAndNullValues(payload);
 };
 
+export const generateRecordPayload: any = (parametersOverride: any) => {
+  const payload = {
+    type: 'record',
+    action: parametersOverride.action || 'insert',
+    fields: parametersOverride.fields || {},
+    channel: 'sources',
+    context: {
+      sources: {
+        job_id: 'randomJobId',
+        version: 'local',
+        job_run_id: 'jobRunId',
+        task_run_id: 'taskRunId',
+      },
+    },
+    recordId: '3',
+    rudderId: 'randomRudderId',
+    messageId: 'randomMessageId',
+    receivedAt: '2024-11-08T10:30:41.618+05:30',
+    request_ip: '[::1]',
+    identifiers: parametersOverride.identifiers || {},
+  };
+  return removeUndefinedAndNullValues(payload);
+};
+
 export const generateSimplifiedTrackPayload: any = (parametersOverride: any) => {
   return removeUndefinedAndNullValues({
     type: 'track',
@@ -251,6 +277,7 @@ export const generateSimplifiedTrackPayload: any = (parametersOverride: any) => 
       device: parametersOverride.context.device,
       os: parametersOverride.context.os,
       app: parametersOverride.context.app,
+      page: parametersOverride.context.page,
     }),
     anonymousId: parametersOverride.anonymousId || 'default-anonymousId',
     originalTimestamp: parametersOverride.originalTimestamp || '2021-01-03T17:02:53.193Z',

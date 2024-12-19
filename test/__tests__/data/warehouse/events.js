@@ -8,7 +8,9 @@ const sampleEvents = {
         Config: {
           restApiKey: "dummyApiKey",
           prefixProperties: true,
-          useNativeSDK: false
+          useNativeSDK: false,
+          allowUsersContextTraits: true,
+          underscoreDivideNumbers: true
         },
         DestinationDefinition: {
           DisplayName: "Braze",
@@ -366,6 +368,146 @@ const sampleEvents = {
           }
         }
       ],
+      snowpipe_streaming: [
+        {
+          metadata: {
+            table: "TRACKS",
+            columns: {
+              UUID_TS: "datetime",
+              CONTEXT_APP_BUILD: "string",
+              CONTEXT_APP_NAME: "string",
+              CONTEXT_APP_NAMESPACE: "string",
+              CONTEXT_APP_VERSION: "string",
+              CONTEXT_IP: "string",
+              CONTEXT_REQUEST_IP: "string",
+              CONTEXT_PASSED_IP: "string",
+              CONTEXT_LIBRARY_NAME: "string",
+              CONTEXT_LIBRARY_VERSION: "string",
+              CONTEXT_LOCALE: "string",
+              CONTEXT_SCREEN_DENSITY: "int",
+              CONTEXT_TRAITS_CITY: "string",
+              CONTEXT_TRAITS_COUNTRY: "string",
+              CONTEXT_TRAITS_EMAIL: "string",
+              CONTEXT_TRAITS_FIRSTNAME: "string",
+              CONTEXT_USER_AGENT: "string",
+              EVENT_TEXT: "string",
+              ID: "string",
+              ANONYMOUS_ID: "string",
+              USER_ID: "string",
+              SENT_AT: "datetime",
+              TIMESTAMP: "datetime",
+              RECEIVED_AT: "datetime",
+              ORIGINAL_TIMESTAMP: "datetime",
+              CHANNEL: "string",
+              EVENT: "string"
+            },
+            receivedAt: "2020-01-24T11:59:02.403+05:30"
+          },
+          data: {
+            CONTEXT_APP_BUILD: "1.0.0",
+            CONTEXT_APP_NAME: "RudderLabs JavaScript SDK",
+            CONTEXT_APP_NAMESPACE: "com.rudderlabs.javascript",
+            CONTEXT_APP_VERSION: "1.0.5",
+            CONTEXT_IP: "0.0.0.0",
+            CONTEXT_REQUEST_IP: "[::1]:53708",
+            CONTEXT_PASSED_IP: "0.0.0.0",
+            CONTEXT_LIBRARY_NAME: "RudderLabs JavaScript SDK",
+            CONTEXT_LIBRARY_VERSION: "1.0.5",
+            CONTEXT_LOCALE: "en-GB",
+            CONTEXT_SCREEN_DENSITY: 2,
+            CONTEXT_TRAITS_CITY: "Disney",
+            CONTEXT_TRAITS_COUNTRY: "USA",
+            CONTEXT_TRAITS_EMAIL: "mickey@disney.com",
+            CONTEXT_TRAITS_FIRSTNAME: "Mickey",
+            CONTEXT_USER_AGENT:
+                "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36",
+            EVENT_TEXT: "button clicked",
+            ID: "a6a0ad5a-bd26-4f19-8f75-38484e580fc7",
+            ANONYMOUS_ID: "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+            USER_ID: "9bb5d4c2-a7aa-4a36-9efb-dd2b1aec5d33",
+            SENT_AT: "2020-01-24T06:29:02.364Z",
+            TIMESTAMP: "2020-01-24T06:29:02.403Z",
+            RECEIVED_AT: "2020-01-24T06:29:02.403Z",
+            ORIGINAL_TIMESTAMP: "2020-01-24T06:29:02.364Z",
+            CHANNEL: "web",
+            EVENT: "button_clicked"
+          }
+        },
+        {
+          metadata: {
+            table: "BUTTON_CLICKED",
+            columns: {
+              UUID_TS: "datetime",
+              CURRENCY: "string",
+              REVENUE: "int",
+              CONTEXT_APP_BUILD: "string",
+              CONTEXT_APP_NAME: "string",
+              CONTEXT_APP_NAMESPACE: "string",
+              CONTEXT_APP_VERSION: "string",
+              CONTEXT_IP: "string",
+              CONTEXT_REQUEST_IP: "string",
+              CONTEXT_PASSED_IP: "string",
+              CONTEXT_LIBRARY_NAME: "string",
+              CONTEXT_LIBRARY_VERSION: "string",
+              CONTEXT_LOCALE: "string",
+              CONTEXT_SCREEN_DENSITY: "int",
+              CONTEXT_TRAITS_CITY: "string",
+              CONTEXT_TRAITS_COUNTRY: "string",
+              CONTEXT_TRAITS_EMAIL: "string",
+              CONTEXT_TRAITS_FIRSTNAME: "string",
+              CONTEXT_USER_AGENT: "string",
+              EVENT_TEXT: "string",
+              ID: "string",
+              ANONYMOUS_ID: "string",
+              USER_ID: "string",
+              SENT_AT: "datetime",
+              TIMESTAMP: "datetime",
+              RECEIVED_AT: "datetime",
+              ORIGINAL_TIMESTAMP: "datetime",
+              CHANNEL: "string",
+              EVENT: "string"
+            },
+            receivedAt: "2020-01-24T11:59:02.403+05:30"
+          },
+          data: {
+            CURRENCY: "USD",
+            REVENUE: 50,
+            STACK_HISTORY_ERROR_DETAILS: [
+              {
+                "message": "Cannot set headers after they are sent to the client",
+                "toString": "[function]"
+              }
+            ],
+            CONTEXT_APP_BUILD: "1.0.0",
+            CONTEXT_APP_NAME: "RudderLabs JavaScript SDK",
+            CONTEXT_APP_NAMESPACE: "com.rudderlabs.javascript",
+            CONTEXT_APP_VERSION: "1.0.5",
+            CONTEXT_IP: "0.0.0.0",
+            CONTEXT_REQUEST_IP: "[::1]:53708",
+            CONTEXT_PASSED_IP: "0.0.0.0",
+            CONTEXT_LIBRARY_NAME: "RudderLabs JavaScript SDK",
+            CONTEXT_LIBRARY_VERSION: "1.0.5",
+            CONTEXT_LOCALE: "en-GB",
+            CONTEXT_SCREEN_DENSITY: 2,
+            CONTEXT_TRAITS_CITY: "Disney",
+            CONTEXT_TRAITS_COUNTRY: "USA",
+            CONTEXT_TRAITS_EMAIL: "mickey@disney.com",
+            CONTEXT_TRAITS_FIRSTNAME: "Mickey",
+            CONTEXT_USER_AGENT:
+                "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36",
+            EVENT_TEXT: "button clicked",
+            ID: "a6a0ad5a-bd26-4f19-8f75-38484e580fc7",
+            ANONYMOUS_ID: "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+            USER_ID: "9bb5d4c2-a7aa-4a36-9efb-dd2b1aec5d33",
+            SENT_AT: "2020-01-24T06:29:02.364Z",
+            TIMESTAMP: "2020-01-24T06:29:02.403Z",
+            RECEIVED_AT: "2020-01-24T06:29:02.403Z",
+            ORIGINAL_TIMESTAMP: "2020-01-24T06:29:02.364Z",
+            CHANNEL: "web",
+            EVENT: "button_clicked",
+          }
+        }
+      ],
       s3_datalake: [
         {
           metadata: {
@@ -514,7 +656,9 @@ const sampleEvents = {
         Config: {
           restApiKey: "dummyApiKey",
           prefixProperties: true,
-          useNativeSDK: false
+          useNativeSDK: false,
+          allowUsersContextTraits: true,
+          underscoreDivideNumbers: true
         },
         DestinationDefinition: {
           DisplayName: "Braze",
@@ -841,6 +985,78 @@ const sampleEvents = {
           }
         }
       ],
+      snowpipe_streaming: [
+        {
+          metadata: {
+            table: "IDENTIFIES",
+            columns: {
+              UUID_TS: "datetime",
+              CITY: "string",
+              COUNTRY: "string",
+              EMAIL: "string",
+              FIRSTNAME: "string",
+              LASTNAME: "string",
+              CONTEXT_APP_BUILD: "string",
+              CONTEXT_APP_NAME: "string",
+              CONTEXT_APP_NAMESPACE: "string",
+              CONTEXT_APP_VERSION: "string",
+              CONTEXT_IP: "string",
+              CONTEXT_REQUEST_IP: "string",
+              CONTEXT_PASSED_IP: "string",
+              CONTEXT_LIBRARY_NAME: "string",
+              CONTEXT_LIBRARY_VERSION: "string",
+              CONTEXT_LOCALE: "string",
+              CONTEXT_SCREEN_DENSITY: "int",
+              CONTEXT_TRAITS_CITY: "string",
+              CONTEXT_TRAITS_COUNTRY: "string",
+              CONTEXT_TRAITS_EMAIL: "string",
+              CONTEXT_TRAITS_FIRSTNAME: "string",
+              CONTEXT_USER_AGENT: "string",
+              ID: "string",
+              ANONYMOUS_ID: "string",
+              USER_ID: "string",
+              SENT_AT: "datetime",
+              TIMESTAMP: "datetime",
+              RECEIVED_AT: "datetime",
+              ORIGINAL_TIMESTAMP: "datetime",
+              CHANNEL: "string"
+            },
+            receivedAt: "2020-01-24T11:59:02.403+05:30"
+          },
+          data: {
+            CITY: "Disney",
+            COUNTRY: "UK",
+            EMAIL: "mickey@disney.com",
+            FIRSTNAME: "Mickey",
+            LASTNAME: "Mouse",
+            CONTEXT_APP_BUILD: "1.0.0",
+            CONTEXT_APP_NAME: "RudderLabs JavaScript SDK",
+            CONTEXT_APP_NAMESPACE: "com.rudderlabs.javascript",
+            CONTEXT_APP_VERSION: "1.0.5",
+            CONTEXT_IP: "0.0.0.0",
+            CONTEXT_REQUEST_IP: "[::1]:53708",
+            CONTEXT_PASSED_IP: "0.0.0.0",
+            CONTEXT_LIBRARY_NAME: "RudderLabs JavaScript SDK",
+            CONTEXT_LIBRARY_VERSION: "1.0.5",
+            CONTEXT_LOCALE: "en-GB",
+            CONTEXT_SCREEN_DENSITY: 2,
+            CONTEXT_TRAITS_CITY: "Disney",
+            CONTEXT_TRAITS_COUNTRY: "USA",
+            CONTEXT_TRAITS_EMAIL: "mickey@disney.com",
+            CONTEXT_TRAITS_FIRSTNAME: "Mickey",
+            CONTEXT_USER_AGENT:
+                "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36",
+            ID: "2536eda4-d638-4c93-8014-8ffe3f083214",
+            ANONYMOUS_ID: "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+            USER_ID: "9bb5d4c2-a7aa-4a36-9efb-dd2b1aec5d33",
+            SENT_AT: "2020-01-24T06:29:02.363Z",
+            TIMESTAMP: "2020-01-24T06:29:02.402Z",
+            RECEIVED_AT: "2020-01-24T06:29:02.403Z",
+            ORIGINAL_TIMESTAMP: "2020-01-24T06:29:02.362Z",
+            CHANNEL: "web"
+          }
+        },
+      ],
       s3_datalake: [
         {
           metadata: {
@@ -1026,7 +1242,9 @@ const sampleEvents = {
         Config: {
           restApiKey: "dummyApiKey",
           prefixProperties: true,
-          useNativeSDK: false
+          useNativeSDK: false,
+          allowUsersContextTraits: true,
+          underscoreDivideNumbers: true
         },
         DestinationDefinition: {
           DisplayName: "Braze",
@@ -1105,6 +1323,66 @@ const sampleEvents = {
         }
       ],
       snowflake: [
+        {
+          metadata: {
+            table: "PAGES",
+            columns: {
+              UUID_TS: "datetime",
+              PATH: "string",
+              URL: "string",
+              NAME: "string",
+              CONTEXT_APP_BUILD: "string",
+              CONTEXT_APP_NAME: "string",
+              CONTEXT_APP_NAMESPACE: "string",
+              CONTEXT_APP_VERSION: "string",
+              CONTEXT_IP: "string",
+              CONTEXT_REQUEST_IP: "string",
+              CONTEXT_PASSED_IP: "string",
+              CONTEXT_LIBRARY_NAME: "string",
+              CONTEXT_LIBRARY_VERSION: "string",
+              CONTEXT_LOCALE: "string",
+              CONTEXT_SCREEN_DENSITY: "int",
+              CONTEXT_USER_AGENT: "string",
+              ID: "string",
+              ANONYMOUS_ID: "string",
+              USER_ID: "string",
+              SENT_AT: "datetime",
+              TIMESTAMP: "datetime",
+              RECEIVED_AT: "datetime",
+              ORIGINAL_TIMESTAMP: "datetime",
+              CHANNEL: "string"
+            },
+            receivedAt: "2020-01-24T11:59:02.403+05:30"
+          },
+          data: {
+            PATH: "/tests/html/index2.html",
+            URL: "http://localhost/tests/html/index2.html",
+            NAME: "sample title",
+            CONTEXT_APP_BUILD: "1.0.0",
+            CONTEXT_APP_NAME: "RudderLabs JavaScript SDK",
+            CONTEXT_APP_NAMESPACE: "com.rudderlabs.javascript",
+            CONTEXT_APP_VERSION: "1.0.5",
+            CONTEXT_IP: "0.0.0.0",
+            CONTEXT_REQUEST_IP: "[::1]:53708",
+            CONTEXT_PASSED_IP: "0.0.0.0",
+            CONTEXT_LIBRARY_NAME: "RudderLabs JavaScript SDK",
+            CONTEXT_LIBRARY_VERSION: "1.0.5",
+            CONTEXT_LOCALE: "en-GB",
+            CONTEXT_SCREEN_DENSITY: 2,
+            CONTEXT_USER_AGENT:
+              "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36",
+            ID: "dd266c67-9199-4a52-ba32-f46ddde67312",
+            ANONYMOUS_ID: "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+            USER_ID: "9bb5d4c2-a7aa-4a36-9efb-dd2b1aec5d33",
+            SENT_AT: "2020-01-24T06:29:02.359Z",
+            TIMESTAMP: "2020-01-24T06:29:02.402Z",
+            RECEIVED_AT: "2020-01-24T06:29:02.403Z",
+            ORIGINAL_TIMESTAMP: "2020-01-24T06:29:02.358Z",
+            CHANNEL: "web"
+          }
+        }
+      ],
+      snowpipe_streaming: [
         {
           metadata: {
             table: "PAGES",
@@ -1283,7 +1561,9 @@ const sampleEvents = {
           mapToSingleEvent: false,
           trackAllPages: false,
           trackCategorisedPages: true,
-          trackNamedPages: false
+          trackNamedPages: false,
+          allowUsersContextTraits: true,
+          underscoreDivideNumbers: true
         },
         Enabled: true
       },
@@ -1356,6 +1636,67 @@ const sampleEvents = {
         }
       ],
       snowflake: [
+        {
+          metadata: {
+            table: "SCREENS",
+            columns: {
+              UUID_TS: "datetime",
+              PATH: "string",
+              CATEGORY: "string",
+              CONTEXT_APP_BUILD: "string",
+              CONTEXT_APP_NAME: "string",
+              CONTEXT_APP_NAMESPACE: "string",
+              CONTEXT_APP_VERSION: "string",
+              CONTEXT_TRAITS_EMAIL: "string",
+              CONTEXT_LIBRARY_NAME: "string",
+              CONTEXT_LIBRARY_VERSION: "string",
+              CONTEXT_USER_AGENT: "string",
+              CONTEXT_LOCALE: "string",
+              CONTEXT_SCREEN_DENSITY: "int",
+              CONTEXT_IP: "string",
+              CONTEXT_REQUEST_IP: "string",
+              CONTEXT_PASSED_IP: "string",
+              ID: "string",
+              ANONYMOUS_ID: "string",
+              USER_ID: "string",
+              SENT_AT: "datetime",
+              ORIGINAL_TIMESTAMP: "datetime",
+              RECEIVED_AT: "datetime",
+              TIMESTAMP: "datetime",
+              CHANNEL: "string",
+              NAME: "string"
+            }
+          },
+          data: {
+            PATH: "/abc",
+            CATEGORY: "test-category",
+            CONTEXT_APP_BUILD: "1.0.0",
+            CONTEXT_APP_NAME: "RudderLabs JavaScript SDK",
+            CONTEXT_APP_NAMESPACE: "com.rudderlabs.javascript",
+            CONTEXT_APP_VERSION: "1.0.0",
+            CONTEXT_TRAITS_EMAIL: "test@rudderstack.com",
+            CONTEXT_LIBRARY_NAME: "RudderLabs JavaScript SDK",
+            CONTEXT_LIBRARY_VERSION: "1.0.0",
+            CONTEXT_USER_AGENT:
+              "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+            CONTEXT_LOCALE: "en-US",
+            CONTEXT_SCREEN_DENSITY: 2,
+            CONTEXT_IP: "0.0.0.0",
+            CONTEXT_REQUEST_IP: "[::1]:53708",
+            CONTEXT_PASSED_IP: "0.0.0.0",
+            ID: "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
+            ANONYMOUS_ID: "00000000000000000000000000",
+            USER_ID: "9bb5d4c2-a7aa-4a36-9efb-dd2b1aec5d33",
+            SENT_AT: "2019-10-14T11:15:53.296Z",
+            ORIGINAL_TIMESTAMP: "2019-10-14T11:15:18.299Z",
+            RECEIVED_AT: "2020-01-24T06:29:02.403Z",
+            TIMESTAMP: "2020-01-24T06:29:02.402Z",
+            CHANNEL: "web",
+            NAME: "ApplicationLoaded"
+          }
+        }
+      ],
+      snowpipe_streaming: [
         {
           metadata: {
             table: "SCREENS",
@@ -1532,7 +1873,9 @@ const sampleEvents = {
           mapToSingleEvent: false,
           trackAllPages: true,
           trackCategorisedPages: false,
-          trackNamedPages: false
+          trackNamedPages: false,
+          allowUsersContextTraits: true,
+          underscoreDivideNumbers: true
         },
         Enabled: true
       },
@@ -1677,6 +2020,73 @@ const sampleEvents = {
           }
         }
       ],
+      snowpipe_streaming: [
+        {
+          metadata: {
+            table: "GROUPS",
+            columns: {
+              UUID_TS: "datetime",
+              CONTEXT_APP_BUILD: "string",
+              CONTEXT_APP_NAME: "string",
+              CONTEXT_APP_NAMESPACE: "string",
+              CONTEXT_APP_VERSION: "string",
+              CONTEXT_TRAITS_EMAIL: "string",
+              CONTEXT_LIBRARY_NAME: "string",
+              CONTEXT_LIBRARY_VERSION: "string",
+              CONTEXT_USER_AGENT: "string",
+              CONTEXT_LOCALE: "string",
+              CONTEXT_IP: "string",
+              CONTEXT_REQUEST_IP: "string",
+              CONTEXT_PASSED_IP: "string",
+              CONTEXT_OS_ID: "string",
+              CONTEXT_OS_MANUFACTURER: "string",
+              CONTEXT_OS_MODEL: "string",
+              CONTEXT_OS_TYPE: "string",
+              CONTEXT_SCREEN_DENSITY: "int",
+              ID: "string",
+              ANONYMOUS_ID: "string",
+              USER_ID: "string",
+              GROUP_ID: "string",
+              SENT_AT: "datetime",
+              RECEIVED_AT: "datetime",
+              ORIGINAL_TIMESTAMP: "datetime",
+              TIMESTAMP: "datetime",
+              CHANNEL: "string"
+            }
+          },
+          data: {
+            CONTEXT_APP_BUILD: "1.0.0",
+            CONTEXT_APP_NAME: "RudderLabs JavaScript SDK",
+            CONTEXT_APP_NAMESPACE: "com.rudderlabs.javascript",
+            CONTEXT_APP_VERSION: "1.0.0",
+            CONTEXT_TRAITS_EMAIL: "test@rudderstack.com",
+            CONTEXT_LIBRARY_NAME: "RudderLabs JavaScript SDK",
+            CONTEXT_LIBRARY_VERSION: "1.0.0",
+            CONTEXT_USER_AGENT:
+              "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+            CONTEXT_LOCALE: "en-US",
+            CONTEXT_IP: "0.0.0.0",
+            CONTEXT_REQUEST_IP: "[::1]:53708",
+            CONTEXT_PASSED_IP: "0.0.0.0",
+            CONTEXT_OS_ID: "72e528f869711c3d",
+            CONTEXT_OS_MANUFACTURER: "Google",
+            CONTEXT_OS_MODEL: "sdk_gphone_x86",
+            CONTEXT_OS_NAME: "",
+            CONTEXT_OS_TOKEN: "",
+            CONTEXT_OS_TYPE: "android",
+            CONTEXT_SCREEN_DENSITY: 2,
+            ID: "84e26acc-56a5-4835-8233-591137fca468",
+            ANONYMOUS_ID: "00000000000000000000000000",
+            USER_ID: "9bb5d4c2-a7aa-4a36-9efb-dd2b1aec5d33",
+            GROUP_ID: "g1",
+            SENT_AT: "2019-10-14T09:03:22.563Z",
+            ORIGINAL_TIMESTAMP: "2019-10-14T09:03:17.562Z",
+            TIMESTAMP: "2020-01-24T11:59:02.403Z",
+            RECEIVED_AT: "2020-01-24T11:59:02.403Z",
+            CHANNEL: "web"
+          }
+        }
+      ],
       s3_datalake: [
         {
           metadata: {
@@ -1752,7 +2162,9 @@ const sampleEvents = {
         Config: {
           apiKey: "dummyApiKey",
           prefixProperties: true,
-          useNativeSDK: false
+          useNativeSDK: false,
+          allowUsersContextTraits: true,
+          underscoreDivideNumbers: true
         },
         DestinationDefinition: {
           DisplayName: "Kiss Metrics",
@@ -1944,6 +2356,70 @@ const sampleEvents = {
           }
         }
       ],
+      snowpipe_streaming: [
+        {
+          metadata: {
+            table: "ALIASES",
+            columns: {
+              UUID_TS: "datetime",
+              CONTEXT_APP_BUILD: "string",
+              CONTEXT_APP_NAME: "string",
+              CONTEXT_APP_NAMESPACE: "string",
+              CONTEXT_APP_VERSION: "string",
+              CONTEXT_LIBRARY_NAME: "string",
+              CONTEXT_LIBRARY_VERSION: "string",
+              CONTEXT_LOCALE: "string",
+              CONTEXT_SCREEN_DENSITY: "int",
+              CONTEXT_TRAITS_CITY: "string",
+              CONTEXT_TRAITS_COUNTRY: "string",
+              CONTEXT_TRAITS_EMAIL: "string",
+              CONTEXT_TRAITS_FIRSTNAME: "string",
+              CONTEXT_USER_AGENT: "string",
+              CONTEXT_IP: "string",
+              CONTEXT_REQUEST_IP: "string",
+              CONTEXT_PASSED_IP: "string",
+              ID: "string",
+              ANONYMOUS_ID: "string",
+              USER_ID: "string",
+              SENT_AT: "datetime",
+              TIMESTAMP: "datetime",
+              RECEIVED_AT: "datetime",
+              ORIGINAL_TIMESTAMP: "datetime",
+              CHANNEL: "string",
+              PREVIOUS_ID: "string"
+            },
+            receivedAt: "2020-01-24T11:59:02.403+05:30"
+          },
+          data: {
+            CONTEXT_APP_BUILD: "1.0.0",
+            CONTEXT_APP_NAME: "RudderLabs JavaScript SDK",
+            CONTEXT_APP_NAMESPACE: "com.rudderlabs.javascript",
+            CONTEXT_APP_VERSION: "1.0.5",
+            CONTEXT_IP: "0.0.0.0",
+            CONTEXT_REQUEST_IP: "[::1]:53708",
+            CONTEXT_PASSED_IP: "0.0.0.0",
+            CONTEXT_LIBRARY_NAME: "RudderLabs JavaScript SDK",
+            CONTEXT_LIBRARY_VERSION: "1.0.5",
+            CONTEXT_LOCALE: "en-GB",
+            CONTEXT_SCREEN_DENSITY: 2,
+            CONTEXT_TRAITS_CITY: "Disney",
+            CONTEXT_TRAITS_COUNTRY: "USA",
+            CONTEXT_TRAITS_EMAIL: "mickey@disney.com",
+            CONTEXT_TRAITS_FIRSTNAME: "Mickey",
+            CONTEXT_USER_AGENT:
+              "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36",
+            ID: "79313729-7fe5-4204-963a-dc46f4205e4e",
+            ANONYMOUS_ID: "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+            USER_ID: "1234abc",
+            SENT_AT: "2020-01-24T06:29:02.366Z",
+            TIMESTAMP: "2020-01-24T06:29:02.403Z",
+            RECEIVED_AT: "2020-01-24T06:29:02.403Z",
+            ORIGINAL_TIMESTAMP: "2020-01-24T06:29:02.366Z",
+            CHANNEL: "web",
+            PREVIOUS_ID: "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
+          }
+        }
+      ],
       s3_datalake: [
         {
           metadata: {
@@ -2016,7 +2492,9 @@ const sampleEvents = {
         Config: {
           restApiKey: "dummyApiKey",
           prefixProperties: true,
-          useNativeSDK: false
+          useNativeSDK: false,
+          allowUsersContextTraits: true,
+          underscoreDivideNumbers: true
         },
         DestinationDefinition: {
           DisplayName: "Braze",
@@ -2133,6 +2611,40 @@ const sampleEvents = {
           }
         }
       ],
+      snowpipe_streaming: [
+        {
+          metadata: {
+            table: "EXTRACT_EVENT",
+            columns: {
+              DATE_PROPERTY: "datetime",
+              DATE_PROPERTY_2: "datetime",
+              CONTEXT_SOURCES_JOB_ID: "string",
+              CONTEXT_SOURCES_JOB_RUN_ID: "string",
+              CONTEXT_SOURCES_TASK_RUN_ID: "string",
+              CONTEXT_SOURCES_VERSION: "string",
+              EVENT: "string",
+              ID: "string",
+              USER_ID: "string",
+              RECEIVED_AT: "datetime",
+              BOOLEAN_PROPERTY: "boolean",
+            },
+            receivedAt: "2020-01-24T11:59:02.403+05:30"
+          },
+          data: {
+            DATE_PROPERTY: "2023-02-01T07:53:31.430Z",
+            DATE_PROPERTY_2: "2023-01-31T07:39:10.002Z",
+            CONTEXT_SOURCES_JOB_ID: "2JABSy1nq89H7xeJimBL2pCtOOp",
+            CONTEXT_SOURCES_JOB_RUN_ID: "cfd6705nsevh5p2l77ag",
+            CONTEXT_SOURCES_TASK_RUN_ID: "cfd6705nsevh5p2l77b0",
+            CONTEXT_SOURCES_VERSION: "version",
+            ID: "some-uuid",
+            USER_ID: "dummy-user-id-inside-properties",
+            RECEIVED_AT: "2020-01-24T06:29:02.403Z",
+            EVENT: "extract_event",
+            BOOLEAN_PROPERTY: true,
+          }
+        }
+      ],
       s3_datalake: [
         {
           metadata: {
@@ -2178,6 +2690,9 @@ function input(eventType) {
 function output(eventType, provider) {
   if (provider === "snowflake") {
     return _.cloneDeep(sampleEvents[eventType].output.snowflake);
+  }
+  if (provider === "snowpipe_streaming") {
+    return _.cloneDeep(sampleEvents[eventType].output.snowpipe_streaming);
   }
   if (provider === "s3_datalake") {
     return _.cloneDeep(sampleEvents[eventType].output.s3_datalake);

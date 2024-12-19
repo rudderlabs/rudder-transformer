@@ -1,4 +1,5 @@
 import { DestHandlerMap } from '../../constants/destinationCanonicalNames';
+import defaultFeaturesConfig from '../../features';
 import { MiscService } from '../misc';
 
 describe('Misc tests', () => {
@@ -22,5 +23,44 @@ describe('Misc tests', () => {
     expect(MiscService.getDeletionHandler('intercom', version)).toEqual(
       require(`../../${version}/destinations/intercom/deleteUsers`),
     );
+  });
+});
+
+describe('Misc | getFeatures', () => {
+  const originalEnv = process.env;
+
+  beforeEach(() => {
+    // Reset environment variables and module cache before each test
+    process.env = { ...originalEnv };
+    jest.resetModules();
+  });
+
+  afterAll(() => {
+    // Restore the original environment variables after all tests
+    process.env = originalEnv;
+  });
+
+  function getMiscService() {
+    // Re-import config and featuresService after environment variables are set
+    const { MiscService: miscService } = require('../misc');
+    return miscService;
+  }
+
+  it('should return the default configuration as a JSON string', () => {
+    const miscService = getMiscService();
+    const expectedConfig = JSON.stringify(defaultFeaturesConfig);
+    const result = miscService.getFeatures();
+    expect(result).toBe(expectedConfig);
+  });
+
+  it('should return configuration with upgradedToSourceTransformV2 overridden by environment variable', () => {
+    process.env.UPGRADED_TO_SOURCE_TRANSFORM_V2 = 'true';
+    const expectedConfig = {
+      ...defaultFeaturesConfig,
+      upgradedToSourceTransformV2: true,
+    };
+    const miscService = getMiscService();
+    const result = miscService.getFeatures();
+    expect(result).toBe(JSON.stringify(expectedConfig));
   });
 });

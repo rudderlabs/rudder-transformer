@@ -1,7 +1,5 @@
 const _ = require("lodash");
 
-const util = require("util");
-
 const { input, output } = require(`./data/warehouse/events.js`);
 const {
   opInput,
@@ -21,6 +19,7 @@ const {
 const {
   validTimestamp
 } = require("../../src/warehouse/util.js");
+const {transformTableName, transformColumnName} = require("../../src/warehouse/v1/util");
 const {isBlank} = require("../../src/warehouse/config/helpers.js");
 
 const version = "v0";
@@ -30,6 +29,7 @@ const integrations = [
   "postgres",
   "clickhouse",
   "snowflake",
+  "snowpipe_streaming",
   "mssql",
   "azure_synapse",
   "deltalake",
@@ -54,7 +54,7 @@ const propsKeyMap = {
 };
 
 const integrationCasedString = (integration, str) => {
-  if (integration === "snowflake") {
+  if (integration === "snowflake" || integration === "snowpipe_streaming") {
     return str.toUpperCase();
   }
   return str;
@@ -153,8 +153,9 @@ describe("column & table names", () => {
     transformers.forEach((transformer, index) => {
       const received = transformer.process(i);
 
-      const provider =
-        integrations[index] === "snowflake" ? "snowflake" : "default";
+      const provider = ["snowflake", "snowpipe_streaming"].includes(integrations[index])
+          ? integrations[index]
+          : "default";
 
       expect(received[1].metadata.columns).toMatchObject(
         names.output.columns[provider]
@@ -211,7 +212,7 @@ describe("column & table names", () => {
         //KEY should be trimmed to 63
         return;
       }
-      if (integrations[index] === "snowflake") {
+      if (integrations[index] === "snowflake" || integrations[index] === "snowpipe_streaming") {
         expect(received[1].metadata).toHaveProperty(
           "table",
           "A_1_A_2_A_3_A_4_A_5_B_1_B_2_B_3_B_4_B_5_C_1_C_2_C_3_C_4_C_5_D_1_D_2_D_3_D_4_D_5_E_1_E_2_E_3_E_4_E_5_F_1_F_2_F_3_F_4_F_5_G_1_G_2"
@@ -317,7 +318,7 @@ describe("conflict between rudder set props and user set props", () => {
       const propsKey = propsKeyMap[evType];
       transformers.forEach((transformer, index) => {
         let sampleRudderPropKey = "id";
-        if (integrations[index] === "snowflake") {
+        if (integrations[index] === "snowflake" || integrations[index] === "snowpipe_streaming") {
           sampleRudderPropKey = "ID";
         }
 
@@ -365,7 +366,7 @@ describe("handle reserved words", () => {
         const received = transformer.process(i);
 
         const out =
-          evType === "track" || evType === "identify"
+          evType === "track" || (evType === "identify" && integrations[index] !== 'snowpipe_streaming')
             ? received[1]
             : received[0];
 
@@ -378,7 +379,7 @@ describe("handle reserved words", () => {
           } else {
             k = snakeCasedKey;
           }
-          if (integrations[index] === "snowflake") {
+          if (integrations[index] === "snowflake" || integrations[index] === "snowpipe_streaming") {
             expect(out.metadata.columns).toHaveProperty(k);
           } else {
             expect(out.metadata.columns).toHaveProperty(k.toLowerCase());
@@ -656,6 +657,17 @@ describe("id column datatype for users table", () => {
 
     transformers.forEach((transformer, index) => {
       const received = transformer.process(i);
+      if (integrations[index] === 'snowpipe_streaming') {
+        expect(received).toHaveLength(1);
+        expect(
+            received[0].metadata.columns[
+                integrationCasedString(integrations[index], "user_id")
+                ]
+        ).toEqual("int");
+        return;
+      }
+
+      expect(received).toHaveLength(2);
       expect(
         received[0].metadata.columns[
           integrationCasedString(integrations[index], "user_id")
@@ -673,6 +685,17 @@ describe("id column datatype for users table", () => {
 
     transformers.forEach((transformer, index) => {
       const received = transformer.process(i);
+      if (integrations[index] === 'snowpipe_streaming') {
+        expect(received).toHaveLength(1);
+        expect(
+            received[0].metadata.columns[
+                integrationCasedString(integrations[index], "user_id")
+                ]
+        ).toEqual("float");
+        return;
+      }
+
+      expect(received).toHaveLength(2);
       expect(
         received[0].metadata.columns[
           integrationCasedString(integrations[index], "user_id")
@@ -1010,28 +1033,6 @@ describe("Add receivedAt for events missing it", () => {
 });
 
 describe("Integration options", () => {
-  describe("Destination config options", () => {
-    destConfig.scenarios().forEach(scenario => {
-      it(scenario.name, () => {
-        if (scenario.skipUsersTable !== null) {
-          scenario.event.destination.Config.skipUsersTable = scenario.skipUsersTable
-        }
-        if (scenario.skipTracksTable !== null) {
-          scenario.event.destination.Config.skipTracksTable = scenario.skipTracksTable
-        }
-
-        transformers.forEach((transformer, index) => {
-          const received = transformer.process(scenario.event);
-          expect(received).toHaveLength(scenario.expected.length);
-          for (const i in received) {
-            const evt = received[i];
-            expect(evt.data.id ? evt.data.id : evt.data.ID).toEqual(scenario.expected[i].id);
-            expect(evt.metadata.table.toLowerCase()).toEqual(scenario.expected[i].table);
-          }
-        });
-      });
-    });
-  });
   describe("track", () => {
     it("should generate two events for every track call", () => {
       const i = opInput("track");
@@ -1049,16 +1050,16 @@ describe("Integration options", () => {
 
   describe("users", () => {
     it("should skip users when skipUsersTable is set", () => {
-      const i = opInput("users");
+      const i = opInput("identify");
       transformers.forEach((transformer, index) => {
         const received = transformer.process(i);
-        expect(received).toEqual(opOutput("users", integrations[index]));
+        expect(received).toEqual(opOutput("identify", integrations[index]));
       });
     });
   });
 
   describe("json paths", () => {
-    const output = (config, provider) => {
+    const output = (eventType, config, provider) => {
       switch (provider) {
         case "rs":
           return _.cloneDeep(config.output.rs);
@@ -1068,6 +1069,16 @@ describe("Integration options", () => {
           return _.cloneDeep(config.output.postgres);
         case "snowflake":
           return _.cloneDeep(config.output.snowflake);
+        case "snowpipe_streaming":
+          return _.cloneDeep(config.output.snowpipe_streaming);
+        case "s3_datalake":
+        case "gcs_datalake":
+        case "azure_datalake":
+          if (eventType === 'identifies') {
+            return _.cloneDeep(config.output.datalake);
+          } else {
+            return _.cloneDeep(config.output.default);
+          }
         default:
           return _.cloneDeep(config.output.default);
       }
@@ -1103,14 +1114,14 @@ describe("Integration options", () => {
           const config = require("./data/warehouse/integrations/jsonpaths/new/" + testCase.eventType);
           const input = _.cloneDeep(config.input);
           const received = transformer.process(input);
-          expect(received).toEqual(output(config, integrations[index]));
+          expect(received).toEqual(output(testCase.eventType, config, integrations[index]));
         })
 
         it(`legacy ${testCase.eventType} for ${integrations[index]}`, () => {
           const config = require("./data/warehouse/integrations/jsonpaths/legacy/" + testCase.eventType);
           const input = _.cloneDeep(config.input);
           const received = transformer.process(input);
-          expect(received).toEqual(output(config, integrations[index]));
+          expect(received).toEqual(output(testCase.eventType, config, integrations[index]));
         })
       });
     }
@@ -1233,4 +1244,1147 @@ describe("isBlank", () => {
       expect(isBlank(testCase.input)).toEqual(testCase.expected);
     });
   }
+});
+
+describe("Destination config", () => {
+    describe("skipUsersTable, skipTracksTable", () => {
+        destConfig.scenarios().forEach(scenario => {
+            it(scenario.name, () => {
+                if (scenario.skipUsersTable !== null) {
+                    scenario.event.destination.Config.skipUsersTable = scenario.skipUsersTable
+                }
+                if (scenario.skipTracksTable !== null) {
+                    scenario.event.destination.Config.skipTracksTable = scenario.skipTracksTable
+                }
+
+                transformers.forEach((transformer, index) => {
+                    const received = transformer.process(scenario.event);
+                    const expectedLength = integrations[index] === "snowpipe_streaming" && scenario.event.message.type === "identify"
+                      ? 1
+                      : scenario.expected.length;
+                    expect(received).toHaveLength(expectedLength);
+                    for (const i in received) {
+                        const evt = received[i];
+                        expect(evt.data.id ? evt.data.id : evt.data.ID).toEqual(scenario.expected[i].id);
+                        expect(evt.metadata.table.toLowerCase()).toEqual(scenario.expected[i].table);
+                    }
+                });
+            });
+        });
+    });
+
+    describe('allowUsersContextTraits, underscoreDivideNumbers', () => {
+        describe("old destinations", () => {
+            it('with allowUsersContextTraits', () => {
+                transformers.forEach((transformer, index) => {
+                    const event = {
+                        destination: {
+                            Config: {
+                                allowUsersContextTraits: true
+                            }
+                        },
+                        message: {
+                            context: {
+                                traits: {
+                                    city: "Disney",
+                                    country: "USA",
+                                    email: "mickey@disney.com",
+                                    firstname: "Mickey"
+                                },
+                            },
+                            traits: {
+                                lastname: "Mouse"
+                            },
+                            type: "identify",
+                            userId: "9bb5d4c2-a7aa-4a36-9efb-dd2b1aec5d33"
+                        },
+                        request: {
+                            query: {
+                                whSchemaVersion: "v1"
+                            }
+                        }
+                    }
+                    const output = transformer.process(event);
+                    const events = integrations[index] === "snowpipe_streaming"
+                      ? [output[0]]
+                      : [output[0], output[1]];
+                    const traitsToCheck = {
+                        'city': 'Disney',
+                        'country': 'USA',
+                        'email': 'mickey@disney.com',
+                        'firstname': 'Mickey'
+                    };
+                    events.forEach(event => {
+                        Object.entries(traitsToCheck).forEach(([trait, value]) => {
+                            expect(event.data[integrationCasedString(integrations[index], trait)]).toEqual(value);
+                            expect(event.data[integrationCasedString(integrations[index], `context_traits_${trait}`)]).toEqual(value);
+                            expect(event.metadata.columns).toHaveProperty(integrationCasedString(integrations[index], trait));
+                            expect(event.metadata.columns).toHaveProperty(integrationCasedString(integrations[index], `context_traits_${trait}`));
+                        });
+                    });
+                });
+            });
+
+            it('with underscoreDivideNumbers', () => {
+                transformers.forEach((transformer, index) => {
+                    const event = {
+                        destination: {
+                            Config: {
+                                underscoreDivideNumbers: true
+                            },
+                        },
+                        message: {
+                            context: {
+                                'attribute v3': 'some-value'
+                            },
+                            event: "button clicked v2",
+                            type: "track",
+                        },
+                        request: {
+                            query: {
+                                whSchemaVersion: "v1"
+                            }
+                        }
+                    }
+                    const output = transformer.process(event);
+                    expect(output[0].data[integrationCasedString(integrations[index], `event`)]).toEqual('button_clicked_v_2');
+                    expect(output[0].data[integrationCasedString(integrations[index], `context_attribute_v_3`)]).toEqual('some-value');
+                    expect(output[0].metadata.columns).toHaveProperty(integrationCasedString(integrations[index], `context_attribute_v_3`));
+                    expect(output[1].data[integrationCasedString(integrations[index], `event`)]).toEqual('button_clicked_v_2');
+                    expect(output[1].data[integrationCasedString(integrations[index], `context_attribute_v_3`)]).toEqual('some-value');
+                    expect(output[1].metadata.table).toEqual(integrationCasedString(integrations[index], 'button_clicked_v_2'));
+                    expect(output[1].metadata.columns).toHaveProperty(integrationCasedString(integrations[index], `context_attribute_v_3`));
+                });
+            });
+        });
+        describe("new destinations", () => {
+          it('without allowUsersContextTraits', () => {
+                transformers.forEach((transformer, index) => {
+                    const event = {
+                        destination: {
+                            Config: {}
+                        },
+                        message: {
+                            context: {
+                                traits: {
+                                    city: "Disney",
+                                    country: "USA",
+                                    email: "mickey@disney.com",
+                                    firstname: "Mickey"
+                                },
+                            },
+                            traits: {
+                                lastname: "Mouse"
+                            },
+                            type: "identify",
+                            userId: "9bb5d4c2-a7aa-4a36-9efb-dd2b1aec5d33"
+                        },
+                        request: {
+                            query: {
+                                whSchemaVersion: "v1"
+                            }
+                        }
+                    }
+                    const received = transformer.process(event);
+                    const events = integrations[index] === "snowpipe_streaming"
+                      ? [received[0]]
+                      : [received[0], received[1]];
+                     // identifies and users event
+                    const traitsToCheck = {
+                        'city': 'Disney',
+                        'country': 'USA',
+                        'email': 'mickey@disney.com',
+                        'firstname': 'Mickey'
+                    };
+                    events.forEach(event => {
+                        Object.entries(traitsToCheck).forEach(([trait, value]) => {
+                            expect(event.data).not.toHaveProperty(integrationCasedString(integrations[index], trait));
+                            expect(event.data[integrationCasedString(integrations[index], `context_traits_${trait}`)]).toEqual(value);
+                            expect(event.metadata.columns).not.toHaveProperty(integrationCasedString(integrations[index], trait));
+                            expect(event.metadata.columns).toHaveProperty(integrationCasedString(integrations[index], `context_traits_${trait}`));
+                        });
+                    });
+                });
+            });
+
+            it('without underscoreDivideNumbers', () => {
+                transformers.forEach((transformer, index) => {
+                    const event = {
+                        destination: {
+                            Config: {},
+                        },
+                        message: {
+                            context: {
+                                'attribute v3': 'some-value'
+                            },
+                            event: "button clicked v2",
+                            type: "track",
+                        },
+                        request: {
+                            query: {
+                                whSchemaVersion: "v1"
+                            }
+                        }
+                    }
+                    const output = transformer.process(event);
+                    expect(output[0].data[integrationCasedString(integrations[index], `event`)]).toEqual('button_clicked_v2');
+                    expect(output[0].data[integrationCasedString(integrations[index], `context_attribute_v3`)]).toEqual('some-value');
+                    expect(output[0].metadata.columns).toHaveProperty(integrationCasedString(integrations[index], `context_attribute_v3`));
+                    expect(output[1].data[integrationCasedString(integrations[index], `event`)]).toEqual('button_clicked_v2');
+                    expect(output[1].data[integrationCasedString(integrations[index], `context_attribute_v3`)]).toEqual('some-value');
+                    expect(output[1].metadata.table).toEqual(integrationCasedString(integrations[index], 'button_clicked_v2'));
+                    expect(output[1].metadata.columns).toHaveProperty(integrationCasedString(integrations[index], `context_attribute_v3`));
+                });
+            });
+        });
+    });
+});
+
+describe("validTimestamp", () => {
+    const testCases = [
+        {
+            name: "undefined input should return false",
+            input: undefined,
+            expected: false,
+        },
+        {
+            name: "negative year and time input should return false #1",
+            input: '-0001-11-30T00:00:00+0000',
+            expected: false,
+        },
+        {
+            name: "negative year and time input should return false #2",
+            input: '-2023-06-14T05:23:59.244Z',
+            expected: false,
+        },
+        {
+            name: "negative year and time input should return false #3",
+            input: '-1900-06-14T05:23:59.244Z',
+            expected: false,
+        },
+        {
+            name: "positive year and time input should return false",
+            input: '+2023-06-14T05:23:59.244Z',
+            expected: false,
+        },
+        {
+            name: "valid timestamp input should return true",
+            input: '2023-06-14T05:23:59.244Z',
+            expected: true,
+        },
+        {
+            name: "non-date string input should return false",
+            input: 'abc',
+            expected: false,
+        },
+        {
+            name: "malicious string input should return false",
+            input: '%u002e%u002e%u2216%u002e%u002e%u2216%u002e%u002e%u2216%u002e%u002e%u2216%u002e%u002e%u2216%u002e%u002e%u2216%u002e%u002e%u2216%u002e%u002e%u2216%u002e%u002e%u2216%u002e%u002e%u2216%u002e%u002e%u2216%u002e%u002e%u2216%u002e%u002e%u2216%u002e%u002e%u2216%u002e%u002e%u2216%u002e%u002e%u2216%u002e%u002e%u2216%u002e%u002e%u2216%u002e%u002e%u2216%u002e%u002e%u2216Windows%u2216win%u002ein',
+            expected: false,
+        },
+        {
+            name: "empty string input should return false",
+            input: '',
+            expected: false,
+        },
+        {
+            name: "valid date input should return true",
+            input: '2023-06-14',
+            expected: true,
+        },
+        {
+            name: "time-only input should return false",
+            input: '05:23:59.244Z',
+            expected: false,
+        },
+        {
+            name: "non-string input should return false",
+            input: {abc: 123},
+            expected: false,
+        },
+        {
+            name: "object with toString method input should return false",
+            input: {
+                toString: '2023-06-14T05:23:59.244Z'
+            },
+            expected: false,
+        },
+    ];
+    for (const testCase of testCases) {
+        it(`should return ${testCase.expected} for ${testCase.name}`, () => {
+            expect(validTimestamp(testCase.input)).toEqual(testCase.expected);
+        });
+    }
+});
+
+describe("isBlank", () => {
+    const testCases = [
+        {
+            name: "null",
+            input: null,
+            expected: true
+        },
+        {
+            name: "empty string",
+            input: "",
+            expected: true
+        },
+        {
+            name: "non-empty string",
+            input: "test",
+            expected: false
+        },
+        {
+            name: "numeric value",
+            input: 1634762544,
+            expected: false
+        },
+        {
+            name: "object with toString property",
+            input: {
+                toString: '2023-06-14T05:23:59.244Z'
+            },
+            expected: false
+        },
+    ];
+    for (const testCase of testCases) {
+        it(`should return ${testCase.expected} for ${testCase.name}`, () => {
+            expect(isBlank(testCase.input)).toEqual(testCase.expected);
+        });
+    }
+});
+
+describe("context traits", () => {
+  const testCases = [
+    {
+      name: "traits with string like object",
+      input: {"1":"f","2":"o", "3":"o"},
+      expectedData: "foo",
+      expectedMetadata: "string",
+      expectedColumns: ["context_traits"],
+    },
+    {
+      name: "traits with string like object with missing keys",
+      input: {"1":"a","3":"a"},
+      expectedData: "a",
+      expectedMetadata: "string",
+      expectedColumns: ["context_traits_1", "context_traits_3"],
+    },
+    {
+      name: "traits with empty object",
+      input: {},
+      expectedData: {},
+      expectedColumns: [],
+    },
+    {
+      name: "traits with empty array",
+      input: [],
+      expectedData: [],
+      expectedMetadata: "array",
+      expectedColumns: [],
+    },
+    {
+      name: "traits with null",
+      input: null,
+      expectedData: null,
+      expectedMetadata: "null",
+      expectedColumns: [],
+    },
+    {
+      name: "traits with undefined",
+      input: undefined,
+      expectedData: undefined,
+      expectedMetadata: "undefined",
+      expectedColumns: [],
+      groupTypeColumns: []
+    },
+    {
+      name: "traits with string",
+      input: "already a string",
+      expectedData: "already a string",
+      expectedMetadata: "string",
+      expectedColumns: ["context_traits"],
+    },
+    {
+      name: "traits with number",
+      input: 42,
+      expectedData: 42,
+      expectedMetadata: "int",
+      expectedColumns: ["context_traits"],
+    },
+    {
+      name: "traits with boolean",
+      input: true,
+      expectedData: true,
+      expectedMetadata: "boolean",
+      expectedColumns: ["context_traits"],
+    },
+    {
+      name: "traits with array",
+      input: ["a", "b", "cd"],
+      expectedData: ["a", "b", "cd"],
+      expectedMetadata: "string",
+      expectedColumns: ["context_traits"],
+    }
+  ];
+  for (const t of testCases) {
+    it(`should return ${t.expectedData} for ${t.name}`, () => {
+      for (const e of eventTypes) {
+        let i = input(e);
+        i.message.context = {"traits": t.input};
+        if (i.metadata) delete i.metadata.sourceCategory;
+        transformers.forEach((transformer, index) => {
+          const received = transformer.process(i);
+          if(t.expectedColumns.length === 0) {
+            expect(Object.keys(received[0].metadata.columns).join()).not.toMatch(/context_traits/g);
+            expect(Object.keys(received[0].data).join()).not.toMatch(/context_traits/g);
+          }
+          for (const column of t.expectedColumns) {
+            expect(received[0].metadata.columns[integrationCasedString(integrations[index], column)]).toEqual(t.expectedMetadata);
+            expect(received[0].data[integrationCasedString(integrations[index], column)]).toEqual(t.expectedData);
+          }
+        });
+      }
+    });
+  }
+})
+
+describe("group traits", () => {
+  const testCases = [
+    {
+      name: "traits with string like object",
+      input: {"1":"f","2":"o", "3":"o"},
+      expectedData: "foo",
+      expectedMetadata: "string",
+      expectedColumns: [],
+    },
+    {
+      name: "traits with string like object with missing keys",
+      input: {"1":"a","3":"a"},
+      expectedData: "a",
+      expectedMetadata: "string",
+      expectedColumns: ["_1", "_3"],
+    },
+    {
+      name: "traits with empty object",
+      input: {},
+      expectedData: {},
+      expectedColumns: [],
+    },
+    {
+      name: "traits with empty array",
+      input: [],
+      expectedData: [],
+      expectedMetadata: "array",
+      expectedColumns: [],
+    },
+    {
+      name: "traits with null",
+      input: null,
+      expectedData: null,
+      expectedMetadata: "null",
+      expectedColumns: [],
+    },
+    {
+      name: "traits with undefined",
+      input: undefined,
+      expectedData: undefined,
+      expectedMetadata: "undefined",
+      expectedColumns: [],
+    },
+    {
+      name: "traits with string",
+      input: "already a string",
+      expectedData: "already a string",
+      expectedMetadata: "string",
+      expectedColumns: [],
+    },
+    {
+      name: "traits with number",
+      input: 42,
+      expectedData: 42,
+      expectedMetadata: "int",
+      expectedColumns: [],
+    },
+    {
+      name: "traits with boolean",
+      input: true,
+      expectedData: true,
+      expectedMetadata: "boolean",
+      expectedColumns: [],
+    },
+    {
+      name: "traits with array",
+      input: ["a", "b", "cd"],
+      expectedData: ["a", "b", "cd"],
+      expectedMetadata: "string",
+      expectedColumns: [],
+    }
+  ];
+  for (const t of testCases){
+    it(`should return ${t.expectedData} for ${t.name}`, () => {
+      let i = input("group");
+      i.message.traits = t.input;
+      if (i.metadata) delete i.metadata.sourceCategory;
+      transformers.forEach((transformer, index) => {
+        const received = transformer.process(i);
+        if(t.expectedColumns.length === 0) {
+          expect(Object.keys(received[0].metadata.columns).join()).not.toMatch(/group_traits/g);
+          expect(Object.keys(received[0].data).join()).not.toMatch(/group_traits/g);
+        }
+        for (const column of t.expectedColumns) {
+          expect(received[0].metadata.columns[integrationCasedString(integrations[index], column)]).toEqual(t.expectedMetadata);
+          expect(received[0].data[integrationCasedString(integrations[index], column)]).toEqual(t.expectedData);
+        }
+      });
+    });
+  }
+})
+
+describe("transformColumnName", () => {
+  describe('with Blendo Casing', () => {
+    const testCases = [
+      {
+        description: 'should convert special characters other than "\\" or "$" to underscores',
+        options: {integrationOptions: {useBlendoCasing: true}, provider: 'postgres'},
+        input: 'column@Name$1',
+        expected: 'column_name$1',
+      },
+      {
+        description: 'should add underscore if name does not start with an alphabet or underscore',
+        options: {integrationOptions: {useBlendoCasing: true}, provider: 'postgres'},
+        input: '1CComega',
+        expected: '_1ccomega',
+      },
+      {
+        description: 'should handle non-ASCII characters by converting to underscores',
+        options: {integrationOptions: {useBlendoCasing: true}, provider: 'postgres'},
+        input: 'Cízǔ',
+        expected: 'c_z_',
+      },
+      {
+        description: 'should transform CamelCase123Key to camelcase123key',
+        options: {integrationOptions: {useBlendoCasing: true}, provider: 'postgres'},
+        input: 'CamelCase123Key',
+        expected: 'camelcase123key',
+      },
+      {
+        description: 'should preserve "\\" and "$" characters',
+        options: {integrationOptions: {useBlendoCasing: true}, provider: 'postgres'},
+        input: 'path to $1,00,000',
+        expected: 'path_to_$1_00_000',
+      },
+      {
+        description: 'should handle a mix of characters, numbers, and special characters',
+        options: {integrationOptions: {useBlendoCasing: true}, provider: 'postgres'},
+        input: 'CamelCase123Key_with$special\\chars',
+        expected: 'camelcase123key_with$special\\chars',
+      },
+      {
+        description: 'should limit length to 63 characters for postgres provider',
+        options: {integrationOptions: {useBlendoCasing: true}, provider: 'postgres'},
+        input: 'a'.repeat(70),
+        expected: 'a'.repeat(63),
+      },
+    ];
+    testCases.forEach(({description, options, input, expected}) => {
+      it(description, () => {
+        const result = transformColumnName(options, input);
+        expect(result).toBe(expected);
+      });
+    });
+  });
+
+  describe('without Blendo Casing (underscoreDivideNumbers=true)', () => {
+    const testCases = [
+      {
+        description: 'should remove symbols and join continuous letters and numbers with a single underscore',
+        options: {
+          integrationOptions: {useBlendoCasing: false},
+          provider: 'postgres',
+          underscoreDivideNumbers: true
+        },
+        input: '&4yasdfa(84224_fs9##_____*3q',
+        expected: '_4_yasdfa_84224_fs_9_3_q',
+      },
+      {
+        description: 'should transform "omega" to "omega"',
+        options: {
+          integrationOptions: {useBlendoCasing: false},
+          provider: 'postgres',
+          underscoreDivideNumbers: true
+        },
+        input: 'omega',
+        expected: 'omega',
+      },
+      {
+        description: 'should transform "omega v2" to "omega_v_2"',
+        options: {
+          integrationOptions: {useBlendoCasing: false},
+          provider: 'postgres',
+          underscoreDivideNumbers: true
+        },
+        input: 'omega v2',
+        expected: 'omega_v_2',
+      },
+      {
+        description: 'should prepend underscore if name starts with a number',
+        options: {
+          integrationOptions: {useBlendoCasing: false},
+          provider: 'postgres',
+          underscoreDivideNumbers: true
+        },
+        input: '9mega',
+        expected: '_9_mega',
+      },
+      {
+        description: 'should remove trailing special characters',
+        options: {
+          integrationOptions: {useBlendoCasing: false},
+          provider: 'postgres',
+          underscoreDivideNumbers: true
+        },
+        input: 'mega&',
+        expected: 'mega',
+      },
+      {
+        description: 'should replace special character in the middle with underscore',
+        options: {
+          integrationOptions: {useBlendoCasing: false},
+          provider: 'postgres',
+          underscoreDivideNumbers: true
+        },
+        input: 'ome$ga',
+        expected: 'ome_ga',
+      },
+      {
+        description: 'should not remove trailing $ character',
+        options: {
+          integrationOptions: {useBlendoCasing: false},
+          provider: 'postgres',
+          underscoreDivideNumbers: true
+        },
+        input: 'omega$',
+        expected: 'omega',
+      },
+      {
+        description: 'should handle spaces and special characters by converting to underscores',
+        options: {
+          integrationOptions: {useBlendoCasing: false},
+          provider: 'postgres',
+          underscoreDivideNumbers: true
+        },
+        input: 'ome_ ga',
+        expected: 'ome_ga',
+      },
+      {
+        description: 'should handle multiple underscores and hyphens by reducing to single underscores',
+        options: {
+          integrationOptions: {useBlendoCasing: false},
+          provider: 'postgres',
+          underscoreDivideNumbers: true
+        },
+        input: '9mega________-________90',
+        expected: '_9_mega_90',
+      },
+      {
+        description: 'should handle non-ASCII characters by converting them to underscores',
+        options: {
+          integrationOptions: {useBlendoCasing: false},
+          provider: 'postgres',
+          underscoreDivideNumbers: true
+        },
+        input: 'Cízǔ',
+        expected: 'c_z',
+      },
+      {
+        description: 'should transform CamelCase123Key to camel_case_123_key',
+        options: {
+          integrationOptions: {useBlendoCasing: false},
+          provider: 'postgres',
+          underscoreDivideNumbers: true
+        },
+        input: 'CamelCase123Key',
+        expected: 'camel_case_123_key',
+      },
+      {
+        description: 'should handle numbers and commas in the input',
+        options: {
+          integrationOptions: {useBlendoCasing: false},
+          provider: 'postgres',
+          underscoreDivideNumbers: true
+        },
+        input: 'path to $1,00,000',
+        expected: 'path_to_1_00_000',
+      },
+      {
+        description: 'should return an empty string if input contains no valid characters',
+        options: {
+          integrationOptions: {useBlendoCasing: false},
+          provider: 'postgres',
+          underscoreDivideNumbers: true
+        },
+        input: '@#$%',
+        expected: '',
+      },
+      {
+        description: 'should keep underscores between letters and numbers',
+        options: {
+          integrationOptions: {useBlendoCasing: false},
+          provider: 'postgres',
+          underscoreDivideNumbers: true
+        },
+        input: 'test123',
+        expected: 'test_123',
+      },
+      {
+        description: 'should keep multiple underscore-number sequences',
+        options: {
+          integrationOptions: {useBlendoCasing: false},
+          provider: 'postgres',
+          underscoreDivideNumbers: true
+        },
+        input: 'abc123def456',
+        expected: 'abc_123_def_456',
+      },
+      {
+        description: 'should keep multiple underscore-number sequences',
+        options: {
+          integrationOptions: {useBlendoCasing: false},
+          provider: 'postgres',
+          underscoreDivideNumbers: true
+        },
+        input: 'abc_123_def_456',
+        expected: 'abc_123_def_456',
+      },
+    ];
+    testCases.forEach(({description, options, input, expected}) => {
+      it(description, () => {
+        const result = transformColumnName(options, input);
+        expect(result).toBe(expected);
+      });
+    });
+  });
+
+  describe('without Blendo Casing (underscoreDivideNumbers=false)', () => {
+    const testCases = [
+      {
+        description: 'should remove symbols and join continuous letters and numbers with a single underscore',
+        options: {
+          integrationOptions: {useBlendoCasing: false},
+          provider: 'postgres',
+          underscoreDivideNumbers: false
+        },
+        input: '&4yasdfa(84224_fs9##_____*3q',
+        expected: '_4yasdfa_84224_fs9_3q',
+      },
+      {
+        description: 'should transform "omega" to "omega"',
+        options: {
+          integrationOptions: {useBlendoCasing: false},
+          provider: 'postgres',
+          underscoreDivideNumbers: false
+        },
+        input: 'omega',
+        expected: 'omega',
+      },
+      {
+        description: 'should transform "omega v2" to "omega_v_2"',
+        options: {
+          integrationOptions: {useBlendoCasing: false},
+          provider: 'postgres',
+          underscoreDivideNumbers: false
+        },
+        input: 'omega v2',
+        expected: 'omega_v2',
+      },
+      {
+        description: 'should prepend underscore if name starts with a number',
+        options: {
+          integrationOptions: {useBlendoCasing: false},
+          provider: 'postgres',
+          underscoreDivideNumbers: false
+        },
+        input: '9mega',
+        expected: '_9mega',
+      },
+      {
+        description: 'should remove trailing special characters',
+        options: {
+          integrationOptions: {useBlendoCasing: false},
+          provider: 'postgres',
+          underscoreDivideNumbers: false
+        },
+        input: 'mega&',
+        expected: 'mega',
+      },
+      {
+        description: 'should replace special character in the middle with underscore',
+        options: {
+          integrationOptions: {useBlendoCasing: false},
+          provider: 'postgres',
+          underscoreDivideNumbers: false
+        },
+        input: 'ome$ga',
+        expected: 'ome_ga',
+      },
+      {
+        description: 'should not remove trailing $ character',
+        options: {
+          integrationOptions: {useBlendoCasing: false},
+          provider: 'postgres',
+          underscoreDivideNumbers: true
+        },
+        input: 'omega$',
+        expected: 'omega',
+      },
+      {
+        description: 'should handle spaces and special characters by converting to underscores',
+        options: {
+          integrationOptions: {useBlendoCasing: false},
+          provider: 'postgres',
+          underscoreDivideNumbers: false
+        },
+        input: 'ome_ ga',
+        expected: 'ome_ga',
+      },
+      {
+        description: 'should handle multiple underscores and hyphens by reducing to single underscores',
+        options: {
+          integrationOptions: {useBlendoCasing: false},
+          provider: 'postgres',
+          underscoreDivideNumbers: false
+        },
+        input: '9mega________-________90',
+        expected: '_9mega_90',
+      },
+      {
+        description: 'should handle non-ASCII characters by converting them to underscores',
+        options: {
+          integrationOptions: {useBlendoCasing: false},
+          provider: 'postgres',
+          underscoreDivideNumbers: false
+        },
+        input: 'Cízǔ',
+        expected: 'c_z',
+      },
+      {
+        description: 'should transform CamelCase123Key to camel_case_123_key',
+        options: {
+          integrationOptions: {useBlendoCasing: false},
+          provider: 'postgres',
+          underscoreDivideNumbers: false
+        },
+        input: 'CamelCase123Key',
+        expected: 'camel_case123_key',
+      },
+      {
+        description: 'should handle numbers and commas in the input',
+        options: {
+          integrationOptions: {useBlendoCasing: false},
+          provider: 'postgres',
+          underscoreDivideNumbers: false
+        },
+        input: 'path to $1,00,000',
+        expected: 'path_to_1_00_000',
+      },
+      {
+        description: 'should return an empty string if input contains no valid characters',
+        options: {
+          integrationOptions: {useBlendoCasing: false},
+          provider: 'postgres',
+          underscoreDivideNumbers: false
+        },
+        input: '@#$%',
+        expected: '',
+      },
+      {
+        description: 'should keep underscores between letters and numbers',
+        options: {
+          integrationOptions: {useBlendoCasing: false},
+          provider: 'postgres',
+          underscoreDivideNumbers: false
+        },
+        input: 'test123',
+        expected: 'test123',
+      },
+      {
+        description: 'should keep multiple underscore-number sequences',
+        options: {
+          integrationOptions: {useBlendoCasing: false},
+          provider: 'postgres',
+          underscoreDivideNumbers: false
+        },
+        input: 'abc123def456',
+        expected: 'abc123_def456',
+      },
+      {
+        description: 'should keep multiple underscore-number sequences',
+        options: {
+          integrationOptions: {useBlendoCasing: false},
+          provider: 'postgres',
+          underscoreDivideNumbers: false
+        },
+        input: 'abc_123_def_456',
+        expected: 'abc_123_def_456',
+      },
+    ];
+    testCases.forEach(({description, options, input, expected}) => {
+      it(description, () => {
+        const result = transformColumnName(options, input);
+        expect(result).toBe(expected);
+      });
+    });
+  });
+})
+
+describe("transformTableName", () => {
+  describe('with Blendo Casing', () => {
+    const testCases = [
+      {
+        description: 'should convert name to Blendo casing (lowercase) when Blendo casing is enabled',
+        options: {integrationOptions: {useBlendoCasing: true}},
+        input: 'TableName123',
+        expected: 'tablename123',
+      },
+      {
+        description: 'should trim spaces and convert to Blendo casing (lowercase) when Blendo casing is enabled',
+        options: {integrationOptions: {useBlendoCasing: true}},
+        input: '   TableName   ',
+        expected: 'tablename',
+      },
+      {
+        description: 'should return an empty string when input is empty and Blendo casing is enabled',
+        options: {integrationOptions: {useBlendoCasing: true}},
+        input: '',
+        expected: '',
+      },
+      {
+        description: 'should handle names with special characters and convert to Blendo casing (lowercase)',
+        options: {integrationOptions: {useBlendoCasing: true}},
+        input: 'Table@Name!',
+        expected: 'table@name!',
+      },
+      {
+        description: 'should convert a mixed-case name to Blendo casing (lowercase) when Blendo casing is enabled',
+        options: {integrationOptions: {useBlendoCasing: true}},
+        input: 'CaMeLcAsE',
+        expected: 'camelcase',
+      },
+      {
+        description: 'should keep an already lowercase name unchanged with Blendo casing enabled',
+        options: {integrationOptions: {useBlendoCasing: true}},
+        input: 'lowercase',
+        expected: 'lowercase',
+      },
+    ];
+    testCases.forEach(({description, options, input, expected}) => {
+      it(description, () => {
+        const result = transformTableName(options, input);
+        expect(result).toBe(expected);
+      });
+    });
+  });
+
+  describe('without Blendo Casing (underscoreDivideNumbers=true)', () => {
+    const testCases = [
+      {
+        description: 'should remove symbols and join continuous letters and numbers with a single underscore',
+        options: {integrationOptions: {useBlendoCasing: false}, underscoreDivideNumbers: true},
+        input: '&4yasdfa(84224_fs9##_____*3q',
+        expected: '_4_yasdfa_84224_fs_9_3_q',
+      },
+      {
+        description: 'should transform "omega" to "omega"',
+        options: {integrationOptions: {useBlendoCasing: false}, underscoreDivideNumbers: true},
+        input: 'omega',
+        expected: 'omega',
+      },
+      {
+        description: 'should transform "omega v2" to "omega_v_2"',
+        options: {integrationOptions: {useBlendoCasing: false}, underscoreDivideNumbers: true},
+        input: 'omega v2',
+        expected: 'omega_v_2',
+      },
+      {
+        description: 'should prepend underscore if name starts with a number',
+        options: {integrationOptions: {useBlendoCasing: false}, underscoreDivideNumbers: true},
+        input: '9mega',
+        expected: '_9_mega',
+      },
+      {
+        description: 'should remove trailing special characters',
+        options: {integrationOptions: {useBlendoCasing: false}, underscoreDivideNumbers: true},
+        input: 'mega&',
+        expected: 'mega',
+      },
+      {
+        description: 'should replace special character in the middle with underscore',
+        options: {integrationOptions: {useBlendoCasing: false}, underscoreDivideNumbers: true},
+        input: 'ome$ga',
+        expected: 'ome_ga',
+      },
+      {
+        description: 'should not remove trailing $ character',
+        options: {integrationOptions: {useBlendoCasing: false}, underscoreDivideNumbers: true},
+        input: 'omega$',
+        expected: 'omega',
+      },
+      {
+        description: 'should handle spaces and special characters by converting to underscores',
+        options: {integrationOptions: {useBlendoCasing: false}, underscoreDivideNumbers: true},
+        input: 'ome_ ga',
+        expected: 'ome_ga',
+      },
+      {
+        description: 'should handle multiple underscores and hyphens by reducing to single underscores',
+        options: {integrationOptions: {useBlendoCasing: false}, underscoreDivideNumbers: true},
+        input: '9mega________-________90',
+        expected: '_9_mega_90',
+      },
+      {
+        description: 'should handle non-ASCII characters by converting them to underscores',
+        options: {integrationOptions: {useBlendoCasing: false}, underscoreDivideNumbers: true},
+        input: 'Cízǔ',
+        expected: 'c_z',
+      },
+      {
+        description: 'should transform CamelCase123Key to camel_case_123_key',
+        options: {integrationOptions: {useBlendoCasing: false}, underscoreDivideNumbers: true},
+        input: 'CamelCase123Key',
+        expected: 'camel_case_123_key',
+      },
+      {
+        description: 'should handle numbers and commas in the input',
+        options: {integrationOptions: {useBlendoCasing: false}, underscoreDivideNumbers: true},
+        input: 'path to $1,00,000',
+        expected: 'path_to_1_00_000',
+      },
+      {
+        description: 'should return an empty string if input contains no valid characters',
+        options: {integrationOptions: {useBlendoCasing: false}, underscoreDivideNumbers: true},
+        input: '@#$%',
+        expected: '',
+      },
+      {
+        description: 'should keep underscores between letters and numbers',
+        options: {integrationOptions: {useBlendoCasing: false}, underscoreDivideNumbers: true},
+        input: 'test123',
+        expected: 'test_123',
+      },
+      {
+        description: 'should keep multiple underscore-number sequences',
+        options: {integrationOptions: {useBlendoCasing: false}, underscoreDivideNumbers: true},
+        input: 'abc123def456',
+        expected: 'abc_123_def_456',
+      },
+    ];
+    testCases.forEach(({description, options, input, expected}) => {
+      it(description, () => {
+        const result = transformTableName(options, input);
+        expect(result).toBe(expected);
+      });
+    });
+  });
+
+  describe('without Blendo Casing (underscoreDivideNumbers=false)', () => {
+    const testCases = [
+      {
+        description: 'should remove symbols and join continuous letters and numbers with a single underscore',
+        options: {integrationOptions: {useBlendoCasing: false}, underscoreDivideNumbers: false},
+        input: '&4yasdfa(84224_fs9##_____*3q',
+        expected: '_4yasdfa_84224_fs9_3q',
+      },
+      {
+        description: 'should transform "omega" to "omega"',
+        options: {integrationOptions: {useBlendoCasing: false}, underscoreDivideNumbers: false},
+        input: 'omega',
+        expected: 'omega',
+      },
+      {
+        description: 'should transform "omega v2" to "omega_v_2"',
+        options: {integrationOptions: {useBlendoCasing: false}, underscoreDivideNumbers: false},
+        input: 'omega v2',
+        expected: 'omega_v2',
+      },
+      {
+        description: 'should prepend underscore if name starts with a number',
+        options: {integrationOptions: {useBlendoCasing: false}, underscoreDivideNumbers: false},
+        input: '9mega',
+        expected: '_9mega',
+      },
+      {
+        description: 'should remove trailing special characters',
+        options: {integrationOptions: {useBlendoCasing: false}, underscoreDivideNumbers: false},
+        input: 'mega&',
+        expected: 'mega',
+      },
+      {
+        description: 'should replace special character in the middle with underscore',
+        options: {integrationOptions: {useBlendoCasing: false}, underscoreDivideNumbers: false},
+        input: 'ome$ga',
+        expected: 'ome_ga',
+      },
+      {
+        description: 'should not remove trailing $ character',
+        options: {integrationOptions: {useBlendoCasing: false}, underscoreDivideNumbers: true},
+        input: 'omega$',
+        expected: 'omega',
+      },
+      {
+        description: 'should handle spaces and special characters by converting to underscores',
+        options: {integrationOptions: {useBlendoCasing: false}, underscoreDivideNumbers: false},
+        input: 'ome_ ga',
+        expected: 'ome_ga',
+      },
+      {
+        description: 'should handle multiple underscores and hyphens by reducing to single underscores',
+        options: {integrationOptions: {useBlendoCasing: false}, underscoreDivideNumbers: false},
+        input: '9mega________-________90',
+        expected: '_9mega_90',
+      },
+      {
+        description: 'should handle non-ASCII characters by converting them to underscores',
+        options: {integrationOptions: {useBlendoCasing: false}, underscoreDivideNumbers: false},
+        input: 'Cízǔ',
+        expected: 'c_z',
+      },
+      {
+        description: 'should transform CamelCase123Key to camel_case_123_key',
+        options: {integrationOptions: {useBlendoCasing: false}, underscoreDivideNumbers: false},
+        input: 'CamelCase123Key',
+        expected: 'camel_case123_key',
+      },
+      {
+        description: 'should handle numbers and commas in the input',
+        options: {integrationOptions: {useBlendoCasing: false}, underscoreDivideNumbers: false},
+        input: 'path to $1,00,000',
+        expected: 'path_to_1_00_000',
+      },
+      {
+        description: 'should return an empty string if input contains no valid characters',
+        options: {integrationOptions: {useBlendoCasing: false}, underscoreDivideNumbers: false},
+        input: '@#$%',
+        expected: '',
+      },
+      {
+        description: 'should keep underscores between letters and numbers',
+        options: {integrationOptions: {useBlendoCasing: false}, underscoreDivideNumbers: false},
+        input: 'test123',
+        expected: 'test123',
+      },
+      {
+        description: 'should keep multiple underscore-number sequences',
+        options: {integrationOptions: {useBlendoCasing: false}, underscoreDivideNumbers: false},
+        input: 'abc123def456',
+        expected: 'abc123_def456',
+      },
+    ];
+    testCases.forEach(({description, options, input, expected}) => {
+      it(description, () => {
+        const result = transformTableName(options, input);
+        expect(result).toBe(expected);
+      });
+    });
+  });
 });

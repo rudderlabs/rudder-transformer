@@ -15,6 +15,7 @@ export const networkCallsData = [
       data: {
         error: {
           message: 'The access token could not be decrypted',
+          error_user_msg: 'The access token could not be decrypted',
           type: 'OAuthException',
           code: 190,
           fbtrace_id: 'fbpixel_trace_id',
@@ -206,6 +207,31 @@ export const networkCallsData = [
       data: { events_received: 1, fbtrace_id: 'facebook_trace_id' },
       status: 200,
       statusText: 'OK',
+    },
+  },
+  {
+    httpReq: {
+      url: `https://graph.facebook.com/${VERSION}/12345678912804009/events?access_token=2804009_valid_access_token`,
+      data: getFormData(testFormData).toString(),
+      params: { destination: 'facebook_pixel' },
+      headers: { 'User-Agent': 'RudderLabs' },
+      method: 'POST',
+    },
+    httpRes: {
+      status: 400,
+      data: {
+        error: {
+          code: 100,
+          error_subcode: 2804009,
+          error_user_msg:
+            'Your purchase event doesn’t include a value parameter. Enter a value. For example: 1.99',
+          error_user_title: 'Missing Value for Purchase Event',
+          fbtrace_id: 'AP4G-xxxxxxxx',
+          is_transient: false,
+          message: 'Invalid parameter',
+          type: 'OAuthException',
+        },
+      },
     },
   },
 ];

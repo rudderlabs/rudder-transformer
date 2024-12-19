@@ -19,9 +19,6 @@ export const data = [
                   eventsMap: [{ from: 'Product Added', to: 'conv.add_to_cart' }],
                   useNativeSDK: { web: false },
                   clientAuthId: { web: 'test-client-auth-id' },
-                  oneTrustCookieCategories: {
-                    web: [{ oneTrustCookieCategory: 'Marketing Sample' }],
-                  },
                   customDomain: { web: 'https://cookiedomain.com' },
                   enableCookieSync: { web: true },
                 },
@@ -108,9 +105,6 @@ export const data = [
                   enableCookieSync: { web: true },
                   eventFilteringOption: 'disable',
                   eventsMap: [{ from: 'Product Added', to: 'conv.add_to_cart' }],
-                  oneTrustCookieCategories: {
-                    web: [{ oneTrustCookieCategory: 'Marketing Sample' }],
-                  },
                   useNativeSDK: { web: false },
                   whitelistedEvents: [{ eventName: '' }],
                 },
@@ -143,9 +137,6 @@ export const data = [
                   eventsMap: [{ from: 'Product Viewed', to: 'conv.add_to_cart' }],
                   useNativeSDK: { web: false },
                   clientAuthId: { web: 'test-client-auth-id' },
-                  oneTrustCookieCategories: {
-                    web: [{ oneTrustCookieCategory: 'Marketing Sample' }],
-                  },
                   customDomain: { web: 'https://cookiedomain.com' },
                   enableCookieSync: { web: true },
                 },
@@ -232,9 +223,6 @@ export const data = [
                   enableCookieSync: { web: true },
                   eventFilteringOption: 'disable',
                   eventsMap: [{ from: 'Product Viewed', to: 'conv.add_to_cart' }],
-                  oneTrustCookieCategories: {
-                    web: [{ oneTrustCookieCategory: 'Marketing Sample' }],
-                  },
                   useNativeSDK: { web: false },
                   whitelistedEvents: [{ eventName: '' }],
                 },

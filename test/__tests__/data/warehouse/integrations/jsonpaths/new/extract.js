@@ -1,7 +1,10 @@
 module.exports = {
     input: {
         destination: {
-            Config: {}
+            Config: {
+                allowUsersContextTraits: true,
+                underscoreDivideNumbers: true
+            }
         },
         message: {
             anonymousId: "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
@@ -49,6 +52,14 @@ module.exports = {
                     }
                 },
                 SNOWFLAKE: {
+                    options: {
+                        jsonPaths: [
+                            "extract.properties.PMap.nestedMap",
+                            "extract.context.CMap.nestedMap",
+                        ]
+                    }
+                },
+                SNOWPIPE_STREAMING: {
                     options: {
                         jsonPaths: [
                             "extract.properties.PMap.nestedMap",
@@ -238,6 +249,43 @@ module.exports = {
             }
         ],
         snowflake: [
+            {
+                "data": {
+                    "CONTEXT_C_MAP_NESTED_MAP": "{\"n1\":\"context nested prop 1\"}",
+                    "CONTEXT_SOURCES_JOB_ID": "djfhksdjhfkjdhfkjahkf",
+                    "CONTEXT_SOURCES_JOB_RUN_ID": "job_run_id",
+                    "CONTEXT_SOURCES_TASK_RUN_ID": "task_run_id",
+                    "CONTEXT_SOURCES_VERSION": "1169/merge",
+                    "CONTEXT_USER_AGENT": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36",
+                    "CURRENCY": "USD",
+                    "EVENT": "Product Added",
+                    "ID": "a6a0ad5a-bd26-4f19-8f75-38484e580fc7",
+                    "P_MAP_NESTED_MAP": "{\"n1\":\"nested prop 1\"}",
+                    "RECEIVED_AT": "2020-01-24T06:29:02.403Z",
+                    "REVENUE": 50
+                },
+                "metadata": {
+                    "columns": {
+                        "CONTEXT_C_MAP_NESTED_MAP": "json",
+                        "CONTEXT_SOURCES_JOB_ID": "string",
+                        "CONTEXT_SOURCES_JOB_RUN_ID": "string",
+                        "CONTEXT_SOURCES_TASK_RUN_ID": "string",
+                        "CONTEXT_SOURCES_VERSION": "string",
+                        "CONTEXT_USER_AGENT": "string",
+                        "CURRENCY": "string",
+                        "EVENT": "string",
+                        "ID": "string",
+                        "P_MAP_NESTED_MAP": "json",
+                        "RECEIVED_AT": "datetime",
+                        "REVENUE": "int",
+                        "UUID_TS": "datetime"
+                    },
+                    "receivedAt": "2020-01-24T11:59:02.403+05:30",
+                    "table": "PRODUCT_ADDED"
+                }
+            }
+        ],
+        snowpipe_streaming: [
             {
                 "data": {
                     "CONTEXT_C_MAP_NESTED_MAP": "{\"n1\":\"context nested prop 1\"}",

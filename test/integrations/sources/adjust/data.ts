@@ -125,4 +125,57 @@ export const data = [
       defaultMockFns();
     },
   },
+  {
+    name: 'adjust',
+    description: 'Simple track call with wrong created at',
+    module: 'source',
+    version: 'v0',
+    skipGo: 'FIXME',
+    input: {
+      request: {
+        body: [
+          {
+            id: 'adjust',
+            query_parameters: {
+              gps_adid: ['38400000-8cf0-11bd-b23e-10b96e40000d'],
+              adid: ['18546f6171f67e29d1cb983322ad1329'],
+              tracker_token: ['abc'],
+              custom: ['custom'],
+              tracker_name: ['dummy'],
+              created_at: ['test'],
+              event_name: ['Click'],
+            },
+            updated_at: '2023-02-10T12:16:07.251Z',
+            created_at: 'test',
+          },
+        ],
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      },
+      pathSuffix: '',
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            error: 'Failed to parse timestamp: "test"',
+            statTags: {
+              destinationId: 'Non determinable',
+              errorCategory: 'transformation',
+              implementation: 'native',
+              module: 'source',
+              workspaceId: 'Non determinable',
+            },
+            statusCode: 400,
+          },
+        ],
+      },
+    },
+    mockFns: () => {
+      defaultMockFns();
+    },
+  },
 ];

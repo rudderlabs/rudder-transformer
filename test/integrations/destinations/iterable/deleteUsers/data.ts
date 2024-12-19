@@ -183,4 +183,40 @@ export const data = [
       },
     },
   },
+  {
+    name: destType,
+    description: 'Test 5: should pass when dataCenter is selected as EUDC',
+    feature: 'userDeletion',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destType: destType.toUpperCase(),
+            userAttributes: [
+              {
+                userId: 'rudder7',
+              },
+            ],
+            config: {
+              apiKey: 'dummyApiKey',
+              dataCenter: 'EUDC',
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            statusCode: 200,
+            status: 'successful',
+          },
+        ],
+      },
+    },
+  },
 ];

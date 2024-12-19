@@ -1,11 +1,26 @@
 const { getMappingConfig } = require('../../util');
 
 const BASE_ENDPOINT = 'https://api.aptrinsic.com/v1';
-const ENDPOINTS = {
-  USERS_ENDPOINT: `${BASE_ENDPOINT}/users`,
-  CUSTOM_EVENTS_ENDPOINT: `${BASE_ENDPOINT}/events/custom`,
-  ACCOUNTS_ENDPOINT: `${BASE_ENDPOINT}/accounts`,
+const BASE_EU_ENDPOINT = 'https://api-eu.aptrinsic.com/v1';
+const BASE_US2_ENDPOINT = 'https://api-us2.aptrinsic.com/v1';
+
+const getBaseEndpoint = (Config) => {
+  const { dataCenter } = Config;
+  switch (dataCenter) {
+    case 'EU':
+      return BASE_EU_ENDPOINT;
+    case 'US2':
+      return BASE_US2_ENDPOINT;
+    default:
+      return BASE_ENDPOINT;
+  }
 };
+
+const getUsersEndpoint = (Config) => `${getBaseEndpoint(Config)}/users`;
+
+const getCustomEventsEndpoint = (Config) => `${getBaseEndpoint(Config)}/events/custom`;
+
+const getAccountsEndpoint = (Config) => `${getBaseEndpoint(Config)}/accounts`;
 
 const CONFIG_CATEGORIES = {
   IDENTIFY: { type: 'identify', name: 'GainsightPX_Identify' },
@@ -79,10 +94,16 @@ const ACCOUNT_EXCLUSION_FIELDS = [
 ];
 
 module.exports = {
-  ENDPOINTS,
   USER_EXCLUSION_FIELDS,
   ACCOUNT_EXCLUSION_FIELDS,
   identifyMapping: MAPPING_CONFIG[CONFIG_CATEGORIES.IDENTIFY.name],
   trackMapping: MAPPING_CONFIG[CONFIG_CATEGORIES.TRACK.name],
   groupMapping: MAPPING_CONFIG[CONFIG_CATEGORIES.GROUP.name],
+  getUsersEndpoint,
+  getCustomEventsEndpoint,
+  getAccountsEndpoint,
+  BASE_ENDPOINT,
+  BASE_EU_ENDPOINT,
+  BASE_US2_ENDPOINT,
+  getBaseEndpoint,
 };

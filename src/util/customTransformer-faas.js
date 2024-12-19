@@ -8,6 +8,8 @@ const {
   executeFaasFunction,
   FAAS_AST_FN_NAME,
   FAAS_AST_VID,
+  PARENT_NAMESPACE,
+  PARENT_CLUSTER,
 } = require('./openfaas');
 const { getLibraryCodeV1 } = require('./customTransforrmationsStore-v1');
 
@@ -25,6 +27,8 @@ function generateFunctionName(userTransformation, libraryVersionIds, testMode, h
   let ids = [userTransformation.workspaceId, userTransformation.versionId].concat(
     (libraryVersionIds || []).sort(),
   );
+
+  ids = ids.concat([PARENT_NAMESPACE, PARENT_CLUSTER]);
 
   if (hashSecret !== '') {
     ids = ids.concat([hashSecret]);

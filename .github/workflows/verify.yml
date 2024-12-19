@@ -14,13 +14,13 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4.1.1
+        uses: actions/checkout@v4.2.1
         with:
           # Make sure the actual branch is checked out when running on pull requests
           ref: ${{ github.head_ref }}
 
       - name: Setup Node
-        uses: actions/setup-node@v4.0.3
+        uses: actions/setup-node@v4.0.4
         with:
           node-version-file: .nvmrc
           cache: 'npm'
@@ -33,9 +33,19 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Filter JS/TS Files
+        run: |
+          changed_files=$(echo "${{ steps.files.outputs.added_modified }}" | tr ' ' '\n' | grep -E '\.(js|ts|jsx|tsx)$' || true)
+          if [ -z "$changed_files" ]; then
+            echo "No JS/TS files to format or lint."
+            exit 0
+          fi
+
       - name: Run format Checks
         run: |
-          npx prettier ${{steps.files.outputs.added_modified}} --write
+          if [ -s changed_files.txt ]; then
+              npx prettier --write $(cat changed_files.txt)
+          fi
 
       - run: git diff --exit-code
 

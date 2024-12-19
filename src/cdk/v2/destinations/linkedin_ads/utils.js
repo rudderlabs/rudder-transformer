@@ -89,7 +89,7 @@ function checkIfPricePresent(properties) {
 }
 
 const calculateConversionObject = (message) => {
-  const { properties, event } = message;
+  const { properties } = message;
 
   const calculateAmount = () => {
     if (properties?.products && properties.products.length > 0) {
@@ -107,9 +107,7 @@ const calculateConversionObject = (message) => {
     };
     return conversionObject;
   }
-  throw new InstrumentationError(
-    `[LinkedIn Conversion API]: Cannot map price for event ${event}. Aborting`,
-  );
+  return null;
 };
 
 const deduceConversionRules = (trackEventName, destConfig) => {

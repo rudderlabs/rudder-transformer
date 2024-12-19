@@ -135,6 +135,14 @@ type Destination = {
   IsConnectionEnabled?: boolean;
 };
 
+type Connection = {
+  sourceId: string;
+  destinationId: string;
+  enabled: boolean;
+  config: Record<string, unknown>;
+  processorEnabled?: boolean;
+};
+
 type UserTransformationLibrary = {
   VersionID: string;
 };
@@ -151,6 +159,7 @@ type ProcessorTransformationRequest = {
   message: object;
   metadata: Metadata;
   destination: Destination;
+  connection?: Connection;
   libraries?: UserTransformationLibrary[];
   credentials?: Credential[];
 };
@@ -160,6 +169,7 @@ type RouterTransformationRequestData = {
   message: object;
   metadata: Metadata;
   destination: Destination;
+  connection?: Connection;
 };
 
 type RouterTransformationRequest = {
@@ -342,14 +352,38 @@ type Source = {
 };
 
 type SourceInput = {
-  event: NonNullable<unknown>[];
+  event: {
+    query_parameters?: any;
+    [key: string]: any;
+  };
   source?: Source;
 };
+
+type SourceRequestV2 = {
+  method?: string;
+  url?: string;
+  proto?: string;
+  body: string;
+  headers?: Record<string, unknown>;
+  query_parameters?: Record<string, unknown>;
+};
+
+type SourceInputV2 = {
+  request: SourceRequestV2;
+  source?: Source;
+};
+
+type SourceInputConversionResult<T> = {
+  output?: T;
+  conversionError?: Error;
+};
+
 export {
   ComparatorInput,
   DeliveryJobState,
   DeliveryV0Response,
   DeliveryV1Response,
+  Connection,
   Destination,
   ErrorDetailer,
   MessageIdMetadataMap,
@@ -371,7 +405,10 @@ export {
   UserDeletionRequest,
   UserDeletionResponse,
   SourceInput,
+  SourceInputV2,
+  SourceRequestV2,
   Source,
+  SourceInputConversionResult,
   UserTransformationLibrary,
   UserTransformationResponse,
   UserTransformationServiceResponse,

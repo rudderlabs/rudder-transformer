@@ -134,7 +134,10 @@ async function getSaleforceIdForRecord(
     );
   }
   const searchRecord = processedsfSearchResponse.response?.searchRecords?.find(
-    (rec) => typeof identifierValue !== 'undefined' && rec[identifierType] === `${identifierValue}`,
+    (rec) =>
+      typeof identifierValue !== 'undefined' &&
+      // eslint-disable-next-line eqeqeq
+      rec[identifierType] == identifierValue,
   );
 
   return searchRecord?.Id;
@@ -190,8 +193,9 @@ async function getSalesforceIdFromPayload(
         'Invalid externalId. id, type, identifierType must be provided',
       );
     }
-
-    const objectType = type.toLowerCase().replace('salesforce-', '');
+    const objectType = type
+      .toLowerCase()
+      .replace(`${destination.DestinationDefinition.Name.toLowerCase()}-`, '');
     let salesforceId = id;
 
     // Fetch the salesforce Id if the identifierType is not ID
@@ -289,6 +293,7 @@ async function processIdentify(
   authorizationData,
   authorizationFlow,
 ) {
+  const { Name } = destination.DestinationDefinition;
   const mapProperty =
     destination.Config.mapProperty === undefined ? true : destination.Config.mapProperty;
   // check the traits before hand
@@ -300,7 +305,7 @@ async function processIdentify(
   // Append external ID to traits if event is mapped to destination and only if identifier type is not id
   // If identifier type is id, then it should not be added to traits, else saleforce will throw an error
   const mappedToDestination = get(message, MappedToDestinationKey);
-  const externalId = getDestinationExternalIDObjectForRetl(message, 'SALESFORCE');
+  const externalId = getDestinationExternalIDObjectForRetl(message, Name);
   if (mappedToDestination && externalId?.identifierType?.toLowerCase() !== 'id') {
     addExternalIdToTraits(message);
   }

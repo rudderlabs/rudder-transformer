@@ -1,0 +1,34 @@
+[
+  {
+    "sourceKeys": "context.document.referrer",
+    "destKeys": "page.referrer"
+  },
+  {
+    "sourceKeys": "document.title",
+    "destKeys": "page.title"
+  },
+  {
+    "sourceKeys": "navigator.userAgent",
+    "destKeys": "userAgent"
+  },
+  {
+    "sourceKeys": "window.location.href",
+    "destKeys": "page.url"
+  },
+  {
+    "sourceKeys": "window.location.pathname",
+    "destKeys": "page.path"
+  },
+  {
+    "sourceKeys": "window.location.search",
+    "destKeys": "page.search"
+  },
+  {
+    "sourceKeys": "window.screen.height",
+    "destKeys": "screen.height"
+  },
+  {
+    "sourceKeys": "window.screen.width",
+    "destKeys": "screen.width"
+  }
+]

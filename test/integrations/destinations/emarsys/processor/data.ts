@@ -112,11 +112,6 @@ export const data = [
                     emersysProperty: '3',
                   },
                 ],
-                oneTrustCookieCategories: [
-                  {
-                    oneTrustCookieCategory: 'Marketing',
-                  },
-                ],
               },
             },
           },
@@ -285,11 +280,6 @@ export const data = [
                     emersysProperty: 'custom_id',
                   },
                 ],
-                oneTrustCookieCategories: [
-                  {
-                    oneTrustCookieCategory: 'Marketing',
-                  },
-                ],
               },
             },
           },
@@ -456,11 +446,6 @@ export const data = [
                     emersysProperty: 'custom_id',
                   },
                 ],
-                oneTrustCookieCategories: [
-                  {
-                    oneTrustCookieCategory: 'Marketing',
-                  },
-                ],
               },
             },
           },
@@ -599,11 +584,6 @@ export const data = [
                     emersysProperty: 'custom_id',
                   },
                 ],
-                oneTrustCookieCategories: [
-                  {
-                    oneTrustCookieCategory: 'Marketing',
-                  },
-                ],
               },
             },
           },
@@ -722,11 +702,6 @@ export const data = [
                     emersysProperty: 'custom_id',
                   },
                 ],
-                oneTrustCookieCategories: [
-                  {
-                    oneTrustCookieCategory: 'Marketing',
-                  },
-                ],
               },
             },
           },
@@ -840,11 +815,6 @@ export const data = [
                   {
                     rudderProperty: 'lastName',
                     emersysProperty: '2',
-                  },
-                ],
-                oneTrustCookieCategories: [
-                  {
-                    oneTrustCookieCategory: 'Marketing',
                   },
                 ],
               },
@@ -962,11 +932,6 @@ export const data = [
                   {
                     rudderProperty: 'custom-field',
                     emersysProperty: 'custom_id',
-                  },
-                ],
-                oneTrustCookieCategories: [
-                  {
-                    oneTrustCookieCategory: 'Marketing',
                   },
                 ],
               },
@@ -1093,11 +1058,6 @@ export const data = [
                     emersysProperty: 'custom_id',
                   },
                 ],
-                oneTrustCookieCategories: [
-                  {
-                    oneTrustCookieCategory: 'Marketing',
-                  },
-                ],
               },
             },
           },
@@ -1218,11 +1178,6 @@ export const data = [
                   {
                     rudderProperty: 'custom-field',
                     emersysProperty: 'custom_id',
-                  },
-                ],
-                oneTrustCookieCategories: [
-                  {
-                    oneTrustCookieCategory: 'Marketing',
                   },
                 ],
               },
@@ -1346,11 +1301,6 @@ export const data = [
                     emersysProperty: 'custom_id',
                   },
                 ],
-                oneTrustCookieCategories: [
-                  {
-                    oneTrustCookieCategory: 'Marketing',
-                  },
-                ],
               },
             },
           },
@@ -1461,11 +1411,6 @@ export const data = [
                   {
                     rudderProperty: 'email',
                     emersysProperty: '3',
-                  },
-                ],
-                oneTrustCookieCategories: [
-                  {
-                    oneTrustCookieCategory: 'Marketing',
                   },
                 ],
               },

@@ -440,6 +440,24 @@ class Prometheus {
         labelNames: ['writeKey', 'source', 'shopifyTopic'],
       },
       {
+        name: 'shopify_pixel_cart_token_not_found',
+        help: 'shopify_pixel_cart_token_not_found',
+        type: 'counter',
+        labelNames: ['event', 'writeKey'],
+      },
+      {
+        name: 'shopify_pixel_cart_token_set',
+        help: 'shopify_pixel_cart_token_set',
+        type: 'counter',
+        labelNames: ['event', 'writeKey'],
+      },
+      {
+        name: 'shopify_pixel_cart_token_redis_error',
+        help: 'shopify_pixel_cart_token_redis_error',
+        type: 'counter',
+        labelNames: ['event', 'writeKey'],
+      },
+      {
         name: 'outgoing_request_count',
         help: 'Outgoing HTTP requests count',
         type: 'counter',
@@ -501,6 +519,24 @@ class Prometheus {
         help: 'braze_alias_missconfigured_count',
         type: 'counter',
         labelNames: ['destination_id'],
+      },
+      {
+        name: 'braze_batch_subscription_size',
+        help: 'braze_batch_subscription_size',
+        type: 'gauge',
+        labelNames: ['destination_id'],
+      },
+      {
+        name: 'braze_batch_subscription_combined_size',
+        help: 'braze_batch_subscription_combined_size',
+        type: 'gauge',
+        labelNames: ['destination_id'],
+      },
+      {
+        name: 'mailjet_packing_size',
+        help: 'mailjet_packing_size',
+        type: 'gauge',
+        labelNames: ['group'],
       },
       {
         name: 'hs_batch_size',

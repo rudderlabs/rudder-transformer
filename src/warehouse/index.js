@@ -30,7 +30,7 @@ const whExtractEventTableColumnMappingRules = require('./config/WHExtractEventTa
 const maxColumnsInEvent = parseInt(process.env.WH_MAX_COLUMNS_IN_EVENT || '200', 10);
 
 const WH_POPULATE_SRC_DEST_INFO_IN_CONTEXT =
-  process.env.WH_POPULATE_SRC_DEST_INFO_IN_CONTEXT || true;
+  process.env.WH_POPULATE_SRC_DEST_INFO_IN_CONTEXT !== 'false';
 
 const getDataType = (key, val, options, jsonKey = false) => {
   const type = typeof val;
@@ -208,6 +208,23 @@ function setDataFromInputAndComputeColumnTypes(
   level = 0,
 ) {
   if (!input || !isObject(input)) return;
+  if (
+    (completePrefix.endsWith('context_traits_') || completePrefix === 'group_traits_') &&
+    isStringLikeObject(input)
+  ) {
+    if (prefix === 'context_traits_') {
+      appendColumnNameAndType(
+        utils,
+        eventType,
+        `${prefix}`,
+        stringLikeObjectToString(input),
+        output,
+        columnTypes,
+        options,
+      );
+    }
+    return;
+  }
   Object.keys(input).forEach((key) => {
     const isValidLegacyJSONPath = isValidLegacyJsonPathKey(
       eventType,
@@ -272,13 +289,70 @@ function setDataFromInputAndComputeColumnTypes(
   });
 }
 
+function isNonNegativeInteger(str) {
+  if (str.length === 0) return false;
+  for (let i = 0; i < str.length; i++) {
+    const charCode = str.charCodeAt(i);
+    if (charCode < 48 || charCode > 57) return false;
+  }
+  return true;
+}
+
+function isStringLikeObject(obj) {
+  if (typeof obj !== 'object' || obj === null) return false;
+
+  const keys = Object.keys(obj);
+  if (keys.length === 0) return false;
+
+  let minKey = Infinity;
+  let maxKey = -Infinity;
+
+  for (let i = 0; i < keys.length; i++) {
+    const key = keys[i];
+    const value = obj[key];
+
+    if (!isNonNegativeInteger(key)) return false;
+    if (typeof value !== 'string' || value.length !== 1) return false;
+
+    const numKey = parseInt(key, 10);
+    if (numKey < minKey) minKey = numKey;
+    if (numKey > maxKey) maxKey = numKey;
+  }
+
+  for (let i = minKey; i <= maxKey; i++) {
+    if (!keys.includes(i.toString())) return false;
+  }
+
+  return (minKey === 0 || minKey === 1) && maxKey - minKey + 1 === keys.length;
+}
+
+function stringLikeObjectToString(obj) {
+  if (!isStringLikeObject(obj)) {
+    return obj; // Return the original input if it's not a valid string-like object
+  }
+
+  const keys = Object.keys(obj)
+    .map(Number)
+    .sort((a, b) => a - b);
+  let result = '';
+
+  for (let i = 0; i < keys.length; i++) {
+    result += obj[keys[i].toString()];
+  }
+
+  return result;
+}
+
 /*
  * uuid_ts and loaded_at datatypes are passed from here to create appropriate columns.
  * Corresponding values are inserted when loading into the warehouse
  */
 function getColumns(options, event, columnTypes) {
   const columns = {};
-  const uuidTS = options.provider === 'snowflake' ? 'UUID_TS' : 'uuid_ts';
+  const uuidTS =
+    options.provider === 'snowflake' || options.provider === 'snowpipe_streaming'
+      ? 'UUID_TS'
+      : 'uuid_ts';
   columns[uuidTS] = 'datetime';
   // add loaded_at for bq to be segment compatible
   if (options.provider === 'bq') {
@@ -306,6 +380,7 @@ function getColumns(options, event, columnTypes) {
 
 const fullEventColumnTypeByProvider = {
   snowflake: 'json',
+  snowpipe_streaming: 'json',
   rs: 'text',
   bq: 'string',
   postgres: 'json',
@@ -542,6 +617,15 @@ function enhanceContextWithSourceDestInfo(message, metadata) {
   message.context = context;
 }
 
+function shouldSkipUsersTable(options) {
+  return (
+    options.provider === 'snowpipe_streaming' ||
+    options.destConfig?.skipUsersTable ||
+    options.integrationOptions?.skipUsersTable ||
+    false
+  );
+}
+
 function processWarehouseMessage(message, options) {
   const utils = getVersionedUtils(options.whSchemaVersion);
   options.utils = utils;
@@ -567,10 +651,21 @@ function processWarehouseMessage(message, options) {
   const eventType = message.type?.toLowerCase();
   const skipTracksTable =
     options.destConfig?.skipTracksTable || options.integrationOptions.skipTracksTable || false;
-  const skipUsersTable =
-    options.destConfig?.skipUsersTable || options.integrationOptions.skipUsersTable || false;
+  const skipUsersTable = shouldSkipUsersTable(options);
   const skipReservedKeywordsEscaping =
     options.integrationOptions.skipReservedKeywordsEscaping || false;
+
+  // underscoreDivideNumbers when set to false, if a column has a format like "_v_3_", it will be formatted to "_v3_"
+  // underscoreDivideNumbers when set to true, if a column has a format like "_v_3_", we keep it like that
+  // For older destinations, it will come as true and for new destinations this config will not be present which means we will treat it as false.
+  options.underscoreDivideNumbers = options.destConfig?.underscoreDivideNumbers || false;
+
+  // allowUsersContextTraits when set to true, if context.traits.* is present, it will be added as context_traits_* and *,
+  // e.g., for context.traits.name, context_traits_name and name will be added to the user's table.
+  // allowUsersContextTraits when set to false, if context.traits.* is present, it will be added only as context_traits_*
+  // e.g., for context.traits.name, only context_traits_name will be added to the user's table.
+  // For older destinations, it will come as true, and for new destinations this config will not be present, which means we will treat it as false.
+  const allowUsersContextTraits = options.destConfig?.allowUsersContextTraits || false;
 
   addJsonKeysToOptions(options);
 
@@ -827,16 +922,18 @@ function processWarehouseMessage(message, options) {
         `${eventType + '_userProperties_'}`,
         2,
       );
-      setDataFromInputAndComputeColumnTypes(
-        utils,
-        eventType,
-        commonProps,
-        message.context ? message.context.traits : {},
-        commonColumnTypes,
-        options,
-        `${eventType + '_context_traits_'}`,
-        3,
-      );
+      if (allowUsersContextTraits) {
+        setDataFromInputAndComputeColumnTypes(
+          utils,
+          eventType,
+          commonProps,
+          message.context ? message.context.traits : {},
+          commonColumnTypes,
+          options,
+          `${eventType + '_context_traits_'}`,
+          3,
+        );
+      }
       setDataFromInputAndComputeColumnTypes(
         utils,
         eventType,
@@ -916,11 +1013,23 @@ function processWarehouseMessage(message, options) {
 
       const usersEvent = { ...commonProps };
       const usersColumnTypes = {};
+      let userColumnMappingRules = whUserColumnMappingRules;
+      if (!isDataLakeProvider(options.provider)) {
+        userColumnMappingRules = {
+          ...userColumnMappingRules,
+          ...{
+            sent_at: 'sentAt',
+            timestamp: 'timestamp',
+            original_timestamp: 'originalTimestamp',
+          },
+        };
+      }
+
       setDataFromColumnMappingAndComputeColumnTypes(
         utils,
         usersEvent,
         message,
-        whUserColumnMappingRules,
+        userColumnMappingRules,
         usersColumnTypes,
         options,
       );

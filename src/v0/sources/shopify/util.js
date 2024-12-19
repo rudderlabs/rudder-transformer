@@ -2,15 +2,9 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 const { v5 } = require('uuid');
 const sha256 = require('sha256');
-const { TransformationError } = require('@rudderstack/integrations-lib');
+const { TransformationError, isDefinedAndNotNull } = require('@rudderstack/integrations-lib');
 const stats = require('../../../util/stats');
-const {
-  constructPayload,
-  extractCustomFields,
-  flattenJson,
-  generateUUID,
-  isDefinedAndNotNull,
-} = require('../../util');
+const utils = require('../../util');
 const { RedisDB } = require('../../../util/redis/redisConnector');
 const {
   lineItemsMappingJSON,
@@ -92,8 +86,8 @@ const getProductsListFromLineItems = (lineItems) => {
   }
   const products = [];
   lineItems.forEach((lineItem) => {
-    const product = constructPayload(lineItem, lineItemsMappingJSON);
-    extractCustomFields(lineItem, product, 'root', LINE_ITEM_EXCLUSION_FIELDS);
+    const product = utils.constructPayload(lineItem, lineItemsMappingJSON);
+    utils.extractCustomFields(lineItem, product, 'root', LINE_ITEM_EXCLUSION_FIELDS);
     product.variant = getVariantString(lineItem);
     products.push(product);
   });
@@ -103,14 +97,14 @@ const getProductsListFromLineItems = (lineItems) => {
 const createPropertiesForEcomEvent = (message) => {
   const { line_items: lineItems } = message;
   const productsList = getProductsListFromLineItems(lineItems);
-  const mappedPayload = constructPayload(message, productMappingJSON);
-  extractCustomFields(message, mappedPayload, 'root', PRODUCT_MAPPING_EXCLUSION_FIELDS);
+  const mappedPayload = utils.constructPayload(message, productMappingJSON);
+  utils.extractCustomFields(message, mappedPayload, 'root', PRODUCT_MAPPING_EXCLUSION_FIELDS);
   mappedPayload.products = productsList;
   return mappedPayload;
 };
 
 const extractEmailFromPayload = (event) => {
-  const flattenedPayload = flattenJson(event);
+  const flattenedPayload = utils.flattenJson(event);
   let email;
   const regex_email = /\bemail\b/i;
   Object.entries(flattenedPayload).some(([key, value]) => {
@@ -124,11 +118,11 @@ const extractEmailFromPayload = (event) => {
 };
 
 const getCartToken = (message) => {
-  const { event, properties } = message;
+  const { event, properties, context } = message;
   if (event === SHOPIFY_TRACK_MAP.carts_update) {
     return properties?.id || properties?.token;
   }
-  return properties?.cart_token || null;
+  return properties?.cart_token || context?.cart_token || null;
 };
 
 /**
@@ -182,7 +176,7 @@ const getAnonymousIdAndSessionId = async (message, metricMetadata, redisData = n
       return { anonymousId, sessionId };
     }
     return {
-      anonymousId: isDefinedAndNotNull(anonymousId) ? anonymousId : generateUUID(),
+      anonymousId: isDefinedAndNotNull(anonymousId) ? anonymousId : utils.generateUUID(),
       sessionId,
     };
   }
@@ -281,4 +275,5 @@ module.exports = {
   checkAndUpdateCartItems,
   getHashLineItems,
   getDataFromRedis,
+  getVariantString,
 };

@@ -1,12 +1,20 @@
-import { eventStreamRouterRequest } from './eventStream';
-import { rETLAudienceRouterRequest } from './audienceList';
-import { rETLBatchingRouterRequest } from './batchingRecord';
-import { rETLRecordRouterRequest } from './record';
+import {
+  eventStreamAudienceListRouterRequest,
+  eventStreamRecordV1RouterRequest,
+  esDestinationAudience,
+  esDestinationRecord,
+} from './eventStream';
+import {
+  rETLRecordV1RouterRequest,
+  rETLRecordV2RouterRequest,
+  rETLRecordV2RouterInvalidRequest,
+} from './rETL';
+import { mockFns } from '../mocks';
 
 export const data = [
   {
     name: 'fb_custom_audience',
-    description: 'eventStream tests',
+    description: 'eventStream using audienceList tests',
     scenario: 'business',
     successCriteria: 'event stream events should be batched correctly',
     feature: 'router',
@@ -14,7 +22,7 @@ export const data = [
     version: 'v0',
     input: {
       request: {
-        body: eventStreamRouterRequest,
+        body: eventStreamAudienceListRouterRequest,
       },
     },
     output: {
@@ -143,43 +151,7 @@ export const data = [
               ],
               batched: false,
               statusCode: 200,
-              destination: {
-                Config: {
-                  accessToken: 'ABC',
-                  userSchema: [
-                    'EMAIL',
-                    'DOBM',
-                    'DOBD',
-                    'DOBY',
-                    'PHONE',
-                    'GEN',
-                    'FI',
-                    'MADID',
-                    'ZIP',
-                    'ST',
-                    'COUNTRY',
-                  ],
-                  isHashRequired: false,
-                  disableFormat: false,
-                  audienceId: 'aud1',
-                  isRaw: true,
-                  type: 'NA',
-                  subType: 'ANYTHING',
-                  maxUserCount: '50',
-                },
-                Enabled: true,
-                Transformations: [],
-                IsProcessorEnabled: true,
-                ID: '123',
-                Name: 'fb_custom_audience',
-                DestinationDefinition: {
-                  ID: '123',
-                  Name: 'fb_custom_audience',
-                  DisplayName: 'fb_custom_audience',
-                  Config: {},
-                },
-                WorkspaceID: '123',
-              },
+              destination: esDestinationAudience,
             },
             {
               batchedRequest: [
@@ -302,43 +274,7 @@ export const data = [
               ],
               batched: false,
               statusCode: 200,
-              destination: {
-                Config: {
-                  accessToken: 'ABC',
-                  userSchema: [
-                    'EMAIL',
-                    'DOBM',
-                    'DOBD',
-                    'DOBY',
-                    'PHONE',
-                    'GEN',
-                    'FI',
-                    'MADID',
-                    'ZIP',
-                    'ST',
-                    'COUNTRY',
-                  ],
-                  isHashRequired: false,
-                  disableFormat: false,
-                  audienceId: 'aud1',
-                  isRaw: true,
-                  type: 'NA',
-                  subType: 'ANYTHING',
-                  maxUserCount: '50',
-                },
-                Enabled: true,
-                Transformations: [],
-                IsProcessorEnabled: true,
-                ID: '123',
-                Name: 'fb_custom_audience',
-                DestinationDefinition: {
-                  ID: '123',
-                  Name: 'fb_custom_audience',
-                  DisplayName: 'fb_custom_audience',
-                  Config: {},
-                },
-                WorkspaceID: '123',
-              },
+              destination: esDestinationAudience,
             },
           ],
         },
@@ -347,196 +283,7 @@ export const data = [
   },
   {
     name: 'fb_custom_audience',
-    description: 'rETL tests',
-    scenario: 'business',
-    successCriteria: 'it should transform audience event correctly',
-    feature: 'router',
-    module: 'destination',
-    version: 'v0',
-    input: {
-      request: {
-        body: rETLAudienceRouterRequest,
-      },
-    },
-    output: {
-      response: {
-        status: 200,
-        body: {
-          output: [
-            {
-              batchedRequest: [
-                {
-                  version: '1',
-                  type: 'REST',
-                  method: 'POST',
-                  endpoint: 'https://graph.facebook.com/v20.0/23848494844100489/users',
-                  headers: {},
-                  params: {
-                    access_token: 'ABC',
-                    payload: {
-                      schema: ['EMAIL', 'FN'],
-                      data: [
-                        [
-                          '7625cab24612c37df6d2f724721bb38a25095d0295e29b807238ee188b8aca43',
-                          'e328a0d90d4b5132b2655cf7079b160040d2c1a83d70d4cad9cf1f69310635b3',
-                        ],
-                        [
-                          'b2b4abadd72190af54305c0d3abf1977fec4935016bb13ff28040d5712318dfd',
-                          'f8147eb72c9bb356c362fdb0796b54971ebc983cb60b3cc3ff29582ce2052bad',
-                        ],
-                        [
-                          'c4b007d1c3c9a5d31bd4082237a913e8e0db1767225c2a5ef33be2716df005fa',
-                          'd8bb13b95eaed7f9b6a8af276aa6122e8015e0c466c1a84e49ff7c69ad6ac911',
-                        ],
-                        [
-                          '94639be1bd9f17c05820164e9d71ef78558f117a9e8bfab43cf8015e08aa0b27',
-                          'b1661f97721dede0f876dcbf603289ee339f641b9c310deba53c76940f472698',
-                        ],
-                        [
-                          '39b456cfb4bb07f9e6bb18698aa173171ca49c731fccc4790e9ecea808d24ae6',
-                          '6c882abd6d0aff713cdd6a4a31ee28c9140612fb2627a611f6f9f539bac44f81',
-                        ],
-                        [
-                          '769f73387add781a481ca08300008a08fb2f1816aaed196137efc2e05976d711',
-                          '2222cb73346f7a01a1d4d3db28b58fd41045782bb66152b92aade379192544c5',
-                        ],
-                        [
-                          '48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08',
-                          'abc12f8d666517c35280bf220f5390b1f0ef4bdbbc794ac59c95bba0381bf91b',
-                        ],
-                        [
-                          'da2d431121cd10578fd81f8f80344b06db59ea2d05a7b5d27536c8789ddae8f0',
-                          'abc12f8d666517c35280bf220f5390b1f0ef4bdbbc794ac59c95bba0381bf91b',
-                        ],
-                        [
-                          'b100c2ec0718fe6b4805b623aeec6710719d042ceea55f5c8135b010ec1c7b36',
-                          '62a2fed3d6e08c44835fce71f02210b1ddabfb066e39edf1e6c261988f824dd3',
-                        ],
-                        [
-                          '0c1d1b0ba547a742013366d6fbc8f71dd77f566d94e41ed9f828a74b96928161',
-                          '62a2fed3d6e08c44835fce71f02210b1ddabfb066e39edf1e6c261988f824dd3',
-                        ],
-                      ],
-                    },
-                  },
-                  body: {
-                    JSON: {},
-                    JSON_ARRAY: {},
-                    XML: {},
-                    FORM: {},
-                  },
-                  files: {},
-                },
-              ],
-              metadata: [
-                {
-                  attemptNum: 1,
-                  destinationId: 'default-destinationId',
-                  dontBatch: false,
-                  jobId: 3,
-                  secret: {
-                    accessToken: 'default-accessToken',
-                  },
-                  sourceId: 'default-sourceId',
-                  userId: 'default-userId',
-                  workspaceId: 'default-workspaceId',
-                },
-              ],
-              batched: false,
-              statusCode: 200,
-              destination: {
-                Config: {
-                  accessToken: 'ABC',
-                  disableFormat: false,
-                  isHashRequired: true,
-                  isRaw: false,
-                  maxUserCount: '50',
-                  oneTrustCookieCategories: [],
-                  skipVerify: false,
-                  subType: 'NA',
-                  type: 'NA',
-                  userSchema: ['EMAIL'],
-                },
-                ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
-                Name: 'FB_CUSTOM_AUDIENCE',
-                Enabled: true,
-                WorkspaceID: '1TSN08muJTZwH8iCDmnnRt1pmLd',
-                DestinationDefinition: {
-                  ID: '1aIXqM806xAVm92nx07YwKbRrO9',
-                  Name: 'FB_CUSTOM_AUDIENCE',
-                  DisplayName: 'FB_CUSTOM_AUDIENCE',
-                  Config: {},
-                },
-                Transformations: [],
-                IsConnectionEnabled: true,
-                IsProcessorEnabled: true,
-              },
-            },
-            {
-              metadata: [
-                {
-                  attemptNum: 1,
-                  destinationId: 'default-destinationId',
-                  dontBatch: false,
-                  jobId: 4,
-                  secret: {
-                    accessToken: 'default-accessToken',
-                  },
-                  sourceId: 'default-sourceId',
-                  userId: 'default-userId',
-                  workspaceId: 'default-workspaceId',
-                },
-              ],
-              batched: false,
-              statusCode: 400,
-              error:
-                'context.destinationFields is required property for events mapped to destination ',
-              statTags: {
-                errorCategory: 'dataValidation',
-                errorType: 'instrumentation',
-                destType: 'FB_CUSTOM_AUDIENCE',
-                destinationId: 'default-destinationId',
-                module: 'destination',
-                implementation: 'native',
-                feature: 'router',
-                workspaceId: 'default-workspaceId',
-              },
-              destination: {
-                Config: {
-                  accessToken: 'ABC',
-                  disableFormat: false,
-                  isHashRequired: true,
-                  isRaw: false,
-                  maxUserCount: '50',
-                  oneTrustCookieCategories: [],
-                  skipVerify: false,
-                  subType: 'NA',
-                  type: 'NA',
-                  userSchema: ['EMAIL'],
-                },
-                ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
-                Name: 'FB_CUSTOM_AUDIENCE',
-                Enabled: true,
-                WorkspaceID: '1TSN08muJTZwH8iCDmnnRt1pmLd',
-                DestinationDefinition: {
-                  ID: '1aIXqM806xAVm92nx07YwKbRrO9',
-                  Name: 'FB_CUSTOM_AUDIENCE',
-                  DisplayName: 'FB_CUSTOM_AUDIENCE',
-                  Config: {},
-                },
-                Transformations: [],
-                IsConnectionEnabled: true,
-                IsProcessorEnabled: true,
-              },
-            },
-          ],
-        },
-      },
-    },
-  },
-  {
-    name: 'fb_custom_audience',
-    description: 'rETL record tests',
+    description: 'event stream record V1 tests',
     scenario: 'business',
     successCriteria: 'all record events should be transformed correctly based on their operation',
     feature: 'router',
@@ -544,7 +291,7 @@ export const data = [
     version: 'v0',
     input: {
       request: {
-        body: rETLRecordRouterRequest,
+        body: eventStreamRecordV1RouterRequest,
       },
     },
     output: {
@@ -613,33 +360,7 @@ export const data = [
               ],
               batched: true,
               statusCode: 200,
-              destination: {
-                Config: {
-                  accessToken: 'ABC',
-                  disableFormat: false,
-                  isHashRequired: true,
-                  isRaw: false,
-                  maxUserCount: '3',
-                  oneTrustCookieCategories: [],
-                  skipVerify: false,
-                  subType: 'NA',
-                  type: 'NA',
-                  userSchema: ['EMAIL'],
-                },
-                ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
-                Name: 'FB_CUSTOM_AUDIENCE',
-                Enabled: true,
-                WorkspaceID: '1TSN08muJTZwH8iCDmnnRt1pmLd',
-                DestinationDefinition: {
-                  ID: '1aIXqM806xAVm92nx07YwKbRrO9',
-                  Name: 'FB_CUSTOM_AUDIENCE',
-                  DisplayName: 'FB_CUSTOM_AUDIENCE',
-                  Config: {},
-                },
-                Transformations: [],
-                IsConnectionEnabled: true,
-                IsProcessorEnabled: true,
-              },
+              destination: esDestinationRecord,
             },
             {
               batchedRequest: [
@@ -686,33 +407,7 @@ export const data = [
               ],
               batched: true,
               statusCode: 200,
-              destination: {
-                Config: {
-                  accessToken: 'ABC',
-                  disableFormat: false,
-                  isHashRequired: true,
-                  isRaw: false,
-                  maxUserCount: '3',
-                  oneTrustCookieCategories: [],
-                  skipVerify: false,
-                  subType: 'NA',
-                  type: 'NA',
-                  userSchema: ['EMAIL'],
-                },
-                ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
-                Name: 'FB_CUSTOM_AUDIENCE',
-                Enabled: true,
-                WorkspaceID: '1TSN08muJTZwH8iCDmnnRt1pmLd',
-                DestinationDefinition: {
-                  ID: '1aIXqM806xAVm92nx07YwKbRrO9',
-                  Name: 'FB_CUSTOM_AUDIENCE',
-                  DisplayName: 'FB_CUSTOM_AUDIENCE',
-                  Config: {},
-                },
-                Transformations: [],
-                IsConnectionEnabled: true,
-                IsProcessorEnabled: true,
-              },
+              destination: esDestinationRecord,
             },
             {
               batchedRequest: [
@@ -791,14 +486,313 @@ export const data = [
               ],
               batched: true,
               statusCode: 200,
+              destination: esDestinationRecord,
+            },
+            {
+              metadata: [
+                {
+                  attemptNum: 1,
+                  destinationId: 'default-destinationId',
+                  dontBatch: false,
+                  jobId: 7,
+                  secret: {
+                    accessToken: 'default-accessToken',
+                  },
+                  sourceId: 'default-sourceId',
+                  userId: 'default-userId',
+                  workspaceId: 'default-workspaceId',
+                },
+              ],
+              batched: false,
+              statusCode: 400,
+              error: 'Invalid action type in record event',
+              statTags: {
+                errorCategory: 'dataValidation',
+                destinationId: 'default-destinationId',
+                errorType: 'instrumentation',
+                destType: 'FB_CUSTOM_AUDIENCE',
+                workspaceId: 'default-workspaceId',
+                module: 'destination',
+                implementation: 'native',
+                feature: 'router',
+              },
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    name: 'fb_custom_audience',
+    description: 'rETL record V1 tests',
+    scenario: 'business',
+    successCriteria: 'all record events should be transformed correctly based on their operation',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: rETLRecordV1RouterRequest,
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batchedRequest: [
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'DELETE',
+                  endpoint: 'https://graph.facebook.com/v20.0/23848494844100489/users',
+                  headers: {},
+                  params: {
+                    access_token: 'ABC',
+                    appsecret_proof:
+                      'd103874f3b5f01f57c4f84edfb96ac94055da8f83c2b45e6f26dafca9188ff4d',
+                    appsecret_time: 1697328000,
+                    payload: {
+                      schema: ['EMAIL', 'FI'],
+                      data: [
+                        [
+                          'b100c2ec0718fe6b4805b623aeec6710719d042ceea55f5c8135b010ec1c7b36',
+                          '1e14a2f476f7611a8b22bc85d14237fdc88aac828737e739416c32c5bce3bd16',
+                        ],
+                        [
+                          'b100c2ec0718fe6b4805b623aeec6710719d042ceea55f5c8135b010ec1c7b36',
+                          '1e14a2f476f7611a8b22bc85d14237fdc88aac828737e739416c32c5bce3bd16',
+                        ],
+                      ],
+                    },
+                  },
+                  body: {
+                    JSON: {},
+                    JSON_ARRAY: {},
+                    XML: {},
+                    FORM: {},
+                  },
+                  files: {},
+                },
+              ],
+              metadata: [
+                {
+                  attemptNum: 1,
+                  destinationId: 'default-destinationId',
+                  dontBatch: false,
+                  jobId: 1,
+                  secret: {
+                    accessToken: 'default-accessToken',
+                  },
+                  sourceId: 'default-sourceId',
+                  userId: 'default-userId',
+                  workspaceId: 'default-workspaceId',
+                },
+                {
+                  attemptNum: 1,
+                  destinationId: 'default-destinationId',
+                  dontBatch: false,
+                  jobId: 2,
+                  secret: {
+                    accessToken: 'default-accessToken',
+                  },
+                  sourceId: 'default-sourceId',
+                  userId: 'default-userId',
+                  workspaceId: 'default-workspaceId',
+                },
+              ],
+              batched: true,
+              statusCode: 200,
               destination: {
                 Config: {
                   accessToken: 'ABC',
+                  appSecret: 'dummySecret',
                   disableFormat: false,
                   isHashRequired: true,
                   isRaw: false,
-                  maxUserCount: '3',
-                  oneTrustCookieCategories: [],
+                  skipVerify: false,
+                  subType: 'NA',
+                  type: 'NA',
+                  userSchema: ['EMAIL'],
+                },
+                ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
+                Name: 'FB_CUSTOM_AUDIENCE',
+                Enabled: true,
+                WorkspaceID: '1TSN08muJTZwH8iCDmnnRt1pmLd',
+                DestinationDefinition: {
+                  ID: '1aIXqM806xAVm92nx07YwKbRrO9',
+                  Name: 'FB_CUSTOM_AUDIENCE',
+                  DisplayName: 'FB_CUSTOM_AUDIENCE',
+                  Config: {},
+                },
+                Transformations: [],
+                IsConnectionEnabled: true,
+                IsProcessorEnabled: true,
+              },
+            },
+            {
+              batchedRequest: [
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint: 'https://graph.facebook.com/v20.0/23848494844100489/users',
+                  headers: {},
+                  params: {
+                    access_token: 'ABC',
+                    appsecret_proof:
+                      'd103874f3b5f01f57c4f84edfb96ac94055da8f83c2b45e6f26dafca9188ff4d',
+                    appsecret_time: 1697328000,
+                    payload: {
+                      schema: ['EMAIL', 'FI'],
+                      data: [
+                        [
+                          'b100c2ec0718fe6b4805b623aeec6710719d042ceea55f5c8135b010ec1c7b36',
+                          '1e14a2f476f7611a8b22bc85d14237fdc88aac828737e739416c32c5bce3bd16',
+                        ],
+                      ],
+                    },
+                  },
+                  body: {
+                    JSON: {},
+                    JSON_ARRAY: {},
+                    XML: {},
+                    FORM: {},
+                  },
+                  files: {},
+                },
+              ],
+              metadata: [
+                {
+                  attemptNum: 1,
+                  destinationId: 'default-destinationId',
+                  dontBatch: false,
+                  jobId: 3,
+                  secret: {
+                    accessToken: 'default-accessToken',
+                  },
+                  sourceId: 'default-sourceId',
+                  userId: 'default-userId',
+                  workspaceId: 'default-workspaceId',
+                },
+              ],
+              batched: true,
+              statusCode: 200,
+              destination: {
+                Config: {
+                  accessToken: 'ABC',
+                  appSecret: 'dummySecret',
+                  disableFormat: false,
+                  isHashRequired: true,
+                  isRaw: false,
+                  skipVerify: false,
+                  subType: 'NA',
+                  type: 'NA',
+                  userSchema: ['EMAIL'],
+                },
+                ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
+                Name: 'FB_CUSTOM_AUDIENCE',
+                Enabled: true,
+                WorkspaceID: '1TSN08muJTZwH8iCDmnnRt1pmLd',
+                DestinationDefinition: {
+                  ID: '1aIXqM806xAVm92nx07YwKbRrO9',
+                  Name: 'FB_CUSTOM_AUDIENCE',
+                  DisplayName: 'FB_CUSTOM_AUDIENCE',
+                  Config: {},
+                },
+                Transformations: [],
+                IsConnectionEnabled: true,
+                IsProcessorEnabled: true,
+              },
+            },
+            {
+              batchedRequest: [
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint: 'https://graph.facebook.com/v20.0/23848494844100489/users',
+                  headers: {},
+                  params: {
+                    access_token: 'ABC',
+                    appsecret_proof:
+                      'd103874f3b5f01f57c4f84edfb96ac94055da8f83c2b45e6f26dafca9188ff4d',
+                    appsecret_time: 1697328000,
+                    payload: {
+                      schema: ['EMAIL', 'FI'],
+                      data: [
+                        [
+                          'b100c2ec0718fe6b4805b623aeec6710719d042ceea55f5c8135b010ec1c7b36',
+                          '1e14a2f476f7611a8b22bc85d14237fdc88aac828737e739416c32c5bce3bd16',
+                        ],
+                        [
+                          'b100c2ec0718fe6b4805b623aeec6710719d042ceea55f5c8135b010ec1c7b36',
+                          '1e14a2f476f7611a8b22bc85d14237fdc88aac828737e739416c32c5bce3bd16',
+                        ],
+                        [
+                          'b100c2ec0718fe6b4805b623aeec6710719d042ceea55f5c8135b010ec1c7b36',
+                          '1e14a2f476f7611a8b22bc85d14237fdc88aac828737e739416c32c5bce3bd16',
+                        ],
+                      ],
+                    },
+                  },
+                  body: {
+                    JSON: {},
+                    JSON_ARRAY: {},
+                    XML: {},
+                    FORM: {},
+                  },
+                  files: {},
+                },
+              ],
+              metadata: [
+                {
+                  attemptNum: 1,
+                  destinationId: 'default-destinationId',
+                  dontBatch: false,
+                  jobId: 4,
+                  secret: {
+                    accessToken: 'default-accessToken',
+                  },
+                  sourceId: 'default-sourceId',
+                  userId: 'default-userId',
+                  workspaceId: 'default-workspaceId',
+                },
+                {
+                  attemptNum: 1,
+                  destinationId: 'default-destinationId',
+                  dontBatch: false,
+                  jobId: 5,
+                  secret: {
+                    accessToken: 'default-accessToken',
+                  },
+                  sourceId: 'default-sourceId',
+                  userId: 'default-userId',
+                  workspaceId: 'default-workspaceId',
+                },
+                {
+                  attemptNum: 1,
+                  destinationId: 'default-destinationId',
+                  dontBatch: false,
+                  jobId: 6,
+                  secret: {
+                    accessToken: 'default-accessToken',
+                  },
+                  sourceId: 'default-sourceId',
+                  userId: 'default-userId',
+                  workspaceId: 'default-workspaceId',
+                },
+              ],
+              batched: true,
+              statusCode: 200,
+              destination: {
+                Config: {
+                  accessToken: 'ABC',
+                  appSecret: 'dummySecret',
+                  disableFormat: false,
+                  isHashRequired: true,
+                  isRaw: false,
                   skipVerify: false,
                   subType: 'NA',
                   type: 'NA',
@@ -855,15 +849,15 @@ export const data = [
   },
   {
     name: 'fb_custom_audience',
-    description: 'rETL record batching tests',
+    description: 'rETL record V2 tests',
     scenario: 'Framework',
-    successCriteria: 'All the record events should be batched',
+    successCriteria: 'all record events should be transformed correctly based on their operation',
     feature: 'router',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
-        body: rETLBatchingRouterRequest,
+        body: rETLRecordV2RouterRequest,
       },
     },
     output: {
@@ -892,28 +886,6 @@ export const data = [
                           'b100c2ec0718fe6b4805b623aeec6710719d042ceea55f5c8135b010ec1c7b36',
                           '1e14a2f476f7611a8b22bc85d14237fdc88aac828737e739416c32c5bce3bd16',
                         ],
-                      ],
-                    },
-                  },
-                  body: {
-                    JSON: {},
-                    JSON_ARRAY: {},
-                    XML: {},
-                    FORM: {},
-                  },
-                  files: {},
-                },
-                {
-                  version: '1',
-                  type: 'REST',
-                  method: 'POST',
-                  endpoint: 'https://graph.facebook.com/v20.0/23848494844100489/users',
-                  headers: {},
-                  params: {
-                    access_token: 'ABC',
-                    payload: {
-                      schema: ['EMAIL', 'FI'],
-                      data: [
                         [
                           'b100c2ec0718fe6b4805b623aeec6710719d042ceea55f5c8135b010ec1c7b36',
                           '1e14a2f476f7611a8b22bc85d14237fdc88aac828737e739416c32c5bce3bd16',
@@ -976,12 +948,9 @@ export const data = [
                   disableFormat: false,
                   isHashRequired: true,
                   isRaw: false,
-                  maxUserCount: '2',
-                  oneTrustCookieCategories: [],
                   skipVerify: false,
                   subType: 'NA',
                   type: 'NA',
-                  userSchema: ['EMAIL'],
                 },
                 Name: 'FB_CUSTOM_AUDIENCE',
                 Enabled: true,
@@ -1003,4 +972,56 @@ export const data = [
       },
     },
   },
-];
+  {
+    name: 'fb_custom_audience',
+    description: 'rETL record V2 invalid connection tests',
+    scenario: 'Framework',
+    successCriteria: 'All the record V2 events should fail',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: rETLRecordV2RouterInvalidRequest,
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              metadata: [
+                {
+                  jobId: 1,
+                  attemptNum: 1,
+                  userId: 'default-userId',
+                  sourceId: 'default-sourceId',
+                  destinationId: 'default-destinationId',
+                  workspaceId: 'default-workspaceId',
+                  secret: {
+                    accessToken: 'default-accessToken',
+                  },
+                  dontBatch: false,
+                },
+              ],
+              batched: false,
+              statusCode: 400,
+              error: 'Audience ID is a mandatory field',
+              statTags: {
+                errorCategory: 'dataValidation',
+                errorType: 'configuration',
+                destType: 'FB_CUSTOM_AUDIENCE',
+                module: 'destination',
+                implementation: 'native',
+                feature: 'router',
+                destinationId: 'default-destinationId',
+                workspaceId: 'default-workspaceId',
+              },
+            },
+          ],
+        },
+      },
+    },
+  },
+].map((d) => ({ ...d, mockFns }));

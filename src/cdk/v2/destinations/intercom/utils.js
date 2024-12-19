@@ -233,25 +233,31 @@ const attachUserAndCompany = (message, Config) => {
  * @param {*} type
  * @returns
  */
-const filterCustomAttributes = (payload, type, destination) => {
+const filterCustomAttributes = (payload, type, destination, message) => {
   let ReservedAttributesList;
   let { apiVersion } = destination.Config;
   apiVersion = isDefinedAndNotNull(apiVersion) ? apiVersion : 'v2';
+  // we are discarding the lookup field from custom attributes
+  const lookupField = getLookUpField(message);
   if (type === 'user') {
-    ReservedAttributesList =
-      apiVersion === 'v1'
+    ReservedAttributesList = [
+      ...(apiVersion === 'v1'
         ? ReservedAttributes.v1UserAttributes
-        : ReservedAttributes.v2UserAttributes;
+        : ReservedAttributes.v2UserAttributes),
+      lookupField,
+    ];
   } else {
-    ReservedAttributesList =
-      apiVersion === 'v1'
+    ReservedAttributesList = [
+      ...(apiVersion === 'v1'
         ? ReservedAttributes.v1CompanyAttributes
-        : ReservedAttributes.v2CompanyAttributes;
+        : ReservedAttributes.v2CompanyAttributes),
+      lookupField !== 'email' && lookupField,
+    ];
   }
   let customAttributes = { ...get(payload, 'custom_attributes') };
   if (customAttributes) {
     ReservedAttributesList.forEach((trait) => {
-      if (customAttributes[trait]) delete customAttributes[trait];
+      if (trait in customAttributes) delete customAttributes[trait];
     });
     if (isDefinedAndNotNull(customAttributes) && Object.keys(customAttributes).length > 0) {
       customAttributes =
@@ -270,7 +276,10 @@ const filterCustomAttributes = (payload, type, destination) => {
  */
 const searchContact = async (message, destination, metadata) => {
   const lookupField = getLookUpField(message);
-  const lookupFieldValue = getFieldValueFromMessage(message, lookupField);
+  let lookupFieldValue = getFieldValueFromMessage(message, lookupField);
+  if (!lookupFieldValue) {
+    lookupFieldValue = message?.context?.traits?.[lookupField];
+  }
   const data = JSON.stringify({
     query: {
       operator: 'AND',

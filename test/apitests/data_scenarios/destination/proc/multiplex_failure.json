@@ -77,6 +77,7 @@
           "DisplayName": "Pinterest Tag",
           "Config": {
             "cdkV2TestThreshold": 1,
+            "cdkV2Enabled": true,
             "destConfig": {
               "defaultConfig": [
                 "tagId",
@@ -92,7 +93,7 @@
                 "whitelistedEvents",
                 "eventFilteringOption"
               ],
-              "web": ["useNativeSDK", "oneTrustCookieCategories"]
+              "web": ["useNativeSDK"]
             },
             "excludeKeys": [],
             "includeKeys": [
@@ -106,7 +107,6 @@
               "deduplicationKey",
               "blacklistedEvents",
               "whitelistedEvents",
-              "oneTrustCookieCategories",
               "eventFilteringOption"
             ],
             "saveDestinationResponse": false,
@@ -206,13 +206,13 @@
         "destinationDefinitionId": ""
       },
       "statusCode": 400,
-      "error": "Missing required value from [\"traits.action_source\",\"context.traits.action_source\",\"traits.actionSource\",\"context.traits.actionSource\",\"properties.action_source\",\"properties.actionSource\",\"channel\"]",
+      "error": "action_source is required: Workflow: procWorkflow, Step: validateCommonFields, ChildStep: undefined, OriginalError: action_source is required",
       "statTags": {
         "errorCategory": "dataValidation",
         "errorType": "instrumentation",
         "destType": "PINTEREST_TAG",
         "module": "destination",
-        "implementation": "native",
+        "implementation": "cdkV2",
         "feature": "processor",
         "destinationId": "2JIqVoWNvSOHa9ppKOqSo4hPuc0",
         "workspaceId": "27O0bhB6p5ehfOWeeZlOSsSDTLg"

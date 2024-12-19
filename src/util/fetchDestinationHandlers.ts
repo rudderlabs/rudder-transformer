@@ -1,22 +1,18 @@
-import * as V0MarketoBulkUploadFileUpload from '../v0/destinations/marketo_bulk_upload/fileUpload';
-import * as V0MarketoBulkUploadPollStatus from '../v0/destinations/marketo_bulk_upload/poll';
-import * as V0MarketoBulkUploadJobStatus from '../v0/destinations/marketo_bulk_upload/fetchJobStatus';
-
 const fileUploadHandlers = {
   v0: {
-    marketo_bulk_upload: V0MarketoBulkUploadFileUpload,
+    marketo_bulk_upload: undefined,
   },
 };
 
 const pollStatusHandlers = {
   v0: {
-    marketo_bulk_upload: V0MarketoBulkUploadPollStatus,
+    marketo_bulk_upload: undefined,
   },
 };
 
 const jobStatusHandlers = {
   v0: {
-    marketo_bulk_upload: V0MarketoBulkUploadJobStatus,
+    marketo_bulk_upload: undefined,
   },
 };
 

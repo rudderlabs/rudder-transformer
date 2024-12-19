@@ -8,6 +8,7 @@ import request from 'supertest';
 import networkHandlerFactory from '../../src/adapters/networkHandlerFactory';
 import { FetchHandler } from '../../src/helpers/fetchHandlers';
 import { applicationRoutes } from '../../src/routes';
+import defaultFeaturesConfig from '../../src/features';
 
 let server: any;
 const OLD_ENV = process.env;
@@ -43,12 +44,9 @@ const getDataFromPath = (pathInput) => {
 
 describe('features tests', () => {
   test('successful features response', async () => {
-    const expectedData = JSON.parse(
-      fs.readFileSync(path.resolve(__dirname, '../../src/features.json'), 'utf8'),
-    );
     const response = await request(server).get('/features');
     expect(response.status).toEqual(200);
-    expect(JSON.parse(response.text)).toEqual(expectedData);
+    expect(JSON.parse(response.text)).toEqual(defaultFeaturesConfig);
   });
 
   test('features regulations should be array', async () => {
@@ -79,6 +77,13 @@ describe('features tests', () => {
     expect(response.status).toEqual(200);
     const supportTransformerProxyV1 = JSON.parse(response.text).supportTransformerProxyV1;
     expect(typeof supportTransformerProxyV1).toBe('boolean');
+  });
+
+  test('features upgradedToSourceTransformV2 to be boolean', async () => {
+    const response = await request(server).get('/features');
+    expect(response.status).toEqual(200);
+    const upgradedToSourceTransformV2 = JSON.parse(response.text).upgradedToSourceTransformV2;
+    expect(typeof upgradedToSourceTransformV2).toBe('boolean');
   });
 });
 
@@ -449,7 +454,6 @@ describe('Destination api tests', () => {
       expect(response.status).toEqual(200);
       expect(JSON.parse(response.text)).toEqual(data.output);
     });
-
     test('(webhook) success snceario for batch of input', async () => {
       const data = getDataFromPath('./data_scenarios/destination/proc/batch_input.json');
       const response = await request(server)

@@ -1,9 +1,7 @@
 /* eslint-disable no-const-assign */
 const lodash = require('lodash');
-const get = require('get-value');
 const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
-const { schemaFields } = require('./config');
-const { MappedToDestinationKey } = require('../../../constants');
+const { schemaFields, MAX_USER_COUNT } = require('./config');
 const stats = require('../../../util/stats');
 const {
   getDestinationExternalIDInfoForRetl,
@@ -11,6 +9,8 @@ const {
   checkSubsetOfArray,
   returnArrayOfSubarrays,
   getSuccessRespEvents,
+  isEventSentByVDMV2Flow,
+  isEventSentByVDMV1Flow,
 } = require('../../util');
 const { getErrorResponse, createFinalResponse } = require('../../util/recordUtils');
 const {
@@ -20,6 +20,7 @@ const {
   batchingWithPayloadSize,
   responseBuilderSimple,
   getDataSource,
+  generateAppSecretProof,
 } = require('./util');
 
 const processRecordEventArray = (
@@ -31,7 +32,7 @@ const processRecordEventArray = (
   prepareParams,
   destination,
   operation,
-  operationAudienceId,
+  audienceId,
 ) => {
   const toSendEvents = [];
   const metadata = [];
@@ -88,7 +89,7 @@ const processRecordEventArray = (
         operationCategory: operation,
       };
 
-      const builtResponse = responseBuilderSimple(wrappedResponse, operationAudienceId);
+      const builtResponse = responseBuilderSimple(wrappedResponse, audienceId);
 
       toSendEvents.push(builtResponse);
     });
@@ -99,49 +100,26 @@ const processRecordEventArray = (
   return response;
 };
 
-async function processRecordInputs(groupedRecordInputs) {
-  const { destination } = groupedRecordInputs[0];
-  const { message } = groupedRecordInputs[0];
-  const {
-    isHashRequired,
-    accessToken,
-    disableFormat,
-    type,
-    subType,
-    isRaw,
-    maxUserCount,
-    audienceId,
-  } = destination.Config;
+function preparePayload(events, config) {
+  const { audienceId, userSchema, isRaw, type, subType, isHashRequired, disableFormat } = config;
+  const { destination } = events[0];
+  const { accessToken, appSecret } = destination.Config;
   const prepareParams = {
     access_token: accessToken,
   };
 
-  // maxUserCount validation
-  const maxUserCountNumber = parseInt(maxUserCount, 10);
-  if (Number.isNaN(maxUserCountNumber)) {
-    throw new ConfigurationError('Batch size must be an Integer.');
+  if (isDefinedAndNotNullAndNotEmpty(appSecret)) {
+    const dateNow = Date.now();
+    prepareParams.appsecret_time = Math.floor(dateNow / 1000); // Get current Unix time in seconds
+    prepareParams.appsecret_proof = generateAppSecretProof(accessToken, appSecret, dateNow);
   }
 
-  // audience id validation
-  let operationAudienceId = audienceId;
-  const mappedToDestination = get(message, MappedToDestinationKey);
-  if (mappedToDestination) {
-    const { objectType } = getDestinationExternalIDInfoForRetl(message, 'FB_CUSTOM_AUDIENCE');
-    operationAudienceId = objectType;
-  }
-  if (!isDefinedAndNotNullAndNotEmpty(operationAudienceId)) {
+  const cleanUserSchema = userSchema.map((field) => field.trim());
+
+  if (!isDefinedAndNotNullAndNotEmpty(audienceId)) {
     throw new ConfigurationError('Audience ID is a mandatory field');
   }
-
-  // user schema validation
-  let { userSchema } = destination.Config;
-  if (mappedToDestination) {
-    userSchema = getSchemaForEventMappedToDest(message);
-  }
-  if (!Array.isArray(userSchema)) {
-    userSchema = [userSchema];
-  }
-  if (!checkSubsetOfArray(schemaFields, userSchema)) {
+  if (!checkSubsetOfArray(schemaFields, cleanUserSchema)) {
     throw new ConfigurationError('One or more of the schema fields are not supported');
   }
 
@@ -156,7 +134,7 @@ async function processRecordInputs(groupedRecordInputs) {
     paramsPayload.data_source = dataSource;
   }
 
-  const groupedRecordsByAction = lodash.groupBy(groupedRecordInputs, (record) =>
+  const groupedRecordsByAction = lodash.groupBy(events, (record) =>
     record.message.action?.toLowerCase(),
   );
 
@@ -167,55 +145,55 @@ async function processRecordInputs(groupedRecordInputs) {
   if (groupedRecordsByAction.delete) {
     const deleteRecordChunksArray = returnArrayOfSubarrays(
       groupedRecordsByAction.delete,
-      maxUserCountNumber,
+      MAX_USER_COUNT,
     );
     deleteResponse = processRecordEventArray(
       deleteRecordChunksArray,
-      userSchema,
+      cleanUserSchema,
       isHashRequired,
       disableFormat,
       paramsPayload,
       prepareParams,
       destination,
       'remove',
-      operationAudienceId,
+      audienceId,
     );
   }
 
   if (groupedRecordsByAction.insert) {
     const insertRecordChunksArray = returnArrayOfSubarrays(
       groupedRecordsByAction.insert,
-      maxUserCountNumber,
+      MAX_USER_COUNT,
     );
 
     insertResponse = processRecordEventArray(
       insertRecordChunksArray,
-      userSchema,
+      cleanUserSchema,
       isHashRequired,
       disableFormat,
       paramsPayload,
       prepareParams,
       destination,
       'add',
-      operationAudienceId,
+      audienceId,
     );
   }
 
   if (groupedRecordsByAction.update) {
     const updateRecordChunksArray = returnArrayOfSubarrays(
       groupedRecordsByAction.update,
-      maxUserCountNumber,
+      MAX_USER_COUNT,
     );
     updateResponse = processRecordEventArray(
       updateRecordChunksArray,
-      userSchema,
+      cleanUserSchema,
       isHashRequired,
       disableFormat,
       paramsPayload,
       prepareParams,
       destination,
       'add',
-      operationAudienceId,
+      audienceId,
     );
   }
 
@@ -225,6 +203,7 @@ async function processRecordInputs(groupedRecordInputs) {
     deleteResponse,
     insertResponse,
     updateResponse,
+
     errorResponse,
   );
   if (finalResponse.length === 0) {
@@ -233,6 +212,68 @@ async function processRecordInputs(groupedRecordInputs) {
     );
   }
   return finalResponse;
+}
+
+function processRecordInputsV1(groupedRecordInputs) {
+  const { destination } = groupedRecordInputs[0];
+  const { message } = groupedRecordInputs[0];
+  const { isHashRequired, disableFormat, type, subType, isRaw, audienceId, userSchema } =
+    destination.Config;
+
+  let operationAudienceId = audienceId;
+  let updatedUserSchema = userSchema;
+  if (isEventSentByVDMV1Flow(groupedRecordInputs[0])) {
+    const { objectType } = getDestinationExternalIDInfoForRetl(message, 'FB_CUSTOM_AUDIENCE');
+    operationAudienceId = objectType;
+    updatedUserSchema = getSchemaForEventMappedToDest(message);
+  }
+
+  return preparePayload(groupedRecordInputs, {
+    audienceId: operationAudienceId,
+    userSchema: updatedUserSchema,
+    isRaw,
+    type,
+    subType,
+    isHashRequired,
+    disableFormat,
+  });
+}
+
+const processRecordInputsV2 = (groupedRecordInputs) => {
+  const { connection, message } = groupedRecordInputs[0];
+  const { isHashRequired, disableFormat, type, subType, isRaw, audienceId } =
+    connection.config.destination;
+  // Ref: https://www.notion.so/rudderstacks/VDM-V2-Final-Config-and-Record-EventPayload-8cc80f3d88ad46c7bc43df4b87a0bbff
+  const identifiers = message?.identifiers;
+  let userSchema;
+  if (identifiers) {
+    userSchema = Object.keys(identifiers);
+  }
+  const events = groupedRecordInputs.map((record) => ({
+    ...record,
+    message: {
+      ...record.message,
+      fields: record.message.identifiers,
+    },
+  }));
+  return preparePayload(events, {
+    audienceId,
+    userSchema,
+    isRaw,
+    type,
+    subType,
+    isHashRequired,
+    disableFormat,
+  });
+};
+
+function processRecordInputs(groupedRecordInputs) {
+  const event = groupedRecordInputs[0];
+  // First check for rETL flow and second check for ES flow
+  if (isEventSentByVDMV1Flow(event) || !isEventSentByVDMV2Flow(event)) {
+    return processRecordInputsV1(groupedRecordInputs);
+  }
+  return processRecordInputsV2(groupedRecordInputs);
 }
 
 module.exports = {

@@ -2,19 +2,26 @@
 
 Thanks for taking the time and for your help improving this project!
 
+**Table of content**
+
+* [Getting Help](#getting-help)
+* [Committing](#committing)
+* [Submitting a Pull Request](#submitting-a-pull-request)
+* [Contributor License Agreement](#contributor-license-agreement)
+* [Guide to build your first custom RudderStack source integration](#building-your-first-custom-rudderStack-source-integration)
+* [Guide to build your first custom RudderStack destination integration](#building-your-first-custom-rudderStack-destination-integration)
+
 ## Getting Help
 
 If you have a question about rudder or have encountered problems using it,
 start by asking a question on [Slack][slack].
 
-## Rudder Labs Contributor Agreement
+## Committing
 
-To contribute to this project, we need you to sign to [Contributor License Agreement (“CLA”)][cla] for the first commit you make. By agreeing to the [CLA][cla]
-we can add you to list of approved contributors and review the changes proposed by you.
-
-## Installing and Setting Up rudder-transformer
-
-See the project's [README](README.md) for further information about working in this repository.
+We prefer squash or rebase commits so that all changes from a branch are
+committed to main branch as a single commit. All pull requests are squashed when
+merged, but rebasing prior to merge gives you better control over the commit
+message.
 
 ## Submitting a Pull Request
 
@@ -35,13 +42,13 @@ See the project's [README](README.md) for further information about working in t
    - Include instructions on how to test your changes.
 3. Your branch may be merged once all configured checks pass, including:
    - A review from appropriate maintainers
+  
+Detailed instructions can be found in the later sections of this document to develop a new integration.
 
-## Committing
+## Contributor License Agreement
 
-We prefer squash or rebase commits so that all changes from a branch are
-committed to main branch as a single commit. All pull requests are squashed when
-merged, but rebasing prior to merge gives you better control over the commit
-message.
+To contribute to this project, we need you to sign to [Contributor License Agreement (“CLA”)][cla] for the first commit you make. By agreeing to the [CLA][cla]
+we can add you to list of approved contributors and review the changes proposed by you.
 
 ----
 
@@ -56,6 +63,15 @@ Before starting to work on your first RudderStack integration, it is highly reco
 * When developing a **source integration**, you’ll be transforming your events data received from the source to this specification.
 * When developing a **destination integration**, you’ll be parsing the event data according to this event spec and transforming it to your destination’s data spec.
 
+Follow through the next sections to learn about developing a new **source integration**
+
+* [Overview of integration development journey](#overview-of-integration-development-journey)
+* [1. Setup rudder-transformer and understand the code structure](#1-setup-rudder-transformer-and-understand-the-code-structure)
+* [2. Write code for a source integration](#2-write-code-for-a-source-integration)
+* [3. Test your source integration](#3-test-your-source-integration)
+* [4. Write automated tests](#4-write-automated-tests)
+* [5. Add RudderStack UI configurations in integrations-config](#5-add-rudderstack-ui-configurations-in-integrations-config)
+* [6. Run the transformer locally](#6-run-the-transformer-locally)
 
 ### Overview of integration development journey
 
@@ -93,13 +109,11 @@ Understand the code structure
 * `test/integrations/destinations` - Integration tests for destination integrations
 
 
-### 2. Write code for a v0 source integration {#2-write-code-for-a-v0-source-integration}
+### 2. Write code for a source integration
 
-Here, we will explain the code for a v0 source integration but most of the learning will apply to other integrations as well (destination and v1).
+Note: Here, we are using an example of `v0` source integration, so you might see some mentions of the `src/v0` folder. But we recommend to use `src/v1` folder for new source integrations.
 
-
-
-* Create a new directory with the integration name under `src/v0` (follow the snake case naming convention)
+* Create a new directory with the integration name under `src/v1/sources` (follow the snake case naming convention)
 * Add `transform.js`, add a `process(eventData)` function and export it. This is the function which will be called to transform the event data received from the source
 * Add `config.js` to separate the source configuration and mapping
 
@@ -186,7 +200,7 @@ function process(eventPayload) {
 exports.process = process;
 ```
 
-### 3. Test your v0 source integration
+### 3. Test your source integration
 
 
 #### Manual testing
@@ -363,7 +377,7 @@ npm run build:start
 ### References
 
 
-* [Contributing.md](https://github.com/rudderlabs/rudder-server/blob/master/CONTRIBUTING.md\) in all github repositories
+* [Contributing.md](https://github.com/rudderlabs/rudder-server/blob/master/CONTRIBUTING.md) in all github repositories
 * [https://www.rudderstack.com/docs/resources/community/](https://www.rudderstack.com/docs/resources/community/)
 * [https://www.rudderstack.com/docs/event-spec/standard-events/](https://www.rudderstack.com/docs/event-spec/standard-events/)
 * [Recording of the community event for new contributors](https://youtu.be/OD2vCYG-P7k?feature=shared)
@@ -379,8 +393,17 @@ Before diving into this tutorial, it is highly recommended to get a high-level o
 
 In this tutorial, we will specifically focus on developing a destination integration.
 
+Follow through the next sections to learn about developing a new **source integration**
 
-### Overview of integration development journey
+* [Overview of integration development journey](#overview-of-integration-development-journey-for-a-destination-integration)
+* [1. Setup rudder-transformer and understand the code structure](#1-setup-rudder-transformer-and-understand-the-code-structure-for-a-destination-integration)
+* [2. Write code for your destination integrationn](#2-write-code-for-your-destination-integration)
+* [3. Test your destination integration](#3-test-your-destination-integration)
+* [4. Write automated tests](#4-write-automated-tests-for-your-destination-integration)
+* [5. Add RudderStack UI configurations in integrations-config](#5-add-rudderstack-ui-configurations-in-integrations-config-for-your-destination-integration)
+* [6. Run the transformer locally](#6-run-the-transformer-locally-for-your-destination-integration)
+
+### Overview of integration development journey for a destination integration
 
 
 1. Add integration code to [rudder-transformer](https://github.com/rudderlabs/rudder-transformer) `src/cdk/v2/destinations` folder. This is the codebase that controls how raw event data from [RudderStack Event Data Specification](https://www.rudderstack.com/docs/event-spec/standard-events/) to destination specific data format
@@ -392,7 +415,7 @@ This enables your integration users to setup/configure the integration via Rudde
 RudderStack team will be available to help you by giving feedback and answering questions either directly on your GitHub PR or the [RudderStack Slack community](https://www.rudderstack.com/join-rudderstack-slack-community/). Before diving into code, writing an integration plan document helps a lot, here’s an [example document](https://rudderstacks.notion.site/Integration-planning-document-example-Slack-Source-integration-46863d6041ec48258f9c5433eab93b28?pvs=25).
 
 
-### 1. Setup rudder-transformer and understand the code structure
+### 1. Setup rudder-transformer and understand the code structure for a destination integration
 
 Setup [rudder-transformer](https://github.com/rudderlabs/rudder-transformer) on your local machine
 
@@ -413,7 +436,7 @@ Understand the code structure
 * `test/integrations/destinations` - Integration tests for destination integrations
 
 
-### 2. Write code for a destination integration
+### 2. Write code for your destination integration
 
 Here, we will explain the code for a destination integration for single event processing as well as batch events processing.
 
@@ -442,37 +465,10 @@ In the [rudder-transformer](https://github.com/rudderlabs/rudder-transformer/) s
 
 **To develop an integration, how much do I need to understand about RudderStack Workflow Engine?**
 
-Not more than what can not be covered in 10 mins. The RudderStack Workflow Engine will convert the `yaml` file to `javascript` for transformation. The key question is - how to write this `yaml` file? And the answer lies in the `keys` you can use in the `yaml`. Get familiar following keys, and you should be able to write your first integration
+Not more than what can not be covered in 10 mins. The RudderStack Workflow Engine converts a `yaml` file to `javascript` for the transformation logic.
+A sample of such `yaml` file is shown below, which can be intimidating at first but getting familiar with few key-value pairs under the two top-level keys (`bindings` and `steps`) will be enough for you to write your first integration. They might also look familiar to you if you have used GitHub Actions.
 
-
-
-1. `bindings` - To import external javascript functions and data
-    1. `path` - The file path where we want to import from e.g. `./config` (can omit the extension `.js`)
-    2. `name` - The name by which we want import e.g. `Config` (can be accessed as `$Config` or `$Config.something`)
-    3. `exportAll` - If `true`, imports everything from the file. Default: `false` i.e. imports only the object matching the `name`
-2. **`steps` - To express the destination transformation logic as a series of steps. If you have used GitHub action, this will sound familiar.**
-    4. `name` (mandatory) - A name to track outputs
-    5. `description` - Mention what does this step do
-    6. `functionName` - The function we want to execute in this step. This function must be defined in the bindings and must have following definition \
-        ```javascript
-            (input: any, bindings: Record&lt;string, any>) => {
-            error?: any,
-            output?: any
-          }
-        ```
-
-    7. `condition` - The step will get executed only when this condition is satisfied
-    8. `inputTemplate` - To customize the input. Passed while executing the step. By default, all steps receive the same input as the workflow input, but when we want to modify the input before executing the step, we can use this feature.
-    9. `contextTemplate` - By default, all steps receive the current context, but we can use this feature when we want to modify the context before executing the step. This is useful when using external workflows, workflow steps, or template paths.
-    10. `loopOverInput` - We can use this feature when the input is an array, and we want to execute the step logic for each element independently. This is mainly used for batch processing.
-    11. `steps` - You may define a series of steps inside a step. We will call such a step a `WorkflowStep` as opposed to `SimpleStep`.
-    12. `workflowStepPath` - We can import the steps from another `yaml` file
-    13. `batches` - To batch the inputs using filter and by length
-        1. `key` - The input name e.g. “heroes”
-        2. `filter` - The filter logic e.g. `.type === “hero”`
-        3. `size` - The size of the batch
-
-A simple example of `procWorkflow.yaml` looks like this:
+Just skim through the example `procWorkflow.yaml` below and then we will introduce what each key-value pair does
 
 ```yaml
 bindings:
@@ -578,6 +574,32 @@ steps:
        })
 ```
 
+
+1. `bindings` - To import external javascript functions and data
+    1. `path` - The file path where we want to import from e.g. `./config` (can omit the extension `.js`)
+    2. `name` - The name by which we want import e.g. `Config` (can be accessed as `$Config` or `$Config.something`)
+    3. `exportAll` - If `true`, imports everything from the file. Default: `false` i.e. imports only the object matching the `name`
+2. **`steps` - To express the destination transformation logic as a series of steps. If you have used GitHub action, this will sound familiar.**
+    1. `name` (mandatory) - A name to track outputs
+    2. `description` - Mention what does this step do
+    3. `functionName` - The function we want to execute in this step. This function must be defined in the bindings and must have following definition \
+        ```javascript
+            (input: any, bindings: Record&lt;string, any>) => {
+            error?: any,
+            output?: any
+          }
+        ```
+    4. `condition` - The step will get executed only when this condition is satisfied
+    5. `inputTemplate` - To customize the input. Passed while executing the step. By default, all steps receive the same input as the workflow input, but when we want to modify the input before executing the step, we can use this feature.
+    6. `contextTemplate` - By default, all steps receive the current context, but we can use this feature when we want to modify the context before executing the step. This is useful when using external workflows, workflow steps, or template paths.
+    7. `loopOverInput` - We can use this feature when the input is an array, and we want to execute the step logic for each element independently. This is mainly used for batch processing.
+    8. `steps` - You may define a series of steps inside a step. We will call such a step a `WorkflowStep` as opposed to `SimpleStep`.
+    9. `workflowStepPath` - We can import the steps from another `yaml` file
+    10. `batches` - To batch the inputs using filter and by length
+        1. `key` - The input name e.g. “heroes”
+        2. `filter` - The filter logic e.g. `.type === “hero”`
+        3. `size` - The size of the batch
+
 ### 3. Test your destination integration
 
 
@@ -620,7 +642,7 @@ For a successful event processing in such case, you should receive HTTP 200 OK r
 You can customize the response to the HTTP request from the source beyond the standard event response format sent by RudderStack. You can customize the response body, content type header, status code, etc. Such customization is useful in some cases when you do not want to receive the standard response from RudderStack e.g. you want a custom response body and the HTTP response status code.
 
 
-### 4. Write automated tests for your destination integration {#4-write-automated-tests-for-your-destination-integration}
+### 4. Write automated tests for your destination integration
 
 Follow the test structure similar to other integrations in `test/integrations/destinations`. Here’s an overview of the test code structure which you will be creating
 
@@ -650,78 +672,14 @@ export const data = [
         body: [
           {
             message: {
-              anonymousId: '78c53c15-32a1-4b65-adac-bec2d7bb8fab',
-              channel: 'web',
-              context: {
-                app: {
-                  name: 'RSPM',
-                  version: '1.9.0',
-                },
-                campaign: {
-                  name: 'sales campaign',
-                  source: 'google',
-                  medium: 'medium',
-                  term: 'event data',
-                  content: 'Make sense of the modern data stack',
-                },
-                ip: '192.0.2.0',
-                library: {
-                  name: 'RudderLabs JavaScript SDK',
-                  version: '2.9.1',
-                },
-                locale: 'en-US',
-                device: {
-                  manufacturer: 'Nokia',
-                  model: 'N2023',
-                },
-                page: {
-                  path: '/best-seller/1',
-                  initial_referrer: 'https://www.google.com/search',
-                  initial_referring_domain: 'google.com',
-                  referrer: 'https://www.google.com/search?q=estore+bestseller',
-                  referring_domain: 'google.com',
-                  search: 'estore bestseller',
-                  title: 'The best sellers offered by EStore',
-                  url: 'https://www.estore.com/best-seller/1',
-                },
-                screen: {
-                  density: 420,
-                  height: 1794,
-                  width: 1080,
-                  innerHeight: 200,
-                  innerWidth: 100,
-                },
-                userAgent:
-                  'Dalvik/2.1.0 (Linux; U; Android 9; Android SDK built for x86 Build/PSR1.180720.075)',
-              },
-              event: 'Product Reviewed',
-              integrations: {
-                All: true,
-              },
-              messageId: '1578564113557-af022c68-429e-4af4-b99b-2b9174056383',
-              properties: {
-                userId: 'u001',
-                sessionId: 's001',
-                review_id: 'review_id_1',
-                product_id: 'product_id_1',
-                rating: 5,
-                review_body: 'Sample Review Body',
-                latitude: 44.56,
-                longitude: 54.46,
-                region: 'Atlas',
-                city: 'NY',
-                country: 'USA',
-              },
-              originalTimestamp: '2020-01-09T10:01:53.558Z',
-              type: 'track',
-              sentAt: '2020-01-09T10:02:03.257Z',
+              ...replaceThisWithYourEventPayload // Event data
             },
             destination: {
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'Fullstory',
               DestinationDefinition: {
                 Config: {
-                  cdkV2Enabled: true,
+                  cdkV2Enabled: true, // This is mandatory for CDK v2 integrations (all new integrations)
                 },
               },
               Config: {
@@ -746,51 +704,7 @@ export const data = [
             output: {
               body: {
                 JSON: {
-                  name: 'Product Reviewed',
-                  properties: {
-                    userId: 'u001',
-                    sessionId: 's001',
-                    review_id: 'review_id_1',
-                    product_id: 'product_id_1',
-                    rating: 5,
-                    review_body: 'Sample Review Body',
-                    latitude: 44.56,
-                    longitude: 54.46,
-                    region: 'Atlas',
-                    city: 'NY',
-                    country: 'USA',
-                  },
-                  timestamp: '2020-01-09T10:01:53.558Z',
-                  context: {
-                    browser: {
-                      url: 'https://www.estore.com/best-seller/1',
-                      user_agent:
-                        'Dalvik/2.1.0 (Linux; U; Android 9; Android SDK built for x86 Build/PSR1.180720.075)',
-                      initial_referrer: 'https://www.google.com/search',
-                    },
-                    mobile: {
-                      app_name: 'RSPM',
-                      app_version: '1.9.0',
-                    },
-                    device: {
-                      manufacturer: 'Nokia',
-                      model: 'N2023',
-                    },
-                    location: {
-                      ip_address: '192.0.2.0',
-                      latitude: 44.56,
-                      longitude: 54.46,
-                      city: 'NY',
-                      region: 'Atlas',
-                      country: 'USA',
-                    },
-                  },
-                  session: {
-                    id: 's001',
-                  },
-                  user: {
-                    uid: 'u001',
-                  },
+                  ...replaceThisWithYourTransformedEventOutput // Transformed event data
                 },
                 JSON_ARRAY: {},
                 XML: {},
@@ -1113,7 +1027,7 @@ You can run tests only for the specific integration, for example
 These tests will automatically be run on each commit, making sure that any new development does not break the existing integrations.
 
 
-### 5. Add RudderStack UI configurations in integrations-config
+### 5. Add RudderStack UI configurations in integrations-config for your destination integration
 
 Add configuration for your destination integration in [rudder-integrations-config](https://github.com/rudderlabs/rudder-integrations-config) repo under `src.configurations/destinations`. At bare minimum, a db-config file is needed, here’s [an example](https://github.com/rudderlabs/rudder-integrations-config/blob/develop/src/configurations/destinations/fullstory/db-config.json) of the same for FullStory destination. Duplicate it in the directory for your integration config folder and change the relevant values for your integration.
 
@@ -1124,7 +1038,7 @@ Alternatively, the easier path to do this is by running a script which will gene
 Run this command from the root directory of the rudder-integrations-config repo. The PR can then be raised after checking if everything looks good.
 
 
-### 6. Run the transformer locally
+### 6. Run the transformer locally for your destination integration
 
 ```bash
 

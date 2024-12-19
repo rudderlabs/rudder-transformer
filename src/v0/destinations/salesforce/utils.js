@@ -1,4 +1,9 @@
-const { RetryableError, ThrottledError, AbortedError } = require('@rudderstack/integrations-lib');
+const {
+  RetryableError,
+  ThrottledError,
+  AbortedError,
+  OAuthSecretError,
+} = require('@rudderstack/integrations-lib');
 const { handleHttpRequest } = require('../../../adapters/network');
 const {
   isHttpStatusSuccess,
@@ -13,9 +18,33 @@ const {
   DESTINATION,
   LEGACY,
   OAUTH,
+  SALESFORCE_OAUTH_SANDBOX,
 } = require('./config');
 
 const ACCESS_TOKEN_CACHE = new Cache(ACCESS_TOKEN_CACHE_TTL);
+
+/**
+ * Extracts and returns the error message from a response object.
+ * If the response is an array and contains a message in the first element,
+ * it returns that message. Otherwise, it returns the stringified response.
+ * Error Message Format Example: ref: https://developer.salesforce.com/docs/atlas.en-us.api_rest.meta/api_rest/errorcodes.htm#:~:text=Incorrect%20ID%20example
+        [
+        {
+          "fields" : [ "Id" ],
+          "message" : "Account ID: id value of incorrect type: 001900K0001pPuOAAU",
+          "errorCode" : "MALFORMED_ID"
+        }
+        ]
+ * @param {Object|Array} response - The response object or array to extract the message from.
+ * @returns {string} The extracted error message or the stringified response.
+ */
+
+const getErrorMessage = (response) => {
+  if (Array.isArray(response) && response?.[0]?.message && response?.[0]?.message?.length > 0) {
+    return response[0].message;
+  }
+  return JSON.stringify(response);
+};
 
 /**
  * ref: https://developer.salesforce.com/docs/atlas.en-us.api_rest.meta/api_rest/errorcodes.htm
@@ -71,15 +100,19 @@ const salesforceResponseHandler = (destResponse, sourceMessage, authKey, authori
     } else if (status === 503 || status === 500) {
       // The salesforce server is unavailable to handle the request. Typically this occurs if the server is down
       // for maintenance or is currently overloaded.
-      throw new RetryableError(
-        `${DESTINATION} Request Failed - due to "${
-          response && Array.isArray(response) && response[0]?.message?.length > 0
-            ? response[0].message
-            : JSON.stringify(response)
-        }", (Retryable) ${sourceMessage}`,
-        500,
-        destResponse,
-      );
+      // ref : https://help.salesforce.com/s/articleView?id=000387190&type=1
+      if (matchErrorCode('SERVER_UNAVAILABLE')) {
+        throw new ThrottledError(
+          `${DESTINATION} Request Failed: ${status} - due to ${getErrorMessage(response)}, ${sourceMessage}`,
+          destResponse,
+        );
+      } else {
+        throw new RetryableError(
+          `${DESTINATION} Request Failed: ${status} - due to "${getErrorMessage(response)}", (Retryable) ${sourceMessage}`,
+          500,
+          destResponse,
+        );
+      }
     }
     // check the error message
     let errorMessage = '';
@@ -104,10 +137,15 @@ const salesforceResponseHandler = (destResponse, sourceMessage, authKey, authori
  * @param {destination: Record<string, any>, metadata: Record<string, object>}
  * @returns
  */
-const getAccessTokenOauth = (metadata) => ({
-  token: metadata.secret?.access_token,
-  instanceUrl: metadata.secret?.instance_url,
-});
+const getAccessTokenOauth = (metadata) => {
+  if (!isDefinedAndNotNull(metadata?.secret)) {
+    throw new OAuthSecretError('secret is undefined/null');
+  }
+  return {
+    token: metadata.secret?.access_token,
+    instanceUrl: metadata.secret?.instance_url,
+  };
+};
 
 const getAccessToken = async ({ destination, metadata }) => {
   const accessTokenKey = destination.ID;
@@ -169,7 +207,9 @@ const getAccessToken = async ({ destination, metadata }) => {
 const collectAuthorizationInfo = async (event) => {
   let authorizationFlow;
   let authorizationData;
-  if (isDefinedAndNotNull(event.metadata?.secret)) {
+  const { Name } = event.destination.DestinationDefinition;
+  const lowerCaseName = Name?.toLowerCase?.();
+  if (isDefinedAndNotNull(event?.metadata?.secret) || lowerCaseName === SALESFORCE_OAUTH_SANDBOX) {
     authorizationFlow = OAUTH;
     authorizationData = getAccessTokenOauth(event.metadata);
   } else {

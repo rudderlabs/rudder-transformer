@@ -1,4 +1,8 @@
-import { generateMetadata, transformResultBuilder } from './../../../testUtils';
+import {
+  generateMetadata,
+  overrideDestination,
+  transformResultBuilder,
+} from './../../../testUtils';
 import { Destination } from '../../../../../src/types';
 import { ProcessorTestData } from '../../../testTypes';
 
@@ -15,6 +19,7 @@ const destination: Destination = {
   Transformations: [],
   Config: {
     apiKey: 'testApiKey',
+    dataCenter: 'USDC',
     preferUserId: false,
     trackAllPages: true,
     trackNamedPages: false,
@@ -82,6 +87,58 @@ export const aliasTestData: ProcessorTestData[] = [
               userId: '',
               headers,
               endpoint: 'https://api.iterable.com/api/users/updateEmail',
+              JSON: {
+                currentEmail: 'old@email.com',
+                newEmail: 'new@email.com',
+              },
+            }),
+            statusCode: 200,
+            metadata: generateMetadata(1),
+          },
+        ],
+      },
+    },
+  },
+  {
+    id: 'iterable-alias-test-1',
+    name: 'iterable',
+    description: 'Alias call with dataCenter as EUDC',
+    scenario: 'Business',
+    successCriteria:
+      'Response should contain status code 200 and it should contain update email payload',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: overrideDestination(destination, { dataCenter: 'EUDC' }),
+            message: {
+              anonymousId: 'anonId',
+              userId: 'new@email.com',
+              previousId: 'old@email.com',
+              name: 'ApplicationLoaded',
+              context: {},
+              properties,
+              type: 'alias',
+              sentAt,
+              originalTimestamp,
+            },
+            metadata: generateMetadata(1),
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: transformResultBuilder({
+              userId: '',
+              headers,
+              endpoint: 'https://api.eu.iterable.com/api/users/updateEmail',
               JSON: {
                 currentEmail: 'old@email.com',
                 newEmail: 'new@email.com',

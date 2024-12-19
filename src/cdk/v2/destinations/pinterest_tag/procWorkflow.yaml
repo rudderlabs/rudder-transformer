@@ -3,14 +3,16 @@ bindings:
     path: ../../../../constants
   - path: ../../bindings/jsontemplate
     exportAll: true
-  - path: ../../../../v0/destinations/pinterest_tag/utils
-  - path: ../../../../v0/destinations/pinterest_tag/config
+  - path: ./utils
+  - path: ./config
   - name: removeUndefinedValues
     path: ../../../../v0/util
   - name: removeUndefinedAndNullAndEmptyValues
     path: ../../../../v0/util
   - name: validateEventName
     path: ../../../../v0/util
+  - path: '@rudderstack/integrations-lib'
+
 steps:
   - name: checkIfProcessed
     condition: .message.statusCode
@@ -66,7 +68,10 @@ steps:
         "opt_out": .context.device.adTrackingEnabled !== undefined ? !.context.device.adTrackingEnabled,
         "event_id": $.getOneByPaths(., ^.destination.Config.deduplicationKey) ?? .messageId,
         "app_id": ^.destination.Config.appId,
-        "advertiser_id": ^.destination.Config.advertiserId
+        "advertiser_id": ^.destination.Config.advertiserId,
+        "partner_name": .properties.partnerName ? $.convertToString(.properties.partnerName) : undefined,
+        "device_carrier": .properties.partnerName ? $.convertToString(.context.network.carrier) : undefined,
+        "wifi": .context.network.wifi ? Boolean(.context.network.wifi) : undefined
       });
       $.outputs.apiVersion === {{$.API_VERSION.v5}} ?  commonFields = commonFields{~["advertiser_id"]};
       $.removeUndefinedValues(commonFields)
@@ -103,7 +108,8 @@ steps:
         "client_ip_address": .context.ip ?? .request_ip,
         "client_user_agent": .context.userAgent,
         "external_id": {{{{$.getGenericPaths("userId")}}}},
-        "click_id": .properties.clickId
+        "click_id": .properties.clickId,
+        "partner_id": .traits.partnerId ?? .context.traits.partnerId ? $.convertToString(.traits.partnerId ?? .context.traits.partnerId) : undefined
       });
       !.destination.Config.sendExternalId ?  userFields = userFields{~["external_id"]} : null;
       userFields = $.removeUndefinedAndNullAndEmptyValues(userFields);
@@ -123,13 +129,17 @@ steps:
         template: |
           const customFields = .message.().({
             "currency": .properties.currency,
-              "value": .properties.value !== undefined ? String(.properties.value) :
-                       .properties.total !== undefined ? String(.properties.total) :
-                       .properties.revenue !== undefined ? String(.properties.revenue) : undefined,
+              "value": .properties.value !== undefined ? $.convertToString(.properties.value) :
+                       .properties.total !== undefined ? $.convertToString(.properties.total) :
+                       .properties.revenue !== undefined ? $.convertToString(.properties.revenue) : undefined,
             "num_items": .properties.numOfItems && Number(.properties.numOfItems),
             "order_id": .properties.order_id,
             "search_string": .properties.query,
-            "opt_out_type": .properties.optOutType
+            "opt_out_type": .properties.optOutType,
+            "content_name": .properties.contentName ? $.convertToString(.properties.contentName) : undefined,
+            "content_category": .properties.contentCategory ? $.convertToString(.properties.contentCategory) : undefined,
+            "content_brand": .properties.contentBrand ? $.convertToString(.properties.contentBrand) : undefined,
+            "np": .properties.np ? $.convertToString(.properties.np) : undefined
           });
           $.removeUndefinedValues(customFields)
 
@@ -143,7 +153,11 @@ steps:
             "content_ids": products.(.product_id ?? .sku ?? .id)[],
             "contents": .message.properties@prop.products.({
               "quantity": Number(.quantity ?? prop.quantity ?? 1),
-              "item_price": String(.price ?? prop.price)
+              "item_price":  $.convertToString(.price ?? prop.price),
+              "item_name": $.convertToString(.name),
+              "id": .product_id ?? .sku ? $.convertToString(.product_id ?? .sku) : undefined,
+              "item_category": .category ? $.convertToString(.category) : undefined,
+              "item_brand": .brand ? $.convertToString(.brand) : undefined
             })[]
           }
         else:
@@ -155,7 +169,11 @@ steps:
               "content_ids": (props.product_id ?? props.sku ?? props.id)[],
               "contents": {
                 "quantity": Number(props.quantity) || 1,
-                "item_price": String(props.price)
+                "item_price": props.price ? $.convertToString(props.price),
+                "item_name": props.name ? $.convertToString(props.name),
+                "id": props.product_id ?? props.sku ? $.convertToString(props.product_id ?? props.sku) : undefined,
+                "item_category": props.category ? $.convertToString(props.category) : undefined,
+                "item_brand": props.brand ? $.convertToString(props.brand) : undefined
               }[]
             };
       - name: combineAllEcomFields

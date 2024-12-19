@@ -1,13 +1,18 @@
-const { TAG_NAMES, InstrumentationError } = require('@rudderstack/integrations-lib');
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const utilities = require('.');
 const { getFuncTestData } = require('../../../test/testHelper');
 const { FilteredEventsError } = require('./errorTypes');
+const { v5 } = require('uuid');
 const {
   hasCircularReference,
   flattenJson,
   generateExclusionList,
   combineBatchRequestsWithSameJobIds,
   validateEventAndLowerCaseConversion,
+  groupRouterTransformEvents,
+  isAxiosError,
+  removeHyphens,
+  convertToUuid,
 } = require('./index');
 const exp = require('constants');
 
@@ -692,6 +697,114 @@ describe('extractCustomFields', () => {
   });
 });
 
+describe('groupRouterTransformEvents', () => {
+  it('should group events by destination.ID and context.sources.job_id', () => {
+    const events = [
+      {
+        destination: { ID: 'dest1' },
+        context: { sources: { job_id: 'job1' } },
+      },
+      {
+        destination: { ID: 'dest1' },
+        context: { sources: { job_id: 'job2' } },
+      },
+      {
+        destination: { ID: 'dest2' },
+        context: { sources: { job_id: 'job1' } },
+      },
+    ];
+    const result = groupRouterTransformEvents(events);
+
+    expect(result.length).toBe(3); // 3 unique groups
+    expect(result).toEqual([
+      [{ destination: { ID: 'dest1' }, context: { sources: { job_id: 'job1' } } }],
+      [{ destination: { ID: 'dest1' }, context: { sources: { job_id: 'job2' } } }],
+      [{ destination: { ID: 'dest2' }, context: { sources: { job_id: 'job1' } } }],
+    ]);
+  });
+
+  it('should group events by default job_id if context.sources.job_id is missing', () => {
+    const events = [
+      {
+        destination: { ID: 'dest1' },
+        context: { sources: {} },
+      },
+      {
+        destination: { ID: 'dest1' },
+        context: { sources: { job_id: 'job1' } },
+      },
+    ];
+    const result = groupRouterTransformEvents(events);
+
+    expect(result.length).toBe(2); // 2 unique groups
+    expect(result).toEqual([
+      [{ destination: { ID: 'dest1' }, context: { sources: {} } }],
+      [{ destination: { ID: 'dest1' }, context: { sources: { job_id: 'job1' } } }],
+    ]);
+  });
+
+  it('should group events by default job_id if context or context.sources is missing', () => {
+    const events = [
+      {
+        destination: { ID: 'dest1' },
+      },
+      {
+        destination: { ID: 'dest1' },
+        context: { sources: { job_id: 'job1' } },
+      },
+    ];
+    const result = groupRouterTransformEvents(events);
+
+    expect(result.length).toBe(2); // 2 unique groups
+    expect(result).toEqual([
+      [{ destination: { ID: 'dest1' } }],
+      [{ destination: { ID: 'dest1' }, context: { sources: { job_id: 'job1' } } }],
+    ]);
+  });
+
+  it('should use "default" when destination.ID is missing', () => {
+    const events = [
+      {
+        context: { sources: { job_id: 'job1' } },
+      },
+      {
+        destination: { ID: 'dest1' },
+        context: { sources: { job_id: 'job1' } },
+      },
+    ];
+    const result = groupRouterTransformEvents(events);
+
+    expect(result.length).toBe(2); // 2 unique groups
+    expect(result).toEqual([
+      [{ context: { sources: { job_id: 'job1' } } }],
+      [{ destination: { ID: 'dest1' }, context: { sources: { job_id: 'job1' } } }],
+    ]);
+  });
+
+  it('should return an empty array when there are no events', () => {
+    const events = [];
+    const result = groupRouterTransformEvents(events);
+
+    expect(result).toEqual([]);
+  });
+
+  it('should handle events with completely missing context and destination', () => {
+    const events = [
+      {},
+      { destination: { ID: 'dest1' } },
+      { context: { sources: { job_id: 'job1' } } },
+    ];
+    const result = groupRouterTransformEvents(events);
+
+    expect(result.length).toBe(3); // 3 unique groups
+    expect(result).toEqual([
+      [{}],
+      [{ destination: { ID: 'dest1' } }],
+      [{ context: { sources: { job_id: 'job1' } } }],
+    ]);
+  });
+});
+
 describe('applyJSONStringTemplate', () => {
   it('should apply JSON string template to the payload', () => {
     const payload = {
@@ -733,5 +846,206 @@ describe('get relative path from url', () => {
   });
   test('null', () => {
     expect(utilities.getRelativePathFromURL(null)).toEqual(null);
+  });
+});
+
+describe('isAxiosError', () => {
+  const validAxiosError = {
+    config: {
+      adapter: ['xhr', 'fetch'],
+    },
+    request: {
+      socket: {},
+      protocol: 'https:',
+      headers: {},
+      method: 'GET',
+      path: '/api/data',
+    },
+    status: 404,
+    statusText: 'Not Found',
+  };
+
+  it('should return true for a valid Axios error object', () => {
+    expect(isAxiosError(validAxiosError)).toBe(true);
+  });
+
+  it('should return false for null', () => {
+    expect(isAxiosError(null)).toBe(false);
+  });
+
+  it('should return false for undefined', () => {
+    expect(isAxiosError(undefined)).toBe(false);
+  });
+
+  it('should return false for non-object types', () => {
+    expect(isAxiosError('string')).toBe(false);
+    expect(isAxiosError(123)).toBe(false);
+    expect(isAxiosError(true)).toBe(false);
+    expect(isAxiosError([])).toBe(false);
+  });
+
+  it('should return false for an empty object', () => {
+    expect(isAxiosError({})).toBe(false);
+  });
+
+  it('should return false when config is missing', () => {
+    const { config, ...errorWithoutConfig } = validAxiosError;
+    expect(isAxiosError(errorWithoutConfig)).toBe(false);
+  });
+
+  it('should return false when config.adapter is not an array', () => {
+    const error = { ...validAxiosError, config: { adapter: 'not an array' } };
+    expect(isAxiosError(error)).toBe(false);
+  });
+
+  it('should return false when config.adapter has length <= 1', () => {
+    const error = { ...validAxiosError, config: { adapter: ['some'] } };
+    expect(isAxiosError(error)).toBe(false);
+  });
+
+  it('should return false when request is missing', () => {
+    const { request, ...errorWithoutRequest } = validAxiosError;
+    expect(isAxiosError(errorWithoutRequest)).toBe(false);
+  });
+
+  it('should return false when request.socket is missing', () => {
+    const error = {
+      ...validAxiosError,
+      request: { ...validAxiosError.request, socket: undefined },
+    };
+    expect(isAxiosError(error)).toBe(false);
+  });
+
+  it('should return false when request.socket is not an object', () => {
+    const error = {
+      ...validAxiosError,
+      request: { ...validAxiosError.request, socket: 'not an object' },
+    };
+    expect(isAxiosError(error)).toBe(false);
+  });
+
+  it('should return false when request.protocol is missing', () => {
+    const error = {
+      ...validAxiosError,
+      request: { ...validAxiosError.request, protocol: undefined },
+    };
+    expect(isAxiosError(error)).toBe(false);
+  });
+
+  it('should return false when request.method is missing', () => {
+    const error = {
+      ...validAxiosError,
+      request: { ...validAxiosError.request, method: undefined },
+    };
+    expect(isAxiosError(error)).toBe(false);
+  });
+
+  it('should return false when request.path is missing', () => {
+    const error = {
+      ...validAxiosError,
+      request: { ...validAxiosError.request, path: undefined },
+    };
+    expect(isAxiosError(error)).toBe(false);
+  });
+
+  it('should return false when status is missing', () => {
+    const { status, ...errorWithoutStatus } = validAxiosError;
+    expect(isAxiosError(errorWithoutStatus)).toBe(false);
+  });
+
+  it('should return true when all required properties are present and valid, even with extra properties', () => {
+    const errorWithExtraProps = {
+      ...validAxiosError,
+      extraProp: 'some value',
+    };
+    expect(isAxiosError(errorWithExtraProps)).toBe(true);
+  });
+
+  it('should return false when config.adapter is an empty array', () => {
+    const error = { ...validAxiosError, config: { adapter: [] } };
+    expect(isAxiosError(error)).toBe(false);
+  });
+
+  it('should return false when status is 0', () => {
+    const error = { ...validAxiosError, status: 0 };
+    expect(isAxiosError(error)).toBe(false);
+  });
+});
+
+describe('removeHyphens', () => {
+  const data = [
+    { input: 'hello-w--orld', expected: 'helloworld' },
+    { input: '', expected: '' },
+    { input: null, expected: null },
+    { input: undefined, expected: undefined },
+    { input: 12345, expected: 12345 },
+    { input: '123-12-241', expected: '12312241' },
+  ];
+  it('should remove hyphens from string else return the input as it is', () => {
+    data.forEach(({ input, expected }) => {
+      expect(removeHyphens(input)).toBe(expected);
+    });
+  });
+});
+
+describe('convertToUuid', () => {
+  const NAMESPACE = v5.DNS;
+
+  test('should generate UUID for valid string input', () => {
+    const input = 'testInput';
+    const expectedUuid = '7ba1e88f-acf9-5528-9c1c-0c897ed80e1e';
+    const result = convertToUuid(input);
+    expect(result).toBe(expectedUuid);
+  });
+
+  test('should generate UUID for valid numeric input', () => {
+    const input = 123456;
+    const expectedUuid = 'a52b2702-9bcf-5701-852a-2f4edc640fe1';
+    const result = convertToUuid(input);
+    expect(result).toBe(expectedUuid);
+  });
+
+  test('should trim spaces and generate UUID', () => {
+    const input = '   testInput   ';
+    const expectedUuid = '7ba1e88f-acf9-5528-9c1c-0c897ed80e1e';
+    const result = convertToUuid(input);
+    expect(result).toBe(expectedUuid);
+  });
+
+  test('should throw an error for empty input', () => {
+    const input = '';
+    expect(() => convertToUuid(input)).toThrow(InstrumentationError);
+    expect(() => convertToUuid(input)).toThrow('Input is empty or invalid.');
+  });
+
+  test('to throw an error for null input', () => {
+    const input = null;
+    expect(() => convertToUuid(input)).toThrow(InstrumentationError);
+    expect(() => convertToUuid(input)).toThrow('Input is undefined or null');
+  });
+
+  test('to throw an error for undefined input', () => {
+    const input = undefined;
+    expect(() => convertToUuid(input)).toThrow(InstrumentationError);
+    expect(() => convertToUuid(input)).toThrow('Input is undefined or null');
+  });
+
+  test('should throw an error for input that is whitespace only', () => {
+    const input = '   ';
+    expect(() => convertToUuid(input)).toThrow(InstrumentationError);
+    expect(() => convertToUuid(input)).toThrow('Input is empty or invalid.');
+  });
+
+  test('should handle long string input gracefully', () => {
+    const input = 'a'.repeat(1000);
+    const expectedUuid = v5(input, NAMESPACE);
+    const result = convertToUuid(input);
+    expect(result).toBe(expectedUuid);
+  });
+
+  test('any invalid input if stringified does not throw error', () => {
+    const input = {};
+    const result = convertToUuid(input);
+    expect(result).toBe('672ca00c-37f4-5d71-b8c3-6ae0848080ec');
   });
 });

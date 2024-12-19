@@ -1,7 +1,10 @@
 module.exports = {
     input: {
         destination: {
-            Config: {}
+            Config: {
+                allowUsersContextTraits: true,
+                underscoreDivideNumbers: true
+            }
         },
         message: {
             anonymousId: "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
@@ -57,6 +60,14 @@ module.exports = {
                     }
                 },
                 SNOWFLAKE: {
+                    options: {
+                        jsonPaths: [
+                            "testMap.nestedMap",
+                            ".ctestMap.cnestedMap",
+                        ]
+                    }
+                },
+                SNOWPIPE_STREAMING: {
                     options: {
                         jsonPaths: [
                             "testMap.nestedMap",
@@ -341,6 +352,67 @@ module.exports = {
             }
         ],
         snowflake: [
+            {
+                "data": {
+                    "ANONYMOUS_ID": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+                    "CHANNEL": "web",
+                    "CONTEXT_APP_BUILD": "1.0.0",
+                    "CONTEXT_APP_NAME": "RudderLabs JavaScript SDK",
+                    "CONTEXT_APP_NAMESPACE": "com.rudderlabs.javascript",
+                    "CONTEXT_APP_VERSION": "1.0.5",
+                    "CONTEXT_CTEST_MAP_CNESTED_MAP_N_1": "context nested prop 1",
+                    "CONTEXT_IP": "0.0.0.0",
+                    "CONTEXT_LIBRARY_NAME": "RudderLabs JavaScript SDK",
+                    "CONTEXT_LIBRARY_VERSION": "1.0.5",
+                    "CONTEXT_LOCALE": "en-GB",
+                    "CONTEXT_PASSED_IP": "0.0.0.0",
+                    "CONTEXT_REQUEST_IP": "[::1]:53708",
+                    "CONTEXT_SCREEN_DENSITY": 2,
+                    "CONTEXT_USER_AGENT": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36",
+                    "CURRENCY": "USD",
+                    "ID": "a6a0ad5a-bd26-4f19-8f75-38484e580fc7",
+                    "ORIGINAL_TIMESTAMP": "2020-01-24T06:29:02.364Z",
+                    "RECEIVED_AT": "2020-01-24T06:29:02.403Z",
+                    "REVENUE": 50,
+                    "SENT_AT": "2020-01-24T06:29:02.364Z",
+                    "TEST_MAP_NESTED_MAP_N_1": "nested prop 1",
+                    "TIMESTAMP": "2020-01-24T06:29:02.403Z",
+                    "USER_ID": "9bb5d4c2-a7aa-4a36-9efb-dd2b1aec5d33"
+                },
+                "metadata": {
+                    "columns": {
+                        "ANONYMOUS_ID": "string",
+                        "CHANNEL": "string",
+                        "CONTEXT_APP_BUILD": "string",
+                        "CONTEXT_APP_NAME": "string",
+                        "CONTEXT_APP_NAMESPACE": "string",
+                        "CONTEXT_APP_VERSION": "string",
+                        "CONTEXT_CTEST_MAP_CNESTED_MAP_N_1": "string",
+                        "CONTEXT_IP": "string",
+                        "CONTEXT_LIBRARY_NAME": "string",
+                        "CONTEXT_LIBRARY_VERSION": "string",
+                        "CONTEXT_LOCALE": "string",
+                        "CONTEXT_PASSED_IP": "string",
+                        "CONTEXT_REQUEST_IP": "string",
+                        "CONTEXT_SCREEN_DENSITY": "int",
+                        "CONTEXT_USER_AGENT": "string",
+                        "CURRENCY": "string",
+                        "ID": "string",
+                        "ORIGINAL_TIMESTAMP": "datetime",
+                        "RECEIVED_AT": "datetime",
+                        "REVENUE": "int",
+                        "SENT_AT": "datetime",
+                        "TEST_MAP_NESTED_MAP_N_1": "string",
+                        "TIMESTAMP": "datetime",
+                        "USER_ID": "string",
+                        "UUID_TS": "datetime"
+                    },
+                    "receivedAt": "2020-01-24T11:59:02.403+05:30",
+                    "table": "SCREENS"
+                }
+            }
+        ],
+        snowpipe_streaming: [
             {
                 "data": {
                     "ANONYMOUS_ID": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",

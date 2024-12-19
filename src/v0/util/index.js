@@ -10,12 +10,13 @@ const Handlebars = require('handlebars');
 const fs = require('fs');
 const path = require('path');
 const lodash = require('lodash');
-const set = require('set-value');
+const { setValue: set } = require('@rudderstack/integrations-lib');
 const get = require('get-value');
 const uaParser = require('ua-parser-js');
 const moment = require('moment-timezone');
 const sha256 = require('sha256');
 const crypto = require('crypto');
+const { v5 } = require('uuid');
 const {
   InstrumentationError,
   BaseError,
@@ -26,11 +27,12 @@ const {
 } = require('@rudderstack/integrations-lib');
 
 const { JsonTemplateEngine, PathType } = require('@rudderstack/json-template-engine');
+const isString = require('lodash/isString');
 const logger = require('../../logger');
 const stats = require('../../util/stats');
 const { DestCanonicalNames, DestHandlerMap } = require('../../constants/destinationCanonicalNames');
 const { client: errNotificationClient } = require('../../util/errorNotifier');
-const { HTTP_STATUS_CODES } = require('./constant');
+const { HTTP_STATUS_CODES, VDM_V2_SCHEMA_VERSION } = require('./constant');
 const {
   REFRESH_TOKEN,
   AUTH_STATUS_INACTIVE,
@@ -968,6 +970,7 @@ const handleMetadataForValue = (value, metadata, destKey, integrationsObj = null
     strictMultiMap,
     validateTimestamp,
     allowedKeyCheck,
+    toArray,
   } = metadata;
 
   // if value is null and defaultValue is supplied - use that
@@ -1033,6 +1036,13 @@ const handleMetadataForValue = (value, metadata, destKey, integrationsObj = null
     if (!foundVal) {
       formattedVal = undefined;
     }
+  }
+
+  if (toArray) {
+    if (Array.isArray(formattedVal)) {
+      return formattedVal;
+    }
+    return [formattedVal];
   }
 
   return formattedVal;
@@ -1552,6 +1562,18 @@ const getErrorStatusCode = (error, defaultStatusCode = HTTP_STATUS_CODES.INTERNA
   }
 };
 
+function isAxiosError(err) {
+  return (
+    Array.isArray(err?.config?.adapter) &&
+    err?.config?.adapter?.length > 1 &&
+    typeof err?.request?.socket === 'object' &&
+    !!err?.request?.protocol &&
+    !!err?.request?.method &&
+    !!err?.request?.path &&
+    !!err?.status
+  );
+}
+
 /**
  * Used for generating error response with stats from native and built errors
  */
@@ -1567,11 +1589,15 @@ function generateErrorObject(error, defTags = {}, shouldEnrichErrorMessage = tru
     error.authErrorCategory,
   );
   let errorMessage = error.message;
+  if (isAxiosError(errObject.destinationResponse)) {
+    delete errObject?.destinationResponse.config;
+    delete errObject?.destinationResponse.request;
+  }
   if (shouldEnrichErrorMessage) {
-    if (error.destinationResponse) {
+    if (errObject.destinationResponse) {
       errorMessage = JSON.stringify({
         message: errorMessage,
-        destinationResponse: error.destinationResponse,
+        destinationResponse: errObject.destinationResponse,
       });
     }
     errObject.message = errorMessage;
@@ -1606,7 +1632,7 @@ function isHttpStatusRetryable(status) {
 function generateUUID() {
   return crypto.randomUUID({
     disableEntropyCache: true,
-  }); /* using disableEntropyCache as true to not cache the generated uuids. 
+  }); /* using disableEntropyCache as true to not cache the generated uuids.
   For more Info https://nodejs.org/api/crypto.html#cryptorandomuuidoptions:~:text=options%20%3CObject%3E-,disableEntropyCache,-%3Cboolean%3E%20By
   */
 }
@@ -1630,6 +1656,9 @@ function isAppleFamily(platform) {
 }
 
 function removeHyphens(str) {
+  if (!isString(str)) {
+    return str;
+  }
   return str.replace(/-/g, '');
 }
 
@@ -2265,8 +2294,14 @@ const validateEventAndLowerCaseConversion = (event, isMandatory, convertToLowerC
   return convertToLowerCase ? event.toString().toLowerCase() : event.toString();
 };
 
-const applyCustomMappings = (message, mappings) =>
-  JsonTemplateEngine.createAsSync(mappings, { defaultPathType: PathType.JSON }).evaluate(message);
+/**
+ * This function applies custom mappings to the event.
+ * @param {*} event The event to be transformed.
+ * @param {*} mappings The custom mappings to be applied.
+ * @returns {object} The transformed event.
+ */
+const applyCustomMappings = (event, mappings) =>
+  JsonTemplateEngine.createAsSync(mappings, { defaultPathType: PathType.JSON }).evaluate(event);
 
 const applyJSONStringTemplate = (message, template) =>
   JsonTemplateEngine.createAsSync(template.replace(/{{/g, '${').replace(/}}/g, '}'), {
@@ -2274,6 +2309,17 @@ const applyJSONStringTemplate = (message, template) =>
   }).evaluate(message);
 
 /**
+ * This groups the events by destination ID and source ID.
+ * Note: sourceID is only used for rETL events.
+ * @param {*} events The events to be grouped.
+ * @returns {array} The array of grouped events.
+ */
+const groupRouterTransformEvents = (events) =>
+  Object.values(
+    lodash.groupBy(events, (ev) => [ev.destination?.ID, ev.context?.sources?.job_id || 'default']),
+  );
+
+/*
  * Gets url path omitting the hostname & protocol
  *
  * **Note**:
@@ -2289,6 +2335,33 @@ const getRelativePathFromURL = (inputUrl) => {
   return inputUrl;
 };
 
+const isEventSentByVDMV1Flow = (event) => event?.message?.context?.mappedToDestination;
+
+const isEventSentByVDMV2Flow = (event) =>
+  event?.connection?.config?.destination?.schemaVersion === VDM_V2_SCHEMA_VERSION;
+
+const convertToUuid = (input) => {
+  const NAMESPACE = v5.DNS;
+
+  if (!isDefinedAndNotNull(input)) {
+    throw new InstrumentationError('Input is undefined or null.');
+  }
+
+  try {
+    // Stringify and trim the input
+    const trimmedInput = String(input).trim();
+
+    // Check for empty input after trimming
+    if (!trimmedInput) {
+      throw new InstrumentationError('Input is empty or invalid.');
+    }
+    // Generate and return UUID
+    return v5(trimmedInput, NAMESPACE);
+  } catch (error) {
+    const errorMessage = `Failed to transform input to uuid: ${error.message}`;
+    throw new InstrumentationError(errorMessage);
+  }
+};
 // ========================================================================
 // EXPORTS
 // ========================================================================
@@ -2348,6 +2421,7 @@ module.exports = {
   getValueFromMessage,
   getValueFromPropertiesOrTraits,
   getValuesAsArrayFromConfig,
+  groupRouterTransformEvents,
   handleSourceKeysOperation,
   hashToSha256,
   isAppleFamily,
@@ -2356,6 +2430,8 @@ module.exports = {
   isDefinedAndNotNull,
   isDefinedAndNotNullAndNotEmpty,
   isEmpty,
+  isEventSentByVDMV1Flow,
+  isEventSentByVDMV2Flow,
   isNotEmpty,
   isNull,
   isEmptyObject,
@@ -2411,4 +2487,6 @@ module.exports = {
   validateEventAndLowerCaseConversion,
   getRelativePathFromURL,
   removeEmptyKey,
+  isAxiosError,
+  convertToUuid,
 };

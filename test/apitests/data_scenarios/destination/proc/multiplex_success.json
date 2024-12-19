@@ -78,6 +78,7 @@
           "DisplayName": "Pinterest Tag",
           "Config": {
             "cdkV2TestThreshold": 1,
+            "cdkV2Enabled": true,
             "destConfig": {
               "defaultConfig": [
                 "tagId",
@@ -93,7 +94,7 @@
                 "whitelistedEvents",
                 "eventFilteringOption"
               ],
-              "web": ["useNativeSDK", "oneTrustCookieCategories"]
+              "web": ["useNativeSDK"]
             },
             "excludeKeys": [],
             "includeKeys": [
@@ -107,7 +108,6 @@
               "deduplicationKey",
               "blacklistedEvents",
               "whitelistedEvents",
-              "oneTrustCookieCategories",
               "eventFilteringOption"
             ],
             "saveDestinationResponse": false,
@@ -206,6 +206,10 @@
               "content_ids": ["123"],
               "contents": [
                 {
+                  "id": "123",
+                  "item_brand": "Gamepro",
+                  "item_category": "Games",
+                  "item_name": "Game",
                   "quantity": 11,
                   "item_price": "13.49"
                 }
@@ -284,6 +288,10 @@
               "content_ids": ["123"],
               "contents": [
                 {
+                  "id": "123",
+                  "item_brand": "Gamepro",
+                  "item_category": "Games",
+                  "item_name": "Game",
                   "quantity": 11,
                   "item_price": "13.49"
                 }

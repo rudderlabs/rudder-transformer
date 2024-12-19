@@ -1,9 +1,9 @@
 const { NetworkError } = require('@rudderstack/integrations-lib');
-const { ENDPOINTS } = require('./config');
 const tags = require('../../util/tags');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 const { handleHttpRequest } = require('../../../adapters/network');
+const { getUsersEndpoint, getAccountsEndpoint } = require('./config');
 
 const handleErrorResponse = (error, customErrMessage, expectedErrStatus, defaultStatus = 400) => {
   let destResp;
@@ -38,10 +38,10 @@ const handleErrorResponse = (error, customErrMessage, expectedErrStatus, default
  * @returns
  */
 const objectExists = async (id, Config, objectType, metadata) => {
-  let url = `${ENDPOINTS.USERS_ENDPOINT}/${id}`;
+  let url = `${getUsersEndpoint(Config)}/${id}`;
 
   if (objectType === 'account') {
-    url = `${ENDPOINTS.ACCOUNTS_ENDPOINT}/${id}`;
+    url = `${getAccountsEndpoint(Config)}/${id}`;
   }
   const { httpResponse: res } = await handleHttpRequest(
     'get',
@@ -70,7 +70,7 @@ const objectExists = async (id, Config, objectType, metadata) => {
 const createAccount = async (payload, Config, metadata) => {
   const { httpResponse: res } = await handleHttpRequest(
     'post',
-    ENDPOINTS.ACCOUNTS_ENDPOINT,
+    getAccountsEndpoint(Config),
     payload,
     {
       headers: {
@@ -96,7 +96,7 @@ const createAccount = async (payload, Config, metadata) => {
 const updateAccount = async (accountId, payload, Config, metadata) => {
   const { httpResponse: res } = await handleHttpRequest(
     'put',
-    `${ENDPOINTS.ACCOUNTS_ENDPOINT}/${accountId}`,
+    `${getAccountsEndpoint(Config)}/${accountId}`,
     payload,
     {
       headers: {

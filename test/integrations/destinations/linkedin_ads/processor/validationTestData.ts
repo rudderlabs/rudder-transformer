@@ -1,4 +1,9 @@
-import { generateMetadata, generateTrackPayload, overrideDestination } from '../../../testUtils';
+import {
+  generateMetadata,
+  generateTrackPayload,
+  overrideDestination,
+  transformResultBuilder,
+} from '../../../testUtils';
 import { Destination } from '../../../../../src/types';
 import { ProcessorTestData } from '../../../testTypes';
 
@@ -29,11 +34,6 @@ const commonDestination: Destination = {
       {
         from: 'ABC Searched',
         to: '34567',
-      },
-    ],
-    oneTrustCookieCategories: [
-      {
-        oneTrustCookieCategory: 'Marketing',
       },
     ],
   },
@@ -73,6 +73,14 @@ const commonStats = {
   module: 'destination',
   feature: 'processor',
   workspaceId: 'default-workspaceId',
+};
+
+const commonHeader = {
+  Authorization: 'Bearer default-accessToken',
+  'Content-Type': 'application/json',
+  'LinkedIn-Version': '202402',
+  'X-RestLi-Method': 'BATCH_CREATE',
+  'X-Restli-Protocol-Version': '2.0.0',
 };
 
 const commonTimestamp = new Date('2023-10-14');
@@ -234,7 +242,7 @@ export const validationTestData: ProcessorTestData[] = [
     description: 'Track call : properties without product array and no price',
     scenario: 'Business',
     successCriteria:
-      'should throw error with status code 400 and error message regarding price is a mandatory field for linkedin conversions',
+      'should not have conversionValue object as price is a mandatory field for linkedin conversions',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -243,7 +251,7 @@ export const validationTestData: ProcessorTestData[] = [
         body: [
           {
             message: generateTrackPayload({
-              event: 'random event',
+              event: 'ABC Searched',
               properties: commonUserProperties,
               context: {
                 traits: commonUserTraits,
@@ -264,11 +272,51 @@ export const validationTestData: ProcessorTestData[] = [
         status: 200,
         body: [
           {
-            error:
-              '[LinkedIn Conversion API]: Cannot map price for event random event. Aborting: Workflow: procWorkflow, Step: commonFields, ChildStep: undefined, OriginalError: [LinkedIn Conversion API]: Cannot map price for event random event. Aborting',
+            output: transformResultBuilder({
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: `https://api.linkedin.com/rest/conversionEvents`,
+              headers: commonHeader,
+              params: {},
+              FORM: {},
+              files: {},
+              JSON: {
+                elements: [
+                  {
+                    conversion: 'urn:lla:llaPartnerConversion:1234567',
+                    conversionHappenedAt: 1697241600000,
+                    eventId: '12345',
+                    user: {
+                      userIds: [
+                        {
+                          idType: 'SHA256_EMAIL',
+                          idValue:
+                            '48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08',
+                        },
+                      ],
+                    },
+                  },
+                  {
+                    conversion: 'urn:lla:llaPartnerConversion:34567',
+                    conversionHappenedAt: 1697241600000,
+                    eventId: '12345',
+                    user: {
+                      userIds: [
+                        {
+                          idType: 'SHA256_EMAIL',
+                          idValue:
+                            '48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08',
+                        },
+                      ],
+                    },
+                  },
+                ],
+              },
+              userId: '',
+            }),
+            statusCode: 200,
             metadata: generateMetadata(1),
-            statTags: commonStats,
-            statusCode: 400,
           },
         ],
       },
@@ -289,7 +337,7 @@ export const validationTestData: ProcessorTestData[] = [
         body: [
           {
             message: generateTrackPayload({
-              event: 'random event',
+              event: 'ABC Searched',
               properties: commonUserPropertiesWithProductWithoutPrice,
               context: {
                 traits: commonUserTraits,
@@ -310,11 +358,51 @@ export const validationTestData: ProcessorTestData[] = [
         status: 200,
         body: [
           {
-            error:
-              '[LinkedIn Conversion API]: Cannot map price for event random event. Aborting: Workflow: procWorkflow, Step: commonFields, ChildStep: undefined, OriginalError: [LinkedIn Conversion API]: Cannot map price for event random event. Aborting',
+            output: transformResultBuilder({
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: `https://api.linkedin.com/rest/conversionEvents`,
+              headers: commonHeader,
+              params: {},
+              FORM: {},
+              files: {},
+              JSON: {
+                elements: [
+                  {
+                    conversion: 'urn:lla:llaPartnerConversion:1234567',
+                    conversionHappenedAt: 1697241600000,
+                    eventId: '12345',
+                    user: {
+                      userIds: [
+                        {
+                          idType: 'SHA256_EMAIL',
+                          idValue:
+                            '48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08',
+                        },
+                      ],
+                    },
+                  },
+                  {
+                    conversion: 'urn:lla:llaPartnerConversion:34567',
+                    conversionHappenedAt: 1697241600000,
+                    eventId: '12345',
+                    user: {
+                      userIds: [
+                        {
+                          idType: 'SHA256_EMAIL',
+                          idValue:
+                            '48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08',
+                        },
+                      ],
+                    },
+                  },
+                ],
+              },
+              userId: '',
+            }),
+            statusCode: 200,
             metadata: generateMetadata(1),
-            statTags: commonStats,
-            statusCode: 400,
           },
         ],
       },

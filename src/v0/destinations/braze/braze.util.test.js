@@ -6,6 +6,7 @@ const {
   getPurchaseObjs,
   setAliasObject,
   handleReservedProperties,
+  combineSubscriptionGroups,
 } = require('./util');
 const { processBatch } = require('./util');
 const {
@@ -254,7 +255,6 @@ describe('dedup utility tests', () => {
           enableNestedArrayOperations: false,
           enableSubscriptionGroupInGroupCall: false,
           eventFilteringOption: 'disable',
-          oneTrustCookieCategories: [],
           restApiKey: 'test-rest-api-key',
           supportDedup: true,
           trackAnonymousUser: true,
@@ -304,6 +304,20 @@ describe('dedup utility tests', () => {
         {
           external_ids: ['user1', 'user2'],
           user_aliases: [{ alias_name: 'user3', alias_label: 'rudder_id' }],
+          fields_to_export: [
+            'created_at',
+            'custom_attributes',
+            'dob',
+            'email',
+            'first_name',
+            'gender',
+            'home_city',
+            'last_name',
+            'phone',
+            'time_zone',
+            'external_id',
+            'user_aliases',
+          ],
         },
         {
           headers: {
@@ -944,7 +958,9 @@ describe('processBatch', () => {
               attributes: [{ id: i, name: 'test', xyz: 'abc' }],
               events: [{ id: i, event: 'test', xyz: 'abc' }],
               purchases: [{ id: i, purchase: 'test', xyz: 'abc' }],
-              subscription_groups: [{ id: i, group: 'test', xyz: 'abc' }],
+              subscription_groups: [
+                { subscription_group_id: i, group: 'test', subscription_state: 'abc' },
+              ],
               merge_updates: [{ id: i, alias: 'test', xyz: 'abc' }],
             },
           },
@@ -958,7 +974,7 @@ describe('processBatch', () => {
 
     // Assert that the response is as expected
     expect(result.length).toBe(1); // One successful batched request and one failure response
-    expect(result[0].batchedRequest.length).toBe(6); // Two batched requests
+    expect(result[0].batchedRequest.length).toBe(8); // Two batched requests
     expect(result[0].batchedRequest[0].body.JSON.partner).toBe('RudderStack'); // Verify partner name
     expect(result[0].batchedRequest[0].body.JSON.attributes.length).toBe(75); // First batch contains 75 attributes
     expect(result[0].batchedRequest[0].body.JSON.events.length).toBe(75); // First batch contains 75 events
@@ -967,10 +983,12 @@ describe('processBatch', () => {
     expect(result[0].batchedRequest[1].body.JSON.attributes.length).toBe(25); // Second batch contains remaining 25 attributes
     expect(result[0].batchedRequest[1].body.JSON.events.length).toBe(25); // Second batch contains remaining 25 events
     expect(result[0].batchedRequest[1].body.JSON.purchases.length).toBe(25); // Second batch contains remaining 25 purchases
-    expect(result[0].batchedRequest[2].body.JSON.subscription_groups.length).toBe(50); // First batch contains 50 subscription group
-    expect(result[0].batchedRequest[3].body.JSON.subscription_groups.length).toBe(50); // First batch contains 25 subscription group
-    expect(result[0].batchedRequest[4].body.JSON.merge_updates.length).toBe(50); // First batch contains 50 merge_updates
-    expect(result[0].batchedRequest[5].body.JSON.merge_updates.length).toBe(50); // First batch contains 25 merge_updates
+    expect(result[0].batchedRequest[2].body.JSON.subscription_groups.length).toBe(25); // First batch contains 25 subscription group
+    expect(result[0].batchedRequest[3].body.JSON.subscription_groups.length).toBe(25); // Second batch contains 25 subscription group
+    expect(result[0].batchedRequest[4].body.JSON.subscription_groups.length).toBe(25); // Third batch contains 25 subscription group
+    expect(result[0].batchedRequest[5].body.JSON.subscription_groups.length).toBe(25); // Fourth batch contains 25 subscription group
+    expect(result[0].batchedRequest[6].body.JSON.merge_updates.length).toBe(50); // First batch contains 50 merge_updates
+    expect(result[0].batchedRequest[7].body.JSON.merge_updates.length).toBe(50); // First batch contains 25 merge_updates
   });
 
   test('processBatch handles more than 75 attributes, events, and purchases with non uniform distribution', () => {
@@ -1041,7 +1059,9 @@ describe('processBatch', () => {
       batchedRequest: {
         body: {
           JSON: {
-            subscription_groups: [{ id: i, group: 'test', xyz: 'abc' }],
+            subscription_groups: [
+              { subscription_group_id: i, group: 'test', subscription_state: 'abc' },
+            ],
           },
         },
       },
@@ -1079,7 +1099,7 @@ describe('processBatch', () => {
     // Assert that the response is as expected
     expect(result.length).toBe(1); // One successful batched request and one failure response
     expect(result[0].metadata.length).toBe(490); // Check the total length is same as input jobs (120 + 160 + 100 + 70 +40)
-    expect(result[0].batchedRequest.length).toBe(6); // Two batched requests
+    expect(result[0].batchedRequest.length).toBe(7); // Two batched requests
     expect(result[0].batchedRequest[0].body.JSON.partner).toBe('RudderStack'); // Verify partner name
     expect(result[0].batchedRequest[0].body.JSON.attributes.length).toBe(75); // First batch contains 75 attributes
     expect(result[0].batchedRequest[0].body.JSON.events.length).toBe(75); // First batch contains 75 events
@@ -1089,9 +1109,10 @@ describe('processBatch', () => {
     expect(result[0].batchedRequest[1].body.JSON.events.length).toBe(45); // Second batch contains remaining 45 events
     expect(result[0].batchedRequest[1].body.JSON.purchases.length).toBe(75); // Second batch contains remaining 75 purchases
     expect(result[0].batchedRequest[2].body.JSON.purchases.length).toBe(10); // Third batch contains remaining 10 purchases
-    expect(result[0].batchedRequest[3].body.JSON.subscription_groups.length).toBe(50); // First batch contains 50 subscription group
-    expect(result[0].batchedRequest[4].body.JSON.subscription_groups.length).toBe(20); // First batch contains 20 subscription group
-    expect(result[0].batchedRequest[5].body.JSON.merge_updates.length).toBe(40); // First batch contains 50 merge_updates
+    expect(result[0].batchedRequest[3].body.JSON.subscription_groups.length).toBe(25); // First batch contains 25 subscription group
+    expect(result[0].batchedRequest[4].body.JSON.subscription_groups.length).toBe(25); // Second batch contains 25 subscription group
+    expect(result[0].batchedRequest[5].body.JSON.subscription_groups.length).toBe(20); // Third batch contains 20 subscription group
+    expect(result[0].batchedRequest[6].body.JSON.merge_updates.length).toBe(40); // First batch contains 50 merge_updates
   });
 
   test('check success and failure scenarios both for processBatch', () => {
@@ -1735,5 +1756,126 @@ describe('handleReservedProperties', () => {
       other_key: 'value',
       'special!@#$%^&*()_+-={}[]|\\;:\'",.<>?/`~': 'value',
     });
+  });
+});
+
+describe('combineSubscriptionGroups', () => {
+  it('should merge external_ids, emails, and phones for the same subscription_group_id and subscription_state', () => {
+    const input = [
+      {
+        subscription_group_id: 'group1',
+        subscription_state: 'Subscribed',
+        external_ids: ['id1', 'id2'],
+        emails: ['email1@example.com', 'email2@example.com'],
+        phones: ['+1234567890', '+0987654321'],
+      },
+      {
+        subscription_group_id: 'group1',
+        subscription_state: 'Subscribed',
+        external_ids: ['id2', 'id3'],
+        emails: ['email2@example.com', 'email3@example.com'],
+        phones: ['+1234567890', '+1122334455'],
+      },
+    ];
+
+    const expectedOutput = [
+      {
+        subscription_group_id: 'group1',
+        subscription_state: 'Subscribed',
+        external_ids: ['id1', 'id2', 'id3'],
+        emails: ['email1@example.com', 'email2@example.com', 'email3@example.com'],
+        phones: ['+1234567890', '+0987654321', '+1122334455'],
+      },
+    ];
+
+    const result = combineSubscriptionGroups(input);
+    expect(result).toEqual(expectedOutput);
+  });
+
+  it('should handle groups with missing external_ids, emails, or phones', () => {
+    const input = [
+      {
+        subscription_group_id: 'group1',
+        subscription_state: 'Subscribed',
+        external_ids: ['id1'],
+      },
+      {
+        subscription_group_id: 'group1',
+        subscription_state: 'Subscribed',
+        emails: ['email1@example.com'],
+      },
+      {
+        subscription_group_id: 'group1',
+        subscription_state: 'Subscribed',
+        phones: ['+1234567890'],
+      },
+    ];
+
+    const expectedOutput = [
+      {
+        subscription_group_id: 'group1',
+        subscription_state: 'Subscribed',
+        external_ids: ['id1'],
+        emails: ['email1@example.com'],
+        phones: ['+1234567890'],
+      },
+    ];
+
+    const result = combineSubscriptionGroups(input);
+    expect(result).toEqual(expectedOutput);
+  });
+
+  it('should handle multiple unique subscription groups', () => {
+    const input = [
+      {
+        subscription_group_id: 'group1',
+        subscription_state: 'Subscribed',
+        external_ids: ['id1'],
+      },
+      {
+        subscription_group_id: 'group2',
+        subscription_state: 'Unsubscribed',
+        external_ids: ['id2'],
+        emails: ['email2@example.com'],
+      },
+    ];
+
+    const expectedOutput = [
+      {
+        subscription_group_id: 'group1',
+        subscription_state: 'Subscribed',
+        external_ids: ['id1'],
+      },
+      {
+        subscription_group_id: 'group2',
+        subscription_state: 'Unsubscribed',
+        external_ids: ['id2'],
+        emails: ['email2@example.com'],
+      },
+    ];
+
+    const result = combineSubscriptionGroups(input);
+    expect(result).toEqual(expectedOutput);
+  });
+
+  it('should not include undefined fields in the output', () => {
+    const input = [
+      {
+        subscription_group_id: 'group1',
+        subscription_state: 'Subscribed',
+        external_ids: ['id1'],
+      },
+    ];
+
+    const expectedOutput = [
+      {
+        subscription_group_id: 'group1',
+        subscription_state: 'Subscribed',
+        external_ids: ['id1'],
+      },
+    ];
+
+    const result = combineSubscriptionGroups(input);
+    expect(result).toEqual(expectedOutput);
   });
 });

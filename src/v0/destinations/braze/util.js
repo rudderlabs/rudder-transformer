@@ -45,6 +45,42 @@ const getEndpointFromConfig = (destination) => {
   return endpoint;
 };
 
+// Merges external_ids, emails, and phones for entries with the same subscription_group_id and subscription_state
+const combineSubscriptionGroups = (subscriptionGroups) => {
+  const uniqueGroups = {};
+
+  subscriptionGroups.forEach((group) => {
+    const key = `${group.subscription_group_id}-${group.subscription_state}`;
+    if (!uniqueGroups[key]) {
+      uniqueGroups[key] = {
+        ...group,
+        external_ids: [...(group.external_ids || [])],
+        emails: [...(group.emails || [])],
+        phones: [...(group.phones || [])],
+      };
+    } else {
+      uniqueGroups[key].external_ids.push(...(group.external_ids || []));
+      uniqueGroups[key].emails.push(...(group.emails || []));
+      uniqueGroups[key].phones.push(...(group.phones || []));
+    }
+  });
+
+  return Object.values(uniqueGroups).map((group) => {
+    const result = {
+      subscription_group_id: group.subscription_group_id,
+      subscription_state: group.subscription_state,
+      external_ids: [...new Set(group.external_ids)],
+    };
+    if (group.emails?.length) {
+      result.emails = [...new Set(group.emails)];
+    }
+    if (group.phones?.length) {
+      result.phones = [...new Set(group.phones)];
+    }
+    return result;
+  });
+};
+
 const CustomAttributeOperationUtil = {
   customAttributeUpdateOperation(key, data, traits, mergeObjectsUpdateOperation) {
     data[key] = {};
@@ -141,19 +177,36 @@ const BrazeDedupUtility = {
     const identfierChunks = _.chunk(identifiers, 50);
     return identfierChunks;
   },
-
+  getFieldsToExport() {
+    return [
+      'created_at',
+      'custom_attributes',
+      'dob',
+      'email',
+      'first_name',
+      'gender',
+      'home_city',
+      'last_name',
+      'phone',
+      'time_zone',
+      'external_id',
+      'user_aliases',
+      // 'country' and 'language' not needed because it is not billable so we don't use it
+    ];
+  },
   async doApiLookup(identfierChunks, { destination, metadata }) {
     return Promise.all(
       identfierChunks.map(async (ids) => {
         const externalIdentifiers = ids.filter((id) => id.external_id);
         const aliasIdentifiers = ids.filter((id) => id.alias_name !== undefined);
-
+        const fieldsToExport = this.getFieldsToExport();
         const { processedResponse: lookUpResponse } = await handleHttpRequest(
           'post',
           `${getEndpointFromConfig(destination)}/users/export/ids`,
           {
             external_ids: externalIdentifiers.map((extId) => extId.external_id),
             user_aliases: aliasIdentifiers,
+            fields_to_export: fieldsToExport,
           },
           {
             headers: {
@@ -364,8 +417,22 @@ function prepareGroupAndAliasBatch(arrayChunks, responseArray, destination, type
     } else if (type === 'subscription') {
       response.endpoint = getSubscriptionGroupEndPoint(getEndpointFromConfig(destination));
       const subscription_groups = chunk;
+      // maketool transformed event
+      logger.info(`braze subscription chunk ${JSON.stringify(subscription_groups)}`);
+
+      stats.gauge('braze_batch_subscription_size', subscription_groups.length, {
+        destination_id: destination.ID,
+      });
+
+      // Deduplicate the subscription groups before constructing the response body
+      const deduplicatedSubscriptionGroups = combineSubscriptionGroups(subscription_groups);
+
+      stats.gauge('braze_batch_subscription_combined_size', deduplicatedSubscriptionGroups.length, {
+        destination_id: destination.ID,
+      });
+
       response.body.JSON = removeUndefinedAndNullValues({
-        subscription_groups,
+        subscription_groups: deduplicatedSubscriptionGroups,
       });
     }
     responseArray.push({
@@ -739,4 +806,5 @@ module.exports = {
   collectStatsForAliasFailure,
   collectStatsForAliasMissConfigurations,
   handleReservedProperties,
+  combineSubscriptionGroups,
 };

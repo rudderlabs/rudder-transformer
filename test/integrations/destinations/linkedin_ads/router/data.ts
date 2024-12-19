@@ -20,11 +20,6 @@ const config = {
       to: '34567',
     },
   ],
-  oneTrustCookieCategories: [
-    {
-      oneTrustCookieCategory: 'Marketing',
-    },
-  ],
 };
 
 const commonDestination = {

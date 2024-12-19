@@ -1,8 +1,9 @@
 /* eslint-disable no-param-reassign */
 
 const get = require('get-value');
-const { cloneDeep } = require('lodash');
+const { cloneDeep, isNumber } = require('lodash');
 const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
+const isString = require('lodash/isString');
 const {
   constructPayload,
   defaultRequestConfig,
@@ -35,7 +36,17 @@ const updateMappingJson = (mapping) => {
 const responseBuilder = async (metadata, message, { Config }, payload) => {
   const response = defaultRequestConfig();
   const { event } = message;
-  const filteredCustomerId = removeHyphens(Config.customerId);
+  const { subAccount } = Config;
+  let { customerId, loginCustomerId } = Config;
+
+  if (isNumber(customerId)) {
+    customerId = customerId.toString();
+  }
+  if (!isString(customerId)) {
+    throw new InstrumentationError('customerId should be a string or number');
+  }
+  const filteredCustomerId = removeHyphens(customerId);
+
   response.endpoint = `${BASE_ENDPOINT}/${filteredCustomerId}:uploadConversionAdjustments`;
   response.body.JSON = payload;
   const accessToken = getAccessToken(metadata, 'access_token');
@@ -45,24 +56,32 @@ const responseBuilder = async (metadata, message, { Config }, payload) => {
     'developer-token': getValueFromMessage(metadata, 'secret.developer_token'),
   };
   response.params = { event, customerId: filteredCustomerId };
-  if (Config.subAccount)
-    if (Config.loginCustomerId) {
-      const filteredLoginCustomerId = removeHyphens(Config.loginCustomerId);
-      response.headers['login-customer-id'] = filteredLoginCustomerId;
-    } else throw new ConfigurationError(`LoginCustomerId is required as subAccount is true.`);
+  if (subAccount) {
+    if (!loginCustomerId) {
+      throw new ConfigurationError(`loginCustomerId is required as subAccount is true.`);
+    }
+    if (isNumber(loginCustomerId)) {
+      loginCustomerId = loginCustomerId.toString();
+    }
+    if (loginCustomerId && !isString(loginCustomerId)) {
+      throw new InstrumentationError('loginCustomerId should be a string or number');
+    }
+    const filteredLoginCustomerId = removeHyphens(loginCustomerId);
+    response.headers['login-customer-id'] = filteredLoginCustomerId;
+  }
 
   return response;
 };
 
 const processTrackEvent = async (metadata, message, destination) => {
-  let flag = 0;
+  let flag = false;
   const { Config } = destination;
   const { event } = message;
   const { listOfConversions } = Config;
   if (listOfConversions.some((i) => i.conversions === event)) {
-    flag = 1;
+    flag = true;
   }
-  if (event === undefined || event === '' || flag === 0) {
+  if (event === undefined || event === '' || !flag) {
     throw new ConfigurationError(
       `Conversion named "${event}" was not specified in the RudderStack destination configuration`,
     );

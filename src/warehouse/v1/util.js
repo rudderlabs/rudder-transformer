@@ -1,8 +1,7 @@
-const _ = require('lodash');
-
 const reservedANSIKeywordsMap = require('../config/ReservedKeywords.json');
 const { isDataLakeProvider } = require('../config/helpers');
 const { TransformationError } = require('@rudderstack/integrations-lib');
+const { snakeCase, snakeCaseWithNumbers } = require('../snakecase/snakecase');
 
 function safeTableName(options, name = '') {
   const { provider } = options;
@@ -12,7 +11,7 @@ function safeTableName(options, name = '') {
   if (tableName === '') {
     throw new TransformationError('Table name cannot be empty.');
   }
-  if (provider === 'snowflake') {
+  if (provider === 'snowflake' || provider === 'snowpipe_streaming') {
     tableName = tableName.toUpperCase();
   } else if (provider === 'postgres') {
     tableName = tableName.substr(0, 63);
@@ -42,7 +41,7 @@ function safeColumnName(options, name = '') {
   if (columnName === '') {
     throw new TransformationError('Column name cannot be empty.');
   }
-  if (provider === 'snowflake') {
+  if (provider === 'snowflake' || provider === 'snowpipe_streaming') {
     columnName = columnName.toUpperCase();
   } else if (provider === 'postgres') {
     columnName = columnName.substr(0, 63);
@@ -82,7 +81,7 @@ function safeColumnName(options, name = '') {
   path to $1,00,000 to path_to_1_00_000
   return an empty string if it couldn't find a char if its ascii value doesnt belong to numbers or english alphabets
 */
-function transformName(provider, name = '') {
+function transformName(options, provider, name = '') {
   const extractedValues = [];
   let extractedValue = '';
   for (let i = 0; i < name.length; i += 1) {
@@ -104,14 +103,17 @@ function transformName(provider, name = '') {
   if (extractedValue !== '') {
     extractedValues.push(extractedValue);
   }
+  const underscoreDivideNumbers = options?.underscoreDivideNumbers || false;
+  const snakeCaseFn = underscoreDivideNumbers ? snakeCase : snakeCaseWithNumbers;
+
   let key = extractedValues.join('_');
   if (name.startsWith('_')) {
     // do not remove leading underscores to allow esacaping rudder keywords with underscore
     // _timestamp -> _timestamp
     // __timestamp -> __timestamp
-    key = name.match(/^_*/)[0] + _.snakeCase(key.replace(/^_*/, ''));
+    key = name.match(/^_*/)[0] + snakeCaseFn(key.replace(/^_*/, ''));
   } else {
-    key = _.snakeCase(key);
+    key = snakeCaseFn(key);
   }
 
   if (key !== '' && key.charCodeAt(0) >= 48 && key.charCodeAt(0) <= 57) {
@@ -150,7 +152,7 @@ function toBlendoCase(name = '') {
 
 function transformTableName(options, name = '') {
   const useBlendoCasing = options.integrationOptions?.useBlendoCasing || false;
-  return useBlendoCasing ? toBlendoCase(name) : transformName('', name);
+  return useBlendoCasing ? toBlendoCase(name) : transformName(options, '', name);
 }
 
 function transformColumnName(options, name = '') {
@@ -158,7 +160,7 @@ function transformColumnName(options, name = '') {
   const useBlendoCasing = options.integrationOptions?.useBlendoCasing || false;
   return useBlendoCasing
     ? transformNameToBlendoCase(provider, name)
-    : transformName(provider, name);
+    : transformName(options, provider, name);
 }
 
 module.exports = {

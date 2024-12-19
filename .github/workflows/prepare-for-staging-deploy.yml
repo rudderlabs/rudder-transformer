@@ -24,7 +24,7 @@ jobs:
       tag_name_ut: ${{ steps.gen_tag_names.outputs.tag_name_ut }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4.1.1
+        uses: actions/checkout@v4.2.1
         with:
           fetch-depth: 1
 
@@ -82,11 +82,12 @@ jobs:
     runs-on: ubuntu-latest
     needs: [generate-tag-names, build-transformer-image, build-user-transformer-image]
     env:
+      TF_IMAGE_REPOSITORY: rudderstack/rudder-transformer
       TAG_NAME: ${{ needs.generate-tag-names.outputs.tag_name }}
       UT_TAG_NAME: ${{ needs.generate-tag-names.outputs.tag_name_ut }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4.1.1
+        uses: actions/checkout@v4.2.1
         with:
           fetch-depth: 1
 
@@ -117,6 +118,7 @@ jobs:
             git checkout -b $BRANCH_NAME
 
             cd helm-charts/shared-services/per-az/environment/staging
+            yq eval -i ".rudder-transformer.image.repository=\"$TF_IMAGE_REPOSITORY\"" staging.yaml
             yq eval -i ".rudder-transformer.image.tag=\"$TAG_NAME\"" staging.yaml
             yq eval -i ".user-transformer.image.tag=\"$TAG_NAME\"" staging.yaml
             git add staging.yaml

@@ -1,0 +1,36 @@
+[
+  {
+    "destKey": "dataFields",
+    "sourceKeys": "properties",
+    "required": false
+  },
+  {
+    "destKey": "id",
+    "sourceKeys": ["properties.order_id", "properties.orderId", "properties.event_id"],
+    "required": false,
+    "metadata": {
+      "type": "toString"
+    }
+  },
+  {
+    "destKey": "createdAt",
+    "sourceKeys": "createdAt",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "campaignId",
+    "sourceKeys": "properties.campaignId",
+    "required": false
+  },
+  {
+    "destKey": "templateId",
+    "sourceKeys": "properties.templateId",
+    "required": false
+  },
+  {
+    "destKey": "total",
+    "sourceKeys": "properties.total",
+    "required": true
+  }
+]

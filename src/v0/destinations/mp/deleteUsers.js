@@ -1,6 +1,10 @@
 const lodash = require('lodash');
-const { ConfigurationError, NetworkError } = require('@rudderstack/integrations-lib');
-const { handleHttpRequest } = require('../../../adapters/network');
+const {
+  ConfigurationError,
+  NetworkError,
+  handleHttpRequest,
+} = require('@rudderstack/integrations-lib');
+// const { handleHttpRequest } = require('../../../adapters/network');
 const { isHttpStatusSuccess } = require('../../util');
 const {
   DEL_MAX_BATCH_SIZE,

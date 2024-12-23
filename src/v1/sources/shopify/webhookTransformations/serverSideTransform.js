@@ -11,11 +11,11 @@ const {
   MAPPING_CATEGORIES,
   IDENTIFY_TOPICS,
   ECOM_TOPICS,
-  RUDDER_ECOM_MAP,
   SUPPORTED_TRACK_EVENTS,
   SHOPIFY_TRACK_MAP,
   lineItemsMappingJSON,
 } = require('../../../../v0/sources/shopify/config');
+const { RUDDER_ECOM_MAP } = require('../config');
 const {
   createPropertiesForEcomEventFromWebhook,
   getProductsFromLineItems,

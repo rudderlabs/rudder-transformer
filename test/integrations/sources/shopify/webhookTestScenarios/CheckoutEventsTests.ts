@@ -217,7 +217,7 @@ export const checkoutEventsTestScenarios = [
                     SHOPIFY: true,
                   },
                   type: 'track',
-                  event: 'Checkout Started',
+                  event: 'Checkout Started Server',
                   properties: {
                     order_id: '35550298931313',
                     value: '600.00',

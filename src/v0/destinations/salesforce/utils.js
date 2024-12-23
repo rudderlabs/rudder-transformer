@@ -1,9 +1,3 @@
-import { SalesforceClient } from './salesforce-sdk/src/api/salesforceClient'; // Your main SDK entry point
-// import {
-//   SalesforceDestinationConfig,
-//   OAuthCredentials,
-// } from './salesforce-sdk/src/types/salesforceTypes';
-
 const {
   RetryableError,
   ThrottledError,
@@ -212,19 +206,17 @@ const getAccessToken = async ({ destination, metadata }) => {
 
 const collectAuthorizationInfo = async (event) => {
   let authorizationFlow;
-  let salesforceInstance;
+  let authorizationData;
   const { Name } = event.destination.DestinationDefinition;
   const lowerCaseName = Name?.toLowerCase?.();
   if (isDefinedAndNotNull(event?.metadata?.secret) || lowerCaseName === SALESFORCE_OAUTH_SANDBOX) {
     authorizationFlow = OAUTH;
-    salesforceInstance = new SalesforceClient(event?.metadata?.secret);
-    // authorizationData = createAuthProvider('oauth', getAccessTokenOauth(event.metadata));
+    authorizationData = getAccessTokenOauth(event.metadata);
   } else {
     authorizationFlow = LEGACY;
-    salesforceInstance = new SalesforceClient(event?.destination?.Config);
-    // authorizationData = createAuthProvider('legacy', await getAccessToken());
+    authorizationData = await getAccessToken(event);
   }
-  return { authorizationFlow, salesforceInstance };
+  return { authorizationFlow, authorizationData };
 };
 
 const getAuthHeader = (authInfo) => {

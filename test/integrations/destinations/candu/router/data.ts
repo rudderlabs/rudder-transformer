@@ -20,12 +20,7 @@ export const data = [
                   Config: {
                     destConfig: { defaultConfig: ['apiKey'] },
                     excludeKeys: [],
-                    includeKeys: [
-                      'apiKey',
-                      'blackListedEvents',
-                      'whiteListedEvents',
-                      'oneTrustCookieCategories',
-                    ],
+                    includeKeys: ['apiKey', 'blackListedEvents', 'whiteListedEvents'],
                     saveDestinationResponse: true,
                     secretKeys: ['apiKey'],
                     supportedMessageTypes: ['identify', 'track'],
@@ -152,12 +147,7 @@ export const data = [
                   Config: {
                     destConfig: { defaultConfig: ['apiKey'] },
                     excludeKeys: [],
-                    includeKeys: [
-                      'apiKey',
-                      'blackListedEvents',
-                      'whiteListedEvents',
-                      'oneTrustCookieCategories',
-                    ],
+                    includeKeys: ['apiKey', 'blackListedEvents', 'whiteListedEvents'],
                     saveDestinationResponse: true,
                     secretKeys: ['apiKey'],
                     supportedMessageTypes: ['identify', 'track'],

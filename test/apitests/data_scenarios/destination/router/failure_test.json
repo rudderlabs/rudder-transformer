@@ -157,7 +157,7 @@
                   "whitelistedEvents",
                   "eventFilteringOption"
                 ],
-                "web": ["useNativeSDK", "oneTrustCookieCategories"]
+                "web": ["useNativeSDK"]
               },
               "excludeKeys": [],
               "includeKeys": [
@@ -171,7 +171,6 @@
                 "deduplicationKey",
                 "blacklistedEvents",
                 "whitelistedEvents",
-                "oneTrustCookieCategories",
                 "eventFilteringOption"
               ],
               "saveDestinationResponse": false,
@@ -395,7 +394,7 @@
                   "whitelistedEvents",
                   "eventFilteringOption"
                 ],
-                "web": ["useNativeSDK", "oneTrustCookieCategories"]
+                "web": ["useNativeSDK"]
               },
               "excludeKeys": [],
               "includeKeys": [
@@ -409,7 +408,6 @@
                 "deduplicationKey",
                 "blacklistedEvents",
                 "whitelistedEvents",
-                "oneTrustCookieCategories",
                 "eventFilteringOption"
               ],
               "saveDestinationResponse": false,
@@ -633,7 +631,7 @@
                   "whitelistedEvents",
                   "eventFilteringOption"
                 ],
-                "web": ["useNativeSDK", "oneTrustCookieCategories"]
+                "web": ["useNativeSDK"]
               },
               "excludeKeys": [],
               "includeKeys": [
@@ -647,7 +645,6 @@
                 "deduplicationKey",
                 "blacklistedEvents",
                 "whitelistedEvents",
-                "oneTrustCookieCategories",
                 "eventFilteringOption"
               ],
               "saveDestinationResponse": false,
@@ -1018,7 +1015,7 @@
                   "whitelistedEvents",
                   "eventFilteringOption"
                 ],
-                "web": ["useNativeSDK", "oneTrustCookieCategories"]
+                "web": ["useNativeSDK"]
               },
               "excludeKeys": [],
               "includeKeys": [
@@ -1032,7 +1029,6 @@
                 "deduplicationKey",
                 "blacklistedEvents",
                 "whitelistedEvents",
-                "oneTrustCookieCategories",
                 "eventFilteringOption"
               ],
               "saveDestinationResponse": false,
@@ -1234,7 +1230,7 @@
                   "whitelistedEvents",
                   "eventFilteringOption"
                 ],
-                "web": ["useNativeSDK", "oneTrustCookieCategories"]
+                "web": ["useNativeSDK"]
               },
               "excludeKeys": [],
               "includeKeys": [
@@ -1248,7 +1244,6 @@
                 "deduplicationKey",
                 "blacklistedEvents",
                 "whitelistedEvents",
-                "oneTrustCookieCategories",
                 "eventFilteringOption"
               ],
               "saveDestinationResponse": false,

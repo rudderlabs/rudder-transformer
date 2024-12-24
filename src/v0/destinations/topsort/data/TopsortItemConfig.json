@@ -1,0 +1,15 @@
+[
+  {
+    "destKey": "position",
+    "sourceKeys": ["properties.position", "position"],
+    "metadata": {
+      "toInt": true
+    },
+    "required": false
+  },
+  {
+    "destKey": "productId",
+    "sourceKeys": ["properties.product_id", "product_id"],
+    "required": false
+  }
+]

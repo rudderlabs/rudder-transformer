@@ -32,11 +32,6 @@ const commonDestination: Destination = {
         to: '34567',
       },
     ],
-    oneTrustCookieCategories: [
-      {
-        oneTrustCookieCategory: 'Marketing',
-      },
-    ],
   },
   Enabled: true,
 };

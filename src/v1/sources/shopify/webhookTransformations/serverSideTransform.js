@@ -1,18 +1,9 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 const lodash = require('lodash');
 const get = require('get-value');
-// const { RedisError } = require('@rudderstack/integrations-lib');
 const stats = require('../../../../util/stats');
-const {
-  getShopifyTopic,
-  // createPropertiesForEcomEvent,
-  extractEmailFromPayload,
-  getAnonymousIdAndSessionId,
-  // getHashLineItems,
-} = require('../../../../v0/sources/shopify/util');
-// const logger = require('../../../logger');
+const { getShopifyTopic, extractEmailFromPayload } = require('../../../../v0/sources/shopify/util');
 const { removeUndefinedAndNullValues, isDefinedAndNotNull } = require('../../../../v0/util');
-// const { RedisDB } = require('../../../util/redis/redisConnector');
 const Message = require('../../../../v0/sources/message');
 const { EventType } = require('../../../../constants');
 const {
@@ -28,6 +19,7 @@ const {
 const {
   createPropertiesForEcomEventFromWebhook,
   getProductsFromLineItems,
+  getAnonymousIdFromAttributes,
 } = require('./serverSideUtlis');
 
 const NO_OPERATION_SUCCESS = {
@@ -128,12 +120,9 @@ const processEvent = async (inputEvent, metricMetadata) => {
       message.setProperty('traits.email', email);
     }
   }
+  // attach anonymousId if the event is track event using note_attributes
   if (message.type !== EventType.IDENTIFY) {
-    const { anonymousId } = await getAnonymousIdAndSessionId(
-      message,
-      { shopifyTopic, ...metricMetadata },
-      null,
-    );
+    const anonymousId = getAnonymousIdFromAttributes(event);
     if (isDefinedAndNotNull(anonymousId)) {
       message.setProperty('anonymousId', anonymousId);
     }

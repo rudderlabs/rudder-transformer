@@ -1,8 +1,8 @@
-/* eslint-disable no-param-reassign */
 const sha256 = require('sha256');
 const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
 
 const { API_VERSION } = require('./config');
+const { CommonUtils } = require('../../../../util/common');
 
 const VALID_ACTION_SOURCES = ['app_android', 'app_ios', 'web', 'offline'];
 
@@ -21,9 +21,15 @@ const ecomEventMaps = [
   },
 ];
 
-const USER_NON_ARRAY_PROPERTIES = ['client_user_agent', 'client_ip_address'];
+const USER_NON_ARRAY_PROPERTIES = [
+  'client_user_agent',
+  'client_ip_address',
+  'click_id',
+  'partner_id',
+];
 
-const getHashedValue = (key, value) => {
+const transformValue = (key, value) => {
+  const arrayValue = CommonUtils.toArray(value);
   switch (key) {
     case 'em':
     case 'ct':
@@ -32,32 +38,17 @@ const getHashedValue = (key, value) => {
     case 'ln':
     case 'fn':
     case 'ge':
-      value = Array.isArray(value)
-        ? value.map((val) => val.toString().trim().toLowerCase())
-        : value.toString().trim().toLowerCase();
-      break;
+      return arrayValue.map((val) => val.toString().trim().toLowerCase());
     case 'ph':
-      // phone numbers should only contain digits & should not contain leading zeros
-      value = Array.isArray(value)
-        ? value.map((val) => val.toString().replace(/\D/g, '').replace(/^0+/, ''))
-        : value.toString().replace(/\D/g, '').replace(/^0+/, '');
-      break;
+      return arrayValue.map((val) => val.toString().replace(/\D/g, '').replace(/^0+/, ''));
     case 'zp':
-      // zip fields should only contain digits
-      value = Array.isArray(value)
-        ? value.map((val) => val.toString().trim().replace(/\D/g, ''))
-        : value.toString().replace(/\D/g, '');
-      break;
-    case 'hashed_maids':
-    case 'external_id':
-    case 'db':
-      // no action needed on value
-      break;
+      return arrayValue.map((val) => val.toString().trim().replace(/\D/g, ''));
     default:
-      return String(value);
+      return arrayValue;
   }
-  return Array.isArray(value) ? value.map((val) => sha256(val)) : [sha256(value)];
 };
+
+const getHashedValue = (key, value) => transformValue(key, value).map((val) => sha256(val));
 
 /**
  *
@@ -67,10 +58,15 @@ const getHashedValue = (key, value) => {
  * Ref: https://s.pinimg.com/ct/docs/conversions_api/dist/v3.html
  */
 const processUserPayload = (userPayload) => {
-  Object.keys(userPayload).forEach((key) => {
-    userPayload[key] = getHashedValue(key, userPayload[key]);
+  const newPayload = { ...userPayload };
+  Object.keys(newPayload).forEach((key) => {
+    if (USER_NON_ARRAY_PROPERTIES.includes(key)) {
+      newPayload[key] = String(newPayload[key]);
+    } else {
+      newPayload[key] = getHashedValue(key, newPayload[key]);
+    }
   });
-  return userPayload;
+  return newPayload;
 };
 
 /**
@@ -99,11 +95,7 @@ const processHashedUserPayload = (userPayload, message) => {
   const processedHashedUserPayload = {};
   Object.keys(userPayload).forEach((key) => {
     if (!USER_NON_ARRAY_PROPERTIES.includes(key)) {
-      if (Array.isArray(userPayload[key])) {
-        processedHashedUserPayload[key] = [...userPayload[key]];
-      } else {
-        processedHashedUserPayload[key] = [userPayload[key]];
-      }
+      processedHashedUserPayload[key] = CommonUtils.toArray(userPayload[key]);
     } else {
       processedHashedUserPayload[key] = userPayload[key];
     }
@@ -111,10 +103,8 @@ const processHashedUserPayload = (userPayload, message) => {
   // multiKeyMap will works on only specific values like m, male, MALE, f, F, Female
   // if hashed data is sent from the user, it is directly set over here
   const gender = message.traits?.gender || message.context?.traits?.gender;
-  if (gender && Array.isArray(gender)) {
-    processedHashedUserPayload.ge = [...gender];
-  } else if (gender) {
-    processedHashedUserPayload.ge = [gender];
+  if (gender) {
+    processedHashedUserPayload.ge = CommonUtils.toArray(gender);
   }
   return processedHashedUserPayload;
 };

@@ -45,6 +45,7 @@ export interface TestCaseData {
   skipGo?: string;
   scenario?: string;
   successCriteria?: string;
+  tags?: string[];
   comment?: string;
   feature: string;
   module: string;

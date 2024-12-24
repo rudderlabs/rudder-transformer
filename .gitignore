@@ -140,3 +140,7 @@ dist
 # component test report
 test_reports/
 temp/
+
+# Allure
+allure-results/
+allure-report/

@@ -15,7 +15,6 @@ import {
   RouterTestData,
   ProxyV1TestData,
 } from '../integrations/testTypes';
-import { method } from 'lodash';
 
 // Default metadata to fill in missing fields
 const defaultMetadata: Metadata = {

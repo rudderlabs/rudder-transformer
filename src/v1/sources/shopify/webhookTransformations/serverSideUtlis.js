@@ -25,12 +25,15 @@ const getProductsFromLineItems = (lineItems, mapping) => {
  * @param {Object} message
  * @returns {Object} properties
  */
-const createPropertiesForEcomEventFromWebhook = (message) => {
+const createPropertiesForEcomEventFromWebhook = (message, shopifyTopic) => {
   const { line_items: lineItems } = message;
   if (!lineItems || lineItems.length === 0) {
     return [];
   }
   const mappedPayload = constructPayload(message, productMappingJSON);
+  if (shopifyTopic === 'orders_updated' || shopifyTopic === 'checkouts_update') {
+    delete mappedPayload.value;
+  }
   mappedPayload.products = getProductsFromLineItems(lineItems, lineItemsMappingJSON);
   return mappedPayload;
 };

@@ -46,7 +46,7 @@ const ecomPayloadBuilder = (event, shopifyTopic) => {
   message.setEventType(EventType.TRACK);
   message.setEventName(RUDDER_ECOM_MAP[shopifyTopic]);
 
-  const properties = createPropertiesForEcomEventFromWebhook(event);
+  const properties = createPropertiesForEcomEventFromWebhook(event, shopifyTopic);
   message.properties = removeUndefinedAndNullValues(properties);
   // Map Customer details if present
   const customerDetails = get(event, 'customer');

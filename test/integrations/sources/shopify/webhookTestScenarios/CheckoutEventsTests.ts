@@ -543,7 +543,6 @@ export const checkoutEventsTestScenarios = [
                       },
                     ],
                     tax: 0,
-                    value: '736.85',
                   },
                   timestamp: '2024-09-17T07:29:02.000Z',
                   traits: {
@@ -1208,7 +1207,6 @@ export const checkoutEventsTestScenarios = [
                   event: 'Order Updated',
                   properties: {
                     order_id: '5778367414385',
-                    value: '600.00',
                     tax: 0,
                     currency: 'USD',
                     products: [

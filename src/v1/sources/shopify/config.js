@@ -36,7 +36,7 @@ const PIXEL_EVENT_MAPPING = {
 };
 
 const RUDDER_ECOM_MAP = {
-  checkouts_create: 'Checkout Started Server',
+  checkouts_create: 'Checkout Started - Webhook',
   checkouts_update: 'Checkout Updated',
   orders_updated: 'Order Updated',
   orders_create: 'Order Created',

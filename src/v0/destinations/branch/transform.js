@@ -46,7 +46,7 @@ function getCategoryAndName(rudderEventName) {
     let requiredName = null;
     let requiredCategory = null;
     // eslint-disable-next-line array-callback-return, sonarjs/no-ignored-return
-    Object.keys(category.name).find((branchKey) => {
+    Object.keys(category.name).forEach((branchKey) => {
       if (
         typeof branchKey === 'string' &&
         typeof rudderEventName === 'string' &&
@@ -55,9 +55,7 @@ function getCategoryAndName(rudderEventName) {
       ) {
         requiredName = category.name[branchKey];
         requiredCategory = category;
-        return true;
       }
-      return false;
     });
     if (requiredName != null && requiredCategory != null) {
       return { evName: requiredName, category: requiredCategory };
@@ -117,14 +115,12 @@ function mapPayload(category, rudderProperty, rudderPropertiesObj) {
   let valFound = false;
   if (category.content_items) {
     // eslint-disable-next-line sonarjs/no-ignored-return
-    Object.keys(category.content_items).find((branchMappingProperty) => {
+    Object.keys(category.content_items).forEach((branchMappingProperty) => {
       if (branchMappingProperty === rudderProperty) {
         const tmpKeyName = category.content_items[branchMappingProperty];
         contentItems[tmpKeyName] = rudderPropertiesObj[rudderProperty];
         valFound = true;
-        return true;
       }
-      return false;
     });
   }
 

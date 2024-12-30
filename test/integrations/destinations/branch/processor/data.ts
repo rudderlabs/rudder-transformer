@@ -1,7 +1,52 @@
-export const data = [
+/**
+ * Auto-migrated and optimized test cases
+ * Generated on: 2024-12-30T11:04:59.426Z
+ */
+
+import { ProcessorTestData } from '../../../testTypes';
+import { Metadata } from '../../../../../src/types';
+
+const baseMetadata: Metadata = {
+  sourceId: 'default-source',
+  workspaceId: 'default-workspace',
+  namespace: 'default-namespace',
+  instanceId: 'default-instance',
+  sourceType: 'default-source-type',
+  sourceCategory: 'default-category',
+  trackingPlanId: 'default-tracking-plan',
+  trackingPlanVersion: 1,
+  sourceTpConfig: {},
+  mergedTpConfig: {},
+  destinationId: 'default-destination',
+  jobRunId: 'default-job-run',
+  jobId: 1,
+  sourceBatchId: 'default-batch',
+  sourceJobId: 'default-source-job',
+  sourceJobRunId: 'default-source-job-run',
+  sourceTaskId: 'default-task',
+  sourceTaskRunId: 'default-task-run',
+  recordId: {},
+  destinationType: 'default-destination-type',
+  messageId: 'default-message-id',
+  oauthAccessToken: 'default-token',
+  messageIds: ['default-message-id'],
+  rudderId: 'default-rudder-id',
+  receivedAt: '2024-12-30T11:04:58.693Z',
+  eventName: 'default-event',
+  eventType: 'default-type',
+  sourceDefinitionId: 'default-source-def',
+  destinationDefinitionId: 'default-dest-def',
+  transformationId: 'default-transform',
+  dontBatch: false,
+};
+
+export const data: ProcessorTestData[] = [
   {
+    id: 'processor-1735556699424',
     name: 'branch',
     description: 'Test 0',
+    scenario: 'Default processor scenario',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -9,21 +54,6 @@ export const data = [
       request: {
         body: [
           {
-            destination: {
-              Config: {
-                branchKey: '<branch key goes here>',
-                useNativeSDK: false,
-              },
-              DestinationDefinition: {
-                DisplayName: 'Branch Metrics',
-                ID: '1WTpBSTiL3iAUHUdW7rHT4sawgU',
-                Name: 'BRANCH',
-              },
-              Enabled: true,
-              ID: '1WTpIHpH7NTBgjeiUPW1kCUgZGI',
-              Name: 'branch test',
-              Transformations: [],
-            },
             message: {
               anonymousId: 'sampath',
               channel: 'web',
@@ -80,6 +110,27 @@ export const data = [
               type: 'track',
               userId: 'sampath',
             },
+            metadata: baseMetadata,
+            destination: {
+              ID: '1WTpIHpH7NTBgjeiUPW1kCUgZGI',
+              Name: 'branch test',
+              DestinationDefinition: {
+                DisplayName: 'Branch Metrics',
+                ID: '1WTpBSTiL3iAUHUdW7rHT4sawgU',
+                Name: 'BRANCH',
+                Config: {},
+              },
+              Config: {
+                branchKey: '<branch key goes here>',
+                useNativeSDK: false,
+              },
+              Enabled: true,
+              WorkspaceID: 'default-workspace',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
+            },
           },
         ],
       },
@@ -129,6 +180,7 @@ export const data = [
               files: {},
               userId: 'sampath',
             },
+            metadata: baseMetadata,
             statusCode: 200,
           },
         ],
@@ -136,8 +188,11 @@ export const data = [
     },
   },
   {
+    id: 'processor-1735556699424',
     name: 'branch',
     description: 'Test 1',
+    scenario: 'Default processor scenario',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -145,21 +200,6 @@ export const data = [
       request: {
         body: [
           {
-            destination: {
-              Config: {
-                branchKey: '<branch key goes here>',
-                useNativeSDK: false,
-              },
-              DestinationDefinition: {
-                DisplayName: 'Branch Metrics',
-                ID: '1WTpBSTiL3iAUHUdW7rHT4sawgU',
-                Name: 'BRANCH',
-              },
-              Enabled: true,
-              ID: '1WTpIHpH7NTBgjeiUPW1kCUgZGI',
-              Name: 'branch test',
-              Transformations: [],
-            },
             message: {
               anonymousId: 'sampath',
               channel: 'web',
@@ -212,6 +252,27 @@ export const data = [
               type: 'identify',
               userId: 'sampath',
             },
+            metadata: baseMetadata,
+            destination: {
+              ID: '1WTpIHpH7NTBgjeiUPW1kCUgZGI',
+              Name: 'branch test',
+              DestinationDefinition: {
+                DisplayName: 'Branch Metrics',
+                ID: '1WTpBSTiL3iAUHUdW7rHT4sawgU',
+                Name: 'BRANCH',
+                Config: {},
+              },
+              Config: {
+                branchKey: '<branch key goes here>',
+                useNativeSDK: false,
+              },
+              Enabled: true,
+              WorkspaceID: 'default-workspace',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
+            },
           },
         ],
       },
@@ -261,6 +322,7 @@ export const data = [
               files: {},
               userId: 'sampath',
             },
+            metadata: baseMetadata,
             statusCode: 200,
           },
         ],
@@ -268,8 +330,11 @@ export const data = [
     },
   },
   {
+    id: 'processor-1735556699424',
     name: 'branch',
     description: 'Test 2',
+    scenario: 'Default processor scenario',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -277,21 +342,6 @@ export const data = [
       request: {
         body: [
           {
-            destination: {
-              Config: {
-                branchKey: '<branch key goes here>',
-                useNativeSDK: false,
-              },
-              DestinationDefinition: {
-                DisplayName: 'Branch Metrics',
-                ID: '1WTpBSTiL3iAUHUdW7rHT4sawgU',
-                Name: 'BRANCH',
-              },
-              Enabled: true,
-              ID: '1WTpIHpH7NTBgjeiUPW1kCUgZGI',
-              Name: 'branch test',
-              Transformations: [],
-            },
             message: {
               anonymousId: 'sampath',
               channel: 'web',
@@ -334,6 +384,27 @@ export const data = [
               type: 'page',
               userId: 'sampath',
             },
+            metadata: baseMetadata,
+            destination: {
+              ID: '1WTpIHpH7NTBgjeiUPW1kCUgZGI',
+              Name: 'branch test',
+              DestinationDefinition: {
+                DisplayName: 'Branch Metrics',
+                ID: '1WTpBSTiL3iAUHUdW7rHT4sawgU',
+                Name: 'BRANCH',
+                Config: {},
+              },
+              Config: {
+                branchKey: '<branch key goes here>',
+                useNativeSDK: false,
+              },
+              Enabled: true,
+              WorkspaceID: 'default-workspace',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
+            },
           },
         ],
       },
@@ -343,24 +414,30 @@ export const data = [
         status: 200,
         body: [
           {
+            metadata: baseMetadata,
             statusCode: 400,
+            error: 'Message type is not supported',
             statTags: {
               destType: 'BRANCH',
+              destinationId: 'default-destination',
               errorCategory: 'dataValidation',
               errorType: 'instrumentation',
               feature: 'processor',
               implementation: 'native',
               module: 'destination',
+              workspaceId: 'default-workspace',
             },
-            error: 'Message type is not supported',
           },
         ],
       },
     },
   },
   {
+    id: 'processor-1735556699424',
     name: 'branch',
     description: 'Test 3',
+    scenario: 'Default processor scenario',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -368,21 +445,6 @@ export const data = [
       request: {
         body: [
           {
-            destination: {
-              Config: {
-                branchKey: '<branch key goes here>',
-                useNativeSDK: false,
-              },
-              DestinationDefinition: {
-                DisplayName: 'Branch Metrics',
-                ID: '1WTpBSTiL3iAUHUdW7rHT4sawgU',
-                Name: 'BRANCH',
-              },
-              Enabled: true,
-              ID: '1WTpIHpH7NTBgjeiUPW1kCUgZGI',
-              Name: 'branch test',
-              Transformations: [],
-            },
             message: {
               anonymousId: 'sampath',
               channel: 'web',
@@ -437,6 +499,27 @@ export const data = [
               type: 'track',
               userId: 'sampath',
             },
+            metadata: baseMetadata,
+            destination: {
+              ID: '1WTpIHpH7NTBgjeiUPW1kCUgZGI',
+              Name: 'branch test',
+              DestinationDefinition: {
+                DisplayName: 'Branch Metrics',
+                ID: '1WTpBSTiL3iAUHUdW7rHT4sawgU',
+                Name: 'BRANCH',
+                Config: {},
+              },
+              Config: {
+                branchKey: '<branch key goes here>',
+                useNativeSDK: false,
+              },
+              Enabled: true,
+              WorkspaceID: 'default-workspace',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
+            },
           },
         ],
       },
@@ -485,6 +568,7 @@ export const data = [
               files: {},
               userId: 'sampath',
             },
+            metadata: baseMetadata,
             statusCode: 200,
           },
         ],
@@ -492,8 +576,11 @@ export const data = [
     },
   },
   {
+    id: 'processor-1735556699424',
     name: 'branch',
     description: 'Test 4',
+    scenario: 'Default processor scenario',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -501,21 +588,6 @@ export const data = [
       request: {
         body: [
           {
-            destination: {
-              Config: {
-                branchKey: '<branch key goes here>',
-                useNativeSDK: false,
-              },
-              DestinationDefinition: {
-                DisplayName: 'Branch Metrics',
-                ID: '1WTpBSTiL3iAUHUdW7rHT4sawgU',
-                Name: 'BRANCH',
-              },
-              Enabled: true,
-              ID: '1WTpIHpH7NTBgjeiUPW1kCUgZGI',
-              Name: 'branch test',
-              Transformations: [],
-            },
             message: {
               anonymousId: 'sampath',
               channel: 'web',
@@ -570,6 +642,27 @@ export const data = [
               type: 'track',
               userId: 'sampath',
             },
+            metadata: baseMetadata,
+            destination: {
+              ID: '1WTpIHpH7NTBgjeiUPW1kCUgZGI',
+              Name: 'branch test',
+              DestinationDefinition: {
+                DisplayName: 'Branch Metrics',
+                ID: '1WTpBSTiL3iAUHUdW7rHT4sawgU',
+                Name: 'BRANCH',
+                Config: {},
+              },
+              Config: {
+                branchKey: '<branch key goes here>',
+                useNativeSDK: false,
+              },
+              Enabled: true,
+              WorkspaceID: 'default-workspace',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
+            },
           },
         ],
       },
@@ -618,6 +711,7 @@ export const data = [
               files: {},
               userId: 'sampath',
             },
+            metadata: baseMetadata,
             statusCode: 200,
           },
         ],
@@ -625,8 +719,11 @@ export const data = [
     },
   },
   {
+    id: 'processor-1735556699424',
     name: 'branch',
     description: 'Test 5',
+    scenario: 'Default processor scenario',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -634,21 +731,6 @@ export const data = [
       request: {
         body: [
           {
-            destination: {
-              Config: {
-                branchKey: '<branch key goes here>',
-                useNativeSDK: false,
-              },
-              DestinationDefinition: {
-                DisplayName: 'Branch Metrics',
-                ID: '1WTpBSTiL3iAUHUdW7rHT4sawgU',
-                Name: 'BRANCH',
-              },
-              Enabled: true,
-              ID: '1WTpIHpH7NTBgjeiUPW1kCUgZGI',
-              Name: 'branch test',
-              Transformations: [],
-            },
             message: {
               anonymousId: 'sampath',
               channel: 'web',
@@ -703,6 +785,27 @@ export const data = [
               type: 'track',
               userId: 'sampath',
             },
+            metadata: baseMetadata,
+            destination: {
+              ID: '1WTpIHpH7NTBgjeiUPW1kCUgZGI',
+              Name: 'branch test',
+              DestinationDefinition: {
+                DisplayName: 'Branch Metrics',
+                ID: '1WTpBSTiL3iAUHUdW7rHT4sawgU',
+                Name: 'BRANCH',
+                Config: {},
+              },
+              Config: {
+                branchKey: '<branch key goes here>',
+                useNativeSDK: false,
+              },
+              Enabled: true,
+              WorkspaceID: 'default-workspace',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
+            },
           },
         ],
       },
@@ -751,6 +854,7 @@ export const data = [
               files: {},
               userId: 'sampath',
             },
+            metadata: baseMetadata,
             statusCode: 200,
           },
         ],
@@ -758,8 +862,11 @@ export const data = [
     },
   },
   {
+    id: 'processor-1735556699424',
     name: 'branch',
     description: 'Test 6',
+    scenario: 'Default processor scenario',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -767,21 +874,6 @@ export const data = [
       request: {
         body: [
           {
-            destination: {
-              Config: {
-                branchKey: '<branch key goes here>',
-                useNativeSDK: false,
-              },
-              DestinationDefinition: {
-                DisplayName: 'Branch Metrics',
-                ID: '1WTpBSTiL3iAUHUdW7rHT4sawgU',
-                Name: 'BRANCH',
-              },
-              Enabled: true,
-              ID: '1WTpIHpH7NTBgjeiUPW1kCUgZGI',
-              Name: 'branch test',
-              Transformations: [],
-            },
             message: {
               anonymousId: 'sampath',
               channel: 'web',
@@ -835,6 +927,27 @@ export const data = [
               type: 'track',
               userId: 'sampath',
             },
+            metadata: baseMetadata,
+            destination: {
+              ID: '1WTpIHpH7NTBgjeiUPW1kCUgZGI',
+              Name: 'branch test',
+              DestinationDefinition: {
+                DisplayName: 'Branch Metrics',
+                ID: '1WTpBSTiL3iAUHUdW7rHT4sawgU',
+                Name: 'BRANCH',
+                Config: {},
+              },
+              Config: {
+                branchKey: '<branch key goes here>',
+                useNativeSDK: false,
+              },
+              Enabled: true,
+              WorkspaceID: 'default-workspace',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
+            },
           },
         ],
       },
@@ -879,6 +992,7 @@ export const data = [
               files: {},
               userId: 'sampath',
             },
+            metadata: baseMetadata,
             statusCode: 200,
           },
         ],
@@ -886,8 +1000,11 @@ export const data = [
     },
   },
   {
+    id: 'processor-1735556699425',
     name: 'branch',
     description: 'Test 7',
+    scenario: 'Default processor scenario',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -895,21 +1012,6 @@ export const data = [
       request: {
         body: [
           {
-            destination: {
-              Config: {
-                branchKey: '<branch key goes here>',
-                useNativeSDK: false,
-              },
-              DestinationDefinition: {
-                DisplayName: 'Branch Metrics',
-                ID: '1WTpBSTiL3iAUHUdW7rHT4sawgU',
-                Name: 'BRANCH',
-              },
-              Enabled: true,
-              ID: '1WTpIHpH7NTBgjeiUPW1kCUgZGI',
-              Name: 'branch test',
-              Transformations: [],
-            },
             message: {
               anonymousId: 'sampath',
               channel: 'web',
@@ -959,6 +1061,27 @@ export const data = [
               type: 'track',
               userId: 'sampath',
             },
+            metadata: baseMetadata,
+            destination: {
+              ID: '1WTpIHpH7NTBgjeiUPW1kCUgZGI',
+              Name: 'branch test',
+              DestinationDefinition: {
+                DisplayName: 'Branch Metrics',
+                ID: '1WTpBSTiL3iAUHUdW7rHT4sawgU',
+                Name: 'BRANCH',
+                Config: {},
+              },
+              Config: {
+                branchKey: '<branch key goes here>',
+                useNativeSDK: false,
+              },
+              Enabled: true,
+              WorkspaceID: 'default-workspace',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
+            },
           },
         ],
       },
@@ -999,6 +1122,7 @@ export const data = [
               files: {},
               userId: 'sampath',
             },
+            metadata: baseMetadata,
             statusCode: 200,
           },
         ],
@@ -1006,8 +1130,11 @@ export const data = [
     },
   },
   {
+    id: 'processor-1735556699425',
     name: 'branch',
     description: 'Test 8',
+    scenario: 'Default processor scenario',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -1015,21 +1142,6 @@ export const data = [
       request: {
         body: [
           {
-            destination: {
-              Config: {
-                branchKey: '<branch key goes here>',
-                useNativeSDK: false,
-              },
-              DestinationDefinition: {
-                DisplayName: 'Branch Metrics',
-                ID: '1WTpBSTiL3iAUHUdW7rHT4sawgU',
-                Name: 'BRANCH',
-              },
-              Enabled: true,
-              ID: '1WTpIHpH7NTBgjeiUPW1kCUgZGI',
-              Name: 'branch test',
-              Transformations: [],
-            },
             message: {
               anonymousId: 'sampath',
               channel: 'web',
@@ -1074,6 +1186,27 @@ export const data = [
               type: 'track',
               userId: 'sampath',
             },
+            metadata: baseMetadata,
+            destination: {
+              ID: '1WTpIHpH7NTBgjeiUPW1kCUgZGI',
+              Name: 'branch test',
+              DestinationDefinition: {
+                DisplayName: 'Branch Metrics',
+                ID: '1WTpBSTiL3iAUHUdW7rHT4sawgU',
+                Name: 'BRANCH',
+                Config: {},
+              },
+              Config: {
+                branchKey: '<branch key goes here>',
+                useNativeSDK: false,
+              },
+              Enabled: true,
+              WorkspaceID: 'default-workspace',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
+            },
           },
         ],
       },
@@ -1116,6 +1249,7 @@ export const data = [
               files: {},
               userId: 'sampath',
             },
+            metadata: baseMetadata,
             statusCode: 200,
           },
         ],
@@ -1123,8 +1257,11 @@ export const data = [
     },
   },
   {
+    id: 'processor-1735556699425',
     name: 'branch',
     description: 'Test 9',
+    scenario: 'Default processor scenario',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -1132,21 +1269,6 @@ export const data = [
       request: {
         body: [
           {
-            destination: {
-              Config: {
-                branchKey: '<branch key goes here>',
-                useNativeSDK: false,
-              },
-              DestinationDefinition: {
-                DisplayName: 'Branch Metrics',
-                ID: '1WTpBSTiL3iAUHUdW7rHT4sawgU',
-                Name: 'BRANCH',
-              },
-              Enabled: true,
-              ID: '1WTpIHpH7NTBgjeiUPW1kCUgZGI',
-              Name: 'branch test',
-              Transformations: [],
-            },
             message: {
               anonymousId: 'sampath',
               channel: 'web',
@@ -1190,6 +1312,27 @@ export const data = [
               type: 'track',
               userId: 'sampath',
             },
+            metadata: baseMetadata,
+            destination: {
+              ID: '1WTpIHpH7NTBgjeiUPW1kCUgZGI',
+              Name: 'branch test',
+              DestinationDefinition: {
+                DisplayName: 'Branch Metrics',
+                ID: '1WTpBSTiL3iAUHUdW7rHT4sawgU',
+                Name: 'BRANCH',
+                Config: {},
+              },
+              Config: {
+                branchKey: '<branch key goes here>',
+                useNativeSDK: false,
+              },
+              Enabled: true,
+              WorkspaceID: 'default-workspace',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
+            },
           },
         ],
       },
@@ -1199,15 +1342,18 @@ export const data = [
         status: 200,
         body: [
           {
+            metadata: baseMetadata,
             statusCode: 400,
             error: 'Event name is required',
             statTags: {
               destType: 'BRANCH',
+              destinationId: 'default-destination',
               errorCategory: 'dataValidation',
               errorType: 'instrumentation',
               feature: 'processor',
               implementation: 'native',
               module: 'destination',
+              workspaceId: 'default-workspace',
             },
           },
         ],
@@ -1215,8 +1361,11 @@ export const data = [
     },
   },
   {
+    id: 'processor-1735556699425',
     name: 'branch',
     description: 'Test 10',
+    scenario: 'Default processor scenario',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -1224,21 +1373,6 @@ export const data = [
       request: {
         body: [
           {
-            destination: {
-              Config: {
-                branchKey: '<branch key goes here>',
-                useNativeSDK: false,
-              },
-              DestinationDefinition: {
-                DisplayName: 'Branch Metrics',
-                ID: '1WTpBSTiL3iAUHUdW7rHT4sawgU',
-                Name: 'BRANCH',
-              },
-              Enabled: true,
-              ID: '1WTpIHpH7NTBgjeiUPW1kCUgZGI',
-              Name: 'branch test',
-              Transformations: [],
-            },
             message: {
               anonymousId: 'sampath',
               channel: 'web',
@@ -1294,6 +1428,27 @@ export const data = [
               type: 'identify',
               userId: 'sampath',
             },
+            metadata: baseMetadata,
+            destination: {
+              ID: '1WTpIHpH7NTBgjeiUPW1kCUgZGI',
+              Name: 'branch test',
+              DestinationDefinition: {
+                DisplayName: 'Branch Metrics',
+                ID: '1WTpBSTiL3iAUHUdW7rHT4sawgU',
+                Name: 'BRANCH',
+                Config: {},
+              },
+              Config: {
+                branchKey: '<branch key goes here>',
+                useNativeSDK: false,
+              },
+              Enabled: true,
+              WorkspaceID: 'default-workspace',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
+            },
           },
         ],
       },
@@ -1346,6 +1501,7 @@ export const data = [
               files: {},
               userId: 'sampath',
             },
+            metadata: baseMetadata,
             statusCode: 200,
           },
         ],
@@ -1353,8 +1509,11 @@ export const data = [
     },
   },
   {
+    id: 'processor-1735556699425',
     name: 'branch',
     description: 'Test 11',
+    scenario: 'Default processor scenario',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -1362,21 +1521,6 @@ export const data = [
       request: {
         body: [
           {
-            destination: {
-              Config: {
-                branchKey: '<branch key goes here>',
-                useNativeSDK: false,
-              },
-              DestinationDefinition: {
-                DisplayName: 'Branch Metrics',
-                ID: '1WTpBSTiL3iAUHUdW7rHT4sawgU',
-                Name: 'BRANCH',
-              },
-              Enabled: true,
-              ID: '1WTpIHpH7NTBgjeiUPW1kCUgZGI',
-              Name: 'branch test',
-              Transformations: [],
-            },
             message: {
               anonymousId: 'sampath',
               channel: 'web',
@@ -1432,6 +1576,27 @@ export const data = [
               type: 'identify',
               userId: 'sampath',
             },
+            metadata: baseMetadata,
+            destination: {
+              ID: '1WTpIHpH7NTBgjeiUPW1kCUgZGI',
+              Name: 'branch test',
+              DestinationDefinition: {
+                DisplayName: 'Branch Metrics',
+                ID: '1WTpBSTiL3iAUHUdW7rHT4sawgU',
+                Name: 'BRANCH',
+                Config: {},
+              },
+              Config: {
+                branchKey: '<branch key goes here>',
+                useNativeSDK: false,
+              },
+              Enabled: true,
+              WorkspaceID: 'default-workspace',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
+            },
           },
         ],
       },
@@ -1484,6 +1649,7 @@ export const data = [
               files: {},
               userId: 'sampath',
             },
+            metadata: baseMetadata,
             statusCode: 200,
           },
         ],
@@ -1491,8 +1657,11 @@ export const data = [
     },
   },
   {
+    id: 'processor-1735556699425',
     name: 'branch',
     description: 'Map event name to branch standard event name in track call',
+    scenario: 'Default processor scenario',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -1500,27 +1669,6 @@ export const data = [
       request: {
         body: [
           {
-            destination: {
-              Config: {
-                branchKey: 'test_branch_key',
-                eventsMapping: [
-                  {
-                    from: 'Some Random Event',
-                    to: 'PURCHASE',
-                  },
-                ],
-                useNativeSDK: false,
-              },
-              DestinationDefinition: {
-                DisplayName: 'Branch Metrics',
-                ID: '1WTpBSTiL3iAUHUdW7rHT4sawgU',
-                Name: 'BRANCH',
-              },
-              Enabled: true,
-              ID: '1WTpIHpH7NTBgjeiUPW1kCUgZGI',
-              Name: 'branch test',
-              Transformations: [],
-            },
             message: {
               anonymousId: 'anonId123',
               channel: 'web',
@@ -1582,6 +1730,33 @@ export const data = [
               type: 'track',
               userId: 'userId123',
             },
+            metadata: baseMetadata,
+            destination: {
+              ID: '1WTpIHpH7NTBgjeiUPW1kCUgZGI',
+              Name: 'branch test',
+              DestinationDefinition: {
+                DisplayName: 'Branch Metrics',
+                ID: '1WTpBSTiL3iAUHUdW7rHT4sawgU',
+                Name: 'BRANCH',
+                Config: {},
+              },
+              Config: {
+                branchKey: 'test_branch_key',
+                eventsMapping: [
+                  {
+                    from: 'Some Random Event',
+                    to: 'PURCHASE',
+                  },
+                ],
+                useNativeSDK: false,
+              },
+              Enabled: true,
+              WorkspaceID: 'default-workspace',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
+            },
           },
         ],
       },
@@ -1640,6 +1815,7 @@ export const data = [
               files: {},
               userId: 'anonId123',
             },
+            metadata: baseMetadata,
             statusCode: 200,
           },
         ],

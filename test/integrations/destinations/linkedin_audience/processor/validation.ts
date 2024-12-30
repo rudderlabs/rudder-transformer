@@ -86,6 +86,7 @@ export const validationTestData: ProcessorTestData[] = [
             },
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -227,6 +228,7 @@ export const validationTestData: ProcessorTestData[] = [
             },
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -337,6 +339,7 @@ export const validationTestData: ProcessorTestData[] = [
             },
           },
         ],
+        method: 'POST',
       },
     },
     output: {

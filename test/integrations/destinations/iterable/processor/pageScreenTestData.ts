@@ -82,6 +82,7 @@ export const pageScreenTestData: ProcessorTestData[] = [
             metadata: generateMetadata(1),
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -142,6 +143,7 @@ export const pageScreenTestData: ProcessorTestData[] = [
             metadata: generateMetadata(1),
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -204,6 +206,7 @@ export const pageScreenTestData: ProcessorTestData[] = [
             metadata: generateMetadata(1),
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -264,6 +267,7 @@ export const pageScreenTestData: ProcessorTestData[] = [
             metadata: generateMetadata(1),
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -324,6 +328,7 @@ export const pageScreenTestData: ProcessorTestData[] = [
             metadata: generateMetadata(1),
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -386,6 +391,7 @@ export const pageScreenTestData: ProcessorTestData[] = [
             metadata: generateMetadata(1),
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -443,6 +449,7 @@ export const pageScreenTestData: ProcessorTestData[] = [
             metadata: generateMetadata(1),
           },
         ],
+        method: 'POST',
       },
     },
     output: {

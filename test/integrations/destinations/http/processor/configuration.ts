@@ -26,6 +26,7 @@ export const configuration: ProcessorTestData[] = [
             metadata: generateMetadata(1),
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -77,6 +78,7 @@ export const configuration: ProcessorTestData[] = [
             metadata: generateMetadata(1),
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -122,6 +124,7 @@ export const configuration: ProcessorTestData[] = [
             metadata: generateMetadata(1),
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -175,6 +178,7 @@ export const configuration: ProcessorTestData[] = [
             metadata: generateMetadata(1),
           },
         ],
+        method: 'POST',
       },
     },
     output: {

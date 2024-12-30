@@ -120,6 +120,7 @@ export const identifyTestData: ProcessorTestData[] = [
             destination: overrideDestination(commonDestination, { advancedMapping: false }),
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -160,6 +161,7 @@ export const identifyTestData: ProcessorTestData[] = [
             destination: commonDestination,
           },
         ],
+        method: 'POST',
       },
     },
     output: {

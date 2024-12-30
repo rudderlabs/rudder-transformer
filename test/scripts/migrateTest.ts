@@ -54,28 +54,7 @@ async function formatWithPrettier(content: string, filepath: string): Promise<st
   }
 }
 
-async function writeTestFile(filePath: string, data: any): Promise<void> {
-  try {
-    // Create initial content
-    const content = `/**
-    * Auto-migrated test cases
-    * Migrated on: ${new Date().toISOString()}
-    */
-
-    export const testData = ${JSON.stringify(data, null, 2)};\n`;
-
-    // Format with prettier
-    const formattedContent = await formatWithPrettier(content, filePath);
-
-    // Write the formatted content
-    fs.writeFileSync(filePath, formattedContent);
-  } catch (error) {
-    console.error(`Error writing to file ${filePath}:`, error);
-    throw error;
-  }
-}
-
-async function enhwriteTestFile(
+async function enhancedwriteTestFile(
   filePath: string,
   testCases: any[],
   feature: string,
@@ -150,7 +129,7 @@ async function migrateTestFiles(): Promise<void> {
       console.log(`Created backup at: ${backupPath}`);
 
       // Write migrated tests
-      await enhwriteTestFile(filePath, migratedTests, feature.toLowerCase());
+      await enhancedwriteTestFile(filePath, migratedTests, feature.toLowerCase());
       console.log(`Successfully migrated ${migratedTests.length} test cases in ${filePath}`);
       migratedCount += migratedTests.length;
     } catch (error) {

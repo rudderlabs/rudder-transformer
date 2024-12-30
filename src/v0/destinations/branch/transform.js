@@ -50,7 +50,8 @@ function getCategoryAndName(rudderEventName) {
       if (
         typeof branchKey === 'string' &&
         typeof rudderEventName === 'string' &&
-        branchKey.toLowerCase() === rudderEventName.toLowerCase()
+        (branchKey.toLowerCase() === rudderEventName.toLowerCase() ||
+          category.name[branchKey].toLowerCase() === rudderEventName.toLowerCase())
       ) {
         requiredName = category.name[branchKey];
         requiredCategory = category;
@@ -217,16 +218,17 @@ function getCommonPayload(message, category, evName) {
 function processMessage(message, destination) {
   let evName;
   let category;
+  let updatedEventName = message.event;
   switch (message.type) {
     case EventType.TRACK: {
       if (!message.event) {
         throw new InstrumentationError('Event name is required');
       }
-      ({ evName, category } = getCategoryAndName(message.event));
       const eventNameFromConfig = getMappedEventNameFromConfig(message, destination);
       if (eventNameFromConfig) {
-        evName = eventNameFromConfig;
+        updatedEventName = eventNameFromConfig;
       }
+      ({ evName, category } = getCategoryAndName(updatedEventName));
       break;
     }
     case EventType.IDENTIFY:

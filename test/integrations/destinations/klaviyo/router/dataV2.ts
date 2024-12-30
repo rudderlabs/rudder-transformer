@@ -89,6 +89,7 @@ export const dataV2: RouterTestData[] = [
     input: {
       request: {
         body: routerRequestV2,
+        method: 'POST',
       },
     },
     output: {
@@ -422,6 +423,7 @@ export const dataV2: RouterTestData[] = [
           ],
           destType: 'klaviyo',
         },
+        method: 'POST',
       },
     },
     output: {
@@ -694,6 +696,7 @@ export const dataV2: RouterTestData[] = [
           ],
           destType: 'klaviyo',
         },
+        method: 'POST',
       },
     },
     output: {
@@ -1113,6 +1116,7 @@ export const dataV2: RouterTestData[] = [
           ],
           destType: 'klaviyo',
         },
+        method: 'POST',
       },
     },
     output: {
@@ -1371,6 +1375,7 @@ export const dataV2: RouterTestData[] = [
           ],
           destType: 'klaviyo',
         },
+        method: 'POST',
       },
     },
     output: {
@@ -1734,6 +1739,7 @@ export const dataV2: RouterTestData[] = [
           ],
           destType: 'klaviyo',
         },
+        method: 'POST',
       },
     },
     output: {

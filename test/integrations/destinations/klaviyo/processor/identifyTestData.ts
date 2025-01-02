@@ -133,6 +133,7 @@ export const identifyData: ProcessorTestData[] = [
             metadata: generateMetadata(1),
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -212,6 +213,7 @@ export const identifyData: ProcessorTestData[] = [
             metadata: generateMetadata(2),
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -296,6 +298,7 @@ export const identifyData: ProcessorTestData[] = [
             metadata: generateMetadata(3),
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -352,6 +355,7 @@ export const identifyData: ProcessorTestData[] = [
             metadata: generateMetadata(4),
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -406,6 +410,7 @@ export const identifyData: ProcessorTestData[] = [
             metadata: generateMetadata(5),
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -488,6 +493,7 @@ export const identifyData: ProcessorTestData[] = [
             metadata: generateMetadata(6),
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -565,6 +571,7 @@ export const identifyData: ProcessorTestData[] = [
             metadata: generateMetadata(7),
           },
         ],
+        method: 'POST',
       },
     },
     output: {

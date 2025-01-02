@@ -45,6 +45,7 @@ export interface TestCaseData {
   skipGo?: string;
   scenario?: string;
   successCriteria?: string;
+  tags?: string[];
   comment?: string;
   feature: string;
   module: string;
@@ -100,6 +101,7 @@ export type ProcessorTestData = {
   version: string;
   input: {
     request: {
+      method: string;
       body: ProcessorTransformationRequest[];
     };
   };
@@ -109,7 +111,7 @@ export type ProcessorTestData = {
       body: ProcessorTransformationResponse[];
     };
   };
-  mockFns?: (mockAdapter: MockAdapter) => {};
+  mockFns?: (mockAdapter: MockAdapter) => void;
 };
 export type RouterTestData = {
   id: string;
@@ -124,6 +126,7 @@ export type RouterTestData = {
   input: {
     request: {
       body: RouterTransformationRequest;
+      method: string;
     };
   };
   output: {

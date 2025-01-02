@@ -217,16 +217,16 @@ export const checkoutEventsTestScenarios = [
                     SHOPIFY: true,
                   },
                   type: 'track',
-                  event: 'Checkout Started',
+                  event: 'Checkout Started - Webhook',
                   properties: {
-                    order_id: 35550298931313,
+                    order_id: '35550298931313',
                     value: '600.00',
-                    tax: '0.00',
+                    tax: 0,
                     currency: 'USD',
                     products: [
                       {
-                        product_id: 7234590408817,
-                        price: '600.00',
+                        product_id: '7234590408817',
+                        price: 600.0,
                         brand: 'Hydrogen Vendor',
                         quantity: 1,
                       },
@@ -533,17 +533,16 @@ export const checkoutEventsTestScenarios = [
                   },
                   properties: {
                     currency: 'USD',
-                    order_id: 35374569160817,
+                    order_id: '35374569160817',
                     products: [
                       {
                         brand: 'pixel-testing-rs',
-                        price: '729.95',
-                        product_id: 7234590638193,
+                        price: 729.95,
+                        product_id: '7234590638193',
                         quantity: 1,
                       },
                     ],
-                    tax: '0.00',
-                    value: '736.85',
+                    tax: 0,
                   },
                   timestamp: '2024-09-17T07:29:02.000Z',
                   traits: {
@@ -1207,15 +1206,14 @@ export const checkoutEventsTestScenarios = [
                   type: 'track',
                   event: 'Order Updated',
                   properties: {
-                    order_id: 5778367414385,
-                    value: '600.00',
-                    tax: '0.00',
+                    order_id: '5778367414385',
+                    tax: 0,
                     currency: 'USD',
                     products: [
                       {
-                        product_id: 7234590408817,
+                        product_id: '7234590408817',
                         title: 'The Collection Snowboard: Hydrogen',
-                        price: '600.00',
+                        price: 600,
                         brand: 'Hydrogen Vendor',
                         quantity: 1,
                       },
@@ -1598,15 +1596,15 @@ export const checkoutEventsTestScenarios = [
                   type: 'track',
                   event: 'Order Created',
                   properties: {
-                    order_id: 5778367414385,
+                    order_id: '5778367414385',
                     value: '600.00',
-                    tax: '0.00',
+                    tax: 0,
                     currency: 'USD',
                     products: [
                       {
-                        product_id: 7234590408817,
+                        product_id: '7234590408817',
                         title: 'The Collection Snowboard: Hydrogen',
-                        price: '600.00',
+                        price: 600,
                         brand: 'Hydrogen Vendor',
                         quantity: 1,
                       },

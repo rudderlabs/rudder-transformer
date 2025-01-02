@@ -27,6 +27,7 @@ import _ from 'lodash';
 import defaultFeaturesConfig from '../../src/features';
 import { ControllerUtility } from '../../src/controllers/util';
 import { FetchHandler } from '../../src/helpers/fetchHandlers';
+import { enhancedTestUtils } from '../test_reporter/allureReporter';
 
 // To run single destination test cases
 // npm run test:ts -- component  --destination=adobe_analytics
@@ -58,7 +59,12 @@ if (opts.generate === 'true') {
 
 let server: Server;
 
-const INTEGRATIONS_WITH_UPDATED_TEST_STRUCTURE = ['klaviyo', 'campaign_manager', 'criteo_audience'];
+const INTEGRATIONS_WITH_UPDATED_TEST_STRUCTURE = [
+  'active_campaign',
+  'klaviyo',
+  'campaign_manager',
+  'criteo_audience',
+];
 
 beforeAll(async () => {
   initaliseReport();
@@ -156,13 +162,8 @@ const testRoute = async (route, tcData: TestCaseData) => {
 
   if (INTEGRATIONS_WITH_UPDATED_TEST_STRUCTURE.includes(tcData.name?.toLocaleLowerCase())) {
     expect(validateTestWithZOD(tcData, response)).toEqual(true);
-    const bodyMatched = _.isEqual(response.body, outputResp.body);
-    const statusMatched = response.status === outputResp.status;
-    if (bodyMatched && statusMatched) {
-      generateTestReport(tcData, response.body, 'passed');
-    } else {
-      generateTestReport(tcData, response.body, 'failed');
-    }
+    enhancedTestUtils.beforeTestRun(tcData);
+    enhancedTestUtils.afterTestRun(tcData, response.body);
   }
 
   if (outputResp?.body) {

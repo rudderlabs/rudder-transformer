@@ -81,6 +81,7 @@ const populateRevenueField = (eventType, properties) => {
 };
 module.exports = {
   batchEvents,
+  batchEventChunks,
   populateRevenueField,
   calculateDefaultRevenue,
 };

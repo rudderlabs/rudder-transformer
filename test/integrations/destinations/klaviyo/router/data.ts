@@ -34,6 +34,7 @@ export const data: RouterTestData[] = [
     input: {
       request: {
         body: routerRequest,
+        method: 'POST',
       },
     },
     output: {

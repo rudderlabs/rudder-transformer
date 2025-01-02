@@ -85,6 +85,7 @@ export const businessTestData: ProcessorTestData[] = [
             },
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -188,6 +189,7 @@ export const businessTestData: ProcessorTestData[] = [
             },
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -317,6 +319,7 @@ export const businessTestData: ProcessorTestData[] = [
             },
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -468,6 +471,7 @@ export const businessTestData: ProcessorTestData[] = [
             },
           },
         ],
+        method: 'POST',
       },
     },
     output: {

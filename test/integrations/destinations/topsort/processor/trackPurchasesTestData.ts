@@ -93,6 +93,7 @@ export const trackPurchasesTestData: ProcessorTestData[] = [
             destination,
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -212,6 +213,7 @@ export const trackPurchasesTestData: ProcessorTestData[] = [
             destination,
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -355,6 +357,7 @@ export const trackPurchasesTestData: ProcessorTestData[] = [
             destination,
           },
         ],
+        method: 'POST',
       },
     },
     output: {

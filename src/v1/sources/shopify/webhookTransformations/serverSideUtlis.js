@@ -1,9 +1,6 @@
 const { isDefinedAndNotNull } = require('@rudderstack/integrations-lib');
 const { constructPayload } = require('../../../../v0/util');
-const {
-  lineItemsMappingJSON,
-  productMappingJSON,
-} = require('../../../../v0/sources/shopify/config');
+const { lineItemsMappingJSON, productMappingJSON } = require('../config');
 
 /**
  * Returns an array of products from the lineItems array received from the webhook event
@@ -28,12 +25,15 @@ const getProductsFromLineItems = (lineItems, mapping) => {
  * @param {Object} message
  * @returns {Object} properties
  */
-const createPropertiesForEcomEventFromWebhook = (message) => {
+const createPropertiesForEcomEventFromWebhook = (message, shopifyTopic) => {
   const { line_items: lineItems } = message;
   if (!lineItems || lineItems.length === 0) {
     return [];
   }
   const mappedPayload = constructPayload(message, productMappingJSON);
+  if (shopifyTopic === 'orders_updated' || shopifyTopic === 'checkouts_update') {
+    delete mappedPayload.value;
+  }
   mappedPayload.products = getProductsFromLineItems(lineItems, lineItemsMappingJSON);
   return mappedPayload;
 };

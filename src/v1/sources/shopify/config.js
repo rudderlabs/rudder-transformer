@@ -31,8 +31,15 @@ const PIXEL_EVENT_MAPPING = {
   checkout_address_info_submitted: 'Checkout Address Info Submitted',
   checkout_contact_info_submitted: 'Checkout Contact Info Submitted',
   checkout_shipping_info_submitted: 'Checkout Shipping Info Submitted',
-  payment_info_submitted: 'Payment Info Submitted',
+  payment_info_submitted: 'Payment Info Entered',
   search_submitted: 'Search Submitted',
+};
+
+const RUDDER_ECOM_MAP = {
+  checkouts_create: 'Checkout Started - Webhook',
+  checkouts_update: 'Checkout Updated',
+  orders_updated: 'Order Updated',
+  orders_create: 'Order Created',
 };
 
 const contextualFieldMappingJSON = JSON.parse(
@@ -63,6 +70,14 @@ const checkoutStartedCompletedEventMappingJSON = JSON.parse(
   ),
 );
 
+const productMappingJSON = JSON.parse(
+  fs.readFileSync(path.resolve(__dirname, 'webhookEventsMapping', 'productMapping.json')),
+);
+
+const lineItemsMappingJSON = JSON.parse(
+  fs.readFileSync(path.resolve(__dirname, 'webhookEventsMapping', 'lineItemsMapping.json')),
+);
+
 const pixelEventToCartTokenLocationMapping = {
   cart_viewed: 'properties.cart_id',
   checkout_address_info_submitted: commonCartTokenLocation,
@@ -79,6 +94,7 @@ module.exports = {
   INTEGERATION,
   PIXEL_EVENT_TOPICS,
   PIXEL_EVENT_MAPPING,
+  RUDDER_ECOM_MAP,
   contextualFieldMappingJSON,
   cartViewedEventMappingJSON,
   productListViewedEventMappingJSON,
@@ -86,4 +102,6 @@ module.exports = {
   productToCartEventMappingJSON,
   checkoutStartedCompletedEventMappingJSON,
   pixelEventToCartTokenLocationMapping,
+  productMappingJSON,
+  lineItemsMappingJSON,
 };

@@ -93,6 +93,7 @@ export const trackImpressionsTestData: ProcessorTestData[] = [
             destination,
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -212,6 +213,7 @@ export const trackImpressionsTestData: ProcessorTestData[] = [
             destination,
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -352,6 +354,7 @@ export const trackImpressionsTestData: ProcessorTestData[] = [
             destination,
           },
         ],
+        method: 'POST',
       },
     },
     output: {

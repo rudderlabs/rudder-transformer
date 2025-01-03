@@ -11,11 +11,11 @@ const {
   MAPPING_CATEGORIES,
   IDENTIFY_TOPICS,
   ECOM_TOPICS,
-  RUDDER_ECOM_MAP,
   SUPPORTED_TRACK_EVENTS,
   SHOPIFY_TRACK_MAP,
   lineItemsMappingJSON,
 } = require('../../../../v0/sources/shopify/config');
+const { RUDDER_ECOM_MAP } = require('../config');
 const {
   createPropertiesForEcomEventFromWebhook,
   getProductsFromLineItems,
@@ -46,7 +46,7 @@ const ecomPayloadBuilder = (event, shopifyTopic) => {
   message.setEventType(EventType.TRACK);
   message.setEventName(RUDDER_ECOM_MAP[shopifyTopic]);
 
-  const properties = createPropertiesForEcomEventFromWebhook(event);
+  const properties = createPropertiesForEcomEventFromWebhook(event, shopifyTopic);
   message.properties = removeUndefinedAndNullValues(properties);
   // Map Customer details if present
   const customerDetails = get(event, 'customer');

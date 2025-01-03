@@ -113,6 +113,7 @@ export const validationTestData: ProcessorTestData[] = [
             destination: overrideDestination(commonDestination, { hashData: false }),
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -168,6 +169,7 @@ export const validationTestData: ProcessorTestData[] = [
             }),
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -219,6 +221,7 @@ export const validationTestData: ProcessorTestData[] = [
             },
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -265,6 +268,7 @@ export const validationTestData: ProcessorTestData[] = [
             }),
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -351,6 +355,7 @@ export const validationTestData: ProcessorTestData[] = [
             }),
           },
         ],
+        method: 'POST',
       },
     },
     output: {

@@ -80,6 +80,7 @@ export const ecomTestData: ProcessorTestData[] = [
             metadata: generateMetadata(1),
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -188,6 +189,7 @@ export const ecomTestData: ProcessorTestData[] = [
             metadata: generateMetadata(2),
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -300,6 +302,7 @@ export const ecomTestData: ProcessorTestData[] = [
             metadata: generateMetadata(3),
           },
         ],
+        method: 'POST',
       },
     },
     output: {

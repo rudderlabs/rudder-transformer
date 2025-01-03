@@ -1786,6 +1786,7 @@ export const newConfigValidationTests: ProcessorTestData[] = [
             metadata: generateMetadata(1),
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -1843,6 +1844,7 @@ export const newConfigValidationTests: ProcessorTestData[] = [
             metadata: generateMetadata(1),
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -1900,6 +1902,7 @@ export const newConfigValidationTests: ProcessorTestData[] = [
             metadata: generateMetadata(1),
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -1956,6 +1959,7 @@ export const newConfigValidationTests: ProcessorTestData[] = [
             metadata: generateMetadata(1),
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -2016,6 +2020,7 @@ export const newConfigValidationTests: ProcessorTestData[] = [
             metadata: generateMetadata(1),
           },
         ],
+        method: 'POST',
       },
     },
     output: {

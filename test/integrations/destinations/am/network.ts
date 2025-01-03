@@ -205,6 +205,44 @@ const deleteNwData = [
       },
     },
   },
+  {
+    httpReq: {
+      method: 'post',
+      url: 'https://analytics.eu.amplitude.com/api/2/deletions/users',
+      data: {
+        user_ids: ['test_user_id_1', 'test_user_id_2'],
+        requester: 'RudderStack',
+        ignore_invalid_id: 'true',
+      },
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Basic MTIzNDphYmNk',
+      },
+    },
+    httpRes: {
+      data: [
+        {
+          active_scrub_done_date: null,
+          amplitude_ids: [
+            {
+              amplitude_id: 44547850078,
+              requested_on_day: '2024-12-01',
+              requester: 'RudderStack',
+            },
+            {
+              amplitude_id: 44547886812,
+              requested_on_day: '2024-12-01',
+              requester: 'RudderStack',
+            },
+          ],
+          app: '10000000',
+          day: '2025-01-10',
+          status: 'staging',
+        },
+      ],
+      status: 200,
+    },
+  },
 ];
 
 const deliveryNwData = [

@@ -134,6 +134,7 @@ export const data: ProcessorTestData[] = [
             },
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -276,6 +277,7 @@ export const data: ProcessorTestData[] = [
             },
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -420,6 +422,7 @@ export const data: ProcessorTestData[] = [
             },
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -562,6 +565,7 @@ export const data: ProcessorTestData[] = [
             },
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -690,6 +694,7 @@ export const data: ProcessorTestData[] = [
             },
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -726,6 +731,7 @@ export const data: ProcessorTestData[] = [
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             message: {

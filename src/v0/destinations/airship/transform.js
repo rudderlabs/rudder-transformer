@@ -149,7 +149,7 @@ const trackResponseBuilder = async (message, { Config }) => {
   }
 
   payload.name = name.replace(/\s+/g, '_');
-  if (payload.value) {
+  if (payload.value && typeof payload.value === 'string') {
     payload.value.replace(/\s+/g, '_');
   }
   const { appKey, dataCenter, apiKey } = Config;

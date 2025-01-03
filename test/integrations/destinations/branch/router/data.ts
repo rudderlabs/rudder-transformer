@@ -221,6 +221,7 @@ export const data: RouterTestData[] = [
           ],
           destType: 'branch',
         },
+        method: 'POST',
       },
     },
     output: {

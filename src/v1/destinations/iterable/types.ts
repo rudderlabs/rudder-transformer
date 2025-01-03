@@ -1,3 +1,5 @@
+import { ProxyMetdata, ProxyV1Request } from '../../../types';
+
 type FailedUpdates = {
   invalidEmails?: string[];
   invalidUserIds?: string[];
@@ -25,22 +27,32 @@ export type GeneralApiResponse = {
   failedUpdates?: FailedUpdates;
 };
 
-export type DestinationResponse = {
+export type IterableBulkApiResponse = {
   status: number;
   response: GeneralApiResponse;
 };
 
-export type ResponseParams = {
-  destinationResponse: DestinationResponse;
-  rudderJobMetadata: any[];
+type IterableBulkRequestBody = {
+  events?: any[];
+  users?: any[];
+};
+
+export type IterableBulkProxyInput = {
+  destinationResponse: IterableBulkApiResponse;
+  rudderJobMetadata: ProxyMetdata;
+  destType: string;
   destinationRequest?: {
     body: {
-      JSON: {
-        events?: any[];
-        users?: any[];
-      };
+      JSON: IterableBulkRequestBody;
     };
   };
+};
+
+export type GenericProxyHandlerInput = {
+  destinationResponse: any;
+  rudderJobMetadata: ProxyMetdata[];
+  destType: string;
+  destinationRequest: ProxyV1Request;
 };
 
 export type Response = {
@@ -49,9 +61,9 @@ export type Response = {
   error: string;
 };
 
-export type SuccessResponse = {
+export type IterableSuccessResponse = {
   status: number;
   message: string;
-  destinationResponse: DestinationResponse;
+  destinationResponse: IterableBulkApiResponse;
   response: Response[];
 };

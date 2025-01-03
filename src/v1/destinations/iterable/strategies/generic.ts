@@ -1,11 +1,12 @@
 import { BaseStrategy } from './base';
-import { DestinationResponse, SuccessResponse } from '../types';
+import { IterableBulkApiResponse, IterableSuccessResponse } from '../types';
+import { ProxyMetdata } from '../../../../types';
 
 class GenericStrategy extends BaseStrategy {
   handleSuccess(responseParams: {
-    destinationResponse: DestinationResponse;
-    rudderJobMetadata: any[];
-  }): SuccessResponse {
+    destinationResponse: IterableBulkApiResponse;
+    rudderJobMetadata: ProxyMetdata[];
+  }): IterableSuccessResponse {
     const { destinationResponse, rudderJobMetadata } = responseParams;
     const { status } = destinationResponse;
 

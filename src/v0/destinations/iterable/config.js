@@ -20,7 +20,6 @@ const ConfigCategory = {
     name: 'IterableIdentifyConfig',
     action: 'identify',
     endpoint: `users/update`,
-    bulkEndpoint: 'users/bulkUpdate',
   },
   PAGE: {
     name: 'IterablePageConfig',
@@ -36,7 +35,6 @@ const ConfigCategory = {
     name: 'IterableTrackConfig',
     action: 'track',
     endpoint: `events/track`,
-    bulkEndpoint: 'events/trackBulk',
   },
   TRACK_PURCHASE: {
     name: 'IterableTrackPurchaseConfig',
@@ -78,9 +76,7 @@ const constructEndpoint = (dataCenter, category) => {
   return `${baseUrl}${category.endpoint}`;
 };
 
-const BULK_ENDPOINTS = Object.values(ConfigCategory)
-  .filter((config) => config.bulkEndpoint)
-  .map((config) => `/api/${config.bulkEndpoint}`);
+const BULK_ENDPOINTS = ['/api/users/bulkUpdate', '/api/events/trackBulk'];
 
 const IDENTIFY_MAX_BATCH_SIZE = 1000;
 const IDENTIFY_MAX_BODY_SIZE_IN_BYTES = 4000000;

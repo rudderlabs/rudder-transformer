@@ -1,24 +1,20 @@
 import { BaseStrategy } from './base';
-import { DestinationResponse, ResponseParams, Response } from '../types';
-import { checkIfEventIsAbortableAndExtractErrorMessage } from '../../../../v0/destinations/iterable/util';
+import { IterableBulkProxyInput } from '../types';
+import { checkIfEventIsAbortableAndExtractErrorMessage } from '../utils';
+import { DeliveryJobState, DeliveryV1Response } from '../../../../types';
 
 class TrackIdentifyStrategy extends BaseStrategy {
-  handleSuccess(responseParams: ResponseParams): {
-    status: number;
-    message: string;
-    destinationResponse: DestinationResponse;
-    response: Response[];
-  } {
+  handleSuccess(responseParams: IterableBulkProxyInput): DeliveryV1Response {
     const { destinationResponse, rudderJobMetadata, destinationRequest } = responseParams;
     const { status } = destinationResponse;
-    const responseWithIndividualEvents: Response[] = [];
+    const responseWithIndividualEvents: DeliveryJobState[] = [];
 
     const { events, users } = destinationRequest?.body.JSON || {};
     const finalData = events || users;
 
     if (finalData) {
       finalData.forEach((event, idx) => {
-        const proxyOutput = {
+        const parsedOutput = {
           statusCode: 200,
           metadata: rudderJobMetadata[idx],
           error: 'success',
@@ -29,10 +25,10 @@ class TrackIdentifyStrategy extends BaseStrategy {
           destinationResponse,
         );
         if (isAbortable) {
-          proxyOutput.statusCode = 400;
-          proxyOutput.error = errorMsg;
+          parsedOutput.statusCode = 400;
+          parsedOutput.error = errorMsg;
         }
-        responseWithIndividualEvents.push(proxyOutput);
+        responseWithIndividualEvents.push(parsedOutput);
       });
     }
 

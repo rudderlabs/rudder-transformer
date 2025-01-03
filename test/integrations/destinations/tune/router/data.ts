@@ -78,6 +78,7 @@ export const data: RouterTestData[] = [
           ],
           destType: 'tune',
         },
+        method: 'POST',
       },
     },
     output: {
@@ -156,6 +157,7 @@ export const data: RouterTestData[] = [
           ],
           destType: 'tune',
         },
+        method: 'POST',
       },
     },
     output: {

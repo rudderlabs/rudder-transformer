@@ -101,6 +101,7 @@ export const trackTestData: ProcessorTestData[] = [
             metadata: generateMetadata(2),
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -183,6 +184,7 @@ export const trackTestData: ProcessorTestData[] = [
             metadata: generateMetadata(3),
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -265,6 +267,7 @@ export const trackTestData: ProcessorTestData[] = [
             metadata: generateMetadata(1),
           },
         ],
+        method: 'POST',
       },
     },
     output: {

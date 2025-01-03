@@ -393,4 +393,45 @@ export const data = [
       },
     },
   },
+  {
+    name: 'am',
+    description: 'user deletion test with EU residencyServer',
+    feature: 'userDeletion',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            jobId: 'dummy-job-id',
+            destType: 'AM',
+            userAttributes: [
+              {
+                userId: 'test_user_id_1',
+              },
+              {
+                userId: 'test_user_id_2',
+              },
+            ],
+            config: {
+              apiKey: '1234',
+              apiSecret: 'abcd',
+              residencyServer: 'EU',
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            statusCode: 200,
+            status: 'successful',
+          },
+        ],
+      },
+    },
+  },
 ];

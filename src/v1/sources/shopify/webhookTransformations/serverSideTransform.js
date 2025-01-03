@@ -4,6 +4,7 @@ const get = require('get-value');
 const stats = require('../../../../util/stats');
 const { getShopifyTopic, extractEmailFromPayload } = require('../../../../v0/sources/shopify/util');
 const { removeUndefinedAndNullValues, isDefinedAndNotNull } = require('../../../../v0/util');
+const { RedisDB } = require('../../../../util/redis/redisConnector');
 const Message = require('../../../../v0/sources/message');
 const { EventType } = require('../../../../constants');
 const {
@@ -21,6 +22,7 @@ const {
   getProductsFromLineItems,
   getAnonymousIdFromAttributes,
 } = require('./serverSideUtlis');
+const { getCartToken } = require('../../../../v0/sources/shopify/util');
 
 const NO_OPERATION_SUCCESS = {
   outputToSource: {
@@ -125,6 +127,13 @@ const processEvent = async (inputEvent, metricMetadata) => {
     const anonymousId = getAnonymousIdFromAttributes(event);
     if (isDefinedAndNotNull(anonymousId)) {
       message.setProperty('anonymousId', anonymousId);
+    } else {
+      // if anonymousId is not present in note_attributes or note_attributes is not present, query redis for anonymousId
+      const cartToken = getCartToken(message);
+      const redisData = await RedisDB.getVal(cartToken);
+      if (redisData?.anonymousId) {
+        message.setProperty('anonymousId', redisData.anonymousId);
+      }
     }
   }
   message.setProperty(`integrations.${INTEGERATION}`, true);

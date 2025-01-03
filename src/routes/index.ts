@@ -16,9 +16,6 @@ import { isNotEmpty } from '../v0/util';
 
 dotenv.config();
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const enableSwagger = process.env.ENABLE_SWAGGER === 'true';
-
 export function applicationRoutes(app: Koa<any, object>) {
   app.use(proxyRoutes);
   app.use(destinationRoutes);

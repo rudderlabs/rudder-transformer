@@ -1,0 +1,121 @@
+[
+  {
+    "output": {
+      "version": "1",
+      "type": "REST",
+      "method": "PATCH",
+      "endpoint": "https://a.klaviyo.com/api/profiles/01GW3PHVY0MTCDGS0A1612HARX",
+      "headers": {
+        "Authorization": "Klaviyo-API-Key dummyPrivateApiKey",
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "revision": "2023-02-22"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "data": {
+            "type": "profile",
+            "attributes": {
+              "email": "test@rudderstack.com",
+              "first_name": "Test",
+              "last_name": "Rudderlabs",
+              "phone_number": "+12 345 578 900",
+              "title": "Developer",
+              "organization": "Rudder",
+              "location": {
+                "city": "Tokyo",
+                "region": "Kanto",
+                "country": "JP",
+                "zip": "100-0001",
+                "address1": "63, Shibuya"
+              },
+              "properties": {
+                "Flagged": false,
+                "Residence": "Shibuya",
+                "street": "63, Shibuya",
+                "_id": "user@1"
+              }
+            },
+            "id": "01GW3PHVY0MTCDGS0A1612HARX"
+          }
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": ""
+    },
+    "metadata": {
+      "jobId": 5,
+      "attemptNum": 1,
+      "userId": "default-userId",
+      "sourceId": "default-sourceId",
+      "destinationId": "default-destinationId",
+      "workspaceId": "default-workspaceId",
+      "secret": {
+        "accessToken": "default-accessToken"
+      },
+      "dontBatch": false
+    },
+    "statusCode": 200
+  },
+  {
+    "output": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://a.klaviyo.com/api/profile-subscription-bulk-create-jobs",
+      "headers": {
+        "Authorization": "Klaviyo-API-Key dummyPrivateApiKey",
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "revision": "2023-02-22"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "data": {
+            "type": "profile-subscription-bulk-create-job",
+            "attributes": {
+              "list_id": "XUepkK",
+              "subscriptions": [
+                {
+                  "email": "test@rudderstack.com",
+                  "phone_number": "+12 345 578 900",
+                  "channels": {
+                    "email": [
+                      "MARKETING"
+                    ],
+                    "sms": [
+                      "MARKETING"
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": ""
+    },
+    "metadata": {
+      "jobId": 5,
+      "attemptNum": 1,
+      "userId": "default-userId",
+      "sourceId": "default-sourceId",
+      "destinationId": "default-destinationId",
+      "workspaceId": "default-workspaceId",
+      "secret": {
+        "accessToken": "default-accessToken"
+      },
+      "dontBatch": false
+    },
+    "statusCode": 200
+  }
+]

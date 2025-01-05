@@ -70,7 +70,7 @@ jobs:
             const prNumber = context.payload.pull_request.number;
             const repoUrl = context.payload.repository.html_url;
             const commentBody = `Allure Test reports for this run are available at:
-            - Allure Report: ${repoUrl}/pages/branch/gh-pages/index.html`;
+            - Allure Report: https://rudderlabs.github.io/rudder-transformer`;
 
             // Comment on the pull request
             await github.rest.issues.createComment({

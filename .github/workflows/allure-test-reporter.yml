@@ -6,8 +6,6 @@ on:
       - opened
       - reopened
       - synchronize
-    branches:
-      - main
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.sha }}

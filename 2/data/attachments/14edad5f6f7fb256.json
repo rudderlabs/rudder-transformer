@@ -1,0 +1,28 @@
+[
+  {
+    "metadata": {
+      "jobId": 3,
+      "attemptNum": 1,
+      "userId": "default-userId",
+      "sourceId": "default-sourceId",
+      "destinationId": "default-destinationId",
+      "workspaceId": "default-workspaceId",
+      "secret": {
+        "accessToken": "default-accessToken"
+      },
+      "dontBatch": false
+    },
+    "statusCode": 500,
+    "error": "{\"message\":\"Failed to create user due to \\\"\\\"\",\"destinationResponse\":\"\\\"\\\"\"}",
+    "statTags": {
+      "errorCategory": "network",
+      "errorType": "retryable",
+      "destType": "KLAVIYO",
+      "module": "destination",
+      "implementation": "native",
+      "feature": "processor",
+      "destinationId": "default-destinationId",
+      "workspaceId": "default-workspaceId"
+    }
+  }
+]

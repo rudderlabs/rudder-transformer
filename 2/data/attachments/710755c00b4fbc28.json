@@ -1,0 +1,48 @@
+[
+  {
+    "output": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://dfareporting.googleapis.com/dfareporting/v4/userprofiles/34245/conversions/batchinsert",
+      "headers": {
+        "Authorization": "Bearer dummyApiToken",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "kind": "dfareporting#conversionsBatchInsertRequest",
+          "conversions": [
+            {
+              "floodlightConfigurationId": "213123123",
+              "ordinal": "1",
+              "timestampMicros": "1668624722903000",
+              "floodlightActivityId": "456543345245",
+              "quantity": "455678",
+              "value": 756,
+              "matchId": "123",
+              "nonPersonalizedAd": false,
+              "treatmentForUnderage": false,
+              "childDirectedTreatment": false,
+              "limitAdTracking": false
+            }
+          ]
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": ""
+    },
+    "metadata": {
+      "secret": {
+        "access_token": "dummyApiToken",
+        "refresh_token": "efgh5678",
+        "developer_token": "ijkl91011"
+      }
+    },
+    "statusCode": 200
+  }
+]

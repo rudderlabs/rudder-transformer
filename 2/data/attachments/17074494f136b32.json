@@ -1,0 +1,70 @@
+[
+  {
+    "output": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://a.klaviyo.com/api/profile-subscription-bulk-create-jobs",
+      "headers": {
+        "Authorization": "Klaviyo-API-Key dummyPrivateApiKey",
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+        "revision": "2024-06-15"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "data": {
+            "type": "profile-subscription-bulk-create-job",
+            "attributes": {
+              "profiles": {
+                "data": [
+                  {
+                    "type": "profile",
+                    "attributes": {
+                      "email": "test@rudderstack.com",
+                      "phone_number": "+12 345 678 900",
+                      "subscriptions": {
+                        "email": {
+                          "marketing": {
+                            "consent": "SUBSCRIBED"
+                          }
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            "relationships": {
+              "list": {
+                "data": {
+                  "type": "list",
+                  "id": "group_list_id"
+                }
+              }
+            }
+          }
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": ""
+    },
+    "metadata": {
+      "jobId": 1,
+      "attemptNum": 1,
+      "userId": "default-userId",
+      "sourceId": "default-sourceId",
+      "destinationId": "default-destinationId",
+      "workspaceId": "default-workspaceId",
+      "secret": {
+        "accessToken": "default-accessToken"
+      },
+      "dontBatch": false
+    },
+    "statusCode": 200
+  }
+]

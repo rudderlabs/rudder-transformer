@@ -9,7 +9,6 @@ on:
     branches:
       - main
 
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.sha }}
   cancel-in-progress: true
@@ -58,22 +57,43 @@ jobs:
 
       - name: Publish to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
+        id: deploy
         if: always()
         with:
           github_token: ${{ secrets.PAT }}
           publish_branch: gh-pages
           publish_dir: allure-history
 
+      - name: Get Report Number
+        id: report-number
+        if: always()
+        run: |
+          # Wait a moment for gh-pages to update
+          sleep 10
+          
+          # Checkout gh-pages to get latest report number
+          git fetch origin gh-pages
+          git checkout gh-pages
+          
+          # Find the latest numbered directory
+          LATEST_NUM=$(find . -maxdepth 1 -type d -name "[0-9]*" | sort -n | tail -1 | sed 's/\.\///')
+          echo "number=${LATEST_NUM}" >> $GITHUB_OUTPUT
+          
+          # Return to previous branch
+          git checkout -
+
       - name: Add Test Report Link as Comment on PR
         uses: actions/github-script@v7
+        if: always()
         with:
           github-token: ${{ secrets.PAT }}
           script: |
             const { owner, repo } = context.repo;
             const prNumber = context.payload.pull_request.number;
-            const repoUrl = context.payload.repository.html_url;
+            const reportNumber = '${{ steps.report-number.outputs.number }}';
+            
             const commentBody = `Allure Test reports for this run are available at:
-            - Allure Report: https://rudderlabs.github.io/rudder-transformer`;
+            - Allure Report: https://rudderlabs.github.io/rudder-transformer/${reportNumber}/index.html`;
 
             // Comment on the pull request
             await github.rest.issues.createComment({

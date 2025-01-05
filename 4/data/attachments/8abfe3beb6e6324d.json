@@ -1,0 +1,20 @@
+{
+  "output": {
+    "status": 500,
+    "message": "Campaign Manager: undefined during CAMPAIGN_MANAGER response transformation 3",
+    "destinationResponse": {
+      "response": "Gateway Timeout",
+      "status": 504
+    },
+    "statTags": {
+      "errorCategory": "network",
+      "errorType": "retryable",
+      "destType": "CAMPAIGN_MANAGER",
+      "module": "destination",
+      "implementation": "native",
+      "feature": "dataDelivery",
+      "destinationId": "default-destinationId",
+      "workspaceId": "default-workspaceId"
+    }
+  }
+}

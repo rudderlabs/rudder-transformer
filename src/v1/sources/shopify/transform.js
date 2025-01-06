@@ -14,7 +14,7 @@ const NO_OPERATION_SUCCESS = {
   statusCode: 200,
 };
 
-const isIdentifierEvent = (event) => ['rudderIdentifier'].includes(event?.event);
+const isIdentifierEvent = (payload) => ['rudderIdentifier'].includes(payload?.event);
 
 const processIdentifierEvent = async (event) => {
   const { cartToken, anonymousId } = event;

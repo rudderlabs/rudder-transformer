@@ -64,6 +64,7 @@ const INTEGRATIONS_WITH_UPDATED_TEST_STRUCTURE = [
   'klaviyo',
   'campaign_manager',
   'criteo_audience',
+  'branch',
 ];
 
 beforeAll(async () => {

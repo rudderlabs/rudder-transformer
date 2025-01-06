@@ -21,32 +21,7 @@ export const statTags = {
   module: 'destination',
 };
 
-export const metadata = [
-  {
-    jobId: 1,
-    attemptNum: 1,
-    userId: 'default-userId',
-    destinationId: 'default-destinationId',
-    workspaceId: 'default-workspaceId',
-    sourceId: 'default-sourceId',
-    secret: {
-      accessToken: 'default-accessToken',
-    },
-    dontBatch: false,
-  },
-  {
-    jobId: 2,
-    attemptNum: 1,
-    userId: 'default-userId',
-    destinationId: 'default-destinationId',
-    workspaceId: 'default-workspaceId',
-    sourceId: 'default-sourceId',
-    secret: {
-      accessToken: 'default-accessToken',
-    },
-    dontBatch: false,
-  },
-];
+export const metadata = [generateMetadata(1), generateMetadata(2)];
 
 export const singleMetadata = [
   {

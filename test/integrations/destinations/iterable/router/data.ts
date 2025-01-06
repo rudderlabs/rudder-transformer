@@ -1,7 +1,15 @@
-export const data = [
+import { RouterTestData } from '../../../testTypes';
+import {} from '../../../../../src/types';
+import { generateMetadata } from '../../../testUtils';
+import { getBrowserInfo } from '../../../../../src/v0/util';
+
+export const data: RouterTestData[] = [
   {
+    id: 'router-1736135082961',
     name: 'iterable',
     description: 'Test 0',
+    scenario: 'Default router scenario',
+    successCriteria: 'Router test should pass successfully',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -15,7 +23,10 @@ export const data = [
                 sentAt: '2022-09-27T11:13:03.777Z',
                 messageId: '9ad41366-8060-4c9f-b181-f6bea67d5469',
                 originalTimestamp: '2022-09-27T11:13:03.777Z',
-                traits: { ruchira: 'donaldbaker@ellis.com', new_field2: 'GB' },
+                traits: {
+                  ruchira: 'donaldbaker@ellis.com',
+                  new_field2: 'GB',
+                },
                 channel: 'sources',
                 rudderId: '3d51640c-ab09-42c1-b7b2-db6ab433b35e',
                 context: {
@@ -29,7 +40,11 @@ export const data = [
                   },
                   mappedToDestination: 'true',
                   externalId: [
-                    { id: 'Tiffany', type: 'ITERABLE-test-ruchira', identifierType: 'itemId' },
+                    {
+                      id: 'Tiffany',
+                      type: 'ITERABLE-test-ruchira',
+                      identifierType: 'itemId',
+                    },
                   ],
                 },
                 timestamp: '2022-09-27T11:12:59.079Z',
@@ -38,10 +53,26 @@ export const data = [
                 recordId: '10',
                 request_ip: '10.1.86.248',
               },
-              metadata: { jobId: 2, userId: 'u1' },
+              metadata: generateMetadata(1),
               destination: {
-                Config: { apiKey: '583af2f8-15ba-49c0-8511-76383e7de07e', hubID: '22066036' },
+                ID: 'default-destination-id',
+                Name: 'Default Destination',
+                DestinationDefinition: {
+                  ID: 'default-dest-def-id',
+                  Name: 'Default Destination Definition',
+                  DisplayName: 'Default Display Name',
+                  Config: {},
+                },
+                Config: {
+                  apiKey: '583af2f8-15ba-49c0-8511-76383e7de07e',
+                  hubID: '22066036',
+                },
                 Enabled: true,
+                WorkspaceID: 'default-workspace',
+                Transformations: [],
+                RevisionID: 'default-revision',
+                IsProcessorEnabled: true,
+                IsConnectionEnabled: true,
               },
             },
             {
@@ -50,7 +81,10 @@ export const data = [
                 sentAt: '2022-09-27T11:13:03.777Z',
                 messageId: '9ad41366-8060-4c9f-b181-f6bea67d5469',
                 originalTimestamp: '2022-09-27T11:13:03.777Z',
-                traits: { ruchira: 'abc@ellis.com', new_field2: 'GB1' },
+                traits: {
+                  ruchira: 'abc@ellis.com',
+                  new_field2: 'GB1',
+                },
                 channel: 'sources',
                 rudderId: '3d51640c-ab09-42c1-b7b2-db6ab433b35e',
                 context: {
@@ -64,7 +98,11 @@ export const data = [
                   },
                   mappedToDestination: 'true',
                   externalId: [
-                    { id: 'ABC', type: 'ITERABLE-test-ruchira', identifierType: 'itemId' },
+                    {
+                      id: 'ABC',
+                      type: 'ITERABLE-test-ruchira',
+                      identifierType: 'itemId',
+                    },
                   ],
                 },
                 timestamp: '2022-09-27T11:12:59.079Z',
@@ -73,15 +111,32 @@ export const data = [
                 recordId: '10',
                 request_ip: '10.1.86.248',
               },
-              metadata: { jobId: 2, userId: 'u1' },
+              metadata: generateMetadata(2),
               destination: {
-                Config: { apiKey: '583af2f8-15ba-49c0-8511-76383e7de07e', hubID: '22066036' },
+                ID: 'default-destination-id',
+                Name: 'Default Destination',
+                DestinationDefinition: {
+                  ID: 'default-dest-def-id',
+                  Name: 'Default Destination Definition',
+                  DisplayName: 'Default Display Name',
+                  Config: {},
+                },
+                Config: {
+                  apiKey: '583af2f8-15ba-49c0-8511-76383e7de07e',
+                  hubID: '22066036',
+                },
                 Enabled: true,
+                WorkspaceID: 'default-workspace',
+                Transformations: [],
+                RevisionID: 'default-revision',
+                IsProcessorEnabled: true,
+                IsConnectionEnabled: true,
               },
             },
           ],
           destType: 'iterable',
         },
+        method: 'POST',
       },
     },
     output: {
@@ -103,8 +158,14 @@ export const data = [
                 body: {
                   JSON: {
                     documents: {
-                      Tiffany: { ruchira: 'donaldbaker@ellis.com', new_field2: 'GB' },
-                      ABC: { ruchira: 'abc@ellis.com', new_field2: 'GB1' },
+                      Tiffany: {
+                        ruchira: 'donaldbaker@ellis.com',
+                        new_field2: 'GB',
+                      },
+                      ABC: {
+                        ruchira: 'abc@ellis.com',
+                        new_field2: 'GB1',
+                      },
                     },
                     replaceUploadedFieldsOnly: true,
                   },
@@ -114,16 +175,29 @@ export const data = [
                 },
                 files: {},
               },
-              metadata: [
-                { jobId: 2, userId: 'u1' },
-                { jobId: 2, userId: 'u1' },
-              ],
-              batched: true,
+              metadata: [generateMetadata(1), generateMetadata(2)],
               statusCode: 200,
               destination: {
-                Config: { apiKey: '583af2f8-15ba-49c0-8511-76383e7de07e', hubID: '22066036' },
+                ID: 'default-destination-id',
+                Name: 'Default Destination',
+                DestinationDefinition: {
+                  ID: 'default-dest-def-id',
+                  Name: 'Default Destination Definition',
+                  DisplayName: 'Default Display Name',
+                  Config: {},
+                },
+                Config: {
+                  apiKey: '583af2f8-15ba-49c0-8511-76383e7de07e',
+                  hubID: '22066036',
+                },
                 Enabled: true,
+                WorkspaceID: 'default-workspace',
+                Transformations: [],
+                RevisionID: 'default-revision',
+                IsProcessorEnabled: true,
+                IsConnectionEnabled: true,
               },
+              batched: true,
             },
           ],
         },
@@ -131,8 +205,11 @@ export const data = [
     },
   },
   {
+    id: 'router-1736135082962',
     name: 'iterable',
     description: 'routerTest 1',
+    scenario: 'Default router scenario',
+    successCriteria: 'Router test should pass successfully',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -145,8 +222,15 @@ export const data = [
                 type: 'track',
                 event: 'Email Opened',
                 sentAt: '2020-08-28T16:26:16.473Z',
-                context: { library: { name: 'analytics-node', version: '0.0.3' } },
-                _metadata: { nodeVersion: '10.22.0' },
+                context: {
+                  library: {
+                    name: 'analytics-node',
+                    version: '0.0.3',
+                  },
+                },
+                _metadata: {
+                  nodeVersion: '10.22.0',
+                },
                 messageId:
                   'node-570110489d3e99b234b18af9a9eca9d4-6009779e-82d7-469d-aaeb-5ccf162b0453',
                 properties: {
@@ -157,8 +241,16 @@ export const data = [
                 anonymousId: 'abcdeeeeeeeexxxx102',
                 originalTimestamp: '2020-08-28T16:26:06.468Z',
               },
-              metadata: { jobId: 2, userId: 'u1' },
+              metadata: generateMetadata(2),
               destination: {
+                ID: 'default-destination-id',
+                Name: 'Default Destination',
+                DestinationDefinition: {
+                  ID: 'default-dest-def-id',
+                  Name: 'Default Destination Definition',
+                  DisplayName: 'Default Display Name',
+                  Config: {},
+                },
                 Config: {
                   apiKey: '62d12498c37c4fd8a1a546c2d35c2f60',
                   mapToSingleEvent: false,
@@ -167,6 +259,11 @@ export const data = [
                   trackNamedPages: false,
                 },
                 Enabled: true,
+                WorkspaceID: 'default-workspace',
+                Transformations: [],
+                RevisionID: 'default-revision',
+                IsProcessorEnabled: true,
+                IsConnectionEnabled: true,
               },
             },
             {
@@ -187,16 +284,29 @@ export const data = [
                     email: 'manashi@website.com',
                     country: 'India',
                   },
-                  library: { name: 'analytics-node', version: '0.0.3' },
+                  library: {
+                    name: 'analytics-node',
+                    version: '0.0.3',
+                  },
                 },
-                _metadata: { nodeVersion: '10.22.0' },
+                _metadata: {
+                  nodeVersion: '10.22.0',
+                },
                 messageId:
                   'node-cc3ef811f686139ee527b806ee0129ef-163a3a88-266f-447e-8cce-34a8f42f8dcd',
                 anonymousId: 'abcdeeeeeeeexxxx102',
                 originalTimestamp: '2020-08-28T16:26:06.462Z',
               },
-              metadata: { jobId: 3, userId: 'u1' },
+              metadata: generateMetadata(3),
               destination: {
+                ID: 'default-destination-id',
+                Name: 'Default Destination',
+                DestinationDefinition: {
+                  ID: 'default-dest-def-id',
+                  Name: 'Default Destination Definition',
+                  DisplayName: 'Default Display Name',
+                  Config: {},
+                },
                 Config: {
                   apiKey: '62d12498c37c4fd8a1a546c2d35c2f60',
                   mapToSingleEvent: false,
@@ -205,6 +315,11 @@ export const data = [
                   trackNamedPages: false,
                 },
                 Enabled: true,
+                WorkspaceID: 'default-workspace',
+                Transformations: [],
+                RevisionID: 'default-revision',
+                IsProcessorEnabled: true,
+                IsConnectionEnabled: true,
               },
             },
             {
@@ -217,14 +332,24 @@ export const data = [
                     namespace: 'com.rudderlabs.javascript',
                     version: '1.0.0',
                   },
-                  traits: { email: 'sayan@gmail.com' },
-                  library: { name: 'RudderLabs JavaScript SDK', version: '1.0.0' },
+                  traits: {
+                    email: 'sayan@gmail.com',
+                  },
+                  library: {
+                    name: 'RudderLabs JavaScript SDK',
+                    version: '1.0.0',
+                  },
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
                   locale: 'en-US',
                   ip: '0.0.0.0',
-                  os: { name: '', version: '' },
-                  screen: { density: 2 },
+                  os: {
+                    name: '',
+                    version: '',
+                  },
+                  screen: {
+                    density: 2,
+                  },
                 },
                 type: 'page',
                 messageId: '5e10d13a-bf9a-44bf-b884-43a9e591ea71',
@@ -239,12 +364,22 @@ export const data = [
                   url: '',
                   category: 'test-category',
                 },
-                integrations: { All: true },
+                integrations: {
+                  All: true,
+                },
                 name: 'ApplicationLoaded',
                 sentAt: '2019-10-14T11:15:53.296Z',
               },
-              metadata: { jobId: 4, userId: 'u1' },
+              metadata: generateMetadata(4),
               destination: {
+                ID: 'default-destination-id',
+                Name: 'Default Destination',
+                DestinationDefinition: {
+                  ID: 'default-dest-def-id',
+                  Name: 'Default Destination Definition',
+                  DisplayName: 'Default Display Name',
+                  Config: {},
+                },
                 Config: {
                   apiKey: '12345',
                   dataCenter: 'USDC',
@@ -254,6 +389,11 @@ export const data = [
                   trackNamedPages: false,
                 },
                 Enabled: true,
+                WorkspaceID: 'default-workspace',
+                Transformations: [],
+                RevisionID: 'default-revision',
+                IsProcessorEnabled: true,
+                IsConnectionEnabled: true,
               },
             },
             {
@@ -276,7 +416,9 @@ export const data = [
                     task_run_id: 'c5tar6cqgmgmcjvupdi0',
                     version: 'release.v1.6.8',
                   },
-                  device: { token: 54321 },
+                  device: {
+                    token: 54321,
+                  },
                 },
                 messageId: '2f052f7c-f694-4849-a7ed-a432f7ffa0a4',
                 originalTimestamp: '2021-10-28T14:03:50.503Z',
@@ -297,7 +439,7 @@ export const data = [
                 type: 'identify',
                 userId: 'lynnanderson@smith.net',
               },
-              metadata: { jobId: 5, userId: 'u1' },
+              metadata: generateMetadata(5),
               destination: {
                 ID: '1zia9wKshXt80YksLmUdJnr7IHI',
                 Name: 'test_iterable',
@@ -337,7 +479,6 @@ export const data = [
                     transformAt: 'processor',
                     transformAtV1: 'processor',
                   },
-                  ResponseRules: null,
                 },
                 Config: {
                   apiKey: '12345',
@@ -348,11 +489,12 @@ export const data = [
                   trackNamedPages: true,
                 },
                 Enabled: true,
+                WorkspaceID: 'default-workspace',
                 Transformations: [],
+                RevisionID: 'default-revision',
                 IsProcessorEnabled: true,
+                IsConnectionEnabled: true,
               },
-              libraries: [],
-              request: { query: {} },
             },
             {
               message: {
@@ -364,14 +506,24 @@ export const data = [
                     namespace: 'com.rudderlabs.javascript',
                     version: '1.0.0',
                   },
-                  traits: { email: 'sayan@gmail.com' },
-                  library: { name: 'RudderLabs JavaScript SDK', version: '1.0.0' },
+                  traits: {
+                    email: 'sayan@gmail.com',
+                  },
+                  library: {
+                    name: 'RudderLabs JavaScript SDK',
+                    version: '1.0.0',
+                  },
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
                   locale: 'en-US',
                   ip: '0.0.0.0',
-                  os: { name: '', version: '' },
-                  screen: { density: 2 },
+                  os: {
+                    name: '',
+                    version: '',
+                  },
+                  screen: {
+                    density: 2,
+                  },
                 },
                 event: 'product added',
                 type: 'track',
@@ -409,12 +561,22 @@ export const data = [
                     },
                   ],
                 },
-                integrations: { All: true },
+                integrations: {
+                  All: true,
+                },
                 name: 'ApplicationLoaded',
                 sentAt: '2019-10-14T11:15:53.296Z',
               },
-              metadata: { jobId: 6, userId: 'u1' },
+              metadata: generateMetadata(6),
               destination: {
+                ID: 'default-destination-id',
+                Name: 'Default Destination',
+                DestinationDefinition: {
+                  ID: 'default-dest-def-id',
+                  Name: 'Default Destination Definition',
+                  DisplayName: 'Default Display Name',
+                  Config: {},
+                },
                 Config: {
                   apiKey: '62d12498c37c4fd8a1a546c2d35c2f60',
                   dataCenter: 'USDC',
@@ -424,14 +586,26 @@ export const data = [
                   trackNamedPages: false,
                 },
                 Enabled: true,
+                WorkspaceID: 'default-workspace',
+                Transformations: [],
+                RevisionID: 'default-revision',
+                IsProcessorEnabled: true,
+                IsConnectionEnabled: true,
               },
             },
             {
               message: {
                 type: 'page',
                 sentAt: '2020-08-28T16:26:16.473Z',
-                context: { library: { name: 'analytics-node', version: '0.0.3' } },
-                _metadata: { nodeVersion: '10.22.0' },
+                context: {
+                  library: {
+                    name: 'analytics-node',
+                    version: '0.0.3',
+                  },
+                },
+                _metadata: {
+                  nodeVersion: '10.22.0',
+                },
                 messageId:
                   'node-6f62b91e789a636929ca38aed01c5f6e-103c720d-81bd-4742-98d6-d45a65aed23e',
                 properties: {
@@ -442,8 +616,16 @@ export const data = [
                 anonymousId: 'abcdeeeeeeeexxxx102',
                 originalTimestamp: '2020-08-28T16:26:06.468Z',
               },
-              metadata: { jobId: 7, userId: 'u1' },
+              metadata: generateMetadata(7),
               destination: {
+                ID: 'default-destination-id',
+                Name: 'Default Destination',
+                DestinationDefinition: {
+                  ID: 'default-dest-def-id',
+                  Name: 'Default Destination Definition',
+                  DisplayName: 'Default Display Name',
+                  Config: {},
+                },
                 Config: {
                   apiKey: '62d12498c37c4fd8a1a546c2d35c2f60',
                   dataCenter: 'USDC',
@@ -453,14 +635,26 @@ export const data = [
                   trackNamedPages: false,
                 },
                 Enabled: true,
+                WorkspaceID: 'default-workspace',
+                Transformations: [],
+                RevisionID: 'default-revision',
+                IsProcessorEnabled: true,
+                IsConnectionEnabled: true,
               },
             },
             {
               message: {
                 type: 'alias',
                 sentAt: '2020-08-28T16:26:16.473Z',
-                context: { library: { name: 'analytics-node', version: '0.0.3' } },
-                _metadata: { nodeVersion: '10.22.0' },
+                context: {
+                  library: {
+                    name: 'analytics-node',
+                    version: '0.0.3',
+                  },
+                },
+                _metadata: {
+                  nodeVersion: '10.22.0',
+                },
                 messageId:
                   'node-6f62b91e789a636929ca38aed01c5f6e-103c720d-81bd-4742-98d6-d45a65aed23e',
                 properties: {
@@ -473,8 +667,16 @@ export const data = [
                 anonymousId: 'abcdeeeeeeeexxxx102',
                 originalTimestamp: '2020-08-28T16:26:06.468Z',
               },
-              metadata: { jobId: 8, userId: 'u1' },
+              metadata: generateMetadata(8),
               destination: {
+                ID: 'default-destination-id',
+                Name: 'Default Destination',
+                DestinationDefinition: {
+                  ID: 'default-dest-def-id',
+                  Name: 'Default Destination Definition',
+                  DisplayName: 'Default Display Name',
+                  Config: {},
+                },
                 Config: {
                   apiKey: '62d12498c37c4fd8a1a546c2d35c2f60',
                   dataCenter: 'USDC',
@@ -484,11 +686,17 @@ export const data = [
                   trackNamedPages: false,
                 },
                 Enabled: true,
+                WorkspaceID: 'default-workspace',
+                Transformations: [],
+                RevisionID: 'default-revision',
+                IsProcessorEnabled: true,
+                IsConnectionEnabled: true,
               },
             },
           ],
           destType: 'iterable',
         },
+        method: 'POST',
       },
     },
     output: {
@@ -528,10 +736,17 @@ export const data = [
                 },
                 files: {},
               },
-              metadata: [{ jobId: 2, userId: 'u1' }],
-              batched: true,
+              metadata: [generateMetadata(2)],
               statusCode: 200,
               destination: {
+                ID: 'default-destination-id',
+                Name: 'Default Destination',
+                DestinationDefinition: {
+                  ID: 'default-dest-def-id',
+                  Name: 'Default Destination Definition',
+                  DisplayName: 'Default Display Name',
+                  Config: {},
+                },
                 Config: {
                   apiKey: '62d12498c37c4fd8a1a546c2d35c2f60',
                   mapToSingleEvent: false,
@@ -540,7 +755,13 @@ export const data = [
                   trackNamedPages: false,
                 },
                 Enabled: true,
+                WorkspaceID: 'default-workspace',
+                Transformations: [],
+                RevisionID: 'default-revision',
+                IsProcessorEnabled: true,
+                IsConnectionEnabled: true,
               },
+              batched: true,
             },
             {
               batchedRequest: {
@@ -576,10 +797,17 @@ export const data = [
                 },
                 files: {},
               },
-              metadata: [{ jobId: 3, userId: 'u1' }],
-              batched: true,
+              metadata: [generateMetadata(3)],
               statusCode: 200,
               destination: {
+                ID: 'default-destination-id',
+                Name: 'Default Destination',
+                DestinationDefinition: {
+                  ID: 'default-dest-def-id',
+                  Name: 'Default Destination Definition',
+                  DisplayName: 'Default Display Name',
+                  Config: {},
+                },
                 Config: {
                   apiKey: '62d12498c37c4fd8a1a546c2d35c2f60',
                   mapToSingleEvent: false,
@@ -588,7 +816,13 @@ export const data = [
                   trackNamedPages: false,
                 },
                 Enabled: true,
+                WorkspaceID: 'default-workspace',
+                Transformations: [],
+                RevisionID: 'default-revision',
+                IsProcessorEnabled: true,
+                IsConnectionEnabled: true,
               },
+              batched: true,
             },
             {
               batchedRequest: {
@@ -596,7 +830,10 @@ export const data = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://api.iterable.com/api/events/trackBulk',
-                headers: { 'Content-Type': 'application/json', api_key: '12345' },
+                headers: {
+                  'Content-Type': 'application/json',
+                  api_key: '12345',
+                },
                 params: {},
                 body: {
                   JSON: {
@@ -623,10 +860,17 @@ export const data = [
                 },
                 files: {},
               },
-              metadata: [{ jobId: 4, userId: 'u1' }],
-              batched: true,
+              metadata: [generateMetadata(4)],
               statusCode: 200,
               destination: {
+                ID: 'default-destination-id',
+                Name: 'Default Destination',
+                DestinationDefinition: {
+                  ID: 'default-dest-def-id',
+                  Name: 'Default Destination Definition',
+                  DisplayName: 'Default Display Name',
+                  Config: {},
+                },
                 Config: {
                   apiKey: '12345',
                   dataCenter: 'USDC',
@@ -636,7 +880,13 @@ export const data = [
                   trackNamedPages: false,
                 },
                 Enabled: true,
+                WorkspaceID: 'default-workspace',
+                Transformations: [],
+                RevisionID: 'default-revision',
+                IsProcessorEnabled: true,
+                IsConnectionEnabled: true,
               },
+              batched: true,
             },
             {
               batchedRequest: {
@@ -653,7 +903,9 @@ export const data = [
                   JSON: {
                     user: {
                       email: 'sayan@gmail.com',
-                      dataFields: { email: 'sayan@gmail.com' },
+                      dataFields: {
+                        email: 'sayan@gmail.com',
+                      },
                       userId: '12345',
                       preferUserId: true,
                       mergeNestedObjects: true,
@@ -687,10 +939,17 @@ export const data = [
                 },
                 files: {},
               },
-              metadata: [{ jobId: 6, userId: 'u1' }],
-              batched: false,
+              metadata: [generateMetadata(6)],
               statusCode: 200,
               destination: {
+                ID: 'default-destination-id',
+                Name: 'Default Destination',
+                DestinationDefinition: {
+                  ID: 'default-dest-def-id',
+                  Name: 'Default Destination Definition',
+                  DisplayName: 'Default Display Name',
+                  Config: {},
+                },
                 Config: {
                   apiKey: '62d12498c37c4fd8a1a546c2d35c2f60',
                   dataCenter: 'USDC',
@@ -700,7 +959,13 @@ export const data = [
                   trackNamedPages: false,
                 },
                 Enabled: true,
+                WorkspaceID: 'default-workspace',
+                Transformations: [],
+                RevisionID: 'default-revision',
+                IsProcessorEnabled: true,
+                IsConnectionEnabled: true,
               },
+              batched: false,
             },
             {
               batchedRequest: {
@@ -734,10 +999,17 @@ export const data = [
                 },
                 files: {},
               },
-              metadata: [{ jobId: 7, userId: 'u1' }],
-              batched: true,
+              metadata: [generateMetadata(7)],
               statusCode: 200,
               destination: {
+                ID: 'default-destination-id',
+                Name: 'Default Destination',
+                DestinationDefinition: {
+                  ID: 'default-dest-def-id',
+                  Name: 'Default Destination Definition',
+                  DisplayName: 'Default Display Name',
+                  Config: {},
+                },
                 Config: {
                   apiKey: '62d12498c37c4fd8a1a546c2d35c2f60',
                   dataCenter: 'USDC',
@@ -747,7 +1019,13 @@ export const data = [
                   trackNamedPages: false,
                 },
                 Enabled: true,
+                WorkspaceID: 'default-workspace',
+                Transformations: [],
+                RevisionID: 'default-revision',
+                IsProcessorEnabled: true,
+                IsConnectionEnabled: true,
               },
+              batched: true,
             },
             {
               batchedRequest: {
@@ -761,17 +1039,27 @@ export const data = [
                 },
                 params: {},
                 body: {
-                  JSON: { currentEmail: 'old@email.com', newEmail: 'new@email.com' },
+                  JSON: {
+                    currentEmail: 'old@email.com',
+                    newEmail: 'new@email.com',
+                  },
                   JSON_ARRAY: {},
                   XML: {},
                   FORM: {},
                 },
                 files: {},
               },
-              metadata: [{ jobId: 8, userId: 'u1' }],
-              batched: false,
+              metadata: [generateMetadata(8)],
               statusCode: 200,
               destination: {
+                ID: 'default-destination-id',
+                Name: 'Default Destination',
+                DestinationDefinition: {
+                  ID: 'default-dest-def-id',
+                  Name: 'Default Destination Definition',
+                  DisplayName: 'Default Display Name',
+                  Config: {},
+                },
                 Config: {
                   apiKey: '62d12498c37c4fd8a1a546c2d35c2f60',
                   dataCenter: 'USDC',
@@ -781,7 +1069,13 @@ export const data = [
                   trackNamedPages: false,
                 },
                 Enabled: true,
+                WorkspaceID: 'default-workspace',
+                Transformations: [],
+                RevisionID: 'default-revision',
+                IsProcessorEnabled: true,
+                IsConnectionEnabled: true,
               },
+              batched: false,
             },
             {
               batchedRequest: {
@@ -789,7 +1083,10 @@ export const data = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://api.iterable.com/api/users/bulkUpdate',
-                headers: { 'Content-Type': 'application/json', api_key: '12345' },
+                headers: {
+                  'Content-Type': 'application/json',
+                  api_key: '12345',
+                },
                 params: {},
                 body: {
                   JSON: {
@@ -817,8 +1114,7 @@ export const data = [
                 },
                 files: {},
               },
-              metadata: [{ jobId: 5, userId: 'u1' }],
-              batched: true,
+              metadata: [generateMetadata(5)],
               statusCode: 200,
               destination: {
                 ID: '1zia9wKshXt80YksLmUdJnr7IHI',
@@ -859,7 +1155,6 @@ export const data = [
                     transformAt: 'processor',
                     transformAtV1: 'processor',
                   },
-                  ResponseRules: null,
                 },
                 Config: {
                   apiKey: '12345',
@@ -870,9 +1165,13 @@ export const data = [
                   trackNamedPages: true,
                 },
                 Enabled: true,
+                WorkspaceID: 'default-workspace',
                 Transformations: [],
+                RevisionID: 'default-revision',
                 IsProcessorEnabled: true,
+                IsConnectionEnabled: true,
               },
+              batched: true,
             },
           ],
         },
@@ -880,8 +1179,11 @@ export const data = [
     },
   },
   {
+    id: 'router-1736135082962',
     name: 'iterable',
     description: 'Simple identify call with EUDC dataCenter',
+    scenario: 'Default router scenario',
+    successCriteria: 'Router test should pass successfully',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -895,7 +1197,10 @@ export const data = [
                 sentAt: '2022-09-27T11:13:03.777Z',
                 messageId: '9ad41366-8060-4c9f-b181-f6bea67d5469',
                 originalTimestamp: '2022-09-27T11:13:03.777Z',
-                traits: { ruchira: 'donaldbaker@ellis.com', new_field2: 'GB' },
+                traits: {
+                  ruchira: 'donaldbaker@ellis.com',
+                  new_field2: 'GB',
+                },
                 channel: 'sources',
                 rudderId: '3d51640c-ab09-42c1-b7b2-db6ab433b35e',
                 context: {
@@ -909,7 +1214,11 @@ export const data = [
                   },
                   mappedToDestination: 'true',
                   externalId: [
-                    { id: 'Tiffany', type: 'ITERABLE-test-ruchira', identifierType: 'itemId' },
+                    {
+                      id: 'Tiffany',
+                      type: 'ITERABLE-test-ruchira',
+                      identifierType: 'itemId',
+                    },
                   ],
                 },
                 timestamp: '2022-09-27T11:12:59.079Z',
@@ -918,14 +1227,27 @@ export const data = [
                 recordId: '10',
                 request_ip: '10.1.86.248',
               },
-              metadata: { jobId: 2, userId: 'u1' },
+              metadata: generateMetadata(1),
               destination: {
+                ID: 'default-destination-id',
+                Name: 'Default Destination',
+                DestinationDefinition: {
+                  ID: 'default-dest-def-id',
+                  Name: 'Default Destination Definition',
+                  DisplayName: 'Default Display Name',
+                  Config: {},
+                },
                 Config: {
                   apiKey: '583af2f8-15ba-49c0-8511-76383e7de07e',
                   dataCenter: 'EUDC',
                   hubID: '22066036',
                 },
                 Enabled: true,
+                WorkspaceID: 'default-workspace',
+                Transformations: [],
+                RevisionID: 'default-revision',
+                IsProcessorEnabled: true,
+                IsConnectionEnabled: true,
               },
             },
             {
@@ -934,7 +1256,10 @@ export const data = [
                 sentAt: '2022-09-27T11:13:03.777Z',
                 messageId: '9ad41366-8060-4c9f-b181-f6bea67d5469',
                 originalTimestamp: '2022-09-27T11:13:03.777Z',
-                traits: { ruchira: 'abc@ellis.com', new_field2: 'GB1' },
+                traits: {
+                  ruchira: 'abc@ellis.com',
+                  new_field2: 'GB1',
+                },
                 channel: 'sources',
                 rudderId: '3d51640c-ab09-42c1-b7b2-db6ab433b35e',
                 context: {
@@ -948,7 +1273,11 @@ export const data = [
                   },
                   mappedToDestination: 'true',
                   externalId: [
-                    { id: 'ABC', type: 'ITERABLE-test-ruchira', identifierType: 'itemId' },
+                    {
+                      id: 'ABC',
+                      type: 'ITERABLE-test-ruchira',
+                      identifierType: 'itemId',
+                    },
                   ],
                 },
                 timestamp: '2022-09-27T11:12:59.079Z',
@@ -957,19 +1286,33 @@ export const data = [
                 recordId: '10',
                 request_ip: '10.1.86.248',
               },
-              metadata: { jobId: 2, userId: 'u1' },
+              metadata: generateMetadata(2),
               destination: {
+                ID: 'default-destination-id',
+                Name: 'Default Destination',
+                DestinationDefinition: {
+                  ID: 'default-dest-def-id',
+                  Name: 'Default Destination Definition',
+                  DisplayName: 'Default Display Name',
+                  Config: {},
+                },
                 Config: {
                   apiKey: '583af2f8-15ba-49c0-8511-76383e7de07e',
                   dataCenter: 'EUDC',
                   hubID: '22066036',
                 },
                 Enabled: true,
+                WorkspaceID: 'default-workspace',
+                Transformations: [],
+                RevisionID: 'default-revision',
+                IsProcessorEnabled: true,
+                IsConnectionEnabled: true,
               },
             },
           ],
           destType: 'iterable',
         },
+        method: 'POST',
       },
     },
     output: {
@@ -991,8 +1334,14 @@ export const data = [
                 body: {
                   JSON: {
                     documents: {
-                      Tiffany: { ruchira: 'donaldbaker@ellis.com', new_field2: 'GB' },
-                      ABC: { ruchira: 'abc@ellis.com', new_field2: 'GB1' },
+                      Tiffany: {
+                        ruchira: 'donaldbaker@ellis.com',
+                        new_field2: 'GB',
+                      },
+                      ABC: {
+                        ruchira: 'abc@ellis.com',
+                        new_field2: 'GB1',
+                      },
                     },
                     replaceUploadedFieldsOnly: true,
                   },
@@ -1002,20 +1351,30 @@ export const data = [
                 },
                 files: {},
               },
-              metadata: [
-                { jobId: 2, userId: 'u1' },
-                { jobId: 2, userId: 'u1' },
-              ],
-              batched: true,
+              metadata: [generateMetadata(1), generateMetadata(2)],
               statusCode: 200,
               destination: {
+                ID: 'default-destination-id',
+                Name: 'Default Destination',
+                DestinationDefinition: {
+                  ID: 'default-dest-def-id',
+                  Name: 'Default Destination Definition',
+                  DisplayName: 'Default Display Name',
+                  Config: {},
+                },
                 Config: {
                   apiKey: '583af2f8-15ba-49c0-8511-76383e7de07e',
                   dataCenter: 'EUDC',
                   hubID: '22066036',
                 },
                 Enabled: true,
+                WorkspaceID: 'default-workspace',
+                Transformations: [],
+                RevisionID: 'default-revision',
+                IsProcessorEnabled: true,
+                IsConnectionEnabled: true,
               },
+              batched: true,
             },
           ],
         },

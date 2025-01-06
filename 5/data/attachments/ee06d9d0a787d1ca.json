@@ -1,0 +1,83 @@
+[
+  {
+    "output": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://a.klaviyo.com/api/events",
+      "headers": {
+        "Authorization": "Klaviyo-API-Key dummyPrivateApiKey",
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "revision": "2023-02-22"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "data": {
+            "type": "event",
+            "attributes": {
+              "metric": {
+                "name": "Added to Cart"
+              },
+              "properties": {
+                "$value": 12.12,
+                "AddedItemCategories": [
+                  "Fiction3",
+                  "Children3"
+                ],
+                "ItemNames": [
+                  "book1",
+                  "book2"
+                ],
+                "CheckoutURL": "http://www.heythere.com",
+                "items": [
+                  {
+                    "ProductID": "b1pid",
+                    "SKU": "123x",
+                    "ProductName": "book1",
+                    "ItemPrice": 12,
+                    "ProductURL": "heyther.com"
+                  },
+                  {
+                    "ProductID": "b2pid",
+                    "SKU": "123x",
+                    "ProductName": "book2",
+                    "ItemPrice": 14,
+                    "ProductURL": "heyther2.com"
+                  }
+                ]
+              },
+              "profile": {
+                "$email": "test@rudderstack.com",
+                "$phone_number": "9112340375",
+                "$id": "sajal12",
+                "age": "22",
+                "name": "Test",
+                "description": "Sample description"
+              }
+            }
+          }
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": ""
+    },
+    "metadata": {
+      "jobId": 3,
+      "attemptNum": 1,
+      "userId": "default-userId",
+      "sourceId": "default-sourceId",
+      "destinationId": "default-destinationId",
+      "workspaceId": "default-workspaceId",
+      "secret": {
+        "accessToken": "default-accessToken"
+      },
+      "dontBatch": false
+    },
+    "statusCode": 200
+  }
+]

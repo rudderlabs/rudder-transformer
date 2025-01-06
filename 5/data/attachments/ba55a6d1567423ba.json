@@ -1,0 +1,63 @@
+[
+  {
+    "output": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://a.klaviyo.com/api/events",
+      "headers": {
+        "Authorization": "Klaviyo-API-Key dummyPrivateApiKey",
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "revision": "2023-02-22"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "data": {
+            "type": "event",
+            "attributes": {
+              "metric": {
+                "name": "TestEven001"
+              },
+              "properties": {
+                "vicePresdentInfo.PreviouslVicePresident": true,
+                "vicePresdentInfo.YearElected": 1801,
+                "vicePresdentInfo.VicePresidents": [
+                  "AaronBurr",
+                  "GeorgeClinton"
+                ]
+              },
+              "profile": {
+                "$email": "test@rudderstack.com",
+                "$phone_number": "9112340375",
+                "$id": "sajal12",
+                "age": "22",
+                "plan_details.plan_type": "gold",
+                "plan_details.duration": "3 months"
+              }
+            }
+          }
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": ""
+    },
+    "metadata": {
+      "jobId": 1,
+      "attemptNum": 1,
+      "userId": "default-userId",
+      "sourceId": "default-sourceId",
+      "destinationId": "default-destinationId",
+      "workspaceId": "default-workspaceId",
+      "secret": {
+        "accessToken": "default-accessToken"
+      },
+      "dontBatch": false
+    },
+    "statusCode": 200
+  }
+]

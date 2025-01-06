@@ -1,8 +1,41 @@
-import { generateMetadata } from './../../../testUtils';
-import { Destination } from '../../../../../src/types';
 import { ProcessorTestData } from '../../../testTypes';
+import { Metadata, Destination } from '../../../../../src/types';
 
-const destination: Destination = {
+const baseMetadata: Metadata = {
+  sourceId: 'default-sourceId',
+  workspaceId: 'default-workspaceId',
+  namespace: 'default-namespace',
+  instanceId: 'default-instance',
+  sourceType: 'default-source-type',
+  sourceCategory: 'default-category',
+  trackingPlanId: 'default-tracking-plan',
+  trackingPlanVersion: 1,
+  sourceTpConfig: {},
+  mergedTpConfig: {},
+  destinationId: 'default-destinationId',
+  jobRunId: 'default-job-run',
+  jobId: 1,
+  sourceBatchId: 'default-batch',
+  sourceJobId: 'default-source-job',
+  sourceJobRunId: 'default-source-job-run',
+  sourceTaskId: 'default-task',
+  sourceTaskRunId: 'default-task-run',
+  recordId: {},
+  destinationType: 'default-destination-type',
+  messageId: 'default-message-id',
+  oauthAccessToken: 'default-token',
+  messageIds: ['default-message-id'],
+  rudderId: 'default-rudder-id',
+  receivedAt: '2025-01-06T04:14:40.785Z',
+  eventName: 'default-event',
+  eventType: 'default-type',
+  sourceDefinitionId: 'default-source-def',
+  destinationDefinitionId: 'default-dest-def',
+  transformationId: 'default-transform',
+  dontBatch: false,
+};
+
+const baseDestination: Destination = {
   ID: '123',
   Name: 'iterable',
   DestinationDefinition: {
@@ -11,8 +44,6 @@ const destination: Destination = {
     DisplayName: 'Iterable',
     Config: {},
   },
-  WorkspaceID: '123',
-  Transformations: [],
   Config: {
     apiKey: 'testApiKey',
     mapToSingleEvent: false,
@@ -21,26 +52,11 @@ const destination: Destination = {
     trackNamedPages: false,
   },
   Enabled: true,
-};
-
-const properties = {
-  url: 'https://dominos.com',
-  title: 'Pizza',
-  referrer: 'https://google.com',
-};
-
-const sentAt = '2020-08-28T16:26:16.473Z';
-const originalTimestamp = '2020-08-28T16:26:06.468Z';
-
-const expectedStatTags = {
-  destType: 'ITERABLE',
-  errorCategory: 'dataValidation',
-  errorType: 'instrumentation',
-  feature: 'processor',
-  implementation: 'native',
-  module: 'destination',
-  destinationId: 'default-destinationId',
-  workspaceId: 'default-workspaceId',
+  WorkspaceID: '123',
+  Transformations: [],
+  RevisionID: 'default-revision',
+  IsProcessorEnabled: true,
+  IsConnectionEnabled: true,
 };
 
 export const validationTestData: ProcessorTestData[] = [
@@ -56,9 +72,9 @@ export const validationTestData: ProcessorTestData[] = [
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
-            destination,
             message: {
               userId: 'sajal12',
               anonymousId: 'abcdeeeeeeeexxxx102',
@@ -67,15 +83,19 @@ export const validationTestData: ProcessorTestData[] = [
                   email: 'abc@example.com',
                 },
               },
-              properties,
+              properties: {
+                url: 'https://dominos.com',
+                title: 'Pizza',
+                referrer: 'https://google.com',
+              },
               type: 'page',
-              sentAt,
-              originalTimestamp,
+              sentAt: '2020-08-28T16:26:16.473Z',
+              originalTimestamp: '2020-08-28T16:26:06.468Z',
             },
-            metadata: generateMetadata(1),
+            metadata: baseMetadata,
+            destination: baseDestination,
           },
         ],
-        method: 'POST',
       },
     },
     output: {
@@ -83,10 +103,19 @@ export const validationTestData: ProcessorTestData[] = [
         status: 200,
         body: [
           {
+            metadata: baseMetadata,
             statusCode: 400,
             error: 'Invalid page call',
-            statTags: { ...expectedStatTags, errorType: 'configuration' },
-            metadata: generateMetadata(1),
+            statTags: {
+              destType: 'ITERABLE',
+              errorCategory: 'dataValidation',
+              errorType: 'configuration',
+              feature: 'processor',
+              implementation: 'native',
+              module: 'destination',
+              destinationId: 'default-destinationId',
+              workspaceId: 'default-workspaceId',
+            },
           },
         ],
       },
@@ -104,19 +133,19 @@ export const validationTestData: ProcessorTestData[] = [
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
-            destination,
             message: {
               context: {},
               type: 'identify',
-              sentAt,
-              originalTimestamp,
+              sentAt: '2020-08-28T16:26:16.473Z',
+              originalTimestamp: '2020-08-28T16:26:06.468Z',
             },
-            metadata: generateMetadata(1),
+            metadata: baseMetadata,
+            destination: baseDestination,
           },
         ],
-        method: 'POST',
       },
     },
     output: {
@@ -124,10 +153,19 @@ export const validationTestData: ProcessorTestData[] = [
         status: 200,
         body: [
           {
+            metadata: baseMetadata,
             statusCode: 400,
             error: 'userId or email is mandatory for this request',
-            statTags: expectedStatTags,
-            metadata: generateMetadata(1),
+            statTags: {
+              destType: 'ITERABLE',
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              feature: 'processor',
+              implementation: 'native',
+              module: 'destination',
+              destinationId: 'default-destinationId',
+              workspaceId: 'default-workspaceId',
+            },
           },
         ],
       },
@@ -145,19 +183,19 @@ export const validationTestData: ProcessorTestData[] = [
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
-            destination,
             message: {
               context: {},
               type: 'group',
-              sentAt,
-              originalTimestamp,
+              sentAt: '2020-08-28T16:26:16.473Z',
+              originalTimestamp: '2020-08-28T16:26:06.468Z',
             },
-            metadata: generateMetadata(1),
+            metadata: baseMetadata,
+            destination: baseDestination,
           },
         ],
-        method: 'POST',
       },
     },
     output: {
@@ -165,10 +203,19 @@ export const validationTestData: ProcessorTestData[] = [
         status: 200,
         body: [
           {
+            metadata: baseMetadata,
             statusCode: 400,
             error: 'Message type group not supported',
-            statTags: expectedStatTags,
-            metadata: generateMetadata(1),
+            statTags: {
+              destType: 'ITERABLE',
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              feature: 'processor',
+              implementation: 'native',
+              module: 'destination',
+              destinationId: 'default-destinationId',
+              workspaceId: 'default-workspaceId',
+            },
           },
         ],
       },
@@ -186,20 +233,24 @@ export const validationTestData: ProcessorTestData[] = [
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
-            destination,
             message: {
               context: {},
               type: 'alias',
-              properties,
-              sentAt,
-              originalTimestamp,
+              properties: {
+                url: 'https://dominos.com',
+                title: 'Pizza',
+                referrer: 'https://google.com',
+              },
+              sentAt: '2020-08-28T16:26:16.473Z',
+              originalTimestamp: '2020-08-28T16:26:06.468Z',
             },
-            metadata: generateMetadata(1),
+            metadata: baseMetadata,
+            destination: baseDestination,
           },
         ],
-        method: 'POST',
       },
     },
     output: {
@@ -207,10 +258,19 @@ export const validationTestData: ProcessorTestData[] = [
         status: 200,
         body: [
           {
+            metadata: baseMetadata,
             statusCode: 400,
             error: 'Missing required value from "previousId"',
-            statTags: expectedStatTags,
-            metadata: generateMetadata(1),
+            statTags: {
+              destType: 'ITERABLE',
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              feature: 'processor',
+              implementation: 'native',
+              module: 'destination',
+              destinationId: 'default-destinationId',
+              workspaceId: 'default-workspaceId',
+            },
           },
         ],
       },
@@ -228,22 +288,26 @@ export const validationTestData: ProcessorTestData[] = [
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
-            destination,
             message: {
               context: {},
               type: 'alias',
               previousId: 'old@email.com',
               anonymousId: 'anonId',
-              properties,
-              sentAt,
-              originalTimestamp,
+              properties: {
+                url: 'https://dominos.com',
+                title: 'Pizza',
+                referrer: 'https://google.com',
+              },
+              sentAt: '2020-08-28T16:26:16.473Z',
+              originalTimestamp: '2020-08-28T16:26:06.468Z',
             },
-            metadata: generateMetadata(1),
+            metadata: baseMetadata,
+            destination: baseDestination,
           },
         ],
-        method: 'POST',
       },
     },
     output: {
@@ -251,10 +315,19 @@ export const validationTestData: ProcessorTestData[] = [
         status: 200,
         body: [
           {
+            metadata: baseMetadata,
             statusCode: 400,
             error: 'Missing required value from "userId"',
-            statTags: expectedStatTags,
-            metadata: generateMetadata(1),
+            statTags: {
+              destType: 'ITERABLE',
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              feature: 'processor',
+              implementation: 'native',
+              module: 'destination',
+              destinationId: 'default-destinationId',
+              workspaceId: 'default-workspaceId',
+            },
           },
         ],
       },

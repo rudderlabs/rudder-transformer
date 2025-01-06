@@ -483,6 +483,7 @@ const batchUpdateUserEvents = (updateUserEvents, registerDeviceOrBrowserTokenEve
 
 /**
  * Processes chunks of catalog events, extracts the necessary data, and prepares batched requests for further processing
+ * ref : https://api.iterable.com/api/docs#catalogs_bulkUpdateCatalogItems
  * @param {*} catalogEventsChunks
  * @returns
  */
@@ -600,12 +601,12 @@ const batchTrackEvents = (trackEvents) => {
  */
 const prepareBatchRequests = (filteredEvents) => {
   const {
-    trackEvents,
-    catalogEvents,
-    errorRespList,
-    updateUserEvents,
-    eventResponseList,
-    registerDeviceOrBrowserTokenEvents,
+    trackEvents, // track
+    catalogEvents, // identify
+    errorRespList, // track
+    updateUserEvents, // identify
+    eventResponseList, // track
+    registerDeviceOrBrowserTokenEvents, // identify
   } = filteredEvents;
 
   const updateUserBatchedResponseList =

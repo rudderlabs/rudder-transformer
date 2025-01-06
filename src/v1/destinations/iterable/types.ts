@@ -39,7 +39,7 @@ type IterableBulkRequestBody = {
 
 export type IterableBulkProxyInput = {
   destinationResponse: IterableBulkApiResponse;
-  rudderJobMetadata: ProxyMetdata;
+  rudderJobMetadata: ProxyMetdata[];
   destType: string;
   destinationRequest?: {
     body: {

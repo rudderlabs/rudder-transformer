@@ -1,7 +1,0 @@
-[
-  {
-    "destKey": "event",
-    "sourceKeys": ["traits.action", "context.traits.action"],
-    "required": false
-  }
-]

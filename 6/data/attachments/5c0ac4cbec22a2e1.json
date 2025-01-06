@@ -1,0 +1,66 @@
+{
+  "body": [
+    {
+      "destination": {
+        "ID": "123",
+        "Name": "klaviyo",
+        "DestinationDefinition": {
+          "ID": "123",
+          "Name": "klaviyo",
+          "DisplayName": "klaviyo",
+          "Config": {}
+        },
+        "Config": {
+          "publicApiKey": "dummyPublicApiKey",
+          "privateApiKey": "dummyPrivateApiKey"
+        },
+        "Enabled": true,
+        "WorkspaceID": "123",
+        "Transformations": []
+      },
+      "message": {
+        "type": "track",
+        "sentAt": "2021-01-25T16:12:02.048Z",
+        "userId": "sajal12",
+        "event": "TestEven002",
+        "properties": {
+          "PreviouslVicePresident": true,
+          "YearElected": 1801,
+          "VicePresidents": [
+            "AaronBurr",
+            "GeorgeClinton"
+          ],
+          "revenue": 3000
+        },
+        "rudderId": "0du4i18w5wwi8dyc47h8xsie700l190b65je",
+        "messageId": "32z56kwyekx7hsxc3lwhrdvpwgbm3fbug8hv",
+        "context": {
+          "traits": {
+            "id": "user@1",
+            "age": "22",
+            "anonymousId": "9c6bd77ea9da3e68",
+            "name": "Test",
+            "email": "test@rudderstack.com",
+            "phone": "9112340375",
+            "description": "Sample description"
+          }
+        },
+        "anonymousId": "9c6bd77ea9da3e68",
+        "originalTimestamp": "2021-01-25T15:32:56.409Z"
+      },
+      "metadata": {
+        "jobId": 2,
+        "attemptNum": 1,
+        "userId": "default-userId",
+        "sourceId": "default-sourceId",
+        "destinationId": "default-destinationId",
+        "workspaceId": "default-workspaceId",
+        "secret": {
+          "accessToken": "default-accessToken"
+        },
+        "dontBatch": false
+      }
+    }
+  ],
+  "method": "POST"
+}

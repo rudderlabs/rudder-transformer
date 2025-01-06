@@ -1,7 +1,0 @@
-title: Source Transformation Output
-type: object
-properties:
-  batch:
-    type: array
-    items:
-      $ref: './rudderMessage.yaml'

@@ -1,5 +1,0 @@
-title: User Transformation Library
-type: object
-properties:
-  VersionID:
-    type: string

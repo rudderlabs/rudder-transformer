@@ -1,9 +1,0 @@
-{
-  "revenue": "properties.revenue",
-  "currency": "properties.currency",
-  "name": "properties.name",
-  "products": "properties.products.sub.product_id",
-  "category": "properties.category",
-  "query": "properties.query",
-  "quantity": "properties.quantity"
-}

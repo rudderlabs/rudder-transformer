@@ -1,8 +1,0 @@
-[
-  {
-    "destKey": "group_id",
-    "sourceKeys": "groupId",
-    "sourceFromGenericMap": true,
-    "required": false
-  }
-]

@@ -1,7 +1,0 @@
-[
-  {
-    "sourceKeys": "userId",
-    "destKey": "id",
-    "sourceFromGenericMap": true
-  }
-]

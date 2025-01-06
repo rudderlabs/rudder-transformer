@@ -69,7 +69,13 @@ jobs:
           # Wait a moment for gh-pages to update
           sleep 10
           
-          # Checkout gh-pages to get latest report number
+          # Create a temporary directory for gh-pages checkout
+          mkdir temp_gh_pages
+          cd temp_gh_pages
+          
+          # Initialize git and fetch gh-pages
+          git init
+          git remote add origin https://github.com/rudderlabs/rudder-transformer.git
           git fetch origin gh-pages
           git checkout gh-pages
           
@@ -77,8 +83,9 @@ jobs:
           LATEST_NUM=$(find . -maxdepth 1 -type d -name "[0-9]*" | sort -n | tail -1 | sed 's/\.\///')
           echo "number=${LATEST_NUM}" >> $GITHUB_OUTPUT
           
-          # Return to previous branch
-          git checkout -
+          # Cleanup
+          cd ..
+          rm -rf temp_gh_pages
 
       - name: Add Test Report Link as Comment on PR
         uses: actions/github-script@v7

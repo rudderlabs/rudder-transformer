@@ -63,10 +63,9 @@ const getAnonymousIdFromAttributes = (event) => {
  * @param {Object} message
  * @returns {String} cart_token
  */
-const getCartToken = (message) => {
-  const { event, properties, context } = message;
-  if (SERVERSIDE_STITCHED_EVENTS.includes(event)) {
-    return context?.cart_token || properties?.cart_token || null;
+const getCartToken = (event, message) => {
+  if (SERVERSIDE_STITCHED_EVENTS.includes(message?.event) || (message?.event) === 'Cart Update') {
+    return event.cart_token || null;
   }
   return null;
 };

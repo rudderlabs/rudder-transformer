@@ -812,6 +812,7 @@ export const data: RouterTestData[] = [
     input: {
       request: {
         body: routerRequest1,
+        method: 'POST',
       },
     },
     output: {
@@ -993,6 +994,7 @@ export const data: RouterTestData[] = [
     input: {
       request: {
         body: routerRequest2,
+        method: 'POST',
       },
     },
     output: {
@@ -1212,6 +1214,7 @@ export const data: RouterTestData[] = [
     input: {
       request: {
         body: routerRequest4,
+        method: 'POST',
       },
     },
     output: {

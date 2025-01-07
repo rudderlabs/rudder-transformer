@@ -89,6 +89,7 @@ export const configLevelFeaturesTestData: ProcessorTestData[] = [
             destination: overrideDestination(commonDestination, { hashData: false }),
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -164,6 +165,7 @@ export const configLevelFeaturesTestData: ProcessorTestData[] = [
             }),
           },
         ],
+        method: 'POST',
       },
     },
     output: {

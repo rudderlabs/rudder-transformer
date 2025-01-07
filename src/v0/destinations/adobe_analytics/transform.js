@@ -340,7 +340,9 @@ const processTrackEvent = (message, adobeEventName, destinationConfig, extras = 
   return {
     ...extras,
     events: overrideEventString || adobeEventArr.join(','),
-    products: overrideProductString || prodString,
+    products:
+      overrideProductString ||
+      (Array.isArray(prodString) && prodString.length > 0 ? prodString : undefined),
   };
 };
 

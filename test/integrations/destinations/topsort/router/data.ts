@@ -97,6 +97,7 @@ export const data: RouterTestData[] = [
           ],
           destType: 'topsort',
         },
+        method: 'POST',
       },
     },
     output: {
@@ -228,6 +229,7 @@ export const data: RouterTestData[] = [
           ],
           destType: 'topsort',
         },
+        method: 'POST',
       },
     },
     output: {
@@ -353,6 +355,7 @@ export const data: RouterTestData[] = [
           ],
           destType: 'topsort',
         },
+        method: 'POST',
       },
     },
     output: {

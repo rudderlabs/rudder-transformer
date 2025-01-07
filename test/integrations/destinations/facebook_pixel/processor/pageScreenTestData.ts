@@ -148,6 +148,7 @@ export const pageScreenTestData: ProcessorTestData[] = [
             destination: commonDestination,
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -228,6 +229,7 @@ export const pageScreenTestData: ProcessorTestData[] = [
             destination: overrideDestination(commonDestination, { standardPageCall: true }),
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -288,6 +290,7 @@ export const pageScreenTestData: ProcessorTestData[] = [
             destination: overrideDestination(commonDestination, { standardPageCall: true }),
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -371,6 +374,7 @@ export const pageScreenTestData: ProcessorTestData[] = [
             destination: commonDestination,
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -455,6 +459,7 @@ export const pageScreenTestData: ProcessorTestData[] = [
             destination: commonDestination,
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -532,6 +537,7 @@ export const pageScreenTestData: ProcessorTestData[] = [
             destination: overrideDestination(commonDestination, { standardPageCall: true }),
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -590,6 +596,7 @@ export const pageScreenTestData: ProcessorTestData[] = [
             destination: overrideDestination(commonDestination, { standardPageCall: true }),
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -673,6 +680,7 @@ export const pageScreenTestData: ProcessorTestData[] = [
             destination: commonDestination,
           },
         ],
+        method: 'POST',
       },
     },
     output: {

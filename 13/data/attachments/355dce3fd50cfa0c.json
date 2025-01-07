@@ -1,0 +1,102 @@
+{
+  "method": "POST",
+  "body": [
+    {
+      "message": {
+        "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+        "context": {
+          "device": {
+            "id": "df16bffa-5c3d-4fbb-9bce-3bab098129a7R",
+            "manufacturer": "Xiaomi",
+            "model": "Redmi 6",
+            "name": "xiaomi"
+          },
+          "network": {
+            "carrier": "Banglalink"
+          },
+          "os": {
+            "name": "android",
+            "version": "8.1.0"
+          },
+          "traits": {
+            "email": "jamesDoe@gmail.com",
+            "address": {
+              "city": "Dhaka",
+              "country": "Bangladesh"
+            },
+            "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1"
+          }
+        },
+        "event": "Tracking Action",
+        "integrations": {
+          "All": true
+        },
+        "message_id": "a80f82be-9bdc-4a9f-b2a5-15621ee41df8",
+        "properties": {
+          "name": "Rudder_Event_Track_Test"
+        },
+        "userId": "test_user_id",
+        "timestamp": "2019-09-01T15:46:51.693Z",
+        "originalTimestamp": "2019-09-01T15:46:51.693Z",
+        "type": "track"
+      },
+      "metadata": {
+        "sourceId": "default-source",
+        "workspaceId": "default-workspace",
+        "namespace": "default-namespace",
+        "instanceId": "default-instance",
+        "sourceType": "default-source-type",
+        "sourceCategory": "default-category",
+        "trackingPlanId": "default-tracking-plan",
+        "trackingPlanVersion": 1,
+        "sourceTpConfig": {},
+        "mergedTpConfig": {},
+        "destinationId": "default-destination",
+        "jobRunId": "default-job-run",
+        "jobId": 1,
+        "sourceBatchId": "default-batch",
+        "sourceJobId": "default-source-job",
+        "sourceJobRunId": "default-source-job-run",
+        "sourceTaskId": "default-task",
+        "sourceTaskRunId": "default-task-run",
+        "recordId": {},
+        "destinationType": "default-destination-type",
+        "messageId": "default-message-id",
+        "oauthAccessToken": "default-token",
+        "messageIds": [
+          "default-message-id"
+        ],
+        "rudderId": "default-rudder-id",
+        "receivedAt": "2024-12-10T06:45:09.572Z",
+        "eventName": "default-event",
+        "eventType": "default-type",
+        "sourceDefinitionId": "default-source-def",
+        "destinationDefinitionId": "default-dest-def",
+        "transformationId": "default-transform",
+        "dontBatch": false
+      },
+      "destination": {
+        "ID": "default-destination-id",
+        "Name": "Default Destination",
+        "DestinationDefinition": {
+          "ID": "default-dest-def-id",
+          "Name": "Default Destination Definition",
+          "DisplayName": "Default Display Name",
+          "Config": {}
+        },
+        "Config": {
+          "apiKey": "dummyApiKey",
+          "apiUrl": "https://active.campaigns.rudder.com",
+          "actid": "476550467",
+          "eventKey": "f8a866fddc721350fdc2fbbd2e5c43a6dddaaa03"
+        },
+        "Enabled": true,
+        "WorkspaceID": "default-workspace",
+        "Transformations": [],
+        "RevisionID": "default-revision",
+        "IsProcessorEnabled": true,
+        "IsConnectionEnabled": true
+      }
+    }
+  ]
+}

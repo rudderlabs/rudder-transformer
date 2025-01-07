@@ -1,0 +1,87 @@
+{
+  "body": [
+    {
+      "destination": {
+        "ID": "123",
+        "Name": "klaviyo",
+        "DestinationDefinition": {
+          "ID": "123",
+          "Name": "klaviyo",
+          "DisplayName": "klaviyo",
+          "Config": {}
+        },
+        "Config": {
+          "publicApiKey": "dummyPublicApiKey",
+          "privateApiKey": "dummyPrivateApiKey",
+          "flattenProperties": true
+        },
+        "Enabled": true,
+        "WorkspaceID": "123",
+        "Transformations": []
+      },
+      "message": {
+        "type": "track",
+        "event": "checkout started",
+        "sentAt": "2021-01-25T16:12:02.048Z",
+        "userId": "sajal12",
+        "channel": "mobile",
+        "context": {
+          "traits": {
+            "id": "user@1",
+            "age": "22",
+            "name": "Test",
+            "email": "test@rudderstack.com",
+            "phone": "9112340375",
+            "anonymousId": "9c6bd77ea9da3e68",
+            "description": "Sample description"
+          }
+        },
+        "properties": {
+          "order_id": "1234",
+          "affiliation": "Apple Store",
+          "value": 20,
+          "revenue": 15,
+          "shipping": 4,
+          "tax": 1,
+          "discount": 1.5,
+          "coupon": "ImagePro",
+          "currency": "USD",
+          "products": [
+            {
+              "product_id": "123",
+              "sku": "G-32",
+              "name": "Monopoly",
+              "price": 14,
+              "quantity": 1,
+              "category": "Games",
+              "url": "https://www.website.com/product/path",
+              "image_url": "https://www.website.com/product/path.jpg"
+            },
+            {
+              "product_id": "345",
+              "sku": "F-32",
+              "name": "UNO",
+              "price": 3.45,
+              "quantity": 2,
+              "category": "Games"
+            }
+          ]
+        },
+        "anonymousId": "9c6bd77ea9da3e68"
+      },
+      "metadata": {
+        "jobId": 2,
+        "attemptNum": 1,
+        "userId": "default-userId",
+        "sourceId": "default-sourceId",
+        "destinationId": "default-destinationId",
+        "workspaceId": "default-workspaceId",
+        "secret": {
+          "accessToken": "default-accessToken"
+        },
+        "dontBatch": false
+      }
+    }
+  ],
+  "method": "POST"
+}

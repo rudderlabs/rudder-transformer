@@ -1,0 +1,73 @@
+[
+  {
+    "output": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://dfareporting.googleapis.com/dfareporting/v4/userprofiles/34245/conversions/batchupdate",
+      "headers": {
+        "Authorization": "Bearer dummyApiToken",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "kind": "dfareporting#conversionsBatchUpdateRequest",
+          "encryptionInfo": {
+            "encryptionEntityType": "DCM_ACCOUNT",
+            "encryptionSource": "AD_SERVING",
+            "encryptionEntityId": "3564523",
+            "kind": "dfareporting#encryptionInfo"
+          },
+          "conversions": [
+            {
+              "floodlightConfigurationId": "213123123",
+              "ordinal": "string",
+              "timestampMicros": "1668624722903000",
+              "floodlightActivityId": "456543345245",
+              "quantity": "455678",
+              "value": 756,
+              "encryptedUserIdCandidates": [
+                "dfghjbnm"
+              ],
+              "nonPersonalizedAd": false,
+              "treatmentForUnderage": false,
+              "userIdentifiers": [
+                {
+                  "hashedEmail": "6db61e6dcbcf2390e4a46af426f26a133a3bee45021422fc7ae86e9136f14110"
+                },
+                {
+                  "hashedPhoneNumber": "ec7e6b85f24fa6b796f1017236463f1b7160fbdc5e663e39ab363b6d6fe30b9f"
+                },
+                {
+                  "addressInfo": {
+                    "hashedFirstName": "96d9632f363564cc3032521409cf22a852f2032eec099ed5967c0d000cec607a",
+                    "hashedLastName": "12918b23d69d698324a78a8ab8f5060fdb25537ea9620f956d39adca151c3ef9",
+                    "hashedStreetAddress": "5c100d86e9f40bb62a85ca821ff93d96aff6b0dc4c792794c4a4d51ec9246eff",
+                    "city": "London",
+                    "state": "England",
+                    "countryCode": "GB",
+                    "postalCode": "EC3M"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": ""
+    },
+    "metadata": {
+      "secret": {
+        "access_token": "dummyApiToken",
+        "refresh_token": "efgh5678",
+        "developer_token": "ijkl91011"
+      }
+    },
+    "statusCode": 200
+  }
+]

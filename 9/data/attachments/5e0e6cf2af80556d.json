@@ -1,0 +1,70 @@
+{
+  "body": [
+    {
+      "destination": {
+        "ID": "123",
+        "Name": "klaviyo",
+        "DestinationDefinition": {
+          "ID": "123",
+          "Name": "klaviyo",
+          "DisplayName": "klaviyo",
+          "Config": {}
+        },
+        "Config": {
+          "publicApiKey": "dummyPublicApiKey",
+          "privateApiKey": "dummyPrivateApiKey",
+          "enforceEmailAsPrimary": true
+        },
+        "Enabled": true,
+        "WorkspaceID": "123",
+        "Transformations": []
+      },
+      "message": {
+        "type": "identify",
+        "sentAt": "2021-01-03T17:02:53.195Z",
+        "userId": "user@1",
+        "rudderId": "ad3ze2ugk6rzga29ap937j2yqtj5st3lz3dw",
+        "messageId": "v07y6pc3x6mybsz0ul9t6xkw3e9frgouc48g",
+        "context": {
+          "traits": {
+            "firstName": "Test",
+            "lastName": "Rudderlabs",
+            "userId": "user@1",
+            "title": "Developer",
+            "organization": "Rudder",
+            "city": "Tokyo",
+            "region": "Kanto",
+            "country": "JP",
+            "zip": "100-0001",
+            "Flagged": false,
+            "Residence": "Shibuya",
+            "properties": {
+              "listId": "XUepkK",
+              "subscribe": true,
+              "consent": [
+                "email",
+                "sms"
+              ]
+            },
+            "street": "63, Shibuya"
+          }
+        },
+        "anonymousId": "97c46c81-3140-456d-b2a9-690d70aaca35",
+        "originalTimestamp": "2021-01-03T17:02:53.193Z"
+      },
+      "metadata": {
+        "jobId": 7,
+        "attemptNum": 1,
+        "userId": "default-userId",
+        "sourceId": "default-sourceId",
+        "destinationId": "default-destinationId",
+        "workspaceId": "default-workspaceId",
+        "secret": {
+          "accessToken": "default-accessToken"
+        },
+        "dontBatch": false
+      }
+    }
+  ],
+  "method": "POST"
+}

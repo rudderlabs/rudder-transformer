@@ -22,7 +22,7 @@ const {
   getProductsFromLineItems,
   getAnonymousIdFromAttributes,
 } = require('./serverSideUtlis');
-const { getCartToken } = require('../../../../v0/sources/shopify/util');
+const { getCartToken } = require('./serverSideUtlis');
 
 const NO_OPERATION_SUCCESS = {
   outputToSource: {

@@ -1,6 +1,10 @@
 const { isDefinedAndNotNull } = require('@rudderstack/integrations-lib');
 const { constructPayload } = require('../../../../v0/util');
-const { lineItemsMappingJSON, productMappingJSON } = require('../config');
+const {
+  lineItemsMappingJSON,
+  productMappingJSON,
+  SERVERSIDE_STITCHED_EVENTS,
+} = require('../config');
 
 /**
  * Returns an array of products from the lineItems array received from the webhook event
@@ -54,8 +58,22 @@ const getAnonymousIdFromAttributes = (event) => {
   return rudderAnonymousIdObject ? rudderAnonymousIdObject.value : null;
 };
 
+/**
+ * Returns the cart_token from the event message
+ * @param {Object} message
+ * @returns {String} cart_token
+ */
+const getCartToken = (message) => {
+  const { event, properties, context } = message;
+  if (SERVERSIDE_STITCHED_EVENTS.includes(event)) {
+    return context?.cart_token || properties?.cart_token || null;
+  }
+  return null;
+};
+
 module.exports = {
   createPropertiesForEcomEventFromWebhook,
   getProductsFromLineItems,
   getAnonymousIdFromAttributes,
+  getCartToken,
 };

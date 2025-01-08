@@ -1,0 +1,35 @@
+{
+  "output": {
+    "response": [
+      {
+        "error": "The authorization token has expired during criteo_audience response transformation",
+        "statusCode": 401,
+        "metadata": {
+          "jobId": 1,
+          "attemptNum": 1,
+          "userId": "default-userId",
+          "sourceId": "default-sourceId",
+          "destinationId": "default-destinationId",
+          "workspaceId": "default-workspaceId",
+          "secret": {
+            "accessToken": "default-accessToken"
+          },
+          "dontBatch": false
+        }
+      }
+    ],
+    "statTags": {
+      "errorCategory": "network",
+      "errorType": "aborted",
+      "destType": "CRITEO_AUDIENCE",
+      "module": "destination",
+      "implementation": "native",
+      "feature": "dataDelivery",
+      "destinationId": "default-destinationId",
+      "workspaceId": "default-workspaceId"
+    },
+    "message": "The authorization token has expired during criteo_audience response transformation",
+    "status": 401,
+    "authErrorCategory": "REFRESH_TOKEN"
+  }
+}

@@ -1,0 +1,82 @@
+[
+  {
+    "output": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://active.campaigns.rudder.com/api/3/contact/sync",
+      "headers": {
+        "Content-Type": "application/json",
+        "Api-Token": "dummyApiKey"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "contact": {
+            "email": "jamesDoe@gmail.com",
+            "phone": "92374162212",
+            "fieldValues": [
+              {
+                "field": "0",
+                "value": "Trastkiv"
+              },
+              {
+                "field": "1",
+                "value": "Russia"
+              },
+              {
+                "field": "3",
+                "value": "||Potato||Onion||"
+              },
+              {
+                "field": "4",
+                "value": "random"
+              }
+            ]
+          }
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": ""
+    },
+    "metadata": {
+      "sourceId": "default-source",
+      "workspaceId": "default-workspace",
+      "namespace": "default-namespace",
+      "instanceId": "default-instance",
+      "sourceType": "default-source-type",
+      "sourceCategory": "default-category",
+      "trackingPlanId": "default-tracking-plan",
+      "trackingPlanVersion": 1,
+      "sourceTpConfig": {},
+      "mergedTpConfig": {},
+      "destinationId": "default-destination",
+      "jobRunId": "default-job-run",
+      "jobId": 1,
+      "sourceBatchId": "default-batch",
+      "sourceJobId": "default-source-job",
+      "sourceJobRunId": "default-source-job-run",
+      "sourceTaskId": "default-task",
+      "sourceTaskRunId": "default-task-run",
+      "recordId": {},
+      "destinationType": "default-destination-type",
+      "messageId": "default-message-id",
+      "oauthAccessToken": "default-token",
+      "messageIds": [
+        "default-message-id"
+      ],
+      "rudderId": "default-rudder-id",
+      "receivedAt": "2024-12-10T06:45:09.572Z",
+      "eventName": "default-event",
+      "eventType": "default-type",
+      "sourceDefinitionId": "default-source-def",
+      "destinationDefinitionId": "default-dest-def",
+      "transformationId": "default-transform",
+      "dontBatch": false
+    },
+    "statusCode": 200
+  }
+]

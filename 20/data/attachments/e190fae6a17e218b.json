@@ -1,0 +1,62 @@
+{
+  "body": [
+    {
+      "destination": {
+        "ID": "123",
+        "Name": "klaviyo",
+        "DestinationDefinition": {
+          "ID": "123",
+          "Name": "klaviyo",
+          "DisplayName": "klaviyo",
+          "Config": {}
+        },
+        "Config": {
+          "publicApiKey": "dummyPublicApiKey",
+          "privateApiKey": "dummyPrivateApiKey"
+        },
+        "Enabled": true,
+        "WorkspaceID": "123",
+        "Transformations": []
+      },
+      "message": {
+        "channel": "web",
+        "userId": "sajal12",
+        "type": "screen",
+        "event": "TestEven001",
+        "properties": {
+          "PreviouslyVicePresident": true,
+          "YearElected": 1801,
+          "VicePresidents": [
+            "Aaron Burr",
+            "George Clinton"
+          ]
+        },
+        "rudderId": "sp7t8k2kts86w48d0pe5dv1x6d6yh3hcpxr9",
+        "context": {
+          "traits": {
+            "id": "user@1",
+            "age": "22",
+            "email": "test@rudderstack.com",
+            "phone": "9112340375",
+            "anonymousId": "9c6bd77ea9da3e68"
+          }
+        },
+        "anonymousId": "9c6bd77ea9da3e68",
+        "originalTimestamp": "2021-01-25T15:32:56.409Z"
+      },
+      "metadata": {
+        "jobId": 1,
+        "attemptNum": 1,
+        "userId": "default-userId",
+        "sourceId": "default-sourceId",
+        "destinationId": "default-destinationId",
+        "workspaceId": "default-workspaceId",
+        "secret": {
+          "accessToken": "default-accessToken"
+        },
+        "dontBatch": false
+      }
+    }
+  ],
+  "method": "POST"
+}

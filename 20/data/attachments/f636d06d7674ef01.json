@@ -1,0 +1,79 @@
+{
+  "body": [
+    {
+      "destination": {
+        "ID": "123",
+        "Name": "klaviyo",
+        "DestinationDefinition": {
+          "ID": "123",
+          "Name": "klaviyo",
+          "DisplayName": "klaviyo",
+          "Config": {}
+        },
+        "Config": {
+          "publicApiKey": "dummyPublicApiKey",
+          "privateApiKey": "dummyPrivateApiKey",
+          "flattenProperties": true
+        },
+        "Enabled": true,
+        "WorkspaceID": "123",
+        "Transformations": []
+      },
+      "message": {
+        "type": "identify",
+        "sentAt": "2021-01-03T17:02:53.195Z",
+        "userId": "user@1",
+        "rudderId": "8di0oi0wcu9nuuehi3n6g77zdvdponoyh496",
+        "messageId": "526qdvprt74gttf733k5mbkdmlzl78cirko9",
+        "context": {
+          "traits": {
+            "firstName": "Test",
+            "lastName": "Rudderlabs",
+            "email": "test@rudderstack.com",
+            "phone": "+12 345 578 900",
+            "userId": "user@1",
+            "title": "Developer",
+            "organization": "Rudder",
+            "city": "Tokyo",
+            "region": "Kanto",
+            "country": "JP",
+            "zip": "100-0001",
+            "Flagged": false,
+            "Residence": "Shibuya",
+            "properties": {
+              "listId": "XUepkK",
+              "subscribe": true,
+              "consent": [
+                "email",
+                "sms"
+              ]
+            },
+            "street": "63, Shibuya",
+            "friend": {
+              "names": {
+                "first": "Alice",
+                "last": "Smith"
+              },
+              "age": 25
+            }
+          }
+        },
+        "anonymousId": "97c46c81-3140-456d-b2a9-690d70aaca35",
+        "originalTimestamp": "2021-01-03T17:02:53.193Z"
+      },
+      "metadata": {
+        "jobId": 2,
+        "attemptNum": 1,
+        "userId": "default-userId",
+        "sourceId": "default-sourceId",
+        "destinationId": "default-destinationId",
+        "workspaceId": "default-workspaceId",
+        "secret": {
+          "accessToken": "default-accessToken"
+        },
+        "dontBatch": false
+      }
+    }
+  ],
+  "method": "POST"
+}

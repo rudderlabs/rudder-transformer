@@ -7,7 +7,7 @@ const {
 } = require('@rudderstack/integrations-lib');
 const { EventType, MappedToDestinationKey } = require('../../../constants');
 const {
-  SF_API_VERSION,
+  // SF_API_VERSION,
   identifyLeadMappingJson,
   identifyContactMappingJson,
   ignoredLeadTraits,
@@ -15,8 +15,8 @@ const {
 } = require('./config');
 const {
   removeUndefinedValues,
-  defaultRequestConfig,
-  defaultPostRequestConfig,
+  // defaultRequestConfig,
+  // defaultPostRequestConfig,
   getFieldValueFromMessage,
   constructPayload,
   getFirstAndLastName,
@@ -27,9 +27,12 @@ const {
   generateErrorObject,
   isHttpStatusSuccess,
 } = require('../../util');
-const { salesforceResponseHandler, collectAuthorizationInfo, getAuthHeader } = require('./utils');
-const { handleHttpRequest } = require('../../../adapters/network');
-const { JSON_MIME_TYPE } = require('../../util/constant');
+const { salesforceResponseHandler, collectAuthorizationInfo, 
+  // getAuthHeader 
+} = require('./utils');
+// const { handleHttpRequest } = require('../../../adapters/network');
+// const { JSON_MIME_TYPE } = require('../../util/constant');
+const { processAxiosResponse } = require('../../../adapters/utils/networkUtils');
 
 // Basic response builder
 // We pass the parameterMap with any processing-specific key-value pre-populated
@@ -38,19 +41,20 @@ const { JSON_MIME_TYPE } = require('../../util/constant');
 function responseBuilderSimple(
   traits,
   salesforceMap,
-  authorizationData,
+  salesforceInstance,
   mapProperty,
   mappedToDestination,
-  authorizationFlow,
+  // authorizationFlow,
 ) {
+  let response;
   const { salesforceType, salesforceId } = salesforceMap;
 
   // if id is valid, do update else create the object
   // POST for create, PATCH for update
-  let targetEndpoint = `${authorizationData.instanceUrl}/services/data/v${SF_API_VERSION}/sobjects/${salesforceType}`;
-  if (salesforceId) {
-    targetEndpoint += `/${salesforceId}?_HttpMethod=PATCH`;
-  }
+  // let targetEndpoint = `${authorizationData.instanceUrl}/services/data/v${SF_API_VERSION}/sobjects/${salesforceType}`;
+  // if (salesforceId) {
+  //   targetEndpoint += `/${salesforceId}?_HttpMethod=PATCH`;
+  // }
 
   // First name and last name need to be extracted from the name field
   // get traits from the message
@@ -87,44 +91,37 @@ function responseBuilderSimple(
     delete rawPayload.Id;
   }
 
-  const response = defaultRequestConfig();
+  // const response = defaultRequestConfig();
 
-  response.method = defaultPostRequestConfig.requestMethod;
-  response.headers = {
-    'Content-Type': JSON_MIME_TYPE,
-    ...getAuthHeader({ authorizationFlow, authorizationData }),
-  };
-  response.body.JSON = removeUndefinedValues(rawPayload);
-  response.endpoint = targetEndpoint;
+  // response.method = defaultPostRequestConfig.requestMethod;
+  // response.headers = {
+  //   'Content-Type': JSON_MIME_TYPE,
+  //   ...getAuthHeader({ authorizationFlow, authorizationData }),
+  // };
+  // response.body.JSON = removeUndefinedValues(rawPayload);
+  // response.endpoint = targetEndpoint;
 
+  if(salesforceId) {
+     response = await salesforceInstance.create(salesforceType,removeUndefinedValues(rawPayload),salesforceId);
+  }
+
+  response = await salesforceInstance.create(salesforceType,removeUndefinedValues(rawPayload),null);
   return response;
 }
 
 // Look up to salesforce using details passed as external id through payload
 async function getSaleforceIdForRecord(
-  authorizationData,
+  salesforceInstance,
   objectType,
   identifierType,
   identifierValue,
-  { destination, metadata },
+  { destination },
   authorizationFlow,
 ) {
-  const objSearchUrl = `${authorizationData.instanceUrl}/services/data/v${SF_API_VERSION}/parameterizedSearch/?q=${identifierValue}&sobject=${objectType}&in=${identifierType}&${objectType}.fields=id,${identifierType}`;
-  const { processedResponse: processedsfSearchResponse } = await handleHttpRequest(
-    'get',
-    objSearchUrl,
-    {
-      headers: getAuthHeader({ authorizationFlow, authorizationData }),
-    },
-    {
-      metadata,
-      destType: 'salesforce',
-      feature: 'transformation',
-      endpointPath: '/parameterizedSearch',
-      requestMethod: 'GET',
-      module: 'router',
-    },
-  );
+  // const objSearchUrl = `${authorizationData.instanceUrl}/services/data/v${SF_API_VERSION}/parameterizedSearch/?q=${identifierValue}&sobject=${objectType}&in=${identifierType}&${objectType}.fields=id,${identifierType}`;
+  const sfSearchResponse = salesforceInstance.search(objectType, identifierValue, identifierType);
+
+  const processedsfSearchResponse = processAxiosResponse(sfSearchResponse);
   if (!isHttpStatusSuccess(processedsfSearchResponse.status)) {
     salesforceResponseHandler(
       processedsfSearchResponse,
@@ -161,7 +158,7 @@ async function getSaleforceIdForRecord(
 // Default Object type will be "Lead" for backward compatibility
 async function getSalesforceIdFromPayload(
   { message, destination, metadata },
-  authorizationData,
+  salesforceInstance,
   authorizationFlow,
 ) {
   // define default map
@@ -201,7 +198,7 @@ async function getSalesforceIdFromPayload(
     // Fetch the salesforce Id if the identifierType is not ID
     if (identifierType.toUpperCase() !== 'ID') {
       salesforceId = await getSaleforceIdForRecord(
-        authorizationData,
+        salesforceInstance,
         objectType,
         identifierType,
         id,
@@ -227,24 +224,16 @@ async function getSalesforceIdFromPayload(
     if (!email) {
       throw new InstrumentationError('Invalid Email address for Lead Objet');
     }
-    const leadQueryUrl = `${authorizationData.instanceUrl}/services/data/v${SF_API_VERSION}/parameterizedSearch/?q=${email}&sobject=Lead&Lead.fields=id,IsConverted,ConvertedContactId,IsDeleted`;
+    // const leadQueryUrl = `${authorizationData.instanceUrl}/services/data/v${SF_API_VERSION}/parameterizedSearch/?q=${email}&sobject=Lead&Lead.fields=id,IsConverted,ConvertedContactId,IsDeleted`;
 
     // request configuration will be conditional
-    const { processedResponse: processedLeadQueryResponse } = await handleHttpRequest(
-      'get',
-      leadQueryUrl,
-      {
-        headers: getAuthHeader({ authorizationFlow, authorizationData }),
-      },
-      {
-        metadata,
-        destType: 'salesforce',
-        feature: 'transformation',
-        endpointPath: '/parameterizedSearch',
-        requestMethod: 'GET',
-        module: 'router',
-      },
+    const leadQueryResponse = salesforceInstance.search(
+      'Lead',
+      email,
+      'IsConverted,ConvertedContactId,IsDeleted',
     );
+
+    const processedLeadQueryResponse = processAxiosResponse(leadQueryResponse);
 
     if (!isHttpStatusSuccess(processedLeadQueryResponse.status)) {
       salesforceResponseHandler(
@@ -290,7 +279,7 @@ async function getSalesforceIdFromPayload(
 // Function for handling identify events
 async function processIdentify(
   { message, destination, metadata },
-  authorizationData,
+  salesforceInstance,
   authorizationFlow,
 ) {
   const { Name } = destination.DestinationDefinition;
@@ -316,7 +305,7 @@ async function processIdentify(
   // get salesforce object map
   const salesforceMaps = await getSalesforceIdFromPayload(
     { message, destination, metadata },
-    authorizationData,
+    salesforceInstance,
     authorizationFlow,
   );
 
@@ -327,10 +316,10 @@ async function processIdentify(
       responseBuilderSimple(
         traits,
         salesforceMap,
-        authorizationData,
+        salesforceInstance,
         mapProperty,
         mappedToDestination,
-        authorizationFlow,
+        // authorizationFlow,
       ),
     );
   });
@@ -342,14 +331,14 @@ async function processIdentify(
 // and event type where applicable
 async function processSingleMessage(
   { message, destination, metadata },
-  authorizationData,
+  salesforceInstance,
   authorizationFlow,
 ) {
   let response;
   if (message.type === EventType.IDENTIFY) {
     response = await processIdentify(
       { message, destination, metadata },
-      authorizationData,
+      salesforceInstance,
       authorizationFlow,
     );
   } else {
@@ -393,7 +382,11 @@ const processRouterDest = async (inputs, reqMetadata) => {
 
         // unprocessed payload
         return getSuccessRespEvents(
-          await processSingleMessage(input, authInfo.authorizationData, authInfo.authorizationFlow),
+          await processSingleMessage(
+            input,
+            authInfo.salesforceInstance,
+            authInfo.authorizationFlow,
+          ),
           [input.metadata],
           input.destination,
         );

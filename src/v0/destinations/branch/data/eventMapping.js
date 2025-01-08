@@ -40,6 +40,7 @@ const CommerceEventConfig = {
     'Spend Credits': 'SPEND_CREDITS',
     'Promotion Viewed': 'VIEW_AD',
     'Promotion Clicked': 'CLICK_AD',
+    Purchase: 'PURCHASE',
     Reserve: 'RESERVE',
   },
   event_data: ['transaction_id', 'currency', 'revenue', 'shipping', 'tax', 'coupon', 'description'],

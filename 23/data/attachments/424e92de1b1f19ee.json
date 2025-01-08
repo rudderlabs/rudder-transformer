@@ -1,0 +1,350 @@
+{
+  "output": [
+    {
+      "batchedRequest": [
+        {
+          "version": "1",
+          "type": "REST",
+          "method": "POST",
+          "endpoint": "https://a.klaviyo.com/api/profile-import",
+          "headers": {
+            "Authorization": "Klaviyo-API-Key dummyPrivateApiKey",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+            "revision": "2024-06-15"
+          },
+          "params": {},
+          "body": {
+            "JSON": {
+              "data": {
+                "type": "profile",
+                "attributes": {
+                  "external_id": "testKlaviyo1",
+                  "anonymous_id": "anonTestKlaviyo1",
+                  "email": "testklaviyo1@rs.com",
+                  "first_name": "Test Klaviyo 1",
+                  "properties": {}
+                },
+                "meta": {
+                  "patch_properties": {}
+                }
+              }
+            },
+            "JSON_ARRAY": {},
+            "XML": {},
+            "FORM": {}
+          },
+          "files": {}
+        },
+        {
+          "version": "1",
+          "type": "REST",
+          "method": "POST",
+          "endpoint": "https://a.klaviyo.com/api/profile-import",
+          "headers": {
+            "Authorization": "Klaviyo-API-Key dummyPrivateApiKey",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+            "revision": "2024-06-15"
+          },
+          "params": {},
+          "body": {
+            "JSON": {
+              "data": {
+                "type": "profile",
+                "attributes": {
+                  "external_id": "testKlaviyo2",
+                  "email": "testklaviyo2@rs.com",
+                  "first_name": "Test Klaviyo 2",
+                  "properties": {}
+                },
+                "meta": {
+                  "patch_properties": {}
+                }
+              }
+            },
+            "JSON_ARRAY": {},
+            "XML": {},
+            "FORM": {}
+          },
+          "files": {}
+        },
+        {
+          "version": "1",
+          "type": "REST",
+          "method": "POST",
+          "endpoint": "https://a.klaviyo.com/api/profile-subscription-bulk-create-jobs",
+          "headers": {
+            "Authorization": "Klaviyo-API-Key dummyPrivateApiKey",
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+            "revision": "2024-06-15"
+          },
+          "params": {},
+          "body": {
+            "JSON": {
+              "data": {
+                "type": "profile-subscription-bulk-create-job",
+                "attributes": {
+                  "profiles": {
+                    "data": [
+                      {
+                        "type": "profile",
+                        "attributes": {
+                          "email": "testklaviyo1@rs.com",
+                          "subscriptions": {
+                            "email": {
+                              "marketing": {
+                                "consent": "SUBSCRIBED"
+                              }
+                            }
+                          }
+                        }
+                      },
+                      {
+                        "type": "profile",
+                        "attributes": {
+                          "email": "testklaviyo2@rs.com",
+                          "subscriptions": {
+                            "email": {
+                              "marketing": {
+                                "consent": "SUBSCRIBED"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  }
+                },
+                "relationships": {
+                  "list": {
+                    "data": {
+                      "type": "list",
+                      "id": "configListId"
+                    }
+                  }
+                }
+              }
+            },
+            "JSON_ARRAY": {},
+            "XML": {},
+            "FORM": {}
+          },
+          "files": {}
+        }
+      ],
+      "metadata": [
+        {
+          "jobId": 1,
+          "attemptNum": 1,
+          "userId": "testKlaviyo1",
+          "sourceId": "default-sourceId",
+          "destinationId": "default-destinationId",
+          "workspaceId": "default-workspaceId",
+          "secret": {
+            "accessToken": "default-accessToken"
+          },
+          "dontBatch": false
+        },
+        {
+          "jobId": 2,
+          "attemptNum": 1,
+          "userId": "testKlaviyo2",
+          "sourceId": "default-sourceId",
+          "destinationId": "default-destinationId",
+          "workspaceId": "default-workspaceId",
+          "secret": {
+            "accessToken": "default-accessToken"
+          },
+          "dontBatch": false
+        }
+      ],
+      "batched": true,
+      "statusCode": 200,
+      "destination": {
+        "ID": "123",
+        "Name": "klaviyo",
+        "DestinationDefinition": {
+          "ID": "123",
+          "Name": "klaviyo",
+          "DisplayName": "klaviyo",
+          "Config": {}
+        },
+        "Config": {
+          "privateApiKey": "dummyPrivateApiKey",
+          "apiVersion": "v2"
+        },
+        "Enabled": true,
+        "WorkspaceID": "123",
+        "Transformations": []
+      }
+    },
+    {
+      "batchedRequest": [
+        {
+          "version": "1",
+          "type": "REST",
+          "method": "POST",
+          "endpoint": "https://a.klaviyo.com/api/profile-import",
+          "headers": {
+            "Authorization": "Klaviyo-API-Key dummyPrivateApiKey",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+            "revision": "2024-06-15"
+          },
+          "params": {},
+          "body": {
+            "JSON": {
+              "data": {
+                "type": "profile",
+                "attributes": {
+                  "external_id": "testKlaviyo3",
+                  "email": "testklaviyo3@rs.com",
+                  "first_name": "Test Klaviyo 3",
+                  "properties": {}
+                },
+                "meta": {
+                  "patch_properties": {}
+                }
+              }
+            },
+            "JSON_ARRAY": {},
+            "XML": {},
+            "FORM": {}
+          },
+          "files": {}
+        },
+        {
+          "version": "1",
+          "type": "REST",
+          "method": "POST",
+          "endpoint": "https://a.klaviyo.com/api/profile-import",
+          "headers": {
+            "Authorization": "Klaviyo-API-Key dummyPrivateApiKey",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+            "revision": "2024-06-15"
+          },
+          "params": {},
+          "body": {
+            "JSON": {
+              "data": {
+                "type": "profile",
+                "attributes": {
+                  "external_id": "testKlaviyo4",
+                  "anonymous_id": "anon id 4",
+                  "email": "testklaviyo4@rs.com",
+                  "first_name": "Test Klaviyo 4",
+                  "properties": {}
+                },
+                "meta": {
+                  "patch_properties": {}
+                }
+              }
+            },
+            "JSON_ARRAY": {},
+            "XML": {},
+            "FORM": {}
+          },
+          "files": {}
+        },
+        {
+          "version": "1",
+          "type": "REST",
+          "method": "POST",
+          "endpoint": "https://a.klaviyo.com/api/profile-subscription-bulk-delete-jobs",
+          "headers": {
+            "Authorization": "Klaviyo-API-Key dummyPrivateApiKey",
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+            "revision": "2024-06-15"
+          },
+          "params": {},
+          "body": {
+            "JSON": {
+              "data": {
+                "type": "profile-subscription-bulk-delete-job",
+                "attributes": {
+                  "profiles": {
+                    "data": [
+                      {
+                        "type": "profile",
+                        "attributes": {
+                          "email": "testklaviyo3@rs.com"
+                        }
+                      },
+                      {
+                        "type": "profile",
+                        "attributes": {
+                          "email": "testklaviyo4@rs.com"
+                        }
+                      }
+                    ]
+                  }
+                },
+                "relationships": {
+                  "list": {
+                    "data": {
+                      "type": "list",
+                      "id": "configListId"
+                    }
+                  }
+                }
+              }
+            },
+            "JSON_ARRAY": {},
+            "XML": {},
+            "FORM": {}
+          },
+          "files": {}
+        }
+      ],
+      "metadata": [
+        {
+          "jobId": 3,
+          "attemptNum": 1,
+          "userId": "testKlaviyo3",
+          "sourceId": "default-sourceId",
+          "destinationId": "default-destinationId",
+          "workspaceId": "default-workspaceId",
+          "secret": {
+            "accessToken": "default-accessToken"
+          },
+          "dontBatch": false
+        },
+        {
+          "jobId": 4,
+          "attemptNum": 1,
+          "userId": "testKlaviyo4",
+          "sourceId": "default-sourceId",
+          "destinationId": "default-destinationId",
+          "workspaceId": "default-workspaceId",
+          "secret": {
+            "accessToken": "default-accessToken"
+          },
+          "dontBatch": false
+        }
+      ],
+      "batched": true,
+      "statusCode": 200,
+      "destination": {
+        "ID": "123",
+        "Name": "klaviyo",
+        "DestinationDefinition": {
+          "ID": "123",
+          "Name": "klaviyo",
+          "DisplayName": "klaviyo",
+          "Config": {}
+        },
+        "Config": {
+          "privateApiKey": "dummyPrivateApiKey",
+          "apiVersion": "v2"
+        },
+        "Enabled": true,
+        "WorkspaceID": "123",
+        "Transformations": []
+      }
+    }
+  ]
+}

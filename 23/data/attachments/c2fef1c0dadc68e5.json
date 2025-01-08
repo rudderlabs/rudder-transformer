@@ -1,0 +1,19 @@
+[
+  {
+    "metadata": {
+      "secret": {
+        "accessToken": "success_access_token"
+      }
+    },
+    "statusCode": 400,
+    "error": "gumCallerId is required for audience type gum",
+    "statTags": {
+      "errorCategory": "dataValidation",
+      "errorType": "configuration",
+      "destType": "CRITEO_AUDIENCE",
+      "module": "destination",
+      "implementation": "native",
+      "feature": "processor"
+    }
+  }
+]

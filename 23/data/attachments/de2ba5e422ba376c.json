@@ -1,0 +1,113 @@
+{
+  "body": [
+    {
+      "message": {
+        "anonymousId": "sampath",
+        "channel": "web",
+        "context": {
+          "app": {
+            "build": "1.0.0",
+            "name": "RudderLabs JavaScript SDK",
+            "namespace": "com.rudderlabs.javascript",
+            "version": "1.0.0"
+          },
+          "device": {
+            "adTrackingEnabled": true,
+            "advertisingId": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+            "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+            "manufacturer": "Google",
+            "model": "AOSP on IA Emulator",
+            "name": "generic_x86_arm",
+            "type": "Android",
+            "attTrackingStatus": 2
+          },
+          "ip": "0.0.0.0",
+          "library": {
+            "name": "RudderLabs JavaScript SDK",
+            "version": "1.0.0"
+          },
+          "locale": "en-US",
+          "os": {
+            "name": "Android",
+            "version": "9"
+          },
+          "screen": {
+            "density": 2
+          },
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+        },
+        "integrations": {
+          "All": true
+        },
+        "traits": {
+          "anonymousId": "sampath",
+          "email": "sampath@gmail.com"
+        },
+        "messageId": "ea5cfab2-3961-4d8a-8187-3d1858c90a9f",
+        "originalTimestamp": "2020-01-17T04:53:51.185Z",
+        "receivedAt": "2020-01-17T10:23:52.688+05:30",
+        "request_ip": "[::1]:64059",
+        "sentAt": "2020-01-17T04:53:52.667Z",
+        "timestamp": "2020-01-17T10:23:51.206+05:30",
+        "type": "identify",
+        "userId": "sampath"
+      },
+      "metadata": {
+        "sourceId": "default-source",
+        "workspaceId": "default-workspace",
+        "namespace": "default-namespace",
+        "instanceId": "default-instance",
+        "sourceType": "default-source-type",
+        "sourceCategory": "default-category",
+        "trackingPlanId": "default-tracking-plan",
+        "trackingPlanVersion": 1,
+        "sourceTpConfig": {},
+        "mergedTpConfig": {},
+        "destinationId": "default-destination",
+        "jobRunId": "default-job-run",
+        "jobId": 1,
+        "sourceBatchId": "default-batch",
+        "sourceJobId": "default-source-job",
+        "sourceJobRunId": "default-source-job-run",
+        "sourceTaskId": "default-task",
+        "sourceTaskRunId": "default-task-run",
+        "recordId": {},
+        "destinationType": "default-destination-type",
+        "messageId": "default-message-id",
+        "oauthAccessToken": "default-token",
+        "messageIds": [
+          "default-message-id"
+        ],
+        "rudderId": "default-rudder-id",
+        "receivedAt": "2024-12-30T11:04:58.693Z",
+        "eventName": "default-event",
+        "eventType": "default-type",
+        "sourceDefinitionId": "default-source-def",
+        "destinationDefinitionId": "default-dest-def",
+        "transformationId": "default-transform",
+        "dontBatch": false
+      },
+      "destination": {
+        "ID": "1WTpIHpH7NTBgjeiUPW1kCUgZGI",
+        "Name": "branch test",
+        "DestinationDefinition": {
+          "DisplayName": "Branch Metrics",
+          "ID": "1WTpBSTiL3iAUHUdW7rHT4sawgU",
+          "Name": "BRANCH",
+          "Config": {}
+        },
+        "Config": {
+          "branchKey": "<branch key goes here>",
+          "useNativeSDK": false
+        },
+        "Enabled": true,
+        "WorkspaceID": "default-workspace",
+        "Transformations": [],
+        "RevisionID": "default-revision",
+        "IsProcessorEnabled": true,
+        "IsConnectionEnabled": true
+      }
+    }
+  ],
+  "method": "POST"
+}

@@ -1,0 +1,97 @@
+{
+  "body": [
+    {
+      "destination": {
+        "ID": "123",
+        "Name": "klaviyo",
+        "DestinationDefinition": {
+          "ID": "123",
+          "Name": "klaviyo",
+          "DisplayName": "klaviyo",
+          "Config": {}
+        },
+        "Config": {
+          "apiVersion": "v2",
+          "privateApiKey": "dummyPrivateApiKey"
+        },
+        "Enabled": true,
+        "WorkspaceID": "123",
+        "Transformations": []
+      },
+      "message": {
+        "type": "identify",
+        "sentAt": "2021-01-03T17:02:53.195Z",
+        "userId": "user@1",
+        "integrations": {
+          "Klaviyo": {
+            "fieldsToUnset": [
+              "Unset1",
+              "Unset2"
+            ],
+            "fieldsToAppend": [
+              "appendList1",
+              "appendList2"
+            ],
+            "fieldsToUnappend": [
+              "unappendList1",
+              "unappendList2"
+            ]
+          },
+          "All": true
+        },
+        "rudderId": "v2svaihgl7jgushv9wr9az0b9z8e6nxr01fq",
+        "messageId": "abcordmewjwcxj6lzqn8klplt46y1ebrrnhe",
+        "context": {
+          "externalId": [
+            {
+              "type": "klaviyo-profileId",
+              "id": "12345678"
+            }
+          ],
+          "traits": {
+            "firstName": "Test",
+            "lastName": "Rudderlabs",
+            "email": "test@rudderstack.com",
+            "phone": "+12 345 578 900",
+            "userId": "user@1",
+            "title": "Developer",
+            "organization": "Rudder",
+            "city": "Tokyo",
+            "region": "Kanto",
+            "country": "JP",
+            "zip": "100-0001",
+            "Flagged": false,
+            "Residence": "Shibuya",
+            "street": "63, Shibuya",
+            "properties": {
+              "listId": "XUepkK",
+              "consent": [
+                "email",
+                "sms"
+              ]
+            },
+            "appendList1": "New Value 1",
+            "appendList2": "New Value 2",
+            "unappendList1": "Old Value 1",
+            "unappendList2": "Old Value 2"
+          }
+        },
+        "anonymousId": "97c46c81-3140-456d-b2a9-690d70aaca35",
+        "originalTimestamp": "2021-01-03T17:02:53.193Z"
+      },
+      "metadata": {
+        "jobId": 4,
+        "attemptNum": 1,
+        "userId": "default-userId",
+        "sourceId": "default-sourceId",
+        "destinationId": "default-destinationId",
+        "workspaceId": "default-workspaceId",
+        "secret": {
+          "accessToken": "default-accessToken"
+        },
+        "dontBatch": false
+      }
+    }
+  ],
+  "method": "POST"
+}

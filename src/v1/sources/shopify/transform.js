@@ -4,23 +4,7 @@ const { process: processWebhookEvents } = require('../../../v0/sources/shopify/t
 const {
   process: processPixelWebhookEvents,
 } = require('./webhookTransformations/serverSideTransform');
-const { RedisDB } = require('../../../util/redis/redisConnector');
-
-const NO_OPERATION_SUCCESS = {
-  outputToSource: {
-    body: Buffer.from('OK').toString('base64'),
-    contentType: 'text/plain',
-  },
-  statusCode: 200,
-};
-
-const isIdentifierEvent = (payload) => ['rudderIdentifier'].includes(payload?.event);
-
-const processIdentifierEvent = async (event) => {
-  const { cartToken, anonymousId } = event;
-  await RedisDB.setVal(`${cartToken}`, ['anonymousId', anonymousId]);
-  return NO_OPERATION_SUCCESS;
-};
+const { processIdentifierEvent, isIdentifierEvent } = require('./utils');
 
 const process = async (inputEvent) => {
   const { event } = inputEvent;

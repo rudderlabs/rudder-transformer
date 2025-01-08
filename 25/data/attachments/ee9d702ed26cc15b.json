@@ -1,0 +1,24 @@
+{
+  "output": {
+    "status": 500,
+    "message": "Campaign Manager: undefined during CAMPAIGN_MANAGER response transformation 3",
+    "destinationResponse": {
+      "response": {
+        "error": "unauthorized",
+        "error_description": "Access token expired: 2020-10-20T12:00:00.000Z"
+      },
+      "status": 401
+    },
+    "statTags": {
+      "errorCategory": "network",
+      "errorType": "aborted",
+      "destType": "CAMPAIGN_MANAGER",
+      "module": "destination",
+      "implementation": "native",
+      "feature": "dataDelivery",
+      "destinationId": "default-destinationId",
+      "workspaceId": "default-workspaceId"
+    },
+    "authErrorCategory": "REFRESH_TOKEN"
+  }
+}

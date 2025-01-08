@@ -1,0 +1,10 @@
+{
+  "output": {
+    "status": 200,
+    "message": "Request Processed Successfully",
+    "destinationResponse": {
+      "response": "",
+      "status": 200
+    }
+  }
+}

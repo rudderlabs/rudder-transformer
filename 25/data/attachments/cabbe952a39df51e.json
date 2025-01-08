@@ -1,0 +1,28 @@
+{
+  "output": {
+    "status": 401,
+    "message": "The authorization header is invalid during criteo_audience response transformation",
+    "destinationResponse": {
+      "errors": [
+        {
+          "traceIdentifier": "80a1a0ba3981b04da847d05700752c77",
+          "type": "authorization",
+          "code": "authorization-token-invalid",
+          "instance": "/2022-10/audiences/123/contactlist",
+          "title": "The authorization header is invalid"
+        }
+      ]
+    },
+    "statTags": {
+      "errorCategory": "network",
+      "errorType": "aborted",
+      "destType": "CRITEO_AUDIENCE",
+      "module": "destination",
+      "implementation": "native",
+      "feature": "dataDelivery",
+      "destinationId": "default-destinationId",
+      "workspaceId": "default-workspaceId"
+    },
+    "authErrorCategory": "REFRESH_TOKEN"
+  }
+}

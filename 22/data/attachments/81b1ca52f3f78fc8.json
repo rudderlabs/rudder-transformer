@@ -1,0 +1,32 @@
+{
+  "body": {
+    "version": "v0",
+    "type": "REST",
+    "userId": "default-userId",
+    "method": "POST",
+    "endpoint": "https://random_test_url/test_for_service_not_available",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "metadata": {
+      "jobId": 1,
+      "attemptNum": 1,
+      "userId": "default-userId",
+      "destinationId": "default-destinationId",
+      "workspaceId": "default-workspaceId",
+      "sourceId": "default-sourceId",
+      "secret": {
+        "accessToken": "default-accessToken"
+      },
+      "dontBatch": false
+    },
+    "destinationConfig": {}
+  },
+  "method": "POST"
+}

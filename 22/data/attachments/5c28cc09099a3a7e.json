@@ -1,0 +1,60 @@
+{
+  "body": [
+    {
+      "destination": {
+        "ID": "123",
+        "Name": "klaviyo",
+        "DestinationDefinition": {
+          "ID": "123",
+          "Name": "klaviyo",
+          "DisplayName": "klaviyo",
+          "Config": {}
+        },
+        "Config": {
+          "apiVersion": "v2",
+          "privateApiKey": "dummyPrivateApiKey",
+          "consent": [
+            "email"
+          ]
+        },
+        "Enabled": true,
+        "WorkspaceID": "123",
+        "Transformations": []
+      },
+      "message": {
+        "channel": "web",
+        "userId": "user123",
+        "type": "group",
+        "groupId": "group_list_id",
+        "traits": {
+          "subscribe": false
+        },
+        "context": {
+          "traits": {
+            "email": "test@rudderstack.com",
+            "phone": "+12 345 678 900",
+            "consent": [
+              "email"
+            ]
+          }
+        },
+        "timestamp": "2020-01-21T00:21:34.208Z",
+        "anonymousId": "yyi6prdksln2hdj9vqntp1j21ko4tpvqv30k",
+        "originalTimestamp": "2019-10-14T09:03:17.562Z"
+      },
+      "metadata": {
+        "jobId": 1,
+        "attemptNum": 1,
+        "userId": "default-userId",
+        "sourceId": "default-sourceId",
+        "destinationId": "default-destinationId",
+        "workspaceId": "default-workspaceId",
+        "secret": {
+          "accessToken": "default-accessToken"
+        },
+        "dontBatch": false
+      }
+    }
+  ],
+  "method": "POST"
+}

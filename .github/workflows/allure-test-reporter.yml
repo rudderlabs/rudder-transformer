@@ -68,21 +68,21 @@ jobs:
         run: |
           # Wait a moment for gh-pages to update
           sleep 10
-          
+
           # Create a temporary directory for gh-pages checkout
           mkdir temp_gh_pages
           cd temp_gh_pages
-          
+
           # Initialize git and fetch gh-pages
           git init
           git remote add origin https://github.com/rudderlabs/rudder-transformer.git
           git fetch origin gh-pages
           git checkout gh-pages
-          
+
           # Find the latest numbered directory
           LATEST_NUM=$(find . -maxdepth 1 -type d -name "[0-9]*" | sort -n | tail -1 | sed 's/\.\///')
           echo "number=${LATEST_NUM}" >> $GITHUB_OUTPUT
-          
+
           # Cleanup
           cd ..
           rm -rf temp_gh_pages
@@ -96,7 +96,7 @@ jobs:
             const { owner, repo } = context.repo;
             const prNumber = context.payload.pull_request.number;
             const reportNumber = '${{ steps.report-number.outputs.number }}';
-            
+
             const commentBody = `Allure Test reports for this run are available at:
             - Allure Report: https://rudderlabs.github.io/rudder-transformer/${reportNumber}/index.html`;
 

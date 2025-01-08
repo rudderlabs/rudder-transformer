@@ -1,0 +1,28 @@
+[
+  {
+    "metadata": {
+      "jobId": 1,
+      "attemptNum": 1,
+      "userId": "default-userId",
+      "sourceId": "default-sourceId",
+      "destinationId": "default-destinationId",
+      "workspaceId": "default-workspaceId",
+      "secret": {
+        "accessToken": "default-accessToken"
+      },
+      "dontBatch": false
+    },
+    "statusCode": 400,
+    "error": "Invalid float value",
+    "statTags": {
+      "errorCategory": "dataValidation",
+      "errorType": "instrumentation",
+      "destType": "KLAVIYO",
+      "module": "destination",
+      "implementation": "native",
+      "feature": "processor",
+      "destinationId": "default-destinationId",
+      "workspaceId": "default-workspaceId"
+    }
+  }
+]

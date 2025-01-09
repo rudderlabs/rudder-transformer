@@ -1049,3 +1049,27 @@ describe('convertToUuid', () => {
     expect(result).toBe('672ca00c-37f4-5d71-b8c3-6ae0848080ec');
   });
 });
+
+describe('', () => {
+  it('should return original value when regex pattern is invalid', () => {
+    const value = 'test value';
+    const metadata = {
+      regex: `\\b(?!1000\\b)\\d{4,}\\b`,
+    };
+    try {
+      const result = utilities.handleMetadataForValue(value, metadata);
+    } catch (e) {
+      expect(e.message).toBe(
+        `The value 'test value' does not match the regex pattern, \\b(?!1000\\b)\\d{4,}\\b`,
+      );
+    }
+  });
+  it('should return true when the regex matches', () => {
+    const value = 1003;
+    const metadata = {
+      regex: `\\b(?!1000\\b)\\d{4,}\\b`,
+    };
+    const res = utilities.handleMetadataForValue(value, metadata);
+    expect(res).toBe(1003);
+  });
+});

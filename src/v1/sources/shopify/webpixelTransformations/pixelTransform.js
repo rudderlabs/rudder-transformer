@@ -162,6 +162,16 @@ function processPixelEvent(inputEvent) {
       }
     });
 
+    // Extract any UTM parameters not in the mappings
+    const campaignObjectSourceKeys = campaignObjectMappings.flatMap(
+      (mapping) => mapping.sourceKeys,
+    );
+    url.searchParams.forEach((value, key) => {
+      if (key.startsWith('utm_') && !campaignObjectSourceKeys.includes(key)) {
+        campaignParams[key] = value;
+      }
+    });
+
     // Only add campaign object if we have any UTM parameters
     if (Object.keys(campaignParams).length > 0) {
       message.context = message.context || {};

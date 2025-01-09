@@ -141,7 +141,7 @@ export const dummyContext = {
 export const dummyContextwithCampaign = {
   document: {
     location: {
-      href: 'https://store.myshopify.com/checkouts/cn/Z2NwLXVzLWVhc3QxOjAxSjY5OVpIRURQNERFMDBKUTVaRkI4UzdU?checkout%5Bpayment_gateway%5D=shopify_payments&utm_campaign=shopifySale&utm_medium=checkout&utm_term=term_checkout&utm_content=web',
+      href: 'https://store.myshopify.com/checkouts/cn/Z2NwLXVzLWVhc3QxOjAxSjY5OVpIRURQNERFMDBKUTVaRkI4UzdU?checkout%5Bpayment_gateway%5D=shopify_payments&utm_campaign=shopifySale&utm_medium=checkout&utm_term=term_checkout&utm_content=web&utm_custom1=customutm&tag=tag',
       hash: '',
       host: 'store.myshopify.com',
       hostname: 'store.myshopify.com',
@@ -230,7 +230,7 @@ export const responseDummyContext = {
 export const responseDummyContextwithCampaign = {
   document: {
     location: {
-      href: 'https://store.myshopify.com/checkouts/cn/Z2NwLXVzLWVhc3QxOjAxSjY5OVpIRURQNERFMDBKUTVaRkI4UzdU?checkout%5Bpayment_gateway%5D=shopify_payments&utm_campaign=shopifySale&utm_medium=checkout&utm_term=term_checkout&utm_content=web',
+      href: 'https://store.myshopify.com/checkouts/cn/Z2NwLXVzLWVhc3QxOjAxSjY5OVpIRURQNERFMDBKUTVaRkI4UzdU?checkout%5Bpayment_gateway%5D=shopify_payments&utm_campaign=shopifySale&utm_medium=checkout&utm_term=term_checkout&utm_content=web&utm_custom1=customutm&tag=tag',
       hash: '',
       host: 'store.myshopify.com',
       hostname: 'store.myshopify.com',

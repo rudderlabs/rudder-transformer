@@ -54,6 +54,7 @@ export const pixelEventsTestScenarios = [
                       medium: 'checkout',
                       name: 'shopifySale',
                       term: 'term_checkout',
+                      utm_custom1: 'customutm',
                     },
                     shopifyDetails: {
                       clientId: 'c7b3f99b-4d34-463b-835f-c879482a7750',

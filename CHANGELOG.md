@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.87.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.87.0...v1.87.1) (2025-01-06)
+
+
+### Bug Fixes
+
+* added missing eu url in delete flow for amplitude destination ([#3952](https://github.com/rudderlabs/rudder-transformer/issues/3952)) ([ac673fc](https://github.com/rudderlabs/rudder-transformer/commit/ac673fc22094d5567691ceaf13adca15442ea896))
+* adding transformer proxy for iterable ([#3878](https://github.com/rudderlabs/rudder-transformer/issues/3878)) ([c47488d](https://github.com/rudderlabs/rudder-transformer/commit/c47488decf8e79b9a2e0277bd85a8e895ffecc56)), closes [#3918](https://github.com/rudderlabs/rudder-transformer/issues/3918)
+* **airship:** resolved minor bugsnag error ([#3942](https://github.com/rudderlabs/rudder-transformer/issues/3942)) ([1d8532e](https://github.com/rudderlabs/rudder-transformer/commit/1d8532e743aad1e27efbe2975551ed174cf6ae6c))
+* property and event name mappings in shopify v2 ([#3941](https://github.com/rudderlabs/rudder-transformer/issues/3941)) ([0dedaa2](https://github.com/rudderlabs/rudder-transformer/commit/0dedaa2983b25ab529a5bc5b34ab70ebbf94fb3e))
+* use correct endpoint for custom events ([#3954](https://github.com/rudderlabs/rudder-transformer/issues/3954)) ([49eb591](https://github.com/rudderlabs/rudder-transformer/commit/49eb59180581b34252b601101ce2450e639c0850))
+* user order ([#3944](https://github.com/rudderlabs/rudder-transformer/issues/3944)) ([43abf9c](https://github.com/rudderlabs/rudder-transformer/commit/43abf9ca193a9d16a9eddc28cc6117beadd76b41)), closes [#3914](https://github.com/rudderlabs/rudder-transformer/issues/3914)
+
 ## [1.87.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.86.0...v1.87.0) (2024-12-13)
 
 

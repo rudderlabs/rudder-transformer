@@ -4,12 +4,7 @@ const {
   getAnonymousIdFromAttributes,
 } = require('./serverSideUtlis');
 
-const { constructPayload } = require('../../../../v0/util');
-
-const {
-  lineItemsMappingJSON,
-  productMappingJSON,
-} = require('../../../../v0/sources/shopify/config');
+const { lineItemsMappingJSON } = require('../../../../v0/sources/shopify/config');
 const Message = require('../../../../v0/sources/message');
 jest.mock('../../../../v0/sources/message');
 

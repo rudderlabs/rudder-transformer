@@ -42,7 +42,7 @@ const RUDDER_ECOM_MAP = {
   orders_create: 'Order Created',
 };
 
-const SERVERSIDE_STITCHED_EVENTS = Object.values(RUDDER_ECOM_MAP);
+const SERVERSIDE_STITCHED_EVENTS = [...Object.values(RUDDER_ECOM_MAP), 'Cart Update'];
 
 const contextualFieldMappingJSON = JSON.parse(
   fs.readFileSync(path.resolve(__dirname, 'pixelEventsMappings', 'contextualFieldMapping.json')),

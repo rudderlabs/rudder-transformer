@@ -33,13 +33,17 @@ const deduceSchedule = (eventLevelSchedule, timestamp, destConfig) => {
   if (isDefinedAndNotNull(eventLevelSchedule) && !Number.isNaN(eventLevelSchedule)) {
     return eventLevelSchedule;
   }
-  const { defaultCampaignScheduleUnit = 'minute', defaultCampaignSchedule = 0 } = destConfig;
+  const { defaultCampaignScheduleUnit = 'minute', defaultCampaignSchedule = '0' } = destConfig;
   const date = new Date(timestamp);
+  let defaultCampaignScheduleInt = parseInt(defaultCampaignSchedule, 10);
+  if (Number.isNaN(defaultCampaignScheduleInt)) {
+    defaultCampaignScheduleInt = 0;
+  }
 
   if (defaultCampaignScheduleUnit === 'day') {
-    date.setDate(date.getDate() + defaultCampaignSchedule);
+    date.setDate(date.getDate() + defaultCampaignScheduleInt);
   } else if (defaultCampaignScheduleUnit === 'minute') {
-    date.setMinutes(date.getMinutes() + defaultCampaignSchedule);
+    date.setMinutes(date.getMinutes() + defaultCampaignScheduleInt);
   } else {
     throw new Error("Invalid delta unit. Use 'day' or 'minute'.");
   }

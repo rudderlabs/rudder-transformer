@@ -1,0 +1,23 @@
+message: "[Generic Response Handler] Request failed for destination bloomreach_catalog with status: 401"
+status: 401
+destinationResponse:
+  response: "Could not verify your access level for that URL.\nYou have to login with proper credentials using HTTP Basic Auth (public key as username and private key as password)"
+  status: 401
+  headers:
+    server: "nginx"
+    date: "Fri, 1 Jan 2029 03:03:43 GMT"
+    content-type: "text/html; charset=utf-8"
+    content-length: "165"
+    www-authenticate: 'Basic realm="Login Required"'
+    vary: "Cookie"
+    via: "1.1 google"
+    alt-svc: 'h3=":443"; ma=2592000,h3-29=":443"; ma=2592000'
+statTags:
+  errorCategory: "network"
+  errorType: "aborted"
+  destType: "BLOOMREACH_CATALOG"
+  module: "destination"
+  implementation: "native"
+  feature: "dataDelivery"
+  destinationId: "2JIqVoWNvSOHa9ppKOqSxxx"
+  workspaceId: "2hSS1hZ8kuCpUZAAYsQucAFdxxx"

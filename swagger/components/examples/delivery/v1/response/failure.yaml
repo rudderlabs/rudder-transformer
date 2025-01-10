@@ -1,0 +1,29 @@
+response:
+  - error: "\"Could not verify your access level for that URL.\\nYou have to login with proper credentials using HTTP Basic Auth (public key as username and private key as password)\""
+    statusCode: 401
+    metadata:
+      userId: "<<>>12345<<>>12345"
+      jobId: 1
+      sourceId: "2ifsnRxzoONtZeIoGxgNWsr4xx"
+      sourceCategory: ""
+      destinationId: "2JIqVoWNvSOHa9ppKOqSxxx"
+      attemptNum: 0
+      receivedAt: "2024-07-17T16:45:40.114+05:30"
+      createdAt: "2024-07-17T11:15:41.140Z"
+      firstAttemptedAt: ""
+      transformAt: "router"
+      workspaceId: "2hSS1hZ8kuCpUZAAYsQucAFdxxx"
+      secret: null
+      workerAssignedTime: "2024-07-17T16:45:41.264239+05:30"
+      dontBatch: false
+statTags:
+  errorCategory: "network"
+  errorType: "aborted"
+  destType: "BLOOMREACH_CATALOG"
+  module: "destination"
+  implementation: "native"
+  feature: "dataDelivery"
+  destinationId: "2JIqVoWNvSOHa9ppKOqSxxx"
+  workspaceId: "2hSS1hZ8kuCpUZAAYsQucAFdxxx"
+message: "BLOOMREACH_CATALOG: Error encountered in transformer proxy V1"
+status: 401

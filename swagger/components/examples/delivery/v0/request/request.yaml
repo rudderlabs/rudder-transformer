@@ -1,0 +1,33 @@
+value:
+  version: v1
+  type: REST
+  method: POST
+  endpoint: "https://demoapp-api.bloomreach.com/data/v2/projects/{project}/catalogs/{catalog}/items/partial-update"
+  userId: ""
+  headers:
+    Authorization: "Basic token"
+  params: {}
+  body:
+    JSON: {}
+    JSON_ARRAY:
+      batch:
+        - item_id: "222"
+          properties: { }
+    XML: {}
+    FORM: {}
+  files: {}
+  metadata:
+    userId: '<<>>12345<<>>12345'
+    jobId: 1
+    sourceId: '2ifsnRxzoONtZeIoGxgNWsr4xx'
+    sourceCategory: ''
+    destinationId: '2JIqVoWNvSOHa9ppKOqSxxx'
+    attemptNum: 0
+    receivedAt: '2024-07-17T16:45:40.114+05:30'
+    createdAt: '2024-07-17T11:15:41.140Z'
+    firstAttemptedAt: ''
+    transformAt: 'router'
+    workspaceId: '2hSS1hZ8kuCpUZAAYsQucAFdxxx'
+    secret: null
+    workerAssignedTime: '2024-07-17T16:45:41.264239+05:30'
+    dontBatch: false

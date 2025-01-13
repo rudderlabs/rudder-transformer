@@ -1,9 +1,3 @@
-const { httpGET, httpPOST } = require('../../../adapters/network');
-const {
-  getDynamicErrorType,
-  processAxiosResponse,
-} = require('../../../adapters/utils/networkUtils');
-const { isHttpStatusSuccess } = require('../../util/index');
 const {
   NetworkError,
   AbortedError,
@@ -11,7 +5,13 @@ const {
   RetryableError,
   UnhandledStatusCodeError,
   InstrumentationError,
-} = require('../../util/errorTypes');
+} = require('@rudderstack/integrations-lib');
+const { httpGET, httpPOST } = require('../../../adapters/network');
+const {
+  getDynamicErrorType,
+  processAxiosResponse,
+} = require('../../../adapters/utils/networkUtils');
+const { isHttpStatusSuccess } = require('../../util/index');
 const tags = require('../../util/tags');
 
 /**
@@ -243,10 +243,14 @@ const marketoResponseHandler = (
  * @param {*} options
  * @returns { response, status }
  */
-const sendGetRequest = async (url, options) => {
+const sendGetRequest = async (url, options, metadata) => {
   const clientResponse = await httpGET(url, options, {
     destType: 'marketo',
     feature: 'transformation',
+    endpointPath: `/v1/leads`,
+    requestMethod: 'GET',
+    module: 'router',
+    metadata,
   });
   const processedResponse = processAxiosResponse(clientResponse);
   return processedResponse;
@@ -258,10 +262,14 @@ const sendGetRequest = async (url, options) => {
  * @param {*} options
  * @returns { response, status }
  */
-const sendPostRequest = async (url, data, options) => {
+const sendPostRequest = async (url, data, options, metadata) => {
   const clientResponse = await httpPOST(url, data, options, {
     destType: 'marketo',
     feature: 'transformation',
+    endpointPath: `/v1/leads`,
+    requestMethod: 'POST',
+    module: 'router',
+    metadata,
   });
   const processedResponse = processAxiosResponse(clientResponse);
   return processedResponse;

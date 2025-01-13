@@ -1,9 +1,9 @@
 import { Context } from 'koa';
-import EventTesterService from '../services/eventTest/eventTester';
+import { EventTesterService } from '../services/eventTest/eventTester';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { CatchErr, FixMe } from '../util/types';
 
-export default class EventTestController {
+export class EventTestController {
   private static API_VERSION = '1';
 
   public static async testEvent(ctx: Context) {
@@ -19,7 +19,7 @@ export default class EventTestController {
       };
       ctx.status = 400;
     }
-    ctx.set('apiVersion', this.API_VERSION);
+    ctx.set('apiVersion', EventTestController.API_VERSION);
   }
 
   public static status(ctx: Context) {

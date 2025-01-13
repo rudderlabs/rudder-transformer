@@ -1,12 +1,18 @@
 const _ = require('lodash');
 const get = require('get-value');
+const logger = require('../../logger');
 
 const isNull = (x) => {
   return x === null || x === undefined;
 };
 
 const isBlank = (value) => {
-  return _.isEmpty(_.toString(value));
+  try {
+    return _.isEmpty(_.toString(value));
+  } catch (e) {
+    logger.error(`Error in isBlank: ${e.message}`);
+    return false;
+  }
 };
 
 const getFirstValidValue = (message, props) => {
@@ -27,6 +33,7 @@ function isDataLakeProvider(provider) {
 
 module.exports = {
   isNull,
+  isBlank,
   getFirstValidValue,
   isDataLakeProvider,
 };

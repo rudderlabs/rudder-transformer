@@ -1,6 +1,8 @@
 /* eslint-disable no-nested-ternary,no-param-reassign */
 const lodash = require('lodash');
 const get = require('get-value');
+const { InstrumentationError, NetworkError } = require('@rudderstack/integrations-lib');
+const { FilteredEventsError } = require('../../util/errorTypes');
 const {
   BrazeDedupUtility,
   CustomAttributeOperationUtil,
@@ -10,7 +12,10 @@ const {
   setExternalIdOrAliasObject,
   getPurchaseObjs,
   setExternalId,
-  setAliasObjectWithAnonId,
+  setAliasObject,
+  collectStatsForAliasFailure,
+  collectStatsForAliasMissConfigurations,
+  handleReservedProperties,
 } = require('./util');
 const tags = require('../../util/tags');
 const { EventType, MappedToDestinationKey } = require('../../../constants');
@@ -20,10 +25,13 @@ const {
   getFieldValueFromMessage,
   removeUndefinedValues,
   isHttpStatusSuccess,
+  isDefinedAndNotNull,
   simpleProcessRouterDestSync,
   simpleProcessRouterDest,
+  isNewStatusCodesAccepted,
+  getDestinationExternalID,
+  getIntegrationsObj,
 } = require('../../util');
-const { InstrumentationError, NetworkError } = require('../../util/errorTypes');
 const {
   ConfigCategory,
   mappingConfig,
@@ -78,7 +86,7 @@ function buildResponse(message, destination, properties, endpoint) {
 
 function getIdentifyPayload(message) {
   let payload = {};
-  payload = setAliasObjectWithAnonId(payload, message);
+  payload = setAliasObject(payload, message);
   payload = setExternalId(payload, message);
   return { aliases_to_identify: [payload], merge_behavior: 'merge' };
 }
@@ -93,7 +101,10 @@ function populateCustomAttributesWithOperation(
     // add,update,remove on json attributes
     if (enableNestedArrayOperations) {
       Object.keys(traits)
-        .filter((key) => typeof traits[key] === 'object' && !Array.isArray(traits[key]))
+        .filter(
+          (key) =>
+            traits[key] !== null && typeof traits[key] === 'object' && !Array.isArray(traits[key]),
+        )
         .forEach((key) => {
           if (traits[key][CustomAttributeOperationTypes.UPDATE]) {
             CustomAttributeOperationUtil.customAttributeUpdateOperation(
@@ -148,11 +159,19 @@ function getUserAttributesObject(message, mappingJson, destination) {
   Object.keys(mappingJson).forEach((destKey) => {
     let value = get(traits, mappingJson[destKey]);
     if (value || (value === null && reservedKeys.includes(destKey))) {
-      // handle gender special case
-      if (destKey === 'gender') {
-        value = formatGender(value);
-      } else if (destKey === 'email' && value !== null) {
-        value = value?.toLowerCase();
+      switch (destKey) {
+        case 'gender':
+          value = formatGender(value);
+          break;
+        case 'email':
+          if (typeof value === 'string') {
+            value = value.toLowerCase();
+          } else if (isDefinedAndNotNull(value)) {
+            throw new InstrumentationError('Invalid email, email must be a valid string');
+          }
+          break;
+        default:
+          break;
       }
       data[destKey] = value;
     }
@@ -186,13 +205,7 @@ function getUserAttributesObject(message, mappingJson, destination) {
  * @param {*} message
  * @param {*} destination
  */
-async function processIdentify(message, destination) {
-  // override userId with externalId in context(if present) and event is mapped to destination
-  const mappedToDestination = get(message, MappedToDestinationKey);
-  if (mappedToDestination) {
-    adduserIdFromExternalId(message);
-  }
-
+async function processIdentify({ message, destination, metadata }) {
   const identifyPayload = getIdentifyPayload(message);
   const identifyEndpoint = getIdentifyEndpoint(getEndpointFromConfig(destination));
   const { processedResponse: brazeIdentifyResp } = await handleHttpRequest(
@@ -209,11 +222,16 @@ async function processIdentify(message, destination) {
     {
       destType: 'braze',
       feature: 'transformation',
+      requestMethod: 'POST',
+      module: 'router',
+      endpointPath: '/users/identify',
+      metadata,
     },
   );
+
   if (!isHttpStatusSuccess(brazeIdentifyResp.status)) {
     throw new NetworkError(
-      'Braze identify failed',
+      `Braze identify failed - ${JSON.stringify(brazeIdentifyResp.response)}`,
       brazeIdentifyResp.status,
       {
         [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(brazeIdentifyResp.status),
@@ -221,9 +239,17 @@ async function processIdentify(message, destination) {
       brazeIdentifyResp.response,
     );
   }
+
+  collectStatsForAliasFailure(brazeIdentifyResp.response, destination.ID);
 }
 
-function processTrackWithUserAttributes(message, destination, mappingJson, processParams) {
+function processTrackWithUserAttributes(
+  message,
+  destination,
+  mappingJson,
+  processParams,
+  reqMetadata,
+) {
   let payload = getUserAttributesObject(message, mappingJson);
   if (payload && Object.keys(payload).length > 0) {
     payload = setExternalIdOrAliasObject(payload, message);
@@ -236,6 +262,10 @@ function processTrackWithUserAttributes(message, destination, mappingJson, proce
       );
       if (dedupedAttributePayload) {
         requestJson.attributes = [dedupedAttributePayload];
+      } else if (isNewStatusCodesAccepted(reqMetadata)) {
+        throw new FilteredEventsError(
+          '[Braze Deduplication]: Duplicate user detected, the user is dropped',
+        );
       } else {
         throw new InstrumentationError(
           '[Braze Deduplication]: Duplicate user detected, the user is dropped',
@@ -250,17 +280,6 @@ function processTrackWithUserAttributes(message, destination, mappingJson, proce
     );
   }
   throw new InstrumentationError('No attributes found to update the user profile');
-}
-
-function handleReservedProperties(props) {
-  // remove reserved keys from custom event properties
-  // https://www.appboy.com/documentation/Platform_Wide/#reserved-keys
-  const reserved = ['time', 'product_id', 'quantity', 'event_name', 'price', 'currency'];
-
-  reserved.forEach((element) => {
-    delete props[element];
-  });
-  return props;
 }
 
 function addMandatoryEventProperties(payload, message) {
@@ -303,14 +322,7 @@ function processTrackEvent(messageType, message, destination, mappingJson, proce
     typeof eventName === 'string' &&
     eventName.toLowerCase() === 'order completed'
   ) {
-    const purchaseObjs = getPurchaseObjs(message);
-
-    // del used properties
-    delete properties.products;
-    delete properties.currency;
-
-    const payload = { properties };
-    setExternalIdOrAliasObject(payload, message);
+    const purchaseObjs = getPurchaseObjs(message, destination.Config);
     return buildResponse(
       message,
       destination,
@@ -371,7 +383,7 @@ function processGroup(message, destination) {
       );
     }
     subscriptionGroup.subscription_state = message.traits.subscriptionState;
-    subscriptionGroup.external_id = [message.userId];
+    subscriptionGroup.external_ids = [message.userId];
     const phone = getFieldValueFromMessage(message, 'phone');
     const email = getFieldValueFromMessage(message, 'email');
     if (phone) {
@@ -444,7 +456,7 @@ function processAlias(message, destination) {
   );
 }
 
-async function process(event, processParams = { userStore: new Map() }) {
+async function process(event, processParams = { userStore: new Map() }, reqMetadata = {}) {
   let response;
   const { message, destination } = event;
   const messageType = message.type.toLowerCase();
@@ -480,18 +492,33 @@ async function process(event, processParams = { userStore: new Map() }) {
         processParams,
       );
       break;
-    case EventType.IDENTIFY:
+    case EventType.IDENTIFY: {
       category = ConfigCategory.IDENTIFY;
-      if (message.anonymousId) {
-        await processIdentify(message, destination);
+      // override userId with externalId in context(if present) and event is mapped to destination
+      const mappedToDestination = get(message, MappedToDestinationKey);
+      if (mappedToDestination) {
+        adduserIdFromExternalId(message);
+      }
+
+      const integrationsObj = getIntegrationsObj(message, 'BRAZE');
+      const isAliasPresent = isDefinedAndNotNull(integrationsObj?.alias);
+
+      const brazeExternalID =
+        getDestinationExternalID(message, 'brazeExternalId') || message.userId;
+      if ((message.anonymousId || isAliasPresent) && brazeExternalID) {
+        await processIdentify({ message, destination });
+      } else {
+        collectStatsForAliasMissConfigurations(destination.ID);
       }
       response = processTrackWithUserAttributes(
         message,
         destination,
         mappingConfig[category.name],
         processParams,
+        reqMetadata,
       );
       break;
+    }
     case EventType.GROUP:
       response = processGroup(message, destination);
       break;

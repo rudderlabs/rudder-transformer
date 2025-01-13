@@ -1,8 +1,7 @@
 const get = require('get-value');
 const md5 = require('md5');
-const myAxios = require('../../../util/myAxios');
+const { InstrumentationError, NetworkError } = require('@rudderstack/integrations-lib');
 const { MappedToDestinationKey } = require('../../../constants');
-const logger = require('../../../logger');
 const {
   isDefinedAndNotNull,
   isDefined,
@@ -15,11 +14,12 @@ const {
   defaultBatchRequestConfig,
   constructPayload,
 } = require('../../util');
-const { InstrumentationError, NetworkError } = require('../../util/errorTypes');
+const logger = require('../../../logger');
 const { MERGE_CONFIG, MERGE_ADDRESS, SUBSCRIPTION_STATUS, VALID_STATUSES } = require('./config');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const tags = require('../../util/tags');
 const { JSON_MIME_TYPE } = require('../../util/constant');
+const { handleHttpRequest } = require('../../../adapters/network');
 
 const ADDRESS_MANDATORY_FIELDS = ['addr1', 'city', 'state', 'zip'];
 
@@ -145,7 +145,7 @@ const filterTagValue = (tag) => {
  * @param {*} email
  * @returns
  */
-const checkIfMailExists = async (apiKey, datacenterId, audienceId, email) => {
+const checkIfMailExists = async (apiKey, datacenterId, audienceId, email, metadata) => {
   if (!email) {
     return false;
   }
@@ -155,22 +155,31 @@ const checkIfMailExists = async (apiKey, datacenterId, audienceId, email) => {
   };
   const url = `${mailChimpSubscriptionEndpoint(datacenterId, audienceId, email)}`;
   const basicAuth = Buffer.from(`apiKey:${apiKey}`).toString('base64');
-  try {
-    const response = await myAxios.get(
-      url,
-      {
-        headers: {
-          Authorization: `Basic ${basicAuth}`,
-        },
+
+  const { processedResponse, httpResponse } = await handleHttpRequest(
+    'get',
+    url,
+    {
+      headers: {
+        Authorization: `Basic ${basicAuth}`,
       },
-      { destType: 'mailchimp', feature: 'transformation' },
-    );
-    if (response?.data?.contact_id) {
-      userStatus.exists = true;
-      userStatus.subscriptionStatus = response.data.status;
-    }
-  } catch (error) {
-    logger.info(`[Mailchimp] :: Email does not exists, Error: ${error.message}`);
+    },
+    {
+      metadata,
+      destType: 'mailchimp',
+      feature: 'transformation',
+      endpointPath: '/lists/audienceId/members/email',
+      requestMethod: 'GET',
+      module: 'router',
+    },
+  );
+  if (!httpResponse.success) {
+    logger.info(`[Mailchimp] :: Email does not exists, Error: ${httpResponse.response?.message}`);
+    return userStatus;
+  }
+  if (processedResponse.response.contact_id) {
+    userStatus.exists = true;
+    userStatus.subscriptionStatus = processedResponse.response.status;
   }
   return userStatus;
 };
@@ -182,27 +191,35 @@ const checkIfMailExists = async (apiKey, datacenterId, audienceId, email) => {
  * @param {*} audienceId
  * @returns
  */
-const checkIfDoubleOptIn = async (apiKey, datacenterId, audienceId) => {
-  let response;
+const checkIfDoubleOptIn = async (apiKey, datacenterId, audienceId, metadata) => {
   const url = `${getMailChimpBaseEndpoint(datacenterId, audienceId)}`;
   const basicAuth = Buffer.from(`apiKey:${apiKey}`).toString('base64');
-  try {
-    response = await myAxios.get(
-      url,
-      {
-        headers: {
-          Authorization: `Basic ${basicAuth}`,
-        },
+  const { httpResponse, processedResponse } = await handleHttpRequest(
+    'get',
+    url,
+    {
+      headers: {
+        Authorization: `Basic ${basicAuth}`,
       },
-      { destType: 'mailchimp', feature: 'transformation' },
-    );
-  } catch (error) {
+    },
+    {
+      metadata,
+      destType: 'mailchimp',
+      feature: 'transformation',
+      endpointPath: '/lists/audienceId',
+      requestMethod: 'GET',
+      module: 'router',
+    },
+  );
+  if (!httpResponse.success) {
+    const error = httpResponse.response?.response;
     const status = error.status || 400;
     throw new NetworkError('User does not have access to the requested operation', status, {
       [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
     });
   }
-  return !!response.data.double_optin;
+
+  return !!processedResponse.response?.double_optin;
 };
 
 /**
@@ -301,7 +318,7 @@ const overrideSubscriptionStatus = (message, primaryPayload, userStatus) => {
  * @param {*} audienceId
  * @returns
  */
-const processPayload = async (message, Config, audienceId) => {
+const processPayload = async (message, Config, audienceId, metadata) => {
   let primaryPayload;
   let email;
   const { apiKey, datacenterId, enableMergeFields } = Config;
@@ -339,10 +356,10 @@ const processPayload = async (message, Config, audienceId) => {
         merge_fields: mergeAdditionalTraitsFields(traits, mergedFieldPayload),
       };
     }
-    const userStatus = await checkIfMailExists(apiKey, datacenterId, audienceId, email);
+    const userStatus = await checkIfMailExists(apiKey, datacenterId, audienceId, email, metadata);
 
     if (!userStatus.exists) {
-      const isDoubleOptin = await checkIfDoubleOptIn(apiKey, datacenterId, audienceId);
+      const isDoubleOptin = await checkIfDoubleOptIn(apiKey, datacenterId, audienceId, metadata);
       primaryPayload.status = isDoubleOptin
         ? SUBSCRIPTION_STATUS.pending
         : SUBSCRIPTION_STATUS.subscribed;

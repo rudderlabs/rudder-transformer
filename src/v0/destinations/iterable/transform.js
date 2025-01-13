@@ -1,5 +1,6 @@
 const lodash = require('lodash');
 const get = require('get-value');
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const {
   getCatalogEndpoint,
   hasMultipleResponses,
@@ -13,11 +14,11 @@ const {
   filterEventsAndPrepareBatchRequests,
   registerDeviceTokenEventPayloadBuilder,
   registerBrowserTokenEventPayloadBuilder,
+  getCategoryWithEndpoint,
 } = require('./util');
 const {
   constructPayload,
   defaultRequestConfig,
-  checkInvalidRtTfEvents,
   defaultPostRequestConfig,
   handleRtTfSingleEventError,
   removeUndefinedAndNullValues,
@@ -26,7 +27,6 @@ const {
 } = require('../../util');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 const { mappingConfig, ConfigCategory } = require('./config');
-const { InstrumentationError } = require('../../util/errorTypes');
 const { EventType, MappedToDestinationKey } = require('../../../constants');
 
 /**
@@ -117,12 +117,11 @@ const responseBuilderForRegisterDeviceOrBrowserTokenEvents = (message, destinati
 
 /**
  * Function to find category value
- * @param {*} messageType
  * @param {*} message
  * @returns
  */
-const getCategory = (messageType, message) => {
-  const eventType = messageType.toLowerCase();
+const getCategory = (message, dataCenter) => {
+  const eventType = message.type.toLowerCase();
 
   switch (eventType) {
     case EventType.IDENTIFY:
@@ -130,17 +129,17 @@ const getCategory = (messageType, message) => {
         get(message, MappedToDestinationKey) &&
         getDestinationExternalIDInfoForRetl(message, 'ITERABLE').objectType !== 'users'
       ) {
-        return ConfigCategory.CATALOG;
+        return getCategoryWithEndpoint(ConfigCategory.CATALOG, dataCenter);
       }
-      return ConfigCategory.IDENTIFY;
+      return getCategoryWithEndpoint(ConfigCategory.IDENTIFY, dataCenter);
     case EventType.PAGE:
-      return ConfigCategory.PAGE;
+      return getCategoryWithEndpoint(ConfigCategory.PAGE, dataCenter);
     case EventType.SCREEN:
-      return ConfigCategory.SCREEN;
+      return getCategoryWithEndpoint(ConfigCategory.SCREEN, dataCenter);
     case EventType.TRACK:
-      return getCategoryUsingEventName(message);
+      return getCategoryUsingEventName(message, dataCenter);
     case EventType.ALIAS:
-      return ConfigCategory.ALIAS;
+      return getCategoryWithEndpoint(ConfigCategory.ALIAS, dataCenter);
     default:
       throw new InstrumentationError(`Message type ${eventType} not supported`);
   }
@@ -151,8 +150,7 @@ const process = (event) => {
   if (!message.type) {
     throw new InstrumentationError('Event type is required');
   }
-  const messageType = message.type.toLowerCase();
-  const category = getCategory(messageType, message);
+  const category = getCategory(message, destination.Config.dataCenter);
   const response = responseBuilder(message, category, destination);
 
   if (hasMultipleResponses(message, category, destination.Config)) {
@@ -162,11 +160,6 @@ const process = (event) => {
 };
 
 const processRouterDest = async (inputs, reqMetadata) => {
-  const errorRespEvents = checkInvalidRtTfEvents(inputs);
-  if (errorRespEvents.length > 0) {
-    return errorRespEvents;
-  }
-
   const batchedEvents = batchEvents(inputs);
   const response = await Promise.all(
     batchedEvents.map(async (listOfEvents) => {

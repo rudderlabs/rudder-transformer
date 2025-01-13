@@ -1,0 +1,98 @@
+bindings:
+  - name: EventType
+    path: ../../../../constants
+  - path: ../../bindings/jsontemplate
+  - name: defaultRequestConfig
+    path: ../../../../v0/util
+  - name: removeUndefinedAndNullValues
+    path: ../../../../v0/util
+  - name: isDefinedAndNotNull
+    path: ../../../../v0/util
+  - path: ./utils
+  - name: getDestinationExternalID
+    path: ../../../../v0/util
+  - name: base64Convertor
+    path: ../../../../v0/util
+  - path: ./config
+
+steps:
+  - name: messageType
+    template: |
+      .message.type.toLowerCase();
+  - name: validateInput
+    template: |
+      let messageType = $.outputs.messageType;
+      $.assert(messageType, "message Type is not present. Aborting");
+      $.assert(messageType in {{$.EventType.([.TRACK,.IDENTIFY])}}, "message type " + messageType + " is not supported");
+      $.assertConfig(.destination.Config.clicksendUsername, "Clicksend user name is not present. Aborting");
+      $.assertConfig(.destination.Config.clicksendPassword, "Click send password is not present. Aborting");
+  - name: prepareIdentifyPayload
+    condition: $.outputs.messageType === {{$.EventType.IDENTIFY}}
+    template: |
+      const payload = .message.({
+           email: {{{{$.getGenericPaths("emailOnly")}}}},
+           phone_number: {{{{$.getGenericPaths("phone")}}}},
+           first_name: {{{{$.getGenericPaths("firstName")}}}},
+           last_name: {{{{$.getGenericPaths("lastName")}}}},
+           address_line_1:  .traits.address_line_1 || .context.traits.address_line_1 || JSON.stringify({{{{$.getGenericPaths("address")}}}}) ,
+           address_line_2:  .traits.address_line_2 || .context.traits.address_line_2 || JSON.stringify({{{{$.getGenericPaths("address")}}}}) ,
+           city: {{{{$.getGenericPaths("city")}}}},
+           state: {{{{$.getGenericPaths("state")}}}},
+           country: {{{{$.getGenericPaths("country")}}}},
+           fax_number: .traits.fax_number || .context.traits.fax_number,
+           organization_name: .traits.fax_number || .context.traits.fax_number,
+         });
+      $.validateIdentifyPayload(payload);
+      payload.contact_id = $.getDestinationExternalID(.message,'CLICKSEND_CONTACT_ID');
+      const contactList = $.getDestinationExternalID(.message,'CLICKSEND_CONTACT_LIST_ID');
+      $.assert(contactList, "externalId does not contain contact list Id of Clicksend. Aborting.");
+      $.context.endPoint = $.getEndIdentifyPoint(payload.contact_id, contactList);
+      $.context.payload = $.removeUndefinedAndNullValues(payload);
+      $.context.method = payload.contact_id ? 'PUT' : 'POST';
+  - name: prepareTrackPayload
+    condition: $.outputs.messageType === {{$.EventType.TRACK}}
+    steps:
+      - name: sendSmsCampaignPayload
+        condition: $.isDefinedAndNotNull($.getDestinationExternalID(^.message,'CLICKSEND_CONTACT_LIST_ID'))
+        template: |
+          const sendCampaignPayload = .message.({
+            list_id : parseInt($.getDestinationExternalID(^.message,'CLICKSEND_CONTACT_LIST_ID'), 10),
+            name : String(.properties.name),
+            body : String(.properties.body),
+            from : $.getDestinationExternalID(^.message,'CLICKSEND_SENDER_ID') ||  ^.destination.Config.defaultSenderId,
+            schedule : $.deduceSchedule(.properties.schedule,{{{{$.getGenericPaths("timestamp")}}}}, ^.destination.Config)
+            });
+            $.assert(!Number.isNaN(sendCampaignPayload.list_id), "list_id must be an integer");
+            $.validateTrackSMSCampaignPayload(sendCampaignPayload);
+            $.context.payload = $.removeUndefinedAndNullValues(sendCampaignPayload);
+            $.context.endPoint = $.SMS_CAMPAIGN_ENDPOINT;
+            $.context.method =  'POST';
+        else:
+          name: sendSmsPayload
+          template: |
+            const sendSmsPayload = .message.({
+            from: $.getDestinationExternalID(^.message,'CLICKSEND_SENDER_ID') ||  ^.destination.Config.defaultSenderId,
+            email: {{{{$.getGenericPaths("emailOnly")}}}},
+            to: {{{{$.getGenericPaths("phone")}}}},
+            body: .properties.body,
+            source: .properties.source ||  ^.destination.Config.defaultSource,
+            schedule: $.deduceSchedule(.properties.schedule, {{{{$.getGenericPaths("timestamp")}}}}, ^.destination.Config),
+            custom_string: .properties.custom_string,
+            country: {{{{$.getGenericPaths("country")}}}},
+            from_email: .properties.from_email
+            });
+            $.assert((sendSmsPayload.from && sendSmsPayload.to && sendSmsPayload.body), "all of sender email, phone and body needs to be present for track call");
+            $.context.payload = $.removeUndefinedAndNullValues(sendSmsPayload);
+            $.context.endPoint = $.SMS_SEND_ENDPOINT;
+            $.context.method =  'POST';
+  - name: buildResponse
+    template: |
+      const response = $.defaultRequestConfig();
+      response.body.JSON = $.context.payload;
+      response.endpoint = $.context.endPoint;
+      response.method = $.context.method;
+      response.headers = {
+       Authorization : "Basic " + $.base64Convertor(.destination.Config.clicksendUsername + ":" + .destination.Config.clicksendPassword),
+       "Content-Type" : "application/json",
+      };
+      response

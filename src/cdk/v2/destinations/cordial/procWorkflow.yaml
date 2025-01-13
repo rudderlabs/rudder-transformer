@@ -1,0 +1,113 @@
+bindings:
+  - name: EventType
+    path: ../../../../constants
+  - path: ../../bindings/jsontemplate
+    exportAll: true
+  - name: getHashFromArray
+    path: ../../../../v0/util
+  - name: getIntegrationsObj
+    path: ../../../../v0/util
+  - name: getDestinationExternalID
+    path: ../../../../v0/util
+  - name: removeUndefinedAndNullValues
+    path: ../../../../v0/util
+  - name: defaultRequestConfig
+    path: ../../../../v0/util
+  - name: base64Convertor
+    path: ../../../../v0/util
+  - name: constructPayload
+    path: ../../../../v0/util
+  - name: removeEmptyKey
+    path: ../../../../v0/util
+  - name: CommonUtils
+    path: ../../../../util/common
+  - path: ./utils
+  - path: ./config
+
+steps:
+  - name: checkIfProcessed
+    condition: .message.statusCode
+    template: |
+      $.batchMode ? .message.body.JSON : .message
+    onComplete: return
+
+  - name: messageType
+    template: |
+      $.context.messageType = .message.type.toLowerCase();
+
+  - name: validateConfig
+    template: |
+      $.assertConfig(.destination.Config.apiKey, "API Key is not present. Aborting");
+      $.assertConfig(.destination.Config.apiBaseUrl, "API Base URl is not present. Aborting");
+
+  - name: validateMessageType
+    template: |
+      let messageType = $.context.messageType;
+      $.assert(messageType, "message Type is not present. Aborting");
+      $.assert(messageType in {{$.EventType.([.TRACK, .IDENTIFY])}}, "message type " + messageType + " is not supported");
+
+  - name: getContactId
+    template: |
+      $.getDestinationExternalID(.message,'cordialContactId');
+
+  - name: getContactEmail
+    template: |
+      .message.().({{{{$.getGenericPaths("emailOnly")}}}});
+
+  - name: validateEventPayload
+    template: |
+      $.assert($.outputs.getContactId || $.outputs.getContactEmail, "Either one of cordial contact id or email is required. Aborting");
+
+  - name: buildIdentifyPayload
+    condition: $.context.messageType in [{{$.EventType.IDENTIFY}}]
+    steps:
+      - name: checkIfContactExists
+        template: |
+          $.checkIfContactExists(.destination.Config,  $.outputs.getContactId, $.outputs.getContactEmail);
+
+      - name: buildPayload
+        template: |
+          const integrationObj = $.getIntegrationsObj(.message, "cordial");
+          let payload = $.constructPayload(.message, $.IDENTIFY_CONFIG);
+          const traits = .message.().(
+              {{{{$.getGenericPaths("traits")}}}};
+          );
+          payload = {...payload, ...traits};
+          payload = payload{~["email", "subscribeStatus"]};
+          $.context.payload = payload;
+
+      - name: createContact
+        condition: $.outputs.buildIdentifyPayload.checkIfContactExists === false
+        template: |
+          $.context.endpoint = $.getCreateContactEndpoint(.destination.Config);
+          $.context.method = "POST";
+
+      - name: updateContact
+        condition: $.outputs.buildIdentifyPayload.checkIfContactExists === true
+        template: |
+          $.context.endpoint = $.getUpdateContactEndpoint(
+          .destination.Config, $.outputs.getContactId, $.outputs.getContactEmail);
+          $.context.method = "PUT";
+
+  - name: buildTrackPayload
+    condition: $.context.messageType in [{{$.EventType.TRACK}}]
+    template: |
+      let payload = $.constructPayload(.message, $.TRACK_CONFIG);
+      payload.cID = $.outputs.getContactId;
+      payload.cID ? payload = payload{~["email"]} : payload = payload{~["cID"]};
+      $.context.payload = payload;
+      $.context.endpoint = $.getEventsEndpoint(.destination.Config);
+      $.context.method = "POST";
+
+  - name: buildResponseForProcessTransformation
+    template: |
+      const payload = $.context.payload;
+      const response = $.defaultRequestConfig();
+      response.body.JSON = $.removeUndefinedAndNullValues($.removeEmptyKey(payload));
+      response.endpoint = $.context.endpoint;
+      response.method = $.context.method;
+      response.headers = {
+          "Content-Type": "application/json",
+          "Authorization":  "Basic " + $.base64Convertor(.destination.Config.apiKey + ":")
+        };
+      response;

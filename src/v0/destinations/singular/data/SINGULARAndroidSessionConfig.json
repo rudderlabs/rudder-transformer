@@ -42,7 +42,7 @@
   {
     "destKey": "asid",
     "sourceKeys": "properties.asid",
-    "required": true,
+    "required": false,
     "metadata": {
       "defaultValue": ""
     }
@@ -91,12 +91,18 @@
   {
     "destKey": "aifa",
     "sourceKeys": "context.device.advertisingId",
-    "required": true
+    "required": false,
+    "metadata": {
+      "defaultValue": ""
+    }
   },
   {
     "destKey": "andi",
     "sourceKeys": "context.device.id",
-    "required": true
+    "required": false,
+    "metadata": {
+      "defaultValue": ""
+    }
   },
   {
     "destKey": "utime",

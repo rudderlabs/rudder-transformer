@@ -1,5 +1,10 @@
 /* eslint-disable no-param-reassign */
 const get = require('get-value');
+const {
+  NetworkInstrumentationError,
+  InstrumentationError,
+  NetworkError,
+} = require('@rudderstack/integrations-lib');
 const { httpPOST, httpGET } = require('../../../adapters/network');
 const {
   processAxiosResponse,
@@ -10,11 +15,6 @@ const {
   defaultPostRequestConfig,
   getFieldValueFromMessage,
 } = require('../../util');
-const {
-  NetworkInstrumentationError,
-  InstrumentationError,
-  NetworkError,
-} = require('../../util/errorTypes');
 const { CONFIG_CATEGORIES, LIFECYCLE_STAGE_ENDPOINT } = require('./config');
 const tags = require('../../util/tags');
 const { JSON_MIME_TYPE } = require('../../util/constant');
@@ -35,7 +35,7 @@ const getHeaders = (apiKey) => {
  * @returns
  * ref: https://developers.freshworks.com/crm/api/#upsert_an_account
  */
-const createUpdateAccount = async (payload, Config) => {
+const createUpdateAccount = async (payload, Config, metadata) => {
   const requestOptions = {
     headers: getHeaders(Config.apiKey),
   };
@@ -47,6 +47,10 @@ const createUpdateAccount = async (payload, Config) => {
   let accountResponse = await httpPOST(endPoint, payloadBody, requestOptions, {
     destType: 'freshsales',
     feature: 'transformation',
+    endpointPath: `/crm/sales/api/sales_accounts/upsert`,
+    requestMethod: 'POST',
+    module: 'router',
+    metadata,
   });
   accountResponse = processAxiosResponse(accountResponse);
   if (accountResponse.status !== 200 && accountResponse.status !== 201) {
@@ -74,7 +78,7 @@ const createUpdateAccount = async (payload, Config) => {
  * @returns
  * ref: https://developers.freshworks.com/crm/api/#upsert_a_contact
  */
-const getUserAccountDetails = async (payload, userEmail, Config) => {
+const getUserAccountDetails = async (payload, userEmail, Config, metadata) => {
   const requestOptions = {
     headers: getHeaders(Config.apiKey),
   };
@@ -90,6 +94,10 @@ const getUserAccountDetails = async (payload, userEmail, Config) => {
   let userSalesAccountResponse = await httpPOST(endPoint, userPayload, requestOptions, {
     destType: 'freshsales',
     feature: 'transformation',
+    endpointPath: `/crm/sales/api/contacts/upsert?include=sales_accounts`,
+    requestMethod: 'POST',
+    module: 'router',
+    metadata,
   });
   userSalesAccountResponse = processAxiosResponse(userSalesAccountResponse);
   if (userSalesAccountResponse.status !== 200 && userSalesAccountResponse.status !== 201) {
@@ -108,7 +116,7 @@ const getUserAccountDetails = async (payload, userEmail, Config) => {
   if (!accountDetails) {
     throw new NetworkInstrumentationError('Fails in fetching user accountDetails');
   }
-  const accountId = await createUpdateAccount(payload, Config);
+  const accountId = await createUpdateAccount(payload, Config, metadata);
   const accountDetail = {
     id: accountId,
     is_primary: false,
@@ -129,7 +137,7 @@ const getUserAccountDetails = async (payload, userEmail, Config) => {
  * @returns
  * ref: https://developers.freshworks.com/crm/api/#upsert_a_contact
  */
-const getContactsDetails = async (userEmail, Config) => {
+const getContactsDetails = async (userEmail, Config, metadata) => {
   const requestOptions = {
     headers: getHeaders(Config.apiKey),
   };
@@ -145,6 +153,10 @@ const getContactsDetails = async (userEmail, Config) => {
   let userResponse = await httpPOST(endPoint, userPayload, requestOptions, {
     destType: 'freshsales',
     feature: 'transformation',
+    endpointPath: `/crm/sales/api/contacts/upsert`,
+    requestMethod: 'POST',
+    module: 'router',
+    metadata,
   });
   userResponse = processAxiosResponse(userResponse);
   if (userResponse.status !== 200 && userResponse.status !== 201) {
@@ -171,8 +183,14 @@ const getContactsDetails = async (userEmail, Config) => {
  * returns
  */
 
-const responseBuilderWithContactDetails = async (email, Config, payload, salesActivityTypeId) => {
-  const userDetails = await getContactsDetails(email, Config);
+const responseBuilderWithContactDetails = async (
+  email,
+  Config,
+  payload,
+  salesActivityTypeId,
+  metadata,
+) => {
+  const userDetails = await getContactsDetails(email, Config, metadata);
   const userId = userDetails.response?.contact?.id;
   if (!userId) {
     throw new NetworkInstrumentationError('Failed in fetching userId. Aborting!', userDetails);
@@ -192,7 +210,7 @@ const responseBuilderWithContactDetails = async (email, Config, payload, salesAc
  * @param {*} Config - headers, apiKey...
  * ref: https://developers.freshworks.com/crm/api/#list_all_sales_activities
  */
-const UpdateContactWithSalesActivity = async (payload, message, Config) => {
+const UpdateContactWithSalesActivity = async (payload, message, Config, metadata) => {
   const requestOptions = {
     headers: getHeaders(Config.apiKey),
   };
@@ -221,11 +239,12 @@ const UpdateContactWithSalesActivity = async (payload, message, Config) => {
         sales_activity_type_id: payload.sales_activity_type_id,
       };
     } else {
-      responseBody = responseBuilderWithContactDetails(
+      responseBody = await responseBuilderWithContactDetails(
         email,
         Config,
         payload,
         payload.sales_activity_type_id,
+        metadata,
       );
     }
     return responseBody;
@@ -235,6 +254,10 @@ const UpdateContactWithSalesActivity = async (payload, message, Config) => {
   let salesActivityResponse = await httpGET(endPoint, requestOptions, {
     destType: 'freshsales',
     feature: 'transformation',
+    endpointPath: `/crm/sales/api/sales_activity_types`,
+    requestMethod: 'GET',
+    module: 'router',
+    metadata,
   });
   salesActivityResponse = processAxiosResponse(salesActivityResponse);
   if (salesActivityResponse.status !== 200) {
@@ -273,6 +296,7 @@ const UpdateContactWithSalesActivity = async (payload, message, Config) => {
         Config,
         payload,
         salesActivityDetails.id,
+        metadata,
       );
     }
 
@@ -286,7 +310,7 @@ const UpdateContactWithSalesActivity = async (payload, message, Config) => {
  * @param {*} Config - headers, apiKey...
  * ref: https://developers.freshworks.com/crm/api/#admin_configuration
  */
-const UpdateContactWithLifeCycleStage = async (message, Config) => {
+const UpdateContactWithLifeCycleStage = async (message, Config, metadata) => {
   const requestOptions = {
     headers: getHeaders(Config.apiKey),
   };
@@ -314,6 +338,10 @@ const UpdateContactWithLifeCycleStage = async (message, Config) => {
   let lifeCycleStagesResponse = await httpGET(endPoint, requestOptions, {
     destType: 'freshsales',
     feature: 'transformation',
+    endpointPath: `/crm/sales/api/lifecycle_stages`,
+    requestMethod: 'GET',
+    module: 'router',
+    metadata,
   });
   lifeCycleStagesResponse = processAxiosResponse(lifeCycleStagesResponse);
   if (lifeCycleStagesResponse.status !== 200) {

@@ -1,0 +1,62 @@
+{
+  "name": "signl4",
+  "description": "test-8",
+  "input": {
+    "request": {
+      "body": {
+        "eventType": 303,
+        "eventRaisedUtc": "2017-09-01T09:16:17.3717355Z",
+        "team": {
+          "id": "f1801955-4724-44de-902a-f6f02ba9e10f"
+        },
+        "user": {
+          "id": "e31da15f-7e13-43f1-b4a5-1ce3b470a504"
+        },
+        "id": "f56a6b59-1197-4e7d-8eca-8d21a4b57ec3"
+      },
+      "headers": {
+        "Content-Type": "application/json"
+      }
+    }
+  },
+  "output": {
+    "response": {
+      "status": 200,
+      "body": "OK"
+    },
+    "queue": [
+      {
+        "context": {
+          "library": {
+            "name": "unknown",
+            "version": "unknown"
+          },
+          "integration": {
+            "name": "Signl4"
+          },
+          "externalId": [
+            {
+              "type": "signl4UserId",
+              "id": "e31da15f-7e13-43f1-b4a5-1ce3b470a504"
+            }
+          ]
+        },
+        "integrations": {
+          "Signl4": false
+        },
+        "type": "track",
+        "messageId": "f56a6b59-1197-4e7d-8eca-8d21a4b57ec3",
+        "originalTimestamp": "2017-09-01T09:16:17.000Z",
+        "event": "Somebody Punched-Out",
+        "properties": {
+          "eventType": 303,
+          "team.id": "f1801955-4724-44de-902a-f6f02ba9e10f"
+        },
+        "anonymousId": "97fcd7b2-cc24-47d7-b776-057b7b199513",
+        "receivedAt": "2024-03-03T04:48:29.000Z",
+        "request_ip": "192.0.2.30"
+      }
+    ],
+    "errQueue": []
+  }
+}

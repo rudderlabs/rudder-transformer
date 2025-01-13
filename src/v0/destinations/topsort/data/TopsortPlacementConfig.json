@@ -1,0 +1,36 @@
+[
+  {
+    "destKey": "path",
+    "sourceKeys": "context.page.path",
+    "required": false
+  },
+  {
+    "destKey": "searchQuery",
+    "sourceKeys": "properties.query",
+    "required": false
+  },
+  {
+    "destKey": "page",
+    "sourceKeys": "properties.pageNumber",
+    "metadata": {
+      "toInt": true
+    },
+    "required": false
+  },
+  {
+    "destKey": "pageSize",
+    "sourceKeys": "properties.pageSize",
+    "metadata": {
+      "toInt": true
+    },
+    "required": false
+  },
+  {
+    "destKey": "categoryIds",
+    "sourceKeys": "properties.category_id",
+    "required": false,
+    "metadata": {
+      "toArray": true
+    }
+  }
+]

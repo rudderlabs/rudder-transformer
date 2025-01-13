@@ -1,4 +1,5 @@
 const get = require('get-value');
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const { removeUndefinedValues, simpleProcessRouterDest } = require('../../util');
 const {
   handleProductViewed,
@@ -11,7 +12,6 @@ const {
 } = require('./utils');
 const { EventType } = require('../../../constants');
 const { mappingConfig } = require('./config');
-const { InstrumentationError } = require('../../util/errorTypes');
 
 function track(message, destination) {
   const rawPayload = constructPayload(message, mappingConfig.MONETATETrack);

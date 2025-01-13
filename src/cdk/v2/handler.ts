@@ -1,9 +1,9 @@
 import {
-  WorkflowEngine,
-  WorkflowEngineFactory,
-  TemplateType,
   ExecutionBindings,
   StepOutput,
+  TemplateType,
+  WorkflowEngine,
+  WorkflowEngineFactory,
 } from '@rudderstack/workflow-engine';
 import { FixMe } from '../../util/types';
 
@@ -11,11 +11,13 @@ import tags from '../../v0/util/tags';
 
 import {
   getErrorInfo,
+  getPlatformBindingsPaths,
   getRootPathForDestination,
   getWorkflowPath,
-  getPlatformBindingsPaths,
   isCdkV2Destination,
 } from './utils';
+
+import logger from '../../logger';
 
 const defTags = {
   [tags.TAG_NAMES.IMPLEMENTATION]: tags.IMPLEMENTATIONS.CDK_V2,
@@ -50,39 +52,46 @@ export async function getWorkflowEngine(
 
 const workflowEnginePromiseMap = new Map();
 
-export function getCachedWorkflowEngine(
+export async function getCachedWorkflowEngine(
   destName: string,
   feature: string,
   bindings: Record<string, unknown> = {},
-): WorkflowEngine {
+): Promise<WorkflowEngine> {
   // Create a new instance of the engine for the destination if needed
   // TODO: Use cache to avoid long living engine objects
   workflowEnginePromiseMap[destName] = workflowEnginePromiseMap[destName] || new Map();
   if (!workflowEnginePromiseMap[destName][feature]) {
-    workflowEnginePromiseMap[destName][feature] = getWorkflowEngine(destName, feature, bindings);
+    workflowEnginePromiseMap[destName][feature] = await getWorkflowEngine(
+      destName,
+      feature,
+      bindings,
+    );
   }
   return workflowEnginePromiseMap[destName][feature];
 }
 
-export async function executeWorkflow(workflowEngine: WorkflowEngine, parsedEvent: FixMe) {
-  try {
-    const result = await workflowEngine.execute(parsedEvent);
-    // TODO: Handle remaining output scenarios
-    return result.output;
-  } catch (error) {
-    throw getErrorInfo(error, isCdkV2Destination(parsedEvent), defTags);
-  }
+export async function executeWorkflow(
+  workflowEngine: WorkflowEngine,
+  parsedEvent: FixMe,
+  requestMetadata: NonNullable<unknown> = {},
+) {
+  const result = await workflowEngine.execute(parsedEvent, { requestMetadata });
+  // TODO: Handle remaining output scenarios
+  return result.output;
 }
 
 export async function processCdkV2Workflow(
   destType: string,
   parsedEvent: FixMe,
   feature: string,
+  requestMetadata: NonNullable<unknown> = {},
   bindings: Record<string, FixMe> = {},
 ) {
   try {
+    logger.debug(`Processing cdkV2 workflow`, { destType });
+
     const workflowEngine = await getCachedWorkflowEngine(destType, feature, bindings);
-    return await executeWorkflow(workflowEngine, parsedEvent);
+    return await executeWorkflow(workflowEngine, parsedEvent, requestMetadata);
   } catch (error) {
     throw getErrorInfo(error, isCdkV2Destination(parsedEvent), defTags);
   }
@@ -96,5 +105,8 @@ export function executeStep(
 ): Promise<StepOutput> {
   return workflowEngine
     .getStepExecutor(stepName)
-    .execute(input, Object.assign(workflowEngine.bindings, getEmptyExecutionBindings(), bindings));
+    .execute(
+      input,
+      Object.assign(workflowEngine.getBindings(), getEmptyExecutionBindings(), bindings),
+    );
 }

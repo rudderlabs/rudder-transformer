@@ -1,3 +1,4 @@
+const { NetworkError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const { httpPOST } = require('../../../adapters/network');
 const { getEndpoint, DEL_MAX_BATCH_SIZE } = require('./config');
 const {
@@ -6,7 +7,6 @@ const {
 } = require('../../../adapters/utils/networkUtils');
 const { isHttpStatusSuccess } = require('../../util');
 const { executeCommonValidations } = require('../../util/regulation-api');
-const { NetworkError, ConfigurationError } = require('../../util/errorTypes');
 const tags = require('../../util/tags');
 const { getUserIdBatches } = require('../../util/deleteUserUtils');
 const { JSON_MIME_TYPE } = require('../../util/constant');
@@ -53,6 +53,8 @@ const userDeletionHandler = async (userAttributes, config) => {
         destType: 'clevertap',
         feature: 'deleteUsers',
         endpointPath,
+        requestMethod: 'POST',
+        module: 'deletion',
       },
     );
     const handledDelResponse = processAxiosResponse(deletionResponse);
@@ -62,6 +64,7 @@ const userDeletionHandler = async (userAttributes, config) => {
         handledDelResponse.status,
         {
           [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(handledDelResponse.status),
+          [tags.TAG_NAMES.STATUS]: handledDelResponse.status,
         },
         handledDelResponse,
       );

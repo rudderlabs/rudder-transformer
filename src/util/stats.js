@@ -4,6 +4,8 @@ const logger = require('../logger');
 
 const enableStats = process.env.ENABLE_STATS !== 'false';
 const statsClientType = process.env.STATS_CLIENT || 'statsd';
+// summary metrics are enabled by default. To disable set ENABLE_SUMMARY_METRICS='false'.
+const enableSummaryMetrics = process.env.ENABLE_SUMMARY_METRICS !== 'false';
 
 let statsClient;
 function init() {
@@ -11,14 +13,21 @@ function init() {
     return;
   }
 
-  if (statsClientType === 'statsd') {
-    statsClient = new statsd.Statsd();
-    logger.info('created statsd client');
-  } else if (statsClientType === 'prometheus') {
-    statsClient = new prometheus.Prometheus();
-    logger.info('created prometheus client');
-  } else {
-    logger.info("Invalid stats client type. Valid values are 'statsd' and 'prometheus'.");
+  switch (statsClientType) {
+    case 'statsd':
+      logger.info('setting up statsd client');
+      statsClient = new statsd.Statsd();
+      break;
+
+    case 'prometheus':
+      logger.info('setting up prometheus client');
+      statsClient = new prometheus.Prometheus(enableSummaryMetrics);
+      break;
+
+    default:
+      logger.error(
+        `invalid stats client type: ${statsClientType}, supported values are 'statsd' and 'prometheues'`,
+      );
   }
 }
 
@@ -29,6 +38,23 @@ const timing = (name, start, tags = {}) => {
   }
 
   statsClient.timing(name, start, tags);
+};
+
+// timingSummary is used to record observations for a summary metric
+const timingSummary = (name, start, tags = {}) => {
+  if (!enableStats || !statsClient || !enableSummaryMetrics) {
+    return;
+  }
+
+  statsClient.timingSummary(name, start, tags);
+};
+
+const summary = (name, value, tags = {}) => {
+  if (!enableStats || !statsClient) {
+    return;
+  }
+
+  statsClient.summary(name, value, tags);
 };
 
 const increment = (name, tags = {}) => {
@@ -79,6 +105,44 @@ async function metricsController(ctx) {
   ctx.body = `Not supported`;
 }
 
+async function resetMetricsController(ctx) {
+  if (!enableStats || !statsClient) {
+    ctx.status = 501;
+    ctx.body = `Not supported`;
+    return;
+  }
+
+  if (statsClientType === 'prometheus') {
+    await statsClient.resetMetricsController(ctx);
+    return;
+  }
+
+  ctx.status = 501;
+  ctx.body = `Not supported`;
+}
+
+async function shutdownMetricsClient() {
+  if (!enableStats || !statsClient) {
+    return;
+  }
+
+  if (statsClientType === 'prometheus') {
+    await statsClient.shutdown();
+  }
+}
+
 init();
 
-module.exports = { init, timing, increment, counter, gauge, histogram, metricsController };
+module.exports = {
+  init,
+  timing,
+  timingSummary,
+  summary,
+  increment,
+  counter,
+  gauge,
+  histogram,
+  metricsController,
+  resetMetricsController,
+  shutdownMetricsClient,
+};

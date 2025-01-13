@@ -22,7 +22,7 @@ logger.info(`Interval Bytes set: ${intervalBytes}`);
 
 heap.start(intervalBytes, stackDepth);
 
-export default class ProfileService {
+export class ProfileService {
   private static async promisifiedRead(readable: any) {
     // eslint-disable-next-line no-new
     new Promise((resolve, reject) => {

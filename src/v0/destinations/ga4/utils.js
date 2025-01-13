@@ -1,4 +1,8 @@
+/* eslint-disable no-param-reassign */
+/* eslint-disable no-plusplus */
 const get = require('get-value');
+const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
+const { cloneDeep } = require('lodash');
 const {
   isEmpty,
   constructPayload,
@@ -6,9 +10,15 @@ const {
   isEmptyObject,
   extractCustomFields,
   isDefinedAndNotNull,
+  getIntegrationsObj,
+  getDestinationExternalID,
+  isHybridModeEnabled,
+  defaultPostRequestConfig,
+  defaultRequestConfig,
 } = require('../../util');
-const { InstrumentationError } = require('../../util/errorTypes');
-const { mappingConfig, ConfigCategory } = require('./config');
+const { mappingConfig, ConfigCategory, DEBUG_ENDPOINT, ENDPOINT } = require('./config');
+const { finaliseAnalyticsConsents } = require('../../util/googleUtils');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 /**
  * Reserved event names cannot be used
@@ -166,13 +176,15 @@ const GA4_ITEM_EXCLUSION = [
 ];
 
 /**
- * Remove arrays and objects from transformed payload 
- * @param {*} params 
- * @returns 
+ * Remove arrays and objects from transformed payload
+ * @param {*} params
+ * @returns
  */
 const removeInvalidParams = (params) =>
   Object.fromEntries(
-    Object.entries(params).filter(([key, value]) => key === 'items' || (typeof value !== 'object' && !isEmpty(value))),
+    Object.entries(params).filter(
+      ([key, value]) => key === 'items' || (typeof value !== 'object' && !isEmpty(value)),
+    ),
   );
 
 /**
@@ -244,10 +256,10 @@ const getItem = (message, isItemsRequired) => {
 
 /**
  * Returns items array for ga4 event payload
- * @param {*} message 
- * @param {*} item 
- * @param {*} itemList 
- * @returns 
+ * @param {*} message
+ * @param {*} item
+ * @param {*} itemList
+ * @returns
  */
 const getItemsArray = (message, item, itemList) => {
   let items = [];
@@ -269,7 +281,7 @@ const getItemsArray = (message, item, itemList) => {
   }
 
   return { items, mapRootLevelPropertiesToGA4ItemsArray };
-}
+};
 /**
  * get exclusion list for a particular event
  * ga4ExclusionList contains the sourceKeys that are already mapped
@@ -398,13 +410,25 @@ const isValidUserProperty = (key, value) => {
 /**
  * Function to validate and prepare user_properties
  * @param {*} message
+ * @param {*} piiPropertiesToIgnore
+ * @returns
  */
-const prepareUserProperties = (message) => {
+const prepareUserProperties = (message, piiPropertiesToIgnore = []) => {
+  // Exclude PII user traits
+  const piiProperties = [];
+  if (piiPropertiesToIgnore.length > 0) {
+    piiPropertiesToIgnore.forEach((property) => {
+      if (typeof property.piiProperty === 'string' && property.piiProperty.trim() !== '') {
+        piiProperties.push(property.piiProperty.trim());
+      }
+    });
+  }
+
   const userProperties = extractCustomFields(
     message,
     {},
     ['properties.user_properties', 'context.traits'],
-    GA4_RESERVED_USER_PROPERTY_EXCLUSION,
+    [...GA4_RESERVED_USER_PROPERTY_EXCLUSION, ...piiProperties],
   );
 
   const validatedUserProperties = Object.entries(userProperties)
@@ -418,20 +442,176 @@ const prepareUserProperties = (message) => {
   return validatedUserProperties;
 };
 
+/**
+ * Returns user consents
+ * Ref : https://developers.google.com/analytics/devguides/collection/protocol/ga4/reference?client_type=gtag#payload_consent
+ * @param {*} message
+ * @returns
+ */
+const prepareUserConsents = (message, destType = 'ga4') => {
+  const integrationObj = getIntegrationsObj(message, destType) || {};
+  const eventLevelConsentsData = integrationObj?.consents || {};
+  const consentConfigMap = {
+    analyticsPersonalizationConsent: 'ad_user_data',
+    analyticsUserDataConsent: 'ad_personalization',
+  };
+
+  const consents = finaliseAnalyticsConsents(consentConfigMap, eventLevelConsentsData);
+  return consents;
+};
+
+const basicValidation = (event) => {
+  if (!event) {
+    throw new InstrumentationError('Event name is required');
+  }
+  if (typeof event !== 'string') {
+    throw new InstrumentationError('track:: event name should be string');
+  }
+};
+
+/**
+ * returns client_id
+ * @param {*} message
+ * @returns
+ */
+const getGA4ClientId = (message, Config, destType) => {
+  let clientId;
+
+  if (isHybridModeEnabled(Config)) {
+    const integrationsObj = getIntegrationsObj(message, destType);
+    if (integrationsObj?.clientId) {
+      clientId = integrationsObj.clientId;
+    }
+  }
+
+  if (!clientId) {
+    clientId =
+      getDestinationExternalID(message, 'ga4ClientId') ||
+      get(message, 'anonymousId') ||
+      get(message, 'rudderId');
+  }
+
+  return clientId;
+};
+
+const addClientDetails = (payload, message, Config, destType = 'ga4') => {
+  const { typesOfClient } = Config;
+  const rawPayload = cloneDeep(payload);
+  switch (typesOfClient) {
+    case 'gtag':
+      // gtag.js uses client_id
+      // GA4 uses it as an identifier to distinguish site visitors.
+      rawPayload.client_id = getGA4ClientId(message, Config, destType);
+      if (!isDefinedAndNotNull(rawPayload.client_id)) {
+        throw new ConfigurationError('ga4ClientId, anonymousId or messageId must be provided');
+      }
+      break;
+    case 'firebase':
+      // firebase uses app_instance_id
+      rawPayload.app_instance_id = getDestinationExternalID(message, 'ga4AppInstanceId');
+      if (!isDefinedAndNotNull(rawPayload.app_instance_id)) {
+        throw new InstrumentationError('ga4AppInstanceId must be provided under externalId');
+      }
+      break;
+    default:
+      throw new ConfigurationError('Invalid type of client');
+  }
+  return rawPayload;
+};
+
+const buildDeliverablePayload = (payload, Config) => {
+  // build response
+  const response = defaultRequestConfig();
+  response.method = defaultPostRequestConfig.requestMethod;
+  // if debug_mode is true, we need to send the event to debug validation server
+  // ref: https://developers.google.com/analytics/devguides/collection/protocol/ga4/validating-events?client_type=firebase#sending_events_for_validation
+  if (Config.debugMode) {
+    response.endpoint = DEBUG_ENDPOINT;
+  } else {
+    response.endpoint = ENDPOINT;
+  }
+  response.headers = {
+    HOST: 'www.google-analytics.com',
+    'Content-Type': JSON_MIME_TYPE,
+  };
+  response.params = {
+    api_secret: Config.apiSecret,
+  };
+
+  // setting response params as per client type
+  switch (Config.typesOfClient) {
+    case 'gtag':
+      response.params.measurement_id = Config.measurementId;
+      break;
+    case 'firebase':
+      response.params.firebase_app_id = Config.firebaseAppId;
+      break;
+    default:
+      break;
+  }
+
+  response.body.JSON = payload;
+  return response;
+};
+
+function sanitizeUserProperties(userPropertiesObj) {
+  const sanitizedObj = {};
+  // eslint-disable-next-line no-restricted-syntax, guard-for-in
+  for (const key in userPropertiesObj) {
+    const { value } = userPropertiesObj[key];
+    if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
+      sanitizedObj[key] = { value };
+    }
+  }
+  return sanitizedObj;
+}
+
+const basicConfigvalidaiton = (Config) => {
+  if (!Config.typesOfClient) {
+    throw new ConfigurationError('Client type not found. Aborting ');
+  }
+  if (!Config.apiSecret) {
+    throw new ConfigurationError('API Secret not found. Aborting ');
+  }
+  if (Config.typesOfClient === 'gtag' && !Config.measurementId) {
+    throw new ConfigurationError('measurementId must be provided. Aborting');
+  }
+  if (Config.typesOfClient === 'firebase' && !Config.firebaseAppId) {
+    throw new ConfigurationError('firebaseAppId must be provided. Aborting');
+  }
+};
+
+const addSessionDetailsForHybridMode = (ga4Payload, message, Config, destType = 'ga4') => {
+  const integrationsObj = getIntegrationsObj(message, destType);
+  if (isHybridModeEnabled(Config) && integrationsObj?.sessionId) {
+    ga4Payload.events[0].params.session_id = `${integrationsObj.sessionId}`;
+  }
+  if (integrationsObj?.sessionNumber) {
+    ga4Payload.events[0].params.session_number = integrationsObj.sessionNumber;
+  }
+};
+
 module.exports = {
+  addClientDetails,
+  basicValidation,
+  buildDeliverablePayload,
+  basicConfigvalidaiton,
   getItem,
   getItemList,
   getItemsArray,
   validateEventName,
+  prepareUserConsents,
   removeInvalidParams,
   isReservedEventName,
   getGA4ExclusionList,
   prepareUserProperties,
   getGA4CustomParameters,
+  sanitizeUserProperties,
   GA4_PARAMETERS_EXCLUSION,
   isReservedWebCustomEventName,
   isReservedWebCustomPrefixName,
   GA4_RESERVED_PARAMETER_EXCLUSION,
   removeReservedParameterPrefixNames,
   GA4_RESERVED_USER_PROPERTY_EXCLUSION,
+  addSessionDetailsForHybridMode,
 };

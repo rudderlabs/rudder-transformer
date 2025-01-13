@@ -1,15 +1,13 @@
-const { httpSend, prepareProxyRequest } = require('../../../adapters/network');
-const {
-  isHttpStatusSuccess,
-  getAuthErrCategoryFromErrDetailsAndStCode,
-} = require('../../util/index');
-
+const { NetworkError } = require('@rudderstack/integrations-lib');
+const get = require('get-value');
+const { prepareProxyRequest, handleHttpRequest } = require('../../../adapters/network');
+const { isHttpStatusSuccess } = require('../../util/index');
 const {
   processAxiosResponse,
   getDynamicErrorType,
 } = require('../../../adapters/utils/networkUtils');
-const { NetworkError } = require('../../util/errorTypes');
 const tags = require('../../util/tags');
+const { getAuthErrCategory } = require('../../util/googleUtils');
 /**
  * This function helps to create a offlineUserDataJobs
  * @param endpoint
@@ -17,28 +15,38 @@ const tags = require('../../util/tags');
  * @param listId
  * @param headers
  * @param method
+ * @consentBlock
+ * ref: https://developers.google.com/google-ads/api/rest/reference/rest/v15/CustomerMatchUserListMetadata
  */
 
-const createJob = async (endpoint, customerId, listId, headers, method) => {
+const createJob = async ({ endpoint, headers, method, params, metadata }) => {
   const jobCreatingUrl = `${endpoint}:create`;
+  const customerMatchUserListMetadata = {
+    userList: `customers/${params.customerId}/userLists/${params.listId}`,
+  };
+  if (Object.keys(params.consent).length > 0) {
+    customerMatchUserListMetadata.consent = params.consent;
+  }
   const jobCreatingRequest = {
     url: jobCreatingUrl,
     data: {
       job: {
         type: 'CUSTOMER_MATCH_USER_LIST',
-        customerMatchUserListMetadata: {
-          userList: `customers/${customerId}/userLists/${listId}`,
-        },
+        customerMatchUserListMetadata,
       },
     },
     headers,
     method,
   };
-  const response = await httpSend(jobCreatingRequest, {
+  const { httpResponse } = await handleHttpRequest('constructor', jobCreatingRequest, {
     destType: 'google_adwords_remarketing_lists',
     feature: 'proxy',
+    endpointPath: '/customers/create',
+    requestMethod: 'POST',
+    module: 'dataDelivery',
+    metadata,
   });
-  return response;
+  return httpResponse;
 };
 /**
  * This function helps to put user details in a offlineUserDataJobs
@@ -49,7 +57,7 @@ const createJob = async (endpoint, customerId, listId, headers, method) => {
  * @param body
  */
 
-const addUserToJob = async (endpoint, headers, method, jobId, body) => {
+const addUserToJob = async ({ endpoint, headers, method, jobId, body, metadata }) => {
   const jobAddingUrl = `${endpoint}/${jobId}:addOperations`;
   const secondRequest = {
     url: jobAddingUrl,
@@ -57,9 +65,13 @@ const addUserToJob = async (endpoint, headers, method, jobId, body) => {
     headers,
     method,
   };
-  const response = await httpSend(secondRequest, {
+  const { httpResponse: response } = await handleHttpRequest('constructor', secondRequest, {
     destType: 'google_adwords_remarketing_lists',
     feature: 'proxy',
+    endpointPath: '/addOperations',
+    requestMethod: 'POST',
+    module: 'dataDelivery',
+    metadata,
   });
   return response;
 };
@@ -71,16 +83,20 @@ const addUserToJob = async (endpoint, headers, method, jobId, body) => {
  * @param method
  * @param jobId
  */
-const runTheJob = async (endpoint, headers, method, jobId) => {
+const runTheJob = async ({ endpoint, headers, method, jobId, metadata }) => {
   const jobRunningUrl = `${endpoint}/${jobId}:run`;
   const thirdRequest = {
     url: jobRunningUrl,
     headers,
     method,
   };
-  const response = await httpSend(thirdRequest, {
+  const { httpResponse: response } = await handleHttpRequest('constructor', thirdRequest, {
     destType: 'google_adwords_remarketing_lists',
     feature: 'proxy',
+    endpointPath: '/run',
+    requestMethod: 'POST',
+    module: 'dataDelivery',
+    metadata,
   });
   return response;
 };
@@ -92,13 +108,12 @@ const runTheJob = async (endpoint, headers, method, jobId) => {
  * @returns
  */
 const gaAudienceProxyRequest = async (request) => {
-  const { body, method, params, endpoint } = request;
+  const { body, method, params, endpoint, metadata } = request;
   const { headers } = request;
-  const { customerId, listId } = params;
 
   // step1: offlineUserDataJobs creation
 
-  const firstResponse = await createJob(endpoint, customerId, listId, headers, method);
+  const firstResponse = await createJob({ endpoint, headers, method, params, metadata });
   if (!firstResponse.success && !isHttpStatusSuccess(firstResponse?.response?.status)) {
     return firstResponse;
   }
@@ -115,7 +130,7 @@ const gaAudienceProxyRequest = async (request) => {
   if (firstResponse?.response?.data?.resourceName)
     // eslint-disable-next-line prefer-destructuring
     jobId = firstResponse.response.data.resourceName.split('/')[3];
-  const secondResponse = await addUserToJob(endpoint, headers, method, jobId, body);
+  const secondResponse = await addUserToJob({ endpoint, headers, method, jobId, body, metadata });
   if (!secondResponse.success && !isHttpStatusSuccess(secondResponse?.response?.status)) {
     return secondResponse;
   }
@@ -128,27 +143,34 @@ const gaAudienceProxyRequest = async (request) => {
   }
 
   // step3: running the job
-  const thirdResponse = await runTheJob(endpoint, headers, method, jobId);
+  const thirdResponse = await runTheJob({ endpoint, headers, method, jobId, metadata });
   return thirdResponse;
 };
 
 const gaAudienceRespHandler = (destResponse, stageMsg) => {
-  const { status, response } = destResponse;
-  // const respAttributes = response["@attributes"] || null;
-  // const { stat, err_code: errorCode } = respAttributes;
+  let { status } = destResponse;
+  const { response } = destResponse;
+
+  if (
+    status === 400 &&
+    get(response, 'error.details.0.errors.0.errorCode.databaseError') === 'CONCURRENT_MODIFICATION'
+  ) {
+    status = 500;
+  }
 
   throw new NetworkError(
-    `${response?.error?.message} ${stageMsg}`,
+    `${JSON.stringify(response)} ${stageMsg}`,
     status,
     {
       [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
     },
     response,
-    getAuthErrCategoryFromErrDetailsAndStCode(status, response),
+    getAuthErrCategory(destResponse),
   );
 };
 
-const responseHandler = (destinationResponse) => {
+const responseHandler = (responseParams) => {
+  const { destinationResponse } = responseParams;
   const message = `Request Processed Successfully`;
   const { status, response } = destinationResponse;
   if (isHttpStatusSuccess(status)) {

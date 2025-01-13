@@ -1,8 +1,9 @@
+const crypto = require('crypto');
 const {
   InstrumentationError,
   ConfigurationError,
   NetworkError,
-} = require('../../../v0/util/errorTypes');
+} = require('@rudderstack/integrations-lib');
 const { isHttpStatusSuccess } = require('../../../v0/util');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const tags = require('../../../v0/util/tags');
@@ -47,7 +48,12 @@ function assertHttpResp(processedResponse, message) {
   }
 }
 
+function MD5(data) {
+  return crypto.createHash('md5').update(data).digest('hex');
+}
+
 module.exports = {
+  MD5,
   isValidEventType,
   assert,
   assertConfig,

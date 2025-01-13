@@ -1,5 +1,6 @@
 const get = require('get-value');
 const md5 = require('md5');
+const { ConfigurationError, InstrumentationError } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const { Event, GA_ENDPOINT, ConfigCategory, mappingConfig, nameToEventMap } = require('./config');
 const {
@@ -12,7 +13,6 @@ const {
   getDestinationExternalID,
   simpleProcessRouterDest,
 } = require('../../util');
-const { ConfigurationError, InstrumentationError } = require('../../util/errorTypes');
 
 const gaDisplayName = 'Google Analytics';
 

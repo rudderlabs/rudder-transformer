@@ -1,3 +1,4 @@
+const { TransformationError, InstrumentationError } = require('@rudderstack/integrations-lib');
 const {
   CONFIG_CATEGORIES,
   MAPPING_CONFIG,
@@ -18,7 +19,6 @@ const {
   simpleProcessRouterDest,
   ErrorMessage,
 } = require('../../util');
-const { TransformationError, InstrumentationError } = require('../../util/errorTypes');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 function responseBuilderSimple(payload, category, destination) {
@@ -56,6 +56,7 @@ function prepareResponse(message, destination, category) {
 
   let outputPayload = {};
 
+  // ref: https://docs.split.io/reference/events-overview
   outputPayload = constructPayload(message, MAPPING_CONFIG[category.name]);
   outputPayload.eventTypeId = outputPayload.eventTypeId.replace(/ /g, '_');
   if (EVENT_TYPE_ID_REGEX.test(outputPayload.eventTypeId)) {
@@ -93,7 +94,12 @@ function prepareResponse(message, destination, category) {
   if (isDefinedAndNotNullAndNotEmpty(environment)) {
     outputPayload.environmentName = environment;
   }
-  outputPayload.trafficTypeName = trafficType;
+
+  // in case traffic type could not be mapped from the input payloads, falls back to the UI configured default traffic type.
+  if (!isDefinedAndNotNullAndNotEmpty(outputPayload.trafficTypeName)) {
+    outputPayload.trafficTypeName = trafficType;
+  }
+
   outputPayload.properties = removeUndefinedNullValuesAndEmptyObjectArray(
     flattenJson(bufferProperty),
   );

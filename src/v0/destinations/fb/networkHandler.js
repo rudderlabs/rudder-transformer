@@ -2,7 +2,8 @@ const { processAxiosResponse } = require('../../../adapters/utils/networkUtils')
 const { errorResponseHandler } = require('../facebook_pixel/networkHandler');
 const { prepareProxyRequest, proxyRequest } = require('../../../adapters/network');
 
-const destResponseHandler = (destinationResponse) => {
+const destResponseHandler = (responseParams) => {
+  const { destinationResponse } = responseParams;
   errorResponseHandler(destinationResponse);
   return {
     destinationResponse: destinationResponse.response,

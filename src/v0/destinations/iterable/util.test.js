@@ -8,7 +8,6 @@ const {
   registerDeviceTokenEventPayloadBuilder,
   registerBrowserTokenEventPayloadBuilder,
 } = require('./util');
-
 const { ConfigCategory } = require('./config');
 
 const getTestMessage = () => {

@@ -1,6 +1,13 @@
 const _ = require('lodash');
 const { handleHttpRequest } = require('../../../adapters/network');
-const { BrazeDedupUtility, addAppId, getPurchaseObjs } = require('./util');
+const {
+  BrazeDedupUtility,
+  addAppId,
+  getPurchaseObjs,
+  setAliasObject,
+  handleReservedProperties,
+  combineSubscriptionGroups,
+} = require('./util');
 const { processBatch } = require('./util');
 const {
   removeUndefinedAndNullValues,
@@ -248,7 +255,6 @@ describe('dedup utility tests', () => {
           enableNestedArrayOperations: false,
           enableSubscriptionGroupInGroupCall: false,
           eventFilteringOption: 'disable',
-          oneTrustCookieCategories: [],
           restApiKey: 'test-rest-api-key',
           supportDedup: true,
           trackAnonymousUser: true,
@@ -261,7 +267,7 @@ describe('dedup utility tests', () => {
       };
 
       // Call the function
-      const users = await BrazeDedupUtility.doApiLookup(identfierChunks, destination);
+      const users = await BrazeDedupUtility.doApiLookup(identfierChunks, { destination });
 
       // Check the result
       expect(users).toEqual([
@@ -298,6 +304,20 @@ describe('dedup utility tests', () => {
         {
           external_ids: ['user1', 'user2'],
           user_aliases: [{ alias_name: 'user3', alias_label: 'rudder_id' }],
+          fields_to_export: [
+            'created_at',
+            'custom_attributes',
+            'dob',
+            'email',
+            'first_name',
+            'gender',
+            'home_city',
+            'last_name',
+            'phone',
+            'time_zone',
+            'external_id',
+            'user_aliases',
+          ],
         },
         {
           headers: {
@@ -305,7 +325,14 @@ describe('dedup utility tests', () => {
           },
           timeout: 10000,
         },
-        { destType: 'braze', feature: 'transformation' },
+        {
+          destType: 'braze',
+          feature: 'transformation',
+          endpointPath: '/users/export/ids',
+          feature: 'transformation',
+          module: 'router',
+          requestMethod: 'POST',
+        },
       );
     });
 
@@ -392,7 +419,9 @@ describe('dedup utility tests', () => {
         },
       }));
 
-      const chunkedUserData = await BrazeDedupUtility.doApiLookup(identifierChunks, destination);
+      const chunkedUserData = await BrazeDedupUtility.doApiLookup(identifierChunks, {
+        destination,
+      });
       const result = _.flatMap(chunkedUserData);
       expect(result).toHaveLength(110);
       expect(handleHttpRequest).toHaveBeenCalledTimes(3);
@@ -448,7 +477,7 @@ describe('dedup utility tests', () => {
         },
       }));
 
-      const users = await BrazeDedupUtility.doApiLookup(chunks, destination);
+      const users = await BrazeDedupUtility.doApiLookup(chunks, { destination });
 
       expect(handleHttpRequest).toHaveBeenCalledTimes(2);
       // Assert that the first chunk was successful and the second failed
@@ -515,7 +544,7 @@ describe('dedup utility tests', () => {
           [{ alias_name: 'alias1', alias_label: 'rudder_id' }],
           [{ alias_name: 'alias2', alias_label: 'rudder_id' }],
         ],
-        { Config: { restApiKey: 'xyz' } },
+        { destination: { Config: { restApiKey: 'xyz' } } },
       );
 
       // restore the original implementation of the mocked functions
@@ -660,9 +689,19 @@ describe('dedup utility tests', () => {
         color: 'green',
         age: 30,
         gender: 'male',
+        country: 'US',
+        language: 'en',
+        email_subscribe: true,
+        push_subscribe: false,
+        subscription_groups: ['group1', 'group2'],
       };
       const storeData = {
         external_id: '123',
+        country: 'US',
+        language: 'en',
+        email_subscribe: true,
+        push_subscribe: false,
+        subscription_groups: ['group1', 'group2'],
         custom_attributes: {
           color: 'blue',
           age: 25,
@@ -676,10 +715,53 @@ describe('dedup utility tests', () => {
         color: 'green',
         age: 30,
         gender: 'male',
+        country: 'US',
+        language: 'en',
+        email_subscribe: true,
+        push_subscribe: false,
+        subscription_groups: ['group1', 'group2'],
       });
     });
 
-    test('returns null if all keys are in BRAZE_NON_BILLABLE_ATTRIBUTES', () => {
+    test('deduplicates user data correctly 2', () => {
+      const userData = {
+        external_id: '123',
+        color: 'green',
+        age: 30,
+        gender: 'male',
+        language: 'en',
+        email_subscribe: true,
+        push_subscribe: false,
+        subscription_groups: ['group1', 'group2'],
+      };
+      const storeData = {
+        external_id: '123',
+        country: 'US',
+        language: 'en',
+        email_subscribe: true,
+        push_subscribe: false,
+        subscription_groups: ['group1', 'group2'],
+        custom_attributes: {
+          color: 'blue',
+          age: 25,
+        },
+      };
+      store.set('123', storeData);
+      const result = BrazeDedupUtility.deduplicate(userData, store);
+      expect(store.size).toBe(1);
+      expect(result).toEqual({
+        external_id: '123',
+        color: 'green',
+        age: 30,
+        gender: 'male',
+        language: 'en',
+        email_subscribe: true,
+        push_subscribe: false,
+        subscription_groups: ['group1', 'group2'],
+      });
+    });
+
+    test('returns only non-billable attribute if there is key of BRAZE_NON_BILLABLE_ATTRIBUTES', () => {
       const userData = {
         external_id: '123',
         country: 'US',
@@ -697,7 +779,7 @@ describe('dedup utility tests', () => {
       };
       store.set('123', storeData);
       const result = BrazeDedupUtility.deduplicate(userData, store);
-      expect(result).toBeNull();
+      expect(result).toEqual({ country: 'US', external_id: '123', language: 'en' });
     });
 
     test('returns null if all keys have $add, $update, or $remove properties', () => {
@@ -723,6 +805,136 @@ describe('dedup utility tests', () => {
       const result = BrazeDedupUtility.deduplicate(userData, store);
       expect(result).toBeNull();
     });
+
+    test('deduplicates user data correctly when user data is null and it doesnt exist in stored data', () => {
+      const userData = {
+        external_id: '123',
+        nullProperty: null,
+        color: 'green',
+        age: 30,
+      };
+      const storeData = {
+        external_id: '123',
+        custom_attributes: {
+          color: 'green',
+          age: 30,
+        },
+      };
+      store.set('123', storeData);
+      const result = BrazeDedupUtility.deduplicate(userData, store);
+      expect(store.size).toBe(1);
+      expect(result).toEqual(null);
+    });
+
+    test('deduplicates user data correctly when user data is null and it is same in stored data', () => {
+      const userData = {
+        external_id: '123',
+        nullProperty: null,
+        color: 'green',
+        age: 30,
+      };
+      const storeData = {
+        external_id: '123',
+        custom_attributes: {
+          color: 'green',
+          age: 30,
+          nullProperty: null,
+        },
+      };
+      store.set('123', storeData);
+      const result = BrazeDedupUtility.deduplicate(userData, store);
+      expect(store.size).toBe(1);
+      expect(result).toEqual(null);
+    });
+
+    test('deduplicates user data correctly when user data is null and it is different in stored data', () => {
+      const userData = {
+        external_id: '123',
+        nullProperty: null,
+        color: 'green',
+        age: 30,
+      };
+      const storeData = {
+        external_id: '123',
+        custom_attributes: {
+          color: 'green',
+          age: 30,
+          nullProperty: 'valid data',
+        },
+      };
+      store.set('123', storeData);
+      const result = BrazeDedupUtility.deduplicate(userData, store);
+      expect(store.size).toBe(1);
+      expect(result).toEqual({
+        external_id: '123',
+        nullProperty: null,
+      });
+    });
+
+    test('deduplicates user data correctly when user data is undefined and it doesnt exist in stored data', () => {
+      const userData = {
+        external_id: '123',
+        undefinedProperty: undefined,
+        color: 'green',
+        age: 30,
+      };
+      const storeData = {
+        external_id: '123',
+        custom_attributes: {
+          color: 'green',
+          age: 30,
+        },
+      };
+      store.set('123', storeData);
+      const result = BrazeDedupUtility.deduplicate(userData, store);
+      expect(store.size).toBe(1);
+      expect(result).toEqual(null);
+    });
+
+    test('deduplicates user data correctly when user data is undefined and it is same in stored data', () => {
+      const userData = {
+        external_id: '123',
+        undefinedProperty: undefined,
+        color: 'green',
+        age: 30,
+      };
+      const storeData = {
+        external_id: '123',
+        custom_attributes: {
+          color: 'green',
+          undefinedProperty: undefined,
+          age: 30,
+        },
+      };
+      store.set('123', storeData);
+      const result = BrazeDedupUtility.deduplicate(userData, store);
+      expect(store.size).toBe(1);
+      expect(result).toEqual(null);
+    });
+
+    test('deduplicates user data correctly when user data is undefined and it is defined in stored data', () => {
+      const userData = {
+        external_id: '123',
+        undefinedProperty: undefined,
+        color: 'green',
+        age: 30,
+      };
+      const storeData = {
+        external_id: '123',
+        custom_attributes: {
+          color: 'green',
+          undefinedProperty: 'defined data',
+          age: 30,
+        },
+      };
+      store.set('123', storeData);
+      const result = BrazeDedupUtility.deduplicate(userData, store);
+      expect(store.size).toBe(1);
+      expect(result).toEqual({
+        external_id: '123',
+        undefinedProperty: undefined,
+      });
+    });
   });
 });
 
@@ -746,7 +958,9 @@ describe('processBatch', () => {
               attributes: [{ id: i, name: 'test', xyz: 'abc' }],
               events: [{ id: i, event: 'test', xyz: 'abc' }],
               purchases: [{ id: i, purchase: 'test', xyz: 'abc' }],
-              subscription_groups: [{ id: i, group: 'test', xyz: 'abc' }],
+              subscription_groups: [
+                { subscription_group_id: i, group: 'test', subscription_state: 'abc' },
+              ],
               merge_updates: [{ id: i, alias: 'test', xyz: 'abc' }],
             },
           },
@@ -760,7 +974,7 @@ describe('processBatch', () => {
 
     // Assert that the response is as expected
     expect(result.length).toBe(1); // One successful batched request and one failure response
-    expect(result[0].batchedRequest.length).toBe(6); // Two batched requests
+    expect(result[0].batchedRequest.length).toBe(8); // Two batched requests
     expect(result[0].batchedRequest[0].body.JSON.partner).toBe('RudderStack'); // Verify partner name
     expect(result[0].batchedRequest[0].body.JSON.attributes.length).toBe(75); // First batch contains 75 attributes
     expect(result[0].batchedRequest[0].body.JSON.events.length).toBe(75); // First batch contains 75 events
@@ -769,10 +983,12 @@ describe('processBatch', () => {
     expect(result[0].batchedRequest[1].body.JSON.attributes.length).toBe(25); // Second batch contains remaining 25 attributes
     expect(result[0].batchedRequest[1].body.JSON.events.length).toBe(25); // Second batch contains remaining 25 events
     expect(result[0].batchedRequest[1].body.JSON.purchases.length).toBe(25); // Second batch contains remaining 25 purchases
-    expect(result[0].batchedRequest[2].body.JSON.subscription_groups.length).toBe(50); // First batch contains 50 subscription group
-    expect(result[0].batchedRequest[3].body.JSON.subscription_groups.length).toBe(50); // First batch contains 25 subscription group
-    expect(result[0].batchedRequest[4].body.JSON.merge_updates.length).toBe(50); // First batch contains 50 merge_updates
-    expect(result[0].batchedRequest[5].body.JSON.merge_updates.length).toBe(50); // First batch contains 25 merge_updates
+    expect(result[0].batchedRequest[2].body.JSON.subscription_groups.length).toBe(25); // First batch contains 25 subscription group
+    expect(result[0].batchedRequest[3].body.JSON.subscription_groups.length).toBe(25); // Second batch contains 25 subscription group
+    expect(result[0].batchedRequest[4].body.JSON.subscription_groups.length).toBe(25); // Third batch contains 25 subscription group
+    expect(result[0].batchedRequest[5].body.JSON.subscription_groups.length).toBe(25); // Fourth batch contains 25 subscription group
+    expect(result[0].batchedRequest[6].body.JSON.merge_updates.length).toBe(50); // First batch contains 50 merge_updates
+    expect(result[0].batchedRequest[7].body.JSON.merge_updates.length).toBe(50); // First batch contains 25 merge_updates
   });
 
   test('processBatch handles more than 75 attributes, events, and purchases with non uniform distribution', () => {
@@ -843,7 +1059,9 @@ describe('processBatch', () => {
       batchedRequest: {
         body: {
           JSON: {
-            subscription_groups: [{ id: i, group: 'test', xyz: 'abc' }],
+            subscription_groups: [
+              { subscription_group_id: i, group: 'test', subscription_state: 'abc' },
+            ],
           },
         },
       },
@@ -881,7 +1099,7 @@ describe('processBatch', () => {
     // Assert that the response is as expected
     expect(result.length).toBe(1); // One successful batched request and one failure response
     expect(result[0].metadata.length).toBe(490); // Check the total length is same as input jobs (120 + 160 + 100 + 70 +40)
-    expect(result[0].batchedRequest.length).toBe(6); // Two batched requests
+    expect(result[0].batchedRequest.length).toBe(7); // Two batched requests
     expect(result[0].batchedRequest[0].body.JSON.partner).toBe('RudderStack'); // Verify partner name
     expect(result[0].batchedRequest[0].body.JSON.attributes.length).toBe(75); // First batch contains 75 attributes
     expect(result[0].batchedRequest[0].body.JSON.events.length).toBe(75); // First batch contains 75 events
@@ -891,9 +1109,10 @@ describe('processBatch', () => {
     expect(result[0].batchedRequest[1].body.JSON.events.length).toBe(45); // Second batch contains remaining 45 events
     expect(result[0].batchedRequest[1].body.JSON.purchases.length).toBe(75); // Second batch contains remaining 75 purchases
     expect(result[0].batchedRequest[2].body.JSON.purchases.length).toBe(10); // Third batch contains remaining 10 purchases
-    expect(result[0].batchedRequest[3].body.JSON.subscription_groups.length).toBe(50); // First batch contains 50 subscription group
-    expect(result[0].batchedRequest[4].body.JSON.subscription_groups.length).toBe(20); // First batch contains 20 subscription group
-    expect(result[0].batchedRequest[5].body.JSON.merge_updates.length).toBe(40); // First batch contains 50 merge_updates
+    expect(result[0].batchedRequest[3].body.JSON.subscription_groups.length).toBe(25); // First batch contains 25 subscription group
+    expect(result[0].batchedRequest[4].body.JSON.subscription_groups.length).toBe(25); // Second batch contains 25 subscription group
+    expect(result[0].batchedRequest[5].body.JSON.subscription_groups.length).toBe(20); // Third batch contains 20 subscription group
+    expect(result[0].batchedRequest[6].body.JSON.merge_updates.length).toBe(40); // First batch contains 50 merge_updates
   });
 
   test('check success and failure scenarios both for processBatch', () => {
@@ -1218,5 +1437,445 @@ describe('getPurchaseObjs', () => {
         'Invalid Order Completed event: Properties object is missing in the message',
       );
     }
+  });
+
+  test('products having extra properties', () => {
+    const output = getPurchaseObjs(
+      {
+        properties: {
+          products: [
+            { product_id: '123', price: 10.99, quantity: 2, random_extra_property_a: 'abc' },
+            { product_id: '456', price: 5.49, quantity: 1, random_extra_property_b: 'efg' },
+            {
+              product_id: '789',
+              price: 15.49,
+              quantity: 1,
+              random_extra_property_a: 'abc',
+              random_extra_property_b: 'efg',
+              random_extra_property_c: 'hij',
+            },
+          ],
+          currency: 'USD',
+        },
+        timestamp: '2023-08-04T12:34:56Z',
+        anonymousId: 'abc',
+      },
+      {
+        sendPurchaseEventWithExtraProperties: true,
+      },
+    );
+    expect(output).toEqual([
+      {
+        product_id: '123',
+        price: 10.99,
+        currency: 'USD',
+        quantity: 2,
+        time: '2023-08-04T12:34:56Z',
+        properties: {
+          random_extra_property_a: 'abc',
+        },
+        _update_existing_only: false,
+        user_alias: {
+          alias_name: 'abc',
+          alias_label: 'rudder_id',
+        },
+      },
+      {
+        product_id: '456',
+        price: 5.49,
+        currency: 'USD',
+        quantity: 1,
+        time: '2023-08-04T12:34:56Z',
+        properties: {
+          random_extra_property_b: 'efg',
+        },
+        _update_existing_only: false,
+        user_alias: {
+          alias_name: 'abc',
+          alias_label: 'rudder_id',
+        },
+      },
+      {
+        product_id: '789',
+        price: 15.49,
+        currency: 'USD',
+        quantity: 1,
+        time: '2023-08-04T12:34:56Z',
+        properties: {
+          random_extra_property_a: 'abc',
+          random_extra_property_b: 'efg',
+          random_extra_property_c: 'hij',
+        },
+        _update_existing_only: false,
+        user_alias: {
+          alias_name: 'abc',
+          alias_label: 'rudder_id',
+        },
+      },
+    ]);
+  });
+
+  test('products having extra properties with sendPurchaseEventWithExtraProperties as false', () => {
+    const output = getPurchaseObjs(
+      {
+        properties: {
+          products: [
+            { product_id: '123', price: 10.99, quantity: 2, random_extra_property_a: 'abc' },
+            { product_id: '456', price: 5.49, quantity: 1, random_extra_property_b: 'efg' },
+            {
+              product_id: '789',
+              price: 15.49,
+              quantity: 1,
+              random_extra_property_a: 'abc',
+              random_extra_property_b: 'efg',
+              random_extra_property_c: 'hij',
+            },
+          ],
+          currency: 'USD',
+        },
+        timestamp: '2023-08-04T12:34:56Z',
+        anonymousId: 'abc',
+      },
+      {
+        sendPurchaseEventWithExtraProperties: false,
+      },
+    );
+    expect(output).toEqual([
+      {
+        product_id: '123',
+        price: 10.99,
+        currency: 'USD',
+        quantity: 2,
+        time: '2023-08-04T12:34:56Z',
+        _update_existing_only: false,
+        user_alias: {
+          alias_name: 'abc',
+          alias_label: 'rudder_id',
+        },
+      },
+      {
+        product_id: '456',
+        price: 5.49,
+        currency: 'USD',
+        quantity: 1,
+        time: '2023-08-04T12:34:56Z',
+        _update_existing_only: false,
+        user_alias: {
+          alias_name: 'abc',
+          alias_label: 'rudder_id',
+        },
+      },
+      {
+        product_id: '789',
+        price: 15.49,
+        currency: 'USD',
+        quantity: 1,
+        time: '2023-08-04T12:34:56Z',
+        _update_existing_only: false,
+        user_alias: {
+          alias_name: 'abc',
+          alias_label: 'rudder_id',
+        },
+      },
+    ]);
+  });
+});
+
+describe('setAliasObject function', () => {
+  // Test when integrationsObj has both alias_name and alias_label
+  test('should set user_alias from integrationsObj if alias_name and alias_label are defined', () => {
+    const payload = {};
+    const result = setAliasObject(payload, {
+      anonymousId: '12345',
+      integrations: {
+        BRAZE: {
+          alias: {
+            alias_name: 'user123',
+            alias_label: 'customer_id',
+          },
+        },
+      },
+    });
+
+    expect(result).toEqual({
+      user_alias: {
+        alias_name: 'user123',
+        alias_label: 'customer_id',
+      },
+    });
+  });
+
+  // Test when integrationsObj is missing alias_name or alias_label
+  test('should set user_alias with anonymousId as alias_name and "rudder_id" as alias_label if integrationsObj does not have alias_name or alias_label', () => {
+    const message = {
+      anonymousId: '12345',
+    };
+    const payload = {};
+    const result = setAliasObject(payload, message);
+
+    expect(result).toEqual({
+      user_alias: {
+        alias_name: '12345',
+        alias_label: 'rudder_id',
+      },
+    });
+  });
+
+  // Test when message has no anonymousId and integrationsObj is missing
+  test('should return payload unchanged if message has no anonymousId and integrationsObj is missing', () => {
+    const message = {};
+    const payload = {};
+    const result = setAliasObject(payload, message);
+
+    expect(result).toEqual(payload);
+  });
+
+  test('should set user_alias from integrationsObj if alias_name and alias_label are defined', () => {
+    const payload = {};
+    const result = setAliasObject(payload, {
+      anonymousId: '12345',
+      integrations: {
+        BRAZE: {
+          alias: {
+            alias_name: 'user123',
+            alias_label: 'customer_id',
+          },
+        },
+      },
+    });
+
+    expect(result).toEqual({
+      user_alias: {
+        alias_name: 'user123',
+        alias_label: 'customer_id',
+      },
+    });
+  });
+
+  test('should set user_alias from integrationsObj if alias_name and alias_label either is not defined', () => {
+    const payload = {};
+    const result = setAliasObject(payload, {
+      anonymousId: '12345',
+      integrations: {
+        BRAZE: {
+          alias: {
+            alias_name: null,
+            alias_label: 'customer_id',
+          },
+        },
+      },
+    });
+
+    expect(result).toEqual({
+      user_alias: {
+        alias_name: '12345',
+        alias_label: 'rudder_id',
+      },
+    });
+  });
+
+  test('should set user_alias from integrationsObj if alias_name and alias_label either is not defined', () => {
+    const payload = {};
+    const result = setAliasObject(payload, {
+      anonymousId: '12345',
+      userID: 'user123',
+      integrations: {
+        BRAZE: {
+          alias: {
+            alias_name: 'rudder_id-123',
+            alias_label: 'customer_id',
+          },
+        },
+      },
+    });
+
+    expect(result).toEqual({
+      user_alias: {
+        alias_name: 'rudder_id-123',
+        alias_label: 'customer_id',
+      },
+    });
+  });
+});
+
+describe('handleReservedProperties', () => {
+  // Removes 'time' and 'event_name' keys from the input object
+  it('should remove "time" and "event_name" keys when they are present in the input object', () => {
+    const props = { time: '2023-10-01T00:00:00Z', event_name: 'test_event', other_key: 'value' };
+    const result = handleReservedProperties(props);
+    expect(result).toEqual({ other_key: 'value' });
+  });
+
+  // Input object is empty
+  it('should return an empty object when the input object is empty', () => {
+    const props = {};
+    const result = handleReservedProperties(props);
+    expect(result).toEqual({});
+  });
+
+  // Works correctly with an object that has no reserved keys
+  it('should remove reserved keys when present in the input object', () => {
+    const props = { time_stamp: '2023-10-01T00:00:00Z', event: 'test_event', other_key: 'value' };
+    const result = handleReservedProperties(props);
+    expect(result).toEqual({
+      time_stamp: '2023-10-01T00:00:00Z',
+      event: 'test_event',
+      other_key: 'value',
+    });
+  });
+
+  // Input object is null or undefined
+  it('should return an empty object when input object is null', () => {
+    const props = null;
+    const result = handleReservedProperties(props);
+    expect(result).toEqual({});
+  });
+
+  // Handles non-object inputs gracefully
+  it('should return an empty object when a non-object input is provided', () => {
+    const props = 'not an object';
+    try {
+      handleReservedProperties(props);
+    } catch (e) {
+      expect(e.message).toBe('Invalid event properties');
+    }
+  });
+
+  // Input object has only reserved keys
+  it('should remove "time" and "event_name" keys when they are present in the input object', () => {
+    const props = { time: '2023-10-01T00:00:00Z', event_name: 'test_event', other_key: 'value' };
+    const result = handleReservedProperties(props);
+    expect(result).toEqual({ other_key: 'value' });
+  });
+
+  // Works with objects having special characters in keys
+  it('should not remove special characters keys when they are present in the input object', () => {
+    const props = { 'special!@#$%^&*()_+-={}[]|\\;:\'",.<>?/`~': 'value', other_key: 'value' };
+    const result = handleReservedProperties(props);
+    expect(result).toEqual({
+      other_key: 'value',
+      'special!@#$%^&*()_+-={}[]|\\;:\'",.<>?/`~': 'value',
+    });
+  });
+});
+
+describe('combineSubscriptionGroups', () => {
+  it('should merge external_ids, emails, and phones for the same subscription_group_id and subscription_state', () => {
+    const input = [
+      {
+        subscription_group_id: 'group1',
+        subscription_state: 'Subscribed',
+        external_ids: ['id1', 'id2'],
+        emails: ['email1@example.com', 'email2@example.com'],
+        phones: ['+1234567890', '+0987654321'],
+      },
+      {
+        subscription_group_id: 'group1',
+        subscription_state: 'Subscribed',
+        external_ids: ['id2', 'id3'],
+        emails: ['email2@example.com', 'email3@example.com'],
+        phones: ['+1234567890', '+1122334455'],
+      },
+    ];
+
+    const expectedOutput = [
+      {
+        subscription_group_id: 'group1',
+        subscription_state: 'Subscribed',
+        external_ids: ['id1', 'id2', 'id3'],
+        emails: ['email1@example.com', 'email2@example.com', 'email3@example.com'],
+        phones: ['+1234567890', '+0987654321', '+1122334455'],
+      },
+    ];
+
+    const result = combineSubscriptionGroups(input);
+    expect(result).toEqual(expectedOutput);
+  });
+
+  it('should handle groups with missing external_ids, emails, or phones', () => {
+    const input = [
+      {
+        subscription_group_id: 'group1',
+        subscription_state: 'Subscribed',
+        external_ids: ['id1'],
+      },
+      {
+        subscription_group_id: 'group1',
+        subscription_state: 'Subscribed',
+        emails: ['email1@example.com'],
+      },
+      {
+        subscription_group_id: 'group1',
+        subscription_state: 'Subscribed',
+        phones: ['+1234567890'],
+      },
+    ];
+
+    const expectedOutput = [
+      {
+        subscription_group_id: 'group1',
+        subscription_state: 'Subscribed',
+        external_ids: ['id1'],
+        emails: ['email1@example.com'],
+        phones: ['+1234567890'],
+      },
+    ];
+
+    const result = combineSubscriptionGroups(input);
+    expect(result).toEqual(expectedOutput);
+  });
+
+  it('should handle multiple unique subscription groups', () => {
+    const input = [
+      {
+        subscription_group_id: 'group1',
+        subscription_state: 'Subscribed',
+        external_ids: ['id1'],
+      },
+      {
+        subscription_group_id: 'group2',
+        subscription_state: 'Unsubscribed',
+        external_ids: ['id2'],
+        emails: ['email2@example.com'],
+      },
+    ];
+
+    const expectedOutput = [
+      {
+        subscription_group_id: 'group1',
+        subscription_state: 'Subscribed',
+        external_ids: ['id1'],
+      },
+      {
+        subscription_group_id: 'group2',
+        subscription_state: 'Unsubscribed',
+        external_ids: ['id2'],
+        emails: ['email2@example.com'],
+      },
+    ];
+
+    const result = combineSubscriptionGroups(input);
+    expect(result).toEqual(expectedOutput);
+  });
+
+  it('should not include undefined fields in the output', () => {
+    const input = [
+      {
+        subscription_group_id: 'group1',
+        subscription_state: 'Subscribed',
+        external_ids: ['id1'],
+      },
+    ];
+
+    const expectedOutput = [
+      {
+        subscription_group_id: 'group1',
+        subscription_state: 'Subscribed',
+        external_ids: ['id1'],
+      },
+    ];
+
+    const result = combineSubscriptionGroups(input);
+    expect(result).toEqual(expectedOutput);
   });
 });

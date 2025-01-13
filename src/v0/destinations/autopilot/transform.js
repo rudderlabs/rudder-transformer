@@ -1,3 +1,4 @@
+const { InstrumentationError, TransformationError } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require('./config');
 const {
@@ -9,7 +10,6 @@ const {
   simpleProcessRouterDest,
 } = require('../../util');
 
-const { InstrumentationError, TransformationError } = require('../../util/errorTypes');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const identifyFields = [

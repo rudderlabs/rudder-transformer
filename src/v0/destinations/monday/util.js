@@ -1,8 +1,12 @@
 const { isNumber } = require('lodash');
+const {
+  NetworkError,
+  ConfigurationError,
+  InstrumentationError,
+} = require('@rudderstack/integrations-lib');
 const { httpPOST } = require('../../../adapters/network');
 const { processAxiosResponse } = require('../../../adapters/utils/networkUtils');
 const { getDestinationExternalID, isDefinedAndNotNull } = require('../../util');
-const { NetworkError, ConfigurationError, InstrumentationError } = require('../../util/errorTypes');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const tags = require('../../util/tags');
 const { JSON_MIME_TYPE } = require('../../util/constant');
@@ -23,7 +27,7 @@ const getGroupId = (groupTitle, board) => {
     }
   });
   if (groupId) {
-    return groupId;
+    return JSON.stringify(groupId);
   }
   throw new ConfigurationError(`Group ${groupTitle} doesn't exist in the board`);
 };
@@ -175,7 +179,7 @@ const mapColumnValues = (properties, columnToPropertyMapping, board) => {
  * @param {*} apiToken
  * @returns
  */
-const getBoardDetails = async (url, boardID, apiToken) => {
+const getBoardDetails = async (url, boardID, apiToken, metadata) => {
   const clientResponse = await httpPOST(
     url,
     {
@@ -190,6 +194,10 @@ const getBoardDetails = async (url, boardID, apiToken) => {
     {
       destType: 'monday',
       feature: 'transformation',
+      endpointPath: '/v2',
+      requestMethod: 'POST',
+      module: 'router',
+      metadata,
     },
   );
   const boardDetailsResponse = processAxiosResponse(clientResponse);
@@ -232,19 +240,20 @@ const populatePayload = (message, Config, boardDeatailsResponse) => {
     columnToPropertyMapping,
     boardDeatailsResponse.response?.data,
   );
+  const items = [
+    `board_id: ${boardId}`,
+    `item_name: ${JSON.stringify(message.properties?.name)}`,
+    `column_values: ${JSON.stringify(columnValues)}`,
+  ];
   if (groupTitle) {
     if (!message.properties?.name) {
       throw new InstrumentationError('Item name is required to create an item');
     }
     const groupId = getGroupId(groupTitle, boardDeatailsResponse.response?.data);
-    payload.query = `mutation { create_item (board_id: ${boardId}, group_id: ${groupId} item_name: ${JSON.stringify(
-      message.properties?.name,
-    )}, column_values: ${JSON.stringify(columnValues)}) {id}}`;
-  } else {
-    payload.query = `mutation { create_item (board_id: ${boardId},  item_name: ${JSON.stringify(
-      message.properties?.name,
-    )}, column_values: ${JSON.stringify(columnValues)}) {id}}`;
+    items.push(`group_id: ${groupId}`);
   }
+  const itemsQuery = items.join(', ');
+  payload.query = `mutation { create_item (${itemsQuery}) {id}}`;
   return payload;
 };
 
@@ -253,7 +262,7 @@ const checkAllowedEventNameFromUI = (event, Config) => {
   let allowEvent;
   if (whitelistedEvents && whitelistedEvents.length > 0) {
     allowEvent = whitelistedEvents.some(
-      (whiteListedEvent) => whiteListedEvent.eventName.toLowerCase() === event.toLowerCase(),
+      (whiteListedEvent) => whiteListedEvent?.eventName?.toLowerCase() === event.toLowerCase(),
     );
   }
   return !!allowEvent;

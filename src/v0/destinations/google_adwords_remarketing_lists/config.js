@@ -1,10 +1,13 @@
 const { getMappingConfig } = require('../../util');
 
-const BASE_ENDPOINT = 'https://googleads.googleapis.com/v14/customers';
+const API_VERSION = 'v17';
+
+const BASE_ENDPOINT = `https://googleads.googleapis.com/${API_VERSION}/customers`;
 const CONFIG_CATEGORIES = {
   AUDIENCE_LIST: { type: 'audienceList', name: 'offlineDataJobs' },
   ADDRESSINFO: { type: 'addressInfo', name: 'addressInfo' },
 };
+const ADDRESS_INFO_ATTRIBUTES = ['firstName', 'lastName', 'country', 'postalCode'];
 const attributeMapping = {
   email: 'hashedEmail',
   phone: 'hashedPhoneNumber',
@@ -16,11 +19,20 @@ const TYPEOFLIST = Object.freeze({
   mobileDeviceID: 'mobileId',
 });
 
+const consentConfigMap = {
+  personalizationConsent: 'adPersonalization',
+  userDataConsent: 'adUserData',
+};
+
 module.exports = {
+  API_VERSION,
   BASE_ENDPOINT,
   TYPEOFLIST,
   attributeMapping,
   hashAttributes,
   offlineDataJobsMapping: MAPPING_CONFIG[CONFIG_CATEGORIES.AUDIENCE_LIST.name],
   addressInfoMapping: MAPPING_CONFIG[CONFIG_CATEGORIES.ADDRESSINFO.name],
+  ADDRESS_INFO_ATTRIBUTES,
+  consentConfigMap,
+  destType: 'google_adwords_remarketing_lists',
 };

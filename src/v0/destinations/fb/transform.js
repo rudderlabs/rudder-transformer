@@ -1,6 +1,7 @@
 const get = require('get-value');
 const set = require('set-value');
 const sha256 = require('sha256');
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const {
   removeUndefinedValues,
@@ -13,6 +14,7 @@ const {
 } = require('../../util');
 
 const {
+  VERSION,
   baseMapping,
   eventNameMapping,
   eventPropsMapping,
@@ -20,7 +22,6 @@ const {
   eventPropToTypeMapping,
 } = require('./config');
 const logger = require('../../../logger');
-const { InstrumentationError } = require('../../util/errorTypes');
 
 // const funcMap = {
 //   integer: parseInt,
@@ -89,7 +90,7 @@ function sanityCheckPayloadForTypesAndModifications(updatedEvent) {
           clonedUpdatedEvent[prop] !== ''
         ) {
           isUDSet = true;
-          clonedUpdatedEvent[prop] = sha256(clonedUpdatedEvent[prop].toLowerCase());
+          clonedUpdatedEvent[prop] = sha256(clonedUpdatedEvent[prop].trim().toLowerCase());
         }
         break;
       case 'ud[zp]':
@@ -112,7 +113,7 @@ function sanityCheckPayloadForTypesAndModifications(updatedEvent) {
           } else {
             isUDSet = true;
             clonedUpdatedEvent[prop] = sha256(
-              clonedUpdatedEvent[prop].toLowerCase() === 'female' ? 'f' : 'm',
+              clonedUpdatedEvent[prop].trim().toLowerCase() === 'female' ? 'f' : 'm',
             );
           }
         }
@@ -127,7 +128,7 @@ function sanityCheckPayloadForTypesAndModifications(updatedEvent) {
         if (clonedUpdatedEvent[prop] && clonedUpdatedEvent[prop] !== '') {
           isUDSet = true;
           clonedUpdatedEvent[prop] = sha256(
-            clonedUpdatedEvent[prop].toLowerCase().replace(/ /g, ''),
+            clonedUpdatedEvent[prop].trim().toLowerCase().replace(/ /g, ''),
           );
         }
         break;
@@ -250,7 +251,7 @@ function responseBuilderSimple(message, payload, destination) {
 
   // "https://graph.facebook.com/v13.0/644748472345539/activities"
 
-  const endpoint = `https://graph.facebook.com/v17.0/${appID}/activities`;
+  const endpoint = `https://graph.facebook.com/${VERSION}/${appID}/activities`;
 
   const response = defaultRequestConfig();
   response.endpoint = endpoint;

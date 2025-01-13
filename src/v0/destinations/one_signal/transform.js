@@ -1,4 +1,10 @@
 const get = require('get-value');
+const {
+  ConfigurationError,
+  TransformationError,
+  InstrumentationError,
+} = require('@rudderstack/integrations-lib');
+const { process: processV2 } = require('./transformV2');
 const { EventType } = require('../../../constants');
 const { ConfigCategory, mappingConfig, BASE_URL, ENDPOINTS } = require('./config');
 const {
@@ -13,11 +19,6 @@ const {
   defaultPutRequestConfig,
 } = require('../../util');
 const { populateDeviceType, populateTags } = require('./util');
-const {
-  ConfigurationError,
-  TransformationError,
-  InstrumentationError,
-} = require('../../util/errorTypes');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const responseBuilder = (payload, endpoint, eventType) => {
@@ -122,7 +123,7 @@ const trackResponseBuilder = (message, { Config }) => {
   if (!externalUserId) {
     throw new InstrumentationError('userId is required for track events/updating a device');
   }
-  endpoint = `${endpoint}/${appId}/users/${externalUserId}`;
+  endpoint = `${endpoint}/${appId}/users/${encodeURIComponent(externalUserId)}`;
   const payload = {};
   const tags = {};
   /* Populating event as true in tags.
@@ -163,7 +164,7 @@ const groupResponseBuilder = (message, { Config }) => {
   if (!externalUserId) {
     throw new InstrumentationError('userId is required for group events');
   }
-  endpoint = `${endpoint}/${appId}/users/${externalUserId}`;
+  endpoint = `${endpoint}/${appId}/users/${encodeURIComponent(externalUserId)}`;
   const payload = {};
   const tags = {
     groupId,
@@ -186,10 +187,16 @@ const groupResponseBuilder = (message, { Config }) => {
 };
 
 const processEvent = (message, destination) => {
+  const { Config } = destination;
+  const { version, appId } = Config;
+  if (version === 'V2') {
+    // This version is used to direct the request to user centric model
+    return processV2(message, destination);
+  }
   if (!message.type) {
     throw new InstrumentationError('Event type is required');
   }
-  if (!destination.Config.appId) {
+  if (!appId) {
     throw new ConfigurationError('appId is a required field');
   }
   const messageType = message.type.toLowerCase();

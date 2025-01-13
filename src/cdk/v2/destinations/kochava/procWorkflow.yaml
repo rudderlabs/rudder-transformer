@@ -10,7 +10,6 @@ bindings:
   - path: ../../bindings/jsontemplate
   - path: ./config.js
 
-
 steps:
   - name: validateInput
     template: |

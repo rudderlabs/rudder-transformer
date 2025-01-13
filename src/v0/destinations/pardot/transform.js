@@ -34,6 +34,7 @@
  */
 
 const get = require('get-value');
+const { ConfigurationError, InstrumentationError } = require('@rudderstack/integrations-lib');
 const { identifyConfig, DESTINATION } = require('./config');
 const logger = require('../../../logger');
 const {
@@ -43,12 +44,10 @@ const {
   getFieldValueFromMessage,
   removeUndefinedValues,
   getSuccessRespEvents,
-  checkInvalidRtTfEvents,
   handleRtTfSingleEventError,
   getAccessToken,
 } = require('../../util');
 const { CONFIG_CATEGORIES } = require('./config');
-const { ConfigurationError, InstrumentationError } = require('../../util/errorTypes');
 
 const buildResponse = (payload, url, destination, token) => {
   const responseBody = removeUndefinedValues(payload);
@@ -150,11 +149,6 @@ const processEvent = (metadata, message, destination) => {
 const process = (event) => processEvent(event.metadata, event.message, event.destination);
 
 const processRouterDest = (events, reqMetadata) => {
-  const errorRespEvents = checkInvalidRtTfEvents(events);
-  if (errorRespEvents.length > 0) {
-    return errorRespEvents;
-  }
-
   const responseList = events.map((event) => {
     try {
       return getSuccessRespEvents(process(event), [event.metadata], event.destination);

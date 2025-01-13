@@ -1,4 +1,5 @@
 const { set } = require('lodash');
+const { TransformationError, InstrumentationError } = require('@rudderstack/integrations-lib');
 const {
   defaultRequestConfig,
   constructPayload,
@@ -14,7 +15,6 @@ const { getDestinationExternalID } = require('../../util');
 const { EventType } = require('../../../constants');
 const { mappingConfig, ConfigCategories } = require('./config');
 const { refinePayload, generatePageName, getLists } = require('./utils');
-const { TransformationError, InstrumentationError } = require('../../util/errorTypes');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const UID_ERROR_MSG = 'Neither externalId nor userId is available';

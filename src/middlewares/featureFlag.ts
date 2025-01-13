@@ -6,7 +6,7 @@ export interface FeatureFlags {
 
 export const FEATURE_FILTER_CODE = 'filter-code';
 
-export default class FeatureFlagMiddleware {
+export class FeatureFlagMiddleware {
   public static async handle(ctx: Context, next: Next): Promise<void> {
     // Initialize ctx.state.features if it doesn't exist
     ctx.state.features = (ctx.state.features || {}) as FeatureFlags;

@@ -1,0 +1,133 @@
+{
+  "name": "canny",
+  "description": "test-2",
+  "input": {
+    "request": {
+      "body": {
+        "created": "2022-07-26T18:32:28.337Z",
+        "object": {
+          "author": {
+            "created": "2022-07-15T11:16:32.648Z",
+            "email": "test@rudderstack.com",
+            "id": "62d14c90fff7c80d0ec08375",
+            "isAdmin": true,
+            "name": "Rudder Test",
+            "url": "https://rudder.canny.io/admin/users/dummyUser",
+            "userID": null
+          },
+          "by": null,
+          "board": {
+            "created": "2022-07-25T12:11:19.895Z",
+            "id": "62de88676bc28b44aaaf25cc",
+            "name": "features",
+            "postCount": 12,
+            "url": "https://rudder.canny.io/admin/board/features"
+          },
+          "category": null,
+          "commentCount": 0,
+          "created": "2022-07-26T10:43:43.752Z",
+          "details": "This is the post's details",
+          "eta": null,
+          "id": "62dfc55ffe7f6f465b9b4568",
+          "imageURLs": [],
+          "issue": {
+            "description": "This is the post's details\n\nhttps://rudder.canny.io/admin/board/features/p/post-title-8",
+            "id": "10001",
+            "key": "TES-2",
+            "status": "To Do",
+            "summary": "Canny Source Testing",
+            "url": "https://rudderstack-user.atlassian.net/browse/TES-2"
+          },
+          "owner": null,
+          "score": 2,
+          "status": "open",
+          "tags": [],
+          "title": "Post Title",
+          "url": "https://rudder.canny.io/admin/board/features/p/post-title-8"
+        },
+        "objectType": "post",
+        "type": "post.jira_issue_linked"
+      },
+      "headers": {
+        "Content-Type": "application/json"
+      }
+    }
+  },
+  "output": {
+    "response": {
+      "status": 200,
+      "body": "OK"
+    },
+    "queue": [
+      {
+        "anonymousId": "1c5e54849f5c711ce38fa60716fbbe44bff478f9ca250897b39cdfc2438cd1bd",
+        "event": "post.jira_issue_linked",
+        "integrations": {
+          "Canny": false
+        },
+        "context": {
+          "library": {
+            "name": "unknown",
+            "version": "unknown"
+          },
+          "integration": {
+            "name": "Canny",
+            "version": "1.0.0"
+          },
+          "traits": {
+            "created": "2022-07-15T11:16:32.648Z",
+            "email": "test@rudderstack.com",
+            "isAdmin": true,
+            "name": "Rudder Test",
+            "url": "https://rudder.canny.io/admin/users/dummyUser"
+          },
+          "externalId": [
+            {
+              "type": "cannyUserId",
+              "id": "62d14c90fff7c80d0ec08375"
+            }
+          ]
+        },
+        "timestamp": "2022-07-26T18:32:28.337Z",
+        "originalTimestamp": "2022-07-26T18:32:28.337Z",
+        "type": "track",
+        "properties": {
+          "by": null,
+          "board": {
+            "created": "2022-07-25T12:11:19.895Z",
+            "id": "62de88676bc28b44aaaf25cc",
+            "name": "features",
+            "postCount": 12,
+            "url": "https://rudder.canny.io/admin/board/features"
+          },
+          "category": null,
+          "commentCount": 0,
+          "created": "2022-07-26T10:43:43.752Z",
+          "details": "This is the post's details",
+          "eta": null,
+          "id": "62dfc55ffe7f6f465b9b4568",
+          "imageURLs": [],
+          "issue": {
+            "description": "This is the post's details\n\nhttps://rudder.canny.io/admin/board/features/p/post-title-8",
+            "id": "10001",
+            "key": "TES-2",
+            "status": "To Do",
+            "summary": "Canny Source Testing",
+            "url": "https://rudderstack-user.atlassian.net/browse/TES-2"
+          },
+          "objectType": "post",
+          "owner": null,
+          "score": 2,
+          "status": "open",
+          "tags": [],
+          "title": "Post Title",
+          "url": "https://rudder.canny.io/admin/board/features/p/post-title-8"
+        },
+        "receivedAt": "2024-03-03T04:48:29.000Z",
+        "request_ip": "192.0.2.30",
+        "messageId": "00000000-0000-0000-0000-000000000000"
+      }
+    ],
+    "errQueue": []
+  }
+}

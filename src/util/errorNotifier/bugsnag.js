@@ -1,13 +1,6 @@
 /* eslint-disable no-param-reassign */
 const Bugsnag = require('@bugsnag/js');
-const {
-  CustomError: CDKCustomError,
-  DataValidationError,
-} = require('rudder-transformer-cdk/build/error/index');
 const stackTraceParser = require('stacktrace-parser');
-const { logger } = require('../../logger');
-const pkg = require('../../../package.json');
-
 const {
   BaseError,
   TransformationError,
@@ -23,7 +16,10 @@ const {
   UnhandledStatusCodeError,
   UnauthorizedError,
   NetworkInstrumentationError,
-} = require('../../v0/util/errorTypes');
+} = require('@rudderstack/integrations-lib');
+const { FilteredEventsError } = require('../../v0/util/errorTypes');
+const logger = require('../../logger');
+const pkg = require('../../../package.json');
 
 const {
   BUGSNAG_API_KEY: apiKey,
@@ -46,8 +42,7 @@ const errorTypesDenyList = [
   UnhandledStatusCodeError,
   UnauthorizedError,
   NetworkInstrumentationError,
-  CDKCustomError,
-  DataValidationError,
+  FilteredEventsError,
 ];
 
 const pathsDenyList = [

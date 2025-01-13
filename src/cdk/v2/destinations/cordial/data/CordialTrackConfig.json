@@ -1,0 +1,21 @@
+[
+  {
+    "destKey": "email",
+    "sourceKeys": "emailOnly",
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "a",
+    "sourceKeys": "event",
+    "required": true
+  },
+  {
+    "destKey": "properties",
+    "sourceKeys": "properties"
+  },
+  {
+    "destKey": "ats",
+    "sourceKeys": "timestamp",
+    "sourceFromGenericMap": true
+  }
+]

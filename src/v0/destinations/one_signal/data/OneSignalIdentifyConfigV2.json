@@ -1,0 +1,54 @@
+[
+  { "sourceKeys": "context.locale", "destKey": "properties.laguage", "required": false },
+  { "sourceKeys": "context.ip", "destKey": "properties.ip", "required": false },
+  { "sourceKeys": "context.timezone", "destKey": "properties.timezone_id", "required": false },
+  { "sourceKeys": "context.location.latitude", "destKey": "properties.lat", "required": false },
+  { "sourceKeys": "context.location.longitude", "destKey": "properties.long", "required": false },
+  {
+    "sourceKeys": "createdAt",
+    "destKey": "properties.created_at",
+    "sourceFromGenericMap": true,
+    "metadata": {
+      "type": "secondTimestamp"
+    },
+    "required": false
+  },
+  {
+    "sourceKeys": "createdAt",
+    "destKey": "properties.last_active",
+    "sourceFromGenericMap": true,
+    "metadata": {
+      "type": "secondTimestamp"
+    },
+    "required": false
+  },
+  {
+    "sourceKeys": [
+      "traits.country",
+      "context.traits.country",
+      "traits.address.country",
+      "context.traits.address.country"
+    ],
+    "destKey": "properties.country",
+    "required": false
+  },
+  {
+    "sourceKeys": [
+      "traits.firstActive",
+      "context.traits.firstActive",
+      "traits.first_active",
+      "context.traits.first_active"
+    ],
+    "metadata": {
+      "type": "secondTimestamp"
+    },
+    "destKey": "properties.first_active",
+    "required": false
+  },
+  {
+    "sourceKeys": "userIdOnly",
+    "destKey": "identity.external_id",
+    "sourceFromGenericMap": true,
+    "required": false
+  }
+]

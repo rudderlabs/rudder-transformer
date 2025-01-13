@@ -1,0 +1,74 @@
+bindings:
+  - name: handleRtTfSingleEventError
+    path: ../../../../v0/util/index
+  - path: ./utils
+    exportAll: true
+  - name: base64Convertor
+    path: ../../../../v0/util
+  - name: BatchUtils
+    path: '@rudderstack/workflow-engine'
+  - path: ./config
+
+steps:
+  - name: validateInput
+    template: |
+      $.assert(Array.isArray(^) && ^.length > 0, "Invalid event array")
+
+  - name: transform
+    externalWorkflow:
+      path: ./procWorkflow.yaml
+      bindings:
+        - name: batchMode
+          value: true
+    loopOverInput: true
+
+  - name: successfulEvents
+    template: |
+      $.outputs.transform#idx.output.({
+        "batchedRequest": .,
+        "batched": false,
+        "destination": ^[idx].destination,
+        "metadata": ^[idx].metadata,
+        "statusCode": 200
+      })[]
+
+  - name: failedEvents
+    template: |
+      $.outputs.transform#idx.error.(
+        $.handleRtTfSingleEventError(^[idx], .originalError ?? ., {})
+      )[]
+
+  - name: batchSuccessfulEvents
+    description: Batches the successfulEvents
+    template: |
+      let batches = $.BatchUtils.chunkArrayBySizeAndLength(
+      $.outputs.successfulEvents, {maxSizeInBytes: $.MAX_REQUEST_SIZE_IN_BYTES, maxItems: $.MAX_BATCH_SIZE}).items;
+
+      batches@batch.({
+        "batchedRequest": {
+          "body": {
+            "JSON": {"events": ~r batch.batchedRequest[]},
+            "JSON_ARRAY": {},
+            "XML": {},
+            "FORM": {}
+          },
+          "version": "1",
+          "type": "REST",
+          "method": "POST",
+          "endpoint": batch[0].destination.Config.().(.endpoint),
+          "headers": batch[0].destination.Config.().({
+            "Content-Type": "application/json",
+            "Authorization": "Basic " + $.base64Convertor(.accessKey + ":" + .accessSecret)
+          }),
+          "params": {},
+          "files": {}
+        },
+        "metadata": ~r batch.metadata[],
+        "batched": true,
+        "statusCode": 200,
+        "destination": batch[0].destination
+      })[];
+
+  - name: finalPayload
+    template: |
+      [...$.outputs.batchSuccessfulEvents, ...$.outputs.failedEvents]

@@ -1,6 +1,7 @@
 const lodash = require('lodash');
 const get = require('get-value');
 const jsonSize = require('json-size');
+const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const {
   isAppleFamily,
   constructPayload,
@@ -13,14 +14,12 @@ const {
   ConfigCategory,
   mappingConfig,
   TRACK_MAX_BATCH_SIZE,
-  TRACK_BATCH_ENDPOINT,
   IDENTIFY_MAX_BATCH_SIZE,
-  IDENTIFY_BATCH_ENDPOINT,
   IDENTIFY_MAX_BODY_SIZE_IN_BYTES,
+  constructEndpoint,
 } = require('./config');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 const { EventType, MappedToDestinationKey } = require('../../../constants');
-const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
 
 const MESSAGE_JSON_PATH = 'message.body.JSON';
 
@@ -88,12 +87,17 @@ const hasMultipleResponses = (message, category, config) => {
   return isIdentifyEvent && isIdentifyCategory && hasToken && hasRegisterDeviceOrBrowserKey;
 };
 
+const getCategoryWithEndpoint = (categoryConfig, dataCenter) => ({
+  ...categoryConfig,
+  endpoint: constructEndpoint(dataCenter, categoryConfig),
+});
+
 /**
  * Returns category value
  * @param {*} message
  * @returns
  */
-const getCategoryUsingEventName = (message) => {
+const getCategoryUsingEventName = (message, dataCenter) => {
   let { event } = message;
   if (typeof event === 'string') {
     event = event.toLowerCase();
@@ -101,12 +105,12 @@ const getCategoryUsingEventName = (message) => {
 
   switch (event) {
     case 'order completed':
-      return ConfigCategory.TRACK_PURCHASE;
+      return getCategoryWithEndpoint(ConfigCategory.TRACK_PURCHASE, dataCenter);
     case 'product added':
     case 'product removed':
-      return ConfigCategory.UPDATE_CART;
+      return getCategoryWithEndpoint(ConfigCategory.UPDATE_CART, dataCenter);
     default:
-      return ConfigCategory.TRACK;
+      return getCategoryWithEndpoint(ConfigCategory.TRACK, dataCenter);
   }
 };
 
@@ -444,8 +448,8 @@ const processUpdateUserBatch = (chunk, registerDeviceOrBrowserTokenEvents) => {
     batchEventResponse.batchedRequest.body.JSON = { users: batch.users };
 
     const { destination, metadata, nonBatchedRequests } = batch;
-    const { apiKey } = destination.Config;
-
+    const { apiKey, dataCenter } = destination.Config;
+    const IDENTIFY_BATCH_ENDPOINT = constructEndpoint(dataCenter, { endpoint: 'users/bulkUpdate' });
     const batchedResponse = combineBatchedAndNonBatchedEvents(
       apiKey,
       metadata,
@@ -479,6 +483,7 @@ const batchUpdateUserEvents = (updateUserEvents, registerDeviceOrBrowserTokenEve
 
 /**
  * Processes chunks of catalog events, extracts the necessary data, and prepares batched requests for further processing
+ * ref : https://api.iterable.com/api/docs#catalogs_bulkUpdateCatalogItems
  * @param {*} catalogEventsChunks
  * @returns
  */
@@ -552,8 +557,8 @@ const processTrackBatch = (chunk) => {
   const metadata = [];
 
   const { destination } = chunk[0];
-  const { apiKey } = destination.Config;
-
+  const { apiKey, dataCenter } = destination.Config;
+  const TRACK_BATCH_ENDPOINT = constructEndpoint(dataCenter, { endpoint: 'events/trackBulk' });
   chunk.forEach((event) => {
     metadata.push(event.metadata);
     events.push(get(event, `${MESSAGE_JSON_PATH}`));
@@ -596,12 +601,12 @@ const batchTrackEvents = (trackEvents) => {
  */
 const prepareBatchRequests = (filteredEvents) => {
   const {
-    trackEvents,
-    catalogEvents,
-    errorRespList,
-    updateUserEvents,
-    eventResponseList,
-    registerDeviceOrBrowserTokenEvents,
+    trackEvents, // track
+    catalogEvents, // identify
+    errorRespList, // track
+    updateUserEvents, // identify
+    eventResponseList, // track
+    registerDeviceOrBrowserTokenEvents, // identify
   } = filteredEvents;
 
   const updateUserBatchedResponseList =
@@ -653,12 +658,13 @@ const mapRegisterDeviceOrBrowserTokenEventsWithJobId = (events) => {
  */
 const categorizeEvent = (event) => {
   const { message, metadata, destination, error } = event;
+  const { dataCenter } = destination.Config;
 
   if (error) {
     return { type: 'error', data: event };
   }
 
-  if (message.endpoint === ConfigCategory.IDENTIFY.endpoint) {
+  if (message.endpoint === constructEndpoint(dataCenter, ConfigCategory.IDENTIFY)) {
     return { type: 'updateUser', data: { message, metadata, destination } };
   }
 
@@ -667,8 +673,8 @@ const categorizeEvent = (event) => {
   }
 
   if (
-    message.endpoint === ConfigCategory.IDENTIFY_BROWSER.endpoint ||
-    message.endpoint === ConfigCategory.IDENTIFY_DEVICE.endpoint
+    message.endpoint === constructEndpoint(dataCenter, ConfigCategory.IDENTIFY_BROWSER) ||
+    message.endpoint === constructEndpoint(dataCenter, ConfigCategory.IDENTIFY_DEVICE)
   ) {
     return { type: 'registerDeviceOrBrowser', data: { message, metadata, destination } };
   }
@@ -753,4 +759,5 @@ module.exports = {
   filterEventsAndPrepareBatchRequests,
   registerDeviceTokenEventPayloadBuilder,
   registerBrowserTokenEventPayloadBuilder,
+  getCategoryWithEndpoint,
 };

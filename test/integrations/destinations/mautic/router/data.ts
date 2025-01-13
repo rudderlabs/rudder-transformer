@@ -14,9 +14,7 @@ export const data = [
                 anonymousId: 'anon-id-new',
                 context: {
                   ip: '14.5.67.21',
-                  library: {
-                    name: 'http',
-                  },
+                  library: { name: 'http' },
                   traits: {
                     firstName: 'Test',
                     lastName: 'Rudderlabs',
@@ -52,16 +50,13 @@ export const data = [
                   userName: 'TestRudderlabs45823@gmail.com',
                 },
               },
-              metadata: {
-                jobId: 1,
-              },
+              metadata: { jobId: 1, userId: 'u1' },
             },
           ],
           destType: 'mautic',
         },
         method: 'POST',
       },
-      pathSuffix: '',
     },
     output: {
       response: {
@@ -106,11 +101,7 @@ export const data = [
                 },
                 files: {},
               },
-              metadata: [
-                {
-                  jobId: 1,
-                },
-              ],
+              metadata: [{ jobId: 1, userId: 'u1' }],
               batched: false,
               statusCode: 200,
               destination: {
@@ -142,9 +133,7 @@ export const data = [
                 anonymousId: 'anon-id-new',
                 context: {
                   ip: '14.5.67.21',
-                  library: {
-                    name: 'http',
-                  },
+                  library: { name: 'http' },
                   traits: {
                     firstName: 'Test',
                     lastName: 'Rudderlabs',
@@ -181,16 +170,13 @@ export const data = [
                   userName: 'abcdef',
                 },
               },
-              metadata: {
-                jobId: 2,
-              },
+              metadata: { jobId: 2, userId: 'u1' },
             },
           ],
           destType: 'mautic',
         },
         method: 'POST',
       },
-      pathSuffix: '',
     },
     output: {
       response: {
@@ -198,11 +184,7 @@ export const data = [
         body: {
           output: [
             {
-              metadata: [
-                {
-                  jobId: 2,
-                },
-              ],
+              metadata: [{ jobId: 2, userId: 'u1' }],
               statTags: {
                 errorCategory: 'dataValidation',
                 errorType: 'configuration',
@@ -243,17 +225,8 @@ export const data = [
               message: {
                 userId: 'user123',
                 groupId: '17',
-                context: {
-                  externalId: [
-                    {
-                      type: 'mauticContactId',
-                      id: '246',
-                    },
-                  ],
-                },
-                traits: {
-                  type: 'Segments',
-                },
+                context: { externalId: [{ type: 'mauticContactId', id: '246' }] },
+                traits: { type: 'Segments' },
                 type: 'group',
               },
               destination: {
@@ -264,16 +237,13 @@ export const data = [
                   userName: 'TestRudderlabs45823@gmail.com',
                 },
               },
-              metadata: {
-                jobId: 3,
-              },
+              metadata: { jobId: 3, userId: 'u1' },
             },
           ],
           destType: 'mautic',
         },
         method: 'POST',
       },
-      pathSuffix: '',
     },
     output: {
       response: {
@@ -292,19 +262,10 @@ export const data = [
                     'Basic VGVzdFJ1ZGRlcmxhYnM0NTgyM0BnbWFpbC5jb206ZHVtbXlQYXNzd29yZA==',
                 },
                 params: {},
-                body: {
-                  JSON: {},
-                  JSON_ARRAY: {},
-                  XML: {},
-                  FORM: {},
-                },
+                body: { JSON: {}, JSON_ARRAY: {}, XML: {}, FORM: {} },
                 files: {},
               },
-              metadata: [
-                {
-                  jobId: 3,
-                },
-              ],
+              metadata: [{ jobId: 3, userId: 'u1' }],
               batched: false,
               statusCode: 200,
               destination: {

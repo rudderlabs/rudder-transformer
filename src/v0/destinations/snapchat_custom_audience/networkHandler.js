@@ -1,3 +1,4 @@
+const { NetworkError, RetryableError, AbortedError } = require('@rudderstack/integrations-lib');
 const { removeUndefinedValues, getAuthErrCategoryFromErrDetailsAndStCode } = require('../../util');
 const { prepareProxyRequest, getPayloadData, httpSend } = require('../../../adapters/network');
 const { isHttpStatusSuccess } = require('../../util/index');
@@ -7,7 +8,6 @@ const {
   getDynamicErrorType,
   processAxiosResponse,
 } = require('../../../adapters/utils/networkUtils');
-const { NetworkError, RetryableError, AbortedError } = require('../../util/errorTypes');
 const { HTTP_STATUS_CODES } = require('../../util/constant');
 
 const prepareProxyReq = (request) => {
@@ -31,6 +31,7 @@ const prepareProxyReq = (request) => {
 };
 
 const scAudienceProxyRequest = async (request) => {
+  const { metadata } = request;
   const { endpoint, data, method, params, headers } = prepareProxyReq(request);
 
   const requestOptions = {
@@ -43,6 +44,10 @@ const scAudienceProxyRequest = async (request) => {
   const response = await httpSend(requestOptions, {
     feature: 'proxy',
     destType: 'snapchat_custom_audience',
+    endpointPath: '/segments/segmentId/users',
+    requestMethod: requestOptions?.method,
+    module: 'dataDelivery',
+    metadata,
   });
   return response;
 };
@@ -80,7 +85,8 @@ const scaAudienceRespHandler = (destResponse, stageMsg) => {
   );
 };
 
-const responseHandler = (destinationResponse) => {
+const responseHandler = (responseParams) => {
+  const { destinationResponse } = responseParams;
   const message = `Request Processed Successfully`;
   const { status } = destinationResponse;
   if (isHttpStatusSuccess(status)) {

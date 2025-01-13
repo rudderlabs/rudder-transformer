@@ -1,0 +1,556 @@
+{
+  "name": "auth0",
+  "description": "update tenant settings",
+  "input": {
+    "request": {
+      "body": [
+        {
+          "log_id": "90020221031061527239169676960191065529099349299958906898",
+          "data": {
+            "date": "2022-10-31T06:15:25.201Z",
+            "type": "sapi",
+            "description": "Update tenant settings",
+            "client_id": "vQcJNDTxsM1W72eHFonRJdzyOvawlwIt",
+            "client_name": "",
+            "ip": "35.160.3.103",
+            "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36",
+            "details": {
+              "request": {
+                "ip": "35.160.3.103",
+                "auth": {
+                  "user": {
+                    "name": "rudder test",
+                    "email": "test@rudderstack.com",
+                    "user_id": "google-oauth2|123456"
+                  },
+                  "strategy": "jwt",
+                  "credentials": {
+                    "jti": "571921bf7833a97efabf08d765a0ec8f",
+                    "scopes": [
+                      "create:actions",
+                      "create:actions_log_sessions",
+                      "create:client_credentials",
+                      "create:client_grants",
+                      "create:clients",
+                      "create:connections",
+                      "create:custom_domains",
+                      "create:email_provider",
+                      "create:email_templates",
+                      "create:guardian_enrollment_tickets",
+                      "create:integrations",
+                      "create:log_streams",
+                      "create:organization_connections",
+                      "create:organization_invitations",
+                      "create:organization_member_roles",
+                      "create:organization_members",
+                      "create:organizations",
+                      "create:requested_scopes",
+                      "create:resource_servers",
+                      "create:roles",
+                      "create:rules",
+                      "create:shields",
+                      "create:signing_keys",
+                      "create:tenant_invitations",
+                      "create:test_email_dispatch",
+                      "create:users",
+                      "delete:actions",
+                      "delete:anomaly_blocks",
+                      "delete:branding",
+                      "delete:client_credentials",
+                      "delete:client_grants",
+                      "delete:clients",
+                      "delete:connections",
+                      "delete:custom_domains",
+                      "delete:device_credentials",
+                      "delete:email_provider",
+                      "delete:email_templates",
+                      "delete:grants",
+                      "delete:guardian_enrollments",
+                      "delete:integrations",
+                      "delete:log_streams",
+                      "delete:organization_connections",
+                      "delete:organization_invitations",
+                      "delete:organization_member_roles",
+                      "delete:organization_members",
+                      "delete:organizations",
+                      "delete:owners",
+                      "delete:requested_scopes",
+                      "delete:resource_servers",
+                      "delete:roles",
+                      "delete:rules",
+                      "delete:rules_configs",
+                      "delete:shields",
+                      "delete:tenant_invitations",
+                      "delete:tenant_members",
+                      "delete:tenants",
+                      "delete:users",
+                      "read:actions",
+                      "read:anomaly_blocks",
+                      "read:attack_protection",
+                      "read:branding",
+                      "read:checks",
+                      "read:client_credentials",
+                      "read:client_grants",
+                      "read:client_keys",
+                      "read:clients",
+                      "read:connections",
+                      "read:custom_domains",
+                      "read:device_credentials",
+                      "read:email_provider",
+                      "read:email_templates",
+                      "read:email_triggers",
+                      "read:entity_counts",
+                      "read:grants",
+                      "read:guardian_factors",
+                      "read:insights",
+                      "read:integrations",
+                      "read:log_streams",
+                      "read:logs",
+                      "read:mfa_policies",
+                      "read:organization_connections",
+                      "read:organization_invitations",
+                      "read:organization_member_roles",
+                      "read:organization_members",
+                      "read:organizations",
+                      "read:prompts",
+                      "read:requested_scopes",
+                      "read:resource_servers",
+                      "read:roles",
+                      "read:rules",
+                      "read:rules_configs",
+                      "read:shields",
+                      "read:signing_keys",
+                      "read:stats",
+                      "read:tenant_invitations",
+                      "read:tenant_members",
+                      "read:tenant_settings",
+                      "read:triggers",
+                      "read:users",
+                      "run:checks",
+                      "update:actions",
+                      "update:attack_protection",
+                      "update:branding",
+                      "update:client_credentials",
+                      "update:client_grants",
+                      "update:client_keys",
+                      "update:clients",
+                      "update:connections",
+                      "update:custom_domains",
+                      "update:email_provider",
+                      "update:email_templates",
+                      "update:email_triggers",
+                      "update:guardian_factors",
+                      "update:integrations",
+                      "update:log_streams",
+                      "update:mfa_policies",
+                      "update:organization_connections",
+                      "update:organizations",
+                      "update:prompts",
+                      "update:requested_scopes",
+                      "update:resource_servers",
+                      "update:roles",
+                      "update:rules",
+                      "update:rules_configs",
+                      "update:shields",
+                      "update:signing_keys",
+                      "update:tenant_members",
+                      "update:tenant_settings",
+                      "update:triggers",
+                      "update:users"
+                    ]
+                  }
+                },
+                "body": {
+                  "picture_url": "",
+                  "support_url": "",
+                  "friendly_name": "mecro-action",
+                  "support_email": "support@test.com"
+                },
+                "path": "/api/v2/tenants/settings",
+                "query": {},
+                "method": "patch",
+                "channel": "https://manage.auth0.com/",
+                "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36"
+              },
+              "response": {
+                "body": {
+                  "flags": {
+                    "enable_sso": true,
+                    "universal_login": true,
+                    "disable_impersonation": true,
+                    "allow_changing_enable_sso": false,
+                    "revoke_refresh_token_grant": false,
+                    "disable_clickjack_protection_headers": false,
+                    "new_universal_login_experience_enabled": true,
+                    "enforce_client_authentication_on_passwordless_start": true,
+                    "cannot_change_enforce_client_authentication_on_passwordless_start": true
+                  },
+                  "picture_url": "",
+                  "support_url": "",
+                  "friendly_name": "mecro-action",
+                  "support_email": "support@test.com",
+                  "enabled_locales": ["en"],
+                  "sandbox_version": "16",
+                  "universal_login": {}
+                },
+                "statusCode": 200
+              }
+            },
+            "user_id": "google-oauth2|123456",
+            "log_id": "90020221031061527239169676960191065529099349299958906898"
+          }
+        },
+        {
+          "log_id": "90020221031061530247169676961198100736838335677367058450",
+          "data": {
+            "date": "2022-10-31T06:15:25.196Z",
+            "type": "gd_tenant_update",
+            "description": "Guardian - Updates tenant settings",
+            "ip": "35.160.3.103",
+            "details": {
+              "request": {
+                "ip": "35.160.3.103",
+                "auth": {
+                  "scopes": [
+                    "read:authenticators",
+                    "remove:authenticators",
+                    "update:authenticators",
+                    "create:authenticators",
+                    "read:enrollments",
+                    "delete:enrollments",
+                    "read:factors",
+                    "update:factors",
+                    "update:tenant_settings",
+                    "update:users",
+                    "create:enrollment_tickets",
+                    "create:users"
+                  ],
+                  "subject": "google-oauth2|123456",
+                  "strategy": "jwt_api2_internal_token"
+                },
+                "body": {
+                  "picture_url": "[REDACTED]",
+                  "friendly_name": "[REDACTED]"
+                },
+                "path": "/api/tenants/settings",
+                "query": {},
+                "method": "PATCH"
+              },
+              "response": {
+                "body": {
+                  "name": "dev-cu4jy2zgao6yx15x",
+                  "picture_url": "[REDACTED]",
+                  "friendly_name": "[REDACTED]",
+                  "guardian_mfa_page": "[REDACTED]"
+                },
+                "statusCode": 200
+              }
+            },
+            "user_id": "google-oauth2|123456",
+            "log_id": "90020221031061530247169676961198100736838335677367058450"
+          }
+        }
+      ],
+      "headers": {
+        "Content-Type": "application/json"
+      }
+    }
+  },
+  "output": {
+    "response": {
+      "status": 200,
+      "body": "OK"
+    },
+    "queue": [
+      {
+        "type": "track",
+        "event": "Success API Operation",
+        "sentAt": "2022-10-31T06:15:25.201Z",
+        "userId": "google-oauth2|123456",
+        "anonymousId": "97fcd7b2-cc24-47d7-b776-057b7b199513",
+        "context": {
+          "library": {
+            "name": "unknown",
+            "version": "unknown"
+          },
+          "traits": {
+            "userId": "google-oauth2|123456"
+          },
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36",
+          "request_ip": "35.160.3.103",
+          "integration": {
+            "name": "Auth0"
+          }
+        },
+        "properties": {
+          "log_id": "90020221031061527239169676960191065529099349299958906898",
+          "details": {
+            "request": {
+              "ip": "35.160.3.103",
+              "auth": {
+                "user": {
+                  "name": "rudder test",
+                  "email": "test@rudderstack.com",
+                  "user_id": "google-oauth2|123456"
+                },
+                "strategy": "jwt",
+                "credentials": {
+                  "jti": "571921bf7833a97efabf08d765a0ec8f",
+                  "scopes": [
+                    "create:actions",
+                    "create:actions_log_sessions",
+                    "create:client_credentials",
+                    "create:client_grants",
+                    "create:clients",
+                    "create:connections",
+                    "create:custom_domains",
+                    "create:email_provider",
+                    "create:email_templates",
+                    "create:guardian_enrollment_tickets",
+                    "create:integrations",
+                    "create:log_streams",
+                    "create:organization_connections",
+                    "create:organization_invitations",
+                    "create:organization_member_roles",
+                    "create:organization_members",
+                    "create:organizations",
+                    "create:requested_scopes",
+                    "create:resource_servers",
+                    "create:roles",
+                    "create:rules",
+                    "create:shields",
+                    "create:signing_keys",
+                    "create:tenant_invitations",
+                    "create:test_email_dispatch",
+                    "create:users",
+                    "delete:actions",
+                    "delete:anomaly_blocks",
+                    "delete:branding",
+                    "delete:client_credentials",
+                    "delete:client_grants",
+                    "delete:clients",
+                    "delete:connections",
+                    "delete:custom_domains",
+                    "delete:device_credentials",
+                    "delete:email_provider",
+                    "delete:email_templates",
+                    "delete:grants",
+                    "delete:guardian_enrollments",
+                    "delete:integrations",
+                    "delete:log_streams",
+                    "delete:organization_connections",
+                    "delete:organization_invitations",
+                    "delete:organization_member_roles",
+                    "delete:organization_members",
+                    "delete:organizations",
+                    "delete:owners",
+                    "delete:requested_scopes",
+                    "delete:resource_servers",
+                    "delete:roles",
+                    "delete:rules",
+                    "delete:rules_configs",
+                    "delete:shields",
+                    "delete:tenant_invitations",
+                    "delete:tenant_members",
+                    "delete:tenants",
+                    "delete:users",
+                    "read:actions",
+                    "read:anomaly_blocks",
+                    "read:attack_protection",
+                    "read:branding",
+                    "read:checks",
+                    "read:client_credentials",
+                    "read:client_grants",
+                    "read:client_keys",
+                    "read:clients",
+                    "read:connections",
+                    "read:custom_domains",
+                    "read:device_credentials",
+                    "read:email_provider",
+                    "read:email_templates",
+                    "read:email_triggers",
+                    "read:entity_counts",
+                    "read:grants",
+                    "read:guardian_factors",
+                    "read:insights",
+                    "read:integrations",
+                    "read:log_streams",
+                    "read:logs",
+                    "read:mfa_policies",
+                    "read:organization_connections",
+                    "read:organization_invitations",
+                    "read:organization_member_roles",
+                    "read:organization_members",
+                    "read:organizations",
+                    "read:prompts",
+                    "read:requested_scopes",
+                    "read:resource_servers",
+                    "read:roles",
+                    "read:rules",
+                    "read:rules_configs",
+                    "read:shields",
+                    "read:signing_keys",
+                    "read:stats",
+                    "read:tenant_invitations",
+                    "read:tenant_members",
+                    "read:tenant_settings",
+                    "read:triggers",
+                    "read:users",
+                    "run:checks",
+                    "update:actions",
+                    "update:attack_protection",
+                    "update:branding",
+                    "update:client_credentials",
+                    "update:client_grants",
+                    "update:client_keys",
+                    "update:clients",
+                    "update:connections",
+                    "update:custom_domains",
+                    "update:email_provider",
+                    "update:email_templates",
+                    "update:email_triggers",
+                    "update:guardian_factors",
+                    "update:integrations",
+                    "update:log_streams",
+                    "update:mfa_policies",
+                    "update:organization_connections",
+                    "update:organizations",
+                    "update:prompts",
+                    "update:requested_scopes",
+                    "update:resource_servers",
+                    "update:roles",
+                    "update:rules",
+                    "update:rules_configs",
+                    "update:shields",
+                    "update:signing_keys",
+                    "update:tenant_members",
+                    "update:tenant_settings",
+                    "update:triggers",
+                    "update:users"
+                  ]
+                }
+              },
+              "body": {
+                "picture_url": "",
+                "support_url": "",
+                "friendly_name": "mecro-action",
+                "support_email": "support@test.com"
+              },
+              "path": "/api/v2/tenants/settings",
+              "query": {},
+              "method": "patch",
+              "channel": "https://manage.auth0.com/",
+              "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36"
+            },
+            "response": {
+              "body": {
+                "flags": {
+                  "enable_sso": true,
+                  "universal_login": true,
+                  "disable_impersonation": true,
+                  "allow_changing_enable_sso": false,
+                  "revoke_refresh_token_grant": false,
+                  "disable_clickjack_protection_headers": false,
+                  "new_universal_login_experience_enabled": true,
+                  "enforce_client_authentication_on_passwordless_start": true,
+                  "cannot_change_enforce_client_authentication_on_passwordless_start": true
+                },
+                "picture_url": "",
+                "support_url": "",
+                "friendly_name": "mecro-action",
+                "support_email": "support@test.com",
+                "enabled_locales": ["en"],
+                "sandbox_version": "16",
+                "universal_login": {}
+              },
+              "statusCode": 200
+            }
+          },
+          "client_id": "vQcJNDTxsM1W72eHFonRJdzyOvawlwIt",
+          "client_name": "",
+          "description": "Update tenant settings",
+          "source_type": "sapi"
+        },
+        "integrations": {
+          "Auth0": false
+        },
+        "originalTimestamp": "2022-10-31T06:15:25.201Z",
+        "receivedAt": "2024-03-03T04:48:29.000Z",
+        "request_ip": "192.0.2.30",
+        "messageId": "00000000-0000-0000-0000-000000000000"
+      },
+      {
+        "type": "track",
+        "event": "Guardian tenant update",
+        "sentAt": "2022-10-31T06:15:25.196Z",
+        "userId": "google-oauth2|123456",
+        "anonymousId": "97fcd7b2-cc24-47d7-b776-057b7b199513",
+        "context": {
+          "library": {
+            "name": "unknown",
+            "version": "unknown"
+          },
+          "traits": {
+            "userId": "google-oauth2|123456"
+          },
+          "request_ip": "35.160.3.103",
+          "integration": {
+            "name": "Auth0"
+          }
+        },
+        "properties": {
+          "log_id": "90020221031061530247169676961198100736838335677367058450",
+          "details": {
+            "request": {
+              "ip": "35.160.3.103",
+              "auth": {
+                "scopes": [
+                  "read:authenticators",
+                  "remove:authenticators",
+                  "update:authenticators",
+                  "create:authenticators",
+                  "read:enrollments",
+                  "delete:enrollments",
+                  "read:factors",
+                  "update:factors",
+                  "update:tenant_settings",
+                  "update:users",
+                  "create:enrollment_tickets",
+                  "create:users"
+                ],
+                "subject": "google-oauth2|123456",
+                "strategy": "jwt_api2_internal_token"
+              },
+              "body": {
+                "picture_url": "[REDACTED]",
+                "friendly_name": "[REDACTED]"
+              },
+              "path": "/api/tenants/settings",
+              "query": {},
+              "method": "PATCH"
+            },
+            "response": {
+              "body": {
+                "name": "dev-cu4jy2zgao6yx15x",
+                "picture_url": "[REDACTED]",
+                "friendly_name": "[REDACTED]",
+                "guardian_mfa_page": "[REDACTED]"
+              },
+              "statusCode": 200
+            }
+          },
+          "description": "Guardian - Updates tenant settings",
+          "source_type": "gd_tenant_update"
+        },
+        "integrations": {
+          "Auth0": false
+        },
+        "originalTimestamp": "2022-10-31T06:15:25.196Z",
+        "receivedAt": "2024-03-03T04:48:29.000Z",
+        "request_ip": "192.0.2.30",
+        "messageId": "00000000-0000-0000-0000-000000000000"
+      }
+    ],
+    "errQueue": []
+  }
+}

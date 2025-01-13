@@ -141,6 +141,7 @@
             "DisplayName": "Pinterest Tag",
             "Config": {
               "cdkV2TestThreshold": 1,
+              "cdkV2Enabled": true,
               "destConfig": {
                 "defaultConfig": [
                   "tagId",
@@ -156,7 +157,7 @@
                   "whitelistedEvents",
                   "eventFilteringOption"
                 ],
-                "web": ["useNativeSDK", "oneTrustCookieCategories"]
+                "web": ["useNativeSDK"]
               },
               "excludeKeys": [],
               "includeKeys": [
@@ -170,7 +171,6 @@
                 "deduplicationKey",
                 "blacklistedEvents",
                 "whitelistedEvents",
-                "oneTrustCookieCategories",
                 "eventFilteringOption"
               ],
               "saveDestinationResponse": false,
@@ -378,6 +378,7 @@
             "DisplayName": "Pinterest Tag",
             "Config": {
               "cdkV2TestThreshold": 1,
+              "cdkV2Enabled": true,
               "destConfig": {
                 "defaultConfig": [
                   "tagId",
@@ -393,7 +394,7 @@
                   "whitelistedEvents",
                   "eventFilteringOption"
                 ],
-                "web": ["useNativeSDK", "oneTrustCookieCategories"]
+                "web": ["useNativeSDK"]
               },
               "excludeKeys": [],
               "includeKeys": [
@@ -407,7 +408,6 @@
                 "deduplicationKey",
                 "blacklistedEvents",
                 "whitelistedEvents",
-                "oneTrustCookieCategories",
                 "eventFilteringOption"
               ],
               "saveDestinationResponse": false,
@@ -615,6 +615,7 @@
             "DisplayName": "Pinterest Tag",
             "Config": {
               "cdkV2TestThreshold": 1,
+              "cdkV2Enabled": true,
               "destConfig": {
                 "defaultConfig": [
                   "tagId",
@@ -630,7 +631,7 @@
                   "whitelistedEvents",
                   "eventFilteringOption"
                 ],
-                "web": ["useNativeSDK", "oneTrustCookieCategories"]
+                "web": ["useNativeSDK"]
               },
               "excludeKeys": [],
               "includeKeys": [
@@ -644,7 +645,6 @@
                 "deduplicationKey",
                 "blacklistedEvents",
                 "whitelistedEvents",
-                "oneTrustCookieCategories",
                 "eventFilteringOption"
               ],
               "saveDestinationResponse": false,
@@ -751,6 +751,10 @@
                     "content_ids": ["123"],
                     "contents": [
                       {
+                        "id": "123",
+                        "item_brand": "Gamepro",
+                        "item_category": "Games",
+                        "item_name": "Game",
                         "quantity": 11,
                         "item_price": "13.49"
                       }
@@ -778,6 +782,10 @@
                     "content_ids": ["123"],
                     "contents": [
                       {
+                        "id": "123",
+                        "item_brand": "Gamepro",
+                        "item_category": "Games",
+                        "item_name": "Game",
                         "quantity": 11,
                         "item_price": "13.49"
                       }
@@ -991,6 +999,7 @@
             "DisplayName": "Pinterest Tag",
             "Config": {
               "cdkV2TestThreshold": 1,
+              "cdkV2Enabled": true,
               "destConfig": {
                 "defaultConfig": [
                   "tagId",
@@ -1006,7 +1015,7 @@
                   "whitelistedEvents",
                   "eventFilteringOption"
                 ],
-                "web": ["useNativeSDK", "oneTrustCookieCategories"]
+                "web": ["useNativeSDK"]
               },
               "excludeKeys": [],
               "includeKeys": [
@@ -1020,7 +1029,6 @@
                 "deduplicationKey",
                 "blacklistedEvents",
                 "whitelistedEvents",
-                "oneTrustCookieCategories",
                 "eventFilteringOption"
               ],
               "saveDestinationResponse": false,
@@ -1192,7 +1200,7 @@
           "errorType": "instrumentation",
           "destType": "PINTEREST_TAG",
           "module": "destination",
-          "implementation": "native",
+          "implementation": "cdkV2",
           "feature": "router",
           "destinationId": "2JIqVoWNvSOHa9ppKOqSo4hPuc0",
           "workspaceId": "27O0bhB6p5ehfOWeeZlOSsSDTLg"
@@ -1206,6 +1214,7 @@
             "DisplayName": "Pinterest Tag",
             "Config": {
               "cdkV2TestThreshold": 1,
+              "cdkV2Enabled": true,
               "destConfig": {
                 "defaultConfig": [
                   "tagId",
@@ -1221,7 +1230,7 @@
                   "whitelistedEvents",
                   "eventFilteringOption"
                 ],
-                "web": ["useNativeSDK", "oneTrustCookieCategories"]
+                "web": ["useNativeSDK"]
               },
               "excludeKeys": [],
               "includeKeys": [
@@ -1235,7 +1244,6 @@
                 "deduplicationKey",
                 "blacklistedEvents",
                 "whitelistedEvents",
-                "oneTrustCookieCategories",
                 "eventFilteringOption"
               ],
               "saveDestinationResponse": false,

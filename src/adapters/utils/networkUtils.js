@@ -1,6 +1,7 @@
 /* eslint-disable eqeqeq */
 const lodash = require('lodash');
 const { isEmpty } = require('lodash');
+const { AbortedError } = require('@rudderstack/integrations-lib');
 const {
   isHttpStatusRetryable,
   isDefinedAndNotNullAndNotEmpty,
@@ -9,7 +10,6 @@ const {
   isHttpStatusSuccess,
   getErrorStatusCode,
 } = require('../../v0/util');
-const { AbortedError } = require('../../v0/util/errorTypes');
 const tags = require('../../v0/util/tags');
 const { HTTP_STATUS_CODES } = require('../../v0/util/constant');
 
@@ -70,6 +70,14 @@ const nodeSysErrorToStatus = (code) => {
     ETIMEDOUT: {
       status: 500,
       message: '[ETIMEDOUT] :: Operation timed out',
+    },
+    EAI_AGAIN: {
+      status: 500,
+      message: '[EAI_AGAIN] :: Temporary failure in name resolution',
+    },
+    ECONNABORTED: {
+      status: 500,
+      message: '[ECONNABORTED] :: Connection aborted',
     },
   };
   return sysErrorToStatusMap[code] || { status: 400, message: `[${code}]` };
@@ -136,10 +144,11 @@ const processAxiosResponse = (clientResponse) => {
     }
     // non 2xx status handling for axios response
     if (response) {
-      const { data, status } = response;
+      const { data, status, headers } = response;
       return {
         response: data || '',
         status: status || 500,
+        ...(isDefinedAndNotNullAndNotEmpty(headers) ? { headers } : {}),
       };
     }
     // (edge case) response and code is not present
@@ -149,10 +158,11 @@ const processAxiosResponse = (clientResponse) => {
     };
   }
   // success(2xx) axios response
-  const { data, status } = clientResponse.response;
+  const { data, status, headers } = clientResponse.response;
   return {
     response: data || '',
     status: status || 500,
+    ...(isDefinedAndNotNullAndNotEmpty(headers) ? { headers } : {}),
   };
 };
 

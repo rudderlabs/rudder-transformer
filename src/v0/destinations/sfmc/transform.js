@@ -1,7 +1,24 @@
+/* eslint-disable no-param-reassign */
 /* eslint-disable no-nested-ternary */
-const myAxios = require('../../../util/myAxios');
+const {
+  NetworkError,
+  ConfigurationError,
+  InstrumentationError,
+  isDefinedAndNotNull,
+  isEmpty,
+  MappedToDestinationKey,
+  GENERIC_TRUE_VALUES,
+  PlatformError,
+} = require('@rudderstack/integrations-lib');
+const get = require('get-value');
 const { EventType } = require('../../../constants');
-const { CONFIG_CATEGORIES, MAPPING_CONFIG, ENDPOINTS } = require('./config');
+const { handleHttpRequest } = require('../../../adapters/network');
+const {
+  CONFIG_CATEGORIES,
+  MAPPING_CONFIG,
+  ENDPOINTS,
+  ACCESS_TOKEN_CACHE_TTL,
+} = require('./config');
 const {
   removeUndefinedAndNullValues,
   getFieldValueFromMessage,
@@ -12,61 +29,54 @@ const {
   flattenJson,
   toTitleCase,
   getHashFromArray,
-  isEmpty,
   simpleProcessRouterDest,
+  getDestinationExternalIDInfoForRetl,
 } = require('../../util');
-const {
-  getDynamicErrorType,
-  nodeSysErrorToStatus,
-} = require('../../../adapters/utils/networkUtils');
-const { NetworkError, ConfigurationError, InstrumentationError } = require('../../util/errorTypes');
+const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
+const { isHttpStatusSuccess } = require('../../util');
 const tags = require('../../util/tags');
 const { JSON_MIME_TYPE } = require('../../util/constant');
+const Cache = require('../../util/cache');
 
+const accessTokenCache = new Cache(ACCESS_TOKEN_CACHE_TTL);
 const CONTACT_KEY_KEY = 'Contact Key';
 
 // DOC: https://developer.salesforce.com/docs/atlas.en-us.mc-app-development.meta/mc-app-development/access-token-s2s.htm
 
-const getToken = async (clientId, clientSecret, subdomain) => {
-  try {
-    const resp = await myAxios.post(
-      `https://${subdomain}.${ENDPOINTS.GET_TOKEN}`,
-      {
-        grant_type: 'client_credentials',
-        client_id: clientId,
-        client_secret: clientSecret,
-      },
-      {
-        'Content-Type': JSON_MIME_TYPE,
-      },
-      { destType: 'sfmc', feature: 'transformation' },
-    );
-    if (resp && resp.data) {
-      return resp.data.access_token;
-    }
-    const status = resp.status || 400;
+const getToken = async (clientId, clientSecret, subdomain, metadata) => {
+  const { processedResponse: processedResponseSfmc } = await handleHttpRequest(
+    'post',
+    `https://${subdomain}.${ENDPOINTS.GET_TOKEN}`,
+    {
+      grant_type: 'client_credentials',
+      client_id: clientId,
+      client_secret: clientSecret,
+    },
+    {
+      'Content-Type': JSON_MIME_TYPE,
+    },
+    {
+      destType: 'sfmc',
+      feature: 'transformation',
+      endpointPath: '/token',
+      requestMethod: 'POST',
+      module: 'router',
+      metadata,
+    },
+  );
+
+  if (!isHttpStatusSuccess(processedResponseSfmc.status)) {
     throw new NetworkError(
       'Could not retrieve access token',
-      status,
+      processedResponseSfmc.status || 400,
       {
-        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(processedResponseSfmc.status || 400),
       },
-      resp,
+      processedResponseSfmc.response,
     );
-  } catch (error) {
-    if (!isEmpty(error.response)) {
-      const status = error.status || 400;
-      throw new NetworkError(`Authorization Failed ${error.response.statusText}`, status, {
-        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
-      });
-    } else {
-      const httpError = nodeSysErrorToStatus(error.code);
-      const status = httpError.status || 400;
-      throw new NetworkError(`Authorization Failed ${httpError.message}`, status, {
-        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
-      });
-    }
   }
+
+  return processedResponseSfmc.response.access_token;
 };
 
 // DOC : https://developer.salesforce.com/docs/atlas.en-us.noversion.mc-apis.meta/mc-apis/createContacts.htm
@@ -177,7 +187,27 @@ const responseBuilderForInsertData = (
   return response;
 };
 
-const responseBuilderSimple = async (message, category, destination) => {
+// DOC : https://developer.salesforce.com/docs/marketing/marketing-cloud/references/mc_rest_interaction/postEvent.html
+
+const responseBuilderForMessageEvent = (message, subDomain, authToken, hashMapEventDefinition) => {
+  const contactKey = message.properties.contactId;
+  delete message.properties.contactId;
+  const response = defaultRequestConfig();
+  response.method = defaultPostRequestConfig.requestMethod;
+  response.endpoint = `https://${subDomain}.${ENDPOINTS.EVENT}`;
+  response.headers = {
+    'Content-Type': JSON_MIME_TYPE,
+    Authorization: `Bearer ${authToken}`,
+  };
+  response.body.JSON = {
+    ContactKey: contactKey,
+    EventDefinitionKey: hashMapEventDefinition[message.event.toLowerCase()],
+    Data: { ...message.properties },
+  };
+  return response;
+};
+
+const responseBuilderSimple = async ({ message, destination, metadata }, category) => {
   const {
     clientId,
     clientSecret,
@@ -187,6 +217,7 @@ const responseBuilderSimple = async (message, category, destination) => {
     eventToExternalKey,
     eventToPrimaryKey,
     eventToUUID,
+    eventToDefinitionMapping,
   } = destination.Config;
   // map from an event name to an external key of a data extension.
   const hashMapExternalKey = getHashFromArray(eventToExternalKey, 'from', 'to');
@@ -195,7 +226,9 @@ const responseBuilderSimple = async (message, category, destination) => {
   // map from an event name to uuid as true or false to determine to send uuid as primary key or not.
   const hashMapUUID = getHashFromArray(eventToUUID, 'event', 'uuid');
   // token needed for authorization for subsequent calls
-  const authToken = await getToken(clientId, clientSecret, subDomain);
+  const authToken = await getToken(clientId, clientSecret, subDomain, metadata);
+  // map from an event name to an event definition key.
+  const hashMapEventDefinition = getHashFromArray(eventToDefinitionMapping, 'from', 'to');
   // if createOrUpdateContacts is true identify calls for create and update of contacts will not occur.
   if (category.type === 'identify' && !createOrUpdateContacts) {
     // first call to identify the contact
@@ -217,10 +250,24 @@ const responseBuilderSimple = async (message, category, destination) => {
   }
 
   if (category.type === 'identify' && createOrUpdateContacts) {
-    throw new ConfigurationError('Creating or updating contacts is disabled');
+    throw new ConfigurationError(
+      'Creating or updating contacts is disabled. To enable this feature set "Do Not Create or Update Contacts" to false',
+    );
   }
 
-  if (category.type === 'track' && hashMapExternalKey[message.event.toLowerCase()]) {
+  if (category.type === 'track') {
+    if (isEmpty(message.event)) {
+      throw new ConfigurationError('Event name is required for track events');
+    }
+    if (typeof message.event !== 'string') {
+      throw new ConfigurationError('Event name must be a string');
+    }
+    if (hashMapEventDefinition[message.event.toLowerCase()]) {
+      return responseBuilderForMessageEvent(message, subDomain, authToken, hashMapEventDefinition);
+    }
+    if (!isDefinedAndNotNull(hashMapExternalKey[message.event.toLowerCase()])) {
+      throw new ConfigurationError('Event not mapped for this track call');
+    }
     return responseBuilderForInsertData(
       message,
       hashMapExternalKey[message.event.toLowerCase()],
@@ -233,14 +280,44 @@ const responseBuilderSimple = async (message, category, destination) => {
     );
   }
 
-  throw new ConfigurationError('Event not mapped for this track call');
+  throw new ConfigurationError(`Event type '${category.type}' not supported`);
 };
 
-const processEvent = async (message, destination) => {
+const retlResponseBuilder = async (message, destination, metadata) => {
+  const { clientId, clientSecret, subDomain, externalKey } = destination.Config;
+  const token = await accessTokenCache.get(metadata.destinationId, () =>
+    getToken(clientId, clientSecret, subDomain, metadata),
+  );
+  const { destinationExternalId, objectType, identifierType } = getDestinationExternalIDInfoForRetl(
+    message,
+    'SFMC',
+  );
+  if (objectType?.toLowerCase() === 'data extension') {
+    const response = defaultRequestConfig();
+    response.method = defaultPutRequestConfig.requestMethod;
+    response.endpoint = `https://${subDomain}.${ENDPOINTS.INSERT_CONTACTS}${externalKey}/rows/${identifierType}:${destinationExternalId}`;
+    response.headers = {
+      'Content-Type': JSON_MIME_TYPE,
+      Authorization: `Bearer ${token}`,
+    };
+    response.body.JSON = {
+      values: {
+        ...message.traits,
+      },
+    };
+    return response;
+  }
+  throw new PlatformError('Unsupported object type for rETL use case');
+};
+
+const processEvent = async ({ message, destination, metadata }) => {
   if (!message.type) {
     throw new InstrumentationError('Event type is required');
   }
-
+  const mappedToDestination = get(message, MappedToDestinationKey);
+  if (mappedToDestination && GENERIC_TRUE_VALUES.includes(mappedToDestination?.toString())) {
+    return retlResponseBuilder(message, destination, metadata);
+  }
   const messageType = message.type.toLowerCase();
   let category;
   // only accept track and identify calls
@@ -256,12 +333,12 @@ const processEvent = async (message, destination) => {
   }
 
   // build the response
-  const response = await responseBuilderSimple(message, category, destination);
+  const response = await responseBuilderSimple({ message, destination, metadata }, category);
   return response;
 };
 
 const process = async (event) => {
-  const response = await processEvent(event.message, event.destination);
+  const response = await processEvent(event);
   return response;
 };
 
@@ -270,4 +347,9 @@ const processRouterDest = async (inputs, reqMetadata) => {
   return respList;
 };
 
-module.exports = { process, processRouterDest };
+module.exports = {
+  process,
+  processRouterDest,
+  responseBuilderSimple,
+  responseBuilderForMessageEvent,
+};

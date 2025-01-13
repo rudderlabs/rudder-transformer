@@ -12,7 +12,7 @@
     "sourceFromGenericMap": false
   },
   {
-    "sourceKeys": "email",
+    "sourceKeys": "emailOnly",
     "destKey": "email",
     "required": false,
     "sourceFromGenericMap": true

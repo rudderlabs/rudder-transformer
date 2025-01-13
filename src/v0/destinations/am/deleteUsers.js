@@ -1,4 +1,5 @@
 const btoa = require('btoa');
+const { ConfigurationError, NetworkError } = require('@rudderstack/integrations-lib');
 const { httpPOST } = require('../../../adapters/network');
 const tags = require('../../util/tags');
 const {
@@ -6,7 +7,6 @@ const {
   getDynamicErrorType,
 } = require('../../../adapters/utils/networkUtils');
 const { isHttpStatusSuccess } = require('../../util');
-const { ConfigurationError, NetworkError } = require('../../util/errorTypes');
 const { executeCommonValidations } = require('../../util/regulation-api');
 const { DELETE_MAX_BATCH_SIZE } = require('./config');
 const { getUserIdBatches } = require('../../util/deleteUserUtils');
@@ -16,7 +16,7 @@ const userDeletionHandler = async (userAttributes, config) => {
   if (!config) {
     throw new ConfigurationError('Config for deletion not present');
   }
-  const { apiKey, apiSecret } = config;
+  const { apiKey, apiSecret, residencyServer } = config;
   if (!apiKey || !apiSecret) {
     throw new ConfigurationError('api key/secret for deletion not present');
   }
@@ -27,7 +27,11 @@ const userDeletionHandler = async (userAttributes, config) => {
   };
   // Ref : https://www.docs.developers.amplitude.com/analytics/apis/user-privacy-api/#response
   const batchEvents = getUserIdBatches(userAttributes, DELETE_MAX_BATCH_SIZE);
-  const url = 'https://amplitude.com/api/2/deletions/users';
+  const url =
+    residencyServer === 'EU'
+      ? 'https://analytics.eu.amplitude.com/api/2/deletions/users'
+      : 'https://amplitude.com/api/2/deletions/users';
+  const endpointPath = '/api/2/deletions/users';
   await Promise.all(
     batchEvents.map(async (batch) => {
       const data = {
@@ -41,6 +45,9 @@ const userDeletionHandler = async (userAttributes, config) => {
       const resp = await httpPOST(url, data, requestOptions, {
         destType: 'am',
         feature: 'deleteUsers',
+        endpointPath,
+        requestMethod: 'POST',
+        module: 'deletion',
       });
       const handledDelResponse = processAxiosResponse(resp);
       if (!isHttpStatusSuccess(handledDelResponse.status)) {
@@ -49,6 +56,7 @@ const userDeletionHandler = async (userAttributes, config) => {
           handledDelResponse.status,
           {
             [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(handledDelResponse.status),
+            [tags.TAG_NAMES.STATUS]: handledDelResponse.status,
           },
           handledDelResponse,
         );

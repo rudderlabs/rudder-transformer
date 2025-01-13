@@ -1,14 +1,15 @@
+const { NetworkError, ThrottledError, AbortedError } = require('@rudderstack/integrations-lib');
 const { proxyRequest, prepareProxyRequest } = require('../../../adapters/network');
 const {
   processAxiosResponse,
   getDynamicErrorType,
 } = require('../../../adapters/utils/networkUtils');
 const { DESTINATION } = require('./config');
-const { NetworkError, ThrottledError, AbortedError } = require('../../util/errorTypes');
 const { TAG_NAMES } = require('../../util/tags');
 const { HTTP_STATUS_CODES } = require('../../util/constant');
 
-const responseHandler = (destinationResponse) => {
+const responseHandler = (responseParams) => {
+  const { destinationResponse } = responseParams;
   const msg = `[${DESTINATION} Response Handler] - Request Processed Successfully`;
   const {
     response: { code },

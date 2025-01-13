@@ -1,5 +1,10 @@
 /* eslint-disable no-return-assign, no-param-reassign, no-restricted-syntax */
 const get = require('get-value');
+const {
+  NetworkError,
+  InstrumentationError,
+  ConfigurationError,
+} = require('@rudderstack/integrations-lib');
 const { getFieldValueFromMessage } = require('../../util');
 const { BASE_URL, lookupFieldMap } = require('./config');
 const { httpGET } = require('../../../adapters/network');
@@ -7,7 +12,6 @@ const {
   processAxiosResponse,
   getDynamicErrorType,
 } = require('../../../adapters/utils/networkUtils');
-const { NetworkError, InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
 const tags = require('../../util/tags');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
@@ -150,7 +154,7 @@ const validateGroupCall = (message) => {
  * It checks for lookUpfield Validation and make axios call ,if Valid, and returns the contactIDs received.
  * It Gets the contact Id using Lookup field and then email, otherwise returns null
  */
-const searchContactIds = async (message, Config, baseUrl) => {
+const searchContactIds = async ({ message, Config, metadata }, baseUrl) => {
   const { lookUpField, userName, password } = Config;
 
   const traits = getFieldValueFromMessage(message, 'traits');
@@ -179,6 +183,10 @@ const searchContactIds = async (message, Config, baseUrl) => {
     {
       destType: 'mautic',
       feature: 'transformation',
+      endpointPath: '/contacts',
+      requestMethod: 'GET',
+      module: 'router',
+      metadata,
     },
   );
   searchContactsResponse = processAxiosResponse(searchContactsResponse);

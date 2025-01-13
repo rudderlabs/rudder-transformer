@@ -13,6 +13,7 @@ const TAG_NAMES = {
   DESTINATION_ID: 'destinationId',
   WORKSPACE_ID: 'workspaceId',
   SOURCE_ID: 'sourceId',
+  STATUS: 'statusCode',
 };
 
 const MODULES = {
@@ -23,7 +24,6 @@ const MODULES = {
 
 const IMPLEMENTATIONS = {
   NATIVE: 'native',
-  CDK_V1: 'cdkV1',
   CDK_V2: 'cdkV2',
 };
 
@@ -51,6 +51,7 @@ const ERROR_TYPES = {
   OAUTH_SECRET: 'oAuthSecret',
   UNSUPPORTED: 'unsupported',
   REDIS: 'redis',
+  FILTERED: 'filtered',
 };
 
 const METADATA = {

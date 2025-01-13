@@ -1,4 +1,4 @@
-const BASE_URL = 'https://graph.facebook.com/v17.0';
+const BASE_URL = 'https://graph.facebook.com/v20.0';
 
 function getEndPoint(audienceId) {
   return `${BASE_URL}/${audienceId}/users`;
@@ -89,11 +89,12 @@ const subTypeFields = [
   'CONTACT_IMPORTER',
   'DATA_FILE',
 ];
-// as per real time experimentation maximum 500 users can be added at a time
-// const MAX_USER_COUNT = 500; (using from destination definition)
+
 const USER_ADD = 'add';
 const USER_DELETE = 'remove';
-/* No official Documentation is available for this but using trial 
+// https://developers.facebook.com/docs/marketing-api/audiences/guides/custom-audiences/
+const MAX_USER_COUNT = 10000;
+/* No official Documentation is available for this but using trial
 and error method we found that 65000 bytes is the maximum payload allowed size but we are 60000 just to be sure batching is done properly
 */
 const maxPayloadSize = 60000; // bytes
@@ -102,6 +103,7 @@ module.exports = {
   schemaFields,
   USER_ADD,
   USER_DELETE,
+  MAX_USER_COUNT,
   typeFields,
   subTypeFields,
   maxPayloadSize,

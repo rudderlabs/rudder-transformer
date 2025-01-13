@@ -1,5 +1,5 @@
 bindings:
-  - path: ../../../../v0/destinations/pinterest_tag/config
+  - path: ./config
   - name: batchMultiplexedEvents
     path: ../../../../v0/util/index
 steps:
@@ -12,7 +12,7 @@ steps:
       If sendTestEvent is enabled, we send test event to the destination
       ref: https://help.pinterest.com/en/business/article/track-conversions-with-the-conversions-api
     template: |
-        ^[0].destination.Config.sendAsTestEvent ? {"test": true} : {}
+      ^[0].destination.Config.sendAsTestEvent ? {"test": true} : {}
 
   - name: transform
     externalWorkflow:

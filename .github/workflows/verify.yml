@@ -1,0 +1,66 @@
+name: Verify
+
+on:
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.sha }}
+  cancel-in-progress: true
+
+jobs:
+  formatting-lint:
+    name: Check for formatting & lint errors
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.2.1
+        with:
+          # Make sure the actual branch is checked out when running on pull requests
+          ref: ${{ github.head_ref }}
+
+      - name: Setup Node
+        uses: actions/setup-node@v4.0.4
+        with:
+          node-version-file: .nvmrc
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - id: files
+        uses: Ana06/get-changed-files@v1.2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Filter JS/TS Files
+        run: |
+          changed_files=$(echo "${{ steps.files.outputs.added_modified }}" | tr ' ' '\n' | grep -E '\.(js|ts|jsx|tsx)$' || true)
+          if [ -z "$changed_files" ]; then
+            echo "No JS/TS files to format or lint."
+            exit 0
+          fi
+
+      - name: Run format Checks
+        run: |
+          if [ -s changed_files.txt ]; then
+              npx prettier --write $(cat changed_files.txt)
+          fi
+
+      - run: git diff --exit-code
+
+      - name: Formatting Error message
+        if: ${{ failure() }}
+        run: |
+          echo 'prettier formatting failure. Ensure you run `npm run format` and commit the files.'
+
+      - name: Run eslint Checks
+        run: |
+          npx eslint ${{steps.files.outputs.added_modified}} --fix
+
+      - run: git diff --exit-code
+
+      - name: Eslint Error message
+        if: ${{ failure() }}
+        run: |
+          echo 'Eslint failure. Ensure you run `npm run lint:fix` and commit the files.'

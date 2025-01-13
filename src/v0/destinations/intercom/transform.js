@@ -1,5 +1,6 @@
 const md5 = require('md5');
 const get = require('get-value');
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const { EventType, MappedToDestinationKey } = require('../../../constants');
 const {
   ConfigCategory,
@@ -18,7 +19,6 @@ const {
   flattenJson,
 } = require('../../util');
 const { separateReservedAndRestMetadata } = require('./util');
-const { InstrumentationError } = require('../../util/errorTypes');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 function getCompanyAttribute(company) {

@@ -1,0 +1,65 @@
+{
+  "name": "mailjet",
+  "description": "MailJet email sent event",
+  "input": {
+    "request": {
+      "body": {
+        "event": "sent",
+        "time": 1664444171,
+        "MessageID": 92886743924596480,
+        "Message_GUID": "0230c73a-2b77-4aea-8ef2-ed15d0edc5fd",
+        "email": "test@rudderstack.com",
+        "mj_campaign_id": 108892,
+        "mj_contact_id": 372651182,
+        "customcampaign": "mj.nl=58486",
+        "smtp_reply": "250 2.0.0 OK DMARC:Quarantine 1664444171 u17-20020adfdd51000000b0022cc3f2bf13si3225188wrm.271 - gsmtp"
+      },
+      "headers": {
+        "Content-Type": "application/json"
+      }
+    }
+  },
+  "output": {
+    "response": {
+      "status": 200,
+      "body": "OK"
+    },
+    "queue": [
+      {
+        "context": {
+          "library": {
+            "name": "unknown",
+            "version": "unknown"
+          },
+          "integration": {
+            "name": "MailJet"
+          },
+          "traits": {
+            "email": "test@rudderstack.com"
+          },
+          "externalId": [
+            {
+              "type": "mailjetContactId",
+              "id": 372651182
+            }
+          ]
+        },
+        "integrations": {
+          "MailJet": false
+        },
+        "type": "track",
+        "event": "sent",
+        "properties": {
+          "customcampaign": "mj.nl=58486",
+          "mj_campaign_id": 108892
+        },
+        "originalTimestamp": "2022-09-29T09:36:11.000Z",
+        "userId": "5b6a3426dba2cb24e4f0aeec43bee9d7",
+        "receivedAt": "2024-03-03T04:48:29.000Z",
+        "request_ip": "192.0.2.30",
+        "messageId": "00000000-0000-0000-0000-000000000000"
+      }
+    ],
+    "errQueue": []
+  }
+}

@@ -1,0 +1,80 @@
+bindings:
+  - name: EventType
+    path: ../../../../constants
+  - path: ../../bindings/jsontemplate
+    exportAll: true
+  - name: removeUndefinedValues
+    path: ../../../../v0/util
+  - name: removeUndefinedNullValuesAndEmptyObjectArray
+    path: ../../../../v0/util
+  - name: defaultRequestConfig
+    path: ../../../../v0/util
+  - name: OAuthSecretError
+    path: '@rudderstack/integrations-lib'
+  - path: ./utils
+  - path: ./config
+  - path: lodash
+    name: cloneDeep
+
+steps:
+  - name: checkIfProcessed
+    condition: .message.statusCode
+    template: |
+      $.batchMode ? .message.body.JSON : .message
+    onComplete: return
+  - name: messageType
+    template: |
+      .message.type.toLowerCase()
+  - name: validateInput
+    template: |
+      let messageType = $.outputs.messageType;
+      $.assert(messageType, "Message type is not present. Aborting message.");
+      $.assert(messageType in {{$.EventType.([.TRACK])}}, 
+        "message type " + messageType + " is not supported")
+
+  - name: validateInputForTrack
+    description: Additional validation for Track events
+    condition: $.outputs.messageType === {{$.EventType.TRACK}}
+    template: |
+      $.assert(.message.event, "event could not be mapped to conversion rule. Aborting.")
+  - name: commonFields
+    description: |
+      Builds common fields in destination payload.
+      ref: https://learn.microsoft.com/en-us/linkedin/marketing/integrations/ads-reporting/conversions-api?view=li-lms-2024-02&tabs=curl#adding-multiple-conversion-events-in-a-batch
+    template: |
+      let commonFields = .message.().({
+        "conversionHappenedAt": $.fetchAndVerifyConversionHappenedAt(^.message),  
+        "eventId": $.getOneByPaths(., ^.destination.Config.deduplicationKey) ?? .messageId,
+        "conversionValue":$.calculateConversionObject(^.message),
+        "user":{
+            "userIds":$.fetchUserIds(^.message,^.destination.Config),
+            "userInfo":$.curateUserInfoObject(^.message)
+        }
+      });
+      $.removeUndefinedValues(commonFields)
+  - name: basePayload
+    template: |
+      const payload = $.outputs.commonFields;
+      payload
+
+  - name: deduceConversionEventRules
+    template: |
+      $.context.deduceConversionRulesArray = $.deduceConversionRules(.message.event,.destination.Config)
+
+  - name: preparePayload
+    template: |
+      $.context.payloads = $.context.deduceConversionRulesArray@conversionRuleId.(
+        const newPayload = $.cloneDeep($.outputs.basePayload);
+        newPayload.conversion = $.createConversionString(conversionRuleId);
+        $.removeUndefinedNullValuesAndEmptyObjectArray(newPayload)
+      )[];
+  - name: buildResponse
+    template: |
+      $.assertThrow((.metadata.secret && .metadata.secret.accessToken), new $.OAuthSecretError("Secret or accessToken is not present in the metadata"))
+      const accessToken = .metadata.secret.accessToken
+      const response = $.defaultRequestConfig();
+      response.body.JSON = {elements: $.context.payloads};
+      response.endpoint = $.BATCH_ENDPOINT;
+      response.method = "POST";
+      response.headers = $.generateHeader(accessToken)
+      response

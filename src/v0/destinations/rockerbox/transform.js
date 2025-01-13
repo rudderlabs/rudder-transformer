@@ -1,4 +1,5 @@
 const get = require('get-value');
+const { ConfigurationError, InstrumentationError } = require('@rudderstack/integrations-lib');
 const {
   defaultRequestConfig,
   removeUndefinedAndNullValues,
@@ -9,7 +10,6 @@ const {
 } = require('../../util');
 const { EventType } = require('../../../constants');
 const { CONFIG_CATEGORIES, MAPPING_CONFIG, ROCKERBOX_DEFINED_PROPERTIES } = require('./config');
-const { ConfigurationError, InstrumentationError } = require('../../util/errorTypes');
 
 const responseBuilderSimple = (message, category, destination) => {
   const payload = constructPayload(message, MAPPING_CONFIG[category.name]);

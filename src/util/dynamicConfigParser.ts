@@ -6,7 +6,7 @@ import { FixMe } from './types';
 const get = require('get-value');
 const unset = require('unset-value');
 
-export default class DynamicConfigParser {
+export class DynamicConfigParser {
   private static getDynamicConfigValue(
     event: ProcessorTransformationRequest | RouterTransformationRequestData,
     value: FixMe,

@@ -1,4 +1,9 @@
 /* eslint-disable no-nested-ternary */
+const {
+  InstrumentationError,
+  ConfigurationError,
+  formatTimeStamp,
+} = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const {
   isEmptyObject,
@@ -22,20 +27,20 @@ const {
   formatEventProps,
 } = require('./util');
 const {
-  ENDPOINTS,
   USER_EXCLUSION_FIELDS,
   ACCOUNT_EXCLUSION_FIELDS,
   trackMapping,
   groupMapping,
   identifyMapping,
+  getUsersEndpoint,
+  getCustomEventsEndpoint,
 } = require('./config');
-const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 /**
  * Create/Update a User with user attributes
  */
-const identifyResponseBuilder = async (message, { Config }) => {
+const identifyResponseBuilder = async (message, { Config }, metadata) => {
   const userId = getFieldValueFromMessage(message, 'userId');
   if (!userId) {
     throw new InstrumentationError('userId or anonymousId is required for identify');
@@ -47,7 +52,7 @@ const identifyResponseBuilder = async (message, { Config }) => {
     'Content-Type': JSON_MIME_TYPE,
   };
 
-  const { success: isPresent } = await objectExists(userId, Config, 'user');
+  const { success: isUserPresent } = await objectExists(userId, Config, 'user', metadata);
 
   let payload = constructPayload(message, identifyMapping);
   const name = getValueFromMessage(message, ['traits.name', 'context.traits.name']);
@@ -56,6 +61,16 @@ const identifyResponseBuilder = async (message, { Config }) => {
     payload.firstName = fName;
     payload.lastName = lName;
   }
+  // Only for the case of new user creation, if signUpDate is not provided in traits, timestamp / originalTimestamp is mapped
+  if (!isUserPresent && !payload.signUpDate) {
+    payload.signUpDate = formatTimeStamp(message.timestamp || message.originalTimestamp);
+  }
+
+  // Only for the case of new user creation, if createDate is not provided in traits, timestamp / originalTimestamp is mapped
+  if (!isUserPresent && !payload.createDate) {
+    payload.createDate = formatTimeStamp(message.timestamp || message.originalTimestamp);
+  }
+
   let customAttributes = {};
   customAttributes = extractCustomFields(
     message,
@@ -75,10 +90,10 @@ const identifyResponseBuilder = async (message, { Config }) => {
     type: 'USER',
   };
 
-  if (isPresent) {
+  if (isUserPresent) {
     // update user
     response.method = defaultPutRequestConfig.requestMethod;
-    response.endpoint = `${ENDPOINTS.USERS_ENDPOINT}/${userId}`;
+    response.endpoint = `${getUsersEndpoint(Config)}/${userId}`;
     response.body.JSON = removeUndefinedAndNullValues(payload);
     return response;
   }
@@ -86,7 +101,7 @@ const identifyResponseBuilder = async (message, { Config }) => {
   // create new user
   payload.identifyId = userId;
   response.method = defaultPostRequestConfig.requestMethod;
-  response.endpoint = ENDPOINTS.USERS_ENDPOINT;
+  response.endpoint = getUsersEndpoint(Config);
   response.body.JSON = removeUndefinedAndNullValues(payload);
   return response;
 };
@@ -96,7 +111,7 @@ const identifyResponseBuilder = async (message, { Config }) => {
  * Pros: Will make atleast 2 API call and at most 3 API calls
  * Cons: There might be some unwanted accounts
  */
-const newGroupResponseBuilder = async (message, { Config }) => {
+const newGroupResponseBuilder = async (message, { Config }, metadata) => {
   const userId = getFieldValueFromMessage(message, 'userId');
   if (!userId) {
     throw new InstrumentationError('userId or anonymousId is required for group');
@@ -126,12 +141,12 @@ const newGroupResponseBuilder = async (message, { Config }) => {
   payload = removeUndefinedAndNullValues(payload);
 
   // update account
-  const { success: updateSuccess, err } = await updateAccount(groupId, payload, Config);
+  const { success: updateSuccess, err } = await updateAccount(groupId, payload, Config, metadata);
   // will not throw error if it is due to unavailable accounts
   if (!updateSuccess && err === null) {
     // create account
     payload.id = groupId;
-    const { success: createSuccess, error } = await createAccount(payload, Config);
+    const { success: createSuccess, error } = await createAccount(payload, Config, metadata);
     if (!createSuccess) {
       throw new ConfigurationError(`failed to create account for group: ${error}`);
     }
@@ -148,7 +163,7 @@ const newGroupResponseBuilder = async (message, { Config }) => {
     'X-APTRINSIC-API-KEY': Config.apiKey,
     'Content-Type': JSON_MIME_TYPE,
   };
-  response.endpoint = `${ENDPOINTS.USERS_ENDPOINT}/${userId}`;
+  response.endpoint = `${getUsersEndpoint(Config)}/${userId}`;
   response.body.JSON = {
     accountId: groupId,
   };
@@ -158,13 +173,13 @@ const newGroupResponseBuilder = async (message, { Config }) => {
 /**
  * Associates a User with an Account.
  */
-const groupResponseBuilder = async (message, { Config }) => {
+const groupResponseBuilder = async (message, { Config }, metadata) => {
   const userId = getFieldValueFromMessage(message, 'userId');
   if (!userId) {
     throw new InstrumentationError('userId or anonymousId is required for group');
   }
 
-  const { success: isPresent, err: e } = await objectExists(userId, Config, 'user');
+  const { success: isPresent, err: e } = await objectExists(userId, Config, 'user', metadata);
   if (!isPresent) {
     throw new InstrumentationError(`aborting group call: ${e}`);
   }
@@ -174,7 +189,7 @@ const groupResponseBuilder = async (message, { Config }) => {
     throw new InstrumentationError('groupId is required for group');
   }
 
-  const { success: accountIsPresent } = await objectExists(groupId, Config, 'account');
+  const { success: accountIsPresent } = await objectExists(groupId, Config, 'account', metadata);
 
   let payload = constructPayload(message, groupMapping);
   let customAttributes = {};
@@ -196,14 +211,14 @@ const groupResponseBuilder = async (message, { Config }) => {
 
   if (accountIsPresent) {
     // update account
-    const { success: updateSuccess, err } = await updateAccount(groupId, payload, Config);
+    const { success: updateSuccess, err } = await updateAccount(groupId, payload, Config, metadata);
     if (!updateSuccess) {
       throw new ConfigurationError(`failed to update account for group: ${err}`);
     }
   } else {
     // create account
     payload.id = groupId;
-    const { success: createSuccess, err } = await createAccount(payload, Config);
+    const { success: createSuccess, err } = await createAccount(payload, Config, metadata);
     if (!createSuccess) {
       throw new ConfigurationError(`failed to create account for group: ${err}`);
     }
@@ -216,7 +231,7 @@ const groupResponseBuilder = async (message, { Config }) => {
     'X-APTRINSIC-API-KEY': Config.apiKey,
     'Content-Type': JSON_MIME_TYPE,
   };
-  response.endpoint = `${ENDPOINTS.USERS_ENDPOINT}/${userId}`;
+  response.endpoint = `${getUsersEndpoint(Config)}/${userId}`;
   response.body.JSON = {
     accountId: groupId,
   };
@@ -257,7 +272,7 @@ const trackResponseBuilder = (message, { Config }) => {
     'X-APTRINSIC-API-KEY': Config.apiKey,
     'Content-Type': JSON_MIME_TYPE,
   };
-  response.endpoint = ENDPOINTS.CUSTOM_EVENTS_ENDPOINT;
+  response.endpoint = getCustomEventsEndpoint(Config);
   return response;
 };
 
@@ -265,7 +280,7 @@ const trackResponseBuilder = (message, { Config }) => {
  * Processing Single event
  */
 const process = async (event) => {
-  const { message, destination } = event;
+  const { message, destination, metadata } = event;
   if (!message.type) {
     throw new InstrumentationError('Message Type is not present. Aborting message.');
   }
@@ -287,16 +302,16 @@ const process = async (event) => {
   let response;
   switch (messageType) {
     case EventType.IDENTIFY:
-      response = await identifyResponseBuilder(message, destination);
+      response = await identifyResponseBuilder(message, destination, metadata);
       break;
     case EventType.TRACK:
       response = trackResponseBuilder(message, destination);
       break;
     case EventType.GROUP:
       if (limitAPIForGroup) {
-        response = await newGroupResponseBuilder(message, destination);
+        response = await newGroupResponseBuilder(message, destination, metadata);
       } else {
-        response = await groupResponseBuilder(message, destination);
+        response = await groupResponseBuilder(message, destination, metadata);
       }
       break;
     default:

@@ -1,303 +1,231 @@
-const { transformedPayloadData } = require('../../../../src/v0/destinations/facebook_pixel/utils');
-const sha256 = require('sha256');
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
+const {
+  getActionSource,
+  formatRevenue,
+  getCategoryFromEvent,
+  verifyEventDuration,
+} = require('./utils');
+const { CONFIG_CATEGORIES, OTHER_STANDARD_EVENTS } = require('./config');
 
-describe('transformedPayloadData_function', () => {
-  // Tests with default values for all parameters
-  it('test_default_values', () => {
-    const message = {};
-    const customData = {};
-    const blacklistPiiProperties = undefined;
-    const whitelistPiiProperties = undefined;
-    const integrationsObj = undefined;
+Date.now = jest.fn(() => new Date('2022-01-20T00:00:00Z'));
+describe('Test Facebook Pixel Utils', () => {
+  describe('getActionSource', () => {
+    // Returns 'other' if payload.action_source is not defined and channel is neither 'web' nor 'mobile'
+    it('should return "other" when payload.action_source is not defined and channel is neither "web" nor "mobile"', () => {
+      const payload = {};
+      const channel = 'email';
+      const result = getActionSource(payload, channel);
+      expect(result).toBe('other');
+    });
 
-    const result = transformedPayloadData(
-      message,
-      customData,
-      blacklistPiiProperties,
-      whitelistPiiProperties,
-      integrationsObj,
-    );
+    // Returns payload.action_source if it is defined and is a valid value from ACTION_SOURCES_VALUES
+    it('should return payload.action_source when it is defined and is a valid value from ACTION_SOURCES_VALUES', () => {
+      const payload = { action_source: 'website' };
+      const channel = 'email';
+      const result = getActionSource(payload, channel);
+      expect(result).toBe('website');
+    });
 
-    expect(result).toEqual({});
-  });
+    // Returns 'website' if channel is 'web' and payload.action_source is not defined
+    it('should return "website" when channel is "web" and payload.action_source is not defined', () => {
+      const payload = {};
+      const channel = 'web';
+      const result = getActionSource(payload, channel);
+      expect(result).toBe('website');
+    });
 
-  // Tests with customData parameter containing all default pii properties
-  it('test_custom_data_default_pii', () => {
-    const message = {};
-    const customData = {
-      email: 'email',
-      firstName: 'firstName',
-      lastName: 'lastName',
-      firstname: 'firstname',
-      lastname: 'lastname',
-      first_name: 'first_name',
-      last_name: 'last_name',
-      gender: 'gender',
-      city: 'city',
-      country: 'country',
-      phone: 'phone',
-      state: 'state',
-      zip: 'zip',
-      postalCode: 'postalCode',
-      birthday: 'birthday',
-    };
-    const blacklistPiiProperties = undefined;
-    const whitelistPiiProperties = undefined;
-    const integrationsObj = undefined;
-
-    const result = transformedPayloadData(
-      message,
-      customData,
-      blacklistPiiProperties,
-      whitelistPiiProperties,
-      integrationsObj,
-    );
-
-    expect(result).toEqual({});
-  });
-
-  // Tests with customData parameter containing only whitelisted properties
-  it('test_custom_data_whitelisted_properties', () => {
-    const message = {};
-    const customData = {
-      email: 'email',
-      firstName: 'firstName',
-      lastName: 'lastName',
-      firstname: 'firstname',
-      lastname: 'lastname',
-      first_name: 'first_name',
-      last_name: 'last_name',
-      gender: 'gender',
-      city: 'city',
-      country: 'country',
-      phone: 'phone',
-      state: 'state',
-      zip: 'zip',
-      postalCode: 'postalCode',
-      birthday: 'birthday',
-      customProperty1: 'customProperty1',
-      customProperty2: 'customProperty2',
-    };
-    const blacklistPiiProperties = undefined;
-    const whitelistPiiProperties = [
-      { whitelistPiiProperties: 'customProperty1' },
-      { whitelistPiiProperties: 'customProperty2' },
-    ];
-    const integrationsObj = undefined;
-
-    const result = transformedPayloadData(
-      message,
-      customData,
-      blacklistPiiProperties,
-      whitelistPiiProperties,
-      integrationsObj,
-    );
-
-    expect(result).toEqual({
-      customProperty1: 'customProperty1',
-      customProperty2: 'customProperty2',
+    // Throws an InstrumentationError if payload.action_source is defined but not a valid value from ACTION_SOURCES_VALUES
+    it('should throw an InstrumentationError when payload.action_source is defined but not a valid value from ACTION_SOURCES_VALUES', () => {
+      const payload = { action_source: 'invalid' };
+      const channel = 'email';
+      expect(() => {
+        getActionSource(payload, channel);
+      }).toThrow(InstrumentationError);
     });
   });
 
-  // Tests with customData parameter containing some blacklisted properties
-  it('test_custom_data_blacklisted_properties', () => {
-    const message = {
-      properties: {
-        email: 'email',
-        firstName: 'firstName',
-      },
-    };
-    const customData = {
-      email: 'email',
-      firstName: 'firstName',
-      lastName: 'lastName',
-      firstname: 'firstname',
-      lastname: 'lastname',
-      first_name: 'first_name',
-      last_name: 'last_name',
-      gender: 'gender',
-      city: 'city',
-      country: 'country',
-      phone: 'phone',
-      state: 'state',
-      zip: 'zip',
-      postalCode: 'postalCode',
-      birthday: 'birthday',
-    };
-    const blacklistPiiProperties = [
-      { blacklistPiiProperties: 'email', blacklistPiiHash: true },
-      { blacklistPiiProperties: 'firstName', blacklistPiiHash: true },
-    ];
-    const whitelistPiiProperties = undefined;
-    const integrationsObj = undefined;
+  describe('formatRevenue', () => {
+    // Returns a number with two decimal places when passed a valid revenue value.
+    it('should return a number with two decimal places when passed a valid revenue value', () => {
+      const revenue = '100.50';
+      const formattedRevenue = formatRevenue(revenue);
+      expect(formattedRevenue).toBe(100.5);
+    });
 
-    const result = transformedPayloadData(
-      message,
-      customData,
-      blacklistPiiProperties,
-      whitelistPiiProperties,
-      integrationsObj,
-    );
+    // Returns 0 when passed a null revenue value.
+    it('should return 0 when passed a null revenue value', () => {
+      const revenue = null;
+      const formattedRevenue = formatRevenue(revenue);
+      expect(formattedRevenue).toBe(0);
+    });
 
-    expect(result).toEqual({ firstName: sha256('firstName'), email: sha256('email') });
-  });
+    // Returns 0 when passed an undefined revenue value.
+    it('should return 0 when passed an undefined revenue value', () => {
+      const revenue = undefined;
+      const formattedRevenue = formatRevenue(revenue);
+      expect(formattedRevenue).toBe(0);
+    });
 
-  // Tests with customData parameter containing some hashed blacklisted properties
-  it('test_custom_data_hashed_blacklisted_properties', () => {
-    const message = {
-      properties: {
-        email: 'email',
-        firstName: 'firstName',
-        lastName: 'lastName',
-      },
-    };
-    const customData = {
-      email: 'email',
-      firstName: 'firstName',
-      lastName: 'lastName',
-      firstname: 'firstname',
-      lastname: 'lastname',
-      first_name: 'first_name',
-      last_name: 'last_name',
-      gender: 'gender',
-      city: 'city',
-      country: 'country',
-      phone: 'phone',
-      state: 'state',
-      zip: 'zip',
-      postalCode: 'postalCode',
-      birthday: 'birthday',
-    };
-    const blacklistPiiProperties = [
-      { blacklistPiiProperties: 'email', blacklistPiiHash: true },
-      { blacklistPiiProperties: 'firstName', blacklistPiiHash: false },
-    ];
-    const whitelistPiiProperties = undefined;
-    const integrationsObj = { hashed: true };
+    // Throws an InstrumentationError when passed a non-numeric string revenue value.
+    it('should throw an InstrumentationError when passed a non-numeric string revenue value', () => {
+      const revenue = 'abc';
+      expect(() => {
+        formatRevenue(revenue);
+      }).toThrow(InstrumentationError);
+    });
 
-    const result = transformedPayloadData(
-      message,
-      customData,
-      blacklistPiiProperties,
-      whitelistPiiProperties,
-      integrationsObj,
-    );
+    // Returns a number with two decimal places when passed a numeric string revenue value with more than two decimal places.
+    it('should return a number with two decimal places when passed a numeric string revenue value with more than two decimal places', () => {
+      const revenue = '100.555';
+      const formattedRevenue = formatRevenue(revenue);
+      expect(formattedRevenue).toBe(100.56);
+    });
 
-    expect(result).toEqual({ email: 'email' });
-  });
-
-  it('test_custom_data_non_pii_blacklisted_properties', () => {
-    const message = {
-      properties: {
-        email: 'email',
-        nonPiiProp1: 'firstName',
-        nonPiiProp2: 'lastName',
-      },
-    };
-    const customData = {
-      email: 'email',
-      firstName: 'firstName',
-      lastName: 'lastName',
-      firstname: 'firstname',
-      lastname: 'lastname',
-      first_name: 'first_name',
-      last_name: 'last_name',
-      gender: 'gender',
-      city: 'city',
-      country: 'country',
-      phone: 'phone',
-      state: 'state',
-      zip: 'zip',
-      postalCode: 'postalCode',
-      birthday: 'birthday',
-      nonPiiProp1: 'firstName',
-      nonPiiProp2: 'lastName',
-    };
-    const blacklistPiiProperties = [
-      { blacklistPiiProperties: 'nonPiiProp1', blacklistPiiHash: true },
-      { blacklistPiiProperties: 'nonPiiProp2', blacklistPiiHash: false },
-    ];
-    const whitelistPiiProperties = undefined;
-    const integrationsObj = undefined;
-
-    const result = transformedPayloadData(
-      message,
-      customData,
-      blacklistPiiProperties,
-      whitelistPiiProperties,
-      integrationsObj,
-    );
-
-    expect(result).toEqual({
-      nonPiiProp1: '9cf22fd0154cc2a33179f3f567cb94dc0245e679700eb5b9ca4cd09cfaab8108',
-      nonPiiProp2: 'lastName',
+    // Returns a number with two decimal places when passed a numeric value with more than two decimal places.
+    it('should return a number with two decimal places when passed a numeric value with more than two decimal places', () => {
+      const revenue = 100.555;
+      const formattedRevenue = formatRevenue(revenue);
+      expect(formattedRevenue).toBe(100.56);
     });
   });
 
-  it('test_custom_data_non_pii_blacklisted_hashed_properties', () => {
-    const message = {
-      properties: {
-        email: 'email',
-        nonPiiProp1: 'firstName',
-        nonPiiProp2: 'lastName',
-      },
-    };
-    const customData = {
-      email: 'email',
-      firstName: 'firstName',
-      lastName: 'lastName',
-      firstname: 'firstname',
-      lastname: 'lastname',
-      first_name: 'first_name',
-      last_name: 'last_name',
-      gender: 'gender',
-      city: 'city',
-      country: 'country',
-      phone: 'phone',
-      state: 'state',
-      zip: 'zip',
-      postalCode: 'postalCode',
-      birthday: 'birthday',
-      nonPiiProp1: 'firstName',
-      nonPiiProp2: 'lastName',
-    };
-    const blacklistPiiProperties = [
-      { blacklistPiiProperties: 'nonPiiProp1', blacklistPiiHash: true },
-      { blacklistPiiProperties: 'nonPiiProp2', blacklistPiiHash: false },
-    ];
-    const whitelistPiiProperties = undefined;
-    const integrationsObj = { hashed: true };
+  describe('getCategoryFromEvent', () => {
+    // The function correctly maps the eventName to its corresponding category.
+    it('should correctly map the eventName to its corresponding category', () => {
+      const eventName = CONFIG_CATEGORIES.PRODUCT_LIST_VIEWED.type;
+      const result = getCategoryFromEvent(eventName);
+      expect(result).toEqual(CONFIG_CATEGORIES.PRODUCT_LIST_VIEWED);
+    });
 
-    const result = transformedPayloadData(
-      message,
-      customData,
-      blacklistPiiProperties,
-      whitelistPiiProperties,
-      integrationsObj,
-    );
+    // The function returns the correct category for a given eventName.
+    it('should return the correct category for a given eventName', () => {
+      const eventName = CONFIG_CATEGORIES.PRODUCT_VIEWED.type;
+      const result = getCategoryFromEvent(eventName);
+      expect(result).toEqual(CONFIG_CATEGORIES.PRODUCT_VIEWED);
+    });
 
-    expect(result).toEqual({
-      nonPiiProp1: 'firstName',
-      nonPiiProp2: 'lastName',
+    // The function returns the default category if the eventName is not recognized.
+    it('should return the default category if the eventName is not recognized', () => {
+      const eventName = 'unknownEvent';
+      const result = getCategoryFromEvent(eventName);
+      expect(result).toEqual(CONFIG_CATEGORIES.SIMPLE_TRACK);
+    });
+
+    // The function handles null or undefined eventName inputs.
+    it('should handle null or undefined eventName inputs', () => {
+      const eventName = null;
+      const result = getCategoryFromEvent(eventName);
+      expect(result).toEqual(CONFIG_CATEGORIES.SIMPLE_TRACK);
+    });
+
+    // The function handles empty string eventName inputs.
+    it('should handle empty string eventName inputs', () => {
+      const eventName = '';
+      const result = getCategoryFromEvent(eventName);
+      expect(result).toEqual(CONFIG_CATEGORIES.SIMPLE_TRACK);
+    });
+
+    // The function handles eventName inputs that are not strings.
+    it('should handle eventName inputs that are not strings', () => {
+      const eventName = 123;
+      const result = getCategoryFromEvent(eventName);
+      expect(result).toEqual(CONFIG_CATEGORIES.SIMPLE_TRACK);
+    });
+
+    // The function handles multiple eventNames that map to the same category.
+    it('should correctly map multiple eventNames to the same category', () => {
+      const eventName1 = CONFIG_CATEGORIES.PRODUCT_LIST_VIEWED.type;
+      const eventName2 = CONFIG_CATEGORIES.PRODUCT_LIST_VIEWED.eventName;
+      const result1 = getCategoryFromEvent(eventName1);
+      const result2 = getCategoryFromEvent(eventName2);
+      expect(result1).toEqual(CONFIG_CATEGORIES.PRODUCT_LIST_VIEWED);
+      expect(result2).toEqual(CONFIG_CATEGORIES.PRODUCT_LIST_VIEWED);
+    });
+
+    // The function handles eventNames that are included in the OTHER_STANDARD_EVENTS list.
+    it('should correctly handle eventNames included in the OTHER_STANDARD_EVENTS list', () => {
+      const eventName = OTHER_STANDARD_EVENTS[0];
+      const result = getCategoryFromEvent(eventName);
+      expect(result).toEqual(CONFIG_CATEGORIES.OTHER_STANDARD);
+      expect(result.eventName).toEqual(eventName);
+    });
+
+    // The function handles eventNames that are not recognized and not in the OTHER_STANDARD_EVENTS list.
+    it('should correctly handle unrecognized eventNames', () => {
+      const eventName = 'unrecognizedEvent';
+      const result = getCategoryFromEvent(eventName);
+      expect(result).toEqual(CONFIG_CATEGORIES.SIMPLE_TRACK);
     });
   });
 
-  // Tests with empty customData parameter
-  it('test_empty_custom_data', () => {
-    const message = {};
-    const customData = {};
-    const blacklistPiiProperties = undefined;
-    const whitelistPiiProperties = undefined;
-    const integrationsObj = undefined;
+  describe('verifyEventDuration', () => {
+    it('should not throw an InstrumentationError when event duration is less than 8 days after the event occurred', () => {
+      const message = {
+        traits: {
+          action_source: 'some_action_source',
+        },
+        context: {
+          traits: {
+            action_source: 'some_action_source',
+          },
+        },
+        properties: {
+          action_source: 'some_action_source',
+        },
+      };
+      const destination = {
+        ID: 'some_destination_id',
+      };
+      const timeStamp = '2022-01-20T00:00:00Z';
+      expect(() => {
+        verifyEventDuration(message, destination, timeStamp);
+      }).not.toThrow(InstrumentationError);
+    });
+    it('should throw an InstrumentationError when event duration is exactly 8 days after the event occurred', () => {
+      const message = {
+        traits: {
+          action_source: 'some_action_source',
+        },
+        context: {
+          traits: {
+            action_source: 'some_action_source',
+          },
+        },
+        properties: {
+          action_source: 'some_action_source',
+        },
+      };
+      const destination = {
+        ID: 'some_destination_id',
+      };
+      const timeStamp = '2022-01-12T00:00:00Z';
 
-    const result = transformedPayloadData(
-      message,
-      customData,
-      blacklistPiiProperties,
-      whitelistPiiProperties,
-      integrationsObj,
-    );
+      expect(() => {
+        verifyEventDuration(message, destination, timeStamp);
+      }).toThrow(InstrumentationError);
+    });
+    it('should not throw an InstrumentationError when event duration is greater than 8 days after the event occurred and action_source is physical_store', () => {
+      const message = {
+        traits: {
+          action_source: 'physical_store',
+        },
+        context: {
+          traits: {
+            action_source: 'some_action_source',
+          },
+        },
+        properties: {
+          action_source: 'some_action_source',
+        },
+      };
+      const destination = {
+        ID: 'some_destination_id',
+      };
+      const timeStamp = '2022-01-12T00:00:00Z';
 
-    expect(result).toEqual({});
+      expect(() => {
+        verifyEventDuration(message, destination, timeStamp);
+      }).not.toThrow(InstrumentationError);
+    });
   });
 });

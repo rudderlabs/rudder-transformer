@@ -1,12 +1,12 @@
 const qs = require('qs');
 const sha256 = require('sha256');
+const { InstrumentationError, NetworkError } = require('@rudderstack/integrations-lib');
 const { generateJWTToken } = require('../../../util/jwtTokenGenerator');
 const { httpSend } = require('../../../adapters/network');
 const { isDefinedAndNotNullAndNotEmpty } = require('../../util');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const { ACCESS_TOKEN_CACHE_TTL, AUDIENCE_ATTRIBUTE, DSP_SUPPORTED_OPERATION } = require('./config');
 const Cache = require('../../util/cache');
-const { InstrumentationError, NetworkError } = require('../../util/errorTypes');
 const tags = require('../../util/tags');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
@@ -51,7 +51,7 @@ const populateIdentifiers = (audienceList, Config) => {
       }
       // here, hashing the data if is not hashed and pushing in the seedList array.
       if (hashRequired) {
-        seedList.push(sha256(userTraits[audienceAttribute]));
+        seedList.push(sha256(userTraits[audienceAttribute].trim()));
       } else {
         seedList.push(userTraits[audienceAttribute]);
       }
@@ -95,7 +95,7 @@ const createPayload = (audienceList, Config) => {
  * @param {*} destination
  * @returns
  */
-const getAccessToken = async (destination) => {
+const getAccessToken = async (destination, metadata) => {
   const { clientId, clientSecret } = destination.Config;
   const accessTokenKey = destination.ID;
 
@@ -137,6 +137,10 @@ const getAccessToken = async (destination) => {
     const dspAuthorisationData = await httpSend(request, {
       destType: 'yahoo_dsp',
       feature: 'transformation',
+      endpointPath: '/identity/oauth2/access_token',
+      requestMethod: 'POST',
+      module: 'router',
+      metadata,
     });
     // If the request fails, throwing error.
     if (dspAuthorisationData.success === false) {

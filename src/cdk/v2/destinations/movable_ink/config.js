@@ -1,0 +1,4 @@
+module.exports = {
+  MAX_REQUEST_SIZE_IN_BYTES: 1000000,
+  MAX_BATCH_SIZE: 1000,
+};

@@ -7,7 +7,13 @@ const ConfigCategories = {
     type: 'track',
     name: 'CampaignManagerTrackConfig',
   },
+  ENHANCED_CONVERSION: {
+    type: 'track',
+    name: 'CampaignManagerEnhancedConversionConfig',
+  },
 };
+
+const MAX_BATCH_CONVERSATIONS_SIZE = 1000;
 
 const EncryptionEntityType = [
   'ENCRYPTION_ENTITY_TYPE_UNKNOWN',
@@ -28,4 +34,5 @@ module.exports = {
   BASE_URL,
   EncryptionEntityType,
   EncryptionSource,
+  MAX_BATCH_CONVERSATIONS_SIZE,
 };

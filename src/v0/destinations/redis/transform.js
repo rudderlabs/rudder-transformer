@@ -1,9 +1,9 @@
 const lodash = require('lodash');
 const flatten = require('flat');
 
-const { isEmpty, isObject } = require('../../util');
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
+const { isEmpty, isObject, getFieldValueFromMessage } = require('../../util');
 const { EventType } = require('../../../constants');
-const { InstrumentationError } = require('../../util/errorTypes');
 
 // processValues:
 // 1. removes keys with empty values or still an object(empty) after flattening
@@ -46,25 +46,58 @@ const transformSubEventTypeProfiles = (message, workspaceId, destinationId) => {
   };
 };
 
+const getJSONValue = (message) => {
+  const eventType = message.type.toLowerCase();
+  if (eventType === EventType.IDENTIFY) {
+    return getFieldValueFromMessage(message, 'traits');
+  }
+  return {};
+};
+
+const getTransformedPayloadForJSON = ({ key, path, value, userId }) => ({
+  message: { key, path, value },
+  userId,
+});
+
 const process = (event) => {
   const { message, destination, metadata } = event;
   const messageType = message && message.type && message.type.toLowerCase();
 
   if (messageType !== EventType.IDENTIFY) {
-    return [];
+    throw new InstrumentationError('Only Identify calls are supported');
   }
 
   if (isEmpty(message.userId)) {
     throw new InstrumentationError('Blank userId passed in identify event');
   }
 
-  const { prefix } = destination.Config;
+  const { prefix, useJSONModule } = destination.Config;
   const destinationId = destination.ID;
   const keyPrefix = isEmpty(prefix) ? '' : `${prefix.trim()}:`;
 
+  const jsonValue = getJSONValue(message);
+
   if (isSubEventTypeProfiles(message)) {
     const { workspaceId } = metadata;
+    if (useJSONModule) {
+      // If redis should store information as JSON type
+      return getTransformedPayloadForJSON({
+        key: `${workspaceId}:${destinationId}:${message.context.sources.profiles_entity}:${message.context.sources.profiles_id_type}:${message.userId}`,
+        path: message.context.sources.profiles_model,
+        value: jsonValue,
+        userId: message.userId,
+      });
+    }
     return transformSubEventTypeProfiles(message, workspaceId, destinationId);
+  }
+
+  if (useJSONModule) {
+    // If redis should store information as JSON type
+    return getTransformedPayloadForJSON({
+      key: `${keyPrefix}user:${lodash.toString(message.userId)}`,
+      value: jsonValue,
+      userId: message.userId,
+    });
   }
 
   const hmap = {

@@ -1,9 +1,5 @@
 const lodash = require('lodash');
-const {
-  getSuccessRespEvents,
-  checkInvalidRtTfEvents,
-  handleRtTfSingleEventError,
-} = require('../../util');
+const { getSuccessRespEvents, handleRtTfSingleEventError } = require('../../util');
 
 const { generateBatchedPayload, validateDestinationConfig } = require('./util');
 
@@ -40,11 +36,6 @@ function batchEvents(successRespList, maxBatchSize = 10) {
 
 // Router transform with batching by default
 const processRouterDest = async (inputs, reqMetadata) => {
-  const errorRespEvents = checkInvalidRtTfEvents(inputs);
-  if (errorRespEvents.length > 0) {
-    return errorRespEvents;
-  }
-
   const successResponseList = [];
   const errorRespList = [];
   const { destination } = inputs[0];

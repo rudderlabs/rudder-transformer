@@ -1,0 +1,53 @@
+[
+  {
+    "sourceKeys": "context.page.referring_domain",
+    "destKey": "domain"
+  },
+  {
+    "sourceKeys": "context.locale",
+    "required": true,
+    "destKey": "culture"
+  },
+  {
+    "sourceKeys": "properties.currency",
+    "required": true,
+    "destKey": "currency"
+  },
+  {
+    "sourceKeys": ["context.ip", "request_ip"],
+    "destKey": "user_ip"
+  },
+  {
+    "sourceKeys": "context.userAgent",
+    "destKey": "user_agent"
+  },
+  {
+    "sourceKeys": "userId",
+    "sourceFromGenericMap": true,
+    "required": true,
+    "destKey": "user_guid"
+  },
+  {
+    "sourceKeys": "context.device.type",
+    "destKey": "device_type"
+  },
+  {
+    "sourceKeys": ["properties.order_id", "properties.transaction_id"],
+    "required": true,
+    "destKey": "transaction_id"
+  },
+  {
+    "sourceKeys": "properties.conversion_source",
+    "destKey": "conversion_source"
+  },
+  {
+    "sourceKeys": "timestamp",
+    "sourceFromGenericMap": true,
+    "destKey": "unixtime"
+  },
+  {
+    "sourceKeys": "properties.bidders",
+    "required": true,
+    "destKey": "bidders"
+  }
+]

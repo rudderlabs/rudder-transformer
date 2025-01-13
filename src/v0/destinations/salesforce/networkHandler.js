@@ -1,14 +1,17 @@
 const { proxyRequest, prepareProxyRequest } = require('../../../adapters/network');
 const { processAxiosResponse } = require('../../../adapters/utils/networkUtils');
+const { LEGACY } = require('./config');
 const { salesforceResponseHandler } = require('./utils');
 
-const responseHandler = (destinationResponse, destType) => {
+const responseHandler = (responseParams) => {
+  const { destinationResponse, destType, rudderJobMetadata } = responseParams;
   const message = `Request for destination: ${destType} Processed Successfully`;
 
   salesforceResponseHandler(
     destinationResponse,
     'during Salesforce Response Handling',
-    destinationResponse?.rudderJobMetadata?.destInfo?.authKey,
+    rudderJobMetadata?.destInfo?.authKey,
+    LEGACY,
   );
 
   // else successfully return status as 200, message and original destination response

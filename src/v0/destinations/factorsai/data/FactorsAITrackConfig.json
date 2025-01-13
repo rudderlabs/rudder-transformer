@@ -44,5 +44,10 @@
     "destKey": "channel",
     "sourceKeys": "channel",
     "required": false
+  },
+  {
+    "sourceKeys": "context",
+    "destKey": "context",
+    "required": false
   }
 ]

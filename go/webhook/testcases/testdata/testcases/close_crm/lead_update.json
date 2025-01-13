@@ -1,0 +1,145 @@
+{
+  "name": "close_crm",
+  "description": "lead update",
+  "input": {
+    "request": {
+      "body": {
+        "event": {
+          "date_created": "2019-01-15T12:48:23.395000",
+          "meta": {
+            "request_method": "PUT",
+            "request_path": "/api/v1/opportunity/object_id/"
+          },
+          "id": "ev_123",
+          "action": "updated",
+          "date_updated": "2019-01-15T12:48:23.395000",
+          "changed_fields": [
+            "confidence",
+            "date_updated",
+            "status_id",
+            "status_label",
+            "status_type"
+          ],
+          "previous_data": {
+            "status_type": "active",
+            "confidence": 70,
+            "date_updated": "2019-01-15T12:47:39.873000+00:00",
+            "status_id": "stat_123",
+            "status_label": "Active"
+          },
+          "organization_id": "orga_123",
+          "data": {
+            "contact_name": "Mr. Jones",
+            "user_name": "Joe Kemp",
+            "value_period": "one_time",
+            "updated_by_name": "Joe Kemp",
+            "date_created": "2019-01-15T12:41:24.496000+00:00",
+            "user_id": "user_123",
+            "updated_by": "user_123",
+            "value_currency": "USD",
+            "organization_id": "orga_123",
+            "status_label": "Won",
+            "contact_id": "cont_123",
+            "status_type": "won",
+            "created_by_name": "Joe Kemp",
+            "id": "id_12",
+            "lead_name": "KLine",
+            "date_lost": null,
+            "note": "",
+            "date_updated": "2019-01-15T12:48:23.392000+00:00",
+            "status_id": "stat_12",
+            "value": 100000,
+            "created_by": "user_123",
+            "value_formatted": "$1,000",
+            "date_won": "2019-01-15",
+            "lead_id": "lead_123",
+            "confidence": 100
+          },
+          "request_id": "req_123",
+          "object_id": "object_id",
+          "user_id": "user_123",
+          "object_type": "opportunity",
+          "lead_id": "lead_123"
+        },
+        "subscription_id": "whsub_123",
+        "source": {}
+      },
+      "headers": {
+        "Content-Type": "application/json"
+      }
+    }
+  },
+  "output": {
+    "response": {
+      "status": 200,
+      "body": "OK"
+    },
+    "queue": [
+      {
+        "context": {
+          "library": {
+            "name": "unknown",
+            "version": "unknown"
+          },
+          "integration": {
+            "name": "CloseCRM"
+          }
+        },
+        "integrations": {
+          "CloseCRM": false
+        },
+        "type": "track",
+        "event": "opportunity updated",
+        "messageId": "ev_123",
+        "userId": "lead_123",
+        "originalTimestamp": "2019-01-TuT12:48:23.395+00:00",
+        "properties": {
+          "date_created": "2019-01-15T12:48:23.395000",
+          "meta": {
+            "request_method": "PUT",
+            "request_path": "/api/v1/opportunity/object_id/"
+          },
+          "id": "ev_123",
+          "action": "updated",
+          "date_updated": "2019-01-15T12:48:23.395000",
+          "organization_id": "orga_123",
+          "data": {
+            "contact_name": "Mr. Jones",
+            "user_name": "Joe Kemp",
+            "value_period": "one_time",
+            "updated_by_name": "Joe Kemp",
+            "date_created": "2019-01-15T12:41:24.496000+00:00",
+            "user_id": "user_123",
+            "updated_by": "user_123",
+            "value_currency": "USD",
+            "organization_id": "orga_123",
+            "status_label": "Won",
+            "contact_id": "cont_123",
+            "status_type": "won",
+            "created_by_name": "Joe Kemp",
+            "id": "id_12",
+            "lead_name": "KLine",
+            "note": "",
+            "date_updated": "2019-01-15T12:48:23.392000+00:00",
+            "status_id": "stat_12",
+            "value": 100000,
+            "created_by": "user_123",
+            "value_formatted": "$1,000",
+            "date_won": "2019-01-15",
+            "lead_id": "lead_123",
+            "confidence": 100
+          },
+          "request_id": "req_123",
+          "object_id": "object_id",
+          "user_id": "user_123",
+          "object_type": "opportunity",
+          "lead_id": "lead_123",
+          "subscription_id": "whsub_123"
+        },
+        "receivedAt": "2024-03-03T04:48:29.000Z",
+        "request_ip": "192.0.2.30"
+      }
+    ],
+    "errQueue": []
+  }
+}

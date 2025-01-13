@@ -1,6 +1,7 @@
 /* eslint-disable */
 const _ = require('lodash');
 const get = require('get-value');
+const logger = require('../../../logger');
 const stats = require('../../../util/stats');
 const { handleHttpRequest } = require('../../../adapters/network');
 const {
@@ -21,11 +22,12 @@ const {
   SUBSCRIPTION_BRAZE_MAX_REQ_COUNT,
   ALIAS_BRAZE_MAX_REQ_COUNT,
   TRACK_BRAZE_MAX_REQ_COUNT,
+  BRAZE_PURCHASE_STANDARD_PROPERTIES,
 } = require('./config');
-const { JSON_MIME_TYPE } = require('../../util/constant');
+const { JSON_MIME_TYPE, HTTP_STATUS_CODES } = require('../../util/constant');
 const { isObject } = require('../../util');
 const { removeUndefinedValues, getIntegrationsObj } = require('../../util');
-const { InstrumentationError } = require('../../util/errorTypes');
+const { InstrumentationError, isDefined } = require('@rudderstack/integrations-lib');
 
 const getEndpointFromConfig = (destination) => {
   // Init -- mostly for test cases
@@ -41,6 +43,42 @@ const getEndpointFromConfig = (destination) => {
     }
   }
   return endpoint;
+};
+
+// Merges external_ids, emails, and phones for entries with the same subscription_group_id and subscription_state
+const combineSubscriptionGroups = (subscriptionGroups) => {
+  const uniqueGroups = {};
+
+  subscriptionGroups.forEach((group) => {
+    const key = `${group.subscription_group_id}-${group.subscription_state}`;
+    if (!uniqueGroups[key]) {
+      uniqueGroups[key] = {
+        ...group,
+        external_ids: [...(group.external_ids || [])],
+        emails: [...(group.emails || [])],
+        phones: [...(group.phones || [])],
+      };
+    } else {
+      uniqueGroups[key].external_ids.push(...(group.external_ids || []));
+      uniqueGroups[key].emails.push(...(group.emails || []));
+      uniqueGroups[key].phones.push(...(group.phones || []));
+    }
+  });
+
+  return Object.values(uniqueGroups).map((group) => {
+    const result = {
+      subscription_group_id: group.subscription_group_id,
+      subscription_state: group.subscription_state,
+      external_ids: [...new Set(group.external_ids)],
+    };
+    if (group.emails?.length) {
+      result.emails = [...new Set(group.emails)];
+    }
+    if (group.phones?.length) {
+      result.phones = [...new Set(group.phones)];
+    }
+    return result;
+  });
 };
 
 const CustomAttributeOperationUtil = {
@@ -139,19 +177,36 @@ const BrazeDedupUtility = {
     const identfierChunks = _.chunk(identifiers, 50);
     return identfierChunks;
   },
-
-  async doApiLookup(identfierChunks, destination) {
+  getFieldsToExport() {
+    return [
+      'created_at',
+      'custom_attributes',
+      'dob',
+      'email',
+      'first_name',
+      'gender',
+      'home_city',
+      'last_name',
+      'phone',
+      'time_zone',
+      'external_id',
+      'user_aliases',
+      // 'country' and 'language' not needed because it is not billable so we don't use it
+    ];
+  },
+  async doApiLookup(identfierChunks, { destination, metadata }) {
     return Promise.all(
       identfierChunks.map(async (ids) => {
         const externalIdentifiers = ids.filter((id) => id.external_id);
         const aliasIdentifiers = ids.filter((id) => id.alias_name !== undefined);
-
+        const fieldsToExport = this.getFieldsToExport();
         const { processedResponse: lookUpResponse } = await handleHttpRequest(
           'post',
           `${getEndpointFromConfig(destination)}/users/export/ids`,
           {
             external_ids: externalIdentifiers.map((extId) => extId.external_id),
             user_aliases: aliasIdentifiers,
+            fields_to_export: fieldsToExport,
           },
           {
             headers: {
@@ -162,6 +217,10 @@ const BrazeDedupUtility = {
           {
             destType: 'braze',
             feature: 'transformation',
+            requestMethod: 'POST',
+            module: 'router',
+            endpointPath: '/users/export/ids',
+            metadata,
           },
         );
         stats.counter('braze_lookup_failure_count', 1, {
@@ -184,10 +243,10 @@ const BrazeDedupUtility = {
    */
   async doLookup(inputs) {
     const lookupStartTime = new Date();
-    const { destination } = inputs[0];
+    const { destination, metadata } = inputs[0];
     const { externalIdsToQuery, aliasIdsToQuery } = this.prepareInputForDedup(inputs);
     const identfierChunks = this.prepareChunksForDedup(externalIdsToQuery, aliasIdsToQuery);
-    const chunkedUserData = await this.doApiLookup(identfierChunks, destination);
+    const chunkedUserData = await this.doApiLookup(identfierChunks, { destination, metadata });
     stats.timing('braze_lookup_time', lookupStartTime, {
       destination_id: destination.Config.destinationId,
     });
@@ -280,12 +339,24 @@ const BrazeDedupUtility = {
         return true;
       });
 
-    if (keys.length === 0) {
-      return null;
+    if (keys.length > 0) {
+      keys.forEach((key) => {
+        // ref: https://www.braze.com/docs/user_guide/data_and_analytics/custom_data/custom_attributes/#adding-descriptions
+        // null is a valid value in braze for unsetting, so we need to compare the values only if the key is present in the stored user data
+        // in case of keys having null values only compare if the key is present in the stored user data
+        if (userData[key] === null) {
+          if (isDefinedAndNotNull(storedUserData[key])) {
+            deduplicatedUserData[key] = userData[key];
+          }
+        } else if (!_.isEqual(userData[key], storedUserData[key])) {
+          deduplicatedUserData[key] = userData[key];
+        }
+      });
     }
 
-    keys.forEach((key) => {
-      if (!_.isEqual(userData[key], storedUserData[key])) {
+    // add non billable attributes back to the deduplicated user object
+    BRAZE_NON_BILLABLE_ATTRIBUTES.forEach((key) => {
+      if (isDefined(userData[key])) {
         deduplicatedUserData[key] = userData[key];
       }
     });
@@ -300,6 +371,7 @@ const BrazeDedupUtility = {
     };
     const identifier = external_id || user_alias?.alias_name;
     store.set(identifier, { ...storedUserData, ...deduplicatedUserData });
+
     return removeUndefinedValues(deduplicatedUserData);
   },
 };
@@ -345,8 +417,22 @@ function prepareGroupAndAliasBatch(arrayChunks, responseArray, destination, type
     } else if (type === 'subscription') {
       response.endpoint = getSubscriptionGroupEndPoint(getEndpointFromConfig(destination));
       const subscription_groups = chunk;
+      // maketool transformed event
+      logger.info(`braze subscription chunk ${JSON.stringify(subscription_groups)}`);
+
+      stats.gauge('braze_batch_subscription_size', subscription_groups.length, {
+        destination_id: destination.ID,
+      });
+
+      // Deduplicate the subscription groups before constructing the response body
+      const deduplicatedSubscriptionGroups = combineSubscriptionGroups(subscription_groups);
+
+      stats.gauge('braze_batch_subscription_combined_size', deduplicatedSubscriptionGroups.length, {
+        destination_id: destination.ID,
+      });
+
       response.body.JSON = removeUndefinedAndNullValues({
-        subscription_groups,
+        subscription_groups: deduplicatedSubscriptionGroups,
       });
     }
     responseArray.push({
@@ -363,11 +449,14 @@ const processBatch = (transformedEvents) => {
   const purchaseArray = [];
   const successMetadata = [];
   const failureResponses = [];
+  const filteredResponses = [];
   const subscriptionsArray = [];
   const mergeUsersArray = [];
   for (const transformedEvent of transformedEvents) {
     if (!isHttpStatusSuccess(transformedEvent?.statusCode)) {
       failureResponses.push(transformedEvent);
+    } else if (transformedEvent?.statusCode === HTTP_STATUS_CODES.FILTER_EVENTS) {
+      filteredResponses.push(transformedEvent);
     } else if (transformedEvent?.batchedRequest?.body?.JSON) {
       const { attributes, events, purchases, subscription_groups, merge_updates } =
         transformedEvent.batchedRequest.body.JSON;
@@ -416,6 +505,23 @@ const processBatch = (transformedEvents) => {
     const attributes = attributeArrayChunks[i];
     const events = eventsArrayChunks[i];
     const purchases = purchaseArrayChunks[i];
+
+    if (attributes) {
+      stats.gauge('braze_batch_attributes_pack_size', attributes.length, {
+        destination_id: destination.ID,
+      });
+    }
+    if (events) {
+      stats.gauge('braze_batch_events_pack_size', events.length, {
+        destination_id: destination.ID,
+      });
+    }
+    if (purchases) {
+      stats.gauge('braze_batch_purchase_pack_size', purchases.length, {
+        destination_id: destination.ID,
+      });
+    }
+
     const response = defaultRequestConfig();
     response.endpoint = endpoint;
     response.body.JSON = removeUndefinedAndNullValues({
@@ -444,6 +550,10 @@ const processBatch = (transformedEvents) => {
   }
   if (failureResponses.length > 0) {
     finalResponse.push(...failureResponses);
+  }
+
+  if (filteredResponses.length > 0) {
+    finalResponse.push(...filteredResponses);
   }
 
   return finalResponse;
@@ -484,8 +594,18 @@ function setExternalId(payload, message) {
   return payload;
 }
 
-function setAliasObjectWithAnonId(payload, message) {
-  if (message.anonymousId) {
+function setAliasObject(payload, message) {
+  const integrationsObj = getIntegrationsObj(message, 'BRAZE');
+  if (
+    isDefinedAndNotNull(integrationsObj?.alias?.alias_name) &&
+    isDefinedAndNotNull(integrationsObj?.alias?.alias_label)
+  ) {
+    const { alias_name, alias_label } = integrationsObj.alias;
+    payload.user_alias = {
+      alias_name,
+      alias_label,
+    };
+  } else if (message.anonymousId) {
     payload.user_alias = {
       alias_name: message.anonymousId,
       alias_label: 'rudder_id',
@@ -502,7 +622,7 @@ function setExternalIdOrAliasObject(payload, message) {
 
   // eslint-disable-next-line no-underscore-dangle
   payload._update_existing_only = false;
-  return setAliasObjectWithAnonId(payload, message);
+  return setAliasObject(payload, message);
 }
 
 function addMandatoryPurchaseProperties(productId, price, currencyCode, quantity, timestamp) {
@@ -515,7 +635,7 @@ function addMandatoryPurchaseProperties(productId, price, currencyCode, quantity
   };
 }
 
-function getPurchaseObjs(message) {
+function getPurchaseObjs(message, config) {
   // ref:https://www.braze.com/docs/api/objects_filters/purchase_object/
   const validateForPurchaseEvent = (message) => {
     const { properties } = message;
@@ -525,7 +645,8 @@ function getPurchaseObjs(message) {
         'Invalid Order Completed event: Properties object is missing in the message',
       );
     }
-    const { products, currency: currencyCode } = properties;
+    const { currency: currencyCode } = properties;
+    let { products } = properties;
     if (!products) {
       throw new InstrumentationError(
         'Invalid Order Completed event: Products array is missing in the message',
@@ -536,6 +657,7 @@ function getPurchaseObjs(message) {
       throw new InstrumentationError('Invalid Order Completed event: Products is not an array');
     }
 
+    products = products.filter((product) => isDefinedAndNotNull(product));
     if (products.length === 0) {
       throw new InstrumentationError('Invalid Order Completed event: Products array is empty');
     }
@@ -610,11 +732,63 @@ function getPurchaseObjs(message) {
       parseInt(quantity, 10),
       timestamp,
     );
+    const extraProperties = _.omit(product, BRAZE_PURCHASE_STANDARD_PROPERTIES);
+    if (Object.keys(extraProperties).length > 0 && config.sendPurchaseEventWithExtraProperties) {
+      purchaseObj = { ...purchaseObj, properties: extraProperties };
+    }
     purchaseObj = setExternalIdOrAliasObject(purchaseObj, message);
     purchaseObjs.push(purchaseObj);
   });
 
   return purchaseObjs;
+}
+
+const collectStatsForAliasFailure = (brazeResponse, destinationId) => {
+  /**
+   * Braze Response for Alias failure
+   * {
+   * "aliases_processed": 0,
+   * "message": "success",
+   * "errors": [
+   *     {
+   *         "type": "'external_id' is required",
+   *         "input_array": "user_identifiers",
+   *         "index": 0
+   *     }
+   *   ]
+   * }
+   */
+
+  /**
+   * Braze Response for Alias success
+   * {
+   *   "aliases_processed": 1,
+   *   "message": "success"
+   *   }
+   */
+
+  // Should not happen but still checking for unhandled exceptions
+  if (!isDefinedAndNotNull(brazeResponse)) {
+    return;
+  }
+  const { aliases_processed: aliasesProcessed, errors } = brazeResponse;
+  if (aliasesProcessed === 0) {
+    stats.increment('braze_alias_failure_count', { destination_id: destinationId });
+  }
+};
+
+const collectStatsForAliasMissConfigurations = (destinationId) => {
+  stats.increment('braze_alias_missconfigured_count', { destination_id: destinationId });
+};
+
+function handleReservedProperties(props) {
+  if (typeof props !== 'object') {
+    throw new InstrumentationError('Invalid event properties');
+  }
+  // remove reserved keys from custom event properties
+  const reserved = ['time', 'event_name'];
+
+  return _.omit(props, reserved);
 }
 
 module.exports = {
@@ -627,6 +801,10 @@ module.exports = {
   getPurchaseObjs,
   setExternalIdOrAliasObject,
   setExternalId,
-  setAliasObjectWithAnonId,
+  setAliasObject,
   addMandatoryPurchaseProperties,
+  collectStatsForAliasFailure,
+  collectStatsForAliasMissConfigurations,
+  handleReservedProperties,
+  combineSubscriptionGroups,
 };

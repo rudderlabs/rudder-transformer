@@ -1,28 +1,26 @@
 const { set, get } = require('lodash');
-const moment = require('moment');
+const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const {
   getHashFromArrayWithDuplicate,
-  constructPayload,
   removeHyphens,
   getHashFromArray,
   handleRtTfSingleEventError,
   defaultBatchRequestConfig,
   getSuccessRespEvents,
-  checkInvalidRtTfEvents,
+  combineBatchRequestsWithSameJobIds,
 } = require('../../util');
-const {
-  CALL_CONVERSION,
-  trackCallConversionsMapping,
-  STORE_CONVERSION_CONFIG,
-} = require('./config');
+const { CALL_CONVERSION, STORE_CONVERSION_CONFIG } = require('./config');
 const {
   validateDestinationConfig,
   getStoreConversionPayload,
   requestBuilder,
   getClickConversionPayloadAndEndpoint,
+  getConsentsDataFromIntegrationObj,
+  getCallConversionPayload,
+  updateConversion,
 } = require('./utils');
-const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
+const helper = require('./helper');
 
 /**
  * get conversions depending on the type set from dashboard
@@ -41,12 +39,18 @@ const getConversions = (message, metadata, { Config }, event, conversionType) =>
   const { properties, timestamp, originalTimestamp } = message;
 
   const filteredCustomerId = removeHyphens(customerId);
+  const eventLevelConsentsData = getConsentsDataFromIntegrationObj(message);
+
   if (conversionType === 'click') {
     // click conversion
     const convertedPayload = getClickConversionPayloadAndEndpoint(
       message,
       Config,
       filteredCustomerId,
+      eventLevelConsentsData,
+    );
+    convertedPayload.payload.conversions[0] = updateConversion(
+      convertedPayload.payload.conversions[0],
     );
     payload = convertedPayload.payload;
     endpoint = convertedPayload.endpoint;
@@ -55,7 +59,7 @@ const getConversions = (message, metadata, { Config }, event, conversionType) =>
     endpoint = STORE_CONVERSION_CONFIG.replace(':customerId', filteredCustomerId);
   } else {
     // call conversions
-    payload = constructPayload(message, trackCallConversionsMapping);
+    payload = getCallConversionPayload(message, Config, eventLevelConsentsData);
     endpoint = CALL_CONVERSION.replace(':customerId', filteredCustomerId);
   }
 
@@ -65,9 +69,7 @@ const getConversions = (message, metadata, { Config }, event, conversionType) =>
     // eslint-disable-next-line unicorn/consistent-destructuring
     if (!properties.conversionDateTime && (timestamp || originalTimestamp)) {
       const conversionTimestamp = timestamp || originalTimestamp;
-      const conversionDateTime = moment(conversionTimestamp)
-        .utcOffset(moment(conversionTimestamp).utcOffset())
-        .format('YYYY-MM-DD HH:mm:ssZ');
+      const conversionDateTime = helper.formatTimestamp(conversionTimestamp);
       set(payload, 'conversions[0].conversionDateTime', conversionDateTime);
     }
     payload.partialFailure = true;
@@ -121,7 +123,6 @@ const trackResponseBuilder = (message, metadata, destination) => {
 
 const process = async (event) => {
   const { message, metadata, destination } = event;
-
   if (!message.type) {
     throw new InstrumentationError('Message type is not present. Aborting message.');
   }
@@ -173,9 +174,8 @@ const batchEvents = (storeSalesEvents) => {
       storeSalesEvent.message?.body?.JSON?.addConversionPayload?.operations,
     );
     batchEventResponse.metadatas.push(storeSalesEvent.metadata);
-    batchEventResponse.destination = storeSalesEvent.destination;
   });
-
+  batchEventResponse.destination = storeSalesEvents[0].destination;
   return [
     getSuccessRespEvents(
       batchEventResponse.batchedRequest,
@@ -187,11 +187,6 @@ const batchEvents = (storeSalesEvents) => {
 };
 
 const processRouterDest = async (inputs, reqMetadata) => {
-  const errorRespEvents = checkInvalidRtTfEvents(inputs);
-  if (errorRespEvents.length > 0) {
-    return errorRespEvents;
-  }
-
   const storeSalesEvents = []; // list containing store sales events in batched format
   const clickCallEvents = []; // list containing click and call events in batched format
   const errorRespList = [];
@@ -231,7 +226,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
     .concat(storeSalesEventsBatchedResponseList)
     .concat(clickCallEvents)
     .concat(errorRespList);
-  return batchedResponseList;
+  return combineBatchRequestsWithSameJobIds(batchedResponseList);
 };
 
 module.exports = { process, processRouterDest };

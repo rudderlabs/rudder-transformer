@@ -1,9 +1,10 @@
 import { MetaTransferObject, RudderMessage, SourceTransformationResponse } from '../../types/index';
+import { CommonUtils } from '../../util/common';
 import { CatchErr } from '../../util/types';
 import { generateErrorObject } from '../../v0/util';
-import ErrorReportingService from '../errorReporting';
+import { ErrorReportingService } from '../errorReporting';
 
-export default class PostTransformationSourceService {
+export class SourcePostTransformationService {
   public static handleFailureEventsSource(
     error: CatchErr,
     metaTO: MetaTransferObject,
@@ -20,16 +21,25 @@ export default class PostTransformationSourceService {
 
   public static handleSuccessEventsSource(
     events: RudderMessage | RudderMessage[] | SourceTransformationResponse,
+    context: { headers?: Record<string, string> },
   ): SourceTransformationResponse {
     // We send response back to the source
     // through outputToSource. This is not sent to gateway
     // We will not return array for events not meant for gateway
-    if (Object.prototype.hasOwnProperty.call(events, 'outputToSource')) {
-      return events as SourceTransformationResponse;
+    let sourceTransformationResponse = events as SourceTransformationResponse;
+    if (!Object.prototype.hasOwnProperty.call(events, 'outputToSource')) {
+      const eventsBatch = CommonUtils.toArray(events);
+      sourceTransformationResponse = {
+        output: { batch: eventsBatch },
+      } as SourceTransformationResponse;
     }
-    if (Array.isArray(events)) {
-      return { output: { batch: events } } as SourceTransformationResponse;
+
+    if (sourceTransformationResponse.output) {
+      sourceTransformationResponse.output.batch.forEach((event) => {
+        const newEvent = event as RudderMessage;
+        newEvent.context = { ...event.context, ...context };
+      });
     }
-    return { output: { batch: [events] } } as SourceTransformationResponse;
+    return sourceTransformationResponse;
   }
 }

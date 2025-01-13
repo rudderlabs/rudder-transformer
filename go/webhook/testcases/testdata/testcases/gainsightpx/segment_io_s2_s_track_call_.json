@@ -1,0 +1,222 @@
+{
+  "name": "gainsightpx",
+  "description": "SegmentIO S2S Track Call ",
+  "input": {
+    "request": {
+      "body": {
+        "user": {
+          "aptrinsicId": "cab9c469-8602-4933-acdb-68338fbb9ab1",
+          "identifyId": "New!",
+          "type": "USER",
+          "gender": "EMPTY_GENDER",
+          "email": "userEmail@address.com",
+          "firstName": "test",
+          "lastName": "rudderlabs",
+          "lastSeenDate": 1665582808669,
+          "signUpDate": 1665582791753,
+          "firstVisitDate": 1665582791753,
+          "title": "Mr.",
+          "phone": "",
+          "score": 0,
+          "role": "",
+          "subscriptionId": "",
+          "accountId": "IBM",
+          "numberOfVisits": 1,
+          "location": {
+            "countryName": "India",
+            "countryCode": "",
+            "stateName": "",
+            "stateCode": "",
+            "city": "",
+            "street": "",
+            "postalCode": "",
+            "continent": "",
+            "regionName": "",
+            "timeZone": "",
+            "coordinates": {
+              "latitude": 0,
+              "longitude": 0
+            }
+          },
+          "propertyKeys": ["AP-EOXPSEZGC5LA-2-1"],
+          "createDate": 1665582808376,
+          "lastModifiedDate": 1665582808717,
+          "customAttributes": null,
+          "globalUnsubscribe": false,
+          "sfdcContactId": "",
+          "lastVisitedUserAgentData": null,
+          "id": "New!",
+          "lastInferredLocation": null
+        },
+        "account": {
+          "id": "IBM",
+          "name": "International Business Machine",
+          "trackedSubscriptionId": "",
+          "sfdcId": "",
+          "lastSeenDate": 1665582808669,
+          "dunsNumber": "",
+          "industry": "",
+          "numberOfEmployees": 0,
+          "sicCode": "",
+          "website": "",
+          "naicsCode": "",
+          "plan": "",
+          "location": {
+            "countryName": "",
+            "countryCode": "",
+            "stateName": "",
+            "stateCode": "",
+            "city": "",
+            "street": "",
+            "postalCode": "",
+            "continent": "",
+            "regionName": "",
+            "timeZone": "",
+            "coordinates": {
+              "latitude": 0,
+              "longitude": 0
+            }
+          },
+          "numberOfUsers": 0,
+          "propertyKeys": ["AP-EOXPSEZGC5LA-2-1"],
+          "createDate": 1665578567565,
+          "lastModifiedDate": 1665582808669,
+          "customAttributes": null,
+          "parentGroupId": ""
+        },
+        "event": {
+          "eventType": "SEGMENT_IO",
+          "eventId": "ajs-next-69810a17571dc115ccead5281cc3fb7d",
+          "propertyKey": "AP-EOXPSEZGC5LA-2-1",
+          "date": 1666687235178,
+          "sessionId": "31a524fa-1490-48db-9600-adfb1fa95333",
+          "globalContext": {},
+          "userType": "USER",
+          "segmentIOEvent": {
+            "pxPropertyKey": "AP-EOXPSEZGC5LA-2",
+            "type": "group",
+            "userId": "1001",
+            "anonymousId": "a4303a13-eb10-46d8-8935-d787daf1cfbd",
+            "context": {
+              "ip": "122.161.67.121",
+              "library": {
+                "name": "analytics.js",
+                "version": "next-1.45.0"
+              },
+              "locale": "en-GB",
+              "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36",
+              "page": {
+                "path": "/abc.html",
+                "title": "Engage Testing",
+                "url": "http://127.0.0.1:5501/abc.html"
+              }
+            },
+            "messageId": "ajs-next-69810a17571dc115ccead5281cc3fb7d",
+            "receivedAt": "2022-10-25T08:40:35.184Z",
+            "sentAt": "2022-10-25T08:40:34.809Z",
+            "timestamp": "2022-10-25T08:40:35.178Z",
+            "traits": {
+              "name": "International Business Machine"
+            },
+            "version": 2,
+            "channel": "client",
+            "groupId": "IBM"
+          }
+        }
+      },
+      "headers": {
+        "Content-Type": "application/json"
+      }
+    }
+  },
+  "output": {
+    "response": {
+      "status": 200,
+      "body": "OK"
+    },
+    "queue": [
+      {
+        "context": {
+          "library": {
+            "name": "unknown",
+            "version": "unknown"
+          },
+          "integration": {
+            "name": "GAINSIGHTPX"
+          },
+          "traits": {
+            "type": "USER",
+            "gender": "EMPTY_GENDER",
+            "email": "userEmail@address.com",
+            "firstName": "test",
+            "lastName": "rudderlabs",
+            "title": "Mr.",
+            "globalUnsubscribe": false,
+            "accountId": "IBM",
+            "numberOfVisits": 1,
+            "propertyKeys": ["AP-EOXPSEZGC5LA-2-1"],
+            "score": 0,
+            "id": "New!",
+            "country": "India",
+            "account": {
+              "numberOfEmployees": 0,
+              "numberOfUsers": 0,
+              "id": "IBM",
+              "name": "International Business Machine"
+            }
+          },
+          "externalId": [
+            {
+              "type": "gainsightpxAptrinsicId",
+              "id": "cab9c469-8602-4933-acdb-68338fbb9ab1"
+            }
+          ]
+        },
+        "integrations": {
+          "GAINSIGHTPX": false
+        },
+        "type": "track",
+        "properties": {
+          "propertyKey": "AP-EOXPSEZGC5LA-2-1",
+          "pxPropertyKey": "AP-EOXPSEZGC5LA-2",
+          "type": "group",
+          "userId": "1001",
+          "anonymousId": "a4303a13-eb10-46d8-8935-d787daf1cfbd",
+          "context": {
+            "ip": "122.161.67.121",
+            "library": {
+              "name": "analytics.js",
+              "version": "next-1.45.0"
+            },
+            "locale": "en-GB",
+            "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36",
+            "page": {
+              "path": "/abc.html",
+              "title": "Engage Testing",
+              "url": "http://127.0.0.1:5501/abc.html"
+            }
+          },
+          "messageId": "ajs-next-69810a17571dc115ccead5281cc3fb7d",
+          "receivedAt": "2022-10-25T08:40:35.184Z",
+          "sentAt": "2022-10-25T08:40:34.809Z",
+          "timestamp": "2022-10-25T08:40:35.178Z",
+          "traits": {
+            "name": "International Business Machine"
+          },
+          "version": 2,
+          "channel": "client",
+          "groupId": "IBM"
+        },
+        "userId": "New!",
+        "category": "SEGMENT_IO",
+        "event": "SegmentIO Cloud Server",
+        "sentAt": "2022-10-25T08:40:35.178Z",
+        "originalTimestamp": "2022-10-25T08:40:35.178Z",
+        "receivedAt": "2024-03-03T04:48:29.000Z",
+        "request_ip": "192.0.2.30",
+        "messageId": "00000000-0000-0000-0000-000000000000"
+      }
+    ],
+    "errQueue": []
+  }
+}

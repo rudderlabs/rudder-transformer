@@ -1,7 +1,7 @@
 const lodash = require('lodash');
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const { getValueFromPropertiesOrTraits, getHashFromArray } = require('../../../../v0/util');
 const { GENERIC_TRUE_VALUES, GENERIC_FALSE_VALUES } = require('../../../../constants');
-const { InstrumentationError } = require('../../../../v0/util/errorTypes');
 
 // valid flag should be provided [1|true] or [0|false]
 const mapFlagValue = (key, value) => {

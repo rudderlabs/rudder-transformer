@@ -6,6 +6,23 @@ type ProcessorTransformationOutput = {
   type: string;
   method: string;
   endpoint: string;
+  userId?: string;
+  headers?: Record<string, unknown>;
+  params?: Record<string, unknown>;
+  body?: {
+    JSON?: Record<string, unknown>;
+    JSON_ARRAY?: Record<string, unknown>;
+    XML?: Record<string, unknown>;
+    FORM?: Record<string, unknown>;
+  };
+  files?: Record<string, unknown>;
+};
+
+type ProxyV0Request = {
+  version: string;
+  type: string;
+  method: string;
+  endpoint: string;
   userId: string;
   headers?: Record<string, unknown>;
   params?: Record<string, unknown>;
@@ -16,7 +33,42 @@ type ProcessorTransformationOutput = {
     FORM?: Record<string, unknown>;
   };
   files?: Record<string, unknown>;
-  metadata?: Metadata;
+  metadata: ProxyMetdata;
+  destinationConfig: Record<string, unknown>;
+};
+
+type ProxyV1Request = {
+  version: string;
+  type: string;
+  method: string;
+  endpoint: string;
+  userId: string;
+  headers?: Record<string, unknown>;
+  params?: Record<string, unknown>;
+  body?: {
+    JSON?: Record<string, unknown>;
+    JSON_ARRAY?: Record<string, unknown>;
+    XML?: Record<string, unknown>;
+    FORM?: Record<string, unknown>;
+  };
+  files?: Record<string, unknown>;
+  metadata: ProxyMetdata[];
+  destinationConfig: Record<string, unknown>;
+};
+
+type ProxyRequest = ProxyV0Request | ProxyV1Request;
+
+type ProxyMetdata = {
+  jobId: number;
+  attemptNum: number;
+  userId: string;
+  sourceId: string;
+  destinationId: string;
+  workspaceId: string;
+  secret: Record<string, unknown>;
+  destInfo?: Record<string, unknown>;
+  omitempty?: Record<string, unknown>;
+  dontBatch: boolean;
 };
 
 type Metadata = {
@@ -50,6 +102,11 @@ type Metadata = {
   sourceDefinitionId: string;
   destinationDefinitionId: string;
   transformationId: string;
+  dontBatch?: boolean;
+};
+
+type MessageIdMetadataMap = {
+  [key: string]: Metadata;
 };
 
 type UserTransformationInput = {
@@ -74,10 +131,27 @@ type Destination = {
   WorkspaceID: string;
   Transformations: UserTransformationInput[];
   RevisionID?: string;
+  IsProcessorEnabled?: boolean;
+  IsConnectionEnabled?: boolean;
+};
+
+type Connection = {
+  sourceId: string;
+  destinationId: string;
+  enabled: boolean;
+  config: Record<string, unknown>;
+  processorEnabled?: boolean;
 };
 
 type UserTransformationLibrary = {
   VersionID: string;
+};
+
+type Credential = {
+  id: string;
+  key: string;
+  value: string;
+  isSecret: boolean;
 };
 
 type ProcessorTransformationRequest = {
@@ -85,7 +159,9 @@ type ProcessorTransformationRequest = {
   message: object;
   metadata: Metadata;
   destination: Destination;
-  libraries: UserTransformationLibrary[];
+  connection?: Connection;
+  libraries?: UserTransformationLibrary[];
+  credentials?: Credential[];
 };
 
 type RouterTransformationRequestData = {
@@ -93,6 +169,7 @@ type RouterTransformationRequestData = {
   message: object;
   metadata: Metadata;
   destination: Destination;
+  connection?: Connection;
 };
 
 type RouterTransformationRequest = {
@@ -105,17 +182,23 @@ type ProcessorTransformationResponse = {
   metadata: Metadata;
   statusCode: number;
   error?: string;
-  statTags: object;
+  statTags?: object;
 };
 
 type RouterTransformationResponse = {
-  batchedRequest?: ProcessorTransformationOutput;
+  batchedRequest?: ProcessorTransformationOutput | ProcessorTransformationOutput[];
   metadata: Metadata[];
   destination: Destination;
   batched: boolean;
   statusCode: number;
-  error: string;
-  statTags: object;
+  error?: string;
+  statTags?: object;
+};
+
+type SourceTransformationEvent = {
+  headers?: Record<string, string>;
+  query_params?: Record<string, string>;
+  [key: string]: any;
 };
 
 type SourceTransformationOutput = {
@@ -130,12 +213,27 @@ type SourceTransformationResponse = {
   statTags: object;
 };
 
-type DeliveryResponse = {
+type DeliveryV0Response = {
   status: number;
   message: string;
-  destinationResponse: object;
+  destinationResponse: any;
   statTags: object;
   authErrorCategory?: string;
+};
+
+type DeliveryJobState = {
+  error: string;
+  statusCode: number;
+  metadata: ProxyMetdata;
+};
+
+type DeliveryV1Response = {
+  status: number;
+  message: string;
+  statTags?: object;
+  destinationResponse?: any;
+  authErrorCategory?: string;
+  response: DeliveryJobState[];
 };
 
 enum MessageType {
@@ -180,12 +278,21 @@ type ErrorDetailer = {
   sourceId?: string;
 };
 
-type MetaTransferObject = {
-  metadatas?: Metadata[];
-  metadata?: Metadata;
+type MetaTransferObjectForProxy = {
+  metadata?: ProxyMetdata;
+  metadatas?: ProxyMetdata[];
   errorDetails: ErrorDetailer;
   errorContext: string;
 };
+
+type MetaTransferObject =
+  | {
+      metadatas?: Metadata[];
+      metadata?: Metadata;
+      errorDetails: ErrorDetailer;
+      errorContext: string;
+    }
+  | MetaTransferObjectForProxy;
 
 type UserTransformationResponse = {
   transformedEvent: RudderMessage;
@@ -220,25 +327,89 @@ type ComparatorInput = {
   requestMetadata: object;
   feature: string;
 };
+type SourceDefinition = {
+  ID: string;
+  Name: string;
+  Category: string;
+  Type: string;
+};
+
+type Source = {
+  ID: string;
+  OriginalID: string;
+  Name: string;
+  SourceDefinition: SourceDefinition;
+  Config: object;
+  Enabled: boolean;
+  WorkspaceID: string;
+  WriteKey: string;
+  Transformations?: UserTransformationInput[];
+  RevisionID?: string;
+  Destinations?: Destination[];
+  Transient: boolean;
+  EventSchemasEnabled: boolean;
+  DgSourceTrackingPlanConfig: object;
+};
+
+type SourceInput = {
+  event: {
+    query_parameters?: any;
+    [key: string]: any;
+  };
+  source?: Source;
+};
+
+type SourceRequestV2 = {
+  method?: string;
+  url?: string;
+  proto?: string;
+  body: string;
+  headers?: Record<string, unknown>;
+  query_parameters?: Record<string, unknown>;
+};
+
+type SourceInputV2 = {
+  request: SourceRequestV2;
+  source?: Source;
+};
+
+type SourceInputConversionResult<T> = {
+  output?: T;
+  conversionError?: Error;
+};
 
 export {
+  ComparatorInput,
+  DeliveryJobState,
+  DeliveryV0Response,
+  DeliveryV1Response,
+  Connection,
+  Destination,
+  ErrorDetailer,
+  MessageIdMetadataMap,
+  MetaTransferObject,
   Metadata,
-  UserTransformationLibrary,
+  ProcessorTransformationOutput,
   ProcessorTransformationRequest,
   ProcessorTransformationResponse,
+  ProxyMetdata,
+  ProxyRequest,
+  ProxyV0Request,
+  ProxyV1Request,
   RouterTransformationRequest,
   RouterTransformationRequestData,
   RouterTransformationResponse,
   RudderMessage,
-  ProcessorTransformationOutput,
+  SourceTransformationEvent,
   SourceTransformationResponse,
-  DeliveryResponse,
-  ErrorDetailer,
-  UserTransformationResponse,
-  UserTransformationServiceResponse,
-  MetaTransferObject,
   UserDeletionRequest,
   UserDeletionResponse,
-  Destination,
-  ComparatorInput,
+  SourceInput,
+  SourceInputV2,
+  SourceRequestV2,
+  Source,
+  SourceInputConversionResult,
+  UserTransformationLibrary,
+  UserTransformationResponse,
+  UserTransformationServiceResponse,
 };

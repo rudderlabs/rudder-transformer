@@ -1,0 +1,260 @@
+bindings:
+  - name: EventType
+    path: ../../../../constants
+  - path: ./utils
+    exportAll: true
+  - path: ../../bindings/jsontemplate
+    exportAll: true
+  - name: defaultRequestConfig
+    path: ../../../../v0/util
+  - name: removeUndefinedAndNullValues
+    path: ../../../../v0/util
+  - name: getFieldValueFromMessage
+    path: ../../../../v0/util
+  - name: isDefinedAndNotNull
+    path: ../../../../v0/util
+  - name: addExternalIdToTraits
+    path: ../../../../v0/util
+  - path: ../../bindings/jsontemplate
+  - name: HTTP_STATUS_CODES
+    path: ../../../../v0/util/constant
+
+steps:
+  - name: checkIfProcessed
+    condition: .message.statusCode
+    template: |
+      $.batchMode ? .message.body.JSON : .message;
+    onComplete: return
+
+  - name: messageType
+    template: |
+      .message.type.toLowerCase();
+
+  - name: validateInput
+    template: |
+      let messageType = $.outputs.messageType;
+      $.assert(messageType, "message Type is not present. Aborting");
+      $.assert(messageType in {{$.EventType.([.IDENTIFY, .TRACK, .GROUP])}}, "message type " + messageType + " is not supported");
+      $.assertConfig(.destination.Config.apiKey, "Access Token is not present. Aborting");
+
+  - name: apiVersion
+    template: |
+      const version = $.isDefinedAndNotNull(.destination.Config.apiVersion) ? .destination.Config.apiVersion : "v2";
+      version;
+
+  - name: rEtlPayload
+    condition: .message.context.mappedToDestination
+    template: |
+      $.addExternalIdToTraits(.message);
+      const payload = $.getFieldValueFromMessage(.message, "traits");
+      payload;
+
+  - name: searchContact
+    condition: ($.outputs.messageType === {{$.EventType.IDENTIFY}} || $.outputs.messageType === {{$.EventType.GROUP}}) && $.outputs.apiVersion !== "v1"
+    template: |
+      const contactId = await $.searchContact(.message, .destination, .metadata);
+      contactId;
+
+  - name: identifyTransformationForLatestVersion
+    condition: $.outputs.messageType === {{$.EventType.IDENTIFY}} && $.outputs.apiVersion !== "v1" && !.message.context.mappedToDestination
+    template: |
+      const payload = .message.({
+            external_id: {{{{$.getGenericPaths("userIdOnly")}}}},
+            email: {{{{$.getGenericPaths("email")}}}},
+            phone: {{{{$.getGenericPaths("phone")}}}},
+            avatar: {{{{$.getGenericPaths("avatar")}}}},
+            last_seen_at: $.toSeconds(.context.traits.lastSeenAt),
+            role: .traits.role || .context.traits.role,
+            signed_up_at: $.toSeconds(.traits.createdAt || .context.traits.createdAt),
+            owner_id: Number(.traits.ownerId || .context.traits.ownerId) || undefined,
+            unsubscribed_from_emails: .traits.unsubscribedFromEmails || .context.traits.unsubscribedFromEmails
+          });
+      !(payload.external_id) && .destination.Config.sendAnonymousId ? payload.external_id = .message.anonymousId;
+      payload;
+
+  - name: identifyPayloadForLatestVersion
+    condition: $.outputs.messageType === {{$.EventType.IDENTIFY}} && $.outputs.apiVersion !== "v1"
+    template: |
+      const payload = .message.context.mappedToDestination ? $.outputs.rEtlPayload : $.outputs.identifyTransformationForLatestVersion;
+      payload.name = $.getName(.message);
+      payload.custom_attributes = (.message.context.mappedToDestination ? .message.traits.custom_attributes : .message.context.traits) || {};
+      payload.custom_attributes = $.filterCustomAttributes(payload, "user", .destination, .message);
+      payload.external_id = !payload.external_id && .destination.Config.sendAnonymousId && .message.anonymousId ? .message.anonymousId : payload.external_id;
+      $.context.payload = payload;
+      $.assert($.context.payload.external_id || $.context.payload.email, "Either email or userId is required for Identify call");
+      const endpoint = $.getBaseEndpoint(.destination) + "/" + "contacts";
+      $.context.requestMethod = $.outputs.searchContact ? 'PUT' : 'POST';
+      const company = .message.traits.company || .message.context.traits.company;
+      const shouldDetachUserAndCompany = $.outputs.searchContact && company.remove;
+      shouldDetachUserAndCompany ? await $.detachContactAndCompany($.outputs.searchContact, company, .destination);
+      $.context.endpoint = $.outputs.searchContact ? endpoint + "/" + $.outputs.searchContact : endpoint;
+      $.context.payload = $.removeUndefinedAndNullValues($.context.payload);
+
+  - name: identifyTransformationForOlderVersion
+    condition: $.outputs.messageType === {{$.EventType.IDENTIFY}} && $.outputs.apiVersion === "v1" && !.message.context.mappedToDestination
+    template: |
+      const payload = .message.({
+            user_id: {{{{$.getGenericPaths("userIdOnly")}}}},
+            email: {{{{$.getGenericPaths("email")}}}},
+            phone: {{{{$.getGenericPaths("phone")}}}},
+            signed_up_at: $.toSeconds(.traits.createdAt || .context.traits.createdAt),
+            last_seen_user_agent: .context.userAgent,
+          });
+      !(payload.user_id) && .destination.Config.sendAnonymousId ? payload.user_id = .message.anonymousId;
+      payload;
+
+  - name: identifyPayloadForOlderVersion
+    condition: $.outputs.messageType === {{$.EventType.IDENTIFY}} && $.outputs.apiVersion === "v1"
+    template: |
+      let payload = .message.context.mappedToDestination ? $.outputs.rEtlPayload : $.outputs.identifyTransformationForOlderVersion;
+       payload = {
+       ...payload,
+       name : $.getName(.message),
+       custom_attributes : .message.traits || .message.context.traits || {},
+       update_last_request_at: typeof .destination.Config.updateLastRequestAt === 'boolean' ? .destination.Config.updateLastRequestAt : true
+      }
+      payload.companies = $.getCompaniesList(payload);
+      payload.custom_attributes = !.message.context.mappedToDestination ? $.filterCustomAttributes(payload, "user", .destination,.message);
+      payload.user_id = !payload.user_id && .destination.Config.sendAnonymousId && .message.anonymousId ? .message.anonymousId : payload.user_id;
+      $.context.payload = payload;
+      $.assert($.context.payload.user_id || $.context.payload.email, "Either of `email` or `userId` is required for Identify call");
+      $.context.requestMethod = 'POST';
+      $.context.endpoint = $.getBaseEndpoint(.destination) + "/" + "users";
+      $.context.payload = $.removeUndefinedAndNullValues($.context.payload);
+
+  - name: trackTransformation
+    condition: $.outputs.messageType === {{$.EventType.TRACK}} && !.message.context.mappedToDestination
+    template: |
+      const timestamp = .message.().(
+            {{{{$.getGenericPaths("timestamp")}}}};
+          );
+      const payload = .message.({
+            event_name: .event,
+            user_id: {{{{$.getGenericPaths("userIdOnly")}}}},
+            email: {{{{$.getGenericPaths("email")}}}},
+            metadata: .properties
+          });
+      $.outputs.apiVersion !== "v1" ? payload.id = .message.properties.id || .message.traits.id;
+      $.outputs.apiVersion !== "v1" ? payload.created_at = $.toSeconds(timestamp);
+      $.outputs.apiVersion === "v1" ? payload.created = $.toSeconds(timestamp);
+      !(payload.user_id) && .destination.Config.sendAnonymousId ? payload.user_id = .message.anonymousId;
+      payload;
+
+  - name: trackPayload
+    condition: $.outputs.messageType === {{$.EventType.TRACK}}
+    template: |
+      let payload = .message.context.mappedToDestination ? $.outputs.rEtlPayload : $.outputs.trackTransformation;
+      payload = $.addMetadataToPayload(payload);
+      $.context.payload = payload;
+      $.assert($.context.payload.event_name, "Event name is required for track call");
+      $.assert($.context.payload.user_id || $.context.payload.email, "Either email or userId is required for Track call");
+      $.context.requestMethod = 'POST';
+      $.context.endpoint =  $.getBaseEndpoint(.destination) + "/" + "events";
+      $.context.payload = $.removeUndefinedAndNullValues($.context.payload);
+
+  - name: groupTransformation
+    condition: $.outputs.messageType === {{$.EventType.GROUP}} && !.message.context.mappedToDestination
+    template: |
+      const payload = .message.({
+            company_id:  {{{{$.getGenericPaths("groupId")}}}},
+            name: {{{{$.getGenericPaths("name")}}}},
+            website: {{{{$.getGenericPaths("website")}}}},
+            plan: .traits.plan || .context.traits.plan,
+            size: Number(.traits.size || .context.traits.size),
+            industry: .traits.industry || .context.traits.industry,
+            monthly_spend: .traits.monthlySpend || .context.traits.monthlySpend ? Number(.traits.monthlySpend || .context.traits.monthlySpend) : undefined,
+            remote_created_at: .traits.remoteCreatedAt || .context.traits.remoteCreatedAt ? Number(.traits.remoteCreatedAt || .context.traits.remoteCreatedAt) : undefined
+          });
+      payload;
+
+  - name: groupPayloadForLatestVersion
+    condition: $.outputs.messageType === {{$.EventType.GROUP}} && $.outputs.apiVersion !== "v1"
+    steps:
+      - name: validateMessageAndPreparePayload
+        template: |
+          $.assert(.message.groupId, "groupId is required for group call");
+          const payload = .message.context.mappedToDestination ? $.outputs.rEtlPayload : $.outputs.groupTransformation;
+          payload.custom_attributes = .message.traits || {};
+          payload.custom_attributes = $.filterCustomAttributes(payload, "company", .destination,.message);
+          $.context.payload = payload;
+      - name: whenSearchContactFound
+        condition: $.isDefinedAndNotNull($.outputs.searchContact)
+        template: |
+          const contactId = $.outputs.searchContact;
+          const companyId = await $.createOrUpdateCompany($.context.payload, .destination, .metadata);
+          $.assert(companyId, "Unable to create or update company");
+          $.context.payload = {
+            id: companyId,
+          };
+          $.context.endpoint = $.getBaseEndpoint(.destination) + "/" + "contacts" + "/" + contactId + "/" + "companies";
+          const payload = $.context.payload;
+          const endpoint = $.context.endpoint;
+          const eventData = {metadata: .metadata, destination: .destination}
+          await $.attachContactToCompany(payload, endpoint, eventData);
+          await $.addOrUpdateTagsToCompany({metadata: .metadata, destination: .destination, message: .message}, companyId);
+        else:
+          name: whenSearchContactNotFound
+          template: |
+            const companyId = await $.createOrUpdateCompany($.context.payload, .destination, .metadata);
+            $.assert(companyId, "Unable to create or update company");
+            $.context.endpoint = $.getBaseEndpoint(.destination) + "/" + "companies";
+            await $.addOrUpdateTagsToCompany({metadata: .metadata, destination: .destination, message: .message}, companyId);
+      - name: prepareFinalPayload
+        template: |
+          $.context.requestMethod = 'POST';
+          $.removeUndefinedAndNullValues($.context.payload);
+
+  - name: groupPayloadForOlderVersion
+    condition: $.outputs.messageType === {{$.EventType.GROUP}} && $.outputs.apiVersion === "v1"
+    template: |
+      $.context.response = [];
+      const response = $.defaultRequestConfig();
+      let payload = .message.context.mappedToDestination ? $.outputs.rEtlPayload : $.outputs.groupTransformation;
+      payload = {
+        ...payload,
+        custom_attributes : $.getFieldValueFromMessage(.message, "traits") || {}
+      }
+      payload.custom_attributes = $.filterCustomAttributes(payload, "company", .destination, .message);
+      response.body.JSON = $.removeUndefinedAndNullValues(payload);
+      response.endpoint = $.getBaseEndpoint(.destination) + "/" + "companies";
+      response.headers = $.getHeaders(.destination, $.outputs.apiVersion);
+      response.method = "POST";
+      response.userId = .message.anonymousId;
+      $.context.response.push(response);
+      payload = response.body.JSON;
+      const companyId = await $.createOrUpdateCompany(payload, .destination, .metadata);
+      $.assert(companyId, "Unable to create or update company");
+      const attachUserAndCompanyResponse = $.attachUserAndCompany(.message, .destination.Config);
+      attachUserAndCompanyResponse ? attachUserAndCompanyResponse.userId = .message.anonymousId;
+      attachUserAndCompanyResponse ? $.context.response.push(attachUserAndCompanyResponse);
+      payload = attachUserAndCompanyResponse.body.JSON;
+      let endpoint = attachUserAndCompanyResponse.endpoint;
+      const eventData = {metadata: .metadata, destination: .destination}
+      attachUserAndCompanyResponse ? await $.attachContactToCompany(payload, endpoint, eventData);
+      await $.addOrUpdateTagsToCompany({metadata: .metadata, destination: .destination, message: .message}, companyId);
+
+  - name: statusCode
+    condition: $.outputs.messageType === {{$.EventType.GROUP}}
+    template: |
+      $.HTTP_STATUS_CODES.SUPPRESS_EVENTS
+    else:
+      name: successStatusCode
+      template: |
+        $.HTTP_STATUS_CODES.OK
+
+  - name: buildResponseForProcessTransformation
+    description: Build response for multiple transformed event
+    condition: $.context.response && $.context.response.length > 0
+    template: |
+      $.context.response;
+    else:
+      name: buildResponseForProcessTransformation
+      description: Build response for single transformed event
+      template: |
+        const response = $.defaultRequestConfig();
+        response.body.JSON = $.context.payload;
+        response.endpoint = $.context.endpoint;
+        response.method = $.context.requestMethod;
+        response.headers = $.getHeaders(.destination, $.outputs.apiVersion);
+        $.outputs.apiVersion === "v1" && $.outputs.messageType !== {{$.EventType.GROUP}} ? response.userId = .message.anonymousId;
+        response;

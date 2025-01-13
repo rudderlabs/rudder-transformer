@@ -1,6 +1,7 @@
 const lodash = require('lodash');
+const { TransformationError, InstrumentationError } = require('@rudderstack/integrations-lib');
+const stats = require('../../../util/stats');
 const {
-  getErrorRespEvents,
   getSuccessRespEvents,
   defaultRequestConfig,
   defaultPostRequestConfig,
@@ -12,7 +13,6 @@ const {
 const { MAX_BATCH_SIZE } = require('./config');
 const { EventType } = require('../../../constants');
 const { createOrUpdateContactResponseBuilder } = require('./utils');
-const { TransformationError, InstrumentationError } = require('../../util/errorTypes');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const responseBuilder = (payload) => {
@@ -106,6 +106,9 @@ const batchEvents = (successRespList) => {
     const eventChunks = lodash.chunk(eventGroups[combination], MAX_BATCH_SIZE);
     // eventChunks = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
     eventChunks.forEach((chunk) => {
+      stats.gauge('mailjet_packing_size', chunk.length, {
+        group: combination,
+      });
       const batchEventResponse = generateBatchedPaylaodForArray(chunk, combination);
       batchedResponseList.push(
         getSuccessRespEvents(
@@ -121,10 +124,6 @@ const batchEvents = (successRespList) => {
 };
 
 const processRouterDest = (inputs, reqMetadata) => {
-  if (!Array.isArray(inputs) || inputs.length <= 0) {
-    const respEvents = getErrorRespEvents(null, 400, 'Invalid event array');
-    return [respEvents];
-  }
   let batchResponseList = [];
   const batchErrorRespList = [];
   const successRespList = [];

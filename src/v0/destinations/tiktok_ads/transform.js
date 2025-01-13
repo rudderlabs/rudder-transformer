@@ -4,6 +4,7 @@ const _ = require('lodash');
 const { SHA256 } = require('crypto-js');
 const get = require('get-value');
 const set = require('set-value');
+const { ConfigurationError, InstrumentationError } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const {
   constructPayload,
@@ -16,10 +17,11 @@ const {
   getDestinationExternalID,
   getFieldValueFromMessage,
   getHashFromArrayWithDuplicate,
-  checkInvalidRtTfEvents,
   handleRtTfSingleEventError,
   batchMultiplexedEvents,
+  validateEventName,
 } = require('../../util');
+const { process: processV2, processRouterDest: processRouterDestV2 } = require('./transformV2');
 const { getContents } = require('./util');
 const {
   trackMapping,
@@ -29,7 +31,6 @@ const {
   MAX_BATCH_SIZE,
   PARTNER_NAME,
 } = require('./config');
-const { ConfigurationError, InstrumentationError } = require('../../util/errorTypes');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const USER_EMAIL_KEY_PATH = 'context.user.email';
@@ -128,16 +129,11 @@ const getTrackResponse = (message, Config, event) => {
 };
 
 const trackResponseBuilder = async (message, { Config }) => {
-  const { eventsToStandard } = Config;
-
-  let event = message.event?.toLowerCase().trim();
-  if (!event) {
-    throw new InstrumentationError('Event name is required');
-  }
-
+  const { eventsToStandard, sendCustomEvents } = Config;
+  validateEventName(message.event);
+  let event = message.event.toLowerCase().trim();
   const standardEventsMap = getHashFromArrayWithDuplicate(eventsToStandard);
-
-  if (eventNameMapping[event] === undefined && !standardEventsMap[event]) {
+  if (!sendCustomEvents && eventNameMapping[event] === undefined && !standardEventsMap[event]) {
     throw new InstrumentationError(
       `Event name (${event}) is not valid, must be mapped to one of standard events`,
     );
@@ -152,17 +148,22 @@ const trackResponseBuilder = async (message, { Config }) => {
         });
       }
     });
-  } else {
-    event = eventNameMapping[event];
-    responseList.push(getTrackResponse(message, Config, event));
+    return responseList;
   }
+  // Doc https://ads.tiktok.com/help/article/standard-events-parameters?lang=en
+  // For custom event we do not want to lower case the event or trim it we just want to send those as it is
+  event = eventNameMapping[event] || message.event;
+  // if there exists no event mapping we will build payload with custom event recieved
+  responseList.push(getTrackResponse(message, Config, event));
 
   return responseList;
 };
 
 const process = async (event) => {
   const { message, destination } = event;
-
+  if (destination.Config?.version === 'v2') {
+    return processV2(event);
+  }
   if (!destination.Config.accessToken) {
     throw new ConfigurationError('Access Token not found. Aborting ');
   }
@@ -237,9 +238,10 @@ function getEventChunks(event, trackResponseList, eventsChunk) {
 }
 
 const processRouterDest = async (inputs, reqMetadata) => {
-  const errorRespEvents = checkInvalidRtTfEvents(inputs);
-  if (errorRespEvents.length > 0) {
-    return errorRespEvents;
+  const { destination } = inputs[0];
+  const { Config } = destination;
+  if (Config?.version === 'v2') {
+    return processRouterDestV2(inputs, reqMetadata);
   }
 
   const trackResponseList = []; // list containing single track event in batched format

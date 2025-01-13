@@ -11,6 +11,9 @@ const ConfigCategory = {
   IDENTIFY: {
     name: 'MPIdentifyConfig',
   },
+  SET_ONCE: {
+    name: 'MPSetOnceConfig',
+  },
   PROFILE_ANDROID: {
     name: 'MPProfilePropertiesAndroid',
   },
@@ -46,7 +49,6 @@ const MP_IDENTIFY_EXCLUSION_LIST = [
 ];
 
 const GEO_SOURCE_ALLOWED_VALUES = [null, 'reverse_geocoding'];
-const TRACK_MAX_BATCH_SIZE = 50;
 const IMPORT_MAX_BATCH_SIZE = 2000;
 const ENGAGE_MAX_BATCH_SIZE = 2000;
 const GROUPS_MAX_BATCH_SIZE = 200;
@@ -65,7 +67,6 @@ module.exports = {
   MP_IDENTIFY_EXCLUSION_LIST,
   getCreateDeletionTaskEndpoint,
   DISTINCT_ID_MAX_BATCH_SIZE,
-  TRACK_MAX_BATCH_SIZE,
   IMPORT_MAX_BATCH_SIZE,
   ENGAGE_MAX_BATCH_SIZE,
   GROUPS_MAX_BATCH_SIZE,

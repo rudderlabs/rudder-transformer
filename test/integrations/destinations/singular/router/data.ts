@@ -14,21 +14,13 @@ export const data = [
                 Config: {
                   apiKey: 'dummyApiKey',
                   sessionEventList: [
-                    {
-                      sessionEventName: 'mysessionevent',
-                    },
-                    {
-                      sessionEventName: 'randomuser',
-                    },
-                    {
-                      sessionEventName: 'titanium',
-                    },
+                    { sessionEventName: 'mysessionevent' },
+                    { sessionEventName: 'randomuser' },
+                    { sessionEventName: 'titanium' },
                   ],
                 },
               },
-              metadata: {
-                jobId: 1,
-              },
+              metadata: { jobId: 1, userId: 'u1' },
               message: {
                 type: 'track',
                 event: 'mysessionevent',
@@ -52,32 +44,17 @@ export const data = [
                     adTrackingEnabled: 'true',
                     token: 'testDeviceToken',
                   },
-                  library: {
-                    name: 'com.rudderstack.android.sdk.core',
-                    version: '0.1.4',
-                  },
+                  library: { name: 'com.rudderstack.android.sdk.core', version: '0.1.4' },
                   locale: 'en-US',
-                  network: {
-                    carrier: 'Android',
-                    bluetooth: false,
-                    cellular: true,
-                    wifi: true,
-                  },
+                  network: { carrier: 'Android', bluetooth: false, cellular: true, wifi: true },
                   campaign: {
                     source: 'google',
                     medium: 'medium',
                     term: 'keyword',
                     content: 'some content',
                   },
-                  os: {
-                    name: 'Android',
-                    version: '9',
-                  },
-                  screen: {
-                    density: 420,
-                    height: 1794,
-                    width: 1080,
-                  },
+                  os: { name: 'Android', version: '9' },
+                  screen: { density: 420, height: 1794, width: 1080 },
                   timezone: 'Asia/Mumbai',
                   userAgent:
                     'Dalvik/2.1.0 (Linux; U; Android 9; Android SDK built for x86 Build/PSR1.180720.075)',
@@ -93,7 +70,7 @@ export const data = [
                   receipt_signature: '1234dfghnh',
                   referring_application: '2134dfg',
                   total: 20,
-                  revenue: 15.0,
+                  revenue: 15,
                   shipping: 22,
                   tax: 1,
                   discount: 1.5,
@@ -112,13 +89,7 @@ export const data = [
                       url: 'https://www.website.com/product/path',
                       image_url: 'https://www.website.com/product/path.jpg',
                     },
-                    {
-                      sku: 'F-32',
-                      name: 'UNO',
-                      price: 3.45,
-                      quantity: 2,
-                      category: 'Games',
-                    },
+                    { sku: 'F-32', name: 'UNO', price: 3.45, quantity: 2, category: 'Games' },
                   ],
                 },
                 timestamp: '2021-09-01T15:46:51.000Z',
@@ -171,34 +142,19 @@ export const data = [
                   c: 'wifi',
                   a: 'dummyApiKey',
                 },
-                body: {
-                  JSON: {},
-                  JSON_ARRAY: {},
-                  XML: {},
-                  FORM: {},
-                },
+                body: { JSON: {}, JSON_ARRAY: {}, XML: {}, FORM: {} },
                 files: {},
               },
-              metadata: [
-                {
-                  jobId: 1,
-                },
-              ],
+              metadata: [{ jobId: 1, userId: 'u1' }],
               batched: false,
               statusCode: 200,
               destination: {
                 Config: {
                   apiKey: 'dummyApiKey',
                   sessionEventList: [
-                    {
-                      sessionEventName: 'mysessionevent',
-                    },
-                    {
-                      sessionEventName: 'randomuser',
-                    },
-                    {
-                      sessionEventName: 'titanium',
-                    },
+                    { sessionEventName: 'mysessionevent' },
+                    { sessionEventName: 'randomuser' },
+                    { sessionEventName: 'titanium' },
                   ],
                 },
               },
@@ -223,21 +179,13 @@ export const data = [
                 Config: {
                   apiKey: 'dummyApiKey',
                   sessionEventList: [
-                    {
-                      sessionEventName: 'mysessionevent',
-                    },
-                    {
-                      sessionEventName: 'randomuser',
-                    },
-                    {
-                      sessionEventName: 'titanium',
-                    },
+                    { sessionEventName: 'mysessionevent' },
+                    { sessionEventName: 'randomuser' },
+                    { sessionEventName: 'titanium' },
                   ],
                 },
               },
-              metadata: {
-                jobId: 2,
-              },
+              metadata: { jobId: 2, userId: 'u1' },
               message: {
                 type: 'track',
                 event: 'mysessionevent',
@@ -261,32 +209,17 @@ export const data = [
                     adTrackingEnabled: 'true',
                     token: 'testDeviceToken',
                   },
-                  library: {
-                    name: 'com.rudderstack.android.sdk.core',
-                    version: '0.1.4',
-                  },
+                  library: { name: 'com.rudderstack.android.sdk.core', version: '0.1.4' },
                   locale: 'en-US',
-                  network: {
-                    carrier: 'Android',
-                    bluetooth: false,
-                    cellular: true,
-                    wifi: true,
-                  },
+                  network: { carrier: 'Android', bluetooth: false, cellular: true, wifi: true },
                   campaign: {
                     source: 'google',
                     medium: 'medium',
                     term: 'keyword',
                     content: 'some content',
                   },
-                  os: {
-                    name: 'Android',
-                    version: '9',
-                  },
-                  screen: {
-                    density: 420,
-                    height: 1794,
-                    width: 1080,
-                  },
+                  os: { name: 'Android', version: '9' },
+                  screen: { density: 420, height: 1794, width: 1080 },
                   timezone: 'Asia/Mumbai',
                   userAgent:
                     'Dalvik/2.1.0 (Linux; U; Android 9; Android SDK built for x86 Build/PSR1.180720.075)',
@@ -302,7 +235,7 @@ export const data = [
                   receipt_signature: '1234dfghnh',
                   referring_application: '2134dfg',
                   total: 20,
-                  revenue: 15.0,
+                  revenue: 15,
                   shipping: 22,
                   tax: 1,
                   discount: 1.5,
@@ -321,13 +254,7 @@ export const data = [
                       url: 'https://www.website.com/product/path',
                       image_url: 'https://www.website.com/product/path.jpg',
                     },
-                    {
-                      sku: 'F-32',
-                      name: 'UNO',
-                      price: 3.45,
-                      quantity: 2,
-                      category: 'Games',
-                    },
+                    { sku: 'F-32', name: 'UNO', price: 3.45, quantity: 2, category: 'Games' },
                   ],
                 },
                 timestamp: '2021-09-01T15:46:51.000Z',
@@ -380,34 +307,19 @@ export const data = [
                   c: 'wifi',
                   a: 'dummyApiKey',
                 },
-                body: {
-                  JSON: {},
-                  JSON_ARRAY: {},
-                  XML: {},
-                  FORM: {},
-                },
+                body: { JSON: {}, JSON_ARRAY: {}, XML: {}, FORM: {} },
                 files: {},
               },
-              metadata: [
-                {
-                  jobId: 2,
-                },
-              ],
+              metadata: [{ jobId: 2, userId: 'u1' }],
               batched: false,
               statusCode: 200,
               destination: {
                 Config: {
                   apiKey: 'dummyApiKey',
                   sessionEventList: [
-                    {
-                      sessionEventName: 'mysessionevent',
-                    },
-                    {
-                      sessionEventName: 'randomuser',
-                    },
-                    {
-                      sessionEventName: 'titanium',
-                    },
+                    { sessionEventName: 'mysessionevent' },
+                    { sessionEventName: 'randomuser' },
+                    { sessionEventName: 'titanium' },
                   ],
                 },
               },
@@ -432,21 +344,13 @@ export const data = [
                 Config: {
                   apiKey: 'dummyApiKey',
                   sessionEventList: [
-                    {
-                      sessionEventName: 'mysessionevent',
-                    },
-                    {
-                      sessionEventName: 'randomuser',
-                    },
-                    {
-                      sessionEventName: 'titanium',
-                    },
+                    { sessionEventName: 'mysessionevent' },
+                    { sessionEventName: 'randomuser' },
+                    { sessionEventName: 'titanium' },
                   ],
                 },
               },
-              metadata: {
-                jobId: 3,
-              },
+              metadata: { jobId: 3, userId: 'u1' },
               message: {
                 type: 'track',
                 event: 'mysessionevent',
@@ -470,32 +374,17 @@ export const data = [
                     adTrackingEnabled: 'true',
                     token: 'testDeviceToken',
                   },
-                  library: {
-                    name: 'com.rudderstack.android.sdk.core',
-                    version: '0.1.4',
-                  },
+                  library: { name: 'com.rudderstack.android.sdk.core', version: '0.1.4' },
                   locale: 'en-US',
-                  network: {
-                    carrier: 'Android',
-                    bluetooth: false,
-                    cellular: true,
-                    wifi: true,
-                  },
+                  network: { carrier: 'Android', bluetooth: false, cellular: true, wifi: true },
                   campaign: {
                     source: 'google',
                     medium: 'medium',
                     term: 'keyword',
                     content: 'some content',
                   },
-                  os: {
-                    name: 'Android',
-                    version: '9',
-                  },
-                  screen: {
-                    density: 420,
-                    height: 1794,
-                    width: 1080,
-                  },
+                  os: { name: 'Android', version: '9' },
+                  screen: { density: 420, height: 1794, width: 1080 },
                   timezone: 'Asia/Mumbai',
                   userAgent:
                     'Dalvik/2.1.0 (Linux; U; Android 9; Android SDK built for x86 Build/PSR1.180720.075)',
@@ -511,7 +400,7 @@ export const data = [
                   receipt_signature: '1234dfghnh',
                   referring_application: '2134dfg',
                   total: 20,
-                  revenue: 15.0,
+                  revenue: 15,
                   shipping: 22,
                   tax: 1,
                   discount: 1.5,
@@ -530,13 +419,7 @@ export const data = [
                       url: 'https://www.website.com/product/path',
                       image_url: 'https://www.website.com/product/path.jpg',
                     },
-                    {
-                      sku: 'F-32',
-                      name: 'UNO',
-                      price: 3.45,
-                      quantity: 2,
-                      category: 'Games',
-                    },
+                    { sku: 'F-32', name: 'UNO', price: 3.45, quantity: 2, category: 'Games' },
                   ],
                 },
                 timestamp: '2021-09-01T15:46:51.000Z',
@@ -589,34 +472,19 @@ export const data = [
                   c: 'wifi',
                   a: 'dummyApiKey',
                 },
-                body: {
-                  JSON: {},
-                  JSON_ARRAY: {},
-                  XML: {},
-                  FORM: {},
-                },
+                body: { JSON: {}, JSON_ARRAY: {}, XML: {}, FORM: {} },
                 files: {},
               },
-              metadata: [
-                {
-                  jobId: 3,
-                },
-              ],
+              metadata: [{ jobId: 3, userId: 'u1' }],
               batched: false,
               statusCode: 200,
               destination: {
                 Config: {
                   apiKey: 'dummyApiKey',
                   sessionEventList: [
-                    {
-                      sessionEventName: 'mysessionevent',
-                    },
-                    {
-                      sessionEventName: 'randomuser',
-                    },
-                    {
-                      sessionEventName: 'titanium',
-                    },
+                    { sessionEventName: 'mysessionevent' },
+                    { sessionEventName: 'randomuser' },
+                    { sessionEventName: 'titanium' },
                   ],
                 },
               },
@@ -644,15 +512,8 @@ export const data = [
                 userId: '68e214f1-ac84-4241-b27d-78a18f59f21e',
                 channel: 'mobile',
                 context: {
-                  os: {
-                    name: 'iOS',
-                    version: '16.2',
-                  },
-                  app: {
-                    build: '5013',
-                    version: '0.5.13',
-                    namespace: 'com.yabimoney',
-                  },
+                  os: { name: 'iOS', version: '16.2' },
+                  app: { build: '5013', version: '0.5.13', namespace: 'com.yabimoney' },
                   device: {
                     id: 'cc06ff5e-838b-4e33-9d90-4ab5a6068bec',
                     name: 'iPhone',
@@ -664,11 +525,7 @@ export const data = [
                     attTrackingStatus: 0,
                   },
                   locale: 'en-AE',
-                  screen: {
-                    width: 844,
-                    height: 390,
-                    density: 3,
-                  },
+                  screen: { width: 844, height: 390, density: 3 },
                   traits: {
                     phone: '',
                     userId: '68e214f1-ac84-4241-b27d-78a18f59f21e',
@@ -677,15 +534,8 @@ export const data = [
                     yabi_user_id: 'uCh5IS8p',
                     subscription_type: '',
                   },
-                  library: {
-                    name: 'rudder-ios-library',
-                    version: '1.8.0',
-                  },
-                  network: {
-                    wifi: true,
-                    carrier: 'etisalat',
-                    cellular: false,
-                  },
+                  library: { name: 'rudder-ios-library', version: '1.8.0' },
+                  network: { wifi: true, carrier: 'etisalat', cellular: false },
                   timezone: 'Asia/Dubai',
                   sessionId: 1674138119,
                 },
@@ -695,9 +545,7 @@ export const data = [
                 receivedAt: '2023-01-19T14:25:25.465Z',
                 request_ip: '87.201.98.151',
                 anonymousId: 'cc06ff5e-838b-4e33-9d90-4ab5a6068bec',
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 originalTimestamp: '2023-01-19T14:25:06.301Z',
               },
               destination: {
@@ -705,29 +553,14 @@ export const data = [
                 Config: {
                   apiKey: 'apiKey',
                   apiSecret: 'dummyApiSecret',
-                  sessionEventList: [
-                    {
-                      sessionEventName: 'test_event',
-                    },
-                  ],
-                  blacklistedEvents: [
-                    {
-                      eventName: '',
-                    },
-                  ],
-                  whitelistedEvents: [
-                    {
-                      eventName: '',
-                    },
-                  ],
+                  sessionEventList: [{ sessionEventName: 'test_event' }],
+                  blacklistedEvents: [{ eventName: '' }],
+                  whitelistedEvents: [{ eventName: '' }],
                   eventFilteringOption: 'whitelistedEvents',
                   eventDelivery: false,
                   eventDeliveryTS: 1663919255086,
                 },
-                liveEventsConfig: {
-                  eventDelivery: false,
-                  eventDeliveryTS: 1663919255086,
-                },
+                liveEventsConfig: { eventDelivery: false, eventDeliveryTS: 1663919255086 },
                 ID: '2EhlBrBduwN2NX4pJ7nrVDHAz6C',
                 workspaceId: '1sUXvPs0hYgjBxSfjG4gqnRFNoP',
                 DestinationDefinition: {
@@ -821,6 +654,7 @@ export const data = [
                 eventType: 'track',
                 sourceDefinitionId: '1TW48i2bIzEl1HPf825cEznfIM8',
                 destinationDefinitionId: '',
+                userId: 'u1',
               },
             },
           ],
@@ -856,12 +690,7 @@ export const data = [
                   a: 'apiKey',
                   e: {},
                 },
-                body: {
-                  JSON: {},
-                  JSON_ARRAY: {},
-                  XML: {},
-                  FORM: {},
-                },
+                body: { JSON: {}, JSON_ARRAY: {}, XML: {}, FORM: {} },
                 files: {},
               },
               metadata: [
@@ -895,6 +724,7 @@ export const data = [
                   eventType: 'track',
                   sourceDefinitionId: '1TW48i2bIzEl1HPf825cEznfIM8',
                   destinationDefinitionId: '',
+                  userId: 'u1',
                 },
               ],
               batched: false,
@@ -904,29 +734,14 @@ export const data = [
                 Config: {
                   apiKey: 'apiKey',
                   apiSecret: 'dummyApiSecret',
-                  sessionEventList: [
-                    {
-                      sessionEventName: 'test_event',
-                    },
-                  ],
-                  blacklistedEvents: [
-                    {
-                      eventName: '',
-                    },
-                  ],
-                  whitelistedEvents: [
-                    {
-                      eventName: '',
-                    },
-                  ],
+                  sessionEventList: [{ sessionEventName: 'test_event' }],
+                  blacklistedEvents: [{ eventName: '' }],
+                  whitelistedEvents: [{ eventName: '' }],
                   eventFilteringOption: 'whitelistedEvents',
                   eventDelivery: false,
                   eventDeliveryTS: 1663919255086,
                 },
-                liveEventsConfig: {
-                  eventDelivery: false,
-                  eventDeliveryTS: 1663919255086,
-                },
+                liveEventsConfig: { eventDelivery: false, eventDeliveryTS: 1663919255086 },
                 ID: '2EhlBrBduwN2NX4pJ7nrVDHAz6C',
                 workspaceId: '1sUXvPs0hYgjBxSfjG4gqnRFNoP',
                 DestinationDefinition: {

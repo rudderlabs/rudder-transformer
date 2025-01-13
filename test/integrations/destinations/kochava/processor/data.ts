@@ -12,7 +12,7 @@ export const data = [
             destination: {
               Config: { apiKey: '<kochava guid goes here>' },
               DestinationDefinition: {
-                Config: { cdkEnabled: true },
+                Config: { cdkV2Enabled: true },
                 DisplayName: 'Kochava',
                 ID: '1WTpBSTiL3iAUHUdW7rHT4sawgU',
                 Name: 'KOCHAVA',
@@ -21,6 +21,10 @@ export const data = [
               ID: '1WTpIHpH7NTBgjeiUPW1kCUgZGI',
               Name: 'kochava test',
               Transformations: [],
+            },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
             },
             message: {
               anonymousId: 'sampath',
@@ -103,6 +107,10 @@ export const data = [
               userId: 'sampath',
             },
             statusCode: 200,
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
           },
         ],
       },
@@ -144,12 +152,13 @@ export const data = [
               sentAt: '2019-10-14T09:03:22.563Z',
             },
             metadata: {
-              destinationId: '1WTpIHpH7NTBgjeiUPW1kCUgZGI',
+              destinationId: 'destId',
+              workspaceId: 'wspId',
             },
             destination: {
               Config: { apiKey: '<kochava guid goes here>' },
               DestinationDefinition: {
-                Config: { cdkEnabled: true },
+                Config: { cdkV2Enabled: true },
                 DisplayName: 'Kochava',
                 ID: '1WTpBSTiL3iAUHUdW7rHT4sawgU',
                 Name: 'KOCHAVA',
@@ -170,18 +179,21 @@ export const data = [
         status: 200,
         body: [
           {
-            error: 'Bad event. Original error: message type "identify" not supported for "kochava"',
+            error:
+              'message type identify is not supported: Workflow: procWorkflow, Step: validateInput, ChildStep: undefined, OriginalError: message type identify is not supported',
             metadata: {
-              destinationId: '1WTpIHpH7NTBgjeiUPW1kCUgZGI',
+              destinationId: 'destId',
+              workspaceId: 'wspId',
             },
             statTags: {
               destType: 'KOCHAVA',
               errorCategory: 'dataValidation',
-              destinationId: '1WTpIHpH7NTBgjeiUPW1kCUgZGI',
+              destinationId: 'destId',
               errorType: 'instrumentation',
               feature: 'processor',
-              implementation: 'cdkV1',
+              implementation: 'cdkV2',
               module: 'destination',
+              workspaceId: 'wspId',
             },
             statusCode: 400,
           },
@@ -225,10 +237,14 @@ export const data = [
               integrations: { All: true },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
             destination: {
               Config: { apiKey: '<kochava guid goes here>' },
               DestinationDefinition: {
-                Config: { cdkEnabled: true },
+                Config: { cdkV2Enabled: true },
                 DisplayName: 'Kochava',
                 ID: '1WTpBSTiL3iAUHUdW7rHT4sawgU',
                 Name: 'KOCHAVA',
@@ -288,6 +304,10 @@ export const data = [
               userId: '00000000000000000000000000',
             },
             statusCode: 200,
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
           },
         ],
       },
@@ -329,10 +349,14 @@ export const data = [
               integrations: { All: true },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
             destination: {
               Config: { apiKey: '<kochava guid goes here>' },
               DestinationDefinition: {
-                Config: { cdkEnabled: true },
+                Config: { cdkV2Enabled: true },
                 DisplayName: 'Kochava',
                 ID: '1WTpBSTiL3iAUHUdW7rHT4sawgU',
                 Name: 'KOCHAVA',
@@ -392,6 +416,10 @@ export const data = [
               userId: '00000000000000000000000000',
             },
             statusCode: 200,
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
           },
         ],
       },
@@ -444,10 +472,14 @@ export const data = [
               type: 'screen',
               sentAt: '2020-03-12T09:05:13.042Z',
             },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
             destination: {
               Config: { apiKey: '<kochava guid goes here>' },
               DestinationDefinition: {
-                Config: { cdkEnabled: true },
+                Config: { cdkV2Enabled: true },
                 DisplayName: 'Kochava',
                 ID: '1WTpBSTiL3iAUHUdW7rHT4sawgU',
                 Name: 'KOCHAVA',
@@ -511,6 +543,10 @@ export const data = [
               userId: '5094f5704b9cf2b3',
             },
             statusCode: 200,
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
           },
         ],
       },
@@ -564,10 +600,14 @@ export const data = [
               type: 'screen',
               sentAt: '2020-03-12T09:05:13.042Z',
             },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
             destination: {
               Config: { apiKey: '<kochava guid goes here>' },
               DestinationDefinition: {
-                Config: { cdkEnabled: true },
+                Config: { cdkV2Enabled: true },
                 DisplayName: 'Kochava',
                 ID: '1WTpBSTiL3iAUHUdW7rHT4sawgU',
                 Name: 'KOCHAVA',
@@ -631,6 +671,10 @@ export const data = [
               userId: '5094f5704b9cf2b3',
             },
             statusCode: 200,
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
           },
         ],
       },
@@ -687,7 +731,7 @@ export const data = [
             destination: {
               Config: { apiKey: '<kochava guid goes here>' },
               DestinationDefinition: {
-                Config: { cdkEnabled: true },
+                Config: { cdkV2Enabled: true },
                 DisplayName: 'Kochava',
                 ID: '1WTpBSTiL3iAUHUdW7rHT4sawgU',
                 Name: 'KOCHAVA',
@@ -696,6 +740,10 @@ export const data = [
               ID: '1WTpIHpH7NTBgjeiUPW1kCUgZGI',
               Name: 'kochava test',
               Transformations: [],
+            },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
             },
           },
         ],
@@ -750,6 +798,10 @@ export const data = [
               userId: '5094f5704b9cf2b3',
             },
             statusCode: 200,
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
           },
         ],
       },
@@ -800,10 +852,14 @@ export const data = [
               type: 'screen',
               sentAt: '2020-03-12T09:05:13.042Z',
             },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
             destination: {
               Config: { apiKey: '<kochava guid goes here>' },
               DestinationDefinition: {
-                Config: { cdkEnabled: true },
+                Config: { cdkV2Enabled: true },
                 DisplayName: 'Kochava',
                 ID: '1WTpBSTiL3iAUHUdW7rHT4sawgU',
                 Name: 'KOCHAVA',
@@ -862,6 +918,10 @@ export const data = [
               userId: '5094f5704b9cf2b3',
             },
             statusCode: 200,
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
           },
         ],
       },
@@ -914,7 +974,7 @@ export const data = [
             destination: {
               Config: { apiKey: '<kochava guid goes here>' },
               DestinationDefinition: {
-                Config: { cdkEnabled: true },
+                Config: { cdkV2Enabled: true },
                 DisplayName: 'Kochava',
                 ID: '1WTpBSTiL3iAUHUdW7rHT4sawgU',
                 Name: 'KOCHAVA',
@@ -923,6 +983,10 @@ export const data = [
               ID: '1WTpIHpH7NTBgjeiUPW1kCUgZGI',
               Name: 'kochava test',
               Transformations: [],
+            },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
             },
           },
         ],
@@ -972,6 +1036,10 @@ export const data = [
               userId: '5094f5704b9cf2b3',
             },
             statusCode: 200,
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
           },
         ],
       },
@@ -1012,10 +1080,14 @@ export const data = [
               integrations: { All: true },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
             destination: {
               Config: { apiKey: '<kochava guid goes here>' },
               DestinationDefinition: {
-                Config: { cdkEnabled: true },
+                Config: { cdkV2Enabled: true },
                 DisplayName: 'Kochava',
                 ID: '1WTpBSTiL3iAUHUdW7rHT4sawgU',
                 Name: 'KOCHAVA',
@@ -1074,6 +1146,10 @@ export const data = [
               userId: '00000000000000000000000000',
             },
             statusCode: 200,
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
           },
         ],
       },
@@ -1115,10 +1191,14 @@ export const data = [
               integrations: { All: true },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
             destination: {
               Config: { apiKey: '<kochava guid goes here>' },
               DestinationDefinition: {
-                Config: { cdkEnabled: true },
+                Config: { cdkV2Enabled: true },
                 DisplayName: 'Kochava',
                 ID: '1WTpBSTiL3iAUHUdW7rHT4sawgU',
                 Name: 'KOCHAVA',
@@ -1182,6 +1262,10 @@ export const data = [
               userId: '00000000000000000000000000',
             },
             statusCode: 200,
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
           },
         ],
       },
@@ -1222,10 +1306,14 @@ export const data = [
               integrations: { All: true },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
             destination: {
               Config: { apiKey: '<kochava guid goes here>' },
               DestinationDefinition: {
-                Config: { cdkEnabled: true },
+                Config: { cdkV2Enabled: true },
                 DisplayName: 'Kochava',
                 ID: '1WTpBSTiL3iAUHUdW7rHT4sawgU',
                 Name: 'KOCHAVA',
@@ -1289,6 +1377,10 @@ export const data = [
               userId: '00000000000000000000000000',
             },
             statusCode: 200,
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
           },
         ],
       },
@@ -1329,10 +1421,14 @@ export const data = [
               integrations: { All: true },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
             destination: {
               Config: { apiKey: '<kochava guid goes here>' },
               DestinationDefinition: {
-                Config: { cdkEnabled: true },
+                Config: { cdkV2Enabled: true },
                 DisplayName: 'Kochava',
                 ID: '1WTpBSTiL3iAUHUdW7rHT4sawgU',
                 Name: 'KOCHAVA',
@@ -1396,6 +1492,10 @@ export const data = [
               userId: '00000000000000000000000000',
             },
             statusCode: 200,
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
           },
         ],
       },

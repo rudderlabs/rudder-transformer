@@ -1,4 +1,4 @@
-const { InstrumentationError } = require('../../util/errorTypes');
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const { GA_ENDPOINT } = require('./config');
 
 /**

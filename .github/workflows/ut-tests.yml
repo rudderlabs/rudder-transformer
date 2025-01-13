@@ -1,0 +1,91 @@
+name: Tests
+
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.sha }}
+  cancel-in-progress: true
+
+jobs:
+  ut_tests:
+    name: UT Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Go
+        uses: actions/setup-go@v5.0.2
+        with:
+          go-version: 1.17
+
+      - name: Install Latest Version of Kind
+        run: go install sigs.k8s.io/kind@v0.17.0
+
+      - name: Checkout
+        uses: actions/checkout@v4.2.1
+        with:
+          fetch-depth: 1
+
+      - name: Setup Node
+        uses: actions/setup-node@v4.0.4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Create Kind cluster
+        run: kind create cluster --name kind-cluster --config=test/__tests__/data/worker-nodes-kind.yml
+
+      - name: Create OpenFaaS Namespaces
+        run: kubectl apply -f https://raw.githubusercontent.com/openfaas/faas-netes/master/namespaces.yml
+
+      - name: Setup Helm
+        uses: azure/setup-helm@v3
+        with:
+          version: v3.10.0
+
+      - name: Add OpenFaaS Helm Chart
+        run: helm repo add openfaas https://openfaas.github.io/faas-netes/
+
+      - name: Deploy OpenFaaS Helm Chart
+        run: |
+          helm repo update \
+            && helm upgrade openfaas --install openfaas/openfaas \
+            --namespace openfaas  \
+            --set functionNamespace=openfaas-fn \
+            --set basic_auth=false \
+            --set generateBasicAuth=false \
+            --set ceScaling=true \
+            --set async=false \
+            --set openfaasImagePullPolicy=IfNotPresent \
+            --set gateway.image=rudderlabs/rudder-openfaas-gateway:0.25.2 \
+            --set faasnetes.image=rudderlabs/rudder-openfaas-faas-netes:0.15.4
+
+      - name: Create regcred secret in openfaas
+        run: kubectl create secret docker-registry regcred --docker-server=https://index.docker.io/v1/ --docker-username=${{ secrets.DOCKERHUB_USERNAME }} --docker-password=${{ secrets.DOCKERHUB_TOKEN }} --docker-email=${{ secrets.DOCKERHUB_EMAIL }} -n openfaas
+
+      - name: Create regcred secret in openfaas-fn
+        run: kubectl create secret docker-registry regcred --docker-server=https://index.docker.io/v1/ --docker-username=${{ secrets.DOCKERHUB_USERNAME }} --docker-password=${{ secrets.DOCKERHUB_TOKEN }} --docker-email=${{ secrets.DOCKERHUB_EMAIL }} -n openfaas-fn
+
+      - name: Patch default service account in openfaas-fn
+        run: 'kubectl patch serviceaccount default -n openfaas-fn -p ''{"imagePullSecrets": [{"name": "regcred"}]}'''
+
+      - name: Patch deployment "gateway"
+        run: 'kubectl patch deployment gateway -n openfaas -p ''{"spec": {"template": {"spec": {"imagePullSecrets": [{"name": "regcred"}]}}}}'''
+
+      - name: Wait for deployment "gateway" rollout
+        run: kubectl rollout status deploy/gateway --timeout 120s -n openfaas
+
+      - run: kubectl get events -n openfaas
+      - run: kubectl get pods -n openfaas
+
+      - name: Port Forwarding to port on gateway-external
+        run: kubectl port-forward service/gateway-external 8080:8080 -n openfaas &
+
+      - name: User Transformation Tests
+        run: npm run test:ut:integration:ci

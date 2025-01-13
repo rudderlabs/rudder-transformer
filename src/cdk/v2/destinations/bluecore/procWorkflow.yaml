@@ -1,0 +1,69 @@
+bindings:
+  - name: EventType
+    path: ../../../../constants
+  - path: ../../bindings/jsontemplate
+  - name: defaultRequestConfig
+    path: ../../../../v0/util
+  - name: removeUndefinedNullValuesAndEmptyObjectArray
+    path: ../../../../v0/util
+  - name: removeUndefinedAndNullValues
+    path: ../../../../v0/util
+  - path: ./utils
+  - path: lodash
+    name: cloneDeep
+
+steps:
+  - name: messageType
+    template: |
+      .message.type.toLowerCase();
+  - name: validateInput
+    template: |
+      let messageType = $.outputs.messageType;
+      $.assert(messageType, "message Type is not present. Aborting");
+      $.assert(messageType in {{$.EventType.([.TRACK, .IDENTIFY])}}, "message type " + messageType + " is not supported");
+      $.assertConfig(.destination.Config.bluecoreNamespace, "[BLUECORE] account namespace required for Authentication.");
+  - name: prepareIdentifyPayload
+    condition: $.outputs.messageType === {{$.EventType.IDENTIFY}}
+    template: |
+      const payload = $.constructProperties(.message);
+      payload.properties.token = .destination.Config.bluecoreNamespace;
+      $.verifyPayload(payload, .message);
+      payload.event = payload.event ?? 'customer_patch';
+      payload.properties.distinct_id = $.populateAccurateDistinctId(payload, .message);
+      $.context.payloads = [$.removeUndefinedAndNullValues(payload)];
+  - name: handleTrackEvent
+    condition: $.outputs.messageType === {{$.EventType.TRACK}}
+    steps:
+      - name: validateInput
+        description: Additional validation for Track events
+        template: |
+          $.assert(.message.event, "event_name could not be mapped. Aborting.")
+      - name: deduceEventNames
+        template: |
+          $.context.deducedEventNameArray = $.deduceTrackEventName(.message.event,.destination.Config)
+      - name: preparePayload
+        template: |
+          const payload = $.constructProperties(.message);
+          $.context.payloads = $.context.deducedEventNameArray@eventName.(
+            const newPayload = $.cloneDeep(payload);
+            newPayload.properties.distinct_id = $.populateAccurateDistinctId(newPayload, ^.message);
+            const temporaryProductArray = newPayload.properties.products ?? $.createProductForStandardEcommEvent(^.message, eventName);
+            newPayload.properties.products = $.normalizeProductArray(temporaryProductArray);
+            newPayload.event = eventName;
+            newPayload.properties.token = ^.destination.Config.bluecoreNamespace;
+            $.verifyPayload(newPayload, ^.message);
+            $.removeUndefinedNullValuesAndEmptyObjectArray(newPayload)
+          )[];
+
+  - name: buildResponse
+    template: |
+      $.context.payloads.(
+        const response = $.defaultRequestConfig();
+        response.body.JSON = .;
+        response.method = "POST";
+        response.endpoint = "https://api.bluecore.app/api/track/mobile/v1";
+        response.headers = {
+          "Content-Type": "application/json"
+        };
+        response
+      )

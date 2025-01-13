@@ -1,27 +1,29 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable class-methods-use-this */
-import groupBy from 'lodash/groupBy';
+import { TransformationError } from '@rudderstack/integrations-lib';
 import { processCdkV2Workflow } from '../../cdk/v2/handler';
-import IntegrationDestinationService from '../../interfaces/DestinationService';
+import { DestinationService } from '../../interfaces/DestinationService';
 import {
-  DeliveryResponse,
+  DeliveryV0Response,
+  DeliveryV1Response,
   ErrorDetailer,
   MetaTransferObject,
+  ProcessorTransformationOutput,
   ProcessorTransformationRequest,
   ProcessorTransformationResponse,
+  ProxyRequest,
   RouterTransformationRequestData,
   RouterTransformationResponse,
-  ProcessorTransformationOutput,
   UserDeletionRequest,
   UserDeletionResponse,
 } from '../../types/index';
-import { TransformationError } from '../../v0/util/errorTypes';
-import tags from '../../v0/util/tags';
-import DestinationPostTransformationService from './postTransformation';
 import stats from '../../util/stats';
 import { CatchErr } from '../../util/types';
+import { groupRouterTransformEvents } from '../../v0/util';
+import tags from '../../v0/util/tags';
+import { DestinationPostTransformationService } from './postTransformation';
 
-export default class CDKV2DestinationService implements IntegrationDestinationService {
+export class CDKV2DestinationService implements DestinationService {
   public init() {}
 
   public getName(): string {
@@ -52,11 +54,18 @@ export default class CDKV2DestinationService implements IntegrationDestinationSe
     events: ProcessorTransformationRequest[],
     destinationType: string,
     _version: string,
-    _requestMetadata: NonNullable<unknown>,
+    requestMetadata: NonNullable<unknown>,
   ): Promise<ProcessorTransformationResponse[]> {
     // TODO: Change the promise type
     const respList: ProcessorTransformationResponse[][] = await Promise.all(
       events.map(async (event) => {
+        const metaTo = this.getTags(
+          destinationType,
+          event.metadata.destinationId,
+          event.metadata.workspaceId,
+          tags.FEATURES.PROCESSOR,
+        );
+        metaTo.metadata = event.metadata;
         try {
           const transformedPayloads:
             | ProcessorTransformationOutput
@@ -64,8 +73,8 @@ export default class CDKV2DestinationService implements IntegrationDestinationSe
             destinationType,
             event,
             tags.FEATURES.PROCESSOR,
+            requestMetadata,
           );
-
           stats.increment('event_transform_success', {
             destType: destinationType,
             module: tags.MODULES.DESTINATION,
@@ -82,13 +91,6 @@ export default class CDKV2DestinationService implements IntegrationDestinationSe
             undefined,
           );
         } catch (error: CatchErr) {
-          const metaTo = this.getTags(
-            destinationType,
-            event.metadata.destinationId,
-            event.metadata.workspaceId,
-            tags.FEATURES.PROCESSOR,
-          );
-          metaTo.metadata = event.metadata;
           const erroredResp =
             DestinationPostTransformationService.handleProcessorTransformFailureEvents(
               error,
@@ -108,43 +110,40 @@ export default class CDKV2DestinationService implements IntegrationDestinationSe
     events: RouterTransformationRequestData[],
     destinationType: string,
     _version: string,
-    _requestMetadata: NonNullable<unknown>,
+    requestMetadata: NonNullable<unknown>,
   ): Promise<RouterTransformationResponse[]> {
-    const allDestEvents: object = groupBy(
-      events,
-      (ev: RouterTransformationRequestData) => ev.destination?.ID,
-    );
+    const groupedEvents: RouterTransformationRequestData[][] = groupRouterTransformEvents(events);
     const response: RouterTransformationResponse[][] = await Promise.all(
-      Object.values(allDestEvents).map(
-        async (destInputArray: RouterTransformationRequestData[]) => {
-          const metaTo = this.getTags(
-            destinationType,
-            destInputArray[0].metadata.destinationId,
-            destInputArray[0].metadata.workspaceId,
-            tags.FEATURES.ROUTER,
-          );
-          metaTo.metadata = destInputArray[0].metadata;
-          try {
-            const doRouterTransformationResponse: RouterTransformationResponse[] =
-              await processCdkV2Workflow(destinationType, destInputArray, tags.FEATURES.ROUTER);
-            return DestinationPostTransformationService.handleRouterTransformSuccessEvents(
-              doRouterTransformationResponse,
-              undefined,
-              metaTo,
-              tags.IMPLEMENTATIONS.CDK_V2,
-              destinationType.toUpperCase(),
+      groupedEvents.map(async (destInputArray: RouterTransformationRequestData[]) => {
+        const metaTo = this.getTags(
+          destinationType,
+          destInputArray[0].metadata.destinationId,
+          destInputArray[0].metadata.workspaceId,
+          tags.FEATURES.ROUTER,
+        );
+        metaTo.metadata = destInputArray[0].metadata;
+        try {
+          const doRouterTransformationResponse: RouterTransformationResponse[] =
+            await processCdkV2Workflow(
+              destinationType,
+              destInputArray,
+              tags.FEATURES.ROUTER,
+              requestMetadata,
             );
-          } catch (error: CatchErr) {
-            metaTo.metadatas = destInputArray.map((input) => input.metadata);
-            const erroredResp =
-              DestinationPostTransformationService.handleRouterTransformFailureEvents(
-                error,
-                metaTo,
-              );
-            return [erroredResp];
-          }
-        },
-      ),
+          return DestinationPostTransformationService.handleRouterTransformSuccessEvents(
+            doRouterTransformationResponse,
+            undefined,
+            metaTo,
+            tags.IMPLEMENTATIONS.CDK_V2,
+            destinationType.toUpperCase(),
+          );
+        } catch (error: CatchErr) {
+          metaTo.metadatas = destInputArray.map((input) => input.metadata);
+          const erroredResp =
+            DestinationPostTransformationService.handleRouterTransformFailureEvents(error, metaTo);
+          return [erroredResp];
+        }
+      }),
     );
     return response.flat();
   }
@@ -159,10 +158,10 @@ export default class CDKV2DestinationService implements IntegrationDestinationSe
   }
 
   public deliver(
-    _event: ProcessorTransformationOutput,
+    _event: ProxyRequest,
     _destinationType: string,
     _requestMetadata: NonNullable<unknown>,
-  ): Promise<DeliveryResponse> {
+  ): Promise<DeliveryV0Response | DeliveryV1Response> {
     throw new TransformationError('CDKV2 Does not Implement Delivery Routine');
   }
 

@@ -26,20 +26,10 @@ export const data = [
                     db: '19950715',
                     lastname: 'Rudderlabs',
                     firstName: 'Test',
-                    address: {
-                      city: 'Kolkata',
-                      state: 'WB',
-                      zip: '700114',
-                      country: 'IN',
-                    },
+                    address: { city: 'Kolkata', state: 'WB', zip: '700114', country: 'IN' },
                   },
-                  device: {
-                    advertisingId: 'abc123',
-                  },
-                  library: {
-                    name: 'rudder-sdk-ruby-sync',
-                    version: '1.0.6',
-                  },
+                  device: { advertisingId: 'abc123' },
+                  library: { name: 'rudder-sdk-ruby-sync', version: '1.0.6' },
                 },
                 messageId: '7208bbb6-2c4e-45bb-bf5b-ad426f3593e9',
                 timestamp: '2020-08-14T05:30:30.118Z',
@@ -81,14 +71,9 @@ export const data = [
                   checkout_id: 'fksdjfsdjfisjf9sdfjsd9f',
                 },
                 anonymousId: '50be5c78-6c3f-4b60-be84-97805a316fb1',
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
               },
-              metadata: {
-                destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
-                jobId: 1,
-              },
+              metadata: { destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq', jobId: 1, userId: 'u1' },
               destination: {
                 DestinationDefinition: { Config: { cdkV2Enabled: true } },
                 ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
@@ -103,30 +88,14 @@ export const data = [
                   deduplicationKey: 'messageId',
                   enhancedMatch: true,
                   customProperties: [
-                    {
-                      properties: 'presentclass',
-                    },
-                    {
-                      properties: 'presentgrade',
-                    },
+                    { properties: 'presentclass' },
+                    { properties: 'presentgrade' },
                   ],
                   eventsMapping: [
-                    {
-                      from: 'ABC Searched',
-                      to: 'WatchVideo',
-                    },
-                    {
-                      from: 'ABC Searched',
-                      to: 'Signup',
-                    },
-                    {
-                      from: 'User Signup',
-                      to: 'Signup',
-                    },
-                    {
-                      from: 'User Created',
-                      to: 'Signup',
-                    },
+                    { from: 'ABC Searched', to: 'WatchVideo' },
+                    { from: 'ABC Searched', to: 'Signup' },
+                    { from: 'User Signup', to: 'Signup' },
+                    { from: 'User Created', to: 'Signup' },
                   ],
                 },
                 Enabled: true,
@@ -150,20 +119,10 @@ export const data = [
                     db: '19950715',
                     lastname: 'Rudderlabs',
                     firstName: 'Test',
-                    address: {
-                      city: 'Kolkata',
-                      state: 'WB',
-                      zip: '700114',
-                      country: 'IN',
-                    },
+                    address: { city: 'Kolkata', state: 'WB', zip: '700114', country: 'IN' },
                   },
-                  device: {
-                    advertisingId: 'abc123',
-                  },
-                  library: {
-                    name: 'rudder-sdk-ruby-sync',
-                    version: '1.0.6',
-                  },
+                  device: { advertisingId: 'abc123' },
+                  library: { name: 'rudder-sdk-ruby-sync', version: '1.0.6' },
                 },
                 messageId: '7208bbb6-2c4e-45bb-bf5b-ad426f3593e9',
                 timestamp: '2020-08-14T05:30:30.118Z',
@@ -204,14 +163,9 @@ export const data = [
                   checkout_id: 'fksdjfsdjfisjf9sdfjsd9f',
                 },
                 anonymousId: '50be5c78-6c3f-4b60-be84-97805a316fb1',
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
               },
-              metadata: {
-                destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
-                jobId: 2,
-              },
+              metadata: { destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq', jobId: 2, userId: 'u1' },
               destination: {
                 DestinationDefinition: { Config: { cdkV2Enabled: true } },
                 ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
@@ -226,30 +180,14 @@ export const data = [
                   deduplicationKey: 'messageId',
                   enhancedMatch: true,
                   customProperties: [
-                    {
-                      properties: 'presentclass',
-                    },
-                    {
-                      properties: 'presentgrade',
-                    },
+                    { properties: 'presentclass' },
+                    { properties: 'presentgrade' },
                   ],
                   eventsMapping: [
-                    {
-                      from: 'ABC Searched',
-                      to: 'WatchVideo',
-                    },
-                    {
-                      from: 'ABC Searched',
-                      to: 'Signup',
-                    },
-                    {
-                      from: 'User Signup',
-                      to: 'Signup',
-                    },
-                    {
-                      from: 'User Created',
-                      to: 'Signup',
-                    },
+                    { from: 'ABC Searched', to: 'WatchVideo' },
+                    { from: 'ABC Searched', to: 'Signup' },
+                    { from: 'User Signup', to: 'Signup' },
+                    { from: 'User Created', to: 'Signup' },
                   ],
                 },
                 Enabled: true,
@@ -273,20 +211,10 @@ export const data = [
                     db: '19950715',
                     lastname: 'Rudderlabs',
                     firstName: 'Test',
-                    address: {
-                      city: 'Kolkata',
-                      state: 'WB',
-                      zip: '700114',
-                      country: 'IN',
-                    },
+                    address: { city: 'Kolkata', state: 'WB', zip: '700114', country: 'IN' },
                   },
-                  device: {
-                    advertisingId: 'abc123',
-                  },
-                  library: {
-                    name: 'rudder-sdk-ruby-sync',
-                    version: '1.0.6',
-                  },
+                  device: { advertisingId: 'abc123' },
+                  library: { name: 'rudder-sdk-ruby-sync', version: '1.0.6' },
                 },
                 messageId: '7208bbb6-2c4e-45bb-bf5b-ad426f3593e9',
                 timestamp: '2020-08-14T05:30:30.118Z',
@@ -308,14 +236,9 @@ export const data = [
                   checkout_id: 'fksdjfsdjfisjf9sdfjsd9f',
                 },
                 anonymousId: '50be5c78-6c3f-4b60-be84-97805a316fb1',
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
               },
-              metadata: {
-                destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
-                jobId: 3,
-              },
+              metadata: { destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq', jobId: 3, userId: 'u1' },
               destination: {
                 DestinationDefinition: { Config: { cdkV2Enabled: true } },
                 ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
@@ -330,30 +253,14 @@ export const data = [
                   deduplicationKey: 'messageId',
                   enhancedMatch: true,
                   customProperties: [
-                    {
-                      properties: 'presentclass',
-                    },
-                    {
-                      properties: 'presentgrade',
-                    },
+                    { properties: 'presentclass' },
+                    { properties: 'presentgrade' },
                   ],
                   eventsMapping: [
-                    {
-                      from: 'ABC Searched',
-                      to: 'WatchVideo',
-                    },
-                    {
-                      from: 'ABC Searched',
-                      to: 'Signup',
-                    },
-                    {
-                      from: 'User Signup',
-                      to: 'Signup',
-                    },
-                    {
-                      from: 'User Created',
-                      to: 'Signup',
-                    },
+                    { from: 'ABC Searched', to: 'WatchVideo' },
+                    { from: 'ABC Searched', to: 'Signup' },
+                    { from: 'User Signup', to: 'Signup' },
+                    { from: 'User Created', to: 'Signup' },
                   ],
                 },
                 Enabled: true,
@@ -377,20 +284,10 @@ export const data = [
                     db: '19950715',
                     lastname: 'Rudderlabs',
                     firstName: 'Test',
-                    address: {
-                      city: 'Kolkata',
-                      state: 'WB',
-                      zip: '700114',
-                      country: 'IN',
-                    },
+                    address: { city: 'Kolkata', state: 'WB', zip: '700114', country: 'IN' },
                   },
-                  device: {
-                    advertisingId: 'abc123',
-                  },
-                  library: {
-                    name: 'rudder-sdk-ruby-sync',
-                    version: '1.0.6',
-                  },
+                  device: { advertisingId: 'abc123' },
+                  library: { name: 'rudder-sdk-ruby-sync', version: '1.0.6' },
                 },
                 messageId: '7208bbb6-2c4e-45bb-bf5b-ad426f3593e9',
                 timestamp: '2020-08-14T05:30:30.118Z',
@@ -431,14 +328,9 @@ export const data = [
                   checkout_id: 'fksdjfsdjfisjf9sdfjsd9f',
                 },
                 anonymousId: '50be5c78-6c3f-4b60-be84-97805a316fb1',
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
               },
-              metadata: {
-                destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
-                jobId: 4,
-              },
+              metadata: { destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq', jobId: 4, userId: 'u1' },
               destination: {
                 DestinationDefinition: { Config: { cdkV2Enabled: true } },
                 ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
@@ -453,30 +345,14 @@ export const data = [
                   deduplicationKey: 'messageId',
                   enhancedMatch: true,
                   customProperties: [
-                    {
-                      properties: 'presentclass',
-                    },
-                    {
-                      properties: 'presentgrade',
-                    },
+                    { properties: 'presentclass' },
+                    { properties: 'presentgrade' },
                   ],
                   eventsMapping: [
-                    {
-                      from: 'ABC Searched',
-                      to: 'WatchVideo',
-                    },
-                    {
-                      from: 'ABC Searched',
-                      to: 'Signup',
-                    },
-                    {
-                      from: 'User Signup',
-                      to: 'Signup',
-                    },
-                    {
-                      from: 'User Created',
-                      to: 'Signup',
-                    },
+                    { from: 'ABC Searched', to: 'WatchVideo' },
+                    { from: 'ABC Searched', to: 'Signup' },
+                    { from: 'User Signup', to: 'Signup' },
+                    { from: 'User Created', to: 'Signup' },
                   ],
                 },
                 Enabled: true,
@@ -500,20 +376,10 @@ export const data = [
                     db: '19950715',
                     lastname: 'Rudderlabs',
                     firstName: 'Test',
-                    address: {
-                      city: 'Kolkata',
-                      state: 'WB',
-                      zip: '700114',
-                      country: 'IN',
-                    },
+                    address: { city: 'Kolkata', state: 'WB', zip: '700114', country: 'IN' },
                   },
-                  device: {
-                    advertisingId: 'abc123',
-                  },
-                  library: {
-                    name: 'rudder-sdk-ruby-sync',
-                    version: '1.0.6',
-                  },
+                  device: { advertisingId: 'abc123' },
+                  library: { name: 'rudder-sdk-ruby-sync', version: '1.0.6' },
                 },
                 messageId: '7208bbb6-2c4e-45bb-bf5b-ad426f3593e9',
                 timestamp: '2020-08-14T05:30:30.118Z',
@@ -554,14 +420,9 @@ export const data = [
                   checkout_id: 'fksdjfsdjfisjf9sdfjsd9f',
                 },
                 anonymousId: '50be5c78-6c3f-4b60-be84-97805a316fb1',
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
               },
-              metadata: {
-                destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
-                jobId: 5,
-              },
+              metadata: { destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq', jobId: 5, userId: 'u1' },
               destination: {
                 DestinationDefinition: { Config: { cdkV2Enabled: true } },
                 ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
@@ -576,30 +437,14 @@ export const data = [
                   deduplicationKey: 'messageId',
                   enhancedMatch: true,
                   customProperties: [
-                    {
-                      properties: 'presentclass',
-                    },
-                    {
-                      properties: 'presentgrade',
-                    },
+                    { properties: 'presentclass' },
+                    { properties: 'presentgrade' },
                   ],
                   eventsMapping: [
-                    {
-                      from: 'ABC Searched',
-                      to: 'WatchVideo',
-                    },
-                    {
-                      from: 'ABC Searched',
-                      to: 'Signup',
-                    },
-                    {
-                      from: 'User Signup',
-                      to: 'Signup',
-                    },
-                    {
-                      from: 'User Created',
-                      to: 'Signup',
-                    },
+                    { from: 'ABC Searched', to: 'WatchVideo' },
+                    { from: 'ABC Searched', to: 'Signup' },
+                    { from: 'User Signup', to: 'Signup' },
+                    { from: 'User Created', to: 'Signup' },
                   ],
                 },
                 Enabled: true,
@@ -623,20 +468,10 @@ export const data = [
                     db: '19950715',
                     lastname: 'Rudderlabs',
                     firstName: 'Test',
-                    address: {
-                      city: 'Kolkata',
-                      state: 'WB',
-                      zip: '700114',
-                      country: 'IN',
-                    },
+                    address: { city: 'Kolkata', state: 'WB', zip: '700114', country: 'IN' },
                   },
-                  device: {
-                    advertisingId: 'abc123',
-                  },
-                  library: {
-                    name: 'rudder-sdk-ruby-sync',
-                    version: '1.0.6',
-                  },
+                  device: { advertisingId: 'abc123' },
+                  library: { name: 'rudder-sdk-ruby-sync', version: '1.0.6' },
                 },
                 messageId: '7208bbb6-2c4e-45bb-bf5b-ad426f3593e9',
                 timestamp: '2020-08-14T05:30:30.118Z',
@@ -677,14 +512,9 @@ export const data = [
                   checkout_id: 'fksdjfsdjfisjf9sdfjsd9f',
                 },
                 anonymousId: '50be5c78-6c3f-4b60-be84-97805a316fb1',
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
               },
-              metadata: {
-                destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
-                jobId: 6,
-              },
+              metadata: { destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq', jobId: 6, userId: 'u1' },
               destination: {
                 DestinationDefinition: { Config: { cdkV2Enabled: true } },
                 ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
@@ -699,30 +529,14 @@ export const data = [
                   deduplicationKey: 'messageId',
                   enhancedMatch: true,
                   customProperties: [
-                    {
-                      properties: 'presentclass',
-                    },
-                    {
-                      properties: 'presentgrade',
-                    },
+                    { properties: 'presentclass' },
+                    { properties: 'presentgrade' },
                   ],
                   eventsMapping: [
-                    {
-                      from: 'ABC Searched',
-                      to: 'WatchVideo',
-                    },
-                    {
-                      from: 'ABC Searched',
-                      to: 'Signup',
-                    },
-                    {
-                      from: 'User Signup',
-                      to: 'Signup',
-                    },
-                    {
-                      from: 'User Created',
-                      to: 'Signup',
-                    },
+                    { from: 'ABC Searched', to: 'WatchVideo' },
+                    { from: 'ABC Searched', to: 'Signup' },
+                    { from: 'User Signup', to: 'Signup' },
+                    { from: 'User Created', to: 'Signup' },
                   ],
                 },
                 Enabled: true,
@@ -736,9 +550,7 @@ export const data = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://ct.pinterest.com/events/v3',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json' },
                 params: {},
                 body: {
                   JSON: {
@@ -769,14 +581,8 @@ export const data = [
                       num_items: 3,
                       content_ids: ['507f1f77bcf86cd799439011', '505bd76785ebb509fc183733'],
                       contents: [
-                        {
-                          quantity: 1,
-                          item_price: '19',
-                        },
-                        {
-                          quantity: 2,
-                          item_price: '3',
-                        },
+                        { quantity: 1, item_price: '19' },
+                        { quantity: 2, item_price: '3' },
                       ],
                     },
                   },
@@ -786,10 +592,7 @@ export const data = [
                 },
                 files: {},
               },
-              metadata: {
-                destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
-                jobId: 7,
-              },
+              metadata: { destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq', jobId: 7, userId: 'u1' },
               destination: {
                 DestinationDefinition: { Config: { cdkV2Enabled: true } },
                 ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
@@ -804,30 +607,14 @@ export const data = [
                   deduplicationKey: 'messageId',
                   enhancedMatch: true,
                   customProperties: [
-                    {
-                      properties: 'presentclass',
-                    },
-                    {
-                      properties: 'presentgrade',
-                    },
+                    { properties: 'presentclass' },
+                    { properties: 'presentgrade' },
                   ],
                   eventsMapping: [
-                    {
-                      from: 'ABC Searched',
-                      to: 'WatchVideo',
-                    },
-                    {
-                      from: 'ABC Searched',
-                      to: 'Signup',
-                    },
-                    {
-                      from: 'User Signup',
-                      to: 'Signup',
-                    },
-                    {
-                      from: 'User Created',
-                      to: 'Signup',
-                    },
+                    { from: 'ABC Searched', to: 'WatchVideo' },
+                    { from: 'ABC Searched', to: 'Signup' },
+                    { from: 'User Signup', to: 'Signup' },
+                    { from: 'User Created', to: 'Signup' },
                   ],
                 },
                 Enabled: true,
@@ -851,9 +638,7 @@ export const data = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://ct.pinterest.com/events/v3',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json' },
                 params: {},
                 body: {
                   JSON: {
@@ -890,10 +675,16 @@ export const data = [
                           content_ids: ['507f1f77bcf86cd799439011', '505bd76785ebb509fc183733'],
                           contents: [
                             {
+                              id: '507f1f77bcf86cd799439011',
+                              item_category: 'Games',
+                              item_name: 'Monopoly: 3rd Edition',
                               quantity: 1,
                               item_price: '19',
                             },
                             {
+                              id: '505bd76785ebb509fc183733',
+                              item_category: 'Games',
+                              item_name: 'Uno Card Game',
                               quantity: 2,
                               item_price: '3',
                             },
@@ -932,10 +723,16 @@ export const data = [
                           content_ids: ['507f1f77bcf86cd799439011', '505bd76785ebb509fc183733'],
                           contents: [
                             {
+                              id: '507f1f77bcf86cd799439011',
+                              item_category: 'Games',
+                              item_name: 'Monopoly: 3rd Edition',
                               quantity: 1,
                               item_price: '19',
                             },
                             {
+                              id: '505bd76785ebb509fc183733',
+                              item_category: 'Games',
+                              item_name: 'Uno Card Game',
                               quantity: 2,
                               item_price: '3',
                             },
@@ -973,10 +770,16 @@ export const data = [
                           content_ids: ['507f1f77bcf86cd799439011', '505bd76785ebb509fc183733'],
                           contents: [
                             {
+                              id: '507f1f77bcf86cd799439011',
+                              item_category: 'Games',
+                              item_name: 'Monopoly: 3rd Edition',
                               quantity: 1,
                               item_price: '19',
                             },
                             {
+                              id: '505bd76785ebb509fc183733',
+                              item_category: 'Games',
+                              item_name: 'Uno Card Game',
                               quantity: 2,
                               item_price: '3',
                             },
@@ -1012,12 +815,7 @@ export const data = [
                           order_id: '50314b8e9bcf000000000000',
                           num_items: 2,
                           content_ids: ['123'],
-                          contents: [
-                            {
-                              quantity: 2,
-                              item_price: '25',
-                            },
-                          ],
+                          contents: [{ id: '123', quantity: 2, item_price: '25' }],
                         },
                       },
                       {
@@ -1051,10 +849,16 @@ export const data = [
                           content_ids: ['507f1f77bcf86cd799439011', '505bd76785ebb509fc183733'],
                           contents: [
                             {
+                              id: '507f1f77bcf86cd799439011',
+                              item_category: 'Games',
+                              item_name: 'Monopoly: 3rd Edition',
                               quantity: 1,
                               item_price: '19',
                             },
                             {
+                              id: '505bd76785ebb509fc183733',
+                              item_category: 'Games',
+                              item_name: 'Uno Card Game',
                               quantity: 2,
                               item_price: '3',
                             },
@@ -1092,10 +896,16 @@ export const data = [
                           content_ids: ['507f1f77bcf86cd799439011', '505bd76785ebb509fc183733'],
                           contents: [
                             {
+                              id: '507f1f77bcf86cd799439011',
+                              item_category: 'Games',
+                              item_name: 'Monopoly: 3rd Edition',
                               quantity: 1,
                               item_price: '19',
                             },
                             {
+                              id: '505bd76785ebb509fc183733',
+                              item_category: 'Games',
+                              item_name: 'Uno Card Game',
                               quantity: 2,
                               item_price: '3',
                             },
@@ -1132,14 +942,8 @@ export const data = [
                           num_items: 3,
                           content_ids: ['507f1f77bcf86cd799439011', '505bd76785ebb509fc183733'],
                           contents: [
-                            {
-                              quantity: 1,
-                              item_price: '19',
-                            },
-                            {
-                              quantity: 2,
-                              item_price: '3',
-                            },
+                            { quantity: 1, item_price: '19' },
+                            { quantity: 2, item_price: '3' },
                           ],
                         },
                       },
@@ -1152,30 +956,12 @@ export const data = [
                 files: {},
               },
               metadata: [
-                {
-                  destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
-                  jobId: 1,
-                },
-                {
-                  destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
-                  jobId: 2,
-                },
-                {
-                  destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
-                  jobId: 3,
-                },
-                {
-                  destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
-                  jobId: 4,
-                },
-                {
-                  destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
-                  jobId: 6,
-                },
-                {
-                  destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
-                  jobId: 7,
-                },
+                { destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq', jobId: 1, userId: 'u1' },
+                { destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq', jobId: 2, userId: 'u1' },
+                { destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq', jobId: 3, userId: 'u1' },
+                { destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq', jobId: 4, userId: 'u1' },
+                { destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq', jobId: 6, userId: 'u1' },
+                { destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq', jobId: 7, userId: 'u1' },
               ],
               batched: true,
               statusCode: 200,
@@ -1193,30 +979,14 @@ export const data = [
                   deduplicationKey: 'messageId',
                   enhancedMatch: true,
                   customProperties: [
-                    {
-                      properties: 'presentclass',
-                    },
-                    {
-                      properties: 'presentgrade',
-                    },
+                    { properties: 'presentclass' },
+                    { properties: 'presentgrade' },
                   ],
                   eventsMapping: [
-                    {
-                      from: 'ABC Searched',
-                      to: 'WatchVideo',
-                    },
-                    {
-                      from: 'ABC Searched',
-                      to: 'Signup',
-                    },
-                    {
-                      from: 'User Signup',
-                      to: 'Signup',
-                    },
-                    {
-                      from: 'User Created',
-                      to: 'Signup',
-                    },
+                    { from: 'ABC Searched', to: 'WatchVideo' },
+                    { from: 'ABC Searched', to: 'Signup' },
+                    { from: 'User Signup', to: 'Signup' },
+                    { from: 'User Created', to: 'Signup' },
                   ],
                 },
                 Enabled: true,
@@ -1224,12 +994,7 @@ export const data = [
               },
             },
             {
-              metadata: [
-                {
-                  destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
-                  jobId: 5,
-                },
-              ],
+              metadata: [{ destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq', jobId: 5, userId: 'u1' }],
               statTags: {
                 destType: 'PINTEREST_TAG',
                 feature: 'router',
@@ -1255,30 +1020,14 @@ export const data = [
                   deduplicationKey: 'messageId',
                   enhancedMatch: true,
                   customProperties: [
-                    {
-                      properties: 'presentclass',
-                    },
-                    {
-                      properties: 'presentgrade',
-                    },
+                    { properties: 'presentclass' },
+                    { properties: 'presentgrade' },
                   ],
                   eventsMapping: [
-                    {
-                      from: 'ABC Searched',
-                      to: 'WatchVideo',
-                    },
-                    {
-                      from: 'ABC Searched',
-                      to: 'Signup',
-                    },
-                    {
-                      from: 'User Signup',
-                      to: 'Signup',
-                    },
-                    {
-                      from: 'User Created',
-                      to: 'Signup',
-                    },
+                    { from: 'ABC Searched', to: 'WatchVideo' },
+                    { from: 'ABC Searched', to: 'Signup' },
+                    { from: 'User Signup', to: 'Signup' },
+                    { from: 'User Created', to: 'Signup' },
                   ],
                 },
                 Enabled: true,
@@ -1292,7 +1041,7 @@ export const data = [
   },
   {
     destType: 'pinterest_tag',
-    description: 'Test 0',
+    description: 'Test 1',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -1317,20 +1066,10 @@ export const data = [
                     db: '19950715',
                     lastname: 'Rudderlabs',
                     firstName: 'Test',
-                    address: {
-                      city: 'Kolkata',
-                      state: 'WB',
-                      zip: '700114',
-                      country: 'IN',
-                    },
+                    address: { city: 'Kolkata', state: 'WB', zip: '700114', country: 'IN' },
                   },
-                  device: {
-                    advertisingId: 'abc123',
-                  },
-                  library: {
-                    name: 'rudder-sdk-ruby-sync',
-                    version: '1.0.6',
-                  },
+                  device: { advertisingId: 'abc123' },
+                  library: { name: 'rudder-sdk-ruby-sync', version: '1.0.6' },
                 },
                 messageId: '7208bbb6-2c4e-45bb-bf5b-ad426f3593e9',
                 timestamp: '2020-08-14T05:30:30.118Z',
@@ -1372,14 +1111,9 @@ export const data = [
                   checkout_id: 'fksdjfsdjfisjf9sdfjsd9f',
                 },
                 anonymousId: '50be5c78-6c3f-4b60-be84-97805a316fb1',
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
               },
-              metadata: {
-                destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
-                jobId: 8,
-              },
+              metadata: { destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq', jobId: 8, userId: 'u1' },
               destination: {
                 DestinationDefinition: { Config: { cdkV2Enabled: true } },
                 ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
@@ -1396,30 +1130,14 @@ export const data = [
                   deduplicationKey: 'messageId',
                   enhancedMatch: true,
                   customProperties: [
-                    {
-                      properties: 'presentclass',
-                    },
-                    {
-                      properties: 'presentgrade',
-                    },
+                    { properties: 'presentclass' },
+                    { properties: 'presentgrade' },
                   ],
                   eventsMapping: [
-                    {
-                      from: 'ABC Searched',
-                      to: 'WatchVideo',
-                    },
-                    {
-                      from: 'ABC Searched',
-                      to: 'Signup',
-                    },
-                    {
-                      from: 'User Signup',
-                      to: 'Signup',
-                    },
-                    {
-                      from: 'User Created',
-                      to: 'Signup',
-                    },
+                    { from: 'ABC Searched', to: 'WatchVideo' },
+                    { from: 'ABC Searched', to: 'Signup' },
+                    { from: 'User Signup', to: 'Signup' },
+                    { from: 'User Created', to: 'Signup' },
                   ],
                 },
                 Enabled: true,
@@ -1443,20 +1161,10 @@ export const data = [
                     db: '19950715',
                     lastname: 'Rudderlabs',
                     firstName: 'Test',
-                    address: {
-                      city: 'Kolkata',
-                      state: 'WB',
-                      zip: '700114',
-                      country: 'IN',
-                    },
+                    address: { city: 'Kolkata', state: 'WB', zip: '700114', country: 'IN' },
                   },
-                  device: {
-                    advertisingId: 'abc123',
-                  },
-                  library: {
-                    name: 'rudder-sdk-ruby-sync',
-                    version: '1.0.6',
-                  },
+                  device: { advertisingId: 'abc123' },
+                  library: { name: 'rudder-sdk-ruby-sync', version: '1.0.6' },
                 },
                 messageId: '7208bbb6-2c4e-45bb-bf5b-ad426f3593e9',
                 timestamp: '2020-08-14T05:30:30.118Z',
@@ -1497,14 +1205,9 @@ export const data = [
                   checkout_id: 'fksdjfsdjfisjf9sdfjsd9f',
                 },
                 anonymousId: '50be5c78-6c3f-4b60-be84-97805a316fb1',
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
               },
-              metadata: {
-                destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
-                jobId: 9,
-              },
+              metadata: { destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq', jobId: 9, userId: 'u1' },
               destination: {
                 DestinationDefinition: { Config: { cdkV2Enabled: true } },
                 ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
@@ -1521,30 +1224,14 @@ export const data = [
                   deduplicationKey: 'messageId',
                   enhancedMatch: true,
                   customProperties: [
-                    {
-                      properties: 'presentclass',
-                    },
-                    {
-                      properties: 'presentgrade',
-                    },
+                    { properties: 'presentclass' },
+                    { properties: 'presentgrade' },
                   ],
                   eventsMapping: [
-                    {
-                      from: 'ABC Searched',
-                      to: 'WatchVideo',
-                    },
-                    {
-                      from: 'ABC Searched',
-                      to: 'Signup',
-                    },
-                    {
-                      from: 'User Signup',
-                      to: 'Signup',
-                    },
-                    {
-                      from: 'User Created',
-                      to: 'Signup',
-                    },
+                    { from: 'ABC Searched', to: 'WatchVideo' },
+                    { from: 'ABC Searched', to: 'Signup' },
+                    { from: 'User Signup', to: 'Signup' },
+                    { from: 'User Created', to: 'Signup' },
                   ],
                 },
                 Enabled: true,
@@ -1568,20 +1255,10 @@ export const data = [
                     db: '19950715',
                     lastname: 'Rudderlabs',
                     firstName: 'Test',
-                    address: {
-                      city: 'Kolkata',
-                      state: 'WB',
-                      zip: '700114',
-                      country: 'IN',
-                    },
+                    address: { city: 'Kolkata', state: 'WB', zip: '700114', country: 'IN' },
                   },
-                  device: {
-                    advertisingId: 'abc123',
-                  },
-                  library: {
-                    name: 'rudder-sdk-ruby-sync',
-                    version: '1.0.6',
-                  },
+                  device: { advertisingId: 'abc123' },
+                  library: { name: 'rudder-sdk-ruby-sync', version: '1.0.6' },
                 },
                 messageId: '7208bbb6-2c4e-45bb-bf5b-ad426f3593e9',
                 timestamp: '2020-08-14T05:30:30.118Z',
@@ -1622,14 +1299,9 @@ export const data = [
                   checkout_id: 'fksdjfsdjfisjf9sdfjsd9f',
                 },
                 anonymousId: '50be5c78-6c3f-4b60-be84-97805a316fb1',
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
               },
-              metadata: {
-                destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
-                jobId: 10,
-              },
+              metadata: { destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq', jobId: 10, userId: 'u1' },
               destination: {
                 DestinationDefinition: { Config: { cdkV2Enabled: true } },
                 ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
@@ -1647,30 +1319,14 @@ export const data = [
                   enhancedMatch: true,
                   sendAsCustomEvent: true,
                   customProperties: [
-                    {
-                      properties: 'presentclass',
-                    },
-                    {
-                      properties: 'presentgrade',
-                    },
+                    { properties: 'presentclass' },
+                    { properties: 'presentgrade' },
                   ],
                   eventsMapping: [
-                    {
-                      from: 'ABC Searched',
-                      to: 'WatchVideo',
-                    },
-                    {
-                      from: 'ABC Searched',
-                      to: 'Signup',
-                    },
-                    {
-                      from: 'User Signup',
-                      to: 'Signup',
-                    },
-                    {
-                      from: 'User Created',
-                      to: 'Signup',
-                    },
+                    { from: 'ABC Searched', to: 'WatchVideo' },
+                    { from: 'ABC Searched', to: 'Signup' },
+                    { from: 'User Signup', to: 'Signup' },
+                    { from: 'User Created', to: 'Signup' },
                   ],
                 },
                 Enabled: true,
@@ -1733,10 +1389,16 @@ export const data = [
                           content_ids: ['507f1f77bcf86cd799439011', '505bd76785ebb509fc183733'],
                           contents: [
                             {
+                              id: '507f1f77bcf86cd799439011',
+                              item_category: 'Games',
+                              item_name: 'Monopoly: 3rd Edition',
                               quantity: 1,
                               item_price: '19',
                             },
                             {
+                              id: '505bd76785ebb509fc183733',
+                              item_category: 'Games',
+                              item_name: 'Uno Card Game',
                               quantity: 2,
                               item_price: '3',
                             },
@@ -1774,10 +1436,16 @@ export const data = [
                           content_ids: ['507f1f77bcf86cd799439011', '505bd76785ebb509fc183733'],
                           contents: [
                             {
+                              id: '507f1f77bcf86cd799439011',
+                              item_category: 'Games',
+                              item_name: 'Monopoly: 3rd Edition',
                               quantity: 1,
                               item_price: '19',
                             },
                             {
+                              id: '505bd76785ebb509fc183733',
+                              item_category: 'Games',
+                              item_name: 'Uno Card Game',
                               quantity: 2,
                               item_price: '3',
                             },
@@ -1814,10 +1482,16 @@ export const data = [
                           content_ids: ['507f1f77bcf86cd799439011', '505bd76785ebb509fc183733'],
                           contents: [
                             {
+                              id: '507f1f77bcf86cd799439011',
+                              item_category: 'Games',
+                              item_name: 'Monopoly: 3rd Edition',
                               quantity: 1,
                               item_price: '19',
                             },
                             {
+                              id: '505bd76785ebb509fc183733',
+                              item_category: 'Games',
+                              item_name: 'Uno Card Game',
                               quantity: 2,
                               item_price: '3',
                             },
@@ -1854,10 +1528,16 @@ export const data = [
                           content_ids: ['507f1f77bcf86cd799439011', '505bd76785ebb509fc183733'],
                           contents: [
                             {
+                              id: '507f1f77bcf86cd799439011',
+                              item_category: 'Games',
+                              item_name: 'Monopoly: 3rd Edition',
                               quantity: 1,
                               item_price: '19',
                             },
                             {
+                              id: '505bd76785ebb509fc183733',
+                              item_category: 'Games',
+                              item_name: 'Uno Card Game',
                               quantity: 2,
                               item_price: '3',
                             },
@@ -1873,18 +1553,9 @@ export const data = [
                 files: {},
               },
               metadata: [
-                {
-                  destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
-                  jobId: 8,
-                },
-                {
-                  destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
-                  jobId: 9,
-                },
-                {
-                  destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
-                  jobId: 10,
-                },
+                { destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq', jobId: 8, userId: 'u1' },
+                { destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq', jobId: 9, userId: 'u1' },
+                { destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq', jobId: 10, userId: 'u1' },
               ],
               batched: true,
               statusCode: 200,
@@ -1904,30 +1575,14 @@ export const data = [
                   deduplicationKey: 'messageId',
                   enhancedMatch: true,
                   customProperties: [
-                    {
-                      properties: 'presentclass',
-                    },
-                    {
-                      properties: 'presentgrade',
-                    },
+                    { properties: 'presentclass' },
+                    { properties: 'presentgrade' },
                   ],
                   eventsMapping: [
-                    {
-                      from: 'ABC Searched',
-                      to: 'WatchVideo',
-                    },
-                    {
-                      from: 'ABC Searched',
-                      to: 'Signup',
-                    },
-                    {
-                      from: 'User Signup',
-                      to: 'Signup',
-                    },
-                    {
-                      from: 'User Created',
-                      to: 'Signup',
-                    },
+                    { from: 'ABC Searched', to: 'WatchVideo' },
+                    { from: 'ABC Searched', to: 'Signup' },
+                    { from: 'User Signup', to: 'Signup' },
+                    { from: 'User Created', to: 'Signup' },
                   ],
                 },
                 Enabled: true,
@@ -1941,7 +1596,7 @@ export const data = [
   },
   {
     destType: 'pinterest_tag',
-    description: 'Test 0',
+    description: 'Test 2',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -1966,20 +1621,10 @@ export const data = [
                     db: '19950715',
                     lastname: 'Rudderlabs',
                     firstName: 'Test',
-                    address: {
-                      city: 'Kolkata',
-                      state: 'WB',
-                      zip: '700114',
-                      country: 'IN',
-                    },
+                    address: { city: 'Kolkata', state: 'WB', zip: '700114', country: 'IN' },
                   },
-                  device: {
-                    advertisingId: 'abc123',
-                  },
-                  library: {
-                    name: 'rudder-sdk-ruby-sync',
-                    version: '1.0.6',
-                  },
+                  device: { advertisingId: 'abc123' },
+                  library: { name: 'rudder-sdk-ruby-sync', version: '1.0.6' },
                 },
                 messageId: '7208bbb6-2c4e-45bb-bf5b-ad426f3593e9',
                 timestamp: '2020-08-14T05:30:30.118Z',
@@ -2020,14 +1665,9 @@ export const data = [
                   checkout_id: 'fksdjfsdjfisjf9sdfjsd9f',
                 },
                 anonymousId: '50be5c78-6c3f-4b60-be84-97805a316fb1',
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
               },
-              metadata: {
-                destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
-                jobId: 5,
-              },
+              metadata: { destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq', jobId: 5, userId: 'u1' },
               destination: {
                 DestinationDefinition: { Config: { cdkV2Enabled: true } },
                 ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
@@ -2042,30 +1682,14 @@ export const data = [
                   deduplicationKey: 'messageId',
                   enhancedMatch: true,
                   customProperties: [
-                    {
-                      properties: 'presentclass',
-                    },
-                    {
-                      properties: 'presentgrade',
-                    },
+                    { properties: 'presentclass' },
+                    { properties: 'presentgrade' },
                   ],
                   eventsMapping: [
-                    {
-                      from: 'ABC Searched',
-                      to: 'Watch Video',
-                    },
-                    {
-                      from: 'ABC Searched',
-                      to: 'Signup',
-                    },
-                    {
-                      from: 'User Signup',
-                      to: 'Signup',
-                    },
-                    {
-                      from: 'User Created',
-                      to: 'Signup',
-                    },
+                    { from: 'ABC Searched', to: 'Watch Video' },
+                    { from: 'ABC Searched', to: 'Signup' },
+                    { from: 'User Signup', to: 'Signup' },
+                    { from: 'User Created', to: 'Signup' },
                   ],
                 },
                 Enabled: true,
@@ -2084,12 +1708,7 @@ export const data = [
         body: {
           output: [
             {
-              metadata: [
-                {
-                  destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
-                  jobId: 5,
-                },
-              ],
+              metadata: [{ destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq', jobId: 5, userId: 'u1' }],
               batched: false,
               statusCode: 400,
               error: 'message type identify is not supported',
@@ -2115,30 +1734,14 @@ export const data = [
                   deduplicationKey: 'messageId',
                   enhancedMatch: true,
                   customProperties: [
-                    {
-                      properties: 'presentclass',
-                    },
-                    {
-                      properties: 'presentgrade',
-                    },
+                    { properties: 'presentclass' },
+                    { properties: 'presentgrade' },
                   ],
                   eventsMapping: [
-                    {
-                      from: 'ABC Searched',
-                      to: 'Watch Video',
-                    },
-                    {
-                      from: 'ABC Searched',
-                      to: 'Signup',
-                    },
-                    {
-                      from: 'User Signup',
-                      to: 'Signup',
-                    },
-                    {
-                      from: 'User Created',
-                      to: 'Signup',
-                    },
+                    { from: 'ABC Searched', to: 'Watch Video' },
+                    { from: 'ABC Searched', to: 'Signup' },
+                    { from: 'User Signup', to: 'Signup' },
+                    { from: 'User Created', to: 'Signup' },
                   ],
                 },
                 Enabled: true,

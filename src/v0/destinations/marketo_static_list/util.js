@@ -1,4 +1,5 @@
-const { InstrumentationError } = require('../../util/errorTypes');
+/* eslint-disable unicorn/consistent-destructuring */
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
 
 /**
  * Fetches the ids from the array of objects

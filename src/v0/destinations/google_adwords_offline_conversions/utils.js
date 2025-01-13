@@ -1,6 +1,12 @@
 const sha256 = require('sha256');
+const SqlString = require('sqlstring');
+const isString = require('lodash/isString');
 const { get, set, cloneDeep } = require('lodash');
-const moment = require('moment');
+const {
+  AbortedError,
+  ConfigurationError,
+  InstrumentationError,
+} = require('@rudderstack/integrations-lib');
 const { httpPOST } = require('../../../adapters/network');
 const {
   isHttpStatusSuccess,
@@ -11,8 +17,8 @@ const {
   getFieldValueFromMessage,
   isDefinedAndNotNullAndNotEmpty,
   isDefinedAndNotNull,
-  getAuthErrCategoryFromStCode,
   getAccessToken,
+  getIntegrationsObj,
 } = require('../../util');
 const {
   SEARCH_STREAM,
@@ -22,10 +28,13 @@ const {
   trackAddStoreAddressConversionsMapping,
   trackClickConversionsMapping,
   CLICK_CONVERSION,
+  trackCallConversionsMapping,
+  consentConfigMap,
 } = require('./config');
 const { processAxiosResponse } = require('../../../adapters/utils/networkUtils');
 const Cache = require('../../util/cache');
-const { AbortedError, ConfigurationError, InstrumentationError } = require('../../util/errorTypes');
+const helper = require('./helper');
+const { finaliseConsent, getAuthErrCategory } = require('../../util/googleUtils');
 
 const conversionActionIdCache = new Cache(CONVERSION_ACTION_ID_CACHE_TTL);
 
@@ -46,11 +55,15 @@ const validateDestinationConfig = ({ Config }) => {
  * @param {*} headers
  * @returns
  */
-const getConversionActionId = async (headers, params) => {
+const getConversionActionId = async ({ headers, params, metadata }) => {
   const conversionActionIdKey = sha256(params.event + params.customerId).toString();
   return conversionActionIdCache.get(conversionActionIdKey, async () => {
+    const queryString = SqlString.format(
+      'SELECT conversion_action.id FROM conversion_action WHERE conversion_action.name = ?',
+      [params.event],
+    );
     const data = {
-      query: `SELECT conversion_action.id FROM conversion_action WHERE conversion_action.name = '${params.event}'`,
+      query: queryString,
     };
     const endpoint = SEARCH_STREAM.replace(':customerId', params.customerId);
     const requestOptions = {
@@ -59,16 +72,21 @@ const getConversionActionId = async (headers, params) => {
     let searchStreamResponse = await httpPOST(endpoint, data, requestOptions, {
       destType: 'google_adwords_offline_conversions',
       feature: 'transformation',
+      endpointPath: `/googleAds:searchStream`,
+      requestMethod: 'POST',
+      module: 'dataDelivery',
+      metadata,
     });
     searchStreamResponse = processAxiosResponse(searchStreamResponse);
-    if (!isHttpStatusSuccess(searchStreamResponse.status)) {
+    const { response, status } = searchStreamResponse;
+    if (!isHttpStatusSuccess(status)) {
       throw new AbortedError(
         `[Google Ads Offline Conversions]:: ${JSON.stringify(
-          searchStreamResponse.response,
+          response,
         )} during google_ads_offline_conversions response transformation`,
-        searchStreamResponse.status,
-        searchStreamResponse.response,
-        getAuthErrCategoryFromStCode(get(searchStreamResponse, 'status')),
+        status,
+        response,
+        getAuthErrCategory(searchStreamResponse),
       );
     }
     const conversionAction = get(
@@ -124,17 +142,17 @@ const buildAndGetAddress = (message, hashUserIdentifier) => {
   const address = constructPayload(message, trackAddStoreAddressConversionsMapping);
   if (address.hashed_last_name) {
     address.hashed_last_name = hashUserIdentifier
-      ? sha256(address.hashed_last_name).toString()
+      ? sha256(address.hashed_last_name.trim()).toString()
       : address.hashed_last_name;
   }
   if (address.hashed_first_name) {
     address.hashed_first_name = hashUserIdentifier
-      ? sha256(address.hashed_first_name).toString()
+      ? sha256(address.hashed_first_name.trim()).toString()
       : address.hashed_first_name;
   }
   if (address.hashed_street_address) {
     address.hashed_street_address = hashUserIdentifier
-      ? sha256(address.hashed_street_address).toString()
+      ? sha256(address.hashed_street_address.trim()).toString()
       : address.hashed_street_address;
   }
   return Object.keys(address).length > 0 ? address : null;
@@ -209,6 +227,17 @@ function getExisitingUserIdentifier(userIdentifierInfo, defaultUserIdentifier) {
   return result;
 }
 
+const getCallConversionPayload = (message, Config, eventLevelConsentsData) => {
+  const payload = constructPayload(message, trackCallConversionsMapping);
+  // here conversions[0] should be present because there are some mandatory properties mapped in the mapping json.
+  payload.conversions[0].consent = finaliseConsent(
+    consentConfigMap,
+    eventLevelConsentsData,
+    Config,
+  );
+  return payload;
+};
+
 /**
  * This Function create the add conversion payload
  * and returns the payload
@@ -224,9 +253,7 @@ const getAddConversionPayload = (message, Config) => {
   // transform originalTimestamp to format (yyyy-mm-dd hh:mm:ss+|-hh:mm)
   // e.g 2019-10-14T11:15:18.299Z -> 2019-10-14 16:10:29+0530
   const timestamp = payload.operations.create.transaction_attribute.transaction_date_time;
-  const convertedDateTime = moment(timestamp)
-    .utcOffset(moment(timestamp).utcOffset())
-    .format('YYYY-MM-DD HH:mm:ssZ');
+  const convertedDateTime = helper.formatTimestamp(timestamp);
   payload.operations.create.transaction_attribute.transaction_date_time = convertedDateTime;
   // mapping custom_key that should be predefined in google Ui and mentioned when new job is created
   if (properties.custom_key && properties[properties.custom_key]) {
@@ -244,8 +271,12 @@ const getAddConversionPayload = (message, Config) => {
   const phone = getFieldValueFromMessage(message, 'phone');
 
   const userIdentifierInfo = {
-    email: hashUserIdentifier && isDefinedAndNotNull(email) ? sha256(email).toString() : email,
-    phone: hashUserIdentifier && isDefinedAndNotNull(phone) ? sha256(phone).toString() : phone,
+    email:
+      hashUserIdentifier && isString(email) && isDefinedAndNotNull(email)
+        ? sha256(email.trim()).toString()
+        : email,
+    phone:
+      hashUserIdentifier && isDefinedAndNotNull(phone) ? sha256(phone.trim()).toString() : phone,
     address: buildAndGetAddress(message, hashUserIdentifier),
   };
 
@@ -267,6 +298,10 @@ const getAddConversionPayload = (message, Config) => {
       set(payload, 'operations.create.userIdentifiers[0]', {});
     }
   }
+  // add consent support for store conversions. Note: No event level consent supported.
+  const consentObject = finaliseConsent(consentConfigMap, {}, Config);
+  // create property should be present because there are some mandatory properties mapped in the mapping json.
+  set(payload, 'operations.create.consent', consentObject);
   return payload;
 };
 
@@ -282,7 +317,41 @@ const getStoreConversionPayload = (message, Config, event) => {
   return payload;
 };
 
-const getClickConversionPayloadAndEndpoint = (message, Config, filteredCustomerId) => {
+const hasClickId = (conversion) => {
+  const { gbraid, wbraid, gclid } = conversion;
+  return gclid || wbraid || gbraid;
+};
+const populateUserIdentifier = ({ email, phone, properties, payload, UserIdentifierSource }) => {
+  const copiedPayload = cloneDeep(payload);
+  // userIdentifierSource
+  // if userIdentifierSource doesn't exist in properties
+  // then it is taken from the webapp config
+  if (!properties.userIdentifierSource && UserIdentifierSource !== 'none') {
+    set(
+      copiedPayload,
+      'conversions[0].userIdentifiers[0].userIdentifierSource',
+      UserIdentifierSource,
+    );
+    // one of email or phone must be provided when none of gclid, wbraid and gbraid provided
+  }
+  if (!email && !phone) {
+    if (!hasClickId(copiedPayload.conversions[0])) {
+      throw new InstrumentationError(
+        `Either an email address or a phone number is required for user identification when none of gclid, wbraid, or gbraid is provided.`,
+      );
+    } else {
+      // we are deleting userIdentifiers if any one of gclid, wbraid and gbraid is there but email or phone is not present
+      delete copiedPayload.conversions[0].userIdentifiers;
+    }
+  }
+  return copiedPayload;
+};
+const getClickConversionPayloadAndEndpoint = (
+  message,
+  Config,
+  filteredCustomerId,
+  eventLevelConsent,
+) => {
   const email = getFieldValueFromMessage(message, 'emailOnly');
   const phone = getFieldValueFromMessage(message, 'phone');
   const { hashUserIdentifier, defaultUserIdentifier, UserIdentifierSource, conversionEnvironment } =
@@ -295,7 +364,7 @@ const getClickConversionPayloadAndEndpoint = (message, Config, filteredCustomerI
     updatedClickMapping = removeHashToSha256TypeFromMappingJson(updatedClickMapping);
   }
 
-  const payload = constructPayload(message, updatedClickMapping);
+  let payload = constructPayload(message, updatedClickMapping);
 
   const endpoint = CLICK_CONVERSION.replace(':customerId', filteredCustomerId);
 
@@ -313,24 +382,19 @@ const getClickConversionPayloadAndEndpoint = (message, Config, filteredCustomerI
     set(payload, 'conversions[0].cartData.items', itemList);
   }
 
-  // userIdentifierSource
-  // if userIdentifierSource doesn't exist in properties
-  // then it is taken from the webapp config
-  if (!properties.userIdentifierSource && UserIdentifierSource !== 'none') {
-    set(payload, 'conversions[0].userIdentifiers[0].userIdentifierSource', UserIdentifierSource);
+  payload = populateUserIdentifier({ email, phone, properties, payload, UserIdentifierSource });
 
-    // one of email or phone must be provided
-    if (!email && !phone) {
-      throw new InstrumentationError(`Either of email or phone is required for user identifier`);
-    }
-  }
   // either of email or phone should be passed
   // defaultUserIdentifier depends on the webapp configuration
   // Ref - https://developers.google.com/google-ads/api/rest/reference/rest/v11/customers/uploadClickConversions#ClickConversion
 
   const userIdentifierInfo = {
-    email: hashUserIdentifier && isDefinedAndNotNull(email) ? sha256(email).toString() : email,
-    phone: hashUserIdentifier && isDefinedAndNotNull(phone) ? sha256(phone).toString() : phone,
+    email:
+      hashUserIdentifier && isString(email) && isDefinedAndNotNull(email)
+        ? sha256(email.trim()).toString()
+        : email,
+    phone:
+      hashUserIdentifier && isDefinedAndNotNull(phone) ? sha256(phone.trim()).toString() : phone,
   };
 
   const keyName = getExisitingUserIdentifier(userIdentifierInfo, defaultUserIdentifier);
@@ -354,7 +418,36 @@ const getClickConversionPayloadAndEndpoint = (message, Config, filteredCustomerI
   if (!properties.conversionEnvironment && conversionEnvironment !== 'none') {
     set(payload, 'conversions[0].conversionEnvironment', conversionEnvironment);
   }
+
+  // add consent support for click conversions
+  const consentObject = finaliseConsent(consentConfigMap, eventLevelConsent, Config);
+  // here conversions[0] is expected to be present there are some mandatory properties mapped in the mapping json.
+  set(payload, 'conversions[0].consent', consentObject);
   return { payload, endpoint };
+};
+
+const getConsentsDataFromIntegrationObj = (message) => {
+  const integrationObj = getIntegrationsObj(message, 'GOOGLE_ADWORDS_OFFLINE_CONVERSIONS') || {};
+  return integrationObj?.consents || {};
+};
+
+/**
+ * remove redundant ids
+ * @param {*} conversionCopy
+ */
+const updateConversion = (conversion) => {
+  const conversionCopy = cloneDeep(conversion);
+  if (conversionCopy.gclid) {
+    delete conversionCopy.wbraid;
+    delete conversionCopy.gbraid;
+  }
+  if (conversionCopy.wbraid && conversionCopy.gbraid) {
+    throw new InstrumentationError(`You can't use both wbraid and gbraid.`);
+  }
+  if (conversionCopy.wbraid || conversionCopy.gbraid) {
+    delete conversionCopy.userIdentifiers;
+  }
+  return conversionCopy;
 };
 
 module.exports = {
@@ -367,4 +460,7 @@ module.exports = {
   buildAndGetAddress,
   getClickConversionPayloadAndEndpoint,
   getExisitingUserIdentifier,
+  getConsentsDataFromIntegrationObj,
+  getCallConversionPayload,
+  updateConversion,
 };

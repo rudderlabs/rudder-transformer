@@ -1,0 +1,59 @@
+[
+  {
+    "destKey": "hashedEmail",
+    "sourceKeys": "emailOnly",
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "hashedPhoneNumber",
+    "sourceKeys": "phone",
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "addressInfo.hashedFirstName",
+    "sourceKeys": "firstName",
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "addressInfo.hashedLastName",
+    "sourceKeys": "lastName",
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "addressInfo.hashedStreetAddress",
+    "sourceKeys": "street",
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "addressInfo.city",
+    "sourceKeys": [
+      "traits.city",
+      "traits.address.city",
+      "context.traits.city",
+      "context.traits.address.city"
+    ]
+  },
+  {
+    "destKey": "addressInfo.state",
+    "sourceKeys": [
+      "traits.state",
+      "traits.address.state",
+      "context.traits.state",
+      "context.traits.address.state"
+    ]
+  },
+  {
+    "destKey": "addressInfo.countryCode",
+    "sourceKeys": [
+      "traits.country",
+      "traits.address.country",
+      "context.traits.country",
+      "context.traits.address.country"
+    ]
+  },
+  {
+    "destKey": "addressInfo.postalCode",
+    "sourceKeys": "zipcode",
+    "sourceFromGenericMap": true
+  }
+]

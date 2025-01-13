@@ -1,4 +1,5 @@
 const get = require('get-value');
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const { endpoints } = require('./config');
 const { categoriesList } = require('./data/eventMapping');
@@ -11,8 +12,8 @@ const {
   isAppleFamily,
   simpleProcessRouterDest,
 } = require('../../util');
-const { InstrumentationError } = require('../../util/errorTypes');
 const { JSON_MIME_TYPE } = require('../../util/constant');
+const { getMappedEventNameFromConfig } = require('./utils');
 
 function responseBuilder(payload, message, destination, category) {
   const response = defaultRequestConfig();
@@ -45,17 +46,16 @@ function getCategoryAndName(rudderEventName) {
     let requiredName = null;
     let requiredCategory = null;
     // eslint-disable-next-line array-callback-return, sonarjs/no-ignored-return
-    Object.keys(category.name).find((branchKey) => {
+    Object.keys(category.name).forEach((branchKey) => {
       if (
         typeof branchKey === 'string' &&
         typeof rudderEventName === 'string' &&
-        branchKey.toLowerCase() === rudderEventName.toLowerCase()
+        (branchKey.toLowerCase() === rudderEventName.toLowerCase() ||
+          category.name[branchKey].toLowerCase() === rudderEventName.toLowerCase())
       ) {
         requiredName = category.name[branchKey];
         requiredCategory = category;
-        return true;
       }
-      return false;
     });
     if (requiredName != null && requiredCategory != null) {
       return { evName: requiredName, category: requiredCategory };
@@ -115,14 +115,12 @@ function mapPayload(category, rudderProperty, rudderPropertiesObj) {
   let valFound = false;
   if (category.content_items) {
     // eslint-disable-next-line sonarjs/no-ignored-return
-    Object.keys(category.content_items).find((branchMappingProperty) => {
+    Object.keys(category.content_items).forEach((branchMappingProperty) => {
       if (branchMappingProperty === rudderProperty) {
         const tmpKeyName = category.content_items[branchMappingProperty];
         contentItems[tmpKeyName] = rudderPropertiesObj[rudderProperty];
         valFound = true;
-        return true;
       }
-      return false;
     });
   }
 
@@ -213,24 +211,22 @@ function getCommonPayload(message, category, evName) {
   return rawPayload;
 }
 
-// function getTrackPayload(message) {
-//   const rawPayload = {};
-//   const { name, category } = getCategoryAndName(message.event);
-//   rawPayload.name = name;
-//
-//   return commonPayload(message, rawPayload, category);
-// }
-
 function processMessage(message, destination) {
   let evName;
   let category;
+  let updatedEventName = message.event;
   switch (message.type) {
-    case EventType.TRACK:
+    case EventType.TRACK: {
       if (!message.event) {
         throw new InstrumentationError('Event name is required');
       }
-      ({ evName, category } = getCategoryAndName(message.event));
+      const eventNameFromConfig = getMappedEventNameFromConfig(message, destination);
+      if (eventNameFromConfig) {
+        updatedEventName = eventNameFromConfig;
+      }
+      ({ evName, category } = getCategoryAndName(updatedEventName));
       break;
+    }
     case EventType.IDENTIFY:
       ({ evName, category } = getCategoryAndName(message.userId));
       break;

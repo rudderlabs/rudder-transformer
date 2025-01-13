@@ -12,12 +12,7 @@ export const data = [
             {
               message: {
                 anonymousId: 'anon-id-new',
-                context: {
-                  ip: '14.5.67.21',
-                  library: {
-                    name: 'http',
-                  },
-                },
+                context: { ip: '14.5.67.21', library: { name: 'http' } },
                 type: 'identify',
               },
               destination: {
@@ -87,9 +82,7 @@ export const data = [
                 rootStore: null,
                 isProcessorEnabled: true,
               },
-              metadata: {
-                jobId: 1,
-              },
+              metadata: { jobId: 1, userId: 'u1' },
             },
             {
               message: {
@@ -102,10 +95,7 @@ export const data = [
                 event: 'Visited Home',
                 messageId: '1601322811899-d9c7dd00-50dc-4364-95c8-e89423eb3cfb',
                 originalTimestamp: '2020-09-29T14:50:29.907+05:30',
-                traits: {
-                  name: 'Home | RudderStack',
-                  url: 'http://www.rudderstack.com',
-                },
+                traits: { name: 'Home | RudderStack', url: 'http://www.rudderstack.com' },
                 receivedAt: '2020-09-29T14:50:43.005+05:30',
                 sentAt: '2020-09-28T19:53:44.998Z',
                 timestamp: '2020-09-29T14:50:29.907+05:30',
@@ -185,6 +175,7 @@ export const data = [
                 jobId: 123,
                 messageId: '4aaecff2-a513-4bbf-9824-c471f4ac9777',
                 sourceId: '1YhwKyDcKstudlGxkeN5p2wgsrp',
+                userId: 'u1',
               },
             },
             {
@@ -192,39 +183,20 @@ export const data = [
                 anonymousId: 'anon-id-new',
                 channel: 'mobile',
                 context: {
-                  app: {
-                    build: '4',
-                    name: 'RuddCDN',
-                  },
-                  page: {
-                    referrer: 'google.com',
-                  },
-                  device: {
-                    id: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
-                    name: 'generic_x86_arm',
-                  },
-                  library: {
-                    name: 'com.rudderstack.android.sdk.core',
-                    version: '1.0.6',
-                  },
-                  os: {
-                    name: 'Android',
-                    version: '9',
-                  },
+                  app: { build: '4', name: 'RuddCDN' },
+                  page: { referrer: 'google.com' },
+                  device: { id: '3f034872-5e28-45a1-9eda-ce22a3e36d1a', name: 'generic_x86_arm' },
+                  library: { name: 'com.rudderstack.android.sdk.core', version: '1.0.6' },
+                  os: { name: 'Android', version: '9' },
                   timezone: 'Asia/Kolkata',
-                  traits: {
-                    customProp: 'customValue',
-                  },
+                  traits: { customProp: 'customValue' },
                   userAgent:
                     'Dalvik/2.1.0 (Linux; U; Android 9; AOSP on IA Emulator Build/PSR1.180720.117)',
                 },
                 event: 'Visited Home',
                 messageId: '1601322811899-d9c7dd00-50dc-4364-95c8-e89423eb3cfb',
                 originalTimestamp: '2020-09-28T19:53:31.900Z',
-                properties: {
-                  title: 'Home | RudderStack',
-                  url: 'http://www.rudderstack.com',
-                },
+                properties: { title: 'Home | RudderStack', url: 'http://www.rudderstack.com' },
                 receivedAt: '2020-09-29T14:50:43.005+05:30',
                 sentAt: '2020-09-28T19:53:44.998Z',
                 timestamp: '2020-09-29T14:50:29.907+05:30',
@@ -304,6 +276,7 @@ export const data = [
                 jobId: 129,
                 messageId: '8b8d5937-09bc-49dc-a35e-8cd6370575f8',
                 sourceId: '1YhwKyDcKstudlGxkeN5p2wgsrp',
+                userId: 'u1',
               },
             },
           ],
@@ -385,11 +358,7 @@ export const data = [
                 rootStore: null,
                 isProcessorEnabled: true,
               },
-              metadata: [
-                {
-                  jobId: 1,
-                },
-              ],
+              metadata: [{ jobId: 1, userId: 'u1' }],
               statTags: {
                 destType: 'LEMNISK',
                 feature: 'router',
@@ -408,9 +377,7 @@ export const data = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'http://10.11.36.17:8080/analyze/analyze.php',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json' },
                 params: {},
                 body: {
                   JSON: {
@@ -512,6 +479,7 @@ export const data = [
                   jobId: 123,
                   messageId: '4aaecff2-a513-4bbf-9824-c471f4ac9777',
                   sourceId: '1YhwKyDcKstudlGxkeN5p2wgsrp',
+                  userId: 'u1',
                 },
               ],
               batched: false,
@@ -523,45 +491,27 @@ export const data = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'http://10.11.36.17:8080/analyze/analyze.php',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json' },
                 params: {},
                 body: {
                   JSON: {
                     type: 'track',
                     context: {
-                      app: {
-                        build: '4',
-                        name: 'RuddCDN',
-                      },
-                      page: {
-                        referrer: 'google.com',
-                      },
+                      app: { build: '4', name: 'RuddCDN' },
+                      page: { referrer: 'google.com' },
                       device: {
                         id: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
                         name: 'generic_x86_arm',
                       },
-                      library: {
-                        name: 'com.rudderstack.android.sdk.core',
-                        version: '1.0.6',
-                      },
-                      os: {
-                        name: 'Android',
-                        version: '9',
-                      },
+                      library: { name: 'com.rudderstack.android.sdk.core', version: '1.0.6' },
+                      os: { name: 'Android', version: '9' },
                       timezone: 'Asia/Kolkata',
-                      traits: {
-                        customProp: 'customValue',
-                      },
+                      traits: { customProp: 'customValue' },
                       userAgent: {
                         ua: 'Dalvik/2.1.0 (Linux; U; Android 9; AOSP on IA Emulator Build/PSR1.180720.117)',
                       },
                     },
-                    properties: {
-                      title: 'Home | RudderStack',
-                      url: 'http://www.rudderstack.com',
-                    },
+                    properties: { title: 'Home | RudderStack', url: 'http://www.rudderstack.com' },
                     event: 'Visited Home',
                     id: 'anon-id-new',
                     userId: 'anon-id-new',
@@ -651,6 +601,7 @@ export const data = [
                   jobId: 129,
                   messageId: '8b8d5937-09bc-49dc-a35e-8cd6370575f8',
                   sourceId: '1YhwKyDcKstudlGxkeN5p2wgsrp',
+                  userId: 'u1',
                 },
               ],
               batched: false,

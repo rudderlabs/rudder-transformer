@@ -1,8 +1,8 @@
 const lodash = require('lodash');
+const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const {
   defaultPutRequestConfig,
   handleRtTfSingleEventError,
-  checkInvalidRtTfEvents,
   constructPayload,
   defaultPostRequestConfig,
   isDefinedAndNotNull,
@@ -23,7 +23,6 @@ const {
   stringifyPropertiesValues,
 } = require('./utils');
 const { MAX_BATCH_SIZE, VALID_STATUSES, TRACK_CONFIG } = require('./config');
-const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const responseBuilderSimple = (finalPayload, endpoint, Config, audienceId) => {
@@ -62,7 +61,10 @@ const trackResponseBuilder = (message, { Config }) => {
   if (processedPayload?.properties) {
     processedPayload.properties = stringifyPropertiesValues(processedPayload.properties);
   }
-  if (processedPayload.name && !(processedPayload.name.length >= 2 && processedPayload.name.length <= 30)) {
+  if (
+    processedPayload.name &&
+    !(processedPayload.name.length >= 2 && processedPayload.name.length <= 30)
+  ) {
     throw new InstrumentationError('Event name should be between 2 and 30 characters');
   }
   processedPayload.name = processedPayload.name.trim().replace(/\s+/g, '_');
@@ -76,7 +78,7 @@ const trackResponseBuilder = (message, { Config }) => {
   return responseBuilderSimple(processedPayload, endpoint, Config, audienceId);
 };
 
-const identifyResponseBuilder = async (message, { Config }) => {
+const identifyResponseBuilder = async (message, { Config }, metadata) => {
   const { datacenterId } = Config;
   const email = getFieldValueFromMessage(message, 'email');
   if (!email) {
@@ -84,13 +86,13 @@ const identifyResponseBuilder = async (message, { Config }) => {
   }
   const audienceId = getAudienceId(message, Config);
   const endpoint = mailChimpSubscriptionEndpoint(datacenterId, audienceId, email);
-  const processedPayload = await processPayload(message, Config, audienceId);
+  const processedPayload = await processPayload(message, Config, audienceId, metadata);
   return responseBuilderSimple(processedPayload, endpoint, Config, audienceId);
 };
 
 const process = async (event) => {
   let response;
-  const { message, destination } = event;
+  const { message, destination, metadata } = event;
   const messageType = message.type.toLowerCase();
   const destConfig = destination.Config;
 
@@ -112,7 +114,7 @@ const process = async (event) => {
 
   switch (messageType) {
     case EventType.IDENTIFY:
-      response = await identifyResponseBuilder(message, destination);
+      response = await identifyResponseBuilder(message, destination, metadata);
       break;
     case EventType.TRACK:
       response = trackResponseBuilder(message, destination);
@@ -159,10 +161,6 @@ const getEventChunks = (event, identifyRespList, trackRespList) => {
 };
 
 const processRouterDest = async (inputs, reqMetadata) => {
-  const errorRespEvents = checkInvalidRtTfEvents(inputs);
-  if (errorRespEvents.length > 0) {
-    return errorRespEvents;
-  }
   let batchResponseList = [];
   const batchErrorRespList = [];
   const identifyRespList = [];

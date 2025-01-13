@@ -1,40 +1,39 @@
 /* eslint-disable class-methods-use-this */
-import IntegrationDestinationService from '../interfaces/DestinationService';
+import { DestinationService } from '../interfaces/DestinationService';
 import {
-  DeliveryResponse,
+  DeliveryV0Response,
+  DeliveryV1Response,
   Destination,
   ErrorDetailer,
   MetaTransferObject,
-  ProcessorTransformationOutput,
   ProcessorTransformationRequest,
   ProcessorTransformationResponse,
+  ProxyRequest,
   RouterTransformationRequestData,
   RouterTransformationResponse,
   UserDeletionRequest,
   UserDeletionResponse,
 } from '../types';
-import tags from '../v0/util/tags';
-import stats from '../util/stats';
-import logger from '../logger';
 import { CommonUtils } from '../util/common';
+import stats from '../util/stats';
+import tags from '../v0/util/tags';
+import logger from '../logger';
 
 const NS_PER_SEC = 1e9;
 
-export default class ComparatorService implements IntegrationDestinationService {
-  secondaryService: IntegrationDestinationService;
+export class ComparatorService implements DestinationService {
+  secondaryService: DestinationService;
 
-  primaryService: IntegrationDestinationService;
+  primaryService: DestinationService;
 
-  constructor(
-    primaryService: IntegrationDestinationService,
-    secondaryService: IntegrationDestinationService,
-  ) {
+  constructor(primaryService: DestinationService, secondaryService: DestinationService) {
     this.primaryService = primaryService;
     this.secondaryService = secondaryService;
   }
 
   public init(): void {
     this.primaryService.init();
+
     this.secondaryService.init();
   }
 
@@ -368,17 +367,18 @@ export default class ComparatorService implements IntegrationDestinationService 
   }
 
   public async deliver(
-    event: ProcessorTransformationOutput,
+    event: ProxyRequest,
     destinationType: string,
     requestMetadata: NonNullable<unknown>,
-  ): Promise<DeliveryResponse> {
+    version: string,
+  ): Promise<DeliveryV0Response | DeliveryV1Response> {
     const primaryResplist = await this.primaryService.deliver(
       event,
       destinationType,
       requestMetadata,
+      version,
     );
     logger.error('[LIVE_COMPARE_TEST] not implemented for delivery routine');
-
     return primaryResplist;
   }
 

@@ -1,4 +1,5 @@
 /* eslint-disable no-param-reassign */
+const { InstrumentationError, TransformationError } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const {
   CONFIG_CATEGORIES,
@@ -15,7 +16,6 @@ const {
   simpleProcessRouterDest,
   extractCustomFields,
 } = require('../../util');
-const { InstrumentationError, TransformationError } = require('../../util/errorTypes');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const responseBuilder = (message, category, { Config }) => {
@@ -79,8 +79,8 @@ const processEvent = (message, destination) => {
       return responseBuilder(message, CONFIG_CATEGORIES.EVENT, destination);
     case EventType.PAGE:
     case EventType.SCREEN:
-      name = message.name || message.properties.name;
-      category = message.properties.category;
+      name = message.name || message.properties?.name;
+      category = message.properties?.category;
       if (name && category) {
         eventName = `Viewed ${category} ${name} ${messageType}`;
       } else if (name) {

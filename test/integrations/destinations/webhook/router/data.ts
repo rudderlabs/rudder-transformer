@@ -19,25 +19,15 @@ export const data = [
                     model: 'Redmi 6',
                     name: 'xiaomi',
                   },
-                  network: {
-                    carrier: 'Banglalink',
-                  },
-                  os: {
-                    name: 'android',
-                    version: '8.1.0',
-                  },
+                  network: { carrier: 'Banglalink' },
+                  os: { name: 'android', version: '8.1.0' },
                   traits: {
-                    address: {
-                      city: 'Dhaka',
-                      country: 'Bangladesh',
-                    },
+                    address: { city: 'Dhaka', country: 'Bangladesh' },
                     anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
                   },
                 },
                 event: 'spin_result',
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 message_id: 'a80f82be-9bdc-4a9f-b2a5-15621ee41df8',
                 properties: {
                   additional_bet_index: 0,
@@ -100,23 +90,16 @@ export const data = [
                   versionSessionCount: 2,
                 },
               },
-              metadata: {
-                jobId: 2,
-              },
+              metadata: { jobId: 2, userId: 'u1' },
               destination: {
                 Config: {
                   webhookUrl: 'http://6b0e6a60.ngrok.io',
                   headers: [
-                    {
-                      from: '',
-                      to: '',
-                    },
-                    {
-                      from: 'test2',
-                      to: 'value2',
-                    },
+                    { from: '', to: '' },
+                    { from: 'test2', to: 'value2' },
                   ],
                 },
+                DestinationDefinition: { Config: { cdkV2Enabled: true } },
               },
             },
             {
@@ -129,25 +112,15 @@ export const data = [
                     model: 'Redmi 6',
                     name: 'xiaomi',
                   },
-                  network: {
-                    carrier: 'Banglalink',
-                  },
-                  os: {
-                    name: 'android',
-                    version: '8.1.0',
-                  },
+                  network: { carrier: 'Banglalink' },
+                  os: { name: 'android', version: '8.1.0' },
                   traits: {
-                    address: {
-                      city: 'Dhaka',
-                      country: 'Bangladesh',
-                    },
+                    address: { city: 'Dhaka', country: 'Bangladesh' },
                     anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
                   },
                 },
                 event: 'spin_result',
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 message_id: 'a80f82be-9bdc-4a9f-b2a5-15621ee41df8',
                 properties: {
                   additional_bet_index: 0,
@@ -210,13 +183,10 @@ export const data = [
                   versionSessionCount: 2,
                 },
               },
-              metadata: {
-                jobId: 2,
-              },
+              metadata: { jobId: 3, userId: 'u1' },
               destination: {
-                Config: {
-                  webhookUrl: 'https://6b0e6a60.ngrok.io/n',
-                },
+                Config: { webhookUrl: 'https://6b0e6a60.ngrok.io/n' },
+                DestinationDefinition: { Config: { cdkV2Enabled: true } },
               },
             },
           ],
@@ -257,9 +227,7 @@ export const data = [
                       versionSessionCount: 2,
                       game_name: 'FireEagleSlots',
                     },
-                    integrations: {
-                      All: true,
-                    },
+                    integrations: { All: true },
                     event: 'spin_result',
                     message_id: 'a80f82be-9bdc-4a9f-b2a5-15621ee41df8',
                     anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
@@ -272,18 +240,10 @@ export const data = [
                       },
                       traits: {
                         anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
-                        address: {
-                          city: 'Dhaka',
-                          country: 'Bangladesh',
-                        },
+                        address: { city: 'Dhaka', country: 'Bangladesh' },
                       },
-                      os: {
-                        version: '8.1.0',
-                        name: 'android',
-                      },
-                      network: {
-                        carrier: 'Banglalink',
-                      },
+                      os: { version: '8.1.0', name: 'android' },
+                      network: { carrier: 'Banglalink' },
                     },
                     type: 'track',
                     properties: {
@@ -330,36 +290,24 @@ export const data = [
                 files: {},
                 endpoint: 'http://6b0e6a60.ngrok.io',
                 userId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
-                headers: {
-                  'content-type': 'application/json',
-                  test2: 'value2',
-                },
+                headers: { 'content-type': 'application/json', test2: 'value2' },
                 version: '1',
                 params: {},
                 type: 'REST',
                 method: 'POST',
               },
-              metadata: [
-                {
-                  jobId: 2,
-                },
-              ],
+              metadata: [{ jobId: 2, userId: 'u1' }],
               batched: false,
               statusCode: 200,
               destination: {
                 Config: {
                   webhookUrl: 'http://6b0e6a60.ngrok.io',
                   headers: [
-                    {
-                      from: '',
-                      to: '',
-                    },
-                    {
-                      from: 'test2',
-                      to: 'value2',
-                    },
+                    { from: '', to: '' },
+                    { from: 'test2', to: 'value2' },
                   ],
                 },
+                DestinationDefinition: { Config: { cdkV2Enabled: true } },
               },
             },
             {
@@ -389,9 +337,7 @@ export const data = [
                       versionSessionCount: 2,
                       game_name: 'FireEagleSlots',
                     },
-                    integrations: {
-                      All: true,
-                    },
+                    integrations: { All: true },
                     event: 'spin_result',
                     message_id: 'a80f82be-9bdc-4a9f-b2a5-15621ee41df8',
                     anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
@@ -404,18 +350,10 @@ export const data = [
                       },
                       traits: {
                         anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
-                        address: {
-                          city: 'Dhaka',
-                          country: 'Bangladesh',
-                        },
+                        address: { city: 'Dhaka', country: 'Bangladesh' },
                       },
-                      os: {
-                        version: '8.1.0',
-                        name: 'android',
-                      },
-                      network: {
-                        carrier: 'Banglalink',
-                      },
+                      os: { version: '8.1.0', name: 'android' },
+                      network: { carrier: 'Banglalink' },
                     },
                     type: 'track',
                     properties: {
@@ -462,25 +400,405 @@ export const data = [
                 files: {},
                 endpoint: 'https://6b0e6a60.ngrok.io/n',
                 userId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
-                headers: {
-                  'content-type': 'application/json',
-                },
+                headers: { 'content-type': 'application/json' },
                 version: '1',
                 params: {},
                 type: 'REST',
                 method: 'POST',
               },
-              metadata: [
-                {
-                  jobId: 2,
+              metadata: [{ jobId: 3, userId: 'u1' }],
+              batched: false,
+              statusCode: 200,
+              destination: {
+                Config: { webhookUrl: 'https://6b0e6a60.ngrok.io/n' },
+                DestinationDefinition: { Config: { cdkV2Enabled: true } },
+              },
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    name: 'webhook',
+    description: 'Identify payload with 3 events in 1 batch',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: {
+                anonymousId: '234234234234234',
+                channel: 'mobile',
+                context: {
+                  app: {
+                    build: '1',
+                    name: 'AMTestProject',
+                    namespace: 'com.rudderstack.android.rudderstack.sampleAndroidApp',
+                    version: '1.0',
+                  },
+                  device: {
+                    id: '8d872292709c6fbe',
+                    manufacturer: 'Google',
+                    model: 'AOSP on IA Emulator',
+                    name: 'generic_x86_arm',
+                    type: 'android',
+                  },
+                  library: {
+                    name: 'com.rudderstack.android.sdk.core',
+                    version: '1.0.2',
+                  },
+                  locale: 'en-US',
+                  network: {
+                    carrier: 'Android',
+                    bluetooth: false,
+                    cellular: true,
+                    wifi: true,
+                  },
+                  os: {
+                    name: 'Android',
+                    version: '9',
+                  },
+                  screen: {
+                    density: 420,
+                    height: 1794,
+                    width: 1080,
+                  },
+                  timezone: 'Asia/Kolkata',
+                  traits: {
+                    address: {
+                      city: 'Kolkata',
+                      country: 'India',
+                      postalcode: '700096',
+                      state: 'West bengal',
+                      street: 'Park Street',
+                    },
+                    age: '30',
+                    anonymousId: '8d872292709c6fbe',
+                    birthday: '2020-05-26',
+                    createdat: '18th March 2020',
+                    description: 'Premium User for 3 years',
+                    email: 'identify@test.com',
+                    firstname: 'John',
+                    userId: 'sample_user_id',
+                    lastname: 'Sparrow',
+                    name: 'John Sparrow',
+                    id: 'sample_user_id',
+                    phone: '9876543210',
+                    username: 'john_sparrow',
+                    quantity: '5',
+                    price: '56.0',
+                  },
+                  userAgent:
+                    'Dalvik/2.1.0 (Linux; U; Android 9; AOSP on IA Emulator Build/PSR1.180720.117)',
                 },
-              ],
+                event: 'identify',
+                integrations: {
+                  All: true,
+                },
+                messageId: '1590431830865-3be680d6-7dcd-4b05-8460-f3acc30046d9',
+                originalTimestamp: '2020-05-25T18:37:10.865Z',
+                sentAt: '2020-05-25T18:37:10.917Z',
+                type: 'identify',
+                userId: 'sample_user_id',
+              },
+              metadata: { jobId: 2, userId: 'u1' },
+              destination: {
+                Config: {
+                  webhookUrl: 'http://6b0e6a60.ngrok.io',
+                  headers: [
+                    { from: '', to: '' },
+                    { from: 'test2', to: 'value2' },
+                  ],
+                },
+                DestinationDefinition: { Config: { cdkV2Enabled: true } },
+              },
+            },
+            {
+              message: {
+                anonymousId: '1231241234123',
+                channel: 'mobile',
+                context: {
+                  timezone: 'Asia/Kolkata',
+                  traits: {
+                    address: {
+                      city: 'Kolkata',
+                      country: 'India',
+                      postalcode: '700096',
+                      state: 'West bengal',
+                      street: 'Park Street',
+                    },
+                    age: '30',
+                    anonymousId: '8d872292709c6fbe',
+                    birthday: '2020-05-26',
+                    createdat: '18th March 2020',
+                    description: 'Premium User for 3 years',
+                    email: 'identify2@test.com',
+                    firstname: 'John',
+                    userId: 'sample_user_id',
+                    lastname: 'Sparrow',
+                    name: 'John Sparrow',
+                    id: 'sample_user_id',
+                    phone: '9876543210',
+                    username: 'john_sparrow',
+                    quantity: '5',
+                    price: '56.0',
+                  },
+                  userAgent:
+                    'Dalvik/2.1.0 (Linux; U; Android 9; AOSP on IA Emulator Build/PSR1.180720.117)',
+                },
+                event: 'identify',
+                integrations: {
+                  All: true,
+                },
+                messageId: '23432324-3be680d6-7dcd-4b05-8460-f3acc30046d9',
+                type: 'identify',
+                userId: 'sample_user_id',
+              },
+              metadata: { jobId: 3, userId: 'u1' },
+              destination: {
+                Config: { webhookUrl: 'https://6b0e6a60.ngrok.io/n' },
+                DestinationDefinition: { Config: { cdkV2Enabled: true } },
+              },
+            },
+            {
+              message: {
+                anonymousId: '345345435',
+                channel: 'mobile',
+                event: 'identify',
+                integrations: {
+                  All: true,
+                },
+                messageId: '23432324-3be680d6-7dcd-4b05-8460-f3acc30046d9',
+                type: 'identify',
+                userId: 'sample_user_id',
+              },
+              metadata: { jobId: 4, userId: 'u1' },
+              destination: {
+                Config: { webhookUrl: 'https://6b0e6a60.ngrok.io/n' },
+                DestinationDefinition: { Config: { cdkV2Enabled: true } },
+              },
+            },
+          ],
+          destType: 'webhook',
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batchedRequest: {
+                body: {
+                  XML: {},
+                  JSON_ARRAY: {},
+                  JSON: {
+                    anonymousId: '234234234234234',
+                    channel: 'mobile',
+                    context: {
+                      app: {
+                        build: '1',
+                        name: 'AMTestProject',
+                        namespace: 'com.rudderstack.android.rudderstack.sampleAndroidApp',
+                        version: '1.0',
+                      },
+                      device: {
+                        id: '8d872292709c6fbe',
+                        manufacturer: 'Google',
+                        model: 'AOSP on IA Emulator',
+                        name: 'generic_x86_arm',
+                        type: 'android',
+                      },
+                      library: {
+                        name: 'com.rudderstack.android.sdk.core',
+                        version: '1.0.2',
+                      },
+                      locale: 'en-US',
+                      network: {
+                        carrier: 'Android',
+                        bluetooth: false,
+                        cellular: true,
+                        wifi: true,
+                      },
+                      os: {
+                        name: 'Android',
+                        version: '9',
+                      },
+                      screen: {
+                        density: 420,
+                        height: 1794,
+                        width: 1080,
+                      },
+                      timezone: 'Asia/Kolkata',
+                      traits: {
+                        address: {
+                          city: 'Kolkata',
+                          country: 'India',
+                          postalcode: '700096',
+                          state: 'West bengal',
+                          street: 'Park Street',
+                        },
+                        age: '30',
+                        anonymousId: '8d872292709c6fbe',
+                        birthday: '2020-05-26',
+                        createdat: '18th March 2020',
+                        description: 'Premium User for 3 years',
+                        email: 'identify@test.com',
+                        firstname: 'John',
+                        userId: 'sample_user_id',
+                        lastname: 'Sparrow',
+                        name: 'John Sparrow',
+                        id: 'sample_user_id',
+                        phone: '9876543210',
+                        username: 'john_sparrow',
+                        quantity: '5',
+                        price: '56.0',
+                      },
+                      userAgent:
+                        'Dalvik/2.1.0 (Linux; U; Android 9; AOSP on IA Emulator Build/PSR1.180720.117)',
+                    },
+                    event: 'identify',
+                    integrations: {
+                      All: true,
+                    },
+                    messageId: '1590431830865-3be680d6-7dcd-4b05-8460-f3acc30046d9',
+                    originalTimestamp: '2020-05-25T18:37:10.865Z',
+                    sentAt: '2020-05-25T18:37:10.917Z',
+                    type: 'identify',
+                    userId: 'sample_user_id',
+                  },
+                  FORM: {},
+                },
+                files: {},
+                endpoint: 'http://6b0e6a60.ngrok.io',
+                userId: '234234234234234',
+                headers: { 'content-type': 'application/json', test2: 'value2' },
+                version: '1',
+                params: {},
+                type: 'REST',
+                method: 'POST',
+              },
+              metadata: [{ jobId: 2, userId: 'u1' }],
+              batched: false,
+              statusCode: 200,
+              destination: {
+                Config: {
+                  webhookUrl: 'http://6b0e6a60.ngrok.io',
+                  headers: [
+                    { from: '', to: '' },
+                    { from: 'test2', to: 'value2' },
+                  ],
+                },
+                DestinationDefinition: { Config: { cdkV2Enabled: true } },
+              },
+            },
+            {
+              batchedRequest: {
+                body: {
+                  XML: {},
+                  JSON_ARRAY: {},
+                  JSON: {
+                    anonymousId: '1231241234123',
+                    channel: 'mobile',
+                    context: {
+                      timezone: 'Asia/Kolkata',
+                      traits: {
+                        address: {
+                          city: 'Kolkata',
+                          country: 'India',
+                          postalcode: '700096',
+                          state: 'West bengal',
+                          street: 'Park Street',
+                        },
+                        age: '30',
+                        anonymousId: '8d872292709c6fbe',
+                        birthday: '2020-05-26',
+                        createdat: '18th March 2020',
+                        description: 'Premium User for 3 years',
+                        email: 'identify2@test.com',
+                        firstname: 'John',
+                        userId: 'sample_user_id',
+                        lastname: 'Sparrow',
+                        name: 'John Sparrow',
+                        id: 'sample_user_id',
+                        phone: '9876543210',
+                        username: 'john_sparrow',
+                        quantity: '5',
+                        price: '56.0',
+                      },
+                      userAgent:
+                        'Dalvik/2.1.0 (Linux; U; Android 9; AOSP on IA Emulator Build/PSR1.180720.117)',
+                    },
+                    event: 'identify',
+                    integrations: {
+                      All: true,
+                    },
+                    messageId: '23432324-3be680d6-7dcd-4b05-8460-f3acc30046d9',
+                    type: 'identify',
+                    userId: 'sample_user_id',
+                  },
+                  FORM: {},
+                },
+                files: {},
+                endpoint: 'https://6b0e6a60.ngrok.io/n',
+                userId: '1231241234123',
+                headers: { 'content-type': 'application/json' },
+                version: '1',
+                params: {},
+                type: 'REST',
+                method: 'POST',
+              },
+              metadata: [{ jobId: 3, userId: 'u1' }],
               batched: false,
               statusCode: 200,
               destination: {
                 Config: {
                   webhookUrl: 'https://6b0e6a60.ngrok.io/n',
                 },
+                DestinationDefinition: { Config: { cdkV2Enabled: true } },
+              },
+            },
+            {
+              batchedRequest: {
+                body: {
+                  XML: {},
+                  JSON_ARRAY: {},
+                  JSON: {
+                    anonymousId: '345345435',
+                    channel: 'mobile',
+                    event: 'identify',
+                    integrations: {
+                      All: true,
+                    },
+                    messageId: '23432324-3be680d6-7dcd-4b05-8460-f3acc30046d9',
+                    type: 'identify',
+                    userId: 'sample_user_id',
+                  },
+                  FORM: {},
+                },
+                files: {},
+                endpoint: 'https://6b0e6a60.ngrok.io/n',
+                userId: '345345435',
+                headers: { 'content-type': 'application/json' },
+                version: '1',
+                params: {},
+                type: 'REST',
+                method: 'POST',
+              },
+              metadata: [{ jobId: 4, userId: 'u1' }],
+              batched: false,
+              statusCode: 200,
+              destination: {
+                Config: {
+                  webhookUrl: 'https://6b0e6a60.ngrok.io/n',
+                },
+                DestinationDefinition: { Config: { cdkV2Enabled: true } },
               },
             },
           ],

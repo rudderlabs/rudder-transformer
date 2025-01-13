@@ -1,59 +1,36 @@
 const lodash = require('lodash');
-const get = require('get-value');
+const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const {
-  defaultRequestConfig,
-  defaultPostRequestConfig,
-  defaultDeleteRequestConfig,
   checkSubsetOfArray,
   isDefinedAndNotNullAndNotEmpty,
   returnArrayOfSubarrays,
   flattenMap,
   simpleProcessRouterDest,
-  getDestinationExternalIDInfoForRetl,
 } = require('../../util');
 const {
   prepareDataField,
-  getSchemaForEventMappedToDest,
   batchingWithPayloadSize,
+  generateAppSecretProof,
+  responseBuilderSimple,
+  getDataSource,
 } = require('./util');
-const {
-  getEndPoint,
-  schemaFields,
-  USER_ADD,
-  USER_DELETE,
-  typeFields,
-  subTypeFields,
-} = require('./config');
+const { schemaFields, USER_ADD, USER_DELETE, MAX_USER_COUNT } = require('./config');
 
-const { MappedToDestinationKey } = require('../../../constants');
-const {
-  InstrumentationError,
-  TransformationError,
-  ConfigurationError,
-} = require('../../util/errorTypes');
+const { processRecordInputs } = require('./recordTransform');
+const logger = require('../../../logger');
 
-const responseBuilderSimple = (payload, audienceId) => {
-  if (payload) {
-    const responseParams = payload.responseField;
-    const response = defaultRequestConfig();
-    response.endpoint = getEndPoint(audienceId);
-
-    if (payload.operationCategory === 'add') {
-      response.method = defaultPostRequestConfig.requestMethod;
+function checkForUnsupportedEventTypes(dictionary, keyList) {
+  const unsupportedEventTypes = [];
+  // eslint-disable-next-line no-restricted-syntax
+  for (const key in dictionary) {
+    if (!keyList.includes(key)) {
+      unsupportedEventTypes.push(key);
     }
-    if (payload.operationCategory === 'remove') {
-      response.method = defaultDeleteRequestConfig.requestMethod;
-    }
-
-    response.params = responseParams;
-    return response;
   }
-  // fail-safety for developer error
-  throw new TransformationError(`Payload could not be constructed`);
-};
+  return unsupportedEventTypes;
+}
 
 // Function responsible prepare the payload field of every event parameter
-
 const preparePayload = (
   userUpdateList,
   userSchema,
@@ -88,22 +65,19 @@ const prepareResponse = (
   userSchema,
   isHashRequired = true,
 ) => {
-  const { accessToken, disableFormat, type, subType, isRaw } = destination.Config;
-
-  const mappedToDestination = get(message, MappedToDestinationKey);
-
-  // If mapped to destination, use the mapped fields instead of destination userschema
-  if (mappedToDestination) {
-    // eslint-disable-next-line no-param-reassign
-    userSchema = getSchemaForEventMappedToDest(message);
-  }
+  const { accessToken, disableFormat, type, subType, isRaw, appSecret } = destination.Config;
 
   const prepareParams = {};
   // creating the parameters field
   const paramsPayload = {};
-  const dataSource = {};
 
   prepareParams.access_token = accessToken;
+
+  if (isDefinedAndNotNullAndNotEmpty(appSecret)) {
+    const dateNow = Date.now();
+    prepareParams.appsecret_time = Math.floor(dateNow / 1000); // Get current Unix time in seconds
+    prepareParams.appsecret_proof = generateAppSecretProof(accessToken, appSecret, dateNow);
+  }
 
   // creating the payload field for parameters
   if (isRaw) {
@@ -111,13 +85,7 @@ const prepareResponse = (
   }
   // creating the data_source block
 
-  if (type && type !== 'NA' && typeFields.includes(type)) {
-    dataSource.type = type;
-  }
-
-  if (subType && subType !== 'NA' && subTypeFields.includes(subType)) {
-    dataSource.sub_type = subType;
-  }
+  const dataSource = getDataSource(type, subType);
   if (Object.keys(dataSource).length > 0) {
     paramsPayload.data_source = dataSource;
   }
@@ -178,31 +146,17 @@ const processEvent = (message, destination) => {
   const respList = [];
   let toSendEvents = [];
   let { userSchema } = destination.Config;
-  const { isHashRequired, audienceId, maxUserCount } = destination.Config;
+  const { isHashRequired, audienceId } = destination.Config;
   if (!message.type) {
     throw new InstrumentationError('Message Type is not present. Aborting message.');
   }
-  const maxUserCountNumber = parseInt(maxUserCount, 10);
 
-  if (Number.isNaN(maxUserCountNumber)) {
-    throw new ConfigurationError('Batch size must be an Integer.');
-  }
   if (message.type.toLowerCase() !== 'audiencelist') {
     throw new InstrumentationError(` ${message.type} call is not supported `);
   }
-  let operationAudienceId = audienceId;
-  const mappedToDestination = get(message, MappedToDestinationKey);
-  if (!operationAudienceId && mappedToDestination) {
-    const { objectType } = getDestinationExternalIDInfoForRetl(message, 'FB_CUSTOM_AUDIENCE');
-    operationAudienceId = objectType;
-  }
-  if (!isDefinedAndNotNullAndNotEmpty(operationAudienceId)) {
-    throw new ConfigurationError('Audience ID is a mandatory field');
-  }
 
-  // If mapped to destination, use the mapped fields instead of destination userschema
-  if (mappedToDestination) {
-    userSchema = getSchemaForEventMappedToDest(message);
+  if (!isDefinedAndNotNullAndNotEmpty(audienceId)) {
+    throw new ConfigurationError('Audience ID is a mandatory field');
   }
 
   // When one single schema field is added in the webapp, it does not appear to be an array
@@ -218,7 +172,7 @@ const processEvent = (message, destination) => {
 
   // when "remove" is present in the payload
   if (isDefinedAndNotNullAndNotEmpty(listData[USER_DELETE])) {
-    const audienceChunksArray = returnArrayOfSubarrays(listData[USER_DELETE], maxUserCountNumber);
+    const audienceChunksArray = returnArrayOfSubarrays(listData[USER_DELETE], MAX_USER_COUNT);
     toSendEvents = prepareToSendEvents(
       message,
       destination,
@@ -231,7 +185,7 @@ const processEvent = (message, destination) => {
 
   // When "add" is present in the payload
   if (isDefinedAndNotNullAndNotEmpty(listData[USER_ADD])) {
-    const audienceChunksArray = returnArrayOfSubarrays(listData[USER_ADD], maxUserCountNumber);
+    const audienceChunksArray = returnArrayOfSubarrays(listData[USER_ADD], MAX_USER_COUNT);
     toSendEvents.push(
       ...prepareToSendEvents(
         message,
@@ -243,8 +197,9 @@ const processEvent = (message, destination) => {
       ),
     );
   }
+
   toSendEvents.forEach((sendEvent) => {
-    respList.push(responseBuilderSimple(sendEvent, operationAudienceId));
+    respList.push(responseBuilderSimple(sendEvent, audienceId));
   });
   // When userListAdd or userListDelete is absent or both passed as empty arrays
   if (respList.length === 0) {
@@ -258,7 +213,31 @@ const processEvent = (message, destination) => {
 const process = (event) => processEvent(event.message, event.destination);
 
 const processRouterDest = async (inputs, reqMetadata) => {
-  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
+  const respList = [];
+  const groupedInputs = lodash.groupBy(inputs, (input) => input.message.type?.toLowerCase());
+  let transformedRecordEvent = [];
+  let transformedAudienceEvent = [];
+
+  const eventTypes = ['record', 'audiencelist'];
+  const unsupportedEventList = checkForUnsupportedEventTypes(groupedInputs, eventTypes);
+  if (unsupportedEventList.length > 0) {
+    logger.info(`unsupported events found ${unsupportedEventList}`);
+    throw new ConfigurationError('unsupported events present in the event');
+  }
+
+  if (groupedInputs.record) {
+    transformedRecordEvent = processRecordInputs(groupedInputs.record);
+  }
+
+  if (groupedInputs.audiencelist) {
+    transformedAudienceEvent = await simpleProcessRouterDest(
+      groupedInputs.audiencelist,
+      process,
+      reqMetadata,
+    );
+  }
+
+  respList.push(...transformedRecordEvent, ...transformedAudienceEvent);
   return flattenMap(respList);
 };
 

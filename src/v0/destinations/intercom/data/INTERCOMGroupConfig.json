@@ -12,12 +12,12 @@
   },
   {
     "destKey": "plan",
-    "sourceKeys": ["traits.plan","context.traits.plan"],
+    "sourceKeys": ["traits.plan", "context.traits.plan"],
     "required": false
   },
   {
     "destKey": "size",
-    "sourceKeys": ["traits.size","context.traits.size"],
+    "sourceKeys": ["traits.size", "context.traits.size"],
     "metadata": {
       "type": "toNumber"
     },
@@ -31,12 +31,12 @@
   },
   {
     "destKey": "industry",
-    "sourceKeys": ["traits.industry","context.traits.industry"],
+    "sourceKeys": ["traits.industry", "context.traits.industry"],
     "required": false
   },
   {
     "destKey": "monthly_spend",
-    "sourceKeys": ["traits.monthlySpend","context.traits.monthlySpend"],
+    "sourceKeys": ["traits.monthlySpend", "context.traits.monthlySpend"],
     "metadata": {
       "type": "toNumber"
     },
@@ -44,7 +44,7 @@
   },
   {
     "destKey": "remote_created_at",
-    "sourceKeys": ["traits.remoteCreatedAt","context.traits.remoteCreatedAt"],
+    "sourceKeys": ["traits.remoteCreatedAt", "context.traits.remoteCreatedAt"],
     "metadata": {
       "type": "toNumber"
     },

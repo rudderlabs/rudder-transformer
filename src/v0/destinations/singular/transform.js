@@ -1,3 +1,4 @@
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const { BASE_URL } = require('./config');
 const {
   defaultRequestConfig,
@@ -10,7 +11,6 @@ const {
   generateRevenuePayloadArray,
   isSessionEvent,
 } = require('./util');
-const { InstrumentationError } = require('../../util/errorTypes');
 
 const responseBuilderSimple = (message, { Config }) => {
   const eventName = message.event;
@@ -20,7 +20,7 @@ const responseBuilderSimple = (message, { Config }) => {
   }
 
   const sessionEvent = isSessionEvent(Config, eventName);
-  const { eventAttributes, payload } = platformWisePayloadGenerator(message, sessionEvent);
+  const { eventAttributes, payload } = platformWisePayloadGenerator(message, sessionEvent, Config);
   const endpoint = sessionEvent ? `${BASE_URL}/launch` : `${BASE_URL}/evt`;
 
   // If we have an event where we have an array of Products, example Order Completed

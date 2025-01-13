@@ -1,3 +1,4 @@
+const { TransformationError, InstrumentationError } = require('@rudderstack/integrations-lib');
 const {
   ErrorMessage,
   defaultRequestConfig,
@@ -13,7 +14,6 @@ const {
   identifyUserPayloadBuilder,
 } = require('./utils');
 const { EventType } = require('../../../constants');
-const { TransformationError, InstrumentationError } = require('../../util/errorTypes');
 
 const responseBuilder = (payload, endpoint, destination) => {
   if (payload) {

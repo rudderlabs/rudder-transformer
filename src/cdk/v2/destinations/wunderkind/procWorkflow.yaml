@@ -1,0 +1,68 @@
+bindings:
+  - name: EventType
+    path: ../../../../constants
+  - path: ../../bindings/jsontemplate
+    exportAll: true
+  - path: ../../../../v0/destinations/webhook/utils
+  - name: getHashFromArray
+    path: ../../../../v0/util
+  - name: getIntegrationsObj
+    path: ../../../../v0/util
+  - name: removeUndefinedAndNullValues
+    path: ../../../../v0/util
+  - name: CommonUtils
+    path: ../../../../util/common
+
+steps:
+  - name: checkIfProcessed
+    condition: .message.statusCode
+    template: |
+      $.batchMode ? .message.body.JSON : .message
+    onComplete: return
+
+  - name: messageType
+    template: |
+      $.context.messageType = .message.type.toLowerCase();
+
+  - name: validateInput
+    template: |
+      let messageType = $.context.messageType;
+      $.assert(messageType, "message Type is not present. Aborting");
+      $.assert(messageType in {{$.EventType.([.TRACK])}}, "message type " + messageType + " is not supported");
+      $.assertConfig(.destination.Config.accountID, "Account ID is not present. Aborting");
+      $.assertConfig(.destination.Config.instanceID, "Instance ID is not present. Aborting");
+      $.assertConfig(.destination.Config.apiKey, "API Key is not present. Aborting");
+
+  - name: buildAccountPayload
+    template: |
+      {
+          account_id: .destination.Config.accountID,
+          account_settings: {
+              instance_id: .destination.Config.instanceID,
+              key: .destination.Config.apiKey
+          }
+      }
+
+  - name: buildPayload
+    template: |
+      const integrationObj = $.getIntegrationsObj(.message, "wunderkind")
+      const event = {
+        ...integrationObj.extraEventProperties,
+        attributes: .message.properties
+      }
+
+      const payload = {
+        account: $.outputs.buildAccountPayload,
+        ...integrationObj.lambdaRootLevelProperties,
+        user_attributes: .message.().(
+          {{{{$.getGenericPaths("traits")}}}}
+        ),
+        events: $.CommonUtils.toArray(event)
+      }
+
+  - name: buildResponseForProcessTransformation
+    template: |
+
+      {
+        payload: JSON.stringify($.outputs.buildPayload),
+      }

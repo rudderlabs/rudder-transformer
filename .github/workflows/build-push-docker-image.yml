@@ -23,6 +23,15 @@ on:
         type: string
       build_type:
         type: string
+      use_merge_sha:
+        type: boolean
+        default: false
+      skip_tests:
+        type: boolean
+        default: false
+        description: if this option is true, we would skip tests while building docker image
+      workflow_url:
+        type: string
     secrets:
       DOCKERHUB_PROD_TOKEN:
         required: true
@@ -31,26 +40,74 @@ env:
   DOCKERHUB_USERNAME: rudderlabs
 
 jobs:
+  get_sha:
+    runs-on: ubuntu-latest
+    name: Get SHA information
+    outputs:
+      sha: ${{steps.getSHA.outputs.SHA}}
+    steps:
+      - name: Checkout SHA
+        id: getSHA
+        run: |
+          if ${{inputs.use_merge_sha}} == true; then
+            sha=$(echo ${{github.sha}})
+          else
+            sha=$(echo ${{ github.event.pull_request.head.sha }})
+          fi
+          echo "SHA: $sha"
+          echo "SHA=$sha" >> $GITHUB_OUTPUT
+
+  get_changed_files:
+    runs-on: ubuntu-latest
+    name: Get Changed files
+    outputs:
+      should_execute_tests: ${{ steps.processing.outputs.should_execute_tests }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.2.1
+        with:
+          fetch-depth: 1
+      - id: files
+        uses: Ana06/get-changed-files@v1.2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          format: 'json'
+      - id: processing
+        run: |
+          readarray -t modified_files <<<"$(jq -r '.[]' <<<'${{ steps.files.outputs.modified }}')"
+          echo "Modified files: $modified_files"
+          found=false
+          for modified_file in "${modified_files[@]}"; do
+            if [[ "$modified_file" == "Dockerfile" || "$modified_file" == "docker-compose.yml" || "$modified_file" == "Dockerfile" || "$modified_file" == "Dockerfile-ut-func" ]]; then
+              found=true
+              break
+            fi
+          done
+          echo "Match Found: $found"
+          echo "::set-output name=should_execute_tests::$found"
+
   build-transformer-image-arm64:
     name: Build Transformer Docker Image ARM64
     runs-on: [self-hosted, Linux, ARM64]
+    needs: [get_sha, get_changed_files]
     steps:
       - name: Checkout
-        uses: actions/checkout@v3.5.3
+        uses: actions/checkout@v4.2.1
         with:
+          ref: ${{ needs.get_sha.outputs.sha }}
           fetch-depth: 1
-
-      - name: Setup Docker Buildx
-        uses: docker/setup-buildx-action@v2.9.1
-
+      
       - name: Login to DockerHub
-        uses: docker/login-action@v2.1.0
+        uses: docker/login-action@v3.3.0
         with:
           username: ${{ env.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_PROD_TOKEN }}
+          password: ${{ secrets.DOCKERHUB_PROD_TOKEN }}    
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3.7.1
 
       - name: Build Docker Image
-        uses: docker/build-push-action@v4.1.1
+        uses: docker/build-push-action@v6.9.0
         with:
           context: .
           file: ${{ inputs.dockerfile }}
@@ -61,12 +118,13 @@ jobs:
           # cache-to: type=gha,mode=max
 
       - name: Run Tests
+        if: ${{ inputs.skip_tests != true || needs.get_changed_files.outputs.should_execute_tests == true }}
         run: |
           docker run ${{ inputs.build_tag }} npm run test:js:ci
           docker run ${{ inputs.build_tag }} npm run test:ts:ci
 
       - name: Build and Push Multi-platform Images
-        uses: docker/build-push-action@v4.1.1
+        uses: docker/build-push-action@v6.9.0
         with:
           context: .
           file: ${{ inputs.dockerfile }}
@@ -84,23 +142,25 @@ jobs:
   build-transformer-image-amd64:
     name: Build Transformer Docker Image AMD64
     runs-on: [self-hosted, Linux, X64]
+    needs: [get_sha, get_changed_files]
     steps:
       - name: Checkout
-        uses: actions/checkout@v3.5.3
+        uses: actions/checkout@v4.2.1
         with:
+          ref: ${{ needs.get_sha.outputs.sha }}
           fetch-depth: 1
-
-      - name: Setup Docker Buildx
-        uses: docker/setup-buildx-action@v2.9.1
-
+      
       - name: Login to DockerHub
-        uses: docker/login-action@v2.1.0
+        uses: docker/login-action@v3.3.0
         with:
           username: ${{ env.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PROD_TOKEN }}
 
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3.7.1
+
       - name: Build Docker Image
-        uses: docker/build-push-action@v4.1.1
+        uses: docker/build-push-action@v6.9.0
         with:
           context: .
           file: ${{ inputs.dockerfile }}
@@ -111,12 +171,13 @@ jobs:
           # cache-to: type=gha,mode=max
 
       - name: Run Tests
+        if: ${{ inputs.skip_tests != true || needs.get_changed_files.outputs.should_execute_tests == true }}
         run: |
           docker run ${{ inputs.build_tag }} npm run test:js:ci
           docker run ${{ inputs.build_tag }} npm run test:ts:ci
 
       - name: Build and Push Multi-platform Images
-        uses: docker/build-push-action@v4.1.1
+        uses: docker/build-push-action@v6.9.0
         with:
           context: .
           file: ${{ inputs.dockerfile }}
@@ -137,25 +198,25 @@ jobs:
     needs: [build-transformer-image-amd64, build-transformer-image-arm64]
 
     steps:
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2.9.1
-
       - name: Login to DockerHub
-        uses: docker/login-action@v2.1.0
+        uses: docker/login-action@v3.3.0
         with:
           username: ${{ env.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PROD_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3.7.1
 
       - name: Create multi-arch manifest
         run: |
           docker buildx imagetools create -t ${{ inputs.push_tags }} ${{ inputs.push_tags }}-amd64 ${{ inputs.push_tags }}-arm64
 
       - name: Create latest multi-arch manifest
-        # To be triggered only for release/hotfix PR merges coming from `prepare-for-prod-deploy.yaml`
+        # To be triggered only for release/hotfix PR merges coming from `prepare-for-prod-dt-deploy.yaml`
         if: ${{ inputs.build_type == 'dt' }}
         run: |
           docker buildx imagetools create -t rudderstack/rudder-transformer:latest ${{ inputs.push_tags }}-amd64 ${{ inputs.push_tags }}-arm64
-      
+
       - name: Create latest ut multi-arch manifest
         # To be triggered only for release/hotfix PR merges coming from `prepare-for-prod-ut-deploy.yaml`
         if: ${{ inputs.build_type == 'ut' }}

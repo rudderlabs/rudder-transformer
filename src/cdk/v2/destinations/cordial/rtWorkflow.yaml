@@ -1,0 +1,31 @@
+bindings:
+  - name: handleRtTfSingleEventError
+    path: ../../../../v0/util/index
+
+steps:
+  - name: validateInput
+    template: |
+      $.assert(Array.isArray(^) && ^.length > 0, "Invalid event array")
+
+  - name: transform
+    externalWorkflow:
+      path: ./procWorkflow.yaml
+    loopOverInput: true
+
+  - name: successfulEvents
+    template: |
+      $.outputs.transform#idx.output.({
+        "batchedRequest": .,
+        "batched": false,
+        "destination": ^[idx].destination,
+        "metadata": ^[idx].metadata[],
+        "statusCode": 200
+      })[]
+  - name: failedEvents
+    template: |
+      $.outputs.transform#idx.error.(
+        $.handleRtTfSingleEventError(^[idx], .originalError ?? ., {})
+      )[]
+  - name: finalPayload
+    template: |
+      [...$.outputs.successfulEvents, ...$.outputs.failedEvents]

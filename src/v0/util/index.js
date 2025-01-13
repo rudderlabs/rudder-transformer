@@ -10,28 +10,36 @@ const Handlebars = require('handlebars');
 const fs = require('fs');
 const path = require('path');
 const lodash = require('lodash');
-const set = require('set-value');
+const { setValue: set } = require('@rudderstack/integrations-lib');
 const get = require('get-value');
 const uaParser = require('ua-parser-js');
 const moment = require('moment-timezone');
 const sha256 = require('sha256');
 const crypto = require('crypto');
-const logger = require('../../logger');
-const stats = require('../../util/stats');
-const { DestCanonicalNames, DestHandlerMap } = require('../../constants/destinationCanonicalNames');
+const { v5 } = require('uuid');
 const {
   InstrumentationError,
   BaseError,
   PlatformError,
   TransformationError,
   OAuthSecretError,
-} = require('./errorTypes');
+  getErrorRespEvents,
+} = require('@rudderstack/integrations-lib');
+
+const { JsonTemplateEngine, PathType } = require('@rudderstack/json-template-engine');
+const isString = require('lodash/isString');
+const logger = require('../../logger');
+const stats = require('../../util/stats');
+const { DestCanonicalNames, DestHandlerMap } = require('../../constants/destinationCanonicalNames');
 const { client: errNotificationClient } = require('../../util/errorNotifier');
-const { HTTP_STATUS_CODES } = require('./constant');
+const { HTTP_STATUS_CODES, VDM_V2_SCHEMA_VERSION } = require('./constant');
 const {
   REFRESH_TOKEN,
   AUTH_STATUS_INACTIVE,
 } = require('../../adapters/networkhandler/authConstants');
+const { FEATURE_FILTER_CODE, FEATURE_GZIP_SUPPORT } = require('./constant');
+const { CommonUtils } = require('../../util/common');
+
 // ========================================================================
 // INLINERS
 // ========================================================================
@@ -48,9 +56,22 @@ const removeUndefinedAndNullAndEmptyValues = (obj) =>
   lodash.pickBy(obj, isDefinedAndNotNullAndNotEmpty);
 const isBlank = (value) => lodash.isEmpty(lodash.toString(value));
 const flattenMap = (collection) => lodash.flatMap(collection, (x) => x);
+const isNull = (x) => lodash.isNull(x);
 // ========================================================================
 // GENERIC UTLITY
 // ========================================================================
+
+const removeUndefinedAndNullRecurse = (obj) => {
+  // eslint-disable-next-line no-restricted-syntax
+  for (const key in obj) {
+    if (obj[key] === null || obj[key] === undefined) {
+      // eslint-disable-next-line no-param-reassign
+      delete obj[key];
+    } else if (typeof obj[key] === 'object') {
+      removeUndefinedAndNullRecurse(obj[key]);
+    }
+  }
+};
 
 const getEventTime = (message) => {
   try {
@@ -76,6 +97,14 @@ const stripTrailingSlash = (str) => (str && str.endsWith('/') ? str.slice(0, -1)
 const isPrimitive = (arg) => {
   const type = typeof arg;
   return arg == null || (type !== 'object' && type !== 'function');
+};
+
+const isNewStatusCodesAccepted = (reqMetadata = {}) => {
+  if (reqMetadata && typeof reqMetadata === 'object' && !Array.isArray(reqMetadata)) {
+    const { features } = reqMetadata;
+    return !!features?.[FEATURE_FILTER_CODE];
+  }
+  return false;
 };
 
 /**
@@ -143,6 +172,20 @@ const isDefinedNotNullNotEmpty = (value) =>
   );
 
 const removeUndefinedNullEmptyExclBoolInt = (obj) => lodash.pickBy(obj, isDefinedNotNullNotEmpty);
+
+/**
+ * Function to remove empty key ("") from payload
+ * @param {*} payload {"key1":"a","":{"id":1}}
+ * @returns // {"key1":"a"}
+ */
+const removeEmptyKey = (payload) => {
+  const rawPayload = payload;
+  const key = '';
+  if (Object.prototype.hasOwnProperty.call(rawPayload, key)) {
+    delete rawPayload[''];
+  }
+  return rawPayload;
+};
 
 /**
  * Recursively removes undefined, null, empty objects, and empty arrays from the given object at all levels.
@@ -363,6 +406,9 @@ const hashToSha256 = (value) => sha256(value);
 
 // Check what type of gender and convert to f or m
 const getFbGenderVal = (gender) => {
+  if (typeof gender !== 'string') {
+    return null;
+  }
   if (
     gender.toUpperCase() === 'FEMALE' ||
     gender.toUpperCase() === 'F' ||
@@ -454,22 +500,18 @@ const defaultBatchRequestConfig = () => ({
 
 // Router transformer
 // Success responses
-const getSuccessRespEvents = (message, metadata, destination, batched = false) => ({
+const getSuccessRespEvents = (
+  message,
+  metadata,
+  destination,
+  batched = false,
+  statusCode = 200,
+) => ({
   batchedRequest: message,
   metadata,
   batched,
-  statusCode: 200,
-  destination,
-});
-
-// Router transformer
-// Error responses
-const getErrorRespEvents = (metadata, statusCode, error, statTags, batched = false) => ({
-  metadata,
-  batched,
   statusCode,
-  error,
-  statTags,
+  destination,
 });
 
 // ========================================================================
@@ -806,9 +848,29 @@ function formatValues(formattedVal, formattingType, typeFormat, integrationsObj)
         curFormattedVal = false;
       }
     },
+    IsArray: () => {
+      curFormattedVal = formattedVal;
+      if (!Array.isArray(formattedVal)) {
+        logger.debug('Array value missing, so dropping it');
+        curFormattedVal = undefined;
+      }
+    },
     trim: () => {
       if (typeof formattedVal === 'string') {
         curFormattedVal = formattedVal.trim();
+      }
+    },
+    isFloat: () => {
+      if (isDefinedAndNotNull(formattedVal)) {
+        curFormattedVal = parseFloat(formattedVal);
+        if (Number.isNaN(curFormattedVal)) {
+          throw new InstrumentationError('Invalid float value');
+        }
+      }
+    },
+    removeSpacesAndDashes: () => {
+      if (typeof formattedVal === 'string') {
+        curFormattedVal = formattedVal.replace(/ /g, '').replace(/-/g, '');
       }
     },
   };
@@ -908,6 +970,7 @@ const handleMetadataForValue = (value, metadata, destKey, integrationsObj = null
     strictMultiMap,
     validateTimestamp,
     allowedKeyCheck,
+    toArray,
   } = metadata;
 
   // if value is null and defaultValue is supplied - use that
@@ -973,6 +1036,13 @@ const handleMetadataForValue = (value, metadata, destKey, integrationsObj = null
     if (!foundVal) {
       formattedVal = undefined;
     }
+  }
+
+  if (toArray) {
+    if (Array.isArray(formattedVal)) {
+      return formattedVal;
+    }
+    return [formattedVal];
   }
 
   return formattedVal;
@@ -1108,7 +1178,7 @@ const getDestinationExternalIDInfoForRetl = (message, destination) => {
   if (externalIdArray) {
     externalIdArray.forEach((extIdObj) => {
       const { type, id } = extIdObj;
-      if (type.includes(`${destination}-`)) {
+      if (type?.includes(`${destination}-`)) {
         destinationExternalId = id;
         objectType = type.replace(`${destination}-`, '');
         identifierType = extIdObj.identifierType;
@@ -1135,7 +1205,7 @@ const getDestinationExternalIDObjectForRetl = (message, destination) => {
     // some stops the execution when the element is found
     externalIdArray.some((extIdObj) => {
       const { type } = extIdObj;
-      if (type.includes(`${destination}-`)) {
+      if (type?.includes(`${destination}-`)) {
         obj = extIdObj;
         return true;
       }
@@ -1206,6 +1276,9 @@ function toUnixTimestamp(timestamp) {
   return unixTimestamp;
 }
 
+// Accepts a timestamp and returns the corresponding unix timestamp in milliseconds
+const toUnixTimestampInMS = (timestamp) => new Date(timestamp).getTime();
+
 // Accecpts timestamp as a parameter and returns the difference of the same with current time.
 function getTimeDifference(timestamp) {
   const currentTime = Date.now();
@@ -1251,6 +1324,31 @@ function getFullName(message) {
 }
 
 /**
+ * Generates an exclusion list from mapping config.
+ *
+ * @param {Array} mappingConfig - The mapping config.
+ *   [
+ *     {
+ *       "destKey": "item_code",
+ *       "sourceKeys": [
+ *         "product_id",
+ *         "sku"
+ *       ]
+ *     },
+ *     {
+ *       "destKey": "name",
+ *       "sourceKeys": "name"
+ *     }
+ *   ]
+ * @returns {Array} - The generated exclusion list.
+ *   ["product_id", "sku", "name"]
+ */
+const generateExclusionList = (mappingConfig) =>
+  mappingConfig.flatMap((mapping) =>
+    Array.isArray(mapping.sourceKeys) ? [...mapping.sourceKeys] : [mapping.sourceKeys],
+  );
+
+/**
  * Extract fileds from message with exclusions
  * Pass the keys of message for extraction and
  * exclusion fields to exlude and the payload to map into
@@ -1276,39 +1374,48 @@ function getFullName(message) {
  * )
  * -------------------------------------------
  * The above call will map the fields other than the
- * exlusion list from the given keys to the destination payload
+ * exclusion list from the given keys to the destination payload
  *
  */
-function extractCustomFields(message, destination, keys, exclusionFields) {
+function extractCustomFields(message, payload, keys, exclusionFields) {
   const mappingKeys = [];
+  // Define reserved words
+  const reservedWords = ['__proto__', 'constructor', 'prototype'];
+
+  const isReservedWord = (key) => reservedWords.includes(key);
+
   if (Array.isArray(keys)) {
     keys.forEach((key) => {
       const messageContext = get(message, key);
       if (messageContext) {
         Object.keys(messageContext).forEach((k) => {
-          if (!exclusionFields.includes(k)) mappingKeys.push(k);
+          if (!exclusionFields.includes(k) && !isReservedWord(k)) {
+            mappingKeys.push(k);
+          }
         });
         mappingKeys.forEach((mappingKey) => {
           if (!(typeof messageContext[mappingKey] === 'undefined')) {
-            set(destination, mappingKey, get(messageContext, mappingKey));
+            set(payload, mappingKey, get(messageContext, mappingKey));
           }
         });
       }
     });
   } else if (keys === 'root') {
     Object.keys(message).forEach((k) => {
-      if (!exclusionFields.includes(k)) mappingKeys.push(k);
+      if (!exclusionFields.includes(k) && !isReservedWord(k)) {
+        mappingKeys.push(k);
+      }
     });
     mappingKeys.forEach((mappingKey) => {
       if (!(typeof message[mappingKey] === 'undefined')) {
-        set(destination, mappingKey, get(message, mappingKey));
+        set(payload, mappingKey, get(message, mappingKey));
       }
     });
   } else {
     logger.debug('unable to parse keys');
   }
 
-  return destination;
+  return payload;
 }
 
 // Deleting nested properties from objects
@@ -1372,11 +1479,22 @@ function getStringValueOfJSON(json) {
   return output;
 }
 
-const getMetadata = (metadata) => ({
+const getTrackingPlanMetadata = (metadata) => ({
+  trackingPlanId: metadata.trackingPlanId,
+  workspaceId: metadata.workspaceId,
+});
+
+const getMetadata = (metadata = {}) => ({
   sourceType: metadata.sourceType,
   destinationType: metadata.destinationType,
   k8_namespace: metadata.namespace,
 });
+
+const getTransformationMetadata = (metadata = {}) => ({
+  transformationId: metadata.transformationId,
+  workspaceId: metadata.workspaceId,
+});
+
 // checks if array 2 is a subset of array 1
 function checkSubsetOfArray(array1, array2) {
   const result = array2.every((val) => array1.includes(val));
@@ -1444,17 +1562,42 @@ const getErrorStatusCode = (error, defaultStatusCode = HTTP_STATUS_CODES.INTERNA
   }
 };
 
+function isAxiosError(err) {
+  return (
+    Array.isArray(err?.config?.adapter) &&
+    err?.config?.adapter?.length > 1 &&
+    typeof err?.request?.socket === 'object' &&
+    !!err?.request?.protocol &&
+    !!err?.request?.method &&
+    !!err?.request?.path &&
+    !!err?.status
+  );
+}
+
 /**
  * Used for generating error response with stats from native and built errors
  */
-function generateErrorObject(error, defTags = {}, shouldEnrichErrorMessage = false) {
-  let errObject = error;
+function generateErrorObject(error, defTags = {}, shouldEnrichErrorMessage = true) {
+  let errObject = new BaseError(
+    error.message,
+    getErrorStatusCode(error),
+    {
+      ...error.statTags,
+      ...defTags,
+    },
+    error.destinationResponse,
+    error.authErrorCategory,
+  );
   let errorMessage = error.message;
+  if (isAxiosError(errObject.destinationResponse)) {
+    delete errObject?.destinationResponse.config;
+    delete errObject?.destinationResponse.request;
+  }
   if (shouldEnrichErrorMessage) {
-    if (error.destinationResponse) {
+    if (errObject.destinationResponse) {
       errorMessage = JSON.stringify({
-        message: error.message,
-        destinationResponse: error.destinationResponse,
+        message: errorMessage,
+        destinationResponse: errObject.destinationResponse,
       });
     }
     errObject.message = errorMessage;
@@ -1462,13 +1605,6 @@ function generateErrorObject(error, defTags = {}, shouldEnrichErrorMessage = fal
   if (!(error instanceof BaseError)) {
     errObject = new TransformationError(errorMessage, getErrorStatusCode(error));
   }
-
-  // Add higher level default tags
-  errObject.statTags = {
-    ...errObject.statTags,
-    ...defTags,
-  };
-
   return errObject;
 }
 /**
@@ -1496,7 +1632,7 @@ function isHttpStatusRetryable(status) {
 function generateUUID() {
   return crypto.randomUUID({
     disableEntropyCache: true,
-  }); /* using disableEntropyCache as true to not cache the generated uuids. 
+  }); /* using disableEntropyCache as true to not cache the generated uuids.
   For more Info https://nodejs.org/api/crypto.html#cryptorandomuuidoptions:~:text=options%20%3CObject%3E-,disableEntropyCache,-%3Cboolean%3E%20By
   */
 }
@@ -1520,17 +1656,10 @@ function isAppleFamily(platform) {
 }
 
 function removeHyphens(str) {
+  if (!isString(str)) {
+    return str;
+  }
   return str.replace(/-/g, '');
-}
-
-function isCdkDestination(event) {
-  // TODO: maybe dont need all these checks in place
-  return (
-    event.destination &&
-    event.destination.DestinationDefinition &&
-    event.destination.DestinationDefinition.Config &&
-    event.destination.DestinationDefinition.Config.cdkEnabled
-  );
 }
 
 /**
@@ -1598,7 +1727,7 @@ function getValidDynamicFormConfig(
  */
 const checkInvalidRtTfEvents = (inputs) => {
   if (!Array.isArray(inputs) || inputs.length === 0) {
-    const respEvents = getErrorRespEvents(null, 400, 'Invalid event array');
+    const respEvents = getErrorRespEvents([], 400, 'Invalid event array');
     return [respEvents];
   }
   return [];
@@ -1660,11 +1789,6 @@ const handleRtTfSingleEventError = (input, error, reqMetadata) => {
  * @returns
  */
 const simpleProcessRouterDest = async (inputs, singleTfFunc, reqMetadata, processParams) => {
-  const errorRespEvents = checkInvalidRtTfEvents(inputs);
-  if (errorRespEvents.length > 0) {
-    return errorRespEvents;
-  }
-
   const respList = await Promise.all(
     inputs.map(async (input) => {
       try {
@@ -1692,10 +1816,6 @@ const simpleProcessRouterDest = async (inputs, singleTfFunc, reqMetadata, proces
  * @returns
  */
 const simpleProcessRouterDestSync = async (inputs, singleTfFunc, reqMetadata, processParams) => {
-  const errorRespEvents = checkInvalidRtTfEvents(inputs);
-  if (errorRespEvents.length > 0) {
-    return errorRespEvents;
-  }
   const respList = [];
   // eslint-disable-next-line no-restricted-syntax
   for (const input of inputs) {
@@ -1704,7 +1824,7 @@ const simpleProcessRouterDestSync = async (inputs, singleTfFunc, reqMetadata, pr
       // transform if not already done
       if (!input.message.statusCode) {
         // eslint-disable-next-line no-await-in-loop
-        resp = await singleTfFunc(input, processParams);
+        resp = await singleTfFunc(input, processParams, reqMetadata);
       }
       respList.push(getSuccessRespEvents(resp, [input.metadata], input.destination));
     } catch (error) {
@@ -2025,6 +2145,223 @@ const getAuthErrCategoryFromStCode = (status) => {
   return '';
 };
 
+const isValidInteger = (value) => {
+  if (Number.isNaN(value) || !isDefinedAndNotNull(value)) {
+    return false;
+  }
+  if (typeof value === 'number' && value % 1 === 0) {
+    return true;
+  }
+  // Use a regular expression to check if the string is a valid integer or a valid floating-point number
+  return typeof value === 'string' ? /^-?\d+$/.test(value) : false;
+};
+const validateEventName = (event) => {
+  if (!event || typeof event !== 'string') {
+    throw new InstrumentationError('Event is a required field and should be a string');
+  }
+};
+
+const IsGzipSupported = (reqMetadata = {}) => {
+  if (reqMetadata && typeof reqMetadata === 'object' && !Array.isArray(reqMetadata)) {
+    const { features } = reqMetadata;
+    return !!features?.[FEATURE_GZIP_SUPPORT];
+  }
+  return false;
+};
+
+/**
+ * Returns an array containing the values of the specified key from each object in the input array.
+ * If the input array is falsy (null, undefined, empty array), an empty array is returned.
+ *
+ * @param {Array} arr - The input array from which values will be extracted.
+ * @param {string} key - The key of the property whose values will be extracted from each object in the input array.
+ * @returns {Array} - A new array containing the values of the specified key from each object in the input array.
+ *
+ * @example
+ * const configArray = [
+ *   { name: 'John', age: 25 },
+ *   { name: 'Jane', age: 30 },
+ *   { name: 'Bob', age: 35 }
+ * ];
+ *
+ * const result = parseConfigArray(configArray, 'name');
+ *  Output: ['John', 'Jane', 'Bob']
+ */
+const parseConfigArray = (arr, key) => {
+  if (!arr) {
+    return [];
+  }
+  return arr.map((item) => item[key]);
+};
+
+/**
+ * Finds an existing batch based on metadata JobIds from the provided batch and metadataMap.
+ * @param {*} batch
+ * @param {*} metadataMap The map containing metadata items indexed by JobIds.
+ * @returns
+ */
+const findExistingBatch = (batch, metadataMap) => {
+  const existingMetadataItem = batch.metadata.find((metadataItem) =>
+    metadataMap.has(metadataItem.jobId),
+  );
+  return existingMetadataItem ? metadataMap.get(existingMetadataItem.jobId) : null;
+};
+
+/**
+ * Removes duplicate metadata within each merged batch object.
+ * @param {*} mergedBatches An array of merged batch objects.
+ */
+const removeDuplicateMetadata = (mergedBatches) => {
+  mergedBatches.forEach((batch) => {
+    const metadataSet = new Set();
+    // eslint-disable-next-line no-param-reassign
+    batch.metadata = batch.metadata.filter((metadataItem) => {
+      if (!metadataSet.has(metadataItem.jobId)) {
+        metadataSet.add(metadataItem.jobId);
+        return true;
+      }
+      return false;
+    });
+  });
+};
+
+/**
+ * Combines batched requests with the same JobIds.
+ * @param {*} inputBatches The array of batched request objects.
+ * @returns  The combined batched requests with merged JobIds.
+ *
+ */
+const combineBatchRequestsWithSameJobIds = (inputBatches) => {
+  const combineBatches = (batches) => {
+    const clonedBatches = [...batches];
+    const mergedBatches = [];
+    const metadataMap = new Map();
+
+    clonedBatches.forEach((batch) => {
+      const existingBatch = findExistingBatch(batch, metadataMap);
+
+      if (existingBatch) {
+        // Merge batchedRequests arrays
+        existingBatch.batchedRequest = [
+          ...CommonUtils.toArray(existingBatch.batchedRequest),
+          ...CommonUtils.toArray(batch.batchedRequest),
+        ];
+
+        // Merge metadata
+        batch.metadata.forEach((metadataItem) => {
+          if (!metadataMap.has(metadataItem.jobId)) {
+            metadataMap.set(metadataItem.jobId, existingBatch);
+          }
+          existingBatch.metadata.push(metadataItem);
+        });
+      } else {
+        mergedBatches.push(batch);
+        batch.metadata.forEach((metadataItem) => {
+          metadataMap.set(metadataItem.jobId, batch);
+        });
+      }
+    });
+
+    // Remove duplicate metadata within each merged object
+    removeDuplicateMetadata(mergedBatches);
+
+    return mergedBatches;
+  };
+  // We need to run this twice because in first pass some batches might not get merged
+  // and in second pass they might get merged
+  // Example: [[{jobID:1}, {jobID:2}], [{jobID:3}], [{jobID:1}, {jobID:3}]]
+  // 1st pass: [[{jobID:1}, {jobID:2}, {jobID:3}], [{jobID:3}]]
+  // 2nd pass: [[{jobID:1}, {jobID:2}, {jobID:3}]]
+  return combineBatches(combineBatches(inputBatches));
+};
+
+/**
+ * This function validates the event and return it as string.
+ * @param {*} isMandatory The event is a required field.
+ * @param {*} convertToLowerCase The event should be converted to lower-case.
+ * @returns {string} Event name converted to string.
+ */
+const validateEventAndLowerCaseConversion = (event, isMandatory, convertToLowerCase) => {
+  if (!isDefined(event) || typeof event === 'object' || typeof event === 'boolean') {
+    throw new InstrumentationError('Event should not be a object, NaN, boolean or undefined');
+  }
+
+  // handling 0 as it is a valid value
+  if (isMandatory && !event && event !== 0) {
+    throw new InstrumentationError('Event is a required field');
+  }
+
+  return convertToLowerCase ? event.toString().toLowerCase() : event.toString();
+};
+
+/**
+ * This function applies custom mappings to the event.
+ * @param {*} event The event to be transformed.
+ * @param {*} mappings The custom mappings to be applied.
+ * @returns {object} The transformed event.
+ */
+const applyCustomMappings = (event, mappings) =>
+  JsonTemplateEngine.createAsSync(mappings, { defaultPathType: PathType.JSON }).evaluate(event);
+
+const applyJSONStringTemplate = (message, template) =>
+  JsonTemplateEngine.createAsSync(template.replace(/{{/g, '${').replace(/}}/g, '}'), {
+    defaultPathType: PathType.JSON,
+  }).evaluate(message);
+
+/**
+ * This groups the events by destination ID and source ID.
+ * Note: sourceID is only used for rETL events.
+ * @param {*} events The events to be grouped.
+ * @returns {array} The array of grouped events.
+ */
+const groupRouterTransformEvents = (events) =>
+  Object.values(
+    lodash.groupBy(events, (ev) => [ev.destination?.ID, ev.context?.sources?.job_id || 'default']),
+  );
+
+/*
+ * Gets url path omitting the hostname & protocol
+ *
+ * **Note**:
+ * - This should only be used when there are no dynamic paths in URL
+ * @param {*} inputUrl
+ * @returns
+ */
+const getRelativePathFromURL = (inputUrl) => {
+  if (isValidUrl(inputUrl)) {
+    const url = new URL(inputUrl);
+    return url.pathname;
+  }
+  return inputUrl;
+};
+
+const isEventSentByVDMV1Flow = (event) => event?.message?.context?.mappedToDestination;
+
+const isEventSentByVDMV2Flow = (event) =>
+  event?.connection?.config?.destination?.schemaVersion === VDM_V2_SCHEMA_VERSION;
+
+const convertToUuid = (input) => {
+  const NAMESPACE = v5.DNS;
+
+  if (!isDefinedAndNotNull(input)) {
+    throw new InstrumentationError('Input is undefined or null.');
+  }
+
+  try {
+    // Stringify and trim the input
+    const trimmedInput = String(input).trim();
+
+    // Check for empty input after trimming
+    if (!trimmedInput) {
+      throw new InstrumentationError('Input is empty or invalid.');
+    }
+    // Generate and return UUID
+    return v5(trimmedInput, NAMESPACE);
+  } catch (error) {
+    const errorMessage = `Failed to transform input to uuid: ${error.message}`;
+    throw new InstrumentationError(errorMessage);
+  }
+};
 // ========================================================================
 // EXPORTS
 // ========================================================================
@@ -2033,6 +2370,8 @@ module.exports = {
   ErrorMessage,
   addExternalIdToTraits,
   adduserIdFromExternalId,
+  applyCustomMappings,
+  applyJSONStringTemplate,
   base64Convertor,
   batchMultiplexedEvents,
   checkEmptyStringInarray,
@@ -2046,6 +2385,7 @@ module.exports = {
   defaultPutRequestConfig,
   defaultRequestConfig,
   deleteObjectProperty,
+  generateExclusionList,
   extractCustomFields,
   flattenJson,
   flattenMap,
@@ -2060,7 +2400,6 @@ module.exports = {
   getDestinationExternalIDInfoForRetl,
   getDestinationExternalIDObjectForRetl,
   getDeviceModel,
-  getErrorRespEvents,
   getEventTime,
   getFieldValueFromMessage,
   getFirstAndLastName,
@@ -2071,6 +2410,8 @@ module.exports = {
   getIntegrationsObj,
   getMappingConfig,
   getMetadata,
+  getTransformationMetadata,
+  getTrackingPlanMetadata,
   getParsedIP,
   getStringValueOfJSON,
   getSuccessRespEvents,
@@ -2080,15 +2421,19 @@ module.exports = {
   getValueFromMessage,
   getValueFromPropertiesOrTraits,
   getValuesAsArrayFromConfig,
+  groupRouterTransformEvents,
   handleSourceKeysOperation,
+  hashToSha256,
   isAppleFamily,
   isBlank,
-  isCdkDestination,
   isDefined,
   isDefinedAndNotNull,
   isDefinedAndNotNullAndNotEmpty,
   isEmpty,
+  isEventSentByVDMV1Flow,
+  isEventSentByVDMV2Flow,
   isNotEmpty,
+  isNull,
   isEmptyObject,
   isHttpStatusRetryable,
   isHttpStatusSuccess,
@@ -2105,10 +2450,12 @@ module.exports = {
   removeUndefinedNullEmptyExclBoolInt,
   removeUndefinedNullValuesAndEmptyObjectArray,
   removeUndefinedValues,
+  removeUndefinedAndNullRecurse,
   returnArrayOfSubarrays,
   stripTrailingSlash,
   toTitleCase,
   toUnixTimestamp,
+  toUnixTimestampInMS,
   updatePayload,
   checkInvalidRtTfEvents,
   simpleProcessRouterDest,
@@ -2118,6 +2465,7 @@ module.exports = {
   getDestAuthCacheInstance,
   refinePayload,
   validateEmail,
+  validateEventName,
   validatePhoneWithCountryCode,
   getEventReqMetadata,
   isHybridModeEnabled,
@@ -2129,4 +2477,16 @@ module.exports = {
   hasCircularReference,
   getAuthErrCategoryFromErrDetailsAndStCode,
   getAuthErrCategoryFromStCode,
+  isValidInteger,
+  isNewStatusCodesAccepted,
+  IsGzipSupported,
+  parseConfigArray,
+  findExistingBatch,
+  removeDuplicateMetadata,
+  combineBatchRequestsWithSameJobIds,
+  validateEventAndLowerCaseConversion,
+  getRelativePathFromURL,
+  removeEmptyKey,
+  isAxiosError,
+  convertToUuid,
 };

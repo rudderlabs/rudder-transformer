@@ -1,0 +1,22 @@
+[
+  {
+    "destKey": "currency",
+    "sourceKeys": "properties.currency"
+  },
+  {
+    "destKey": "client_ip",
+    "sourceKeys": ["context.ip", "request_ip"]
+  },
+  {
+    "destKey": "referrer_url",
+    "sourceKeys": "context.page.referrer"
+  },
+  {
+    "destKey": "imp",
+    "sourceKeys": "messageId"
+  },
+  {
+    "destKey": "order_id",
+    "sourceKeys": "properties.order_id"
+  }
+]

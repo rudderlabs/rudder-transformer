@@ -1,8 +1,0 @@
-- destKey: type
-  sourceKeys: type
-  metadata:
-    type: toLowerCase
-- destKey: userId
-  sourceKeys: userIdOnly
-  sourceFromGenericMap: true
-  required: true

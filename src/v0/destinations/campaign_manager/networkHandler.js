@@ -1,3 +1,5 @@
+/* eslint-disable no-restricted-syntax */
+const { AbortedError, RetryableError, NetworkError } = require('@rudderstack/integrations-lib');
 const { prepareProxyRequest, proxyRequest } = require('../../../adapters/network');
 const { isHttpStatusSuccess, getAuthErrCategoryFromStCode } = require('../../util/index');
 
@@ -5,26 +7,48 @@ const {
   processAxiosResponse,
   getDynamicErrorType,
 } = require('../../../adapters/utils/networkUtils');
-const { AbortedError, RetryableError, NetworkError } = require('../../util/errorTypes');
 const tags = require('../../util/tags');
 
 function checkIfFailuresAreRetryable(response) {
+  const { status } = response;
   try {
-    if (Array.isArray(response.status) && Array.isArray(response.status[0].errors)) {
-      return (
-        response.status[0].errors[0].code !== 'PERMISSION_DENIED' &&
-        response.status[0].errors[0].code !== 'INVALID_ARGUMENT'
-      );
+    if (Array.isArray(status)) {
+      // iterate over each status, and if found retryable in conversations ..retry else discard
+      /* status : [{
+        "conversion": {
+          object (Conversion)
+        },
+        "errors": [
+          {
+            object (ConversionError)
+          }
+        ],
+        "kind": string
+      }] */
+      for (const st of status) {
+        for (const err of st.errors) {
+          // if code is any of these, event is not retryable
+          if (
+            err.code === 'PERMISSION_DENIED' ||
+            err.code === 'INVALID_ARGUMENT' ||
+            err.code === 'NOT_FOUND'
+          ) {
+            return false;
+          }
+        }
+      }
     }
     return true;
   } catch (e) {
-    return true;
+    return false;
   }
 }
 
-const responseHandler = (destinationResponse) => {
+const responseHandler = (responseParams) => {
+  const { destinationResponse } = responseParams;
   const message = `[CAMPAIGN_MANAGER Response Handler] - Request Processed Successfully`;
   const { response, status } = destinationResponse;
+
   if (isHttpStatusSuccess(status)) {
     // check for Failures
     if (response.hasFailures === true) {
@@ -53,7 +77,7 @@ const responseHandler = (destinationResponse) => {
 
   throw new NetworkError(
     `Campaign Manager: ${response.error?.message} during CAMPAIGN_MANAGER response transformation 3`,
-    status,
+    500,
     {
       [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
     },

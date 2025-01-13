@@ -1,7 +1,7 @@
 import { sendToDestination, userTransformHandler } from '../../routerUtils';
 import { FixMe } from '../../util/types';
 
-export default class EventTesterService {
+export class EventTesterService {
   private static getDestHandler(version, destination) {
     // eslint-disable-next-line global-require, import/no-dynamic-require
     return require(`../../${version}/destinations/${destination}/transform`);
@@ -11,7 +11,7 @@ export default class EventTesterService {
     function capitalize(s) {
       return s === 'id' ? s.toUpperCase() : s.charAt(0).toUpperCase() + s.slice(1);
     }
-    let transformedObj: FixMe;
+    const transformedObj: FixMe = {};
     const { destinationDefinition } = dest;
     Object.keys(dest).forEach((key) => {
       transformedObj[capitalize(key)] = dest[key];
@@ -54,7 +54,7 @@ export default class EventTesterService {
           libraries,
         };
 
-        let response: FixMe;
+        let response: FixMe = {};
         let errorFound = false;
 
         if (stage.user_transform) {

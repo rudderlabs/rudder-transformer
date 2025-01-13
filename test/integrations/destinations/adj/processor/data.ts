@@ -2179,7 +2179,8 @@ export const data = [
         status: 200,
         body: [
           {
-            error: 'App Token is not present. Please configure your app token from config dashbaord',
+            error:
+              'App Token is not present. Please configure your app token from config dashbaord',
             statTags: {
               destType: 'ADJ',
               errorCategory: 'dataValidation',
@@ -2205,24 +2206,24 @@ export const data = [
         body: [
           {
             message: {
-              "type": "track",
-              "event": "Application Installed",
-              "sentAt": "2022-09-28T20:14:44.995Z",
-              "userId": "sample_user_id",
-              "context": {
-                "device": {
-                  "id": "sample_device_id",
-                  "type": "android",
-                  "advertisingId": "_sample"
+              type: 'track',
+              event: 'Application Installed',
+              sentAt: '2022-09-28T20:14:44.995Z',
+              userId: 'sample_user_id',
+              context: {
+                device: {
+                  id: 'sample_device_id',
+                  type: 'android',
+                  advertisingId: '_sample',
                 },
-                "traits": {
-                  "userId": "_sample_uid",
-                  "anonymousId": "_sample_anonid"
-                }
+                traits: {
+                  userId: '_sample_uid',
+                  anonymousId: '_sample_anonid',
+                },
               },
-              "timestamp": "2022-09-28T20:14:43.314Z",
-              "request_ip": "71.189.106.156",
-              "originalTimestamp": "2022-09-28T20:14:44.995Z"
+              timestamp: '2022-09-28T20:14:43.314Z',
+              request_ip: '71.189.106.156',
+              originalTimestamp: '2022-09-28T20:14:44.995Z',
             },
             destination: {
               ID: '1i3Em7GMU9xVEiDlZUN8c88BMS9',
@@ -2245,8 +2246,7 @@ export const data = [
               },
               Config: {
                 appToken: 'testAppToken',
-                customMappings: [
-                  { from: 'Application Installed', to: '3fdmll' }],
+                customMappings: [{ from: 'Application Installed', to: '3fdmll' }],
                 partnerParamsKeys: [
                   { from: 'key1', to: 'partnerParamKey-1' },
                   { from: 'key2', to: 'partnerParamKey-2' },
@@ -2277,10 +2277,10 @@ export const data = [
               endpoint: 'https://s2s.adjust.com/event',
               headers: { Accept: '*/*' },
               params: {
-                event_token: "3fdmll",
-                ip_address: "71.189.106.156",
+                event_token: '3fdmll',
+                ip_address: '71.189.106.156',
                 android_id: 'sample_device_id',
-                gps_adid: "_sample",
+                gps_adid: '_sample',
                 s2s: 1,
                 app_token: 'testAppToken',
                 environment: 'production',
@@ -2294,4 +2294,5 @@ export const data = [
         ],
       },
     },
-  },];
+  },
+];

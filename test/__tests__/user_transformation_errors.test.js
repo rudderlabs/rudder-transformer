@@ -163,7 +163,6 @@ describe("JS Transformation Error Tests", () => {
         true,
       );
       
-      console.log('XTE: ', result.transformedEvents)
       expect(result.transformedEvents.length).toBe(1);
       result.transformedEvents.forEach(ev => { expect(ev.error).toEqual(
         `ReferenceError: x is not defined

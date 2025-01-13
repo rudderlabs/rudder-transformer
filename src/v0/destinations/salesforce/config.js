@@ -24,6 +24,9 @@ const SF_TOKEN_REQUEST_URL = 'https://login.salesforce.com/services/oauth2/token
 const SF_TOKEN_REQUEST_URL_SANDBOX = 'https://test.salesforce.com/services/oauth2/token';
 
 const DESTINATION = 'Salesforce';
+const SALESFORCE_OAUTH_SANDBOX = 'salesforce_oauth_sandbox';
+const OAUTH = 'oauth';
+const LEGACY = 'legacy';
 
 const mappingConfig = getMappingConfig(ConfigCategory, __dirname);
 
@@ -37,4 +40,7 @@ module.exports = {
   ignoredContactTraits: mappingConfig[ConfigCategory.IGNORE_CONTACT.name],
   ACCESS_TOKEN_CACHE_TTL,
   DESTINATION,
+  OAUTH,
+  LEGACY,
+  SALESFORCE_OAUTH_SANDBOX,
 };

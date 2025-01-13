@@ -22,7 +22,10 @@
   {
     "destKey": "session_id",
     "sourceKeys": ["properties.sessionId", "context.sessionId"],
-    "required": false
+    "required": false,
+    "metadata": {
+      "type": "toString"
+    }
   },
   {
     "destKey": "transaction",

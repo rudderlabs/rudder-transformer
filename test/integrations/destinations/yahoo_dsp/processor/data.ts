@@ -51,7 +51,7 @@ export const data = [
                     },
                     {
                       ipAddress: 'fdffddf',
-                      email: 'van@abc.com',
+                      email: 'van@abc.com ',
                       deviceId: 'djfdjfkdjf',
                       phone: '@09876543210',
                       firstName: 'test',

@@ -1,3 +1,4 @@
+const { NetworkError, InvalidAuthTokenError } = require('@rudderstack/integrations-lib');
 const {
   REFRESH_TOKEN,
   AUTH_STATUS_INACTIVE,
@@ -7,7 +8,6 @@ const {
   getDynamicErrorType,
 } = require('../../../adapters/utils/networkUtils');
 
-const { NetworkError, InvalidAuthTokenError } = require('../../util/errorTypes');
 const tags = require('../../util/tags');
 
 /**

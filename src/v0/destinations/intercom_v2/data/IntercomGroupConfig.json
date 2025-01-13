@@ -1,0 +1,47 @@
+[
+  {
+    "destKey": "company_id",
+    "sourceKeys": "groupId",
+    "sourceFromGenericMap": true,
+    "required": true
+  },
+  {
+    "destKey": "name",
+    "sourceKeys": "name",
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "website",
+    "sourceKeys": "website",
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "plan",
+    "sourceKeys": ["traits.plan", "context.traits.plan"]
+  },
+  {
+    "destKey": "size",
+    "sourceKeys": ["traits.size", "context.traits.size"],
+    "metadata": {
+      "type": "toNumber"
+    }
+  },
+  {
+    "destKey": "industry",
+    "sourceKeys": ["traits.industry", "context.traits.industry"]
+  },
+  {
+    "destKey": "monthly_spend",
+    "sourceKeys": ["traits.monthlySpend", "context.traits.monthlySpend"],
+    "metadata": {
+      "type": "toNumber"
+    }
+  },
+  {
+    "destKey": "remote_created_at",
+    "sourceKeys": ["traits.remoteCreatedAt", "context.traits.remoteCreatedAt"],
+    "metadata": {
+      "type": "secondTimestamp"
+    }
+  }
+]

@@ -1,0 +1,27 @@
+[
+  {
+    "destKey": "occurredAt",
+    "sourceKeys": ["timestamp", "originalTimestamp"],
+    "required": true
+  },
+  {
+    "destKey": "opaqueUserId",
+    "sourceKeys": "anonymousId",
+    "required": true
+  },
+  {
+    "destKey": "resolvedBidId",
+    "sourceKeys": "properties.resolvedBidId",
+    "required": false
+  },
+  {
+    "destKey": "entity",
+    "sourceKeys": "properties.entity",
+    "required": false
+  },
+  {
+    "destKey": "additionalAttribution",
+    "sourceKeys": "properties.additionalAttribution",
+    "required": false
+  }
+]

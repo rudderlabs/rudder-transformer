@@ -1,7 +1,7 @@
 [
   {
     "destKey": "Email",
-    "sourceKeys": "email",
+    "sourceKeys": "emailOnly",
     "required": false,
     "sourceFromGenericMap": true
   },

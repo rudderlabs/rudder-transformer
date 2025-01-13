@@ -1,6 +1,7 @@
 const get = require('get-value');
 const set = require('set-value');
-
+const lodash = require('lodash');
+const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const {
   removeUndefinedValues,
@@ -15,22 +16,33 @@ const {
   isDefinedAndNotNullAndNotEmpty,
   simpleProcessRouterDest,
 } = require('../../util');
-const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
 
-const { Event, ENDPOINT, ConfigCategory, mappingConfig, nameToEventMap } = require('./config');
+const {
+  Event,
+  ENDPOINT,
+  ENDPOINT_V2,
+  ConfigCategory,
+  mappingConfig,
+  nameToEventMap,
+} = require('./config');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 function responseBuilderSimple(payload, message, destination) {
-  const { androidAppId, appleAppId } = destination.Config;
+  const { androidAppId, appleAppId, sharingFilter, devKey, s2sKey, authVersion } =
+    destination.Config;
   let endpoint;
   const os = get(message, 'context.os.name');
   // if ((os && os.toLowerCase() === "android") || (os && isAppleFamily(os))){
   //   if()
   // }
+
+  const finalEndPoint =
+    isDefinedAndNotNull(authVersion) && authVersion === 'v2' ? ENDPOINT_V2 : ENDPOINT;
+
   if (os && os.toLowerCase() === 'android' && androidAppId) {
-    endpoint = `${ENDPOINT}${androidAppId}`;
+    endpoint = `${finalEndPoint}${androidAppId}`;
   } else if (os && isAppleFamily(os) && appleAppId) {
-    endpoint = `${ENDPOINT}id${appleAppId}`;
+    endpoint = `${finalEndPoint}id${appleAppId}`;
   } else {
     throw new ConfigurationError(
       'os name is required along with the respective appId eg. (os->android & Android App Id is required) or (os->ios & Apple App Id is required)',
@@ -87,16 +99,19 @@ function responseBuilderSimple(payload, message, destination) {
     updatedPayload.bundleIdentifier = bundleIdentifier;
   }
 
-  const { sharingFilter, devKey } = destination.Config;
+  // const { sharingFilter, devKey } = destination.Config;
   if (isDefinedAndNotNullAndNotEmpty(sharingFilter)) {
     updatedPayload.sharing_filter = sharingFilter;
   }
+
+  const finalAuthentication =
+    isDefinedAndNotNull(authVersion) && authVersion === 'v2' ? s2sKey : devKey;
 
   const response = defaultRequestConfig();
   response.endpoint = endpoint;
   response.headers = {
     'Content-Type': JSON_MIME_TYPE,
-    authentication: devKey,
+    authentication: finalAuthentication,
   };
   response.method = defaultPostRequestConfig.requestMethod;
   response.body.JSON = removeUndefinedAndNullValues(updatedPayload);
@@ -113,23 +128,31 @@ function getEventValueForUnIdentifiedTrackEvent(message) {
   return { eventValue };
 }
 
-function getEventValueMapFromMappingJson(message, mappingJson, isMultiSupport) {
+function getEventValueMapFromMappingJson(message, mappingJson, isMultiSupport, config) {
   let eventValue = {};
-  set(eventValue, 'properties', message.properties);
+  const { addPropertiesAtRoot, afCurrencyAtRoot, listOfProps } = config;
+  const clonedProp = message.properties && lodash.cloneDeep(message.properties);
+  if (addPropertiesAtRoot) {
+    eventValue = clonedProp;
+  } else {
+    if (Array.isArray(listOfProps) && listOfProps.length > 0) {
+      listOfProps.forEach((prop) => {
+        eventValue[prop.property] = clonedProp[prop.property];
+        delete clonedProp[prop.property];
+      });
+    }
+    eventValue.properties = clonedProp;
+  }
+
   const sourceKeys = Object.keys(mappingJson);
   sourceKeys.forEach((sourceKey) => {
     set(eventValue, mappingJson[sourceKey], get(message, sourceKey));
   });
-  if (
-    isMultiSupport &&
-    message.properties &&
-    message.properties.products &&
-    message.properties.products.length > 0
-  ) {
+  if (isMultiSupport && clonedProp && clonedProp.products && clonedProp.products.length > 0) {
     const contentIds = [];
     const quantities = [];
     const prices = [];
-    message.properties.products.forEach((product) => {
+    clonedProp.products.forEach((product) => {
       contentIds.push(product.product_id);
       quantities.push(product.quantity);
       prices.push(product.price);
@@ -140,6 +163,9 @@ function getEventValueMapFromMappingJson(message, mappingJson, isMultiSupport) {
       af_quantity: quantities,
       af_price: prices,
     };
+  }
+  if (afCurrencyAtRoot) {
+    eventValue.af_currency = clonedProp.currency;
   }
   eventValue = removeUndefinedValues(eventValue);
   if (Object.keys(eventValue).length > 0) {
@@ -160,7 +186,7 @@ function processNonTrackEvents(message, eventName) {
   return payload;
 }
 
-function processEventTypeTrack(message) {
+function processEventTypeTrack(message, config) {
   let isMultiSupport = true;
   const evType = message.event && message.event.toLowerCase();
   let category = ConfigCategory.DEFAULT;
@@ -184,6 +210,7 @@ function processEventTypeTrack(message) {
     message,
     mappingConfig[category.name],
     isMultiSupport,
+    config,
   );
   payload.eventName = message.event;
   payload.eventCurrency = message?.properties?.currency;
@@ -192,16 +219,29 @@ function processEventTypeTrack(message) {
 }
 
 function processSingleMessage(message, destination) {
+  const { devKey, s2sKey, authVersion, useRichEventName } = destination.Config;
+
+  if (!isDefinedAndNotNull(authVersion) && !isDefinedAndNotNull(devKey)) {
+    throw new ConfigurationError('No authentication key is present. Aborting.');
+  }
+
+  if (isDefinedAndNotNull(authVersion) && authVersion === 'v2' && !isDefinedAndNotNull(s2sKey)) {
+    throw new ConfigurationError('s2s key is mandatory for v2 authorization. Aborting.');
+  }
+
+  if (isDefinedAndNotNull(authVersion) && authVersion === 'v1' && !isDefinedAndNotNull(devKey)) {
+    throw new ConfigurationError('dev key is mandatory for v1 authorization. Aborting.');
+  }
   const messageType = message.type.toLowerCase();
   let payload;
   switch (messageType) {
     case EventType.TRACK: {
-      payload = processEventTypeTrack(message);
+      payload = processEventTypeTrack(message, destination.Config);
       break;
     }
     case EventType.SCREEN: {
       let eventName;
-      if (destination.Config.useRichEventName === true) {
+      if (useRichEventName === true) {
         eventName = `Viewed ${
           message.name || message.event || get(message, 'properties.name') || ''
         } Screen`;
@@ -213,7 +253,7 @@ function processSingleMessage(message, destination) {
     }
     case EventType.PAGE: {
       let eventName;
-      if (destination.Config.useRichEventName === true) {
+      if (useRichEventName === true) {
         eventName = `Viewed ${message.name || get(message, 'properties.name') || ''} Page`;
       } else {
         eventName = EventType.PAGE;

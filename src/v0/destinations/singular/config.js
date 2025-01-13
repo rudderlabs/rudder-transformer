@@ -13,12 +13,20 @@ const CONFIG_CATEGORIES = {
     name: 'SINGULARIosSessionConfig',
     type: 'track',
   },
+  SESSION_UNITY: {
+    name: 'SINGULARUnitySessionConfig',
+    type: 'track',
+  },
   EVENT_ANDROID: {
     name: 'SINGULARAndroidEventConfig',
     type: 'track',
   },
   EVENT_IOS: {
     name: 'SINGULARIosEventConfig',
+    type: 'track',
+  },
+  EVENT_UNITY: {
+    name: 'SINGULARUnityEventConfig',
     type: 'track',
   },
   PRODUCT_PROPERTY: {
@@ -29,7 +37,14 @@ const CONFIG_CATEGORIES = {
 const SUPPORTED_PLATFORM = {
   android: 'ANDROID',
   ios: 'IOS',
+  pc: 'unity',
+  xbox: 'unity',
+  playstation: 'unity',
+  nintendo: 'unity',
+  metaquest: 'unity',
 };
+
+const SUPPORTED_UNTIY_SUBPLATFORMS = ['pc', 'xbox', 'playstation', 'nintendo', 'metaquest'];
 
 const SINGULAR_SESSION_ANDROID_EXCLUSION = [
   'referring_application',
@@ -93,5 +108,6 @@ module.exports = {
   SINGULAR_EVENT_ANDROID_EXCLUSION,
   SINGULAR_EVENT_IOS_EXCLUSION,
   SUPPORTED_PLATFORM,
+  SUPPORTED_UNTIY_SUBPLATFORMS,
   BASE_URL,
 };

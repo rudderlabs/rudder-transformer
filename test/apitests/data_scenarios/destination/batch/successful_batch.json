@@ -221,8 +221,7 @@
                   "unsetParamsReferrerOnNewSession",
                   "batchEvents",
                   "eventUploadPeriodMillis",
-                  "eventUploadThreshold",
-                  "oneTrustCookieCategories"
+                  "eventUploadThreshold"
                 ]
               },
               "excludeKeys": [],
@@ -257,7 +256,6 @@
                 "useIdfaAsDeviceId",
                 "blacklistedEvents",
                 "whitelistedEvents",
-                "oneTrustCookieCategories",
                 "eventFilteringOption",
                 "mapDeviceBrand"
               ],
@@ -578,8 +576,7 @@
                   "unsetParamsReferrerOnNewSession",
                   "batchEvents",
                   "eventUploadPeriodMillis",
-                  "eventUploadThreshold",
-                  "oneTrustCookieCategories"
+                  "eventUploadThreshold"
                 ]
               },
               "excludeKeys": [],
@@ -614,7 +611,6 @@
                 "useIdfaAsDeviceId",
                 "blacklistedEvents",
                 "whitelistedEvents",
-                "oneTrustCookieCategories",
                 "eventFilteringOption",
                 "mapDeviceBrand"
               ],
@@ -935,8 +931,7 @@
                   "unsetParamsReferrerOnNewSession",
                   "batchEvents",
                   "eventUploadPeriodMillis",
-                  "eventUploadThreshold",
-                  "oneTrustCookieCategories"
+                  "eventUploadThreshold"
                 ]
               },
               "excludeKeys": [],
@@ -971,7 +966,6 @@
                 "useIdfaAsDeviceId",
                 "blacklistedEvents",
                 "whitelistedEvents",
-                "oneTrustCookieCategories",
                 "eventFilteringOption",
                 "mapDeviceBrand"
               ],
@@ -1557,8 +1551,7 @@
                 "unsetParamsReferrerOnNewSession",
                 "batchEvents",
                 "eventUploadPeriodMillis",
-                "eventUploadThreshold",
-                "oneTrustCookieCategories"
+                "eventUploadThreshold"
               ]
             },
             "excludeKeys": [],
@@ -1593,7 +1586,6 @@
               "useIdfaAsDeviceId",
               "blacklistedEvents",
               "whitelistedEvents",
-              "oneTrustCookieCategories",
               "eventFilteringOption",
               "mapDeviceBrand"
             ],

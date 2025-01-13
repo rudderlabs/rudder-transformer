@@ -2,6 +2,7 @@
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable  array-callback-return */
 const get = require('get-value');
+const { ConfigurationError, InstrumentationError } = require('@rudderstack/integrations-lib');
 const { EventType, WhiteListedTraits, MappedToDestinationKey } = require('../../../constants');
 const {
   CONFIG_CATEGORIES,
@@ -12,6 +13,7 @@ const {
   eventNameMapping,
   jsonNameMapping,
 } = require('./config');
+const { processRouter: processRouterV2, processV2 } = require('./transformV2');
 const {
   createCustomerProperties,
   subscribeUserToList,
@@ -19,6 +21,7 @@ const {
   batchSubscribeEvents,
   getIdFromNewOrExistingProfile,
   profileUpdateResponseBuilder,
+  addSubscribeFlagToTraits,
 } = require('./util');
 const {
   defaultRequestConfig,
@@ -31,13 +34,12 @@ const {
   addExternalIdToTraits,
   adduserIdFromExternalId,
   getSuccessRespEvents,
-  checkInvalidRtTfEvents,
   handleRtTfSingleEventError,
+  groupEventsByType,
   flattenJson,
+  isNewStatusCodesAccepted,
 } = require('../../util');
-
-const { ConfigurationError, InstrumentationError } = require('../../util/errorTypes');
-const { JSON_MIME_TYPE } = require('../../util/constant');
+const { JSON_MIME_TYPE, HTTP_STATUS_CODES } = require('../../util/constant');
 
 /**
  * Main Identify request handler func
@@ -49,17 +51,23 @@ const { JSON_MIME_TYPE } = require('../../util/constant');
  * @param {*} message
  * @param {*} category
  * @param {*} destination
+ * @param {*} reqMetadata
  * @returns
  */
-const identifyRequestHandler = async (message, category, destination) => {
+const identifyRequestHandler = async (
+  { message, category, destination, metadata },
+  reqMetadata,
+) => {
   // If listId property is present try to subscribe/member user in list
   const { privateApiKey, enforceEmailAsPrimary, listId, flattenProperties } = destination.Config;
   const mappedToDestination = get(message, MappedToDestinationKey);
+  let traitsInfo = getFieldValueFromMessage(message, 'traits');
   if (mappedToDestination) {
     addExternalIdToTraits(message);
     adduserIdFromExternalId(message);
+    traitsInfo = addSubscribeFlagToTraits(traitsInfo);
   }
-  const traitsInfo = getFieldValueFromMessage(message, 'traits');
+
   let propertyPayload = constructPayload(message, MAPPING_CONFIG[category.name]);
   // Extract other K-V property from traits about user custom properties
   let customPropertyPayload = {};
@@ -92,6 +100,10 @@ const identifyRequestHandler = async (message, category, destination) => {
   data.attributes.properties = flattenProperties
     ? flattenJson(data.attributes.properties, '.', 'normal', false)
     : data.attributes.properties;
+
+  if (isEmptyObject(data.attributes.properties)) {
+    delete data.attributes.properties;
+  }
   const payload = {
     data: removeUndefinedAndNullValues(data),
   };
@@ -105,17 +117,41 @@ const identifyRequestHandler = async (message, category, destination) => {
     },
   };
 
-  const profileId = await getIdFromNewOrExistingProfile(endpoint, payload, requestOptions);
+  const { profileId, response, statusCode } = await getIdFromNewOrExistingProfile({
+    endpoint,
+    payload,
+    requestOptions,
+    metadata,
+  });
 
-  // Update Profile
-  const responseArray = [profileUpdateResponseBuilder(payload, profileId, category, privateApiKey)];
+  const responseMap = {
+    profileUpdateResponse: profileUpdateResponseBuilder(
+      payload,
+      profileId,
+      category,
+      privateApiKey,
+    ),
+  };
 
   // check if user wants to subscribe profile or not and listId is present or not
   if (traitsInfo?.properties?.subscribe && (traitsInfo.properties?.listId || listId)) {
-    responseArray.push(subscribeUserToList(message, traitsInfo, destination));
-    return responseArray;
+    responseMap.subscribeUserToListResponse = subscribeUserToList(message, traitsInfo, destination);
   }
-  return responseArray[0];
+
+  if (isNewStatusCodesAccepted(reqMetadata) && statusCode === HTTP_STATUS_CODES.CREATED) {
+    responseMap.suppressEventResponse = {
+      ...responseMap.profileUpdateResponse,
+      statusCode: HTTP_STATUS_CODES.SUPPRESS_EVENTS,
+      error: JSON.stringify(response),
+    };
+    return responseMap.subscribeUserToListResponse
+      ? [responseMap.subscribeUserToListResponse]
+      : responseMap.suppressEventResponse;
+  }
+
+  return responseMap.subscribeUserToListResponse
+    ? [responseMap.profileUpdateResponse, responseMap.subscribeUserToListResponse]
+    : responseMap.profileUpdateResponse;
 };
 
 // ----------------------
@@ -128,6 +164,9 @@ const trackRequestHandler = (message, category, destination) => {
   const payload = {};
   const { privateApiKey, flattenProperties } = destination.Config;
   let event = get(message, 'event');
+  if (event && typeof event !== 'string') {
+    throw new InstrumentationError('Event type should be a string');
+  }
   event = event ? event.trim().toLowerCase() : event;
   let attributes = {};
   if (ecomEvents.includes(event) && message.properties) {
@@ -241,7 +280,11 @@ const groupRequestHandler = (message, category, destination) => {
 };
 
 // Main event processor using specific handler funcs
-const processEvent = async (message, destination) => {
+const processEvent = async (event, reqMetadata) => {
+  const { message, destination, metadata } = event;
+  if (destination.Config?.apiVersion === 'v2') {
+    return processV2(event, reqMetadata);
+  }
   if (!message.type) {
     throw new InstrumentationError('Event type is required');
   }
@@ -255,7 +298,10 @@ const processEvent = async (message, destination) => {
   switch (messageType) {
     case EventType.IDENTIFY:
       category = CONFIG_CATEGORIES.IDENTIFY;
-      response = await identifyRequestHandler(message, category, destination);
+      response = await identifyRequestHandler(
+        { message, category, destination, metadata },
+        reqMetadata,
+      );
       break;
     case EventType.SCREEN:
     case EventType.TRACK:
@@ -272,8 +318,8 @@ const processEvent = async (message, destination) => {
   return response;
 };
 
-const process = async (event) => {
-  const result = await processEvent(event.message, event.destination);
+const process = async (event, reqMetadata) => {
+  const result = await processEvent(event, reqMetadata);
   return result;
 };
 
@@ -288,16 +334,16 @@ const getEventChunks = (event, subscribeRespList, nonSubscribeRespList) => {
   }
 };
 
-const processRouterDest = async (inputs, reqMetadata) => {
-  const errorRespEvents = checkInvalidRtTfEvents(inputs);
-  if (errorRespEvents.length > 0) {
-    return errorRespEvents;
+const processRouter = async (inputs, reqMetadata) => {
+  const { destination } = inputs[0];
+  // This is used to switch to latest API version
+  if (destination.Config?.apiVersion === 'v2') {
+    return processRouterV2(inputs, reqMetadata);
   }
   let batchResponseList = [];
   const batchErrorRespList = [];
   const subscribeRespList = [];
   const nonSubscribeRespList = [];
-  const { destination } = inputs[0];
   await Promise.all(
     inputs.map(async (event) => {
       try {
@@ -312,7 +358,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
           // if not transformed
           getEventChunks(
             {
-              message: await process(event),
+              message: await process(event, reqMetadata),
               metadata: event.metadata,
               destination,
             },
@@ -326,16 +372,58 @@ const processRouterDest = async (inputs, reqMetadata) => {
       }
     }),
   );
-  let batchedSubscribeResponseList = [];
+  const batchedSubscribeResponseList = [];
   if (subscribeRespList.length > 0) {
-    batchedSubscribeResponseList = batchSubscribeEvents(subscribeRespList);
+    const batchedResponseList = batchSubscribeEvents(subscribeRespList);
+    batchedSubscribeResponseList.push(...batchedResponseList);
   }
-  const nonSubscribeSuccessList = nonSubscribeRespList.map((resp) =>
-    getSuccessRespEvents(resp.message, [resp.metadata], resp.destination),
-  );
+  const nonSubscribeSuccessList = nonSubscribeRespList.map((resp) => {
+    const response = resp;
+    const { message, metadata, destination: eventDestination } = response;
+    if (
+      isNewStatusCodesAccepted(reqMetadata) &&
+      message?.statusCode &&
+      message.statusCode === HTTP_STATUS_CODES.SUPPRESS_EVENTS
+    ) {
+      const { error } = message;
+      delete message.error;
+      delete message.statusCode;
+      return {
+        ...getSuccessRespEvents(
+          message,
+          [metadata],
+          eventDestination,
+          false,
+          HTTP_STATUS_CODES.SUPPRESS_EVENTS,
+        ),
+        error,
+      };
+    }
+    return getSuccessRespEvents(message, [metadata], eventDestination);
+  });
+
   batchResponseList = [...batchedSubscribeResponseList, ...nonSubscribeSuccessList];
 
-  return [...batchResponseList, ...batchErrorRespList];
+  return { successEvents: batchResponseList, errorEvents: batchErrorRespList };
 };
-
+const processRouterDest = async (inputs, reqMetadata) => {
+  /**
+  We are doing this to maintain the order of events not only fo transformation but for delivery as well
+  Job Id:       1                 2                 3                  4                  5                6
+  Input : ['user1 track1', 'user1 identify 1', 'user1 track 2', 'user2 identify 1', 'user2 track 1', 'user1 track 3']
+  Output after batching : [['user1 track1'],['user1 identify 1', 'user2 identify 1'], [ 'user1 track 2', 'user2 track 1', 'user1 track 3']]
+  Output after transformation: [1, [2,4], [3,5,6]]
+  */
+  const inputsGroupedByType = groupEventsByType(inputs);
+  const respList = [];
+  const errList = [];
+  await Promise.all(
+    inputsGroupedByType.map(async (typedEventList) => {
+      const { successEvents, errorEvents } = await processRouter(typedEventList, reqMetadata);
+      respList.push(...successEvents);
+      errList.push(...errorEvents);
+    }),
+  );
+  return [...respList, ...errList];
+};
 module.exports = { process, processRouterDest };

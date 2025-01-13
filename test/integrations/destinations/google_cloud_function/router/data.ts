@@ -20,9 +20,7 @@ export const data = [
                   maxBatchSize: '2',
                 },
               },
-              metadata: {
-                jobId: '1',
-              },
+              metadata: { jobId: '1', userId: 'u1' },
               message: {
                 channel: 'web',
                 context: {
@@ -32,21 +30,13 @@ export const data = [
                     namespace: 'com.rudderlabs.javascript',
                     version: '1.0.0',
                   },
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.0.0',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.0.0' },
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
                   locale: 'en-US',
                   ip: '0.0.0.0',
-                  os: {
-                    name: '',
-                    version: '',
-                  },
-                  screen: {
-                    density: 2,
-                  },
+                  os: { name: '', version: '' },
+                  screen: { density: 2 },
                 },
                 messageId: '84e26acc-56a5-4835-8233-591137fca468',
                 session_id: '3049dc4c-5a95-4ccd-a3e7-d74a7e411f22',
@@ -61,9 +51,7 @@ export const data = [
                   emailOptOut: true,
                   masterAvatarTypeCode: 10,
                 },
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 sentAt: '2019-10-14T09:03:22.563Z',
               },
             },
@@ -77,9 +65,7 @@ export const data = [
                   maxBatchSize: '2',
                 },
               },
-              metadata: {
-                jobId: '2',
-              },
+              metadata: { jobId: '2', userId: 'u1' },
               message: {
                 channel: 'web',
                 context: {
@@ -89,21 +75,13 @@ export const data = [
                     namespace: 'com.rudderlabs.javascript',
                     version: '1.0.0',
                   },
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.0.0',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.0.0' },
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
                   locale: 'en-US',
                   ip: '0.0.0.0',
-                  os: {
-                    name: '',
-                    version: '',
-                  },
-                  screen: {
-                    density: 2,
-                  },
+                  os: { name: '', version: '' },
+                  screen: { density: 2 },
                 },
                 messageId: '84e26acc-56a5-4835-8233-591137fca468',
                 session_id: '3049dc4c-5a95-4ccd-a3e7-d74a7e411f22',
@@ -118,9 +96,7 @@ export const data = [
                   emailOptOut: true,
                   masterAvatarTypeCode: 10,
                 },
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 sentAt: '2019-10-14T09:03:22.563Z',
               },
             },
@@ -135,9 +111,7 @@ export const data = [
                   maxBatchSize: '2',
                 },
               },
-              metadata: {
-                jobId: '3',
-              },
+              metadata: { jobId: '3', userId: 'u1' },
               message: {
                 channel: 'web',
                 context: {
@@ -147,21 +121,13 @@ export const data = [
                     namespace: 'com.rudderlabs.javascript',
                     version: '1.0.0',
                   },
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.0.0',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.0.0' },
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
                   locale: 'en-US',
                   ip: '0.0.0.0',
-                  os: {
-                    name: '',
-                    version: '',
-                  },
-                  screen: {
-                    density: 2,
-                  },
+                  os: { name: '', version: '' },
+                  screen: { density: 2 },
                 },
                 messageId: '84e26acc-56a5-4835-8233-591137fca468',
                 session_id: '3049dc4c-5a95-4ccd-a3e7-d74a7e411f22',
@@ -176,9 +142,7 @@ export const data = [
                   emailOptOut: true,
                   masterAvatarTypeCode: 10,
                 },
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 sentAt: '2019-10-14T09:03:22.563Z',
               },
             },
@@ -204,21 +168,13 @@ export const data = [
                       namespace: 'com.rudderlabs.javascript',
                       version: '1.0.0',
                     },
-                    library: {
-                      name: 'RudderLabs JavaScript SDK',
-                      version: '1.0.0',
-                    },
+                    library: { name: 'RudderLabs JavaScript SDK', version: '1.0.0' },
                     userAgent:
                       'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
                     locale: 'en-US',
                     ip: '0.0.0.0',
-                    os: {
-                      name: '',
-                      version: '',
-                    },
-                    screen: {
-                      density: 2,
-                    },
+                    os: { name: '', version: '' },
+                    screen: { density: 2 },
                   },
                   messageId: '84e26acc-56a5-4835-8233-591137fca468',
                   session_id: '3049dc4c-5a95-4ccd-a3e7-d74a7e411f22',
@@ -233,9 +189,7 @@ export const data = [
                     emailOptOut: true,
                     masterAvatarTypeCode: 10,
                   },
-                  integrations: {
-                    All: true,
-                  },
+                  integrations: { All: true },
                   sentAt: '2019-10-14T09:03:22.563Z',
                 },
                 {
@@ -247,21 +201,13 @@ export const data = [
                       namespace: 'com.rudderlabs.javascript',
                       version: '1.0.0',
                     },
-                    library: {
-                      name: 'RudderLabs JavaScript SDK',
-                      version: '1.0.0',
-                    },
+                    library: { name: 'RudderLabs JavaScript SDK', version: '1.0.0' },
                     userAgent:
                       'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
                     locale: 'en-US',
                     ip: '0.0.0.0',
-                    os: {
-                      name: '',
-                      version: '',
-                    },
-                    screen: {
-                      density: 2,
-                    },
+                    os: { name: '', version: '' },
+                    screen: { density: 2 },
                   },
                   messageId: '84e26acc-56a5-4835-8233-591137fca468',
                   session_id: '3049dc4c-5a95-4ccd-a3e7-d74a7e411f22',
@@ -276,13 +222,14 @@ export const data = [
                     emailOptOut: true,
                     masterAvatarTypeCode: 10,
                   },
-                  integrations: {
-                    All: true,
-                  },
+                  integrations: { All: true },
                   sentAt: '2019-10-14T09:03:22.563Z',
                 },
               ],
-              metadata: [{ jobId: '1' }, { jobId: '3' }],
+              metadata: [
+                { jobId: '1', userId: 'u1' },
+                { jobId: '3', userId: 'u1' },
+              ],
               batched: true,
               statusCode: 200,
               destination: {
@@ -306,7 +253,7 @@ export const data = [
                   maxBatchSize: '2',
                 },
               },
-              metadata: [{ jobId: '2' }],
+              metadata: [{ jobId: '2', userId: 'u1' }],
               batched: false,
               statusCode: 400,
               error: '[GCF]:: Url not found. Aborting',
@@ -345,9 +292,7 @@ export const data = [
                   maxBatchSize: '2',
                 },
               },
-              metadata: {
-                jobId: '1',
-              },
+              metadata: { jobId: '1', userId: 'u1' },
               message: {
                 channel: 'web',
                 context: {
@@ -357,21 +302,13 @@ export const data = [
                     namespace: 'com.rudderlabs.javascript',
                     version: '1.0.0',
                   },
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.0.0',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.0.0' },
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
                   locale: 'en-US',
                   ip: '0.0.0.0',
-                  os: {
-                    name: '',
-                    version: '',
-                  },
-                  screen: {
-                    density: 2,
-                  },
+                  os: { name: '', version: '' },
+                  screen: { density: 2 },
                 },
                 messageId: '84e26acc-56a5-4835-8233-591137fca468',
                 session_id: '3049dc4c-5a95-4ccd-a3e7-d74a7e411f22',
@@ -386,9 +323,7 @@ export const data = [
                   emailOptOut: true,
                   masterAvatarTypeCode: 10,
                 },
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 sentAt: '2019-10-14T09:03:22.563Z',
               },
             },
@@ -402,9 +337,7 @@ export const data = [
                   maxBatchSize: '2',
                 },
               },
-              metadata: {
-                jobId: '2',
-              },
+              metadata: { jobId: '2', userId: 'u1' },
               message: {
                 channel: 'web',
                 context: {
@@ -414,21 +347,13 @@ export const data = [
                     namespace: 'com.rudderlabs.javascript',
                     version: '1.0.0',
                   },
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.0.0',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.0.0' },
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
                   locale: 'en-US',
                   ip: '0.0.0.0',
-                  os: {
-                    name: '',
-                    version: '',
-                  },
-                  screen: {
-                    density: 2,
-                  },
+                  os: { name: '', version: '' },
+                  screen: { density: 2 },
                 },
                 messageId: '84e26acc-56a5-4835-8233-591137fca468',
                 session_id: '3049dc4c-5a95-4ccd-a3e7-d74a7e411f22',
@@ -443,9 +368,7 @@ export const data = [
                   emailOptOut: true,
                   masterAvatarTypeCode: 10,
                 },
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 sentAt: '2019-10-14T09:03:22.563Z',
               },
             },
@@ -460,9 +383,7 @@ export const data = [
                   maxBatchSize: '2',
                 },
               },
-              metadata: {
-                jobId: '3',
-              },
+              metadata: { jobId: '3', userId: 'u1' },
               message: {
                 channel: 'web',
                 context: {
@@ -472,21 +393,13 @@ export const data = [
                     namespace: 'com.rudderlabs.javascript',
                     version: '1.0.0',
                   },
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.0.0',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.0.0' },
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
                   locale: 'en-US',
                   ip: '0.0.0.0',
-                  os: {
-                    name: '',
-                    version: '',
-                  },
-                  screen: {
-                    density: 2,
-                  },
+                  os: { name: '', version: '' },
+                  screen: { density: 2 },
                 },
                 messageId: '84e26acc-56a5-4835-8233-591137fca468',
                 session_id: '3049dc4c-5a95-4ccd-a3e7-d74a7e411f22',
@@ -501,9 +414,7 @@ export const data = [
                   emailOptOut: true,
                   masterAvatarTypeCode: 10,
                 },
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 sentAt: '2019-10-14T09:03:22.563Z',
               },
             },
@@ -529,21 +440,13 @@ export const data = [
                       namespace: 'com.rudderlabs.javascript',
                       version: '1.0.0',
                     },
-                    library: {
-                      name: 'RudderLabs JavaScript SDK',
-                      version: '1.0.0',
-                    },
+                    library: { name: 'RudderLabs JavaScript SDK', version: '1.0.0' },
                     userAgent:
                       'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
                     locale: 'en-US',
                     ip: '0.0.0.0',
-                    os: {
-                      name: '',
-                      version: '',
-                    },
-                    screen: {
-                      density: 2,
-                    },
+                    os: { name: '', version: '' },
+                    screen: { density: 2 },
                   },
                   messageId: '84e26acc-56a5-4835-8233-591137fca468',
                   session_id: '3049dc4c-5a95-4ccd-a3e7-d74a7e411f22',
@@ -558,9 +461,7 @@ export const data = [
                     emailOptOut: true,
                     masterAvatarTypeCode: 10,
                   },
-                  integrations: {
-                    All: true,
-                  },
+                  integrations: { All: true },
                   sentAt: '2019-10-14T09:03:22.563Z',
                 },
                 {
@@ -572,21 +473,13 @@ export const data = [
                       namespace: 'com.rudderlabs.javascript',
                       version: '1.0.0',
                     },
-                    library: {
-                      name: 'RudderLabs JavaScript SDK',
-                      version: '1.0.0',
-                    },
+                    library: { name: 'RudderLabs JavaScript SDK', version: '1.0.0' },
                     userAgent:
                       'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
                     locale: 'en-US',
                     ip: '0.0.0.0',
-                    os: {
-                      name: '',
-                      version: '',
-                    },
-                    screen: {
-                      density: 2,
-                    },
+                    os: { name: '', version: '' },
+                    screen: { density: 2 },
                   },
                   messageId: '84e26acc-56a5-4835-8233-591137fca468',
                   session_id: '3049dc4c-5a95-4ccd-a3e7-d74a7e411f22',
@@ -601,13 +494,14 @@ export const data = [
                     emailOptOut: true,
                     masterAvatarTypeCode: 10,
                   },
-                  integrations: {
-                    All: true,
-                  },
+                  integrations: { All: true },
                   sentAt: '2019-10-14T09:03:22.563Z',
                 },
               ],
-              metadata: [{ jobId: '1' }, { jobId: '3' }],
+              metadata: [
+                { jobId: '1', userId: 'u1' },
+                { jobId: '3', userId: 'u1' },
+              ],
               batched: true,
               statusCode: 200,
               destination: {
@@ -631,7 +525,7 @@ export const data = [
                   maxBatchSize: '2',
                 },
               },
-              metadata: [{ jobId: '2' }],
+              metadata: [{ jobId: '2', userId: 'u1' }],
               batched: false,
               statusCode: 400,
               error: '[GCF]:: Url not found. Aborting',

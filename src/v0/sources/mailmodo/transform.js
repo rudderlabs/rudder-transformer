@@ -1,9 +1,9 @@
 const path = require('path');
 const fs = require('fs');
 const sha256 = require('sha256');
+const { TransformationError } = require('@rudderstack/integrations-lib');
 const { flattenJson, removeUndefinedAndNullAndEmptyValues } = require('../../util');
 const Message = require('../message');
-const { TransformationError } = require('../../util/errorTypes');
 
 // import mapping json using JSON.parse to preserve object key order
 const mapping = JSON.parse(fs.readFileSync(path.resolve(__dirname, './mapping.json'), 'utf-8'));

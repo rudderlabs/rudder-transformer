@@ -6,7 +6,7 @@
   },
   {
     "destKey": "item_category",
-    "sourceKeys": "properties.item_category",
+    "sourceKeys": ["properties.item_category", "properties.category"],
     "required": false
   },
   {

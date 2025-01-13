@@ -1,0 +1,22 @@
+[
+  {
+    "destKey": "properties.search_term",
+    "sourceKeys": "properties.query",
+    "required": false
+  },
+  {
+    "destKey": "properties.order_id",
+    "sourceKeys": "properties.order_id",
+    "required": false
+  },
+  {
+    "destKey": "properties.total",
+    "sourceKeys": "properties.total",
+    "required": false
+  },
+  {
+    "destKey": "properties.products",
+    "sourceKeys": ["properties.products"],
+    "required": false
+  }
+]

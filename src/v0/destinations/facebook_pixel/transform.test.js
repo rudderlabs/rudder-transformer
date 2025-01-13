@@ -24,6 +24,23 @@ const getTestMessage = () => {
   return message;
 };
 
+const getTestMessageWithoutProductIdAndCategory = () => {
+  let message = {
+    properties: {
+      currency: 'CAD',
+      quantity: 1,
+      price: 24.75,
+      value: 30,
+      name: 'my product 1',
+      testDimension: true,
+      testMetric: true,
+      position: 4.5,
+      query: 'HDMI Cable',
+    },
+  };
+  return message;
+};
+
 const getTestCategoryToContent = () => {
   let categoryToContent = [
     {
@@ -50,6 +67,17 @@ describe('Unit test cases for facebook_pixel handle search', () => {
       ],
     };
     expect(handleSearch(getTestMessage())).toEqual(expectedOutput);
+  });
+
+  it('should return content with content_ids and content fields as empty array', async () => {
+    const expectedOutput = {
+      content_ids: [],
+      content_category: '',
+      value: 30,
+      search_string: 'HDMI Cable',
+      contents: [],
+    };
+    expect(handleSearch(getTestMessageWithoutProductIdAndCategory())).toEqual(expectedOutput);
   });
 
   it("mapping 'product_id' with contentId", async () => {

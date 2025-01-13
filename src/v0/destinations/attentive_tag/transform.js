@@ -1,4 +1,5 @@
 const get = require('get-value');
+const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const { ConfigCategory, mappingConfig, BASE_URL } = require('./config');
 const {
@@ -15,10 +16,9 @@ const {
 const {
   getDestinationItemProperties,
   getExternalIdentifiersMapping,
-  getPropertiesKeyValidation,
+  arePropertiesValid,
   validateTimestamp,
 } = require('./util');
-const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const responseBuilder = (payload, apiKey, endpoint) => {
@@ -137,9 +137,9 @@ const trackResponseBuilder = (message, { Config }) => {
       payload = constructPayload(message, mappingConfig[ConfigCategory.TRACK.name]);
       endpoint = ConfigCategory.TRACK.endpoint;
       payload.type = get(message, 'event');
-      if (!getPropertiesKeyValidation(payload)) {
+      if (!arePropertiesValid(payload.properties)) {
         throw new InstrumentationError(
-          '[Attentive Tag]:The event name contains characters which is not allowed',
+          '[Attentive Tag]:The properties contains characters which is not allowed',
         );
       }
   }

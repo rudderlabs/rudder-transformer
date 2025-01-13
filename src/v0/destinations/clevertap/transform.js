@@ -1,6 +1,11 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-nested-ternary */
 const get = require('get-value');
+const {
+  InstrumentationError,
+  TransformationError,
+  isDefinedAndNotNull,
+} = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const {
   getEndpoint,
@@ -21,11 +26,11 @@ const {
   handleRtTfSingleEventError,
   batchMultiplexedEvents,
   getSuccessRespEvents,
-  checkInvalidRtTfEvents,
+  getIntegrationsObj,
+  removeUndefinedNullValuesAndEmptyObjectArray,
 } = require('../../util');
-const { generateClevertapBatchedPayload } = require('./utils');
+const { generateClevertapBatchedPayload, deduceTokenType } = require('./utils');
 
-const { InstrumentationError, TransformationError } = require('../../util/errorTypes');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const TIMESTAMP_KEY_PATH = 'context.traits.ts';
@@ -83,16 +88,21 @@ const responseWrapper = (payload, destination) => {
     }                                        
  *                                                    
   }
- * This function stringify the payload attributes if it's an array or objects.
+ * This function stringify the payload attributes if it's an array or objects. The keys that are not stringified are present in the `stringifyExcludeList` array.
  * @param {*} payload
  * @returns
  * return the final payload after converting to the relevant data-types.
  */
 const convertObjectAndArrayToString = (payload, event) => {
   const finalPayload = {};
+  const stringifyExcludeList = ['category-unsubscribe', 'category-resubscribe'];
   if (payload) {
     Object.keys(payload).forEach((key) => {
-      if (payload[key] && (Array.isArray(payload[key]) || typeof payload[key] === 'object')) {
+      if (
+        payload[key] &&
+        (Array.isArray(payload[key]) || typeof payload[key] === 'object') &&
+        !stringifyExcludeList.includes(key)
+      ) {
         finalPayload[key] = JSON.stringify(payload[key]);
       } else {
         finalPayload[key] = payload[key];
@@ -232,7 +242,7 @@ const getClevertapProfile = (message, category) => {
   if (message.traits?.overrideFields) {
     const { overrideFields } = message.traits;
     Object.assign(profile, overrideFields);
-  } else if (message.context.traits?.overrideFields) {
+  } else if (message.context?.traits?.overrideFields) {
     const { overrideFields } = message.context.traits;
     Object.assign(profile, overrideFields);
   }
@@ -264,7 +274,9 @@ const responseBuilderSimple = (message, category, destination) => {
         deviceToken &&
         (deviceOS === 'android' || isAppleFamily(deviceOS))
       ) {
-        const tokenType = deviceOS === 'android' ? 'fcm' : 'apns';
+        const tokenType = deduceTokenType(message, deviceOS);
+        const integObject = getIntegrationsObj(message, 'clevertap');
+        const chromeKeys = integObject?.chromeKeys;
         const payloadForDeviceToken = {
           d: [
             {
@@ -272,6 +284,7 @@ const responseBuilderSimple = (message, category, destination) => {
               tokenData: {
                 id: deviceToken,
                 type: tokenType,
+                keys: isDefinedAndNotNull(chromeKeys) ? chromeKeys : null,
               },
               objectId: get(message, 'anonymousId'),
             },
@@ -279,7 +292,12 @@ const responseBuilderSimple = (message, category, destination) => {
         };
         const respArr = [];
         respArr.push(responseWrapper(payload, destination)); // identify
-        respArr.push(responseWrapper(payloadForDeviceToken, destination)); // device token
+        respArr.push(
+          responseWrapper(
+            removeUndefinedNullValuesAndEmptyObjectArray(payloadForDeviceToken),
+            destination,
+          ),
+        ); // device token
         return respArr;
       }
     } else {
@@ -298,7 +316,7 @@ const responseBuilderSimple = (message, category, destination) => {
     // For 'Order Completed' type of events we are mapping it as 'Charged'
     // Special event in Clevertap.
     // Source: https://developer.clevertap.com/docs/concepts-events#recording-customer-purchases
-    if (get(message.event) && get(message.event).toLowerCase() === 'order completed') {
+    if (get(message.event) && get(message.event).toString().toLowerCase() === 'order completed') {
       eventPayload = {
         evtName: 'Charged',
         evtData: constructPayload(message, MAPPING_CONFIG[CONFIG_CATEGORIES.ECOM.name]),
@@ -384,13 +402,6 @@ const processEvent = (message, destination) => {
 const process = (event) => processEvent(event.message, event.destination);
 
 const processRouterDest = (inputs, reqMetadata) => {
-  // const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
-  // return respList;
-  const errorRespEvents = checkInvalidRtTfEvents(inputs);
-  if (errorRespEvents.length > 0) {
-    return errorRespEvents;
-  }
-
   const eventsChunk = [];
   const errorRespList = [];
   // const { destination } = inputs[0];
@@ -419,7 +430,7 @@ const processRouterDest = (inputs, reqMetadata) => {
     batchedEvents.forEach((batch) => {
       const batchedRequest = generateClevertapBatchedPayload(batch.events, batch.destination);
       batchResponseList.push(
-        getSuccessRespEvents(batchedRequest, batch.metadata, batch.destination, reqMetadata),
+        getSuccessRespEvents(batchedRequest, batch.metadata, batch.destination),
       );
     });
   }

@@ -1,4 +1,5 @@
 const qs = require('qs');
+const { InstrumentationError, NetworkError } = require('@rudderstack/integrations-lib');
 const { httpGET, httpPOST } = require('../../../adapters/network');
 const {
   getDynamicErrorType,
@@ -8,7 +9,6 @@ const { BASE_ENDPOINT, VERSION, ACCESS_TOKEN_CACHE_TTL_SECONDS } = require('./co
 const { constructPayload, isDefinedAndNotNullAndNotEmpty } = require('../../util');
 const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require('./config');
 const Cache = require('../../util/cache');
-const { InstrumentationError, NetworkError } = require('../../util/errorTypes');
 const tags = require('../../util/tags');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
@@ -20,7 +20,7 @@ const ACCESS_TOKEN_CACHE = new Cache(ACCESS_TOKEN_CACHE_TTL_SECONDS);
  * @param {*} destination
  * @returns
  */
-const getAccessToken = async (destination) => {
+const getAccessToken = async (destination, metadata) => {
   const { username, password, accountToken } = destination.Config;
   const accessTokenKey = destination.ID;
 
@@ -46,6 +46,10 @@ const getAccessToken = async (destination) => {
     const wootricAuthResponse = await httpPOST(request.url, request.data, request.header, {
       destType: 'wootric',
       feature: 'transformation',
+      endpointPath: `/oauth/token`,
+      requestMethod: 'POST',
+      module: 'router',
+      metadata,
     });
     const processedAuthResponse = processAxiosResponse(wootricAuthResponse);
     // If the request fails, throwing error.
@@ -76,7 +80,7 @@ const getAccessToken = async (destination) => {
  * @returns
  */
 
-const retrieveUserDetails = async (endUserId, externalId, accessToken) => {
+const retrieveUserDetails = async (endUserId, externalId, accessToken, metadata) => {
   let endpoint;
   if (isDefinedAndNotNullAndNotEmpty(endUserId)) {
     endpoint = `${BASE_ENDPOINT}/${VERSION}/end_users/${endUserId}`;
@@ -98,6 +102,10 @@ const retrieveUserDetails = async (endUserId, externalId, accessToken) => {
   const userResponse = await httpGET(endpoint, requestOptions, {
     destType: 'wootric',
     feature: 'transformation',
+    endpointPath: `/v1/end_users/`,
+    requestMethod: 'GET',
+    module: 'router',
+    metadata,
   });
   const processedUserResponse = processAxiosResponse(userResponse);
 

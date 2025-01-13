@@ -1,5 +1,6 @@
 import groupBy from 'lodash/groupBy';
 import isEmpty from 'lodash/isEmpty';
+import { isNil } from 'lodash';
 import { userTransformHandler } from '../routerUtils';
 import {
   UserTransformationLibrary,
@@ -7,13 +8,14 @@ import {
   ProcessorTransformationResponse,
   UserTransformationResponse,
   UserTransformationServiceResponse,
+  MessageIdMetadataMap,
 } from '../types/index';
 import {
   RespStatusError,
   RetryRequestError,
   extractStackTraceUptoLastSubstringMatch,
 } from '../util/utils';
-import { getMetadata, isNonFuncObject } from '../v0/util';
+import { getMetadata, getTransformationMetadata, isNonFuncObject } from '../v0/util';
 import { SUPPORTED_FUNC_NAMES } from '../util/ivmFactory';
 import logger from '../logger';
 import stats from '../util/stats';
@@ -23,10 +25,11 @@ import { CatchErr, FixMe } from '../util/types';
 import { FeatureFlags, FEATURE_FILTER_CODE } from '../middlewares/featureFlag';
 import { HTTP_CUSTOM_STATUS_CODES } from '../constants';
 
-export default class UserTransformService {
+export class UserTransformService {
   public static async transformRoutine(
     events: ProcessorTransformationRequest[],
     features: FeatureFlags = {},
+    requestSize = 0,
   ): Promise<UserTransformationServiceResponse> {
     let retryStatus = 200;
     const groupedEvents: NonNullable<unknown> = groupBy(
@@ -49,14 +52,23 @@ export default class UserTransformService {
         const eventsToProcess = destEvents as ProcessorTransformationRequest[];
         const transformationVersionId =
           eventsToProcess[0]?.destination?.Transformations[0]?.VersionID;
-        const messageIds = eventsToProcess.map((ev) => ev.metadata?.messageId);
-        const messageIdsSet = new Set<string>(messageIds);
+        const messageIds: string[] = [];
+        const messageIdsSet = new Set<string>();
+        const messageIdMetadataMap: MessageIdMetadataMap = {};
+        eventsToProcess.forEach((ev) => {
+          messageIds.push(ev.metadata?.messageId);
+          messageIdsSet.add(ev.metadata?.messageId);
+          messageIdMetadataMap[ev.metadata?.messageId] = ev.metadata;
+        });
+
         const messageIdsInOutputSet = new Set<string>();
 
         const commonMetadata = {
           sourceId: eventsToProcess[0]?.metadata?.sourceId,
           destinationId: eventsToProcess[0]?.metadata.destinationId,
           destinationType: eventsToProcess[0]?.metadata.destinationType,
+          workspaceId: eventsToProcess[0]?.metadata.workspaceId,
+          transformationId: eventsToProcess[0]?.metadata.transformationId,
           messageIds,
         };
 
@@ -77,9 +89,6 @@ export default class UserTransformService {
         }
         const userFuncStartTime = new Date();
         try {
-          stats.counter('user_transform_function_input_events', eventsToProcess.length, {
-            ...metaTags,
-          });
           const destTransformedEvents: UserTransformationResponse[] = await userTransformHandler()(
             eventsToProcess,
             transformationVersionId,
@@ -88,6 +97,12 @@ export default class UserTransformService {
 
           const transformedEventsWithMetadata: ProcessorTransformationResponse[] = [];
           destTransformedEvents.forEach((ev) => {
+            // add messageId to output set
+            if (ev.metadata?.messageId) {
+              messageIdsInOutputSet.add(ev.metadata.messageId);
+            } else if (ev.metadata?.messageIds) {
+              ev.metadata.messageIds.forEach((id) => messageIdsInOutputSet.add(id));
+            }
             if (ev.error) {
               transformedEventsWithMetadata.push({
                 statusCode: 400,
@@ -106,12 +121,6 @@ export default class UserTransformService {
               } as ProcessorTransformationResponse);
               return;
             }
-            // add messageId to output set
-            if (ev.metadata?.messageId) {
-              messageIdsInOutputSet.add(ev.metadata.messageId);
-            } else if (ev.metadata?.messageIds) {
-              ev.metadata.messageIds.forEach((id) => messageIdsInOutputSet.add(id));
-            }
             transformedEventsWithMetadata.push({
               output: ev.transformedEvent,
               metadata: isEmpty(ev.metadata) ? commonMetadata : ev.metadata,
@@ -125,7 +134,7 @@ export default class UserTransformService {
             const droppedEvents = messageIdsNotInOutput.map((id) => ({
               statusCode: HTTP_CUSTOM_STATUS_CODES.FILTERED,
               metadata: {
-                ...commonMetadata,
+                ...(isEmpty(messageIdMetadataMap[id]) ? commonMetadata : messageIdMetadataMap[id]),
                 messageId: id,
                 messageIds: null,
               },
@@ -152,20 +161,23 @@ export default class UserTransformService {
                   statusCode: status,
                   metadata: e.metadata,
                   error: errorString,
-                } as ProcessorTransformationResponse),
+                }) as ProcessorTransformationResponse,
             ),
           );
           stats.counter('user_transform_errors', eventsToProcess.length, {
-            transformationId: eventsToProcess[0]?.metadata?.transformationId,
-            workspaceId: eventsToProcess[0]?.metadata?.workspaceId,
             status,
             ...metaTags,
+            ...getTransformationMetadata(eventsToProcess[0]?.metadata),
           });
         } finally {
-          stats.timing('user_transform_request_latency', userFuncStartTime, {
-            workspaceId: eventsToProcess[0]?.metadata?.workspaceId,
-            transformationId: eventsToProcess[0]?.metadata?.transformationId,
+          stats.timingSummary('user_transform_request_latency_summary', userFuncStartTime, {
             ...metaTags,
+            ...getTransformationMetadata(eventsToProcess[0]?.metadata),
+          });
+
+          stats.summary('user_transform_batch_size_summary', requestSize, {
+            ...metaTags,
+            ...getTransformationMetadata(eventsToProcess[0]?.metadata),
           });
         }
 
@@ -182,8 +194,9 @@ export default class UserTransformService {
     } as UserTransformationServiceResponse;
   }
 
-  public static async testTransformRoutine(events, trRevCode, libraryVersionIDs) {
+  public static async testTransformRoutine(events, trRevCode, libraryVersionIDs, credentials) {
     const response: FixMe = {};
+    let errorCode: number | undefined;
     try {
       if (!trRevCode || !trRevCode.code || !trRevCode.codeVersion) {
         throw new Error('Invalid Request. Missing parameters in transformation code block');
@@ -192,11 +205,21 @@ export default class UserTransformService {
         throw new Error('Invalid request. Missing events');
       }
 
+      const updatedEvents = events.map((ev) => {
+        if (isNil(ev.credentials)) {
+          return {
+            ...ev,
+            credentials,
+          };
+        }
+        return ev;
+      });
+
       logger.debug(`[CT] Test Input Events: ${JSON.stringify(events)}`);
       // eslint-disable-next-line no-param-reassign
       trRevCode.versionId = 'testVersionId';
       response.body = await userTransformHandler()(
-        events,
+        updatedEvents,
         trRevCode.versionId,
         libraryVersionIDs,
         trRevCode,
@@ -209,6 +232,13 @@ export default class UserTransformService {
       response.body = {
         error: extractStackTraceUptoLastSubstringMatch(error.stack, SUPPORTED_FUNC_NAMES),
       };
+      errorCode = error.statusCode;
+    } finally {
+      const metaTags = getTransformationMetadata(events[0]?.metadata);
+      stats.counter('user_transform_test_count_total', events.length, {
+        status: errorCode || response.status,
+        ...metaTags,
+      });
     }
     return response;
   }

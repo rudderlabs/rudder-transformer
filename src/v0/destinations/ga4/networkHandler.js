@@ -1,3 +1,4 @@
+const { NetworkError } = require('@rudderstack/integrations-lib');
 const { proxyRequest, prepareProxyRequest } = require('../../../adapters/network');
 const {
   getDynamicErrorType,
@@ -5,10 +6,10 @@ const {
 } = require('../../../adapters/utils/networkUtils');
 const { isDefinedAndNotNull, isDefined, isHttpStatusSuccess } = require('../../util');
 
-const { NetworkError } = require('../../util/errorTypes');
 const tags = require('../../util/tags');
 
-const responseHandler = (destinationResponse, dest) => {
+const responseHandler = (responseParams) => {
+  const { destinationResponse, destType } = responseParams;
   const message = `[GA4 Response Handler] - Request Processed Successfully`;
   let { status } = destinationResponse;
   const { response } = destinationResponse;
@@ -29,10 +30,10 @@ const responseHandler = (destinationResponse, dest) => {
       // Build the error in case the validationMessages[] is non-empty
       const { description, validationCode, fieldPath } = response.validationMessages[0];
       throw new NetworkError(
-        `Validation Server Response Handler:: Validation Error for ${dest} of field path :${fieldPath} | ${validationCode}-${description}`,
-        status,
+        `Validation Server Response Handler:: Validation Error for ${destType} of field path :${fieldPath} | ${validationCode}-${description}`,
+        400,
         {
-          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
+          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(400),
         },
         response?.validationMessages[0]?.description,
       );
@@ -42,7 +43,7 @@ const responseHandler = (destinationResponse, dest) => {
   // if the response from destination is not a success case build an explicit error
   if (!isHttpStatusSuccess(status)) {
     throw new NetworkError(
-      `[GA4 Response Handler] Request failed for destination ${dest} with status: ${status}`,
+      `[GA4 Response Handler] Request failed for destination ${destType} with status: ${status}`,
       status,
       {
         [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),

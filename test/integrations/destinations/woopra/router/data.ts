@@ -13,30 +13,15 @@ export const data = [
               message: {
                 anonymousId: '21e13f4bc7ceddad',
                 context: {
-                  app: {
-                    build: '4',
-                    name: 'RuddCDN',
-                  },
-                  device: {
-                    id: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
-                    name: 'generic_x86_arm',
-                  },
-                  os: {
-                    name: 'Android',
-                    version: '9',
-                  },
+                  app: { build: '4', name: 'RuddCDN' },
+                  device: { id: '3f034872-5e28-45a1-9eda-ce22a3e36d1a', name: 'generic_x86_arm' },
+                  os: { name: 'Android', version: '9' },
                   timezone: 'Asia/Kolkata',
-                  traits: {
-                    anonymousId: '21e13f4bc7ceddad',
-                  },
+                  traits: { anonymousId: '21e13f4bc7ceddad' },
                   userAgent:
                     'Dalvik/2.1.0 (Linux; U; Android 9; AOSP on IA Emulator Build/PSR1.180720.117)',
                 },
-                integrations: {
-                  woopra: {
-                    projectName: 'abc.com',
-                  },
-                },
+                integrations: { woopra: { projectName: 'abc.com' } },
                 messageId: '1601322811899-d9c7dd00-50dc-4364-95c8-e89423eb3cfb',
                 originalTimestamp: '2020-09-28T19:53:31.900Z',
                 traits: {
@@ -52,14 +37,8 @@ export const data = [
                 timestamp: '2020-09-29T14:50:29.907+05:30',
                 type: 'identify',
               },
-              destination: {
-                Config: {
-                  projectName: 'int.com',
-                },
-              },
-              metadata: {
-                jobId: 1,
-              },
+              destination: { Config: { projectName: 'int.com' } },
+              metadata: { jobId: 1, userId: 'u1' },
             },
           ],
           destType: 'woopra',
@@ -74,12 +53,7 @@ export const data = [
           output: [
             {
               batchedRequest: {
-                body: {
-                  XML: {},
-                  FORM: {},
-                  JSON: {},
-                  JSON_ARRAY: {},
-                },
+                body: { XML: {}, FORM: {}, JSON: {}, JSON_ARRAY: {} },
                 type: 'REST',
                 files: {},
                 method: 'GET',
@@ -100,16 +74,8 @@ export const data = [
                 version: '1',
                 endpoint: 'https://www.woopra.com/track/identify',
               },
-              destination: {
-                Config: {
-                  projectName: 'int.com',
-                },
-              },
-              metadata: [
-                {
-                  jobId: 1,
-                },
-              ],
+              destination: { Config: { projectName: 'int.com' } },
+              metadata: [{ jobId: 1, userId: 'u1' }],
               batched: false,
               statusCode: 200,
             },
@@ -133,49 +99,26 @@ export const data = [
                 anonymousId: '21e13f4bc7ceddad',
                 channel: 'mobile',
                 context: {
-                  app: {
-                    build: '4',
-                    name: 'RuddCDN',
-                  },
-                  device: {
-                    id: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
-                    name: 'generic_x86_arm',
-                  },
-                  library: {
-                    name: 'com.rudderstack.android.sdk.core',
-                    version: '1.0.6',
-                  },
-                  os: {
-                    name: 'Android',
-                    version: '9',
-                  },
+                  app: { build: '4', name: 'RuddCDN' },
+                  device: { id: '3f034872-5e28-45a1-9eda-ce22a3e36d1a', name: 'generic_x86_arm' },
+                  library: { name: 'com.rudderstack.android.sdk.core', version: '1.0.6' },
+                  os: { name: 'Android', version: '9' },
                   timezone: 'Asia/Kolkata',
                   userAgent:
                     'Dalvik/2.1.0 (Linux; U; Android 9; AOSP on IA Emulator Build/PSR1.180720.117)',
                 },
                 event: 'First Investment',
-                integrations: {
-                  woopra: 'int.com',
-                },
+                integrations: { woopra: 'int.com' },
                 messageId: '1601322811899-d9c7dd00-50dc-4364-95c8-e89423eb3cfb',
                 originalTimestamp: '2020-09-28T19:53:31.900Z',
-                properties: {
-                  currency: 'EUR',
-                  revenue: 20.37566,
-                },
+                properties: { currency: 'EUR', revenue: 20.37566 },
                 receivedAt: '2020-09-29T14:50:43.005+05:30',
                 sentAt: '2020-09-28T19:53:44.998Z',
                 timestamp: '2020-09-29T14:50:29.907+05:30',
                 type: 'track',
               },
-              destination: {
-                Config: {
-                  projectName: 'int.com',
-                },
-              },
-              metadata: {
-                jobId: 2,
-              },
+              destination: { Config: { projectName: 'int.com' } },
+              metadata: { jobId: 2, userId: 'u1' },
             },
           ],
           destType: 'woopra',
@@ -190,12 +133,7 @@ export const data = [
           output: [
             {
               batchedRequest: {
-                body: {
-                  XML: {},
-                  FORM: {},
-                  JSON: {},
-                  JSON_ARRAY: {},
-                },
+                body: { XML: {}, FORM: {}, JSON: {}, JSON_ARRAY: {} },
                 type: 'REST',
                 files: {},
                 method: 'GET',
@@ -213,16 +151,8 @@ export const data = [
                 version: '1',
                 endpoint: 'https://www.woopra.com/track/ce',
               },
-              destination: {
-                Config: {
-                  projectName: 'int.com',
-                },
-              },
-              metadata: [
-                {
-                  jobId: 2,
-                },
-              ],
+              destination: { Config: { projectName: 'int.com' } },
+              metadata: [{ jobId: 2, userId: 'u1' }],
               batched: false,
               statusCode: 200,
             },
@@ -246,19 +176,11 @@ export const data = [
                 anonymousId: '21e13f4bc7ceddad',
                 channel: 'mobile',
                 event: 'First Investment',
-                integrations: {
-                  woopra: 'int.com',
-                },
+                integrations: { woopra: 'int.com' },
                 type: 'group',
               },
-              destination: {
-                Config: {
-                  projectName: 'int.com',
-                },
-              },
-              metadata: {
-                jobId: 3,
-              },
+              destination: { Config: { projectName: 'int.com' } },
+              metadata: { jobId: 3, userId: 'u1' },
             },
           ],
           destType: 'woopra',
@@ -272,16 +194,8 @@ export const data = [
         body: {
           output: [
             {
-              destination: {
-                Config: {
-                  projectName: 'int.com',
-                },
-              },
-              metadata: [
-                {
-                  jobId: 3,
-                },
-              ],
+              destination: { Config: { projectName: 'int.com' } },
+              metadata: [{ jobId: 3, userId: 'u1' }],
               statTags: {
                 errorCategory: 'dataValidation',
                 implementation: 'native',

@@ -1,3 +1,4 @@
+const { NetworkError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const { httpPOST } = require('../../../adapters/network');
 const {
   processAxiosResponse,
@@ -8,7 +9,6 @@ const { isHttpStatusSuccess } = require('../../util');
 const { executeCommonValidations } = require('../../util/regulation-api');
 const { DEL_MAX_BATCH_SIZE } = require('./config');
 const { getUserIdBatches } = require('../../util/deleteUserUtils');
-const { NetworkError, ConfigurationError } = require('../../util/errorTypes');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const userDeletionHandler = async (userAttributes, config) => {
@@ -21,11 +21,12 @@ const userDeletionHandler = async (userAttributes, config) => {
   }
   // Endpoints different for different data centers.
   // DOC: https://www.braze.com/docs/user_guide/administrative/access_braze/braze_instances/
+  // Example Data Center: "EU-01", "US-01"
   let endPoint;
-  const endpointPath = '/users/delete'; // TODO: to handle for destinations dynamically by extracting from endpoint
+  const endpointPath = '/users/delete';
   const dataCenterArr = dataCenter.trim().split('-');
   if (dataCenterArr[0].toLowerCase() === 'eu') {
-    endPoint = 'https://rest.fra-01.braze.eu/users/delete';
+    endPoint = `https://rest.fra-${dataCenterArr[1]}.braze.eu/users/delete`;
   } else {
     endPoint = `https://rest.iad-${dataCenterArr[1]}.braze.com/users/delete`;
   }
@@ -46,6 +47,8 @@ const userDeletionHandler = async (userAttributes, config) => {
         destType: 'braze',
         feature: 'deleteUsers',
         endpointPath,
+        requestMethod: 'POST',
+        module: 'deletion',
       });
       const handledDelResponse = processAxiosResponse(resp);
       if (!isHttpStatusSuccess(handledDelResponse.status) && handledDelResponse.status !== 404) {
@@ -54,6 +57,7 @@ const userDeletionHandler = async (userAttributes, config) => {
           handledDelResponse.status,
           {
             [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(handledDelResponse.status),
+            [tags.TAG_NAMES.STATUS]: handledDelResponse.status,
           },
           handledDelResponse,
         );

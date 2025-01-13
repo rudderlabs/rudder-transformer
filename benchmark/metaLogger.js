@@ -2,30 +2,30 @@
 
 const logger = require('../src/logger');
 
-logger.setLogLevel(Number.POSITIVE_INFINITY);
+logger.setLogLevel('random');
 
 const debug = (...args) => {
-  logger.setLogLevel(logger.levelDebug);
+  logger.setLogLevel('debug');
   logger.debug(...args);
-  logger.setLogLevel(Number.POSITIVE_INFINITY);
+  logger.setLogLevel('random');
 };
 
 const info = (...args) => {
-  logger.setLogLevel(logger.levelInfo);
+  logger.setLogLevel('info');
   logger.info(...args);
-  logger.setLogLevel(Number.POSITIVE_INFINITY);
+  logger.setLogLevel('random');
 };
 
 const warn = (...args) => {
-  logger.setLogLevel(logger.levelWarn);
+  logger.setLogLevel('warn');
   logger.warn(...args);
-  logger.setLogLevel(Number.POSITIVE_INFINITY);
+  logger.setLogLevel('random');
 };
 
 const error = (...args) => {
-  logger.setLogLevel(logger.levelError);
+  logger.setLogLevel('error');
   logger.error(...args);
-  logger.setLogLevel(Number.POSITIVE_INFINITY);
+  logger.setLogLevel('random');
 };
 
 module.exports = {

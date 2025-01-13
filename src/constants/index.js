@@ -6,6 +6,7 @@ const EventType = {
   ALIAS: 'alias',
   GROUP: 'group',
   RESET: 'reset',
+  RECORD: 'record',
 };
 
 const Address = {

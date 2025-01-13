@@ -1,0 +1,89 @@
+bindings:
+  - path: ./config
+    exportAll: true
+  - path: ./utils
+    exportAll: true
+  - name: defaultRequestConfig
+    path: ../../../../v0/util
+
+steps:
+  - name: validateInput
+    description: Validate input, if all the required fields are available or not.
+    template: |
+      const config = .connection.config.destination;
+      const secret = .metadata.secret;
+      let messageType = .message.type;
+      $.assertConfig(config.audienceId, "Audience Id is not present. Aborting");
+      $.assertConfig(secret.accessToken, "Access Token is not present. Aborting");
+      $.assertConfig(config.audienceType, "audienceType is not present. Aborting");
+      $.assert(messageType, "Message Type is not present. Aborting message.");
+      $.assert(messageType.toLowerCase() === $.SUPPORTED_EVENT_TYPE, `Event type ${.message.type.toLowerCase()} is not supported. Aborting message.`);
+      $.assert(.message.fields, "`fields` is not present. Aborting message.");
+      $.assert(.message.identifiers, "`identifiers` is not present inside properties. Aborting message.");
+      $.assert($.containsAll([.message.action], $.ACTION_TYPES), "Unsupported action type. Aborting message.")
+
+  - name: getConfigs
+    description: This step fetches the configs from different places and combines them.
+    template: |
+      const config = .connection.config.destination;
+      {
+        audienceType: config.audienceType,
+        audienceId: config.audienceId,
+        accessToken: .metadata.secret.accessToken,
+        isHashRequired: config.isHashRequired,
+      }
+
+  - name: prepareUserTypeBasePayload
+    condition: $.outputs.getConfigs.audienceType === 'user'
+    steps:
+      - name: prepareUserIds
+        description: Prepare user ids for user audience type
+        template: |
+          const identifiers = $.outputs.getConfigs.isHashRequired === true ? 
+            $.hashIdentifiers(.message.identifiers) :
+            .message.identifiers;
+          $.prepareUserIds(identifiers)
+
+      - name: preparePayload
+        description: Prepare base payload for user audiences
+        template: |
+          const payload = {
+            'elements': [
+              {
+                'action': $.generateActionType(.message.action),
+                'userIds': $.outputs.prepareUserTypeBasePayload.prepareUserIds,
+                ....message.fields
+              }
+            ]
+          }
+          payload;
+
+  - name: prepareCompanyTypeBasePayload
+    description: Prepare base payload for company audiences
+    condition: $.outputs.getConfigs.audienceType === 'company'
+    template: |
+      const payload = {
+        'elements': [
+          {
+            'action': $.generateActionType(.message.action),
+            ....message.identifiers,
+            ....message.fields
+          }
+        ]
+      }
+      payload;
+
+  - name: buildResponseForProcessTransformation
+    description: build response depending upon batch size
+    template: |
+      const response = $.defaultRequestConfig();
+      response.body.JSON = {...$.outputs.prepareUserTypeBasePayload, ...$.outputs.prepareCompanyTypeBasePayload};
+      response.endpoint = $.generateEndpoint($.outputs.getConfigs.audienceType, $.outputs.getConfigs.audienceId);
+      response.headers = {
+          "Authorization": "Bearer " + $.outputs.getConfigs.accessToken,
+          "Content-Type": "application/json",
+          "X-RestLi-Method": "BATCH_CREATE",
+          "X-Restli-Protocol-Version": "2.0.0",
+          "LinkedIn-Version": "202409"
+        };
+      response;

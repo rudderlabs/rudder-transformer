@@ -1,4 +1,4 @@
-const { InstrumentationError } = require('../../util/errorTypes');
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
 
 /**
  * Verifies whether the input payload is in right format or not

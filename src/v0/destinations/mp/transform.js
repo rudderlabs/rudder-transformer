@@ -1,5 +1,6 @@
 const lodash = require('lodash');
 const get = require('get-value');
+const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const {
   base64Convertor,
@@ -11,11 +12,12 @@ const {
   getTimeDifference,
   getValuesAsArrayFromConfig,
   removeUndefinedValues,
-  toUnixTimestamp,
+  toUnixTimestampInMS,
   getFieldValueFromMessage,
-  checkInvalidRtTfEvents,
   handleRtTfSingleEventError,
   groupEventsByType,
+  parseConfigArray,
+  combineBatchRequestsWithSameJobIds,
 } = require('../../util');
 const {
   ConfigCategory,
@@ -23,18 +25,19 @@ const {
   BASE_ENDPOINT,
   BASE_ENDPOINT_EU,
   IMPORT_MAX_BATCH_SIZE,
-  TRACK_MAX_BATCH_SIZE,
   ENGAGE_MAX_BATCH_SIZE,
   GROUPS_MAX_BATCH_SIZE,
 } = require('./config');
 const {
   createIdentifyResponse,
   isImportAuthCredentialsAvailable,
-  combineBatchRequestsWithSameJobIds,
+  buildUtmParams,
   groupEventsByEndpoint,
   batchEvents,
+  trimTraits,
+  generatePageOrScreenCustomEventName,
+  recordBatchSizeMetrics,
 } = require('./util');
-const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
 const { CommonUtils } = require('../../../util/common');
 
 // ref: https://help.mixpanel.com/hc/en-us/articles/115004613766-Default-Properties-Collected-by-Mixpanel
@@ -43,21 +46,19 @@ const mPEventPropertiesConfigJson = mappingConfig[ConfigCategory.EVENT_PROPERTIE
 const setImportCredentials = (destConfig) => {
   const endpoint =
     destConfig.dataResidency === 'eu' ? `${BASE_ENDPOINT_EU}/import/` : `${BASE_ENDPOINT}/import/`;
-  const headers = { 'Content-Type': 'application/json' };
   const params = { strict: destConfig.strictMode ? 1 : 0 };
-  const { apiSecret, serviceAccountUserName, serviceAccountSecret, projectId } = destConfig;
-  if (apiSecret) {
-    headers.Authorization = `Basic ${base64Convertor(`${apiSecret}:`)}`;
+  const { serviceAccountUserName, serviceAccountSecret, projectId, token } = destConfig;
+  let credentials;
+  if (token) {
+    credentials = `${token}:`;
   } else if (serviceAccountUserName && serviceAccountSecret && projectId) {
-    headers.Authorization = `Basic ${base64Convertor(
-      `${serviceAccountUserName}:${serviceAccountSecret}`,
-    )}`;
+    credentials = `${serviceAccountUserName}:${serviceAccountSecret}`;
     params.projectId = projectId;
-  } else {
-    throw new InstrumentationError(
-      'Event timestamp is older than 5 days and no API secret or service account credentials (i.e. username, secret and projectId) are provided in destination configuration',
-    );
   }
+  const headers = {
+    'Content-Type': 'application/json',
+    Authorization: `Basic ${base64Convertor(credentials)}`,
+  };
   return { endpoint, headers, params };
 };
 
@@ -66,45 +67,34 @@ const responseBuilderSimple = (payload, message, eventType, destConfig) => {
   response.method = defaultPostRequestConfig.requestMethod;
   response.userId = message.userId || message.anonymousId;
   response.body.JSON_ARRAY = { batch: JSON.stringify([removeUndefinedValues(payload)]) };
-  const { apiSecret, serviceAccountUserName, serviceAccountSecret, projectId, dataResidency } =
-    destConfig;
+  const { dataResidency } = destConfig;
   const duration = getTimeDifference(message.timestamp);
+
+  const setCredentials = () => {
+    const credentials = setImportCredentials(destConfig);
+    response.endpoint = credentials.endpoint;
+    response.headers = credentials.headers;
+    response.params = {
+      project_id: credentials.params?.projectId,
+      strict: credentials.params.strict,
+    };
+  };
+
   switch (eventType) {
     case EventType.ALIAS:
     case EventType.TRACK:
     case EventType.SCREEN:
-    case EventType.PAGE:
-      if (
-        !apiSecret &&
-        !(serviceAccountUserName && serviceAccountSecret && projectId) &&
-        duration.days <= 5
-      ) {
-        response.endpoint =
-          dataResidency === 'eu' ? `${BASE_ENDPOINT_EU}/track/` : `${BASE_ENDPOINT}/track/`;
-        response.headers = {};
-      } else if (duration.years > 5) {
+    case EventType.PAGE: {
+      if (duration.years > 5) {
         throw new InstrumentationError('Event timestamp should be within last 5 years');
-      } else {
-        const credentials = setImportCredentials(destConfig);
-        response.endpoint = credentials.endpoint;
-        response.headers = credentials.headers;
-        response.params = {
-          project_id: credentials.params?.projectId,
-          strict: credentials.params.strict,
-        };
-        break;
       }
+      setCredentials();
       break;
-    case 'merge':
-      // eslint-disable-next-line no-case-declarations
-      const credentials = setImportCredentials(destConfig);
-      response.endpoint = credentials.endpoint;
-      response.headers = credentials.headers;
-      response.params = {
-        project_id: credentials.params?.projectId,
-        strict: credentials.params.strict,
-      };
+    }
+    case 'merge': {
+      setCredentials();
       break;
+    }
     default:
       response.endpoint =
         dataResidency === 'eu' ? `${BASE_ENDPOINT_EU}/engage/` : `${BASE_ENDPOINT}/engage/`;
@@ -171,7 +161,8 @@ const getEventValueForTrackEvent = (message, destination) => {
   if (mappedProperties.$insert_id) {
     mappedProperties.$insert_id = mappedProperties.$insert_id.slice(-36);
   }
-  const unixTimestamp = toUnixTimestamp(message.timestamp);
+
+  const unixTimestamp = toUnixTimestampInMS(message.timestamp || message.originalTimestamp);
   let properties = {
     ...message.properties,
     ...get(message, 'context.traits'),
@@ -179,6 +170,7 @@ const getEventValueForTrackEvent = (message, destination) => {
     token: destination.Config.token,
     distinct_id: message.userId || message.anonymousId,
     time: unixTimestamp,
+    ...buildUtmParams(message.context?.campaign),
   };
 
   if (destination.Config?.identityMergeApi === 'simplified') {
@@ -224,17 +216,51 @@ const processTrack = (message, destination) => {
   return returnValue;
 };
 
+const createSetOnceResponse = (message, type, destination, setOnce) => {
+  const payload = {
+    $set_once: setOnce,
+    $token: destination.Config.token,
+    $distinct_id: message.userId || message.anonymousId,
+  };
+
+  if (destination?.Config.identityMergeApi === 'simplified') {
+    payload.$distinct_id = message.userId || `$device:${message.anonymousId}`;
+  }
+
+  return responseBuilderSimple(payload, message, type, destination.Config);
+};
+
 const processIdentifyEvents = async (message, type, destination) => {
+  const messageClone = { ...message };
+  let seggregatedTraits = {};
   const returnValue = [];
+  let setOnceProperties = [];
+
+  // making payload for set_once properties
+  if (destination.Config.setOnceProperties && destination.Config.setOnceProperties.length > 0) {
+    setOnceProperties = parseConfigArray(destination.Config.setOnceProperties, 'property');
+    seggregatedTraits = trimTraits(
+      messageClone.traits,
+      messageClone.context.traits,
+      setOnceProperties,
+    );
+    messageClone.traits = seggregatedTraits.traits;
+    messageClone.context.traits = seggregatedTraits.contextTraits;
+    if (Object.keys(seggregatedTraits.setOnce).length > 0) {
+      returnValue.push(
+        createSetOnceResponse(messageClone, type, destination, seggregatedTraits.setOnce),
+      );
+    }
+  }
 
   // Creating the user profile
   // https://developer.mixpanel.com/reference/profile-set
-  returnValue.push(createIdentifyResponse(message, type, destination, responseBuilderSimple));
+  returnValue.push(createIdentifyResponse(messageClone, type, destination, responseBuilderSimple));
 
   if (
     destination.Config?.identityMergeApi !== 'simplified' &&
-    message.userId &&
-    message.anonymousId &&
+    messageClone.userId &&
+    messageClone.anonymousId &&
     isImportAuthCredentialsAvailable(destination)
   ) {
     // If userId and anonymousId both are present and required credentials for /import
@@ -243,13 +269,13 @@ const processIdentifyEvents = async (message, type, destination) => {
     const trackPayload = {
       event: '$merge',
       properties: {
-        $distinct_ids: [message.userId, message.anonymousId],
+        $distinct_ids: [messageClone.userId, messageClone.anonymousId],
         token: destination.Config.token,
       },
     };
     const identifyTrackResponse = responseBuilderSimple(
       trackPayload,
-      message,
+      messageClone,
       'merge',
       destination.Config,
     );
@@ -259,16 +285,25 @@ const processIdentifyEvents = async (message, type, destination) => {
 };
 
 const processPageOrScreenEvents = (message, type, destination) => {
+  const {
+    token,
+    identityMergeApi,
+    useUserDefinedPageEventName,
+    userDefinedPageEventTemplate,
+    useUserDefinedScreenEventName,
+    userDefinedScreenEventTemplate,
+  } = destination.Config;
   const mappedProperties = constructPayload(message, mPEventPropertiesConfigJson);
   let properties = {
     ...get(message, 'context.traits'),
     ...message.properties,
     ...mappedProperties,
-    token: destination.Config.token,
+    token,
     distinct_id: message.userId || message.anonymousId,
-    time: toUnixTimestamp(message.timestamp),
+    time: toUnixTimestampInMS(message.timestamp || message.originalTimestamp),
+    ...buildUtmParams(message.context?.campaign),
   };
-  if (destination.Config?.identityMergeApi === 'simplified') {
+  if (identityMergeApi === 'simplified') {
     properties = {
       ...properties,
       distinct_id: message.userId || `$device:${message.anonymousId}`,
@@ -287,7 +322,18 @@ const processPageOrScreenEvents = (message, type, destination) => {
     properties.$browser = browser.name;
     properties.$browser_version = browser.version;
   }
-  const eventName = type === 'page' ? 'Loaded a Page' : 'Loaded a Screen';
+
+  let eventName;
+  if (type === 'page') {
+    eventName = useUserDefinedPageEventName
+      ? generatePageOrScreenCustomEventName(message, userDefinedPageEventTemplate)
+      : 'Loaded a Page';
+  } else {
+    eventName = useUserDefinedScreenEventName
+      ? generatePageOrScreenCustomEventName(message, userDefinedScreenEventTemplate)
+      : 'Loaded a Screen';
+  }
+
   const payload = {
     event: eventName,
     properties,
@@ -340,7 +386,7 @@ const processGroupEvents = (message, type, destination) => {
           $set: {
             [groupKey]: groupKeyVal,
           },
-          $ip: get(message, 'context.ip'),
+          $ip: get(message, 'context.ip') || message.request_ip,
         };
         if (destination?.Config.identityMergeApi === 'simplified') {
           payload.$distinct_id = message.userId || `$device:${message.anonymousId}`;
@@ -402,7 +448,9 @@ const processSingleMessage = (message, destination) => {
       return processIdentifyEvents(clonedMessage, clonedMessage.type, destination);
     case EventType.ALIAS:
       if (destination.Config?.identityMergeApi === 'simplified') {
-        throw new InstrumentationError('Alias call is deprecated in `Simplified ID merge`');
+        throw new InstrumentationError(
+          'The use of the alias call in the context of the `Simplified ID merge` feature is not supported anymore.',
+        );
       }
       return processAliasEvents(message, message.type, destination);
     case EventType.GROUP:
@@ -418,10 +466,11 @@ const process = (event) => processSingleMessage(event.message, event.destination
 // Ref: https://help.mixpanel.com/hc/en-us/articles/115004613766-Default-Properties-Collected-by-Mixpanel
 // Ref: https://help.mixpanel.com/hc/en-us/articles/115004561786-Track-UTM-Tags
 const processRouterDest = async (inputs, reqMetadata) => {
-  const errorRespEvents = checkInvalidRtTfEvents(inputs);
-  if (errorRespEvents.length > 0) {
-    return errorRespEvents;
-  }
+  const batchSize = {
+    engage: 0,
+    groups: 0,
+    import: 0,
+  };
 
   const groupedEvents = groupEventsByType(inputs);
   const response = await Promise.all(
@@ -437,7 +486,6 @@ const processRouterDest = async (inputs, reqMetadata) => {
                 destination: event.destination,
               };
             }
-
             let processedEvents = await process(event);
             processedEvents = CommonUtils.toArray(processedEvents);
             return processedEvents.map((res) => ({
@@ -452,19 +500,17 @@ const processRouterDest = async (inputs, reqMetadata) => {
       );
 
       transformedPayloads = lodash.flatMap(transformedPayloads);
-      const { engageEvents, groupsEvents, trackEvents, importEvents, batchErrorRespList } =
+      const { engageEvents, groupsEvents, importEvents, batchErrorRespList } =
         groupEventsByEndpoint(transformedPayloads);
 
-      const engageRespList = batchEvents(engageEvents, ENGAGE_MAX_BATCH_SIZE);
-      const groupsRespList = batchEvents(groupsEvents, GROUPS_MAX_BATCH_SIZE);
-      const trackRespList = batchEvents(trackEvents, TRACK_MAX_BATCH_SIZE);
-      const importRespList = batchEvents(importEvents, IMPORT_MAX_BATCH_SIZE);
-      const batchSuccessRespList = [
-        ...engageRespList,
-        ...groupsRespList,
-        ...trackRespList,
-        ...importRespList,
-      ];
+      const engageRespList = batchEvents(engageEvents, ENGAGE_MAX_BATCH_SIZE, reqMetadata);
+      const groupsRespList = batchEvents(groupsEvents, GROUPS_MAX_BATCH_SIZE, reqMetadata);
+      const importRespList = batchEvents(importEvents, IMPORT_MAX_BATCH_SIZE, reqMetadata);
+      const batchSuccessRespList = [...engageRespList, ...groupsRespList, ...importRespList];
+
+      batchSize.engage += engageRespList.length;
+      batchSize.groups += groupsRespList.length;
+      batchSize.import += importRespList.length;
 
       return [...batchSuccessRespList, ...batchErrorRespList];
     }),
@@ -472,6 +518,9 @@ const processRouterDest = async (inputs, reqMetadata) => {
 
   // Flatten the response array containing batched events from multiple groups
   const allBatchedEvents = lodash.flatMap(response);
+
+  const { destination } = allBatchedEvents[0];
+  recordBatchSizeMetrics(batchSize, destination.ID);
   return combineBatchRequestsWithSameJobIds(allBatchedEvents);
 };
 

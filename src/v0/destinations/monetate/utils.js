@@ -1,6 +1,6 @@
 const set = require('set-value');
 const get = require('get-value');
-const { InstrumentationError } = require('../../util/errorTypes');
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const { isDefinedAndNotNull, defaultRequestConfig, getValueFromMessage } = require('../../util');
 const { ENDPOINT } = require('./config');
 const { JSON_MIME_TYPE } = require('../../util/constant');

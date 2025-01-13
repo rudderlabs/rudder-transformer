@@ -1,0 +1,122 @@
+[
+  {
+    "destKey": "$created",
+    "sourceKeys": "createdAt",
+    "required": false
+  },
+  {
+    "destKey": "$email",
+    "sourceKeys": "email",
+    "required": false
+  },
+  {
+    "destKey": "$first_name",
+    "sourceKeys": ["firstName", "firstname", "first_name"],
+    "required": false
+  },
+  {
+    "destKey": "$last_name",
+    "sourceKeys": ["lastName", "lastname", "last_name"],
+    "required": false
+  },
+  {
+    "destKey": "$name",
+    "sourceKeys": "name",
+    "required": false
+  },
+  {
+    "destKey": "$username",
+    "sourceKeys": ["username", "userName"],
+    "required": false
+  },
+  {
+    "destKey": "$phone",
+    "sourceKeys": "phone",
+    "required": false
+  },
+  {
+    "destKey": "$avatar",
+    "sourceKeys": "avatar",
+    "required": false
+  },
+  {
+    "destKey": "$country_code",
+    "sourceKeys": ["country", "address.country"],
+    "required": false
+  },
+  {
+    "destKey": "$city",
+    "sourceKeys": ["city", "address.city"],
+    "required": false
+  },
+  {
+    "destKey": "$region",
+    "sourceKeys": ["state", "address.state", "location.region"],
+    "required": false
+  },
+  {
+    "destKey": "$unsubscribed",
+    "sourceKeys": "unsubscribed",
+    "required": false
+  },
+  {
+    "destKey": "$geo_source",
+    "sourceKeys": "location.geoSource",
+    "required": false
+  },
+  {
+    "destKey": "$timezone",
+    "sourceKeys": "location.timezone",
+    "required": false
+  },
+  {
+    "destKey": "$latitude",
+    "sourceKeys": "location.latitude",
+    "required": false
+  },
+  {
+    "destKey": "$longitude",
+    "sourceKeys": "location.longitude",
+    "required": false
+  },
+  {
+    "destKey": "$carrier",
+    "sourceKeys": "network.carrier",
+    "required": false
+  },
+  {
+    "destKey": "$manufacturer",
+    "sourceKeys": "device.manufacturer",
+    "required": false
+  },
+  {
+    "destKey": "$model",
+    "sourceKeys": "device.model",
+    "required": false
+  },
+  {
+    "destKey": "$screen_height",
+    "sourceKeys": "screen.height",
+    "required": false
+  },
+  {
+    "destKey": "$screen_width",
+    "sourceKeys": "screen.width",
+    "required": false
+  },
+  {
+    "destKey": "$wifi",
+    "sourceKeys": "network.wifi",
+    "required": false
+  },
+  {
+    "destKey": "$initial_referrer",
+    "sourceKeys": "page.initial_referrer",
+    "required": false
+  },
+  {
+    "destKey": "$initial_referring_domain",
+    "sourceKeys": ["page.initial_referring_domain", "page.initialReferringDomain"],
+    "required": false
+  }
+]

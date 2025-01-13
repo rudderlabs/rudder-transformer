@@ -1,10 +1,9 @@
 const { get, set } = require('lodash');
 const sha256 = require('sha256');
+const { NetworkError, NetworkInstrumentationError } = require('@rudderstack/integrations-lib');
+const SqlString = require('sqlstring');
 const { prepareProxyRequest, handleHttpRequest } = require('../../../adapters/network');
-const {
-  isHttpStatusSuccess,
-  getAuthErrCategoryFromErrDetailsAndStCode,
-} = require('../../util/index');
+const { isHttpStatusSuccess } = require('../../util/index');
 const { CONVERSION_ACTION_ID_CACHE_TTL } = require('./config');
 const Cache = require('../../util/cache');
 
@@ -15,8 +14,9 @@ const {
   getDynamicErrorType,
 } = require('../../../adapters/utils/networkUtils');
 const { BASE_ENDPOINT } = require('./config');
-const { NetworkError, NetworkInstrumentationError } = require('../../util/errorTypes');
+
 const tags = require('../../util/tags');
+const { getAuthErrCategory } = require('../../util/googleUtils');
 
 const ERROR_MSG_PATH = 'response[0].error.message';
 
@@ -28,14 +28,19 @@ const ERROR_MSG_PATH = 'response[0].error.message';
  * @returns
  */
 
-const getConversionActionId = async (method, headers, params) => {
+const getConversionActionId = async ({ method, headers, params, metadata }) => {
   const conversionActionIdKey = sha256(params.event + params.customerId).toString();
   return conversionActionIdCache.get(conversionActionIdKey, async () => {
+    const queryString = SqlString.format(
+      'SELECT conversion_action.id FROM conversion_action WHERE conversion_action.name = ?',
+      [params.event],
+    );
     const data = {
-      query: `SELECT conversion_action.id FROM conversion_action WHERE conversion_action.name = '${params.event}'`,
+      query: queryString,
     };
+    const searchStreamEndpoint = `${BASE_ENDPOINT}/${params.customerId}/googleAds:searchStream`;
     const requestBody = {
-      url: `${BASE_ENDPOINT}/${params.customerId}/googleAds:searchStream`,
+      url: searchStreamEndpoint,
       data,
       headers,
       method,
@@ -46,24 +51,26 @@ const getConversionActionId = async (method, headers, params) => {
       {
         destType: 'google_adwords_enhanced_conversions',
         feature: 'proxy',
+        endpointPath: `/googleAds:searchStream`,
+        requestMethod: 'POST',
+        module: 'dataDelivery',
+        metadata,
       },
     );
-    if (!isHttpStatusSuccess(gaecConversionActionIdResponse.status)) {
+    const { status, response } = gaecConversionActionIdResponse;
+    if (!isHttpStatusSuccess(status)) {
       throw new NetworkError(
         `"${JSON.stringify(
           get(gaecConversionActionIdResponse, ERROR_MSG_PATH, '')
             ? get(gaecConversionActionIdResponse, ERROR_MSG_PATH, '')
-            : gaecConversionActionIdResponse.response,
+            : response,
         )} during Google_adwords_enhanced_conversions response transformation"`,
-        gaecConversionActionIdResponse.status,
+        status,
         {
-          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(gaecConversionActionIdResponse.status),
+          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
         },
-        gaecConversionActionIdResponse.response,
-        getAuthErrCategoryFromErrDetailsAndStCode(
-          get(gaecConversionActionIdResponse, 'status'),
-          get(gaecConversionActionIdResponse, ERROR_MSG_PATH),
-        ),
+        response,
+        getAuthErrCategory(gaecConversionActionIdResponse),
       );
     }
     const conversionActionId = get(
@@ -87,10 +94,10 @@ const getConversionActionId = async (method, headers, params) => {
  * @returns
  */
 const ProxyRequest = async (request) => {
-  const { body, method, endpoint, params } = request;
+  const { body, method, endpoint, params, metadata } = request;
   const { headers } = request;
 
-  const conversionActionId = await getConversionActionId(method, headers, params);
+  const conversionActionId = await getConversionActionId({ method, headers, params, metadata });
 
   set(
     body.JSON,
@@ -101,11 +108,16 @@ const ProxyRequest = async (request) => {
   const { httpResponse: response } = await handleHttpRequest('constructor', requestBody, {
     destType: 'google_adwords_enhanced_conversions',
     feature: 'proxy',
+    endpointPath: `/googleAds:uploadOfflineUserData`,
+    requestMethod: 'POST',
+    module: 'dataDelivery',
+    metadata,
   });
   return response;
 };
 
-const responseHandler = (destinationResponse) => {
+const responseHandler = (responseParams) => {
+  const { destinationResponse } = responseParams;
   const message = 'Request Processed Successfully';
   const { status } = destinationResponse;
   if (isHttpStatusSuccess(status)) {
@@ -115,9 +127,7 @@ const responseHandler = (destinationResponse) => {
     // Ref - https://github.com/googleapis/googleapis/blob/master/google/rpc/code.proto
     if (partialFailureError && partialFailureError.code !== 0) {
       throw new NetworkError(
-        `[Google Ads Offline Conversions]:: partialFailureError - ${JSON.stringify(
-          partialFailureError,
-        )}`,
+        JSON.stringify(partialFailureError),
         400,
         {
           [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(400),
@@ -142,7 +152,7 @@ const responseHandler = (destinationResponse) => {
       [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
     },
     response,
-    getAuthErrCategoryFromErrDetailsAndStCode(status, response),
+    getAuthErrCategory(destinationResponse),
   );
 };
 

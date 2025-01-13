@@ -2,7 +2,6 @@ bindings:
   - path: ../../../../v0/destinations/algolia/config
   - name: handleRtTfSingleEventError
     path: ../../../../v0/util/index
-
 steps:
   - name: validateInput
     template: |
@@ -28,10 +27,14 @@ steps:
       $.outputs.transform#idx.error.(
         $.handleRtTfSingleEventError(^[idx], .originalError ?? ., {})
       )[]
+
   - name: batchSuccessfulEvents
     description: Batches the successfulEvents
     template: |
-      let batches = $.chunk($.outputs.successfulEvents, $.MAX_BATCH_SIZE);
+      const dontBatchTrueEvents =  $.outputs.successfulEvents{.metadata.dontBatch}[];
+      const dontBatchFalseEvents = $.outputs.successfulEvents{!.metadata.dontBatch}[];
+
+      let batches = [...$.chunk(dontBatchFalseEvents, $.MAX_BATCH_SIZE), ...$.chunk(dontBatchTrueEvents, 1)];
       batches@batch.({
         "batchedRequest": {
           "body": {
@@ -56,6 +59,7 @@ steps:
         "statusCode": 200,
         "destination": batch[0].destination
       })[];
+
   - name: finalPayload
     template: |
       [...$.outputs.failedEvents, ...$.outputs.batchSuccessfulEvents]

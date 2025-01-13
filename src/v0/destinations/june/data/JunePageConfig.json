@@ -1,49 +1,41 @@
 [
-    {
-        "destKey": "userId",
-        "sourceKeys": "userIdOnly",
-        "sourceFromGenericMap": true,
-        "required": false
-    },
-    {
-        "destKey": "anonymousId",
-        "sourceKeys": "anonymousId",
-        "required": false
-    },
-    {
-        "destKey": "timestamp",
-        "sourceKeys": "timestamp",
-        "sourceFromGenericMap": true,
-        "required": false
-    },
-    {
-        "destKey": "properties",
-        "sourceKeys": "properties",
-        "required": true,
-        "metadata": {
-            "excludes": [
-                "groupId"
-            ]
-        }
-    },
-    {
-        "destKey": "context",
-        "sourceKeys": "context",
-        "required": false,
-        "metadata": {
-            "excludes": [
-                "page",
-                "traits",
-                "sessionId",
-                "sessionStart",
-                "consentManagement"
-            ]
-        }
-    },
-    {
-        "destKey": "context.groupId",
-        "sourceKeys": "groupId",
-        "sourceFromGenericMap": true,
-        "required": false
+  {
+    "destKey": "userId",
+    "sourceKeys": "userIdOnly",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "anonymousId",
+    "sourceKeys": "anonymousId",
+    "required": false
+  },
+  {
+    "destKey": "timestamp",
+    "sourceKeys": "timestamp",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "properties",
+    "sourceKeys": "properties",
+    "required": true,
+    "metadata": {
+      "excludes": ["groupId"]
     }
+  },
+  {
+    "destKey": "context",
+    "sourceKeys": "context",
+    "required": false,
+    "metadata": {
+      "excludes": ["page", "traits", "sessionId", "sessionStart", "consentManagement"]
+    }
+  },
+  {
+    "destKey": "context.groupId",
+    "sourceKeys": "groupId",
+    "sourceFromGenericMap": true,
+    "required": false
+  }
 ]

@@ -1,42 +1,45 @@
 const { getMappingConfig } = require('../../util');
 
-const BASE_URL = 'https://api.iterable.com/api/';
+const BASE_URL = {
+  USDC: 'https://api.iterable.com/api/',
+  EUDC: 'https://api.eu.iterable.com/api/',
+};
 
 const ConfigCategory = {
   IDENTIFY_BROWSER: {
     name: 'IterableRegisterBrowserTokenConfig',
     action: 'identifyBrowser',
-    endpoint: `${BASE_URL}users/registerBrowserToken`,
+    endpoint: `users/registerBrowserToken`,
   },
   IDENTIFY_DEVICE: {
     name: 'IterableRegisterDeviceTokenConfig',
     action: 'identifyDevice',
-    endpoint: `${BASE_URL}users/registerDeviceToken`,
+    endpoint: `users/registerDeviceToken`,
   },
   IDENTIFY: {
     name: 'IterableIdentifyConfig',
     action: 'identify',
-    endpoint: `${BASE_URL}users/update`,
+    endpoint: `users/update`,
   },
   PAGE: {
     name: 'IterablePageConfig',
     action: 'page',
-    endpoint: `${BASE_URL}events/track`,
+    endpoint: `events/track`,
   },
   SCREEN: {
     name: 'IterablePageConfig',
     action: 'screen',
-    endpoint: `${BASE_URL}events/track`,
+    endpoint: `events/track`,
   },
   TRACK: {
     name: 'IterableTrackConfig',
     action: 'track',
-    endpoint: `${BASE_URL}events/track`,
+    endpoint: `events/track`,
   },
   TRACK_PURCHASE: {
     name: 'IterableTrackPurchaseConfig',
     action: 'trackPurchase',
-    endpoint: `${BASE_URL}commerce/trackPurchase`,
+    endpoint: `commerce/trackPurchase`,
   },
   PRODUCT: {
     name: 'IterableProductConfig',
@@ -46,7 +49,7 @@ const ConfigCategory = {
   UPDATE_CART: {
     name: 'IterableProductConfig',
     action: 'updateCart',
-    endpoint: `${BASE_URL}commerce/updateCart`,
+    endpoint: `commerce/updateCart`,
   },
   DEVICE: {
     name: 'IterableDeviceConfig',
@@ -56,30 +59,56 @@ const ConfigCategory = {
   ALIAS: {
     name: 'IterableAliasConfig',
     action: 'alias',
-    endpoint: `${BASE_URL}users/updateEmail`,
+    endpoint: `users/updateEmail`,
   },
   CATALOG: {
     name: 'IterableCatalogConfig',
     action: 'catalogs',
-    endpoint: `${BASE_URL}catalogs`,
+    endpoint: `catalogs`,
   },
 };
 
 const mappingConfig = getMappingConfig(ConfigCategory, __dirname);
 
+// Function to construct endpoint based on the selected data center
+const constructEndpoint = (dataCenter, category) => {
+  const baseUrl = BASE_URL[dataCenter] || BASE_URL.USDC; // Default to USDC if not found
+  return `${baseUrl}${category.endpoint}`;
+};
+
+const BULK_ENDPOINTS = ['/api/users/bulkUpdate', '/api/events/trackBulk'];
+
 const IDENTIFY_MAX_BATCH_SIZE = 1000;
 const IDENTIFY_MAX_BODY_SIZE_IN_BYTES = 4000000;
-const IDENTIFY_BATCH_ENDPOINT = 'https://api.iterable.com/api/users/bulkUpdate';
 
 const TRACK_MAX_BATCH_SIZE = 8000;
-const TRACK_BATCH_ENDPOINT = 'https://api.iterable.com/api/events/trackBulk';
+
+const ITERABLE_RESPONSE_USER_ID_PATHS = [
+  'invalidUserIds',
+  'failedUpdates.invalidUserIds',
+  'failedUpdates.notFoundUserIds',
+  'failedUpdates.forgottenUserIds',
+  'failedUpdates.conflictUserIds',
+  'failedUpdates.invalidDataUserIds',
+];
+
+const ITERABLE_RESPONSE_EMAIL_PATHS = [
+  'invalidEmails',
+  'failedUpdates.invalidEmails',
+  'failedUpdates.notFoundEmails',
+  'failedUpdates.forgottenEmails',
+  'failedUpdates.conflictEmails',
+  'failedUpdates.invalidDataEmails',
+];
 
 module.exports = {
   mappingConfig,
   ConfigCategory,
-  TRACK_BATCH_ENDPOINT,
+  constructEndpoint,
   TRACK_MAX_BATCH_SIZE,
   IDENTIFY_MAX_BATCH_SIZE,
-  IDENTIFY_BATCH_ENDPOINT,
   IDENTIFY_MAX_BODY_SIZE_IN_BYTES,
+  ITERABLE_RESPONSE_USER_ID_PATHS,
+  ITERABLE_RESPONSE_EMAIL_PATHS,
+  BULK_ENDPOINTS,
 };

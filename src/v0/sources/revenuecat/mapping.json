@@ -1,0 +1,10 @@
+[
+  {
+    "sourceKeys": "event.type",
+    "destKeys": "event"
+  },
+  {
+    "sourceKeys": "event.id",
+    "destKeys": "messageId"
+  }
+]

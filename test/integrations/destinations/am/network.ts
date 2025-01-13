@@ -205,5 +205,250 @@ const deleteNwData = [
       },
     },
   },
+  {
+    httpReq: {
+      method: 'post',
+      url: 'https://analytics.eu.amplitude.com/api/2/deletions/users',
+      data: {
+        user_ids: ['test_user_id_1', 'test_user_id_2'],
+        requester: 'RudderStack',
+        ignore_invalid_id: 'true',
+      },
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Basic MTIzNDphYmNk',
+      },
+    },
+    httpRes: {
+      data: [
+        {
+          active_scrub_done_date: null,
+          amplitude_ids: [
+            {
+              amplitude_id: 44547850078,
+              requested_on_day: '2024-12-01',
+              requester: 'RudderStack',
+            },
+            {
+              amplitude_id: 44547886812,
+              requested_on_day: '2024-12-01',
+              requester: 'RudderStack',
+            },
+          ],
+          app: '10000000',
+          day: '2025-01-10',
+          status: 'staging',
+        },
+      ],
+      status: 200,
+    },
+  },
 ];
-export const networkCallsData = [...deleteNwData];
+
+const deliveryNwData = [
+  {
+    httpReq: {
+      url: 'https://api.amplitude.com/2/httpapi/test1',
+      data: {
+        api_key: 'c9d8a13b8bcab46a547f7be5200c483d',
+        events: [
+          {
+            app_name: 'Rudder-CleverTap_Example',
+            app_version: '1.0',
+            time: 1619006730330,
+            user_id: 'gabi_userId_45',
+            user_properties: {
+              Residence: 'Shibuya',
+              city: 'Tokyo',
+              country: 'JP',
+              email: 'gabi29@gmail.com',
+              gender: 'M',
+              name: 'User2 Gabi2',
+              organization: 'Company',
+              region: 'ABC',
+              title: 'Owner',
+              zip: '100-0001',
+            },
+          },
+        ],
+        options: { min_id_length: 1 },
+      },
+      params: { destination: 'am' },
+      headers: { 'Content-Type': 'application/json', 'User-Agent': 'RudderLabs' },
+      method: 'POST',
+    },
+    httpRes: {
+      data: {
+        code: 200,
+        server_upload_time: 1639235302252,
+        payload_size_bytes: 863,
+        events_ingested: 1,
+      },
+      status: 200,
+      statusText: 'OK',
+      headers: {
+        date: 'Sat, 11 Dec 2021 15:08:22 GMT',
+        'content-type': 'application/json',
+        'content-length': '93',
+        connection: 'keep-alive',
+        'access-control-allow-origin': '*',
+        'access-control-allow-methods': 'GET, POST',
+        'strict-transport-security': 'max-age=15768000',
+      },
+    },
+  },
+  {
+    httpReq: {
+      url: 'https://api.amplitude.com/2/httpapi/test2',
+      data: {
+        api_key: 'c9d8a13b8bcab46a547f7be5200c483d',
+        events: [
+          {
+            app_name: 'Rudder-CleverTap_Example',
+            app_version: '1.0',
+            time: 1619006730330,
+            user_id: 'gabi_userId_45',
+            user_properties: {
+              Residence: 'Shibuya',
+              city: 'Tokyo',
+              country: 'JP',
+              email: 'gabi29@gmail.com',
+              gender: 'M',
+              name: 'User2 Gabi2',
+              organization: 'Company',
+              region: 'ABC',
+              title: 'Owner',
+              zip: '100-0001',
+            },
+          },
+        ],
+        options: {
+          min_id_length: 1,
+        },
+      },
+      params: { destination: 'am' },
+      headers: { 'Content-Type': 'application/json', 'User-Agent': 'RudderLabs' },
+      method: 'POST',
+    },
+    httpRes: {
+      data: {
+        code: 400,
+        server_upload_time: 1639235302252,
+        payload_size_bytes: 863,
+        events_ingested: 0,
+      },
+      status: 400,
+      statusText: 'Bad Request',
+      headers: {
+        date: 'Sat, 11 Dec 2021 15:08:22 GMT',
+        'content-type': 'application/json',
+        'content-length': '93',
+        connection: 'keep-alive',
+        'access-control-allow-origin': '*',
+        'access-control-allow-methods': 'GET, POST',
+        'strict-transport-security': 'max-age=15768000',
+      },
+    },
+  },
+  {
+    httpReq: {
+      url: 'https://api.amplitude.com/2/httpapi/test4',
+      data: {
+        api_key: 'c9d8a13b8bcab46a547f7be5200c483d',
+        events: [
+          {
+            app_name: 'Rudder-CleverTap_Example',
+            app_version: '1.0',
+            time: 1619006730330,
+            user_id: 'gabi_userId_45',
+            user_properties: {
+              Residence: 'Shibuya',
+              city: 'Tokyo',
+              country: 'JP',
+              email: 'gabi29@gmail.com',
+              gender: 'M',
+              name: 'User2 Gabi2',
+              organization: 'Company',
+              region: 'ABC',
+              title: 'Owner',
+              zip: '100-0001',
+            },
+          },
+        ],
+        options: { min_id_length: 1 },
+      },
+      params: { destination: 'am' },
+      headers: { 'Content-Type': 'application/json', 'User-Agent': 'RudderLabs' },
+      method: 'POST',
+    },
+    httpRes: { status: 400, statusText: 'Bad Request' },
+  },
+  {
+    httpReq: {
+      url: 'https://api.amplitude.com/2/httpapi/test5',
+      data: {
+        api_key: 'c9d8a13b8bcab46a547f7be5200c483d',
+        events: [
+          {
+            app_name: 'Rudder-CleverTap_Example',
+            app_version: '1.0',
+            time: 1619006730330,
+            user_id: 'gabi_userId_45',
+            user_properties: {
+              Residence: 'Shibuya',
+              city: 'Tokyo',
+              country: 'JP',
+              email: 'gabi29@gmail.com',
+              gender: 'M',
+              name: 'User2 Gabi2',
+              organization: 'Company',
+              region: 'ABC',
+              title: 'Owner',
+              zip: '100-0001',
+            },
+          },
+        ],
+        options: { min_id_length: 1 },
+      },
+      params: { destination: 'am' },
+      headers: { 'Content-Type': 'application/json', 'User-Agent': 'RudderLabs' },
+      method: 'POST',
+    },
+    httpRes: {},
+  },
+  {
+    httpReq: {
+      url: 'https://api.amplitude.com/2/httpapi/test6',
+      data: {
+        api_key: 'c9d8a13b8bcab46a547f7be5200c483d',
+        events: [
+          {
+            app_name: 'Rudder-CleverTap_Example',
+            app_version: '1.0',
+            time: 1619006730330,
+            user_id: 'gabi_userId_45',
+            user_properties: {
+              Residence: 'Shibuya',
+              city: 'Tokyo',
+              country: 'JP',
+              email: 'gabi29@gmail.com',
+              gender: 'M',
+              name: 'User2 Gabi2',
+              organization: 'Company',
+              region: 'ABC',
+              title: 'Owner',
+              zip: '100-0001',
+            },
+          },
+        ],
+        options: { min_id_length: 1 },
+      },
+      params: { destination: 'am' },
+      headers: { 'Content-Type': 'application/json', 'User-Agent': 'RudderLabs' },
+      method: 'POST',
+    },
+    httpRes: {},
+  },
+];
+
+export const networkCallsData = [...deleteNwData, ...deliveryNwData];

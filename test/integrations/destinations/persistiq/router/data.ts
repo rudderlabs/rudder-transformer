@@ -26,33 +26,22 @@ export const data = [
                     Snippet: 'extra value',
                     extra: 'extraVal',
                   },
-                  externalId: [
-                    {
-                      type: 'persistIqLeadId',
-                      id: 'lel1c5u1wuk8',
-                    },
-                  ],
+                  externalId: [{ type: 'persistIqLeadId', id: 'lel1c5u1wuk8' }],
                 },
                 traits: {
                   linkedinUrl: 'www.google.com',
                   dup: 'update',
                   status: 'open',
-                  company: {
-                    name: 'abc123',
-                  },
+                  company: { name: 'abc123' },
                 },
               },
               destination: {
                 Config: {
                   apiKey: 'dummyApiKey',
-                  persistIqAttributesMapping: [
-                    {
-                      from: 'useroccupation',
-                      to: 'occupation',
-                    },
-                  ],
+                  persistIqAttributesMapping: [{ from: 'useroccupation', to: 'occupation' }],
                 },
               },
+              metadata: { jobId: 1, userId: 'u1' },
             },
           ],
           destType: 'persistiq',
@@ -102,7 +91,7 @@ export const data = [
                   persistIqAttributesMapping: [{ from: 'useroccupation', to: 'occupation' }],
                 },
               },
-              metadata: [null],
+              metadata: [{ jobId: 1, userId: 'u1' }],
               statusCode: 200,
             },
           ],

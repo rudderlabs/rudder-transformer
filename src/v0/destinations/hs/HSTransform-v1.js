@@ -1,5 +1,10 @@
 const get = require('get-value');
 const lodash = require('lodash');
+const {
+  InstrumentationError,
+  ConfigurationError,
+  TransformationError,
+} = require('@rudderstack/integrations-lib');
 const { MappedToDestinationKey, GENERIC_TRUE_VALUES } = require('../../../constants');
 const {
   defaultGetRequestConfig,
@@ -15,11 +20,6 @@ const {
   getDestinationExternalIDInfoForRetl,
 } = require('../../util');
 const {
-  InstrumentationError,
-  ConfigurationError,
-  TransformationError,
-} = require('../../util/errorTypes');
-const {
   BATCH_CONTACT_ENDPOINT,
   MAX_BATCH_SIZE,
   TRACK_ENDPOINT,
@@ -34,6 +34,7 @@ const {
   getEmailAndUpdatedProps,
   formatPropertyValueForIdentify,
   getHsSearchId,
+  populateTraits,
 } = require('./util');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
@@ -50,9 +51,9 @@ const { JSON_MIME_TYPE } = require('../../util/constant');
  * @param {*} propertyMap
  * @returns
  */
-const processLegacyIdentify = async (message, destination, propertyMap) => {
+const processLegacyIdentify = async ({ message, destination, metadata }, propertyMap) => {
   const { Config } = destination;
-  const traits = getFieldValueFromMessage(message, 'traits');
+  let traits = getFieldValueFromMessage(message, 'traits');
   const mappedToDestination = get(message, MappedToDestinationKey);
   const operation = get(message, 'context.hubspotOperation');
   // if mappedToDestination is set true, then add externalId to traits
@@ -80,6 +81,8 @@ const processLegacyIdentify = async (message, destination, propertyMap) => {
       )}/${hsSearchId}`;
       response.method = defaultPatchRequestConfig.requestMethod;
     }
+
+    traits = await populateTraits(propertyMap, traits, destination, metadata);
     response.body.JSON = removeUndefinedAndNullValues({ properties: traits });
     response.source = 'rETL';
     response.operation = operation;
@@ -89,7 +92,10 @@ const processLegacyIdentify = async (message, destination, propertyMap) => {
     }
     const { email } = traits;
 
-    const userProperties = await getTransformedJSON(message, destination, propertyMap);
+    const userProperties = await getTransformedJSON(
+      { message, destination, metadata },
+      propertyMap,
+    );
 
     const payload = {
       properties: formatPropertyValueForIdentify(userProperties),
@@ -131,7 +137,7 @@ const processLegacyIdentify = async (message, destination, propertyMap) => {
  * @param {*} propertyMap
  * @returns
  */
-const processLegacyTrack = async (message, destination, propertyMap) => {
+const processLegacyTrack = async ({ message, destination, metadata }, propertyMap) => {
   const { Config } = destination;
 
   if (!Config.hubID) {
@@ -148,7 +154,7 @@ const processLegacyTrack = async (message, destination, propertyMap) => {
     id: getDestinationExternalID(message, 'hubspotId'),
   };
 
-  const userProperties = await getTransformedJSON(message, destination, propertyMap);
+  const userProperties = await getTransformedJSON({ message, destination, metadata }, propertyMap);
 
   const payload = { ...parameters, ...userProperties };
   const params = removeUndefinedAndNullValues(payload);

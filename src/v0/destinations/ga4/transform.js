@@ -1,25 +1,15 @@
 const get = require('get-value');
+const { InstrumentationError, UnsupportedEventError } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const {
   isEmptyObject,
   constructPayload,
   getIntegrationsObj,
   isHybridModeEnabled,
-  isDefinedAndNotNull,
-  defaultRequestConfig,
-  defaultPostRequestConfig,
-  getDestinationExternalID,
   removeUndefinedAndNullValues,
 } = require('../../util');
 const {
-  ConfigurationError,
-  InstrumentationError,
-  UnsupportedEventError,
-} = require('../../util/errorTypes');
-const {
-  ENDPOINT,
   mappingConfig,
-  DEBUG_ENDPOINT,
   ConfigCategory,
   trackCommonConfig,
   VALID_ITEM_OR_PRODUCT_PROPERTIES,
@@ -27,6 +17,7 @@ const {
 const {
   getItemsArray,
   validateEventName,
+  prepareUserConsents,
   removeInvalidParams,
   isReservedEventName,
   getGA4ExclusionList,
@@ -35,33 +26,12 @@ const {
   GA4_PARAMETERS_EXCLUSION,
   GA4_RESERVED_PARAMETER_EXCLUSION,
   removeReservedParameterPrefixNames,
+  basicValidation,
+  addClientDetails,
+  buildDeliverablePayload,
+  basicConfigvalidaiton,
 } = require('./utils');
-const { JSON_MIME_TYPE } = require('../../util/constant');
-
-/**
- * returns client_id
- * @param {*} message
- * @returns
- */
-const getGA4ClientId = (message, Config) => {
-  let clientId;
-
-  if (isHybridModeEnabled(Config)) {
-    const integrationsObj = getIntegrationsObj(message, 'ga4');
-    if (integrationsObj?.clientId) {
-      clientId = integrationsObj.clientId;
-    }
-  }
-
-  if (!clientId) {
-    clientId =
-      getDestinationExternalID(message, 'ga4ClientId') ||
-      get(message, 'anonymousId') ||
-      get(message, 'rudderId');
-  }
-
-  return clientId;
-};
+require('../../util/constant');
 
 /**
  * Returns response for GA4 destination
@@ -69,16 +39,11 @@ const getGA4ClientId = (message, Config) => {
  * @param {*} Config
  * @returns
  */
-const responseBuilder = (message, { Config }) => {
+const responseBuilder = (message, { Config }, destType) => {
   let event = get(message, 'event');
-  if (!event) {
-    throw new InstrumentationError('Event name is required');
-  }
+  basicValidation(event);
 
   // trim and replace spaces with "_"
-  if (typeof event !== 'string') {
-    throw new InstrumentationError('track:: event name should be string');
-  }
   event = event.trim().replace(/\s+/g, '_');
 
   // reserved event names are not allowed
@@ -89,25 +54,7 @@ const responseBuilder = (message, { Config }) => {
   // get common top level rawPayload
   let rawPayload = constructPayload(message, trackCommonConfig);
 
-  switch (Config.typesOfClient) {
-    case 'gtag':
-      // gtag.js uses client_id
-      // GA4 uses it as an identifier to distinguish site visitors.
-      rawPayload.client_id = getGA4ClientId(message, Config);
-      if (!isDefinedAndNotNull(rawPayload.client_id)) {
-        throw new ConfigurationError('ga4ClientId, anonymousId or messageId must be provided');
-      }
-      break;
-    case 'firebase':
-      // firebase uses app_instance_id
-      rawPayload.app_instance_id = getDestinationExternalID(message, 'ga4AppInstanceId');
-      if (!isDefinedAndNotNull(rawPayload.app_instance_id)) {
-        throw new InstrumentationError('ga4AppInstanceId must be provided under externalId');
-      }
-      break;
-    default:
-      throw ConfigurationError('Invalid type of client');
-  }
+  rawPayload = addClientDetails(rawPayload, message, Config, destType);
 
   let payload = {};
   const eventConfig = ConfigCategory[`${event.toUpperCase()}`];
@@ -119,7 +66,7 @@ const responseBuilder = (message, { Config }) => {
     payload.name = evConfigEvent;
     payload.params = constructPayload(message, mappingConfig[name]);
 
-    const { items, mapRootLevelPropertiesToGA4ItemsArray } = getItemsArray(message, item, itemList)
+    const { items, mapRootLevelPropertiesToGA4ItemsArray } = getItemsArray(message, item, itemList);
 
     if (items.length > 0) {
       payload.params.items = items;
@@ -215,7 +162,7 @@ const responseBuilder = (message, { Config }) => {
   }
 
   removeReservedParameterPrefixNames(payload.params);
-  const integrationsObj = getIntegrationsObj(message, 'ga4');
+  const integrationsObj = getIntegrationsObj(message, destType);
   if (isHybridModeEnabled(Config) && integrationsObj && integrationsObj.sessionId) {
     payload.params.session_id = integrationsObj.sessionId;
   }
@@ -233,80 +180,45 @@ const responseBuilder = (message, { Config }) => {
   }
 
   // Prepare GA4 user properties
-  const userProperties = prepareUserProperties(message);
+  const userProperties = prepareUserProperties(message, Config.piiPropertiesToIgnore);
   if (!isEmptyObject(userProperties)) {
     rawPayload.user_properties = userProperties;
+  }
+
+  // Prepare GA4 consents
+  const consents = prepareUserConsents(message, destType);
+  if (!isEmptyObject(consents)) {
+    rawPayload.consent = consents;
   }
 
   payload = removeUndefinedAndNullValues(payload);
   rawPayload = { ...rawPayload, events: [payload] };
 
-  // build response
-  const response = defaultRequestConfig();
-  response.method = defaultPostRequestConfig.requestMethod;
-  // if debug_mode is true, we need to send the event to debug validation server
-  // ref: https://developers.google.com/analytics/devguides/collection/protocol/ga4/validating-events?client_type=firebase#sending_events_for_validation
-  if (Config.debugMode) {
-    response.endpoint = DEBUG_ENDPOINT;
-  } else {
-    response.endpoint = ENDPOINT;
-  }
-  response.headers = {
-    HOST: 'www.google-analytics.com',
-    'Content-Type': JSON_MIME_TYPE,
-  };
-  response.params = {
-    api_secret: Config.apiSecret,
-  };
-
-  // setting response params as per client type
-  switch (Config.typesOfClient) {
-    case 'gtag':
-      response.params.measurement_id = Config.measurementId;
-      break;
-    case 'firebase':
-      response.params.firebase_app_id = Config.firebaseAppId;
-      break;
-    default:
-      break;
-  }
-
-  response.body.JSON = rawPayload;
-  return response;
+  return buildDeliverablePayload(rawPayload, Config);
 };
 
-const process = (event) => {
+const processEvents = ({ event, destType = 'ga4' }) => {
   const { message, destination } = event;
   const { Config } = destination;
-
-  if (!Config.typesOfClient) {
-    throw new ConfigurationError('Client type not found. Aborting ');
-  }
-  if (!Config.apiSecret) {
-    throw new ConfigurationError('API Secret not found. Aborting ');
-  }
-  if (Config.typesOfClient === 'gtag' && !Config.measurementId) {
-    throw new ConfigurationError('measurementId must be provided. Aborting');
-  }
-  if (Config.typesOfClient === 'firebase' && !Config.firebaseAppId) {
-    throw new ConfigurationError('firebaseAppId must be provided. Aborting');
-  }
 
   if (!message.type) {
     throw new InstrumentationError('Message Type is not present. Aborting message.');
   }
 
+  basicConfigvalidaiton(Config);
+
   const messageType = message.type.toLowerCase();
+
   let response;
   switch (messageType) {
     case EventType.TRACK:
-      response = responseBuilder(message, destination);
+      response = responseBuilder(message, destination, destType);
       break;
     case EventType.PAGE:
       // GA4 custom event 'page_view' is fired for page
       if (!isHybridModeEnabled(Config)) {
         message.event = 'page_view';
-        response = responseBuilder(message, destination);
+        response = responseBuilder(message, destination, destType);
       } else {
         throw new UnsupportedEventError(
           'GA4 Hybrid mode is enabled, page calls will be sent through device mode',
@@ -316,7 +228,7 @@ const process = (event) => {
     case EventType.GROUP:
       // GA4 standard event 'join_group' is fired for group
       message.event = 'join_group';
-      response = responseBuilder(message, destination);
+      response = responseBuilder(message, destination, destType);
       break;
     default:
       throw new InstrumentationError(`Message type ${messageType} not supported`);
@@ -324,4 +236,7 @@ const process = (event) => {
   return response;
 };
 
-module.exports = { process };
+// Keeping this for other params which comes as part of process args
+const process = (event) => processEvents({ event });
+
+module.exports = { process, processEvents };

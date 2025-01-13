@@ -30,9 +30,7 @@ export const data = [
                 Name: 'zendesk',
                 Transformations: [],
               },
-              metadata: {
-                jobId: 2,
-              },
+              metadata: { jobId: 2, userId: 'u1' },
               message: {
                 anonymousId: '297b0750-934b-4411-b66c-9b418cdbc0c9',
                 channel: 'web',
@@ -44,28 +42,15 @@ export const data = [
                     version: '1.1.0-beta.2',
                   },
                   ip: '0.0.0.0',
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.1.0-beta.2',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.1.0-beta.2' },
                   locale: 'en-GB',
-                  os: {
-                    name: '',
-                    version: '',
-                  },
-                  screen: {
-                    density: 2,
-                  },
-                  traits: {
-                    email: 'example124@email.com',
-                    name: 'abcd124',
-                  },
+                  os: { name: '', version: '' },
+                  screen: { density: 2 },
+                  traits: { email: 'example124@email.com', name: 'abcd124' },
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36',
                 },
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 messageId: '0bab70e8-bf2f-449a-a19b-ca6e3bfed9b7',
                 originalTimestamp: '2020-03-23T18:27:28.98Z',
                 receivedAt: '2020-03-23T23:57:29.022+05:30',
@@ -108,9 +93,7 @@ export const data = [
                         email: 'example124@email.com',
                         name: 'abcd124',
                         external_id: 'abcd-124',
-                        user_fields: {
-                          id: 'abcd-124',
-                        },
+                        user_fields: { id: 'abcd-124' },
                         verified: true,
                       },
                     },
@@ -122,11 +105,7 @@ export const data = [
                   userId: '297b0750-934b-4411-b66c-9b418cdbc0c9',
                 },
               ],
-              metadata: [
-                {
-                  jobId: 2,
-                },
-              ],
+              metadata: [{ jobId: 2, userId: 'u1' }],
               batched: false,
               statusCode: 200,
               destination: {
@@ -186,9 +165,7 @@ export const data = [
                 Name: 'zendesk',
                 Transformations: [],
               },
-              metadata: {
-                jobId: 2,
-              },
+              metadata: { jobId: 2, userId: 'u1' },
               message: {
                 anonymousId: '297b0750-934b-4411-b66c-9b418cdbc0c9',
                 channel: 'web',
@@ -200,29 +177,16 @@ export const data = [
                     version: '1.1.0-beta.2',
                   },
                   ip: '0.0.0.0',
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.1.0-beta.2',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.1.0-beta.2' },
                   locale: 'en-GB',
-                  os: {
-                    name: '',
-                    version: '',
-                  },
-                  screen: {
-                    density: 2,
-                  },
-                  traits: {
-                    email: 'example124@email.com',
-                    name: 'abcd124',
-                  },
+                  os: { name: '', version: '' },
+                  screen: { density: 2 },
+                  traits: { email: 'example124@email.com', name: 'abcd124' },
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36',
                 },
                 groupId: 'group-124',
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 messageId: '2d54ba80-ce5f-4bcb-b1d7-7587e7a865fc',
                 originalTimestamp: '2020-03-23T18:27:28.983Z',
                 receivedAt: '2020-03-23T23:57:29.022+05:30',
@@ -277,11 +241,7 @@ export const data = [
                 files: {},
                 userId: '297b0750-934b-4411-b66c-9b418cdbc0c9',
               },
-              metadata: [
-                {
-                  jobId: 2,
-                },
-              ],
+              metadata: [{ jobId: 2, userId: 'u1' }],
               batched: false,
               statusCode: 200,
               destination: {
@@ -340,9 +300,7 @@ export const data = [
                 Name: 'zendesk',
                 Transformations: [],
               },
-              metadata: {
-                jobId: 3,
-              },
+              metadata: { jobId: 3, userId: 'u1' },
               message: {
                 anonymousId: '223b5f40-9543-4456-a7aa-945c43048185',
                 channel: 'web',
@@ -383,7 +341,7 @@ export const data = [
           output: [
             {
               error:
-                "Failed to fetch user with email: testemail2@email due to Couldn't find user: John Wick",
+                '{"message":"Failed to fetch user with email: testemail2@email due to Couldn\'t find user: John Wick","destinationResponse":{"status":400,"statTags":{"errorCategory":"network","errorType":"aborted","meta":"instrumentation"},"destinationResponse":"","authErrorCategory":""}}',
               statTags: {
                 destType: 'ZENDESK',
                 errorCategory: 'network',
@@ -393,11 +351,7 @@ export const data = [
                 module: 'destination',
               },
               statusCode: 400,
-              metadata: [
-                {
-                  jobId: 3,
-                },
-              ],
+              metadata: [{ jobId: 3, userId: 'u1' }],
               batched: false,
               destination: {
                 Config: {

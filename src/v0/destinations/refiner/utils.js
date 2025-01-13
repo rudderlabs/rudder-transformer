@@ -1,7 +1,7 @@
 const get = require('get-value');
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const { CONFIG_CATEGORIES } = require('./config');
 const { getHashFromArray, getFieldValueFromMessage } = require('../../util');
-const { InstrumentationError } = require('../../util/errorTypes');
 
 /**
  * Validation for userId and an email

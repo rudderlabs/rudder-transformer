@@ -1,6 +1,7 @@
 const { SHA256 } = require('crypto-js');
 const set = require('set-value');
 const lodash = require('lodash');
+const { ConfigurationError, InstrumentationError } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const {
   constructPayload,
@@ -8,7 +9,6 @@ const {
   removeUndefinedAndNullValues,
   isDefinedAndNotNullAndNotEmpty,
   getHashFromArrayWithDuplicate,
-  checkInvalidRtTfEvents,
   handleRtTfSingleEventError,
   getSuccessRespEvents,
   defaultBatchRequestConfig,
@@ -21,7 +21,6 @@ const {
   EVENT_NAME_MAPPING,
   PARTNER_NAME,
 } = require('./config');
-const { ConfigurationError, InstrumentationError } = require('../../util/errorTypes');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const getContents = (message) => {
@@ -199,11 +198,6 @@ const batchEvents = (eventChunksArray) => {
 };
 
 const processRouterDest = async (inputs, reqMetadata) => {
-  const errorRespEvents = checkInvalidRtTfEvents(inputs);
-  if (errorRespEvents.length > 0) {
-    return errorRespEvents;
-  }
-
   const batchErrorRespList = [];
   const eventChunksArray = [];
   const { destination } = inputs[0];

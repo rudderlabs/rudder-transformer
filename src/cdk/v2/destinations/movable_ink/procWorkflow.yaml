@@ -1,0 +1,74 @@
+bindings:
+  - name: EventType
+    path: ../../../../constants
+  - path: ../../bindings/jsontemplate
+  - name: defaultRequestConfig
+    path: ../../../../v0/util
+  - name: toUnixTimestampInMS
+    path: ../../../../v0/util
+  - name: base64Convertor
+    path: ../../../../v0/util
+  - path: ./utils
+
+steps:
+  - name: messageType
+    template: |
+      .message.type.toLowerCase();
+
+  - name: validateInput
+    template: |
+      let messageType = $.outputs.messageType;
+      $.assert(messageType, "message Type is not present. Aborting");
+      $.assert(messageType in {{$.EventType.([.IDENTIFY,.TRACK])}}, "message type " + messageType + " is not supported");
+      $.assertConfig(.destination.Config.endpoint, "Movable Ink Endpoint is not present. Aborting");
+      $.assertConfig(.destination.Config.accessKey, "Access key is not present . Aborting");
+      $.assertConfig(.destination.Config.accessSecret, "Access Secret is not present. Aborting");
+      $.assert(.message.timestamp ?? .message.originalTimestamp, "Timestamp is not present. Aborting");
+      $.assert(!(messageType === {{$.EventType.TRACK}} && !(.message.event)), "Event name is not present. Aborting");
+
+      const userId = .message.().(
+          {{{{$.getGenericPaths("userIdOnly")}}}};
+      );
+      const email = .message.().(
+          {{{{$.getGenericPaths("email")}}}};
+      );
+
+      $.assert(userId || email || .message.anonymousId, "Either one of userId or email or anonymousId is required. Aborting");
+      $.validateEventPayload(.message);
+
+  - name: preparePayload
+    description: Prepare payload for identify and track. This payload schema needs to be configured in the Movable Ink dashboard. Movable Ink will discard any additional fields from the input payload.
+    template: |
+      const userId = .message.().(
+          {{{{$.getGenericPaths("userIdOnly")}}}};
+      );
+      const email = .message.().(
+          {{{{$.getGenericPaths("email")}}}};
+      ); 
+      const timestampInUnix = $.toUnixTimestampInMS(.message.().(
+            {{{{$.getGenericPaths("timestamp")}}}};
+      ));
+      $.context.payload = {
+        ...(.message),
+        userId: userId || email,
+        timestamp: timestampInUnix,
+        anonymousId: .message.anonymousId
+      }
+
+  - name: buildResponse
+    description: In batchMode we return payload directly
+    condition: $.batchMode
+    template: |
+      $.context.payload
+    else:
+      name: buildResponseForProcessTransformation
+      template: |
+        const response = $.defaultRequestConfig();
+        response.body.JSON = $.context.payload;
+        response.endpoint = .destination.Config.endpoint;
+        response.method = "POST";
+        response.headers = {
+          "Content-Type": "application/json",
+          "Authorization": "Basic " + $.base64Convertor(.destination.Config.accessKey + ":" + .destination.Config.accessSecret)
+        }
+        response;

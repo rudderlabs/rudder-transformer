@@ -1,0 +1,25 @@
+[
+  {
+    "destKey": "user_id",
+    "sourceKeys": "userIdOnly",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "anonymous_id",
+    "sourceKeys": "anonymousId",
+    "required": false
+  },
+  {
+    "destKey": "first_name",
+    "sourceKeys": "firstName",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "last_name",
+    "sourceKeys": "lastName",
+    "sourceFromGenericMap": true,
+    "required": false
+  }
+]

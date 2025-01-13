@@ -1,10 +1,10 @@
 const get = require('get-value');
 const btoa = require('btoa');
 
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const { EventType, MappedToDestinationKey } = require('../../../constants');
 
 const {
-  getErrorRespEvents,
   getSuccessRespEvents,
   defaultRequestConfig,
   addExternalIdToTraits,
@@ -12,6 +12,7 @@ const {
   adduserIdFromExternalId,
   getFieldValueFromMessage,
   handleRtTfSingleEventError,
+  validateEventName,
 } = require('../../util');
 
 const logger = require('../../../logger');
@@ -23,7 +24,6 @@ const {
   defaultResponseBuilder,
   validateConfigFields,
 } = require('./util');
-const { InstrumentationError } = require('../../util/errorTypes');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 function responseBuilder(message, evType, evName, destination, messageType) {
@@ -101,6 +101,7 @@ function processSingleMessage(message, destination) {
       break;
     case EventType.TRACK:
       evType = 'event';
+      validateEventName(message.event);
       evName = message.event;
       break;
     case EventType.ALIAS:
@@ -113,6 +114,7 @@ function processSingleMessage(message, destination) {
       logger.error(`could not determine type ${messageType}`);
       throw new InstrumentationError(`could not determine type ${messageType}`);
   }
+  evName = evName ? String(evName) : evName;
   const response = responseBuilder(message, evType, evName, destination, messageType);
 
   // replace default domain with EU data center domainc for EU based account
@@ -171,10 +173,6 @@ const batchEvents = (successRespList) => {
 };
 
 const processRouterDest = (inputs, reqMetadata) => {
-  if (!Array.isArray(inputs) || inputs.length <= 0) {
-    const respEvents = getErrorRespEvents(null, 400, 'Invalid event array');
-    return [respEvents];
-  }
   let batchResponseList = [];
   const batchErrorRespList = [];
   const successRespList = [];

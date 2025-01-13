@@ -1,8 +1,8 @@
 const qs = require('qs');
+const { InstrumentationError, NetworkError } = require('@rudderstack/integrations-lib');
 const { httpPOST } = require('../../../adapters/network');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const { getDestinationExternalID } = require('../../util');
-const { InstrumentationError, NetworkError } = require('../../util/errorTypes');
 const tags = require('../../util/tags');
 const logger = require('../../../logger');
 const { JSON_MIME_TYPE } = require('../../util/constant');
@@ -13,7 +13,7 @@ const { JSON_MIME_TYPE } = require('../../util/constant');
  * @param message
  * @returns canny userId
  */
-const retrieveUserId = async (apiKey, message) => {
+const retrieveUserId = async (apiKey, message, metadata) => {
   const cannyId = getDestinationExternalID(message, 'cannyUserId');
   if (cannyId) {
     return cannyId;
@@ -43,8 +43,12 @@ const retrieveUserId = async (apiKey, message) => {
     qs.stringify(requestBody),
     { headers },
     {
+      metadata,
       destType: 'canny',
       feature: 'transformation',
+      endpointPath: `/v1/users/retrieve`,
+      requestMethod: 'POST',
+      module: 'processor',
     },
   );
   logger.debug(response);

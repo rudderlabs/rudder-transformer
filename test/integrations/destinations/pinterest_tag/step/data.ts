@@ -75,6 +75,7 @@ export const data = [
             destination: {
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'PINTEREST_TAG',
+              DestinationDefinition: { Config: { cdkV2Enabled: true } },
               Config: {
                 sendAsTestEvent: false,
                 tagId: '123456789',
@@ -90,6 +91,7 @@ export const data = [
               Enabled: true,
               Transformations: [],
             },
+            metadata: { destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq' },
           },
         ],
         method: 'POST',
@@ -101,6 +103,9 @@ export const data = [
         status: 200,
         body: [
           {
+            metadata: {
+              destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
+            },
             output: {
               version: '1',
               type: 'REST',
@@ -139,8 +144,20 @@ export const data = [
                     num_items: 3,
                     content_ids: ['507f1f77bcf86cd799439011', '505bd76785ebb509fc183733'],
                     contents: [
-                      { quantity: 1, item_price: '19' },
-                      { quantity: 2, item_price: '3' },
+                      {
+                        id: '507f1f77bcf86cd799439011',
+                        item_category: 'Games',
+                        item_name: 'Monopoly: 3rd Edition',
+                        quantity: 1,
+                        item_price: '19',
+                      },
+                      {
+                        id: '505bd76785ebb509fc183733',
+                        item_category: 'Games',
+                        item_name: 'Uno Card Game',
+                        quantity: 2,
+                        item_price: '3',
+                      },
                     ],
                   },
                 },
@@ -232,6 +249,7 @@ export const data = [
             destination: {
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'PINTEREST_TAG',
+              DestinationDefinition: { Config: { cdkV2Enabled: true } },
               Config: {
                 sendAsTestEvent: false,
                 tagId: '123456789',
@@ -247,6 +265,7 @@ export const data = [
               Enabled: true,
               Transformations: [],
             },
+            metadata: { destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq' },
           },
         ],
         method: 'POST',
@@ -258,6 +277,9 @@ export const data = [
         status: 200,
         body: [
           {
+            metadata: {
+              destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
+            },
             output: {
               version: '1',
               type: 'REST',
@@ -294,8 +316,20 @@ export const data = [
                     num_items: 3,
                     content_ids: ['507f1f77bcf86cd799439011', '505bd76785ebb509fc183733'],
                     contents: [
-                      { quantity: 1, item_price: '19' },
-                      { quantity: 2, item_price: '3' },
+                      {
+                        id: '507f1f77bcf86cd799439011',
+                        item_category: 'Games',
+                        item_name: 'Monopoly: 3rd Edition',
+                        quantity: 1,
+                        item_price: '19',
+                      },
+                      {
+                        id: '505bd76785ebb509fc183733',
+                        item_category: 'Games',
+                        item_name: 'Uno Card Game',
+                        quantity: 2,
+                        item_price: '3',
+                      },
                     ],
                   },
                 },
@@ -368,6 +402,7 @@ export const data = [
             destination: {
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'PINTEREST_TAG',
+              DestinationDefinition: { Config: { cdkV2Enabled: true } },
               Config: {
                 sendAsTestEvent: false,
                 tagId: '123456789',
@@ -383,6 +418,7 @@ export const data = [
               Enabled: true,
               Transformations: [],
             },
+            metadata: { destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq' },
           },
         ],
         method: 'POST',
@@ -394,6 +430,9 @@ export const data = [
         status: 200,
         body: [
           {
+            metadata: {
+              destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
+            },
             output: {
               version: '1',
               type: 'REST',
@@ -429,7 +468,7 @@ export const data = [
                     order_id: '50314b8e9bcf000000000000',
                     num_items: 2,
                     content_ids: ['123'],
-                    contents: [{ quantity: 2, item_price: '25' }],
+                    contents: [{ id: '123', quantity: 2, item_price: '25' }],
                   },
                 },
                 JSON_ARRAY: {},
@@ -519,6 +558,7 @@ export const data = [
             destination: {
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'PINTEREST_TAG',
+              DestinationDefinition: { Config: { cdkV2Enabled: true } },
               Config: {
                 sendAsTestEvent: false,
                 tagId: '123456789',
@@ -534,6 +574,7 @@ export const data = [
               Enabled: true,
               Transformations: [],
             },
+            metadata: { destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq' },
           },
         ],
         method: 'POST',
@@ -545,13 +586,17 @@ export const data = [
         status: 200,
         body: [
           {
-            error: 'Advertiser Id not found. Aborting',
+            error:
+              'Advertiser Id not found. Aborting: Workflow: procWorkflow, Step: validateInput, ChildStep: undefined, OriginalError: Advertiser Id not found. Aborting',
+            metadata: {
+              destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
+            },
             statTags: {
               destType: 'PINTEREST_TAG',
               errorCategory: 'dataValidation',
               errorType: 'configuration',
               feature: 'processor',
-              implementation: 'native',
+              implementation: 'cdkV2',
               module: 'destination',
             },
             statusCode: 400,
@@ -633,6 +678,7 @@ export const data = [
             destination: {
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'PINTEREST_TAG',
+              DestinationDefinition: { Config: { cdkV2Enabled: true } },
               Config: {
                 sendAsTestEvent: false,
                 tagId: '123456789',
@@ -648,6 +694,7 @@ export const data = [
               Enabled: true,
               Transformations: [],
             },
+            metadata: { destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq' },
           },
         ],
         method: 'POST',
@@ -660,13 +707,16 @@ export const data = [
         body: [
           {
             error:
-              'It is required at least one of em, hashed_maids or pair of client_ip_address and client_user_agent',
+              'It is required at least one of em, hashed_maids or pair of client_ip_address and client_user_agent: Workflow: procWorkflow, Step: validateUserFields, ChildStep: undefined, OriginalError: It is required at least one of em, hashed_maids or pair of client_ip_address and client_user_agent',
+            metadata: {
+              destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
+            },
             statTags: {
               destType: 'PINTEREST_TAG',
               errorCategory: 'dataValidation',
               errorType: 'instrumentation',
               feature: 'processor',
-              implementation: 'native',
+              implementation: 'cdkV2',
               module: 'destination',
             },
             statusCode: 400,
@@ -751,6 +801,7 @@ export const data = [
             destination: {
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'PINTEREST_TAG',
+              DestinationDefinition: { Config: { cdkV2Enabled: true } },
               Config: {
                 sendAsTestEvent: false,
                 tagId: '123456789',
@@ -766,6 +817,7 @@ export const data = [
               Enabled: true,
               Transformations: [],
             },
+            metadata: { destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq' },
           },
         ],
         method: 'POST',
@@ -777,6 +829,9 @@ export const data = [
         status: 200,
         body: [
           {
+            metadata: {
+              destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
+            },
             output: {
               version: '1',
               type: 'REST',
@@ -813,8 +868,20 @@ export const data = [
                     order_id: '50314b8e9bcf000000000000',
                     content_ids: ['507f1f77bcf86cd799439011', '505bd76785ebb509fc183733'],
                     contents: [
-                      { quantity: 1, item_price: '19' },
-                      { quantity: 2, item_price: '3' },
+                      {
+                        id: '507f1f77bcf86cd799439011',
+                        item_category: 'Games',
+                        item_name: 'Monopoly: 3rd Edition',
+                        quantity: 1,
+                        item_price: '19',
+                      },
+                      {
+                        id: '505bd76785ebb509fc183733',
+                        item_category: 'Games',
+                        item_name: 'Uno Card Game',
+                        quantity: 2,
+                        item_price: '3',
+                      },
                     ],
                   },
                 },
@@ -907,6 +974,7 @@ export const data = [
             destination: {
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'PINTEREST_TAG',
+              DestinationDefinition: { Config: { cdkV2Enabled: true } },
               Config: {
                 sendAsTestEvent: false,
                 tagId: '123456789',
@@ -922,6 +990,7 @@ export const data = [
               Enabled: true,
               Transformations: [],
             },
+            metadata: { destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq' },
           },
         ],
         method: 'POST',
@@ -933,13 +1002,17 @@ export const data = [
         status: 200,
         body: [
           {
-            error: 'Advertiser Id not found. Aborting',
+            error:
+              'Advertiser Id not found. Aborting: Workflow: procWorkflow, Step: validateInput, ChildStep: undefined, OriginalError: Advertiser Id not found. Aborting',
+            metadata: {
+              destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
+            },
             statTags: {
               destType: 'PINTEREST_TAG',
               errorCategory: 'dataValidation',
               errorType: 'configuration',
               feature: 'processor',
-              implementation: 'native',
+              implementation: 'cdkV2',
               module: 'destination',
             },
             statusCode: 400,
@@ -1023,6 +1096,7 @@ export const data = [
             destination: {
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'PINTEREST_TAG',
+              DestinationDefinition: { Config: { cdkV2Enabled: true } },
               Config: {
                 sendAsTestEvent: false,
                 tagId: '123456789',
@@ -1038,6 +1112,7 @@ export const data = [
               Enabled: true,
               Transformations: [],
             },
+            metadata: { destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq' },
           },
         ],
         method: 'POST',
@@ -1049,13 +1124,17 @@ export const data = [
         status: 200,
         body: [
           {
-            error: 'message type group is not supported',
+            error:
+              'message type group is not supported: Workflow: procWorkflow, Step: validateInput, ChildStep: undefined, OriginalError: message type group is not supported',
+            metadata: {
+              destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
+            },
             statTags: {
               destType: 'PINTEREST_TAG',
               errorCategory: 'dataValidation',
               errorType: 'instrumentation',
               feature: 'processor',
-              implementation: 'native',
+              implementation: 'cdkV2',
               module: 'destination',
             },
             statusCode: 400,
@@ -1140,6 +1219,7 @@ export const data = [
             destination: {
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'PINTEREST_TAG',
+              DestinationDefinition: { Config: { cdkV2Enabled: true } },
               Config: {
                 sendAsTestEvent: false,
                 tagId: '123456789',
@@ -1155,6 +1235,7 @@ export const data = [
               Enabled: true,
               Transformations: [],
             },
+            metadata: { destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq' },
           },
         ],
         method: 'POST',
@@ -1166,13 +1247,17 @@ export const data = [
         status: 200,
         body: [
           {
-            error: 'Action source must be one of app_android, app_ios, web, offline',
+            error:
+              'Action source must be one of app_android, app_ios, web, offline: Workflow: procWorkflow, Step: validateCommonFields, ChildStep: undefined, OriginalError: Action source must be one of app_android, app_ios, web, offline',
+            metadata: {
+              destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
+            },
             statTags: {
               destType: 'PINTEREST_TAG',
               errorCategory: 'dataValidation',
               errorType: 'instrumentation',
               feature: 'processor',
-              implementation: 'native',
+              implementation: 'cdkV2',
               module: 'destination',
             },
             statusCode: 400,
@@ -1257,6 +1342,7 @@ export const data = [
             destination: {
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'PINTEREST_TAG',
+              DestinationDefinition: { Config: { cdkV2Enabled: true } },
               Config: {
                 sendAsTestEvent: false,
                 tagId: '123456789',
@@ -1273,6 +1359,7 @@ export const data = [
               Enabled: true,
               Transformations: [],
             },
+            metadata: { destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq' },
           },
         ],
         method: 'POST',
@@ -1284,6 +1371,9 @@ export const data = [
         status: 200,
         body: [
           {
+            metadata: {
+              destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
+            },
             output: {
               version: '1',
               type: 'REST',
@@ -1320,8 +1410,20 @@ export const data = [
                     order_id: '50314b8e9bcf000000000000',
                     content_ids: ['507f1f77bcf86cd799439011', '505bd76785ebb509fc183733'],
                     contents: [
-                      { quantity: 1, item_price: '19' },
-                      { quantity: 2, item_price: '3' },
+                      {
+                        id: '507f1f77bcf86cd799439011',
+                        item_category: 'Games',
+                        item_name: 'Monopoly: 3rd Edition',
+                        quantity: 1,
+                        item_price: '19',
+                      },
+                      {
+                        id: '505bd76785ebb509fc183733',
+                        item_category: 'Games',
+                        item_name: 'Uno Card Game',
+                        quantity: 2,
+                        item_price: '3',
+                      },
                     ],
                   },
                 },
@@ -1378,6 +1480,7 @@ export const data = [
             destination: {
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'PINTEREST_TAG',
+              DestinationDefinition: { Config: { cdkV2Enabled: true } },
               Config: {
                 sendAsTestEvent: false,
                 tagId: '123456789',
@@ -1393,6 +1496,7 @@ export const data = [
               Enabled: true,
               Transformations: [],
             },
+            metadata: { destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq' },
           },
         ],
         method: 'POST',
@@ -1404,6 +1508,9 @@ export const data = [
         status: 200,
         body: [
           {
+            metadata: {
+              destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
+            },
             output: {
               version: '1',
               type: 'REST',
@@ -1488,6 +1595,7 @@ export const data = [
             destination: {
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'PINTEREST_TAG',
+              DestinationDefinition: { Config: { cdkV2Enabled: true } },
               Config: {
                 sendAsTestEvent: false,
                 tagId: '123456789',
@@ -1503,6 +1611,7 @@ export const data = [
               Enabled: true,
               Transformations: [],
             },
+            metadata: { destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq' },
           },
         ],
         method: 'POST',
@@ -1514,6 +1623,9 @@ export const data = [
         status: 200,
         body: [
           {
+            metadata: {
+              destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
+            },
             output: {
               version: '1',
               type: 'REST',
@@ -1598,6 +1710,7 @@ export const data = [
             destination: {
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'PINTEREST_TAG',
+              DestinationDefinition: { Config: { cdkV2Enabled: true } },
               Config: {
                 sendAsTestEvent: false,
                 tagId: '123456789',
@@ -1613,6 +1726,7 @@ export const data = [
               Enabled: true,
               Transformations: [],
             },
+            metadata: { destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq' },
           },
         ],
         method: 'POST',
@@ -1624,6 +1738,9 @@ export const data = [
         status: 200,
         body: [
           {
+            metadata: {
+              destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
+            },
             output: {
               version: '1',
               type: 'REST',
@@ -1709,6 +1826,7 @@ export const data = [
             destination: {
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'PINTEREST_TAG',
+              DestinationDefinition: { Config: { cdkV2Enabled: true } },
               Config: {
                 sendAsTestEvent: false,
                 tagId: '123456789',
@@ -1724,6 +1842,7 @@ export const data = [
               Enabled: true,
               Transformations: [],
             },
+            metadata: { destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq' },
           },
         ],
         method: 'POST',
@@ -1735,6 +1854,9 @@ export const data = [
         status: 200,
         body: [
           {
+            metadata: {
+              destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
+            },
             output: {
               version: '1',
               type: 'REST',
@@ -1821,6 +1943,7 @@ export const data = [
             destination: {
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'PINTEREST_TAG',
+              DestinationDefinition: { Config: { cdkV2Enabled: true } },
               Config: {
                 sendAsTestEvent: false,
                 tagId: '123456789',
@@ -1834,6 +1957,7 @@ export const data = [
               Enabled: true,
               Transformations: [],
             },
+            metadata: { destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq' },
           },
         ],
         method: 'POST',
@@ -1845,6 +1969,9 @@ export const data = [
         status: 200,
         body: [
           {
+            metadata: {
+              destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
+            },
             output: {
               version: '1',
               type: 'REST',
@@ -1933,6 +2060,7 @@ export const data = [
             destination: {
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'PINTEREST_TAG',
+              DestinationDefinition: { Config: { cdkV2Enabled: true } },
               Config: {
                 sendAsTestEvent: false,
                 tagId: '123456789',
@@ -1946,6 +2074,7 @@ export const data = [
               Enabled: true,
               Transformations: [],
             },
+            metadata: { destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq' },
           },
         ],
         method: 'POST',
@@ -1957,6 +2086,9 @@ export const data = [
         status: 200,
         body: [
           {
+            metadata: {
+              destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
+            },
             output: {
               version: '1',
               type: 'REST',
@@ -2096,6 +2228,7 @@ export const data = [
             destination: {
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'PINTEREST_TAG',
+              DestinationDefinition: { Config: { cdkV2Enabled: true } },
               Config: {
                 sendAsTestEvent: false,
                 tagId: '123456789',
@@ -2114,6 +2247,7 @@ export const data = [
               Enabled: true,
               Transformations: [],
             },
+            metadata: { destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq' },
           },
         ],
         method: 'POST',
@@ -2125,6 +2259,9 @@ export const data = [
         status: 200,
         body: [
           {
+            metadata: {
+              destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
+            },
             output: {
               body: {
                 JSON: {
@@ -2216,6 +2353,7 @@ export const data = [
             destination: {
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'PINTEREST_TAG',
+              DestinationDefinition: { Config: { cdkV2Enabled: true } },
               Config: {
                 sendAsTestEvent: false,
                 tagId: '123456789',
@@ -2232,6 +2370,7 @@ export const data = [
               Enabled: true,
               Transformations: [],
             },
+            metadata: { destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq' },
           },
         ],
         method: 'POST',
@@ -2243,6 +2382,9 @@ export const data = [
         status: 200,
         body: [
           {
+            metadata: {
+              destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
+            },
             output: {
               version: '1',
               type: 'REST',
@@ -2278,7 +2420,7 @@ export const data = [
                     order_id: '50314b8e9bcf000000000000',
                     num_items: 0,
                     content_ids: ['1234'],
-                    contents: [{ quantity: 1, item_price: 'undefined' }],
+                    contents: [{ id: '1234', quantity: 1 }],
                   },
                 },
                 JSON_ARRAY: {},
@@ -2360,6 +2502,7 @@ export const data = [
             destination: {
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'PINTEREST_TAG',
+              DestinationDefinition: { Config: { cdkV2Enabled: true } },
               Config: {
                 sendAsTestEvent: false,
                 tagId: '123456789',
@@ -2376,6 +2519,7 @@ export const data = [
               Enabled: true,
               Transformations: [],
             },
+            metadata: { destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq' },
           },
         ],
         method: 'POST',
@@ -2387,6 +2531,9 @@ export const data = [
         status: 200,
         body: [
           {
+            metadata: {
+              destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
+            },
             output: {
               version: '1',
               type: 'REST',
@@ -2422,7 +2569,15 @@ export const data = [
                     order_id: '50314b8e9bcf000000000000',
                     num_items: 1,
                     content_ids: ['507f1f77bcf86cd799439011'],
-                    contents: [{ quantity: 1, item_price: '19' }],
+                    contents: [
+                      {
+                        id: '507f1f77bcf86cd799439011',
+                        item_category: 'Games',
+                        item_name: 'Monopoly: 3rd Edition',
+                        quantity: 1,
+                        item_price: '19',
+                      },
+                    ],
                   },
                 },
                 JSON_ARRAY: {},
@@ -2491,6 +2646,7 @@ export const data = [
             destination: {
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'PINTEREST_TAG',
+              DestinationDefinition: { Config: { cdkV2Enabled: true } },
               Config: {
                 sendAsTestEvent: false,
                 tagId: '123456789',
@@ -2506,6 +2662,7 @@ export const data = [
               Enabled: true,
               Transformations: [],
             },
+            metadata: { destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq' },
           },
         ],
         method: 'POST',
@@ -2517,6 +2674,9 @@ export const data = [
         status: 200,
         body: [
           {
+            metadata: {
+              destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
+            },
             output: {
               body: {
                 FORM: {},
@@ -2525,7 +2685,7 @@ export const data = [
                   advertiser_id: '123456',
                   app_id: '429047995',
                   custom_data: {
-                    contents: [{ item_price: 'undefined', quantity: 1 }],
+                    contents: [{ quantity: 1 }],
                     currency: 'USD',
                     num_items: 0,
                     order_id: '50314b8e9bcf000000000000',
@@ -2644,6 +2804,7 @@ export const data = [
             destination: {
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'PINTEREST_TAG',
+              DestinationDefinition: { Config: { cdkV2Enabled: true } },
               Config: {
                 sendAsTestEvent: false,
                 tagId: '123456789',
@@ -2662,6 +2823,7 @@ export const data = [
               Enabled: true,
               Transformations: [],
             },
+            metadata: { destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq' },
           },
         ],
         method: 'POST',
@@ -2673,6 +2835,9 @@ export const data = [
         status: 200,
         body: [
           {
+            metadata: {
+              destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
+            },
             output: {
               version: '1',
               type: 'REST',
@@ -2715,8 +2880,20 @@ export const data = [
                     num_items: 3,
                     content_ids: ['507f1f77bcf86cd799439011', '505bd76785ebb509fc183733'],
                     contents: [
-                      { quantity: 1, item_price: '19' },
-                      { quantity: 2, item_price: '3' },
+                      {
+                        id: '507f1f77bcf86cd799439011',
+                        item_category: 'Games',
+                        item_name: 'Monopoly: 3rd Edition',
+                        quantity: 1,
+                        item_price: '19',
+                      },
+                      {
+                        id: '505bd76785ebb509fc183733',
+                        item_category: 'Games',
+                        item_name: 'Uno Card Game',
+                        quantity: 2,
+                        item_price: '3',
+                      },
                     ],
                   },
                 },
@@ -2810,6 +2987,7 @@ export const data = [
             destination: {
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'PINTEREST_TAG',
+              DestinationDefinition: { Config: { cdkV2Enabled: true } },
               Config: {
                 sendAsTestEvent: false,
                 tagId: '123456789',
@@ -2828,6 +3006,7 @@ export const data = [
               Enabled: true,
               Transformations: [],
             },
+            metadata: { destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq' },
           },
         ],
         method: 'POST',
@@ -2839,6 +3018,9 @@ export const data = [
         status: 200,
         body: [
           {
+            metadata: {
+              destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
+            },
             output: {
               version: '1',
               type: 'REST',
@@ -2878,8 +3060,20 @@ export const data = [
                     num_items: 3,
                     content_ids: ['507f1f77bcf86cd799439011', '505bd76785ebb509fc183733'],
                     contents: [
-                      { quantity: 1, item_price: '19' },
-                      { quantity: 2, item_price: '3' },
+                      {
+                        id: '507f1f77bcf86cd799439011',
+                        item_category: 'Games',
+                        item_name: 'Monopoly: 3rd Edition',
+                        quantity: 1,
+                        item_price: '19',
+                      },
+                      {
+                        id: '505bd76785ebb509fc183733',
+                        item_category: 'Games',
+                        item_name: 'Uno Card Game',
+                        quantity: 2,
+                        item_price: '3',
+                      },
                     ],
                   },
                 },
@@ -2979,6 +3173,7 @@ export const data = [
             destination: {
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'PINTEREST_TAG',
+              DestinationDefinition: { Config: { cdkV2Enabled: true } },
               Config: {
                 sendAsTestEvent: false,
                 tagId: '123456789',
@@ -2997,6 +3192,7 @@ export const data = [
               Enabled: true,
               Transformations: [],
             },
+            metadata: { destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq' },
           },
         ],
         method: 'POST',
@@ -3008,6 +3204,9 @@ export const data = [
         status: 200,
         body: [
           {
+            metadata: {
+              destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
+            },
             output: {
               version: '1',
               type: 'REST',
@@ -3071,8 +3270,20 @@ export const data = [
                     num_items: 3,
                     content_ids: ['507f1f77bcf86cd799439011', '505bd76785ebb509fc183733'],
                     contents: [
-                      { quantity: 1, item_price: '19' },
-                      { quantity: 2, item_price: '3' },
+                      {
+                        id: '507f1f77bcf86cd799439011',
+                        item_category: 'Games',
+                        item_name: 'Monopoly: 3rd Edition',
+                        quantity: 1,
+                        item_price: '19',
+                      },
+                      {
+                        id: '505bd76785ebb509fc183733',
+                        item_category: 'Games',
+                        item_name: 'Uno Card Game',
+                        quantity: 2,
+                        item_price: '3',
+                      },
                     ],
                   },
                 },
@@ -3129,6 +3340,7 @@ export const data = [
             destination: {
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'PINTEREST_TAG',
+              DestinationDefinition: { Config: { cdkV2Enabled: true } },
               Config: {
                 sendAsTestEvent: false,
                 tagId: '123456789',
@@ -3147,6 +3359,7 @@ export const data = [
               Enabled: true,
               Transformations: [],
             },
+            metadata: { destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq' },
           },
         ],
         method: 'POST',
@@ -3158,13 +3371,17 @@ export const data = [
         status: 200,
         body: [
           {
-            error: 'Ad Account ID not found. Aborting',
+            error:
+              'Ad Account ID not found. Aborting: Workflow: procWorkflow, Step: validateInput, ChildStep: undefined, OriginalError: Ad Account ID not found. Aborting',
+            metadata: {
+              destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
+            },
             statTags: {
               destType: 'PINTEREST_TAG',
               errorCategory: 'dataValidation',
               errorType: 'configuration',
               feature: 'processor',
-              implementation: 'native',
+              implementation: 'cdkV2',
               module: 'destination',
             },
             statusCode: 400,
@@ -3213,6 +3430,7 @@ export const data = [
             destination: {
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'PINTEREST_TAG',
+              DestinationDefinition: { Config: { cdkV2Enabled: true } },
               Config: {
                 sendAsTestEvent: false,
                 tagId: '123456789',
@@ -3231,6 +3449,7 @@ export const data = [
               Enabled: true,
               Transformations: [],
             },
+            metadata: { destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq' },
           },
         ],
         method: 'POST',
@@ -3242,13 +3461,17 @@ export const data = [
         status: 200,
         body: [
           {
-            error: 'Conversion Token not found. Aborting',
+            error:
+              'Conversion Token not found. Aborting: Workflow: procWorkflow, Step: validateInput, ChildStep: undefined, OriginalError: Conversion Token not found. Aborting',
+            metadata: {
+              destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
+            },
             statTags: {
               destType: 'PINTEREST_TAG',
               errorCategory: 'dataValidation',
               errorType: 'configuration',
               feature: 'processor',
-              implementation: 'native',
+              implementation: 'cdkV2',
               module: 'destination',
             },
             statusCode: 400,
@@ -3310,6 +3533,7 @@ export const data = [
             destination: {
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'PINTEREST_TAG',
+              DestinationDefinition: { Config: { cdkV2Enabled: true } },
               Config: {
                 sendAsTestEvent: false,
                 tagId: '123456789',
@@ -3328,6 +3552,7 @@ export const data = [
               Enabled: true,
               Transformations: [],
             },
+            metadata: { destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq' },
           },
         ],
         method: 'POST',
@@ -3339,17 +3564,60 @@ export const data = [
         status: 200,
         body: [
           {
-            error:
-              "custom event is not mapped in UI. Make sure to map the event in UI or enable the 'send as custom event' setting",
-            statTags: {
-              destType: 'PINTEREST_TAG',
-              errorCategory: 'dataValidation',
-              errorType: 'configuration',
-              feature: 'processor',
-              implementation: 'native',
-              module: 'destination',
+            metadata: {
+              destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
             },
-            statusCode: 400,
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://api.pinterest.com/v5/ad_accounts/accountId123/events',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer conversionToken123',
+              },
+              params: {},
+              body: {
+                JSON: {
+                  event_name: 'custom event',
+                  event_time: 1597383030,
+                  action_source: 'web',
+                  event_id: '7208bbb6-2c4e-45bb-bf5b-ad426f3593e9',
+                  app_id: '429047995',
+                  user_data: {
+                    em: ['48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08'],
+                    ph: ['d164bbe036663cb5c96835e9ccc6501e9a521127ea62f6359744928ba932413b'],
+                    ln: ['dcf000c2386fb76d22cefc0d118a8511bb75999019cd373df52044bccd1bd251'],
+                    fn: ['9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08'],
+                    ct: ['6689106ca7922c30b2fd2c175c85bc7fc2d52cc4941bdd7bb622c6cdc6284a85'],
+                    st: ['3b45022ab36728cdae12e709e945bba267c50ee8a91e6e4388539a8e03a3fdcd'],
+                    zp: ['1a4292e00780e18d00e76fde9850aee5344e939ba593333cd5e4b4aa2cd33b0c'],
+                    country: ['582967534d0f909d196b97f9e6921342777aea87b46fa52df165389db1fb8ccf'],
+                    hashed_maids: [
+                      '6ca13d52ca70c883e0f0bb101e425a89e8624de51db2d2392593af6a84118090',
+                    ],
+                    client_user_agent: 'chrome',
+                  },
+                  custom_data: {
+                    currency: 'USD',
+                    value: '27.5',
+                    order_id: '50314b8e9bcf000000000000',
+                    num_items: 0,
+                    contents: [
+                      {
+                        quantity: 1,
+                      },
+                    ],
+                  },
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: '',
+            },
+            statusCode: 200,
           },
         ],
       },

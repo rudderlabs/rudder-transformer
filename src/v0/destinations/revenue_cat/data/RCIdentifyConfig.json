@@ -13,7 +13,7 @@
   },
   {
     "destKey": "$email.value",
-    "sourceKeys": "email",
+    "sourceKeys": "emailOnly",
     "sourceFromGenericMap": true,
     "required": false
   },

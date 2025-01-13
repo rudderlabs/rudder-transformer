@@ -2,6 +2,7 @@
   {
     "destKey": "$value",
     "sourceKeys": "value",
+    "metadata": { "type": "isFloat" },
     "required": false
   },
   {

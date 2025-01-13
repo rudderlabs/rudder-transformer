@@ -19,24 +19,19 @@ const getRudderLibrariesUrl = `${CONFIG_BACKEND_URL}/rudderstackTransformationLi
 async function getTransformationCodeV1(versionId) {
   const transformation = transformationCache[versionId];
   if (transformation) return transformation;
-  const tags = {
-    versionId,
-    version: 1,
-  };
   try {
     const url = `${getTransformationURL}?versionId=${versionId}`;
-    const startTime = new Date();
     const response = await fetchWithProxy(url);
 
     responseStatusHandler(response.status, 'Transformation', versionId, url);
-    stats.increment('get_transformation_code', { success: 'true', ...tags });
-    stats.timing('get_transformation_code_time', startTime, tags);
     const myJson = await response.json();
     transformationCache[versionId] = myJson;
     return myJson;
   } catch (error) {
-    logger.error(error);
-    stats.increment('get_transformation_code', { success: 'false', ...tags });
+    logger.error(
+      `Error fetching transformation V1 code for versionId: ${versionId}`,
+      error.message,
+    );
     throw error;
   }
 }
@@ -44,24 +39,16 @@ async function getTransformationCodeV1(versionId) {
 async function getLibraryCodeV1(versionId) {
   const library = libraryCache[versionId];
   if (library) return library;
-  const tags = {
-    libraryVersionId: versionId,
-    version: 1,
-  };
   try {
     const url = `${getLibrariesUrl}?versionId=${versionId}`;
-    const startTime = new Date();
     const response = await fetchWithProxy(url);
 
     responseStatusHandler(response.status, 'Transformation Library', versionId, url);
-    stats.increment('get_libraries_code', { success: 'true', ...tags });
-    stats.timing('get_libraries_code_time', startTime, tags);
     const myJson = await response.json();
     libraryCache[versionId] = myJson;
     return myJson;
   } catch (error) {
-    logger.error(error);
-    stats.increment('get_libraries_code', { success: 'false', ...tags });
+    logger.error(`Error fetching library code for versionId: ${versionId}`, error.message);
     throw error;
   }
 }
@@ -69,26 +56,17 @@ async function getLibraryCodeV1(versionId) {
 async function getRudderLibByImportName(importName) {
   const rudderLibrary = rudderLibraryCache[importName];
   if (rudderLibrary) return rudderLibrary;
-  const tags = {
-    libraryVersionId: importName,
-    version: 1,
-    type: 'rudderlibrary',
-  };
   try {
     const [name, version] = importName.split('/').slice(-2);
     const url = `${getRudderLibrariesUrl}/${name}?version=${version}`;
-    const startTime = new Date();
     const response = await fetchWithProxy(url);
 
     responseStatusHandler(response.status, 'Rudder Library', importName, url);
-    stats.increment('get_libraries_code', { success: 'true', ...tags });
-    stats.timing('get_libraries_code_time', startTime, tags);
     const myJson = await response.json();
     rudderLibraryCache[importName] = myJson;
     return myJson;
   } catch (error) {
-    logger.error(error);
-    stats.increment('get_libraries_code', { success: 'false', ...tags });
+    logger.error(`Error fetching rudder library code for importName: ${importName}`, error.message);
     throw error;
   }
 }

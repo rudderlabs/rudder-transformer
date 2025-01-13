@@ -1,8 +1,13 @@
-const { validateEventName, prepareUserProperties, removeInvalidParams } = require('./utils');
+const {
+  validateEventName,
+  removeInvalidParams,
+  prepareUserConsents,
+  prepareUserProperties,
+} = require('./utils');
 
 const userPropertyData = [
   {
-    description: "Should validate and prepare user_properties",
+    description: 'Should validate and prepare user_properties',
     input: {
       userId: 'user@1',
       group_id: 'group@1',
@@ -147,7 +152,6 @@ describe('Google Analytics 4 utils test', () => {
         const output = validateEventName('Grisly1234567_Open_General_Setting');
         expect(output).toEqual();
       } catch (error) {
-        console.log(error.message);
         expect(error.message).toEqual();
       }
     });
@@ -163,6 +167,256 @@ describe('Google Analytics 4 utils test', () => {
   });
 
   describe('prepareUserProperties function tests', () => {
+    // Empty message and context returns empty object
+    it('should return empty object when message and context are empty', () => {
+      // Arrange
+      const message = {};
+      const context = {};
+
+      // Act
+      const result = prepareUserProperties(message, []);
+
+      // Assert
+      expect(result).toEqual({});
+    });
+
+    // Filters out reserved and PII properties
+    it('should filter out reserved and PII properties', () => {
+      // Arrange
+      const message = {
+        context: {
+          traits: {
+            property3: 'value3',
+            property4: 'value4',
+            pii_property3: 'pii_value3',
+            pii_property4: 'pii_value4',
+          },
+        },
+        properties: {
+          user_properties: {
+            property1: 'value1',
+            property2: 'value2',
+            pii_property1: 'pii_value1',
+            pii_property2: 'pii_value2',
+          },
+        },
+      };
+
+      const piiPropertiesToIgnore = [
+        { piiProperty: 'pii_property1' },
+        { piiProperty: 'pii_property2' },
+        { piiProperty: 'pii_property3' },
+        { piiProperty: 'pii_property4' },
+      ];
+
+      // Act
+      const result = prepareUserProperties(message, piiPropertiesToIgnore);
+
+      // Assert
+      expect(result).toEqual({
+        property1: { value: 'value1' },
+        property2: { value: 'value2' },
+        property3: { value: 'value3' },
+        property4: { value: 'value4' },
+      });
+    });
+
+    // Validates user properties and returns them in expected format
+    it('should validate user properties and return them in expected format', () => {
+      // Arrange
+      const message = {
+        context: {
+          traits: {
+            valid_property3: 'value3',
+            _invalid_property3: '12_invalid_value3',
+            valid_property4: 'value4',
+            invalid_property4: [],
+          },
+        },
+        properties: {
+          user_properties: {
+            valid_property1: 'value1',
+            '12invalid_property1': 'ga_invalid_value1',
+            valid_property2: 'value2',
+            ga_invalid_property2: 'google_invalid_value2',
+          },
+        },
+      };
+      // Act
+      const result = prepareUserProperties(message, []);
+
+      // Assert
+      expect(result).toEqual({
+        valid_property1: { value: 'value1' },
+        valid_property2: { value: 'value2' },
+        valid_property3: { value: 'value3' },
+        valid_property4: { value: 'value4' },
+      });
+    });
+
+    // Invalid user properties are filtered out
+
+    // User properties with invalid value types are filtered out
+    it('should filter out user properties with invalid value types', () => {
+      // Arrange
+      const message = {
+        context: {
+          traits: {
+            valid_property3: 'value3',
+            invalid_property3: { 456: 'value3' },
+            valid_property4: 'value4',
+            invalid_property4: '01234567890123456789012345678901234567890123456789',
+          },
+        },
+        properties: {
+          user_properties: {
+            valid_property1: 'value1',
+            invalid_property1: [123, 456],
+            valid_property2: 'value2',
+          },
+        },
+      };
+
+      // Act
+      const result = prepareUserProperties(message, []);
+
+      // Assert
+      expect(result).toEqual({
+        valid_property1: { value: 'value1' },
+        valid_property2: { value: 'value2' },
+        valid_property3: { value: 'value3' },
+        valid_property4: { value: 'value4' },
+      });
+    });
+
+    // PII properties are filtered out
+    it('should filter out PII properties from user_properties', () => {
+      // Arrange
+      const message = {
+        properties: {
+          user_properties: {
+            property1: 'value1',
+            property2: 'value2',
+            pii_property1: 'pii_value1',
+            pii_property2: 'pii_value2',
+          },
+        },
+      };
+      const piiPropertiesToIgnore = [
+        { piiProperty: 'pii_property1' },
+        { piiProperty: 'pii_property2' },
+      ];
+
+      // Act
+      const result = prepareUserProperties(message, piiPropertiesToIgnore);
+
+      // Assert
+      expect(result).toEqual({
+        property1: { value: 'value1' },
+        property2: { value: 'value2' },
+      });
+    });
+
+    // PII properties are undefined
+    it('should return undefined when user_properties is undefined', () => {
+      // Arrange
+      const message = {
+        properties: {
+          user_properties: {
+            property1: 'value1',
+            property2: 'value2',
+            pii_property1: 'pii_value1',
+            pii_property2: 'pii_value2',
+          },
+        },
+      };
+      const piiPropertiesToIgnore = undefined;
+
+      // Act
+      const result = prepareUserProperties(message, piiPropertiesToIgnore);
+
+      // Assert
+      expect(result).toEqual({
+        pii_property1: { value: 'pii_value1' },
+        pii_property2: { value: 'pii_value2' },
+        property1: { value: 'value1' },
+        property2: { value: 'value2' },
+      });
+    });
+
+    // User properties with valid keys and values are returned in expected format
+    it('should return user properties with valid keys and values in expected format', () => {
+      // Arrange
+      const message = {
+        properties: {
+          user_properties: {
+            property1: 'value1',
+            property2: 'value2',
+          },
+        },
+      };
+
+      // Act
+      const result = prepareUserProperties(message, []);
+
+      // Assert
+      expect(result).toEqual({
+        property1: { value: 'value1' },
+        property2: { value: 'value2' },
+      });
+    });
+
+    // User properties with valid keys but invalid values are filtered out
+    it('should filter out user properties with invalid values', () => {
+      // Arrange
+      const message = {
+        properties: {
+          user_properties: {
+            validKey1: 'validValue1',
+            validKey2: 'validValue2',
+            invalidKey1: '',
+            invalidKey2:
+              'invalidValueThatIsTooLongInvalidValueThatIsTooLongInvalidValueThatIsTooLongInvalidValueThatIsTooLong',
+            validKey4: true,
+          },
+        },
+      };
+      const piiPropertiesToIgnore = [];
+
+      // Act
+      const result = prepareUserProperties(message, piiPropertiesToIgnore);
+
+      // Assert
+      expect(result).toEqual({
+        validKey1: { value: 'validValue1' },
+        validKey2: { value: 'validValue2' },
+        validKey4: { value: true },
+      });
+    });
+    // User properties with keys starting with reserved prefixes are filtered out
+    it('should filter out user properties with keys starting with reserved prefixes', () => {
+      // Arrange
+      const message = {
+        properties: {
+          user_properties: {
+            google_property: 'value1',
+            ga_property: 'value2',
+            firebase_property: 'value3',
+            valid_property: 'value4',
+          },
+        },
+      };
+      const piiPropertiesToIgnore = [];
+
+      // Act
+      const result = prepareUserProperties(message, piiPropertiesToIgnore);
+
+      // Assert
+      expect(result).toEqual({
+        valid_property: { value: 'value4' },
+      });
+    });
+
     userPropertyData.forEach((dataPoint) => {
       it(`${dataPoint.description}`, () => {
         try {
@@ -196,6 +450,86 @@ describe('Google Analytics 4 utils test', () => {
 
       const result = removeInvalidParams(params);
       expect(result).toEqual(expected);
+    });
+  });
+
+  describe('prepareUserConsents function tests', () => {
+    it('Should return an empty object when no consents are given', () => {
+      const message = {};
+      const result = prepareUserConsents(message);
+      expect(result).toEqual({});
+    });
+
+    it('Should return an empty object when no consents are given', () => {
+      const message = {
+        integrations: {
+          GA4: {},
+        },
+      };
+      const result = prepareUserConsents(message);
+      expect(result).toEqual({});
+    });
+
+    it('Should return an empty object when no consents are given', () => {
+      const message = {
+        integrations: {
+          GA4: {
+            consents: {},
+          },
+        },
+      };
+      const result = prepareUserConsents(message);
+      expect(result).toEqual({});
+    });
+
+    it('Should return a consents object when consents are given', () => {
+      const message = {
+        integrations: {
+          GA4: {
+            consents: {
+              ad_personalization: 'GRANTED',
+              ad_user_data: 'GRANTED',
+            },
+          },
+        },
+      };
+      const result = prepareUserConsents(message);
+      expect(result).toEqual({
+        ad_personalization: 'GRANTED',
+        ad_user_data: 'GRANTED',
+      });
+    });
+
+    it('Should return an empty object when invalid consents are given', () => {
+      const message = {
+        integrations: {
+          GA4: {
+            consents: {
+              ad_personalization: 'NOT_SPECIFIED',
+              ad_user_data: 'NOT_SPECIFIED',
+            },
+          },
+        },
+      };
+      const result = prepareUserConsents(message);
+      expect(result).toEqual({});
+    });
+
+    it('Should return a valid consents values from consents object', () => {
+      const message = {
+        integrations: {
+          GA4: {
+            consents: {
+              ad_personalization: 'NOT_SPECIFIED',
+              ad_user_data: 'DENIED',
+            },
+          },
+        },
+      };
+      const result = prepareUserConsents(message);
+      expect(result).toEqual({
+        ad_user_data: 'DENIED',
+      });
     });
   });
 });

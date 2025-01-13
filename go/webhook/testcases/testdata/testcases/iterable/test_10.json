@@ -1,0 +1,68 @@
+{
+  "name": "iterable",
+  "description": "test-10",
+  "input": {
+    "request": {
+      "body": {
+        "email": "test@rudderstack.com",
+        "eventName": "emailSubscribe",
+        "dataFields": {
+          "profileUpdatedAt": "2022-04-19 03:33:50 +00:00",
+          "publicIdString": "ad474bf7-e785-480f-b9d0-861b85ab5bf5",
+          "signupSource": "WebForm",
+          "email": "test@abcd.com",
+          "createdAt": "2022-04-19 03:33:50 +00:00",
+          "messageTypeIds": [],
+          "emailListIds": [1589748],
+          "channelIds": []
+        }
+      },
+      "headers": {
+        "Content-Type": "application/json"
+      }
+    }
+  },
+  "output": {
+    "response": {
+      "status": 200,
+      "body": "OK"
+    },
+    "queue": [
+      {
+        "userId": "5b6a3426dba2cb24e4f0aeec43bee9d7",
+        "context": {
+          "integration": {
+            "name": "Iterable",
+            "version": "1.0.0"
+          },
+          "library": {
+            "name": "unknown",
+            "version": "unknown"
+          },
+          "traits": {
+            "email": "test@rudderstack.com"
+          }
+        },
+        "event": "emailSubscribe",
+        "integrations": {
+          "Iterable": false
+        },
+        "properties": {
+          "channelIds": [],
+          "createdAt": "2022-04-19 03:33:50 +00:00",
+          "emailListIds": [1589748],
+          "messageTypeIds": [],
+          "profileUpdatedAt": "2022-04-19 03:33:50 +00:00",
+          "publicIdString": "ad474bf7-e785-480f-b9d0-861b85ab5bf5",
+          "signupSource": "WebForm"
+        },
+        "receivedAt": "2022-04-19T03:33:50.000Z",
+        "timestamp": "2022-04-19T03:33:50.000Z",
+        "type": "track",
+        "request_ip": "192.0.2.30",
+        "messageId": "00000000-0000-0000-0000-000000000000"
+      }
+    ],
+    "errQueue": []
+  }
+}

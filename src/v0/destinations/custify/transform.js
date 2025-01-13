@@ -1,4 +1,5 @@
 const get = require('get-value');
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const { EventType, MappedToDestinationKey } = require('../../../constants');
 const { ConfigCategory } = require('./config');
 const {
@@ -9,7 +10,6 @@ const {
   simpleProcessRouterDest,
 } = require('../../util');
 const { processIdentify, processTrack, processGroup } = require('./util');
-const { InstrumentationError } = require('../../util/errorTypes');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 /**
@@ -19,7 +19,7 @@ const { JSON_MIME_TYPE } = require('../../util/constant');
  * @param {*} destination
  * @returns
  */
-const validateAndBuildResponse = async (message, destination) => {
+const validateAndBuildResponse = async ({ message, destination, metadata }) => {
   const messageType = message.type.toLowerCase();
   const response = defaultRequestConfig();
   let responseBody;
@@ -34,7 +34,7 @@ const validateAndBuildResponse = async (message, destination) => {
       category = ConfigCategory.TRACK;
       break;
     case EventType.GROUP:
-      responseBody = await processGroup(message, destination);
+      responseBody = await processGroup(message, destination, metadata);
       category = ConfigCategory.GROUP_USER;
       break;
     default:
@@ -57,14 +57,14 @@ const validateAndBuildResponse = async (message, destination) => {
   return response;
 };
 
-const processSingleMessage = async (message, destination) => {
+const processSingleMessage = async ({ message, destination, metadata }) => {
   if (!message.type) {
     throw new InstrumentationError('Message Type is not present. Ignoring message.');
   }
-  return validateAndBuildResponse(message, destination);
+  return validateAndBuildResponse({ message, destination, metadata });
 };
 
-const process = (event) => processSingleMessage(event.message, event.destination);
+const process = (event) => processSingleMessage(event);
 
 const processRouterDest = async (inputs, reqMetadata) => {
   const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);

@@ -1,9 +1,8 @@
-const _ = require('lodash');
 const get = require('get-value');
 
-const v0 = require('./v0/util');
 const v1 = require('./v1/util');
-const { PlatformError, InstrumentationError } = require('../v0/util/errorTypes');
+const { PlatformError, InstrumentationError } = require('@rudderstack/integrations-lib');
+const { isBlank } = require('./config/helpers');
 
 const minTimeInMs = Date.parse('0001-01-01T00:00:00Z');
 const maxTimeInMs = Date.parse('9999-12-31T23:59:59.999Z');
@@ -20,10 +19,6 @@ const isValidJsonPathKey = (key, level, jsonKeys = {}) => {
 };
 const isValidLegacyJsonPathKey = (eventType, key, level, jsonKeys = {}) => {
   return eventType === 'track' && jsonKeys[key] === level;
-};
-
-const isBlank = (value) => {
-  return _.isEmpty(_.toString(value));
 };
 
 /*
@@ -59,7 +54,15 @@ const keysFromJsonPaths = (jsonPaths) => {
   const jsonPathKeys = {};
   const jsonLegacyPathKeys = {};
 
-  const supportedEventPrefixes = ['track.', 'identify.', 'page.', 'screen.', 'alias.', 'group.', 'extract.'];
+  const supportedEventPrefixes = [
+    'track.',
+    'identify.',
+    'page.',
+    'screen.',
+    'alias.',
+    'group.',
+    'extract.',
+  ];
 
   jsonPaths.forEach((jsonPath) => {
     const trimmedJSONPath = jsonPath.trim();
@@ -71,13 +74,13 @@ const keysFromJsonPaths = (jsonPaths) => {
     const key = paths.join('_');
     const pos = paths.length - 1;
 
-    if (supportedEventPrefixes.some(prefix => trimmedJSONPath.startsWith(prefix))) {
+    if (supportedEventPrefixes.some((prefix) => trimmedJSONPath.startsWith(prefix))) {
       jsonPathKeys[key] = pos;
       return;
     }
     jsonLegacyPathKeys[key] = pos;
   });
-  return {jsonPathKeys, jsonLegacyPathKeys};
+  return { jsonPathKeys, jsonLegacyPathKeys };
 };
 
 // https://www.myintervals.com/blog/2009/05/20/iso-8601-date-validation-that-doesnt-suck/
@@ -89,6 +92,9 @@ const timestampRegex = new RegExp(
 );
 
 function validTimestamp(input) {
+  if (typeof input !== 'string') {
+    return false;
+  }
   if (timestampRegex.test(input)) {
     // check if date value lies in between min time and max time. if not then it's not a valid timestamp
     const d = new Date(input);
@@ -104,14 +110,7 @@ function validTimestamp(input) {
 }
 
 function getVersionedUtils(schemaVersion) {
-  switch (schemaVersion) {
-    case 'v0':
-      return v0;
-    case 'v1':
-      return v1;
-    default:
-      return v1;
-  }
+  return v1;
 }
 
 function isRudderSourcesEvent(event) {
@@ -139,7 +138,6 @@ const getRecordIDForExtract = (message) => {
 
 module.exports = {
   isObject,
-  isBlank,
   isValidJsonPathKey,
   isValidLegacyJsonPathKey,
   keysFromJsonPaths,

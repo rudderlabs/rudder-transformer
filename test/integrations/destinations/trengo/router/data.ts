@@ -27,49 +27,25 @@ export const data = [
                     name: 'generic_x86',
                     type: 'android',
                   },
-                  library: {
-                    name: 'com.rudderstack.android.sdk.core',
-                    version: '1.0.1-beta.1',
-                  },
+                  library: { name: 'com.rudderstack.android.sdk.core', version: '1.0.1-beta.1' },
                   locale: 'en-US',
-                  network: {
-                    carrier: 'Android',
-                    bluetooth: false,
-                    cellular: true,
-                    wifi: true,
-                  },
-                  os: {
-                    name: 'Android',
-                    version: '8.1.0',
-                  },
-                  screen: {
-                    density: 420,
-                    height: 1794,
-                    width: 1080,
-                  },
+                  network: { carrier: 'Android', bluetooth: false, cellular: true, wifi: true },
+                  os: { name: 'Android', version: '8.1.0' },
+                  screen: { density: 420, height: 1794, width: 1080 },
                   timezone: 'Asia/Kolkata',
-                  traits: {
-                    anonymousId: 'anon_id_success',
-                  },
+                  traits: { anonymousId: 'anon_id_success' },
                   userAgent:
                     'Dalvik/2.1.0 (Linux; U; Android 8.1.0; Android SDK built for x86 Build/OSM1.180201.007)',
                 },
                 event: 'Product Purchased',
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 messageId: 'id1',
-                properties: {
-                  name: 'Test Product',
-                  phone: '9830311521',
-                },
+                properties: { name: 'Test Product', phone: '9830311521' },
                 originalTimestamp: '2020-12-17T21:00:59.176Z',
                 type: 'track',
                 sentAt: '2020-03-12T09:05:03.421Z',
               },
-              metadata: {
-                jobId: 2,
-              },
+              metadata: { jobId: 2, userId: 'u1' },
               destination: {
                 Config: {
                   apiToken: 'trengo_integration_test_api_token',
@@ -77,29 +53,12 @@ export const data = [
                   channelIdentifier: 'phone',
                   enableDedup: true,
                   eventTemplateMap: [
-                    {
-                      from: 'Product Purchased',
-                      to: '{{event}} from Rudderstack',
-                    },
-                    {
-                      from: 'checkedOut',
-                      to: 'Total cart value {{value}} shipped',
-                    },
-                    {
-                      from: 'Order Completed',
-                      to: 'Completed Order',
-                    },
-                    {
-                      from: 'Stress Test',
-                    },
-                    {
-                      from: 'Stress test2',
-                      to: '',
-                    },
-                    {
-                      from: 'Stress test3',
-                      to: '{event} Stress test',
-                    },
+                    { from: 'Product Purchased', to: '{{event}} from Rudderstack' },
+                    { from: 'checkedOut', to: 'Total cart value {{value}} shipped' },
+                    { from: 'Order Completed', to: 'Completed Order' },
+                    { from: 'Stress Test' },
+                    { from: 'Stress test2', to: '' },
+                    { from: 'Stress test3', to: '{event} Stress test' },
                   ],
                 },
                 secretConfig: {},
@@ -170,21 +129,14 @@ export const data = [
                 },
                 params: {},
                 body: {
-                  JSON: {
-                    contact_id: 90002431001,
-                    channel_id: 'trengo_phone_channel',
-                  },
+                  JSON: { contact_id: 90002431001, channel_id: 'trengo_phone_channel' },
                   XML: {},
                   JSON_ARRAY: {},
                   FORM: {},
                 },
                 files: {},
               },
-              metadata: [
-                {
-                  jobId: 2,
-                },
-              ],
+              metadata: [{ jobId: 2, userId: 'u1' }],
               batched: false,
               statusCode: 200,
               destination: {
@@ -194,29 +146,12 @@ export const data = [
                   channelIdentifier: 'phone',
                   enableDedup: true,
                   eventTemplateMap: [
-                    {
-                      from: 'Product Purchased',
-                      to: '{{event}} from Rudderstack',
-                    },
-                    {
-                      from: 'checkedOut',
-                      to: 'Total cart value {{value}} shipped',
-                    },
-                    {
-                      from: 'Order Completed',
-                      to: 'Completed Order',
-                    },
-                    {
-                      from: 'Stress Test',
-                    },
-                    {
-                      from: 'Stress test2',
-                      to: '',
-                    },
-                    {
-                      from: 'Stress test3',
-                      to: '{event} Stress test',
-                    },
+                    { from: 'Product Purchased', to: '{{event}} from Rudderstack' },
+                    { from: 'checkedOut', to: 'Total cart value {{value}} shipped' },
+                    { from: 'Order Completed', to: 'Completed Order' },
+                    { from: 'Stress Test' },
+                    { from: 'Stress test2', to: '' },
+                    { from: 'Stress test3', to: '{event} Stress test' },
                   ],
                 },
                 secretConfig: {},
@@ -283,10 +218,7 @@ export const data = [
                 userId: 'randomUserId',
                 type: 'identify',
                 context: {
-                  traits: {
-                    name: 'Jimothy Halpert',
-                    email: 'j@d.com',
-                  },
+                  traits: { name: 'Jimothy Halpert', email: 'j@d.com' },
                   ip: '14.5.67.21',
                   app: {
                     build: '1',
@@ -301,33 +233,16 @@ export const data = [
                     name: 'generic_x86',
                     type: 'android',
                   },
-                  library: {
-                    name: 'com.rudderstack.android.sdk.core',
-                    version: '0.1.4',
-                  },
+                  library: { name: 'com.rudderstack.android.sdk.core', version: '0.1.4' },
                   locale: 'en-US',
-                  network: {
-                    carrier: 'Android',
-                    bluetooth: false,
-                    cellular: true,
-                    wifi: true,
-                  },
-                  os: {
-                    name: 'Android',
-                    version: '9',
-                  },
-                  screen: {
-                    density: 420,
-                    height: 1794,
-                    width: 1080,
-                  },
+                  network: { carrier: 'Android', bluetooth: false, cellular: true, wifi: true },
+                  os: { name: 'Android', version: '9' },
+                  screen: { density: 420, height: 1794, width: 1080 },
                   timezone: 'Asia/Kolkata',
                 },
                 timestamp: '2020-02-02T00:23:09.544Z',
               },
-              metadata: {
-                jobId: 2,
-              },
+              metadata: { jobId: 2, userId: 'u1' },
               destination: {
                 Config: {
                   apiToken: 'trengo_integration_test_api_token',
@@ -335,29 +250,12 @@ export const data = [
                   channelIdentifier: 'email',
                   enableDedup: true,
                   eventTemplateMap: [
-                    {
-                      from: 'Product Purchased',
-                      to: '{{event}} from Rudderstack',
-                    },
-                    {
-                      from: 'checkedOut',
-                      to: 'Total cart value {{value}} shipped',
-                    },
-                    {
-                      from: 'Order Completed',
-                      to: 'Completed Order',
-                    },
-                    {
-                      from: 'Stress Test',
-                    },
-                    {
-                      from: 'Stress test2',
-                      to: '',
-                    },
-                    {
-                      from: 'Stress test3',
-                      to: '{event} Stress test',
-                    },
+                    { from: 'Product Purchased', to: '{{event}} from Rudderstack' },
+                    { from: 'checkedOut', to: 'Total cart value {{value}} shipped' },
+                    { from: 'Order Completed', to: 'Completed Order' },
+                    { from: 'Stress Test' },
+                    { from: 'Stress test2', to: '' },
+                    { from: 'Stress test3', to: '{event} Stress test' },
                   ],
                 },
                 secretConfig: {},
@@ -439,11 +337,7 @@ export const data = [
                 },
                 files: {},
               },
-              metadata: [
-                {
-                  jobId: 2,
-                },
-              ],
+              metadata: [{ jobId: 2, userId: 'u1' }],
               batched: false,
               statusCode: 200,
               destination: {
@@ -453,29 +347,12 @@ export const data = [
                   channelIdentifier: 'email',
                   enableDedup: true,
                   eventTemplateMap: [
-                    {
-                      from: 'Product Purchased',
-                      to: '{{event}} from Rudderstack',
-                    },
-                    {
-                      from: 'checkedOut',
-                      to: 'Total cart value {{value}} shipped',
-                    },
-                    {
-                      from: 'Order Completed',
-                      to: 'Completed Order',
-                    },
-                    {
-                      from: 'Stress Test',
-                    },
-                    {
-                      from: 'Stress test2',
-                      to: '',
-                    },
-                    {
-                      from: 'Stress test3',
-                      to: '{event} Stress test',
-                    },
+                    { from: 'Product Purchased', to: '{{event}} from Rudderstack' },
+                    { from: 'checkedOut', to: 'Total cart value {{value}} shipped' },
+                    { from: 'Order Completed', to: 'Completed Order' },
+                    { from: 'Stress Test' },
+                    { from: 'Stress test2', to: '' },
+                    { from: 'Stress test3', to: '{event} Stress test' },
                   ],
                 },
                 secretConfig: {},

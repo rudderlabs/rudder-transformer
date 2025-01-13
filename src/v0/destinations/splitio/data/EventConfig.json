@@ -29,5 +29,17 @@
       "type": "toFloat"
     },
     "required": false
+  },
+  {
+    "destKey": "trafficTypeName",
+    "sourceKeys": [
+      "traits.trafficTypeName",
+      "context.traits.trafficTypeName",
+      "properties.trafficTypeName"
+    ],
+    "metadata": {
+      "type": "toString"
+    },
+    "required": false
   }
 ]

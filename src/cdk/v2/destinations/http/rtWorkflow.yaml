@@ -1,0 +1,60 @@
+bindings:
+  - name: handleRtTfSingleEventError
+    path: ../../../../v0/util/index
+  - path: ./utils
+    exportAll: true
+  - name: BatchUtils
+    path: '@rudderstack/workflow-engine'
+
+steps:
+  - name: validateInput
+    template: |
+      $.assert(Array.isArray(^) && ^.length > 0, "Invalid event array")
+
+  - name: transform
+    externalWorkflow:
+      path: ./procWorkflow.yaml
+    loopOverInput: true
+
+  - name: successfulEvents
+    template: |
+      $.outputs.transform#idx.output.({
+        "batchedRequest": .,
+        "batched": false,
+        "destination": ^[idx].destination,
+        "metadata": ^[idx].metadata[],
+        "statusCode": 200
+      })[]
+
+  - name: failedEvents
+    template: |
+      $.outputs.transform#idx.error.(
+        $.handleRtTfSingleEventError(^[idx], .originalError ?? ., {})
+      )[]
+
+  - name: bodyFormat
+    template: |
+      $.outputs.successfulEvents[0].destination.Config.format ?? "JSON";
+
+  - name: batchingEnabled
+    template: |
+      $.outputs.successfulEvents[0].destination.Config.isBatchingEnabled;
+
+  - name: batchSize
+    template: |
+      $.outputs.successfulEvents[0].destination.Config.maxBatchSize;
+
+  - name: batchSuccessfulEvents
+    description: Batches the successfulEvents
+    condition: $.outputs.batchingEnabled && $.outputs.bodyFormat === "JSON"
+    template: |
+      $.batchSuccessfulEvents($.outputs.successfulEvents, $.outputs.batchSize);
+
+  - name: finalPayloadWithBatching
+    condition: $.outputs.batchingEnabled && $.outputs.bodyFormat === "JSON"
+    template: |
+      [...$.outputs.batchSuccessfulEvents, ...$.outputs.failedEvents]
+    else:
+      name: finalPayloadWithoutBatching
+      template: |
+        [...$.outputs.successfulEvents, ...$.outputs.failedEvents]

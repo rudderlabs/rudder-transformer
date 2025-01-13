@@ -1,38 +1,49 @@
 import { Context } from 'koa';
-import MiscService from '../services/misc';
-import ServiceSelector from '../helpers/serviceSelector';
-import ControllerUtility from './util';
+import { ServiceSelector } from '../helpers/serviceSelector';
+import { MiscService } from '../services/misc';
+import { SourcePostTransformationService } from '../services/source/postTransformation';
+import { ControllerUtility } from './util';
 import logger from '../logger';
-import PostTransformationServiceSource from '../services/source/postTransformation';
 
-export default class SourceController {
+export class SourceController {
   public static async sourceTransform(ctx: Context) {
-    logger.debug(
-      'Native(Source-Transform):: Request to transformer::',
-      JSON.stringify(ctx.request.body),
-    );
+    logger.debug('Native(Source-Transform):: Request to transformer::', ctx.request.body);
     const requestMetadata = MiscService.getRequestMetadata(ctx);
     const events = ctx.request.body as object[];
     const { version, source }: { version: string; source: string } = ctx.params;
+    const enrichedMetadata = {
+      ...requestMetadata,
+      source,
+      version,
+    };
     const integrationService = ServiceSelector.getNativeSourceService();
+
     try {
-      const resplist = await integrationService.sourceTransformRoutine(
-        events,
+      const { implementationVersion, input } = ControllerUtility.adaptInputToVersion(
         source,
         version,
+        events,
+      );
+
+      const resplist = await integrationService.sourceTransformRoutine(
+        input,
+        source,
+        implementationVersion,
         requestMetadata,
       );
       ctx.body = resplist;
     } catch (err: any) {
+      logger.error(err?.message || 'error in source transformation', enrichedMetadata);
       const metaTO = integrationService.getTags();
-      const resp = PostTransformationServiceSource.handleFailureEventsSource(err, metaTO);
+      const resp = SourcePostTransformationService.handleFailureEventsSource(err, metaTO);
       ctx.body = [resp];
     }
     ControllerUtility.postProcess(ctx);
-    logger.debug(
-      'Native(Source-Transform):: Response from transformer::',
-      JSON.stringify(ctx.body),
-    );
+    logger.debug('Native(Source-Transform):: Response from transformer::', {
+      srcResponse: ctx.body,
+      version,
+      source,
+    });
     return ctx;
   }
 }

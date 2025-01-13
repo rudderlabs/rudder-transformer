@@ -7,7 +7,7 @@ properties:
       type: object
       properties:
         request:
-          type: object
+          $ref: './request.yaml'
         message:
           type: object
         metadata:

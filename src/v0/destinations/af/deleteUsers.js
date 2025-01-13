@@ -1,12 +1,16 @@
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-param-reassign */
+const {
+  ConfigurationError,
+  InstrumentationError,
+  NetworkError,
+} = require('@rudderstack/integrations-lib');
 const { httpPOST } = require('../../../adapters/network');
 const {
   processAxiosResponse,
   getDynamicErrorType,
 } = require('../../../adapters/utils/networkUtils');
-const { generateUUID, isHttpStatusSuccess } = require('../../util');
-const { ConfigurationError, InstrumentationError, NetworkError } = require('../../util/errorTypes');
+const utils = require('../../util');
 const tags = require('../../util/tags');
 const { executeCommonValidations } = require('../../util/regulation-api');
 
@@ -19,7 +23,7 @@ const { executeCommonValidations } = require('../../util/regulation-api');
  * @returns
  */
 const deleteUser = async (config, endpoint, body, identityType, identityValue) => {
-  body.subject_request_id = generateUUID();
+  body.subject_request_id = utils.generateUUID();
   body.submitted_time = new Date().toISOString();
   body.subject_identities[0].identity_type = identityType;
   body.subject_identities[0].identity_value = identityValue;
@@ -34,15 +38,19 @@ const deleteUser = async (config, endpoint, body, identityType, identityValue) =
     {
       destType: 'af',
       feature: 'deleteUsers',
+      endpointPath: `appsflyer.com/api/gdpr/v1/opendsr_requests`,
+      requestMethod: 'POST',
+      module: 'deletion',
     },
   );
   const handledDelResponse = processAxiosResponse(response);
-  if (!isHttpStatusSuccess(handledDelResponse.status)) {
+  if (!utils.isHttpStatusSuccess(handledDelResponse.status)) {
     throw new NetworkError(
       'User deletion request failed',
       handledDelResponse.status,
       {
         [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(handledDelResponse.status),
+        [tags.TAG_NAMES.STATUS]: handledDelResponse.status,
       },
       handledDelResponse,
     );

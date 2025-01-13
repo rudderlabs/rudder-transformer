@@ -1,0 +1,147 @@
+{
+  "name": "pagerduty",
+  "description": "Incident Resolved",
+  "input": {
+    "request": {
+      "body": {
+        "event": {
+          "id": "01DEN1HNLBC1VITK192ETJ1MPJ",
+          "event_type": "incident.resolved",
+          "resource_type": "incident",
+          "occurred_at": "2022-12-07T11:04:27.459Z",
+          "agent": {
+            "html_url": "https://rudderlabs-com.pagerduty.com/users/PXZZD2E",
+            "id": "PXZZD2E",
+            "self": "https://api.pagerduty.com/users/user@1",
+            "summary": "rudder test",
+            "type": "user_reference"
+          },
+          "client": null,
+          "data": {
+            "id": "Q3S7IX2U5KTCOY",
+            "type": "incident",
+            "self": "https://api.pagerduty.com/incidents/Q3S7IX2U5KTCOY",
+            "html_url": "https://rudderlabs-com.pagerduty.com/incidents/Q3S7IX2U5KTCOY",
+            "number": 2,
+            "status": "resolved",
+            "incident_key": "faaecfc0aca04b6ea07154188b5d3c6c",
+            "created_at": "2022-12-07T10:56:52Z",
+            "title": "Server Crashed",
+            "service": {
+              "html_url": "https://rudderlabs-com.pagerduty.com/services/PAJBUTT",
+              "id": "PAJBUTT",
+              "self": "https://api.pagerduty.com/services/PAJBUTT",
+              "summary": "Database",
+              "type": "service_reference"
+            },
+            "assignees": [],
+            "escalation_policy": {
+              "html_url": "https://rudderlabs-com.pagerduty.com/escalation_policies/PB7HKU4",
+              "id": "PB7HKU4",
+              "self": "https://api.pagerduty.com/escalation_policies/PB7HKU4",
+              "summary": "Default",
+              "type": "escalation_policy_reference"
+            },
+            "teams": [],
+            "priority": {
+              "html_url": "https://rudderlabs-com.pagerduty.com/account/incident_priorities",
+              "id": "P5DBC3A",
+              "self": "https://api.pagerduty.com/priorities/P5DBC3A",
+              "summary": "P3",
+              "type": "priority_reference"
+            },
+            "urgency": "high",
+            "conference_bridge": {
+              "conference_number": "",
+              "conference_url": ""
+            },
+            "resolve_reason": null
+          }
+        }
+      },
+      "headers": {
+        "Content-Type": "application/json"
+      }
+    }
+  },
+  "output": {
+    "response": {
+      "status": 200,
+      "body": "OK"
+    },
+    "queue": [
+      {
+        "type": "track",
+        "event": "Incident Resolved",
+        "userId": "PXZZD2E",
+        "context": {
+          "traits": {
+            "id": "PXZZD2E",
+            "self": "https://api.pagerduty.com/users/user@1",
+            "type": "user_reference",
+            "summary": "rudder test",
+            "html_url": "https://rudderlabs-com.pagerduty.com/users/PXZZD2E"
+          },
+          "library": {
+            "name": "unknown",
+            "version": "unknown"
+          },
+          "integration": {
+            "name": "PagerDuty"
+          }
+        },
+        "messageId": "01DEN1HNLBC1VITK192ETJ1MPJ",
+        "properties": {
+          "data": {
+            "id": "Q3S7IX2U5KTCOY",
+            "self": "https://api.pagerduty.com/incidents/Q3S7IX2U5KTCOY",
+            "type": "incident",
+            "teams": [],
+            "title": "Server Crashed",
+            "number": 2,
+            "status": "resolved",
+            "service": {
+              "id": "PAJBUTT",
+              "self": "https://api.pagerduty.com/services/PAJBUTT",
+              "type": "service_reference",
+              "summary": "Database",
+              "html_url": "https://rudderlabs-com.pagerduty.com/services/PAJBUTT"
+            },
+            "urgency": "high",
+            "html_url": "https://rudderlabs-com.pagerduty.com/incidents/Q3S7IX2U5KTCOY",
+            "priority": {
+              "id": "P5DBC3A",
+              "self": "https://api.pagerduty.com/priorities/P5DBC3A",
+              "type": "priority_reference",
+              "summary": "P3",
+              "html_url": "https://rudderlabs-com.pagerduty.com/account/incident_priorities"
+            },
+            "assignees": [],
+            "created_at": "2022-12-07T10:56:52Z",
+            "incident_key": "faaecfc0aca04b6ea07154188b5d3c6c",
+            "resolve_reason": null,
+            "conference_bridge": {
+              "conference_url": "",
+              "conference_number": ""
+            },
+            "escalation_policy": {
+              "id": "PB7HKU4",
+              "self": "https://api.pagerduty.com/escalation_policies/PB7HKU4",
+              "type": "escalation_policy_reference",
+              "summary": "Default",
+              "html_url": "https://rudderlabs-com.pagerduty.com/escalation_policies/PB7HKU4"
+            }
+          },
+          "resourceType": "incident"
+        },
+        "integrations": {
+          "PagerDuty": false
+        },
+        "originalTimestamp": "2022-12-07T11:04:27.000Z",
+        "receivedAt": "2024-03-03T04:48:29.000Z",
+        "request_ip": "192.0.2.30"
+      }
+    ],
+    "errQueue": []
+  }
+}

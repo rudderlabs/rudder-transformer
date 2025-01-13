@@ -22,7 +22,7 @@ const CONFIG_CATEGORIES = {
     name: 'JunePageConfig',
     type: 'page',
     endpoint: `${BASE_ENDPOINT}/page`,
-  }
+  },
 };
 
 const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);

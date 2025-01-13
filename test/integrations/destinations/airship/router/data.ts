@@ -11,15 +11,9 @@ export const data = [
           input: [
             {
               destination: {
-                Config: {
-                  apiKey: 'dummyApiKey',
-                  appKey: 'O2YARRI15I',
-                  dataCenter: false,
-                },
+                Config: { apiKey: 'dummyApiKey', appKey: 'O2YARRI15I', dataCenter: false },
               },
-              metadata: {
-                jobId: 1,
-              },
+              metadata: { jobId: 1, userId: 'u1' },
               message: {
                 channel: 'web',
                 context: {
@@ -29,26 +23,14 @@ export const data = [
                     namespace: 'com.rudderlabs.javascript',
                     version: '1.0.0',
                   },
-                  traits: {
-                    email: 'testone@gmail.com',
-                    firstName: 'test',
-                    lastName: 'one',
-                  },
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.0.0',
-                  },
+                  traits: { email: 'testone@gmail.com', firstName: 'test', lastName: 'one' },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.0.0' },
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
                   locale: 'en-US',
                   ip: '0.0.0.0',
-                  os: {
-                    name: '',
-                    version: '',
-                  },
-                  screen: {
-                    density: 2,
-                  },
+                  os: { name: '', version: '' },
+                  screen: { density: 2 },
                 },
                 type: 'track',
                 messageId: '84e26acc-56a5-4835-8233-591137fca468',
@@ -62,28 +44,14 @@ export const data = [
                   brand: 'Victory Sneakers',
                   colors: ['red', 'blue'],
                   items: [
-                    {
-                      text: 'New Line Sneakers',
-                      price: '$ 79.95',
-                    },
-                    {
-                      text: 'Old Line Sneakers',
-                      price: '$ 79.95',
-                    },
-                    {
-                      text: 'Blue Line Sneakers',
-                      price: '$ 79.95',
-                    },
+                    { text: 'New Line Sneakers', price: '$ 79.95' },
+                    { text: 'Old Line Sneakers', price: '$ 79.95' },
+                    { text: 'Blue Line Sneakers', price: '$ 79.95' },
                   ],
                   name: 'Hugh Manbeing',
-                  userLocation: {
-                    state: 'CO',
-                    zip: '80202',
-                  },
+                  userLocation: { state: 'CO', zip: '80202' },
                 },
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 sentAt: '2019-10-14T09:03:22.563Z',
               },
             },
@@ -114,9 +82,7 @@ export const data = [
                 body: {
                   JSON: {
                     occured: '2019-10-14T09:03:17.562Z',
-                    user: {
-                      named_user_id: 'testuserId1',
-                    },
+                    user: { named_user_id: 'testuserId1' },
                     body: {
                       name: 'product_clicked',
                       properties: {
@@ -124,24 +90,12 @@ export const data = [
                         brand: 'Victory Sneakers',
                         colors: ['red', 'blue'],
                         items: [
-                          {
-                            text: 'New Line Sneakers',
-                            price: '$ 79.95',
-                          },
-                          {
-                            text: 'Old Line Sneakers',
-                            price: '$ 79.95',
-                          },
-                          {
-                            text: 'Blue Line Sneakers',
-                            price: '$ 79.95',
-                          },
+                          { text: 'New Line Sneakers', price: '$ 79.95' },
+                          { text: 'Old Line Sneakers', price: '$ 79.95' },
+                          { text: 'Blue Line Sneakers', price: '$ 79.95' },
                         ],
                         name: 'Hugh Manbeing',
-                        userLocation: {
-                          state: 'CO',
-                          zip: '80202',
-                        },
+                        userLocation: { state: 'CO', zip: '80202' },
                       },
                     },
                   },
@@ -151,19 +105,11 @@ export const data = [
                 },
                 files: {},
               },
-              metadata: [
-                {
-                  jobId: 1,
-                },
-              ],
+              metadata: [{ jobId: 1, userId: 'u1' }],
               batched: false,
               statusCode: 200,
               destination: {
-                Config: {
-                  apiKey: 'dummyApiKey',
-                  appKey: 'O2YARRI15I',
-                  dataCenter: false,
-                },
+                Config: { apiKey: 'dummyApiKey', appKey: 'O2YARRI15I', dataCenter: false },
               },
             },
           ],
@@ -183,15 +129,9 @@ export const data = [
           input: [
             {
               destination: {
-                Config: {
-                  apiKey: 'dummyApiKey',
-                  appKey: 'O2YARRI15I',
-                  dataCenter: false,
-                },
+                Config: { apiKey: 'dummyApiKey', appKey: 'O2YARRI15I', dataCenter: false },
               },
-              metadata: {
-                jobId: 2,
-              },
+              metadata: { jobId: 2, userId: 'u1' },
               message: {
                 anonymousId: '507f191e810c19729de860ea',
                 channel: 'browser',
@@ -200,9 +140,7 @@ export const data = [
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.2214.115 Safari/537.36',
                 },
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 messageId: '022bb90c-bbac-11e4-8dfc-aa07a5b093db',
                 receivedAt: '2015-02-23T22:28:55.387Z',
                 sentAt: '2015-02-23T22:28:55.111Z',
@@ -255,15 +193,9 @@ export const data = [
                   params: {},
                   body: {
                     JSON: {
-                      audience: {
-                        named_user_id: '97980cfea0067',
-                      },
-                      add: {
-                        rudderstack_integration: ['firstname', 'favcolor'],
-                      },
-                      remove: {
-                        rudderstack_integration: ['lastname'],
-                      },
+                      audience: { named_user_id: '97980cfea0067' },
+                      add: { rudderstack_integration: ['firstname', 'favcolor'] },
+                      remove: { rudderstack_integration: ['lastname'] },
                     },
                     JSON_ARRAY: {},
                     XML: {},
@@ -291,12 +223,7 @@ export const data = [
                           value: 'Peter Gibbons',
                           timestamp: '2015-02-23T22:28:55Z',
                         },
-                        {
-                          action: 'set',
-                          key: 'age',
-                          value: 34,
-                          timestamp: '2015-02-23T22:28:55Z',
-                        },
+                        { action: 'set', key: 'age', value: 34, timestamp: '2015-02-23T22:28:55Z' },
                         {
                           action: 'set',
                           key: 'email',
@@ -354,19 +281,11 @@ export const data = [
                   files: {},
                 },
               ],
-              metadata: [
-                {
-                  jobId: 2,
-                },
-              ],
+              metadata: [{ jobId: 2, userId: 'u1' }],
               batched: false,
               statusCode: 200,
               destination: {
-                Config: {
-                  apiKey: 'dummyApiKey',
-                  appKey: 'O2YARRI15I',
-                  dataCenter: false,
-                },
+                Config: { apiKey: 'dummyApiKey', appKey: 'O2YARRI15I', dataCenter: false },
               },
             },
           ],
@@ -385,15 +304,8 @@ export const data = [
         body: {
           input: [
             {
-              destination: {
-                Config: {
-                  apiKey: 'dummyApiKey',
-                  dataCenter: false,
-                },
-              },
-              metadata: {
-                jobId: 3,
-              },
+              destination: { Config: { apiKey: 'dummyApiKey', dataCenter: false } },
+              metadata: { jobId: 3, userId: 'u1' },
               message: {
                 anonymousId: '507f191e810c19729de860ea',
                 channel: 'browser',
@@ -402,9 +314,7 @@ export const data = [
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.2214.115 Safari/537.36',
                 },
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 messageId: '022bb90c-bbac-11e4-8dfc-aa07a5b093db',
                 receivedAt: '2015-02-23T22:28:55.387Z',
                 sentAt: '2015-02-23T22:28:55.111Z',
@@ -457,15 +367,9 @@ export const data = [
                   params: {},
                   body: {
                     JSON: {
-                      audience: {
-                        named_user_id: '97980cfea0067',
-                      },
-                      add: {
-                        rudderstack_integration_group: ['firstname', 'favcolor'],
-                      },
-                      remove: {
-                        rudderstack_integration_group: ['lastname'],
-                      },
+                      audience: { named_user_id: '97980cfea0067' },
+                      add: { rudderstack_integration_group: ['firstname', 'favcolor'] },
+                      remove: { rudderstack_integration_group: ['lastname'] },
                     },
                     JSON_ARRAY: {},
                     XML: {},
@@ -493,12 +397,7 @@ export const data = [
                           value: 'Peter Gibbons',
                           timestamp: '2015-02-23T22:28:55Z',
                         },
-                        {
-                          action: 'set',
-                          key: 'age',
-                          value: 34,
-                          timestamp: '2015-02-23T22:28:55Z',
-                        },
+                        { action: 'set', key: 'age', value: 34, timestamp: '2015-02-23T22:28:55Z' },
                         {
                           action: 'set',
                           key: 'email',
@@ -556,23 +455,20 @@ export const data = [
                   files: {},
                 },
               ],
-              metadata: [
-                {
-                  jobId: 3,
-                },
-              ],
+              metadata: [{ jobId: 3, userId: 'u1' }],
               batched: false,
               statusCode: 200,
-              destination: {
-                Config: {
-                  apiKey: 'dummyApiKey',
-                  dataCenter: false,
-                },
-              },
+              destination: { Config: { apiKey: 'dummyApiKey', dataCenter: false } },
             },
           ],
         },
       },
     },
   },
-];
+].map((tc) => ({
+  ...tc,
+  mockFns: (_) => {
+    jest.spyOn(Date.prototype, 'toISOString').mockReturnValue('2015-02-23T22:28:55Z');
+    // jest.spyOn(Date, 'now').mockReturnValue(new Date('2023-10-14T12:34:56.789Z').valueOf());
+  },
+}));

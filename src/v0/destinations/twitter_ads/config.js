@@ -14,5 +14,5 @@ const mappingConfig = getMappingConfig(ConfigCategories, __dirname);
 module.exports = {
   mappingConfig,
   ConfigCategories,
-  BASE_URL
+  BASE_URL,
 };

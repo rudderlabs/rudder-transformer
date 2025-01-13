@@ -68,6 +68,15 @@
         "destinationId": "d1"
       },
       "statusCode": 200
+    },
+    {
+      "error": "Error: non-standard event\n    at transformEvent (base transformation:5:56)",
+      "metadata": {
+        "destinationId": "d1",
+        "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+        "sourceId": "s1"
+      },
+      "statusCode": 400
     }
   ],
   "retryStatus": 200

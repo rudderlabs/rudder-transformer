@@ -3,6 +3,12 @@
 /* eslint-disable no-use-before-define */
 const get = require('get-value');
 const cloneDeep = require('lodash/cloneDeep');
+const {
+  InstrumentationError,
+  ConfigurationError,
+  UnauthorizedError,
+  getErrorRespEvents,
+} = require('@rudderstack/integrations-lib');
 const stats = require('../../../util/stats');
 const { EventType, MappedToDestinationKey } = require('../../../constants');
 const {
@@ -23,10 +29,8 @@ const {
   getFieldValueFromMessage,
   getDestinationExternalID,
   getSuccessRespEvents,
-  getErrorRespEvents,
   isDefinedAndNotNull,
   generateErrorObject,
-  checkInvalidRtTfEvents,
   handleRtTfSingleEventError,
 } = require('../../util');
 const Cache = require('../../util/cache');
@@ -38,11 +42,6 @@ const {
   getResponseHandlerData,
 } = require('./util');
 const logger = require('../../../logger');
-const {
-  InstrumentationError,
-  ConfigurationError,
-  UnauthorizedError,
-} = require('../../util/errorTypes');
 
 const userIdLeadCache = new Cache(USER_LEAD_CACHE_TTL); // 1 day
 const emailLeadCache = new Cache(USER_LEAD_CACHE_TTL); // 1 day
@@ -56,7 +55,7 @@ const authCache = new Cache(AUTH_CACHE_TTL); // 1 hr
 // fails the transformer if auth fails
 // ------------------------
 // Ref: https://developers.marketo.com/rest-api/authentication/#creating_an_access_token
-const getAuthToken = async (formattedDestination) =>
+const getAuthToken = async (formattedDestination, metadata) =>
   authCache.get(formattedDestination.ID, async () => {
     const { accountId, clientId, clientSecret } = formattedDestination;
     const clientResponse = await sendGetRequest(
@@ -68,6 +67,7 @@ const getAuthToken = async (formattedDestination) =>
           grant_type: 'client_credentials',
         },
       },
+      metadata,
     );
     const data = marketoResponseHandler(clientResponse, 'During fetching auth token');
     if (data) {
@@ -93,7 +93,7 @@ const getAuthToken = async (formattedDestination) =>
 // If lookupField is omitted, the default key is email.
 // ------------------------
 // Thus we'll always be using createOrUpdate
-const createOrUpdateLead = async (formattedDestination, token, userId, anonymousId) =>
+const createOrUpdateLead = async (formattedDestination, token, userId, anonymousId, metadata) =>
   userIdLeadCache.get(userId || anonymousId, async () => {
     const attribute = userId ? { userId } : { anonymousId };
     stats.increment(LEAD_LOOKUP_METRIC, {
@@ -115,6 +115,7 @@ const createOrUpdateLead = async (formattedDestination, token, userId, anonymous
           'Content-type': JSON_MIME_TYPE,
         },
       },
+      metadata,
     );
     const data = getResponseHandlerData(
       clientResponse,
@@ -136,7 +137,7 @@ const createOrUpdateLead = async (formattedDestination, token, userId, anonymous
 // ------------------------
 // Ref: https://developers.marketo.com/rest-api/lead-database/leads/#create_and_update
 // ------------------------
-const lookupLeadUsingEmail = async (formattedDestination, token, email) =>
+const lookupLeadUsingEmail = async (formattedDestination, token, email, metadata) =>
   emailLeadCache.get(email, async () => {
     stats.increment(LEAD_LOOKUP_METRIC, { type: 'email', action: 'fetch' });
     const clientResponse = await sendGetRequest(
@@ -146,6 +147,7 @@ const lookupLeadUsingEmail = async (formattedDestination, token, email) =>
         params: { filterValues: email, filterType: 'email' },
         headers: { Authorization: `Bearer ${token}` },
       },
+      metadata,
     );
     const data = getResponseHandlerData(
       clientResponse,
@@ -168,7 +170,7 @@ const lookupLeadUsingEmail = async (formattedDestination, token, email) =>
 // ------------------------
 // Ref: https://developers.marketo.com/rest-api/lead-database/leads/#create_and_update
 // ------------------------
-const lookupLeadUsingId = async (formattedDestination, token, userId, anonymousId) =>
+const lookupLeadUsingId = async (formattedDestination, token, userId, anonymousId, metadata) =>
   userIdLeadCache.get(userId || anonymousId, async () => {
     stats.increment(LEAD_LOOKUP_METRIC, { type: 'userId', action: 'fetch' });
     const clientResponse = await sendGetRequest(
@@ -180,6 +182,7 @@ const lookupLeadUsingId = async (formattedDestination, token, userId, anonymousI
         },
         headers: { Authorization: `Bearer ${token}` },
       },
+      metadata,
     );
     const data = getResponseHandlerData(
       clientResponse,
@@ -196,7 +199,7 @@ const lookupLeadUsingId = async (formattedDestination, token, userId, anonymousI
     return null;
   });
 
-const getLeadId = async (message, formattedDestination, token) => {
+const getLeadId = async (message, formattedDestination, token, metadata) => {
   // precedence ->>
   //  -> externalId (context.externalId[0].type == marketoLeadId)
   //  -> lookup lead using email
@@ -226,10 +229,16 @@ const getLeadId = async (message, formattedDestination, token) => {
   if (!leadId) {
     // search for lead using email
     if (email) {
-      leadId = await lookupLeadUsingEmail(formattedDestination, token, email);
+      leadId = await lookupLeadUsingEmail(formattedDestination, token, email, metadata);
     } else {
       // search lead using userId or anonymousId
-      leadId = await lookupLeadUsingId(formattedDestination, token, userId, message.anonymousId);
+      leadId = await lookupLeadUsingId(
+        formattedDestination,
+        token,
+        userId,
+        message.anonymousId,
+        metadata,
+      );
     }
   }
 
@@ -237,7 +246,13 @@ const getLeadId = async (message, formattedDestination, token) => {
   if (!leadId) {
     // check we have permission to create lead on marketo
     if (formattedDestination.createIfNotExist) {
-      leadId = await createOrUpdateLead(formattedDestination, token, userId, message.anonymousId);
+      leadId = await createOrUpdateLead(
+        formattedDestination,
+        token,
+        userId,
+        message.anonymousId,
+        metadata,
+      );
     } else {
       throw new ConfigurationError('Lead creation is turned off on the dashboard');
     }
@@ -265,7 +280,7 @@ const getLeadId = async (message, formattedDestination, token) => {
 // ------------------------
 // Almost same as leadId lookup. Noticable difference from lookup is we'll using
 // `id` i.e. leadId as lookupField at the end of it
-const processIdentify = async (message, formattedDestination, token) => {
+const processIdentify = async (message, formattedDestination, token, metadata) => {
   // If mapped to destination, Add externalId to traits
   if (get(message, MappedToDestinationKey)) {
     addExternalIdToTraits(message);
@@ -278,7 +293,7 @@ const processIdentify = async (message, formattedDestination, token) => {
     throw new InstrumentationError('Invalid traits value for Marketo');
   }
 
-  const leadId = await getLeadId(message, formattedDestination, token);
+  const leadId = await getLeadId(message, formattedDestination, token, metadata);
 
   let attribute = constructPayload(traits, identifyConfig);
   // leadTraitMapping will not be used if mapping is done through VDM in rETL
@@ -339,7 +354,7 @@ const processIdentify = async (message, formattedDestination, token) => {
 // process track events - only mapped events
 // ------------------------
 // Ref: https://developers.marketo.com/rest-api/endpoint-reference/lead-database-endpoint-reference/#!/Activities/addCustomActivityUsingPOST
-const processTrack = async (message, formattedDestination, token) => {
+const processTrack = async (message, formattedDestination, token, metadata) => {
   // check if trackAnonymousEvent is turned off and userId is not present - fail
   // check if the event is mapped in customActivityEventMap. if not - fail
   // get primaryKey name for the event
@@ -374,7 +389,7 @@ const processTrack = async (message, formattedDestination, token) => {
   }
 
   // get leadId
-  const leadId = await getLeadId(message, formattedDestination, token);
+  const leadId = await getLeadId(message, formattedDestination, token, metadata);
 
   // handle addition of custom activity attributes
   // Reference: https://developers.marketo.com/rest-api/lead-database/activities/#add_custom_activities
@@ -421,7 +436,7 @@ const responseWrapper = (response) => {
   return resp;
 };
 
-const processEvent = async (message, destination, token) => {
+const processEvent = async ({ message, destination, metadata }, token) => {
   if (!message.type) {
     throw new InstrumentationError('Message Type is not present. Aborting message.');
   }
@@ -431,10 +446,10 @@ const processEvent = async (message, destination, token) => {
   let response;
   switch (messageType) {
     case EventType.IDENTIFY:
-      response = await processIdentify(message, formattedDestination, token);
+      response = await processIdentify(message, formattedDestination, token, metadata);
       break;
     case EventType.TRACK:
-      response = await processTrack(message, formattedDestination, token);
+      response = await processTrack(message, formattedDestination, token, metadata);
       break;
     default:
       throw new InstrumentationError('Message type not supported');
@@ -445,24 +460,20 @@ const processEvent = async (message, destination, token) => {
 };
 
 const process = async (event) => {
-  const token = await getAuthToken(formatConfig(event.destination));
+  const token = await getAuthToken(formatConfig(event.destination), event.metadata);
   if (!token) {
     throw new UnauthorizedError('Authorization failed');
   }
-  const response = await processEvent(event.message, event.destination, token);
+  const response = await processEvent(event, token);
   return response;
 };
 
 const processRouterDest = async (inputs, reqMetadata) => {
   // Token needs to be generated for marketo which will be done on input level.
   // If destination information is not present Error should be thrown
-  const errorRespEvents = checkInvalidRtTfEvents(inputs);
-  if (errorRespEvents.length > 0) {
-    return errorRespEvents;
-  }
   let token;
   try {
-    token = await getAuthToken(formatConfig(inputs[0].destination));
+    token = await getAuthToken(formatConfig(inputs[0].destination), inputs[0].metadata);
 
     // If token is null track/identify calls cannot be executed.
     if (!token) {
@@ -488,7 +499,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
     inputs.map(async (input) => {
       try {
         return getSuccessRespEvents(
-          await processEvent(input.message, input.destination, token),
+          await processEvent(input, token),
           [input.metadata],
           input.destination,
         );

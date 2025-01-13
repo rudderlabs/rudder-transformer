@@ -1,0 +1,70 @@
+bindings:
+  - path: ./utils
+  - path: ./config
+
+steps:
+  - name: validateInput
+    template: |
+      $.assert(Array.isArray(^) && ^.length > 0, "Invalid event array")
+
+  - name: transform
+    externalWorkflow:
+      path: ./procWorkflow.yaml
+      bindings:
+        - name: batchMode
+          value: true
+    loopOverInput: true
+  - name: successfulEvents
+    template: |
+      $.outputs.transform#idx.output.({
+        "message": .[],
+        "destination": ^ [idx].destination,
+        "metadata": ^ [idx].metadata
+      })[]
+  - name: failedEvents
+    template: |
+      $.outputs.transform#idx.error.({
+        "metadata": ^[idx].metadata[],
+        "destination": ^[idx].destination,
+        "batched": false,
+        "statusCode": .status,
+        "error": .message,
+        "statTags": .originalError.statTags
+      })[]
+
+  - name: batchSuccessfulEvents
+    description: Batches the successfulEvents using V3 API
+    condition: $.outputs.successfulEvents.length
+    template: |
+      let batches = $.batchEvents($.outputs.successfulEvents);
+      batches@batch.({
+        "batchedRequest": {
+          "body": {
+            "JSON": batch.message,
+            "JSON_ARRAY": {},
+            "XML": {},
+            "FORM": {}
+          },
+          "version": "1",
+          "type": "REST",
+          "method": "POST",
+          "endpoint": batch.message.people ? $.IDENTIFY_ENDPOINT[$.originalInput[0].destination.Config.instanceRegion] : $.TRACK_ENDPOINT[$.originalInput[0].destination.Config.instanceRegion], 
+          "headers": {
+            "X-Api-Key": .destination.Config.privateApiKey,
+            "Content-Type": "application/json",
+          },
+          "params": {},
+          "files": {}
+        },
+        "metadata": batch.metadata,
+        "batched": true,
+        "statusCode": 200,
+        "destination": batch.destination
+      })[];
+    else:
+      name: returnEmptyOuput
+      template: '[]'
+
+  - name: finalPayload
+    template: |
+      [...$.outputs.batchSuccessfulEvents, ...$.outputs.failedEvents]

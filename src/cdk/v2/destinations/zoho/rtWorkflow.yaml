@@ -1,0 +1,38 @@
+bindings:
+  - name: EventType
+    path: ../../../../constants
+  - name: processRecordInputs
+    path: ./transformRecord
+  - name: handleRtTfSingleEventError
+    path: ../../../../v0/util/index
+  - name: InstrumentationError
+    path: '@rudderstack/integrations-lib'
+
+steps:
+  - name: validateConfig
+    template: |
+      const config = ^[0].destination.Config
+      $.assertConfig(config.region, "Datacentre Region is not present. Aborting")
+
+  - name: validateInput
+    template: |
+      $.assert(Array.isArray(^) && ^.length > 0, "Invalid event array")
+
+  - name: processRecordEvents
+    template: |
+      await $.processRecordInputs(^.{.message.type === $.EventType.RECORD}[], ^[0].destination)
+
+  - name: failOtherEvents
+    template: |
+      const otherEvents = ^.{.message.type !== $.EventType.RECORD}[]
+      let failedEvents = otherEvents.map(
+        function(event) {
+        const error = new $.InstrumentationError("Event type " + event.message.type + " is not supported");
+          $.handleRtTfSingleEventError(event, error, {})
+        }
+      )
+      failedEvents ?? []
+
+  - name: finalPayload
+    template: |
+      [...$.outputs.processRecordEvents, ...$.outputs.failOtherEvents]

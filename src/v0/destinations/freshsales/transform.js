@@ -1,4 +1,5 @@
 const get = require('get-value');
+const { InstrumentationError, TransformationError } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const {
   defaultRequestConfig,
@@ -8,8 +9,8 @@ const {
   defaultPostRequestConfig,
   getValidDynamicFormConfig,
   simpleProcessRouterDest,
+  validateEventName,
 } = require('../../util');
-const { InstrumentationError, TransformationError } = require('../../util/errorTypes');
 const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require('./config');
 const {
   getUserAccountDetails,
@@ -65,10 +66,7 @@ const identifyResponseBuilder = (message, { Config }) => {
  * @param {*} Config
  * @returns
  */
-const trackResponseBuilder = async (message, { Config }, event) => {
-  if (!event) {
-    throw new InstrumentationError('Event name is required for track call.');
-  }
+const trackResponseBuilder = async ({ message, destination: { Config }, metadata }, event) => {
   let payload;
 
   const response = defaultRequestConfig();
@@ -80,11 +78,12 @@ const trackResponseBuilder = async (message, { Config }, event) => {
         payload,
         message,
         Config,
+        metadata,
       );
       break;
     }
     case 'lifecycle_stage': {
-      response.body.JSON = await UpdateContactWithLifeCycleStage(message, Config);
+      response.body.JSON = await UpdateContactWithLifeCycleStage(message, Config, metadata);
       response.endpoint = `https://${Config.domain}${CONFIG_CATEGORIES.IDENTIFY.baseUrl}`;
       break;
     }
@@ -102,7 +101,7 @@ const trackResponseBuilder = async (message, { Config }, event) => {
  * @param {*} Config
  * @returns
  */
-const groupResponseBuilder = async (message, { Config }) => {
+const groupResponseBuilder = async ({ message, destination: { Config }, metadata }) => {
   const payload = constructPayload(message, MAPPING_CONFIG[CONFIG_CATEGORIES.GROUP.name]);
   if (!payload) {
     // fail-safety for developer error
@@ -116,7 +115,7 @@ const groupResponseBuilder = async (message, { Config }) => {
     return updateAccountWOContact(payload, Config);
   }
 
-  const accountDetails = await getUserAccountDetails(payload, userEmail, Config);
+  const accountDetails = await getUserAccountDetails(payload, userEmail, Config, metadata);
   const responseIdentify = identifyResponseConfig(Config);
   responseIdentify.body.JSON.contact = { sales_accounts: accountDetails };
   responseIdentify.body.JSON.unique_identifier = { emails: userEmail };
@@ -126,9 +125,6 @@ const groupResponseBuilder = async (message, { Config }) => {
 // Checks if there are any mapping events for the track event and returns them
 function eventMappingHandler(message, destination) {
   const event = get(message, 'event');
-  if (!event) {
-    throw new InstrumentationError('Event name is required');
-  }
 
   let { rudderEventsToFreshsalesEvents } = destination.Config;
   const mappedEvents = new Set();
@@ -151,7 +147,8 @@ function eventMappingHandler(message, destination) {
   return [...mappedEvents];
 }
 
-const processEvent = async (message, destination) => {
+const processEvent = async (event) => {
+  const { message, destination, metadata } = event;
   if (!message.type) {
     throw new InstrumentationError('Message Type is not present. Aborting message.');
   }
@@ -162,29 +159,33 @@ const processEvent = async (message, destination) => {
       response = identifyResponseBuilder(message, destination);
       break;
     case EventType.TRACK: {
+      validateEventName(message.event);
       const mappedEvents = eventMappingHandler(message, destination);
       if (mappedEvents.length > 0) {
         const respList = await Promise.all(
           mappedEvents.map(async (mappedEvent) =>
-            trackResponseBuilder(message, destination, mappedEvent),
+            trackResponseBuilder({ message, destination, metadata }, mappedEvent),
           ),
         );
 
         response = respList;
       } else {
-        response = await trackResponseBuilder(message, destination, get(message, 'event'));
+        response = await trackResponseBuilder(
+          { message, destination, metadata },
+          get(message, 'event'),
+        );
       }
       break;
     }
     case EventType.GROUP:
-      response = await groupResponseBuilder(message, destination);
+      response = await groupResponseBuilder({ message, destination, metadata });
       break;
     default:
       throw new InstrumentationError(`message type ${messageType} not supported`);
   }
   return response;
 };
-const process = async (event) => processEvent(event.message, event.destination);
+const process = async (event) => processEvent(event);
 
 const processRouterDest = async (inputs, reqMetadata) => {
   const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);

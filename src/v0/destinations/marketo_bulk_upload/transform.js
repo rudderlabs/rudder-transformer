@@ -1,3 +1,4 @@
+const { InstrumentationError, isDefined } = require('@rudderstack/integrations-lib');
 const {
   getHashFromArray,
   getFieldValueFromMessage,
@@ -5,7 +6,6 @@ const {
   defaultRequestConfig,
 } = require('../../util');
 const { EventType } = require('../../../constants');
-const { InstrumentationError } = require('../../util/errorTypes');
 
 function responseBuilderSimple(message, destination) {
   const payload = {};
@@ -34,8 +34,17 @@ function responseBuilderSimple(message, destination) {
   // columnNames with trait's values from rudder payload
   Object.keys(fieldHashmap).forEach((key) => {
     const val = traits[fieldHashmap[key]];
-    if (val) {
-      payload[key] = val;
+    if (isDefined(val)) {
+      let newVal = val;
+      // If value contains comma or newline then we need to escape it
+      if (typeof val === 'string') {
+        newVal = val
+          .toString()
+          .replaceAll(/\\/g, '\\\\')
+          .replaceAll(/,/g, '\\,')
+          .replaceAll(/\n/g, '\\n');
+      }
+      payload[key] = newVal;
     }
   });
   const response = defaultRequestConfig();

@@ -1,7 +1,7 @@
 /* eslint-disable one-var, @typescript-eslint/naming-convention */
 /* eslint-disable camelcase */
+const { ConfigurationError, InstrumentationError } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
-const { ConfigurationError, InstrumentationError } = require('../../util/errorTypes');
 const {
   constructPayload,
   extractCustomFields,
@@ -14,7 +14,6 @@ const {
   getFieldValueFromMessage,
   getIntegrationsObj,
   getSuccessRespEvents,
-  checkInvalidRtTfEvents,
   handleRtTfSingleEventError,
 } = require('../../util/index');
 const {
@@ -250,10 +249,6 @@ const process = (event) => {
 };
 
 const processRouterDest = async (inputs, reqMetadata) => {
-  const errorRespEvents = checkInvalidRtTfEvents(inputs);
-  if (errorRespEvents.length > 0) {
-    return errorRespEvents;
-  }
   const inputChunks = returnArrayOfSubarrays(inputs, MAX_BATCH_SIZE);
   const successList = [];
   const errorList = [];

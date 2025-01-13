@@ -1,6 +1,7 @@
 const lodash = require('lodash');
 const get = require('get-value');
 const { isEmpty } = require('lodash');
+const { ConfigurationError, InstrumentationError } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const { ConfigCategory, IDENTIFY_MAX_BATCH_SIZE, mappingConfig, BASE_URL } = require('./config');
 const {
@@ -9,12 +10,10 @@ const {
   defaultPostRequestConfig,
   defaultBatchRequestConfig,
   removeUndefinedAndNullValues,
-  getErrorRespEvents,
   getSuccessRespEvents,
   handleRtTfSingleEventError,
 } = require('../../util');
 const { deduceAddressFields, extractCustomProperties } = require('./utils');
-const { ConfigurationError, InstrumentationError } = require('../../util/errorTypes');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const responseBuilder = (responseConfgs) => {
@@ -191,11 +190,6 @@ function getEventChunks(event, identifyEventChunks, eventResponseList) {
 }
 
 const processRouterDest = (inputs, reqMetadata) => {
-  if (!Array.isArray(inputs) || inputs.length <= 0) {
-    const respEvents = getErrorRespEvents(null, 400, 'Invalid event array');
-    return [respEvents];
-  }
-
   const identifyEventChunks = []; // list containing identify events in batched format
   const eventResponseList = []; // list containing other events in batched format
   const errorRespList = [];

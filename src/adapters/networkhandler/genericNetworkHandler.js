@@ -1,7 +1,7 @@
+const { NetworkError } = require('@rudderstack/integrations-lib');
 const { isHttpStatusSuccess } = require('../../v0/util/index');
 const { proxyRequest, prepareProxyRequest } = require('../network');
 const { getDynamicErrorType, processAxiosResponse } = require('../utils/networkUtils');
-const { NetworkError } = require('../../v0/util/errorTypes');
 const tags = require('../../v0/util/tags');
 
 /**
@@ -17,13 +17,14 @@ const tags = require('../../v0/util/tags');
  * will act as fall-fack for such scenarios.
  *
  */
-const responseHandler = (destinationResponse, dest) => {
+const responseHandler = (responseParams) => {
+  const { destinationResponse, destType } = responseParams;
   const { status } = destinationResponse;
-  const message = `[Generic Response Handler] Request for destination: ${dest} Processed Successfully`;
+  const message = `[Generic Response Handler] Request for destination: ${destType} Processed Successfully`;
   // if the response from destination is not a success case build an explicit error
   if (!isHttpStatusSuccess(status)) {
     throw new NetworkError(
-      `[Generic Response Handler] Request failed for destination ${dest} with status: ${status}`,
+      `[Generic Response Handler] Request failed for destination ${destType} with status: ${status}`,
       status,
       {
         [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),

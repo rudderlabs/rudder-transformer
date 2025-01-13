@@ -1,13 +1,13 @@
 const path = require('path');
 const fs = require('fs');
-const { generateUUID } = require('../../util');
+const { TransformationError } = require('@rudderstack/integrations-lib');
+const utils = require('../../util');
 const Message = require('../message');
 
 const mappingJson = JSON.parse(fs.readFileSync(path.resolve(__dirname, './mapping.json'), 'utf-8'));
 
 const { removeUndefinedAndNullValues } = require('../../util');
 
-const { TransformationError } = require('../../util/errorTypes');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const processNormalEvent = (event) => {
@@ -37,7 +37,7 @@ const processNormalEvent = (event) => {
   message.setPropertiesV2(event, mappingJson);
 
   // app center does not has the concept of user but we need to set some random anonymousId in order to make the server accept the message
-  message.anonymousId = generateUUID();
+  message.anonymousId = utils.generateUUID();
   return message;
 };
 

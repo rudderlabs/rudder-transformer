@@ -1,4 +1,8 @@
 const get = require('get-value');
+const {
+  InstrumentationError,
+  NetworkInstrumentationError,
+} = require('@rudderstack/integrations-lib');
 const { httpGET } = require('../../../adapters/network');
 const {
   toUnixTimestamp,
@@ -11,7 +15,6 @@ const {
   constructPayload,
 } = require('../../util');
 const { BASE_ENDPOINT, createPayloadMapping, updatePayloadMapping } = require('./config');
-const { InstrumentationError, NetworkInstrumentationError } = require('../../util/errorTypes');
 
 const CURRENCY_CODES = [
   'aed',
@@ -176,7 +179,7 @@ const CURRENCY_CODES = [
   'zwl',
 ];
 
-const getSubscriptionHistory = async (endpoint, options) => {
+const getSubscriptionHistory = async (endpoint, options, metadata) => {
   const requestOptions = {
     method: 'get',
     ...options,
@@ -185,6 +188,10 @@ const getSubscriptionHistory = async (endpoint, options) => {
   const res = await httpGET(endpoint, requestOptions, {
     destType: 'profitwell',
     feature: 'transformation',
+    endpointPath: '/users/userId',
+    requestMethod: 'GET',
+    module: 'router',
+    metadata,
   });
   return res;
 };

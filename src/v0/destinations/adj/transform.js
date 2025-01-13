@@ -1,4 +1,9 @@
 const get = require('get-value');
+const {
+  InstrumentationError,
+  TransformationError,
+  ConfigurationError,
+} = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const { CONFIG_CATEGORIES, MAPPING_CONFIG, baseEndpoint } = require('./config');
 const {
@@ -11,11 +16,6 @@ const {
   isAppleFamily,
   simpleProcessRouterDest,
 } = require('../../util');
-const {
-  InstrumentationError,
-  TransformationError,
-  ConfigurationError,
-} = require('../../util/errorTypes');
 
 const rejectParams = ['revenue', 'currency'];
 

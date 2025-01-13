@@ -1,20 +1,20 @@
+import dotenv from 'dotenv';
+import gracefulShutdown from 'http-graceful-shutdown';
 import Koa from 'koa';
 import bodyParser from 'koa-bodyparser';
-import gracefulShutdown from 'http-graceful-shutdown';
-import dotenv from 'dotenv';
-import logger from './logger';
-import cluster from './util/cluster';
-import { router } from './legacy/router';
-import { testRouter } from './testRouter';
+import { addRequestSizeMiddleware, addStatMiddleware, initPyroscope } from './middleware';
+import { addSwaggerRoutes, applicationRoutes } from './routes';
 import { metricsRouter } from './routes/metricsRouter';
-import { addStatMiddleware, addRequestSizeMiddleware, initPyroscope } from './middleware';
-import { logProcessInfo } from './util/utils';
-import { applicationRoutes, addSwaggerRoutes } from './routes';
+import cluster from './util/cluster';
 import { RedisDB } from './util/redis/redisConnector';
+import { logProcessInfo } from './util/utils';
 
 dotenv.config();
+
+// eslint-disable-next-line import/first
+import logger from './logger';
+
 const clusterEnabled = process.env.CLUSTER_ENABLED !== 'false';
-const useUpdatedRoutes = process.env.ENABLE_NEW_ROUTES !== 'false';
 const port = parseInt(process.env.PORT ?? '9090', 10);
 const metricsPort = parseInt(process.env.METRICS_PORT || '9091', 10);
 
@@ -35,15 +35,7 @@ app.use(
 addRequestSizeMiddleware(app);
 addSwaggerRoutes(app);
 
-if (useUpdatedRoutes) {
-  logger.info('Using new routes');
-  applicationRoutes(app);
-} else {
-  // To be depricated
-  logger.info('Using old routes');
-  app.use(router.routes()).use(router.allowedMethods());
-  app.use(testRouter.routes()).use(testRouter.allowedMethods());
-}
+applicationRoutes(app);
 
 function finalFunction() {
   RedisDB.disconnect();

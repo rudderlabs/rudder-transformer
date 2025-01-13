@@ -4,7 +4,8 @@ const ENDPOINT = 'https://tr.snapchat.com/v2/conversion';
 const MAX_BATCH_SIZE = 2000;
 
 const ConfigCategory = {
-  COMMON: { name: 'SnapchatCommonConfig' },
+  DEFAULT: { name: 'SnapchatTrackDefaultConfig' },
+  TRACK_COMMON: { name: 'TrackEventCommonConfig' },
   /* E-Commerce Events */
   // Ref - https://www.rudderstack.com/docs/rudderstack-api/api-specification/rudderstack-ecommerce-events-specification/
   /* Browsing Section */
@@ -54,6 +55,7 @@ const eventNameMapping = {
   save: 'SAVE',
   subscribe: 'SUBSCRIBE',
   complete_tutorial: 'COMPLETE_TUTORIAL',
+  level_complete: 'LEVEL_COMPLETE',
   invite: 'INVITE',
   login: 'LOGIN',
   share: 'SHARE',
@@ -72,7 +74,7 @@ const eventNameMapping = {
   custom_event_4: 'CUSTOM_EVENT_4',
   custom_event_5: 'CUSTOM_EVENT_5',
 };
-
+const pageTypeToTrackEvent = 'page_view';
 const mappingConfig = getMappingConfig(ConfigCategory, __dirname);
 
 module.exports = {
@@ -80,6 +82,6 @@ module.exports = {
   ConfigCategory,
   eventNameMapping,
   mappingConfig,
-  trackCommonConfig: mappingConfig[ConfigCategory.COMMON.name],
   MAX_BATCH_SIZE,
+  pageTypeToTrackEvent,
 };

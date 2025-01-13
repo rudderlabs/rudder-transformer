@@ -22,6 +22,7 @@ const userTransformHandler = () => {
 async function sendToDestination(destination, payload) {
   let parsedResponse;
   logger.info('Request recieved for destination', destination);
+
   const resp = await proxyRequest(payload);
 
   if (resp.success) {

@@ -1,21 +1,15 @@
 import { Context } from 'koa';
-import logger from '../logger';
+import { ServiceSelector } from '../helpers/serviceSelector';
+import { DestinationPostTransformationService } from '../services/destination/postTransformation';
 import { UserDeletionRequest, UserDeletionResponse } from '../types';
-import ServiceSelector from '../helpers/serviceSelector';
 import tags from '../v0/util/tags';
-import stats from '../util/stats';
-import PostTransformationDestinationService from '../services/destination/postTransformation';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { CatchErr } from '../util/types';
+import logger from '../logger';
 
-// TODO: refactor this class to new format
-export default class RegulationController {
+export class RegulationController {
   public static async deleteUsers(ctx: Context) {
-    logger.debug(
-      'Native(Process-Transform):: Requst to transformer::',
-      JSON.stringify(ctx.request.body),
-    );
-    const startTime = new Date();
+    logger.debug('Native(Process-Transform):: Requst to transformer::', ctx.request.body);
     let rudderDestInfo: any;
     try {
       const rudderDestInfoHeader = ctx.get('x-rudder-dest-info');
@@ -35,7 +29,7 @@ export default class RegulationController {
         rudderDestInfo,
       );
       ctx.body = resplist;
-      ctx.status = resplist[0].statusCode;
+      ctx.status = resplist[0].statusCode; // TODO: check if this is the right way to set status
     } catch (error: CatchErr) {
       const metaTO = integrationService.getTags(
         userDeletionRequests[0].destType,
@@ -44,17 +38,13 @@ export default class RegulationController {
         tags.FEATURES.USER_DELETION,
       );
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const errResp = PostTransformationDestinationService.handleUserDeletionFailureEvents(
+      const errResp = DestinationPostTransformationService.handleUserDeletionFailureEvents(
         error,
         metaTO,
-      );
-      ctx.body = [{ error, statusCode: 500 }] as UserDeletionResponse[];
+      ); // TODO: this is not used. Fix it.
+      ctx.body = [{ error, statusCode: 500 }] as UserDeletionResponse[]; // TODO: responses array length is always 1. Is that okay?
       ctx.status = 500;
     }
-    stats.timing('dest_transform_request_latency', startTime, {
-      feature: tags.FEATURES.USER_DELETION,
-      version: 'v0',
-    });
     return ctx;
   }
 }

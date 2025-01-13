@@ -1,0 +1,5 @@
+title: request
+type: object
+parameters:
+  query:
+  type: string

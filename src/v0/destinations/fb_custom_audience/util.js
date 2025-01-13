@@ -1,12 +1,19 @@
 const lodash = require('lodash');
 const sha256 = require('sha256');
-const get = require('get-value');
+const crypto = require('crypto');
 const jsonSize = require('json-size');
+const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
+const { TransformationError } = require('@rudderstack/integrations-lib');
+const { typeFields, subTypeFields, getEndPoint } = require('./config');
+const {
+  defaultRequestConfig,
+  defaultPostRequestConfig,
+  defaultDeleteRequestConfig,
+} = require('../../util');
 const stats = require('../../../util/stats');
 
 const { isDefinedAndNotNull } = require('../../util');
-const { maxPayloadSize } = require('./config');
-const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
+const config = require('./config');
 
 /**
  * Example payload ={
@@ -27,9 +34,9 @@ const { InstrumentationError, ConfigurationError } = require('../../util/errorTy
 } */
 const batchingWithPayloadSize = (payload) => {
   const payloadSize = jsonSize(payload);
-  if (payloadSize > maxPayloadSize) {
+  if (payloadSize > config.maxPayloadSize) {
     const revisedPayloadArray = [];
-    const noOfBatches = Math.ceil(payloadSize / maxPayloadSize);
+    const noOfBatches = Math.ceil(payloadSize / config.maxPayloadSize);
     const revisedRecordsPerPayload = Math.floor(payload.data.length / noOfBatches);
     const revisedDataArray = lodash.chunk(payload.data, revisedRecordsPerPayload);
     revisedDataArray.forEach((data) => {
@@ -41,7 +48,7 @@ const batchingWithPayloadSize = (payload) => {
 };
 
 const getSchemaForEventMappedToDest = (message) => {
-  const mappedSchema = get(message, 'context.destinationFields');
+  const mappedSchema = message?.context?.destinationFields;
   if (!mappedSchema) {
     throw new InstrumentationError(
       'context.destinationFields is required property for events mapped to destination ',
@@ -92,11 +99,11 @@ const ensureApplicableFormat = (userProperty, userInformation) => {
       case 'FN':
       case 'FI':
         if (userProperty !== 'FI') {
-          updatedProperty = stringifiedUserInformation.toLowerCase().replace(/[!#$%&@A-Za-z]/g, '');
+          updatedProperty = stringifiedUserInformation.toLowerCase().replace(/[^#$%&'*+/a-z]/g, '');
         } else {
           updatedProperty = stringifiedUserInformation
             .toLowerCase()
-            .replace(/[^!#$%&,.?@A-Za-z]/g, '');
+            .replace(/[^!"#$%&'()*+,-./a-z]/g, '');
         }
         break;
       case 'MADID':
@@ -131,21 +138,21 @@ const getUpdatedDataElement = (dataElement, isHashRequired, eachProperty, update
   /**
    * hash the original value for the properties apart from 'MADID' && 'EXTERN_ID as hashing is not required for them
    * ref: https://developers.facebook.com/docs/marketing-api/audiences/guides/custom-audiences#hash
-   * sending null values for the properties for which user hasn't provided any value
+   * sending empty string for the properties for which user hasn't provided any value
    */
   if (isHashRequired && eachProperty !== 'MADID' && eachProperty !== 'EXTERN_ID') {
     if (tmpUpdatedProperty) {
       tmpUpdatedProperty = `${tmpUpdatedProperty}`;
       dataElement.push(sha256(tmpUpdatedProperty));
     } else {
-      dataElement.push(null);
+      dataElement.push('');
     }
   }
-  // if property name is MADID or EXTERN_ID if the value is undefined send null
+  // if property name is MADID or EXTERN_ID if the value is undefined send empty string
   else if (!tmpUpdatedProperty && (eachProperty === 'MADID' || eachProperty === 'EXTERN_ID')) {
-    dataElement.push(null);
+    dataElement.push('');
   } else {
-    dataElement.push(tmpUpdatedProperty);
+    dataElement.push(tmpUpdatedProperty || '');
   }
   return dataElement;
 };
@@ -206,4 +213,57 @@ const prepareDataField = (
   return data;
 };
 
-module.exports = { prepareDataField, getSchemaForEventMappedToDest, batchingWithPayloadSize };
+// ref: https://developers.facebook.com/docs/facebook-login/security/#generate-the-proof
+const generateAppSecretProof = (accessToken, appSecret, dateNow) => {
+  const currentTime = Math.floor(dateNow / 1000); // Get current Unix time in seconds
+  const data = `${accessToken}|${currentTime}`;
+
+  // Creating a HMAC SHA-256 hash with the app_secret as the key
+  const hmac = crypto.createHmac('sha256', appSecret);
+  hmac.update(data);
+  const appsecretProof = hmac.digest('hex');
+
+  return appsecretProof;
+};
+
+const getDataSource = (type, subType) => {
+  const dataSource = {};
+  if (type && type !== 'NA' && typeFields.includes(type)) {
+    dataSource.type = type;
+  }
+  if (subType && subType !== 'NA' && subTypeFields.includes(subType)) {
+    dataSource.sub_type = subType;
+  }
+  return dataSource;
+};
+
+const responseBuilderSimple = (payload, audienceId) => {
+  if (payload) {
+    const responseParams = payload.responseField;
+    const response = defaultRequestConfig();
+    response.endpoint = getEndPoint(audienceId);
+
+    if (payload.operationCategory === 'add') {
+      response.method = defaultPostRequestConfig.requestMethod;
+    }
+    if (payload.operationCategory === 'remove') {
+      response.method = defaultDeleteRequestConfig.requestMethod;
+    }
+
+    response.params = responseParams;
+    return response;
+  }
+  // fail-safety for developer error
+  throw new TransformationError(`Payload could not be constructed`);
+};
+
+module.exports = {
+  prepareDataField,
+  getSchemaForEventMappedToDest,
+  batchingWithPayloadSize,
+  ensureApplicableFormat,
+  getUpdatedDataElement,
+  generateAppSecretProof,
+  responseBuilderSimple,
+  getDataSource,
+};

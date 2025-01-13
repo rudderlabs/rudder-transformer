@@ -1,6 +1,7 @@
 /* eslint-disable no-nested-ternary */
 const get = require('get-value');
 const set = require('set-value');
+const { TransformationError, InstrumentationError } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const {
   defaultRequestConfig,
@@ -12,7 +13,6 @@ const {
   getDestinationExternalID,
 } = require('../../util');
 const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require('./config');
-const { TransformationError, InstrumentationError } = require('../../util/errorTypes');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const responseBuilder = (payload, endpoint, destination) => {
@@ -40,7 +40,8 @@ const identifyResponseBuilder = (message, destination) => {
 
 const trackResponseBuilder = (message, destination) => {
   const { endpoint, name } = CONFIG_CATEGORIES.TRACK;
-  const groupId = getDestinationExternalID(message, 'stormlyGroupId') || message.properties?.groupId;
+  const groupId =
+    getDestinationExternalID(message, 'stormlyGroupId') || message.properties?.groupId;
   let payload = constructPayload(message, MAPPING_CONFIG[name]);
 
   if (groupId) {

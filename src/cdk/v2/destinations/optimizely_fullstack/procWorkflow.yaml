@@ -17,6 +17,8 @@ bindings:
     path: ../../../../v0/util
   - name: generateUUID
     path: ../../../../v0/util
+  - name: getRelativePathFromURL
+    path: ../../../../v0/util
   - name: handleHttpRequest
     path: ../../../../adapters/network
   - path: ./utils
@@ -59,7 +61,9 @@ steps:
     description: Fetch the data file from the data file url
     template: |
       const dataFileUrl = .destination.Config.dataFileUrl;
-      const rawResponse = await $.handleHttpRequest("get", dataFileUrl);
+      const urlPath = $.getRelativePathFromURL(dataFileUrl)
+      const reqStats = {metadata:.metadata, module: 'router',feature: "transformation", destType:"optimizely_fullstack",requestMethod:"get",endpointPath: urlPath}
+      const rawResponse = await $.handleHttpRequest("get", dataFileUrl, reqStats);
       const processedResponse = rawResponse.processedResponse;
       $.assertHttpResp(processedResponse, "Data File Lookup Failed due to " + JSON.stringify(processedResponse.response));
       processedResponse.response;

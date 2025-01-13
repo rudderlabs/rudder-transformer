@@ -1,5 +1,5 @@
 import Router from '@koa/router';
-import EventTestController from '../controllers/eventTest';
+import { EventTestController } from '../controllers/eventTest';
 
 const router = new Router({ prefix: '/test-router' });
 

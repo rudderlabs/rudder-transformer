@@ -1,28 +1,49 @@
 import { Context } from 'koa';
+import { castArray } from 'lodash';
+import { UserTransformService } from '../services/userTransform';
 import { ProcessorTransformationRequest, UserTransformationServiceResponse } from '../types/index';
-import UserTransformService from '../services/userTransform';
-import logger from '../logger';
 import {
-  setupUserTransformHandler,
   extractLibraries,
+  setupUserTransformHandler,
   validateCode,
 } from '../util/customTransformer';
-import ControllerUtility from './util';
 
-export default class UserTransformController {
+import { reconcileFunction } from '../util/openfaas/index';
+import { ControllerUtility } from './util';
+import logger from '../logger';
+
+export class UserTransformController {
+  /**
+  reconcileFunction is a controller function to reconcile the openfaas
+  fns with the latest configuration in the service.
+  */
+  public static async reconcileFunction(ctx: Context) {
+    const { wId } = ctx.params;
+    const { name = [], migrateAll = 'false' } = ctx.request.query;
+
+    logger.info(`Received a request to reconcile fns in workspace: ${wId}`);
+
+    const fns = castArray(name);
+    await reconcileFunction(wId, fns, migrateAll === 'true');
+
+    ctx.body = { message: 'Reconciled' };
+    return ctx;
+  }
+
   public static async transform(ctx: Context) {
     logger.debug(
       '(User transform - router:/customTransform ):: Request to transformer',
-      JSON.stringify(ctx.request.body),
+      ctx.request.body,
     );
+    const requestSize = Number(ctx.request.get('content-length'));
     const events = ctx.request.body as ProcessorTransformationRequest[];
     const processedRespone: UserTransformationServiceResponse =
-      await UserTransformService.transformRoutine(events, ctx.state.features);
+      await UserTransformService.transformRoutine(events, ctx.state.features, requestSize);
     ctx.body = processedRespone.transformedEvents;
     ControllerUtility.postProcess(ctx, processedRespone.retryStatus);
     logger.debug(
       '(User transform - router:/customTransform ):: Response from transformer',
-      JSON.stringify(ctx.response.body),
+      ctx.response.body,
     );
     return ctx;
   }
@@ -30,19 +51,20 @@ export default class UserTransformController {
   public static async testTransform(ctx: Context) {
     logger.debug(
       '(User transform - router:/transformation/test ):: Request to transformer',
-      JSON.stringify(ctx.request.body),
+      ctx.request.body,
     );
-    const { events, trRevCode, libraryVersionIDs = [] } = ctx.request.body as any;
+    const { events, trRevCode, libraryVersionIDs = [], credentials = [] } = ctx.request.body as any;
     const response = await UserTransformService.testTransformRoutine(
       events,
       trRevCode,
       libraryVersionIDs,
+      credentials,
     );
     ctx.body = response.body;
     ControllerUtility.postProcess(ctx, response.status);
     logger.debug(
       '(User transform - router:/transformation/test ):: Response from transformer',
-      JSON.stringify(ctx.response.body),
+      ctx.response.body,
     );
     return ctx;
   }
@@ -50,7 +72,7 @@ export default class UserTransformController {
   public static async testTransformLibrary(ctx: Context) {
     logger.debug(
       '(User transform - router:/transformationLibrary/test ):: Request to transformer',
-      JSON.stringify(ctx.request.body),
+      ctx.request.body,
     );
     try {
       const { code, language = 'javascript' } = ctx.request.body as any;
@@ -65,7 +87,7 @@ export default class UserTransformController {
     }
     logger.debug(
       '(User transform - router:/transformationLibrary/test ):: Response from transformer',
-      JSON.stringify(ctx.response.body),
+      ctx.response.body,
     );
     return ctx;
   }
@@ -73,7 +95,7 @@ export default class UserTransformController {
   public static async testTransformSethandle(ctx: Context) {
     logger.debug(
       '(User transform - router:/transformation/sethandle ):: Request to transformer',
-      JSON.stringify(ctx.request.body),
+      ctx.request.body,
     );
     try {
       const { trRevCode, libraryVersionIDs = [] } = ctx.request.body as any;
@@ -95,7 +117,7 @@ export default class UserTransformController {
     }
     logger.debug(
       '(User transform - router:/transformation/sethandle ):: Response from transformer',
-      JSON.stringify(ctx.request.body),
+      ctx.request.body,
     );
     return ctx;
   }
@@ -103,7 +125,7 @@ export default class UserTransformController {
   public static async extractLibhandle(ctx: Context) {
     logger.debug(
       '(User transform - router:/extractLibs ):: Request to transformer',
-      JSON.stringify(ctx.request.body),
+      ctx.request.body,
     );
     try {
       const {
@@ -133,7 +155,7 @@ export default class UserTransformController {
     }
     logger.debug(
       '(User transform - router:/extractLibs ):: Response from transformer',
-      JSON.stringify(ctx.request.body),
+      ctx.request.body,
     );
     return ctx;
   }

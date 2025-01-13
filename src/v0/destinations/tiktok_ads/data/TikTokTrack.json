@@ -43,6 +43,22 @@
     }
   },
   {
+    "destKey": "properties.shop_id",
+    "sourceKeys": ["properties.shop_id", "properties.shopId"],
+    "required": false,
+    "metadata": {
+      "type": "toString"
+    }
+  },
+  {
+    "destKey": "properties.order_id",
+    "sourceKeys": ["properties.order_id", "properties.orderId"],
+    "required": false,
+    "metadata": {
+      "type": "toString"
+    }
+  },
+  {
     "destKey": "properties.content_type",
     "sourceKeys": ["properties.contentType", "properties.content_type"],
     "required": false
@@ -70,6 +86,11 @@
   {
     "destKey": "context.ad",
     "sourceKeys": ["properties.context.ad", "context.ad"],
+    "required": false
+  },
+  {
+    "destKey": "context.ad.callback",
+    "sourceKeys": "properties.clickId",
     "required": false
   },
   {

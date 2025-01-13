@@ -4,7 +4,7 @@ const logger = require('../logger');
 const { responseStatusHandler } = require('./utils');
 const stats = require('./stats');
 
-const tpCache = new NodeCache();
+const tpCache = new NodeCache({ useClones: false });
 const CONFIG_BACKEND_URL = process.env.CONFIG_BACKEND_URL || 'https://api.rudderlabs.com';
 const TRACKING_PLAN_URL = `${CONFIG_BACKEND_URL}/workspaces`;
 
@@ -54,6 +54,11 @@ async function getEventSchema(tpId, tpVersion, eventType, eventName, workspaceId
   try {
     let eventSchema;
     const tp = await getTrackingPlan(tpId, tpVersion, workspaceId);
+
+    if (Object.hasOwn(tp, 'events')) {
+      const ev = tp.events.find((e) => e.name === eventName && e.eventType === eventType);
+      return ev?.rules;
+    }
 
     if (eventType !== 'track') {
       if (Object.prototype.hasOwnProperty.call(tp.rules, eventType)) {

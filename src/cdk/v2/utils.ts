@@ -1,9 +1,9 @@
 import path from 'path';
 import fs from 'fs/promises';
 import { WorkflowExecutionError, WorkflowCreationError } from '@rudderstack/workflow-engine';
+import { PlatformError } from '@rudderstack/integrations-lib';
 import logger from '../../logger';
 import { generateErrorObject } from '../../v0/util';
-import { PlatformError } from '../../v0/util/errorTypes';
 import tags from '../../v0/util/tags';
 import { CatchErr } from '../../util/types';
 

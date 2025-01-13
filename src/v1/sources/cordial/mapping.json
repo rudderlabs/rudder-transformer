@@ -1,0 +1,22 @@
+[
+  {
+    "sourceKeys": "event._id",
+    "destKeys": "properties.event_id"
+  },
+  {
+    "sourceKeys": "contact._id",
+    "destKeys": ["context.traits.userId", "userId"]
+  },
+  {
+    "sourceKeys": ["event.ts", "event.ats"],
+    "destKeys": ["timestamp", "sentAt", "originalTimestamp"]
+  },
+  {
+    "sourceKeys": "event.d",
+    "destKeys": "context.device"
+  },
+  {
+    "sourceKeys": "contact.channels.email.address",
+    "destKeys": ["context.traits.email"]
+  }
+]

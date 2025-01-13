@@ -1,5 +1,11 @@
 const get = require('get-value');
 const set = require('set-value');
+const {
+  NetworkInstrumentationError,
+  InstrumentationError,
+  NetworkError,
+  isDefinedAndNotNull,
+} = require('@rudderstack/integrations-lib');
 const myAxios = require('../../../util/myAxios');
 
 const { EventType } = require('../../../constants');
@@ -26,17 +32,12 @@ const {
 const { getSourceName } = require('./util');
 const logger = require('../../../logger');
 const { httpGET } = require('../../../adapters/network');
-const {
-  NetworkInstrumentationError,
-  InstrumentationError,
-  NetworkError,
-} = require('../../util/errorTypes');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const tags = require('../../util/tags');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const CONTEXT_TRAITS_KEY_PATH = 'context.traits';
-
+const endpointPath = '/users/search.json';
 function responseBuilder(message, headers, payload, endpoint) {
   const response = defaultRequestConfig();
 
@@ -94,7 +95,13 @@ const responseBuilderToUpdatePrimaryAccount = (
  * @param {*} headers -> Authorizations for API's call
  * @returns it return payloadbuilder for updating email
  */
-const payloadBuilderforUpdatingEmail = async (userId, headers, userEmail, baseEndpoint) => {
+const payloadBuilderforUpdatingEmail = async (
+  userId,
+  headers,
+  userEmail,
+  baseEndpoint,
+  metadata,
+) => {
   // url for list all identities of user
   const url = `${baseEndpoint}users/${userId}/identities`;
   const config = { headers };
@@ -102,6 +109,10 @@ const payloadBuilderforUpdatingEmail = async (userId, headers, userEmail, baseEn
     const res = await httpGET(url, config, {
       destType: 'zendesk',
       feature: 'transformation',
+      endpointPath: 'users/userId/identities',
+      requestMethod: 'POST',
+      module: 'router',
+      metadata,
     });
     if (res?.response?.data?.count > 0) {
       const { identities } = res.response.data;
@@ -127,7 +138,7 @@ const payloadBuilderforUpdatingEmail = async (userId, headers, userEmail, baseEn
   return {};
 };
 
-async function createUserFields(url, config, newFields, fieldJson) {
+async function createUserFields(url, config, newFields, fieldJson, metadata) {
   let fieldData;
   // removing trailing 's' from fieldJson
   const fieldJsonSliced = fieldJson.slice(0, -1);
@@ -147,6 +158,10 @@ async function createUserFields(url, config, newFields, fieldJson) {
         const response = await myAxios.post(url, fieldData, config, {
           destType: 'zendesk',
           feature: 'transformation',
+          endpointPath: '/users/userId/identities',
+          requestMethod: 'POST',
+          module: 'router',
+          metadata,
         });
         if (response.status !== 201) {
           logger.debug(`${NAME}:: Failed to create User Field : `, field);
@@ -166,6 +181,7 @@ async function checkAndCreateUserFields(
   fieldJson,
   headers,
   baseEndpoint,
+  metadata,
 ) {
   let newFields = [];
 
@@ -176,6 +192,9 @@ async function checkAndCreateUserFields(
     const response = await myAxios.get(url, config, {
       destType: 'zendesk',
       feature: 'transformation',
+      requestMethod: 'POST',
+      module: 'router',
+      metadata,
     });
     const fields = get(response.data, fieldJson);
     if (response.data && fields) {
@@ -190,7 +209,7 @@ async function checkAndCreateUserFields(
       );
 
       if (newFields.length > 0) {
-        await createUserFields(url, config, newFields, fieldJson);
+        await createUserFields(url, config, newFields, fieldJson, metadata);
       }
     }
   } catch (error) {
@@ -240,7 +259,7 @@ function getIdentifyPayload(message, category, destinationConfig, type) {
  * @param {*} headers headers for authorizations
  * @returns
  */
-const getUserIdByExternalId = async (message, headers, baseEndpoint) => {
+const getUserIdByExternalId = async (message, headers, baseEndpoint, metadata) => {
   const externalId = getFieldValueFromMessage(message, 'userIdOnly');
   if (!externalId) {
     logger.debug(`${NAME}:: externalId is required for getting zenuserId`);
@@ -253,6 +272,10 @@ const getUserIdByExternalId = async (message, headers, baseEndpoint) => {
     const resp = await httpGET(url, config, {
       destType: 'zendesk',
       feature: 'transformation',
+      endpointPath,
+      requestMethod: 'GET',
+      module: 'router',
+      metadata,
     });
 
     if (resp?.response?.data?.count > 0) {
@@ -266,7 +289,7 @@ const getUserIdByExternalId = async (message, headers, baseEndpoint) => {
   return undefined;
 };
 
-async function getUserId(message, headers, baseEndpoint, type) {
+async function getUserId(message, headers, baseEndpoint, type, metadata) {
   const traits =
     type === 'group'
       ? get(message, CONTEXT_TRAITS_KEY_PATH)
@@ -283,6 +306,10 @@ async function getUserId(message, headers, baseEndpoint, type) {
     const resp = await myAxios.get(url, config, {
       destType: 'zendesk',
       feature: 'transformation',
+      endpointPath,
+      requestMethod: 'GET',
+      module: 'router',
+      metadata,
     });
     if (!resp || !resp.data || resp.data.count === 0) {
       logger.debug(`${NAME}:: User not found`);
@@ -300,13 +327,17 @@ async function getUserId(message, headers, baseEndpoint, type) {
   }
 }
 
-async function isUserAlreadyAssociated(userId, orgId, headers, baseEndpoint) {
+async function isUserAlreadyAssociated(userId, orgId, headers, baseEndpoint, metadata) {
   const url = `${baseEndpoint}/users/${userId}/organization_memberships.json`;
   const config = { headers };
   try {
     const response = await myAxios.get(url, config, {
       destType: 'zendesk',
       feature: 'transformation',
+      endpointPath: '/users/userId/organization_memberships.json',
+      requestMethod: 'GET',
+      module: 'router',
+      metadata,
     });
     if (response?.data?.organization_memberships?.[0]?.organization_id === orgId) {
       return true;
@@ -318,7 +349,7 @@ async function isUserAlreadyAssociated(userId, orgId, headers, baseEndpoint) {
   return false;
 }
 
-async function createUser(message, headers, destinationConfig, baseEndpoint, type) {
+async function createUser(message, headers, destinationConfig, baseEndpoint, type, metadata) {
   const traits =
     type === 'group'
       ? get(message, CONTEXT_TRAITS_KEY_PATH)
@@ -339,6 +370,10 @@ async function createUser(message, headers, destinationConfig, baseEndpoint, typ
     const resp = await myAxios.post(url, payload, config, {
       destType: 'zendesk',
       feature: 'transformation',
+      endpointPath: '/users/create_or_update.json',
+      requestMethod: 'POST',
+      module: 'router',
+      metadata,
     });
 
     if (!resp.data || !resp.data.user || !resp.data.user.id) {
@@ -356,9 +391,16 @@ async function createUser(message, headers, destinationConfig, baseEndpoint, typ
   }
 }
 
-async function getUserMembershipPayload(message, headers, orgId, destinationConfig, baseEndpoint) {
+async function getUserMembershipPayload(
+  message,
+  headers,
+  orgId,
+  destinationConfig,
+  baseEndpoint,
+  metadata,
+) {
   // let zendeskUserID = await getUserId(message.userId, headers);
-  let zendeskUserID = await getUserId(message, headers, baseEndpoint, 'group');
+  let zendeskUserID = await getUserId(message, headers, baseEndpoint, 'group', metadata);
   const traits = get(message, CONTEXT_TRAITS_KEY_PATH);
   if (!zendeskUserID) {
     if (traits && traits.name && traits.email) {
@@ -368,6 +410,7 @@ async function getUserMembershipPayload(message, headers, orgId, destinationConf
         destinationConfig,
         baseEndpoint,
         'group',
+        metadata,
       );
       zendeskUserID = zendeskUserId;
     } else {
@@ -384,13 +427,24 @@ async function getUserMembershipPayload(message, headers, orgId, destinationConf
   return payload;
 }
 
-async function createOrganization(message, category, headers, destinationConfig, baseEndpoint) {
+async function createOrganization(
+  message,
+  category,
+  headers,
+  destinationConfig,
+  baseEndpoint,
+  metadata,
+) {
+  if (!isDefinedAndNotNull(message.traits)) {
+    throw new InstrumentationError('Organisation Traits are missing. Aborting.');
+  }
   await checkAndCreateUserFields(
     message.traits,
     category.organizationFieldsEndpoint,
     category.organizationFieldsJson,
     headers,
     baseEndpoint,
+    metadata,
   );
   const mappingJson = mappingConfig[category.name];
   const payload = constructPayload(message, mappingJson);
@@ -420,6 +474,10 @@ async function createOrganization(message, category, headers, destinationConfig,
     const resp = await myAxios.post(url, payload, config, {
       destType: 'zendesk',
       feature: 'transformation',
+      endpointPath: '/organizations/create_or_update.json',
+      requestMethod: 'POST',
+      module: 'router',
+      metadata,
     });
 
     if (!resp.data || !resp.data.organization) {
@@ -441,7 +499,7 @@ function validateUserId(message) {
   }
 }
 
-async function processIdentify(message, destinationConfig, headers, baseEndpoint) {
+async function processIdentify(message, destinationConfig, headers, baseEndpoint, metadata) {
   validateUserId(message);
   const category = ConfigCategory.IDENTIFY;
   const traits = getFieldValueFromMessage(message, 'traits');
@@ -453,6 +511,7 @@ async function processIdentify(message, destinationConfig, headers, baseEndpoint
     category.userFieldsJson,
     headers,
     baseEndpoint,
+    metadata,
   );
 
   const payload = getIdentifyPayload(message, category, destinationConfig, 'identify');
@@ -460,7 +519,12 @@ async function processIdentify(message, destinationConfig, headers, baseEndpoint
   const returnList = [];
 
   if (destinationConfig.searchByExternalId) {
-    const userIdByExternalId = await getUserIdByExternalId(message, headers, baseEndpoint);
+    const userIdByExternalId = await getUserIdByExternalId(
+      message,
+      headers,
+      baseEndpoint,
+      metadata,
+    );
     const userEmail = traits?.email;
     if (userIdByExternalId && userEmail) {
       const payloadForUpdatingEmail = await payloadBuilderforUpdatingEmail(
@@ -468,6 +532,7 @@ async function processIdentify(message, destinationConfig, headers, baseEndpoint
         headers,
         userEmail,
         baseEndpoint,
+        metadata,
       );
       if (!isEmptyObject(payloadForUpdatingEmail)) returnList.push(payloadForUpdatingEmail);
     }
@@ -480,7 +545,7 @@ async function processIdentify(message, destinationConfig, headers, baseEndpoint
     traits.company.id
   ) {
     const orgId = traits.company.id;
-    const userId = await getUserId(message, headers, baseEndpoint);
+    const userId = await getUserId(message, headers, baseEndpoint, metadata);
     if (userId) {
       const membershipUrl = `${baseEndpoint}users/${userId}/organization_memberships.json`;
       try {
@@ -488,6 +553,10 @@ async function processIdentify(message, destinationConfig, headers, baseEndpoint
         const response = await myAxios.get(membershipUrl, config, {
           destType: 'zendesk',
           feature: 'transformation',
+          endpointPath: '/users/userId/organization_memberships.json',
+          requestMethod: 'GET',
+          module: 'router',
+          metadata,
         });
         if (
           response.data &&
@@ -517,7 +586,7 @@ async function processIdentify(message, destinationConfig, headers, baseEndpoint
   return returnList;
 }
 
-async function processTrack(message, destinationConfig, headers, baseEndpoint) {
+async function processTrack(message, destinationConfig, headers, baseEndpoint, metadata) {
   validateUserId(message);
   const traits = getFieldValueFromMessage(message, 'traits');
   let userEmail;
@@ -535,6 +604,10 @@ async function processTrack(message, destinationConfig, headers, baseEndpoint) {
     const userResponse = await myAxios.get(url, config, {
       destType: 'zendesk',
       feature: 'transformation',
+      endpointPath,
+      requestMethod: 'GET',
+      module: 'router',
+      metadata,
     });
     if (!get(userResponse, 'data.users.0.id') || userResponse.data.count === 0) {
       const { zendeskUserId, email } = await createUser(
@@ -542,6 +615,7 @@ async function processTrack(message, destinationConfig, headers, baseEndpoint) {
         headers,
         destinationConfig,
         baseEndpoint,
+        metadata,
       );
       if (!zendeskUserId) {
         throw new NetworkInstrumentationError('User not found');
@@ -585,13 +659,20 @@ async function processTrack(message, destinationConfig, headers, baseEndpoint) {
   return response;
 }
 
-async function processGroup(message, destinationConfig, headers, baseEndpoint) {
+async function processGroup(message, destinationConfig, headers, baseEndpoint, metadata) {
   const category = ConfigCategory.GROUP;
   let payload;
   let url;
 
   if (destinationConfig.sendGroupCallsWithoutUserId && !message.userId) {
-    payload = await createOrganization(message, category, headers, destinationConfig, baseEndpoint);
+    payload = await createOrganization(
+      message,
+      category,
+      headers,
+      destinationConfig,
+      baseEndpoint,
+      metadata,
+    );
     url = baseEndpoint + category.createEndpoint;
   } else {
     validateUserId(message);
@@ -601,6 +682,7 @@ async function processGroup(message, destinationConfig, headers, baseEndpoint) {
       headers,
       destinationConfig,
       baseEndpoint,
+      metadata,
     );
     if (!orgId) {
       throw new NetworkInstrumentationError(
@@ -615,11 +697,12 @@ async function processGroup(message, destinationConfig, headers, baseEndpoint) {
       orgId,
       destinationConfig,
       baseEndpoint,
+      metadata,
     );
     url = baseEndpoint + category.userMembershipEndpoint;
 
     const userId = payload.organization_membership.user_id;
-    if (await isUserAlreadyAssociated(userId, orgId, headers, baseEndpoint)) {
+    if (await isUserAlreadyAssociated(userId, orgId, headers, baseEndpoint, metadata)) {
       throw new InstrumentationError('User is already associated with organization');
     }
   }
@@ -645,15 +728,15 @@ async function processSingleMessage(event) {
     'Content-Type': JSON_MIME_TYPE,
   };
 
-  const { message } = event;
+  const { message, metadata } = event;
   const evType = getEventType(message);
   switch (evType) {
     case EventType.IDENTIFY:
-      return processIdentify(message, destinationConfig, headers, baseEndpoint);
+      return processIdentify(message, destinationConfig, headers, baseEndpoint, metadata);
     case EventType.GROUP:
-      return processGroup(message, destinationConfig, headers, baseEndpoint);
+      return processGroup(message, destinationConfig, headers, baseEndpoint, metadata);
     case EventType.TRACK:
-      return processTrack(message, destinationConfig, headers, baseEndpoint);
+      return processTrack(message, destinationConfig, headers, baseEndpoint, metadata);
     default:
       throw new InstrumentationError(`Event type ${evType} is not supported`);
   }

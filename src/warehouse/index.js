@@ -5,7 +5,6 @@ const { v4: uuidv4 } = require('uuid');
 
 const {
   isObject,
-  isBlank,
   isValidJsonPathKey,
   isValidLegacyJsonPathKey,
   keysFromJsonPaths,
@@ -24,14 +23,14 @@ const whPageColumnMappingRules = require('./config/WHPageConfig.js');
 const whScreenColumnMappingRules = require('./config/WHScreenConfig.js');
 const whGroupColumnMappingRules = require('./config/WHGroupConfig.js');
 const whAliasColumnMappingRules = require('./config/WHAliasConfig.js');
-const { isDataLakeProvider } = require('./config/helpers');
-const { InstrumentationError } = require('../v0/util/errorTypes');
+const { isDataLakeProvider, isBlank } = require('./config/helpers');
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const whExtractEventTableColumnMappingRules = require('./config/WHExtractEventTableConfig.js');
 
 const maxColumnsInEvent = parseInt(process.env.WH_MAX_COLUMNS_IN_EVENT || '200', 10);
 
 const WH_POPULATE_SRC_DEST_INFO_IN_CONTEXT =
-  process.env.WH_POPULATE_SRC_DEST_INFO_IN_CONTEXT || true;
+  process.env.WH_POPULATE_SRC_DEST_INFO_IN_CONTEXT !== 'false';
 
 const getDataType = (key, val, options, jsonKey = false) => {
   const type = typeof val;
@@ -155,7 +154,7 @@ function setDataFromColumnMappingAndComputeColumnTypes(
     const columnName = utils.safeColumnName(options, key);
     // do not set column if val is null/empty/object
     if (typeof val === 'object' || isBlank(val)) {
-      // delete in output and columnTypes, so as to remove if we user
+      // delete in output and columnTypes, to remove if the user
       // has set property with same name
       // eslint-disable-next-line no-param-reassign
       delete output[columnName];
@@ -197,21 +196,47 @@ function setDataFromColumnMappingAndComputeColumnTypes(
 
 */
 function setDataFromInputAndComputeColumnTypes(
-    utils,
-    eventType,
-    output,
-    input,
-    columnTypes,
-    options,
-    completePrefix = '',
-    completeLevel = 0,
-    prefix = '',
-    level = 0,
+  utils,
+  eventType,
+  output,
+  input,
+  columnTypes,
+  options,
+  completePrefix = '',
+  completeLevel = 0,
+  prefix = '',
+  level = 0,
 ) {
   if (!input || !isObject(input)) return;
+  if (
+    (completePrefix.endsWith('context_traits_') || completePrefix === 'group_traits_') &&
+    isStringLikeObject(input)
+  ) {
+    if (prefix === 'context_traits_') {
+      appendColumnNameAndType(
+        utils,
+        eventType,
+        `${prefix}`,
+        stringLikeObjectToString(input),
+        output,
+        columnTypes,
+        options,
+      );
+    }
+    return;
+  }
   Object.keys(input).forEach((key) => {
-    const isValidLegacyJSONPath = isValidLegacyJsonPathKey(eventType, `${prefix + key}`, level, options.jsonLegacyPathKeys);
-    const isValidJSONPath = isValidJsonPathKey(`${completePrefix + key}`, completeLevel, options.jsonPathKeys);
+    const isValidLegacyJSONPath = isValidLegacyJsonPathKey(
+      eventType,
+      `${prefix + key}`,
+      level,
+      options.jsonLegacyPathKeys,
+    );
+    const isValidJSONPath = isValidJsonPathKey(
+      `${completePrefix + key}`,
+      completeLevel,
+      options.jsonPathKeys,
+    );
 
     if (isValidJSONPath || isValidLegacyJSONPath) {
       if (isBlank(input[key])) {
@@ -220,27 +245,27 @@ function setDataFromInputAndComputeColumnTypes(
 
       const val = JSON.stringify(input[key]);
       appendColumnNameAndType(
-          utils,
-          eventType,
-          `${prefix + key}`,
-          val,
-          output,
-          columnTypes,
-          options,
-          true,
+        utils,
+        eventType,
+        `${prefix + key}`,
+        val,
+        output,
+        columnTypes,
+        options,
+        true,
       );
     } else if (isObject(input[key]) && (options.sourceCategory !== 'cloud' || level < 3)) {
       setDataFromInputAndComputeColumnTypes(
-          utils,
-          eventType,
-          output,
-          input[key],
-          columnTypes,
-          options,
-          `${completePrefix + key}_`,
-          completeLevel + 1,
-          `${prefix + key}_`,
-          level + 1,
+        utils,
+        eventType,
+        output,
+        input[key],
+        columnTypes,
+        options,
+        `${completePrefix + key}_`,
+        completeLevel + 1,
+        `${prefix + key}_`,
+        level + 1,
       );
     } else {
       let val = input[key];
@@ -252,16 +277,70 @@ function setDataFromInputAndComputeColumnTypes(
         val = JSON.stringify(val);
       }
       appendColumnNameAndType(
-          utils,
-          eventType,
-          `${prefix + key}`,
-          val,
-          output,
-          columnTypes,
-          options,
+        utils,
+        eventType,
+        `${prefix + key}`,
+        val,
+        output,
+        columnTypes,
+        options,
       );
     }
   });
+}
+
+function isNonNegativeInteger(str) {
+  if (str.length === 0) return false;
+  for (let i = 0; i < str.length; i++) {
+    const charCode = str.charCodeAt(i);
+    if (charCode < 48 || charCode > 57) return false;
+  }
+  return true;
+}
+
+function isStringLikeObject(obj) {
+  if (typeof obj !== 'object' || obj === null) return false;
+
+  const keys = Object.keys(obj);
+  if (keys.length === 0) return false;
+
+  let minKey = Infinity;
+  let maxKey = -Infinity;
+
+  for (let i = 0; i < keys.length; i++) {
+    const key = keys[i];
+    const value = obj[key];
+
+    if (!isNonNegativeInteger(key)) return false;
+    if (typeof value !== 'string' || value.length !== 1) return false;
+
+    const numKey = parseInt(key, 10);
+    if (numKey < minKey) minKey = numKey;
+    if (numKey > maxKey) maxKey = numKey;
+  }
+
+  for (let i = minKey; i <= maxKey; i++) {
+    if (!keys.includes(i.toString())) return false;
+  }
+
+  return (minKey === 0 || minKey === 1) && maxKey - minKey + 1 === keys.length;
+}
+
+function stringLikeObjectToString(obj) {
+  if (!isStringLikeObject(obj)) {
+    return obj; // Return the original input if it's not a valid string-like object
+  }
+
+  const keys = Object.keys(obj)
+    .map(Number)
+    .sort((a, b) => a - b);
+  let result = '';
+
+  for (let i = 0; i < keys.length; i++) {
+    result += obj[keys[i].toString()];
+  }
+
+  return result;
 }
 
 /*
@@ -270,7 +349,10 @@ function setDataFromInputAndComputeColumnTypes(
  */
 function getColumns(options, event, columnTypes) {
   const columns = {};
-  const uuidTS = options.provider === 'snowflake' ? 'UUID_TS' : 'uuid_ts';
+  const uuidTS =
+    options.provider === 'snowflake' || options.provider === 'snowpipe_streaming'
+      ? 'UUID_TS'
+      : 'uuid_ts';
   columns[uuidTS] = 'datetime';
   // add loaded_at for bq to be segment compatible
   if (options.provider === 'bq') {
@@ -298,6 +380,7 @@ function getColumns(options, event, columnTypes) {
 
 const fullEventColumnTypeByProvider = {
   snowflake: 'json',
+  snowpipe_streaming: 'json',
   rs: 'text',
   bq: 'string',
   postgres: 'json',
@@ -323,8 +406,8 @@ function storeRudderEvent(utils, message, output, columnTypes, options) {
 function addJsonKeysToOptions(options) {
   // Add json key paths from integration options and destination config
   const jsonPaths = Array.isArray(options.integrationOptions?.jsonPaths)
-      ? options.integrationOptions.jsonPaths
-      : [];
+    ? options.integrationOptions.jsonPaths
+    : [];
   if (options.destJsonPaths) {
     jsonPaths.push(...options.destJsonPaths.split(','));
   }
@@ -534,6 +617,15 @@ function enhanceContextWithSourceDestInfo(message, metadata) {
   message.context = context;
 }
 
+function shouldSkipUsersTable(options) {
+  return (
+    options.provider === 'snowpipe_streaming' ||
+    options.destConfig?.skipUsersTable ||
+    options.integrationOptions?.skipUsersTable ||
+    false
+  );
+}
+
 function processWarehouseMessage(message, options) {
   const utils = getVersionedUtils(options.whSchemaVersion);
   options.utils = utils;
@@ -557,10 +649,23 @@ function processWarehouseMessage(message, options) {
       : {};
   const responses = [];
   const eventType = message.type?.toLowerCase();
-  const skipTracksTable = options.integrationOptions.skipTracksTable || false;
-  const skipUsersTable = options.integrationOptions.skipUsersTable || false;
+  const skipTracksTable =
+    options.destConfig?.skipTracksTable || options.integrationOptions.skipTracksTable || false;
+  const skipUsersTable = shouldSkipUsersTable(options);
   const skipReservedKeywordsEscaping =
     options.integrationOptions.skipReservedKeywordsEscaping || false;
+
+  // underscoreDivideNumbers when set to false, if a column has a format like "_v_3_", it will be formatted to "_v3_"
+  // underscoreDivideNumbers when set to true, if a column has a format like "_v_3_", we keep it like that
+  // For older destinations, it will come as true and for new destinations this config will not be present which means we will treat it as false.
+  options.underscoreDivideNumbers = options.destConfig?.underscoreDivideNumbers || false;
+
+  // allowUsersContextTraits when set to true, if context.traits.* is present, it will be added as context_traits_* and *,
+  // e.g., for context.traits.name, context_traits_name and name will be added to the user's table.
+  // allowUsersContextTraits when set to false, if context.traits.* is present, it will be added only as context_traits_*
+  // e.g., for context.traits.name, only context_traits_name will be added to the user's table.
+  // For older destinations, it will come as true, and for new destinations this config will not be present, which means we will treat it as false.
+  const allowUsersContextTraits = options.destConfig?.allowUsersContextTraits || false;
 
   addJsonKeysToOptions(options);
 
@@ -594,7 +699,7 @@ function processWarehouseMessage(message, options) {
         commonColumnTypes,
         options,
         `${eventType + '_context_'}`,
-          2,
+        2,
         'context_',
       );
 
@@ -618,7 +723,7 @@ function processWarehouseMessage(message, options) {
         eventTableColumnTypes,
         options,
         `${eventType + '_properties_'}`,
-          2,
+        2,
       );
       setDataFromColumnMappingAndComputeColumnTypes(
         utils,
@@ -673,7 +778,7 @@ function processWarehouseMessage(message, options) {
         commonColumnTypes,
         options,
         `${eventType + '_context_'}`,
-          2,
+        2,
         'context_',
       );
       setDataFromColumnMappingAndComputeColumnTypes(
@@ -749,7 +854,7 @@ function processWarehouseMessage(message, options) {
         eventTableColumnTypes,
         options,
         `${eventType + '_properties_'}`,
-          2,
+        2,
       );
       setDataFromInputAndComputeColumnTypes(
         utils,
@@ -759,7 +864,7 @@ function processWarehouseMessage(message, options) {
         eventTableColumnTypes,
         options,
         `${eventType + '_userProperties_'}`,
-          2,
+        2,
       );
       setDataFromColumnMappingAndComputeColumnTypes(
         utils,
@@ -815,18 +920,20 @@ function processWarehouseMessage(message, options) {
         commonColumnTypes,
         options,
         `${eventType + '_userProperties_'}`,
-          2,
+        2,
       );
-      setDataFromInputAndComputeColumnTypes(
-        utils,
-        eventType,
-        commonProps,
-        message.context ? message.context.traits : {},
-        commonColumnTypes,
-        options,
-        `${eventType + '_context_traits_'}`,
+      if (allowUsersContextTraits) {
+        setDataFromInputAndComputeColumnTypes(
+          utils,
+          eventType,
+          commonProps,
+          message.context ? message.context.traits : {},
+          commonColumnTypes,
+          options,
+          `${eventType + '_context_traits_'}`,
           3,
-      );
+        );
+      }
       setDataFromInputAndComputeColumnTypes(
         utils,
         eventType,
@@ -835,7 +942,7 @@ function processWarehouseMessage(message, options) {
         commonColumnTypes,
         options,
         `${eventType + '_traits_'}`,
-          2,
+        2,
         '',
       );
 
@@ -848,7 +955,7 @@ function processWarehouseMessage(message, options) {
         commonColumnTypes,
         options,
         `${eventType + '_context_'}`,
-          2,
+        2,
         'context_',
       );
 
@@ -906,11 +1013,23 @@ function processWarehouseMessage(message, options) {
 
       const usersEvent = { ...commonProps };
       const usersColumnTypes = {};
+      let userColumnMappingRules = whUserColumnMappingRules;
+      if (!isDataLakeProvider(options.provider)) {
+        userColumnMappingRules = {
+          ...userColumnMappingRules,
+          ...{
+            sent_at: 'sentAt',
+            timestamp: 'timestamp',
+            original_timestamp: 'originalTimestamp',
+          },
+        };
+      }
+
       setDataFromColumnMappingAndComputeColumnTypes(
         utils,
         usersEvent,
         message,
-        whUserColumnMappingRules,
+        userColumnMappingRules,
         usersColumnTypes,
         options,
       );
@@ -954,7 +1073,7 @@ function processWarehouseMessage(message, options) {
         columnTypes,
         options,
         `${eventType + '_properties_'}`,
-          2,
+        2,
       );
       // set rudder properties after user set properties to prevent overwriting
       setDataFromInputAndComputeColumnTypes(
@@ -965,7 +1084,7 @@ function processWarehouseMessage(message, options) {
         columnTypes,
         options,
         `${eventType + '_context_'}`,
-          2,
+        2,
         'context_',
       );
       setDataFromColumnMappingAndComputeColumnTypes(
@@ -1025,7 +1144,7 @@ function processWarehouseMessage(message, options) {
         columnTypes,
         options,
         `${eventType + '_traits_'}`,
-          2,
+        2,
       );
       setDataFromInputAndComputeColumnTypes(
         utils,
@@ -1035,7 +1154,7 @@ function processWarehouseMessage(message, options) {
         columnTypes,
         options,
         `${eventType + '_context_'}`,
-          2,
+        2,
         'context_',
       );
       setDataFromColumnMappingAndComputeColumnTypes(
@@ -1083,7 +1202,7 @@ function processWarehouseMessage(message, options) {
         columnTypes,
         options,
         `${eventType + '_traits_'}`,
-          2,
+        2,
       );
       setDataFromInputAndComputeColumnTypes(
         utils,
@@ -1093,7 +1212,7 @@ function processWarehouseMessage(message, options) {
         columnTypes,
         options,
         `${eventType + '_context_'}`,
-          2,
+        2,
         'context_',
       );
       setDataFromColumnMappingAndComputeColumnTypes(

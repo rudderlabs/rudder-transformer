@@ -16,6 +16,16 @@ if (enableStats) {
       ctx.body = error.message;
     }
   });
+
+  metricsRouter.get('/resetMetrics', async (ctx) => {
+    try {
+      await stats.resetMetricsController(ctx);
+    } catch (error) {
+      logger.error(error);
+      ctx.status = 400;
+      ctx.body = error.message;
+    }
+  });
 }
 
 module.exports = { metricsRouter };

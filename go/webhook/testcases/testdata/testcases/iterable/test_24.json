@@ -1,0 +1,62 @@
+{
+  "name": "iterable",
+  "description": "test-24",
+  "input": {
+    "request": {
+      "body": {
+        "email": "docs@iterable.com",
+        "eventName": "smsReceived",
+        "dataFields": {
+          "fromPhoneNumber": "+16503926753",
+          "toPhoneNumber": "+14155824541",
+          "smsMessage": "Message text",
+          "email": "docs@iterable.com",
+          "createdAt": "2016-12-05 22:51:25 +00:00"
+        }
+      },
+      "headers": {
+        "Content-Type": "application/json"
+      }
+    }
+  },
+  "output": {
+    "response": {
+      "status": 200,
+      "body": "OK"
+    },
+    "queue": [
+      {
+        "userId": "0e13848b1c7e27eb5d88c5d35b70783e",
+        "context": {
+          "integration": {
+            "name": "Iterable",
+            "version": "1.0.0"
+          },
+          "library": {
+            "name": "unknown",
+            "version": "unknown"
+          },
+          "traits": {
+            "email": "docs@iterable.com"
+          }
+        },
+        "event": "smsReceived",
+        "integrations": {
+          "Iterable": false
+        },
+        "properties": {
+          "fromPhoneNumber": "+16503926753",
+          "toPhoneNumber": "+14155824541",
+          "smsMessage": "Message text",
+          "createdAt": "2016-12-05 22:51:25 +00:00"
+        },
+        "receivedAt": "2016-12-05T22:51:25.000Z",
+        "timestamp": "2016-12-05T22:51:25.000Z",
+        "type": "track",
+        "request_ip": "192.0.2.30",
+        "messageId": "00000000-0000-0000-0000-000000000000"
+      }
+    ],
+    "errQueue": []
+  }
+}

@@ -1,3 +1,4 @@
+const { ConfigurationError, NetworkError } = require('@rudderstack/integrations-lib');
 const { httpDELETE } = require('../../../adapters/network');
 const {
   processAxiosResponse,
@@ -5,7 +6,6 @@ const {
 } = require('../../../adapters/utils/networkUtils');
 const { isHttpStatusSuccess } = require('../../util');
 const tags = require('../../util/tags');
-const { ConfigurationError, NetworkError } = require('../../util/errorTypes');
 const { executeCommonValidations } = require('../../util/regulation-api');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
@@ -42,6 +42,9 @@ const userDeletionHandler = async (userAttributes, config) => {
           {
             destType: 'engage',
             feature: 'deleteUsers',
+            requestMethod: 'DELETE',
+            endpointPath: '/users/userId',
+            module: 'deletion',
           },
         );
         const handledDelResponse = processAxiosResponse(response);
@@ -51,6 +54,7 @@ const userDeletionHandler = async (userAttributes, config) => {
             handledDelResponse.status,
             {
               [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(handledDelResponse.status),
+              [tags.TAG_NAMES.STATUS]: handledDelResponse.status,
             },
             handledDelResponse,
           );

@@ -1,15 +1,14 @@
 /* eslint-disable no-console */
 const lodash = require('lodash');
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const {
   defaultBatchRequestConfig,
   getSuccessRespEvents,
-  checkInvalidRtTfEvents,
   handleRtTfSingleEventError,
   groupEventsByType,
 } = require('../../util');
 const { MAX_ROWS_PER_REQUEST, DESTINATION } = require('./config');
-const { InstrumentationError } = require('../../util/errorTypes');
 const { getRearrangedEvents } = require('./util');
 
 const getInsertIdColValue = (properties, insertIdCol) => {
@@ -130,10 +129,6 @@ const processEachTypedEventList = (
 };
 
 const processRouterDest = (inputs) => {
-  const errorRespEvents = checkInvalidRtTfEvents(inputs, DESTINATION);
-  if (errorRespEvents.length > 0) {
-    return errorRespEvents;
-  }
   const finalResp = [];
 
   const batchedEvents = groupEventsByType(inputs);

@@ -16,10 +16,7 @@ export const data = [
                 userId: 'userId1',
                 channel: 'web',
                 context: {
-                  os: {
-                    name: '',
-                    version: '',
-                  },
+                  os: { name: '', version: '' },
                   app: {
                     name: 'RudderLabs JavaScript SDK',
                     build: '1.0.0',
@@ -53,10 +50,7 @@ export const data = [
                     field1: 'val1',
                     ip: '0.0.0.0',
                   },
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.2.1',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.2.1' },
                   campaign: {},
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.71 Safari/537.36',
@@ -67,14 +61,10 @@ export const data = [
                 receivedAt: '2021-10-25T15:10:08.889+05:30',
                 request_ip: '[::1]',
                 anonymousId: '7138f7d9-5dd2-4337-805d-ca17be59dc8e',
-                integrations: {
-                  Ometria: {
-                    listingId: 'test1',
-                  },
-                },
+                integrations: { Ometria: { listingId: 'test1' } },
                 originalTimestamp: '2021-10-25T09:40:08.879Z',
               },
-              metadata: { jobId: 1 },
+              metadata: { jobId: 1, userId: 'u1' },
               destination: {
                 ID: '1zzHtStW2ZPlullmz6L7DGnmk9V',
                 Name: 'ometria-dev',
@@ -131,10 +121,7 @@ export const data = [
                 userId: 'userId1',
                 channel: 'web',
                 context: {
-                  os: {
-                    name: '',
-                    version: '',
-                  },
+                  os: { name: '', version: '' },
                   app: {
                     name: 'RudderLabs JavaScript SDK',
                     build: '1.0.0',
@@ -168,10 +155,7 @@ export const data = [
                     field1: 'val1',
                     ip: '0.0.0.0',
                   },
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.2.1',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.2.1' },
                   campaign: {},
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.71 Safari/537.36',
@@ -181,15 +165,10 @@ export const data = [
                 timestamp: '2021-10-25T15:10:08.888+05:30',
                 receivedAt: '2021-10-25T15:10:08.889+05:30',
                 request_ip: '[::1]',
-                integrations: {
-                  Ometria: {
-                    listingId: 'updatedId1',
-                    allowMarketing: true,
-                  },
-                },
+                integrations: { Ometria: { listingId: 'updatedId1', allowMarketing: true } },
                 originalTimestamp: '2021-10-25T09:40:08.879Z',
               },
-              metadata: { jobId: 2 },
+              metadata: { jobId: 2, userId: 'u1' },
               destination: {
                 ID: '1zzHtStW2ZPlullmz6L7DGnmk9V',
                 Name: 'ometria-dev',
@@ -255,9 +234,7 @@ export const data = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://api.ometria.com/v2/push',
-                headers: {
-                  'X-Ometria-Auth': 'dummyApiKey',
-                },
+                headers: { 'X-Ometria-Auth': 'dummyApiKey' },
                 params: {},
                 body: {
                   JSON: {},
@@ -271,12 +248,8 @@ export const data = [
                 files: {},
               },
               metadata: [
-                {
-                  jobId: 1,
-                },
-                {
-                  jobId: 2,
-                },
+                { jobId: 1, userId: 'u1' },
+                { jobId: 2, userId: 'u1' },
               ],
               batched: true,
               statusCode: 200,

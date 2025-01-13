@@ -1,6 +1,7 @@
 /* eslint-disable no-nested-ternary */
 const get = require('get-value');
 const set = require('set-value');
+const { ConfigurationError } = require('@rudderstack/integrations-lib');
 const {
   defaultPostRequestConfig,
   defaultPutRequestConfig,
@@ -17,7 +18,6 @@ const {
 } = require('../../util');
 
 const { EventType } = require('../../../constants');
-const { ConfigurationError } = require('../../util/errorTypes');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const getPropertyParams = (message) => {

@@ -1,5 +1,10 @@
 const jsonxml = require('jsontoxml');
 const get = require('get-value');
+const {
+  InstrumentationError,
+  TransformationError,
+  ConfigurationError,
+} = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const { ECOM_PRODUCT_EVENTS, commonConfig, formatDestinationConfig } = require('./config');
 const {
@@ -11,13 +16,10 @@ const {
   isDefinedAndNotNull,
   isDefinedAndNotNullAndNotEmpty,
   getIntegrationsObj,
+  removeUndefinedAndNullValues,
   simpleProcessRouterDest,
+  validateEventAndLowerCaseConversion,
 } = require('../../util');
-const {
-  InstrumentationError,
-  TransformationError,
-  ConfigurationError,
-} = require('../../util/errorTypes');
 
 const {
   handleContextData,
@@ -75,6 +77,7 @@ const responseBuilderSimple = async (message, destinationConfig, basicPayload) =
     }
     payload.linkURL =
       adobeIntegrationsObject?.linkURL || context?.page?.url || 'No linkURL provided';
+    payload.linkURL = encodeURI(payload.linkURL);
   }
   // handle hier
   if (overrideHiers) {
@@ -96,7 +99,7 @@ const responseBuilderSimple = async (message, destinationConfig, basicPayload) =
     const propertiesPageUrl = properties?.pageUrl;
     const pageUrl = contextPageUrl || propertiesPageUrl;
     if (isDefinedAndNotNullAndNotEmpty(pageUrl)) {
-      payload.pageUrl = pageUrl;
+      payload.pageUrl = encodeURI(pageUrl);
     }
     if (trackPageName) {
       // better handling possible here, both error and implementation wise
@@ -305,7 +308,7 @@ const processTrackEvent = (message, adobeEventName, destinationConfig, extras = 
     destinationConfig;
   const { event: rawMessageEvent, properties } = message;
   const { overrideEventString, overrideProductString } = properties;
-  const event = rawMessageEvent.toLowerCase();
+  const event = validateEventAndLowerCaseConversion(rawMessageEvent, true, true);
   const adobeEventArr = adobeEventName ? adobeEventName.split(',') : [];
   // adobeEventArr is an array of events which is defined as
   // ["eventName", "mapped Adobe Event=mapped merchproperty's value", "mapped Adobe Event=mapped merchproperty's value", . . .]
@@ -337,13 +340,18 @@ const processTrackEvent = (message, adobeEventName, destinationConfig, extras = 
   return {
     ...extras,
     events: overrideEventString || adobeEventArr.join(','),
-    products: overrideProductString || prodString,
+    products:
+      overrideProductString ||
+      (Array.isArray(prodString) && prodString.length > 0 ? prodString : undefined),
   };
 };
 
 const handleTrack = (message, destinationConfig) => {
   const ORDER_ID_KEY = 'properties.order_id';
   const { event: rawEvent, properties } = message;
+  if (!rawEvent) {
+    throw new InstrumentationError('Event name is not present. Aborting message.');
+  }
   let payload = null;
   // handle ecommerce events separately
   // generic events should go to the default
@@ -394,7 +402,7 @@ const handleTrack = (message, destinationConfig) => {
       break;
   }
 
-  return payload;
+  return removeUndefinedAndNullValues(payload);
 };
 
 const process = async (event) => {

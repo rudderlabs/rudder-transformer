@@ -77,7 +77,7 @@ const userDeletionHandler = async (userAttributes, config) => {
   if (config.statusCallbackUrls) {
     const statusCallbackUrlsArray = config.statusCallbackUrls.split(',');
     const filteredStatusCallbackUrlsArray = statusCallbackUrlsArray.filter((statusCallbackUrl) => {
-      const URLRegex = /^(https?:\/\/)?[\w.-]+(?:\.[\w.-]+)+[\w!#$&'()*+,/:;=?@[\]~-]+$/;
+      const URLRegex = /^(https?:\/\/)?[\w.-]+(\.[A-Za-z]{2,})+([#/?]\S*)?$/;
       return statusCallbackUrl.match(URLRegex);
     });
     if (filteredStatusCallbackUrlsArray.length > 3) {

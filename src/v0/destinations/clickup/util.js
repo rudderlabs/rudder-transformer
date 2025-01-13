@@ -56,7 +56,7 @@ const validateEmail = (email) => {
  * @param {*} url
  */
 const validateUrl = (url) => {
-  const regex = /^(https?:\/\/)[\w.-]+(?:\.[\w.-]+)+[\w!#$&'()*+,/:;=?@[\]~-]+$/;
+  const regex = /^https?:\/\/[\w.-]+(\.[A-Za-z]{2,})+([#/?]\S*)?$/;
   if (!regex.test(url)) {
     throw new InstrumentationError('The provided url is invalid');
   }

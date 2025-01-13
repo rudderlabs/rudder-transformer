@@ -3,11 +3,10 @@ const get = require('get-value');
 const unset = require('unset-value');
 
 function getDynamicConfigValue(event, value) {
-  // this regex checks for pattern  "only spaces {{ path || defaultvalue }}  only spaces" .
-  //  " {{message.traits.key  ||   \"email\" }} "
-  //  " {{ message.traits.key || 1233 }} "
+  // Improved regex for safe and efficient pattern matching
   const defFormat =
-    /^\s*{{\s*(?<path>[A-Z_a-z]\w*(?:\.[A-Z_a-z]\w*)+)\s*\|\|\s*(?<defaultVal>.*)\s*}}\s*$/;
+    /^\s*{{\s*(?<path>[A-Z_a-z]\w*(?:\.[A-Z_a-z]\w*)+)\s*\|\|\s*(?<defaultVal>[^{}]+?)\s*}}\s*$/;
+
   const matResult = value.match(defFormat);
   if (matResult) {
     // Support "event.<obj1>.<key>" alias for "message.<obj1>.<key>"
@@ -21,6 +20,7 @@ function getDynamicConfigValue(event, value) {
     }
     return value;
   }
+
   /** var format2 = /<some other regex>/;
   matResult = value.match(format2);
   if (matResult) {

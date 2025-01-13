@@ -54,7 +54,7 @@ jobs:
           keep_reports: 20
 
       - name: Publish to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
+        uses: peaceiris/actions-gh-pages@v4
         id: deploy
         if: always()
         with:

@@ -3,9 +3,9 @@ const get = require('get-value');
 const unset = require('unset-value');
 
 function getDynamicConfigValue(event, value) {
-  // Improved regex for safe and efficient pattern matching
+  // Refined regex to ensure safety and avoid super-linear runtime
   const defFormat =
-    /^\s*{{\s*(?<path>[A-Z_a-z]\w*(?:\.[A-Z_a-z]\w*)+)\s*\|\|\s*(?<defaultVal>[^{}]+?)\s*}}\s*$/;
+    /^\s*{{\s*(?<path>[A-Z_a-z]\w*(?:\.[A-Z_a-z]\w*)*)\s*\|\|\s*(?<defaultVal>[^{|}]+)\s*}}\s*$/;
 
   const matResult = value.match(defFormat);
   if (matResult) {

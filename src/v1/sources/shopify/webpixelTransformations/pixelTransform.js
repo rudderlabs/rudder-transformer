@@ -141,6 +141,11 @@ function processPixelEvent(inputEvent) {
   }
   message.anonymousId = clientId;
   message.setProperty(`integrations.${INTEGERATION}`, true);
+  message.setProperty('integrations.DATA_WAREHOUSE', {
+    options: {
+      jsonPaths: ['context.shopifyDetails'],
+    },
+  });
   message.setProperty('context.library', {
     name: 'RudderStack Shopify Cloud',
     eventOrigin: 'client',

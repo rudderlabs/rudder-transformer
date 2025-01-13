@@ -69,6 +69,82 @@ export const data = [
   },
   {
     name: 'loops',
+    description: 'Identify event with mailing lists',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v2',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              userId: 'dummy-user001',
+              channel: 'web',
+              context: {
+                traits: {
+                  email: 'dummyuser@domain.com',
+                  firstName: 'Bob',
+                  lastName: 'Brown',
+                  phone: '099-999-9999',
+                  mailinglists: {
+                    list_001: true,
+                    list_002: false,
+                  },
+                },
+              },
+              timestamp: '2020-01-27T17:50:57.109+05:30',
+              type: 'identify',
+            },
+            destination: {
+              ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
+              Name: 'Loops',
+              DestinationDefinition: {
+                Config: {
+                  cdkV2Enabled: true,
+                },
+              },
+              Config: {
+                apiKey: 'dummyApiKey',
+              },
+              Enabled: true,
+              Transformations: [],
+            },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
+            output: {
+              email: 'dummyuser@domain.com',
+              firstName: 'Bob',
+              lastName: 'Brown',
+              phone: '099-999-9999',
+              userId: 'dummy-user001',
+              mailinglists: {
+                list_001: true,
+                list_002: false,
+              },
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'loops',
     description: 'Identify event with missing email trait',
     feature: 'processor',
     module: 'destination',

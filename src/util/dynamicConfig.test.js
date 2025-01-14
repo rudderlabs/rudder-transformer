@@ -6,7 +6,7 @@ const reqType = 'processor';
 
 describe(`${funcName} Tests`, () => {
   const funcTestData = getFuncTestData(__dirname, `./testdata/${funcName}.json`);
-  test.each(funcTestData)('$description', async ({ description, input, output }) => {
+  test.each(funcTestData)('$description', async ({ input, output }) => {
     let result;
     if (Array.isArray(input)) {
       result = processDynamicConfig(...input);

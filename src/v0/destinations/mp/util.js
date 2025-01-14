@@ -78,12 +78,13 @@ const getTransformedJSON = (message, mappingJson, useNewMapping) => {
   const device = get(message, 'context.device');
   if (device) {
     let payload;
+    const deviceTokenArray = isDefined(device.token) ? [device.token] : [];
     if (isAppleFamily(device.type)) {
       payload = constructPayload(message, mPProfileIosConfigJson);
-      rawPayload.$ios_devices = isDefined(device.token) ? [device.token] : [];
+      rawPayload.$ios_devices = deviceTokenArray;
     } else if (device.type.toLowerCase() === 'android') {
       payload = constructPayload(message, mPProfileAndroidConfigJson);
-      rawPayload.$android_devices = isDefined(device.token) ? [device.token] : [];
+      rawPayload.$android_devices = deviceTokenArray;
     }
     rawPayload = { ...rawPayload, ...payload };
   }

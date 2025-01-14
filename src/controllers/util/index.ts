@@ -32,7 +32,7 @@ export class ControllerUtility {
 
   private static getSourceDirPath(version: string): string {
     if (version === 'v2') {
-      return path.resolve(__dirname, `../../sources`);
+      return path.resolve(__dirname, '../../sources');
     }
     return path.resolve(__dirname, `../../${version}/sources`);
   }

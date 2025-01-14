@@ -6,6 +6,7 @@ import Koa from 'koa';
 import bodyParser from 'koa-bodyparser';
 import { applicationRoutes } from '../../src/routes';
 import min from 'lodash/min';
+import defaultFeaturesConfig from '../../src/features';
 
 let server: any;
 const OLD_ENV = process.env;
@@ -95,7 +96,7 @@ const integrations = {
   TWITTER_ADS: 'twitter_ads',
 };
 
-const features = getDataFromPath('../../src/features.json');
+const features = defaultFeaturesConfig;
 let allIntegrations: string[] = [];
 Object.keys(features.routerTransform).forEach((feature) => {
   allIntegrations.push(integrations[feature]);

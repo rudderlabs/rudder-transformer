@@ -356,11 +356,9 @@ const updateConversion = (conversion) => {
   if (conversionCopy.gclid) {
     delete conversionCopy.wbraid;
     delete conversionCopy.gbraid;
-  }
-  if (conversionCopy.wbraid && conversionCopy.gbraid) {
+  } else if (conversionCopy.wbraid && conversionCopy.gbraid) {
     throw new InstrumentationError(`You can't use both wbraid and gbraid.`);
-  }
-  if (conversionCopy.wbraid || conversionCopy.gbraid) {
+  } else if (conversionCopy.wbraid || conversionCopy.gbraid) {
     delete conversionCopy.userIdentifiers;
   }
   return conversionCopy;

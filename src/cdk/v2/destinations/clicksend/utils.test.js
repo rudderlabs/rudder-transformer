@@ -101,6 +101,20 @@ describe('deduceSchedule', () => {
     expect(result).toBe(expectedTimestamp);
   });
 
+  it('should calculate timestamp when defaultCampaignSchedule has trailing invalid text and/or leading space', () => {
+    const eventLevelSchedule = null;
+    const timestamp = '2023-10-01T00:00:00Z';
+    const destConfig = {
+      defaultCampaignScheduleUnit: 'minute',
+      defaultCampaignSchedule: ' 5Invalid.String  ',
+    };
+
+    const result = deduceSchedule(eventLevelSchedule, timestamp, destConfig);
+    const expectedTimestamp = new Date('2023-10-01T00:05:00Z').getTime() / 1000;
+
+    expect(result).toBe(expectedTimestamp);
+  });
+
   // returns UNIX timestamp in seconds
   it('should return UNIX timestamp in seconds', () => {
     const eventLevelSchedule = null;

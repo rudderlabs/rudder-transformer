@@ -41,9 +41,9 @@ const deduceSchedule = (eventLevelSchedule, timestamp, destConfig) => {
   }
 
   if (defaultCampaignScheduleUnit === 'day') {
-    date.setDate(date.getDate() + defaultCampaignScheduleInt);
+    date.setUTCDate(date.getUTCDate() + defaultCampaignScheduleInt);
   } else if (defaultCampaignScheduleUnit === 'minute') {
-    date.setMinutes(date.getMinutes() + defaultCampaignScheduleInt);
+    date.setUTCMinutes(date.getUTCMinutes() + defaultCampaignScheduleInt);
   } else {
     throw new Error("Invalid delta unit. Use 'day' or 'minute'.");
   }

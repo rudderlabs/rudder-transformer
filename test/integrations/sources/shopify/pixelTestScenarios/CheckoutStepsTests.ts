@@ -389,7 +389,7 @@ export const pixelCheckoutStepsScenarios = [
                     SHOPIFY: true,
                     DATA_WAREHOUSE: {
                       options: {
-                        jsonPaths: ['context.shopifyDetails'],
+                        jsonPaths: ['track.context.shopifyDetails'],
                       },
                     },
                   },
@@ -928,7 +928,7 @@ export const pixelCheckoutStepsScenarios = [
                     SHOPIFY: true,
                     DATA_WAREHOUSE: {
                       options: {
-                        jsonPaths: ['context.shopifyDetails'],
+                        jsonPaths: ['track.context.shopifyDetails'],
                       },
                     },
                   },
@@ -1482,7 +1482,7 @@ export const pixelCheckoutStepsScenarios = [
                     SHOPIFY: true,
                     DATA_WAREHOUSE: {
                       options: {
-                        jsonPaths: ['context.shopifyDetails'],
+                        jsonPaths: ['track.context.shopifyDetails'],
                       },
                     },
                   },
@@ -2052,7 +2052,7 @@ export const pixelCheckoutStepsScenarios = [
                     SHOPIFY: true,
                     DATA_WAREHOUSE: {
                       options: {
-                        jsonPaths: ['context.shopifyDetails'],
+                        jsonPaths: ['track.context.shopifyDetails'],
                       },
                     },
                   },

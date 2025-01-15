@@ -70,7 +70,7 @@ export const pixelEventsTestScenarios = [
                     SHOPIFY: true,
                     DATA_WAREHOUSE: {
                       options: {
-                        jsonPaths: ['context.shopifyDetails'],
+                        jsonPaths: ['page.context.shopifyDetails'],
                       },
                     },
                   },
@@ -186,7 +186,7 @@ export const pixelEventsTestScenarios = [
                     SHOPIFY: true,
                     DATA_WAREHOUSE: {
                       options: {
-                        jsonPaths: ['context.shopifyDetails'],
+                        jsonPaths: ['track.context.shopifyDetails'],
                       },
                     },
                   },
@@ -355,7 +355,7 @@ export const pixelEventsTestScenarios = [
                     SHOPIFY: true,
                     DATA_WAREHOUSE: {
                       options: {
-                        jsonPaths: ['context.shopifyDetails'],
+                        jsonPaths: ['track.context.shopifyDetails'],
                       },
                     },
                   },
@@ -585,7 +585,7 @@ export const pixelEventsTestScenarios = [
                     SHOPIFY: true,
                     DATA_WAREHOUSE: {
                       options: {
-                        jsonPaths: ['context.shopifyDetails'],
+                        jsonPaths: ['track.context.shopifyDetails'],
                       },
                     },
                   },
@@ -760,7 +760,7 @@ export const pixelEventsTestScenarios = [
                     SHOPIFY: true,
                     DATA_WAREHOUSE: {
                       options: {
-                        jsonPaths: ['context.shopifyDetails'],
+                        jsonPaths: ['track.context.shopifyDetails'],
                       },
                     },
                   },
@@ -906,7 +906,7 @@ export const pixelEventsTestScenarios = [
                     SHOPIFY: true,
                     DATA_WAREHOUSE: {
                       options: {
-                        jsonPaths: ['context.shopifyDetails'],
+                        jsonPaths: ['track.context.shopifyDetails'],
                       },
                     },
                   },
@@ -1000,7 +1000,7 @@ export const pixelEventsTestScenarios = [
                     SHOPIFY: true,
                     DATA_WAREHOUSE: {
                       options: {
-                        jsonPaths: ['context.shopifyDetails'],
+                        jsonPaths: ['track.context.shopifyDetails'],
                       },
                     },
                   },

@@ -141,7 +141,7 @@ const processEvent = async (inputEvent, metricMetadata) => {
   message.setProperty(`integrations.${INTEGERATION}`, true);
   message.setProperty('integrations.DATA_WAREHOUSE', {
     options: {
-      jsonPaths: ['context.shopifyDetails'],
+      jsonPaths: [`${message.type}.context.shopifyDetails`],
     },
   });
   message.setProperty('context.library', {

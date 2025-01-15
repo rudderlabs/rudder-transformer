@@ -189,7 +189,7 @@ export const identityTestScenarios = [
                     SHOPIFY: true,
                     DATA_WAREHOUSE: {
                       options: {
-                        jsonPaths: ['context.shopifyDetails'],
+                        jsonPaths: ['identify.context.shopifyDetails'],
                       },
                     },
                   },

@@ -70,7 +70,7 @@ export const genericTrackTestScenarios = [
                     SHOPIFY: true,
                     DATA_WAREHOUSE: {
                       options: {
-                        jsonPaths: ['context.shopifyDetails'],
+                        jsonPaths: ['track.context.shopifyDetails'],
                       },
                     },
                   },
@@ -537,7 +537,7 @@ export const genericTrackTestScenarios = [
                     SHOPIFY: true,
                     DATA_WAREHOUSE: {
                       options: {
-                        jsonPaths: ['context.shopifyDetails'],
+                        jsonPaths: ['track.context.shopifyDetails'],
                       },
                     },
                   },

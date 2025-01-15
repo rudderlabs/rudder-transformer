@@ -217,7 +217,7 @@ export const checkoutEventsTestScenarios = [
                     SHOPIFY: true,
                     DATA_WAREHOUSE: {
                       options: {
-                        jsonPaths: ['context.shopifyDetails'],
+                        jsonPaths: ['track.context.shopifyDetails'],
                       },
                     },
                   },
@@ -537,7 +537,7 @@ export const checkoutEventsTestScenarios = [
                     SHOPIFY: true,
                     DATA_WAREHOUSE: {
                       options: {
-                        jsonPaths: ['context.shopifyDetails'],
+                        jsonPaths: ['track.context.shopifyDetails'],
                       },
                     },
                   },
@@ -1214,7 +1214,7 @@ export const checkoutEventsTestScenarios = [
                     SHOPIFY: true,
                     DATA_WAREHOUSE: {
                       options: {
-                        jsonPaths: ['context.shopifyDetails'],
+                        jsonPaths: ['track.context.shopifyDetails'],
                       },
                     },
                   },
@@ -1609,7 +1609,7 @@ export const checkoutEventsTestScenarios = [
                     SHOPIFY: true,
                     DATA_WAREHOUSE: {
                       options: {
-                        jsonPaths: ['context.shopifyDetails'],
+                        jsonPaths: ['track.context.shopifyDetails'],
                       },
                     },
                   },

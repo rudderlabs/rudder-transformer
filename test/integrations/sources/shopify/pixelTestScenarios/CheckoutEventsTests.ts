@@ -338,7 +338,7 @@ export const pixelCheckoutEventsTestScenarios = [
                     SHOPIFY: true,
                     DATA_WAREHOUSE: {
                       options: {
-                        jsonPaths: ['context.shopifyDetails'],
+                        jsonPaths: ['track.context.shopifyDetails'],
                       },
                     },
                   },
@@ -782,7 +782,7 @@ export const pixelCheckoutEventsTestScenarios = [
                     SHOPIFY: true,
                     DATA_WAREHOUSE: {
                       options: {
-                        jsonPaths: ['context.shopifyDetails'],
+                        jsonPaths: ['track.context.shopifyDetails'],
                       },
                     },
                   },

@@ -3641,7 +3641,7 @@ export const data = [
                 },
                 Enabled: true,
               },
-              error: 'Email incorrect-email is invalid',
+              error: 'Email "incorrect-email" is invalid',
               metadata: [
                 {
                   jobId: 3,

@@ -5492,7 +5492,7 @@ export const data = [
         status: 200,
         body: [
           {
-            error: 'Email incorrect-email is invalid',
+            error: 'Email "incorrect-email" is invalid',
             statTags: {
               destType: 'HS',
               errorCategory: 'dataValidation',

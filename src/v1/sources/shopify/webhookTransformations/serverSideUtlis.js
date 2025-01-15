@@ -3,7 +3,6 @@ const { constructPayload } = require('../../../../v0/util');
 const {
   lineItemsMappingJSON,
   productMappingJSON,
-  SERVERSIDE_STITCHED_EVENTS,
 } = require('../config');
 
 /**
@@ -63,12 +62,7 @@ const getAnonymousIdFromAttributes = (event) => {
  * @param {Object} message
  * @returns {String} cart_token
  */
-const getCartToken = (event, message) => {
-  if (SERVERSIDE_STITCHED_EVENTS.includes(message?.event)) {
-    return event.cart_token || null;
-  }
-  return null;
-};
+const getCartToken = (event) => event?.cart_token || null;
 
 module.exports = {
   createPropertiesForEcomEventFromWebhook,

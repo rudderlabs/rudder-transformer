@@ -129,7 +129,7 @@ const processEvent = async (inputEvent, metricMetadata) => {
       message.setProperty('anonymousId', anonymousId);
     } else {
       // if anonymousId is not present in note_attributes or note_attributes is not present, query redis for anonymousId
-      const cartToken = getCartToken(event, message);
+      const cartToken = getCartToken(event);
       if (cartToken) {
         const redisData = await RedisDB.getVal(cartToken);
         if (redisData?.anonymousId) {

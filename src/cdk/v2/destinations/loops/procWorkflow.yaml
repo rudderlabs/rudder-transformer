@@ -20,7 +20,6 @@ steps:
   - name: validateIdentifyEmail
     condition: $.outputs.messageType === {{$.EventType.IDENTIFY}}
     template: |
-      console.log(.message.context.traits);
       $.assert(.message.context.traits.email, "email is required. Aborting");
 
   - name: validateTrackIdentifier

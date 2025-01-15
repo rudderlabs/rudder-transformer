@@ -76,7 +76,7 @@ const processIdentify = async ({ message, destination, metadata }, propertyMap) 
   // since hubspot does not allow imvalid emails, we need to
   // validate the email before sending it to hubspot
   if (traits?.email && !validator.isEmail(traits.email)) {
-    throw new InstrumentationError(`Email ${traits.email} is invalid`);
+    throw new InstrumentationError(`Email "${traits.email}" is invalid`);
   }
   const mappedToDestination = get(message, MappedToDestinationKey);
   const operation = get(message, 'context.hubspotOperation');

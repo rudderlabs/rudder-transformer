@@ -215,6 +215,11 @@ export const checkoutEventsTestScenarios = [
                   },
                   integrations: {
                     SHOPIFY: true,
+                    DATA_WAREHOUSE: {
+                      options: {
+                        jsonPaths: ['track.context.shopifyDetails'],
+                      },
+                    },
                   },
                   type: 'track',
                   event: 'Checkout Started - Webhook',
@@ -530,6 +535,11 @@ export const checkoutEventsTestScenarios = [
                   event: 'Checkout Updated',
                   integrations: {
                     SHOPIFY: true,
+                    DATA_WAREHOUSE: {
+                      options: {
+                        jsonPaths: ['track.context.shopifyDetails'],
+                      },
+                    },
                   },
                   properties: {
                     currency: 'USD',
@@ -1202,6 +1212,11 @@ export const checkoutEventsTestScenarios = [
                   },
                   integrations: {
                     SHOPIFY: true,
+                    DATA_WAREHOUSE: {
+                      options: {
+                        jsonPaths: ['track.context.shopifyDetails'],
+                      },
+                    },
                   },
                   type: 'track',
                   event: 'Order Updated',
@@ -1592,6 +1607,11 @@ export const checkoutEventsTestScenarios = [
                   },
                   integrations: {
                     SHOPIFY: true,
+                    DATA_WAREHOUSE: {
+                      options: {
+                        jsonPaths: ['track.context.shopifyDetails'],
+                      },
+                    },
                   },
                   type: 'track',
                   event: 'Order Created',

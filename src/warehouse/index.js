@@ -655,6 +655,35 @@ function processWarehouseMessage(message, options) {
   const skipReservedKeywordsEscaping =
     options.integrationOptions.skipReservedKeywordsEscaping || false;
 
+  if (message.integrations?.['DATA_WAREHOUSE']?.options?.jsonPaths) {
+    // set the json paths from the DATA_WAREHOUSE options
+    let multiWarehouseJSONPaths = Array.isArray(
+      message.integrations['DATA_WAREHOUSE'].options.jsonPaths,
+    )
+      ? message.integrations['DATA_WAREHOUSE'].options.jsonPaths
+      : [];
+    // check to see if there are already json paths set in the options
+    const currentEventJSONPaths = Array.isArray(options.integrationOptions?.jsonPaths)
+      ? options.integrationOptions.jsonPaths
+      : [];
+
+    switch (options.provider) {
+      case 'rs':
+      case 'postgres':
+      case 'snowflake':
+      case 'bq':
+        // Merge DATA_WAREHOUSE paths with provider paths
+        options.integrationOptions.jsonPaths = [
+          ...multiWarehouseJSONPaths,
+          ...currentEventJSONPaths,
+        ];
+        break;
+      default:
+        // For other providers, only use provider-specific paths
+        options.integrationOptions.jsonPaths = currentEventJSONPaths;
+    }
+  }
+
   // underscoreDivideNumbers when set to false, if a column has a format like "_v_3_", it will be formatted to "_v3_"
   // underscoreDivideNumbers when set to true, if a column has a format like "_v_3_", we keep it like that
   // For older destinations, it will come as true and for new destinations this config will not be present which means we will treat it as false.

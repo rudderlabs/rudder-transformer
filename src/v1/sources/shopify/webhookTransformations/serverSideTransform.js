@@ -136,6 +136,11 @@ const processEvent = async (inputEvent, metricMetadata) => {
     }
   }
   message.setProperty(`integrations.${INTEGERATION}`, true);
+  message.setProperty('integrations.DATA_WAREHOUSE', {
+    options: {
+      jsonPaths: [`${message.type}.context.shopifyDetails`],
+    },
+  });
   message.setProperty('context.library', {
     eventOrigin: 'server',
     name: 'RudderStack Shopify Cloud',

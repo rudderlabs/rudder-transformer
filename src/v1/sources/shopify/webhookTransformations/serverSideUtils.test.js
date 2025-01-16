@@ -1,3 +1,4 @@
+const { processEvent } = require('./serverSideTransform');
 const {
   getProductsFromLineItems,
   createPropertiesForEcomEventFromWebhook,
@@ -60,7 +61,6 @@ describe('serverSideUtils.js', () => {
     });
 
     it('should return array of products', () => {
-      const mapping = {};
       const result = getProductsFromLineItems(LINEITEMS, lineItemsMappingJSON);
       expect(result).toEqual([
         { brand: 'Hydrogen Vendor', price: '600.00', product_id: 7234590408818, quantity: 1 },
@@ -151,11 +151,23 @@ describe('Redis cart token tests', () => {
     const getValSpy = jest
       .spyOn(RedisDB, 'getVal')
       .mockResolvedValue({ anonymousId: 'anonymousIdTest1' });
-    const event = { cartToken: 'cartTokenTest1' };
-
-    const redisData = await RedisDB.getVal(event.cartToken);
-
+    const event = {
+      cart_token: `cartTokenTest1`,
+      id: 5778367414385,
+      line_items: [
+        {
+          id: 14234727743601,
+        },
+      ],
+      query_parameters: {
+        topic: ['orders_updated'],
+        version: ['pixel'],
+        writeKey: ['dummy-write-key'],
+      },
+    };
+    const message = await processEvent(event);
+    expect(getValSpy).toHaveBeenCalledTimes(1);
     expect(getValSpy).toHaveBeenCalledWith('cartTokenTest1');
-    expect(redisData).toEqual({ anonymousId: 'anonymousIdTest1' });
+    expect(message.setProperty).toHaveBeenCalledWith('anonymousId', 'anonymousIdTest1');
   });
 });

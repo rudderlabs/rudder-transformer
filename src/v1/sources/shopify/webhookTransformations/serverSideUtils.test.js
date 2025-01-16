@@ -2,7 +2,9 @@ const {
   getProductsFromLineItems,
   createPropertiesForEcomEventFromWebhook,
   getAnonymousIdFromAttributes,
+  getCartToken,
 } = require('./serverSideUtlis');
+const { RedisDB } = require('../../../../util/redis/redisConnector');
 
 const { lineItemsMappingJSON } = require('../../../../v0/sources/shopify/config');
 const Message = require('../../../../v0/sources/message');
@@ -110,7 +112,13 @@ describe('serverSideUtils.js', () => {
     // Handles empty note_attributes array gracefully
     it('should return null when note_attributes is an empty array', async () => {
       const event = { note_attributes: [] };
-      const result = await getAnonymousIdFromAttributes(event);
+      const result = getAnonymousIdFromAttributes(event);
+      expect(result).toBeNull();
+    });
+
+    it('should return null when note_attributes is not present', async () => {
+      const event = {};
+      const result = getAnonymousIdFromAttributes(event);
       expect(result).toBeNull();
     });
 
@@ -118,8 +126,36 @@ describe('serverSideUtils.js', () => {
       const event = {
         note_attributes: [{ name: 'rudderAnonymousId', value: '123456' }],
       };
-      const result = await getAnonymousIdFromAttributes(event);
+      const result = getAnonymousIdFromAttributes(event);
       expect(result).toEqual('123456');
     });
+  });
+
+  describe('getCartToken', () => {
+    it('should return null if cart_token is not present', () => {
+      const event = {};
+      const result = getCartToken(event);
+      expect(result).toBeNull();
+    });
+
+    it('should return cart_token if it is present', () => {
+      const event = { cart_token: 'cartTokenTest1' };
+      const result = getCartToken(event);
+      expect(result).toEqual('cartTokenTest1');
+    });
+  });
+});
+
+describe('Redis cart token tests', () => {
+  it('should get anonymousId property from redis', async () => {
+    const getValSpy = jest
+      .spyOn(RedisDB, 'getVal')
+      .mockResolvedValue({ anonymousId: 'anonymousIdTest1' });
+    const event = { cartToken: 'cartTokenTest1' };
+
+    const redisData = await RedisDB.getVal(event.cartToken);
+
+    expect(getValSpy).toHaveBeenCalledWith('cartTokenTest1');
+    expect(redisData).toEqual({ anonymousId: 'anonymousIdTest1' });
   });
 });

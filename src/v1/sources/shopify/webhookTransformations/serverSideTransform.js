@@ -67,9 +67,6 @@ const ecomPayloadBuilder = (event, shopifyTopic) => {
   if (event.billing_address) {
     message.setProperty('traits.billingAddress', event.billing_address);
   }
-  if (!message.userId && event.user_id) {
-    message.setProperty('userId', event.user_id);
-  }
   return message;
 };
 

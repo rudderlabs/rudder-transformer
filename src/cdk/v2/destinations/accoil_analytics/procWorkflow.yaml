@@ -25,8 +25,8 @@ steps:
         "type": $.context.messageType
       };
       $.context.finalHeaders = {
-          "authorization": "Basic " + $.base64Convertor(.destination.Config.apiKey + ":"),
-          "content-type": "application/json"
+          "Authorization": "Basic " + $.base64Convertor(.destination.Config.apiKey + ":"),
+          "Content-Type": "application/json"
         };
       $.context.endpoint = $.endpointUrl(.destination.Config.apiKey);
 

@@ -535,7 +535,7 @@ describe('Unit test cases for getTransformedJSON', () => {
     expect(result).toEqual(expectedResult);
   });
 
-  it('should transform the message payload to appropriate payload if device.token is present and device.token is null or other value', () => {
+  it('should transform the message payload to appropriate payload if device.token is present and device.token is null', () => {
     const message = {
       context: {
         app: {
@@ -566,7 +566,6 @@ describe('Unit test cases for getTransformedJSON', () => {
       $model: 'Android SDK built for x86',
       $wifi: true,
       userId: 'test_user_id',
-      $android_devices: [null],
       $os: 'Android',
       $android_model: 'Android SDK built for x86',
       $android_os_version: '8.1.0',
@@ -609,7 +608,6 @@ describe('Unit test cases for getTransformedJSON', () => {
       $model: 'Android SDK built for x86',
       $wifi: true,
       userId: 'test_user_id',
-      $ios_devices: [],
       $os: 'iOS',
       $ios_device_model: 'Android SDK built for x86',
       $ios_version: '8.1.0',
@@ -651,7 +649,6 @@ describe('Unit test cases for getTransformedJSON', () => {
       $model: 'Android SDK built for x86',
       $wifi: true,
       userId: 'test_user_id',
-      $android_devices: [],
       $os: 'Android',
       $android_model: 'Android SDK built for x86',
       $android_os_version: '8.1.0',
@@ -659,6 +656,32 @@ describe('Unit test cases for getTransformedJSON', () => {
       $android_app_version: '1.0',
       $android_app_version_code: '1.0',
       $android_brand: 'Google',
+    };
+
+    expect(result).toEqual(expectedResult);
+  });
+
+  it('should transform the message payload to appropriate payload if device is not present', () => {
+    const message = {
+      context: {
+        app: {
+          build: '1',
+          name: 'LeanPlumIntegrationAndroid',
+          namespace: 'com.android.SampleLeanPlum',
+          version: '1.0',
+        },
+        network: { carrier: 'Android', bluetooth: false, cellular: true, wifi: true },
+        os: { name: 'iOS', version: '8.1.0' },
+        timezone: 'Asia/Kolkata',
+        traits: { userId: 'test_user_id' },
+      },
+    };
+    const result = getTransformedJSON(message, mappingConfig[ConfigCategory.IDENTIFY.name], true);
+
+    const expectedResult = {
+      $carrier: 'Android',
+      $wifi: true,
+      userId: 'test_user_id',
     };
 
     expect(result).toEqual(expectedResult);

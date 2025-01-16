@@ -1,5 +1,4 @@
 import Router from '@koa/router';
-import { Context } from 'koa';
 import { UserTransformController } from '../controllers/userTransform';
 import { FeatureFlagMiddleware } from '../middlewares/featureFlag';
 import { RouteActivationMiddleware } from '../middlewares/routeActivation';

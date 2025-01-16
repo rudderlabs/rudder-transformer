@@ -28,7 +28,6 @@ async function shutdownWorkers() {
 }
 
 function start(port, app, metricsApp) {
-  console.log(numWorkers);
 
   if (cluster.isMaster) {
     logger.info(`Master (pid: ${process.pid}) has started`);

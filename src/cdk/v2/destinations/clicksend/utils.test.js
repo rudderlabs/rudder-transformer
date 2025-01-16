@@ -46,7 +46,7 @@ describe('deduceSchedule', () => {
   it('should return eventLevelSchedule when it is defined, not null, and not empty', () => {
     const eventLevelSchedule = 1234567890;
     const timestamp = '2023-10-01T00:00:00Z';
-    const destConfig = { defaultCampaignScheduleUnit: 'minute', defaultCampaignSchedule: 5 };
+    const destConfig = { defaultCampaignScheduleUnit: 'minute', defaultCampaignSchedule: '5' };
 
     const result = deduceSchedule(eventLevelSchedule, timestamp, destConfig);
 
@@ -57,7 +57,7 @@ describe('deduceSchedule', () => {
   it('should throw error when defaultCampaignScheduleUnit is invalid', () => {
     const eventLevelSchedule = null;
     const timestamp = '2023-10-01T00:00:00Z';
-    const destConfig = { defaultCampaignScheduleUnit: 'hour', defaultCampaignSchedule: 5 };
+    const destConfig = { defaultCampaignScheduleUnit: 'hour', defaultCampaignSchedule: '5' };
 
     expect(() => {
       deduceSchedule(eventLevelSchedule, timestamp, destConfig);
@@ -68,7 +68,7 @@ describe('deduceSchedule', () => {
   it('should calculate future timestamp correctly when defaultCampaignScheduleUnit is minute', () => {
     const eventLevelSchedule = null;
     const timestamp = '2023-10-01T00:00:00Z';
-    const destConfig = { defaultCampaignScheduleUnit: 'minute', defaultCampaignSchedule: 5 };
+    const destConfig = { defaultCampaignScheduleUnit: 'minute', defaultCampaignSchedule: '5' };
 
     const result = deduceSchedule(eventLevelSchedule, timestamp, destConfig);
 
@@ -81,7 +81,7 @@ describe('deduceSchedule', () => {
   it('should calculate future timestamp correctly when defaultCampaignScheduleUnit is day', () => {
     const eventLevelSchedule = null;
     const timestamp = '2023-10-01T00:00:00Z';
-    const destConfig = { defaultCampaignScheduleUnit: 'day', defaultCampaignSchedule: 1 };
+    const destConfig = { defaultCampaignScheduleUnit: 'day', defaultCampaignSchedule: '1' };
 
     const result = deduceSchedule(eventLevelSchedule, timestamp, destConfig);
 
@@ -90,11 +90,36 @@ describe('deduceSchedule', () => {
     expect(result).toBe(expectedTimestamp);
   });
 
+  it('should calculate timestamp when defaultCampaignSchedule in some invalid string', () => {
+    const eventLevelSchedule = null;
+    const timestamp = '2023-10-01T00:00:00Z';
+    const destConfig = { defaultCampaignScheduleUnit: 'day', defaultCampaignSchedule: 'inValid' };
+
+    const result = deduceSchedule(eventLevelSchedule, timestamp, destConfig);
+    const expectedTimestamp = new Date('2023-10-01T00:00:00Z').getTime() / 1000;
+
+    expect(result).toBe(expectedTimestamp);
+  });
+
+  it('should calculate timestamp when defaultCampaignSchedule has trailing invalid text and/or leading space', () => {
+    const eventLevelSchedule = null;
+    const timestamp = '2023-10-01T00:00:00Z';
+    const destConfig = {
+      defaultCampaignScheduleUnit: 'minute',
+      defaultCampaignSchedule: ' 5Invalid.String  ',
+    };
+
+    const result = deduceSchedule(eventLevelSchedule, timestamp, destConfig);
+    const expectedTimestamp = new Date('2023-10-01T00:05:00Z').getTime() / 1000;
+
+    expect(result).toBe(expectedTimestamp);
+  });
+
   // returns UNIX timestamp in seconds
   it('should return UNIX timestamp in seconds', () => {
     const eventLevelSchedule = null;
     const timestamp = '2023-10-01T00:00:00Z';
-    const destConfig = { defaultCampaignScheduleUnit: 'minute', defaultCampaignSchedule: 5 };
+    const destConfig = { defaultCampaignScheduleUnit: 'minute', defaultCampaignSchedule: '5' };
 
     const result = deduceSchedule(eventLevelSchedule, timestamp, destConfig);
 

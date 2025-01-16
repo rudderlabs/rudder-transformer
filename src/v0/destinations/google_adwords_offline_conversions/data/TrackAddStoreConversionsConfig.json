@@ -17,7 +17,8 @@
     ],
     "required": true,
     "metadata": {
-      "type": "toNumber"
+      "type": "toNumber",
+      "regex": "^([1-9]\\d*(\\.\\d+)?|0\\.\\d+)$"
     }
   },
   {

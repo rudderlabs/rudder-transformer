@@ -3547,4 +3547,120 @@ export const data = [
       },
     },
   },
+  {
+    name: 'hs',
+    description: 'test when email is of wrong format',
+    feature: 'router',
+    module: 'destination',
+    id: 'emailfailsValidation',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: {
+                channel: 'web',
+                context: {
+                  traits: {
+                    email: 'incorrect-email',
+                    firstname: 'Test Hubspot',
+                  },
+                  library: {
+                    name: 'RudderLabs JavaScript SDK',
+                    version: '1.0.0',
+                  },
+                },
+                type: 'identify',
+                messageId: 'e8585d9a-7137-4223-b295-68ab1b17dad7',
+                originalTimestamp: '2025-01-01T09:35:31.289Z',
+                anonymousId: '00000000000000000000000000',
+                userId: '12345',
+                properties: '',
+                integrations: {
+                  All: true,
+                },
+                sentAt: '2019-10-14T11:15:53.296Z',
+              },
+              destination: {
+                Config: {
+                  authorizationType: 'newPrivateAppApi',
+                  hubID: '',
+                  apiKey: '',
+                  accessToken: 'dummy-access-token',
+                  apiVersion: 'newApi',
+                  lookupField: 'lookupField',
+                  eventFilteringOption: 'disable',
+                  blacklistedEvents: [
+                    {
+                      eventName: '',
+                    },
+                  ],
+                  whitelistedEvents: [
+                    {
+                      eventName: '',
+                    },
+                  ],
+                },
+                Enabled: true,
+              },
+              metadata: { jobId: 3, userId: 'u1' },
+            },
+          ],
+          destType: 'hs',
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batched: false,
+              destination: {
+                Config: {
+                  accessToken: 'dummy-access-token',
+                  apiKey: '',
+                  apiVersion: 'newApi',
+                  authorizationType: 'newPrivateAppApi',
+                  blacklistedEvents: [
+                    {
+                      eventName: '',
+                    },
+                  ],
+                  eventFilteringOption: 'disable',
+                  hubID: '',
+                  lookupField: 'lookupField',
+                  whitelistedEvents: [
+                    {
+                      eventName: '',
+                    },
+                  ],
+                },
+                Enabled: true,
+              },
+              error: 'Email "incorrect-email" is invalid',
+              metadata: [
+                {
+                  jobId: 3,
+                  userId: 'u1',
+                },
+              ],
+              statTags: {
+                destType: 'HS',
+                errorCategory: 'dataValidation',
+                errorType: 'instrumentation',
+                feature: 'router',
+                implementation: 'native',
+                module: 'destination',
+              },
+              statusCode: 400,
+            },
+          ],
+        },
+      },
+    },
+  },
 ];

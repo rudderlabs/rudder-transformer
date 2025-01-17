@@ -1,0 +1,18 @@
+[
+  {
+    "sourceKeys": "utm_campaign",
+    "destKeys": "name"
+  },
+  {
+    "sourceKeys": "utm_medium",
+    "destKeys": "medium"
+  },
+  {
+    "sourceKeys": "utm_term",
+    "destKeys": "term"
+  },
+  {
+    "sourceKeys": "utm_content",
+    "destKeys": "content"
+  }
+]

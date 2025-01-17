@@ -1335,7 +1335,7 @@ export const data = [
   },
   {
     name: 'twitter_ads',
-    description: 'Test case for track event with email and ip_address as an identifier',
+    description: 'Test case for track event with phone and user_agent as an identifier',
     feature: 'processor',
     module: 'destination',
     version: 'v0',

@@ -35,8 +35,11 @@ const RESERVED_TRAITS_MAPPING = {
   'address.postalcode': 'zipcode',
   'address.state': 'region',
   createdAt: 'account_creation',
+  createdat: 'account_creation',
   firstName: 'first_name',
+  firstname: 'first_name',
   lastName: 'last_name',
+  lastname: 'last_name',
   name: 'full_name',
   phone: 'mobile_phone',
 };

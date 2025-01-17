@@ -1,4 +1,3 @@
-// const lodash = require('lodash');
 const { TransformationError } = require('@rudderstack/integrations-lib');
 const logger = require('../../../logger');
 const { CommonUtils } = require('../../../util/common');

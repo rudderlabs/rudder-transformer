@@ -22,6 +22,17 @@ const convertToISODate = (rawTimestamp) => {
   return date.toISOString();
 };
 
+const flattenParams = (qParams) => {
+  const formattedOutput = {};
+  if (qParams) {
+    Object.entries(qParams).forEach(([key, [value]]) => {
+      formattedOutput[key] = value;
+    });
+  }
+  return formattedOutput;
+};
+
 module.exports = {
   convertToISODate,
+  flattenParams,
 };

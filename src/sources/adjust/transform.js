@@ -1,18 +1,38 @@
-const { processEvent: processV0Event } = require('../../v0/sources/adjust/transform');
+// const lodash = require('lodash');
+const { TransformationError } = require('@rudderstack/integrations-lib');
 const { CommonUtils } = require('../../util/common');
+const logger = require('../../logger');
+const { flattenParams } = require('../../v0/sources/adjust/utils');
+const { processPayload } = require('../../v0/sources/adjust/core');
 
-const convertV2ToV0 = (sourceEvent) => {
-  const v0Event = JSON.parse(sourceEvent.request.body);
-  if (sourceEvent.request.query_parameters) {
-    v0Event.query_parameters = sourceEvent.request.query_parameters;
+const getPayloadFromRequest = (inputRequest) => {
+  // This function extracts the query_parameters from the request
+  // and flattens it to get the payload
+
+  const { request } = inputRequest;
+  if (!request) {
+    throw new TransformationError('request field is missing from webhook V2 payload');
   }
-  return v0Event;
+
+  const { query_parameters: qParams } = request;
+  logger.debug(`[Adjust] Input event: query_params: ${JSON.stringify(qParams)}`);
+  if (!qParams) {
+    throw new TransformationError('Query_parameters is missing');
+  }
+
+  return flattenParams(qParams);
 };
 
 const process = (requests) => {
+  // This function just converts the
+  //  - incoming payload to array
+  //  - extracts params and constructs payload
+  //  - sends it to processPayload for transformation
   const requestsArray = CommonUtils.toArray(requests);
-  const v0Events = requestsArray.map(convertV2ToV0);
-  return v0Events.map(processV0Event);
+  return requestsArray.map((inputRequest) => {
+    const formattedPayload = getPayloadFromRequest(inputRequest);
+    return processPayload(formattedPayload);
+  });
 };
 
 module.exports = { process };

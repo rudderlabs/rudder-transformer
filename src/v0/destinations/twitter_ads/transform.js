@@ -131,17 +131,17 @@ function processTrack(message, metadata, destination) {
     identifiers.push({ twclid: message.properties.twclid });
   }
 
-  if (message.properties.ip_address) {
-    const ipAddress = message.properties.ip_address.trim();
-    if (ipAddress) {
-      identifiers.push({ ip_address: ipAddress });
-    }
-  }
+  const ipAddress = message.properties.ip_address?.trim();
+  const userAgent = message.properties.user_agent?.trim();
 
-  if (message.properties.user_agent) {
-    const userAgent = message.properties.user_agent.trim();
+  if (ipAddress && userAgent) {
+    identifiers.push({ ip_address: ipAddress, user_agent: userAgent });
+  } else if (identifiers.length > 0) {
+    if (ipAddress) {
+      identifiers[0] = { ...identifiers[0], ip_address: ipAddress };
+    }
     if (userAgent) {
-      identifiers.push({ user_agent: userAgent });
+      identifiers[0] = { ...identifiers[0], user_agent: userAgent };
     }
   }
 
@@ -167,11 +167,10 @@ function validateRequest(message) {
     !properties.email &&
     !properties.phone &&
     !properties.twclid &&
-    !properties.ip_address &&
-    !properties.user_agent
+    !(properties.ip_address && properties.user_agent)
   ) {
     throw new InstrumentationError(
-      '[TWITTER ADS]: one of twclid, phone, email, ip_address or user_agent must be present in properties.',
+      '[TWITTER ADS]: one of twclid, phone, email or ip_address with user_agent must be present in properties.',
     );
   }
 }

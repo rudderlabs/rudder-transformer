@@ -164,10 +164,7 @@ const getEventValueForTrackEvent = (message, destination) => {
 
   const unixTimestamp = toUnixTimestampInMS(message.timestamp || message.originalTimestamp);
 
-  let traits = { ...get(message, 'context.traits') };
-  if (destination.Config?.dropTraitsInTrackEvent) {
-    traits = {};
-  }
+  const traits = destination.Config?.dropTraitsInTrackEvent ? {} : { ...message.context.traits };
 
   let properties = {
     ...message.properties,

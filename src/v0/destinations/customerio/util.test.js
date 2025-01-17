@@ -8,6 +8,7 @@ const {
 const getTestMessage = () => {
   let message = {
     anonymousId: 'anonId',
+    previousId: 'user0',
     traits: {
       email: 'abc@test.com',
       name: 'rudder',
@@ -133,7 +134,7 @@ describe('Unit test cases for customerio aliasResponseBuilder', () => {
   it('Device token name does not match with event name as well as allowed list', async () => {
     let expectedOutput = {
       endpoint: 'https://track.customer.io/api/v1/merge_customers',
-      rawPayload: { primary: { id: 'user1' }, secondary: { id: undefined } },
+      rawPayload: { primary: { id: 'user1' }, secondary: { id: 'user0' } },
       requestConfig: { requestFormat: 'JSON', requestMethod: 'POST' },
     };
     expect(aliasResponseBuilder(getTestMessage(), 'user1')).toEqual(expectedOutput);

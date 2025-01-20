@@ -167,7 +167,7 @@ describe('Redis cart token tests', () => {
     };
     const message = await processEvent(event);
     expect(getValSpy).toHaveBeenCalledTimes(1);
-    expect(getValSpy).toHaveBeenCalledWith('cartTokenTest1');
+    expect(getValSpy).toHaveBeenCalledWith('pixel:cartTokenTest1');
     expect(message.setProperty).toHaveBeenCalledWith('anonymousId', 'anonymousIdTest1');
   });
 });

@@ -78,7 +78,7 @@ const handleAnonymousId = async (message, event) => {
     // if anonymousId is not present in note_attributes or note_attributes is not present, query redis for anonymousId
     const cartToken = getCartToken(event);
     if (cartToken) {
-      const redisData = await RedisDB.getVal(cartToken);
+      const redisData = await RedisDB.getVal(`pixel:${cartToken}`);
       if (redisData?.anonymousId) {
         message.setProperty('anonymousId', redisData.anonymousId);
       }

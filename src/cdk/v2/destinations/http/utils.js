@@ -46,13 +46,12 @@ const encodeParamsObject = (params) => {
   if (!params || typeof params !== 'object') {
     return {}; // Return an empty object if input is null, undefined, or not an object
   }
-  const encodedParams = {};
-  Object.keys(params).forEach((key) => {
-    if (params[key] !== undefined) {
-      encodedParams[encodeURIComponent(key)] = encodeURIComponent(params[key]);
-    }
-  });
-  return encodedParams;
+  return Object.keys(params)
+    .filter((key) => params[key] !== undefined)
+    .reduce((acc, key) => {
+      acc[encodeURIComponent(key)] = encodeURIComponent(params[key]);
+      return acc;
+    }, {});
 };
 
 const getValueFromJsonPath = (message, jsonPath) => {

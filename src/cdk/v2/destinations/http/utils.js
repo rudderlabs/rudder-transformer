@@ -164,6 +164,11 @@ const getMergedEvents = (batch) => {
   return events;
 };
 
+const metadataHeaders = (contentType) =>
+  contentType === 'JSON'
+    ? { 'Content-Type': 'application/json' }
+    : { 'Content-Type': 'application/xml' };
+
 const mergeMetadata = (batch) => batch.map((event) => event.metadata[0]);
 
 const createHashKey = (endpoint, headers, params) => {
@@ -223,5 +228,6 @@ module.exports = {
   prepareEndpoint,
   excludeMappedFields,
   getXMLPayload,
+  metadataHeaders,
   batchSuccessfulEvents,
 };

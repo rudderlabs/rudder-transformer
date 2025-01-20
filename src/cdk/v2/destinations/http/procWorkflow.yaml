@@ -36,10 +36,11 @@ steps:
     template: |
       const configAuthHeaders = $.getAuthHeaders(.destination.Config);
       const additionalConfigHeaders = $.getCustomMappings(.message, .destination.Config.headers);   
+      const metadataHeaders = $.metadataHeaders($.context.format);
       $.context.headers = {
         ...configAuthHeaders,
         ...additionalConfigHeaders,
-        "Content-Type": $.context.format === "JSON" ? "application/json" : "application/xml",
+        ...metadataHeaders,
       }
 
   - name: prepareParams

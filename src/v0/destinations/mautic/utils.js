@@ -1,5 +1,6 @@
 /* eslint-disable no-return-assign, no-param-reassign, no-restricted-syntax */
 const get = require('get-value');
+const validator = require('validator');
 const {
   NetworkError,
   InstrumentationError,
@@ -24,15 +25,7 @@ const { JSON_MIME_TYPE } = require('../../util/constant');
 function createAxiosUrl(propertyName, value, baseUrl) {
   return `${baseUrl}/contacts?where%5B0%5D%5Bcol%5D=${propertyName}&where%5B0%5D%5Bexpr%5D=eq&where%5B0%5D%5Bval%5D=${value}`;
 }
-/**
- * @param {*} inputText
- * @returns Boolean Value
- * for validating email match
- */
-function validateEmail(inputText) {
-  const mailformat = /^[\d%+._a-z-]+@[\d.a-z-]+\.[a-z]{2,3}$/;
-  return mailformat.test(inputText);
-}
+
 /**
  * @param {*} message
  * @param {*} lookUpField
@@ -126,7 +119,7 @@ const validatePayload = (payload) => {
     throw new InstrumentationError('The provided phone number is invalid');
   }
 
-  if (payload.email && !validateEmail(payload.email)) {
+  if (payload.email && !validator.isEmail(payload.email)) {
     throw new InstrumentationError('The provided email is invalid');
   }
   return true;
@@ -220,7 +213,6 @@ const getEndpoint = (Config) => {
 };
 module.exports = {
   deduceStateField,
-  validateEmail,
   validatePhone,
   deduceAddressFields,
   validateGroupCall,

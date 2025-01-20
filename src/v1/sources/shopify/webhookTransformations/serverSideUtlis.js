@@ -1,10 +1,10 @@
+/* eslint-disable no-param-reassign */
+const get = require('get-value');
 const { isDefinedAndNotNull } = require('@rudderstack/integrations-lib');
+const { extractEmailFromPayload } = require('../../../../v0/sources/shopify/util');
 const { constructPayload } = require('../../../../v0/util');
-const {
-  lineItemsMappingJSON,
-  productMappingJSON,
-  SERVERSIDE_STITCHED_EVENTS,
-} = require('../config');
+const { INTEGERATION, lineItemsMappingJSON, productMappingJSON } = require('../config');
+const { RedisDB } = require('../../../../util/redis/redisConnector');
 
 /**
  * Returns an array of products from the lineItems array received from the webhook event
@@ -60,14 +60,64 @@ const getAnonymousIdFromAttributes = (event) => {
 
 /**
  * Returns the cart_token from the event message
- * @param {Object} message
+ * @param {Object} event
  * @returns {String} cart_token
  */
-const getCartToken = (event, message) => {
-  if (SERVERSIDE_STITCHED_EVENTS.includes(message?.event)) {
-    return event.cart_token || null;
+const getCartToken = (event) => event?.cart_token || null;
+
+/**
+ * Handles the anonymousId assignment for the message, based on the event attributes and redis data
+ * @param {Object} message
+ * @param {Object} event
+ */
+const handleAnonymousId = async (message, event) => {
+  const anonymousId = getAnonymousIdFromAttributes(event);
+  if (isDefinedAndNotNull(anonymousId)) {
+    message.setProperty('anonymousId', anonymousId);
+  } else {
+    // if anonymousId is not present in note_attributes or note_attributes is not present, query redis for anonymousId
+    const cartToken = getCartToken(event);
+    if (cartToken) {
+      const redisData = await RedisDB.getVal(cartToken);
+      if (redisData?.anonymousId) {
+        message.setProperty('anonymousId', redisData.anonymousId);
+      }
+    }
   }
-  return null;
+};
+
+/**
+  Handles userId, email and contextual properties enrichment for the message payload
+ * @param {Object} message
+ * @param {Object} event
+ * @param {String} shopifyTopic
+*/
+const handleCommonProperties = (message, event, shopifyTopic) => {
+  if (message.userId) {
+    message.userId = String(message.userId);
+  }
+  if (!get(message, 'traits.email')) {
+    const email = extractEmailFromPayload(event);
+    if (email) {
+      message.setProperty('traits.email', email);
+    }
+  }
+  message.setProperty(`integrations.${INTEGERATION}`, true);
+  message.setProperty('context.library', {
+    eventOrigin: 'server',
+    name: 'RudderStack Shopify Cloud',
+    version: '2.0.0',
+  });
+  message.setProperty('context.topic', shopifyTopic);
+  // attaching cart, checkout and order tokens in context object
+  message.setProperty(`context.cart_token`, event.cart_token);
+  message.setProperty(`context.checkout_token`, event.checkout_token);
+  // raw shopify payload passed inside context object under shopifyDetails
+  message.setProperty('context.shopifyDetails', event);
+  if (shopifyTopic === 'orders_updated') {
+    message.setProperty(`context.order_token`, event.token);
+  }
+  return message;
 };
 
 module.exports = {
@@ -75,4 +125,6 @@ module.exports = {
   getProductsFromLineItems,
   getAnonymousIdFromAttributes,
   getCartToken,
+  handleAnonymousId,
+  handleCommonProperties,
 };

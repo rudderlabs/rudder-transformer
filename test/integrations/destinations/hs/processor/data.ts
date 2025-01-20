@@ -5425,4 +5425,86 @@ export const data = [
       },
     },
   },
+  {
+    name: 'hs',
+    description:
+      '[HS] (New API v3) - throw error if invalid email is provided in traits for identify call',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            description:
+              '[HS] (New API v3) - throw error if invalid email is provided in traits for identify call',
+            message: {
+              channel: 'web',
+              context: {
+                traits: {
+                  email: 'incorrect-email',
+                  firstname: 'Test Hubspot',
+                },
+                library: {
+                  name: 'RudderLabs JavaScript SDK',
+                  version: '1.0.0',
+                },
+              },
+              type: 'identify',
+              messageId: 'e8585d9a-7137-4223-b295-68ab1b17dad7',
+              originalTimestamp: '2025-01-01T09:35:31.289Z',
+              anonymousId: '00000000000000000000000000',
+              userId: '12345',
+              properties: '',
+              integrations: {
+                All: true,
+              },
+              sentAt: '2019-10-14T11:15:53.296Z',
+            },
+            destination: {
+              Config: {
+                authorizationType: 'newPrivateAppApi',
+                hubID: '',
+                apiKey: '',
+                accessToken: 'dummy-access-token',
+                apiVersion: 'newApi',
+                lookupField: 'lookupField',
+                eventFilteringOption: 'disable',
+                blacklistedEvents: [
+                  {
+                    eventName: '',
+                  },
+                ],
+                whitelistedEvents: [
+                  {
+                    eventName: '',
+                  },
+                ],
+              },
+              Enabled: true,
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            error: 'Email "incorrect-email" is invalid',
+            statTags: {
+              destType: 'HS',
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              feature: 'processor',
+              implementation: 'native',
+              module: 'destination',
+            },
+            statusCode: 400,
+          },
+        ],
+      },
+    },
+  },
 ];

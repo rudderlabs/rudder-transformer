@@ -346,6 +346,24 @@ const populateUserIdentifier = ({ email, phone, properties, payload, UserIdentif
   }
   return copiedPayload;
 };
+
+/**
+ * remove redundant ids
+ * @param {*} conversionCopy
+ */
+const updateConversion = (conversion) => {
+  const conversionCopy = cloneDeep(conversion);
+  if (conversionCopy.gclid) {
+    delete conversionCopy.wbraid;
+    delete conversionCopy.gbraid;
+  } else if (conversionCopy.wbraid && conversionCopy.gbraid) {
+    throw new InstrumentationError(`You can't use both wbraid and gbraid.`);
+  } else if (conversionCopy.wbraid || conversionCopy.gbraid) {
+    delete conversionCopy.userIdentifiers;
+  }
+  return conversionCopy;
+};
+
 const getClickConversionPayloadAndEndpoint = (
   message,
   Config,
@@ -423,31 +441,13 @@ const getClickConversionPayloadAndEndpoint = (
   const consentObject = finaliseConsent(consentConfigMap, eventLevelConsent, Config);
   // here conversions[0] is expected to be present there are some mandatory properties mapped in the mapping json.
   set(payload, 'conversions[0].consent', consentObject);
+  payload.conversions[0] = updateConversion(payload.conversions[0]);
   return { payload, endpoint };
 };
 
 const getConsentsDataFromIntegrationObj = (message) => {
   const integrationObj = getIntegrationsObj(message, 'GOOGLE_ADWORDS_OFFLINE_CONVERSIONS') || {};
   return integrationObj?.consents || {};
-};
-
-/**
- * remove redundant ids
- * @param {*} conversionCopy
- */
-const updateConversion = (conversion) => {
-  const conversionCopy = cloneDeep(conversion);
-  if (conversionCopy.gclid) {
-    delete conversionCopy.wbraid;
-    delete conversionCopy.gbraid;
-  }
-  if (conversionCopy.wbraid && conversionCopy.gbraid) {
-    throw new InstrumentationError(`You can't use both wbraid and gbraid.`);
-  }
-  if (conversionCopy.wbraid || conversionCopy.gbraid) {
-    delete conversionCopy.userIdentifiers;
-  }
-  return conversionCopy;
 };
 
 module.exports = {

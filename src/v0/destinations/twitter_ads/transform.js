@@ -138,10 +138,10 @@ function processTrack(message, metadata, destination) {
     identifiers.push({ ip_address: ipAddress, user_agent: userAgent });
   } else if (identifiers.length > 0) {
     if (ipAddress) {
-      identifiers[0] = { ...identifiers[0], ip_address: ipAddress };
+      identifiers[0].ip_address = ipAddress;
     }
     if (userAgent) {
-      identifiers[0] = { ...identifiers[0], user_agent: userAgent };
+      identifiers[0].user_agent = userAgent;
     }
   }
 

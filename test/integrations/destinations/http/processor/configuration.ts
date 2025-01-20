@@ -1,6 +1,12 @@
 import { ProcessorTestData } from '../../../testTypes';
 import { generateMetadata, transformResultBuilder } from '../../../testUtils';
-import { destType, destinations, properties, traits } from '../common';
+import {
+  destType,
+  destinations,
+  properties,
+  traits,
+  processorInstrumentationErrorStatTags,
+} from '../common';
 
 export const configuration: ProcessorTestData[] = [
   {
@@ -201,6 +207,101 @@ export const configuration: ProcessorTestData[] = [
               },
             }),
             statusCode: 200,
+            metadata: generateMetadata(1),
+          },
+        ],
+      },
+    },
+  },
+  {
+    id: 'http-configuration-test-5',
+    name: destType,
+    description:
+      'Track call with basic auth, get method, headers, query params and pathParams mapping',
+    scenario: 'Business',
+    successCriteria:
+      'Response should contain get method, headers and query params and pathParams mapping',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: destinations[7],
+            message: {
+              type: 'track',
+              userId: 'userId123',
+              event: 'Order Completed',
+              properties,
+            },
+            metadata: generateMetadata(1),
+          },
+        ],
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: transformResultBuilder({
+              method: 'GET',
+              userId: '',
+              endpoint: 'http://abc.com/contacts/userId123/c1',
+              headers: {
+                Authorization: 'Basic dGVzdC11c2VyOg==',
+                h1: 'val1',
+                h2: 2,
+                'content-type': 'application/json',
+              },
+              params: {
+                q1: 'val1',
+              },
+            }),
+            statusCode: 200,
+            metadata: generateMetadata(1),
+          },
+        ],
+      },
+    },
+  },
+  {
+    id: 'http-configuration-test-6',
+    name: destType,
+    description: 'Track call with missing pathParams mapping value',
+    scenario: 'Business',
+    successCriteria:
+      'Response should contain get method, headers and query params and pathParams mapping',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: destinations[7],
+            message: {
+              type: 'track',
+              event: 'Order Completed',
+              properties,
+            },
+            metadata: generateMetadata(1),
+          },
+        ],
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            error:
+              'Path not found in the object.: Workflow: procWorkflow, Step: deduceEndPoint, ChildStep: undefined, OriginalError: Path not found in the object.',
+            statusCode: 400,
+            statTags: { ...processorInstrumentationErrorStatTags, errorType: 'configuration' },
             metadata: generateMetadata(1),
           },
         ],

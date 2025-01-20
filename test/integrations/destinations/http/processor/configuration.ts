@@ -308,4 +308,58 @@ export const configuration: ProcessorTestData[] = [
       },
     },
   },
+  {
+    id: 'http-configuration-test-5',
+    name: destType,
+    description:
+      'Track call with basic auth, get method, headers, query params and pathParams mapping',
+    scenario: 'Business',
+    successCriteria:
+      'Response should contain get method, headers and query params and pathParams mapping',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: destinations[8],
+            message: {
+              type: 'track',
+              userId: 'userId123',
+              event: 'Order Completed',
+              properties,
+            },
+            metadata: generateMetadata(1),
+          },
+        ],
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: transformResultBuilder({
+              method: 'GET',
+              userId: '',
+              endpoint: 'http://abc.com/contacts/userId123/c1',
+              headers: {
+                Authorization: 'Basic dGVzdC11c2VyOg==',
+                h1: 'val1',
+                h2: 2,
+                'content-type': 'application/json',
+              },
+              params: {
+                'user%20name': 'val1',
+              },
+            }),
+            statusCode: 200,
+            metadata: generateMetadata(1),
+          },
+        ],
+      },
+    },
+  },
 ];

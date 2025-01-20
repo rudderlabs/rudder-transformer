@@ -42,6 +42,19 @@ const getCustomMappings = (message, mapping) => {
   }
 };
 
+const encodeParamsObject = (params) => {
+  if (!params || typeof params !== 'object') {
+    return {}; // Return an empty object if input is null, undefined, or not an object
+  }
+  const encodedParams = {};
+  Object.keys(params).forEach((key) => {
+    if (params[key] !== undefined) {
+      encodedParams[encodeURIComponent(key)] = encodeURIComponent(params[key]);
+    }
+  });
+  return encodedParams;
+};
+
 const getValueFromJsonPath = (message, jsonPath) => {
   let finalPath = jsonPath;
   if (jsonPath.includes('$')) {
@@ -184,6 +197,7 @@ const batchSuccessfulEvents = (events, batchSize) => {
 module.exports = {
   getAuthHeaders,
   getCustomMappings,
+  encodeParamsObject,
   prepareEndpoint,
   excludeMappedFields,
   getXMLPayload,

@@ -43,7 +43,8 @@ steps:
 
   - name: prepareParams
     template: |
-      $.context.params = $.getCustomMappings(.message, .destination.Config.queryParams)
+      const params = $.getCustomMappings(.message, .destination.Config.queryParams)
+      $.context.params = $.encodeParamsObject(params)
 
   - name: deduceEndPoint
     template: |

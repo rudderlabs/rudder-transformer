@@ -1,4 +1,4 @@
-const { toXML } = require('jstoxml');
+const { XMLBuilder } = require('fast-xml-parser');
 const { groupBy } = require('lodash');
 const { createHash } = require('crypto');
 const { ConfigurationError } = require('@rudderstack/integrations-lib');
@@ -127,10 +127,14 @@ const excludeMappedFields = (payload, mapping) => {
   return rawPayload;
 };
 
-const getXMLPayload = (payload) =>
-  toXML(payload, {
-    header: true,
-  });
+const getXMLPayload = (payload) => {
+  const builderOptions = {
+    ignoreAttributes: false, // Include attributes if they exist
+  };
+  const builder = new XMLBuilder(builderOptions);
+
+  return `<?xml version="1.0" encoding="UTF-8"?>${builder.build(payload)}`;
+};
 
 const getMergedEvents = (batch) => {
   const events = [];

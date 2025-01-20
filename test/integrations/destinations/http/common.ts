@@ -396,6 +396,46 @@ const destinations: Destination[] = [
     Transformations: [],
     WorkspaceID: 'test-workspace-id',
   },
+  {
+    Config: {
+      apiUrl: 'http://abc.com/events',
+      auth: 'bearerTokenAuth',
+      bearerToken: 'test-token',
+      method: 'POST',
+      format: 'XML',
+      headers: [
+        {
+          to: '$.h1',
+          from: "'val1'",
+        },
+        {
+          to: '$.h2',
+          from: '$.key1',
+        },
+        {
+          to: "$.'content-type'",
+          from: "'application/json'",
+        },
+      ],
+      propertiesMapping: [
+        {
+          from: '$.',
+          to: '$.',
+        },
+      ],
+    },
+    DestinationDefinition: {
+      DisplayName: displayName,
+      ID: '123',
+      Name: destTypeInUpperCase,
+      Config: { cdkV2Enabled: true },
+    },
+    Enabled: true,
+    ID: '123',
+    Name: destTypeInUpperCase,
+    Transformations: [],
+    WorkspaceID: 'test-workspace-id',
+  },
 ];
 
 const traits = {

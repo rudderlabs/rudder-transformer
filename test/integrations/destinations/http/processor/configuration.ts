@@ -209,7 +209,7 @@ export const configuration: ProcessorTestData[] = [
               },
               XML: {
                 payload:
-                  '<?xml version="1.0" encoding="UTF-8"?><event>Order Completed</event><currency>USD</currency><userId>userId123</userId><properties><items><item_id>622c6f5d5cf86a4c77358033</item_id><name>Cones of Dunshire</name><price>40</price><item_id>577c6f5d5cf86a4c7735ba03</item_id><name>Five Crowns</name><price>5</price></items></properties>',
+                  '<?xml version="1.0" encoding="UTF-8"?><event>Order Completed</event><currency>USD</currency><userId>userId123</userId><properties><items><item_id>622c6f5d5cf86a4c77358033</item_id><name>Cones of Dunshire</name><price>40</price></items><items><item_id>577c6f5d5cf86a4c7735ba03</item_id><name>Five Crowns</name><price>5</price></items></properties>',
               },
             }),
             statusCode: 200,
@@ -361,6 +361,59 @@ export const configuration: ProcessorTestData[] = [
               },
               params: {
                 'user%20name': 'val1',
+              },
+            }),
+            statusCode: 200,
+            metadata: generateMetadata(1),
+          },
+        ],
+      },
+    },
+  },
+  {
+    id: 'http-configuration-test-4',
+    name: destType,
+    description:
+      'Track call with bearer token, xml format, post method, additional headers and properties mapping',
+    scenario: 'Business',
+    successCriteria:
+      'Response should be in xml format with post method, headers and properties mapping',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: destinations[4],
+            message: {
+              name: "Rubik's Cube",
+              revenue: 4.99,
+              brand: null,
+            },
+            metadata: generateMetadata(1),
+          },
+        ],
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: transformResultBuilder({
+              method: 'POST',
+              userId: '',
+              endpoint: destinations[4].Config.apiUrl,
+              headers: {
+                'Content-Type': 'application/xml',
+                Authorization: 'Bearer test-token',
+                h1: 'val1',
+                'content-type': 'application/json',
+              },
+              XML: {
+                payload: '<?xml version="1.0" encoding="UTF-8"?><properties></properties>',
               },
             }),
             statusCode: 200,

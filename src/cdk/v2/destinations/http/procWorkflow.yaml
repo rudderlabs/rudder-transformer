@@ -38,7 +38,8 @@ steps:
       const additionalConfigHeaders = $.getCustomMappings(.message, .destination.Config.headers);   
       $.context.headers = {
         ...configAuthHeaders,
-        ...additionalConfigHeaders
+        ...additionalConfigHeaders,
+        "Content-Type": $.context.format === "JSON" ? "application/json" : "application/xml",
       }
 
   - name: prepareParams

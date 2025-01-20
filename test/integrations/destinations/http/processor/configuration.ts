@@ -44,6 +44,9 @@ export const configuration: ProcessorTestData[] = [
               method: 'POST',
               userId: '',
               endpoint: destinations[0].Config.apiUrl,
+              headers: {
+                'Content-Type': 'application/json',
+              },
               JSON: {
                 contacts: {
                   first_name: 'John',
@@ -97,6 +100,7 @@ export const configuration: ProcessorTestData[] = [
               userId: '',
               endpoint: 'http://abc.com/contacts/john.doe@example.com/',
               headers: {
+                'Content-Type': 'application/json',
                 'x-api-key': 'test-api-key',
               },
             }),
@@ -143,6 +147,7 @@ export const configuration: ProcessorTestData[] = [
               userId: '',
               endpoint: destinations[1].Config.apiUrl,
               headers: {
+                'Content-Type': 'application/json',
                 Authorization: 'Basic dGVzdC11c2VyOg==',
                 h1: 'val1',
                 h2: 2,
@@ -197,6 +202,7 @@ export const configuration: ProcessorTestData[] = [
               userId: '',
               endpoint: destinations[4].Config.apiUrl,
               headers: {
+                'Content-Type': 'application/xml',
                 Authorization: 'Bearer test-token',
                 h1: 'val1',
                 'content-type': 'application/json',
@@ -251,6 +257,7 @@ export const configuration: ProcessorTestData[] = [
               userId: '',
               endpoint: 'http://abc.com/contacts/userId123/c1',
               headers: {
+                'Content-Type': 'application/json',
                 Authorization: 'Basic dGVzdC11c2VyOg==',
                 h1: 'val1',
                 h2: 2,
@@ -346,6 +353,7 @@ export const configuration: ProcessorTestData[] = [
               userId: '',
               endpoint: 'http://abc.com/contacts/userId123/c1',
               headers: {
+                'Content-Type': 'application/json',
                 Authorization: 'Basic dGVzdC11c2VyOg==',
                 h1: 'val1',
                 h2: 2,

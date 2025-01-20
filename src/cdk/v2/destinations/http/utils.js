@@ -127,13 +127,31 @@ const excludeMappedFields = (payload, mapping) => {
   return rawPayload;
 };
 
+const sanitizeKey = (key) =>
+  key
+    .replace(/[^\w.-]/g, '_') // Replace invalid characters with underscores
+    .replace(/^[^A-Z_a-z]/, '_'); // Ensure key starts with a letter or underscore
+const preprocessJson = (obj) => {
+  if (typeof obj !== 'object' || obj === null) return obj;
+
+  if (Array.isArray(obj)) {
+    return obj.map(preprocessJson);
+  }
+
+  return Object.entries(obj).reduce((acc, [key, value]) => {
+    const sanitizedKey = sanitizeKey(key);
+    acc[sanitizedKey] = preprocessJson(value);
+    return acc;
+  }, {});
+};
+
 const getXMLPayload = (payload) => {
   const builderOptions = {
     ignoreAttributes: false, // Include attributes if they exist
   };
   const builder = new XMLBuilder(builderOptions);
 
-  return `<?xml version="1.0" encoding="UTF-8"?>${builder.build(payload)}`;
+  return `<?xml version="1.0" encoding="UTF-8"?>${builder.build(preprocessJson(payload))}`;
 };
 
 const getMergedEvents = (batch) => {

@@ -385,7 +385,7 @@ export const configuration: ProcessorTestData[] = [
       request: {
         body: [
           {
-            destination: destinations[4],
+            destination: destinations[9],
             message: {
               name: "Rubik's Cube",
               revenue: 4.99,
@@ -405,7 +405,7 @@ export const configuration: ProcessorTestData[] = [
             output: transformResultBuilder({
               method: 'POST',
               userId: '',
-              endpoint: destinations[4].Config.apiUrl,
+              endpoint: destinations[9].Config.apiUrl,
               headers: {
                 'Content-Type': 'application/xml',
                 Authorization: 'Bearer test-token',
@@ -413,7 +413,8 @@ export const configuration: ProcessorTestData[] = [
                 'content-type': 'application/json',
               },
               XML: {
-                payload: '<?xml version="1.0" encoding="UTF-8"?><properties></properties>',
+                payload:
+                  '<?xml version="1.0" encoding="UTF-8"?><name>Rubik&apos;s Cube</name><revenue>4.99</revenue>',
               },
             }),
             statusCode: 200,

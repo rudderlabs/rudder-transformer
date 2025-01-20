@@ -90,7 +90,7 @@ const prepareEndpoint = (message, apiUrl, pathParams) => {
   } catch (e) {
     throw new ConfigurationError(`Error in api url template: ${e.message}`);
   }
-  if (!pathParams) {
+  if (!Array.isArray(pathParams)) {
     return requestUrl;
   }
   const pathParamsSubString = getPathParamsSubString(message, pathParams);

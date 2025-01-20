@@ -21,7 +21,6 @@ const {
   handleAnonymousId,
   handleCommonProperties,
 } = require('./serverSideUtlis');
-const { getCartToken } = require('./serverSideUtlis');
 
 const NO_OPERATION_SUCCESS = {
   outputToSource: {

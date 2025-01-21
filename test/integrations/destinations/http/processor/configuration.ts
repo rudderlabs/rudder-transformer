@@ -98,7 +98,7 @@ export const configuration: ProcessorTestData[] = [
             output: transformResultBuilder({
               method: 'DELETE',
               userId: '',
-              endpoint: 'http://abc.com/contacts/john.doe@example.com/',
+              endpoint: 'http://abc.com/contacts/john.doe@example.com',
               headers: {
                 'Content-Type': 'application/json',
                 'x-api-key': 'test-api-key',
@@ -222,11 +222,9 @@ export const configuration: ProcessorTestData[] = [
   {
     id: 'http-configuration-test-5',
     name: destType,
-    description:
-      'Track call with basic auth, get method, headers, query params and pathParams mapping',
+    description: 'Track call with pathParams mapping',
     scenario: 'Business',
-    successCriteria:
-      'Response should contain get method, headers and query params and pathParams mapping',
+    successCriteria: 'Response should have the give paths added in the endpoint',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -277,52 +275,9 @@ export const configuration: ProcessorTestData[] = [
   {
     id: 'http-configuration-test-6',
     name: destType,
-    description: 'Track call with missing pathParams mapping value',
+    description: 'Track call with query params keys containing space',
     scenario: 'Business',
-    successCriteria:
-      'Response should contain get method, headers and query params and pathParams mapping',
-    feature: 'processor',
-    module: 'destination',
-    version: 'v0',
-    input: {
-      request: {
-        body: [
-          {
-            destination: destinations[7],
-            message: {
-              type: 'track',
-              event: 'Order Completed',
-              properties,
-            },
-            metadata: generateMetadata(1),
-          },
-        ],
-        method: 'POST',
-      },
-    },
-    output: {
-      response: {
-        status: 200,
-        body: [
-          {
-            error:
-              'Path not found in the object.: Workflow: procWorkflow, Step: deduceEndPoint, ChildStep: undefined, OriginalError: Path not found in the object.',
-            statusCode: 400,
-            statTags: { ...processorInstrumentationErrorStatTags, errorType: 'configuration' },
-            metadata: generateMetadata(1),
-          },
-        ],
-      },
-    },
-  },
-  {
-    id: 'http-configuration-test-5',
-    name: destType,
-    description:
-      'Track call with basic auth, get method, headers, query params and pathParams mapping',
-    scenario: 'Business',
-    successCriteria:
-      'Response should contain get method, headers and query params and pathParams mapping',
+    successCriteria: 'Response should contain query params with URI encoded keys',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -371,10 +326,9 @@ export const configuration: ProcessorTestData[] = [
     },
   },
   {
-    id: 'http-configuration-test-4',
+    id: 'http-configuration-test-7',
     name: destType,
-    description:
-      'Track call with bearer token, xml format, post method, additional headers and properties mapping',
+    description: 'Track call with bearer token, xml format',
     scenario: 'Business',
     successCriteria:
       'Response should be in xml format with post method, headers and properties mapping',

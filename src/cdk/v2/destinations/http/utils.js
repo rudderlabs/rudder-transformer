@@ -3,7 +3,6 @@ const { groupBy } = require('lodash');
 const { createHash } = require('crypto');
 const { ConfigurationError } = require('@rudderstack/integrations-lib');
 const { BatchUtils } = require('@rudderstack/workflow-engine');
-const jsonpath = require('rs-jsonpath');
 const {
   base64Convertor,
   applyCustomMappings,
@@ -54,46 +53,29 @@ const encodeParamsObject = (params) => {
     }, {});
 };
 
-const getValueFromJsonPath = (message, jsonPath) => {
-  let finalPath = jsonPath;
-  if (jsonPath.includes('$')) {
-    try {
-      [finalPath = null] = jsonpath.query(message, jsonPath);
-    } catch (error) {
-      throw new ConfigurationError(
-        `An error occurred while querying the JSON path: ${error.message}`,
-      );
-    }
-    if (finalPath === null) {
-      throw new ConfigurationError('Path not found in the object.');
-    }
-  }
-  return finalPath;
-};
-
-const getPathParamsSubString = (message, pathParamsArray) => {
-  if (pathParamsArray.length === 0) {
+const getPathParamsStringTemplate = (pathParamsArray) => {
+  if (!Array.isArray(pathParamsArray) || pathParamsArray.length === 0) {
     return '';
   }
   const pathParamsValuesArray = pathParamsArray.map((pathParam) => {
-    const path = pathParam.path.replace(/^\/+/, '');
-    return getValueFromJsonPath(message, path);
+    let path = pathParam.path.replace(/^\/+|\/+$/g, ''); // Remove leading and trailing slashes
+    if (path.includes('$')) path = `\${${path}}`; // If json path, then return '${jsonpath}'
+    return path;
   });
   return `/${pathParamsValuesArray.join('/')}`;
 };
 
 const prepareEndpoint = (message, apiUrl, pathParams) => {
-  let requestUrl;
+  let endpoint;
+  const trimmedUrl = apiUrl.replace(/^\/+|\/+$/g, ''); // Remove leading and trailing slashes
+  const pathParamsStringTemplate = getPathParamsStringTemplate(pathParams);
+  const requestUrlTemplate = `${trimmedUrl}${pathParamsStringTemplate}`;
   try {
-    requestUrl = applyJSONStringTemplate(message, `\`${apiUrl}\``);
+    endpoint = applyJSONStringTemplate(message, `\`${requestUrlTemplate}\``);
   } catch (e) {
     throw new ConfigurationError(`Error in api url template: ${e.message}`);
   }
-  if (!Array.isArray(pathParams)) {
-    return requestUrl;
-  }
-  const pathParamsSubString = getPathParamsSubString(message, pathParams);
-  return `${requestUrl}${pathParamsSubString}`;
+  return endpoint;
 };
 
 const excludeMappedFields = (payload, mapping) => {

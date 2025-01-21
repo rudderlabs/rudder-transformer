@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 const lodash = require('lodash');
 const get = require('get-value');
 const stats = require('../../../../util/stats');
-const { getShopifyTopic } = require('../../../../v0/sources/shopify/util');
-const { removeUndefinedAndNullValues } = require('../../../../v0/util');
+const { getShopifyTopic, extractEmailFromPayload } = require('../../../../v0/sources/shopify/util');
+const { removeUndefinedAndNullValues, isDefinedAndNotNull } = require('../../../../v0/util');
 const Message = require('../../../../v0/sources/message');
 const { EventType } = require('../../../../constants');
 const {
@@ -18,8 +19,7 @@ const { RUDDER_ECOM_MAP } = require('../config');
 const {
   createPropertiesForEcomEventFromWebhook,
   getProductsFromLineItems,
-  handleAnonymousId,
-  handleCommonProperties,
+  getAnonymousIdFromAttributes,
 } = require('./serverSideUtlis');
 
 const NO_OPERATION_SUCCESS = {
@@ -65,6 +65,9 @@ const ecomPayloadBuilder = (event, shopifyTopic) => {
   if (event.billing_address) {
     message.setProperty('traits.billingAddress', event.billing_address);
   }
+  if (!message.userId && event.user_id) {
+    message.setProperty('userId', event.user_id);
+  }
   return message;
 };
 
@@ -107,12 +110,38 @@ const processEvent = async (inputEvent, metricMetadata) => {
       message = trackPayloadBuilder(event, shopifyTopic);
       break;
   }
+
+  if (message.userId) {
+    message.userId = String(message.userId);
+  }
+  if (!get(message, 'traits.email')) {
+    const email = extractEmailFromPayload(event);
+    if (email) {
+      message.setProperty('traits.email', email);
+    }
+  }
   // attach anonymousId if the event is track event using note_attributes
   if (message.type !== EventType.IDENTIFY) {
-    handleAnonymousId(message, event);
+    const anonymousId = getAnonymousIdFromAttributes(event);
+    if (isDefinedAndNotNull(anonymousId)) {
+      message.setProperty('anonymousId', anonymousId);
+    }
   }
-  // attach userId, email and other contextual properties
-  message = handleCommonProperties(message, event, shopifyTopic);
+  message.setProperty(`integrations.${INTEGERATION}`, true);
+  message.setProperty('context.library', {
+    eventOrigin: 'server',
+    name: 'RudderStack Shopify Cloud',
+    version: '2.0.0',
+  });
+  message.setProperty('context.topic', shopifyTopic);
+  // attaching cart, checkout and order tokens in context object
+  message.setProperty(`context.cart_token`, event.cart_token);
+  message.setProperty(`context.checkout_token`, event.checkout_token);
+  // raw shopify payload passed inside context object under shopifyDetails
+  message.setProperty('context.shopifyDetails', event);
+  if (shopifyTopic === 'orders_updated') {
+    message.setProperty(`context.order_token`, event.token);
+  }
   message = removeUndefinedAndNullValues(message);
   return message;
 };

@@ -1,0 +1,20 @@
+output:
+  status: 200
+  message: "[Generic Response Handler] Request for destination: bloomreach_catalog Processed Successfully"
+  destinationResponse:
+    response:
+      - queued: true
+        success: true
+    status: 200
+    headers:
+      server: "nginx"
+      date: "Mon, 01 Jan 2029 03:45:29 GMT"
+      content-type: "application/json"
+      x-ratelimit-limit: 5
+      x-ratelimit-remaining: 4
+      x-ratelimit-reset: 1736135140
+      retry-after: "Mon, 06 Jan 2025 03:45:40 GMT"
+      strict-transport-security: "max-age=31536000; includeSubDomains"
+      via: "1.1 google"
+      alt-svc: "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
+      transfer-encoding: "chunked"

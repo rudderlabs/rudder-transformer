@@ -1,4 +1,5 @@
 const { NetworkError, InstrumentationError } = require('@rudderstack/integrations-lib');
+const validator = require('validator');
 const { httpGET } = require('../../../adapters/network');
 const {
   processAxiosResponse,
@@ -9,6 +10,7 @@ const {
   getHashFromArrayWithValueAsObject,
   formatTimeStamp,
 } = require('../../util');
+
 const { getCustomFieldsEndPoint } = require('./config');
 const tags = require('../../util/tags');
 const { JSON_MIME_TYPE } = require('../../util/constant');
@@ -44,9 +46,7 @@ const validatePhoneWithCountryCode = (phone) => {
  * @param {*} email
  */
 const validateEmail = (email) => {
-  const regex =
-    /^(([^\s"(),.:;<>@[\\\]]+(\.[^\s"(),.:;<>@[\\\]]+)*)|(".+"))@((\[(?:\d{1,3}\.){3}\d{1,3}])|(([\dA-Za-z-]+\.)+[A-Za-z]{2,}))$/;
-  if (!regex.test(email)) {
+  if (!validator.isEmail(email)) {
     throw new InstrumentationError('The provided email is invalid');
   }
 };
@@ -56,7 +56,7 @@ const validateEmail = (email) => {
  * @param {*} url
  */
 const validateUrl = (url) => {
-  const regex = /^(https?:\/\/)[\w.-]+(?:\.[\w.-]+)+[\w!#$&'()*+,/:;=?@[\]~-]+$/;
+  const regex = /^https?:\/\/[\w.-]+(\.[A-Za-z]{2,})+([#/?]\S*)?$/;
   if (!regex.test(url)) {
     throw new InstrumentationError('The provided url is invalid');
   }

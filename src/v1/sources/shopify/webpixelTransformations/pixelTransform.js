@@ -16,7 +16,6 @@ const {
   checkoutStepEventBuilder,
   searchEventBuilder,
 } = require('./pixelUtils');
-const campaignObjectMappings = require('../pixelEventsMappings/campaignObjectMappings.json');
 const {
   INTEGERATION,
   PIXEL_EVENT_TOPICS,
@@ -86,7 +85,7 @@ const handleCartTokenRedisOperations = async (inputEvent, clientId) => {
 
 function processPixelEvent(inputEvent) {
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  const { name, query_parameters, context, clientId, data, id } = inputEvent;
+  const { name, query_parameters, clientId, data, id } = inputEvent;
   const shopifyDetails = { ...inputEvent };
   delete shopifyDetails.context;
   delete shopifyDetails.query_parameters;
@@ -148,36 +147,6 @@ function processPixelEvent(inputEvent) {
   });
   message.setProperty('context.topic', name);
   message.setProperty('context.shopifyDetails', shopifyDetails);
-
-  // adding campaign object to the message
-  if (context?.document?.location?.href) {
-    const url = new URL(context.document.location.href);
-    const campaignParams = {};
-
-    // Loop through mappings and extract UTM parameters
-    campaignObjectMappings.forEach((mapping) => {
-      const value = url.searchParams.get(mapping.sourceKeys);
-      if (value) {
-        campaignParams[mapping.destKeys] = value;
-      }
-    });
-
-    // Extract any UTM parameters not in the mappings
-    const campaignObjectSourceKeys = campaignObjectMappings.flatMap(
-      (mapping) => mapping.sourceKeys,
-    );
-    url.searchParams.forEach((value, key) => {
-      if (key.startsWith('utm_') && !campaignObjectSourceKeys.includes(key)) {
-        campaignParams[key] = value;
-      }
-    });
-
-    // Only add campaign object if we have any UTM parameters
-    if (Object.keys(campaignParams).length > 0) {
-      message.context = message.context || {};
-      message.context.campaign = campaignParams;
-    }
-  }
   message.messageId = id;
   message = removeUndefinedAndNullValues(message);
   return message;

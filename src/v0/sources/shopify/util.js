@@ -272,7 +272,6 @@ module.exports = {
   createPropertiesForEcomEvent,
   extractEmailFromPayload,
   getAnonymousIdAndSessionId,
-  getCartToken,
   checkAndUpdateCartItems,
   getHashLineItems,
   getDataFromRedis,

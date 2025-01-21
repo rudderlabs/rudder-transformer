@@ -308,7 +308,7 @@ const destinations: Destination[] = [
       ],
       queryParams: [
         {
-          to: '$.q1',
+          to: "$['q1']",
           from: "'val1'",
         },
         {

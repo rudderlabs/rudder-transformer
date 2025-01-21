@@ -1,14 +1,9 @@
-/{version}/destinations/{destination}/proxy:
+/v0/destinations/{destination}/proxy:
   post:
     tags:
       - Delivery
     summary: Destination processor transformation
     parameters:
-      - in: path
-        name: version
-        required: true
-        schema:
-          type: string
       - in: path
         name: destination
         description: The destination identifier
@@ -21,7 +16,10 @@
       content:
         application/json:
           schema:
-            $ref: '../components/schemas/processorTransformationOutput.yaml'
+            $ref: '../components/schemas/v0DeliveryRequest.yaml'
+          examples:
+            request:
+              $ref: '../components/examples/delivery/v0/request/request.yaml'
     responses:
       200:
         description: Success
@@ -31,25 +29,58 @@
               type: object
               properties:
                 output:
-                  $ref: '../components/schemas/deliveryResponse.yaml'
-      400:
-        description: Bad Request
+                  $ref: '../components/schemas/v0DeliveryResponse.yaml'
+            examples:
+              success:
+                value:
+                  output:
+                    $ref: '../components/examples/delivery/v0/response/success.yaml'
+              failure:
+                value:
+                  output:
+                    $ref: '../components/examples/delivery/v0/response/failure.yaml'
+
+/v1/destinations/{destination}/proxy:
+  post:
+    tags:
+      - Delivery
+    summary: Destination processor transformation
+    parameters:
+      - in: path
+        name: destination
+        description: The destination identifier
+        required: true
+        schema:
+          type: string
+    requestBody:
+      description: Request Body
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/v1DeliveryRequest.yaml'
+          examples:
+            request:
+              $ref: '../components/examples/delivery/v1/request/request.yaml'
+    responses:
+      200:
+        description: Success
         content:
           application/json:
             schema:
               type: object
               properties:
                 output:
-                  $ref: '../components/schemas/deliveryResponse.yaml'
-      500:
-        description: Internal Server Error
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                output:
-                  $ref: '../components/schemas/deliveryResponse.yaml'
+                  $ref: '../components/schemas/v1DeliveryResponse.yaml'
+            examples:
+              success:
+                value:
+                  output:
+                    $ref: '../components/examples/delivery/v1/response/success.yaml'
+              failure:
+                value:
+                  output:
+                    $ref: '../components/examples/delivery/v1/response/failure.yaml'
 
 /{version}/destinations/{destination}/proxyTest:
   post:

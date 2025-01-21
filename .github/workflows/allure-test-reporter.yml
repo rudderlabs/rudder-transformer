@@ -1,0 +1,109 @@
+name: Allure Test Reporter
+
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.sha }}
+  cancel-in-progress: true
+
+permissions:
+  id-token: write
+  contents: write # Required for gh-pages deployment
+
+jobs:
+  test_and_publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.2.1
+
+      - name: Setup Node
+        uses: actions/setup-node@v4.0.4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Run Tests and Generate Report
+        run: |
+          npm run test:ts
+
+      - name: Load test report history
+        uses: actions/checkout@v4
+        if: always()
+        continue-on-error: true
+        with:
+          ref: gh-pages
+          path: gh-pages
+
+      - name: Generate Allure Report
+        uses: simple-elf/allure-report-action@master
+        if: always()
+        with:
+          gh_pages: gh-pages
+          allure_results: allure-results
+          allure_history: allure-history
+          keep_reports: 20
+
+      - name: Publish to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        id: deploy
+        if: always()
+        with:
+          github_token: ${{ secrets.PAT }}
+          publish_branch: gh-pages
+          publish_dir: allure-history
+
+      - name: Get Report Number
+        id: report-number
+        if: always()
+        run: |
+          # Wait a moment for gh-pages to update
+          sleep 10
+
+          # Create a temporary directory for gh-pages checkout
+          mkdir temp_gh_pages
+          cd temp_gh_pages
+
+          # Initialize git and fetch gh-pages
+          git init
+          git remote add origin https://github.com/rudderlabs/rudder-transformer.git
+          git fetch origin gh-pages
+          git checkout gh-pages
+
+          # Find the latest numbered directory
+          LATEST_NUM=$(find . -maxdepth 1 -type d -name "[0-9]*" | sort -n | tail -1 | sed 's/\.\///')
+          echo "number=${LATEST_NUM}" >> $GITHUB_OUTPUT
+
+          # Cleanup
+          cd ..
+          rm -rf temp_gh_pages
+
+      - name: Add Test Report Link as Comment on PR
+        uses: actions/github-script@v7
+        if: always()
+        with:
+          github-token: ${{ secrets.PAT }}
+          script: |
+            const { owner, repo } = context.repo;
+            const prNumber = context.payload.pull_request.number;
+            const reportNumber = '${{ steps.report-number.outputs.number }}';
+
+            const commentBody = `Allure Test reports for this run are available at:
+            - Allure Report: https://rudderlabs.github.io/rudder-transformer/${reportNumber}/index.html`;
+
+            // Comment on the pull request
+            await github.rest.issues.createComment({
+              owner,
+              repo,
+              issue_number: prNumber,
+              body: commentBody
+            });

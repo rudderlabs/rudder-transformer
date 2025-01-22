@@ -1,6 +1,7 @@
 /* eslint-disable no-param-reassign */
 const get = require('get-value');
 const { isDefinedAndNotNull } = require('@rudderstack/integrations-lib');
+const { extractEmailFromPayload } = require('../../../../v0/sources/shopify/util');
 const { constructPayload } = require('../../../../v0/util');
 const { INTEGERATION, lineItemsMappingJSON, productMappingJSON } = require('../config');
 const { RedisDB } = require('../../../../util/redis/redisConnector');

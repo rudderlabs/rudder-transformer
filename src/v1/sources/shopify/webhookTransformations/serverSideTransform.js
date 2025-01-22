@@ -2,7 +2,7 @@ const lodash = require('lodash');
 const get = require('get-value');
 const stats = require('../../../../util/stats');
 const { getShopifyTopic, extractEmailFromPayload } = require('../../../../v0/sources/shopify/util');
-const { removeUndefinedAndNullValues, isDefinedAndNotNull } = require('../../../../v0/util');
+const { removeUndefinedAndNullValues } = require('../../../../v0/util');
 const Message = require('../../../../v0/sources/message');
 const { EventType } = require('../../../../constants');
 const {

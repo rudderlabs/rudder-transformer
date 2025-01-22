@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 const lodash = require('lodash');
 const get = require('get-value');
 const stats = require('../../../../util/stats');
@@ -109,7 +110,7 @@ const processEvent = async (inputEvent, metricMetadata) => {
   }
   // attach anonymousId if the event is track event using note_attributes
   if (message.type !== EventType.IDENTIFY) {
-    handleAnonymousId(message, event);
+    await handleAnonymousId(message, event);
   }
   // attach userId, email and other contextual properties
   message = handleCommonProperties(message, event, shopifyTopic);

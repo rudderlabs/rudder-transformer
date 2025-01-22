@@ -1,10 +1,6 @@
-/* eslint-disable no-param-reassign */
-const get = require('get-value');
 const { isDefinedAndNotNull } = require('@rudderstack/integrations-lib');
-const { extractEmailFromPayload } = require('../../../../v0/sources/shopify/util');
 const { constructPayload } = require('../../../../v0/util');
-const { INTEGERATION, lineItemsMappingJSON, productMappingJSON } = require('../config');
-const { RedisDB } = require('../../../../util/redis/redisConnector');
+const { lineItemsMappingJSON, productMappingJSON } = require('../config');
 
 /**
  * Returns an array of products from the lineItems array received from the webhook event
@@ -124,12 +120,9 @@ const handleCommonProperties = (message, event, shopifyTopic) => {
   });
   return message;
 };
-
 module.exports = {
   createPropertiesForEcomEventFromWebhook,
   getProductsFromLineItems,
-  getAnonymousIdFromAttributes,
-  getCartToken,
   handleAnonymousId,
-  handleCommonProperties,
+  handleCommonProperties
 };

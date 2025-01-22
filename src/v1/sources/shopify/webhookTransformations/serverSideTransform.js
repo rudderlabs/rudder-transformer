@@ -1,9 +1,8 @@
-/* eslint-disable no-param-reassign */
 const lodash = require('lodash');
 const get = require('get-value');
 const stats = require('../../../../util/stats');
-const { getShopifyTopic } = require('../../../../v0/sources/shopify/util');
-const { removeUndefinedAndNullValues } = require('../../../../v0/util');
+const { getShopifyTopic, extractEmailFromPayload } = require('../../../../v0/sources/shopify/util');
+const { removeUndefinedAndNullValues, isDefinedAndNotNull } = require('../../../../v0/util');
 const Message = require('../../../../v0/sources/message');
 const { EventType } = require('../../../../constants');
 const {
@@ -66,6 +65,9 @@ const ecomPayloadBuilder = (event, shopifyTopic) => {
   if (event.billing_address) {
     message.setProperty('traits.billingAddress', event.billing_address);
   }
+  if (!message.userId && event.user_id) {
+    message.setProperty('userId', event.user_id);
+  }
   return message;
 };
 
@@ -107,6 +109,16 @@ const processEvent = async (inputEvent, metricMetadata) => {
       }
       message = trackPayloadBuilder(event, shopifyTopic);
       break;
+  }
+
+  if (message.userId) {
+    message.userId = String(message.userId);
+  }
+  if (!get(message, 'traits.email')) {
+    const email = extractEmailFromPayload(event);
+    if (email) {
+      message.setProperty('traits.email', email);
+    }
   }
   // attach anonymousId if the event is track event using note_attributes
   if (message.type !== EventType.IDENTIFY) {

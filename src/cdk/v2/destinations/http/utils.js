@@ -78,7 +78,9 @@ const getPathParamsSubString = (message, pathParamsArray) => {
   if (pathParamsArray.length === 0) {
     return '';
   }
-  const pathParamsValuesArray = pathParamsArray.map((pathParam) => encodeURIComponent(getPathValueFromJsonpath(message, pathParam.path)));
+  const pathParamsValuesArray = pathParamsArray.map((pathParam) =>
+    encodeURIComponent(getPathValueFromJsonpath(message, pathParam.path)),
+  );
   return `/${pathParamsValuesArray.join('/')}`;
 };
 

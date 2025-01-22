@@ -1,4 +1,4 @@
-const { encodeParamsObject, prepareEndpoint, getXMLPayload } = require('./utils');
+const { encodeParamsObject, prepareEndpoint, prepareBody } = require('./utils');
 
 const { XMLBuilder } = require('fast-xml-parser');
 const jsonpath = require('rs-jsonpath');
@@ -71,12 +71,27 @@ describe('Utils Functions', () => {
     });
   });
 
-  describe('getXMLPayload', () => {
-    test('should generate XML payload with correct structure', () => {
-      const payload = { key: null };
-      const expectedXML = '<?xml version="1.0" encoding="UTF-8"?><key xsi:nil></key>';
-      const result = getXMLPayload(payload);
-      expect(result).toBe(expectedXML);
+  describe('prepareBody', () => {
+    test('should prepare XML payload when content type is XML', () => {
+      const payload = { key: 'value', key2: null };
+      const expectedXML =
+        '<?xml version="1.0" encoding="UTF-8"?><key>value</key><key2 xsi:nil></key2>';
+      const result = prepareBody(payload, 'XML');
+      expect(result).toEqual({ payload: expectedXML });
+    });
+
+    test('should prepare FORM-URLENCODED payload when content type is FORM-URLENCODED', () => {
+      const payload = { key1: 'value1', key2: 'value2' };
+      const expectedFORM = 'key1=value1&key2=value2';
+      const result = prepareBody(payload, 'FORM-URLENCODED');
+      expect(result).toEqual({ payload: expectedFORM });
+    });
+
+    test('should return original payload without null or undefined values for other content types', () => {
+      const payload = { key1: 'value1', key2: null, key3: undefined, key4: 'value4' };
+      const expected = { key1: 'value1', key4: 'value4' };
+      const result = prepareBody(payload, 'JSON');
+      expect(result).toEqual(expected);
     });
   });
 });

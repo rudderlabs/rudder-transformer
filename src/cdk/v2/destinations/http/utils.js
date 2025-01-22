@@ -1,6 +1,7 @@
 const { XMLBuilder } = require('fast-xml-parser');
 const { groupBy } = require('lodash');
 const { createHash } = require('crypto');
+const querystring = require('querystring');
 const { ConfigurationError } = require('@rudderstack/integrations-lib');
 const { BatchUtils } = require('@rudderstack/workflow-engine');
 const jsonpath = require('rs-jsonpath');
@@ -9,6 +10,7 @@ const {
   applyCustomMappings,
   isEmptyObject,
   applyJSONStringTemplate,
+  removeUndefinedAndNullValues,
 } = require('../../../../v0/util');
 
 const getAuthHeaders = (config) => {
@@ -172,10 +174,44 @@ const getMergedEvents = (batch) => {
   return events;
 };
 
-const metadataHeaders = (contentType) =>
-  contentType === 'JSON'
-    ? { 'Content-Type': 'application/json' }
-    : { 'Content-Type': 'application/xml' };
+const metadataHeaders = (contentType) => {
+  switch (contentType) {
+    case 'XML':
+      return { 'Content-Type': 'application/xml' };
+    case 'FORM-URLENCODED':
+      return { 'Content-Type': 'application/x-www-form-urlencoded' };
+    default:
+      return { 'Content-Type': 'application/json' };
+  }
+};
+
+/**
+ * Converts JSON payload to application/x-www-form-urlencoded format.
+ * @param {Object} payload - The JSON payload to be converted.
+ * @returns {string} - The payload in application/x-www-form-urlencoded format.
+ */
+const getFORMPayload = (payload) => {
+  if (!payload) {
+    throw new ConfigurationError('Invalid payload for FORM format');
+  }
+  return querystring.stringify(payload);
+};
+
+const prepareBody = (payload, contentType) => {
+  let responseBody;
+  if (contentType === 'XML' && !isEmptyObject(payload)) {
+    responseBody = {
+      payload: getXMLPayload(payload),
+    };
+  } else if (contentType === 'FORM-URLENCODED' && !isEmptyObject(payload)) {
+    responseBody = {
+      payload: getFORMPayload(payload),
+    };
+  } else {
+    responseBody = removeUndefinedAndNullValues(payload);
+  }
+  return responseBody;
+};
 
 const mergeMetadata = (batch) => batch.map((event) => event.metadata[0]);
 
@@ -235,7 +271,7 @@ module.exports = {
   encodeParamsObject,
   prepareEndpoint,
   excludeMappedFields,
-  getXMLPayload,
   metadataHeaders,
+  prepareBody,
   batchSuccessfulEvents,
 };

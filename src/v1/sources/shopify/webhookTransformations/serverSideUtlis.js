@@ -127,6 +127,7 @@ const handleCommonProperties = (message, event, shopifyTopic) => {
 module.exports = {
   createPropertiesForEcomEventFromWebhook,
   getProductsFromLineItems,
+  getAnonymousIdFromAttributes,
   handleAnonymousId,
   handleCommonProperties,
 };

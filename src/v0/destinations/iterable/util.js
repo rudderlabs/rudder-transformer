@@ -69,6 +69,37 @@ const validateMandatoryField = (payload) => {
   }
 };
 
+const deepCompareObjects = (obj1, obj2) => {
+  // Handle null/undefined cases
+  if (obj1 === obj2) return true;
+  if (!obj1 || !obj2) return false;
+
+  // Get keys from both objects
+  const keys1 = Object.keys(obj1);
+  const keys2 = Object.keys(obj2);
+
+  // Check if number of keys match
+  if (keys1.length !== keys2.length) return false;
+
+  // Compare each key-value pair recursively
+  return keys1.every((key) => {
+    const val1 = obj1[key];
+    const val2 = obj2[key];
+
+    // Handle nested objects/arrays
+    if (typeof val1 === 'object' && typeof val2 === 'object') {
+      return deepCompareObjects(val1, val2);
+    }
+
+    return val1 === val2;
+  });
+};
+
+const getCategoryWithEndpoint = (categoryConfig, dataCenter) => ({
+  ...categoryConfig,
+  endpoint: constructEndpoint(dataCenter, categoryConfig),
+});
+
 /**
  * Check for register device and register browser events
  * @param {*} message
@@ -80,17 +111,16 @@ const hasMultipleResponses = (message, category, config) => {
   const { context } = message;
 
   const isIdentifyEvent = message.type === EventType.IDENTIFY;
-  const isIdentifyCategory = category === ConfigCategory.IDENTIFY;
-  const hasToken = context && (context.device?.token || context.os?.token);
+
+  // TODO: This is a temporary fix to check if the category is IDENTIFY
+  const identifyCategory = getCategoryWithEndpoint(ConfigCategory.IDENTIFY, config.dataCenter);
+  const isIdentifyCategory = deepCompareObjects(category, identifyCategory);
+
+  const hasToken = Boolean(context && (context.device?.token || context.os?.token));
   const hasRegisterDeviceOrBrowserKey = Boolean(config.registerDeviceOrBrowserApiKey);
 
   return isIdentifyEvent && isIdentifyCategory && hasToken && hasRegisterDeviceOrBrowserKey;
 };
-
-const getCategoryWithEndpoint = (categoryConfig, dataCenter) => ({
-  ...categoryConfig,
-  endpoint: constructEndpoint(dataCenter, categoryConfig),
-});
 
 /**
  * Returns category value

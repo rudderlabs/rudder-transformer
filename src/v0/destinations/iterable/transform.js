@@ -110,7 +110,9 @@ const responseBuilder = (message, category, destination) => {
 const responseBuilderForRegisterDeviceOrBrowserTokenEvents = (message, destination) => {
   const { device } = message.context;
   const category = device?.token ? ConfigCategory.IDENTIFY_DEVICE : ConfigCategory.IDENTIFY_BROWSER;
-  const response = responseBuilder(message, category, destination);
+
+  const categoryWithEndpoint = getCategoryWithEndpoint(category, destination.Config.dataCenter);
+  const response = responseBuilder(message, categoryWithEndpoint, destination);
   response.headers.api_key = destination.Config.registerDeviceOrBrowserApiKey;
   return response;
 };

@@ -5,7 +5,6 @@ const { extractEmailFromPayload } = require('../../../../v0/sources/shopify/util
 const { constructPayload } = require('../../../../v0/util');
 const { INTEGERATION, lineItemsMappingJSON, productMappingJSON } = require('../config');
 const { RedisDB } = require('../../../../util/redis/redisConnector');
-const { extractEmailFromPayload } = require('../../../../v0/sources/shopify/util');
 
 /**
  * Returns an array of products from the lineItems array received from the webhook event
@@ -127,6 +126,7 @@ const handleCommonProperties = (message, event, shopifyTopic) => {
 };
 module.exports = {
   createPropertiesForEcomEventFromWebhook,
+  getCartToken,
   getProductsFromLineItems,
   getAnonymousIdFromAttributes,
   handleAnonymousId,

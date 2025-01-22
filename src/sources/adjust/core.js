@@ -1,8 +1,8 @@
 const path = require('path');
 const fs = require('fs');
-const Message = require('../message');
+const Message = require('../../v0/sources/message');
 const { excludedFieldList } = require('./config');
-const { extractCustomFields, generateUUID } = require('../../util');
+const { extractCustomFields, generateUUID } = require('../../v0/util');
 const { convertToISODate } = require('./utils');
 
 // ref : https://help.adjust.com/en/article/global-callbacks#general-recommended-placeholders
@@ -17,7 +17,12 @@ const processPayload = (payload) => {
   message.setEventType(eventType);
   message.setPropertiesV2(payload, mapping);
   let customProperties = {};
+
+  // to remove writeKey from custom properties we can add it to excludedFieldList
+  excludedFieldList.push('writeKey');
+
   customProperties = extractCustomFields(payload, customProperties, 'root', excludedFieldList);
+
   message.properties = { ...message.properties, ...customProperties };
 
   if (payload.created_at) {

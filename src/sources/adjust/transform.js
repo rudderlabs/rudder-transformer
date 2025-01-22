@@ -1,8 +1,8 @@
 const { TransformationError } = require('@rudderstack/integrations-lib');
 const { CommonUtils } = require('../../util/common');
 const logger = require('../../logger');
-const { flattenParams } = require('../../v0/sources/adjust/utils');
-const { processPayload } = require('../../v0/sources/adjust/core');
+const { flattenParams } = require('./utils');
+const { processPayload } = require('./core');
 
 const getPayloadFromRequest = (inputRequest) => {
   // This function extracts the query_parameters from the request

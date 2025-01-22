@@ -3,6 +3,7 @@ const { groupBy } = require('lodash');
 const { createHash } = require('crypto');
 const { ConfigurationError } = require('@rudderstack/integrations-lib');
 const { BatchUtils } = require('@rudderstack/workflow-engine');
+const jsonpath = require('rs-jsonpath');
 const {
   base64Convertor,
   applyCustomMappings,
@@ -53,29 +54,46 @@ const encodeParamsObject = (params) => {
     }, {});
 };
 
-const getPathParamsStringTemplate = (pathParamsArray) => {
-  if (!Array.isArray(pathParamsArray) || pathParamsArray.length === 0) {
+const getPathValueFromJsonpath = (message, path) => {
+  let finalPath = path;
+  if (path.includes('/')) {
+    throw new ConfigurationError('Path value cannot contain "/"');
+  }
+  if (path.includes('$')) {
+    try {
+      [finalPath = null] = jsonpath.query(message, path);
+    } catch (error) {
+      throw new ConfigurationError(
+        `An error occurred while querying the JSON path: ${error.message}`,
+      );
+    }
+    if (finalPath === null) {
+      throw new ConfigurationError('Path not found in the object.');
+    }
+  }
+  return finalPath;
+};
+
+const getPathParamsSubString = (message, pathParamsArray) => {
+  if (pathParamsArray.length === 0) {
     return '';
   }
-  const pathParamsValuesArray = pathParamsArray.map((pathParam) => {
-    let path = pathParam.path.replace(/^\/+|\/+$/g, ''); // Remove leading and trailing slashes
-    if (path.includes('$')) path = `\${${path}}`; // If json path, then return '${jsonpath}'
-    return path;
-  });
+  const pathParamsValuesArray = pathParamsArray.map((pathParam) => encodeURIComponent(getPathValueFromJsonpath(message, pathParam.path)));
   return `/${pathParamsValuesArray.join('/')}`;
 };
 
 const prepareEndpoint = (message, apiUrl, pathParams) => {
-  let endpoint;
-  const trimmedUrl = apiUrl.replace(/^\/+|\/+$/g, ''); // Remove leading and trailing slashes
-  const pathParamsStringTemplate = getPathParamsStringTemplate(pathParams);
-  const requestUrlTemplate = `${trimmedUrl}${pathParamsStringTemplate}`;
+  let requestUrl;
   try {
-    endpoint = applyJSONStringTemplate(message, `\`${requestUrlTemplate}\``);
+    requestUrl = applyJSONStringTemplate(message, `\`${apiUrl}\``);
   } catch (e) {
     throw new ConfigurationError(`Error in api url template: ${e.message}`);
   }
-  return endpoint;
+  if (!Array.isArray(pathParams)) {
+    return requestUrl;
+  }
+  const pathParamsSubString = getPathParamsSubString(message, pathParams);
+  return `${requestUrl}${pathParamsSubString}`;
 };
 
 const excludeMappedFields = (payload, mapping) => {

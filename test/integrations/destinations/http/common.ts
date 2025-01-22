@@ -158,27 +158,27 @@ const destinations: Destination[] = [
       propertiesMapping: [
         {
           from: '$.event',
-          to: '$.event',
+          to: '$.body.event',
         },
         {
           from: '$.properties.currency',
-          to: '$.currency',
+          to: '$.body.currency',
         },
         {
           from: '$.userId',
-          to: '$.userId',
+          to: '$.body.userId',
         },
         {
           from: '$.properties.products[*].product_id',
-          to: '$.properties.items[*].item_id',
+          to: '$.body.properties.items[*].item_id',
         },
         {
           from: '$.properties.products[*].name',
-          to: '$.properties.items[*].name',
+          to: '$.body.properties.items[*].name',
         },
         {
           from: '$.properties.products[*].price',
-          to: '$.properties.items[*].price',
+          to: '$.body.properties.items[*].price',
         },
       ],
     },
@@ -623,7 +623,7 @@ const properties = {
 const processorInstrumentationErrorStatTags = {
   destType: destTypeInUpperCase,
   errorCategory: 'dataValidation',
-  errorType: 'instrumentation',
+  errorType: 'configuration',
   feature: 'processor',
   implementation: 'cdkV2',
   module: 'destination',

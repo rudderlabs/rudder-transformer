@@ -99,36 +99,6 @@ const prepareEndpoint = (message, apiUrl, pathParams) => {
   return `${requestUrl}${pathParamsSubString}`;
 };
 
-const excludeMappedFields = (payload, mapping) => {
-  const rawPayload = { ...payload };
-  if (mapping) {
-    mapping.forEach(({ from, to }) => {
-      // continue when from === to
-      if (from === to) return;
-
-      // Remove the '$.' prefix and split the remaining string by '.'
-      const keys = from.replace(/^\$\./, '').split('.');
-      let current = rawPayload;
-
-      // Traverse to the parent of the key to be removed
-      keys.slice(0, -1).forEach((key) => {
-        if (current?.[key]) {
-          current = current[key];
-        } else {
-          current = null;
-        }
-      });
-
-      if (current) {
-        // Remove the 'from' field from input payload
-        delete current[keys[keys.length - 1]];
-      }
-    });
-  }
-
-  return rawPayload;
-};
-
 const sanitizeKey = (key) =>
   key
     .replace(/[^\w.-]/g, '_') // Replace invalid characters with underscores
@@ -158,9 +128,20 @@ const getXMLPayload = (payload) => {
   const builderOptions = {
     ignoreAttributes: false, // Include attributes if they exist
     suppressEmptyNode: false, // Ensures that null or undefined values are not omitted
+    attributeNamePrefix: '@_',
   };
+
+  if (Object.keys(payload).length !== 1) {
+    throw new ConfigurationError(
+      `Error: XML supports only one root key. Please update request body mappings accordingly`,
+    );
+  }
+  const rootKey = Object.keys(payload)[0];
+
   const builder = new XMLBuilder(builderOptions);
-  return `<?xml version="1.0" encoding="UTF-8"?>${builder.build(preprocessJson(payload))}`;
+  const processesPayload = preprocessJson(payload);
+  processesPayload[rootKey]['@_xmlns:xsi'] = 'http://www.w3.org/2001/XMLSchema-instance';
+  return `<?xml version="1.0" encoding="UTF-8"?>${builder.build(processesPayload)}`;
 };
 
 const getMergedEvents = (batch) => {
@@ -253,7 +234,6 @@ module.exports = {
   getCustomMappings,
   encodeParamsObject,
   prepareEndpoint,
-  excludeMappedFields,
   metadataHeaders,
   prepareBody,
   batchSuccessfulEvents,

@@ -1,8 +1,9 @@
-const { toXML } = require('jstoxml');
+const { XMLBuilder } = require('fast-xml-parser');
 const { groupBy } = require('lodash');
 const { createHash } = require('crypto');
 const { ConfigurationError } = require('@rudderstack/integrations-lib');
 const { BatchUtils } = require('@rudderstack/workflow-engine');
+const jsonpath = require('rs-jsonpath');
 const {
   base64Convertor,
   applyCustomMappings,
@@ -41,12 +42,60 @@ const getCustomMappings = (message, mapping) => {
   }
 };
 
-const addPathParams = (message, apiUrl) => {
+const encodeParamsObject = (params) => {
+  if (!params || typeof params !== 'object') {
+    return {}; // Return an empty object if input is null, undefined, or not an object
+  }
+  return Object.keys(params)
+    .filter((key) => params[key] !== undefined)
+    .reduce((acc, key) => {
+      acc[encodeURIComponent(key)] = encodeURIComponent(params[key]);
+      return acc;
+    }, {});
+};
+
+const getPathValueFromJsonpath = (message, path) => {
+  let finalPath = path;
+  if (path.includes('/')) {
+    throw new ConfigurationError('Path value cannot contain "/"');
+  }
+  if (path.includes('$')) {
+    try {
+      [finalPath = null] = jsonpath.query(message, path);
+    } catch (error) {
+      throw new ConfigurationError(
+        `An error occurred while querying the JSON path: ${error.message}`,
+      );
+    }
+    if (finalPath === null) {
+      throw new ConfigurationError('Path not found in the object.');
+    }
+  }
+  return finalPath;
+};
+
+const getPathParamsSubString = (message, pathParamsArray) => {
+  if (pathParamsArray.length === 0) {
+    return '';
+  }
+  const pathParamsValuesArray = pathParamsArray.map((pathParam) =>
+    encodeURIComponent(getPathValueFromJsonpath(message, pathParam.path)),
+  );
+  return `/${pathParamsValuesArray.join('/')}`;
+};
+
+const prepareEndpoint = (message, apiUrl, pathParams) => {
+  let requestUrl;
   try {
-    return applyJSONStringTemplate(message, `\`${apiUrl}\``);
+    requestUrl = applyJSONStringTemplate(message, `\`${apiUrl}\``);
   } catch (e) {
     throw new ConfigurationError(`Error in api url template: ${e.message}`);
   }
+  if (!Array.isArray(pathParams)) {
+    return requestUrl;
+  }
+  const pathParamsSubString = getPathParamsSubString(message, pathParams);
+  return `${requestUrl}${pathParamsSubString}`;
 };
 
 const excludeMappedFields = (payload, mapping) => {
@@ -79,10 +128,39 @@ const excludeMappedFields = (payload, mapping) => {
   return rawPayload;
 };
 
-const getXMLPayload = (payload) =>
-  toXML(payload, {
-    header: true,
-  });
+const sanitizeKey = (key) =>
+  key
+    .replace(/[^\w.-]/g, '_') // Replace invalid characters with underscores
+    .replace(/^[^A-Z_a-z]/, '_'); // Ensure key starts with a letter or underscore
+
+const preprocessJson = (obj) => {
+  if (typeof obj !== 'object' || obj === null) {
+    // Handle null values: add xsi:nil attribute
+    if (obj === null) {
+      return { '@_xsi:nil': 'true' };
+    }
+    return obj; // Return primitive values as is
+  }
+
+  if (Array.isArray(obj)) {
+    return obj.map(preprocessJson);
+  }
+
+  return Object.entries(obj).reduce((acc, [key, value]) => {
+    const sanitizedKey = sanitizeKey(key);
+    acc[sanitizedKey] = preprocessJson(value);
+    return acc;
+  }, {});
+};
+
+const getXMLPayload = (payload) => {
+  const builderOptions = {
+    ignoreAttributes: false, // Include attributes if they exist
+    suppressEmptyNode: false, // Ensures that null or undefined values are not omitted
+  };
+  const builder = new XMLBuilder(builderOptions);
+  return `<?xml version="1.0" encoding="UTF-8"?>${builder.build(preprocessJson(payload))}`;
+};
 
 const getMergedEvents = (batch) => {
   const events = [];
@@ -93,6 +171,11 @@ const getMergedEvents = (batch) => {
   });
   return events;
 };
+
+const metadataHeaders = (contentType) =>
+  contentType === 'JSON'
+    ? { 'Content-Type': 'application/json' }
+    : { 'Content-Type': 'application/xml' };
 
 const mergeMetadata = (batch) => batch.map((event) => event.metadata[0]);
 
@@ -149,8 +232,10 @@ const batchSuccessfulEvents = (events, batchSize) => {
 module.exports = {
   getAuthHeaders,
   getCustomMappings,
-  addPathParams,
+  encodeParamsObject,
+  prepareEndpoint,
   excludeMappedFields,
   getXMLPayload,
+  metadataHeaders,
   batchSuccessfulEvents,
 };

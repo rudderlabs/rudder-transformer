@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.88.2](https://github.com/rudderlabs/rudder-transformer/compare/v1.88.1...v1.88.2) (2025-01-22)
+
+
+### Bug Fixes
+
+* revert feat added drop traits in track call feature for mixpanel ([#4003](https://github.com/rudderlabs/rudder-transformer/issues/4003)) ([ba2accd](https://github.com/rudderlabs/rudder-transformer/commit/ba2accd14a9d99f2c55a9eab34f65e6e4d989e4a))
+
 ### [1.88.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.88.0...v1.88.1) (2025-01-21)
 
 ## [1.88.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.87.1...v1.88.0) (2025-01-20)

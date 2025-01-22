@@ -1,0 +1,214 @@
+{
+  "body": {
+    "input": [
+      {
+        "message": {
+          "channel": "web",
+          "traits": {
+            "email": "testklaviyo1@rs.com",
+            "firstname": "Test Klaviyo 1",
+            "properties": {
+              "subscribe": true,
+              "listId": "configListId",
+              "consent": [
+                "email"
+              ]
+            }
+          },
+          "context": {},
+          "anonymousId": "anonTestKlaviyo1",
+          "type": "identify",
+          "userId": "testKlaviyo1",
+          "integrations": {
+            "All": true
+          }
+        },
+        "metadata": {
+          "jobId": 1,
+          "attemptNum": 1,
+          "userId": "testKlaviyo1",
+          "sourceId": "default-sourceId",
+          "destinationId": "default-destinationId",
+          "workspaceId": "default-workspaceId",
+          "secret": {
+            "accessToken": "default-accessToken"
+          },
+          "dontBatch": false
+        },
+        "destination": {
+          "ID": "123",
+          "Name": "klaviyo",
+          "DestinationDefinition": {
+            "ID": "123",
+            "Name": "klaviyo",
+            "DisplayName": "klaviyo",
+            "Config": {}
+          },
+          "Config": {
+            "privateApiKey": "dummyPrivateApiKey",
+            "apiVersion": "v2"
+          },
+          "Enabled": true,
+          "WorkspaceID": "123",
+          "Transformations": []
+        }
+      },
+      {
+        "message": {
+          "channel": "web",
+          "traits": {
+            "email": "testklaviyo2@rs.com",
+            "firstname": "Test Klaviyo 2",
+            "properties": {
+              "subscribe": true,
+              "listId": "configListId",
+              "consent": [
+                "email"
+              ]
+            }
+          },
+          "context": {},
+          "type": "identify",
+          "userId": "testKlaviyo2",
+          "integrations": {
+            "All": true
+          }
+        },
+        "metadata": {
+          "jobId": 2,
+          "attemptNum": 1,
+          "userId": "testKlaviyo2",
+          "sourceId": "default-sourceId",
+          "destinationId": "default-destinationId",
+          "workspaceId": "default-workspaceId",
+          "secret": {
+            "accessToken": "default-accessToken"
+          },
+          "dontBatch": false
+        },
+        "destination": {
+          "ID": "123",
+          "Name": "klaviyo",
+          "DestinationDefinition": {
+            "ID": "123",
+            "Name": "klaviyo",
+            "DisplayName": "klaviyo",
+            "Config": {}
+          },
+          "Config": {
+            "privateApiKey": "dummyPrivateApiKey",
+            "apiVersion": "v2"
+          },
+          "Enabled": true,
+          "WorkspaceID": "123",
+          "Transformations": []
+        }
+      },
+      {
+        "message": {
+          "channel": "web",
+          "traits": {
+            "email": "testklaviyo3@rs.com",
+            "firstname": "Test Klaviyo 3",
+            "properties": {
+              "subscribe": false,
+              "listId": "configListId",
+              "consent": [
+                "email"
+              ]
+            }
+          },
+          "context": {},
+          "type": "identify",
+          "userId": "testKlaviyo3",
+          "integrations": {
+            "All": true
+          }
+        },
+        "metadata": {
+          "jobId": 3,
+          "attemptNum": 1,
+          "userId": "testKlaviyo3",
+          "sourceId": "default-sourceId",
+          "destinationId": "default-destinationId",
+          "workspaceId": "default-workspaceId",
+          "secret": {
+            "accessToken": "default-accessToken"
+          },
+          "dontBatch": false
+        },
+        "destination": {
+          "ID": "123",
+          "Name": "klaviyo",
+          "DestinationDefinition": {
+            "ID": "123",
+            "Name": "klaviyo",
+            "DisplayName": "klaviyo",
+            "Config": {}
+          },
+          "Config": {
+            "privateApiKey": "dummyPrivateApiKey",
+            "apiVersion": "v2"
+          },
+          "Enabled": true,
+          "WorkspaceID": "123",
+          "Transformations": []
+        }
+      },
+      {
+        "message": {
+          "channel": "web",
+          "traits": {
+            "email": "testklaviyo4@rs.com",
+            "firstname": "Test Klaviyo 4",
+            "properties": {
+              "subscribe": false,
+              "listId": "configListId",
+              "consent": [
+                "email"
+              ]
+            }
+          },
+          "context": {},
+          "type": "identify",
+          "anonymousId": "anon id 4",
+          "userId": "testKlaviyo4",
+          "integrations": {
+            "All": true
+          }
+        },
+        "metadata": {
+          "jobId": 4,
+          "attemptNum": 1,
+          "userId": "testKlaviyo4",
+          "sourceId": "default-sourceId",
+          "destinationId": "default-destinationId",
+          "workspaceId": "default-workspaceId",
+          "secret": {
+            "accessToken": "default-accessToken"
+          },
+          "dontBatch": false
+        },
+        "destination": {
+          "ID": "123",
+          "Name": "klaviyo",
+          "DestinationDefinition": {
+            "ID": "123",
+            "Name": "klaviyo",
+            "DisplayName": "klaviyo",
+            "Config": {}
+          },
+          "Config": {
+            "privateApiKey": "dummyPrivateApiKey",
+            "apiVersion": "v2"
+          },
+          "Enabled": true,
+          "WorkspaceID": "123",
+          "Transformations": []
+        }
+      }
+    ],
+    "destType": "klaviyo"
+  },
+  "method": "POST"
+}

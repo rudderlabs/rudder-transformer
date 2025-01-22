@@ -442,7 +442,7 @@ const destinations: Destination[] = [
       auth: 'bearerTokenAuth',
       bearerToken: 'test-token',
       method: 'POST',
-      format: 'FORM-URLENCODED',
+      format: 'FORM',
       headers: [
         {
           to: '$.h1',
@@ -490,7 +490,7 @@ const destinations: Destination[] = [
       auth: 'bearerTokenAuth',
       bearerToken: 'test-token',
       method: 'POST',
-      format: 'FORM-URLENCODED',
+      format: 'FORM',
       headers: [
         {
           to: '$.h1',
@@ -534,7 +534,7 @@ const destinations: Destination[] = [
       auth: 'bearerTokenAuth',
       bearerToken: 'test-token',
       method: 'POST',
-      format: 'FORM-URLENCODED',
+      format: 'FORM',
       headers: [
         {
           to: '$.h1',

@@ -30,7 +30,8 @@ steps:
 
   - name: deduceBodyFormat
     template: |
-      $.context.format = .destination.Config.format ?? 'JSON';
+      const format = .destination.Config.format ?? 'JSON';
+      $.context.format = $.CONTENT_TYPES_MAP[format];
 
   - name: buildHeaders
     template: |
@@ -60,9 +61,7 @@ steps:
   - name: buildResponseForProcessTransformation
     template: |
       const response = $.defaultRequestConfig();
-      $.context.format === "JSON" ? response.body.JSON = $.context.payload;
-      $.context.format === "XML" ? response.body.XML = $.context.payload;
-      $.context.format === "FORM-URLENCODED" ? response.body.FORM = $.context.payload;
+      response.body[$.context.format] = $.context.payload;
       response.endpoint = $.context.endpoint;
       response.headers = $.context.headers;
       response.method = $.context.method;

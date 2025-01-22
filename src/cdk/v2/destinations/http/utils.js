@@ -12,6 +12,12 @@ const {
   removeUndefinedAndNullValues,
 } = require('../../../../v0/util');
 
+const CONTENT_TYPES_MAP = {
+  JSON: 'JSON',
+  XML: 'XML',
+  FORM: 'FORM',
+};
+
 const getAuthHeaders = (config) => {
   let headers;
   switch (config.auth) {
@@ -156,9 +162,9 @@ const getMergedEvents = (batch) => {
 
 const metadataHeaders = (contentType) => {
   switch (contentType) {
-    case 'XML':
+    case CONTENT_TYPES_MAP.XML:
       return { 'Content-Type': 'application/xml' };
-    case 'FORM-URLENCODED':
+    case CONTENT_TYPES_MAP.FORM:
       return { 'Content-Type': 'application/x-www-form-urlencoded' };
     default:
       return { 'Content-Type': 'application/json' };
@@ -167,7 +173,7 @@ const metadataHeaders = (contentType) => {
 
 const prepareBody = (payload, contentType) => {
   let responseBody;
-  if (contentType === 'XML' && !isEmptyObject(payload)) {
+  if (contentType === CONTENT_TYPES_MAP.XML && !isEmptyObject(payload)) {
     responseBody = {
       payload: getXMLPayload(payload),
     };
@@ -230,6 +236,7 @@ const batchSuccessfulEvents = (events, batchSize) => {
 };
 
 module.exports = {
+  CONTENT_TYPES_MAP,
   getAuthHeaders,
   getCustomMappings,
   encodeParamsObject,

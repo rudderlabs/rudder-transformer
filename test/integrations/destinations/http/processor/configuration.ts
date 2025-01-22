@@ -328,10 +328,9 @@ export const configuration: ProcessorTestData[] = [
   {
     id: 'http-configuration-test-7',
     name: destType,
-    description: 'Track call with bearer token, xml format',
+    description: 'Track call with xml format and payload with special characters in keys',
     scenario: 'Business',
-    successCriteria:
-      'Response should be in xml format with post method, headers and properties mapping',
+    successCriteria: 'Response should be in xml format with the special characters handled',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -341,9 +340,14 @@ export const configuration: ProcessorTestData[] = [
           {
             destination: destinations[9],
             message: {
-              name: "Rubik's Cube",
-              revenue: 4.99,
-              brand: null,
+              type: 'track',
+              userId: 'userId123',
+              event: 'Order Completed',
+              properties: {
+                name: "Rubik's Cube",
+                "1revenue-wdfqwe'": 4.99,
+                brand: null,
+              },
             },
             metadata: generateMetadata(1),
           },
@@ -368,7 +372,7 @@ export const configuration: ProcessorTestData[] = [
               },
               XML: {
                 payload:
-                  '<?xml version="1.0" encoding="UTF-8"?><name>Rubik&apos;s Cube</name><revenue>4.99</revenue>',
+                  '<?xml version="1.0" encoding="UTF-8"?><name>Rubik&apos;s Cube</name><_revenue-wdfqwe_>4.99</_revenue-wdfqwe_><brand xsi:nil></brand>',
               },
             }),
             statusCode: 200,

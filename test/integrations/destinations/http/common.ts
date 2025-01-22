@@ -419,8 +419,8 @@ const destinations: Destination[] = [
       ],
       propertiesMapping: [
         {
-          from: '$.',
-          to: '$.',
+          from: '$.properties',
+          to: '$',
         },
       ],
     },

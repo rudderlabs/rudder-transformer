@@ -112,8 +112,15 @@ const sanitizeKey = (key) =>
   key
     .replace(/[^\w.-]/g, '_') // Replace invalid characters with underscores
     .replace(/^[^A-Z_a-z]/, '_'); // Ensure key starts with a letter or underscore
+
 const preprocessJson = (obj) => {
-  if (typeof obj !== 'object' || obj === null) return obj;
+  if (typeof obj !== 'object' || obj === null) {
+    // Handle null values: add xsi:nil attribute
+    if (obj === null) {
+      return { '@_xsi:nil': 'true' };
+    }
+    return obj; // Return primitive values as is
+  }
 
   if (Array.isArray(obj)) {
     return obj.map(preprocessJson);
@@ -129,9 +136,9 @@ const preprocessJson = (obj) => {
 const getXMLPayload = (payload) => {
   const builderOptions = {
     ignoreAttributes: false, // Include attributes if they exist
+    suppressEmptyNode: false, // Ensures that null or undefined values are not omitted
   };
   const builder = new XMLBuilder(builderOptions);
-
   return `<?xml version="1.0" encoding="UTF-8"?>${builder.build(preprocessJson(payload))}`;
 };
 

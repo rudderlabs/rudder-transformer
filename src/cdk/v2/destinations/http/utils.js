@@ -1,7 +1,6 @@
 const { XMLBuilder } = require('fast-xml-parser');
 const { groupBy } = require('lodash');
 const { createHash } = require('crypto');
-const querystring = require('querystring');
 const { ConfigurationError } = require('@rudderstack/integrations-lib');
 const { BatchUtils } = require('@rudderstack/workflow-engine');
 const jsonpath = require('rs-jsonpath');
@@ -185,27 +184,11 @@ const metadataHeaders = (contentType) => {
   }
 };
 
-/**
- * Converts JSON payload to application/x-www-form-urlencoded format.
- * @param {Object} payload - The JSON payload to be converted.
- * @returns {string} - The payload in application/x-www-form-urlencoded format.
- */
-const getFORMPayload = (payload) => {
-  if (!payload) {
-    throw new ConfigurationError('Invalid payload for FORM format');
-  }
-  return querystring.stringify(payload);
-};
-
 const prepareBody = (payload, contentType) => {
   let responseBody;
   if (contentType === 'XML' && !isEmptyObject(payload)) {
     responseBody = {
       payload: getXMLPayload(payload),
-    };
-  } else if (contentType === 'FORM-URLENCODED' && !isEmptyObject(payload)) {
-    responseBody = {
-      payload: getFORMPayload(payload),
     };
   } else {
     responseBody = removeUndefinedAndNullValues(payload);

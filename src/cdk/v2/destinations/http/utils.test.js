@@ -82,9 +82,9 @@ describe('Utils Functions', () => {
 
     test('should prepare FORM-URLENCODED payload when content type is FORM-URLENCODED', () => {
       const payload = { key1: 'value1', key2: 'value2' };
-      const expectedFORM = 'key1=value1&key2=value2';
+      const expectedFORM = { key1: 'value1', key2: 'value2' };
       const result = prepareBody(payload, 'FORM-URLENCODED');
-      expect(result).toEqual({ payload: expectedFORM });
+      expect(result).toEqual(expectedFORM);
     });
 
     test('should return original payload without null or undefined values for other content types', () => {

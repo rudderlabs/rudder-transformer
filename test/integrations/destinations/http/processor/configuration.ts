@@ -426,7 +426,9 @@ export const configuration: ProcessorTestData[] = [
                 'content-type': 'application/json',
               },
               FORM: {
-                payload: 'event=Order%20Completed&currency=USD&userId=userId123',
+                currency: 'USD',
+                event: 'Order Completed',
+                userId: 'userId123',
               },
             }),
             statusCode: 200,
@@ -437,7 +439,7 @@ export const configuration: ProcessorTestData[] = [
     },
   },
   {
-    id: 'http-configuration-test-5',
+    id: 'http-configuration-test-9',
     name: destType,
     description: 'Track call with bearer token, form url encoded format',
     scenario: 'Business',
@@ -478,7 +480,9 @@ export const configuration: ProcessorTestData[] = [
                 'Content-Type': 'application/x-www-form-urlencoded',
               },
               FORM: {
-                payload: 'event=Order%20Completed&currency=USD&userId=userId123',
+                currency: 'USD',
+                event: 'Order Completed',
+                userId: 'userId123',
               },
             }),
             statusCode: 200,
@@ -489,7 +493,7 @@ export const configuration: ProcessorTestData[] = [
     },
   },
   {
-    id: 'http-configuration-test-6',
+    id: 'http-configuration-test-10',
     name: destType,
     description: 'empty body',
     scenario: 'Business',
@@ -524,9 +528,7 @@ export const configuration: ProcessorTestData[] = [
                 h1: 'val1',
                 'Content-Type': 'application/x-www-form-urlencoded',
               },
-              FORM: {
-                payload: 'event=&currency=&userId=',
-              },
+              FORM: {},
             }),
             statusCode: 200,
             metadata: generateMetadata(1),

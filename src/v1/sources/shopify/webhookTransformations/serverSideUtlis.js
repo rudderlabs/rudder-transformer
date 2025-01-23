@@ -5,7 +5,7 @@ const { extractEmailFromPayload } = require('../../../../v0/sources/shopify/util
 const { constructPayload } = require('../../../../v0/util');
 const { INTEGERATION, lineItemsMappingJSON, productMappingJSON } = require('../config');
 const { RedisDB } = require('../../../../util/redis/redisConnector');
-
+const stats = require('../../../../util/stats');
 /**
  * Returns an array of products from the lineItems array received from the webhook event
  * @param {Array} lineItems
@@ -67,10 +67,11 @@ const getCartToken = (event) => event?.cart_token || null;
 
 /**
  * Handles the anonymousId assignment for the message, based on the event attributes and redis data
- * @param {Object} message
- * @param {Object} event
+ * @param {Object} message rudderstack message object
+ * @param {Object} event raw shopify event payload
+ * @param {Object} metricMetadata metric metadata object
  */
-const handleAnonymousId = async (message, event) => {
+const setAnonymousId = async (message, event, metricMetadata) => {
   const anonymousId = getAnonymousIdFromAttributes(event);
   if (isDefinedAndNotNull(anonymousId)) {
     message.anonymousId = anonymousId;
@@ -78,19 +79,24 @@ const handleAnonymousId = async (message, event) => {
     // if anonymousId is not present in note_attributes or note_attributes is not present, query redis for anonymousId
     const cartToken = getCartToken(event);
     if (cartToken) {
-      const redisData = await RedisDB.getVal(cartToken);
+      const redisData = await RedisDB.getVal(`pixel:${cartToken}`);
       if (redisData?.anonymousId) {
         message.anonymousId = redisData.anonymousId;
       }
+    } else {
+      stats.increment('shopify_pixel_cart_token_not_found_server_side', {
+        source: metricMetadata.source,
+        writeKey: metricMetadata.writeKey,
+      });
     }
   }
 };
 
 /**
   Handles userId, email and contextual properties enrichment for the message payload
- * @param {Object} message
- * @param {Object} event
- * @param {String} shopifyTopic
+ * @param {Object} message rudderstack message object
+ * @param {Object} event raw shopify event payload
+ * @param {String} shopifyTopic shopify event topic
 */
 const handleCommonProperties = (message, event, shopifyTopic) => {
   if (message.userId) {
@@ -125,6 +131,6 @@ module.exports = {
   getProductsFromLineItems,
   getAnonymousIdFromAttributes,
   getCartToken,
-  handleAnonymousId,
+  setAnonymousId,
   handleCommonProperties,
 };

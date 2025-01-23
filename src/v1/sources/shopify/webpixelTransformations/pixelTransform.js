@@ -15,6 +15,7 @@ const {
   checkoutEventBuilder,
   checkoutStepEventBuilder,
   searchEventBuilder,
+  extractCampaignParams,
 } = require('./pixelUtils');
 const campaignObjectMappings = require('../pixelEventsMappings/campaignObjectMappings.json');
 const {
@@ -69,7 +70,7 @@ const handleCartTokenRedisOperations = async (inputEvent, clientId) => {
   const cartToken = extractCartToken(inputEvent);
   try {
     if (isDefinedNotNullNotEmpty(clientId) && isDefinedNotNullNotEmpty(cartToken)) {
-      await RedisDB.setVal(cartToken, ['anonymousId', clientId]);
+      await RedisDB.setVal(`pixel:${cartToken}`, ['anonymousId', clientId]);
       stats.increment('shopify_pixel_cart_token_set', {
         event: inputEvent.name,
         writeKey: inputEvent.query_parameters.writeKey,
@@ -149,34 +150,10 @@ function processPixelEvent(inputEvent) {
   message.setProperty('context.topic', name);
   message.setProperty('context.shopifyDetails', shopifyDetails);
 
-  // adding campaign object to the message
-  if (context?.document?.location?.href) {
-    const url = new URL(context.document.location.href);
-    const campaignParams = {};
-
-    // Loop through mappings and extract UTM parameters
-    campaignObjectMappings.forEach((mapping) => {
-      const value = url.searchParams.get(mapping.sourceKeys);
-      if (value) {
-        campaignParams[mapping.destKeys] = value;
-      }
-    });
-
-    // Extract any UTM parameters not in the mappings
-    const campaignObjectSourceKeys = campaignObjectMappings.flatMap(
-      (mapping) => mapping.sourceKeys,
-    );
-    url.searchParams.forEach((value, key) => {
-      if (key.startsWith('utm_') && !campaignObjectSourceKeys.includes(key)) {
-        campaignParams[key] = value;
-      }
-    });
-
-    // Only add campaign object if we have any UTM parameters
-    if (Object.keys(campaignParams).length > 0) {
-      message.context = message.context || {};
-      message.context.campaign = campaignParams;
-    }
+  // adding campaign object with utm parameters to the message context
+  const campaignParams = extractCampaignParams(context, campaignObjectMappings);
+  if (campaignParams) {
+    message.context.campaign = campaignParams;
   }
   message.messageId = id;
   message = removeUndefinedAndNullValues(message);

@@ -188,7 +188,7 @@ function processPixelEvent(inputEvent) {
   return message;
 }
 
-const processPixelWebEvents = async (event) => {
+const processPixelWebEvents = (event) => {
   const pixelEvent = processPixelEvent(event);
   return removeUndefinedAndNullValues(pixelEvent);
 };

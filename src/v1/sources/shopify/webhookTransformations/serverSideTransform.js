@@ -116,7 +116,7 @@ const processEvent = async (inputEvent, metricMetadata) => {
   message = removeUndefinedAndNullValues(message);
   return message;
 };
-const process = async (event) => {
+const processWebhookEvents = async (event) => {
   const metricMetadata = {
     writeKey: event.query_parameters?.writeKey?.[0],
     source: 'SHOPIFY',
@@ -126,7 +126,7 @@ const process = async (event) => {
 };
 
 module.exports = {
-  process,
+  processWebhookEvents,
   processEvent,
   identifyPayloadBuilder,
   ecomPayloadBuilder,

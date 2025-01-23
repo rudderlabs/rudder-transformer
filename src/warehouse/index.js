@@ -308,8 +308,8 @@ function isStringLikeObject(obj) {
   let minKey = Infinity;
   let maxKey = -Infinity;
 
-  for (let i = 0; i < keys.length; i++) {
-    const key = keys[i];
+  for (const element of keys) {
+    const key = element;
     const value = obj[key];
 
     if (!isNonNegativeInteger(key)) return false;
@@ -337,8 +337,8 @@ function stringLikeObjectToString(obj) {
     .sort((a, b) => a - b);
   let result = '';
 
-  for (let i = 0; i < keys.length; i++) {
-    result += obj[keys[i].toString()];
+  for (const element of keys) {
+    result += obj[element.toString()];
   }
 
   return result;

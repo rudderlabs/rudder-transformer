@@ -95,7 +95,7 @@ const customTagProcessor = async ({ message, destination, metadata }, category, 
   // Step - 1
   // Fetch already created tags from dest, so that we avoid duplicate tag creation request
   // Ref - https://developers.activecampaign.com/reference/retrieve-all-tags
-  endpoint = `${destination.Config.apiUrl}${`${tagEndPoint}?limit=100`}`;
+  endpoint = `${destination.Config.apiUrl}${tagEndPoint}?limit=100`;
   requestOptions = {
     headers: getHeader(destination),
   };

@@ -8,7 +8,6 @@ const {
   base64Convertor,
   applyCustomMappings,
   isEmptyObject,
-  applyJSONStringTemplate,
   removeUndefinedAndNullValues,
 } = require('../../../../v0/util');
 
@@ -92,15 +91,10 @@ const getPathParamsSubString = (message, pathParamsArray) => {
 };
 
 const prepareEndpoint = (message, apiUrl, pathParams) => {
-  let requestUrl;
-  try {
-    requestUrl = applyJSONStringTemplate(message, `\`${apiUrl}\``);
-  } catch (e) {
-    throw new ConfigurationError(`Error in api url template: ${e.message}`);
-  }
   if (!Array.isArray(pathParams)) {
-    return requestUrl;
+    return apiUrl;
   }
+  const requestUrl = apiUrl.replace(/[\s/]+$/g, '');
   const pathParamsSubString = getPathParamsSubString(message, pathParams);
   return `${requestUrl}${pathParamsSubString}`;
 };

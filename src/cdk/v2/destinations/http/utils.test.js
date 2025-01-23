@@ -21,12 +21,12 @@ describe('Utils Functions', () => {
   describe('prepareEndpoint', () => {
     test('should replace template variables in API URL', () => {
       const message = { id: 123 };
-      const apiUrl = 'https://api.example.com/resource/${$.id}';
-      expect(prepareEndpoint(message, apiUrl, [])).toBe('https://api.example.com/resource/123');
+      const apiUrl = 'https://api.example.com/resource/';
+      expect(prepareEndpoint(message, apiUrl, [])).toBe('https://api.example.com/resource');
     });
     test('should replace template variables in API URL and add path params', () => {
       const message = { id: 123, p2: 'P2' };
-      const apiUrl = 'https://api.example.com/resource/${$.id}';
+      const apiUrl = 'https://api.example.com/resource/';
       const pathParams = [
         {
           path: 'p1',
@@ -36,12 +36,12 @@ describe('Utils Functions', () => {
         },
       ];
       expect(prepareEndpoint(message, apiUrl, pathParams)).toBe(
-        'https://api.example.com/resource/123/p1/P2',
+        'https://api.example.com/resource/p1/P2',
       );
     });
     test('should add path params after uri encoding', () => {
       const message = { id: 123, p2: 'P2%&' };
-      const apiUrl = 'https://api.example.com/resource/${$.id}';
+      const apiUrl = 'https://api.example.com/resource/';
       const pathParams = [
         {
           path: 'p1',
@@ -51,7 +51,7 @@ describe('Utils Functions', () => {
         },
       ];
       expect(prepareEndpoint(message, apiUrl, pathParams)).toBe(
-        'https://api.example.com/resource/123/p1/P2%25%26',
+        'https://api.example.com/resource/p1/P2%25%26',
       );
     });
     test('should throw error as path contains slash', () => {

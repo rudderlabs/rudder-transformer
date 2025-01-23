@@ -92,13 +92,18 @@ const destinations: Destination[] = [
   },
   {
     Config: {
-      apiUrl: 'http://abc.com/contacts/{{$.traits.email}}/',
+      apiUrl: 'http://abc.com/contacts/',
       auth: 'apiKeyAuth',
       apiKeyName: 'x-api-key',
       apiKeyValue: 'test-api-key',
       method: 'DELETE',
       isBatchingEnabled: true,
       maxBatchSize: 4,
+      pathParams: [
+        {
+          path: '$.traits.email',
+        },
+      ],
     },
     DestinationDefinition: {
       DisplayName: displayName,
@@ -114,13 +119,18 @@ const destinations: Destination[] = [
   },
   {
     Config: {
-      apiUrl: 'http://abc.com/contacts/{{$.traits.email}}/',
+      apiUrl: 'http://abc.com/contacts/',
       auth: 'apiKeyAuth',
       apiKeyName: 'x-api-key',
       apiKeyValue: 'test-api-key',
       method: 'GET',
       isBatchingEnabled: true,
       maxBatchSize: 4,
+      pathParams: [
+        {
+          path: '$.traits.email',
+        },
+      ],
     },
     DestinationDefinition: {
       DisplayName: displayName,
@@ -249,7 +259,7 @@ const destinations: Destination[] = [
   },
   {
     Config: {
-      apiUrl: 'http://abc.com/contacts/{{$.traits.phone}}',
+      apiUrl: 'http://abc.com/contacts/',
       auth: 'noAuth',
       method: 'POST',
       format: 'JSON',
@@ -263,6 +273,11 @@ const destinations: Destination[] = [
         {
           to: '$.key',
           from: '.traits.key',
+        },
+      ],
+      pathParams: [
+        {
+          path: '$.traits.phone',
         },
       ],
     },

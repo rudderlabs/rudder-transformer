@@ -123,14 +123,19 @@ const handleCommonProperties = (message, event, shopifyTopic) => {
   if (shopifyTopic === 'orders_updated') {
     message.setProperty(`context.order_token`, event.token);
   }
+  message.setProperty('integrations.DATA_WAREHOUSE', {
+    options: {
+      jsonPaths: [`${message.type}.context.shopifyDetails`],
+    },
+  });
   return message;
 };
 
 module.exports = {
   createPropertiesForEcomEventFromWebhook,
+  getCartToken,
   getProductsFromLineItems,
   getAnonymousIdFromAttributes,
-  getCartToken,
   setAnonymousId,
   handleCommonProperties,
 };

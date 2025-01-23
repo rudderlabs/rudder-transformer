@@ -278,6 +278,164 @@ const destinations: Destination[] = [
     Transformations: [],
     WorkspaceID: 'test-workspace-id',
   },
+  {
+    Config: {
+      apiUrl: 'http://abc.com/contacts',
+      auth: 'basicAuth',
+      username: 'test-user',
+      password: '',
+      method: 'GET',
+      format: 'JSON',
+      isBatchingEnabled: true,
+      maxBatchSize: 2,
+      headers: [
+        {
+          to: '$.h1',
+          from: "'val1'",
+        },
+        {
+          to: '$.h2',
+          from: '2',
+        },
+        {
+          to: "$.'content-type'",
+          from: "'application/json'",
+        },
+        {
+          to: '$.h3',
+          from: '$.traits.firstName',
+        },
+      ],
+      queryParams: [
+        {
+          to: "$['q1']",
+          from: "'val1'",
+        },
+        {
+          to: '$.q2',
+          from: '$.traits.email',
+        },
+      ],
+      pathParams: [
+        {
+          path: '$.userId',
+        },
+        {
+          path: 'c1',
+        },
+      ],
+    },
+    DestinationDefinition: {
+      DisplayName: displayName,
+      ID: '123',
+      Name: destTypeInUpperCase,
+      Config: { cdkV2Enabled: true },
+    },
+    Enabled: true,
+    ID: '123',
+    Name: destTypeInUpperCase,
+    Transformations: [],
+    WorkspaceID: 'test-workspace-id',
+  },
+  {
+    Config: {
+      apiUrl: 'http://abc.com/contacts',
+      auth: 'basicAuth',
+      username: 'test-user',
+      password: '',
+      method: 'GET',
+      format: 'JSON',
+      isBatchingEnabled: true,
+      maxBatchSize: 2,
+      headers: [
+        {
+          to: '$.h1',
+          from: "'val1'",
+        },
+        {
+          to: '$.h2',
+          from: '2',
+        },
+        {
+          to: "$.'content-type'",
+          from: "'application/json'",
+        },
+        {
+          to: '$.h3',
+          from: '$.traits.firstName',
+        },
+      ],
+      queryParams: [
+        {
+          to: 'user name',
+          from: "'val1'",
+        },
+        {
+          to: '$.q2',
+          from: '$.traits.email',
+        },
+      ],
+      pathParams: [
+        {
+          path: '$.userId',
+        },
+        {
+          path: 'c1',
+        },
+      ],
+    },
+    DestinationDefinition: {
+      DisplayName: displayName,
+      ID: '123',
+      Name: destTypeInUpperCase,
+      Config: { cdkV2Enabled: true },
+    },
+    Enabled: true,
+    ID: '123',
+    Name: destTypeInUpperCase,
+    Transformations: [],
+    WorkspaceID: 'test-workspace-id',
+  },
+  {
+    Config: {
+      apiUrl: 'http://abc.com/events',
+      auth: 'bearerTokenAuth',
+      bearerToken: 'test-token',
+      method: 'POST',
+      format: 'XML',
+      headers: [
+        {
+          to: '$.h1',
+          from: "'val1'",
+        },
+        {
+          to: '$.h2',
+          from: '$.key1',
+        },
+        {
+          to: "$.'content-type'",
+          from: "'application/json'",
+        },
+      ],
+      propertiesMapping: [
+        {
+          from: '$.properties',
+          to: '$',
+        },
+      ],
+    },
+    DestinationDefinition: {
+      DisplayName: displayName,
+      ID: '123',
+      Name: destTypeInUpperCase,
+      Config: { cdkV2Enabled: true },
+    },
+    Enabled: true,
+    ID: '123',
+    Name: destTypeInUpperCase,
+    Transformations: [],
+    WorkspaceID: 'test-workspace-id',
+  },
 ];
 
 const traits = {

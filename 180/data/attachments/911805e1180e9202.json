@@ -1,0 +1,34 @@
+{
+  "output": {
+    "response": [
+      {
+        "error": "{\"error\":{\"message\":\"Service Unavailable\",\"description\":\"The server is currently unable to handle the request due to temporary overloading or maintenance of the server. Please try again later.\"}}",
+        "statusCode": 503,
+        "metadata": {
+          "jobId": 1,
+          "attemptNum": 1,
+          "userId": "default-userId",
+          "destinationId": "default-destinationId",
+          "workspaceId": "default-workspaceId",
+          "sourceId": "default-sourceId",
+          "secret": {
+            "accessToken": "default-accessToken"
+          },
+          "dontBatch": false
+        }
+      }
+    ],
+    "statTags": {
+      "errorCategory": "network",
+      "errorType": "retryable",
+      "destType": "CAMPAIGN_MANAGER",
+      "module": "destination",
+      "implementation": "native",
+      "feature": "dataDelivery",
+      "destinationId": "default-destinationId",
+      "workspaceId": "default-workspaceId"
+    },
+    "message": "Campaign Manager: Error transformer proxy v1 during CAMPAIGN_MANAGER response transformation",
+    "status": 503
+  }
+}

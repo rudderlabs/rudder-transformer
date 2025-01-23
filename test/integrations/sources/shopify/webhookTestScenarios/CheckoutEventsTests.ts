@@ -1800,6 +1800,11 @@ export const checkoutEventsTestScenarios = [
                   event: 'Order Cancelled',
                   integrations: {
                     SHOPIFY: true,
+                    DATA_WAREHOUSE: {
+                      options: {
+                        jsonPaths: ['track.context.shopifyDetails'],
+                      },
+                    },
                   },
                   properties: {
                     products: [

@@ -222,10 +222,10 @@ export const checkoutEventsTestScenarios = [
                     },
                   },
                   type: 'track',
-                  event: 'Checkout Started - Webhook',
+                  event: 'Checkout Started Webhook',
                   properties: {
                     order_id: '35550298931313',
-                    value: '600.00',
+                    value: 600,
                     tax: 0,
                     currency: 'USD',
                     products: [
@@ -1617,7 +1617,7 @@ export const checkoutEventsTestScenarios = [
                   event: 'Order Created',
                   properties: {
                     order_id: '5778367414385',
-                    value: '600.00',
+                    value: 600,
                     tax: 0,
                     currency: 'USD',
                     products: [
@@ -1695,6 +1695,141 @@ export const checkoutEventsTestScenarios = [
                   },
                   timestamp: '2024-11-06T02:54:50.000Z',
                   anonymousId: '50ead33e-d763-4854-b0ab-765859ef05cb',
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  },
+  {
+    id: 'c005',
+    name: 'shopify',
+    description: 'Track Call -> Order Cancelled event from Pixel app',
+    module: 'source',
+    version: 'v1',
+    input: {
+      request: {
+        body: [
+          {
+            event: {
+              email: 'henry@wfls.com',
+              total_price: '600.00',
+              total_tax: '0.00',
+              updated_at: '2024-11-05T21:54:50-05:00',
+              line_items: [
+                {
+                  id: 14234727743601,
+                  name: 'The Collection Snowboard: Hydrogen',
+                  price: '600.00',
+                  product_id: 7234590408817,
+                  quantity: 1,
+                  sku: '',
+                  title: 'The Collection Snowboard: Hydrogen',
+                  total_discount: '0.00',
+                  variant_id: 41327142600817,
+                  vendor: 'Hydrogen Vendor',
+                },
+              ],
+              shipping_address: {
+                first_name: 'henry',
+                address1: 'Yuimaru Kitchen',
+                city: 'Johnson City',
+                zip: '37604',
+              },
+              query_parameters: {
+                topic: ['orders_cancelled'],
+                version: ['pixel'],
+                writeKey: ['2mw9SN679HngnZkCHT4oSVVBVmb'],
+              },
+            },
+            source: dummySourceConfig,
+          },
+        ],
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      },
+      pathSuffix: '',
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              batch: [
+                {
+                  context: {
+                    integration: {
+                      name: 'SHOPIFY',
+                    },
+                    library: {
+                      eventOrigin: 'server',
+                      name: 'RudderStack Shopify Cloud',
+                      version: '2.0.0',
+                    },
+                    shopifyDetails: {
+                      email: 'henry@wfls.com',
+                      line_items: [
+                        {
+                          id: 14234727743601,
+                          name: 'The Collection Snowboard: Hydrogen',
+                          price: '600.00',
+                          product_id: 7234590408817,
+                          quantity: 1,
+                          sku: '',
+                          title: 'The Collection Snowboard: Hydrogen',
+                          total_discount: '0.00',
+                          variant_id: 41327142600817,
+                          vendor: 'Hydrogen Vendor',
+                        },
+                      ],
+                      shipping_address: {
+                        address1: 'Yuimaru Kitchen',
+                        city: 'Johnson City',
+                        first_name: 'henry',
+                        zip: '37604',
+                      },
+                      total_price: '600.00',
+                      total_tax: '0.00',
+                      updated_at: '2024-11-05T21:54:50-05:00',
+                    },
+                    topic: 'orders_cancelled',
+                  },
+                  event: 'Order Cancelled',
+                  integrations: {
+                    SHOPIFY: true,
+                    DATA_WAREHOUSE: {
+                      options: {
+                        jsonPaths: ['track.context.shopifyDetails'],
+                      },
+                    },
+                  },
+                  properties: {
+                    products: [
+                      {
+                        brand: 'Hydrogen Vendor',
+                        price: 600,
+                        product_id: '7234590408817',
+                        quantity: 1,
+                        title: 'The Collection Snowboard: Hydrogen',
+                      },
+                    ],
+                    tax: 0,
+                    value: 600,
+                  },
+                  timestamp: '2024-11-06T02:54:50.000Z',
+                  traits: {
+                    email: 'henry@wfls.com',
+                    shippingAddress: {
+                      address1: 'Yuimaru Kitchen',
+                      city: 'Johnson City',
+                      first_name: 'henry',
+                      zip: '37604',
+                    },
+                  },
+                  type: 'track',
                 },
               ],
             },

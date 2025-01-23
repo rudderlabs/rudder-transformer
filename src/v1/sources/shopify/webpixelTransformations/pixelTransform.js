@@ -69,7 +69,7 @@ const handleCartTokenRedisOperations = async (inputEvent, clientId) => {
   const cartToken = extractCartToken(inputEvent);
   try {
     if (isDefinedNotNullNotEmpty(clientId) && isDefinedNotNullNotEmpty(cartToken)) {
-      await RedisDB.setVal(cartToken, ['anonymousId', clientId]);
+      await RedisDB.setVal(`pixel:${cartToken}`, ['anonymousId', clientId]);
       stats.increment('shopify_pixel_cart_token_set', {
         event: inputEvent.name,
         writeKey: inputEvent.query_parameters.writeKey,

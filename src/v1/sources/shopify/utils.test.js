@@ -25,7 +25,10 @@ describe('Identifier Utils Tests', () => {
 
       const response = await processIdentifierEvent(event);
 
-      expect(setValSpy).toHaveBeenCalledWith('cartTokenTest1', ['anonymousId', 'anonymousIdTest1']);
+      expect(setValSpy).toHaveBeenCalledWith('pixel:cartTokenTest1', [
+        'anonymousId',
+        'anonymousIdTest1',
+      ]);
       expect(response).toEqual({
         outputToSource: {
           body: Buffer.from('OK').toString('base64'),

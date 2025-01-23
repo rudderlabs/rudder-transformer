@@ -94,7 +94,7 @@ const prepareEndpoint = (message, apiUrl, pathParams) => {
   if (!Array.isArray(pathParams)) {
     return apiUrl;
   }
-  const requestUrl = apiUrl.replace(/[\s/]+(?=$)/, '');
+  const requestUrl = apiUrl.replace(/\/+$/g, '');
   const pathParamsSubString = getPathParamsSubString(message, pathParams);
   return `${requestUrl}${pathParamsSubString}`;
 };

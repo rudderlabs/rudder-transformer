@@ -5,8 +5,7 @@ const { extractEmailFromPayload } = require('../../../../v0/sources/shopify/util
 const { constructPayload } = require('../../../../v0/util');
 const { INTEGERATION, lineItemsMappingJSON, productMappingJSON } = require('../config');
 const { RedisDB } = require('../../../../util/redis/redisConnector');
-const logger = require('../../../../logger');
-
+const stats = require('../../../../util/stats');
 /**
  * Returns an array of products from the lineItems array received from the webhook event
  * @param {Array} lineItems
@@ -68,10 +67,11 @@ const getCartToken = (event) => event?.cart_token || null;
 
 /**
  * Handles the anonymousId assignment for the message, based on the event attributes and redis data
- * @param {Object} message
- * @param {Object} event
+ * @param {Object} message rudderstack message object
+ * @param {Object} event raw shopify event payload
+ * @param {Object} metricMetadata metric metadata object
  */
-const setAnonymousId = async (message, event) => {
+const setAnonymousId = async (message, event, metricMetadata) => {
   const anonymousId = getAnonymousIdFromAttributes(event);
   if (isDefinedAndNotNull(anonymousId)) {
     message.anonymousId = anonymousId;
@@ -84,11 +84,9 @@ const setAnonymousId = async (message, event) => {
         message.anonymousId = redisData.anonymousId;
       }
     } else {
-      // have log in case cart_token is not present in the event, attach the log to the writekey
-      logger.error('Cart token not found in the event', {
-        event,
-        sourceId: message.sourceId,
-        workspaceId: message.workspaceId,
+      stats.increment('shopify_pixel_cart_token_not_found_server_side', {
+        source: metricMetadata.source,
+        writeKey: metricMetadata.writeKey,
       });
     }
   }

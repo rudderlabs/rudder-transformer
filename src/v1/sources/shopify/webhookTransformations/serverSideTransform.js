@@ -18,7 +18,7 @@ const { RUDDER_ECOM_MAP } = require('../config');
 const {
   createPropertiesForEcomEventFromWebhook,
   getProductsFromLineItems,
-  handleAnonymousId,
+  setAnonymousId,
   handleCommonProperties,
 } = require('./serverSideUtlis');
 
@@ -109,7 +109,7 @@ const processEvent = async (inputEvent, metricMetadata) => {
   }
   // attach anonymousId if the event is track event using note_attributes
   if (message.type !== EventType.IDENTIFY) {
-    await handleAnonymousId(message, event);
+    await setAnonymousId(message, event);
   }
   // attach userId, email and other contextual properties
   message = handleCommonProperties(message, event, shopifyTopic);

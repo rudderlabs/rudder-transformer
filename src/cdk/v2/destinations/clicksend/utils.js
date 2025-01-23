@@ -4,8 +4,11 @@ const { BatchUtils } = require('@rudderstack/workflow-engine');
 const { SMS_SEND_ENDPOINT, MAX_BATCH_SIZE, COMMON_CONTACT_DOMAIN } = require('./config');
 const { isDefinedAndNotNullAndNotEmpty, isDefinedAndNotNull } = require('../../../../v0/util');
 
-const getEndIdentifyPoint = (contactId, contactListId) =>
-  `${COMMON_CONTACT_DOMAIN}/${contactListId}/contacts${isDefinedAndNotNullAndNotEmpty(contactId) ? `/${contactId}` : ''}`;
+const getEndIdentifyPoint = (contactId, contactListId) => {
+  const basePath = `${COMMON_CONTACT_DOMAIN}/${contactListId}/contacts`;
+  const contactSuffix = isDefinedAndNotNullAndNotEmpty(contactId) ? `/${contactId}` : '';
+  return basePath + contactSuffix;
+};
 
 const validateIdentifyPayload = (payload) => {
   if (

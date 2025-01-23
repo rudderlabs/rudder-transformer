@@ -130,6 +130,7 @@ const handleCommonProperties = (message, event, shopifyTopic) => {
   });
   return message;
 };
+
 module.exports = {
   createPropertiesForEcomEventFromWebhook,
   getCartToken,

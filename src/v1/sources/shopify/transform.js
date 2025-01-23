@@ -9,14 +9,15 @@ const { processIdentifierEvent, isIdentifierEvent } = require('./utils');
 const process = async (inputEvent) => {
   const { event } = inputEvent;
   const { query_parameters } = event;
-  if (isIdentifierEvent(event)) {
-    return processIdentifierEvent(event);
-  }
-  // check identify the event is from the web pixel based on the pixelEventLabel property.
+
+  // these are the events from the front-end tracking, viz. web-pixel or themea-app extension.
   const { pixelEventLabel: pixelClientEventLabel } = event;
   if (pixelClientEventLabel) {
-    // this is a event fired from the web pixel loaded on the browser
-    // by the user interactions with the store.
+    // check if the event is an identifier event, used to set the anonymousId in the redis for identity stitching.
+    if (isIdentifierEvent(event)) {
+      return processIdentifierEvent(event);
+    }
+    // handle events from the app pixel.
     const pixelWebEventResponse = await processPixelWebEvents(event);
     return pixelWebEventResponse;
   }

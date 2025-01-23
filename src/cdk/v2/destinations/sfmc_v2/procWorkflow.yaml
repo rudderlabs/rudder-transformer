@@ -1,0 +1,105 @@
+bindings:
+  - path: ./config
+    exportAll: true
+  - path: ./utils
+    exportAll: true
+  - name: defaultRequestConfig
+    path: ../../../../v0/util
+
+steps:
+  - name: validateInput
+    description: Validate input, if all the required fields are available or not.
+    template: |
+      const config = .connection.config.destination;
+      console.log(JSON.stringify(config));
+      let messageType = .message.type;
+      $.assertConfig(config.objectType, "Object type is not present. Aborting");
+      $.assert(messageType, "Message Type is not present. Aborting message.");
+      $.assert(messageType.toLowerCase() === $.SUPPORTED_EVENT_TYPE, `Event type ${.message.type.toLowerCase()} is not supported. Aborting message.`);
+      $.assert(.message.fields, "`fields` is not present. Aborting message.");
+      $.assert(.message.identifiers, "`identifiers` is not present inside properties. Aborting message.");
+      $.assert($.containsAll([.message.action], $.ACTION_TYPES), "Unsupported action type. Aborting message.");
+
+  - name: getConfigs
+    description: This step fetches the configs from different places and combines them.
+    template: |
+      const config = .connection.config.destination;
+      {
+        objectType: config.objectType,
+        dataExtensionKey: config.dataExtensionKey,
+        action: .message.action
+      }
+
+  - name: getAccessToken
+    description: This step generate the accessToken from the secret configs and stores in a cache
+    template: |
+      const {clientId, clientSecret, subDomain} = .destination.Config;
+      const metadata = .metadata;
+      const { destinationId } = metadata;
+      const token = await $.accessTokenCache.get(destinationId, function(){
+        $.getAccessToken({clientId, clientSecret, subDomain}, metadata)
+      }
+      );
+      token
+
+  - name: prepareDataExtensionPayload
+    description: This step build the payload for data extension type object
+    condition: $.outputs.getConfigs.objectType === 'dataExtension'
+    steps:
+      - name: prepareDataExtensionPayloadForInsertAction
+        condition: $.outputs.getConfigs.action === 'insert' || $.outputs.getConfigs.action === 'update'
+        template: |
+          const payload = {
+            values: .message.fields
+          }
+          payload
+      - name: prepareDataExtensionPayloadForDeleteAction
+        condition: $.outputs.getConfigs.action === 'delete'
+        template: |
+          {
+            payload: $.buildDataExtensionPayloadForDelete(.message,$.outputs.getConfigs.dataExtensionKey,$.outputs.getAccessToken)
+          }
+
+  - name: prepareContactPayload
+    description: This step build the payload for contact type object
+    condition: $.outputs.getConfigs.objectType === 'contact'
+    steps:
+      - name: prepareContactPayloadForInsertUpdateAction
+        condition: $.outputs.getConfigs.action === 'insert' || $.outputs.getConfigs.action === 'update'
+        template: |
+          $.buildContactPayload(.message);
+      - name: prepareContactPayloadForDeleteAction
+        condition: $.outputs.getConfigs.action === 'delete'
+        template: |
+          {
+            "values": [
+              .message.identifiers.contactKey
+            ],
+            "DeleteOperationType": "ContactAndAttributes"
+          }
+
+  - name: buildResponseForProcessTransformation
+    description: build xml response for delete of data extension for soap endpoint
+    condition: $.outputs.getConfigs.objectType === 'dataExtension' && $.outputs.getConfigs.action === 'delete'
+    template: |
+      const response = $.defaultRequestConfig();
+      response.body.XML = $.outputs.prepareDataExtensionPayload; 
+      response.endpoint = $.getEndpoint($.outputs.getConfigs,.destination.Config.subDomain,.message.identifiers);
+      response.headers = {
+          "Content-Type": `text/xml; charset="UTF-8"`,
+          "soapaction": "Delete",
+        };
+      response;
+    else:
+      name: buildResponseForRest
+      description: build response for rest endpoint
+      template: |
+        const response = $.defaultRequestConfig();
+        response.method = $.getMethod($.outputs.getConfigs);
+        response.body.JSON = $.outputs.prepareDataExtensionPayload || $.outputs.prepareContactPayload;
+        response.endpoint = $.getEndpoint($.outputs.getConfigs,.destination.Config.subDomain,.message.identifiers);
+        response.headers = {
+            "Authorization": "Bearer " + $.outputs.getAccessToken,
+            "Content-Type": "application/json",
+          };
+        response;

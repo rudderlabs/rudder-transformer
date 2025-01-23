@@ -168,6 +168,6 @@ describe('Redis cart token tests', () => {
     const message = await processEvent(event);
     expect(getValSpy).toHaveBeenCalledTimes(1);
     expect(getValSpy).toHaveBeenCalledWith('cartTokenTest1');
-    expect(message.setProperty).toHaveBeenCalledWith('anonymousId', 'anonymousIdTest1');
+    expect(message.anonymousId).toEqual('anonymousIdTest1');
   });
 });

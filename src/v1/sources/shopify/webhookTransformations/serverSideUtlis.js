@@ -73,14 +73,14 @@ const getCartToken = (event) => event?.cart_token || null;
 const handleAnonymousId = async (message, event) => {
   const anonymousId = getAnonymousIdFromAttributes(event);
   if (isDefinedAndNotNull(anonymousId)) {
-    message.setProperty('anonymousId', anonymousId);
+    message.anonymousId = anonymousId;
   } else {
     // if anonymousId is not present in note_attributes or note_attributes is not present, query redis for anonymousId
     const cartToken = getCartToken(event);
     if (cartToken) {
       const redisData = await RedisDB.getVal(cartToken);
       if (redisData?.anonymousId) {
-        message.setProperty('anonymousId', redisData.anonymousId);
+        message.anonymousId = redisData.anonymousId;
       }
     }
   }

@@ -6190,6 +6190,7 @@ export const data = [
       },
     },
   },
+<<<<<<< HEAD
   {
     name: 'mp',
     description: 'Track event test when dropTraitsInTrackEvent is true',
@@ -6301,4 +6302,6 @@ export const data = [
       },
     },
   },
+=======
+>>>>>>> origin/develop
 ];

@@ -220,7 +220,7 @@ const groupResponseBuilder = (message, { Config }) => {
     // attribute
     if (typeof traits[key] !== 'boolean') {
       const attribute = { action: 'set' };
-      const keyMapped = RESERVED_TRAITS_MAPPING[key.toLowerCase()];
+      const keyMapped = RESERVED_TRAITS_MAPPING[key] || RESERVED_TRAITS_MAPPING[key.toLowerCase()];
       if (keyMapped) {
         attribute.key = keyMapped;
       } else {

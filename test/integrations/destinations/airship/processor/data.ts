@@ -1,6 +1,132 @@
 export const data = [
   {
     name: 'airship',
+    description: 'Test 4',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              anonymousId: 'd00de6f3-2ea3-44bd-8fc5-0c318cb0b9d9',
+              channel: 'mobile',
+              context: {
+                app: {
+                  build: '1',
+                  name: 'Polarsteps',
+                  namespace: 'com.polarsteps.Polarsteps',
+                  version: '8.2.11',
+                },
+                device: {
+                  attTrackingStatus: 0,
+                  id: '1d89c859-76c6-4374-ac0a-e32dee541e12',
+                  manufacturer: 'Apple',
+                  model: 'arm64',
+                  name: 'iPhone 14 Pro Max',
+                  type: 'iOS',
+                },
+                library: {
+                  name: 'rudder-ios-library',
+                  version: '1.31.0',
+                },
+                locale: 'en-US',
+                network: {
+                  cellular: false,
+                  wifi: true,
+                },
+                os: {
+                  name: 'iOS',
+                  version: '17.0',
+                },
+                screen: {
+                  density: 3,
+                  height: 932,
+                  width: 430,
+                },
+                sessionId: 1736246350,
+                timezone: 'Europe/Amsterdam',
+                traits: {
+                  // "af_install_time": "2024-12-09 12:26:29.643",
+                  firstName: 'Orcun',
+                  lastName: 'Test',
+                },
+              },
+              event: 'identify',
+              integrations: {
+                All: true,
+              },
+              messageId: 'b95d29ee-f9c8-486c-b9ef-acf231759612',
+              originalTimestamp: '2025-01-07T10:57:38.768Z',
+              receivedAt: '2025-01-07T10:57:49.882Z',
+              request_ip: '77.248.183.43',
+              rudderId: 'b931e94b-3b22-462c-8b58-243cb4b37366',
+              sentAt: '2025-01-07T10:57:47.707Z',
+              type: 'identify',
+              userId: '1c5577e3-8d2d-4ecd-9361-88c2bfb254c5',
+            },
+            destination: {
+              Config: {
+                apiKey: 'dummyApiKey',
+                appKey: 'O2YARRI15I',
+                dataCenter: false,
+              },
+            },
+          },
+        ],
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint:
+                'https://go.urbanairship.com/api/named_users/1c5577e3-8d2d-4ecd-9361-88c2bfb254c5/attributes',
+              headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/vnd.urbanairship+json; version=3',
+                Authorization: 'Bearer dummyApiKey',
+              },
+              params: {},
+              body: {
+                JSON: {
+                  attributes: [
+                    {
+                      action: 'set',
+                      key: 'first_name',
+                      value: 'Orcun',
+                      timestamp: '2015-02-23T22:28:55Z',
+                    },
+                    {
+                      action: 'set',
+                      key: 'last_name',
+                      value: 'Test',
+                      timestamp: '2015-02-23T22:28:55Z',
+                    },
+                  ],
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: '',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'airship',
     description: 'Test 0',
     feature: 'processor',
     module: 'destination',

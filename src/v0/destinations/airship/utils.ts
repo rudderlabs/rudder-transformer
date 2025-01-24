@@ -49,6 +49,20 @@ type AirshipObjectAttributes = Partial<{
   removeAttributes: Omit<Attribute, 'value'>[];
 }>;
 
+const getDigitCount = (num: number): number => Math.floor(Math.log10(Math.abs(num))) + 1;
+
+export const isValidTimestamp = (timestamp: string | number): boolean => {
+  // Check if timestamp is a valid Unix timestamp (10 digits)
+  if (typeof timestamp === 'number' || !Number.isNaN(Number(timestamp))) {
+    return getDigitCount(Number(timestamp)) >= 10;
+  }
+
+  // Check if timestamp is a valid date string
+  const date = moment.utc(timestamp);
+  return date.isValid() && date.year() >= 1970;
+};
+
+// Airship timestamp format: https://docs.airship.com/api/ua/#api-request-format
 const AIRSHIP_TIMESTAMP_FORMAT = 'YYYY-MM-DD[T]HH:mm:ss[Z]';
 
 const convertToAirshipTimestamp = (timestamp: string) => {
@@ -105,6 +119,7 @@ const getJsonAttributesFromIntegrationsObj = (message: RudderMessage): AirshipOb
   if (integrationsObj?.JSONAttributes) {
     airshipObjectAttributes.jsonAttributes = Object.entries(integrationsObj.JSONAttributes).map(
       ([key, value]) => {
+        // object attribute type in Airship: https://docs.airship.com/api/ua/#schemas-setattributeobject
         if (Array.isArray(value)) {
           throw new InstrumentationError(
             `JsonAttribute as array is not supported for ${key} in Airship`,
@@ -120,6 +135,7 @@ const getJsonAttributesFromIntegrationsObj = (message: RudderMessage): AirshipOb
     );
   }
   if (integrationsObj?.removeAttributes) {
+    // Remove Attributes in Airship: https://docs.airship.com/api/ua/#schemas-removeattributeobject
     airshipObjectAttributes.removeAttributes = integrationsObj.removeAttributes.map((key) => ({
       action: 'remove',
       key,
@@ -127,6 +143,13 @@ const getJsonAttributesFromIntegrationsObj = (message: RudderMessage): AirshipOb
     }));
   }
   return airshipObjectAttributes;
+};
+
+export const getAttributeValue = (value: string | number | object): AttributeValue => {
+  if (isValidTimestamp(value as string)) {
+    return convertToAirshipTimestamp(value as string);
+  }
+  return value as AttributeValue;
 };
 
 export const prepareAttributePayload = (
@@ -165,13 +188,7 @@ export const prepareAttributePayload = (
           return acc;
         }
       }
-      // let valueToSet = value;
-      // try {
-      //   valueToSet = convertToAirshipTimestamp(value as string);
-      // } catch (error) {
-      //   // Do nothing
-      // }
-      attribute.value = value as AttributeValue;
+      attribute.value = getAttributeValue(value as AttributeValue);
       acc.attributes.push(attribute);
     }
     return acc;

@@ -1,6 +1,6 @@
 import { RudderMessage } from '../../../types';
-import { flattenJson, getFieldValueFromMessage } from '../../util';
-import { getAirshipTimestamp, prepareAttributePayload } from './utils';
+import { convertToUuid, flattenJson, getFieldValueFromMessage } from '../../util';
+import { getAirshipTimestamp, isValidTimestamp, prepareAttributePayload } from './utils';
 
 type timestampTc = {
   description: string;
@@ -135,7 +135,7 @@ describe('Airship utils - prepareAttributePayload', () => {
         {
           action: 'set',
           key: 'af_install_time',
-          value: '2024-12-09 12:26:29.643',
+          value: '2024-12-09T12:26:29Z',
           timestamp: '2025-01-07T10:57:38Z',
         },
         { action: 'set', key: 'af_status', value: 'Organic', timestamp: '2025-01-07T10:57:38Z' },
@@ -247,7 +247,7 @@ describe('Airship utils - prepareAttributePayload', () => {
         {
           action: 'set',
           key: 'af_install_time',
-          value: '2024-12-09 12:26:29.643',
+          value: '2024-12-09T12:26:29Z',
           timestamp: '2025-01-07T10:57:38Z',
         },
         { action: 'set', key: 'af_status', value: 'Organic', timestamp: '2025-01-07T10:57:38Z' },
@@ -306,7 +306,7 @@ describe('Airship utils - prepareAttributePayload', () => {
         {
           action: 'set',
           key: 'af_install_time',
-          value: '2024-12-09 12:26:29.643',
+          value: '2024-12-09T12:26:29Z',
           timestamp: '2025-01-07T10:57:38Z',
         },
         { action: 'set', key: 'af_status', value: 'Organic', timestamp: '2025-01-07T10:57:38Z' },
@@ -340,5 +340,42 @@ describe('Airship utils - prepareAttributePayload', () => {
     // @ts-expect-error error with type
     const attributePayload = prepareAttributePayload(flattenedTraits, message);
     expect(attributePayload).toEqual(expectedAttributePayload);
+  });
+});
+
+describe('Airship utils - isValidTimestamp', () => {
+  it('should return true when timestamp is a valid Unix timestamp', () => {
+    const timestamp = 1736246350;
+    expect(isValidTimestamp(timestamp)).toBe(true);
+  });
+
+  it('should return true when timestamp is a valid Unix timestamp with milliseconds', () => {
+    const timestamp = 1736246350 * 1000;
+    expect(isValidTimestamp(timestamp)).toBe(true);
+  });
+
+  it('should return true when timestamp is a valid date string', () => {
+    const timestamp = '2025-01-23T12:00:00Z';
+    expect(isValidTimestamp(timestamp)).toBe(true);
+  });
+
+  it('should return false when timestamp is not a valid Unix timestamp or date string(invalid_timestamp)', () => {
+    const timestamp = 'invalid_timestamp';
+    expect(isValidTimestamp(timestamp)).toBe(false);
+  });
+
+  it('should return false when timestamp is not a valid Unix timestamp or date string(uuid)', () => {
+    const timestamp = convertToUuid('invalid_timestamp');
+    expect(isValidTimestamp(timestamp)).toBe(false);
+  });
+
+  it('should return false when timestamp is not a valid Unix timestamp or date string(91504)', () => {
+    const timestamp = 91504;
+    expect(isValidTimestamp(timestamp)).toBe(false);
+  });
+
+  it('should return false when timestamp is not a valid Unix timestamp or date string("91504")', () => {
+    const timestamp = '91504';
+    expect(isValidTimestamp(timestamp)).toBe(false);
   });
 });

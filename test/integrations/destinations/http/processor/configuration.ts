@@ -98,7 +98,7 @@ export const configuration: ProcessorTestData[] = [
             output: transformResultBuilder({
               method: 'DELETE',
               userId: '',
-              endpoint: 'http://abc.com/contacts/john.doe@example.com/',
+              endpoint: 'http://abc.com/contacts/john.doe%40example.com',
               headers: {
                 'Content-Type': 'application/json',
                 'x-api-key': 'test-api-key',
@@ -209,7 +209,7 @@ export const configuration: ProcessorTestData[] = [
               },
               XML: {
                 payload:
-                  '<?xml version="1.0" encoding="UTF-8"?><event>Order Completed</event><currency>USD</currency><userId>userId123</userId><properties><items><item_id>622c6f5d5cf86a4c77358033</item_id><name>Cones of Dunshire</name><price>40</price></items><items><item_id>577c6f5d5cf86a4c7735ba03</item_id><name>Five Crowns</name><price>5</price></items></properties>',
+                  '<?xml version="1.0" encoding="UTF-8"?><body xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><event>Order Completed</event><currency>USD</currency><userId>userId123</userId><properties><items><item_id>622c6f5d5cf86a4c77358033</item_id><name>Cones of Dunshire</name><price>40</price></items><items><item_id>577c6f5d5cf86a4c7735ba03</item_id><name>Five Crowns</name><price>5</price></items></properties></body>',
               },
             }),
             statusCode: 200,
@@ -328,9 +328,9 @@ export const configuration: ProcessorTestData[] = [
   {
     id: 'http-configuration-test-7',
     name: destType,
-    description: 'Track call with xml format and payload with special characters in keys',
+    description: 'Track call with xml format with multiple keys',
     scenario: 'Business',
-    successCriteria: 'Response should be in xml format with the special characters handled',
+    successCriteria: 'Should throw error as the body have multiple root keys',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -360,20 +360,163 @@ export const configuration: ProcessorTestData[] = [
         status: 200,
         body: [
           {
+            error:
+              'Error: XML supports only one root key. Please update request body mappings accordingly: Workflow: procWorkflow, Step: prepareBody, ChildStep: undefined, OriginalError: Error: XML supports only one root key. Please update request body mappings accordingly',
+            statusCode: 400,
+            metadata: generateMetadata(1),
+            statTags: { ...processorInstrumentationErrorStatTags },
+          },
+        ],
+      },
+    },
+  },
+  {
+    id: 'http-configuration-test-8',
+    name: destType,
+    description:
+      'Track call with bearer token, form format, post method, additional headers and properties mapping',
+    scenario: 'Business',
+    successCriteria:
+      'Response should be in form format with post method, headers and properties mapping',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        method: 'POST',
+        body: [
+          {
+            destination: destinations[10],
+            message: {
+              type: 'track',
+              userId: 'userId123',
+              event: 'Order Completed',
+              properties,
+            },
+            metadata: generateMetadata(1),
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
             output: transformResultBuilder({
               method: 'POST',
               userId: '',
-              endpoint: destinations[9].Config.apiUrl,
+              endpoint: destinations[10].Config.apiUrl,
               headers: {
-                'Content-Type': 'application/xml',
+                'Content-Type': 'application/x-www-form-urlencoded',
                 Authorization: 'Bearer test-token',
                 h1: 'val1',
                 'content-type': 'application/json',
               },
-              XML: {
-                payload:
-                  '<?xml version="1.0" encoding="UTF-8"?><name>Rubik&apos;s Cube</name><_revenue-wdfqwe_>4.99</_revenue-wdfqwe_><brand xsi:nil></brand>',
+              FORM: {
+                currency: 'USD',
+                event: 'Order Completed',
+                userId: 'userId123',
               },
+            }),
+            statusCode: 200,
+            metadata: generateMetadata(1),
+          },
+        ],
+      },
+    },
+  },
+  {
+    id: 'http-configuration-test-9',
+    name: destType,
+    description: 'Track call with bearer token, form url encoded format',
+    scenario: 'Business',
+    successCriteria:
+      'Response should be in form format with post method, headers and properties mapping',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        method: 'POST',
+        body: [
+          {
+            destination: destinations[11],
+            message: {
+              type: 'track',
+              userId: 'userId123',
+              event: 'Order Completed',
+              properties,
+            },
+            metadata: generateMetadata(1),
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: transformResultBuilder({
+              method: 'POST',
+              userId: '',
+              endpoint: destinations[11].Config.apiUrl,
+              headers: {
+                Authorization: 'Bearer test-token',
+                h1: 'val1',
+                'Content-Type': 'application/x-www-form-urlencoded',
+              },
+              FORM: {
+                currency: 'USD',
+                event: 'Order Completed',
+                userId: 'userId123',
+              },
+            }),
+            statusCode: 200,
+            metadata: generateMetadata(1),
+          },
+        ],
+      },
+    },
+  },
+  {
+    id: 'http-configuration-test-10',
+    name: destType,
+    description: 'empty body',
+    scenario: 'Business',
+    successCriteria:
+      'Response should be in form format with post method, headers and properties mapping',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        method: 'POST',
+        body: [
+          {
+            destination: destinations[12],
+            message: {},
+            metadata: generateMetadata(1),
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: transformResultBuilder({
+              method: 'POST',
+              userId: '',
+              endpoint: destinations[12].Config.apiUrl,
+              headers: {
+                Authorization: 'Bearer test-token',
+                h1: 'val1',
+                'Content-Type': 'application/x-www-form-urlencoded',
+              },
+              FORM: {},
             }),
             statusCode: 200,
             metadata: generateMetadata(1),

@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.88.3](https://github.com/rudderlabs/rudder-transformer/compare/v1.88.2...v1.88.3) (2025-01-24)
+
+
+### Bug Fixes
+
+* is identify category comparision simplification ([c434ca4](https://github.com/rudderlabs/rudder-transformer/commit/c434ca4f714900000ebc37c4fbd23e2cad469f35))
+* iterable register device token flow ([f19966a](https://github.com/rudderlabs/rudder-transformer/commit/f19966ae7efe8fcd82607d39c3d78ed6f17d0e79))
+
 ### [1.88.2](https://github.com/rudderlabs/rudder-transformer/compare/v1.88.1...v1.88.2) (2025-01-22)
 
 

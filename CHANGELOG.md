@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.88.3](https://github.com/rudderlabs/rudder-transformer/compare/v1.88.2...v1.88.3) (2025-01-24)
+
+
+### Bug Fixes
+
+* iterable device token registration api issues ([#4013](https://github.com/rudderlabs/rudder-transformer/issues/4013)) ([a986138](https://github.com/rudderlabs/rudder-transformer/commit/a986138d43d2cabcaa597b70fa7871b383cb1427))
+
 ### [1.88.2](https://github.com/rudderlabs/rudder-transformer/compare/v1.88.1...v1.88.2) (2025-01-22)
 
 

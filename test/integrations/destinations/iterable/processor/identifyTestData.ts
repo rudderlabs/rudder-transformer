@@ -37,6 +37,163 @@ const baseMetadata: Metadata = {
 
 export const identifyTestData: ProcessorTestData[] = [
   {
+    id: 'iterable-identify-test-has-multiple-responses',
+    name: 'iterable',
+    description: 'Indentify call to verify hasMultipleResponses',
+    scenario: 'Business',
+    successCriteria:
+      'Response should contain status code 200 and it should contain update user payload with new email sent in payload',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        method: 'POST',
+        body: [
+          {
+            message: {
+              type: 'identify',
+              sentAt: '2020-08-28T16:26:16.473Z',
+              userId: 'userId',
+              channel: 'web',
+              context: {
+                os: {
+                  name: '',
+                  version: '1.12.3',
+                },
+                app: {
+                  name: 'RudderLabs JavaScript SDK',
+                  build: '1.0.0',
+                  version: '1.1.11',
+                  namespace: 'com.rudderlabs.javascript',
+                },
+                traits: {
+                  email: 'ruchira@rudderlabs.com',
+                },
+                locale: 'en-US',
+                device: {
+                  token: 'token',
+                  id: 'id',
+                  type: 'ios',
+                },
+                screen: {
+                  density: 2,
+                },
+                library: {
+                  name: 'RudderLabs JavaScript SDK',
+                  version: '1.1.11',
+                },
+                campaign: {},
+                userAgent:
+                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0',
+              },
+              rudderId: '62amo6xzksaeyupr4y0pfaucwj0upzs6g7yx',
+              messageId: 'hk02avz2xijdkid4i0mvncbm478g9lybdpgc',
+              anonymousId: 'anonId',
+              originalTimestamp: '2020-08-28T16:26:06.468Z',
+            },
+            metadata: baseMetadata,
+            destination: {
+              ID: '123',
+              Name: 'iterable',
+              DestinationDefinition: {
+                ID: '123',
+                Name: 'iterable',
+                DisplayName: 'Iterable',
+                Config: {},
+              },
+              Config: {
+                apiKey: 'testApiKey',
+                dataCenter: 'USDC',
+                registerDeviceOrBrowserApiKey: 'randomApiKey',
+                preferUserId: false,
+                trackAllPages: true,
+                trackNamedPages: false,
+                mapToSingleEvent: false,
+                trackCategorisedPages: false,
+              },
+              Enabled: true,
+              WorkspaceID: '123',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              userId: '',
+              method: 'POST',
+              endpoint: 'https://api.iterable.com/api/users/update',
+              headers: {
+                api_key: 'testApiKey',
+                'Content-Type': 'application/json',
+              },
+              params: {},
+              body: {
+                JSON: {
+                  email: 'ruchira@rudderlabs.com',
+                  userId: 'userId',
+                  dataFields: {
+                    email: 'ruchira@rudderlabs.com',
+                  },
+                  preferUserId: false,
+                  mergeNestedObjects: true,
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+            },
+            metadata: baseMetadata,
+            statusCode: 200,
+          },
+          {
+            output: {
+              body: {
+                FORM: {},
+                JSON: {
+                  device: {
+                    platform: 'APNS',
+                    token: 'token',
+                  },
+                  email: 'ruchira@rudderlabs.com',
+                  preferUserId: false,
+                  userId: 'userId',
+                },
+                JSON_ARRAY: {},
+                XML: {},
+              },
+              endpoint: 'https://api.iterable.com/api/users/registerDeviceToken',
+              files: {},
+              headers: {
+                'Content-Type': 'application/json',
+                api_key: 'randomApiKey',
+              },
+              method: 'POST',
+              params: {},
+              type: 'REST',
+              userId: '',
+              version: '1',
+            },
+            metadata: baseMetadata,
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
+  {
     id: 'iterable-identify-test-1',
     name: 'iterable',
     description: 'Indentify call to update user in iterable with user traits',

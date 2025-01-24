@@ -7,6 +7,8 @@ const {
   updateUserEventPayloadBuilder,
   registerDeviceTokenEventPayloadBuilder,
   registerBrowserTokenEventPayloadBuilder,
+  hasMultipleResponses,
+  getCategoryWithEndpoint,
 } = require('./util');
 const { ConfigCategory } = require('./config');
 
@@ -796,6 +798,95 @@ describe('iterable utils test', () => {
       expect(updateCartEventPayloadBuilder(fittingPayload, ConfigCategory.UPDATE_CART)).toEqual(
         expectedOutput,
       );
+    });
+  });
+  describe('Unit test cases for iterable hasMultipleResponses', () => {
+    it('should return false when message type is not identify', () => {
+      const category = getCategoryWithEndpoint(ConfigCategory.IDENTIFY, 'USDC');
+      const message = {
+        type: 'track',
+        context: {
+          device: { token: '123' },
+          os: { token: '456' },
+        },
+      };
+      const config = { registerDeviceOrBrowserApiKey: 'test-key' };
+
+      expect(hasMultipleResponses(message, category, config)).toBe(false);
+    });
+
+    it('should return false when category is not identify', () => {
+      const category = getCategoryWithEndpoint(ConfigCategory.PAGE, 'USDC');
+      const message = {
+        type: 'identify',
+        context: {
+          device: { token: '123' },
+          os: { token: '456' },
+        },
+      };
+      const config = { registerDeviceOrBrowserApiKey: 'test-key' };
+
+      expect(hasMultipleResponses(message, category, config)).toBe(false);
+    });
+
+    it('should return false when no device/os token present', () => {
+      const category = getCategoryWithEndpoint(ConfigCategory.IDENTIFY, 'USDC');
+      const message = {
+        type: 'identify',
+        context: {
+          device: {},
+          os: {},
+        },
+      };
+      const config = { registerDeviceOrBrowserApiKey: 'test-key' };
+
+      expect(hasMultipleResponses(message, category, config)).toBe(false);
+    });
+
+    it('should return false when registerDeviceOrBrowserApiKey not present in config', () => {
+      const category = getCategoryWithEndpoint(ConfigCategory.IDENTIFY, 'USDC');
+      const message = {
+        type: 'identify',
+        context: {
+          device: { token: '123' },
+          os: { token: '456' },
+        },
+      };
+      const config = {};
+
+      expect(hasMultipleResponses(message, category, config)).toBe(false);
+    });
+
+    it('should return true when all conditions are met with device token', () => {
+      const category = getCategoryWithEndpoint(ConfigCategory.IDENTIFY, 'USDC');
+      const message = {
+        type: 'identify',
+        context: {
+          device: { token: '123' },
+        },
+      };
+      const config = {
+        dataCenter: '123',
+        registerDeviceOrBrowserApiKey: 'test-key',
+      };
+
+      expect(hasMultipleResponses(message, category, config)).toBe(true);
+    });
+
+    it('should return true when all conditions are met with os token', () => {
+      const category = getCategoryWithEndpoint(ConfigCategory.IDENTIFY, 'USDC');
+      const message = {
+        type: 'identify',
+        context: {
+          os: { token: '456' },
+        },
+      };
+      const config = {
+        dataCenter: '123',
+        registerDeviceOrBrowserApiKey: 'test-key',
+      };
+
+      expect(hasMultipleResponses(message, category, config)).toBe(true);
     });
   });
 });

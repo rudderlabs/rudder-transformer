@@ -80,6 +80,7 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
+  await createHttpTerminator({ server }).terminate();
   if (opts.generate === 'true') {
     const callsDataStr = responses.join('\n');
     const calls = `
@@ -89,7 +90,6 @@ afterAll(async () => {
     `;
     appendFileSync(join(__dirname, 'destinations', opts.destination, 'network.ts'), calls);
   }
-  await createHttpTerminator({ server }).terminate();
 });
 let mockAdapter;
 if (!opts.generate || opts.generate === 'false') {

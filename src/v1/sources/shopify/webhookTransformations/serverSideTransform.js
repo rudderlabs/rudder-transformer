@@ -9,12 +9,11 @@ const {
   INTEGERATION,
   MAPPING_CATEGORIES,
   IDENTIFY_TOPICS,
-  ECOM_TOPICS,
   SUPPORTED_TRACK_EVENTS,
   SHOPIFY_TRACK_MAP,
   lineItemsMappingJSON,
 } = require('../../../../v0/sources/shopify/config');
-const { RUDDER_ECOM_MAP } = require('../config');
+const { ECOM_TOPICS, RUDDER_ECOM_MAP } = require('../config');
 const {
   createPropertiesForEcomEventFromWebhook,
   getProductsFromLineItems,
@@ -93,6 +92,7 @@ const processEvent = async (inputEvent, metricMetadata) => {
     case ECOM_TOPICS.ORDERS_UPDATE:
     case ECOM_TOPICS.CHECKOUTS_CREATE:
     case ECOM_TOPICS.CHECKOUTS_UPDATE:
+    case ECOM_TOPICS.ORDERS_CANCELLED:
       message = ecomPayloadBuilder(event, shopifyTopic);
       break;
     default:

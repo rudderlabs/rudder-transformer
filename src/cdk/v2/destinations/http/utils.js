@@ -8,8 +8,14 @@ const {
   base64Convertor,
   applyCustomMappings,
   isEmptyObject,
-  applyJSONStringTemplate,
+  removeUndefinedAndNullValues,
 } = require('../../../../v0/util');
+
+const CONTENT_TYPES_MAP = {
+  JSON: 'JSON',
+  XML: 'XML',
+  FORM: 'FORM',
+};
 
 const getAuthHeaders = (config) => {
   let headers;
@@ -85,47 +91,12 @@ const getPathParamsSubString = (message, pathParamsArray) => {
 };
 
 const prepareEndpoint = (message, apiUrl, pathParams) => {
-  let requestUrl;
-  try {
-    requestUrl = applyJSONStringTemplate(message, `\`${apiUrl}\``);
-  } catch (e) {
-    throw new ConfigurationError(`Error in api url template: ${e.message}`);
-  }
   if (!Array.isArray(pathParams)) {
-    return requestUrl;
+    return apiUrl;
   }
+  const requestUrl = apiUrl.replace(/\/{1,10}$/, '');
   const pathParamsSubString = getPathParamsSubString(message, pathParams);
   return `${requestUrl}${pathParamsSubString}`;
-};
-
-const excludeMappedFields = (payload, mapping) => {
-  const rawPayload = { ...payload };
-  if (mapping) {
-    mapping.forEach(({ from, to }) => {
-      // continue when from === to
-      if (from === to) return;
-
-      // Remove the '$.' prefix and split the remaining string by '.'
-      const keys = from.replace(/^\$\./, '').split('.');
-      let current = rawPayload;
-
-      // Traverse to the parent of the key to be removed
-      keys.slice(0, -1).forEach((key) => {
-        if (current?.[key]) {
-          current = current[key];
-        } else {
-          current = null;
-        }
-      });
-
-      if (current) {
-        // Remove the 'from' field from input payload
-        delete current[keys[keys.length - 1]];
-      }
-    });
-  }
-
-  return rawPayload;
 };
 
 const sanitizeKey = (key) =>
@@ -157,9 +128,20 @@ const getXMLPayload = (payload) => {
   const builderOptions = {
     ignoreAttributes: false, // Include attributes if they exist
     suppressEmptyNode: false, // Ensures that null or undefined values are not omitted
+    attributeNamePrefix: '@_',
   };
+
+  if (Object.keys(payload).length !== 1) {
+    throw new ConfigurationError(
+      `Error: XML supports only one root key. Please update request body mappings accordingly`,
+    );
+  }
+  const rootKey = Object.keys(payload)[0];
+
   const builder = new XMLBuilder(builderOptions);
-  return `<?xml version="1.0" encoding="UTF-8"?>${builder.build(preprocessJson(payload))}`;
+  const processesPayload = preprocessJson(payload);
+  processesPayload[rootKey]['@_xmlns:xsi'] = 'http://www.w3.org/2001/XMLSchema-instance';
+  return `<?xml version="1.0" encoding="UTF-8"?>${builder.build(processesPayload)}`;
 };
 
 const getMergedEvents = (batch) => {
@@ -172,10 +154,28 @@ const getMergedEvents = (batch) => {
   return events;
 };
 
-const metadataHeaders = (contentType) =>
-  contentType === 'JSON'
-    ? { 'Content-Type': 'application/json' }
-    : { 'Content-Type': 'application/xml' };
+const metadataHeaders = (contentType) => {
+  switch (contentType) {
+    case CONTENT_TYPES_MAP.XML:
+      return { 'Content-Type': 'application/xml' };
+    case CONTENT_TYPES_MAP.FORM:
+      return { 'Content-Type': 'application/x-www-form-urlencoded' };
+    default:
+      return { 'Content-Type': 'application/json' };
+  }
+};
+
+const prepareBody = (payload, contentType) => {
+  let responseBody;
+  if (contentType === CONTENT_TYPES_MAP.XML && !isEmptyObject(payload)) {
+    responseBody = {
+      payload: getXMLPayload(payload),
+    };
+  } else {
+    responseBody = removeUndefinedAndNullValues(payload);
+  }
+  return responseBody;
+};
 
 const mergeMetadata = (batch) => batch.map((event) => event.metadata[0]);
 
@@ -230,12 +230,12 @@ const batchSuccessfulEvents = (events, batchSize) => {
 };
 
 module.exports = {
+  CONTENT_TYPES_MAP,
   getAuthHeaders,
   getCustomMappings,
   encodeParamsObject,
   prepareEndpoint,
-  excludeMappedFields,
-  getXMLPayload,
   metadataHeaders,
+  prepareBody,
   batchSuccessfulEvents,
 };

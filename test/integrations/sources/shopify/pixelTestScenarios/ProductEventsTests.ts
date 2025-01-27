@@ -68,6 +68,11 @@ export const pixelEventsTestScenarios = [
                   },
                   integrations: {
                     SHOPIFY: true,
+                    DATA_WAREHOUSE: {
+                      options: {
+                        jsonPaths: ['page.context.shopifyDetails'],
+                      },
+                    },
                   },
                   name: 'Page View',
                   type: 'page',
@@ -179,6 +184,11 @@ export const pixelEventsTestScenarios = [
                   },
                   integrations: {
                     SHOPIFY: true,
+                    DATA_WAREHOUSE: {
+                      options: {
+                        jsonPaths: ['track.context.shopifyDetails'],
+                      },
+                    },
                   },
                   type: 'track',
                   event: 'Product Viewed',
@@ -343,6 +353,11 @@ export const pixelEventsTestScenarios = [
                   },
                   integrations: {
                     SHOPIFY: true,
+                    DATA_WAREHOUSE: {
+                      options: {
+                        jsonPaths: ['track.context.shopifyDetails'],
+                      },
+                    },
                   },
                   type: 'track',
                   event: 'Cart Viewed',
@@ -568,6 +583,11 @@ export const pixelEventsTestScenarios = [
                   },
                   integrations: {
                     SHOPIFY: true,
+                    DATA_WAREHOUSE: {
+                      options: {
+                        jsonPaths: ['track.context.shopifyDetails'],
+                      },
+                    },
                   },
                   type: 'track',
                   event: 'Product List Viewed',
@@ -738,6 +758,11 @@ export const pixelEventsTestScenarios = [
                   },
                   integrations: {
                     SHOPIFY: true,
+                    DATA_WAREHOUSE: {
+                      options: {
+                        jsonPaths: ['track.context.shopifyDetails'],
+                      },
+                    },
                   },
                   type: 'track',
                   event: 'Product Added',
@@ -879,6 +904,11 @@ export const pixelEventsTestScenarios = [
                   },
                   integrations: {
                     SHOPIFY: true,
+                    DATA_WAREHOUSE: {
+                      options: {
+                        jsonPaths: ['track.context.shopifyDetails'],
+                      },
+                    },
                   },
                   type: 'track',
                   event: 'Product Removed',
@@ -968,6 +998,11 @@ export const pixelEventsTestScenarios = [
                   },
                   integrations: {
                     SHOPIFY: true,
+                    DATA_WAREHOUSE: {
+                      options: {
+                        jsonPaths: ['track.context.shopifyDetails'],
+                      },
+                    },
                   },
                   type: 'track',
                   event: 'Search Submitted',

@@ -30,7 +30,8 @@ steps:
 
   - name: deduceBodyFormat
     template: |
-      $.context.format = .destination.Config.format ?? 'JSON';
+      const format = .destination.Config.format ?? 'JSON';
+      $.context.format = $.CONTENT_TYPES_MAP[format];
 
   - name: buildHeaders
     template: |
@@ -45,8 +46,8 @@ steps:
 
   - name: prepareParams
     template: |
-      const params = $.getCustomMappings(.message, .destination.Config.queryParams)
-      $.context.params = $.encodeParamsObject(params)
+      const params = $.getCustomMappings(.message, .destination.Config.queryParams);
+      $.context.params = $.encodeParamsObject(params);
 
   - name: deduceEndPoint
     template: |
@@ -55,13 +56,12 @@ steps:
   - name: prepareBody
     template: |
       const payload = $.getCustomMappings(.message, .destination.Config.propertiesMapping);
-      $.context.payload = $.excludeMappedFields(payload, .destination.Config.propertiesMapping)
-      $.context.format === "XML" &&  !$.isEmptyObject($.context.payload) ?  $.context.payload = {payload: $.getXMLPayload($.context.payload)} : $.context.payload = $.removeUndefinedAndNullValues($.context.payload)
+      $.context.payload = $.prepareBody(payload, $.context.format);
 
   - name: buildResponseForProcessTransformation
     template: |
       const response = $.defaultRequestConfig();
-      $.context.format === "JSON" ? response.body.JSON = $.context.payload: response.body.XML = $.context.payload;
+      response.body[$.context.format] = $.context.payload;
       response.endpoint = $.context.endpoint;
       response.headers = $.context.headers;
       response.method = $.context.method;

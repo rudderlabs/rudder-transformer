@@ -4,13 +4,7 @@ const logger = require('./logger');
 const { proxyRequest } = require('./adapters/network');
 const { nodeSysErrorToStatus } = require('./adapters/utils/networkUtils');
 
-let areFunctionsEnabled = -1;
-const functionsEnabled = () => {
-  if (areFunctionsEnabled === -1) {
-    areFunctionsEnabled = process.env.ENABLE_FUNCTIONS === 'false' ? 0 : 1;
-  }
-  return areFunctionsEnabled === 1;
-};
+const functionsEnabled = () => process.env.ENABLE_FUNCTIONS !== 'false';
 
 const userTransformHandler = () => {
   if (functionsEnabled()) {

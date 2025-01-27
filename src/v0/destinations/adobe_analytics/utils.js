@@ -98,6 +98,25 @@ function escapeToHTML(inputString) {
 }
 
 /**
+ * Tries to find a value from alternative sources based on the source key.
+ * @param {Object} message - The input message object.
+ * @param {string} sourceKey - The key to look for.
+ * @returns {any} - The found value or null.
+ */
+function findValueFromSources(message, sourceKey) {
+  // Try alternative sources defined in SOURCE_KEYS
+  for (const source of SOURCE_KEYS) {
+    const value = getMappingFieldValueFormMessage(message, source, sourceKey);
+    if (isDefinedAndNotNull(value)) {
+      return value;
+    }
+  }
+
+  // Fallback to value retrieval by path
+  return getValueByPath(message, sourceKey);
+}
+
+/**
  * This function is used for populating the eVars and hVars in the payload
  * @param {*} destVarMapping
  * @param {*} message
@@ -106,31 +125,28 @@ function escapeToHTML(inputString) {
  * @returns updated paylaod with eVars and hVars added
  */
 function rudderPropToDestMap(destVarMapping, message, payload, destVarStrPrefix) {
-  const mappedVar = {};
-  // pass the Rudder Property mapped in the ui whose evar you want to map
-  Object.keys(destVarMapping).forEach((key) => {
-    let val = get(message, `properties.${key}`);
-    if (isDefinedAndNotNull(val)) {
-      const destVarKey = destVarStrPrefix + destVarMapping[key];
-      mappedVar[destVarKey] = escapeToHTML(val);
-    } else {
-      SOURCE_KEYS.some((sourceKey) => {
-        val = getMappingFieldValueFormMessage(message, sourceKey, key);
-        if (isDefinedAndNotNull(val)) {
-          mappedVar[`${destVarStrPrefix}${[destVarMapping[key]]}`] = escapeToHTML(val);
-        } else {
-          val = getValueByPath(message, key);
-          if (isDefinedAndNotNull(val)) {
-            mappedVar[`${destVarStrPrefix}${[destVarMapping[key]]}`] = escapeToHTML(val);
-          }
-        }
-      });
+  const mappedVariables = {};
+
+  // Iterate over each key in the destination variable mapping
+  Object.keys(destVarMapping).forEach((sourceKey) => {
+    let value = message?.properties?.[sourceKey];
+
+    if (!isDefinedAndNotNull(value)) {
+      // Try getting the value from alternative sources
+      value = findValueFromSources(message, sourceKey);
+    }
+
+    if (isDefinedAndNotNull(value)) {
+      const destinationKey = `${destVarStrPrefix}${destVarMapping[sourceKey]}`;
+      mappedVariables[destinationKey] = escapeToHTML(value);
     }
   });
-  if (Object.keys(mappedVar).length > 0) {
-    // non-empty object
-    Object.assign(payload, mappedVar);
+
+  // Add non-empty mapped variables to the payload
+  if (Object.keys(mappedVariables).length > 0) {
+    Object.assign(payload, mappedVariables);
   }
+
   return payload;
 }
 

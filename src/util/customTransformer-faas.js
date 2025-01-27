@@ -34,7 +34,6 @@ function generateFunctionName(userTransformation, libraryVersionIds, testMode, h
     ids = ids.concat([hashSecret]);
   }
 
-  // FIXME: Why the id's are sorted ?!
   const hash = crypto.createHash('md5').update(`${ids}`).digest('hex');
   return `fn-${userTransformation.workspaceId}-${hash}`.substring(0, 63).toLowerCase();
 }

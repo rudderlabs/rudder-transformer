@@ -237,7 +237,7 @@ export const identifyData = [
         body: [
           {
             error:
-              "[Bluecore]  traits.action must be 'identify' for identify action: Workflow: procWorkflow, Step: prepareIdentifyPayload, ChildStep: undefined, OriginalError: [Bluecore]  traits.action must be 'identify' for identify action",
+              "[Bluecore] traits.action must be 'identify' for identify action: Workflow: procWorkflow, Step: prepareIdentifyPayload, ChildStep: undefined, OriginalError: [Bluecore] traits.action must be 'identify' for identify action",
             metadata: {
               destinationId: '',
               destinationType: '',

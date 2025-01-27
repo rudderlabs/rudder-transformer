@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.89.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.88.3...v1.89.0) (2025-01-27)
+
+
+### Features
+
+* add DATA WAREHOUSE to integrations object in shopify pixel source ([#3980](https://github.com/rudderlabs/rudder-transformer/issues/3980)) ([3c20393](https://github.com/rudderlabs/rudder-transformer/commit/3c20393a0e4e3ec98d316820d187310bfec1faea)), closes [#3973](https://github.com/rudderlabs/rudder-transformer/issues/3973) [#3957](https://github.com/rudderlabs/rudder-transformer/issues/3957) [#3957](https://github.com/rudderlabs/rudder-transformer/issues/3957)
+* add redis support in shopify pixel for id stitching  ([#4001](https://github.com/rudderlabs/rudder-transformer/issues/4001)) ([23ad10a](https://github.com/rudderlabs/rudder-transformer/commit/23ad10a4bd470f09a75e9230d8c860b703a5a1f9)), closes [#3957](https://github.com/rudderlabs/rudder-transformer/issues/3957)
+* add support for form format ([#4000](https://github.com/rudderlabs/rudder-transformer/issues/4000)) ([1fc15bf](https://github.com/rudderlabs/rudder-transformer/commit/1fc15bfd4b88e0b252c780a278376cea4c594057))
+* **http:** resolves bug fixes raised during testing ([#3991](https://github.com/rudderlabs/rudder-transformer/issues/3991)) ([a86f009](https://github.com/rudderlabs/rudder-transformer/commit/a86f0094cbef9428e7aeda4965b580f29c89f706))
+
+
+### Bug Fixes
+
+* add mappings to mp event ([#3997](https://github.com/rudderlabs/rudder-transformer/issues/3997)) ([2eab465](https://github.com/rudderlabs/rudder-transformer/commit/2eab46557743702a834597d0d0267a17e561516d))
+* sonar issues in adobe analytics ([#3999](https://github.com/rudderlabs/rudder-transformer/issues/3999)) ([d74c4ab](https://github.com/rudderlabs/rudder-transformer/commit/d74c4ab7ef582eb83d67c4b295aa5d3845c15166))
+* sonar issues in user transformations static lookup ([#3998](https://github.com/rudderlabs/rudder-transformer/issues/3998)) ([a7d6b8f](https://github.com/rudderlabs/rudder-transformer/commit/a7d6b8fca8681d2eb3bf1751bf7855a7cc220d3b))
+* sonar issues in various components ([#4006](https://github.com/rudderlabs/rudder-transformer/issues/4006)) ([454451d](https://github.com/rudderlabs/rudder-transformer/commit/454451dba3260a3664088e2bb009fd8a11cbf957))
+
 ### [1.88.3](https://github.com/rudderlabs/rudder-transformer/compare/v1.88.2...v1.88.3) (2025-01-24)
 
 

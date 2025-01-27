@@ -323,13 +323,29 @@ function stringifyQueryParam(value) {
  * @param {Object} payload
  * @returns {String}
  */
-function getFormData(payload) {
+function getFormData(payload = {}) {
   const data = new URLSearchParams();
   Object.keys(payload).forEach((key) => {
     const payloadValStr = stringifyQueryParam(payload[key]);
     data.append(key, payloadValStr);
   });
   return data;
+}
+
+function extractPayloadForFormat(payload, format) {
+  switch (format) {
+    case 'JSON_ARRAY':
+      return payload?.batch;
+    case 'JSON':
+      return payload;
+    case 'XML':
+      return payload?.payload;
+    case 'FORM':
+      return getFormData(payload);
+    default:
+      logger.debug(`Unknown payload format: ${format}`);
+      return undefined;
+  }
 }
 
 /**
@@ -340,31 +356,27 @@ function getFormData(payload) {
 const prepareProxyRequest = (request) => {
   const { body, method, params, endpoint, headers, destinationConfig: config } = request;
   const { payload, payloadFormat } = getPayloadData(body);
-  let data;
-
-  switch (payloadFormat) {
-    case 'JSON_ARRAY':
-      data = payload.batch;
-      // TODO: add headers
-      break;
-    case 'JSON':
-      data = payload;
-      break;
-    case 'XML':
-      data = payload.payload;
-      break;
-    case 'FORM':
-      data = getFormData(payload);
-      break;
-    case 'MULTIPART-FORM':
-      // TODO:
-      break;
-    default:
-      logger.debug(`body format ${payloadFormat} not supported`);
-  }
+  const data = extractPayloadForFormat(payload, payloadFormat);
   // Ref: https://github.com/rudderlabs/rudder-server/blob/master/router/network.go#L164
   headers['User-Agent'] = 'RudderLabs';
   return removeUndefinedValues({ endpoint, data, params, headers, method, config });
+};
+
+const getHttpWrapperMethod = (requestType) => {
+  switch (requestType) {
+    case 'get':
+      return httpGET;
+    case 'put':
+      return httpPUT;
+    case 'patch':
+      return httpPATCH;
+    case 'delete':
+      return httpDELETE;
+    case 'constructor':
+      return httpSend;
+    default:
+      return httpPOST;
+  }
 };
 
 /**
@@ -392,27 +404,7 @@ const prepareProxyRequest = (request) => {
     })
  */
 const handleHttpRequest = async (requestType = 'post', ...httpArgs) => {
-  let httpWrapperMethod;
-  switch (requestType.toLowerCase()) {
-    case 'get':
-      httpWrapperMethod = httpGET;
-      break;
-    case 'put':
-      httpWrapperMethod = httpPUT;
-      break;
-    case 'patch':
-      httpWrapperMethod = httpPATCH;
-      break;
-    case 'delete':
-      httpWrapperMethod = httpDELETE;
-      break;
-    case 'constructor':
-      httpWrapperMethod = httpSend;
-      break;
-    default:
-      httpWrapperMethod = httpPOST;
-      break;
-  }
+  const httpWrapperMethod = getHttpWrapperMethod(requestType.toLowerCase());
   const httpResponse = await httpWrapperMethod(...httpArgs);
   const processedResponse = processAxiosResponse(httpResponse);
   return { httpResponse, processedResponse };

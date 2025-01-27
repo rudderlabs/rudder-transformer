@@ -76,11 +76,11 @@
     "destKey": "mp_lib"
   },
   {
-    "sourceKeys": "context.page.initialReferrer",
+    "sourceKeys": ["context.page.initialReferrer", "context.page.initial_referrer"],
     "destKey": "$initial_referrer"
   },
   {
-    "sourceKeys": "context.page.initialReferringDomain",
+    "sourceKeys": ["context.page.initialReferringDomain", "context.page.initial_referring_domain"],
     "destKey": "$initial_referring_domain"
   },
   {

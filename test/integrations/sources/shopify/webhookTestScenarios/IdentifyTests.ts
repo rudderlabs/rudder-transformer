@@ -187,6 +187,11 @@ export const identityTestScenarios = [
                   },
                   integrations: {
                     SHOPIFY: true,
+                    DATA_WAREHOUSE: {
+                      options: {
+                        jsonPaths: ['identify.context.shopifyDetails'],
+                      },
+                    },
                   },
                   type: 'identify',
                   userId: '7358220173425',

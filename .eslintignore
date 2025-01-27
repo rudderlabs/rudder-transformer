@@ -27,3 +27,4 @@ scripts/skipPrepareScript.js
 .prettierignore
 *.json
 Dockerfile*
+*.properties

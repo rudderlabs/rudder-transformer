@@ -92,13 +92,18 @@ const destinations: Destination[] = [
   },
   {
     Config: {
-      apiUrl: 'http://abc.com/contacts/{{$.traits.email}}/',
+      apiUrl: 'http://abc.com/contacts/',
       auth: 'apiKeyAuth',
       apiKeyName: 'x-api-key',
       apiKeyValue: 'test-api-key',
       method: 'DELETE',
       isBatchingEnabled: true,
       maxBatchSize: 4,
+      pathParams: [
+        {
+          path: '$.traits.email',
+        },
+      ],
     },
     DestinationDefinition: {
       DisplayName: displayName,
@@ -114,13 +119,18 @@ const destinations: Destination[] = [
   },
   {
     Config: {
-      apiUrl: 'http://abc.com/contacts/{{$.traits.email}}/',
+      apiUrl: 'http://abc.com/contacts/',
       auth: 'apiKeyAuth',
       apiKeyName: 'x-api-key',
       apiKeyValue: 'test-api-key',
       method: 'GET',
       isBatchingEnabled: true,
       maxBatchSize: 4,
+      pathParams: [
+        {
+          path: '$.traits.email',
+        },
+      ],
     },
     DestinationDefinition: {
       DisplayName: displayName,
@@ -158,27 +168,27 @@ const destinations: Destination[] = [
       propertiesMapping: [
         {
           from: '$.event',
-          to: '$.event',
+          to: '$.body.event',
         },
         {
           from: '$.properties.currency',
-          to: '$.currency',
+          to: '$.body.currency',
         },
         {
           from: '$.userId',
-          to: '$.userId',
+          to: '$.body.userId',
         },
         {
           from: '$.properties.products[*].product_id',
-          to: '$.properties.items[*].item_id',
+          to: '$.body.properties.items[*].item_id',
         },
         {
           from: '$.properties.products[*].name',
-          to: '$.properties.items[*].name',
+          to: '$.body.properties.items[*].name',
         },
         {
           from: '$.properties.products[*].price',
-          to: '$.properties.items[*].price',
+          to: '$.body.properties.items[*].price',
         },
       ],
     },
@@ -249,7 +259,7 @@ const destinations: Destination[] = [
   },
   {
     Config: {
-      apiUrl: 'http://abc.com/contacts/{{$.traits.phone}}',
+      apiUrl: 'http://abc.com/contacts/',
       auth: 'noAuth',
       method: 'POST',
       format: 'JSON',
@@ -263,6 +273,305 @@ const destinations: Destination[] = [
         {
           to: '$.key',
           from: '.traits.key',
+        },
+      ],
+      pathParams: [
+        {
+          path: '$.traits.phone',
+        },
+      ],
+    },
+    DestinationDefinition: {
+      DisplayName: displayName,
+      ID: '123',
+      Name: destTypeInUpperCase,
+      Config: { cdkV2Enabled: true },
+    },
+    Enabled: true,
+    ID: '123',
+    Name: destTypeInUpperCase,
+    Transformations: [],
+    WorkspaceID: 'test-workspace-id',
+  },
+  {
+    Config: {
+      apiUrl: 'http://abc.com/contacts',
+      auth: 'basicAuth',
+      username: 'test-user',
+      password: '',
+      method: 'GET',
+      format: 'JSON',
+      isBatchingEnabled: true,
+      maxBatchSize: 2,
+      headers: [
+        {
+          to: '$.h1',
+          from: "'val1'",
+        },
+        {
+          to: '$.h2',
+          from: '2',
+        },
+        {
+          to: "$.'content-type'",
+          from: "'application/json'",
+        },
+        {
+          to: '$.h3',
+          from: '$.traits.firstName',
+        },
+      ],
+      queryParams: [
+        {
+          to: "$['q1']",
+          from: "'val1'",
+        },
+        {
+          to: '$.q2',
+          from: '$.traits.email',
+        },
+      ],
+      pathParams: [
+        {
+          path: '$.userId',
+        },
+        {
+          path: 'c1',
+        },
+      ],
+    },
+    DestinationDefinition: {
+      DisplayName: displayName,
+      ID: '123',
+      Name: destTypeInUpperCase,
+      Config: { cdkV2Enabled: true },
+    },
+    Enabled: true,
+    ID: '123',
+    Name: destTypeInUpperCase,
+    Transformations: [],
+    WorkspaceID: 'test-workspace-id',
+  },
+  {
+    Config: {
+      apiUrl: 'http://abc.com/contacts',
+      auth: 'basicAuth',
+      username: 'test-user',
+      password: '',
+      method: 'GET',
+      format: 'JSON',
+      isBatchingEnabled: true,
+      maxBatchSize: 2,
+      headers: [
+        {
+          to: '$.h1',
+          from: "'val1'",
+        },
+        {
+          to: '$.h2',
+          from: '2',
+        },
+        {
+          to: "$.'content-type'",
+          from: "'application/json'",
+        },
+        {
+          to: '$.h3',
+          from: '$.traits.firstName',
+        },
+      ],
+      queryParams: [
+        {
+          to: 'user name',
+          from: "'val1'",
+        },
+        {
+          to: '$.q2',
+          from: '$.traits.email',
+        },
+      ],
+      pathParams: [
+        {
+          path: '$.userId',
+        },
+        {
+          path: 'c1',
+        },
+      ],
+    },
+    DestinationDefinition: {
+      DisplayName: displayName,
+      ID: '123',
+      Name: destTypeInUpperCase,
+      Config: { cdkV2Enabled: true },
+    },
+    Enabled: true,
+    ID: '123',
+    Name: destTypeInUpperCase,
+    Transformations: [],
+    WorkspaceID: 'test-workspace-id',
+  },
+  {
+    Config: {
+      apiUrl: 'http://abc.com/events',
+      auth: 'bearerTokenAuth',
+      bearerToken: 'test-token',
+      method: 'POST',
+      format: 'XML',
+      headers: [
+        {
+          to: '$.h1',
+          from: "'val1'",
+        },
+        {
+          to: '$.h2',
+          from: '$.key1',
+        },
+        {
+          to: "$.'content-type'",
+          from: "'application/json'",
+        },
+      ],
+      propertiesMapping: [
+        {
+          from: '$.properties',
+          to: '$',
+        },
+      ],
+    },
+    DestinationDefinition: {
+      DisplayName: displayName,
+      ID: '123',
+      Name: destTypeInUpperCase,
+      Config: { cdkV2Enabled: true },
+    },
+    Enabled: true,
+    ID: '123',
+    Name: destTypeInUpperCase,
+    Transformations: [],
+    WorkspaceID: 'test-workspace-id',
+  },
+  {
+    Config: {
+      apiUrl: 'http://abc.com/events',
+      auth: 'bearerTokenAuth',
+      bearerToken: 'test-token',
+      method: 'POST',
+      format: 'FORM',
+      headers: [
+        {
+          to: '$.h1',
+          from: "'val1'",
+        },
+        {
+          to: '$.h2',
+          from: '$.key1',
+        },
+        {
+          to: "$.'content-type'",
+          from: "'application/json'",
+        },
+      ],
+      propertiesMapping: [
+        {
+          from: '$.event',
+          to: '$.event',
+        },
+        {
+          from: '$.properties.currency',
+          to: '$.currency',
+        },
+        {
+          from: '$.userId',
+          to: '$.userId',
+        },
+      ],
+    },
+    DestinationDefinition: {
+      DisplayName: displayName,
+      ID: '123',
+      Name: destTypeInUpperCase,
+      Config: { cdkV2Enabled: true },
+    },
+    Enabled: true,
+    ID: '123',
+    Name: destTypeInUpperCase,
+    Transformations: [],
+    WorkspaceID: 'test-workspace-id',
+  },
+  {
+    Config: {
+      apiUrl: 'http://abc.com/events',
+      auth: 'bearerTokenAuth',
+      bearerToken: 'test-token',
+      method: 'POST',
+      format: 'FORM',
+      headers: [
+        {
+          to: '$.h1',
+          from: "'val1'",
+        },
+        {
+          to: '$.h2',
+          from: '$.key1',
+        },
+      ],
+      propertiesMapping: [
+        {
+          from: '$.event',
+          to: '$.event',
+        },
+        {
+          from: '$.properties.currency',
+          to: '$.currency',
+        },
+        {
+          from: '$.userId',
+          to: '$.userId',
+        },
+      ],
+    },
+    DestinationDefinition: {
+      DisplayName: displayName,
+      ID: '123',
+      Name: destTypeInUpperCase,
+      Config: { cdkV2Enabled: true },
+    },
+    Enabled: true,
+    ID: '123',
+    Name: destTypeInUpperCase,
+    Transformations: [],
+    WorkspaceID: 'test-workspace-id',
+  },
+  {
+    Config: {
+      apiUrl: 'http://abc.com/events',
+      auth: 'bearerTokenAuth',
+      bearerToken: 'test-token',
+      method: 'POST',
+      format: 'FORM',
+      headers: [
+        {
+          to: '$.h1',
+          from: "'val1'",
+        },
+        {
+          to: '$.h2',
+          from: '$.key1',
+        },
+      ],
+      propertiesMapping: [
+        {
+          from: '$.event',
+          to: '$.event',
+        },
+        {
+          from: '$.properties.currency',
+          to: '$.currency',
+        },
+        {
+          from: '$.userId',
+          to: '$.userId',
         },
       ],
     },
@@ -329,7 +638,7 @@ const properties = {
 const processorInstrumentationErrorStatTags = {
   destType: destTypeInUpperCase,
   errorCategory: 'dataValidation',
-  errorType: 'instrumentation',
+  errorType: 'configuration',
   feature: 'processor',
   implementation: 'cdkV2',
   module: 'destination',

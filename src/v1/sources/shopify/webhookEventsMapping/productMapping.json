@@ -8,7 +8,10 @@
   },
   {
     "sourceKeys": "total_price",
-    "destKey": "value"
+    "destKey": "value",
+    "metadata": {
+      "type": "toNumber"
+    }
   },
   {
     "sourceKeys": "total_tax",

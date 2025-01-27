@@ -450,7 +450,7 @@ export const data = [
                   JSON_ARRAY: {},
                   GZIP: {
                     payload:
-                      '[{"event":"Loaded a Page","properties":{"ip":"0.0.0.0","$user_id":"hjikl","$current_url":"https://docs.rudderstack.com/destinations/mixpanel","$screen_dpi":2,"mp_lib":"RudderLabs JavaScript SDK","$app_build_number":"1.0.0","$app_version_string":"1.0.5","$insert_id":"dd266c67-9199-4a52-ba32-f46ddde67312","token":"test_api_token","distinct_id":"hjikl","time":1688624942402,"name":"Contact Us","$browser":"Chrome","$browser_version":"79.0.3945.117"}}]',
+                      '[{"event":"Loaded a Page","properties":{"ip":"0.0.0.0","$user_id":"hjikl","$current_url":"https://docs.rudderstack.com/destinations/mixpanel","$screen_dpi":2,"mp_lib":"RudderLabs JavaScript SDK","$initial_referrer":"https://docs.rudderstack.com","$initial_referring_domain":"docs.rudderstack.com","$app_build_number":"1.0.0","$app_version_string":"1.0.5","$insert_id":"dd266c67-9199-4a52-ba32-f46ddde67312","token":"test_api_token","distinct_id":"hjikl","time":1688624942402,"name":"Contact Us","$browser":"Chrome","$browser_version":"79.0.3945.117"}}]',
                   },
                   XML: {},
                   FORM: {},
@@ -1173,7 +1173,7 @@ export const data = [
                   JSON: {},
                   JSON_ARRAY: {
                     batch:
-                      '[{"event":"Loaded a Page","properties":{"ip":"0.0.0.0","$user_id":"hjikl","$current_url":"https://docs.rudderstack.com/destinations/mixpanel","$screen_dpi":2,"mp_lib":"RudderLabs JavaScript SDK","$app_build_number":"1.0.0","$app_version_string":"1.0.5","$insert_id":"dd266c67-9199-4a52-ba32-f46ddde67312","token":"test_api_token","distinct_id":"hjikl","time":1688624942402,"name":"Contact Us","$browser":"Chrome","$browser_version":"79.0.3945.117"}}]',
+                      '[{"event":"Loaded a Page","properties":{"ip":"0.0.0.0","$user_id":"hjikl","$current_url":"https://docs.rudderstack.com/destinations/mixpanel","$screen_dpi":2,"mp_lib":"RudderLabs JavaScript SDK","$initial_referrer":"https://docs.rudderstack.com","$initial_referring_domain":"docs.rudderstack.com","$app_build_number":"1.0.0","$app_version_string":"1.0.5","$insert_id":"dd266c67-9199-4a52-ba32-f46ddde67312","token":"test_api_token","distinct_id":"hjikl","time":1688624942402,"name":"Contact Us","$browser":"Chrome","$browser_version":"79.0.3945.117"}}]',
                   },
                   XML: {},
                   FORM: {},

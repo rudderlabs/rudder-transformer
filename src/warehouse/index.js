@@ -11,6 +11,7 @@ const {
   validTimestamp,
   getVersionedUtils,
   isRudderSourcesEvent,
+  mergeJSONPathsFromDataWarehouse,
 } = require('./util');
 const { getMergeRuleEvent } = require('./identity');
 
@@ -307,8 +308,8 @@ function isStringLikeObject(obj) {
   let minKey = Infinity;
   let maxKey = -Infinity;
 
-  for (let i = 0; i < keys.length; i++) {
-    const key = keys[i];
+  for (const element of keys) {
+    const key = element;
     const value = obj[key];
 
     if (!isNonNegativeInteger(key)) return false;
@@ -336,8 +337,8 @@ function stringLikeObjectToString(obj) {
     .sort((a, b) => a - b);
   let result = '';
 
-  for (let i = 0; i < keys.length; i++) {
-    result += obj[keys[i].toString()];
+  for (const element of keys) {
+    result += obj[element.toString()];
   }
 
   return result;
@@ -654,6 +655,8 @@ function processWarehouseMessage(message, options) {
   const skipUsersTable = shouldSkipUsersTable(options);
   const skipReservedKeywordsEscaping =
     options.integrationOptions.skipReservedKeywordsEscaping || false;
+
+  mergeJSONPathsFromDataWarehouse(message, options);
 
   // underscoreDivideNumbers when set to false, if a column has a format like "_v_3_", it will be formatted to "_v3_"
   // underscoreDivideNumbers when set to true, if a column has a format like "_v_3_", we keep it like that

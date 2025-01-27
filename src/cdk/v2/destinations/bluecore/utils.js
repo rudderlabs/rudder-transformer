@@ -19,6 +19,70 @@ const { EVENT_NAME_MAPPING, IDENTIFY_EXCLUSION_LIST, TRACK_EXCLUSION_LIST } = re
 const { EventType } = require('../../../../constants');
 const { MAPPING_CONFIG, CONFIG_CATEGORIES } = require('./config');
 
+const validateCustomerProperties = (payload, eventName) => {
+  if (
+    !isDefinedAndNotNull(payload?.properties?.customer) ||
+    Object.keys(payload.properties.customer).length === 0
+  ) {
+    throw new InstrumentationError(
+      `[Bluecore] property:: No relevant trait to populate customer information, which is required for ${eventName} action`,
+    );
+  }
+};
+
+const validateIdentifyAction = (message) => {
+  if (
+    message.type === EventType.IDENTIFY &&
+    isDefinedNotNullNotEmpty(message.traits?.action) &&
+    message.traits?.action !== 'identify'
+  ) {
+    throw new InstrumentationError(
+      "[Bluecore] traits.action must be 'identify' for identify action",
+    );
+  }
+};
+const validateSearchEvent = (payload) => {
+  if (!payload?.properties?.search_term) {
+    throw new InstrumentationError(
+      '[Bluecore] property:: search_query is required for search event',
+    );
+  }
+};
+
+const validatePurchaseEvent = (payload) => {
+  if (!isDefinedAndNotNull(payload?.properties?.order_id)) {
+    throw new InstrumentationError('[Bluecore] property:: order_id is required for purchase event');
+  }
+  if (!isDefinedAndNotNull(payload?.properties?.total)) {
+    throw new InstrumentationError('[Bluecore] property:: total is required for purchase event');
+  }
+  validateCustomerProperties(payload, 'purchase');
+};
+
+const validateCustomerEvent = (payload, message) => {
+  if (!isDefinedAndNotNullAndNotEmpty(getFieldValueFromMessage(message, 'email'))) {
+    throw new InstrumentationError(
+      `[Bluecore] property:: email is required for ${payload.event} action`,
+    );
+  }
+  validateCustomerProperties(payload, payload.event);
+};
+
+const validateEventSpecificPayload = (payload, message) => {
+  const eventValidators = {
+    search: validateSearchEvent,
+    purchase: validatePurchaseEvent,
+    identify: validateCustomerEvent,
+    optin: validateCustomerEvent,
+    unsubscribe: validateCustomerEvent,
+  };
+
+  const validator = eventValidators[payload.event];
+  if (validator) {
+    validator(payload, message);
+  }
+};
+
 /**
  * Verifies the correctness of payload for different events.
  *
@@ -28,63 +92,8 @@ const { MAPPING_CONFIG, CONFIG_CATEGORIES } = require('./config');
  * @returns {void}
  */
 const verifyPayload = (payload, message) => {
-  if (
-    message.type === EventType.IDENTIFY &&
-    isDefinedNotNullNotEmpty(message.traits?.action) &&
-    message.traits?.action !== 'identify'
-  ) {
-    throw new InstrumentationError(
-      "[Bluecore]  traits.action must be 'identify' for identify action",
-    );
-  }
-  switch (payload.event) {
-    case 'search':
-      if (!payload?.properties?.search_term) {
-        throw new InstrumentationError(
-          '[Bluecore] property:: search_query is required for search event',
-        );
-      }
-      break;
-    case 'purchase':
-      if (!isDefinedAndNotNull(payload?.properties?.order_id)) {
-        throw new InstrumentationError(
-          '[Bluecore] property:: order_id is required for purchase event',
-        );
-      }
-      if (!isDefinedAndNotNull(payload?.properties?.total)) {
-        throw new InstrumentationError(
-          '[Bluecore] property:: total is required for purchase event',
-        );
-      }
-      if (
-        !isDefinedAndNotNull(payload?.properties?.customer) ||
-        Object.keys(payload.properties.customer).length === 0
-      ) {
-        throw new InstrumentationError(
-          `[Bluecore] property:: No relevant trait to populate customer information, which is required for ${payload.event} event`,
-        );
-      }
-      break;
-    case 'identify':
-    case 'optin':
-    case 'unsubscribe':
-      if (!isDefinedAndNotNullAndNotEmpty(getFieldValueFromMessage(message, 'email'))) {
-        throw new InstrumentationError(
-          `[Bluecore] property:: email is required for ${payload.event} action`,
-        );
-      }
-      if (
-        !isDefinedAndNotNull(payload?.properties?.customer) ||
-        Object.keys(payload.properties.customer).length === 0
-      ) {
-        throw new InstrumentationError(
-          `[Bluecore] property:: No relevant trait to populate customer information, which is required for ${payload.event} action`,
-        );
-      }
-      break;
-    default:
-      break;
-  }
+  validateIdentifyAction(message);
+  validateEventSpecificPayload(payload, message);
 };
 
 /**

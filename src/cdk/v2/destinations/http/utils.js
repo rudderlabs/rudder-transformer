@@ -124,23 +124,24 @@ const preprocessJson = (obj) => {
   }, {});
 };
 
-const getXMLPayload = (payload) => {
+const getXMLPayload = (payload, rootKey) => {
   const builderOptions = {
     ignoreAttributes: false, // Include attributes if they exist
     suppressEmptyNode: false, // Ensures that null or undefined values are not omitted
     attributeNamePrefix: '@_',
   };
 
-  if (Object.keys(payload).length !== 1) {
-    throw new ConfigurationError(
-      `Error: XML supports only one root key. Please update request body mappings accordingly`,
-    );
+  if (!rootKey) {
+    throw new ConfigurationError(`Error: XML root key is invalid`);
   }
-  const rootKey = Object.keys(payload)[0];
 
   const builder = new XMLBuilder(builderOptions);
-  const processesPayload = preprocessJson(payload);
-  processesPayload[rootKey]['@_xmlns:xsi'] = 'http://www.w3.org/2001/XMLSchema-instance';
+  const processesPayload = {
+    [rootKey]: {
+      ...preprocessJson(payload),
+      '@_xmlns:xsi': 'http://www.w3.org/2001/XMLSchema-instance',
+    },
+  };
   return `<?xml version="1.0" encoding="UTF-8"?>${builder.build(processesPayload)}`;
 };
 
@@ -165,11 +166,11 @@ const metadataHeaders = (contentType) => {
   }
 };
 
-const prepareBody = (payload, contentType) => {
+const prepareBody = (payload, contentType, xmlRootKey) => {
   let responseBody;
   if (contentType === CONTENT_TYPES_MAP.XML && !isEmptyObject(payload)) {
     responseBody = {
-      payload: getXMLPayload(payload),
+      payload: getXMLPayload(payload, xmlRootKey),
     };
   } else {
     responseBody = removeUndefinedAndNullValues(payload);

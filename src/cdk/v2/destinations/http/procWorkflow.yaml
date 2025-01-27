@@ -56,7 +56,7 @@ steps:
   - name: prepareBody
     template: |
       const payload = $.getCustomMappings(.message, .destination.Config.propertiesMapping);
-      $.context.payload = $.prepareBody(payload, $.context.format);
+      $.context.payload = $.prepareBody(payload, $.context.format, .destination.Config.xmlRootKey);
 
   - name: buildResponseForProcessTransformation
     template: |

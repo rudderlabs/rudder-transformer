@@ -73,10 +73,10 @@ describe('Utils Functions', () => {
 
   describe('prepareBody', () => {
     test('should prepare XML payload when content type is XML', () => {
-      const payload = { root: { key: 'value', key2: null } };
+      const payload = { key: 'value', key2: null };
       const expectedXML =
         '<?xml version="1.0" encoding="UTF-8"?><root xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><key>value</key><key2 xsi:nil></key2></root>';
-      const result = prepareBody(payload, 'XML');
+      const result = prepareBody(payload, 'XML', 'root');
       expect(result).toEqual({ payload: expectedXML });
     });
 

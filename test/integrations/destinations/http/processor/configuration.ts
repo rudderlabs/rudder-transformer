@@ -361,7 +361,7 @@ export const configuration: ProcessorTestData[] = [
         body: [
           {
             error:
-              'Error: XML supports only one root key. Please update request body mappings accordingly: Workflow: procWorkflow, Step: prepareBody, ChildStep: undefined, OriginalError: Error: XML supports only one root key. Please update request body mappings accordingly',
+              'Error: XML root key is invalid: Workflow: procWorkflow, Step: prepareBody, ChildStep: undefined, OriginalError: Error: XML root key is invalid',
             statusCode: 400,
             metadata: generateMetadata(1),
             statTags: { ...processorInstrumentationErrorStatTags },

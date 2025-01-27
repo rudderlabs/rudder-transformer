@@ -145,7 +145,6 @@ const handleCustomMappings = (message, Config) => {
 const boilerplateOperations = (ga4Payload, message, Config, eventName) => {
   removeReservedParameterPrefixNames(ga4Payload.events[0].params);
   ga4Payload.events[0].name = eventName;
-  const integrationsObj = getIntegrationsObj(message, 'ga4_v2');
 
   if (ga4Payload.events[0].params) {
     ga4Payload.events[0].params = removeInvalidParams(

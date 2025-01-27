@@ -177,6 +177,7 @@ function validateAndBuildResponse(message, payload, category, destination) {
   };
   response.userId = message.anonymousId;
   const messageType = message.type.toLowerCase();
+  respList.push(response);
   switch (messageType) {
     case EventType.IDENTIFY:
       response.body.JSON = removeUndefinedAndNullValues(
@@ -188,7 +189,6 @@ function validateAndBuildResponse(message, payload, category, destination) {
       break;
     case EventType.GROUP: {
       response.body.JSON = removeUndefinedAndNullValues(buildCustomAttributes(message, payload));
-      respList.push(response);
       if (checkIfEmailOrUserIdPresent(message, destination.Config)) {
         const attachUserAndCompanyResponse = attachUserAndCompany(message, destination.Config);
         attachUserAndCompanyResponse.userId = message.anonymousId;
@@ -200,7 +200,7 @@ function validateAndBuildResponse(message, payload, category, destination) {
       throw new InstrumentationError(`Message type ${messageType} not supported`);
   }
 
-  return messageType === EventType.GROUP ? respList : response;
+  return respList;
 }
 
 function processSingleMessage(message, destination) {

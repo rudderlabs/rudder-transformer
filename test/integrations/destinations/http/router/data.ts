@@ -182,7 +182,7 @@ export const data = [
                 version: '1',
                 type: 'REST',
                 method: 'GET',
-                endpoint: 'http://abc.com/contacts/john.doe@example.com/',
+                endpoint: 'http://abc.com/contacts/john.doe%40example.com',
                 headers: {
                   'x-api-key': 'test-api-key',
                   'Content-Type': 'application/json',

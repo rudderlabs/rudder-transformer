@@ -188,26 +188,6 @@ describe('Airship utils - prepareAttributePayload', () => {
       type: 'identify',
     } as unknown as RudderMessage;
 
-    const expectedAttributePayload = {
-      attributes: [
-        {
-          action: 'set',
-          key: 'af_install_time',
-          value: '2024-12-09T12:26:29Z',
-          timestamp: '2025-01-07T10:57:38Z',
-        },
-        { action: 'set', key: 'af_status', value: 'Organic', timestamp: '2025-01-07T10:57:38Z' },
-        { action: 'set', key: 'first_name', value: 'Orcun', timestamp: '2025-01-07T10:57:38Z' },
-        { action: 'set', key: 'last_name', value: 'Test', timestamp: '2025-01-07T10:57:38Z' },
-        {
-          action: 'set',
-          key: 'widgets_installed#123',
-          value: ['no_widgets_installed', 'widgets_installed'],
-          timestamp: '2025-01-07T10:57:38Z',
-        },
-      ],
-    };
-
     const traits = getFieldValueFromMessage(message, 'traits');
     const flattenedTraits = flattenJson(traits);
     // @ts-expect-error error with type
@@ -285,6 +265,78 @@ describe('Airship utils - prepareAttributePayload', () => {
             recordId: '123',
             recordType: 'user',
           },
+        },
+      },
+      event: 'identify',
+      integrations: {
+        All: true,
+        AIRSHIP: {
+          JSONAttributes: {
+            'widgets_installed#123': {
+              widgets: ['no_widgets_installed', 'widgets_installed'],
+            },
+          },
+        },
+      },
+      type: 'identify',
+    } as unknown as RudderMessage;
+
+    const expectedAttributePayload = {
+      attributes: [
+        {
+          action: 'set',
+          key: 'af_install_time',
+          value: '2024-12-09T12:26:29Z',
+          timestamp: '2025-01-07T10:57:38Z',
+        },
+        { action: 'set', key: 'af_status', value: 'Organic', timestamp: '2025-01-07T10:57:38Z' },
+        { action: 'set', key: 'first_name', value: 'Orcun', timestamp: '2025-01-07T10:57:38Z' },
+        { action: 'set', key: 'last_name', value: 'Test', timestamp: '2025-01-07T10:57:38Z' },
+        {
+          action: 'set',
+          key: 'data_recordId',
+          value: '123',
+          timestamp: '2025-01-07T10:57:38Z',
+        },
+        {
+          action: 'set',
+          key: 'data_recordType',
+          value: 'user',
+          timestamp: '2025-01-07T10:57:38Z',
+        },
+        {
+          action: 'set',
+          key: 'widgets_installed#123',
+          value: {
+            widgets: ['no_widgets_installed', 'widgets_installed'],
+          },
+          timestamp: '2025-01-07T10:57:38Z',
+        },
+      ],
+    };
+
+    const traits = getFieldValueFromMessage(message, 'traits');
+    const flattenedTraits = flattenJson(traits);
+    // @ts-expect-error error with type
+    const attributePayload = prepareAttributePayload(flattenedTraits, message);
+    expect(attributePayload).toEqual(expectedAttributePayload);
+  });
+
+  it('should return the correct attribute payload when jsonAttributes is present in integrations object and jsonAttribute(widgets_installed#123) is object & traits include an object', () => {
+    const message = {
+      ...commonEventProps,
+      context: {
+        ...commonContextProps,
+        traits: {
+          af_install_time: '2024-12-09 12:26:29.643',
+          af_status: 'Organic',
+          firstName: 'Orcun',
+          lastName: 'Test',
+          data: {
+            recordId: '123',
+            recordType: 'user',
+          },
+          widgets_installed: ['no_widgets_installed', 'widgets_installed'],
         },
       },
       event: 'identify',

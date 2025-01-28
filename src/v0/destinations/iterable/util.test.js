@@ -1,3 +1,5 @@
+const jsonSize = require('json-size');
+const { get } = require('lodash');
 const {
   pageEventPayloadBuilder,
   trackEventPayloadBuilder,
@@ -9,8 +11,13 @@ const {
   registerBrowserTokenEventPayloadBuilder,
   hasMultipleResponses,
   getCategoryWithEndpoint,
+  getCategoryUsingEventName,
+  prepareAndSplitUpdateUserBatchesBasedOnPayloadSize,
 } = require('./util');
-const { ConfigCategory } = require('./config');
+const { ConfigCategory, constructEndpoint } = require('./config');
+
+const dataCenter = 'USDC';
+const dataCenterEU = 'EUDC';
 
 const getTestMessage = () => {
   let message = {
@@ -109,6 +116,28 @@ const getTestEcommMessage = () => {
 };
 
 describe('iterable utils test', () => {
+  describe('Unit test cases for iterable constructEndpoint', () => {
+    // Constructs endpoint URL by combining USDC base URL with category endpoint
+    it('should combine USDC and EUDC base URL with category endpoint', () => {
+      const category = { endpoint: 'users/update' };
+
+      const result = constructEndpoint(dataCenter, category);
+      const resultEU = constructEndpoint(dataCenterEU, category);
+
+      expect(result).toBe('https://api.iterable.com/api/users/update');
+      expect(resultEU).toBe('https://api.eu.iterable.com/api/users/update');
+    });
+
+    // Defaults to USDC base URL when invalid dataCenter is provided
+    it('should default to USDC base URL when invalid dataCenter provided', () => {
+      const dataCenter = 'INVALID';
+      const category = { endpoint: 'events/track' };
+
+      const result = constructEndpoint(dataCenter, category);
+
+      expect(result).toBe('https://api.iterable.com/api/events/track');
+    });
+  });
   describe('Unit test cases for iterable registerDeviceTokenEventPayloadBuilder', () => {
     it('for no device type', async () => {
       let expectedOutput = {
@@ -887,6 +916,182 @@ describe('iterable utils test', () => {
       };
 
       expect(hasMultipleResponses(message, category, config)).toBe(true);
+    });
+  });
+  describe('Unit test cases for iterable getCategoryUsingEventName', () => {
+    // Returns TRACK_PURCHASE category when event is 'order completed'
+    it('should return TRACK_PURCHASE category when event is order completed', () => {
+      const message = {
+        event: 'order completed',
+        properties: {
+          total: 100,
+        },
+      };
+
+      const result = getCategoryUsingEventName(message, dataCenter);
+      const resultEU = getCategoryUsingEventName(message, dataCenterEU);
+
+      expect(result).toEqual({
+        name: 'IterableTrackPurchaseConfig',
+        action: 'trackPurchase',
+        endpoint: 'https://api.iterable.com/api/commerce/trackPurchase',
+      });
+      expect(resultEU).toEqual({
+        ...ConfigCategory.TRACK_PURCHASE,
+        endpoint: 'https://api.eu.iterable.com/api/commerce/trackPurchase',
+      });
+    });
+
+    // Handles event name as product added
+    it('should return UPDATE_CART category when event is product added', () => {
+      const message = {
+        event: 'product added',
+        properties: {
+          total: 100,
+        },
+      };
+
+      const result = getCategoryUsingEventName(message, dataCenter);
+
+      expect(result).toEqual({
+        ...ConfigCategory.UPDATE_CART,
+        endpoint: 'https://api.iterable.com/api/commerce/updateCart',
+      });
+    });
+
+    // Handles event name as product added
+    it('should return UPDATE_CART category when event is product removed', () => {
+      const message = {
+        event: 'PRODUCT REMOVED',
+        properties: {
+          total: 100,
+        },
+      };
+
+      const result = getCategoryUsingEventName(message, dataCenterEU);
+
+      expect(result).toEqual({
+        ...ConfigCategory.UPDATE_CART,
+        endpoint: 'https://api.eu.iterable.com/api/commerce/updateCart',
+      });
+    });
+
+    // Handles event name as a generic event
+    it('should return TRACK category when event is generic', () => {
+      const message = {
+        event: 'custom event',
+        properties: {
+          total: 100,
+        },
+      };
+
+      const result = getCategoryUsingEventName(message, dataCenter);
+
+      expect(result).toEqual({
+        ...ConfigCategory.TRACK,
+        endpoint: 'https://api.iterable.com/api/events/track',
+      });
+    });
+  });
+  describe('Unit test cases for iterable prepareAndSplitUpdateUserBatchesBasedOnPayloadSize', () => {
+    // Function correctly splits events into batches when total size exceeds max body size
+    it('should split events into multiple batches when payload size exceeds limit', () => {
+      const mockEvents = [
+        {
+          metadata: { jobId: '1' },
+          destination: 'dest1',
+          message: { body: { JSON: { id: '1', data: 'a'.repeat(3000000) } } },
+        },
+        {
+          metadata: { jobId: '2' },
+          destination: 'dest1',
+          message: { body: { JSON: { id: '2', data: 'b'.repeat(3000000) } } },
+        },
+      ];
+
+      const registerDeviceOrBrowserTokenEvents = {
+        1: { deviceToken: 'token1' },
+        2: { deviceToken: 'token2' },
+      };
+
+      const result = prepareAndSplitUpdateUserBatchesBasedOnPayloadSize(
+        mockEvents,
+        registerDeviceOrBrowserTokenEvents,
+      );
+
+      expect(result).toHaveLength(2);
+      expect(result[0].users).toHaveLength(1);
+      expect(result[1].users).toHaveLength(1);
+      expect(result[0].nonBatchedRequests).toEqual([{ deviceToken: 'token1' }]);
+      expect(result[1].nonBatchedRequests).toEqual([{ deviceToken: 'token2' }]);
+    });
+
+    // Empty input chunk array returns empty batches array
+    it('should return empty batches array for empty input chunk', () => {
+      const emptyChunk = [];
+      const registerDeviceOrBrowserTokenEvents = {};
+
+      const result = prepareAndSplitUpdateUserBatchesBasedOnPayloadSize(
+        emptyChunk,
+        registerDeviceOrBrowserTokenEvents,
+      );
+
+      expect(result).toEqual([]);
+    });
+
+    // Each batch contains users, metadata, and non-batched requests arrays
+    it('should create batches with users, metadata, and non-batched requests arrays', () => {
+      const chunk = [
+        { metadata: { jobId: '1' }, destination: 'dest1', message: { body: { JSON: {} } } },
+        { metadata: { jobId: '2' }, destination: 'dest1', message: { body: { JSON: {} } } },
+      ];
+      const registerDeviceOrBrowserTokenEvents = {};
+
+      const result = prepareAndSplitUpdateUserBatchesBasedOnPayloadSize(
+        chunk,
+        registerDeviceOrBrowserTokenEvents,
+      );
+
+      expect(result).toHaveLength(1);
+      expect(result[0]).toHaveProperty('users');
+      expect(result[0]).toHaveProperty('metadata');
+      expect(result[0]).toHaveProperty('nonBatchedRequests');
+    });
+
+    // Device/browser token events are added to nonBatchedRequests array
+    it('should add device/browser token events to nonBatchedRequests array', () => {
+      const chunk = [
+        { metadata: { jobId: '1' }, destination: 'dest1', message: { body: { JSON: {} } } },
+      ];
+      const registerDeviceOrBrowserTokenEvents = {
+        1: 'tokenEvent',
+      };
+
+      const result = prepareAndSplitUpdateUserBatchesBasedOnPayloadSize(
+        chunk,
+        registerDeviceOrBrowserTokenEvents,
+      );
+
+      expect(result[0].nonBatchedRequests).toContain('tokenEvent');
+    });
+
+    // Final batch is created even if size limit not reached
+    it('should create final batch even if size limit not reached', () => {
+      const chunk = [
+        { metadata: { jobId: '1' }, destination: 'dest1', message: { body: { JSON: {} } } },
+      ];
+      const registerDeviceOrBrowserTokenEvents = {
+        1: { deviceToken: 'token1' },
+      };
+
+      const result = prepareAndSplitUpdateUserBatchesBasedOnPayloadSize(
+        chunk,
+        registerDeviceOrBrowserTokenEvents,
+      );
+
+      expect(result).toHaveLength(1);
+      expect(result[0].users).toHaveLength(1);
+      expect(result[0].nonBatchedRequests).toContainEqual({ deviceToken: 'token1' });
     });
   });
 });

@@ -336,6 +336,11 @@ export const pixelCheckoutEventsTestScenarios = [
                   },
                   integrations: {
                     SHOPIFY: true,
+                    DATA_WAREHOUSE: {
+                      options: {
+                        jsonPaths: ['track.context.shopifyDetails'],
+                      },
+                    },
                   },
                   type: 'track',
                   event: 'Checkout Started',
@@ -775,6 +780,11 @@ export const pixelCheckoutEventsTestScenarios = [
                   },
                   integrations: {
                     SHOPIFY: true,
+                    DATA_WAREHOUSE: {
+                      options: {
+                        jsonPaths: ['track.context.shopifyDetails'],
+                      },
+                    },
                   },
                   type: 'track',
                   event: 'Order Completed',

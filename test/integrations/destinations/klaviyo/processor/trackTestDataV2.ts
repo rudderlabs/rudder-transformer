@@ -46,7 +46,7 @@ const commonOutputHeaders = {
 };
 const profileAttributes = {
   email: 'test@rudderstack.com',
-  phone_number: '9112340375',
+  phone_number: '+9112340375',
   anonymous_id: '9c6bd77ea9da3e68',
   properties: {
     age: '22',
@@ -86,7 +86,7 @@ export const trackTestData: ProcessorTestData[] = [
                   ...commonTraits,
                   name: 'Test',
                   email: 'test@rudderstack.com',
-                  phone: '9112340375',
+                  phone: '+9112340375',
                   description: 'Sample description',
                 },
               },
@@ -174,7 +174,7 @@ export const trackTestData: ProcessorTestData[] = [
                   description: 'Sample description',
                   name: 'Test',
                   email: 'test@rudderstack.com',
-                  phone: '9112340375',
+                  phone: '+9112340375',
                 },
               },
               properties: commonProps,
@@ -257,7 +257,7 @@ export const trackTestData: ProcessorTestData[] = [
                   description: 'Sample description',
                   name: 'Test',
                   email: 'test@rudderstack.com',
-                  phone: '9112340375',
+                  phone: '+9112340375',
                 },
               },
               properties: { ...commonProps, value: { price: 9.99 } },
@@ -288,6 +288,67 @@ export const trackTestData: ProcessorTestData[] = [
             },
             statusCode: 400,
             metadata: generateMetadata(1),
+          },
+        ],
+      },
+    },
+  },
+  {
+    id: 'klaviyo-track-150624-test-4',
+    name: 'klaviyo',
+    description: '150624 -> Track event call, with phone not in E.164 format',
+    scenario: 'Business',
+    successCriteria:
+      'Response should an error message and status code should be 400, as Phone number is not in E.164 format.',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: overrideDestination(destination, { enforceEmailAsPrimary: true }),
+            message: generateSimplifiedTrackPayload({
+              type: 'track',
+              event: 'TestEven001',
+              sentAt: '2025-01-01T11:11:11.111Z',
+              userId: 'invalidPhoneUser',
+              context: {
+                traits: {
+                  ...commonTraits,
+                  description: 'Sample description',
+                  name: 'Test',
+                  email: 'test@rudderstack.com',
+                  phone: '9112340375',
+                },
+              },
+              properties: commonProps,
+              originalTimestamp: '2025-01-01T11:11:11.111Z',
+            }),
+            metadata: generateMetadata(4),
+          },
+        ],
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            error: 'Phone number is not in E.164 format.',
+            statTags: {
+              destType: 'KLAVIYO',
+              destinationId: 'default-destinationId',
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              feature: 'processor',
+              implementation: 'native',
+              module: 'destination',
+              workspaceId: 'default-workspaceId',
+            },
+            statusCode: 400,
+            metadata: generateMetadata(4),
           },
         ],
       },

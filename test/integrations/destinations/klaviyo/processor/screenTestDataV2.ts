@@ -55,7 +55,7 @@ export const screenTestData: ProcessorTestData[] = [
                     id: 'user@1',
                     age: '22',
                     email: 'test@rudderstack.com',
-                    phone: '9112340375',
+                    phone: '+9112340375',
                     anonymousId: '9c6bd77ea9da3e68',
                     append1: 'value1',
                   },
@@ -125,7 +125,7 @@ export const screenTestData: ProcessorTestData[] = [
                               },
                             },
                           },
-                          phone_number: '9112340375',
+                          phone_number: '+9112340375',
                           properties: {
                             id: 'user@1',
                             age: '22',

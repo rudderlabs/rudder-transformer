@@ -971,6 +971,7 @@ const handleMetadataForValue = (value, metadata, destKey, integrationsObj = null
     validateTimestamp,
     allowedKeyCheck,
     toArray,
+    regex,
   } = metadata;
 
   // if value is null and defaultValue is supplied - use that
@@ -1044,7 +1045,14 @@ const handleMetadataForValue = (value, metadata, destKey, integrationsObj = null
     }
     return [formattedVal];
   }
-
+  if (regex) {
+    const regexPattern = new RegExp(regex);
+    if (!regexPattern.test(formattedVal)) {
+      throw new InstrumentationError(
+        `The value '${formattedVal}' does not match the regex pattern, ${regex}`,
+      );
+    }
+  }
   return formattedVal;
 };
 
@@ -1924,12 +1932,6 @@ const refinePayload = (obj) => {
   return refinedPayload;
 };
 
-const validateEmail = (email) => {
-  const regex =
-    /^(([^\s"(),.:;<>@[\\\]]+(\.[^\s"(),.:;<>@[\\\]]+)*)|(".+"))@((\[(?:\d{1,3}\.){3}\d{1,3}])|(([\dA-Za-z-]+\.)+[A-Za-z]{2,}))$/;
-  return !!regex.test(email);
-};
-
 const validatePhoneWithCountryCode = (phone) => {
   const regex = /^\+(?:[\d{] ?){6,14}\d$/;
   return !!regex.test(phone);
@@ -2464,7 +2466,6 @@ module.exports = {
   getErrorStatusCode,
   getDestAuthCacheInstance,
   refinePayload,
-  validateEmail,
   validateEventName,
   validatePhoneWithCountryCode,
   getEventReqMetadata,
@@ -2489,4 +2490,5 @@ module.exports = {
   removeEmptyKey,
   isAxiosError,
   convertToUuid,
+  handleMetadataForValue,
 };

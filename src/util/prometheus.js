@@ -446,6 +446,12 @@ class Prometheus {
         labelNames: ['event', 'writeKey'],
       },
       {
+        name: 'shopify_pixel_cart_token_not_found_server_side',
+        help: 'shopify_pixel_cart_token_not_found_server_side',
+        type: 'counter',
+        labelNames: ['event', 'writeKey'],
+      },
+      {
         name: 'shopify_pixel_cart_token_set',
         help: 'shopify_pixel_cart_token_set',
         type: 'counter',

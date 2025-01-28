@@ -62,11 +62,12 @@ export class UserTransformService {
 
         const messageIdsInOutputSet = new Set<string>();
 
+        const workspaceId = eventsToProcess[0]?.metadata.workspaceId;
         const commonMetadata = {
           sourceId: eventsToProcess[0]?.metadata?.sourceId,
           destinationId: eventsToProcess[0]?.metadata.destinationId,
           destinationType: eventsToProcess[0]?.metadata.destinationType,
-          workspaceId: eventsToProcess[0]?.metadata.workspaceId,
+          workspaceId,
           transformationId: eventsToProcess[0]?.metadata.transformationId,
           messageIds,
         };
@@ -87,7 +88,11 @@ export class UserTransformService {
           } as ProcessorTransformationResponse);
           return transformedEvents;
         }
-        stats.histogram('user_transform_input_events', events.length, { ...transformationTags });
+        stats.histogram('user_transform_input_events', events.length, { workspaceId });
+        logger.info('user_transform_input_events', {
+          inCount: events.length,
+          ...transformationTags,
+        });
         const userFuncStartTime = new Date();
         try {
           const destTransformedEvents: UserTransformationResponse[] = await userTransformHandler()(
@@ -184,6 +189,10 @@ export class UserTransformService {
 
         stats.counter('user_transform_requests', 1, {});
         stats.histogram('user_transform_output_events', transformedEvents.length, {
+          workspaceId,
+        });
+        logger.info('user_transform_output_events', {
+          outCount: transformedEvents.length,
           ...transformationTags,
         });
         return transformedEvents;

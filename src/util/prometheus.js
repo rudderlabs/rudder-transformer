@@ -958,14 +958,14 @@ class Prometheus {
         name: 'user_transform_input_events',
         help: 'Number of input events to user transform',
         type: 'histogram',
-        labelNames: ['transformationId', 'workspaceId'],
+        labelNames: ['workspaceId'],
         buckets: [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 150, 200],
       },
       {
         name: 'user_transform_output_events',
         help: 'user_transform_output_events',
         type: 'histogram',
-        labelNames: ['transformationId', 'workspaceId'],
+        labelNames: ['workspaceId'],
         buckets: [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 150, 200],
       },
       // summary

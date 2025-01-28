@@ -760,4 +760,5 @@ module.exports = {
   registerDeviceTokenEventPayloadBuilder,
   registerBrowserTokenEventPayloadBuilder,
   getCategoryWithEndpoint,
+  prepareAndSplitUpdateUserBatchesBasedOnPayloadSize,
 };

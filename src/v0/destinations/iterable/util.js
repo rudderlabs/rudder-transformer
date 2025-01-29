@@ -69,6 +69,11 @@ const validateMandatoryField = (payload) => {
   }
 };
 
+const getCategoryWithEndpoint = (categoryConfig, dataCenter) => ({
+  ...categoryConfig,
+  endpoint: constructEndpoint(dataCenter, categoryConfig),
+});
+
 /**
  * Check for register device and register browser events
  * @param {*} message
@@ -80,17 +85,12 @@ const hasMultipleResponses = (message, category, config) => {
   const { context } = message;
 
   const isIdentifyEvent = message.type === EventType.IDENTIFY;
-  const isIdentifyCategory = category === ConfigCategory.IDENTIFY;
-  const hasToken = context && (context.device?.token || context.os?.token);
+  const isIdentifyCategory = category.action === ConfigCategory.IDENTIFY.action;
+  const hasToken = Boolean(context && (context.device?.token || context.os?.token));
   const hasRegisterDeviceOrBrowserKey = Boolean(config.registerDeviceOrBrowserApiKey);
 
   return isIdentifyEvent && isIdentifyCategory && hasToken && hasRegisterDeviceOrBrowserKey;
 };
-
-const getCategoryWithEndpoint = (categoryConfig, dataCenter) => ({
-  ...categoryConfig,
-  endpoint: constructEndpoint(dataCenter, categoryConfig),
-});
 
 /**
  * Returns category value

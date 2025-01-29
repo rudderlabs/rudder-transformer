@@ -2,7 +2,6 @@ const {
   encodeParamsObject,
   prepareEndpoint,
   prepareBody,
-  removeUndefinedAndNullValuesDeep,
   stringifyFirstLevelValues,
 } = require('./utils');
 
@@ -86,38 +85,27 @@ describe('Utils Functions', () => {
     });
 
     test('should prepare FORM-URLENCODED payload when content type is FORM-URLENCODED', () => {
-      const payload = { key1: 'value1', key2: 'value2' };
-      const expectedFORM = { key1: 'value1', key2: 'value2' };
-      const result = prepareBody(payload, 'FORM-URLENCODED');
+      const payload = {
+        key1: 'value1',
+        key2: 'value2',
+        key3: { subKey: 'value3', subkey2: undefined },
+      };
+      const expectedFORM = { key1: 'value1', key2: 'value2', key3: '{"subKey":"value3"}' };
+      const result = prepareBody(payload, 'FORM');
       expect(result).toEqual(expectedFORM);
     });
 
     test('should return original payload without null or undefined values for other content types', () => {
-      const payload = { key1: 'value1', key2: null, key3: undefined, key4: 'value4' };
-      const expected = { key1: 'value1', key4: 'value4' };
+      const payload = {
+        key1: 'value1',
+        key2: null,
+        key3: undefined,
+        key4: 'value4',
+        key5: { subKey1: undefined, subKey2: 'value5' },
+      };
+      const expected = { key1: 'value1', key4: 'value4', key5: { subKey2: 'value5' } };
       const result = prepareBody(payload, 'JSON');
       expect(result).toEqual(expected);
-    });
-  });
-
-  describe('removeUndefinedAndNullValuesDeep', () => {
-    test('removes null and undefined values from an object', () => {
-      const input = {
-        a: null,
-        b: undefined,
-        c: { d: null, e: 42, f: { g: undefined, h: 'hello' } },
-      };
-      const expected = { c: { e: 42, f: { h: 'hello' } } };
-      expect(removeUndefinedAndNullValuesDeep(input)).toEqual(expected);
-    });
-
-    test('returns the same value if no null or undefined', () => {
-      const input = { a: 1, b: 'test', c: { d: 3 } };
-      expect(removeUndefinedAndNullValuesDeep(input)).toEqual(input);
-    });
-
-    test('handles empty objects', () => {
-      expect(removeUndefinedAndNullValuesDeep({})).toEqual({});
     });
   });
 

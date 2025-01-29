@@ -4,7 +4,12 @@ const { createHash } = require('crypto');
 const { ConfigurationError } = require('@rudderstack/integrations-lib');
 const { BatchUtils } = require('@rudderstack/workflow-engine');
 const jsonpath = require('rs-jsonpath');
-const { base64Convertor, applyCustomMappings, isEmptyObject } = require('../../../../v0/util');
+const {
+  base64Convertor,
+  applyCustomMappings,
+  isEmptyObject,
+  removeUndefinedAndNullRecurse,
+} = require('../../../../v0/util');
 
 const CONTENT_TYPES_MAP = {
   JSON: 'JSON',
@@ -151,19 +156,6 @@ const metadataHeaders = (contentType) => {
   }
 };
 
-function removeUndefinedAndNullValuesDeep(obj) {
-  if (obj !== null && typeof obj === 'object' && !Array.isArray(obj)) {
-    return Object.entries(obj).reduce((acc, [key, value]) => {
-      const cleanedValue = removeUndefinedAndNullValuesDeep(value);
-      if (cleanedValue !== null && cleanedValue !== undefined) {
-        acc[key] = cleanedValue;
-      }
-      return acc;
-    }, {});
-  }
-  return obj;
-}
-
 function stringifyFirstLevelValues(obj) {
   return Object.entries(obj).reduce((acc, [key, value]) => {
     acc[key] = typeof value === 'string' ? value : JSON.stringify(value);
@@ -173,15 +165,15 @@ function stringifyFirstLevelValues(obj) {
 
 const prepareBody = (payload, contentType, xmlRootKey) => {
   let responseBody;
-  const processedPayload = removeUndefinedAndNullValuesDeep(payload);
-  if (contentType === CONTENT_TYPES_MAP.XML && !isEmptyObject(processedPayload)) {
+  removeUndefinedAndNullRecurse(payload);
+  if (contentType === CONTENT_TYPES_MAP.XML && !isEmptyObject(payload)) {
     responseBody = {
       payload: getXMLPayload(payload, xmlRootKey),
     };
-  } else if (contentType === CONTENT_TYPES_MAP.FORM && !isEmptyObject(processedPayload)) {
-    responseBody = stringifyFirstLevelValues(processedPayload);
+  } else if (contentType === CONTENT_TYPES_MAP.FORM && !isEmptyObject(payload)) {
+    responseBody = stringifyFirstLevelValues(payload);
   } else {
-    responseBody = processedPayload || {};
+    responseBody = payload || {};
   }
   return responseBody;
 };
@@ -247,6 +239,5 @@ module.exports = {
   metadataHeaders,
   prepareBody,
   batchSuccessfulEvents,
-  removeUndefinedAndNullValuesDeep,
   stringifyFirstLevelValues,
 };

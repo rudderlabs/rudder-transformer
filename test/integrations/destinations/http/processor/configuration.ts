@@ -209,7 +209,7 @@ export const configuration: ProcessorTestData[] = [
               },
               XML: {
                 payload:
-                  '<?xml version="1.0" encoding="UTF-8"?><body xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><event>Order Completed</event><currency>USD</currency><userId>userId123</userId><properties><items><item_id>622c6f5d5cf86a4c77358033</item_id><name>Cones of Dunshire</name><price>40</price></items><items><item_id>577c6f5d5cf86a4c7735ba03</item_id><name>Five Crowns</name><price>5</price></items></properties></body>',
+                  '<?xml version="1.0" encoding="UTF-8"?><body><event>Order Completed</event><currency>USD</currency><userId>userId123</userId><properties><items><item_id>622c6f5d5cf86a4c77358033</item_id><name>Cones of Dunshire</name><price>40</price></items><items><item_id>577c6f5d5cf86a4c7735ba03</item_id><name>Five Crowns</name><price>5</price></items></properties></body>',
               },
             }),
             statusCode: 200,
@@ -517,6 +517,56 @@ export const configuration: ProcessorTestData[] = [
                 'Content-Type': 'application/x-www-form-urlencoded',
               },
               FORM: {},
+            }),
+            statusCode: 200,
+            metadata: generateMetadata(1),
+          },
+        ],
+      },
+    },
+  },
+  {
+    id: 'http-configuration-test-11',
+    name: destType,
+    description: 'Identify call with properties mapping and form format',
+    scenario: 'Business',
+    successCriteria: 'Response should be in form format with properties mapping',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: destinations[13],
+            message: {
+              type: 'identify',
+              userId: 'userId123',
+              anonymousId: 'anonId123',
+              traits,
+            },
+            metadata: generateMetadata(1),
+          },
+        ],
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: transformResultBuilder({
+              method: 'POST',
+              userId: '',
+              endpoint: destinations[13].Config.apiUrl,
+              headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+              },
+              FORM: {
+                contacts:
+                  '{"first_name":"John","email":"john.doe@example.com","address":{"pin_code":"123456"}}',
+              },
             }),
             statusCode: 200,
             metadata: generateMetadata(1),

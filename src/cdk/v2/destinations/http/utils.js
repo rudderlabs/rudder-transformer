@@ -4,12 +4,7 @@ const { createHash } = require('crypto');
 const { ConfigurationError } = require('@rudderstack/integrations-lib');
 const { BatchUtils } = require('@rudderstack/workflow-engine');
 const jsonpath = require('rs-jsonpath');
-const {
-  base64Convertor,
-  applyCustomMappings,
-  isEmptyObject,
-  removeUndefinedAndNullValues,
-} = require('../../../../v0/util');
+const { base64Convertor, applyCustomMappings, isEmptyObject } = require('../../../../v0/util');
 
 const CONTENT_TYPES_MAP = {
   JSON: 'JSON',
@@ -123,6 +118,7 @@ const preprocessJson = (obj) => {
 const getXMLPayload = (payload, rootKey) => {
   const builderOptions = {
     ignoreAttributes: false,
+    suppressEmptyNode: true,
   };
 
   if (!rootKey) {
@@ -160,7 +156,7 @@ const metadataHeaders = (contentType) => {
 };
 
 function removeUndefinedAndNullValuesDeep(obj) {
-  if (obj !== null && typeof obj === 'object') {
+  if (obj !== null && typeof obj === 'object' && !Array.isArray(obj)) {
     return Object.entries(obj).reduce((acc, [key, value]) => {
       const cleanedValue = removeUndefinedAndNullValuesDeep(value);
       if (cleanedValue !== null && cleanedValue !== undefined) {
@@ -189,7 +185,7 @@ const prepareBody = (payload, contentType, xmlRootKey) => {
   } else if (contentType === CONTENT_TYPES_MAP.FORM && !isEmptyObject(processedPayload)) {
     responseBody = stringifyFirstLevelValues(processedPayload);
   } else {
-    responseBody = processedPayload;
+    responseBody = processedPayload || {};
   }
   return responseBody;
 };

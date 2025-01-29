@@ -84,7 +84,7 @@ const routerRequest = {
         identifiers: {
           id: 'test-id-7',
         },
-        action: 'delete',
+        action: 'update',
       }),
       metadata: generateMetadata(7),
       destination,
@@ -95,7 +95,7 @@ const routerRequest = {
         identifiers: {
           id: 'test-id-8',
         },
-        action: 'delete',
+        action: 'insert',
       }),
       metadata: generateMetadata(8),
       destination,
@@ -106,9 +106,42 @@ const routerRequest = {
         identifiers: {
           id: 'test-id-9',
         },
-        action: 'dummy-action',
+        action: 'delete',
       }),
       metadata: generateMetadata(9),
+      destination,
+      connection,
+    },
+    {
+      message: generateRecordPayload({
+        identifiers: {
+          id: 'test-id-10',
+        },
+        action: 'delete',
+      }),
+      metadata: generateMetadata(10),
+      destination,
+      connection,
+    },
+    {
+      message: generateRecordPayload({
+        identifiers: {
+          id: 'test-id-11',
+        },
+        action: 'delete',
+      }),
+      metadata: generateMetadata(11),
+      destination,
+      connection,
+    },
+    {
+      message: generateRecordPayload({
+        identifiers: {
+          id: 'test-id-12',
+        },
+        action: 'dummy-action',
+      }),
+      metadata: generateMetadata(12),
       destination,
       connection,
     },
@@ -122,7 +155,7 @@ const routerRequest = {
         },
         originalTimestamp: '2024-03-04T15:32:56.409Z',
       },
-      metadata: generateMetadata(10),
+      metadata: generateMetadata(13),
       destination,
       connection,
     },
@@ -207,7 +240,7 @@ export const data = [
                 params,
                 body: {
                   JSON: {
-                    ids: ['test-id-7', 'test-id-8'],
+                    ids: ['test-id-11'],
                   },
                   JSON_ARRAY: {},
                   XML: {},
@@ -215,13 +248,13 @@ export const data = [
                 },
                 files: {},
               },
-              metadata: [generateMetadata(7), generateMetadata(8)],
+              metadata: [generateMetadata(11)],
               batched: true,
               statusCode: 200,
               destination,
             },
             {
-              metadata: [generateMetadata(9)],
+              metadata: [generateMetadata(12)],
               batched: false,
               statusCode: 400,
               error: 'action dummy-action is not supported',
@@ -229,11 +262,58 @@ export const data = [
               destination,
             },
             {
-              metadata: [generateMetadata(10)],
+              metadata: [generateMetadata(13)],
               batched: false,
               statusCode: 400,
               error: 'message type identify is not supported',
               statTags: RouterInstrumentationErrorStatTags,
+              destination,
+            },
+            {
+              metadata: [generateMetadata(10)],
+              batched: false,
+              statusCode: 400,
+              error: "customer with 'id':'test-id-10' is not present in customer io",
+              statTags: { ...RouterInstrumentationErrorStatTags, errorType: 'configuration' },
+              destination,
+            },
+            {
+              metadata: [generateMetadata(7)],
+              batched: false,
+              statusCode: 401,
+              error:
+                '{"message":"error fetching customers : {\\"response\\":{\\"errors\\":[{\\"detail\\":\\"unauthorized\\",\\"status\\":\\"401\\"}]},\\"status\\":401}","destinationResponse":{"response":{"errors":[{"detail":"unauthorized","status":"401"}]},"status":401}}',
+              statTags: {
+                ...RouterInstrumentationErrorStatTags,
+                errorCategory: 'network',
+                errorType: 'aborted',
+              },
+              destination,
+            },
+            {
+              metadata: [generateMetadata(8)],
+              batched: false,
+              statusCode: 401,
+              error:
+                '{"message":"error fetching customers : {\\"response\\":{\\"errors\\":[{\\"detail\\":\\"unauthorized\\",\\"status\\":\\"401\\"}]},\\"status\\":401}","destinationResponse":{"response":{"errors":[{"detail":"unauthorized","status":"401"}]},"status":401}}',
+              statTags: {
+                ...RouterInstrumentationErrorStatTags,
+                errorCategory: 'network',
+                errorType: 'aborted',
+              },
+              destination,
+            },
+            {
+              metadata: [generateMetadata(9)],
+              batched: false,
+              statusCode: 401,
+              error:
+                '{"message":"error fetching customers : {\\"response\\":{\\"errors\\":[{\\"detail\\":\\"unauthorized\\",\\"status\\":\\"401\\"}]},\\"status\\":401}","destinationResponse":{"response":{"errors":[{"detail":"unauthorized","status":"401"}]},"status":401}}',
+              statTags: {
+                ...RouterInstrumentationErrorStatTags,
+                errorCategory: 'network',
+                errorType: 'aborted',
+              },
               destination,
             },
           ],

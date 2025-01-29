@@ -28,9 +28,33 @@ export type ConnectionStructure = {
 };
 
 export type DestinationStructure = {
-  config: {
+  Config: {
     apiKey: string;
     appApiKey: string;
     siteId: string;
   };
+};
+
+export type CustomerSearchPayloadType = {
+  filter: {
+    or: {
+      attribute: {
+        field: string;
+        operator: string;
+        value: string | number;
+      };
+    }[];
+  };
+};
+
+export type CustomerSearchResponseType = {
+  identifiers: {
+    cio_id: string;
+    id: string | number;
+    email: string;
+  }[];
+};
+
+export type SegmentActionPayloadType = {
+  ids: string[];
 };

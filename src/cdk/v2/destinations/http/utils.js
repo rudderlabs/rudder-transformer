@@ -106,10 +106,6 @@ const sanitizeKey = (key) =>
 
 const preprocessJson = (obj) => {
   if (typeof obj !== 'object' || obj === null) {
-    // Handle null values: add xsi:nil attribute
-    if (obj === null) {
-      return { '@_xsi:nil': 'true' };
-    }
     return obj; // Return primitive values as is
   }
 
@@ -126,9 +122,7 @@ const preprocessJson = (obj) => {
 
 const getXMLPayload = (payload, rootKey) => {
   const builderOptions = {
-    ignoreAttributes: false, // Include attributes if they exist
-    suppressEmptyNode: false, // Ensures that null or undefined values are not omitted
-    attributeNamePrefix: '@_',
+    ignoreAttributes: false,
   };
 
   if (!rootKey) {
@@ -139,7 +133,6 @@ const getXMLPayload = (payload, rootKey) => {
   const processesPayload = {
     [rootKey]: {
       ...preprocessJson(payload),
-      '@_xmlns:xsi': 'http://www.w3.org/2001/XMLSchema-instance',
     },
   };
   return `<?xml version="1.0" encoding="UTF-8"?>${builder.build(processesPayload)}`;
@@ -166,14 +159,37 @@ const metadataHeaders = (contentType) => {
   }
 };
 
+function removeUndefinedAndNullValuesDeep(obj) {
+  if (obj !== null && typeof obj === 'object') {
+    return Object.entries(obj).reduce((acc, [key, value]) => {
+      const cleanedValue = removeUndefinedAndNullValuesDeep(value);
+      if (cleanedValue !== null && cleanedValue !== undefined) {
+        acc[key] = cleanedValue;
+      }
+      return acc;
+    }, {});
+  }
+  return obj;
+}
+
+function stringifyFirstLevelValues(obj) {
+  return Object.entries(obj).reduce((acc, [key, value]) => {
+    acc[key] = typeof value === 'string' ? value : JSON.stringify(value);
+    return acc;
+  }, {});
+}
+
 const prepareBody = (payload, contentType, xmlRootKey) => {
   let responseBody;
-  if (contentType === CONTENT_TYPES_MAP.XML && !isEmptyObject(payload)) {
+  const processedPayload = removeUndefinedAndNullValuesDeep(payload);
+  if (contentType === CONTENT_TYPES_MAP.XML && !isEmptyObject(processedPayload)) {
     responseBody = {
       payload: getXMLPayload(payload, xmlRootKey),
     };
+  } else if (contentType === CONTENT_TYPES_MAP.FORM && !isEmptyObject(processedPayload)) {
+    responseBody = stringifyFirstLevelValues(processedPayload);
   } else {
-    responseBody = removeUndefinedAndNullValues(payload);
+    responseBody = processedPayload;
   }
   return responseBody;
 };

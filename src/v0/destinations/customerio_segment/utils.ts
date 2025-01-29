@@ -8,7 +8,9 @@ import {
   DestinationStructure,
   EventStructure,
   RespList,
-  SegmentActionPayloadType,
+  SegmentationHeadersType,
+  SegmentationParamType,
+  SegmentationPayloadType,
 } from './type';
 import { handleRtTfSingleEventError, isHttpStatusSuccess } from '../../util';
 import { handleHttpRequest } from '../../../adapters/network';
@@ -16,6 +18,7 @@ import { getDynamicErrorType } from '../../../adapters/utils/networkUtils';
 
 const tags = require('../../util/tags');
 
+// return identifiers id type it can be 'id' or 'cio_id' or 'email'
 function getIdType(connection: ConnectionStructure) {
   return connection?.config?.destination?.identifierMappings[0]?.to || 'id';
 }
@@ -24,12 +27,13 @@ const getMergedQueryPayload = (batch: any[]) => batch.map((input) => input?.payl
 
 const getMergedEvents = (batch: any[]) => batch.map((input) => input?.event);
 
+// method to filter and get all ids from customer io
 async function getUserIds(
   finalPayload: CustomerSearchPayloadType,
   destination: DestinationStructure,
   connection: ConnectionStructure,
 ) {
-  const headers = {
+  const headers: SegmentationHeadersType = {
     'Content-Type': 'application/json',
     Authorization: `Bearer ${destination?.Config?.appApiKey}`,
   };
@@ -85,6 +89,7 @@ function getCustomerSearchPayloadAndEvent(event: EventStructure, payloadAndEvent
   });
 }
 
+// returns filtered success inputs and error responses
 async function filterCustomers(
   payloadAndEventList: any[],
   destination: DestinationStructure,
@@ -100,10 +105,10 @@ async function filterCustomers(
 
   await Promise.all(
     batches.items.map(async (batch) => {
-      const queryPayload = getMergedQueryPayload(batch);
+      const queryPayload: any[] = getMergedQueryPayload(batch);
       const mergedEvents: EventStructure[] = getMergedEvents(batch);
 
-      const finalPayload = {
+      const finalPayload: CustomerSearchPayloadType = {
         filter: {
           or: queryPayload,
         },
@@ -143,11 +148,12 @@ async function filterCustomers(
   return { filteredSuccessInputs, filteredErrorRespList };
 }
 
+// returns build and return the final batched response
 const buildBatchedResponse = (
-  payload: SegmentActionPayloadType,
+  payload: SegmentationPayloadType,
   endpoint: string,
-  headers: any,
-  params: { id_type: string },
+  headers: SegmentationHeadersType,
+  params: SegmentationParamType,
   metadata: Record<string, unknown>[],
   destination: DestinationStructure,
 ) => ({
@@ -183,21 +189,27 @@ function getMergedPayload(batch: any[]) {
   return { ids: mergedIds };
 }
 
+// return merged metadata
+// e.g. [{payload: p1, metadata: m1},{payload: p2, metadata: m2},{payload: p3, metadata: m3}...]
+// returns [{m1},{m2},{m3},....]
 const getMergedMetadata = (batch: any[]) => batch.map((input) => input.metadata);
 
-function getHeaders(destination: DestinationStructure) {
+// return headers for segmentation process
+function getHeaders(destination: DestinationStructure): SegmentationHeadersType {
   return {
     'Content-Type': 'application/json',
     Authorization: `Basic ${base64Convertor(`${destination.Config.siteId}:${destination.Config.apiKey}`)}`,
   };
 }
 
-function getParams(connection: ConnectionStructure) {
+// return params for segmentation process
+function getParams(connection: ConnectionStructure): SegmentationParamType {
   return {
     id_type: getIdType(connection),
   };
 }
 
+// return final batched response for insert/update flow
 function insertOrUpdateBatchResponseBuilder(
   insertOrUpdateRespList: RespList[],
   destination: DestinationStructure,
@@ -205,8 +217,8 @@ function insertOrUpdateBatchResponseBuilder(
 ) {
   const insertOrUpdateBatchResponse: any[] = [];
   const endpoint = `${BASE_ENDPOINT}/${getSegmentId(connection)}/add_customers`;
-  const headers = getHeaders(destination);
-  const params = getParams(connection);
+  const headers: SegmentationHeadersType = getHeaders(destination);
+  const params: SegmentationParamType = getParams(connection);
   const batches = BatchUtils.chunkArrayBySizeAndLength(insertOrUpdateRespList, {
     maxItems: MAX_ITEMS,
   });
@@ -220,6 +232,7 @@ function insertOrUpdateBatchResponseBuilder(
   return insertOrUpdateBatchResponse;
 }
 
+// return final batched response for delete flow
 function deleteBatchResponseBuilder(
   deleteRespList: RespList[],
   destination: DestinationStructure,
@@ -227,8 +240,8 @@ function deleteBatchResponseBuilder(
 ) {
   const deleteBatchResponse: any[] = [];
   const endpoint = `${BASE_ENDPOINT}/${getSegmentId(connection)}/remove_customers`;
-  const headers = getHeaders(destination);
-  const params = getParams(connection);
+  const headers: SegmentationHeadersType = getHeaders(destination);
+  const params: SegmentationParamType = getParams(connection);
   const batches = BatchUtils.chunkArrayBySizeAndLength(deleteRespList, {
     maxItems: MAX_ITEMS,
   });

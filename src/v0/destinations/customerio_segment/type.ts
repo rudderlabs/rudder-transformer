@@ -50,11 +50,22 @@ export type CustomerSearchPayloadType = {
 export type CustomerSearchResponseType = {
   identifiers: {
     cio_id: string;
-    id: string | number;
+    id: string;
     email: string;
   }[];
+  ids: string[];
+  next: string;
 };
 
-export type SegmentActionPayloadType = {
-  ids: string[];
+export type SegmentationPayloadType = {
+  ids: (string | number)[];
+};
+
+export type SegmentationParamType = {
+  id_type: string;
+};
+
+export type SegmentationHeadersType = {
+  'Content-Type': string;
+  Authorization: string;
 };

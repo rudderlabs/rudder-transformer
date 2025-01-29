@@ -31,7 +31,7 @@ const getEventChunks = (
   }
 };
 
-const validateEvent = (event: { message: any }) => {
+const validateEvent = (event: EventStructure) => {
   const eventType = getEventType(event?.message);
   if (eventType !== EventType.RECORD) {
     throw new InstrumentationError(`message type ${eventType} is not supported`);
@@ -40,6 +40,11 @@ const validateEvent = (event: { message: any }) => {
   const eventAction = getEventAction(event);
   if (!Object.values(SegmentAction).includes(eventAction)) {
     throw new InstrumentationError(`action ${eventAction} is not supported`);
+  }
+
+  const identifiers = event?.message?.identifiers || {};
+  if (Object.entries(identifiers).length === 0) {
+    throw new InstrumentationError(`identifiers cannot be empty`);
   }
 };
 

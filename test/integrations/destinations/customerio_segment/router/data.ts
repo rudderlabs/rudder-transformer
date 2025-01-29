@@ -159,6 +159,14 @@ const routerRequest = {
       destination,
       connection,
     },
+    {
+      message: generateRecordPayload({
+        action: 'insert',
+      }),
+      metadata: generateMetadata(14),
+      destination,
+      connection,
+    },
   ],
   destType,
 };
@@ -266,6 +274,14 @@ export const data = [
               batched: false,
               statusCode: 400,
               error: 'message type identify is not supported',
+              statTags: RouterInstrumentationErrorStatTags,
+              destination,
+            },
+            {
+              metadata: [generateMetadata(14)],
+              batched: false,
+              statusCode: 400,
+              error: 'identifiers cannot be empty',
               statTags: RouterInstrumentationErrorStatTags,
               destination,
             },

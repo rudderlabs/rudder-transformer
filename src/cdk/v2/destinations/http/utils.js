@@ -115,15 +115,11 @@ const preprocessJson = (obj) => {
   }, {});
 };
 
-const getXMLPayload = (payload, rootKey) => {
+const getXMLPayload = (payload, rootKey = 'root') => {
   const builderOptions = {
     ignoreAttributes: false,
     suppressEmptyNode: true,
   };
-
-  if (!rootKey) {
-    throw new ConfigurationError(`Error: XML root key is invalid`);
-  }
 
   const builder = new XMLBuilder(builderOptions);
   const processesPayload = {

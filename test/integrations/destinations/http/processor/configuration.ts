@@ -328,9 +328,9 @@ export const configuration: ProcessorTestData[] = [
   {
     id: 'http-configuration-test-7',
     name: destType,
-    description: 'Track call with xml format with multiple keys',
+    description: 'Identify call with properties mapping and form format with nested objects',
     scenario: 'Business',
-    successCriteria: 'Should throw error as the body have multiple root keys',
+    successCriteria: 'Response should be in form format with nested objects stringified',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -338,16 +338,12 @@ export const configuration: ProcessorTestData[] = [
       request: {
         body: [
           {
-            destination: destinations[9],
+            destination: destinations[13],
             message: {
-              type: 'track',
+              type: 'identify',
               userId: 'userId123',
-              event: 'Order Completed',
-              properties: {
-                name: "Rubik's Cube",
-                "1revenue-wdfqwe'": 4.99,
-                brand: null,
-              },
+              anonymousId: 'anonId123',
+              traits,
             },
             metadata: generateMetadata(1),
           },
@@ -360,11 +356,20 @@ export const configuration: ProcessorTestData[] = [
         status: 200,
         body: [
           {
-            error:
-              'Error: XML root key is invalid: Workflow: procWorkflow, Step: prepareBody, ChildStep: undefined, OriginalError: Error: XML root key is invalid',
-            statusCode: 400,
+            output: transformResultBuilder({
+              method: 'POST',
+              userId: '',
+              endpoint: destinations[13].Config.apiUrl,
+              headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+              },
+              FORM: {
+                contacts:
+                  '{"first_name":"John","email":"john.doe@example.com","address":{"pin_code":"123456"}}',
+              },
+            }),
+            statusCode: 200,
             metadata: generateMetadata(1),
-            statTags: { ...processorInstrumentationErrorStatTags },
           },
         ],
       },
@@ -517,56 +522,6 @@ export const configuration: ProcessorTestData[] = [
                 'Content-Type': 'application/x-www-form-urlencoded',
               },
               FORM: {},
-            }),
-            statusCode: 200,
-            metadata: generateMetadata(1),
-          },
-        ],
-      },
-    },
-  },
-  {
-    id: 'http-configuration-test-11',
-    name: destType,
-    description: 'Identify call with properties mapping and form format',
-    scenario: 'Business',
-    successCriteria: 'Response should be in form format with properties mapping',
-    feature: 'processor',
-    module: 'destination',
-    version: 'v0',
-    input: {
-      request: {
-        body: [
-          {
-            destination: destinations[13],
-            message: {
-              type: 'identify',
-              userId: 'userId123',
-              anonymousId: 'anonId123',
-              traits,
-            },
-            metadata: generateMetadata(1),
-          },
-        ],
-        method: 'POST',
-      },
-    },
-    output: {
-      response: {
-        status: 200,
-        body: [
-          {
-            output: transformResultBuilder({
-              method: 'POST',
-              userId: '',
-              endpoint: destinations[13].Config.apiUrl,
-              headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-              },
-              FORM: {
-                contacts:
-                  '{"first_name":"John","email":"john.doe@example.com","address":{"pin_code":"123456"}}',
-              },
             }),
             statusCode: 200,
             metadata: generateMetadata(1),

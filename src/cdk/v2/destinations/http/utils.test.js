@@ -1,4 +1,10 @@
-const { encodeParamsObject, prepareEndpoint, prepareBody } = require('./utils');
+const {
+  encodeParamsObject,
+  prepareEndpoint,
+  prepareBody,
+  removeUndefinedAndNullValuesDeep,
+  stringifyFirstLevelValues,
+} = require('./utils');
 
 const { XMLBuilder } = require('fast-xml-parser');
 const jsonpath = require('rs-jsonpath');
@@ -91,6 +97,44 @@ describe('Utils Functions', () => {
       const expected = { key1: 'value1', key4: 'value4' };
       const result = prepareBody(payload, 'JSON');
       expect(result).toEqual(expected);
+    });
+  });
+
+  describe('removeUndefinedAndNullValuesDeep', () => {
+    test('removes null and undefined values from an object', () => {
+      const input = {
+        a: null,
+        b: undefined,
+        c: { d: null, e: 42, f: { g: undefined, h: 'hello' } },
+      };
+      const expected = { c: { e: 42, f: { h: 'hello' } } };
+      expect(removeUndefinedAndNullValuesDeep(input)).toEqual(expected);
+    });
+
+    test('returns the same value if no null or undefined', () => {
+      const input = { a: 1, b: 'test', c: { d: 3 } };
+      expect(removeUndefinedAndNullValuesDeep(input)).toEqual(input);
+    });
+
+    test('handles empty objects', () => {
+      expect(removeUndefinedAndNullValuesDeep({})).toEqual({});
+    });
+  });
+
+  describe('stringifyFirstLevelValues', () => {
+    test('converts non-string first-level values to strings', () => {
+      const input = { a: 1, b: true, c: { d: 42 } };
+      const expected = { a: '1', b: 'true', c: '{"d":42}' };
+      expect(stringifyFirstLevelValues(input)).toEqual(expected);
+    });
+
+    test('keeps string values unchanged', () => {
+      const input = { a: 'hello', b: 'world' };
+      expect(stringifyFirstLevelValues(input)).toEqual(input);
+    });
+
+    test('handles empty objects', () => {
+      expect(stringifyFirstLevelValues({})).toEqual({});
     });
   });
 });

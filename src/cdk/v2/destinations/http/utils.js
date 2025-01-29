@@ -247,4 +247,6 @@ module.exports = {
   metadataHeaders,
   prepareBody,
   batchSuccessfulEvents,
+  removeUndefinedAndNullValuesDeep,
+  stringifyFirstLevelValues,
 };

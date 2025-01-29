@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.89.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.89.0...v1.89.1) (2025-01-29)
+
+
+### Bug Fixes
+
+* extend statuscode check to 502 to retry the request ([#4029](https://github.com/rudderlabs/rudder-transformer/issues/4029)) ([d003676](https://github.com/rudderlabs/rudder-transformer/commit/d00367691400402011d624c5b993d0f152191edd))
+
 ## [1.89.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.88.3...v1.89.0) (2025-01-27)
 
 

@@ -11,7 +11,6 @@ steps:
     description: Validate input, if all the required fields are available or not.
     template: |
       const config = .connection.config.destination;
-      console.log(JSON.stringify(config));
       let messageType = .message.type;
       $.assertConfig(config.objectType, "Object type is not present. Aborting");
       $.assert(messageType, "Message Type is not present. Aborting message.");

@@ -1,11 +1,11 @@
 import { NetworkError, PlatformError } from '@rudderstack/integrations-lib';
 import { XMLBuilder } from 'fast-xml-parser';
 import { ENDPOINTS } from './config';
+import { getDynamicErrorType } from '../../../../adapters/utils/networkUtils';
+import Cache from '../../../../v0/util/cache';
 import { handleHttpRequest } from '../../../../adapters/network';
 import { JSON_MIME_TYPE } from '../../../../v0/util/constant';
 import { isHttpStatusSuccess } from '../../../../v0/util';
-import { getDynamicErrorType } from '../../../../adapters/utils/networkUtils';
-import Cache from '../../../../v0/util/cache';
 
 export const accessTokenCache = new Cache(1000);
 export const getAccessToken = async ({ clientId, clientSecret, subDomain }, metadata) => {
@@ -55,18 +55,18 @@ export const getEndpoint = (
 ) => {
   if (config.objectType === 'dataExtension') {
     if (config.action === 'delete') {
-      return `https:\\${subDomain}.soap.marketingcloudapis.com/Service.asmx`;
+      return `https://${subDomain}.soap.marketingcloudapis.com/Service.asmx`;
     }
     const result = Object.entries(identifiers)
       .map(([key, value]) => `${key}:${value}`)
       .join();
-    return `https:\\${subDomain}.${ENDPOINTS.DATA_EXTENSION}${config.dataExtensionKey}/rows/${result}`;
+    return `https://${subDomain}.${ENDPOINTS.DATA_EXTENSION}${config.dataExtensionKey}/rows/${result}`;
   }
   if (config.objectType === 'contact') {
     if (config.action === 'delete') {
-      return `https:\\${subDomain}.${ENDPOINTS.DELETE_CONTACT}`;
+      return `https://${subDomain}.${ENDPOINTS.DELETE_CONTACT}`;
     }
-    return `https:\\${subDomain}.${ENDPOINTS.UPSERT_CONTACT}`;
+    return `https://${subDomain}.${ENDPOINTS.UPSERT_CONTACT}`;
   }
   throw new PlatformError(
     `Something went wrong. Can't generate endpoint for action:${config.action} and objectType:${config.objectType} combination`,
@@ -83,8 +83,14 @@ export const getMethod = ({ action, objectType }) => {
   return 'PUT';
 };
 
-export const buildContactPayload = (message: any) => {
-  const { fields, identifiers } = message;
+/**
+ * Builds the payload for upserting a contact in SFMC
+ * @param {Object} message - The incoming message
+ * @param {Object} identifiers - The identifiers for the contact
+ * @param {Object} fields - The fields for the contact
+ * @returns {Object} - The payload for upserting the contact
+ */
+export const buildContactPayload = ({ fields, identifiers }) => {
   // Group fields by top-level category
   const groupedFields = Object.entries(fields).reduce((acc, [key, value]) => {
     const [category, field] = key.split('.');
@@ -118,18 +124,6 @@ export const buildDataExtensionPayloadForDelete = (
   const jsonToXml = new XMLBuilder({ ignoreAttributes: false });
   const headers = { fueloauth: { '#text': accessToken } };
   const [key, value] = Object.entries(message.identifiers)[0];
-  //   const deleteReq: {
-  //     CustomerKey: string;
-  //     Keys: any;
-  //   } = {
-  //     CustomerKey: dataExtensionKey,
-  //     Keys: {
-  //       key: {
-  //         Name: key,
-  //         Value: value,
-  //       },
-  //     },
-  //   };
   return jsonToXml.build({
     's:Envelope': {
       's:Header': headers,
@@ -145,7 +139,7 @@ export const buildDataExtensionPayloadForDelete = (
           Objects: {
             CustomerKey: dataExtensionKey,
             Keys: {
-              key: {
+              Key: {
                 Name: key,
                 Value: value,
               },

@@ -94,6 +94,7 @@ const defaultFeaturesConfig: FeaturesConfig = {
     INTERCOM_V2: true,
     LINKEDIN_AUDIENCE: true,
     TOPSORT: true,
+    SFMC_V2: true,
   },
   regulations: [
     'BRAZE',

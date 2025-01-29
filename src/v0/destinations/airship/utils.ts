@@ -179,9 +179,14 @@ export const prepareAttributePayload = (
       if (isJsonAttributesPresent && isKeyObjectType) {
         // Skip these keys
         // they can be in the form of an array or object
-        const keyParts = key?.split('_') || [];
-        const isKeyPresentInJsonAttributes = keyParts.some((p) =>
-          airshipObjectAttributes.jsonAttributes?.some((attr) => attr.key.includes(p)),
+        const keyParts = key?.split(/[[\]_]+/g) || [];
+        if (keyParts.length === 0) {
+          // If key doesn't include any of the delimiters like '[' or ']' or '_' , skip it
+          return acc;
+        }
+        // Skip keys that exist in both traits and integrations object to avoid duplication
+        const isKeyPresentInJsonAttributes = airshipObjectAttributes.jsonAttributes?.some((attr) =>
+          attr.key.includes(keyParts[0]),
         );
         if (isKeyPresentInJsonAttributes) {
           // Skip this key

@@ -761,4 +761,5 @@ module.exports = {
   registerBrowserTokenEventPayloadBuilder,
   getCategoryWithEndpoint,
   prepareAndSplitUpdateUserBatchesBasedOnPayloadSize,
+  getMergeNestedObjects,
 };

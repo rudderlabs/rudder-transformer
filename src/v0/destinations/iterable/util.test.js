@@ -1,5 +1,3 @@
-const jsonSize = require('json-size');
-const { get } = require('lodash');
 const {
   pageEventPayloadBuilder,
   trackEventPayloadBuilder,
@@ -13,6 +11,7 @@ const {
   getCategoryWithEndpoint,
   getCategoryUsingEventName,
   prepareAndSplitUpdateUserBatchesBasedOnPayloadSize,
+  getMergeNestedObjects,
 } = require('./util');
 const { ConfigCategory, constructEndpoint } = require('./config');
 
@@ -1092,6 +1091,21 @@ describe('iterable utils test', () => {
       expect(result).toHaveLength(1);
       expect(result[0].users).toHaveLength(1);
       expect(result[0].nonBatchedRequests).toContainEqual({ deviceToken: 'token1' });
+    });
+  });
+  describe('Unit test cases for iterable getMergeNestedObjects', () => {
+    // Return true when config.mergeNestedObjects is undefined
+    it('should return true when mergeNestedObjects is undefined', () => {
+      const config = {};
+      const result = getMergeNestedObjects(config);
+      expect(result).toBe(true);
+    });
+
+    // should return true when config.mergeNestedObjects is true
+    it('should return true when mergeNestedObjects is true', () => {
+      const config = { mergeNestedObjects: true };
+      const result = getMergeNestedObjects(config);
+      expect(result).toBe(true);
     });
   });
 });

@@ -66,7 +66,7 @@ async function getUserIds(
   const destinationResponse: CustomerSearchResponseType = response?.response;
 
   const idType = getIdType(connection);
-  return destinationResponse.identifiers?.map((item) => item[idType]) || [];
+  return destinationResponse?.identifiers?.map((item) => item[idType]) || [];
 }
 
 function getCustomerSearchPayloadAndEvent(event: EventStructure, payloadAndEventList: any[]) {
@@ -111,8 +111,8 @@ async function filterCustomers(
 
       try {
         // get filtered available user ids from customer io
-        const userIdsList: any = await getUserIds(finalPayload, destination, connection);
-        const userIdsSet: any = new Set(userIdsList);
+        const userIdsList: any[] = await getUserIds(finalPayload, destination, connection);
+        const userIdsSet = new Set(userIdsList);
 
         mergedEvents.forEach((event) => {
           const { identifiers } = event?.message || {};
@@ -120,7 +120,7 @@ async function filterCustomers(
           const idValue = identifiers[idType];
           // if user id is available add it to successInputs to process it later
           // else add the error response to corresponding event
-          if (userIdsSet.has(idValue)) {
+          if (userIdsSet.has(String(idValue))) {
             filteredSuccessInputs.push(event);
           } else {
             const error = new ConfigurationError(

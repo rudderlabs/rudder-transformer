@@ -6287,7 +6287,71 @@ export const data = [
                 JSON: {},
                 JSON_ARRAY: {
                   batch:
-                    '[{"event":"FirstTrackCall12","properties":{"foo":"bar","$deviceId":"nkasdnkasd","$user_id":"e6ab2c5e-2cda-44a9-a962-e2f67df78bca","$current_url":"http://127.0.0.1:7307/Testing/App_for_testingTool/","$referrer":"http://127.0.0.1:7307/Testing/","$screen_height":900,"$screen_width":1440,"$screen_dpi":2,"mp_lib":"RudderLabs JavaScript SDK","$app_build_number":"1.0.0","$app_version_string":"1.1.18","$insert_id":"0d5c1a4a-27e4-41da-a246-4d01f44e74bd","token":"test_api_token","distinct_id":"e6ab2c5e-2cda-44a9-a962-e2f67df78bca","time":1632986123523,"$browser":"Chrome","$browser_version":"93.0.4577.82"}}]',
+                    '[{"event":"FirstTrackCall12","properties":{"foo":"bar","$deviceId":"nkasdnkasd","$user_id":"e6ab2c5e-2cda-44a9-a962-e2f67df78bca","$current_url":"http://127.0.0.1:7307/Testing/App_for_testingTool/","$referrer":"http://127.0.0.1:7307/Testing/","$screen_height":900,"$screen_width":1440,"$screen_dpi":2,"mp_lib":"RudderLabs JavaScript SDK","$initial_referrer":"http://127.0.0.1:7307/Testing/","$initial_referring_domain":"127.0.0.1:7307","$app_build_number":"1.0.0","$app_version_string":"1.1.18","$insert_id":"0d5c1a4a-27e4-41da-a246-4d01f44e74bd","token":"test_api_token","distinct_id":"e6ab2c5e-2cda-44a9-a962-e2f67df78bca","time":1632986123523,"$browser":"Chrome","$browser_version":"93.0.4577.82"}}]',
+                },
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'mp',
+    description:
+      'Track event test when dropTraitsInTrackEvent is false/undefined and context.traits is undefined',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: overrideDestination(sampleDestination, {}),
+            message: {
+              type: 'track',
+              event: 'FirstTrackCall12',
+              sentAt: '2021-09-30T07:15:23.523Z',
+              channel: 'web',
+              rudderId: '294702c7-8732-4fb3-b39f-f3bdffe1aa88',
+              messageId: '0d5c1a4a-27e4-41da-a246-4d01f44e74bd',
+              userId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
+              properties: { foo: 'bar', $deviceId: 'nkasdnkasd' },
+              anonymousId: '1dbb5784-b8e2-4074-8644-9920145b7ae5',
+              integrations: { All: true },
+              originalTimestamp: '2021-09-30T07:15:23.523Z',
+            },
+          },
+        ],
+        method: 'POST',
+      },
+      pathSuffix: '',
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://api.mixpanel.com/import/',
+              headers: {
+                Authorization: 'Basic dGVzdF9hcGlfdG9rZW46',
+                'Content-Type': 'application/json',
+              },
+              params: { strict: 0 },
+              body: {
+                JSON: {},
+                JSON_ARRAY: {
+                  batch:
+                    '[{"event":"FirstTrackCall12","properties":{"foo":"bar","$deviceId":"nkasdnkasd","$user_id":"e6ab2c5e-2cda-44a9-a962-e2f67df78bca","$insert_id":"0d5c1a4a-27e4-41da-a246-4d01f44e74bd","token":"test_api_token","distinct_id":"e6ab2c5e-2cda-44a9-a962-e2f67df78bca","time":1632986123523}}]',
                 },
                 XML: {},
                 FORM: {},

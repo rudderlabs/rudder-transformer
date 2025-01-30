@@ -35,28 +35,6 @@ export type DestinationStructure = {
   };
 };
 
-export type CustomerSearchPayloadType = {
-  filter: {
-    or: {
-      attribute: {
-        field: string;
-        operator: string;
-        value: string | number;
-      };
-    }[];
-  };
-};
-
-export type CustomerSearchResponseType = {
-  identifiers: {
-    cio_id: string;
-    id: string;
-    email: string;
-  }[];
-  ids: string[];
-  next: string;
-};
-
 export type SegmentationPayloadType = {
   ids: (string | number)[];
 };

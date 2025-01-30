@@ -73,7 +73,7 @@ const routerRequest = {
         identifiers: {
           id: 'test-id-6',
         },
-        action: 'update',
+        action: 'delete',
       }),
       metadata: generateMetadata(6),
       destination,
@@ -84,7 +84,7 @@ const routerRequest = {
         identifiers: {
           id: 'test-id-7',
         },
-        action: 'update',
+        action: 'delete',
       }),
       metadata: generateMetadata(7),
       destination,
@@ -95,53 +95,9 @@ const routerRequest = {
         identifiers: {
           id: 'test-id-8',
         },
-        action: 'insert',
-      }),
-      metadata: generateMetadata(8),
-      destination,
-      connection,
-    },
-    {
-      message: generateRecordPayload({
-        identifiers: {
-          id: 'test-id-9',
-        },
-        action: 'delete',
-      }),
-      metadata: generateMetadata(9),
-      destination,
-      connection,
-    },
-    {
-      message: generateRecordPayload({
-        identifiers: {
-          id: 'test-id-10',
-        },
-        action: 'delete',
-      }),
-      metadata: generateMetadata(10),
-      destination,
-      connection,
-    },
-    {
-      message: generateRecordPayload({
-        identifiers: {
-          id: 'test-id-11',
-        },
-        action: 'delete',
-      }),
-      metadata: generateMetadata(11),
-      destination,
-      connection,
-    },
-    {
-      message: generateRecordPayload({
-        identifiers: {
-          id: 'test-id-12',
-        },
         action: 'dummy-action',
       }),
-      metadata: generateMetadata(12),
+      metadata: generateMetadata(8),
       destination,
       connection,
     },
@@ -155,7 +111,7 @@ const routerRequest = {
         },
         originalTimestamp: '2024-03-04T15:32:56.409Z',
       },
-      metadata: generateMetadata(13),
+      metadata: generateMetadata(9),
       destination,
       connection,
     },
@@ -163,7 +119,7 @@ const routerRequest = {
       message: generateRecordPayload({
         action: 'insert',
       }),
-      metadata: generateMetadata(14),
+      metadata: generateMetadata(10),
       destination,
       connection,
     },
@@ -225,7 +181,7 @@ export const data = [
                 params,
                 body: {
                   JSON: {
-                    ids: ['test-id-4', 'test-id-5', 'test-id-6'],
+                    ids: ['test-id-4', 'test-id-5'],
                   },
                   JSON_ARRAY: {},
                   XML: {},
@@ -233,7 +189,7 @@ export const data = [
                 },
                 files: {},
               },
-              metadata: [generateMetadata(4), generateMetadata(5), generateMetadata(6)],
+              metadata: [generateMetadata(4), generateMetadata(5)],
               batched: true,
               statusCode: 200,
               destination,
@@ -248,7 +204,7 @@ export const data = [
                 params,
                 body: {
                   JSON: {
-                    ids: ['test-id-11'],
+                    ids: ['test-id-6', 'test-id-7'],
                   },
                   JSON_ARRAY: {},
                   XML: {},
@@ -256,13 +212,13 @@ export const data = [
                 },
                 files: {},
               },
-              metadata: [generateMetadata(11)],
+              metadata: [generateMetadata(6), generateMetadata(7)],
               batched: true,
               statusCode: 200,
               destination,
             },
             {
-              metadata: [generateMetadata(12)],
+              metadata: [generateMetadata(8)],
               batched: false,
               statusCode: 400,
               error: 'action dummy-action is not supported',
@@ -270,7 +226,7 @@ export const data = [
               destination,
             },
             {
-              metadata: [generateMetadata(13)],
+              metadata: [generateMetadata(9)],
               batched: false,
               statusCode: 400,
               error: 'message type identify is not supported',
@@ -278,58 +234,11 @@ export const data = [
               destination,
             },
             {
-              metadata: [generateMetadata(14)],
+              metadata: [generateMetadata(10)],
               batched: false,
               statusCode: 400,
               error: 'identifiers cannot be empty',
               statTags: RouterInstrumentationErrorStatTags,
-              destination,
-            },
-            {
-              metadata: [generateMetadata(10)],
-              batched: false,
-              statusCode: 400,
-              error: "customer with 'id':'test-id-10' is not present in customer io",
-              statTags: { ...RouterInstrumentationErrorStatTags, errorType: 'configuration' },
-              destination,
-            },
-            {
-              metadata: [generateMetadata(7)],
-              batched: false,
-              statusCode: 401,
-              error:
-                '{"message":"error fetching customers : {\\"response\\":{\\"errors\\":[{\\"detail\\":\\"unauthorized\\",\\"status\\":\\"401\\"}]},\\"status\\":401}","destinationResponse":{"response":{"errors":[{"detail":"unauthorized","status":"401"}]},"status":401}}',
-              statTags: {
-                ...RouterInstrumentationErrorStatTags,
-                errorCategory: 'network',
-                errorType: 'aborted',
-              },
-              destination,
-            },
-            {
-              metadata: [generateMetadata(8)],
-              batched: false,
-              statusCode: 401,
-              error:
-                '{"message":"error fetching customers : {\\"response\\":{\\"errors\\":[{\\"detail\\":\\"unauthorized\\",\\"status\\":\\"401\\"}]},\\"status\\":401}","destinationResponse":{"response":{"errors":[{"detail":"unauthorized","status":"401"}]},"status":401}}',
-              statTags: {
-                ...RouterInstrumentationErrorStatTags,
-                errorCategory: 'network',
-                errorType: 'aborted',
-              },
-              destination,
-            },
-            {
-              metadata: [generateMetadata(9)],
-              batched: false,
-              statusCode: 401,
-              error:
-                '{"message":"error fetching customers : {\\"response\\":{\\"errors\\":[{\\"detail\\":\\"unauthorized\\",\\"status\\":\\"401\\"}]},\\"status\\":401}","destinationResponse":{"response":{"errors":[{"detail":"unauthorized","status":"401"}]},"status":401}}',
-              statTags: {
-                ...RouterInstrumentationErrorStatTags,
-                errorCategory: 'network',
-                errorType: 'aborted',
-              },
               destination,
             },
           ],

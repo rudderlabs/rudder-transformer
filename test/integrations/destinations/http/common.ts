@@ -151,6 +151,7 @@ const destinations: Destination[] = [
       bearerToken: 'test-token',
       method: 'POST',
       format: 'XML',
+      xmlRootKey: 'body',
       headers: [
         {
           to: '$.h1',
@@ -168,27 +169,27 @@ const destinations: Destination[] = [
       propertiesMapping: [
         {
           from: '$.event',
-          to: '$.body.event',
+          to: '$.event',
         },
         {
           from: '$.properties.currency',
-          to: '$.body.currency',
+          to: '$.currency',
         },
         {
           from: '$.userId',
-          to: '$.body.userId',
+          to: '$.userId',
         },
         {
           from: '$.properties.products[*].product_id',
-          to: '$.body.properties.items[*].item_id',
+          to: '$.properties.items[*].item_id',
         },
         {
           from: '$.properties.products[*].name',
-          to: '$.body.properties.items[*].name',
+          to: '$.properties.items[*].name',
         },
         {
           from: '$.properties.products[*].price',
-          to: '$.body.properties.items[*].price',
+          to: '$.properties.items[*].price',
         },
       ],
     },
@@ -572,6 +573,41 @@ const destinations: Destination[] = [
         {
           from: '$.userId',
           to: '$.userId',
+        },
+      ],
+    },
+    DestinationDefinition: {
+      DisplayName: displayName,
+      ID: '123',
+      Name: destTypeInUpperCase,
+      Config: { cdkV2Enabled: true },
+    },
+    Enabled: true,
+    ID: '123',
+    Name: destTypeInUpperCase,
+    Transformations: [],
+    WorkspaceID: 'test-workspace-id',
+  },
+  {
+    Config: {
+      apiUrl: 'http://abc.com/contacts',
+      auth: 'noAuth',
+      method: 'POST',
+      format: 'FORM',
+      isBatchingEnabled: true,
+      maxBatchSize: '2',
+      propertiesMapping: [
+        {
+          from: '$.traits.firstName',
+          to: '$.contacts.first_name',
+        },
+        {
+          from: '$.traits.email',
+          to: '$.contacts.email',
+        },
+        {
+          from: '$.traits.address.pinCode',
+          to: '$.contacts.address.pin_code',
         },
       ],
     },

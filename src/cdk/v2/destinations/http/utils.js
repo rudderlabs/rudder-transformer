@@ -8,7 +8,7 @@ const {
   base64Convertor,
   applyCustomMappings,
   isEmptyObject,
-  removeUndefinedAndNullValues,
+  removeUndefinedAndNullRecurse,
 } = require('../../../../v0/util');
 
 const CONTENT_TYPES_MAP = {
@@ -106,10 +106,6 @@ const sanitizeKey = (key) =>
 
 const preprocessJson = (obj) => {
   if (typeof obj !== 'object' || obj === null) {
-    // Handle null values: add xsi:nil attribute
-    if (obj === null) {
-      return { '@_xsi:nil': 'true' };
-    }
     return obj; // Return primitive values as is
   }
 
@@ -124,23 +120,18 @@ const preprocessJson = (obj) => {
   }, {});
 };
 
-const getXMLPayload = (payload) => {
+const getXMLPayload = (payload, rootKey = 'root') => {
   const builderOptions = {
-    ignoreAttributes: false, // Include attributes if they exist
-    suppressEmptyNode: false, // Ensures that null or undefined values are not omitted
-    attributeNamePrefix: '@_',
+    ignoreAttributes: false,
+    suppressEmptyNode: true,
   };
 
-  if (Object.keys(payload).length !== 1) {
-    throw new ConfigurationError(
-      `Error: XML supports only one root key. Please update request body mappings accordingly`,
-    );
-  }
-  const rootKey = Object.keys(payload)[0];
-
   const builder = new XMLBuilder(builderOptions);
-  const processesPayload = preprocessJson(payload);
-  processesPayload[rootKey]['@_xmlns:xsi'] = 'http://www.w3.org/2001/XMLSchema-instance';
+  const processesPayload = {
+    [rootKey]: {
+      ...preprocessJson(payload),
+    },
+  };
   return `<?xml version="1.0" encoding="UTF-8"?>${builder.build(processesPayload)}`;
 };
 
@@ -165,14 +156,24 @@ const metadataHeaders = (contentType) => {
   }
 };
 
-const prepareBody = (payload, contentType) => {
+function stringifyFirstLevelValues(obj) {
+  return Object.entries(obj).reduce((acc, [key, value]) => {
+    acc[key] = typeof value === 'string' ? value : JSON.stringify(value);
+    return acc;
+  }, {});
+}
+
+const prepareBody = (payload, contentType, xmlRootKey) => {
   let responseBody;
+  removeUndefinedAndNullRecurse(payload);
   if (contentType === CONTENT_TYPES_MAP.XML && !isEmptyObject(payload)) {
     responseBody = {
-      payload: getXMLPayload(payload),
+      payload: getXMLPayload(payload, xmlRootKey),
     };
+  } else if (contentType === CONTENT_TYPES_MAP.FORM && !isEmptyObject(payload)) {
+    responseBody = stringifyFirstLevelValues(payload);
   } else {
-    responseBody = removeUndefinedAndNullValues(payload);
+    responseBody = payload || {};
   }
   return responseBody;
 };
@@ -238,4 +239,5 @@ module.exports = {
   metadataHeaders,
   prepareBody,
   batchSuccessfulEvents,
+  stringifyFirstLevelValues,
 };

@@ -1,9 +1,9 @@
 import { Connection, Destination } from '../../../../src/types';
 import { VDM_V2_SCHEMA_VERSION } from '../../../../src/v0/util/constant';
 
-const destType = 'customerio_segment';
-const destTypeInUpperCase = 'CUSTOMERIO_SEGMENT';
-const displayName = 'Customerio Segment';
+const destType = 'customerio_audience';
+const destTypeInUpperCase = 'CUSTOMERIO_AUDIENCE';
+const displayName = 'Customer.io Audience';
 const channel = 'web';
 const destination: Destination = {
   Config: {

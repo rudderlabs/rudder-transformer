@@ -79,11 +79,16 @@ const handleDuplicateCheck = (addDefaultDuplicateCheck, identifierType, operatio
 };
 
 function escapeAndEncode(value) {
-  return encodeURIComponent(value.replace(/([(),\\])/g, '\\$1'));
+  // Convert to string if not already
+  const stringValue = value.toString();
+
+  // Apply existing escape and encode logic
+  return encodeURIComponent(stringValue.replace(/([(),\\])/g, '\\$1'));
 }
 
 function transformToURLParams(fields, Config) {
   const criteria = Object.entries(fields)
+    .filter(([key, value]) => isDefinedAndNotNull(value))
     .map(([key, value]) => `(${key}:equals:${escapeAndEncode(value)})`)
     .join('and');
 

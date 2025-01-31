@@ -482,6 +482,7 @@ const metadata: Metadata = {
   sourceDefinitionId: '1b6gJdqOPOCadT3cddw8eidV591',
   destinationDefinitionId: '',
   transformationId: '',
+  userId: '',
 };
 
 const destination: Destination = {

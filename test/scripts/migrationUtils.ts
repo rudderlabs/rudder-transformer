@@ -49,6 +49,7 @@ const defaultMetadata: Metadata = {
   destinationDefinitionId: 'default-dest-def',
   transformationId: 'default-transform',
   dontBatch: false,
+  userId: 'default-user',
 };
 
 // Default destination configuration

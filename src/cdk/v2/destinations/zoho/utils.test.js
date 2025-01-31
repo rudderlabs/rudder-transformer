@@ -2,11 +2,23 @@ const {
   handleDuplicateCheck,
   deduceModuleInfo,
   validatePresenceOfMandatoryProperties,
-  formatMultiSelectFields,
   validateConfigurationIssue,
+  searchRecordId,
 } = require('./utils');
-
+const networkAdapter = require('../../../../adapters/network');
 const { ConfigurationError } = require('@rudderstack/integrations-lib');
+
+jest.mock('../../../../adapters/network', () => {
+  // Return a partial mock that has all methods from the real module
+  // except for those you explicitly override.
+  const originalModule = jest.requireActual('../../../../adapters/network');
+
+  return {
+    ...originalModule,
+    // Override only handleHttpRequest with a jest.fn()
+    handleHttpRequest: jest.fn(),
+  };
+});
 
 describe('handleDuplicateCheck', () => {
   // Returns identifierType when addDefaultDuplicateCheck is false
@@ -259,5 +271,151 @@ describe('validateConfigurationIssue', () => {
     const action = 'delete';
 
     expect(() => validateConfigurationIssue(Config, operationModuleType, action)).not.toThrow();
+  });
+});
+
+describe('searchRecordId', () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  const httpMetaData = {
+    destType: 'zoho',
+    feature: 'deleteRecords',
+    requestMethod: 'GET',
+    endpointPath: 'crm/v6/Leads/search?criteria=',
+    module: 'router',
+  };
+
+  const options = {
+    headers: {
+      Authorization: 'Zoho-oauthtoken test-token',
+    },
+  };
+
+  it('should return record IDs when search is successful', async () => {
+    const fields = { email: 'test@test.com' };
+    const metadata = { secret: { accessToken: 'test-token' } };
+    const config = { apiKey: 'test-key', region: 'US' };
+
+    const mockSearchResult = {
+      processedResponse: {
+        status: 200,
+        response: {
+          data: [{ id: '123' }, { id: '456' }],
+        },
+      },
+    };
+
+    networkAdapter.handleHttpRequest.mockResolvedValueOnce(mockSearchResult);
+
+    const result = await searchRecordId(fields, metadata, config);
+
+    expect(networkAdapter.handleHttpRequest).toHaveBeenCalledWith(
+      'get',
+      'https://www.zohoapis.com/crm/v6/Leads/search?criteria=(email:equals:test%40test.com)',
+      options,
+      httpMetaData,
+    );
+
+    expect(result).toEqual({
+      erroneous: false,
+      message: ['123', '456'],
+    });
+  });
+
+  it('should return error when no records found', async () => {
+    const fields = { email: 'test@test.com' };
+    const metadata = { secret: { accessToken: 'test-token' } };
+    const config = { apiKey: 'test-key', region: 'US' };
+
+    const mockSearchResult = {
+      processedResponse: {
+        status: 204,
+      },
+    };
+
+    networkAdapter.handleHttpRequest.mockResolvedValueOnce(mockSearchResult);
+
+    const result = await searchRecordId(fields, metadata, config);
+
+    expect(networkAdapter.handleHttpRequest).toHaveBeenCalledWith(
+      'get',
+      'https://www.zohoapis.com/crm/v6/Leads/search?criteria=(email:equals:test%40test.com)',
+      options,
+      httpMetaData,
+    );
+
+    expect(result).toEqual({
+      erroneous: true,
+      message: 'No contact is found with record details',
+    });
+  });
+
+  it('should return array of record IDs in message field when records are found', async () => {
+    const fields = { name: 'John Doe' };
+    const metadata = { secret: { accessToken: 'test-token' } };
+    const config = { apiKey: 'config-key', region: 'US' };
+
+    const mockSearchResult = {
+      processedResponse: {
+        status: 200,
+        response: {
+          data: [{ id: '789' }, { id: '101' }],
+        },
+      },
+    };
+
+    networkAdapter.handleHttpRequest.mockResolvedValueOnce(mockSearchResult);
+
+    const result = await searchRecordId(fields, metadata, config);
+
+    expect(networkAdapter.handleHttpRequest).toHaveBeenCalledWith(
+      'get',
+      'https://www.zohoapis.com/crm/v6/Leads/search?criteria=(name:equals:John%20Doe)',
+      options,
+      httpMetaData,
+    );
+
+    expect(result).toEqual({
+      erroneous: false,
+      message: ['789', '101'],
+    });
+  });
+
+  it('should transform fields to URL parameters and return record IDs when search is successful', async () => {
+    const fields = {
+      email: 'test@test.com',
+      numValue: 123,
+      nullValue: null,
+      undefinedValue: undefined,
+    };
+    const metadata = { secret: { accessToken: 'test-token' } };
+    const config = { apiKey: 'test-key', region: 'US' };
+
+    const mockSearchResult = {
+      processedResponse: {
+        status: 200,
+        response: {
+          data: [{ id: '123' }, { id: '456' }],
+        },
+      },
+    };
+
+    networkAdapter.handleHttpRequest.mockResolvedValueOnce(mockSearchResult);
+
+    const result = await searchRecordId(fields, metadata, config);
+
+    expect(networkAdapter.handleHttpRequest).toHaveBeenCalledWith(
+      'get',
+      'https://www.zohoapis.com/crm/v6/Leads/search?criteria=(email:equals:test%40test.com)and(numValue:equals:123)',
+      options,
+      httpMetaData,
+    );
+
+    expect(result).toEqual({
+      erroneous: false,
+      message: ['123', '456'],
+    });
   });
 });

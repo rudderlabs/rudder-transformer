@@ -137,6 +137,7 @@ export type RouterTestData = {
       };
     };
   };
+  mockFns?: (mockAdapter: MockAdapter) => void;
 };
 
 export type ProxyV1TestData = {

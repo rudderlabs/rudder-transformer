@@ -103,6 +103,8 @@ type Metadata = {
   destinationDefinitionId: string;
   transformationId: string;
   dontBatch?: boolean;
+  userId?: string;
+  secret?: object;
 };
 
 type MessageIdMetadataMap = {

@@ -46,12 +46,17 @@ const buildBatchedResponse = (
   destination,
 });
 
+// returns action of record event
 const getEventAction = (event: EventStructure) => event?.message?.action?.toLowerCase() || '';
 
+// returns segment id
 function getSegmentId(connection: ConnectionStructure) {
   return connection?.config?.destination?.audienceId || '';
 }
 
+// returns the merged payload
+// e.g. [{payload: {ids: [id1]}, metadata: m1},{payload: {ids: [id2]}, metadata: m2},{payload: {ids: [id3]}, metadata: m3}...]
+// returns [ids: [id1,id2,id3]]
 function getMergedPayload(batch: any[]) {
   const mergedIds = batch.flatMap((input) => input.payload.ids);
   return { ids: mergedIds };

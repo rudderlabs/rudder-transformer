@@ -1,0 +1,34 @@
+{
+  "output": {
+    "response": [
+      {
+        "error": "{\"code\":\"INVALID_MODULE\",\"details\":{\"resource_path_index\":0},\"message\":\"the module name given seems to be invalid\",\"status\":\"error\"}",
+        "statusCode": 400,
+        "metadata": {
+          "jobId": 1,
+          "attemptNum": 1,
+          "userId": "default-userId",
+          "destinationId": "default-destinationId",
+          "workspaceId": "default-workspaceId",
+          "sourceId": "default-sourceId",
+          "secret": {
+            "accessToken": "default-accessToken"
+          },
+          "dontBatch": false
+        }
+      }
+    ],
+    "statTags": {
+      "errorCategory": "network",
+      "errorType": "aborted",
+      "destType": "ZOHO",
+      "module": "destination",
+      "implementation": "native",
+      "feature": "dataDelivery",
+      "destinationId": "default-destinationId",
+      "workspaceId": "default-workspaceId"
+    },
+    "message": "ZOHO: Error encountered in transformer proxy V1",
+    "status": 400
+  }
+}

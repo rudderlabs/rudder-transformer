@@ -1,0 +1,215 @@
+{
+  "body": {
+    "input": [
+      {
+        "message": {
+          "action": "insert",
+          "context": {
+            "externalId": [
+              {
+                "type": "ZOHO-Leads",
+                "identifierType": "email"
+              }
+            ],
+            "mappedToDestination": "true",
+            "sources": {
+              "job_run_id": "cgiiurt8um7k7n5dq480",
+              "task_run_id": "cgiiurt8um7k7n5dq48g",
+              "job_id": "2MUWghI7u85n91dd1qzGyswpZan",
+              "version": "895/merge"
+            }
+          },
+          "recordId": "2",
+          "rudderId": "2",
+          "fields": {
+            "Email": "subscribed@eewrfrd.com",
+            "First_Name": "subcribed",
+            "Last_Name": " User"
+          },
+          "type": "record"
+        },
+        "metadata": {
+          "sourceId": "default-source",
+          "workspaceId": "default-workspace",
+          "namespace": "default-namespace",
+          "instanceId": "default-instance",
+          "sourceType": "default-source-type",
+          "sourceCategory": "default-category",
+          "trackingPlanId": "default-tracking-plan",
+          "trackingPlanVersion": 1,
+          "sourceTpConfig": {},
+          "mergedTpConfig": {},
+          "destinationId": "default-destination",
+          "jobRunId": "default-job-run",
+          "jobId": 1,
+          "sourceBatchId": "default-batch",
+          "sourceJobId": "default-source-job",
+          "sourceJobRunId": "default-source-job-run",
+          "sourceTaskId": "default-task",
+          "sourceTaskRunId": "default-task-run",
+          "recordId": {},
+          "destinationType": "default-destination-type",
+          "messageId": "default-message-id",
+          "oauthAccessToken": "default-token",
+          "messageIds": [
+            "default-message-id"
+          ],
+          "rudderId": "default-rudder-id",
+          "receivedAt": "2025-01-31T07:06:50.197Z",
+          "eventName": "default-event",
+          "eventType": "default-type",
+          "sourceDefinitionId": "default-source-def",
+          "destinationDefinitionId": "default-dest-def",
+          "transformationId": "default-transform",
+          "dontBatch": false,
+          "userId": "u1",
+          "secret": {
+            "accessToken": "correct-access-token"
+          }
+        },
+        "destination": {
+          "ID": "345",
+          "Name": "Test",
+          "DestinationDefinition": {
+            "ID": "345",
+            "Name": "Test",
+            "DisplayName": "ZOHO",
+            "Config": {
+              "cdkV2Enabled": true,
+              "excludeKeys": [],
+              "includeKeys": []
+            }
+          },
+          "Config": {
+            "region": "US",
+            "module": "Leads",
+            "trigger": "workflow",
+            "addDefaultDuplicateCheck": true,
+            "multiSelectFieldLevelDecision": [
+              {
+                "from": "multi-language",
+                "to": "true"
+              },
+              {
+                "from": "multi class",
+                "to": "false"
+              }
+            ]
+          },
+          "Enabled": true,
+          "WorkspaceID": "",
+          "Transformations": [],
+          "RevisionID": "default-revision",
+          "IsProcessorEnabled": true,
+          "IsConnectionEnabled": true
+        }
+      },
+      {
+        "message": {
+          "action": "insert",
+          "context": {
+            "externalId": [
+              {
+                "type": "ZOHO-Leads",
+                "identifierType": "email"
+              }
+            ],
+            "mappedToDestination": "true",
+            "sources": {
+              "job_run_id": "cgiiurt8um7k7n5dq480",
+              "task_run_id": "cgiiurt8um7k7n5dq48g",
+              "job_id": "2MUWghI7u85n91dd1qzGyswpZan",
+              "version": "895/merge"
+            }
+          },
+          "recordId": "2",
+          "rudderId": "2",
+          "fields": {
+            "Email": "subscribed@eewrfrd.com",
+            "First_Name": "subcribed",
+            "Last_Name": " User",
+            "multi-language": "Bengali"
+          },
+          "type": "record"
+        },
+        "metadata": {
+          "sourceId": "default-source",
+          "workspaceId": "default-workspace",
+          "namespace": "default-namespace",
+          "instanceId": "default-instance",
+          "sourceType": "default-source-type",
+          "sourceCategory": "default-category",
+          "trackingPlanId": "default-tracking-plan",
+          "trackingPlanVersion": 1,
+          "sourceTpConfig": {},
+          "mergedTpConfig": {},
+          "destinationId": "default-destination",
+          "jobRunId": "default-job-run",
+          "jobId": 2,
+          "sourceBatchId": "default-batch",
+          "sourceJobId": "default-source-job",
+          "sourceJobRunId": "default-source-job-run",
+          "sourceTaskId": "default-task",
+          "sourceTaskRunId": "default-task-run",
+          "recordId": {},
+          "destinationType": "default-destination-type",
+          "messageId": "default-message-id",
+          "oauthAccessToken": "default-token",
+          "messageIds": [
+            "default-message-id"
+          ],
+          "rudderId": "default-rudder-id",
+          "receivedAt": "2025-01-31T07:06:50.197Z",
+          "eventName": "default-event",
+          "eventType": "default-type",
+          "sourceDefinitionId": "default-source-def",
+          "destinationDefinitionId": "default-dest-def",
+          "transformationId": "default-transform",
+          "dontBatch": false,
+          "userId": "u1",
+          "secret": {
+            "accessToken": "correct-access-token"
+          }
+        },
+        "destination": {
+          "ID": "345",
+          "Name": "Test",
+          "DestinationDefinition": {
+            "ID": "345",
+            "Name": "Test",
+            "DisplayName": "ZOHO",
+            "Config": {
+              "cdkV2Enabled": true,
+              "excludeKeys": [],
+              "includeKeys": []
+            }
+          },
+          "Config": {
+            "region": "US",
+            "module": "Leads",
+            "trigger": "workflow",
+            "addDefaultDuplicateCheck": true,
+            "multiSelectFieldLevelDecision": [
+              {
+                "from": "multi-language",
+                "to": "true"
+              },
+              {
+                "from": "multi class",
+                "to": "false"
+              }
+            ]
+          },
+          "Enabled": true,
+          "WorkspaceID": "",
+          "Transformations": [],
+          "RevisionID": "default-revision",
+          "IsProcessorEnabled": true,
+          "IsConnectionEnabled": true
+        }
+      }
+    ],
+    "destType": "zoho"
+  },
+  "method": "POST"
+}

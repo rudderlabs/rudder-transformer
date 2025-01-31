@@ -238,7 +238,7 @@ export const data = [
                   Authorization: 'Basic dGVzdC11c2VyOg==',
                   'content-type': 'application/json',
                   h1: 'val1',
-                  h2: 2,
+                  h2: '2',
                   h3: 'John',
                 },
                 params: {
@@ -271,7 +271,7 @@ export const data = [
                   Authorization: 'Basic dGVzdC11c2VyOg==',
                   'content-type': 'application/json',
                   h1: 'val1',
-                  h2: 2,
+                  h2: '2',
                   h3: 'John',
                 },
                 params: {
@@ -304,7 +304,7 @@ export const data = [
                   Authorization: 'Basic dGVzdC11c2VyOg==',
                   'content-type': 'application/json',
                   h1: 'val1',
-                  h2: 2,
+                  h2: '2',
                   h3: 'Alex',
                 },
                 params: {

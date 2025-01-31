@@ -273,7 +273,7 @@ const destinations: Destination[] = [
         },
         {
           to: '$.key',
-          from: '.traits.key',
+          from: '$.traits.key',
         },
       ],
       pathParams: [

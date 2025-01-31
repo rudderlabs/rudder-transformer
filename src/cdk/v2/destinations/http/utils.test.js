@@ -1,4 +1,5 @@
 const {
+  enhanceMappings,
   encodeParamsObject,
   prepareEndpoint,
   prepareBody,
@@ -123,6 +124,46 @@ describe('Utils Functions', () => {
 
     test('handles empty objects', () => {
       expect(stringifyFirstLevelValues({})).toEqual({});
+    });
+  });
+
+  describe('enhanceMappings function', () => {
+    test("should wrap 'from' property in single quotes if it is not already wrapped and does not contain '$'", () => {
+      const input = [{ to: 'a', from: 'b' }];
+      const output = enhanceMappings(input);
+      expect(output).toEqual([{ to: 'a', from: "'b'" }]);
+    });
+
+    test("should not modify 'from' property if it is already wrapped in single quotes", () => {
+      const input = [{ to: 'a', from: "'b'" }];
+      const output = enhanceMappings(input);
+      expect(output).toEqual([{ to: 'a', from: "'b'" }]);
+    });
+
+    test("should not modify 'from' property if it contains '$'", () => {
+      const input = [{ to: 'a', from: '$.b' }];
+      const output = enhanceMappings(input);
+      expect(output).toEqual([{ to: 'a', from: '$.b' }]);
+    });
+
+    test('should return an empty array if input is an empty array', () => {
+      const input = [];
+      const output = enhanceMappings(input);
+      expect(output).toEqual([]);
+    });
+
+    test('should correctly handle multiple mappings in an array', () => {
+      const input = [
+        { to: 'a', from: 'b' },
+        { to: 'x', from: "'y'" },
+        { to: 'p', from: '$.q' },
+      ];
+      const output = enhanceMappings(input);
+      expect(output).toEqual([
+        { to: 'a', from: "'b'" },
+        { to: 'x', from: "'y'" },
+        { to: 'p', from: '$.q' },
+      ]);
     });
   });
 });

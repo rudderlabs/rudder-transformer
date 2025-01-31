@@ -40,9 +40,28 @@ const getAuthHeaders = (config) => {
   return headers;
 };
 
+const enhanceMappings = (mappings) => {
+  let enhancedMappings = mappings;
+  if (Array.isArray(mappings)) {
+    enhancedMappings = mappings.map((mapping) => {
+      const enhancedMapping = { ...mapping };
+      if (
+        mapping.hasOwnProperty('from') &&
+        !mapping.from.includes('$') &&
+        !(mapping.from.startsWith("'") && mapping.from.endsWith("'"))
+      ) {
+        enhancedMapping.from = `'${mapping.from}'`;
+      }
+      return enhancedMapping;
+    });
+  }
+  return enhancedMappings;
+};
+
 const getCustomMappings = (message, mapping) => {
+  const enhancedMappings = enhanceMappings(mapping);
   try {
-    return applyCustomMappings(message, mapping);
+    return applyCustomMappings(message, enhancedMappings);
   } catch (e) {
     throw new ConfigurationError(`Error in custom mappings: ${e.message}`);
   }
@@ -233,6 +252,7 @@ const batchSuccessfulEvents = (events, batchSize) => {
 module.exports = {
   CONTENT_TYPES_MAP,
   getAuthHeaders,
+  enhanceMappings,
   getCustomMappings,
   encodeParamsObject,
   prepareEndpoint,

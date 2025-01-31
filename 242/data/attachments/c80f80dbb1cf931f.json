@@ -1,0 +1,96 @@
+{
+  "output": [
+    {
+      "metadata": [
+        {
+          "jobId": 1,
+          "attemptNum": 1,
+          "userId": "default-userId",
+          "sourceId": "default-sourceId",
+          "destinationId": "default-destinationId",
+          "workspaceId": "default-workspaceId",
+          "secret": {
+            "accessToken": "default-accessToken"
+          },
+          "dontBatch": false
+        }
+      ],
+      "batched": false,
+      "statusCode": 400,
+      "error": "Phone number is not in E.164 format.",
+      "statTags": {
+        "errorCategory": "dataValidation",
+        "errorType": "instrumentation",
+        "destType": "KLAVIYO",
+        "module": "destination",
+        "implementation": "native",
+        "feature": "router",
+        "destinationId": "default-destinationId",
+        "workspaceId": "default-workspaceId"
+      },
+      "destination": {
+        "ID": "123",
+        "Name": "klaviyo",
+        "DestinationDefinition": {
+          "ID": "123",
+          "Name": "klaviyo",
+          "DisplayName": "klaviyo",
+          "Config": {}
+        },
+        "Config": {
+          "privateApiKey": "dummyPrivateApiKey",
+          "apiVersion": "v2"
+        },
+        "Enabled": true,
+        "WorkspaceID": "123",
+        "Transformations": []
+      }
+    },
+    {
+      "metadata": [
+        {
+          "jobId": 2,
+          "attemptNum": 1,
+          "userId": "default-userId",
+          "sourceId": "default-sourceId",
+          "destinationId": "default-destinationId",
+          "workspaceId": "default-workspaceId",
+          "secret": {
+            "accessToken": "default-accessToken"
+          },
+          "dontBatch": false
+        }
+      ],
+      "batched": false,
+      "statusCode": 400,
+      "error": "Phone number is not in E.164 format.",
+      "statTags": {
+        "errorCategory": "dataValidation",
+        "errorType": "instrumentation",
+        "destType": "KLAVIYO",
+        "module": "destination",
+        "implementation": "native",
+        "feature": "router",
+        "destinationId": "default-destinationId",
+        "workspaceId": "default-workspaceId"
+      },
+      "destination": {
+        "ID": "123",
+        "Name": "klaviyo",
+        "DestinationDefinition": {
+          "ID": "123",
+          "Name": "klaviyo",
+          "DisplayName": "klaviyo",
+          "Config": {}
+        },
+        "Config": {
+          "privateApiKey": "dummyPrivateApiKey",
+          "apiVersion": "v2"
+        },
+        "Enabled": true,
+        "WorkspaceID": "123",
+        "Transformations": []
+      }
+    }
+  ]
+}

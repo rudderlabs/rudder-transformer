@@ -11,12 +11,28 @@ import {
   SegmentationPayloadType,
 } from './type';
 
-// return identifiers id type it can be 'id' or 'cio_id' or 'email'
-function getIdType(connection: ConnectionStructure) {
-  return connection?.config?.destination?.identifierMappings[0]?.to || 'id';
-}
+const getIdType = (connection: ConnectionStructure): string =>
+  connection.config.destination.identifierMappings[0]?.to || 'id';
 
-// returns build and return the final batched response
+const getSegmentId = (connection: ConnectionStructure): string | number =>
+  connection.config.destination.audienceId;
+
+const getHeaders = (destination: DestinationStructure): SegmentationHeadersType => ({
+  'Content-Type': 'application/json',
+  Authorization: `Basic ${base64Convertor(`${destination.Config.siteId}:${destination.Config.apiKey}`)}`,
+});
+
+const getParams = (connection: ConnectionStructure): SegmentationParamType => ({
+  id_type: getIdType(connection),
+});
+
+const getMergedPayload = (batch: RespList[]): SegmentationPayloadType => ({
+  ids: batch.flatMap((input) => input.payload.ids),
+});
+
+const getMergedMetadata = (batch: RespList[]): Record<string, unknown>[] =>
+  batch.map((input) => input.metadata);
+
 const buildBatchedResponse = (
   payload: SegmentationPayloadType,
   endpoint: string,
@@ -46,108 +62,60 @@ const buildBatchedResponse = (
   destination,
 });
 
-// returns action of record event
-const getEventAction = (event: EventStructure) => event?.message?.action?.toLowerCase() || '';
-
-// returns segment id
-function getSegmentId(connection: ConnectionStructure) {
-  return connection?.config?.destination?.audienceId || '';
-}
-
-// returns the merged payload
-// e.g. [{payload: {ids: [id1]}, metadata: m1},{payload: {ids: [id2]}, metadata: m2},{payload: {ids: [id3]}, metadata: m3}...]
-// returns [ids: [id1,id2,id3]]
-function getMergedPayload(batch: any[]) {
-  const mergedIds = batch.flatMap((input) => input.payload.ids);
-  return { ids: mergedIds };
-}
-
-// return merged metadata
-// e.g. [{payload: p1, metadata: m1},{payload: p2, metadata: m2},{payload: p3, metadata: m3}...]
-// returns [{m1},{m2},{m3},....]
-const getMergedMetadata = (batch: any[]) => batch.map((input) => input.metadata);
-
-// return headers for segmentation process
-function getHeaders(destination: DestinationStructure): SegmentationHeadersType {
-  return {
-    'Content-Type': 'application/json',
-    Authorization: `Basic ${base64Convertor(`${destination.Config.siteId}:${destination.Config.apiKey}`)}`,
-  };
-}
-
-// return params for segmentation process
-function getParams(connection: ConnectionStructure): SegmentationParamType {
-  return {
-    id_type: getIdType(connection),
-  };
-}
-
-// return final batched response for insert/update flow
-function insertOrUpdateBatchResponseBuilder(
-  insertOrUpdateRespList: RespList[],
+const processBatch = (
+  respList: RespList[],
+  endpoint: string,
   destination: DestinationStructure,
   connection: ConnectionStructure,
-) {
-  const insertOrUpdateBatchResponse: any[] = [];
-  const endpoint = `${BASE_ENDPOINT}/${getSegmentId(connection)}/add_customers`;
-  const headers: SegmentationHeadersType = getHeaders(destination);
-  const params: SegmentationParamType = getParams(connection);
-  const batches = BatchUtils.chunkArrayBySizeAndLength(insertOrUpdateRespList, {
-    maxItems: MAX_ITEMS,
-  });
-  batches.items.forEach((batch) => {
+): any[] => {
+  if (!respList?.length) {
+    return [];
+  }
+
+  const headers = getHeaders(destination);
+  const params = getParams(connection);
+  const batches = BatchUtils.chunkArrayBySizeAndLength(respList, { maxItems: MAX_ITEMS });
+
+  return batches.items.map((batch) => {
     const mergedPayload = getMergedPayload(batch);
     const mergedMetadata = getMergedMetadata(batch);
-    insertOrUpdateBatchResponse.push(
-      buildBatchedResponse(mergedPayload, endpoint, headers, params, mergedMetadata, destination),
+    return buildBatchedResponse(
+      mergedPayload,
+      endpoint,
+      headers,
+      params,
+      mergedMetadata,
+      destination,
     );
   });
-  return insertOrUpdateBatchResponse;
-}
+};
 
-// return final batched response for delete flow
-function deleteBatchResponseBuilder(
-  deleteRespList: RespList[],
-  destination: DestinationStructure,
-  connection: ConnectionStructure,
-) {
-  const deleteBatchResponse: any[] = [];
-  const endpoint = `${BASE_ENDPOINT}/${getSegmentId(connection)}/remove_customers`;
-  const headers: SegmentationHeadersType = getHeaders(destination);
-  const params: SegmentationParamType = getParams(connection);
-  const batches = BatchUtils.chunkArrayBySizeAndLength(deleteRespList, {
-    maxItems: MAX_ITEMS,
-  });
-  batches.items.forEach((batch) => {
-    const mergedPayload = getMergedPayload(batch);
-    const mergedMetadata = getMergedMetadata(batch);
-    deleteBatchResponse.push(
-      buildBatchedResponse(mergedPayload, endpoint, headers, params, mergedMetadata, destination),
-    );
-  });
-  return deleteBatchResponse;
-}
-
-// returns final batched response
 const batchResponseBuilder = (
   insertOrUpdateRespList: RespList[],
   deleteRespList: RespList[],
   destination: DestinationStructure,
   connection: ConnectionStructure,
-) => {
-  const response: any[] = [];
-  if (insertOrUpdateRespList.length > 0) {
-    response.push(
-      ...insertOrUpdateBatchResponseBuilder(insertOrUpdateRespList, destination, connection),
-    );
-  }
-  if (deleteRespList.length > 0) {
-    response.push(...deleteBatchResponseBuilder(deleteRespList, destination, connection));
-  }
-  return response;
+): any[] => {
+  const segmentId = getSegmentId(connection);
+
+  const insertResponses = processBatch(
+    insertOrUpdateRespList,
+    `${BASE_ENDPOINT}/${segmentId}/add_customers`,
+    destination,
+    connection,
+  );
+
+  const deleteResponses = processBatch(
+    deleteRespList,
+    `${BASE_ENDPOINT}/${segmentId}/remove_customers`,
+    destination,
+    connection,
+  );
+
+  return [...insertResponses, ...deleteResponses];
 };
 
-module.exports = {
-  batchResponseBuilder,
-  getEventAction,
-};
+const getEventAction = (event: EventStructure): string =>
+  event?.message?.action?.toLowerCase() || '';
+
+export { batchResponseBuilder, getEventAction };

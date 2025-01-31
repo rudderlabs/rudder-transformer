@@ -88,7 +88,7 @@ function escapeAndEncode(value) {
 
 function transformToURLParams(fields, Config) {
   const criteria = Object.entries(fields)
-    .filter(([key, value]) => isDefinedAndNotNull(value))
+    .filter(([, value]) => isDefinedAndNotNull(value))
     .map(([key, value]) => `(${key}:equals:${escapeAndEncode(value)})`)
     .join('and');
 

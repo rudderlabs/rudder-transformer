@@ -1,0 +1,84 @@
+{
+  "body": {
+    "version": "v1",
+    "type": "REST",
+    "userId": "default-userId",
+    "method": "POST",
+    "endpoint": "https://www.zohoapis.in/crm/v6/Leads/upsert",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Zoho-oauthtoken dummy-key"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "duplicate_check_fields": [
+          "Email"
+        ],
+        "data": [
+          {
+            "Email": "subscribed@eewrfrd.com",
+            "First_Name": "subcribed",
+            "Last_Name": " User"
+          },
+          {
+            "Email": "subscribed@eewrfrd.com",
+            "First_Name": "subcribed",
+            "Last_Name": " User"
+          },
+          {
+            "Random": "subscribed@eewrfrd.com"
+          }
+        ],
+        "$append_values": {},
+        "trigger": [
+          "workflow"
+        ]
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "metadata": [
+      {
+        "jobId": 1,
+        "attemptNum": 1,
+        "userId": "default-userId",
+        "destinationId": "default-destinationId",
+        "workspaceId": "default-workspaceId",
+        "sourceId": "default-sourceId",
+        "secret": {
+          "accessToken": "default-accessToken"
+        },
+        "dontBatch": false
+      },
+      {
+        "jobId": 2,
+        "attemptNum": 1,
+        "userId": "default-userId",
+        "destinationId": "default-destinationId",
+        "workspaceId": "default-workspaceId",
+        "sourceId": "default-sourceId",
+        "secret": {
+          "accessToken": "default-accessToken"
+        },
+        "dontBatch": false
+      },
+      {
+        "jobId": 3,
+        "attemptNum": 1,
+        "userId": "default-userId",
+        "destinationId": "default-destinationId",
+        "workspaceId": "default-workspaceId",
+        "sourceId": "default-sourceId",
+        "secret": {
+          "accessToken": "default-accessToken"
+        },
+        "dontBatch": false
+      }
+    ],
+    "destinationConfig": {}
+  },
+  "method": "POST"
+}

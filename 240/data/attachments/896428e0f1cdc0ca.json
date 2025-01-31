@@ -1,0 +1,35 @@
+{
+  "output": {
+    "response": [
+      {
+        "error": "{\"code\":\"INVALID_TOKEN\",\"details\":{},\"message\":\"invalid oauth token\",\"status\":\"error\"}",
+        "statusCode": 500,
+        "metadata": {
+          "jobId": 1,
+          "attemptNum": 1,
+          "userId": "default-userId",
+          "destinationId": "default-destinationId",
+          "workspaceId": "default-workspaceId",
+          "sourceId": "default-sourceId",
+          "secret": {
+            "accessToken": "default-accessToken"
+          },
+          "dontBatch": false
+        }
+      }
+    ],
+    "statTags": {
+      "errorCategory": "network",
+      "errorType": "retryable",
+      "destType": "ZOHO",
+      "module": "destination",
+      "implementation": "native",
+      "feature": "dataDelivery",
+      "destinationId": "default-destinationId",
+      "workspaceId": "default-workspaceId"
+    },
+    "message": "Zoho: Error transformer proxy v1 during Zoho response transformation. invalid oauth token",
+    "status": 500,
+    "authErrorCategory": "REFRESH_TOKEN"
+  }
+}

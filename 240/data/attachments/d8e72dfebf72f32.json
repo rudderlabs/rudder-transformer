@@ -1,0 +1,112 @@
+{
+  "output": {
+    "status": 200,
+    "message": "[ZOHO Response V1 Handler] - Request Processed Successfully",
+    "destinationResponse": {
+      "response": {
+        "data": [
+          {
+            "code": "SUCCESS",
+            "duplicate_field": "Email",
+            "action": "update",
+            "details": {
+              "Modified_Time": "2024-07-16T15:01:02+05:30",
+              "Modified_By": {
+                "name": "dummy-user",
+                "id": "724445000000323001"
+              },
+              "Created_Time": "2024-07-16T09:39:27+05:30",
+              "id": "724445000000424003",
+              "Created_By": {
+                "name": "dummy-user",
+                "id": "724445000000323001"
+              }
+            },
+            "message": "record updated",
+            "status": "success"
+          },
+          {
+            "code": "SUCCESS",
+            "duplicate_field": "Email",
+            "action": "update",
+            "details": {
+              "Modified_Time": "2024-07-16T15:01:02+05:30",
+              "Modified_By": {
+                "name": "dummy-user",
+                "id": "724445000000323001"
+              },
+              "Created_Time": "2024-07-16T09:39:27+05:30",
+              "id": "724445000000424003",
+              "Created_By": {
+                "name": "dummy-user",
+                "id": "724445000000323001"
+              }
+            },
+            "message": "record updated",
+            "status": "success"
+          },
+          {
+            "code": "MANDATORY_NOT_FOUND",
+            "details": {
+              "api_name": "Last_Name",
+              "json_path": "$.data[2].Last_Name"
+            },
+            "message": "required field not found",
+            "status": "error"
+          }
+        ]
+      },
+      "status": 200
+    },
+    "response": [
+      {
+        "statusCode": 200,
+        "metadata": {
+          "jobId": 1,
+          "attemptNum": 1,
+          "userId": "default-userId",
+          "destinationId": "default-destinationId",
+          "workspaceId": "default-workspaceId",
+          "sourceId": "default-sourceId",
+          "secret": {
+            "accessToken": "default-accessToken"
+          },
+          "dontBatch": false
+        },
+        "error": "success"
+      },
+      {
+        "statusCode": 200,
+        "metadata": {
+          "jobId": 2,
+          "attemptNum": 1,
+          "userId": "default-userId",
+          "destinationId": "default-destinationId",
+          "workspaceId": "default-workspaceId",
+          "sourceId": "default-sourceId",
+          "secret": {
+            "accessToken": "default-accessToken"
+          },
+          "dontBatch": false
+        },
+        "error": "success"
+      },
+      {
+        "statusCode": 400,
+        "metadata": {
+          "jobId": 3,
+          "attemptNum": 1,
+          "userId": "default-userId",
+          "destinationId": "default-destinationId",
+          "workspaceId": "default-workspaceId",
+          "sourceId": "default-sourceId",
+          "secret": {
+            "accessToken": "default-accessToken"
+          },
+          "dontBatch": false
+        },
+        "error": "message: undefined {\"api_name\":\"Last_Name\",\"json_path\":\"$.data[2].Last_Name\"}"
+      }
+    ]
+  }
+}

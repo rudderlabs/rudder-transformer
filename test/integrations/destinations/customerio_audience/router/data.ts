@@ -1,4 +1,4 @@
-import { generateMetadata, generateRecordPayload } from '../../../testUtils';
+import { generateMetadata, generateRecordPayload, overrideDestination } from '../../../testUtils';
 import { defaultMockFns } from '../mocks';
 import {
   destType,
@@ -123,6 +123,28 @@ const routerRequest = {
       destination,
       connection,
     },
+    {
+      message: generateRecordPayload({
+        identifiers: {
+          id: 'test-id-11',
+        },
+        action: 'insert',
+      }),
+      metadata: generateMetadata(11),
+      destination: overrideDestination(destination, { siteId: 'test-dummy-id', apiKey: '' }),
+      connection,
+    },
+    {
+      message: generateRecordPayload({
+        identifiers: {
+          id: 'test-id-12',
+        },
+        action: 'insert',
+      }),
+      metadata: generateMetadata(12),
+      destination: overrideDestination(destination, { siteId: 123, apiKey: 'test-api-key' }),
+      connection,
+    },
   ],
   destType,
 };
@@ -240,6 +262,28 @@ export const data = [
               error: 'identifiers cannot be empty',
               statTags: RouterInstrumentationErrorStatTags,
               destination,
+            },
+            {
+              metadata: [generateMetadata(11)],
+              batched: false,
+              statusCode: 400,
+              error: 'apiKey is required and must be a string, aborting.',
+              statTags: { ...RouterInstrumentationErrorStatTags, errorType: 'configuration' },
+              destination: overrideDestination(destination, {
+                siteId: 'test-dummy-id',
+                apiKey: '',
+              }),
+            },
+            {
+              metadata: [generateMetadata(12)],
+              batched: false,
+              statusCode: 400,
+              error: 'siteId is required and must be a string, aborting.',
+              statTags: { ...RouterInstrumentationErrorStatTags, errorType: 'configuration' },
+              destination: overrideDestination(destination, {
+                siteId: 123,
+                apiKey: 'test-api-key',
+              }),
             },
           ],
         },

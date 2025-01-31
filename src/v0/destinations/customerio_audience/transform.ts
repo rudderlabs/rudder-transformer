@@ -1,3 +1,4 @@
+import { ConfigurationError, isDefinedAndNotNullAndNotEmpty } from '@rudderstack/integrations-lib';
 import { SegmentAction } from './config';
 import { EventStructure, RespList } from './type';
 
@@ -36,6 +37,16 @@ const validateEvent = (event: EventStructure): boolean => {
   const identifiers = event?.message?.identifiers || {};
   if (Object.entries(identifiers).length === 0) {
     throw new InstrumentationError(`identifiers cannot be empty`);
+  }
+
+  const siteId = event?.destination?.Config?.siteId;
+  if (!isDefinedAndNotNullAndNotEmpty(siteId) || typeof siteId !== 'string') {
+    throw new ConfigurationError('siteId is required and must be a string, aborting.');
+  }
+
+  const apiKey = event?.destination?.Config?.apiKey;
+  if (!isDefinedAndNotNullAndNotEmpty(apiKey) || typeof apiKey !== 'string') {
+    throw new ConfigurationError('apiKey is required and must be a string, aborting.');
   }
 
   return true;

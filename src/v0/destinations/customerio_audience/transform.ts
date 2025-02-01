@@ -1,6 +1,6 @@
 import { ConfigurationError, isDefinedAndNotNullAndNotEmpty } from '@rudderstack/integrations-lib';
 import { SegmentAction } from './config';
-import { EventStructure, RespList } from './type';
+import { CustomerIORouterRequestType, RespList } from './type';
 
 const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const { batchResponseBuilder, getEventAction } = require('./utils');
@@ -11,7 +11,7 @@ interface ProcessedEvent extends RespList {
   eventAction: keyof typeof SegmentAction;
 }
 
-const createEventChunk = (event: EventStructure): ProcessedEvent => {
+const createEventChunk = (event: CustomerIORouterRequestType): ProcessedEvent => {
   const eventAction = getEventAction(event);
   const { identifiers } = event?.message || {};
   const id: string | number = Object.values(identifiers)[0];
@@ -23,7 +23,7 @@ const createEventChunk = (event: EventStructure): ProcessedEvent => {
   };
 };
 
-const validateEvent = (event: EventStructure): boolean => {
+const validateEvent = (event: CustomerIORouterRequestType): boolean => {
   const eventType = getEventType(event?.message);
   if (eventType !== EventType.RECORD) {
     throw new InstrumentationError(`message type ${eventType} is not supported`);
@@ -52,7 +52,7 @@ const validateEvent = (event: EventStructure): boolean => {
   return true;
 };
 
-const processRouterDest = async (inputs: any[], reqMetadata: any) => {
+const processRouterDest = async (inputs: CustomerIORouterRequestType[], reqMetadata: any) => {
   if (!inputs?.length) return [];
 
   const { destination, connection } = inputs[0];

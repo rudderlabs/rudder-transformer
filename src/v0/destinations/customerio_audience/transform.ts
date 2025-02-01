@@ -55,7 +55,7 @@ const validateEvent = (event: CustomerIORouterRequestType): boolean => {
   }
 
   const audienceId = event?.connection?.config?.destination?.audienceId;
-  if (!isDefinedAndNotNullAndNotEmpty(audienceId)) {
+  if (!audienceId) {
     throw new InstrumentationError('audienceId is required, aborting.');
   }
 

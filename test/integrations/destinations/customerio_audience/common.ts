@@ -42,6 +42,16 @@ const connection: Connection = {
   },
 };
 
+const inValidConnection: Connection = {
+  ...connection,
+  config: {
+    ...connection.config,
+    destination: {
+      audienceId: '',
+    },
+  },
+};
+
 const insertOrUpdateEndpoint =
   'https://track.customer.io/api/v1/segments/test-segment-id/add_customers';
 
@@ -77,6 +87,7 @@ export {
   channel,
   destination,
   connection,
+  inValidConnection,
   processorInstrumentationErrorStatTags,
   RouterInstrumentationErrorStatTags,
   headers,

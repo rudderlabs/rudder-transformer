@@ -34,9 +34,14 @@ const validateEvent = (event: CustomerIORouterRequestType): boolean => {
     throw new InstrumentationError(`action ${eventAction} is not supported`);
   }
 
-  const identifiers = event?.message?.identifiers || {};
-  if (Object.entries(identifiers).length === 0) {
+  const identifiers = event?.message?.identifiers;
+  if (!identifiers || Object.keys(identifiers).length === 0) {
     throw new InstrumentationError(`identifiers cannot be empty`);
+  }
+
+  const id = Object.values(identifiers)[0];
+  if (typeof id !== 'string' && typeof id !== 'number') {
+    throw new ConfigurationError(`identifier type should be a string or integer`);
   }
 
   const siteId = event?.destination?.Config?.siteId;
@@ -47,6 +52,11 @@ const validateEvent = (event: CustomerIORouterRequestType): boolean => {
   const apiKey = event?.destination?.Config?.apiKey;
   if (!isDefinedAndNotNullAndNotEmpty(apiKey) || typeof apiKey !== 'string') {
     throw new ConfigurationError('apiKey is required and must be a string, aborting.');
+  }
+
+  const audienceId = event?.connection?.config?.destination?.audienceId;
+  if (!isDefinedAndNotNullAndNotEmpty(audienceId)) {
+    throw new InstrumentationError('audienceId is required, aborting.');
   }
 
   return true;

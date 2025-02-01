@@ -1,6 +1,6 @@
 import { base64Convertor } from '@rudderstack/integrations-lib';
 import { BatchUtils } from '@rudderstack/workflow-engine';
-import { BASE_ENDPOINT, MAX_ITEMS } from './config';
+import { BASE_ENDPOINT, DEFAULT_ID_TYPE, MAX_ITEMS } from './config';
 import {
   CustomerIOConnectionType,
   CustomerIODestinationType,
@@ -13,7 +13,7 @@ import {
 } from './type';
 
 const getIdType = (connection: CustomerIOConnectionType): string =>
-  connection.config.destination.identifierMappings[0]?.to || 'id';
+  connection.config.destination.identifierMappings[0]?.to || DEFAULT_ID_TYPE;
 
 const getSegmentId = (connection: CustomerIOConnectionType): string | number =>
   connection.config.destination.audienceId;

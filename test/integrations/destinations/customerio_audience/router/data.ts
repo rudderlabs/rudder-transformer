@@ -9,9 +9,10 @@ import {
   deleteEndpoint,
   connection,
   params,
+  inValidConnection,
 } from '../common';
 
-const routerRequest = {
+const routerRequest1 = {
   input: [
     {
       message: generateRecordPayload({
@@ -149,19 +150,48 @@ const routerRequest = {
   destType,
 };
 
+// scenario when all the events are malfunctioned
+const routerRequest2 = {
+  input: [
+    {
+      message: generateRecordPayload({
+        identifiers: {
+          id: [],
+        },
+        action: 'insert',
+      }),
+      metadata: generateMetadata(1),
+      destination,
+      connection: inValidConnection,
+    },
+    {
+      message: generateRecordPayload({
+        identifiers: {
+          id: 'test-id-1',
+        },
+        action: 'insert',
+      }),
+      metadata: generateMetadata(2),
+      destination,
+      connection: inValidConnection,
+    },
+  ],
+  destType,
+};
+
 export const data = [
   {
     id: 'customerio-segment-router-test-1',
     name: destType,
     description: 'Basic Router Test to test record payloads',
-    scenario: 'Framework',
+    scenario: 'Framework+Business',
     successCriteria: 'All events should be transformed successfully and status code should be 200',
     feature: 'router',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
-        body: routerRequest,
+        body: routerRequest1,
         method: 'POST',
       },
     },
@@ -284,6 +314,48 @@ export const data = [
                 siteId: 123,
                 apiKey: 'test-api-key',
               }),
+            },
+          ],
+        },
+      },
+    },
+    mockFns: defaultMockFns,
+  },
+  {
+    id: 'customerio-segment-router-test-2',
+    name: destType,
+    description: 'Basic Router Test to test record payloads',
+    scenario: 'Framework',
+    successCriteria: 'All events should throw error',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: routerRequest2,
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              metadata: [generateMetadata(1)],
+              batched: false,
+              statusCode: 400,
+              error: 'identifier type should be a string or integer',
+              statTags: { ...RouterInstrumentationErrorStatTags, errorType: 'configuration' },
+              destination,
+            },
+            {
+              metadata: [generateMetadata(2)],
+              batched: false,
+              statusCode: 400,
+              error: 'audienceId is required, aborting.',
+              statTags: RouterInstrumentationErrorStatTags,
+              destination,
             },
           ],
         },

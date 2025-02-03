@@ -1,4 +1,4 @@
-import { ConfigurationError, isDefinedAndNotNullAndNotEmpty } from '@rudderstack/integrations-lib';
+import { ConfigurationError } from '@rudderstack/integrations-lib';
 import { SegmentAction } from './config';
 import { CustomerIORouterRequestType, RespList } from './type';
 
@@ -39,24 +39,23 @@ const validateEvent = (event: CustomerIORouterRequestType): boolean => {
     throw new InstrumentationError(`identifiers cannot be empty`);
   }
 
+  if (Object.keys(identifiers).length > 1) {
+    throw new InstrumentationError(`only one identifier is supported`);
+  }
+
   const id = Object.values(identifiers)[0];
   if (typeof id !== 'string' && typeof id !== 'number') {
     throw new ConfigurationError(`identifier type should be a string or integer`);
   }
 
-  const siteId = event?.destination?.Config?.siteId;
-  if (!isDefinedAndNotNullAndNotEmpty(siteId) || typeof siteId !== 'string') {
-    throw new ConfigurationError('siteId is required and must be a string, aborting.');
-  }
-
-  const apiKey = event?.destination?.Config?.apiKey;
-  if (!isDefinedAndNotNullAndNotEmpty(apiKey) || typeof apiKey !== 'string') {
-    throw new ConfigurationError('apiKey is required and must be a string, aborting.');
-  }
-
   const audienceId = event?.connection?.config?.destination?.audienceId;
   if (!audienceId) {
     throw new InstrumentationError('audienceId is required, aborting.');
+  }
+
+  const identifierMappings = event?.connection?.config?.destination?.identifierMappings;
+  if (!identifierMappings || Object.keys(identifierMappings).length === 0) {
+    throw new InstrumentationError('identifierMappings cannot be empty');
   }
 
   return true;

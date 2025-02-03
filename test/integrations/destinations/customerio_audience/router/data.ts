@@ -127,23 +127,13 @@ const routerRequest1 = {
     {
       message: generateRecordPayload({
         identifiers: {
-          id: 'test-id-11',
+          id: 'test-id-7',
+          email: 'test@gmail.com',
         },
         action: 'insert',
       }),
       metadata: generateMetadata(11),
-      destination: overrideDestination(destination, { siteId: 'test-dummy-id', apiKey: '' }),
-      connection,
-    },
-    {
-      message: generateRecordPayload({
-        identifiers: {
-          id: 'test-id-12',
-        },
-        action: 'insert',
-      }),
-      metadata: generateMetadata(12),
-      destination: overrideDestination(destination, { siteId: 123, apiKey: 'test-api-key' }),
+      destination,
       connection,
     },
   ],
@@ -174,6 +164,25 @@ const routerRequest2 = {
       metadata: generateMetadata(2),
       destination,
       connection: inValidConnection,
+    },
+    {
+      message: generateRecordPayload({
+        identifiers: {
+          id: 'test-id-1',
+        },
+        action: 'insert',
+      }),
+      metadata: generateMetadata(3),
+      destination,
+      connection: {
+        ...connection,
+        config: {
+          ...connection.config,
+          destination: {
+            audienceId: 'test-audience-id',
+          },
+        },
+      },
     },
   ],
   destType,
@@ -297,23 +306,9 @@ export const data = [
               metadata: [generateMetadata(11)],
               batched: false,
               statusCode: 400,
-              error: 'apiKey is required and must be a string, aborting.',
-              statTags: { ...RouterInstrumentationErrorStatTags, errorType: 'configuration' },
-              destination: overrideDestination(destination, {
-                siteId: 'test-dummy-id',
-                apiKey: '',
-              }),
-            },
-            {
-              metadata: [generateMetadata(12)],
-              batched: false,
-              statusCode: 400,
-              error: 'siteId is required and must be a string, aborting.',
-              statTags: { ...RouterInstrumentationErrorStatTags, errorType: 'configuration' },
-              destination: overrideDestination(destination, {
-                siteId: 123,
-                apiKey: 'test-api-key',
-              }),
+              error: 'only one identifier is supported',
+              statTags: RouterInstrumentationErrorStatTags,
+              destination,
             },
           ],
         },
@@ -354,6 +349,14 @@ export const data = [
               batched: false,
               statusCode: 400,
               error: 'audienceId is required, aborting.',
+              statTags: RouterInstrumentationErrorStatTags,
+              destination,
+            },
+            {
+              metadata: [generateMetadata(3)],
+              batched: false,
+              statusCode: 400,
+              error: 'identifierMappings cannot be empty',
               statTags: RouterInstrumentationErrorStatTags,
               destination,
             },

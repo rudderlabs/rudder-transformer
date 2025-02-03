@@ -1,6 +1,5 @@
 import { NetworkError, PlatformError } from '@rudderstack/integrations-lib';
 import { XMLBuilder } from 'fast-xml-parser';
-import { ENDPOINTS } from './config';
 import { getDynamicErrorType } from '../../../../adapters/utils/networkUtils';
 import Cache from '../../../../v0/util/cache';
 import { handleHttpRequest } from '../../../../adapters/network';
@@ -11,7 +10,7 @@ export const accessTokenCache = new Cache(1000);
 export const getAccessToken = async ({ clientId, clientSecret, subDomain }, metadata) => {
   const { processedResponse: processedResponseSfmc } = await handleHttpRequest(
     'post',
-    `https://${subDomain}.${ENDPOINTS.GET_TOKEN}`,
+    `https://${subDomain}.auth.marketingcloudapis.com/v2/token`,
     {
       grant_type: 'client_credentials',
       client_id: clientId,
@@ -60,13 +59,13 @@ export const getEndpoint = (
     const result = Object.entries(identifiers)
       .map(([key, value]) => `${key}:${value}`)
       .join();
-    return `https://${subDomain}.${ENDPOINTS.DATA_EXTENSION}${config.dataExtensionKey}/rows/${result}`;
+    return `https://${subDomain}.rest.marketingcloudapis.com/hub/v1/dataevents/key:${config.dataExtensionKey}/rows/${result}`;
   }
   if (config.objectType === 'contact') {
     if (config.action === 'delete') {
-      return `https://${subDomain}.${ENDPOINTS.DELETE_CONTACT}`;
+      return `https://${subDomain}.rest.marketingcloudapis.com/contacts/v1/contacts/actions/delete?type=keys`;
     }
-    return `https://${subDomain}.${ENDPOINTS.UPSERT_CONTACT}`;
+    return `https://${subDomain}.rest.marketingcloudapis.com/contacts/v1/contacts`;
   }
   throw new PlatformError(
     `Something went wrong. Can't generate endpoint for action:${config.action} and objectType:${config.objectType} combination`,

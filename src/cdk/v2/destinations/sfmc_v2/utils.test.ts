@@ -4,11 +4,8 @@ import {
   getMethod,
   buildContactPayload,
   buildDataExtensionPayloadForDelete,
-  accessTokenCache,
 } from './utils';
-import { ENDPOINTS } from './config';
 import { PlatformError, NetworkError } from '@rudderstack/integrations-lib';
-import { handleHttpRequest } from '../../../../../src/adapters/network';
 import MockAxiosAdapter from 'axios-mock-adapter';
 import axios from 'axios';
 
@@ -95,7 +92,9 @@ describe('SFMC V2 Utils', () => {
       const identifiers = { id: '123' };
 
       const result = getEndpoint(config, subDomain, identifiers);
-      expect(result).toBe(`https://test.${ENDPOINTS.DELETE_CONTACT}`);
+      expect(result).toBe(
+        `https://test.rest.marketingcloudapis.com/contacts/v1/contacts/actions/delete?type=keys`,
+      );
     });
     it('should return upsert contact endpoint when objectType is contact and action is not delete', () => {
       const config = {
@@ -108,7 +107,7 @@ describe('SFMC V2 Utils', () => {
 
       const result = getEndpoint(config, subDomain, identifiers);
 
-      expect(result).toBe(`https://test.${ENDPOINTS.UPSERT_CONTACT}`);
+      expect(result).toBe(`https://test.rest.marketingcloudapis.com/contacts/v1/contacts`);
     });
     it('should throw PlatformError when objectType is invalid', () => {
       const config = {

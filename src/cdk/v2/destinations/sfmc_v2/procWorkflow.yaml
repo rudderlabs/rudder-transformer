@@ -14,9 +14,9 @@ steps:
       let messageType = .message.type;
       $.assertConfig(config.objectType, "Object type is not present. Aborting");
       $.assert(messageType, "Message Type is not present. Aborting message.");
-      $.assert(messageType.toLowerCase() === $.SUPPORTED_EVENT_TYPE, `Event type ${.message.type.toLowerCase()} is not supported. Aborting message.`);
+      $.assert(messageType.toLowerCase() === $.SUPPORTED_EVENT_TYPE, `Event type ${.message.type} is not supported. Aborting message.`);
       $.assert(.message.fields, "`fields` is not present. Aborting message.");
-      $.assert(.message.identifiers, "`identifiers` is not present inside properties. Aborting message.");
+      $.assert(.message.identifiers, "`identifiers` is not present inside message. Aborting message.");
       $.assert($.containsAll([.message.action], $.ACTION_TYPES), "Unsupported action type. Aborting message.");
 
   - name: getConfigs
@@ -48,10 +48,9 @@ steps:
       - name: prepareDataExtensionPayloadForInsertAction
         condition: $.outputs.getConfigs.action === 'insert' || $.outputs.getConfigs.action === 'update'
         template: |
-          const payload = {
+          {
             values: .message.fields
           }
-          payload
       - name: prepareDataExtensionPayloadForDeleteAction
         condition: $.outputs.getConfigs.action === 'delete'
         template: |

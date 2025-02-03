@@ -1,3 +1,6 @@
+import { generateMetadata, generateRecordPayload } from '../../../testUtils';
+import { commonDestination } from './contact';
+
 export const dataExtensionTests = [
   {
     name: 'sfmc_v2',
@@ -9,34 +12,17 @@ export const dataExtensionTests = [
       request: {
         body: [
           {
-            message: {
-              type: 'record',
-              action: 'insert',
+            message: generateRecordPayload({
               fields: {
                 Key2: 'Test Name 1',
                 Key3: 'test1@mail.com',
                 Key4: '9876543210',
                 Key5: 'delhi',
               },
-              userId: '95582e9e-38fe-447f-9e4b-817d6e4d0c2e',
-              channel: 'sources',
-              context: {
-                sources: {
-                  job_id: '2rtFmdkX7aFXgKXqMkp97kqSzia',
-                  version: 'local',
-                  job_run_id: 'cubrc3j2i731fpi60mv0',
-                  task_run_id: 'cubrc3r2i731fpi60mvg',
-                },
-              },
-              recordId: '5',
-              rudderId: '46466a83-cd49-4b17-b101-5447a5f5bd05',
-              messageId: '2bc221ea-6046-4fd4-9dff-74b5ea389f4d',
-              receivedAt: '2025-01-27T16:37:51.735Z',
-              request_ip: '[::1]',
               identifiers: {
                 Key1: 'user1',
               },
-            },
+            }),
             connection: {
               enabled: true,
               config: {
@@ -91,22 +77,8 @@ export const dataExtensionTests = [
               },
               processorEnabled: false,
             },
-            metadata: {
-              jobId: 1,
-              destinationId: 'default-destination',
-            },
-            destination: {
-              Config: {
-                clientId: 'validClientId',
-                clientSecret: 'validClientSecret',
-                subDomain: 'validSubDomain',
-              },
-              DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
-              },
-            },
+            metadata: generateMetadata(1),
+            destination: commonDestination,
           },
         ],
         method: 'POST',
@@ -117,10 +89,7 @@ export const dataExtensionTests = [
         status: 200,
         body: [
           {
-            metadata: {
-              destinationId: 'default-destination',
-              jobId: 1,
-            },
+            metadata: generateMetadata(1),
             output: {
               body: {
                 FORM: {},
@@ -164,8 +133,7 @@ export const dataExtensionTests = [
       request: {
         body: [
           {
-            message: {
-              type: 'record',
+            message: generateRecordPayload({
               action: 'delete',
               fields: {
                 Key2: 'Test Name 1',
@@ -173,25 +141,10 @@ export const dataExtensionTests = [
                 Key4: '9876543210',
                 Key5: 'delhi',
               },
-              userId: '95582e9e-38fe-447f-9e4b-817d6e4d0c2e',
-              channel: 'sources',
-              context: {
-                sources: {
-                  job_id: '2rtFmdkX7aFXgKXqMkp97kqSzia',
-                  version: 'local',
-                  job_run_id: 'cubrc3j2i731fpi60mv0',
-                  task_run_id: 'cubrc3r2i731fpi60mvg',
-                },
-              },
-              recordId: '5',
-              rudderId: '46466a83-cd49-4b17-b101-5447a5f5bd05',
-              messageId: '2bc221ea-6046-4fd4-9dff-74b5ea389f4d',
-              receivedAt: '2025-01-27T16:37:51.735Z',
-              request_ip: '[::1]',
               identifiers: {
                 Key1: 'user1',
               },
-            },
+            }),
             connection: {
               enabled: true,
               config: {
@@ -246,22 +199,8 @@ export const dataExtensionTests = [
               },
               processorEnabled: false,
             },
-            metadata: {
-              jobId: 1,
-              destinationId: 'default-destination',
-            },
-            destination: {
-              Config: {
-                clientId: 'validClientId',
-                clientSecret: 'validClientSecret',
-                subDomain: 'validSubDomain',
-              },
-              DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
-              },
-            },
+            metadata: generateMetadata(1),
+            destination: commonDestination,
           },
         ],
         method: 'POST',
@@ -272,10 +211,7 @@ export const dataExtensionTests = [
         status: 200,
         body: [
           {
-            metadata: {
-              destinationId: 'default-destination',
-              jobId: 1,
-            },
+            metadata: generateMetadata(1),
             output: {
               body: {
                 FORM: {},
@@ -314,8 +250,7 @@ export const dataExtensionTests = [
       request: {
         body: [
           {
-            message: {
-              type: 'record',
+            message: generateRecordPayload({
               action: 'update',
               fields: {
                 Key2: 'Test Name 1',
@@ -323,25 +258,10 @@ export const dataExtensionTests = [
                 Key4: '9876543210',
                 Key5: 'delhi',
               },
-              userId: '95582e9e-38fe-447f-9e4b-817d6e4d0c2e',
-              channel: 'sources',
-              context: {
-                sources: {
-                  job_id: '2rtFmdkX7aFXgKXqMkp97kqSzia',
-                  version: 'local',
-                  job_run_id: 'cubrc3j2i731fpi60mv0',
-                  task_run_id: 'cubrc3r2i731fpi60mvg',
-                },
-              },
-              recordId: '5',
-              rudderId: '46466a83-cd49-4b17-b101-5447a5f5bd05',
-              messageId: '2bc221ea-6046-4fd4-9dff-74b5ea389f4d',
-              receivedAt: '2025-01-27T16:37:51.735Z',
-              request_ip: '[::1]',
               identifiers: {
                 Key1: 'user1',
               },
-            },
+            }),
             connection: {
               enabled: true,
               config: {
@@ -396,22 +316,8 @@ export const dataExtensionTests = [
               },
               processorEnabled: false,
             },
-            metadata: {
-              jobId: 1,
-              destinationId: 'default-destination',
-            },
-            destination: {
-              Config: {
-                clientId: 'validClientId',
-                clientSecret: 'validClientSecret',
-                subDomain: 'validSubDomain',
-              },
-              DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
-              },
-            },
+            metadata: generateMetadata(1),
+            destination: commonDestination,
           },
         ],
         method: 'POST',
@@ -422,10 +328,7 @@ export const dataExtensionTests = [
         status: 200,
         body: [
           {
-            metadata: {
-              destinationId: 'default-destination',
-              jobId: 1,
-            },
+            metadata: generateMetadata(1),
             output: {
               body: {
                 FORM: {},

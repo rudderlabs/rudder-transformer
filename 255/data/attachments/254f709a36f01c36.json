@@ -1,0 +1,35 @@
+{
+  "output": {
+    "response": [
+      {
+        "error": "{\"error\":{\"code\":401,\"message\":\"Request is missing required authentication credential. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.\",\"errors\":[{\"message\":\"Login Required.\",\"domain\":\"global\",\"reason\":\"required\",\"location\":\"Authorization\",\"locationType\":\"header\"}],\"status\":\"UNAUTHENTICATED\",\"details\":[{\"@type\":\"type.googleapis.com/google.rpc.ErrorInfo\",\"reason\":\"CREDENTIALS_MISSING\",\"domain\":\"googleapis.com\",\"metadata\":{\"method\":\"google.ads.xfa.op.v4.DfareportingConversions.Batchinsert\",\"service\":\"googleapis.com\"}}]}}",
+        "statusCode": 401,
+        "metadata": {
+          "jobId": 1,
+          "attemptNum": 1,
+          "userId": "default-userId",
+          "destinationId": "default-destinationId",
+          "workspaceId": "default-workspaceId",
+          "sourceId": "default-sourceId",
+          "secret": {
+            "accessToken": "default-accessToken"
+          },
+          "dontBatch": false
+        }
+      }
+    ],
+    "statTags": {
+      "errorCategory": "network",
+      "errorType": "aborted",
+      "destType": "CAMPAIGN_MANAGER",
+      "module": "destination",
+      "implementation": "native",
+      "feature": "dataDelivery",
+      "destinationId": "default-destinationId",
+      "workspaceId": "default-workspaceId"
+    },
+    "message": "Campaign Manager: Error transformer proxy v1 during CAMPAIGN_MANAGER response transformation",
+    "status": 401,
+    "authErrorCategory": "REFRESH_TOKEN"
+  }
+}

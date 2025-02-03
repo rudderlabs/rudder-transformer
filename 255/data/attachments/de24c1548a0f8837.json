@@ -1,0 +1,21 @@
+[
+  {
+    "metadata": {
+      "secret": {
+        "access_token": "dummyApiToken",
+        "refresh_token": "efgh5678",
+        "developer_token": "ijkl91011"
+      }
+    },
+    "statusCode": 400,
+    "error": "[CAMPAIGN MANAGER (DCM)]: Atleast one of encryptedUserId,encryptedUserIdCandidates, matchId, mobileDeviceId, gclid, dclid, impressionId.",
+    "statTags": {
+      "errorCategory": "dataValidation",
+      "errorType": "instrumentation",
+      "destType": "CAMPAIGN_MANAGER",
+      "module": "destination",
+      "implementation": "native",
+      "feature": "processor"
+    }
+  }
+]

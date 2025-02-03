@@ -27,6 +27,7 @@ type CustomerIODestinationConfig = {
   apiKey: string;
   appApiKey: string;
   siteId: string;
+  [key: string]: any;
 };
 
 type CustomerIOConnectionConfig = {

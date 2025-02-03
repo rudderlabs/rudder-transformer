@@ -174,7 +174,6 @@ type RouterTransformationRequestData<
   metadata: Metadata;
   destination: DestinationType;
   connection?: ConnectionType;
-  [key: string]: any;
 };
 
 type RouterTransformationRequest = {

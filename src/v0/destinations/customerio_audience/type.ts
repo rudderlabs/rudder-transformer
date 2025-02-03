@@ -1,13 +1,14 @@
-import { Connection, Destination, Metadata } from '../../../types';
-import { FixMe } from '../../../util/types';
+import { Connection, Destination, Metadata, RouterTransformationRequestData } from '../../../types';
 
+// Basic response type for audience list operations
 export type RespList = {
   payload: {
     ids: (string | number)[];
   };
-  metadata: CustomerIOMetadataType;
+  metadata: Metadata;
 };
 
+// Types for API request components
 export type SegmentationPayloadType = {
   ids: (string | number)[];
 };
@@ -21,60 +22,38 @@ export type SegmentationHeadersType = {
   Authorization: string;
 };
 
-type CIOConnectionConfigType = {
-  destination: {
-    audienceId: string | number;
-    identifierMappings: {
-      from: string;
-      to: string;
-    }[];
-    [key: string]: any;
-  };
-  [key: string]: any;
-};
-
-type CIODestinationConfigType = {
+// CustomerIO specific configuration types
+type CustomerIODestinationConfig = {
   apiKey: string;
   appApiKey: string;
   siteId: string;
   [key: string]: any;
 };
 
-type GenericRouterRequestData<
-  CIOMessage = object,
-  CIODestination = Destination,
-  CIOConnection = Connection,
-> = {
-  message: CIOMessage;
-  metadata: Metadata;
-  destination: CIODestination;
-  connection: CIOConnection;
-  [key: string]: any;
+type CustomerIOConnectionConfig = {
+  destination: {
+    audienceId: string | number;
+    identifierMappings: {
+      from: string;
+      to: string;
+    }[];
+  };
 };
 
-type CIODestination<CIODestinationConfig = FixMe> = {
-  Config: CIODestinationConfig;
-  [key: string]: any;
-};
-
-type CIOConnection<CIOConnectionConfig = Record<string, unknown>> = {
-  config: CIOConnectionConfig;
-  [key: string]: any;
-};
-
+// Message type specific to CustomerIO
 export type CustomerIOMessageType = {
   action: string;
   identifiers: Record<string, string | number>;
   [key: string]: any;
 };
 
-export type CustomerIOMetadataType = Metadata;
+// Final exported types using generics from base types
+export type CustomerIODestinationType = Destination<CustomerIODestinationConfig>;
+export type CustomerIOConnectionType = Connection & {
+  config: CustomerIOConnectionConfig;
+};
 
-export type CustomerIODestinationType = CIODestination<CIODestinationConfigType>;
-
-export type CustomerIOConnectionType = CIOConnection<CIOConnectionConfigType>;
-
-export type CustomerIORouterRequestType = GenericRouterRequestData<
+export type CustomerIORouterRequestType = RouterTransformationRequestData<
   CustomerIOMessageType,
   CustomerIODestinationType,
   CustomerIOConnectionType

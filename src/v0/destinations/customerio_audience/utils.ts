@@ -4,13 +4,13 @@ import { BASE_ENDPOINT, DEFAULT_ID_TYPE, MAX_ITEMS } from './config';
 import {
   CustomerIOConnectionType,
   CustomerIODestinationType,
-  CustomerIOMetadataType,
   CustomerIORouterRequestType,
   RespList,
   SegmentationHeadersType,
   SegmentationParamType,
   SegmentationPayloadType,
 } from './type';
+import { Metadata } from '../../../types';
 
 const getIdType = (connection: CustomerIOConnectionType): string =>
   connection.config.destination.identifierMappings[0]?.to || DEFAULT_ID_TYPE;
@@ -31,15 +31,14 @@ const getMergedPayload = (batch: RespList[]): SegmentationPayloadType => ({
   ids: batch.flatMap((input) => input.payload.ids),
 });
 
-const getMergedMetadata = (batch: RespList[]): CustomerIOMetadataType[] =>
-  batch.map((input) => input.metadata);
+const getMergedMetadata = (batch: RespList[]): Metadata[] => batch.map((input) => input.metadata);
 
 const buildBatchedResponse = (
   payload: SegmentationPayloadType,
   endpoint: string,
   headers: SegmentationHeadersType,
   params: SegmentationParamType,
-  metadata: CustomerIOMetadataType[],
+  metadata: Metadata[],
   destination: CustomerIODestinationType,
 ) => ({
   batchedRequest: {

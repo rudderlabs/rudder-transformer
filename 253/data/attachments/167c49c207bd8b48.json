@@ -1,0 +1,78 @@
+{
+  "output": {
+    "status": 200,
+    "message": "[CAMPAIGN_MANAGER Response V1 Handler] - Request Processed Successfully",
+    "destinationResponse": {
+      "response": {
+        "hasFailures": true,
+        "status": [
+          {
+            "conversion": {
+              "timestampMicros": "1668624722000000",
+              "floodlightConfigurationId": "213123123",
+              "ordinal": "1",
+              "floodlightActivityId": "456543345245",
+              "value": 7,
+              "gclid": "123",
+              "limitAdTracking": true,
+              "childDirectedTreatment": true
+            },
+            "kind": "dfareporting#conversionStatus"
+          },
+          {
+            "conversion": {
+              "timestampMicros": "1668624722000000",
+              "floodlightConfigurationId": "213123123",
+              "ordinal": "1",
+              "floodlightActivityId": "456543345245",
+              "value": 8,
+              "gclid": "321",
+              "limitAdTracking": true,
+              "childDirectedTreatment": true
+            },
+            "errors": [
+              {
+                "code": "NOT_FOUND",
+                "message": "Floodlight config id: 213123123 was not found.",
+                "kind": "dfareporting#conversionError"
+              }
+            ],
+            "kind": "dfareporting#conversionStatus"
+          }
+        ],
+        "kind": "dfareporting#conversionsBatchInsertResponse"
+      },
+      "status": 200
+    },
+    "response": [
+      {
+        "statusCode": 200,
+        "metadata": {
+          "jobId": 1,
+          "attemptNum": 1,
+          "userId": "dummyUserId",
+          "sourceId": "dummySourceId",
+          "destinationId": "dummyDestinationId",
+          "workspaceId": "dummyWorkspaceId",
+          "secret": {},
+          "dontBatch": false
+        },
+        "error": "success"
+      },
+      {
+        "statusCode": 400,
+        "metadata": {
+          "jobId": 2,
+          "attemptNum": 1,
+          "userId": "dummyUserId",
+          "sourceId": "dummySourceId",
+          "destinationId": "dummyDestinationId",
+          "workspaceId": "dummyWorkspaceId",
+          "secret": {},
+          "dontBatch": false
+        },
+        "error": "Floodlight config id: 213123123 was not found., "
+      }
+    ]
+  }
+}

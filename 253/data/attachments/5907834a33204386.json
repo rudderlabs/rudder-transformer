@@ -1,0 +1,24 @@
+{
+  "output": {
+    "response": [
+      {
+        "error": "\"\"",
+        "statusCode": 200,
+        "metadata": {
+          "jobId": 1,
+          "attemptNum": 1,
+          "userId": "default-userId",
+          "sourceId": "default-sourceId",
+          "destinationId": "default-destinationId",
+          "workspaceId": "default-workspaceId",
+          "secret": {
+            "accessToken": "default-accessToken"
+          },
+          "dontBatch": false
+        }
+      }
+    ],
+    "status": 200,
+    "message": "Request Processed Successfully"
+  }
+}

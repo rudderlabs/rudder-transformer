@@ -505,7 +505,7 @@ export const contactTests = [
         body: [
           {
             error:
-              'Event type ${.message.type} is not supported. Aborting message.: Workflow: procWorkflow, Step: validateInput, ChildStep: undefined, OriginalError: Event type ${.message.type} is not supported. Aborting message.',
+              'Event type identify is not supported. Aborting message.: Workflow: procWorkflow, Step: validateInput, ChildStep: undefined, OriginalError: Event type identify is not supported. Aborting message.',
             metadata: generateMetadata(1),
             statTags: {
               destType: 'SFMC_V2',

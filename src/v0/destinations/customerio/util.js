@@ -1,6 +1,7 @@
 const get = require('get-value');
 const set = require('set-value');
 const truncate = require('truncate-utf8-bytes');
+const validator = require('validator');
 const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const { MAX_BATCH_SIZE, configFieldsToCheck } = require('./config');
 const {
@@ -10,7 +11,6 @@ const {
   getFieldValueFromMessage,
   defaultDeleteRequestConfig,
   isAppleFamily,
-  validateEmail,
 } = require('../../util');
 
 const { EventType, SpecedTraits, TraitsMapping } = require('../../../constants');
@@ -166,26 +166,19 @@ const identifyResponseBuilder = (userId, message) => {
 
 const aliasResponseBuilder = (message, userId) => {
   // ref : https://customer.io/docs/api/#operation/merge
-  if (!userId && !message.previousId) {
-    throw new InstrumentationError('Both userId and previousId is mandatory for merge operation');
+  if (!userId || !message.previousId) {
+    throw new InstrumentationError('Both userId and previousId are mandatory for merge operation');
   }
   const endpoint = MERGE_USER_ENDPOINT;
   const requestConfig = defaultPostRequestConfig;
-  let cioProperty = 'id';
-  if (validateEmail(userId)) {
-    cioProperty = 'email';
-  }
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  let prev_cioProperty = 'id';
-  if (validateEmail(message.previousId)) {
-    prev_cioProperty = 'email';
-  }
+  const cioProperty = validator.isEmail(userId) ? 'email' : 'id';
+  const prevCioProperty = validator.isEmail(message.previousId) ? 'email' : 'id';
   const rawPayload = {
     primary: {
       [cioProperty]: userId,
     },
     secondary: {
-      [prev_cioProperty]: message.previousId,
+      [prevCioProperty]: message.previousId,
     },
   };
 
@@ -208,11 +201,8 @@ const groupResponseBuilder = (message) => {
     cio_relationships: [],
   };
   const id = payload?.userId || payload?.email;
-  let cioProperty = 'id';
-  if (validateEmail(id)) {
-    cioProperty = 'email';
-  }
   if (id) {
+    const cioProperty = validator.isEmail(id) ? 'email' : 'id';
     rawPayload.cio_relationships.push({ identifiers: { [cioProperty]: id } });
   }
   const requestConfig = defaultPostRequestConfig;

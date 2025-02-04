@@ -387,6 +387,11 @@ export const pixelCheckoutStepsScenarios = [
                   },
                   integrations: {
                     SHOPIFY: true,
+                    DATA_WAREHOUSE: {
+                      options: {
+                        jsonPaths: ['track.context.shopifyDetails'],
+                      },
+                    },
                   },
                   type: 'track',
                   event: 'Checkout Address Info Submitted',
@@ -921,6 +926,11 @@ export const pixelCheckoutStepsScenarios = [
                   },
                   integrations: {
                     SHOPIFY: true,
+                    DATA_WAREHOUSE: {
+                      options: {
+                        jsonPaths: ['track.context.shopifyDetails'],
+                      },
+                    },
                   },
                   type: 'track',
                   event: 'Checkout Contact Info Submitted',
@@ -1470,6 +1480,11 @@ export const pixelCheckoutStepsScenarios = [
                   },
                   integrations: {
                     SHOPIFY: true,
+                    DATA_WAREHOUSE: {
+                      options: {
+                        jsonPaths: ['track.context.shopifyDetails'],
+                      },
+                    },
                   },
                   type: 'track',
                   event: 'Checkout Shipping Info Submitted',
@@ -2035,6 +2050,11 @@ export const pixelCheckoutStepsScenarios = [
                   },
                   integrations: {
                     SHOPIFY: true,
+                    DATA_WAREHOUSE: {
+                      options: {
+                        jsonPaths: ['track.context.shopifyDetails'],
+                      },
+                    },
                   },
                   type: 'track',
                   event: 'Payment Info Entered',

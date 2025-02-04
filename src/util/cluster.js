@@ -44,7 +44,9 @@ function start(port, app, metricsApp) {
 
     // Fork workers.
     for (let i = 0; i < numWorkers; i += 1) {
-      cluster.fork();
+      cluster.fork({
+        WORKER_ID: `worker-${i + 1}`,
+      });
     }
 
     cluster.on('online', (worker) => {

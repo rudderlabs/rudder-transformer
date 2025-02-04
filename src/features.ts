@@ -95,6 +95,7 @@ const defaultFeaturesConfig: FeaturesConfig = {
     LINKEDIN_AUDIENCE: true,
     TOPSORT: true,
     SFMC_V2: true,
+    CUSTOMERIO_AUDIENCE: true,
   },
   regulations: [
     'BRAZE',

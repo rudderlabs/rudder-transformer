@@ -52,8 +52,10 @@ paths:
     $ref: './routes/bulkUpload.yaml#/~1getWarningJobs'
 
   #Delivery Routes
-  /{version}/destinations/{destination}/proxy:
-    $ref: './routes/delivery.yaml#/~1{version}~1destinations~1{destination}~1proxy'
+  /v0/destinations/{destination}/proxy:
+    $ref: './routes/delivery.yaml#/~1v0~1destinations~1{destination}~1proxy'
+  /v1/destinations/{destination}/proxy:
+    $ref: './routes/delivery.yaml#/~1v1~1destinations~1{destination}~1proxy'
   /{version}/destinations/{destination}/proxyTest:
     $ref: './routes/delivery.yaml#/~1{version}~1destinations~1{destination}~1proxyTest'
 

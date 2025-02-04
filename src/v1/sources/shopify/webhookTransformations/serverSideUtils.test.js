@@ -4,6 +4,7 @@ const {
   createPropertiesForEcomEventFromWebhook,
   getAnonymousIdFromAttributes,
   getCartToken,
+  setAnonymousId,
 } = require('./serverSideUtlis');
 const { RedisDB } = require('../../../../util/redis/redisConnector');
 
@@ -169,5 +170,24 @@ describe('Redis cart token tests', () => {
     expect(getValSpy).toHaveBeenCalledTimes(1);
     expect(getValSpy).toHaveBeenCalledWith('pixel:cartTokenTest1');
     expect(message.anonymousId).toEqual('anonymousIdTest1');
+  });
+
+  it('should generate new anonymousId using UUID v5 when no existing ID is found', async () => {
+    const message = {};
+    const event = {
+      note_attributes: [],
+    };
+    const metricMetadata = { source: 'test', writeKey: 'test-key' };
+    const cartToken = 'test-cart-token';
+    const mockRedisData = null;
+    const expectedAnonymousId = '5c2cff2c-9cb1-59e5-82f9-fa5241f0e240';
+    jest.mock('uuid', () => ({
+      v5: jest.fn(() => expectedAnonymousId),
+      DNS: 'dns-namespace',
+    }));
+    RedisDB.getVal = jest.spyOn(RedisDB, 'getVal').mockResolvedValue(mockRedisData);
+    await setAnonymousId(message, { ...event, cart_token: cartToken }, metricMetadata);
+    expect(message.anonymousId).toBe(expectedAnonymousId);
+    expect(message.traits.cart_token_hash).toBe(expectedAnonymousId);
   });
 });

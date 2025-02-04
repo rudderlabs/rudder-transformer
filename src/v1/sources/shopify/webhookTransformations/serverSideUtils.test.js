@@ -5,6 +5,7 @@ const {
   getAnonymousIdFromAttributes,
   getCartToken,
   setAnonymousId,
+  addCartTokenHashToTraits,
 } = require('./serverSideUtlis');
 const { RedisDB } = require('../../../../util/redis/redisConnector');
 
@@ -132,7 +133,7 @@ describe('serverSideUtils.js', () => {
     });
   });
 
-  describe('getCartToken', () => {
+  describe('Test getCartToken', () => {
     it('should return null if cart_token is not present', () => {
       const event = {};
       const result = getCartToken(event);
@@ -143,6 +144,32 @@ describe('serverSideUtils.js', () => {
       const event = { cart_token: 'cartTokenTest1' };
       const result = getCartToken(event);
       expect(result).toEqual('cartTokenTest1');
+    });
+  });
+
+  describe('Test addCartTokenHashToTraits', () => {
+    it('should add cart_token_hash to traits object', () => {
+      const message = {
+        traits: {
+          address: 'addressTest1',
+        },
+      };
+      addCartTokenHashToTraits(message, 'cartTokenHashTest1');
+      expect(message.traits).toEqual({
+        cart_token_hash: 'cartTokenHashTest1',
+        address: 'addressTest1',
+      });
+    });
+
+    it('should add cart token hash to empty traits object', () => {
+      const message = { traits: {} };
+      const cartTokenHash = 'abc123';
+
+      addCartTokenHashToTraits(message, cartTokenHash);
+
+      expect(message.traits).toEqual({
+        cart_token_hash: 'abc123',
+      });
     });
   });
 });

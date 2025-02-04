@@ -2,6 +2,64 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.89.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.89.0...v1.89.1) (2025-01-29)
+
+
+### Bug Fixes
+
+* extend statuscode check to 502 to retry the request ([#4029](https://github.com/rudderlabs/rudder-transformer/issues/4029)) ([d003676](https://github.com/rudderlabs/rudder-transformer/commit/d00367691400402011d624c5b993d0f152191edd))
+
+## [1.89.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.88.3...v1.89.0) (2025-01-27)
+
+
+### Features
+
+* add DATA WAREHOUSE to integrations object in shopify pixel source ([#3980](https://github.com/rudderlabs/rudder-transformer/issues/3980)) ([3c20393](https://github.com/rudderlabs/rudder-transformer/commit/3c20393a0e4e3ec98d316820d187310bfec1faea)), closes [#3973](https://github.com/rudderlabs/rudder-transformer/issues/3973) [#3957](https://github.com/rudderlabs/rudder-transformer/issues/3957) [#3957](https://github.com/rudderlabs/rudder-transformer/issues/3957)
+* add redis support in shopify pixel for id stitching  ([#4001](https://github.com/rudderlabs/rudder-transformer/issues/4001)) ([23ad10a](https://github.com/rudderlabs/rudder-transformer/commit/23ad10a4bd470f09a75e9230d8c860b703a5a1f9)), closes [#3957](https://github.com/rudderlabs/rudder-transformer/issues/3957)
+* add support for form format ([#4000](https://github.com/rudderlabs/rudder-transformer/issues/4000)) ([1fc15bf](https://github.com/rudderlabs/rudder-transformer/commit/1fc15bfd4b88e0b252c780a278376cea4c594057))
+* **http:** resolves bug fixes raised during testing ([#3991](https://github.com/rudderlabs/rudder-transformer/issues/3991)) ([a86f009](https://github.com/rudderlabs/rudder-transformer/commit/a86f0094cbef9428e7aeda4965b580f29c89f706))
+
+
+### Bug Fixes
+
+* add mappings to mp event ([#3997](https://github.com/rudderlabs/rudder-transformer/issues/3997)) ([2eab465](https://github.com/rudderlabs/rudder-transformer/commit/2eab46557743702a834597d0d0267a17e561516d))
+* sonar issues in adobe analytics ([#3999](https://github.com/rudderlabs/rudder-transformer/issues/3999)) ([d74c4ab](https://github.com/rudderlabs/rudder-transformer/commit/d74c4ab7ef582eb83d67c4b295aa5d3845c15166))
+* sonar issues in user transformations static lookup ([#3998](https://github.com/rudderlabs/rudder-transformer/issues/3998)) ([a7d6b8f](https://github.com/rudderlabs/rudder-transformer/commit/a7d6b8fca8681d2eb3bf1751bf7855a7cc220d3b))
+* sonar issues in various components ([#4006](https://github.com/rudderlabs/rudder-transformer/issues/4006)) ([454451d](https://github.com/rudderlabs/rudder-transformer/commit/454451dba3260a3664088e2bb009fd8a11cbf957))
+
+### [1.88.3](https://github.com/rudderlabs/rudder-transformer/compare/v1.88.2...v1.88.3) (2025-01-24)
+
+
+### Bug Fixes
+
+* iterable device token registration api issues ([#4013](https://github.com/rudderlabs/rudder-transformer/issues/4013)) ([a986138](https://github.com/rudderlabs/rudder-transformer/commit/a986138d43d2cabcaa597b70fa7871b383cb1427))
+
+### [1.88.2](https://github.com/rudderlabs/rudder-transformer/compare/v1.88.1...v1.88.2) (2025-01-22)
+
+
+### Bug Fixes
+
+* revert feat added drop traits in track call feature for mixpanel ([#4003](https://github.com/rudderlabs/rudder-transformer/issues/4003)) ([ba2accd](https://github.com/rudderlabs/rudder-transformer/commit/ba2accd14a9d99f2c55a9eab34f65e6e4d989e4a))
+
+### [1.88.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.88.0...v1.88.1) (2025-01-21)
+
+## [1.88.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.87.1...v1.88.0) (2025-01-20)
+
+
+### Features
+
+* add redis support in shopify pixel for id stitching ([#3957](https://github.com/rudderlabs/rudder-transformer/issues/3957)) ([165e06d](https://github.com/rudderlabs/rudder-transformer/commit/165e06de1ac22cda5c4db0b0b23e6e9972d5fa94))
+* added drop traits in track call feature for mixpanel ([#3986](https://github.com/rudderlabs/rudder-transformer/issues/3986)) ([6ec3d55](https://github.com/rudderlabs/rudder-transformer/commit/6ec3d552b845535965bc6c7b9990161a168b9a4e))
+
+
+### Bug Fixes
+
+* add email validation in HS ([#3972](https://github.com/rudderlabs/rudder-transformer/issues/3972)) ([1c45db8](https://github.com/rudderlabs/rudder-transformer/commit/1c45db8e6ec6b9436ef08eaa9dfcc99c8953397b))
+* fixing mismatch of schedule field value in clicksend destination ([#3975](https://github.com/rudderlabs/rudder-transformer/issues/3975)) ([12e8a52](https://github.com/rudderlabs/rudder-transformer/commit/12e8a528148454e2113c9c68b575d25695c1d55a))
+* refactor code and add validation for values ([#3971](https://github.com/rudderlabs/rudder-transformer/issues/3971)) ([fc09080](https://github.com/rudderlabs/rudder-transformer/commit/fc090806235f2599703098c9f3fc83c4bdf7d599))
+* removing device token from if condition in mixpanel destination ([#3982](https://github.com/rudderlabs/rudder-transformer/issues/3982)) ([b0e0b15](https://github.com/rudderlabs/rudder-transformer/commit/b0e0b15ee3cb7aeab0162c91fdcf98fca1e16722))
+* sonar issues in regex expressions ([#3979](https://github.com/rudderlabs/rudder-transformer/issues/3979)) ([0e0944d](https://github.com/rudderlabs/rudder-transformer/commit/0e0944d2372fa53b1a6db56fd382fc42c57e5068))
+
 ### [1.87.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.87.0...v1.87.1) (2025-01-06)
 
 

@@ -15,7 +15,9 @@ const {
   checkoutEventBuilder,
   checkoutStepEventBuilder,
   searchEventBuilder,
+  extractCampaignParams,
 } = require('./pixelUtils');
+const campaignObjectMappings = require('../pixelEventsMappings/campaignObjectMappings.json');
 const {
   INTEGERATION,
   PIXEL_EVENT_TOPICS,
@@ -68,7 +70,7 @@ const handleCartTokenRedisOperations = async (inputEvent, clientId) => {
   const cartToken = extractCartToken(inputEvent);
   try {
     if (isDefinedNotNullNotEmpty(clientId) && isDefinedNotNullNotEmpty(cartToken)) {
-      await RedisDB.setVal(cartToken, ['anonymousId', clientId]);
+      await RedisDB.setVal(`pixel:${cartToken}`, ['anonymousId', clientId]);
       stats.increment('shopify_pixel_cart_token_set', {
         event: inputEvent.name,
         writeKey: inputEvent.query_parameters.writeKey,
@@ -85,7 +87,7 @@ const handleCartTokenRedisOperations = async (inputEvent, clientId) => {
 
 function processPixelEvent(inputEvent) {
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  const { name, query_parameters, clientId, data, id } = inputEvent;
+  const { name, query_parameters, context, clientId, data, id } = inputEvent;
   const shopifyDetails = { ...inputEvent };
   delete shopifyDetails.context;
   delete shopifyDetails.query_parameters;
@@ -140,6 +142,11 @@ function processPixelEvent(inputEvent) {
   }
   message.anonymousId = clientId;
   message.setProperty(`integrations.${INTEGERATION}`, true);
+  message.setProperty('integrations.DATA_WAREHOUSE', {
+    options: {
+      jsonPaths: [`${message.type}.context.shopifyDetails`],
+    },
+  });
   message.setProperty('context.library', {
     name: 'RudderStack Shopify Cloud',
     eventOrigin: 'client',
@@ -147,12 +154,18 @@ function processPixelEvent(inputEvent) {
   });
   message.setProperty('context.topic', name);
   message.setProperty('context.shopifyDetails', shopifyDetails);
+
+  // adding campaign object with utm parameters to the message context
+  const campaignParams = extractCampaignParams(context, campaignObjectMappings);
+  if (campaignParams) {
+    message.context.campaign = campaignParams;
+  }
   message.messageId = id;
   message = removeUndefinedAndNullValues(message);
   return message;
 }
 
-const processPixelWebEvents = async (event) => {
+const processPixelWebEvents = (event) => {
   const pixelEvent = processPixelEvent(event);
   return removeUndefinedAndNullValues(pixelEvent);
 };

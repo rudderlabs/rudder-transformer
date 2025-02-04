@@ -68,6 +68,11 @@ export const genericTrackTestScenarios = [
                   event: 'Cart Update',
                   integrations: {
                     SHOPIFY: true,
+                    DATA_WAREHOUSE: {
+                      options: {
+                        jsonPaths: ['track.context.shopifyDetails'],
+                      },
+                    },
                   },
                   properties: {
                     products: [],
@@ -530,6 +535,11 @@ export const genericTrackTestScenarios = [
                   },
                   integrations: {
                     SHOPIFY: true,
+                    DATA_WAREHOUSE: {
+                      options: {
+                        jsonPaths: ['track.context.shopifyDetails'],
+                      },
+                    },
                   },
                   type: 'track',
                   event: 'Order Paid',

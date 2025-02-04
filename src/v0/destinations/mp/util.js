@@ -48,7 +48,7 @@ const populateDeviceFieldsInPayload = (message, rawPayload) => {
     if (isAppleFamily(device.type)) {
       payload = constructPayload(message, mPProfileIosConfigJson);
       updatedRawPayload.$ios_devices = deviceTokenArray;
-    } else if (device.type.toLowerCase() === 'android') {
+    } else if (device.type?.toLowerCase() === 'android') {
       payload = constructPayload(message, mPProfileAndroidConfigJson);
       updatedRawPayload.$android_devices = deviceTokenArray;
     }

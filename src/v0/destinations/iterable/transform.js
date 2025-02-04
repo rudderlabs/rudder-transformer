@@ -1,6 +1,7 @@
 const lodash = require('lodash');
 const get = require('get-value');
 const { InstrumentationError } = require('@rudderstack/integrations-lib');
+const logger = require('../../../logger');
 const {
   getCatalogEndpoint,
   hasMultipleResponses,
@@ -28,6 +29,7 @@ const {
 const { JSON_MIME_TYPE } = require('../../util/constant');
 const { mappingConfig, ConfigCategory } = require('./config');
 const { EventType, MappedToDestinationKey } = require('../../../constants');
+const { MD5 } = require('../../../cdk/v2/bindings/default');
 
 /**
  * Common payload builder function for all events
@@ -108,10 +110,16 @@ const responseBuilder = (message, category, destination) => {
  * @returns
  */
 const responseBuilderForRegisterDeviceOrBrowserTokenEvents = (message, destination) => {
-  const { device } = message.context;
+  const { device, os } = message.context;
   const category = device?.token ? ConfigCategory.IDENTIFY_DEVICE : ConfigCategory.IDENTIFY_BROWSER;
-  const response = responseBuilder(message, category, destination);
+
+  const categoryWithEndpoint = getCategoryWithEndpoint(category, destination.Config.dataCenter);
+  const response = responseBuilder(message, categoryWithEndpoint, destination);
   response.headers.api_key = destination.Config.registerDeviceOrBrowserApiKey;
+  logger.info('{{ITERABLE::}} registerDeviceApiCalled', {
+    destinationId: destination.ID,
+    token: MD5(device?.token || os?.token || 'no token'),
+  });
   return response;
 };
 

@@ -88,7 +88,7 @@ export class UserTransformService {
           } as ProcessorTransformationResponse);
           return transformedEvents;
         }
-        stats.histogram('user_transform_input_events', events.length, { workspaceId });
+        stats.counter('user_transform_input_events', events.length, { workspaceId });
         logger.info('user_transform_input_events', {
           inCount: events.length,
           ...transformationTags,
@@ -188,7 +188,7 @@ export class UserTransformService {
         }
 
         stats.counter('user_transform_requests', 1, {});
-        stats.histogram('user_transform_output_events', transformedEvents.length, {
+        stats.counter('user_transform_output_events', transformedEvents.length, {
           workspaceId,
         });
         logger.info('user_transform_output_events', {

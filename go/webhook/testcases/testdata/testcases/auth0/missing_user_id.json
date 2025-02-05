@@ -3,6 +3,7 @@
   "description": "missing userId",
   "input": {
     "request": {
+      "query": "{}",
       "body": {
         "log_id": "90020221031055712103169676686005480714681762668315934738",
         "data": {

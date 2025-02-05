@@ -3,6 +3,7 @@
   "description": "test-12",
   "input": {
     "request": {
+      "query": "{}",
       "body": {
         "email": "docs@iterable.com",
         "userId": "1",

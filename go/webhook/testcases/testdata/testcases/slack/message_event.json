@@ -3,6 +3,7 @@
   "description": "Message event",
   "input": {
     "request": {
+      "query": "{}",
       "body": {
         "event": {
           "user": "U04G7H550",

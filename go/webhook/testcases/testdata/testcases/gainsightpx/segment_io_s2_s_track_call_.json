@@ -3,6 +3,7 @@
   "description": "SegmentIO S2S Track Call ",
   "input": {
     "request": {
+      "query": "{}",
       "body": {
         "user": {
           "aptrinsicId": "cab9c469-8602-4933-acdb-68338fbb9ab1",

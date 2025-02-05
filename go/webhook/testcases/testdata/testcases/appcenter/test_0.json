@@ -3,6 +3,7 @@
   "description": "test-0",
   "input": {
     "request": {
+      "query": "{}",
       "body": {
         "text": "Hello from your abc-test app in App Center!",
         "sent_at": "2023-01-02T07: 53: 28.3117824Z",

@@ -3,6 +3,7 @@
   "description": "lead update",
   "input": {
     "request": {
+      "query": "{}",
       "body": {
         "event": {
           "date_created": "2019-01-15T12:48:23.395000",
@@ -61,8 +62,7 @@
           "object_type": "opportunity",
           "lead_id": "lead_123"
         },
-        "subscription_id": "whsub_123",
-        "source": {}
+        "subscription_id": "whsub_123"
       },
       "headers": {
         "Content-Type": "application/json"

@@ -1,0 +1,183 @@
+{
+  "name": "shopify",
+  "description": "Page Call -> page_view event from web pixel",
+  "input": {
+    "request": {
+      "query": "{\"topic\":[\"page_viewed\"],\"writeKey\":[\"dummy-write-key\"]}",
+      "body": {
+        "id": "sh-f6b6f548-5FEF-4DAE-9CAB-39EE6F94E09B",
+        "name": "page_viewed",
+        "data": {},
+        "type": "standard",
+        "clientId": "c7b3f99b-4d34-463b-835f-c879482a7750",
+        "timestamp": "2024-09-15T17:24:30.373Z",
+        "context": {
+          "document": {
+            "location": {
+              "href": "https://store.myshopify.com/checkouts/cn/Z2NwLXVzLWVhc3QxOjAxSjY5OVpIRURQNERFMDBKUTVaRkI4UzdU?checkout%5Bpayment_gateway%5D=shopify_payments&utm_campaign=shopifySale&utm_medium=checkout&utm_term=term_checkout&utm_content=web&utm_custom1=customutm&tag=tag",
+              "hash": "",
+              "host": "store.myshopify.com",
+              "hostname": "store.myshopify.com",
+              "origin": "https://store.myshopify.com",
+              "pathname": "/checkouts/cn/Z2NwLXVzLWVhc3QxOjAxSjY5OVpIRURQNERFMDBKUTVaRkI4UzdU",
+              "port": "",
+              "protocol": "https:",
+              "search": ""
+            },
+            "referrer": "https://store.myshopify.com/cart",
+            "characterSet": "UTF-8",
+            "title": "Checkout - pixel-testing-rs"
+          },
+          "navigator": {
+            "language": "en-US",
+            "cookieEnabled": true,
+            "languages": ["en-US", "en"],
+            "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36"
+          },
+          "window": {
+            "innerHeight": 1028,
+            "innerWidth": 1362,
+            "outerHeight": 1080,
+            "outerWidth": 1728,
+            "pageXOffset": 0,
+            "pageYOffset": 0,
+            "location": {
+              "href": "https://store.myshopify.com/checkouts/cn/Z2NwLXVzLWVhc3QxOjAxSjY5OVpIRURQNERFMDBKUTVaRkI4UzdU",
+              "hash": "",
+              "host": "store.myshopify.com",
+              "hostname": "store.myshopify.com",
+              "origin": "https://store.myshopify.com",
+              "pathname": "/checkouts/cn/Z2NwLXVzLWVhc3QxOjAxSjY5OVpIRURQNERFMDBKUTVaRkI4UzdU",
+              "port": "",
+              "protocol": "https:",
+              "search": ""
+            },
+            "origin": "https://store.myshopify.com",
+            "screen": {
+              "height": 1117,
+              "width": 1728
+            },
+            "screenX": 0,
+            "screenY": 37,
+            "scrollX": 0,
+            "scrollY": 0
+          }
+        },
+        "pixelEventLabel": true
+      },
+      "headers": {
+        "Content-Type": "application/json"
+      }
+    }
+  },
+  "output": {
+    "response": {
+      "status": 200,
+      "body": "OK"
+    },
+    "queue": [
+      {
+        "context": {
+          "document": {
+            "location": {
+              "href": "https://store.myshopify.com/checkouts/cn/Z2NwLXVzLWVhc3QxOjAxSjY5OVpIRURQNERFMDBKUTVaRkI4UzdU?checkout%5Bpayment_gateway%5D=shopify_payments&utm_campaign=shopifySale&utm_medium=checkout&utm_term=term_checkout&utm_content=web&utm_custom1=customutm&tag=tag",
+              "hash": "",
+              "host": "store.myshopify.com",
+              "hostname": "store.myshopify.com",
+              "origin": "https://store.myshopify.com",
+              "pathname": "/checkouts/cn/Z2NwLXVzLWVhc3QxOjAxSjY5OVpIRURQNERFMDBKUTVaRkI4UzdU",
+              "port": "",
+              "protocol": "https:",
+              "search": ""
+            },
+            "referrer": "https://store.myshopify.com/cart",
+            "title": "Checkout - pixel-testing-rs",
+            "characterSet": "UTF-8"
+          },
+          "navigator": {
+            "language": "en-US",
+            "cookieEnabled": true,
+            "languages": ["en-US", "en"],
+            "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36"
+          },
+          "window": {
+            "innerHeight": 1028,
+            "innerWidth": 1362,
+            "outerHeight": 1080,
+            "outerWidth": 1728,
+            "pageXOffset": 0,
+            "pageYOffset": 0,
+            "location": {
+              "href": "https://store.myshopify.com/checkouts/cn/Z2NwLXVzLWVhc3QxOjAxSjY5OVpIRURQNERFMDBKUTVaRkI4UzdU",
+              "hash": "",
+              "host": "store.myshopify.com",
+              "hostname": "store.myshopify.com",
+              "origin": "https://store.myshopify.com",
+              "pathname": "/checkouts/cn/Z2NwLXVzLWVhc3QxOjAxSjY5OVpIRURQNERFMDBKUTVaRkI4UzdU",
+              "port": "",
+              "protocol": "https:",
+              "search": ""
+            },
+            "origin": "https://store.myshopify.com",
+            "screen": {
+              "height": 1117,
+              "width": 1728
+            },
+            "screenX": 0,
+            "screenY": 37,
+            "scrollX": 0,
+            "scrollY": 0
+          },
+          "page": {
+            "title": "Checkout - pixel-testing-rs",
+            "url": "https://store.myshopify.com/checkouts/cn/Z2NwLXVzLWVhc3QxOjAxSjY5OVpIRURQNERFMDBKUTVaRkI4UzdU",
+            "path": "/checkouts/cn/Z2NwLXVzLWVhc3QxOjAxSjY5OVpIRURQNERFMDBKUTVaRkI4UzdU",
+            "search": ""
+          },
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36",
+          "screen": {
+            "height": 1117,
+            "width": 1728
+          },
+          "library": {
+            "name": "RudderStack Shopify Cloud",
+            "eventOrigin": "client",
+            "version": "2.0.0"
+          },
+          "campaign": {
+            "content": "web",
+            "medium": "checkout",
+            "name": "shopifySale",
+            "term": "term_checkout",
+            "utm_custom1": "customutm"
+          },
+          "shopifyDetails": {
+            "clientId": "c7b3f99b-4d34-463b-835f-c879482a7750",
+            "data": {},
+            "id": "sh-f6b6f548-5FEF-4DAE-9CAB-39EE6F94E09B",
+            "name": "page_viewed",
+            "timestamp": "2024-09-15T17:24:30.373Z",
+            "type": "standard"
+          },
+          "topic": "page_viewed"
+        },
+        "integrations": {
+          "SHOPIFY": true,
+          "DATA_WAREHOUSE": {
+            "options": {
+              "jsonPaths": ["page.context.shopifyDetails"]
+            }
+          }
+        },
+        "name": "Page View",
+        "type": "page",
+        "properties": {},
+        "anonymousId": "c7b3f99b-4d34-463b-835f-c879482a7750",
+        "messageId": "sh-f6b6f548-5FEF-4DAE-9CAB-39EE6F94E09B",
+        "receivedAt": "2024-03-03T04:48:29.000Z",
+        "request_ip": "192.0.2.30"
+      }
+    ],
+    "errQueue": []
+  }
+}

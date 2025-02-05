@@ -3,6 +3,7 @@
   "description": "Incident Priority Updated",
   "input": {
     "request": {
+      "query": "{}",
       "body": {
         "event": {
           "id": "01DFU6P4VDDZCIHVQ5Q0ME99OE",

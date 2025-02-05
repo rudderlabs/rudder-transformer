@@ -1,0 +1,23 @@
+{
+  "name": "shopify",
+  "description": "Track Call -> Unsupported event from Pixel app",
+  "input": {
+    "request": {
+      "query": "{\"topic\":[\"unsupported_event\"],\"writeKey\":[\"2mw9SN679HngnXXXHT4oSVVBVmb\"],\"version\":[\"pixel\"]}",
+      "body": {
+        "id": 35550298931313
+      },
+      "headers": {
+        "Content-Type": "application/json"
+      }
+    }
+  },
+  "output": {
+    "response": {
+      "status": 200,
+      "body": "OK"
+    },
+    "queue": [],
+    "errQueue": []
+  }
+}

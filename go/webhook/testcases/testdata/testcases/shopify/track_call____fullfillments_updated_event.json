@@ -3,12 +3,8 @@
   "description": "Track Call -> Fullfillments updated event",
   "input": {
     "request": {
+      "query": "{\"topic\":[\"fulfillments_update\"],\"writeKey\":[\"sample-write-key\"],\"signature\":[\"rudderstack\"]}",
       "body": {
-        "query_parameters": {
-          "topic": ["fulfillments_update"],
-          "writeKey": ["sample-write-key"],
-          "signature": ["rudderstack"]
-        },
         "shipping_address": {
           "address1": "11 Rani Sankari Lane Patuapara Bhowanipore"
         },

@@ -3,6 +3,7 @@
   "description": "test-2",
   "input": {
     "request": {
+      "query": "{}",
       "body": {
         "data": {
           "customer_id": "0200102",

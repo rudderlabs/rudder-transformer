@@ -3,6 +3,7 @@
   "description": "Track Call -> type and userId is given",
   "input": {
     "request": {
+      "query": "{}",
       "body": {
         "event": "Song Played",
         "userId": "R1234",

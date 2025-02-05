@@ -3,6 +3,7 @@
   "description": "test-17",
   "input": {
     "request": {
+      "query": "{}",
       "body": {
         "email": "docs@iterable.com",
         "eventName": "pushBounce",

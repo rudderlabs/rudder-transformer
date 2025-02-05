@@ -3,6 +3,7 @@
   "description": "Incident Triggered",
   "input": {
     "request": {
+      "query": "{}",
       "body": {
         "event": {
           "id": "01DEN0V2VIFEN5871PQGX72URP",

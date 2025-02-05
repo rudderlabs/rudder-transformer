@@ -3,6 +3,7 @@
   "description": "test-4",
   "input": {
     "request": {
+      "query": "{}",
       "body": {
         "event": {
           "userId": 33556506,

@@ -3,12 +3,8 @@
   "description": "Invalid topic",
   "input": {
     "request": {
-      "body": {
-        "query_parameters": {
-          "signature": ["rudderstack"],
-          "writeKey": ["sample-write-key"]
-        }
-      },
+      "query": "{\"signature\":[\"rudderstack\"],\"writeKey\":[\"sample-write-key\"]}",
+      "body": {},
       "headers": {
         "Content-Type": "application/json"
       }

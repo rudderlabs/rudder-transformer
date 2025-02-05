@@ -3,6 +3,7 @@
   "description": "Simple track call",
   "input": {
     "request": {
+      "query": "{}",
       "body": {
         "api_version": "1.0",
         "event": {

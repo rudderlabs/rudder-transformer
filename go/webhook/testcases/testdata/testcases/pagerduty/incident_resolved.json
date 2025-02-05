@@ -3,6 +3,7 @@
   "description": "Incident Resolved",
   "input": {
     "request": {
+      "query": "{}",
       "body": {
         "event": {
           "id": "01DEN1HNLBC1VITK192ETJ1MPJ",

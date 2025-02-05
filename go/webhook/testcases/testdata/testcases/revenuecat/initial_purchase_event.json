@@ -3,6 +3,7 @@
   "description": "Initial purchase event",
   "input": {
     "request": {
+      "query": "{}",
       "body": {
         "api_version": "1.0",
         "event": {

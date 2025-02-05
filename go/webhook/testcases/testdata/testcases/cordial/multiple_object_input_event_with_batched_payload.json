@@ -3,6 +3,7 @@
   "description": "Multiple object Input event with batched payload",
   "input": {
     "request": {
+      "query": "{}",
       "body": [
         {
           "contact": {
@@ -64,8 +65,7 @@
               "product_name": ["wtp ab"],
               "product_group": ["women"]
             }
-          },
-          "source": {}
+          }
         },
         {
           "contact": {
@@ -127,8 +127,7 @@
               "product_name": ["wtp ab"],
               "product_group": ["women"]
             }
-          },
-          "source": {}
+          }
         }
       ],
       "headers": {

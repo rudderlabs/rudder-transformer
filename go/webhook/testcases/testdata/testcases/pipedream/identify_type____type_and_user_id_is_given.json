@@ -3,6 +3,7 @@
   "description": "Identify type  -> type and userId is given",
   "input": {
     "request": {
+      "query": "{}",
       "body": {
         "userId": "1",
         "originalTimestamp": "2020-09-28T19:53:31.900Z",

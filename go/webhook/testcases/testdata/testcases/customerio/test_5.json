@@ -3,6 +3,7 @@
   "description": "test-5",
   "input": {
     "request": {
+      "query": "{}",
       "body": {
         "data": {
           "content_id": 1146,

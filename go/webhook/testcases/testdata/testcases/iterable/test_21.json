@@ -3,6 +3,7 @@
   "description": "test-21",
   "input": {
     "request": {
+      "query": "{}",
       "body": {
         "email": "docs@iterable.com",
         "eventName": "pushUninstall",

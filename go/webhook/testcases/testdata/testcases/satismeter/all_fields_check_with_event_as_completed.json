@@ -3,6 +3,7 @@
   "description": " All fields Check with event as completed",
   "input": {
     "request": {
+      "query": "{}",
       "body": {
         "response": {
           "id": "63767499ca6fb1b7c988d5bb",

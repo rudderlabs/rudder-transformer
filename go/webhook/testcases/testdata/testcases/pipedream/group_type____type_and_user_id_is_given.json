@@ -3,6 +3,7 @@
   "description": "Group type  -> type and userId is given",
   "input": {
     "request": {
+      "query": "{}",
       "body": {
         "userId": "user123",
         "groupId": "17",

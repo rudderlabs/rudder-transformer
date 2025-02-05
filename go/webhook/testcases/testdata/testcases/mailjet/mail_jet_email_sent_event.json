@@ -3,6 +3,7 @@
   "description": "MailJet email sent event",
   "input": {
     "request": {
+      "query": "{}",
       "body": {
         "event": "sent",
         "time": 1664444171,

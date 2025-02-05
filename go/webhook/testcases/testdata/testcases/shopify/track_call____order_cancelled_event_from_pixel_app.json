@@ -1,0 +1,123 @@
+{
+  "name": "shopify",
+  "description": "Track Call -> Order Cancelled event from Pixel app",
+  "input": {
+    "request": {
+      "query": "{\"topic\":[\"orders_cancelled\"],\"version\":[\"pixel\"],\"writeKey\":[\"2mw9SN679HngnZkCHT4oSVVBVmb\"]}",
+      "body": {
+        "email": "henry@wfls.com",
+        "total_price": "600.00",
+        "total_tax": "0.00",
+        "updated_at": "2024-11-05T21:54:50-05:00",
+        "line_items": [
+          {
+            "id": 14234727743601,
+            "name": "The Collection Snowboard: Hydrogen",
+            "price": "600.00",
+            "product_id": 7234590408817,
+            "quantity": 1,
+            "sku": "",
+            "title": "The Collection Snowboard: Hydrogen",
+            "total_discount": "0.00",
+            "variant_id": 41327142600817,
+            "vendor": "Hydrogen Vendor"
+          }
+        ],
+        "shipping_address": {
+          "first_name": "henry",
+          "address1": "Yuimaru Kitchen",
+          "city": "Johnson City",
+          "zip": "37604"
+        }
+      },
+      "headers": {
+        "Content-Type": "application/json"
+      }
+    }
+  },
+  "output": {
+    "response": {
+      "status": 200,
+      "body": "OK"
+    },
+    "queue": [
+      {
+        "context": {
+          "integration": {
+            "name": "SHOPIFY"
+          },
+          "library": {
+            "eventOrigin": "server",
+            "name": "RudderStack Shopify Cloud",
+            "version": "2.0.0"
+          },
+          "shopifyDetails": {
+            "email": "henry@wfls.com",
+            "line_items": [
+              {
+                "id": 14234727743601,
+                "name": "The Collection Snowboard: Hydrogen",
+                "price": "600.00",
+                "product_id": 7234590408817,
+                "quantity": 1,
+                "sku": "",
+                "title": "The Collection Snowboard: Hydrogen",
+                "total_discount": "0.00",
+                "variant_id": 41327142600817,
+                "vendor": "Hydrogen Vendor"
+              }
+            ],
+            "shipping_address": {
+              "address1": "Yuimaru Kitchen",
+              "city": "Johnson City",
+              "first_name": "henry",
+              "zip": "37604"
+            },
+            "total_price": "600.00",
+            "total_tax": "0.00",
+            "updated_at": "2024-11-05T21:54:50-05:00"
+          },
+          "topic": "orders_cancelled"
+        },
+        "event": "Order Cancelled",
+        "integrations": {
+          "SHOPIFY": true,
+          "DATA_WAREHOUSE": {
+            "options": {
+              "jsonPaths": ["track.context.shopifyDetails"]
+            }
+          }
+        },
+        "properties": {
+          "products": [
+            {
+              "brand": "Hydrogen Vendor",
+              "price": 600,
+              "product_id": "7234590408817",
+              "quantity": 1,
+              "title": "The Collection Snowboard: Hydrogen"
+            }
+          ],
+          "tax": 0,
+          "value": 600
+        },
+        "timestamp": "2024-11-06T02:54:50.000Z",
+        "traits": {
+          "email": "henry@wfls.com",
+          "shippingAddress": {
+            "address1": "Yuimaru Kitchen",
+            "city": "Johnson City",
+            "first_name": "henry",
+            "zip": "37604"
+          }
+        },
+        "type": "track",
+        "receivedAt": "2024-03-03T04:48:29.000Z",
+        "request_ip": "192.0.2.30",
+        "messageId": "00000000-0000-0000-0000-000000000000"
+      }
+    ],
+    "errQueue": []
+  },
+  "skip": "FixMe"
+}

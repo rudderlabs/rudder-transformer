@@ -1,0 +1,281 @@
+{
+  "name": "shopify",
+  "description": "Track Call -> cart_viewed event from web pixel",
+  "input": {
+    "request": {
+      "query": "{\"topic\":[\"cart_viewed\"],\"writeKey\":[\"dummy-write-key\"]}",
+      "body": {
+        "id": "shu-f6eecef1-4132-459F-CDB5-681DA3DD61CD",
+        "name": "cart_viewed",
+        "data": {
+          "cart": {
+            "cost": {
+              "totalAmount": {
+                "amount": 1259.9,
+                "currencyCode": "USD"
+              }
+            },
+            "lines": [
+              {
+                "cost": {
+                  "totalAmount": {
+                    "amount": 1259.9,
+                    "currencyCode": "USD"
+                  }
+                },
+                "merchandise": {
+                  "price": {
+                    "amount": 629.95,
+                    "currencyCode": "USD"
+                  },
+                  "product": {
+                    "title": "The Multi-managed Snowboard",
+                    "vendor": "Multi-managed Vendor",
+                    "id": "7234590736497",
+                    "untranslatedTitle": "The Multi-managed Snowboard",
+                    "url": "/products/the-multi-managed-snowboard",
+                    "type": "snowboard"
+                  },
+                  "id": "41327143157873",
+                  "image": {
+                    "src": "//store.myshopify.com/cdn/shop/files/Main_9129b69a-0c7b-4f66-b6cf-c4222f18028a.jpg?v=1724736597"
+                  },
+                  "sku": "sku-managed-1",
+                  "title": "Default Title",
+                  "untranslatedTitle": "Default Title"
+                },
+                "quantity": 2
+              }
+            ],
+            "totalQuantity": 2,
+            "attributes": [],
+            "id": "Z2NwLXVzLWVhc3QxOjAxSjY5OVpIRURQNERFMDBKUTVaRkI4UzdU"
+          }
+        },
+        "type": "standard",
+        "clientId": "c7b3f99b-4d34-463b-835f-c879482a7750",
+        "timestamp": "2024-09-15T18:25:30.125Z",
+        "context": {
+          "document": {
+            "location": {
+              "href": "https://store.myshopify.com/checkouts/cn/Z2NwLXVzLWVhc3QxOjAxSjY5OVpIRURQNERFMDBKUTVaRkI4UzdU",
+              "hash": "",
+              "host": "store.myshopify.com",
+              "hostname": "store.myshopify.com",
+              "origin": "https://store.myshopify.com",
+              "pathname": "/checkouts/cn/Z2NwLXVzLWVhc3QxOjAxSjY5OVpIRURQNERFMDBKUTVaRkI4UzdU",
+              "port": "",
+              "protocol": "https:",
+              "search": ""
+            },
+            "referrer": "https://store.myshopify.com/cart",
+            "characterSet": "UTF-8",
+            "title": "Checkout - pixel-testing-rs"
+          },
+          "navigator": {
+            "language": "en-US",
+            "cookieEnabled": true,
+            "languages": ["en-US", "en"],
+            "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36"
+          },
+          "window": {
+            "innerHeight": 1028,
+            "innerWidth": 1362,
+            "outerHeight": 1080,
+            "outerWidth": 1728,
+            "pageXOffset": 0,
+            "pageYOffset": 0,
+            "location": {
+              "href": "https://store.myshopify.com/checkouts/cn/Z2NwLXVzLWVhc3QxOjAxSjY5OVpIRURQNERFMDBKUTVaRkI4UzdU",
+              "hash": "",
+              "host": "store.myshopify.com",
+              "hostname": "store.myshopify.com",
+              "origin": "https://store.myshopify.com",
+              "pathname": "/checkouts/cn/Z2NwLXVzLWVhc3QxOjAxSjY5OVpIRURQNERFMDBKUTVaRkI4UzdU",
+              "port": "",
+              "protocol": "https:",
+              "search": ""
+            },
+            "origin": "https://store.myshopify.com",
+            "screen": {
+              "height": 1117,
+              "width": 1728
+            },
+            "screenX": 0,
+            "screenY": 37,
+            "scrollX": 0,
+            "scrollY": 0
+          }
+        },
+        "pixelEventLabel": true
+      },
+      "headers": {
+        "Content-Type": "application/json"
+      }
+    }
+  },
+  "output": {
+    "response": {
+      "status": 200,
+      "body": "OK"
+    },
+    "queue": [
+      {
+        "context": {
+          "document": {
+            "location": {
+              "href": "https://store.myshopify.com/checkouts/cn/Z2NwLXVzLWVhc3QxOjAxSjY5OVpIRURQNERFMDBKUTVaRkI4UzdU",
+              "hash": "",
+              "host": "store.myshopify.com",
+              "hostname": "store.myshopify.com",
+              "origin": "https://store.myshopify.com",
+              "pathname": "/checkouts/cn/Z2NwLXVzLWVhc3QxOjAxSjY5OVpIRURQNERFMDBKUTVaRkI4UzdU",
+              "port": "",
+              "protocol": "https:",
+              "search": ""
+            },
+            "referrer": "https://store.myshopify.com/cart",
+            "characterSet": "UTF-8",
+            "title": "Checkout - pixel-testing-rs"
+          },
+          "navigator": {
+            "language": "en-US",
+            "cookieEnabled": true,
+            "languages": ["en-US", "en"],
+            "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36"
+          },
+          "window": {
+            "innerHeight": 1028,
+            "innerWidth": 1362,
+            "outerHeight": 1080,
+            "outerWidth": 1728,
+            "pageXOffset": 0,
+            "pageYOffset": 0,
+            "location": {
+              "href": "https://store.myshopify.com/checkouts/cn/Z2NwLXVzLWVhc3QxOjAxSjY5OVpIRURQNERFMDBKUTVaRkI4UzdU",
+              "hash": "",
+              "host": "store.myshopify.com",
+              "hostname": "store.myshopify.com",
+              "origin": "https://store.myshopify.com",
+              "pathname": "/checkouts/cn/Z2NwLXVzLWVhc3QxOjAxSjY5OVpIRURQNERFMDBKUTVaRkI4UzdU",
+              "port": "",
+              "protocol": "https:",
+              "search": ""
+            },
+            "origin": "https://store.myshopify.com",
+            "screen": {
+              "height": 1117,
+              "width": 1728
+            },
+            "screenX": 0,
+            "screenY": 37,
+            "scrollX": 0,
+            "scrollY": 0
+          },
+          "page": {
+            "title": "Checkout - pixel-testing-rs",
+            "url": "https://store.myshopify.com/checkouts/cn/Z2NwLXVzLWVhc3QxOjAxSjY5OVpIRURQNERFMDBKUTVaRkI4UzdU",
+            "path": "/checkouts/cn/Z2NwLXVzLWVhc3QxOjAxSjY5OVpIRURQNERFMDBKUTVaRkI4UzdU",
+            "search": ""
+          },
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36",
+          "screen": {
+            "height": 1117,
+            "width": 1728
+          },
+          "library": {
+            "name": "RudderStack Shopify Cloud",
+            "eventOrigin": "client",
+            "version": "2.0.0"
+          },
+          "shopifyDetails": {
+            "clientId": "c7b3f99b-4d34-463b-835f-c879482a7750",
+            "data": {
+              "cart": {
+                "attributes": [],
+                "cost": {
+                  "totalAmount": {
+                    "amount": 1259.9,
+                    "currencyCode": "USD"
+                  }
+                },
+                "id": "Z2NwLXVzLWVhc3QxOjAxSjY5OVpIRURQNERFMDBKUTVaRkI4UzdU",
+                "lines": [
+                  {
+                    "cost": {
+                      "totalAmount": {
+                        "amount": 1259.9,
+                        "currencyCode": "USD"
+                      }
+                    },
+                    "merchandise": {
+                      "id": "41327143157873",
+                      "image": {
+                        "src": "//store.myshopify.com/cdn/shop/files/Main_9129b69a-0c7b-4f66-b6cf-c4222f18028a.jpg?v=1724736597"
+                      },
+                      "price": {
+                        "amount": 629.95,
+                        "currencyCode": "USD"
+                      },
+                      "product": {
+                        "id": "7234590736497",
+                        "title": "The Multi-managed Snowboard",
+                        "type": "snowboard",
+                        "untranslatedTitle": "The Multi-managed Snowboard",
+                        "url": "/products/the-multi-managed-snowboard",
+                        "vendor": "Multi-managed Vendor"
+                      },
+                      "sku": "sku-managed-1",
+                      "title": "Default Title",
+                      "untranslatedTitle": "Default Title"
+                    },
+                    "quantity": 2
+                  }
+                ],
+                "totalQuantity": 2
+              }
+            },
+            "id": "shu-f6eecef1-4132-459F-CDB5-681DA3DD61CD",
+            "name": "cart_viewed",
+            "timestamp": "2024-09-15T18:25:30.125Z",
+            "type": "standard"
+          },
+          "topic": "cart_viewed"
+        },
+        "integrations": {
+          "SHOPIFY": true,
+          "DATA_WAREHOUSE": {
+            "options": {
+              "jsonPaths": ["track.context.shopifyDetails"]
+            }
+          }
+        },
+        "type": "track",
+        "event": "Cart Viewed",
+        "properties": {
+          "products": [
+            {
+              "quantity": 2,
+              "product_id": "7234590736497",
+              "variant": "The Multi-managed Snowboard",
+              "image_url": "//store.myshopify.com/cdn/shop/files/Main_9129b69a-0c7b-4f66-b6cf-c4222f18028a.jpg?v=1724736597",
+              "price": 629.95,
+              "category": "snowboard",
+              "url": "/products/the-multi-managed-snowboard",
+              "brand": "Multi-managed Vendor",
+              "sku": "sku-managed-1",
+              "name": "Default Title"
+            }
+          ],
+          "cart_id": "Z2NwLXVzLWVhc3QxOjAxSjY5OVpIRURQNERFMDBKUTVaRkI4UzdU",
+          "total": 1259.9
+        },
+        "anonymousId": "c7b3f99b-4d34-463b-835f-c879482a7750",
+        "messageId": "shu-f6eecef1-4132-459F-CDB5-681DA3DD61CD",
+        "receivedAt": "2024-03-03T04:48:29.000Z",
+        "request_ip": "192.0.2.30"
+      }
+    ],
+    "errQueue": []
+  }
+}

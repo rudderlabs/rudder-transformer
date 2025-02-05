@@ -3,6 +3,7 @@
   "description": "users.messages.inappmessage.Click event",
   "input": {
     "request": {
+      "query": "{}",
       "body": {
         "events": [
           {
@@ -28,45 +29,7 @@
               "send_id": "f123456789abcdef01234567"
             }
           }
-        ],
-        "source": {
-          "ID": "2hgvYyU5TYaFvVzBge6tF2UKoeG",
-          "OriginalID": "",
-          "Name": "Braze source",
-          "SourceDefinition": {
-            "ID": "1lh9senY3vrBg4JQXswWzyYBTOO",
-            "Name": "Braze",
-            "Category": "webhook",
-            "Type": "cloud"
-          },
-          "Config": {
-            "customMapping": [
-              {
-                "from": "randomEvent",
-                "to": "In-App Message Clicked"
-              }
-            ]
-          },
-          "Enabled": true,
-          "WorkspaceID": "2hSS1hZ8kuCpUZAAYsQucAFdob9",
-          "Destinations": null,
-          "WriteKey": "2hgvYykpvMaE5Eg47Au8RWC9Yza",
-          "DgSourceTrackingPlanConfig": {
-            "sourceId": "",
-            "version": 0,
-            "config": null,
-            "mergedConfig": null,
-            "deleted": false,
-            "trackingPlan": {
-              "id": "",
-              "version": 0
-            }
-          },
-          "Transient": false,
-          "GeoEnrichment": {
-            "Enabled": false
-          }
-        }
+        ]
       },
       "headers": {
         "Content-Type": "application/json"

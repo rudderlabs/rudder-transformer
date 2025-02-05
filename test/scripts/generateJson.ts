@@ -67,18 +67,71 @@ function getErrorResponse(outputResponse?: responseType) {
   return errorResponse;
 }
 
-function getSourceRequestBody(testCase: any, version?: string) {
-  const bodyElement =
-    testCase.input.request.body.length === 1
-      ? testCase.input.request.body[0]
-      : testCase.input.request.body;
-  if (version === 'v0') {
-    return bodyElement;
+function getSourceRequestBody(
+  testCase: any,
+  version?: string,
+  deleteQueryParameters: boolean = true,
+) {
+  function removeQueryParameters(element: any) {
+    if (Array.isArray(element)) {
+      return element;
+    }
+    if (deleteQueryParameters && element?.query_parameters) {
+      delete element.query_parameters;
+    }
+    return { ...element };
   }
-  if (Array.isArray(bodyElement?.event)) {
-    return bodyElement.event.map((e) => ({ ...e, source: bodyElement.source }));
+
+  const { body } = testCase.input.request;
+  const bodyElement = body.length === 1 ? body[0] : body;
+
+  if (!version) {
+    throw new Error(`Unknown version: ${version}`);
   }
-  return { ...bodyElement.event, source: bodyElement.source };
+
+  switch (version) {
+    case 'v0':
+      return removeQueryParameters(bodyElement);
+    case 'v1':
+      return removeQueryParameters(bodyElement.event);
+    case 'v2':
+      return { ...bodyElement.request.body };
+    default:
+      throw new Error(`Unknown version: ${version}`);
+  }
+}
+
+function getSourceRequestParams(testCase: any, version?: string) {
+  function getQueryParameters(element: any, rawParams: any) {
+    if (Array.isArray(element)) {
+      return rawParams;
+    }
+    if (element?.query_parameters) {
+      return { ...rawParams, ...element.query_parameters };
+    }
+    return { ...rawParams };
+  }
+
+  const rawParams = testCase.input.request?.params || {};
+
+  const { body } = testCase.input.request;
+  const bodyElement = body.length === 1 ? body[0] : body;
+
+  const queryParams = (function () {
+    switch (version) {
+      case 'v0':
+        return getQueryParameters(bodyElement, rawParams);
+      case 'v1':
+        return getQueryParameters(bodyElement.event, rawParams);
+      case 'v2':
+        const { query_parameters } = bodyElement.request;
+        return { ...rawParams, ...(query_parameters || {}) };
+      default:
+        throw new Error(`Unknown version: ${version}`);
+    }
+  })();
+
+  return JSON.stringify(queryParams);
 }
 
 function generateSources(outputFolder: string, options: OptionValues) {
@@ -118,9 +171,8 @@ function generateSources(outputFolder: string, options: OptionValues) {
 
       let errorQueue: any[] = [];
       if (statusCode !== 200) {
-        errorQueue = Array.isArray(testCase.input.request?.body)
-          ? testCase.input.request?.body
-          : [testCase.input.request?.body];
+        const body = getSourceRequestBody(testCase, version, false);
+        errorQueue = Array.isArray(body) ? body : [body];
       }
 
       let goTest: TestCaseData = {
@@ -128,7 +180,7 @@ function generateSources(outputFolder: string, options: OptionValues) {
         description: testCase.description,
         input: {
           request: {
-            query: JSON.stringify(testCase.input.request.params),
+            query: getSourceRequestParams(testCase, version),
             body: getSourceRequestBody(testCase, version),
             headers: testCase.input.request.headers || {
               'Content-Type': 'application/json',

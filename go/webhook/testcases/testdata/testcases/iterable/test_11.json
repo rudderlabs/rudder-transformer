@@ -3,6 +3,7 @@
   "description": "test-11",
   "input": {
     "request": {
+      "query": "{}",
       "body": {
         "email": "docs@iterable.com",
         "eventName": "emailUnSubscribe",

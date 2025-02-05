@@ -3,6 +3,7 @@
   "description": "Batch of events",
   "input": {
     "request": {
+      "query": "{}",
       "body": {
         "batch": [
           {

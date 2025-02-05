@@ -3,6 +3,7 @@
   "description": "Segment Match Track Call and no userId and yes anonymousId as event.sessionId",
   "input": {
     "request": {
+      "query": "{}",
       "body": {
         "user": {
           "aptrinsicId": "cab9c469-8602-4933-acdb-68338fbb9ab1",

@@ -3,6 +3,7 @@
   "description": "test-3",
   "input": {
     "request": {
+      "query": "{}",
       "body": {
         "email": "test@rudderstack.com",
         "eventName": "inAppSendSkip"

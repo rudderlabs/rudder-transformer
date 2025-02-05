@@ -3,6 +3,7 @@
   "description": "test-1",
   "input": {
     "request": {
+      "query": "{}",
       "body": {
         "app_name": "MSAppCenterTesting",
         "branch": "master",

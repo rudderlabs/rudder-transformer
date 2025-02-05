@@ -1,0 +1,95 @@
+{
+  "name": "shopify",
+  "description": "Track Call -> Cart Update event with no line items from Pixel app",
+  "input": {
+    "request": {
+      "query": "{\"topic\":[\"carts_update\"],\"writeKey\":[\"2mw9SN679HngnXXXHT4oSVVBVmb\"],\"version\":[\"pixel\"]}",
+      "body": {
+        "id": "Z2NwLXVzLWVhc3QxOjAxSjdXRjdOQjY0NlFFNFdQVEg0MTRFM1E2",
+        "token": "Z2NwLXVzLWVhc3QxOjAxSjdXRjdOQjY0NlFFNFdQVEg0MTRFM1E2",
+        "line_items": [],
+        "note": "",
+        "note_attributes": [
+          {
+            "name": "cartId",
+            "value": "9c623f099fc8819aa4d6a958b65dfe7d"
+          },
+          {
+            "name": "cartToken",
+            "value": "Z2NwLXVzLWVhc3QxOjAxSkQzNUFXVEI4VkVUNUpTTk1LSzBCMzlF"
+          },
+          {
+            "name": "rudderAnonymousId",
+            "value": "50ead33e-d763-4854-b0ab-765859ef05cb"
+          }
+        ],
+        "updated_at": "2024-09-17T08:15:13.280Z",
+        "created_at": "2024-09-16T03:50:15.478Z"
+      },
+      "headers": {
+        "Content-Type": "application/json"
+      }
+    }
+  },
+  "output": {
+    "response": {
+      "status": 200,
+      "body": "OK"
+    },
+    "queue": [
+      {
+        "anonymousId": "50ead33e-d763-4854-b0ab-765859ef05cb",
+        "context": {
+          "integration": {
+            "name": "SHOPIFY"
+          },
+          "library": {
+            "eventOrigin": "server",
+            "name": "RudderStack Shopify Cloud",
+            "version": "2.0.0"
+          },
+          "shopifyDetails": {
+            "created_at": "2024-09-16T03:50:15.478Z",
+            "id": "Z2NwLXVzLWVhc3QxOjAxSjdXRjdOQjY0NlFFNFdQVEg0MTRFM1E2",
+            "line_items": [],
+            "note": "",
+            "note_attributes": [
+              {
+                "name": "cartId",
+                "value": "9c623f099fc8819aa4d6a958b65dfe7d"
+              },
+              {
+                "name": "cartToken",
+                "value": "Z2NwLXVzLWVhc3QxOjAxSkQzNUFXVEI4VkVUNUpTTk1LSzBCMzlF"
+              },
+              {
+                "name": "rudderAnonymousId",
+                "value": "50ead33e-d763-4854-b0ab-765859ef05cb"
+              }
+            ],
+            "token": "Z2NwLXVzLWVhc3QxOjAxSjdXRjdOQjY0NlFFNFdQVEg0MTRFM1E2",
+            "updated_at": "2024-09-17T08:15:13.280Z"
+          },
+          "topic": "carts_update"
+        },
+        "event": "Cart Update",
+        "integrations": {
+          "SHOPIFY": true,
+          "DATA_WAREHOUSE": {
+            "options": {
+              "jsonPaths": ["track.context.shopifyDetails"]
+            }
+          }
+        },
+        "properties": {
+          "products": []
+        },
+        "type": "track",
+        "receivedAt": "2024-03-03T04:48:29.000Z",
+        "request_ip": "192.0.2.30",
+        "messageId": "00000000-0000-0000-0000-000000000000"
+      }
+    ],
+    "errQueue": []
+  }
+}

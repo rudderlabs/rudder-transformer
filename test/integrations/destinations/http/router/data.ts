@@ -182,9 +182,10 @@ export const data = [
                 version: '1',
                 type: 'REST',
                 method: 'GET',
-                endpoint: 'http://abc.com/contacts/john.doe@example.com/',
+                endpoint: 'http://abc.com/contacts/john.doe%40example.com',
                 headers: {
                   'x-api-key': 'test-api-key',
+                  'Content-Type': 'application/json',
                 },
                 params: {},
                 body: {
@@ -233,15 +234,16 @@ export const data = [
                 method: 'GET',
                 endpoint: 'http://abc.com/contacts',
                 headers: {
+                  'Content-Type': 'application/json',
                   Authorization: 'Basic dGVzdC11c2VyOg==',
                   'content-type': 'application/json',
                   h1: 'val1',
-                  h2: 2,
+                  h2: '2',
                   h3: 'John',
                 },
                 params: {
                   q1: 'val1',
-                  q2: 'john.doe@example.com',
+                  q2: 'john.doe%40example.com',
                 },
                 body: {
                   JSON: {},
@@ -265,15 +267,16 @@ export const data = [
                 method: 'GET',
                 endpoint: 'http://abc.com/contacts',
                 headers: {
+                  'Content-Type': 'application/json',
                   Authorization: 'Basic dGVzdC11c2VyOg==',
                   'content-type': 'application/json',
                   h1: 'val1',
-                  h2: 2,
+                  h2: '2',
                   h3: 'John',
                 },
                 params: {
                   q1: 'val1',
-                  q2: 'john.doe@example.com',
+                  q2: 'john.doe%40example.com',
                 },
                 body: {
                   JSON: {},
@@ -297,15 +300,16 @@ export const data = [
                 method: 'GET',
                 endpoint: 'http://abc.com/contacts',
                 headers: {
+                  'Content-Type': 'application/json',
                   Authorization: 'Basic dGVzdC11c2VyOg==',
                   'content-type': 'application/json',
                   h1: 'val1',
-                  h2: 2,
+                  h2: '2',
                   h3: 'Alex',
                 },
                 params: {
                   q1: 'val1',
-                  q2: 'alex.t@example.com',
+                  q2: 'alex.t%40example.com',
                 },
                 body: {
                   JSON: {},
@@ -355,6 +359,7 @@ export const data = [
                 endpoint: 'http://abc.com/events',
                 params: {},
                 headers: {
+                  'Content-Type': 'application/json',
                   'content-type': 'application/json',
                 },
                 body: {
@@ -409,6 +414,7 @@ export const data = [
                 method: 'POST',
                 endpoint: 'http://abc.com/contacts/1234567890',
                 headers: {
+                  'Content-Type': 'application/json',
                   'content-type': 'application/json',
                   key: 'value1',
                 },
@@ -433,6 +439,7 @@ export const data = [
                 method: 'POST',
                 endpoint: 'http://abc.com/contacts/1234567890',
                 headers: {
+                  'Content-Type': 'application/json',
                   'content-type': 'application/json',
                 },
                 params: {},
@@ -456,6 +463,7 @@ export const data = [
                 method: 'POST',
                 endpoint: 'http://abc.com/contacts/2234567890',
                 headers: {
+                  'Content-Type': 'application/json',
                   'content-type': 'application/json',
                 },
                 params: {},

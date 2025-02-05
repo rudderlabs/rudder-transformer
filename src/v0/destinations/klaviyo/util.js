@@ -1,5 +1,6 @@
 const set = require('set-value');
 const lodash = require('lodash');
+const { parsePhoneNumberFromString } = require('libphonenumber-js');
 const { NetworkError, InstrumentationError } = require('@rudderstack/integrations-lib');
 const { WhiteListedTraits } = require('../../../constants');
 const {
@@ -31,6 +32,24 @@ const {
 } = require('./config');
 
 const REVISION_CONSTANT = '2023-02-22';
+
+/**
+ * This function is used to check if the phone number is in E.164 format. It uses libphonenumber-js library to parse the phone number
+ * @param {*} phoneNumber
+ * @returns boolean
+ */
+function isValidE164PhoneNumber(phoneNumber) {
+  try {
+    // Remove all non-numeric characters from the phone number like spaces, hyphens, etc.
+    const sanitizedPhoneNumber = phoneNumber.replace(/[^\d+]/g, '');
+    const parsedNumber = parsePhoneNumberFromString(sanitizedPhoneNumber);
+    // Check if the number is valid and properly formatted in E.164.
+    return parsedNumber && parsedNumber.format('E.164') === sanitizedPhoneNumber;
+  } catch (error) {
+    // If parsing fails, it's not a valid E.164 number, i.e doesn't start with '+' and country code
+    return false;
+  }
+}
 
 /**
  * This function calls the create user endpoint ref: https://developers.klaviyo.com/en/reference/create_profile
@@ -414,6 +433,12 @@ const constructProfile = (message, destination, isIdentifyCall) => {
     message,
     MAPPING_CONFIG[CONFIG_CATEGORIES.PROFILEV2.name],
   );
+  if (
+    isDefinedAndNotNull(profileAttributes.phone_number) &&
+    !isValidE164PhoneNumber(profileAttributes.phone_number)
+  ) {
+    throw new InstrumentationError('Phone number is not in E.164 format.');
+  }
   const { enforceEmailAsPrimary, flattenProperties } = destination.Config;
   let customPropertyPayload = {};
   const { meta, metadataFields } = getProfileMetadataAndMetadataFields(message);

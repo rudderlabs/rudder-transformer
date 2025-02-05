@@ -4,8 +4,11 @@ const { BatchUtils } = require('@rudderstack/workflow-engine');
 const { SMS_SEND_ENDPOINT, MAX_BATCH_SIZE, COMMON_CONTACT_DOMAIN } = require('./config');
 const { isDefinedAndNotNullAndNotEmpty, isDefinedAndNotNull } = require('../../../../v0/util');
 
-const getEndIdentifyPoint = (contactId, contactListId) =>
-  `${COMMON_CONTACT_DOMAIN}/${contactListId}/contacts${isDefinedAndNotNullAndNotEmpty(contactId) ? `/${contactId}` : ''}`;
+const getEndIdentifyPoint = (contactId, contactListId) => {
+  const basePath = `${COMMON_CONTACT_DOMAIN}/${contactListId}/contacts`;
+  const contactSuffix = isDefinedAndNotNullAndNotEmpty(contactId) ? `/${contactId}` : '';
+  return basePath + contactSuffix;
+};
 
 const validateIdentifyPayload = (payload) => {
   if (
@@ -33,13 +36,17 @@ const deduceSchedule = (eventLevelSchedule, timestamp, destConfig) => {
   if (isDefinedAndNotNull(eventLevelSchedule) && !Number.isNaN(eventLevelSchedule)) {
     return eventLevelSchedule;
   }
-  const { defaultCampaignScheduleUnit = 'minute', defaultCampaignSchedule = 0 } = destConfig;
+  const { defaultCampaignScheduleUnit = 'minute', defaultCampaignSchedule = '0' } = destConfig;
   const date = new Date(timestamp);
+  let defaultCampaignScheduleInt = parseInt(defaultCampaignSchedule, 10);
+  if (Number.isNaN(defaultCampaignScheduleInt)) {
+    defaultCampaignScheduleInt = 0;
+  }
 
   if (defaultCampaignScheduleUnit === 'day') {
-    date.setDate(date.getDate() + defaultCampaignSchedule);
+    date.setUTCDate(date.getUTCDate() + defaultCampaignScheduleInt);
   } else if (defaultCampaignScheduleUnit === 'minute') {
-    date.setMinutes(date.getMinutes() + defaultCampaignSchedule);
+    date.setUTCMinutes(date.getUTCMinutes() + defaultCampaignScheduleInt);
   } else {
     throw new Error("Invalid delta unit. Use 'day' or 'minute'.");
   }

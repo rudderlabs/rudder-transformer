@@ -17,6 +17,7 @@ const {
   isObject,
   isDefinedAndNotNullAndNotEmpty,
   isDefinedAndNotNull,
+  removeUndefinedValues,
 } = require('../../util');
 const {
   ConfigCategory,
@@ -31,6 +32,30 @@ const mPIdentifyConfigJson = mappingConfig[ConfigCategory.IDENTIFY.name];
 const mPProfileAndroidConfigJson = mappingConfig[ConfigCategory.PROFILE_ANDROID.name];
 const mPProfileIosConfigJson = mappingConfig[ConfigCategory.PROFILE_IOS.name];
 const mPSetOnceConfigJson = mappingConfig[ConfigCategory.SET_ONCE.name];
+
+/**
+ * This method populates the payload with device fields based on mp mapping
+ * @param message
+ * @param rawPayload
+ * @returns
+ */
+const populateDeviceFieldsInPayload = (message, rawPayload) => {
+  const device = get(message, 'context.device');
+  let payload = {};
+  let updatedRawPayload = { ...rawPayload };
+  if (device) {
+    const deviceTokenArray = isDefinedAndNotNull(device.token) ? [device.token] : undefined;
+    if (isAppleFamily(device.type)) {
+      payload = constructPayload(message, mPProfileIosConfigJson);
+      updatedRawPayload.$ios_devices = deviceTokenArray;
+    } else if (device.type?.toLowerCase() === 'android') {
+      payload = constructPayload(message, mPProfileAndroidConfigJson);
+      updatedRawPayload.$android_devices = deviceTokenArray;
+    }
+    updatedRawPayload = removeUndefinedValues(updatedRawPayload);
+  }
+  return { ...updatedRawPayload, ...payload };
+};
 
 /**
  * this function has been used to create
@@ -75,18 +100,8 @@ const getTransformedJSON = (message, mappingJson, useNewMapping) => {
     }
   }
 
-  const device = get(message, 'context.device');
-  if (device && device.token) {
-    let payload;
-    if (isAppleFamily(device.type)) {
-      payload = constructPayload(message, mPProfileIosConfigJson);
-      rawPayload.$ios_devices = [device.token];
-    } else if (device.type.toLowerCase() === 'android') {
-      payload = constructPayload(message, mPProfileAndroidConfigJson);
-      rawPayload.$android_devices = [device.token];
-    }
-    rawPayload = { ...rawPayload, ...payload };
-  }
+  rawPayload = populateDeviceFieldsInPayload(message, rawPayload);
+
   if (message.channel === 'web' && message.context?.userAgent) {
     const browser = getBrowserInfo(message.context.userAgent);
     rawPayload.$browser = browser.name;
@@ -373,4 +388,5 @@ module.exports = {
   trimTraits,
   generatePageOrScreenCustomEventName,
   recordBatchSizeMetrics,
+  getTransformedJSON,
 };

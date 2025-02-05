@@ -24,6 +24,11 @@ export class SourceController {
         version,
         events,
       );
+      logger.debug('Native(Source-Transform):: Controller Input Adapter::', {
+        implementationVersion,
+        inputVersion: version,
+        source,
+      });
 
       const resplist = await integrationService.sourceTransformRoutine(
         input,

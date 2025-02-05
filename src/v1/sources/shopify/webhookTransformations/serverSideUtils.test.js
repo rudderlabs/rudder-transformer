@@ -1,15 +1,13 @@
+const { processEvent } = require('./serverSideTransform');
 const {
   getProductsFromLineItems,
   createPropertiesForEcomEventFromWebhook,
   getAnonymousIdFromAttributes,
+  getCartToken,
 } = require('./serverSideUtlis');
+const { RedisDB } = require('../../../../util/redis/redisConnector');
 
-const { constructPayload } = require('../../../../v0/util');
-
-const {
-  lineItemsMappingJSON,
-  productMappingJSON,
-} = require('../../../../v0/sources/shopify/config');
+const { lineItemsMappingJSON } = require('../../../../v0/sources/shopify/config');
 const Message = require('../../../../v0/sources/message');
 jest.mock('../../../../v0/sources/message');
 
@@ -63,7 +61,6 @@ describe('serverSideUtils.js', () => {
     });
 
     it('should return array of products', () => {
-      const mapping = {};
       const result = getProductsFromLineItems(LINEITEMS, lineItemsMappingJSON);
       expect(result).toEqual([
         { brand: 'Hydrogen Vendor', price: '600.00', product_id: 7234590408818, quantity: 1 },
@@ -115,7 +112,13 @@ describe('serverSideUtils.js', () => {
     // Handles empty note_attributes array gracefully
     it('should return null when note_attributes is an empty array', async () => {
       const event = { note_attributes: [] };
-      const result = await getAnonymousIdFromAttributes(event);
+      const result = getAnonymousIdFromAttributes(event);
+      expect(result).toBeNull();
+    });
+
+    it('should return null when note_attributes is not present', async () => {
+      const event = {};
+      const result = getAnonymousIdFromAttributes(event);
       expect(result).toBeNull();
     });
 
@@ -123,8 +126,48 @@ describe('serverSideUtils.js', () => {
       const event = {
         note_attributes: [{ name: 'rudderAnonymousId', value: '123456' }],
       };
-      const result = await getAnonymousIdFromAttributes(event);
+      const result = getAnonymousIdFromAttributes(event);
       expect(result).toEqual('123456');
     });
+  });
+
+  describe('getCartToken', () => {
+    it('should return null if cart_token is not present', () => {
+      const event = {};
+      const result = getCartToken(event);
+      expect(result).toBeNull();
+    });
+
+    it('should return cart_token if it is present', () => {
+      const event = { cart_token: 'cartTokenTest1' };
+      const result = getCartToken(event);
+      expect(result).toEqual('cartTokenTest1');
+    });
+  });
+});
+
+describe('Redis cart token tests', () => {
+  it('should get anonymousId property from redis', async () => {
+    const getValSpy = jest
+      .spyOn(RedisDB, 'getVal')
+      .mockResolvedValue({ anonymousId: 'anonymousIdTest1' });
+    const event = {
+      cart_token: `cartTokenTest1`,
+      id: 5778367414385,
+      line_items: [
+        {
+          id: 14234727743601,
+        },
+      ],
+      query_parameters: {
+        topic: ['orders_updated'],
+        version: ['pixel'],
+        writeKey: ['dummy-write-key'],
+      },
+    };
+    const message = await processEvent(event);
+    expect(getValSpy).toHaveBeenCalledTimes(1);
+    expect(getValSpy).toHaveBeenCalledWith('pixel:cartTokenTest1');
+    expect(message.anonymousId).toEqual('anonymousIdTest1');
   });
 });

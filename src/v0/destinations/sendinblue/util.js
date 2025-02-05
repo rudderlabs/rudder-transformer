@@ -1,10 +1,10 @@
 const { NetworkError, InstrumentationError } = require('@rudderstack/integrations-lib');
+const validator = require('validator');
 const { EMAIL_SUFFIX, getContactDetailsEndpoint } = require('./config');
 const {
   getHashFromArray,
   getIntegrationsObj,
   isNotEmpty,
-  validateEmail,
   validatePhoneWithCountryCode,
   getDestinationExternalID,
 } = require('../../util');
@@ -36,7 +36,7 @@ const checkIfEmailOrPhoneExists = (email, phone) => {
 };
 
 const validateEmailAndPhone = (email, phone = null) => {
-  if (email && !validateEmail(email)) {
+  if (email && !validator.isEmail(email)) {
     throw new InstrumentationError('The provided email is invalid');
   }
 

@@ -2050,4 +2050,108 @@ export const dataV2: RouterTestData[] = [
       },
     },
   },
+  {
+    id: 'klaviyo-router-150624-test-7',
+    name: 'klaviyo',
+    description:
+      '150624 -> Router tests to check for invalid phone number format in identify and track calls and should throw error',
+    scenario: 'Framework',
+    successCriteria: 'Should throw invalid phone number error for identify and track calls',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: {
+                userId: 'user123',
+                type: 'identify',
+                traits: { subscribe: true },
+                context: {
+                  traits: {
+                    email: 'test@rudderstack.com',
+                    phone: '123321000',
+                    consent: 'email',
+                  },
+                  ip: '14.5.67.21',
+                  library: { name: 'http' },
+                },
+                timestamp: '2020-01-21T00:21:34.208Z',
+              },
+              destination,
+              metadata: generateMetadata(1),
+            },
+            {
+              message: {
+                type: 'track',
+                event: 'TestEven001',
+                sentAt: '2025-01-01T11:11:11.111Z',
+                userId: 'invalidPhoneUser',
+                context: {
+                  traits: {
+                    name: 'Test',
+                    email: 'test@rudderstack.com',
+                    phone: '9112340375',
+                  },
+                },
+                properties: {
+                  price: 120,
+                },
+                originalTimestamp: '2025-01-01T11:11:11.111Z',
+              },
+              metadata: generateMetadata(2),
+              destination,
+            },
+          ],
+          destType: 'klaviyo',
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              error: 'Phone number is not in E.164 format.',
+              statTags: {
+                destType: 'KLAVIYO',
+                destinationId: 'default-destinationId',
+                errorCategory: 'dataValidation',
+                errorType: 'instrumentation',
+                feature: 'router',
+                implementation: 'native',
+                module: 'destination',
+                workspaceId: 'default-workspaceId',
+              },
+              metadata: [generateMetadata(1)],
+              batched: false,
+              statusCode: 400,
+              destination,
+            },
+            {
+              error: 'Phone number is not in E.164 format.',
+              statTags: {
+                destType: 'KLAVIYO',
+                destinationId: 'default-destinationId',
+                errorCategory: 'dataValidation',
+                errorType: 'instrumentation',
+                feature: 'router',
+                implementation: 'native',
+                module: 'destination',
+                workspaceId: 'default-workspaceId',
+              },
+              metadata: [generateMetadata(2)],
+              batched: false,
+              statusCode: 400,
+              destination,
+            },
+          ],
+        },
+      },
+    },
+  },
 ];

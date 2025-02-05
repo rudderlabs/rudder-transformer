@@ -401,7 +401,7 @@ const executeFaasFunction = async (
       throw new RetryRequestError(`Rate limit exceeded for ${name}`);
     }
 
-    if (error.statusCode === 500 || error.statusCode === 503) {
+    if (error.statusCode === 500 || error.statusCode === 503 || error.statusCode === 502) {
       throw new RetryRequestError(error.message);
     }
 

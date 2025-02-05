@@ -849,9 +849,10 @@ export const data = [
   },
   {
     name: 'fb_custom_audience',
-    description: 'rETL record V2 tests',
+    description: 'rETL record V2 tests with null values',
     scenario: 'Framework',
-    successCriteria: 'all record events should be transformed correctly based on their operation',
+    successCriteria:
+      'all record events should be transformed correctly including records with null values',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -890,6 +891,7 @@ export const data = [
                           'b100c2ec0718fe6b4805b623aeec6710719d042ceea55f5c8135b010ec1c7b36',
                           '1e14a2f476f7611a8b22bc85d14237fdc88aac828737e739416c32c5bce3bd16',
                         ],
+                        ['', ''],
                       ],
                     },
                   },
@@ -932,6 +934,18 @@ export const data = [
                   destinationId: 'default-destinationId',
                   dontBatch: false,
                   jobId: 3,
+                  secret: {
+                    accessToken: 'default-accessToken',
+                  },
+                  sourceId: 'default-sourceId',
+                  userId: 'default-userId',
+                  workspaceId: 'default-workspaceId',
+                },
+                {
+                  attemptNum: 1,
+                  destinationId: 'default-destinationId',
+                  dontBatch: false,
+                  jobId: 4,
                   secret: {
                     accessToken: 'default-accessToken',
                   },

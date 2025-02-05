@@ -11,6 +11,7 @@ const { RedisDB } = require('../../../../util/redis/redisConnector');
 
 const { lineItemsMappingJSON } = require('../../../../v0/sources/shopify/config');
 const Message = require('../../../../v0/sources/message');
+const { property } = require('lodash');
 jest.mock('../../../../v0/sources/message');
 
 const LINEITEMS = [
@@ -148,28 +149,27 @@ describe('serverSideUtils.js', () => {
   });
 
   describe('Test addCartTokenHashToTraits', () => {
-    it('should add cart_token_hash to traits object', () => {
-      const message = {
-        traits: {
-          address: 'addressTest1',
-        },
-      };
-      addCartTokenHashToTraits(message, 'cartTokenHashTest1');
+    // Add cart token hash to traits when cart token exists in event
+    it('should add cart_token_hash to message traits when cart token exists', () => {
+      const message = { traits: { existingTrait: 'value' } };
+      const event = { cart_token: 'Z2NwLXVzLWVhc3QxOjAxSkJaTUVRSjgzNUJUN1BTNjEzRFdRUFFQ' };
+      const expectedHash = '9125e1da-57b9-5bdc-953e-eb2b0ded5edc';
+
+      addCartTokenHashToTraits(message, event);
+
       expect(message.traits).toEqual({
-        cart_token_hash: 'cartTokenHashTest1',
-        address: 'addressTest1',
+        existingTrait: 'value',
+        cart_token_hash: expectedHash,
       });
     });
 
-    it('should add cart token hash to empty traits object', () => {
-      const message = { traits: {} };
-      const cartTokenHash = 'abc123';
+    // Do not add cart token hash to traits when cart token does not exist in event
+    it('should not add cart_token_hash to message traits when cart token does not exist', () => {
+      const message = { traits: { existingTrait: 'value' } };
+      const event = { property: 'value' };
+      addCartTokenHashToTraits(message, event);
 
-      addCartTokenHashToTraits(message, cartTokenHash);
-
-      expect(message.traits).toEqual({
-        cart_token_hash: 'abc123',
-      });
+      expect(message.traits).toEqual({ existingTrait: 'value' });
     });
   });
 });
@@ -215,6 +215,5 @@ describe('Redis cart token tests', () => {
     RedisDB.getVal = jest.spyOn(RedisDB, 'getVal').mockResolvedValue(mockRedisData);
     await setAnonymousId(message, { ...event, cart_token: cartToken }, metricMetadata);
     expect(message.anonymousId).toBe(expectedAnonymousId);
-    expect(message.traits.cart_token_hash).toBe(expectedAnonymousId);
   });
 });

@@ -1,7 +1,6 @@
 /* eslint-disable no-param-reassign */
 const get = require('get-value');
-const { v5 } = require('uuid');
-const { isDefinedAndNotNull } = require('@rudderstack/integrations-lib');
+const { isDefinedAndNotNull, uuidv5 } = require('@rudderstack/integrations-lib');
 const { extractEmailFromPayload } = require('../../../../v0/sources/shopify/util');
 const { constructPayload } = require('../../../../v0/util');
 const { INTEGERATION, lineItemsMappingJSON, productMappingJSON } = require('../config');
@@ -87,7 +86,7 @@ const addCartTokenHashToTraits = (message, cartTokenHash) => {
 const setAnonymousId = async (message, event, metricMetadata) => {
   const anonymousId = getAnonymousIdFromAttributes(event);
   const cartToken = getCartToken(event);
-  const cartTokenHash = cartToken ? v5(cartToken, v5.DNS) : null;
+  const cartTokenHash = cartToken ? uuidv5(cartToken) : null;
   if (isDefinedAndNotNull(anonymousId)) {
     message.anonymousId = anonymousId;
     if (cartToken) {

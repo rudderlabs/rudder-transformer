@@ -464,10 +464,10 @@ class Prometheus {
         labelNames: ['event', 'writeKey'],
       },
       {
-        name: 'shopify_pixel_redis_no_val',
-        help: 'shopify_pixel_redis_no_val',
+        name: 'shopify_pixel_id_stitch_gaps',
+        help: 'shopify_pixel_id_stitch_gaps',
         type: 'counter',
-        labelNames: ['event', 'source', 'writeKey'],
+        labelNames: ['event', 'reason', 'source', 'writeKey'],
       },
       {
         name: 'outgoing_request_count',

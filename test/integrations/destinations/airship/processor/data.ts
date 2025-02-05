@@ -2713,6 +2713,280 @@ export const data = [
       },
     },
   },
+  {
+    name: 'airship',
+    description: 'Test 25: Traits mapping with keys in Camel casing',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              anonymousId: '507f191e810c19729de860ea',
+              channel: 'browser',
+              context: {
+                ip: '8.8.8.8',
+                userAgent:
+                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.2214.115 Safari/537.36',
+              },
+              integrations: { All: true },
+              messageId: '022bb90c-bbac-11e4-8dfc-aa07a5b093db',
+              receivedAt: '2015-02-23T22:28:55.387Z',
+              sentAt: '2015-02-23T22:28:55.111Z',
+              timestamp: '2015-02-23T22:28:55.111Z',
+              traits: {
+                name: 'Peter Gibbons',
+                age: 34,
+                email: 'peter@example.com',
+                plan: 'premium',
+                logins: 5,
+                firstName: 'Peter',
+                lastName: 'Gibbons',
+                createdAt: 'today',
+                address: {
+                  postalCode: '94103',
+                  country: 'USA',
+                },
+              },
+              type: 'identify',
+              userId: '97980cfea0067',
+              version: '1',
+            },
+            destination: {
+              Config: {
+                apiKey: 'dummyApiKey',
+                appKey: 'O2YARRI15I',
+                dataCenter: false,
+              },
+            },
+          },
+        ],
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://go.urbanairship.com/api/named_users/97980cfea0067/attributes',
+              headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/vnd.urbanairship+json; version=3',
+                Authorization: 'Bearer dummyApiKey',
+              },
+              params: {},
+              body: {
+                JSON: {
+                  attributes: [
+                    {
+                      action: 'set',
+                      key: 'full_name',
+                      value: 'Peter Gibbons',
+                      timestamp: '2015-02-23T22:28:55Z',
+                    },
+                    { action: 'set', key: 'age', value: 34, timestamp: '2015-02-23T22:28:55Z' },
+                    {
+                      action: 'set',
+                      key: 'email',
+                      value: 'peter@example.com',
+                      timestamp: '2015-02-23T22:28:55Z',
+                    },
+                    {
+                      action: 'set',
+                      key: 'plan',
+                      value: 'premium',
+                      timestamp: '2015-02-23T22:28:55Z',
+                    },
+                    { action: 'set', key: 'logins', value: 5, timestamp: '2015-02-23T22:28:55Z' },
+                    {
+                      action: 'set',
+                      key: 'first_name',
+                      value: 'Peter',
+                      timestamp: '2015-02-23T22:28:55Z',
+                    },
+                    {
+                      action: 'set',
+                      key: 'last_name',
+                      value: 'Gibbons',
+                      timestamp: '2015-02-23T22:28:55Z',
+                    },
+                    {
+                      action: 'set',
+                      key: 'account_creation',
+                      value: 'today',
+                      timestamp: '2015-02-23T22:28:55Z',
+                    },
+                    {
+                      action: 'set',
+                      key: 'zipcode',
+                      value: '94103',
+                      timestamp: '2015-02-23T22:28:55Z',
+                    },
+                    {
+                      action: 'set',
+                      key: 'country',
+                      value: 'USA',
+                      timestamp: '2015-02-23T22:28:55Z',
+                    },
+                  ],
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: '',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'airship',
+    description: 'Test 26: Traits mapping with keys in lower case',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              anonymousId: '507f191e810c19729de860ea',
+              channel: 'browser',
+              context: {
+                ip: '8.8.8.8',
+                userAgent:
+                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.2214.115 Safari/537.36',
+              },
+              integrations: { All: true },
+              messageId: '022bb90c-bbac-11e4-8dfc-aa07a5b093db',
+              receivedAt: '2015-02-23T22:28:55.387Z',
+              sentAt: '2015-02-23T22:28:55.111Z',
+              timestamp: '2015-02-23T22:28:55.111Z',
+              traits: {
+                name: 'Peter Gibbons',
+                age: 34,
+                email: 'peter@example.com',
+                plan: 'premium',
+                logins: 5,
+                firstname: 'Peter',
+                lastname: 'Gibbons',
+                createdat: 'today',
+                address: {
+                  postalCode: '94103',
+                  country: 'USA',
+                },
+              },
+              type: 'identify',
+              userId: '97980cfea0067',
+              version: '1',
+            },
+            destination: {
+              Config: {
+                apiKey: 'dummyApiKey',
+                appKey: 'O2YARRI15I',
+                dataCenter: false,
+              },
+            },
+          },
+        ],
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://go.urbanairship.com/api/named_users/97980cfea0067/attributes',
+              headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/vnd.urbanairship+json; version=3',
+                Authorization: 'Bearer dummyApiKey',
+              },
+              params: {},
+              body: {
+                JSON: {
+                  attributes: [
+                    {
+                      action: 'set',
+                      key: 'full_name',
+                      value: 'Peter Gibbons',
+                      timestamp: '2015-02-23T22:28:55Z',
+                    },
+                    { action: 'set', key: 'age', value: 34, timestamp: '2015-02-23T22:28:55Z' },
+                    {
+                      action: 'set',
+                      key: 'email',
+                      value: 'peter@example.com',
+                      timestamp: '2015-02-23T22:28:55Z',
+                    },
+                    {
+                      action: 'set',
+                      key: 'plan',
+                      value: 'premium',
+                      timestamp: '2015-02-23T22:28:55Z',
+                    },
+                    { action: 'set', key: 'logins', value: 5, timestamp: '2015-02-23T22:28:55Z' },
+                    {
+                      action: 'set',
+                      key: 'first_name',
+                      value: 'Peter',
+                      timestamp: '2015-02-23T22:28:55Z',
+                    },
+                    {
+                      action: 'set',
+                      key: 'last_name',
+                      value: 'Gibbons',
+                      timestamp: '2015-02-23T22:28:55Z',
+                    },
+                    {
+                      action: 'set',
+                      key: 'account_creation',
+                      value: 'today',
+                      timestamp: '2015-02-23T22:28:55Z',
+                    },
+                    {
+                      action: 'set',
+                      key: 'zipcode',
+                      value: '94103',
+                      timestamp: '2015-02-23T22:28:55Z',
+                    },
+                    {
+                      action: 'set',
+                      key: 'country',
+                      value: 'USA',
+                      timestamp: '2015-02-23T22:28:55Z',
+                    },
+                  ],
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: '',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
 ].map((tc) => ({
   ...tc,
   mockFns: (_) => {

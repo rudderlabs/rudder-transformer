@@ -207,7 +207,7 @@ describe('Redis cart token tests', () => {
     const metricMetadata = { source: 'test', writeKey: 'test-key' };
     const cartToken = 'test-cart-token';
     const mockRedisData = null;
-    const expectedAnonymousId = '5c2cff2c-9cb1-59e5-82f9-fa5241f0e240';
+    const expectedAnonymousId = '40a532a2-88be-5e3a-8687-56e34739e89d';
     jest.mock('uuid', () => ({
       v5: jest.fn(() => expectedAnonymousId),
       DNS: 'dns-namespace',

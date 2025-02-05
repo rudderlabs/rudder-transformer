@@ -166,7 +166,7 @@ const getEventValueForTrackEvent = (message, destination) => {
 
   const traits = destination.Config?.dropTraitsInTrackEvent
     ? {}
-    : { ...get(message, 'context.traits') };
+    : { ...message?.context?.traits };
 
   let properties = {
     ...message.properties,

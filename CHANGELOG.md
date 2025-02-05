@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.90.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.89.1...v1.90.0) (2025-02-03)
+
+
+### Features
+
+* **http:** enclose constants with quotes in mappings ([#4037](https://github.com/rudderlabs/rudder-transformer/issues/4037)) ([d62ba40](https://github.com/rudderlabs/rudder-transformer/commit/d62ba40ff26d1f4fc27b54f1546094f384ee7266))
+* **http:** minor bug fixes and enhancements related to XML and FORM formats ([#4022](https://github.com/rudderlabs/rudder-transformer/issues/4022)) ([241250d](https://github.com/rudderlabs/rudder-transformer/commit/241250d10e1d8cb904ec188312e1ec5532379e93))
+* onboarding customerio segment  destination ([#4028](https://github.com/rudderlabs/rudder-transformer/issues/4028)) ([16b927a](https://github.com/rudderlabs/rudder-transformer/commit/16b927a97b64d3033e33a047429d0bbd15c7e1fd))
+
+
+### Bug Fixes
+
+* add phone e164 format validation for klaviyo ([#4025](https://github.com/rudderlabs/rudder-transformer/issues/4025)) ([ea46afe](https://github.com/rudderlabs/rudder-transformer/commit/ea46afef39bc85727a5258737987e4da1104ac3d))
+
 ### [1.89.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.89.0...v1.89.1) (2025-01-29)
 
 

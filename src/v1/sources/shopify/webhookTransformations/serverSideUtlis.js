@@ -108,7 +108,7 @@ const setAnonymousId = async (message, event, metricMetadata) => {
       message.anonymousId = cartTokenHash;
       stats.increment('shopify_pixel_id_stitch_gaps', {
         event: message.event,
-        reason: 'missing anonymousId in redis',
+        reason: 'redis_cache_miss',
         source: metricMetadata.source,
         writeKey: metricMetadata.writeKey,
       });
@@ -116,7 +116,7 @@ const setAnonymousId = async (message, event, metricMetadata) => {
   } else {
     stats.increment('shopify_pixel_id_stitch_gaps', {
       event: message.event,
-      reason: 'missing cart token',
+      reason: 'cart_token_miss',
       source: metricMetadata.source,
       writeKey: metricMetadata.writeKey,
     });

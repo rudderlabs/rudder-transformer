@@ -23,7 +23,6 @@ const {
   isEmptyObject,
   removeUndefinedAndNullValues,
   isHybridModeEnabled,
-  getIntegrationsObj,
   applyCustomMappings,
 } = require('../../util');
 const { trackCommonConfig, ConfigCategory, mappingConfig } = require('../ga4/config');

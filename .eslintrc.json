@@ -13,7 +13,7 @@
     "plugin:@typescript-eslint/recommended",
     "prettier"
   ],
-  "plugins": ["@typescript-eslint", "unicorn"],
+  "plugins": ["@typescript-eslint", "unicorn", "unused-imports"],
   "globals": {},
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
@@ -67,6 +67,7 @@
     "sonarjs/no-identical-functions": "error",
     "no-prototype-builtins": "off",
     "@typescript-eslint/dot-notation": "error",
-    "@typescript-eslint/no-unused-vars": "error"
+    "@typescript-eslint/no-unused-vars": "error",
+    "unused-imports/no-unused-imports": "error"
   }
 }

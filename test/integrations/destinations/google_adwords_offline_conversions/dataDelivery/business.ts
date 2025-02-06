@@ -235,7 +235,7 @@ export const testScenariosForV0API = [
           params: params.param1,
           JSON: invalidArgumentRequestPayload,
           endpoint:
-            'https://googleads.googleapis.com/v16/customers/11122233331/offlineUserDataJobs',
+            'https://googleads.googleapis.com/v17/customers/11122233331/offlineUserDataJobs',
         }),
         method: 'POST',
       },
@@ -309,7 +309,7 @@ export const testScenariosForV0API = [
           headers: headers.header1,
           params: params.param1,
           JSON: validRequestPayload1,
-          endpoint: 'https://googleads.googleapis.com/v16/customers/1112223333/offlineUserDataJobs',
+          endpoint: 'https://googleads.googleapis.com/v17/customers/1112223333/offlineUserDataJobs',
         }),
         method: 'POST',
       },
@@ -350,7 +350,7 @@ export const testScenariosForV0API = [
           params: params.param2,
           JSON: validRequestPayload2,
           endpoint:
-            'https://googleads.googleapis.com/v16/customers/1234567891:uploadClickConversions',
+            'https://googleads.googleapis.com/v17/customers/1234567891:uploadClickConversions',
         }),
         method: 'POST',
       },
@@ -400,7 +400,7 @@ export const testScenariosForV0API = [
           params: params.param3,
           JSON: validRequestPayload2,
           endpoint:
-            'https://googleads.googleapis.com/v16/customers/1234567891:uploadClickConversions',
+            'https://googleads.googleapis.com/v17/customers/1234567891:uploadClickConversions',
         }),
         method: 'POST',
       },
@@ -453,7 +453,7 @@ export const testScenariosForV1API = [
             params: params.param1,
             JSON: invalidArgumentRequestPayload,
             endpoint:
-              'https://googleads.googleapis.com/v16/customers/11122233331/offlineUserDataJobs',
+              'https://googleads.googleapis.com/v17/customers/11122233331/offlineUserDataJobs',
           },
           metadataArray,
         ),
@@ -500,7 +500,7 @@ export const testScenariosForV1API = [
             params: params.param1,
             JSON: validRequestPayload1,
             endpoint:
-              'https://googleads.googleapis.com/v16/customers/1112223333/offlineUserDataJobs',
+              'https://googleads.googleapis.com/v17/customers/1112223333/offlineUserDataJobs',
           },
           metadataArray,
         ),
@@ -545,7 +545,7 @@ export const testScenariosForV1API = [
             params: params.param2,
             JSON: validRequestPayload2,
             endpoint:
-              'https://googleads.googleapis.com/v16/customers/1234567891:uploadClickConversions',
+              'https://googleads.googleapis.com/v17/customers/1234567891:uploadClickConversions',
           },
           metadataArray,
         ),
@@ -591,7 +591,7 @@ export const testScenariosForV1API = [
             params: params.param3,
             JSON: validRequestPayload2,
             endpoint:
-              'https://googleads.googleapis.com/v16/customers/1234567891:uploadClickConversions',
+              'https://googleads.googleapis.com/v17/customers/1234567891:uploadClickConversions',
           },
           metadataArray,
         ),
@@ -637,7 +637,7 @@ export const testScenariosForV1API = [
             params: params.param4,
             JSON: notAllowedToAccessFeatureRequestPayload,
             endpoint:
-              'https://googleads.googleapis.com/v16/customers/1234567893:uploadClickConversions',
+              'https://googleads.googleapis.com/v17/customers/1234567893:uploadClickConversions',
           },
           metadataArray,
         ),

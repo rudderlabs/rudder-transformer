@@ -6190,4 +6190,244 @@ export const data = [
       },
     },
   },
+  {
+    name: 'mp',
+    description: 'Test fallback for traits to context traits on group call',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: overrideDestination(sampleDestination, {
+              groupKeySettings: [{ groupKey: 'company' }],
+            }),
+            message: {
+              anonymousId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
+              channel: 'mobile',
+              name: 'Contact Us',
+              context: {
+                app: {
+                  build: '1.0.0',
+                  name: 'RudderLabs Android SDK',
+                  namespace: 'com.rudderlabs.javascript',
+                  version: '1.0.5',
+                },
+                ip: '0.0.0.0',
+                library: { name: 'RudderLabs JavaScript SDK', version: '1.0.5' },
+                locale: 'en-GB',
+                os: { name: '', version: '' },
+                screen: { density: 2 },
+                traits: { company: 'testComp' },
+                userAgent:
+                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36',
+              },
+              integrations: { All: true },
+              messageId: 'dd266c67-9199-4a52-ba32-f46ddde67312',
+              originalTimestamp: '2020-01-24T06:29:02.358Z',
+              properties: {
+                path: '/tests/html/index2.html',
+                referrer: '',
+                search: '',
+                title: '',
+                url: 'http://localhost/tests/html/index2.html',
+              },
+              traits: {},
+              receivedAt: '2020-01-24T11:59:02.403+05:30',
+              request_ip: '[::1]:53708',
+              sentAt: '2020-01-24T06:29:02.359Z',
+              timestamp: '2020-01-24T11:59:02.402+05:30',
+              type: 'group',
+              userId: 'hjikl',
+            },
+          },
+        ],
+        method: 'POST',
+      },
+      pathSuffix: '',
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://api.mixpanel.com/engage/',
+              headers: {},
+              params: {},
+              body: {
+                JSON: {},
+                JSON_ARRAY: {
+                  batch:
+                    '[{"$token":"test_api_token","$distinct_id":"hjikl","$set":{"company":["testComp"]},"$ip":"0.0.0.0"}]',
+                },
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: 'hjikl',
+            },
+            statusCode: 200,
+          },
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://api.mixpanel.com/groups/',
+              headers: {},
+              params: {},
+              body: {
+                JSON: {},
+                JSON_ARRAY: {
+                  batch:
+                    '[{"$token":"test_api_token","$group_key":"company","$group_id":"testComp","$set":{"company":"testComp"}}]',
+                },
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: 'hjikl',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'mp',
+    description: 'Test fallback to traits for when groupId is an array',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: overrideDestination(sampleDestination, {
+              groupKeySettings: [{ groupKey: 'company' }],
+            }),
+            message: {
+              anonymousId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
+              channel: 'mobile',
+              name: 'Contact Us',
+              context: {
+                app: {
+                  build: '1.0.0',
+                  name: 'RudderLabs Android SDK',
+                  namespace: 'com.rudderlabs.javascript',
+                  version: '1.0.5',
+                },
+                ip: '0.0.0.0',
+                library: { name: 'RudderLabs JavaScript SDK', version: '1.0.5' },
+                locale: 'en-GB',
+                os: { name: '', version: '' },
+                screen: { density: 2 },
+                traits: { company: ['testComp', 'testComp1'] },
+                userAgent:
+                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36',
+              },
+              integrations: { All: true },
+              messageId: 'dd266c67-9199-4a52-ba32-f46ddde67312',
+              originalTimestamp: '2020-01-24T06:29:02.358Z',
+              properties: {
+                path: '/tests/html/index2.html',
+                referrer: '',
+                search: '',
+                title: '',
+                url: 'http://localhost/tests/html/index2.html',
+              },
+              traits: {},
+              receivedAt: '2020-01-24T11:59:02.403+05:30',
+              request_ip: '[::1]:53708',
+              sentAt: '2020-01-24T06:29:02.359Z',
+              timestamp: '2020-01-24T11:59:02.402+05:30',
+              type: 'group',
+              userId: 'hjikl',
+            },
+          },
+        ],
+        method: 'POST',
+      },
+      pathSuffix: '',
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://api.mixpanel.com/engage/',
+              headers: {},
+              params: {},
+              body: {
+                JSON: {},
+                JSON_ARRAY: {
+                  batch:
+                    '[{"$token":"test_api_token","$distinct_id":"hjikl","$set":{"company":["testComp","testComp1"]},"$ip":"0.0.0.0"}]',
+                },
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: 'hjikl',
+            },
+            statusCode: 200,
+          },
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://api.mixpanel.com/groups/',
+              headers: {},
+              params: {},
+              body: {
+                JSON: {},
+                JSON_ARRAY: {
+                  batch:
+                    '[{"$token":"test_api_token","$group_key":"company","$group_id":"testComp","$set":{"company":["testComp","testComp1"]}}]',
+                },
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: 'hjikl',
+            },
+            statusCode: 200,
+          },
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://api.mixpanel.com/groups/',
+              headers: {},
+              params: {},
+              body: {
+                JSON: {},
+                JSON_ARRAY: {
+                  batch:
+                    '[{"$token":"test_api_token","$group_key":"company","$group_id":"testComp1","$set":{"company":["testComp","testComp1"]}}]',
+                },
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: 'hjikl',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
 ];

@@ -369,13 +369,15 @@ const processAliasEvents = (message, type, destination) => {
 const processGroupEvents = (message, type, destination) => {
   const returnValue = [];
   const groupKeys = getValuesAsArrayFromConfig(destination.Config.groupKeySettings, 'groupKey');
+  const traits =
+    Object.keys(message.traits ?? {}).length > 0 ? message.traits : message.context.traits ?? {};
   let groupKeyVal;
   if (groupKeys.length > 0) {
     groupKeys.forEach((groupKey) => {
       groupKeyVal =
         groupKey === 'groupId'
           ? getFieldValueFromMessage(message, 'groupId')
-          : get(message.traits, groupKey);
+          : get(traits, groupKey);
       if (groupKeyVal && !Array.isArray(groupKeyVal)) {
         groupKeyVal = [groupKeyVal];
       }
@@ -399,7 +401,7 @@ const processGroupEvents = (message, type, destination) => {
             $group_key: groupKey,
             $group_id: value,
             $set: {
-              ...message.traits,
+              ...traits,
             },
           };
           const groupResponse = responseBuilderSimple(

@@ -8,11 +8,15 @@ const {
   addCartTokenHashToTraits,
 } = require('./serverSideUtlis');
 const { RedisDB } = require('../../../../util/redis/redisConnector');
+const stats = require('../../../../util/stats');
 
 const { lineItemsMappingJSON } = require('../../../../v0/sources/shopify/config');
 const Message = require('../../../../v0/sources/message');
 const { property } = require('lodash');
 jest.mock('../../../../v0/sources/message');
+jest.mock('../../../../util/stats', () => ({
+  increment: jest.fn(),
+}));
 
 const LINEITEMS = [
   {
@@ -215,5 +219,25 @@ describe('Redis cart token tests', () => {
     RedisDB.getVal = jest.spyOn(RedisDB, 'getVal').mockResolvedValue(mockRedisData);
     await setAnonymousId(message, { ...event, cart_token: cartToken }, metricMetadata);
     expect(message.anonymousId).toBe(expectedAnonymousId);
+  });
+
+  it('should handle undefined event parameter without error', async () => {
+    const message = {};
+
+    const metricMetadata = {
+      source: 'test-source',
+      writeKey: 'test-key',
+    };
+
+    await setAnonymousId(message, undefined, metricMetadata);
+
+    expect(message.anonymousId).toBeUndefined();
+
+    expect(stats.increment).toHaveBeenCalledWith('shopify_pixel_id_stitch_gaps', {
+      event: message.event,
+      reason: 'cart_token_miss',
+      source: metricMetadata.source,
+      writeKey: metricMetadata.writeKey,
+    });
   });
 });

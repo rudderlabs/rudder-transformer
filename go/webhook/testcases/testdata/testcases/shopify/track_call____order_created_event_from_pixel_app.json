@@ -3,7 +3,11 @@
   "description": "Track Call -> Order Created event from Pixel app",
   "input": {
     "request": {
-      "query": "{\"topic\":[\"orders_create\"],\"version\":[\"pixel\"],\"writeKey\":[\"2mw9SN679HngnZkCHT4oSVVBVmb\"]}",
+      "query": {
+        "topic": ["orders_create"],
+        "version": ["pixel"],
+        "writeKey": ["2mw9SN679HngnZkCHT4oSVVBVmb"]
+      },
       "body": {
         "id": 5778367414385,
         "admin_graphql_api_id": "gid://shopify/Order/5778367414385",

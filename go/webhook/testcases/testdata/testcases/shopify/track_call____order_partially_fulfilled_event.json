@@ -3,7 +3,11 @@
   "description": "Track Call -> Order Partially Fulfilled event",
   "input": {
     "request": {
-      "query": "{\"topic\":[\"orders_partially_fulfilled\"],\"writeKey\":[\"sample-write-key\"],\"signature\":[\"rudderstack\"]}",
+      "query": {
+        "topic": ["orders_partially_fulfilled"],
+        "writeKey": ["sample-write-key"],
+        "signature": ["rudderstack"]
+      },
       "body": {
         "id": 820982911946154500,
         "admin_graphql_api_id": "gid://shopify/Order/820982911946154508",

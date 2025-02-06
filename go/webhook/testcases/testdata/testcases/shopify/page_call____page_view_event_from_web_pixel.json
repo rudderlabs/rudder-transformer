@@ -3,7 +3,10 @@
   "description": "Page Call -> page_view event from web pixel",
   "input": {
     "request": {
-      "query": "{\"topic\":[\"page_viewed\"],\"writeKey\":[\"dummy-write-key\"]}",
+      "query": {
+        "topic": ["page_viewed"],
+        "writeKey": ["dummy-write-key"]
+      },
       "body": {
         "id": "sh-f6b6f548-5FEF-4DAE-9CAB-39EE6F94E09B",
         "name": "page_viewed",

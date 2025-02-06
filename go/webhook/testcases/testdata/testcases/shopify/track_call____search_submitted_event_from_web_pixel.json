@@ -3,7 +3,10 @@
   "description": "Track Call -> search_submitted event from web pixel",
   "input": {
     "request": {
-      "query": "{\"topic\":[\"search_submitted\"],\"writeKey\":[\"dummy-write-key\"]}",
+      "query": {
+        "topic": ["search_submitted"],
+        "writeKey": ["dummy-write-key"]
+      },
       "body": {
         "id": "sh-f7d599b4-D80F-4D05-C4CE-B980D5444596",
         "name": "search_submitted",

@@ -17,7 +17,7 @@ interface TestCaseData {
 
 interface Input {
   request: {
-    query?: string;
+    query?: Record<string, string[]>;
     body: any;
     headers?: Record<string, string>;
     method?: string;
@@ -95,7 +95,11 @@ function getSourceRequestBody(
     case 'v1':
       return removeQueryParameters(bodyElement.event);
     case 'v2':
-      return { ...bodyElement.request.body };
+      if (typeof bodyElement.request.body === 'string') {
+        return JSON.parse(bodyElement.request.body);
+      } else {
+        return bodyElement.request.body;
+      }
     default:
       throw new Error(`Unknown version: ${version}`);
   }
@@ -131,10 +135,7 @@ function getSourceRequestParams(testCase: any, version?: string) {
     }
   })();
 
-  if (Object.keys(queryParams).length === 0) {
-    return undefined;
-  }
-  return JSON.stringify(queryParams);
+  return Object.keys(queryParams).length === 0 ? undefined : queryParams;
 }
 
 function generateSources(outputFolder: string, options: OptionValues) {

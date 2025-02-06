@@ -3,7 +3,11 @@
   "description": "Identify Call -> Customer update event from Pixel app",
   "input": {
     "request": {
-      "query": "{\"topic\":[\"customers_update\"],\"version\":[\"pixel\"],\"writeKey\":[\"2mw9SN679HngnXXXHT4oSVVBVmb\"]}",
+      "query": {
+        "topic": ["customers_update"],
+        "version": ["pixel"],
+        "writeKey": ["2mw9SN679HngnXXXHT4oSVVBVmb"]
+      },
       "body": {
         "id": 7358220173425,
         "email": "henry@wfls.com",

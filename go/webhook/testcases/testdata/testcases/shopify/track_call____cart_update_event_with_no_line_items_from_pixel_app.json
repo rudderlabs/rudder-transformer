@@ -3,7 +3,11 @@
   "description": "Track Call -> Cart Update event with no line items from Pixel app",
   "input": {
     "request": {
-      "query": "{\"topic\":[\"carts_update\"],\"writeKey\":[\"2mw9SN679HngnXXXHT4oSVVBVmb\"],\"version\":[\"pixel\"]}",
+      "query": {
+        "topic": ["carts_update"],
+        "writeKey": ["2mw9SN679HngnXXXHT4oSVVBVmb"],
+        "version": ["pixel"]
+      },
       "body": {
         "id": "Z2NwLXVzLWVhc3QxOjAxSjdXRjdOQjY0NlFFNFdQVEg0MTRFM1E2",
         "token": "Z2NwLXVzLWVhc3QxOjAxSjdXRjdOQjY0NlFFNFdQVEg0MTRFM1E2",

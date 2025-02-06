@@ -3,7 +3,9 @@
   "description": "Track Call -> carts_create ",
   "input": {
     "request": {
-      "query": "{\"topic\":[\"carts_create\"]}",
+      "query": {
+        "topic": ["carts_create"]
+      },
       "body": {
         "id": "shopify_test3",
         "token": "shopify_test3",

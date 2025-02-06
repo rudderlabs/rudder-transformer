@@ -3,7 +3,10 @@
   "description": "Track Call -> checkout_completed event from web pixel",
   "input": {
     "request": {
-      "query": "{\"topic\":[\"checkouts_update\"],\"writeKey\":[\"dummy-write-key\"]}",
+      "query": {
+        "topic": ["checkouts_update"],
+        "writeKey": ["dummy-write-key"]
+      },
       "body": {
         "id": "sh-f77a78f1-C1D8-4ED4-9C9B-0D352CF6F3BF",
         "name": "checkout_completed",

@@ -3,7 +3,11 @@
   "description": "Identify Call for customers create event",
   "input": {
     "request": {
-      "query": "{\"topic\":[\"customers_create\"],\"signature\":[\"rudderstack\"],\"writeKey\":[\"sample-write-key\"]}",
+      "query": {
+        "topic": ["customers_create"],
+        "signature": ["rudderstack"],
+        "writeKey": ["sample-write-key"]
+      },
       "body": {
         "id": 5747017285820,
         "email": "anuraj@rudderstack.com",

@@ -3,7 +3,10 @@
   "description": "Track Call -> shipping_info_submitted event from web pixel",
   "input": {
     "request": {
-      "query": "{\"topic\":[\"checkouts_update\"],\"writeKey\":[\"dummy-write-key\"]}",
+      "query": {
+        "topic": ["checkouts_update"],
+        "writeKey": ["dummy-write-key"]
+      },
       "body": {
         "id": "sh-f7d5618e-404A-4E6D-4662-599A4BCC9E7C",
         "name": "checkout_shipping_info_submitted",

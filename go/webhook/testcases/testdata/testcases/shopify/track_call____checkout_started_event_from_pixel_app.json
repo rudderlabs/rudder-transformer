@@ -3,7 +3,11 @@
   "description": "Track Call -> Checkout Started event from Pixel app",
   "input": {
     "request": {
-      "query": "{\"topic\":[\"checkouts_create\"],\"version\":[\"pixel\"],\"writeKey\":[\"2mw9SN679HngnXXXHT4oSVVBVmb\"]}",
+      "query": {
+        "topic": ["checkouts_create"],
+        "version": ["pixel"],
+        "writeKey": ["2mw9SN679HngnXXXHT4oSVVBVmb"]
+      },
       "body": {
         "id": 35550298931313,
         "token": "84ad78572dae52a8cbea7d55371afe89",

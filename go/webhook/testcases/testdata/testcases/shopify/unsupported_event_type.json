@@ -3,7 +3,11 @@
   "description": "Unsupported Event Type",
   "input": {
     "request": {
-      "query": "{\"topic\":[\"random_event\"],\"signature\":[\"rudderstack\"],\"writeKey\":[\"sample-write-key\"]}",
+      "query": {
+        "topic": ["random_event"],
+        "signature": ["rudderstack"],
+        "writeKey": ["sample-write-key"]
+      },
       "body": {},
       "headers": {
         "Content-Type": "application/json"

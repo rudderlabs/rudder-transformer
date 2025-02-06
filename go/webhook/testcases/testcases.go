@@ -31,9 +31,10 @@ type Case struct {
 type Input struct {
 	Request Request
 }
+
 type Request struct {
 	Method   string
-	RawQuery string `json:"query"`
+	RawQuery map[string][]string `json:"query"`
 	Headers  map[string]string
 	Body     json.RawMessage
 }

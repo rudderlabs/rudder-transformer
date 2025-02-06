@@ -3,7 +3,11 @@
   "description": "Topic Not found",
   "input": {
     "request": {
-      "query": "{\"topic\":[],\"signature\":[\"rudderstack\"],\"writeKey\":[\"sample-write-key\"]}",
+      "query": {
+        "topic": [],
+        "signature": ["rudderstack"],
+        "writeKey": ["sample-write-key"]
+      },
       "body": {},
       "headers": {
         "Content-Type": "application/json"

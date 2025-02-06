@@ -3,7 +3,11 @@
   "description": "Track Call -> Order Updated event from Pixel app",
   "input": {
     "request": {
-      "query": "{\"topic\":[\"orders_updated\"],\"version\":[\"pixel\"],\"writeKey\":[\"2mw9SN679HngnXXXHT4oSVVBVmb\"]}",
+      "query": {
+        "topic": ["orders_updated"],
+        "version": ["pixel"],
+        "writeKey": ["2mw9SN679HngnXXXHT4oSVVBVmb"]
+      },
       "body": {
         "id": 5778367414385,
         "admin_graphql_api_id": "gid://shopify/Order/5778367414385",

@@ -3,7 +3,10 @@
   "description": "Track Call -> payment_info_submitted event from web pixel",
   "input": {
     "request": {
-      "query": "{\"topic\":[\"checkouts_update\"],\"writeKey\":[\"dummy-write-key\"]}",
+      "query": {
+        "topic": ["checkouts_update"],
+        "writeKey": ["dummy-write-key"]
+      },
       "body": {
         "id": "sh-f7d843ea-ED11-4A12-F32F-C5A45BED0413",
         "name": "payment_info_submitted",

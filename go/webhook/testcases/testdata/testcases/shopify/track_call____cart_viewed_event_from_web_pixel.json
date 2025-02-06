@@ -3,7 +3,10 @@
   "description": "Track Call -> cart_viewed event from web pixel",
   "input": {
     "request": {
-      "query": "{\"topic\":[\"cart_viewed\"],\"writeKey\":[\"dummy-write-key\"]}",
+      "query": {
+        "topic": ["cart_viewed"],
+        "writeKey": ["dummy-write-key"]
+      },
       "body": {
         "id": "shu-f6eecef1-4132-459F-CDB5-681DA3DD61CD",
         "name": "cart_viewed",

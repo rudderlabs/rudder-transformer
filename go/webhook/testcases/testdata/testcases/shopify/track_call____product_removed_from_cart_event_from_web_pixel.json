@@ -3,7 +3,10 @@
   "description": "Track Call -> product_removed_from_cart event from web pixel",
   "input": {
     "request": {
-      "query": "{\"topic\":[\"carts_update\"],\"writeKey\":[\"dummy-write-key\"]}",
+      "query": {
+        "topic": ["carts_update"],
+        "writeKey": ["dummy-write-key"]
+      },
       "body": {
         "id": "shu-f778d1eb-9B83-4832-9DC0-5C3B33A809F0",
         "name": "product_removed_from_cart",

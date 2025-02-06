@@ -23,54 +23,68 @@ const {
   generateAppSecretProof,
 } = require('./util');
 
-const processRecordEventArray = (
-  recordChunksArray,
-  userSchema,
-  isHashRequired,
-  disableFormat,
-  paramsPayload,
-  prepareParams,
-  destination,
-  operation,
-  audienceId,
-) => {
+/**
+ * Processes a single record and updates the data element.
+ * @param {Object} record - The record to process.
+ * @param {Array} userSchema - The schema defining user properties.
+ * @param {boolean} isHashRequired - Whether hashing is required.
+ * @param {boolean} disableFormat - Whether formatting is disabled.
+ * @returns {Object} - The processed data element and metadata.
+ */
+const processRecord = (record, userSchema, isHashRequired, disableFormat) => {
+  const { fields } = record.message;
+  let dataElement = [];
+  let nullUserData = true;
+
+  userSchema.forEach((eachProperty) => {
+    const userProperty = fields[eachProperty];
+    let updatedProperty = userProperty;
+
+    if (isHashRequired && !disableFormat) {
+      updatedProperty = ensureApplicableFormat(eachProperty, userProperty);
+    }
+
+    dataElement = getUpdatedDataElement(dataElement, isHashRequired, eachProperty, updatedProperty);
+
+    if (dataElement[dataElement.length - 1]) {
+      nullUserData = false;
+    }
+  });
+
+  if (nullUserData) {
+    stats.increment('fb_custom_audience_event_having_all_null_field_values_for_a_user', {
+      destinationId: record.destination.ID,
+      nullFields: userSchema,
+    });
+  }
+
+  return { dataElement, metadata: record.metadata };
+};
+
+/**
+ * Processes an array of record chunks and prepares the payload for sending.
+ * @param {Array} recordChunksArray - The array of record chunks.
+ * @param {Object} config - Configuration object containing userSchema, isHashRequired, disableFormat, etc.
+ * @param {Object} destination - The destination configuration.
+ * @param {string} operation - The operation to perform (e.g., 'add', 'remove').
+ * @param {string} audienceId - The audience ID.
+ * @returns {Array} - The response events to send.
+ */
+const processRecordEventArray = (recordChunksArray, config, destination, operation, audienceId) => {
+  const { userSchema, isHashRequired, disableFormat, paramsPayload, prepareParams } = config;
   const toSendEvents = [];
   const metadata = [];
+
   recordChunksArray.forEach((recordArray) => {
-    const data = [];
-    recordArray.forEach((input) => {
-      const { fields } = input.message;
-      let dataElement = [];
-      let nullUserData = true;
-
-      userSchema.forEach((eachProperty) => {
-        const userProperty = fields[eachProperty];
-        let updatedProperty = userProperty;
-
-        if (isHashRequired && !disableFormat) {
-          updatedProperty = ensureApplicableFormat(eachProperty, userProperty);
-        }
-
-        dataElement = getUpdatedDataElement(
-          dataElement,
-          isHashRequired,
-          eachProperty,
-          updatedProperty,
-        );
-
-        if (dataElement[dataElement.length - 1]) {
-          nullUserData = false;
-        }
-      });
-
-      if (nullUserData) {
-        stats.increment('fb_custom_audience_event_having_all_null_field_values_for_a_user', {
-          destinationId: destination.ID,
-          nullFields: userSchema,
-        });
-      }
-      data.push(dataElement);
-      metadata.push(input.metadata);
+    const data = recordArray.map((input) => {
+      const { dataElement, metadata: recordMetadata } = processRecord(
+        input,
+        userSchema,
+        isHashRequired,
+        disableFormat,
+      );
+      metadata.push(recordMetadata);
+      return dataElement;
     });
 
     const prepareFinalPayload = lodash.cloneDeep(paramsPayload);
@@ -90,16 +104,19 @@ const processRecordEventArray = (
       };
 
       const builtResponse = responseBuilderSimple(wrappedResponse, audienceId);
-
       toSendEvents.push(builtResponse);
     });
   });
 
-  const response = getSuccessRespEvents(toSendEvents, metadata, destination, true);
-
-  return response;
+  return getSuccessRespEvents(toSendEvents, metadata, destination, true);
 };
 
+/**
+ * Prepares the payload for the given events and configuration.
+ * @param {Array} events - The events to process.
+ * @param {Object} config - The configuration object.
+ * @returns {Array} - The final response payload.
+ */
 function preparePayload(events, config) {
   const { audienceId, userSchema, isRaw, type, subType, isHashRequired, disableFormat } = config;
   const { destination } = events[0];
@@ -138,64 +155,32 @@ function preparePayload(events, config) {
     record.message.action?.toLowerCase(),
   );
 
-  let insertResponse;
-  let deleteResponse;
-  let updateResponse;
+  const processAction = (action, operation) => {
+    if (groupedRecordsByAction[action]) {
+      const recordChunksArray = returnArrayOfSubarrays(
+        groupedRecordsByAction[action],
+        MAX_USER_COUNT,
+      );
+      return processRecordEventArray(
+        recordChunksArray,
+        {
+          userSchema: cleanUserSchema,
+          isHashRequired,
+          disableFormat,
+          paramsPayload,
+          prepareParams,
+        },
+        destination,
+        operation,
+        audienceId,
+      );
+    }
+    return null;
+  };
 
-  if (groupedRecordsByAction.delete) {
-    const deleteRecordChunksArray = returnArrayOfSubarrays(
-      groupedRecordsByAction.delete,
-      MAX_USER_COUNT,
-    );
-    deleteResponse = processRecordEventArray(
-      deleteRecordChunksArray,
-      cleanUserSchema,
-      isHashRequired,
-      disableFormat,
-      paramsPayload,
-      prepareParams,
-      destination,
-      'remove',
-      audienceId,
-    );
-  }
-
-  if (groupedRecordsByAction.insert) {
-    const insertRecordChunksArray = returnArrayOfSubarrays(
-      groupedRecordsByAction.insert,
-      MAX_USER_COUNT,
-    );
-
-    insertResponse = processRecordEventArray(
-      insertRecordChunksArray,
-      cleanUserSchema,
-      isHashRequired,
-      disableFormat,
-      paramsPayload,
-      prepareParams,
-      destination,
-      'add',
-      audienceId,
-    );
-  }
-
-  if (groupedRecordsByAction.update) {
-    const updateRecordChunksArray = returnArrayOfSubarrays(
-      groupedRecordsByAction.update,
-      MAX_USER_COUNT,
-    );
-    updateResponse = processRecordEventArray(
-      updateRecordChunksArray,
-      cleanUserSchema,
-      isHashRequired,
-      disableFormat,
-      paramsPayload,
-      prepareParams,
-      destination,
-      'add',
-      audienceId,
-    );
-  }
+  const deleteResponse = processAction('delete', 'remove');
+  const insertResponse = processAction('insert', 'add');
+  const updateResponse = processAction('update', 'add');
 
   const errorResponse = getErrorResponse(groupedRecordsByAction);
 
@@ -203,7 +188,6 @@ function preparePayload(events, config) {
     deleteResponse,
     insertResponse,
     updateResponse,
-
     errorResponse,
   );
   if (finalResponse.length === 0) {
@@ -214,6 +198,11 @@ function preparePayload(events, config) {
   return finalResponse;
 }
 
+/**
+ * Processes record inputs for V1 flow.
+ * @param {Array} groupedRecordInputs - The grouped record inputs.
+ * @returns {Array} - The processed payload.
+ */
 function processRecordInputsV1(groupedRecordInputs) {
   const { destination } = groupedRecordInputs[0];
   const { message } = groupedRecordInputs[0];
@@ -239,11 +228,15 @@ function processRecordInputsV1(groupedRecordInputs) {
   });
 }
 
+/**
+ * Processes record inputs for V2 flow.
+ * @param {Array} groupedRecordInputs - The grouped record inputs.
+ * @returns {Array} - The processed payload.
+ */
 const processRecordInputsV2 = (groupedRecordInputs) => {
   const { connection, message } = groupedRecordInputs[0];
   const { isHashRequired, disableFormat, type, subType, isRaw, audienceId } =
     connection.config.destination;
-  // Ref: https://www.notion.so/rudderstacks/VDM-V2-Final-Config-and-Record-EventPayload-8cc80f3d88ad46c7bc43df4b87a0bbff
   const identifiers = message?.identifiers;
   let userSchema;
   if (identifiers) {
@@ -267,6 +260,11 @@ const processRecordInputsV2 = (groupedRecordInputs) => {
   });
 };
 
+/**
+ * Processes record inputs based on the flow type.
+ * @param {Array} groupedRecordInputs - The grouped record inputs.
+ * @returns {Array} - The processed payload.
+ */
 function processRecordInputs(groupedRecordInputs) {
   const event = groupedRecordInputs[0];
   // First check for rETL flow and second check for ES flow

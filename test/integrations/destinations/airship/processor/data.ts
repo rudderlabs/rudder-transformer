@@ -1,4 +1,7 @@
+import { identifyTestCases } from './business';
+
 export const data = [
+  ...identifyTestCases,
   {
     name: 'airship',
     description: 'Test 0',

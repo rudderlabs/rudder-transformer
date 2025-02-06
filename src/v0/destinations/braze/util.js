@@ -771,7 +771,7 @@ const collectStatsForAliasFailure = (brazeResponse, destinationId) => {
   if (!isDefinedAndNotNull(brazeResponse)) {
     return;
   }
-  const { aliases_processed: aliasesProcessed, errors } = brazeResponse;
+  const { aliases_processed: aliasesProcessed } = brazeResponse;
   if (aliasesProcessed === 0) {
     stats.increment('braze_alias_failure_count', { destination_id: destinationId });
   }

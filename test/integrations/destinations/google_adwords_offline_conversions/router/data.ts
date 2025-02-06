@@ -484,7 +484,7 @@ export const data = [
                   type: 'REST',
                   method: 'POST',
                   endpoint:
-                    'https://googleads.googleapis.com/v16/customers/7693729833/offlineUserDataJobs',
+                    'https://googleads.googleapis.com/v17/customers/7693729833/offlineUserDataJobs',
                   headers: {
                     Authorization: 'Bearer abcd1234',
                     'Content-Type': 'application/json',
@@ -566,7 +566,7 @@ export const data = [
                   type: 'REST',
                   method: 'POST',
                   endpoint:
-                    'https://googleads.googleapis.com/v16/customers/7693729833:uploadCallConversions',
+                    'https://googleads.googleapis.com/v17/customers/7693729833:uploadCallConversions',
                   headers: {
                     Authorization: 'Bearer abcd1234',
                     'Content-Type': 'application/json',
@@ -681,7 +681,7 @@ export const data = [
                 type: 'REST',
                 method: 'POST',
                 endpoint:
-                  'https://googleads.googleapis.com/v16/customers/9625812972:uploadClickConversions',
+                  'https://googleads.googleapis.com/v17/customers/9625812972:uploadClickConversions',
                 headers: {
                   Authorization: 'Bearer abcd1234',
                   'Content-Type': 'application/json',
@@ -816,7 +816,7 @@ export const data = [
                 type: 'REST',
                 method: 'POST',
                 endpoint:
-                  'https://googleads.googleapis.com/v16/customers/9625812972:uploadCallConversions',
+                  'https://googleads.googleapis.com/v17/customers/9625812972:uploadCallConversions',
                 headers: {
                   Authorization: 'Bearer abcd1234',
                   'Content-Type': 'application/json',
@@ -1170,7 +1170,7 @@ export const data = [
                 type: 'REST',
                 method: 'POST',
                 endpoint:
-                  'https://googleads.googleapis.com/v16/customers/1234556775/offlineUserDataJobs',
+                  'https://googleads.googleapis.com/v17/customers/1234556775/offlineUserDataJobs',
                 headers: {
                   Authorization: 'Bearer abcd1234',
                   'Content-Type': 'application/json',

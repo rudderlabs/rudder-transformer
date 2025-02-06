@@ -1,7 +1,15 @@
 const { getMappingConfig } = require('../../util');
 
-const ENDPOINT = 'https://tr.snapchat.com/v2/conversion';
+const ENDPOINT = {
+  Endpoint_v2: 'https://tr.snapchat.com/v2/conversion',
+  Endpoint_v3: 'https://tr.snapchat.com/v3/{ID}/events',
+};
 const MAX_BATCH_SIZE = 2000;
+
+const API_VERSION = {
+  v2: 'legacyApi',
+  v3: 'newApi',
+};
 
 const ConfigCategory = {
   DEFAULT: { name: 'SnapchatTrackDefaultConfig' },
@@ -84,4 +92,5 @@ module.exports = {
   mappingConfig,
   MAX_BATCH_SIZE,
   pageTypeToTrackEvent,
+  API_VERSION,
 };

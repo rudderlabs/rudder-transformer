@@ -7,8 +7,8 @@ const {
   getFieldValueFromMessage,
   defaultBatchRequestConfig,
 } = require('../../util');
-const { ENDPOINT } = require('./config');
 const { JSON_MIME_TYPE } = require('../../util/constant');
+const { ENDPOINT } = require('./config');
 
 const channelMapping = {
   web: 'WEB',
@@ -128,7 +128,7 @@ function generateBatchedPayloadForArray(events, destination) {
     batch: JSON.stringify(batchResponseList),
   };
 
-  batchedRequest.endpoint = ENDPOINT;
+  batchedRequest.endpoint = ENDPOINT.Endpoint_v2;
   batchedRequest.headers = {
     'Content-Type': JSON_MIME_TYPE,
     Authorization: `Bearer ${apiKey}`,

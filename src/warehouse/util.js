@@ -136,6 +136,27 @@ const getRecordIDForExtract = (message) => {
   return recordId;
 };
 
+function mergeJSONPathsFromDataWarehouse(message, options) {
+  const dataWarehouseOptions = message.integrations?.['DATA_WAREHOUSE']?.options;
+  if (!dataWarehouseOptions?.jsonPaths) return;
+
+  const dataWarehouseJSONPaths = Array.isArray(dataWarehouseOptions.jsonPaths)
+    ? dataWarehouseOptions.jsonPaths
+    : [];
+  const currentJSONPaths = Array.isArray(options.integrationOptions?.jsonPaths)
+    ? options.integrationOptions.jsonPaths
+    : [];
+
+  switch (options.provider) {
+    case 'rs':
+    case 'postgres':
+    case 'snowflake':
+    case 'bq':
+      options.integrationOptions.jsonPaths = [...dataWarehouseJSONPaths, ...currentJSONPaths];
+      break;
+  }
+}
+
 module.exports = {
   isObject,
   isValidJsonPathKey,
@@ -148,4 +169,5 @@ module.exports = {
   sourceCategoriesToUseRecordId,
   getCloudRecordID,
   getRecordIDForExtract,
+  mergeJSONPathsFromDataWarehouse,
 };

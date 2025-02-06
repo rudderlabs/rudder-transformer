@@ -27,7 +27,11 @@ scripts/skipPrepareScript.js
 .prettierignore
 *.json
 Dockerfile*
+*.properties
 
 # Ignore Go module files
 go/**/*.mod
 go/**/*.sum
+
+
+

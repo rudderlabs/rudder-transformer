@@ -176,7 +176,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint:
-                'https://googleads.googleapis.com/v16/customers/9625812972:uploadClickConversions',
+                'https://googleads.googleapis.com/v17/customers/9625812972:uploadClickConversions',
               headers: {
                 Authorization: 'Bearer abcd1234',
                 'Content-Type': 'application/json',
@@ -467,7 +467,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint:
-                'https://googleads.googleapis.com/v16/customers/9625812972:uploadClickConversions',
+                'https://googleads.googleapis.com/v17/customers/9625812972:uploadClickConversions',
               headers: {
                 Authorization: 'Bearer abcd1234',
                 'Content-Type': 'application/json',
@@ -758,7 +758,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint:
-                'https://googleads.googleapis.com/v16/customers/9625812972:uploadClickConversions',
+                'https://googleads.googleapis.com/v17/customers/9625812972:uploadClickConversions',
               headers: {
                 Authorization: 'Bearer abcd1234',
                 'Content-Type': 'application/json',
@@ -1049,7 +1049,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint:
-                'https://googleads.googleapis.com/v16/customers/9625812972:uploadCallConversions',
+                'https://googleads.googleapis.com/v17/customers/9625812972:uploadCallConversions',
               headers: {
                 Authorization: 'Bearer abcd1234',
                 'Content-Type': 'application/json',
@@ -2023,7 +2023,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint:
-                'https://googleads.googleapis.com/v16/customers/9625812972:uploadClickConversions',
+                'https://googleads.googleapis.com/v17/customers/9625812972:uploadClickConversions',
               headers: {
                 Authorization: 'Bearer abcd1234',
                 'Content-Type': 'application/json',
@@ -2129,7 +2129,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint:
-                'https://googleads.googleapis.com/v16/customers/9625812972:uploadCallConversions',
+                'https://googleads.googleapis.com/v17/customers/9625812972:uploadCallConversions',
               headers: {
                 Authorization: 'Bearer abcd1234',
                 'Content-Type': 'application/json',
@@ -2353,7 +2353,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint:
-                'https://googleads.googleapis.com/v16/customers/9625812972:uploadClickConversions',
+                'https://googleads.googleapis.com/v17/customers/9625812972:uploadClickConversions',
               headers: {
                 Authorization: 'Bearer abcd1234',
                 'Content-Type': 'application/json',
@@ -2553,7 +2553,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint:
-                'https://googleads.googleapis.com/v16/customers/9625812972:uploadCallConversions',
+                'https://googleads.googleapis.com/v17/customers/9625812972:uploadCallConversions',
               headers: {
                 Authorization: 'Bearer abcd1234',
                 'Content-Type': 'application/json',
@@ -2789,7 +2789,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint:
-                'https://googleads.googleapis.com/v16/customers/9625812972:uploadCallConversions',
+                'https://googleads.googleapis.com/v17/customers/9625812972:uploadCallConversions',
               headers: {
                 Authorization: 'Bearer abcd1234',
                 'Content-Type': 'application/json',
@@ -3012,7 +3012,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint:
-                'https://googleads.googleapis.com/v16/customers/9625812972:uploadClickConversions',
+                'https://googleads.googleapis.com/v17/customers/9625812972:uploadClickConversions',
               headers: {
                 Authorization: 'Bearer abcd1234',
                 'Content-Type': 'application/json',
@@ -3520,7 +3520,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint:
-                'https://googleads.googleapis.com/v16/customers/9625812972:uploadClickConversions',
+                'https://googleads.googleapis.com/v17/customers/9625812972:uploadClickConversions',
               headers: {
                 Authorization: 'Bearer abcd1234',
                 'Content-Type': 'application/json',
@@ -3763,7 +3763,7 @@ export const data = [
                 XML: {},
               },
               endpoint:
-                'https://googleads.googleapis.com/v16/customers/9625812972:uploadClickConversions',
+                'https://googleads.googleapis.com/v17/customers/9625812972:uploadClickConversions',
               files: {},
               headers: {
                 Authorization: 'Bearer abcd1234',
@@ -3937,7 +3937,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint:
-                'https://googleads.googleapis.com/v16/customers/9625812972:uploadClickConversions',
+                'https://googleads.googleapis.com/v17/customers/9625812972:uploadClickConversions',
               headers: {
                 Authorization: 'Bearer abcd1234',
                 'Content-Type': 'application/json',
@@ -4129,7 +4129,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint:
-                'https://googleads.googleapis.com/v16/customers/1112223333/offlineUserDataJobs',
+                'https://googleads.googleapis.com/v17/customers/1112223333/offlineUserDataJobs',
               headers: {
                 Authorization: 'Bearer abcd1234',
                 'Content-Type': 'application/json',
@@ -4466,7 +4466,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint:
-                'https://googleads.googleapis.com/v16/customers/1112223333/offlineUserDataJobs',
+                'https://googleads.googleapis.com/v17/customers/1112223333/offlineUserDataJobs',
               headers: {
                 Authorization: 'Bearer abcd1234',
                 'Content-Type': 'application/json',
@@ -4665,7 +4665,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint:
-                'https://googleads.googleapis.com/v16/customers/1112223333/offlineUserDataJobs',
+                'https://googleads.googleapis.com/v17/customers/1112223333/offlineUserDataJobs',
               headers: {
                 Authorization: 'Bearer abcd1234',
                 'Content-Type': 'application/json',
@@ -4867,7 +4867,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint:
-                'https://googleads.googleapis.com/v16/customers/1112223333/offlineUserDataJobs',
+                'https://googleads.googleapis.com/v17/customers/1112223333/offlineUserDataJobs',
               headers: {
                 Authorization: 'Bearer abcd1234',
                 'Content-Type': 'application/json',
@@ -5031,7 +5031,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint:
-                'https://googleads.googleapis.com/v16/customers/1112223333/offlineUserDataJobs',
+                'https://googleads.googleapis.com/v17/customers/1112223333/offlineUserDataJobs',
               headers: {
                 Authorization: 'Bearer abcd1234',
                 'Content-Type': 'application/json',
@@ -5191,7 +5191,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint:
-                'https://googleads.googleapis.com/v16/customers/1112223333/offlineUserDataJobs',
+                'https://googleads.googleapis.com/v17/customers/1112223333/offlineUserDataJobs',
               headers: {
                 Authorization: 'Bearer abcd1234',
                 'Content-Type': 'application/json',
@@ -5349,7 +5349,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint:
-                'https://googleads.googleapis.com/v16/customers/1112223333/offlineUserDataJobs',
+                'https://googleads.googleapis.com/v17/customers/1112223333/offlineUserDataJobs',
               headers: {
                 Authorization: 'Bearer abcd1234',
                 'Content-Type': 'application/json',
@@ -5504,7 +5504,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint:
-                'https://googleads.googleapis.com/v16/customers/1112223333/offlineUserDataJobs',
+                'https://googleads.googleapis.com/v17/customers/1112223333/offlineUserDataJobs',
               headers: {
                 Authorization: 'Bearer abcd1234',
                 'Content-Type': 'application/json',
@@ -5665,7 +5665,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint:
-                'https://googleads.googleapis.com/v16/customers/1112223333/offlineUserDataJobs',
+                'https://googleads.googleapis.com/v17/customers/1112223333/offlineUserDataJobs',
               headers: {
                 Authorization: 'Bearer abcd1234',
                 'Content-Type': 'application/json',
@@ -5907,6 +5907,114 @@ export const data = [
         body: [
           {
             error: "You can't use both wbraid and gbraid.",
+            metadata: {
+              secret: {
+                access_token: 'abcd1234',
+                developer_token: 'ijkl91011',
+                refresh_token: 'efgh5678',
+              },
+            },
+            statTags: {
+              destType: 'GOOGLE_ADWORDS_OFFLINE_CONVERSIONS',
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              feature: 'processor',
+              implementation: 'native',
+              module: 'destination',
+            },
+            statusCode: 400,
+          },
+        ],
+      },
+    },
+    mockFns: timestampMock,
+  },
+  {
+    name: 'google_adwords_offline_conversions',
+    description: 'Test 29 : store conversion which has value less than 0, should throw error',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              channel: 'web',
+              context: {
+                traits: {},
+              },
+              event: 'Product Clicked',
+              type: 'track',
+              messageId: '5e10d13a-bf9a-44bf-b884-43a9e591ea71',
+              anonymousId: '00000000000000000000000000',
+              userId: '12345',
+              properties: {
+                item_id: 'item id',
+                merchant_id: 'merchant id',
+                currency: 'INR',
+                revenue: '0',
+                store_code: 'store code',
+                gclid: 'gclid',
+                conversionDateTime: '2019-10-14T11:15:18.299Z',
+                product_id: '123445',
+                quantity: 123,
+              },
+              integrations: {
+                google_adwords_offline_conversion: {
+                  consent: {
+                    adUserdata: 'UNSPECIFIED',
+                    adPersonalization: 'GRANTED',
+                  },
+                },
+              },
+              name: 'ApplicationLoaded',
+              sentAt: '2019-10-14T11:15:53.296Z',
+            },
+            metadata: {
+              secret: {
+                access_token: 'abcd1234',
+                refresh_token: 'efgh5678',
+                developer_token: 'ijkl91011',
+              },
+            },
+            destination: {
+              Config: {
+                isCustomerAllowed: false,
+                customerId: '111-222-3333',
+                subAccount: true,
+                loginCustomerId: 'login-customer-id',
+                userDataConsent: 'GRANTED',
+                personalizationConsent: 'DENIED',
+                eventsToOfflineConversionsTypeMapping: [
+                  {
+                    from: 'Product Clicked',
+                    to: 'store',
+                  },
+                ],
+                eventsToConversionsNamesMapping: [
+                  {
+                    from: 'Product Clicked',
+                    to: 'Sign-up - click',
+                  },
+                ],
+                hashUserIdentifier: true,
+                defaultUserIdentifier: 'phone',
+                validateOnly: false,
+                rudderAccountId: '2EOknn1JNH7WK1MfNkgr4t3u4fGYKkRK',
+              },
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            error:
+              "The value '0' does not match the regex pattern, ^([1-9]\\d*(\\.\\d+)?|0\\.\\d+)$",
             metadata: {
               secret: {
                 access_token: 'abcd1234',

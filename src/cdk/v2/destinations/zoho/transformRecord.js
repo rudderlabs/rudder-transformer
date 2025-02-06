@@ -43,7 +43,7 @@ const responseBuilder = (
     Authorization: `Zoho-oauthtoken ${metadata[0].secret.accessToken}`,
   };
 
-  if (action === 'insert' || action === 'update') {
+  if (action === 'upsert') {
     const payload = {
       duplicate_check_fields: handleDuplicateCheck(
         addDefaultDuplicateCheck,
@@ -70,7 +70,6 @@ const batchResponseBuilder = (
   identifierType,
   operationModuleType,
   upsertEndPoint,
-  action,
 ) => {
   const upsertResponseArray = [];
   const deletionResponseArray = [];
@@ -101,7 +100,7 @@ const batchResponseBuilder = (
         identifierType,
         operationModuleType,
         upsertEndPoint,
-        action,
+        'upsert',
         upsertmetadataChunks.items[0],
       ),
     );
@@ -115,7 +114,7 @@ const batchResponseBuilder = (
         identifierType,
         operationModuleType,
         upsertEndPoint,
-        action,
+        'delete',
         deletionmetadataChunks.items[0],
       ),
     );
@@ -285,7 +284,6 @@ const processRecordInputs = async (inputs, destination) => {
   const response = [];
   const errorResponseList = [];
   const { Config } = destination;
-  const { action } = inputs[0].message;
 
   const transformedResponseToBeBatched = {
     upsertData: [],
@@ -302,7 +300,7 @@ const processRecordInputs = async (inputs, destination) => {
     inputs.map((input) =>
       processInput(
         input,
-        action,
+        input.action,
         operationModuleType,
         Config,
         transformedResponseToBeBatched,
@@ -322,7 +320,6 @@ const processRecordInputs = async (inputs, destination) => {
     identifierType,
     operationModuleType,
     upsertEndPoint,
-    action,
   );
 
   if (upsertResponseArray.length === 0 && deletionResponseArray.length === 0) {

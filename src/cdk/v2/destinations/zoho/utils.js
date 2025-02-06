@@ -1,24 +1,19 @@
 const {
-  MappedToDestinationKey,
   getHashFromArray,
   isDefinedAndNotNull,
   ConfigurationError,
   isDefinedAndNotNullAndNotEmpty,
 } = require('@rudderstack/integrations-lib');
-const get = require('get-value');
 const { getDestinationExternalIDInfoForRetl, isHttpStatusSuccess } = require('../../../../v0/util');
 const zohoConfig = require('./config');
 const { handleHttpRequest } = require('../../../../adapters/network');
 
 const deduceModuleInfo = (inputs, Config) => {
-  const singleRecordInput = inputs[0].message;
+  const firstRecord = inputs[0].message;
   const operationModuleInfo = {};
-  const mappedToDestination = get(singleRecordInput, MappedToDestinationKey);
+  const mappedToDestination = firstRecord?.context?.mappedToDestination;
   if (mappedToDestination) {
-    const { objectType, identifierType } = getDestinationExternalIDInfoForRetl(
-      singleRecordInput,
-      'ZOHO',
-    );
+    const { objectType, identifierType } = getDestinationExternalIDInfoForRetl(firstRecord, 'ZOHO');
     operationModuleInfo.operationModuleType = objectType;
     operationModuleInfo.upsertEndPoint = zohoConfig
       .COMMON_RECORD_ENDPOINT(Config.region)
@@ -142,18 +137,14 @@ const calculateTrigger = (trigger) => {
   return [trigger];
 };
 
-const validateConfigurationIssue = (Config, operationModuleType, action) => {
+const validateConfigurationIssue = (Config, operationModuleType) => {
   const hashMapMultiselect = getHashFromArray(
     Config.multiSelectFieldLevelDecision,
     'from',
     'to',
     false,
   );
-  if (
-    Object.keys(hashMapMultiselect).length > 0 &&
-    Config.module !== operationModuleType &&
-    action !== 'delete'
-  ) {
+  if (Object.keys(hashMapMultiselect).length > 0 && Config.module !== operationModuleType) {
     throw new ConfigurationError(
       'Object Chosen in Visual Data Mapper is not consistent with Module type selected in destination configuration. Aborting Events.',
     );

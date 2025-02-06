@@ -150,7 +150,7 @@ export const configuration: ProcessorTestData[] = [
                 'Content-Type': 'application/json',
                 Authorization: 'Basic dGVzdC11c2VyOg==',
                 h1: 'val1',
-                h2: 2,
+                h2: '2',
                 'content-type': 'application/json',
               },
               params: {
@@ -258,7 +258,7 @@ export const configuration: ProcessorTestData[] = [
                 'Content-Type': 'application/json',
                 Authorization: 'Basic dGVzdC11c2VyOg==',
                 h1: 'val1',
-                h2: 2,
+                h2: '2',
                 'content-type': 'application/json',
               },
               params: {
@@ -311,7 +311,7 @@ export const configuration: ProcessorTestData[] = [
                 'Content-Type': 'application/json',
                 Authorization: 'Basic dGVzdC11c2VyOg==',
                 h1: 'val1',
-                h2: 2,
+                h2: '2',
                 'content-type': 'application/json',
               },
               params: {

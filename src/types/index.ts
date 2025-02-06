@@ -124,11 +124,11 @@ type DestinationDefinition = {
   Config: FixMe;
 };
 
-type Destination = {
+type Destination<DestinationConfig = FixMe> = {
   ID: string;
   Name: string;
   DestinationDefinition: DestinationDefinition;
-  Config: FixMe;
+  Config: DestinationConfig;
   Enabled: boolean;
   WorkspaceID: string;
   Transformations: UserTransformationInput[];
@@ -166,12 +166,16 @@ type ProcessorTransformationRequest = {
   credentials?: Credential[];
 };
 
-type RouterTransformationRequestData = {
+type RouterTransformationRequestData<
+  Message = object,
+  DestinationType = Destination,
+  ConnectionType = Connection,
+> = {
   request?: object;
-  message: object;
+  message: Message;
   metadata: Metadata;
-  destination: Destination;
-  connection?: Connection;
+  destination: DestinationType;
+  connection?: ConnectionType;
 };
 
 type RouterTransformationRequest = {

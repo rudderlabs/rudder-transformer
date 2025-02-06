@@ -1,0 +1,94 @@
+[
+  {
+    "output": {
+      "version": "1",
+      "type": "REST",
+      "method": "PATCH",
+      "endpoint": "https://api.criteo.com/2022-10/audiences/34893/contactlist",
+      "headers": {
+        "Authorization": "Bearer success_access_token",
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "data": {
+            "type": "ContactlistAmendment",
+            "attributes": {
+              "operation": "add",
+              "identifierType": "madid",
+              "internalIdentifiers": false,
+              "identifiers": [
+                "sample_madid",
+                "sample_madid_1",
+                "sample_madid_2",
+                "sample_madid_10",
+                "sample_madid_13",
+                "sample_madid_11",
+                "sample_madid_12"
+              ]
+            }
+          }
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": ""
+    },
+    "metadata": {
+      "secret": {
+        "accessToken": "success_access_token"
+      }
+    },
+    "statusCode": 200
+  },
+  {
+    "output": {
+      "version": "1",
+      "type": "REST",
+      "method": "PATCH",
+      "endpoint": "https://api.criteo.com/2022-10/audiences/34893/contactlist",
+      "headers": {
+        "Authorization": "Bearer success_access_token",
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "data": {
+            "type": "ContactlistAmendment",
+            "attributes": {
+              "operation": "remove",
+              "identifierType": "madid",
+              "internalIdentifiers": false,
+              "identifiers": [
+                "sample_madid_3",
+                "sample_madid_4",
+                "sample_madid_5",
+                "sample_madid_6",
+                "sample_madid_7",
+                "sample_madid_8",
+                "sample_madid_9"
+              ]
+            }
+          }
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": ""
+    },
+    "metadata": {
+      "secret": {
+        "accessToken": "success_access_token"
+      }
+    },
+    "statusCode": 200
+  }
+]

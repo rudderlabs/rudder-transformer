@@ -1,0 +1,41 @@
+{
+  "output": {
+    "status": 200,
+    "message": "[CAMPAIGN_MANAGER Response Handler] - Request Processed Successfully",
+    "destinationResponse": {
+      "response": {
+        "hasFailures": false,
+        "status": [
+          {
+            "conversion": {
+              "timestampMicros": "1668624722000000",
+              "floodlightConfigurationId": "213123123",
+              "ordinal": "1",
+              "floodlightActivityId": "456543345245",
+              "value": 7,
+              "gclid": "123",
+              "limitAdTracking": true,
+              "childDirectedTreatment": true
+            },
+            "kind": "dfareporting#conversionStatus"
+          },
+          {
+            "conversion": {
+              "timestampMicros": "1668624722000000",
+              "floodlightConfigurationId": "213123123",
+              "ordinal": "1",
+              "floodlightActivityId": "456543345245",
+              "value": 8,
+              "gclid": "321",
+              "limitAdTracking": true,
+              "childDirectedTreatment": true
+            },
+            "kind": "dfareporting#conversionStatus"
+          }
+        ],
+        "kind": "dfareporting#conversionsBatchInsertResponse"
+      },
+      "status": 200
+    }
+  }
+}

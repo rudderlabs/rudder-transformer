@@ -1,7 +1,20 @@
 const mockLoggerInstance = {
   info: jest.fn(),
 };
-const { getFormData, httpPOST, httpGET, httpSend, fireHTTPStats } = require('./network');
+const {
+  getFormData,
+  httpPOST,
+  httpGET,
+  httpSend,
+  fireHTTPStats,
+  proxyRequest,
+  prepareProxyRequest,
+  handleHttpRequest,
+  httpDELETE,
+  httpPUT,
+  httpPATCH,
+  getPayloadData,
+} = require('./network');
 const { getFuncTestData } = require('../../test/testHelper');
 jest.mock('../util/stats', () => ({
   timing: jest.fn(),
@@ -20,14 +33,28 @@ jest.mock('@rudderstack/integrations-lib', () => {
   };
 });
 
-jest.mock('axios', () => jest.fn());
+// Mock the axios module
+jest.mock('axios', () => {
+  const mockAxios = jest.fn(); // Mock the default axios function
+  mockAxios.get = jest.fn(); // Mock axios.get
+  mockAxios.post = jest.fn(); // Mock axios.post
+  mockAxios.put = jest.fn(); // Mock axios.put
+  mockAxios.patch = jest.fn(); // Mock axios.patch
+  mockAxios.delete = jest.fn(); // Mock axios.delete
+
+  // Mock the axios.create method if needed
+  mockAxios.create = jest.fn(() => mockAxios);
+
+  return mockAxios; // Return the mocked axios
+});
+
+const axios = require('axios');
 
 jest.mock('../util/logger', () => ({
   ...jest.requireActual('../util/logger'),
   getMatchedMetadata: jest.fn(),
 }));
 
-const axios = require('axios');
 const loggerUtil = require('../util/logger');
 
 axios.post = jest.fn();
@@ -633,5 +660,340 @@ describe('logging in http methods', () => {
     );
 
     expect(mockLoggerInstance.info).toHaveBeenCalledTimes(0);
+  });
+});
+
+describe('httpDELETE tests', () => {
+  beforeEach(() => {
+    mockLoggerInstance.info.mockClear();
+    loggerUtil.getMatchedMetadata.mockClear();
+    axios.delete.mockClear();
+  });
+
+  test('should call axios.delete with correct parameters and log request/response', async () => {
+    const statTags = {
+      metadata: {
+        destType: 'DT',
+        destinationId: 'd1',
+        workspaceId: 'w1',
+        sourceId: 's1',
+      },
+      destType: 'DT',
+      feature: 'feat',
+      endpointPath: '/m/n/o',
+      requestMethod: 'delete',
+    };
+    loggerUtil.getMatchedMetadata.mockReturnValue([statTags.metadata]);
+
+    axios.delete.mockResolvedValueOnce({
+      status: 200,
+      data: { a: 1, b: 2, c: 'abc' },
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Some-Header': 'headsome',
+      },
+    });
+
+    await expect(httpDELETE('https://some.web.com/m/n/o', {}, statTags)).resolves.not.toThrow(
+      Error,
+    );
+    expect(loggerUtil.getMatchedMetadata).toHaveBeenCalledTimes(2);
+    expect(mockLoggerInstance.info).toHaveBeenCalledTimes(2);
+
+    expect(mockLoggerInstance.info).toHaveBeenNthCalledWith(1, ' [DT] /m/n/o request', {
+      body: undefined,
+      destType: 'DT',
+      destinationId: 'd1',
+      workspaceId: 'w1',
+      sourceId: 's1',
+      url: 'https://some.web.com/m/n/o',
+      method: 'delete',
+    });
+
+    expect(mockLoggerInstance.info).toHaveBeenNthCalledWith(2, ' [DT] /m/n/o response', {
+      destType: 'DT',
+      destinationId: 'd1',
+      workspaceId: 'w1',
+      sourceId: 's1',
+      body: { a: 1, b: 2, c: 'abc' },
+      status: 200,
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Some-Header': 'headsome',
+      },
+    });
+  });
+});
+
+describe('httpPUT tests', () => {
+  beforeEach(() => {
+    mockLoggerInstance.info.mockClear();
+    loggerUtil.getMatchedMetadata.mockClear();
+    axios.put.mockClear();
+  });
+
+  test('should call axios.put with correct parameters and log request/response', async () => {
+    const statTags = {
+      metadata: {
+        destType: 'DT',
+        destinationId: 'd1',
+        workspaceId: 'w1',
+        sourceId: 's1',
+      },
+      destType: 'DT',
+      feature: 'feat',
+      endpointPath: '/m/n/o',
+      requestMethod: 'put',
+    };
+    loggerUtil.getMatchedMetadata.mockReturnValue([statTags.metadata]);
+
+    axios.put.mockResolvedValueOnce({
+      status: 200,
+      data: { a: 1, b: 2, c: 'abc' },
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Some-Header': 'headsome',
+      },
+    });
+
+    await expect(httpPUT('https://some.web.com/m/n/o', {}, {}, statTags)).resolves.not.toThrow(
+      Error,
+    );
+    expect(loggerUtil.getMatchedMetadata).toHaveBeenCalledTimes(2);
+    expect(mockLoggerInstance.info).toHaveBeenCalledTimes(2);
+
+    expect(mockLoggerInstance.info).toHaveBeenNthCalledWith(1, ' [DT] /m/n/o request', {
+      body: {},
+      destType: 'DT',
+      destinationId: 'd1',
+      workspaceId: 'w1',
+      sourceId: 's1',
+      url: 'https://some.web.com/m/n/o',
+      method: 'put',
+    });
+
+    expect(mockLoggerInstance.info).toHaveBeenNthCalledWith(2, ' [DT] /m/n/o response', {
+      destType: 'DT',
+      destinationId: 'd1',
+      workspaceId: 'w1',
+      sourceId: 's1',
+      body: { a: 1, b: 2, c: 'abc' },
+      status: 200,
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Some-Header': 'headsome',
+      },
+    });
+  });
+});
+
+describe('httpPATCH tests', () => {
+  beforeEach(() => {
+    mockLoggerInstance.info.mockClear();
+    loggerUtil.getMatchedMetadata.mockClear();
+    axios.patch.mockClear();
+  });
+
+  test('should call axios.patch with correct parameters and log request/response', async () => {
+    const statTags = {
+      metadata: {
+        destType: 'DT',
+        destinationId: 'd1',
+        workspaceId: 'w1',
+        sourceId: 's1',
+      },
+      destType: 'DT',
+      feature: 'feat',
+      endpointPath: '/m/n/o',
+      requestMethod: 'patch',
+    };
+    loggerUtil.getMatchedMetadata.mockReturnValue([statTags.metadata]);
+
+    axios.patch.mockResolvedValueOnce({
+      status: 200,
+      data: { a: 1, b: 2, c: 'abc' },
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Some-Header': 'headsome',
+      },
+    });
+
+    await expect(httpPATCH('https://some.web.com/m/n/o', {}, {}, statTags)).resolves.not.toThrow(
+      Error,
+    );
+    expect(loggerUtil.getMatchedMetadata).toHaveBeenCalledTimes(2);
+    expect(mockLoggerInstance.info).toHaveBeenCalledTimes(2);
+
+    expect(mockLoggerInstance.info).toHaveBeenNthCalledWith(1, ' [DT] /m/n/o request', {
+      body: {},
+      destType: 'DT',
+      destinationId: 'd1',
+      workspaceId: 'w1',
+      sourceId: 's1',
+      url: 'https://some.web.com/m/n/o',
+      method: 'patch',
+    });
+
+    expect(mockLoggerInstance.info).toHaveBeenNthCalledWith(2, ' [DT] /m/n/o response', {
+      destType: 'DT',
+      destinationId: 'd1',
+      workspaceId: 'w1',
+      sourceId: 's1',
+      body: { a: 1, b: 2, c: 'abc' },
+      status: 200,
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Some-Header': 'headsome',
+      },
+    });
+  });
+});
+
+describe('getPayloadData tests', () => {
+  test('should return payload and payloadFormat for non-empty body', () => {
+    const body = {
+      JSON: { key: 'value' },
+      XML: null,
+      FORM: null,
+    };
+    const result = getPayloadData(body);
+    expect(result).toEqual({ payload: { key: 'value' }, payloadFormat: 'JSON' });
+  });
+
+  test('should return undefined payload and payloadFormat for empty body', () => {
+    const body = {};
+    const result = getPayloadData(body);
+    expect(result).toEqual({ payload: undefined, payloadFormat: undefined });
+  });
+});
+
+describe('prepareProxyRequest tests', () => {
+  test('should prepare proxy request with correct headers and payload', () => {
+    const request = {
+      body: { JSON: { key: 'value' } },
+      method: 'POST',
+      params: { param1: 'value1' },
+      endpoint: 'https://example.com',
+      headers: { 'Content-Type': 'application/json' },
+      destinationConfig: { key: 'value' },
+    };
+    const result = prepareProxyRequest(request);
+    expect(result).toEqual({
+      endpoint: 'https://example.com',
+      data: { key: 'value' },
+      params: { param1: 'value1' },
+      headers: { 'Content-Type': 'application/json', 'User-Agent': 'RudderLabs' },
+      method: 'POST',
+      config: { key: 'value' },
+    });
+  });
+});
+
+describe('handleHttpRequest tests', () => {
+  beforeEach(() => {
+    axios.post.mockClear();
+    axios.get.mockClear();
+    axios.put.mockClear();
+    axios.patch.mockClear();
+    axios.delete.mockClear();
+  });
+
+  test('should handle POST request correctly', async () => {
+    axios.post.mockResolvedValueOnce({
+      status: 200,
+      data: { key: 'value' },
+    });
+
+    const result = await handleHttpRequest('post', 'https://example.com', { key: 'value' }, {});
+    expect(result.httpResponse).toEqual({
+      success: true,
+      response: { status: 200, data: { key: 'value' } },
+    });
+    expect(result.processedResponse).toBeDefined();
+  });
+
+  test('should handle GET request correctly', async () => {
+    axios.get.mockResolvedValueOnce({
+      status: 200,
+      data: { key: 'value' },
+    });
+
+    const result = await handleHttpRequest('get', 'https://example.com', {});
+    expect(result.httpResponse).toEqual({
+      success: true,
+      response: { status: 200, data: { key: 'value' } },
+    });
+    expect(result.processedResponse).toBeDefined();
+  });
+
+  test('should handle PUT request correctly', async () => {
+    axios.put.mockResolvedValueOnce({
+      status: 200,
+      data: { key: 'value' },
+    });
+
+    const result = await handleHttpRequest('put', 'https://example.com', { key: 'value' }, {});
+    expect(result.httpResponse).toEqual({
+      success: true,
+      response: { status: 200, data: { key: 'value' } },
+    });
+    expect(result.processedResponse).toBeDefined();
+  });
+
+  test('should handle PATCH request correctly', async () => {
+    axios.patch.mockResolvedValueOnce({
+      status: 200,
+      data: { key: 'value' },
+    });
+
+    const result = await handleHttpRequest('patch', 'https://example.com', { key: 'value' }, {});
+    expect(result.httpResponse).toEqual({
+      success: true,
+      response: { status: 200, data: { key: 'value' } },
+    });
+    expect(result.processedResponse).toBeDefined();
+  });
+
+  test('should handle DELETE request correctly', async () => {
+    axios.delete.mockResolvedValueOnce({
+      status: 200,
+      data: { key: 'value' },
+    });
+
+    const result = await handleHttpRequest('delete', 'https://example.com', {});
+    expect(result.httpResponse).toEqual({
+      success: true,
+      response: { status: 200, data: { key: 'value' } },
+    });
+    expect(result.processedResponse).toBeDefined();
+  });
+});
+
+describe('proxyRequest tests', () => {
+  beforeEach(() => {
+    axios.mockClear();
+  });
+
+  test('should proxy request correctly', async () => {
+    axios.mockResolvedValueOnce({
+      status: 200,
+      data: { key: 'value' },
+    });
+
+    const request = {
+      body: { JSON: { key: 'value' } },
+      method: 'POST',
+      params: { param1: 'value1' },
+      endpoint: 'https://example.com',
+      headers: { 'Content-Type': 'application/json' },
+      destinationConfig: { key: 'value' },
+      metadata: { destType: 'DT' },
+    };
+
+    const result = await proxyRequest(request, 'DT');
+    expect(result).toEqual({
+      success: true,
+      response: { status: 200, data: { key: 'value' } },
+    });
   });
 });

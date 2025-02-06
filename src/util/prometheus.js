@@ -865,6 +865,18 @@ class Prometheus {
       // User transform metrics
       // counter
       {
+        name: 'user_transform_input_events',
+        help: 'Number of input events to user transform',
+        type: 'counter',
+        labelNames: ['workspaceId'],
+      },
+      {
+        name: 'user_transform_output_events',
+        help: 'user_transform_output_events',
+        type: 'counter',
+        labelNames: ['workspaceId'],
+      },
+      {
         name: 'user_transform_function_group_size',
         help: 'user_transform_function_group_size',
         type: 'counter',
@@ -953,20 +965,6 @@ class Prometheus {
         help: 'geo_call_duration',
         type: 'histogram',
         labelNames: ['identifier', 'transformationId', 'workspaceId'],
-      },
-      {
-        name: 'user_transform_input_events',
-        help: 'Number of input events to user transform',
-        type: 'histogram',
-        labelNames: [],
-        buckets: [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 150, 200],
-      },
-      {
-        name: 'user_transform_output_events',
-        help: 'user_transform_output_events',
-        type: 'histogram',
-        labelNames: [],
-        buckets: [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 150, 200],
       },
       // summary
       {

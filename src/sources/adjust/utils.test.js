@@ -35,3 +35,108 @@ describe('convertToISODate', () => {
     expect(() => convertToISODate(hugeTimestamp)).toThrow(TransformationError);
   });
 });
+
+describe('flattenParams', () => {
+  const { flattenParams } = require('./utils');
+
+  it('should flatten object with array values to their first elements', () => {
+    const input = {
+      key1: ['value1'],
+      key2: ['value2'],
+      key3: [123],
+    };
+    const expected = {
+      key1: 'value1',
+      key2: 'value2',
+      key3: 123,
+    };
+    expect(flattenParams(input)).toEqual(expected);
+  });
+
+  it('should return empty object when input is null or undefined', () => {
+    expect(flattenParams(null)).toEqual({});
+    expect(flattenParams(undefined)).toEqual({});
+  });
+
+  it('should handle empty object input', () => {
+    expect(flattenParams({})).toEqual({});
+  });
+
+  it('should handle array with undefined or null first elements', () => {
+    const input = {
+      key1: [undefined],
+      key2: [null],
+    };
+    const expected = {
+      key1: undefined,
+      key2: null,
+    };
+    expect(flattenParams(input)).toEqual(expected);
+  });
+
+  it('should handle mixed type values in arrays', () => {
+    const input = {
+      number: [42],
+      string: ['test'],
+      boolean: [true],
+      object: [{ nested: 'value' }],
+    };
+    const expected = {
+      number: 42,
+      string: 'test',
+      boolean: true,
+      object: { nested: 'value' },
+    };
+    expect(flattenParams(input)).toEqual(expected);
+  });
+
+  it('should handle empty arrays as values', () => {
+    const input = {
+      key1: [],
+      key2: ['value'],
+      key3: [],
+    };
+    const expected = {
+      key1: undefined,
+      key2: 'value',
+      key3: undefined,
+    };
+    expect(flattenParams(input)).toEqual(expected);
+  });
+
+  it('should keep non-array values unchanged', () => {
+    const input = {
+      string: 'direct string',
+      number: 42,
+      boolean: true,
+      object: { test: 'value' },
+      array: ['first', 'second'],
+    };
+    const expected = {
+      string: 'direct string',
+      number: 42,
+      boolean: true,
+      object: { test: 'value' },
+      array: 'first',
+    };
+    expect(flattenParams(input)).toEqual(expected);
+  });
+
+  it('should handle mixed array and non-array values', () => {
+    const input = {
+      arrayValue: ['first'],
+      emptyArray: [],
+      directValue: 'string',
+      nullValue: null,
+      undefinedValue: undefined,
+    };
+    const expected = {
+      arrayValue: 'first',
+      emptyArray: undefined,
+      directValue: 'string',
+      nullValue: null,
+      undefinedValue: undefined,
+    };
+    expect(flattenParams(input)).toEqual(expected);
+  });
+});

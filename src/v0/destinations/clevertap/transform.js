@@ -404,7 +404,6 @@ const process = (event) => processEvent(event.message, event.destination);
 const processRouterDest = (inputs, reqMetadata) => {
   const eventsChunk = [];
   const errorRespList = [];
-  // const { destination } = inputs[0];
 
   inputs.forEach((event) => {
     try {

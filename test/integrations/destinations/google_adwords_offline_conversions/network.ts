@@ -30,7 +30,7 @@ const commonResponse = {
 export const networkCallsData = [
   {
     httpReq: {
-      url: 'https://googleads.googleapis.com/v16/customers/11122233331/offlineUserDataJobs:create',
+      url: 'https://googleads.googleapis.com/v17/customers/11122233331/offlineUserDataJobs:create',
       data: {
         job: {
           storeSalesMetadata: {
@@ -59,7 +59,7 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      url: 'https://googleads.googleapis.com/v16/customers/1112223333/googleAds:searchStream',
+      url: 'https://googleads.googleapis.com/v17/customers/1112223333/googleAds:searchStream',
       data: {
         query: `SELECT conversion_action.id FROM conversion_action WHERE conversion_action.name = 'Sign-up - click'`,
       },
@@ -92,7 +92,7 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      url: 'https://googleads.googleapis.com/v16/customers/11122233331/offlineUserDataJobs/OFFLINE_USER_DATA_JOB_ID_FOR_ADD_FAILURE:addOperations',
+      url: 'https://googleads.googleapis.com/v17/customers/11122233331/offlineUserDataJobs/OFFLINE_USER_DATA_JOB_ID_FOR_ADD_FAILURE:addOperations',
       data: {
         enable_partial_failure: false,
         enable_warnings: false,
@@ -173,7 +173,7 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      url: 'https://googleads.googleapis.com/v16/customers/1112223333/offlineUserDataJobs:create',
+      url: 'https://googleads.googleapis.com/v17/customers/1112223333/offlineUserDataJobs:create',
       data: {
         job: {
           storeSalesMetadata: {
@@ -202,7 +202,7 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      url: 'https://googleads.googleapis.com/v16/customers/1112223333/offlineUserDataJobs/OFFLINE_USER_DATA_JOB_ID:addOperations',
+      url: 'https://googleads.googleapis.com/v17/customers/1112223333/offlineUserDataJobs/OFFLINE_USER_DATA_JOB_ID:addOperations',
       data: {
         enable_partial_failure: false,
         enable_warnings: false,
@@ -245,7 +245,7 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      url: 'https://googleads.googleapis.com/v16/customers/1112223333/offlineUserDataJobs/OFFLINE_USER_DATA_JOB_ID:run',
+      url: 'https://googleads.googleapis.com/v17/customers/1112223333/offlineUserDataJobs/OFFLINE_USER_DATA_JOB_ID:run',
       data: { validate_only: false },
       params: { destination: 'google_adwords_offline_conversion' },
       headers: {
@@ -267,7 +267,7 @@ export const networkCallsData = [
     description:
       'Mock response from destination depicting a request with invalid authentication credentials',
     httpReq: {
-      url: 'https://googleads.googleapis.com/v16/customers/customerid/offlineUserDataJobs:create',
+      url: 'https://googleads.googleapis.com/v17/customers/customerid/offlineUserDataJobs:create',
       data: {
         job: {
           storeSalesMetadata: {
@@ -303,7 +303,7 @@ export const networkCallsData = [
     description:
       'Mock response from destination depicting a request with invalid authentication scopes',
     httpReq: {
-      url: 'https://googleads.googleapis.com/v16/customers/1234/offlineUserDataJobs:create',
+      url: 'https://googleads.googleapis.com/v17/customers/1234/offlineUserDataJobs:create',
       data: {
         job: {
           storeSalesMetadata: {
@@ -336,7 +336,7 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      url: 'https://googleads.googleapis.com/v16/customers/1234567890/googleAds:searchStream',
+      url: 'https://googleads.googleapis.com/v17/customers/1234567890/googleAds:searchStream',
       data: {
         query: `SELECT conversion_action.id FROM conversion_action WHERE conversion_action.name = 'Sign-up - click'`,
       },
@@ -364,7 +364,7 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      url: 'https://googleads.googleapis.com/v16/customers/1234567891/googleAds:searchStream',
+      url: 'https://googleads.googleapis.com/v17/customers/1234567891/googleAds:searchStream',
       data: {
         query:
           "SELECT conversion_action.id FROM conversion_action WHERE conversion_action.name = 'Sign-up - click'",
@@ -397,7 +397,7 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      url: 'https://googleads.googleapis.com/v16/customers/1234567891/googleAds:searchStream',
+      url: 'https://googleads.googleapis.com/v17/customers/1234567891/googleAds:searchStream',
       data: { query: 'SELECT conversion_custom_variable.name FROM conversion_custom_variable' },
       headers: {
         Authorization: 'Bearer abcd1234',
@@ -431,7 +431,7 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      url: 'https://googleads.googleapis.com/v16/customers/1234567891:uploadClickConversions',
+      url: 'https://googleads.googleapis.com/v17/customers/1234567891:uploadClickConversions',
       data: {
         conversions: [
           {
@@ -498,7 +498,7 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      url: 'https://googleads.googleapis.com/v16/customers/1234567891:uploadClickConversions',
+      url: 'https://googleads.googleapis.com/v17/customers/1234567891:uploadClickConversions',
       data: {
         conversions: [
           {
@@ -559,7 +559,7 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      url: 'https://googleads.googleapis.com/v16/customers/1234567893/googleAds:searchStream',
+      url: 'https://googleads.googleapis.com/v17/customers/1234567893/googleAds:searchStream',
       data: {
         query:
           "SELECT conversion_action.id FROM conversion_action WHERE conversion_action.name = 'Sign-up - click'",
@@ -592,7 +592,7 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      url: 'https://googleads.googleapis.com/v16/customers/1234567893:uploadClickConversions',
+      url: 'https://googleads.googleapis.com/v17/customers/1234567893:uploadClickConversions',
       data: {
         conversions: [
           {
@@ -678,7 +678,7 @@ export const networkCallsData = [
     description:
       'Mock response from destination depicting a request from user who has not enabled 2 factor authentication',
     httpReq: {
-      url: 'https://googleads.googleapis.com/v16/customers/customerid/offlineUserDataJobs:create',
+      url: 'https://googleads.googleapis.com/v17/customers/customerid/offlineUserDataJobs:create',
       data: {
         job: {
           storeSalesMetadata: {
@@ -704,7 +704,7 @@ export const networkCallsData = [
     description:
       'Mock response from destination depicting a request from user who has not enabled 2 factor authentication',
     httpReq: {
-      url: 'https://googleads.googleapis.com/v16/customers/1112223333/googleAds:searchStream',
+      url: 'https://googleads.googleapis.com/v17/customers/1112223333/googleAds:searchStream',
       data: {
         query:
           "SELECT conversion_action.id FROM conversion_action WHERE conversion_action.name = 'Sign-up - click'",

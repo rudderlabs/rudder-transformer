@@ -80,6 +80,7 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
+  await createHttpTerminator({ server }).terminate();
   if (opts.generate === 'true') {
     const callsDataStr = responses.join('\n');
     const calls = `
@@ -89,7 +90,6 @@ afterAll(async () => {
     `;
     appendFileSync(join(__dirname, 'destinations', opts.destination, 'network.ts'), calls);
   }
-  await createHttpTerminator({ server }).terminate();
 });
 let mockAdapter;
 if (!opts.generate || opts.generate === 'false') {
@@ -254,7 +254,7 @@ describe.each(allTestDataFilePaths)('%s Tests', (testDataPath) => {
 
   describe(`${testData[0].name} ${testData[0].module}`, () => {
     test.each(extendedTestData)(
-      '$tcData.feature -> $tcData.description $descriptionSuffix (index: $#)',
+      '$tcData.feature -> $tcData.description$descriptionSuffix (index: $#)',
       async ({ tcData, sourceTransformV2Flag }) => {
         tcData?.mockFns?.(mockAdapter);
 

@@ -3,7 +3,6 @@
   "description": "Purchase event with anonymous user",
   "input": {
     "request": {
-      "query": "{}",
       "body": {
         "api_version": "1.0",
         "event": {

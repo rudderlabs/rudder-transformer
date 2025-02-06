@@ -3,7 +3,6 @@
   "description": "lead update",
   "input": {
     "request": {
-      "query": "{}",
       "body": {
         "event": {
           "date_created": "2019-01-15T12:48:23.395000",

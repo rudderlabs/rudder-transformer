@@ -3,7 +3,6 @@
   "description": "test-8",
   "input": {
     "request": {
-      "query": "{}",
       "body": {
         "fuuid": "98255",
         "next-step-id": "success",

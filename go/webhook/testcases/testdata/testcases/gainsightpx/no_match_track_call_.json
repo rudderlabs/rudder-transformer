@@ -3,7 +3,6 @@
   "description": "No Match Track Call ",
   "input": {
     "request": {
-      "query": "{}",
       "body": {
         "event": {
           "eventType": "Unavailable",

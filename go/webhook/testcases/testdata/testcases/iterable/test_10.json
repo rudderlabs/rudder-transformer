@@ -3,7 +3,6 @@
   "description": "test-10",
   "input": {
     "request": {
-      "query": "{}",
       "body": {
         "email": "test@rudderstack.com",
         "eventName": "emailSubscribe",

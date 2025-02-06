@@ -3,7 +3,6 @@
   "description": "Simple track call with unknown field id",
   "input": {
     "request": {
-      "query": "{}",
       "body": {
         "activity": {
           "id": "00651b946bfef7e80478efee",

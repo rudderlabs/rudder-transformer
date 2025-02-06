@@ -3,7 +3,6 @@
   "description": "test-4",
   "input": {
     "request": {
-      "query": "{}",
       "body": {
         "triggerData": {
           "data": {},

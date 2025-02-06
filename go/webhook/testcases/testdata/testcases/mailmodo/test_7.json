@@ -3,7 +3,6 @@
   "description": "test-7",
   "input": {
     "request": {
-      "query": "{}",
       "body": {
         "eventData": {
           "type": "html"

@@ -3,7 +3,6 @@
   "description": "Incident Escalated",
   "input": {
     "request": {
-      "query": "{}",
       "body": {
         "event": {
           "id": "01DFU77KTKK9UUYX779UX0N1ZP",

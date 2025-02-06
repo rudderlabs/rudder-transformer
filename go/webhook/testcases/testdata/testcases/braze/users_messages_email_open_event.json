@@ -3,7 +3,6 @@
   "description": "users.messages.email.Open event",
   "input": {
     "request": {
-      "query": "{}",
       "body": {
         "events": [
           {

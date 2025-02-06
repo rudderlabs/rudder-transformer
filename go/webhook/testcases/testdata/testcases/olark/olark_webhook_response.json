@@ -3,7 +3,6 @@
   "description": "Olark webhook response",
   "input": {
     "request": {
-      "query": "{}",
       "body": {
         "kind": "Conversation",
         "id": "ho6HrHxoabmm6q0G103JU0JFaor0BobA",

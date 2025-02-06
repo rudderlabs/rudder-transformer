@@ -3,7 +3,6 @@
   "description": "MailJet email open event",
   "input": {
     "request": {
-      "query": "{}",
       "body": {
         "event": "open",
         "time": 1664443614,

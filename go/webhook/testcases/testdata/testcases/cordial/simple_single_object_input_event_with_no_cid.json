@@ -3,7 +3,6 @@
   "description": "Simple Single object Input event with no CId",
   "input": {
     "request": {
-      "query": "{}",
       "body": {
         "contact": {
           "_id": "6690fe3655e334xx028xx1",

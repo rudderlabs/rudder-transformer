@@ -3,7 +3,6 @@
   "description": "users.messages.inappmessage.Click event",
   "input": {
     "request": {
-      "query": "{}",
       "body": {
         "events": [
           {

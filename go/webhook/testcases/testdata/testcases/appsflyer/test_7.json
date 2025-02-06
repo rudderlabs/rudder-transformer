@@ -3,7 +3,6 @@
   "description": "test-7",
   "input": {
     "request": {
-      "query": "{}",
       "body": {
         "idfv": "868049A3-4B2F-4A11-9B00-CFFC362XXXXX",
         "device_category": "phone",

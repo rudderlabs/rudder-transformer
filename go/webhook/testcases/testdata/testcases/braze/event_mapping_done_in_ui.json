@@ -3,7 +3,6 @@
   "description": "event mapping done in UI",
   "input": {
     "request": {
-      "query": "{}",
       "body": {
         "events": [
           {

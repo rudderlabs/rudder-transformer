@@ -3,7 +3,6 @@
   "description": "test-0",
   "input": {
     "request": {
-      "query": "{}",
       "body": [
         {
           "date": "2020-07-10T07:43:07.766Z",

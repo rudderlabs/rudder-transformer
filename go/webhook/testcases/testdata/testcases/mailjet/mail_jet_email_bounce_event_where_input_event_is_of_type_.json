@@ -3,7 +3,6 @@
   "description": "MailJet email bounce event where input event is of type ",
   "input": {
     "request": {
-      "query": "{}",
       "body": {
         "event": "bounce",
         "time": 1664444171,

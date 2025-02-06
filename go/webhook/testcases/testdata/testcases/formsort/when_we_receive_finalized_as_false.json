@@ -3,7 +3,6 @@
   "description": "when we receive finalized as false",
   "input": {
     "request": {
-      "query": "{}",
       "body": {
         "answers": {
           "yes": true,

@@ -3,7 +3,6 @@
   "description": "test-26",
   "input": {
     "request": {
-      "query": "{}",
       "body": {
         "email": "docs@iterable.com",
         "eventName": "smsSendSkip",

@@ -3,7 +3,6 @@
   "description": "test-4",
   "input": {
     "request": {
-      "query": "{}",
       "body": {
         "created": "2022-07-26T18:07:03.143Z",
         "object": {

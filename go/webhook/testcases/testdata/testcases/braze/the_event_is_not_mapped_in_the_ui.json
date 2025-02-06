@@ -3,7 +3,6 @@
   "description": "The event is not mapped in the UI",
   "input": {
     "request": {
-      "query": "{}",
       "body": {
         "events": [
           {

@@ -3,7 +3,6 @@
   "description": "Alias type  -> type and userId is given",
   "input": {
     "request": {
-      "query": "{}",
       "body": {
         "type": "alias",
         "previousId": "name@surname.com",

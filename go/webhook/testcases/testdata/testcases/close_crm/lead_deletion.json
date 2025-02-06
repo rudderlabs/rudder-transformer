@@ -3,7 +3,6 @@
   "description": "lead deletion",
   "input": {
     "request": {
-      "query": "{}",
       "body": {
         "subscription_id": "whsub_123",
         "event": {

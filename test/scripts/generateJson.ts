@@ -17,7 +17,7 @@ interface TestCaseData {
 
 interface Input {
   request: {
-    query: string;
+    query?: string;
     body: any;
     headers?: Record<string, string>;
     method?: string;
@@ -131,6 +131,9 @@ function getSourceRequestParams(testCase: any, version?: string) {
     }
   })();
 
+  if (Object.keys(queryParams).length === 0) {
+    return undefined;
+  }
   return JSON.stringify(queryParams);
 }
 

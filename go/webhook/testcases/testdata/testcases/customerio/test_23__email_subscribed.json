@@ -3,7 +3,6 @@
   "description": "test-23: email subscribed",
   "input": {
     "request": {
-      "query": "{}",
       "body": {
         "data": {
           "customer_id": "0200102",

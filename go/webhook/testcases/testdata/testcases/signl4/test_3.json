@@ -3,7 +3,6 @@
   "description": "test-3",
   "input": {
     "request": {
-      "query": "{}",
       "body": {
         "eventType": 202,
         "eventRaisedUtc": "2020-01-10T12:27:19Z",

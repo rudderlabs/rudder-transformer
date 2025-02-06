@@ -3,7 +3,6 @@
   "description": "No type or anonymousId is given",
   "input": {
     "request": {
-      "query": "{}",
       "body": {
         "userId": "12",
         "artist": "Gautam",

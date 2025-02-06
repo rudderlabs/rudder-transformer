@@ -3,7 +3,6 @@
   "description": "Page type  -> type and userId is given",
   "input": {
     "request": {
-      "query": "{}",
       "body": {
         "anonymousId": "21e13f4bc7ceddad",
         "channel": "mobile",

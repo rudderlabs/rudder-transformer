@@ -3,7 +3,6 @@
   "description": "test-4",
   "input": {
     "request": {
-      "query": "{}",
       "body": {
         "id": "1139624368u",
         "name": "tech.desusai.msappcentertesting.MainActivity$1.onClick (MainActivity.java:25)",

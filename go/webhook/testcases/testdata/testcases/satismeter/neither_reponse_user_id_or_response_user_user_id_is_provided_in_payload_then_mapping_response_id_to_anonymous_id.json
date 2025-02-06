@@ -3,7 +3,6 @@
   "description": " Neither reponse.user.id or response.user.userId is provided in payload then mapping response.id to anonymousId",
   "input": {
     "request": {
-      "query": "{}",
       "body": {
         "response": {
           "id": "63767499ca6fb1b7c988d5bb",

@@ -3,7 +3,6 @@
   "description": "Team joined event",
   "input": {
     "request": {
-      "query": "{}",
       "body": {
         "event": {
           "type": "team_join",

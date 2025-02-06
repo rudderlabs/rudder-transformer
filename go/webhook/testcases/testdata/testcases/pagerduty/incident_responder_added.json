@@ -3,7 +3,6 @@
   "description": "Incident Responder Added",
   "input": {
     "request": {
-      "query": "{}",
       "body": {
         "event": {
           "id": "01DFU6Z1ZCLMV9SEK3X5JZ5WLW",

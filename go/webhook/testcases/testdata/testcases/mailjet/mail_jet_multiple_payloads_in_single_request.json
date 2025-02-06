@@ -3,7 +3,6 @@
   "description": "MailJet Multiple payloads in single request",
   "input": {
     "request": {
-      "query": "{}",
       "body": [
         {
           "event": "open",

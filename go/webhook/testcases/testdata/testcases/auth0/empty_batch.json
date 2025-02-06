@@ -3,7 +3,6 @@
   "description": "empty batch",
   "input": {
     "request": {
-      "query": "{}",
       "body": [],
       "headers": {
         "Content-Type": "application/json"

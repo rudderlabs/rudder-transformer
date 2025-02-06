@@ -3,7 +3,6 @@
   "description": "users.behaviors.CustomEvent any custom event",
   "input": {
     "request": {
-      "query": "{}",
       "body": {
         "events": [
           {

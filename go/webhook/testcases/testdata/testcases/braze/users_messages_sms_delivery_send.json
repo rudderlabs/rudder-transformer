@@ -3,7 +3,6 @@
   "description": "users.messages.sms.Delivery send",
   "input": {
     "request": {
-      "query": "{}",
       "body": {
         "events": [
           {

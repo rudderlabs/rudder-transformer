@@ -3,7 +3,6 @@
   "description": "Multiple object Input event with batched payload",
   "input": {
     "request": {
-      "query": "{}",
       "body": [
         {
           "contact": {

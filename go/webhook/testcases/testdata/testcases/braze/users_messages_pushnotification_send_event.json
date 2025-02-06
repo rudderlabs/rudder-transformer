@@ -3,7 +3,6 @@
   "description": "users.messages.pushnotification.Send event",
   "input": {
     "request": {
-      "query": "{}",
       "body": {
         "events": [
           {

@@ -3,7 +3,6 @@
   "description": "MailJet when no email is present",
   "input": {
     "request": {
-      "query": "{}",
       "body": {
         "event": "bounce",
         "time": 1664444170,

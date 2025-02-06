@@ -3,7 +3,6 @@
   "description": "No Query Parameters",
   "input": {
     "request": {
-      "query": "{}",
       "body": {},
       "headers": {
         "Content-Type": "application/json"

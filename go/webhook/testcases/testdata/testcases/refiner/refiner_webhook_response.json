@@ -3,7 +3,6 @@
   "description": "Refiner webhook response",
   "input": {
     "request": {
-      "query": "{}",
       "body": {
         "uuid": "69b83e20-4ea2-11ed-941c-e1cb6c7a3870",
         "cookie_uuid": "2f9b7e6a-9ba8-1c68-d474-48d719d92a60",

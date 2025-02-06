@@ -3,7 +3,6 @@
   "description": "test-12",
   "input": {
     "request": {
-      "query": "{}",
       "body": {
         "data": {
           "action_id": 41,

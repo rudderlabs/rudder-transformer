@@ -3,7 +3,6 @@
   "description": "users.behaviors.app.SessionStart event",
   "input": {
     "request": {
-      "query": "{}",
       "body": {
         "events": [
           {

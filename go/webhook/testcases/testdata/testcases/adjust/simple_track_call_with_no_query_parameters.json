@@ -3,7 +3,6 @@
   "description": "Simple track call with no query parameters",
   "input": {
     "request": {
-      "query": "{}",
       "body": {
         "id": "adjust",
         "updated_at": "2023-02-10T12:16:07.251Z",

@@ -3,7 +3,6 @@
   "description": "add member to an organization",
   "input": {
     "request": {
-      "query": "{}",
       "body": {
         "log_id": "90020221031061004280169676882609459981150114445973782546",
         "data": {

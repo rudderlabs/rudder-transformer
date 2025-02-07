@@ -2,11 +2,20 @@ const { getFieldValueFromMessage } = require('../../util');
 
 // Utility function to extract the click_id from the event_source_url
 const extractClickIdFromUrl = (message) => {
-  const eventSourceUrl = getFieldValueFromMessage(message, 'eventSourceUrl');
-  const urlObj = new URL(eventSourceUrl);
-  const clickId = urlObj.searchParams.get('ScCid'); // 'ScCid' is the query parameter for click_id
+  try {
+    const eventSourceUrl = getFieldValueFromMessage(message, 'pageUrl');
 
-  return clickId;
+    if (!eventSourceUrl) {
+      throw new Error('URL not found in message');
+    }
+
+    const urlObj = new URL(eventSourceUrl);
+    const clickId = urlObj.searchParams.get('ScCid'); // 'ScCid' is the query parameter for click_id
+
+    return clickId;
+  } catch (error) {
+    return null; 
+  }
 };
 
 function getEndpointWithClickId(endpoint, message) {
@@ -25,9 +34,7 @@ function getEndpointWithClickId(endpoint, message) {
 
   // If no Click ID is found after all the checks, throw an error
   if (!clickId) {
-    throw new Error(
-      'Click ID (ScCid) is required either in the event_source_url or user input',
-    );
+    throw new Error('Click ID (ScCid) is required either in the event_source_url or user input');
   }
 
   // Replace {ID} in the endpoint with the found Click ID

@@ -33,7 +33,7 @@ const responseBuilder = (
   identifierType,
   operationModuleType,
   commonEndPoint,
-  action,
+  isUpsert,
   metadata,
 ) => {
   const { trigger, addDefaultDuplicateCheck, multiSelectFieldLevelDecision } = config;
@@ -43,7 +43,7 @@ const responseBuilder = (
     Authorization: `Zoho-oauthtoken ${metadata[0].secret.accessToken}`,
   };
 
-  if (action === 'upsert') {
+  if (isUpsert) {
     const payload = {
       duplicate_check_fields: handleDuplicateCheck(
         addDefaultDuplicateCheck,
@@ -100,7 +100,7 @@ const batchResponseBuilder = (
         identifierType,
         operationModuleType,
         upsertEndPoint,
-        'upsert',
+        true,
         upsertmetadataChunks.items[0],
       ),
     );
@@ -114,7 +114,7 @@ const batchResponseBuilder = (
         identifierType,
         operationModuleType,
         upsertEndPoint,
-        'delete',
+        false,
         deletionmetadataChunks.items[0],
       ),
     );
@@ -225,13 +225,12 @@ const handleDeletion = async (
  */
 const processInput = async (
   input,
-  action,
   operationModuleType,
   Config,
   transformedResponseToBeBatched,
   errorResponseList,
 ) => {
-  const { fields } = input.message;
+  const { fields, action } = input.message;
 
   if (isEmptyObject(fields)) {
     const emptyFieldsError = new InstrumentationError('`fields` cannot be empty');
@@ -300,7 +299,6 @@ const processRecordInputs = async (inputs, destination) => {
     inputs.map((input) =>
       processInput(
         input,
-        input.action,
         operationModuleType,
         Config,
         transformedResponseToBeBatched,

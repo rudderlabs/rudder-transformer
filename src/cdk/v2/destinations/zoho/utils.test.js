@@ -180,47 +180,43 @@ describe('validateConfigurationIssue', () => {
       module: 'moduleA',
     };
     const operationModuleType = 'moduleB';
-    const action = 'create';
 
-    expect(() => validateConfigurationIssue(Config, operationModuleType, action)).toThrow(
+    expect(() => validateConfigurationIssue(Config, operationModuleType)).toThrow(
       ConfigurationError,
     );
-    expect(() => validateConfigurationIssue(Config, operationModuleType, action)).toThrow(
+    expect(() => validateConfigurationIssue(Config, operationModuleType)).toThrow(
       'Object Chosen in Visual Data Mapper is not consistent with Module type selected in destination configuration. Aborting Events.',
     );
   });
 
-  test('should not throw an error when hashMapMultiselect is not empty, Config.module is the same as operationModuleType, and action is not delete', () => {
+  test('should not throw an error when hashMapMultiselect is not empty, Config.module is the same as operationModuleType', () => {
     const Config = {
       multiSelectFieldLevelDecision: [{ from: 'field1', to: 'true' }],
       module: 'moduleA',
     };
     const operationModuleType = 'moduleA';
-    const action = 'create';
 
-    expect(() => validateConfigurationIssue(Config, operationModuleType, action)).not.toThrow();
+    expect(() => validateConfigurationIssue(Config, operationModuleType)).not.toThrow();
   });
 
-  test('should not throw an error when hashMapMultiselect is empty, Config.module is different from operationModuleType, and action is not delete', () => {
+  test('should not throw an error when hashMapMultiselect is empty, Config.module is different from operationModuleType', () => {
     const Config = {
       multiSelectFieldLevelDecision: [],
       module: 'moduleA',
     };
     const operationModuleType = 'moduleB';
-    const action = 'create';
 
-    expect(() => validateConfigurationIssue(Config, operationModuleType, action)).not.toThrow();
+    expect(() => validateConfigurationIssue(Config, operationModuleType)).not.toThrow();
   });
 
-  test('should not throw an error when hashMapMultiselect is empty, Config.module is the same as operationModuleType, and action is not delete', () => {
+  test('should not throw an error when hashMapMultiselect is empty, Config.module is the same as operationModuleType', () => {
     const Config = {
       multiSelectFieldLevelDecision: [],
       module: 'moduleA',
     };
     const operationModuleType = 'moduleA';
-    const action = 'create';
 
-    expect(() => validateConfigurationIssue(Config, operationModuleType, action)).not.toThrow();
+    expect(() => validateConfigurationIssue(Config, operationModuleType)).not.toThrow();
   });
 
   test('should not throw an error when multiSelectFieldLevelDecision has entries without from key', () => {
@@ -229,12 +225,11 @@ describe('validateConfigurationIssue', () => {
       module: 'moduleA',
     };
     const operationModuleType = 'moduleB';
-    const action = 'create';
 
-    expect(() => validateConfigurationIssue(Config, operationModuleType, action)).not.toThrow();
+    expect(() => validateConfigurationIssue(Config, operationModuleType)).not.toThrow();
   });
 
-  test('should throw ConfigurationError when multiSelectFieldLevelDecision has mixed case from keys, Config.module is different from operationModuleType, and action is not delete', () => {
+  test('should throw ConfigurationError when multiSelectFieldLevelDecision has mixed case from keys, Config.module is different from operationModuleType', () => {
     const Config = {
       multiSelectFieldLevelDecision: [
         { from: 'FIELD1', to: 'true' },
@@ -243,21 +238,9 @@ describe('validateConfigurationIssue', () => {
       module: 'moduleA',
     };
     const operationModuleType = 'moduleB';
-    const action = 'create';
 
-    expect(() => validateConfigurationIssue(Config, operationModuleType, action)).toThrow(
+    expect(() => validateConfigurationIssue(Config, operationModuleType)).toThrow(
       ConfigurationError,
     );
-  });
-
-  test('should not throw an error when hashMapMultiselect is not empty, Config.module is different from operationModuleType, and action is delete', () => {
-    const Config = {
-      multiSelectFieldLevelDecision: [{ from: 'field1', to: 'true' }],
-      module: 'moduleA',
-    };
-    const operationModuleType = 'moduleB';
-    const action = 'delete';
-
-    expect(() => validateConfigurationIssue(Config, operationModuleType, action)).not.toThrow();
   });
 });

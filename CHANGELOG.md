@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.90.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.90.0...v1.90.1) (2025-02-06)
+
+
+### Bug Fixes
+
+* update google ads api version for gaoc ([#4047](https://github.com/rudderlabs/rudder-transformer/issues/4047)) ([62705c0](https://github.com/rudderlabs/rudder-transformer/commit/62705c0613f3c38b8f3e6baf047467ce97878625))
+
 ## [1.90.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.89.1...v1.90.0) (2025-02-03)
 
 

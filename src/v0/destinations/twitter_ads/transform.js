@@ -134,9 +134,14 @@ function processTrack(message, metadata, destination) {
   const ipAddress = message.properties.ip_address?.trim();
   const userAgent = message.properties.user_agent?.trim();
 
+  // ip_address or/and user_agent is required to be
+  // passed in conjunction with another identifier
+  // ref: https://developer.x.com/en/docs/x-ads-api/measurement/web-conversions/api-reference/conversions
   if (ipAddress && userAgent) {
     identifiers.push({ ip_address: ipAddress, user_agent: userAgent });
   } else if (identifiers.length > 0) {
+    // we are adding ip_address or/and user_agent to any other identifier
+    // because it should be passed with any other identifier
     if (ipAddress) {
       identifiers[0].ip_address = ipAddress;
     }

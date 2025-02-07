@@ -294,7 +294,7 @@ const processRecordInputs = async (inputs, destination) => {
 
   const { operationModuleType, identifierType, upsertEndPoint } = deduceModuleInfo(inputs, Config);
 
-  validateConfigurationIssue(Config, operationModuleType, action);
+  validateConfigurationIssue(Config, operationModuleType);
 
   await Promise.all(
     inputs.map((input) =>

@@ -1,0 +1,47 @@
+[
+  {
+    "destKey": "data.custom_data.brands",
+    "sourceKeys": "properties.brands",
+    "required": false,
+    "metadata": {
+      "type": "IsArray"
+    }
+  },
+  {
+    "destKey": "data.custom_data.sign_up_method",
+    "sourceKeys": ["properties.signUpMethod", "properties.sign_up_method"],
+    "required": false
+  },
+
+  {
+    "destKey": "data.user_data.sc_click_id",
+    "sourceKeys": ["properties.sc_click_id", "properties.scClickId"],
+    "required": false
+  },
+  {
+    "destKey": "data.user_data.sc_cookie1",
+    "sourceKeys": ["properties.sc_cookie1", "properties.scCookie1"],
+    "required": false
+  },
+  {
+    "destKey": "data.app_data.advertiser_tracking_enabled",
+    "sourceKeys": [
+      "properties.advertiser_tracking_enabled",
+      "properties.advertiserTrackingEnabled"
+    ],
+    "required": false
+  },
+  {
+    "destKey": "data.user_data.client_user_agent",
+    "sourceKeys": ["properties.client_user_agent", "properties.clientUserAgent"],
+    "metadata": {
+      "type": "toLower"
+    },
+    "required": false
+  },
+  {
+    "destKey": "data.level",
+    "sourceKeys": "properties.level",
+    "required": false
+  }
+]

@@ -18,8 +18,8 @@ const {
 const {
   ENDPOINT,
   eventNameMapping,
-  mappingConfig,
-  ConfigCategory,
+  mappingConfigV3,
+  ConfigCategoryV3,
   MAX_BATCH_SIZE,
   pageTypeToTrackEvent,
 } = require('./config');
@@ -113,7 +113,7 @@ const populateHashedValues = (payload, message) => {
   return updatedPayload;
 };
 const getEventCommonProperties = (message) =>
-  constructPayload(message, mappingConfig[ConfigCategory.TRACK_COMMON.name]);
+  constructPayload(message, mappingConfigV3[ConfigCategoryV3.TRACK_COMMON.name]);
 const validateEventConfiguration = (actionSource, pixelId, snapAppId, appId) => {
   if ((actionSource === 'WEB' || actionSource === 'OFFLINE') && !pixelId) {
     throw new ConfigurationError('Pixel Id is required for web and offline events');
@@ -183,31 +183,31 @@ const trackResponseBuilder = (message, { Config }, mappedEvent) => {
     switch (event.toLowerCase()) {
       /* Browsing Section */
       case 'products_searched':
-        payload = constructPayload(message, mappingConfig[ConfigCategory.PRODUCTS_SEARCHED.name]);
+        payload = constructPayload(message, mappingConfigV3[ConfigCategoryV3.PRODUCTS_SEARCHED.name]);
         payload.data.event_name = eventNameMapping[event.toLowerCase()];
         break;
       case 'product_list_viewed':
-        payload = constructPayload(message, mappingConfig[ConfigCategory.PRODUCT_LIST_VIEWED.name]);
+        payload = constructPayload(message, mappingConfigV3[ConfigCategoryV3.PRODUCT_LIST_VIEWED.name]);
         payload.data.event_name = eventNameMapping[event.toLowerCase()];
         payload.data.custom_data.content_ids = getItemIds(message);
         payload.data.custom_data.contents.price = payload.data.custom_data.contents.price || getPriceSum(message);
         break;
       /* Promotions Section */
       case 'promotion_viewed':
-        payload = constructPayload(message, mappingConfig[ConfigCategory.PROMOTION_VIEWED.name]);
+        payload = constructPayload(message, mappingConfigV3[ConfigCategoryV3.PROMOTION_VIEWED.name]);
         payload.data.event_name = eventNameMapping[event.toLowerCase()];
         break;
       case 'promotion_clicked':
-        payload = constructPayload(message, mappingConfig[ConfigCategory.PROMOTION_CLICKED.name]);
+        payload = constructPayload(message, mappingConfigV3[ConfigCategoryV3.PROMOTION_CLICKED.name]);
         payload.data.event_name = eventNameMapping[event.toLowerCase()];
         break;
       /* Ordering Section */
       case 'product_viewed':
-        payload = constructPayload(message, mappingConfig[ConfigCategory.PRODUCT_VIEWED.name]);
+        payload = constructPayload(message, mappingConfigV3[ConfigCategoryV3.PRODUCT_VIEWED.name]);
         payload.data.event_name = eventNameMapping[event.toLowerCase()];
         break;
       case 'checkout_started':
-        payload = constructPayload(message, mappingConfig[ConfigCategory.CHECKOUT_STARTED.name]);
+        payload = constructPayload(message, mappingConfigV3[ConfigCategoryV3.CHECKOUT_STARTED.name]);
         payload.data.event_name = eventNameMapping[event.toLowerCase()];
         payload.data.custom_data.content_ids = getItemIds(message);
         payload.data.custom_data.contents.price = payload.data.custom_data.contents.price || getPriceSum(message);
@@ -215,35 +215,35 @@ const trackResponseBuilder = (message, { Config }, mappedEvent) => {
       case 'payment_info_entered':
         payload = constructPayload(
           message,
-          mappingConfig[ConfigCategory.PAYMENT_INFO_ENTERED.name],
+          mappingConfigV3[ConfigCategoryV3.PAYMENT_INFO_ENTERED.name],
         );
         payload.data.event_type = eventNameMapping[event.toLowerCase()];
         break;
       case 'order_completed':
-        payload = constructPayload(message, mappingConfig[ConfigCategory.ORDER_COMPLETED.name]);
+        payload = constructPayload(message, mappingConfigV3[ConfigCategoryV3.ORDER_COMPLETED.name]);
         payload.data.event_name = eventNameMapping[event.toLowerCase()];
         payload.data.custom_data.content_ids = getItemIds(message);
         payload.data.custom_data.contents.price = payload.data.custom_data.contents.price || getPriceSum(message);
         break;
       case 'product_added':
-        payload = constructPayload(message, mappingConfig[ConfigCategory.PRODUCT_ADDED.name]);
+        payload = constructPayload(message, mappingConfigV3[ConfigCategoryV3.PRODUCT_ADDED.name]);
         payload.data.event_name = eventNameMapping[event.toLowerCase()];
         break;
       /* Wishlist Section */
       case 'product_added_to_wishlist':
         payload = constructPayload(
           message,
-          mappingConfig[ConfigCategory.PRODUCT_ADDED_TO_WISHLIST.name],
+          mappingConfigV3[ConfigCategoryV3.PRODUCT_ADDED_TO_WISHLIST.name],
         );
         payload.data.event_name = eventNameMapping[event.toLowerCase()];
         break;
       /* Snapchat General Events */
       case 'sign_up':
-        payload = constructPayload(message, mappingConfig[ConfigCategory.SIGN_UP.name]);
+        payload = constructPayload(message, mappingConfigV3[ConfigCategoryV3.SIGN_UP.name]);
         payload.data.event_name = eventNameMapping[event.toLowerCase()];
         break;
       default:
-        payload = constructPayload(message, mappingConfig[ConfigCategory.DEFAULT.name]);
+        payload = constructPayload(message, mappingConfigV3[ConfigCategoryV3.DEFAULT.name]);
         payload.data.event_name = eventNameMapping[event.toLowerCase()];
         break;
     }

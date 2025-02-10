@@ -1,11 +1,16 @@
+jest.mock('../../../../adapters/network');
+const { ConfigurationError } = require('@rudderstack/integrations-lib');
+const { handleHttpRequest } = require('../../../../adapters/network');
 const {
   handleDuplicateCheck,
   deduceModuleInfo,
   validatePresenceOfMandatoryProperties,
   validateConfigurationIssue,
+  formatMultiSelectFields,
+  transformToURLParams,
+  calculateTrigger,
+  searchRecordId,
 } = require('./utils');
-
-const { ConfigurationError } = require('@rudderstack/integrations-lib');
 
 describe('handleDuplicateCheck', () => {
   const testCases = [
@@ -61,6 +66,156 @@ describe('handleDuplicateCheck', () => {
   });
 });
 
+describe('formatMultiSelectFields', () => {
+  const testCases = [
+    {
+      name: 'should convert a field value to an array if a mapping exists in multiSelectFieldLevelDecision',
+      input: {
+        config: {
+          multiSelectFieldLevelDecision: [{ from: 'tags', to: 'tagsArray' }],
+        },
+        fields: { tags: 'value' },
+      },
+      expected: { tags: ['value'] },
+    },
+    {
+      name: 'should leave fields unchanged if no mapping exists',
+      input: {
+        config: {
+          multiSelectFieldLevelDecision: [{ from: 'categories', to: 'catArray' }],
+        },
+        fields: { tags: 'value', other: 'val' },
+      },
+      expected: { tags: 'value', other: 'val' },
+    },
+  ];
+
+  testCases.forEach(({ name, input, expected }) => {
+    it(name, () => {
+      const result = formatMultiSelectFields(input.config, { ...input.fields });
+      expect(result).toEqual(expected);
+    });
+  });
+});
+
+describe('transformToURLParams', () => {
+  const testCases = [
+    {
+      name: 'should build a proper URL with encoded criteria based on fields and config',
+      input: {
+        fields: { First_Name: 'John, Doe', Age: '30' },
+        config: { region: 'US' },
+      },
+      expected: `https://www.zohoapis.com/crm/v6/Leads/search?criteria=(First_Name:equals:John%5C%2C%20Doe)and(Age:equals:30)`,
+    },
+  ];
+
+  testCases.forEach(({ name, input, expected }) => {
+    it(name, () => {
+      const url = transformToURLParams(input.fields, input.config);
+      expect(url).toEqual(expected);
+    });
+  });
+});
+
+describe('calculateTrigger', () => {
+  const testCases = [
+    {
+      name: 'should return null when trigger is "Default"',
+      input: 'Default',
+      expected: null,
+    },
+    {
+      name: 'should return an empty array when trigger is "None"',
+      input: 'None',
+      expected: [],
+    },
+    {
+      name: 'should return an array containing the trigger for Custom',
+      input: 'Custom',
+      expected: ['Custom'],
+    },
+    {
+      name: 'should return an array containing the trigger for Approval',
+      input: 'Approval',
+      expected: ['Approval'],
+    },
+  ];
+
+  testCases.forEach(({ name, input, expected }) => {
+    it(name, () => {
+      expect(calculateTrigger(input)).toEqual(expected);
+    });
+  });
+});
+
+describe('searchRecordId', () => {
+  beforeEach(() => {
+    jest.resetAllMocks();
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  const testCases = [
+    {
+      name: 'should return valid record IDs when HTTP response is successful with data',
+      input: {
+        fields: { email: 'test@example.com' },
+        metadata: { secret: { accessToken: 'token' } },
+        config: { region: 'US' },
+        mockResponse: {
+          processedResponse: {
+            status: 200,
+            response: {
+              data: [{ id: 'rec1' }, { id: 'rec2' }],
+            },
+          },
+        },
+      },
+      expected: { erroneous: false, message: ['rec1', 'rec2'] },
+    },
+    {
+      name: 'should return error if HTTP status indicates failure',
+      input: {
+        fields: { email: 'error@example.com' },
+        metadata: { secret: { accessToken: 'token' } },
+        config: { region: 'US' },
+        mockResponse: {
+          processedResponse: {
+            status: 400,
+            response: 'Bad Request',
+          },
+        },
+      },
+      expected: { erroneous: true, message: 'Bad Request' },
+    },
+    {
+      name: 'should return error message when HTTP status is 204 (no content)',
+      input: {
+        fields: { email: 'nocontent@example.com' },
+        metadata: { secret: { accessToken: 'token' } },
+        config: { region: 'US' },
+        mockResponse: {
+          processedResponse: {
+            status: 204,
+            response: null,
+          },
+        },
+      },
+      expected: { erroneous: true, message: 'No contact is found with record details' },
+    },
+  ];
+
+  testCases.forEach(({ name, input, expected }) => {
+    it(name, async () => {
+      handleHttpRequest.mockResolvedValue(input.mockResponse);
+      const result = await searchRecordId(input.fields, input.metadata, input.config);
+      expect(result).toEqual(expected);
+    });
+  });
+});
 describe('deduceModuleInfo', () => {
   const testCases = [
     {

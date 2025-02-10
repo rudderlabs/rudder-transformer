@@ -2,7 +2,6 @@ const {
   handleDuplicateCheck,
   deduceModuleInfo,
   validatePresenceOfMandatoryProperties,
-  formatMultiSelectFields,
   validateConfigurationIssue,
 } = require('./utils');
 

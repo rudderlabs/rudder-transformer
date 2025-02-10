@@ -12,6 +12,7 @@ const {
   productToCartEventMappingJSON,
   checkoutStartedCompletedEventMappingJSON,
 } = require('../config');
+const pixelIdentifyMapping = require('../pixelEventsMappings/pixelIdentifyMapping.json');
 
 function getNestedValue(object, path) {
   const keys = path.split('.');
@@ -204,6 +205,32 @@ const searchEventBuilder = (inputEvent) => {
   );
 };
 
+const identifyEventBuilder = (identifyMessage, inputEvent) => {
+  // const identifyTraits = {
+  //   email: inputEvent?.data?.checkout?.customer?.email,
+  //   firstName: inputEvent?.data?.checkout?.customer?.firstName,
+  //   lastName: inputEvent?.data?.checkout?.customer?.lastName,
+  //   shopifyClientId: inputEvent?.clientId,
+  //   phone: inputEvent?.checkout?.phone,
+  //   address: {
+  //     street: inputEvent?.checkout?.billingAddress?.address1,
+  //     city: inputEvent?.checkout?.billingAddress?.city,
+  //     country: inputEvent?.checkout?.billingAddress?.country,
+  //     postalCode: inputEvent?.checkout?.billingAddress?.zip,
+  //     state: inputEvent?.checkout?.billingAddress?.province,
+  //   },
+  // };
+  const identifyTraits = mapObjectKeys(inputEvent, pixelIdentifyMapping);
+  const contextualPayload = mapContextObjectKeys(inputEvent.context, contextualFieldMappingJSON);
+  contextualPayload.traits = identifyTraits;
+  identifyMessage.context = contextualPayload;
+  identifyMessage.userId =
+    inputEvent?.data?.checkout?.customer?.id || inputEvent?.data?.checkout?.email;
+  identifyMessage.anonymousId = inputEvent?.clientId;
+  identifyMessage.type = EventType.IDENTIFY;
+  return identifyMessage;
+};
+
 /**
  * Extracts UTM parameters from the context object
  * @param {*} context context object from the event
@@ -248,5 +275,6 @@ module.exports = {
   checkoutEventBuilder,
   checkoutStepEventBuilder,
   searchEventBuilder,
+  identifyEventBuilder,
   extractCampaignParams,
 };

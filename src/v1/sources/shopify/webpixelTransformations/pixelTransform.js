@@ -15,6 +15,7 @@ const {
   checkoutEventBuilder,
   checkoutStepEventBuilder,
   searchEventBuilder,
+  identifyEventBuilder,
   extractCampaignParams,
 } = require('./pixelUtils');
 const campaignObjectMappings = require('../pixelEventsMappings/campaignObjectMappings.json');
@@ -96,6 +97,7 @@ function processPixelEvent(inputEvent) {
   const { order } = checkout ?? {};
   const { customer } = order ?? {};
   let message = {};
+  let identifyMessage = {};
   switch (name) {
     case PIXEL_EVENT_TOPICS.PAGE_VIEWED:
       message = pageViewedEventBuilder(inputEvent);
@@ -127,6 +129,7 @@ function processPixelEvent(inputEvent) {
       if (customer.id) message.userId = customer.id || '';
       handleCartTokenRedisOperations(inputEvent, clientId);
       message = checkoutStepEventBuilder(inputEvent);
+      identifyMessage = identifyEventBuilder(identifyMessage, inputEvent);
       break;
     case PIXEL_EVENT_TOPICS.SEARCH_SUBMITTED:
       message = searchEventBuilder(inputEvent);
@@ -162,12 +165,16 @@ function processPixelEvent(inputEvent) {
   }
   message.messageId = id;
   message = removeUndefinedAndNullValues(message);
-  return message;
+  // return an array of message and identifyMessage if identifyMessage is not empty
+  return Object.keys(identifyMessage).length > 0 ? [message, identifyMessage] : message;
 }
 
 const processPixelWebEvents = (event) => {
-  const pixelEvent = processPixelEvent(event);
-  return removeUndefinedAndNullValues(pixelEvent);
+  const pixelEvent = removeUndefinedAndNullValues(processPixelEvent(event));
+  if (_.isObject(pixelEvent) && _.every(pixelEvent, _.isObject)) {
+    return _.toArray(pixelEvent);
+  }
+  return pixelEvent;
 };
 
 module.exports = {

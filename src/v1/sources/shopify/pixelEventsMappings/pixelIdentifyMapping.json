@@ -1,0 +1,42 @@
+[
+  {
+    "sourceKeys": "data.checkout.customer.email",
+    "destKeys": "email"
+  },
+  {
+    "sourceKeys": "data.checkout.customer.firstName",
+    "destKeys": "firstName"
+  },
+  {
+    "sourceKeys": "data.checkout.customer.lastName",
+    "destKeys": "lastName"
+  },
+  {
+    "sourceKeys": "clientId",
+    "destKeys": "shopifyClientId"
+  },
+  {
+    "sourceKeys": "checkout.phone",
+    "destKeys": "phone"
+  },
+  {
+    "sourceKeys": "checkout.billingAddress.address1",
+    "destKeys": "address.street"
+  },
+  {
+    "sourceKeys": "checkout.billingAddress.city",
+    "destKeys": "address.city"
+  },
+  {
+    "sourceKeys": "checkout.billingAddress.country",
+    "destKeys": "address.country"
+  },
+  {
+    "sourceKeys": "checkout.billingAddress.zip",
+    "destKeys": "address.postalCode"
+  },
+  {
+    "sourceKeys": "checkout.billingAddress.province",
+    "destKeys": "address.state"
+  }
+]

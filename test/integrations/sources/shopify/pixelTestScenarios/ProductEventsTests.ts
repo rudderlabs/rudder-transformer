@@ -1060,11 +1060,18 @@ export const pixelEventsTestScenarios = [
         status: 200,
         body: [
           {
-            outputToSource: {
-              body: 'T0s=',
-              contentType: 'text/plain',
+            output: {
+              batch: [
+                {
+                  context: {},
+                  outputToSource: {
+                    body: 'T0s=',
+                    contentType: 'text/plain',
+                  },
+                  statusCode: 200,
+                },
+              ],
             },
-            statusCode: 200,
           },
         ],
       },

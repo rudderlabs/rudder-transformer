@@ -141,7 +141,7 @@ function processPixelEvent(inputEvent) {
         source: 'SHOPIFY',
         shopifyTopic: name,
       });
-      return NO_OPERATION_SUCCESS;
+      return [NO_OPERATION_SUCCESS];
   }
   message.anonymousId = clientId;
   message.setProperty(`integrations.${INTEGERATION}`, true);
@@ -166,7 +166,7 @@ function processPixelEvent(inputEvent) {
   message.messageId = id;
   message = removeUndefinedAndNullValues(message);
   // return an array of message and identifyMessage if identifyMessage is not empty
-  return Object.keys(identifyMessage).length > 0 ? [message, identifyMessage] : message;
+  return Object.keys(identifyMessage).length > 0 ? [message, identifyMessage] : [message];
 }
 
 const processPixelWebEvents = (event) => {
@@ -174,7 +174,7 @@ const processPixelWebEvents = (event) => {
   if (_.isObject(pixelEvent) && _.every(pixelEvent, _.isObject)) {
     return _.toArray(pixelEvent);
   }
-  return pixelEvent;
+  return [pixelEvent];
 };
 
 module.exports = {

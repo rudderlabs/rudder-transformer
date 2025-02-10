@@ -5,8 +5,7 @@ const { isShopifyV1Event } = require('./utils');
 const process = async (inputEvent) => {
   const { event } = inputEvent;
   if (isShopifyV1Event(event)) {
-    const v1EventResponse = await processV1Events(event);
-    return v1EventResponse;
+    return processV1Events(event);
   }
   return processV0(event);
 };

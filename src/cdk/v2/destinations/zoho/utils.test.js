@@ -216,6 +216,7 @@ describe('searchRecordId', () => {
     });
   });
 });
+
 describe('deduceModuleInfo', () => {
   const testCases = [
     {
@@ -267,6 +268,38 @@ describe('deduceModuleInfo', () => {
         upsertEndPoint: 'https://www.zohoapis.eu/crm/v6/Leads',
         identifierType: 'Email',
       },
+    },
+    {
+      name: 'should handle null input',
+      input: {
+        inputs: null,
+        config: {},
+      },
+      expected: {},
+    },
+    {
+      name: 'should handle undefined input',
+      input: {
+        inputs: undefined,
+        config: {},
+      },
+      expected: {},
+    },
+    {
+      name: 'should handle non-array input',
+      input: {
+        inputs: 'not an array',
+        config: {},
+      },
+      expected: {},
+    },
+    {
+      name: 'should handle empty array',
+      input: {
+        inputs: [],
+        config: {},
+      },
+      expected: {},
     },
   ];
 

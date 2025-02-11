@@ -37,10 +37,9 @@ function validatePresenceOfMandatoryProperties(objectName, object) {
   }
 
   const requiredFields = zohoConfig.MODULE_MANDATORY_FIELD_CONFIG[objectName];
-  const missingFields =
-    requiredFields.filter(
-      (field) => !object.hasOwnProperty(field) || !isDefinedAndNotNullAndNotEmpty(object[field]),
-    ) || [];
+  const missingFields = requiredFields.filter(
+    (field) => !object.hasOwnProperty(field) || !isDefinedAndNotNullAndNotEmpty(object[field]),
+  );
 
   return {
     status: missingFields.length > 0,

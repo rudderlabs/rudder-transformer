@@ -2,7 +2,6 @@ import { FetchHandler } from '../../helpers/fetchHandlers';
 import { SourceService } from '../../interfaces/SourceService';
 import {
   ErrorDetailer,
-  ErrorDetailerOptions,
   MetaTransferObject,
   RudderMessage,
   SourceInputConversionResult,
@@ -16,14 +15,13 @@ import { SourcePostTransformationService } from './postTransformation';
 import logger from '../../logger';
 
 export class NativeIntegrationSourceService implements SourceService {
-  public getTags(extraErrorDetails: ErrorDetailerOptions = {}): MetaTransferObject {
+  public getTags(): MetaTransferObject {
     const metaTO = {
       errorDetails: {
         module: tags.MODULES.SOURCE,
         implementation: tags.IMPLEMENTATIONS.NATIVE,
         destinationId: 'Non determinable',
         workspaceId: 'Non determinable',
-        ...extraErrorDetails,
       } as ErrorDetailer,
       errorContext: '[Native Integration Service] Failure During Source Transform',
     } as MetaTransferObject;
@@ -38,7 +36,7 @@ export class NativeIntegrationSourceService implements SourceService {
     _requestMetadata: NonNullable<unknown>,
   ): Promise<SourceTransformationResponse[]> {
     const sourceHandler = FetchHandler.getSourceHandler(sourceType, version);
-    const metaTO = this.getTags({ srcType: sourceType });
+    const metaTO = this.getTags();
     const respList: SourceTransformationResponse[] = await Promise.all<FixMe>(
       sourceEvents.map(async (sourceEvent) => {
         try {

@@ -687,7 +687,6 @@ export const data = [
               errorCategory: 'transformation',
               implementation: 'native',
               module: 'source',
-              srcType: 'appsflyer',
               workspaceId: 'Non determinable',
             },
             statusCode: 400,

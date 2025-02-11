@@ -853,7 +853,6 @@ export const data = [
               errorCategory: 'transformation',
               implementation: 'native',
               module: 'source',
-              srcType: 'gainsightpx',
               workspaceId: 'Non determinable',
             },
             statusCode: 400,

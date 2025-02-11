@@ -114,7 +114,8 @@ function createIdentifiers(properties) {
       ip_address: trimmedIp,
       user_agent: trimmedUserAgent,
     });
-  } else if (identifiers.length > 0) {
+  } else {
+    // identifiers have at least one element
     if (trimmedIp) {
       identifiers[0].ip_address = trimmedIp;
     }

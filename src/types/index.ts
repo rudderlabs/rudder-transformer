@@ -270,6 +270,9 @@ type ErrorDetailer = {
   module: string;
   implementation: string;
   feature: string;
+} & ErrorDetailerOptions;
+
+type ErrorDetailerOptions = {
   errorCategory?: string;
   errorType?: string;
   meta?: string;
@@ -390,6 +393,7 @@ export {
   Connection,
   Destination,
   ErrorDetailer,
+  ErrorDetailerOptions,
   MessageIdMetadataMap,
   MetaTransferObject,
   Metadata,

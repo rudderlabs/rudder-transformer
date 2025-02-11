@@ -206,11 +206,25 @@ describe('searchRecordId', () => {
       },
       expected: { erroneous: true, message: 'No contact is found with record details' },
     },
+    {
+      name: 'should handle network errors gracefully',
+      input: {
+        fields: { email: 'test@example.com' },
+        metadata: { secret: { accessToken: 'token' } },
+        config: { region: 'US' },
+        mockError: new Error('Network timeout'),
+      },
+      expected: { erroneous: true, message: 'Network timeout' },
+    },
   ];
 
   testCases.forEach(({ name, input, expected }) => {
     it(name, async () => {
-      handleHttpRequest.mockResolvedValue(input.mockResponse);
+      if (input.mockError) {
+        handleHttpRequest.mockRejectedValue(input.mockError);
+      } else {
+        handleHttpRequest.mockResolvedValue(input.mockResponse);
+      }
       const result = await searchRecordId(input.fields, input.metadata, input.config);
       expect(result).toEqual(expected);
     });

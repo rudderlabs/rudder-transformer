@@ -95,7 +95,7 @@ export const v0oauthScenarios = [
       request: {
         body: generateProxyV0Payload({
           ...commonRequestParameters,
-          endpoint: 'https://googleads.googleapis.com/v16/customers/customerid/offlineUserDataJobs',
+          endpoint: 'https://googleads.googleapis.com/v17/customers/customerid/offlineUserDataJobs',
         }),
         method: 'POST',
       },
@@ -138,7 +138,7 @@ export const v0oauthScenarios = [
       request: {
         body: generateProxyV0Payload({
           ...commonRequestParameters,
-          endpoint: 'https://googleads.googleapis.com/v16/customers/1234/offlineUserDataJobs',
+          endpoint: 'https://googleads.googleapis.com/v17/customers/1234/offlineUserDataJobs',
         }),
         method: 'POST',
       },
@@ -184,7 +184,7 @@ export const v1oauthScenarios = [
           {
             ...commonRequestParameters,
             endpoint:
-              'https://googleads.googleapis.com/v16/customers/customerid/offlineUserDataJobs',
+              'https://googleads.googleapis.com/v17/customers/customerid/offlineUserDataJobs',
           },
           metadataArray,
         ),
@@ -230,7 +230,7 @@ export const v1oauthScenarios = [
         body: generateProxyV1Payload(
           {
             ...commonRequestParameters,
-            endpoint: 'https://googleads.googleapis.com/v16/customers/1234/offlineUserDataJobs',
+            endpoint: 'https://googleads.googleapis.com/v17/customers/1234/offlineUserDataJobs',
           },
           metadataArray,
         ),
@@ -282,7 +282,7 @@ export const v1oauthScenarios = [
               'login-customer-id': 'logincustomerid',
             },
             endpoint:
-              'https://googleads.googleapis.com/v16/customers/customerid/offlineUserDataJobs',
+              'https://googleads.googleapis.com/v17/customers/customerid/offlineUserDataJobs',
           },
           metadataArray,
         ),
@@ -354,7 +354,7 @@ export const v1oauthScenarios = [
               'login-customer-id': 'logincustomerid',
             },
             endpoint:
-              'https://googleads.googleapis.com/v16/customers/customerid/offlineUserDataJobs',
+              'https://googleads.googleapis.com/v17/customers/customerid/offlineUserDataJobs',
           },
           metadataArray,
         ),

@@ -2,6 +2,37 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.90.2](https://github.com/rudderlabs/rudder-transformer/compare/v1.90.1...v1.90.2) (2025-02-11)
+
+
+### Bug Fixes
+
+* better error handling in webhook v2 ([9f224ec](https://github.com/rudderlabs/rudder-transformer/commit/9f224ec03b91f1a4d85b117dbf6972bb1ef40c6d))
+* improve error handling for webhook v2 ([f44d5a5](https://github.com/rudderlabs/rudder-transformer/commit/f44d5a56fd6ee183aea73eaba7e73c121f8bc470))
+* improve error handling for webhook v2 ([#4061](https://github.com/rudderlabs/rudder-transformer/issues/4061)) ([5d1e1bd](https://github.com/rudderlabs/rudder-transformer/commit/5d1e1bdb26bacddb3838bd16752b333d7814c294))
+* improve error handling for webhook v2 ([#4062](https://github.com/rudderlabs/rudder-transformer/issues/4062)) ([d795830](https://github.com/rudderlabs/rudder-transformer/commit/d79583087e98d713afb9b38d3a25d4e580a36c76))
+
+### [1.90.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.90.0...v1.90.1) (2025-02-06)
+
+
+### Bug Fixes
+
+* update google ads api version for gaoc ([#4047](https://github.com/rudderlabs/rudder-transformer/issues/4047)) ([62705c0](https://github.com/rudderlabs/rudder-transformer/commit/62705c0613f3c38b8f3e6baf047467ce97878625))
+
+## [1.90.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.89.1...v1.90.0) (2025-02-03)
+
+
+### Features
+
+* **http:** enclose constants with quotes in mappings ([#4037](https://github.com/rudderlabs/rudder-transformer/issues/4037)) ([d62ba40](https://github.com/rudderlabs/rudder-transformer/commit/d62ba40ff26d1f4fc27b54f1546094f384ee7266))
+* **http:** minor bug fixes and enhancements related to XML and FORM formats ([#4022](https://github.com/rudderlabs/rudder-transformer/issues/4022)) ([241250d](https://github.com/rudderlabs/rudder-transformer/commit/241250d10e1d8cb904ec188312e1ec5532379e93))
+* onboarding customerio segment  destination ([#4028](https://github.com/rudderlabs/rudder-transformer/issues/4028)) ([16b927a](https://github.com/rudderlabs/rudder-transformer/commit/16b927a97b64d3033e33a047429d0bbd15c7e1fd))
+
+
+### Bug Fixes
+
+* add phone e164 format validation for klaviyo ([#4025](https://github.com/rudderlabs/rudder-transformer/issues/4025)) ([ea46afe](https://github.com/rudderlabs/rudder-transformer/commit/ea46afef39bc85727a5258737987e4da1104ac3d))
+
 ### [1.89.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.89.0...v1.89.1) (2025-01-29)
 
 

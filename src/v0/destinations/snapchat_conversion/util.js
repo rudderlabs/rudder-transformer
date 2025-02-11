@@ -41,14 +41,15 @@ function getNormalizedPhoneNumber(message) {
   }
   let leadingZero = true;
   if (phoneNumber) {
-    for (let i = 0; i < phoneNumber.length; i += 1) {
-      if (Number.isNaN(parseInt(phoneNumber[i], 10)) || (phoneNumber[i] === '0' && leadingZero)) {
-        phoneNumber = phoneNumber.replace(phoneNumber[i], '');
-        i -= 1;
-      } else {
+    phoneNumber = phoneNumber
+      .split('')
+      .filter((char) => {
+        if (Number.isNaN(parseInt(char, 10))) return false; // Remove non-numeric characters
+        if (char === '0' && leadingZero) return false; // Remove leading zeros
         leadingZero = false;
-      }
-    }
+        return true;
+      })
+      .join('');
     return phoneNumber;
   }
   return null;

@@ -85,7 +85,7 @@ const handleCartTokenRedisOperations = async (inputEvent, clientId) => {
   }
 };
 
-function processPixelEvent(inputEvent) {
+async function processPixelEvent(inputEvent) {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   const { name, query_parameters, context, clientId, data, id } = inputEvent;
   const shopifyDetails = { ...inputEvent };
@@ -161,12 +161,19 @@ function processPixelEvent(inputEvent) {
     message.context.campaign = campaignParams;
   }
   message.messageId = id;
+
+  // attach userId to the message if anonymousId is present in Redis
+  // this allows stitching of events from the same user across multiple checkouts
+  const redisData = await RedisDB.getVal(`pixel:${message.anonymousId}`);
+  if (isDefinedNotNullNotEmpty(redisData)) {
+    message.userId = redisData.userId;
+  }
   message = removeUndefinedAndNullValues(message);
   return message;
 }
 
-const processPixelWebEvents = (event) => {
-  const pixelEvent = processPixelEvent(event);
+const processPixelWebEvents = async (event) => {
+  const pixelEvent = await processPixelEvent(event);
   return removeUndefinedAndNullValues(pixelEvent);
 };
 

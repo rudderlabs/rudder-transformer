@@ -17,7 +17,7 @@ const processV1Events = async (event) => {
       return processIdentifierEvent(event);
     }
     // handle events from the app pixel.
-    const pixelWebEventResponse = processPixelWebEvents(event);
+    const pixelWebEventResponse = await processPixelWebEvents(event);
     return pixelWebEventResponse;
   }
   if (isServerSideEvent) {

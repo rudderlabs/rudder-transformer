@@ -212,11 +212,10 @@ function process(event) {
 
   const messageType = message.type?.toLowerCase();
 
-  if (messageType === EventType.TRACK) {
-    return processTrack(message, metadata, destination);
+  if (messageType !== EventType.TRACK) {
+    throw new InstrumentationError(`Message type ${messageType} not supported`);
   }
-
-  throw new InstrumentationError(`Message type ${messageType} not supported`);
+  return processTrack(message, metadata, destination);
 }
 
 const processRouterDest = async (inputs, reqMetadata) => {

@@ -79,30 +79,97 @@ function populateEventId(event, requestJson, destination) {
   return eventId;
 }
 
-function populateContents(requestJson) {
-  const reqJson = { ...requestJson };
-  if (reqJson.contents) {
-    const transformedContents = requestJson.contents
-      .map((obj) => ({
-        ...(obj.id && { content_id: obj.id }),
-        ...(obj.groupId && { content_group_id: obj.groupId }),
-        ...(obj.name && { content_name: obj.name }),
-        ...(obj.price && { content_price: parseFloat(obj.price) }),
-        ...(obj.type && { content_type: obj.type }),
-        ...(obj.quantity && { num_items: parseInt(obj.quantity, 10) }),
-      }))
-      .filter((tfObj) => Object.keys(tfObj).length > 0);
-    if (transformedContents.length > 0) {
-      reqJson.contents = transformedContents;
+// Separate identifier creation logic for better maintainability
+function createIdentifiers(properties) {
+  const identifiers = [];
+  const { email, phone, twclid, ip_address: ipAddress, user_agent: userAgent } = properties;
+
+  // Handle email
+  if (email?.trim()) {
+    identifiers.push({
+      hashed_email: sha256(email.trim().toLowerCase()),
+    });
+  }
+
+  // Handle phone
+  if (phone?.trim()) {
+    identifiers.push({
+      hashed_phone_number: sha256(phone.trim()),
+    });
+  }
+
+  // Handle twclid
+  if (twclid) {
+    identifiers.push({ twclid });
+  }
+
+  // Handle IP and user agent
+  const trimmedIp = ipAddress?.trim();
+  const trimmedUserAgent = userAgent?.trim();
+  // ip_address or/and user_agent is required to be
+  // passed in conjunction with another identifier
+  // ref: https://developer.x.com/en/docs/x-ads-api/measurement/web-conversions/api-reference/conversions
+  if (trimmedIp && trimmedUserAgent) {
+    identifiers.push({
+      ip_address: trimmedIp,
+      user_agent: trimmedUserAgent,
+    });
+  } else if (identifiers.length > 0) {
+    if (trimmedIp) {
+      identifiers[0].ip_address = trimmedIp;
+    }
+    if (trimmedUserAgent) {
+      identifiers[0].user_agent = trimmedUserAgent;
     }
   }
-  return reqJson;
+
+  return identifiers;
+}
+
+// Simplified content transformation
+function transformContent(content) {
+  const mappings = {
+    id: 'content_id',
+    groupId: 'content_group_id',
+    name: 'content_name',
+    type: 'content_type',
+  };
+
+  const transformed = {};
+
+  Object.entries(mappings).forEach(([key, newKey]) => {
+    if (content[key]) {
+      transformed[newKey] = content[key];
+    }
+  });
+
+  if (content.price) {
+    transformed.content_price = parseFloat(content.price);
+  }
+
+  if (content.quantity) {
+    transformed.num_items = parseInt(content.quantity, 10);
+  }
+
+  return Object.keys(transformed).length > 0 ? transformed : null;
+}
+
+function populateContents(requestJson) {
+  if (!requestJson.contents) return requestJson;
+
+  const transformedContents = requestJson.contents.map(transformContent).filter(Boolean);
+
+  return {
+    ...requestJson,
+    ...(transformedContents.length > 0 && { contents: transformedContents }),
+  };
 }
 
 // process track call
 function processTrack(message, metadata, destination) {
   let requestJson = constructPayload(message, mappingConfig[ConfigCategories.TRACK.name]);
 
+  // Populate required fields
   requestJson.event_id =
     requestJson.event_id || populateEventId(message.event, requestJson, destination);
 
@@ -110,52 +177,11 @@ function processTrack(message, metadata, destination) {
     ? requestJson.conversion_time
     : message.timestamp;
 
-  const identifiers = [];
-
-  if (message.properties.email) {
-    let email = message.properties.email.trim();
-    if (email) {
-      email = email.toLowerCase();
-      identifiers.push({ hashed_email: sha256(email) });
-    }
-  }
-
-  if (message.properties.phone) {
-    const phone = message.properties.phone.trim();
-    if (phone) {
-      identifiers.push({ hashed_phone_number: sha256(phone) });
-    }
-  }
-
-  if (message.properties.twclid) {
-    identifiers.push({ twclid: message.properties.twclid });
-  }
-
-  const ipAddress = message.properties.ip_address?.trim();
-  const userAgent = message.properties.user_agent?.trim();
-
-  // ip_address or/and user_agent is required to be
-  // passed in conjunction with another identifier
-  // ref: https://developer.x.com/en/docs/x-ads-api/measurement/web-conversions/api-reference/conversions
-  if (ipAddress && userAgent) {
-    identifiers.push({ ip_address: ipAddress, user_agent: userAgent });
-  } else if (identifiers.length > 0) {
-    // we are adding ip_address or/and user_agent to any other identifier
-    // because it should be passed with any other identifier
-    if (ipAddress) {
-      identifiers[0].ip_address = ipAddress;
-    }
-    if (userAgent) {
-      identifiers[0].user_agent = userAgent;
-    }
-  }
-
+  // Add identifiers and transform contents
+  requestJson.identifiers = createIdentifiers(message.properties);
   requestJson = populateContents(requestJson);
 
-  requestJson.identifiers = identifiers;
-
   const endpointUrl = prepareUrl(message, destination);
-
   return buildResponse(message, requestJson, metadata, endpointUrl);
 }
 

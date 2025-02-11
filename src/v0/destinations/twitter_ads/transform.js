@@ -135,13 +135,12 @@ function transformContent(content) {
     type: 'content_type',
   };
 
-  const transformed = {};
-
-  Object.entries(mappings).forEach(([key, newKey]) => {
+  const transformed = Object.entries(mappings).reduce((acc, [key, newKey]) => {
     if (content[key]) {
-      transformed[newKey] = content[key];
+      acc[newKey] = content[key];
     }
-  });
+    return acc;
+  }, {});
 
   if (content.price) {
     transformed.content_price = parseFloat(content.price);

@@ -86,15 +86,25 @@ function populateContents(requestJson) {
 
   const transformedContents = contents
     .map(({ id, groupId, name, price, type, quantity }) => {
-      const transformed = {
-        ...(id && { content_id: id }),
-        ...(groupId && { content_group_id: groupId }),
-        ...(name && { content_name: name }),
-        ...(price && !Number.isNaN(parseFloat(price)) && { content_price: parseFloat(price) }),
-        ...(type && { content_type: type }),
-        ...(quantity &&
-          !Number.isNaN(parseInt(quantity, 10)) && { num_items: parseInt(quantity, 10) }),
-      };
+      const transformed = {};
+      if (id) {
+        transformed.content_id = id;
+      }
+      if (groupId) {
+        transformed.content_group_id = groupId;
+      }
+      if (name) {
+        transformed.content_name = name;
+      }
+      if (price && Number.isFinite(parseFloat(price))) {
+        transformed.content_price = parseFloat(price);
+      }
+      if (type) {
+        transformed.content_type = type;
+      }
+      if (quantity && Number.isFinite(parseInt(quantity, 10))) {
+        transformed.num_items = parseInt(quantity, 10);
+      }
       return Object.keys(transformed).length > 0 ? transformed : null;
     })
     .filter(Boolean); // Removes null entries

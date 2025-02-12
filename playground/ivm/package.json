@@ -1,0 +1,12 @@
+{
+  "name": "ivm",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "keywords": [],
+  "author": "",
+  "dependencies": {
+    "isolated-vm": "^5.0.3"
+  }
+}

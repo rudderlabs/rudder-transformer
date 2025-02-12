@@ -59,7 +59,10 @@ const formatMultiSelectFields = (config, fields) => {
   const formattedFields = { ...fields };
 
   Object.keys(formattedFields).forEach((eachFieldKey) => {
-    if (multiSelectFields.hasOwnProperty(eachFieldKey)) {
+    if (
+      multiSelectFields.hasOwnProperty(eachFieldKey) &&
+      isDefinedAndNotNull(formattedFields[eachFieldKey])
+    ) {
       formattedFields[eachFieldKey] = [formattedFields[eachFieldKey]];
     }
   });

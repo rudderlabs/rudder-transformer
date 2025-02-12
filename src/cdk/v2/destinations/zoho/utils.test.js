@@ -79,6 +79,16 @@ describe('formatMultiSelectFields', () => {
       expected: { tags: ['value'] },
     },
     {
+      name: 'should leave fields unchanged if mapping fields exists but null',
+      input: {
+        config: {
+          multiSelectFieldLevelDecision: [{ from: 'tags', to: 'tagsArray' }],
+        },
+        fields: { tags: null, other: 'val' },
+      },
+      expected: { tags: null, other: 'val' },
+    },
+    {
       name: 'should leave fields unchanged if no mapping exists',
       input: {
         config: {

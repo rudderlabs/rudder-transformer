@@ -1,0 +1,68 @@
+[
+  {
+    "output": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://a.klaviyo.com/api/events",
+      "headers": {
+        "Authorization": "Klaviyo-API-Key dummyPrivateApiKey",
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "revision": "2023-02-22"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "data": {
+            "type": "event",
+            "attributes": {
+              "metric": {
+                "name": "Viewed Product"
+              },
+              "properties": {
+                "ProductName": "test product",
+                "ProductID": "1114",
+                "SKU": "WINNIePuh12",
+                "ImageURL": "http://www.example.com/path/to/product/image.png",
+                "URL": "http://www.example.com/path/to/product",
+                "Brand": "Not for Kids",
+                "Price": 9.9,
+                "Categories": [
+                  "Fiction",
+                  "Children"
+                ]
+              },
+              "profile": {
+                "$email": "test@rudderstack.com",
+                "$phone_number": "9112340375",
+                "$id": "sajal12",
+                "age": "22",
+                "name": "Test",
+                "description": "Sample description"
+              }
+            }
+          }
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": ""
+    },
+    "metadata": {
+      "jobId": 1,
+      "attemptNum": 1,
+      "userId": "default-userId",
+      "sourceId": "default-sourceId",
+      "destinationId": "default-destinationId",
+      "workspaceId": "default-workspaceId",
+      "secret": {
+        "accessToken": "default-accessToken"
+      },
+      "dontBatch": false
+    },
+    "statusCode": 200
+  }
+]

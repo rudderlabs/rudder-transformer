@@ -1,0 +1,45 @@
+{
+  "output": {
+    "status": 500,
+    "message": "Campaign Manager: Request had insufficient authentication scopes. during CAMPAIGN_MANAGER response transformation 3",
+    "destinationResponse": {
+      "response": {
+        "error": {
+          "code": 403,
+          "message": "Request had insufficient authentication scopes.",
+          "errors": [
+            {
+              "message": "Insufficient Permission",
+              "domain": "global",
+              "reason": "insufficientPermissions"
+            }
+          ],
+          "status": "PERMISSION_DENIED",
+          "details": [
+            {
+              "@type": "type.googleapis.com/google.rpc.ErrorInfo",
+              "reason": "ACCESS_TOKEN_SCOPE_INSUFFICIENT",
+              "domain": "googleapis.com",
+              "metadata": {
+                "service": "gmail.googleapis.com",
+                "method": "caribou.api.proto.MailboxService.GetProfile"
+              }
+            }
+          ]
+        }
+      },
+      "status": 403
+    },
+    "statTags": {
+      "errorCategory": "network",
+      "errorType": "aborted",
+      "destType": "CAMPAIGN_MANAGER",
+      "module": "destination",
+      "implementation": "native",
+      "feature": "dataDelivery",
+      "destinationId": "default-destinationId",
+      "workspaceId": "default-workspaceId"
+    },
+    "authErrorCategory": "AUTH_STATUS_INACTIVE"
+  }
+}

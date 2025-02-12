@@ -418,7 +418,6 @@ export const data = [
         body: [
           {
             message: {
-              userId: 'dummy-user001',
               channel: 'web',
               event: 'signup',
               properties: {

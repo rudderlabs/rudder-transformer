@@ -48,7 +48,8 @@ steps:
       $.context.endpoint = "https://app.loops.so/api/v1/contacts/update";
       const payload = {}
       Object.assign(payload, .message.context.traits);
-      payload.userId = .message.userId;
+      payload.userId = .message.({{{{$.getGenericPaths("userIdOnly")}}}});
+      payload.email = .message.({{{{$.getGenericPaths("emailOnly")}}}});
       $.context.payload = payload;
 
   - name: trackPayload
@@ -57,7 +58,8 @@ steps:
       $.context.endpoint = "https://app.loops.so/api/v1/events/send";
       const payload = {}
       Object.assign(payload, .message.context.traits);
-      payload.userId = .message.userId;
+      payload.userId = .message.({{{{$.getGenericPaths("userIdOnly")}}}});
+      payload.email = .message.({{{{$.getGenericPaths("emailOnly")}}}});
       payload.eventName = .message.event;
       payload.eventProperties = .message.properties;
       $.context.payload = payload;

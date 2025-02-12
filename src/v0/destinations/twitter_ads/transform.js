@@ -96,11 +96,11 @@ function populateContents(requestJson) {
       if (name) {
         transformed.content_name = name;
       }
-      if (price && Number.isFinite(parseFloat(price))) {
-        transformed.content_price = parseFloat(price);
-      }
       if (type) {
         transformed.content_type = type;
+      }
+      if (price && Number.isFinite(parseFloat(price))) {
+        transformed.content_price = parseFloat(price);
       }
       if (quantity && Number.isFinite(parseInt(quantity, 10))) {
         transformed.num_items = parseInt(quantity, 10);

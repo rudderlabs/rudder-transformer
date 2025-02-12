@@ -7,6 +7,7 @@ const {
 const { getDestinationExternalIDInfoForRetl, isHttpStatusSuccess } = require('../../../../v0/util');
 const zohoConfig = require('./config');
 const { handleHttpRequest } = require('../../../../adapters/network');
+const { CommonUtils } = require('../../../../util/common');
 
 const deduceModuleInfo = (inputs, Config) => {
   if (!Array.isArray(inputs) || inputs.length === 0) {
@@ -131,8 +132,7 @@ const searchRecordId = async (fields, metadata, Config) => {
 
     if (
       searchResult.processedResponse.status === 204 ||
-      !Array.isArray(searchResult.processedResponse.response?.data) ||
-      searchResult.processedResponse.response?.data?.length === 0
+      !CommonUtils.isNonEmptyArray(searchResult.processedResponse.response?.data)
     ) {
       return {
         erroneous: true,

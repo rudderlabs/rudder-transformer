@@ -5,7 +5,7 @@ ENV HUSKY 0
 RUN apt-get update \
   && apt-get install -y curl make g++ \
   && apt-get install -y cpio \
-  && curl -sL https://deb.nodesource.com/setup_18.x | bash \
+  && curl -sL https://deb.nodesource.com/setup_20.x | bash \
   && apt-get install -y nodejs \
   && rm -rf /var/lib/apt/lists/* \
   && rm -rf /var/lib/apt/lists.d/* \
@@ -38,7 +38,7 @@ RUN npm run build:ci -- --sourceMap false
 RUN npm run copy
 
 HEALTHCHECK --interval=1s --timeout=30s --retries=30 \
-CMD wget --no-verbose --tries=5 --spider http://localhost:9090/health || exit 1
+  CMD wget --no-verbose --tries=5 --spider http://localhost:9090/health || exit 1
 
 CMD [ "npm", "start" ]
 
@@ -75,7 +75,7 @@ COPY --chown=node:node --from=prodDepsBuilder /home/node/app/node_modules ./node
 COPY --chown=node:node --from=development /home/node/app/dist/ ./dist
 
 HEALTHCHECK --interval=1s --timeout=30s --retries=30 \
-CMD wget --no-verbose --tries=5 --spider http://localhost:9090/health || exit 1
+  CMD wget --no-verbose --tries=5 --spider http://localhost:9090/health || exit 1
 
 CMD [ "npm", "start" ]
 

@@ -81,6 +81,11 @@ function populateEventId(event, requestJson, destination) {
 
 // Separate identifier creation logic for better maintainability
 function createIdentifiers(properties) {
+  if (!properties) {
+    throw new InstrumentationError(
+      '[TWITTER ADS]: properties must be present in event. Aborting message',
+    );
+  }
   const identifiers = [];
   const { email, phone, twclid, ip_address: ipAddress, user_agent: userAgent } = properties;
 
@@ -115,7 +120,11 @@ function createIdentifiers(properties) {
       user_agent: trimmedUserAgent,
     });
   } else {
-    // identifiers have at least one element
+    if (identifiers.length === 0) {
+      throw new InstrumentationError(
+        '[TWITTER ADS]: one of twclid, phone, email or ip_address with user_agent must be present in properties.',
+      );
+    }
     if (trimmedIp) {
       identifiers[0].ip_address = trimmedIp;
     }
@@ -167,7 +176,9 @@ function populateContents(requestJson) {
 
 // process track call
 function processTrack(message, metadata, destination) {
+  const identifiers = createIdentifiers(message.properties);
   let requestJson = constructPayload(message, mappingConfig[ConfigCategories.TRACK.name]);
+  requestJson.identifiers = identifiers;
 
   // Populate required fields
   requestJson.event_id =
@@ -178,38 +189,14 @@ function processTrack(message, metadata, destination) {
     : message.timestamp;
 
   // Add identifiers and transform contents
-  requestJson.identifiers = createIdentifiers(message.properties);
   requestJson = populateContents(requestJson);
 
   const endpointUrl = prepareUrl(message, destination);
   return buildResponse(message, requestJson, metadata, endpointUrl);
 }
 
-function validateRequest(message) {
-  const { properties } = message;
-
-  if (!properties) {
-    throw new InstrumentationError(
-      '[TWITTER ADS]: properties must be present in event. Aborting message',
-    );
-  }
-
-  if (
-    !properties.email &&
-    !properties.phone &&
-    !properties.twclid &&
-    !(properties.ip_address && properties.user_agent)
-  ) {
-    throw new InstrumentationError(
-      '[TWITTER ADS]: one of twclid, phone, email or ip_address with user_agent must be present in properties.',
-    );
-  }
-}
-
 function process(event) {
   const { message, metadata, destination } = event;
-
-  validateRequest(message);
 
   const messageType = message.type?.toLowerCase();
 

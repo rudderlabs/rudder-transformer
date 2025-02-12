@@ -2093,6 +2093,81 @@ export const data = [
       },
     },
   },
+  {
+    name: 'twitter_ads',
+    description: 'Test case for empty string identifiers',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              type: 'track',
+              event: 'ABC Searched',
+              timestamp: '2020-08-14T05:30:30.118Z',
+              properties: {
+                email: '',
+                phone: '',
+                twclid: '',
+                ip_address: '',
+                user_agent: '',
+                // All identifier fields present but empty
+              },
+            },
+            metadata: {
+              secret: {
+                consumerKey: 'qwe',
+                consumerSecret: 'fdghv',
+                accessToken: 'dummyAccessToken',
+                accessTokenSecret: 'testAccessTokenSecret',
+              },
+            },
+            destination: {
+              Config: {
+                pixelId: 'dummyPixelId',
+                twitterAdsEventNames: [
+                  {
+                    rudderEventName: 'ABC Searched',
+                    twitterEventId: 'tw-234234324234',
+                  },
+                ],
+              },
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            statusCode: 400,
+            error:
+              '[TWITTER ADS]: one of twclid, phone, email or ip_address with user_agent must be present in properties.',
+            metadata: {
+              secret: {
+                consumerKey: 'qwe',
+                consumerSecret: 'fdghv',
+                accessToken: 'dummyAccessToken',
+                accessTokenSecret: 'testAccessTokenSecret',
+              },
+            },
+            statTags: {
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              destType: 'TWITTER_ADS',
+              module: 'destination',
+              implementation: 'native',
+              feature: 'processor',
+            },
+          },
+        ],
+      },
+    },
+  },
 ].map((tc) => ({
   ...tc,
   mockFns: (_) => {

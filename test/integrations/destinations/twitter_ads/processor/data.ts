@@ -2168,6 +2168,115 @@ export const data = [
       },
     },
   },
+  {
+    name: 'twitter_ads',
+    description: 'Test case for all invalid contents',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              type: 'track',
+              event: 'ABC Searched',
+              timestamp: '2020-08-14T05:30:30.118Z',
+              properties: {
+                email: 'test@example.com',
+                value: '100',
+                currency: 'USD',
+                contents: [
+                  {
+                    // No valid mappable fields
+                    invalidField1: 'value1',
+                    invalidField2: 'value2',
+                  },
+                  {
+                    // Another invalid content
+                    someField: 123,
+                    otherField: true,
+                  },
+                ],
+              },
+            },
+            metadata: {
+              secret: {
+                consumerKey: 'qwe',
+                consumerSecret: 'fdghv',
+                accessToken: 'dummyAccessToken',
+                accessTokenSecret: 'testAccessTokenSecret',
+              },
+            },
+            destination: {
+              Config: {
+                pixelId: 'dummyPixelId',
+                twitterAdsEventNames: [
+                  {
+                    rudderEventName: 'ABC Searched',
+                    twitterEventId: 'tw-234234324234',
+                  },
+                ],
+              },
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://ads-api.twitter.com/12/measurement/conversions/dummyPixelId',
+              headers: {
+                Authorization: authHeaderConstant,
+                'Content-Type': 'application/json',
+              },
+              params: {},
+              body: {
+                JSON: {
+                  conversions: [
+                    {
+                      conversion_time: '2020-08-14T05:30:30.118Z',
+                      event_id: 'tw-234234324234',
+                      value: '100',
+                      price_currency: 'USD',
+                      identifiers: [
+                        {
+                          hashed_email:
+                            '973dfe463ec85785f5f95af5ba3906eedb2d931c24e69824a89ea65dba4e813b',
+                        },
+                      ],
+                      // contents field should not be present as all contents were invalid
+                    },
+                  ],
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: '',
+            },
+            metadata: {
+              secret: {
+                consumerKey: 'qwe',
+                consumerSecret: 'fdghv',
+                accessToken: 'dummyAccessToken',
+                accessTokenSecret: 'testAccessTokenSecret',
+              },
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
 ].map((tc) => ({
   ...tc,
   mockFns: (_) => {

@@ -79,6 +79,29 @@ function populateEventId(event, requestJson, destination) {
   return eventId;
 }
 
+function populateContents(requestJson) {
+  const { contents, ...rest } = requestJson;
+
+  if (!Array.isArray(contents)) return requestJson;
+
+  const transformedContents = contents
+    .map(({ id, groupId, name, price, type, quantity }) => {
+      const transformed = {
+        ...(id && { content_id: id }),
+        ...(groupId && { content_group_id: groupId }),
+        ...(name && { content_name: name }),
+        ...(price && !Number.isNaN(parseFloat(price)) && { content_price: parseFloat(price) }),
+        ...(type && { content_type: type }),
+        ...(quantity &&
+          !Number.isNaN(parseInt(quantity, 10)) && { num_items: parseInt(quantity, 10) }),
+      };
+      return Object.keys(transformed).length > 0 ? transformed : null;
+    })
+    .filter(Boolean); // Removes null entries
+
+  return transformedContents.length > 0 ? { ...rest, contents: transformedContents } : rest;
+}
+
 // Separate identifier creation logic for better maintainability
 function createIdentifiers(properties) {
   if (!properties) {
@@ -134,44 +157,6 @@ function createIdentifiers(properties) {
   }
 
   return identifiers;
-}
-
-// Simplified content transformation
-function transformContent(content) {
-  const mappings = {
-    id: 'content_id',
-    groupId: 'content_group_id',
-    name: 'content_name',
-    type: 'content_type',
-  };
-
-  const transformed = Object.entries(mappings).reduce((acc, [key, newKey]) => {
-    if (content[key]) {
-      acc[newKey] = content[key];
-    }
-    return acc;
-  }, {});
-
-  if (content.price) {
-    transformed.content_price = parseFloat(content.price);
-  }
-
-  if (content.quantity) {
-    transformed.num_items = parseInt(content.quantity, 10);
-  }
-
-  return Object.keys(transformed).length > 0 ? transformed : null;
-}
-
-function populateContents(requestJson) {
-  if (!requestJson.contents) return requestJson;
-
-  const transformedContents = requestJson.contents.map(transformContent).filter(Boolean);
-
-  return {
-    ...requestJson,
-    ...(transformedContents.length > 0 && { contents: transformedContents }),
-  };
 }
 
 // process track call

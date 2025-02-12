@@ -446,12 +446,6 @@ class Prometheus {
         labelNames: ['event', 'writeKey'],
       },
       {
-        name: 'shopify_pixel_cart_token_not_found_server_side',
-        help: 'shopify_pixel_cart_token_not_found_server_side',
-        type: 'counter',
-        labelNames: ['event', 'writeKey'],
-      },
-      {
         name: 'shopify_pixel_cart_token_set',
         help: 'shopify_pixel_cart_token_set',
         type: 'counter',
@@ -462,6 +456,12 @@ class Prometheus {
         help: 'shopify_pixel_cart_token_redis_error',
         type: 'counter',
         labelNames: ['event', 'writeKey'],
+      },
+      {
+        name: 'shopify_pixel_id_stitch_gaps',
+        help: 'shopify_pixel_id_stitch_gaps',
+        type: 'counter',
+        labelNames: ['event', 'reason', 'source', 'writeKey'],
       },
       {
         name: 'outgoing_request_count',
@@ -865,6 +865,18 @@ class Prometheus {
       // User transform metrics
       // counter
       {
+        name: 'user_transform_input_events',
+        help: 'Number of input events to user transform',
+        type: 'counter',
+        labelNames: ['workspaceId'],
+      },
+      {
+        name: 'user_transform_output_events',
+        help: 'user_transform_output_events',
+        type: 'counter',
+        labelNames: ['workspaceId'],
+      },
+      {
         name: 'user_transform_function_group_size',
         help: 'user_transform_function_group_size',
         type: 'counter',
@@ -953,20 +965,6 @@ class Prometheus {
         help: 'geo_call_duration',
         type: 'histogram',
         labelNames: ['identifier', 'transformationId', 'workspaceId'],
-      },
-      {
-        name: 'user_transform_input_events',
-        help: 'Number of input events to user transform',
-        type: 'histogram',
-        labelNames: [],
-        buckets: [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 150, 200],
-      },
-      {
-        name: 'user_transform_output_events',
-        help: 'user_transform_output_events',
-        type: 'histogram',
-        labelNames: [],
-        buckets: [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 150, 200],
       },
       // summary
       {

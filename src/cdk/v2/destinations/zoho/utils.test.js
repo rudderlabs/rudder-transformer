@@ -257,11 +257,36 @@ describe('searchRecordId', () => {
         message: ['123', '456'],
       },
     },
+    {
+      name: 'should handle non-success HTTP status code',
+      response: {
+        processedResponse: {
+          status: 400,
+          response: 'Bad Request Error',
+        },
+      },
+      expected: {
+        erroneous: true,
+        message: 'Bad Request Error',
+      },
+    },
+    {
+      name: 'should handle HTTP request error',
+      error: new Error('Network Error'),
+      expected: {
+        erroneous: true,
+        message: 'Network Error',
+      },
+    },
   ];
 
-  testCases.forEach(({ name, response, expected }) => {
+  testCases.forEach(({ name, response, error, expected }) => {
     it(name, async () => {
-      handleHttpRequest.mockResolvedValueOnce(response);
+      if (error) {
+        handleHttpRequest.mockRejectedValueOnce(error);
+      } else {
+        handleHttpRequest.mockResolvedValueOnce(response);
+      }
 
       const result = await searchRecordId(mockFields, mockMetadata, mockConfig);
 
@@ -353,6 +378,48 @@ describe('deduceModuleInfo', () => {
         config: {},
       },
       expected: {},
+    },
+    {
+      name: 'should use default US region when config.region is null',
+      input: {
+        inputs: [
+          {
+            message: {
+              context: {
+                externalId: [{ type: 'ZOHO-Leads', id: '12345', identifierType: 'Email' }],
+                mappedToDestination: true,
+              },
+            },
+          },
+        ],
+        config: { region: null },
+      },
+      expected: {
+        operationModuleType: 'Leads',
+        upsertEndPoint: 'https://www.zohoapis.com/crm/v6/Leads',
+        identifierType: 'Email',
+      },
+    },
+    {
+      name: 'should use default US region when config.region is undefined',
+      input: {
+        inputs: [
+          {
+            message: {
+              context: {
+                externalId: [{ type: 'ZOHO-Leads', id: '12345', identifierType: 'Email' }],
+                mappedToDestination: true,
+              },
+            },
+          },
+        ],
+        config: {}, // region is undefined
+      },
+      expected: {
+        operationModuleType: 'Leads',
+        upsertEndPoint: 'https://www.zohoapis.com/crm/v6/Leads',
+        identifierType: 'Email',
+      },
     },
   ];
 

@@ -126,7 +126,11 @@ const searchRecordId = async (fields, metadata, Config) => {
       };
     }
 
-    if (searchResult.processedResponse.status === 204) {
+    if (
+      searchResult.processedResponse.status === 204 ||
+      !Array.isArray(searchResult.processedResponse.response?.data) ||
+      searchResult.processedResponse.response?.data?.length === 0
+    ) {
       return {
         erroneous: true,
         message: 'No contact is found with record details',

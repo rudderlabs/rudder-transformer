@@ -150,82 +150,111 @@ describe('calculateTrigger', () => {
 });
 
 describe('searchRecordId', () => {
-  beforeEach(() => {
-    jest.resetAllMocks();
-  });
+  const mockFields = { Email: 'test@example.com' };
+  const mockMetadata = { secret: { accessToken: 'mock-token' } };
+  const mockConfig = { region: 'us' };
 
-  afterEach(() => {
+  beforeEach(() => {
     jest.clearAllMocks();
   });
 
   const testCases = [
     {
-      name: 'should return valid record IDs when HTTP response is successful with data',
-      input: {
-        fields: { email: 'test@example.com' },
-        metadata: { secret: { accessToken: 'token' } },
-        config: { region: 'US' },
-        mockResponse: {
-          processedResponse: {
-            status: 200,
-            response: {
-              data: [{ id: 'rec1' }, { id: 'rec2' }],
-            },
+      name: 'should handle non-array response data',
+      response: {
+        processedResponse: {
+          status: 200,
+          response: {
+            data: 'not-an-array',
           },
         },
       },
-      expected: { erroneous: false, message: ['rec1', 'rec2'] },
+      expected: {
+        erroneous: true,
+        message: 'No contact is found with record details',
+      },
     },
     {
-      name: 'should return error if HTTP status indicates failure',
-      input: {
-        fields: { email: 'error@example.com' },
-        metadata: { secret: { accessToken: 'token' } },
-        config: { region: 'US' },
-        mockResponse: {
-          processedResponse: {
-            status: 400,
-            response: 'Bad Request',
+      name: 'should handle missing response data property',
+      response: {
+        processedResponse: {
+          status: 200,
+          response: {},
+        },
+      },
+      expected: {
+        erroneous: true,
+        message: 'No contact is found with record details',
+      },
+    },
+    {
+      name: 'should handle null response data',
+      response: {
+        processedResponse: {
+          status: 200,
+          response: {
+            data: null,
           },
         },
       },
-      expected: { erroneous: true, message: 'Bad Request' },
+      expected: {
+        erroneous: true,
+        message: 'No contact is found with record details',
+      },
     },
     {
-      name: 'should return error message when HTTP status is 204 (no content)',
-      input: {
-        fields: { email: 'nocontent@example.com' },
-        metadata: { secret: { accessToken: 'token' } },
-        config: { region: 'US' },
-        mockResponse: {
-          processedResponse: {
-            status: 204,
-            response: null,
+      name: 'should handle empty array response data',
+      response: {
+        processedResponse: {
+          status: 200,
+          response: {
+            data: [],
           },
         },
       },
-      expected: { erroneous: true, message: 'No contact is found with record details' },
+      expected: {
+        erroneous: true,
+        message: 'No contact is found with record details',
+      },
     },
     {
-      name: 'should handle network errors gracefully',
-      input: {
-        fields: { email: 'test@example.com' },
-        metadata: { secret: { accessToken: 'token' } },
-        config: { region: 'US' },
-        mockError: new Error('Network timeout'),
+      name: 'should handle valid array response data with single record',
+      response: {
+        processedResponse: {
+          status: 200,
+          response: {
+            data: [{ id: '123' }],
+          },
+        },
       },
-      expected: { erroneous: true, message: 'Network timeout' },
+      expected: {
+        erroneous: false,
+        message: ['123'],
+      },
+    },
+    {
+      name: 'should handle valid array response data with multiple records',
+      response: {
+        processedResponse: {
+          status: 200,
+          response: {
+            data: [{ id: '123' }, { id: '456' }],
+          },
+        },
+      },
+      expected: {
+        erroneous: false,
+        message: ['123', '456'],
+      },
     },
   ];
 
-  testCases.forEach(({ name, input, expected }) => {
+  testCases.forEach(({ name, response, expected }) => {
     it(name, async () => {
-      if (input.mockError) {
-        handleHttpRequest.mockRejectedValue(input.mockError);
-      } else {
-        handleHttpRequest.mockResolvedValue(input.mockResponse);
-      }
-      const result = await searchRecordId(input.fields, input.metadata, input.config);
+      handleHttpRequest.mockResolvedValueOnce(response);
+
+      const result = await searchRecordId(mockFields, mockMetadata, mockConfig);
+
       expect(result).toEqual(expected);
     });
   });

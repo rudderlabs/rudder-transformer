@@ -4,12 +4,19 @@ const {
   createPropertiesForEcomEventFromWebhook,
   getAnonymousIdFromAttributes,
   getCartToken,
+  setAnonymousId,
+  addCartTokenHashToTraits,
 } = require('./serverSideUtlis');
 const { RedisDB } = require('../../../../util/redis/redisConnector');
+const stats = require('../../../../util/stats');
 
 const { lineItemsMappingJSON } = require('../../../../v0/sources/shopify/config');
 const Message = require('../../../../v0/sources/message');
+const { property } = require('lodash');
 jest.mock('../../../../v0/sources/message');
+jest.mock('../../../../util/stats', () => ({
+  increment: jest.fn(),
+}));
 
 const LINEITEMS = [
   {
@@ -131,7 +138,7 @@ describe('serverSideUtils.js', () => {
     });
   });
 
-  describe('getCartToken', () => {
+  describe('Test getCartToken', () => {
     it('should return null if cart_token is not present', () => {
       const event = {};
       const result = getCartToken(event);
@@ -142,6 +149,31 @@ describe('serverSideUtils.js', () => {
       const event = { cart_token: 'cartTokenTest1' };
       const result = getCartToken(event);
       expect(result).toEqual('cartTokenTest1');
+    });
+  });
+
+  describe('Test addCartTokenHashToTraits', () => {
+    // Add cart token hash to traits when cart token exists in event
+    it('should add cart_token_hash to message traits when cart token exists', () => {
+      const message = { traits: { existingTrait: 'value' } };
+      const event = { cart_token: 'Z2NwLXVzLWVhc3QxOjAxSkJaTUVRSjgzNUJUN1BTNjEzRFdRUFFQ' };
+      const expectedHash = '9125e1da-57b9-5bdc-953e-eb2b0ded5edc';
+
+      addCartTokenHashToTraits(message, event);
+
+      expect(message.traits).toEqual({
+        existingTrait: 'value',
+        cart_token_hash: expectedHash,
+      });
+    });
+
+    // Do not add cart token hash to traits when cart token does not exist in event
+    it('should not add cart_token_hash to message traits when cart token does not exist', () => {
+      const message = { traits: { existingTrait: 'value' } };
+      const event = { property: 'value' };
+      addCartTokenHashToTraits(message, event);
+
+      expect(message.traits).toEqual({ existingTrait: 'value' });
     });
   });
 });
@@ -169,5 +201,43 @@ describe('Redis cart token tests', () => {
     expect(getValSpy).toHaveBeenCalledTimes(1);
     expect(getValSpy).toHaveBeenCalledWith('pixel:cartTokenTest1');
     expect(message.anonymousId).toEqual('anonymousIdTest1');
+  });
+
+  it('should generate new anonymousId using UUID v5 when no existing ID is found', async () => {
+    const message = {};
+    const event = {
+      note_attributes: [],
+    };
+    const metricMetadata = { source: 'test', writeKey: 'test-key' };
+    const cartToken = 'test-cart-token';
+    const mockRedisData = null;
+    const expectedAnonymousId = '40a532a2-88be-5e3a-8687-56e34739e89d';
+    jest.mock('uuid', () => ({
+      v5: jest.fn(() => expectedAnonymousId),
+      DNS: 'dns-namespace',
+    }));
+    RedisDB.getVal = jest.spyOn(RedisDB, 'getVal').mockResolvedValue(mockRedisData);
+    await setAnonymousId(message, { ...event, cart_token: cartToken }, metricMetadata);
+    expect(message.anonymousId).toBe(expectedAnonymousId);
+  });
+
+  it('should handle undefined event parameter without error', async () => {
+    const message = {};
+
+    const metricMetadata = {
+      source: 'test-source',
+      writeKey: 'test-key',
+    };
+
+    await setAnonymousId(message, undefined, metricMetadata);
+
+    expect(message.anonymousId).toBeUndefined();
+
+    expect(stats.increment).toHaveBeenCalledWith('shopify_pixel_id_stitch_gaps', {
+      event: message.event,
+      reason: 'cart_token_miss',
+      source: metricMetadata.source,
+      writeKey: metricMetadata.writeKey,
+    });
   });
 });

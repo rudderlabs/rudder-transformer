@@ -1,0 +1,20 @@
+{
+  "output": {
+    "status": 429,
+    "message": "Request Failed: during criteo_audience response transformation - due to Request Limit exceeded, (Throttled)",
+    "destinationResponse": {
+      "response": {},
+      "status": 429
+    },
+    "statTags": {
+      "errorCategory": "network",
+      "errorType": "throttled",
+      "destType": "CRITEO_AUDIENCE",
+      "module": "destination",
+      "implementation": "native",
+      "feature": "dataDelivery",
+      "destinationId": "default-destinationId",
+      "workspaceId": "default-workspaceId"
+    }
+  }
+}

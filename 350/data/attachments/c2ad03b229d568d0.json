@@ -1,0 +1,90 @@
+{
+  "body": [
+    {
+      "destination": {
+        "ID": "123",
+        "Name": "klaviyo",
+        "DestinationDefinition": {
+          "ID": "123",
+          "Name": "klaviyo",
+          "DisplayName": "klaviyo",
+          "Config": {}
+        },
+        "Config": {
+          "publicApiKey": "dummyPublicApiKey",
+          "privateApiKey": "dummyPrivateApiKey"
+        },
+        "Enabled": true,
+        "WorkspaceID": "123",
+        "Transformations": []
+      },
+      "message": {
+        "type": "track",
+        "event": "product added",
+        "sentAt": "2021-01-25T16:12:02.048Z",
+        "userId": "sajal12",
+        "channel": "mobile",
+        "context": {
+          "traits": {
+            "id": "user@1",
+            "age": "22",
+            "name": "Test",
+            "email": "test@rudderstack.com",
+            "phone": "9112340375",
+            "anonymousId": "9c6bd77ea9da3e68",
+            "description": "Sample description"
+          }
+        },
+        "rudderId": "b7b24f86-f7bf-46d8-b2b4-ccafc080239c",
+        "messageId": "1611588776408-ee5a3212-fbf9-4cbb-bbad-3ed0f7c6a2ce",
+        "properties": {
+          "order_id": "1234",
+          "value": 12.12,
+          "categories": [
+            "Fiction3",
+            "Children3"
+          ],
+          "checkout_url": "http://www.heythere.com",
+          "item_names": [
+            "book1",
+            "book2"
+          ],
+          "products": [
+            {
+              "product_id": "b1pid",
+              "sku": "123x",
+              "name": "book1",
+              "url": "heyther.com",
+              "price": 12
+            },
+            {
+              "product_id": "b2pid",
+              "sku": "123x",
+              "name": "book2",
+              "url": "heyther2.com",
+              "price": 14
+            }
+          ]
+        },
+        "anonymousId": "9c6bd77ea9da3e68",
+        "integrations": {
+          "All": true
+        },
+        "originalTimestamp": "2021-01-25T15:32:56.409Z"
+      },
+      "metadata": {
+        "jobId": 3,
+        "attemptNum": 1,
+        "userId": "default-userId",
+        "sourceId": "default-sourceId",
+        "destinationId": "default-destinationId",
+        "workspaceId": "default-workspaceId",
+        "secret": {
+          "accessToken": "default-accessToken"
+        },
+        "dontBatch": false
+      }
+    }
+  ],
+  "method": "POST"
+}

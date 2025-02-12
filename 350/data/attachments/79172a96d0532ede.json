@@ -1,0 +1,19 @@
+[
+  {
+    "metadata": {
+      "secret": {
+        "accessToken": "success_access_token"
+      }
+    },
+    "statusCode": 400,
+    "error": "Required property for email type audience is not available in an object",
+    "statTags": {
+      "errorCategory": "dataValidation",
+      "errorType": "instrumentation",
+      "destType": "CRITEO_AUDIENCE",
+      "module": "destination",
+      "implementation": "native",
+      "feature": "processor"
+    }
+  }
+]

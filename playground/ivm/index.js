@@ -1,47 +1,67 @@
+// bench.js
 import ivm from 'isolated-vm';
+import { performance } from 'perf_hooks';
 
-// This code registers the constant transformation function in the isolate's global context.
-const transformationCode = `global.transform = function(input) {
+// This is the same transformation code used in index.js.
+// It registers a global `transform` function that takes an object,
+// adds an "id" attribute with a random UUID, and returns the object.
+const transformationCode = `
+  global.transform = function(input) {
     function generateUUID() {
-        // Simple UUID v4 generator implementation
-        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-            const r = Math.random() * 16 | 0;
-            const v = c === 'x' ? r : (r & 0x3 | 0x8);
-            return v.toString(16);
-        });
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+        const r = Math.random() * 16 | 0;
+        const v = (c === 'x') ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+      });
     }
-    // Add an "id" attribute with a random UUID to the input.
     input.id = generateUUID();
     return input;
-};`;
+  };
+`;
 
-// Create an isolate with an 8MB memory limit.
-const isolate = new ivm.Isolate({ memoryLimit: 8 });
-const context = isolate.createContextSync();
-const jail = context.global;
+async function setup() {
+  // Create an isolate with an 8 MB memory limit
+  const isolate = new ivm.Isolate({ memoryLimit: 8 });
+  const context = isolate.createContextSync();
+  const jail = context.global;
+  // Make the global object available in the isolate (derefInto() helps produce a plain object)
+  await jail.set("global", jail.derefInto());
+  // Compile and run the transformation code so that `transform` is registered
+  const script = isolate.compileScriptSync(transformationCode);
+  script.runSync(context);
+  // Retrieve the 'transform' function as a reference
+  const transformFn = context.global.getSync("transform", { reference: true });
+  return { isolate, transformFn };
+}
 
-// Make the global object available in the isolate.
-jail.setSync('global', jail.derefInto());
+async function benchmark(iterations) {
+  const { isolate, transformFn } = await setup();
+  const input = { name: "john" };
 
-// Compile and run the transformation code to register "transform" in the global scope.
-const script = isolate.compileScriptSync(transformationCode);
-script.runSync(context);
+  let transformedOutput;
+  // Warm-up phase (and capturing transformation result)
+  for (let i = 0; i < 100; i++) {
+    const externalInput = new ivm.ExternalCopy(input).copyInto();
+    transformedOutput = transformFn.applySync(undefined, [externalInput], { result: { copy: true } });
+  }
+  
+  console.log("Transformed sample:", JSON.stringify(transformedOutput, null, 2));
 
-// Retrieve the "transform" function from the isolate as a reference.
-const transformFn = context.global.getSync('transform', { reference: true });
+  // Benchmark loop
+  const start = performance.now();
+  for (let i = 0; i < iterations; i++) {
+    const externalInput = new ivm.ExternalCopy(input).copyInto();
+    // Capture transformation result on each iteration if needed:
+    transformedOutput = transformFn.applySync(undefined, [externalInput], { result: { copy: true } });
+  }
+  const end = performance.now();
+  const totalTime = end - start;
+  console.log(`Total time for ${iterations} iterations: ${totalTime.toFixed(2)} ms`);
+  console.log(`Average time per transformation: ${(totalTime / iterations).toFixed(4)} ms`);
 
-// Prepare the user-supplied JSON input.
-const userInput = { name: "john" };
-const externalInput = new ivm.ExternalCopy(userInput).copyInto();
+  // Clean up
+  isolate.dispose();
+}
 
-// Call the transformation function inside the isolate.
-// The result is automatically transferred back to the main context.
-const transformedOutput = transformFn.applySync(
-    undefined, 
-    [externalInput], 
-    { result: { copy: true } }
-);
-
-// Log the transformed output.
-// E.g., it might output: { name: 'john', id: '8660eb1a-d351-46ba-b59a-876ea428721b' }
-console.log(transformedOutput);
+// Change the number of iterations as needed.
+benchmark(10000).catch(console.error);

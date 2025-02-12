@@ -5,6 +5,8 @@ bindings:
     exportAll: true
   - name: removeUndefinedAndNullValues
     path: ../../../../v0/util
+  - name: defaultRequestConfig
+    path: ../../../../v0/util
 
 steps:
   - name: messageType
@@ -20,14 +22,15 @@ steps:
   - name: validateIdentifyEmail
     condition: $.outputs.messageType === {{$.EventType.IDENTIFY}}
     template: |
-      $.assert(.message.context.traits.email, "email is required. Aborting");
+      const email = .message.({{{{$.getGenericPaths("emailOnly")}}}});
+      $.assert(email, "email is required. Aborting");
 
   - name: validateTrackIdentifier
     condition: $.outputs.messageType === {{$.EventType.TRACK}}
     template: |
       const userId = .message.({{{{$.getGenericPaths("userIdOnly")}}}});
-      $.assert(.message.context.traits?.email || userId,
-        "Either email or userId is required. Aborting");
+      const email = .message.({{{{$.getGenericPaths("emailOnly")}}}});
+      $.assert(email || userId, "Either email or userId is required. Aborting");
 
   - name: validateEventName
     condition: $.outputs.messageType === {{$.EventType.TRACK}}
@@ -38,10 +41,6 @@ steps:
     template: |
       $.context.messageType = .message.type.toLowerCase();
       $.context.payload = {};
-      $.context.finalHeaders = {
-          "authorization": "Bearer " + .destination.Config.apiKey,
-          "content-type": "application/json"
-        };
 
   - name: identifyPayload
     condition: $.outputs.messageType === {{$.EventType.IDENTIFY}}
@@ -62,3 +61,14 @@ steps:
       payload.eventName = .message.event;
       payload.eventProperties = .message.properties;
       $.context.payload = payload;
+
+  - name: buildResponse
+    template: |
+      const response = $.defaultRequestConfig();
+      response.body.JSON = $.context.payload;
+      response.endpoint = $.context.endpoint;
+      response.headers = {
+        "authorization": "Bearer " + .destination.Config.apiKey,
+        "content-type": "application/json"
+      };
+      response

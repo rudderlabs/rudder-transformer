@@ -4,7 +4,7 @@ export const data = [
     description: 'Identify event with traits',
     feature: 'processor',
     module: 'destination',
-    version: 'v2',
+    version: 'v0',
     input: {
       request: {
         body: [
@@ -55,11 +55,29 @@ export const data = [
               workspaceId: 'wspId',
             },
             output: {
-              email: 'dummyuser@domain.com',
-              firstName: 'Bob',
-              lastName: 'Brown',
-              phone: '099-999-9999',
-              userId: 'dummy-user001',
+              body: {
+                JSON: {
+                  email: 'dummyuser@domain.com',
+                  firstName: 'Bob',
+                  lastName: 'Brown',
+                  phone: '099-999-9999',
+                  userId: 'dummy-user001',
+                },
+                FORM: {},
+                JSON_ARRAY: {},
+                XML: {},
+              },
+              endpoint: 'https://app.loops.so/api/v1/contacts/update',
+              files: {},
+              headers: {
+                authorization: 'Bearer dummyApiKey',
+                'content-type': 'application/json',
+              },
+              method: 'POST',
+              type: 'REST',
+              version: '1',
+              params: {},
+              userId: '',
             },
             statusCode: 200,
           },
@@ -72,7 +90,7 @@ export const data = [
     description: 'Identify event with mailing lists',
     feature: 'processor',
     module: 'destination',
-    version: 'v2',
+    version: 'v0',
     input: {
       request: {
         body: [
@@ -92,7 +110,6 @@ export const data = [
                   },
                 },
               },
-              timestamp: '2020-01-27T17:50:57.109+05:30',
               type: 'identify',
             },
             destination: {
@@ -109,10 +126,7 @@ export const data = [
               Enabled: true,
               Transformations: [],
             },
-            metadata: {
-              destinationId: 'destId',
-              workspaceId: 'wspId',
-            },
+            metadata: {},
           },
         ],
       },
@@ -122,21 +136,36 @@ export const data = [
         status: 200,
         body: [
           {
-            metadata: {
-              destinationId: 'destId',
-              workspaceId: 'wspId',
-            },
             output: {
-              email: 'dummyuser@domain.com',
-              firstName: 'Bob',
-              lastName: 'Brown',
-              phone: '099-999-9999',
-              userId: 'dummy-user001',
-              mailinglists: {
-                list_001: true,
-                list_002: false,
+              body: {
+                JSON: {
+                  email: 'dummyuser@domain.com',
+                  firstName: 'Bob',
+                  lastName: 'Brown',
+                  phone: '099-999-9999',
+                  userId: 'dummy-user001',
+                  mailinglists: {
+                    list_001: true,
+                    list_002: false,
+                  },
+                },
+                FORM: {},
+                JSON_ARRAY: {},
+                XML: {},
               },
+              endpoint: 'https://app.loops.so/api/v1/contacts/update',
+              files: {},
+              headers: {
+                authorization: 'Bearer dummyApiKey',
+                'content-type': 'application/json',
+              },
+              method: 'POST',
+              type: 'REST',
+              version: '1',
+              params: {},
+              userId: '',
             },
+            metadata: {},
             statusCode: 200,
           },
         ],
@@ -148,7 +177,7 @@ export const data = [
     description: 'Identify event with missing email trait',
     feature: 'processor',
     module: 'destination',
-    version: 'v2',
+    version: 'v0',
     input: {
       request: {
         body: [
@@ -180,10 +209,7 @@ export const data = [
               Enabled: true,
               Transformations: [],
             },
-            metadata: {
-              destinationId: 'destId',
-              workspaceId: 'wspId',
-            },
+            metadata: {},
           },
         ],
       },
@@ -195,19 +221,14 @@ export const data = [
           {
             error:
               'email is required. Aborting: Workflow: procWorkflow, Step: validateIdentifyEmail, ChildStep: undefined, OriginalError: email is required. Aborting',
-            metadata: {
-              destinationId: 'destId',
-              workspaceId: 'wspId',
-            },
+            metadata: {},
             statTags: {
               destType: 'LOOPS',
-              destinationId: 'destId',
               errorCategory: 'dataValidation',
               errorType: 'instrumentation',
               feature: 'processor',
               implementation: 'cdkV2',
               module: 'destination',
-              workspaceId: 'wspId',
             },
             statusCode: 400,
           },
@@ -220,7 +241,7 @@ export const data = [
     description: 'Track event with traits',
     feature: 'processor',
     module: 'destination',
-    version: 'v2',
+    version: 'v0',
     input: {
       request: {
         body: [
@@ -258,10 +279,7 @@ export const data = [
               Enabled: true,
               Transformations: [],
             },
-            metadata: {
-              destinationId: 'destId',
-              workspaceId: 'wspId',
-            },
+            metadata: {},
           },
         ],
       },
@@ -271,21 +289,36 @@ export const data = [
         status: 200,
         body: [
           {
-            metadata: {
-              destinationId: 'destId',
-              workspaceId: 'wspId',
-            },
+            metadata: {},
             output: {
-              email: 'dummyuser@domain.com',
-              firstName: 'Bob',
-              lastName: 'Brown',
-              phone: '099-999-9999',
-              userId: 'dummy-user001',
-              eventName: 'signup',
-              eventProperties: {
-                subscriptionStatus: 'trial',
-                plan: null,
+              body: {
+                JSON: {
+                  email: 'dummyuser@domain.com',
+                  firstName: 'Bob',
+                  lastName: 'Brown',
+                  phone: '099-999-9999',
+                  userId: 'dummy-user001',
+                  eventName: 'signup',
+                  eventProperties: {
+                    subscriptionStatus: 'trial',
+                    plan: null,
+                  },
+                },
+                FORM: {},
+                JSON_ARRAY: {},
+                XML: {},
               },
+              endpoint: 'https://app.loops.so/api/v1/events/send',
+              files: {},
+              headers: {
+                authorization: 'Bearer dummyApiKey',
+                'content-type': 'application/json',
+              },
+              method: 'POST',
+              type: 'REST',
+              version: '1',
+              params: {},
+              userId: '',
             },
             statusCode: 200,
           },
@@ -298,7 +331,7 @@ export const data = [
     description: 'Track event with no email in traits',
     feature: 'processor',
     module: 'destination',
-    version: 'v2',
+    version: 'v0',
     input: {
       request: {
         body: [
@@ -331,10 +364,7 @@ export const data = [
               Enabled: true,
               Transformations: [],
             },
-            metadata: {
-              destinationId: 'destId',
-              workspaceId: 'wspId',
-            },
+            metadata: {},
           },
         ],
       },
@@ -344,17 +374,32 @@ export const data = [
         status: 200,
         body: [
           {
-            metadata: {
-              destinationId: 'destId',
-              workspaceId: 'wspId',
-            },
+            metadata: {},
             output: {
-              userId: 'dummy-user001',
-              eventName: 'signup',
-              eventProperties: {
-                subscriptionStatus: 'trial',
-                plan: null,
+              body: {
+                JSON: {
+                  userId: 'dummy-user001',
+                  eventName: 'signup',
+                  eventProperties: {
+                    subscriptionStatus: 'trial',
+                    plan: null,
+                  },
+                },
+                FORM: {},
+                JSON_ARRAY: {},
+                XML: {},
               },
+              endpoint: 'https://app.loops.so/api/v1/events/send',
+              files: {},
+              headers: {
+                authorization: 'Bearer dummyApiKey',
+                'content-type': 'application/json',
+              },
+              method: 'POST',
+              type: 'REST',
+              version: '1',
+              params: {},
+              userId: '',
             },
             statusCode: 200,
           },
@@ -367,7 +412,7 @@ export const data = [
     description: 'Track event with missing email and userId',
     feature: 'processor',
     module: 'destination',
-    version: 'v2',
+    version: 'v0',
     input: {
       request: {
         body: [
@@ -398,10 +443,7 @@ export const data = [
               Enabled: true,
               Transformations: [],
             },
-            metadata: {
-              destinationId: 'destId',
-              workspaceId: 'wspId',
-            },
+            metadata: {},
           },
         ],
       },
@@ -413,19 +455,14 @@ export const data = [
           {
             error:
               'Either email or userId is required. Aborting: Workflow: procWorkflow, Step: validateTrackIdentifier, ChildStep: undefined, OriginalError: Either email or userId is required. Aborting',
-            metadata: {
-              destinationId: 'destId',
-              workspaceId: 'wspId',
-            },
+            metadata: {},
             statTags: {
               destType: 'LOOPS',
-              destinationId: 'destId',
               errorCategory: 'dataValidation',
               errorType: 'instrumentation',
               feature: 'processor',
               implementation: 'cdkV2',
               module: 'destination',
-              workspaceId: 'wspId',
             },
             statusCode: 400,
           },

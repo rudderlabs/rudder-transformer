@@ -20,6 +20,7 @@ const {
   setAnonymousId,
   handleCommonProperties,
   updateAnonymousIdToUserIdInRedis,
+  addCartTokenHashToTraits,
 } = require('./serverSideUtlis');
 
 const NO_OPERATION_SUCCESS = {
@@ -115,6 +116,8 @@ const processEvent = async (inputEvent, metricMetadata) => {
   }
   // attach userId, email and other contextual properties
   message = handleCommonProperties(message, event, shopifyTopic);
+  // add cart_token_hash to traits if cart_token is present
+  message = addCartTokenHashToTraits(message, event);
   message = removeUndefinedAndNullValues(message);
   return message;
 };

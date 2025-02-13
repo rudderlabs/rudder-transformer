@@ -19,6 +19,7 @@ const {
   getProductsFromLineItems,
   setAnonymousId,
   handleCommonProperties,
+  updateAnonymousIdToUserIdInRedis,
   addCartTokenHashToTraits,
 } = require('./serverSideUtlis');
 
@@ -111,6 +112,7 @@ const processEvent = async (inputEvent, metricMetadata) => {
   // attach anonymousId if the event is track event using note_attributes
   if (message.type !== EventType.IDENTIFY) {
     await setAnonymousId(message, event, metricMetadata);
+    await updateAnonymousIdToUserIdInRedis(message);
   }
   // attach userId, email and other contextual properties
   message = handleCommonProperties(message, event, shopifyTopic);

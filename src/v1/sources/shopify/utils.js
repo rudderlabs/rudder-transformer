@@ -13,7 +13,9 @@ const isIdentifierEvent = (payload) => ['rudderIdentifier'].includes(payload?.ev
 const processIdentifierEvent = async (event) => {
   const { cartToken, anonymousId, userId } = event;
   await RedisDB.setVal(`pixel:${cartToken}`, ['anonymousId', anonymousId]);
-  await RedisDB.setVal(`pixel:${anonymousId}`, ['userId', userId]);
+  if (userId) {
+    await RedisDB.setVal(`pixel:${anonymousId}`, ['userId', userId]);
+  }
   return NO_OPERATION_SUCCESS;
 };
 

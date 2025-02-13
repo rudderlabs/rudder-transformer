@@ -9,4 +9,6 @@ export const mockFns = (_) => {
     }
     return Promise.resolve({});
   });
+  // Mock setVal to track anonymousId to userId mapping
+  jest.spyOn(RedisDB, 'setVal').mockReturnValue(Promise.resolve());
 };

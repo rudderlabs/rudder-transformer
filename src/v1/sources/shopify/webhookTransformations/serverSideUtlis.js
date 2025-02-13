@@ -93,6 +93,17 @@ const setAnonymousId = async (message, event, metricMetadata) => {
 };
 
 /**
+ * Updates the anonymousId to userId mapping in Redis
+ * @param {Object} message rudderstack message object
+ */
+const updateAnonymousIdToUserIdInRedis = async (message) => {
+  const { anonymousId, userId } = message;
+  if (anonymousId && userId) {
+    await RedisDB.setVal(`pixel:${anonymousId}`, ['userId', userId]);
+  }
+};
+
+/**
   Handles userId, email and contextual properties enrichment for the message payload
  * @param {Object} message rudderstack message object
  * @param {Object} event raw shopify event payload
@@ -138,4 +149,5 @@ module.exports = {
   getAnonymousIdFromAttributes,
   setAnonymousId,
   handleCommonProperties,
+  updateAnonymousIdToUserIdInRedis,
 };

@@ -72,20 +72,17 @@ const formatMultiSelectFields = (config, fields) => {
 };
 
 const handleDuplicateCheck = (addDefaultDuplicateCheck, identifierType, operationModuleType) => {
-  let duplicateCheckFields = [identifierType];
+  let additionalFields = [];
 
   if (addDefaultDuplicateCheck) {
     const moduleDuplicateCheckField =
       zohoConfig.MODULE_WISE_DUPLICATE_CHECK_FIELD[operationModuleType];
-
-    if (isDefinedAndNotNull(moduleDuplicateCheckField)) {
-      duplicateCheckFields = [identifierType, ...moduleDuplicateCheckField];
-    } else {
-      duplicateCheckFields.push('Name');
-    }
+    additionalFields = isDefinedAndNotNull(moduleDuplicateCheckField)
+      ? moduleDuplicateCheckField
+      : ['Name'];
   }
 
-  return [...new Set(duplicateCheckFields)];
+  return Array.from(new Set([identifierType, ...additionalFields]));
 };
 
 function escapeAndEncode(value) {

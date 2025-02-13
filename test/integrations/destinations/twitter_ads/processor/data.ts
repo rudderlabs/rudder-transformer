@@ -142,7 +142,7 @@ export const data = [
                         },
                         {
                           content_id: '4',
-                          content_price: '200.00',
+                          content_price: '200',
                           num_items: 11,
                         },
                       ],
@@ -856,7 +856,7 @@ export const data = [
                         },
                         {
                           content_id: '4',
-                          content_price: '200.00',
+                          content_price: '200',
                           num_items: 11,
                         },
                       ],
@@ -1883,7 +1883,7 @@ export const data = [
                           content_id: '13',
                           content_name: 'Product 2',
                           content_type: 'digital',
-                          content_price: '200.00',
+                          content_price: '200',
                         },
                         {
                           content_id: '14',

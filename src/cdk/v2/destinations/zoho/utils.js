@@ -86,7 +86,9 @@ const handleDuplicateCheck = (addDefaultDuplicateCheck, identifierType, operatio
 };
 
 function escapeAndEncode(value) {
-  return encodeURIComponent(value.replace(/([(),\\])/g, '\\$1'));
+  return encodeURIComponent(
+    typeof value === 'string' ? value.replace(/([(),\\])/g, '\\$1') : value,
+  );
 }
 
 function transformToURLParams(fields, Config) {

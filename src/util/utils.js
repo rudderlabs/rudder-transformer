@@ -57,9 +57,9 @@ const staticLookup =
         });
 
         if (!address) {
-          cb(null, `resolved empty list of IP address for ${hostname}`, RECORD_TYPE_A);
+          cb(new Error(`resolved empty list of IP address for ${hostname}`), null, RECORD_TYPE_A);
         } else if (address.startsWith(LOCALHOST_OCTET)) {
-          cb(null, `cannot use ${address} as IP address`, RECORD_TYPE_A);
+          cb(new Error(`cannot use ${address} as IP address`), null, RECORD_TYPE_A);
         } else {
           cb(null, address, RECORD_TYPE_A);
         }
@@ -70,7 +70,7 @@ const staticLookup =
           ...transformationTags,
           error: 'true',
         });
-        cb(null, `unable to resolve IP address for ${hostname}`, RECORD_TYPE_A);
+        cb(new Error(`unable to resolve IP address for ${hostname}`), null, RECORD_TYPE_A);
       });
   };
 

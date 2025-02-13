@@ -30,7 +30,11 @@ describe('staticLookup', () => {
     const resolve = staticLookup(transformationTags, fetchAddressFromHostName);
     const callback = (args) => {
       expect(fetchAddressFromHostName).toHaveBeenCalledWith(HOST_NAME);
-      expect(args).toEqual(null, `unable to resolve IP address for ${HOST_NAME}`, RECORD_TYPE_A);
+      expect(args).toEqual(
+        new Error(`unable to resolve IP address for ${HOST_NAME}`),
+        null,
+        RECORD_TYPE_A,
+      );
     };
     resolve(HOST_NAME, null, callback);
   });
@@ -42,8 +46,8 @@ describe('staticLookup', () => {
     const callback = (args) => {
       expect(fetchAddressFromHostName).toHaveBeenCalledWith(HOST_NAME);
       expect(args).toEqual(
+        new Error(`resolved empty list of IP address for ${HOST_NAME}`),
         null,
-        `resolved empty list of IP address for ${HOST_NAME}`,
         RECORD_TYPE_A,
       );
     };
@@ -61,8 +65,8 @@ describe('staticLookup', () => {
     const callback = (args) => {
       expect(fetchAddressFromHostName).toHaveBeenCalledWith(HOST_NAME);
       expect(args).toEqual(
+        new Error(`cannot use ${LOCALHOST_OCTET}.0.0.1 as IP address`),
         null,
-        `cannot use ${LOCALHOST_OCTET}.0.0.1 as IP address`,
         RECORD_TYPE_A,
       );
     };

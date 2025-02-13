@@ -19,9 +19,9 @@ const {
   getProductsFromLineItems,
   setAnonymousId,
   handleCommonProperties,
-  updateAnonymousIdToUserIdInRedis,
   addCartTokenHashToTraits,
 } = require('./serverSideUtlis');
+const { updateAnonymousIdToUserIdInRedis } = require('../utils');
 
 const NO_OPERATION_SUCCESS = {
   outputToSource: {

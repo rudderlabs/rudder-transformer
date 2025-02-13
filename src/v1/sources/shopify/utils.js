@@ -8,14 +8,23 @@ const NO_OPERATION_SUCCESS = {
   statusCode: 200,
 };
 
+/**
+ * Updates the anonymousId to userId mapping in Redis
+ * @param {String} anonymousId
+ * @param {String} userId
+ */
+const updateAnonymousIdToUserIdInRedis = async (anonymousId, userId) => {
+  if (anonymousId && userId) {
+    await RedisDB.setVal(`pixel:${anonymousId}`, ['userId', userId]);
+  }
+};
+
 const isIdentifierEvent = (payload) => ['rudderIdentifier'].includes(payload?.event);
 
 const processIdentifierEvent = async (event) => {
   const { cartToken, anonymousId, userId } = event;
   await RedisDB.setVal(`pixel:${cartToken}`, ['anonymousId', anonymousId]);
-  if (userId) {
-    await RedisDB.setVal(`pixel:${anonymousId}`, ['userId', userId]);
-  }
+  updateAnonymousIdToUserIdInRedis(anonymousId, userId);
   return NO_OPERATION_SUCCESS;
 };
 
@@ -34,4 +43,5 @@ module.exports = {
   processIdentifierEvent,
   isIdentifierEvent,
   isShopifyV1Event,
+  updateAnonymousIdToUserIdInRedis,
 };

@@ -127,8 +127,8 @@ export const data = [
                     conversions: [
                       {
                         contents: [
-                          { content_id: '12', content_price: 123.3345, num_items: 12 },
-                          { content_id: '4', content_price: 200, num_items: 11 },
+                          { content_id: '12', content_price: '123.3345', num_items: 12 },
+                          { content_id: '4', content_price: '200.00', num_items: 11 },
                         ],
                         conversion_id: '213123',
                         conversion_time: '2023-06-01T06:03:08.739Z',

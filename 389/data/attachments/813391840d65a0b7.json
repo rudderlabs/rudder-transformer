@@ -1,0 +1,28 @@
+{
+  "output": {
+    "status": 500,
+    "message": "Request Failed: during criteo_audience response transformation (Retryable)",
+    "destinationResponse": {
+      "response": {
+        "errors": [
+          {
+            "traceIdentifier": "80a1a0ba3981b04da847d05700752c77",
+            "type": "authorization",
+            "code": "audience-invalid"
+          }
+        ]
+      },
+      "status": 503
+    },
+    "statTags": {
+      "errorCategory": "network",
+      "errorType": "retryable",
+      "destType": "CRITEO_AUDIENCE",
+      "module": "destination",
+      "implementation": "native",
+      "feature": "dataDelivery",
+      "destinationId": "default-destinationId",
+      "workspaceId": "default-workspaceId"
+    }
+  }
+}

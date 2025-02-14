@@ -1,0 +1,35 @@
+{
+  "output": {
+    "response": [
+      {
+        "error": "{\"errors\":[{\"traceIdentifier\":\"80a1a0ba3981b04da847d05700752c77\",\"type\":\"authorization\",\"code\":\"audience-invalid\"}]}",
+        "statusCode": 400,
+        "metadata": {
+          "jobId": 4,
+          "attemptNum": 1,
+          "userId": "default-userId",
+          "sourceId": "default-sourceId",
+          "destinationId": "default-destinationId",
+          "workspaceId": "default-workspaceId",
+          "secret": {
+            "accessToken": "default-accessToken"
+          },
+          "dontBatch": false
+        }
+      }
+    ],
+    "statTags": {
+      "errorCategory": "network",
+      "errorType": "aborted",
+      "meta": "instrumentation",
+      "destType": "CRITEO_AUDIENCE",
+      "module": "destination",
+      "implementation": "native",
+      "feature": "dataDelivery",
+      "destinationId": "default-destinationId",
+      "workspaceId": "default-workspaceId"
+    },
+    "message": "AudienceId is Invalid. Please Provide Valid AudienceId",
+    "status": 400
+  }
+}

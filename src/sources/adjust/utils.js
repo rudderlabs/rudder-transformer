@@ -1,4 +1,4 @@
-const { TransformationError } = require('@rudderstack/integrations-lib');
+const { TransformationError, isDefinedAndNotNull } = require('@rudderstack/integrations-lib');
 
 /**
  * Converts a raw timestamp to ISO 8601 date string format
@@ -35,13 +35,16 @@ const convertToISODate = (rawTimestamp) => {
  * @description
  * This function flattens an object containing array parameters into a simple key-value object
  * with first element of array as value if it is an array, otherwise the value is returned as is
- * In case of empty array, the value is returned as undefined
+ * In case of empty array, the key is removed from the output
  */
 const flattenParams = (qParams) => {
   const formattedOutput = {};
   if (qParams) {
     Object.entries(qParams).forEach(([key, value]) => {
-      formattedOutput[key] = Array.isArray(value) ? value[0] : value;
+      const finalValue = Array.isArray(value) ? value[0] : value;
+      if (isDefinedAndNotNull(finalValue)) {
+        formattedOutput[key] = finalValue;
+      }
     });
   }
   return formattedOutput;

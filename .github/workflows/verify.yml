@@ -40,7 +40,6 @@ jobs:
             echo "No JS/TS files to format or lint."
             exit 0
           fi
-          echo "$changed_files" > changed_files.txt
 
       - name: Run format Checks
         run: |

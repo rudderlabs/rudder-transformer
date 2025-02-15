@@ -1,16 +1,73 @@
-const { InstrumentationError } = require('@rudderstack/integrations-lib');
-const lodash = require('lodash');
-const { BatchUtils } = require('@rudderstack/workflow-engine');
-const { SMS_SEND_ENDPOINT, MAX_BATCH_SIZE, COMMON_CONTACT_DOMAIN } = require('./config');
-const { isDefinedAndNotNullAndNotEmpty, isDefinedAndNotNull } = require('../../../../v0/util');
+import { InstrumentationError } from '@rudderstack/integrations-lib';
+import lodash from 'lodash';
+import { BatchUtils } from '@rudderstack/workflow-engine';
+import { SMS_SEND_ENDPOINT, MAX_BATCH_SIZE, COMMON_CONTACT_DOMAIN } from './config';
+import { isDefinedAndNotNullAndNotEmpty } from '../../../../v0/util';
 
-const getEndIdentifyPoint = (contactId, contactListId) => {
+interface Constants {
+  version: string;
+  type: string;
+  headers: Record<string, string>;
+  destination: unknown;
+  endPoint: string;
+}
+
+interface Event {
+  metadata: unknown;
+  message: [
+    {
+      body: {
+        JSON: any;
+      };
+      version: string;
+      type: string;
+      headers: Record<string, string>;
+      endpoint: string;
+    },
+  ];
+  destination: unknown;
+}
+
+interface BatchedRequest {
+  batchedRequest: {
+    body: {
+      JSON: any;
+      JSON_ARRAY: Record<string, never>;
+      XML: Record<string, never>;
+      FORM: Record<string, never>;
+    };
+    version: string;
+    type: string;
+    method: string;
+    endpoint: string;
+    headers: Record<string, string>;
+    params: Record<string, never>;
+    files: Record<string, never>;
+  };
+  metadata: unknown[];
+  batched: boolean;
+  statusCode: number;
+  destination: unknown;
+}
+
+export interface SMSCampaignPayload {
+  body?: string;
+  name?: string;
+  list_id?: string;
+  from?: string;
+}
+
+const getEndIdentifyPoint = (contactId?: string, contactListId?: string): string => {
   const basePath = `${COMMON_CONTACT_DOMAIN}/${contactListId}/contacts`;
   const contactSuffix = isDefinedAndNotNullAndNotEmpty(contactId) ? `/${contactId}` : '';
   return basePath + contactSuffix;
 };
 
-const validateIdentifyPayload = (payload) => {
+const validateIdentifyPayload = (payload: {
+  phone_number?: string;
+  email?: string;
+  fax_number?: string;
+}): void => {
   if (
     !(
       isDefinedAndNotNullAndNotEmpty(payload.phone_number) ||
@@ -24,7 +81,7 @@ const validateIdentifyPayload = (payload) => {
   }
 };
 
-const validateTrackSMSCampaignPayload = (payload) => {
+const validateTrackSMSCampaignPayload = (payload: SMSCampaignPayload): void => {
   if (!(payload.body && payload.name && payload.list_id && payload.from)) {
     throw new InstrumentationError(
       'All of contact list Id, name, body and from are required to trigger an sms campaign',
@@ -32,8 +89,15 @@ const validateTrackSMSCampaignPayload = (payload) => {
   }
 };
 
-const deduceSchedule = (eventLevelSchedule, timestamp, destConfig) => {
-  if (isDefinedAndNotNull(eventLevelSchedule) && !Number.isNaN(eventLevelSchedule)) {
+const deduceSchedule = (
+  eventLevelSchedule: number | null | undefined,
+  timestamp: number | string,
+  destConfig: {
+    defaultCampaignScheduleUnit?: string;
+    defaultCampaignSchedule?: string;
+  },
+): number => {
+  if (typeof eventLevelSchedule === 'number' && !Number.isNaN(eventLevelSchedule)) {
     return eventLevelSchedule;
   }
   const { defaultCampaignScheduleUnit = 'minute', defaultCampaignSchedule = '0' } = destConfig;
@@ -54,16 +118,20 @@ const deduceSchedule = (eventLevelSchedule, timestamp, destConfig) => {
   return Math.floor(date.getTime() / 1000);
 };
 
-const mergeMetadata = (batch) => batch.map((event) => event.metadata);
+const mergeMetadata = (batch: Event[]): unknown[] => batch.map((event) => event.metadata);
 
-const getMergedEvents = (batch) => batch.map((event) => event.message[0].body.JSON);
+const getMergedEvents = (batch: Event[]): any[] => batch.map((event) => event.message[0].body.JSON);
 
-const getHttpMethodForEndpoint = (endpoint) => {
+const getHttpMethodForEndpoint = (endpoint: string): string => {
   const contactIdPattern = /\/contacts\/[^/]+$/;
   return contactIdPattern.test(endpoint) ? 'PUT' : 'POST';
 };
 
-const buildBatchedRequest = (batch, constants, endpoint) => ({
+const buildBatchedRequest = (
+  batch: Event[],
+  constants: Constants,
+  endpoint: string,
+): BatchedRequest => ({
   batchedRequest: {
     body: {
       JSON:
@@ -88,7 +156,7 @@ const buildBatchedRequest = (batch, constants, endpoint) => ({
   destination: batch[0].destination,
 });
 
-const initializeConstants = (successfulEvents) => {
+const initializeConstants = (successfulEvents: Event[]): Constants | null => {
   if (successfulEvents.length === 0) return null;
   return {
     version: successfulEvents[0].message[0].version,
@@ -99,8 +167,8 @@ const initializeConstants = (successfulEvents) => {
   };
 };
 
-const batchResponseBuilder = (events) => {
-  const response = [];
+const batchResponseBuilder = (events: Event[]): BatchedRequest[] => {
+  const response: BatchedRequest[] = [];
   const constants = initializeConstants(events);
   if (!constants) return [];
   const typedEventGroups = lodash.groupBy(events, (event) => event.message[0].endpoint);
@@ -124,7 +192,7 @@ const batchResponseBuilder = (events) => {
   return response;
 };
 
-module.exports = {
+export {
   batchResponseBuilder,
   getEndIdentifyPoint,
   validateIdentifyPayload,

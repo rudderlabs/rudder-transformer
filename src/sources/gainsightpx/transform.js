@@ -10,6 +10,7 @@ const surveyMapping = require('./data/surveyMapping.json');
 const featureMatchMapping = require('./data/featureMatchMapping.json');
 const segmentIoMapping = require('./data/segmentIOMapping.json');
 const { refinePayload, refineTraitPayload } = require('./utils');
+const { getBodyFromV2SpecPayload } = require('../../v0/util');
 
 const buildIdentifyPayload = (event) => {
   let message = new Message(`GAINSIGHTPX`);
@@ -84,7 +85,8 @@ function processEvent(event) {
   return message;
 }
 
-function process(event) {
+function process(payload) {
+  const event = getBodyFromV2SpecPayload(payload);
   const response = processEvent(event);
   const returnValue = refinePayload(response);
   return returnValue;

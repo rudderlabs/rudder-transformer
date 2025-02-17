@@ -2,7 +2,11 @@ const path = require('path');
 const fs = require('fs');
 const sha256 = require('sha256');
 const { TransformationError } = require('@rudderstack/integrations-lib');
-const { flattenJson, removeUndefinedAndNullAndEmptyValues } = require('../../util');
+const {
+  flattenJson,
+  removeUndefinedAndNullAndEmptyValues,
+  getBodyFromV2SpecPayload,
+} = require('../../v0/util');
 const Message = require('../message');
 
 // import mapping json using JSON.parse to preserve object key order
@@ -39,7 +43,8 @@ function settingProperties(event, message) {
   return cloneMessage;
 }
 
-function process(event) {
+function process(payload) {
+  const event = getBodyFromV2SpecPayload(payload);
   const message = new Message(`Mailmodo`);
 
   // event type is always track

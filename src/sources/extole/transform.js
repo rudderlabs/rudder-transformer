@@ -1,9 +1,9 @@
 /* eslint-disable no-case-declarations */
 const path = require('path');
 const fs = require('fs');
-const { generateUUID } = require('../../util');
-const Message = require('../message');
-const { removeUndefinedAndNullValues, extractCustomFields } = require('../../util');
+const { generateUUID, getBodyFromV2SpecPayload } = require('../../v0/util');
+const Message = require('../../v0/sources/message');
+const { removeUndefinedAndNullValues, extractCustomFields } = require('../../v0/util');
 
 const mappingJson = JSON.parse(fs.readFileSync(path.resolve(__dirname, './mapping.json'), 'utf-8'));
 
@@ -31,7 +31,8 @@ function processEvent(event) {
   return message;
 }
 
-function process(event) {
+function process(payload) {
+  const event = getBodyFromV2SpecPayload(payload);
   const response = processEvent(event);
   const returnValue = removeUndefinedAndNullValues(response);
   return returnValue;

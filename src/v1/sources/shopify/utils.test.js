@@ -1,4 +1,8 @@
-const { isIdentifierEvent, processIdentifierEvent } = require('./utils');
+const {
+  isIdentifierEvent,
+  processIdentifierEvent,
+  updateAnonymousIdToUserIdInRedis,
+} = require('./utils');
 const { RedisDB } = require('../../../util/redis/redisConnector');
 
 describe('Identifier Utils Tests', () => {
@@ -43,6 +47,24 @@ describe('Identifier Utils Tests', () => {
       const event = { cartToken: 'cartTokenTest1', anonymousId: 'anonymousIdTest1' };
 
       await expect(processIdentifierEvent(event)).rejects.toThrow('Redis connection failed');
+    });
+  });
+
+  describe('test updateAnonymousIdToUserIdInRedis', () => {
+    beforeEach(() => {
+      jest.clearAllMocks();
+    });
+
+    it('should update the anonymousId to userId in redis', async () => {
+      const setValSpy = jest.spyOn(RedisDB, 'setVal').mockResolvedValue('OK');
+      const event = {
+        cartToken: 'cartTokenTest1',
+        anonymousId: 'anonymousTest1',
+        userId: 'userIdTest1',
+      };
+
+      await updateAnonymousIdToUserIdInRedis(event.anonymousId, event.userId);
+      expect(setValSpy).toHaveBeenCalledWith('pixel:anonymousTest1', ['userId', 'userIdTest1']);
     });
   });
 });

@@ -12,7 +12,6 @@ const stats = require('../../../../util/stats');
 
 const { lineItemsMappingJSON } = require('../../../../v0/sources/shopify/config');
 const Message = require('../../../../v0/sources/message');
-const { property } = require('lodash');
 jest.mock('../../../../v0/sources/message');
 jest.mock('../../../../util/stats', () => ({
   increment: jest.fn(),
@@ -185,6 +184,9 @@ describe('Redis cart token tests', () => {
       .mockResolvedValue({ anonymousId: 'anonymousIdTest1' });
     const event = {
       cart_token: `cartTokenTest1`,
+      customer: {
+        id: 'customer-id-001',
+      },
       id: 5778367414385,
       line_items: [
         {
@@ -198,7 +200,7 @@ describe('Redis cart token tests', () => {
       },
     };
     const message = await processEvent(event);
-    expect(getValSpy).toHaveBeenCalledTimes(1);
+    expect(getValSpy).toHaveBeenCalledTimes(2);
     expect(getValSpy).toHaveBeenCalledWith('pixel:cartTokenTest1');
     expect(message.anonymousId).toEqual('anonymousIdTest1');
   });

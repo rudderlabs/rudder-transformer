@@ -1,18 +1,18 @@
 const lodash = require('lodash');
 const get = require('get-value');
+const { isDefinedNotNullNotEmpty } = require('@rudderstack/integrations-lib');
 const stats = require('../../../../util/stats');
 const { getShopifyTopic } = require('../../../../v0/sources/shopify/util');
 const { removeUndefinedAndNullValues } = require('../../../../v0/util');
 const Message = require('../../../../v0/sources/message');
 const { EventType } = require('../../../../constants');
 const {
-  INTEGERATION,
   MAPPING_CATEGORIES,
   IDENTIFY_TOPICS,
   SUPPORTED_TRACK_EVENTS,
   SHOPIFY_TRACK_MAP,
-  lineItemsMappingJSON,
 } = require('../../../../v0/sources/shopify/config');
+const { INTEGERATION, identifyMappingJSON, lineItemsMappingJSON } = require('../config');
 const { ECOM_TOPICS, RUDDER_ECOM_MAP } = require('../config');
 const {
   createPropertiesForEcomEventFromWebhook,
@@ -22,6 +22,7 @@ const {
   addCartTokenHashToTraits,
 } = require('./serverSideUtlis');
 const { updateAnonymousIdToUserIdInRedis } = require('../utils');
+const { RedisDB } = require('../../../../util/redis/redisConnector');
 
 const NO_OPERATION_SUCCESS = {
   outputToSource: {
@@ -34,7 +35,7 @@ const NO_OPERATION_SUCCESS = {
 const identifyPayloadBuilder = (event) => {
   const message = new Message(INTEGERATION);
   message.setEventType(EventType.IDENTIFY);
-  message.setPropertiesV2(event, MAPPING_CATEGORIES[EventType.IDENTIFY]);
+  message.setPropertiesV2(event, identifyMappingJSON);
   if (event.updated_at) {
     // converting shopify updated_at timestamp to rudder timestamp format
     message.setTimestamp(new Date(event.updated_at).toISOString());
@@ -118,6 +119,10 @@ const processEvent = async (inputEvent, metricMetadata) => {
   message = handleCommonProperties(message, event, shopifyTopic);
   // add cart_token_hash to traits if cart_token is present
   message = addCartTokenHashToTraits(message, event);
+  const redisData = await RedisDB.getVal(`pixel:${message.anonymousId}`);
+  if (isDefinedNotNullNotEmpty(redisData)) {
+    message.userId = redisData.userId;
+  }
   message = removeUndefinedAndNullValues(message);
   return message;
 };

@@ -87,14 +87,11 @@ const handleCartTokenRedisOperations = async (inputEvent, clientId) => {
 
 async function processPixelEvent(inputEvent) {
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  const { name, query_parameters, context, clientId, data, id } = inputEvent;
+  const { name, query_parameters, context, clientId, id } = inputEvent;
   const shopifyDetails = { ...inputEvent };
   delete shopifyDetails.context;
   delete shopifyDetails.query_parameters;
   delete shopifyDetails.pixelEventLabel;
-  const { checkout } = data ?? {};
-  const { order } = checkout ?? {};
-  const { customer } = order ?? {};
   let message = {};
   switch (name) {
     case PIXEL_EVENT_TOPICS.PAGE_VIEWED:
@@ -116,7 +113,6 @@ async function processPixelEvent(inputEvent) {
       break;
     case PIXEL_EVENT_TOPICS.CHECKOUT_STARTED:
     case PIXEL_EVENT_TOPICS.CHECKOUT_COMPLETED:
-      if (customer.id) message.userId = customer.id || '';
       handleCartTokenRedisOperations(inputEvent, clientId);
       message = checkoutEventBuilder(inputEvent);
       break;
@@ -124,7 +120,6 @@ async function processPixelEvent(inputEvent) {
     case PIXEL_EVENT_TOPICS.CHECKOUT_CONTACT_INFO_SUBMITTED:
     case PIXEL_EVENT_TOPICS.CHECKOUT_SHIPPING_INFO_SUBMITTED:
     case PIXEL_EVENT_TOPICS.PAYMENT_INFO_SUBMITTED:
-      if (customer.id) message.userId = customer.id || '';
       handleCartTokenRedisOperations(inputEvent, clientId);
       message = checkoutStepEventBuilder(inputEvent);
       break;

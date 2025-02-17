@@ -7,9 +7,10 @@ const { get } = require('lodash');
 const Message = require('../message');
 
 const { mappingConfig } = require('./config');
-const { isDefinedAndNotNull } = require('../../util');
+const { isDefinedAndNotNull, getBodyFromV2SpecPayload } = require('../../v0/util');
 
-function process(event) {
+function process(payload) {
+  const event = getBodyFromV2SpecPayload(payload);
   const message = new Message(`Customer.io`);
 
   // since customer, email, sms, push, slack, webhook

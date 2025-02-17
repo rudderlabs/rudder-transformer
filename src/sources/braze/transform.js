@@ -7,8 +7,9 @@ const {
   formatTimeStamp,
   removeUndefinedAndNullValues,
   getHashFromArray,
-} = require('../../../v0/util');
-const Message = require('../../../v0/sources/message');
+  getBodyFromV2SpecPayload,
+} = require('../../v0/util');
+const Message = require('../message');
 
 // import mapping json using JSON.parse to preserve object key order
 const mapping = JSON.parse(fs.readFileSync(path.resolve(__dirname, './mapping.json'), 'utf-8'));
@@ -66,8 +67,9 @@ const processEvent = (event, eventMapping) => {
   throw new TransformationError('Unknown event type from Braze');
 };
 
-const process = (inputEvent) => {
-  const { event, source } = inputEvent;
+const process = (payload) => {
+  const event = getBodyFromV2SpecPayload(payload);
+  const { source } = payload;
   const { customMapping } = source.Config;
   const eventMapping = getHashFromArray(customMapping, 'from', 'to', false);
   const responses = [];

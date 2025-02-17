@@ -1,11 +1,11 @@
 const path = require('path');
 const fs = require('fs');
-const { removeUndefinedAndNullValues } = require('../../util');
+const { removeUndefinedAndNullValues, getBodyFromV2SpecPayload } = require('../../v0/util');
 const { getGroupId } = require('./util');
 // import mapping json using JSON.parse to preserve object key order
 const mapping = JSON.parse(fs.readFileSync(path.resolve(__dirname, './mapping.json'), 'utf-8'));
 const Message = require('../message');
-const { generateUUID } = require('../../util');
+const { generateUUID } = require('../../v0/util');
 
 // Ref: https://auth0.com/docs/logs/references/log-event-type-codes
 const eventNameMap = JSON.parse(
@@ -69,10 +69,11 @@ function processEvents(eventList) {
   return responses;
 }
 
-function process(events) {
-  let eventList = events;
-  if (!Array.isArray(events)) {
-    eventList = events.logs || [events];
+function process(payload) {
+  const event = getBodyFromV2SpecPayload(payload);
+  let eventList = event;
+  if (!Array.isArray(event)) {
+    eventList = event.logs || [event];
   }
   return processEvents(eventList);
 }

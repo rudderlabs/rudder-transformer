@@ -66,11 +66,10 @@ function processChallengeEvent(event) {
 // to Monday to verify the webhook url.
 // Ref: https://developer.monday.com/api-reference/docs/webhooks-1#how-to-verify-a-webhook-url
 function process(payload) {
-  if (isChallengeEvent(payload)) {
-    return processChallengeEvent(payload);
-  }
   const event = getBodyFromV2SpecPayload(payload);
-  const response = processNormalEvent(event);
+  const response = isChallengeEvent(event)
+    ? processChallengeEvent(event)
+    : processNormalEvent(event);
   return removeUndefinedAndNullValues(response);
 }
 

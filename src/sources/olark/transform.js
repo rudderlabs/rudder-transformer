@@ -2,7 +2,7 @@ const path = require('path');
 const fs = require('fs');
 const set = require('set-value');
 const Message = require('../message');
-const { removeUndefinedAndNullValues } = require('../../util');
+const { removeUndefinedAndNullValues, getBodyFromV2SpecPayload } = require('../../v0/util');
 const { getBrowserInfo } = require('./util');
 
 // ref : https://www.olark.com/help/webhooks/
@@ -49,7 +49,8 @@ const prepareGroupPayload = (event) => {
   return groupEvents;
 };
 
-function process(event) {
+function process(payload) {
+  const event = getBodyFromV2SpecPayload(payload);
   const response = [];
   response.push(prepareTrackPayload(event));
 

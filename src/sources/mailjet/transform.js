@@ -2,13 +2,15 @@ const path = require('path');
 const fs = require('fs');
 const md5 = require('md5');
 const Message = require('../message');
-const { CommonUtils } = require('../../../util/common');
+const { CommonUtils } = require('../../util/common');
+const { getBodyFromV2SpecPayload } = require('../../v0/util');
 
 // ref : https://dev.mailjet.com/email/guides/webhooks/
 // import mapping json using JSON.parse to preserve object key order
 const mapping = JSON.parse(fs.readFileSync(path.resolve(__dirname, './mapping.json'), 'utf-8'));
 
-const processEvent = (event) => {
+const processEvent = (payload) => {
+  const event = getBodyFromV2SpecPayload(payload);
   const message = new Message(`MailJet`);
   // event type is always track
   const eventType = 'track';

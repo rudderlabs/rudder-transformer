@@ -2,8 +2,12 @@ const sha256 = require('sha256');
 const { TransformationError } = require('@rudderstack/integrations-lib');
 const Message = require('../message');
 const { mapping, formEventName } = require('./util');
-const { generateUUID, removeUndefinedAndNullValues } = require('../../util');
-const { JSON_MIME_TYPE } = require('../../util/constant');
+const {
+  generateUUID,
+  removeUndefinedAndNullValues,
+  getBodyFromV2SpecPayload,
+} = require('../../v0/util');
+const { JSON_MIME_TYPE } = require('../../v0/util/constant');
 
 function processNormalEvent(mondayPayload) {
   const message = new Message(`MONDAY`);
@@ -61,10 +65,12 @@ function processChallengeEvent(event) {
 // For challenge event the recieved challenge object is sent back
 // to Monday to verify the webhook url.
 // Ref: https://developer.monday.com/api-reference/docs/webhooks-1#how-to-verify-a-webhook-url
-function process(event) {
-  const response = isChallengeEvent(event)
-    ? processChallengeEvent(event)
-    : processNormalEvent(event);
+function process(payload) {
+  if (isChallengeEvent(payload)) {
+    return processChallengeEvent(payload);
+  }
+  const event = getBodyFromV2SpecPayload(payload);
+  const response = processNormalEvent(event);
   return removeUndefinedAndNullValues(response);
 }
 

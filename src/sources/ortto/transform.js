@@ -1,9 +1,14 @@
 const path = require('path');
 const fs = require('fs');
-const { flattenJson, removeUndefinedAndNullValues, generateUUID } = require('../../util');
+const {
+  flattenJson,
+  removeUndefinedAndNullValues,
+  generateUUID,
+  getBodyFromV2SpecPayload,
+} = require('../../v0/util');
 const Message = require('../message');
 const eventMapping = require('./event_mapping.json');
-const { JSON_MIME_TYPE } = require('../../util/constant');
+const { JSON_MIME_TYPE } = require('../../v0/util/constant');
 
 // import mapping json using JSON.parse to preserve object key order
 const mapping = JSON.parse(fs.readFileSync(path.resolve(__dirname, './mapping.json'), 'utf-8'));
@@ -43,7 +48,8 @@ function settingProperties(event, message) {
   return message;
 }
 
-function process(event) {
+function process(payload) {
+  const event = getBodyFromV2SpecPayload(payload);
   let message = new Message(`ortto`);
 
   // Here, we are checking for the test event to discard them

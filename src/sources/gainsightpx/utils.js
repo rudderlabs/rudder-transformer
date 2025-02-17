@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign */
-const { isDefinedAndNotNullAndNotEmpty } = require('../../util');
+const { isDefinedAndNotNullAndNotEmpty } = require('../../v0/util');
 const { traitsToDelete, accountTraitsToDelete } = require('./config');
 
 /**

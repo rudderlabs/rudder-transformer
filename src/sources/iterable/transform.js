@@ -3,11 +3,13 @@ const fs = require('fs');
 const md5 = require('md5');
 const { TransformationError } = require('@rudderstack/integrations-lib');
 const Message = require('../message');
+const { getBodyFromV2SpecPayload } = require('../../v0/util');
 
 // import mapping json using JSON.parse to preserve object key order
 const mapping = JSON.parse(fs.readFileSync(path.resolve(__dirname, './mapping.json'), 'utf-8'));
 
-function process(event) {
+function process(payload) {
+  const event = getBodyFromV2SpecPayload(payload);
   // throw an error if (email, eventName) are not present
   if (!(event.email && event.eventName)) {
     throw new TransformationError('Unknwon event type from Iterable');

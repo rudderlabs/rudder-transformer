@@ -1,36 +1,79 @@
-const lodash = require('lodash');
+import { merge } from 'lodash';
 
-const {
+import {
   InstrumentationError,
   isDefinedAndNotNullAndNotEmpty,
   getHashFromArrayWithDuplicate,
   isDefinedAndNotNull,
   isDefinedNotNullNotEmpty,
-} = require('@rudderstack/integrations-lib');
-const {
+} from '@rudderstack/integrations-lib';
+import {
   getFieldValueFromMessage,
   validateEventName,
   constructPayload,
   getDestinationExternalID,
   extractCustomFields,
-} = require('../../../../v0/util');
-const { CommonUtils } = require('../../../../util/common');
-const { EVENT_NAME_MAPPING, IDENTIFY_EXCLUSION_LIST, TRACK_EXCLUSION_LIST } = require('./config');
-const { EventType } = require('../../../../constants');
-const { MAPPING_CONFIG, CONFIG_CATEGORIES } = require('./config');
+} from '../../../../v0/util';
+import { CommonUtils } from '../../../../util/common';
+import {
+  EVENT_NAME_MAPPING,
+  IDENTIFY_EXCLUSION_LIST,
+  TRACK_EXCLUSION_LIST,
+  MAPPING_CONFIG,
+  CONFIG_CATEGORIES,
+} from './config';
+import { EventType } from '../../../../constants';
 
-const validateCustomerProperties = (payload, eventName) => {
-  if (
-    !isDefinedAndNotNull(payload?.properties?.customer) ||
-    Object.keys(payload.properties.customer).length === 0
-  ) {
+// Define interfaces for commonly used types
+interface Message {
+  type: string;
+  traits?: {
+    action?: string;
+    [key: string]: any;
+  };
+  properties?: {
+    [key: string]: any;
+  };
+  event?: string;
+}
+
+interface Payload {
+  event: string;
+  properties?: {
+    customer?: Record<string, any>;
+    search_term?: string;
+    order_id?: string;
+    total?: number;
+    [key: string]: any;
+  };
+}
+
+interface Product {
+  product_id?: string | number;
+  sku?: string;
+  id?: string;
+  query?: string;
+  order_id?: string;
+  total?: number;
+  [key: string]: any;
+}
+
+interface DestConfig {
+  eventsMapping: Array<{
+    from: string;
+    to: string;
+  }>;
+}
+
+const validateCustomerProperties = (payload: Payload, eventName: string): void => {
+  if (Object.keys(payload?.properties?.customer || {}).length === 0) {
     throw new InstrumentationError(
       `[Bluecore] property:: No relevant trait to populate customer information, which is required for ${eventName} action`,
     );
   }
 };
 
-const validateIdentifyAction = (message) => {
+const validateIdentifyAction = (message: Message): void => {
   if (
     message.type === EventType.IDENTIFY &&
     isDefinedNotNullNotEmpty(message.traits?.action) &&
@@ -41,7 +84,8 @@ const validateIdentifyAction = (message) => {
     );
   }
 };
-const validateSearchEvent = (payload) => {
+
+const validateSearchEvent = (payload: Payload): void => {
   if (!payload?.properties?.search_term) {
     throw new InstrumentationError(
       '[Bluecore] property:: search_query is required for search event',
@@ -49,7 +93,7 @@ const validateSearchEvent = (payload) => {
   }
 };
 
-const validatePurchaseEvent = (payload) => {
+const validatePurchaseEvent = (payload: Payload): void => {
   if (!isDefinedAndNotNull(payload?.properties?.order_id)) {
     throw new InstrumentationError('[Bluecore] property:: order_id is required for purchase event');
   }
@@ -59,7 +103,7 @@ const validatePurchaseEvent = (payload) => {
   validateCustomerProperties(payload, 'purchase');
 };
 
-const validateCustomerEvent = (payload, message) => {
+const validateCustomerEvent = (payload: Payload, message: Message): void => {
   if (!isDefinedAndNotNullAndNotEmpty(getFieldValueFromMessage(message, 'email'))) {
     throw new InstrumentationError(
       `[Bluecore] property:: email is required for ${payload.event} action`,
@@ -68,7 +112,7 @@ const validateCustomerEvent = (payload, message) => {
   validateCustomerProperties(payload, payload.event);
 };
 
-const validateEventSpecificPayload = (payload, message) => {
+const validateEventSpecificPayload = (payload: Payload, message: Message): void => {
   const eventValidators = {
     search: validateSearchEvent,
     purchase: validatePurchaseEvent,
@@ -91,7 +135,7 @@ const validateEventSpecificPayload = (payload, message) => {
  * @throws {InstrumentationError} - Throws an error if required properties are missing.
  * @returns {void}
  */
-const verifyPayload = (payload, message) => {
+const verifyPayload = (payload: Payload, message: Message): void => {
   validateIdentifyAction(message);
   validateEventSpecificPayload(payload, message);
 };
@@ -103,7 +147,7 @@ const verifyPayload = (payload, message) => {
  * @param {object} Config - The configuration object.
  * @returns {string|array} - The deduced track event name.
  */
-const deduceTrackEventName = (trackEventName, destConfig) => {
+const deduceTrackEventName = (trackEventName: string, destConfig: DestConfig): string[] => {
   let eventName;
   const { eventsMapping } = destConfig;
   validateEventName(trackEventName);
@@ -128,13 +172,8 @@ const deduceTrackEventName = (trackEventName, destConfig) => {
 
   const eventMapInfo = EVENT_NAME_MAPPING.find((eventMap) =>
     eventMap.src.includes(trackEventName.toLowerCase()),
-  );
-  if (isDefinedAndNotNull(eventMapInfo)) {
-    return [eventMapInfo.dest];
-  }
-
-  // Step 3: if nothing matches this is to be considered as a custom event
-  return [trackEventName];
+  ) || { dest: trackEventName };
+  return [eventMapInfo.dest];
 };
 
 /**
@@ -143,7 +182,7 @@ const deduceTrackEventName = (trackEventName, destConfig) => {
  * @param {string} eventName - The name of the event to check.
  * @returns {boolean} - True if the event is a standard Bluecore event, false otherwise.
  */
-const isStandardBluecoreEvent = (eventName) => {
+const isStandardBluecoreEvent = (eventName: string): boolean => {
   // Return false immediately if eventName is an empty string or falsy
   if (!eventName) {
     return false;
@@ -161,25 +200,21 @@ const isStandardBluecoreEvent = (eventName) => {
  * @throws {InstrumentationError} - If the products array is not defined or null.
  * @returns {array} - The updated product array.
  */
-const normalizeProductArray = (products) => {
-  let finalProductArray = null;
-  if (isDefinedAndNotNull(products)) {
-    const productArray = CommonUtils.toArray(products);
-    const mappedProductArray = productArray.map(
-      ({ product_id, sku, id, query, order_id, total, ...rest }) => ({
-        id: product_id || sku || id,
-        ...rest,
-      }),
-    );
-    finalProductArray = mappedProductArray;
+const normalizeProductArray = (products: Product | Product[] | null): Product[] | null => {
+  if (!isDefinedAndNotNull(products)) {
+    return null;
   }
-  // if any custom event is not sent with product array, then it should be null
-  return finalProductArray;
+  return CommonUtils.toArray(products).map(
+    ({ product_id, sku, id, query, order_id, total, ...rest }) => ({
+      id: product_id || sku || id,
+      ...rest,
+    }),
+  );
 };
 
-const mapCustomProperties = (message) => {
+const mapCustomProperties = (message: Message): { properties: Record<string, any> } => {
   let customerProperties;
-  const customProperties = { properties: {} };
+  const customProperties = { properties: {} as Record<string, any> };
   const messageType = message.type.toUpperCase();
   switch (messageType) {
     case 'IDENTIFY':
@@ -218,18 +253,13 @@ const mapCustomProperties = (message) => {
  * @param {object} message - The message object.
  * @returns {object} - The constructed properties object.
  */
-const constructProperties = (message) => {
+const constructProperties = (message: Message): Record<string, any> => {
   const commonCategory = CONFIG_CATEGORIES.COMMON;
   const commonPayload = constructPayload(message, MAPPING_CONFIG[commonCategory.name]);
   const category = CONFIG_CATEGORIES[message.type.toUpperCase()];
   const typeSpecificPayload = constructPayload(message, MAPPING_CONFIG[category.name]);
   const typeSpecificCustomProperties = mapCustomProperties(message);
-  const finalPayload = lodash.merge(
-    commonPayload,
-    typeSpecificPayload,
-    typeSpecificCustomProperties,
-  );
-  return finalPayload;
+  return merge(commonPayload, typeSpecificPayload, typeSpecificCustomProperties);
 };
 
 /**
@@ -239,16 +269,23 @@ const constructProperties = (message) => {
  * @param {string} eventName - The name of the event.
  * @returns {Array|null} - An array containing the properties if the event is a standard Bluecore event and not 'search', otherwise null.
  */
-const createProductForStandardEcommEvent = (message, eventName) => {
+const createProductForStandardEcommEvent = (
+  message: Message,
+  eventName?: string,
+): Product[] | null => {
+  if (!eventName) {
+    return null;
+  }
   const { event, properties } = message;
-  if (event.toLowerCase() === 'order completed' && eventName === 'purchase') {
+  if (event?.toLowerCase() === 'order completed' && eventName === 'purchase') {
     throw new InstrumentationError('[Bluecore]:: products array is required for purchase event');
   }
   if (eventName !== 'search' && isStandardBluecoreEvent(eventName)) {
-    return [properties];
+    return [properties as Product];
   }
   return null;
 };
+
 /**
  * Function: populateAccurateDistinctId
  *
@@ -266,7 +303,7 @@ const createProductForStandardEcommEvent = (message, eventName) => {
  * - InstrumentationError: If the distinct ID could not be set.
  *
  */
-const populateAccurateDistinctId = (payload, message) => {
+const populateAccurateDistinctId = (payload: Payload, message: Message): string => {
   const bluecoreExternalId = getDestinationExternalID(message, 'bluecoreExternalId');
   if (isDefinedAndNotNullAndNotEmpty(bluecoreExternalId)) {
     return bluecoreExternalId;
@@ -289,7 +326,7 @@ const populateAccurateDistinctId = (payload, message) => {
   return distinctId;
 };
 
-module.exports = {
+export {
   verifyPayload,
   deduceTrackEventName,
   normalizeProductArray,

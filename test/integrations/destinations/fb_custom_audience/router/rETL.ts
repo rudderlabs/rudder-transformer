@@ -116,8 +116,8 @@ export const rETLRecordV2RouterRequest: RouterTransformationRequest = {
             version: '895/merge',
           },
         },
-        recordId: '2',
-        rudderId: '2',
+        recordId: '3',
+        rudderId: '3',
         identifiers: {
           EMAIL: 'subscribed@eewrfrd.com',
           FI: 'ghui',
@@ -125,6 +125,29 @@ export const rETLRecordV2RouterRequest: RouterTransformationRequest = {
         type: 'record',
       },
       metadata: generateMetadata(3),
+    },
+    {
+      destination: destinationV2,
+      connection: connection,
+      message: {
+        action: 'insert',
+        context: {
+          sources: {
+            job_run_id: 'cgiiurt8um7k7n5dq480',
+            task_run_id: 'cgiiurt8um7k7n5dq48g',
+            job_id: '2MUWghI7u85n91dd1qzGyswpZan',
+            version: '895/merge',
+          },
+        },
+        recordId: '4',
+        rudderId: '4',
+        identifiers: {
+          EMAIL: null,
+          FI: null,
+        },
+        type: 'record',
+      },
+      metadata: generateMetadata(4),
     },
   ],
   destType: 'fb_custom_audience',

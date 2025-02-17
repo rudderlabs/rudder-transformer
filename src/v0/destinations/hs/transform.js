@@ -86,7 +86,7 @@ const processBatchRouter = async (inputs, reqMetadata) => {
   try {
     if (mappedToDestination && GENERIC_TRUE_VALUES.includes(mappedToDestination?.toString())) {
       // skip splitting the batches to inserts and updates if object it is an association
-      if (objectType.toLowerCase() !== 'association') {
+      if (objectType?.toLowerCase() !== 'association') {
         propertyMap = await getProperties(destination, metadata);
         // get info about existing objects and splitting accordingly.
         tempInputs = await splitEventsForCreateUpdate(tempInputs, destination, metadata);

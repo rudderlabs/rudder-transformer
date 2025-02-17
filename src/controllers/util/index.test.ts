@@ -1,3 +1,5 @@
+import { TransformationError } from '@rudderstack/integrations-lib';
+import { ErrorMessages } from '../../constants';
 import {
   Destination,
   Metadata,
@@ -222,7 +224,7 @@ describe('adaptInputToVersion', () => {
       implementationVersion: 'v0',
       input: [
         {
-          conversionError: new SyntaxError('Unexpected end of JSON input'),
+          conversionError: new TransformationError(ErrorMessages.JSONParseError),
         },
       ],
     };
@@ -321,7 +323,7 @@ describe('adaptInputToVersion', () => {
       implementationVersion: 'v1',
       input: [
         {
-          conversionError: new SyntaxError('Unexpected end of JSON input'),
+          conversionError: new TransformationError(ErrorMessages.JSONParseError),
         },
       ],
     };

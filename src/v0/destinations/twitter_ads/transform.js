@@ -80,29 +80,106 @@ function populateEventId(event, requestJson, destination) {
 }
 
 function populateContents(requestJson) {
-  const reqJson = { ...requestJson };
-  if (reqJson.contents) {
-    const transformedContents = requestJson.contents
-      .map((obj) => ({
-        ...(obj.id && { content_id: obj.id }),
-        ...(obj.groupId && { content_group_id: obj.groupId }),
-        ...(obj.name && { content_name: obj.name }),
-        ...(obj.price && { content_price: parseFloat(obj.price) }),
-        ...(obj.type && { content_type: obj.type }),
-        ...(obj.quantity && { num_items: parseInt(obj.quantity, 10) }),
-      }))
-      .filter((tfObj) => Object.keys(tfObj).length > 0);
-    if (transformedContents.length > 0) {
-      reqJson.contents = transformedContents;
+  const { contents, ...rest } = requestJson;
+
+  if (!Array.isArray(contents)) return requestJson;
+
+  const transformedContents = contents
+    .map(({ id, groupId, name, price, type, quantity }) => {
+      const transformed = {};
+      if (id) {
+        transformed.content_id = id;
+      }
+      if (groupId) {
+        transformed.content_group_id = groupId;
+      }
+      if (name) {
+        transformed.content_name = name;
+      }
+      if (type) {
+        transformed.content_type = type;
+      }
+      if (price && Number.isFinite(parseFloat(price))) {
+        const parsedPrice = parseFloat(price);
+        // content_price should be a string
+        transformed.content_price = Number.isInteger(parsedPrice)
+          ? parsedPrice.toFixed(2)
+          : parsedPrice.toString();
+      }
+      if (quantity && Number.isFinite(parseInt(quantity, 10))) {
+        transformed.num_items = parseInt(quantity, 10);
+      }
+      return Object.keys(transformed).length > 0 ? transformed : null;
+    })
+    .filter(Boolean); // Removes null entries
+
+  return transformedContents.length > 0 ? { ...rest, contents: transformedContents } : rest;
+}
+
+// Separate identifier creation logic for better maintainability
+function createIdentifiers(properties) {
+  if (!properties) {
+    throw new InstrumentationError(
+      '[TWITTER ADS]: properties must be present in event. Aborting message',
+    );
+  }
+  const identifiers = [];
+  const { email, phone, twclid, ip_address: ipAddress, user_agent: userAgent } = properties;
+
+  // Handle email
+  if (email?.trim()) {
+    identifiers.push({
+      hashed_email: sha256(email.trim().toLowerCase()),
+    });
+  }
+
+  // Handle phone
+  if (phone?.trim()) {
+    identifiers.push({
+      hashed_phone_number: sha256(phone.trim()),
+    });
+  }
+
+  // Handle twclid
+  if (twclid) {
+    identifiers.push({ twclid });
+  }
+
+  // Handle IP and user agent
+  const trimmedIp = ipAddress?.trim();
+  const trimmedUserAgent = userAgent?.trim();
+  // ip_address or/and user_agent is required to be
+  // passed in conjunction with another identifier
+  // ref: https://developer.x.com/en/docs/x-ads-api/measurement/web-conversions/api-reference/conversions
+  if (trimmedIp && trimmedUserAgent) {
+    identifiers.push({
+      ip_address: trimmedIp,
+      user_agent: trimmedUserAgent,
+    });
+  } else {
+    if (identifiers.length === 0) {
+      throw new InstrumentationError(
+        '[TWITTER ADS]: one of twclid, phone, email or ip_address with user_agent must be present in properties.',
+      );
+    }
+    if (trimmedIp) {
+      identifiers[0].ip_address = trimmedIp;
+    }
+    if (trimmedUserAgent) {
+      identifiers[0].user_agent = trimmedUserAgent;
     }
   }
-  return reqJson;
+
+  return identifiers;
 }
 
 // process track call
 function processTrack(message, metadata, destination) {
+  const identifiers = createIdentifiers(message.properties);
   let requestJson = constructPayload(message, mappingConfig[ConfigCategories.TRACK.name]);
+  requestJson.identifiers = identifiers;
 
+  // Populate required fields
   requestJson.event_id =
     requestJson.event_id || populateEventId(message.event, requestJson, destination);
 
@@ -110,84 +187,22 @@ function processTrack(message, metadata, destination) {
     ? requestJson.conversion_time
     : message.timestamp;
 
-  const identifiers = [];
-
-  if (message.properties.email) {
-    let email = message.properties.email.trim();
-    if (email) {
-      email = email.toLowerCase();
-      identifiers.push({ hashed_email: sha256(email) });
-    }
-  }
-
-  if (message.properties.phone) {
-    const phone = message.properties.phone.trim();
-    if (phone) {
-      identifiers.push({ hashed_phone_number: sha256(phone) });
-    }
-  }
-
-  if (message.properties.twclid) {
-    identifiers.push({ twclid: message.properties.twclid });
-  }
-
-  if (message.properties.ip_address) {
-    const ipAddress = message.properties.ip_address.trim();
-    if (ipAddress) {
-      identifiers.push({ ip_address: ipAddress });
-    }
-  }
-
-  if (message.properties.user_agent) {
-    const userAgent = message.properties.user_agent.trim();
-    if (userAgent) {
-      identifiers.push({ user_agent: userAgent });
-    }
-  }
-
+  // Add identifiers and transform contents
   requestJson = populateContents(requestJson);
 
-  requestJson.identifiers = identifiers;
-
   const endpointUrl = prepareUrl(message, destination);
-
   return buildResponse(message, requestJson, metadata, endpointUrl);
-}
-
-function validateRequest(message) {
-  const { properties } = message;
-
-  if (!properties) {
-    throw new InstrumentationError(
-      '[TWITTER ADS]: properties must be present in event. Aborting message',
-    );
-  }
-
-  if (
-    !properties.email &&
-    !properties.phone &&
-    !properties.twclid &&
-    !properties.ip_address &&
-    !properties.user_agent
-  ) {
-    throw new InstrumentationError(
-      '[TWITTER ADS]: one of twclid, phone, email, ip_address or user_agent must be present in properties.',
-    );
-  }
 }
 
 function process(event) {
   const { message, metadata, destination } = event;
 
-  validateRequest(message);
-
   const messageType = message.type?.toLowerCase();
 
-  if (messageType === EventType.TRACK) {
-    return processTrack(message, metadata, destination);
+  if (messageType !== EventType.TRACK) {
+    throw new InstrumentationError(`Message type ${messageType} not supported`);
   }
-
-  throw new InstrumentationError(`Message type ${messageType} not supported`);
+  return processTrack(message, metadata, destination);
 }
 
 const processRouterDest = async (inputs, reqMetadata) => {

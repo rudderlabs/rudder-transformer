@@ -38,7 +38,6 @@ export class UserTransformService {
         `${event.metadata.destinationId}_${event.metadata.sourceId}`,
     );
     stats.counter('user_transform_function_group_size', Object.entries(groupedEvents).length, {});
-    stats.histogram('user_transform_input_events', events.length, {});
 
     const transformedEvents: FixMe[] = [];
     let librariesVersionIDs: FixMe[] = [];
@@ -63,11 +62,12 @@ export class UserTransformService {
 
         const messageIdsInOutputSet = new Set<string>();
 
+        const workspaceId = eventsToProcess[0]?.metadata.workspaceId;
         const commonMetadata = {
           sourceId: eventsToProcess[0]?.metadata?.sourceId,
           destinationId: eventsToProcess[0]?.metadata.destinationId,
           destinationType: eventsToProcess[0]?.metadata.destinationType,
-          workspaceId: eventsToProcess[0]?.metadata.workspaceId,
+          workspaceId,
           transformationId: eventsToProcess[0]?.metadata.transformationId,
           messageIds,
         };
@@ -76,6 +76,7 @@ export class UserTransformService {
           eventsToProcess.length > 0 && eventsToProcess[0].metadata
             ? getMetadata(eventsToProcess[0].metadata)
             : {};
+        const transformationTags = getTransformationMetadata(eventsToProcess[0]?.metadata);
 
         if (!transformationVersionId) {
           const errorMessage = 'Transformation VersionID not found';
@@ -87,6 +88,11 @@ export class UserTransformService {
           } as ProcessorTransformationResponse);
           return transformedEvents;
         }
+        stats.counter('user_transform_input_events', events.length, { workspaceId });
+        logger.info('user_transform_input_events', {
+          inCount: events.length,
+          ...transformationTags,
+        });
         const userFuncStartTime = new Date();
         try {
           const destTransformedEvents: UserTransformationResponse[] = await userTransformHandler()(
@@ -167,22 +173,28 @@ export class UserTransformService {
           stats.counter('user_transform_errors', eventsToProcess.length, {
             status,
             ...metaTags,
-            ...getTransformationMetadata(eventsToProcess[0]?.metadata),
+            ...transformationTags,
           });
         } finally {
           stats.timingSummary('user_transform_request_latency_summary', userFuncStartTime, {
             ...metaTags,
-            ...getTransformationMetadata(eventsToProcess[0]?.metadata),
+            ...transformationTags,
           });
 
           stats.summary('user_transform_batch_size_summary', requestSize, {
             ...metaTags,
-            ...getTransformationMetadata(eventsToProcess[0]?.metadata),
+            ...transformationTags,
           });
         }
 
         stats.counter('user_transform_requests', 1, {});
-        stats.histogram('user_transform_output_events', transformedEvents.length, {});
+        stats.counter('user_transform_output_events', transformedEvents.length, {
+          workspaceId,
+        });
+        logger.info('user_transform_output_events', {
+          outCount: transformedEvents.length,
+          ...transformationTags,
+        });
         return transformedEvents;
       }),
     );

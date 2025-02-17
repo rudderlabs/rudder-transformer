@@ -133,7 +133,7 @@ async function validate(event) {
 
     // UnPlanned event case - since no event schema is found. Violation is raised
     // Return this violation error only in case of track calls.
-    if (!eventSchema || eventSchema === {}) {
+    if (!eventSchema || Object.keys(eventSchema).length === 0) {
       if (event.message.type !== 'track') {
         return [];
       }
@@ -173,7 +173,7 @@ async function validate(event) {
 
     let ajv = isDraft4 ? ajv4 : ajv19;
     const ajvCache = isDraft4 ? ajv4Cache : ajv19Cache;
-    if (merged !== {}) {
+    if (Object.keys(merged).length > 0) {
       const configHash = hash(merged);
       ajv = ajvCache.get(configHash);
       if (!ajv) {

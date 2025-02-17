@@ -530,4 +530,54 @@ export const configuration: ProcessorTestData[] = [
       },
     },
   },
+  {
+    id: 'http-configuration-test-11',
+    name: destType,
+    description: 'Identify call with default properties mapping',
+    scenario: 'Business',
+    successCriteria: 'Response should be in json format with default properties mapping',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: destinations[14],
+            message: {
+              type: 'identify',
+              userId: 'userId123',
+              anonymousId: 'anonId123',
+            },
+            metadata: generateMetadata(1),
+          },
+        ],
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: transformResultBuilder({
+              method: 'POST',
+              userId: '',
+              endpoint: destinations[14].Config.apiUrl,
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              JSON: {
+                type: 'identify',
+                userId: 'userId123',
+                anonymousId: 'anonId123',
+              },
+            }),
+            statusCode: 200,
+            metadata: generateMetadata(1),
+          },
+        ],
+      },
+    },
+  },
 ];

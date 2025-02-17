@@ -30,7 +30,6 @@ function generateBatchedPayload(events) {
   let batchEventResponse = events.map((event) => event.message);
   // Batch event into dest batch structure
   events.forEach((ev) => {
-    // batchResponseList.push(ev.message.body.JSON);
     metadata.push(ev.metadata);
   });
   batchEventResponse = {

@@ -1,5 +1,5 @@
 const Message = require('../message');
-const { generateUUID } = require('../../util');
+const { generateUUID, getBodyFromV2SpecPayload } = require('../../v0/util');
 const { callTypes } = require('./config');
 const { findUserIdOrAnonymousId } = require('./util');
 
@@ -11,7 +11,8 @@ const buildTrackPayload = (event) => {
   return message;
 };
 
-const process = (event) => {
+const process = (payload) => {
+  const event = getBodyFromV2SpecPayload(payload);
   const id = findUserIdOrAnonymousId(event);
   if (event?.type && callTypes.includes(event.type.toLowerCase()) && id) {
     return event;

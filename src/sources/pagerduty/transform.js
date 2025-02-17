@@ -1,5 +1,5 @@
 const Message = require('../message');
-const { generateUUID } = require('../../util');
+const { generateUUID, getBodyFromV2SpecPayload } = require('../../v0/util');
 const trackMapping = require('./data/trackMapping.json');
 const eventNameMap = require('./data/eventMapping.json');
 
@@ -25,8 +25,8 @@ const prepareTrackPayload = (event) => {
   return message;
 };
 
-function process(event) {
-  const { event: processEvent } = event;
+function process(payload) {
+  const { event: processEvent } = getBodyFromV2SpecPayload(payload);
   return prepareTrackPayload(processEvent);
 }
 

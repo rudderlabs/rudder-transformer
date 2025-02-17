@@ -33,7 +33,7 @@ on:
       workflow_url:
         type: string
     secrets:
-      DOCKERHUB_PROD_TOKEN:
+      DOCKERHUB_TOKEN:
         required: true
 
 env:

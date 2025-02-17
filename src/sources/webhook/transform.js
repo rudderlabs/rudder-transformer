@@ -1,4 +1,8 @@
-const { removeUndefinedAndNullValues, generateUUID } = require('../../../v0/util');
+const {
+  removeUndefinedAndNullValues,
+  generateUUID,
+  getBodyFromV2SpecPayload,
+} = require('../../v0/util');
 
 function processEvent(event) {
   const payload = {
@@ -10,8 +14,8 @@ function processEvent(event) {
   return payload;
 }
 
-function process(inputEvent) {
-  const { event } = inputEvent;
+function process(payload) {
+  const event = getBodyFromV2SpecPayload(payload);
   const response = processEvent(event);
   return removeUndefinedAndNullValues(response);
 }

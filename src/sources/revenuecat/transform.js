@@ -1,11 +1,17 @@
 const { camelCase } = require('lodash');
 const moment = require('moment');
 const { isDefinedAndNotNullAndNotEmpty } = require('@rudderstack/integrations-lib');
-const { removeUndefinedAndNullValues, isDefinedAndNotNull, generateUUID } = require('../../util');
+const {
+  removeUndefinedAndNullValues,
+  isDefinedAndNotNull,
+  generateUUID,
+  getBodyFromV2SpecPayload,
+} = require('../../v0/util');
 
 const Message = require('../message');
 
-function process(event) {
+function process(payload) {
+  const event = getBodyFromV2SpecPayload(payload);
   const message = new Message(`RevenueCat`);
 
   // we are setting event type as track always

@@ -1,7 +1,7 @@
 const path = require('path');
 const fs = require('fs');
 const Message = require('../message');
-const { removeUndefinedAndNullValues } = require('../../util');
+const { removeUndefinedAndNullValues, getBodyFromV2SpecPayload } = require('../../v0/util');
 
 // import mapping json using JSON.parse to preserve object key order
 const identifyMapping = JSON.parse(
@@ -40,18 +40,19 @@ const prepareGroupPayload = (event) => {
   return message;
 };
 
-function process(event) {
-  const payload = [];
+function process(payload) {
+  const event = getBodyFromV2SpecPayload(payload);
+  const resultPayload = [];
   const identifyPayload = prepareIdentifyaPayload(event);
   const trackPayload = prepareTrackPayload(event);
   const groupPayload = prepareGroupPayload(event);
 
-  payload.push(identifyPayload, trackPayload);
+  resultPayload.push(identifyPayload, trackPayload);
 
   if (groupPayload.groupId) {
-    payload.push(groupPayload);
+    resultPayload.push(groupPayload);
   }
-  return payload;
+  return resultPayload;
 }
 
 module.exports = { process };

@@ -2,9 +2,13 @@ const sha256 = require('sha256');
 const { TransformationError } = require('@rudderstack/integrations-lib');
 const Message = require('../message');
 const { mapping, tsToISODate, normalizeEventName } = require('./util');
-const { generateUUID, removeUndefinedAndNullValues } = require('../../util');
-const { JSON_MIME_TYPE } = require('../../util/constant');
-const { EventType } = require('../../../constants');
+const {
+  generateUUID,
+  removeUndefinedAndNullValues,
+  getBodyFromV2SpecPayload,
+} = require('../../v0/util');
+const { JSON_MIME_TYPE } = require('../../v0/util/constant');
+const { EventType } = require('../../constants');
 
 /**
  * Transform event data to RudderStack supported standard event schema
@@ -100,7 +104,8 @@ function isWebhookUrlVerificationEvent(event) {
  * Reference - https://api.slack.com/apis/connections/events-api
  * @param {Object} event
  */
-function process(event) {
+function process(payload) {
+  const event = getBodyFromV2SpecPayload(payload);
   const response = isWebhookUrlVerificationEvent(event)
     ? processUrlVerificationEvent(event)
     : processNormalEvent(event);

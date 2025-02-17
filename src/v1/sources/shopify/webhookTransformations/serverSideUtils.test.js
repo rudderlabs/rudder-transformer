@@ -11,9 +11,9 @@ const { RedisDB } = require('../../../../util/redis/redisConnector');
 const stats = require('../../../../util/stats');
 
 const { lineItemsMappingJSON } = require('../../../../v0/sources/shopify/config');
-const Message = require('../../../../v0/sources/message');
+const Message = require('../../../../sources/message');
 const { property } = require('lodash');
-jest.mock('../../../../v0/sources/message');
+jest.mock('../../../../sources/message');
 jest.mock('../../../../util/stats', () => ({
   increment: jest.fn(),
 }));

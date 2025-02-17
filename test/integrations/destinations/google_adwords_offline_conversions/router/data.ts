@@ -1,4 +1,5 @@
 import { timestampMock } from '../mocks';
+import { API_VERSION } from '../../../../../src/v0/destinations/google_adwords_enhanced_conversions/config';
 
 export const data = [
   {
@@ -483,8 +484,7 @@ export const data = [
                   version: '1',
                   type: 'REST',
                   method: 'POST',
-                  endpoint:
-                    'https://googleads.googleapis.com/v17/customers/7693729833/offlineUserDataJobs',
+                  endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
                   headers: {
                     Authorization: 'Bearer abcd1234',
                     'Content-Type': 'application/json',
@@ -565,8 +565,7 @@ export const data = [
                   version: '1',
                   type: 'REST',
                   method: 'POST',
-                  endpoint:
-                    'https://googleads.googleapis.com/v17/customers/7693729833:uploadCallConversions',
+                  endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833:uploadCallConversions`,
                   headers: {
                     Authorization: 'Bearer abcd1234',
                     'Content-Type': 'application/json',
@@ -680,8 +679,7 @@ export const data = [
                 version: '1',
                 type: 'REST',
                 method: 'POST',
-                endpoint:
-                  'https://googleads.googleapis.com/v17/customers/9625812972:uploadClickConversions',
+                endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/9625812972:uploadClickConversions`,
                 headers: {
                   Authorization: 'Bearer abcd1234',
                   'Content-Type': 'application/json',
@@ -815,8 +813,7 @@ export const data = [
                 version: '1',
                 type: 'REST',
                 method: 'POST',
-                endpoint:
-                  'https://googleads.googleapis.com/v17/customers/9625812972:uploadCallConversions',
+                endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/9625812972:uploadCallConversions`,
                 headers: {
                   Authorization: 'Bearer abcd1234',
                   'Content-Type': 'application/json',
@@ -1169,8 +1166,7 @@ export const data = [
                 version: '1',
                 type: 'REST',
                 method: 'POST',
-                endpoint:
-                  'https://googleads.googleapis.com/v17/customers/1234556775/offlineUserDataJobs',
+                endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/1234556775/offlineUserDataJobs`,
                 headers: {
                   Authorization: 'Bearer abcd1234',
                   'Content-Type': 'application/json',

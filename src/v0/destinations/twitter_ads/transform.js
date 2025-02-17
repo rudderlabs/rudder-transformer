@@ -100,7 +100,11 @@ function populateContents(requestJson) {
         transformed.content_type = type;
       }
       if (price && Number.isFinite(parseFloat(price))) {
-        transformed.content_price = parseFloat(price);
+        const parsedPrice = parseFloat(price);
+        // content_price should be a string
+        transformed.content_price = Number.isInteger(parsedPrice)
+          ? parsedPrice.toFixed(2)
+          : parsedPrice.toString();
       }
       if (quantity && Number.isFinite(parseInt(quantity, 10))) {
         transformed.num_items = parseInt(quantity, 10);

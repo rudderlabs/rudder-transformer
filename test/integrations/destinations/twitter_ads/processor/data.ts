@@ -137,12 +137,12 @@ export const data = [
                       contents: [
                         {
                           content_id: '12',
-                          content_price: 123.3345,
+                          content_price: '123.3345',
                           num_items: 12,
                         },
                         {
                           content_id: '4',
-                          content_price: 200,
+                          content_price: '200.00',
                           num_items: 11,
                         },
                       ],
@@ -851,12 +851,12 @@ export const data = [
                       contents: [
                         {
                           content_id: '12',
-                          content_price: 123.3345,
+                          content_price: '123.3345',
                           num_items: 12,
                         },
                         {
                           content_id: '4',
-                          content_price: 200,
+                          content_price: '200.00',
                           num_items: 11,
                         },
                       ],
@@ -1883,7 +1883,7 @@ export const data = [
                           content_id: '13',
                           content_name: 'Product 2',
                           content_type: 'digital',
-                          content_price: 200,
+                          content_price: '200.00',
                         },
                         {
                           content_id: '14',
@@ -2253,6 +2253,129 @@ export const data = [
                         },
                       ],
                       // contents field should not be present as all contents were invalid
+                    },
+                  ],
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: '',
+            },
+            metadata: {
+              secret: {
+                consumerKey: 'qwe',
+                consumerSecret: 'fdghv',
+                accessToken: 'dummyAccessToken',
+                accessTokenSecret: 'testAccessTokenSecret',
+              },
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'twitter_ads',
+    description: 'Test case for content transformations with invalid content price',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              type: 'track',
+              event: 'ABC Searched',
+              timestamp: '2020-08-14T05:30:30.118Z',
+              properties: {
+                email: 'abc@ax.com',
+                contents: [
+                  {
+                    // invalid price
+                    id: '12',
+                    price: 'random-price-string',
+                    name: 'Product 1',
+                    type: 'physical',
+                    groupId: 'group1',
+                  },
+                  {
+                    // valid price
+                    id: '13',
+                    price: '0',
+                    name: 'Product 2',
+                    type: 'digital',
+                  },
+                ],
+              },
+            },
+            metadata: {
+              secret: {
+                consumerKey: 'qwe',
+                consumerSecret: 'fdghv',
+                accessToken: 'dummyAccessToken',
+                accessTokenSecret: 'testAccessTokenSecret',
+              },
+            },
+            destination: {
+              Config: {
+                pixelId: 'dummyPixelId',
+                twitterAdsEventNames: [
+                  {
+                    rudderEventName: 'ABC Searched',
+                    twitterEventId: 'tw-234234324234',
+                  },
+                ],
+              },
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://ads-api.twitter.com/12/measurement/conversions/dummyPixelId',
+              headers: {
+                Authorization: authHeaderConstant,
+                'Content-Type': 'application/json',
+              },
+              params: {},
+              body: {
+                JSON: {
+                  conversions: [
+                    {
+                      conversion_time: '2020-08-14T05:30:30.118Z',
+                      event_id: 'tw-234234324234',
+                      identifiers: [
+                        {
+                          hashed_email:
+                            '4c3c8a8cba2f3bb1e9e617301f85d1f68e816a01c7b716f482f2ab9adb8181fb',
+                        },
+                      ],
+                      contents: [
+                        {
+                          content_id: '12',
+                          content_name: 'Product 1',
+                          content_type: 'physical',
+                          content_group_id: 'group1',
+                        },
+                        {
+                          content_id: '13',
+                          content_name: 'Product 2',
+                          content_type: 'digital',
+                          content_price: '0.00',
+                        },
+                      ],
                     },
                   ],
                 },

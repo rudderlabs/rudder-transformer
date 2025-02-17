@@ -1,18 +1,46 @@
-const { processEvent: processV0Event } = require('../../v0/sources/adjust/transform');
+const { TransformationError } = require('@rudderstack/integrations-lib');
 const { CommonUtils } = require('../../util/common');
+const logger = require('../../logger');
+const { flattenParams } = require('./utils');
+const { processPayload } = require('./core');
 
-const convertV2ToV0 = (sourceEvent) => {
-  const v0Event = JSON.parse(sourceEvent.request.body);
-  if (sourceEvent.request.query_parameters) {
-    v0Event.query_parameters = sourceEvent.request.query_parameters;
+/**
+ * Extracts and flattens query parameters from the webhook request
+ * @param {Object} inputRequest - The incoming webhook request object
+ * @returns {Object} Flattened query parameters
+ * @throws {TransformationError} If request or query_parameters are missing
+ */
+const getPayloadFromRequest = (inputRequest) => {
+  const { request } = inputRequest;
+  if (!request) {
+    throw new TransformationError('request field is missing from webhook V2 payload');
   }
-  return v0Event;
+
+  const { query_parameters: qParams } = request;
+  logger.debug(`[Adjust] Input event: query_params: ${JSON.stringify(qParams)}`);
+  if (!qParams || Object.keys(qParams).length === 0) {
+    throw new TransformationError('Query_parameters is missing');
+  }
+
+  return flattenParams(qParams);
 };
 
+/**
+ * Processes incoming webhook requests from Adjust
+ * @param {Object|Array} requests - Single request object or array of webhook requests
+ * @returns {Array} Array of transformed payloads ready to be sent to rudder-server
+ * @description
+ * This function:
+ * - converts incoming payload to array
+ * - extracts params and constructs payload
+ * - sends it to processPayload for transformation
+ */
 const process = (requests) => {
   const requestsArray = CommonUtils.toArray(requests);
-  const v0Events = requestsArray.map(convertV2ToV0);
-  return v0Events.map(processV0Event);
+  return requestsArray.map((inputRequest) => {
+    const formattedPayload = getPayloadFromRequest(inputRequest);
+    return processPayload(formattedPayload);
+  });
 };
 
 module.exports = { process };

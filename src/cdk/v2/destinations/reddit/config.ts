@@ -1,7 +1,12 @@
+interface EventMap {
+  src: string[];
+  dest: string;
+}
+
 const ENDPOINT = 'https://ads-api.reddit.com/api/v2.0/conversions/events/';
 const maxBatchSize = 1000;
 
-const ecomEventMaps = [
+const ecomEventMaps: EventMap[] = [
   {
     src: ['product viewed', 'product list viewed'],
     dest: 'ViewContent',
@@ -24,8 +29,4 @@ const ecomEventMaps = [
   },
 ];
 
-module.exports = {
-  ENDPOINT,
-  maxBatchSize,
-  ecomEventMaps,
-};
+export { ENDPOINT, maxBatchSize, ecomEventMaps };

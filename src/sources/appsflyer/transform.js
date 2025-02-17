@@ -2,11 +2,11 @@ const path = require('path');
 const fs = require('fs');
 const { TransformationError } = require('@rudderstack/integrations-lib');
 const Message = require('../message');
-const { generateUUID } = require('../../util');
+const { generateUUID, getBodyFromV2SpecPayload } = require('../../v0/util');
 
 const mappingJson = JSON.parse(fs.readFileSync(path.resolve(__dirname, './mapping.json'), 'utf-8'));
 
-const { removeUndefinedAndNullValues, isObject, isAppleFamily } = require('../../util');
+const { removeUndefinedAndNullValues, isObject, isAppleFamily } = require('../../v0/util');
 
 function processEvent(event) {
   const messageType = 'track';
@@ -74,7 +74,8 @@ function processEvent(event) {
   throw new TransformationError('Unknwon event type from Appsflyer');
 }
 
-function process(event) {
+function process(payload) {
+  const event = getBodyFromV2SpecPayload(payload);
   const response = processEvent(event);
   const returnValue = removeUndefinedAndNullValues(response);
   return returnValue;

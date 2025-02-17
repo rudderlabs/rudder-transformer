@@ -2,7 +2,7 @@
 const path = require('path');
 const fs = require('fs');
 const { generateUUID, getBodyFromV2SpecPayload } = require('../../v0/util');
-const Message = require('../../v0/sources/message');
+const Message = require('../message');
 const { removeUndefinedAndNullValues, extractCustomFields } = require('../../v0/util');
 
 const mappingJson = JSON.parse(fs.readFileSync(path.resolve(__dirname, './mapping.json'), 'utf-8'));

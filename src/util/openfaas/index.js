@@ -41,6 +41,11 @@ const FAAS_READINESS_HTTP_SUCCESS_THRESHOLD =
 const PARENT_NAMESPACE = process.env.NAMESPACE || 'default';
 const PARENT_CLUSTER = process.env.FAAS_FN_PARENT_CLUSTER || 'default';
 
+const FAAS_CONN_POOL_ENABLE = process.env.FAAS_CONN_POOL_ENABLE || 'false';
+const FAAS_CONN_POOL_TRACKER_MAX_COUNT = process.env.FAAS_CONN_TRACKER_COUNT || '100';
+const FAAS_CONN_POOL_MAX_SIZE = process.env.FAAS_CONN_POOL_SIZE || '2';
+const FAAS_CONN_POOL_BLOCK = process.env.FAAS_CONN_POOL_BLOCK || 'false';
+
 const CONFIG_BACKEND_URL = process.env.CONFIG_BACKEND_URL || 'https://api.rudderlabs.com';
 const GEOLOCATION_URL = process.env.GEOLOCATION_URL || '';
 const FAAS_AST_VID = 'ast';
@@ -304,6 +309,13 @@ function buildOpenfaasFn(name, code, versionId, libraryVersionIDs, testMode, trM
   }
 
   const envVars = {};
+
+  if (FAAS_CONN_POOL_ENABLE.trim().toLowerCase() === 'true') {
+    envVars.conn_pool_enable = FAAS_CONN_POOL_ENABLE;
+    envVars.conn_pool_max_size = FAAS_CONN_POOL_MAX_SIZE;
+    envVars.conn_pool_block = FAAS_CONN_POOL_BLOCK;
+    envVars.conn_pool_tracker_max_count = FAAS_CONN_POOL_TRACKER_MAX_COUNT;
+  }
 
   if (FAAS_ENABLE_WATCHDOG_ENV_VARS.trim().toLowerCase() === 'true') {
     envVars.max_inflight = FAAS_MAX_INFLIGHT;

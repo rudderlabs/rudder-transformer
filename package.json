@@ -1,6 +1,6 @@
 {
   "name": "rudder-transformer",
-  "version": "1.90.2",
+  "version": "1.91.0",
   "description": "",
   "homepage": "https://github.com/rudderlabs/rudder-transformer#readme",
   "bugs": {
@@ -64,7 +64,7 @@
     "@koa/router": "^12.0.0",
     "@ndhoule/extend": "^2.0.0",
     "@pyroscope/nodejs": "^0.2.9",
-    "@rudderstack/integrations-lib": "^0.2.13",
+    "@rudderstack/integrations-lib": "^0.2.16",
     "@rudderstack/json-template-engine": "^0.19.5",
     "@rudderstack/workflow-engine": "^0.8.13",
     "@shopify/jest-koa-mocks": "^5.1.1",
@@ -92,7 +92,7 @@
     "json-diff": "^1.0.3",
     "json-size": "^1.0.0",
     "jsontoxml": "^1.0.1",
-    "koa": "^2.15.3",
+    "koa": "^2.15.4",
     "koa-bodyparser": "^4.4.0",
     "koa2-swagger-ui": "^5.7.0",
     "libphonenumber-js": "^1.11.18",

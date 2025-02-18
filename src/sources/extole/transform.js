@@ -21,8 +21,7 @@ function processEvent(event) {
       break;
     default:
       message.setEventName(event.type);
-      let messageProperties = {};
-      messageProperties = extractCustomFields(event, messageProperties, 'root', ['type']);
+      const messageProperties = extractCustomFields(event, {}, 'root', ['type']);
       message.setProperty('properties', messageProperties);
   }
 

@@ -29,10 +29,11 @@ describe('Identifier Utils Tests', () => {
 
       const response = await processIdentifierEvent(event);
 
-      expect(setValSpy).toHaveBeenCalledWith('pixel:cartTokenTest1', [
-        'anonymousId',
-        'anonymousIdTest1',
-      ]);
+      expect(setValSpy).toHaveBeenCalledWith(
+        'pixel:cartTokenTest1',
+        ['anonymousId', 'anonymousIdTest1'],
+        43200,
+      );
       expect(response).toEqual({
         outputToSource: {
           body: Buffer.from('OK').toString('base64'),
@@ -64,7 +65,11 @@ describe('Identifier Utils Tests', () => {
       };
 
       await updateAnonymousIdToUserIdInRedis(event.anonymousId, event.userId);
-      expect(setValSpy).toHaveBeenCalledWith('pixel:anonymousTest1', ['userId', 'userIdTest1']);
+      expect(setValSpy).toHaveBeenCalledWith(
+        'pixel:anonymousTest1',
+        ['userId', 'userIdTest1'],
+        86400,
+      );
     });
 
     it('should handle null values', async () => {

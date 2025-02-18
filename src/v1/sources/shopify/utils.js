@@ -15,7 +15,8 @@ const NO_OPERATION_SUCCESS = {
  */
 const updateAnonymousIdToUserIdInRedis = async (anonymousId, userId) => {
   if (anonymousId && userId) {
-    await RedisDB.setVal(`pixel:${anonymousId}`, ['userId', userId]);
+    // set the anonymousId to userId mapping in Redis for 24 hours
+    await RedisDB.setVal(`pixel:${anonymousId}`, ['userId', userId], 86400);
   }
 };
 
@@ -23,7 +24,10 @@ const isIdentifierEvent = (payload) => ['rudderIdentifier'].includes(payload?.ev
 
 const processIdentifierEvent = async (event) => {
   const { cartToken, anonymousId, userId } = event;
-  await RedisDB.setVal(`pixel:${cartToken}`, ['anonymousId', anonymousId]);
+  if (cartToken && anonymousId) {
+    // set the cartToken to anonymousId mapping in Redis for 12 hours
+    await RedisDB.setVal(`pixel:${cartToken}`, ['anonymousId', anonymousId], 43200);
+  }
   updateAnonymousIdToUserIdInRedis(anonymousId, userId);
   return NO_OPERATION_SUCCESS;
 };

@@ -83,7 +83,7 @@ const process = (payload) => {
         responses.push(removeUndefinedAndNullValues(resp));
       }
     } catch (error) {
-      // TODO: figure out a way to handle partial failures within batch
+      // Figure out a way to handle partial failures within batch
       // responses.push({
       //   statusCode: 400,
       //   error: error.message || "Unknwon error"

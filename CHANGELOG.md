@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.90.2](https://github.com/rudderlabs/rudder-transformer/compare/v1.90.1...v1.90.2) (2025-02-11)
+
+
+### Bug Fixes
+
+* better error handling in webhook v2 ([9f224ec](https://github.com/rudderlabs/rudder-transformer/commit/9f224ec03b91f1a4d85b117dbf6972bb1ef40c6d))
+* improve error handling for webhook v2 ([f44d5a5](https://github.com/rudderlabs/rudder-transformer/commit/f44d5a56fd6ee183aea73eaba7e73c121f8bc470))
+* improve error handling for webhook v2 ([#4061](https://github.com/rudderlabs/rudder-transformer/issues/4061)) ([5d1e1bd](https://github.com/rudderlabs/rudder-transformer/commit/5d1e1bdb26bacddb3838bd16752b333d7814c294))
+* improve error handling for webhook v2 ([#4062](https://github.com/rudderlabs/rudder-transformer/issues/4062)) ([d795830](https://github.com/rudderlabs/rudder-transformer/commit/d79583087e98d713afb9b38d3a25d4e580a36c76))
+
 ### [1.90.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.90.0...v1.90.1) (2025-02-06)
 
 

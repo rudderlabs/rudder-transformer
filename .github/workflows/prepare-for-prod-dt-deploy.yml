@@ -60,7 +60,7 @@ jobs:
       use_merge_sha: true
       skip_tests: ${{startsWith(github.event.pull_request.head.ref, 'hotfix-release/')}}
     secrets:
-      DOCKERHUB_PROD_TOKEN: ${{ secrets.DOCKERHUB_PROD_TOKEN }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   create-pull-request:
     name: Update Helm Charts For Production and Create Pull Request

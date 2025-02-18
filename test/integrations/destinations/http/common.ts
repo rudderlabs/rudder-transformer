@@ -623,6 +623,29 @@ const destinations: Destination[] = [
     Transformations: [],
     WorkspaceID: 'test-workspace-id',
   },
+  {
+    Config: {
+      apiUrl: 'http://abc.com/contacts',
+      auth: 'noAuth',
+      method: 'POST',
+      format: 'JSON',
+      isBatchingEnabled: true,
+      maxBatchSize: '2',
+      isDefaultMapping: true,
+      propertiesMapping: [],
+    },
+    DestinationDefinition: {
+      DisplayName: displayName,
+      ID: '123',
+      Name: destTypeInUpperCase,
+      Config: { cdkV2Enabled: true },
+    },
+    Enabled: true,
+    ID: '123',
+    Name: destTypeInUpperCase,
+    Transformations: [],
+    WorkspaceID: 'test-workspace-id',
+  },
 ];
 
 const traits = {

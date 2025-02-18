@@ -556,6 +556,7 @@ export const genericTrackTestScenarios = [
                   },
                   traits: {
                     email: 'henry@wfls.com',
+                    cart_token_hash: '9125e1da-57b9-5bdc-953e-eb2b0ded5edc',
                   },
                   anonymousId: '50ead33e-d763-4854-b0ab-765859ef05cb',
                 },

@@ -46,7 +46,7 @@ const fetchAddressFromHostName = async (hostname) => {
 
 const staticLookup =
   (transformationTags, fetchAddress = fetchAddressFromHostName) =>
-  (hostname, _, cb) => {
+  (hostname, options, cb) => {
     const resolveStartTime = new Date();
 
     fetchAddress(hostname)
@@ -57,9 +57,11 @@ const staticLookup =
         });
 
         if (!address) {
-          cb(new Error(`resolved empty list of IP address for ${hostname}`), null, RECORD_TYPE_A);
+          cb(new Error(`resolved empty list of IP address for ${hostname}`), null);
         } else if (address.startsWith(LOCALHOST_OCTET)) {
-          cb(new Error(`cannot use ${address} as IP address`), null, RECORD_TYPE_A);
+          cb(new Error(`cannot use ${address} as IP address`), null);
+        } else if (options?.all) {
+          cb(null, [{ address, family: RECORD_TYPE_A }]);
         } else {
           cb(null, address, RECORD_TYPE_A);
         }
@@ -70,7 +72,7 @@ const staticLookup =
           ...transformationTags,
           error: 'true',
         });
-        cb(new Error(`unable to resolve IP address for ${hostname}`), null, RECORD_TYPE_A);
+        cb(new Error(`unable to resolve IP address for ${hostname}`), null);
       });
   };
 

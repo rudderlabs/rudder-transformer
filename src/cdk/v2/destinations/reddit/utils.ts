@@ -9,7 +9,7 @@ interface Product {
 interface Properties {
   products?: Product[];
   price?: number;
-  quantity?: number;
+  quantity?: number | null;
   revenue?: number;
 }
 
@@ -106,10 +106,6 @@ const populateRevenueField = (eventType: string, properties: Properties): number
       revenue = calculateDefaultRevenue(properties);
       revenueInCents = revenue ? revenue * 100 : null;
       break;
-  }
-
-  if (Number.isNaN(revenueInCents)) {
-    return null;
   }
   // Return the value as it is if it's not NaN
   return revenueInCents;

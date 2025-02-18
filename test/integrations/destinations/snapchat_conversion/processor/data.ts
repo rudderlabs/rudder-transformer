@@ -4848,6 +4848,164 @@ export const data = [
       },
     },
   },
+  {
+    name: 'snapchat_conversion',
+    description: 'Test case for Prodcuts Searched event for conversion type offline in Version 3',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              messageId: 'ec5481b6-a926-4d2e-b293-0b3a77c4d3be',
+              originalTimestamp: '2022-04-22T10:57:58Z',
+              anonymousId: 'ea5cfab2-3961-4d8a-8187-3d1858c99090',
+              context: {
+                traits: {
+                  email: 'test@email.com',
+                  phone: '+91 2111111 ',
+                  firstName: 'john',
+                  middleName: 'victor',
+                  lastName: 'doe',
+                  city: 'some_city',
+                  state: 'some_state',
+                },
+                app: {
+                  build: '1.0.0',
+                  name: 'RudderLabs JavaScript SDK',
+                  namespace: 'com.rudderlabs.javascript',
+                  version: '1.0.0',
+                },
+                device: {
+                  advertisingId: 'T0T0T072-5e28-45a1-9eda-ce22a3e36d1a',
+                  id: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
+                  manufacturer: 'Google',
+                  name: 'generic_x86_arm',
+                  type: 'ios',
+                  attTrackingStatus: 3,
+                },
+                library: {
+                  name: 'RudderLabs JavaScript SDK',
+                  version: '1.0.0',
+                },
+                locale: 'en-US',
+                os: {
+                  name: 'iOS',
+                  version: '14.4.1',
+                },
+                screen: {
+                  density: 2,
+                },
+                externalId: [
+                  {
+                    type: 'ga4AppInstanceId',
+                    id: 'f0dd99v4f979fb997ce453373900f891',
+                  },
+                ],
+                clientUserAgent:
+                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36',
+              },
+              type: 'track',
+              event: 'Products Searched',
+              properties: {
+                brands: 'abc',
+                action_source: 'web',
+                num_items: 4,
+                sc_click_id: 'some_click_id',
+                description: 'Products Searched event for conversion type offline',
+                event_source_url: 'https://www.example.com&ScCid=123',
+              },
+              integrations: {
+                All: true,
+              },
+              sentAt: '2022-04-22T10:57:58Z',
+            },
+            destination: {
+              DestinationDefinition: {
+                Config: {
+                  cdkV2Enabled: false,
+                },
+              },
+              Config: {
+                pixelId: 'dummyPixelId',
+                apiKey: 'dummyApiKey',
+                apiVersion: 'newApi',
+              },
+            },
+            metadata: {
+              jobId: 21,
+              destinationId: 'd2',
+              workspaceId: 'w2',
+            },
+          },
+        ],
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            metadata: {
+              jobId: 21,
+              destinationId: 'd2',
+              workspaceId: 'w2',
+            },
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://tr.snapchat.com/v3/some_click_id/events',
+              headers: {
+                Authorization: 'Bearer dummyApiKey',
+                'Content-Type': 'application/json',
+              },
+              params: {},
+              body: {
+                JSON: {
+                  data: [
+                    {
+                      event_name: 'SEARCH',
+                      action_source: 'WEB',
+                      event_time: '1650625078',
+                      pixel_id: 'dummyPixelId',
+                      description: 'Products Searched event for conversion type offline',
+                      user_data: {
+                        fn: '96d9632f363564cc3032521409cf22a852f2032eec099ed5967c0d000cec607a',
+                        ln: '799ef92a11af918e3fb741df42934f3b568ed2d93ac1df74f1b8d41a27932a6f',
+                        st: '6db488fc98e30afdf67a05a6da916805b02891ce58f03970c6deff79129c5f1c',
+                        mn: '99bde068af2d49ed7fc8b8fa79abe13a6059e0db320bb73459fd96624bb4b33f',
+                        em: '73062d872926c2a556f17b36f50e328ddf9bff9d403939bd14b6c3b7f5a33fc2',
+                        ph: 'bc77d64d7045fe44795ed926df37231a0cfb6ec6b74588c512790e9f143cc492',
+                        madid: 'f9779d734aaee50f16ee0011260bae7048f1d9a128c62b6a661077875701edd2',
+                        idfv: '54bd0b26a3d39dad90f5149db49b9fd9ba885f8e35d1d94cae69273f5e657b9f',
+                        client_user_agent:
+                          'mozilla/5.0 (macintosh; intel mac os x 10_15_2) applewebkit/537.36 (khtml, like gecko) chrome/79.0.3945.88 safari/537.36',
+                        ScCid: 'some_click_id',
+                      },
+                      custom_data: {
+                        num_items: 4,
+                      },
+                      app_data: {},
+                    },
+                  ],
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: '',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
 ].map((tc) => ({
   ...tc,
   mockFns: (_) => {

@@ -1,34 +1,25 @@
-const { getFieldValueFromMessage } = require('../../util');
-
-// Utility function to extract the click_id from the event_source_url
-const extractClickIdFromUrl = (message) => {
+/// Utility function to extract the click_id (ScCid) from the event_source_url
+const extractClickIdFromUrl = (url) => {
   try {
-    const eventSourceUrl = getFieldValueFromMessage(message, 'pageUrl');
-
-    if (!eventSourceUrl) {
-      throw new Error('URL not found in message');
-    }
-
-    const urlObj = new URL(eventSourceUrl);
+    const urlObj = new URL(url);
     const clickId = urlObj.searchParams.get('ScCid'); // 'ScCid' is the query parameter for click_id
-
-    return clickId;
+    return clickId || null; // Return null if not found
   } catch (error) {
-    return null; 
+    return null;
   }
 };
 
 function getEndpointWithClickId(endpoint, message) {
   let clickId;
 
-  const scClickId = getFieldValueFromMessage(message, 'scClickId');
-
-  if (scClickId) {
-    clickId = scClickId;
+  // Check if scClickId is provided directly in the message
+  if (message.properties.sc_click_id) {
+    clickId = message.properties.sc_click_id;
   } else {
-    const eventSourceUrl = getFieldValueFromMessage(message, 'eventSourceUrl');
+    // Check if the eventSourceUrl is provided in message properties or directly
+    const eventSourceUrl = message.event_source_url || message.properties?.event_source_url;
     if (eventSourceUrl) {
-      clickId = extractClickIdFromUrl(eventSourceUrl);
+      clickId = extractClickIdFromUrl(eventSourceUrl); // Extract from URL if present
     }
   }
 
@@ -38,15 +29,12 @@ function getEndpointWithClickId(endpoint, message) {
   }
 
   // Replace {ID} in the endpoint with the found Click ID
-  const urlObj = new URL(endpoint);
-  if (urlObj.pathname.includes('{ID}')) {
-    urlObj.pathname = urlObj.pathname.replace('{ID}', clickId);
-  } else {
-    throw new Error('Endpoint URL does not contain {ID} placeholder');
-  }
+  let urlObj = decodeURIComponent(endpoint);
+
+  urlObj = urlObj.replace('{ID}', clickId);
 
   // Return the updated endpoint URL with the scClickId replaced
-  return urlObj.toString();
+  return urlObj;
 }
 
 module.exports = { getEndpointWithClickId, extractClickIdFromUrl };

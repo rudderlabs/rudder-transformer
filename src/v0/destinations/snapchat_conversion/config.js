@@ -116,6 +116,7 @@ const mappingConfigV3 = getMappingConfig(ConfigCategoryV3, __dirname);
 module.exports = {
   ENDPOINT,
   ConfigCategory,
+  ConfigCategoryV3,
   eventNameMapping,
   mappingConfig,
   mappingConfigV3,

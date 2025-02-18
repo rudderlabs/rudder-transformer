@@ -2,76 +2,78 @@ const path = require('path');
 const fs = require('fs');
 const { TransformationError } = require('@rudderstack/integrations-lib');
 const Message = require('../message');
-const { generateUUID, getBodyFromV2SpecPayload } = require('../../v0/util');
+const { generateUUID, getBodyFromV2SpecPayload, isAndroidFamily } = require('../../v0/util');
 
 const mappingJson = JSON.parse(fs.readFileSync(path.resolve(__dirname, './mapping.json'), 'utf-8'));
 
 const { removeUndefinedAndNullValues, isObject, isAppleFamily } = require('../../v0/util');
 
+const TRACK_MESSAGE_TYPE = 'track';
+
+function createBaseMessage(eventName) {
+  const message = new Message(`AF`);
+  message.setEventType(TRACK_MESSAGE_TYPE);
+  message.setEventName(eventName);
+  return message;
+}
+
+function getAdvertisingId(event) {
+  if (isAppleFamily(event.platform)) {
+    return event.idfa;
+  }
+  if (isAndroidFamily(event.platform)) {
+    return event.android_id;
+  }
+  return null;
+}
+
 function processEvent(event) {
-  const messageType = 'track';
+  if (!event.event_name) {
+    throw new TransformationError('Unknwon event type from Appsflyer');
+  }
 
-  if (event.event_name) {
-    const eventName = event.event_name;
-    const message = new Message(`AF`);
+  const message = createBaseMessage(event.event_name);
 
-    message.setEventType(messageType);
+  const properties = { ...event };
+  message.setProperty('properties', properties);
 
-    message.setEventName(eventName);
+  // set fields in payload from mapping json
+  message.setProperties(event, mappingJson);
 
-    const properties = { ...event };
-    message.setProperty('properties', properties);
+  const mappedPropertiesKeys = Object.keys(mappingJson);
 
-    // set fields in payload from mapping json
-    message.setProperties(event, mappingJson);
+  if (!isObject(message.context.device)) {
+    message.context.device = {};
+  }
 
-    // Remove the fields from properties that are already mapped to other fields.
-    Object.keys(mappingJson).forEach((key) => {
-      if (message.properties && message.properties[key] !== undefined) {
-        delete message.properties[key];
-      }
-    });
-
-    if (!isObject(message.context.device)) {
-      message.context.device = {};
-    }
-
-    if (event.platform) {
-      if (isAppleFamily(event.platform)) {
-        message.context.device.advertisingId = event.idfa;
-      } else if (event.platform.toLowerCase() === 'android') {
-        message.context.device.advertisingId = event.android_id;
-      }
-      // remove idfa from message properties as it is already mapped.
-      if (message.properties && message.properties.idfa !== undefined) {
-        delete message.properties.idfa;
-      }
-      // remove android_id from message properties as it is already mapped.
-      if (message.properties && message.properties.android_id !== undefined) {
-        delete message.properties.android_id;
-      }
-    }
-    if (message.context.device.advertisingId) {
+  if (event.platform) {
+    const advertisingId = getAdvertisingId(event);
+    if (advertisingId) {
+      message.context.device.advertisingId = advertisingId;
       message.context.device.adTrackingEnabled = true;
     }
-
-    if (event.appsflyer_id) {
-      message.context.externalId = [
-        {
-          type: 'appsflyerExternalId',
-          value: event.appsflyer_id,
-        },
-      ];
-      // remove appsflyer_id from message properties as it is already mapped.
-      if (message.properties && message.properties.appsflyer_id !== undefined) {
-        delete message.properties.appsflyer_id;
-      }
-    }
-    message.setProperty('anonymousId', generateUUID());
-
-    return message;
+    mappedPropertiesKeys.push('idfa', 'android_id');
   }
-  throw new TransformationError('Unknwon event type from Appsflyer');
+
+  if (event.appsflyer_id) {
+    message.context.externalId = [
+      {
+        type: 'appsflyerExternalId',
+        value: event.appsflyer_id,
+      },
+    ];
+    mappedPropertiesKeys.push('appsflyer_id');
+  }
+  message.setProperty('anonymousId', generateUUID());
+
+  // Remove the fields from properties that are already mapped to other fields.
+  mappedPropertiesKeys.forEach((key) => {
+    if (message.properties && message.properties[key] !== undefined) {
+      delete message.properties[key];
+    }
+  });
+
+  return message;
 }
 
 function process(payload) {

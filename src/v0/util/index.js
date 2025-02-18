@@ -1663,6 +1663,14 @@ function isAppleFamily(platform) {
   return false;
 }
 
+function isAndroidFamily(platform) {
+  const androidOsNames = ['android'];
+  if (typeof platform === 'string') {
+    return androidOsNames.includes(platform?.toLowerCase());
+  }
+  return false;
+}
+
 function removeHyphens(str) {
   if (!isString(str)) {
     return str;
@@ -2441,6 +2449,7 @@ module.exports = {
   handleSourceKeysOperation,
   hashToSha256,
   isAppleFamily,
+  isAndroidFamily,
   isBlank,
   isDefined,
   isDefinedAndNotNull,

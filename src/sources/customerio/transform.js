@@ -21,7 +21,6 @@ function process(payload) {
   const eventObjectType = event.object_type?.toLowerCase() || '';
   let eventName = get(mappingConfig, `${eventObjectType}.${event.metric}`);
   if (!eventName) {
-    // throw new TransformationError("Metric not supported");
     eventName = 'Unknown Event';
   }
   message.setEventName(eventName);
@@ -36,12 +35,7 @@ function process(payload) {
   }
 
   // when customer.io does not pass an associated userId, set the email address as anonymousId
-  if (
-    (message.userId === null || message.userId === undefined) &&
-    message.context &&
-    message.context.traits &&
-    message.context.traits.email
-  ) {
+  if ((message.userId === null || message.userId === undefined) && message.context?.traits?.email) {
     message.anonymousId = message.context.traits.email;
   }
 

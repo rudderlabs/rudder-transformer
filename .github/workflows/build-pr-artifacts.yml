@@ -53,7 +53,7 @@ jobs:
       load_target: development
       push_target: production
     secrets:
-      DOCKERHUB_PROD_TOKEN: ${{ secrets.DOCKERHUB_PROD_TOKEN }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   build-user-transformer-image:
     name: Build User Transformer Docker Image - PR
@@ -69,4 +69,4 @@ jobs:
       load_target: development
       push_target: production
     secrets:
-      DOCKERHUB_PROD_TOKEN: ${{ secrets.DOCKERHUB_PROD_TOKEN }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}

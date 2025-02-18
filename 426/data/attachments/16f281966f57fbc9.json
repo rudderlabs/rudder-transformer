@@ -1,0 +1,139 @@
+[
+  {
+    "output": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://a.klaviyo.com/api/profile-import",
+      "headers": {
+        "Authorization": "Klaviyo-API-Key dummyPrivateApiKey",
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+        "revision": "2024-06-15"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "data": {
+            "type": "profile",
+            "attributes": {
+              "anonymous_id": "97c46c81-3140-456d-b2a9-690d70aaca35",
+              "email": "test@rudderstack.com",
+              "first_name": "Test",
+              "last_name": "Rudderlabs",
+              "phone_number": "+12 345 578 900",
+              "title": "Developer",
+              "organization": "Rudder",
+              "location": {
+                "city": "Tokyo",
+                "region": "Kanto",
+                "country": "JP",
+                "zip": "100-0001",
+                "address1": "63, Shibuya"
+              },
+              "properties": {
+                "Flagged": false,
+                "Residence": "Shibuya",
+                "_id": "user@1"
+              }
+            },
+            "meta": {
+              "patch_properties": {}
+            }
+          }
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": ""
+    },
+    "metadata": {
+      "jobId": 5,
+      "attemptNum": 1,
+      "userId": "default-userId",
+      "sourceId": "default-sourceId",
+      "destinationId": "default-destinationId",
+      "workspaceId": "default-workspaceId",
+      "secret": {
+        "accessToken": "default-accessToken"
+      },
+      "dontBatch": false
+    },
+    "statusCode": 200
+  },
+  {
+    "output": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://a.klaviyo.com/api/profile-subscription-bulk-create-jobs",
+      "headers": {
+        "Authorization": "Klaviyo-API-Key dummyPrivateApiKey",
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+        "revision": "2024-06-15"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "data": {
+            "type": "profile-subscription-bulk-create-job",
+            "attributes": {
+              "profiles": {
+                "data": [
+                  {
+                    "type": "profile",
+                    "attributes": {
+                      "email": "test@rudderstack.com",
+                      "phone_number": "+12 345 578 900",
+                      "subscriptions": {
+                        "email": {
+                          "marketing": {
+                            "consent": "SUBSCRIBED"
+                          }
+                        },
+                        "sms": {
+                          "marketing": {
+                            "consent": "SUBSCRIBED"
+                          }
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            "relationships": {
+              "list": {
+                "data": {
+                  "type": "list",
+                  "id": "XUepkK"
+                }
+              }
+            }
+          }
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": ""
+    },
+    "metadata": {
+      "jobId": 5,
+      "attemptNum": 1,
+      "userId": "default-userId",
+      "sourceId": "default-sourceId",
+      "destinationId": "default-destinationId",
+      "workspaceId": "default-workspaceId",
+      "secret": {
+        "accessToken": "default-accessToken"
+      },
+      "dontBatch": false
+    },
+    "statusCode": 200
+  }
+]

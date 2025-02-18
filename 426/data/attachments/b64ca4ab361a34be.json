@@ -1,0 +1,144 @@
+{
+  "body": {
+    "input": [
+      {
+        "message": {
+          "channel": "web",
+          "context": {
+            "app": {
+              "build": "1.0.0",
+              "name": "RudderLabs JavaScript SDK",
+              "namespace": "com.rudderlabs.javascript",
+              "version": "1.0.0"
+            },
+            "library": {
+              "name": "RudderLabs JavaScript SDK",
+              "version": "1.0.0"
+            },
+            "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+            "locale": "en-US",
+            "ip": "0.0.0.0",
+            "os": {
+              "name": "",
+              "version": ""
+            },
+            "screen": {
+              "density": 2
+            }
+          },
+          "messageId": "84e26acc-56a5-4835-8233-591137fca468",
+          "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+          "originalTimestamp": "2019-10-14T09:03:17.562Z",
+          "anonymousId": "anon_id",
+          "userId": "123456",
+          "type": "identify",
+          "traits": {
+            "anonymousId": "anon_id",
+            "email": "jamesDoe@gmail.com",
+            "firstName": "James",
+            "lastName": "Doe",
+            "phone": "92374162212",
+            "tags": [
+              "Test_User",
+              "Interested_User",
+              "DIY_Hobby"
+            ],
+            "fieldInfo": {
+              "Office": "Trastkiv",
+              "Country": "Russia",
+              "Likes": [
+                "Potato",
+                "Onion"
+              ],
+              "Random": "random"
+            },
+            "lists": [
+              {
+                "id": 2,
+                "status": "subscribe"
+              },
+              {
+                "id": 3,
+                "status": "unsubscribe"
+              },
+              {
+                "id": 3,
+                "status": "unsubscribexyz"
+              }
+            ],
+            "address": {
+              "city": "kolkata",
+              "country": "India",
+              "postalCode": 789223,
+              "state": "WB",
+              "street": ""
+            }
+          },
+          "integrations": {
+            "All": true
+          },
+          "sentAt": "2019-10-14T09:03:22.563Z"
+        },
+        "metadata": {
+          "sourceId": "default-source",
+          "workspaceId": "default-workspace",
+          "namespace": "default-namespace",
+          "instanceId": "default-instance",
+          "sourceType": "default-source-type",
+          "sourceCategory": "default-category",
+          "trackingPlanId": "default-tracking-plan",
+          "trackingPlanVersion": 1,
+          "sourceTpConfig": {},
+          "mergedTpConfig": {},
+          "destinationId": "default-destination",
+          "jobRunId": "default-job-run",
+          "jobId": 2,
+          "sourceBatchId": "default-batch",
+          "sourceJobId": "default-source-job",
+          "sourceJobRunId": "default-source-job-run",
+          "sourceTaskId": "default-task",
+          "sourceTaskRunId": "default-task-run",
+          "recordId": {},
+          "destinationType": "default-destination-type",
+          "messageId": "default-message-id",
+          "oauthAccessToken": "default-token",
+          "messageIds": [
+            "default-message-id"
+          ],
+          "rudderId": "default-rudder-id",
+          "receivedAt": "2024-12-06T12:28:58.577Z",
+          "eventName": "default-event",
+          "eventType": "default-type",
+          "sourceDefinitionId": "default-source-def",
+          "destinationDefinitionId": "default-dest-def",
+          "transformationId": "default-transform",
+          "dontBatch": false
+        },
+        "destination": {
+          "ID": "default-destination-id",
+          "Name": "Default Destination",
+          "DestinationDefinition": {
+            "ID": "default-dest-def-id",
+            "Name": "Default Destination Definition",
+            "DisplayName": "Default Display Name",
+            "Config": {}
+          },
+          "Config": {
+            "apiKey": "dummyApiToken",
+            "apiUrl": "https://active.campaigns.rudder.com",
+            "actid": "476550467",
+            "eventKey": "f8a866fddc721350fdc2fbbd2e5c43a6dddaaa03"
+          },
+          "Enabled": true,
+          "WorkspaceID": "default-workspace",
+          "Transformations": [],
+          "RevisionID": "default-revision",
+          "IsProcessorEnabled": true,
+          "IsConnectionEnabled": true
+        }
+      }
+    ],
+    "destType": "active_campaign"
+  },
+  "method": "POST"
+}

@@ -1,0 +1,71 @@
+[
+  {
+    "output": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://a.klaviyo.com/api/events",
+      "headers": {
+        "Authorization": "Klaviyo-API-Key dummyPrivateApiKey",
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "revision": "2023-02-22"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "data": {
+            "type": "event",
+            "attributes": {
+              "metric": {
+                "name": "Started Checkout"
+              },
+              "properties": {
+                "$event_id": "1234",
+                "$value": 20,
+                "items[0].ProductID": "123",
+                "items[0].SKU": "G-32",
+                "items[0].ProductName": "Monopoly",
+                "items[0].Quantity": 1,
+                "items[0].ItemPrice": 14,
+                "items[0].ProductURL": "https://www.website.com/product/path",
+                "items[0].ImageURL": "https://www.website.com/product/path.jpg",
+                "items[1].ProductID": "345",
+                "items[1].SKU": "F-32",
+                "items[1].ProductName": "UNO",
+                "items[1].Quantity": 2,
+                "items[1].ItemPrice": 3.45
+              },
+              "profile": {
+                "$email": "test@rudderstack.com",
+                "$phone_number": "9112340375",
+                "$id": "sajal12",
+                "age": "22",
+                "name": "Test",
+                "description": "Sample description"
+              }
+            }
+          }
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": ""
+    },
+    "metadata": {
+      "jobId": 2,
+      "attemptNum": 1,
+      "userId": "default-userId",
+      "sourceId": "default-sourceId",
+      "destinationId": "default-destinationId",
+      "workspaceId": "default-workspaceId",
+      "secret": {
+        "accessToken": "default-accessToken"
+      },
+      "dontBatch": false
+    },
+    "statusCode": 200
+  }
+]

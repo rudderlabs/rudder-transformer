@@ -7,7 +7,6 @@ const { removeUndefinedAndNullValues } = require('../../../../v0/util');
 const Message = require('../../../../v0/sources/message');
 const { EventType } = require('../../../../constants');
 const {
-  MAPPING_CATEGORIES,
   IDENTIFY_TOPICS,
   SUPPORTED_TRACK_EVENTS,
   SHOPIFY_TRACK_MAP,
@@ -53,13 +52,10 @@ const ecomPayloadBuilder = (event, shopifyTopic) => {
   // Map Customer details if present
   const customerDetails = get(event, 'customer');
   if (customerDetails) {
-    message.setPropertiesV2(customerDetails, MAPPING_CATEGORIES[EventType.IDENTIFY]);
+    message.setPropertiesV2(customerDetails, identifyMappingJSON);
   }
   if (event.updated_at) {
     message.setTimestamp(new Date(event.updated_at).toISOString());
-  }
-  if (event.customer) {
-    message.setPropertiesV2(event.customer, MAPPING_CATEGORIES[EventType.IDENTIFY]);
   }
   if (event.shipping_address) {
     message.setProperty('traits.shippingAddress', event.shipping_address);
@@ -113,15 +109,18 @@ const processEvent = async (inputEvent, metricMetadata) => {
   // attach anonymousId if the event is track event using note_attributes
   if (message.type !== EventType.IDENTIFY) {
     await setAnonymousId(message, event, metricMetadata);
-    await updateAnonymousIdToUserIdInRedis(message);
+    await updateAnonymousIdToUserIdInRedis(message.anonymousId, message.userId);
   }
-  // attach userId, email and other contextual properties
+  // attach email and other contextual properties
   message = handleCommonProperties(message, event, shopifyTopic);
   // add cart_token_hash to traits if cart_token is present
   message = addCartTokenHashToTraits(message, event);
   const redisData = await RedisDB.getVal(`pixel:${message.anonymousId}`);
   if (isDefinedNotNullNotEmpty(redisData)) {
     message.userId = redisData.userId;
+  }
+  if (message.userId) {
+    message.userId = String(message.userId);
   }
   message = removeUndefinedAndNullValues(message);
   return message;

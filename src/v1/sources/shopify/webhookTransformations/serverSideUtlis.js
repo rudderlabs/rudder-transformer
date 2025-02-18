@@ -125,15 +125,12 @@ const setAnonymousId = async (message, event, metricMetadata) => {
 };
 
 /**
-  Handles userId, email and contextual properties enrichment for the message payload
+  Handles email and contextual properties enrichment for the message payload
  * @param {Object} message rudderstack message object
  * @param {Object} event raw shopify event payload
  * @param {String} shopifyTopic shopify event topic
 */
 const handleCommonProperties = (message, event, shopifyTopic) => {
-  if (message.userId) {
-    message.userId = String(message.userId);
-  }
   if (!get(message, 'traits.email')) {
     const email = extractEmailFromPayload(event);
     if (email) {

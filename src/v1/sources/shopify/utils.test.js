@@ -66,5 +66,17 @@ describe('Identifier Utils Tests', () => {
       await updateAnonymousIdToUserIdInRedis(event.anonymousId, event.userId);
       expect(setValSpy).toHaveBeenCalledWith('pixel:anonymousTest1', ['userId', 'userIdTest1']);
     });
+
+    it('should handle null values', async () => {
+      const setValSpy = jest.spyOn(RedisDB, 'setVal').mockResolvedValue('OK');
+      const event = {
+        cartToken: 'cartTokenTest1',
+        anonymousId: null,
+        userId: null,
+      };
+
+      await updateAnonymousIdToUserIdInRedis(event.anonymousId, event.userId);
+      expect(setValSpy).not.toHaveBeenCalled();
+    });
   });
 });

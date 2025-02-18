@@ -5,7 +5,8 @@ const {
   getConsentsDataFromIntegrationObj,
   getCallConversionPayload,
 } = require('./utils');
-const { API_VERSION } = require('./config');
+
+const API_VERSION = 'v18';
 
 const getTestMessage = () => {
   let message = {

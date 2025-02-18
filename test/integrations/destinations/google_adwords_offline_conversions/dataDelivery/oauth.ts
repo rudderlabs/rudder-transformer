@@ -3,7 +3,8 @@ import {
   generateProxyV1Payload,
   generateProxyV0Payload,
 } from '../../../testUtils';
-import { API_VERSION } from '../../../../../src/v0/destinations/google_adwords_offline_conversions/config';
+
+const API_VERSION = 'v18';
 
 const commonHeaders = {
   Authorization: 'Bearer abcd1234',

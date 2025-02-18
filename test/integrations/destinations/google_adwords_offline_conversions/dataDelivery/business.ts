@@ -3,7 +3,8 @@ import {
   generateProxyV0Payload,
   generateProxyV1Payload,
 } from '../../../testUtils';
-import { API_VERSION } from '../../../../../src/v0/destinations/google_adwords_offline_conversions/config';
+
+const API_VERSION = 'v18';
 
 const transactionAttribute = {
   CUSTOM_KEY: 'CUSTOM_VALUE',

@@ -42,21 +42,40 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.PAT }}
         run: |
+          git checkout master
+          git pull origin master
           git checkout -b transformer-hosted-alerts-enabled-${{ steps.set_tag.outputs.tag }}
           yq eval -i '.enabled_on_hosted="true"' operator-helm/alerts/cross-customer-pipelines/integrations/generic-transformation-errors.yaml
           git add operator-helm/alerts/cross-customer-pipelines/integrations/generic-transformation-errors.yaml
           git commit -m "chore: enable transformer hosted alerts for release ${{ steps.set_tag.outputs.tag }}"
-          git push -u origin transformer-alerts-enabled-${{ steps.set_tag.outputs.tag }}
-          gh pr create --title "Enable transformer hosted alerts for release ${{ steps.set_tag.outputs.tag }}" --body "Enable transformer hosted alerts for release ${{ steps.set_tag.outputs.tag }}" --base main
+          git push -u origin transformer-hosted-alerts-enabled-${{ steps.set_tag.outputs.tag }}
+          # Add error handling for PR creation
+          if gh pr create --title "chore: enable transformer hosted alerts for release ${{ steps.set_tag.outputs.tag }}" \
+             --body "chore: enable transformer hosted alerts for release ${{ steps.set_tag.outputs.tag }}" \
+             --base master; then
+            echo "PR created successfully"
+          else
+            echo "Failed to create PR, checking if changes exist"
+            exit 1
+          fi
 
       - name: Create PR for disabled alerts
         env:
           GITHUB_TOKEN: ${{ secrets.PAT }}
         run: |
-          git checkout main
+          git checkout master
+          git pull origin master
           git checkout -b transformer-hosted-alerts-disabled-${{ steps.set_tag.outputs.tag }}
           yq eval -i '.enabled_on_hosted="false"' operator-helm/alerts/cross-customer-pipelines/integrations/generic-transformation-errors.yaml
           git add operator-helm/alerts/cross-customer-pipelines/integrations/generic-transformation-errors.yaml
           git commit -m "chore: disable transformer hosted alerts for release ${{ steps.set_tag.outputs.tag }}"
-          git push -u origin transformer-alerts-disabled-${{ steps.set_tag.outputs.tag }}
-          gh pr create --title "Disable transformer hosted alerts for release ${{ steps.set_tag.outputs.tag }}" --body "Disable transformer hosted alerts for release ${{ steps.set_tag.outputs.tag }}" --base main 
+          git push -u origin transformer-hosted-alerts-disabled-${{ steps.set_tag.outputs.tag }}
+          # Add error handling for PR creation
+          if gh pr create --title "chore: disable transformer hosted alerts for release ${{ steps.set_tag.outputs.tag }}" \
+             --body "chore: disable transformer hosted alerts for release ${{ steps.set_tag.outputs.tag }}" \
+             --base master; then
+            echo "PR created successfully"
+          else
+            echo "Failed to create PR, checking if changes exist"
+            exit 1
+          fi 

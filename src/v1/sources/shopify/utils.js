@@ -22,13 +22,20 @@ const updateAnonymousIdToUserIdInRedis = async (anonymousId, userId) => {
 
 const isIdentifierEvent = (payload) => ['rudderIdentifier'].includes(payload?.event);
 
+/**
+ * Sets the cartToken <-> anonymousId mapping or anonymousId <-> userId mapping in Redis based on the event action
+ * @param {Object} event
+ * @returns {Object} NO_OPERATION_SUCCESS
+ */
 const processIdentifierEvent = async (event) => {
-  const { cartToken, anonymousId, userId } = event;
-  if (cartToken && anonymousId) {
+  const { cartToken, anonymousId, userId, action } = event;
+  if (cartToken && anonymousId && action === 'stitchCartTokenToAnonId') {
     // set the cartToken to anonymousId mapping in Redis for 12 hours
     await RedisDB.setVal(`pixel:${cartToken}`, ['anonymousId', anonymousId], 43200);
   }
-  updateAnonymousIdToUserIdInRedis(anonymousId, userId);
+  if (action === 'stitchUserIdToAnonId') {
+    updateAnonymousIdToUserIdInRedis(anonymousId, userId);
+  }
   return NO_OPERATION_SUCCESS;
 };
 

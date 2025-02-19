@@ -25,7 +25,11 @@ describe('Identifier Utils Tests', () => {
 
     it('should set the anonymousId in redis and return NO_OPERATION_SUCCESS', async () => {
       const setValSpy = jest.spyOn(RedisDB, 'setVal').mockResolvedValue('OK');
-      const event = { cartToken: 'cartTokenTest1', anonymousId: 'anonymousIdTest1' };
+      const event = {
+        cartToken: 'cartTokenTest1',
+        anonymousId: 'anonymousIdTest1',
+        action: 'stitchCartTokenToAnonId',
+      };
 
       const response = await processIdentifierEvent(event);
 
@@ -45,7 +49,11 @@ describe('Identifier Utils Tests', () => {
 
     it('should handle redis errors', async () => {
       jest.spyOn(RedisDB, 'setVal').mockRejectedValue(new Error('Redis connection failed'));
-      const event = { cartToken: 'cartTokenTest1', anonymousId: 'anonymousIdTest1' };
+      const event = {
+        cartToken: 'cartTokenTest1',
+        anonymousId: 'anonymousIdTest1',
+        action: 'stitchCartTokenToAnonId',
+      };
 
       await expect(processIdentifierEvent(event)).rejects.toThrow('Redis connection failed');
     });
@@ -62,6 +70,7 @@ describe('Identifier Utils Tests', () => {
         cartToken: 'cartTokenTest1',
         anonymousId: 'anonymousTest1',
         userId: 'userIdTest1',
+        action: 'stitchUserIdToAnonId',
       };
 
       await updateAnonymousIdToUserIdInRedis(event.anonymousId, event.userId);

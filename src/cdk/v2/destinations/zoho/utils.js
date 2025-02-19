@@ -148,6 +148,17 @@ function transformToURLParams(fields, Config) {
   return `${regionBasedEndPoint}/crm/v6/Leads/search?criteria=${criteria}`;
 }
 
+function transformToURLParamsV2(fields, Config, object) {
+  const criteria = Object.entries(fields)
+    .map(([key, value]) => `(${key}:equals:${escapeAndEncode(value)})`)
+    .join('and');
+
+  const dataCenter = Config.region;
+  const regionBasedEndPoint = zohoConfig.DATA_CENTRE_BASE_ENDPOINTS_MAP[dataCenter];
+
+  return `${regionBasedEndPoint}/crm/v6/${object}/search?criteria=${criteria}`;
+}
+
 const searchRecordId = async (fields, metadata, Config) => {
   try {
     const searchURL = transformToURLParams(fields, Config);
@@ -164,6 +175,56 @@ const searchRecordId = async (fields, metadata, Config) => {
         feature: 'deleteRecords',
         requestMethod: 'GET',
         endpointPath: 'crm/v6/Leads/search?criteria=',
+        module: 'router',
+      },
+    );
+
+    if (!isHttpStatusSuccess(searchResult.processedResponse.status)) {
+      return {
+        erroneous: true,
+        message: searchResult.processedResponse.response,
+      };
+    }
+
+    if (
+      searchResult.processedResponse.status === 204 ||
+      !CommonUtils.isNonEmptyArray(searchResult.processedResponse.response?.data)
+    ) {
+      return {
+        erroneous: true,
+        message: 'No contact is found with record details',
+      };
+    }
+
+    return {
+      erroneous: false,
+      message: searchResult.processedResponse.response.data.map((record) => record.id),
+    };
+  } catch (error) {
+    return {
+      erroneous: true,
+      message: error.message,
+    };
+  }
+};
+
+const searchRecordIdV2 = async (fields, metadata, Config, conConfig) => {
+  try {
+    const { object } = conConfig.destination;
+    const searchURL = transformToURLParamsV2(fields, Config, object);
+    const searchResult = await handleHttpRequest(
+      'get',
+      searchURL,
+      {
+        headers: {
+          Authorization: `Zoho-oauthtoken ${metadata.secret.accessToken}`,
+        },
+      },
+      {
+        destType: 'zoho',
+        feature: 'deleteRecords',
+        requestMethod: 'GET',
+        endpointPath: `crm/v6/${object}/search?criteria=`,
         module: 'router',
       },
     );
@@ -232,7 +293,9 @@ module.exports = {
   handleDuplicateCheck,
   handleDuplicateCheckV2,
   searchRecordId,
+  searchRecordIdV2,
   transformToURLParams,
+  transformToURLParamsV2,
   calculateTrigger,
   validateConfigurationIssue,
 };

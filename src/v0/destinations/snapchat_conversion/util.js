@@ -41,7 +41,7 @@ function getNormalizedPhoneNumber(message) {
   if (regexExp.test(phoneNumber)) return phoneNumber;
 
   // Remove leading zeros and non-numeric characters
-  return phoneNumber.replace(/\D/g, '').replace(/^0+/, '') || null;
+  return String(phoneNumber).replace(/\D/g, '').replace(/^0+/, '') || null;
 }
 
 function getDataUseValue(message) {

@@ -92,11 +92,12 @@ module.exports = async ({ events }) => {
         });
         return;
       }
+      let metadata = ev.metadata
+      metadata.workerId = process.env.WORKER_ID;
       transformedEventsWithMetadata.push({
         output: ev.transformedEvent,
         metadata: _.isEmpty(ev.metadata)
-          ? commonMetadata
-          : Object.assign({}, ...ev.metadata, process.env.WORKER_ID),
+          ? commonMetadata : metadata,
         statusCode: 200,
       });
     });

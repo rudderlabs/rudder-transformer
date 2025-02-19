@@ -99,7 +99,7 @@ const createIdentifyEvent = (message) => {
     }
   });
   // Set the mapped traits
-  identifyEvent.traits = removeUndefinedAndNullValues(mappedTraits);
+  identifyEvent.context.traits = removeUndefinedAndNullValues(mappedTraits);
   return identifyEvent;
 };
 

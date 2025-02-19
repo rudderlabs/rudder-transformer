@@ -31,6 +31,25 @@ const deduceModuleInfo = (inputs, Config) => {
   };
 };
 
+const deduceModuleInfoV2 = (inputs, Config, conConfig) => {
+  if (!Array.isArray(inputs) || inputs.length === 0) {
+    return {};
+  }
+
+  const { destination } = conConfig;
+  if (!destination) {
+    return {};
+  }
+
+  const { object, identifierMappings } = destination;
+  const identifierType = identifierMappings.map(({ to }) => to);
+  return {
+    operationModuleType: object,
+    upsertEndPoint: zohoConfig.COMMON_RECORD_ENDPOINT(Config.region).replace('moduleType', object),
+    identifierType,
+  };
+};
+
 // Keeping the original function name and return structure
 function validatePresenceOfMandatoryProperties(objectName, object) {
   if (!zohoConfig.MODULE_MANDATORY_FIELD_CONFIG.hasOwnProperty(objectName)) {
@@ -71,6 +90,21 @@ const formatMultiSelectFields = (config, fields) => {
   return formattedFields;
 };
 
+const formatMultiSelectFieldsV2 = (config, fields) => {
+  const multiSelectFields = { ...config.destination.multiSelectFieldLevelDecision };
+  // Creating a shallow copy to avoid mutations
+  const formattedFields = { ...fields };
+  Object.keys(formattedFields).forEach((eachFieldKey) => {
+    if (
+      multiSelectFields.hasOwnProperty(eachFieldKey) &&
+      isDefinedAndNotNull(formattedFields[eachFieldKey])
+    ) {
+      formattedFields[eachFieldKey] = [formattedFields[eachFieldKey]];
+    }
+  });
+  return formattedFields;
+};
+
 const handleDuplicateCheck = (addDefaultDuplicateCheck, identifierType, operationModuleType) => {
   let additionalFields = [];
 
@@ -83,6 +117,20 @@ const handleDuplicateCheck = (addDefaultDuplicateCheck, identifierType, operatio
   }
 
   return Array.from(new Set([identifierType, ...additionalFields]));
+};
+
+const handleDuplicateCheckV2 = (addDefaultDuplicateCheck, identifierType, operationModuleType) => {
+  let additionalFields = [];
+
+  if (addDefaultDuplicateCheck) {
+    const moduleDuplicateCheckField =
+      zohoConfig.MODULE_WISE_DUPLICATE_CHECK_FIELD[operationModuleType];
+    additionalFields = isDefinedAndNotNull(moduleDuplicateCheckField)
+      ? moduleDuplicateCheckField
+      : ['Name'];
+  }
+
+  return Array.from(new Set([...identifierType, ...additionalFields]));
 };
 
 function escapeAndEncode(value) {
@@ -177,9 +225,12 @@ const validateConfigurationIssue = (Config, operationModuleType) => {
 
 module.exports = {
   deduceModuleInfo,
+  deduceModuleInfoV2,
   validatePresenceOfMandatoryProperties,
   formatMultiSelectFields,
+  formatMultiSelectFieldsV2,
   handleDuplicateCheck,
+  handleDuplicateCheckV2,
   searchRecordId,
   transformToURLParams,
   calculateTrigger,

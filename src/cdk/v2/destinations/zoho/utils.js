@@ -31,11 +31,7 @@ const deduceModuleInfo = (inputs, Config) => {
   };
 };
 
-const deduceModuleInfoV2 = (inputs, Config, conConfig) => {
-  if (!Array.isArray(inputs) || inputs.length === 0) {
-    return {};
-  }
-
+const deduceModuleInfoV2 = (Config, conConfig) => {
   const { destination } = conConfig;
   if (!destination) {
     return {};

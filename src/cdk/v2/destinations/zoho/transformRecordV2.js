@@ -290,6 +290,9 @@ const processRecordInputsV2 = async (inputs, destination) => {
   if (!inputs || inputs.length === 0) {
     return [];
   }
+  if (!destination) {
+    return [];
+  }
 
   const response = [];
   const errorResponseList = [];
@@ -313,7 +316,6 @@ const processRecordInputsV2 = async (inputs, destination) => {
   };
 
   const { operationModuleType, identifierType, upsertEndPoint } = deduceModuleInfoV2(
-    inputs,
     Config,
     conConfig,
   );

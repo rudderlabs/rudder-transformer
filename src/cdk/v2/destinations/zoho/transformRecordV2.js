@@ -19,7 +19,7 @@ const {
   validatePresenceOfMandatoryProperties,
   formatMultiSelectFieldsV2,
   handleDuplicateCheckV2,
-  searchRecordId,
+  searchRecordIdV2,
   calculateTrigger,
 } = require('./utils');
 const { REFRESH_TOKEN } = require('../../../../adapters/networkhandler/authConstants');
@@ -197,10 +197,11 @@ const handleDeletion = async (
   input,
   fields,
   Config,
+  conConfig,
   transformedResponseToBeBatched,
   errorResponseList,
 ) => {
-  const searchResponse = await searchRecordId(fields, input.metadata, Config);
+  const searchResponse = await searchRecordIdV2(fields, input.metadata, Config, conConfig);
 
   if (searchResponse.erroneous) {
     const error = handleSearchError(searchResponse);
@@ -255,6 +256,7 @@ const processInput = async (
       input,
       allFields,
       Config,
+      conConfig,
       transformedResponseToBeBatched,
       errorResponseList,
     );

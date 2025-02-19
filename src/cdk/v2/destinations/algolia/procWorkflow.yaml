@@ -1,4 +1,4 @@
-bindings:
+ebindings:
   - name: EventType
     path: ../../../../constants
   - path: ../../../../v0/destinations/algolia/util

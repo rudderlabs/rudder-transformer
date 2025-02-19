@@ -1059,7 +1059,7 @@ const handleMetadataForValue = (value, metadata, destKey, integrationsObj = null
 // Given a destinationName according to the destination definition names,
 // It'll look for the canonical names for that integration and return the
 // `integrations` object for that destination, else null
-const getIntegrationsObj = (message, destinationName = null) => {
+const getIntegrationsObj = (message, destinationName = '') => {
   if (destinationName) {
     const canonicalNames = DestCanonicalNames[destinationName];
     // eslint-disable-next-line no-restricted-syntax

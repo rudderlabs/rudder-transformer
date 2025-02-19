@@ -150,6 +150,11 @@ jobs:
 
           gh pr create --fill
 
+      - name: Update Operator Alerts Configuration
+        uses: ./.github/workflows/update-operator-alerts.yml
+        with:
+          tag_name: ${{ needs.generate-tag-names.outputs.tag_name }}
+
       - name: Update helm charts and raise pull request for enterprise customers on dedicated transformers
         env:
           GITHUB_TOKEN: ${{ secrets.PAT }}

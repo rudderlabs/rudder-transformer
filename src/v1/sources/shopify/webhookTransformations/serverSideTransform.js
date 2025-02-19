@@ -78,7 +78,7 @@ const trackPayloadBuilder = (event, shopifyTopic) => {
 };
 
 /**
- * Creates an identify event with userId and anonymousId from message object
+ * Creates an identify event with userId and anonymousId from message object and identifyMappingJSON
  * @param {String} message
  * @returns {Message} identifyEvent
  */
@@ -87,10 +87,19 @@ const createIdentifyEvent = (message) => {
   const identifyEvent = new Message(INTEGERATION);
   identifyEvent.setEventType(EventType.IDENTIFY);
   identifyEvent.userId = userId;
-  identifyEvent.anonymousId = anonymousId;git
-  if (traits) {
-    identifyEvent.traits = lodash.cloneDeep(traits);
-  }
+  identifyEvent.anonymousId = anonymousId;
+  const mappedTraits = {};
+  identifyMappingJSON.forEach((mapping) => {
+    if (mapping.destKeys.startsWith('traits.')) {
+      const traitKey = mapping.destKeys.replace('traits.', '');
+      const sourceValue = get(traits, traitKey);
+      if (sourceValue !== undefined) {
+        lodash.set(mappedTraits, traitKey, sourceValue);
+      }
+    }
+  });
+  // Set the mapped traits
+  identifyEvent.traits = removeUndefinedAndNullValues(mappedTraits);
   return identifyEvent;
 };
 

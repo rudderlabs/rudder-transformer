@@ -45,6 +45,7 @@ async function createIvm(
   const libraries = await Promise.all(
     libraryVersionIds.map(async (libraryVersionId) => await getLibraryCodeV1(libraryVersionId)),
   );
+
   const librariesMap = {};
   if (code && libraries) {
     const extractedLibraries = Object.keys(
@@ -156,7 +157,10 @@ async function createIvm(
       return outputEvents
     }
   `;
-  const isolate = new ivm.Isolate({ memoryLimit: ISOLATE_VM_MEMORY });
+
+  const isolate = new ivm.Isolate({ memoryLimit: 128 });
+  throw Exception('After Isolate');
+
   const isolateStartWallTime = isolate.wallTime;
   const isolateStartCPUTime = isolate.cpuTime;
   const context = await isolate.createContext();

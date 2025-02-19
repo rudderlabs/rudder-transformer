@@ -76,6 +76,7 @@ async function userTransformHandlerV1(
   logger.debug(`Creating IsolateVM`);
   const isolatevm = await isolatevmFactory.create();
 
+  return [];
   const invokeTime = new Date();
   let transformedEvents;
   let logs;

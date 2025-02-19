@@ -8,6 +8,7 @@ const { parserForImport } = require('./parser');
 const stats = require('./stats');
 const { fetchWithDnsWrapper } = require('./utils');
 const { getMetadata, getTransformationMetadata } = require('../v0/util');
+const { Exception } = require('handlebars');
 const ISOLATE_VM_MEMORY = parseInt(process.env.ISOLATE_VM_MEMORY || '128', 10);
 const GEOLOCATION_TIMEOUT_IN_MS = parseInt(process.env.GEOLOCATION_TIMEOUT_IN_MS || '1000', 10);
 
@@ -293,6 +294,7 @@ async function userTransformHandler(
           testMode,
           libraryVersionIDs,
         );
+        console.log(result);
 
         if (result.error) {
           throw new Error(result.error);

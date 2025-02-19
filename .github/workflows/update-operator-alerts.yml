@@ -6,6 +6,12 @@ on:
       tag_name:
         required: false
         type: string
+  workflow_dispatch:
+    inputs:
+      tag_name:
+        description: 'Tag name for the release (defaults to current date if empty)'
+        required: false
+        type: string
 
 jobs:
   update-alerts:

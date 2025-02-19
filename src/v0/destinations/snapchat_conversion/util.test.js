@@ -47,6 +47,16 @@ describe('Snapchat Conversion Utils', () => {
         input: { traits: { phone: '000' } },
         expected: null,
       },
+      {
+        name: 'should handle integer phone numbers',
+        input: { traits: { phone: 1234567890 } },
+        expected: '1234567890',
+      },
+      {
+        name: 'should handle object in place of phone number',
+        input: { traits: { phone: { test: 'test' } } },
+        expected: null,
+      },
     ];
 
     testCases.forEach(({ name, input, expected }) => {

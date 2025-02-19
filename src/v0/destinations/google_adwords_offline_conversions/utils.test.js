@@ -317,7 +317,7 @@ describe('getConsentsDataFromIntegrationObj', () => {
 });
 
 describe('getCallConversionPayload', () => {
-  it('should call conversion payload with consent object', () => {
+  it('should call conversion payload with consent object and set default consent for adUserData', () => {
     const message = {
       properties: {
         callerId: '1234',
@@ -325,17 +325,9 @@ describe('getCallConversionPayload', () => {
         conversionDateTime: '2022-01-01 12:32:45-08:00',
       },
     };
-    const result = getCallConversionPayload(
-      message,
-      {
-        userDataConsent: 'GRANTED',
-        personalizationConsent: 'DENIED',
-      },
-      {
-        adUserData: 'GRANTED',
-        adPersonalization: 'GRANTED',
-      },
-    );
+    const result = getCallConversionPayload(message, {
+      adPersonalization: 'GRANTED',
+    });
     expect(result).toEqual({
       conversions: [
         {
@@ -343,7 +335,7 @@ describe('getCallConversionPayload', () => {
           callerId: '1234',
           consent: {
             adPersonalization: 'GRANTED',
-            adUserData: 'GRANTED',
+            adUserData: 'UNSPECIFIED',
           },
           conversionDateTime: '2022-01-01 12:32:45-08:00',
         },
@@ -358,14 +350,10 @@ describe('getCallConversionPayload', () => {
         conversionDateTime: '2022-01-01 12:32:45-08:00',
       },
     };
-    const result = getCallConversionPayload(
-      message,
-      {
-        userDataConsent: 'GRANTED',
-        personalizationConsent: 'DENIED',
-      },
-      {},
-    );
+    const result = getCallConversionPayload(message, {
+      adUserData: 'GRANTED',
+      adPersonalization: 'DENIED',
+    });
     expect(result).toEqual({
       conversions: [
         {

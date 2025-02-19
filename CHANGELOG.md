@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.91.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.91.0...v1.91.1) (2025-02-19)
+
+
+### Bug Fixes
+
+* snapchat util function for normalizing phone number ([#4093](https://github.com/rudderlabs/rudder-transformer/issues/4093)) ([17ff7f9](https://github.com/rudderlabs/rudder-transformer/commit/17ff7f96a2a911485592afb379dd2886ee8b9982))
+
 ## [1.91.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.90.2...v1.91.0) (2025-02-17)
 
 

@@ -100,9 +100,10 @@ export type CustomerIOConnection = Connection<
 
 export type CustomerIORouterRequest = RouterTransformationRequestData<
   CustomerIOMessage,
-  CustomerIODestination,
-  CustomerIOConnection
->;
+  CustomerIODestination
+> & {
+  connection: CustomerIOConnection;
+};
 
 // Remove the duplicate types and use the generic ones instead
 export type CustomerIOBatchResponse = BatchRequestOutput<

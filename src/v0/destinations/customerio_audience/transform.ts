@@ -1,20 +1,18 @@
-import {
-  SegmentAction,
-  CustomerIOConnection,
-  CustomerIODestination,
-  CustomerIORouterRequest,
-  ProcessedEvent,
-} from './type';
+import { SegmentAction, CustomerIORouterRequest, ProcessedEvent } from './type';
 import { batchResponseBuilder, createEventChunk } from './utils';
 import { handleRtTfSingleEventError } from '../../util';
+import { RequestMetadata } from '../../../types/rudderEvents';
 
-const processRouterDest = async (inputs: CustomerIORouterRequest[], reqMetadata: any) => {
+const processRouterDest = async (
+  inputs: CustomerIORouterRequest[],
+  reqMetadata: RequestMetadata,
+) => {
   if (!inputs?.length) return [];
 
   const { destination, connection } = inputs[0];
 
-  const customerIODestination = destination as CustomerIODestination;
-  const customerIOConnection = connection as CustomerIOConnection;
+  const customerIODestination = destination;
+  const customerIOConnection = connection;
 
   // Process events and separate valid and error cases
   const processedEvents = inputs.map((event) => {

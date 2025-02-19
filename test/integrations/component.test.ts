@@ -95,7 +95,7 @@ console.log('opts', opts);
 const allTestDataFilePaths = getTestDataFilePaths(rootDir, opts);
 const DEFAULT_VERSION = 'v0';
 
-const testRoute = async (route, tcData: TestCaseData) => {
+const testRoute = async (route: string, tcData: TestCaseData) => {
   const inputReq = tcData.input.request;
   const { headers, params, body } = inputReq;
   let testRequest: request.Test;

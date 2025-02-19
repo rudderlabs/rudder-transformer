@@ -22,7 +22,7 @@ beforeAll(async () => {
     }),
   );
   applicationRoutes(app);
-  server = app.listen(9090);
+  server = app.listen();
 });
 
 afterAll(async () => {

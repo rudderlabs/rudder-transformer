@@ -149,3 +149,4 @@ allure-report/
 
 # local scripts
 */scripts/local/
+.aider*

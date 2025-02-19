@@ -48,7 +48,7 @@
     "pre-commit": "npm run test:ts:silent && npm run test:js:silent && npx lint-staged",
     "commit-msg": "commitlint --edit",
     "prepare": "node ./scripts/skipPrepareScript.js || husky install",
-    "release": "npx semantic-release",
+    "release": "npx semantic-release --debug",
     "clean:node": "modclean",
     "check:lint": "eslint . -f json -o reports/eslint.json || exit 0"
   },

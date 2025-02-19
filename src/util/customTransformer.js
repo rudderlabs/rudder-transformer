@@ -294,7 +294,6 @@ async function userTransformHandler(
           testMode,
           libraryVersionIDs,
         );
-        console.log(result);
 
         if (result.error) {
           throw new Error(result.error);

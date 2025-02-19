@@ -159,8 +159,6 @@ async function createIvm(
   `;
 
   const isolate = new ivm.Isolate({ memoryLimit: 128 });
-  throw Exception('After Isolate');
-
   const isolateStartWallTime = isolate.wallTime;
   const isolateStartCPUTime = isolate.cpuTime;
   const context = await isolate.createContext();

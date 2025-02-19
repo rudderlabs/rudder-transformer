@@ -1,35 +1,47 @@
-const lodash = require('lodash');
-const crypto = require('crypto');
-const {
+import lodash from 'lodash';
+import crypto from 'crypto';
+import {
   InstrumentationError,
   ConfigurationError,
   isDefinedAndNotNullAndNotEmpty,
   removeUndefinedAndNullAndEmptyValues,
   removeUndefinedAndNullValues,
   isDefinedAndNotNull,
-} = require('@rudderstack/integrations-lib');
-const {
+} from '@rudderstack/integrations-lib';
+import {
   getIntegrationsObj,
   validateEventName,
   getValueFromMessage,
   getHashFromArray,
-} = require('../../../../v0/util');
-const {
+} from '../../../../v0/util';
+import {
   EMAIL_FIELD_ID,
   MAX_BATCH_SIZE,
   OPT_IN_FILED_ID,
   ALLOWED_OPT_IN_VALUES,
   MAX_BATCH_SIZE_BYTES,
   groupedSuccessfulPayload,
-} = require('./config');
-const { EventType } = require('../../../../constants');
+} from './config';
+import { EventType } from '../../../../constants';
+import {
+  Message,
+  DestConfig,
+  FieldMapping,
+  IntegrationObject,
+  BatchConstants,
+  Batch,
+  SuccessfulEvent,
+  IdentifyPayload,
+  GroupPayload,
+  BatchedRequest,
+} from './types';
 
-const base64Sha = (str) => {
+const base64Sha = (str: string): string => {
   const hexDigest = crypto.createHash('sha1').update(str).digest('hex');
   return Buffer.from(hexDigest).toString('base64');
 };
 
-const getWsseHeader = (user, secret) => {
+const getWsseHeader = (user: string, secret: string): string => {
   const nonce = crypto.randomBytes(16).toString('hex');
   const timestamp = new Date().toISOString();
 
@@ -37,7 +49,7 @@ const getWsseHeader = (user, secret) => {
   return `UsernameToken Username="${user}", PasswordDigest="${digest}", Nonce="${nonce}", Created="${timestamp}"`;
 };
 
-const buildHeader = (destConfig) => {
+const buildHeader = (destConfig: DestConfig): Record<string, string> => {
   const { emersysUsername, emersysUserSecret } = destConfig;
   if (
     !isDefinedAndNotNullAndNotEmpty(emersysUsername) ||
@@ -52,14 +64,23 @@ const buildHeader = (destConfig) => {
   };
 };
 
-const deduceCustomIdentifier = (integrationObject, emersysCustomIdentifier) =>
+const deduceCustomIdentifier = (
+  integrationObject: IntegrationObject | null,
+  emersysCustomIdentifier?: string,
+): string | number =>
   integrationObject?.customIdentifierId || emersysCustomIdentifier || EMAIL_FIELD_ID;
 
-const buildIdentifyPayload = (message, destConfig) => {
-  let destinationPayload;
+const buildIdentifyPayload = (
+  message: Message,
+  destConfig: DestConfig,
+): {
+  eventType: string;
+  destinationPayload: IdentifyPayload;
+} => {
+  let destinationPayload: IdentifyPayload;
   const { fieldMapping, emersysCustomIdentifier, discardEmptyProperties, defaultContactList } =
     destConfig;
-  const payload = {};
+  const payload: Record<string, any> = {};
 
   const integrationObject = getIntegrationsObj(message, 'emarsys');
   const finalContactList = integrationObject?.contactListId || defaultContactList;
@@ -81,10 +102,11 @@ const buildIdentifyPayload = (message, destConfig) => {
     });
   }
   const emersysIdentifier = deduceCustomIdentifier(integrationObject, emersysCustomIdentifier);
-  const finalPayload =
+  const finalPayload = (
     discardEmptyProperties === true
-      ? removeUndefinedAndNullAndEmptyValues(payload) // empty property value has a significance in emersys
-      : removeUndefinedAndNullValues(payload);
+      ? removeUndefinedAndNullAndEmptyValues(payload)
+      : removeUndefinedAndNullValues(payload)
+  ) as Record<string, unknown>;
   if (
     isDefinedAndNotNull(finalPayload[OPT_IN_FILED_ID]) &&
     !ALLOWED_OPT_IN_VALUES.includes(String(finalPayload[OPT_IN_FILED_ID]))
@@ -108,14 +130,20 @@ const buildIdentifyPayload = (message, destConfig) => {
   return { eventType: message.type, destinationPayload };
 };
 
-const findRudderPropertyByEmersysProperty = (emersysProperty, fieldMapping) => {
-  // find the object where the emersysProperty matches the input
+const findRudderPropertyByEmersysProperty = (
+  emersysProperty: string | number,
+  fieldMapping?: FieldMapping[],
+): string => {
+  if (!fieldMapping) return 'email';
   const item = lodash.find(fieldMapping, { emersysProperty: String(emersysProperty) });
-  // Return the rudderProperty if the object is found, otherwise return null
   return item ? item.rudderProperty : 'email';
 };
 
-const deduceExternalIdValue = (message, emersysIdentifier, fieldMapping) => {
+const deduceExternalIdValue = (
+  message: Message,
+  emersysIdentifier: string | number,
+  fieldMapping?: FieldMapping[],
+): string => {
   const configuredPayloadProperty = findRudderPropertyByEmersysProperty(
     emersysIdentifier,
     fieldMapping,
@@ -125,7 +153,7 @@ const deduceExternalIdValue = (message, emersysIdentifier, fieldMapping) => {
     `context.traits.${configuredPayloadProperty}`,
   ]);
 
-  if (!isDefinedAndNotNull(deduceExternalIdValue)) {
+  if (!isDefinedAndNotNull(externalIdValue)) {
     throw new InstrumentationError(
       `Could not find value for externalId required in ${message.type} call. Aborting.`,
     );
@@ -134,7 +162,7 @@ const deduceExternalIdValue = (message, emersysIdentifier, fieldMapping) => {
   return externalIdValue;
 };
 
-const buildGroupPayload = (message, destConfig) => {
+const buildGroupPayload = (message: Message, destConfig: DestConfig) => {
   const { emersysCustomIdentifier, defaultContactList, fieldMapping } = destConfig;
   const integrationObject = getIntegrationsObj(message, 'emarsys');
   const emersysIdentifier = deduceCustomIdentifier(integrationObject, emersysCustomIdentifier);
@@ -144,7 +172,7 @@ const buildGroupPayload = (message, destConfig) => {
       `No value found in payload for contact custom identifier of id ${emersysIdentifier}`,
     );
   }
-  const payload = {
+  const payload: GroupPayload = {
     key_id: emersysIdentifier,
     external_ids: [externalIdValue],
   };
@@ -157,14 +185,14 @@ const buildGroupPayload = (message, destConfig) => {
   };
 };
 
-const deduceEventId = (message, destConfig) => {
-  let eventId;
+const deduceEventId = (message: Message, destConfig: DestConfig): string => {
+  let eventId: string | undefined;
   const { eventsMapping } = destConfig;
   const { event } = message;
   validateEventName(event);
   if (Array.isArray(eventsMapping) && eventsMapping.length > 0) {
     const keyMap = getHashFromArray(eventsMapping, 'from', 'to', false);
-    eventId = keyMap[event];
+    eventId = keyMap[event as string];
   }
   if (!eventId) {
     throw new ConfigurationError(`${event} is not mapped to any Emersys external event. Aborting`);
@@ -172,10 +200,13 @@ const deduceEventId = (message, destConfig) => {
   return eventId;
 };
 
-const deduceEndPoint = (finalPayload) => {
-  let endPoint;
-  let eventId;
-  let contactListId;
+const deduceEndPoint = (finalPayload: {
+  eventType: string;
+  destinationPayload: any;
+}): string | undefined => {
+  let endPoint: string | undefined;
+  let eventId: string;
+  let contactListId: string;
   const { eventType, destinationPayload } = finalPayload;
   switch (eventType) {
     case EventType.IDENTIFY:
@@ -195,20 +226,23 @@ const deduceEndPoint = (finalPayload) => {
   return endPoint;
 };
 
-const estimateJsonSize = (obj) => new Blob([JSON.stringify(obj)]).size;
+const estimateJsonSize = (obj: any): number => new Blob([JSON.stringify(obj)]).size;
 
-const createSingleIdentifyPayload = (keyId, contacts, contactListId) => ({
+const createSingleIdentifyPayload = (
+  keyId: string | number,
+  contacts: any[],
+  contactListId: string,
+): IdentifyPayload => ({
   key_id: keyId,
   contacts,
   contact_list_id: contactListId,
 });
 
-const ensureSizeConstraints = (contacts) => {
-  const chunks = [];
-  let currentBatch = [];
+const ensureSizeConstraints = (contacts: any[]): any[][] => {
+  const chunks: any[][] = [];
+  let currentBatch: any[] = [];
 
   contacts.forEach((contact) => {
-    // Start a new batch if adding the next contact exceeds size limits
     if (
       currentBatch.length === 0 ||
       estimateJsonSize([...currentBatch, contact]) < MAX_BATCH_SIZE_BYTES
@@ -220,7 +254,6 @@ const ensureSizeConstraints = (contacts) => {
     }
   });
 
-  // Add the remaining batch if not empty
   if (currentBatch.length > 0) {
     chunks.push(currentBatch);
   }
@@ -228,16 +261,15 @@ const ensureSizeConstraints = (contacts) => {
   return chunks;
 };
 
-const createIdentifyBatches = (events) => {
+const createIdentifyBatches = (events: SuccessfulEvent[]): Batch[] => {
   const groupedIdentifyPayload = lodash.groupBy(
     events,
     (item) =>
       `${item.message[0].body.JSON.destinationPayload.key_id}-${item.message[0].body.JSON.destinationPayload.contact_list_id}`,
   );
-  return lodash.flatMap(groupedIdentifyPayload, (group) => {
+  return lodash.flatMap(groupedIdentifyPayload, (group): Batch[] => {
     const firstItem = group[0].message[0].body.JSON.destinationPayload;
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    const { key_id, contact_list_id } = firstItem;
+    const { key_id: keyId, contact_list_id: contactListId } = firstItem;
 
     const allContacts = lodash.flatMap(
       group,
@@ -246,26 +278,25 @@ const createIdentifyBatches = (events) => {
     const initialChunks = lodash.chunk(allContacts, MAX_BATCH_SIZE);
     const finalChunks = lodash.flatMap(initialChunks, ensureSizeConstraints);
 
-    // Include metadata for each chunk
     return finalChunks.map((contacts) => ({
-      payload: createSingleIdentifyPayload(key_id, contacts, contact_list_id),
+      endpoint: 'https://api.emarsys.net/api/v2/contact/?create_if_not_exists=1',
+      payload: createSingleIdentifyPayload(keyId, contacts, contactListId),
       metadata: group.map((g) => g.metadata),
     }));
   });
 };
 
-const createGroupBatches = (events) => {
+const createGroupBatches = (events: SuccessfulEvent[]): Batch[] => {
   const grouped = lodash.groupBy(
     events,
     (item) =>
       `${item.message[0].body.JSON.destinationPayload.payload.key_id}-${item.message[0].body.JSON.destinationPayload.contactListId}`,
   );
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  return Object.entries(grouped).flatMap(([key, group]) => {
+  return Object.entries(grouped).flatMap(([, group]) => {
     const keyId = group[0].message[0].body.JSON.destinationPayload.payload.key_id;
     const { contactListId } = group[0].message[0].body.JSON.destinationPayload;
-    const combinedExternalIds = group.reduce((acc, item) => {
+    const combinedExternalIds = group.reduce((acc: string[], item) => {
       acc.push(...item.message[0].body.JSON.destinationPayload.payload.external_ids);
       return acc;
     }, []);
@@ -283,21 +314,20 @@ const createGroupBatches = (events) => {
   });
 };
 
-const createTrackBatches = (events) => [
+const createTrackBatches = (events: SuccessfulEvent[]): Batch[] => [
   {
-    endpoint: events[0].message[0].endpoint,
+    endpoint: events[0].message[0].endpoint as string,
     payload: events[0].message[0].body.JSON.destinationPayload.payload,
     metadata: [events[0].metadata],
   },
 ];
-const formatIdentifyPayloadsWithEndpoint = (combinedPayloads, endpointUrl = '') =>
-  combinedPayloads.map((singleCombinedPayload) => ({
-    endpoint: endpointUrl,
-    payload: singleCombinedPayload.payload,
-    metadata: singleCombinedPayload.metadata,
-  }));
 
-const buildBatchedRequest = (batches, method, constants, batchedStatus = true) =>
+const buildBatchedRequest = (
+  batches: Batch[],
+  method: string,
+  constants: BatchConstants,
+  batchedStatus = true,
+): BatchedRequest[] =>
   batches.map((batch) => ({
     batchedRequest: {
       body: {
@@ -321,7 +351,7 @@ const buildBatchedRequest = (batches, method, constants, batchedStatus = true) =
   }));
 
 // Helper to initialize the constants used across batch processing
-function initializeConstants(successfulEvents) {
+function initializeConstants(successfulEvents: SuccessfulEvent[]): BatchConstants | null {
   if (successfulEvents.length === 0) return null;
   return {
     version: successfulEvents[0].message[0].version,
@@ -332,7 +362,12 @@ function initializeConstants(successfulEvents) {
 }
 
 // Helper to append requests based on batched events and constants
-function appendRequestsToOutput(groupPayload, output, constants, batched = true) {
+function appendRequestsToOutput(
+  groupPayload: { batches: Batch[]; method: string },
+  output: BatchedRequest[],
+  constants: BatchConstants,
+  batched = true,
+): void {
   if (groupPayload.batches) {
     const requests = buildBatchedRequest(
       groupPayload.batches,
@@ -345,18 +380,18 @@ function appendRequestsToOutput(groupPayload, output, constants, batched = true)
 }
 
 // Process batches based on event types
-function processEventBatches(typedEventGroups, constants) {
-  let batchesOfIdentifyEvents;
-  const finalOutput = [];
+function processEventBatches(
+  typedEventGroups: Record<string, SuccessfulEvent[]>,
+  constants: BatchConstants,
+): BatchedRequest[] {
+  const finalOutput: BatchedRequest[] = [];
 
   // Process each event group based on type
   Object.keys(typedEventGroups).forEach((eventType) => {
     switch (eventType) {
       case EventType.IDENTIFY:
-        batchesOfIdentifyEvents = createIdentifyBatches(typedEventGroups[eventType]);
-        groupedSuccessfulPayload.identify.batches = formatIdentifyPayloadsWithEndpoint(
-          batchesOfIdentifyEvents,
-          'https://api.emarsys.net/api/v2/contact/?create_if_not_exists=1',
+        groupedSuccessfulPayload.identify.batches = createIdentifyBatches(
+          typedEventGroups[eventType],
         );
         break;
       case EventType.GROUP:
@@ -379,7 +414,7 @@ function processEventBatches(typedEventGroups, constants) {
 }
 
 // Entry function to create batches from successful events
-function batchResponseBuilder(successfulEvents) {
+function batchResponseBuilder(successfulEvents: SuccessfulEvent[]): BatchedRequest[] {
   const constants = initializeConstants(successfulEvents);
   if (!constants) return [];
 
@@ -391,7 +426,7 @@ function batchResponseBuilder(successfulEvents) {
   return processEventBatches(typedEventGroups, constants);
 }
 
-module.exports = {
+export {
   buildIdentifyPayload,
   buildGroupPayload,
   buildHeader,
@@ -400,7 +435,6 @@ module.exports = {
   base64Sha,
   getWsseHeader,
   findRudderPropertyByEmersysProperty,
-  formatIdentifyPayloadsWithEndpoint,
   createSingleIdentifyPayload,
   createIdentifyBatches,
   ensureSizeConstraints,

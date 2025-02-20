@@ -3,21 +3,26 @@ export const data = [
     name: 'mailmodo',
     description: 'test-0',
     module: 'source',
-    version: 'v0',
+    version: 'v2',
     input: {
       request: {
         body: [
           {
-            triggerData: {
-              data: {},
-              triggerSource: 'CsvList',
-              email: 'gouhgc@mailmodo.com',
-              triggerDetails:
-                'file:1a69df39hfbfg4e0b-8b5c-73776157aa37/7647792f-4ebc-4f9d-ac79-05fb0356137e',
-              userId: 'd3775892hvh4f2f-b9d5-e49810eb2cae',
-              journeyId: '1a69df39hgvh4e0b-8b5c-73776157aa37',
-              eventProperty: {},
+            request: {
+              body: JSON.stringify({
+                triggerData: {
+                  data: {},
+                  triggerSource: 'CsvList',
+                  email: 'gouhgc@mailmodo.com',
+                  triggerDetails:
+                    'file:1a69df39hfbfg4e0b-8b5c-73776157aa37/7647792f-4ebc-4f9d-ac79-05fb0356137e',
+                  userId: 'd3775892hvh4f2f-b9d5-e49810eb2cae',
+                  journeyId: '1a69df39hgvh4e0b-8b5c-73776157aa37',
+                  eventProperty: {},
+                },
+              }),
             },
+            source: {},
           },
         ],
         method: 'POST',
@@ -36,7 +41,10 @@ export const data = [
                   anonymousId: 'f43848cce166e51b097cbed2851adc16ed9d4c341928f1c790215c50cefb59b0',
                   context: {
                     externalId: [
-                      { id: 'd3775892hvh4f2f-b9d5-e49810eb2cae', type: 'mailmodoUserId' },
+                      {
+                        id: 'd3775892hvh4f2f-b9d5-e49810eb2cae',
+                        type: 'mailmodoUserId',
+                      },
                     ],
                     traits: { email: 'gouhgc@mailmodo.com' },
                     integration: { name: 'Mailmodo', version: '1.0.0' },
@@ -63,27 +71,37 @@ export const data = [
     name: 'mailmodo',
     description: 'test-1',
     module: 'source',
-    version: 'v0',
+    version: 'v2',
     input: {
       request: {
         body: [
           {
-            fuuid: '27905',
-            'next-step-id': 'success',
-            'total-steps': '3',
-            responseId: 'b9a5d224-cc5a-4e64-9800-5a3db9515fdf',
-            recipientEmail: 'test.rudderlabs21997@gmail.com',
-            formId: 'formosztd5',
-            recordedAt: { ts: 1662695704, date: '2022-09-09', hour: 9, minute: 25 },
-            submissionSource: 'amp',
-            elementjbtz42: 'Everything ',
-            element8jzo13: ['Reliable', 'High Quality', 'Useful'],
-            recipientData: { email: 'test.rudderlabs21997@gmail.com' },
-            recommend: '9',
-            liking: 'upvote',
-            satisfaction: '4',
-            campaignId: '0b53e1bf-84ae-4198-9184-8a4d6e1fa3dd',
-            campaignName: 'Campaign-testing',
+            request: {
+              body: JSON.stringify({
+                fuuid: '27905',
+                'next-step-id': 'success',
+                'total-steps': '3',
+                responseId: 'b9a5d224-cc5a-4e64-9800-5a3db9515fdf',
+                recipientEmail: 'test.rudderlabs21997@gmail.com',
+                formId: 'formosztd5',
+                recordedAt: {
+                  ts: 1662695704,
+                  date: '2022-09-09',
+                  hour: 9,
+                  minute: 25,
+                },
+                submissionSource: 'amp',
+                elementjbtz42: 'Everything ',
+                element8jzo13: ['Reliable', 'High Quality', 'Useful'],
+                recipientData: { email: 'test.rudderlabs21997@gmail.com' },
+                recommend: '9',
+                liking: 'upvote',
+                satisfaction: '4',
+                campaignId: '0b53e1bf-84ae-4198-9184-8a4d6e1fa3dd',
+                campaignName: 'Campaign-testing',
+              }),
+            },
+            source: {},
           },
         ],
         method: 'POST',
@@ -138,19 +156,24 @@ export const data = [
     name: 'mailmodo',
     description: 'test-2',
     module: 'source',
-    version: 'v0',
+    version: 'v2',
     input: {
       request: {
         body: [
           {
-            triggerData: {
-              data: {},
-              triggerSource: 'Manual Add To List',
-              email: 'gou****@mailmodo.com',
-              userId: 'd3775892-****-4f2f-b9d5-e49810eb2cae',
-              journeyId: '349e986e-f56c-****-bc3b-b5f13c3e34da',
-              eventProperty: {},
+            request: {
+              body: JSON.stringify({
+                triggerData: {
+                  data: {},
+                  triggerSource: 'Manual Add To List',
+                  email: 'gou****@mailmodo.com',
+                  userId: 'd3775892-****-4f2f-b9d5-e49810eb2cae',
+                  journeyId: '349e986e-f56c-****-bc3b-b5f13c3e34da',
+                  eventProperty: {},
+                },
+              }),
             },
+            source: {},
           },
         ],
         method: 'POST',
@@ -169,7 +192,10 @@ export const data = [
                   anonymousId: '26c9ad4b531287858155ffa834be13dddc2c45df6e29af7230408953d732dd92',
                   context: {
                     externalId: [
-                      { id: 'd3775892-****-4f2f-b9d5-e49810eb2cae', type: 'mailmodoUserId' },
+                      {
+                        id: 'd3775892-****-4f2f-b9d5-e49810eb2cae',
+                        type: 'mailmodoUserId',
+                      },
                     ],
                     traits: { email: 'gou****@mailmodo.com' },
                     integration: { name: 'Mailmodo', version: '1.0.0' },
@@ -194,19 +220,24 @@ export const data = [
     name: 'mailmodo',
     description: 'test-3',
     module: 'source',
-    version: 'v0',
+    version: 'v2',
     input: {
       request: {
         body: [
           {
-            triggerData: {
-              data: {},
-              triggerSource: 'Dashboard-change in property: first_name',
-              email: 'gou****@mailmodo.com',
-              userId: 'cc56708d-****-****-8c07-a4bfa5a7b79b',
-              journeyId: 'a78d7221-de34-47d8-81c6-5ad70cf4ee38',
-              eventProperty: {},
+            request: {
+              body: JSON.stringify({
+                triggerData: {
+                  data: {},
+                  triggerSource: 'Dashboard-change in property: first_name',
+                  email: 'gou****@mailmodo.com',
+                  userId: 'cc56708d-****-****-8c07-a4bfa5a7b79b',
+                  journeyId: 'a78d7221-de34-47d8-81c6-5ad70cf4ee38',
+                  eventProperty: {},
+                },
+              }),
             },
+            source: {},
           },
         ],
         method: 'POST',
@@ -225,7 +256,10 @@ export const data = [
                   anonymousId: '26c9ad4b531287858155ffa834be13dddc2c45df6e29af7230408953d732dd92',
                   context: {
                     externalId: [
-                      { id: 'cc56708d-****-****-8c07-a4bfa5a7b79b', type: 'mailmodoUserId' },
+                      {
+                        id: 'cc56708d-****-****-8c07-a4bfa5a7b79b',
+                        type: 'mailmodoUserId',
+                      },
                     ],
                     traits: { email: 'gou****@mailmodo.com' },
                     integration: { name: 'Mailmodo', version: '1.0.0' },
@@ -250,31 +284,41 @@ export const data = [
     name: 'mailmodo',
     description: 'test-4',
     module: 'source',
-    version: 'v0',
+    version: 'v2',
     input: {
       request: {
         body: [
           {
-            triggerData: {
-              data: {},
-              formSubmissionData: {
-                element6ehxt3: 'Te**',
-                element6jkcy4: 'Bang****',
-                fuuid: '47949',
-                'next-step-id': 'step7tr7n2',
-                'total-steps': '3',
-                responseId: '4a8bfda7-****-4a8c-9cd1-a30d30a6dab9',
-                recipientEmail: 'gou****@mailmodo.com',
-                formId: 'formmqxnu2',
-                recordedAt: { ts: 1657097786, date: '2022-07-06', hour: 14, minute: 26 },
-                submissionSource: 'amp',
-              },
-              email: 'gou****@mailmodo.com',
-              triggerSource: 'form submission',
-              userId: '11bff3e8-****-4e93-a533-fd8f9defc768',
-              journeyId: '03664747-****-412e-8790-de9e9abe96a5',
-              eventProperty: {},
+            request: {
+              body: JSON.stringify({
+                triggerData: {
+                  data: {},
+                  formSubmissionData: {
+                    element6ehxt3: 'Te**',
+                    element6jkcy4: 'Bang****',
+                    fuuid: '47949',
+                    'next-step-id': 'step7tr7n2',
+                    'total-steps': '3',
+                    responseId: '4a8bfda7-****-4a8c-9cd1-a30d30a6dab9',
+                    recipientEmail: 'gou****@mailmodo.com',
+                    formId: 'formmqxnu2',
+                    recordedAt: {
+                      ts: 1657097786,
+                      date: '2022-07-06',
+                      hour: 14,
+                      minute: 26,
+                    },
+                    submissionSource: 'amp',
+                  },
+                  email: 'gou****@mailmodo.com',
+                  triggerSource: 'form submission',
+                  userId: '11bff3e8-****-4e93-a533-fd8f9defc768',
+                  journeyId: '03664747-****-412e-8790-de9e9abe96a5',
+                  eventProperty: {},
+                },
+              }),
             },
+            source: {},
           },
         ],
         method: 'POST',
@@ -293,7 +337,10 @@ export const data = [
                   anonymousId: '26c9ad4b531287858155ffa834be13dddc2c45df6e29af7230408953d732dd92',
                   context: {
                     externalId: [
-                      { id: '11bff3e8-****-4e93-a533-fd8f9defc768', type: 'mailmodoUserId' },
+                      {
+                        id: '11bff3e8-****-4e93-a533-fd8f9defc768',
+                        type: 'mailmodoUserId',
+                      },
                     ],
                     traits: { email: 'gou****@mailmodo.com' },
                     integration: { name: 'Mailmodo', version: '1.0.0' },
@@ -328,25 +375,30 @@ export const data = [
     name: 'mailmodo',
     description: 'test-5',
     module: 'source',
-    version: 'v0',
+    version: 'v2',
     input: {
       request: {
         body: [
           {
-            triggerData: {
-              data: {},
-              eventProperty: {
-                Name: 'APPLE iPhone 13 (Blue, 128 GB)',
-                Category: 'Mobiles',
-                'Is Purchased': 'false',
-                Price: '829',
-                Currency: 'USD',
-              },
-              triggerSource: 'New Custom Event Trigger - Product Viewed',
-              email: 'gou****@mailmodo.com',
-              userId: 'd3775892-****-4f2f-b9d5-e49810eb2cae',
-              journeyId: '3f135bf7-****-4e31-b265-f61cfe1bd423',
+            request: {
+              body: JSON.stringify({
+                triggerData: {
+                  data: {},
+                  eventProperty: {
+                    Name: 'APPLE iPhone 13 (Blue, 128 GB)',
+                    Category: 'Mobiles',
+                    'Is Purchased': 'false',
+                    Price: '829',
+                    Currency: 'USD',
+                  },
+                  triggerSource: 'New Custom Event Trigger - Product Viewed',
+                  email: 'gou****@mailmodo.com',
+                  userId: 'd3775892-****-4f2f-b9d5-e49810eb2cae',
+                  journeyId: '3f135bf7-****-4e31-b265-f61cfe1bd423',
+                },
+              }),
             },
+            source: {},
           },
         ],
         method: 'POST',
@@ -365,7 +417,10 @@ export const data = [
                   anonymousId: '26c9ad4b531287858155ffa834be13dddc2c45df6e29af7230408953d732dd92',
                   context: {
                     externalId: [
-                      { id: 'd3775892-****-4f2f-b9d5-e49810eb2cae', type: 'mailmodoUserId' },
+                      {
+                        id: 'd3775892-****-4f2f-b9d5-e49810eb2cae',
+                        type: 'mailmodoUserId',
+                      },
                     ],
                     traits: { email: 'gou****@mailmodo.com' },
                     integration: { name: 'Mailmodo', version: '1.0.0' },
@@ -395,19 +450,24 @@ export const data = [
     name: 'mailmodo',
     description: 'test-6',
     module: 'source',
-    version: 'v0',
+    version: 'v2',
     input: {
       request: {
         body: [
           {
-            triggerData: {
-              email: 'gou****@mailmodo.com',
-              data: {},
-              userId: 'd3775892-****-4f2f-b9d5-e49810eb2cae',
-              journeyId: 'b1ee6bf6-****-4b5a-b7b5-0637853cd8c3',
-              triggerSource: 'Api',
-              eventProperty: {},
+            request: {
+              body: JSON.stringify({
+                triggerData: {
+                  email: 'gou****@mailmodo.com',
+                  data: {},
+                  userId: 'd3775892-****-4f2f-b9d5-e49810eb2cae',
+                  journeyId: 'b1ee6bf6-****-4b5a-b7b5-0637853cd8c3',
+                  triggerSource: 'Api',
+                  eventProperty: {},
+                },
+              }),
             },
+            source: {},
           },
         ],
         method: 'POST',
@@ -426,7 +486,10 @@ export const data = [
                   anonymousId: '26c9ad4b531287858155ffa834be13dddc2c45df6e29af7230408953d732dd92',
                   context: {
                     externalId: [
-                      { id: 'd3775892-****-4f2f-b9d5-e49810eb2cae', type: 'mailmodoUserId' },
+                      {
+                        id: 'd3775892-****-4f2f-b9d5-e49810eb2cae',
+                        type: 'mailmodoUserId',
+                      },
                     ],
                     traits: { email: 'gou****@mailmodo.com' },
                     integration: { name: 'Mailmodo', version: '1.0.0' },
@@ -451,24 +514,29 @@ export const data = [
     name: 'mailmodo',
     description: 'test-7',
     module: 'source',
-    version: 'v0',
+    version: 'v2',
     input: {
       request: {
         body: [
           {
-            eventData: { type: 'html' },
-            triggerData: {
-              data: {},
-              triggerSource: 'CsvList',
-              email: 'gou****@mailmodo.com',
-              triggerDetails:
-                'file:5d31c2b4-****-4a84-acd3-834cae80231b/5a61e0b8-b6f6-4d7d-abf2-90357d6638af',
-              userId: 'cc56708d-****-4fea-8c07-a4bfa5a7b79b',
-              journeyId: '5d31c2b4-****-4a84-acd3-834cae80231b',
-              eventProperty: {},
+            request: {
+              body: JSON.stringify({
+                eventData: { type: 'html' },
+                triggerData: {
+                  data: {},
+                  triggerSource: 'CsvList',
+                  email: 'gou****@mailmodo.com',
+                  triggerDetails:
+                    'file:5d31c2b4-****-4a84-acd3-834cae80231b/5a61e0b8-b6f6-4d7d-abf2-90357d6638af',
+                  userId: 'cc56708d-****-4fea-8c07-a4bfa5a7b79b',
+                  journeyId: '5d31c2b4-****-4a84-acd3-834cae80231b',
+                  eventProperty: {},
+                },
+                lastCampaignEmailRef: '064c76e7-****-4780-a001-226c066aaa12',
+                lastCampaignId: '31422f76-****-4a72-a630-dd6f9f615bc3',
+              }),
             },
-            lastCampaignEmailRef: '064c76e7-****-4780-a001-226c066aaa12',
-            lastCampaignId: '31422f76-****-4a72-a630-dd6f9f615bc3',
+            source: {},
           },
         ],
         method: 'POST',
@@ -487,7 +555,10 @@ export const data = [
                   anonymousId: '26c9ad4b531287858155ffa834be13dddc2c45df6e29af7230408953d732dd92',
                   context: {
                     externalId: [
-                      { id: 'cc56708d-****-4fea-8c07-a4bfa5a7b79b', type: 'mailmodoUserId' },
+                      {
+                        id: 'cc56708d-****-4fea-8c07-a4bfa5a7b79b',
+                        type: 'mailmodoUserId',
+                      },
                     ],
                     traits: { email: 'gou****@mailmodo.com' },
                     integration: { name: 'Mailmodo', version: '1.0.0' },
@@ -517,27 +588,37 @@ export const data = [
     name: 'mailmodo',
     description: 'test-8',
     module: 'source',
-    version: 'v0',
+    version: 'v2',
     input: {
       request: {
         body: [
           {
-            fuuid: '98255',
-            'next-step-id': 'success',
-            'total-steps': '3',
-            responseId: 'ad20a980-4fce-44b6-887d-2236df514a76',
-            recipientEmail: 'test@rudderstack.com',
-            formId: 'formosztd5',
-            recordedAt: { ts: 1662695887, date: '2022-09-09', hour: 9, minute: 28 },
-            submissionSource: 'amp',
-            elementjbtz42: 'peace',
-            element8jzo13: ['Useful'],
-            recipientData: { email: 'test@rudderstack.com', first_name: 'abcda' },
-            recommend: '1',
-            liking: 'downvote',
-            satisfaction: '1',
-            campaignId: '0b53e1bf-84ae-4198-9184-8a4d6e1fa3dd',
-            campaignName: 'Campaign-testing',
+            request: {
+              body: JSON.stringify({
+                fuuid: '98255',
+                'next-step-id': 'success',
+                'total-steps': '3',
+                responseId: 'ad20a980-4fce-44b6-887d-2236df514a76',
+                recipientEmail: 'test@rudderstack.com',
+                formId: 'formosztd5',
+                recordedAt: {
+                  ts: 1662695887,
+                  date: '2022-09-09',
+                  hour: 9,
+                  minute: 28,
+                },
+                submissionSource: 'amp',
+                elementjbtz42: 'peace',
+                element8jzo13: ['Useful'],
+                recipientData: { email: 'test@rudderstack.com', first_name: 'abcda' },
+                recommend: '1',
+                liking: 'downvote',
+                satisfaction: '1',
+                campaignId: '0b53e1bf-84ae-4198-9184-8a4d6e1fa3dd',
+                campaignName: 'Campaign-testing',
+              }),
+            },
+            source: {},
           },
         ],
         method: 'POST',
@@ -557,7 +638,10 @@ export const data = [
                   context: {
                     integration: { name: 'Mailmodo', version: '1.0.0' },
                     library: { name: 'unknown', version: 'unknown' },
-                    traits: { email: 'test@rudderstack.com', first_name: 'abcda' },
+                    traits: {
+                      email: 'test@rudderstack.com',
+                      first_name: 'abcda',
+                    },
                   },
                   event: 'Form Submitted',
                   integrations: { Mailmodo: false },

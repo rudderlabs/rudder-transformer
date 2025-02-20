@@ -3,7 +3,7 @@ const get = require('get-value');
 const stats = require('../../../../util/stats');
 const { getShopifyTopic } = require('../../../../v0/sources/shopify/util');
 const { removeUndefinedAndNullValues } = require('../../../../v0/util');
-const Message = require('../../../../v0/sources/message');
+const Message = require('../../../../sources/message');
 const { EventType } = require('../../../../constants');
 const {
   INTEGERATION,

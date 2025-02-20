@@ -144,6 +144,10 @@ const processEvent = async (inputEvent, metricMetadata) => {
   const redisData = await RedisDB.getVal(`pixel:${message.anonymousId}`);
   if (isDefinedNotNullNotEmpty(redisData)) {
     message.userId = redisData.userId;
+    stats.increment('shopify_pixel_userid_mapping', {
+      action: 'stitchUserIdToAnonId',
+      operation: 'get',
+    });
   }
   if (message.userId) {
     message.userId = String(message.userId);

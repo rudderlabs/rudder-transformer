@@ -162,6 +162,10 @@ async function processPixelEvent(inputEvent) {
   const redisData = await RedisDB.getVal(`pixel:${message.anonymousId}`);
   if (isDefinedNotNullNotEmpty(redisData)) {
     message.userId = redisData.userId;
+    stats.increment('shopify_pixel_userid_mapping', {
+      action: 'stitchUserIdToAnonId',
+      operation: 'get',
+    });
   }
   message = removeUndefinedAndNullValues(message);
   return message;

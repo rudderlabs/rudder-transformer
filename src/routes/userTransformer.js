@@ -15,6 +15,7 @@ async function transform(ctx) {
   const processedResponse = await piscina.run({ events });
 
   ctx.body = processedResponse.transformedEvents;
+  ctx.set('apiVersion', 2);
   logger.debug(
     '(User transform - router:/customTransform ):: Response from transformer',
     ctx.response.body,
@@ -22,5 +23,11 @@ async function transform(ctx) {
   return ctx;
 }
 
+async function health(ctx) {
+  ctx.status = 200;
+  return ctx;
+}
+
+router.get('/health', health);
 router.post('/customTransform', transform);
 module.exports = router.routes();

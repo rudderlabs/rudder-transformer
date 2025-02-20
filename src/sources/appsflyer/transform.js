@@ -2,11 +2,15 @@ const path = require('path');
 const fs = require('fs');
 const { TransformationError } = require('@rudderstack/integrations-lib');
 const Message = require('../message');
-const { generateUUID, getBodyFromV2SpecPayload, isAndroidFamily } = require('../../v0/util');
+const {
+  generateUUID,
+  getBodyFromV2SpecPayload,
+  removeUndefinedAndNullValues,
+  isObject,
+} = require('../../v0/util');
+const { getAdvertisingId } = require('./utils');
 
 const mappingJson = JSON.parse(fs.readFileSync(path.resolve(__dirname, './mapping.json'), 'utf-8'));
-
-const { removeUndefinedAndNullValues, isObject, isAppleFamily } = require('../../v0/util');
 
 const TRACK_MESSAGE_TYPE = 'track';
 
@@ -15,16 +19,6 @@ function createBaseMessage(eventName) {
   message.setEventType(TRACK_MESSAGE_TYPE);
   message.setEventName(eventName);
   return message;
-}
-
-function getAdvertisingId(event) {
-  if (isAppleFamily(event.platform)) {
-    return event.idfa;
-  }
-  if (isAndroidFamily(event.platform)) {
-    return event.android_id;
-  }
-  return null;
 }
 
 function processEvent(event) {

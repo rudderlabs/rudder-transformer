@@ -79,6 +79,10 @@ const checkoutStartedCompletedEventMappingJSON = JSON.parse(
   ),
 );
 
+const identifyMappingJSON = JSON.parse(
+  fs.readFileSync(path.resolve(__dirname, 'webhookEventsMapping', 'identifyMapping.json')),
+);
+
 const productMappingJSON = JSON.parse(
   fs.readFileSync(path.resolve(__dirname, 'webhookEventsMapping', 'productMapping.json')),
 );
@@ -114,4 +118,5 @@ module.exports = {
   pixelEventToCartTokenLocationMapping,
   productMappingJSON,
   lineItemsMappingJSON,
+  identifyMappingJSON,
 };

@@ -1,6 +1,6 @@
 {
   "name": "adjust",
-  "description": "Simple track call with no query parameters",
+  "description": "Simple track call with no query parameters v2 version",
   "input": {
     "request": {
       "body": {

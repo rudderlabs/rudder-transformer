@@ -204,13 +204,12 @@ const destinationTestHandler = async (tcData: TestCaseData) => {
   await testRoute(route, tcData);
 };
 
-const sourceTestHandler = async (tcData) => {
-  const route = `/${join(
-    tcData.version || DEFAULT_VERSION,
-    'sources',
-    tcData.name,
-    tcData.input.pathSuffix,
-  )}`;
+const sourceTestHandler = async (tcData, sourceTransformV2Flag) => {
+  const testVersion = tcData.version || DEFAULT_VERSION;
+  if (!sourceTransformV2Flag && testVersion === 'v2') {
+    return;
+  }
+  const route = `/${join(testVersion, 'sources', tcData.name, tcData.input.pathSuffix)}`;
   await testRoute(route, tcData);
 };
 
@@ -265,7 +264,7 @@ describe.each(allTestDataFilePaths)('%s Tests', (testDataPath) => {
           case tags.MODULES.SOURCE:
             tcData?.mockFns?.(mockAdapter);
             testSetupSourceTransformV2(sourceTransformV2Flag);
-            await sourceTestHandler(tcData);
+            await sourceTestHandler(tcData, sourceTransformV2Flag);
             break;
           default:
             console.log('Invalid module');

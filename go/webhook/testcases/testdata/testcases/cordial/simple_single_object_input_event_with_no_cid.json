@@ -49,8 +49,7 @@
             "title": "Khaki Shirt",
             "test_key": "value"
           }
-        },
-        "source": {}
+        }
       },
       "headers": {
         "Content-Type": "application/json"

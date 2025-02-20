@@ -31,13 +31,8 @@ const deduceModuleInfo = (inputs, Config) => {
   };
 };
 
-const deduceModuleInfoV2 = (Config, conConfig) => {
-  const { destination } = conConfig;
-  if (!destination) {
-    return {};
-  }
-
-  const { object, identifierMappings } = destination;
+const deduceModuleInfoV2 = (Config, destConfig) => {
+  const { object, identifierMappings } = destConfig;
   const identifierType = identifierMappings.map(({ to }) => to);
   return {
     operationModuleType: object,
@@ -86,8 +81,8 @@ const formatMultiSelectFields = (config, fields) => {
   return formattedFields;
 };
 
-const formatMultiSelectFieldsV2 = (config, fields) => {
-  const multiSelectFields = { ...config.destination.multiSelectFieldLevelDecision };
+const formatMultiSelectFieldsV2 = (destConfig, fields) => {
+  const multiSelectFields = { ...destConfig.multiSelectFieldLevelDecision };
   // Creating a shallow copy to avoid mutations
   const formattedFields = { ...fields };
   Object.keys(formattedFields).forEach((eachFieldKey) => {
@@ -204,9 +199,9 @@ const searchRecordId = async (fields, metadata, Config) => {
   }
 };
 
-const searchRecordIdV2 = async (fields, metadata, Config, conConfig) => {
+const searchRecordIdV2 = async (fields, metadata, Config, destConfig) => {
   try {
-    const { object } = conConfig.destination;
+    const { object } = destConfig;
     const searchURL = transformToURLParamsV2(fields, Config, object);
     const searchResult = await handleHttpRequest(
       'get',

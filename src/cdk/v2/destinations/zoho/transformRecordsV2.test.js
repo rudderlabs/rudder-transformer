@@ -1,5 +1,4 @@
-import { destType } from '../../../../../test/integrations/destinations/zoho/common';
-import { processRecordInputsV2 } from './transformRecordV2';
+const { processRecordInputsV2 } = require('./transformRecordV2');
 
 describe('processRecordInputsV2', () => {
   it('should return an empty array if no inputs are provided', async () => {

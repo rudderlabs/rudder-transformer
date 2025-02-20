@@ -27,15 +27,14 @@ const { REFRESH_TOKEN } = require('../../../../adapters/networkhandler/authConst
 // Main response builder function
 const responseBuilder = (
   items,
-  conConfig,
+  destConfig,
   identifierType,
   operationModuleType,
   commonEndPoint,
   isUpsert,
   metadata,
 ) => {
-  const { trigger, addDefaultDuplicateCheck, multiSelectFieldLevelDecision } =
-    conConfig.destination;
+  const { trigger, addDefaultDuplicateCheck, multiSelectFieldLevelDecision } = destConfig;
 
   const response = defaultRequestConfig();
   response.headers = {
@@ -66,7 +65,7 @@ const responseBuilder = (
 const batchResponseBuilder = (
   transformedResponseToBeBatched,
   config,
-  conConfig,
+  destConfig,
   identifierType,
   operationModuleType,
   upsertEndPoint,
@@ -96,7 +95,7 @@ const batchResponseBuilder = (
     upsertResponseArray.push(
       responseBuilder(
         chunk,
-        conConfig,
+        destConfig,
         identifierType,
         operationModuleType,
         upsertEndPoint,
@@ -110,7 +109,7 @@ const batchResponseBuilder = (
     deletionResponseArray.push(
       responseBuilder(
         chunk,
-        conConfig,
+        destConfig,
         identifierType,
         operationModuleType,
         upsertEndPoint,
@@ -144,7 +143,7 @@ const handleUpsert = async (
   input,
   allFields,
   operationModuleType,
-  conConfig,
+  destConfig,
   transformedResponseToBeBatched,
   errorResponseList,
 ) => {
@@ -156,7 +155,7 @@ const handleUpsert = async (
     );
     errorResponseList.push(handleRtTfSingleEventError(input, error, {}));
   } else {
-    const formattedFields = formatMultiSelectFieldsV2(conConfig, allFields);
+    const formattedFields = formatMultiSelectFieldsV2(destConfig, allFields);
     transformedResponseToBeBatched.upsertSuccessMetadata.push(input.metadata);
     transformedResponseToBeBatched.upsertData.push(formattedFields);
   }
@@ -197,11 +196,11 @@ const handleDeletion = async (
   input,
   fields,
   Config,
-  conConfig,
+  destConfig,
   transformedResponseToBeBatched,
   errorResponseList,
 ) => {
-  const searchResponse = await searchRecordIdV2(fields, input.metadata, Config, conConfig);
+  const searchResponse = await searchRecordIdV2(fields, input.metadata, Config, destConfig);
 
   if (searchResponse.erroneous) {
     const error = handleSearchError(searchResponse);
@@ -231,7 +230,7 @@ const processInput = async (
   Config,
   transformedResponseToBeBatched,
   errorResponseList,
-  conConfig,
+  destConfig,
 ) => {
   const { fields, action, identifiers } = input.message;
   const allFields = { ...identifiers, ...fields };
@@ -247,7 +246,7 @@ const processInput = async (
       input,
       allFields,
       operationModuleType,
-      conConfig,
+      destConfig,
       transformedResponseToBeBatched,
       errorResponseList,
     );
@@ -256,7 +255,7 @@ const processInput = async (
       input,
       allFields,
       Config,
-      conConfig,
+      destConfig,
       transformedResponseToBeBatched,
       errorResponseList,
     );
@@ -297,15 +296,15 @@ const processRecordInputsV2 = async (inputs, destination) => {
   const response = [];
   const errorResponseList = [];
   const { Config } = destination;
-
-  const { connection } = inputs[0];
-  if (!connection?.config) {
-    return [];
+  const { destination: destConfig } = inputs[0].connection?.config || {};
+  if (!destConfig) {
+    throw new ConfigurationError('Connection destination config is required');
   }
-
-  const { config: conConfig } = connection;
-  if (!conConfig) {
-    return [];
+  const { object, identifierMappings } = destConfig;
+  if (!object || !identifierMappings) {
+    throw new ConfigurationError(
+      'Object and identifierMappings are required in destination config',
+    );
   }
 
   const transformedResponseToBeBatched = {
@@ -317,7 +316,7 @@ const processRecordInputsV2 = async (inputs, destination) => {
 
   const { operationModuleType, identifierType, upsertEndPoint } = deduceModuleInfoV2(
     Config,
-    conConfig,
+    destConfig,
   );
 
   await Promise.all(
@@ -328,7 +327,7 @@ const processRecordInputsV2 = async (inputs, destination) => {
         Config,
         transformedResponseToBeBatched,
         errorResponseList,
-        conConfig,
+        destConfig,
       ),
     ),
   );
@@ -341,7 +340,7 @@ const processRecordInputsV2 = async (inputs, destination) => {
   } = batchResponseBuilder(
     transformedResponseToBeBatched,
     Config,
-    conConfig,
+    destConfig,
     identifierType,
     operationModuleType,
     upsertEndPoint,

@@ -77,6 +77,32 @@ const trackPayloadBuilder = (event, shopifyTopic) => {
   return message;
 };
 
+/**
+ * Creates an identify event with userId and anonymousId from message object and identifyMappingJSON
+ * @param {String} message
+ * @returns {Message} identifyEvent
+ */
+const createIdentifyEvent = (message) => {
+  const { userId, anonymousId, traits } = message;
+  const identifyEvent = new Message(INTEGERATION);
+  identifyEvent.setEventType(EventType.IDENTIFY);
+  identifyEvent.userId = userId;
+  identifyEvent.anonymousId = anonymousId;
+  const mappedTraits = {};
+  identifyMappingJSON.forEach((mapping) => {
+    if (mapping.destKeys.startsWith('traits.')) {
+      const traitKey = mapping.destKeys.replace('traits.', '');
+      const sourceValue = get(traits, traitKey);
+      if (sourceValue !== undefined) {
+        lodash.set(mappedTraits, traitKey, sourceValue);
+      }
+    }
+  });
+  // Set the mapped traits
+  identifyEvent.context.traits = removeUndefinedAndNullValues(mappedTraits);
+  return identifyEvent;
+};
+
 const processEvent = async (inputEvent, metricMetadata) => {
   let message;
   const event = lodash.cloneDeep(inputEvent);
@@ -123,6 +149,13 @@ const processEvent = async (inputEvent, metricMetadata) => {
     message.userId = String(message.userId);
   }
   message = removeUndefinedAndNullValues(message);
+
+  // if the message payload contains both anonymousId and userId, hence the user is identified
+  // then create an identify event by multiplexing the original event and return both the message and identify event
+  if (message.anonymousId && message.userId) {
+    const identifyEvent = createIdentifyEvent(message);
+    return [message, identifyEvent];
+  }
   return message;
 };
 const processWebhookEvents = async (event) => {

@@ -1,4 +1,5 @@
 *
+!main.js
 !src
 !Makefile
 !jest*.js

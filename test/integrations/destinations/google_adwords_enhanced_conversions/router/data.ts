@@ -1,3 +1,5 @@
+const API_VERSION = 'v18';
+
 const events = [
   {
     metadata: {
@@ -657,8 +659,7 @@ export const data = [
                   JSON_ARRAY: {},
                   XML: {},
                 },
-                endpoint:
-                  'https://googleads.googleapis.com/v17/customers/1234567890:uploadConversionAdjustments',
+                endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/1234567890:uploadConversionAdjustments`,
                 files: {},
                 headers: {
                   Authorization: 'Bearer abcd1234',
@@ -828,8 +829,7 @@ export const data = [
                   JSON_ARRAY: {},
                   XML: {},
                 },
-                endpoint:
-                  'https://googleads.googleapis.com/v17/customers/1234567890:uploadConversionAdjustments',
+                endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/1234567890:uploadConversionAdjustments`,
                 files: {},
                 headers: {
                   Authorization: 'Bearer abcd1234',

@@ -49,7 +49,7 @@ export const metadata = {
 export const headerBlockWithCorrectAccessToken = {
   Authorization: 'Bearer default-accessToken',
   'Content-Type': 'application/json',
-  'LinkedIn-Version': '202402',
+  'LinkedIn-Version': '202502',
   'X-RestLi-Method': 'BATCH_CREATE',
   'X-Restli-Protocol-Version': '2.0.0',
 };

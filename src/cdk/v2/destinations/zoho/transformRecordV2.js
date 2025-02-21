@@ -12,6 +12,7 @@ const {
   handleRtTfSingleEventError,
   isEmptyObject,
   defaultDeleteRequestConfig,
+  getHashFromArray,
 } = require('../../../../v0/util');
 const zohoConfig = require('./config');
 const {
@@ -41,6 +42,13 @@ const responseBuilder = (
     Authorization: `Zoho-oauthtoken ${metadata[0].secret.accessToken}`,
   };
 
+  const multiSelectFieldLevelDecisionAcc = getHashFromArray(
+    multiSelectFieldLevelDecision,
+    'from',
+    'to',
+    false,
+  );
+
   if (isUpsert) {
     const payload = {
       duplicate_check_fields: handleDuplicateCheckV2(
@@ -49,7 +57,7 @@ const responseBuilder = (
         operationModuleType,
       ),
       data: items,
-      $append_values: multiSelectFieldLevelDecision || {},
+      $append_values: multiSelectFieldLevelDecisionAcc || {},
       trigger: calculateTrigger(trigger),
     };
     response.method = defaultPostRequestConfig.requestMethod;

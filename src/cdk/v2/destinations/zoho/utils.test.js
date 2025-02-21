@@ -8,6 +8,7 @@ const {
   validatePresenceOfMandatoryProperties,
   validateConfigurationIssue,
   formatMultiSelectFields,
+  formatMultiSelectFieldsV2,
   transformToURLParams,
   transformToURLParamsV2,
   calculateTrigger,
@@ -106,6 +107,48 @@ describe('formatMultiSelectFields', () => {
   testCases.forEach(({ name, input, expected }) => {
     it(name, () => {
       const result = formatMultiSelectFields(input.config, { ...input.fields });
+      expect(result).toEqual(expected);
+    });
+  });
+});
+
+describe('formatMultiSelectFieldsV2', () => {
+  const testCases = [
+    {
+      name: 'should convert a field value to an array if a mapping exists in multiSelectFieldLevelDecision',
+      input: {
+        config: {
+          multiSelectFieldLevelDecision: [{ from: 'tags', to: 'true' }],
+        },
+        fields: { tags: 'value' },
+      },
+      expected: { tags: ['value'] },
+    },
+    {
+      name: 'should leave fields unchanged if mapping fields exists but null',
+      input: {
+        config: {
+          multiSelectFieldLevelDecision: [{ from: 'tags', to: 'true' }],
+        },
+        fields: { tags: null, other: 'val' },
+      },
+      expected: { tags: null, other: 'val' },
+    },
+    {
+      name: 'should leave fields unchanged if no mapping exists',
+      input: {
+        config: {
+          multiSelectFieldLevelDecision: [{ from: 'categories', to: 'true' }],
+        },
+        fields: { tags: 'value', other: 'val' },
+      },
+      expected: { tags: 'value', other: 'val' },
+    },
+  ];
+
+  testCases.forEach(({ name, input, expected }) => {
+    it(name, () => {
+      const result = formatMultiSelectFieldsV2(input.config, { ...input.fields });
       expect(result).toEqual(expected);
     });
   });

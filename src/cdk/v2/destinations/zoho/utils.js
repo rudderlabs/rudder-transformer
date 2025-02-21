@@ -82,7 +82,12 @@ const formatMultiSelectFields = (config, fields) => {
 };
 
 const formatMultiSelectFieldsV2 = (destConfig, fields) => {
-  const multiSelectFields = { ...destConfig.multiSelectFieldLevelDecision };
+  const multiSelectFields = getHashFromArray(
+    destConfig.multiSelectFieldLevelDecision,
+    'from',
+    'to',
+    false,
+  );
   // Creating a shallow copy to avoid mutations
   const formattedFields = { ...fields };
   Object.keys(formattedFields).forEach((eachFieldKey) => {

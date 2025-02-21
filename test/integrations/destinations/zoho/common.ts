@@ -107,10 +107,10 @@ const commonDeletionConnectionConfigV2: Connection = {
         },
       ],
       addDefaultDuplicateCheck: true,
-      multiSelectFieldLevelDecision: {
-        'multi-language': 'true',
-        'multi class': 'false',
-      },
+      multiSelectFieldLevelDecision: [
+        { from: 'multi-language', to: 'true' },
+        { from: 'multi class', to: 'false' },
+      ],
     },
   },
 };
@@ -420,10 +420,10 @@ const commonConnectionConfigV2: Connection = {
           to: 'email',
         },
       ],
-      multiSelectFieldLevelDecision: {
-        'multi-language': 'true',
-        'multi class': 'false',
-      },
+      multiSelectFieldLevelDecision: [
+        { from: 'multi-language', to: 'true' },
+        { from: 'multi class', to: 'false' },
+      ],
     },
   },
 };
@@ -445,10 +445,10 @@ const commonConnectionConfigV2_2: Connection = {
           to: 'email',
         },
       ],
-      multiSelectFieldLevelDecision: {
-        'multi-language': 'true',
-        'multi class': 'false',
-      },
+      multiSelectFieldLevelDecision: [
+        { from: 'multi-language', to: 'true' },
+        { from: 'multi class', to: 'false' },
+      ],
     },
   },
 };
@@ -470,10 +470,10 @@ const commonConnectionConfigCustomModuleV2: Connection = {
           to: 'Email',
         },
       ],
-      multiSelectFieldLevelDecision: {
-        'multi-language': 'true',
-        'multi class': 'false',
-      },
+      multiSelectFieldLevelDecision: [
+        { from: 'multi-language', to: 'true' },
+        { from: 'multi class', to: 'false' },
+      ],
     },
   },
 };

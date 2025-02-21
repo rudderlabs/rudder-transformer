@@ -4,6 +4,8 @@ import {
   generateProxyV0Payload,
 } from '../../../testUtils';
 
+const API_VERSION = 'v18';
+
 const commonHeaders = {
   Authorization: 'Bearer abcd1234',
   'Content-Type': 'application/json',
@@ -95,7 +97,7 @@ export const v0oauthScenarios = [
       request: {
         body: generateProxyV0Payload({
           ...commonRequestParameters,
-          endpoint: 'https://googleads.googleapis.com/v17/customers/customerid/offlineUserDataJobs',
+          endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/customerid/offlineUserDataJobs`,
         }),
         method: 'POST',
       },
@@ -138,7 +140,7 @@ export const v0oauthScenarios = [
       request: {
         body: generateProxyV0Payload({
           ...commonRequestParameters,
-          endpoint: 'https://googleads.googleapis.com/v17/customers/1234/offlineUserDataJobs',
+          endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/1234/offlineUserDataJobs`,
         }),
         method: 'POST',
       },
@@ -183,8 +185,7 @@ export const v1oauthScenarios = [
         body: generateProxyV1Payload(
           {
             ...commonRequestParameters,
-            endpoint:
-              'https://googleads.googleapis.com/v17/customers/customerid/offlineUserDataJobs',
+            endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/customerid/offlineUserDataJobs`,
           },
           metadataArray,
         ),
@@ -230,7 +231,7 @@ export const v1oauthScenarios = [
         body: generateProxyV1Payload(
           {
             ...commonRequestParameters,
-            endpoint: 'https://googleads.googleapis.com/v17/customers/1234/offlineUserDataJobs',
+            endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/1234/offlineUserDataJobs`,
           },
           metadataArray,
         ),
@@ -281,8 +282,7 @@ export const v1oauthScenarios = [
               'developer-token': 'ijkl91011',
               'login-customer-id': 'logincustomerid',
             },
-            endpoint:
-              'https://googleads.googleapis.com/v17/customers/customerid/offlineUserDataJobs',
+            endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/customerid/offlineUserDataJobs`,
           },
           metadataArray,
         ),
@@ -353,8 +353,7 @@ export const v1oauthScenarios = [
               'developer-token': 'ijkl91011',
               'login-customer-id': 'logincustomerid',
             },
-            endpoint:
-              'https://googleads.googleapis.com/v17/customers/customerid/offlineUserDataJobs',
+            endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/customerid/offlineUserDataJobs`,
           },
           metadataArray,
         ),

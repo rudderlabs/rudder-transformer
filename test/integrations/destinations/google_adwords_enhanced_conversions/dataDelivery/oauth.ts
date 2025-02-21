@@ -1,4 +1,5 @@
-import { API_VERSION } from '../../../../../src/v0/destinations/google_adwords_enhanced_conversions/config';
+const API_VERSION = 'v18';
+
 import {
   generateProxyV1Payload,
   generateProxyV0Payload,

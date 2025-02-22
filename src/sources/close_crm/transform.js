@@ -4,9 +4,10 @@ const {
   removeUndefinedAndNullRecurse,
   generateUUID,
   formatTimeStamp,
-} = require('../../../v0/util');
+  getBodyFromV2SpecPayload,
+} = require('../../v0/util');
 const { excludedFieldList } = require('./config');
-const Message = require('../../../v0/sources/message');
+const Message = require('../message');
 
 function processEvent(inputEvent) {
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -48,8 +49,8 @@ function processEvent(inputEvent) {
   return message;
 }
 
-function process(inputEvent) {
-  const { event } = inputEvent;
+function process(payload) {
+  const event = getBodyFromV2SpecPayload(payload);
   const response = processEvent(event);
   return removeUndefinedAndNullValues(response);
 }

@@ -85,6 +85,11 @@ const HTTP_STATUS_CODES = {
   NETWORK_AUTHENTICATION_REQUIRED: 511,
 };
 
+const ERROR_MESSAGES = {
+  MALFORMED_JSON_IN_REQUEST_BODY: 'Malformed JSON in request body',
+  REQUEST_BODY_NOT_PRESENT_IN_V2_SPEC_PAYLOAD: 'request.body is not present in V2 spec payload',
+};
+
 module.exports = {
   API_CALL,
   AUTH_CACHE_TTL,
@@ -94,4 +99,5 @@ module.exports = {
   FEATURE_FILTER_CODE,
   FEATURE_GZIP_SUPPORT,
   VDM_V2_SCHEMA_VERSION,
+  ERROR_MESSAGES,
 };

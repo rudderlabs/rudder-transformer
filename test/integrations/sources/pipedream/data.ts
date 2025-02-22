@@ -3,15 +3,20 @@ export const data = [
     name: 'pipedream',
     description: 'No type or userId  is given',
     module: 'source',
-    version: 'v0',
+    version: 'v2',
     input: {
       request: {
         body: [
           {
-            anonymousId: '63767499ca6fb1b7c988d5bb',
-            artist: 'Gautam',
-            genre: 'Jazz',
-            song: 'Take Five',
+            request: {
+              body: JSON.stringify({
+                anonymousId: '63767499ca6fb1b7c988d5bb',
+                artist: 'Gautam',
+                genre: 'Jazz',
+                song: 'Take Five',
+              }),
+            },
+            source: {},
           },
         ],
         method: 'POST',
@@ -53,10 +58,22 @@ export const data = [
     name: 'pipedream',
     description: 'No type or anonymousId is given',
     module: 'source',
-    version: 'v0',
+    version: 'v2',
     input: {
       request: {
-        body: [{ userId: '12', artist: 'Gautam', genre: 'Jazz', song: 'Take Five' }],
+        body: [
+          {
+            request: {
+              body: JSON.stringify({
+                userId: '12',
+                artist: 'Gautam',
+                genre: 'Jazz',
+                song: 'Take Five',
+              }),
+            },
+            source: {},
+          },
+        ],
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
       },
@@ -78,7 +95,12 @@ export const data = [
                   },
                   integrations: { PIPEDREAM: false },
                   type: 'track',
-                  properties: { userId: '12', artist: 'Gautam', genre: 'Jazz', song: 'Take Five' },
+                  properties: {
+                    userId: '12',
+                    artist: 'Gautam',
+                    genre: 'Jazz',
+                    song: 'Take Five',
+                  },
                 },
               ],
             },
@@ -91,29 +113,39 @@ export const data = [
     name: 'pipedream',
     description: 'Track Call -> type and userId is given',
     module: 'source',
-    version: 'v0',
+    version: 'v2',
     input: {
       request: {
         body: [
           {
-            event: 'Song Played',
-            userId: 'R1234',
-            context: {
-              library: { name: 'unknown', version: 'unknown' },
-              traits: {
-                createdAt: '2022-10-15T05:41:06.016Z',
-                custom: { key1: 'v1', key2: 'V2' },
-                email: 'john@doe.com',
-                name: 'John Doe',
-                userDeleted: false,
-              },
-              locale: 'en',
-              location: { country: 'IN', countryName: 'India', short: 'India', long: 'India' },
-              device: { os: 'macOS', type: 'desktop' },
-              page: { referrer: 'http://127.0.0.1:5500/testSm.html' },
+            request: {
+              body: JSON.stringify({
+                event: 'Song Played',
+                userId: 'R1234',
+                context: {
+                  library: { name: 'unknown', version: 'unknown' },
+                  traits: {
+                    createdAt: '2022-10-15T05:41:06.016Z',
+                    custom: { key1: 'v1', key2: 'V2' },
+                    email: 'john@doe.com',
+                    name: 'John Doe',
+                    userDeleted: false,
+                  },
+                  locale: 'en',
+                  location: {
+                    country: 'IN',
+                    countryName: 'India',
+                    short: 'India',
+                    long: 'India',
+                  },
+                  device: { os: 'macOS', type: 'desktop' },
+                  page: { referrer: 'http://127.0.0.1:5500/testSm.html' },
+                },
+                type: 'track',
+                properties: { artist: 'John', Album: 'ABCD' },
+              }),
             },
-            type: 'track',
-            properties: { artist: 'John', Album: 'ABCD' },
+            source: {},
           },
         ],
         method: 'POST',
@@ -164,24 +196,29 @@ export const data = [
     name: 'pipedream',
     description: 'Identify type  -> type and userId is given',
     module: 'source',
-    version: 'v0',
+    version: 'v2',
     input: {
       request: {
         body: [
           {
-            userId: '1',
-            originalTimestamp: '2020-09-28T19:53:31.900Z',
-            traits: {
-              firstName: 'John',
-              lastName: 'doe',
-              email: 'John@r.com',
-              hasPurchased: 'yes',
-              address: { Home: { city: 'iudcb' }, Office: { abc: 'jbc' } },
-              state: 'Delhi',
-              title: 'Mr',
+            request: {
+              body: JSON.stringify({
+                userId: '1',
+                originalTimestamp: '2020-09-28T19:53:31.900Z',
+                traits: {
+                  firstName: 'John',
+                  lastName: 'doe',
+                  email: 'John@r.com',
+                  hasPurchased: 'yes',
+                  address: { Home: { city: 'iudcb' }, Office: { abc: 'jbc' } },
+                  state: 'Delhi',
+                  title: 'Mr',
+                },
+                timestamp: '2020-09-29T14:50:29.907+05:30',
+                type: 'identify',
+              }),
             },
-            timestamp: '2020-09-29T14:50:29.907+05:30',
-            type: 'identify',
+            source: {},
           },
         ],
         method: 'POST',
@@ -223,16 +260,21 @@ export const data = [
     name: 'pipedream',
     description: 'Group type  -> type and userId is given',
     module: 'source',
-    version: 'v0',
+    version: 'v2',
     input: {
       request: {
         body: [
           {
-            userId: 'user123',
-            groupId: '17',
-            context: {},
-            traits: { operation: 'add' },
-            type: 'group',
+            request: {
+              body: JSON.stringify({
+                userId: 'user123',
+                groupId: '17',
+                context: {},
+                traits: { operation: 'add' },
+                type: 'group',
+              }),
+            },
+            source: {},
           },
         ],
         method: 'POST',
@@ -265,24 +307,32 @@ export const data = [
     name: 'pipedream',
     description: 'Page type  -> type and userId is given',
     module: 'source',
-    version: 'v0',
+    version: 'v2',
     input: {
       request: {
         body: [
           {
-            anonymousId: '21e13f4bc7ceddad',
-            channel: 'mobile',
-            context: {
-              os: { name: 'Android', version: '9' },
-              timezone: 'Asia/Kolkata',
-              traits: { customProp: 'customValue' },
-              userAgent:
-                'Dalvik/2.1.0 (Linux; U; Android 9; AOSP on IA Emulator Build/PSR1.180720.117)',
+            request: {
+              body: JSON.stringify({
+                anonymousId: '21e13f4bc7ceddad',
+                channel: 'mobile',
+                context: {
+                  os: { name: 'Android', version: '9' },
+                  timezone: 'Asia/Kolkata',
+                  traits: { customProp: 'customValue' },
+                  userAgent:
+                    'Dalvik/2.1.0 (Linux; U; Android 9; AOSP on IA Emulator Build/PSR1.180720.117)',
+                },
+                name: 'Home',
+                properties: {
+                  title: 'Home | RudderStack',
+                  url: 'http://www.rudderstack.com',
+                },
+                receivedAt: '2020-09-29T14:50:43.005+05:30',
+                type: 'page',
+              }),
             },
-            name: 'Home',
-            properties: { title: 'Home | RudderStack', url: 'http://www.rudderstack.com' },
-            receivedAt: '2020-09-29T14:50:43.005+05:30',
-            type: 'page',
+            source: {},
           },
         ],
         method: 'POST',
@@ -308,7 +358,10 @@ export const data = [
                       'Dalvik/2.1.0 (Linux; U; Android 9; AOSP on IA Emulator Build/PSR1.180720.117)',
                   },
                   name: 'Home',
-                  properties: { title: 'Home | RudderStack', url: 'http://www.rudderstack.com' },
+                  properties: {
+                    title: 'Home | RudderStack',
+                    url: 'http://www.rudderstack.com',
+                  },
                   receivedAt: '2020-09-29T14:50:43.005+05:30',
                   type: 'page',
                 },
@@ -323,10 +376,21 @@ export const data = [
     name: 'pipedream',
     description: 'Alias type  -> type and userId is given',
     module: 'source',
-    version: 'v0',
+    version: 'v2',
     input: {
       request: {
-        body: [{ type: 'alias', previousId: 'name@surname.com', userId: '12345' }],
+        body: [
+          {
+            request: {
+              body: JSON.stringify({
+                type: 'alias',
+                previousId: 'name@surname.com',
+                userId: '12345',
+              }),
+            },
+            source: {},
+          },
+        ],
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
       },
@@ -339,7 +403,12 @@ export const data = [
           {
             output: {
               batch: [
-                { type: 'alias', previousId: 'name@surname.com', userId: '12345', context: {} },
+                {
+                  type: 'alias',
+                  previousId: 'name@surname.com',
+                  userId: '12345',
+                  context: {},
+                },
               ],
             },
           },

@@ -560,6 +560,25 @@ export const genericTrackTestScenarios = [
                   },
                   anonymousId: '50ead33e-d763-4854-b0ab-765859ef05cb',
                 },
+                {
+                  anonymousId: '50ead33e-d763-4854-b0ab-765859ef05cb',
+                  context: {
+                    integration: {
+                      name: 'SHOPIFY',
+                    },
+                    library: {
+                      name: 'unknown',
+                      version: 'unknown',
+                    },
+                    traits: {
+                      email: 'henry@wfls.com',
+                    },
+                  },
+                  integrations: {
+                    SHOPIFY: false,
+                  },
+                  type: 'identify',
+                },
               ],
             },
           },

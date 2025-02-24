@@ -65,26 +65,9 @@ export const data = [
         body: {
           output: {
             status: 200,
-            message:
-              '[Generic Response Handler] Request for destination: am Processed Successfully',
-            destinationResponse: {
-              headers: {
-                'access-control-allow-methods': 'GET, POST',
-                'access-control-allow-origin': '*',
-                connection: 'keep-alive',
-                'content-length': '93',
-                'content-type': 'application/json',
-                date: 'Sat, 11 Dec 2021 15:08:22 GMT',
-                'strict-transport-security': 'max-age=15768000',
-              },
-              response: {
-                code: 200,
-                server_upload_time: 1639235302252,
-                payload_size_bytes: 863,
-                events_ingested: 1,
-              },
-              status: 200,
-            },
+            message: '[amplitude Response Handler] - Request Processed Successfully',
+            destinationResponse:
+              '{"code":200,"server_upload_time":1639235302252,"payload_size_bytes":863,"events_ingested":1}',
           },
         },
       },
@@ -152,7 +135,7 @@ export const data = [
           output: {
             status: 400,
             message:
-              '[Generic Response Handler] Request failed for destination am with status: 400',
+              'Request Failed during amplitude response transformation: with status "400" due to "{"code":400,"server_upload_time":1639235302252,"payload_size_bytes":863,"events_ingested":0}", (Aborted)',
             destinationResponse: {
               headers: {
                 'access-control-allow-methods': 'GET, POST',
@@ -248,7 +231,7 @@ export const data = [
           output: {
             status: 400,
             message:
-              '[Generic Response Handler] Request failed for destination am with status: 400',
+              'Request Failed during amplitude response transformation: with status "400" due to ""[ENOTFOUND] :: DNS lookup failed"", (Aborted)',
             destinationResponse: {
               response: '[ENOTFOUND] :: DNS lookup failed',
               status: 400,
@@ -378,7 +361,7 @@ export const data = [
           output: {
             status: 400,
             message:
-              '[Generic Response Handler] Request failed for destination am with status: 400',
+              'Request Failed during amplitude response transformation: with status "400" due to """", (Aborted)',
             destinationResponse: {
               response: '',
               status: 400,
@@ -460,7 +443,7 @@ export const data = [
           output: {
             status: 500,
             message:
-              '[Generic Response Handler] Request failed for destination am with status: 500',
+              'Request Failed during amplitude response transformation: with status "500" due to """", (Retryable)',
             destinationResponse: {
               response: '',
               status: 500,
@@ -542,7 +525,7 @@ export const data = [
           output: {
             status: 500,
             message:
-              '[Generic Response Handler] Request failed for destination am with status: 500',
+              'Request Failed during amplitude response transformation: with status "500" due to """", (Retryable)',
             destinationResponse: {
               response: '',
               status: 500,

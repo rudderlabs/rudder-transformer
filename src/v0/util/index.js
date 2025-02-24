@@ -23,7 +23,6 @@ const {
   PlatformError,
   TransformationError,
   OAuthSecretError,
-  getErrorRespEvents,
 } = require('@rudderstack/integrations-lib');
 
 const { JsonTemplateEngine, PathType } = require('@rudderstack/json-template-engine');
@@ -1719,6 +1718,14 @@ function getValidDynamicFormConfig(
   return res;
 }
 
+const getErrorRespEvents = (metadata, statusCode, error, statTags, batched = false) => ({
+  metadata,
+  batched,
+  statusCode,
+  error,
+  statTags,
+});
+
 /**
  * This method is used to check if the input events sent to router transformation are valid
  * It is to be used only for router transform destinations
@@ -2402,6 +2409,7 @@ module.exports = {
   getDestinationExternalIDInfoForRetl,
   getDestinationExternalIDObjectForRetl,
   getDeviceModel,
+  getErrorRespEvents,
   getEventTime,
   getFieldValueFromMessage,
   getFirstAndLastName,

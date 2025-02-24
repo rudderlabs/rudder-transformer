@@ -74,6 +74,9 @@ const process = (inputEvent) => {
 
   // Ref: Custom Currents Connector Partner Dev Documentation.pdf
   const eventList = Array.isArray(event) && event.length > 0 ? event[0].events : event.events;
+  if (!eventList || !Array.isArray(eventList)) {
+    throw new TransformationError('eventList should be an array');
+  }
   eventList.forEach((singleEvent) => {
     try {
       const resp = processEvent(singleEvent, eventMapping);

@@ -1267,6 +1267,62 @@ export const data = [
       },
     },
   },
+  {
+    name: 'braze',
+    description: 'event.events is not in required format',
+    module: 'source',
+    version: 'v1',
+    input: {
+      request: {
+        body: [
+          {
+            event: {
+              events: {},
+            },
+            source: {
+              ID: '2hgvYyU5TYaFvVzBge6tF2UKoeG',
+              OriginalID: '',
+              Name: 'Braze source',
+              SourceDefinition: commonSourceDefinition,
+              Config: {
+                customMapping: [
+                  {
+                    from: 'randomEvent',
+                    to: 'In-App Message Clicked',
+                  },
+                ],
+              },
+              ...commonSourceConfigProperties,
+            },
+          },
+        ],
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      },
+      pathSuffix: '',
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            error: 'eventList should be an array',
+            statTags: {
+              destinationId: 'Non determinable',
+              errorCategory: 'transformation',
+              implementation: 'native',
+              module: 'source',
+              srcType: 'braze',
+              workspaceId: 'Non determinable',
+            },
+            statusCode: 400,
+          },
+        ],
+      },
+    },
+  },
 ].map((tc) => ({
   ...tc,
   mockFns: () => {

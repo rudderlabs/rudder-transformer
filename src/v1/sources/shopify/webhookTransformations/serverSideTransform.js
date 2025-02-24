@@ -87,10 +87,10 @@ const createIdentifyEvent = (message) => {
   const identifyEvent = new Message(INTEGERATION);
   identifyEvent.setEventType(EventType.IDENTIFY);
   if (userId) {
-    identifyEvent.userId = userId ?? undefined;
+    identifyEvent.userId = userId;
   }
   if (anonymousId) {
-    identifyEvent.anonymousId = anonymousId ?? undefined;
+    identifyEvent.anonymousId = anonymousId;
   }
   const mappedTraits = {};
   identifyMappingJSON.forEach((mapping) => {

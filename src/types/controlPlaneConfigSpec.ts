@@ -1,5 +1,5 @@
 import type { FixMe } from '../util/types';
-import type { UserTransformationInput } from './userTransformationContracts';
+import type { UserTransformationInput } from './userTransformation';
 
 export type DestinationDefinition = {
   ID: string;

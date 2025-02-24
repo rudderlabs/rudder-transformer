@@ -1527,4 +1527,101 @@ export const upsertData = [
     },
     mockFns: defaultMockFns,
   },
+  {
+    name: destType,
+    description: 'Test fields can be empty',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: upsertPayload3V2,
+              metadata: {
+                jobId: 1,
+                userId: 'u1',
+                secret: {
+                  accessToken: 'correct-access-token',
+                },
+              },
+              destination: commonUpsertDestConfig3,
+              connection: commonConnectionConfigV2_3,
+            },
+            {
+              message: {
+                action: 'insert',
+                context: {},
+                fields: {},
+                identifiers: {},
+                type: 'record',
+              },
+              metadata: {},
+              destination: commonUpsertDestConfig,
+              connection: commonConnectionConfigV2_3,
+            },
+          ],
+          destType,
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: 'https://www.zohoapis.com/crm/v6/Leads/upsert',
+                headers: {
+                  Authorization: 'Zoho-oauthtoken correct-access-token',
+                },
+                params: {},
+                body: {
+                  JSON: commonOutput1,
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+              },
+              metadata: [
+                {
+                  jobId: 1,
+                  userId: 'u1',
+                  secret: {
+                    accessToken: 'correct-access-token',
+                  },
+                },
+              ],
+              batched: true,
+              statusCode: 200,
+              destination: commonUpsertDestConfig3,
+            },
+            {
+              batched: false,
+              destination: commonUpsertDestConfig,
+              error: '`fields` cannot be empty',
+              metadata: [{}],
+              statTags: {
+                destType: 'ZOHO',
+                errorCategory: 'dataValidation',
+                errorType: 'instrumentation',
+                feature: 'router',
+                implementation: 'cdkV2',
+                module: 'destination',
+              },
+              statusCode: 400,
+            },
+          ],
+        },
+      },
+    },
+    mockFns: defaultMockFns,
+  },
 ];

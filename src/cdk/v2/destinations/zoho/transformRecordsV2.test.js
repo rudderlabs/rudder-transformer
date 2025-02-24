@@ -7,7 +7,16 @@ describe('processRecordInputsV2', () => {
   });
 
   it('should return an empty array if no destination is provided', async () => {
-    const result = await processRecordInputsV2([], null);
+    const result = await processRecordInputsV2(
+      [
+        {
+          id: '1',
+          metadata: {},
+          type: 'record',
+        },
+      ],
+      null,
+    );
     expect(result).toEqual([]);
   });
 

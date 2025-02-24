@@ -419,7 +419,7 @@ export const data = [
                   'Content-Type': 'application/json',
                   'X-RestLi-Method': 'BATCH_CREATE',
                   'X-Restli-Protocol-Version': '2.0.0',
-                  'LinkedIn-Version': '202502',
+                  'LinkedIn-Version': '202409',
                   Authorization: 'Bearer dummyToken',
                 },
                 params: {},

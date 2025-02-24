@@ -260,7 +260,7 @@ export const genericTrackTestScenarios = [
                   gift_card: false,
                   grams: 0,
                   name: 'The Collection Snowboard: Hydrogen',
-                  price: '600.00',
+                  price: 600,
                   price_set: {
                     shop_money: {
                       amount: '600.00',
@@ -272,7 +272,7 @@ export const genericTrackTestScenarios = [
                     },
                   },
                   product_exists: true,
-                  product_id: 7234590408817,
+                  product_id: '7234590408817',
                   properties: [],
                   quantity: 1,
                   requires_shipping: true,
@@ -474,7 +474,7 @@ export const genericTrackTestScenarios = [
                           gift_card: false,
                           grams: 0,
                           name: 'The Collection Snowboard: Hydrogen',
-                          price: '600.00',
+                          price: 600,
                           price_set: {
                             shop_money: {
                               amount: '600.00',
@@ -486,7 +486,7 @@ export const genericTrackTestScenarios = [
                             },
                           },
                           product_exists: true,
-                          product_id: 7234590408817,
+                          product_id: '7234590408817',
                           properties: [],
                           quantity: 1,
                           requires_shipping: true,
@@ -546,9 +546,9 @@ export const genericTrackTestScenarios = [
                   properties: {
                     products: [
                       {
-                        product_id: 7234590408817,
+                        product_id: '7234590408817',
                         title: 'The Collection Snowboard: Hydrogen',
-                        price: '600.00',
+                        price: 600,
                         brand: 'Hydrogen Vendor',
                         quantity: 1,
                       },

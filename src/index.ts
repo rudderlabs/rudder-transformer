@@ -15,8 +15,8 @@ dotenv.config();
 import logger from './logger';
 
 const clusterEnabled = process.env.CLUSTER_ENABLED !== 'false';
-const port = parseInt(process.env.PORT ?? '9090', 10);
-const metricsPort = parseInt(process.env.METRICS_PORT || '9091', 10);
+const port = parseInt(process.env.PORT ?? '9095', 10);
+const metricsPort = parseInt(process.env.METRICS_PORT || '9096', 10);
 
 initPyroscope();
 

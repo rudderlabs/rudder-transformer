@@ -1529,7 +1529,7 @@ export const upsertData = [
   },
   {
     name: destType,
-    description: 'Test fields can be empty',
+    description: 'Test fields can be empty V2',
     feature: 'router',
     module: 'destination',
     version: 'v0',

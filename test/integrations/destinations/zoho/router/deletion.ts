@@ -490,4 +490,88 @@ export const deleteData = [
     },
     mockFns: defaultMockFns,
   },
+  {
+    name: destType,
+    id: 'zoho_deletion_2_v2',
+    description: 'Delete with invalid access token V2',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: {
+                action: 'delete',
+                context: {
+                  sources: {
+                    job_run_id: 'cgiiurt8um7k7n5dq480',
+                    task_run_id: 'cgiiurt8um7k7n5dq48g',
+                    job_id: '2MUWghI7u85n91dd1qzGyswpZan',
+                    version: '895/merge',
+                  },
+                },
+                recordId: '2',
+                rudderId: '2',
+                fields: {
+                  First_Name: 'subcribed3',
+                  Last_Name: 'User3',
+                },
+                identifiers: {
+                  Email: 'tobedeleted3@gmail.com',
+                },
+                type: 'record',
+              },
+              metadata: {
+                jobId: 2,
+                userId: 'u1',
+                secret: {
+                  accessToken: 'expired-access-token',
+                },
+              },
+              destination: commonDeletionDestConfig,
+              connection: commonDeletionConnectionConfigV2,
+            },
+          ],
+          destType,
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batched: false,
+              authErrorCategory: 'REFRESH_TOKEN',
+              statusCode: 500,
+              error: `{\"message\":\"[Zoho]:: {\\\"code\\\":\\\"INVALID_TOKEN\\\",\\\"details\\\":{},\\\"message\\\":\\\"invalid oauth token\\\",\\\"status\\\":\\\"error\\\"} during zoho record search\",\"destinationResponse\":{\"code\":\"INVALID_TOKEN\",\"details\":{},\"message\":\"invalid oauth token\",\"status\":\"error\"}}`,
+              destination: commonDeletionDestConfig,
+              metadata: [
+                {
+                  jobId: 2,
+                  userId: 'u1',
+                  secret: {
+                    accessToken: 'expired-access-token',
+                  },
+                },
+              ],
+              statTags: {
+                errorType: 'retryable',
+                errorCategory: 'network',
+                destType: 'ZOHO',
+                module: 'destination',
+                implementation: 'cdkV2',
+                feature: 'router',
+              },
+            },
+          ],
+        },
+      },
+    },
+    mockFns: defaultMockFns,
+  },
 ];

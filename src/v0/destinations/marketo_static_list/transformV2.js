@@ -1,9 +1,5 @@
 const lodash = require('lodash');
-const {
-  InstrumentationError,
-  UnauthorizedError,
-  getErrorRespEvents,
-} = require('@rudderstack/integrations-lib');
+const { InstrumentationError, UnauthorizedError } = require('@rudderstack/integrations-lib');
 const {
   defaultPostRequestConfig,
   defaultDeleteRequestConfig,
@@ -11,6 +7,7 @@ const {
   getSuccessRespEvents,
   isDefinedAndNotNull,
   generateErrorObject,
+  getErrorRespEvents,
 } = require('../../util');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 const { MAX_LEAD_IDS_SIZE } = require('./config');

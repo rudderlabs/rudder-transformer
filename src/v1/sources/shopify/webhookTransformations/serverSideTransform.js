@@ -86,8 +86,12 @@ const createIdentifyEvent = (message) => {
   const { userId, anonymousId, traits } = message;
   const identifyEvent = new Message(INTEGERATION);
   identifyEvent.setEventType(EventType.IDENTIFY);
-  identifyEvent.userId = userId;
-  identifyEvent.anonymousId = anonymousId;
+  if (userId) {
+    identifyEvent.userId = userId;
+  }
+  if (anonymousId) {
+    identifyEvent.anonymousId = anonymousId;
+  }
   const mappedTraits = {};
   identifyMappingJSON.forEach((mapping) => {
     if (mapping.destKeys.startsWith('traits.')) {
@@ -106,6 +110,7 @@ const createIdentifyEvent = (message) => {
 const processEvent = async (inputEvent, metricMetadata) => {
   let message;
   const event = lodash.cloneDeep(inputEvent);
+  const { customer } = event;
   const shopifyTopic = getShopifyTopic(event);
   delete event.query_parameters;
   switch (shopifyTopic) {
@@ -154,9 +159,13 @@ const processEvent = async (inputEvent, metricMetadata) => {
   }
   message = removeUndefinedAndNullValues(message);
 
-  // if the message payload contains both anonymousId and userId, hence the user is identified
+  // if the message payload contains both anonymousId and userId or contains customer object, hence the user is identified
   // then create an identify event by multiplexing the original event and return both the message and identify event
-  if (message.anonymousId && message.userId) {
+  if (
+    (message.userId && message.anonymousId) ||
+    (message.userId && customer) ||
+    (message.anonymousId && customer)
+  ) {
     const identifyEvent = createIdentifyEvent(message);
     return [message, identifyEvent];
   }

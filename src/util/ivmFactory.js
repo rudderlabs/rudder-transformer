@@ -66,7 +66,7 @@ async function createIvm(
       }
     });
 
-    // Extract ruddder libraries from import names
+    // Extract rudder libraries from import names
     const rudderLibImportNames = extractedLibraries.filter((name) =>
       RUDDER_LIBRARY_REGEX.test(name),
     );

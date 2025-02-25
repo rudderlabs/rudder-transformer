@@ -104,6 +104,12 @@ const createIdentifyEvent = (message) => {
   });
   // Set the mapped traits
   identifyEvent.context.traits = removeUndefinedAndNullValues(mappedTraits);
+  identifyEvent.setProperty(`integrations.${INTEGERATION}`, true);
+  identifyEvent.setProperty('context.library', {
+    eventOrigin: 'server',
+    name: 'RudderStack Shopify Cloud',
+    version: '2.0.0',
+  });
   return identifyEvent;
 };
 

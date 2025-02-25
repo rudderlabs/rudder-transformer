@@ -45,7 +45,7 @@ function processEvents(eventList) {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     const { data, log_id } = event;
     // Dropping the event if type is not present
-    if (data && data.type) {
+    if (data?.type) {
       const eventType = data.type;
       // ss -> successful signup
       if (eventType === 'ss') {

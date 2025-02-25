@@ -1075,6 +1075,35 @@ describe('', () => {
   });
 });
 
+describe('isAndroidFamily', () => {
+  it('should return true for "android" platform', () => {
+    expect(utilities.isAndroidFamily('android')).toBe(true);
+  });
+
+  it('should return true for "ANDROID" platform (case insensitive)', () => {
+    expect(utilities.isAndroidFamily('ANDROID')).toBe(true);
+  });
+
+  it('should return false for non-android platforms', () => {
+    expect(utilities.isAndroidFamily('ios')).toBe(false);
+    expect(utilities.isAndroidFamily('web')).toBe(false);
+    expect(utilities.isAndroidFamily('windows')).toBe(false);
+  });
+
+  it('should return false for empty string', () => {
+    expect(utilities.isAndroidFamily('')).toBe(false);
+  });
+
+  it('should return false for non-string inputs', () => {
+    expect(utilities.isAndroidFamily(null)).toBe(false);
+    expect(utilities.isAndroidFamily(undefined)).toBe(false);
+    expect(utilities.isAndroidFamily(123)).toBe(false);
+    expect(utilities.isAndroidFamily({})).toBe(false);
+    expect(utilities.isAndroidFamily([])).toBe(false);
+    expect(utilities.isAndroidFamily(true)).toBe(false);
+  });
+});
+
 describe('getBodyFromV2SpecPayload', () => {
   it('should successfully parse valid JSON body', () => {
     const input = {

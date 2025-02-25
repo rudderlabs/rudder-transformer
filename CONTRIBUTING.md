@@ -352,14 +352,12 @@ These tests will automatically be run on each commit, making sure that any new d
 
 ### 5. Add RudderStack UI configurations in integrations-config
 
-Add configuration for your integration in [rudder-integrations-config](https://github.com/rudderlabs/rudder-integrations-config) repo under `src/configurations/sources/` or `src.configurations/destinations`. At bare minimum, a db-config file is needed, here’s [an example](https://github.com/rudderlabs/rudder-integrations-config/blob/develop/src/configurations/sources/slack/db-config.json) of the same for Slack source. Duplicate it in the directory for your integration config folder and change the relevant values for your integration.
+> Update: We have created a script to make it easier to generate files needed for integrations-config changes for your integration. Here's how it works
+> 1. Create a copy of this [`test/configData/inputData.json`](https://github.com/rudderlabs/rudder-integrations-config/blob/develop/test/configData/inputData.json) and adjust it to what you want to see in the RudderStack dashboard ui
+> 2. `python3 scripts/configGenerator.py <path of the placeholder file from the step 1>`
+>     Run this command from the root directory of the `rudder-integrations-config` repo. The PR can then be raised after checking if everything looks good.
 
-Alternatively, the easier path to do this is by running a script which will generate these files for you. For this, first create a copy of this `[test/configData/inputData.json](https://github.com/rudderlabs/rudder-integrations-config/blob/develop/test/configData/inputData.json)` and adjust it to what you want to see in the RudderStack dashboard ui. And use that placeholder file in the following command
-
-`python3 scripts/configGenerator.py &lt;path of the placeholder file>` 
-
-Run this command from the root directory of the rudder-integrations-config repo. The PR can then be raised after checking if everything looks good.
-
+Add configuration for your integration in [`rudder-integrations-config`](https://github.com/rudderlabs/rudder-integrations-config) repo under `src/configurations/sources/` or `src.configurations/destinations`. At bare minimum, a `db-config` file is needed, here’s [an example](https://github.com/rudderlabs/rudder-integrations-config/blob/develop/src/configurations/sources/slack/db-config.json) of the same for Slack source. Duplicate it in the directory for your integration config folder and change the relevant values for your integration.
 
 ### 6. Run the transformer locally
 
@@ -1029,13 +1027,13 @@ These tests will automatically be run on each commit, making sure that any new d
 
 ### 5. Add RudderStack UI configurations in integrations-config for your destination integration
 
-Add configuration for your destination integration in [rudder-integrations-config](https://github.com/rudderlabs/rudder-integrations-config) repo under `src.configurations/destinations`. At bare minimum, a db-config file is needed, here’s [an example](https://github.com/rudderlabs/rudder-integrations-config/blob/develop/src/configurations/destinations/fullstory/db-config.json) of the same for FullStory destination. Duplicate it in the directory for your integration config folder and change the relevant values for your integration.
 
-Alternatively, the easier path to do this is by running a script which will generate these files for you. For this, first create a copy of this `[test/configData/inputData.json](https://github.com/rudderlabs/rudder-integrations-config/blob/develop/test/configData/inputData.json)` and adjust it to what you want to see in the RudderStack dashboard ui. And use that placeholder file in the following command
+> Update: We have created a script to make it easier to generate files needed for integrations-config changes for your integration. Here's how it works
+> 1. Create a copy of this [`test/configData/inputData.json`](https://github.com/rudderlabs/rudder-integrations-config/blob/develop/test/configData/inputData.json) and adjust it to what you want to see in the RudderStack dashboard ui
+> 2. `python3 scripts/configGenerator.py <path of the placeholder file from the step 1>`
+>     Run this command from the root directory of the `rudder-integrations-config` repo. The PR can then be raised after checking if everything looks good.
 
-`python3 scripts/configGenerator.py &lt;path of the placeholder file>` 
-
-Run this command from the root directory of the rudder-integrations-config repo. The PR can then be raised after checking if everything looks good.
+Add configuration for your destination integration in [`rudder-integrations-config`](https://github.com/rudderlabs/rudder-integrations-config) repo under `src.configurations/destinations`. At bare minimum, a `db-config` file is needed, here’s [an example](https://github.com/rudderlabs/rudder-integrations-config/blob/develop/src/configurations/destinations/fullstory/db-config.json) of the same for FullStory destination. Duplicate it in the directory for your integration config folder and change the relevant values for your integration.
 
 
 ### 6. Run the transformer locally for your destination integration

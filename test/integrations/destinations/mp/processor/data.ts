@@ -2252,7 +2252,7 @@ export const data = [
                 JSON: {},
                 JSON_ARRAY: {
                   batch:
-                    '[{"$set":{"$carrier":"Android","$manufacturer":"Google","$model":"Android SDK built for x86","$screen_height":1794,"$screen_width":1080,"$wifi":true,"anonymousId":"5094f5704b9cf2b3","userId":"test_user_id","$ios_devices":["test_device_token"],"$os":"iOS","$ios_device_model":"Android SDK built for x86","$ios_version":"8.1.0","$ios_app_release":"1","$ios_app_version":"1.0"},"$token":"test_api_token","$distinct_id":"test_user_id","$time":1584003903421}]',
+                    '[{"$set":{"$carrier":"Android","$manufacturer":"Google","$model":"Android SDK built for x86","$screen_height":1794,"$screen_width":1080,"$wifi":true,"anonymousId":"5094f5704b9cf2b3","userId":"test_user_id","$ios_devices":["test_device_token"],"$os":"iOS","$ios_device_model":"Android SDK built for x86","$ios_version":"8.1.0","$ios_app_release":"1.0","$ios_app_version":"1"},"$token":"test_api_token","$distinct_id":"test_user_id","$time":1584003903421}]',
                 },
                 XML: {},
                 FORM: {},
@@ -2565,7 +2565,7 @@ export const data = [
                 JSON: {},
                 JSON_ARRAY: {
                   batch:
-                    '[{"$set":{"$carrier":"Android","$manufacturer":"Google","$model":"Android SDK built for x86","$screen_height":1794,"$screen_width":1080,"$wifi":true,"anonymousId":"5094f5704b9cf2b3","userId":"test_user_id","createdat":"2020-01-23T08:54:02.362Z","$ios_devices":["test_device_token"],"$ios_device_model":"Android SDK built for x86","$ios_app_release":"1","$ios_app_version":"1.0"},"$token":"test_api_token","$distinct_id":"test_user_id","$time":1584003903421}]',
+                    '[{"$set":{"$carrier":"Android","$manufacturer":"Google","$model":"Android SDK built for x86","$screen_height":1794,"$screen_width":1080,"$wifi":true,"anonymousId":"5094f5704b9cf2b3","userId":"test_user_id","createdat":"2020-01-23T08:54:02.362Z","$ios_devices":["test_device_token"],"$ios_device_model":"Android SDK built for x86","$ios_app_release":"1.0","$ios_app_version":"1"},"$token":"test_api_token","$distinct_id":"test_user_id","$time":1584003903421}]',
                 },
                 XML: {},
                 FORM: {},
@@ -5798,7 +5798,7 @@ export const data = [
                 JSON: {},
                 JSON_ARRAY: {
                   batch:
-                    '[{"$set":{"$carrier":"Android","$manufacturer":"Google","$model":"Android SDK built for x86","$screen_height":1794,"$screen_width":1080,"$wifi":true,"anonymousId":"5094f5704b9cf2b3","userId":"test_user_id","$ios_devices":["test_device_token"],"$os":"iOS","$ios_device_model":"Android SDK built for x86","$ios_version":"8.1.0","$ios_app_release":"1","$ios_app_version":"1.0"},"$token":"test_api_token","$distinct_id":"test_user_id","$time":1584003903421}]',
+                    '[{"$set":{"$carrier":"Android","$manufacturer":"Google","$model":"Android SDK built for x86","$screen_height":1794,"$screen_width":1080,"$wifi":true,"anonymousId":"5094f5704b9cf2b3","userId":"test_user_id","$ios_devices":["test_device_token"],"$os":"iOS","$ios_device_model":"Android SDK built for x86","$ios_version":"8.1.0","$ios_app_release":"1.0","$ios_app_version":"1"},"$token":"test_api_token","$distinct_id":"test_user_id","$time":1584003903421}]',
                 },
                 XML: {},
                 FORM: {},

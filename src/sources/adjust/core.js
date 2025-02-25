@@ -1,6 +1,6 @@
 const path = require('path');
 const fs = require('fs');
-const Message = require('../../v0/sources/message');
+const Message = require('../message');
 const { excludedFieldList } = require('./config');
 const { extractCustomFields, generateUUID } = require('../../v0/util');
 const { convertToISODate } = require('./utils');

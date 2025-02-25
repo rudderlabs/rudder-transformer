@@ -40,6 +40,11 @@ const CONFIG_CATEGORIES = {
     type: 'trackAttr',
     name: 'MOENGAGETrackAttributesConfig',
   },
+  // Supports object types in event attributes, so adding a new track config which remove json flatting config
+  TRACK_ATTR_OBJ: {
+    type: 'trackAttrObj',
+    name: 'MOENGAGETrackAttributesObjectConfig',
+  },
   ALIAS: { type: 'alias', name: 'MoEngageAliasConfig' },
 };
 

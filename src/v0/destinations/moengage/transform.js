@@ -23,9 +23,17 @@ const {
 } = require('../../util');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
+// moengage supports object type, if user enables object data type we merge the custom attributes
+// ref: https://help.moengage.com/hc/en-us/articles/29787626775828-Support-for-Object-Data-Type
+const mergeCustomAttributes = (attributes) => {
+  if (!attributes['']) return attributes;
+  const { '': data, ...rest } = attributes;
+  return typeof data === 'object' && data !== null ? { ...rest, ...data } : rest;
+};
+
 function responseBuilderSimple(message, category, destination) {
   const payload = constructPayload(message, MAPPING_CONFIG[category.name]);
-  const { apiId, region, apiKey } = destination.Config;
+  const { apiId, region, apiKey, useObjectData } = destination.Config;
   const response = defaultRequestConfig();
   // check the region and which api end point should be used
   switch (region) {
@@ -53,38 +61,45 @@ function responseBuilderSimple(message, category, destination) {
   if (payload) {
     switch (category.type) {
       case 'identify':
-        // Ref: https://docs.moengage.com/docs/data-import-apis#user-api
+        // Ref: https://developers.moengage.com/hc/en-us/articles/4413167462804-Track-User
         payload.type = 'customer';
         payload.attributes = constructPayload(
           message,
           MAPPING_CONFIG[CONFIG_CATEGORIES.IDENTIFY_ATTR.name],
         );
-        // nested attributes are not by moengage so it is falttened
-        payload.attributes = flattenJson(payload.attributes);
+        payload.attributes = useObjectData
+          ? mergeCustomAttributes(payload.attributes)
+          : flattenJson(payload.attributes);
         break;
       case 'device':
-        // Ref: https://docs.moengage.com/docs/data-import-apis#device-api
+        // Ref: https://developers.moengage.com/hc/en-us/articles/31285296671252-Track-Device
         payload.type = 'device';
         payload.attributes = constructPayload(
           message,
           MAPPING_CONFIG[CONFIG_CATEGORIES.DEVICE_ATTR.name],
         );
-        // nested attributes are not by moengage so it is falttened
-        payload.attributes = flattenJson(payload.attributes);
+        payload.attributes = useObjectData
+          ? mergeCustomAttributes(payload.attributes)
+          : flattenJson(payload.attributes);
 
-        // Ref - https://developers.moengage.com/hc/en-us/articles/4413167466260-Device-
+        // Ref - https://developers.moengage.com/hc/en-us/articles/31285296671252-Track-Device#01GKFZD63J5TJY4NP3Q4PFHV5H
         if (isAppleFamily(payload.attributes?.platform)) {
           payload.attributes.platform = 'iOS';
         }
         break;
       case 'track':
-        // Ref: https://docs.moengage.com/docs/data-import-apis#event-api
+        // Ref: https://developers.moengage.com/hc/en-us/articles/4413174104852-Create-Event
         payload.type = 'event';
         payload.actions = [
-          constructPayload(message, MAPPING_CONFIG[CONFIG_CATEGORIES.TRACK_ATTR.name]),
+          constructPayload(
+            message,
+            useObjectData
+              ? MAPPING_CONFIG[CONFIG_CATEGORIES.TRACK_ATTR_OBJ.name]
+              : MAPPING_CONFIG[CONFIG_CATEGORIES.TRACK_ATTR.name],
+          ),
         ];
 
-        // Ref - https://developers.moengage.com/hc/en-us/articles/4413174104852-Event-
+        // Ref - https://developers.moengage.com/hc/en-us/articles/4413174104852-Create-Event#01GKFZH82AJAJA5ERCZRJ1QVBF
         if (isAppleFamily(payload.actions[0]?.platform)) {
           payload.actions[0].platform = 'iOS';
         }

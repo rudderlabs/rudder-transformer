@@ -31,24 +31,85 @@ const mergeCustomAttributes = (attributes) => {
   return typeof data === 'object' && data !== null ? { ...rest, ...data } : rest;
 };
 
-function responseBuilderSimple(message, category, destination) {
-  const payload = constructPayload(message, MAPPING_CONFIG[category.name]);
-  const { apiId, region, apiKey, useObjectData } = destination.Config;
-  const response = defaultRequestConfig();
-  // check the region and which api end point should be used
+// check the region and which api end point should be used
+const getCommonDestinationEndpoint = ({ apiId, region, category }) => {
   switch (region) {
     case 'EU':
-      response.endpoint = `${endpointEU[category.type]}${apiId}`;
-      break;
+      return `${endpointEU[category.type]}${apiId}`;
     case 'US':
-      response.endpoint = `${endpointUS[category.type]}${apiId}`;
-      break;
+      return `${endpointUS[category.type]}${apiId}`;
     case 'IND':
-      response.endpoint = `${endpointIND[category.type]}${apiId}`;
-      break;
+      return `${endpointIND[category.type]}${apiId}`;
     default:
       throw new ConfigurationError('The region is not valid');
   }
+};
+
+const createDestinationPayload = ({ message, category, useObjectData }) => {
+  if (!category?.type) {
+    throw new InstrumentationError('Category type is missing or invalid');
+  }
+
+  const payload = {};
+
+  const setPayloadAttributes = (configCategory) => {
+    payload.attributes = constructPayload(message, MAPPING_CONFIG[configCategory]);
+    payload.attributes = useObjectData
+      ? mergeCustomAttributes(payload.attributes)
+      : flattenJson(payload.attributes);
+  };
+
+  switch (category.type) {
+    case 'identify':
+      // Track User
+      payload.type = 'customer';
+      setPayloadAttributes(CONFIG_CATEGORIES.IDENTIFY_ATTR.name);
+      break;
+
+    case 'device':
+      // Track Device
+      payload.type = 'device';
+      setPayloadAttributes(CONFIG_CATEGORIES.DEVICE_ATTR.name);
+
+      if (isAppleFamily(payload.attributes?.platform)) {
+        payload.attributes.platform = 'iOS';
+      }
+      break;
+
+    case 'track':
+      // Create Event
+      payload.type = 'event';
+      payload.actions = [
+        constructPayload(
+          message,
+          useObjectData
+            ? MAPPING_CONFIG[CONFIG_CATEGORIES.TRACK_ATTR_OBJ.name]
+            : MAPPING_CONFIG[CONFIG_CATEGORIES.TRACK_ATTR.name],
+        ),
+      ];
+
+      if (isAppleFamily(payload.actions[0]?.platform)) {
+        payload.actions[0].platform = 'iOS';
+      }
+      break;
+
+    default:
+      throw new InstrumentationError(`Event type ${category.type} is not supported`);
+  }
+
+  return payload;
+};
+
+function responseBuilderSimple(message, category, destination) {
+  const payload = constructPayload(message, MAPPING_CONFIG[category.name]);
+  if (!payload) {
+    // fail-safety for developer error
+    throw new TransformationError('Payload could not be constructed');
+  }
+
+  const { apiId, region, apiKey, useObjectData } = destination.Config;
+  const response = defaultRequestConfig();
+  response.endpoint = getCommonDestinationEndpoint({ apiId, region, category });
   response.method = defaultPostRequestConfig.requestMethod;
   response.headers = {
     'Content-Type': JSON_MIME_TYPE,
@@ -58,64 +119,16 @@ function responseBuilderSimple(message, category, destination) {
     Authorization: `Basic ${btoa(`${apiId}:${apiKey}`)}`,
   };
   response.userId = message.userId || message.anonymousId;
-  if (payload) {
-    switch (category.type) {
-      case 'identify':
-        // Ref: https://developers.moengage.com/hc/en-us/articles/4413167462804-Track-User
-        payload.type = 'customer';
-        payload.attributes = constructPayload(
-          message,
-          MAPPING_CONFIG[CONFIG_CATEGORIES.IDENTIFY_ATTR.name],
-        );
-        payload.attributes = useObjectData
-          ? mergeCustomAttributes(payload.attributes)
-          : flattenJson(payload.attributes);
-        break;
-      case 'device':
-        // Ref: https://developers.moengage.com/hc/en-us/articles/31285296671252-Track-Device
-        payload.type = 'device';
-        payload.attributes = constructPayload(
-          message,
-          MAPPING_CONFIG[CONFIG_CATEGORIES.DEVICE_ATTR.name],
-        );
-        payload.attributes = useObjectData
-          ? mergeCustomAttributes(payload.attributes)
-          : flattenJson(payload.attributes);
 
-        // Ref - https://developers.moengage.com/hc/en-us/articles/31285296671252-Track-Device#01GKFZD63J5TJY4NP3Q4PFHV5H
-        if (isAppleFamily(payload.attributes?.platform)) {
-          payload.attributes.platform = 'iOS';
-        }
-        break;
-      case 'track':
-        // Ref: https://developers.moengage.com/hc/en-us/articles/4413174104852-Create-Event
-        payload.type = 'event';
-        payload.actions = [
-          constructPayload(
-            message,
-            useObjectData
-              ? MAPPING_CONFIG[CONFIG_CATEGORIES.TRACK_ATTR_OBJ.name]
-              : MAPPING_CONFIG[CONFIG_CATEGORIES.TRACK_ATTR.name],
-          ),
-        ];
-
-        // Ref - https://developers.moengage.com/hc/en-us/articles/4413174104852-Create-Event#01GKFZH82AJAJA5ERCZRJ1QVBF
-        if (isAppleFamily(payload.actions[0]?.platform)) {
-          payload.actions[0].platform = 'iOS';
-        }
-        break;
-      case EventType.ALIAS:
-        // clean as per merge user call in moengage
-        delete response.headers['MOE-APPKEY'];
-        break;
-      default:
-        throw new InstrumentationError(`Event type ${category.type} is not supported`);
-    }
-
+  if (category.type === 'alias') {
+    delete response.headers['MOE-APPKEY'];
     response.body.JSON = removeUndefinedAndNullValues(payload);
-  } else {
-    // fail-safety for developer error
-    throw new TransformationError('Payload could not be constructed');
+    return response;
+  }
+
+  const destinationPayload = createDestinationPayload({ message, category, useObjectData });
+  if (destinationPayload) {
+    response.body.JSON = removeUndefinedAndNullValues({ ...payload, ...destinationPayload });
   }
   return response;
 }

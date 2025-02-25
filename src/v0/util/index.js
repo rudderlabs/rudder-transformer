@@ -23,7 +23,6 @@ const {
   PlatformError,
   TransformationError,
   OAuthSecretError,
-  getErrorRespEvents,
 } = require('@rudderstack/integrations-lib');
 
 const { JsonTemplateEngine, PathType } = require('@rudderstack/json-template-engine');
@@ -1663,6 +1662,14 @@ function isAppleFamily(platform) {
   return false;
 }
 
+function isAndroidFamily(platform) {
+  const androidOsNames = ['android'];
+  if (typeof platform === 'string') {
+    return androidOsNames.includes(platform?.toLowerCase());
+  }
+  return false;
+}
+
 function removeHyphens(str) {
   if (!isString(str)) {
     return str;
@@ -1718,6 +1725,14 @@ function getValidDynamicFormConfig(
   }
   return res;
 }
+
+const getErrorRespEvents = (metadata, statusCode, error, statTags, batched = false) => ({
+  metadata,
+  batched,
+  statusCode,
+  error,
+  statTags,
+});
 
 /**
  * This method is used to check if the input events sent to router transformation are valid
@@ -2416,6 +2431,7 @@ module.exports = {
   getDestinationExternalIDInfoForRetl,
   getDestinationExternalIDObjectForRetl,
   getDeviceModel,
+  getErrorRespEvents,
   getEventTime,
   getFieldValueFromMessage,
   getFirstAndLastName,
@@ -2441,6 +2457,7 @@ module.exports = {
   handleSourceKeysOperation,
   hashToSha256,
   isAppleFamily,
+  isAndroidFamily,
   isBlank,
   isDefined,
   isDefinedAndNotNull,

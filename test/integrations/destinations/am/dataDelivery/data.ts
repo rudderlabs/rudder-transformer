@@ -545,4 +545,126 @@ export const data = [
       },
     },
   },
+  {
+    name: 'am',
+    description: 'Test 6: for 429 Rate Limit Handling',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          type: 'REST',
+          endpoint: 'https://api.amplitude.com/2/httpapi/rate-limited',
+          method: 'POST',
+          userId: 'test_user_123',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: {
+            FORM: {},
+            JSON: {
+              api_key: 'c9d8a13b8bcab46a547f7be5200c483d',
+              events: [
+                {
+                  app_name: 'Rudder-Amplitude_Example',
+                  app_version: '1.0',
+                  time: 1619006730330,
+                  user_id: 'testrluser@email.com',
+                  user_properties: {
+                    city: 'San Francisco',
+                    country: 'US',
+                    email: 'testrluser@email.com',
+                  },
+                },
+              ],
+              options: {
+                min_id_length: 1,
+              },
+            },
+            JSON_ARRAY: {},
+            XML: {},
+          },
+          files: {},
+          params: {
+            destination: 'am',
+          },
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 500, // Expected status is 500 (RetryableError)
+        body: {
+          output: {
+            status: 500,
+            message:
+              'Request Failed during amplitude response transformation: Too many requests for some devices and users - due to Request Limit exceeded, (Retryable)',
+            destinationResponse: {
+              headers: {
+                'access-control-allow-methods': 'GET, POST',
+                'access-control-allow-origin': '*',
+                'content-type': 'application/json',
+                'retry-after': '120',
+              },
+              response: {
+                code: 429,
+                error: 'Too many requests for some devices and users',
+                eps_threshold: 30,
+                throttled_devices: {
+                  'HIJ3L821-F01A-2GY5-2C81-7F03X7DS291D': 31,
+                },
+                throttled_users: {
+                  'testrluser@email.com': 32,
+                },
+                throttled_events: [3, 4, 7],
+              },
+              status: 200,
+            },
+            statTags: {
+              destType: 'AM',
+              errorCategory: 'network',
+              destinationId: 'Non-determininable',
+              workspaceId: 'Non-determininable',
+              errorType: 'retryable',
+              feature: 'dataDelivery',
+              implementation: 'native',
+              module: 'destination',
+            },
+          },
+        },
+      },
+    },
+    mockFns: (mockAdapter: MockAdapter) => {
+      mockAdapter
+        .onPost('https://api.amplitude.com/2/httpapi/rate-limited', {
+          asymmetricMatch: (actual) => {
+            // Simple check to match the request body
+            return actual.api_key === 'c9d8a13b8bcab46a547f7be5200c483d';
+          },
+        })
+        .replyOnce(
+          200,
+          {
+            code: 429,
+            error: 'Too many requests for some devices and users',
+            eps_threshold: 30,
+            throttled_devices: {
+              'HIJ3L821-F01A-2GY5-2C81-7F03X7DS291D': 31,
+            },
+            throttled_users: {
+              'testrluser@email.com': 32,
+            },
+            throttled_events: [3, 4, 7],
+          },
+          {
+            'access-control-allow-methods': 'GET, POST',
+            'access-control-allow-origin': '*',
+            'content-type': 'application/json',
+            'retry-after': '120',
+          },
+        );
+    },
+  },
 ];

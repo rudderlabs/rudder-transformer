@@ -12,7 +12,7 @@ const responseHandler = (responseParams) => {
   if (isHttpStatusSuccess(status)) {
     const { error, code } = response;
     if (code === 429) {
-      // log the error when it contains 'Too many requests for some devices and users'
+      // log the error when it contains 'Too many requests for some devices and users' and throw a RetryableError
       if (error.includes('Too many requests for some devices and users')) {
         logger.error('Too many requests for some devices and users.');
         throw new RetryableError(
@@ -21,6 +21,7 @@ const responseHandler = (responseParams) => {
           destinationResponse,
         );
       }
+      // throw a ThrottledError in other 429 cases
       throw new ThrottledError(
         `Request Failed during ${DESTINATION} response transformation: ${error} - due to Request Limit exceeded, (Throttled)`,
         destinationResponse,
@@ -46,7 +47,7 @@ const responseHandler = (responseParams) => {
   );
 };
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
+// eslint-disable-next-line func-names, @typescript-eslint/naming-convention
 class networkHandler {
   constructor() {
     this.prepareProxyRequest = prepareProxyRequest;

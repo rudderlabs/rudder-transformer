@@ -4,6 +4,8 @@ import {
   generateProxyV1Payload,
 } from '../../../testUtils';
 
+const API_VERSION = 'v18';
+
 const transactionAttribute = {
   CUSTOM_KEY: 'CUSTOM_VALUE',
   currency_code: 'INR',
@@ -234,8 +236,7 @@ export const testScenariosForV0API = [
           headers: headers.header1,
           params: params.param1,
           JSON: invalidArgumentRequestPayload,
-          endpoint:
-            'https://googleads.googleapis.com/v17/customers/11122233331/offlineUserDataJobs',
+          endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/11122233331/offlineUserDataJobs`,
         }),
         method: 'POST',
       },
@@ -309,7 +310,7 @@ export const testScenariosForV0API = [
           headers: headers.header1,
           params: params.param1,
           JSON: validRequestPayload1,
-          endpoint: 'https://googleads.googleapis.com/v17/customers/1112223333/offlineUserDataJobs',
+          endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/1112223333/offlineUserDataJobs`,
         }),
         method: 'POST',
       },
@@ -349,8 +350,7 @@ export const testScenariosForV0API = [
           headers: headers.header2,
           params: params.param2,
           JSON: validRequestPayload2,
-          endpoint:
-            'https://googleads.googleapis.com/v17/customers/1234567891:uploadClickConversions',
+          endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/1234567891:uploadClickConversions`,
         }),
         method: 'POST',
       },
@@ -399,8 +399,7 @@ export const testScenariosForV0API = [
           headers: headers.header2,
           params: params.param3,
           JSON: validRequestPayload2,
-          endpoint:
-            'https://googleads.googleapis.com/v17/customers/1234567891:uploadClickConversions',
+          endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/1234567891:uploadClickConversions`,
         }),
         method: 'POST',
       },
@@ -452,8 +451,7 @@ export const testScenariosForV1API = [
             headers: headers.header1,
             params: params.param1,
             JSON: invalidArgumentRequestPayload,
-            endpoint:
-              'https://googleads.googleapis.com/v17/customers/11122233331/offlineUserDataJobs',
+            endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/11122233331/offlineUserDataJobs`,
           },
           metadataArray,
         ),
@@ -499,8 +497,7 @@ export const testScenariosForV1API = [
             headers: headers.header1,
             params: params.param1,
             JSON: validRequestPayload1,
-            endpoint:
-              'https://googleads.googleapis.com/v17/customers/1112223333/offlineUserDataJobs',
+            endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/1112223333/offlineUserDataJobs`,
           },
           metadataArray,
         ),
@@ -544,8 +541,7 @@ export const testScenariosForV1API = [
             headers: headers.header2,
             params: params.param2,
             JSON: validRequestPayload2,
-            endpoint:
-              'https://googleads.googleapis.com/v17/customers/1234567891:uploadClickConversions',
+            endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/1234567891:uploadClickConversions`,
           },
           metadataArray,
         ),
@@ -590,8 +586,7 @@ export const testScenariosForV1API = [
             headers: headers.header2,
             params: params.param3,
             JSON: validRequestPayload2,
-            endpoint:
-              'https://googleads.googleapis.com/v17/customers/1234567891:uploadClickConversions',
+            endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/1234567891:uploadClickConversions`,
           },
           metadataArray,
         ),
@@ -636,8 +631,7 @@ export const testScenariosForV1API = [
             headers: headers.header2,
             params: params.param4,
             JSON: notAllowedToAccessFeatureRequestPayload,
-            endpoint:
-              'https://googleads.googleapis.com/v17/customers/1234567893:uploadClickConversions',
+            endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/1234567893:uploadClickConversions`,
           },
           metadataArray,
         ),

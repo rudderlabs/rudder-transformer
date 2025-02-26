@@ -1,4 +1,5 @@
 // This file contains the test scenarios related to Shopify pixel events, emitted from web pixel on the browser.
+import { mockFns } from '../mocks';
 import {
   dummyContext,
   dummyContextwithCampaign,
@@ -76,6 +77,7 @@ export const pixelEventsTestScenarios = [
                   },
                   name: 'Page View',
                   type: 'page',
+                  userId: 'test-user-id',
                   properties: {},
                   anonymousId: 'c7b3f99b-4d34-463b-835f-c879482a7750',
                   messageId: 'sh-f6b6f548-5FEF-4DAE-9CAB-39EE6F94E09B',
@@ -191,6 +193,7 @@ export const pixelEventsTestScenarios = [
                     },
                   },
                   type: 'track',
+                  userId: 'test-user-id',
                   event: 'Product Viewed',
                   properties: {
                     product_id: '7234590834801',
@@ -360,6 +363,7 @@ export const pixelEventsTestScenarios = [
                     },
                   },
                   type: 'track',
+                  userId: 'test-user-id',
                   event: 'Cart Viewed',
                   properties: {
                     products: [
@@ -590,6 +594,7 @@ export const pixelEventsTestScenarios = [
                     },
                   },
                   type: 'track',
+                  userId: 'test-user-id',
                   event: 'Product List Viewed',
                   properties: {
                     cart_id: 'c7b3f99b-4d34-463b-835f-c879482a7750',
@@ -765,6 +770,7 @@ export const pixelEventsTestScenarios = [
                     },
                   },
                   type: 'track',
+                  userId: 'test-user-id',
                   event: 'Product Added',
                   properties: {
                     image_url:
@@ -911,6 +917,7 @@ export const pixelEventsTestScenarios = [
                     },
                   },
                   type: 'track',
+                  userId: 'test-user-id',
                   event: 'Product Removed',
                   properties: {
                     image_url:
@@ -1005,6 +1012,7 @@ export const pixelEventsTestScenarios = [
                     },
                   },
                   type: 'track',
+                  userId: 'test-user-id',
                   event: 'Search Submitted',
                   properties: {
                     query: 'skate',
@@ -1070,4 +1078,4 @@ export const pixelEventsTestScenarios = [
       },
     },
   },
-];
+].map((p1) => ({ ...p1, mockFns }));

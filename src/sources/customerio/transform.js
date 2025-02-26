@@ -7,9 +7,10 @@ const { get } = require('lodash');
 const Message = require('../message');
 
 const { mappingConfig } = require('./config');
-const { isDefinedAndNotNull } = require('../../util');
+const { isDefinedAndNotNull, getBodyFromV2SpecPayload } = require('../../v0/util');
 
-function process(event) {
+function process(payload) {
+  const event = getBodyFromV2SpecPayload(payload);
   const message = new Message(`Customer.io`);
 
   // since customer, email, sms, push, slack, webhook
@@ -20,7 +21,6 @@ function process(event) {
   const eventObjectType = event.object_type?.toLowerCase() || '';
   let eventName = get(mappingConfig, `${eventObjectType}.${event.metric}`);
   if (!eventName) {
-    // throw new TransformationError("Metric not supported");
     eventName = 'Unknown Event';
   }
   message.setEventName(eventName);
@@ -35,12 +35,7 @@ function process(event) {
   }
 
   // when customer.io does not pass an associated userId, set the email address as anonymousId
-  if (
-    (message.userId === null || message.userId === undefined) &&
-    message.context &&
-    message.context.traits &&
-    message.context.traits.email
-  ) {
+  if ((message.userId === null || message.userId === undefined) && message.context?.traits?.email) {
     message.anonymousId = message.context.traits.email;
   }
 

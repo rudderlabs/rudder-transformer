@@ -1,14 +1,12 @@
 const path = require('path');
 const fs = require('fs');
 const { TransformationError } = require('@rudderstack/integrations-lib');
-const utils = require('../../util');
+const utils = require('../../v0/util');
 const Message = require('../message');
 
 const mappingJson = JSON.parse(fs.readFileSync(path.resolve(__dirname, './mapping.json'), 'utf-8'));
 
-const { removeUndefinedAndNullValues } = require('../../util');
-
-const { JSON_MIME_TYPE } = require('../../util/constant');
+const { JSON_MIME_TYPE } = require('../../v0/util/constant');
 
 const processNormalEvent = (event) => {
   const message = new Message(`APPCENTER`);
@@ -56,11 +54,12 @@ const processTestEvent = (event) => ({
   statusCode: 200,
 });
 
-const process = (event) => {
+const process = (payload) => {
+  const event = utils.getBodyFromV2SpecPayload(payload);
   const response = isTestEvent(event) ? processTestEvent(event) : processNormalEvent(event);
   // to bypass the unit testcases ( we may change this)
   // response.anonymousId = "7e32188a4dab669f";
-  return removeUndefinedAndNullValues(response);
+  return utils.removeUndefinedAndNullValues(response);
 };
 
 exports.process = process;

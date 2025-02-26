@@ -4,7 +4,8 @@ import {
   rETLRecordRouterRequestVDMv2General,
   rETLRecordRouterRequestVDMv2UserId,
 } from './record';
-import { API_VERSION } from '../../../../../src/v0/destinations/google_adwords_remarketing_lists/config';
+
+const API_VERSION = 'v18';
 
 export const data = [
   {

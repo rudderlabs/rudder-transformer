@@ -6,6 +6,8 @@ const {
   getCallConversionPayload,
 } = require('./utils');
 
+const API_VERSION = 'v18';
+
 const getTestMessage = () => {
   let message = {
     event: 'testEventName',
@@ -163,7 +165,7 @@ describe('getExisitingUserIdentifier util tests', () => {
 describe('getClickConversionPayloadAndEndpoint util tests', () => {
   it('getClickConversionPayloadAndEndpoint flow check when default field identifier is present', () => {
     let expectedOutput = {
-      endpoint: 'https://googleads.googleapis.com/v17/customers/9625812972:uploadClickConversions',
+      endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/9625812972:uploadClickConversions`,
       payload: {
         conversions: [
           {
@@ -193,7 +195,7 @@ describe('getClickConversionPayloadAndEndpoint util tests', () => {
     delete fittingPayload.traits.email;
     delete fittingPayload.properties.email;
     let expectedOutput = {
-      endpoint: 'https://googleads.googleapis.com/v17/customers/9625812972:uploadClickConversions',
+      endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/9625812972:uploadClickConversions`,
       payload: {
         conversions: [
           {
@@ -225,7 +227,7 @@ describe('getClickConversionPayloadAndEndpoint util tests', () => {
     delete fittingPayload.traits.phone;
     delete fittingPayload.properties.email;
     let expectedOutput = {
-      endpoint: 'https://googleads.googleapis.com/v17/customers/9625812972:uploadClickConversions',
+      endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/9625812972:uploadClickConversions`,
       payload: {
         conversions: [
           {
@@ -263,7 +265,7 @@ describe('getClickConversionPayloadAndEndpoint util tests', () => {
       },
     ];
     let expectedOutput = {
-      endpoint: 'https://googleads.googleapis.com/v17/customers/9625812972:uploadClickConversions',
+      endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/9625812972:uploadClickConversions`,
       payload: {
         conversions: [
           {

@@ -1,6 +1,5 @@
 const _ = require('lodash');
-const { getErrorRespEvents } = require('@rudderstack/integrations-lib');
-const { getSuccessRespEvents } = require('../../util');
+const { getSuccessRespEvents, getErrorRespEvents } = require('../../util');
 const { ConfigurationError } = require('@rudderstack/integrations-lib');
 
 const DEFAULT_INVOCATION_TYPE = 'Event'; // asynchronous invocation

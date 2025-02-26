@@ -12,11 +12,11 @@
     "destKey": "$ios_version"
   },
   {
-    "sourceKeys": "context.app.build",
+    "sourceKeys": "context.app.version",
     "destKey": "$ios_app_release"
   },
   {
-    "sourceKeys": "context.app.version",
+    "sourceKeys": "context.app.build",
     "destKey": "$ios_app_version"
   },
   {

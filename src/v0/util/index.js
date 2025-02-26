@@ -23,7 +23,6 @@ const {
   PlatformError,
   TransformationError,
   OAuthSecretError,
-  getErrorRespEvents,
 } = require('@rudderstack/integrations-lib');
 
 const { JsonTemplateEngine, PathType } = require('@rudderstack/json-template-engine');
@@ -32,7 +31,7 @@ const logger = require('../../logger');
 const stats = require('../../util/stats');
 const { DestCanonicalNames, DestHandlerMap } = require('../../constants/destinationCanonicalNames');
 const { client: errNotificationClient } = require('../../util/errorNotifier');
-const { HTTP_STATUS_CODES, VDM_V2_SCHEMA_VERSION } = require('./constant');
+const { HTTP_STATUS_CODES, VDM_V2_SCHEMA_VERSION, ERROR_MESSAGES } = require('./constant');
 const {
   REFRESH_TOKEN,
   AUTH_STATUS_INACTIVE,
@@ -1663,6 +1662,14 @@ function isAppleFamily(platform) {
   return false;
 }
 
+function isAndroidFamily(platform) {
+  const androidOsNames = ['android'];
+  if (typeof platform === 'string') {
+    return androidOsNames.includes(platform?.toLowerCase());
+  }
+  return false;
+}
+
 function removeHyphens(str) {
   if (!isString(str)) {
     return str;
@@ -1718,6 +1725,14 @@ function getValidDynamicFormConfig(
   }
   return res;
 }
+
+const getErrorRespEvents = (metadata, statusCode, error, statTags, batched = false) => ({
+  metadata,
+  batched,
+  statusCode,
+  error,
+  statTags,
+});
 
 /**
  * This method is used to check if the input events sent to router transformation are valid
@@ -2364,6 +2379,19 @@ const convertToUuid = (input) => {
     throw new InstrumentationError(errorMessage);
   }
 };
+
+const getBodyFromV2SpecPayload = ({ request }) => {
+  if (request?.body) {
+    try {
+      const parsedBody = JSON.parse(request.body);
+      return parsedBody;
+    } catch (error) {
+      throw new TransformationError(ERROR_MESSAGES.MALFORMED_JSON_IN_REQUEST_BODY);
+    }
+  }
+  throw new TransformationError(ERROR_MESSAGES.REQUEST_BODY_NOT_PRESENT_IN_V2_SPEC_PAYLOAD);
+};
+
 // ========================================================================
 // EXPORTS
 // ========================================================================
@@ -2397,11 +2425,13 @@ module.exports = {
   generateErrorObject,
   generateUUID,
   getBrowserInfo,
+  getBodyFromV2SpecPayload,
   getDateInFormat,
   getDestinationExternalID,
   getDestinationExternalIDInfoForRetl,
   getDestinationExternalIDObjectForRetl,
   getDeviceModel,
+  getErrorRespEvents,
   getEventTime,
   getFieldValueFromMessage,
   getFirstAndLastName,
@@ -2427,6 +2457,7 @@ module.exports = {
   handleSourceKeysOperation,
   hashToSha256,
   isAppleFamily,
+  isAndroidFamily,
   isBlank,
   isDefined,
   isDefinedAndNotNull,

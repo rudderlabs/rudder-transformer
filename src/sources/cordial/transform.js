@@ -1,6 +1,6 @@
-const Message = require('../../../v0/sources/message');
-const { CommonUtils } = require('../../../util/common');
-const { generateUUID, isDefinedAndNotNull } = require('../../../v0/util');
+const Message = require('../message');
+const { CommonUtils } = require('../../util/common');
+const { generateUUID, isDefinedAndNotNull, getBodyFromV2SpecPayload } = require('../../v0/util');
 const { eventsMapping } = require('./config');
 
 const mapping = require('./mapping.json');
@@ -43,8 +43,8 @@ const processEvent = (inputPaylaod) => {
 };
 
 const process = (inputEvent) => {
-  const { event: events } = inputEvent;
-  const eventsArray = CommonUtils.toArray(events);
+  const event = getBodyFromV2SpecPayload(inputEvent);
+  const eventsArray = CommonUtils.toArray(event);
   return eventsArray.map(processEvent);
 };
 

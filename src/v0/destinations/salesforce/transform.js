@@ -3,7 +3,6 @@ const cloneDeep = require('lodash/cloneDeep');
 const {
   InstrumentationError,
   NetworkInstrumentationError,
-  getErrorRespEvents,
 } = require('@rudderstack/integrations-lib');
 const { EventType, MappedToDestinationKey } = require('../../../constants');
 const {
@@ -26,6 +25,7 @@ const {
   handleRtTfSingleEventError,
   generateErrorObject,
   isHttpStatusSuccess,
+  getErrorRespEvents,
 } = require('../../util');
 const { salesforceResponseHandler, collectAuthorizationInfo, getAuthHeader } = require('./utils');
 const { handleHttpRequest } = require('../../../adapters/network');

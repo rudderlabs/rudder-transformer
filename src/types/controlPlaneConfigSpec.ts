@@ -1,14 +1,14 @@
-import type { FixMe } from '../util/types';
+// import type { FixMe } from '../util/types';
 import type { UserTransformationInput } from './userTransformation';
 
 export type DestinationDefinition = {
   ID: string;
   Name: string;
   DisplayName: string;
-  Config: FixMe;
+  Config: Record<string, unknown>;
 };
 
-export type Destination<DestinationConfig = FixMe> = {
+export type Destination<DestinationConfig = Record<string, unknown>> = {
   ID: string;
   Name: string;
   DestinationDefinition: DestinationDefinition;

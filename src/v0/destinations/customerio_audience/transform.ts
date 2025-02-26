@@ -1,4 +1,4 @@
-import { ConfigurationError } from '@rudderstack/integrations-lib';
+import { ConfigurationError, isDefinedAndNotNull } from '@rudderstack/integrations-lib';
 import { SegmentAction } from './config';
 import { CustomerIORouterRequestType, RespList } from './type';
 
@@ -11,10 +11,24 @@ interface ProcessedEvent extends RespList {
   eventAction: keyof typeof SegmentAction;
 }
 
-const createEventChunk = (event: CustomerIORouterRequestType): ProcessedEvent => {
+const createEventChunk = (
+  event: CustomerIORouterRequestType & { message: { identifiers: Record<string, any> } },
+): ProcessedEvent => {
   const eventAction = getEventAction(event);
-  const { identifiers } = event?.message || {};
-  const id: string | number = Object.values(identifiers)[0];
+
+  const identifiers = event?.message?.identifiers;
+  if (!isDefinedAndNotNull(identifiers) || Object.keys(identifiers).length === 0) {
+    throw new ConfigurationError('[CustomerIO] Identifiers are required, aborting.');
+  }
+
+  const id = Object.values(identifiers)[0];
+  if (!isDefinedAndNotNull(id)) {
+    throw new ConfigurationError('[CustomerIO] Identifier is required, aborting.');
+  }
+
+  if (typeof id !== 'string' && typeof id !== 'number') {
+    throw new ConfigurationError('[CustomerIO] Identifier type should be a string or integer');
+  }
 
   return {
     payload: { ids: [id] },
@@ -23,7 +37,9 @@ const createEventChunk = (event: CustomerIORouterRequestType): ProcessedEvent =>
   };
 };
 
-const validateEvent = (event: CustomerIORouterRequestType): boolean => {
+const validateEvent = (
+  event: CustomerIORouterRequestType & { message: { identifiers: Record<string, any> } },
+): boolean => {
   const eventType = getEventType(event?.message);
   if (eventType !== EventType.RECORD) {
     throw new InstrumentationError(`message type ${eventType} is not supported`);
@@ -48,12 +64,21 @@ const validateEvent = (event: CustomerIORouterRequestType): boolean => {
     throw new ConfigurationError(`identifier type should be a string or integer`);
   }
 
-  const audienceId = event?.connection?.config?.destination?.audienceId;
+  const connectionConfig = event?.connection?.config as
+    | {
+        destination: { audienceId: string; identifierMappings: Record<string, any> };
+      }
+    | undefined;
+  if (!connectionConfig) {
+    throw new InstrumentationError('connection config is required, aborting.');
+  }
+
+  const { audienceId, identifierMappings } = connectionConfig.destination;
+
   if (!audienceId) {
     throw new InstrumentationError('audienceId is required, aborting.');
   }
 
-  const identifierMappings = event?.connection?.config?.destination?.identifierMappings;
   if (!identifierMappings || Object.keys(identifierMappings).length === 0) {
     throw new InstrumentationError('identifierMappings cannot be empty');
   }
@@ -69,10 +94,14 @@ const processRouterDest = async (inputs: CustomerIORouterRequestType[], reqMetad
   // Process events and separate valid and error cases
   const processedEvents = inputs.map((event) => {
     try {
-      validateEvent(event);
+      validateEvent(
+        event as CustomerIORouterRequestType & { message: { identifiers: Record<string, any> } },
+      );
       return {
         success: true,
-        data: createEventChunk(event),
+        data: createEventChunk(
+          event as CustomerIORouterRequestType & { message: { identifiers: Record<string, any> } },
+        ),
       };
     } catch (error) {
       return {

@@ -12,6 +12,9 @@ export function process(event: ProcessorTransformationRequest) {
   const { message, destination } = event;
   const { Config } = destination;
   if (isDefinedAndNotNull(Config.configData)) {
+    if (typeof Config.configData !== 'string') {
+      throw new InstrumentationError('Config data is not a string');
+    }
     const configDetails = JSON.parse(Config.configData);
     Config.propertyId = configDetails.PROPERTY;
     Config.typesOfClient = configDetails.DATA_STREAM.type;

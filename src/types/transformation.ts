@@ -50,16 +50,12 @@ export type ProcessorTransformationResponse = {
 /**
  * Router transformation structures
  */
-export type RouterTransformationRequestData<
-  Message = object,
-  DestinationType = Destination,
-  ConnectionType = Connection,
-> = {
+export type RouterTransformationRequestData = {
   request?: object;
-  message: Message;
+  message: object;
   metadata: Metadata;
-  destination: DestinationType;
-  connection?: ConnectionType;
+  destination: Destination;
+  connection?: Connection;
 };
 
 export type RouterTransformationRequest = {
@@ -118,23 +114,8 @@ export type ProxyV0Request = {
 /**
  * Proxy request structure for version 1
  */
-export type ProxyV1Request = {
-  version: string;
-  type: string;
-  method: string;
-  endpoint: string;
-  userId: string;
-  headers?: Record<string, unknown>;
-  params?: Record<string, unknown>;
-  body?: {
-    JSON?: Record<string, unknown>;
-    JSON_ARRAY?: Record<string, unknown>;
-    XML?: Record<string, unknown>;
-    FORM?: Record<string, unknown>;
-  };
-  files?: Record<string, unknown>;
+export type ProxyV1Request = Omit<ProxyV0Request, 'metadata'> & {
   metadata: ProxyMetdata[];
-  destinationConfig: Record<string, unknown>;
 };
 
 export type ProxyRequest = ProxyV0Request | ProxyV1Request;

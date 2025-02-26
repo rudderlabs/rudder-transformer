@@ -53,8 +53,4 @@ export type CustomerIOConnectionType = Connection & {
   config: CustomerIOConnectionConfig;
 };
 
-export type CustomerIORouterRequestType = RouterTransformationRequestData<
-  CustomerIOMessageType,
-  CustomerIODestinationType,
-  CustomerIOConnectionType
->;
+export type CustomerIORouterRequestType = RouterTransformationRequestData;

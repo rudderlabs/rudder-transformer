@@ -46,10 +46,6 @@ const getCommonDestinationEndpoint = ({ apiId, region, category }) => {
 };
 
 const createDestinationPayload = ({ message, category, useObjectData }) => {
-  if (!category?.type) {
-    throw new InstrumentationError('Category type is missing or invalid');
-  }
-
   const payload = {};
 
   const setPayloadAttributes = (configCategory) => {

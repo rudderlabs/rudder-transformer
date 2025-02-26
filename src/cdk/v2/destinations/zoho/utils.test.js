@@ -4,12 +4,16 @@ const { handleHttpRequest } = require('../../../../adapters/network');
 const {
   handleDuplicateCheck,
   deduceModuleInfo,
+  deduceModuleInfoV2,
   validatePresenceOfMandatoryProperties,
   validateConfigurationIssue,
   formatMultiSelectFields,
+  formatMultiSelectFieldsV2,
   transformToURLParams,
+  transformToURLParamsV2,
   calculateTrigger,
   searchRecordId,
+  searchRecordIdV2,
 } = require('./utils');
 
 describe('handleDuplicateCheck', () => {
@@ -108,6 +112,48 @@ describe('formatMultiSelectFields', () => {
   });
 });
 
+describe('formatMultiSelectFieldsV2', () => {
+  const testCases = [
+    {
+      name: 'should convert a field value to an array if a mapping exists in multiSelectFieldLevelDecision',
+      input: {
+        config: {
+          multiSelectFieldLevelDecision: [{ from: 'tags', to: 'true' }],
+        },
+        fields: { tags: 'value' },
+      },
+      expected: { tags: ['value'] },
+    },
+    {
+      name: 'should leave fields unchanged if mapping fields exists but null',
+      input: {
+        config: {
+          multiSelectFieldLevelDecision: [{ from: 'tags', to: 'true' }],
+        },
+        fields: { tags: null, other: 'val' },
+      },
+      expected: { tags: null, other: 'val' },
+    },
+    {
+      name: 'should leave fields unchanged if no mapping exists',
+      input: {
+        config: {
+          multiSelectFieldLevelDecision: [{ from: 'categories', to: 'true' }],
+        },
+        fields: { tags: 'value', other: 'val' },
+      },
+      expected: { tags: 'value', other: 'val' },
+    },
+  ];
+
+  testCases.forEach(({ name, input, expected }) => {
+    it(name, () => {
+      const result = formatMultiSelectFieldsV2(input.config, { ...input.fields });
+      expect(result).toEqual(expected);
+    });
+  });
+});
+
 describe('transformToURLParams', () => {
   const testCases = [
     {
@@ -123,6 +169,27 @@ describe('transformToURLParams', () => {
   testCases.forEach(({ name, input, expected }) => {
     it(name, () => {
       const url = transformToURLParams(input.fields, input.config);
+      expect(url).toEqual(expected);
+    });
+  });
+});
+
+describe('transformToURLParamsV2', () => {
+  const testCases = [
+    {
+      name: 'should build a proper URL with encoded criteria based on fields and config',
+      input: {
+        fields: { First_Name: 'John, Doe', Age: '30' },
+        config: { region: 'US' },
+        object: 'Leads',
+      },
+      expected: `https://www.zohoapis.com/crm/v6/Leads/search?criteria=(First_Name:equals:John%5C%2C%20Doe)and(Age:equals:30)`,
+    },
+  ];
+
+  testCases.forEach(({ name, input, expected }) => {
+    it(name, () => {
+      const url = transformToURLParamsV2(input.fields, input.config, input.object);
       expect(url).toEqual(expected);
     });
   });
@@ -295,6 +362,148 @@ describe('searchRecordId', () => {
   });
 });
 
+describe('searchRecordIdV2', () => {
+  const mockFields = { Email: 'test@example.com' };
+  const mockMetadata = { secret: { accessToken: 'mock-token' } };
+  const mockConfig = { region: 'us' };
+  const mockConConfig = {
+    destination: {
+      object: 'Leads',
+      identifierMappings: [{ to: 'Email', from: 'Email' }],
+    },
+  };
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  const testCases = [
+    {
+      name: 'should handle non-array response data',
+      response: {
+        processedResponse: {
+          status: 200,
+          response: {
+            data: 'not-an-array',
+          },
+        },
+      },
+      expected: {
+        erroneous: true,
+        message: 'No contact is found with record details',
+      },
+    },
+    {
+      name: 'should handle missing response data property',
+      response: {
+        processedResponse: {
+          status: 200,
+          response: {},
+        },
+      },
+      expected: {
+        erroneous: true,
+        message: 'No contact is found with record details',
+      },
+    },
+    {
+      name: 'should handle null response data',
+      response: {
+        processedResponse: {
+          status: 200,
+          response: {
+            data: null,
+          },
+        },
+      },
+      expected: {
+        erroneous: true,
+        message: 'No contact is found with record details',
+      },
+    },
+    {
+      name: 'should handle empty array response data',
+      response: {
+        processedResponse: {
+          status: 200,
+          response: {
+            data: [],
+          },
+        },
+      },
+      expected: {
+        erroneous: true,
+        message: 'No contact is found with record details',
+      },
+    },
+    {
+      name: 'should handle valid array response data with single record',
+      response: {
+        processedResponse: {
+          status: 200,
+          response: {
+            data: [{ id: '123' }],
+          },
+        },
+      },
+      expected: {
+        erroneous: false,
+        message: ['123'],
+      },
+    },
+    {
+      name: 'should handle valid array response data with multiple records',
+      response: {
+        processedResponse: {
+          status: 200,
+          response: {
+            data: [{ id: '123' }, { id: '456' }],
+          },
+        },
+      },
+      expected: {
+        erroneous: false,
+        message: ['123', '456'],
+      },
+    },
+    {
+      name: 'should handle non-success HTTP status code',
+      response: {
+        processedResponse: {
+          status: 400,
+          response: 'Bad Request Error',
+        },
+      },
+      expected: {
+        erroneous: true,
+        message: 'Bad Request Error',
+      },
+    },
+    {
+      name: 'should handle HTTP request error',
+      error: new Error('Network Error'),
+      expected: {
+        erroneous: true,
+        message: 'Network Error',
+      },
+    },
+  ];
+
+  testCases.forEach(({ name, response, error, expected }) => {
+    it(name, async () => {
+      if (error) {
+        handleHttpRequest.mockRejectedValueOnce(error);
+      } else {
+        handleHttpRequest.mockResolvedValueOnce(response);
+      }
+
+      const result = await searchRecordIdV2(mockFields, mockMetadata, mockConfig, mockConConfig);
+
+      expect(result).toEqual(expected);
+    });
+  });
+});
+
 describe('deduceModuleInfo', () => {
   const testCases = [
     {
@@ -426,6 +635,78 @@ describe('deduceModuleInfo', () => {
   testCases.forEach(({ name, input, expected }) => {
     it(name, () => {
       const result = deduceModuleInfo(input.inputs, input.config);
+      expect(result).toEqual(expected);
+    });
+  });
+});
+
+describe('deduceModuleInfoV2', () => {
+  const testCases = [
+    {
+      name: 'should return operationModuleInfo, upsertEndPoint and identifierType when conConfig is present',
+      input: {
+        config: { region: 'US' },
+        destination: {
+          object: 'Leads',
+          identifierMappings: [{ to: 'Email', from: 'Email' }],
+        },
+      },
+      expected: {
+        operationModuleType: 'Leads',
+        upsertEndPoint: 'https://www.zohoapis.com/crm/v6/Leads',
+        identifierType: ['Email'],
+      },
+    },
+    {
+      name: 'should handle different regions in config',
+      input: {
+        config: { region: 'EU' },
+        destination: {
+          object: 'Leads',
+          identifierMappings: [{ to: 'Email', from: 'Email' }],
+        },
+      },
+      expected: {
+        operationModuleType: 'Leads',
+        upsertEndPoint: 'https://www.zohoapis.eu/crm/v6/Leads',
+        identifierType: ['Email'],
+      },
+    },
+    {
+      name: 'should use default US region when config.region is null',
+      input: {
+        config: { region: null },
+        destination: {
+          object: 'Leads',
+          identifierMappings: [{ to: 'Email', from: 'Email' }],
+        },
+      },
+      expected: {
+        operationModuleType: 'Leads',
+        upsertEndPoint: 'https://www.zohoapis.com/crm/v6/Leads',
+        identifierType: ['Email'],
+      },
+    },
+    {
+      name: 'should use default US region when config.region is undefined',
+      input: {
+        config: {}, // region is undefined
+        destination: {
+          object: 'Leads',
+          identifierMappings: [{ to: 'Email', from: 'Email' }],
+        },
+      },
+      expected: {
+        operationModuleType: 'Leads',
+        upsertEndPoint: 'https://www.zohoapis.com/crm/v6/Leads',
+        identifierType: ['Email'],
+      },
+    },
+  ];
+
+  testCases.forEach(({ name, input, expected }) => {
+    it(name, () => {
+      const result = deduceModuleInfoV2(input.config, input.destination);
       expect(result).toEqual(expected);
     });
   });

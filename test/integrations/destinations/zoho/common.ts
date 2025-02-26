@@ -1,4 +1,4 @@
-import { Destination } from '../../../../src/types';
+import { Destination, Connection } from '../../../../src/types';
 
 const destType = 'zoho';
 const destTypeInUpperCase = 'ZOHO';
@@ -30,6 +30,28 @@ const deletionPayload1 = {
     Email: 'tobedeleted@gmail.com',
     First_Name: 'subcribed',
     Last_Name: ' User',
+  },
+  type: 'record',
+};
+
+const deletionPayload1V2 = {
+  action: 'delete',
+  context: {
+    sources: {
+      job_run_id: 'cgiiurt8um7k7n5dq480',
+      task_run_id: 'cgiiurt8um7k7n5dq48g',
+      job_id: '2MUWghI7u85n91dd1qzGyswpZan',
+      version: '895/merge',
+    },
+  },
+  recordId: '2',
+  rudderId: '2',
+  fields: {
+    First_Name: 'subcribed',
+    Last_Name: ' User',
+  },
+  identifiers: {
+    Email: 'tobedeleted@gmail.com',
   },
   type: 'record',
 };
@@ -68,6 +90,31 @@ const commonDeletionDestConfig: Destination = {
   },
 };
 
+const commonDeletionConnectionConfigV2: Connection = {
+  sourceId: '2t1wMHLftBHKN1XzcfU4v7JTQTg',
+  destinationId: '2tCmPNvYHqCUgcRva2XN52ZaYHk',
+  enabled: true,
+  processorEnabled: true,
+  config: {
+    destination: {
+      object: 'Leads',
+      trigger: 'None',
+      schemaVersion: '1.1',
+      identifierMappings: [
+        {
+          from: 'email',
+          to: 'Email',
+        },
+      ],
+      addDefaultDuplicateCheck: true,
+      multiSelectFieldLevelDecision: [
+        { from: 'multi-language', to: 'true' },
+        { from: 'multi class', to: 'false' },
+      ],
+    },
+  },
+};
+
 const upsertPayload1 = {
   action: 'insert',
   context: {
@@ -91,6 +138,28 @@ const upsertPayload1 = {
     Email: 'subscribed@eewrfrd.com',
     First_Name: 'subcribed',
     Last_Name: ' User',
+  },
+  type: 'record',
+};
+
+const upsertPayload1V2 = {
+  action: 'insert',
+  context: {
+    sources: {
+      job_run_id: 'cgiiurt8um7k7n5dq480',
+      task_run_id: 'cgiiurt8um7k7n5dq48g',
+      job_id: '2MUWghI7u85n91dd1qzGyswpZan',
+      version: '895/merge',
+    },
+  },
+  recordId: '2',
+  rudderId: '2',
+  fields: {
+    First_Name: 'subcribed',
+    Last_Name: ' User',
+  },
+  identifiers: {
+    Email: 'subscribed@eewrfrd.com',
   },
   type: 'record',
 };
@@ -123,6 +192,29 @@ const upsertPayload2 = {
   type: 'record',
 };
 
+const upsertPayload2V2 = {
+  action: 'insert',
+  context: {
+    sources: {
+      job_run_id: 'cgiiurt8um7k7n5dq480',
+      task_run_id: 'cgiiurt8um7k7n5dq48g',
+      job_id: '2MUWghI7u85n91dd1qzGyswpZan',
+      version: '895/merge',
+    },
+  },
+  recordId: '2',
+  rudderId: '2',
+  fields: {
+    First_Name: 'subcribed',
+    Last_Name: ' User',
+    'multi-language': 'Bengali',
+  },
+  identifiers: {
+    Email: 'subscribed@eewrfrd.com',
+  },
+  type: 'record',
+};
+
 const upsertPayload3 = {
   action: 'insert',
   context: {
@@ -146,6 +238,28 @@ const upsertPayload3 = {
     Email: 'subscribed@eewrfrd.com',
     First_Name: 'subcribed',
     Last_Name: ' User',
+  },
+  type: 'record',
+};
+
+const upsertPayload3V2 = {
+  action: 'insert',
+  context: {
+    sources: {
+      job_run_id: 'cgiiurt8um7k7n5dq480',
+      task_run_id: 'cgiiurt8um7k7n5dq48g',
+      job_id: '2MUWghI7u85n91dd1qzGyswpZan',
+      version: '895/merge',
+    },
+  },
+  recordId: '2',
+  rudderId: '2',
+  fields: {
+    First_Name: 'subcribed',
+    Last_Name: ' User',
+  },
+  identifiers: {
+    Email: 'subscribed@eewrfrd.com',
   },
   type: 'record',
 };
@@ -289,6 +403,102 @@ const commonOutput1 = {
   trigger: ['workflow'],
 };
 
+const commonConnectionConfigV2: Connection = {
+  sourceId: '2t1wMHLftBHKN1XzcfU4v7JTQTg',
+  destinationId: '2tCmPNvYHqCUgcRva2XN52ZaYHk',
+  enabled: true,
+  processorEnabled: true,
+  config: {
+    destination: {
+      object: 'Leads',
+      trigger: 'workflow',
+      schemaVersion: '1.1',
+      addDefaultDuplicateCheck: true,
+      identifierMappings: [
+        {
+          from: 'email',
+          to: 'email',
+        },
+      ],
+      multiSelectFieldLevelDecision: [
+        { from: 'multi-language', to: 'true' },
+        { from: 'multi class', to: 'false' },
+      ],
+    },
+  },
+};
+
+const commonConnectionConfigV2_2: Connection = {
+  sourceId: '2t1wMHLftBHKN1XzcfU4v7JTQTg',
+  destinationId: '2tCmPNvYHqCUgcRva2XN52ZaYHk',
+  enabled: true,
+  processorEnabled: true,
+  config: {
+    destination: {
+      object: 'Leads',
+      trigger: 'None',
+      schemaVersion: '1.1',
+      addDefaultDuplicateCheck: true,
+      identifierMappings: [
+        {
+          from: 'email',
+          to: 'email',
+        },
+      ],
+      multiSelectFieldLevelDecision: [
+        { from: 'multi-language', to: 'true' },
+        { from: 'multi class', to: 'false' },
+      ],
+    },
+  },
+};
+
+const commonConnectionConfigCustomModuleV2: Connection = {
+  sourceId: '2t1wMHLftBHKN1XzcfU4v7JTQTg',
+  destinationId: '2tCmPNvYHqCUgcRva2XN52ZaYHk',
+  enabled: true,
+  processorEnabled: true,
+  config: {
+    destination: {
+      object: 'CUSTOM',
+      trigger: 'None',
+      schemaVersion: '1.1',
+      addDefaultDuplicateCheck: true,
+      identifierMappings: [
+        {
+          from: 'email',
+          to: 'Email',
+        },
+      ],
+      multiSelectFieldLevelDecision: [
+        { from: 'multi-language', to: 'true' },
+        { from: 'multi class', to: 'false' },
+      ],
+    },
+  },
+};
+
+const commonConnectionConfigV2_3: Connection = {
+  sourceId: '2t1wMHLftBHKN1XzcfU4v7JTQTg',
+  destinationId: '2tCmPNvYHqCUgcRva2XN52ZaYHk',
+  enabled: true,
+  processorEnabled: true,
+  config: {
+    destination: {
+      object: 'Leads',
+      trigger: 'workflow',
+      schemaVersion: '1.1',
+      addDefaultDuplicateCheck: true,
+      identifierMappings: [
+        {
+          from: 'email',
+          to: 'Email',
+        },
+      ],
+    },
+  },
+};
+
 export {
   destType,
   destTypeInUpperCase,
@@ -297,13 +507,22 @@ export {
   segmentName,
   leadUpsertEndpoint,
   deletionPayload1,
+  deletionPayload1V2,
   commonDeletionDestConfig,
   upsertPayload1,
+  upsertPayload1V2,
   upsertPayload2,
+  upsertPayload2V2,
   upsertPayload3,
+  upsertPayload3V2,
   commonUpsertDestConfig,
   commonUpsertDestConfig2,
   commonOutput1,
   commonUpsertDestConfig3,
   commonUpsertDestConfig2CustomModule,
+  commonConnectionConfigV2,
+  commonConnectionConfigV2_2,
+  commonConnectionConfigV2_3,
+  commonConnectionConfigCustomModuleV2,
+  commonDeletionConnectionConfigV2,
 };

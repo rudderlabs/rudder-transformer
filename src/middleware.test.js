@@ -12,7 +12,12 @@ const stats = require('./util/stats');
 const { getDestTypeFromContext } = require('@rudderstack/integrations-lib');
 
 // Mock dependencies
-jest.mock('@pyroscope/nodejs');
+jest.mock('@pyroscope/nodejs', () => ({
+  init: jest.fn(),
+  startHeapCollecting: jest.fn(),
+  collectCpu: jest.fn(),
+  collectHeap: jest.fn(),
+}));
 jest.mock('./util/stats', () => ({
   timing: jest.fn(),
   histogram: jest.fn(),

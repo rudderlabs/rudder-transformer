@@ -47,8 +47,7 @@ const responseHandler = (responseParams) => {
   );
 };
 
-// eslint-disable-next-line func-names, @typescript-eslint/naming-convention
-class networkHandler {
+class NetworkHandler {
   constructor() {
     this.prepareProxyRequest = prepareProxyRequest;
     this.proxy = proxyRequest;
@@ -58,5 +57,5 @@ class networkHandler {
 }
 
 module.exports = {
-  networkHandler,
+  NetworkHandler,
 };

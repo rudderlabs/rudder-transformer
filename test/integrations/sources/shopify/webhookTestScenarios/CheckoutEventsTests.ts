@@ -613,8 +613,9 @@ export const checkoutEventsTestScenarios = [
                       name: 'SHOPIFY',
                     },
                     library: {
-                      name: 'unknown',
-                      version: 'unknown',
+                      eventOrigin: 'server',
+                      name: 'RudderStack Shopify Cloud',
+                      version: '2.0.0',
                     },
                     traits: {
                       acceptsMarketing: false,
@@ -668,7 +669,7 @@ export const checkoutEventsTestScenarios = [
                     },
                   },
                   integrations: {
-                    SHOPIFY: false,
+                    SHOPIFY: true,
                   },
                   type: 'identify',
                   userId: '7188389789809',
@@ -1376,8 +1377,9 @@ export const checkoutEventsTestScenarios = [
                       name: 'SHOPIFY',
                     },
                     library: {
-                      name: 'unknown',
-                      version: 'unknown',
+                      eventOrigin: 'server',
+                      name: 'RudderStack Shopify Cloud',
+                      version: '2.0.0',
                     },
                     traits: {
                       address: {
@@ -1446,7 +1448,7 @@ export const checkoutEventsTestScenarios = [
                     },
                   },
                   integrations: {
-                    SHOPIFY: false,
+                    SHOPIFY: true,
                   },
                   type: 'identify',
                   userId: '7358220173425',
@@ -1852,8 +1854,9 @@ export const checkoutEventsTestScenarios = [
                       name: 'SHOPIFY',
                     },
                     library: {
-                      name: 'unknown',
-                      version: 'unknown',
+                      eventOrigin: 'server',
+                      name: 'RudderStack Shopify Cloud',
+                      version: '2.0.0',
                     },
                     traits: {
                       address: {
@@ -1919,7 +1922,7 @@ export const checkoutEventsTestScenarios = [
                     },
                   },
                   integrations: {
-                    SHOPIFY: false,
+                    SHOPIFY: true,
                   },
                   type: 'identify',
                   userId: '7358220173425',

@@ -567,15 +567,16 @@ export const genericTrackTestScenarios = [
                       name: 'SHOPIFY',
                     },
                     library: {
-                      name: 'unknown',
-                      version: 'unknown',
+                      eventOrigin: 'server',
+                      name: 'RudderStack Shopify Cloud',
+                      version: '2.0.0',
                     },
                     traits: {
                       email: 'henry@wfls.com',
                     },
                   },
                   integrations: {
-                    SHOPIFY: false,
+                    SHOPIFY: true,
                   },
                   type: 'identify',
                 },

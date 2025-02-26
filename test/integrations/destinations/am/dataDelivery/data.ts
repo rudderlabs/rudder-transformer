@@ -667,4 +667,120 @@ export const data = [
         );
     },
   },
+  {
+    name: 'am',
+    description: 'Test 7: for standard 429 Rate Limit Handling (ThrottledError)',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          type: 'REST',
+          endpoint: 'https://api.amplitude.com/2/httpapi/standard-rate-limited',
+          method: 'POST',
+          userId: 'test_user_456',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: {
+            FORM: {},
+            JSON: {
+              api_key: 'random-api-key',
+              events: [
+                {
+                  app_name: 'Rudder-Amplitude_Example',
+                  app_version: '1.0',
+                  time: 1619006730330,
+                  user_id: 'user@example.com',
+                  user_properties: {
+                    city: 'San Francisco',
+                    country: 'US',
+                    email: 'user@example.com',
+                  },
+                },
+              ],
+              options: {
+                min_id_length: 1,
+              },
+            },
+            JSON_ARRAY: {},
+            XML: {},
+          },
+          files: {},
+          params: {
+            destination: 'am',
+          },
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 429,
+        body: {
+          output: {
+            destinationResponse: {
+              headers: {
+                'access-control-allow-methods': 'GET, POST',
+                'access-control-allow-origin': '*',
+                'content-type': 'application/json',
+                'retry-after': '60',
+              },
+              response: {
+                code: 429,
+                eps_threshold: 20,
+                error: 'Rate limit exceeded',
+                throttled_events: [2, 5],
+                throttled_users: {
+                  'user@example.com': 25,
+                },
+              },
+              status: 200,
+            },
+            message:
+              'Request Failed during amplitude response transformation: Rate limit exceeded - due to Request Limit exceeded, (Throttled)',
+            statTags: {
+              destType: 'AM',
+              destinationId: 'Non-determininable',
+              errorCategory: 'network',
+              errorType: 'throttled',
+              feature: 'dataDelivery',
+              implementation: 'native',
+              module: 'destination',
+              workspaceId: 'Non-determininable',
+            },
+            status: 429,
+          },
+        },
+      },
+    },
+    mockFns: (mockAdapter: MockAdapter) => {
+      mockAdapter
+        .onPost('https://api.amplitude.com/2/httpapi/standard-rate-limited', {
+          asymmetricMatch: (actual) => {
+            // Simple check to match the request body
+            return actual.api_key === 'random-api-key';
+          },
+        })
+        .replyOnce(
+          200,
+          {
+            code: 429,
+            error: 'Rate limit exceeded',
+            eps_threshold: 20,
+            throttled_users: {
+              'user@example.com': 25,
+            },
+            throttled_events: [2, 5],
+          },
+          {
+            'access-control-allow-methods': 'GET, POST',
+            'access-control-allow-origin': '*',
+            'content-type': 'application/json',
+            'retry-after': '60',
+          },
+        );
+    },
+  },
 ];

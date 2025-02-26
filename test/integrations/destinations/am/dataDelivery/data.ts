@@ -23,7 +23,7 @@ export const data = [
           body: {
             FORM: {},
             JSON: {
-              api_key: 'c9d8a13b8bcab46a547f7be5200c483d',
+              api_key: 'dummy-api-key',
               events: [
                 {
                   app_name: 'Rudder-CleverTap_Example',
@@ -92,7 +92,7 @@ export const data = [
           body: {
             FORM: {},
             JSON: {
-              api_key: 'c9d8a13b8bcab46a547f7be5200c483d',
+              api_key: 'dummy-api-key',
               events: [
                 {
                   app_name: 'Rudder-CleverTap_Example',
@@ -188,7 +188,7 @@ export const data = [
           body: {
             FORM: {},
             JSON: {
-              api_key: 'c9d8a13b8bcab46a547f7be5200c483d',
+              api_key: 'dummy-api-key',
               events: [
                 {
                   app_name: 'Rudder-CleverTap_Example',
@@ -257,7 +257,7 @@ export const data = [
           {
             asymmetricMatch: (actual) => {
               const expected = {
-                api_key: 'c9d8a13b8bcab46a547f7be5200c483d',
+                api_key: 'dummy-api-key',
                 events: [
                   {
                     app_name: 'Rudder-CleverTap_Example',
@@ -318,7 +318,7 @@ export const data = [
           body: {
             FORM: {},
             JSON: {
-              api_key: 'c9d8a13b8bcab46a547f7be5200c483d',
+              api_key: 'dummy-api-key',
               events: [
                 {
                   app_name: 'Rudder-CleverTap_Example',
@@ -400,7 +400,7 @@ export const data = [
           body: {
             FORM: {},
             JSON: {
-              api_key: 'c9d8a13b8bcab46a547f7be5200c483d',
+              api_key: 'dummy-api-key',
               events: [
                 {
                   app_name: 'Rudder-CleverTap_Example',
@@ -482,7 +482,7 @@ export const data = [
           body: {
             FORM: {},
             JSON: {
-              api_key: 'c9d8a13b8bcab46a547f7be5200c483d',
+              api_key: 'dummy-api-key',
               events: [
                 {
                   app_name: 'Rudder-CleverTap_Example',
@@ -564,7 +564,7 @@ export const data = [
           body: {
             FORM: {},
             JSON: {
-              api_key: 'c9d8a13b8bcab46a547f7be5200c483d',
+              api_key: 'dummy-api-key',
               events: [
                 {
                   app_name: 'Rudder-Amplitude_Example',
@@ -641,7 +641,7 @@ export const data = [
         .onPost('https://api.amplitude.com/2/httpapi/rate-limited', {
           asymmetricMatch: (actual) => {
             // Simple check to match the request body
-            return actual.api_key === 'c9d8a13b8bcab46a547f7be5200c483d';
+            return actual.api_key === 'dummy-api-key';
           },
         })
         .replyOnce(
@@ -731,10 +731,8 @@ export const data = [
                 code: 429,
                 eps_threshold: 20,
                 error: 'Rate limit exceeded',
-                throttled_events: [2, 5],
-                throttled_users: {
-                  'user@example.com': 25,
-                },
+                throttled_events: [],
+                throttled_users: {},
               },
               status: 200,
             },
@@ -769,10 +767,8 @@ export const data = [
             code: 429,
             error: 'Rate limit exceeded',
             eps_threshold: 20,
-            throttled_users: {
-              'user@example.com': 25,
-            },
-            throttled_events: [2, 5],
+            throttled_users: {},
+            throttled_events: [],
           },
           {
             'access-control-allow-methods': 'GET, POST',

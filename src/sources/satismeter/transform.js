@@ -1,5 +1,5 @@
 const Message = require('../message');
-const { refinePayload } = require('../../util');
+const { refinePayload, getBodyFromV2SpecPayload } = require('../../v0/util');
 const trackMapping = require('./data/trackMapping.json');
 
 const buildTrackPayload = (event) => {
@@ -19,7 +19,8 @@ const processEvent = (event) => {
   return message;
 };
 
-const process = (event) => {
+const process = (payload) => {
+  const event = getBodyFromV2SpecPayload(payload);
   const response = processEvent(event);
   const refinedResponse = refinePayload(response);
   return refinedResponse;

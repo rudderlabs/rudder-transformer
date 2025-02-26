@@ -22,7 +22,7 @@ const businessMockData = [
     description: 'Mock response from destination depicting an expired access token',
     httpReq: {
       method: 'post',
-      url: 'https://rudderstack.my.salesforce_oauth_sandbox.com/services/data/v50.0/sobjects/Lead/20',
+      url: 'https://rudderstack.my.salesforce_oauth_sandbox.com/services/data/v63.0/sobjects/Lead/20',
       headers: headerWithWrongAccessToken,
       data: dataValue,
       params: { destination: 'salesforce_oauth_sandbox' },
@@ -37,7 +37,7 @@ const businessMockData = [
       'Mock response from destination depicting a valid lead request, with no changed data',
     httpReq: {
       method: 'post',
-      url: 'https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/existing_unchanged_leadId',
+      url: 'https://rudderstack.my.salesforce.com/services/data/v63.0/sobjects/Lead/existing_unchanged_leadId',
       data: dataValue,
       headers: headerWithRightAccessToken,
     },

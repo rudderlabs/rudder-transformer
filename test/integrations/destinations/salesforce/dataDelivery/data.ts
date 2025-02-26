@@ -31,7 +31,7 @@ const legacyTests = [
             Authorization: 'Bearer token',
           },
           version: '1',
-          endpoint: 'https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/1',
+          endpoint: 'https://rudderstack.my.salesforce.com/services/data/v63.0/sobjects/Lead/1',
           body: {
             XML: {},
             FORM: {},
@@ -86,7 +86,7 @@ const legacyTests = [
             Authorization: 'Bearer token',
           },
           version: '1',
-          endpoint: 'https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/3',
+          endpoint: 'https://rudderstack.my.salesforce.com/services/data/v63.0/sobjects/Lead/3',
           body: {
             XML: {},
             FORM: {},
@@ -155,7 +155,7 @@ const legacyTests = [
             Authorization: 'Bearer Incorrect_token',
           },
           version: '1',
-          endpoint: 'https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/2',
+          endpoint: 'https://rudderstack.my.salesforce.com/services/data/v63.0/sobjects/Lead/2',
           body: {
             XML: {},
             FORM: {},
@@ -224,7 +224,7 @@ const legacyTests = [
             Authorization: 'Bearer token',
           },
           version: '1',
-          endpoint: 'https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/4',
+          endpoint: 'https://rudderstack.my.salesforce.com/services/data/v63.0/sobjects/Lead/4',
           body: {
             XML: {},
             FORM: {},
@@ -293,7 +293,7 @@ const legacyTests = [
             Authorization: 'Bearer token',
           },
           version: '1',
-          endpoint: 'https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/5',
+          endpoint: 'https://rudderstack.my.salesforce.com/services/data/v63.0/sobjects/Lead/5',
           body: {
             XML: {},
             FORM: {},
@@ -362,7 +362,7 @@ const legacyTests = [
             Authorization: 'Bearer token',
           },
           version: '1',
-          endpoint: 'https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/6',
+          endpoint: 'https://rudderstack.my.salesforce.com/services/data/v63.0/sobjects/Lead/6',
           body: {
             XML: {},
             FORM: {},
@@ -429,7 +429,7 @@ const legacyTests = [
             Authorization: 'Bearer token',
           },
           version: '1',
-          endpoint: 'https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/7',
+          endpoint: 'https://rudderstack.my.salesforce.com/services/data/v63.0/sobjects/Lead/7',
           body: {
             XML: {},
             FORM: {},
@@ -490,7 +490,7 @@ const legacyTests = [
           type: 'REST',
           method: 'POST',
           endpoint:
-            'https://rudderstack.my.salesforce.com/services/data/v50.0/parameterizedSearch/?q=123&sobject=object_name&in=External_ID__c&object_name.fields=id,External_ID__c',
+            'https://rudderstack.my.salesforce.com/services/data/v63.0/parameterizedSearch/?q=123&sobject=object_name&in=External_ID__c&object_name.fields=id,External_ID__c',
           headers: {
             'Content-Type': 'application/json',
             Authorization: 'Bearer token',
@@ -530,7 +530,7 @@ const legacyTests = [
                   {
                     attributes: {
                       type: 'object_name',
-                      url: '/services/data/v50.0/sobjects/object_name/a0J75100002w97gEAA',
+                      url: '/services/data/v63.0/sobjects/object_name/a0J75100002w97gEAA',
                     },
                     Id: 'a0J75100002w97gEAA',
                     External_ID__c: 'external_id',
@@ -538,7 +538,7 @@ const legacyTests = [
                   {
                     attributes: {
                       type: 'object_name',
-                      url: '/services/data/v50.0/sobjects/object_name/a0J75200002w9ZsEAI',
+                      url: '/services/data/v63.0/sobjects/object_name/a0J75200002w9ZsEAI',
                     },
                     Id: 'a0J75200002w9ZsEAI',
                     External_ID__c: 'external_id TEST',
@@ -570,7 +570,7 @@ const legacyTests = [
             Authorization: 'Bearer token',
           },
           version: '1',
-          endpoint: 'https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/101',
+          endpoint: 'https://rudderstack.my.salesforce.com/services/data/v63.0/sobjects/Lead/101',
           body: {
             XML: {},
             FORM: {},
@@ -626,7 +626,7 @@ const legacyTests = [
       // params has `{ destination: salesforce }`
       mockAdapter
         .onPost(
-          'https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/101',
+          'https://rudderstack.my.salesforce.com/services/data/v63.0/sobjects/Lead/101',
           {
             Email: 'denis.kornilov@sbermarket.ru',
             Company: 'sbermarket.ru',
@@ -663,7 +663,7 @@ const legacyTests = [
             Authorization: 'Bearer token',
           },
           version: '1',
-          endpoint: 'https://rudder.my.salesforce.com/services/data/v50.0/sobjects/Lead/102',
+          endpoint: 'https://rudder.my.salesforce.com/services/data/v63.0/sobjects/Lead/102',
           body: {
             XML: {},
             FORM: {},
@@ -719,7 +719,7 @@ const legacyTests = [
       // params has `{ destination: salesforce }`
       mockAdapter
         .onPost(
-          'https://rudder.my.salesforce.com/services/data/v50.0/sobjects/Lead/102',
+          'https://rudder.my.salesforce.com/services/data/v63.0/sobjects/Lead/102',
           {
             Email: 'denis.kornilov@sbermarket.ru',
             Company: 'sbermarket.ru',

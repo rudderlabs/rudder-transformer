@@ -95,7 +95,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
           {
             ...commonRequestParameters,
             endpoint:
-              'https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/existing_unchanged_leadId',
+              'https://rudderstack.my.salesforce.com/services/data/v63.0/sobjects/Lead/existing_unchanged_leadId',
           },
           reqMetadataArray,
         ),
@@ -136,7 +136,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
           {
             ...commonRequestParameters,
             endpoint:
-              'https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/invalid_session_id',
+              'https://rudderstack.my.salesforce.com/services/data/v63.0/sobjects/Lead/invalid_session_id',
           },
           reqMetadataArray,
         ),
@@ -179,7 +179,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
         body: generateProxyV1Payload(
           {
             ...commonRequestParameters,
-            endpoint: 'https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/2',
+            endpoint: 'https://rudderstack.my.salesforce.com/services/data/v63.0/sobjects/Lead/2',
           },
           reqMetadataArray,
         ),
@@ -221,7 +221,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
         body: generateProxyV1Payload(
           {
             ...commonRequestParameters,
-            endpoint: 'https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/4',
+            endpoint: 'https://rudderstack.my.salesforce.com/services/data/v63.0/sobjects/Lead/4',
           },
           reqMetadataArray,
         ),
@@ -264,7 +264,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
         body: generateProxyV1Payload(
           {
             ...commonRequestParameters,
-            endpoint: 'https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/5',
+            endpoint: 'https://rudderstack.my.salesforce.com/services/data/v63.0/sobjects/Lead/5',
           },
           reqMetadataArray,
         ),
@@ -307,7 +307,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
         body: generateProxyV1Payload(
           {
             ...commonRequestParameters,
-            endpoint: 'https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/6',
+            endpoint: 'https://rudderstack.my.salesforce.com/services/data/v63.0/sobjects/Lead/6',
           },
           reqMetadataArray,
         ),
@@ -350,7 +350,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
           {
             ...externalIDSearchedData,
             endpoint:
-              'https://rudderstack.my.salesforce.com/services/data/v50.0/parameterizedSearch/?q=123&sobject=object_name&in=External_ID__c&object_name.fields=id,External_ID__c',
+              'https://rudderstack.my.salesforce.com/services/data/v63.0/parameterizedSearch/?q=123&sobject=object_name&in=External_ID__c&object_name.fields=id,External_ID__c',
           },
           reqMetadataArray,
         ),
@@ -366,7 +366,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
             response: [
               {
                 error:
-                  '{"searchRecords":[{"attributes":{"type":"object_name","url":"/services/data/v50.0/sobjects/object_name/a0J75100002w97gEAA"},"Id":"a0J75100002w97gEAA","External_ID__c":"external_id"},{"attributes":{"type":"object_name","url":"/services/data/v50.0/sobjects/object_name/a0J75200002w9ZsEAI"},"Id":"a0J75200002w9ZsEAI","External_ID__c":"external_id TEST"}]}',
+                  '{"searchRecords":[{"attributes":{"type":"object_name","url":"/services/data/v63.0/sobjects/object_name/a0J75100002w97gEAA"},"Id":"a0J75100002w97gEAA","External_ID__c":"external_id"},{"attributes":{"type":"object_name","url":"/services/data/v63.0/sobjects/object_name/a0J75200002w9ZsEAI"},"Id":"a0J75200002w9ZsEAI","External_ID__c":"external_id TEST"}]}',
                 metadata: proxyMetdata,
                 statusCode: 200,
               },

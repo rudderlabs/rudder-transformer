@@ -560,6 +560,26 @@ export const genericTrackTestScenarios = [
                   },
                   anonymousId: '50ead33e-d763-4854-b0ab-765859ef05cb',
                 },
+                {
+                  anonymousId: '50ead33e-d763-4854-b0ab-765859ef05cb',
+                  context: {
+                    integration: {
+                      name: 'SHOPIFY',
+                    },
+                    library: {
+                      eventOrigin: 'server',
+                      name: 'RudderStack Shopify Cloud',
+                      version: '2.0.0',
+                    },
+                    traits: {
+                      email: 'henry@wfls.com',
+                    },
+                  },
+                  integrations: {
+                    SHOPIFY: true,
+                  },
+                  type: 'identify',
+                },
               ],
             },
           },

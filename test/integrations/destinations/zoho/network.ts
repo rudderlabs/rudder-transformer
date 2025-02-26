@@ -418,4 +418,23 @@ export const networkCallsData = [
       statusText: 'OK',
     },
   },
+  {
+    httpReq: {
+      url: 'https://www.zohoapis.in/crm/v6/Leads/search?criteria=(Email:equals:tobedeleted3%40gmail.com)and(First_Name:equals:subcribed3)and(Last_Name:equals:User3)',
+      headers: {
+        Authorization: 'Zoho-oauthtoken expired-access-token',
+      },
+      method: 'GET',
+    },
+    httpRes: {
+      data: {
+        code: 'INVALID_TOKEN',
+        details: {},
+        message: 'invalid oauth token',
+        status: 'error',
+      },
+      status: 401,
+      statusText: 'Bad Request',
+    },
+  },
 ];

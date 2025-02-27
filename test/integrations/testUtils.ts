@@ -623,3 +623,21 @@ export const generateGoogleOAuthMetadata = (jobId: number): any => {
     dontBatch: false,
   };
 };
+
+/**
+ * Constants for test files
+ * This file contains constants used in test files to avoid hardcoded values
+ */
+
+// Dummy secret value to be used in place of actual API keys, tokens, etc.
+export const DUMMY_SECRET = 'DUMMY_SECRET_VALUE';
+
+// Function to base64 encode a string for Basic auth
+export const basicEncoded = (string: string, repeat: number = 1): string => {
+  if (repeat == 1) {
+    return Buffer.from(string).toString('base64');
+  } else {
+    const strings = Array(repeat).fill(string);
+    return Buffer.from(strings.join(':')).toString('base64');
+  }
+};

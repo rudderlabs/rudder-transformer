@@ -1,5 +1,7 @@
 import { AxiosResponse } from 'axios';
 import MockAdapter from 'axios-mock-adapter';
+import { BaseTestCase } from '@rudderstack/integrations-lib';
+
 import {
   DeliveryV1Response,
   ProcessorTransformationRequest,
@@ -38,7 +40,7 @@ export interface mockType {
   response: responseType;
 }
 
-export interface TestCaseData {
+export interface TestCaseData extends BaseTestCase {
   id?: string;
   name: string;
   description: string;

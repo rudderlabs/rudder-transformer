@@ -47,7 +47,6 @@ const getCommonDestinationEndpoint = ({ apiId, region, category }) => {
 
 const createDestinationPayload = ({ message, category, useObjectData }) => {
   const payload = {};
-
   const setPayloadAttributes = (configCategory) => {
     payload.attributes = constructPayload(message, MAPPING_CONFIG[configCategory]);
     payload.attributes = useObjectData
@@ -60,8 +59,7 @@ const createDestinationPayload = ({ message, category, useObjectData }) => {
       // Track User
       payload.type = 'customer';
       setPayloadAttributes(CONFIG_CATEGORIES.IDENTIFY_ATTR.name);
-      break;
-
+      return payload;
     case 'device':
       // Track Device
       payload.type = 'device';
@@ -70,8 +68,7 @@ const createDestinationPayload = ({ message, category, useObjectData }) => {
       if (isAppleFamily(payload.attributes?.platform)) {
         payload.attributes.platform = 'iOS';
       }
-      break;
-
+      return payload;
     case 'track':
       // Create Event
       payload.type = 'event';
@@ -87,13 +84,10 @@ const createDestinationPayload = ({ message, category, useObjectData }) => {
       if (isAppleFamily(payload.actions[0]?.platform)) {
         payload.actions[0].platform = 'iOS';
       }
-      break;
-
+      return payload;
     default:
       throw new InstrumentationError(`Event type ${category.type} is not supported`);
   }
-
-  return payload;
 };
 
 function responseBuilderSimple(message, category, destination) {

@@ -1,15 +1,12 @@
 const lodash = require('lodash');
 const cloneDeep = require('lodash/cloneDeep');
-const {
-  InstrumentationError,
-  UnauthorizedError,
-  getErrorRespEvents,
-} = require('@rudderstack/integrations-lib');
+const { InstrumentationError, UnauthorizedError } = require('@rudderstack/integrations-lib');
 const {
   defaultPostRequestConfig,
   defaultDeleteRequestConfig,
   generateErrorObject,
   simpleProcessRouterDest,
+  getErrorRespEvents,
 } = require('../../util');
 const { AUTH_CACHE_TTL, JSON_MIME_TYPE } = require('../../util/constant');
 const { getIds, validateMessageType } = require('./util');

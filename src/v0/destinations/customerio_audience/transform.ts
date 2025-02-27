@@ -1,17 +1,25 @@
-import { ConfigurationError, isDefinedAndNotNull } from '@rudderstack/integrations-lib';
+import {
+  ConfigurationError,
+  InstrumentationError,
+  isDefinedAndNotNull,
+} from '@rudderstack/integrations-lib';
 import { SegmentAction } from './config';
-import { CustomerIORouterRequestType, RespList } from './type';
+import {
+  CustomerIOConnectionType,
+  CustomerIODestinationType,
+  CustomerIORouterRequestType,
+  RespList,
+} from './type';
 
-const { InstrumentationError } = require('@rudderstack/integrations-lib');
-const { batchResponseBuilder, getEventAction } = require('./utils');
-const { handleRtTfSingleEventError, getEventType } = require('../../util');
-const { EventType } = require('../../../constants');
+import { batchResponseBuilder, getEventAction } from './utils';
+import { handleRtTfSingleEventError, getEventType } from '../../util';
+import { EventType } from '../../../constants';
 
 interface ProcessedEvent extends RespList {
   eventAction: keyof typeof SegmentAction;
 }
 
-const createEventChunk = (
+export const createEventChunk = (
   event: CustomerIORouterRequestType & { message: { identifiers: Record<string, any> } },
 ): ProcessedEvent => {
   const eventAction = getEventAction(event);
@@ -33,11 +41,11 @@ const createEventChunk = (
   return {
     payload: { ids: [id] },
     metadata: event.metadata,
-    eventAction,
+    eventAction: eventAction as keyof typeof SegmentAction,
   };
 };
 
-const validateEvent = (
+export const validateEvent = (
   event: CustomerIORouterRequestType & { message: { identifiers: Record<string, any> } },
 ): boolean => {
   const eventType = getEventType(event?.message);
@@ -91,6 +99,9 @@ const processRouterDest = async (inputs: CustomerIORouterRequestType[], reqMetad
 
   const { destination, connection } = inputs[0];
 
+  const customerIODestination = destination as CustomerIODestinationType;
+  const customerIOConnection = connection as CustomerIOConnectionType;
+
   // Process events and separate valid and error cases
   const processedEvents = inputs.map((event) => {
     try {
@@ -132,8 +143,8 @@ const processRouterDest = async (inputs: CustomerIORouterRequestType[], reqMetad
   const batchSuccessfulRespList = batchResponseBuilder(
     insertOrUpdateRespList,
     deleteRespList,
-    destination,
-    connection,
+    customerIODestination,
+    customerIOConnection,
   );
 
   return [...batchSuccessfulRespList, ...errorEvents];

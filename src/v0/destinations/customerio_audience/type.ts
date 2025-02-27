@@ -23,14 +23,14 @@ export type SegmentationHeadersType = {
 };
 
 // CustomerIO specific configuration types
-type CustomerIODestinationConfig = {
+export type CustomerIODestinationConfig = {
   apiKey: string;
   appApiKey: string;
   siteId: string;
   [key: string]: any;
 };
 
-type CustomerIOConnectionConfig = {
+export type CustomerIOConnectionConfig = {
   destination: {
     audienceId: string | number;
     identifierMappings: {

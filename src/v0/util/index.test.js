@@ -3,7 +3,6 @@ const utilities = require('.');
 const { getFuncTestData } = require('../../../test/testHelper');
 const { FilteredEventsError } = require('./errorTypes');
 const { v5 } = require('uuid');
-const { ERROR_MESSAGES } = require('./constant');
 const {
   hasCircularReference,
   flattenJson,
@@ -16,6 +15,7 @@ const {
   convertToUuid,
 } = require('./index');
 const exp = require('constants');
+const { ERROR_MESSAGES } = require('./constant');
 
 // Names of the utility functions to test
 const functionNames = [

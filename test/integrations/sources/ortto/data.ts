@@ -9,33 +9,36 @@ export const data = [
     name: 'ortto',
     description: 'Simple track call',
     module: 'source',
-    version: 'v0',
+    version: 'v2',
     input: {
       request: {
         body: [
           {
-            activity: {
-              id: '00651b946bfef7e80478efee',
-              field_id: 'act::s-all',
-              created: '2023-10-03T04:11:23Z',
-              attr: {
-                'str::is': 'API',
-                'str::s-ctx': 'Subscribed via API',
-              },
+            request: {
+              body: JSON.stringify({
+                activity: {
+                  id: '00651b946bfef7e80478efee',
+                  field_id: 'act::s-all',
+                  created: '2023-10-03T04:11:23Z',
+                  attr: {
+                    'str::is': 'API',
+                    'str::s-ctx': 'Subscribed via API',
+                  },
+                },
+                contact: {
+                  contact_id: '00651b946baa9be6b2edad00',
+                  email: 'abhi@example.com',
+                },
+                id: '00651b946cef87c7af64f4f3',
+                time: '2023-10-03T04:11:24.25726779Z',
+                webhook_id: '651b8aec8002153e16319fd3',
+              }),
             },
-            contact: {
-              contact_id: '00651b946baa9be6b2edad00',
-              email: 'abhi@example.com',
-            },
-            id: '00651b946cef87c7af64f4f3',
-            time: '2023-10-03T04:11:24.25726779Z',
-            webhook_id: '651b8aec8002153e16319fd3',
+            source: {},
           },
         ],
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
       },
       pathSuffix: '',
     },
@@ -78,65 +81,62 @@ export const data = [
         ],
       },
     },
-    mockFns: () => {
-      defaultMockFns();
-    },
   },
   {
     name: 'ortto',
     description: 'Simple track call',
     module: 'source',
-    version: 'v0',
+    version: 'v2',
     input: {
       request: {
         body: [
           {
-            activity: {
-              id: '00651b946bfef7e80478efee',
-              field_id: 'act::s-all',
-              created: '2023-10-03T04:11:23Z',
-              attr: {
-                'str::is': 'API',
-                'str::s-ctx': 'Subscribed via API',
-              },
+            request: {
+              body: JSON.stringify({
+                activity: {
+                  id: '00651b946bfef7e80478efee',
+                  field_id: 'act::s-all',
+                  created: '2023-10-03T04:11:23Z',
+                  attr: {
+                    'str::is': 'API',
+                    'str::s-ctx': 'Subscribed via API',
+                  },
+                },
+                contact: {
+                  external_id: 'user_x',
+                  city: {
+                    name: 'Kolkata',
+                    id: 0,
+                    lat: 37751000,
+                    lng: -97822000,
+                  },
+                  country: {
+                    name: 'United States',
+                    id: 6252001,
+                    lat: 0,
+                    lng: 0,
+                  },
+                  email: 'xyz@email.com',
+                  first_name: 'Ujjwal',
+                  last_name: 'Ujjwal',
+                  birthday: {
+                    year: 1980,
+                    month: 12,
+                    day: 11,
+                    timezone: 'Australia/Sydney',
+                  },
+                  phone_number: { c: '91', n: '401234567' },
+                },
+                id: '00651b946cef87c7af64f4f3',
+                time: '2023-10-03T04:11:24.25726779Z',
+                webhook_id: '651b8aec8002153e16319fd3',
+              }),
             },
-            contact: {
-              external_id: 'user_x',
-              city: {
-                name: 'Kolkata',
-                id: 0,
-                lat: 37751000,
-                lng: -97822000,
-              },
-              country: {
-                name: 'United States',
-                id: 6252001,
-                lat: 0,
-                lng: 0,
-              },
-              email: 'xyz@email.com',
-              first_name: 'Ujjwal',
-              last_name: 'Ujjwal',
-              birthday: {
-                year: 1980,
-                month: 12,
-                day: 11,
-                timezone: 'Australia/Sydney',
-              },
-              phone_number: {
-                c: '91',
-                n: '401234567',
-              },
-            },
-            id: '00651b946cef87c7af64f4f3',
-            time: '2023-10-03T04:11:24.25726779Z',
-            webhook_id: '651b8aec8002153e16319fd3',
+            source: {},
           },
         ],
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
       },
       pathSuffix: '',
     },
@@ -158,10 +158,7 @@ export const data = [
                       firstName: 'Ujjwal',
                       lastName: 'Ujjwal',
                       phone: '91401234567',
-                      address: {
-                        city: 'Kolkata',
-                        country: 'United States',
-                      },
+                      address: { city: 'Kolkata', country: 'United States' },
                     },
                   },
                   event: 'Resubscribe globally',
@@ -190,66 +187,63 @@ export const data = [
         ],
       },
     },
-    mockFns: () => {
-      defaultMockFns();
-    },
   },
   {
     name: 'ortto',
     description: 'Simple track call with unknown field id',
     module: 'source',
-    version: 'v0',
+    version: 'v2',
     input: {
       request: {
         body: [
           {
-            activity: {
-              id: '00651b946bfef7e80478efee',
-              field_id: 'act::s-ccc',
-              created: '2023-10-03T04:11:23Z',
-              attr: {
-                'str::is': 'API',
-                'str::s-ctx': 'Subscribed via API',
-              },
+            request: {
+              body: JSON.stringify({
+                activity: {
+                  id: '00651b946bfef7e80478efee',
+                  field_id: 'act::s-ccc',
+                  created: '2023-10-03T04:11:23Z',
+                  attr: {
+                    'str::is': 'API',
+                    'str::s-ctx': 'Subscribed via API',
+                  },
+                },
+                contact: {
+                  external_id: 'user_x',
+                  city: {
+                    name: 'Kolkata',
+                    id: 0,
+                    lat: 37751000,
+                    lng: -97822000,
+                  },
+                  contact_id: '006524f0b8d370050056e400',
+                  country: {
+                    name: 'United States',
+                    id: 6252001,
+                    lat: 0,
+                    lng: 0,
+                  },
+                  email: 'xyz@email.com',
+                  first_name: 'Ujjwal',
+                  last_name: 'Ujjwal',
+                  birthday: {
+                    year: 1980,
+                    month: 3,
+                    day: 4,
+                    timezone: 'Australia/Sydney',
+                  },
+                  phone_number: { c: '91', n: '401234567' },
+                },
+                id: '00651b946cef87c7af64f4f3',
+                time: '2023-10-03T04:11:24.25726779Z',
+                webhook_id: '651b8aec8002153e16319fd3',
+              }),
             },
-            contact: {
-              external_id: 'user_x',
-              city: {
-                name: 'Kolkata',
-                id: 0,
-                lat: 37751000,
-                lng: -97822000,
-              },
-              contact_id: '006524f0b8d370050056e400',
-              country: {
-                name: 'United States',
-                id: 6252001,
-                lat: 0,
-                lng: 0,
-              },
-              email: 'xyz@email.com',
-              first_name: 'Ujjwal',
-              last_name: 'Ujjwal',
-              birthday: {
-                year: 1980,
-                month: 3,
-                day: 4,
-                timezone: 'Australia/Sydney',
-              },
-              phone_number: {
-                c: '91',
-                n: '401234567',
-              },
-            },
-            id: '00651b946cef87c7af64f4f3',
-            time: '2023-10-03T04:11:24.25726779Z',
-            webhook_id: '651b8aec8002153e16319fd3',
+            source: {},
           },
         ],
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
       },
       pathSuffix: '',
     },
@@ -277,10 +271,7 @@ export const data = [
                       firstName: 'Ujjwal',
                       lastName: 'Ujjwal',
                       phone: '91401234567',
-                      address: {
-                        city: 'Kolkata',
-                        country: 'United States',
-                      },
+                      address: { city: 'Kolkata', country: 'United States' },
                     },
                   },
                   event: 'custom event triggered',
@@ -309,66 +300,63 @@ export const data = [
         ],
       },
     },
-    mockFns: () => {
-      defaultMockFns();
-    },
   },
   {
     name: 'ortto',
     description: 'Simple track call with unknown field id',
     module: 'source',
-    version: 'v0',
+    version: 'v2',
     input: {
       request: {
         body: [
           {
-            activity: {
-              id: '00651b946bfef7e80478efee',
-              field_id: 'act::test_webhook',
-              created: '2023-10-03T04:11:23Z',
-              attr: {
-                'str::is': 'API',
-                'str::s-ctx': 'Subscribed via API',
-              },
+            request: {
+              body: JSON.stringify({
+                activity: {
+                  id: '00651b946bfef7e80478efee',
+                  field_id: 'act::test_webhook',
+                  created: '2023-10-03T04:11:23Z',
+                  attr: {
+                    'str::is': 'API',
+                    'str::s-ctx': 'Subscribed via API',
+                  },
+                },
+                contact: {
+                  external_id: 'user_x',
+                  city: {
+                    name: 'Kolkata',
+                    id: 0,
+                    lat: 37751000,
+                    lng: -97822000,
+                  },
+                  contact_id: '006524f0b8d370050056e400',
+                  country: {
+                    name: 'United States',
+                    id: 6252001,
+                    lat: 0,
+                    lng: 0,
+                  },
+                  email: 'xyz@email.com',
+                  first_name: 'Ujjwal',
+                  last_name: 'Ujjwal',
+                  birthday: {
+                    year: 1980,
+                    month: 3,
+                    day: 4,
+                    timezone: 'Australia/Sydney',
+                  },
+                  phone_number: { c: '91', n: '401234567' },
+                },
+                id: '00651b946cef87c7af64f4f3',
+                time: '2023-10-03T04:11:24.25726779Z',
+                webhook_id: '651b8aec8002153e16319fd3',
+              }),
             },
-            contact: {
-              external_id: 'user_x',
-              city: {
-                name: 'Kolkata',
-                id: 0,
-                lat: 37751000,
-                lng: -97822000,
-              },
-              contact_id: '006524f0b8d370050056e400',
-              country: {
-                name: 'United States',
-                id: 6252001,
-                lat: 0,
-                lng: 0,
-              },
-              email: 'xyz@email.com',
-              first_name: 'Ujjwal',
-              last_name: 'Ujjwal',
-              birthday: {
-                year: 1980,
-                month: 3,
-                day: 4,
-                timezone: 'Australia/Sydney',
-              },
-              phone_number: {
-                c: '91',
-                n: '401234567',
-              },
-            },
-            id: '00651b946cef87c7af64f4f3',
-            time: '2023-10-03T04:11:24.25726779Z',
-            webhook_id: '651b8aec8002153e16319fd3',
+            source: {},
           },
         ],
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
       },
       pathSuffix: '',
     },
@@ -386,8 +374,10 @@ export const data = [
         ],
       },
     },
-    mockFns: () => {
-      defaultMockFns();
-    },
   },
-];
+].map((testCase) => ({
+  ...testCase,
+  mockFns: () => {
+    defaultMockFns();
+  },
+}));

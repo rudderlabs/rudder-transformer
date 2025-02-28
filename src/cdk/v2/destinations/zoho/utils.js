@@ -133,7 +133,7 @@ function escapeAndEncode(value) {
   return encodeURIComponent(value.replace(/([(),\\])/g, '\\$1'));
 }
 
-function transformToURLParams(fields, Config) {
+function transformToURLParams(fields, Config, operationModuleType) {
   const criteria = Object.entries(fields)
     .map(([key, value]) => `(${key}:equals:${escapeAndEncode(value)})`)
     .join('and');
@@ -141,7 +141,7 @@ function transformToURLParams(fields, Config) {
   const dataCenter = Config.region;
   const regionBasedEndPoint = zohoConfig.DATA_CENTRE_BASE_ENDPOINTS_MAP[dataCenter];
 
-  return `${regionBasedEndPoint}/crm/v6/Leads/search?criteria=${criteria}`;
+  return `${regionBasedEndPoint}/crm/v6/${operationModuleType}/search?criteria=${criteria}`;
 }
 
 function transformToURLParamsV2(fields, Config, object) {
@@ -155,9 +155,9 @@ function transformToURLParamsV2(fields, Config, object) {
   return `${regionBasedEndPoint}/crm/v6/${object}/search?criteria=${criteria}`;
 }
 
-const searchRecordId = async (fields, metadata, Config) => {
+const searchRecordId = async (fields, metadata, Config, operationModuleType) => {
   try {
-    const searchURL = transformToURLParams(fields, Config);
+    const searchURL = transformToURLParams(fields, Config, operationModuleType);
     const searchResult = await handleHttpRequest(
       'get',
       searchURL,
@@ -170,7 +170,7 @@ const searchRecordId = async (fields, metadata, Config) => {
         destType: 'zoho',
         feature: 'deleteRecords',
         requestMethod: 'GET',
-        endpointPath: 'crm/v6/Leads/search?criteria=',
+        endpointPath: `crm/v6/${operationModuleType}/search?criteria=`,
         module: 'router',
       },
     );

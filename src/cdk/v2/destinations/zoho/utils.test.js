@@ -157,18 +157,28 @@ describe('formatMultiSelectFieldsV2', () => {
 describe('transformToURLParams', () => {
   const testCases = [
     {
-      name: 'should build a proper URL with encoded criteria based on fields and config',
+      name: 'should build a proper URL with encoded criteria based on fields and config for Leads module',
       input: {
         fields: { First_Name: 'John, Doe', Age: '30' },
         config: { region: 'US' },
+        object: 'Leads',
       },
       expected: `https://www.zohoapis.com/crm/v6/Leads/search?criteria=(First_Name:equals:John%5C%2C%20Doe)and(Age:equals:30)`,
+    },
+    {
+      name: 'should build a proper URL with encoded criteria based on fields and config for Contacts module',
+      input: {
+        fields: { First_Name: 'John, Doe', Age: '30' },
+        config: { region: 'US' },
+        object: 'Contacts',
+      },
+      expected: `https://www.zohoapis.com/crm/v6/Contacts/search?criteria=(First_Name:equals:John%5C%2C%20Doe)and(Age:equals:30)`,
     },
   ];
 
   testCases.forEach(({ name, input, expected }) => {
     it(name, () => {
-      const url = transformToURLParams(input.fields, input.config);
+      const url = transformToURLParams(input.fields, input.config, input.object);
       expect(url).toEqual(expected);
     });
   });

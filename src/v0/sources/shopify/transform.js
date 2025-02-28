@@ -16,7 +16,7 @@ const {
 const logger = require('../../../logger');
 const { RedisDB } = require('../../../util/redis/redisConnector');
 const { removeUndefinedAndNullValues, isDefinedAndNotNull } = require('../../util');
-const Message = require('../message');
+const Message = require('../../../sources/message');
 const { EventType } = require('../../../constants');
 const {
   INTEGERATION,

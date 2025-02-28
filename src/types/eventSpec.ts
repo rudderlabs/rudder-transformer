@@ -67,6 +67,4 @@ export type Metadata = {
   dontBatch?: boolean;
 };
 
-export type MessageIdMetadataMap = {
-  [key: string]: Metadata;
-};
+export type MessageIdMetadataMap = Record<string, Metadata>;

@@ -1,3 +1,4 @@
+import { AUTH_PATTERN_2 } from './maskedSecrets';
 const deleteNwData = [
   {
     httpReq: {
@@ -1086,7 +1087,7 @@ const deleteNwData = [
       headers: {
         'Content-Type': 'application/json',
 
-        Authorization: 'Bearer test_gdpr_token',
+        Authorization: AUTH_PATTERN_2,
       },
     },
     httpRes: {
@@ -1109,7 +1110,7 @@ const deleteNwData = [
       headers: {
         'Content-Type': 'application/json',
         Accept: 'text/plain',
-        Authorization: 'Bearer test_gdpr_token',
+        Authorization: AUTH_PATTERN_2,
       },
     },
     httpRes: {

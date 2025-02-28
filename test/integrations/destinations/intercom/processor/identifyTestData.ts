@@ -1,3 +1,4 @@
+import { AUTH_PATTERN_2, SECRET_1, AUTH_PATTERN_8, SECRET_7 } from '../maskedSecrets';
 import { Destination } from '../../../../../src/types';
 import {
   generateMetadata,
@@ -6,14 +7,14 @@ import {
 } from '../../../testUtils';
 
 const v1Config = {
-  apiKey: 'intercomApiKey',
+  apiKey: SECRET_7,
   apiVersion: 'v1',
   appId: '9e9cdea1-78fa-4829-a9b2-5d7f7e96d1a0',
   collectContext: false,
 };
 
 const v2Config = {
-  apiKey: 'testApiKey',
+  apiKey: SECRET_1,
   apiVersion: 'v2',
   apiServer: 'standard',
   sendAnonymousId: false,
@@ -21,7 +22,7 @@ const v2Config = {
 
 const v2Headers = {
   Accept: 'application/json',
-  Authorization: 'Bearer testApiKey',
+  Authorization: AUTH_PATTERN_2,
   'Content-Type': 'application/json',
   'Intercom-Version': '2.10',
   'User-Agent': 'RudderStack',
@@ -29,7 +30,7 @@ const v2Headers = {
 
 const v1Headers = {
   'Content-Type': 'application/json',
-  Authorization: 'Bearer intercomApiKey',
+  Authorization: AUTH_PATTERN_8,
   Accept: 'application/json',
   'Intercom-Version': '1.4',
   'User-Agent': 'RudderStack',

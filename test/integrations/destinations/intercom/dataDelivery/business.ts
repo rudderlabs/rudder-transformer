@@ -1,3 +1,4 @@
+import { AUTH_PATTERN_2, AUTH_PATTERN_4 } from '../maskedSecrets';
 import {
   generateMetadata,
   generateProxyV0Payload,
@@ -6,7 +7,7 @@ import {
 
 const commonHeaders = {
   'Content-Type': 'application/json',
-  Authorization: 'Bearer testApiKey',
+  Authorization: AUTH_PATTERN_2,
   Accept: 'application/json',
   'Intercom-Version': '1.4',
   'User-Agent': 'RudderStack',
@@ -14,7 +15,7 @@ const commonHeaders = {
 
 const unauthorizedResponseHeaders = {
   'Content-Type': 'application/json',
-  Authorization: 'Bearer invalidApiKey',
+  Authorization: AUTH_PATTERN_4,
   Accept: 'application/json',
   'Intercom-Version': '1.4',
   'User-Agent': 'RudderStack',

@@ -1,3 +1,4 @@
+import { AUTH_PATTERN_2 } from './maskedSecrets';
 export const networkCallsData = [
   {
     httpReq: {
@@ -39,7 +40,7 @@ export const networkCallsData = [
       method: 'delete',
       url: 'https://api.custify.com/people?user_id=rudder1',
       headers: {
-        Authorization: 'Bearer dummyApiKey',
+        Authorization: AUTH_PATTERN_2,
       },
     },
     httpRes: {
@@ -56,7 +57,7 @@ export const networkCallsData = [
       method: 'delete',
       url: 'https://api.custify.com/people?user_id=rudder2',
       headers: {
-        Authorization: 'Bearer dummyApiKey',
+        Authorization: AUTH_PATTERN_2,
       },
     },
     httpRes: {
@@ -72,7 +73,7 @@ export const networkCallsData = [
       method: 'delete',
       url: 'https://api.custify.com/people?user_id=rudder3',
       headers: {
-        Authorization: 'Bearer dummyApiKey',
+        Authorization: AUTH_PATTERN_2,
       },
     },
     httpRes: {

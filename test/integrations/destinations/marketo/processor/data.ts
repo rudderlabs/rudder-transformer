@@ -1,3 +1,4 @@
+import { AUTH_PATTERN_2 } from '../maskedSecrets';
 export const data = [
   {
     name: 'marketo',
@@ -114,7 +115,7 @@ export const data = [
               endpoint:
                 'https://marketo_acct_id_success.mktorest.com/rest/v1/customobjects/new_user.json',
               headers: {
-                Authorization: 'Bearer access_token_success',
+                Authorization: AUTH_PATTERN_2,
                 'Content-Type': 'application/json',
               },
               params: {},
@@ -264,7 +265,7 @@ export const data = [
                 'https://marketo_acct_id_success.mktorest.com/rest/v1/activities/external.json',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Bearer access_token_success',
+                Authorization: AUTH_PATTERN_2,
               },
               params: {},
               body: {
@@ -409,7 +410,7 @@ export const data = [
                 'https://marketo_acct_id_success.mktorest.com/rest/v1/activities/external.json',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Bearer access_token_success',
+                Authorization: AUTH_PATTERN_2,
               },
               params: {},
               body: {
@@ -555,7 +556,7 @@ export const data = [
                 'https://marketo_acct_id_success.mktorest.com/rest/v1/activities/external.json',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Bearer access_token_success',
+                Authorization: AUTH_PATTERN_2,
               },
               params: {},
               body: {
@@ -1580,7 +1581,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://marketo_acct_id_success.mktorest.com/rest/v1/leads.json',
               headers: {
-                Authorization: 'Bearer access_token_success',
+                Authorization: AUTH_PATTERN_2,
                 'Content-Type': 'application/json',
               },
               params: {},
@@ -1720,7 +1721,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://marketo_acct_id_success.mktorest.com/rest/v1/leads.json',
               headers: {
-                Authorization: 'Bearer access_token_success',
+                Authorization: AUTH_PATTERN_2,
                 'Content-Type': 'application/json',
               },
               params: {},

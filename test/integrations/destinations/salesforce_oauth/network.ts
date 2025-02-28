@@ -1,5 +1,6 @@
+import { AUTH_PATTERN_2 } from './maskedSecrets';
 const headerWithWrongAccessToken = {
-  Authorization: 'Bearer expiredAccessToken',
+  Authorization: AUTH_PATTERN_2,
   'Content-Type': 'application/json',
 };
 

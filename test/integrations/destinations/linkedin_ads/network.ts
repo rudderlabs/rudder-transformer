@@ -1,5 +1,6 @@
+import { AUTH_PATTERN_2, AUTH_PATTERN_4, AUTH_PATTERN_6 } from './maskedSecrets';
 export const headerBlockWithCorrectAccessToken = {
-  Authorization: 'Bearer default-accessToken',
+  Authorization: AUTH_PATTERN_2,
   'Content-Type': 'application/json',
   'LinkedIn-Version': '202409',
   'X-RestLi-Method': 'BATCH_CREATE',
@@ -67,7 +68,7 @@ const businessMockData = [
     httpReq: {
       method: 'post',
       url: 'https://api.linkedin.com/rest/conversionEvents',
-      headers: { ...headerBlockWithCorrectAccessToken, Authorization: 'Bearer revokedToken' },
+      headers: { ...headerBlockWithCorrectAccessToken, Authorization: AUTH_PATTERN_6 },
       data: testJSONData,
     },
     httpRes: {
@@ -86,7 +87,7 @@ const businessMockData = [
     httpReq: {
       method: 'post',
       url: 'https://api.linkedin.com/rest/conversionEvents',
-      headers: { ...headerBlockWithCorrectAccessToken, Authorization: 'Bearer invalidToken' },
+      headers: { ...headerBlockWithCorrectAccessToken, Authorization: AUTH_PATTERN_4 },
       data: testJSONData,
     },
     httpRes: {

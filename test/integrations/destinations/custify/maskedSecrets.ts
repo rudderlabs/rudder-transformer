@@ -1,0 +1,6 @@
+// Auto-generated masked secrets file
+
+export const AUTH_PATTERN_2 = 'Bearer dummyApiKey';
+export const SECRET_1 = 'dummyApiKey';
+export const AUTH_PATTERN_4 = 'Bearer apiKey_key_test_001';
+export const SECRET_3 = 'apiKey_key_test_001';

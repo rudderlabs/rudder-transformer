@@ -1,3 +1,4 @@
+import { AUTH_PATTERN_2 } from './maskedSecrets';
 const deleteNwData = [
   {
     httpReq: {
@@ -111,7 +112,7 @@ const deleteNwData = [
       method: 'get',
       url: 'https://api.sendgrid.com/v3/marketing/field_definitions',
       headers: {
-        Authorization: 'Bearer apikey',
+        Authorization: AUTH_PATTERN_2,
         'Content-Type': 'application/json',
       },
     },

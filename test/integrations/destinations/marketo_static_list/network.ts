@@ -1,3 +1,4 @@
+import { SECRET_1 } from './maskedSecrets';
 const deliveryCallsData = [
   {
     httpReq: {
@@ -127,7 +128,7 @@ export const networkCallsData = [
     },
     httpRes: {
       data: {
-        access_token: 'access_token_success',
+        access_token: SECRET_1,
         expires_in: 3599,
         scope: 'integrations@rudderstack.com',
         token_type: 'bearer',

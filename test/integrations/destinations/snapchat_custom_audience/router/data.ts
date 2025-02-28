@@ -1,3 +1,4 @@
+import { AUTH_PATTERN_2, SECRET_1 } from '../maskedSecrets';
 export const data = [
   {
     name: 'snapchat_custom_audience',
@@ -12,7 +13,7 @@ export const data = [
             {
               metadata: {
                 secret: {
-                  access_token: 'dummyAccessToken',
+                  access_token: SECRET_1,
                   refresh_token: 'dummyRefreshToken',
                   developer_token: 'dummyDeveloperToken',
                 },
@@ -62,7 +63,7 @@ export const data = [
                   endpoint: 'https://adsapi.snapchat.com/v1/segments/123/users',
                   headers: {
                     'Content-Type': 'application/json',
-                    Authorization: 'Bearer dummyAccessToken',
+                    Authorization: AUTH_PATTERN_2,
                   },
                   params: {},
                   body: {
@@ -86,7 +87,7 @@ export const data = [
               metadata: [
                 {
                   secret: {
-                    access_token: 'dummyAccessToken',
+                    access_token: SECRET_1,
                     developer_token: 'dummyDeveloperToken',
                     refresh_token: 'dummyRefreshToken',
                   },

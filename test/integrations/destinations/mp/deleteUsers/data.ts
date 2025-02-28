@@ -1,3 +1,4 @@
+import { SECRET_1 } from '../maskedSecrets';
 export const data = [
   {
     name: 'mp',
@@ -3183,7 +3184,7 @@ export const data = [
               prefixProperties: true,
               useNativeSDK: false,
               userDeletionApi: 'task',
-              gdprApiToken: 'test_gdpr_token',
+              gdprApiToken: SECRET_1,
             },
           },
         ],

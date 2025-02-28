@@ -1,3 +1,4 @@
+import { AUTH_PATTERN_2, SECRET_1 } from '../maskedSecrets';
 export const data = [
   {
     name: 'airship',
@@ -11,7 +12,7 @@ export const data = [
           input: [
             {
               destination: {
-                Config: { apiKey: 'dummyApiKey', appKey: 'O2YARRI15I', dataCenter: false },
+                Config: { apiKey: SECRET_1, appKey: 'O2YARRI15I', dataCenter: false },
               },
               metadata: { jobId: 1, userId: 'u1' },
               message: {
@@ -76,7 +77,7 @@ export const data = [
                   'Content-Type': 'application/json',
                   Accept: 'application/vnd.urbanairship+json; version=3',
                   'X-UA-Appkey': 'O2YARRI15I',
-                  Authorization: 'Bearer dummyApiKey',
+                  Authorization: AUTH_PATTERN_2,
                 },
                 params: {},
                 body: {
@@ -109,7 +110,7 @@ export const data = [
               batched: false,
               statusCode: 200,
               destination: {
-                Config: { apiKey: 'dummyApiKey', appKey: 'O2YARRI15I', dataCenter: false },
+                Config: { apiKey: SECRET_1, appKey: 'O2YARRI15I', dataCenter: false },
               },
             },
           ],
@@ -129,7 +130,7 @@ export const data = [
           input: [
             {
               destination: {
-                Config: { apiKey: 'dummyApiKey', appKey: 'O2YARRI15I', dataCenter: false },
+                Config: { apiKey: SECRET_1, appKey: 'O2YARRI15I', dataCenter: false },
               },
               metadata: { jobId: 2, userId: 'u1' },
               message: {
@@ -188,7 +189,7 @@ export const data = [
                   headers: {
                     'Content-Type': 'application/json',
                     Accept: 'application/vnd.urbanairship+json; version=3',
-                    Authorization: 'Bearer dummyApiKey',
+                    Authorization: AUTH_PATTERN_2,
                   },
                   params: {},
                   body: {
@@ -211,7 +212,7 @@ export const data = [
                   headers: {
                     'Content-Type': 'application/json',
                     Accept: 'application/vnd.urbanairship+json; version=3',
-                    Authorization: 'Bearer dummyApiKey',
+                    Authorization: AUTH_PATTERN_2,
                   },
                   params: {},
                   body: {
@@ -285,7 +286,7 @@ export const data = [
               batched: false,
               statusCode: 200,
               destination: {
-                Config: { apiKey: 'dummyApiKey', appKey: 'O2YARRI15I', dataCenter: false },
+                Config: { apiKey: SECRET_1, appKey: 'O2YARRI15I', dataCenter: false },
               },
             },
           ],
@@ -304,7 +305,7 @@ export const data = [
         body: {
           input: [
             {
-              destination: { Config: { apiKey: 'dummyApiKey', dataCenter: false } },
+              destination: { Config: { apiKey: SECRET_1, dataCenter: false } },
               metadata: { jobId: 3, userId: 'u1' },
               message: {
                 anonymousId: '507f191e810c19729de860ea',
@@ -362,7 +363,7 @@ export const data = [
                   headers: {
                     'Content-Type': 'application/json',
                     Accept: 'application/vnd.urbanairship+json; version=3',
-                    Authorization: 'Bearer dummyApiKey',
+                    Authorization: AUTH_PATTERN_2,
                   },
                   params: {},
                   body: {
@@ -385,7 +386,7 @@ export const data = [
                   headers: {
                     'Content-Type': 'application/json',
                     Accept: 'application/vnd.urbanairship+json; version=3',
-                    Authorization: 'Bearer dummyApiKey',
+                    Authorization: AUTH_PATTERN_2,
                   },
                   params: {},
                   body: {
@@ -458,7 +459,7 @@ export const data = [
               metadata: [{ jobId: 3, userId: 'u1' }],
               batched: false,
               statusCode: 200,
-              destination: { Config: { apiKey: 'dummyApiKey', dataCenter: false } },
+              destination: { Config: { apiKey: SECRET_1, dataCenter: false } },
             },
           ],
         },

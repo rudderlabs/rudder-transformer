@@ -1,3 +1,4 @@
+import { AUTH_PATTERN_2 } from '../maskedSecrets';
 import {
   generateMetadata,
   generateTrackPayload,
@@ -76,7 +77,7 @@ const commonStats = {
 };
 
 const commonHeader = {
-  Authorization: 'Bearer default-accessToken',
+  Authorization: AUTH_PATTERN_2,
   'Content-Type': 'application/json',
   'LinkedIn-Version': '202409',
   'X-RestLi-Method': 'BATCH_CREATE',

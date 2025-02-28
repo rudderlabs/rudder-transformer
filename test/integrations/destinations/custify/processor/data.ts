@@ -1,3 +1,4 @@
+import { AUTH_PATTERN_4, SECRET_3 } from '../maskedSecrets';
 export const data = [
   {
     name: 'custify',
@@ -11,7 +12,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'apiKey_key_test_001',
+                apiKey: SECRET_3,
                 sendAnonymousId: false,
               },
               ID: 'custify-1234',
@@ -63,7 +64,7 @@ export const data = [
               endpoint: 'https://api.custify.com/people',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Bearer apiKey_key_test_001',
+                Authorization: AUTH_PATTERN_4,
                 Accept: 'application/json',
               },
               params: {},
@@ -120,7 +121,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'apiKey_key_test_001',
+                apiKey: SECRET_3,
                 sendAnonymousId: false,
               },
               ID: 'custify-1234',
@@ -173,7 +174,7 @@ export const data = [
               endpoint: 'https://api.custify.com/people',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Bearer apiKey_key_test_001',
+                Authorization: AUTH_PATTERN_4,
                 Accept: 'application/json',
               },
               params: {},
@@ -230,7 +231,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'apiKey_key_test_001',
+                apiKey: SECRET_3,
                 sendAnonymousId: false,
               },
               ID: 'custify-1234',
@@ -300,7 +301,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'apiKey_key_test_001',
+                apiKey: SECRET_3,
                 sendAnonymousId: false,
               },
               ID: 'custify-1234',
@@ -371,7 +372,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'apiKey_key_test_001',
+                apiKey: SECRET_3,
                 sendAnonymousId: true,
               },
               ID: 'custify-1234',
@@ -422,7 +423,7 @@ export const data = [
               endpoint: 'https://api.custify.com/people',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Bearer apiKey_key_test_001',
+                Authorization: AUTH_PATTERN_4,
                 Accept: 'application/json',
               },
               params: {},
@@ -478,7 +479,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'apiKey_key_test_001',
+                apiKey: SECRET_3,
                 sendAnonymousId: false,
               },
               ID: 'custify-1234',
@@ -529,7 +530,7 @@ export const data = [
               endpoint: 'https://api.custify.com/event',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Bearer apiKey_key_test_001',
+                Authorization: AUTH_PATTERN_4,
                 Accept: 'application/json',
               },
               params: {},
@@ -572,7 +573,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'apiKey_key_test_001',
+                apiKey: SECRET_3,
                 sendAnonymousId: false,
               },
               ID: 'custify-1234',
@@ -631,7 +632,7 @@ export const data = [
               endpoint: 'https://api.custify.com/people',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Bearer apiKey_key_test_001',
+                Authorization: AUTH_PATTERN_4,
                 Accept: 'application/json',
               },
               params: {},

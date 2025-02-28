@@ -1,3 +1,4 @@
+import { SECRET_1 } from '../maskedSecrets';
 const destType = 'custify';
 const commonData = {
   name: destType,
@@ -48,7 +49,7 @@ export const data = [
               },
             ],
             config: {
-              apiToken: 'dummyApiKey',
+              apiToken: SECRET_1,
             },
           },
         ],
@@ -83,7 +84,7 @@ export const data = [
               },
             ],
             config: {
-              apiKey: 'dummyApiKey',
+              apiKey: SECRET_1,
             },
           },
         ],
@@ -114,7 +115,7 @@ export const data = [
               },
             ],
             config: {
-              apiKey: 'dummyApiKey',
+              apiKey: SECRET_1,
             },
           },
         ],
@@ -142,7 +143,7 @@ export const data = [
               {},
             ],
             config: {
-              apiKey: 'dummyApiKey',
+              apiKey: SECRET_1,
             },
           },
         ],

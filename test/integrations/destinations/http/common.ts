@@ -1,3 +1,4 @@
+import { SECRET_1 } from './maskedSecrets';
 import { Destination } from '../../../../src/types';
 
 const destType = 'http';
@@ -148,7 +149,7 @@ const destinations: Destination[] = [
     Config: {
       apiUrl: 'http://abc.com/events',
       auth: 'bearerTokenAuth',
-      bearerToken: 'test-token',
+      bearerToken: SECRET_1,
       method: 'POST',
       format: 'XML',
       xmlRootKey: 'body',
@@ -416,7 +417,7 @@ const destinations: Destination[] = [
     Config: {
       apiUrl: 'http://abc.com/events',
       auth: 'bearerTokenAuth',
-      bearerToken: 'test-token',
+      bearerToken: SECRET_1,
       method: 'POST',
       format: 'XML',
       headers: [
@@ -456,7 +457,7 @@ const destinations: Destination[] = [
     Config: {
       apiUrl: 'http://abc.com/events',
       auth: 'bearerTokenAuth',
-      bearerToken: 'test-token',
+      bearerToken: SECRET_1,
       method: 'POST',
       format: 'FORM',
       headers: [
@@ -504,7 +505,7 @@ const destinations: Destination[] = [
     Config: {
       apiUrl: 'http://abc.com/events',
       auth: 'bearerTokenAuth',
-      bearerToken: 'test-token',
+      bearerToken: SECRET_1,
       method: 'POST',
       format: 'FORM',
       headers: [
@@ -548,7 +549,7 @@ const destinations: Destination[] = [
     Config: {
       apiUrl: 'http://abc.com/events',
       auth: 'bearerTokenAuth',
-      bearerToken: 'test-token',
+      bearerToken: SECRET_1,
       method: 'POST',
       format: 'FORM',
       headers: [

@@ -1,3 +1,4 @@
+import { AUTH_PATTERN_2 } from '../maskedSecrets';
 import { generateMetadata, generateProxyV1Payload } from '../../../testUtils';
 
 const commonStatTags = {
@@ -460,7 +461,7 @@ export const businessData = [
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
-              Authorization: 'Bearer dummy-access-token',
+              Authorization: AUTH_PATTERN_2,
             },
             JSON: {
               email: 'osvaldocostaferreira98@gmail.com',
@@ -560,7 +561,7 @@ export const businessData = [
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
-              Authorization: 'Bearer dummy-access-token',
+              Authorization: AUTH_PATTERN_2,
             },
             JSON: {
               inputs: [{ to: { id: 1 }, from: { id: 9405415215 }, type: 'contact_to_company' }],

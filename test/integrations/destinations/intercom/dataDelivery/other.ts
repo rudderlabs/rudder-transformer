@@ -1,3 +1,4 @@
+import { AUTH_PATTERN_2 } from '../maskedSecrets';
 import { ProxyV1TestData } from '../../../testTypes';
 import {
   generateMetadata,
@@ -7,7 +8,7 @@ import {
 
 const commonHeaders = {
   'Content-Type': 'application/json',
-  Authorization: 'Bearer testApiKey',
+  Authorization: AUTH_PATTERN_2,
   Accept: 'application/json',
   'Intercom-Version': '1.4',
   'User-Agent': 'RudderStack',

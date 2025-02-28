@@ -1,3 +1,4 @@
+import { AUTH_PATTERN_2 } from './maskedSecrets';
 import { Destination } from '../../../../src/types';
 
 const destTypeInUpperCase = 'INTERCOM_V2';
@@ -111,7 +112,7 @@ const headers = {
 
 const headersWithRevokedAccessToken = {
   ...headers,
-  Authorization: 'Bearer revoked-accessToken',
+  Authorization: AUTH_PATTERN_2,
 };
 
 const RouterInstrumentationErrorStatTags = {

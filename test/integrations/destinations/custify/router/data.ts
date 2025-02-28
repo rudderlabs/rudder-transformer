@@ -1,3 +1,4 @@
+import { AUTH_PATTERN_4, SECRET_3 } from '../maskedSecrets';
 export const data = [
   {
     name: 'custify',
@@ -12,7 +13,7 @@ export const data = [
             {
               description: 'Group callw with all parameters',
               destination: {
-                Config: { apiKey: 'apiKey_key_test_001', sendAnonymousId: false },
+                Config: { apiKey: SECRET_3, sendAnonymousId: false },
                 ID: 'custify-1234',
               },
               metadata: { jobId: 1, userId: 'u1' },
@@ -108,7 +109,7 @@ export const data = [
                 endpoint: 'https://api.custify.com/people',
                 headers: {
                   'Content-Type': 'application/json',
-                  Authorization: 'Bearer apiKey_key_test_001',
+                  Authorization: AUTH_PATTERN_4,
                   Accept: 'application/json',
                 },
                 params: {},
@@ -139,7 +140,7 @@ export const data = [
               batched: false,
               statusCode: 200,
               destination: {
-                Config: { apiKey: 'apiKey_key_test_001', sendAnonymousId: false },
+                Config: { apiKey: SECRET_3, sendAnonymousId: false },
                 ID: 'custify-1234',
               },
             },

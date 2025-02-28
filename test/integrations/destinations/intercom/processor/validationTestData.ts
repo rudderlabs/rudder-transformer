@@ -1,16 +1,17 @@
+import { SECRET_1, SECRET_3, SECRET_7 } from '../maskedSecrets';
 import { Destination } from '../../../../../src/types';
 import { ProcessorTestData } from '../../../testTypes';
 import { generateMetadata } from '../../../testUtils';
 
 const v1Config = {
-  apiKey: 'intercomApiKey',
+  apiKey: SECRET_7,
   apiVersion: 'v1',
   appId: '9e9cdea1-78fa-4829-a9b2-5d7f7e96d1a0',
   collectContext: false,
 };
 
 const v2Config = {
-  apiKey: 'testApiKey',
+  apiKey: SECRET_1,
   apiVersion: 'v2',
   apiServer: 'standard',
   sendAnonymousId: false,
@@ -28,7 +29,7 @@ const destination: Destination = {
     },
   },
   Config: {
-    apiKey: 'testApiKey',
+    apiKey: SECRET_1,
     apiVersion: 'v2',
     apiServer: 'standard',
     sendAnonymousId: false,
@@ -332,7 +333,7 @@ export const validationTestData: ProcessorTestData[] = [
           {
             destination: {
               ...v2Destination,
-              Config: { ...v2Destination.Config, apiKey: 'invalidApiKey' },
+              Config: { ...v2Destination.Config, apiKey: SECRET_3 },
             },
             message: {
               userId: 'user@3',

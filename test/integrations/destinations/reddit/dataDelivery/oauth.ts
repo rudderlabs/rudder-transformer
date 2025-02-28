@@ -1,3 +1,4 @@
+import { AUTH_PATTERN_2 } from '../maskedSecrets';
 import {
   generateMetadata,
   generateProxyV1Payload,
@@ -40,7 +41,7 @@ const authorizationRequiredRequestPayload = {
 };
 
 const commonHeaders = {
-  Authorization: 'Bearer dummyAccessToken',
+  Authorization: AUTH_PATTERN_2,
   'Content-Type': 'application/json',
 };
 

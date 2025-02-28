@@ -1,3 +1,4 @@
+import { AUTH_PATTERN_2 } from './maskedSecrets';
 const dataDeliveryMocksData = [
   {
     httpReq: {
@@ -421,7 +422,7 @@ const deleteNwData = [
           'user_aliases',
         ],
       },
-      headers: { Authorization: 'Bearer dummyApiKey' },
+      headers: { Authorization: AUTH_PATTERN_2 },
       url: 'https://rest.iad-03.braze.com/users/export/ids',
     },
     httpRes: {

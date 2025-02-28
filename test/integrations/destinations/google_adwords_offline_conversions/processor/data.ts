@@ -1,3 +1,4 @@
+import { AUTH_PATTERN_2, SECRET_1 } from '../maskedSecrets';
 import { timestampMock } from '../mocks';
 
 const API_VERSION = 'v18';
@@ -102,7 +103,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                access_token: 'abcd1234',
+                access_token: SECRET_1,
                 refresh_token: 'efgh5678',
                 developer_token: 'ijkl91011',
               },
@@ -180,7 +181,7 @@ export const data = [
               method: 'POST',
               endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/9625812972:uploadClickConversions`,
               headers: {
-                Authorization: 'Bearer abcd1234',
+                Authorization: AUTH_PATTERN_2,
                 'Content-Type': 'application/json',
                 'developer-token': 'ijkl91011',
               },
@@ -280,7 +281,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                access_token: 'abcd1234',
+                access_token: SECRET_1,
                 refresh_token: 'efgh5678',
                 developer_token: 'ijkl91011',
               },
@@ -392,7 +393,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                access_token: 'abcd1234',
+                access_token: SECRET_1,
                 refresh_token: 'efgh5678',
                 developer_token: 'ijkl91011',
               },
@@ -470,7 +471,7 @@ export const data = [
               method: 'POST',
               endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/9625812972:uploadClickConversions`,
               headers: {
-                Authorization: 'Bearer abcd1234',
+                Authorization: AUTH_PATTERN_2,
                 'Content-Type': 'application/json',
                 'developer-token': 'ijkl91011',
               },
@@ -570,7 +571,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                access_token: 'abcd1234',
+                access_token: SECRET_1,
                 refresh_token: 'efgh5678',
                 developer_token: 'ijkl91011',
               },
@@ -682,7 +683,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                access_token: 'abcd1234',
+                access_token: SECRET_1,
                 refresh_token: 'efgh5678',
                 developer_token: 'ijkl91011',
               },
@@ -760,7 +761,7 @@ export const data = [
               method: 'POST',
               endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/9625812972:uploadClickConversions`,
               headers: {
-                Authorization: 'Bearer abcd1234',
+                Authorization: AUTH_PATTERN_2,
                 'Content-Type': 'application/json',
                 'developer-token': 'ijkl91011',
               },
@@ -860,7 +861,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                access_token: 'abcd1234',
+                access_token: SECRET_1,
                 refresh_token: 'efgh5678',
                 developer_token: 'ijkl91011',
               },
@@ -972,7 +973,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                access_token: 'abcd1234',
+                access_token: SECRET_1,
                 refresh_token: 'efgh5678',
                 developer_token: 'ijkl91011',
               },
@@ -1050,7 +1051,7 @@ export const data = [
               method: 'POST',
               endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/9625812972:uploadCallConversions`,
               headers: {
-                Authorization: 'Bearer abcd1234',
+                Authorization: AUTH_PATTERN_2,
                 'Content-Type': 'application/json',
                 'developer-token': 'ijkl91011',
               },
@@ -1125,7 +1126,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                access_token: 'abcd1234',
+                access_token: SECRET_1,
                 refresh_token: 'efgh5678',
                 developer_token: 'ijkl91011',
               },
@@ -1401,7 +1402,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                access_token: 'abcd1234',
+                access_token: SECRET_1,
                 refresh_token: 'efgh5678',
                 developer_token: 'ijkl91011',
               },
@@ -1475,7 +1476,7 @@ export const data = [
           {
             metadata: {
               secret: {
-                access_token: 'abcd1234',
+                access_token: SECRET_1,
                 refresh_token: 'efgh5678',
                 developer_token: 'ijkl91011',
               },
@@ -1574,7 +1575,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                access_token: 'abcd1234',
+                access_token: SECRET_1,
                 refresh_token: 'efgh5678',
                 developer_token: 'ijkl91011',
               },
@@ -1648,7 +1649,7 @@ export const data = [
           {
             metadata: {
               secret: {
-                access_token: 'abcd1234',
+                access_token: SECRET_1,
                 refresh_token: 'efgh5678',
                 developer_token: 'ijkl91011',
               },
@@ -1748,7 +1749,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                access_token: 'abcd1234',
+                access_token: SECRET_1,
                 refresh_token: 'efgh5678',
                 developer_token: 'ijkl91011',
               },
@@ -1822,7 +1823,7 @@ export const data = [
           {
             metadata: {
               secret: {
-                access_token: 'abcd1234',
+                access_token: SECRET_1,
                 refresh_token: 'efgh5678',
                 developer_token: 'ijkl91011',
               },
@@ -1941,7 +1942,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                access_token: 'abcd1234',
+                access_token: SECRET_1,
                 refresh_token: 'efgh5678',
                 developer_token: 'ijkl91011',
               },
@@ -2023,7 +2024,7 @@ export const data = [
               method: 'POST',
               endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/9625812972:uploadClickConversions`,
               headers: {
-                Authorization: 'Bearer abcd1234',
+                Authorization: AUTH_PATTERN_2,
                 'Content-Type': 'application/json',
                 'developer-token': 'ijkl91011',
               },
@@ -2114,7 +2115,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                access_token: 'abcd1234',
+                access_token: SECRET_1,
                 refresh_token: 'efgh5678',
                 developer_token: 'ijkl91011',
               },
@@ -2128,7 +2129,7 @@ export const data = [
               method: 'POST',
               endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/9625812972:uploadCallConversions`,
               headers: {
-                Authorization: 'Bearer abcd1234',
+                Authorization: AUTH_PATTERN_2,
                 'Content-Type': 'application/json',
                 'developer-token': 'ijkl91011',
               },
@@ -2203,7 +2204,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                access_token: 'abcd1234',
+                access_token: SECRET_1,
                 refresh_token: 'efgh5678',
                 developer_token: 'ijkl91011',
               },
@@ -2271,7 +2272,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                access_token: 'abcd1234',
+                access_token: SECRET_1,
                 refresh_token: 'efgh5678',
                 developer_token: 'ijkl91011',
               },
@@ -2351,7 +2352,7 @@ export const data = [
               method: 'POST',
               endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/9625812972:uploadClickConversions`,
               headers: {
-                Authorization: 'Bearer abcd1234',
+                Authorization: AUTH_PATTERN_2,
                 'Content-Type': 'application/json',
                 'developer-token': 'ijkl91011',
                 'login-customer-id': '8617859087',
@@ -2405,7 +2406,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                access_token: 'abcd1234',
+                access_token: SECRET_1,
                 refresh_token: 'efgh5678',
                 developer_token: 'ijkl91011',
               },
@@ -2472,7 +2473,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                access_token: 'abcd1234',
+                access_token: SECRET_1,
                 refresh_token: 'efgh5678',
                 developer_token: 'ijkl91011',
               },
@@ -2550,7 +2551,7 @@ export const data = [
               method: 'POST',
               endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/9625812972:uploadCallConversions`,
               headers: {
-                Authorization: 'Bearer abcd1234',
+                Authorization: AUTH_PATTERN_2,
                 'Content-Type': 'application/json',
                 'developer-token': 'ijkl91011',
               },
@@ -2597,7 +2598,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                access_token: 'abcd1234',
+                access_token: SECRET_1,
                 refresh_token: 'efgh5678',
                 developer_token: 'ijkl91011',
               },
@@ -2707,7 +2708,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                access_token: 'abcd1234',
+                access_token: SECRET_1,
                 refresh_token: 'efgh5678',
                 developer_token: 'ijkl91011',
               },
@@ -2785,7 +2786,7 @@ export const data = [
               method: 'POST',
               endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/9625812972:uploadCallConversions`,
               headers: {
-                Authorization: 'Bearer abcd1234',
+                Authorization: AUTH_PATTERN_2,
                 'Content-Type': 'application/json',
                 'developer-token': 'ijkl91011',
               },
@@ -2859,7 +2860,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                access_token: 'abcd1234',
+                access_token: SECRET_1,
                 refresh_token: 'efgh5678',
                 developer_token: 'ijkl91011',
               },
@@ -2928,7 +2929,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                access_token: 'abcd1234',
+                access_token: SECRET_1,
                 refresh_token: 'efgh5678',
                 developer_token: 'ijkl91011',
               },
@@ -3007,7 +3008,7 @@ export const data = [
               method: 'POST',
               endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/9625812972:uploadClickConversions`,
               headers: {
-                Authorization: 'Bearer abcd1234',
+                Authorization: AUTH_PATTERN_2,
                 'Content-Type': 'application/json',
                 'developer-token': 'ijkl91011',
               },
@@ -3059,7 +3060,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                access_token: 'abcd1234',
+                access_token: SECRET_1,
                 refresh_token: 'efgh5678',
                 developer_token: 'ijkl91011',
               },
@@ -3128,7 +3129,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                access_token: 'abcd1234',
+                access_token: SECRET_1,
                 refresh_token: 'efgh5678',
                 developer_token: 'ijkl91011',
               },
@@ -3203,7 +3204,7 @@ export const data = [
           {
             metadata: {
               secret: {
-                access_token: 'abcd1234',
+                access_token: SECRET_1,
                 refresh_token: 'efgh5678',
                 developer_token: 'ijkl91011',
               },
@@ -3281,7 +3282,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                access_token: 'abcd1234',
+                access_token: SECRET_1,
                 refresh_token: 'efgh5678',
                 developer_token: 'ijkl91011',
               },
@@ -3356,7 +3357,7 @@ export const data = [
           {
             metadata: {
               secret: {
-                access_token: 'abcd1234',
+                access_token: SECRET_1,
                 refresh_token: 'efgh5678',
                 developer_token: 'ijkl91011',
               },
@@ -3435,7 +3436,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                access_token: 'abcd1234',
+                access_token: SECRET_1,
                 refresh_token: 'efgh5678',
                 developer_token: 'ijkl91011',
               },
@@ -3514,7 +3515,7 @@ export const data = [
               method: 'POST',
               endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/9625812972:uploadClickConversions`,
               headers: {
-                Authorization: 'Bearer abcd1234',
+                Authorization: AUTH_PATTERN_2,
                 'Content-Type': 'application/json',
                 'developer-token': 'ijkl91011',
                 'login-customer-id': '8617859087',
@@ -3578,7 +3579,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                access_token: 'abcd1234',
+                access_token: SECRET_1,
                 refresh_token: 'efgh5678',
                 developer_token: 'ijkl91011',
               },
@@ -3646,7 +3647,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                access_token: 'abcd1234',
+                access_token: SECRET_1,
                 refresh_token: 'efgh5678',
                 developer_token: 'ijkl91011',
               },
@@ -3721,7 +3722,7 @@ export const data = [
           {
             metadata: {
               secret: {
-                access_token: 'abcd1234',
+                access_token: SECRET_1,
                 developer_token: 'ijkl91011',
                 refresh_token: 'efgh5678',
               },
@@ -3757,7 +3758,7 @@ export const data = [
               endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/9625812972:uploadClickConversions`,
               files: {},
               headers: {
-                Authorization: 'Bearer abcd1234',
+                Authorization: AUTH_PATTERN_2,
                 'Content-Type': 'application/json',
                 'developer-token': 'ijkl91011',
                 'login-customer-id': '8617859087',
@@ -3850,7 +3851,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                access_token: 'abcd1234',
+                access_token: SECRET_1,
                 refresh_token: 'efgh5678',
                 developer_token: 'ijkl91011',
               },
@@ -3929,7 +3930,7 @@ export const data = [
               method: 'POST',
               endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/9625812972:uploadClickConversions`,
               headers: {
-                Authorization: 'Bearer abcd1234',
+                Authorization: AUTH_PATTERN_2,
                 'Content-Type': 'application/json',
                 'developer-token': 'ijkl91011',
                 'login-customer-id': '8617859087',
@@ -3986,7 +3987,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                access_token: 'abcd1234',
+                access_token: SECRET_1,
                 refresh_token: 'efgh5678',
                 developer_token: 'ijkl91011',
               },
@@ -4041,7 +4042,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                access_token: 'abcd1234',
+                access_token: SECRET_1,
                 refresh_token: 'efgh5678',
                 developer_token: 'ijkl91011',
               },
@@ -4120,7 +4121,7 @@ export const data = [
               method: 'POST',
               endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/1112223333/offlineUserDataJobs`,
               headers: {
-                Authorization: 'Bearer abcd1234',
+                Authorization: AUTH_PATTERN_2,
                 'Content-Type': 'application/json',
                 'developer-token': 'ijkl91011',
                 'login-customer-id': 'logincustomerid',
@@ -4185,7 +4186,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                access_token: 'abcd1234',
+                access_token: SECRET_1,
                 refresh_token: 'efgh5678',
                 developer_token: 'ijkl91011',
               },
@@ -4240,7 +4241,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                access_token: 'abcd1234',
+                access_token: SECRET_1,
                 refresh_token: 'efgh5678',
                 developer_token: 'ijkl91011',
               },
@@ -4314,7 +4315,7 @@ export const data = [
           {
             metadata: {
               secret: {
-                access_token: 'abcd1234',
+                access_token: SECRET_1,
                 refresh_token: 'efgh5678',
                 developer_token: 'ijkl91011',
               },
@@ -4377,7 +4378,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                access_token: 'abcd1234',
+                access_token: SECRET_1,
                 refresh_token: 'efgh5678',
                 developer_token: 'ijkl91011',
               },
@@ -4456,7 +4457,7 @@ export const data = [
               method: 'POST',
               endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/1112223333/offlineUserDataJobs`,
               headers: {
-                Authorization: 'Bearer abcd1234',
+                Authorization: AUTH_PATTERN_2,
                 'Content-Type': 'application/json',
                 'developer-token': 'ijkl91011',
                 'login-customer-id': 'logincustomerid',
@@ -4520,7 +4521,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                access_token: 'abcd1234',
+                access_token: SECRET_1,
                 refresh_token: 'efgh5678',
                 developer_token: 'ijkl91011',
               },
@@ -4575,7 +4576,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                access_token: 'abcd1234',
+                access_token: SECRET_1,
                 refresh_token: 'efgh5678',
                 developer_token: 'ijkl91011',
               },
@@ -4654,7 +4655,7 @@ export const data = [
               method: 'POST',
               endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/1112223333/offlineUserDataJobs`,
               headers: {
-                Authorization: 'Bearer abcd1234',
+                Authorization: AUTH_PATTERN_2,
                 'Content-Type': 'application/json',
                 'developer-token': 'ijkl91011',
                 'login-customer-id': 'logincustomerid',
@@ -4719,7 +4720,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                access_token: 'abcd1234',
+                access_token: SECRET_1,
                 refresh_token: 'efgh5678',
                 developer_token: 'ijkl91011',
               },
@@ -4776,7 +4777,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                access_token: 'abcd1234',
+                access_token: SECRET_1,
                 refresh_token: 'efgh5678',
                 developer_token: 'ijkl91011',
               },
@@ -4855,7 +4856,7 @@ export const data = [
               method: 'POST',
               endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/1112223333/offlineUserDataJobs`,
               headers: {
-                Authorization: 'Bearer abcd1234',
+                Authorization: AUTH_PATTERN_2,
                 'Content-Type': 'application/json',
                 'developer-token': 'ijkl91011',
                 'login-customer-id': 'logincustomerid',
@@ -4917,7 +4918,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                access_token: 'abcd1234',
+                access_token: SECRET_1,
                 refresh_token: 'efgh5678',
                 developer_token: 'ijkl91011',
               },
@@ -4974,7 +4975,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                access_token: 'abcd1234',
+                access_token: SECRET_1,
                 refresh_token: 'efgh5678',
                 developer_token: 'ijkl91011',
               },
@@ -5018,7 +5019,7 @@ export const data = [
               method: 'POST',
               endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/1112223333/offlineUserDataJobs`,
               headers: {
-                Authorization: 'Bearer abcd1234',
+                Authorization: AUTH_PATTERN_2,
                 'Content-Type': 'application/json',
                 'developer-token': 'ijkl91011',
                 'login-customer-id': 'logincustomerid',
@@ -5080,7 +5081,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                access_token: 'abcd1234',
+                access_token: SECRET_1,
                 refresh_token: 'efgh5678',
                 developer_token: 'ijkl91011',
               },
@@ -5133,7 +5134,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                access_token: 'abcd1234',
+                access_token: SECRET_1,
                 refresh_token: 'efgh5678',
                 developer_token: 'ijkl91011',
               },
@@ -5177,7 +5178,7 @@ export const data = [
               method: 'POST',
               endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/1112223333/offlineUserDataJobs`,
               headers: {
-                Authorization: 'Bearer abcd1234',
+                Authorization: AUTH_PATTERN_2,
                 'Content-Type': 'application/json',
                 'developer-token': 'ijkl91011',
                 'login-customer-id': 'logincustomerid',
@@ -5239,7 +5240,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                access_token: 'abcd1234',
+                access_token: SECRET_1,
                 refresh_token: 'efgh5678',
                 developer_token: 'ijkl91011',
               },
@@ -5290,7 +5291,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                access_token: 'abcd1234',
+                access_token: SECRET_1,
                 refresh_token: 'efgh5678',
                 developer_token: 'ijkl91011',
               },
@@ -5334,7 +5335,7 @@ export const data = [
               method: 'POST',
               endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/1112223333/offlineUserDataJobs`,
               headers: {
-                Authorization: 'Bearer abcd1234',
+                Authorization: AUTH_PATTERN_2,
                 'Content-Type': 'application/json',
                 'developer-token': 'ijkl91011',
                 'login-customer-id': 'logincustomerid',
@@ -5391,7 +5392,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                access_token: 'abcd1234',
+                access_token: SECRET_1,
                 refresh_token: 'efgh5678',
                 developer_token: 'ijkl91011',
               },
@@ -5442,7 +5443,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                access_token: 'abcd1234',
+                access_token: SECRET_1,
                 refresh_token: 'efgh5678',
                 developer_token: 'ijkl91011',
               },
@@ -5488,7 +5489,7 @@ export const data = [
               method: 'POST',
               endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/1112223333/offlineUserDataJobs`,
               headers: {
-                Authorization: 'Bearer abcd1234',
+                Authorization: AUTH_PATTERN_2,
                 'Content-Type': 'application/json',
                 'developer-token': 'ijkl91011',
                 'login-customer-id': 'logincustomerid',
@@ -5545,7 +5546,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                access_token: 'abcd1234',
+                access_token: SECRET_1,
                 refresh_token: 'efgh5678',
                 developer_token: 'ijkl91011',
               },
@@ -5602,7 +5603,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                access_token: 'abcd1234',
+                access_token: SECRET_1,
                 refresh_token: 'efgh5678',
                 developer_token: 'ijkl91011',
               },
@@ -5648,7 +5649,7 @@ export const data = [
               method: 'POST',
               endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/1112223333/offlineUserDataJobs`,
               headers: {
-                Authorization: 'Bearer abcd1234',
+                Authorization: AUTH_PATTERN_2,
                 'Content-Type': 'application/json',
                 'developer-token': 'ijkl91011',
                 'login-customer-id': 'logincustomerid',
@@ -5705,7 +5706,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                access_token: 'abcd1234',
+                access_token: SECRET_1,
                 refresh_token: 'efgh5678',
                 developer_token: 'ijkl91011',
               },
@@ -5815,7 +5816,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                access_token: 'abcd1234',
+                access_token: SECRET_1,
                 refresh_token: 'efgh5678',
                 developer_token: 'ijkl91011',
               },
@@ -5890,7 +5891,7 @@ export const data = [
             error: "You can't use both wbraid and gbraid.",
             metadata: {
               secret: {
-                access_token: 'abcd1234',
+                access_token: SECRET_1,
                 developer_token: 'ijkl91011',
                 refresh_token: 'efgh5678',
               },
@@ -5954,7 +5955,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                access_token: 'abcd1234',
+                access_token: SECRET_1,
                 refresh_token: 'efgh5678',
                 developer_token: 'ijkl91011',
               },
@@ -5998,7 +5999,7 @@ export const data = [
               "The value '0' does not match the regex pattern, ^([1-9]\\d*(\\.\\d+)?|0\\.\\d+)$",
             metadata: {
               secret: {
-                access_token: 'abcd1234',
+                access_token: SECRET_1,
                 developer_token: 'ijkl91011',
                 refresh_token: 'efgh5678',
               },

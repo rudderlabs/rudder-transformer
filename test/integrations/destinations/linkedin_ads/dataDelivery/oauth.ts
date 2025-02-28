@@ -1,3 +1,11 @@
+import {
+  AUTH_PATTERN_2,
+  SECRET_1,
+  AUTH_PATTERN_4,
+  SECRET_3,
+  AUTH_PATTERN_6,
+  SECRET_5,
+} from '../maskedSecrets';
 import { generateMetadata, generateProxyV1Payload } from '../../../testUtils';
 import { ProxyV1TestData } from '../../../testTypes';
 
@@ -41,13 +49,13 @@ export const metadata = {
   workspaceId: 'default-workspaceId',
   sourceId: 'default-sourceId',
   secret: {
-    accessToken: 'default-accessToken',
+    accessToken: SECRET_1,
   },
   dontBatch: false,
 };
 
 export const headerBlockWithCorrectAccessToken = {
-  Authorization: 'Bearer default-accessToken',
+  Authorization: AUTH_PATTERN_2,
   'Content-Type': 'application/json',
   'LinkedIn-Version': '202409',
   'X-RestLi-Method': 'BATCH_CREATE',
@@ -59,15 +67,15 @@ const commonRequestParameters = {
   JSON: testJSONData,
 };
 const commonRequestParametersWithInvalidAccess = {
-  headers: { ...headerBlockWithCorrectAccessToken, Authorization: 'Bearer invalidToken' },
+  headers: { ...headerBlockWithCorrectAccessToken, Authorization: AUTH_PATTERN_4 },
   JSON: testJSONData,
-  accessToken: 'invalidToken',
+  accessToken: SECRET_3,
 };
 
 const commonRequestParametersWithRevokedAccess = {
-  headers: { ...headerBlockWithCorrectAccessToken, Authorization: 'Bearer revokedToken' },
+  headers: { ...headerBlockWithCorrectAccessToken, Authorization: AUTH_PATTERN_6 },
   JSON: testJSONData,
-  accessToken: 'revokedToken',
+  accessToken: SECRET_5,
 };
 
 export const oauthScenariosV1: ProxyV1TestData[] = [
@@ -99,7 +107,7 @@ export const oauthScenariosV1: ProxyV1TestData[] = [
                 error:
                   '{"status":401,"serviceErrorCode":65601,"code":"REVOKED_ACCESS_TOKEN","message":"The token used in the request has been revoked by the user"}',
                 statusCode: 400,
-                metadata: { ...metadata, secret: { accessToken: 'revokedToken' } },
+                metadata: { ...metadata, secret: { accessToken: SECRET_5 } },
               },
             ],
             statTags,
@@ -140,7 +148,7 @@ export const oauthScenariosV1: ProxyV1TestData[] = [
                 error:
                   '{"status":401,"serviceErrorCode":65600,"code":"INVALID_ACCESS_TOKEN","message":"Invalid access token"}',
                 statusCode: 500,
-                metadata: { ...metadata, secret: { accessToken: 'invalidToken' } },
+                metadata: { ...metadata, secret: { accessToken: SECRET_3 } },
               },
             ],
             statTags: { ...statTags, errorType: 'retryable' },

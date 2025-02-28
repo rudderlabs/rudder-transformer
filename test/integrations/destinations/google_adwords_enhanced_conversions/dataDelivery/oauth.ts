@@ -1,3 +1,4 @@
+import { AUTH_PATTERN_2 } from '../maskedSecrets';
 const API_VERSION = 'v18';
 
 import {
@@ -39,7 +40,7 @@ const requestPayload = {
 };
 
 const headers = {
-  Authorization: 'Bearer abcd1234',
+  Authorization: AUTH_PATTERN_2,
   'Content-Type': 'application/json',
   'developer-token': 'ijkl91011',
   'login-customer-id': '0987654321',

@@ -1,3 +1,4 @@
+import { AUTH_PATTERN_2, SECRET_5 } from '../maskedSecrets';
 import {
   generateGoogleOAuthMetadata,
   generateProxyV0Payload,
@@ -7,7 +8,7 @@ import {
 const API_VERSION = 'v18';
 
 export const commonHeaders = {
-  Authorization: 'Bearer dummy-access',
+  Authorization: AUTH_PATTERN_2,
   'Content-Type': 'application/json',
   'developer-token': 'dummy-dev-token',
 };
@@ -414,7 +415,7 @@ export const testScenariosForV1API = [
                   dontBatch: false,
                   jobId: 1,
                   secret: {
-                    access_token: 'default-accessToken',
+                    access_token: SECRET_5,
                   },
                   sourceId: 'default-sourceId',
                   userId: 'default-userId',

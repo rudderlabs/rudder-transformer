@@ -1,5 +1,6 @@
+import { AUTH_PATTERN_2 } from './maskedSecrets';
 const headers = {
-  Authorization: 'Bearer success_access_token',
+  Authorization: AUTH_PATTERN_2,
   'Content-Type': 'application/json',
   Accept: 'application/json',
   'User-Agent': 'RudderLabs',

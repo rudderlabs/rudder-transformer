@@ -1,3 +1,4 @@
+import { AUTH_PATTERN_2, SECRET_1 } from '../maskedSecrets';
 export const data = [
   {
     name: 'criteo_audience',
@@ -11,7 +12,7 @@ export const data = [
           {
             metadata: {
               secret: {
-                accessToken: 'success_access_token',
+                accessToken: SECRET_1,
               },
             },
             message: {
@@ -79,7 +80,7 @@ export const data = [
               method: 'PATCH',
               endpoint: 'https://api.criteo.com/2022-10/audiences/34894/contactlist',
               headers: {
-                Authorization: 'Bearer success_access_token',
+                Authorization: AUTH_PATTERN_2,
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
               },
@@ -112,7 +113,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                accessToken: 'success_access_token',
+                accessToken: SECRET_1,
               },
             },
             statusCode: 200,
@@ -133,7 +134,7 @@ export const data = [
           {
             metadata: {
               secret: {
-                accessToken: 'success_access_token',
+                accessToken: SECRET_1,
               },
             },
             message: {
@@ -218,7 +219,7 @@ export const data = [
               method: 'PATCH',
               endpoint: 'https://api.criteo.com/2022-10/audiences/34893/contactlist',
               headers: {
-                Authorization: 'Bearer success_access_token',
+                Authorization: AUTH_PATTERN_2,
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
               },
@@ -252,7 +253,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                accessToken: 'success_access_token',
+                accessToken: SECRET_1,
               },
             },
             statusCode: 200,
@@ -264,7 +265,7 @@ export const data = [
               method: 'PATCH',
               endpoint: 'https://api.criteo.com/2022-10/audiences/34893/contactlist',
               headers: {
-                Authorization: 'Bearer success_access_token',
+                Authorization: AUTH_PATTERN_2,
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
               },
@@ -298,7 +299,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                accessToken: 'success_access_token',
+                accessToken: SECRET_1,
               },
             },
             statusCode: 200,
@@ -319,7 +320,7 @@ export const data = [
           {
             metadata: {
               secret: {
-                accessToken: 'success_access_token',
+                accessToken: SECRET_1,
               },
             },
             message: {
@@ -381,7 +382,7 @@ export const data = [
               method: 'PATCH',
               endpoint: 'https://api.criteo.com/2022-10/audiences/34894/contactlist',
               headers: {
-                Authorization: 'Bearer success_access_token',
+                Authorization: AUTH_PATTERN_2,
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
               },
@@ -407,7 +408,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                accessToken: 'success_access_token',
+                accessToken: SECRET_1,
               },
             },
             statusCode: 200,
@@ -428,7 +429,7 @@ export const data = [
           {
             metadata: {
               secret: {
-                accessToken: 'success_access_token',
+                accessToken: SECRET_1,
               },
             },
             message: {
@@ -487,7 +488,7 @@ export const data = [
               method: 'PATCH',
               endpoint: 'https://api.criteo.com/2022-10/audiences/34895/contactlist',
               headers: {
-                Authorization: 'Bearer success_access_token',
+                Authorization: AUTH_PATTERN_2,
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
               },
@@ -513,7 +514,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                accessToken: 'success_access_token',
+                accessToken: SECRET_1,
               },
             },
             statusCode: 200,
@@ -534,7 +535,7 @@ export const data = [
           {
             metadata: {
               secret: {
-                accessToken: 'success_access_token',
+                accessToken: SECRET_1,
               },
             },
             message: {
@@ -601,7 +602,7 @@ export const data = [
               method: 'PATCH',
               endpoint: 'https://api.criteo.com/2022-10/audiences/34893/contactlist',
               headers: {
-                Authorization: 'Bearer success_access_token',
+                Authorization: AUTH_PATTERN_2,
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
               },
@@ -627,7 +628,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                accessToken: 'success_access_token',
+                accessToken: SECRET_1,
               },
             },
             statusCode: 200,
@@ -639,7 +640,7 @@ export const data = [
               method: 'PATCH',
               endpoint: 'https://api.criteo.com/2022-10/audiences/34893/contactlist',
               headers: {
-                Authorization: 'Bearer success_access_token',
+                Authorization: AUTH_PATTERN_2,
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
               },
@@ -665,7 +666,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                accessToken: 'success_access_token',
+                accessToken: SECRET_1,
               },
             },
             statusCode: 200,
@@ -686,7 +687,7 @@ export const data = [
           {
             metadata: {
               secret: {
-                accessToken: 'success_access_token',
+                accessToken: SECRET_1,
               },
             },
             message: {
@@ -753,7 +754,7 @@ export const data = [
               method: 'PATCH',
               endpoint: 'https://api.criteo.com/2022-10/audiences/34893/contactlist',
               headers: {
-                Authorization: 'Bearer success_access_token',
+                Authorization: AUTH_PATTERN_2,
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
               },
@@ -779,7 +780,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                accessToken: 'success_access_token',
+                accessToken: SECRET_1,
               },
             },
             statusCode: 200,
@@ -791,7 +792,7 @@ export const data = [
               method: 'PATCH',
               endpoint: 'https://api.criteo.com/2022-10/audiences/34893/contactlist',
               headers: {
-                Authorization: 'Bearer success_access_token',
+                Authorization: AUTH_PATTERN_2,
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
               },
@@ -817,7 +818,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                accessToken: 'success_access_token',
+                accessToken: SECRET_1,
               },
             },
             statusCode: 200,
@@ -838,7 +839,7 @@ export const data = [
           {
             metadata: {
               secret: {
-                accessToken: 'success_access_token',
+                accessToken: SECRET_1,
               },
             },
             message: {
@@ -906,7 +907,7 @@ export const data = [
               method: 'PATCH',
               endpoint: 'https://api.criteo.com/2022-10/audiences/34893/contactlist',
               headers: {
-                Authorization: 'Bearer success_access_token',
+                Authorization: AUTH_PATTERN_2,
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
               },
@@ -933,7 +934,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                accessToken: 'success_access_token',
+                accessToken: SECRET_1,
               },
             },
             statusCode: 200,
@@ -945,7 +946,7 @@ export const data = [
               method: 'PATCH',
               endpoint: 'https://api.criteo.com/2022-10/audiences/34893/contactlist',
               headers: {
-                Authorization: 'Bearer success_access_token',
+                Authorization: AUTH_PATTERN_2,
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
               },
@@ -972,7 +973,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                accessToken: 'success_access_token',
+                accessToken: SECRET_1,
               },
             },
             statusCode: 200,
@@ -993,7 +994,7 @@ export const data = [
           {
             metadata: {
               secret: {
-                accessToken: 'success_access_token',
+                accessToken: SECRET_1,
               },
             },
             message: {
@@ -1051,7 +1052,7 @@ export const data = [
           {
             metadata: {
               secret: {
-                accessToken: 'success_access_token',
+                accessToken: SECRET_1,
               },
             },
             statusCode: 400,
@@ -1081,7 +1082,7 @@ export const data = [
           {
             metadata: {
               secret: {
-                accessToken: 'success_access_token',
+                accessToken: SECRET_1,
               },
             },
             destination: {
@@ -1149,7 +1150,7 @@ export const data = [
           {
             metadata: {
               secret: {
-                accessToken: 'success_access_token',
+                accessToken: SECRET_1,
               },
             },
             statusCode: 400,
@@ -1179,7 +1180,7 @@ export const data = [
           {
             metadata: {
               secret: {
-                accessToken: 'success_access_token',
+                accessToken: SECRET_1,
               },
             },
             destination: {
@@ -1240,7 +1241,7 @@ export const data = [
           {
             metadata: {
               secret: {
-                accessToken: 'success_access_token',
+                accessToken: SECRET_1,
               },
             },
             statusCode: 400,
@@ -1270,7 +1271,7 @@ export const data = [
           {
             metadata: {
               secret: {
-                accessToken: 'success_access_token',
+                accessToken: SECRET_1,
               },
             },
             message: {
@@ -1307,7 +1308,7 @@ export const data = [
           {
             metadata: {
               secret: {
-                accessToken: 'success_access_token',
+                accessToken: SECRET_1,
               },
             },
             statusCode: 400,
@@ -1337,7 +1338,7 @@ export const data = [
           {
             metadata: {
               secret: {
-                accessToken: 'success_access_token',
+                accessToken: SECRET_1,
               },
             },
             destination: {
@@ -1397,7 +1398,7 @@ export const data = [
           {
             metadata: {
               secret: {
-                accessToken: 'success_access_token',
+                accessToken: SECRET_1,
               },
             },
             statusCode: 400,
@@ -1427,7 +1428,7 @@ export const data = [
           {
             metadata: {
               secret: {
-                accessToken: 'success_access_token',
+                accessToken: SECRET_1,
               },
             },
             destination: {
@@ -1508,7 +1509,7 @@ export const data = [
           {
             metadata: {
               secret: {
-                accessToken: 'success_access_token',
+                accessToken: SECRET_1,
               },
             },
             statusCode: 400,
@@ -1538,7 +1539,7 @@ export const data = [
           {
             metadata: {
               secret: {
-                accessToken: 'success_access_token',
+                accessToken: SECRET_1,
               },
             },
             message: {
@@ -1595,7 +1596,7 @@ export const data = [
           {
             metadata: {
               secret: {
-                accessToken: 'success_access_token',
+                accessToken: SECRET_1,
               },
             },
             statusCode: 400,

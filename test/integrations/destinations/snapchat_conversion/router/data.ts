@@ -1,3 +1,4 @@
+import { AUTH_PATTERN_2, SECRET_1 } from '../maskedSecrets';
 import { FEATURES, IMPLEMENTATIONS, MODULES } from '../../../../../src/v0/util/tags';
 
 export const data = [
@@ -74,7 +75,7 @@ export const data = [
               destination: {
                 Config: {
                   pixelId: 'dummyPixelId',
-                  apiKey: 'dummyApiKey',
+                  apiKey: SECRET_1,
                 },
               },
             },
@@ -141,7 +142,7 @@ export const data = [
               destination: {
                 Config: {
                   pixelId: 'dummyPixelId',
-                  apiKey: 'dummyApiKey',
+                  apiKey: SECRET_1,
                 },
               },
             },
@@ -208,7 +209,7 @@ export const data = [
               destination: {
                 Config: {
                   pixelId: 'dummyPixelId',
-                  apiKey: 'dummyApiKey',
+                  apiKey: SECRET_1,
                 },
               },
             },
@@ -230,7 +231,7 @@ export const data = [
                 endpoint: 'https://tr.snapchat.com/v2/conversion',
                 headers: {
                   'Content-Type': 'application/json',
-                  Authorization: 'Bearer dummyApiKey',
+                  Authorization: AUTH_PATTERN_2,
                 },
                 params: {},
                 body: {
@@ -263,7 +264,7 @@ export const data = [
               destination: {
                 Config: {
                   pixelId: 'dummyPixelId',
-                  apiKey: 'dummyApiKey',
+                  apiKey: SECRET_1,
                 },
               },
             },
@@ -392,7 +393,7 @@ export const data = [
               destination: {
                 Config: {
                   pixelId: 'dummyPixelId',
-                  apiKey: 'dummyApiKey',
+                  apiKey: SECRET_1,
                   appId: 'jahsdfjk-5487-asdfa-9957-7c74eb8d3e80',
                   snapAppId: '',
                   enableDeduplication: false,
@@ -436,7 +437,7 @@ export const data = [
               destination: {
                 Config: {
                   pixelId: 'dummyPixelId',
-                  apiKey: 'dummyApiKey',
+                  apiKey: SECRET_1,
                   appId: 'jahsdfjk-5487-asdfa-9957-7c74eb8d3e80',
                   snapAppId: '',
                   enableDeduplication: false,

@@ -1,3 +1,4 @@
+import { SECRET_1 } from './maskedSecrets';
 const commonHeaders = {
   Authorization: 'Bearer token',
   'Content-Type': 'application/json',
@@ -180,7 +181,7 @@ const transformationMocksData = [
     httpRes: {
       status: 200,
       data: {
-        access_token: 'dummy.access.token',
+        access_token: SECRET_1,
         instance_url: 'https://ap15.salesforce.com',
         id: 'https://login.salesforce.com/id/00D2v000002lXbXEAU/0052v00000ga9WqAAI',
         token_type: 'Bearer',
@@ -197,7 +198,7 @@ const transformationMocksData = [
     httpRes: {
       status: 200,
       data: {
-        access_token: 'dummy.access.token',
+        access_token: SECRET_1,
         instance_url: 'https://ap15.salesforce.com',
         id: 'https://login.salesforce.com/id/00D2v000002lXbXEAU/0052v00000ga9WqAAI',
         token_type: 'Bearer',

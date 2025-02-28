@@ -1,3 +1,4 @@
+import { AUTH_PATTERN_2 } from './maskedSecrets';
 const API_VERSION = 'v18';
 
 const commonResponse = {
@@ -44,7 +45,7 @@ export const networkCallsData = [
         },
       },
       headers: {
-        Authorization: 'Bearer abcd1234',
+        Authorization: AUTH_PATTERN_2,
         'Content-Type': 'application/json',
         'developer-token': 'ijkl91011',
         'login-customer-id': 'logincustomerid',
@@ -67,7 +68,7 @@ export const networkCallsData = [
       },
       params: { destination: 'google_adwords_offline_conversion' },
       headers: {
-        Authorization: 'Bearer abcd1234',
+        Authorization: AUTH_PATTERN_2,
         'Content-Type': 'application/json',
         'developer-token': 'ijkl91011',
         'login-customer-id': 'logincustomerid',
@@ -123,7 +124,7 @@ export const networkCallsData = [
       },
       params: { destination: 'google_adwords_offline_conversion' },
       headers: {
-        Authorization: 'Bearer abcd1234',
+        Authorization: AUTH_PATTERN_2,
         'Content-Type': 'application/json',
         'developer-token': 'ijkl91011',
         'login-customer-id': 'logincustomerid',
@@ -188,7 +189,7 @@ export const networkCallsData = [
       },
       params: { destination: 'google_adwords_offline_conversion' },
       headers: {
-        Authorization: 'Bearer abcd1234',
+        Authorization: AUTH_PATTERN_2,
         'Content-Type': 'application/json',
         'developer-token': 'ijkl91011',
         'login-customer-id': 'logincustomerid',
@@ -233,7 +234,7 @@ export const networkCallsData = [
       },
       params: { destination: 'google_adwords_offline_conversion' },
       headers: {
-        Authorization: 'Bearer abcd1234',
+        Authorization: AUTH_PATTERN_2,
         'Content-Type': 'application/json',
         'developer-token': 'ijkl91011',
         'login-customer-id': 'logincustomerid',
@@ -251,7 +252,7 @@ export const networkCallsData = [
       data: { validate_only: false },
       params: { destination: 'google_adwords_offline_conversion' },
       headers: {
-        Authorization: 'Bearer abcd1234',
+        Authorization: AUTH_PATTERN_2,
         'Content-Type': 'application/json',
         'developer-token': 'ijkl91011',
         'login-customer-id': 'logincustomerid',
@@ -282,7 +283,7 @@ export const networkCallsData = [
       },
       params: { destination: 'google_adwords_offline_conversion' },
       headers: {
-        Authorization: 'Bearer abcd1234',
+        Authorization: AUTH_PATTERN_2,
         'Content-Type': 'application/json',
         'developer-token': 'ijkl91011',
         'login-customer-id': 'logincustomerid',
@@ -318,7 +319,7 @@ export const networkCallsData = [
       },
       params: { destination: 'google_adwords_offline_conversion' },
       headers: {
-        Authorization: 'Bearer abcd1234',
+        Authorization: AUTH_PATTERN_2,
         'Content-Type': 'application/json',
         'developer-token': 'ijkl91011',
         'login-customer-id': 'logincustomerid',
@@ -343,7 +344,7 @@ export const networkCallsData = [
         query: `SELECT conversion_action.id FROM conversion_action WHERE conversion_action.name = 'Sign-up - click'`,
       },
       headers: {
-        Authorization: 'Bearer abcd1234',
+        Authorization: AUTH_PATTERN_2,
         'Content-Type': 'application/json',
         'developer-token': 'ijkl91011',
       },
@@ -372,7 +373,7 @@ export const networkCallsData = [
           "SELECT conversion_action.id FROM conversion_action WHERE conversion_action.name = 'Sign-up - click'",
       },
       headers: {
-        Authorization: 'Bearer abcd1234',
+        Authorization: AUTH_PATTERN_2,
         'Content-Type': 'application/json',
         'developer-token': 'ijkl91011',
       },
@@ -402,7 +403,7 @@ export const networkCallsData = [
       url: `https://googleads.googleapis.com/${API_VERSION}/customers/1234567891/googleAds:searchStream`,
       data: { query: 'SELECT conversion_custom_variable.name FROM conversion_custom_variable' },
       headers: {
-        Authorization: 'Bearer abcd1234',
+        Authorization: AUTH_PATTERN_2,
         'Content-Type': 'application/json',
         'developer-token': 'ijkl91011',
       },
@@ -475,7 +476,7 @@ export const networkCallsData = [
         partialFailure: true,
       },
       headers: {
-        Authorization: 'Bearer abcd1234',
+        Authorization: AUTH_PATTERN_2,
         'Content-Type': 'application/json',
         'developer-token': 'ijkl91011',
       },
@@ -536,7 +537,7 @@ export const networkCallsData = [
         partialFailure: true,
       },
       headers: {
-        Authorization: 'Bearer abcd1234',
+        Authorization: AUTH_PATTERN_2,
         'Content-Type': 'application/json',
         'developer-token': 'ijkl91011',
       },
@@ -567,7 +568,7 @@ export const networkCallsData = [
           "SELECT conversion_action.id FROM conversion_action WHERE conversion_action.name = 'Sign-up - click'",
       },
       headers: {
-        Authorization: 'Bearer abcd1234',
+        Authorization: AUTH_PATTERN_2,
         'Content-Type': 'application/json',
         'developer-token': 'ijkl91011',
       },
@@ -630,7 +631,7 @@ export const networkCallsData = [
         partialFailure: true,
       },
       headers: {
-        Authorization: 'Bearer abcd1234',
+        Authorization: AUTH_PATTERN_2,
         'Content-Type': 'application/json',
         'developer-token': 'ijkl91011',
       },

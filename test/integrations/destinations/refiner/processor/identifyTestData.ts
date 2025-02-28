@@ -1,3 +1,4 @@
+import { AUTH_PATTERN_2, SECRET_1 } from '../maskedSecrets';
 import { Destination } from '../../../../../src/types';
 import { ProcessorTestData } from '../../../testTypes';
 import {
@@ -16,7 +17,7 @@ const destination: Destination = {
     Config: {},
   },
   Config: {
-    apiKey: 'dummyApiKey',
+    apiKey: SECRET_1,
     blacklistedEvents: [{ eventName: '' }],
     eventDelivery: true,
     eventDeliveryTS: 1665474171943,
@@ -57,7 +58,7 @@ const expectedOutputUserTraits = {
 };
 
 const headers = {
-  Authorization: 'Bearer dummyApiKey',
+  Authorization: AUTH_PATTERN_2,
   'Content-Type': 'application/x-www-form-urlencoded',
 };
 

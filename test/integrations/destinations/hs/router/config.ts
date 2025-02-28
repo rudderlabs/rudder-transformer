@@ -1,6 +1,7 @@
+import { SECRET_1 } from '../maskedSecrets';
 export const destination = {
   Config: {
-    accessToken: 'dummy-access-token',
+    accessToken: SECRET_1,
     hubID: 'dummy-hubId',
     authorizationType: 'newPrivateAppApi',
     apiVersion: 'newApi',

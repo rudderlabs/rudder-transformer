@@ -1,3 +1,4 @@
+import { SECRET_1 } from '../maskedSecrets';
 import { RouterTransformationRequest } from '../../../../../src/types';
 import { generateMetadata } from '../../../testUtils';
 import {
@@ -112,7 +113,7 @@ const routerRequest1: RouterTransformationRequest = {
       metadata: {
         ...generateMetadata(5),
         secret: {
-          accessToken: 'revoked-accessToken',
+          accessToken: SECRET_1,
         },
       },
     },
@@ -555,7 +556,7 @@ export const data: RouterTestData[] = [
                 {
                   ...generateMetadata(5),
                   secret: {
-                    accessToken: 'revoked-accessToken',
+                    accessToken: SECRET_1,
                   },
                 },
               ],

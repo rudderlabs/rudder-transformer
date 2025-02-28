@@ -9,8 +9,7 @@ const { getBodyFromV2SpecPayload } = require('../../v0/util');
 // import mapping json using JSON.parse to preserve object key order
 const mapping = JSON.parse(fs.readFileSync(path.resolve(__dirname, './mapping.json'), 'utf-8'));
 
-const processEvent = (payload) => {
-  const event = getBodyFromV2SpecPayload(payload);
+const processEvent = (event) => {
   const message = new Message(`MailJet`);
   // event type is always track
   const eventType = 'track';
@@ -48,7 +47,8 @@ const processEvent = (payload) => {
 };
 
 // This fucntion just converts the incoming payload to array of already not and sends it to processEvent
-const process = (events) => {
+const process = (payload) => {
+  const events = getBodyFromV2SpecPayload(payload);
   const eventsArray = CommonUtils.toArray(events);
   return eventsArray.map(processEvent);
 };

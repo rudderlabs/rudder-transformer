@@ -226,12 +226,7 @@ describe.each(allTestDataFilePaths)('%s Tests', (testDataPath) => {
     testData = [testData[parseInt(opts.index)]];
   }
   if (opts.id) {
-    testData = testData.filter((data) => {
-      if (data['id'] === opts.id) {
-        return true;
-      }
-      return false;
-    });
+    testData = testData.filter((data) => data.id === opts.id);
   }
 
   const extendedTestData: ExtendedTestCaseData[] = testData.flatMap((tcData) => {

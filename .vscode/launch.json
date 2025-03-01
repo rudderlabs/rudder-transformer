@@ -1,38 +1,17 @@
 {
-  // Use IntelliSense to learn about possible attributes.
-  // Hover to view descriptions of existing attributes.
-  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
   "version": "0.2.0",
   "configurations": [
     {
+      "type": "node",
+      "request": "launch",
       "name": "transformer",
-      "type": "node",
-      "request": "launch",
-      "program": "${workspaceRoot}/index.js",
-      "runtimeArgs": ["--nolazy"],
-      "sourceMaps": true,
-      "runtimeExecutable": "/usr/local/bin/node"
-    },
-    {
-      "type": "node",
-      "request": "launch",
-      "name": "Launch TS",
-      "program": "${workspaceFolder}/dist/src/index.js",
+      "program": "${workspaceFolder}/src/index.ts",
       "outFiles": ["${workspaceFolder}/dist/src/**/*.js"],
-      "runtimeExecutable": "/usr/local/bin/node"
+      "runtimeArgs": ["--require", "${workspaceFolder}/node_modules/ts-node/register"],
+      "resolveSourceMapLocations": ["${workspaceFolder}/**", "!**/node_modules/**"]
     },
     {
-      "name": "benchmark",
-      "type": "node",
-      "request": "launch",
-      "program": "${workspaceRoot}/benchmark",
-      "args": ["--destinations=${input:destinations}", "--feature=${input:feature}"],
-      "runtimeArgs": ["--nolazy"],
-      "sourceMaps": true,
-      "runtimeExecutable": "/usr/local/bin/node"
-    },
-    {
-      "runtimeExecutable": "/usr/local/bin/node",
+      "runtimeExecutable": "${env:NODE_BIN}",
       "type": "node",
       "request": "launch",
       "name": "Jest Current File",
@@ -40,7 +19,6 @@
       "args": ["${fileBasenameNoExtension}", "--config", "jest.config.js"],
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
-      "disableOptimisticBPs": true,
       "windows": {
         "program": "${workspaceFolder}/node_modules/jest/bin/jest"
       }

@@ -39,7 +39,6 @@
     "test:js:silent": "export LOG_LEVEL=silent && npm run test:js -- --silent",
     "test:js:ci": "npm run test:js -- --coverage --expand --maxWorkers=50%",
     "test:ts": "NODE_OPTIONS='--no-node-snapshot' jest -c jest.config.typescript.js --detectOpenHandles",
-    "test:ts:debug": "NODE_OPTIONS='--no-node-snapshot --inspect-brk' jest -c jest.config.typescript.js",
     "test:ts:component:generateNwMocks": "npm run test:ts -- component --generate=true",
     "test:ts:silent": "export LOG_LEVEL=silent && npm run test:ts -- --silent",
     "test:ts:ci": "npm run test:ts -- --coverage --expand --maxWorkers=50%",

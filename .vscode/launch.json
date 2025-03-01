@@ -8,10 +8,12 @@
       "program": "${workspaceFolder}/src/index.ts",
       "outFiles": ["${workspaceFolder}/dist/src/**/*.js"],
       "runtimeArgs": ["--require", "${workspaceFolder}/node_modules/ts-node/register"],
-      "resolveSourceMapLocations": ["${workspaceFolder}/**", "!**/node_modules/**"]
+      "resolveSourceMapLocations": ["${workspaceFolder}/**", "!**/node_modules/**"],
+      "env": {
+        "NODE_ENV": "development"
+      }
     },
     {
-      "runtimeExecutable": "${env:NODE_BIN}",
       "type": "node",
       "request": "launch",
       "name": "Jest Current File",
@@ -19,23 +21,33 @@
       "args": ["${fileBasenameNoExtension}", "--config", "jest.config.js"],
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
+      "runtimeArgs": ["--require", "${workspaceFolder}/node_modules/ts-node/register"],
       "windows": {
         "program": "${workspaceFolder}/node_modules/jest/bin/jest"
+      },
+      "env": {
+        "NODE_ENV": "test"
       }
-    }
-  ],
-  "inputs": [
-    {
-      "id": "destinations",
-      "type": "promptString",
-      "description": "Enter destinations",
-      "default": "algolia"
     },
     {
-      "id": "feature",
-      "type": "promptString",
-      "description": "Enter Feature",
-      "default": "proc"
+      "type": "node",
+      "request": "launch",
+      "name": "Test Single Component",
+      "program": "${workspaceFolder}/node_modules/.bin/jest",
+      "args": [
+        "-c",
+        "jest.config.typescript.js",
+        "component",
+        "--destination=adobe_analytics",
+        "--feature=processor"
+      ],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "runtimeArgs": ["--require", "${workspaceFolder}/node_modules/ts-node/register"],
+      "env": {
+        "NODE_ENV": "test",
+        "NODE_OPTIONS": "--no-node-snapshot"
+      }
     }
   ]
 }

@@ -1,3 +1,4 @@
+import { getAuthHeader_1, getSecret_1, getAuthHeader_3, getSecret_3 } from '../maskedSecrets';
 export const data = [
   {
     name: 'mailchimp',
@@ -19,7 +20,7 @@ export const data = [
                   DisplayName: 'MailChimp',
                 },
                 Config: {
-                  apiKey: 'apikey',
+                  apiKey: getSecret_3(),
                   audienceId: 'aud111',
                   datacenterId: 'usXX',
                   enableMergeFields: true,
@@ -74,7 +75,7 @@ export const data = [
                   DisplayName: 'MailChimp',
                 },
                 Config: {
-                  apiKey: 'apikey',
+                  apiKey: getSecret_3(),
                   audienceId: 'aud111',
                   datacenterId: 'usXX',
                   enableMergeFields: true,
@@ -124,7 +125,7 @@ export const data = [
                   DisplayName: 'MailChimp',
                 },
                 Config: {
-                  apiKey: 'apikey',
+                  apiKey: getSecret_3(),
                   audienceId: 'aud111',
                   datacenterId: 'usXX',
                   enableMergeFields: true,
@@ -174,7 +175,7 @@ export const data = [
                   DisplayName: 'MailChimp',
                 },
                 Config: {
-                  apiKey: 'apikey',
+                  apiKey: getSecret_3(),
                   audienceId: 'aud111',
                   datacenterId: 'usXX',
                   enableMergeFields: true,
@@ -209,7 +210,7 @@ export const data = [
                   DisplayName: 'MailChimp',
                 },
                 Config: {
-                  apiKey: 'apikey',
+                  apiKey: getSecret_3(),
                   audienceId: 'aud111',
                   datacenterId: 'usXX',
                   enableMergeFields: true,
@@ -243,7 +244,7 @@ export const data = [
                   DisplayName: 'MailChimp',
                 },
                 Config: {
-                  apiKey: 'apikey',
+                  apiKey: getSecret_3(),
                   audienceId: 'aud111',
                   datacenterId: 'usXX',
                   enableMergeFields: true,
@@ -296,7 +297,7 @@ export const data = [
                   'https://usXX.api.mailchimp.com/3.0/lists/aud111?skip_merge_validation=true&skip_duplicate_check=false',
                 headers: {
                   'Content-Type': 'application/json',
-                  Authorization: 'Basic YXBpS2V5OmFwaWtleQ==',
+                  Authorization: getAuthHeader_3(),
                 },
                 params: {},
                 body: {
@@ -336,7 +337,7 @@ export const data = [
                   DisplayName: 'MailChimp',
                 },
                 Config: {
-                  apiKey: 'apikey',
+                  apiKey: getSecret_3(),
                   audienceId: 'aud111',
                   datacenterId: 'usXX',
                   enableMergeFields: true,
@@ -354,7 +355,7 @@ export const data = [
                   'https://usXX.api.mailchimp.com/3.0/lists/aud111/members/48cd6232dc124497369f59c33d3eb4ab/events',
                 headers: {
                   'Content-Type': 'application/json',
-                  Authorization: 'Basic YXBpS2V5OmFwaWtleQ==',
+                  Authorization: getAuthHeader_3(),
                 },
                 params: {},
                 body: {
@@ -382,7 +383,7 @@ export const data = [
                   DisplayName: 'MailChimp',
                 },
                 Config: {
-                  apiKey: 'apikey',
+                  apiKey: getSecret_3(),
                   audienceId: 'aud111',
                   datacenterId: 'usXX',
                   enableMergeFields: true,
@@ -400,7 +401,7 @@ export const data = [
                   'https://usXX.api.mailchimp.com/3.0/lists/aud111/members/48cd6232dc124497369f59c33d3eb4ab/events',
                 headers: {
                   'Content-Type': 'application/json',
-                  Authorization: 'Basic YXBpS2V5OmFwaWtleQ==',
+                  Authorization: getAuthHeader_3(),
                 },
                 params: {},
                 body: {
@@ -435,7 +436,7 @@ export const data = [
                   DisplayName: 'MailChimp',
                 },
                 Config: {
-                  apiKey: 'apikey',
+                  apiKey: getSecret_3(),
                   audienceId: 'aud111',
                   datacenterId: 'usXX',
                   enableMergeFields: true,
@@ -454,7 +455,7 @@ export const data = [
                   DisplayName: 'MailChimp',
                 },
                 Config: {
-                  apiKey: 'apikey',
+                  apiKey: getSecret_3(),
                   audienceId: 'aud111',
                   datacenterId: 'usXX',
                   enableMergeFields: true,
@@ -485,7 +486,7 @@ export const data = [
                   DisplayName: 'MailChimp',
                 },
                 Config: {
-                  apiKey: 'apikey',
+                  apiKey: getSecret_3(),
                   audienceId: 'aud111',
                   datacenterId: 'usXX',
                   enableMergeFields: true,
@@ -532,7 +533,7 @@ export const data = [
                   DisplayName: 'MailChimp',
                 },
                 Config: {
-                  apiKey: 'apiKey-dummyApiKey',
+                  apiKey: getSecret_1(),
                   audienceId: '1232yyqw22',
                   datacenterId: 'us20',
                 },
@@ -589,7 +590,7 @@ export const data = [
                   DisplayName: 'MailChimp',
                 },
                 Config: {
-                  apiKey: 'apiKey-dummyApiKey',
+                  apiKey: getSecret_1(),
                   audienceId: '1232yyqw22',
                   datacenterId: 'us20',
                 },
@@ -635,7 +636,7 @@ export const data = [
                   DisplayName: 'MailChimp',
                 },
                 Config: {
-                  apiKey: 'apiKey-dummyApiKey',
+                  apiKey: getSecret_1(),
                   audienceId: '1232yyqw22',
                   datacenterId: 'us20',
                 },
@@ -681,7 +682,7 @@ export const data = [
                   DisplayName: 'MailChimp',
                 },
                 Config: {
-                  apiKey: 'apiKey-dummyApiKey',
+                  apiKey: getSecret_1(),
                   audienceId: '1232yyqw22',
                   datacenterId: 'us20',
                 },
@@ -736,7 +737,7 @@ export const data = [
                   'https://us20.api.mailchimp.com/3.0/lists/1232yyqw22?skip_merge_validation=false&skip_duplicate_check=false',
                 headers: {
                   'Content-Type': 'application/json',
-                  Authorization: 'Basic YXBpS2V5OmFwaUtleS1kdW1teUFwaUtleQ==',
+                  Authorization: getAuthHeader_1(),
                 },
                 params: {},
                 body: {
@@ -774,7 +775,7 @@ export const data = [
                   DisplayName: 'MailChimp',
                 },
                 Config: {
-                  apiKey: 'apiKey-dummyApiKey',
+                  apiKey: getSecret_1(),
                   audienceId: '1232yyqw22',
                   datacenterId: 'us20',
                 },
@@ -792,7 +793,7 @@ export const data = [
                   DisplayName: 'MailChimp',
                 },
                 Config: {
-                  apiKey: 'apiKey-dummyApiKey',
+                  apiKey: getSecret_1(),
                   audienceId: '1232yyqw22',
                   datacenterId: 'us20',
                 },

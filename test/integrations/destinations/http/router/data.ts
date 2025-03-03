@@ -1,3 +1,4 @@
+import { getAuthHeader_1 } from '../maskedSecrets';
 import { generateMetadata } from '../../../testUtils';
 import { destType, destinations, traits, properties } from '../common';
 
@@ -235,7 +236,7 @@ export const data = [
                 endpoint: 'http://abc.com/contacts',
                 headers: {
                   'Content-Type': 'application/json',
-                  Authorization: 'Basic dGVzdC11c2VyOg==',
+                  Authorization: getAuthHeader_1(),
                   'content-type': 'application/json',
                   h1: 'val1',
                   h2: '2',
@@ -268,7 +269,7 @@ export const data = [
                 endpoint: 'http://abc.com/contacts',
                 headers: {
                   'Content-Type': 'application/json',
-                  Authorization: 'Basic dGVzdC11c2VyOg==',
+                  Authorization: getAuthHeader_1(),
                   'content-type': 'application/json',
                   h1: 'val1',
                   h2: '2',
@@ -301,7 +302,7 @@ export const data = [
                 endpoint: 'http://abc.com/contacts',
                 headers: {
                   'Content-Type': 'application/json',
-                  Authorization: 'Basic dGVzdC11c2VyOg==',
+                  Authorization: getAuthHeader_1(),
                   'content-type': 'application/json',
                   h1: 'val1',
                   h2: '2',

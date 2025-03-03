@@ -1,3 +1,4 @@
+import { getAuthHeader_1 } from './maskedSecrets';
 const dataDeliveryMocksData = [
   {
     httpReq: {
@@ -421,7 +422,7 @@ const deleteNwData = [
           'user_aliases',
         ],
       },
-      headers: { Authorization: 'Bearer dummyApiKey' },
+      headers: { Authorization: getAuthHeader_1() },
       url: 'https://rest.iad-03.braze.com/users/export/ids',
     },
     httpRes: {

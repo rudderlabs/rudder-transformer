@@ -1,3 +1,4 @@
+import { getAuthHeader_1 } from '../maskedSecrets';
 import { testScenariosForV1API } from './business';
 import { otheMarketoScenariosV1 } from './other';
 
@@ -432,7 +433,7 @@ const legacyTests = [
           endpoint: 'https://unhandled_exception_in_proxy_req.mktorest.com/rest/v1/leads.json',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: 'Bearer access_token_success',
+            Authorization: getAuthHeader_1(),
           },
           body: {
             JSON: {

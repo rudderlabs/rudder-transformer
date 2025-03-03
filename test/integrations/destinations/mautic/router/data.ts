@@ -1,3 +1,4 @@
+import { getSecret_1, getSecret_2 } from '../maskedSecrets';
 export const data = [
   {
     name: 'mautic',
@@ -45,9 +46,9 @@ export const data = [
               destination: {
                 Config: {
                   lookUpField: 'email',
-                  password: 'dummyPassword',
+                  password: getSecret_2(),
                   subDomainName: 'ruddertest2',
-                  userName: 'TestRudderlabs45823@gmail.com',
+                  userName: getSecret_1(),
                 },
               },
               metadata: { jobId: 1, userId: 'u1' },
@@ -107,9 +108,9 @@ export const data = [
               destination: {
                 Config: {
                   lookUpField: 'email',
-                  password: 'dummyPassword',
+                  password: getSecret_2(),
                   subDomainName: 'ruddertest2',
-                  userName: 'TestRudderlabs45823@gmail.com',
+                  userName: getSecret_1(),
                 },
               },
             },
@@ -164,7 +165,7 @@ export const data = [
               destination: {
                 Config: {
                   lookUpField: 'email',
-                  password: 'dummyPassword',
+                  password: getSecret_2(),
                   subDomainName: '',
                   domainName: '',
                   userName: 'abcdef',
@@ -197,7 +198,7 @@ export const data = [
                 Config: {
                   domainName: '',
                   lookUpField: 'email',
-                  password: 'dummyPassword',
+                  password: getSecret_2(),
                   subDomainName: '',
                   userName: 'abcdef',
                 },
@@ -232,9 +233,9 @@ export const data = [
               destination: {
                 Config: {
                   lookUpField: 'lastName',
-                  password: 'dummyPassword',
+                  password: getSecret_2(),
                   subDomainName: 'ruddertest2',
-                  userName: 'TestRudderlabs45823@gmail.com',
+                  userName: getSecret_1(),
                 },
               },
               metadata: { jobId: 3, userId: 'u1' },
@@ -271,9 +272,9 @@ export const data = [
               destination: {
                 Config: {
                   lookUpField: 'lastName',
-                  password: 'dummyPassword',
+                  password: getSecret_2(),
                   subDomainName: 'ruddertest2',
-                  userName: 'TestRudderlabs45823@gmail.com',
+                  userName: getSecret_1(),
                 },
               },
             },

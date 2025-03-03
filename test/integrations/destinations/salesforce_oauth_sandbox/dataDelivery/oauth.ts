@@ -1,9 +1,10 @@
+import { getAuthHeader_1, getSecret_1 } from '../maskedSecrets';
 import { ProxyMetdata } from '../../../../../src/types';
 import { ProxyV1TestData } from '../../../testTypes';
 import { generateProxyV1Payload } from '../../../testUtils';
 
 const commonHeadersForWrongToken = {
-  Authorization: 'Bearer expiredAccessToken',
+  Authorization: getAuthHeader_1(),
   'Content-Type': 'application/json',
 };
 
@@ -57,7 +58,7 @@ export const proxyMetdataWithSecretWithWrongAccessToken: ProxyMetdata = {
   destinationId: 'dummyDestinationId',
   workspaceId: 'dummyWorkspaceId',
   secret: {
-    access_token: 'expiredAccessToken',
+    access_token: getSecret_1(),
     instanceUrl: 'https://rudderstack.my.salesforce_oauth_sandbox.com',
   },
   destInfo: { authKey: 'dummyDestinationId' },

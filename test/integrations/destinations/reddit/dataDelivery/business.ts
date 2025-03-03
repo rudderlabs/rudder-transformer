@@ -1,3 +1,4 @@
+import { getAuthHeader_1 } from '../maskedSecrets';
 import {
   generateMetadata,
   generateProxyV0Payload,
@@ -105,7 +106,7 @@ const validRequestMultipleEventsInPayload = {
 };
 
 const commonHeaders = {
-  Authorization: 'Bearer dummyAccessToken',
+  Authorization: getAuthHeader_1(),
   'Content-Type': 'application/json',
 };
 

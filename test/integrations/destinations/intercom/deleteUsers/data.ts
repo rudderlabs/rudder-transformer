@@ -1,3 +1,4 @@
+import { getSecret_1 } from '../maskedSecrets';
 export const data = [
   {
     name: 'intercom',
@@ -19,7 +20,7 @@ export const data = [
               },
             ],
             config: {
-              apiKey: 'testApiKey',
+              apiKey: getSecret_1(),
             },
           },
         ],
@@ -57,7 +58,7 @@ export const data = [
               },
             ],
             config: {
-              apiKey: 'testApiKey',
+              apiKey: getSecret_1(),
             },
           },
         ],

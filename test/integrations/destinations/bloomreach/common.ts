@@ -1,3 +1,4 @@
+import { getAuthHeader_1, getSecret_1, getSecret_2 } from './maskedSecrets';
 import { Destination } from '../../../../src/types';
 
 const destType = 'bloomreach';
@@ -7,8 +8,8 @@ const channel = 'web';
 const destination: Destination = {
   Config: {
     apiBaseUrl: 'https://demoapp-api.bloomreach.com',
-    apiKey: 'test-api-key',
-    apiSecret: 'test-api-secret',
+    apiKey: getSecret_1(),
+    apiSecret: getSecret_2(),
     projectToken: 'test-project-token',
     hardID: 'registered',
     softID: 'cookie',
@@ -82,7 +83,7 @@ const proxyV1RetryableErrorStatTags = {
 
 const headers = {
   'Content-Type': 'application/json',
-  Authorization: 'Basic dGVzdC1hcGkta2V5OnRlc3QtYXBpLXNlY3JldA==',
+  Authorization: getAuthHeader_1(),
 };
 
 export {

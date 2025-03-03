@@ -1,3 +1,4 @@
+import { getAuthHeader_1 } from '../maskedSecrets';
 import {
   generateMetadata,
   generateProxyV0Payload,
@@ -44,13 +45,13 @@ const products = [
 
 const headers = {
   header1: {
-    Authorization: 'Bearer abcd1234',
+    Authorization: getAuthHeader_1(),
     'Content-Type': 'application/json',
     'developer-token': 'ijkl91011',
     'login-customer-id': 'logincustomerid',
   },
   header2: {
-    Authorization: 'Bearer abcd1234',
+    Authorization: getAuthHeader_1(),
     'Content-Type': 'application/json',
     'developer-token': 'ijkl91011',
   },

@@ -1,3 +1,4 @@
+import { getAuthHeader_1, getSecret_1 } from '../maskedSecrets';
 import {
   commonInput,
   destination,
@@ -11,8 +12,8 @@ const commonDestination = {
   ID: 'random_id',
   Name: 'clicksend',
   Config: {
-    clicksendPassword: 'dummy',
-    clicksendUsername: 'dummy',
+    clicksendPassword: getSecret_1(),
+    clicksendUsername: getSecret_1(),
     defaultCampaignSchedule: '2',
     defaultCampaignScheduleUnit: 'day',
     defaultSenderId: 'abc@gmail.com',
@@ -129,7 +130,7 @@ export const data = [
                 endpoint: 'https://rest.clicksend.com/v3/sms-campaigns/send',
                 files: {},
                 headers: {
-                  Authorization: 'Basic ZHVtbXk6ZHVtbXk=',
+                  Authorization: getAuthHeader_1(),
                   'Content-Type': 'application/json',
                 },
                 method: 'POST',
@@ -172,7 +173,7 @@ export const data = [
                 endpoint: 'https://rest.clicksend.com/v3/sms/send',
                 files: {},
                 headers: {
-                  Authorization: 'Basic ZHVtbXk6ZHVtbXk=',
+                  Authorization: getAuthHeader_1(),
                   'Content-Type': 'application/json',
                 },
                 method: 'POST',
@@ -211,7 +212,7 @@ export const data = [
                 endpoint: 'https://rest.clicksend.com/v3/lists/123345/contacts/111',
                 files: {},
                 headers: {
-                  Authorization: 'Basic ZHVtbXk6ZHVtbXk=',
+                  Authorization: getAuthHeader_1(),
                   'Content-Type': 'application/json',
                 },
                 method: 'PUT',
@@ -381,7 +382,7 @@ export const data = [
                 endpoint: 'https://rest.clicksend.com/v3/sms-campaigns/send',
                 files: {},
                 headers: {
-                  Authorization: 'Basic ZHVtbXk6ZHVtbXk=',
+                  Authorization: getAuthHeader_1(),
                   'Content-Type': 'application/json',
                 },
                 method: 'POST',
@@ -444,7 +445,7 @@ export const data = [
                 endpoint: 'https://rest.clicksend.com/v3/sms/send',
                 files: {},
                 headers: {
-                  Authorization: 'Basic ZHVtbXk6ZHVtbXk=',
+                  Authorization: getAuthHeader_1(),
                   'Content-Type': 'application/json',
                 },
                 method: 'POST',

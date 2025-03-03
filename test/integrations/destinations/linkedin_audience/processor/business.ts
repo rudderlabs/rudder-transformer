@@ -1,3 +1,4 @@
+import { getAuthHeader_1 } from '../maskedSecrets';
 import { ProcessorTestData } from '../../../testTypes';
 import { generateMetadata, generateRecordPayload } from '../../../testUtils';
 
@@ -221,7 +222,7 @@ export const businessTestData: ProcessorTestData[] = [
               endpoint: 'https://api.linkedin.com/rest/dmpSegments/32589526/users',
               files: {},
               headers: {
-                Authorization: 'Bearer default-accessToken',
+                Authorization: getAuthHeader_1(),
                 'Content-Type': 'application/json',
                 'LinkedIn-Version': '202409',
                 'X-RestLi-Method': 'BATCH_CREATE',
@@ -356,7 +357,7 @@ export const businessTestData: ProcessorTestData[] = [
               endpoint: 'https://api.linkedin.com/rest/dmpSegments/32589526/users',
               files: {},
               headers: {
-                Authorization: 'Bearer default-accessToken',
+                Authorization: getAuthHeader_1(),
                 'Content-Type': 'application/json',
                 'LinkedIn-Version': '202409',
                 'X-RestLi-Method': 'BATCH_CREATE',
@@ -503,7 +504,7 @@ export const businessTestData: ProcessorTestData[] = [
               endpoint: 'https://api.linkedin.com/rest/dmpSegments/32589526/companies',
               files: {},
               headers: {
-                Authorization: 'Bearer default-accessToken',
+                Authorization: getAuthHeader_1(),
                 'Content-Type': 'application/json',
                 'LinkedIn-Version': '202409',
                 'X-RestLi-Method': 'BATCH_CREATE',

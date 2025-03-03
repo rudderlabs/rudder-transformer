@@ -1,3 +1,4 @@
+import { getAuthHeader_1, getSecret_1 } from '../maskedSecrets';
 export const data = [
   {
     name: 'vitally',
@@ -11,7 +12,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKeyVitally: 'abc123',
+                apiKeyVitally: getSecret_1(),
               },
               DestinationDefinition: {
                 Config: {
@@ -66,7 +67,7 @@ export const data = [
               method: 'POST',
               userId: '',
               headers: {
-                authorization: 'Basic abc123',
+                authorization: getAuthHeader_1(),
                 'content-type': 'application/json',
               },
             },
@@ -92,7 +93,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKeyVitally: 'abc123',
+                apiKeyVitally: getSecret_1(),
               },
               DestinationDefinition: {
                 Config: {
@@ -145,7 +146,7 @@ export const data = [
               method: 'POST',
               userId: '',
               headers: {
-                authorization: 'Basic abc123',
+                authorization: getAuthHeader_1(),
                 'content-type': 'application/json',
               },
             },
@@ -171,7 +172,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKeyVitally: 'abc123',
+                apiKeyVitally: getSecret_1(),
               },
               DestinationDefinition: {
                 Config: {
@@ -220,7 +221,7 @@ export const data = [
               method: 'POST',
               userId: '',
               headers: {
-                authorization: 'Basic abc123',
+                authorization: getAuthHeader_1(),
                 'content-type': 'application/json',
               },
             },
@@ -247,7 +248,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKeyVitally: 'abc123',
+                apiKeyVitally: getSecret_1(),
               },
               DestinationDefinition: {
                 Config: {

@@ -1,3 +1,4 @@
+import { getAuthHeader_1 } from '../maskedSecrets';
 export const data = [
   {
     name: 'marketo',
@@ -728,7 +729,7 @@ export const data = [
                   'https://marketo_acct_id_success.mktorest.com/rest/v1/activities/external.json',
                 headers: {
                   'Content-Type': 'application/json',
-                  Authorization: 'Bearer access_token_success',
+                  Authorization: getAuthHeader_1(),
                 },
                 params: {},
                 body: {
@@ -846,7 +847,7 @@ export const data = [
                   'https://marketo_acct_id_success.mktorest.com/rest/v1/activities/external.json',
                 headers: {
                   'Content-Type': 'application/json',
-                  Authorization: 'Bearer access_token_success',
+                  Authorization: getAuthHeader_1(),
                 },
                 params: {},
                 body: {
@@ -1162,7 +1163,7 @@ export const data = [
                   'https://successful_identify_transformation.mktorest.com/rest/v1/leads.json',
                 headers: {
                   'Content-Type': 'application/json',
-                  Authorization: 'Bearer access_token_success',
+                  Authorization: getAuthHeader_1(),
                 },
                 params: {},
                 body: {
@@ -1374,7 +1375,7 @@ export const data = [
                 endpoint:
                   'https://marketo_acct_id_success.mktorest.com/rest/v1/activities/external.json',
                 headers: {
-                  Authorization: 'Bearer access_token_success',
+                  Authorization: getAuthHeader_1(),
                   'Content-Type': 'application/json',
                 },
                 params: {},

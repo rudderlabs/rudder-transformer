@@ -1,3 +1,4 @@
+import { getAuthHeader_1, getSecret_1 } from '../maskedSecrets';
 import { generateProxyV1Payload } from '../../../testUtils';
 import { ProxyV1TestData } from '../../../testTypes';
 
@@ -75,12 +76,12 @@ export const metadata = {
   workspaceId: 'default-workspaceId',
   sourceId: 'default-sourceId',
   secret: {
-    accessToken: 'default-accessToken',
+    accessToken: getSecret_1(),
   },
   dontBatch: false,
 };
 export const headerBlockWithCorrectAccessToken = {
-  Authorization: 'Bearer default-accessToken',
+  Authorization: getAuthHeader_1(),
   'Content-Type': 'application/json',
   'LinkedIn-Version': '202409',
   'X-RestLi-Method': 'BATCH_CREATE',

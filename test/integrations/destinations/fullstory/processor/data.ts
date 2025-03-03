@@ -1,3 +1,4 @@
+import { getAuthHeader_1, getSecret_1, getAuthHeader_2, getSecret_2 } from '../maskedSecrets';
 export const data = [
   {
     name: 'fullstory',
@@ -85,7 +86,7 @@ export const data = [
                 },
               },
               Config: {
-                apiKey: 'dummyfullstoryAPIKey',
+                apiKey: getSecret_1(),
               },
               Enabled: true,
               Transformations: [],
@@ -161,7 +162,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://api.fullstory.com/v2/events',
               headers: {
-                authorization: 'Basic dummyfullstoryAPIKey',
+                authorization: getAuthHeader_1(),
                 'content-type': 'application/json',
               },
               params: {},
@@ -222,7 +223,7 @@ export const data = [
                 },
               },
               Config: {
-                apiKey: 'dummyfullstoryAPIKey',
+                apiKey: getSecret_1(),
               },
               Enabled: true,
               Transformations: [],
@@ -309,7 +310,7 @@ export const data = [
                 },
               },
               Config: {
-                apiKey: 'fullstoryAPIKey',
+                apiKey: getSecret_2(),
               },
               Enabled: true,
               Transformations: [],
@@ -354,7 +355,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://api.fullstory.com/v2/users',
               headers: {
-                authorization: 'Basic fullstoryAPIKey',
+                authorization: getAuthHeader_2(),
                 'content-type': 'application/json',
               },
               params: {},
@@ -403,7 +404,7 @@ export const data = [
                 },
               },
               Config: {
-                apiKey: 'fullstoryAPIKey',
+                apiKey: getSecret_2(),
               },
               Enabled: true,
               Transformations: [],
@@ -442,7 +443,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://api.fullstory.com/v2/users',
               headers: {
-                authorization: 'Basic fullstoryAPIKey',
+                authorization: getAuthHeader_2(),
                 'content-type': 'application/json',
               },
               params: {},

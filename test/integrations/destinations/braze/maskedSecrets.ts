@@ -1,0 +1,4 @@
+// Auto-generated masked secrets file
+
+export const getAuthHeader_1 = () => 'Bearer dummyApiKey';
+export const getSecret_1 = () => 'dummyApiKey';

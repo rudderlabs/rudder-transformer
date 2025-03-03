@@ -1,3 +1,4 @@
+import { getAuthHeader_1, getSecret_1 } from '../maskedSecrets';
 export const data = [
   {
     name: 'criteo_audience',
@@ -19,7 +20,7 @@ export const data = [
                 },
                 ID: 'iwehr83843',
               },
-              metadata: { secret: { accessToken: 'success_access_token' }, jobId: 1, userId: 'u1' },
+              metadata: { secret: { accessToken: getSecret_1() }, jobId: 1, userId: 'u1' },
               message: {
                 userId: 'user 1',
                 type: 'audiencelist',
@@ -61,7 +62,7 @@ export const data = [
                 },
                 ID: 'iwehr83843',
               },
-              metadata: { secret: { accessToken: 'success_access_token' }, jobId: 2, userId: 'u1' },
+              metadata: { secret: { accessToken: getSecret_1() }, jobId: 2, userId: 'u1' },
               message: {
                 userId: 'user 1',
                 type: 'audiencelist',
@@ -120,7 +121,7 @@ export const data = [
                   method: 'PATCH',
                   endpoint: 'https://api.criteo.com/2022-10/audiences/34893/contactlist',
                   headers: {
-                    Authorization: 'Bearer success_access_token',
+                    Authorization: getAuthHeader_1(),
                     'Content-Type': 'application/json',
                     Accept: 'application/json',
                   },
@@ -144,9 +145,7 @@ export const data = [
                   files: {},
                 },
               ],
-              metadata: [
-                { jobId: 1, secret: { accessToken: 'success_access_token' }, userId: 'u1' },
-              ],
+              metadata: [{ jobId: 1, secret: { accessToken: getSecret_1() }, userId: 'u1' }],
               batched: false,
               statusCode: 200,
               destination: {
@@ -167,7 +166,7 @@ export const data = [
                   method: 'PATCH',
                   endpoint: 'https://api.criteo.com/2022-10/audiences/34893/contactlist',
                   headers: {
-                    Authorization: 'Bearer success_access_token',
+                    Authorization: getAuthHeader_1(),
                     'Content-Type': 'application/json',
                     Accept: 'application/json',
                   },
@@ -196,7 +195,7 @@ export const data = [
                   method: 'PATCH',
                   endpoint: 'https://api.criteo.com/2022-10/audiences/34893/contactlist',
                   headers: {
-                    Authorization: 'Bearer success_access_token',
+                    Authorization: getAuthHeader_1(),
                     'Content-Type': 'application/json',
                     Accept: 'application/json',
                   },
@@ -220,9 +219,7 @@ export const data = [
                   files: {},
                 },
               ],
-              metadata: [
-                { jobId: 2, secret: { accessToken: 'success_access_token' }, userId: 'u1' },
-              ],
+              metadata: [{ jobId: 2, secret: { accessToken: getSecret_1() }, userId: 'u1' }],
               batched: false,
               statusCode: 200,
               destination: {
@@ -262,7 +259,7 @@ export const data = [
               },
               metadata: {
                 secret: {
-                  accessToken: 'success_access_token',
+                  accessToken: getSecret_1(),
                 },
                 jobId: 1,
                 userId: 'u1',
@@ -324,7 +321,7 @@ export const data = [
               },
               metadata: {
                 secret: {
-                  accessToken: 'success_access_token',
+                  accessToken: getSecret_1(),
                 },
                 jobId: 2,
                 userId: 'u1',
@@ -393,7 +390,7 @@ export const data = [
                   method: 'PATCH',
                   endpoint: 'https://api.criteo.com/2022-10/audiences/34893/contactlist',
                   headers: {
-                    Authorization: 'Bearer success_access_token',
+                    Authorization: getAuthHeader_1(),
                     'Content-Type': 'application/json',
                     Accept: 'application/json',
                   },
@@ -422,7 +419,7 @@ export const data = [
                   jobId: 1,
                   userId: 'u1',
                   secret: {
-                    accessToken: 'success_access_token',
+                    accessToken: getSecret_1(),
                   },
                 },
               ],
@@ -447,7 +444,7 @@ export const data = [
                   endpoint:
                     'https://api.criteo.com/2022-10/audiences/23848494844100489/contactlist',
                   headers: {
-                    Authorization: 'Bearer success_access_token',
+                    Authorization: getAuthHeader_1(),
                     'Content-Type': 'application/json',
                     Accept: 'application/json',
                   },
@@ -476,7 +473,7 @@ export const data = [
                   jobId: 2,
                   userId: 'u1',
                   secret: {
-                    accessToken: 'success_access_token',
+                    accessToken: getSecret_1(),
                   },
                 },
               ],

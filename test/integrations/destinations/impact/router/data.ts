@@ -1,3 +1,4 @@
+import { getSecret_1, getSecret_2 } from '../maskedSecrets';
 export const data = [
   {
     name: 'fb',
@@ -12,8 +13,8 @@ export const data = [
             {
               destination: {
                 Config: {
-                  accountSID: 'dfsgertrtff3erfc34rfwf',
-                  apiKey: 'fghsdfgegvcergfvfdfsag',
+                  accountSID: getSecret_1(),
+                  apiKey: getSecret_2(),
                   campaignId: '23224',
                   impactAppId: '2323',
                   eventTypeId: '56446',
@@ -99,8 +100,8 @@ export const data = [
               metadata: { jobId: 2, userId: 'u1' },
               destination: {
                 Config: {
-                  accountSID: 'dfsgertrtff3erfc34rfwf',
-                  apiKey: 'fghsdfgegvcergfvfdfsag',
+                  accountSID: getSecret_1(),
+                  apiKey: getSecret_2(),
                   campaignId: '23224',
                   impactAppId: '2323',
                   eventTypeId: '56446',
@@ -167,8 +168,8 @@ export const data = [
               statusCode: 200,
               destination: {
                 Config: {
-                  accountSID: 'dfsgertrtff3erfc34rfwf',
-                  apiKey: 'fghsdfgegvcergfvfdfsag',
+                  accountSID: getSecret_1(),
+                  apiKey: getSecret_2(),
                   campaignId: '23224',
                   impactAppId: '2323',
                   eventTypeId: '56446',
@@ -232,8 +233,8 @@ export const data = [
               statusCode: 200,
               destination: {
                 Config: {
-                  accountSID: 'dfsgertrtff3erfc34rfwf',
-                  apiKey: 'fghsdfgegvcergfvfdfsag',
+                  accountSID: getSecret_1(),
+                  apiKey: getSecret_2(),
                   campaignId: '23224',
                   impactAppId: '2323',
                   eventTypeId: '56446',

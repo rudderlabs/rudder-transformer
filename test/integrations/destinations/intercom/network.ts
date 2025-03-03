@@ -1,12 +1,13 @@
+import { getAuthHeader_1, getAuthHeader_2, getAuthHeader_3 } from './maskedSecrets';
 const commonHeaders = {
   Accept: 'application/json',
-  Authorization: 'Bearer testApiKey',
+  Authorization: getAuthHeader_1(),
   'Content-Type': 'application/json',
 };
 
 const v0VersionHeaders = {
   'Content-Type': 'application/json',
-  Authorization: 'Bearer testApiKey',
+  Authorization: getAuthHeader_1(),
   Accept: 'application/json',
   'Intercom-Version': '1.4',
   'User-Agent': 'RudderStack',
@@ -14,7 +15,7 @@ const v0VersionHeaders = {
 
 const v1VersionHeaders = {
   'Content-Type': 'application/json',
-  Authorization: 'Bearer testApiKey',
+  Authorization: getAuthHeader_1(),
   Accept: 'application/json',
   'Intercom-Version': '2.10',
   'User-Agent': 'RudderStack',
@@ -45,7 +46,7 @@ const companyPayload = {
 
 const v1Headers = {
   'Content-Type': 'application/json',
-  Authorization: 'Bearer abcd=',
+  Authorization: getAuthHeader_3(),
   Accept: 'application/json',
   'Intercom-Version': '1.4',
 };
@@ -434,7 +435,7 @@ const deliveryCallsData = [
       },
       headers: {
         Accept: 'application/json',
-        Authorization: 'Bearer invalidApiKey',
+        Authorization: getAuthHeader_2(),
         'Content-Type': 'application/json',
       },
     },
@@ -529,7 +530,7 @@ const deliveryCallsData = [
       params: {},
       headers: {
         'Content-Type': 'application/json',
-        Authorization: 'Bearer invalidApiKey',
+        Authorization: getAuthHeader_2(),
         Accept: 'application/json',
         'Intercom-Version': '1.4',
         'User-Agent': 'RudderStack',

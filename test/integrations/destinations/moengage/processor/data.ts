@@ -1,3 +1,4 @@
+import { getAuthHeader_1, getSecret_1, getSecret_2 } from '../maskedSecrets';
 const mockFns = (_) => {
   jest.spyOn(Date, 'now').mockReturnValueOnce(new Date('2023-10-14T00:00:00.000Z').valueOf());
 };
@@ -151,8 +152,8 @@ export const data = [
                 },
               },
               Config: {
-                apiId: 'W0ZHNMPI2O4KHJ48ZILZACRA',
-                apiKey: 'dummyApiKey',
+                apiId: getSecret_1(),
+                apiKey: getSecret_2(),
                 eventDelivery: false,
                 eventDeliveryTS: 1602757086384,
                 region: 'US',
@@ -179,8 +180,8 @@ export const data = [
               endpoint: 'https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA',
               headers: {
                 'Content-Type': 'application/json',
-                'MOE-APPKEY': 'W0ZHNMPI2O4KHJ48ZILZACRA',
-                Authorization: 'Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOmR1bW15QXBpS2V5',
+                'MOE-APPKEY': getSecret_1(),
+                Authorization: getAuthHeader_1(),
               },
               params: {},
               body: {
@@ -375,8 +376,8 @@ export const data = [
                 },
               },
               Config: {
-                apiId: 'W0ZHNMPI2O4KHJ48ZILZACRA',
-                apiKey: 'dummyApiKey',
+                apiId: getSecret_1(),
+                apiKey: getSecret_2(),
                 eventDelivery: false,
                 eventDeliveryTS: 1602757086384,
                 region: 'US',
@@ -420,9 +421,9 @@ export const data = [
               params: {},
               userId: 'rudder123',
               headers: {
-                'MOE-APPKEY': 'W0ZHNMPI2O4KHJ48ZILZACRA',
+                'MOE-APPKEY': getSecret_1(),
                 'Content-Type': 'application/json',
-                Authorization: 'Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOmR1bW15QXBpS2V5',
+                Authorization: getAuthHeader_1(),
               },
               version: '1',
               endpoint: 'https://api-01.moengage.com/v1/customer/W0ZHNMPI2O4KHJ48ZILZACRA',
@@ -505,8 +506,8 @@ export const data = [
                 },
               },
               Config: {
-                apiId: 'W0ZHNMPI2O4KHJ48ZILZACRA',
-                apiKey: 'dummyApiKey',
+                apiId: getSecret_1(),
+                apiKey: getSecret_2(),
                 eventDelivery: false,
                 eventDeliveryTS: 1602757086384,
                 region: 'US',
@@ -548,9 +549,9 @@ export const data = [
               params: {},
               userId: '4eb021e9-a2af-4926-ae82-fe996d12f3c5',
               headers: {
-                'MOE-APPKEY': 'W0ZHNMPI2O4KHJ48ZILZACRA',
+                'MOE-APPKEY': getSecret_1(),
                 'Content-Type': 'application/json',
-                Authorization: 'Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOmR1bW15QXBpS2V5',
+                Authorization: getAuthHeader_1(),
               },
               version: '1',
               endpoint: 'https://api-01.moengage.com/v1/customer/W0ZHNMPI2O4KHJ48ZILZACRA',
@@ -643,8 +644,8 @@ export const data = [
                 },
               },
               Config: {
-                apiId: 'W0ZHNMPI2O4KHJ48ZILZACRA',
-                apiKey: 'dummyApiKey',
+                apiId: getSecret_1(),
+                apiKey: getSecret_2(),
                 eventDelivery: false,
                 eventDeliveryTS: 1602757086384,
                 region: 'US',
@@ -688,9 +689,9 @@ export const data = [
               params: {},
               userId: 'rudder123',
               headers: {
-                'MOE-APPKEY': 'W0ZHNMPI2O4KHJ48ZILZACRA',
+                'MOE-APPKEY': getSecret_1(),
                 'Content-Type': 'application/json',
-                Authorization: 'Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOmR1bW15QXBpS2V5',
+                Authorization: getAuthHeader_1(),
               },
               version: '1',
               endpoint: 'https://api-01.moengage.com/v1/customer/W0ZHNMPI2O4KHJ48ZILZACRA',
@@ -721,9 +722,9 @@ export const data = [
               params: {},
               userId: 'rudder123',
               headers: {
-                'MOE-APPKEY': 'W0ZHNMPI2O4KHJ48ZILZACRA',
+                'MOE-APPKEY': getSecret_1(),
                 'Content-Type': 'application/json',
-                Authorization: 'Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOmR1bW15QXBpS2V5',
+                Authorization: getAuthHeader_1(),
               },
               version: '1',
               endpoint: 'https://api-01.moengage.com/v1/device/W0ZHNMPI2O4KHJ48ZILZACRA',
@@ -808,8 +809,8 @@ export const data = [
                 },
               },
               Config: {
-                apiId: 'W0ZHNMPI2O4KHJ48ZILZACRA',
-                apiKey: 'dummyApiKey',
+                apiId: getSecret_1(),
+                apiKey: getSecret_2(),
                 eventDelivery: false,
                 eventDeliveryTS: 1602757086384,
                 region: 'EU',
@@ -853,9 +854,9 @@ export const data = [
               params: {},
               userId: 'rudder123',
               headers: {
-                'MOE-APPKEY': 'W0ZHNMPI2O4KHJ48ZILZACRA',
+                'MOE-APPKEY': getSecret_1(),
                 'Content-Type': 'application/json',
-                Authorization: 'Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOmR1bW15QXBpS2V5',
+                Authorization: getAuthHeader_1(),
               },
               version: '1',
               endpoint: 'https://api-02.moengage.com/v1/customer/W0ZHNMPI2O4KHJ48ZILZACRA',
@@ -940,8 +941,8 @@ export const data = [
                 },
               },
               Config: {
-                apiId: 'W0ZHNMPI2O4KHJ48ZILZACRA',
-                apiKey: 'dummyApiKey',
+                apiId: getSecret_1(),
+                apiKey: getSecret_2(),
                 eventDelivery: false,
                 eventDeliveryTS: 1602757086384,
                 region: 'IND',
@@ -985,9 +986,9 @@ export const data = [
               params: {},
               userId: 'rudder123',
               headers: {
-                'MOE-APPKEY': 'W0ZHNMPI2O4KHJ48ZILZACRA',
+                'MOE-APPKEY': getSecret_1(),
                 'Content-Type': 'application/json',
-                Authorization: 'Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOmR1bW15QXBpS2V5',
+                Authorization: getAuthHeader_1(),
               },
               version: '1',
               endpoint: 'https://api-03.moengage.com/v1/customer/W0ZHNMPI2O4KHJ48ZILZACRA',
@@ -1072,8 +1073,8 @@ export const data = [
                 },
               },
               Config: {
-                apiId: 'W0ZHNMPI2O4KHJ48ZILZACRA',
-                apiKey: 'dummyApiKey',
+                apiId: getSecret_1(),
+                apiKey: getSecret_2(),
                 eventDelivery: false,
                 eventDeliveryTS: 1602757086384,
                 region: 'AMA',
@@ -1181,8 +1182,8 @@ export const data = [
                 },
               },
               Config: {
-                apiId: 'W0ZHNMPI2O4KHJ48ZILZACRA',
-                apiKey: 'dummyApiKey',
+                apiId: getSecret_1(),
+                apiKey: getSecret_2(),
                 eventDelivery: false,
                 eventDeliveryTS: 1602757086384,
                 region: 'IND',
@@ -1291,8 +1292,8 @@ export const data = [
                 },
               },
               Config: {
-                apiId: 'W0ZHNMPI2O4KHJ48ZILZACRA',
-                apiKey: 'dummyApiKey',
+                apiId: getSecret_1(),
+                apiKey: getSecret_2(),
                 eventDelivery: false,
                 eventDeliveryTS: 1602757086384,
                 region: 'IND',
@@ -1480,8 +1481,8 @@ export const data = [
                 },
               },
               Config: {
-                apiId: 'W0ZHNMPI2O4KHJ48ZILZACRA',
-                apiKey: 'dummyApiKey',
+                apiId: getSecret_1(),
+                apiKey: getSecret_2(),
                 eventDelivery: false,
                 eventDeliveryTS: 1602757086384,
                 region: 'US',
@@ -1508,8 +1509,8 @@ export const data = [
               endpoint: 'https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA',
               headers: {
                 'Content-Type': 'application/json',
-                'MOE-APPKEY': 'W0ZHNMPI2O4KHJ48ZILZACRA',
-                Authorization: 'Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOmR1bW15QXBpS2V5',
+                'MOE-APPKEY': getSecret_1(),
+                Authorization: getAuthHeader_1(),
               },
               params: {},
               body: {
@@ -1772,8 +1773,8 @@ export const data = [
                 },
               },
               Config: {
-                apiId: 'W0ZHNMPI2O4KHJ48ZILZACRA',
-                apiKey: 'dummyApiKey',
+                apiId: getSecret_1(),
+                apiKey: getSecret_2(),
                 eventDelivery: false,
                 eventDeliveryTS: 1602757086384,
                 region: 'US',
@@ -1800,8 +1801,8 @@ export const data = [
               endpoint: 'https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA',
               headers: {
                 'Content-Type': 'application/json',
-                'MOE-APPKEY': 'W0ZHNMPI2O4KHJ48ZILZACRA',
-                Authorization: 'Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOmR1bW15QXBpS2V5',
+                'MOE-APPKEY': getSecret_1(),
+                Authorization: getAuthHeader_1(),
               },
               params: {},
               body: {
@@ -1965,8 +1966,8 @@ export const data = [
                 },
               },
               Config: {
-                apiId: 'W0ZHNMPI2O4KHJ48ZILZACRA',
-                apiKey: 'dummyApiKey',
+                apiId: getSecret_1(),
+                apiKey: getSecret_2(),
                 eventDelivery: false,
                 eventDeliveryTS: 1602757086384,
                 region: 'US',
@@ -2010,9 +2011,9 @@ export const data = [
               params: {},
               userId: 'rudder123',
               headers: {
-                'MOE-APPKEY': 'W0ZHNMPI2O4KHJ48ZILZACRA',
+                'MOE-APPKEY': getSecret_1(),
                 'Content-Type': 'application/json',
-                Authorization: 'Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOmR1bW15QXBpS2V5',
+                Authorization: getAuthHeader_1(),
               },
               version: '1',
               endpoint: 'https://api-01.moengage.com/v1/customer/W0ZHNMPI2O4KHJ48ZILZACRA',
@@ -2043,9 +2044,9 @@ export const data = [
               params: {},
               userId: 'rudder123',
               headers: {
-                'MOE-APPKEY': 'W0ZHNMPI2O4KHJ48ZILZACRA',
+                'MOE-APPKEY': getSecret_1(),
                 'Content-Type': 'application/json',
-                Authorization: 'Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOmR1bW15QXBpS2V5',
+                Authorization: getAuthHeader_1(),
               },
               version: '1',
               endpoint: 'https://api-01.moengage.com/v1/device/W0ZHNMPI2O4KHJ48ZILZACRA',
@@ -2206,8 +2207,8 @@ export const data = [
                 },
               },
               Config: {
-                apiId: 'W0ZHNMPI2O4KHJ48ZILZACRA',
-                apiKey: 'dummyApiKey',
+                apiId: getSecret_1(),
+                apiKey: getSecret_2(),
                 eventDelivery: false,
                 eventDeliveryTS: 1602757086384,
                 region: 'US',
@@ -2234,8 +2235,8 @@ export const data = [
               endpoint: 'https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA',
               headers: {
                 'Content-Type': 'application/json',
-                'MOE-APPKEY': 'W0ZHNMPI2O4KHJ48ZILZACRA',
-                Authorization: 'Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOmR1bW15QXBpS2V5',
+                'MOE-APPKEY': getSecret_1(),
+                Authorization: getAuthHeader_1(),
               },
               params: {},
               body: {
@@ -2483,8 +2484,8 @@ export const data = [
                 },
               },
               Config: {
-                apiId: 'W0ZHNMPI2O4KHJ48ZILZACRA',
-                apiKey: 'dummyApiKey',
+                apiId: getSecret_1(),
+                apiKey: getSecret_2(),
                 eventDelivery: false,
                 eventDeliveryTS: 1602757086384,
                 region: 'US',
@@ -2511,8 +2512,8 @@ export const data = [
               endpoint: 'https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA',
               headers: {
                 'Content-Type': 'application/json',
-                'MOE-APPKEY': 'W0ZHNMPI2O4KHJ48ZILZACRA',
-                Authorization: 'Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOmR1bW15QXBpS2V5',
+                'MOE-APPKEY': getSecret_1(),
+                Authorization: getAuthHeader_1(),
               },
               params: {},
               body: {
@@ -2652,8 +2653,8 @@ export const data = [
                 },
               },
               Config: {
-                apiId: 'W0ZHNMPI2O4KHJ48ZILZACRA',
-                apiKey: 'dummyApiKey',
+                apiId: getSecret_1(),
+                apiKey: getSecret_2(),
                 eventDelivery: false,
                 eventDeliveryTS: 1602757086384,
                 region: 'US',
@@ -2691,7 +2692,7 @@ export const data = [
               params: {},
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOmR1bW15QXBpS2V5',
+                Authorization: getAuthHeader_1(),
               },
               version: '1',
               endpoint:
@@ -2747,8 +2748,8 @@ export const data = [
                 },
               },
               Config: {
-                apiId: 'W0ZHNMPI2O4KHJ48ZILZACRA',
-                apiKey: 'dummyApiKey',
+                apiId: getSecret_1(),
+                apiKey: getSecret_2(),
                 eventDelivery: false,
                 eventDeliveryTS: 1602757086384,
                 region: 'US',
@@ -2833,8 +2834,8 @@ export const data = [
                 },
               },
               Config: {
-                apiId: 'W0ZHNMPI2O4KHJ48ZILZACRA',
-                apiKey: 'dummyApiKey',
+                apiId: getSecret_1(),
+                apiKey: getSecret_2(),
                 eventDelivery: false,
                 eventDeliveryTS: 1602757086384,
                 region: 'US',
@@ -2868,9 +2869,9 @@ export const data = [
               endpoint: 'https://api-01.moengage.com/v1/customer/W0ZHNMPI2O4KHJ48ZILZACRA',
               files: {},
               headers: {
-                Authorization: 'Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOmR1bW15QXBpS2V5',
+                Authorization: getAuthHeader_1(),
                 'Content-Type': 'application/json',
-                'MOE-APPKEY': 'W0ZHNMPI2O4KHJ48ZILZACRA',
+                'MOE-APPKEY': getSecret_1(),
               },
               method: 'POST',
               params: {},

@@ -1,3 +1,4 @@
+import { getAuthHeader_1, getSecret_1, getSecret_2 } from '../maskedSecrets';
 const mockFns = (_) => {
   jest.spyOn(Date, 'now').mockReturnValueOnce(new Date('2023-10-14T00:00:00.000Z').valueOf());
 };
@@ -141,8 +142,8 @@ export const data = [
                   },
                 },
                 Config: {
-                  apiId: 'W0ZHNMPI2O4KHJ48ZILZACRA',
-                  apiKey: 'dummyApiKey',
+                  apiId: getSecret_1(),
+                  apiKey: getSecret_2(),
                   eventDelivery: false,
                   eventDeliveryTS: 1602757086384,
                   region: 'US',
@@ -218,8 +219,8 @@ export const data = [
                   },
                 },
                 Config: {
-                  apiId: 'W0ZHNMPI2O4KHJ48ZILZACRA',
-                  apiKey: 'dummyApiKey',
+                  apiId: getSecret_1(),
+                  apiKey: getSecret_2(),
                   eventDelivery: false,
                   eventDeliveryTS: 1602757086384,
                   region: 'US',
@@ -248,8 +249,8 @@ export const data = [
                 endpoint: 'https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA',
                 headers: {
                   'Content-Type': 'application/json',
-                  'MOE-APPKEY': 'W0ZHNMPI2O4KHJ48ZILZACRA',
-                  Authorization: 'Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOmR1bW15QXBpS2V5',
+                  'MOE-APPKEY': getSecret_1(),
+                  Authorization: getAuthHeader_1(),
                 },
                 params: {},
                 body: {
@@ -352,8 +353,8 @@ export const data = [
                   },
                 },
                 Config: {
-                  apiId: 'W0ZHNMPI2O4KHJ48ZILZACRA',
-                  apiKey: 'dummyApiKey',
+                  apiId: getSecret_1(),
+                  apiKey: getSecret_2(),
                   eventDelivery: false,
                   eventDeliveryTS: 1602757086384,
                   region: 'US',
@@ -371,8 +372,8 @@ export const data = [
                 endpoint: 'https://api-01.moengage.com/v1/customer/W0ZHNMPI2O4KHJ48ZILZACRA',
                 headers: {
                   'Content-Type': 'application/json',
-                  'MOE-APPKEY': 'W0ZHNMPI2O4KHJ48ZILZACRA',
-                  Authorization: 'Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOmR1bW15QXBpS2V5',
+                  'MOE-APPKEY': getSecret_1(),
+                  Authorization: getAuthHeader_1(),
                 },
                 params: {},
                 body: {
@@ -421,8 +422,8 @@ export const data = [
                   },
                 },
                 Config: {
-                  apiId: 'W0ZHNMPI2O4KHJ48ZILZACRA',
-                  apiKey: 'dummyApiKey',
+                  apiId: getSecret_1(),
+                  apiKey: getSecret_2(),
                   eventDelivery: false,
                   eventDeliveryTS: 1602757086384,
                   region: 'US',

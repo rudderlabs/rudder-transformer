@@ -1,3 +1,4 @@
+import { getAuthHeader_1, getSecret_1 } from '../maskedSecrets';
 export const data = [
   {
     name: 'delighted',
@@ -11,7 +12,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: getSecret_1(),
                 channel: 'email',
                 delay: 0,
                 eventNamesSettings: [
@@ -77,7 +78,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://api.delighted.com/v1/people.json',
               headers: {
-                Authorization: 'Basic ZHVtbXlBcGlLZXk=',
+                Authorization: getAuthHeader_1(),
                 'Content-Type': 'application/json',
               },
               params: {},
@@ -116,7 +117,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: getSecret_1(),
                 channel: 'email',
                 delay: 0,
                 eventNamesSettings: [
@@ -186,7 +187,7 @@ export const data = [
               method: 'POST',
               params: {},
               headers: {
-                Authorization: 'Basic ZHVtbXlBcGlLZXk=',
+                Authorization: getAuthHeader_1(),
                 'Content-Type': 'application/json',
               },
               version: '1',
@@ -211,7 +212,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: getSecret_1(),
                 channel: 'email',
                 delay: 0,
                 eventNamesSettings: [
@@ -295,7 +296,7 @@ export const data = [
               method: 'POST',
               params: {},
               headers: {
-                Authorization: 'Basic ZHVtbXlBcGlLZXk=',
+                Authorization: getAuthHeader_1(),
                 'Content-Type': 'application/json',
               },
               version: '1',
@@ -409,7 +410,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: getSecret_1(),
                 channel: 'email',
                 delay: 0,
                 eventNamesSettings: [
@@ -497,7 +498,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: getSecret_1(),
                 channel: 'email',
                 delay: 0,
                 eventNamesSettings: [
@@ -585,7 +586,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: getSecret_1(),
                 channel: 'email',
                 delay: 0,
                 eventNamesSettings: [
@@ -666,7 +667,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: getSecret_1(),
                 channel: 'email',
                 delay: 0,
                 eventNamesSettings: [
@@ -754,7 +755,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: getSecret_1(),
                 channel: 'email',
                 delay: 0,
                 eventNamesSettings: [
@@ -847,7 +848,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: getSecret_1(),
                 channel: 'email',
                 delay: 0,
                 eventNamesSettings: [
@@ -918,7 +919,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://api.delighted.com/v1/people.json',
               headers: {
-                Authorization: 'Basic ZHVtbXlBcGlLZXk=',
+                Authorization: getAuthHeader_1(),
                 'Content-Type': 'application/json',
               },
               params: {},

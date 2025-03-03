@@ -1,3 +1,4 @@
+import { getAuthHeader_1 } from '../maskedSecrets';
 import {
   generateMetadata,
   generateProxyV0Payload,
@@ -8,7 +9,7 @@ import { ProxyV1TestData } from '../../../testTypes';
 const API_VERSION = 'v18';
 
 const headers = {
-  Authorization: 'Bearer abcd1234',
+  Authorization: getAuthHeader_1(),
   'Content-Type': 'application/json',
   'developer-token': 'ijkl91011',
   'login-customer-id': '0987654321',

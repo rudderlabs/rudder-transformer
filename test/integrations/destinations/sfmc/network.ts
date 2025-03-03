@@ -1,3 +1,4 @@
+import { getSecret_1 } from './maskedSecrets';
 export const networkCallsData = [
   {
     httpReq: {
@@ -7,7 +8,7 @@ export const networkCallsData = [
     httpRes: {
       status: 200,
       data: {
-        access_token: 'yourAuthToken',
+        access_token: getSecret_1(),
       },
     },
   },

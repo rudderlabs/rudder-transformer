@@ -1,3 +1,10 @@
+import {
+  getAuthHeader_1,
+  getAuthHeader_2,
+  getAuthHeader_3,
+  getAuthHeader_4,
+  getAuthHeader_5,
+} from './maskedSecrets';
 export const networkCallsData = [
   {
     httpReq: {
@@ -424,7 +431,7 @@ export const networkCallsData = [
       url: 'https://api.hubapi.com/crm/v3/objects/contacts/search',
       method: 'POST',
       headers: {
-        Authorization: 'Bearer dummy-access-token',
+        Authorization: getAuthHeader_1(),
       },
     },
     httpRes: {
@@ -436,7 +443,7 @@ export const networkCallsData = [
       url: 'https://api.hubapi.com/crm/v3/objects/contacts/search',
       method: 'POST',
       headers: {
-        Authorization: 'Bearer dummy-access-tokensuccess',
+        Authorization: getAuthHeader_2(),
       },
     },
     httpRes: {
@@ -466,7 +473,7 @@ export const networkCallsData = [
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: 'Bearer dummy-access-token-hs-additonal-email',
+        Authorization: getAuthHeader_3(),
       },
     },
     httpRes: {
@@ -496,7 +503,7 @@ export const networkCallsData = [
       url: 'https://api.hubapi.com/crm/v3/objects/contacts/search',
       method: 'POST',
       headers: {
-        Authorization: 'Bearer dummy-access-tokenmultiple',
+        Authorization: getAuthHeader_4(),
       },
     },
     httpRes: {
@@ -865,7 +872,7 @@ export const networkCallsData = [
       url: 'https://api.hubapi.com/crm/v3/objects/contacts/search',
       method: 'POST',
       headers: {
-        Authorization: 'Bearer dontbatchtrueaccesstoken',
+        Authorization: getAuthHeader_5(),
       },
     },
     httpRes: {
@@ -1010,7 +1017,7 @@ export const networkCallsData = [
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: 'Bearer dummy-access-token',
+        Authorization: getAuthHeader_1(),
       },
     },
     httpRes: {
@@ -1044,7 +1051,7 @@ export const networkCallsData = [
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: 'Bearer dummy-access-token',
+        Authorization: getAuthHeader_1(),
       },
     },
     httpRes: {

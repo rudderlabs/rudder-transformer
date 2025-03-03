@@ -1,5 +1,6 @@
+import { getAuthHeader_1 } from './maskedSecrets';
 const headers = {
-  Authorization: 'Bearer success_access_token',
+  Authorization: getAuthHeader_1(),
   'Content-Type': 'application/json',
   Accept: 'application/json',
   'User-Agent': 'RudderLabs',

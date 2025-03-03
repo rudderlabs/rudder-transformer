@@ -129,38 +129,61 @@ const handleDuplicateCheckV2 = (addDefaultDuplicateCheck, identifierType, operat
   return Array.from(new Set([...identifierType, ...additionalFields]));
 };
 
-function escapeAndEncode(value) {
-  return encodeURIComponent(value.replace(/([(),\\])/g, '\\$1'));
-}
+// Zoho has limitation that where clause should be formatted in a specific way
+// ref: https://www.zoho.com/crm/developer/docs/api/v6/COQL-Limitations.html
+const groupConditions = (conditions) => {
+  if (conditions.length === 1) {
+    return conditions[0]; // No need for grouping with a single condition
+  }
+  if (conditions.length === 2) {
+    return `(${conditions[0]} AND ${conditions[1]})`; // Base case
+  }
+  return `(${groupConditions(conditions.slice(0, 2))} AND ${groupConditions(conditions.slice(2))})`;
+};
 
-function transformToURLParams(fields, Config, operationModuleType) {
-  const criteria = Object.entries(fields)
-    .map(([key, value]) => `(${key}:equals:${escapeAndEncode(value)})`)
-    .join('and');
+// supported data type in where clause
+// ref: https://help.zoho.com/portal/en/kb/creator/developer-guide/forms/add-and-manage-fields/articles/understand-fields#Types_of_fields
+// ref: https://www.zoho.com/crm/developer/docs/api/v6/Get-Records-through-COQL-Query.html
+const generateWhereClause = (fields) => {
+  const conditions = Object.keys(fields)
+    .filter(
+      (field) =>
+        fields[field] !== undefined &&
+        fields[field] !== null &&
+        (!Array.isArray(fields[field]) || fields[field].length > 0),
+    )
+    .map((key) => {
+      const value = fields[key];
+      if (Array.isArray(value)) {
+        return `${key} = '${value.join(';')}'`;
+      }
+      if (typeof value === 'number') {
+        return `${key} = ${value}`;
+      }
+      return `${key} = '${value}'`;
+    });
 
-  const dataCenter = Config.region;
-  const regionBasedEndPoint = zohoConfig.DATA_CENTRE_BASE_ENDPOINTS_MAP[dataCenter];
+  return conditions.length > 0 ? `WHERE ${groupConditions(conditions)}` : '';
+};
 
-  return `${regionBasedEndPoint}/crm/v6/${operationModuleType}/search?criteria=${criteria}`;
-}
+const generateSqlQuery = (module, fields) => {
+  // Generate the WHERE clause based on the fields
+  const whereClause = generateWhereClause(fields);
 
-function transformToURLParamsV2(fields, Config, object) {
-  const criteria = Object.entries(fields)
-    .map(([key, value]) => `(${key}:equals:${escapeAndEncode(value)})`)
-    .join('and');
-
-  const dataCenter = Config.region;
-  const regionBasedEndPoint = zohoConfig.DATA_CENTRE_BASE_ENDPOINTS_MAP[dataCenter];
-
-  return `${regionBasedEndPoint}/crm/v6/${object}/search?criteria=${criteria}`;
-}
+  // Construct the SQL query with specific fields in the SELECT clause
+  return `SELECT id FROM ${module} ${whereClause}`;
+};
 
 const searchRecordId = async (fields, metadata, Config, operationModuleType) => {
   try {
-    const searchURL = transformToURLParams(fields, Config, operationModuleType);
+    const { region } = Config;
+    const searchURL = `${zohoConfig.DATA_CENTRE_BASE_ENDPOINTS_MAP[region]}/crm/v6/coql`;
     const searchResult = await handleHttpRequest(
-      'get',
+      'post',
       searchURL,
+      {
+        select_query: generateSqlQuery(operationModuleType, fields),
+      },
       {
         headers: {
           Authorization: `Zoho-oauthtoken ${metadata.secret.accessToken}`,
@@ -169,8 +192,8 @@ const searchRecordId = async (fields, metadata, Config, operationModuleType) => 
       {
         destType: 'zoho',
         feature: 'deleteRecords',
-        requestMethod: 'GET',
-        endpointPath: `crm/v6/${operationModuleType}/search?criteria=`,
+        requestMethod: 'POST',
+        endpointPath: searchURL,
         module: 'router',
       },
     );
@@ -206,11 +229,15 @@ const searchRecordId = async (fields, metadata, Config, operationModuleType) => 
 
 const searchRecordIdV2 = async (fields, metadata, Config, destConfig) => {
   try {
+    const { region } = Config;
     const { object } = destConfig;
-    const searchURL = transformToURLParamsV2(fields, Config, object);
+    const searchURL = `${zohoConfig.DATA_CENTRE_BASE_ENDPOINTS_MAP[region]}/crm/v6/coql`;
     const searchResult = await handleHttpRequest(
-      'get',
+      'post',
       searchURL,
+      {
+        select_query: generateSqlQuery(object, fields),
+      },
       {
         headers: {
           Authorization: `Zoho-oauthtoken ${metadata.secret.accessToken}`,
@@ -219,8 +246,8 @@ const searchRecordIdV2 = async (fields, metadata, Config, destConfig) => {
       {
         destType: 'zoho',
         feature: 'deleteRecords',
-        requestMethod: 'GET',
-        endpointPath: `crm/v6/${object}/search?criteria=`,
+        requestMethod: 'POST',
+        endpointPath: searchURL,
         module: 'router',
       },
     );
@@ -290,8 +317,6 @@ module.exports = {
   handleDuplicateCheckV2,
   searchRecordId,
   searchRecordIdV2,
-  transformToURLParams,
-  transformToURLParamsV2,
   calculateTrigger,
   validateConfigurationIssue,
 };

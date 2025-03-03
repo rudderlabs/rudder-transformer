@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.91.5](https://github.com/rudderlabs/rudder-transformer/compare/v1.91.4...v1.91.5) (2025-02-28)
+
+
+### Bug Fixes
+
+* mailjet handling of v2 spec ([94611c9](https://github.com/rudderlabs/rudder-transformer/commit/94611c942afca4b17f4dd60024172ce4bc599563))
+
 ### [1.91.4](https://github.com/rudderlabs/rudder-transformer/compare/v1.91.3...v1.91.4) (2025-02-27)
 
 ### [1.91.3](https://github.com/rudderlabs/rudder-transformer/compare/v1.91.2...v1.91.3) (2025-02-25)

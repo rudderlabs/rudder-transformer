@@ -1,0 +1,3 @@
+NUM_PROCS=15
+MAX_THREADS=6
+CONFIG_BACKEND_URL=https://api.dev.rudderlabs.com

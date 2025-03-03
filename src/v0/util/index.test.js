@@ -13,6 +13,7 @@ const {
   isAxiosError,
   removeHyphens,
   convertToUuid,
+  unwrapArrayValues,
 } = require('./index');
 const exp = require('constants');
 const { ERROR_MESSAGES } = require('./constant');
@@ -1161,5 +1162,59 @@ describe('getBodyFromV2SpecPayload', () => {
       },
     };
     expect(utilities.getBodyFromV2SpecPayload(input)).toEqual([1, 2, 3]);
+  });
+});
+
+describe('unwrapArrayValues', () => {
+  it('should throw an error if the payload is null', () => {
+    const payload = null;
+    expect(() => unwrapArrayValues(payload)).toThrow('Payload must be an valid object');
+  });
+
+  it('should throw an error if the payload is string', () => {
+    const payload = 'payload';
+    expect(() => unwrapArrayValues(payload)).toThrow('Payload must be an valid object');
+  });
+
+  it('should throw an error if the payload is array', () => {
+    const payload = [];
+    expect(() => unwrapArrayValues(payload)).toThrow('Payload must be an valid object');
+  });
+
+  it('should return an empty object when given an empty object', () => {
+    const payload = {};
+    const result = unwrapArrayValues(payload);
+    expect(result).toEqual({});
+  });
+
+  it('should unwrap array of length 1 and assign the other value as it is', () => {
+    const payload = {
+      ids: [1, 2, 3],
+      names: ['Test 1', 'Test 2', 'Test 3'],
+      items: [['apple', 'banana']],
+      age: [100],
+      id: '456',
+      emptyStr: [''],
+      emptyArray: [],
+      array: [null],
+      boolean: true,
+      null: null,
+      undefined: undefined,
+    };
+    const expectedResult = {
+      ids: [1, 2, 3],
+      names: ['Test 1', 'Test 2', 'Test 3'],
+      items: ['apple', 'banana'],
+      age: 100,
+      id: '456',
+      emptyStr: '',
+      emptyArray: [],
+      array: null,
+      boolean: true,
+      null: null,
+      undefined: undefined,
+    };
+    const result = unwrapArrayValues(payload);
+    expect(result).toEqual(expectedResult);
   });
 });

@@ -1,5 +1,8 @@
+import { base64Convertor } from '@rudderstack/integrations-lib';
+
 // Auto-generated masked secrets file
 
-export const getAuthHeader_1 = () => 'Basic dGVzdC1hcGkta2V5OnRlc3QtYXBpLXNlY3JldA==';
+export const getAuthHeader_1 = () =>
+  `Basic ${base64Convertor(getSecret_1() + ':' + getSecret_2())}`;
 export const getSecret_1 = () => 'test-api-key';
 export const getSecret_2 = () => 'test-api-secret';

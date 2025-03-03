@@ -1,0 +1,81 @@
+name: Update Operator Alerts Configuration
+
+on:
+  workflow_call:
+    inputs:
+      tag_name:
+        required: false
+        type: string
+  workflow_dispatch:
+    inputs:
+      tag_name:
+        description: 'Tag name for the release (defaults to current date if empty)'
+        required: false
+        type: string
+
+jobs:
+  update-alerts:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout operator repo
+        uses: actions/checkout@v4.2.1
+        with:
+          repository: rudderlabs/rudderstack-operator
+          token: ${{ secrets.PAT }}
+          fetch-depth: 1
+
+      - name: Initialize Git Config
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "noreply@github.com"
+
+      - name: Set tag name
+        id: set_tag
+        run: |
+          if [ -z "${{ inputs.tag_name }}" ]; then
+            echo "tag=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
+          else
+            echo "tag=${{ inputs.tag_name }}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create PR for enabled alerts
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT }}
+        run: |
+          git checkout master
+          git pull origin master
+          git checkout -b transformer-hosted-alerts-enabled-${{ steps.set_tag.outputs.tag }}
+          yq eval -i '.enabled_on_hosted="true"' operator-helm/alerts/cross-customer-pipelines/integrations/generic-transformation-errors.yaml
+          git add operator-helm/alerts/cross-customer-pipelines/integrations/generic-transformation-errors.yaml
+          git commit -m "chore: enable transformer hosted alerts for release ${{ steps.set_tag.outputs.tag }}"
+          git push -u origin transformer-hosted-alerts-enabled-${{ steps.set_tag.outputs.tag }}
+          # Add error handling for PR creation
+          if gh pr create --title "chore: enable transformer hosted alerts for release ${{ steps.set_tag.outputs.tag }}" \
+             --body "chore: enable transformer hosted alerts for release ${{ steps.set_tag.outputs.tag }}" \
+             --base master; then
+            echo "PR created successfully"
+          else
+            echo "Failed to create PR, checking if changes exist"
+            exit 1
+          fi
+
+      - name: Create PR for disabled alerts
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT }}
+        run: |
+          git checkout master
+          git pull origin master
+          git checkout -b transformer-hosted-alerts-disabled-${{ steps.set_tag.outputs.tag }}
+          yq eval -i '.enabled_on_hosted="false"' operator-helm/alerts/cross-customer-pipelines/integrations/generic-transformation-errors.yaml
+          git add operator-helm/alerts/cross-customer-pipelines/integrations/generic-transformation-errors.yaml
+          git commit -m "chore: disable transformer hosted alerts for release ${{ steps.set_tag.outputs.tag }}"
+          git push -u origin transformer-hosted-alerts-disabled-${{ steps.set_tag.outputs.tag }}
+          # Add error handling for PR creation
+          if gh pr create --title "chore: disable transformer hosted alerts for release ${{ steps.set_tag.outputs.tag }}" \
+             --body "chore: disable transformer hosted alerts for release ${{ steps.set_tag.outputs.tag }}" \
+             --base master; then
+            echo "PR created successfully"
+          else
+            echo "Failed to create PR, checking if changes exist"
+            exit 1
+          fi 

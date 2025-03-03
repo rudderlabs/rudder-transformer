@@ -1294,7 +1294,6 @@ export const data = [
       request: {
         body: [
           {
-            event: [],
             request: {
               body: JSON.stringify([]),
             },
@@ -1351,7 +1350,6 @@ export const data = [
       request: {
         body: [
           {
-            event: [],
             request: {
               body: JSON.stringify([null]),
             },
@@ -1408,7 +1406,6 @@ export const data = [
       request: {
         body: [
           {
-            event: [],
             request: {
               body: JSON.stringify([{}]),
             },
@@ -1465,7 +1462,6 @@ export const data = [
       request: {
         body: [
           {
-            event: [],
             request: {
               body: JSON.stringify([
                 {

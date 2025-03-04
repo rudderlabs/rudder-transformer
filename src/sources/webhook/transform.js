@@ -4,19 +4,26 @@ const {
   getBodyFromV2SpecPayload,
 } = require('../../v0/util');
 
-function processEvent(event) {
-  const payload = {
+function processEvent(payload) {
+  const event = getBodyFromV2SpecPayload(payload);
+
+  const request = { ...payload.request };
+  delete request.body;
+
+  const response = {
     type: 'track',
     event: 'webhook_source_event',
     properties: event,
     anonymousId: generateUUID(),
+    context: {
+      ...request,
+    },
   };
-  return payload;
+  return response;
 }
 
 function process(payload) {
-  const event = getBodyFromV2SpecPayload(payload);
-  const response = processEvent(event);
+  const response = processEvent(payload);
   return removeUndefinedAndNullValues(response);
 }
 

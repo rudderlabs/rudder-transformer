@@ -868,7 +868,7 @@ export const data = [
   },
   {
     name: 'moengage',
-    description: 'Test 5: pass object data in output attributes',
+    description: 'Test 5: pass traits as a object',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -1826,7 +1826,7 @@ export const data = [
   },
   {
     name: 'moengage',
-    description: 'Test 11: pass object data in output attributes',
+    description: 'Test 11: pass traits as a object',
     feature: 'processor',
     module: 'destination',
     version: 'v0',

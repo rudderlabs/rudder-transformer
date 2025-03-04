@@ -26,8 +26,10 @@ const { JSON_MIME_TYPE } = require('../../util/constant');
 // moengage supports object type, if user enables object data type we merge the custom attributes
 // ref: https://help.moengage.com/hc/en-us/articles/29787626775828-Support-for-Object-Data-Type
 const mergeCustomAttributes = (attributes) => {
-  if (!attributes['']) return attributes;
-  const { '': data, ...rest } = attributes;
+  if (!attributes.data) {
+    return attributes;
+  }
+  const { data, ...rest } = attributes;
   return typeof data === 'object' && data !== null ? { ...rest, ...data } : rest;
 };
 
@@ -58,12 +60,18 @@ const createDestinationPayload = ({ message, category, useObjectData }) => {
     case 'identify':
       // Track User
       payload.type = 'customer';
-      setPayloadAttributes(CONFIG_CATEGORIES.IDENTIFY_ATTR.name);
+      setPayloadAttributes(
+        useObjectData
+          ? CONFIG_CATEGORIES.IDENTIFY_ATTR_OBJ.name
+          : CONFIG_CATEGORIES.IDENTIFY_ATTR.name,
+      );
       return payload;
     case 'device':
       // Track Device
       payload.type = 'device';
-      setPayloadAttributes(CONFIG_CATEGORIES.DEVICE_ATTR.name);
+      setPayloadAttributes(
+        useObjectData ? CONFIG_CATEGORIES.DEVICE_ATTR_OBJ.name : CONFIG_CATEGORIES.DEVICE_ATTR.name,
+      );
 
       if (isAppleFamily(payload.attributes?.platform)) {
         payload.attributes.platform = 'iOS';

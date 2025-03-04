@@ -4,61 +4,7 @@
   "input": {
     "request": {
       "body": {
-        "created": "2022-07-26T18:07:03.143Z",
-        "object": {
-          "author": {
-            "avatarURL": "https://canny.io/images/cddfd145056cd4bc04132ee0e7de04ee.png",
-            "created": "2022-07-15T11:16:32.648Z",
-            "email": "test@rudderstack.com",
-            "id": "62d14c90fff7c80d0ec08375",
-            "isAdmin": true,
-            "name": "Rudder Test",
-            "url": "https://rudder.canny.io/admin/users/dummyUser",
-            "userID": null
-          },
-          "board": {
-            "created": "2022-07-25T12:11:19.895Z",
-            "id": "62de88676bc28b44aaaf25cc",
-            "name": "features",
-            "postCount": 12,
-            "url": "https://rudder.canny.io/admin/board/features"
-          },
-          "by": null,
-          "category": null,
-          "changeComment": {
-            "imageURLs": ["https://canny.io/images/0a4b1c6a967ad9fc17f0c71dc11d1de2.webp"],
-            "value": ""
-          },
-          "changedAt": "2022-07-26T18:07:03.143Z",
-          "changer": {
-            "avatarURL": "https://canny.io/images/cddfd145056cd4bc04132ee0e7de04ee.png",
-            "created": "2022-07-15T11:16:32.648Z",
-            "email": "test@rudderstack.com",
-            "id": "62d14c90fff7c80d0ec08375",
-            "isAdmin": true,
-            "name": "Rudder Test",
-            "url": "https://rudder.canny.io/admin/users/dummyUser",
-            "userID": null
-          },
-          "commentCount": 1,
-          "created": "2022-07-26T08:22:31.089Z",
-          "details": "This is the post's details",
-          "eta": null,
-          "id": "62dfa4479950e9465532a31e",
-          "imageURLs": [],
-          "jira": {
-            "linkedIssues": [],
-            "linkedIssueIDs": []
-          },
-          "owner": null,
-          "score": 2,
-          "status": "planned",
-          "tags": [],
-          "title": "Post Title",
-          "url": "https://rudder.canny.io/admin/board/features/p/post-title-7"
-        },
-        "objectType": "post",
-        "type": "post.status_changed"
+        "source": {}
       },
       "headers": {
         "Content-Type": "application/json"

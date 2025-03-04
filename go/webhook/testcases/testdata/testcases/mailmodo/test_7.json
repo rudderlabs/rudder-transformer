@@ -4,20 +4,7 @@
   "input": {
     "request": {
       "body": {
-        "eventData": {
-          "type": "html"
-        },
-        "triggerData": {
-          "data": {},
-          "triggerSource": "CsvList",
-          "email": "gou****@mailmodo.com",
-          "triggerDetails": "file:5d31c2b4-****-4a84-acd3-834cae80231b/5a61e0b8-b6f6-4d7d-abf2-90357d6638af",
-          "userId": "cc56708d-****-4fea-8c07-a4bfa5a7b79b",
-          "journeyId": "5d31c2b4-****-4a84-acd3-834cae80231b",
-          "eventProperty": {}
-        },
-        "lastCampaignEmailRef": "064c76e7-****-4780-a001-226c066aaa12",
-        "lastCampaignId": "31422f76-****-4a72-a630-dd6f9f615bc3"
+        "source": {}
       },
       "headers": {
         "Content-Type": "application/json"

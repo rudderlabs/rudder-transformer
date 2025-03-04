@@ -4,20 +4,7 @@
   "input": {
     "request": {
       "body": {
-        "data": {
-          "action_id": 41,
-          "campaign_id": 7,
-          "customer_id": "0200102",
-          "identifiers": {
-            "id": "0200102"
-          },
-          "delivery_id": "ROk1AAIBcR4iT6mueuxiDtzO8HXv",
-          "failure_message": "Twilio Error 21408: Permission to send an SMS has not been enabled for the region indicated by the 'To' number: +18008675309."
-        },
-        "event_id": "01E4F3DCS83P8HT7R3E6DWQN1X",
-        "object_type": "sms",
-        "metric": "attempted",
-        "timestamp": 1234567890
+        "source": {}
       },
       "headers": {
         "Content-Type": "application/json"

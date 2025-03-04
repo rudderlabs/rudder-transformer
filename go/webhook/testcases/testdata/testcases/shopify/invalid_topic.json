@@ -7,7 +7,8 @@
         "query_parameters": {
           "signature": ["rudderstack"],
           "writeKey": ["sample-write-key"]
-        }
+        },
+        "source": {}
       },
       "headers": {
         "Content-Type": "application/json"
@@ -22,10 +23,13 @@
     "queue": [],
     "errQueue": [
       {
-        "query_parameters": {
-          "signature": ["rudderstack"],
-          "writeKey": ["sample-write-key"]
-        }
+        "event": {
+          "query_parameters": {
+            "signature": ["rudderstack"],
+            "writeKey": ["sample-write-key"]
+          }
+        },
+        "source": {}
       }
     ]
   }

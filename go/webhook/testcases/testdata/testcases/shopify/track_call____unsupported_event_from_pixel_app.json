@@ -1,0 +1,41 @@
+{
+  "name": "shopify",
+  "description": "Track Call -> Unsupported event from Pixel app",
+  "input": {
+    "request": {
+      "body": {
+        "id": 35550298931313,
+        "query_parameters": {
+          "topic": ["unsupported_event"],
+          "writeKey": ["2mw9SN679HngnXXXHT4oSVVBVmb"],
+          "version": ["pixel"]
+        },
+        "source": {
+          "ID": "dummy-source-id",
+          "OriginalID": "",
+          "Name": "Shopify v2",
+          "Config": {
+            "disableClientSideIdentifier": false,
+            "eventUpload": false,
+            "version": "pixel"
+          },
+          "Enabled": true,
+          "WorkspaceID": "dummy-workspace-id",
+          "Destinations": null,
+          "WriteKey": "dummy-write-key"
+        }
+      },
+      "headers": {
+        "Content-Type": "application/json"
+      }
+    }
+  },
+  "output": {
+    "response": {
+      "status": 200,
+      "body": "OK"
+    },
+    "queue": [],
+    "errQueue": []
+  }
+}

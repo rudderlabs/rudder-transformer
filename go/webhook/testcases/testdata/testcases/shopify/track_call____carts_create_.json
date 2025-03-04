@@ -12,7 +12,8 @@
         "line_items": [],
         "note": null,
         "updated_at": "2023-02-10T12:16:07.251Z",
-        "created_at": "2023-02-10T12:05:04.402Z"
+        "created_at": "2023-02-10T12:05:04.402Z",
+        "source": {}
       },
       "headers": {
         "Content-Type": "application/json"

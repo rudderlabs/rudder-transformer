@@ -4,23 +4,7 @@
   "input": {
     "request": {
       "body": {
-        "event": {
-          "userId": 33556506,
-          "originalTriggerUuid": null,
-          "boardId": 3139815405,
-          "pulseId": 3160188786,
-          "pulseName": "New Sprint Item",
-          "groupId": "topics",
-          "groupName": "Group Title",
-          "groupColor": "#579bfc",
-          "isTopGroup": true,
-          "columnValues": {},
-          "app": "monday",
-          "type": "create_pulse",
-          "triggerTime": "2022-08-30T09:02:39.191Z",
-          "subscriptionId": 150881106,
-          "triggerUuid": "049869226bf6711705c62e301a2c3eee"
-        }
+        "source": {}
       },
       "headers": {
         "Content-Type": "application/json"

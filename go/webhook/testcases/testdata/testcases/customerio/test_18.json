@@ -4,20 +4,7 @@
   "input": {
     "request": {
       "body": {
-        "data": {
-          "action_id": 38,
-          "broadcast_id": 6,
-          "customer_id": "0200102",
-          "identifiers": {
-            "id": "0200102"
-          },
-          "delivery_id": "RAECAQFxNeUBx6LqgjqrN1j-BJc=",
-          "failure_message": "Variable 'customer.test' is missing"
-        },
-        "event_id": "01E4TYA2KA9T0XGHCRJ784B774",
-        "object_type": "webhook",
-        "metric": "attempted",
-        "timestamp": 1585747134
+        "source": {}
       },
       "headers": {
         "Content-Type": "application/json"

@@ -4,20 +4,7 @@
   "input": {
     "request": {
       "body": {
-        "data": {
-          "action_id": 38,
-          "campaign_id": 6,
-          "customer_id": "0200102",
-          "identifiers": {
-            "id": "0200102"
-          },
-          "delivery_id": "RAEABQFxN56fWzydfV4_EGvfobI=",
-          "failure_message": "NoDevicesSynced"
-        },
-        "event_id": "01E4VSX8SZ0T9AQMH4Q16NRB89",
-        "object_type": "push",
-        "metric": "attempted",
-        "timestamp": 1585776075
+        "source": {}
       },
       "headers": {
         "Content-Type": "application/json"

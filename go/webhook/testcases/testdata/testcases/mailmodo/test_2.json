@@ -4,14 +4,7 @@
   "input": {
     "request": {
       "body": {
-        "triggerData": {
-          "data": {},
-          "triggerSource": "Manual Add To List",
-          "email": "gou****@mailmodo.com",
-          "userId": "d3775892-****-4f2f-b9d5-e49810eb2cae",
-          "journeyId": "349e986e-f56c-****-bc3b-b5f13c3e34da",
-          "eventProperty": {}
-        }
+        "source": {}
       },
       "headers": {
         "Content-Type": "application/json"

@@ -4,31 +4,7 @@
   "input": {
     "request": {
       "body": {
-        "triggerData": {
-          "data": {},
-          "formSubmissionData": {
-            "element6ehxt3": "Te**",
-            "element6jkcy4": "Bang****",
-            "fuuid": "47949",
-            "next-step-id": "step7tr7n2",
-            "total-steps": "3",
-            "responseId": "4a8bfda7-****-4a8c-9cd1-a30d30a6dab9",
-            "recipientEmail": "gou****@mailmodo.com",
-            "formId": "formmqxnu2",
-            "recordedAt": {
-              "ts": 1657097786,
-              "date": "2022-07-06",
-              "hour": 14,
-              "minute": 26
-            },
-            "submissionSource": "amp"
-          },
-          "email": "gou****@mailmodo.com",
-          "triggerSource": "form submission",
-          "userId": "11bff3e8-****-4e93-a533-fd8f9defc768",
-          "journeyId": "03664747-****-412e-8790-de9e9abe96a5",
-          "eventProperty": {}
-        }
+        "source": {}
       },
       "headers": {
         "Content-Type": "application/json"

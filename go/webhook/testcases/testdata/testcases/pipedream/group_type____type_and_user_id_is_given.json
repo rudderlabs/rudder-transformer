@@ -4,13 +4,7 @@
   "input": {
     "request": {
       "body": {
-        "userId": "user123",
-        "groupId": "17",
-        "context": {},
-        "traits": {
-          "operation": "add"
-        },
-        "type": "group"
+        "source": {}
       },
       "headers": {
         "Content-Type": "application/json"

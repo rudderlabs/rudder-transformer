@@ -4,32 +4,7 @@
   "input": {
     "request": {
       "body": {
-        "email": "docs@iterable.com",
-        "eventName": "smsBounce",
-        "dataFields": {
-          "smsProviderResponse": {
-            "status": 404,
-            "message": "The requested resource /2010-04-01/Accounts/ACCOUNT_NUMBER/Messages.json was not found",
-            "code": 20404,
-            "more_info": "https://www.twilio.com/docs/errors/20404"
-          },
-          "email": "docs@iterable.com",
-          "createdAt": "2016-12-05 22:43:24 +00:00",
-          "campaignId": 74003,
-          "templateId": 112561,
-          "smsMessage": "Here is example message, please respond with 'received'",
-          "campaignName": "My campaign name",
-          "workflowId": null,
-          "workflowName": null,
-          "templateName": "My template name",
-          "channelId": 4270,
-          "messageTypeId": 4769,
-          "experimentId": null,
-          "fromPhoneNumberId": 268,
-          "imageUrl": null,
-          "locale": null,
-          "emailId": "c74003:t112561:docs@iterable.com"
-        }
+        "source": {}
       },
       "headers": {
         "Content-Type": "application/json"
@@ -84,7 +59,7 @@
           "locale": null,
           "emailId": "c74003:t112561:docs@iterable.com"
         },
-        "receivedAt": "2024-03-03T04:48:29.000Z",
+        "receivedAt": "2016-12-05T22:43:24.000Z",
         "timestamp": "2016-12-05T22:43:24.000Z",
         "type": "track",
         "request_ip": "192.0.2.30",

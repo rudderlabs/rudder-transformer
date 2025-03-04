@@ -4,31 +4,7 @@
   "input": {
     "request": {
       "body": {
-        "email": "docs@iterable.com",
-        "eventName": "pushOpen",
-        "dataFields": {
-          "appAlreadyRunning": false,
-          "email": "docs@iterable.com",
-          "createdAt": "2016-12-08 01:25:22 +00:00",
-          "campaignId": 74768,
-          "templateId": 113554,
-          "pushMessage": "Push message text",
-          "campaignName": "My campaign name",
-          "workflowId": null,
-          "workflowName": null,
-          "templateName": "My template name",
-          "channelId": 2203,
-          "messageTypeId": 2439,
-          "experimentId": null,
-          "payload": {
-            "path": "shop_home"
-          },
-          "sound": null,
-          "badge": null,
-          "contentAvailable": false,
-          "deeplink": null,
-          "locale": null
-        }
+        "source": {}
       },
       "headers": {
         "Content-Type": "application/json"
@@ -82,7 +58,7 @@
           "deeplink": null,
           "locale": null
         },
-        "receivedAt": "2024-03-03T04:48:29.000Z",
+        "receivedAt": "2016-12-08T01:25:22.000Z",
         "timestamp": "2016-12-08T01:25:22.000Z",
         "type": "track",
         "request_ip": "192.0.2.30",

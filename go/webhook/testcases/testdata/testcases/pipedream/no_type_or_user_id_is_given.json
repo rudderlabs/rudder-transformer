@@ -4,10 +4,7 @@
   "input": {
     "request": {
       "body": {
-        "anonymousId": "63767499ca6fb1b7c988d5bb",
-        "artist": "Gautam",
-        "genre": "Jazz",
-        "song": "Take Five"
+        "source": {}
       },
       "headers": {
         "Content-Type": "application/json"

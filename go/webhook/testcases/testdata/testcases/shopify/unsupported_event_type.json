@@ -8,7 +8,8 @@
           "topic": ["random_event"],
           "signature": ["rudderstack"],
           "writeKey": ["sample-write-key"]
-        }
+        },
+        "source": {}
       },
       "headers": {
         "Content-Type": "application/json"

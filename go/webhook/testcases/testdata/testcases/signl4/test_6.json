@@ -4,12 +4,7 @@
   "input": {
     "request": {
       "body": {
-        "eventType": 301,
-        "eventRaisedUtc": "2017-09-01T09:16:17.3717355Z",
-        "team": {
-          "id": "f1801955-4724-44de-902a-f6f02ba9e10f"
-        },
-        "id": "f56a6b59-1197-4e7d-8eca-8d21a4b57ec3"
+        "source": {}
       },
       "headers": {
         "Content-Type": "application/json"

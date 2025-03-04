@@ -4,22 +4,7 @@
   "input": {
     "request": {
       "body": {
-        "data": {
-          "action_id": 38,
-          "broadcast_id": 9,
-          "customer_id": "0200102",
-          "identifiers": {
-            "id": "0200102"
-          },
-          "delivery_id": "RPILAgIBcRh6qzHz-8gKvscP2UZa",
-          "href": "https://app.com/verify",
-          "link_id": 1,
-          "recipient": "+18008675309"
-        },
-        "event_id": "01E4XXPN42JDF4B1ATQKTZ8WHV",
-        "object_type": "sms",
-        "metric": "clicked",
-        "timestamp": 1585847161
+        "source": {}
       },
       "headers": {
         "Content-Type": "application/json"

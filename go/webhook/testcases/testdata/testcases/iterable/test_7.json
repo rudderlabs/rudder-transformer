@@ -4,25 +4,7 @@
   "input": {
     "request": {
       "body": {
-        "email": "docs@iterable.com",
-        "eventName": "emailComplaint",
-        "dataFields": {
-          "recipientState": "Complaint",
-          "templateId": 79190,
-          "email": "docs@iterable.com",
-          "createdAt": "2016-12-09 18:52:19 +00:00",
-          "campaignId": 49313,
-          "messageId": "d3c44d47b4994306b4db8d16a94db025",
-          "emailSubject": "My subject",
-          "campaignName": "My campaign name",
-          "workflowId": null,
-          "workflowName": null,
-          "templateName": "test template",
-          "channelId": 3420,
-          "messageTypeId": 3866,
-          "experimentId": null,
-          "emailId": "c49313:t79190:docs@iterable.com"
-        }
+        "source": {}
       },
       "headers": {
         "Content-Type": "application/json"
@@ -70,7 +52,7 @@
           "experimentId": null,
           "emailId": "c49313:t79190:docs@iterable.com"
         },
-        "receivedAt": "2024-03-03T04:48:29.000Z",
+        "receivedAt": "2016-12-09T18:52:19.000Z",
         "timestamp": "2016-12-09T18:52:19.000Z",
         "type": "track",
         "request_ip": "192.0.2.30",

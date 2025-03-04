@@ -4,65 +4,7 @@
   "input": {
     "request": {
       "body": {
-        "event": {
-          "id": "01DFU77KTKK9UUYX779UX0N1ZP",
-          "event_type": "incident.escalated",
-          "resource_type": "incident",
-          "occurred_at": "2022-12-20T11:49:35.385Z",
-          "agent": {
-            "html_url": "https://rudderlabs-com.pagerduty.com/users/PXZZD2E",
-            "id": "PXZZD2E",
-            "self": "https://api.pagerduty.com/users/user@1",
-            "summary": "rudder test",
-            "type": "user_reference"
-          },
-          "client": null,
-          "data": {
-            "id": "Q1KRTY75EUMGM0",
-            "type": "incident",
-            "self": "https://api.pagerduty.com/incidents/Q1KRTY75EUMGM0",
-            "html_url": "https://rudderlabs-com.pagerduty.com/incidents/Q1KRTY75EUMGM0",
-            "number": 7,
-            "status": "triggered",
-            "incident_key": "a3e0e442f8b74a8c94298f19de0dcbed",
-            "created_at": "2022-12-20T11:37:19Z",
-            "title": "Event Stream Failure",
-            "service": {
-              "html_url": "https://rudderlabs-com.pagerduty.com/services/PAJBUTT",
-              "id": "PAJBUTT",
-              "self": "https://api.pagerduty.com/services/PAJBUTT",
-              "summary": "Database",
-              "type": "service_reference"
-            },
-            "assignees": [
-              {
-                "html_url": "https://rudderlabs-com.pagerduty.com/users/PXZZD2E",
-                "id": "PXZZD2E",
-                "self": "https://api.pagerduty.com/users/user@1",
-                "summary": "rudder test",
-                "type": "user_reference"
-              }
-            ],
-            "escalation_policy": {
-              "html_url": "https://rudderlabs-com.pagerduty.com/escalation_policies/PB7HKU4",
-              "id": "PB7HKU4",
-              "self": "https://api.pagerduty.com/escalation_policies/PB7HKU4",
-              "summary": "Default",
-              "type": "escalation_policy_reference"
-            },
-            "teams": [],
-            "priority": {
-              "html_url": "https://rudderlabs-com.pagerduty.com/account/incident_priorities",
-              "id": "PPMNDVQ",
-              "self": "https://api.pagerduty.com/priorities/PPMNDVQ",
-              "summary": "P1",
-              "type": "priority_reference"
-            },
-            "urgency": "high",
-            "conference_bridge": null,
-            "resolve_reason": null
-          }
-        }
+        "source": {}
       },
       "headers": {
         "Content-Type": "application/json"

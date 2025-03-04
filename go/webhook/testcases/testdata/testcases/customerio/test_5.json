@@ -4,22 +4,7 @@
   "input": {
     "request": {
       "body": {
-        "data": {
-          "content_id": 1146,
-          "customer_id": "0200102",
-          "identifiers": {
-            "id": "0200102"
-          },
-          "delivery_id": "RMehBAAAAXE7r_ONUGXly9DBGkpq1JS31=",
-          "failure_message": "550 5.5.0 Requested action not taken: mailbox unavailable",
-          "newsletter_id": 736,
-          "recipient": "test@example.com",
-          "subject": "Thanks for joining!"
-        },
-        "event_id": "12ASDG7S9P6MAZPTJ78DAND9GDC",
-        "object_type": "email",
-        "metric": "bounced",
-        "timestamp": 1234567890
+        "source": {}
       },
       "headers": {
         "Content-Type": "application/json"

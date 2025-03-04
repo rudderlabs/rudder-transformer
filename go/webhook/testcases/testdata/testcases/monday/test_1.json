@@ -4,18 +4,7 @@
   "input": {
     "request": {
       "body": {
-        "event": {
-          "userId": 33556506,
-          "originalTriggerUuid": null,
-          "boardId": 3139815405,
-          "itemId": 3160188786,
-          "itemName": "New Sprint Item",
-          "app": "monday",
-          "type": "delete_pulse",
-          "triggerTime": "2022-08-30T09:06:09.176Z",
-          "subscriptionId": 150882006,
-          "triggerUuid": "4e4f87c8255c4ba4ba2f5e9934cb6d40"
-        }
+        "source": {}
       },
       "headers": {
         "Content-Type": "application/json"

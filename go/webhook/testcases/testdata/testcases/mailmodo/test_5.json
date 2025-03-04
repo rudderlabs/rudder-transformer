@@ -4,20 +4,7 @@
   "input": {
     "request": {
       "body": {
-        "triggerData": {
-          "data": {},
-          "eventProperty": {
-            "Name": "APPLE iPhone 13 (Blue, 128 GB)",
-            "Category": "Mobiles",
-            "Is Purchased": "false",
-            "Price": "829",
-            "Currency": "USD"
-          },
-          "triggerSource": "New Custom Event Trigger - Product Viewed",
-          "email": "gou****@mailmodo.com",
-          "userId": "d3775892-****-4f2f-b9d5-e49810eb2cae",
-          "journeyId": "3f135bf7-****-4e31-b265-f61cfe1bd423"
-        }
+        "source": {}
       },
       "headers": {
         "Content-Type": "application/json"

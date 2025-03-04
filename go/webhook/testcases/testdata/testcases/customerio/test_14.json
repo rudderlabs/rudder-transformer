@@ -4,20 +4,7 @@
   "input": {
     "request": {
       "body": {
-        "data": {
-          "action_id": 39,
-          "broadcast_id": 9,
-          "customer_id": "0200102",
-          "identifiers": {
-            "id": "0200102"
-          },
-          "delivery_id": "RPILAgQBcRhNAufb0s30bmz5HD7Y",
-          "recipient": "#signups"
-        },
-        "event_id": "01E4C4TQKD6KJ274870J5DE2HB",
-        "object_type": "slack",
-        "metric": "sent",
-        "timestamp": 1585250655
+        "source": {}
       },
       "headers": {
         "Content-Type": "application/json"

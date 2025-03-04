@@ -4,14 +4,7 @@
   "input": {
     "request": {
       "body": {
-        "triggerData": {
-          "data": {},
-          "triggerSource": "Dashboard-change in property: first_name",
-          "email": "gou****@mailmodo.com",
-          "userId": "cc56708d-****-****-8c07-a4bfa5a7b79b",
-          "journeyId": "a78d7221-de34-47d8-81c6-5ad70cf4ee38",
-          "eventProperty": {}
-        }
+        "source": {}
       },
       "headers": {
         "Content-Type": "application/json"

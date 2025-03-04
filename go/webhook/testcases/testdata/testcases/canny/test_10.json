@@ -4,57 +4,7 @@
   "input": {
     "request": {
       "body": {
-        "created": "2022-07-26T11:32:31.378Z",
-        "object": {
-          "board": {
-            "created": "2022-07-25T12:11:19.895Z",
-            "id": "62de88676bc28b44aaaf25cc",
-            "name": "features",
-            "postCount": 12,
-            "url": "https://rudder.canny.io/admin/board/features"
-          },
-          "by": null,
-          "created": "2022-07-26T11:32:31.263Z",
-          "id": "62dfd0cfb2870d468c9618f5",
-          "post": {
-            "author": {
-              "avatarURL": "https://canny.io/images/cddfd145056cd4bc04132ee0e7de04ee.png",
-              "created": "2022-07-15T11:16:32.648Z",
-              "email": "test@rudderstack.com",
-              "id": "62d14c90fff7c80d0ec08375",
-              "isAdmin": true,
-              "name": "Rudder Test",
-              "url": "https://rudder.canny.io/admin/users/dummyUser",
-              "userID": null
-            },
-            "by": null,
-            "category": null,
-            "commentCount": 0,
-            "details": "Array of images",
-            "eta": null,
-            "id": "62dfd0cfb2870d468c9618dd",
-            "imageURLs": [],
-            "owner": null,
-            "score": 1,
-            "status": "open",
-            "tags": [],
-            "title": "Images testing",
-            "url": "https://rudder.canny.io/admin/board/features/p/images-testing-2"
-          },
-          "score": 1,
-          "voter": {
-            "avatarURL": "https://canny.io/images/cddfd145056cd4bc04132ee0e7de04ee.png",
-            "created": "2022-07-15T11:16:32.648Z",
-            "email": "test@rudderstack.com",
-            "id": "62d14c90fff7c80d0ec08375",
-            "isAdmin": true,
-            "name": "Rudder Test",
-            "url": "https://rudder.canny.io/admin/users/dummyUser",
-            "userID": "123"
-          }
-        },
-        "objectType": "vote",
-        "type": "vote.created"
+        "source": {}
       },
       "headers": {
         "Content-Type": "application/json"

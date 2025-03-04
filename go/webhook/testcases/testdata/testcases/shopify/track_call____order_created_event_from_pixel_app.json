@@ -1,0 +1,501 @@
+{
+  "name": "shopify",
+  "description": "Track Call -> Order Created event from Pixel app",
+  "input": {
+    "request": {
+      "body": {
+        "id": 5778367414385,
+        "admin_graphql_api_id": "gid://shopify/Order/5778367414385",
+        "app_id": 580111,
+        "browser_ip": "139.5.255.205",
+        "cart_token": "Z2NwLXVzLWVhc3QxOjAxSkJaTUVRSjgzNUJUN1BTNjEzRFdRUFFQ",
+        "checkout_id": 35550298931313,
+        "checkout_token": "84ad78572dae52a8cbea7d55371afe89",
+        "confirmation_number": "DPPARQ8UJ",
+        "contact_email": "henry@wfls.com",
+        "created_at": "2024-11-05T21:54:49-05:00",
+        "currency": "USD",
+        "current_subtotal_price": "600.00",
+        "current_total_discounts": "0.00",
+        "current_total_price": "600.00",
+        "current_total_tax": "0.00",
+        "email": "henry@wfls.com",
+        "name": "#1017",
+        "note_attributes": [
+          {
+            "name": "cartId",
+            "value": "9c623f099fc8819aa4d6a958b65dfe7d"
+          },
+          {
+            "name": "cartToken",
+            "value": "Z2NwLXVzLWVhc3QxOjAxSkQzNUFXVEI4VkVUNUpTTk1LSzBCMzlF"
+          },
+          {
+            "name": "rudderAnonymousId",
+            "value": "50ead33e-d763-4854-b0ab-765859ef05cb"
+          }
+        ],
+        "order_number": 1017,
+        "order_status_url": "https://pixel-testing-rs.myshopify.com/59026964593/orders/676613a0027fc8240e16d67fdc9f5ac8/authenticate?key=a70bbe7ec8abcc46b77e4331e4df8c60",
+        "phone": null,
+        "presentment_currency": "USD",
+        "subtotal_price": "600.00",
+        "token": "676613a0027fc8240e16d67fdc9f5ac8",
+        "total_discounts": "0.00",
+        "total_line_items_price": "600.00",
+        "total_outstanding": "0.00",
+        "total_price": "600.00",
+        "total_tax": "0.00",
+        "updated_at": "2024-11-05T21:54:50-05:00",
+        "user_id": null,
+        "billing_address": {
+          "first_name": "yodi",
+          "address1": "Yuma Proving Ground",
+          "phone": null,
+          "city": "Yuma Proving Ground",
+          "zip": "85365",
+          "province": "Arizona",
+          "country": "United States",
+          "last_name": "waffles",
+          "address2": "suite 001",
+          "company": null,
+          "latitude": 33.0177811,
+          "longitude": -114.2525392,
+          "name": "yodi waffles",
+          "country_code": "US",
+          "province_code": "AZ"
+        },
+        "customer": {
+          "id": 7358220173425,
+          "email": "henry@wfls.com",
+          "created_at": "2024-10-23T16:03:11-04:00",
+          "updated_at": "2024-11-05T21:54:49-05:00",
+          "first_name": "yodi",
+          "last_name": "waffles",
+          "state": "disabled",
+          "phone": null,
+          "currency": "USD",
+          "tax_exemptions": [],
+          "admin_graphql_api_id": "gid://shopify/Customer/7358220173425",
+          "default_address": {
+            "id": 8715246862449,
+            "customer_id": 7358220173425,
+            "first_name": "henry",
+            "last_name": "waffles",
+            "company": null,
+            "address1": "Yuimaru Kitchen",
+            "address2": "6",
+            "city": "Johnson City",
+            "province": "Tennessee",
+            "country": "United States",
+            "zip": "37604",
+            "phone": null,
+            "name": "henry waffles",
+            "province_code": "TN",
+            "country_code": "US",
+            "country_name": "United States",
+            "default": true
+          }
+        },
+        "line_items": [
+          {
+            "id": 14234727743601,
+            "current_quantity": 1,
+            "fulfillable_quantity": 1,
+            "fulfillment_service": "manual",
+            "gift_card": false,
+            "grams": 0,
+            "name": "The Collection Snowboard: Hydrogen",
+            "price": "600.00",
+            "product_id": 7234590408817,
+            "quantity": 1,
+            "requires_shipping": true,
+            "sku": "",
+            "taxable": true,
+            "title": "The Collection Snowboard: Hydrogen",
+            "total_discount": "0.00",
+            "variant_id": 41327142600817,
+            "variant_inventory_management": "shopify",
+            "variant_title": null,
+            "vendor": "Hydrogen Vendor"
+          }
+        ],
+        "shipping_address": {
+          "first_name": "henry",
+          "address1": "Yuimaru Kitchen",
+          "phone": null,
+          "city": "Johnson City",
+          "zip": "37604",
+          "province": "Tennessee",
+          "country": "United States",
+          "last_name": "waffles",
+          "address2": "6",
+          "company": null,
+          "latitude": 36.3528845,
+          "longitude": -82.4006335,
+          "name": "henry waffles",
+          "country_code": "US",
+          "province_code": "TN"
+        },
+        "query_parameters": {
+          "topic": ["orders_create"],
+          "version": ["pixel"],
+          "writeKey": ["2mw9SN679HngnZkCHT4oSVVBVmb"]
+        },
+        "source": {
+          "ID": "dummy-source-id",
+          "OriginalID": "",
+          "Name": "Shopify v2",
+          "Config": {
+            "disableClientSideIdentifier": false,
+            "eventUpload": false,
+            "version": "pixel"
+          },
+          "Enabled": true,
+          "WorkspaceID": "dummy-workspace-id",
+          "Destinations": null,
+          "WriteKey": "dummy-write-key"
+        }
+      },
+      "headers": {
+        "Content-Type": "application/json"
+      }
+    }
+  },
+  "output": {
+    "response": {
+      "status": 200,
+      "body": "OK"
+    },
+    "queue": [
+      {
+        "context": {
+          "library": {
+            "eventOrigin": "server",
+            "name": "RudderStack Shopify Cloud",
+            "version": "2.0.0"
+          },
+          "integration": {
+            "name": "SHOPIFY"
+          },
+          "topic": "orders_create",
+          "cart_token": "Z2NwLXVzLWVhc3QxOjAxSkJaTUVRSjgzNUJUN1BTNjEzRFdRUFFQ",
+          "checkout_token": "84ad78572dae52a8cbea7d55371afe89",
+          "shopifyDetails": {
+            "id": 5778367414385,
+            "admin_graphql_api_id": "gid://shopify/Order/5778367414385",
+            "app_id": 580111,
+            "browser_ip": "139.5.255.205",
+            "cart_token": "Z2NwLXVzLWVhc3QxOjAxSkJaTUVRSjgzNUJUN1BTNjEzRFdRUFFQ",
+            "checkout_id": 35550298931313,
+            "checkout_token": "84ad78572dae52a8cbea7d55371afe89",
+            "confirmation_number": "DPPARQ8UJ",
+            "contact_email": "henry@wfls.com",
+            "created_at": "2024-11-05T21:54:49-05:00",
+            "currency": "USD",
+            "current_subtotal_price": "600.00",
+            "current_total_discounts": "0.00",
+            "current_total_price": "600.00",
+            "current_total_tax": "0.00",
+            "email": "henry@wfls.com",
+            "name": "#1017",
+            "note_attributes": [
+              {
+                "name": "cartId",
+                "value": "9c623f099fc8819aa4d6a958b65dfe7d"
+              },
+              {
+                "name": "cartToken",
+                "value": "Z2NwLXVzLWVhc3QxOjAxSkQzNUFXVEI4VkVUNUpTTk1LSzBCMzlF"
+              },
+              {
+                "name": "rudderAnonymousId",
+                "value": "50ead33e-d763-4854-b0ab-765859ef05cb"
+              }
+            ],
+            "order_number": 1017,
+            "order_status_url": "https://pixel-testing-rs.myshopify.com/59026964593/orders/676613a0027fc8240e16d67fdc9f5ac8/authenticate?key=a70bbe7ec8abcc46b77e4331e4df8c60",
+            "phone": null,
+            "presentment_currency": "USD",
+            "subtotal_price": "600.00",
+            "token": "676613a0027fc8240e16d67fdc9f5ac8",
+            "total_discounts": "0.00",
+            "total_line_items_price": "600.00",
+            "total_outstanding": "0.00",
+            "total_price": "600.00",
+            "total_tax": "0.00",
+            "updated_at": "2024-11-05T21:54:50-05:00",
+            "user_id": null,
+            "billing_address": {
+              "first_name": "yodi",
+              "address1": "Yuma Proving Ground",
+              "phone": null,
+              "city": "Yuma Proving Ground",
+              "zip": "85365",
+              "province": "Arizona",
+              "country": "United States",
+              "last_name": "waffles",
+              "address2": "suite 001",
+              "company": null,
+              "latitude": 33.0177811,
+              "longitude": -114.2525392,
+              "name": "yodi waffles",
+              "country_code": "US",
+              "province_code": "AZ"
+            },
+            "customer": {
+              "id": 7358220173425,
+              "email": "henry@wfls.com",
+              "created_at": "2024-10-23T16:03:11-04:00",
+              "updated_at": "2024-11-05T21:54:49-05:00",
+              "first_name": "yodi",
+              "last_name": "waffles",
+              "state": "disabled",
+              "phone": null,
+              "currency": "USD",
+              "tax_exemptions": [],
+              "admin_graphql_api_id": "gid://shopify/Customer/7358220173425",
+              "default_address": {
+                "id": 8715246862449,
+                "customer_id": 7358220173425,
+                "first_name": "henry",
+                "last_name": "waffles",
+                "company": null,
+                "address1": "Yuimaru Kitchen",
+                "address2": "6",
+                "city": "Johnson City",
+                "province": "Tennessee",
+                "country": "United States",
+                "zip": "37604",
+                "phone": null,
+                "name": "henry waffles",
+                "province_code": "TN",
+                "country_code": "US",
+                "country_name": "United States",
+                "default": true
+              }
+            },
+            "line_items": [
+              {
+                "id": 14234727743601,
+                "current_quantity": 1,
+                "fulfillable_quantity": 1,
+                "fulfillment_service": "manual",
+                "gift_card": false,
+                "grams": 0,
+                "name": "The Collection Snowboard: Hydrogen",
+                "price": "600.00",
+                "product_id": 7234590408817,
+                "quantity": 1,
+                "requires_shipping": true,
+                "sku": "",
+                "taxable": true,
+                "title": "The Collection Snowboard: Hydrogen",
+                "total_discount": "0.00",
+                "variant_id": 41327142600817,
+                "variant_inventory_management": "shopify",
+                "variant_title": null,
+                "vendor": "Hydrogen Vendor"
+              }
+            ],
+            "shipping_address": {
+              "first_name": "henry",
+              "address1": "Yuimaru Kitchen",
+              "phone": null,
+              "city": "Johnson City",
+              "zip": "37604",
+              "province": "Tennessee",
+              "country": "United States",
+              "last_name": "waffles",
+              "address2": "6",
+              "company": null,
+              "latitude": 36.3528845,
+              "longitude": -82.4006335,
+              "name": "henry waffles",
+              "country_code": "US",
+              "province_code": "TN"
+            }
+          }
+        },
+        "integrations": {
+          "SHOPIFY": true,
+          "DATA_WAREHOUSE": {
+            "options": {
+              "jsonPaths": ["track.context.shopifyDetails"]
+            }
+          }
+        },
+        "type": "track",
+        "event": "Order Created",
+        "properties": {
+          "order_id": "5778367414385",
+          "value": 600,
+          "tax": 0,
+          "currency": "USD",
+          "products": [
+            {
+              "product_id": "7234590408817",
+              "title": "The Collection Snowboard: Hydrogen",
+              "price": 600,
+              "brand": "Hydrogen Vendor",
+              "quantity": 1
+            }
+          ]
+        },
+        "userId": "7358220173425",
+        "traits": {
+          "email": "henry@wfls.com",
+          "firstName": "yodi",
+          "lastName": "waffles",
+          "address": {
+            "id": 8715246862449,
+            "customer_id": 7358220173425,
+            "first_name": "henry",
+            "last_name": "waffles",
+            "company": null,
+            "address1": "Yuimaru Kitchen",
+            "address2": "6",
+            "city": "Johnson City",
+            "province": "Tennessee",
+            "country": "United States",
+            "zip": "37604",
+            "phone": null,
+            "name": "henry waffles",
+            "province_code": "TN",
+            "country_code": "US",
+            "country_name": "United States",
+            "default": true
+          },
+          "cart_token_hash": "9125e1da-57b9-5bdc-953e-eb2b0ded5edc",
+          "state": "disabled",
+          "currency": "USD",
+          "taxExemptions": [],
+          "adminGraphqlApiId": "gid://shopify/Customer/7358220173425",
+          "shippingAddress": {
+            "first_name": "henry",
+            "address1": "Yuimaru Kitchen",
+            "phone": null,
+            "city": "Johnson City",
+            "zip": "37604",
+            "province": "Tennessee",
+            "country": "United States",
+            "last_name": "waffles",
+            "address2": "6",
+            "company": null,
+            "latitude": 36.3528845,
+            "longitude": -82.4006335,
+            "name": "henry waffles",
+            "country_code": "US",
+            "province_code": "TN"
+          },
+          "billingAddress": {
+            "first_name": "yodi",
+            "address1": "Yuma Proving Ground",
+            "phone": null,
+            "city": "Yuma Proving Ground",
+            "zip": "85365",
+            "province": "Arizona",
+            "country": "United States",
+            "last_name": "waffles",
+            "address2": "suite 001",
+            "company": null,
+            "latitude": 33.0177811,
+            "longitude": -114.2525392,
+            "name": "yodi waffles",
+            "country_code": "US",
+            "province_code": "AZ"
+          }
+        },
+        "timestamp": "2024-11-06T02:54:50.000Z",
+        "anonymousId": "50ead33e-d763-4854-b0ab-765859ef05cb",
+        "receivedAt": "2024-03-03T04:48:29.000Z",
+        "request_ip": "192.0.2.30",
+        "messageId": "00000000-0000-0000-0000-000000000000"
+      },
+      {
+        "anonymousId": "50ead33e-d763-4854-b0ab-765859ef05cb",
+        "context": {
+          "integration": {
+            "name": "SHOPIFY"
+          },
+          "library": {
+            "eventOrigin": "server",
+            "name": "RudderStack Shopify Cloud",
+            "version": "2.0.0"
+          },
+          "traits": {
+            "address": {
+              "address1": "Yuimaru Kitchen",
+              "address2": "6",
+              "city": "Johnson City",
+              "company": null,
+              "country": "United States",
+              "country_code": "US",
+              "country_name": "United States",
+              "customer_id": 7358220173425,
+              "default": true,
+              "first_name": "henry",
+              "id": 8715246862449,
+              "last_name": "waffles",
+              "name": "henry waffles",
+              "phone": null,
+              "province": "Tennessee",
+              "province_code": "TN",
+              "zip": "37604"
+            },
+            "adminGraphqlApiId": "gid://shopify/Customer/7358220173425",
+            "billingAddress": {
+              "address1": "Yuma Proving Ground",
+              "address2": "suite 001",
+              "city": "Yuma Proving Ground",
+              "company": null,
+              "country": "United States",
+              "country_code": "US",
+              "first_name": "yodi",
+              "last_name": "waffles",
+              "latitude": 33.0177811,
+              "longitude": -114.2525392,
+              "name": "yodi waffles",
+              "phone": null,
+              "province": "Arizona",
+              "province_code": "AZ",
+              "zip": "85365"
+            },
+            "currency": "USD",
+            "email": "henry@wfls.com",
+            "firstName": "yodi",
+            "lastName": "waffles",
+            "shippingAddress": {
+              "address1": "Yuimaru Kitchen",
+              "address2": "6",
+              "city": "Johnson City",
+              "company": null,
+              "country": "United States",
+              "country_code": "US",
+              "first_name": "henry",
+              "last_name": "waffles",
+              "latitude": 36.3528845,
+              "longitude": -82.4006335,
+              "name": "henry waffles",
+              "phone": null,
+              "province": "Tennessee",
+              "province_code": "TN",
+              "zip": "37604"
+            },
+            "state": "disabled",
+            "taxExemptions": []
+          }
+        },
+        "integrations": {
+          "SHOPIFY": true
+        },
+        "type": "identify",
+        "userId": "7358220173425",
+        "receivedAt": "2024-03-03T04:48:29.000Z",
+        "request_ip": "192.0.2.30",
+        "messageId": "00000000-0000-0000-0000-000000000000"
+      }
+    ],
+    "errQueue": []
+  }
+}

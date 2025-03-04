@@ -4,30 +4,7 @@
   "input": {
     "request": {
       "body": {
-        "email": "docs@iterable.com",
-        "eventName": "emailUnSubscribe",
-        "dataFields": {
-          "campaignId": 1089024,
-          "messageId": "bf008db8ab194b65816398c05bf30f99",
-          "emailId": "c1089024:t1526112:docs@iterable.com",
-          "workflowName": "My test workflow",
-          "messageTypeIds": [],
-          "locale": null,
-          "templateId": 1526112,
-          "emailSubject": "Upcoming events!",
-          "labels": [],
-          "unsubSource": "EmailLink",
-          "createdAt": "2020-03-20 23:34:15 +00:00",
-          "templateName": "My test template",
-          "emailListIds": [],
-          "messageTypeId": 31082,
-          "experimentId": null,
-          "channelIds": [27447],
-          "campaignName": "My test campaign",
-          "workflowId": 76786,
-          "email": "docs@iterable.com",
-          "channelId": 27447
-        }
+        "source": {}
       },
       "headers": {
         "Content-Type": "application/json"
@@ -80,7 +57,7 @@
           "workflowId": 76786,
           "channelId": 27447
         },
-        "receivedAt": "2024-03-03T04:48:29.000Z",
+        "receivedAt": "2020-03-20T23:34:15.000Z",
         "timestamp": "2020-03-20T23:34:15.000Z",
         "type": "track",
         "request_ip": "192.0.2.30",

@@ -4,22 +4,7 @@
   "input": {
     "request": {
       "body": {
-        "id": "1139624368u",
-        "name": "tech.desusai.msappcentertesting.MainActivity$1.onClick (MainActivity.java:25)",
-        "reason": "java.lang.ArithmeticException: divide by zero",
-        "file_name": null,
-        "line_number": null,
-        "url": "https://appcenter.ms/users/venkat-rudderstack.com/apps/MSAppCenterTesting/crashes/errors/1139624368u",
-        "app_display_name": "MSAppCenterTesting",
-        "app_platform": "Java",
-        "app_version": "1.0(1)",
-        "stack_trace": [
-          "tech.desusai.msappcentertesting.MainActivity$1.onClick (MainActivity.java:25);"
-        ],
-        "affected_users": 0,
-        "crash_count": 0,
-        "sent_at": "2021-03-02T18:14:33.9713246Z",
-        "app_id": "ce8b5280-4605-4c1c-8c48-bd54c8fdda31"
+        "source": {}
       },
       "headers": {
         "Content-Type": "application/json"

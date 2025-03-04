@@ -4,26 +4,7 @@
   "input": {
     "request": {
       "body": {
-        "userId": "1",
-        "originalTimestamp": "2020-09-28T19:53:31.900Z",
-        "traits": {
-          "firstName": "John",
-          "lastName": "doe",
-          "email": "John@r.com",
-          "hasPurchased": "yes",
-          "address": {
-            "Home": {
-              "city": "iudcb"
-            },
-            "Office": {
-              "abc": "jbc"
-            }
-          },
-          "state": "Delhi",
-          "title": "Mr"
-        },
-        "timestamp": "2020-09-29T14:50:29.907+05:30",
-        "type": "identify"
+        "source": {}
       },
       "headers": {
         "Content-Type": "application/json"

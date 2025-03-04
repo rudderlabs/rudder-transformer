@@ -4,15 +4,7 @@
   "input": {
     "request": {
       "body": {
-        "email": "docs@iterable.com",
-        "eventName": "smsSendSkip",
-        "dataFields": {
-          "createdAt": "2019-08-07 18:49:48 +00:00",
-          "reason": "DuplicateMarketingMessage",
-          "campaignId": 729390,
-          "messageId": "2c780bf42f26485db0fc6571d2e0f6a0",
-          "email": "docs@iterable.com"
-        }
+        "source": {}
       },
       "headers": {
         "Content-Type": "application/json"
@@ -50,7 +42,7 @@
           "campaignId": 729390,
           "messageId": "2c780bf42f26485db0fc6571d2e0f6a0"
         },
-        "receivedAt": "2024-03-03T04:48:29.000Z",
+        "receivedAt": "2019-08-07T18:49:48.000Z",
         "timestamp": "2019-08-07T18:49:48.000Z",
         "type": "track",
         "request_ip": "192.0.2.30",

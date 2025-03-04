@@ -4,46 +4,7 @@
   "input": {
     "request": {
       "body": {
-        "log_id": "90020221031061004280169676882609459981150114445973782546",
-        "data": {
-          "date": "2022-10-31T06:09:59.135Z",
-          "type": "sapi",
-          "description": "Add members to an organization",
-          "client_id": "vQcJNDTxsM1W72eHFonRJdzyOvawlwIt",
-          "client_name": "",
-          "ip": "35.167.74.121",
-          "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36",
-          "details": {
-            "request": {
-              "ip": "35.167.74.121",
-              "auth": {
-                "user": {
-                  "name": "rudder test",
-                  "email": "test@rudderstack.com",
-                  "user_id": "google-oauth2|123456"
-                },
-                "strategy": "jwt",
-                "credentials": {
-                  "jti": "571921bf7833a97efabf08d765a0ec8f"
-                }
-              },
-              "body": {
-                "members": ["auth0|123456"]
-              },
-              "path": "/api/v2/organizations/org_eoe8p2atZ7furBxg/members",
-              "query": {},
-              "method": "post",
-              "channel": "https://manage.auth0.com/",
-              "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36"
-            },
-            "response": {
-              "body": {},
-              "statusCode": 204
-            }
-          },
-          "user_id": "google-oauth2|123456",
-          "log_id": "90020221031061004280169676882609459981150114445973782546"
-        }
+        "source": {}
       },
       "headers": {
         "Content-Type": "application/json"

@@ -4,32 +4,7 @@
   "input": {
     "request": {
       "body": {
-        "log_id": "90020221031055712103169676686005480714681762668315934738",
-        "data": {
-          "date": "2022-10-31T05:57:06.859Z",
-          "type": "ss",
-          "description": "",
-          "connection": "Username-Password-Authentication",
-          "connection_id": "con_djwCjiwyID0vZy1S",
-          "client_id": "vQcJNDTxsM1W72eHFonRJdzyOvawlwIt",
-          "client_name": "All Applications",
-          "ip": "35.166.202.113",
-          "user_agent": "unknown",
-          "details": {
-            "body": {
-              "email": "testRudderlabs+21@gmail.com",
-              "tenant": "dev-cu4jy2zgao6yx15x",
-              "password": "dummyPassword",
-              "client_id": "vQcJNDTxsM1W72eHFonRJdzyOvawlwIt",
-              "connection": "Username-Password-Authentication"
-            }
-          },
-          "user_id": "",
-          "user_name": "testRudderlabs+21@gmail.com",
-          "strategy": "auth0",
-          "strategy_type": "database",
-          "log_id": "90020221031055712103169676686005480714681762668315934738"
-        }
+        "source": {}
       },
       "headers": {
         "Content-Type": "application/json"

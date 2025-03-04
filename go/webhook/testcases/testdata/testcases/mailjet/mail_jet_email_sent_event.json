@@ -4,15 +4,7 @@
   "input": {
     "request": {
       "body": {
-        "event": "sent",
-        "time": 1664444171,
-        "MessageID": 92886743924596480,
-        "Message_GUID": "0230c73a-2b77-4aea-8ef2-ed15d0edc5fd",
-        "email": "test@rudderstack.com",
-        "mj_campaign_id": 108892,
-        "mj_contact_id": 372651182,
-        "customcampaign": "mj.nl=58486",
-        "smtp_reply": "250 2.0.0 OK DMARC:Quarantine 1664444171 u17-20020adfdd51000000b0022cc3f2bf13si3225188wrm.271 - gsmtp"
+        "source": {}
       },
       "headers": {
         "Content-Type": "application/json"

@@ -4,36 +4,6 @@
   "input": {
     "request": {
       "body": {
-        "events": [
-          {
-            "event_type": "users.behaviors.Purchase",
-            "id": "a1234567-89ab-cdef-0123-456789abcdef",
-            "time": 1477502783,
-            "user": {
-              "user_id": "0123456789abcdef01234567",
-              "external_user_id": "user_id",
-              "device_id": "fedcba87-6543-210f-edc-ba9876543210",
-              "timezone": "America/Chicago"
-            },
-            "properties": {
-              "app_id": "01234567-89ab-cdef-0123-456789abcdef",
-              "platform": "ios",
-              "os_version": "iOS10.3.1",
-              "device_model": "iPhone7Plus",
-              "product_id": "1234",
-              "price": 12.34,
-              "currency": "AED",
-              "ad_id": "01234567-89ab-cdef-0123-456789abcdef",
-              "ad_id_type": "roku_ad_id",
-              "ad_tracking_enabled": true,
-              "purchase_properties": {
-                "stringpropertyname": "a",
-                "numberpropertyname": 1,
-                "listpropertyname": ["a", "b"]
-              }
-            }
-          }
-        ],
         "source": {
           "ID": "2hgvYyU5TYaFvVzBge6tF2UKoeG",
           "OriginalID": "",

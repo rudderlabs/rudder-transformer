@@ -4,25 +4,7 @@
   "input": {
     "request": {
       "body": {
-        "data": {
-          "action_id": 42,
-          "campaign_id": 23,
-          "content": "Welcome to the club, we are with you.",
-          "customer_id": "user-123",
-          "delivery_id": "RAECAAFwnUSneIa0ZXkmq8EdkAM==",
-          "headers": {
-            "Custom-Header": ["custom-value"]
-          },
-          "identifiers": {
-            "id": "user-123"
-          },
-          "recipient": "test@example.com",
-          "subject": "Thanks for signing up"
-        },
-        "event_id": "01E2EMRMM6TZ12TF9WGZN0WJQT",
-        "metric": "sent",
-        "object_type": "email",
-        "timestamp": 1644227937
+        "source": {}
       },
       "headers": {
         "Content-Type": "application/json"

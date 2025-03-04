@@ -4,15 +4,7 @@
   "input": {
     "request": {
       "body": {
-        "triggerData": {
-          "data": {},
-          "triggerSource": "CsvList",
-          "email": "gouhgc@mailmodo.com",
-          "triggerDetails": "file:1a69df39hfbfg4e0b-8b5c-73776157aa37/7647792f-4ebc-4f9d-ac79-05fb0356137e",
-          "userId": "d3775892hvh4f2f-b9d5-e49810eb2cae",
-          "journeyId": "1a69df39hgvh4e0b-8b5c-73776157aa37",
-          "eventProperty": {}
-        }
+        "source": {}
       },
       "headers": {
         "Content-Type": "application/json"

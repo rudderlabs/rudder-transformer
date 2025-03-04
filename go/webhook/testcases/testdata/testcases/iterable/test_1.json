@@ -4,17 +4,7 @@
   "input": {
     "request": {
       "body": {
-        "eventName": "emailSubscribe",
-        "dataFields": {
-          "profileUpdatedAt": "2022-04-19 03:33:50 +00:00",
-          "publicIdString": "ad474bf7-e785-480f-b9d0-861b85ab5bf5",
-          "signupSource": "WebForm",
-          "email": "test@abcd.com",
-          "createdAt": "2022-04-19 03:33:50 +00:00",
-          "messageTypeIds": [],
-          "emailListIds": [1589748],
-          "channelIds": []
-        }
+        "source": {}
       },
       "headers": {
         "Content-Type": "application/json"
@@ -29,17 +19,10 @@
     "queue": [],
     "errQueue": [
       {
-        "eventName": "emailSubscribe",
-        "dataFields": {
-          "profileUpdatedAt": "2022-04-19 03:33:50 +00:00",
-          "publicIdString": "ad474bf7-e785-480f-b9d0-861b85ab5bf5",
-          "signupSource": "WebForm",
-          "email": "test@abcd.com",
-          "createdAt": "2022-04-19 03:33:50 +00:00",
-          "messageTypeIds": [],
-          "emailListIds": [1589748],
-          "channelIds": []
-        }
+        "request": {
+          "body": "{\"eventName\":\"emailSubscribe\",\"dataFields\":{\"profileUpdatedAt\":\"2022-04-19 03:33:50 +00:00\",\"publicIdString\":\"ad474bf7-e785-480f-b9d0-861b85ab5bf5\",\"signupSource\":\"WebForm\",\"email\":\"test@abcd.com\",\"createdAt\":\"2022-04-19 03:33:50 +00:00\",\"messageTypeIds\":[],\"emailListIds\":[1589748],\"channelIds\":[]}}"
+        },
+        "source": {}
       }
     ]
   }

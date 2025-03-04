@@ -3,7 +3,9 @@
   "description": "No Query Parameters",
   "input": {
     "request": {
-      "body": {},
+      "body": {
+        "source": {}
+      },
       "headers": {
         "Content-Type": "application/json"
       }
@@ -15,7 +17,12 @@
       "body": "Query_parameters is missing\n"
     },
     "queue": [],
-    "errQueue": [{}]
+    "errQueue": [
+      {
+        "event": {},
+        "source": {}
+      }
+    ]
   },
   "skip": "not possible"
 }

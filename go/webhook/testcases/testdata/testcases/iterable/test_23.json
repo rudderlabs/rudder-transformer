@@ -4,29 +4,7 @@
   "input": {
     "request": {
       "body": {
-        "email": "docs@iterable.com",
-        "eventName": "smsClick",
-        "dataFields": {
-          "campaignId": 1234567,
-          "campaignName": "My test campaign",
-          "workflowId": null,
-          "workflowName": null,
-          "templateName": "My template",
-          "locale": null,
-          "channelId": 98765,
-          "messageTypeId": 43210,
-          "experimentId": null,
-          "labels": [],
-          "smsMessage": "Test SMS! https://www.example.com",
-          "fromPhoneNumberId": 1234,
-          "imageUrl": null,
-          "clickedUrl": "https://www.example.com",
-          "email": "docs@iterable.com",
-          "createdAt": "2022-03-10 05:00:14 +00:00",
-          "templateId": 1112222,
-          "messageId": "ebd8f3cfc1f74353b423c5e0f3dd8b39",
-          "emailId": "c1234567:t9876543:docs@iterable.com"
-        }
+        "source": {}
       },
       "headers": {
         "Content-Type": "application/json"
@@ -78,7 +56,7 @@
           "messageId": "ebd8f3cfc1f74353b423c5e0f3dd8b39",
           "emailId": "c1234567:t9876543:docs@iterable.com"
         },
-        "receivedAt": "2024-03-03T04:48:29.000Z",
+        "receivedAt": "2022-03-10T05:00:14.000Z",
         "timestamp": "2022-03-10T05:00:14.000Z",
         "type": "track",
         "request_ip": "192.0.2.30",

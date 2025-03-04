@@ -4,38 +4,7 @@
   "input": {
     "request": {
       "body": {
-        "event": {
-          "userId": 33556506,
-          "originalTriggerUuid": null,
-          "boardId": 3139815405,
-          "groupId": "topics",
-          "pulseId": 3160181387,
-          "pulseName": "New Sprint Item",
-          "columnId": "status",
-          "columnType": "color",
-          "columnTitle": "Status",
-          "value": {
-            "label": {
-              "index": 1,
-              "text": "Done",
-              "style": {
-                "color": "#00c875",
-                "border": "#00B461",
-                "var_name": "green-shadow"
-              },
-              "is_done": true
-            },
-            "post_id": null
-          },
-          "previousValue": null,
-          "changedAt": 1661859406.8970098,
-          "isTopGroup": true,
-          "app": "monday",
-          "type": "update_column_value",
-          "triggerTime": "2022-08-30T11:36:47.406Z",
-          "subscriptionId": 150894742,
-          "triggerUuid": "51730730740a9d00ec45203bd392a9bd"
-        }
+        "source": {}
       },
       "headers": {
         "Content-Type": "application/json"

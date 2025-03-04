@@ -4,17 +4,7 @@
   "input": {
     "request": {
       "body": {
-        "data": {
-          "customer_id": "0200102",
-          "identifiers": {
-            "id": "0200102"
-          },
-          "email_address": "test@example.com"
-        },
-        "event_id": "01E4C4CT6YDC7Y5M7FE1GWWPQJ",
-        "object_type": "customer",
-        "metric": "subscribed",
-        "timestamp": 1585250199
+        "source": {}
       },
       "headers": {
         "Content-Type": "application/json"

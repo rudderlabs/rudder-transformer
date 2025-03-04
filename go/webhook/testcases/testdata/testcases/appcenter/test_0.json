@@ -4,9 +4,7 @@
   "input": {
     "request": {
       "body": {
-        "text": "Hello from your abc-test app in App Center!",
-        "sent_at": "2023-01-02T07: 53: 28.3117824Z",
-        "url": "https://appcenter.ms/users/abc-rudderstack.com/apps/abc-test"
+        "source": {}
       },
       "headers": {
         "Content-Type": "application/json"

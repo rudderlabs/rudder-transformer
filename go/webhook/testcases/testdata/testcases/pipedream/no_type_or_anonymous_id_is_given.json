@@ -4,10 +4,7 @@
   "input": {
     "request": {
       "body": {
-        "userId": "12",
-        "artist": "Gautam",
-        "genre": "Jazz",
-        "song": "Take Five"
+        "source": {}
       },
       "headers": {
         "Content-Type": "application/json"

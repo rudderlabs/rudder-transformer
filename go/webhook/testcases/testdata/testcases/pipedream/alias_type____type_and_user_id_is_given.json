@@ -4,9 +4,7 @@
   "input": {
     "request": {
       "body": {
-        "type": "alias",
-        "previousId": "name@surname.com",
-        "userId": "12345"
+        "source": {}
       },
       "headers": {
         "Content-Type": "application/json"

@@ -4,23 +4,7 @@
   "input": {
     "request": {
       "body": {
-        "data": {
-          "action_id": 36,
-          "broadcast_id": 9,
-          "customer_id": "0200102",
-          "identifiers": {
-            "id": "0200102"
-          },
-          "delivery_id": "RPILAgABcRhIBqSp7kiPekGBIeVh",
-          "href": "http://google.com",
-          "link_id": 1,
-          "recipient": "test@example.com",
-          "subject": "hello"
-        },
-        "event_id": "01E4C8BES5XT87ZWRJFTB35YJ3",
-        "object_type": "email",
-        "metric": "clicked",
-        "timestamp": 1585254348
+        "source": {}
       },
       "headers": {
         "Content-Type": "application/json"

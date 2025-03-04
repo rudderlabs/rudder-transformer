@@ -4,20 +4,7 @@
   "input": {
     "request": {
       "body": {
-        "data": {
-          "action_id": 38,
-          "broadcast_id": 6,
-          "customer_id": "0200102",
-          "identifiers": {
-            "id": "0200102"
-          },
-          "delivery_id": "RAECAQFxNeK3bC4SYqhQqFGBQrQ=",
-          "failure_message": "HTTP 404 Not Found []"
-        },
-        "event_id": "01E4TY5FVB0ZQ4KVDKRME0XSYZ",
-        "object_type": "webhook",
-        "metric": "failed",
-        "timestamp": 1585746984
+        "source": {}
       },
       "headers": {
         "Content-Type": "application/json"

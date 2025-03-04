@@ -4,15 +4,7 @@
   "input": {
     "request": {
       "body": {
-        "email": "docs@iterable.com",
-        "eventName": "webPushSendSkip",
-        "dataFields": {
-          "createdAt": "2019-08-07 23:43:48 +00:00",
-          "reason": "DuplicateMarketingMessage",
-          "campaignId": 723636,
-          "messageId": "4238c918b20a41dfbe9a910275b76f12",
-          "email": "docs@iterable.com"
-        }
+        "source": {}
       },
       "headers": {
         "Content-Type": "application/json"
@@ -50,7 +42,7 @@
           "campaignId": 723636,
           "messageId": "4238c918b20a41dfbe9a910275b76f12"
         },
-        "receivedAt": "2024-03-03T04:48:29.000Z",
+        "receivedAt": "2019-08-07T23:43:48.000Z",
         "timestamp": "2019-08-07T23:43:48.000Z",
         "type": "track",
         "request_ip": "192.0.2.30",

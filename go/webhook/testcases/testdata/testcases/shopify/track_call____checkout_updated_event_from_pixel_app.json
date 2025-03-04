@@ -1,0 +1,466 @@
+{
+  "name": "shopify",
+  "description": "Track Call -> Checkout Updated event from Pixel app",
+  "input": {
+    "request": {
+      "body": {
+        "query_parameters": {
+          "topic": ["checkouts_update"],
+          "writeKey": ["2mw9SN679HngnXXXHT4oSVVBVmb"],
+          "version": ["pixel"]
+        },
+        "id": 35374569160817,
+        "token": "e89d4437003b6b8480f8bc7f8036a659",
+        "cart_token": "Z2NwLXVzLWVhc3QxOjAxSjdXRjdOQjY0NlFFNFdQVEg0MTRFM1E2",
+        "email": "testuser101@gmail.com",
+        "created_at": "2024-09-16T03:50:1500:00",
+        "updated_at": "2024-09-17T03:29:02-04:00",
+        "note": "",
+        "note_attributes": [
+          {
+            "name": "cartId",
+            "value": "9c623f099fc8819aa4d6a958b65dfe7d"
+          },
+          {
+            "name": "cartToken",
+            "value": "Z2NwLXVzLWVhc3QxOjAxSkQzNUFXVEI4VkVUNUpTTk1LSzBCMzlF"
+          },
+          {
+            "name": "rudderAnonymousId",
+            "value": "50ead33e-d763-4854-b0ab-765859ef05cb"
+          }
+        ],
+        "shipping_address": {
+          "first_name": "testuser",
+          "address1": "oakwood bridge",
+          "phone": null,
+          "city": "KLF",
+          "zip": "85003",
+          "province": "Arizona",
+          "country": "United States",
+          "last_name": "dummy",
+          "address2": "Hedgetown",
+          "company": null,
+          "latitude": null,
+          "longitude": null,
+          "name": "testuser dummy",
+          "country_code": "US",
+          "province_code": "AZ"
+        },
+        "total_weight": 0,
+        "currency": "USD",
+        "customer_locale": "en-US",
+        "line_items": [
+          {
+            "key": "41327143059569",
+            "fulfillment_service": "manual",
+            "gift_card": false,
+            "grams": 0,
+            "presentment_title": "The Multi-location Snowboard",
+            "presentment_variant_title": "",
+            "product_id": 7234590638193,
+            "quantity": 1,
+            "requires_shipping": true,
+            "sku": "",
+            "tax_lines": [],
+            "taxable": true,
+            "title": "The Multi-location Snowboard",
+            "variant_id": 41327143059569,
+            "variant_title": "",
+            "variant_price": "729.95",
+            "vendor": "pixel-testing-rs",
+            "unit_price_measurement": {
+              "measured_type": null,
+              "quantity_value": null,
+              "quantity_unit": null,
+              "reference_value": null,
+              "reference_unit": null
+            },
+            "compare_at_price": null,
+            "line_price": "729.95",
+            "price": "729.95",
+            "applied_discounts": [],
+            "destination_location_id": null,
+            "user_id": null,
+            "rank": null,
+            "origin_location_id": null,
+            "properties": {}
+          }
+        ],
+        "name": "#35374569160817",
+        "abandoned_checkout_url": "https://pixel-testing-rs.myshopify.com/59026964593/checkouts/ac/Z2NwLXVzLWVhc3QxOjAxSjdXRjdOQjY0NlFFNFdQVEg0MTRFM1E2/recover?key=8195f56ee0de230b3a0469cc692f3436",
+        "presentment_currency": "USD",
+        "total_tax": "0.00",
+        "total_discounts": "0.00",
+        "subtotal_price": "729.95",
+        "total_price": "736.85",
+        "total_duties": "0.00",
+        "customer": {
+          "id": 7188389789809,
+          "email": "testuser101@gmail.com",
+          "accepts_marketing": false,
+          "created_at": null,
+          "updated_at": null,
+          "first_name": "testuser",
+          "last_name": "dummy",
+          "orders_count": 0,
+          "state": "disabled",
+          "total_spent": "0.00",
+          "last_order_id": null,
+          "note": null,
+          "verified_email": true,
+          "multipass_identifier": null,
+          "tax_exempt": false,
+          "phone": null,
+          "tags": "",
+          "currency": "USD",
+          "accepts_marketing_updated_at": null,
+          "admin_graphql_api_id": "gid://shopify/Customer/7188389789809",
+          "default_address": {
+            "id": null,
+            "customer_id": 7188389789809,
+            "first_name": "testuser",
+            "last_name": "dummy",
+            "company": null,
+            "address1": "oakwood bridge",
+            "address2": "Hedgetown",
+            "city": "KLF",
+            "province": "Arizona",
+            "country": "United States",
+            "zip": "85003",
+            "phone": null,
+            "name": "testuser dummy",
+            "province_code": "AZ",
+            "country_code": "US",
+            "country_name": "United States",
+            "default": true
+          },
+          "last_order_name": null,
+          "marketing_opt_in_level": null
+        },
+        "source": {
+          "ID": "dummy-source-id",
+          "OriginalID": "",
+          "Name": "Shopify v2",
+          "Config": {
+            "disableClientSideIdentifier": false,
+            "eventUpload": false,
+            "version": "pixel"
+          },
+          "Enabled": true,
+          "WorkspaceID": "dummy-workspace-id",
+          "Destinations": null,
+          "WriteKey": "dummy-write-key"
+        }
+      },
+      "headers": {
+        "Content-Type": "application/json"
+      }
+    }
+  },
+  "output": {
+    "response": {
+      "status": 200,
+      "body": "OK"
+    },
+    "queue": [
+      {
+        "anonymousId": "50ead33e-d763-4854-b0ab-765859ef05cb",
+        "context": {
+          "cart_token": "Z2NwLXVzLWVhc3QxOjAxSjdXRjdOQjY0NlFFNFdQVEg0MTRFM1E2",
+          "integration": {
+            "name": "SHOPIFY"
+          },
+          "library": {
+            "eventOrigin": "server",
+            "name": "RudderStack Shopify Cloud",
+            "version": "2.0.0"
+          },
+          "shopifyDetails": {
+            "id": 35374569160817,
+            "token": "e89d4437003b6b8480f8bc7f8036a659",
+            "cart_token": "Z2NwLXVzLWVhc3QxOjAxSjdXRjdOQjY0NlFFNFdQVEg0MTRFM1E2",
+            "email": "testuser101@gmail.com",
+            "created_at": "2024-09-16T03:50:1500:00",
+            "updated_at": "2024-09-17T03:29:02-04:00",
+            "note": "",
+            "note_attributes": [
+              {
+                "name": "cartId",
+                "value": "9c623f099fc8819aa4d6a958b65dfe7d"
+              },
+              {
+                "name": "cartToken",
+                "value": "Z2NwLXVzLWVhc3QxOjAxSkQzNUFXVEI4VkVUNUpTTk1LSzBCMzlF"
+              },
+              {
+                "name": "rudderAnonymousId",
+                "value": "50ead33e-d763-4854-b0ab-765859ef05cb"
+              }
+            ],
+            "shipping_address": {
+              "first_name": "testuser",
+              "address1": "oakwood bridge",
+              "phone": null,
+              "city": "KLF",
+              "zip": "85003",
+              "province": "Arizona",
+              "country": "United States",
+              "last_name": "dummy",
+              "address2": "Hedgetown",
+              "company": null,
+              "latitude": null,
+              "longitude": null,
+              "name": "testuser dummy",
+              "country_code": "US",
+              "province_code": "AZ"
+            },
+            "total_weight": 0,
+            "currency": "USD",
+            "customer_locale": "en-US",
+            "line_items": [
+              {
+                "key": "41327143059569",
+                "fulfillment_service": "manual",
+                "gift_card": false,
+                "grams": 0,
+                "presentment_title": "The Multi-location Snowboard",
+                "presentment_variant_title": "",
+                "product_id": 7234590638193,
+                "quantity": 1,
+                "requires_shipping": true,
+                "sku": "",
+                "tax_lines": [],
+                "taxable": true,
+                "title": "The Multi-location Snowboard",
+                "variant_id": 41327143059569,
+                "variant_title": "",
+                "variant_price": "729.95",
+                "vendor": "pixel-testing-rs",
+                "unit_price_measurement": {
+                  "measured_type": null,
+                  "quantity_value": null,
+                  "quantity_unit": null,
+                  "reference_value": null,
+                  "reference_unit": null
+                },
+                "compare_at_price": null,
+                "line_price": "729.95",
+                "price": "729.95",
+                "applied_discounts": [],
+                "destination_location_id": null,
+                "user_id": null,
+                "rank": null,
+                "origin_location_id": null,
+                "properties": {}
+              }
+            ],
+            "name": "#35374569160817",
+            "abandoned_checkout_url": "https://pixel-testing-rs.myshopify.com/59026964593/checkouts/ac/Z2NwLXVzLWVhc3QxOjAxSjdXRjdOQjY0NlFFNFdQVEg0MTRFM1E2/recover?key=8195f56ee0de230b3a0469cc692f3436",
+            "presentment_currency": "USD",
+            "total_tax": "0.00",
+            "total_discounts": "0.00",
+            "subtotal_price": "729.95",
+            "total_price": "736.85",
+            "total_duties": "0.00",
+            "customer": {
+              "id": 7188389789809,
+              "email": "testuser101@gmail.com",
+              "accepts_marketing": false,
+              "created_at": null,
+              "updated_at": null,
+              "first_name": "testuser",
+              "last_name": "dummy",
+              "orders_count": 0,
+              "state": "disabled",
+              "total_spent": "0.00",
+              "last_order_id": null,
+              "note": null,
+              "verified_email": true,
+              "multipass_identifier": null,
+              "tax_exempt": false,
+              "phone": null,
+              "tags": "",
+              "currency": "USD",
+              "accepts_marketing_updated_at": null,
+              "admin_graphql_api_id": "gid://shopify/Customer/7188389789809",
+              "default_address": {
+                "id": null,
+                "customer_id": 7188389789809,
+                "first_name": "testuser",
+                "last_name": "dummy",
+                "company": null,
+                "address1": "oakwood bridge",
+                "address2": "Hedgetown",
+                "city": "KLF",
+                "province": "Arizona",
+                "country": "United States",
+                "zip": "85003",
+                "phone": null,
+                "name": "testuser dummy",
+                "province_code": "AZ",
+                "country_code": "US",
+                "country_name": "United States",
+                "default": true
+              },
+              "last_order_name": null,
+              "marketing_opt_in_level": null
+            }
+          },
+          "topic": "checkouts_update"
+        },
+        "event": "Checkout Updated",
+        "integrations": {
+          "SHOPIFY": true,
+          "DATA_WAREHOUSE": {
+            "options": {
+              "jsonPaths": ["track.context.shopifyDetails"]
+            }
+          }
+        },
+        "properties": {
+          "currency": "USD",
+          "order_id": "35374569160817",
+          "products": [
+            {
+              "brand": "pixel-testing-rs",
+              "price": 729.95,
+              "product_id": "7234590638193",
+              "quantity": 1
+            }
+          ],
+          "tax": 0
+        },
+        "timestamp": "2024-09-17T07:29:02.000Z",
+        "traits": {
+          "acceptsMarketing": false,
+          "address": {
+            "address1": "oakwood bridge",
+            "address2": "Hedgetown",
+            "city": "KLF",
+            "company": null,
+            "country": "United States",
+            "country_code": "US",
+            "country_name": "United States",
+            "customer_id": 7188389789809,
+            "default": true,
+            "first_name": "testuser",
+            "id": null,
+            "last_name": "dummy",
+            "name": "testuser dummy",
+            "phone": null,
+            "province": "Arizona",
+            "province_code": "AZ",
+            "zip": "85003"
+          },
+          "cart_token_hash": "9e189f39-da46-58df-81b4-5e507d9ef64e",
+          "adminGraphqlApiId": "gid://shopify/Customer/7188389789809",
+          "currency": "USD",
+          "email": "testuser101@gmail.com",
+          "firstName": "testuser",
+          "lastName": "dummy",
+          "orderCount": 0,
+          "shippingAddress": {
+            "address1": "oakwood bridge",
+            "address2": "Hedgetown",
+            "city": "KLF",
+            "company": null,
+            "country": "United States",
+            "country_code": "US",
+            "first_name": "testuser",
+            "last_name": "dummy",
+            "latitude": null,
+            "longitude": null,
+            "name": "testuser dummy",
+            "phone": null,
+            "province": "Arizona",
+            "province_code": "AZ",
+            "zip": "85003"
+          },
+          "state": "disabled",
+          "tags": "",
+          "taxExempt": false,
+          "totalSpent": "0.00",
+          "verifiedEmail": true
+        },
+        "type": "track",
+        "userId": "7188389789809",
+        "receivedAt": "2024-03-03T04:48:29.000Z",
+        "request_ip": "192.0.2.30",
+        "messageId": "00000000-0000-0000-0000-000000000000"
+      },
+      {
+        "anonymousId": "50ead33e-d763-4854-b0ab-765859ef05cb",
+        "context": {
+          "integration": {
+            "name": "SHOPIFY"
+          },
+          "library": {
+            "eventOrigin": "server",
+            "name": "RudderStack Shopify Cloud",
+            "version": "2.0.0"
+          },
+          "traits": {
+            "acceptsMarketing": false,
+            "address": {
+              "address1": "oakwood bridge",
+              "address2": "Hedgetown",
+              "city": "KLF",
+              "company": null,
+              "country": "United States",
+              "country_code": "US",
+              "country_name": "United States",
+              "customer_id": 7188389789809,
+              "default": true,
+              "first_name": "testuser",
+              "id": null,
+              "last_name": "dummy",
+              "name": "testuser dummy",
+              "phone": null,
+              "province": "Arizona",
+              "province_code": "AZ",
+              "zip": "85003"
+            },
+            "adminGraphqlApiId": "gid://shopify/Customer/7188389789809",
+            "currency": "USD",
+            "email": "testuser101@gmail.com",
+            "firstName": "testuser",
+            "lastName": "dummy",
+            "orderCount": 0,
+            "shippingAddress": {
+              "address1": "oakwood bridge",
+              "address2": "Hedgetown",
+              "city": "KLF",
+              "company": null,
+              "country": "United States",
+              "country_code": "US",
+              "first_name": "testuser",
+              "last_name": "dummy",
+              "latitude": null,
+              "longitude": null,
+              "name": "testuser dummy",
+              "phone": null,
+              "province": "Arizona",
+              "province_code": "AZ",
+              "zip": "85003"
+            },
+            "state": "disabled",
+            "tags": "",
+            "taxExempt": false,
+            "totalSpent": "0.00",
+            "verifiedEmail": true
+          }
+        },
+        "integrations": {
+          "SHOPIFY": true
+        },
+        "type": "identify",
+        "userId": "7188389789809",
+        "receivedAt": "2024-03-03T04:48:29.000Z",
+        "request_ip": "192.0.2.30",
+        "messageId": "00000000-0000-0000-0000-000000000000"
+      }
+    ],
+    "errQueue": []
+  }
+}

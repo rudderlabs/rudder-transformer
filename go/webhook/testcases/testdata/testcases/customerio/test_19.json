@@ -4,20 +4,7 @@
   "input": {
     "request": {
       "body": {
-        "data": {
-          "action_id": 40,
-          "broadcast_id": 9,
-          "customer_id": "0200102",
-          "identifiers": {
-            "id": "0200102"
-          },
-          "delivery_id": "RPILAgEBcRhNAufr2aU82jtDZEh6",
-          "recipient": "https://test.example.com/process"
-        },
-        "event_id": "01E4C6EP0HCKRHKFARMZ5XEH7A",
-        "object_type": "webhook",
-        "metric": "sent",
-        "timestamp": 1585252357
+        "source": {}
       },
       "headers": {
         "Content-Type": "application/json"

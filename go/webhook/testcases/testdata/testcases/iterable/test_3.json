@@ -4,8 +4,7 @@
   "input": {
     "request": {
       "body": {
-        "email": "test@rudderstack.com",
-        "eventName": "inAppSendSkip"
+        "source": {}
       },
       "headers": {
         "Content-Type": "application/json"

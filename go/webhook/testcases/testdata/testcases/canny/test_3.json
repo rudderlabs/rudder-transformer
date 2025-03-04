@@ -4,49 +4,7 @@
   "input": {
     "request": {
       "body": {
-        "created": "2022-07-27T04:08:24.377Z",
-        "object": {
-          "author": {
-            "created": "2022-07-15T11:16:32.648Z",
-            "email": "test@rudderstack.com",
-            "id": "62d14c90fff7c80d0ec08375",
-            "isAdmin": true,
-            "name": "Rudder Test",
-            "url": "https://rudder.canny.io/admin/users/dummyUser",
-            "userID": null
-          },
-          "by": null,
-          "board": {
-            "created": "2022-07-25T12:11:19.895Z",
-            "id": "62de88676bc28b44aaaf25cc",
-            "name": "features",
-            "postCount": 12,
-            "url": "https://rudder.canny.io/admin/board/features"
-          },
-          "category": null,
-          "commentCount": 0,
-          "created": "2022-07-26T11:32:31.228Z",
-          "details": "Array of images",
-          "eta": null,
-          "id": "62dfd0cfb2870d468c9618dd",
-          "imageURLs": [],
-          "issue": {
-            "description": "Array of images\n\nhttps://rudder.canny.io/admin/board/features/p/images-testing-2",
-            "id": "10002",
-            "key": "TES-3",
-            "status": "To Do",
-            "summary": "Images testing",
-            "url": "https://rudderstack-user.atlassian.net/browse/TES-3"
-          },
-          "owner": null,
-          "score": 1,
-          "status": "open",
-          "tags": [],
-          "title": "Images testing",
-          "url": "https://rudder.canny.io/admin/board/features/p/images-testing-2"
-        },
-        "objectType": "post",
-        "type": "post.jira_issue_unlinked"
+        "source": {}
       },
       "headers": {
         "Content-Type": "application/json"

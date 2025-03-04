@@ -8,7 +8,8 @@
           "topic": [],
           "signature": ["rudderstack"],
           "writeKey": ["sample-write-key"]
-        }
+        },
+        "source": {}
       },
       "headers": {
         "Content-Type": "application/json"
@@ -23,11 +24,14 @@
     "queue": [],
     "errQueue": [
       {
-        "query_parameters": {
-          "topic": [],
-          "signature": ["rudderstack"],
-          "writeKey": ["sample-write-key"]
-        }
+        "event": {
+          "query_parameters": {
+            "topic": [],
+            "signature": ["rudderstack"],
+            "writeKey": ["sample-write-key"]
+          }
+        },
+        "source": {}
       }
     ]
   },

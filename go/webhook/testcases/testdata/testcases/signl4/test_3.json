@@ -4,22 +4,7 @@
   "input": {
     "request": {
       "body": {
-        "eventType": 202,
-        "eventRaisedUtc": "2020-01-10T12:27:19Z",
-        "subscription": {
-          "id": "b8fdd850-e2ad-45ff-924d-9c332a063200"
-        },
-        "team": {
-          "id": "0e8979f7-0c6a-472d-8918-ecfd339252f8"
-        },
-        "alert": {
-          "statusCode": 1,
-          "eventId": "2518236416806594587_0e67b746-6c88-4ddf-8872-99690b0457d9",
-          "externalEventId": "INC091210",
-          "acknowledgedUserIds": [],
-          "id": "2518236416804564453_12ea0f6f-948c-43d0-9034-f9565d7b6bd2"
-        },
-        "id": "27283793-47c8-4da2-9767-d37be224338d"
+        "source": {}
       },
       "headers": {
         "Content-Type": "application/json"

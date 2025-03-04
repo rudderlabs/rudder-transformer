@@ -4,60 +4,7 @@
   "input": {
     "request": {
       "body": {
-        "event": {
-          "id": "01DEN1HNLBC1VITK192ETJ1MPJ",
-          "event_type": "incident.resolved",
-          "resource_type": "incident",
-          "occurred_at": "2022-12-07T11:04:27.459Z",
-          "agent": {
-            "html_url": "https://rudderlabs-com.pagerduty.com/users/PXZZD2E",
-            "id": "PXZZD2E",
-            "self": "https://api.pagerduty.com/users/user@1",
-            "summary": "rudder test",
-            "type": "user_reference"
-          },
-          "client": null,
-          "data": {
-            "id": "Q3S7IX2U5KTCOY",
-            "type": "incident",
-            "self": "https://api.pagerduty.com/incidents/Q3S7IX2U5KTCOY",
-            "html_url": "https://rudderlabs-com.pagerduty.com/incidents/Q3S7IX2U5KTCOY",
-            "number": 2,
-            "status": "resolved",
-            "incident_key": "faaecfc0aca04b6ea07154188b5d3c6c",
-            "created_at": "2022-12-07T10:56:52Z",
-            "title": "Server Crashed",
-            "service": {
-              "html_url": "https://rudderlabs-com.pagerduty.com/services/PAJBUTT",
-              "id": "PAJBUTT",
-              "self": "https://api.pagerduty.com/services/PAJBUTT",
-              "summary": "Database",
-              "type": "service_reference"
-            },
-            "assignees": [],
-            "escalation_policy": {
-              "html_url": "https://rudderlabs-com.pagerduty.com/escalation_policies/PB7HKU4",
-              "id": "PB7HKU4",
-              "self": "https://api.pagerduty.com/escalation_policies/PB7HKU4",
-              "summary": "Default",
-              "type": "escalation_policy_reference"
-            },
-            "teams": [],
-            "priority": {
-              "html_url": "https://rudderlabs-com.pagerduty.com/account/incident_priorities",
-              "id": "P5DBC3A",
-              "self": "https://api.pagerduty.com/priorities/P5DBC3A",
-              "summary": "P3",
-              "type": "priority_reference"
-            },
-            "urgency": "high",
-            "conference_bridge": {
-              "conference_number": "",
-              "conference_url": ""
-            },
-            "resolve_reason": null
-          }
-        }
+        "source": {}
       },
       "headers": {
         "Content-Type": "application/json"

@@ -4,25 +4,7 @@
   "input": {
     "request": {
       "body": {
-        "data": {
-          "action_id": 37,
-          "broadcast_id": 9,
-          "customer_id": "0200102",
-          "identifiers": {
-            "id": "0200102"
-          },
-          "delivery_id": "RPILAgUBcRhIBqSfeiIwdIYJKxTY",
-          "recipients": [
-            {
-              "device_id": "eeC2XC_NVPo:APA91bEYRSgmu-dAZcOWi7RzKBbT9gdY3WJACOpLQEMAmAOsChJMAZWirvSlSF3EuHxb7qdwlYeOyCWtbsnR14Vyx5nwBmg5J3SyPxfNn-ey1tNgXIj5UOq8IBk2VwzMApk-xzD4JJof",
-              "device_platform": "android"
-            }
-          ]
-        },
-        "event_id": "01E4C4HDQ7P1X9KTKF0ZX7PWHE",
-        "object_type": "push",
-        "metric": "sent",
-        "timestamp": 1585250350
+        "source": {}
       },
       "headers": {
         "Content-Type": "application/json"

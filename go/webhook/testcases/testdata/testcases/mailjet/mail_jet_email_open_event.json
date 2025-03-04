@@ -4,19 +4,7 @@
   "input": {
     "request": {
       "body": {
-        "event": "open",
-        "time": 1664443614,
-        "MessageID": 94857068804950690,
-        "Message_GUID": "54d6cdec-f659-4547-8926-13d9c4126b82",
-        "email": "test@rudderstack.com",
-        "mj_campaign_id": 108760,
-        "mj_contact_id": 399962859,
-        "customcampaign": "mj.nl=58424",
-        "ip": "66.249.84.231",
-        "geo": "US",
-        "agent": "Mozilla/5.0 (Windows NT 5.1; rv:11.0) Gecko Firefox/11.0 (via ggpht.com GoogleImageProxy)",
-        "CustomID": "",
-        "Payload": ""
+        "source": {}
       },
       "headers": {
         "Content-Type": "application/json"

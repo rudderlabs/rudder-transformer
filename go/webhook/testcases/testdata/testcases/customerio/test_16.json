@@ -4,20 +4,7 @@
   "input": {
     "request": {
       "body": {
-        "data": {
-          "action_id": 39,
-          "broadcast_id": 9,
-          "customer_id": "0200102",
-          "identifiers": {
-            "id": "0200102"
-          },
-          "delivery_id": "RPILAgQBcRhIBqRiZAc0fyQiLvkC",
-          "failure_message": "value passed for channel was invalid"
-        },
-        "event_id": "01E4C4HDQ77BCN0X23Z3WBE764",
-        "object_type": "slack",
-        "metric": "failed",
-        "timestamp": 1585250350
+        "source": {}
       },
       "headers": {
         "Content-Type": "application/json"

@@ -1,0 +1,247 @@
+{
+  "name": "shopify",
+  "description": "Track Call -> product_viewed event from web pixel",
+  "input": {
+    "request": {
+      "body": {
+        "id": "sh-f6c07b5a-D20A-4E5F-812E-337299B56C34",
+        "name": "product_viewed",
+        "data": {
+          "productVariant": {
+            "price": {
+              "amount": 749.95,
+              "currencyCode": "USD"
+            },
+            "product": {
+              "title": "The Collection Snowboard: Liquid",
+              "vendor": "Hydrogen Vendor",
+              "id": "7234590834801",
+              "untranslatedTitle": "The Collection Snowboard: Liquid",
+              "url": "/products/the-collection-snowboard-liquid",
+              "type": "snowboard"
+            },
+            "id": "41327143321713",
+            "image": {
+              "src": "//store.myshopify.com/cdn/shop/files/Main_b13ad453-477c-4ed1-9b43-81f3345adfd6.jpg?v=1724736600"
+            },
+            "sku": "",
+            "title": "Default Title",
+            "untranslatedTitle": "Default Title"
+          }
+        },
+        "type": "standard",
+        "clientId": "c7b3f99b-4d34-463b-835f-c879482a7750",
+        "timestamp": "2024-09-15T17:34:54.889Z",
+        "context": {
+          "document": {
+            "location": {
+              "href": "https://store.myshopify.com/checkouts/cn/Z2NwLXVzLWVhc3QxOjAxSjY5OVpIRURQNERFMDBKUTVaRkI4UzdU",
+              "hash": "",
+              "host": "store.myshopify.com",
+              "hostname": "store.myshopify.com",
+              "origin": "https://store.myshopify.com",
+              "pathname": "/checkouts/cn/Z2NwLXVzLWVhc3QxOjAxSjY5OVpIRURQNERFMDBKUTVaRkI4UzdU",
+              "port": "",
+              "protocol": "https:",
+              "search": ""
+            },
+            "referrer": "https://store.myshopify.com/cart",
+            "characterSet": "UTF-8",
+            "title": "Checkout - pixel-testing-rs"
+          },
+          "navigator": {
+            "language": "en-US",
+            "cookieEnabled": true,
+            "languages": ["en-US", "en"],
+            "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36"
+          },
+          "window": {
+            "innerHeight": 1028,
+            "innerWidth": 1362,
+            "outerHeight": 1080,
+            "outerWidth": 1728,
+            "pageXOffset": 0,
+            "pageYOffset": 0,
+            "location": {
+              "href": "https://store.myshopify.com/checkouts/cn/Z2NwLXVzLWVhc3QxOjAxSjY5OVpIRURQNERFMDBKUTVaRkI4UzdU",
+              "hash": "",
+              "host": "store.myshopify.com",
+              "hostname": "store.myshopify.com",
+              "origin": "https://store.myshopify.com",
+              "pathname": "/checkouts/cn/Z2NwLXVzLWVhc3QxOjAxSjY5OVpIRURQNERFMDBKUTVaRkI4UzdU",
+              "port": "",
+              "protocol": "https:",
+              "search": ""
+            },
+            "origin": "https://store.myshopify.com",
+            "screen": {
+              "height": 1117,
+              "width": 1728
+            },
+            "screenX": 0,
+            "screenY": 37,
+            "scrollX": 0,
+            "scrollY": 0
+          }
+        },
+        "pixelEventLabel": true,
+        "query_parameters": {
+          "topic": ["product_viewed"],
+          "writeKey": ["dummy-write-key"]
+        },
+        "source": {
+          "ID": "dummy-source-id",
+          "OriginalID": "",
+          "Name": "Shopify v2",
+          "Config": {
+            "disableClientSideIdentifier": false,
+            "eventUpload": false,
+            "version": "pixel"
+          },
+          "Enabled": true,
+          "WorkspaceID": "dummy-workspace-id",
+          "Destinations": null,
+          "WriteKey": "dummy-write-key"
+        }
+      },
+      "headers": {
+        "Content-Type": "application/json"
+      }
+    }
+  },
+  "output": {
+    "response": {
+      "status": 200,
+      "body": "OK"
+    },
+    "queue": [
+      {
+        "context": {
+          "document": {
+            "location": {
+              "href": "https://store.myshopify.com/checkouts/cn/Z2NwLXVzLWVhc3QxOjAxSjY5OVpIRURQNERFMDBKUTVaRkI4UzdU",
+              "hash": "",
+              "host": "store.myshopify.com",
+              "hostname": "store.myshopify.com",
+              "origin": "https://store.myshopify.com",
+              "pathname": "/checkouts/cn/Z2NwLXVzLWVhc3QxOjAxSjY5OVpIRURQNERFMDBKUTVaRkI4UzdU",
+              "port": "",
+              "protocol": "https:",
+              "search": ""
+            },
+            "referrer": "https://store.myshopify.com/cart",
+            "characterSet": "UTF-8",
+            "title": "Checkout - pixel-testing-rs"
+          },
+          "navigator": {
+            "language": "en-US",
+            "cookieEnabled": true,
+            "languages": ["en-US", "en"],
+            "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36"
+          },
+          "window": {
+            "innerHeight": 1028,
+            "innerWidth": 1362,
+            "outerHeight": 1080,
+            "outerWidth": 1728,
+            "pageXOffset": 0,
+            "pageYOffset": 0,
+            "location": {
+              "href": "https://store.myshopify.com/checkouts/cn/Z2NwLXVzLWVhc3QxOjAxSjY5OVpIRURQNERFMDBKUTVaRkI4UzdU",
+              "hash": "",
+              "host": "store.myshopify.com",
+              "hostname": "store.myshopify.com",
+              "origin": "https://store.myshopify.com",
+              "pathname": "/checkouts/cn/Z2NwLXVzLWVhc3QxOjAxSjY5OVpIRURQNERFMDBKUTVaRkI4UzdU",
+              "port": "",
+              "protocol": "https:",
+              "search": ""
+            },
+            "origin": "https://store.myshopify.com",
+            "screen": {
+              "height": 1117,
+              "width": 1728
+            },
+            "screenX": 0,
+            "screenY": 37,
+            "scrollX": 0,
+            "scrollY": 0
+          },
+          "page": {
+            "title": "Checkout - pixel-testing-rs",
+            "url": "https://store.myshopify.com/checkouts/cn/Z2NwLXVzLWVhc3QxOjAxSjY5OVpIRURQNERFMDBKUTVaRkI4UzdU",
+            "path": "/checkouts/cn/Z2NwLXVzLWVhc3QxOjAxSjY5OVpIRURQNERFMDBKUTVaRkI4UzdU",
+            "search": ""
+          },
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36",
+          "screen": {
+            "height": 1117,
+            "width": 1728
+          },
+          "library": {
+            "name": "RudderStack Shopify Cloud",
+            "eventOrigin": "client",
+            "version": "2.0.0"
+          },
+          "shopifyDetails": {
+            "clientId": "c7b3f99b-4d34-463b-835f-c879482a7750",
+            "data": {
+              "productVariant": {
+                "id": "41327143321713",
+                "image": {
+                  "src": "//store.myshopify.com/cdn/shop/files/Main_b13ad453-477c-4ed1-9b43-81f3345adfd6.jpg?v=1724736600"
+                },
+                "price": {
+                  "amount": 749.95,
+                  "currencyCode": "USD"
+                },
+                "product": {
+                  "id": "7234590834801",
+                  "title": "The Collection Snowboard: Liquid",
+                  "type": "snowboard",
+                  "untranslatedTitle": "The Collection Snowboard: Liquid",
+                  "url": "/products/the-collection-snowboard-liquid",
+                  "vendor": "Hydrogen Vendor"
+                },
+                "sku": "",
+                "title": "Default Title",
+                "untranslatedTitle": "Default Title"
+              }
+            },
+            "id": "sh-f6c07b5a-D20A-4E5F-812E-337299B56C34",
+            "name": "product_viewed",
+            "timestamp": "2024-09-15T17:34:54.889Z",
+            "type": "standard"
+          },
+          "topic": "product_viewed"
+        },
+        "integrations": {
+          "SHOPIFY": true,
+          "DATA_WAREHOUSE": {
+            "options": {
+              "jsonPaths": ["track.context.shopifyDetails"]
+            }
+          }
+        },
+        "type": "track",
+        "userId": "test-user-id",
+        "event": "Product Viewed",
+        "properties": {
+          "product_id": "7234590834801",
+          "variant": "The Collection Snowboard: Liquid",
+          "brand": "Hydrogen Vendor",
+          "category": "snowboard",
+          "price": 749.95,
+          "currency": "USD",
+          "url": "/products/the-collection-snowboard-liquid",
+          "name": "The Collection Snowboard: Liquid"
+        },
+        "anonymousId": "c7b3f99b-4d34-463b-835f-c879482a7750",
+        "messageId": "sh-f6c07b5a-D20A-4E5F-812E-337299B56C34",
+        "receivedAt": "2024-03-03T04:48:29.000Z",
+        "request_ip": "192.0.2.30"
+      }
+    ],
+    "errQueue": []
+  }
+}

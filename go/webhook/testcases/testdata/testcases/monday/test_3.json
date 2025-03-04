@@ -4,24 +4,7 @@
   "input": {
     "request": {
       "body": {
-        "event": {
-          "userId": 33556506,
-          "originalTriggerUuid": null,
-          "boardId": 3139815405,
-          "groupId": "topics",
-          "pulseId": 3160181387,
-          "value": {
-            "name": "New Sprint Item renamed"
-          },
-          "previousValue": {
-            "name": "New Sprint Item"
-          },
-          "app": "monday",
-          "type": "update_name",
-          "triggerTime": "2022-08-30T11:40:17.351Z",
-          "subscriptionId": 150910867,
-          "triggerUuid": "05ce13d32d0256c4fb7dd5de25b1a1ba"
-        }
+        "source": {}
       },
       "headers": {
         "Content-Type": "application/json"

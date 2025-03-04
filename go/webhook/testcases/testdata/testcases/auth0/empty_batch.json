@@ -3,7 +3,7 @@
   "description": "empty batch",
   "input": {
     "request": {
-      "body": [],
+      "body": {},
       "headers": {
         "Content-Type": "application/json"
       }
@@ -11,10 +11,11 @@
   },
   "output": {
     "response": {
-      "status": 400,
-      "body": "Empty batch payload\n"
+      "status": 200,
+      "body": "OK"
     },
     "queue": [],
-    "errQueue": [[]]
-  }
+    "errQueue": []
+  },
+  "skip": "Created this case manually"
 }

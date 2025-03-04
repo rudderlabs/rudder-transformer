@@ -4,19 +4,7 @@
   "input": {
     "request": {
       "body": {
-        "app_name": "MSAppCenterTesting",
-        "branch": "master",
-        "build_status": "Succeeded",
-        "build_id": "1",
-        "build_link": "https://appcenter.ms/users/venkat-rudderstack.com/apps/MSAppCenterTesting/build/branches/master/builds/1",
-        "build_reason": "manual",
-        "finish_time": "2021-03-02T16:41:29.891411Z",
-        "icon_link": null,
-        "notification_settings_link": "https://appcenter.ms/users/venkat-rudderstack.com/apps/MSAppCenterTesting/settings/notifications",
-        "os": "Android",
-        "start_time": "2021-03-02T16:34:13.9184874Z",
-        "source_version": "7ed5c7b279316f19e9a0c45bb0fb49c0655471af",
-        "sent_at": "2021-03-02T16:41:55.8819564Z"
+        "source": {}
       },
       "headers": {
         "Content-Type": "application/json"

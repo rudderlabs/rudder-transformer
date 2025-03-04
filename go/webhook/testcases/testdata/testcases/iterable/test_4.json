@@ -4,25 +4,7 @@
   "input": {
     "request": {
       "body": {
-        "email": "test@rudderstack.com",
-        "eventName": "emailSend",
-        "dataFields": {
-          "contentId": 331201,
-          "email": "test@rudderstack.com",
-          "createdAt": "2016-12-02 20:21:04 +00:00",
-          "campaignId": 59667,
-          "templateId": 93849,
-          "messageId": "d0aa7801f91f4824997a631f3ed583c3",
-          "emailSubject": "My subject",
-          "campaignName": "My campaign name",
-          "workflowId": null,
-          "workflowName": null,
-          "templateName": "My template name",
-          "channelId": 3420,
-          "messageTypeId": 3866,
-          "experimentId": null,
-          "emailId": "c59667:t93849:docs@iterable.com"
-        }
+        "source": {}
       },
       "headers": {
         "Content-Type": "application/json"
@@ -70,7 +52,7 @@
           "experimentId": null,
           "emailId": "c59667:t93849:docs@iterable.com"
         },
-        "receivedAt": "2024-03-03T04:48:29.000Z",
+        "receivedAt": "2016-12-02T20:21:04.000Z",
         "timestamp": "2016-12-02T20:21:04.000Z",
         "type": "track",
         "request_ip": "192.0.2.30",

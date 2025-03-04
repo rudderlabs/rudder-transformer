@@ -4,29 +4,7 @@
   "input": {
     "request": {
       "body": {
-        "fuuid": "27905",
-        "next-step-id": "success",
-        "total-steps": "3",
-        "responseId": "b9a5d224-cc5a-4e64-9800-5a3db9515fdf",
-        "recipientEmail": "test.rudderlabs21997@gmail.com",
-        "formId": "formosztd5",
-        "recordedAt": {
-          "ts": 1662695704,
-          "date": "2022-09-09",
-          "hour": 9,
-          "minute": 25
-        },
-        "submissionSource": "amp",
-        "elementjbtz42": "Everything ",
-        "element8jzo13": ["Reliable", "High Quality", "Useful"],
-        "recipientData": {
-          "email": "test.rudderlabs21997@gmail.com"
-        },
-        "recommend": "9",
-        "liking": "upvote",
-        "satisfaction": "4",
-        "campaignId": "0b53e1bf-84ae-4198-9184-8a4d6e1fa3dd",
-        "campaignName": "Campaign-testing"
+        "source": {}
       },
       "headers": {
         "Content-Type": "application/json"

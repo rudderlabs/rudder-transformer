@@ -4,27 +4,7 @@
   "input": {
     "request": {
       "body": {
-        "eventType": 203,
-        "eventRaisedUtc": "2018-04-17T15:00:32Z",
-        "subscription": {
-          "id": "1578ebd9-0a27-44ab-bc8e-52cd7d32e81d"
-        },
-        "user": {
-          "username": "Rene",
-          "mailaddress": "rene@signl4.com",
-          "id": "f0bd5063-9588-51cf-b3d9-94e5647dedc5"
-        },
-        "alert": {
-          "statusCode": 0,
-          "eventId": "2518783235949759942_fbc7b4a4-badd-47b8-9e1d-702fb6a1a0b2",
-          "externalEventId": "Content you passed in the X-S4-ExternalID parameter",
-          "id": "2518783235958846071_4e2dfab2-4717-42bc-8d37-8682402309c2"
-        },
-        "annotation": {
-          "message": "OK, I'll take care about it.",
-          "id": "2518783235661483318_99ebffe0-1b90-40ef-990a-fbd842484761"
-        },
-        "id": "141c0f88-7831-4d5e-b055-f6e83c269770"
+        "source": {}
       },
       "headers": {
         "Content-Type": "application/json"

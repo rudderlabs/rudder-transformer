@@ -50,7 +50,7 @@
           "smsMessage": "Message text",
           "createdAt": "2016-12-05 22:51:25 +00:00"
         },
-        "receivedAt": "2016-12-05T22:51:25.000Z",
+        "receivedAt": "2024-03-03T04:48:29.000Z",
         "timestamp": "2016-12-05T22:51:25.000Z",
         "type": "track",
         "request_ip": "192.0.2.30",

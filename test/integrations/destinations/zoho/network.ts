@@ -217,8 +217,7 @@ export const networkCallsData = [
         Authorization: 'Zoho-oauthtoken correct-access-token',
       },
       data: {
-        select_query:
-          "SELECT id FROM Leads WHERE ((Email = 'tobedeleted@gmail.com' AND First_Name = 'subcribed') AND Last_Name = ' User')",
+        select_query: "SELECT id FROM Leads WHERE Email = 'tobedeleted@gmail.com'",
       },
       method: 'POST',
     },
@@ -232,6 +231,68 @@ export const networkCallsData = [
       },
       status: 200,
       statusText: 'OK',
+    },
+  },
+  {
+    httpReq: {
+      url: 'https://www.zohoapis.in/crm/v6/coql',
+      headers: {
+        Authorization: 'Zoho-oauthtoken correct-access-token',
+      },
+      data: {
+        select_query: "SELECT id FROM Leads WHERE Email = 'tobedeleted2@gmail.com'",
+      },
+      method: 'POST',
+    },
+    httpRes: {
+      data: {
+        data: [
+          {
+            id: '<RECORD_ID_2>',
+          },
+        ],
+      },
+      status: 200,
+      statusText: 'OK',
+    },
+  },
+  {
+    httpReq: {
+      url: 'https://www.zohoapis.in/crm/v6/coql',
+      headers: {
+        Authorization: 'Zoho-oauthtoken correct-access-token',
+      },
+      data: {
+        select_query: "SELECT id FROM Leads WHERE Email = 'tobedeleted3@gmail.com'",
+      },
+      method: 'POST',
+    },
+    httpRes: {
+      data: '',
+      status: 204,
+      statusText: 'OK',
+    },
+  },
+  {
+    httpReq: {
+      url: 'https://www.zohoapis.in/crm/v6/coql',
+      headers: {
+        Authorization: 'Zoho-oauthtoken expired-access-token',
+      },
+      data: {
+        select_query: "SELECT id FROM Leads WHERE Email = 'tobedeleted3@gmail.com'",
+      },
+      method: 'POST',
+    },
+    httpRes: {
+      data: {
+        code: 'INVALID_TOKEN',
+        details: {},
+        message: 'invalid oauth token',
+        status: 'error',
+      },
+      status: 401,
+      statusText: 'Bad Request',
     },
   },
   {
@@ -265,8 +326,7 @@ export const networkCallsData = [
         Authorization: 'Zoho-oauthtoken correct-access-token',
       },
       data: {
-        select_query:
-          "SELECT id FROM Contacts WHERE ((Email = 'tobedeleted2@gmail.com' AND First_Name = 'subcribed2') AND Last_Name = ' User2')",
+        select_query: "SELECT id FROM Contacts WHERE Email = 'tobedeleted2@gmail.com'",
       },
       method: 'POST',
     },
@@ -280,69 +340,6 @@ export const networkCallsData = [
       },
       status: 200,
       statusText: 'OK',
-    },
-  },
-  {
-    httpReq: {
-      url: 'https://www.zohoapis.in/crm/v6/coql',
-      headers: {
-        Authorization: 'Zoho-oauthtoken correct-access-token',
-      },
-      data: {
-        select_query:
-          "SELECT id FROM Leads WHERE ((Email = 'tobedeleted3@gmail.com' AND First_Name = 'subcribed3') AND Last_Name = ' User3')",
-      },
-      method: 'POST',
-    },
-    httpRes: {
-      data: {
-        data: '',
-      },
-      status: 204,
-      statusText: 'OK',
-    },
-  },
-  {
-    httpReq: {
-      url: 'https://www.zohoapis.in/crm/v6/coql',
-      headers: {
-        Authorization: 'Zoho-oauthtoken correct-access-token',
-      },
-      data: {
-        select_query:
-          "SELECT id FROM Leads WHERE (First_Name = 'subcribed3' AND Last_Name = ' User3')",
-      },
-      method: 'POST',
-    },
-    httpRes: {
-      data: {
-        data: '',
-      },
-      status: 204,
-      statusText: 'OK',
-    },
-  },
-  {
-    httpReq: {
-      url: 'https://www.zohoapis.in/crm/v6/coql',
-      headers: {
-        Authorization: 'Zoho-oauthtoken expired-access-token',
-      },
-      data: {
-        select_query:
-          "SELECT id FROM Leads WHERE ((Email = 'tobedeleted3@gmail.com' AND First_Name = 'subcribed3') AND Last_Name = 'User3')",
-      },
-      method: 'POST',
-    },
-    httpRes: {
-      data: {
-        code: 'INVALID_TOKEN',
-        details: {},
-        message: 'invalid oauth token',
-        status: 'error',
-      },
-      status: 401,
-      statusText: 'Bad Request',
     },
   },
 ];

@@ -174,7 +174,7 @@ const generateSqlQuery = (module, fields) => {
   return `SELECT id FROM ${module} ${whereClause}`;
 };
 
-const searchRecordId = async (fields, metadata, Config, operationModuleType) => {
+const searchRecordId = async (fields, metadata, Config, operationModuleType, identifierType) => {
   try {
     const { region } = Config;
     const searchURL = `${zohoConfig.DATA_CENTRE_BASE_ENDPOINTS_MAP[region]}/crm/v6/coql`;
@@ -182,7 +182,14 @@ const searchRecordId = async (fields, metadata, Config, operationModuleType) => 
       'post',
       searchURL,
       {
-        select_query: generateSqlQuery(operationModuleType, fields),
+        select_query: generateSqlQuery(
+          operationModuleType,
+          fields[identifierType]
+            ? {
+                [identifierType]: fields[identifierType],
+              }
+            : fields,
+        ),
       },
       {
         headers: {
@@ -227,7 +234,7 @@ const searchRecordId = async (fields, metadata, Config, operationModuleType) => 
   }
 };
 
-const searchRecordIdV2 = async (fields, metadata, Config, destConfig) => {
+const searchRecordIdV2 = async (identifiers, metadata, Config, destConfig) => {
   try {
     const { region } = Config;
     const { object } = destConfig;
@@ -236,7 +243,7 @@ const searchRecordIdV2 = async (fields, metadata, Config, destConfig) => {
       'post',
       searchURL,
       {
-        select_query: generateSqlQuery(object, fields),
+        select_query: generateSqlQuery(object, identifiers),
       },
       {
         headers: {

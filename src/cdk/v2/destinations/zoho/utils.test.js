@@ -185,7 +185,7 @@ describe('calculateTrigger', () => {
 
 describe('searchRecordId', () => {
   const module = 'Leads';
-  const mockFields = { Email: 'test@example.com' };
+  const mockFields = { Email: 'test@example.com', Name: 'John Doe' };
   const mockMetadata = { secret: { accessToken: 'mock-token' } };
   const mockConfig = { region: 'US' };
   const mockQuery = "SELECT id FROM Leads WHERE Email = 'test@example.com'";
@@ -200,6 +200,7 @@ describe('searchRecordId', () => {
       module,
       query: mockQuery,
       name: 'should handle non-array response data',
+      identifierType: 'Email',
       response: {
         processedResponse: {
           status: 200,
@@ -218,6 +219,7 @@ describe('searchRecordId', () => {
       query: mockQuery,
       module,
       name: 'should handle missing response data property',
+      identifierType: 'Email',
       response: {
         processedResponse: {
           status: 200,
@@ -234,6 +236,7 @@ describe('searchRecordId', () => {
       query: mockQuery,
       module,
       name: 'should handle null response data',
+      identifierType: 'Email',
       response: {
         processedResponse: {
           status: 200,
@@ -252,6 +255,7 @@ describe('searchRecordId', () => {
       query: mockQuery,
       module,
       name: 'should handle empty array response data',
+      identifierType: 'Email',
       response: {
         processedResponse: {
           status: 200,
@@ -270,6 +274,7 @@ describe('searchRecordId', () => {
       query: mockQuery,
       module,
       name: 'should handle valid array response data with single record',
+      identifierType: 'Email',
       response: {
         processedResponse: {
           status: 200,
@@ -296,6 +301,7 @@ describe('searchRecordId', () => {
       query:
         "SELECT id FROM Leads WHERE ((Name = 'rid1927ce14265c006ae11555ec6e1cdbbac' AND Name1 = 'Liam Bailey') AND ((Has_Chargeback = 'true' AND Last_Client_Purchase = '2021-06-15T00:00:00Z') AND (Purchase_Category = 'category1;category2' AND Lifetime_Client_Revenue = 1200)))",
       name: 'should handle valid array response data with multiple records',
+      identifierType: '',
       response: {
         processedResponse: {
           status: 200,
@@ -314,6 +320,7 @@ describe('searchRecordId', () => {
       query: mockQuery,
       module,
       name: 'should handle non-success HTTP status code',
+      identifierType: 'Email',
       response: {
         processedResponse: {
           status: 400,
@@ -330,6 +337,7 @@ describe('searchRecordId', () => {
       query: mockQuery,
       module,
       name: 'should handle HTTP request error',
+      identifierType: 'Email',
       error: new Error('Network Error'),
       expected: {
         erroneous: true,
@@ -338,7 +346,7 @@ describe('searchRecordId', () => {
     },
   ];
 
-  testCases.forEach(({ name, response, error, expected, query, fields }) => {
+  testCases.forEach(({ name, response, error, expected, query, fields, identifierType }) => {
     it(name, async () => {
       if (error) {
         handleHttpRequest.mockRejectedValueOnce(error);
@@ -346,7 +354,7 @@ describe('searchRecordId', () => {
         handleHttpRequest.mockResolvedValueOnce(response);
       }
 
-      const result = await searchRecordId(fields, mockMetadata, mockConfig, module);
+      const result = await searchRecordId(fields, mockMetadata, mockConfig, module, identifierType);
       expect(handleHttpRequest).toHaveBeenCalledWith(
         'post',
         'https://www.zohoapis.com/crm/v6/coql',

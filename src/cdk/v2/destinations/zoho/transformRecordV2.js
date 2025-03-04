@@ -202,13 +202,13 @@ const handleSearchError = (searchResponse) => {
  */
 const handleDeletion = async (
   input,
-  fields,
+  identifiers,
   Config,
   destConfig,
   transformedResponseToBeBatched,
   errorResponseList,
 ) => {
-  const searchResponse = await searchRecordIdV2(fields, input.metadata, Config, destConfig);
+  const searchResponse = await searchRecordIdV2(identifiers, input.metadata, Config, destConfig);
 
   if (searchResponse.erroneous) {
     const error = handleSearchError(searchResponse);
@@ -261,7 +261,7 @@ const processInput = async (
   } else {
     await handleDeletion(
       input,
-      allFields,
+      identifiers,
       Config,
       destConfig,
       transformedResponseToBeBatched,

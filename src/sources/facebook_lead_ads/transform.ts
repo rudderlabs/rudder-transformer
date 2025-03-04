@@ -1,6 +1,7 @@
 import { TransformationError } from '@rudderstack/integrations-lib';
 import Message from '../message';
 import { EventType } from '../../constants';
+import { SourceInputV2 } from '../../types';
 
 const {
   removeUndefinedAndNullValues,
@@ -38,7 +39,7 @@ function processEvent(inputEvent: any): any {
   return message;
 }
 
-const process = (payload: any) => {
+const process = (payload: SourceInputV2) => {
   const event = getBodyFromV2SpecPayload(payload);
   try {
     const response: any = processEvent(event);

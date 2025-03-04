@@ -31,6 +31,16 @@ const deduceModuleInfo = (inputs, Config) => {
   };
 };
 
+const deduceModuleInfoV2 = (Config, destConfig) => {
+  const { object, identifierMappings } = destConfig;
+  const identifierType = identifierMappings.map(({ to }) => to);
+  return {
+    operationModuleType: object,
+    upsertEndPoint: zohoConfig.COMMON_RECORD_ENDPOINT(Config.region).replace('moduleType', object),
+    identifierType,
+  };
+};
+
 // Keeping the original function name and return structure
 function validatePresenceOfMandatoryProperties(objectName, object) {
   if (!zohoConfig.MODULE_MANDATORY_FIELD_CONFIG.hasOwnProperty(objectName)) {
@@ -71,6 +81,26 @@ const formatMultiSelectFields = (config, fields) => {
   return formattedFields;
 };
 
+const formatMultiSelectFieldsV2 = (destConfig, fields) => {
+  const multiSelectFields = getHashFromArray(
+    destConfig.multiSelectFieldLevelDecision,
+    'from',
+    'to',
+    false,
+  );
+  // Creating a shallow copy to avoid mutations
+  const formattedFields = { ...fields };
+  Object.keys(formattedFields).forEach((eachFieldKey) => {
+    if (
+      multiSelectFields.hasOwnProperty(eachFieldKey) &&
+      isDefinedAndNotNull(formattedFields[eachFieldKey])
+    ) {
+      formattedFields[eachFieldKey] = [formattedFields[eachFieldKey]];
+    }
+  });
+  return formattedFields;
+};
+
 const handleDuplicateCheck = (addDefaultDuplicateCheck, identifierType, operationModuleType) => {
   let additionalFields = [];
 
@@ -85,11 +115,25 @@ const handleDuplicateCheck = (addDefaultDuplicateCheck, identifierType, operatio
   return Array.from(new Set([identifierType, ...additionalFields]));
 };
 
+const handleDuplicateCheckV2 = (addDefaultDuplicateCheck, identifierType, operationModuleType) => {
+  let additionalFields = [];
+
+  if (addDefaultDuplicateCheck) {
+    const moduleDuplicateCheckField =
+      zohoConfig.MODULE_WISE_DUPLICATE_CHECK_FIELD[operationModuleType];
+    additionalFields = isDefinedAndNotNull(moduleDuplicateCheckField)
+      ? moduleDuplicateCheckField
+      : ['Name'];
+  }
+
+  return Array.from(new Set([...identifierType, ...additionalFields]));
+};
+
 function escapeAndEncode(value) {
   return encodeURIComponent(value.replace(/([(),\\])/g, '\\$1'));
 }
 
-function transformToURLParams(fields, Config) {
+function transformToURLParams(fields, Config, operationModuleType) {
   const criteria = Object.entries(fields)
     .map(([key, value]) => `(${key}:equals:${escapeAndEncode(value)})`)
     .join('and');
@@ -97,12 +141,23 @@ function transformToURLParams(fields, Config) {
   const dataCenter = Config.region;
   const regionBasedEndPoint = zohoConfig.DATA_CENTRE_BASE_ENDPOINTS_MAP[dataCenter];
 
-  return `${regionBasedEndPoint}/crm/v6/Leads/search?criteria=${criteria}`;
+  return `${regionBasedEndPoint}/crm/v6/${operationModuleType}/search?criteria=${criteria}`;
 }
 
-const searchRecordId = async (fields, metadata, Config) => {
+function transformToURLParamsV2(fields, Config, object) {
+  const criteria = Object.entries(fields)
+    .map(([key, value]) => `(${key}:equals:${escapeAndEncode(value)})`)
+    .join('and');
+
+  const dataCenter = Config.region;
+  const regionBasedEndPoint = zohoConfig.DATA_CENTRE_BASE_ENDPOINTS_MAP[dataCenter];
+
+  return `${regionBasedEndPoint}/crm/v6/${object}/search?criteria=${criteria}`;
+}
+
+const searchRecordId = async (fields, metadata, Config, operationModuleType) => {
   try {
-    const searchURL = transformToURLParams(fields, Config);
+    const searchURL = transformToURLParams(fields, Config, operationModuleType);
     const searchResult = await handleHttpRequest(
       'get',
       searchURL,
@@ -115,7 +170,57 @@ const searchRecordId = async (fields, metadata, Config) => {
         destType: 'zoho',
         feature: 'deleteRecords',
         requestMethod: 'GET',
-        endpointPath: 'crm/v6/Leads/search?criteria=',
+        endpointPath: `crm/v6/${operationModuleType}/search?criteria=`,
+        module: 'router',
+      },
+    );
+
+    if (!isHttpStatusSuccess(searchResult.processedResponse.status)) {
+      return {
+        erroneous: true,
+        message: searchResult.processedResponse.response,
+      };
+    }
+
+    if (
+      searchResult.processedResponse.status === 204 ||
+      !CommonUtils.isNonEmptyArray(searchResult.processedResponse.response?.data)
+    ) {
+      return {
+        erroneous: true,
+        message: 'No contact is found with record details',
+      };
+    }
+
+    return {
+      erroneous: false,
+      message: searchResult.processedResponse.response.data.map((record) => record.id),
+    };
+  } catch (error) {
+    return {
+      erroneous: true,
+      message: error.message,
+    };
+  }
+};
+
+const searchRecordIdV2 = async (fields, metadata, Config, destConfig) => {
+  try {
+    const { object } = destConfig;
+    const searchURL = transformToURLParamsV2(fields, Config, object);
+    const searchResult = await handleHttpRequest(
+      'get',
+      searchURL,
+      {
+        headers: {
+          Authorization: `Zoho-oauthtoken ${metadata.secret.accessToken}`,
+        },
+      },
+      {
+        destType: 'zoho',
+        feature: 'deleteRecords',
+        requestMethod: 'GET',
+        endpointPath: `crm/v6/${object}/search?criteria=`,
         module: 'router',
       },
     );
@@ -177,11 +282,16 @@ const validateConfigurationIssue = (Config, operationModuleType) => {
 
 module.exports = {
   deduceModuleInfo,
+  deduceModuleInfoV2,
   validatePresenceOfMandatoryProperties,
   formatMultiSelectFields,
+  formatMultiSelectFieldsV2,
   handleDuplicateCheck,
+  handleDuplicateCheckV2,
   searchRecordId,
+  searchRecordIdV2,
   transformToURLParams,
+  transformToURLParamsV2,
   calculateTrigger,
   validateConfigurationIssue,
 };

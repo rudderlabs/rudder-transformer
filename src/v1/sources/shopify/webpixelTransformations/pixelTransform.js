@@ -70,7 +70,7 @@ const handleCartTokenRedisOperations = async (inputEvent, clientId) => {
   const cartToken = extractCartToken(inputEvent);
   try {
     if (isDefinedNotNullNotEmpty(clientId) && isDefinedNotNullNotEmpty(cartToken)) {
-      await RedisDB.setVal(`pixel:${cartToken}`, ['anonymousId', clientId]);
+      await RedisDB.setVal(`pixel:${cartToken}`, ['anonymousId', clientId], 43200);
       stats.increment('shopify_pixel_cart_token_set', {
         event: inputEvent.name,
         writeKey: inputEvent.query_parameters.writeKey,
@@ -85,16 +85,13 @@ const handleCartTokenRedisOperations = async (inputEvent, clientId) => {
   }
 };
 
-function processPixelEvent(inputEvent) {
+async function processPixelEvent(inputEvent) {
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  const { name, query_parameters, context, clientId, data, id } = inputEvent;
+  const { name, query_parameters, context, clientId, id } = inputEvent;
   const shopifyDetails = { ...inputEvent };
   delete shopifyDetails.context;
   delete shopifyDetails.query_parameters;
   delete shopifyDetails.pixelEventLabel;
-  const { checkout } = data ?? {};
-  const { order } = checkout ?? {};
-  const { customer } = order ?? {};
   let message = {};
   switch (name) {
     case PIXEL_EVENT_TOPICS.PAGE_VIEWED:
@@ -116,7 +113,6 @@ function processPixelEvent(inputEvent) {
       break;
     case PIXEL_EVENT_TOPICS.CHECKOUT_STARTED:
     case PIXEL_EVENT_TOPICS.CHECKOUT_COMPLETED:
-      if (customer.id) message.userId = customer.id || '';
       handleCartTokenRedisOperations(inputEvent, clientId);
       message = checkoutEventBuilder(inputEvent);
       break;
@@ -124,7 +120,6 @@ function processPixelEvent(inputEvent) {
     case PIXEL_EVENT_TOPICS.CHECKOUT_CONTACT_INFO_SUBMITTED:
     case PIXEL_EVENT_TOPICS.CHECKOUT_SHIPPING_INFO_SUBMITTED:
     case PIXEL_EVENT_TOPICS.PAYMENT_INFO_SUBMITTED:
-      if (customer.id) message.userId = customer.id || '';
       handleCartTokenRedisOperations(inputEvent, clientId);
       message = checkoutStepEventBuilder(inputEvent);
       break;
@@ -161,12 +156,23 @@ function processPixelEvent(inputEvent) {
     message.context.campaign = campaignParams;
   }
   message.messageId = id;
+
+  // attach userId to the message if anonymousId is present in Redis
+  // this allows stitching of events from the same user across multiple checkouts
+  const redisData = await RedisDB.getVal(`pixel:${message.anonymousId}`);
+  if (isDefinedNotNullNotEmpty(redisData)) {
+    message.userId = redisData.userId;
+    stats.increment('shopify_pixel_userid_mapping', {
+      action: 'stitchUserIdToAnonId',
+      operation: 'get',
+    });
+  }
   message = removeUndefinedAndNullValues(message);
   return message;
 }
 
-const processPixelWebEvents = (event) => {
-  const pixelEvent = processPixelEvent(event);
+const processPixelWebEvents = async (event) => {
+  const pixelEvent = await processPixelEvent(event);
   return removeUndefinedAndNullValues(pixelEvent);
 };
 

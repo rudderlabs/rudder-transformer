@@ -168,7 +168,9 @@ const generateWhereClause = (fields) => {
 
 const generateSqlQuery = (module, fields) => {
   // Generate the WHERE clause based on the fields
-  const whereClause = generateWhereClause(fields);
+  // Limiting to 25 fields
+  const entries = Object.entries(fields).slice(0, 25);
+  const whereClause = generateWhereClause(Object.fromEntries(entries));
 
   // Construct the SQL query with specific fields in the SELECT clause
   return `SELECT id FROM ${module} ${whereClause}`;

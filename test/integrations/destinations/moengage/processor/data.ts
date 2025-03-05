@@ -880,7 +880,10 @@ export const data = [
               anonymousId: '4eb021e9-a2af-4926-ae82-fe996d12f3c5',
               channel: 'web',
               properties: {
-                key1: 'value1',
+                key1: {
+                  key1_1: 'value1',
+                  key1_2: 'value2',
+                },
                 key2: 'value2',
               },
               context: {
@@ -1029,7 +1032,10 @@ export const data = [
                     push_id: 'desuhere',
                     platform: 'android',
                     app_version: '1.1.6',
-                    key1: 'value1',
+                    key1: {
+                      key1_1: 'value1',
+                      key1_2: 'value2',
+                    },
                     key2: 'value2',
                   },
                   customer_id: 'rudder123',

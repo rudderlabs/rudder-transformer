@@ -1,0 +1,18 @@
+{
+  "input": [
+    {
+      "request": {
+        "body": "{\"challenge\": \"some_key\"}"
+      }
+    }
+  ],
+  "output": [
+    {
+      "outputToSource": {
+        "body": "eyJjaGFsbGVuZ2UiOiJzb21lX2tleSJ9",
+        "contentType": "application/json"
+      },
+      "statusCode": 200
+    }
+  ]
+}

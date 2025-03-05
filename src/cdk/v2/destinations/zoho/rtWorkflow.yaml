@@ -1,7 +1,7 @@
 bindings:
   - name: EventType
     path: ../../../../constants
-  - name: processRecordInputs
+  - name: processRecordInputsWrap
     path: ./transformRecord
   - name: handleRtTfSingleEventError
     path: ../../../../v0/util/index
@@ -20,7 +20,7 @@ steps:
 
   - name: processRecordEvents
     template: |
-      await $.processRecordInputs(^.{.message.type === $.EventType.RECORD}[], ^[0].destination)
+      await $.processRecordInputsWrap(^.{.message.type === $.EventType.RECORD}[], ^[0].destination)
 
   - name: failOtherEvents
     template: |

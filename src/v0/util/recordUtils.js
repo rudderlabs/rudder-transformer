@@ -1,5 +1,5 @@
-const { InstrumentationError, getErrorRespEvents } = require('@rudderstack/integrations-lib');
-const { generateErrorObject } = require('./index');
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
+const { generateErrorObject, getErrorRespEvents } = require('./index');
 
 const eventTypes = ['update', 'insert', 'delete'];
 

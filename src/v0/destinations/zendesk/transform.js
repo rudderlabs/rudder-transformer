@@ -118,7 +118,10 @@ const payloadBuilderforUpdatingEmail = async (
       const { identities } = res.response.data;
       if (identities && Array.isArray(identities)) {
         const identitiesDetails = identities.find(
-          (identitieslist) => identitieslist.primary === true && identitieslist.value !== userEmail,
+          (identitieslist) =>
+            identitieslist.primary === true &&
+            identitieslist.type === 'email' &&
+            identitieslist.value !== userEmail,
         );
         if (identitiesDetails?.id && userEmail) {
           return responseBuilderToUpdatePrimaryAccount(

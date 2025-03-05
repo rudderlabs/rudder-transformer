@@ -528,8 +528,8 @@ describe('Unit test cases for getTransformedJSON', () => {
       $os: 'iOS',
       $ios_device_model: 'Android SDK built for x86',
       $ios_version: '8.1.0',
-      $ios_app_release: '1',
-      $ios_app_version: '1.0',
+      $ios_app_release: '1.0',
+      $ios_app_version: '1',
     };
 
     expect(result).toEqual(expectedResult);
@@ -611,8 +611,8 @@ describe('Unit test cases for getTransformedJSON', () => {
       $os: 'iOS',
       $ios_device_model: 'Android SDK built for x86',
       $ios_version: '8.1.0',
-      $ios_app_release: '1',
-      $ios_app_version: '1.0',
+      $ios_app_release: '1.0',
+      $ios_app_version: '1',
     };
 
     expect(result).toEqual(expectedResult);

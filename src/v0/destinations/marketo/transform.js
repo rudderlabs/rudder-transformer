@@ -7,7 +7,6 @@ const {
   InstrumentationError,
   ConfigurationError,
   UnauthorizedError,
-  getErrorRespEvents,
 } = require('@rudderstack/integrations-lib');
 const stats = require('../../../util/stats');
 const { EventType, MappedToDestinationKey } = require('../../../constants');
@@ -32,6 +31,7 @@ const {
   isDefinedAndNotNull,
   generateErrorObject,
   handleRtTfSingleEventError,
+  getErrorRespEvents,
 } = require('../../util');
 const Cache = require('../../util/cache');
 const { USER_LEAD_CACHE_TTL, AUTH_CACHE_TTL, JSON_MIME_TYPE } = require('../../util/constant');

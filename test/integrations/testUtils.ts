@@ -4,7 +4,7 @@ import { MockHttpCallsData, TestCaseData } from './testTypes';
 import MockAdapter from 'axios-mock-adapter';
 import isMatch from 'lodash/isMatch';
 import { OptionValues } from 'commander';
-import { removeUndefinedAndNullValues } from '@rudderstack/integrations-lib';
+import { filter, removeUndefinedAndNullValues } from '@rudderstack/integrations-lib';
 import tags from '../../src/v0/util/tags';
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { Destination, ProxyMetdata, ProxyV0Request, ProxyV1Request } from '../../src/types';
@@ -21,6 +21,7 @@ import {
 
 const generateAlphanumericId = (size = 36) =>
   [...Array(size)].map(() => ((Math.random() * size) | 0).toString(size)).join('');
+
 export const getTestDataFilePaths = (dirPath: string, opts: OptionValues): string[] => {
   const globPattern = join(dirPath, '**', 'data.ts');
   let testFilePaths = globSync(globPattern);
@@ -29,7 +30,7 @@ export const getTestDataFilePaths = (dirPath: string, opts: OptionValues): strin
   const destinationOrSource = opts.destination || opts.source;
   if (destinationOrSource) {
     filteredTestFilePaths = testFilePaths.filter(
-      (testFile) => destinationOrSource && testFile.includes(`${destinationOrSource}/`),
+      (testFile) => destinationOrSource && testFile.includes(`/${destinationOrSource}/`),
     );
   }
   if (opts.feature) {
@@ -41,7 +42,7 @@ export const getTestDataFilePaths = (dirPath: string, opts: OptionValues): strin
 };
 
 export const getTestData = (filePath): TestCaseData[] => {
-  return require(filePath).data as TestCaseData[];
+  return filter(require(filePath).data as TestCaseData[]);
 };
 
 export const getMockHttpCallsData = (filePath): MockHttpCallsData[] => {

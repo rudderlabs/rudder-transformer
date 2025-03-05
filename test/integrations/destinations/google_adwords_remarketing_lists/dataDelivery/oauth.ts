@@ -1,6 +1,7 @@
 import { generateMetadata, generateProxyV1Payload } from '../../../testUtils';
 import { commonHeaders, commonParams, validRequestPayload1 } from './business';
-import { API_VERSION } from '../../../../../src/v0/destinations/google_adwords_remarketing_lists/config';
+
+const API_VERSION = 'v18';
 
 const commonStatTags = {
   destType: 'GOOGLE_ADWORDS_REMARKETING_LISTS',

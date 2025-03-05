@@ -464,6 +464,18 @@ class Prometheus {
         labelNames: ['event', 'reason', 'source', 'writeKey'],
       },
       {
+        name: 'shopify_pixel_userid_mapping',
+        help: 'shopify_pixel_userid_mapping',
+        type: 'counter',
+        labelNames: ['action', 'operation'],
+      },
+      {
+        name: 'shopify_pixel_cart_token_mapping',
+        help: 'shopify_pixel_cart_token_mapping',
+        type: 'counter',
+        labelNames: ['action', 'operation'],
+      },
+      {
         name: 'outgoing_request_count',
         help: 'Outgoing HTTP requests count',
         type: 'counter',

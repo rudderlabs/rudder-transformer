@@ -3,7 +3,7 @@ const prometheus = require('./prometheus');
 const logger = require('../logger');
 
 const enableStats = process.env.ENABLE_STATS !== 'false';
-const statsClientType = process.env.STATS_CLIENT || 'statsd';
+const statsClientType = process.env.STATS_CLIENT || 'prometheus';
 // summary metrics are enabled by default. To disable set ENABLE_SUMMARY_METRICS='false'.
 const enableSummaryMetrics = process.env.ENABLE_SUMMARY_METRICS !== 'false';
 

@@ -1,3 +1,4 @@
+import { secretFailedApiToken } from './maskedSecrets';
 export const networkCallsData = [
   {
     httpReq: {
@@ -590,7 +591,7 @@ export const networkCallsData = [
       url: 'https://api.monday.com/v2',
       method: 'POST',
       headers: {
-        Authorization: 'failedApiToken',
+        Authorization: secretFailedApiToken,
       },
     },
     httpRes: {

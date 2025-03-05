@@ -1,3 +1,4 @@
+import { secretFailedApiToken } from '../maskedSecrets';
 export const data = [
   {
     name: 'monday',
@@ -1312,7 +1313,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiToken: 'failedApiToken',
+                apiToken: secretFailedApiToken,
                 boardId: '339283934',
                 groupTitle: 'Next year',
                 columnToPropertyMapping: [

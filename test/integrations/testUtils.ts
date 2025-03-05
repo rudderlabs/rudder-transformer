@@ -19,10 +19,13 @@ import {
   RouterTransformationResponseListSchema,
 } from '../../src/types/zodTypes';
 import { defaultAccessToken } from './common/secrets';
+import { randomBytes } from 'crypto';
 
-const generateAlphanumericId = (size = 36) =>
-  [...Array(size)].map(() => ((Math.random() * size) | 0).toString(size)).join('');
-
+const generateAlphanumericId = (size = 36) => {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  const bytes = randomBytes(size);
+  return Array.from(bytes, (byte) => chars[byte % chars.length]).join('');
+};
 export const getTestDataFilePaths = (dirPath: string, opts: OptionValues): string[] => {
   const globPattern = join(dirPath, '**', 'data.ts');
   let testFilePaths = globSync(globPattern);

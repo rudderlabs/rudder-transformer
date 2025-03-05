@@ -1,6 +1,7 @@
 import { Destination } from '../../../../../src/types';
 import { ProcessorTestData } from '../../../testTypes';
 import { generateMetadata } from '../../../testUtils';
+import { secret1 } from '../maskedSecrets';
 
 const destination: Destination = {
   ID: '123',

@@ -3,6 +3,7 @@ import { RouterTestData } from '../../../testTypes';
 import { routerRequest } from './commonConfig';
 import { generateMetadata } from '../../../testUtils';
 import { dataV2 } from './dataV2';
+import { secret1, authHeader1 } from '../maskedSecrets';
 
 const destination: Destination = {
   ID: '123',

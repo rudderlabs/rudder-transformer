@@ -38,7 +38,7 @@
         "-c",
         "jest.config.typescript.js",
         "component",
-        "--destination=marketo,marketo_static_list",
+        "--destination=monday",
         "--feature=processor"
       ],
       "console": "integratedTerminal",

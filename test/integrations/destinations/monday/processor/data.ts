@@ -1286,6 +1286,7 @@ export const data = [
     },
   },
   {
+    only: true,
     name: 'monday',
     description: 'check for deleted boards (configured boards are deleted)',
     feature: 'processor',

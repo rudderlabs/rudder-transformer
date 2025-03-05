@@ -1,4 +1,4 @@
-import { getAuthHeader_1 } from '../maskedSecrets';
+import { authHeader1 } from '../maskedSecrets';
 export const data = [
   {
     name: 'salesforce',
@@ -93,7 +93,7 @@ export const data = [
                   endpoint: 'https://ap15.salesforce.com/services/data/v50.0/sobjects/Lead',
                   headers: {
                     'Content-Type': 'application/json',
-                    Authorization: getAuthHeader_1(),
+                    Authorization: authHeader1,
                   },
                   params: {},
                   body: {
@@ -239,7 +239,7 @@ export const data = [
                     'https://ap15.salesforce.com/services/data/v50.0/sobjects/Lead/leadId?_HttpMethod=PATCH',
                   headers: {
                     'Content-Type': 'application/json',
-                    Authorization: getAuthHeader_1(),
+                    Authorization: authHeader1,
                   },
                   params: {},
                   body: {
@@ -384,7 +384,7 @@ export const data = [
                   endpoint: 'https://ap15.salesforce.com/services/data/v50.0/sobjects/Lead',
                   headers: {
                     'Content-Type': 'application/json',
-                    Authorization: getAuthHeader_1(),
+                    Authorization: authHeader1,
                   },
                   params: {},
                   body: {
@@ -454,7 +454,7 @@ export const data = [
                 endpoint: 'https://ap15.salesforce.com/services/data/v50.0/sobjects/Lead',
                 headers: {
                   'Content-Type': 'application/json',
-                  Authorization: getAuthHeader_1(),
+                  Authorization: authHeader1,
                 },
                 params: {},
                 body: {
@@ -516,7 +516,7 @@ export const data = [
                 endpoint: 'https://ap15.salesforce.com/services/data/v50.0/sobjects/Lead',
                 headers: {
                   'Content-Type': 'application/json',
-                  Authorization: getAuthHeader_1(),
+                  Authorization: authHeader1,
                 },
                 params: {},
                 body: {
@@ -669,7 +669,7 @@ export const data = [
                   endpoint: 'https://ap15.salesforce.com/services/data/v50.0/sobjects/customobject',
                   headers: {
                     'Content-Type': 'application/json',
-                    Authorization: getAuthHeader_1(),
+                    Authorization: authHeader1,
                   },
                   params: {},
                   body: {
@@ -827,7 +827,7 @@ export const data = [
                     'https://ap15.salesforce.com/services/data/v50.0/sobjects/customobject2/id1101?_HttpMethod=PATCH',
                   headers: {
                     'Content-Type': 'application/json',
-                    Authorization: getAuthHeader_1(),
+                    Authorization: authHeader1,
                   },
                   params: {},
                   body: {
@@ -985,7 +985,7 @@ export const data = [
                     'https://ap15.salesforce.com/services/data/v50.0/sobjects/customobject2/id1102?_HttpMethod=PATCH',
                   headers: {
                     'Content-Type': 'application/json',
-                    Authorization: getAuthHeader_1(),
+                    Authorization: authHeader1,
                   },
                   params: {},
                   body: {

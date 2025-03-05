@@ -1,4 +1,4 @@
-import { getAuthHeader_1, getAuthHeader_2 } from '../maskedSecrets';
+import { authHeader1, authHeader2 } from '../maskedSecrets';
 import {
   generateMetadata,
   generateProxyV0Payload,
@@ -7,7 +7,7 @@ import {
 
 const commonHeaders = {
   'Content-Type': 'application/json',
-  Authorization: getAuthHeader_1(),
+  Authorization: authHeader1,
   Accept: 'application/json',
   'Intercom-Version': '1.4',
   'User-Agent': 'RudderStack',
@@ -15,7 +15,7 @@ const commonHeaders = {
 
 const unauthorizedResponseHeaders = {
   'Content-Type': 'application/json',
-  Authorization: getAuthHeader_2(),
+  Authorization: authHeader2,
   Accept: 'application/json',
   'Intercom-Version': '1.4',
   'User-Agent': 'RudderStack',

@@ -1,4 +1,4 @@
-import { getAuthHeader_1, getSecret_1 } from '../maskedSecrets';
+import { authHeader1, secret1 } from '../maskedSecrets';
 export const data = [
   {
     name: 'courier',
@@ -74,7 +74,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
               },
             },
           },
@@ -93,7 +93,7 @@ export const data = [
               endpoint: 'https://api.courier.com/inbound/rudderstack',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -152,7 +152,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
               },
             },
           },
@@ -171,7 +171,7 @@ export const data = [
               endpoint: 'https://api.courier.com/inbound/rudderstack',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -230,7 +230,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
               },
             },
           },
@@ -282,7 +282,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
               },
             },
           },
@@ -301,7 +301,7 @@ export const data = [
               endpoint: 'https://api.courier.com/inbound/rudderstack',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
               },
               params: {},
               body: {

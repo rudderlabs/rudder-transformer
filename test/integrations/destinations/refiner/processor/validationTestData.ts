@@ -1,4 +1,4 @@
-import { getSecret_1 } from '../maskedSecrets';
+import { secret1 } from '../maskedSecrets';
 import { Destination } from '../../../../../src/types';
 import { ProcessorTestData } from '../../../testTypes';
 import { generateMetadata } from '../../../testUtils';
@@ -13,7 +13,7 @@ const destination: Destination = {
     Config: {},
   },
   Config: {
-    apiKey: getSecret_1(),
+    apiKey: secret1,
     blacklistedEvents: [{ eventName: '' }],
     eventDelivery: true,
     eventDeliveryTS: 1665474171943,

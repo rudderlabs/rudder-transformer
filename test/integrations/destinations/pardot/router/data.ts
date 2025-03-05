@@ -1,4 +1,4 @@
-import { getAuthHeader_1, getSecret_1, getAuthHeader_2, getSecret_2 } from '../maskedSecrets';
+import { authHeader1, secret1, authHeader2, secret2 } from '../maskedSecrets';
 import { FEATURES, MODULES } from '../../../../../src/v0/util/tags';
 
 export const data = [
@@ -57,7 +57,7 @@ export const data = [
               },
               metadata: {
                 jobId: 1,
-                secret: { access_token: getSecret_1(), refresh_token: 'myRefreshToken' },
+                secret: { access_token: secret1, refresh_token: 'myRefreshToken' },
                 userId: 'u1',
               },
               message: {
@@ -164,7 +164,7 @@ export const data = [
               },
               metadata: {
                 jobId: 2,
-                secret: { access_token: getSecret_1(), refresh_token: 'myRefreshToken' },
+                secret: { access_token: secret1, refresh_token: 'myRefreshToken' },
                 userId: 'u1',
               },
               message: {
@@ -270,7 +270,7 @@ export const data = [
               },
               metadata: {
                 jobId: 3,
-                secret: { access_token: getSecret_1(), refresh_token: 'myRefreshToken' },
+                secret: { access_token: secret1, refresh_token: 'myRefreshToken' },
                 userId: 'u1',
               },
               message: {
@@ -377,7 +377,7 @@ export const data = [
               },
               metadata: {
                 jobId: 4,
-                secret: { access_token: getSecret_2(), refresh_token: 'myRefreshToken' },
+                secret: { access_token: secret2, refresh_token: 'myRefreshToken' },
                 userId: 'u1',
               },
               message: {
@@ -558,7 +558,7 @@ export const data = [
                 method: 'POST',
                 endpoint: 'https://pi.pardot.com/api/prospect/version/4/do/upsert/id/123435',
                 headers: {
-                  Authorization: getAuthHeader_1(),
+                  Authorization: authHeader1,
                   'Pardot-Business-Unit-Id': '0Uv2v000000k9tHCAQ',
                 },
                 params: {},
@@ -579,7 +579,7 @@ export const data = [
               metadata: [
                 {
                   jobId: 1,
-                  secret: { access_token: getSecret_1(), refresh_token: 'myRefreshToken' },
+                  secret: { access_token: secret1, refresh_token: 'myRefreshToken' },
                   userId: 'u1',
                 },
               ],
@@ -636,7 +636,7 @@ export const data = [
                 endpoint:
                   'https://pi.pardot.com/api/prospect/version/4/do/upsert/email/Roger_12@waltair.io',
                 headers: {
-                  Authorization: getAuthHeader_1(),
+                  Authorization: authHeader1,
                   'Pardot-Business-Unit-Id': '0Uv2v000000k9tHCAQ',
                 },
                 params: {},
@@ -657,7 +657,7 @@ export const data = [
               metadata: [
                 {
                   jobId: 2,
-                  secret: { access_token: getSecret_1(), refresh_token: 'myRefreshToken' },
+                  secret: { access_token: secret1, refresh_token: 'myRefreshToken' },
                   userId: 'u1',
                 },
               ],
@@ -714,7 +714,7 @@ export const data = [
                 endpoint:
                   'https://pi.pardot.com/api/prospect/version/4/do/upsert/fid/00Q6r000002LKhTPVR',
                 headers: {
-                  Authorization: getAuthHeader_1(),
+                  Authorization: authHeader1,
                   'Pardot-Business-Unit-Id': '0Uv2v000000k9tHCAQ',
                 },
                 params: {},
@@ -735,7 +735,7 @@ export const data = [
               metadata: [
                 {
                   jobId: 3,
-                  secret: { access_token: getSecret_1(), refresh_token: 'myRefreshToken' },
+                  secret: { access_token: secret1, refresh_token: 'myRefreshToken' },
                   userId: 'u1',
                 },
               ],
@@ -792,7 +792,7 @@ export const data = [
                 endpoint:
                   'https://pi.pardot.com/api/prospect/version/4/do/upsert/email/rolex_waltair@mywebsite.io',
                 headers: {
-                  Authorization: getAuthHeader_2(),
+                  Authorization: authHeader2,
                   'Pardot-Business-Unit-Id': '0Uv2v000000k9tHCAQ',
                 },
                 params: {},
@@ -813,7 +813,7 @@ export const data = [
               metadata: [
                 {
                   jobId: 4,
-                  secret: { access_token: getSecret_2(), refresh_token: 'myRefreshToken' },
+                  secret: { access_token: secret2, refresh_token: 'myRefreshToken' },
                   userId: 'u1',
                 },
               ],
@@ -937,7 +937,7 @@ export const data = [
           method: 'POST',
           endpoint: 'https://pi.pardot.com/api/prospect/version/4/do/upsert/id/123435',
           headers: {
-            Authorization: getAuthHeader_1(),
+            Authorization: authHeader1,
             'Pardot-Business-Unit-Id': '0Uv2v000000k9tHCAQ',
           },
           body: {
@@ -1073,7 +1073,7 @@ export const data = [
           endpoint:
             'https://pi.pardot.com/api/prospect/version/4/do/upsert/email/Roger_12@waltair.io',
           headers: {
-            Authorization: getAuthHeader_1(),
+            Authorization: authHeader1,
             'Pardot-Business-Unit-Id': '0Uv2v000000k9tHCAQ',
           },
           body: {
@@ -1208,7 +1208,7 @@ export const data = [
           method: 'POST',
           endpoint: 'https://pi.pardot.com/api/prospect/version/4/do/upsert/fid/00Q6r000002LKhTPVR',
           headers: {
-            Authorization: getAuthHeader_1(),
+            Authorization: authHeader1,
             'Pardot-Business-Unit-Id': '0Uv2v000000k9tHCAQ',
           },
           body: {
@@ -1344,7 +1344,7 @@ export const data = [
           endpoint:
             'https://pi.pardot.com/api/prospect/version/4/do/upsert/email/rolex_waltair@mywebsite.io',
           headers: {
-            Authorization: getAuthHeader_2(),
+            Authorization: authHeader2,
             'Pardot-Business-Unit-Id': '0Uv2v000000k9tHCAQ',
           },
           body: {

@@ -1,4 +1,4 @@
-import { getSecret_1 } from '../maskedSecrets';
+import { secret1 } from '../maskedSecrets';
 import { ProxyV1TestData } from '../../../testTypes';
 import { generateMetadata, generateProxyV1Payload } from '../../../testUtils';
 import { headers, headersWithRevokedAccessToken, RouterNetworkErrorStatTags } from '../common';
@@ -39,7 +39,7 @@ export const oauthScenariosV0 = [
         body: generateProxyV1Payload({
           ...commonRequestParameters,
           headers: headersWithRevokedAccessToken,
-          accessToken: getSecret_1(),
+          accessToken: secret1,
         }),
         method: 'POST',
       },
@@ -123,7 +123,7 @@ export const oauthScenariosV1: ProxyV1TestData[] = [
         body: generateProxyV1Payload({
           ...commonRequestParameters,
           headers: headersWithRevokedAccessToken,
-          accessToken: getSecret_1(),
+          accessToken: secret1,
         }),
         method: 'POST',
       },
@@ -140,7 +140,7 @@ export const oauthScenariosV1: ProxyV1TestData[] = [
                 statusCode: 400,
                 metadata: {
                   ...generateMetadata(1),
-                  secret: { accessToken: getSecret_1() },
+                  secret: { accessToken: secret1 },
                 },
               },
             ],

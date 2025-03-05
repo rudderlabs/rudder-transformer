@@ -9,6 +9,7 @@ import {
   wrongIdentifyData,
   wrongTrackData,
 } from './network';
+import { defaultAccessToken } from '../../../common/secrets';
 
 export const statTags = {
   destType: 'ITERABLE',
@@ -32,7 +33,7 @@ export const singleMetadata = [
     workspaceId: 'default-workspaceId',
     sourceId: 'default-sourceId',
     secret: {
-      accessToken: 'default-accessToken',
+      accessToken: defaultAccessToken,
     },
     dontBatch: false,
   },

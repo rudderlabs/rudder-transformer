@@ -1,4 +1,4 @@
-import { getAuthHeader_1, getSecret_1 } from '../maskedSecrets';
+import { authHeader1, secret1 } from '../maskedSecrets';
 export const data = [
   {
     name: 'splitio',
@@ -37,7 +37,7 @@ export const data = [
               },
               metadata: { jobId: 1, userId: 'u1' },
               destination: {
-                Config: { apiKey: getSecret_1(), environment: 'staging', trafficType: 'user' },
+                Config: { apiKey: secret1, environment: 'staging', trafficType: 'user' },
               },
             },
           ],
@@ -57,7 +57,7 @@ export const data = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://events.split.io/api/events',
-                headers: { 'Content-Type': 'application/json', Authorization: getAuthHeader_1() },
+                headers: { 'Content-Type': 'application/json', Authorization: authHeader1 },
                 params: {},
                 body: {
                   JSON: {
@@ -78,7 +78,7 @@ export const data = [
               batched: false,
               statusCode: 200,
               destination: {
-                Config: { apiKey: getSecret_1(), environment: 'staging', trafficType: 'user' },
+                Config: { apiKey: secret1, environment: 'staging', trafficType: 'user' },
               },
             },
           ],
@@ -120,7 +120,7 @@ export const data = [
               },
               metadata: { jobId: 2, userId: 'u1' },
               destination: {
-                Config: { apiKey: getSecret_1(), environment: 'staging', trafficType: 'user' },
+                Config: { apiKey: secret1, environment: 'staging', trafficType: 'user' },
               },
             },
           ],
@@ -140,7 +140,7 @@ export const data = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://events.split.io/api/events',
-                headers: { 'Content-Type': 'application/json', Authorization: getAuthHeader_1() },
+                headers: { 'Content-Type': 'application/json', Authorization: authHeader1 },
                 params: {},
                 body: {
                   JSON: {
@@ -161,7 +161,7 @@ export const data = [
               batched: false,
               statusCode: 200,
               destination: {
-                Config: { apiKey: getSecret_1(), environment: 'staging', trafficType: 'user' },
+                Config: { apiKey: secret1, environment: 'staging', trafficType: 'user' },
               },
             },
           ],

@@ -1,8 +1,9 @@
-import { getAuthHeader_1 } from '../maskedSecrets';
 import { ProxyV1TestData } from '../../../testTypes';
 import { generateProxyV1Payload, generateMetadata } from '../../../testUtils';
+import { defaultAccessTokenAuthHeader } from '../../../common/secrets';
+
 export const headers = {
-  Authorization: getAuthHeader_1(),
+  Authorization: defaultAccessTokenAuthHeader,
   'Content-Type': 'application/json',
   Accept: 'application/json',
 };

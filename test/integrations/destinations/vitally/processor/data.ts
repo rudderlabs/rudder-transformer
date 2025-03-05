@@ -1,4 +1,4 @@
-import { getAuthHeader_1, getSecret_1 } from '../maskedSecrets';
+import { authHeader1, secret1 } from '../maskedSecrets';
 export const data = [
   {
     name: 'vitally',
@@ -12,7 +12,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKeyVitally: getSecret_1(),
+                apiKeyVitally: secret1,
               },
               DestinationDefinition: {
                 Config: {
@@ -67,7 +67,7 @@ export const data = [
               method: 'POST',
               userId: '',
               headers: {
-                authorization: getAuthHeader_1(),
+                authorization: authHeader1,
                 'content-type': 'application/json',
               },
             },
@@ -93,7 +93,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKeyVitally: getSecret_1(),
+                apiKeyVitally: secret1,
               },
               DestinationDefinition: {
                 Config: {
@@ -146,7 +146,7 @@ export const data = [
               method: 'POST',
               userId: '',
               headers: {
-                authorization: getAuthHeader_1(),
+                authorization: authHeader1,
                 'content-type': 'application/json',
               },
             },
@@ -172,7 +172,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKeyVitally: getSecret_1(),
+                apiKeyVitally: secret1,
               },
               DestinationDefinition: {
                 Config: {
@@ -221,7 +221,7 @@ export const data = [
               method: 'POST',
               userId: '',
               headers: {
-                authorization: getAuthHeader_1(),
+                authorization: authHeader1,
                 'content-type': 'application/json',
               },
             },
@@ -248,7 +248,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKeyVitally: getSecret_1(),
+                apiKeyVitally: secret1,
               },
               DestinationDefinition: {
                 Config: {

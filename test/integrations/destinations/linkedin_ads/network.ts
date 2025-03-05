@@ -1,6 +1,8 @@
-import { getAuthHeader_1, getAuthHeader_2, getAuthHeader_3 } from './maskedSecrets';
+import { defaultAccessTokenAuthHeader } from '../../common/secrets';
+import { authHeader1, authHeader2 } from './maskedSecrets';
+
 export const headerBlockWithCorrectAccessToken = {
-  Authorization: getAuthHeader_1(),
+  Authorization: defaultAccessTokenAuthHeader,
   'Content-Type': 'application/json',
   'LinkedIn-Version': '202409',
   'X-RestLi-Method': 'BATCH_CREATE',
@@ -68,7 +70,10 @@ const businessMockData = [
     httpReq: {
       method: 'post',
       url: 'https://api.linkedin.com/rest/conversionEvents',
-      headers: { ...headerBlockWithCorrectAccessToken, Authorization: getAuthHeader_3() },
+      headers: {
+        ...headerBlockWithCorrectAccessToken,
+        Authorization: authHeader1,
+      },
       data: testJSONData,
     },
     httpRes: {
@@ -87,7 +92,10 @@ const businessMockData = [
     httpReq: {
       method: 'post',
       url: 'https://api.linkedin.com/rest/conversionEvents',
-      headers: { ...headerBlockWithCorrectAccessToken, Authorization: getAuthHeader_2() },
+      headers: {
+        ...headerBlockWithCorrectAccessToken,
+        Authorization: authHeader2,
+      },
       data: testJSONData,
     },
     httpRes: {

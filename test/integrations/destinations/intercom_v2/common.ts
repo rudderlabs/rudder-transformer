@@ -1,5 +1,6 @@
-import { getAuthHeader_1 } from './maskedSecrets';
+import { authHeader1 } from './maskedSecrets';
 import { Destination } from '../../../../src/types';
+import { defaultAccessToken } from '../../common/secrets';
 
 const destTypeInUpperCase = 'INTERCOM_V2';
 const channel = 'web';
@@ -104,7 +105,7 @@ const properties = {
 };
 
 const headers = {
-  Authorization: 'Bearer default-accessToken',
+  Authorization: `Bearer ${defaultAccessToken}`,
   Accept: 'application/json',
   'Content-Type': 'application/json',
   'Intercom-Version': '2.10',
@@ -112,7 +113,7 @@ const headers = {
 
 const headersWithRevokedAccessToken = {
   ...headers,
-  Authorization: getAuthHeader_1(),
+  Authorization: authHeader1,
 };
 
 const RouterInstrumentationErrorStatTags = {

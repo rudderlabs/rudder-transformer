@@ -1,4 +1,4 @@
-import { getAuthHeader_1, getSecret_1, getSecret_2 } from '../maskedSecrets';
+import { authHeader1, secret1, secret2 } from '../maskedSecrets';
 export const data = [
   {
     name: 'trengo',
@@ -12,7 +12,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiToken: getSecret_1(),
+                apiToken: secret1,
                 channelId: 'trengo_email_channel',
                 channelIdentifier: 'email',
                 enableDedup: true,
@@ -72,7 +72,7 @@ export const data = [
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -106,7 +106,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiToken: getSecret_1(),
+                apiToken: secret1,
                 channelId: 'trengo_email_channel',
                 channelIdentifier: 'phone',
                 enableDedup: true,
@@ -187,7 +187,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiToken: getSecret_1(),
+                apiToken: secret1,
                 channelId: 'trengo_phone_channel',
                 channelIdentifier: 'phone',
                 enableDedup: true,
@@ -247,7 +247,7 @@ export const data = [
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -281,7 +281,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiToken: getSecret_1(),
+                apiToken: secret1,
                 channelId: 'trengo_phone_channel',
                 channelIdentifier: 'phone',
                 enableDedup: true,
@@ -362,7 +362,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiToken: getSecret_1(),
+                apiToken: secret1,
                 channelId: 'trengo_phone_channel',
                 channelIdentifier: 'phone',
                 enableDedup: true,
@@ -442,7 +442,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiToken: getSecret_1(),
+                apiToken: secret1,
                 channelId: 'trengo_phone_channel',
                 channelIdentifier: 'phone',
                 enableDedup: false,
@@ -502,7 +502,7 @@ export const data = [
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -536,7 +536,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiToken: getSecret_1(),
+                apiToken: secret1,
                 channelId: 'trengo_email_channel',
                 channelIdentifier: 'email',
                 enableDedup: false,
@@ -601,7 +601,7 @@ export const data = [
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -635,7 +635,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiToken: getSecret_1(),
+                apiToken: secret1,
                 channelId: 'trengo_email_channel',
                 channelIdentifier: 'email',
                 enableDedup: false,
@@ -696,7 +696,7 @@ export const data = [
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -730,7 +730,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiToken: getSecret_1(),
+                apiToken: secret1,
                 channelId: 'trengo_phone_channel',
                 channelIdentifier: 'phone',
                 enableDedup: false,
@@ -812,7 +812,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiToken: getSecret_1(),
+                apiToken: secret1,
                 channelId: 'trengo_phone_channel',
                 channelIdentifier: 'email',
                 enableDedup: false,
@@ -879,7 +879,7 @@ export const data = [
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -913,7 +913,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiToken: getSecret_1(),
+                apiToken: secret1,
                 channelId: 'trengo_phone_channel',
                 channelIdentifier: 'email',
                 enableDedup: false,
@@ -980,7 +980,7 @@ export const data = [
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -1010,7 +1010,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiToken: getSecret_1(),
+                apiToken: secret1,
                 channelId: 'trengo_phone_channel',
                 channelIdentifier: 'email',
                 enableDedup: false,
@@ -1077,7 +1077,7 @@ export const data = [
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -1107,7 +1107,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiToken: getSecret_1(),
+                apiToken: secret1,
                 channelId: 'trengo_phone_channel',
                 channelIdentifier: 'email',
                 enableDedup: false,
@@ -1174,7 +1174,7 @@ export const data = [
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -1208,7 +1208,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiToken: getSecret_1(),
+                apiToken: secret1,
                 channelId: 'trengo_phone_channel',
                 channelIdentifier: 'email',
                 enableDedup: false,
@@ -1294,7 +1294,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiToken: getSecret_1(),
+                apiToken: secret1,
                 channelId: 'trengo_phone_channel',
                 channelIdentifier: 'phone',
                 enableDedup: true,
@@ -1354,7 +1354,7 @@ export const data = [
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
               },
               params: {},
               body: { JSON: { name: 'Thalmor Bretz 2' }, XML: {}, JSON_ARRAY: {}, FORM: {} },
@@ -1379,7 +1379,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiToken: getSecret_1(),
+                apiToken: secret1,
                 channelId: 'trengo_phone_channel',
                 channelIdentifier: 'email',
                 enableDedup: false,
@@ -1444,7 +1444,7 @@ export const data = [
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -1475,7 +1475,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiToken: getSecret_2(),
+                apiToken: secret2,
                 channelId: 'trengo_phone_channel',
                 channelIdentifier: 'email',
                 enableDedup: false,

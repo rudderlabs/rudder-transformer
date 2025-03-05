@@ -4,9 +4,10 @@ import {
   generateProxyV0Payload,
   generateProxyV1Payload,
 } from '../../../testUtils';
+import { authHeader1 } from '../maskedSecrets';
 
 const commonHeaders = {
-  Authorization: 'Bearer abcd123',
+  Authorization: authHeader1,
   'Content-Type': 'application/json',
   'User-Agent': 'RudderLabs',
 };

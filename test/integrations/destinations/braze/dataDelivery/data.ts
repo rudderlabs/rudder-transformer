@@ -1,6 +1,7 @@
 import MockAdapter from 'axios-mock-adapter';
 import { testScenariosForV1API } from './business';
 import { otherScenariosV1 } from './other';
+import { authHeader1 } from '../maskedSecrets';
 
 export const existingTestData = [
   {
@@ -18,7 +19,7 @@ export const existingTestData = [
           userId: 'gabi_userId_45',
           headers: {
             Accept: 'application/json',
-            Authorization: 'Bearer api_key',
+            Authorization: authHeader1,
             'Content-Type': 'application/json',
           },
           body: {
@@ -79,7 +80,7 @@ export const existingTestData = [
           userId: 'gabi_userId_45',
           headers: {
             Accept: 'application/json',
-            Authorization: 'Bearer api_key',
+            Authorization: authHeader1,
             'Content-Type': 'application/json',
           },
           body: {
@@ -140,7 +141,7 @@ export const existingTestData = [
           userId: 'gabi_userId_45',
           headers: {
             Accept: 'application/json',
-            Authorization: 'Bearer api_key',
+            Authorization: authHeader1,
             'Content-Type': 'application/json',
           },
           body: {
@@ -211,7 +212,7 @@ export const existingTestData = [
           userId: 'gabi_userId_45',
           headers: {
             Accept: 'application/json',
-            Authorization: 'Bearer api_key',
+            Authorization: authHeader1,
             'Content-Type': 'application/json',
           },
           body: {
@@ -269,7 +270,7 @@ export const existingTestData = [
           userId: 'gabi_userId_45',
           headers: {
             Accept: 'application/json',
-            Authorization: 'Bearer api_key',
+            Authorization: authHeader1,
             'Content-Type': 'application/json',
           },
           body: {
@@ -337,7 +338,7 @@ export const existingTestData = [
           userId: 'gabi_userId_45',
           headers: {
             Accept: 'application/json',
-            Authorization: 'Bearer api_key',
+            Authorization: authHeader1,
             'Content-Type': 'application/json',
           },
           body: {
@@ -404,7 +405,7 @@ export const existingTestData = [
           },
           {
             Accept: 'application/json',
-            Authorization: 'Bearer api_key',
+            Authorization: authHeader1,
             'Content-Type': 'application/json',
             'User-Agent': 'RudderLabs',
           },
@@ -431,7 +432,7 @@ export const existingTestData = [
           userId: 'gabi_userId_45',
           headers: {
             Accept: 'application/json',
-            Authorization: 'Bearer api_key',
+            Authorization: authHeader1,
             'Content-Type': 'application/json',
           },
           body: {
@@ -499,7 +500,7 @@ export const existingTestData = [
           userId: 'gabi_userId_45',
           headers: {
             Accept: 'application/json',
-            Authorization: 'Bearer api_key',
+            Authorization: authHeader1,
             'Content-Type': 'application/json',
           },
           body: {
@@ -587,7 +588,7 @@ export const existingTestData = [
           userId: 'gabi_userId_45',
           headers: {
             Accept: 'application/json',
-            Authorization: 'Bearer api_key',
+            Authorization: authHeader1,
             'Content-Type': 'application/json',
           },
           body: {
@@ -686,7 +687,7 @@ export const existingTestData = [
           userId: 'gabi_userId_45',
           headers: {
             Accept: 'application/json',
-            Authorization: 'Bearer api_key',
+            Authorization: authHeader1,
             'Content-Type': 'application/json',
           },
           body: {

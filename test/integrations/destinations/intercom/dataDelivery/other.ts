@@ -1,4 +1,4 @@
-import { getAuthHeader_1 } from '../maskedSecrets';
+import { authHeader1 } from '../maskedSecrets';
 import { ProxyV1TestData } from '../../../testTypes';
 import {
   generateMetadata,
@@ -8,7 +8,7 @@ import {
 
 const commonHeaders = {
   'Content-Type': 'application/json',
-  Authorization: getAuthHeader_1(),
+  Authorization: authHeader1,
   Accept: 'application/json',
   'Intercom-Version': '1.4',
   'User-Agent': 'RudderStack',

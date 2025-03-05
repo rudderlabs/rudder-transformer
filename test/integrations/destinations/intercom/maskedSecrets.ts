@@ -1,10 +1,10 @@
-// Auto-generated masked secrets file
+import path from 'path';
 
-export const getAuthHeader_1 = () => `Bearer ${getSecret_1()}`;
-export const getSecret_1 = () => 'testApiKey';
-export const getAuthHeader_2 = () => `Bearer ${getSecret_2()}`;
-export const getSecret_2 = () => 'invalidApiKey';
-export const getAuthHeader_3 = () => `Bearer ${getSecret_3()}`;
-export const getSecret_3 = () => 'abcd=';
-export const getAuthHeader_4 = () => `Bearer ${getSecret_4()}`;
-export const getSecret_4 = () => 'intercomApiKey';
+export const secret1 = path.basename(__dirname) + 1;
+export const secret2 = path.basename(__dirname) + 2;
+export const secret3 = path.basename(__dirname) + 3;
+export const secret4 = path.basename(__dirname) + 4;
+export const authHeader1 = `Bearer ${secret1}`;
+export const authHeader2 = `Bearer ${secret2}`;
+export const authHeader3 = `Bearer ${secret3}`;
+export const authHeader4 = `Bearer ${secret4}`;

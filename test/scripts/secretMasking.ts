@@ -501,7 +501,7 @@ function createUniqueSecrets(matches: SecretMatch[]): MaskedSecret[] {
 
 // Create the maskedSecrets.ts file
 async function createMaskedSecretsFile(filePath: string, secrets: MaskedSecret[]): Promise<void> {
-  let content = '// Auto-generated masked secrets file\n\n';
+  let content = '\n\n';
 
   // Create a map to eliminate duplicates
   const constantsMap = new Map<string, string>();

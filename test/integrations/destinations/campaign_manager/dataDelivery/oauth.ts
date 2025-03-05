@@ -1,10 +1,12 @@
 import { ProxyV1TestData } from '../../../testTypes';
 import { generateProxyV1Payload, generateProxyV0Payload } from '../../../testUtils';
+import { defaultAccessToken } from '../../../common/secrets';
+import { authHeader1 } from '../../am/maskedSecrets';
 // Boilerplat data for the test cases
 // ======================================
 
 const commonHeaders = {
-  Authorization: 'Bearer dummyApiKey',
+  Authorization: authHeader1,
   'Content-Type': 'application/json',
 };
 
@@ -342,7 +344,7 @@ export const v1oauthScenarios: ProxyV1TestData[] = [
                   workspaceId: 'default-workspaceId',
                   sourceId: 'default-sourceId',
                   secret: {
-                    accessToken: 'default-accessToken',
+                    accessToken: defaultAccessToken,
                   },
                   dontBatch: false,
                 },
@@ -405,7 +407,7 @@ export const v1oauthScenarios: ProxyV1TestData[] = [
                   workspaceId: 'default-workspaceId',
                   sourceId: 'default-sourceId',
                   secret: {
-                    accessToken: 'default-accessToken',
+                    accessToken: defaultAccessToken,
                   },
                   dontBatch: false,
                 },
@@ -468,7 +470,7 @@ export const v1oauthScenarios: ProxyV1TestData[] = [
                   workspaceId: 'default-workspaceId',
                   sourceId: 'default-sourceId',
                   secret: {
-                    accessToken: 'default-accessToken',
+                    accessToken: defaultAccessToken,
                   },
                   dontBatch: false,
                 },
@@ -530,7 +532,7 @@ export const v1oauthScenarios: ProxyV1TestData[] = [
                   workspaceId: 'default-workspaceId',
                   sourceId: 'default-sourceId',
                   secret: {
-                    accessToken: 'default-accessToken',
+                    accessToken: defaultAccessToken,
                   },
                   dontBatch: false,
                 },

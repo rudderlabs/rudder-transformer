@@ -1,9 +1,9 @@
-import { getAuthHeader_1, getAuthHeader_2 } from './maskedSecrets';
+import { authHeader1, authHeader2 } from './maskedSecrets';
 export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: getAuthHeader_1(),
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
       },
       method: 'GET',
@@ -14,7 +14,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: getAuthHeader_1(),
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
       },
       method: 'GET',
@@ -25,7 +25,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: getAuthHeader_1(),
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
       },
       method: 'GET',
@@ -675,7 +675,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: getAuthHeader_2(),
+        Authorization: authHeader2,
         'Content-Type': 'application/json',
       },
       method: 'GET',
@@ -1325,7 +1325,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: getAuthHeader_2(),
+        Authorization: authHeader2,
         'Content-Type': 'application/json',
       },
       method: 'GET',
@@ -3222,7 +3222,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: getAuthHeader_2(),
+        Authorization: authHeader2,
         'Content-Type': 'application/json',
       },
       method: 'GET',

@@ -1,4 +1,4 @@
-import { getAuthHeader_1 } from '../maskedSecrets';
+import { authHeader1 } from '../maskedSecrets';
 const API_VERSION = 'v18';
 
 import {
@@ -40,7 +40,7 @@ const requestPayload = {
 };
 
 const headers = {
-  Authorization: getAuthHeader_1(),
+  Authorization: authHeader1,
   'Content-Type': 'application/json',
   'developer-token': 'ijkl91011',
   'login-customer-id': '0987654321',

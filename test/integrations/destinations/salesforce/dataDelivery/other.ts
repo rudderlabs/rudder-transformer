@@ -1,5 +1,6 @@
 import { ProxyV1TestData } from '../../../testTypes';
 import { generateProxyV1Payload } from '../../../testUtils';
+import { defaultAccessToken } from '../../../common/secrets';
 
 const statTags = {
   errorCategory: 'network',
@@ -19,7 +20,7 @@ const metadata = {
   workspaceId: 'default-workspaceId',
   sourceId: 'default-sourceId',
   secret: {
-    accessToken: 'default-accessToken',
+    accessToken: defaultAccessToken,
   },
   dontBatch: false,
 };

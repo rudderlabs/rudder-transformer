@@ -1,4 +1,4 @@
-const { ConfigurationError } = require('@rudderstack/integrations-lib');
+const { ConfigurationError, generateRandomString } = require('@rudderstack/integrations-lib');
 const axios = require('axios');
 const MockAxiosAdapter = require('axios-mock-adapter');
 const { responseBuilderSimple, responseBuilderForMessageEvent } = require('./transform');
@@ -134,7 +134,7 @@ describe('responseBuilderSimple', () => {
       },
     };
     const subDomain = 'subdomain';
-    const authToken = 'token';
+    const authToken = generateRandomString();
     const hashMapEventDefinition = {
       testevent: 'eventDefinitionKey',
     };
@@ -151,7 +151,7 @@ describe('responseBuilderSimple', () => {
     );
     expect(response.headers).toEqual({
       'Content-Type': 'application/json',
-      Authorization: 'Bearer token',
+      Authorization: `Bearer ${authToken}`,
     });
     expect(response.body.JSON).toEqual({
       ContactKey: '12345',

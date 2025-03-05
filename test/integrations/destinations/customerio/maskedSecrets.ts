@@ -1,20 +1,15 @@
+import path from 'path';
 import { base64Convertor } from '@rudderstack/integrations-lib';
 
-// Auto-generated masked secrets file
-
-export const getAuthHeader_1 = () =>
-  `Basic ${base64Convertor(getSecret_1() + ':' + getSecret_2())}`;
-export const getSecret_1 = () => '46be54768e7d49ab2628';
-export const getSecret_2 = () => 'dummyApiKey';
-export const getAuthHeader_2 = () =>
-  `Basic ${base64Convertor(getSecret_3() + ':' + getSecret_4())}`;
-export const getSecret_3 = () => 'eead090ab9e2e35004dc';
-export const getSecret_4 = () => 'a292d85ac36de15fc219';
-export const getAuthHeader_3 = () =>
-  `Basic ${base64Convertor(getSecret_5() + ':' + getSecret_6())}`;
-export const getSecret_5 = () => 'DESU SAI';
-export const getSecret_6 = () => 'DESAU SAI';
-export const getAuthHeader_4 = () =>
-  `Basic ${base64Convertor(getSecret_7() + ':' + getSecret_8())}`;
-export const getSecret_7 = () => 'c0efdbd20b9fbe24a7e2';
-export const getSecret_8 = () => 'ef32c3f60fb98f39ef35';
+export const secret1 = path.basename(__dirname) + 1;
+export const secret2 = path.basename(__dirname) + 2;
+export const secret3 = path.basename(__dirname) + 3;
+export const secret4 = path.basename(__dirname) + 4;
+export const secret5 = path.basename(__dirname) + 5;
+export const secret6 = path.basename(__dirname) + 6;
+export const secret7 = path.basename(__dirname) + 7;
+export const secret8 = path.basename(__dirname) + 8;
+export const authHeader1 = `Basic ${base64Convertor(secret1 + ':' + secret2)}`;
+export const authHeader2 = `Basic ${base64Convertor(secret3 + ':' + secret4)}`;
+export const authHeader3 = `Basic ${base64Convertor(secret5 + ':' + secret6)}`;
+export const authHeader4 = `Basic ${base64Convertor(secret7 + ':' + secret8)}`;

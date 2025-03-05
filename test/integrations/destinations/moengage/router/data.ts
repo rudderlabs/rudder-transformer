@@ -1,4 +1,4 @@
-import { getAuthHeader_1, getSecret_1, getSecret_2 } from '../maskedSecrets';
+import { authHeader1, secret1, secret2 } from '../maskedSecrets';
 const mockFns = (_) => {
   jest.spyOn(Date, 'now').mockReturnValueOnce(new Date('2023-10-14T00:00:00.000Z').valueOf());
 };
@@ -142,8 +142,8 @@ export const data = [
                   },
                 },
                 Config: {
-                  apiId: getSecret_1(),
-                  apiKey: getSecret_2(),
+                  apiId: secret1,
+                  apiKey: secret2,
                   eventDelivery: false,
                   eventDeliveryTS: 1602757086384,
                   region: 'US',
@@ -219,8 +219,8 @@ export const data = [
                   },
                 },
                 Config: {
-                  apiId: getSecret_1(),
-                  apiKey: getSecret_2(),
+                  apiId: secret1,
+                  apiKey: secret2,
                   eventDelivery: false,
                   eventDeliveryTS: 1602757086384,
                   region: 'US',
@@ -246,11 +246,11 @@ export const data = [
                 version: '1',
                 type: 'REST',
                 method: 'POST',
-                endpoint: 'https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA',
+                endpoint: `https://api-01.moengage.com/v1/event/${secret1}`,
                 headers: {
                   'Content-Type': 'application/json',
-                  'MOE-APPKEY': getSecret_1(),
-                  Authorization: getAuthHeader_1(),
+                  'MOE-APPKEY': secret1,
+                  Authorization: authHeader1,
                 },
                 params: {},
                 body: {
@@ -353,8 +353,8 @@ export const data = [
                   },
                 },
                 Config: {
-                  apiId: getSecret_1(),
-                  apiKey: getSecret_2(),
+                  apiId: secret1,
+                  apiKey: secret2,
                   eventDelivery: false,
                   eventDeliveryTS: 1602757086384,
                   region: 'US',
@@ -369,11 +369,11 @@ export const data = [
                 version: '1',
                 type: 'REST',
                 method: 'POST',
-                endpoint: 'https://api-01.moengage.com/v1/customer/W0ZHNMPI2O4KHJ48ZILZACRA',
+                endpoint: `https://api-01.moengage.com/v1/customer/${secret1}`,
                 headers: {
                   'Content-Type': 'application/json',
-                  'MOE-APPKEY': getSecret_1(),
-                  Authorization: getAuthHeader_1(),
+                  'MOE-APPKEY': secret1,
+                  Authorization: authHeader1,
                 },
                 params: {},
                 body: {
@@ -422,8 +422,8 @@ export const data = [
                   },
                 },
                 Config: {
-                  apiId: getSecret_1(),
-                  apiKey: getSecret_2(),
+                  apiId: secret1,
+                  apiKey: secret2,
                   eventDelivery: false,
                   eventDeliveryTS: 1602757086384,
                   region: 'US',

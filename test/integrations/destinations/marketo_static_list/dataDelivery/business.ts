@@ -1,7 +1,7 @@
 import { ProxyMetdata } from '../../../../../src/types';
 import { ProxyV1TestData } from '../../../testTypes';
 import { generateProxyV1Payload } from '../../../testUtils';
-
+import { authHeader1, authHeaderAccessToken } from '../maskedSecrets';
 export const statTags = {
   aborted: {
     destType: 'MARKETO_STATIC_LIST',
@@ -79,11 +79,11 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
           {
             ...commonRequestParameters,
             headers: {
-              Authorization: 'Bearer Incorrect_token',
+              Authorization: authHeaderAccessToken,
               'Content-Type': 'application/json',
             },
             endpoint:
-              'https://marketo_acct_id_success.mktorest.com/rest/v1/lists/1234/leads.json?id=110&id=111&id=112',
+              'https://marketo_static_list_acct_id_success.mktorest.com/rest/v1/lists/1234/leads.json?id=110&id=111&id=112',
           },
           reqMetadataArray,
         ),
@@ -125,11 +125,11 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
           {
             ...commonRequestParameters,
             headers: {
-              Authorization: 'Bearer Incorrect_token',
+              Authorization: authHeaderAccessToken,
               'Content-Type': 'application/json',
             },
             endpoint:
-              'https://marketo_acct_id_success.mktorest.com/rest/v1/lists/1234/leads.json?id=1&id=2&id=3',
+              'https://marketo_static_list_acct_id_success.mktorest.com/rest/v1/lists/1234/leads.json?id=1&id=2&id=3',
           },
           reqMetadataArray,
         ),
@@ -174,12 +174,12 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
           {
             ...commonRequestParameters,
             headers: {
-              Authorization: 'Bearer token',
+              Authorization: authHeader1,
               'Content-Type': 'application/json',
               'User-Agent': 'RudderLabs',
             },
             endpoint:
-              'https://marketo_acct_id_success.mktorest.com/rest/v1/lists/1234/leads.json?id=1&id=2',
+              'https://marketo_static_list_acct_id_success.mktorest.com/rest/v1/lists/1234/leads.json?id=1&id=2',
           },
           reqMetadataArray,
         ),
@@ -221,7 +221,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
           {
             ...commonRequestParameters,
             headers: {
-              Authorization: 'Bearer test_token_6',
+              Authorization: authHeader1,
               'Content-Type': 'application/json',
               'User-Agent': 'RudderLabs',
             },

@@ -1,6 +1,7 @@
 import { ProxyMetdata } from '../../../../../src/types';
 import { ProxyV1TestData } from '../../../testTypes';
 import { generateProxyV1Payload } from '../../../testUtils';
+import { authHeader1 } from '../maskedSecrets';
 
 const statTags = {
   aborted: {
@@ -86,7 +87,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
           {
             ...commonRequestParameters,
             headers: {
-              Authorization: 'Bearer test_token_1',
+              Authorization: authHeader1,
               'Content-Type': 'application/json',
               'User-Agent': 'RudderLabs',
             },
@@ -132,7 +133,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
           {
             ...commonRequestParameters,
             headers: {
-              Authorization: 'Bearer test_token_2',
+              Authorization: authHeader1,
               'Content-Type': 'application/json',
             },
             endpoint: 'https://mktId.mktorest.com/rest/v1/leads.json/test2',
@@ -179,7 +180,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
           {
             ...commonRequestParameters,
             headers: {
-              Authorization: 'Bearer test_token_3',
+              Authorization: authHeader1,
               'Content-Type': 'application/json',
             },
             endpoint: 'https://mktId.mktorest.com/rest/v1/leads.json/test3',
@@ -226,7 +227,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
           {
             ...commonRequestParameters,
             headers: {
-              Authorization: 'Bearer test_token_4',
+              Authorization: authHeader1,
               'Content-Type': 'application/json',
             },
             endpoint: 'https://mktId.mktorest.com/rest/v1/leads.json/test4',
@@ -270,7 +271,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
         body: generateProxyV1Payload(
           {
             headers: {
-              Authorization: 'Bearer test_token_6',
+              Authorization: authHeader1,
               'Content-Type': 'invalid',
               'User-Agent': 'RudderLabs',
             },
@@ -317,7 +318,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
         body: generateProxyV1Payload(
           {
             headers: {
-              Authorization: 'Bearer test_token_6',
+              Authorization: authHeader1,
               'Content-Type': 'application/json',
               'User-Agent': 'RudderLabs',
             },

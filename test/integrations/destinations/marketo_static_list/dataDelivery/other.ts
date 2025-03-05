@@ -1,6 +1,6 @@
 import { ProxyV1TestData } from '../../../testTypes';
 import { generateProxyV1Payload, generateMetadata } from '../../../testUtils';
-import { reqMetadataArray, statTags } from './business';
+import { statTags } from './business';
 
 export const otherScenariosV1: ProxyV1TestData[] = [
   {

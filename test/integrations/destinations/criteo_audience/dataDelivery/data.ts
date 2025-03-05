@@ -1,4 +1,4 @@
-import { getAuthHeader_1 } from '../maskedSecrets';
+import { defaultAccessTokenAuthHeader } from '../../../common/secrets';
 import { generateMetadata } from '../../../testUtils';
 import { V1BusinessTestScenarion } from './business';
 import { v1OauthScenarios } from './oauth';
@@ -19,7 +19,7 @@ const v0testCases = [
           method: 'PATCH',
           endpoint: 'https://api.criteo.com/2022-10/audiences/34894/contactlist',
           headers: {
-            Authorization: getAuthHeader_1(),
+            Authorization: defaultAccessTokenAuthHeader,
             'Content-Type': 'application/json',
             Accept: 'application/json',
           },
@@ -81,7 +81,7 @@ const v0testCases = [
           method: 'PATCH',
           endpoint: 'https://api.criteo.com/2022-10/audiences/3485/contactlist/expiredAccessToken',
           headers: {
-            Authorization: getAuthHeader_1(),
+            Authorization: defaultAccessTokenAuthHeader,
             'Content-Type': 'application/json',
             Accept: 'application/json',
           },
@@ -161,7 +161,7 @@ const v0testCases = [
           method: 'PATCH',
           endpoint: 'https://api.criteo.com/2022-10/audiences/34895/contactlist/invalidAccessToken',
           headers: {
-            Authorization: getAuthHeader_1(),
+            Authorization: defaultAccessTokenAuthHeader,
             'Content-Type': 'application/json',
             Accept: 'application/json',
           },
@@ -241,7 +241,7 @@ const v0testCases = [
           method: 'PATCH',
           endpoint: 'https://api.criteo.com/2022-10/audiences/34896/contactlist',
           headers: {
-            Authorization: getAuthHeader_1(),
+            Authorization: defaultAccessTokenAuthHeader,
             'Content-Type': 'application/json',
             Accept: 'application/json',
           },
@@ -321,7 +321,7 @@ const v0testCases = [
           method: 'PATCH',
           endpoint: 'https://api.criteo.com/2022-10/audiences/34897/contactlist',
           headers: {
-            Authorization: getAuthHeader_1(),
+            Authorization: defaultAccessTokenAuthHeader,
             'Content-Type': 'application/json',
             Accept: 'application/json',
           },
@@ -400,7 +400,7 @@ const v0testCases = [
           method: 'PATCH',
           endpoint: 'https://api.criteo.com/2022-10/audiences/34898/contactlist',
           headers: {
-            Authorization: getAuthHeader_1(),
+            Authorization: defaultAccessTokenAuthHeader,
             'Content-Type': 'application/json',
             Accept: 'application/json',
           },
@@ -472,7 +472,7 @@ const v0testCases = [
           method: 'PATCH',
           endpoint: 'https://api.criteo.com/2022-10/audiences/34899/contactlist',
           headers: {
-            Authorization: getAuthHeader_1(),
+            Authorization: defaultAccessTokenAuthHeader,
             'Content-Type': 'application/json',
             Accept: 'application/json',
           },

@@ -1,4 +1,4 @@
-import { getAuthHeader_2, getSecret_2 } from '../maskedSecrets';
+import { authHeader2, authHeader3, secret2, secret3 } from '../maskedSecrets';
 export const data = [
   {
     name: 'custify',
@@ -13,7 +13,7 @@ export const data = [
             {
               description: 'Group callw with all parameters',
               destination: {
-                Config: { apiKey: getSecret_2(), sendAnonymousId: false },
+                Config: { apiKey: secret2, sendAnonymousId: false },
                 ID: 'custify-1234',
               },
               metadata: { jobId: 1, userId: 'u1' },
@@ -55,7 +55,7 @@ export const data = [
             {
               description: 'Identify with all parameters',
               destination: {
-                Config: { apiKeyToken: 'pk_123', listId: 'correctListId123' },
+                Config: { apiKeyToken: secret3, listId: 'correctListId123' },
                 ID: 'custify-1234',
               },
               metadata: { jobId: 2, userId: 'u1' },
@@ -109,7 +109,7 @@ export const data = [
                 endpoint: 'https://api.custify.com/people',
                 headers: {
                   'Content-Type': 'application/json',
-                  Authorization: getAuthHeader_2(),
+                  Authorization: authHeader2,
                   Accept: 'application/json',
                 },
                 params: {},
@@ -140,7 +140,7 @@ export const data = [
               batched: false,
               statusCode: 200,
               destination: {
-                Config: { apiKey: getSecret_2(), sendAnonymousId: false },
+                Config: { apiKey: secret2, sendAnonymousId: false },
                 ID: 'custify-1234',
               },
             },
@@ -152,8 +152,8 @@ export const data = [
                 endpoint: 'https://api.custify.com/people',
                 headers: {
                   'Content-Type': 'application/json',
-                  Authorization: 'Bearer undefined',
                   Accept: 'application/json',
+                  Authorization: authHeader3,
                 },
                 params: {},
                 body: {
@@ -190,7 +190,7 @@ export const data = [
               batched: false,
               statusCode: 200,
               destination: {
-                Config: { apiKeyToken: 'pk_123', listId: 'correctListId123' },
+                Config: { apiKeyToken: secret3, listId: 'correctListId123' },
                 ID: 'custify-1234',
               },
             },

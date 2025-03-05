@@ -1,4 +1,4 @@
-import { getAuthHeader_1, getSecret_1 } from '../maskedSecrets';
+import { defaultAccessToken, defaultAccessTokenAuthHeader } from '../../../common/secrets';
 import { generateMetadata, generateRecordPayload } from '../../../testUtils';
 
 export const data = [
@@ -272,7 +272,7 @@ export const data = [
                 endpoint: 'https://api.linkedin.com/rest/dmpSegments/32589526/users',
                 files: {},
                 headers: {
-                  Authorization: getAuthHeader_1(),
+                  Authorization: defaultAccessTokenAuthHeader,
                   'Content-Type': 'application/json',
                   'LinkedIn-Version': '202409',
                   'X-RestLi-Method': 'BATCH_CREATE',
@@ -309,7 +309,7 @@ export const data = [
                   dontBatch: false,
                   jobId: 1,
                   secret: {
-                    accessToken: getSecret_1(),
+                    accessToken: defaultAccessToken,
                   },
                   sourceId: 'default-sourceId',
                   userId: 'default-userId',
@@ -321,7 +321,7 @@ export const data = [
                   dontBatch: false,
                   jobId: 2,
                   secret: {
-                    accessToken: getSecret_1(),
+                    accessToken: defaultAccessToken,
                   },
                   sourceId: 'default-sourceId',
                   userId: 'default-userId',
@@ -359,7 +359,7 @@ export const data = [
                   dontBatch: false,
                   jobId: 3,
                   secret: {
-                    accessToken: getSecret_1(),
+                    accessToken: defaultAccessToken,
                   },
                   sourceId: 'default-sourceId',
                   userId: 'default-userId',

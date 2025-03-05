@@ -1,4 +1,4 @@
-import { getAuthHeader_1, getSecret_1 } from './maskedSecrets';
+import { authHeader1, secret1 } from './maskedSecrets';
 export const data = [
   {
     name: 'factorsai',
@@ -12,7 +12,7 @@ export const data = [
           {
             destination: {
               Config: {
-                factorsAIApiKey: getSecret_1(),
+                factorsAIApiKey: secret1,
               },
             },
             message: {
@@ -88,7 +88,7 @@ export const data = [
               params: {},
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
               },
               version: '1',
               endpoint: 'https://api.factors.ai/integrations/rudderstack_platform',
@@ -111,7 +111,7 @@ export const data = [
           {
             destination: {
               Config: {
-                factorsAIApiKey: getSecret_1(),
+                factorsAIApiKey: secret1,
               },
             },
             message: {
@@ -176,7 +176,7 @@ export const data = [
           {
             destination: {
               Config: {
-                factorsAIApiKey: getSecret_1(),
+                factorsAIApiKey: secret1,
               },
             },
             message: {
@@ -252,7 +252,7 @@ export const data = [
               params: {},
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
               },
               version: '1',
               endpoint: 'https://api.factors.ai/integrations/rudderstack_platform',
@@ -275,7 +275,7 @@ export const data = [
           {
             destination: {
               Config: {
-                factorsAIApiKey: getSecret_1(),
+                factorsAIApiKey: secret1,
               },
             },
             message: {
@@ -333,7 +333,7 @@ export const data = [
               params: {},
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
               },
               version: '1',
               endpoint: 'https://api.factors.ai/integrations/rudderstack_platform',
@@ -356,7 +356,7 @@ export const data = [
           {
             destination: {
               Config: {
-                factorsAIApiKey: getSecret_1(),
+                factorsAIApiKey: secret1,
               },
             },
             message: {
@@ -404,7 +404,7 @@ export const data = [
               userId: '',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
               },
               version: '1',
               endpoint: 'https://api.factors.ai/integrations/rudderstack_platform',
@@ -427,7 +427,7 @@ export const data = [
           {
             destination: {
               Config: {
-                factorsAIApiKey: getSecret_1(),
+                factorsAIApiKey: secret1,
               },
             },
             message: {
@@ -533,7 +533,7 @@ export const data = [
               userId: '',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
               },
               version: '1',
               endpoint: 'https://api.factors.ai/integrations/rudderstack_platform',
@@ -556,7 +556,7 @@ export const data = [
           {
             destination: {
               Config: {
-                factorsAIApiKey: getSecret_1(),
+                factorsAIApiKey: secret1,
               },
             },
             message: {
@@ -632,7 +632,7 @@ export const data = [
               params: {},
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
               },
               version: '1',
               endpoint: 'https://api.factors.ai/integrations/rudderstack_platform',
@@ -655,7 +655,7 @@ export const data = [
           {
             destination: {
               Config: {
-                factorsAIApiKey: getSecret_1(),
+                factorsAIApiKey: secret1,
               },
             },
             message: {
@@ -727,7 +727,7 @@ export const data = [
               params: {},
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
               },
               version: '1',
               endpoint: 'https://api.factors.ai/integrations/rudderstack_platform',
@@ -750,7 +750,7 @@ export const data = [
           {
             destination: {
               Config: {
-                factorsAIApiKey: getSecret_1(),
+                factorsAIApiKey: secret1,
               },
             },
             message: {
@@ -800,7 +800,7 @@ export const data = [
               params: {},
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
               },
               version: '1',
               endpoint: 'https://api.factors.ai/integrations/rudderstack_platform',

@@ -1,4 +1,4 @@
-import { getSecret_1 } from './maskedSecrets';
+import { secret1 } from './maskedSecrets';
 export const destination = {
   DestinationDefinition: {
     Config: {
@@ -23,7 +23,7 @@ export const generateMetadata = (jobId: number, userId?: string): any => {
     workspaceId: 'default-workspaceId',
     dontBatch: false,
     secret: {
-      accessToken: getSecret_1(),
+      accessToken: secret1,
       refreshToken: 'dummyRefreshToken',
       clientId: 'dummyClientId',
     },

@@ -1,6 +1,4 @@
-import { getAuthHeader_1, getSecret_1, getAuthHeader_2, getSecret_2 } from './maskedSecrets';
-import { enhanceRequestOptions } from '../../../../src/adapters/network';
-import qs from 'qs';
+import { authHeader1, secret1, authHeader2, secret2 } from '../maskedSecrets';
 
 export const data = [
   {
@@ -15,7 +13,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
               },
             },
             message: {
@@ -94,7 +92,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://canny.io/api/v1/users/create_or_update',
               headers: {
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
               params: {},
@@ -105,7 +103,7 @@ export const data = [
                     title: 'VP',
                     gender: 'female',
                   },
-                  apiKey: getSecret_1(),
+                  apiKey: secret1,
                   userID: 'user123456001',
                   email: 'firstUser@testmail.com',
                   name: 'First User',
@@ -136,7 +134,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
               },
             },
             message: {
@@ -233,7 +231,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
               },
             },
             message: {
@@ -330,7 +328,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
               },
             },
             message: {
@@ -620,7 +618,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: getSecret_2(),
+                apiKey: secret2,
                 eventsToEvents: [
                   {
                     from: 'abc',
@@ -720,7 +718,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://canny.io/api/v1/votes/create',
               headers: {
-                Authorization: getAuthHeader_2(),
+                Authorization: authHeader2,
                 'Content-Type': 'application/x-www-form-urlencoded',
               },
               params: {},
@@ -730,7 +728,7 @@ export const data = [
                 XML: {},
                 FORM: {
                   postID: 'postid',
-                  apiKey: getSecret_2(),
+                  apiKey: secret2,
                   voterID: '52d14c90fff7c80abcd12345',
                 },
               },
@@ -746,13 +744,13 @@ export const data = [
               method: 'POST',
               endpoint: 'https://canny.io/api/v1/posts/create',
               headers: {
-                Authorization: getAuthHeader_2(),
+                Authorization: authHeader2,
                 'Content-Type': 'application/json',
               },
               params: {},
               body: {
                 JSON: {
-                  apiKey: getSecret_2(),
+                  apiKey: secret2,
                   boardID: 'boardid',
                   details: 'details',
                   title: 'title',
@@ -782,7 +780,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: getSecret_2(),
+                apiKey: secret2,
                 eventsToEvents: [
                   {
                     from: 'abc def',
@@ -873,7 +871,7 @@ export const data = [
               userId: '',
               endpoint: 'https://canny.io/api/v1/posts/create',
               headers: {
-                Authorization: getAuthHeader_2(),
+                Authorization: authHeader2,
                 'Content-Type': 'application/json',
               },
               params: {},
@@ -882,7 +880,7 @@ export const data = [
                 JSON_ARRAY: {},
                 XML: {},
                 JSON: {
-                  apiKey: getSecret_2(),
+                  apiKey: secret2,
                   authorID: '52d14c90fff7c80abcd12345',
                   boardID: 'boardid',
                   details: 'details',
@@ -909,7 +907,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: getSecret_2(),
+                apiKey: secret2,
                 eventsToEvents: [
                   {
                     from: 'sample',
@@ -1002,7 +1000,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://canny.io/api/v1/posts/create',
               headers: {
-                Authorization: getAuthHeader_2(),
+                Authorization: authHeader2,
                 'Content-Type': 'application/json',
               },
               params: {},
@@ -1011,7 +1009,7 @@ export const data = [
                 JSON_ARRAY: {},
                 XML: {},
                 JSON: {
-                  apiKey: getSecret_2(),
+                  apiKey: secret2,
                   authorID: '62d1',
                   boardID: '62de8',
                   details: 'Array of images',
@@ -1043,7 +1041,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: getSecret_2(),
+                apiKey: secret2,
                 eventsToEvents: [
                   {
                     from: 'sample',
@@ -1152,7 +1150,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: getSecret_2(),
+                apiKey: secret2,
                 eventsToEvents: [
                   {
                     from: 'sample',
@@ -1264,7 +1262,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: getSecret_2(),
+                apiKey: secret2,
                 eventsToEvents: [],
               },
             },
@@ -1364,7 +1362,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: getSecret_2(),
+                apiKey: secret2,
                 eventsToEvents: [
                   {
                     from: 'abc',
@@ -1475,7 +1473,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: getSecret_2(),
+                apiKey: secret2,
                 eventsToEvents: [
                   {
                     from: 'abc def',
@@ -1586,7 +1584,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: getSecret_2(),
+                apiKey: secret2,
                 eventsToEvents: [
                   {
                     from: 'abc def',
@@ -1696,7 +1694,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: getSecret_2(),
+                apiKey: secret2,
                 eventsToEvents: [
                   {
                     from: 'abc def',

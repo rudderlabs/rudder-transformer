@@ -1,4 +1,4 @@
-import { getAuthHeader_1, getSecret_1, getSecret_2 } from './maskedSecrets';
+import { authHeader1, secret1, secret2 } from './maskedSecrets';
 import { Connection, Destination } from '../../../../src/types';
 import { VDM_V2_SCHEMA_VERSION } from '../../../../src/v0/util/constant';
 
@@ -8,10 +8,10 @@ const displayName = 'Customer.io Audience';
 const channel = 'web';
 const destination: Destination = {
   Config: {
-    apiKey: getSecret_2(),
+    apiKey: secret2,
     appApiKey: 'test-app-api-key',
     connectionMode: 'cloud',
-    siteId: getSecret_1(),
+    siteId: secret1,
   },
   DestinationDefinition: {
     DisplayName: displayName,
@@ -76,7 +76,7 @@ const RouterInstrumentationErrorStatTags = {
 
 const headers = {
   'Content-Type': 'application/json',
-  Authorization: getAuthHeader_1(),
+  Authorization: authHeader1,
 };
 
 const params = {

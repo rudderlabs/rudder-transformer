@@ -1,4 +1,4 @@
-import { getAuthHeader_1, getSecret_1 } from '../maskedSecrets';
+import { authHeader1, secret1 } from '../maskedSecrets';
 import { identifyTestCases } from './business';
 
 export const data = [
@@ -55,7 +55,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 appKey: 'O2YARRI15I',
                 dataCenter: false,
               },
@@ -79,7 +79,7 @@ export const data = [
                 'Content-Type': 'application/json',
                 Accept: 'application/vnd.urbanairship+json; version=3',
                 'X-UA-Appkey': 'O2YARRI15I',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -166,7 +166,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 appKey: 'O2YARRI15I',
                 dataCenter: false,
               },
@@ -247,7 +247,7 @@ export const data = [
               sentAt: '2019-10-14T09:03:22.563Z',
             },
             destination: {
-              Config: { apiKey: getSecret_1(), dataCenter: false },
+              Config: { apiKey: secret1, dataCenter: false },
             },
           },
         ],
@@ -326,7 +326,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 appKey: 'O2YARRI15I',
                 dataCenter: true,
               },
@@ -350,7 +350,7 @@ export const data = [
                 'Content-Type': 'application/json',
                 Accept: 'application/vnd.urbanairship+json; version=3',
                 'X-UA-Appkey': 'O2YARRI15I',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -429,7 +429,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 appKey: 'O2YARRI15I',
                 dataCenter: false,
               },
@@ -452,7 +452,7 @@ export const data = [
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/vnd.urbanairship+json; version=3',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -553,7 +553,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 appKey: 'O2YARRI15I',
                 dataCenter: false,
               },
@@ -576,7 +576,7 @@ export const data = [
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/vnd.urbanairship+json; version=3',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -644,7 +644,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 appKey: 'O2YARRI15I',
                 dataCenter: false,
               },
@@ -667,7 +667,7 @@ export const data = [
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/vnd.urbanairship+json; version=3',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -694,7 +694,7 @@ export const data = [
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/vnd.urbanairship+json; version=3',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -810,7 +810,7 @@ export const data = [
               version: '1',
             },
             destination: {
-              Config: { apiKey: getSecret_1(), dataCenter: true },
+              Config: { apiKey: secret1, dataCenter: true },
             },
           },
         ],
@@ -830,7 +830,7 @@ export const data = [
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/vnd.urbanairship+json; version=3',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -857,7 +857,7 @@ export const data = [
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/vnd.urbanairship+json; version=3',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -958,7 +958,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 appKey: 'O2YARRI15I',
                 appSecret: 'fhf',
                 dataCenter: true,
@@ -1031,7 +1031,7 @@ export const data = [
               version: '1',
             },
             destination: {
-              Config: { apiKey: getSecret_1(), dataCenter: false },
+              Config: { apiKey: secret1, dataCenter: false },
             },
           },
         ],
@@ -1051,7 +1051,7 @@ export const data = [
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/vnd.urbanairship+json; version=3',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -1151,7 +1151,7 @@ export const data = [
               version: '1',
             },
             destination: {
-              Config: { apiKey: getSecret_1(), dataCenter: false },
+              Config: { apiKey: secret1, dataCenter: false },
             },
           },
         ],
@@ -1171,7 +1171,7 @@ export const data = [
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/vnd.urbanairship+json; version=3',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -1238,7 +1238,7 @@ export const data = [
               version: '1',
             },
             destination: {
-              Config: { apiKey: getSecret_1(), dataCenter: false },
+              Config: { apiKey: secret1, dataCenter: false },
             },
           },
         ],
@@ -1258,7 +1258,7 @@ export const data = [
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/vnd.urbanairship+json; version=3',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -1285,7 +1285,7 @@ export const data = [
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/vnd.urbanairship+json; version=3',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -1401,7 +1401,7 @@ export const data = [
               version: '1',
             },
             destination: {
-              Config: { apiKey: getSecret_1(), dataCenter: true },
+              Config: { apiKey: secret1, dataCenter: true },
             },
           },
         ],
@@ -1421,7 +1421,7 @@ export const data = [
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/vnd.urbanairship+json; version=3',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -1448,7 +1448,7 @@ export const data = [
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/vnd.urbanairship+json; version=3',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -1549,7 +1549,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 appKey: 'O2YARRI15I',
                 appSecret: 'fhf',
                 dataCenter: true,
@@ -1625,7 +1625,7 @@ export const data = [
               version: '1',
             },
             destination: {
-              Config: { apiKey: getSecret_1(), dataCenter: false },
+              Config: { apiKey: secret1, dataCenter: false },
             },
           },
         ],
@@ -1645,7 +1645,7 @@ export const data = [
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/vnd.urbanairship+json; version=3',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -1672,7 +1672,7 @@ export const data = [
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/vnd.urbanairship+json; version=3',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -1891,7 +1891,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 appKey: 'ffdf',
                 appSecret: 'fhf',
                 dataCenter: false,
@@ -1916,7 +1916,7 @@ export const data = [
                 'Content-Type': 'application/json',
                 Accept: 'application/vnd.urbanairship+json; version=3',
                 'X-UA-Appkey': 'ffdf',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -1962,7 +1962,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 appKey: 'ffdf',
                 appSecret: 'fhf',
                 dataCenter: false,
@@ -1987,7 +1987,7 @@ export const data = [
                 'Content-Type': 'application/json',
                 Accept: 'application/vnd.urbanairship+json; version=3',
                 'X-UA-Appkey': 'ffdf',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -2050,7 +2050,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 appKey: 'ffdf',
                 dataCenter: false,
               },
@@ -2074,7 +2074,7 @@ export const data = [
                 'Content-Type': 'application/json',
                 Accept: 'application/vnd.urbanairship+json; version=3',
                 'X-UA-Appkey': 'ffdf',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -2137,7 +2137,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 appKey: 'ffdf',
                 dataCenter: false,
               },
@@ -2161,7 +2161,7 @@ export const data = [
                 'Content-Type': 'application/json',
                 Accept: 'application/vnd.urbanairship+json; version=3',
                 'X-UA-Appkey': 'ffdf',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -2342,7 +2342,7 @@ export const data = [
               sentAt: '2019-10-14T09:03:22.563Z',
             },
             destination: {
-              Config: { appKey: getSecret_1(), dataCenter: false },
+              Config: { appKey: secret1, dataCenter: false },
             },
           },
         ],
@@ -2408,7 +2408,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 appKey: 'ffdf',
                 dataCenter: false,
               },
@@ -2432,7 +2432,7 @@ export const data = [
                 'Content-Type': 'application/json',
                 Accept: 'application/vnd.urbanairship+json; version=3',
                 'X-UA-Appkey': 'ffdf',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -2495,7 +2495,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 appKey: 'ffdf',
                 dataCenter: false,
               },
@@ -2519,7 +2519,7 @@ export const data = [
                 'Content-Type': 'application/json',
                 Accept: 'application/vnd.urbanairship+json; version=3',
                 'X-UA-Appkey': 'ffdf',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -2583,7 +2583,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 appKey: 'ffdf',
                 dataCenter: false,
               },
@@ -2607,7 +2607,7 @@ export const data = [
                 'Content-Type': 'application/json',
                 Accept: 'application/vnd.urbanairship+json; version=3',
                 'X-UA-Appkey': 'ffdf',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -2670,7 +2670,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 appKey: 'ffdf',
                 dataCenter: false,
               },
@@ -2694,7 +2694,7 @@ export const data = [
                 'Content-Type': 'application/json',
                 Accept: 'application/vnd.urbanairship+json; version=3',
                 'X-UA-Appkey': 'ffdf',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
               },
               params: {},
               body: {

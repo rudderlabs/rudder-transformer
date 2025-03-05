@@ -1,4 +1,4 @@
-import { getAuthHeader_1, getSecret_1 } from '../maskedSecrets';
+import { authHeader1, secret1 } from '../maskedSecrets';
 import { Destination } from '../../../../../src/types';
 import { ProcessorTestData } from '../../../testTypes';
 import {
@@ -17,7 +17,7 @@ const destination: Destination = {
     Config: {},
   },
   Config: {
-    apiKey: getSecret_1(),
+    apiKey: secret1,
     blacklistedEvents: [{ eventName: '' }],
     eventDelivery: true,
     eventDeliveryTS: 1665474171943,
@@ -54,7 +54,7 @@ const properties = {
 };
 
 const headers = {
-  Authorization: getAuthHeader_1(),
+  Authorization: authHeader1,
   'Content-Type': 'application/x-www-form-urlencoded',
 };
 

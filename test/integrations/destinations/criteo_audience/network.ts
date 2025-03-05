@@ -1,6 +1,7 @@
-import { getAuthHeader_1 } from './maskedSecrets';
+import { defaultAccessTokenAuthHeader } from '../../common/secrets';
+
 const headers = {
-  Authorization: getAuthHeader_1(),
+  Authorization: defaultAccessTokenAuthHeader,
   'Content-Type': 'application/json',
   Accept: 'application/json',
   'User-Agent': 'RudderLabs',

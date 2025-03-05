@@ -1,4 +1,4 @@
-import { getAuthHeader_1, getSecret_1 } from '../maskedSecrets';
+import { authHeader1, secret1 } from '../maskedSecrets';
 import { Destination } from '../../../../../src/types';
 import { RouterTestData } from '../../../testTypes';
 import { generateMetadata } from '../../../testUtils';
@@ -15,7 +15,7 @@ const destination: Destination = {
     },
   },
   Config: {
-    apiKey: getSecret_1(),
+    apiKey: secret1,
     connectionMode: {
       web: 'cloud',
     },
@@ -114,7 +114,7 @@ export const data: RouterTestData[] = [
                 endpoint: 'https://api.topsort.com/v2/events',
                 headers: {
                   'content-type': 'application/json',
-                  Authorization: getAuthHeader_1(),
+                  Authorization: authHeader1,
                 },
                 params: {},
                 body: {
@@ -246,7 +246,7 @@ export const data: RouterTestData[] = [
                 endpoint: 'https://api.topsort.com/v2/events',
                 headers: {
                   'content-type': 'application/json',
-                  Authorization: getAuthHeader_1(),
+                  Authorization: authHeader1,
                 },
                 params: {},
                 body: {
@@ -372,7 +372,7 @@ export const data: RouterTestData[] = [
                 endpoint: 'https://api.topsort.com/v2/events',
                 headers: {
                   'content-type': 'application/json',
-                  Authorization: getAuthHeader_1(),
+                  Authorization: authHeader1,
                 },
                 params: {},
                 body: {

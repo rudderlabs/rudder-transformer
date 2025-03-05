@@ -1,14 +1,10 @@
-// Auto-generated masked secrets file
+import path from 'path';
 
-export const getAuthHeader_1 = () => `Bearer ${getSecret_1()}`;
-export const getSecret_1 = () => 'dummy-access-token';
-export const getAuthHeader_2 = () => `Bearer ${getSecret_2()}`;
-export const getSecret_2 = () => 'dummy-access-tokensuccess';
-export const getAuthHeader_3 = () => `Bearer ${getSecret_3()}`;
-export const getSecret_3 = () => 'dummy-access-token-hs-additonal-email';
-export const getAuthHeader_4 = () => `Bearer ${getSecret_4()}`;
-export const getSecret_4 = () => 'dummy-access-tokenmultiple';
-export const getAuthHeader_5 = () => `Bearer ${getSecret_5()}`;
-export const getSecret_5 = () => 'dontbatchtrueaccesstoken';
-export const getAuthHeader_6 = () => `Bearer ${getSecret_6()}`;
-export const getSecret_6 = () => 'pat-123';
+export const secret1 = path.basename(__dirname) + 1;
+export const secret2 = path.basename(__dirname) + 2;
+export const secret3 = path.basename(__dirname) + 3;
+export const secret4 = path.basename(__dirname) + 4;
+export const authHeader1 = `Bearer ${secret1}`;
+export const authHeader2 = `Bearer ${secret2}`;
+export const authHeader3 = `Bearer ${secret3}`;
+export const authHeader4 = `Bearer ${secret4}`;

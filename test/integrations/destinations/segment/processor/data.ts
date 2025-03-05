@@ -1,4 +1,4 @@
-import { getAuthHeader_1, getSecret_1 } from '../maskedSecrets';
+import { authHeader1, secret1 } from '../maskedSecrets';
 export const data = [
   {
     name: 'segment',
@@ -23,7 +23,7 @@ export const data = [
                 },
               },
               Config: {
-                writeKey: getSecret_1(),
+                writeKey: secret1,
               },
               Enabled: true,
               Transformations: [],
@@ -103,7 +103,7 @@ export const data = [
               endpoint: 'https://api.segment.io/v1/batch',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -165,7 +165,7 @@ export const data = [
                 },
               },
               Config: {
-                writeKey: getSecret_1(),
+                writeKey: secret1,
               },
               Enabled: true,
               Transformations: [],
@@ -237,7 +237,7 @@ export const data = [
               endpoint: 'https://api.segment.io/v1/batch',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -292,7 +292,7 @@ export const data = [
                 },
               },
               Config: {
-                writeKey: getSecret_1(),
+                writeKey: secret1,
               },
               Enabled: true,
               Transformations: [],
@@ -369,7 +369,7 @@ export const data = [
               endpoint: 'https://api.segment.io/v1/batch',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -429,7 +429,7 @@ export const data = [
                 },
               },
               Config: {
-                writeKey: getSecret_1(),
+                writeKey: secret1,
               },
               Enabled: true,
               Transformations: [],
@@ -507,7 +507,7 @@ export const data = [
               endpoint: 'https://api.segment.io/v1/batch',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -569,7 +569,7 @@ export const data = [
                 },
               },
               Config: {
-                writeKey: getSecret_1(),
+                writeKey: secret1,
               },
               Enabled: true,
               Transformations: [],
@@ -640,7 +640,7 @@ export const data = [
               endpoint: 'https://api.segment.io/v1/batch',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
               },
               params: {},
               body: {

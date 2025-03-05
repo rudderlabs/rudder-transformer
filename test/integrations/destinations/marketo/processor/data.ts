@@ -1,4 +1,4 @@
-import { getAuthHeader_1 } from '../maskedSecrets';
+import { authHeader1, expiredAccessToken, secret1 } from '../maskedSecrets';
 export const data = [
   {
     name: 'marketo',
@@ -51,7 +51,7 @@ export const data = [
               userId: 'lynnanderson@smith.net',
             },
             destination: {
-              ID: '1zia9wKshXt80YksLmUdJnr7IHI',
+              ID: 'marketoYksLmUdJnr7IHI',
               Name: 'test_marketo',
               DestinationDefinition: {
                 ID: '1iVQvTRMsPPyJzwol0ifH93QTQ6',
@@ -86,7 +86,7 @@ export const data = [
               },
               Config: {
                 clientId: 'marketo_client_id_success',
-                clientSecret: 'marketo_client_secret_success',
+                clientSecret: secret1,
                 accountId: 'marketo_acct_id_success',
                 rudderEventsMapping: [],
               },
@@ -115,7 +115,7 @@ export const data = [
               endpoint:
                 'https://marketo_acct_id_success.mktorest.com/rest/v1/customobjects/new_user.json',
               headers: {
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
               params: {},
@@ -218,7 +218,7 @@ export const data = [
               Config: {
                 accountId: 'marketo_acct_id_success',
                 clientId: 'marketo_client_id_success',
-                clientSecret: 'marketo_client_secret_success',
+                clientSecret: secret1,
                 trackAnonymousEvents: true,
                 customActivityPropertyMap: [
                   {
@@ -265,7 +265,7 @@ export const data = [
                 'https://marketo_acct_id_success.mktorest.com/rest/v1/activities/external.json',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -364,7 +364,7 @@ export const data = [
               Config: {
                 accountId: 'marketo_acct_id_success',
                 clientId: 'marketo_client_id_success',
-                clientSecret: 'marketo_client_secret_success',
+                clientSecret: secret1,
                 trackAnonymousEvents: true,
                 customActivityPropertyMap: [
                   {
@@ -410,7 +410,7 @@ export const data = [
                 'https://marketo_acct_id_success.mktorest.com/rest/v1/activities/external.json',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -514,7 +514,7 @@ export const data = [
               Config: {
                 accountId: 'marketo_acct_id_success',
                 clientId: 'marketo_client_id_success',
-                clientSecret: 'marketo_client_secret_success',
+                clientSecret: secret1,
                 trackAnonymousEvents: false,
                 customActivityPropertyMap: [
                   {
@@ -556,7 +556,7 @@ export const data = [
                 'https://marketo_acct_id_success.mktorest.com/rest/v1/activities/external.json',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -655,8 +655,16 @@ export const data = [
         body: [
           {
             statusCode: 500,
-            error:
-              '{"message":"Request Failed for marketo, Access Token Expired (Retryable).During fetching auth token","destinationResponse":{"access_token":"access_token_expired","expires_in":0,"scope":"integrations@rudderstack.com","token_type":"bearer"}}',
+            error: JSON.stringify({
+              message:
+                'Request Failed for marketo, Access Token Expired (Retryable).During fetching auth token',
+              destinationResponse: {
+                access_token: expiredAccessToken,
+                expires_in: 0,
+                scope: 'integrations@rudderstack.com',
+                token_type: 'bearer',
+              },
+            }),
             statTags: {
               errorCategory: 'network',
               errorType: 'retryable',
@@ -742,7 +750,7 @@ export const data = [
               Config: {
                 accountId: 'marketo_acct_id_failed',
                 clientId: 'marketo_client_id_success',
-                clientSecret: 'marketo_client_secret_success',
+                clientSecret: secret1,
                 trackAnonymousEvents: false,
                 customActivityPropertyMap: [
                   {
@@ -840,7 +848,7 @@ export const data = [
               Config: {
                 accountId: 'marketo_acct_id_success',
                 clientId: 'marketo_client_id_success',
-                clientSecret: 'marketo_client_secret_success',
+                clientSecret: secret1,
                 trackAnonymousEvents: true,
                 customActivityPropertyMap: [
                   {
@@ -963,7 +971,7 @@ export const data = [
               Config: {
                 accountId: 'marketo_acct_id_success',
                 clientId: 'marketo_client_id_success',
-                clientSecret: 'marketo_client_secret_success',
+                clientSecret: secret1,
                 trackAnonymousEvents: false,
                 customActivityPropertyMap: [
                   {
@@ -1082,7 +1090,7 @@ export const data = [
               Config: {
                 accountId: 'marketo_acct_id_success',
                 clientId: 'marketo_client_id_success',
-                clientSecret: 'marketo_client_secret_success',
+                clientSecret: secret1,
                 trackAnonymousEvents: true,
                 customActivityPropertyMap: [
                   {
@@ -1201,7 +1209,7 @@ export const data = [
               Config: {
                 accountId: 'marketo_acct_id_success',
                 clientId: 'marketo_client_id_success',
-                clientSecret: 'marketo_client_secret_success',
+                clientSecret: secret1,
                 trackAnonymousEvents: true,
                 customActivityPropertyMap: [
                   {
@@ -1319,7 +1327,7 @@ export const data = [
               Config: {
                 accountId: 'marketo_acct_id_success',
                 clientId: 'marketo_client_id_success',
-                clientSecret: 'marketo_client_secret_success',
+                clientSecret: secret1,
                 trackAnonymousEvents: true,
                 customActivityPropertyMap: [
                   {
@@ -1438,7 +1446,7 @@ export const data = [
               Config: {
                 accountId: 'marketo_acct_id_success',
                 clientId: 'marketo_client_id_success',
-                clientSecret: 'marketo_client_secret_success',
+                clientSecret: secret1,
                 trackAnonymousEvents: true,
                 customActivityPropertyMap: [
                   {
@@ -1538,7 +1546,7 @@ export const data = [
               Config: {
                 accountId: 'marketo_acct_id_success',
                 clientId: 'marketo_client_id_success',
-                clientSecret: 'marketo_client_secret_success',
+                clientSecret: secret1,
                 trackAnonymousEvents: true,
                 customActivityPropertyMap: [
                   {
@@ -1581,7 +1589,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://marketo_acct_id_success.mktorest.com/rest/v1/leads.json',
               headers: {
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
               params: {},
@@ -1658,7 +1666,7 @@ export const data = [
               userId: 'dummyMail@dummyDomain.com',
             },
             destination: {
-              ID: '1zia9wKshXt80YksLmUdJnr7IHI',
+              ID: 'marketoYksLmUdJnr7IHI',
               Name: 'test_marketo',
               DestinationDefinition: {
                 ID: '1iVQvTRMsPPyJzwol0ifH93QTQ6',
@@ -1693,7 +1701,7 @@ export const data = [
               },
               Config: {
                 clientId: 'marketo_client_id_success',
-                clientSecret: 'marketo_client_secret_success',
+                clientSecret: secret1,
                 accountId: 'marketo_acct_id_success',
                 rudderEventsMapping: [],
               },
@@ -1721,7 +1729,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://marketo_acct_id_success.mktorest.com/rest/v1/leads.json',
               headers: {
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
               params: {},

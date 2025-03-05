@@ -1,4 +1,4 @@
-import { getAuthHeader_1, getSecret_1 } from '../maskedSecrets';
+import { authHeader1, secret1 } from '../maskedSecrets';
 export const data = [
   {
     name: 'campaign_manager',
@@ -13,7 +13,7 @@ export const data = [
             {
               metadata: {
                 secret: {
-                  access_token: getSecret_1(),
+                  access_token: secret1,
                   refresh_token: 'efgh5678',
                   developer_token: 'ijkl91011',
                 },
@@ -93,7 +93,7 @@ export const data = [
             {
               metadata: {
                 secret: {
-                  access_token: getSecret_1(),
+                  access_token: secret1,
                   refresh_token: 'efgh5678',
                   developer_token: 'ijkl91011',
                 },
@@ -173,7 +173,7 @@ export const data = [
             {
               metadata: {
                 secret: {
-                  access_token: getSecret_1(),
+                  access_token: secret1,
                   refresh_token: 'efgh5678',
                   developer_token: 'ijkl91011',
                 },
@@ -272,7 +272,7 @@ export const data = [
                 endpoint:
                   'https://dfareporting.googleapis.com/dfareporting/v4/userprofiles/437689/conversions/batchinsert',
                 headers: {
-                  Authorization: getAuthHeader_1(),
+                  Authorization: authHeader1,
                   'Content-Type': 'application/json',
                 },
                 params: {},
@@ -310,7 +310,7 @@ export const data = [
               metadata: [
                 {
                   secret: {
-                    access_token: getSecret_1(),
+                    access_token: secret1,
                     developer_token: 'ijkl91011',
                     refresh_token: 'efgh5678',
                   },
@@ -338,7 +338,7 @@ export const data = [
                 endpoint:
                   'https://dfareporting.googleapis.com/dfareporting/v4/userprofiles/437689/conversions/batchupdate',
                 headers: {
-                  Authorization: getAuthHeader_1(),
+                  Authorization: authHeader1,
                   'Content-Type': 'application/json',
                 },
                 params: {},
@@ -374,7 +374,7 @@ export const data = [
               metadata: [
                 {
                   secret: {
-                    access_token: getSecret_1(),
+                    access_token: secret1,
                     developer_token: 'ijkl91011',
                     refresh_token: 'efgh5678',
                   },
@@ -410,7 +410,7 @@ export const data = [
               metadata: [
                 {
                   secret: {
-                    access_token: getSecret_1(),
+                    access_token: secret1,
                     developer_token: 'ijkl91011',
                     refresh_token: 'efgh5678',
                   },
@@ -446,7 +446,7 @@ export const data = [
             {
               metadata: {
                 secret: {
-                  access_token: getSecret_1(),
+                  access_token: secret1,
                   refresh_token: 'efgh5678',
                   developer_token: 'ijkl91011',
                 },
@@ -488,7 +488,7 @@ export const data = [
             {
               metadata: {
                 secret: {
-                  access_token: getSecret_1(),
+                  access_token: secret1,
                   refresh_token: 'efgh5678',
                   developer_token: 'ijkl91011',
                 },
@@ -530,7 +530,7 @@ export const data = [
             {
               metadata: {
                 secret: {
-                  access_token: getSecret_1(),
+                  access_token: secret1,
                   refresh_token: 'efgh5678',
                   developer_token: 'ijkl91011',
                 },
@@ -588,7 +588,7 @@ export const data = [
                 endpoint:
                   'https://dfareporting.googleapis.com/dfareporting/v4/userprofiles/437689/conversions/batchinsert',
                 headers: {
-                  Authorization: getAuthHeader_1(),
+                  Authorization: authHeader1,
                   'Content-Type': 'application/json',
                 },
                 params: {},
@@ -646,7 +646,7 @@ export const data = [
               metadata: [
                 {
                   secret: {
-                    access_token: getSecret_1(),
+                    access_token: secret1,
                     refresh_token: 'efgh5678',
                     developer_token: 'ijkl91011',
                   },
@@ -655,7 +655,7 @@ export const data = [
                 },
                 {
                   secret: {
-                    access_token: getSecret_1(),
+                    access_token: secret1,
                     refresh_token: 'efgh5678',
                     developer_token: 'ijkl91011',
                   },
@@ -664,7 +664,7 @@ export const data = [
                 },
                 {
                   secret: {
-                    access_token: getSecret_1(),
+                    access_token: secret1,
                     refresh_token: 'efgh5678',
                     developer_token: 'ijkl91011',
                   },
@@ -702,7 +702,7 @@ export const data = [
             {
               metadata: {
                 secret: {
-                  access_token: getSecret_1(),
+                  access_token: secret1,
                   refresh_token: 'efgh5678',
                   developer_token: 'ijkl91011',
                 },
@@ -744,7 +744,7 @@ export const data = [
             {
               metadata: {
                 secret: {
-                  access_token: getSecret_1(),
+                  access_token: secret1,
                   refresh_token: 'efgh5678',
                   developer_token: 'ijkl91011',
                 },
@@ -786,7 +786,7 @@ export const data = [
             {
               metadata: {
                 secret: {
-                  access_token: getSecret_1(),
+                  access_token: secret1,
                   refresh_token: 'efgh5678',
                   developer_token: 'ijkl91011',
                 },
@@ -844,7 +844,7 @@ export const data = [
                 endpoint:
                   'https://dfareporting.googleapis.com/dfareporting/v4/userprofiles/437689/conversions/batchupdate',
                 headers: {
-                  Authorization: getAuthHeader_1(),
+                  Authorization: authHeader1,
                   'Content-Type': 'application/json',
                 },
                 params: {},
@@ -885,7 +885,7 @@ export const data = [
               metadata: [
                 {
                   secret: {
-                    access_token: getSecret_1(),
+                    access_token: secret1,
                     refresh_token: 'efgh5678',
                     developer_token: 'ijkl91011',
                   },
@@ -894,7 +894,7 @@ export const data = [
                 },
                 {
                   secret: {
-                    access_token: getSecret_1(),
+                    access_token: secret1,
                     refresh_token: 'efgh5678',
                     developer_token: 'ijkl91011',
                   },
@@ -922,7 +922,7 @@ export const data = [
                 endpoint:
                   'https://dfareporting.googleapis.com/dfareporting/v4/userprofiles/437689/conversions/batchinsert',
                 headers: {
-                  Authorization: getAuthHeader_1(),
+                  Authorization: authHeader1,
                   'Content-Type': 'application/json',
                 },
                 params: {},
@@ -954,7 +954,7 @@ export const data = [
               metadata: [
                 {
                   secret: {
-                    access_token: getSecret_1(),
+                    access_token: secret1,
                     refresh_token: 'efgh5678',
                     developer_token: 'ijkl91011',
                   },
@@ -992,7 +992,7 @@ export const data = [
             {
               metadata: {
                 secret: {
-                  access_token: getSecret_1(),
+                  access_token: secret1,
                   refresh_token: 'efgh5678',
                   developer_token: 'ijkl91011',
                 },
@@ -1033,7 +1033,7 @@ export const data = [
             {
               metadata: {
                 secret: {
-                  access_token: getSecret_1(),
+                  access_token: secret1,
                   refresh_token: 'efgh5678',
                   developer_token: 'ijkl91011',
                 },
@@ -1074,7 +1074,7 @@ export const data = [
             {
               metadata: {
                 secret: {
-                  access_token: getSecret_1(),
+                  access_token: secret1,
                   refresh_token: 'efgh5678',
                   developer_token: 'ijkl91011',
                 },
@@ -1127,7 +1127,7 @@ export const data = [
               metadata: [
                 {
                   secret: {
-                    access_token: getSecret_1(),
+                    access_token: secret1,
                     refresh_token: 'efgh5678',
                     developer_token: 'ijkl91011',
                   },
@@ -1161,7 +1161,7 @@ export const data = [
               metadata: [
                 {
                   secret: {
-                    access_token: getSecret_1(),
+                    access_token: secret1,
                     refresh_token: 'efgh5678',
                     developer_token: 'ijkl91011',
                   },
@@ -1195,7 +1195,7 @@ export const data = [
               metadata: [
                 {
                   secret: {
-                    access_token: getSecret_1(),
+                    access_token: secret1,
                     refresh_token: 'efgh5678',
                     developer_token: 'ijkl91011',
                   },

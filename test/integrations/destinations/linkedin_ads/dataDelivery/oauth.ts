@@ -1,13 +1,7 @@
-import {
-  getAuthHeader_1,
-  getSecret_1,
-  getAuthHeader_2,
-  getSecret_2,
-  getAuthHeader_3,
-  getSecret_3,
-} from '../maskedSecrets';
+import { secret1, authHeader2, secret2, authHeader1 } from '../maskedSecrets';
 import { generateMetadata, generateProxyV1Payload } from '../../../testUtils';
 import { ProxyV1TestData } from '../../../testTypes';
+import { defaultAccessTokenAuthHeader } from '../../../common/secrets';
 
 export const testJSONData = {
   elements: [
@@ -49,13 +43,13 @@ export const metadata = {
   workspaceId: 'default-workspaceId',
   sourceId: 'default-sourceId',
   secret: {
-    accessToken: getSecret_1(),
+    accessToken: secret1,
   },
   dontBatch: false,
 };
 
 export const headerBlockWithCorrectAccessToken = {
-  Authorization: getAuthHeader_1(),
+  Authorization: defaultAccessTokenAuthHeader,
   'Content-Type': 'application/json',
   'LinkedIn-Version': '202409',
   'X-RestLi-Method': 'BATCH_CREATE',
@@ -66,16 +60,17 @@ const commonRequestParameters = {
   headers: headerBlockWithCorrectAccessToken,
   JSON: testJSONData,
 };
-const commonRequestParametersWithInvalidAccess = {
-  headers: { ...headerBlockWithCorrectAccessToken, Authorization: getAuthHeader_2() },
-  JSON: testJSONData,
-  accessToken: getSecret_2(),
-};
 
 const commonRequestParametersWithRevokedAccess = {
-  headers: { ...headerBlockWithCorrectAccessToken, Authorization: getAuthHeader_3() },
+  headers: { ...headerBlockWithCorrectAccessToken, Authorization: authHeader1 },
   JSON: testJSONData,
-  accessToken: getSecret_3(),
+  accessToken: secret1,
+};
+
+const commonRequestParametersWithInvalidAccess = {
+  headers: { ...headerBlockWithCorrectAccessToken, Authorization: authHeader2 },
+  JSON: testJSONData,
+  accessToken: secret2,
 };
 
 export const oauthScenariosV1: ProxyV1TestData[] = [
@@ -107,7 +102,7 @@ export const oauthScenariosV1: ProxyV1TestData[] = [
                 error:
                   '{"status":401,"serviceErrorCode":65601,"code":"REVOKED_ACCESS_TOKEN","message":"The token used in the request has been revoked by the user"}',
                 statusCode: 400,
-                metadata: { ...metadata, secret: { accessToken: getSecret_3() } },
+                metadata: { ...metadata, secret: { accessToken: secret1 } },
               },
             ],
             statTags,
@@ -148,7 +143,7 @@ export const oauthScenariosV1: ProxyV1TestData[] = [
                 error:
                   '{"status":401,"serviceErrorCode":65600,"code":"INVALID_ACCESS_TOKEN","message":"Invalid access token"}',
                 statusCode: 500,
-                metadata: { ...metadata, secret: { accessToken: getSecret_2() } },
+                metadata: { ...metadata, secret: { accessToken: secret2 } },
               },
             ],
             statTags: { ...statTags, errorType: 'retryable' },

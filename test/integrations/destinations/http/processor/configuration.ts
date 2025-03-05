@@ -1,4 +1,4 @@
-import { getAuthHeader_1, getAuthHeader_2 } from '../maskedSecrets';
+import { authHeader1, authHeader2 } from '../maskedSecrets';
 import { ProcessorTestData } from '../../../testTypes';
 import { generateMetadata, transformResultBuilder } from '../../../testUtils';
 import {
@@ -149,7 +149,7 @@ export const configuration: ProcessorTestData[] = [
               endpoint: destinations[1].Config.apiUrl,
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
                 h1: 'val1',
                 h2: '2',
                 'content-type': 'application/json',
@@ -204,7 +204,7 @@ export const configuration: ProcessorTestData[] = [
               endpoint: destinations[4].Config.apiUrl,
               headers: {
                 'Content-Type': 'application/xml',
-                Authorization: getAuthHeader_2(),
+                Authorization: authHeader2,
                 h1: 'val1',
                 'content-type': 'application/json',
               },
@@ -257,7 +257,7 @@ export const configuration: ProcessorTestData[] = [
               endpoint: 'http://abc.com/contacts/userId123/c1',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
                 h1: 'val1',
                 h2: '2',
                 'content-type': 'application/json',
@@ -310,7 +310,7 @@ export const configuration: ProcessorTestData[] = [
               endpoint: 'http://abc.com/contacts/userId123/c1',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
                 h1: 'val1',
                 h2: '2',
                 'content-type': 'application/json',
@@ -415,7 +415,7 @@ export const configuration: ProcessorTestData[] = [
               endpoint: destinations[10].Config.apiUrl,
               headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
-                Authorization: getAuthHeader_2(),
+                Authorization: authHeader2,
                 h1: 'val1',
                 'content-type': 'application/json',
               },
@@ -469,7 +469,7 @@ export const configuration: ProcessorTestData[] = [
               userId: '',
               endpoint: destinations[11].Config.apiUrl,
               headers: {
-                Authorization: getAuthHeader_2(),
+                Authorization: authHeader2,
                 h1: 'val1',
                 'Content-Type': 'application/x-www-form-urlencoded',
               },
@@ -518,7 +518,7 @@ export const configuration: ProcessorTestData[] = [
               userId: '',
               endpoint: destinations[12].Config.apiUrl,
               headers: {
-                Authorization: getAuthHeader_2(),
+                Authorization: authHeader2,
                 h1: 'val1',
                 'Content-Type': 'application/x-www-form-urlencoded',
               },

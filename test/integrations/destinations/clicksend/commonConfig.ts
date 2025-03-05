@@ -1,4 +1,4 @@
-import { getAuthHeader_1, getSecret_1 } from './maskedSecrets';
+import { authHeader1, secret1 } from './maskedSecrets';
 export const destination = {
   ID: 'random_id',
   Name: 'clicksend',
@@ -8,8 +8,8 @@ export const destination = {
     },
   },
   Config: {
-    clicksendUsername: getSecret_1(),
-    clicksendPassword: getSecret_1(),
+    clicksendUsername: secret1,
+    clicksendPassword: secret1,
     defaultCampaignScheduleUnit: 'day',
     defaultCampaignSchedule: '2',
     defaultSource: 'php',
@@ -94,6 +94,6 @@ export const processInstrumentationErrorStatTags = {
 };
 
 export const commonHeader = {
-  Authorization: getAuthHeader_1(),
+  Authorization: authHeader1,
   'Content-Type': 'application/json',
 };

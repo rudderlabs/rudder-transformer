@@ -1,6 +1,6 @@
 import { ProxyV1TestData } from '../../../testTypes';
 import { generateProxyV0Payload, generateProxyV1Payload } from '../../../testUtils';
-
+import { defaultAccessToken } from '../../../common/secrets';
 export const otherScenariosV0 = [
   {
     id: 'cm360_v0_other_scenario_1',
@@ -269,7 +269,7 @@ export const otherScenariosV1: ProxyV1TestData[] = [
                   workspaceId: 'default-workspaceId',
                   sourceId: 'default-sourceId',
                   secret: {
-                    accessToken: 'default-accessToken',
+                    accessToken: defaultAccessToken,
                   },
                   dontBatch: false,
                 },
@@ -327,7 +327,7 @@ export const otherScenariosV1: ProxyV1TestData[] = [
                   workspaceId: 'default-workspaceId',
                   sourceId: 'default-sourceId',
                   secret: {
-                    accessToken: 'default-accessToken',
+                    accessToken: defaultAccessToken,
                   },
                   dontBatch: false,
                 },
@@ -385,7 +385,7 @@ export const otherScenariosV1: ProxyV1TestData[] = [
                   workspaceId: 'default-workspaceId',
                   sourceId: 'default-sourceId',
                   secret: {
-                    accessToken: 'default-accessToken',
+                    accessToken: defaultAccessToken,
                   },
                   dontBatch: false,
                 },
@@ -443,7 +443,7 @@ export const otherScenariosV1: ProxyV1TestData[] = [
                   workspaceId: 'default-workspaceId',
                   sourceId: 'default-sourceId',
                   secret: {
-                    accessToken: 'default-accessToken',
+                    accessToken: defaultAccessToken,
                   },
                   dontBatch: false,
                 },
@@ -502,7 +502,7 @@ export const otherScenariosV1: ProxyV1TestData[] = [
                   workspaceId: 'default-workspaceId',
                   sourceId: 'default-sourceId',
                   secret: {
-                    accessToken: 'default-accessToken',
+                    accessToken: defaultAccessToken,
                   },
                   dontBatch: false,
                 },

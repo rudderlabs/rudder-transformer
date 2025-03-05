@@ -1,4 +1,6 @@
-import { getAuthHeader_1, getSecret_1 } from '../maskedSecrets';
+import { defaultAccessToken, defaultAccessTokenAuthHeader } from '../../../common/secrets';
+import { secret1 } from '../maskedSecrets';
+
 export const data = [
   {
     name: 'criteo_audience',
@@ -12,7 +14,7 @@ export const data = [
           {
             metadata: {
               secret: {
-                accessToken: getSecret_1(),
+                accessToken: defaultAccessToken,
               },
             },
             message: {
@@ -59,7 +61,7 @@ export const data = [
             destination: {
               Config: {
                 clientId: 'abcdef8-f49-4cd6-b4c5-958b3d66d431',
-                clientSecret: 'sjhdkhfrz6yc9LrRRIPimE9h53jADLccXTykHCcA6eEoFR4rXQg',
+                clientSecret: secret1,
                 audienceId: '34894',
                 audienceType: 'email',
               },
@@ -80,7 +82,7 @@ export const data = [
               method: 'PATCH',
               endpoint: 'https://api.criteo.com/2022-10/audiences/34894/contactlist',
               headers: {
-                Authorization: getAuthHeader_1(),
+                Authorization: defaultAccessTokenAuthHeader,
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
               },
@@ -113,7 +115,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                accessToken: getSecret_1(),
+                accessToken: defaultAccessToken,
               },
             },
             statusCode: 200,
@@ -134,7 +136,7 @@ export const data = [
           {
             metadata: {
               secret: {
-                accessToken: getSecret_1(),
+                accessToken: defaultAccessToken,
               },
             },
             message: {
@@ -198,7 +200,7 @@ export const data = [
             destination: {
               Config: {
                 clientId: 'abcdef8-f49-4cd6-b4c5-958b3d66d431',
-                clientSecret: 'sjhdkhfrz6yc9LrRRIPimE9h53jADLccXTykHCcA6eEoFR4rXQg',
+                clientSecret: secret1,
                 audienceId: '34893',
                 audienceType: 'madid',
               },
@@ -219,7 +221,7 @@ export const data = [
               method: 'PATCH',
               endpoint: 'https://api.criteo.com/2022-10/audiences/34893/contactlist',
               headers: {
-                Authorization: getAuthHeader_1(),
+                Authorization: defaultAccessTokenAuthHeader,
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
               },
@@ -253,7 +255,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                accessToken: getSecret_1(),
+                accessToken: defaultAccessToken,
               },
             },
             statusCode: 200,
@@ -265,7 +267,7 @@ export const data = [
               method: 'PATCH',
               endpoint: 'https://api.criteo.com/2022-10/audiences/34893/contactlist',
               headers: {
-                Authorization: getAuthHeader_1(),
+                Authorization: defaultAccessTokenAuthHeader,
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
               },
@@ -299,7 +301,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                accessToken: getSecret_1(),
+                accessToken: defaultAccessToken,
               },
             },
             statusCode: 200,
@@ -320,7 +322,7 @@ export const data = [
           {
             metadata: {
               secret: {
-                accessToken: getSecret_1(),
+                accessToken: defaultAccessToken,
               },
             },
             message: {
@@ -361,7 +363,7 @@ export const data = [
             destination: {
               Config: {
                 clientId: 'abcdef8-f49-4cd6-b4c5-958b3d66d431',
-                clientSecret: 'sjhdkhfrz6yc9LrRRIPimE9h53jADLccXTykHCcA6eEoFR4rXQg',
+                clientSecret: secret1,
                 audienceId: '34894',
                 audienceType: 'email',
               },
@@ -382,7 +384,7 @@ export const data = [
               method: 'PATCH',
               endpoint: 'https://api.criteo.com/2022-10/audiences/34894/contactlist',
               headers: {
-                Authorization: getAuthHeader_1(),
+                Authorization: defaultAccessTokenAuthHeader,
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
               },
@@ -408,7 +410,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                accessToken: getSecret_1(),
+                accessToken: defaultAccessToken,
               },
             },
             statusCode: 200,
@@ -429,7 +431,7 @@ export const data = [
           {
             metadata: {
               secret: {
-                accessToken: getSecret_1(),
+                accessToken: defaultAccessToken,
               },
             },
             message: {
@@ -467,7 +469,7 @@ export const data = [
             destination: {
               Config: {
                 clientId: 'abcdef8-f49-4cd6-b4c5-958b3d66d431',
-                clientSecret: 'sjhdkhfrz6yc9LrRRIPimE9h53jADLccXTykHCcA6eEoFR4rXQg',
+                clientSecret: secret1,
                 audienceId: '34895',
                 audienceType: 'madid',
               },
@@ -488,7 +490,7 @@ export const data = [
               method: 'PATCH',
               endpoint: 'https://api.criteo.com/2022-10/audiences/34895/contactlist',
               headers: {
-                Authorization: getAuthHeader_1(),
+                Authorization: defaultAccessTokenAuthHeader,
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
               },
@@ -514,7 +516,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                accessToken: getSecret_1(),
+                accessToken: defaultAccessToken,
               },
             },
             statusCode: 200,
@@ -535,7 +537,7 @@ export const data = [
           {
             metadata: {
               secret: {
-                accessToken: getSecret_1(),
+                accessToken: defaultAccessToken,
               },
             },
             message: {
@@ -581,7 +583,7 @@ export const data = [
             destination: {
               Config: {
                 clientId: 'abcdef8-f49-4cd6-b4c5-958b3d66d431',
-                clientSecret: 'sjhdkhfrz6yc9LrRRIPimE9h53jADLccXTykHCcA6eEoFR4rXQg',
+                clientSecret: secret1,
                 audienceId: '34893',
                 audienceType: 'madid',
               },
@@ -602,7 +604,7 @@ export const data = [
               method: 'PATCH',
               endpoint: 'https://api.criteo.com/2022-10/audiences/34893/contactlist',
               headers: {
-                Authorization: getAuthHeader_1(),
+                Authorization: defaultAccessTokenAuthHeader,
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
               },
@@ -628,7 +630,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                accessToken: getSecret_1(),
+                accessToken: defaultAccessToken,
               },
             },
             statusCode: 200,
@@ -640,7 +642,7 @@ export const data = [
               method: 'PATCH',
               endpoint: 'https://api.criteo.com/2022-10/audiences/34893/contactlist',
               headers: {
-                Authorization: getAuthHeader_1(),
+                Authorization: defaultAccessTokenAuthHeader,
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
               },
@@ -666,7 +668,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                accessToken: getSecret_1(),
+                accessToken: defaultAccessToken,
               },
             },
             statusCode: 200,
@@ -687,7 +689,7 @@ export const data = [
           {
             metadata: {
               secret: {
-                accessToken: getSecret_1(),
+                accessToken: defaultAccessToken,
               },
             },
             message: {
@@ -733,7 +735,7 @@ export const data = [
             destination: {
               Config: {
                 clientId: 'abcdef8-f49-4cd6-b4c5-958b3d66d431',
-                clientSecret: 'sjhdkhfrz6yc9LrRRIPimE9h53jADLccXTykHCcA6eEoFR4rXQg',
+                clientSecret: secret1,
                 audienceId: '34893',
                 audienceType: 'identityLink',
               },
@@ -754,7 +756,7 @@ export const data = [
               method: 'PATCH',
               endpoint: 'https://api.criteo.com/2022-10/audiences/34893/contactlist',
               headers: {
-                Authorization: getAuthHeader_1(),
+                Authorization: defaultAccessTokenAuthHeader,
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
               },
@@ -780,7 +782,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                accessToken: getSecret_1(),
+                accessToken: defaultAccessToken,
               },
             },
             statusCode: 200,
@@ -792,7 +794,7 @@ export const data = [
               method: 'PATCH',
               endpoint: 'https://api.criteo.com/2022-10/audiences/34893/contactlist',
               headers: {
-                Authorization: getAuthHeader_1(),
+                Authorization: defaultAccessTokenAuthHeader,
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
               },
@@ -818,7 +820,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                accessToken: getSecret_1(),
+                accessToken: defaultAccessToken,
               },
             },
             statusCode: 200,
@@ -839,7 +841,7 @@ export const data = [
           {
             metadata: {
               secret: {
-                accessToken: getSecret_1(),
+                accessToken: defaultAccessToken,
               },
             },
             message: {
@@ -885,7 +887,7 @@ export const data = [
             destination: {
               Config: {
                 clientId: 'abcdef8-f49-4cd6-b4c5-958b3d66d431',
-                clientSecret: 'sjhdkhfrz6yc9LrRRIPimE9h53jADLccXTykHCcA6eEoFR4rXQg',
+                clientSecret: secret1,
                 audienceId: '34893',
                 audienceType: 'gum',
                 gumCallerId: '329739',
@@ -907,7 +909,7 @@ export const data = [
               method: 'PATCH',
               endpoint: 'https://api.criteo.com/2022-10/audiences/34893/contactlist',
               headers: {
-                Authorization: getAuthHeader_1(),
+                Authorization: defaultAccessTokenAuthHeader,
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
               },
@@ -934,7 +936,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                accessToken: getSecret_1(),
+                accessToken: defaultAccessToken,
               },
             },
             statusCode: 200,
@@ -946,7 +948,7 @@ export const data = [
               method: 'PATCH',
               endpoint: 'https://api.criteo.com/2022-10/audiences/34893/contactlist',
               headers: {
-                Authorization: getAuthHeader_1(),
+                Authorization: defaultAccessTokenAuthHeader,
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
               },
@@ -973,7 +975,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                accessToken: getSecret_1(),
+                accessToken: defaultAccessToken,
               },
             },
             statusCode: 200,
@@ -994,7 +996,7 @@ export const data = [
           {
             metadata: {
               secret: {
-                accessToken: getSecret_1(),
+                accessToken: defaultAccessToken,
               },
             },
             message: {
@@ -1035,7 +1037,7 @@ export const data = [
             destination: {
               Config: {
                 clientId: 'abcdef8-f49-4cd6-b4c5-958b3d66d431',
-                clientSecret: 'sjhdkhfrz6yc9LrRRIPimE9h53jADLccXTykHCcA6eEoFR4rXQg',
+                clientSecret: secret1,
                 audienceId: '34893',
                 audienceType: 'email',
               },
@@ -1052,7 +1054,7 @@ export const data = [
           {
             metadata: {
               secret: {
-                accessToken: getSecret_1(),
+                accessToken: defaultAccessToken,
               },
             },
             statusCode: 400,
@@ -1082,13 +1084,13 @@ export const data = [
           {
             metadata: {
               secret: {
-                accessToken: getSecret_1(),
+                accessToken: defaultAccessToken,
               },
             },
             destination: {
               Config: {
                 clientId: 'abcdef8-f49-4cd6-b4c5-958b3d66d431',
-                clientSecret: 'sjhdkhfrz6yc9LrRRIPimE9h53jADLccXTykHCcA6eEoFR4rXQg',
+                clientSecret: secret1,
                 audienceId: '34893',
                 audienceType: 'email',
               },
@@ -1150,7 +1152,7 @@ export const data = [
           {
             metadata: {
               secret: {
-                accessToken: getSecret_1(),
+                accessToken: defaultAccessToken,
               },
             },
             statusCode: 400,
@@ -1180,13 +1182,13 @@ export const data = [
           {
             metadata: {
               secret: {
-                accessToken: getSecret_1(),
+                accessToken: defaultAccessToken,
               },
             },
             destination: {
               Config: {
                 clientId: 'abcdef8-f49-4cd6-b4c5-958b3d66d431',
-                clientSecret: 'sjhdkhfrz6yc9LrRRIPimE9h53jADLccXTykHCcA6eEoFR4rXQg',
+                clientSecret: secret1,
                 audienceId: '34893',
                 audienceType: 'email',
               },
@@ -1241,7 +1243,7 @@ export const data = [
           {
             metadata: {
               secret: {
-                accessToken: getSecret_1(),
+                accessToken: defaultAccessToken,
               },
             },
             statusCode: 400,
@@ -1271,7 +1273,7 @@ export const data = [
           {
             metadata: {
               secret: {
-                accessToken: getSecret_1(),
+                accessToken: defaultAccessToken,
               },
             },
             message: {
@@ -1291,7 +1293,7 @@ export const data = [
             destination: {
               Config: {
                 clientId: 'abcdef8-f49-4cd6-b4c5-958b3d66d431',
-                clientSecret: 'sjhdkhfrz6yc9LrRRIPimE9h53jADLccXTykHCcA6eEoFR4rXQg',
+                clientSecret: secret1,
                 audienceId: '34893',
                 audienceType: 'email',
               },
@@ -1308,7 +1310,7 @@ export const data = [
           {
             metadata: {
               secret: {
-                accessToken: getSecret_1(),
+                accessToken: defaultAccessToken,
               },
             },
             statusCode: 400,
@@ -1338,13 +1340,13 @@ export const data = [
           {
             metadata: {
               secret: {
-                accessToken: getSecret_1(),
+                accessToken: defaultAccessToken,
               },
             },
             destination: {
               Config: {
                 clientId: 'abcdef8-f49-4cd6-b4c5-958b3d66d431',
-                clientSecret: 'sjhdkhfrz6yc9LrRRIPimE9h53jADLccXTykHCcA6eEoFR4rXQg',
+                clientSecret: secret1,
                 audienceId: '34893',
                 audienceType: 'email',
               },
@@ -1398,7 +1400,7 @@ export const data = [
           {
             metadata: {
               secret: {
-                accessToken: getSecret_1(),
+                accessToken: defaultAccessToken,
               },
             },
             statusCode: 400,
@@ -1428,7 +1430,7 @@ export const data = [
           {
             metadata: {
               secret: {
-                accessToken: getSecret_1(),
+                accessToken: defaultAccessToken,
               },
             },
             destination: {
@@ -1509,7 +1511,7 @@ export const data = [
           {
             metadata: {
               secret: {
-                accessToken: getSecret_1(),
+                accessToken: defaultAccessToken,
               },
             },
             statusCode: 400,
@@ -1539,7 +1541,7 @@ export const data = [
           {
             metadata: {
               secret: {
-                accessToken: getSecret_1(),
+                accessToken: defaultAccessToken,
               },
             },
             message: {
@@ -1579,7 +1581,7 @@ export const data = [
             destination: {
               Config: {
                 clientId: 'abcdef8-f49-4cd6-b4c5-958b3d66d431',
-                clientSecret: 'sjhdkhfrz6yc9LrRRIPimE9h53jADLccXTykHCcA6eEoFR4rXQg',
+                clientSecret: secret1,
                 audienceId: '34894',
                 audienceType: 'email',
               },
@@ -1596,7 +1598,7 @@ export const data = [
           {
             metadata: {
               secret: {
-                accessToken: getSecret_1(),
+                accessToken: defaultAccessToken,
               },
             },
             statusCode: 400,

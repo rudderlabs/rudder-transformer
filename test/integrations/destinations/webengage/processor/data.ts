@@ -1,4 +1,4 @@
-import { getAuthHeader_1, getSecret_1 } from '../maskedSecrets';
+import { authHeader1, secret1 } from '../maskedSecrets';
 export const data = [
   {
     name: 'webengage',
@@ -12,7 +12,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 licenseCode: '3bjsjdbh7',
                 dataCenter: 'ind',
               },
@@ -87,7 +87,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 licenseCode: '3bjsjdbh7',
                 dataCenter: 'ind',
               },
@@ -142,7 +142,7 @@ export const data = [
               endpoint: 'https://api.in.webengage.com/v1/accounts/3bjsjdbh7/events',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -203,7 +203,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 licenseCode: '3bjsjdbh7',
                 dataCenter: 'ind',
               },
@@ -257,7 +257,7 @@ export const data = [
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -319,7 +319,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 licenseCode: '3bjsjdbh7',
                 dataCenter: 'ind',
               },
@@ -373,7 +373,7 @@ export const data = [
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -435,7 +435,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 licenseCode: '3bjsjdbh7',
                 dataCenter: 'ind',
               },
@@ -490,7 +490,7 @@ export const data = [
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -553,7 +553,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 licenseCode: '3bjsjdbh7',
                 dataCenter: 'ind',
               },
@@ -646,7 +646,7 @@ export const data = [
               method: 'POST',
               params: {},
               headers: {
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
               version: '1',
@@ -671,7 +671,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 licenseCode: '3bjsjdbh7',
                 dataCenter: 'ind',
               },
@@ -764,7 +764,7 @@ export const data = [
               method: 'POST',
               params: {},
               headers: {
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
               version: '1',
@@ -789,7 +789,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 licenseCode: '3bjsjdbh7',
                 dataCenter: 'ind',
               },
@@ -881,7 +881,7 @@ export const data = [
               method: 'POST',
               params: {},
               headers: {
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
               version: '1',
@@ -906,7 +906,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 licenseCode: '3bjsjdbh7',
                 dataCenter: 'ind',
               },
@@ -960,7 +960,7 @@ export const data = [
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -1023,7 +1023,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 licenseCode: '3bjsjdbh7',
                 dataCenter: 'ind',
               },
@@ -1097,7 +1097,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 licenseCode: '3bjsjdbh7',
                 dataCenter: 'ind',
               },
@@ -1171,7 +1171,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 licenseCode: '3bjsjdbh7',
                 dataCenter: 'ind',
               },
@@ -1244,7 +1244,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 licenseCode: '3bjsjdbh7',
                 dataCenter: 'standard',
               },
@@ -1317,7 +1317,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 licenseCode: '3bjsjdbh7',
                 dataCenter: 'standard',
               },
@@ -1371,7 +1371,7 @@ export const data = [
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -1434,7 +1434,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 licenseCode: '3bjsjdbh7',
                 dataCenter: 'standard',
               },
@@ -1487,7 +1487,7 @@ export const data = [
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -1549,7 +1549,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 licenseCode: '3bjsjdbh7',
                 dataCenter: 'ind',
               },
@@ -1633,7 +1633,7 @@ export const data = [
               method: 'POST',
               params: {},
               headers: {
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
               version: '1',
@@ -1658,7 +1658,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 licenseCode: '3bjsjdbh7',
                 dataCenter: 'ind',
               },
@@ -1725,7 +1725,7 @@ export const data = [
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -1765,7 +1765,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 licenseCode: '3bjsjdbh7',
                 dataCenter: 'ind',
               },
@@ -1836,7 +1836,7 @@ export const data = [
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -1879,7 +1879,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 licenseCode: '3bjsjdbh7',
                 dataCenter: 'ind',
               },
@@ -1955,7 +1955,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 licenseCode: '3bjsjdbh7',
                 dataCenter: 'ind',
               },
@@ -2030,7 +2030,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 licenseCode: '3bjsjdbh7',
                 dataCenter: 'ind',
               },
@@ -2119,7 +2119,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 licenseCode: '3bjsjdbh7',
                 dataCenter: 'ind',
               },
@@ -2206,7 +2206,7 @@ export const data = [
               endpoint: 'https://api.in.webengage.com/v1/accounts/3bjsjdbh7/events',
               files: {},
               headers: {
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
               method: 'POST',

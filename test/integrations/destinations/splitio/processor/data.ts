@@ -1,4 +1,4 @@
-import { getAuthHeader_1, getSecret_1 } from '../maskedSecrets';
+import { authHeader1, secret1 } from '../maskedSecrets';
 export const data = [
   {
     name: 'splitio',
@@ -42,7 +42,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 environment: 'staging',
                 trafficType: 'anonymous',
               },
@@ -63,7 +63,7 @@ export const data = [
               endpoint: 'https://events.split.io/api/events',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -143,7 +143,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 environment: 'staging',
                 trafficType: 'user',
               },
@@ -164,7 +164,7 @@ export const data = [
               endpoint: 'https://events.split.io/api/events',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -245,7 +245,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 environment: 'production',
                 trafficType: 'anonymous',
               },
@@ -266,7 +266,7 @@ export const data = [
               endpoint: 'https://events.split.io/api/events',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -335,7 +335,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 environment: 'production',
                 trafficType: 'user',
               },
@@ -356,7 +356,7 @@ export const data = [
               endpoint: 'https://events.split.io/api/events',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -419,7 +419,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 environment: 'staging',
                 trafficType: 'user',
               },
@@ -440,7 +440,7 @@ export const data = [
               endpoint: 'https://events.split.io/api/events',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -507,7 +507,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 environment: 'staging',
                 trafficType: 'user',
               },
@@ -528,7 +528,7 @@ export const data = [
               endpoint: 'https://events.split.io/api/events',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -591,7 +591,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 environment: 'staging',
                 trafficType: 'user',
               },
@@ -653,7 +653,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 environment: 'staging',
                 trafficType: 'user',
               },
@@ -714,7 +714,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 environment: 'production',
                 trafficType: 'user',
               },
@@ -776,7 +776,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 environment: 'production',
                 trafficType: 'user',
               },
@@ -797,7 +797,7 @@ export const data = [
               endpoint: 'https://events.split.io/api/events',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -860,7 +860,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 environment: 'staging',
                 trafficType: 'anonymous',
               },
@@ -881,7 +881,7 @@ export const data = [
               endpoint: 'https://events.split.io/api/events',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
               },
               params: {},
               body: {

@@ -1,5 +1,6 @@
 import { generateMetadata, generateProxyV1Payload } from '../../../testUtils';
 import { ProxyV1TestData } from '../../../testTypes';
+import { defaultAccessToken } from '../../../common/secrets';
 
 export const headerBlockWithCorrectAccessToken = {
   'Content-Type': 'application/json',
@@ -32,7 +33,7 @@ export const metadata = [
     workspaceId: 'default-workspaceId',
     sourceId: 'default-sourceId',
     secret: {
-      accessToken: 'default-accessToken',
+      accessToken: defaultAccessToken,
     },
     dontBatch: false,
   },
@@ -44,7 +45,7 @@ export const metadata = [
     workspaceId: 'default-workspaceId',
     sourceId: 'default-sourceId',
     secret: {
-      accessToken: 'default-accessToken',
+      accessToken: defaultAccessToken,
     },
     dontBatch: false,
   },
@@ -56,7 +57,7 @@ export const metadata = [
     workspaceId: 'default-workspaceId',
     sourceId: 'default-sourceId',
     secret: {
-      accessToken: 'default-accessToken',
+      accessToken: defaultAccessToken,
     },
     dontBatch: false,
   },
@@ -68,7 +69,7 @@ export const metadata = [
     workspaceId: 'default-workspaceId',
     sourceId: 'default-sourceId',
     secret: {
-      accessToken: 'default-accessToken',
+      accessToken: defaultAccessToken,
     },
     dontBatch: false,
   },
@@ -83,7 +84,7 @@ export const singleMetadata = [
     workspaceId: 'default-workspaceId',
     sourceId: 'default-sourceId',
     secret: {
-      accessToken: 'default-accessToken',
+      accessToken: defaultAccessToken,
     },
     dontBatch: false,
   },

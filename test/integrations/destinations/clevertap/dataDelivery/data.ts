@@ -39,7 +39,7 @@ const oldV0TestCases = [
                     msgSms: true,
                     msgemail: true,
                     msgwhatsapp: false,
-                    custom_tags: '["Test_User","Interested_User","DIY_Hobby"]',
+                    custom_tags: JSON.stringify(['Test_User', 'Interested_User', 'DIY_Hobby']),
                     custom_mappings: '{"Office":"Trastkiv","Country":"Russia"}',
                     address:
                       '{"city":"kolkata","country":"India","postalCode":789223,"state":"WB","street":""}',

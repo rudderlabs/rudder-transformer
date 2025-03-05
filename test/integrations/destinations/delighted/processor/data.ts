@@ -1,4 +1,4 @@
-import { getAuthHeader_1, getSecret_1 } from '../maskedSecrets';
+import { authHeader1, secret1 } from '../maskedSecrets';
 export const data = [
   {
     name: 'delighted',
@@ -12,7 +12,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 channel: 'email',
                 delay: 0,
                 eventNamesSettings: [
@@ -78,7 +78,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://api.delighted.com/v1/people.json',
               headers: {
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
               params: {},
@@ -117,7 +117,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 channel: 'email',
                 delay: 0,
                 eventNamesSettings: [
@@ -187,7 +187,7 @@ export const data = [
               method: 'POST',
               params: {},
               headers: {
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
               version: '1',
@@ -212,7 +212,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 channel: 'email',
                 delay: 0,
                 eventNamesSettings: [
@@ -296,7 +296,7 @@ export const data = [
               method: 'POST',
               params: {},
               headers: {
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
               version: '1',
@@ -321,7 +321,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'dummyApiKeyforfailure',
+                apiKey: secret1,
                 channel: 'email',
                 delay: 0,
                 eventNamesSettings: [
@@ -410,7 +410,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 channel: 'email',
                 delay: 0,
                 eventNamesSettings: [
@@ -498,7 +498,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 channel: 'email',
                 delay: 0,
                 eventNamesSettings: [
@@ -586,7 +586,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 channel: 'email',
                 delay: 0,
                 eventNamesSettings: [
@@ -667,7 +667,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 channel: 'email',
                 delay: 0,
                 eventNamesSettings: [
@@ -755,7 +755,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 channel: 'email',
                 delay: 0,
                 eventNamesSettings: [
@@ -848,7 +848,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 channel: 'email',
                 delay: 0,
                 eventNamesSettings: [
@@ -919,7 +919,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://api.delighted.com/v1/people.json',
               headers: {
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
               params: {},
@@ -957,7 +957,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'dummyApiKeyforfailure',
+                apiKey: secret1,
                 channel: 'email',
                 delay: 0,
                 eventNamesSettings: [
@@ -996,7 +996,7 @@ export const data = [
               session_id: '3049dc4c-5a95-4ccd-a3e7-d74a7e411f22',
               originalTimestamp: '2019-10-14T09:03:17.562Z',
               type: 'track',
-              userId: 'test@rudderlabs.com',
+              userId: 'test429@rudderlabs.com',
               event: 'Product Reviewed',
               properties: {
                 review_id: '12345',

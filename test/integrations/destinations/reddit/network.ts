@@ -1,4 +1,4 @@
-import { getAuthHeader_1 } from './maskedSecrets';
+import { authHeader1 } from './maskedSecrets';
 export const networkCallsData = [
   {
     httpReq: {
@@ -39,7 +39,7 @@ export const networkCallsData = [
       },
       params: { destination: 'reddit' },
       headers: {
-        Authorization: getAuthHeader_1(),
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
       },
       method: 'POST',
@@ -91,7 +91,7 @@ export const networkCallsData = [
       },
       params: { destination: 'reddit' },
       headers: {
-        Authorization: getAuthHeader_1(),
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
       },
       method: 'POST',
@@ -137,7 +137,7 @@ export const networkCallsData = [
       },
       params: { destination: 'reddit' },
       headers: {
-        Authorization: getAuthHeader_1(),
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
       },
       method: 'POST',
@@ -194,7 +194,7 @@ export const networkCallsData = [
       },
       params: { destination: 'reddit' },
       headers: {
-        Authorization: getAuthHeader_1(),
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
       },
       method: 'POST',
@@ -280,7 +280,7 @@ export const networkCallsData = [
       },
       params: { destination: 'reddit' },
       headers: {
-        Authorization: getAuthHeader_1(),
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
       },
       method: 'POST',

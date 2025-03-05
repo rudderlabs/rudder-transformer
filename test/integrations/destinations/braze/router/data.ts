@@ -1,4 +1,4 @@
-import { getAuthHeader_1, getSecret_1 } from '../maskedSecrets';
+import { authHeader1, secret1 } from '../maskedSecrets';
 export const data = [
   {
     name: 'braze',
@@ -13,7 +13,7 @@ export const data = [
             {
               destination: {
                 Config: {
-                  restApiKey: getSecret_1(),
+                  restApiKey: secret1,
                   prefixProperties: true,
                   useNativeSDK: false,
                   dataCenter: 'eu-01',
@@ -69,7 +69,7 @@ export const data = [
             {
               destination: {
                 Config: {
-                  restApiKey: getSecret_1(),
+                  restApiKey: secret1,
                   prefixProperties: true,
                   useNativeSDK: false,
                   dataCenter: 'us-01',
@@ -123,7 +123,7 @@ export const data = [
             {
               destination: {
                 Config: {
-                  restApiKey: getSecret_1(),
+                  restApiKey: secret1,
                   prefixProperties: true,
                   useNativeSDK: false,
                   dataCenter: 'us-01',
@@ -151,7 +151,7 @@ export const data = [
             {
               destination: {
                 Config: {
-                  restApiKey: getSecret_1(),
+                  restApiKey: secret1,
                   prefixProperties: true,
                   useNativeSDK: false,
                   dataCenter: 'us-01',
@@ -179,7 +179,7 @@ export const data = [
             {
               destination: {
                 Config: {
-                  restApiKey: getSecret_1(),
+                  restApiKey: secret1,
                   prefixProperties: true,
                   useNativeSDK: false,
                   dataCenter: 'us-01',
@@ -201,7 +201,7 @@ export const data = [
             {
               destination: {
                 Config: {
-                  restApiKey: getSecret_1(),
+                  restApiKey: secret1,
                   prefixProperties: true,
                   useNativeSDK: false,
                   dataCenter: 'us-01',
@@ -223,7 +223,7 @@ export const data = [
             {
               destination: {
                 Config: {
-                  restApiKey: getSecret_1(),
+                  restApiKey: secret1,
                   prefixProperties: true,
                   useNativeSDK: false,
                   dataCenter: 'us-01',
@@ -269,7 +269,7 @@ export const data = [
                   headers: {
                     'Content-Type': 'application/json',
                     Accept: 'application/json',
-                    Authorization: getAuthHeader_1(),
+                    Authorization: authHeader1,
                   },
                   params: {},
                   body: {
@@ -321,7 +321,7 @@ export const data = [
                   headers: {
                     'Content-Type': 'application/json',
                     Accept: 'application/json',
-                    Authorization: getAuthHeader_1(),
+                    Authorization: authHeader1,
                   },
                   params: {},
                   body: {
@@ -355,7 +355,7 @@ export const data = [
                   headers: {
                     'Content-Type': 'application/json',
                     Accept: 'application/json',
-                    Authorization: getAuthHeader_1(),
+                    Authorization: authHeader1,
                   },
                   params: {},
                   body: {
@@ -391,7 +391,7 @@ export const data = [
               statusCode: 200,
               destination: {
                 Config: {
-                  restApiKey: getSecret_1(),
+                  restApiKey: secret1,
                   prefixProperties: true,
                   useNativeSDK: false,
                   dataCenter: 'eu-01',
@@ -433,7 +433,7 @@ export const data = [
                   enableNestedArrayOperations: false,
                   enableSubscriptionGroupInGroupCall: false,
                   eventFilteringOption: 'disable',
-                  restApiKey: getSecret_1(),
+                  restApiKey: secret1,
                   supportDedup: true,
                   trackAnonymousUser: true,
                   whitelistedEvents: [],
@@ -502,7 +502,7 @@ export const data = [
                   enableNestedArrayOperations: false,
                   enableSubscriptionGroupInGroupCall: false,
                   eventFilteringOption: 'disable',
-                  restApiKey: getSecret_1(),
+                  restApiKey: secret1,
                   supportDedup: true,
                   trackAnonymousUser: true,
                   whitelistedEvents: [],
@@ -571,7 +571,7 @@ export const data = [
                   enableNestedArrayOperations: false,
                   enableSubscriptionGroupInGroupCall: false,
                   eventFilteringOption: 'disable',
-                  restApiKey: getSecret_1(),
+                  restApiKey: secret1,
                   supportDedup: true,
                   trackAnonymousUser: true,
                   whitelistedEvents: [],
@@ -624,7 +624,7 @@ export const data = [
                   enableNestedArrayOperations: false,
                   enableSubscriptionGroupInGroupCall: false,
                   eventFilteringOption: 'disable',
-                  restApiKey: getSecret_1(),
+                  restApiKey: secret1,
                   supportDedup: true,
                   trackAnonymousUser: true,
                   whitelistedEvents: [],
@@ -677,7 +677,7 @@ export const data = [
                   enableNestedArrayOperations: false,
                   enableSubscriptionGroupInGroupCall: false,
                   eventFilteringOption: 'disable',
-                  restApiKey: getSecret_1(),
+                  restApiKey: secret1,
                   supportDedup: true,
                   trackAnonymousUser: true,
                   whitelistedEvents: [],
@@ -739,7 +739,7 @@ export const data = [
                   headers: {
                     'Content-Type': 'application/json',
                     Accept: 'application/json',
-                    Authorization: getAuthHeader_1(),
+                    Authorization: authHeader1,
                   },
                   params: {},
                   body: {
@@ -829,7 +829,7 @@ export const data = [
                   enableNestedArrayOperations: false,
                   enableSubscriptionGroupInGroupCall: false,
                   eventFilteringOption: 'disable',
-                  restApiKey: getSecret_1(),
+                  restApiKey: secret1,
                   supportDedup: true,
                   trackAnonymousUser: true,
                   whitelistedEvents: [],
@@ -864,7 +864,7 @@ export const data = [
                   enableNestedArrayOperations: false,
                   enableSubscriptionGroupInGroupCall: false,
                   eventFilteringOption: 'disable',
-                  restApiKey: getSecret_1(),
+                  restApiKey: secret1,
                   supportDedup: true,
                   trackAnonymousUser: true,
                   whitelistedEvents: [],

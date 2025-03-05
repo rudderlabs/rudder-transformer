@@ -1,4 +1,4 @@
-import { getAuthHeader_3, getSecret_3 } from '../maskedSecrets';
+import { authHeader3, secret3 } from '../maskedSecrets';
 import { rETLAudienceRouterRequest } from './audience';
 import {
   rETLRecordRouterRequest,
@@ -34,7 +34,7 @@ export const data = [
                   method: 'POST',
                   endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
                   headers: {
-                    Authorization: getAuthHeader_3(),
+                    Authorization: authHeader3,
                     'Content-Type': 'application/json',
                   },
                   params: {
@@ -85,7 +85,7 @@ export const data = [
                   destinationId: 'default-destinationId',
                   dontBatch: false,
                   secret: {
-                    access_token: getSecret_3(),
+                    access_token: secret3,
                   },
                   sourceId: 'default-sourceId',
                   userId: 'default-userId',
@@ -129,7 +129,7 @@ export const data = [
                   method: 'POST',
                   endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
                   headers: {
-                    Authorization: getAuthHeader_3(),
+                    Authorization: authHeader3,
                     'Content-Type': 'application/json',
                   },
                   params: {
@@ -180,7 +180,7 @@ export const data = [
                   destinationId: 'default-destinationId',
                   dontBatch: false,
                   secret: {
-                    access_token: getSecret_3(),
+                    access_token: secret3,
                   },
                   sourceId: 'default-sourceId',
                   userId: 'default-userId',
@@ -224,7 +224,7 @@ export const data = [
                   method: 'POST',
                   endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
                   headers: {
-                    Authorization: getAuthHeader_3(),
+                    Authorization: authHeader3,
                     'Content-Type': 'application/json',
                   },
                   params: {
@@ -274,7 +274,7 @@ export const data = [
                   method: 'POST',
                   endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
                   headers: {
-                    Authorization: getAuthHeader_3(),
+                    Authorization: authHeader3,
                     'Content-Type': 'application/json',
                   },
                   params: {
@@ -325,7 +325,7 @@ export const data = [
                   destinationId: 'default-destinationId',
                   dontBatch: false,
                   secret: {
-                    access_token: getSecret_3(),
+                    access_token: secret3,
                   },
                   sourceId: 'default-sourceId',
                   userId: 'default-userId',
@@ -391,7 +391,7 @@ export const data = [
                   method: 'POST',
                   endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
                   headers: {
-                    Authorization: getAuthHeader_3(),
+                    Authorization: authHeader3,
                     'Content-Type': 'application/json',
                   },
                   params: {
@@ -444,7 +444,7 @@ export const data = [
                   destinationId: 'default-destinationId',
                   dontBatch: false,
                   secret: {
-                    access_token: getSecret_3(),
+                    access_token: secret3,
                   },
                   sourceId: 'default-sourceId',
                   userId: 'default-userId',
@@ -488,7 +488,7 @@ export const data = [
                   method: 'POST',
                   endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
                   headers: {
-                    Authorization: getAuthHeader_3(),
+                    Authorization: authHeader3,
                     'Content-Type': 'application/json',
                   },
                   params: {
@@ -559,7 +559,7 @@ export const data = [
                   destinationId: 'default-destinationId',
                   dontBatch: false,
                   secret: {
-                    access_token: getSecret_3(),
+                    access_token: secret3,
                   },
                   sourceId: 'default-sourceId',
                   userId: 'default-userId',
@@ -572,7 +572,7 @@ export const data = [
                   dontBatch: false,
                   jobId: 3,
                   secret: {
-                    access_token: getSecret_3(),
+                    access_token: secret3,
                   },
                   sourceId: 'default-sourceId',
                   userId: 'default-userId',
@@ -615,7 +615,7 @@ export const data = [
                   method: 'POST',
                   endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
                   headers: {
-                    Authorization: getAuthHeader_3(),
+                    Authorization: authHeader3,
                     'Content-Type': 'application/json',
                   },
                   params: {
@@ -668,7 +668,7 @@ export const data = [
                   destinationId: 'default-destinationId',
                   dontBatch: false,
                   secret: {
-                    access_token: getSecret_3(),
+                    access_token: secret3,
                   },
                   sourceId: 'default-sourceId',
                   userId: 'default-userId',
@@ -711,7 +711,7 @@ export const data = [
                   destinationId: 'default-destinationId',
                   dontBatch: false,
                   secret: {
-                    access_token: getSecret_3(),
+                    access_token: secret3,
                   },
                   sourceId: 'default-sourceId',
                   userId: 'default-userId',
@@ -763,7 +763,7 @@ export const data = [
                   method: 'POST',
                   endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
                   headers: {
-                    Authorization: getAuthHeader_3(),
+                    Authorization: authHeader3,
                     'Content-Type': 'application/json',
                   },
                   params: {
@@ -816,7 +816,7 @@ export const data = [
                   destinationId: 'default-destinationId',
                   dontBatch: false,
                   secret: {
-                    access_token: getSecret_3(),
+                    access_token: secret3,
                   },
                   sourceId: 'default-sourceId',
                   userId: 'default-userId',
@@ -879,7 +879,7 @@ export const data = [
                   method: 'POST',
                   endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
                   headers: {
-                    Authorization: getAuthHeader_3(),
+                    Authorization: authHeader3,
                     'Content-Type': 'application/json',
                   },
                   params: {
@@ -917,7 +917,7 @@ export const data = [
                   destinationId: 'default-destinationId',
                   dontBatch: false,
                   secret: {
-                    access_token: getSecret_3(),
+                    access_token: secret3,
                   },
                   sourceId: 'default-sourceId',
                   userId: 'default-userId',

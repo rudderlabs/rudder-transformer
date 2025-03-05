@@ -1,4 +1,7 @@
-// Auto-generated masked secrets file
+import path from 'path';
 
-export const getAuthHeader_1 = () => `Bearer ${getSecret_1()}`;
-export const getSecret_1 = () => 'access_token_success';
+export const secret1 = path.basename(__dirname) + 1;
+export const secretAccessToken = path.basename(__dirname) + 2;
+export const expiredAccessToken = path.basename(__dirname) + 3;
+
+export const authHeader1 = `Bearer ${secret1}`;

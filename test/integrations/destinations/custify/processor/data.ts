@@ -1,4 +1,4 @@
-import { getAuthHeader_2, getSecret_2 } from '../maskedSecrets';
+import { authHeader2, secret2 } from '../maskedSecrets';
 export const data = [
   {
     name: 'custify',
@@ -12,7 +12,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: getSecret_2(),
+                apiKey: secret2,
                 sendAnonymousId: false,
               },
               ID: 'custify-1234',
@@ -64,7 +64,7 @@ export const data = [
               endpoint: 'https://api.custify.com/people',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: getAuthHeader_2(),
+                Authorization: authHeader2,
                 Accept: 'application/json',
               },
               params: {},
@@ -121,7 +121,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: getSecret_2(),
+                apiKey: secret2,
                 sendAnonymousId: false,
               },
               ID: 'custify-1234',
@@ -174,7 +174,7 @@ export const data = [
               endpoint: 'https://api.custify.com/people',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: getAuthHeader_2(),
+                Authorization: authHeader2,
                 Accept: 'application/json',
               },
               params: {},
@@ -231,7 +231,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: getSecret_2(),
+                apiKey: secret2,
                 sendAnonymousId: false,
               },
               ID: 'custify-1234',
@@ -301,7 +301,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: getSecret_2(),
+                apiKey: secret2,
                 sendAnonymousId: false,
               },
               ID: 'custify-1234',
@@ -372,7 +372,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: getSecret_2(),
+                apiKey: secret2,
                 sendAnonymousId: true,
               },
               ID: 'custify-1234',
@@ -423,7 +423,7 @@ export const data = [
               endpoint: 'https://api.custify.com/people',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: getAuthHeader_2(),
+                Authorization: authHeader2,
                 Accept: 'application/json',
               },
               params: {},
@@ -479,7 +479,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: getSecret_2(),
+                apiKey: secret2,
                 sendAnonymousId: false,
               },
               ID: 'custify-1234',
@@ -530,7 +530,7 @@ export const data = [
               endpoint: 'https://api.custify.com/event',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: getAuthHeader_2(),
+                Authorization: authHeader2,
                 Accept: 'application/json',
               },
               params: {},
@@ -573,7 +573,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: getSecret_2(),
+                apiKey: secret2,
                 sendAnonymousId: false,
               },
               ID: 'custify-1234',
@@ -632,7 +632,7 @@ export const data = [
               endpoint: 'https://api.custify.com/people',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: getAuthHeader_2(),
+                Authorization: authHeader2,
                 Accept: 'application/json',
               },
               params: {},

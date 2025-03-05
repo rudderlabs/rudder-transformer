@@ -1,4 +1,4 @@
-import { getAuthHeader_1, getSecret_1 } from '../maskedSecrets';
+import { authHeader1, secret1 } from '../maskedSecrets';
 export const data = [
   {
     name: 'june',
@@ -12,7 +12,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
               },
               ID: 'june123',
             },
@@ -65,7 +65,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
               },
               ID: 'june123',
             },
@@ -101,7 +101,7 @@ export const data = [
               endpoint: 'https://api.june.so/api/identify',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -140,7 +140,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
               },
               ID: 'june123',
             },
@@ -195,7 +195,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
               },
               ID: 'june123',
             },
@@ -230,7 +230,7 @@ export const data = [
               endpoint: 'https://api.june.so/api/track',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -271,7 +271,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
               },
               ID: 'june123',
             },
@@ -300,7 +300,7 @@ export const data = [
               endpoint: 'https://api.june.so/api/track',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -335,7 +335,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
               },
               ID: 'june123',
             },
@@ -371,7 +371,7 @@ export const data = [
               endpoint: 'https://api.june.so/api/track',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -415,7 +415,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
               },
               ID: 'june123',
             },
@@ -458,7 +458,7 @@ export const data = [
               endpoint: 'https://api.june.so/api/track',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -502,7 +502,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
               },
               ID: 'june123',
             },
@@ -539,7 +539,7 @@ export const data = [
               endpoint: 'https://api.june.so/api/group',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -582,7 +582,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
               },
               ID: 'june123',
             },
@@ -636,7 +636,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
               },
               ID: 'june123',
             },
@@ -691,7 +691,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
               },
               ID: 'june123',
             },
@@ -726,7 +726,7 @@ export const data = [
               endpoint: 'https://api.june.so/api/page',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
               },
               params: {},
               body: {

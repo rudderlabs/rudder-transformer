@@ -1,3 +1,10 @@
+import {
+  secretPassword,
+  secretAccountToken,
+  authHeaderAccessToken,
+  secretInvalidToken,
+} from '../maskedSecrets';
+
 export const data = [
   {
     name: 'wootric',
@@ -12,8 +19,8 @@ export const data = [
             destination: {
               Config: {
                 username: 'wootricfakeuser@example.com',
-                password: 'password@123',
-                accountToken: 'NPS-dummyToken12',
+                password: secretPassword,
+                accountToken: secretInvalidToken,
               },
               ID: 'wootric-1234',
             },
@@ -69,8 +76,8 @@ export const data = [
             destination: {
               Config: {
                 username: 'wootricfakeuser@example.com',
-                password: 'password@123',
-                accountToken: 'NPS-dummyToken',
+                password: secretPassword,
+                accountToken: secretAccountToken,
               },
               ID: 'wootric-1234',
             },
@@ -151,8 +158,7 @@ export const data = [
               endpoint: 'https://api.wootric.com/v1/end_users',
               headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
-                Authorization:
-                  'Bearer 2fe581c1c72851e73d60f4191f720be93e5d3e8a6147e37c4e8e852b1a8f506c',
+                Authorization: authHeaderAccessToken,
               },
               params: {},
               body: {
@@ -194,8 +200,8 @@ export const data = [
             destination: {
               Config: {
                 username: 'wootricfakeuser@example.com',
-                password: 'password@123',
-                accountToken: 'NPS-dummyToken',
+                password: secretPassword,
+                accountToken: secretAccountToken,
               },
               ID: 'wootric-1234',
             },
@@ -275,8 +281,7 @@ export const data = [
               endpoint: 'https://api.wootric.com/v1/end_users',
               headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
-                Authorization:
-                  'Bearer 2fe581c1c72851e73d60f4191f720be93e5d3e8a6147e37c4e8e852b1a8f506c',
+                Authorization: authHeaderAccessToken,
               },
               params: {},
               body: {
@@ -317,8 +322,8 @@ export const data = [
             destination: {
               Config: {
                 username: 'wootricfakeuser@example.com',
-                password: 'password@123',
-                accountToken: 'NPS-dummyToken',
+                password: secretPassword,
+                accountToken: secretAccountToken,
               },
               ID: 'wootric-1234',
             },
@@ -398,8 +403,7 @@ export const data = [
               endpoint: 'https://api.wootric.com/v1/end_users',
               headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
-                Authorization:
-                  'Bearer 2fe581c1c72851e73d60f4191f720be93e5d3e8a6147e37c4e8e852b1a8f506c',
+                Authorization: authHeaderAccessToken,
               },
               params: {},
               body: {
@@ -440,8 +444,8 @@ export const data = [
             destination: {
               Config: {
                 username: 'wootricfakeuser@example.com',
-                password: 'password@123',
-                accountToken: 'NPS-dummyToken',
+                password: secretPassword,
+                accountToken: secretAccountToken,
               },
               ID: 'wootric-1234',
             },
@@ -533,8 +537,8 @@ export const data = [
             destination: {
               Config: {
                 username: 'wootricfakeuser@example.com',
-                password: 'password@123',
-                accountToken: 'NPS-dummyToken',
+                password: secretPassword,
+                accountToken: secretAccountToken,
               },
               ID: 'wootric-1234',
             },
@@ -634,8 +638,8 @@ export const data = [
             destination: {
               Config: {
                 username: 'wootricfakeuser@example.com',
-                password: 'password@123',
-                accountToken: 'NPS-dummyToken',
+                password: secretPassword,
+                accountToken: secretAccountToken,
               },
               ID: 'wootric-1234',
             },
@@ -716,8 +720,7 @@ export const data = [
               endpoint: 'https://api.wootric.com/v1/end_users/490635419',
               headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
-                Authorization:
-                  'Bearer 2fe581c1c72851e73d60f4191f720be93e5d3e8a6147e37c4e8e852b1a8f506c',
+                Authorization: authHeaderAccessToken,
               },
               params: {},
               body: {
@@ -756,8 +759,8 @@ export const data = [
             destination: {
               Config: {
                 username: 'wootricfakeuser@example.com',
-                password: 'password@123',
-                accountToken: 'NPS-dummyToken',
+                password: secretPassword,
+                accountToken: secretAccountToken,
               },
               ID: 'wootric-1234',
             },
@@ -832,8 +835,7 @@ export const data = [
               endpoint: 'https://api.wootric.com/v1/end_users/486438462',
               headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
-                Authorization:
-                  'Bearer 2fe581c1c72851e73d60f4191f720be93e5d3e8a6147e37c4e8e852b1a8f506c',
+                Authorization: authHeaderAccessToken,
               },
               params: {},
               body: {
@@ -871,8 +873,8 @@ export const data = [
             destination: {
               Config: {
                 username: 'wootricfakeuser@example.com',
-                password: 'password@123',
-                accountToken: 'NPS-dummyToken',
+                password: secretPassword,
+                accountToken: secretAccountToken,
               },
               ID: 'wootric-1234',
             },
@@ -950,8 +952,7 @@ export const data = [
               endpoint: 'https://api.wootric.com/v1/end_users/486438462',
               headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
-                Authorization:
-                  'Bearer 2fe581c1c72851e73d60f4191f720be93e5d3e8a6147e37c4e8e852b1a8f506c',
+                Authorization: authHeaderAccessToken,
               },
               params: {},
               body: {
@@ -989,8 +990,8 @@ export const data = [
             destination: {
               Config: {
                 username: 'wootricfakeuser@example.com',
-                password: 'password@123',
-                accountToken: 'NPS-dummyToken',
+                password: secretPassword,
+                accountToken: secretAccountToken,
               },
               ID: 'wootric-1234',
             },
@@ -1078,8 +1079,7 @@ export const data = [
               endpoint: 'https://api.wootric.com/v1/end_users/486438462/responses',
               headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
-                Authorization:
-                  'Bearer 2fe581c1c72851e73d60f4191f720be93e5d3e8a6147e37c4e8e852b1a8f506c',
+                Authorization: authHeaderAccessToken,
               },
               params: {},
               body: {
@@ -1121,8 +1121,8 @@ export const data = [
             destination: {
               Config: {
                 username: 'wootricfakeuser@example.com',
-                password: 'password@123',
-                accountToken: 'NPS-dummyToken',
+                password: secretPassword,
+                accountToken: secretAccountToken,
               },
               ID: 'wootric-1234',
             },
@@ -1222,8 +1222,8 @@ export const data = [
             destination: {
               Config: {
                 username: 'wootricfakeuser@example.com',
-                password: 'password@123',
-                accountToken: 'NPS-dummyToken',
+                password: secretPassword,
+                accountToken: secretAccountToken,
               },
               ID: 'wootric-1234',
             },
@@ -1329,8 +1329,8 @@ export const data = [
             destination: {
               Config: {
                 username: 'wootricfakeuser@example.com',
-                password: 'password@123',
-                accountToken: 'NPS-dummyToken',
+                password: secretPassword,
+                accountToken: secretAccountToken,
               },
               ID: 'wootric-1234',
             },
@@ -1430,8 +1430,8 @@ export const data = [
             destination: {
               Config: {
                 username: 'wootricfakeuser@example.com',
-                password: 'password@123',
-                accountToken: 'NPS-dummyToken',
+                password: secretPassword,
+                accountToken: secretAccountToken,
               },
               ID: 'wootric-1234',
             },
@@ -1509,8 +1509,7 @@ export const data = [
               endpoint: 'https://api.wootric.com/v1/end_users/486438462/declines',
               headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
-                Authorization:
-                  'Bearer 2fe581c1c72851e73d60f4191f720be93e5d3e8a6147e37c4e8e852b1a8f506c',
+                Authorization: authHeaderAccessToken,
               },
               params: {},
               body: {
@@ -1543,8 +1542,8 @@ export const data = [
             destination: {
               Config: {
                 username: 'wootricfakeuser@example.com',
-                password: 'password@123',
-                accountToken: 'NPS-dummyToken',
+                password: secretPassword,
+                accountToken: secretAccountToken,
               },
               ID: 'wootric-1234',
             },
@@ -1643,8 +1642,8 @@ export const data = [
             destination: {
               Config: {
                 username: 'wootricfakeuser@example.com',
-                password: 'password@123',
-                accountToken: 'NPS-dummyToken',
+                password: secretPassword,
+                accountToken: secretAccountToken,
               },
               ID: 'wootric-1234',
             },
@@ -1754,8 +1753,8 @@ export const data = [
             destination: {
               Config: {
                 username: 'wootricfakeuser@example.com',
-                password: 'password@123',
-                accountToken: 'NPS-dummyToken',
+                password: secretPassword,
+                accountToken: secretAccountToken,
               },
               ID: 'wootric-1234',
             },

@@ -100,7 +100,7 @@ export const data = [
                         msgemail: true,
                         msgwhatsapp: false,
                         custom_mappings: '{"Office":"Trastkiv","Country":"Russia"}',
-                        custom_tags: '["Test_User","Interested_User","DIY_Hobby"]',
+                        custom_tags: JSON.stringify(['Test_User', 'Interested_User', 'DIY_Hobby']),
                         address:
                           '{"city":"kolkata","country":"India","postalCode":789223,"state":"WB","street":""}',
                         'category-unsubscribe': { email: ['Marketing', 'Transactional'] },
@@ -224,7 +224,7 @@ export const data = [
                         msgemail: true,
                         msgwhatsapp: false,
                         custom_mappings: '{"Office":"Trastkiv","Country":"Russia"}',
-                        custom_tags: '["Test_User","Interested_User","DIY_Hobby"]',
+                        custom_tags: JSON.stringify(['Test_User', 'Interested_User', 'DIY_Hobby']),
                         address:
                           '{"city":"kolkata","country":"India","postalCode":789223,"state":"WB","street":""}',
                         'category-unsubscribe': { email: ['Marketing', 'Transactional'] },
@@ -369,7 +369,7 @@ export const data = [
                         msgemail: true,
                         msgwhatsapp: false,
                         custom_mappings: '{"Office":"Trastkiv","Country":"Russia"}',
-                        custom_tags: '["Test_User","Interested_User","DIY_Hobby"]',
+                        custom_tags: JSON.stringify(['Test_User', 'Interested_User', 'DIY_Hobby']),
                         address:
                           '{"city":"kolkata","country":"India","postalCode":789223,"state":"WB","street":""}',
                       },
@@ -1095,7 +1095,7 @@ export const data = [
                         msgemail: true,
                         msgwhatsapp: false,
                         custom_mappings: '{"Office":"Trastkiv","Country":"Russia"}',
-                        custom_tags: '["Test_User","Interested_User","DIY_Hobby"]',
+                        custom_tags: JSON.stringify(['Test_User', 'Interested_User', 'DIY_Hobby']),
                         address:
                           '{"city":"kolkata","country":"India","postalCode":789223,"state":"WB","street":""}',
                       },
@@ -1238,7 +1238,7 @@ export const data = [
                         msgemail: true,
                         msgwhatsapp: false,
                         custom_mappings: '{"Office":"Trastkiv","Country":"Russia"}',
-                        custom_tags: '["Test_User","Interested_User","DIY_Hobby"]',
+                        custom_tags: JSON.stringify(['Test_User', 'Interested_User', 'DIY_Hobby']),
                         address:
                           '{"city":"kolkata","country":"India","postalCode":789223,"state":"WB","street":""}',
                       },
@@ -1819,7 +1819,7 @@ export const data = [
                         msgemail: true,
                         msgwhatsapp: false,
                         custom_mappings: '{"Office":"Trastkiv","Country":"Russia"}',
-                        custom_tags: '["Test_User","Interested_User","DIY_Hobby"]',
+                        custom_tags: JSON.stringify(['Test_User', 'Interested_User', 'DIY_Hobby']),
                         address:
                           '{"city":"kolkata","country":"India","postalCode":789223,"state":"WB","street":""}',
                       },
@@ -2204,7 +2204,7 @@ export const data = [
                         msgemail: true,
                         msgwhatsapp: false,
                         custom_mappings: '{"Office":"Trastkiv","Country":"Russia"}',
-                        custom_tags: '["Test_User","Interested_User","DIY_Hobby"]',
+                        custom_tags: JSON.stringify(['Test_User', 'Interested_User', 'DIY_Hobby']),
                         address:
                           '{"city":"kolkata","country":"India","postalCode":789223,"state":"WB","street":""}',
                         first_name: 'John',
@@ -2357,7 +2357,7 @@ export const data = [
                         msgemail: true,
                         msgwhatsapp: false,
                         custom_mappings: '{"Office":"Trastkiv","Country":"Russia"}',
-                        custom_tags: '["Test_User","Interested_User","DIY_Hobby"]',
+                        custom_tags: JSON.stringify(['Test_User', 'Interested_User', 'DIY_Hobby']),
                         address:
                           '{"city":"kolkata","country":"India","postalCode":789223,"state":"WB","street":""}',
                         first_name: 'John',

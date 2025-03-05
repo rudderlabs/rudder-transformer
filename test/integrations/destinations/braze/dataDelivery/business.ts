@@ -1,6 +1,7 @@
 import { ProxyMetdata } from '../../../../../src/types';
 import { ProxyV1TestData } from '../../../testTypes';
 import { generateMetadata, generateProxyV1Payload } from '../../../testUtils';
+import { authHeader1 } from '../maskedSecrets';
 
 const BRAZE_USERS_TRACK_ENDPOINT = 'https://rest.iad-03.braze.com/users/track';
 
@@ -8,7 +9,7 @@ const partner = 'RudderStack';
 
 const headers = {
   Accept: 'application/json',
-  Authorization: 'Bearer api_key',
+  Authorization: authHeader1,
   'Content-Type': 'application/json',
   'User-Agent': 'RudderLabs',
 };

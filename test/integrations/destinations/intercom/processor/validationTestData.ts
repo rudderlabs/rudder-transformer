@@ -1,17 +1,17 @@
-import { getSecret_1, getSecret_2, getSecret_4 } from '../maskedSecrets';
+import { secret1, secret2, secret4 } from '../maskedSecrets';
 import { Destination } from '../../../../../src/types';
 import { ProcessorTestData } from '../../../testTypes';
 import { generateMetadata } from '../../../testUtils';
 
 const v1Config = {
-  apiKey: getSecret_4(),
+  apiKey: secret4,
   apiVersion: 'v1',
   appId: '9e9cdea1-78fa-4829-a9b2-5d7f7e96d1a0',
   collectContext: false,
 };
 
 const v2Config = {
-  apiKey: getSecret_1(),
+  apiKey: secret1,
   apiVersion: 'v2',
   apiServer: 'standard',
   sendAnonymousId: false,
@@ -29,7 +29,7 @@ const destination: Destination = {
     },
   },
   Config: {
-    apiKey: getSecret_1(),
+    apiKey: secret1,
     apiVersion: 'v2',
     apiServer: 'standard',
     sendAnonymousId: false,
@@ -333,7 +333,7 @@ export const validationTestData: ProcessorTestData[] = [
           {
             destination: {
               ...v2Destination,
-              Config: { ...v2Destination.Config, apiKey: getSecret_2() },
+              Config: { ...v2Destination.Config, apiKey: secret2 },
             },
             message: {
               userId: 'user@3',

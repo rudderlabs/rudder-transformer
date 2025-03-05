@@ -1,4 +1,4 @@
-import { getAuthHeader_1, getSecret_1 } from '../maskedSecrets';
+import { authHeader1, secret1 } from '../maskedSecrets';
 export const data = [
   {
     name: 'delighted',
@@ -13,7 +13,7 @@ export const data = [
             {
               destination: {
                 Config: {
-                  apiKey: getSecret_1(),
+                  apiKey: secret1,
                   channel: 'email',
                   delay: 0,
                   eventNamesSettings: [{ event: '' }],
@@ -55,7 +55,7 @@ export const data = [
             {
               destination: {
                 Config: {
-                  apiKey: getSecret_1(),
+                  apiKey: secret1,
                   channel: 'email',
                   delay: 0,
                   eventNamesSettings: [{ event: '' }],
@@ -121,7 +121,7 @@ export const data = [
                 method: 'POST',
                 params: {},
                 headers: {
-                  Authorization: getAuthHeader_1(),
+                  Authorization: authHeader1,
                   'Content-Type': 'application/json',
                 },
                 version: '1',
@@ -132,7 +132,7 @@ export const data = [
               statusCode: 200,
               destination: {
                 Config: {
-                  apiKey: getSecret_1(),
+                  apiKey: secret1,
                   channel: 'email',
                   delay: 0,
                   eventNamesSettings: [{ event: '' }],
@@ -152,7 +152,7 @@ export const data = [
                 method: 'POST',
                 params: {},
                 headers: {
-                  Authorization: getAuthHeader_1(),
+                  Authorization: authHeader1,
                   'Content-Type': 'application/json',
                 },
                 version: '1',
@@ -163,7 +163,7 @@ export const data = [
               statusCode: 200,
               destination: {
                 Config: {
-                  apiKey: getSecret_1(),
+                  apiKey: secret1,
                   channel: 'email',
                   delay: 0,
                   eventNamesSettings: [{ event: '' }],

@@ -451,7 +451,10 @@ export const data = [
                       nested: '{"json":"test"}',
                       status: 'testing',
                       description: 'Example track call',
-                      fullyNested: '[{"a":1,"b":2},{"a":1,"b":[1,2,3]}]',
+                      fullyNested: JSON.stringify([
+                        { a: 1, b: 2 },
+                        { a: 1, b: [1, 2, 3] },
+                      ]),
                     },
                     url: 'file:///Users/anurajguha/workspace/simple-html-test/index.html',
                     referrer: '$direct',

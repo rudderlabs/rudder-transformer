@@ -1,8 +1,7 @@
+import path from 'path';
 import { base64Convertor } from '@rudderstack/integrations-lib';
 
-// Auto-generated masked secrets file
-
-export const getAuthHeader_1 = () => `Basic ${base64Convertor(getSecret_1() + ':' + '')}`;
-export const getSecret_1 = () => 'test-user';
-export const getAuthHeader_2 = () => `Bearer ${getSecret_2()}`;
-export const getSecret_2 = () => 'test-token';
+export const secret1 = path.basename(__dirname) + 1;
+export const secret2 = path.basename(__dirname) + 2;
+export const authHeader1 = `Basic ${base64Convertor(secret1 + ':' + '')}`;
+export const authHeader2 = `Bearer ${secret2}`;

@@ -1,4 +1,4 @@
-import { getAuthHeader_1 } from '../maskedSecrets';
+import { authHeader1 } from '../maskedSecrets';
 import {
   generateMetadata,
   generateProxyV0Payload,
@@ -9,7 +9,7 @@ import { ProxyV1TestData } from '../../../testTypes';
 const API_VERSION = 'v18';
 
 const headers = {
-  Authorization: getAuthHeader_1(),
+  Authorization: authHeader1,
   'Content-Type': 'application/json',
   'developer-token': 'ijkl91011',
   'login-customer-id': '0987654321',
@@ -219,8 +219,22 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
             message: 'Request Processed Successfully',
             response: [
               {
-                error:
-                  '[{"results":[{"adjustmentType":"ENHANCEMENT","conversionAction":"customers/7693729833/conversionActions/874224905","adjustmentDateTime":"2021-01-01 12:32:45-08:00","gclidDateTimePair":{"gclid":"1234","conversionDateTime":"2021-01-01 12:32:45-08:00"},"orderId":"12345"}]}]',
+                error: JSON.stringify([
+                  {
+                    results: [
+                      {
+                        adjustmentType: 'ENHANCEMENT',
+                        conversionAction: 'customers/7693729833/conversionActions/874224905',
+                        adjustmentDateTime: '2021-01-01 12:32:45-08:00',
+                        gclidDateTimePair: {
+                          gclid: '1234',
+                          conversionDateTime: '2021-01-01 12:32:45-08:00',
+                        },
+                        orderId: '12345',
+                      },
+                    ],
+                  },
+                ]),
                 metadata: generateMetadata(1),
                 statusCode: 200,
               },

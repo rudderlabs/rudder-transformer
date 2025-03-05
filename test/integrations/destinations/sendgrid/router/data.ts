@@ -1,4 +1,4 @@
-import { getAuthHeader_1, getSecret_1 } from '../maskedSecrets';
+import { authHeader1, secret1 } from '../maskedSecrets';
 export const data = [
   {
     name: 'sendgrid',
@@ -13,7 +13,7 @@ export const data = [
             {
               destination: {
                 Config: {
-                  apiKey: getSecret_1(),
+                  apiKey: secret1,
                   eventNamesSettings: [{ event: 'testing' }, { event: 'clicked' }],
                   subject: 'A sample subject',
                   replyToEmail: 'ankit@rudderstack.com',
@@ -102,7 +102,7 @@ export const data = [
                 files: {},
                 method: 'POST',
                 params: {},
-                headers: { Authorization: getAuthHeader_1(), 'Content-Type': 'application/json' },
+                headers: { Authorization: authHeader1, 'Content-Type': 'application/json' },
                 version: '1',
                 endpoint: 'https://api.sendgrid.com/v3/mail/send',
               },
@@ -111,7 +111,7 @@ export const data = [
               statusCode: 200,
               destination: {
                 Config: {
-                  apiKey: getSecret_1(),
+                  apiKey: secret1,
                   eventNamesSettings: [{ event: 'testing' }, { event: 'clicked' }],
                   subject: 'A sample subject',
                   replyToEmail: 'ankit@rudderstack.com',
@@ -153,7 +153,7 @@ export const data = [
                 ID: '2HOQOO6wWKaKjeQrEABXgiH6cmU',
                 Config: {
                   IPPoolName: '',
-                  apiKey: getSecret_1(),
+                  apiKey: secret1,
                   attachments: [
                     {
                       content: '',
@@ -227,7 +227,7 @@ export const data = [
                 ID: '2HOQOO6wWKaKjeQrEABXgiH6cmU',
                 Config: {
                   IPPoolName: '',
-                  apiKey: getSecret_1(),
+                  apiKey: secret1,
                   attachments: [
                     {
                       content: '',
@@ -301,7 +301,7 @@ export const data = [
                 ID: '2HOQOO6wWKaKjeQrEABXgiH6cmU',
                 Config: {
                   IPPoolName: '',
-                  apiKey: getSecret_1(),
+                  apiKey: secret1,
                   attachments: [
                     {
                       content: '',
@@ -376,7 +376,7 @@ export const data = [
                 ID: '2HOQOO6wWKaKjeQrEABXgiH6cmU',
                 Config: {
                   IPPoolName: '',
-                  apiKey: getSecret_1(),
+                  apiKey: secret1,
                   attachments: [
                     {
                       content: '',
@@ -452,7 +452,7 @@ export const data = [
                 ID: '2HOQOO6wWKaKjeQrEABXgiH6cmU',
                 Config: {
                   IPPoolName: '',
-                  apiKey: getSecret_1(),
+                  apiKey: secret1,
                   attachments: [
                     {
                       content: '',
@@ -519,7 +519,7 @@ export const data = [
                 ID: '2HOQOO6wWKaKjeQrEABXgiH6cmU',
                 Config: {
                   IPPoolName: '',
-                  apiKey: getSecret_1(),
+                  apiKey: secret1,
                   attachments: [
                     {
                       content: '',
@@ -611,7 +611,7 @@ export const data = [
                 endpoint: 'https://api.sendgrid.com/v3/marketing/contacts',
                 headers: {
                   'Content-Type': 'application/json',
-                  Authorization: getAuthHeader_1(),
+                  Authorization: authHeader1,
                 },
                 params: {},
                 body: {
@@ -641,7 +641,7 @@ export const data = [
                 ID: '2HOQOO6wWKaKjeQrEABXgiH6cmU',
                 Config: {
                   IPPoolName: '',
-                  apiKey: getSecret_1(),
+                  apiKey: secret1,
                   attachments: [
                     {
                       content: '',
@@ -693,7 +693,7 @@ export const data = [
                 endpoint: 'https://api.sendgrid.com/v3/marketing/contacts',
                 headers: {
                   'Content-Type': 'application/json',
-                  Authorization: getAuthHeader_1(),
+                  Authorization: authHeader1,
                 },
                 params: {},
                 body: {
@@ -722,7 +722,7 @@ export const data = [
                 ID: '2HOQOO6wWKaKjeQrEABXgiH6cmU',
                 Config: {
                   IPPoolName: '',
-                  apiKey: getSecret_1(),
+                  apiKey: secret1,
                   attachments: [
                     {
                       content: '',
@@ -774,7 +774,7 @@ export const data = [
                 endpoint: 'https://api.sendgrid.com/v3/marketing/contacts',
                 headers: {
                   'Content-Type': 'application/json',
-                  Authorization: getAuthHeader_1(),
+                  Authorization: authHeader1,
                 },
                 params: {},
                 body: {
@@ -806,7 +806,7 @@ export const data = [
                 ID: '2HOQOO6wWKaKjeQrEABXgiH6cmU',
                 Config: {
                   IPPoolName: '',
-                  apiKey: getSecret_1(),
+                  apiKey: secret1,
                   attachments: [
                     {
                       content: '',
@@ -858,7 +858,7 @@ export const data = [
                 endpoint: 'https://api.sendgrid.com/v3/marketing/contacts',
                 headers: {
                   'Content-Type': 'application/json',
-                  Authorization: getAuthHeader_1(),
+                  Authorization: authHeader1,
                 },
                 params: {},
                 body: {
@@ -891,7 +891,7 @@ export const data = [
                 ID: '2HOQOO6wWKaKjeQrEABXgiH6cmU',
                 Config: {
                   IPPoolName: '',
-                  apiKey: getSecret_1(),
+                  apiKey: secret1,
                   attachments: [
                     {
                       content: '',
@@ -943,7 +943,7 @@ export const data = [
                 endpoint: 'https://api.sendgrid.com/v3/marketing/contacts',
                 headers: {
                   'Content-Type': 'application/json',
-                  Authorization: getAuthHeader_1(),
+                  Authorization: authHeader1,
                 },
                 params: {},
                 body: {
@@ -972,7 +972,7 @@ export const data = [
                 ID: '2HOQOO6wWKaKjeQrEABXgiH6cmU',
                 Config: {
                   IPPoolName: '',
-                  apiKey: getSecret_1(),
+                  apiKey: secret1,
                   attachments: [
                     {
                       content: '',
@@ -1024,7 +1024,7 @@ export const data = [
                 endpoint: 'https://api.sendgrid.com/v3/marketing/contacts',
                 headers: {
                   'Content-Type': 'application/json',
-                  Authorization: getAuthHeader_1(),
+                  Authorization: authHeader1,
                 },
                 params: {},
                 body: {
@@ -1059,7 +1059,7 @@ export const data = [
                 ID: '2HOQOO6wWKaKjeQrEABXgiH6cmU',
                 Config: {
                   IPPoolName: '',
-                  apiKey: getSecret_1(),
+                  apiKey: secret1,
                   attachments: [
                     {
                       content: '',

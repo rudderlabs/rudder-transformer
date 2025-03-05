@@ -1,4 +1,4 @@
-import { getAuthHeader_1, getSecret_1 } from '../maskedSecrets';
+import { authHeader1, secret1 } from '../maskedSecrets';
 export const data = [
   {
     name: 'snapchat_conversion',
@@ -73,7 +73,7 @@ export const data = [
                 },
               },
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 pixelId: 'dummyPixelId',
               },
             },
@@ -104,7 +104,7 @@ export const data = [
               userId: '',
               endpoint: 'https://tr.snapchat.com/v2/conversion',
               headers: {
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
               params: {},
@@ -218,7 +218,7 @@ export const data = [
               },
               Config: {
                 pixelId: 'dummyPixelId',
-                apiKey: getSecret_1(),
+                apiKey: secret1,
               },
             },
             metadata: {
@@ -247,7 +247,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://tr.snapchat.com/v2/conversion',
               headers: {
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
               params: {},
@@ -366,7 +366,7 @@ export const data = [
               },
               Config: {
                 pixelId: 'dummyPixelId',
-                apiKey: getSecret_1(),
+                apiKey: secret1,
               },
             },
             metadata: {
@@ -480,7 +480,7 @@ export const data = [
               },
               Config: {
                 pixelId: 'dummyPixelId',
-                apiKey: getSecret_1(),
+                apiKey: secret1,
               },
             },
             metadata: {
@@ -593,7 +593,7 @@ export const data = [
                 },
               },
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
               },
             },
             metadata: {
@@ -706,7 +706,7 @@ export const data = [
                 },
               },
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 pixelId: 'dummyPixelId',
               },
             },
@@ -736,7 +736,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://tr.snapchat.com/v2/conversion',
               headers: {
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
               params: {},
@@ -842,7 +842,7 @@ export const data = [
                 },
               },
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 pixelId: 'dummyPixelId',
               },
             },
@@ -956,7 +956,7 @@ export const data = [
                 },
               },
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 pixelId: 'dummyPixelId',
                 appId: 'dhfeih44f',
               },
@@ -1073,7 +1073,7 @@ export const data = [
                 },
               },
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 pixelId: 'dummyPixelId',
                 appId: 'dhfeih44f',
                 snapAppId: 'hfhdhfd',
@@ -1105,7 +1105,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://tr.snapchat.com/v2/conversion',
               headers: {
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
               params: {},
@@ -1226,7 +1226,7 @@ export const data = [
                 },
               },
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 pixelId: 'dummyPixelId',
                 appId: 'dhfeih44f',
                 snapAppId: 'hfhdhfd',
@@ -1258,7 +1258,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://tr.snapchat.com/v2/conversion',
               headers: {
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
               params: {},
@@ -1378,7 +1378,7 @@ export const data = [
                 },
               },
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 pixelId: 'dummyPixelId',
                 appId: 'dhfeih44f',
                 snapAppId: 'hfhdhfd',
@@ -1410,7 +1410,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://tr.snapchat.com/v2/conversion',
               headers: {
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
               params: {},
@@ -1529,7 +1529,7 @@ export const data = [
                 },
               },
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 pixelId: 'dummyPixelId',
                 appId: 'dhfeih44f',
                 snapAppId: 'hfhdhfd',
@@ -1561,7 +1561,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://tr.snapchat.com/v2/conversion',
               headers: {
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
               params: {},
@@ -1672,7 +1672,7 @@ export const data = [
                 },
               },
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 pixelId: 'dummyPixelId',
                 appId: 'dhfeih44f',
                 snapAppId: 'hfhdhfd',
@@ -1704,7 +1704,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://tr.snapchat.com/v2/conversion',
               headers: {
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
               params: {},
@@ -1818,7 +1818,7 @@ export const data = [
                 },
               },
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 pixelId: 'dummyPixelId',
                 appId: 'dhfeih44f',
                 snapAppId: 'hfhdhfd',
@@ -1850,7 +1850,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://tr.snapchat.com/v2/conversion',
               headers: {
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
               params: {},
@@ -1963,7 +1963,7 @@ export const data = [
                 },
               },
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 pixelId: 'dummyPixelId',
                 appId: 'dhfeih44f',
                 snapAppId: 'hfhdhfd',
@@ -1995,7 +1995,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://tr.snapchat.com/v2/conversion',
               headers: {
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
               params: {},
@@ -2104,7 +2104,7 @@ export const data = [
                 },
               },
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 pixelId: 'dummyPixelId',
                 appId: 'dhfeih44f',
                 snapAppId: 'hfhdhfd',
@@ -2136,7 +2136,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://tr.snapchat.com/v2/conversion',
               headers: {
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
               params: {},
@@ -2244,7 +2244,7 @@ export const data = [
                 },
               },
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 pixelId: 'dummyPixelId',
                 appId: 'dhfeih44f',
                 snapAppId: 'hfhdhfd',
@@ -2276,7 +2276,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://tr.snapchat.com/v2/conversion',
               headers: {
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
               params: {},
@@ -2386,7 +2386,7 @@ export const data = [
                 },
               },
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 pixelId: 'dummyPixelId',
                 appId: 'dhfeih44f',
                 snapAppId: 'hfhdhfd',
@@ -2418,7 +2418,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://tr.snapchat.com/v2/conversion',
               headers: {
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
               params: {},
@@ -2528,7 +2528,7 @@ export const data = [
                 },
               },
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 pixelId: 'dummyPixelId',
                 appId: 'dhfeih44f',
                 snapAppId: 'hfhdhfd',
@@ -2560,7 +2560,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://tr.snapchat.com/v2/conversion',
               headers: {
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
               params: {},
@@ -2670,7 +2670,7 @@ export const data = [
                 },
               },
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 pixelId: 'dummyPixelId',
                 appId: 'dhfeih44f',
                 snapAppId: 'hfhdhfd',
@@ -2702,7 +2702,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://tr.snapchat.com/v2/conversion',
               headers: {
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
               params: {},
@@ -2813,7 +2813,7 @@ export const data = [
                 },
               },
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 pixelId: 'dummyPixelId',
                 appId: 'dhfeih44f',
                 snapAppId: 'hfhdhfd',
@@ -2845,7 +2845,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://tr.snapchat.com/v2/conversion',
               headers: {
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
               params: {},
@@ -2957,7 +2957,7 @@ export const data = [
                 },
               },
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 pixelId: 'dummyPixelId',
                 appId: 'dhfeih44f',
                 snapAppId: 'hfhdhfd',
@@ -2989,7 +2989,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://tr.snapchat.com/v2/conversion',
               headers: {
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
               params: {},
@@ -3098,7 +3098,7 @@ export const data = [
               },
               Config: {
                 pixelId: 'dummyPixelId',
-                apiKey: getSecret_1(),
+                apiKey: secret1,
               },
             },
             metadata: {
@@ -3127,7 +3127,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://tr.snapchat.com/v2/conversion',
               headers: {
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
               params: {},
@@ -3237,7 +3237,7 @@ export const data = [
                 },
               },
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 pixelId: 'dummyPixelId',
                 appId: 'dhfeih44f',
                 snapAppId: 'hfhdhfd',
@@ -3269,7 +3269,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://tr.snapchat.com/v2/conversion',
               headers: {
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
               params: {},
@@ -3379,7 +3379,7 @@ export const data = [
               },
               Config: {
                 pixelId: 'dummyPixelId',
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 rudderEventsToSnapEvents: [
                   {
                     from: 'ProdSearched',
@@ -3415,7 +3415,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://tr.snapchat.com/v2/conversion',
               headers: {
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
               params: {},
@@ -3521,7 +3521,7 @@ export const data = [
               },
               Config: {
                 pixelId: 'dummyPixelId',
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 rudderEventsToSnapEvents: [],
               },
             },
@@ -3630,7 +3630,7 @@ export const data = [
               },
               Config: {
                 pixelId: 'dummyPixelId',
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 rudderEventsToSnapEvents: [
                   {
                     from: 'Product_Added_To_Cart',
@@ -3665,7 +3665,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://tr.snapchat.com/v2/conversion',
               headers: {
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
               params: {},
@@ -3766,7 +3766,7 @@ export const data = [
               },
               Config: {
                 pixelId: 'dummyPixelId',
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 rudderEventsToSnapEvents: [
                   {
                     from: 'Product Added To Cart',
@@ -3802,7 +3802,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://tr.snapchat.com/v2/conversion',
               headers: {
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
               params: {},
@@ -3920,7 +3920,7 @@ export const data = [
                 },
               },
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 pixelId: 'dummyPixelId',
                 deduplicationKey: 'properties.custom_dedup_id',
                 enableDeduplication: true,
@@ -3954,7 +3954,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://tr.snapchat.com/v2/conversion',
               headers: {
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
               params: {},
@@ -4075,7 +4075,7 @@ export const data = [
                 },
               },
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 pixelId: 'dummyPixelId',
                 appId: 'dhfeih44f',
                 snapAppId: 'hfhdhfd',
@@ -4107,7 +4107,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://tr.snapchat.com/v2/conversion',
               headers: {
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
               params: {},
@@ -4225,7 +4225,7 @@ export const data = [
                 },
               },
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 pixelId: 'dummyPixelId',
                 appId: 'dhfeih44f',
                 snapAppId: 'hfhdhfd',
@@ -4257,7 +4257,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://tr.snapchat.com/v2/conversion',
               headers: {
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
               params: {},
@@ -4377,7 +4377,7 @@ export const data = [
                 },
               },
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 pixelId: 'dummyPixelId',
                 appId: 'dhfeih44f',
                 snapAppId: 'hfhdhfd',
@@ -4409,7 +4409,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://tr.snapchat.com/v2/conversion',
               headers: {
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
               params: {},
@@ -4532,7 +4532,7 @@ export const data = [
                 },
               },
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 pixelId: 'dummyPixelId',
                 appId: 'dhfeih44f',
                 snapAppId: 'hfhdhfd',
@@ -4564,7 +4564,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://tr.snapchat.com/v2/conversion',
               headers: {
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
               params: {},
@@ -4668,7 +4668,7 @@ export const data = [
               },
               Config: {
                 pixelId: 'dummyPixelId',
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 rudderEventsToSnapEvents: [
                   {
                     from: 'Custom Event',
@@ -4704,7 +4704,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://tr.snapchat.com/v2/conversion',
               headers: {
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
               params: {},
@@ -4808,7 +4808,7 @@ export const data = [
               },
               Config: {
                 pixelId: 'dummyPixelId',
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 rudderEventsToSnapEvents: [],
               },
             },

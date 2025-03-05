@@ -1,4 +1,4 @@
-import { getAuthHeader_1, getSecret_1 } from '../maskedSecrets';
+import { authHeader1, secret1 } from '../maskedSecrets';
 export const data = [
   {
     name: 'trengo',
@@ -49,7 +49,7 @@ export const data = [
               metadata: { jobId: 2, userId: 'u1' },
               destination: {
                 Config: {
-                  apiToken: getSecret_1(),
+                  apiToken: secret1,
                   channelId: 'trengo_phone_channel',
                   channelIdentifier: 'phone',
                   enableDedup: true,
@@ -126,7 +126,7 @@ export const data = [
                 headers: {
                   'Content-Type': 'application/json',
                   Accept: 'application/json',
-                  Authorization: getAuthHeader_1(),
+                  Authorization: authHeader1,
                 },
                 params: {},
                 body: {
@@ -142,7 +142,7 @@ export const data = [
               statusCode: 200,
               destination: {
                 Config: {
-                  apiToken: getSecret_1(),
+                  apiToken: secret1,
                   channelId: 'trengo_phone_channel',
                   channelIdentifier: 'phone',
                   enableDedup: true,
@@ -246,7 +246,7 @@ export const data = [
               metadata: { jobId: 2, userId: 'u1' },
               destination: {
                 Config: {
-                  apiToken: getSecret_1(),
+                  apiToken: secret1,
                   channelId: 'trengo_email_channel',
                   channelIdentifier: 'email',
                   enableDedup: true,
@@ -323,7 +323,7 @@ export const data = [
                 headers: {
                   'Content-Type': 'application/json',
                   Accept: 'application/json',
-                  Authorization: getAuthHeader_1(),
+                  Authorization: authHeader1,
                 },
                 params: {},
                 body: {
@@ -343,7 +343,7 @@ export const data = [
               statusCode: 200,
               destination: {
                 Config: {
-                  apiToken: getSecret_1(),
+                  apiToken: secret1,
                   channelId: 'trengo_email_channel',
                   channelIdentifier: 'email',
                   enableDedup: true,

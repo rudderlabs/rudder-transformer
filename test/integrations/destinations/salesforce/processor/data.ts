@@ -1,4 +1,4 @@
-import { getAuthHeader_1, getAuthHeader_2, getSecret_2 } from '../maskedSecrets';
+import { authHeader1, authHeader2, secret2 } from '../maskedSecrets';
 export const data = [
   {
     name: 'salesforce',
@@ -98,7 +98,7 @@ export const data = [
               endpoint: 'https://ap15.salesforce.com/services/data/v50.0/sobjects/Lead',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -225,7 +225,7 @@ export const data = [
               endpoint: 'https://ap15.salesforce.com/services/data/v50.0/sobjects/Lead',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -353,7 +353,7 @@ export const data = [
               endpoint: 'https://ap15.salesforce.com/services/data/v50.0/sobjects/Lead',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -589,7 +589,7 @@ export const data = [
               endpoint: 'https://ap15.salesforce.com/services/data/v50.0/sobjects/Lead',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -718,7 +718,7 @@ export const data = [
               endpoint: 'https://ap15.salesforce.com/services/data/v50.0/sobjects/Lead',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -851,7 +851,7 @@ export const data = [
                 'https://ap15.salesforce.com/services/data/v50.0/sobjects/Contact/sf-contact-id?_HttpMethod=PATCH',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -984,7 +984,7 @@ export const data = [
                 'https://ap15.salesforce.com/services/data/v50.0/sobjects/Lead/sf-contact-id?_HttpMethod=PATCH',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
               },
               params: {},
               userId: '',
@@ -1111,7 +1111,7 @@ export const data = [
               endpoint: 'https://ap15.salesforce.com/services/data/v50.0/sobjects/Lead',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -1237,7 +1237,7 @@ export const data = [
                 'https://ap15.salesforce.com/services/data/v50.0/sobjects/custom_object__c/a005g0000383kmUAAQ?_HttpMethod=PATCH',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -1352,7 +1352,7 @@ export const data = [
                 'https://ap15.salesforce.com/services/data/v50.0/sobjects/custom_object__c/a005g0000383kmUAAQ?_HttpMethod=PATCH',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -1401,7 +1401,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                access_token: getSecret_2(),
+                access_token: secret2,
                 instance_url: 'http://dummyurl.com',
               },
             },
@@ -1468,7 +1468,7 @@ export const data = [
             statusCode: 200,
             metadata: {
               secret: {
-                access_token: getSecret_2(),
+                access_token: secret2,
                 instance_url: 'http://dummyurl.com',
               },
             },
@@ -1480,7 +1480,7 @@ export const data = [
                 'http://dummyurl.com/services/data/v50.0/sobjects/custom_object__c/a005g0000383kmUAAQ?_HttpMethod=PATCH',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: getAuthHeader_2(),
+                Authorization: authHeader2,
               },
               params: {},
               body: {

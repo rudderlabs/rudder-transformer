@@ -1,4 +1,4 @@
-import { getAuthHeader_1 } from '../maskedSecrets';
+import { authHeader1, secret1 } from '../maskedSecrets';
 export const data = [
   {
     name: 'marketo',
@@ -50,8 +50,8 @@ export const data = [
               destination: {
                 Config: {
                   accountId: 'marketo_acct_id_success',
-                  clientId: 'marketo_client_id_success',
-                  clientSecret: 'marketo_client_secret_success',
+                  clientId: 'marketo_client_id',
+                  clientSecret: secret1,
                   trackAnonymousEvents: true,
                   customActivityPropertyMap: [{ from: 'name', to: 'productName' }],
                   leadTraitMapping: [{ from: 'leadScore', to: 'customLeadScore' }],
@@ -170,8 +170,8 @@ export const data = [
               destination: {
                 Config: {
                   accountId: 'marketo_acct_id_success',
-                  clientId: 'marketo_client_id_success',
-                  clientSecret: 'marketo_client_secret_success',
+                  clientId: 'marketo_client_id',
+                  clientSecret: secret1,
                   trackAnonymousEvents: true,
                   customActivityPropertyMap: [{ from: 'name', to: 'productName' }],
                   leadTraitMapping: [{ from: 'leadScore', to: 'customLeadScore' }],
@@ -317,8 +317,8 @@ export const data = [
               destination: {
                 Config: {
                   accountId: 'valid_account_broken_event',
-                  clientId: '504300cd-76b2-a7l4-bhle-90a07420nx73',
-                  clientSecret: '3l3gJpzRsZagD6gu7tnTeKXz0bomLGnd',
+                  clientId: 'marketo_client_id',
+                  clientSecret: secret1,
                   trackAnonymousEvents: false,
                   createIfNotExist: true,
                   rudderEventsMapping: [
@@ -470,8 +470,8 @@ export const data = [
               destination: {
                 Config: {
                   accountId: 'unhandled_status_code',
-                  clientId: '504300cd-76b2-a7l4-bhle-90a07420nx73',
-                  clientSecret: '3l3gJpzRsZagD6gu7tnTeKXz0bomLGnd',
+                  clientId: 'marketo_client_id',
+                  clientSecret: secret1,
                   trackAnonymousEvents: false,
                   createIfNotExist: true,
                   rudderEventsMapping: [
@@ -623,8 +623,8 @@ export const data = [
               destination: {
                 Config: {
                   accountId: 'successful_identify_transformation',
-                  clientId: '504300cd-76b2-a7l4-bhle-90a07420nx73',
-                  clientSecret: '3l3gJpzRsZagD6gu7tnTeKXz0bomLGnd',
+                  clientId: 'marketo_client_id',
+                  clientSecret: secret1,
                   trackAnonymousEvents: false,
                   createIfNotExist: true,
                   rudderEventsMapping: [
@@ -729,7 +729,7 @@ export const data = [
                   'https://marketo_acct_id_success.mktorest.com/rest/v1/activities/external.json',
                 headers: {
                   'Content-Type': 'application/json',
-                  Authorization: getAuthHeader_1(),
+                  Authorization: authHeader1,
                 },
                 params: {},
                 body: {
@@ -758,8 +758,8 @@ export const data = [
               destination: {
                 Config: {
                   accountId: 'marketo_acct_id_success',
-                  clientId: 'marketo_client_id_success',
-                  clientSecret: 'marketo_client_secret_success',
+                  clientId: 'marketo_client_id',
+                  clientSecret: secret1,
                   trackAnonymousEvents: true,
                   customActivityPropertyMap: [{ from: 'name', to: 'productName' }],
                   leadTraitMapping: [{ from: 'leadScore', to: 'customLeadScore' }],
@@ -847,7 +847,7 @@ export const data = [
                   'https://marketo_acct_id_success.mktorest.com/rest/v1/activities/external.json',
                 headers: {
                   'Content-Type': 'application/json',
-                  Authorization: getAuthHeader_1(),
+                  Authorization: authHeader1,
                 },
                 params: {},
                 body: {
@@ -876,8 +876,8 @@ export const data = [
               destination: {
                 Config: {
                   accountId: 'marketo_acct_id_success',
-                  clientId: 'marketo_client_id_success',
-                  clientSecret: 'marketo_client_secret_success',
+                  clientId: 'marketo_client_id',
+                  clientSecret: secret1,
                   trackAnonymousEvents: true,
                   customActivityPropertyMap: [{ from: 'name', to: 'productName' }],
                   leadTraitMapping: [{ from: 'leadScore', to: 'customLeadScore' }],
@@ -968,8 +968,8 @@ export const data = [
               destination: {
                 Config: {
                   accountId: 'valid_account_broken_event',
-                  clientId: '504300cd-76b2-a7l4-bhle-90a07420nx73',
-                  clientSecret: '3l3gJpzRsZagD6gu7tnTeKXz0bomLGnd',
+                  clientId: 'marketo_client_id',
+                  clientSecret: secret1,
                   trackAnonymousEvents: false,
                   createIfNotExist: true,
                   rudderEventsMapping: [
@@ -1066,8 +1066,8 @@ export const data = [
               destination: {
                 Config: {
                   accountId: 'unhandled_status_code',
-                  clientId: '504300cd-76b2-a7l4-bhle-90a07420nx73',
-                  clientSecret: '3l3gJpzRsZagD6gu7tnTeKXz0bomLGnd',
+                  clientId: 'marketo_client_id',
+                  clientSecret: secret1,
                   trackAnonymousEvents: false,
                   createIfNotExist: true,
                   rudderEventsMapping: [
@@ -1163,7 +1163,7 @@ export const data = [
                   'https://successful_identify_transformation.mktorest.com/rest/v1/leads.json',
                 headers: {
                   'Content-Type': 'application/json',
-                  Authorization: getAuthHeader_1(),
+                  Authorization: authHeader1,
                 },
                 params: {},
                 body: {
@@ -1194,8 +1194,8 @@ export const data = [
               destination: {
                 Config: {
                   accountId: 'successful_identify_transformation',
-                  clientId: '504300cd-76b2-a7l4-bhle-90a07420nx73',
-                  clientSecret: '3l3gJpzRsZagD6gu7tnTeKXz0bomLGnd',
+                  clientId: 'marketo_client_id',
+                  clientSecret: secret1,
                   trackAnonymousEvents: false,
                   createIfNotExist: true,
                   rudderEventsMapping: [
@@ -1334,8 +1334,8 @@ export const data = [
                 ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
                 Config: {
                   accountId: 'marketo_acct_id_success',
-                  clientId: 'marketo_client_id_success',
-                  clientSecret: 'marketo_client_secret_success',
+                  clientId: 'marketo_client_id',
+                  clientSecret: secret1,
                   trackAnonymousEvents: true,
                   customActivityPropertyMap: [
                     { from: 'name', to: 'productName' },
@@ -1375,7 +1375,7 @@ export const data = [
                 endpoint:
                   'https://marketo_acct_id_success.mktorest.com/rest/v1/activities/external.json',
                 headers: {
-                  Authorization: getAuthHeader_1(),
+                  Authorization: authHeader1,
                   'Content-Type': 'application/json',
                 },
                 params: {},
@@ -1404,8 +1404,8 @@ export const data = [
                 ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
                 Config: {
                   accountId: 'marketo_acct_id_success',
-                  clientId: 'marketo_client_id_success',
-                  clientSecret: 'marketo_client_secret_success',
+                  clientId: 'marketo_client_id',
+                  clientSecret: secret1,
                   trackAnonymousEvents: true,
                   customActivityPropertyMap: [
                     { from: 'name', to: 'productName' },

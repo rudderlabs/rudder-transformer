@@ -1,6 +1,10 @@
-// Auto-generated masked secrets file
+import path from 'path';
 
-export const getAuthHeader_1 = () => `Bearer ${getSecret_1()}`;
-export const getSecret_1 = () => 'dummyApiKey';
-export const getAuthHeader_2 = () => `Bearer ${getSecret_2()}`;
-export const getSecret_2 = () => 'apiKey_key_test_001';
+export const secret1 = path.basename(__dirname) + 1;
+export const secret2 = path.basename(__dirname) + 2;
+export const secret3 = path.basename(__dirname) + 3;
+export const secret4 = undefined;
+
+export const authHeader1 = `Bearer ${secret1}`;
+export const authHeader2 = `Bearer ${secret2}`;
+export const authHeader3 = `Bearer ${secret4}`;

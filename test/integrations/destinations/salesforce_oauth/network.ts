@@ -1,11 +1,11 @@
-import { getAuthHeader_1 } from './maskedSecrets';
+import { authHeader1 } from './maskedSecrets';
 const headerWithWrongAccessToken = {
-  Authorization: getAuthHeader_1(),
+  Authorization: authHeader1,
   'Content-Type': 'application/json',
 };
 
 const headerWithRightAccessToken = {
-  Authorization: 'Bearer correctAccessToken',
+  Authorization: authHeader1,
   'Content-Type': 'application/json',
 };
 

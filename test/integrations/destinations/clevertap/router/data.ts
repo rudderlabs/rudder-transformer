@@ -165,7 +165,11 @@ export const data = [
                           address:
                             '{"city":"kolkata","country":"India","postalCode":789223,"state":"WB","street":""}',
                           custom_mappings: '{"Office":"Trastkiv","Country":"Russia"}',
-                          custom_tags: '["Test_User","Interested_User","DIY_Hobby"]',
+                          custom_tags: JSON.stringify([
+                            'Test_User',
+                            'Interested_User',
+                            'DIY_Hobby',
+                          ]),
                         },
                         objectId: 'anon_id',
                       },

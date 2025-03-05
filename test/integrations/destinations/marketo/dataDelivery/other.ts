@@ -1,5 +1,6 @@
 import { ProxyV1TestData } from '../../../testTypes';
 import { generateProxyV1Payload } from '../../../testUtils';
+import { defaultAccessToken } from '../../../common/secrets';
 
 const statTags = {
   aborted: {
@@ -27,7 +28,7 @@ const statTags = {
 const metadata = {
   jobId: 1,
   secret: {
-    accessToken: 'default-accessToken',
+    accessToken: defaultAccessToken,
   },
   attemptNum: 1,
   userId: 'default-userId',

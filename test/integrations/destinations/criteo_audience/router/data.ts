@@ -1,4 +1,6 @@
-import { getAuthHeader_1, getSecret_1 } from '../maskedSecrets';
+import { defaultAccessToken, defaultAccessTokenAuthHeader } from '../../../common/secrets';
+import { secret1 } from '../maskedSecrets';
+
 export const data = [
   {
     name: 'criteo_audience',
@@ -14,13 +16,13 @@ export const data = [
               destination: {
                 Config: {
                   clientId: 'abcdef8-f49-4cd6-b4c5-958b3d66d431',
-                  clientSecret: 'sjhdkhfrz6yc9LrRRIPimE9h53jADLccXTykHCcA6eEoFR4rXQg',
+                  clientSecret: secret1,
                   audienceId: '34893',
                   audienceType: 'email',
                 },
                 ID: 'iwehr83843',
               },
-              metadata: { secret: { accessToken: getSecret_1() }, jobId: 1, userId: 'u1' },
+              metadata: { secret: { accessToken: defaultAccessToken }, jobId: 1, userId: 'u1' },
               message: {
                 userId: 'user 1',
                 type: 'audiencelist',
@@ -56,13 +58,13 @@ export const data = [
               destination: {
                 Config: {
                   clientId: 'abcdef8-f49-4cd6-b4c5-958b3d66d431',
-                  clientSecret: 'sjhdkhfrz6yc9LrRRIPimE9h53jADLccXTykHCcA6eEoFR4rXQg',
+                  clientSecret: secret1,
                   audienceId: '34893',
                   audienceType: 'madid',
                 },
                 ID: 'iwehr83843',
               },
-              metadata: { secret: { accessToken: getSecret_1() }, jobId: 2, userId: 'u1' },
+              metadata: { secret: { accessToken: defaultAccessToken }, jobId: 2, userId: 'u1' },
               message: {
                 userId: 'user 1',
                 type: 'audiencelist',
@@ -121,7 +123,7 @@ export const data = [
                   method: 'PATCH',
                   endpoint: 'https://api.criteo.com/2022-10/audiences/34893/contactlist',
                   headers: {
-                    Authorization: getAuthHeader_1(),
+                    Authorization: defaultAccessTokenAuthHeader,
                     'Content-Type': 'application/json',
                     Accept: 'application/json',
                   },
@@ -145,13 +147,13 @@ export const data = [
                   files: {},
                 },
               ],
-              metadata: [{ jobId: 1, secret: { accessToken: getSecret_1() }, userId: 'u1' }],
+              metadata: [{ jobId: 1, secret: { accessToken: defaultAccessToken }, userId: 'u1' }],
               batched: false,
               statusCode: 200,
               destination: {
                 Config: {
                   clientId: 'abcdef8-f49-4cd6-b4c5-958b3d66d431',
-                  clientSecret: 'sjhdkhfrz6yc9LrRRIPimE9h53jADLccXTykHCcA6eEoFR4rXQg',
+                  clientSecret: secret1,
                   audienceId: '34893',
                   audienceType: 'email',
                 },
@@ -166,7 +168,7 @@ export const data = [
                   method: 'PATCH',
                   endpoint: 'https://api.criteo.com/2022-10/audiences/34893/contactlist',
                   headers: {
-                    Authorization: getAuthHeader_1(),
+                    Authorization: defaultAccessTokenAuthHeader,
                     'Content-Type': 'application/json',
                     Accept: 'application/json',
                   },
@@ -195,7 +197,7 @@ export const data = [
                   method: 'PATCH',
                   endpoint: 'https://api.criteo.com/2022-10/audiences/34893/contactlist',
                   headers: {
-                    Authorization: getAuthHeader_1(),
+                    Authorization: defaultAccessTokenAuthHeader,
                     'Content-Type': 'application/json',
                     Accept: 'application/json',
                   },
@@ -219,13 +221,13 @@ export const data = [
                   files: {},
                 },
               ],
-              metadata: [{ jobId: 2, secret: { accessToken: getSecret_1() }, userId: 'u1' }],
+              metadata: [{ jobId: 2, secret: { accessToken: defaultAccessToken }, userId: 'u1' }],
               batched: false,
               statusCode: 200,
               destination: {
                 Config: {
                   clientId: 'abcdef8-f49-4cd6-b4c5-958b3d66d431',
-                  clientSecret: 'sjhdkhfrz6yc9LrRRIPimE9h53jADLccXTykHCcA6eEoFR4rXQg',
+                  clientSecret: secret1,
                   audienceId: '34893',
                   audienceType: 'madid',
                 },
@@ -251,7 +253,7 @@ export const data = [
               destination: {
                 Config: {
                   clientId: 'abcdef8-f49-4cd6-b4c5-958b3d66d431',
-                  clientSecret: 'sjhdkhfrz6yc9LrRRIPimE9h53jADLccXTykHCcA6eEoFR4rXQg',
+                  clientSecret: secret1,
                   audienceId: '34893',
                   audienceType: 'email',
                 },
@@ -259,7 +261,7 @@ export const data = [
               },
               metadata: {
                 secret: {
-                  accessToken: getSecret_1(),
+                  accessToken: defaultAccessToken,
                 },
                 jobId: 1,
                 userId: 'u1',
@@ -313,7 +315,7 @@ export const data = [
               destination: {
                 Config: {
                   clientId: 'abcdef8-f49-4cd6-b4c5-958b3d66d431',
-                  clientSecret: 'sjhdkhfrz6yc9LrRRIPimE9h53jADLccXTykHCcA6eEoFR4rXQg',
+                  clientSecret: secret1,
                   audienceType: 'email',
                   'warehouse-adAccountId': '123',
                 },
@@ -321,7 +323,7 @@ export const data = [
               },
               metadata: {
                 secret: {
-                  accessToken: getSecret_1(),
+                  accessToken: defaultAccessToken,
                 },
                 jobId: 2,
                 userId: 'u1',
@@ -390,7 +392,7 @@ export const data = [
                   method: 'PATCH',
                   endpoint: 'https://api.criteo.com/2022-10/audiences/34893/contactlist',
                   headers: {
-                    Authorization: getAuthHeader_1(),
+                    Authorization: defaultAccessTokenAuthHeader,
                     'Content-Type': 'application/json',
                     Accept: 'application/json',
                   },
@@ -419,7 +421,7 @@ export const data = [
                   jobId: 1,
                   userId: 'u1',
                   secret: {
-                    accessToken: getSecret_1(),
+                    accessToken: defaultAccessToken,
                   },
                 },
               ],
@@ -428,7 +430,7 @@ export const data = [
               destination: {
                 Config: {
                   clientId: 'abcdef8-f49-4cd6-b4c5-958b3d66d431',
-                  clientSecret: 'sjhdkhfrz6yc9LrRRIPimE9h53jADLccXTykHCcA6eEoFR4rXQg',
+                  clientSecret: secret1,
                   audienceId: '34893',
                   audienceType: 'email',
                 },
@@ -444,7 +446,7 @@ export const data = [
                   endpoint:
                     'https://api.criteo.com/2022-10/audiences/23848494844100489/contactlist',
                   headers: {
-                    Authorization: getAuthHeader_1(),
+                    Authorization: defaultAccessTokenAuthHeader,
                     'Content-Type': 'application/json',
                     Accept: 'application/json',
                   },
@@ -473,7 +475,7 @@ export const data = [
                   jobId: 2,
                   userId: 'u1',
                   secret: {
-                    accessToken: getSecret_1(),
+                    accessToken: defaultAccessToken,
                   },
                 },
               ],
@@ -482,7 +484,7 @@ export const data = [
               destination: {
                 Config: {
                   clientId: 'abcdef8-f49-4cd6-b4c5-958b3d66d431',
-                  clientSecret: 'sjhdkhfrz6yc9LrRRIPimE9h53jADLccXTykHCcA6eEoFR4rXQg',
+                  clientSecret: secret1,
                   'warehouse-adAccountId': '123',
                   audienceType: 'email',
                 },

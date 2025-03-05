@@ -1,4 +1,4 @@
-import { getAuthHeader_1, getSecret_1 } from '../maskedSecrets';
+import { authHeader1, secret1 } from '../maskedSecrets';
 export const data = [
   {
     name: 'user',
@@ -23,7 +23,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 appSubdomain: 'commander',
                 userEvents: [{ rsEventName: 'login', userEventName: 'product viewed' }],
                 companyAttributesMapping: [
@@ -88,7 +88,7 @@ export const data = [
               traits: { googleUrl: 'www.google.com' },
             },
             destination: {
-              Config: { apiKey: getSecret_1(), appSubdomain: 'commander' },
+              Config: { apiKey: secret1, appSubdomain: 'commander' },
             },
           },
         ],
@@ -134,7 +134,7 @@ export const data = [
               timestamp: '2020-02-02T00:23:09.544Z',
             },
             destination: {
-              Config: { apiKey: getSecret_1(), appSubdomain: 'commander' },
+              Config: { apiKey: secret1, appSubdomain: 'commander' },
             },
           },
         ],
@@ -199,7 +199,7 @@ export const data = [
               userId: 'user@123',
             },
             destination: {
-              Config: { apiKey: getSecret_1(), appSubdomain: 'commander' },
+              Config: { apiKey: secret1, appSubdomain: 'commander' },
             },
           },
         ],
@@ -259,7 +259,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 appSubdomain: 'commander',
                 userAttributesMapping: [{ from: 'useroccupation', to: 'occupation' }],
               },
@@ -298,7 +298,7 @@ export const data = [
               files: {},
               headers: {
                 Accept: '*/*;version=2',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
               method: 'PUT',
@@ -345,7 +345,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 appSubdomain: 'commander',
                 userAttributesMapping: [{ from: 'useroccupation', to: 'occupation' }],
               },
@@ -386,7 +386,7 @@ export const data = [
               headers: {
                 Accept: '*/*;version=2',
                 'Content-Type': 'application/json',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
               },
               version: '1',
               endpoint: 'https://commander.user.com/api/public/users/59/',
@@ -442,7 +442,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 appSubdomain: 'commander',
                 userAttributesMapping: [{ from: 'useroccupation', to: 'occupation' }],
                 userEvents: [
@@ -483,7 +483,7 @@ export const data = [
               headers: {
                 Accept: '*/*;version=2',
                 'Content-Type': 'application/json',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
               },
               version: '1',
               endpoint: 'https://commander.user.com/api/public/events/',
@@ -552,7 +552,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 appSubdomain: 'commander',
                 userAttributesMapping: [{ from: 'useroccupation', to: 'occupation' }],
                 userEvents: [
@@ -593,7 +593,7 @@ export const data = [
               headers: {
                 Accept: '*/*;version=2',
                 'Content-Type': 'application/json',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
               },
               version: '1',
               endpoint: 'https://commander.user.com/api/public/site-views/',
@@ -644,7 +644,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 appSubdomain: 'commander',
                 userAttributesMapping: [{ from: 'useroccupation', to: 'occupation' }],
                 userEvents: [
@@ -684,7 +684,7 @@ export const data = [
               headers: {
                 Accept: '*/*;version=2',
                 'Content-Type': 'application/json',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
               },
               version: '1',
               endpoint: 'https://commander.user.com/api/public/companies/21/add_member/',

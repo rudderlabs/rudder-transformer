@@ -1,4 +1,4 @@
-import { getAuthHeader_1, getSecret_1 } from './maskedSecrets';
+import { authHeader1, expiredAccessToken, secret1, secretAccessToken } from './maskedSecrets';
 const userObject = {
   City: 'Tokyo',
   Country: 'JP',
@@ -10,7 +10,7 @@ const userObject = {
 };
 
 const headerObject = {
-  Authorization: 'Bearer test_token_2',
+  Authorization: authHeader1,
   'Content-Type': 'application/json',
   'User-Agent': 'RudderLabs',
 };
@@ -25,7 +25,7 @@ const tfProxyMocksData = [
         lookupField: 'id',
       },
       headers: {
-        Authorization: 'Bearer test_token_1',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
         'User-Agent': 'RudderLabs',
       },
@@ -81,7 +81,7 @@ const tfProxyMocksData = [
         lookupField: 'id',
       },
       headers: {
-        Authorization: 'Bearer test_token_3',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
         'User-Agent': 'RudderLabs',
       },
@@ -111,7 +111,7 @@ const tfProxyMocksData = [
         lookupField: 'id',
       },
       headers: {
-        Authorization: 'Bearer test_token_4',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
         'User-Agent': 'RudderLabs',
       },
@@ -128,7 +128,7 @@ const tfProxyMocksData = [
         lookupField: 'id',
       },
       headers: {
-        Authorization: 'Bearer test_token_5',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
         'User-Agent': 'RudderLabs',
       },
@@ -145,7 +145,7 @@ const tfProxyMocksData = [
         lookupField: 'id',
       },
       headers: {
-        Authorization: 'Bearer test_token_6',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
         'User-Agent': 'RudderLabs',
       },
@@ -173,7 +173,7 @@ const tfProxyMocksData = [
         lookupField: 'id',
       },
       headers: {
-        Authorization: getAuthHeader_1(),
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
         'User-Agent': 'RudderLabs',
       },
@@ -201,7 +201,7 @@ const tfProxyMocksData = [
     },
     httpRes: {
       data: {
-        access_token: getSecret_1(),
+        access_token: secretAccessToken,
         expires_in: 3599,
         scope: 'integrations@rudderstack.com',
         token_type: 'bearer',
@@ -217,7 +217,7 @@ const tfProxyMocksData = [
     },
     httpRes: {
       data: {
-        access_token: 'access_token_expired',
+        access_token: expiredAccessToken,
         expires_in: 0,
         scope: 'integrations@rudderstack.com',
         token_type: 'bearer',
@@ -307,7 +307,7 @@ const tfProxyMocksData = [
   },
   {
     httpReq: {
-      url: 'https://munchkinId.mktorest.com/identity/oauth/token?client_id=b&client_secret=clientSecret&grant_type=client_credentials',
+      url: `https://munchkinId.mktorest.com/identity/oauth/token?client_id=b&client_secret=${secret1}&grant_type=client_credentials`,
       method: 'GET',
     },
     httpRes: {
@@ -320,12 +320,12 @@ const tfProxyMocksData = [
   },
   {
     httpReq: {
-      url: 'https://munchkinId.mktorest.com/identity/oauth/token?client_id=wrongClientId&client_secret=clientSecret&grant_type=client_credentials',
+      url: `https://munchkinId.mktorest.com/identity/oauth/token?client_id=wrongClientId&client_secret=${secret1}&grant_type=client_credentials`,
       method: 'GET',
     },
     httpRes: {
       data: {
-        access_token: 'test_access_token',
+        access_token: secret1,
       },
       status: 200,
       statusText: 'OK',
@@ -389,7 +389,7 @@ const tfProxyMocksData = [
     },
     httpRes: {
       data: {
-        access_token: 'test_access_token',
+        access_token: secret1,
       },
       status: 200,
       statusText: 'OK',
@@ -402,7 +402,7 @@ const tfProxyMocksData = [
     },
     httpRes: {
       data: {
-        access_token: 'test_access_token',
+        access_token: secret1,
       },
       status: 200,
       statusText: 'OK',
@@ -445,7 +445,7 @@ const tfProxyMocksData = [
     },
     httpRes: {
       data: {
-        access_token: 'test_access_token',
+        access_token: secret1,
       },
       status: 200,
       statusText: 'OK',
@@ -476,7 +476,7 @@ const tfProxyMocksData = [
     },
     httpRes: {
       data: {
-        access_token: 'test_access_token',
+        access_token: secret1,
       },
       status: 200,
       statusText: 'OK',
@@ -489,7 +489,7 @@ const tfProxyMocksData = [
     },
     httpRes: {
       data: {
-        access_token: 'test_access_token',
+        access_token: secret1,
       },
       status: 200,
       statusText: 'OK',
@@ -542,7 +542,7 @@ const tfProxyMocksData = [
     },
     httpRes: {
       data: {
-        access_token: getSecret_1(),
+        access_token: secret1,
         expires_in: 3599,
         scope: 'integrations@rudderstack.com',
         token_type: 'bearer',
@@ -606,7 +606,7 @@ const tfProxyMocksData = [
     },
     httpRes: {
       data: {
-        access_token: getSecret_1(),
+        access_token: secret1,
         expires_in: 3599,
         scope: 'integrations@rudderstack.com',
         token_type: 'bearer',
@@ -766,7 +766,7 @@ const tfProxyMocksData = [
     },
     httpRes: {
       data: {
-        access_token: getSecret_1(),
+        access_token: secret1,
         expires_in: 3599,
         scope: 'integrations@rudderstack.com',
         token_type: 'bearer',
@@ -817,7 +817,7 @@ const tfProxyMocksData = [
     },
     httpRes: {
       data: {
-        access_token: getSecret_1(),
+        access_token: secret1,
         expires_in: 3599,
         scope: 'integrations@rudderstack.com',
         token_type: 'bearer',
@@ -868,7 +868,7 @@ const tfProxyMocksData = [
     },
     httpRes: {
       data: {
-        access_token: getSecret_1(),
+        access_token: secret1,
         expires_in: 3599,
         scope: 'integrations@rudderstack.com',
         token_type: 'bearer',
@@ -935,7 +935,7 @@ const businessMockData = [
         lookupField: 'id',
       },
       headers: {
-        Authorization: 'Bearer test_token_1',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
         'User-Agent': 'RudderLabs',
       },
@@ -993,7 +993,7 @@ const businessMockData = [
         lookupField: 'id',
       },
       headers: {
-        Authorization: 'Bearer test_token_3',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
         'User-Agent': 'RudderLabs',
       },
@@ -1024,7 +1024,7 @@ const businessMockData = [
         lookupField: 'id',
       },
       headers: {
-        Authorization: 'Bearer test_token_4',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
         'User-Agent': 'RudderLabs',
       },
@@ -1042,7 +1042,7 @@ const businessMockData = [
         lookupField: 'id',
       },
       headers: {
-        Authorization: 'Bearer test_token_5',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
         'User-Agent': 'RudderLabs',
       },
@@ -1060,7 +1060,7 @@ const businessMockData = [
         lookupField: 'id',
       },
       headers: {
-        Authorization: 'Bearer test_token_6',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
         'User-Agent': 'RudderLabs',
       },
@@ -1082,7 +1082,7 @@ const businessMockData = [
         lookupField: 'id',
       },
       headers: {
-        Authorization: getAuthHeader_1(),
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
         'User-Agent': 'RudderLabs',
       },
@@ -1111,7 +1111,7 @@ const businessMockData = [
     },
     httpRes: {
       data: {
-        access_token: getSecret_1(),
+        access_token: secret1,
         expires_in: 3599,
         scope: 'integrations@rudderstack.com',
         token_type: 'bearer',
@@ -1128,7 +1128,7 @@ const businessMockData = [
     },
     httpRes: {
       data: {
-        access_token: 'access_token_expired',
+        access_token: expiredAccessToken,
         expires_in: 0,
         scope: 'integrations@rudderstack.com',
         token_type: 'bearer',
@@ -1237,12 +1237,12 @@ const businessMockData = [
   {
     description: 'Mock response for a failed access token request due to invalid client id',
     httpReq: {
-      url: 'https://munchkinId.mktorest.com/identity/oauth/token?client_id=wrongClientId&client_secret=clientSecret&grant_type=client_credentials',
+      url: `https://munchkinId.mktorest.com/identity/oauth/token?client_id=wrongClientId&client_secret=${secret1}&grant_type=client_credentials`,
       method: 'GET',
     },
     httpRes: {
       data: {
-        access_token: 'test_access_token',
+        access_token: secret1,
       },
       status: 200,
       statusText: 'OK',
@@ -1309,7 +1309,7 @@ const businessMockData = [
     },
     httpRes: {
       data: {
-        access_token: 'test_access_token',
+        access_token: secret1,
       },
       status: 200,
       statusText: 'OK',
@@ -1323,7 +1323,7 @@ const businessMockData = [
     },
     httpRes: {
       data: {
-        access_token: 'test_access_token',
+        access_token: secret1,
       },
       status: 200,
       statusText: 'OK',
@@ -1368,7 +1368,7 @@ const businessMockData = [
     },
     httpRes: {
       data: {
-        access_token: 'test_access_token',
+        access_token: secret1,
       },
       status: 200,
       statusText: 'OK',
@@ -1401,7 +1401,7 @@ const businessMockData = [
     },
     httpRes: {
       data: {
-        access_token: 'test_access_token',
+        access_token: secret1,
       },
       status: 200,
       statusText: 'OK',
@@ -1415,7 +1415,7 @@ const businessMockData = [
     },
     httpRes: {
       data: {
-        access_token: 'test_access_token',
+        access_token: secret1,
       },
       status: 200,
       statusText: 'OK',
@@ -1472,7 +1472,7 @@ const businessMockData = [
     },
     httpRes: {
       data: {
-        access_token: getSecret_1(),
+        access_token: secret1,
         expires_in: 3599,
         scope: 'integrations@rudderstack.com',
         token_type: 'bearer',
@@ -1539,7 +1539,7 @@ const businessMockData = [
     },
     httpRes: {
       data: {
-        access_token: getSecret_1(),
+        access_token: secret1,
         expires_in: 3599,
         scope: 'integrations@rudderstack.com',
         token_type: 'bearer',
@@ -1706,7 +1706,7 @@ const businessMockData = [
     },
     httpRes: {
       data: {
-        access_token: getSecret_1(),
+        access_token: secret1,
         expires_in: 3599,
         scope: 'integrations@rudderstack.com',
         token_type: 'bearer',
@@ -1761,7 +1761,7 @@ const businessMockData = [
     },
     httpRes: {
       data: {
-        access_token: getSecret_1(),
+        access_token: secret1,
         expires_in: 3599,
         scope: 'integrations@rudderstack.com',
         token_type: 'bearer',
@@ -1816,7 +1816,7 @@ const businessMockData = [
     },
     httpRes: {
       data: {
-        access_token: getSecret_1(),
+        access_token: secret1,
         expires_in: 3599,
         scope: 'integrations@rudderstack.com',
         token_type: 'bearer',
@@ -1879,7 +1879,7 @@ const businessMockData = [
     httpReq: {
       url: 'https://mktId.mktorest.com/rest/v1/leads.json/test_invalid_header',
       headers: {
-        Authorization: 'Bearer test_token_6',
+        Authorization: authHeader1,
         'Content-Type': 'invalid',
         'User-Agent': 'RudderLabs',
       },
@@ -1904,7 +1904,7 @@ const businessMockData = [
     httpReq: {
       url: 'https://mktId.mktorest.com/rest/v1/leads.json/test_exceeded_length',
       headers: {
-        Authorization: 'Bearer test_token_6',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
         'User-Agent': 'RudderLabs',
       },

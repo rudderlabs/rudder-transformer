@@ -1,11 +1,11 @@
 import {
-  getAuthHeader_1,
-  getSecret_1,
-  getSecret_2,
-  getAuthHeader_2,
-  getSecret_3,
-  getAuthHeader_3,
-  getSecret_4,
+  authHeader1,
+  secret1,
+  secret2,
+  authHeader2,
+  secret3,
+  authHeader3,
+  secret4,
 } from '../maskedSecrets';
 export const data = [
   {
@@ -41,11 +41,11 @@ export const data = [
             destination: {
               Config: {
                 lookUpField: 'email',
-                password: getSecret_2(),
+                password: secret2,
                 subDomainName: '',
                 domainMethod: 'domainNameOption',
                 domainName: 'https://testmautic.com',
-                userName: getSecret_4(),
+                userName: secret4,
               },
             },
           },
@@ -65,7 +65,7 @@ export const data = [
               endpoint: 'https://testmautic.com/api/contacts/new',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: getAuthHeader_3(),
+                Authorization: authHeader3,
               },
               params: {},
               body: {
@@ -122,11 +122,11 @@ export const data = [
             destination: {
               Config: {
                 lookUpField: 'email',
-                password: getSecret_2(),
+                password: secret2,
                 subDomainName: 'test',
                 domainMethod: 'subDomainNameOption',
                 domainName: 'https://testmautic.com/',
-                userName: getSecret_4(),
+                userName: secret4,
               },
             },
           },
@@ -146,7 +146,7 @@ export const data = [
               endpoint: 'https://test.mautic.net/api/contacts/new',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: getAuthHeader_3(),
+                Authorization: authHeader3,
               },
               params: {},
               body: {
@@ -202,11 +202,11 @@ export const data = [
             destination: {
               Config: {
                 lookUpField: 'email',
-                password: getSecret_2(),
+                password: secret2,
                 subDomainName: 'test',
                 domainMethod: 'domainNameOption',
                 domainName: 'https://testmautic.com',
-                userName: getSecret_4(),
+                userName: secret4,
               },
             },
           },
@@ -226,7 +226,7 @@ export const data = [
               endpoint: 'https://testmautic.com/api/contacts/new',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: getAuthHeader_3(),
+                Authorization: authHeader3,
               },
               params: {},
               body: {
@@ -286,7 +286,7 @@ export const data = [
                 lookUpField: 'email',
                 password: '',
                 subDomainName: 'testapi3',
-                userName: getSecret_4(),
+                userName: secret4,
               },
             },
           },
@@ -349,7 +349,7 @@ export const data = [
             destination: {
               Config: {
                 lookUpField: 'email',
-                password: getSecret_2(),
+                password: secret2,
                 subDomainName: '',
                 domainName: '',
                 userName: 'opiogfuebj',
@@ -425,9 +425,9 @@ export const data = [
             destination: {
               Config: {
                 lookUpField: 'email',
-                password: getSecret_2(),
+                password: secret2,
                 subDomainName: 'ruddertest2',
-                userName: getSecret_1(),
+                userName: secret1,
               },
             },
           },
@@ -447,7 +447,7 @@ export const data = [
               endpoint: 'https://ruddertest2.mautic.net/api/contacts/new',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -528,9 +528,9 @@ export const data = [
             destination: {
               Config: {
                 lookUpField: 'email',
-                password: getSecret_2(),
+                password: secret2,
                 subDomainName: 'ruddertest2',
-                userName: getSecret_1(),
+                userName: secret1,
               },
             },
           },
@@ -550,7 +550,7 @@ export const data = [
               endpoint: 'https://ruddertest2.mautic.net/api/contacts/247/edit',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -631,7 +631,7 @@ export const data = [
             destination: {
               Config: {
                 lookUpField: 'email',
-                password: getSecret_2(),
+                password: secret2,
                 subDomainName: 'testapi3',
                 userName: '',
               },
@@ -693,7 +693,7 @@ export const data = [
                 lookUpField: 'email',
                 password: '',
                 subDomainName: 'testapi3',
-                userName: getSecret_4(),
+                userName: secret4,
               },
             },
           },
@@ -766,9 +766,9 @@ export const data = [
             destination: {
               Config: {
                 lookUpField: 'email',
-                password: getSecret_2(),
+                password: secret2,
                 subDomainName: '',
-                userName: getSecret_4(),
+                userName: secret4,
               },
             },
           },
@@ -825,9 +825,9 @@ export const data = [
             destination: {
               Config: {
                 lookUpField: 'email',
-                password: getSecret_2(),
+                password: secret2,
                 subDomainName: 'testapi3',
-                userName: getSecret_4(),
+                userName: secret4,
               },
             },
           },
@@ -885,9 +885,9 @@ export const data = [
             destination: {
               Config: {
                 lookUpField: 'email',
-                password: getSecret_2(),
+                password: secret2,
                 subDomainName: 'testapi3',
-                userName: getSecret_1(),
+                userName: secret1,
               },
             },
           },
@@ -941,9 +941,9 @@ export const data = [
             destination: {
               Config: {
                 lookUpField: 'email',
-                password: getSecret_2(),
+                password: secret2,
                 subDomainName: 'testapi3',
-                userName: getSecret_4(),
+                userName: secret4,
               },
             },
           },
@@ -997,9 +997,9 @@ export const data = [
             destination: {
               Config: {
                 lookUpField: 'email',
-                password: getSecret_2(),
+                password: secret2,
                 subDomainName: 'testapi3',
-                userName: getSecret_4(),
+                userName: secret4,
               },
             },
           },
@@ -1057,9 +1057,9 @@ export const data = [
             destination: {
               Config: {
                 lookUpField: 'email',
-                password: getSecret_2(),
+                password: secret2,
                 subDomainName: 'testapi3',
-                userName: getSecret_4(),
+                userName: secret4,
               },
             },
           },
@@ -1113,9 +1113,9 @@ export const data = [
             destination: {
               Config: {
                 lookUpField: 'email',
-                password: getSecret_2(),
+                password: secret2,
                 subDomainName: 'testapi3',
-                userName: getSecret_1(),
+                userName: secret1,
               },
             },
           },
@@ -1173,9 +1173,9 @@ export const data = [
             destination: {
               Config: {
                 lookUpField: 'email',
-                password: getSecret_2(),
+                password: secret2,
                 subDomainName: 'testapi3',
-                userName: getSecret_1(),
+                userName: secret1,
               },
             },
           },
@@ -1221,9 +1221,9 @@ export const data = [
             destination: {
               Config: {
                 lookUpField: 'email',
-                password: getSecret_2(),
+                password: secret2,
                 subDomainName: 'testapi3',
-                userName: getSecret_1(),
+                userName: secret1,
               },
             },
           },
@@ -1281,9 +1281,9 @@ export const data = [
             destination: {
               Config: {
                 lookUpField: 'email',
-                password: getSecret_2(),
+                password: secret2,
                 subDomainName: 'testapi3',
-                userName: getSecret_1(),
+                userName: secret1,
               },
             },
           },
@@ -1337,9 +1337,9 @@ export const data = [
             destination: {
               Config: {
                 lookUpField: 'email',
-                password: getSecret_2(),
+                password: secret2,
                 subDomainName: 'testapi3',
-                userName: getSecret_4(),
+                userName: secret4,
               },
             },
           },
@@ -1359,7 +1359,7 @@ export const data = [
               endpoint: 'https://testapi3.mautic.net/api/contacts/new',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: getAuthHeader_3(),
+                Authorization: authHeader3,
               },
               params: {},
               body: {
@@ -1415,9 +1415,9 @@ export const data = [
             destination: {
               Config: {
                 lookUpField: 'email',
-                password: getSecret_2(),
+                password: secret2,
                 subDomainName: 'testapi3',
-                userName: getSecret_4(),
+                userName: secret4,
               },
             },
           },
@@ -1437,7 +1437,7 @@ export const data = [
               endpoint: 'https://testapi3.mautic.net/api/contacts/new',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: getAuthHeader_3(),
+                Authorization: authHeader3,
               },
               params: {},
               body: {
@@ -1487,9 +1487,9 @@ export const data = [
             destination: {
               Config: {
                 lookUpField: 'email',
-                password: getSecret_2(),
+                password: secret2,
                 subDomainName: 'testapi5',
-                userName: getSecret_3(),
+                userName: secret3,
               },
             },
           },
@@ -1509,7 +1509,7 @@ export const data = [
               endpoint: 'https://testapi5.mautic.net/api/contacts/246/edit',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: getAuthHeader_2(),
+                Authorization: authHeader2,
               },
               params: {},
               body: {
@@ -1550,9 +1550,9 @@ export const data = [
             destination: {
               Config: {
                 lookUpField: 'lastName',
-                password: getSecret_2(),
+                password: secret2,
                 subDomainName: 'testapi5',
-                userName: getSecret_3(),
+                userName: secret3,
               },
             },
           },
@@ -1601,9 +1601,9 @@ export const data = [
             destination: {
               Config: {
                 lookUpField: 'lastName',
-                password: getSecret_2(),
+                password: secret2,
                 subDomainName: 'testapi5',
-                userName: getSecret_3(),
+                userName: secret3,
               },
             },
           },
@@ -1623,7 +1623,7 @@ export const data = [
               endpoint: 'https://testapi5.mautic.net/api/segments/17/contact/246/remove',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: getAuthHeader_2(),
+                Authorization: authHeader2,
               },
               params: {},
               body: { JSON: {}, JSON_ARRAY: {}, XML: {}, FORM: {} },
@@ -1657,9 +1657,9 @@ export const data = [
             destination: {
               Config: {
                 lookUpField: 'lastName',
-                password: getSecret_2(),
+                password: secret2,
                 subDomainName: 'testapi5',
-                userName: getSecret_3(),
+                userName: secret3,
               },
             },
           },
@@ -1679,7 +1679,7 @@ export const data = [
               endpoint: 'https://testapi5.mautic.net/api/segments/17/contact/246/add',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: getAuthHeader_2(),
+                Authorization: authHeader2,
               },
               params: {},
               body: { JSON: {}, JSON_ARRAY: {}, XML: {}, FORM: {} },
@@ -1711,9 +1711,9 @@ export const data = [
             destination: {
               Config: {
                 lookUpField: 'lastName',
-                password: getSecret_2(),
+                password: secret2,
                 subDomainName: 'testapi5',
-                userName: getSecret_4(),
+                userName: secret4,
               },
             },
           },
@@ -1761,9 +1761,9 @@ export const data = [
             destination: {
               Config: {
                 lookUpField: 'lastName',
-                password: getSecret_2(),
+                password: secret2,
                 subDomainName: 'testapi5',
-                userName: getSecret_4(),
+                userName: secret4,
               },
             },
           },
@@ -1812,9 +1812,9 @@ export const data = [
             destination: {
               Config: {
                 lookUpField: 'email',
-                password: getSecret_2(),
+                password: secret2,
                 subDomainName: 'ruddertest2',
-                userName: getSecret_3(),
+                userName: secret3,
               },
             },
           },
@@ -1834,7 +1834,7 @@ export const data = [
               endpoint: 'https://ruddertest2.mautic.net/api/companies/20/contact/247/add',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: getAuthHeader_2(),
+                Authorization: authHeader2,
               },
               params: {},
               body: { JSON: {}, JSON_ARRAY: {}, XML: {}, FORM: {} },
@@ -1867,9 +1867,9 @@ export const data = [
             destination: {
               Config: {
                 lookUpField: 'lastName',
-                password: getSecret_2(),
+                password: secret2,
                 subDomainName: 'ruddertest2',
-                userName: getSecret_3(),
+                userName: secret3,
               },
             },
           },
@@ -1916,9 +1916,9 @@ export const data = [
             destination: {
               Config: {
                 lookUpField: 'lastName',
-                password: getSecret_2(),
+                password: secret2,
                 subDomainName: 'ruddertest2',
-                userName: getSecret_3(),
+                userName: secret3,
               },
             },
           },

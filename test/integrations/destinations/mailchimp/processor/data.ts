@@ -1,4 +1,4 @@
-import { getAuthHeader_2, getSecret_2, getSecret_1 } from '../maskedSecrets';
+import { authHeader2, secret2, secret1 } from '../maskedSecrets';
 export const data = [
   {
     name: 'mailchimp',
@@ -19,7 +19,7 @@ export const data = [
                 DisplayName: 'MailChimp',
               },
               Config: {
-                apiKey: getSecret_2(),
+                apiKey: secret2,
                 audienceId: 'aud111',
                 datacenterId: 'usXX',
                 enableMergeFields: true,
@@ -94,7 +94,7 @@ export const data = [
                 'https://usXX.api.mailchimp.com/3.0/lists/aud111/members/48cd6232dc124497369f59c33d3eb4ab',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: getAuthHeader_2(),
+                Authorization: authHeader2,
               },
               params: {},
               body: {
@@ -147,7 +147,7 @@ export const data = [
                 DisplayName: 'MailChimp',
               },
               Config: {
-                apiKey: getSecret_2(),
+                apiKey: secret2,
                 audienceId: 'aud111',
                 datacenterId: 'usXX',
                 enableMergeFields: true,
@@ -217,7 +217,7 @@ export const data = [
                 'https://usXX.api.mailchimp.com/3.0/lists/aud111/members/48cd6232dc124497369f59c33d3eb4ab',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: getAuthHeader_2(),
+                Authorization: authHeader2,
               },
               params: {},
               body: {
@@ -261,7 +261,7 @@ export const data = [
                 DisplayName: 'MailChimp',
               },
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 audienceId: 'aud111',
                 datacenterId: 'usXX',
               },
@@ -371,7 +371,7 @@ export const data = [
                 DisplayName: 'MailChimp',
               },
               Config: {
-                apiKey: getSecret_2(),
+                apiKey: secret2,
                 audienceId: 'aud111',
                 datacenterId: 'usXX',
               },
@@ -487,7 +487,7 @@ export const data = [
                 DisplayName: 'MailChimp',
               },
               Config: {
-                apiKey: getSecret_2(),
+                apiKey: secret2,
                 audienceId: 'aud111',
                 datacenterId: 'usXX',
               },
@@ -564,7 +564,7 @@ export const data = [
                 'https://usXX.api.mailchimp.com/3.0/lists/aud111/members/48cd6232dc124497369f59c33d3eb4ab',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: getAuthHeader_2(),
+                Authorization: authHeader2,
               },
               params: {},
               body: {
@@ -608,7 +608,7 @@ export const data = [
                 DisplayName: 'MailChimp',
               },
               Config: {
-                apiKey: getSecret_2(),
+                apiKey: secret2,
                 audienceId: 'aud111',
                 datacenterId: 'usXX',
               },
@@ -688,7 +688,7 @@ export const data = [
                 DisplayName: 'MailChimp',
               },
               Config: {
-                apiKey: getSecret_2(),
+                apiKey: secret2,
                 audienceId: 'aud111',
                 datacenterId: 'usXX',
               },
@@ -778,7 +778,7 @@ export const data = [
                 DisplayName: 'MailChimp',
               },
               Config: {
-                apiKey: getSecret_2(),
+                apiKey: secret2,
                 audienceId: 'aud112',
                 datacenterId: 'usXX',
               },
@@ -852,7 +852,7 @@ export const data = [
               params: {},
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: getAuthHeader_2(),
+                Authorization: authHeader2,
               },
               audienceId: 'aud112',
               version: '1',
@@ -885,7 +885,7 @@ export const data = [
                 DisplayName: 'MailChimp',
               },
               Config: {
-                apiKey: getSecret_2(),
+                apiKey: secret2,
                 audienceId: 'aud111',
                 datacenterId: 'usXX',
               },
@@ -960,7 +960,7 @@ export const data = [
               audienceId: 'aud111',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: getAuthHeader_2(),
+                Authorization: authHeader2,
               },
               version: '1',
               endpoint:
@@ -992,7 +992,7 @@ export const data = [
                 DisplayName: 'MailChimp',
               },
               Config: {
-                apiKey: getSecret_2(),
+                apiKey: secret2,
                 audienceId: 'aud111',
                 datacenterId: 'usXX',
               },
@@ -1061,7 +1061,7 @@ export const data = [
                 'https://usXX.api.mailchimp.com/3.0/lists/aud111/members/48cd6232dc124497369f59c33d3eb4ab',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: getAuthHeader_2(),
+                Authorization: authHeader2,
               },
               params: {},
               body: {
@@ -1197,7 +1197,7 @@ export const data = [
                 DisplayName: 'MailChimp',
               },
               Config: {
-                apiKey: getSecret_2(),
+                apiKey: secret2,
                 datacenterId: 'usXX',
               },
               Enabled: true,
@@ -1291,7 +1291,7 @@ export const data = [
                 DisplayName: 'MailChimp',
               },
               Config: {
-                apiKey: getSecret_2(),
+                apiKey: secret2,
                 audienceId: 'aud111',
                 datacenterId: '',
               },
@@ -1386,7 +1386,7 @@ export const data = [
                 DisplayName: 'MailChimp',
               },
               Config: {
-                apiKey: getSecret_2(),
+                apiKey: secret2,
                 audienceId: 'aud111',
                 datacenterId: 'usXX',
               },
@@ -1481,7 +1481,7 @@ export const data = [
                 DisplayName: 'MailChimp',
               },
               Config: {
-                apiKey: getSecret_2(),
+                apiKey: secret2,
                 audienceId: 'aud111',
                 datacenterId: 'usXX',
               },
@@ -1528,7 +1528,7 @@ export const data = [
                 'https://usXX.api.mailchimp.com/3.0/lists/aud111/members/48cd6232dc124497369f59c33d3eb4ab/events',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: getAuthHeader_2(),
+                Authorization: authHeader2,
               },
               params: {},
               body: {
@@ -1573,7 +1573,7 @@ export const data = [
                 DisplayName: 'MailChimp',
               },
               Config: {
-                apiKey: getSecret_2(),
+                apiKey: secret2,
                 audienceId: 'aud111',
                 datacenterId: 'usXX',
               },
@@ -1621,7 +1621,7 @@ export const data = [
                 'https://usXX.api.mailchimp.com/3.0/lists/aud111/members/48cd6232dc124497369f59c33d3eb4ab/events',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: getAuthHeader_2(),
+                Authorization: authHeader2,
               },
               params: {},
               body: {
@@ -1667,7 +1667,7 @@ export const data = [
                 DisplayName: 'MailChimp',
               },
               Config: {
-                apiKey: getSecret_2(),
+                apiKey: secret2,
                 audienceId: 'aud111',
                 datacenterId: 'usXX',
               },
@@ -1735,7 +1735,7 @@ export const data = [
                 DisplayName: 'MailChimp',
               },
               Config: {
-                apiKey: getSecret_2(),
+                apiKey: secret2,
                 audienceId: 'aud111',
                 datacenterId: 'usXX',
               },
@@ -1808,7 +1808,7 @@ export const data = [
                 DisplayName: 'MailChimp',
               },
               Config: {
-                apiKey: getSecret_2(),
+                apiKey: secret2,
                 audienceId: 'aud111',
                 datacenterId: 'usXX',
               },
@@ -1851,7 +1851,7 @@ export const data = [
                 'https://usXX.api.mailchimp.com/3.0/lists/aud111/members/48cd6232dc124497369f59c33d3eb4ab/events',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: getAuthHeader_2(),
+                Authorization: authHeader2,
               },
               params: {},
               body: {
@@ -1892,7 +1892,7 @@ export const data = [
                 DisplayName: 'MailChimp',
               },
               Config: {
-                apiKey: getSecret_2(),
+                apiKey: secret2,
                 audienceId: 'aud111',
                 datacenterId: 'usXX',
               },
@@ -1951,7 +1951,7 @@ export const data = [
                 'https://usXX.api.mailchimp.com/3.0/lists/aud111/members/48cd6232dc124497369f59c33d3eb4ab/events',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: getAuthHeader_2(),
+                Authorization: authHeader2,
               },
               params: {},
               body: {
@@ -1962,7 +1962,10 @@ export const data = [
                   properties: {
                     brand: 'Aster',
                     product: 'Garments',
-                    products: '[{"product_id":"123","price":"14"},{"product_id":"123","price":14}]',
+                    products: JSON.stringify([
+                      { product_id: '123', price: '14' },
+                      { product_id: '123', price: 14 },
+                    ]),
                     purchased: 'false',
                   },
                 },
@@ -1999,7 +2002,7 @@ export const data = [
                 DisplayName: 'MailChimp',
               },
               Config: {
-                apiKey: getSecret_2(),
+                apiKey: secret2,
                 audienceId: 'aud111',
                 datacenterId: 'usXX',
               },
@@ -2058,7 +2061,7 @@ export const data = [
                 'https://usXX.api.mailchimp.com/3.0/lists/aud111/members/48cd6232dc124497369f59c33d3eb4ab/events',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: getAuthHeader_2(),
+                Authorization: authHeader2,
               },
               params: {},
               body: {
@@ -2069,7 +2072,10 @@ export const data = [
                   properties: {
                     brand: 'Aster',
                     product: 'Garments',
-                    products: '[{"product_id":"123","price":"14"},{"product_id":"123","price":14}]',
+                    products: JSON.stringify([
+                      { product_id: '123', price: '14' },
+                      { product_id: '123', price: 14 },
+                    ]),
                     purchased: 'false',
                   },
                 },
@@ -2106,7 +2112,7 @@ export const data = [
                 DisplayName: 'MailChimp',
               },
               Config: {
-                apiKey: getSecret_2(),
+                apiKey: secret2,
                 audienceId: 'aud111',
                 datacenterId: 'usXX',
               },
@@ -2191,7 +2197,7 @@ export const data = [
                 DisplayName: 'MailChimp',
               },
               Config: {
-                apiKey: getSecret_2(),
+                apiKey: secret2,
                 audienceId: 'aud111',
                 datacenterId: 'usXX',
               },

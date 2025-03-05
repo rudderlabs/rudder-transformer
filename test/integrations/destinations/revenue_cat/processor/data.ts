@@ -1,12 +1,12 @@
 import {
-  getAuthHeader_1,
-  getSecret_1,
-  getAuthHeader_2,
-  getSecret_2,
-  getAuthHeader_3,
-  getSecret_3,
-  getAuthHeader_4,
-  getSecret_4,
+  authHeader1,
+  secret1,
+  authHeader2,
+  secret2,
+  authHeader3,
+  secret3,
+  authHeader4,
+  secret4,
 } from '../maskedSecrets';
 export const data = [
   {
@@ -21,7 +21,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 xPlatform: 'stripe',
               },
             },
@@ -99,7 +99,7 @@ export const data = [
               method: 'GET',
               endpoint: 'https://api.revenuecat.com/v1/subscribers/rudder1235678',
               headers: {
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
               params: {},
@@ -121,7 +121,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://api.revenuecat.com/v1/subscribers/rudder1235678/attributes',
               headers: {
-                Authorization: getAuthHeader_1(),
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
               params: {},
@@ -188,7 +188,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: getSecret_2(),
+                apiKey: secret2,
                 xPlatform: 'stripe',
               },
             },
@@ -266,7 +266,7 @@ export const data = [
               method: 'GET',
               endpoint: 'https://api.revenuecat.com/v1/subscribers/rudder1235678',
               headers: {
-                Authorization: getAuthHeader_2(),
+                Authorization: authHeader2,
                 'Content-Type': 'application/json',
               },
               params: {},
@@ -288,7 +288,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://api.revenuecat.com/v1/subscribers/rudder1235678/attributes',
               headers: {
-                Authorization: getAuthHeader_2(),
+                Authorization: authHeader2,
                 'Content-Type': 'application/json',
               },
               params: {},
@@ -448,7 +448,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: getSecret_3(),
+                apiKey: secret3,
               },
             },
             message: {
@@ -520,7 +520,7 @@ export const data = [
               method: 'GET',
               endpoint: 'https://api.revenuecat.com/v1/subscribers/rudder1235678',
               headers: {
-                Authorization: getAuthHeader_3(),
+                Authorization: authHeader3,
                 'Content-Type': 'application/json',
               },
               params: {},
@@ -542,7 +542,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://api.revenuecat.com/v1/subscribers/rudder1235678/attributes',
               headers: {
-                Authorization: getAuthHeader_3(),
+                Authorization: authHeader3,
                 'Content-Type': 'application/json',
               },
               params: {},
@@ -591,7 +591,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: getSecret_4(),
+                apiKey: secret4,
               },
             },
             message: {
@@ -670,7 +670,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: getSecret_4(),
+                apiKey: secret4,
                 xPlatform: 'stripe',
               },
             },
@@ -729,7 +729,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://api.revenuecat.com/v1/receipts',
               headers: {
-                Authorization: getAuthHeader_4(),
+                Authorization: authHeader4,
                 'Content-Type': 'application/json',
                 'X-Platform': 'stripe',
               },
@@ -761,7 +761,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://api.revenuecat.com/v1/receipts',
               headers: {
-                Authorization: getAuthHeader_4(),
+                Authorization: authHeader4,
                 'Content-Type': 'application/json',
                 'X-Platform': 'stripe',
               },
@@ -802,7 +802,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: getSecret_4(),
+                apiKey: secret4,
                 xPlatform: 'stripe',
               },
             },
@@ -880,7 +880,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://api.revenuecat.com/v1/receipts',
               headers: {
-                Authorization: getAuthHeader_4(),
+                Authorization: authHeader4,
                 'Content-Type': 'application/json',
                 'X-Platform': 'stripe',
               },
@@ -912,7 +912,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://api.revenuecat.com/v1/receipts',
               headers: {
-                Authorization: getAuthHeader_4(),
+                Authorization: authHeader4,
                 'Content-Type': 'application/json',
                 'X-Platform': 'stripe',
               },
@@ -944,7 +944,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://api.revenuecat.com/v1/receipts',
               headers: {
-                Authorization: getAuthHeader_4(),
+                Authorization: authHeader4,
                 'Content-Type': 'application/json',
                 'X-Platform': 'stripe',
               },
@@ -976,7 +976,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://api.revenuecat.com/v1/receipts',
               headers: {
-                Authorization: getAuthHeader_4(),
+                Authorization: authHeader4,
                 'Content-Type': 'application/json',
                 'X-Platform': 'stripe',
               },
@@ -1017,7 +1017,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: getSecret_4(),
+                apiKey: secret4,
                 xPlatform: 'stripe',
               },
             },
@@ -1061,7 +1061,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://api.revenuecat.com/v1/receipts',
               headers: {
-                Authorization: getAuthHeader_4(),
+                Authorization: authHeader4,
                 'Content-Type': 'application/json',
                 'X-Platform': 'stripe',
               },

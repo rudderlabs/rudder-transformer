@@ -1,4 +1,4 @@
-import { getAuthHeader_1, getSecret_1 } from '../maskedSecrets';
+import { authHeader1, secret1 } from '../maskedSecrets';
 const arrayHandlingCases = [
   {
     description:
@@ -56,7 +56,7 @@ const arrayHandlingCases = [
             headers: {
               'Content-Type': 'application/json',
               Accept: 'application/vnd.urbanairship+json; version=3',
-              Authorization: getAuthHeader_1(),
+              Authorization: authHeader1,
             },
             params: {},
             body: {
@@ -145,7 +145,7 @@ const arrayHandlingCases = [
             headers: {
               'Content-Type': 'application/json',
               Accept: 'application/vnd.urbanairship+json; version=3',
-              Authorization: getAuthHeader_1(),
+              Authorization: authHeader1,
             },
             params: {},
             body: {
@@ -214,7 +214,7 @@ const getIdentifyTestCase = ({ description, inputEvent, expectedOutputResponse }
             message: inputEvent,
             destination: {
               Config: {
-                apiKey: getSecret_1(),
+                apiKey: secret1,
                 appKey: 'O2YARRI15I',
                 dataCenter: false,
               },

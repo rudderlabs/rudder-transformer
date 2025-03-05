@@ -1,9 +1,9 @@
-import { getAuthHeader_1 } from './maskedSecrets';
+import { authHeader1 } from './maskedSecrets';
 export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: getAuthHeader_1(),
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
       },
 
@@ -45,7 +45,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: getAuthHeader_1(),
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
       },
 
@@ -93,7 +93,7 @@ export const networkCallsData = [
         user_custom_id: 'user@123',
       },
       headers: {
-        Authorization: getAuthHeader_1(),
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
       },
 
@@ -131,7 +131,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: getAuthHeader_1(),
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
       },
 
@@ -168,7 +168,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: getAuthHeader_1(),
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
       },
 
@@ -205,7 +205,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: getAuthHeader_1(),
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
       },
 
@@ -242,7 +242,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: getAuthHeader_1(),
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
       },
 
@@ -278,7 +278,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: getAuthHeader_1(),
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
       },
 
@@ -314,7 +314,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: getAuthHeader_1(),
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
       },
 
@@ -356,7 +356,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: getAuthHeader_1(),
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
       },
 
@@ -404,7 +404,7 @@ export const networkCallsData = [
         user_custom_id: 'user@123',
       },
       headers: {
-        Authorization: getAuthHeader_1(),
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
       },
 

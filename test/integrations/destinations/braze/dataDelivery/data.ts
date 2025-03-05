@@ -550,7 +550,7 @@ export const existingTestData = [
             message: 'Request for braze Processed Successfully',
             response: [
               {
-                error: '{"aliases_processed":1,"message":"success"}',
+                error: JSON.stringify({ aliases_processed: 1, message: 'success' }),
                 statusCode: 201,
                 metadata: {
                   jobId: 2,
@@ -638,7 +638,7 @@ export const existingTestData = [
             status: 401,
             response: [
               {
-                error: '{"code":400,"message":"Bad Req","status":"Fail Case"}',
+                error: JSON.stringify({ code: 400, message: 'Bad Req', status: 'Fail Case' }),
                 statusCode: 401,
                 metadata: {
                   jobId: 2,

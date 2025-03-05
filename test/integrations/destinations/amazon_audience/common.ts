@@ -7,7 +7,7 @@ export const destination = {
     },
   },
   Config: {
-    advertiserId: '{"Dummy Name":"1234"}',
+    advertiserId: JSON.stringify({ 'Dummy Name': '1234' }),
     audienceId: 'dummyId',
   },
   ID: 'amazonAud-1234',

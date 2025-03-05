@@ -235,7 +235,7 @@ const expectedUser6Traits = {
       company_id: 'company_id',
       custom_attributes: {
         key1: 'value1',
-        key2: '{"a":"a"}',
+        key2: JSON.stringify({ a: 'a' }),
         key3: '[1,2,3]',
       },
     },
@@ -713,7 +713,7 @@ export const identifyTestData = [
                     custom_attributes: {
                       key1: 'value1',
                       key3: JSON.stringify(['value1', 'value2']),
-                      key4: '{"foo":"bar"}',
+                      key4: JSON.stringify({ foo: 'bar' }),
                     },
                     company_id: 'c0277b5c814453e5135f515f943d085a',
                   },

@@ -784,8 +784,17 @@ export const data = [
         body: [
           {
             statusCode: 500,
-            error:
-              '{"message":"Request Failed for marketo, Access Token Expired (Retryable).During fetching auth token","destinationResponse":{"response":{"success":false,"errors":[{"code":"601","message":"Access Token Expired"}]},"status":200}}',
+            error: JSON.stringify({
+              message:
+                'Request Failed for marketo, Access Token Expired (Retryable).During fetching auth token',
+              destinationResponse: {
+                response: {
+                  success: false,
+                  errors: [{ code: '601', message: 'Access Token Expired' }],
+                },
+                status: 200,
+              },
+            }),
             statTags: {
               errorCategory: 'network',
               errorType: 'retryable',

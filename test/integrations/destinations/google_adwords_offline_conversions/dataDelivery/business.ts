@@ -514,7 +514,7 @@ export const testScenariosForV1API = [
               '[Google Ads Offline Conversions Response Handler] - Request processed successfully',
             response: [
               {
-                error: '{"name":"customers/111-222-3333/operations/abcd="}',
+                error: JSON.stringify({ name: 'customers/111-222-3333/operations/abcd=' }),
                 metadata: generateMetadata(1),
                 statusCode: 200,
               },

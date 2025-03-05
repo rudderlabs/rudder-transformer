@@ -99,8 +99,12 @@ export const oauthScenariosV1: ProxyV1TestData[] = [
           output: {
             response: [
               {
-                error:
-                  '{"status":401,"serviceErrorCode":65601,"code":"REVOKED_ACCESS_TOKEN","message":"The token used in the request has been revoked by the user"}',
+                error: JSON.stringify({
+                  status: 401,
+                  serviceErrorCode: 65601,
+                  code: 'REVOKED_ACCESS_TOKEN',
+                  message: 'The token used in the request has been revoked by the user',
+                }),
                 statusCode: 400,
                 metadata: { ...metadata, secret: { accessToken: secret1 } },
               },
@@ -140,8 +144,12 @@ export const oauthScenariosV1: ProxyV1TestData[] = [
           output: {
             response: [
               {
-                error:
-                  '{"status":401,"serviceErrorCode":65600,"code":"INVALID_ACCESS_TOKEN","message":"Invalid access token"}',
+                error: JSON.stringify({
+                  status: 401,
+                  serviceErrorCode: 65600,
+                  code: 'INVALID_ACCESS_TOKEN',
+                  message: 'Invalid access token',
+                }),
                 statusCode: 500,
                 metadata: { ...metadata, secret: { accessToken: secret2 } },
               },

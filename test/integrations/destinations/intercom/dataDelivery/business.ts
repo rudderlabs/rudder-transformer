@@ -388,8 +388,11 @@ export const testScenariosForV1API = [
             message: 'Request Processed Successfully',
             response: [
               {
-                error:
-                  '{"type":"error.list","request_id":"request123","errors":[{"code":"unauthorized","message":"Access Token Invalid"}]}',
+                error: JSON.stringify({
+                  type: 'error.list',
+                  request_id: 'request123',
+                  errors: [{ code: 'unauthorized', message: 'Access Token Invalid' }],
+                }),
                 metadata: generateMetadata(1),
                 statusCode: 401,
               },
@@ -472,8 +475,11 @@ export const testScenariosForV1API = [
             message: 'Request Processed Successfully',
             response: [
               {
-                error:
-                  '{"type":"error.list","request_id":"request124","errors":[{"code":"api_plan_restricted","message":"Active subscription needed."}]}',
+                error: JSON.stringify({
+                  type: 'error.list',
+                  request_id: 'request124',
+                  errors: [{ code: 'api_plan_restricted', message: 'Active subscription needed.' }],
+                }),
                 metadata: generateMetadata(1),
                 statusCode: 403,
               },
@@ -513,8 +519,16 @@ export const testScenariosForV1API = [
             message: 'Request Processed Successfully',
             response: [
               {
-                error:
-                  '{"type":"error.list","request_id":"request125","errors":[{"code":"rate_limit_exceeded","message":"The rate limit for the App has been exceeded"}]}',
+                error: JSON.stringify({
+                  type: 'error.list',
+                  request_id: 'request125',
+                  errors: [
+                    {
+                      code: 'rate_limit_exceeded',
+                      message: 'The rate limit for the App has been exceeded',
+                    },
+                  ],
+                }),
                 metadata: generateMetadata(1),
                 statusCode: 429,
               },
@@ -558,8 +572,16 @@ export const testScenariosForV1API = [
             message: 'Request Processed Successfully',
             response: [
               {
-                error:
-                  '{"type":"error.list","request_id":"request126","errors":[{"code":"conflict","message":"A contact matching those details already exists with id=test1"}]}',
+                error: JSON.stringify({
+                  type: 'error.list',
+                  request_id: 'request126',
+                  errors: [
+                    {
+                      code: 'conflict',
+                      message: 'A contact matching those details already exists with id=test1',
+                    },
+                  ],
+                }),
                 metadata: generateMetadata(1),
                 statusCode: 409,
               },
@@ -603,8 +625,15 @@ export const testScenariosForV1API = [
             message: 'Request Processed Successfully',
             response: [
               {
-                error:
-                  '{"errors":[{"code":"media_type_not_acceptable","message":"The Accept header should send a media type of application/json"}],"type":"error.list"}',
+                error: JSON.stringify({
+                  errors: [
+                    {
+                      code: 'media_type_not_acceptable',
+                      message: 'The Accept header should send a media type of application/json',
+                    },
+                  ],
+                  type: 'error.list',
+                }),
                 metadata: generateMetadata(1),
                 statusCode: 406,
               },

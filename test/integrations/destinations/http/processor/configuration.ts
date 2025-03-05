@@ -365,8 +365,11 @@ export const configuration: ProcessorTestData[] = [
                 'Content-Type': 'application/x-www-form-urlencoded',
               },
               FORM: {
-                contacts:
-                  '{"first_name":"John","email":"john.doe@example.com","address":{"pin_code":"123456"}}',
+                contacts: JSON.stringify({
+                  first_name: 'John',
+                  email: 'john.doe@example.com',
+                  address: { pin_code: '123456' },
+                }),
               },
             }),
             statusCode: 200,

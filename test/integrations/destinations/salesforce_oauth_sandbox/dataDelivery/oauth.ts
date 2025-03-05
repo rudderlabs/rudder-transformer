@@ -163,7 +163,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
             message: 'Request for destination: salesforce Processed Successfully',
             response: [
               {
-                error: '{"statusText":"No Content"}',
+                error: JSON.stringify({ statusText: 'No Content' }),
                 metadata: proxyMetdataWithSecretWithRightAccessToken,
                 statusCode: 200,
               },

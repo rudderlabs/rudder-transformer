@@ -99,8 +99,19 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
             message: 'Request Processed Successfully',
             response: [
               {
-                error:
-                  '{"requestId":"b6d1#18a8d2c10e7","result":[{"id":110,"status":"skipped","reasons":[{"code":"1015","message":"Lead not in list"}]},{"id":111,"status":"removed"},{"id":112,"status":"removed"}],"success":true}',
+                error: JSON.stringify({
+                  requestId: 'b6d1#18a8d2c10e7',
+                  result: [
+                    {
+                      id: 110,
+                      status: 'skipped',
+                      reasons: [{ code: '1015', message: 'Lead not in list' }],
+                    },
+                    { id: 111, status: 'removed' },
+                    { id: 112, status: 'removed' },
+                  ],
+                  success: true,
+                }),
                 metadata: proxyMetdata,
                 statusCode: 200,
               },
@@ -147,8 +158,11 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
               'Request Failed for Marketo Static List, Access token invalid (Retryable).during Marketo Static List Response Handling',
             response: [
               {
-                error:
-                  '{"requestId":"68d8#1846058ee27","success":false,"errors":[{"code":"601","message":"Access token invalid"}]}',
+                error: JSON.stringify({
+                  requestId: '68d8#1846058ee27',
+                  success: false,
+                  errors: [{ code: '601', message: 'Access token invalid' }],
+                }),
                 metadata: proxyMetdata,
                 statusCode: 500,
               },
@@ -195,8 +209,14 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
             message: 'Request Processed Successfully',
             response: [
               {
-                error:
-                  '{"requestId":"12d3c#1846057dce2","result":[{"id":1,"status":"added"},{"id":2,"status":"added"}],"success":true}',
+                error: JSON.stringify({
+                  requestId: '12d3c#1846057dce2',
+                  result: [
+                    { id: 1, status: 'added' },
+                    { id: 2, status: 'added' },
+                  ],
+                  success: true,
+                }),
                 metadata: proxyMetdata,
                 statusCode: 200,
               },

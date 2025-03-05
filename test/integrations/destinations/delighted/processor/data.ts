@@ -1018,8 +1018,10 @@ export const data = [
         status: 200,
         body: [
           {
-            error:
-              '{"message":"Error occurred while checking user: {}","destinationResponse":{"response":{},"status":429}}',
+            error: JSON.stringify({
+              message: 'Error occurred while checking user: {}',
+              destinationResponse: { response: {}, status: 429 },
+            }),
             statTags: {
               destType: 'DELIGHTED',
               errorCategory: 'network',

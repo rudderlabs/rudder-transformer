@@ -1056,8 +1056,18 @@ export const data = [
             {
               batched: false,
               statusCode: 400,
-              error:
-                '{"message":"Error occurred [Marketo Transformer]: During lead look up using email -> some other problem","destinationResponse":{"response":{"requestId":"142e4#1835b117b76","success":false,"errors":[{"code":"random_marketo_code","message":"some other problem"}]},"status":200}}',
+              error: JSON.stringify({
+                message:
+                  'Error occurred [Marketo Transformer]: During lead look up using email -> some other problem',
+                destinationResponse: {
+                  response: {
+                    requestId: '142e4#1835b117b76',
+                    success: false,
+                    errors: [{ code: 'random_marketo_code', message: 'some other problem' }],
+                  },
+                  status: 200,
+                },
+              }),
               statTags: {
                 errorCategory: 'network',
                 errorType: 'aborted',

@@ -200,7 +200,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
             message: 'Request Processed Successfully',
             response: [
               {
-                error: '{"events_received":1,"fbtrace_id":"facebook_trace_id"}',
+                error: JSON.stringify({ events_received: 1, fbtrace_id: 'facebook_trace_id' }),
                 statusCode: 200,
                 metadata: generateMetadata(1),
               },

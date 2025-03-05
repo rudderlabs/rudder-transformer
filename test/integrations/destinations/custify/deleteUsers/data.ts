@@ -124,7 +124,9 @@ export const data = [
     output: {
       response: {
         status: 400,
-        body: [{ statusCode: 400, error: '{"error":"User: rudder3 has a problem"}' }],
+        body: [
+          { statusCode: 400, error: JSON.stringify({ error: 'User: rudder3 has a problem' }) },
+        ],
       },
     },
   },

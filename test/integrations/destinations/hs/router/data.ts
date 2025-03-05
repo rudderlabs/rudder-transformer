@@ -3493,8 +3493,23 @@ export const data = [
                 updatedAt: '2021-02-03T16:22:31.374Z',
                 workspaceId: '1TSN08muJTZwH8iCDmnnRt1pmLd',
               },
-              error:
-                '{"message":"Failed to get hubspot properties: {\\"status\\":\\"error\\",\\"message\\":\\"The API key provided is invalid. View or manage your API key here: https://app.hubspot.com/l/api-key/\\",\\"correlationId\\":\\"4d39ff11-e121-4514-bcd8-132a9dd1ff50\\",\\"category\\":\\"INVALID_AUTHENTICATION\\",\\"links\\":{\\"api key\\":\\"https://app.hubspot.com/l/api-key/\\"}}","destinationResponse":{"response":{"status":"error","message":"The API key provided is invalid. View or manage your API key here: https://app.hubspot.com/l/api-key/","correlationId":"4d39ff11-e121-4514-bcd8-132a9dd1ff50","category":"INVALID_AUTHENTICATION","links":{"api key":"https://app.hubspot.com/l/api-key/"}},"status":401}}',
+              error: JSON.stringify({
+                message:
+                  'Failed to get hubspot properties: {"status":"error","message":"The API key provided is invalid. View or manage your API key here: https://app.hubspot.com/l/api-key/","correlationId":"4d39ff11-e121-4514-bcd8-132a9dd1ff50","category":"INVALID_AUTHENTICATION","links":{"api key":"https://app.hubspot.com/l/api-key/"}}',
+                destinationResponse: {
+                  response: {
+                    status: 'error',
+                    message:
+                      'The API key provided is invalid. View or manage your API key here: https://app.hubspot.com/l/api-key/',
+                    correlationId: '4d39ff11-e121-4514-bcd8-132a9dd1ff50',
+                    category: 'INVALID_AUTHENTICATION',
+                    links: {
+                      'api key': 'https://app.hubspot.com/l/api-key/',
+                    },
+                  },
+                  status: 401,
+                },
+              }),
               metadata: [
                 {
                   jobId: 2,
@@ -3537,8 +3552,23 @@ export const data = [
                 updatedAt: '2021-02-03T16:22:31.374Z',
                 workspaceId: '1TSN08muJTZwH8iCDmnnRt1pmLd',
               },
-              error:
-                '{"message":"Failed to get hubspot properties: {\\"status\\":\\"error\\",\\"message\\":\\"The API key provided is invalid. View or manage your API key here: https://app.hubspot.com/l/api-key/\\",\\"correlationId\\":\\"4d39ff11-e121-4514-bcd8-132a9dd1ff50\\",\\"category\\":\\"INVALID_AUTHENTICATION\\",\\"links\\":{\\"api key\\":\\"https://app.hubspot.com/l/api-key/\\"}}","destinationResponse":{"response":{"status":"error","message":"The API key provided is invalid. View or manage your API key here: https://app.hubspot.com/l/api-key/","correlationId":"4d39ff11-e121-4514-bcd8-132a9dd1ff50","category":"INVALID_AUTHENTICATION","links":{"api key":"https://app.hubspot.com/l/api-key/"}},"status":401}}',
+              error: JSON.stringify({
+                message:
+                  'Failed to get hubspot properties: {"status":"error","message":"The API key provided is invalid. View or manage your API key here: https://app.hubspot.com/l/api-key/","correlationId":"4d39ff11-e121-4514-bcd8-132a9dd1ff50","category":"INVALID_AUTHENTICATION","links":{"api key":"https://app.hubspot.com/l/api-key/"}}',
+                destinationResponse: {
+                  response: {
+                    status: 'error',
+                    message:
+                      'The API key provided is invalid. View or manage your API key here: https://app.hubspot.com/l/api-key/',
+                    correlationId: '4d39ff11-e121-4514-bcd8-132a9dd1ff50',
+                    category: 'INVALID_AUTHENTICATION',
+                    links: {
+                      'api key': 'https://app.hubspot.com/l/api-key/',
+                    },
+                  },
+                  status: 401,
+                },
+              }),
               metadata: [
                 {
                   jobId: 3,

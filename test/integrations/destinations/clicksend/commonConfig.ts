@@ -75,8 +75,8 @@ export const routerInstrumentationErrorStatTags = {
   module: 'destination',
 };
 export const commonIdentifyOutput = {
-  address_line_1: '{"city":"New York","country":"USA","pinCode":"123456"}',
-  address_line_2: '{"city":"New York","country":"USA","pinCode":"123456"}',
+  address_line_1: JSON.stringify({ city: 'New York', country: 'USA', pinCode: '123456' }),
+  address_line_2: JSON.stringify({ city: 'New York', country: 'USA', pinCode: '123456' }),
   city: 'New York',
   email: 'abc@gmail.com',
   first_name: 'John',

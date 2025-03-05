@@ -197,8 +197,16 @@ export const data = [
                 body: {
                   FORM: {},
                   JSON: {
-                    address_line_1: '{"city":"New York","country":"USA","pinCode":"123456"}',
-                    address_line_2: '{"city":"New York","country":"USA","pinCode":"123456"}',
+                    address_line_1: JSON.stringify({
+                      city: 'New York',
+                      country: 'USA',
+                      pinCode: '123456',
+                    }),
+                    address_line_2: JSON.stringify({
+                      city: 'New York',
+                      country: 'USA',
+                      pinCode: '123456',
+                    }),
                     city: 'New York',
                     contact_id: '111',
                     email: 'abc@gmail.com',

@@ -129,7 +129,7 @@ const BrazePurchaseEvent = {
 const metadataArray = [generateMetadata(1), generateMetadata(2), generateMetadata(3)];
 
 const errorMessages = {
-  message_1: '{"events_processed":2,"purchases_processed":1,"message":"success"}',
+  message_1: JSON.stringify({ events_processed: 2, purchases_processed: 1, message: 'success' }),
   message_2:
     '{"events_processed":1,"message":"success","errors":[{"type":"\'external_id\', \'braze_id\', \'user_alias\', \'email\' or \'phone\' is required","input_array":"events","index":1},{"type":"\'quantity\' is not valid","input_array":"purchases","index":0}]}',
   message_3:
@@ -352,17 +352,17 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
           output: {
             response: [
               {
-                error: '{"message":"Invalid API Key"}',
+                error: JSON.stringify({ message: 'Invalid API Key' }),
                 statusCode: 401,
                 metadata: generateMetadata(1),
               },
               {
-                error: '{"message":"Invalid API Key"}',
+                error: JSON.stringify({ message: 'Invalid API Key' }),
                 statusCode: 401,
                 metadata: generateMetadata(2),
               },
               {
-                error: '{"message":"Invalid API Key"}',
+                error: JSON.stringify({ message: 'Invalid API Key' }),
                 statusCode: 401,
                 metadata: generateMetadata(3),
               },

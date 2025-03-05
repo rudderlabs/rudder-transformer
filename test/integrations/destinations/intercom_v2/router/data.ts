@@ -544,8 +544,19 @@ export const data: RouterTestData[] = [
             },
             {
               batched: false,
-              error:
-                '{"message":"Unable to search contact due to","destinationResponse":"{\\"type\\":\\"error.list\\",\\"request_id\\":\\"request_id-1\\",\\"errors\\":[{\\"code\\":\\"unauthorized\\",\\"message\\":\\"Access Token Invalid\\"}]}"}',
+              error: JSON.stringify({
+                message: 'Unable to search contact due to',
+                destinationResponse: JSON.stringify({
+                  type: 'error.list',
+                  request_id: 'request_id-1',
+                  errors: [
+                    {
+                      code: 'unauthorized',
+                      message: 'Access Token Invalid',
+                    },
+                  ],
+                }),
+              }),
               statTags: {
                 ...RouterNetworkErrorStatTags,
                 errorType: 'retryable',

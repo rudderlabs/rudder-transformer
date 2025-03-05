@@ -162,9 +162,17 @@ export const data = [
                           msgSms: true,
                           msgemail: true,
                           msgwhatsapp: false,
-                          address:
-                            '{"city":"kolkata","country":"India","postalCode":789223,"state":"WB","street":""}',
-                          custom_mappings: '{"Office":"Trastkiv","Country":"Russia"}',
+                          address: JSON.stringify({
+                            city: 'kolkata',
+                            country: 'India',
+                            postalCode: 789223,
+                            state: 'WB',
+                            street: '',
+                          }),
+                          custom_mappings: JSON.stringify({
+                            Office: 'Trastkiv',
+                            Country: 'Russia',
+                          }),
                           custom_tags: JSON.stringify([
                             'Test_User',
                             'Interested_User',

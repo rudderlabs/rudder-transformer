@@ -2111,7 +2111,7 @@ export const data = [
                 XML: {},
                 FORM: {
                   api_key: secret2,
-                  identification: ['{"group_type":"Company","group_value":"ABC"}'],
+                  identification: [JSON.stringify({ group_type: 'Company', group_value: 'ABC' })],
                 },
               },
               files: {},
@@ -2293,7 +2293,16 @@ export const data = [
                 FORM: {
                   api_key: secret2,
                   identification: [
-                    '{"group_type":"Company","group_value":"ABC","group_properties":{"KEY_3":{"CHILD_KEY_92":"value_95","CHILD_KEY_102":"value_103"},"KEY_2":{"CHILD_KEY_92":"value_95","CHILD_KEY_102":"value_103"},"name_trait":"Company","value_trait":"ABC"}}',
+                    JSON.stringify({
+                      group_type: 'Company',
+                      group_value: 'ABC',
+                      group_properties: {
+                        KEY_3: { CHILD_KEY_92: 'value_95', CHILD_KEY_102: 'value_103' },
+                        KEY_2: { CHILD_KEY_92: 'value_95', CHILD_KEY_102: 'value_103' },
+                        name_trait: 'Company',
+                        value_trait: 'ABC',
+                      },
+                    }),
                   ],
                 },
               },
@@ -2519,7 +2528,20 @@ export const data = [
                 FORM: {
                   api_key: secret2,
                   mapping: [
-                    '{"global_user_id":"newUserIdAlias","user_id":"sampleusrRudder3","user_properties":{"initial_referrer":"https://docs.rudderstack.com","initial_referring_domain":"docs.rudderstack.com","utm_source":"google","utm_medium":"medium","utm_term":"keyword","utm_content":"some content","utm_name":"some campaign","utm_test":"other value"}}',
+                    JSON.stringify({
+                      global_user_id: 'newUserIdAlias',
+                      user_id: 'sampleusrRudder3',
+                      user_properties: {
+                        initial_referrer: 'https://docs.rudderstack.com',
+                        initial_referring_domain: 'docs.rudderstack.com',
+                        utm_source: 'google',
+                        utm_medium: 'medium',
+                        utm_term: 'keyword',
+                        utm_content: 'some content',
+                        utm_name: 'some campaign',
+                        utm_test: 'other value',
+                      },
+                    }),
                   ],
                 },
               },
@@ -2634,7 +2656,20 @@ export const data = [
                 FORM: {
                   api_key: secret2,
                   mapping: [
-                    '{"user_id":"sampleusrRudder3","user_properties":{"initial_referrer":"https://docs.rudderstack.com","initial_referring_domain":"docs.rudderstack.com","utm_source":"google","utm_medium":"medium","utm_term":"keyword","utm_content":"some content","utm_name":"some campaign","utm_test":"other value"},"unmap":true}',
+                    JSON.stringify({
+                      user_id: 'sampleusrRudder3',
+                      user_properties: {
+                        initial_referrer: 'https://docs.rudderstack.com',
+                        initial_referring_domain: 'docs.rudderstack.com',
+                        utm_source: 'google',
+                        utm_medium: 'medium',
+                        utm_term: 'keyword',
+                        utm_content: 'some content',
+                        utm_name: 'some campaign',
+                        utm_test: 'other value',
+                      },
+                      unmap: true,
+                    }),
                   ],
                 },
               },
@@ -8182,7 +8217,16 @@ export const data = [
                 FORM: {
                   api_key: secret2,
                   identification: [
-                    '{"group_type":"Company","group_value":"ABC","group_properties":{"KEY_3":{"CHILD_KEY_92":"value_95","CHILD_KEY_102":"value_103"},"KEY_2":{"CHILD_KEY_92":"value_95","CHILD_KEY_102":"value_103"},"name_trait":"Company","value_trait":"ABC"}}',
+                    JSON.stringify({
+                      group_type: 'Company',
+                      group_value: 'ABC',
+                      group_properties: {
+                        KEY_3: { CHILD_KEY_92: 'value_95', CHILD_KEY_102: 'value_103' },
+                        KEY_2: { CHILD_KEY_92: 'value_95', CHILD_KEY_102: 'value_103' },
+                        name_trait: 'Company',
+                        value_trait: 'ABC',
+                      },
+                    }),
                   ],
                 },
               },
@@ -8295,7 +8339,20 @@ export const data = [
                 FORM: {
                   api_key: secret2,
                   mapping: [
-                    '{"global_user_id":"newUserIdAlias","user_id":"sampleusrRudder3","user_properties":{"initial_referrer":"https://docs.rudderstack.com","initial_referring_domain":"docs.rudderstack.com","utm_source":"google","utm_medium":"medium","utm_term":"keyword","utm_content":"some content","utm_name":"some campaign","utm_test":"other value"}}',
+                    JSON.stringify({
+                      global_user_id: 'newUserIdAlias',
+                      user_id: 'sampleusrRudder3',
+                      user_properties: {
+                        initial_referrer: 'https://docs.rudderstack.com',
+                        initial_referring_domain: 'docs.rudderstack.com',
+                        utm_source: 'google',
+                        utm_medium: 'medium',
+                        utm_term: 'keyword',
+                        utm_content: 'some content',
+                        utm_name: 'some campaign',
+                        utm_test: 'other value',
+                      },
+                    }),
                   ],
                 },
               },
@@ -9287,7 +9344,16 @@ export const data = [
                 FORM: {
                   api_key: secret2,
                   identification: [
-                    '{"group_type":"Company","group_value":"ABC","group_properties":{"KEY_3":{"CHILD_KEY_92":"value_95","CHILD_KEY_102":"value_103"},"KEY_2":{"CHILD_KEY_92":"value_95","CHILD_KEY_102":"value_103"},"name_trait":"Company","value_trait":"ABC"}}',
+                    JSON.stringify({
+                      group_type: 'Company',
+                      group_value: 'ABC',
+                      group_properties: {
+                        KEY_3: { CHILD_KEY_92: 'value_95', CHILD_KEY_102: 'value_103' },
+                        KEY_2: { CHILD_KEY_92: 'value_95', CHILD_KEY_102: 'value_103' },
+                        name_trait: 'Company',
+                        value_trait: 'ABC',
+                      },
+                    }),
                   ],
                 },
               },
@@ -9650,7 +9716,21 @@ export const data = [
                 FORM: {
                   api_key: secret2,
                   mapping: [
-                    '{"global_user_id":"newUserIdAlias","user_id":"sampleusrRudder3","event_id":67,"user_properties":{"initial_referrer":"https://docs.rudderstack.com","initial_referring_domain":"docs.rudderstack.com","utm_source":"google","utm_medium":"medium","utm_term":"keyword","utm_content":"some content","utm_name":"some campaign","utm_test":"other value"}}',
+                    JSON.stringify({
+                      global_user_id: 'newUserIdAlias',
+                      user_id: 'sampleusrRudder3',
+                      event_id: 67,
+                      user_properties: {
+                        initial_referrer: 'https://docs.rudderstack.com',
+                        initial_referring_domain: 'docs.rudderstack.com',
+                        utm_source: 'google',
+                        utm_medium: 'medium',
+                        utm_term: 'keyword',
+                        utm_content: 'some content',
+                        utm_name: 'some campaign',
+                        utm_test: 'other value',
+                      },
+                    }),
                   ],
                 },
               },

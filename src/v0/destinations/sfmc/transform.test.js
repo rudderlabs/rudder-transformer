@@ -6,7 +6,7 @@ beforeAll(() => {
   const mock = new MockAxiosAdapter(axios);
   mock
     .onPost('https://yourSubDomain.auth.marketingcloudapis.com/v2/token')
-    .reply(200, '{"access_token":"yourAuthToken"}');
+    .reply(200, JSON.stringify({ access_token: 'yourAuthToken' }));
 });
 
 describe('responseBuilderSimple', () => {

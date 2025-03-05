@@ -22,9 +22,14 @@ const dataDeliveryMocksData = [
               msgemail: true,
               msgwhatsapp: false,
               custom_tags: JSON.stringify(['Test_User', 'Interested_User', 'DIY_Hobby']),
-              custom_mappings: '{"Office":"Trastkiv","Country":"Russia"}',
-              address:
-                '{"city":"kolkata","country":"India","postalCode":789223,"state":"WB","street":""}',
+              custom_mappings: JSON.stringify({ Office: 'Trastkiv', Country: 'Russia' }),
+              address: JSON.stringify({
+                city: 'kolkata',
+                country: 'India',
+                postalCode: 789223,
+                state: 'WB',
+                street: '',
+              }),
             },
             identity: 'anon_id',
           },

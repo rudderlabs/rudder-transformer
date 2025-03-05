@@ -135,8 +135,11 @@ export const oauthScenariosV1: ProxyV1TestData[] = [
           output: {
             response: [
               {
-                error:
-                  '{"type":"error.list","request_id":"request_id-1","errors":[{"code":"unauthorized","message":"Access Token Invalid"}]}',
+                error: JSON.stringify({
+                  type: 'error.list',
+                  request_id: 'request_id-1',
+                  errors: [{ code: 'unauthorized', message: 'Access Token Invalid' }],
+                }),
                 statusCode: 400,
                 metadata: {
                   ...generateMetadata(1),

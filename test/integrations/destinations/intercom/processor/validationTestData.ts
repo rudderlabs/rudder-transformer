@@ -367,8 +367,38 @@ export const validationTestData: ProcessorTestData[] = [
         status: 200,
         body: [
           {
-            error:
-              '{"message":"{\\"message\\":\\"Unable to search contact due to : [{\\\\\\"code\\\\\\":\\\\\\"unauthorized\\\\\\",\\\\\\"message\\\\\\":\\\\\\"Access Token Invalid\\\\\\"}]: Workflow: procWorkflow, Step: searchContact, ChildStep: undefined, OriginalError: Unable to search contact due to : [{\\\\\\"code\\\\\\":\\\\\\"unauthorized\\\\\\",\\\\\\"message\\\\\\":\\\\\\"Access Token Invalid\\\\\\"}]\\",\\"destinationResponse\\":{\\"response\\":{\\"type\\":\\"error.list\\",\\"request_id\\":\\"request_1\\",\\"errors\\":[{\\"code\\":\\"unauthorized\\",\\"message\\":\\"Access Token Invalid\\"}]},\\"status\\":401}}","destinationResponse":{"response":{"type":"error.list","request_id":"request_1","errors":[{"code":"unauthorized","message":"Access Token Invalid"}]},"status":401}}',
+            error: JSON.stringify({
+              message: JSON.stringify({
+                message:
+                  'Unable to search contact due to : [{"code":"unauthorized","message":"Access Token Invalid"}]: Workflow: procWorkflow, Step: searchContact, ChildStep: undefined, OriginalError: Unable to search contact due to : [{"code":"unauthorized","message":"Access Token Invalid"}]',
+                destinationResponse: {
+                  response: {
+                    type: 'error.list',
+                    request_id: 'request_1',
+                    errors: [
+                      {
+                        code: 'unauthorized',
+                        message: 'Access Token Invalid',
+                      },
+                    ],
+                  },
+                  status: 401,
+                },
+              }),
+              destinationResponse: {
+                response: {
+                  type: 'error.list',
+                  request_id: 'request_1',
+                  errors: [
+                    {
+                      code: 'unauthorized',
+                      message: 'Access Token Invalid',
+                    },
+                  ],
+                },
+                status: 401,
+              },
+            }),
             statTags: { ...expectedStatTags, errorCategory: 'network', errorType: 'aborted' },
             statusCode: 401,
             metadata: generateMetadata(1),

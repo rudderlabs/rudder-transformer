@@ -333,8 +333,34 @@ export const v1oauthScenarios: ProxyV1TestData[] = [
           output: {
             response: [
               {
-                error:
-                  '{"error":{"code":401,"message":"Request is missing required authentication credential. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.","errors":[{"message":"Login Required.","domain":"global","reason":"required","location":"Authorization","locationType":"header"}],"status":"UNAUTHENTICATED","details":[{"@type":"type.googleapis.com/google.rpc.ErrorInfo","reason":"CREDENTIALS_MISSING","domain":"googleapis.com","metadata":{"method":"google.ads.xfa.op.v4.DfareportingConversions.Batchinsert","service":"googleapis.com"}}]}}',
+                error: JSON.stringify({
+                  error: {
+                    code: 401,
+                    message:
+                      'Request is missing required authentication credential. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.',
+                    errors: [
+                      {
+                        message: 'Login Required.',
+                        domain: 'global',
+                        reason: 'required',
+                        location: 'Authorization',
+                        locationType: 'header',
+                      },
+                    ],
+                    status: 'UNAUTHENTICATED',
+                    details: [
+                      {
+                        '@type': 'type.googleapis.com/google.rpc.ErrorInfo',
+                        reason: 'CREDENTIALS_MISSING',
+                        domain: 'googleapis.com',
+                        metadata: {
+                          method: 'google.ads.xfa.op.v4.DfareportingConversions.Batchinsert',
+                          service: 'googleapis.com',
+                        },
+                      },
+                    ],
+                  },
+                }),
                 statusCode: 401,
                 metadata: {
                   jobId: 1,
@@ -396,8 +422,31 @@ export const v1oauthScenarios: ProxyV1TestData[] = [
           output: {
             response: [
               {
-                error:
-                  '{"error":{"code":403,"message":"Request had insufficient authentication scopes.","errors":[{"message":"Insufficient Permission","domain":"global","reason":"insufficientPermissions"}],"status":"PERMISSION_DENIED","details":[{"@type":"type.googleapis.com/google.rpc.ErrorInfo","reason":"ACCESS_TOKEN_SCOPE_INSUFFICIENT","domain":"googleapis.com","metadata":{"service":"gmail.googleapis.com","method":"caribou.api.proto.MailboxService.GetProfile"}}]}}',
+                error: JSON.stringify({
+                  error: {
+                    code: 403,
+                    message: 'Request had insufficient authentication scopes.',
+                    errors: [
+                      {
+                        message: 'Insufficient Permission',
+                        domain: 'global',
+                        reason: 'insufficientPermissions',
+                      },
+                    ],
+                    status: 'PERMISSION_DENIED',
+                    details: [
+                      {
+                        '@type': 'type.googleapis.com/google.rpc.ErrorInfo',
+                        reason: 'ACCESS_TOKEN_SCOPE_INSUFFICIENT',
+                        domain: 'googleapis.com',
+                        metadata: {
+                          service: 'gmail.googleapis.com',
+                          method: 'caribou.api.proto.MailboxService.GetProfile',
+                        },
+                      },
+                    ],
+                  },
+                }),
                 statusCode: 403,
                 metadata: {
                   jobId: 1,
@@ -459,8 +508,9 @@ export const v1oauthScenarios: ProxyV1TestData[] = [
           output: {
             response: [
               {
-                error:
-                  '{"error":{"code":403,"message":"invalid_grant","error_description":"Bad accesss"}}',
+                error: JSON.stringify({
+                  error: { code: 403, message: 'invalid_grant', error_description: 'Bad accesss' },
+                }),
                 statusCode: 403,
                 metadata: {
                   jobId: 1,
@@ -521,8 +571,10 @@ export const v1oauthScenarios: ProxyV1TestData[] = [
           output: {
             response: [
               {
-                error:
-                  '{"error":"unauthorized","error_description":"Access token expired: 2020-10-20T12:00:00.000Z"}',
+                error: JSON.stringify({
+                  error: 'unauthorized',
+                  error_description: 'Access token expired: 2020-10-20T12:00:00.000Z',
+                }),
                 statusCode: 401,
                 metadata: {
                   jobId: 1,

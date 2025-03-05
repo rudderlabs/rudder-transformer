@@ -47,8 +47,11 @@ export const data = [
         status: 200,
         body: [
           {
-            error:
-              '{"message":"Access token could not be generated due to {\\"error\\":\\"Not found\\",\\"status\\":404}","destinationResponse":{"response":{"error":"Not found","status":404},"status":500}}',
+            error: JSON.stringify({
+              message:
+                'Access token could not be generated due to {"error":"Not found","status":404}',
+              destinationResponse: { response: { error: 'Not found', status: 404 }, status: 500 },
+            }),
             statTags: {
               destType: 'WOOTRIC',
               errorCategory: 'network',

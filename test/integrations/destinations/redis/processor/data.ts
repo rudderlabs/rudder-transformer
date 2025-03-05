@@ -848,8 +848,13 @@ export const data = [
               message: {
                 hash: 'some-workspace-id:1WhcOCGgj9asZu850HvugU2C3Aq:some-entity:some-id-type:some-user-id',
                 key: 'some-model',
-                value:
-                  '{"MODEL_ID":"1691755780","VALID_AT":"2023-08-11T11:32:44.963062Z","USER_MAIN_ID":"rid5530313526204a95efe71d98cd17d5a1","CHURN_SCORE_7_DAYS":0.027986,"PERCENTILE_CHURN_SCORE_7_DAYS":0}',
+                value: JSON.stringify({
+                  MODEL_ID: '1691755780',
+                  VALID_AT: '2023-08-11T11:32:44.963062Z',
+                  USER_MAIN_ID: 'rid5530313526204a95efe71d98cd17d5a1',
+                  CHURN_SCORE_7_DAYS: 0.027986,
+                  PERCENTILE_CHURN_SCORE_7_DAYS: 0,
+                }),
               },
               userId: 'some-user-id',
             },

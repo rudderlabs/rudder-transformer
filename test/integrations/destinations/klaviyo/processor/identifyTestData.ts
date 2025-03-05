@@ -306,8 +306,10 @@ export const identifyData: ProcessorTestData[] = [
         status: 200,
         body: [
           {
-            error:
-              '{"message":"Failed to create user due to \\"\\"","destinationResponse":"\\"\\""}',
+            error: JSON.stringify({
+              message: 'Failed to create user due to ""',
+              destinationResponse: '""',
+            }),
             statTags: {
               destType: 'KLAVIYO',
               errorCategory: 'network',

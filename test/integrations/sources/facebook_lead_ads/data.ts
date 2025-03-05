@@ -1,3 +1,9 @@
+import utils from '../../../../src/v0/util';
+
+const defaultMockFns = () => {
+  jest.spyOn(utils, 'generateUUID').mockReturnValue('dummy-anonymous-id-0-0');
+};
+
 export const data = [
   {
     name: 'facebook_lead_ads',
@@ -23,7 +29,7 @@ export const data = [
                 last_name: ['Name'],
                 military_status: ['na'],
                 phone_number: ['+910123456789'],
-                post_code: ['200000'],
+                post_code: [200000],
                 relationship_status: ['na'],
                 'short_answer_ques_1?': ['dummy short answer'],
                 state: ['Dummy State'],
@@ -59,7 +65,7 @@ export const data = [
                       address: {
                         city: 'Bengaluru',
                         country: 'IN',
-                        postalCode: '200000',
+                        postalCode: 200000,
                         state: 'Dummy State',
                         street: 'Dummy Street',
                       },
@@ -80,7 +86,7 @@ export const data = [
                       military_status: 'na',
                       phone: '+910123456789',
                       phone_number: '+910123456789',
-                      post_code: '200000',
+                      post_code: 200000,
                       relationship_status: 'na',
                       'short_answer_ques_1?': 'dummy short answer',
                       state: 'Dummy State',
@@ -92,6 +98,7 @@ export const data = [
                     FacebookLeadAds: false,
                   },
                   originalTimestamp: '2025-02-01T10:20:00.000Z',
+                  anonymousId: 'dummy-anonymous-id-0-0',
                   type: 'identify',
                   userId: '3960271960958574',
                 },
@@ -197,6 +204,7 @@ export const data = [
                     FacebookLeadAds: false,
                   },
                   originalTimestamp: '2025-02-01T10:20:00.000Z',
+                  anonymousId: 'dummy-anonymous-id-0-0',
                   type: 'identify',
                   userId: '3960271960958574',
                 },
@@ -302,6 +310,7 @@ export const data = [
                     FacebookLeadAds: false,
                   },
                   type: 'identify',
+                  anonymousId: 'dummy-anonymous-id-0-0',
                   userId: '3960271960958574',
                 },
               ],
@@ -391,4 +400,9 @@ export const data = [
       },
     },
   },
-];
+].map((tc) => ({
+  ...tc,
+  mockFns: () => {
+    defaultMockFns();
+  },
+}));

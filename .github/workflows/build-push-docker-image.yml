@@ -38,7 +38,7 @@ on:
 
 permissions:
   id-token: write # allows the JWT to be requested from GitHub's OIDC provider
-  contents: read  # This is required for actions/checkout
+  contents: read # This is required for actions/checkout
 
 env:
   DOCKERHUB_USERNAME: rudderlabs
@@ -111,7 +111,7 @@ jobs:
         uses: docker/setup-buildx-action@v3.7.1
 
       - name: Build Docker Image
-        uses: rudderlabs/build-scan-push-action@v1.3.1
+        uses: rudderlabs/build-scan-push-action@v1.5.2
         with:
           context: .
           file: ${{ inputs.dockerfile }}
@@ -128,7 +128,7 @@ jobs:
           docker run ${{ inputs.build_tag }} npm run test:ts:ci
 
       - name: Build and Push Multi-platform Images
-        uses: rudderlabs/build-scan-push-action@v1.3.1
+        uses: rudderlabs/build-scan-push-action@v1.5.2
         with:
           context: .
           file: ${{ inputs.dockerfile }}
@@ -164,7 +164,7 @@ jobs:
         uses: docker/setup-buildx-action@v3.7.1
 
       - name: Build Docker Image
-        uses: rudderlabs/build-scan-push-action@v1.3.1
+        uses: rudderlabs/build-scan-push-action@v1.5.2
         with:
           context: .
           file: ${{ inputs.dockerfile }}
@@ -181,7 +181,7 @@ jobs:
           docker run ${{ inputs.build_tag }} npm run test:ts:ci
 
       - name: Build and Push Multi-platform Images
-        uses: rudderlabs/build-scan-push-action@v1.3.1
+        uses: rudderlabs/build-scan-push-action@v1.5.2
         with:
           context: .
           file: ${{ inputs.dockerfile }}

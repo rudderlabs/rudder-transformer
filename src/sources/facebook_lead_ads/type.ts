@@ -1,16 +1,18 @@
-export type InputEventType = {
-  [key: string]: string[];
-};
+export type InputEventType = Record<string, string[]>;
 
 export type OutputEventType = {
   userId?: string;
-  anonymousId: string;
+  anonymousId?: string;
   type: 'identify';
   context: {
-    traits: {
-      [key: string]: string;
+    traits: Record<string, string>;
+    library: {
+      name: string;
+      version: string;
+    };
+    integration: {
+      name: string;
     };
   };
   originalTimestamp?: Date;
-  [key: string]: any;
 };

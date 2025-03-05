@@ -14,7 +14,7 @@ const destination: Destination = {
     Config: {},
   },
   Config: {
-    privateApiKey: 'dummyPrivateApiKey',
+    privateApiKey: secret1,
   },
   Enabled: true,
   WorkspaceID: '123',
@@ -50,7 +50,7 @@ export const data: RouterTestData[] = [
                   method: 'POST',
                   endpoint: 'https://a.klaviyo.com/api/profile-subscription-bulk-create-jobs',
                   headers: {
-                    Authorization: 'Klaviyo-API-Key dummyPrivateApiKey',
+                    Authorization: authHeader1,
                     'Content-Type': 'application/json',
                     Accept: 'application/json',
                     revision: '2023-02-22',
@@ -88,7 +88,7 @@ export const data: RouterTestData[] = [
                   method: 'POST',
                   endpoint: 'https://a.klaviyo.com/api/profile-subscription-bulk-create-jobs',
                   headers: {
-                    Authorization: 'Klaviyo-API-Key dummyPrivateApiKey',
+                    Authorization: authHeader1,
                     'Content-Type': 'application/json',
                     Accept: 'application/json',
                     revision: '2023-02-22',
@@ -122,7 +122,7 @@ export const data: RouterTestData[] = [
                   method: 'PATCH',
                   endpoint: 'https://a.klaviyo.com/api/profiles/01GW3PHVY0MTCDGS0A1612HARX',
                   headers: {
-                    Authorization: 'Klaviyo-API-Key dummyPrivateApiKey',
+                    Authorization: authHeader1,
                     'Content-Type': 'application/json',
                     Accept: 'application/json',
                     revision: '2023-02-22',
@@ -170,7 +170,7 @@ export const data: RouterTestData[] = [
                 method: 'PATCH',
                 endpoint: 'https://a.klaviyo.com/api/profiles/01GW3PHVY0MTCDGS0A1612HARX',
                 headers: {
-                  Authorization: 'Klaviyo-API-Key dummyPrivateApiKey',
+                  Authorization: authHeader1,
                   'Content-Type': 'application/json',
                   Accept: 'application/json',
                   revision: '2023-02-22',

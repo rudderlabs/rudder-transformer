@@ -1,4 +1,5 @@
-import { secretFailedApiToken } from './maskedSecrets';
+import { secretFailedApiToken, secretApiToken } from './maskedSecrets';
+
 export const networkCallsData = [
   {
     httpReq: {
@@ -327,8 +328,7 @@ export const networkCallsData = [
       url: 'https://api.monday.com/v2',
       method: 'POST',
       headers: {
-        Authorization:
-          'eywwakzdjiksjhriherniSFsjhnskdojsSDFhsdns.sSRSSREWdnfnsjshfjsjskshfiskskdS__Fskilhih',
+        Authorization: secretApiToken,
       },
     },
     httpRes: {

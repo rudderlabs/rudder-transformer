@@ -1,9 +1,6 @@
-const statsd = require('./statsd');
 const prometheus = require('./prometheus');
-const logger = require('../logger');
 
 const enableStats = process.env.ENABLE_STATS !== 'false';
-const statsClientType = process.env.STATS_CLIENT || 'statsd';
 // summary metrics are enabled by default. To disable set ENABLE_SUMMARY_METRICS='false'.
 const enableSummaryMetrics = process.env.ENABLE_SUMMARY_METRICS !== 'false';
 
@@ -13,22 +10,7 @@ function init() {
     return;
   }
 
-  switch (statsClientType) {
-    case 'statsd':
-      logger.info('setting up statsd client');
-      statsClient = new statsd.Statsd();
-      break;
-
-    case 'prometheus':
-      logger.info('setting up prometheus client');
-      statsClient = new prometheus.Prometheus(enableSummaryMetrics);
-      break;
-
-    default:
-      logger.error(
-        `invalid stats client type: ${statsClientType}, supported values are 'statsd' and 'prometheues'`,
-      );
-  }
+  statsClient = new prometheus.Prometheus(enableSummaryMetrics);
 }
 
 // Sends the diff between current time and start as the stat
@@ -96,13 +78,7 @@ async function metricsController(ctx) {
     return;
   }
 
-  if (statsClientType === 'prometheus') {
-    await statsClient.metricsController(ctx);
-    return;
-  }
-
-  ctx.status = 404;
-  ctx.body = `Not supported`;
+  await statsClient.metricsController(ctx);
 }
 
 async function resetMetricsController(ctx) {
@@ -112,13 +88,7 @@ async function resetMetricsController(ctx) {
     return;
   }
 
-  if (statsClientType === 'prometheus') {
-    await statsClient.resetMetricsController(ctx);
-    return;
-  }
-
-  ctx.status = 501;
-  ctx.body = `Not supported`;
+  await statsClient.resetMetricsController(ctx);
 }
 
 async function shutdownMetricsClient() {
@@ -126,9 +96,7 @@ async function shutdownMetricsClient() {
     return;
   }
 
-  if (statsClientType === 'prometheus') {
-    await statsClient.shutdown();
-  }
+  await statsClient.shutdown();
 }
 
 init();

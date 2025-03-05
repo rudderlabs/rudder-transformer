@@ -2455,4 +2455,336 @@ export const data = [
       },
     },
   },
+  {
+    name: 'zendesk',
+    description:
+      'scenario when searchByExternalId (Update user’s primary email) is true and there are different primary key i.e. phone, email',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: {
+              Config: {
+                apiToken: 'myDummyApiToken4',
+                createUsersAsVerified: true,
+                domain: 'rudderlabshelp',
+                email: 'myDummyUserName1',
+                password: 'myDummyPwd1',
+                removeUsersFromOrganization: true,
+                sendGroupCallsWithoutUserId: true,
+                searchByExternalId: true,
+              },
+              DestinationDefinition: {
+                DisplayName: 'Zendesk',
+                ID: '1YknZ1ENqB8UurJQJE2VrEA61tr',
+                Name: 'ZENDESK',
+              },
+              Enabled: true,
+              ID: 'xxxxxxxxxxxxxxxxxxxxxxxO51P',
+              Name: 'zendesk',
+              Transformations: [],
+            },
+            message: {
+              channel: 'web',
+              context: {
+                app: {
+                  build: '1.0.0',
+                  name: 'RudderLabs JavaScript SDK',
+                  namespace: 'com.rudderlabs.javascript',
+                  version: '1.1.0-beta.2',
+                },
+                ip: '0.0.0.0',
+                library: { name: 'RudderLabs JavaScript SDK', version: '1.1.0-beta.2' },
+                locale: 'en-GB',
+                os: { name: '', version: '' },
+                screen: { density: 2 },
+                userAgent:
+                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36',
+              },
+              integrations: { All: true },
+              messageId: '0bab70e8-bf2f-449a-a19b-ca6e3bfed9b7',
+              request_ip: '[::1]:51573',
+              type: 'identify',
+              userId: 'test-user-id',
+              traits: { email: 'example@email.com', name: 'test-user-name' },
+            },
+          },
+        ],
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              body: {
+                XML: {},
+                FORM: {},
+                JSON: { identity: { type: 'email', value: 'example@email.com' } },
+                JSON_ARRAY: {},
+              },
+              type: 'REST',
+              files: {},
+              method: 'PUT',
+              params: {},
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: 'Basic bXlEdW1teVVzZXJOYW1lMS90b2tlbjpteUR1bW15QXBpVG9rZW40',
+                'X-Zendesk-Marketplace-Name': 'RudderStack',
+                'X-Zendesk-Marketplace-App-Id': '263241',
+                'X-Zendesk-Marketplace-Organization-Id': '3339',
+              },
+              version: '1',
+              endpoint:
+                'https://rudderlabshelp.zendesk.com/api/v2/users/911113780483/identities/7534173321117',
+              userId: '',
+            },
+            statusCode: 200,
+          },
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://rudderlabshelp.zendesk.com/api/v2/users/create_or_update.json',
+              headers: {
+                Authorization: 'Basic bXlEdW1teVVzZXJOYW1lMS90b2tlbjpteUR1bW15QXBpVG9rZW40',
+                'Content-Type': 'application/json',
+                'X-Zendesk-Marketplace-Name': 'RudderStack',
+                'X-Zendesk-Marketplace-Organization-Id': '3339',
+                'X-Zendesk-Marketplace-App-Id': '263241',
+              },
+              params: {},
+              body: {
+                JSON: {
+                  user: {
+                    email: 'example@email.com',
+                    name: 'test-user-name',
+                    external_id: 'test-user-id',
+                    user_fields: { id: 'test-user-id' },
+                    verified: true,
+                  },
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: '',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'zendesk',
+    description:
+      'scenario when searchByExternalId (Update user’s primary email) is true and there are no primary email',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: {
+              Config: {
+                apiToken: 'myDummyApiToken4',
+                createUsersAsVerified: true,
+                domain: 'rudderlabshelp',
+                email: 'myDummyUserName1',
+                password: 'myDummyPwd1',
+                removeUsersFromOrganization: true,
+                sendGroupCallsWithoutUserId: true,
+                searchByExternalId: true,
+              },
+              DestinationDefinition: {
+                DisplayName: 'Zendesk',
+                ID: '1YknZ1ENqB8UurJQJE2VrEA61tr',
+                Name: 'ZENDESK',
+              },
+              Enabled: true,
+              ID: 'xxxxxxxxxxxxxxxxxxxxxxxO51P',
+              Name: 'zendesk',
+              Transformations: [],
+            },
+            message: {
+              channel: 'web',
+              context: {
+                app: {
+                  build: '1.0.0',
+                  name: 'RudderLabs JavaScript SDK',
+                  namespace: 'com.rudderlabs.javascript',
+                  version: '1.1.0-beta.2',
+                },
+                ip: '0.0.0.0',
+                library: { name: 'RudderLabs JavaScript SDK', version: '1.1.0-beta.2' },
+                locale: 'en-GB',
+                os: { name: '', version: '' },
+                screen: { density: 2 },
+                userAgent:
+                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36',
+              },
+              integrations: { All: true },
+              messageId: '0bab70e8-bf2f-449a-a19b-ca6e3bfed9b7',
+              request_ip: '[::1]:51573',
+              type: 'identify',
+              userId: 'test-user-id-no-primary-email',
+              traits: { email: 'example@email.com', name: 'test-user-name' },
+            },
+          },
+        ],
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://rudderlabshelp.zendesk.com/api/v2/users/create_or_update.json',
+              headers: {
+                Authorization: 'Basic bXlEdW1teVVzZXJOYW1lMS90b2tlbjpteUR1bW15QXBpVG9rZW40',
+                'Content-Type': 'application/json',
+                'X-Zendesk-Marketplace-Name': 'RudderStack',
+                'X-Zendesk-Marketplace-Organization-Id': '3339',
+                'X-Zendesk-Marketplace-App-Id': '263241',
+              },
+              params: {},
+              body: {
+                JSON: {
+                  user: {
+                    email: 'example@email.com',
+                    name: 'test-user-name',
+                    external_id: 'test-user-id-no-primary-email',
+                    user_fields: { id: 'test-user-id-no-primary-email' },
+                    verified: true,
+                  },
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: '',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'zendesk',
+    description:
+      'scenario when searchByExternalId (Update user’s primary email) is true and primary email is same',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: {
+              Config: {
+                apiToken: 'myDummyApiToken4',
+                createUsersAsVerified: true,
+                domain: 'rudderlabshelp',
+                email: 'myDummyUserName1',
+                password: 'myDummyPwd1',
+                removeUsersFromOrganization: true,
+                sendGroupCallsWithoutUserId: true,
+                searchByExternalId: true,
+              },
+              DestinationDefinition: {
+                DisplayName: 'Zendesk',
+                ID: '1YknZ1ENqB8UurJQJE2VrEA61tr',
+                Name: 'ZENDESK',
+              },
+              Enabled: true,
+              ID: 'xxxxxxxxxxxxxxxxxxxxxxxO51P',
+              Name: 'zendesk',
+              Transformations: [],
+            },
+            message: {
+              channel: 'web',
+              context: {
+                app: {
+                  build: '1.0.0',
+                  name: 'RudderLabs JavaScript SDK',
+                  namespace: 'com.rudderlabs.javascript',
+                  version: '1.1.0-beta.2',
+                },
+                ip: '0.0.0.0',
+                library: { name: 'RudderLabs JavaScript SDK', version: '1.1.0-beta.2' },
+                locale: 'en-GB',
+                os: { name: '', version: '' },
+                screen: { density: 2 },
+                userAgent:
+                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36',
+              },
+              integrations: { All: true },
+              messageId: '0bab70e8-bf2f-449a-a19b-ca6e3bfed9b7',
+              request_ip: '[::1]:51573',
+              type: 'identify',
+              userId: 'test-user-id-with-same-primary-email',
+              traits: { email: 'example@email.com', name: 'test-user-name' },
+            },
+          },
+        ],
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://rudderlabshelp.zendesk.com/api/v2/users/create_or_update.json',
+              headers: {
+                Authorization: 'Basic bXlEdW1teVVzZXJOYW1lMS90b2tlbjpteUR1bW15QXBpVG9rZW40',
+                'Content-Type': 'application/json',
+                'X-Zendesk-Marketplace-Name': 'RudderStack',
+                'X-Zendesk-Marketplace-Organization-Id': '3339',
+                'X-Zendesk-Marketplace-App-Id': '263241',
+              },
+              params: {},
+              body: {
+                JSON: {
+                  user: {
+                    email: 'example@email.com',
+                    name: 'test-user-name',
+                    external_id: 'test-user-id-with-same-primary-email',
+                    user_fields: { id: 'test-user-id-with-same-primary-email' },
+                    verified: true,
+                  },
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: '',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
 ];

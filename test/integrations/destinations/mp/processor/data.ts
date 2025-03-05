@@ -2252,7 +2252,7 @@ export const data = [
                 JSON: {},
                 JSON_ARRAY: {
                   batch:
-                    '[{"$set":{"$carrier":"Android","$manufacturer":"Google","$model":"Android SDK built for x86","$screen_height":1794,"$screen_width":1080,"$wifi":true,"anonymousId":"5094f5704b9cf2b3","userId":"test_user_id","$ios_devices":["test_device_token"],"$os":"iOS","$ios_device_model":"Android SDK built for x86","$ios_version":"8.1.0","$ios_app_release":"1","$ios_app_version":"1.0"},"$token":"test_api_token","$distinct_id":"test_user_id","$time":1584003903421}]',
+                    '[{"$set":{"$carrier":"Android","$manufacturer":"Google","$model":"Android SDK built for x86","$screen_height":1794,"$screen_width":1080,"$wifi":true,"anonymousId":"5094f5704b9cf2b3","userId":"test_user_id","$ios_devices":["test_device_token"],"$os":"iOS","$ios_device_model":"Android SDK built for x86","$ios_version":"8.1.0","$ios_app_release":"1.0","$ios_app_version":"1"},"$token":"test_api_token","$distinct_id":"test_user_id","$time":1584003903421}]',
                 },
                 XML: {},
                 FORM: {},
@@ -2565,7 +2565,7 @@ export const data = [
                 JSON: {},
                 JSON_ARRAY: {
                   batch:
-                    '[{"$set":{"$carrier":"Android","$manufacturer":"Google","$model":"Android SDK built for x86","$screen_height":1794,"$screen_width":1080,"$wifi":true,"anonymousId":"5094f5704b9cf2b3","userId":"test_user_id","createdat":"2020-01-23T08:54:02.362Z","$ios_devices":["test_device_token"],"$ios_device_model":"Android SDK built for x86","$ios_app_release":"1","$ios_app_version":"1.0"},"$token":"test_api_token","$distinct_id":"test_user_id","$time":1584003903421}]',
+                    '[{"$set":{"$carrier":"Android","$manufacturer":"Google","$model":"Android SDK built for x86","$screen_height":1794,"$screen_width":1080,"$wifi":true,"anonymousId":"5094f5704b9cf2b3","userId":"test_user_id","createdat":"2020-01-23T08:54:02.362Z","$ios_devices":["test_device_token"],"$ios_device_model":"Android SDK built for x86","$ios_app_release":"1.0","$ios_app_version":"1"},"$token":"test_api_token","$distinct_id":"test_user_id","$time":1584003903421}]',
                 },
                 XML: {},
                 FORM: {},
@@ -5798,7 +5798,7 @@ export const data = [
                 JSON: {},
                 JSON_ARRAY: {
                   batch:
-                    '[{"$set":{"$carrier":"Android","$manufacturer":"Google","$model":"Android SDK built for x86","$screen_height":1794,"$screen_width":1080,"$wifi":true,"anonymousId":"5094f5704b9cf2b3","userId":"test_user_id","$ios_devices":["test_device_token"],"$os":"iOS","$ios_device_model":"Android SDK built for x86","$ios_version":"8.1.0","$ios_app_release":"1","$ios_app_version":"1.0"},"$token":"test_api_token","$distinct_id":"test_user_id","$time":1584003903421}]',
+                    '[{"$set":{"$carrier":"Android","$manufacturer":"Google","$model":"Android SDK built for x86","$screen_height":1794,"$screen_width":1080,"$wifi":true,"anonymousId":"5094f5704b9cf2b3","userId":"test_user_id","$ios_devices":["test_device_token"],"$os":"iOS","$ios_device_model":"Android SDK built for x86","$ios_version":"8.1.0","$ios_app_release":"1.0","$ios_app_version":"1"},"$token":"test_api_token","$distinct_id":"test_user_id","$time":1584003903421}]',
                 },
                 XML: {},
                 FORM: {},
@@ -6183,6 +6183,181 @@ export const data = [
               },
               files: {},
               userId: 'dummyAnnonymousId',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'mp',
+    description: 'Track event test when dropTraitsInTrackEvent is true',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: overrideDestination(sampleDestination, {
+              dropTraitsInTrackEvent: true,
+            }),
+            message: {
+              type: 'track',
+              event: 'FirstTrackCall12',
+              sentAt: '2021-09-30T07:15:23.523Z',
+              channel: 'web',
+              context: {
+                os: { name: '', version: '' },
+                app: {
+                  name: 'RudderLabs JavaScript SDK',
+                  build: '1.0.0',
+                  version: '1.1.18',
+                  namespace: 'com.rudderlabs.javascript',
+                },
+                page: {
+                  url: 'http://127.0.0.1:7307/Testing/App_for_testingTool/',
+                  path: '/Testing/App_for_testingTool/',
+                  title: 'Document',
+                  search: '',
+                  tab_url: 'http://127.0.0.1:7307/Testing/App_for_testingTool/',
+                  referrer: 'http://127.0.0.1:7307/Testing/',
+                  initial_referrer: 'http://127.0.0.1:7307/Testing/',
+                  referring_domain: '127.0.0.1:7307',
+                  initial_referring_domain: '127.0.0.1:7307',
+                },
+                locale: 'en-US',
+                screen: { width: 1440, height: 900, density: 2, innerWidth: 590, innerHeight: 665 },
+                traits: {
+                  anonymousId: 'ea776ad0-3136-44fb-9216-5b1578609a2b',
+                  userId: 'as09sufa09usaf09as0f9uasf',
+                  id: 'as09sufa09usaf09as0f9uasf',
+                  firstName: 'Bob',
+                  lastName: 'Marley',
+                  name: 'Bob Marley',
+                  age: 43,
+                  email: 'bob@marleymail.com',
+                  phone: '+447748544123',
+                  birthday: '1987-01-01T20:08:59+0000',
+                  createdAt: '2022-01-21T14:10:12+0000',
+                  address: '51,B.L.T road, Kolkata-700060',
+                  description: 'I am great',
+                  gender: 'male',
+                  title: 'Founder',
+                  username: 'bobm',
+                  website: 'https://bobm.com',
+                  randomProperty: 'randomValue',
+                },
+                library: { name: 'RudderLabs JavaScript SDK', version: '1.1.18' },
+                campaign: {},
+                userAgent:
+                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36',
+              },
+              rudderId: '294702c7-8732-4fb3-b39f-f3bdffe1aa88',
+              messageId: '0d5c1a4a-27e4-41da-a246-4d01f44e74bd',
+              userId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
+              properties: { foo: 'bar', $deviceId: 'nkasdnkasd' },
+              anonymousId: '1dbb5784-b8e2-4074-8644-9920145b7ae5',
+              integrations: { All: true },
+              originalTimestamp: '2021-09-30T07:15:23.523Z',
+            },
+          },
+        ],
+        method: 'POST',
+      },
+      pathSuffix: '',
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://api.mixpanel.com/import/',
+              headers: {
+                Authorization: 'Basic dGVzdF9hcGlfdG9rZW46',
+                'Content-Type': 'application/json',
+              },
+              params: { strict: 0 },
+              body: {
+                JSON: {},
+                JSON_ARRAY: {
+                  batch:
+                    '[{"event":"FirstTrackCall12","properties":{"foo":"bar","$deviceId":"nkasdnkasd","$user_id":"e6ab2c5e-2cda-44a9-a962-e2f67df78bca","$current_url":"http://127.0.0.1:7307/Testing/App_for_testingTool/","$referrer":"http://127.0.0.1:7307/Testing/","$screen_height":900,"$screen_width":1440,"$screen_dpi":2,"mp_lib":"RudderLabs JavaScript SDK","$initial_referrer":"http://127.0.0.1:7307/Testing/","$initial_referring_domain":"127.0.0.1:7307","$app_build_number":"1.0.0","$app_version_string":"1.1.18","$insert_id":"0d5c1a4a-27e4-41da-a246-4d01f44e74bd","token":"test_api_token","distinct_id":"e6ab2c5e-2cda-44a9-a962-e2f67df78bca","time":1632986123523,"$browser":"Chrome","$browser_version":"93.0.4577.82"}}]',
+                },
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'mp',
+    description:
+      'Track event test when dropTraitsInTrackEvent is false/undefined and context.traits is undefined',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: overrideDestination(sampleDestination, {}),
+            message: {
+              type: 'track',
+              event: 'FirstTrackCall12',
+              sentAt: '2021-09-30T07:15:23.523Z',
+              channel: 'web',
+              rudderId: '294702c7-8732-4fb3-b39f-f3bdffe1aa88',
+              messageId: '0d5c1a4a-27e4-41da-a246-4d01f44e74bd',
+              userId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
+              properties: { foo: 'bar', $deviceId: 'nkasdnkasd' },
+              anonymousId: '1dbb5784-b8e2-4074-8644-9920145b7ae5',
+              integrations: { All: true },
+              originalTimestamp: '2021-09-30T07:15:23.523Z',
+            },
+          },
+        ],
+        method: 'POST',
+      },
+      pathSuffix: '',
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://api.mixpanel.com/import/',
+              headers: {
+                Authorization: 'Basic dGVzdF9hcGlfdG9rZW46',
+                'Content-Type': 'application/json',
+              },
+              params: { strict: 0 },
+              body: {
+                JSON: {},
+                JSON_ARRAY: {
+                  batch:
+                    '[{"event":"FirstTrackCall12","properties":{"foo":"bar","$deviceId":"nkasdnkasd","$user_id":"e6ab2c5e-2cda-44a9-a962-e2f67df78bca","$insert_id":"0d5c1a4a-27e4-41da-a246-4d01f44e74bd","token":"test_api_token","distinct_id":"e6ab2c5e-2cda-44a9-a962-e2f67df78bca","time":1632986123523}}]',
+                },
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
             },
             statusCode: 200,
           },

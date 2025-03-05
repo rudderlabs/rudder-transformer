@@ -227,14 +227,10 @@ function getExisitingUserIdentifier(userIdentifierInfo, defaultUserIdentifier) {
   return result;
 }
 
-const getCallConversionPayload = (message, Config, eventLevelConsentsData) => {
+const getCallConversionPayload = (message, eventLevelConsentsData) => {
   const payload = constructPayload(message, trackCallConversionsMapping);
   // here conversions[0] should be present because there are some mandatory properties mapped in the mapping json.
-  payload.conversions[0].consent = finaliseConsent(
-    consentConfigMap,
-    eventLevelConsentsData,
-    Config,
-  );
+  payload.conversions[0].consent = finaliseConsent(consentConfigMap, eventLevelConsentsData);
   return payload;
 };
 
@@ -242,7 +238,7 @@ const getCallConversionPayload = (message, Config, eventLevelConsentsData) => {
  * This Function create the add conversion payload
  * and returns the payload
  */
-const getAddConversionPayload = (message, Config) => {
+const getAddConversionPayload = (message, Config, eventLevelConsentsData) => {
   const { properties } = message;
   const { validateOnly, hashUserIdentifier, defaultUserIdentifier } = Config;
   const payload = constructPayload(message, trackAddStoreConversionsMapping);
@@ -299,19 +295,19 @@ const getAddConversionPayload = (message, Config) => {
     }
   }
   // add consent support for store conversions. Note: No event level consent supported.
-  const consentObject = finaliseConsent(consentConfigMap, {}, Config);
+  const consentObject = finaliseConsent(consentConfigMap, eventLevelConsentsData);
   // create property should be present because there are some mandatory properties mapped in the mapping json.
   set(payload, 'operations.create.consent', consentObject);
   return payload;
 };
 
-const getStoreConversionPayload = (message, Config, event) => {
+const getStoreConversionPayload = (message, Config, event, eventLevelConsentsData) => {
   const { validateOnly } = Config;
   const payload = {
     event,
     isStoreConversion: true,
     createJobPayload: getCreateJobPayload(message),
-    addConversionPayload: getAddConversionPayload(message, Config),
+    addConversionPayload: getAddConversionPayload(message, Config, eventLevelConsentsData),
     executeJobPayload: { validate_only: validateOnly },
   };
   return payload;
@@ -438,7 +434,7 @@ const getClickConversionPayloadAndEndpoint = (
   }
 
   // add consent support for click conversions
-  const consentObject = finaliseConsent(consentConfigMap, eventLevelConsent, Config);
+  const consentObject = finaliseConsent(consentConfigMap, eventLevelConsent);
   // here conversions[0] is expected to be present there are some mandatory properties mapped in the mapping json.
   set(payload, 'conversions[0].consent', consentObject);
   payload.conversions[0] = updateConversion(payload.conversions[0]);

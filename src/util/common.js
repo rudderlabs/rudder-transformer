@@ -24,6 +24,10 @@ const CommonUtils = {
   setDiff(mainSet, comparisionSet) {
     return [...mainSet].filter((item) => !comparisionSet.has(item));
   },
+
+  isNonEmptyArray(array) {
+    return Array.isArray(array) && array.length > 0;
+  },
 };
 
 module.exports = {

@@ -225,35 +225,26 @@ describe.each(allTestDataFilePaths)('%s Tests', (testDataPath) => {
     testData = [testData[parseInt(opts.index)]];
   }
   if (opts.id) {
-    testData = testData.filter((data) => {
-      if (data['id'] === opts.id) {
-        return true;
-      }
-      return false;
-    });
+    testData = testData.filter((data) => data.id === opts.id);
   }
 
-  const extendedTestData: ExtendedTestCaseData[] = testData.flatMap((tcData) =>
-    tcData.module === tags.MODULES.SOURCE
-      ? [
-          {
-            tcData,
-            sourceTransformV2Flag: false,
-            descriptionSuffix: ' (sourceTransformV2Flag: false)',
-          },
-          {
-            tcData,
-            sourceTransformV2Flag: true,
-            descriptionSuffix: ' (sourceTransformV2Flag: true)',
-          },
-        ]
-      : [
-          {
-            tcData,
-            descriptionSuffix: '',
-          },
-        ],
-  );
+  const extendedTestData: ExtendedTestCaseData[] = testData.flatMap((tcData) => {
+    if (tcData.module === tags.MODULES.SOURCE) {
+      return [
+        {
+          tcData,
+          sourceTransformV2Flag: false,
+          descriptionSuffix: ' (sourceTransformV2Flag: false)',
+        },
+        {
+          tcData,
+          sourceTransformV2Flag: true,
+          descriptionSuffix: ' (sourceTransformV2Flag: true)',
+        },
+      ];
+    }
+    return [{ tcData, descriptionSuffix: '' }];
+  });
 
   describe(`${testData[0].name} ${testData[0].module}`, () => {
     test.each(extendedTestData)(

@@ -10,13 +10,17 @@ export const data = [
     name: 'adjust',
     description: 'Simple track call',
     module: 'source',
-    version: 'v1',
+    version: 'v2',
     input: {
       request: {
         body: [
           {
-            event: {
-              id: 'adjust',
+            request: {
+              body: JSON.stringify({
+                id: 'adjust',
+                updated_at: '2023-02-10T12:16:07.251Z',
+                created_at: '2023-02-10T12:05:04.402Z',
+              }),
               query_parameters: {
                 gps_adid: ['38400000-8cf0-11bd-b23e-10b96e40000d'],
                 adid: ['18546f6171f67e29d1cb983322ad1329'],
@@ -26,16 +30,12 @@ export const data = [
                 created_at: ['1404214665'],
                 event_name: ['Click'],
               },
-              updated_at: '2023-02-10T12:16:07.251Z',
-              created_at: '2023-02-10T12:05:04.402Z',
             },
             source: {},
           },
         ],
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
       },
       pathSuffix: '',
     },
@@ -49,20 +49,11 @@ export const data = [
                 {
                   anonymousId: '97fcd7b2-cc24-47d7-b776-057b7b199513',
                   context: {
-                    library: {
-                      name: 'unknown',
-                      version: 'unknown',
-                    },
-                    integration: {
-                      name: 'Adjust',
-                    },
-                    device: {
-                      'id ': '18546f6171f67e29d1cb983322ad1329',
-                    },
+                    library: { name: 'unknown', version: 'unknown' },
+                    integration: { name: 'Adjust' },
+                    device: { 'id ': '18546f6171f67e29d1cb983322ad1329' },
                   },
-                  integrations: {
-                    Adjust: false,
-                  },
+                  integrations: { Adjust: false },
                   type: 'track',
                   event: 'Click',
                   originalTimestamp: '2014-07-01T11:37:45.000Z',
@@ -164,24 +155,25 @@ export const data = [
     name: 'adjust',
     description: 'Simple track call with no query parameters',
     module: 'source',
-    version: 'v1',
+    version: 'v2',
     skipGo: 'FIXME',
     input: {
       request: {
         body: [
           {
-            event: {
-              id: 'adjust',
-              updated_at: '2023-02-10T12:16:07.251Z',
-              created_at: '2023-02-10T12:05:04.402Z',
+            request: {
+              body: JSON.stringify({
+                id: 'adjust',
+                updated_at: '2023-02-10T12:16:07.251Z',
+                created_at: '2023-02-10T12:05:04.402Z',
+              }),
+              query_parameters: undefined,
             },
             source: {},
           },
         ],
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
       },
       pathSuffix: '',
     },
@@ -196,6 +188,7 @@ export const data = [
               errorCategory: 'transformation',
               implementation: 'native',
               module: 'source',
+              srcType: 'adjust',
               workspaceId: 'Non determinable',
             },
             statusCode: 400,
@@ -256,14 +249,18 @@ export const data = [
     name: 'adjust',
     description: 'Simple track call with wrong created at',
     module: 'source',
-    version: 'v1',
+    version: 'v2',
     skipGo: 'FIXME',
     input: {
       request: {
         body: [
           {
-            event: {
-              id: 'adjust',
+            request: {
+              body: JSON.stringify({
+                id: 'adjust',
+                updated_at: '2023-02-10T12:16:07.251Z',
+                created_at: 'test',
+              }),
               query_parameters: {
                 gps_adid: ['38400000-8cf0-11bd-b23e-10b96e40000d'],
                 adid: ['18546f6171f67e29d1cb983322ad1329'],
@@ -273,16 +270,12 @@ export const data = [
                 created_at: ['test'],
                 event_name: ['Click'],
               },
-              updated_at: '2023-02-10T12:16:07.251Z',
-              created_at: 'test',
             },
             source: {},
           },
         ],
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
       },
       pathSuffix: '',
     },
@@ -297,6 +290,7 @@ export const data = [
               errorCategory: 'transformation',
               implementation: 'native',
               module: 'source',
+              srcType: 'adjust',
               workspaceId: 'Non determinable',
             },
             statusCode: 400,

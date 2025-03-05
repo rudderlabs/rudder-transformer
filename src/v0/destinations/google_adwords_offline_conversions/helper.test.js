@@ -2,6 +2,14 @@ const moment = require('moment-timezone');
 const { formatTimestamp } = require('./helper');
 
 describe('google adwords offline conversions - helper', () => {
+  beforeAll(() => {
+    jest.spyOn(console, 'warn').mockImplementation(() => {});
+  });
+
+  afterAll(() => {
+    console.warn.mockRestore();
+  });
+
   it('should correctly format to IST', () => {
     moment.tz.setDefault('Asia/Calcutta');
     expect(formatTimestamp('2019-10-14 11:15:18.299Z')).toEqual('2019-10-14 16:45:18+05:30');

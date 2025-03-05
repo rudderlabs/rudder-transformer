@@ -15,7 +15,6 @@ import { getValueFromMessage } from '../../v0/util';
 import genericFieldMap from '../../v0/util/data/GenericFieldMapping.json';
 import { EventType, MappedToDestinationKey } from '../../constants';
 import { versionConversionFactory } from './versionConversion';
-import defaultFeaturesConfig from '../../features';
 
 export class ControllerUtility {
   private static sourceVersionMap: Map<string, string> = new Map();
@@ -42,11 +41,7 @@ export class ControllerUtility {
       return this.sourceVersionMap;
     }
 
-    const versions = ['v0', 'v1'];
-    if (defaultFeaturesConfig.upgradedToSourceTransformV2) {
-      // this makes it easy to revert to v0,v1 spec if something doesn't work out using ENV variables
-      versions.push('v2');
-    }
+    const versions = ['v0', 'v1', 'v2'];
 
     versions.forEach((version) => {
       const files = fs.readdirSync(this.getSourceDirPath(version), {

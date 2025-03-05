@@ -1,7 +1,9 @@
+import { JsonSchemaGenerator } from '@rudderstack/integrations-lib';
 import { FetchHandler } from '../../helpers/fetchHandlers';
 import { SourceService } from '../../interfaces/SourceService';
 import {
   ErrorDetailer,
+  ErrorDetailerOptions,
   MetaTransferObject,
   RudderMessage,
   SourceInputConversionResult,
@@ -13,15 +15,17 @@ import { FixMe } from '../../util/types';
 import tags from '../../v0/util/tags';
 import { SourcePostTransformationService } from './postTransformation';
 import logger from '../../logger';
+import { getBodyFromV2SpecPayload } from '../../v0/util';
 
 export class NativeIntegrationSourceService implements SourceService {
-  public getTags(): MetaTransferObject {
+  public getTags(extraErrorDetails: ErrorDetailerOptions = {}): MetaTransferObject {
     const metaTO = {
       errorDetails: {
         module: tags.MODULES.SOURCE,
         implementation: tags.IMPLEMENTATIONS.NATIVE,
         destinationId: 'Non determinable',
         workspaceId: 'Non determinable',
+        ...extraErrorDetails,
       } as ErrorDetailer,
       errorContext: '[Native Integration Service] Failure During Source Transform',
     } as MetaTransferObject;
@@ -36,7 +40,7 @@ export class NativeIntegrationSourceService implements SourceService {
     _requestMetadata: NonNullable<unknown>,
   ): Promise<SourceTransformationResponse[]> {
     const sourceHandler = FetchHandler.getSourceHandler(sourceType, version);
-    const metaTO = this.getTags();
+    const metaTO = this.getTags({ srcType: sourceType });
     const respList: SourceTransformationResponse[] = await Promise.all<FixMe>(
       sourceEvents.map(async (sourceEvent) => {
         try {
@@ -80,6 +84,19 @@ export class NativeIntegrationSourceService implements SourceService {
           logger.debug(`Error during source Transform: ${error}`, {
             ...logger.getLogMetadata(metaTO.errorDetails),
           });
+          // log the payload schema here
+          const duplicateSourceEvent: any = sourceEvent;
+          try {
+            duplicateSourceEvent.output.request.body = getBodyFromV2SpecPayload(
+              duplicateSourceEvent?.output,
+            );
+          } catch (e) {
+            /* empty */
+          }
+          logger.error(
+            `Sample Payload Schema for source ${sourceType} : ${JSON.stringify(JsonSchemaGenerator.generate(duplicateSourceEvent))}`,
+          );
+
           return SourcePostTransformationService.handleFailureEventsSource(error, metaTO);
         }
       }),

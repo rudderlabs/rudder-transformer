@@ -127,8 +127,8 @@ export const data = [
                     conversions: [
                       {
                         contents: [
-                          { content_id: '12', content_price: 123.3345, num_items: 12 },
-                          { content_id: '4', content_price: 200, num_items: 11 },
+                          { content_id: '12', content_price: '123.3345', num_items: 12 },
+                          { content_id: '4', content_price: '200.00', num_items: 11 },
                         ],
                         conversion_id: '213123',
                         conversion_time: '2023-06-01T06:03:08.739Z',
@@ -187,6 +187,229 @@ export const data = [
                 },
               ],
               statusCode: 200,
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    name: 'twitter_ads',
+    description: 'Test case for missing properties in message',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: {
+                type: 'track',
+                event: 'Home Page Viewed',
+              },
+              metadata: {
+                secret: {
+                  consumerKey: 'qwe',
+                  consumerSecret: 'fdghv',
+                  accessToken: 'dummyAccessToken',
+                  accessTokenSecret: 'testAccessTokenSecret',
+                },
+              },
+              destination: {
+                Config: {
+                  pixelId: 'dummyPixelId',
+                  twitterAdsEventNames: [
+                    {
+                      rudderEventName: 'Home Page Viewed',
+                      twitterEventId: 'tw-odt2o-odt2q',
+                    },
+                  ],
+                },
+              },
+            },
+          ],
+          destType: 'twitter_ads',
+        },
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batched: false,
+              destination: {
+                Config: {
+                  pixelId: 'dummyPixelId',
+                  twitterAdsEventNames: [
+                    { rudderEventName: 'Home Page Viewed', twitterEventId: 'tw-odt2o-odt2q' },
+                  ],
+                },
+              },
+              statusCode: 400,
+              error: '[TWITTER ADS]: properties must be present in event. Aborting message',
+              metadata: [
+                {
+                  secret: {
+                    consumerKey: 'qwe',
+                    consumerSecret: 'fdghv',
+                    accessToken: 'dummyAccessToken',
+                    accessTokenSecret: 'testAccessTokenSecret',
+                  },
+                },
+              ],
+              statTags: {
+                errorCategory: 'dataValidation',
+                errorType: 'instrumentation',
+                destType: 'TWITTER_ADS',
+                module: 'destination',
+                implementation: 'native',
+                feature: 'router',
+              },
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    name: 'twitter_ads',
+    description: 'Test case for missing OAuth secret',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: {
+                type: 'track',
+                event: 'Home Page Viewed',
+                properties: {
+                  email: 'test@test.com',
+                },
+              },
+              metadata: {}, // Missing secret
+              destination: {
+                Config: {
+                  pixelId: 'dummyPixelId',
+                  twitterAdsEventNames: [
+                    {
+                      rudderEventName: 'Home Page Viewed',
+                      twitterEventId: 'tw-odt2o-odt2q',
+                    },
+                  ],
+                },
+              },
+            },
+          ],
+          destType: 'twitter_ads',
+        },
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batched: false,
+              destination: {
+                Config: {
+                  pixelId: 'dummyPixelId',
+                  twitterAdsEventNames: [
+                    { rudderEventName: 'Home Page Viewed', twitterEventId: 'tw-odt2o-odt2q' },
+                  ],
+                },
+              },
+              statusCode: 500,
+              error: '[TWITTER ADS]:: OAuth - access keys not found',
+              metadata: [{}],
+              statTags: {
+                errorCategory: 'platform',
+                errorType: 'oAuthSecret',
+                destType: 'TWITTER_ADS',
+                module: 'destination',
+                implementation: 'native',
+                feature: 'router',
+              },
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    name: 'twitter_ads',
+    description: 'Test case for unsupported message type',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: {
+                type: 'identify', // Unsupported message type
+                properties: {
+                  email: 'test@test.com',
+                },
+              },
+              metadata: {
+                secret: {
+                  consumerKey: 'qwe',
+                  consumerSecret: 'fdghv',
+                  accessToken: 'dummyAccessToken',
+                  accessTokenSecret: 'testAccessTokenSecret',
+                },
+              },
+              destination: {
+                Config: {
+                  pixelId: 'dummyPixelId',
+                },
+              },
+            },
+          ],
+          destType: 'twitter_ads',
+        },
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batched: false,
+              destination: {
+                Config: {
+                  pixelId: 'dummyPixelId',
+                },
+              },
+              statusCode: 400,
+              error: 'Message type identify not supported',
+              metadata: [
+                {
+                  secret: {
+                    consumerKey: 'qwe',
+                    consumerSecret: 'fdghv',
+                    accessToken: 'dummyAccessToken',
+                    accessTokenSecret: 'testAccessTokenSecret',
+                  },
+                },
+              ],
+              statTags: {
+                errorCategory: 'dataValidation',
+                errorType: 'instrumentation',
+                destType: 'TWITTER_ADS',
+                module: 'destination',
+                implementation: 'native',
+                feature: 'router',
+              },
             },
           ],
         },

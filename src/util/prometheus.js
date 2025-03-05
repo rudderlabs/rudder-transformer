@@ -446,12 +446,6 @@ class Prometheus {
         labelNames: ['event', 'writeKey'],
       },
       {
-        name: 'shopify_pixel_cart_token_not_found_server_side',
-        help: 'shopify_pixel_cart_token_not_found_server_side',
-        type: 'counter',
-        labelNames: ['event', 'writeKey'],
-      },
-      {
         name: 'shopify_pixel_cart_token_set',
         help: 'shopify_pixel_cart_token_set',
         type: 'counter',
@@ -462,6 +456,24 @@ class Prometheus {
         help: 'shopify_pixel_cart_token_redis_error',
         type: 'counter',
         labelNames: ['event', 'writeKey'],
+      },
+      {
+        name: 'shopify_pixel_id_stitch_gaps',
+        help: 'shopify_pixel_id_stitch_gaps',
+        type: 'counter',
+        labelNames: ['event', 'reason', 'source', 'writeKey'],
+      },
+      {
+        name: 'shopify_pixel_userid_mapping',
+        help: 'shopify_pixel_userid_mapping',
+        type: 'counter',
+        labelNames: ['action', 'operation'],
+      },
+      {
+        name: 'shopify_pixel_cart_token_mapping',
+        help: 'shopify_pixel_cart_token_mapping',
+        type: 'counter',
+        labelNames: ['action', 'operation'],
       },
       {
         name: 'outgoing_request_count',

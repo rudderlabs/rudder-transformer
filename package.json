@@ -103,7 +103,7 @@
     "moment": "^2.29.4",
     "moment-timezone": "^0.5.43",
     "node-cache": "^5.1.2",
-    "node-fetch": "^2.6.12",
+    "node-fetch": "^3.3.2",
     "oauth-1.0a": "^2.2.6",
     "object-hash": "^3.0.0",
     "parse-static-imports": "^1.1.0",

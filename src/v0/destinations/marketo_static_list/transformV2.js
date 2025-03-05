@@ -1,5 +1,6 @@
 const lodash = require('lodash');
 const { InstrumentationError, UnauthorizedError } = require('@rudderstack/integrations-lib');
+const Cache = require('../../util/cache');
 const {
   defaultPostRequestConfig,
   defaultDeleteRequestConfig,
@@ -9,10 +10,12 @@ const {
   generateErrorObject,
   getErrorRespEvents,
 } = require('../../util');
-const { JSON_MIME_TYPE } = require('../../util/constant');
+const { JSON_MIME_TYPE, AUTH_CACHE_TTL } = require('../../util/constant');
 const { MAX_LEAD_IDS_SIZE } = require('./config');
-const { getAuthToken } = require('../marketo/transform');
+const { getAuthToken } = require('../marketo/util');
 const { formatConfig } = require('../marketo/config');
+
+const authCache = new Cache(AUTH_CACHE_TTL); // 1 hr
 
 /**
  * Generates the final response structure to be sent to the destination
@@ -73,7 +76,7 @@ const batchResponseBuilder = (listId, Config, token, leadIds, operation) => {
  * @returns An array containing the batched responses for the insert and delete actions along with the metadata.
  */
 async function processRecordInputs(groupedRecordInputs, destination, listId) {
-  const token = await getAuthToken(formatConfig(destination));
+  const token = await getAuthToken(authCache, formatConfig(destination));
   if (!token) {
     throw new UnauthorizedError('Authorization failed');
   }

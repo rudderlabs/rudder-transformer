@@ -43,8 +43,7 @@
             "updated_by": "user_123",
             "created_by": "user_123"
           }
-        },
-        "source": {}
+        }
       },
       "headers": {
         "Content-Type": "application/json"

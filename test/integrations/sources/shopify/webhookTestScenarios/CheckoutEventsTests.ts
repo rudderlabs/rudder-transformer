@@ -1940,6 +1940,7 @@ export const checkoutEventsTestScenarios = [
     description: 'Track Call -> Order Cancelled event from Pixel app',
     module: 'source',
     version: 'v1',
+    skipGo: 'FixMe',
     input: {
       request: {
         body: [

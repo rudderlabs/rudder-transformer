@@ -61,8 +61,7 @@
           "object_type": "opportunity",
           "lead_id": "lead_123"
         },
-        "subscription_id": "whsub_123",
-        "source": {}
+        "subscription_id": "whsub_123"
       },
       "headers": {
         "Content-Type": "application/json"

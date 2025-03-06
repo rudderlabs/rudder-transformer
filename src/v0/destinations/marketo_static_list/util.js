@@ -1,5 +1,9 @@
 /* eslint-disable unicorn/consistent-destructuring */
 const { InstrumentationError } = require('@rudderstack/integrations-lib');
+const Cache = require('../../util/cache');
+const { AUTH_CACHE_TTL } = require('../../util/constant');
+
+const authCache = new Cache(AUTH_CACHE_TTL); // 1 hr
 
 /**
  * Fetches the ids from the array of objects
@@ -38,4 +42,5 @@ const validateMessageType = (message, allowedTypes) => {
 module.exports = {
   getIds,
   validateMessageType,
+  authCache,
 };

@@ -1,3 +1,5 @@
+import { defaultApiKey } from '../../../common/secrets';
+
 export const data = [
   {
     name: 'ometria',
@@ -55,7 +57,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: defaultApiKey,
                 allowMarketing: false,
                 allowTransactional: false,
                 marketingOptin: 'EXPLICITLY_OPTEDOUT',
@@ -77,7 +79,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api.ometria.com/v2/push',
-              headers: { 'X-Ometria-Auth': 'dummyApiKey' },
+              headers: { 'X-Ometria-Auth': defaultApiKey },
               params: {},
               body: {
                 JSON: {},
@@ -164,7 +166,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: defaultApiKey,
                 allowMarketing: false,
                 allowTransactional: false,
                 marketingOptin: 'EXPLICITLY_OPTEDOUT',
@@ -186,7 +188,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api.ometria.com/v2/push',
-              headers: { 'X-Ometria-Auth': 'dummyApiKey' },
+              headers: { 'X-Ometria-Auth': defaultApiKey },
               params: {},
               body: {
                 JSON: {},
@@ -272,7 +274,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: defaultApiKey,
                 allowMarketing: false,
                 allowTransactional: false,
                 marketingOptin: 'EXPLICITLY_OPTEDOUT',
@@ -294,7 +296,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api.ometria.com/v2/push',
-              headers: { 'X-Ometria-Auth': 'dummyApiKey' },
+              headers: { 'X-Ometria-Auth': defaultApiKey },
               params: {},
               body: {
                 JSON: {},
@@ -383,7 +385,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: defaultApiKey,
                 allowMarketing: false,
                 allowTransactional: false,
                 marketingOptin: 'NOT_SPECIFIED',
@@ -405,7 +407,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api.ometria.com/v2/push',
-              headers: { 'X-Ometria-Auth': 'dummyApiKey' },
+              headers: { 'X-Ometria-Auth': defaultApiKey },
               params: {},
               body: {
                 JSON: {},
@@ -496,7 +498,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: defaultApiKey,
                 allowMarketing: false,
                 allowTransactional: false,
                 marketingOptin: 'NOT_SPECIFIED',
@@ -518,7 +520,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api.ometria.com/v2/push',
-              headers: { 'X-Ometria-Auth': 'dummyApiKey' },
+              headers: { 'X-Ometria-Auth': defaultApiKey },
               params: {},
               body: {
                 JSON: {},
@@ -603,7 +605,7 @@ export const data = [
               integrations: { All: true },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
-            destination: { Config: { apiKey: 'dummyApiKey' } },
+            destination: { Config: { apiKey: defaultApiKey } },
           },
         ],
         method: 'POST',
@@ -620,7 +622,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api.ometria.com/v2/push',
-              headers: { 'X-Ometria-Auth': 'dummyApiKey' },
+              headers: { 'X-Ometria-Auth': defaultApiKey },
               params: {},
               body: {
                 JSON: {},
@@ -704,7 +706,7 @@ export const data = [
               integrations: { All: true },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
-            destination: { Config: { apiKey: 'dummyApiKey' } },
+            destination: { Config: { apiKey: defaultApiKey } },
           },
         ],
         method: 'POST',
@@ -721,7 +723,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api.ometria.com/v2/push',
-              headers: { 'X-Ometria-Auth': 'dummyApiKey' },
+              headers: { 'X-Ometria-Auth': defaultApiKey },
               params: {},
               body: {
                 JSON: {},
@@ -814,7 +816,7 @@ export const data = [
               integrations: { All: true },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
-            destination: { Config: { apiKey: 'dummyApiKey' } },
+            destination: { Config: { apiKey: defaultApiKey } },
           },
         ],
         method: 'POST',
@@ -831,7 +833,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api.ometria.com/v2/push',
-              headers: { 'X-Ometria-Auth': 'dummyApiKey' },
+              headers: { 'X-Ometria-Auth': defaultApiKey },
               params: {},
               body: {
                 JSON: {},
@@ -932,7 +934,7 @@ export const data = [
               integrations: { All: true },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
-            destination: { Config: { apiKey: 'dummyApiKey' } },
+            destination: { Config: { apiKey: defaultApiKey } },
           },
         ],
         method: 'POST',
@@ -949,7 +951,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api.ometria.com/v2/push',
-              headers: { 'X-Ometria-Auth': 'dummyApiKey' },
+              headers: { 'X-Ometria-Auth': defaultApiKey },
               params: {},
               body: {
                 JSON: {},
@@ -1059,7 +1061,7 @@ export const data = [
               integrations: { All: true },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
-            destination: { Config: { apiKey: 'dummyApiKey' } },
+            destination: { Config: { apiKey: defaultApiKey } },
           },
         ],
         method: 'POST',
@@ -1076,7 +1078,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api.ometria.com/v2/push',
-              headers: { 'X-Ometria-Auth': 'dummyApiKey' },
+              headers: { 'X-Ometria-Auth': defaultApiKey },
               params: {},
               body: {
                 JSON: {},
@@ -1190,7 +1192,7 @@ export const data = [
               integrations: { All: true },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
-            destination: { Config: { apiKey: 'dummyApiKey' } },
+            destination: { Config: { apiKey: defaultApiKey } },
           },
         ],
         method: 'POST',
@@ -1207,7 +1209,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api.ometria.com/v2/push',
-              headers: { 'X-Ometria-Auth': 'dummyApiKey' },
+              headers: { 'X-Ometria-Auth': defaultApiKey },
               params: {},
               body: {
                 JSON: {},

@@ -1,3 +1,4 @@
+import { defaultApiKey } from '../../../common/secrets';
 import { secret4 } from '../maskedSecrets';
 
 export const data = [
@@ -3101,7 +3102,7 @@ export const data = [
               },
             ],
             config: {
-              apiKey: 'dummyApiKey',
+              apiKey: defaultApiKey,
               prefixProperties: true,
               useNativeSDK: false,
             },

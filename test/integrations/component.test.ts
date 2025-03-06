@@ -205,12 +205,7 @@ const destinationTestHandler = async (tcData: TestCaseData) => {
 };
 
 const sourceTestHandler = async (tcData) => {
-  const route = `/${join(
-    tcData.version || DEFAULT_VERSION,
-    'sources',
-    tcData.name,
-    tcData.input.pathSuffix,
-  )}`;
+  const route = `/${join(tcData.version || 'v2', 'sources', tcData.name, tcData.input.pathSuffix)}`;
   await testRoute(route, tcData);
 };
 

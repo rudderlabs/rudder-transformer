@@ -1,3 +1,4 @@
 /opt/yarn-v1.22.22/
 image-metadata:history*:created-by
 node_modules/
+test/integrations/destinations/emarsys/

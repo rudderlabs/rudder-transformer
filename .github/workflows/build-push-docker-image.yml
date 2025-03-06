@@ -118,6 +118,7 @@ jobs:
           target: ${{ inputs.load_target }}
           load: true
           tags: ${{ inputs.build_tag }}
+          push: true
           # cache-from: type=gha
           # cache-to: type=gha,mode=max
 
@@ -171,6 +172,7 @@ jobs:
           target: ${{ inputs.load_target }}
           load: true
           tags: ${{ inputs.build_tag }}
+          push: true
           # cache-from: type=gha
           # cache-to: type=gha,mode=max
 

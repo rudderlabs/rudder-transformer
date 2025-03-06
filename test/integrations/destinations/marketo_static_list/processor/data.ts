@@ -1,4 +1,5 @@
-import { authHeader1, authHeaderAccessToken, secret1 } from '../maskedSecrets';
+import { authHeaderAccessToken, secret1 } from '../maskedSecrets';
+
 export const data = [
   {
     name: 'marketo_static_list',

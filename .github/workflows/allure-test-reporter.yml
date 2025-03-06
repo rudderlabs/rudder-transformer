@@ -74,7 +74,11 @@ jobs:
           git config --global user.email "github-actions@github.com"
           git add .
           git commit -m "chore: add allure report for $REPORT_FOLDER" || echo "No changes to commit"
-          git push
+          # Push the report to the reports repository
+          for i in {1..5}; do
+            git push origin main && break || sleep 5
+            git pull --rebase origin main
+          done
 
       - name: Add Test Report Link as Comment on PR
         uses: actions/github-script@v7

@@ -1,4 +1,6 @@
 /opt/yarn-v1.22.22/
+/usr/lib/x86_64-linux-gnu/
+/var/lib/dpkg/
 image-metadata:history*:created-by
 node_modules/
 test/integrations/destinations/emarsys/

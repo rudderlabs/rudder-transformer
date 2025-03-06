@@ -7,14 +7,15 @@ const {
   setAnonymousId,
   addCartTokenHashToTraits,
 } = require('./serverSideUtlis');
-const { RedisDB } = require('../../../../util/redis/redisConnector');
-const stats = require('../../../../util/stats');
 
-const { lineItemsMappingJSON } = require('../../../../v0/sources/shopify/config');
-const Message = require('../../../../sources/message');
+const stats = require('../../../util/stats');
 
-jest.mock('../../../../sources/message');
-jest.mock('../../../../util/stats', () => ({
+const { lineItemsMappingJSON } = require('../config');
+const Message = require('../../message');
+const { RedisDB } = require('../../../util/redis/redisConnector');
+
+jest.mock('../../message');
+jest.mock('../../../util/stats', () => ({
   increment: jest.fn(),
 }));
 
@@ -70,11 +71,11 @@ describe('serverSideUtils.js', () => {
     it('should return array of products', () => {
       const result = getProductsFromLineItems(LINEITEMS, lineItemsMappingJSON);
       expect(result).toEqual([
-        { brand: 'Hydrogen Vendor', price: '600.00', product_id: 7234590408818, quantity: 1 },
+        { brand: 'Hydrogen Vendor', price: 600, product_id: '7234590408818', quantity: 1 },
         {
           brand: 'Hydrogen Vendor',
-          price: '600.00',
-          product_id: 7234590408817,
+          price: 600,
+          product_id: '7234590408817',
           quantity: 1,
           title: 'The Collection Snowboard: Nitrogen',
         },

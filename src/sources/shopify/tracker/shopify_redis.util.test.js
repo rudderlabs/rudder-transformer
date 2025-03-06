@@ -1,5 +1,26 @@
 const { getAnonymousIdAndSessionId, checkAndUpdateCartItems } = require('./util');
+const { process: processTrackerEvents } = require('./transform');
+const fs = require('fs');
+const path = require('path');
+const { RedisDB } = require('../../../util/redis/redisConnector');
+
 jest.mock('ioredis', () => require('../../../../test/__mocks__/redis'));
+
+jest.mock('../../../v0/util/index', () => {
+  const originalModule = jest.requireActual('../../../v0/util/index');
+  return {
+    ...originalModule,
+    generateUUID: jest.fn(() => 'generated_uuid'),
+  };
+});
+
+const timeoutPromise = () =>
+  new Promise((resolve, _) => {
+    setTimeout(() => resolve(), 100);
+  });
+
+process.env.USE_REDIS_DB = 'true';
+
 const metricMetadata = {
   writeKey: 'dummyKey',
   source: 'src',
@@ -284,6 +305,51 @@ describe('Shopify Utils Test', () => {
       const output = await getAnonymousIdAndSessionId(input, {}, null);
 
       expect(output).toEqual(expectedOutput);
+    });
+  });
+
+  describe('checkRedisConnectionReadyState', () => {
+    RedisDB.init();
+    it('should resolve if client connects after initial connection error', async () => {
+      RedisDB.client.end(3);
+      await Promise.race([RedisDB.checkRedisConnectionReadyState(), timeoutPromise()]);
+      expect(RedisDB.client.status).toBe('ready');
+    });
+    it('should resolve if client is already connected', async () => {
+      await RedisDB.checkRedisConnectionReadyState();
+      expect(RedisDB.client.status).toBe('ready');
+    });
+  });
+  describe('checkAndConnectConnection', () => {
+    it('Status is end', async () => {
+      RedisDB.client.end(11);
+      await Promise.race([RedisDB.checkAndConnectConnection(), timeoutPromise()]);
+      expect(RedisDB.client.status).toBe('ready');
+    });
+    it('should resolve if client is already connected', async () => {
+      await RedisDB.checkAndConnectConnection();
+      expect(RedisDB.client.status).toBe('ready');
+    });
+  });
+  describe(`Source Tests`, () => {
+    // it('Redis connection', async () => {
+    //   RedisDB.init();
+    //   await RedisDB.checkRedisConnectionReadyState();
+    //   expect(RedisDB.client.status).toBe('ready');
+    // });
+
+    const testDataFile = fs.readFileSync(path.resolve(__dirname, `./shopify_source.json`));
+    const data = JSON.parse(testDataFile);
+
+    data.forEach((dataPoint, index) => {
+      it(`${index}. shopify - ${dataPoint.description}`, async () => {
+        try {
+          const output = await processTrackerEvents(dataPoint.input);
+          expect(output).toEqual(dataPoint.output);
+        } catch (error) {
+          expect(error.message).toEqual(dataPoint.output.error);
+        }
+      });
     });
   });
 });

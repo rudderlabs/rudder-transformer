@@ -3,10 +3,10 @@ const {
   processIdentifierEvent,
   updateAnonymousIdToUserIdInRedis,
 } = require('./utils');
-const { RedisDB } = require('../../../util/redis/redisConnector');
-const stats = require('../../../util/stats');
+const { RedisDB } = require('../../util/redis/redisConnector');
+const stats = require('../../util/stats');
 
-jest.mock('../../../util/stats', () => ({
+jest.mock('../../util/stats', () => ({
   increment: jest.fn(),
 }));
 

@@ -1,5 +1,5 @@
-const { RedisDB } = require('../../../util/redis/redisConnector');
-const stats = require('../../../util/stats');
+const { RedisDB } = require('../../util/redis/redisConnector');
+const stats = require('../../util/stats');
 
 const NO_OPERATION_SUCCESS = {
   outputToSource: {

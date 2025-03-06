@@ -4,7 +4,7 @@ const { v5 } = require('uuid');
 const sha256 = require('sha256');
 const { TransformationError, isDefinedAndNotNull } = require('@rudderstack/integrations-lib');
 const stats = require('../../../util/stats');
-const utils = require('../../util');
+const utils = require('../../../v0/util');
 const { RedisDB } = require('../../../util/redis/redisConnector');
 const {
   lineItemsMappingJSON,

@@ -5,6 +5,7 @@ const {
   RetryableError,
   filter,
   UnhandledStatusCodeError,
+  ThrottledError,
 } = require('@rudderstack/integrations-lib');
 
 jest.mock('../../../adapters/network');
@@ -69,14 +70,27 @@ describe('getAuthToken', () => {
       expectedError: new RetryableError(
         'Request Failed for marketo, Access Token Expired (Retryable).During fetching auth token',
         500,
-        {
-          access_token: 'expired-token',
-          expires_in: 0,
-        },
       ),
     },
     {
-      only: true,
+      name: 'should handle throttled status code',
+      mockResponse: {
+        response: {
+          data: {
+            errors: [
+              {
+                code: '606',
+              },
+            ],
+          },
+          status: 200,
+        },
+      },
+      expectedError: new ThrottledError(
+        'Request Failed for marketo, undefined (Throttled).During fetching auth token',
+      ),
+    },
+    {
       name: 'should handle unknown status code',
       mockResponse: {
         response: {

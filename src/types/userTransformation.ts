@@ -1,5 +1,5 @@
 import type { CatchErr } from '../util/types';
-import type { Metadata, RudderMessage } from './rudderEvent';
+import type { Metadata, RudderMessage } from './rudderEvents';
 import type { ProcessorTransformationResponse } from './destinationTransformation';
 
 /**

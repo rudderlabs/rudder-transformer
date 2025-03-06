@@ -4,7 +4,7 @@ import type {
   Destination,
   UserTransformationLibrary,
 } from './controlPlaneConfig';
-import type { Metadata, RudderMessage } from './rudderEvent';
+import type { Metadata, RudderMessage } from './rudderEvents';
 
 /**
  * Processor transformation request/response structures

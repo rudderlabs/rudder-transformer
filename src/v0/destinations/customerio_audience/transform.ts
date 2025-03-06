@@ -48,7 +48,7 @@ export const createEventChunk = (
 export const validateEvent = (
   event: CustomerIORouterRequestType & { message: { identifiers: Record<string, any> } },
 ): boolean => {
-  const eventType = getEventType(event?.message);
+  const eventType = getEventType(event.message);
   if (eventType !== EventType.RECORD) {
     throw new InstrumentationError(`message type ${eventType} is not supported`);
   }

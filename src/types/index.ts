@@ -1,4 +1,4 @@
-export * from './rudderEvent';
+export * from './rudderEvents';
 export * from './controlPlaneConfig';
 export * from './destinationTransformation';
 export * from './sourceTransformation';

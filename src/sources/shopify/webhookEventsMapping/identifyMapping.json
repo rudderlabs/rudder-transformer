@@ -3,7 +3,6 @@
     "sourceKeys": "id",
     "destKeys": "userId"
   },
-
   {
     "sourceKeys": "email",
     "destKeys": "traits.email"
@@ -25,12 +24,89 @@
   },
 
   {
-    "sourceKeys": "shipping_address.company",
-    "destKeys": "traits.company"
+    "sourceKeys": "addresses",
+    "destKeys": "traits.addressList"
   },
 
   {
-    "sourceKeys": "created_at",
-    "destKeys": "traits.createdAt"
+    "sourceKeys": "default_address",
+    "destKeys": "traits.address"
+  },
+
+  {
+    "sourceKeys": "shipping_address",
+    "destKeys": "traits.shippingAddress"
+  },
+
+  {
+    "sourceKeys": "billing_address",
+    "destKeys": "traits.billingAddress"
+  },
+
+  {
+    "sourceKeys": "accepts_marketing",
+    "destKeys": "traits.acceptsMarketing"
+  },
+
+  {
+    "sourceKeys": "orders_count",
+    "destKeys": "traits.orderCount"
+  },
+
+  {
+    "sourceKeys": "state",
+    "destKeys": "traits.state"
+  },
+  {
+    "sourceKeys": "total_spent",
+    "destKeys": "traits.totalSpent"
+  },
+  {
+    "sourceKeys": "note",
+    "destKeys": "traits.note"
+  },
+  {
+    "sourceKeys": "verified_email",
+    "destKeys": "traits.verifiedEmail"
+  },
+  {
+    "sourceKeys": "multipass_identifier",
+    "destKeys": "traits.multipassIdentifier"
+  },
+  {
+    "sourceKeys": "tax_exempt",
+    "destKeys": "traits.taxExempt"
+  },
+  {
+    "sourceKeys": "tags",
+    "destKeys": "traits.tags"
+  },
+  {
+    "sourceKeys": "last_order_name",
+    "destKeys": "traits.lastOrderName"
+  },
+  {
+    "sourceKeys": "currency",
+    "destKeys": "traits.currency"
+  },
+  {
+    "sourceKeys": "marketing_opt_in_level",
+    "destKeys": "traits.marketingOptInLevel"
+  },
+  {
+    "sourceKeys": "tax_exemptions",
+    "destKeys": "traits.taxExemptions"
+  },
+  {
+    "sourceKeys": "sms_marketing_consent",
+    "destKeys": "traits.smsMarketingConsent"
+  },
+  {
+    "sourceKeys": "admin_graphql_api_id",
+    "destKeys": "traits.adminGraphqlApiId"
+  },
+  {
+    "sourceKeys": "accepts_marketing_updated_at",
+    "destKeys": "traits.acceptsMarketingUpdatedAt"
   }
 ]

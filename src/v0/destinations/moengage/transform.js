@@ -3,6 +3,7 @@ const {
   ConfigurationError,
   TransformationError,
   InstrumentationError,
+  isObject,
 } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const {
@@ -30,7 +31,7 @@ const mergeCustomAttributes = (attributes) => {
     return attributes;
   }
   const { data, ...rest } = attributes;
-  return typeof data === 'object' && data !== null ? { ...rest, ...data } : rest;
+  return isObject(data) ? { ...rest, ...data } : rest;
 };
 
 // check the region and which api end point should be used

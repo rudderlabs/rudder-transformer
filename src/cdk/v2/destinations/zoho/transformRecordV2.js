@@ -186,6 +186,11 @@ const handleSearchError = (searchResponse) => {
       REFRESH_TOKEN,
     );
   }
+  if (searchResponse.message.code === 'INSTRUMENTATION_ERROR') {
+    return new InstrumentationError(
+      `failed to fetch zoho id for record for: ${searchResponse.message}`,
+    );
+  }
   return new ConfigurationError(
     `failed to fetch zoho id for record for ${JSON.stringify(searchResponse.message)}`,
   );
@@ -259,6 +264,12 @@ const processInput = async (
       errorResponseList,
     );
   } else {
+    if (isEmptyObject(identifiers)) {
+      const error = new InstrumentationError('`identifiers` cannot be empty');
+      errorResponseList.push(handleRtTfSingleEventError(input, error, {}));
+      return;
+    }
+
     await handleDeletion(
       input,
       identifiers,

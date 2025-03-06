@@ -3,6 +3,7 @@ const {
   isDefinedAndNotNull,
   ConfigurationError,
   isDefinedAndNotNullAndNotEmpty,
+  removeUndefinedNullEmptyExclBoolInt,
 } = require('@rudderstack/integrations-lib');
 const { getDestinationExternalIDInfoForRetl, isHttpStatusSuccess } = require('../../../../v0/util');
 const zohoConfig = require('./config');
@@ -145,23 +146,16 @@ const groupConditions = (conditions) => {
 // ref: https://help.zoho.com/portal/en/kb/creator/developer-guide/forms/add-and-manage-fields/articles/understand-fields#Types_of_fields
 // ref: https://www.zoho.com/crm/developer/docs/api/v6/Get-Records-through-COQL-Query.html
 const generateWhereClause = (fields) => {
-  const conditions = Object.keys(fields)
-    .filter(
-      (field) =>
-        fields[field] !== undefined &&
-        fields[field] !== null &&
-        (!Array.isArray(fields[field]) || fields[field].length > 0),
-    )
-    .map((key) => {
-      const value = fields[key];
-      if (Array.isArray(value)) {
-        return `${key} = '${value.join(';')}'`;
-      }
-      if (typeof value === 'number') {
-        return `${key} = ${value}`;
-      }
-      return `${key} = '${value}'`;
-    });
+  const conditions = Object.keys(removeUndefinedNullEmptyExclBoolInt(fields)).map((key) => {
+    const value = fields[key];
+    if (Array.isArray(value)) {
+      return `${key} = '${value.join(';')}'`;
+    }
+    if (typeof value === 'number') {
+      return `${key} = ${value}`;
+    }
+    return `${key} = '${value}'`;
+  });
 
   return conditions.length > 0 ? `WHERE ${groupConditions(conditions)}` : '';
 };
@@ -171,6 +165,9 @@ const generateSqlQuery = (module, fields) => {
   // Limiting to 25 fields
   const entries = Object.entries(fields).slice(0, 25);
   const whereClause = generateWhereClause(Object.fromEntries(entries));
+  if (whereClause === '') {
+    return '';
+  }
 
   // Construct the SQL query with specific fields in the SELECT clause
   return `SELECT id FROM ${module} ${whereClause}`;
@@ -180,18 +177,23 @@ const searchRecordId = async (fields, metadata, Config, operationModuleType, ide
   try {
     const { region } = Config;
     const searchURL = `${zohoConfig.DATA_CENTRE_BASE_ENDPOINTS_MAP[region]}/crm/v6/coql`;
+
+    const selectQuery = generateSqlQuery(operationModuleType, {
+      [identifierType]: fields[identifierType],
+    });
+    if (selectQuery === '') {
+      return {
+        erroneous: true,
+        code: 'INSTRUMENTATION_ERROR',
+        message: `Identifier values are not provided for ${operationModuleType}`,
+      };
+    }
+
     const searchResult = await handleHttpRequest(
       'post',
       searchURL,
       {
-        select_query: generateSqlQuery(
-          operationModuleType,
-          fields[identifierType]
-            ? {
-                [identifierType]: fields[identifierType],
-              }
-            : fields,
-        ),
+        select_query: selectQuery,
       },
       {
         headers: {
@@ -220,7 +222,7 @@ const searchRecordId = async (fields, metadata, Config, operationModuleType, ide
     ) {
       return {
         erroneous: true,
-        message: 'No contact is found with record details',
+        message: `No ${operationModuleType} is found with record details`,
       };
     }
 
@@ -241,11 +243,21 @@ const searchRecordIdV2 = async (identifiers, metadata, Config, destConfig) => {
     const { region } = Config;
     const { object } = destConfig;
     const searchURL = `${zohoConfig.DATA_CENTRE_BASE_ENDPOINTS_MAP[region]}/crm/v6/coql`;
+
+    const selectQuery = generateSqlQuery(object, identifiers);
+    if (selectQuery === '') {
+      return {
+        erroneous: true,
+        code: 'INSTRUMENTATION_ERROR',
+        message: `Identifier values are not provided for ${object}`,
+      };
+    }
+
     const searchResult = await handleHttpRequest(
       'post',
       searchURL,
       {
-        select_query: generateSqlQuery(object, identifiers),
+        select_query: selectQuery,
       },
       {
         headers: {
@@ -274,7 +286,7 @@ const searchRecordIdV2 = async (identifiers, metadata, Config, destConfig) => {
     ) {
       return {
         erroneous: true,
-        message: 'No contact is found with record details',
+        message: `No ${object} is found with record details`,
       };
     }
 

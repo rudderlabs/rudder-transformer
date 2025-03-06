@@ -211,7 +211,7 @@ describe('searchRecordId', () => {
       },
       expected: {
         erroneous: true,
-        message: 'No contact is found with record details',
+        message: 'No Leads is found with record details',
       },
     },
     {
@@ -228,7 +228,7 @@ describe('searchRecordId', () => {
       },
       expected: {
         erroneous: true,
-        message: 'No contact is found with record details',
+        message: 'No Leads is found with record details',
       },
     },
     {
@@ -247,7 +247,7 @@ describe('searchRecordId', () => {
       },
       expected: {
         erroneous: true,
-        message: 'No contact is found with record details',
+        message: 'No Leads is found with record details',
       },
     },
     {
@@ -266,7 +266,7 @@ describe('searchRecordId', () => {
       },
       expected: {
         erroneous: true,
-        message: 'No contact is found with record details',
+        message: 'No Leads is found with record details',
       },
     },
     {
@@ -286,33 +286,6 @@ describe('searchRecordId', () => {
       expected: {
         erroneous: false,
         message: ['123'],
-      },
-    },
-    {
-      fields: {
-        Name: 'rid1927ce14265c006ae11555ec6e1cdbbac',
-        Name1: 'Liam Bailey',
-        Has_Chargeback: true,
-        Last_Client_Purchase: '2021-06-15T00:00:00Z',
-        Purchase_Category: ['category1', 'category2'],
-        Lifetime_Client_Revenue: 1200,
-      },
-      module,
-      query:
-        "SELECT id FROM Leads WHERE ((Name = 'rid1927ce14265c006ae11555ec6e1cdbbac' AND Name1 = 'Liam Bailey') AND ((Has_Chargeback = 'true' AND Last_Client_Purchase = '2021-06-15T00:00:00Z') AND (Purchase_Category = 'category1;category2' AND Lifetime_Client_Revenue = 1200)))",
-      name: 'should handle valid array response data with multiple records',
-      identifierType: '',
-      response: {
-        processedResponse: {
-          status: 200,
-          response: {
-            data: [{ id: '123' }, { id: '456' }],
-          },
-        },
-      },
-      expected: {
-        erroneous: false,
-        message: ['123', '456'],
       },
     },
     {
@@ -378,6 +351,40 @@ describe('searchRecordId', () => {
       expect(result).toEqual(expected);
     });
   });
+
+  const testCases2 = [
+    {
+      fields: {
+        Email: '',
+        phone: null,
+        jobs: [],
+      },
+      query: mockQuery,
+      module,
+      identifierType: 'Email',
+      name: 'should return intrumentation error when identifier value is empty',
+      response: {
+        processedResponse: {
+          status: 200,
+          response: {
+            data: [{ id: '123' }],
+          },
+        },
+      },
+      expected: {
+        erroneous: true,
+        code: 'INSTRUMENTATION_ERROR',
+        message: 'Identifier values are not provided for Leads',
+      },
+    },
+  ];
+
+  testCases2.forEach(({ name, expected, fields, identifierType }) => {
+    it(name, async () => {
+      const result = await searchRecordId(fields, mockMetadata, mockConfig, module, identifierType);
+      expect(result).toEqual(expected);
+    });
+  });
 });
 
 describe('searchRecordIdV2', () => {
@@ -412,7 +419,7 @@ describe('searchRecordIdV2', () => {
       },
       expected: {
         erroneous: true,
-        message: 'No contact is found with record details',
+        message: 'No Leads is found with record details',
       },
     },
     {
@@ -428,7 +435,7 @@ describe('searchRecordIdV2', () => {
       },
       expected: {
         erroneous: true,
-        message: 'No contact is found with record details',
+        message: 'No Leads is found with record details',
       },
     },
     {
@@ -446,7 +453,7 @@ describe('searchRecordIdV2', () => {
       },
       expected: {
         erroneous: true,
-        message: 'No contact is found with record details',
+        message: 'No Leads is found with record details',
       },
     },
     {
@@ -464,7 +471,7 @@ describe('searchRecordIdV2', () => {
       },
       expected: {
         erroneous: true,
-        message: 'No contact is found with record details',
+        message: 'No Leads is found with record details',
       },
     },
     {
@@ -599,6 +606,44 @@ describe('searchRecordIdV2', () => {
         },
       );
 
+      expect(result).toEqual(expected);
+    });
+  });
+
+  const testCases2 = [
+    {
+      fields: {
+        Email: '',
+        phone: null,
+        jobs: [],
+      },
+      query: mockQuery,
+      module: mockConConfig.destination.object,
+      name: 'should return intrumentation error when identifier value is empty',
+      response: {
+        processedResponse: {
+          status: 200,
+          response: {
+            data: [{ id: '123' }],
+          },
+        },
+      },
+      expected: {
+        erroneous: true,
+        code: 'INSTRUMENTATION_ERROR',
+        message: 'Identifier values are not provided for Leads',
+      },
+    },
+  ];
+
+  testCases2.forEach(({ name, expected, fields }) => {
+    it(name, async () => {
+      const result = await searchRecordIdV2(
+        fields,
+        mockMetadata,
+        mockConfig,
+        mockConConfig.destination,
+      );
       expect(result).toEqual(expected);
     });
   });

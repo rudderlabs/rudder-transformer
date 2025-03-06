@@ -173,78 +173,8 @@ const generateSqlQuery = (module, fields) => {
   return `SELECT id FROM ${module} ${whereClause}`;
 };
 
-const searchRecordId = async (fields, metadata, Config, operationModuleType, identifierType) => {
+const sendCOQLRequest = async (region, accessToken, object, selectQuery) => {
   try {
-    const { region } = Config;
-    const searchURL = `${zohoConfig.DATA_CENTRE_BASE_ENDPOINTS_MAP[region]}/crm/v6/coql`;
-
-    const selectQuery = generateSqlQuery(operationModuleType, {
-      [identifierType]: fields[identifierType],
-    });
-    if (selectQuery === '') {
-      return {
-        erroneous: true,
-        code: 'INSTRUMENTATION_ERROR',
-        message: `Identifier values are not provided for ${operationModuleType}`,
-      };
-    }
-
-    const searchResult = await handleHttpRequest(
-      'post',
-      searchURL,
-      {
-        select_query: selectQuery,
-      },
-      {
-        headers: {
-          Authorization: `Zoho-oauthtoken ${metadata.secret.accessToken}`,
-        },
-      },
-      {
-        destType: 'zoho',
-        feature: 'deleteRecords',
-        requestMethod: 'POST',
-        endpointPath: searchURL,
-        module: 'router',
-      },
-    );
-
-    if (!isHttpStatusSuccess(searchResult.processedResponse.status)) {
-      return {
-        erroneous: true,
-        message: searchResult.processedResponse.response,
-      };
-    }
-
-    if (
-      searchResult.processedResponse.status === 204 ||
-      !CommonUtils.isNonEmptyArray(searchResult.processedResponse.response?.data)
-    ) {
-      return {
-        erroneous: true,
-        message: `No ${operationModuleType} is found with record details`,
-      };
-    }
-
-    return {
-      erroneous: false,
-      message: searchResult.processedResponse.response.data.map((record) => record.id),
-    };
-  } catch (error) {
-    return {
-      erroneous: true,
-      message: error.message,
-    };
-  }
-};
-
-const searchRecordIdV2 = async (identifiers, metadata, Config, destConfig) => {
-  try {
-    const { region } = Config;
-    const { object } = destConfig;
-    const searchURL = `${zohoConfig.DATA_CENTRE_BASE_ENDPOINTS_MAP[region]}/crm/v6/coql`;
-
-    const selectQuery = generateSqlQuery(object, identifiers);
     if (selectQuery === '') {
       return {
         erroneous: true,
@@ -253,6 +183,7 @@ const searchRecordIdV2 = async (identifiers, metadata, Config, destConfig) => {
       };
     }
 
+    const searchURL = `${zohoConfig.DATA_CENTRE_BASE_ENDPOINTS_MAP[region]}/crm/v6/coql`;
     const searchResult = await handleHttpRequest(
       'post',
       searchURL,
@@ -261,7 +192,7 @@ const searchRecordIdV2 = async (identifiers, metadata, Config, destConfig) => {
       },
       {
         headers: {
-          Authorization: `Zoho-oauthtoken ${metadata.secret.accessToken}`,
+          Authorization: `Zoho-oauthtoken ${accessToken}`,
         },
       },
       {
@@ -294,6 +225,44 @@ const searchRecordIdV2 = async (identifiers, metadata, Config, destConfig) => {
       erroneous: false,
       message: searchResult.processedResponse.response.data.map((record) => record.id),
     };
+  } catch (error) {
+    return {
+      erroneous: true,
+      message: error.message,
+    };
+  }
+};
+
+const searchRecordId = async (fields, metadata, Config, operationModuleType, identifierType) => {
+  try {
+    const { region } = Config;
+
+    const selectQuery = generateSqlQuery(operationModuleType, {
+      [identifierType]: fields[identifierType],
+    });
+    const result = await sendCOQLRequest(
+      region,
+      metadata.secret.accessToken,
+      operationModuleType,
+      selectQuery,
+    );
+    return result;
+  } catch (error) {
+    return {
+      erroneous: true,
+      message: error.message,
+    };
+  }
+};
+
+const searchRecordIdV2 = async (identifiers, metadata, Config, destConfig) => {
+  try {
+    const { region } = Config;
+    const { object } = destConfig;
+
+    const selectQuery = generateSqlQuery(object, identifiers);
+    const result = await sendCOQLRequest(region, metadata.secret.accessToken, object, selectQuery);
+    return result;
   } catch (error) {
     return {
       erroneous: true,

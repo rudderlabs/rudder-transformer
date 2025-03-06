@@ -73,12 +73,14 @@ const marketoApplicationErrorHandler = (marketoResponse, sourceMessage, destinat
       400,
       marketoResponse,
     );
-  } else if (errors && MARKETO_THROTTLED_CODES.includes(errors[0].code)) {
+  }
+  if (errors && MARKETO_THROTTLED_CODES.includes(errors[0].code)) {
     throw new ThrottledError(
       `Request Failed for ${destination}, ${errors[0].message} (Throttled).${sourceMessage}`,
       marketoResponse,
     );
-  } else if (errors && MARKETO_RETRYABLE_CODES.includes(errors[0].code)) {
+  }
+  if (errors && MARKETO_RETRYABLE_CODES.includes(errors[0].code)) {
     throw new RetryableError(
       `Request Failed for ${destination}, ${errors[0].message} (Retryable).${sourceMessage}`,
       500,
@@ -307,12 +309,8 @@ const getAuthToken = async (authCache, formattedDestination, metadata) =>
       metadata,
     );
     const data = marketoResponseHandler(clientResponse, 'During fetching auth token');
-    if (data) {
-      stats.increment(FETCH_TOKEN_METRIC, { status: 'success' });
-      return { value: data.access_token, age: data.expires_in };
-    }
-    stats.increment(FETCH_TOKEN_METRIC, { status: 'failed' });
-    return null;
+    stats.increment(FETCH_TOKEN_METRIC, { status: 'success' });
+    return { value: data.access_token, age: data.expires_in };
   });
 
 module.exports = {

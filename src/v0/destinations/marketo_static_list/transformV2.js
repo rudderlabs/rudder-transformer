@@ -1,6 +1,5 @@
 const lodash = require('lodash');
 const { InstrumentationError, UnauthorizedError } = require('@rudderstack/integrations-lib');
-const Cache = require('../../util/cache');
 const {
   defaultPostRequestConfig,
   defaultDeleteRequestConfig,
@@ -10,12 +9,11 @@ const {
   generateErrorObject,
   getErrorRespEvents,
 } = require('../../util');
-const { JSON_MIME_TYPE, AUTH_CACHE_TTL } = require('../../util/constant');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 const { MAX_LEAD_IDS_SIZE } = require('./config');
 const { getAuthToken } = require('../marketo/util');
 const { formatConfig } = require('../marketo/config');
-
-const authCache = new Cache(AUTH_CACHE_TTL); // 1 hr
+const { authCache } = require('./util');
 
 /**
  * Generates the final response structure to be sent to the destination

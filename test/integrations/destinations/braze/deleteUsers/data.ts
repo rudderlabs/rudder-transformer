@@ -1,3 +1,5 @@
+import { secret1, secret2 } from '../maskedSecrets';
+
 export const data = [
   {
     name: 'braze',
@@ -167,7 +169,7 @@ export const data = [
             ],
             config: {
               dataCenter: 'US-03',
-              restApiKey: '1234',
+              restApiKey: secret2,
             },
           },
         ],
@@ -353,7 +355,7 @@ export const data = [
             ],
             config: {
               dataCenter: 'US-03',
-              restApiKey: '1234',
+              restApiKey: secret2,
             },
           },
         ],
@@ -461,7 +463,7 @@ export const data = [
               },
             ],
             config: {
-              restApiKey: 'b1bd90e2-d203-480a-962c-f7bb03ea0afe',
+              restApiKey: secret1,
               dataCenter: 'US-03',
             },
           },

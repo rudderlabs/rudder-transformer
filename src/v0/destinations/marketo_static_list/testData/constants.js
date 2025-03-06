@@ -1,16 +1,20 @@
+const { generateRandomString } = require('@rudderstack/integrations-lib');
+
+const clientSecret = generateRandomString();
+const ACCESS_TOKEN = generateRandomString();
 const EXTERNAL_ID = 'marketoStaticListId';
-const TOKEN = 'Bearer access_token_success';
+const AUTH_HEADER_TOKEN = `Bearer ${ACCESS_TOKEN}`;
 const CONTENT_TYPE = 'application/json';
 const DEST_CONFIG = {
-  clientId: 'marketo_client_id_success',
-  clientSecret: 'marketo_client_secret_success',
-  accountId: 'marketo_acct_id_success',
-  staticListId: 1234,
+  clientId: 'marketo_static_list_client_id_success',
+  clientSecret,
+  accountId: 'marketo_static_list_unit_test_success',
+  staticListId: 1122,
 };
 const DEST_DEFINITION = {
   ID: '1iVQvTRMsPPyJzwol0ifH93QTQ6',
-  Name: 'MARKETO',
-  DisplayName: 'Marketo',
+  Name: 'MARKETO_STATIC_LIST',
+  DisplayName: 'Marketo Static List',
   transformAt: 'processor',
   transformAtV1: 'processor',
 };
@@ -18,12 +22,7 @@ const DEST_OBJECT = {
   ID: '1zwa1wKshSt81YksKmUdJnr4IOK',
   Name: 'test_marketo_rc',
   DestinationDefinition: DEST_DEFINITION,
-  Config: {
-    clientId: 'marketo_client_id_success',
-    clientSecret: 'marketo_client_secret_success',
-    accountId: 'marketo_acct_id_success',
-    staticListId: 1122,
-  },
+  Config: DEST_CONFIG,
   Enabled: true,
   Transformations: [],
   IsProcessorEnabled: true,
@@ -36,7 +35,8 @@ const MESSAGE_SOURCES_CONTEXT = {
 
 module.exports = {
   EXTERNAL_ID,
-  TOKEN,
+  ACCESS_TOKEN,
+  AUTH_HEADER_TOKEN,
   CONTENT_TYPE,
   DEST_OBJECT,
   DEST_DEFINITION,

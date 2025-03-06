@@ -1,3 +1,4 @@
+import { authHeader1, secret1, secret2 } from '../maskedSecrets';
 export const data = [
   {
     name: 'trengo',
@@ -11,7 +12,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiToken: 'trengo_integration_test_api_token',
+                apiToken: secret1,
                 channelId: 'trengo_email_channel',
                 channelIdentifier: 'email',
                 enableDedup: true,
@@ -71,7 +72,7 @@ export const data = [
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
-                Authorization: 'Bearer trengo_integration_test_api_token',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -105,7 +106,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiToken: 'trengo_integration_test_api_token',
+                apiToken: secret1,
                 channelId: 'trengo_email_channel',
                 channelIdentifier: 'phone',
                 enableDedup: true,
@@ -186,7 +187,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiToken: 'trengo_integration_test_api_token',
+                apiToken: secret1,
                 channelId: 'trengo_phone_channel',
                 channelIdentifier: 'phone',
                 enableDedup: true,
@@ -246,7 +247,7 @@ export const data = [
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
-                Authorization: 'Bearer trengo_integration_test_api_token',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -280,7 +281,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiToken: 'trengo_integration_test_api_token',
+                apiToken: secret1,
                 channelId: 'trengo_phone_channel',
                 channelIdentifier: 'phone',
                 enableDedup: true,
@@ -361,7 +362,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiToken: 'trengo_integration_test_api_token',
+                apiToken: secret1,
                 channelId: 'trengo_phone_channel',
                 channelIdentifier: 'phone',
                 enableDedup: true,
@@ -441,7 +442,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiToken: 'trengo_integration_test_api_token',
+                apiToken: secret1,
                 channelId: 'trengo_phone_channel',
                 channelIdentifier: 'phone',
                 enableDedup: false,
@@ -501,7 +502,7 @@ export const data = [
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
-                Authorization: 'Bearer trengo_integration_test_api_token',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -535,7 +536,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiToken: 'trengo_integration_test_api_token',
+                apiToken: secret1,
                 channelId: 'trengo_email_channel',
                 channelIdentifier: 'email',
                 enableDedup: false,
@@ -600,7 +601,7 @@ export const data = [
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
-                Authorization: 'Bearer trengo_integration_test_api_token',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -634,7 +635,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiToken: 'trengo_integration_test_api_token',
+                apiToken: secret1,
                 channelId: 'trengo_email_channel',
                 channelIdentifier: 'email',
                 enableDedup: false,
@@ -695,7 +696,7 @@ export const data = [
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
-                Authorization: 'Bearer trengo_integration_test_api_token',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -729,7 +730,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiToken: 'trengo_integration_test_api_token',
+                apiToken: secret1,
                 channelId: 'trengo_phone_channel',
                 channelIdentifier: 'phone',
                 enableDedup: false,
@@ -811,7 +812,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiToken: 'trengo_integration_test_api_token',
+                apiToken: secret1,
                 channelId: 'trengo_phone_channel',
                 channelIdentifier: 'email',
                 enableDedup: false,
@@ -878,7 +879,7 @@ export const data = [
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
-                Authorization: 'Bearer trengo_integration_test_api_token',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -912,7 +913,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiToken: 'trengo_integration_test_api_token',
+                apiToken: secret1,
                 channelId: 'trengo_phone_channel',
                 channelIdentifier: 'email',
                 enableDedup: false,
@@ -979,7 +980,7 @@ export const data = [
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
-                Authorization: 'Bearer trengo_integration_test_api_token',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -1009,7 +1010,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiToken: 'trengo_integration_test_api_token',
+                apiToken: secret1,
                 channelId: 'trengo_phone_channel',
                 channelIdentifier: 'email',
                 enableDedup: false,
@@ -1076,7 +1077,7 @@ export const data = [
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
-                Authorization: 'Bearer trengo_integration_test_api_token',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -1106,7 +1107,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiToken: 'trengo_integration_test_api_token',
+                apiToken: secret1,
                 channelId: 'trengo_phone_channel',
                 channelIdentifier: 'email',
                 enableDedup: false,
@@ -1173,7 +1174,7 @@ export const data = [
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
-                Authorization: 'Bearer trengo_integration_test_api_token',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -1207,7 +1208,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiToken: 'trengo_integration_test_api_token',
+                apiToken: secret1,
                 channelId: 'trengo_phone_channel',
                 channelIdentifier: 'email',
                 enableDedup: false,
@@ -1293,7 +1294,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiToken: 'trengo_integration_test_api_token',
+                apiToken: secret1,
                 channelId: 'trengo_phone_channel',
                 channelIdentifier: 'phone',
                 enableDedup: true,
@@ -1353,7 +1354,7 @@ export const data = [
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
-                Authorization: 'Bearer trengo_integration_test_api_token',
+                Authorization: authHeader1,
               },
               params: {},
               body: { JSON: { name: 'Thalmor Bretz 2' }, XML: {}, JSON_ARRAY: {}, FORM: {} },
@@ -1378,7 +1379,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiToken: 'trengo_integration_test_api_token',
+                apiToken: secret1,
                 channelId: 'trengo_phone_channel',
                 channelIdentifier: 'email',
                 enableDedup: false,
@@ -1443,7 +1444,7 @@ export const data = [
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
-                Authorization: 'Bearer trengo_integration_test_api_token',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -1474,7 +1475,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiToken: 'wrong_trengo_integration_test_api_token',
+                apiToken: secret2,
                 channelId: 'trengo_phone_channel',
                 channelIdentifier: 'email',
                 enableDedup: false,
@@ -1528,8 +1529,13 @@ export const data = [
         body: [
           {
             // though we are getting undefined as statusText through mocked response but we are getting that from actual response
-            error:
-              '{"message":"Inside lookupContact, failed to make request: undefined","destinationResponse":{"response":{"message":"Unauthenticated.","errors":[]},"status":401}}',
+            error: JSON.stringify({
+              message: 'Inside lookupContact, failed to make request: undefined',
+              destinationResponse: {
+                response: { message: 'Unauthenticated.', errors: [] },
+                status: 401,
+              },
+            }),
             statTags: {
               destType: 'TRENGO',
               errorCategory: 'network',

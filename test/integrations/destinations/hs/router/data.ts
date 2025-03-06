@@ -1,3 +1,4 @@
+import { authHeader1, secret1, authHeader3, secret3 } from '../maskedSecrets';
 import { destination } from './config';
 export const data = [
   {
@@ -15,7 +16,7 @@ export const data = [
                 ID: '123',
                 Config: {
                   authorizationType: 'newPrivateAppApi',
-                  accessToken: 'pat-123',
+                  accessToken: secret1,
                   apiVersion: 'newApi',
                 },
               },
@@ -74,7 +75,7 @@ export const data = [
                 method: 'POST',
                 endpoint:
                   'https://api.hubapi.com/crm/v3/associations/companies/contacts/batch/create',
-                headers: { 'Content-Type': 'application/json', Authorization: 'Bearer pat-123' },
+                headers: { 'Content-Type': 'application/json', Authorization: authHeader1 },
                 params: {},
                 body: {
                   JSON: { inputs: [{ to: { id: 1 }, from: { id: 9405415215 }, type: 'engineer' }] },
@@ -91,7 +92,7 @@ export const data = [
                 ID: '123',
                 Config: {
                   authorizationType: 'newPrivateAppApi',
-                  accessToken: 'pat-123',
+                  accessToken: secret1,
                   apiVersion: 'newApi',
                 },
               },
@@ -572,8 +573,12 @@ export const data = [
                 body: {
                   JSON: {},
                   JSON_ARRAY: {
-                    batch:
-                      '[{"email":"testhubspot1@email.com","properties":[{"property":"firstname","value":"Test Hubspot1"}]}]',
+                    batch: JSON.stringify([
+                      {
+                        email: 'testhubspot1@email.com',
+                        properties: [{ property: 'firstname', value: 'Test Hubspot1' }],
+                      },
+                    ]),
                   },
                   XML: {},
                   FORM: {},
@@ -657,8 +662,12 @@ export const data = [
                 body: {
                   JSON: {},
                   JSON_ARRAY: {
-                    batch:
-                      '[{"email":"testhubspot3@email.com","properties":[{"property":"firstname","value":"Test Hubspot3"}]}]',
+                    batch: JSON.stringify([
+                      {
+                        email: 'testhubspot3@email.com',
+                        properties: [{ property: 'firstname', value: 'Test Hubspot3' }],
+                      },
+                    ]),
                   },
                   XML: {},
                   FORM: {},
@@ -701,8 +710,12 @@ export const data = [
                 body: {
                   JSON: {},
                   JSON_ARRAY: {
-                    batch:
-                      '[{"email":"testhubspot4@email.com","properties":[{"property":"firstname","value":"Test Hubspot4"}]}]',
+                    batch: JSON.stringify([
+                      {
+                        email: 'testhubspot4@email.com',
+                        properties: [{ property: 'firstname', value: 'Test Hubspot4' }],
+                      },
+                    ]),
                   },
                   XML: {},
                   FORM: {},
@@ -778,7 +791,7 @@ export const data = [
               destination: {
                 Config: {
                   authorizationType: 'newPrivateAppApi',
-                  accessToken: 'dummy-access-token',
+                  accessToken: secret1,
                   hubID: 'dummy-hubId',
                   apiKey: 'dummy-apikey',
                   apiVersion: 'newApi',
@@ -855,7 +868,7 @@ export const data = [
               destination: {
                 Config: {
                   authorizationType: 'newPrivateAppApi',
-                  accessToken: 'dummy-access-token',
+                  accessToken: secret1,
                   hubID: 'dummy-hubId',
                   apiKey: 'dummy-apikey',
                   apiVersion: 'newApi',
@@ -943,7 +956,7 @@ export const data = [
               destination: {
                 Config: {
                   authorizationType: 'newPrivateAppApi',
-                  accessToken: 'dummy-access-token',
+                  accessToken: secret1,
                   hubID: 'dummy-hubId',
                   apiKey: 'dummy-apikey',
                   apiVersion: 'newApi',
@@ -1010,7 +1023,7 @@ export const data = [
                 endpoint: 'https://api.hubapi.com/crm/v3/objects/lead/batch/create',
                 headers: {
                   'Content-Type': 'application/json',
-                  Authorization: 'Bearer dummy-access-token',
+                  Authorization: authHeader1,
                 },
                 params: {},
                 body: {
@@ -1052,7 +1065,7 @@ export const data = [
               destination: {
                 Config: {
                   authorizationType: 'newPrivateAppApi',
-                  accessToken: 'dummy-access-token',
+                  accessToken: secret1,
                   hubID: 'dummy-hubId',
                   apiKey: 'dummy-apikey',
                   apiVersion: 'newApi',
@@ -1107,7 +1120,7 @@ export const data = [
                 endpoint: 'https://api.hubapi.com/crm/v3/objects/lead/batch/update',
                 headers: {
                   'Content-Type': 'application/json',
-                  Authorization: 'Bearer dummy-access-token',
+                  Authorization: authHeader1,
                 },
                 params: {},
                 body: {
@@ -1135,7 +1148,7 @@ export const data = [
               destination: {
                 Config: {
                   authorizationType: 'newPrivateAppApi',
-                  accessToken: 'dummy-access-token',
+                  accessToken: secret1,
                   hubID: 'dummy-hubId',
                   apiKey: 'dummy-apikey',
                   apiVersion: 'newApi',
@@ -1233,7 +1246,7 @@ export const data = [
               destination: {
                 Config: {
                   authorizationType: 'newPrivateAppApi',
-                  accessToken: 'dummy-access-token',
+                  accessToken: secret1,
                   hubID: 'dummy-hubId',
                   apiKey: 'dummy-apikey',
                   apiVersion: 'newApi',
@@ -1316,7 +1329,7 @@ export const data = [
               destination: {
                 Config: {
                   authorizationType: 'newPrivateAppApi',
-                  accessToken: 'dummy-access-token',
+                  accessToken: secret1,
                   hubID: 'dummy-hubId',
                   apiKey: 'dummy-apikey',
                   apiVersion: 'newApi',
@@ -1399,7 +1412,7 @@ export const data = [
               destination: {
                 Config: {
                   authorizationType: 'newPrivateAppApi',
-                  accessToken: 'dummy-access-token',
+                  accessToken: secret1,
                   hubID: 'dummy-hubId',
                   apiKey: 'dummy-apikey',
                   apiVersion: 'newApi',
@@ -1482,7 +1495,7 @@ export const data = [
               destination: {
                 Config: {
                   authorizationType: 'newPrivateAppApi',
-                  accessToken: 'dummy-access-token',
+                  accessToken: secret1,
                   hubID: 'dummy-hubId',
                   apiKey: 'dummy-apikey',
                   apiVersion: 'newApi',
@@ -1549,7 +1562,7 @@ export const data = [
               destination: {
                 Config: {
                   authorizationType: 'newPrivateAppApi',
-                  accessToken: 'dummy-access-token',
+                  accessToken: secret1,
                   hubID: 'dummy-hubId',
                   apiKey: 'dummy-apikey',
                   apiVersion: 'newApi',
@@ -1615,7 +1628,7 @@ export const data = [
                 endpoint: 'https://api.hubapi.com/crm/v3/objects/contacts/batch/create',
                 headers: {
                   'Content-Type': 'application/json',
-                  Authorization: 'Bearer dummy-access-token',
+                  Authorization: authHeader1,
                 },
                 params: {},
                 body: {
@@ -1644,7 +1657,7 @@ export const data = [
               destination: {
                 Config: {
                   authorizationType: 'newPrivateAppApi',
-                  accessToken: 'dummy-access-token',
+                  accessToken: secret1,
                   hubID: 'dummy-hubId',
                   apiKey: 'dummy-apikey',
                   apiVersion: 'newApi',
@@ -1699,7 +1712,7 @@ export const data = [
                 endpoint: 'https://api.hubapi.com/events/v3/send',
                 headers: {
                   'Content-Type': 'application/json',
-                  Authorization: 'Bearer dummy-access-token',
+                  Authorization: authHeader1,
                 },
                 params: {},
                 body: {
@@ -1720,7 +1733,7 @@ export const data = [
               destination: {
                 Config: {
                   authorizationType: 'newPrivateAppApi',
-                  accessToken: 'dummy-access-token',
+                  accessToken: secret1,
                   hubID: 'dummy-hubId',
                   apiKey: 'dummy-apikey',
                   apiVersion: 'newApi',
@@ -1811,7 +1824,7 @@ export const data = [
               destination: {
                 Config: {
                   authorizationType: 'newPrivateAppApi',
-                  accessToken: 'dummy-access-token-hs-additonal-email',
+                  accessToken: secret3,
                   hubID: 'dummy-hubId',
                   apiKey: 'dummy-apikey',
                   apiVersion: 'newApi',
@@ -1857,7 +1870,7 @@ export const data = [
                 endpoint: 'https://api.hubapi.com/crm/v3/objects/contacts/batch/update',
                 headers: {
                   'Content-Type': 'application/json',
-                  Authorization: 'Bearer dummy-access-token-hs-additonal-email',
+                  Authorization: authHeader3,
                 },
                 params: {},
                 body: {
@@ -1881,7 +1894,7 @@ export const data = [
               destination: {
                 Config: {
                   authorizationType: 'newPrivateAppApi',
-                  accessToken: 'dummy-access-token-hs-additonal-email',
+                  accessToken: secret3,
                   hubID: 'dummy-hubId',
                   apiKey: 'dummy-apikey',
                   apiVersion: 'newApi',
@@ -1961,7 +1974,7 @@ export const data = [
                 ID: '2RnSBhn4zPTOF8NdqAIrnVPPnfr',
                 Name: 'hs-1',
                 Config: {
-                  accessToken: 'dontbatchtrueaccesstoken',
+                  accessToken: secret1,
                   apiKey: '',
                   apiVersion: 'newApi',
                   authorizationType: 'newPrivateAppApi',
@@ -2037,7 +2050,7 @@ export const data = [
                 ID: '2RnSBhn4zPTOF8NdqAIrnVPPnfr',
                 Name: 'hs-1',
                 Config: {
-                  accessToken: 'dontbatchtrueaccesstoken',
+                  accessToken: secret1,
                   apiKey: '',
                   apiVersion: 'newApi',
                   authorizationType: 'newPrivateAppApi',
@@ -2111,7 +2124,7 @@ export const data = [
                 ID: '2RnSBhn4zPTOF8NdqAIrnVPPnfr',
                 Name: 'hs-1',
                 Config: {
-                  accessToken: 'dontbatchtrueaccesstoken',
+                  accessToken: secret1,
                   apiKey: '',
                   apiVersion: 'newApi',
                   authorizationType: 'newPrivateAppApi',
@@ -2186,7 +2199,7 @@ export const data = [
                 ID: '2RnSBhn4zPTOF8NdqAIrnVPPnfr',
                 Name: 'hs-1',
                 Config: {
-                  accessToken: 'dontbatchtrueaccesstoken',
+                  accessToken: secret1,
                   apiKey: '',
                   apiVersion: 'newApi',
                   authorizationType: 'newPrivateAppApi',
@@ -2269,7 +2282,7 @@ export const data = [
                 endpoint: 'https://api.hubapi.com/crm/v3/objects/contacts/batch/create',
                 files: {},
                 headers: {
-                  Authorization: 'Bearer dontbatchtrueaccesstoken',
+                  Authorization: authHeader1,
                   'Content-Type': 'application/json',
                 },
                 method: 'POST',
@@ -2279,7 +2292,7 @@ export const data = [
               },
               destination: {
                 Config: {
-                  accessToken: 'dontbatchtrueaccesstoken',
+                  accessToken: secret1,
                   apiKey: '',
                   apiVersion: 'newApi',
                   authorizationType: 'newPrivateAppApi',
@@ -2358,7 +2371,7 @@ export const data = [
                 endpoint: 'https://api.hubapi.com/crm/v3/objects/contacts',
                 files: {},
                 headers: {
-                  Authorization: 'Bearer dontbatchtrueaccesstoken',
+                  Authorization: authHeader1,
                   'Content-Type': 'application/json',
                 },
                 method: 'POST',
@@ -2368,7 +2381,7 @@ export const data = [
               },
               destination: {
                 Config: {
-                  accessToken: 'dontbatchtrueaccesstoken',
+                  accessToken: secret1,
                   apiKey: '',
                   apiVersion: 'newApi',
                   authorizationType: 'newPrivateAppApi',
@@ -2438,7 +2451,7 @@ export const data = [
                 endpoint: 'https://api.hubapi.com/crm/v3/objects/contacts',
                 files: {},
                 headers: {
-                  Authorization: 'Bearer dontbatchtrueaccesstoken',
+                  Authorization: authHeader1,
                   'Content-Type': 'application/json',
                 },
                 method: 'POST',
@@ -2448,7 +2461,7 @@ export const data = [
               },
               destination: {
                 Config: {
-                  accessToken: 'dontbatchtrueaccesstoken',
+                  accessToken: secret1,
                   apiKey: '',
                   apiVersion: 'newApi',
                   authorizationType: 'newPrivateAppApi',
@@ -2552,7 +2565,7 @@ export const data = [
                 ID: '2RnSBhn4zPTOF8NdqAIrnVPPnfr',
                 Name: 'hs-1',
                 Config: {
-                  accessToken: 'dontbatchtrueaccesstoken',
+                  accessToken: secret1,
                   apiKey: '',
                   apiVersion: 'newApi',
                   authorizationType: 'newPrivateAppApi',
@@ -2627,7 +2640,7 @@ export const data = [
                 ID: '2RnSBhn4zPTOF8NdqAIrnVPPnfr',
                 Name: 'hs-1',
                 Config: {
-                  accessToken: 'dontbatchtrueaccesstoken',
+                  accessToken: secret1,
                   apiKey: '',
                   apiVersion: 'newApi',
                   authorizationType: 'newPrivateAppApi',
@@ -2710,7 +2723,7 @@ export const data = [
                 endpoint: 'https://api.hubapi.com/crm/v3/objects/contacts/batch/create',
                 files: {},
                 headers: {
-                  Authorization: 'Bearer dontbatchtrueaccesstoken',
+                  Authorization: authHeader1,
                   'Content-Type': 'application/json',
                 },
                 method: 'POST',
@@ -2720,7 +2733,7 @@ export const data = [
               },
               destination: {
                 Config: {
-                  accessToken: 'dontbatchtrueaccesstoken',
+                  accessToken: secret1,
                   apiKey: '',
                   apiVersion: 'newApi',
                   authorizationType: 'newPrivateAppApi',
@@ -3056,7 +3069,7 @@ export const data = [
                 endpoint: 'https://api.hubapi.com/crm/v3/objects/contacts/batch/create',
                 headers: {
                   'Content-Type': 'application/json',
-                  Authorization: 'Bearer dummy-access-token',
+                  Authorization: authHeader1,
                 },
                 params: {},
                 body: {
@@ -3104,7 +3117,7 @@ export const data = [
                 endpoint: 'https://api.hubapi.com/events/v3/send',
                 headers: {
                   'Content-Type': 'application/json',
-                  Authorization: 'Bearer dummy-access-token',
+                  Authorization: authHeader1,
                 },
                 params: {},
                 body: {
@@ -3137,7 +3150,7 @@ export const data = [
                 endpoint: 'https://api.hubapi.com/events/v3/send',
                 headers: {
                   'Content-Type': 'application/json',
-                  Authorization: 'Bearer dummy-access-token',
+                  Authorization: authHeader1,
                 },
                 params: {},
                 body: {
@@ -3170,7 +3183,7 @@ export const data = [
                 endpoint: 'https://api.hubapi.com/events/v3/send',
                 headers: {
                   'Content-Type': 'application/json',
-                  Authorization: 'Bearer dummy-access-token',
+                  Authorization: authHeader1,
                 },
                 params: {},
                 body: {
@@ -3203,7 +3216,7 @@ export const data = [
                 endpoint: 'https://api.hubapi.com/events/v3/send',
                 headers: {
                   'Content-Type': 'application/json',
-                  Authorization: 'Bearer dummy-access-token',
+                  Authorization: authHeader1,
                 },
                 params: {},
                 body: {
@@ -3236,7 +3249,7 @@ export const data = [
                 endpoint: 'https://api.hubapi.com/events/v3/send',
                 headers: {
                   'Content-Type': 'application/json',
-                  Authorization: 'Bearer dummy-access-token',
+                  Authorization: authHeader1,
                 },
                 params: {},
                 body: {
@@ -3269,7 +3282,7 @@ export const data = [
                 endpoint: 'https://api.hubapi.com/crm/v3/objects/contacts/batch/create',
                 headers: {
                   'Content-Type': 'application/json',
-                  Authorization: 'Bearer dummy-access-token',
+                  Authorization: authHeader1,
                 },
                 params: {},
                 body: {
@@ -3480,8 +3493,23 @@ export const data = [
                 updatedAt: '2021-02-03T16:22:31.374Z',
                 workspaceId: '1TSN08muJTZwH8iCDmnnRt1pmLd',
               },
-              error:
-                '{"message":"Failed to get hubspot properties: {\\"status\\":\\"error\\",\\"message\\":\\"The API key provided is invalid. View or manage your API key here: https://app.hubspot.com/l/api-key/\\",\\"correlationId\\":\\"4d39ff11-e121-4514-bcd8-132a9dd1ff50\\",\\"category\\":\\"INVALID_AUTHENTICATION\\",\\"links\\":{\\"api key\\":\\"https://app.hubspot.com/l/api-key/\\"}}","destinationResponse":{"response":{"status":"error","message":"The API key provided is invalid. View or manage your API key here: https://app.hubspot.com/l/api-key/","correlationId":"4d39ff11-e121-4514-bcd8-132a9dd1ff50","category":"INVALID_AUTHENTICATION","links":{"api key":"https://app.hubspot.com/l/api-key/"}},"status":401}}',
+              error: JSON.stringify({
+                message:
+                  'Failed to get hubspot properties: {"status":"error","message":"The API key provided is invalid. View or manage your API key here: https://app.hubspot.com/l/api-key/","correlationId":"4d39ff11-e121-4514-bcd8-132a9dd1ff50","category":"INVALID_AUTHENTICATION","links":{"api key":"https://app.hubspot.com/l/api-key/"}}',
+                destinationResponse: {
+                  response: {
+                    status: 'error',
+                    message:
+                      'The API key provided is invalid. View or manage your API key here: https://app.hubspot.com/l/api-key/',
+                    correlationId: '4d39ff11-e121-4514-bcd8-132a9dd1ff50',
+                    category: 'INVALID_AUTHENTICATION',
+                    links: {
+                      'api key': 'https://app.hubspot.com/l/api-key/',
+                    },
+                  },
+                  status: 401,
+                },
+              }),
               metadata: [
                 {
                   jobId: 2,
@@ -3524,8 +3552,23 @@ export const data = [
                 updatedAt: '2021-02-03T16:22:31.374Z',
                 workspaceId: '1TSN08muJTZwH8iCDmnnRt1pmLd',
               },
-              error:
-                '{"message":"Failed to get hubspot properties: {\\"status\\":\\"error\\",\\"message\\":\\"The API key provided is invalid. View or manage your API key here: https://app.hubspot.com/l/api-key/\\",\\"correlationId\\":\\"4d39ff11-e121-4514-bcd8-132a9dd1ff50\\",\\"category\\":\\"INVALID_AUTHENTICATION\\",\\"links\\":{\\"api key\\":\\"https://app.hubspot.com/l/api-key/\\"}}","destinationResponse":{"response":{"status":"error","message":"The API key provided is invalid. View or manage your API key here: https://app.hubspot.com/l/api-key/","correlationId":"4d39ff11-e121-4514-bcd8-132a9dd1ff50","category":"INVALID_AUTHENTICATION","links":{"api key":"https://app.hubspot.com/l/api-key/"}},"status":401}}',
+              error: JSON.stringify({
+                message:
+                  'Failed to get hubspot properties: {"status":"error","message":"The API key provided is invalid. View or manage your API key here: https://app.hubspot.com/l/api-key/","correlationId":"4d39ff11-e121-4514-bcd8-132a9dd1ff50","category":"INVALID_AUTHENTICATION","links":{"api key":"https://app.hubspot.com/l/api-key/"}}',
+                destinationResponse: {
+                  response: {
+                    status: 'error',
+                    message:
+                      'The API key provided is invalid. View or manage your API key here: https://app.hubspot.com/l/api-key/',
+                    correlationId: '4d39ff11-e121-4514-bcd8-132a9dd1ff50',
+                    category: 'INVALID_AUTHENTICATION',
+                    links: {
+                      'api key': 'https://app.hubspot.com/l/api-key/',
+                    },
+                  },
+                  status: 401,
+                },
+              }),
               metadata: [
                 {
                   jobId: 3,
@@ -3587,7 +3630,7 @@ export const data = [
                   authorizationType: 'newPrivateAppApi',
                   hubID: '',
                   apiKey: '',
-                  accessToken: 'dummy-access-token',
+                  accessToken: secret1,
                   apiVersion: 'newApi',
                   lookupField: 'lookupField',
                   eventFilteringOption: 'disable',
@@ -3621,7 +3664,7 @@ export const data = [
               batched: false,
               destination: {
                 Config: {
-                  accessToken: 'dummy-access-token',
+                  accessToken: secret1,
                   apiKey: '',
                   apiVersion: 'newApi',
                   authorizationType: 'newPrivateAppApi',

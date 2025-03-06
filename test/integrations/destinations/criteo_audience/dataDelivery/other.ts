@@ -172,7 +172,7 @@ export const v1OtherScenarios: ProxyV1TestData[] = [
             status: 400,
             response: [
               {
-                error: '{"message":"unknown error"}',
+                error: JSON.stringify({ message: 'unknown error' }),
                 metadata: generateMetadata(3),
                 statusCode: 400,
               },

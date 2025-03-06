@@ -1,4 +1,5 @@
 import { generateMetadata } from '../../../testUtils';
+import { authHeader1 } from '../maskedSecrets';
 
 const commonStatTags = {
   destType: 'HS',
@@ -17,7 +18,7 @@ const commonBody = {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
-    Authorization: 'Bearer dummyAccessToken',
+    Authorization: authHeader1,
   },
   params: {},
   files: {},
@@ -188,7 +189,7 @@ export const otherData = [
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: 'Bearer dummyAccessToken',
+            Authorization: authHeader1,
           },
           params: {},
           files: {},

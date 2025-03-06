@@ -1,3 +1,4 @@
+import { authHeader1, secret1 } from '../maskedSecrets';
 export const data = [
   {
     name: 'refiner',
@@ -38,7 +39,7 @@ export const data = [
               metadata: { jobId: 1, userId: 'u1' },
               destination: {
                 Config: {
-                  apiKey: 'dummyApiKey',
+                  apiKey: secret1,
                   blacklistedEvents: [{ eventName: '' }],
                   eventDelivery: true,
                   eventDeliveryTS: 1665475307930,
@@ -82,7 +83,7 @@ export const data = [
                 endpoint: 'https://api.refiner.io/v1/identify-user',
                 files: {},
                 headers: {
-                  Authorization: 'Bearer dummyApiKey',
+                  Authorization: authHeader1,
                   'Content-Type': 'application/x-www-form-urlencoded',
                 },
                 method: 'POST',
@@ -92,7 +93,7 @@ export const data = [
               },
               destination: {
                 Config: {
-                  apiKey: 'dummyApiKey',
+                  apiKey: secret1,
                   blacklistedEvents: [{ eventName: '' }],
                   eventDelivery: true,
                   eventDeliveryTS: 1665475307930,
@@ -177,7 +178,7 @@ export const data = [
               metadata: { jobId: 2, userId: 'u1' },
               destination: {
                 Config: {
-                  apiKey: 'dummyApiKey',
+                  apiKey: secret1,
                   blacklistedEvents: [{ eventName: '' }],
                   eventDelivery: true,
                   eventDeliveryTS: 1665475307930,
@@ -210,7 +211,7 @@ export const data = [
                 endpoint: 'https://api.refiner.io/v1/track',
                 files: {},
                 headers: {
-                  Authorization: 'Bearer dummyApiKey',
+                  Authorization: authHeader1,
                   'Content-Type': 'application/x-www-form-urlencoded',
                 },
                 method: 'POST',
@@ -220,7 +221,7 @@ export const data = [
               },
               destination: {
                 Config: {
-                  apiKey: 'dummyApiKey',
+                  apiKey: secret1,
                   blacklistedEvents: [{ eventName: '' }],
                   eventDelivery: true,
                   eventDeliveryTS: 1665475307930,
@@ -269,7 +270,7 @@ export const data = [
               destination: {
                 Config: {
                   accountAttributesMapping: [{ from: 'email', to: 'businessEmail' }],
-                  apiKey: 'dummyApiKey',
+                  apiKey: secret1,
                   blacklistedEvents: [{ eventName: '' }],
                   eventDelivery: true,
                   eventDeliveryTS: 1665476456112,
@@ -307,7 +308,7 @@ export const data = [
                 endpoint: 'https://api.refiner.io/v1/identify-user',
                 files: {},
                 headers: {
-                  Authorization: 'Bearer dummyApiKey',
+                  Authorization: authHeader1,
                   'Content-Type': 'application/x-www-form-urlencoded',
                 },
                 method: 'POST',
@@ -318,7 +319,7 @@ export const data = [
               destination: {
                 Config: {
                   accountAttributesMapping: [{ from: 'email', to: 'businessEmail' }],
-                  apiKey: 'dummyApiKey',
+                  apiKey: secret1,
                   blacklistedEvents: [{ eventName: '' }],
                   eventDelivery: true,
                   eventDeliveryTS: 1665476456112,

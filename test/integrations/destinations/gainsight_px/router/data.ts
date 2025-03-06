@@ -448,10 +448,13 @@ export const data = [
                     date: 1624704082335,
                     attributes: {
                       array: '[1,2,3]',
-                      nested: '{"json":"test"}',
+                      nested: JSON.stringify({ json: 'test' }),
                       status: 'testing',
                       description: 'Example track call',
-                      fullyNested: '[{"a":1,"b":2},{"a":1,"b":[1,2,3]}]',
+                      fullyNested: JSON.stringify([
+                        { a: 1, b: 2 },
+                        { a: 1, b: [1, 2, 3] },
+                      ]),
                     },
                     url: 'file:///Users/anurajguha/workspace/simple-html-test/index.html',
                     referrer: '$direct',
@@ -595,8 +598,12 @@ export const data = [
         body: {
           output: [
             {
-              error:
-                '{"message":"error while fetching user: \\"<!doctype html><meta charset=\\\\\\"utf-8\\\\\\"><meta name=viewport content=\\\\\\"width=device-width, initial-scale=1\\\\\\"><title>403</title>403 Forbidden\\"","destinationResponse":"<!doctype html><meta charset=\\"utf-8\\"><meta name=viewport content=\\"width=device-width, initial-scale=1\\"><title>403</title>403 Forbidden"}',
+              error: JSON.stringify({
+                message:
+                  'error while fetching user: "<!doctype html><meta charset=\\"utf-8\\"><meta name=viewport content=\\"width=device-width, initial-scale=1\\"><title>403</title>403 Forbidden"',
+                destinationResponse:
+                  '<!doctype html><meta charset="utf-8"><meta name=viewport content="width=device-width, initial-scale=1"><title>403</title>403 Forbidden',
+              }),
               statTags: {
                 destType: 'GAINSIGHT_PX',
                 destinationId: destination2.ID,

@@ -1,4 +1,6 @@
 import crypto from 'crypto';
+import { HEADER_BLOCK, NONCE, TIMESTAMP } from '../constants';
+
 const config = {
   discardEmptyProperties: true,
   emersysUsername: 'dummy',
@@ -48,11 +50,11 @@ const commonDestination = {
   Enabled: true,
 };
 
-const buf = Buffer.from('5398e214ae99c2e50afb709a3bc423f9', 'hex');
+const buf = Buffer.from(NONCE, 'hex');
 
 export const mockFns = (_) => {
   // @ts-ignore
-  jest.spyOn(Date.prototype, 'toISOString').mockReturnValueOnce('2019-10-14T00:00:00.000Z');
+  jest.spyOn(Date.prototype, 'toISOString').mockReturnValueOnce(TIMESTAMP);
   // @ts-ignore
   jest.spyOn(crypto, 'randomBytes').mockReturnValue(buf);
 };
@@ -422,8 +424,7 @@ export const data = [
                 headers: {
                   'Content-Type': 'application/json',
                   Accept: 'application/json',
-                  'X-WSSE':
-                    'UsernameToken Username="dummy", PasswordDigest="NDc5MjNlODIyMGE4ODhiMTQyNTA0OGMzZTFjZTM1MmMzMmU0NmNiNw==", Nonce="5398e214ae99c2e50afb709a3bc423f9", Created="2019-10-14T00:00:00.000Z"',
+                  'X-WSSE': HEADER_BLOCK,
                 },
                 params: {},
                 files: {},
@@ -471,8 +472,7 @@ export const data = [
                 headers: {
                   'Content-Type': 'application/json',
                   Accept: 'application/json',
-                  'X-WSSE':
-                    'UsernameToken Username="dummy", PasswordDigest="NDc5MjNlODIyMGE4ODhiMTQyNTA0OGMzZTFjZTM1MmMzMmU0NmNiNw==", Nonce="5398e214ae99c2e50afb709a3bc423f9", Created="2019-10-14T00:00:00.000Z"',
+                  'X-WSSE': HEADER_BLOCK,
                 },
                 params: {},
                 files: {},
@@ -514,8 +514,7 @@ export const data = [
                 headers: {
                   'Content-Type': 'application/json',
                   Accept: 'application/json',
-                  'X-WSSE':
-                    'UsernameToken Username="dummy", PasswordDigest="NDc5MjNlODIyMGE4ODhiMTQyNTA0OGMzZTFjZTM1MmMzMmU0NmNiNw==", Nonce="5398e214ae99c2e50afb709a3bc423f9", Created="2019-10-14T00:00:00.000Z"',
+                  'X-WSSE': HEADER_BLOCK,
                 },
                 params: {},
                 files: {},
@@ -550,8 +549,7 @@ export const data = [
                 headers: {
                   'Content-Type': 'application/json',
                   Accept: 'application/json',
-                  'X-WSSE':
-                    'UsernameToken Username="dummy", PasswordDigest="NDc5MjNlODIyMGE4ODhiMTQyNTA0OGMzZTFjZTM1MmMzMmU0NmNiNw==", Nonce="5398e214ae99c2e50afb709a3bc423f9", Created="2019-10-14T00:00:00.000Z"',
+                  'X-WSSE': HEADER_BLOCK,
                 },
                 params: {},
                 files: {},
@@ -615,8 +613,7 @@ export const data = [
                 headers: {
                   'Content-Type': 'application/json',
                   Accept: 'application/json',
-                  'X-WSSE':
-                    'UsernameToken Username="dummy", PasswordDigest="NDc5MjNlODIyMGE4ODhiMTQyNTA0OGMzZTFjZTM1MmMzMmU0NmNiNw==", Nonce="5398e214ae99c2e50afb709a3bc423f9", Created="2019-10-14T00:00:00.000Z"',
+                  'X-WSSE': HEADER_BLOCK,
                 },
                 params: {},
                 files: {},

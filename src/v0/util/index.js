@@ -2399,8 +2399,7 @@ const unwrapArrayValues = (payload) => {
   const result = {};
   Object.keys(payload).forEach((key) => {
     if (Array.isArray(payload[key]) && payload[key].length === 1) {
-      const [value] = payload[key];
-      result[key] = value;
+      [result[key]] = payload[key];
     } else {
       result[key] = payload[key];
     }

@@ -1,3 +1,4 @@
+import { authHeader1, secret1 } from '../maskedSecrets';
 export const data = [
   {
     name: 'snapchat_custom_audience',
@@ -11,7 +12,7 @@ export const data = [
           {
             metadata: {
               secret: {
-                access_token: 'dummyAccessToken',
+                access_token: secret1,
                 refresh_token: 'dummyRefreshToken',
                 developer_token: 'dummyDeveloperToken',
               },
@@ -66,7 +67,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://adsapi.snapchat.com/v1/segments/123/users',
               headers: {
-                Authorization: 'Bearer dummyAccessToken',
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
               params: {},
@@ -88,7 +89,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                access_token: 'dummyAccessToken',
+                access_token: secret1,
                 refresh_token: 'dummyRefreshToken',
                 developer_token: 'dummyDeveloperToken',
               },
@@ -111,7 +112,7 @@ export const data = [
           {
             metadata: {
               secret: {
-                access_token: 'dummyAccessToken',
+                access_token: secret1,
                 refresh_token: 'dummyRefreshToken',
                 developer_token: 'dummyDeveloperToken',
               },
@@ -166,7 +167,7 @@ export const data = [
               method: 'DELETE',
               endpoint: 'https://adsapi.snapchat.com/v1/segments/123/users',
               headers: {
-                Authorization: 'Bearer dummyAccessToken',
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
               params: {},
@@ -189,7 +190,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                access_token: 'dummyAccessToken',
+                access_token: secret1,
                 refresh_token: 'dummyRefreshToken',
                 developer_token: 'dummyDeveloperToken',
               },
@@ -212,7 +213,7 @@ export const data = [
           {
             metadata: {
               secret: {
-                access_token: 'dummyAccessToken',
+                access_token: secret1,
                 refresh_token: 'dummyRefreshToken',
                 developer_token: 'dummyDeveloperToken',
               },
@@ -277,7 +278,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://adsapi.snapchat.com/v1/segments/123/users',
               headers: {
-                Authorization: 'Bearer dummyAccessToken',
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
               params: {},
@@ -299,7 +300,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                access_token: 'dummyAccessToken',
+                access_token: secret1,
                 refresh_token: 'dummyRefreshToken',
                 developer_token: 'dummyDeveloperToken',
               },
@@ -313,7 +314,7 @@ export const data = [
               method: 'DELETE',
               endpoint: 'https://adsapi.snapchat.com/v1/segments/123/users',
               headers: {
-                Authorization: 'Bearer dummyAccessToken',
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
               params: {},
@@ -336,7 +337,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                access_token: 'dummyAccessToken',
+                access_token: secret1,
                 refresh_token: 'dummyRefreshToken',
                 developer_token: 'dummyDeveloperToken',
               },
@@ -359,7 +360,7 @@ export const data = [
           {
             metadata: {
               secret: {
-                access_token: 'dummyAccessToken',
+                access_token: secret1,
                 refresh_token: 'dummyRefreshToken',
                 developer_token: 'dummyDeveloperToken',
               },
@@ -422,7 +423,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://adsapi.snapchat.com/v1/segments/123/users',
               headers: {
-                Authorization: 'Bearer dummyAccessToken',
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
               params: {},
@@ -447,7 +448,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                access_token: 'dummyAccessToken',
+                access_token: secret1,
                 refresh_token: 'dummyRefreshToken',
                 developer_token: 'dummyDeveloperToken',
               },
@@ -470,7 +471,7 @@ export const data = [
           {
             metadata: {
               secret: {
-                access_token: 'dummyAccessToken',
+                access_token: secret1,
                 refresh_token: 'dummyRefreshToken',
                 developer_token: 'dummyDeveloperToken',
               },
@@ -533,7 +534,7 @@ export const data = [
               method: 'DELETE',
               endpoint: 'https://adsapi.snapchat.com/v1/segments/123/users',
               headers: {
-                Authorization: 'Bearer dummyAccessToken',
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
               params: {},
@@ -559,7 +560,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                access_token: 'dummyAccessToken',
+                access_token: secret1,
                 refresh_token: 'dummyRefreshToken',
                 developer_token: 'dummyDeveloperToken',
               },
@@ -582,7 +583,7 @@ export const data = [
           {
             metadata: {
               secret: {
-                access_token: 'dummyAccessToken',
+                access_token: secret1,
                 refresh_token: 'dummyRefreshToken',
                 developer_token: 'dummyDeveloperToken',
               },
@@ -633,7 +634,7 @@ export const data = [
           {
             metadata: {
               secret: {
-                access_token: 'dummyAccessToken',
+                access_token: secret1,
                 refresh_token: 'dummyRefreshToken',
                 developer_token: 'dummyDeveloperToken',
               },
@@ -665,7 +666,7 @@ export const data = [
           {
             metadata: {
               secret: {
-                access_token: 'dummyAccessToken',
+                access_token: secret1,
                 refresh_token: 'dummyRefreshToken',
                 developer_token: 'dummyDeveloperToken',
               },
@@ -715,7 +716,7 @@ export const data = [
           {
             metadata: {
               secret: {
-                access_token: 'dummyAccessToken',
+                access_token: secret1,
                 refresh_token: 'dummyRefreshToken',
                 developer_token: 'dummyDeveloperToken',
               },
@@ -747,7 +748,7 @@ export const data = [
           {
             metadata: {
               secret: {
-                access_token: 'dummyAccessToken',
+                access_token: secret1,
                 refresh_token: 'dummyRefreshToken',
                 developer_token: 'dummyDeveloperToken',
               },
@@ -783,7 +784,7 @@ export const data = [
           {
             metadata: {
               secret: {
-                access_token: 'dummyAccessToken',
+                access_token: secret1,
                 refresh_token: 'dummyRefreshToken',
                 developer_token: 'dummyDeveloperToken',
               },
@@ -815,7 +816,7 @@ export const data = [
           {
             metadata: {
               secret: {
-                access_token: 'dummyAccessToken',
+                access_token: secret1,
                 refresh_token: 'dummyRefreshToken',
                 developer_token: 'dummyDeveloperToken',
               },
@@ -854,7 +855,7 @@ export const data = [
           {
             metadata: {
               secret: {
-                access_token: 'dummyAccessToken',
+                access_token: secret1,
                 refresh_token: 'dummyRefreshToken',
                 developer_token: 'dummyDeveloperToken',
               },
@@ -886,7 +887,7 @@ export const data = [
           {
             metadata: {
               secret: {
-                access_token: 'dummyAccessToken',
+                access_token: secret1,
                 refresh_token: 'dummyRefreshToken',
                 developer_token: 'dummyDeveloperToken',
               },
@@ -928,7 +929,7 @@ export const data = [
           {
             metadata: {
               secret: {
-                access_token: 'dummyAccessToken',
+                access_token: secret1,
                 refresh_token: 'dummyRefreshToken',
                 developer_token: 'dummyDeveloperToken',
               },
@@ -961,7 +962,7 @@ export const data = [
           {
             metadata: {
               secret: {
-                access_token: 'dummyAccessToken',
+                access_token: secret1,
                 refresh_token: 'dummyRefreshToken',
                 developer_token: 'dummyDeveloperToken',
               },
@@ -1019,7 +1020,7 @@ export const data = [
           {
             metadata: {
               secret: {
-                access_token: 'dummyAccessToken',
+                access_token: secret1,
                 refresh_token: 'dummyRefreshToken',
                 developer_token: 'dummyDeveloperToken',
               },
@@ -1051,7 +1052,7 @@ export const data = [
           {
             metadata: {
               secret: {
-                access_token: 'dummyAccessToken',
+                access_token: secret1,
                 refresh_token: 'dummyRefreshToken',
                 developer_token: 'dummyDeveloperToken',
               },
@@ -1113,7 +1114,7 @@ export const data = [
               method: 'DELETE',
               endpoint: 'https://adsapi.snapchat.com/v1/segments/123/users',
               headers: {
-                Authorization: 'Bearer dummyAccessToken',
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
               params: {},
@@ -1136,7 +1137,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                access_token: 'dummyAccessToken',
+                access_token: secret1,
                 refresh_token: 'dummyRefreshToken',
                 developer_token: 'dummyDeveloperToken',
               },
@@ -1159,7 +1160,7 @@ export const data = [
           {
             metadata: {
               secret: {
-                access_token: 'dummyAccessToken',
+                access_token: secret1,
                 refresh_token: 'dummyRefreshToken',
                 developer_token: 'dummyDeveloperToken',
               },
@@ -1214,7 +1215,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://adsapi.snapchat.com/v1/segments/123/users',
               headers: {
-                Authorization: 'Bearer dummyAccessToken',
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
               params: {},
@@ -1236,7 +1237,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                access_token: 'dummyAccessToken',
+                access_token: secret1,
                 refresh_token: 'dummyRefreshToken',
                 developer_token: 'dummyDeveloperToken',
               },
@@ -1259,7 +1260,7 @@ export const data = [
           {
             metadata: {
               secret: {
-                access_token: 'dummyAccessToken',
+                access_token: secret1,
                 refresh_token: 'dummyRefreshToken',
                 developer_token: 'dummyDeveloperToken',
               },
@@ -1315,7 +1316,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://adsapi.snapchat.com/v1/segments/123/users',
               headers: {
-                Authorization: 'Bearer dummyAccessToken',
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
               params: {},
@@ -1337,7 +1338,7 @@ export const data = [
             },
             metadata: {
               secret: {
-                access_token: 'dummyAccessToken',
+                access_token: secret1,
                 refresh_token: 'dummyRefreshToken',
                 developer_token: 'dummyDeveloperToken',
               },

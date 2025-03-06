@@ -4,7 +4,7 @@ const { isDefinedNotNullNotEmpty } = require('@rudderstack/integrations-lib');
 const stats = require('../../../../util/stats');
 const { getShopifyTopic } = require('../../../../v0/sources/shopify/util');
 const { removeUndefinedAndNullValues } = require('../../../../v0/util');
-const Message = require('../../../../v0/sources/message');
+const Message = require('../../../../sources/message');
 const { EventType } = require('../../../../constants');
 const {
   IDENTIFY_TOPICS,

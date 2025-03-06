@@ -1,10 +1,11 @@
+import { authHeader1, authHeaderAccessToken, secret1, secretAccessToken } from './maskedSecrets';
 const deliveryCallsData = [
   {
     httpReq: {
-      url: 'https://marketo_acct_id_success.mktorest.com/rest/v1/lists/1234/leads.json?id=110&id=111&id=112',
+      url: 'https://marketo_static_list_acct_id_success.mktorest.com/rest/v1/lists/1234/leads.json?id=110&id=111&id=112',
       params: { destination: 'marketo_static_list' },
       headers: {
-        Authorization: 'Bearer Incorrect_token',
+        Authorization: authHeaderAccessToken,
         'Content-Type': 'application/json',
         'User-Agent': 'RudderLabs',
       },
@@ -25,10 +26,10 @@ const deliveryCallsData = [
   },
   {
     httpReq: {
-      url: 'https://marketo_acct_id_success.mktorest.com/rest/v1/lists/1234/leads.json?id=1&id=2&id=3',
+      url: 'https://marketo_static_list_acct_id_success.mktorest.com/rest/v1/lists/1234/leads.json?id=1&id=2&id=3',
       params: { destination: 'marketo_static_list' },
       headers: {
-        Authorization: 'Bearer Incorrect_token',
+        Authorization: authHeaderAccessToken,
         'Content-Type': 'application/json',
         'User-Agent': 'RudderLabs',
       },
@@ -45,10 +46,10 @@ const deliveryCallsData = [
   },
   {
     httpReq: {
-      url: 'https://marketo_acct_id_success.mktorest.com/rest/v1/lists/1234/leads.json?id=1&id=2',
+      url: 'https://marketo_static_list_acct_id_success.mktorest.com/rest/v1/lists/1234/leads.json?id=1&id=2',
       params: { destination: 'marketo_static_list' },
       headers: {
-        Authorization: 'Bearer token',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
         'User-Agent': 'RudderLabs',
       },
@@ -68,10 +69,10 @@ const deliveryCallsData = [
   },
   {
     httpReq: {
-      url: 'https://marketo_acct_id_success.mktorest.com/rest/v1/lists/1234/leads.json?id=3&id=4',
+      url: 'https://marketo_static_list_acct_id_success.mktorest.com/rest/v1/lists/1234/leads.json?id=3&id=4',
       params: {},
       headers: {
-        Authorization: 'Bearer token',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
         'User-Agent': 'RudderLabs',
       },
@@ -91,10 +92,10 @@ const deliveryCallsData = [
   },
   {
     httpReq: {
-      url: 'https://marketo_acct_id_success.mktorest.com/rest/v1/lists/1234/leads.json?id=5&id=6',
+      url: 'https://marketo_static_list_acct_id_success.mktorest.com/rest/v1/lists/1234/leads.json?id=5&id=6',
       params: {},
       headers: {
-        Authorization: 'Bearer token',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
         'User-Agent': 'RudderLabs',
       },
@@ -119,15 +120,15 @@ export const networkCallsData = [
     httpReq: {
       method: 'GET',
       params: {
-        client_id: 'marketo_client_id_success',
-        client_secret: 'marketo_client_secret_success',
+        client_id: 'marketo_static_list_client_id_success',
+        client_secret: secret1,
         grant_type: 'client_credentials',
       },
-      url: 'https://marketo_acct_id_success.mktorest.com/identity/oauth/token',
+      url: 'https://marketo_static_list_acct_id_success.mktorest.com/identity/oauth/token',
     },
     httpRes: {
       data: {
-        access_token: 'access_token_success',
+        access_token: secretAccessToken,
         expires_in: 3599,
         scope: 'integrations@rudderstack.com',
         token_type: 'bearer',

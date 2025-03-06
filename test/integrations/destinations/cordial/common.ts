@@ -1,3 +1,4 @@
+import { authHeader1, secret1 } from './maskedSecrets';
 import { Destination } from '../../../../src/types';
 
 const destType = 'cordial';
@@ -6,7 +7,7 @@ const displayName = 'Cordial';
 const destination: Destination = {
   Config: {
     apiBaseUrl: 'https://abc.example.com',
-    apiKey: 'test-api-key',
+    apiKey: secret1,
   },
   DestinationDefinition: {
     DisplayName: displayName,
@@ -46,7 +47,7 @@ const context = {
 };
 const headers = {
   'Content-Type': 'application/json',
-  Authorization: 'Basic dGVzdC1hcGkta2V5Og==',
+  Authorization: authHeader1,
 };
 const properties = {
   product_id: '622c6f5d5cf86a4c77358033',

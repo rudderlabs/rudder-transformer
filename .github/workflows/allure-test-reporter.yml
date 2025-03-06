@@ -72,6 +72,8 @@ jobs:
           cd test-reports
           git config --global user.name "github-actions"
           git config --global user.email "github-actions@github.com"
+          # Pull latest changes
+          git pull --rebase origin main 
           git add .
           git commit -m "chore: add allure report for $REPORT_FOLDER" || echo "No changes to commit"
           # Push the report to the reports repository

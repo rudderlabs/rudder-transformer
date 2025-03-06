@@ -1,19 +1,56 @@
-const { process: processV1 } = require('../../v1/sources/shopify/transform');
+const { process: processTrackerEvents } = require('./tracker/transform');
+const { getBodyFromV2SpecPayload } = require('../../v0/util');
+const { processPixelEvents } = require('./transformPixel');
+const { isShopifyPixelEvent } = require('./utils');
 
-const convertV2ToV1 = (inputRequest) => {
-  const { body: bodyString, query_parameters: qParams } = inputRequest.request;
-  const requestBody = JSON.parse(bodyString);
+/*
+V0
+{
+  query_parameters: { }
+  key: value
+}
 
-  if (qParams) {
-    requestBody.query_parameters = qParams;
+V1
+{
+  event: {
+    query_parameters: { }
+    key: value
+  },
+  source: {}
+}
+
+V2
+{
+  request: {
+    body: {
+      
+    },
+    query_parameters: { },
+    headers: {},
+    method: 'POST',
+    url: 'https://api.shopify.com/v1/shopify/events'
+  },
+  source: {}
+}
+*/
+
+function getEventFromV2Request(sourceEvent) {
+  const event = getBodyFromV2SpecPayload(sourceEvent);
+  const queryParams = sourceEvent.request.query_parameters;
+  if (typeof queryParams === 'object') {
+    event.query_parameters = queryParams;
   }
 
-  return {
-    event: requestBody,
-    source: inputRequest.source,
-  };
-};
+  return event;
+}
 
-const process = async (inputEvent) => processV1(convertV2ToV1(inputEvent));
+const process = async (payload) => {
+  const event = getEventFromV2Request(payload);
+
+  if (isShopifyPixelEvent(event)) {
+    return processPixelEvents(event);
+  }
+  return processTrackerEvents(event);
+};
 
 module.exports = { process };

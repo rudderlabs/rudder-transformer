@@ -14,6 +14,14 @@ jest.mock('../../../v0/util/index', () => {
   };
 });
 
+jest.mock('./config', () => {
+  const originalModule = jest.requireActual('./config');
+  return {
+    ...originalModule,
+    useRedisDatabase: true,
+  };
+});
+
 const timeoutPromise = () =>
   new Promise((resolve, _) => {
     setTimeout(() => resolve(), 100);
@@ -332,12 +340,6 @@ describe('Shopify Utils Test', () => {
     });
   });
   describe(`Source Tests`, () => {
-    // it('Redis connection', async () => {
-    //   RedisDB.init();
-    //   await RedisDB.checkRedisConnectionReadyState();
-    //   expect(RedisDB.client.status).toBe('ready');
-    // });
-
     const testDataFile = fs.readFileSync(path.resolve(__dirname, `./shopify_source.json`));
     const data = JSON.parse(testDataFile);
 

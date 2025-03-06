@@ -6,13 +6,8 @@ const { getShopifyTopic } = require('../tracker/util');
 const { removeUndefinedAndNullValues } = require('../../../v0/util');
 const Message = require('../../message');
 const { EventType } = require('../../../constants');
-const { SUPPORTED_TRACK_EVENTS, SHOPIFY_TRACK_MAP } = require('../tracker/config');
-const {
-  INTEGERATION,
-  identifyMappingJSON,
-  lineItemsMappingJSON,
-  addressMappingJSON,
-} = require('../config');
+const { IDENTIFY_TOPICS, SUPPORTED_TRACK_EVENTS, SHOPIFY_TRACK_MAP } = require('../tracker/config');
+const { INTEGERATION, identifyMappingJSON, lineItemsMappingJSON } = require('../config');
 const { ECOM_TOPICS, RUDDER_ECOM_MAP } = require('../config');
 const {
   createPropertiesForEcomEventFromWebhook,
@@ -32,6 +27,17 @@ const NO_OPERATION_SUCCESS = {
   statusCode: 200,
 };
 
+const identifyPayloadBuilder = (event) => {
+  const message = new Message(INTEGERATION);
+  message.setEventType(EventType.IDENTIFY);
+  message.setPropertiesV2(event, identifyMappingJSON);
+  if (event.updated_at) {
+    // converting shopify updated_at timestamp to rudder timestamp format
+    message.setTimestamp(new Date(event.updated_at).toISOString());
+  }
+  return message;
+};
+
 const ecomPayloadBuilder = (event, shopifyTopic) => {
   const message = new Message(INTEGERATION);
   message.setEventType(EventType.TRACK);
@@ -41,41 +47,17 @@ const ecomPayloadBuilder = (event, shopifyTopic) => {
   message.properties = removeUndefinedAndNullValues(properties);
   // Map Customer details if present
   const customerDetails = get(event, 'customer');
-  // Initialize context.traits
-  message.context = message.context || {};
-  message.context.traits = {};
   if (customerDetails) {
-    const { id } = customerDetails;
-
-    // Apply mappings from identifyMappingJSON
-    identifyMappingJSON.forEach((mapping) => {
-      if (mapping.destKeys.startsWith('traits.')) {
-        const sourceValue = get(customerDetails, mapping.sourceKeys);
-        if (sourceValue !== undefined) {
-          const destPath = mapping.destKeys.replace('traits.', '');
-          lodash.set(message.context.traits, destPath, sourceValue);
-        }
-      }
-    });
-
-    // Handle additional traits from shipping_address using the same mapping logic
-    if (id) {
-      message.userId = id;
-    }
-
-    message.context.traits = removeUndefinedAndNullValues(message.context.traits);
+    message.setPropertiesV2(customerDetails, identifyMappingJSON);
   }
   if (event.updated_at) {
     message.setTimestamp(new Date(event.updated_at).toISOString());
   }
   if (event.shipping_address) {
-    addressMappingJSON.forEach((mapping) => {
-      const sourceValue = get(event.shipping_address, mapping.sourceKeys);
-      if (sourceValue !== undefined) {
-        const destPath = mapping.destKeys.replace('traits.', '');
-        lodash.set(message.context.traits, destPath, sourceValue);
-      }
-    });
+    message.setProperty('traits.shippingAddress', event.shipping_address);
+  }
+  if (event.billing_address) {
+    message.setProperty('traits.billingAddress', event.billing_address);
   }
   return message;
 };
@@ -97,8 +79,7 @@ const trackPayloadBuilder = (event, shopifyTopic) => {
  * @returns {Message} identifyEvent
  */
 const createIdentifyEvent = (message) => {
-  const { userId, anonymousId, context } = message;
-  const { traits } = context;
+  const { userId, anonymousId, traits } = message;
   const identifyEvent = new Message(INTEGERATION);
   identifyEvent.setEventType(EventType.IDENTIFY);
   if (userId) {
@@ -107,8 +88,18 @@ const createIdentifyEvent = (message) => {
   if (anonymousId) {
     identifyEvent.anonymousId = anonymousId;
   }
-  // Set the mapped contextual traits from the parent ecommerce event
-  identifyEvent.context.traits = removeUndefinedAndNullValues(lodash.cloneDeep(traits || {}));
+  const mappedTraits = {};
+  identifyMappingJSON.forEach((mapping) => {
+    if (mapping.destKeys.startsWith('traits.')) {
+      const traitKey = mapping.destKeys.replace('traits.', '');
+      const sourceValue = get(traits, traitKey);
+      if (sourceValue !== undefined) {
+        lodash.set(mappedTraits, traitKey, sourceValue);
+      }
+    }
+  });
+  // Set the mapped traits
+  identifyEvent.context.traits = removeUndefinedAndNullValues(mappedTraits);
   identifyEvent.setProperty(`integrations.${INTEGERATION}`, true);
   identifyEvent.setProperty('context.library', {
     eventOrigin: 'server',
@@ -125,6 +116,10 @@ const processEvent = async (inputEvent, metricMetadata) => {
   const shopifyTopic = getShopifyTopic(event);
   delete event.query_parameters;
   switch (shopifyTopic) {
+    case IDENTIFY_TOPICS.CUSTOMERS_CREATE:
+    case IDENTIFY_TOPICS.CUSTOMERS_UPDATE:
+      message = identifyPayloadBuilder(event);
+      break;
     case ECOM_TOPICS.ORDERS_CREATE:
     case ECOM_TOPICS.ORDERS_UPDATE:
     case ECOM_TOPICS.CHECKOUTS_CREATE:
@@ -144,10 +139,11 @@ const processEvent = async (inputEvent, metricMetadata) => {
       message = trackPayloadBuilder(event, shopifyTopic);
       break;
   }
-  // attach anonymousId using note_attributes
-  await setAnonymousId(message, event, metricMetadata);
-  await updateAnonymousIdToUserIdInRedis(message.anonymousId, message.userId);
-
+  // attach anonymousId if the event is track event using note_attributes
+  if (message.type !== EventType.IDENTIFY) {
+    await setAnonymousId(message, event, metricMetadata);
+    await updateAnonymousIdToUserIdInRedis(message.anonymousId, message.userId);
+  }
   // attach email and other contextual properties
   message = handleCommonProperties(message, event, shopifyTopic);
   // add cart_token_hash to traits if cart_token is present
@@ -189,6 +185,7 @@ const processWebhookEvents = async (event) => {
 module.exports = {
   processWebhookEvents,
   processEvent,
+  identifyPayloadBuilder,
   ecomPayloadBuilder,
   trackPayloadBuilder,
 };

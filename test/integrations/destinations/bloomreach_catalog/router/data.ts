@@ -211,8 +211,27 @@ export const data = [
                 body: {
                   JSON: {},
                   JSON_ARRAY: {
-                    batch:
-                      '[{"item_id":"test-item-id","properties":{"title":"Hardcover Monthbooks","status":"up to date","unprinted":1}},{"item_id":"test-item-id-7","properties":{"title":"Hardcover Monthbooks","status":"up to date","unprinted":1,"test_empty":"","test_null":null,"test_empty_array":[]}}]',
+                    batch: JSON.stringify([
+                      {
+                        item_id: 'test-item-id',
+                        properties: {
+                          title: 'Hardcover Monthbooks',
+                          status: 'up to date',
+                          unprinted: 1,
+                        },
+                      },
+                      {
+                        item_id: 'test-item-id-7',
+                        properties: {
+                          title: 'Hardcover Monthbooks',
+                          status: 'up to date',
+                          unprinted: 1,
+                          test_empty: '',
+                          test_null: null,
+                          test_empty_array: [],
+                        },
+                      },
+                    ]),
                   },
                   XML: {},
                   FORM: {},
@@ -235,8 +254,24 @@ export const data = [
                 body: {
                   JSON: {},
                   JSON_ARRAY: {
-                    batch:
-                      '[{"item_id":"test-item-id","properties":{"title":"Hardcover Monthbooks","status":"up to date","unprinted":3}},{"item_id":"test-item-id","properties":{"title":"Hardcover Monthbooks","status":"up to date","unprinted":2}}]',
+                    batch: JSON.stringify([
+                      {
+                        item_id: 'test-item-id',
+                        properties: {
+                          title: 'Hardcover Monthbooks',
+                          status: 'up to date',
+                          unprinted: 3,
+                        },
+                      },
+                      {
+                        item_id: 'test-item-id',
+                        properties: {
+                          title: 'Hardcover Monthbooks',
+                          status: 'up to date',
+                          unprinted: 2,
+                        },
+                      },
+                    ]),
                   },
                   XML: {},
                   FORM: {},
@@ -259,7 +294,7 @@ export const data = [
                 body: {
                   JSON: {},
                   JSON_ARRAY: {
-                    batch: '["test-item-id-1","test-item-id-2"]',
+                    batch: JSON.stringify(['test-item-id-1', 'test-item-id-2']),
                   },
                   XML: {},
                   FORM: {},
@@ -282,7 +317,7 @@ export const data = [
                 body: {
                   JSON: {},
                   JSON_ARRAY: {
-                    batch: '["test-item-id-3"]',
+                    batch: JSON.stringify(['test-item-id-3']),
                   },
                   XML: {},
                   FORM: {},

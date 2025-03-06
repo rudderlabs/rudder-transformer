@@ -1,3 +1,4 @@
+import { authHeader1 } from './maskedSecrets';
 const deleteNwData = [
   {
     httpReq: {
@@ -5,7 +6,7 @@ const deleteNwData = [
       url: 'https://rudderlabs.us-uat.gladly.qa/api/v1/customer-profiles?email=test%40rudderlabs.com',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: 'Basic dGVzdFVzZXJOYW1lOnRlc3RBcGlUb2tlbg==',
+        Authorization: authHeader1,
       },
     },
     httpRes: {
@@ -19,7 +20,7 @@ const deleteNwData = [
       url: 'https://rudderlabs.us-uat.gladly.qa/api/v1/customer-profiles?email=test%2B2%40rudderlabs.com',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: 'Basic dGVzdFVzZXJOYW1lOnRlc3RBcGlUb2tlbg==',
+        Authorization: authHeader1,
       },
     },
     httpRes: {
@@ -46,7 +47,7 @@ const deleteNwData = [
       url: 'https://rudderlabs.us-uat.gladly.qa/api/v1/customer-profiles?phoneNumber=%2B91%209999999988',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: 'Basic dGVzdFVzZXJOYW1lOnRlc3RBcGlUb2tlbg==',
+        Authorization: authHeader1,
       },
     },
     httpRes: {
@@ -85,7 +86,7 @@ const deleteNwData = [
       url: 'https://rudderlabs.us-uat.gladly.qa/api/v1/customer-profiles?email=test6%40rudderlabs.com',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: 'Basic dGVzdFVzZXJOYW1lOnRlc3RBcGlUb2tlbg==',
+        Authorization: authHeader1,
       },
     },
     httpRes: {
@@ -99,7 +100,7 @@ const deleteNwData = [
       url: 'https://rudderlabs.us-uat.gladly.qa/api/v1/customer-profiles?email=abc',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: 'Basic dGVzdFVzZXJOYW1lOnRlc3RBcGlUb2tlbg==',
+        Authorization: authHeader1,
       },
     },
     httpRes: {

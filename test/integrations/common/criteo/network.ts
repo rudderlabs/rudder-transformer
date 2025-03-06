@@ -1,5 +1,6 @@
+import { defaultAccessTokenAuthHeader } from '../secrets';
 const headers = {
-  Authorization: 'Bearer success_access_token',
+  Authorization: defaultAccessTokenAuthHeader,
   'Content-Type': 'application/json',
   Accept: 'application/json',
   'User-Agent': 'RudderLabs',

@@ -1,3 +1,4 @@
+import { authHeader1, authHeader2 } from '../maskedSecrets';
 import { generateMetadata, generateProxyV1Payload } from '../../../testUtils';
 
 const commonStatTags = {
@@ -24,11 +25,32 @@ export const businessData = [
           {
             endpoint: 'https://api.hubapi.com/contacts/v1/contact/batch/',
             JSON_ARRAY: {
-              batch:
-                '[{"email":"identify111051@test.com","properties":[{"property":"firstname","value":"John1051"},{"property":"lastname","value":"Sparrow1051"}]},{"email":"identify111052@test.com","properties":[{"property":"firstname","value":"John1052"},{"property":"lastname","value":"Sparrow1052"}]},{"email":"identify111053@test.com","properties":[{"property":"firstname","value":"John1053"},{"property":"lastname","value":"Sparrow1053"}]}]',
+              batch: JSON.stringify([
+                {
+                  email: 'identify111051@test.com',
+                  properties: [
+                    { property: 'firstname', value: 'John1051' },
+                    { property: 'lastname', value: 'Sparrow1051' },
+                  ],
+                },
+                {
+                  email: 'identify111052@test.com',
+                  properties: [
+                    { property: 'firstname', value: 'John1052' },
+                    { property: 'lastname', value: 'Sparrow1052' },
+                  ],
+                },
+                {
+                  email: 'identify111053@test.com',
+                  properties: [
+                    { property: 'firstname', value: 'John1053' },
+                    { property: 'lastname', value: 'Sparrow1053' },
+                  ],
+                },
+              ]),
             },
             headers: {
-              Authorization: 'Bearer validApiKey',
+              Authorization: authHeader1,
               'Content-Type': 'application/json',
             },
           },
@@ -76,11 +98,32 @@ export const businessData = [
           {
             endpoint: 'https://api.hubapi.com/contacts/v1/contact/batch/',
             JSON_ARRAY: {
-              batch:
-                '[{"email":"identify111051@test.com","properties":[{"property":"firstname","value":"John1051"},{"property":"lastname","value":"Sparrow1051"}]},{"email":"identify111052@test.con","properties":[{"property":"firstname","value":"John1052"},{"property":"lastname","value":"Sparrow1052"}]},{"email":"identify111053@test.com","properties":[{"property":"firstname","value":"John1053"},{"property":"lastname","value":"Sparrow1053"}]}]',
+              batch: JSON.stringify([
+                {
+                  email: 'identify111051@test.com',
+                  properties: [
+                    { property: 'firstname', value: 'John1051' },
+                    { property: 'lastname', value: 'Sparrow1051' },
+                  ],
+                },
+                {
+                  email: 'identify111052@test.con',
+                  properties: [
+                    { property: 'firstname', value: 'John1052' },
+                    { property: 'lastname', value: 'Sparrow1052' },
+                  ],
+                },
+                {
+                  email: 'identify111053@test.com',
+                  properties: [
+                    { property: 'firstname', value: 'John1053' },
+                    { property: 'lastname', value: 'Sparrow1053' },
+                  ],
+                },
+              ]),
             },
             headers: {
-              Authorization: 'Bearer inValidApiKey',
+              Authorization: authHeader2,
               'Content-Type': 'application/json',
             },
           },
@@ -181,7 +224,7 @@ export const businessData = [
           {
             headers: {
               'Content-Type': 'application/json',
-              Authorization: 'Bearer validAccessToken',
+              Authorization: authHeader1,
             },
             method: 'POST',
             endpoint: 'https://api.hubapi.com/crm/v3/objects/contacts/batch/create',
@@ -460,7 +503,7 @@ export const businessData = [
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
-              Authorization: 'Bearer dummy-access-token',
+              Authorization: authHeader1,
             },
             JSON: {
               email: 'osvaldocostaferreira98@gmail.com',
@@ -508,7 +551,7 @@ export const businessData = [
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
-              Authorization: 'Bearer invalid-dummy-access-token',
+              Authorization: authHeader2,
             },
             JSON: {
               email: 'osvaldocostaferreira98@gmail.com',
@@ -560,7 +603,7 @@ export const businessData = [
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
-              Authorization: 'Bearer dummy-access-token',
+              Authorization: authHeader1,
             },
             JSON: {
               inputs: [{ to: { id: 1 }, from: { id: 9405415215 }, type: 'contact_to_company' }],

@@ -1,3 +1,5 @@
+import { authHeader1 } from './maskedSecrets';
+
 const deleteNwData = [
   {
     httpReq: {
@@ -61,7 +63,7 @@ const deleteNwData = [
 
       url: 'https://api.engage.so/v1/users/6',
       'Content-Type': 'application/json',
-      Authorization: 'Basic YWJjZDplZmdo',
+      Authorization: authHeader1,
     },
     httpRes: {
       data: {
@@ -78,7 +80,7 @@ const deleteNwData = [
 
       url: 'https://api.engage.so/v1/users/7',
       'Content-Type': 'application/json',
-      Authorization: 'Basic YWJjZDplZmdo',
+      Authorization: authHeader1,
     },
     httpRes: {
       status: 200,
@@ -91,7 +93,7 @@ const deleteNwData = [
 
       url: 'https://api.engage.so/v1/users/8',
       'Content-Type': 'application/json',
-      Authorization: 'Basic YWJjZDplZmdo',
+      Authorization: authHeader1,
     },
     httpRes: {
       data: {
@@ -108,7 +110,7 @@ const deleteNwData = [
 
       url: 'https://api.engage.so/v1/users/9',
       'Content-Type': 'application/json',
-      Authorization: 'Basic YWJjZDplZmdo',
+      Authorization: authHeader1,
     },
     httpRes: {
       status: 200,

@@ -7,16 +7,15 @@ import axios from 'axios';
 import bodyParser from 'koa-bodyparser';
 import { Command } from 'commander';
 import { createHttpTerminator } from 'http-terminator';
-import { ExtendedTestCaseData, MockHttpCallsData, TestCaseData } from './testTypes';
+import { ExtendedTestCaseData, TestCaseData } from './testTypes';
 import { applicationRoutes } from '../../src/routes/index';
 import MockAxiosAdapter from 'axios-mock-adapter';
 import {
   getTestDataFilePaths,
   getTestData,
-  getMockHttpCallsData,
-  getAllTestMockDataFilePaths,
-  addMock,
+  registerAxiosMocks,
   validateTestWithZOD,
+  getTestMockData,
 } from './testUtils';
 import tags from '../../src/v0/util/tags';
 import { Server } from 'http';
@@ -91,24 +90,6 @@ afterAll(async () => {
     appendFileSync(join(__dirname, 'destinations', opts.destination, 'network.ts'), calls);
   }
 });
-let mockAdapter;
-if (!opts.generate || opts.generate === 'false') {
-  // unmock already existing axios-mocking
-  mockAdapter = new MockAxiosAdapter(axios, { onNoMatch: 'throwException' });
-  const registerAxiosMocks = (axiosMocks: MockHttpCallsData[]) => {
-    axiosMocks.forEach((axiosMock) => addMock(mockAdapter, axiosMock));
-  };
-
-  // // all the axios requests will be stored in this map
-  const allTestMockDataFilePaths = getAllTestMockDataFilePaths(__dirname, opts.destination);
-  const allAxiosRequests = allTestMockDataFilePaths
-    .map((currPath) => {
-      const mockNetworkCallsData: MockHttpCallsData[] = getMockHttpCallsData(currPath);
-      return mockNetworkCallsData;
-    })
-    .flat();
-  registerAxiosMocks(allAxiosRequests);
-}
 
 // END
 const rootDir = __dirname;
@@ -214,13 +195,14 @@ const sourceTestHandler = async (tcData) => {
   await testRoute(route, tcData);
 };
 
-// Trigger the test suites
+const mockAdapter = new MockAxiosAdapter(axios as any, { onNoMatch: 'throwException' });
+registerAxiosMocks(mockAdapter, getTestMockData(opts.destination || opts.source));
+
 describe.each(allTestDataFilePaths)('%s Tests', (testDataPath) => {
   beforeEach(() => {
     jest.resetAllMocks();
     jest.clearAllMocks();
   });
-  // add special mocks for specific destinations
   let testData: TestCaseData[] = getTestData(testDataPath);
   if (opts.index !== undefined) {
     testData = [testData[parseInt(opts.index)]];

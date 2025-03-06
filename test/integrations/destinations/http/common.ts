@@ -1,3 +1,4 @@
+import { secret1, secret2 } from './maskedSecrets';
 import { Destination } from '../../../../src/types';
 
 const destType = 'http';
@@ -43,7 +44,7 @@ const destinations: Destination[] = [
     Config: {
       apiUrl: 'http://abc.com/contacts',
       auth: 'basicAuth',
-      username: 'test-user',
+      username: secret1,
       password: '',
       method: 'GET',
       format: 'JSON',
@@ -148,7 +149,7 @@ const destinations: Destination[] = [
     Config: {
       apiUrl: 'http://abc.com/events',
       auth: 'bearerTokenAuth',
-      bearerToken: 'test-token',
+      bearerToken: secret2,
       method: 'POST',
       format: 'XML',
       xmlRootKey: 'body',
@@ -298,7 +299,7 @@ const destinations: Destination[] = [
     Config: {
       apiUrl: 'http://abc.com/contacts',
       auth: 'basicAuth',
-      username: 'test-user',
+      username: secret1,
       password: '',
       method: 'GET',
       format: 'JSON',
@@ -357,7 +358,7 @@ const destinations: Destination[] = [
     Config: {
       apiUrl: 'http://abc.com/contacts',
       auth: 'basicAuth',
-      username: 'test-user',
+      username: secret1,
       password: '',
       method: 'GET',
       format: 'JSON',
@@ -416,7 +417,7 @@ const destinations: Destination[] = [
     Config: {
       apiUrl: 'http://abc.com/events',
       auth: 'bearerTokenAuth',
-      bearerToken: 'test-token',
+      bearerToken: secret2,
       method: 'POST',
       format: 'XML',
       headers: [
@@ -456,7 +457,7 @@ const destinations: Destination[] = [
     Config: {
       apiUrl: 'http://abc.com/events',
       auth: 'bearerTokenAuth',
-      bearerToken: 'test-token',
+      bearerToken: secret2,
       method: 'POST',
       format: 'FORM',
       headers: [
@@ -504,7 +505,7 @@ const destinations: Destination[] = [
     Config: {
       apiUrl: 'http://abc.com/events',
       auth: 'bearerTokenAuth',
-      bearerToken: 'test-token',
+      bearerToken: secret2,
       method: 'POST',
       format: 'FORM',
       headers: [
@@ -548,7 +549,7 @@ const destinations: Destination[] = [
     Config: {
       apiUrl: 'http://abc.com/events',
       auth: 'bearerTokenAuth',
-      bearerToken: 'test-token',
+      bearerToken: secret2,
       method: 'POST',
       format: 'FORM',
       headers: [

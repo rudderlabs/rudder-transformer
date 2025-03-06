@@ -1,5 +1,6 @@
 import { generateMetadata, generateProxyV1Payload } from '../../../testUtils';
 import { ProxyV1TestData } from '../../../testTypes';
+import { defaultAccessToken } from '../../../common/secrets';
 
 export const headerBlockWithCorrectAccessToken = {
   'Content-Type': 'application/json',
@@ -32,7 +33,7 @@ export const metadata = [
     workspaceId: 'default-workspaceId',
     sourceId: 'default-sourceId',
     secret: {
-      accessToken: 'default-accessToken',
+      accessToken: defaultAccessToken,
     },
     dontBatch: false,
   },
@@ -44,7 +45,7 @@ export const metadata = [
     workspaceId: 'default-workspaceId',
     sourceId: 'default-sourceId',
     secret: {
-      accessToken: 'default-accessToken',
+      accessToken: defaultAccessToken,
     },
     dontBatch: false,
   },
@@ -56,7 +57,7 @@ export const metadata = [
     workspaceId: 'default-workspaceId',
     sourceId: 'default-sourceId',
     secret: {
-      accessToken: 'default-accessToken',
+      accessToken: defaultAccessToken,
     },
     dontBatch: false,
   },
@@ -68,7 +69,7 @@ export const metadata = [
     workspaceId: 'default-workspaceId',
     sourceId: 'default-sourceId',
     secret: {
-      accessToken: 'default-accessToken',
+      accessToken: defaultAccessToken,
     },
     dontBatch: false,
   },
@@ -83,7 +84,7 @@ export const singleMetadata = [
     workspaceId: 'default-workspaceId',
     sourceId: 'default-sourceId',
     secret: {
-      accessToken: 'default-accessToken',
+      accessToken: defaultAccessToken,
     },
     dontBatch: false,
   },
@@ -224,8 +225,12 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
               {
                 statusCode: 404,
                 metadata: generateMetadata(1),
-                error:
-                  '{"http_code":404,"response_code":"NOT_FOUND","response_msg":"Contact record not found.","data":null}',
+                error: JSON.stringify({
+                  http_code: 404,
+                  response_code: 'NOT_FOUND',
+                  response_msg: 'Contact record not found.',
+                  data: null,
+                }),
               },
             ],
           },
@@ -267,8 +272,12 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
               {
                 statusCode: 404,
                 metadata: generateMetadata(1),
-                error:
-                  '{"http_code":404,"response_code":"NOT_FOUND","response_msg":"Contact record not found.","data":null}',
+                error: JSON.stringify({
+                  http_code: 404,
+                  response_code: 'NOT_FOUND',
+                  response_msg: 'Contact record not found.',
+                  data: null,
+                }),
               },
             ],
           },
@@ -310,8 +319,13 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
               {
                 statusCode: 400,
                 metadata: generateMetadata(1),
-                error:
-                  '{"http_code":400,"response_code":400,"response_msg":"preg_replace(): Parameter mismatch, pattern is a string while replacement is an array","data":null}',
+                error: JSON.stringify({
+                  http_code: 400,
+                  response_code: 400,
+                  response_msg:
+                    'preg_replace(): Parameter mismatch, pattern is a string while replacement is an array',
+                  data: null,
+                }),
               },
             ],
           },
@@ -353,8 +367,12 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
               {
                 statusCode: 404,
                 metadata: generateMetadata(1),
-                error:
-                  '{"http_code":404,"response_code":"NOT_FOUND","response_msg":"Your list is not found.","data":null}',
+                error: JSON.stringify({
+                  http_code: 404,
+                  response_code: 'NOT_FOUND',
+                  response_msg: 'Your list is not found.',
+                  data: null,
+                }),
               },
             ],
           },

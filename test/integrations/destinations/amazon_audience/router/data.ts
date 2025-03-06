@@ -1,3 +1,4 @@
+import { authHeader1 } from '../maskedSecrets';
 import { destination, generateMetadata } from '../common';
 
 export const data = [
@@ -106,7 +107,7 @@ export const data = [
                 headers: {
                   'Amazon-Advertising-API-ClientId': 'dummyClientId',
                   'Content-Type': 'application/json',
-                  Authorization: 'Bearer dummyAccessToken',
+                  Authorization: authHeader1,
                 },
                 params: {},
                 body: {
@@ -157,7 +158,7 @@ export const data = [
                 headers: {
                   'Amazon-Advertising-API-ClientId': 'dummyClientId',
                   'Content-Type': 'application/json',
-                  Authorization: 'Bearer dummyAccessToken',
+                  Authorization: authHeader1,
                 },
                 params: {},
                 body: {

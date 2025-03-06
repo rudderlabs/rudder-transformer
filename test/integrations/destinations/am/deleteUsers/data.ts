@@ -1,3 +1,5 @@
+import { secret1, secret2 } from '../maskedSecrets';
+
 export const data = [
   {
     name: 'am',
@@ -374,8 +376,8 @@ export const data = [
               },
             ],
             config: {
-              apiKey: '1234',
-              apiSecret: 'abcd',
+              apiKey: secret1,
+              apiSecret: secret2,
             },
           },
         ],
@@ -414,8 +416,8 @@ export const data = [
               },
             ],
             config: {
-              apiKey: '1234',
-              apiSecret: 'abcd',
+              apiKey: secret1,
+              apiSecret: secret2,
               residencyServer: 'EU',
             },
           },

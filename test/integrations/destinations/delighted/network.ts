@@ -1,9 +1,11 @@
+import { authHeader1 } from './maskedSecrets';
+
 export const networkCallsData = [
   {
     httpReq: {
       url: 'https://api.delighted.com/v1/people.json',
       method: 'GET',
-      headers: { Authorization: `Basic ZHVtbXlBcGlLZXk=` },
+      headers: { Authorization: authHeader1 },
       params: {
         email: 'identified_user@email.com',
       },
@@ -17,7 +19,7 @@ export const networkCallsData = [
     httpReq: {
       url: 'https://api.delighted.com/v1/people.json',
       method: 'GET',
-      headers: { Authorization: `Basic ZHVtbXlBcGlLZXlmb3JmYWlsdXJl` },
+      headers: { Authorization: authHeader1 },
       params: {
         email: 'unidentified_user@email.com',
       },
@@ -31,9 +33,9 @@ export const networkCallsData = [
     httpReq: {
       url: 'https://api.delighted.com/v1/people.json',
       method: 'GET',
-      headers: { Authorization: `Basic ZHVtbXlBcGlLZXlmb3JmYWlsdXJl` },
+      headers: { Authorization: authHeader1 },
       params: {
-        email: 'test@rudderlabs.com',
+        email: 'test429@rudderlabs.com',
       },
     },
     httpRes: {

@@ -476,7 +476,10 @@ describe('Emarsys utils', () => {
         keyId,
       );
 
-      expect(result).toEqual({ isAbortable: true, errorMsg: '{"errorCode":"errorMessage"}' });
+      expect(result).toEqual({
+        isAbortable: true,
+        errorMsg: JSON.stringify({ errorCode: 'errorMessage' }),
+      });
     });
 
     // Returns {isAbortable: true, errorMsg} if event is an object with keyId and has a corresponding error in the errors object.
@@ -503,7 +506,10 @@ describe('Emarsys utils', () => {
         keyId,
       );
 
-      expect(result).toEqual({ isAbortable: true, errorMsg: '{"errorCode":"errorMessage"}' });
+      expect(result).toEqual({
+        isAbortable: true,
+        errorMsg: JSON.stringify({ errorCode: 'errorMessage' }),
+      });
     });
   });
 

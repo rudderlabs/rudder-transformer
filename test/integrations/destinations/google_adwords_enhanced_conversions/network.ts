@@ -1,3 +1,4 @@
+import { authHeader1 } from './maskedSecrets';
 const API_VERSION = 'v18';
 
 export const networkCallsData = [
@@ -8,7 +9,7 @@ export const networkCallsData = [
         query: `SELECT conversion_action.id FROM conversion_action WHERE conversion_action.name = 'Product Added'`,
       },
       headers: {
-        Authorization: 'Bearer abcd1234',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
         'developer-token': 'ijkl91011',
         'login-customer-id': '0987654321',
@@ -37,7 +38,7 @@ export const networkCallsData = [
       },
       params: { destination: 'google_adwords_enhanced_conversion' },
       headers: {
-        Authorization: 'Bearer abcd1234',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
         'developer-token': 'ijkl91011',
         'login-customer-id': '0987654321',
@@ -96,7 +97,7 @@ export const networkCallsData = [
       },
       params: { destination: 'google_adwords_enhanced_conversion' },
       headers: {
-        Authorization: 'Bearer abcd1234',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
         'developer-token': 'ijkl91011',
         'login-customer-id': '0987654321',
@@ -131,7 +132,7 @@ export const networkCallsData = [
       },
       params: { destination: 'google_adwords_enhanced_conversion' },
       headers: {
-        Authorization: 'Bearer abcd1234',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
         'developer-token': 'ijkl91011',
         'login-customer-id': '0987654321',
@@ -192,7 +193,7 @@ export const networkCallsData = [
         destination: 'google_adwords_enhanced_conversion',
       },
       headers: {
-        Authorization: 'Bearer abcd1234',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
         'developer-token': 'ijkl91011',
         'login-customer-id': '0987654321',
@@ -253,7 +254,7 @@ export const networkCallsData = [
         destination: 'google_adwords_enhanced_conversion',
       },
       headers: {
-        Authorization: 'Bearer abcd1234',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
         'developer-token': 'ijkl91011',
         'login-customer-id': '0987654321',
@@ -283,7 +284,7 @@ export const networkCallsData = [
       },
       params: { destination: 'google_adwords_enhanced_conversion' },
       headers: {
-        Authorization: 'Bearer abcd1234',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
         'developer-token': 'ijkl91011',
         'login-customer-id': '0987654321',
@@ -342,7 +343,7 @@ export const networkCallsData = [
       },
       params: { destination: 'google_adwords_enhanced_conversion' },
       headers: {
-        Authorization: 'Bearer abcd1234',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
         'developer-token': 'ijkl91011',
         'login-customer-id': '0987654321',
@@ -390,7 +391,7 @@ export const networkCallsData = [
       },
       params: { destination: 'google_adwords_enhanced_conversion' },
       headers: {
-        Authorization: 'Bearer abcd1234',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
         'developer-token': 'ijkl91011',
         'login-customer-id': '0987654321',

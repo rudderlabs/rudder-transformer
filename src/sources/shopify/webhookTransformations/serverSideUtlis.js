@@ -1,11 +1,11 @@
 /* eslint-disable no-param-reassign */
 const get = require('get-value');
 const { isDefinedAndNotNull, uuidv5 } = require('@rudderstack/integrations-lib');
-const { extractEmailFromPayload } = require('../../../../v0/sources/shopify/util');
-const { constructPayload } = require('../../../../v0/util');
+const { extractEmailFromPayload } = require('../tracker/util');
+const { constructPayload } = require('../../../v0/util');
 const { INTEGERATION, lineItemsMappingJSON, productMappingJSON } = require('../config');
-const { RedisDB } = require('../../../../util/redis/redisConnector');
-const stats = require('../../../../util/stats');
+const { RedisDB } = require('../../../util/redis/redisConnector');
+const stats = require('../../../util/stats');
 
 /**
  * Returns an array of products from the lineItems array received from the webhook event

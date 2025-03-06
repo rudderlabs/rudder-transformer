@@ -32,7 +32,7 @@ describe('Unit test cases for groupEventsByEndpoint', () => {
           endpoint: '/engage',
           body: {
             JSON_ARRAY: {
-              batch: '[{prop:1}]',
+              batch: JSON.stringify([{ prop: 1 }]),
             },
           },
           userId: 'user1',
@@ -43,7 +43,7 @@ describe('Unit test cases for groupEventsByEndpoint', () => {
           endpoint: '/engage',
           body: {
             JSON_ARRAY: {
-              batch: '[{prop:2}]',
+              batch: JSON.stringify([{ prop: 2 }]),
             },
           },
           userId: 'user2',
@@ -54,7 +54,7 @@ describe('Unit test cases for groupEventsByEndpoint', () => {
           endpoint: '/groups',
           body: {
             JSON_ARRAY: {
-              batch: '[{prop:3}]',
+              batch: JSON.stringify([{ prop: 3 }]),
             },
           },
           userId: 'user1',
@@ -65,7 +65,7 @@ describe('Unit test cases for groupEventsByEndpoint', () => {
           endpoint: '/track',
           body: {
             JSON_ARRAY: {
-              batch: '[{prop:4}]',
+              batch: JSON.stringify([{ prop: 4 }]),
             },
           },
           userId: 'user1',
@@ -76,7 +76,7 @@ describe('Unit test cases for groupEventsByEndpoint', () => {
           endpoint: '/import',
           body: {
             JSON_ARRAY: {
-              batch: '[{prop:5}]',
+              batch: JSON.stringify([{ prop: 5 }]),
             },
           },
           userId: 'user2',
@@ -92,7 +92,7 @@ describe('Unit test cases for groupEventsByEndpoint', () => {
             endpoint: '/engage',
             body: {
               JSON_ARRAY: {
-                batch: '[{prop:1}]',
+                batch: JSON.stringify([{ prop: 1 }]),
               },
             },
             userId: 'user1',
@@ -103,7 +103,7 @@ describe('Unit test cases for groupEventsByEndpoint', () => {
             endpoint: '/engage',
             body: {
               JSON_ARRAY: {
-                batch: '[{prop:2}]',
+                batch: JSON.stringify([{ prop: 2 }]),
               },
             },
             userId: 'user2',
@@ -116,7 +116,7 @@ describe('Unit test cases for groupEventsByEndpoint', () => {
             endpoint: '/groups',
             body: {
               JSON_ARRAY: {
-                batch: '[{prop:3}]',
+                batch: JSON.stringify([{ prop: 3 }]),
               },
             },
             userId: 'user1',
@@ -129,7 +129,7 @@ describe('Unit test cases for groupEventsByEndpoint', () => {
             endpoint: '/import',
             body: {
               JSON_ARRAY: {
-                batch: '[{prop:5}]',
+                batch: JSON.stringify([{ prop: 5 }]),
               },
             },
             userId: 'user2',
@@ -149,7 +149,7 @@ describe('Unit test cases for batchEvents', () => {
           endpoint: '/engage',
           body: {
             JSON_ARRAY: {
-              batch: '[{"prop":1}]',
+              batch: JSON.stringify([{ prop: 1 }]),
             },
           },
           headers: {},
@@ -163,7 +163,7 @@ describe('Unit test cases for batchEvents', () => {
           endpoint: '/engage',
           body: {
             JSON_ARRAY: {
-              batch: '[{"prop":2}]',
+              batch: JSON.stringify([{ prop: 2 }]),
             },
           },
           headers: {},
@@ -177,7 +177,7 @@ describe('Unit test cases for batchEvents', () => {
           endpoint: '/engage',
           body: {
             JSON_ARRAY: {
-              batch: '[{"prop":3}]',
+              batch: JSON.stringify([{ prop: 3 }]),
             },
           },
           headers: {},
@@ -194,7 +194,12 @@ describe('Unit test cases for batchEvents', () => {
       {
         batched: true,
         batchedRequest: {
-          body: { FORM: {}, JSON: {}, JSON_ARRAY: { batch: '[{"prop":1},{"prop":2}]' }, XML: {} },
+          body: {
+            FORM: {},
+            JSON: {},
+            JSON_ARRAY: { batch: JSON.stringify([{ prop: 1 }, { prop: 2 }]) },
+            XML: {},
+          },
           endpoint: '/engage',
           files: {},
           headers: {},
@@ -210,7 +215,12 @@ describe('Unit test cases for batchEvents', () => {
       {
         batched: true,
         batchedRequest: {
-          body: { FORM: {}, JSON: {}, JSON_ARRAY: { batch: '[{"prop":3}]' }, XML: {} },
+          body: {
+            FORM: {},
+            JSON: {},
+            JSON_ARRAY: { batch: JSON.stringify([{ prop: 3 }]) },
+            XML: {},
+          },
           endpoint: '/engage',
           files: {},
           headers: {},
@@ -237,13 +247,13 @@ describe('Unit test cases for generateBatchedPayloadForArray', () => {
   it('should generate a batched payload with GZIP payload for /import endpoint when given an array of events', () => {
     const events = [
       {
-        body: { JSON_ARRAY: { batch: '[{"event": "event1"}]' } },
+        body: { JSON_ARRAY: { batch: JSON.stringify([{ event: 'event1' }]) } },
         endpoint: '/import',
         headers: { 'Content-Type': 'application/json' },
         params: {},
       },
       {
-        body: { JSON_ARRAY: { batch: '[{"event": "event2"}]' } },
+        body: { JSON_ARRAY: { batch: JSON.stringify([{ event: 'event2' }]) } },
         endpoint: '/import',
         headers: { 'Content-Type': 'application/json' },
         params: {},
@@ -256,7 +266,7 @@ describe('Unit test cases for generateBatchedPayloadForArray', () => {
         JSON_ARRAY: {},
         XML: {},
         GZIP: {
-          payload: '[{"event":"event1"},{"event":"event2"}]',
+          payload: JSON.stringify([{ event: 'event1' }, { event: 'event2' }]),
         },
       },
       endpoint: '/import',
@@ -278,13 +288,13 @@ describe('Unit test cases for generateBatchedPayloadForArray', () => {
   it('should generate a batched payload with JSON_ARRAY body when given an array of events', () => {
     const events = [
       {
-        body: { JSON_ARRAY: { batch: '[{"event": "event1"}]' } },
+        body: { JSON_ARRAY: { batch: JSON.stringify([{ event: 'event1' }]) } },
         endpoint: '/endpoint',
         headers: { 'Content-Type': 'application/json' },
         params: {},
       },
       {
-        body: { JSON_ARRAY: { batch: '[{"event": "event2"}]' } },
+        body: { JSON_ARRAY: { batch: JSON.stringify([{ event: 'event2' }]) } },
         endpoint: '/endpoint',
         headers: { 'Content-Type': 'application/json' },
         params: {},
@@ -294,7 +304,7 @@ describe('Unit test cases for generateBatchedPayloadForArray', () => {
       body: {
         FORM: {},
         JSON: {},
-        JSON_ARRAY: { batch: '[{"event":"event1"},{"event":"event2"}]' },
+        JSON_ARRAY: { batch: JSON.stringify([{ event: 'event1' }, { event: 'event2' }]) },
         XML: {},
       },
       endpoint: '/endpoint',

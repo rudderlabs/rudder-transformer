@@ -1,4 +1,5 @@
 import { generateMetadata, generateProxyV0Payload } from '../../../testUtils';
+import { authHeader1, authHeader2 } from '../maskedSecrets';
 
 const commonStatTags = {
   destType: 'AMAZON_AUDIENCE',
@@ -23,7 +24,7 @@ export const data = [
       request: {
         body: generateProxyV0Payload({
           headers: {
-            Authorization: 'Bearer success_access_token',
+            Authorization: authHeader1,
             'Content-Type': 'application/json',
             Accept: 'application/json',
           },
@@ -86,7 +87,7 @@ export const data = [
       request: {
         body: generateProxyV0Payload({
           headers: {
-            Authorization: 'Bearer success_access_token',
+            Authorization: authHeader1,
             'Content-Type': 'application/json',
             Accept: 'application/json',
           },
@@ -158,7 +159,7 @@ export const data = [
       request: {
         body: generateProxyV0Payload({
           headers: {
-            Authorization: 'Bearer fail_token',
+            Authorization: authHeader2,
             'Content-Type': 'application/json',
             Accept: 'application/json',
           },

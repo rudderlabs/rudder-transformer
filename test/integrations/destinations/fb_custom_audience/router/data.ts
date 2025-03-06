@@ -10,7 +10,7 @@ import {
   rETLRecordV2RouterInvalidRequest,
 } from './rETL';
 import { mockFns } from '../mocks';
-
+import { defaultAccessToken } from '../../../common/secrets';
 export const data = [
   {
     name: 'fb_custom_audience',
@@ -142,7 +142,7 @@ export const data = [
                   dontBatch: false,
                   jobId: 1,
                   secret: {
-                    accessToken: 'default-accessToken',
+                    accessToken: defaultAccessToken,
                   },
                   sourceId: 'default-sourceId',
                   userId: 'default-userId',
@@ -265,7 +265,7 @@ export const data = [
                   dontBatch: false,
                   jobId: 2,
                   secret: {
-                    accessToken: 'default-accessToken',
+                    accessToken: defaultAccessToken,
                   },
                   sourceId: 'default-sourceId',
                   userId: 'default-userId',
@@ -339,7 +339,7 @@ export const data = [
                   dontBatch: false,
                   jobId: 1,
                   secret: {
-                    accessToken: 'default-accessToken',
+                    accessToken: defaultAccessToken,
                   },
                   sourceId: 'default-sourceId',
                   userId: 'default-userId',
@@ -351,7 +351,7 @@ export const data = [
                   dontBatch: false,
                   jobId: 2,
                   secret: {
-                    accessToken: 'default-accessToken',
+                    accessToken: defaultAccessToken,
                   },
                   sourceId: 'default-sourceId',
                   userId: 'default-userId',
@@ -398,7 +398,7 @@ export const data = [
                   dontBatch: false,
                   jobId: 3,
                   secret: {
-                    accessToken: 'default-accessToken',
+                    accessToken: defaultAccessToken,
                   },
                   sourceId: 'default-sourceId',
                   userId: 'default-userId',
@@ -453,7 +453,7 @@ export const data = [
                   dontBatch: false,
                   jobId: 4,
                   secret: {
-                    accessToken: 'default-accessToken',
+                    accessToken: defaultAccessToken,
                   },
                   sourceId: 'default-sourceId',
                   userId: 'default-userId',
@@ -465,7 +465,7 @@ export const data = [
                   dontBatch: false,
                   jobId: 5,
                   secret: {
-                    accessToken: 'default-accessToken',
+                    accessToken: defaultAccessToken,
                   },
                   sourceId: 'default-sourceId',
                   userId: 'default-userId',
@@ -477,7 +477,7 @@ export const data = [
                   dontBatch: false,
                   jobId: 6,
                   secret: {
-                    accessToken: 'default-accessToken',
+                    accessToken: defaultAccessToken,
                   },
                   sourceId: 'default-sourceId',
                   userId: 'default-userId',
@@ -496,7 +496,7 @@ export const data = [
                   dontBatch: false,
                   jobId: 7,
                   secret: {
-                    accessToken: 'default-accessToken',
+                    accessToken: defaultAccessToken,
                   },
                   sourceId: 'default-sourceId',
                   userId: 'default-userId',
@@ -583,7 +583,7 @@ export const data = [
                   dontBatch: false,
                   jobId: 1,
                   secret: {
-                    accessToken: 'default-accessToken',
+                    accessToken: defaultAccessToken,
                   },
                   sourceId: 'default-sourceId',
                   userId: 'default-userId',
@@ -595,7 +595,7 @@ export const data = [
                   dontBatch: false,
                   jobId: 2,
                   secret: {
-                    accessToken: 'default-accessToken',
+                    accessToken: defaultAccessToken,
                   },
                   sourceId: 'default-sourceId',
                   userId: 'default-userId',
@@ -670,7 +670,7 @@ export const data = [
                   dontBatch: false,
                   jobId: 3,
                   secret: {
-                    accessToken: 'default-accessToken',
+                    accessToken: defaultAccessToken,
                   },
                   sourceId: 'default-sourceId',
                   userId: 'default-userId',
@@ -753,7 +753,7 @@ export const data = [
                   dontBatch: false,
                   jobId: 4,
                   secret: {
-                    accessToken: 'default-accessToken',
+                    accessToken: defaultAccessToken,
                   },
                   sourceId: 'default-sourceId',
                   userId: 'default-userId',
@@ -765,7 +765,7 @@ export const data = [
                   dontBatch: false,
                   jobId: 5,
                   secret: {
-                    accessToken: 'default-accessToken',
+                    accessToken: defaultAccessToken,
                   },
                   sourceId: 'default-sourceId',
                   userId: 'default-userId',
@@ -777,7 +777,7 @@ export const data = [
                   dontBatch: false,
                   jobId: 6,
                   secret: {
-                    accessToken: 'default-accessToken',
+                    accessToken: defaultAccessToken,
                   },
                   sourceId: 'default-sourceId',
                   userId: 'default-userId',
@@ -821,7 +821,7 @@ export const data = [
                   dontBatch: false,
                   jobId: 7,
                   secret: {
-                    accessToken: 'default-accessToken',
+                    accessToken: defaultAccessToken,
                   },
                   sourceId: 'default-sourceId',
                   userId: 'default-userId',
@@ -911,7 +911,7 @@ export const data = [
                   dontBatch: false,
                   jobId: 1,
                   secret: {
-                    accessToken: 'default-accessToken',
+                    accessToken: defaultAccessToken,
                   },
                   sourceId: 'default-sourceId',
                   userId: 'default-userId',
@@ -923,7 +923,7 @@ export const data = [
                   dontBatch: false,
                   jobId: 2,
                   secret: {
-                    accessToken: 'default-accessToken',
+                    accessToken: defaultAccessToken,
                   },
                   sourceId: 'default-sourceId',
                   userId: 'default-userId',
@@ -935,7 +935,7 @@ export const data = [
                   dontBatch: false,
                   jobId: 3,
                   secret: {
-                    accessToken: 'default-accessToken',
+                    accessToken: defaultAccessToken,
                   },
                   sourceId: 'default-sourceId',
                   userId: 'default-userId',
@@ -947,7 +947,7 @@ export const data = [
                   dontBatch: false,
                   jobId: 4,
                   secret: {
-                    accessToken: 'default-accessToken',
+                    accessToken: defaultAccessToken,
                   },
                   sourceId: 'default-sourceId',
                   userId: 'default-userId',
@@ -1014,7 +1014,7 @@ export const data = [
                   destinationId: 'default-destinationId',
                   workspaceId: 'default-workspaceId',
                   secret: {
-                    accessToken: 'default-accessToken',
+                    accessToken: defaultAccessToken,
                   },
                   dontBatch: false,
                 },

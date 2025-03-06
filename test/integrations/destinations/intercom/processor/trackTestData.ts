@@ -1,3 +1,4 @@
+import { authHeader1, secret1, authHeader4, secret4 } from '../maskedSecrets';
 import { Destination } from '../../../../../src/types';
 import {
   generateMetadata,
@@ -6,14 +7,14 @@ import {
 } from '../../../testUtils';
 
 const v1Config = {
-  apiKey: 'intercomApiKey',
+  apiKey: secret4,
   apiVersion: 'v1',
   appId: '9e9cdea1-78fa-4829-a9b2-5d7f7e96d1a0',
   collectContext: false,
 };
 
 const v2Config = {
-  apiKey: 'testApiKey',
+  apiKey: secret1,
   apiVersion: 'v2',
   apiServer: 'standard',
   sendAnonymousId: false,
@@ -21,7 +22,7 @@ const v2Config = {
 
 const v1Headers = {
   'Content-Type': 'application/json',
-  Authorization: 'Bearer intercomApiKey',
+  Authorization: authHeader4,
   Accept: 'application/json',
   'Intercom-Version': '1.4',
   'User-Agent': 'RudderStack',
@@ -29,7 +30,7 @@ const v1Headers = {
 
 const v2Headers = {
   Accept: 'application/json',
-  Authorization: 'Bearer testApiKey',
+  Authorization: authHeader1,
   'Content-Type': 'application/json',
   'Intercom-Version': '2.10',
   'User-Agent': 'RudderStack',

@@ -1,6 +1,6 @@
 import type { CatchErr } from '../util/types';
-import type { Source } from './controlPlaneConfigSpec';
-import type { RudderMessage } from './eventSpec';
+import type { Source } from './controlPlaneConfig';
+import type { RudderMessage } from './rudderEvent';
 
 export type SourceTransformationEvent = {
   headers?: Record<string, string>;

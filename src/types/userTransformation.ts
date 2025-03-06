@@ -1,6 +1,6 @@
 import type { CatchErr } from '../util/types';
-import type { Metadata, RudderMessage } from './eventSpec';
-import type { ProcessorTransformationResponse } from './transformation';
+import type { Metadata, RudderMessage } from './rudderEvent';
+import type { ProcessorTransformationResponse } from './destinationTransformation';
 
 /**
  * Input structure for user transformations

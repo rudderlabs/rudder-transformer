@@ -1,5 +1,5 @@
 import { InstrumentationError, isDefinedAndNotNull } from '@rudderstack/integrations-lib';
-import { ProcessorTransformationRequest } from '../../../types';
+import { ProcessorTransformationRequest, RudderMessage } from '../../../types';
 import { handleCustomMappings } from './customMappingsHandler';
 import { processEvents as ga4Process } from '../ga4/transform';
 import { basicConfigvalidaiton } from '../ga4/utils';
@@ -22,7 +22,7 @@ export function process(event: ProcessorTransformationRequest) {
     Config.apiSecret = configDetails.MEASUREMENT_PROTOCOL_SECRET;
   }
 
-  const eventPayload = message as any;
+  const eventPayload = message as RudderMessage;
 
   if (!eventPayload.type) {
     throw new InstrumentationError('Message Type is not present. Aborting message.');

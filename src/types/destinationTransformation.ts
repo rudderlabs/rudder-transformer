@@ -3,8 +3,8 @@ import type {
   Credential,
   Destination,
   UserTransformationLibrary,
-} from './controlPlaneConfigSpec';
-import type { Metadata, RudderMessage } from './eventSpec';
+} from './controlPlaneConfig';
+import type { Metadata, RudderMessage } from './rudderEvent';
 
 /**
  * Processor transformation request/response structures

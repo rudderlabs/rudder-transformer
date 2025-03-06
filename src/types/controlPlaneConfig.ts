@@ -21,6 +21,10 @@ export type Destination<DestinationConfig = Record<string, unknown>> = {
   IsConnectionEnabled?: boolean;
 };
 
+export type DestinationConnectionConfig<T> = {
+  destination: T;
+};
+
 export type Connection = {
   sourceId: string;
   destinationId: string;

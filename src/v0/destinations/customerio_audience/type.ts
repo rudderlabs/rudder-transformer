@@ -1,4 +1,10 @@
-import { Connection, Destination, Metadata, RouterTransformationRequestData } from '../../../types';
+import {
+  Connection,
+  Destination,
+  DestinationConnectionConfig,
+  Metadata,
+  RouterTransformationRequestData,
+} from '../../../types';
 
 // Basic response type for audience list operations
 export type RespList = {
@@ -31,13 +37,11 @@ export type CustomerIODestinationConfig = {
 };
 
 export type CustomerIOConnectionConfig = {
-  destination: {
-    audienceId: string | number;
-    identifierMappings: {
-      from: string;
-      to: string;
-    }[];
-  };
+  audienceId: string | number;
+  identifierMappings: {
+    from: string;
+    to: string;
+  }[];
 };
 
 // Message type specific to CustomerIO
@@ -50,7 +54,7 @@ export type CustomerIOMessageType = {
 // Final exported types using generics from base types
 export type CustomerIODestinationType = Destination<CustomerIODestinationConfig>;
 export type CustomerIOConnectionType = Connection & {
-  config: CustomerIOConnectionConfig;
+  config: DestinationConnectionConfig<CustomerIOConnectionConfig>;
 };
 
 export type CustomerIORouterRequestType = RouterTransformationRequestData;

@@ -34,7 +34,7 @@ jobs:
 
       - name: Run Tests and Generate Report
         run: |
-          npm run test:ts
+          npm run test:ts:silent
 
       - name: Install Allure
         run: npm install -g allure-commandline

@@ -78,15 +78,15 @@ jobs:
 
       - name: Add Test Report Link as Comment on PR
         uses: actions/github-script@v7
-        if: always()
         with:
           github-token: ${{ secrets.PAT }}
           script: |
             const { owner, repo } = context.repo;
             const prNumber = context.payload.pull_request.number;
 
+            const reportFolder = process.env.REPORT_FOLDER;  // Read from environment variable
             const commentBody = `Allure Test reports for this run are available at:
-            - Allure Report: "https://rudderlabs.github.io/test-reports/${REPORT_FOLDER}/index.html"`;
+            - Allure Report: [View Report](https://rudderlabs.github.io/test-reports/${reportFolder}/index.html)`;
 
             // Comment on the pull request
             await github.rest.issues.createComment({

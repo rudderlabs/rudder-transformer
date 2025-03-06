@@ -200,10 +200,11 @@ const handleDeletion = async (
   input,
   fields,
   Config,
+  operationModuleType,
   transformedResponseToBeBatched,
   errorResponseList,
 ) => {
-  const searchResponse = await searchRecordId(fields, input.metadata, Config);
+  const searchResponse = await searchRecordId(fields, input.metadata, Config, operationModuleType);
 
   if (searchResponse.erroneous) {
     const error = handleSearchError(searchResponse);
@@ -251,7 +252,14 @@ const processInput = async (
       errorResponseList,
     );
   } else {
-    await handleDeletion(input, fields, Config, transformedResponseToBeBatched, errorResponseList);
+    await handleDeletion(
+      input,
+      fields,
+      Config,
+      operationModuleType,
+      transformedResponseToBeBatched,
+      errorResponseList,
+    );
   }
 };
 

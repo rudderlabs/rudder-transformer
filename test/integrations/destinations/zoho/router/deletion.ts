@@ -1,9 +1,11 @@
 import { defaultMockFns } from '../mocks';
 import {
   commonDeletionDestConfig,
+  commonDeletionDestConfig2,
   deletionPayload1,
   deletionPayload1V2,
   commonDeletionConnectionConfigV2,
+  commonConnectionConfigV2_4,
   destType,
 } from '../common';
 
@@ -115,6 +117,194 @@ export const deleteData = [
               batched: true,
               statusCode: 200,
               destination: commonDeletionDestConfig,
+            },
+          ],
+        },
+      },
+    },
+    mockFns: defaultMockFns,
+  },
+  {
+    name: destType,
+    id: 'zoho_deletion_1',
+    description: 'Happy flow record deletion with Contacts module',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: {
+                action: 'delete',
+                context: {
+                  externalId: [
+                    {
+                      type: 'ZOHO-Contacts',
+                      identifierType: 'email',
+                    },
+                  ],
+                  mappedToDestination: 'true',
+                  sources: {
+                    job_run_id: 'cgiiurt8um7k7n5dq480',
+                    task_run_id: 'cgiiurt8um7k7n5dq48g',
+                    job_id: '2MUWghI7u85n91dd1qzGyswpZan',
+                    version: '895/merge',
+                  },
+                },
+                recordId: '2',
+                rudderId: '2',
+                fields: {
+                  Email: 'tobedeleted2@gmail.com',
+                  First_Name: 'subcribed2',
+                  Last_Name: ' User2',
+                },
+                type: 'record',
+              },
+              metadata: {
+                jobId: 2,
+                userId: 'u1',
+                secret: {
+                  accessToken: 'correct-access-token',
+                },
+              },
+              destination: commonDeletionDestConfig2,
+            },
+          ],
+          destType,
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'DELETE',
+                endpoint:
+                  'https://www.zohoapis.in/crm/v6/Contacts?ids=<RECORD_ID_2>&wf_trigger=false',
+                headers: {
+                  Authorization: 'Zoho-oauthtoken correct-access-token',
+                },
+                params: {},
+                body: {
+                  JSON: {},
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+              },
+              metadata: [
+                {
+                  jobId: 2,
+                  userId: 'u1',
+                  secret: {
+                    accessToken: 'correct-access-token',
+                  },
+                },
+              ],
+              batched: true,
+              statusCode: 200,
+              destination: commonDeletionDestConfig2,
+            },
+          ],
+        },
+      },
+    },
+    mockFns: defaultMockFns,
+  },
+  {
+    name: destType,
+    id: 'zoho_deletion_1',
+    description: 'Happy flow record deletion with Contacts module V2',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: {
+                action: 'delete',
+                context: {
+                  sources: {
+                    job_run_id: 'cgiiurt8um7k7n5dq480',
+                    task_run_id: 'cgiiurt8um7k7n5dq48g',
+                    job_id: '2MUWghI7u85n91dd1qzGyswpZan',
+                    version: '895/merge',
+                  },
+                },
+                recordId: '2',
+                rudderId: '2',
+                identifiers: {
+                  Email: 'tobedeleted2@gmail.com',
+                },
+                fields: {
+                  First_Name: 'subcribed2',
+                  Last_Name: ' User2',
+                },
+                type: 'record',
+              },
+              metadata: {
+                jobId: 2,
+                userId: 'u1',
+                secret: {
+                  accessToken: 'correct-access-token',
+                },
+              },
+              destination: commonDeletionDestConfig2,
+              connection: commonConnectionConfigV2_4,
+            },
+          ],
+          destType,
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'DELETE',
+                endpoint:
+                  'https://www.zohoapis.in/crm/v6/Contacts?ids=<RECORD_ID_2>&wf_trigger=false',
+                headers: {
+                  Authorization: 'Zoho-oauthtoken correct-access-token',
+                },
+                params: {},
+                body: {
+                  JSON: {},
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+              },
+              metadata: [
+                {
+                  jobId: 2,
+                  userId: 'u1',
+                  secret: {
+                    accessToken: 'correct-access-token',
+                  },
+                },
+              ],
+              batched: true,
+              statusCode: 200,
+              destination: commonDeletionDestConfig2,
             },
           ],
         },

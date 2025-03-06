@@ -1,6 +1,6 @@
 {
   "name": "rudder-transformer",
-  "version": "1.91.3",
+  "version": "1.92.0",
   "description": "",
   "homepage": "https://github.com/rudderlabs/rudder-transformer#readme",
   "bugs": {
@@ -114,7 +114,6 @@
     "sha256": "^0.2.0",
     "sqlstring": "^2.3.3",
     "stacktrace-parser": "^0.1.10",
-    "statsd-client": "^0.4.7",
     "truncate-utf8-bytes": "^1.0.2",
     "ua-parser-js": "^1.0.37",
     "unset-value": "^2.0.1",

@@ -332,39 +332,36 @@ export const data = [
         body: [
           {
             request: {
-              body: JSON.stringify({
-                event: 'open',
-                time: 1704458040,
-                MessageID: 987654,
-                Message_GUID: '876r-oihugyf-7tfygh',
-                email: 'abc@r.com',
-                mj_campaign_id: 321,
-                mj_contact_id: 123,
-                customcampaign: 'test_campaign',
-                url: 'https://www.example.com/',
-                ip: 'ip_info',
-                geo: 'some geo info',
-                agent: 'mailjet api test',
-              }),
-            },
-            source: {},
-          },
-          {
-            request: {
-              body: JSON.stringify({
-                event: 'click',
-                time: 1704458041,
-                MessageID: 12345234567,
-                Message_GUID: '12345-kjhgfd-2efv',
-                email: 'abc@r.com',
-                mj_campaign_id: 12,
-                mj_contact_id: 32532,
-                customcampaign: 'test_campaign',
-                url: 'https://www.example.com/',
-                ip: 'ip_info',
-                geo: 'some geo info',
-                agent: 'mailjet api test',
-              }),
+              body: JSON.stringify([
+                {
+                  event: 'open',
+                  time: 1704458040,
+                  MessageID: 987654,
+                  Message_GUID: '876r-oihugyf-7tfygh',
+                  email: 'abc@r.com',
+                  mj_campaign_id: 321,
+                  mj_contact_id: 123,
+                  customcampaign: 'test_campaign',
+                  url: 'https://www.example.com/',
+                  ip: 'ip_info',
+                  geo: 'some geo info',
+                  agent: 'mailjet api test',
+                },
+                {
+                  event: 'click',
+                  time: 1704458041,
+                  MessageID: 12345234567,
+                  Message_GUID: '12345-kjhgfd-2efv',
+                  email: 'abc@r.com',
+                  mj_campaign_id: 12,
+                  mj_contact_id: 32532,
+                  customcampaign: 'test_campaign',
+                  url: 'https://www.example.com/',
+                  ip: 'ip_info',
+                  geo: 'some geo info',
+                  agent: 'mailjet api test',
+                },
+              ]),
             },
             source: {},
           },
@@ -403,12 +400,6 @@ export const data = [
                   userId: '593a5aff0b445b3b77a6d9676b7ec86e',
                   originalTimestamp: '2024-01-05T12:34:00.000Z',
                 },
-              ],
-            },
-          },
-          {
-            output: {
-              batch: [
                 {
                   context: {
                     library: { name: 'unknown', version: 'unknown' },

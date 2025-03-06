@@ -1173,6 +1173,356 @@ export const data = [
       },
     },
   },
+  {
+    name: 'braze',
+    description: 'event.events is not available in required format',
+    module: 'source',
+    version: 'v2',
+    input: {
+      request: {
+        body: [
+          {
+            request: {
+              body: JSON.stringify({}),
+            },
+            source: {
+              ID: '2hgvYyU5TYaFvVzBge6tF2UKoeG',
+              OriginalID: '',
+              Name: 'Braze source',
+              SourceDefinition: commonSourceDefinition,
+              Config: {
+                customMapping: [
+                  {
+                    from: 'randomEvent',
+                    to: 'In-App Message Clicked',
+                  },
+                ],
+              },
+              ...commonSourceConfigProperties,
+            },
+          },
+        ],
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      },
+      pathSuffix: '',
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            error: 'eventList should be an array',
+            statTags: {
+              destinationId: 'Non determinable',
+              errorCategory: 'transformation',
+              implementation: 'native',
+              module: 'source',
+              srcType: 'braze',
+              workspaceId: 'Non determinable',
+            },
+            statusCode: 400,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'braze',
+    description: 'event is null in request',
+    module: 'source',
+    version: 'v2',
+    input: {
+      request: {
+        body: [
+          {
+            request: {
+              body: JSON.stringify(null),
+            },
+            source: {
+              ID: '2hgvYyU5TYaFvVzBge6tF2UKoeG',
+              OriginalID: '',
+              Name: 'Braze source',
+              SourceDefinition: commonSourceDefinition,
+              Config: {
+                customMapping: [
+                  {
+                    from: 'randomEvent',
+                    to: 'In-App Message Clicked',
+                  },
+                ],
+              },
+              ...commonSourceConfigProperties,
+            },
+          },
+        ],
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      },
+      pathSuffix: '',
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            error: 'eventList should be an array',
+            statTags: {
+              destinationId: 'Non determinable',
+              errorCategory: 'transformation',
+              implementation: 'native',
+              module: 'source',
+              srcType: 'braze',
+              workspaceId: 'Non determinable',
+            },
+            statusCode: 400,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'braze',
+    description: 'event is empty array in request',
+    module: 'source',
+    version: 'v2',
+    input: {
+      request: {
+        body: [
+          {
+            request: {
+              body: JSON.stringify([]),
+            },
+            source: {
+              ID: '2hgvYyU5TYaFvVzBge6tF2UKoeG',
+              OriginalID: '',
+              Name: 'Braze source',
+              SourceDefinition: commonSourceDefinition,
+              Config: {
+                customMapping: [
+                  {
+                    from: 'randomEvent',
+                    to: 'In-App Message Clicked',
+                  },
+                ],
+              },
+              ...commonSourceConfigProperties,
+            },
+          },
+        ],
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      },
+      pathSuffix: '',
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            error: 'eventList should be an array',
+            statTags: {
+              destinationId: 'Non determinable',
+              errorCategory: 'transformation',
+              implementation: 'native',
+              module: 'source',
+              srcType: 'braze',
+              workspaceId: 'Non determinable',
+            },
+            statusCode: 400,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'braze',
+    description: 'event[0] is null/undefined in request',
+    module: 'source',
+    version: 'v2',
+    input: {
+      request: {
+        body: [
+          {
+            request: {
+              body: JSON.stringify([null]),
+            },
+            source: {
+              ID: '2hgvYyU5TYaFvVzBge6tF2UKoeG',
+              OriginalID: '',
+              Name: 'Braze source',
+              SourceDefinition: commonSourceDefinition,
+              Config: {
+                customMapping: [
+                  {
+                    from: 'randomEvent',
+                    to: 'In-App Message Clicked',
+                  },
+                ],
+              },
+              ...commonSourceConfigProperties,
+            },
+          },
+        ],
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      },
+      pathSuffix: '',
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            error: 'eventList should be an array',
+            statTags: {
+              destinationId: 'Non determinable',
+              errorCategory: 'transformation',
+              implementation: 'native',
+              module: 'source',
+              srcType: 'braze',
+              workspaceId: 'Non determinable',
+            },
+            statusCode: 400,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'braze',
+    description: 'event[0].events is undefined or null',
+    module: 'source',
+    version: 'v2',
+    input: {
+      request: {
+        body: [
+          {
+            request: {
+              body: JSON.stringify([{}]),
+            },
+            source: {
+              ID: '2hgvYyU5TYaFvVzBge6tF2UKoeG',
+              OriginalID: '',
+              Name: 'Braze source',
+              SourceDefinition: commonSourceDefinition,
+              Config: {
+                customMapping: [
+                  {
+                    from: 'randomEvent',
+                    to: 'In-App Message Clicked',
+                  },
+                ],
+              },
+              ...commonSourceConfigProperties,
+            },
+          },
+        ],
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      },
+      pathSuffix: '',
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            error: 'eventList should be an array',
+            statTags: {
+              destinationId: 'Non determinable',
+              errorCategory: 'transformation',
+              implementation: 'native',
+              module: 'source',
+              srcType: 'braze',
+              workspaceId: 'Non determinable',
+            },
+            statusCode: 400,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'braze',
+    description: 'success scenario when event[0].events is valid request',
+    module: 'source',
+    version: 'v2',
+    input: {
+      request: {
+        body: [
+          {
+            request: {
+              body: JSON.stringify([
+                {
+                  events: [
+                    {
+                      event_type: 'users.messages.inappmessage.Click',
+                      properties: { device_model: 'samsung' },
+                      user: {
+                        user_id: 'user_id',
+                        external_user_id: 'externalUserId',
+                      },
+                    },
+                  ],
+                },
+              ]),
+            },
+            source: {
+              ID: '2hgvYyU5TYaFvVzBge6tF2UKoeG',
+              OriginalID: '',
+              Name: 'Braze source',
+              SourceDefinition: commonSourceDefinition,
+              Config: {
+                customMapping: [],
+              },
+              ...commonSourceConfigProperties,
+            },
+          },
+        ],
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      },
+      pathSuffix: '',
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              batch: [
+                {
+                  anonymousId: 'user_id',
+                  context: {
+                    device: { model: 'samsung' },
+                    integration: { name: 'Braze' },
+                    library: { name: 'unknown', version: 'unknown' },
+                  },
+                  event: 'users.messages.inappmessage.Click',
+                  integrations: { Braze: false },
+                  type: 'track',
+                  userId: 'externalUserId',
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  },
 ].map((tc) => ({
   ...tc,
   mockFns: () => {

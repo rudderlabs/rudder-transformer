@@ -13,7 +13,7 @@ const deletionPayload1 = {
     externalId: [
       {
         type: 'ZOHO-Leads',
-        identifierType: 'email',
+        identifierType: 'Email',
       },
     ],
     mappedToDestination: 'true',
@@ -40,7 +40,7 @@ const deletionPayload2 = {
     externalId: [
       {
         type: 'ZOHO-Contacts',
-        identifierType: 'email',
+        identifierType: 'Email',
       },
     ],
     mappedToDestination: 'true',

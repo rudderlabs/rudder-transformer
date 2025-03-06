@@ -87,7 +87,7 @@ jobs:
             REPORT_URL="https://rudderlabs.github.io/test-reports/$REPORT_FOLDER/index.html"
 
             const commentBody = `Allure Test reports for this run are available at:
-            - Allure Report: $REPORT_URL`;
+            - Allure Report: ${REPORT_URL}`;
 
             // Comment on the pull request
             await github.rest.issues.createComment({

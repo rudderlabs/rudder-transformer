@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 const { isDefinedAndNotNull } = require('@rudderstack/integrations-lib');
-const Message = require('../../../../sources/message');
-const { EventType } = require('../../../../constants');
+const Message = require('../../message');
+const { EventType } = require('../../../constants');
 const {
   INTEGERATION,
   PIXEL_EVENT_MAPPING,

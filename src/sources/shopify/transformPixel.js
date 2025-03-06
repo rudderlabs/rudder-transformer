@@ -3,7 +3,7 @@ const { isIdentifierEvent, processIdentifierEvent } = require('./utils');
 const { processWebhookEvents } = require('./webhookTransformations/serverSideTransform');
 const { processPixelWebEvents } = require('./webpixelTransformations/pixelTransform');
 
-const processV1Events = async (event) => {
+const processPixelEvents = async (event) => {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   const { query_parameters } = event;
 
@@ -32,5 +32,5 @@ const processV1Events = async (event) => {
 };
 
 module.exports = {
-  processV1Events,
+  processPixelEvents,
 };

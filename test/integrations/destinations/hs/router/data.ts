@@ -1,4 +1,4 @@
-import { authHeader1, secret1, authHeader3, secret3 } from '../maskedSecrets';
+import { authHeader1, secret1, authHeader2, authHeader3, secret3, secret2 } from '../maskedSecrets';
 import { destination } from './config';
 export const data = [
   {
@@ -3700,6 +3700,207 @@ export const data = [
                 module: 'destination',
               },
               statusCode: 400,
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    name: 'hs',
+    description: 'if dontBatch is true we should use patch request method for update for retl flow',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    scenario: 'buisness',
+    id: 'dontbatchtrueid',
+    successCriteria:
+      'should not create a batch with the events if that events contains dontBatch true',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: {
+                type: 'identify',
+                sentAt: '2024-05-23T16:49:57.461+05:30',
+                userId: 'identify425@test.com',
+                channel: 'mobile',
+                context: {
+                  traits: {
+                    age: '30',
+                    name: 'John Sparrow',
+                    email: 'identify425@test.com',
+                    phone: '9112340425',
+                    lastname: 'Sparrow',
+                    firstname: 'John',
+                  },
+                  context: {
+                    sources: {
+                      job_id: '2qY238MjR41Cn1pnO5kSK0Metno',
+                      version: 'v1.60.8',
+                      job_run_id: 'cus0gkdes5sukm8iqqh0',
+                      task_run_id: 'cus0gkdes5sukm8iqqig',
+                    },
+                    externalId: [
+                      {
+                        id: 'identify425@test.com',
+                        type: 'HS-contacts',
+                        identifierType: 'email',
+                      },
+                    ],
+                    mappedToDestination: 'true',
+                  },
+                  userAgent:
+                    'Dalvik/2.1.0 (Linux; U; Android 9; AOSP on IA Emulator Build/PSR1.180720.117)',
+                },
+                timestamp: '2024-05-23T16:49:57.070+05:30',
+                receivedAt: '2024-05-23T16:49:57.071+05:30',
+                anonymousId: '8d872292709c6fbe',
+              },
+              metadata: {
+                jobId: 1,
+                sourceId: '2RnN36pc7p5lzoApxZnDfRnYFx0',
+                destinationId: '2RnSBhn4zPTOF8NdqAIrnVPPnfr',
+                transformAt: 'router',
+                workspaceId: '2QapBTEvZYwuf6O9KB5AEvvBt8j',
+                dontBatch: true,
+              },
+              destination: {
+                ID: '2RnSBhn4zPTOF8NdqAIrnVPPnfr',
+                Name: 'hs-1',
+                Config: {
+                  accessToken: secret2,
+                  apiKey: '',
+                  apiVersion: 'newApi',
+                  authorizationType: 'newPrivateAppApi',
+                  blacklistedEvents: [],
+                  connectionMode: 'cloud',
+                  doAssociation: false,
+                  eventDelivery: false,
+                  eventDeliveryTS: 1687884567403,
+                  eventFilteringOption: 'disable',
+                  hubID: '25092171',
+                  hubspotEvents: [
+                    {
+                      eventProperties: [
+                        {
+                          from: 'first_name',
+                          to: 'first_name',
+                        },
+                        {
+                          from: 'last_name',
+                          to: 'last_name',
+                        },
+                      ],
+                      hubspotEventName: 'pedummy-hubId_rs_hub_chair',
+                      rsEventName: 'Order Complete',
+                    },
+                  ],
+                  lookupField: 'email',
+                  useNativeSDK: false,
+                  whitelistedEvents: [],
+                },
+                Enabled: true,
+                WorkspaceID: '2QapBTEvZYwuf6O9KB5AEvvBt8j',
+                Transformations: [],
+                IsProcessorEnabled: true,
+                RevisionID: '2gqf7Mc7WEwqQtQy3G105O22s3D',
+              },
+              request: {
+                query: {},
+              },
+            },
+          ],
+          destType: 'hs',
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batched: false,
+              batchedRequest: {
+                body: {
+                  FORM: {},
+                  JSON: {
+                    properties: {
+                      email: 'identify425@test.com',
+                      firstname: 'John',
+                      lastname: 'Sparrow',
+                      phone: '9112340425',
+                    },
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                },
+                endpoint: 'https://api.hubapi.com/crm/v3/objects/contacts/103604',
+                files: {},
+                headers: {
+                  Authorization: authHeader2,
+                  'Content-Type': 'application/json',
+                },
+                method: 'PATCH',
+                params: {},
+                type: 'REST',
+                version: '1',
+              },
+              destination: {
+                Config: {
+                  accessToken: secret2,
+                  apiKey: '',
+                  apiVersion: 'newApi',
+                  authorizationType: 'newPrivateAppApi',
+                  blacklistedEvents: [],
+                  connectionMode: 'cloud',
+                  doAssociation: false,
+                  eventDelivery: false,
+                  eventDeliveryTS: 1687884567403,
+                  eventFilteringOption: 'disable',
+                  hubID: '25092171',
+                  hubspotEvents: [
+                    {
+                      eventProperties: [
+                        {
+                          from: 'first_name',
+                          to: 'first_name',
+                        },
+                        {
+                          from: 'last_name',
+                          to: 'last_name',
+                        },
+                      ],
+                      hubspotEventName: 'pedummy-hubId_rs_hub_chair',
+                      rsEventName: 'Order Complete',
+                    },
+                  ],
+                  lookupField: 'email',
+                  useNativeSDK: false,
+                  whitelistedEvents: [],
+                },
+                Enabled: true,
+                ID: '2RnSBhn4zPTOF8NdqAIrnVPPnfr',
+                IsProcessorEnabled: true,
+                Name: 'hs-1',
+                RevisionID: '2gqf7Mc7WEwqQtQy3G105O22s3D',
+                Transformations: [],
+                WorkspaceID: '2QapBTEvZYwuf6O9KB5AEvvBt8j',
+              },
+              metadata: [
+                {
+                  destinationId: '2RnSBhn4zPTOF8NdqAIrnVPPnfr',
+                  dontBatch: true,
+                  jobId: 1,
+                  sourceId: '2RnN36pc7p5lzoApxZnDfRnYFx0',
+                  transformAt: 'router',
+                  workspaceId: '2QapBTEvZYwuf6O9KB5AEvvBt8j',
+                },
+              ],
+              statusCode: 200,
             },
           ],
         },

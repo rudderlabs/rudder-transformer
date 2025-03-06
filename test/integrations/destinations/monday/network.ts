@@ -1,3 +1,5 @@
+import { secretFailedApiToken, secretApiToken } from './maskedSecrets';
+
 export const networkCallsData = [
   {
     httpReq: {
@@ -26,8 +28,12 @@ export const networkCallsData = [
                   title: 'Subitems',
                   type: 'subtasks',
                   description: null,
-                  settings_str:
-                    '{"allowMultipleItems":true,"itemTypeName":"column.subtasks.title","displayType":"BOARD_INLINE","boardIds":[3160974974]}',
+                  settings_str: JSON.stringify({
+                    allowMultipleItems: true,
+                    itemTypeName: 'column.subtasks.title',
+                    displayType: 'BOARD_INLINE',
+                    boardIds: [3160974974],
+                  }),
                 },
                 {
                   id: 'person',
@@ -41,8 +47,15 @@ export const networkCallsData = [
                   title: 'Status',
                   type: 'color',
                   description: null,
-                  settings_str:
-                    '{"labels":{"0":"Working on it","1":"Done","2":"Stuck"},"labels_positions_v2":{"0":0,"1":2,"2":1,"5":3},"labels_colors":{"0":{"color":"#fdab3d","border":"#E99729","var_name":"orange"},"1":{"color":"#00c875","border":"#00B461","var_name":"green-shadow"},"2":{"color":"#e2445c","border":"#CE3048","var_name":"red-shadow"}}}',
+                  settings_str: JSON.stringify({
+                    labels: { '0': 'Working on it', '1': 'Done', '2': 'Stuck' },
+                    labels_positions_v2: { '0': 0, '1': 2, '2': 1, '5': 3 },
+                    labels_colors: {
+                      '0': { color: '#fdab3d', border: '#E99729', var_name: 'orange' },
+                      '1': { color: '#00c875', border: '#00B461', var_name: 'green-shadow' },
+                      '2': { color: '#e2445c', border: '#CE3048', var_name: 'red-shadow' },
+                    },
+                  }),
                 },
                 {
                   id: 'date4',
@@ -63,30 +76,42 @@ export const networkCallsData = [
                   title: 'Connect boards',
                   type: 'board-relation',
                   description: null,
-                  settings_str: '{"allowCreateReflectionColumn":false}',
+                  settings_str: JSON.stringify({ allowCreateReflectionColumn: false }),
                 },
                 {
                   id: 'status_1',
                   title: 'Other',
                   type: 'color',
                   description: null,
-                  settings_str:
-                    '{"labels":{"0":"Working on it","1":"Done","2":"Stuck"},"labels_colors":{"0":{"color":"#fdab3d","border":"#E99729","var_name":"orange"},"1":{"color":"#00c875","border":"#00B461","var_name":"green-shadow"},"2":{"color":"#e2445c","border":"#CE3048","var_name":"red-shadow"}}}',
+                  settings_str: JSON.stringify({
+                    labels: { '0': 'Working on it', '1': 'Done', '2': 'Stuck' },
+                    labels_colors: {
+                      '0': { color: '#fdab3d', border: '#E99729', var_name: 'orange' },
+                      '1': { color: '#00c875', border: '#00B461', var_name: 'green-shadow' },
+                      '2': { color: '#e2445c', border: '#CE3048', var_name: 'red-shadow' },
+                    },
+                  }),
                 },
                 {
                   id: 'date_1',
                   title: 'Date 1',
                   type: 'date',
                   description: null,
-                  settings_str: '{"hide_footer":false}',
+                  settings_str: JSON.stringify({ hide_footer: false }),
                 },
                 {
                   id: 'status_12',
                   title: 'new status',
                   type: 'color',
                   description: null,
-                  settings_str:
-                    '{"labels":{"0":"Working on it","1":"Done","2":"Stuck"},"labels_colors":{"0":{"color":"#fdab3d","border":"#E99729","var_name":"orange"},"1":{"color":"#00c875","border":"#00B461","var_name":"green-shadow"},"2":{"color":"#e2445c","border":"#CE3048","var_name":"red-shadow"}}}',
+                  settings_str: JSON.stringify({
+                    labels: { '0': 'Working on it', '1': 'Done', '2': 'Stuck' },
+                    labels_colors: {
+                      '0': { color: '#fdab3d', border: '#E99729', var_name: 'orange' },
+                      '1': { color: '#00c875', border: '#00B461', var_name: 'green-shadow' },
+                      '2': { color: '#e2445c', border: '#CE3048', var_name: 'red-shadow' },
+                    },
+                  }),
                 },
                 {
                   id: 'numbers',
@@ -114,8 +139,13 @@ export const networkCallsData = [
                   title: 'Dropdown',
                   type: 'dropdown',
                   description: null,
-                  settings_str:
-                    '{"hide_footer":false,"labels":[{"id":1,"name":"dropdown"},{"id":2,"name":"dropup"}]}',
+                  settings_str: JSON.stringify({
+                    hide_footer: false,
+                    labels: [
+                      { id: 1, name: 'dropdown' },
+                      { id: 2, name: 'dropup' },
+                    ],
+                  }),
                 },
                 {
                   id: 'email',
@@ -150,7 +180,7 @@ export const networkCallsData = [
                   title: 'Timeline',
                   type: 'timerange',
                   description: null,
-                  settings_str: '{"hide_footer":false}',
+                  settings_str: JSON.stringify({ hide_footer: false }),
                 },
                 {
                   id: 'dependent_on',
@@ -158,8 +188,11 @@ export const networkCallsData = [
                   type: 'dependency',
                   description:
                     'Choose the item your task will be dependent on. If the “dependent on” item’s date is changing, the other dates will adjust automatically',
-                  settings_str:
-                    '{"boardIds":[3142482015],"dependencyNewInfra":true,"allowMultipleItems":true}',
+                  settings_str: JSON.stringify({
+                    boardIds: [3142482015],
+                    dependencyNewInfra: true,
+                    allowMultipleItems: true,
+                  }),
                 },
                 {
                   id: 'long_text',
@@ -180,15 +213,23 @@ export const networkCallsData = [
                   title: 'Tags',
                   type: 'tag',
                   description: null,
-                  settings_str: '{"hide_footer":false}',
+                  settings_str: JSON.stringify({ hide_footer: false }),
                 },
                 {
                   id: 'label',
                   title: 'Label',
                   type: 'color',
                   description: '',
-                  settings_str:
-                    '{"done_colors":[1],"labels":{"3":"Label 2","105":"Label 1","156":"Label 3"},"labels_positions_v2":{"3":1,"5":3,"105":0,"156":2},"labels_colors":{"3":{"color":"#0086c0","border":"#3DB0DF","var_name":"blue-links"},"105":{"color":"#9AADBD","border":"#9AADBD","var_name":"winter"},"156":{"color":"#9D99B9","border":"#9D99B9","var_name":"purple_gray"}}}',
+                  settings_str: JSON.stringify({
+                    done_colors: [1],
+                    labels: { '3': 'Label 2', '105': 'Label 1', '156': 'Label 3' },
+                    labels_positions_v2: { '3': 1, '5': 3, '105': 0, '156': 2 },
+                    labels_colors: {
+                      '3': { color: '#0086c0', border: '#3DB0DF', var_name: 'blue-links' },
+                      '105': { color: '#9AADBD', border: '#9AADBD', var_name: 'winter' },
+                      '156': { color: '#9D99B9', border: '#9D99B9', var_name: 'purple_gray' },
+                    },
+                  }),
                 },
                 {
                   id: 'world_clock',
@@ -287,8 +328,7 @@ export const networkCallsData = [
       url: 'https://api.monday.com/v2',
       method: 'POST',
       headers: {
-        Authorization:
-          'eywwakzdjiksjhriherniSFsjhnskdojsSDFhsdns.sSRSSREWdnfnsjshfjsjskshfiskskdS__Fskilhih',
+        Authorization: secretApiToken,
       },
     },
     httpRes: {
@@ -310,8 +350,12 @@ export const networkCallsData = [
                   title: 'Subitems',
                   type: 'subtasks',
                   description: null,
-                  settings_str:
-                    '{"allowMultipleItems":true,"itemTypeName":"column.subtasks.title","displayType":"BOARD_INLINE","boardIds":[3160974974]}',
+                  settings_str: JSON.stringify({
+                    allowMultipleItems: true,
+                    itemTypeName: 'column.subtasks.title',
+                    displayType: 'BOARD_INLINE',
+                    boardIds: [3160974974],
+                  }),
                 },
                 {
                   id: 'person',
@@ -325,8 +369,15 @@ export const networkCallsData = [
                   title: 'Status',
                   type: 'color',
                   description: null,
-                  settings_str:
-                    '{"labels":{"0":"Working on it","1":"Done","2":"Stuck"},"labels_positions_v2":{"0":0,"1":2,"2":1,"5":3},"labels_colors":{"0":{"color":"#fdab3d","border":"#E99729","var_name":"orange"},"1":{"color":"#00c875","border":"#00B461","var_name":"green-shadow"},"2":{"color":"#e2445c","border":"#CE3048","var_name":"red-shadow"}}}',
+                  settings_str: JSON.stringify({
+                    labels: { '0': 'Working on it', '1': 'Done', '2': 'Stuck' },
+                    labels_positions_v2: { '0': 0, '1': 2, '2': 1, '5': 3 },
+                    labels_colors: {
+                      '0': { color: '#fdab3d', border: '#E99729', var_name: 'orange' },
+                      '1': { color: '#00c875', border: '#00B461', var_name: 'green-shadow' },
+                      '2': { color: '#e2445c', border: '#CE3048', var_name: 'red-shadow' },
+                    },
+                  }),
                 },
                 {
                   id: 'date4',
@@ -347,30 +398,42 @@ export const networkCallsData = [
                   title: 'Connect boards',
                   type: 'board-relation',
                   description: null,
-                  settings_str: '{"allowCreateReflectionColumn":false}',
+                  settings_str: JSON.stringify({ allowCreateReflectionColumn: false }),
                 },
                 {
                   id: 'status_1',
                   title: 'Other',
                   type: 'color',
                   description: null,
-                  settings_str:
-                    '{"labels":{"0":"Working on it","1":"Done","2":"Stuck"},"labels_colors":{"0":{"color":"#fdab3d","border":"#E99729","var_name":"orange"},"1":{"color":"#00c875","border":"#00B461","var_name":"green-shadow"},"2":{"color":"#e2445c","border":"#CE3048","var_name":"red-shadow"}}}',
+                  settings_str: JSON.stringify({
+                    labels: { '0': 'Working on it', '1': 'Done', '2': 'Stuck' },
+                    labels_colors: {
+                      '0': { color: '#fdab3d', border: '#E99729', var_name: 'orange' },
+                      '1': { color: '#00c875', border: '#00B461', var_name: 'green-shadow' },
+                      '2': { color: '#e2445c', border: '#CE3048', var_name: 'red-shadow' },
+                    },
+                  }),
                 },
                 {
                   id: 'date_1',
                   title: 'Date 1',
                   type: 'date',
                   description: null,
-                  settings_str: '{"hide_footer":false}',
+                  settings_str: JSON.stringify({ hide_footer: false }),
                 },
                 {
                   id: 'status_12',
                   title: 'new status',
                   type: 'color',
                   description: null,
-                  settings_str:
-                    '{"labels":{"0":"Working on it","1":"Done","2":"Stuck"},"labels_colors":{"0":{"color":"#fdab3d","border":"#E99729","var_name":"orange"},"1":{"color":"#00c875","border":"#00B461","var_name":"green-shadow"},"2":{"color":"#e2445c","border":"#CE3048","var_name":"red-shadow"}}}',
+                  settings_str: JSON.stringify({
+                    labels: { '0': 'Working on it', '1': 'Done', '2': 'Stuck' },
+                    labels_colors: {
+                      '0': { color: '#fdab3d', border: '#E99729', var_name: 'orange' },
+                      '1': { color: '#00c875', border: '#00B461', var_name: 'green-shadow' },
+                      '2': { color: '#e2445c', border: '#CE3048', var_name: 'red-shadow' },
+                    },
+                  }),
                 },
                 {
                   id: 'numbers',
@@ -398,8 +461,13 @@ export const networkCallsData = [
                   title: 'Dropdown',
                   type: 'dropdown',
                   description: null,
-                  settings_str:
-                    '{"hide_footer":false,"labels":[{"id":1,"name":"dropdown"},{"id":2,"name":"dropup"}]}',
+                  settings_str: JSON.stringify({
+                    hide_footer: false,
+                    labels: [
+                      { id: 1, name: 'dropdown' },
+                      { id: 2, name: 'dropup' },
+                    ],
+                  }),
                 },
                 {
                   id: 'email',
@@ -434,7 +502,7 @@ export const networkCallsData = [
                   title: 'Timeline',
                   type: 'timerange',
                   description: null,
-                  settings_str: '{"hide_footer":false}',
+                  settings_str: JSON.stringify({ hide_footer: false }),
                 },
                 {
                   id: 'dependent_on',
@@ -442,8 +510,11 @@ export const networkCallsData = [
                   type: 'dependency',
                   description:
                     'Choose the item your task will be dependent on. If the “dependent on” item’s date is changing, the other dates will adjust automatically',
-                  settings_str:
-                    '{"boardIds":[3142482015],"dependencyNewInfra":true,"allowMultipleItems":true}',
+                  settings_str: JSON.stringify({
+                    boardIds: [3142482015],
+                    dependencyNewInfra: true,
+                    allowMultipleItems: true,
+                  }),
                 },
                 {
                   id: 'long_text',
@@ -464,15 +535,23 @@ export const networkCallsData = [
                   title: 'Tags',
                   type: 'tag',
                   description: null,
-                  settings_str: '{"hide_footer":false}',
+                  settings_str: JSON.stringify({ hide_footer: false }),
                 },
                 {
                   id: 'label',
                   title: 'Label',
                   type: 'color',
                   description: '',
-                  settings_str:
-                    '{"done_colors":[1],"labels":{"3":"Label 2","105":"Label 1","156":"Label 3"},"labels_positions_v2":{"3":1,"5":3,"105":0,"156":2},"labels_colors":{"3":{"color":"#0086c0","border":"#3DB0DF","var_name":"blue-links"},"105":{"color":"#9AADBD","border":"#9AADBD","var_name":"winter"},"156":{"color":"#9D99B9","border":"#9D99B9","var_name":"purple_gray"}}}',
+                  settings_str: JSON.stringify({
+                    done_colors: [1],
+                    labels: { '3': 'Label 2', '105': 'Label 1', '156': 'Label 3' },
+                    labels_positions_v2: { '3': 1, '5': 3, '105': 0, '156': 2 },
+                    labels_colors: {
+                      '3': { color: '#0086c0', border: '#3DB0DF', var_name: 'blue-links' },
+                      '105': { color: '#9AADBD', border: '#9AADBD', var_name: 'winter' },
+                      '156': { color: '#9D99B9', border: '#9D99B9', var_name: 'purple_gray' },
+                    },
+                  }),
                 },
                 {
                   id: 'world_clock',
@@ -512,7 +591,7 @@ export const networkCallsData = [
       url: 'https://api.monday.com/v2',
       method: 'POST',
       headers: {
-        Authorization: 'failedApiToken',
+        Authorization: secretFailedApiToken,
       },
     },
     httpRes: {

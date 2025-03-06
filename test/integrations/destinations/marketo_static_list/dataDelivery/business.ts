@@ -1,7 +1,7 @@
 import { ProxyMetdata } from '../../../../../src/types';
 import { ProxyV1TestData } from '../../../testTypes';
 import { generateProxyV1Payload } from '../../../testUtils';
-
+import { authHeader1, authHeaderAccessToken } from '../maskedSecrets';
 export const statTags = {
   aborted: {
     destType: 'MARKETO_STATIC_LIST',
@@ -79,11 +79,11 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
           {
             ...commonRequestParameters,
             headers: {
-              Authorization: 'Bearer Incorrect_token',
+              Authorization: authHeaderAccessToken,
               'Content-Type': 'application/json',
             },
             endpoint:
-              'https://marketo_acct_id_success.mktorest.com/rest/v1/lists/1234/leads.json?id=110&id=111&id=112',
+              'https://marketo_static_list_acct_id_success.mktorest.com/rest/v1/lists/1234/leads.json?id=110&id=111&id=112',
           },
           reqMetadataArray,
         ),
@@ -99,8 +99,19 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
             message: 'Request Processed Successfully',
             response: [
               {
-                error:
-                  '{"requestId":"b6d1#18a8d2c10e7","result":[{"id":110,"status":"skipped","reasons":[{"code":"1015","message":"Lead not in list"}]},{"id":111,"status":"removed"},{"id":112,"status":"removed"}],"success":true}',
+                error: JSON.stringify({
+                  requestId: 'b6d1#18a8d2c10e7',
+                  result: [
+                    {
+                      id: 110,
+                      status: 'skipped',
+                      reasons: [{ code: '1015', message: 'Lead not in list' }],
+                    },
+                    { id: 111, status: 'removed' },
+                    { id: 112, status: 'removed' },
+                  ],
+                  success: true,
+                }),
                 metadata: proxyMetdata,
                 statusCode: 200,
               },
@@ -125,11 +136,11 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
           {
             ...commonRequestParameters,
             headers: {
-              Authorization: 'Bearer Incorrect_token',
+              Authorization: authHeaderAccessToken,
               'Content-Type': 'application/json',
             },
             endpoint:
-              'https://marketo_acct_id_success.mktorest.com/rest/v1/lists/1234/leads.json?id=1&id=2&id=3',
+              'https://marketo_static_list_acct_id_success.mktorest.com/rest/v1/lists/1234/leads.json?id=1&id=2&id=3',
           },
           reqMetadataArray,
         ),
@@ -147,8 +158,11 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
               'Request Failed for Marketo Static List, Access token invalid (Retryable).during Marketo Static List Response Handling',
             response: [
               {
-                error:
-                  '{"requestId":"68d8#1846058ee27","success":false,"errors":[{"code":"601","message":"Access token invalid"}]}',
+                error: JSON.stringify({
+                  requestId: '68d8#1846058ee27',
+                  success: false,
+                  errors: [{ code: '601', message: 'Access token invalid' }],
+                }),
                 metadata: proxyMetdata,
                 statusCode: 500,
               },
@@ -174,12 +188,12 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
           {
             ...commonRequestParameters,
             headers: {
-              Authorization: 'Bearer token',
+              Authorization: authHeader1,
               'Content-Type': 'application/json',
               'User-Agent': 'RudderLabs',
             },
             endpoint:
-              'https://marketo_acct_id_success.mktorest.com/rest/v1/lists/1234/leads.json?id=1&id=2',
+              'https://marketo_static_list_acct_id_success.mktorest.com/rest/v1/lists/1234/leads.json?id=1&id=2',
           },
           reqMetadataArray,
         ),
@@ -195,8 +209,14 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
             message: 'Request Processed Successfully',
             response: [
               {
-                error:
-                  '{"requestId":"12d3c#1846057dce2","result":[{"id":1,"status":"added"},{"id":2,"status":"added"}],"success":true}',
+                error: JSON.stringify({
+                  requestId: '12d3c#1846057dce2',
+                  result: [
+                    { id: 1, status: 'added' },
+                    { id: 2, status: 'added' },
+                  ],
+                  success: true,
+                }),
                 metadata: proxyMetdata,
                 statusCode: 200,
               },
@@ -221,7 +241,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
           {
             ...commonRequestParameters,
             headers: {
-              Authorization: 'Bearer test_token_6',
+              Authorization: authHeader1,
               'Content-Type': 'application/json',
               'User-Agent': 'RudderLabs',
             },

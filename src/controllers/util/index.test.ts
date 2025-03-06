@@ -187,7 +187,7 @@ describe('adaptInputToVersion', () => {
           url: 'http://example.com',
           proto: 'HTTP/2',
           headers: { headerkey: ['headervalue'] },
-          body: '{"key": "value"}',
+          body: JSON.stringify({ key: 'value' }),
           query_parameters: { paramkey: ['paramvalue'] },
         },
         source: { id: 'source_id', config: { configField1: 'configVal1' } },
@@ -198,7 +198,7 @@ describe('adaptInputToVersion', () => {
           url: 'http://example.com',
           proto: 'HTTP/2',
           headers: { headerkey: ['headervalue'] },
-          body: '{"key": "value"}',
+          body: JSON.stringify({ key: 'value' }),
           query_parameters: { paramkey: ['paramvalue'] },
         },
         source: { id: 'source_id', config: { configField1: 'configVal1' } },
@@ -209,7 +209,7 @@ describe('adaptInputToVersion', () => {
           url: 'http://example.com',
           proto: 'HTTP/2',
           headers: { headerkey: ['headervalue'] },
-          body: '{"key": "value"}',
+          body: JSON.stringify({ key: 'value' }),
           query_parameters: { paramkey: ['paramvalue'] },
         },
         source: { id: 'source_id', config: { configField1: 'configVal1' } },
@@ -279,7 +279,7 @@ describe('adaptInputToVersion', () => {
           url: 'http://example.com',
           proto: 'HTTP/2',
           headers: { headerkey: ['headervalue'] },
-          body: '{"key": "value"}',
+          body: JSON.stringify({ key: 'value' }),
           query_parameters: { paramkey: ['paramvalue'] },
         },
         source: { id: 'source_id', config: { configField1: 'configVal1' } },
@@ -290,7 +290,7 @@ describe('adaptInputToVersion', () => {
           url: 'http://example.com',
           proto: 'HTTP/2',
           headers: { headerkey: ['headervalue'] },
-          body: '{"key": "value"}',
+          body: JSON.stringify({ key: 'value' }),
           query_parameters: { paramkey: ['paramvalue'] },
         },
         source: { id: 'source_id', config: { configField1: 'configVal1' } },
@@ -301,7 +301,7 @@ describe('adaptInputToVersion', () => {
           url: 'http://example.com',
           proto: 'HTTP/2',
           headers: { headerkey: ['headervalue'] },
-          body: '{"key": "value"}',
+          body: JSON.stringify({ key: 'value' }),
           query_parameters: { paramkey: ['paramvalue'] },
         },
         source: { id: 'source_id', config: { configField1: 'configVal1' } },
@@ -416,7 +416,7 @@ describe('adaptInputToVersion', () => {
         {
           output: {
             request: {
-              body: '{"key":"value"}',
+              body: JSON.stringify({ key: 'value' }),
               query_parameters: { paramkey: ['paramvalue'] },
             },
             source: { id: 'source_id', config: { configField1: 'configVal1' } },
@@ -425,7 +425,7 @@ describe('adaptInputToVersion', () => {
         {
           output: {
             request: {
-              body: '{"key":"value"}',
+              body: JSON.stringify({ key: 'value' }),
             },
             source: { id: 'source_id', config: { configField1: 'configVal1' } },
           },

@@ -416,7 +416,16 @@ export const data = [
                   FORM: {
                     api_key: '4c7ed7573eb73517ee4c26ed4bde9a85',
                     identification: [
-                      '{"group_type":"Company","group_value":"Comapny-ABC","group_properties":{"KEY_2":{"CHILD_KEY_102":"value_103","CHILD_KEY_92":"value_95"},"KEY_3":{"CHILD_KEY_102":"value_103","CHILD_KEY_92":"value_95"},"name_trait":"Company","value_trait":"Comapny-ABC"}}',
+                      JSON.stringify({
+                        group_type: 'Company',
+                        group_value: 'Comapny-ABC',
+                        group_properties: {
+                          KEY_2: { CHILD_KEY_102: 'value_103', CHILD_KEY_92: 'value_95' },
+                          KEY_3: { CHILD_KEY_102: 'value_103', CHILD_KEY_92: 'value_95' },
+                          name_trait: 'Company',
+                          value_trait: 'Comapny-ABC',
+                        },
+                      }),
                     ],
                   },
                   JSON: {},
@@ -449,7 +458,12 @@ export const data = [
                   JSON_ARRAY: {},
                   FORM: {
                     api_key: '4c7ed7573eb73517ee4c26ed4bde9a85',
-                    mapping: ['{"global_user_id":"newUserIdAlias","user_id":"sampleusrRudder3"}'],
+                    mapping: [
+                      JSON.stringify({
+                        global_user_id: 'newUserIdAlias',
+                        user_id: 'sampleusrRudder3',
+                      }),
+                    ],
                   },
                   JSON: {},
                 },
@@ -557,7 +571,16 @@ export const data = [
                 FORM: {
                   api_key: '4c7ed7573eb73517ee4c26ed4bde9a85',
                   identification: [
-                    '{"group_type":"Company","group_value":"Comapny-ABC","group_properties":{"KEY_2":{"CHILD_KEY_102":"value_103","CHILD_KEY_92":"value_95"},"KEY_3":{"CHILD_KEY_102":"value_103","CHILD_KEY_92":"value_95"},"name_trait":"Company","value_trait":"Comapny-ABC"}}',
+                    JSON.stringify({
+                      group_type: 'Company',
+                      group_value: 'Comapny-ABC',
+                      group_properties: {
+                        KEY_2: { CHILD_KEY_102: 'value_103', CHILD_KEY_92: 'value_95' },
+                        KEY_3: { CHILD_KEY_102: 'value_103', CHILD_KEY_92: 'value_95' },
+                        name_trait: 'Company',
+                        value_trait: 'Comapny-ABC',
+                      },
+                    }),
                   ],
                 },
                 JSON: {},
@@ -592,7 +615,12 @@ export const data = [
                 JSON_ARRAY: {},
                 FORM: {
                   api_key: '4c7ed7573eb73517ee4c26ed4bde9a85',
-                  mapping: ['{"global_user_id":"newUserIdAlias","user_id":"sampleusrRudder3"}'],
+                  mapping: [
+                    JSON.stringify({
+                      global_user_id: 'newUserIdAlias',
+                      user_id: 'sampleusrRudder3',
+                    }),
+                  ],
                 },
                 JSON: {},
               },
@@ -1046,7 +1074,16 @@ export const data = [
                   FORM: {
                     api_key: '4c7ed7573eb73517ee4c26ed4bde9a85',
                     identification: [
-                      '{"group_type":"Company","group_value":"Comapny-ABC","group_properties":{"KEY_2":{"CHILD_KEY_102":"value_103","CHILD_KEY_92":"value_95"},"KEY_3":{"CHILD_KEY_102":"value_103","CHILD_KEY_92":"value_95"},"name_trait":"Company","value_trait":"Comapny-ABC"}}',
+                      JSON.stringify({
+                        group_type: 'Company',
+                        group_value: 'Comapny-ABC',
+                        group_properties: {
+                          KEY_2: { CHILD_KEY_102: 'value_103', CHILD_KEY_92: 'value_95' },
+                          KEY_3: { CHILD_KEY_102: 'value_103', CHILD_KEY_92: 'value_95' },
+                          name_trait: 'Company',
+                          value_trait: 'Comapny-ABC',
+                        },
+                      }),
                     ],
                   },
                   JSON: {},
@@ -1079,7 +1116,12 @@ export const data = [
                   JSON_ARRAY: {},
                   FORM: {
                     api_key: '4c7ed7573eb73517ee4c26ed4bde9a85',
-                    mapping: ['{"global_user_id":"newUserIdAlias","user_id":"sampleusrRudder3"}'],
+                    mapping: [
+                      JSON.stringify({
+                        global_user_id: 'newUserIdAlias',
+                        user_id: 'sampleusrRudder3',
+                      }),
+                    ],
                   },
                   JSON: {},
                 },
@@ -1185,7 +1227,16 @@ export const data = [
                 FORM: {
                   api_key: '4c7ed7573eb73517ee4c26ed4bde9a85',
                   identification: [
-                    '{"group_type":"Company","group_value":"Comapny-ABC","group_properties":{"KEY_2":{"CHILD_KEY_102":"value_103","CHILD_KEY_92":"value_95"},"KEY_3":{"CHILD_KEY_102":"value_103","CHILD_KEY_92":"value_95"},"name_trait":"Company","value_trait":"Comapny-ABC"}}',
+                    JSON.stringify({
+                      group_type: 'Company',
+                      group_value: 'Comapny-ABC',
+                      group_properties: {
+                        KEY_2: { CHILD_KEY_102: 'value_103', CHILD_KEY_92: 'value_95' },
+                        KEY_3: { CHILD_KEY_102: 'value_103', CHILD_KEY_92: 'value_95' },
+                        name_trait: 'Company',
+                        value_trait: 'Comapny-ABC',
+                      },
+                    }),
                   ],
                 },
                 JSON: {},
@@ -1220,7 +1271,12 @@ export const data = [
                 JSON_ARRAY: {},
                 FORM: {
                   api_key: '4c7ed7573eb73517ee4c26ed4bde9a85',
-                  mapping: ['{"global_user_id":"newUserIdAlias","user_id":"sampleusrRudder3"}'],
+                  mapping: [
+                    JSON.stringify({
+                      global_user_id: 'newUserIdAlias',
+                      user_id: 'sampleusrRudder3',
+                    }),
+                  ],
                 },
                 JSON: {},
               },
@@ -2370,7 +2426,16 @@ export const data = [
                   FORM: {
                     api_key: '4c7ed7573eb73517ee4c26ed4bde9a85',
                     identification: [
-                      '{"group_type":"Company","group_value":"Comapny-ABC","group_properties":{"KEY_2":{"CHILD_KEY_102":"value_103","CHILD_KEY_92":"value_95"},"KEY_3":{"CHILD_KEY_102":"value_103","CHILD_KEY_92":"value_95"},"name_trait":"Company","value_trait":"Comapny-ABC"}}',
+                      JSON.stringify({
+                        group_type: 'Company',
+                        group_value: 'Comapny-ABC',
+                        group_properties: {
+                          KEY_2: { CHILD_KEY_102: 'value_103', CHILD_KEY_92: 'value_95' },
+                          KEY_3: { CHILD_KEY_102: 'value_103', CHILD_KEY_92: 'value_95' },
+                          name_trait: 'Company',
+                          value_trait: 'Comapny-ABC',
+                        },
+                      }),
                     ],
                   },
                   JSON: {},
@@ -2403,7 +2468,12 @@ export const data = [
                   JSON_ARRAY: {},
                   FORM: {
                     api_key: '4c7ed7573eb73517ee4c26ed4bde9a85',
-                    mapping: ['{"global_user_id":"newUserIdAlias","user_id":"sampleusrRudder3"}'],
+                    mapping: [
+                      JSON.stringify({
+                        global_user_id: 'newUserIdAlias',
+                        user_id: 'sampleusrRudder3',
+                      }),
+                    ],
                   },
                   JSON: {},
                 },
@@ -2511,7 +2581,16 @@ export const data = [
                 FORM: {
                   api_key: '4c7ed7573eb73517ee4c26ed4bde9a85',
                   identification: [
-                    '{"group_type":"Company","group_value":"Comapny-ABC","group_properties":{"KEY_2":{"CHILD_KEY_102":"value_103","CHILD_KEY_92":"value_95"},"KEY_3":{"CHILD_KEY_102":"value_103","CHILD_KEY_92":"value_95"},"name_trait":"Company","value_trait":"Comapny-ABC"}}',
+                    JSON.stringify({
+                      group_type: 'Company',
+                      group_value: 'Comapny-ABC',
+                      group_properties: {
+                        KEY_2: { CHILD_KEY_102: 'value_103', CHILD_KEY_92: 'value_95' },
+                        KEY_3: { CHILD_KEY_102: 'value_103', CHILD_KEY_92: 'value_95' },
+                        name_trait: 'Company',
+                        value_trait: 'Comapny-ABC',
+                      },
+                    }),
                   ],
                 },
                 JSON: {},
@@ -2546,7 +2625,12 @@ export const data = [
                 JSON_ARRAY: {},
                 FORM: {
                   api_key: '4c7ed7573eb73517ee4c26ed4bde9a85',
-                  mapping: ['{"global_user_id":"newUserIdAlias","user_id":"sampleusrRudder3"}'],
+                  mapping: [
+                    JSON.stringify({
+                      global_user_id: 'newUserIdAlias',
+                      user_id: 'sampleusrRudder3',
+                    }),
+                  ],
                 },
                 JSON: {},
               },
@@ -3009,7 +3093,16 @@ export const data = [
                   FORM: {
                     api_key: '4c7ed7573eb73517ee4c26ed4bde9a85',
                     identification: [
-                      '{"group_type":"Company","group_value":"Comapny-ABC","group_properties":{"KEY_2":{"CHILD_KEY_102":"value_103","CHILD_KEY_92":"value_95"},"KEY_3":{"CHILD_KEY_102":"value_103","CHILD_KEY_92":"value_95"},"name_trait":"Company","value_trait":"Comapny-ABC"}}',
+                      JSON.stringify({
+                        group_type: 'Company',
+                        group_value: 'Comapny-ABC',
+                        group_properties: {
+                          KEY_2: { CHILD_KEY_102: 'value_103', CHILD_KEY_92: 'value_95' },
+                          KEY_3: { CHILD_KEY_102: 'value_103', CHILD_KEY_92: 'value_95' },
+                          name_trait: 'Company',
+                          value_trait: 'Comapny-ABC',
+                        },
+                      }),
                     ],
                   },
                   JSON: {},
@@ -3042,7 +3135,12 @@ export const data = [
                   JSON_ARRAY: {},
                   FORM: {
                     api_key: '4c7ed7573eb73517ee4c26ed4bde9a85',
-                    mapping: ['{"global_user_id":"newUserIdAlias","user_id":"sampleusrRudder3"}'],
+                    mapping: [
+                      JSON.stringify({
+                        global_user_id: 'newUserIdAlias',
+                        user_id: 'sampleusrRudder3',
+                      }),
+                    ],
                   },
                   JSON: {},
                 },
@@ -3149,7 +3247,16 @@ export const data = [
                 FORM: {
                   api_key: '4c7ed7573eb73517ee4c26ed4bde9a85',
                   identification: [
-                    '{"group_type":"Company","group_value":"Comapny-ABC","group_properties":{"KEY_2":{"CHILD_KEY_102":"value_103","CHILD_KEY_92":"value_95"},"KEY_3":{"CHILD_KEY_102":"value_103","CHILD_KEY_92":"value_95"},"name_trait":"Company","value_trait":"Comapny-ABC"}}',
+                    JSON.stringify({
+                      group_type: 'Company',
+                      group_value: 'Comapny-ABC',
+                      group_properties: {
+                        KEY_2: { CHILD_KEY_102: 'value_103', CHILD_KEY_92: 'value_95' },
+                        KEY_3: { CHILD_KEY_102: 'value_103', CHILD_KEY_92: 'value_95' },
+                        name_trait: 'Company',
+                        value_trait: 'Comapny-ABC',
+                      },
+                    }),
                   ],
                 },
                 JSON: {},
@@ -3184,7 +3291,12 @@ export const data = [
                 JSON_ARRAY: {},
                 FORM: {
                   api_key: '4c7ed7573eb73517ee4c26ed4bde9a85',
-                  mapping: ['{"global_user_id":"newUserIdAlias","user_id":"sampleusrRudder3"}'],
+                  mapping: [
+                    JSON.stringify({
+                      global_user_id: 'newUserIdAlias',
+                      user_id: 'sampleusrRudder3',
+                    }),
+                  ],
                 },
                 JSON: {},
               },

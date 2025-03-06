@@ -1,3 +1,5 @@
+import { defaultApiKey } from '../../../common/secrets';
+
 export const data = [
   {
     name: 'ometria',
@@ -103,7 +105,7 @@ export const data = [
                   ResponseRules: {},
                 },
                 Config: {
-                  apiKey: 'dummyApiKey',
+                  apiKey: defaultApiKey,
                   allowMarketing: false,
                   allowTransactional: false,
                   marketingOptin: 'EXPLICITLY_OPTEDOUT',
@@ -207,7 +209,7 @@ export const data = [
                   ResponseRules: {},
                 },
                 Config: {
-                  apiKey: 'dummyApiKey',
+                  apiKey: defaultApiKey,
                   allowMarketing: false,
                   allowTransactional: false,
                   marketingOptin: 'EXPLICITLY_OPTEDOUT',
@@ -234,7 +236,7 @@ export const data = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://api.ometria.com/v2/push',
-                headers: { 'X-Ometria-Auth': 'dummyApiKey' },
+                headers: { 'X-Ometria-Auth': defaultApiKey },
                 params: {},
                 body: {
                   JSON: {},
@@ -313,7 +315,7 @@ export const data = [
                   ResponseRules: {},
                 },
                 Config: {
-                  apiKey: 'dummyApiKey',
+                  apiKey: defaultApiKey,
                   allowMarketing: false,
                   allowTransactional: false,
                   marketingOptin: 'EXPLICITLY_OPTEDOUT',

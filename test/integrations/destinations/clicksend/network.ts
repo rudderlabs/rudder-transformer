@@ -1,6 +1,8 @@
+import { secret1 } from './maskedSecrets';
+
 export const headerBlockWithCorrectAccessToken = {
   'Content-Type': 'application/json',
-  Authorization: 'dummy-key',
+  Authorization: secret1,
 };
 
 export const contactPayload = {

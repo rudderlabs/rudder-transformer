@@ -1,3 +1,5 @@
+import { secret1 } from '../maskedSecrets';
+
 export const data = [
   {
     name: 'sendgrid',
@@ -581,7 +583,7 @@ export const data = [
               },
             ],
             config: {
-              apiKey: '1234',
+              apiKey: secret1,
             },
           },
         ],
@@ -1185,7 +1187,7 @@ export const data = [
               },
             ],
             config: {
-              apiKey: '1234',
+              apiKey: secret1,
             },
           },
         ],
@@ -1254,7 +1256,7 @@ export const data = [
               userId: 'eab57ccf-6322-498e-9338-7761c6dc0656',
             },
             config: {
-              apiKey: '1234',
+              apiKey: secret1,
             },
           },
         ],

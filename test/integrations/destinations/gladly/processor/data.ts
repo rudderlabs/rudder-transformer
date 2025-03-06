@@ -1,3 +1,4 @@
+import { authHeader1, secret1, secret2 } from '../maskedSecrets';
 export const data = [
   {
     name: 'gladly',
@@ -29,8 +30,8 @@ export const data = [
                 },
               },
               Config: {
-                apiToken: 'testApiToken',
-                userName: 'testUserName',
+                apiToken: secret2,
+                userName: secret1,
                 domain: 'rudderlabs.us-uat.gladly.qa',
               },
             },
@@ -98,8 +99,8 @@ export const data = [
                 },
               },
               Config: {
-                apiToken: 'testApiToken',
-                userName: 'testUserName',
+                apiToken: secret2,
+                userName: secret1,
                 domain: 'rudderlabs.us-uat.gladly.qa',
               },
             },
@@ -166,7 +167,7 @@ export const data = [
                 },
               },
               Config: {
-                apiToken: 'testApiToken',
+                apiToken: secret2,
                 domain: 'rudderlabs.us-uat.gladly.qa',
               },
             },
@@ -242,8 +243,8 @@ export const data = [
                 },
               },
               Config: {
-                apiToken: 'testApiToken',
-                userName: 'testUserName',
+                apiToken: secret2,
+                userName: secret1,
                 domain: 'rudderlabs.us-uat.gladly.qa',
               },
             },
@@ -276,7 +277,7 @@ export const data = [
               },
               endpoint: 'https://rudderlabs.us-uat.gladly.qa/api/v1/customer-profiles',
               headers: {
-                Authorization: 'Basic dGVzdFVzZXJOYW1lOnRlc3RBcGlUb2tlbg==',
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
               userId: '',
@@ -333,8 +334,8 @@ export const data = [
                 },
               },
               Config: {
-                apiToken: 'testApiToken',
-                userName: 'testUserName',
+                apiToken: secret2,
+                userName: secret1,
                 domain: 'rudderlabs.us-uat.gladly.qa',
               },
             },
@@ -366,7 +367,7 @@ export const data = [
               },
               endpoint: 'https://rudderlabs.us-uat.gladly.qa/api/v1/customer-profiles/user@2',
               headers: {
-                Authorization: 'Basic dGVzdFVzZXJOYW1lOnRlc3RBcGlUb2tlbg==',
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
               userId: '',
@@ -421,8 +422,8 @@ export const data = [
                 },
               },
               Config: {
-                apiToken: 'testApiToken',
-                userName: 'testUserName',
+                apiToken: secret2,
+                userName: secret1,
                 domain: 'rudderlabs.us-uat.gladly.qa',
               },
             },
@@ -452,7 +453,7 @@ export const data = [
               },
               endpoint: 'https://rudderlabs.us-uat.gladly.qa/api/v1/customer-profiles/user@3',
               headers: {
-                Authorization: 'Basic dGVzdFVzZXJOYW1lOnRlc3RBcGlUb2tlbg==',
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
               userId: '',
@@ -500,8 +501,8 @@ export const data = [
                 },
               },
               Config: {
-                apiToken: 'testApiToken',
-                userName: 'testUserName',
+                apiToken: secret2,
+                userName: secret1,
                 domain: 'rudderlabs.us-uat.gladly.qa',
               },
             },
@@ -581,8 +582,8 @@ export const data = [
                 },
               },
               Config: {
-                apiToken: 'testApiToken',
-                userName: 'testUserName',
+                apiToken: secret2,
+                userName: secret1,
                 domain: 'rudderlabs.us-uat.gladly.qa',
               },
             },
@@ -619,7 +620,7 @@ export const data = [
               },
               endpoint: 'https://rudderlabs.us-uat.gladly.qa/api/v1/customer-profiles',
               headers: {
-                Authorization: 'Basic dGVzdFVzZXJOYW1lOnRlc3RBcGlUb2tlbg==',
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
               userId: '',
@@ -673,8 +674,8 @@ export const data = [
                 },
               },
               Config: {
-                apiToken: 'testApiToken',
-                userName: 'testUserName',
+                apiToken: secret2,
+                userName: secret1,
                 domain: 'rudderlabs.us-uat.gladly.qa',
               },
             },
@@ -704,7 +705,7 @@ export const data = [
               },
               endpoint: 'https://rudderlabs.us-uat.gladly.qa/api/v1/customer-profiles',
               headers: {
-                Authorization: 'Basic dGVzdFVzZXJOYW1lOnRlc3RBcGlUb2tlbg==',
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
               userId: '',
@@ -758,8 +759,8 @@ export const data = [
                 },
               },
               Config: {
-                apiToken: 'testApiToken',
-                userName: 'testUserName',
+                apiToken: secret2,
+                userName: secret1,
                 domain: 'rudderlabs.us-uat.gladly.qa',
               },
             },
@@ -789,7 +790,7 @@ export const data = [
               },
               endpoint: 'https://rudderlabs.us-uat.gladly.qa/api/v1/customer-profiles',
               headers: {
-                Authorization: 'Basic dGVzdFVzZXJOYW1lOnRlc3RBcGlUb2tlbg==',
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
               userId: '',

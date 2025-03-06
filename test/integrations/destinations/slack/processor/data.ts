@@ -146,8 +146,11 @@ export const data = [
                 JSON_ARRAY: {},
                 XML: {},
                 FORM: {
-                  payload:
-                    '{"text":"Identified my-namehiji: hulala favorite color: black ","username":"RudderStack","icon_url":"https://cdn.rudderlabs.com/rudderstack.png"}',
+                  payload: JSON.stringify({
+                    text: 'Identified my-namehiji: hulala favorite color: black ',
+                    username: 'RudderStack',
+                    icon_url: 'https://cdn.rudderlabs.com/rudderstack.png',
+                  }),
                 },
               },
               files: {},
@@ -474,8 +477,11 @@ export const data = [
                 JSON_ARRAY: {},
                 XML: {},
                 FORM: {
-                  payload:
-                    '{"text":"identified my-name-1 with hiji: hulala-1 ","username":"RudderStack","icon_url":"https://cdn.rudderlabs.com/rudderstack.png"}',
+                  payload: JSON.stringify({
+                    text: 'identified my-name-1 with hiji: hulala-1 ',
+                    username: 'RudderStack',
+                    icon_url: 'https://cdn.rudderlabs.com/rudderstack.png',
+                  }),
                 },
               },
               files: {},
@@ -655,8 +661,9 @@ export const data = [
                 JSON_ARRAY: {},
                 XML: {},
                 FORM: {
-                  payload:
-                    '{"text":"my-name performed test_isent1 with test_val1 test_val2 and traits hulala"}',
+                  payload: JSON.stringify({
+                    text: 'my-name performed test_isent1 with test_val1 test_val2 and traits hulala',
+                  }),
                 },
               },
               files: {},
@@ -839,8 +846,9 @@ export const data = [
                 JSON_ARRAY: {},
                 XML: {},
                 FORM: {
-                  payload:
-                    '{"text":"my-name performed test_eventing_testis with test_val1 test_val2"}',
+                  payload: JSON.stringify({
+                    text: 'my-name performed test_eventing_testis with test_val1 test_val2',
+                  }),
                 },
               },
               files: {},
@@ -1023,7 +1031,7 @@ export const data = [
                 JSON_ARRAY: {},
                 XML: {},
                 FORM: {
-                  payload: '{"text":"my-name did test_eventing_test"}',
+                  payload: JSON.stringify({ text: 'my-name did test_eventing_test' }),
                 },
               },
               files: {},
@@ -1204,8 +1212,11 @@ export const data = [
                 JSON_ARRAY: {},
                 XML: {},
                 FORM: {
-                  payload:
-                    '{"text":"my-name performed test_isent1 with test_val1 test_val2 and traits hulala","username":"RudderStack","icon_url":"https://cdn.rudderlabs.com/rudderstack.png"}',
+                  payload: JSON.stringify({
+                    text: 'my-name performed test_isent1 with test_val1 test_val2 and traits hulala',
+                    username: 'RudderStack',
+                    icon_url: 'https://cdn.rudderlabs.com/rudderstack.png',
+                  }),
                 },
               },
               files: {},
@@ -1387,8 +1398,12 @@ export const data = [
                 JSON_ARRAY: {},
                 XML: {},
                 FORM: {
-                  payload:
-                    '{"channel":"example-of-legacy","text":"my-name performed test_eventing_testis with test_val1 test_val2","username":"RudderStack","icon_url":"https://cdn.rudderlabs.com/rudderstack.png"}',
+                  payload: JSON.stringify({
+                    channel: 'example-of-legacy',
+                    text: 'my-name performed test_eventing_testis with test_val1 test_val2',
+                    username: 'RudderStack',
+                    icon_url: 'https://cdn.rudderlabs.com/rudderstack.png',
+                  }),
                 },
               },
               files: {},
@@ -1995,8 +2010,11 @@ export const data = [
                 JSON_ARRAY: {},
                 XML: {},
                 FORM: {
-                  payload:
-                    '{"text":"User 12345 did black_event","username":"RudderStack","icon_url":"https://cdn.rudderlabs.com/rudderstack.png"}',
+                  payload: JSON.stringify({
+                    text: 'User 12345 did black_event',
+                    username: 'RudderStack',
+                    icon_url: 'https://cdn.rudderlabs.com/rudderstack.png',
+                  }),
                 },
               },
               files: {},
@@ -2150,8 +2168,11 @@ export const data = [
                 JSON_ARRAY: {},
                 XML: {},
                 FORM: {
-                  payload:
-                    '{"text":"Identified User 12345","username":"RudderStack","icon_url":"https://cdn.rudderlabs.com/rudderstack.png"}',
+                  payload: JSON.stringify({
+                    text: 'Identified User 12345',
+                    username: 'RudderStack',
+                    icon_url: 'https://cdn.rudderlabs.com/rudderstack.png',
+                  }),
                 },
               },
               files: {},

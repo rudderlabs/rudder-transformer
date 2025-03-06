@@ -1,3 +1,4 @@
+import { secret1 } from '../maskedSecrets';
 import { ProxyV1TestData } from '../../../testTypes';
 import { generateMetadata, generateProxyV1Payload } from '../../../testUtils';
 import { headers, headersWithRevokedAccessToken, RouterNetworkErrorStatTags } from '../common';
@@ -38,7 +39,7 @@ export const oauthScenariosV0 = [
         body: generateProxyV1Payload({
           ...commonRequestParameters,
           headers: headersWithRevokedAccessToken,
-          accessToken: 'revoked-accessToken',
+          accessToken: secret1,
         }),
         method: 'POST',
       },
@@ -122,7 +123,7 @@ export const oauthScenariosV1: ProxyV1TestData[] = [
         body: generateProxyV1Payload({
           ...commonRequestParameters,
           headers: headersWithRevokedAccessToken,
-          accessToken: 'revoked-accessToken',
+          accessToken: secret1,
         }),
         method: 'POST',
       },
@@ -134,12 +135,15 @@ export const oauthScenariosV1: ProxyV1TestData[] = [
           output: {
             response: [
               {
-                error:
-                  '{"type":"error.list","request_id":"request_id-1","errors":[{"code":"unauthorized","message":"Access Token Invalid"}]}',
+                error: JSON.stringify({
+                  type: 'error.list',
+                  request_id: 'request_id-1',
+                  errors: [{ code: 'unauthorized', message: 'Access Token Invalid' }],
+                }),
                 statusCode: 400,
                 metadata: {
                   ...generateMetadata(1),
-                  secret: { accessToken: 'revoked-accessToken' },
+                  secret: { accessToken: secret1 },
                 },
               },
             ],

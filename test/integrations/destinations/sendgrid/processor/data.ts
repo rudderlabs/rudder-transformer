@@ -1,3 +1,4 @@
+import { authHeader1, secret1 } from '../maskedSecrets';
 export const data = [
   {
     name: 'sendgrid',
@@ -12,7 +13,7 @@ export const data = [
             destination: {
               Config: {
                 IPPoolName: '',
-                apiKey: 'apikey',
+                apiKey: secret1,
                 attachments: [
                   {
                     content: '',
@@ -114,7 +115,7 @@ export const data = [
             destination: {
               Config: {
                 IPPoolName: '',
-                apiKey: 'apikey',
+                apiKey: secret1,
                 attachments: [
                   {
                     content: '',
@@ -196,7 +197,7 @@ export const data = [
               endpoint: 'https://api.sendgrid.com/v3/marketing/contacts',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Bearer apikey',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -237,7 +238,7 @@ export const data = [
               ID: '2HOQOO6wWKaKjeQrEABXgiH6cmU',
               Config: {
                 IPPoolName: '',
-                apiKey: 'apikey',
+                apiKey: secret1,
                 attachments: [
                   {
                     content: '',
@@ -344,7 +345,7 @@ export const data = [
               params: {},
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Bearer apikey',
+                Authorization: authHeader1,
               },
               version: '1',
               endpoint: 'https://api.sendgrid.com/v3/marketing/contacts',
@@ -367,7 +368,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'apikey',
+                apiKey: secret1,
                 eventNamesSettings: [
                   {
                     event: 'testing',
@@ -466,7 +467,7 @@ export const data = [
               endpoint: 'https://api.sendgrid.com/v3/mail/send',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Bearer apikey',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -521,7 +522,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'apikey',
+                apiKey: secret1,
                 eventNamesSettings: [
                   {
                     event: 'testing',
@@ -622,7 +623,7 @@ export const data = [
               endpoint: 'https://api.sendgrid.com/v3/mail/send',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Bearer apikey',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -677,7 +678,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'apikey',
+                apiKey: secret1,
                 eventNamesSettings: [
                   {
                     event: 'testing',
@@ -790,7 +791,7 @@ export const data = [
               endpoint: 'https://api.sendgrid.com/v3/mail/send',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Bearer apikey',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -849,7 +850,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'apikey',
+                apiKey: secret1,
                 eventNamesSettings: [
                   {
                     event: 'testing',
@@ -982,7 +983,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'apikey',
+                apiKey: secret1,
                 eventNamesSettings: [
                   {
                     event: 'testing',
@@ -1101,7 +1102,7 @@ export const data = [
               endpoint: 'https://api.sendgrid.com/v3/mail/send',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Bearer apikey',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -1166,7 +1167,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'apikey',
+                apiKey: secret1,
                 eventNamesSettings: [
                   {
                     event: 'testing',
@@ -1288,7 +1289,7 @@ export const data = [
               endpoint: 'https://api.sendgrid.com/v3/mail/send',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Bearer apikey',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -1353,7 +1354,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'apikey',
+                apiKey: secret1,
                 eventNamesSettings: [
                   {
                     event: 'testing',
@@ -1479,7 +1480,7 @@ export const data = [
               endpoint: 'https://api.sendgrid.com/v3/mail/send',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Bearer apikey',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -1555,7 +1556,7 @@ export const data = [
               ID: '2HOQOO6wWKaKjeQrEABXgiH6cmU',
               Config: {
                 IPPoolName: '',
-                apiKey: 'apikey',
+                apiKey: secret1,
                 attachments: [
                   {
                     content: '',
@@ -1663,7 +1664,7 @@ export const data = [
               params: {},
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Bearer apikey',
+                Authorization: authHeader1,
               },
               version: '1',
               endpoint: 'https://api.sendgrid.com/v3/marketing/contacts',

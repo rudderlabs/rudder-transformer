@@ -1,8 +1,5 @@
-const headers = {
-  'Amazon-Advertising-API-ClientId': 'dummyClientId',
-  'Content-Type': 'application/json',
-  Authorization: 'Bearer success_access_token',
-};
+import { authHeader1, authHeader2 } from './maskedSecrets';
+
 export const networkCallsData = [
   {
     description: 'successful step 1',
@@ -23,7 +20,7 @@ export const networkCallsData = [
       },
       params: {},
       headers: {
-        Authorization: 'Bearer success_access_token',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
         Accept: 'application/json',
       },
@@ -51,7 +48,7 @@ export const networkCallsData = [
       },
       params: {},
       headers: {
-        Authorization: 'Bearer success_access_token',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
         Accept: 'application/json',
       },
@@ -80,7 +77,7 @@ export const networkCallsData = [
       },
       params: {},
       headers: {
-        Authorization: 'Bearer success_access_token',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
         Accept: 'application/json',
       },
@@ -107,7 +104,7 @@ export const networkCallsData = [
       },
       params: {},
       headers: {
-        Authorization: 'Bearer fail_token',
+        Authorization: authHeader2,
         'Content-Type': 'application/json',
         Accept: 'application/json',
       },

@@ -543,8 +543,18 @@ export const data = [
               properties: {
                 phone: 'c4994d14e724936f1169147dddf1673a09af69b55cc54bc695dbe246bd093b05',
                 value: 32.839999999999996,
-                emails:
-                  '["efaaf5c8803af4fbf305d7a110c832673d89ed40983770329092fd04b0ba7900","078d6c8e19f24093368d1712d7801970467f59216f7ccc087bf81b91e0e1f68f","","","","","","","",""]',
+                emails: JSON.stringify([
+                  'efaaf5c8803af4fbf305d7a110c832673d89ed40983770329092fd04b0ba7900',
+                  '078d6c8e19f24093368d1712d7801970467f59216f7ccc087bf81b91e0e1f68f',
+                  '',
+                  '',
+                  '',
+                  '',
+                  '',
+                  '',
+                  '',
+                  '',
+                ]),
                 eventId: '8965fb56-090f-47a5-aa7f-bbab22d9ec90',
                 currency: 'USD',
                 order_id: 60241286212,
@@ -667,8 +677,18 @@ export const data = [
               properties: {
                 phone: 'c4994d14e724936f1169147dddf1673a09af69b55cc54bc695dbe246bd093b05',
                 value: 32.839999999999996,
-                emails:
-                  '["efaaf5c8803af4fbf305d7a110c832673d89ed40983770329092fd04b0ba7900","078d6c8e19f24093368d1712d7801970467f59216f7ccc087bf81b91e0e1f68f","","","","","","","",""]',
+                emails: JSON.stringify([
+                  'efaaf5c8803af4fbf305d7a110c832673d89ed40983770329092fd04b0ba7900',
+                  '078d6c8e19f24093368d1712d7801970467f59216f7ccc087bf81b91e0e1f68f',
+                  '',
+                  '',
+                  '',
+                  '',
+                  '',
+                  '',
+                  '',
+                  '',
+                ]),
                 eventId: '8965fb56-090f-47a5-aa7f-bbab22d9ec90',
                 currency: 'USD',
                 order_id: 60241286212,
@@ -787,8 +807,18 @@ export const data = [
               properties: {
                 phone: 'c4994d14e724936f1169147dddf1673a09af69b55cc54bc695dbe246bd093b05',
                 value: 32.839999999999996,
-                emails:
-                  '["efaaf5c8803af4fbf305d7a110c832673d89ed40983770329092fd04b0ba7900","078d6c8e19f24093368d1712d7801970467f59216f7ccc087bf81b91e0e1f68f","","","","","","","",""]',
+                emails: JSON.stringify([
+                  'efaaf5c8803af4fbf305d7a110c832673d89ed40983770329092fd04b0ba7900',
+                  '078d6c8e19f24093368d1712d7801970467f59216f7ccc087bf81b91e0e1f68f',
+                  '',
+                  '',
+                  '',
+                  '',
+                  '',
+                  '',
+                  '',
+                  '',
+                ]),
                 eventId: '8965fb56-090f-47a5-aa7f-bbab22d9ec90',
                 currency: 'USD',
                 order_id: 60241286212,

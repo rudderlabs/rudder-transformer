@@ -1,3 +1,4 @@
+import { authHeader1, secret1 } from './maskedSecrets';
 export const data = [
   {
     name: 'attribution',
@@ -22,7 +23,7 @@ export const data = [
                 },
               },
               Config: {
-                writeKey: 'abcdefghijklmnopqrstuvwxyz',
+                writeKey: secret1,
               },
               Enabled: true,
               Transformations: [],
@@ -80,7 +81,7 @@ export const data = [
               endpoint: 'https://track.attributionapp.com/v1/import',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Basic YWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXo6',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -165,7 +166,7 @@ export const data = [
                 },
               },
               Config: {
-                writeKey: 'abcdefghijklmnopqrstuvwxyz',
+                writeKey: secret1,
               },
               Enabled: true,
               Transformations: [],
@@ -215,7 +216,7 @@ export const data = [
               endpoint: 'https://track.attributionapp.com/v1/import',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Basic YWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXo6',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -287,7 +288,7 @@ export const data = [
                 },
               },
               Config: {
-                writeKey: 'abcdefghijklmnopqrstuvwxyz',
+                writeKey: secret1,
               },
               Enabled: true,
               Transformations: [],
@@ -337,7 +338,7 @@ export const data = [
               endpoint: 'https://track.attributionapp.com/v1/import',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Basic YWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXo6',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -406,7 +407,7 @@ export const data = [
                 },
               },
               Config: {
-                writeKey: 'abcdefghijklmnopqrstuvwxyz',
+                writeKey: secret1,
               },
               Enabled: true,
               Transformations: [],
@@ -458,7 +459,7 @@ export const data = [
               endpoint: 'https://track.attributionapp.com/v1/import',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Basic YWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXo6',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -532,7 +533,7 @@ export const data = [
                 },
               },
               Config: {
-                writeKey: 'abcdefghijklmnopqrstuvwxyz',
+                writeKey: secret1,
               },
               Enabled: true,
               Transformations: [],
@@ -582,7 +583,7 @@ export const data = [
               endpoint: 'https://track.attributionapp.com/v1/import',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Basic YWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXo6',
+                Authorization: authHeader1,
               },
               params: {},
               body: {

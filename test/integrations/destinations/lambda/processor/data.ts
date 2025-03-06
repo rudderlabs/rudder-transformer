@@ -238,8 +238,22 @@ export const data = [
               resultSetID: 10,
             },
             output: {
-              payload:
-                '{"type":"identify","sentAt":"2022-08-03T10:44:55.382+05:30","userId":"user113","context":{"os":{"name":"android"},"device":{"name":"Mi","token":"qwertyuioprtyuiop"},"traits":{"name":"User2","email":"user112@mail.com"}},"rudderId":"ed33ef22-569d-44b1-a6cb-063c69dca8f0","messageId":"29beef33-2771-45fd-adb4-4376aa6d72d9","timestamp":"2022-08-03T10:44:54.942+05:30","receivedAt":"2022-08-03T10:44:54.943+05:30","request_ip":"[::1]","originalTimestamp":"2022-08-03T10:44:55.382+05:30"}',
+              payload: JSON.stringify({
+                type: 'identify',
+                sentAt: '2022-08-03T10:44:55.382+05:30',
+                userId: 'user113',
+                context: {
+                  os: { name: 'android' },
+                  device: { name: 'Mi', token: 'qwertyuioprtyuiop' },
+                  traits: { name: 'User2', email: 'user112@mail.com' },
+                },
+                rudderId: 'ed33ef22-569d-44b1-a6cb-063c69dca8f0',
+                messageId: '29beef33-2771-45fd-adb4-4376aa6d72d9',
+                timestamp: '2022-08-03T10:44:54.942+05:30',
+                receivedAt: '2022-08-03T10:44:54.943+05:30',
+                request_ip: '[::1]',
+                originalTimestamp: '2022-08-03T10:44:55.382+05:30',
+              }),
               destConfig: { clientContext: '', invocationType: 'Event', lambda: 'testFunction' },
               userId: '',
             },

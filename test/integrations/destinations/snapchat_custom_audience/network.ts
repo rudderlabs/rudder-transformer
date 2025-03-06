@@ -1,3 +1,5 @@
+import { authHeader1 } from './maskedSecrets';
+
 export const networkCallsData = [
   {
     httpReq: {
@@ -12,7 +14,7 @@ export const networkCallsData = [
       },
       params: { destination: 'snapchat_custom_audience' },
       headers: {
-        Authorization: 'Bearer abcd123',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
         'User-Agent': 'RudderLabs',
       },
@@ -41,7 +43,7 @@ export const networkCallsData = [
       },
       params: { destination: 'snapchat_custom_audience' },
       headers: {
-        Authorization: 'Bearer abcd123',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
         'User-Agent': 'RudderLabs',
       },
@@ -63,7 +65,7 @@ export const networkCallsData = [
       },
       params: { destination: 'snapchat_custom_audience' },
       headers: {
-        Authorization: 'Bearer abcd123',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
         'User-Agent': 'RudderLabs',
       },
@@ -94,7 +96,7 @@ export const networkCallsData = [
       },
       params: { destination: 'snapchat_custom_audience' },
       headers: {
-        Authorization: 'Bearer abcd123',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
         'User-Agent': 'RudderLabs',
       },

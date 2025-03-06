@@ -280,8 +280,11 @@ export const data = [
                 {
                   body: {
                     FORM: {
-                      payload:
-                        '{"text":"identified my-name-1 with hiji: hulala-1 ","username":"RudderStack","icon_url":"https://cdn.rudderlabs.com/rudderstack.png"}',
+                      payload: JSON.stringify({
+                        text: 'identified my-name-1 with hiji: hulala-1 ',
+                        username: 'RudderStack',
+                        icon_url: 'https://cdn.rudderlabs.com/rudderstack.png',
+                      }),
                     },
                     JSON: {},
                     JSON_ARRAY: {},

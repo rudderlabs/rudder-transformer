@@ -1,14 +1,15 @@
+import { authHeader1, secret1 } from '../maskedSecrets';
 import { ProxyMetdata } from '../../../../../src/types';
 import { ProxyV1TestData } from '../../../testTypes';
 import { generateProxyV1Payload } from '../../../testUtils';
 
 const commonHeadersForWrongToken = {
-  Authorization: 'Bearer expiredAccessToken',
+  Authorization: authHeader1,
   'Content-Type': 'application/json',
 };
 
 const commonHeadersForRightToken = {
-  Authorization: 'Bearer correctAccessToken',
+  Authorization: authHeader1,
   'Content-Type': 'application/json',
 };
 const params = { destination: 'salesforce_oauth' };
@@ -57,7 +58,7 @@ export const proxyMetdataWithSecretWithWrongAccessToken: ProxyMetdata = {
   destinationId: 'dummyDestinationId',
   workspaceId: 'dummyWorkspaceId',
   secret: {
-    access_token: 'expiredAccessToken',
+    access_token: secret1,
     instanceUrl: 'https://rudderstack.my.salesforce_oauth.com',
   },
   destInfo: { authKey: 'dummyDestinationId' },
@@ -117,8 +118,9 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
               'Salesforce Request Failed - due to "INVALID_SESSION_ID", (Retryable) during Salesforce Response Handling',
             response: [
               {
-                error:
-                  '[{"message":"Session expired or invalid","errorCode":"INVALID_SESSION_ID"}]',
+                error: JSON.stringify([
+                  { message: 'Session expired or invalid', errorCode: 'INVALID_SESSION_ID' },
+                ]),
                 metadata: proxyMetdataWithSecretWithWrongAccessToken,
                 statusCode: 500,
               },
@@ -161,7 +163,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
             message: 'Request for destination: salesforce Processed Successfully',
             response: [
               {
-                error: '{"statusText":"No Content"}',
+                error: JSON.stringify({ statusText: 'No Content' }),
                 metadata: proxyMetdataWithSecretWithRightAccessToken,
                 statusCode: 200,
               },

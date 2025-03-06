@@ -1,3 +1,5 @@
+import { authHeader1, secret1 } from '../maskedSecrets';
+
 export const data = [
   {
     name: 'freshsales',
@@ -76,7 +78,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: secret1,
                 domain: 'domain-rudder.myfreshworks.com',
               },
             },
@@ -116,7 +118,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: secret1,
                 domain: 'rudderstack-476952domain3105.myfreshworks.com',
               },
             },
@@ -202,7 +204,7 @@ export const data = [
               params: {},
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Token token=dummyApiKey',
+                Authorization: authHeader1,
               },
               version: '1',
               endpoint:
@@ -227,7 +229,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: secret1,
                 domain: 'rudderstack-476952domain3105.myfreshworks.com',
               },
             },
@@ -313,7 +315,7 @@ export const data = [
               params: {},
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Token token=dummyApiKey',
+                Authorization: authHeader1,
               },
               version: '1',
               endpoint:
@@ -338,7 +340,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: secret1,
                 domain: 'rudderstack-476952domain3105.myfreshworks.com',
               },
             },
@@ -403,7 +405,7 @@ export const data = [
               endpoint:
                 'https://rudderstack-476952domain3105.myfreshworks.com/crm/sales/api/contacts/upsert',
               headers: {
-                Authorization: 'Token token=dummyApiKey',
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
               params: {},
@@ -448,7 +450,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: secret1,
                 domain: 'rudderstack-476952domain3105.myfreshworks.com',
               },
             },
@@ -532,7 +534,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: secret1,
                 domain: 'domain-rudder.myfreshworks.com',
               },
             },
@@ -639,7 +641,7 @@ export const data = [
               params: {},
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Token token=dummyApiKey',
+                Authorization: authHeader1,
               },
               version: '1',
               endpoint: 'https://domain-rudder.myfreshworks.com/crm/sales/api/contacts/upsert',
@@ -663,7 +665,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: secret1,
                 domain: 'domain-rudder.myfreshworks.com',
               },
             },
@@ -751,7 +753,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: secret1,
                 domain: 'domain-rudder.myfreshworks.com',
               },
             },
@@ -838,7 +840,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: secret1,
                 domain: 'domain-rudder.myfreshworks.com',
               },
             },
@@ -926,7 +928,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: secret1,
                 domain: 'domain-rudder.myfreshworks.com',
               },
             },
@@ -993,7 +995,7 @@ export const data = [
               endpoint:
                 'https://domain-rudder.myfreshworks.com/crm/sales/api/sales_accounts/upsert',
               headers: {
-                Authorization: 'Token token=dummyApiKey',
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
               params: {},
@@ -1081,7 +1083,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: secret1,
                 domain: 'domain-rudder.myfreshworks.com',
               },
             },
@@ -1184,7 +1186,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: secret1,
                 domain: 'domain-rudder.myfreshworks.com',
               },
             },
@@ -1288,7 +1290,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: secret1,
                 domain: 'domain-rudder.myfreshworks.com',
               },
             },
@@ -1400,7 +1402,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: secret1,
                 domain: 'domain-rudder.myfreshworks.com',
                 rudderEventsToFreshsalesEvents: [
                   {
@@ -1446,7 +1448,7 @@ export const data = [
               params: {},
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Token token=dummyApiKey',
+                Authorization: authHeader1,
               },
               version: '1',
               endpoint: 'https://domain-rudder.myfreshworks.com/crm/sales/api/sales_activities',
@@ -1536,7 +1538,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: secret1,
                 domain: 'domain-rudder.myfreshworks.com',
               },
             },
@@ -1555,7 +1557,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://domain-rudder.myfreshworks.com/crm/sales/api/contacts/upsert',
               headers: {
-                Authorization: 'Token token=dummyApiKey',
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
               params: {},
@@ -1659,7 +1661,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: secret1,
                 domain: 'domain-rudder.myfreshworks.com',
               },
             },
@@ -1766,7 +1768,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: secret1,
                 domain: 'domain-rudder.myfreshworks.com',
               },
             },
@@ -1877,7 +1879,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: secret1,
                 domain: 'domain-rudder.myfreshworks.com',
               },
             },
@@ -1988,7 +1990,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: secret1,
                 domain: 'domain-rudder.myfreshworks.com',
               },
             },
@@ -2099,7 +2101,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: secret1,
                 domain: 'domain-rudder.myfreshworks.com',
               },
             },
@@ -2137,7 +2139,7 @@ export const data = [
               params: {},
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Token token=dummyApiKey',
+                Authorization: authHeader1,
               },
               version: '1',
               endpoint: 'https://domain-rudder.myfreshworks.com/crm/sales/api/sales_activities',
@@ -2231,7 +2233,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: secret1,
                 domain: 'domain-rudder.myfreshworks.com',
               },
             },
@@ -2269,7 +2271,7 @@ export const data = [
               params: {},
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Token token=dummyApiKey',
+                Authorization: authHeader1,
               },
               version: '1',
               endpoint: 'https://domain-rudder.myfreshworks.com/crm/sales/api/sales_activities',
@@ -2313,7 +2315,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: secret1,
                 domain: 'domain-rudder.myfreshworks.com',
               },
             },
@@ -2425,7 +2427,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: secret1,
                 domain: 'domain-rudder.myfreshworks.com',
               },
             },
@@ -2532,7 +2534,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: secret1,
                 domain: 'domain-rudder.myfreshworks.com',
               },
             },
@@ -2565,7 +2567,7 @@ export const data = [
               params: {},
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Token token=dummyApiKey',
+                Authorization: authHeader1,
               },
               version: '1',
               endpoint: 'https://domain-rudder.myfreshworks.com/crm/sales/api/contacts/upsert',
@@ -2656,7 +2658,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: secret1,
                 domain: 'domain-rudder.myfreshworks.com',
               },
             },

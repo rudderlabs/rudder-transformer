@@ -1,3 +1,4 @@
+import { authHeader1, secret1, secret2 } from '../maskedSecrets';
 export const data = [
   {
     name: 'customerio',
@@ -65,8 +66,8 @@ export const data = [
               destination: {
                 Config: {
                   datacenterEU: false,
-                  siteID: '46be54768e7d49ab2628',
-                  apiKey: 'dummyApiKey',
+                  siteID: secret1,
+                  apiKey: secret2,
                 },
               },
             },
@@ -109,8 +110,8 @@ export const data = [
               destination: {
                 Config: {
                   datacenterEU: false,
-                  siteID: '46be54768e7d49ab2628',
-                  apiKey: 'dummyApiKey',
+                  siteID: secret1,
+                  apiKey: secret2,
                 },
               },
             },
@@ -147,8 +148,8 @@ export const data = [
               destination: {
                 Config: {
                   datacenterEU: false,
-                  siteID: '46be54768e7d49ab2628',
-                  apiKey: 'dummyApiKey',
+                  siteID: secret1,
+                  apiKey: secret2,
                 },
               },
             },
@@ -185,8 +186,8 @@ export const data = [
               destination: {
                 Config: {
                   datacenterEU: false,
-                  siteID: '46be54768e7d49ab2628',
-                  apiKey: 'dummyApiKey',
+                  siteID: secret1,
+                  apiKey: secret2,
                 },
               },
             },
@@ -207,7 +208,7 @@ export const data = [
                 type: 'REST',
                 method: 'PUT',
                 endpoint: 'https://track.customer.io/api/v1/customers/123456',
-                headers: { Authorization: 'Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk=' },
+                headers: { Authorization: authHeader1 },
                 params: {},
                 body: {
                   JSON: {
@@ -237,8 +238,8 @@ export const data = [
               destination: {
                 Config: {
                   datacenterEU: false,
-                  siteID: '46be54768e7d49ab2628',
-                  apiKey: 'dummyApiKey',
+                  siteID: secret1,
+                  apiKey: secret2,
                 },
               },
             },
@@ -248,7 +249,7 @@ export const data = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://track.customer.io/api/v1/customers/12345/events',
-                headers: { Authorization: 'Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk=' },
+                headers: { Authorization: authHeader1 },
                 params: {},
                 body: {
                   JSON: {
@@ -277,8 +278,8 @@ export const data = [
               destination: {
                 Config: {
                   datacenterEU: false,
-                  siteID: '46be54768e7d49ab2628',
-                  apiKey: 'dummyApiKey',
+                  siteID: secret1,
+                  apiKey: secret2,
                 },
               },
             },
@@ -289,7 +290,7 @@ export const data = [
                 method: 'POST',
                 endpoint: 'https://track.customer.io/api/v2/batch',
                 headers: {
-                  Authorization: 'Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk=',
+                  Authorization: authHeader1,
                   'Content-Type': 'application/json',
                 },
                 params: {},
@@ -335,8 +336,8 @@ export const data = [
               destination: {
                 Config: {
                   datacenterEU: false,
-                  siteID: '46be54768e7d49ab2628',
-                  apiKey: 'dummyApiKey',
+                  siteID: secret1,
+                  apiKey: secret2,
                 },
               },
             },

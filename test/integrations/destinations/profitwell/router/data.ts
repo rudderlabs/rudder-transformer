@@ -1,3 +1,5 @@
+import { secretApiKey } from '../maskedSecrets';
+
 export const data = [
   {
     name: 'profitwell',
@@ -10,7 +12,7 @@ export const data = [
         body: {
           input: [
             {
-              destination: { Config: { privateApiKey: '9270161a8e5abaa0e56efddfd9dbcb62' } },
+              destination: { Config: { privateApiKey: secretApiKey } },
               metadata: { jobId: 2, userId: 'u1' },
               message: {
                 channel: 'web',
@@ -81,7 +83,7 @@ export const data = [
                 params: {},
                 headers: {
                   'Content-Type': 'application/json',
-                  Authorization: '9270161a8e5abaa0e56efddfd9dbcb62',
+                  Authorization: secretApiKey,
                 },
                 version: '1',
                 endpoint: 'https://api.profitwell.com/v2/subscriptions/',
@@ -89,7 +91,7 @@ export const data = [
               metadata: [{ jobId: 2, userId: 'u1' }],
               batched: false,
               statusCode: 200,
-              destination: { Config: { privateApiKey: '9270161a8e5abaa0e56efddfd9dbcb62' } },
+              destination: { Config: { privateApiKey: secretApiKey } },
             },
           ],
         },

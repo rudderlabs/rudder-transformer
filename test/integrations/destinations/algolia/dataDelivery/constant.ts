@@ -1,3 +1,5 @@
+import { defaultApiKey } from '../../../common/secrets';
+
 const proxyMetdata1 = {
   jobId: 1,
   attemptNum: 1,
@@ -35,7 +37,7 @@ export const abortStatTags = {
 
 export const commonRequestProperties = {
   commonHeaders: {
-    'X-Algolia-API-Key': 'dummyApiKey',
+    'X-Algolia-API-Key': defaultApiKey,
     'X-Algolia-Application-Id': 'O2YARRI15I',
     'User-Agent': 'RudderLabs',
   },

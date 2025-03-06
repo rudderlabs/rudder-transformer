@@ -1,12 +1,13 @@
 import { ProxyMetdata } from '../../../../../src/types';
 import { ProxyV1TestData } from '../../../testTypes';
 import { generateProxyV0Payload, generateProxyV1Payload } from '../../../testUtils';
+import { authHeader1 } from '../../am/maskedSecrets';
 
 // Boilerplate data for the test cases
 // ======================================
 
 const commonHeaders = {
-  Authorization: 'Bearer dummyApiKey',
+  Authorization: authHeader1,
   'Content-Type': 'application/json',
 };
 

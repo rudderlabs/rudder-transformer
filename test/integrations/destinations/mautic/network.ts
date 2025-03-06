@@ -1,8 +1,9 @@
+import { authHeader1, authHeader2 } from './maskedSecrets';
 export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Basic VGVzdFJ1ZGRlcmxhYnM0NTgyM0BnbWFpbC5jb206ZHVtbXlQYXNzd29yZA==',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
       },
       method: 'GET',
@@ -13,7 +14,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Basic VGVzdFJ1ZGRlcmxhYnM0NTgyM0BnbWFpbC5jb206ZHVtbXlQYXNzd29yZA==',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
       },
       method: 'GET',
@@ -24,7 +25,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Basic VGVzdFJ1ZGRlcmxhYnM0NTgyM0BnbWFpbC5jb206ZHVtbXlQYXNzd29yZA==',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
       },
       method: 'GET',
@@ -674,7 +675,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Basic VGVzdDQ1ODIzUnVkZGVybGFic0BnbWFpbC5jb206ZHVtbXlQYXNzd29yZA==',
+        Authorization: authHeader2,
         'Content-Type': 'application/json',
       },
       method: 'GET',
@@ -1324,7 +1325,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Basic VGVzdDQ1ODIzUnVkZGVybGFic0BnbWFpbC5jb206ZHVtbXlQYXNzd29yZA==',
+        Authorization: authHeader2,
         'Content-Type': 'application/json',
       },
       method: 'GET',
@@ -3221,7 +3222,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Basic VGVzdDQ1ODIzUnVkZGVybGFic0BnbWFpbC5jb206ZHVtbXlQYXNzd29yZA==',
+        Authorization: authHeader2,
         'Content-Type': 'application/json',
       },
       method: 'GET',

@@ -186,6 +186,11 @@ const handleSearchError = (searchResponse) => {
       REFRESH_TOKEN,
     );
   }
+  if (searchResponse.message.code === 'INSTRUMENTATION_ERROR') {
+    return new InstrumentationError(
+      `failed to fetch zoho id for record for: ${searchResponse.message}`,
+    );
+  }
   return new ConfigurationError(
     `failed to fetch zoho id for record for ${JSON.stringify(searchResponse.message)}`,
   );
@@ -202,13 +207,13 @@ const handleSearchError = (searchResponse) => {
  */
 const handleDeletion = async (
   input,
-  fields,
+  identifiers,
   Config,
   destConfig,
   transformedResponseToBeBatched,
   errorResponseList,
 ) => {
-  const searchResponse = await searchRecordIdV2(fields, input.metadata, Config, destConfig);
+  const searchResponse = await searchRecordIdV2(identifiers, input.metadata, Config, destConfig);
 
   if (searchResponse.erroneous) {
     const error = handleSearchError(searchResponse);
@@ -259,9 +264,15 @@ const processInput = async (
       errorResponseList,
     );
   } else {
+    if (isEmptyObject(identifiers)) {
+      const error = new InstrumentationError('`identifiers` cannot be empty');
+      errorResponseList.push(handleRtTfSingleEventError(input, error, {}));
+      return;
+    }
+
     await handleDeletion(
       input,
-      allFields,
+      identifiers,
       Config,
       destConfig,
       transformedResponseToBeBatched,

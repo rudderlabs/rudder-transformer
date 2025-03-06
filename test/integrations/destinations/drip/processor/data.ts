@@ -1,3 +1,4 @@
+import { authHeader1, secret1 } from '../maskedSecrets';
 export const data = [
   {
     name: 'drip',
@@ -11,7 +12,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: secret1,
                 accountId: '1809802',
                 campaignId: '',
                 enableUserCreation: true,
@@ -75,7 +76,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://api.getdrip.com/v2/1809802/subscribers',
               headers: {
-                Authorization: 'Basic ZHVtbXlBcGlLZXk=',
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
               params: {},
@@ -119,7 +120,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: secret1,
                 accountId: '1809802',
                 campaignId: '',
                 enableUserCreation: true,
@@ -204,7 +205,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: secret1,
                 accountId: '1809802',
                 campaignId: '',
                 enableUserCreation: true,
@@ -266,7 +267,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://api.getdrip.com/v2/1809802/subscribers',
               headers: {
-                Authorization: 'Basic ZHVtbXlBcGlLZXk=',
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
               params: {},
@@ -311,7 +312,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: secret1,
                 accountId: '1809802',
                 campaignId: '915194776',
                 enableUserCreation: true,
@@ -375,7 +376,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://api.getdrip.com/v2/1809802/campaigns/915194776/subscribers',
               headers: {
-                Authorization: 'Basic ZHVtbXlBcGlLZXk=',
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
               params: {},
@@ -413,7 +414,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: secret1,
                 accountId: '1809802',
                 campaignId: '915194776',
                 enableUserCreation: true,
@@ -475,7 +476,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://api.getdrip.com/v2/1809802/events',
               headers: {
-                Authorization: 'Basic ZHVtbXlBcGlLZXk=',
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
               params: {},
@@ -517,7 +518,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: secret1,
                 accountId: '1809802',
                 campaignId: '915194776',
                 enableUserCreation: true,
@@ -600,7 +601,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: secret1,
                 accountId: '1809802',
                 campaignId: '915194776',
                 enableUserCreation: false,
@@ -662,7 +663,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://api.getdrip.com/v2/1809802/events',
               headers: {
-                Authorization: 'Basic ZHVtbXlBcGlLZXk=',
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
               params: {},
@@ -704,7 +705,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: secret1,
                 accountId: '1809802',
                 campaignId: '915194776',
                 enableUserCreation: false,
@@ -764,7 +765,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://api.getdrip.com/v2/1809802/events',
               headers: {
-                Authorization: 'Basic ZHVtbXlBcGlLZXk=',
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
               params: {},
@@ -806,7 +807,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: secret1,
                 accountId: '1809802',
                 campaignId: '915194776',
                 enableUserCreation: false,
@@ -887,7 +888,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: secret1,
                 accountId: '1809802',
                 campaignId: '915194776',
                 enableUserCreation: false,
@@ -949,7 +950,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://api.getdrip.com/v3/1809802/shopper_activity/order',
               headers: {
-                Authorization: 'Basic ZHVtbXlBcGlLZXk=',
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
               params: {},
@@ -986,7 +987,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: secret1,
                 accountId: '1809802',
                 campaignId: '915194776',
                 enableUserCreation: false,
@@ -1054,7 +1055,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://api.getdrip.com/v3/1809802/shopper_activity/order',
               headers: {
-                Authorization: 'Basic ZHVtbXlBcGlLZXk=',
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
               params: {},
@@ -1097,7 +1098,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: secret1,
                 accountId: '1809802',
                 campaignId: '915194776',
                 enableUserCreation: false,
@@ -1160,7 +1161,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://api.getdrip.com/v2/1809802/events',
               headers: {
-                Authorization: 'Basic ZHVtbXlBcGlLZXk=',
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
               params: {},
@@ -1202,7 +1203,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: secret1,
                 accountId: '1809802',
                 campaignId: '',
                 enableUserCreation: true,
@@ -1443,7 +1444,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://api.getdrip.com/v2/1809802/subscribers',
               headers: {
-                Authorization: 'Basic ZHVtbXlBcGlLZXk=',
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
               params: {},

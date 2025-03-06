@@ -1,3 +1,5 @@
+import { secretApiToken } from '../maskedSecrets';
+
 export const data = [
   {
     name: 'monday',
@@ -12,8 +14,7 @@ export const data = [
             {
               destination: {
                 Config: {
-                  apiToken:
-                    'eywwakzdjiksjhriherniSFsjhnskdojsSDFhsdns.sSRSSREWdnfnsjshfjsjskshfiskskdS__Fskilhih',
+                  apiToken: secretApiToken,
                   boardId: '339283933',
                   groupTitle: '',
                   columnToPropertyMapping: [],
@@ -52,8 +53,7 @@ export const data = [
             {
               destination: {
                 Config: {
-                  apiToken:
-                    'eywwakzdjiksjhriherniSFsjhnskdojsSDFhsdns.sSRSSREWdnfnsjshfjsjskshfiskskdS__Fskilhih',
+                  apiToken: secretApiToken,
                   boardId: '339283933',
                   groupTitle: 'Next month',
                   columnToPropertyMapping: [
@@ -121,8 +121,7 @@ export const data = [
                 endpoint: 'https://api.monday.com/v2',
                 files: {},
                 headers: {
-                  Authorization:
-                    'eywwakzdjiksjhriherniSFsjhnskdojsSDFhsdns.sSRSSREWdnfnsjshfjsjskshfiskskdS__Fskilhih',
+                  Authorization: secretApiToken,
                   'Content-Type': 'application/json',
                 },
                 method: 'POST',
@@ -135,8 +134,7 @@ export const data = [
               statusCode: 200,
               destination: {
                 Config: {
-                  apiToken:
-                    'eywwakzdjiksjhriherniSFsjhnskdojsSDFhsdns.sSRSSREWdnfnsjshfjsjskshfiskskdS__Fskilhih',
+                  apiToken: secretApiToken,
                   boardId: '339283933',
                   groupTitle: '',
                   columnToPropertyMapping: [],
@@ -152,8 +150,7 @@ export const data = [
                 endpoint: 'https://api.monday.com/v2',
                 headers: {
                   'Content-Type': 'application/json',
-                  Authorization:
-                    'eywwakzdjiksjhriherniSFsjhnskdojsSDFhsdns.sSRSSREWdnfnsjshfjsjskshfiskskdS__Fskilhih',
+                  Authorization: secretApiToken,
                 },
                 params: {},
                 body: {
@@ -172,8 +169,7 @@ export const data = [
               statusCode: 200,
               destination: {
                 Config: {
-                  apiToken:
-                    'eywwakzdjiksjhriherniSFsjhnskdojsSDFhsdns.sSRSSREWdnfnsjshfjsjskshfiskskdS__Fskilhih',
+                  apiToken: secretApiToken,
                   boardId: '339283933',
                   groupTitle: 'Next month',
                   columnToPropertyMapping: [

@@ -29834,8 +29834,41 @@ export const data = [
             },
             {
               batchedRequest: {
-                payload:
-                  '[{"name":"Screen View","type":"screen","sentAt":"2022-08-18T08:43:15.539+05:30","userId":"identified user id","context":{"ip":"14.5.67.21","library":{"name":"http"}},"rudderId":"daf823fb-e8d3-413a-8313-d34cd756f968","messageId":"1b8ee4c3-ffad-4457-b453-31b32da1dfea","timestamp":"2020-02-02T00:23:09.544Z","properties":{"prop1":"5"},"receivedAt":"2022-08-18T08:43:13.521+05:30","request_ip":"[::1]","anonymousId":"anon-id-new","originalTimestamp":"2022-08-18T08:43:15.539+05:30"},{"type":"group","sentAt":"2022-08-18T08:43:15.539+05:30","traits":{"name":"Company","industry":"Industry","employees":123},"userId":"user123","context":{"ip":"14.5.67.21","traits":{"trait1":"new-val"},"library":{"name":"http"}},"groupId":"group1","rudderId":"bda76e3e-87eb-4153-9d1e-e9c2ed48b7a5","messageId":"2c59b527-3235-4fc2-9680-f41ec52ebb51","timestamp":"2020-01-21T00:21:34.208Z","receivedAt":"2022-08-18T08:43:13.521+05:30","request_ip":"[::1]","originalTimestamp":"2022-08-18T08:43:15.539+05:30"}]',
+                payload: JSON.stringify([
+                  {
+                    name: 'Screen View',
+                    type: 'screen',
+                    sentAt: '2022-08-18T08:43:15.539+05:30',
+                    userId: 'identified user id',
+                    context: { ip: '14.5.67.21', library: { name: 'http' } },
+                    rudderId: 'daf823fb-e8d3-413a-8313-d34cd756f968',
+                    messageId: '1b8ee4c3-ffad-4457-b453-31b32da1dfea',
+                    timestamp: '2020-02-02T00:23:09.544Z',
+                    properties: { prop1: '5' },
+                    receivedAt: '2022-08-18T08:43:13.521+05:30',
+                    request_ip: '[::1]',
+                    anonymousId: 'anon-id-new',
+                    originalTimestamp: '2022-08-18T08:43:15.539+05:30',
+                  },
+                  {
+                    type: 'group',
+                    sentAt: '2022-08-18T08:43:15.539+05:30',
+                    traits: { name: 'Company', industry: 'Industry', employees: 123 },
+                    userId: 'user123',
+                    context: {
+                      ip: '14.5.67.21',
+                      traits: { trait1: 'new-val' },
+                      library: { name: 'http' },
+                    },
+                    groupId: 'group1',
+                    rudderId: 'bda76e3e-87eb-4153-9d1e-e9c2ed48b7a5',
+                    messageId: '2c59b527-3235-4fc2-9680-f41ec52ebb51',
+                    timestamp: '2020-01-21T00:21:34.208Z',
+                    receivedAt: '2022-08-18T08:43:13.521+05:30',
+                    request_ip: '[::1]',
+                    originalTimestamp: '2022-08-18T08:43:15.539+05:30',
+                  },
+                ]),
                 destConfig: { clientContext: '', lambda: 'testFunction', invocationType: 'Event' },
               },
               metadata: [
@@ -29990,8 +30023,25 @@ export const data = [
             },
             {
               batchedRequest: {
-                payload:
-                  '[{"type":"alias","sentAt":"2022-08-18T08:43:15.539+05:30","userId":"user123","context":{"ip":"14.5.67.21","traits":{"trait1":"new-val"},"library":{"name":"http"}},"rudderId":"bda76e3e-87eb-4153-9d1e-e9c2ed48b7a5","messageId":"3ff8d400-b6d4-43a4-a0ff-1bc7ae8b5f7d","timestamp":"2020-01-21T00:21:34.208Z","previousId":"previd1","receivedAt":"2022-08-18T08:43:13.521+05:30","request_ip":"[::1]","originalTimestamp":"2022-08-18T08:43:15.539+05:30"}]',
+                payload: JSON.stringify([
+                  {
+                    type: 'alias',
+                    sentAt: '2022-08-18T08:43:15.539+05:30',
+                    userId: 'user123',
+                    context: {
+                      ip: '14.5.67.21',
+                      traits: { trait1: 'new-val' },
+                      library: { name: 'http' },
+                    },
+                    rudderId: 'bda76e3e-87eb-4153-9d1e-e9c2ed48b7a5',
+                    messageId: '3ff8d400-b6d4-43a4-a0ff-1bc7ae8b5f7d',
+                    timestamp: '2020-01-21T00:21:34.208Z',
+                    previousId: 'previd1',
+                    receivedAt: '2022-08-18T08:43:13.521+05:30',
+                    request_ip: '[::1]',
+                    originalTimestamp: '2022-08-18T08:43:15.539+05:30',
+                  },
+                ]),
                 destConfig: { clientContext: '', lambda: 'testFunction', invocationType: 'Event' },
               },
               metadata: [

@@ -1,8 +1,16 @@
+import {
+  authHeader1,
+  authHeader2,
+  authHeader3,
+  authHeader4,
+  authHeader5,
+  authHeader6,
+} from './maskedSecrets';
 export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Basic bXlEdW1teVVzZXJOYW1lMS90b2tlbjpteUR1bW15QXBpVG9rZW40',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
       },
       method: 'GET',
@@ -70,7 +78,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Basic bXlEdW1teVVzZXJOYW1lMS90b2tlbjpteUR1bW15QXBpVG9rZW40',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
       },
       method: 'GET',
@@ -114,7 +122,7 @@ export const networkCallsData = [
         },
       },
       headers: {
-        Authorization: 'Basic bXlEdW1teVVzZXJOYW1lMS90b2tlbjpteUR1bW15QXBpVG9rZW40',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
       },
       method: 'POST',
@@ -145,7 +153,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Basic bXlEdW1teVVzZXJOYW1lMS90b2tlbjpteUR1bW15QXBpVG9rZW40',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
       },
       method: 'GET',
@@ -205,7 +213,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Basic bXlEdW1teVVzZXJOYW1lMS90b2tlbjpteUR1bW15QXBpVG9rZW40',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
       },
       method: 'GET',
@@ -216,7 +224,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Basic cnVkZGVybGFidGVzdDJAZW1haWwuY29tL3Rva2VuOmR1bW15QXBpVG9rZW4=',
+        Authorization: authHeader2,
         'Content-Type': 'application/json',
       },
       method: 'GET',
@@ -235,7 +243,7 @@ export const networkCallsData = [
         },
       },
       headers: {
-        Authorization: 'Basic cnVkZGVybGFidGVzdDJAZW1haWwuY29tL3Rva2VuOmR1bW15QXBpVG9rZW4=',
+        Authorization: authHeader2,
         'Content-Type': 'application/json',
       },
       method: 'POST',
@@ -246,7 +254,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Basic bXlEdW1teVVzZXJOYW1lMS90b2tlbjpteUR1bW15QXBpVG9rZW40',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
       },
       method: 'GET',
@@ -314,7 +322,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Basic bXlEdW1teVVzZXJOYW1lMS90b2tlbjpteUR1bW15QXBpVG9rZW40',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
       },
       method: 'GET',
@@ -382,7 +390,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Basic bXlEdW1teVVzZXJOYW1lMS90b2tlbjpteUR1bW15QXBpVG9rZW40',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
       },
       method: 'GET',
@@ -426,7 +434,7 @@ export const networkCallsData = [
         },
       },
       headers: {
-        Authorization: 'Basic bXlEdW1teVVzZXJOYW1lMS90b2tlbjpteUR1bW15QXBpVG9rZW40',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
       },
       method: 'POST',
@@ -457,7 +465,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Basic bXlEdW1teVVzZXJOYW1lMS90b2tlbjpteUR1bW15QXBpVG9rZW40',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
       },
       method: 'GET',
@@ -517,7 +525,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Basic bXlEdW1teVVzZXJOYW1lMS90b2tlbjpteUR1bW15QXBpVG9rZW40',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
       },
       method: 'GET',
@@ -528,7 +536,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Basic bXlEdW1teVVzZXJOYW1lMS90b2tlbjpteUR1bW15QXBpVG9rZW40',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
       },
       method: 'GET',
@@ -588,7 +596,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Basic bXlEdW1teVVzZXJOYW1lMS90b2tlbjpteUR1bW15QXBpVG9rZW40',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
       },
       method: 'GET',
@@ -656,7 +664,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Basic bXlEdW1teVVzZXJOYW1lMS90b2tlbjpteUR1bW15QXBpVG9rZW40',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
       },
       method: 'GET',
@@ -716,7 +724,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Basic bXlEdW1teVVzZXJOYW1lMS90b2tlbjpteUR1bW15QXBpVG9rZW40',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
       },
       method: 'GET',
@@ -745,7 +753,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Basic bXlEdW1teVVzZXJOYW1lMS90b2tlbjpteUR1bW15QXBpVG9rZW40',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
       },
       method: 'GET',
@@ -813,7 +821,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Basic bXlEdW1teVVzZXJOYW1lMS90b2tlbjpteUR1bW15QXBpVG9rZW40',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
       },
       method: 'GET',
@@ -873,7 +881,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Basic bXlEdW1teVVzZXJOYW1lMS90b2tlbjpteUR1bW15QXBpVG9rZW40',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
       },
       method: 'GET',
@@ -902,7 +910,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Basic dGVzdEBydWRkZXIuY29tL3Rva2VuOm15RHVtbXlBcGlUb2tlbjQ=',
+        Authorization: authHeader3,
         'Content-Type': 'application/json',
       },
       method: 'GET',
@@ -973,7 +981,7 @@ export const networkCallsData = [
         user_field: { active: true, description: 'country', key: 'country', title: 'country' },
       },
       headers: {
-        Authorization: 'Basic dGVzdEBydWRkZXIuY29tL3Rva2VuOm15RHVtbXlBcGlUb2tlbjQ=',
+        Authorization: authHeader3,
         'Content-Type': 'application/json',
       },
       method: 'POST',
@@ -1041,7 +1049,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Basic dGVzdEBydWRkZXIuY29tL3Rva2VuOm15RHVtbXlBcGlUb2tlbjQ=',
+        Authorization: authHeader3,
         'Content-Type': 'application/json',
       },
       method: 'GET',
@@ -1112,7 +1120,7 @@ export const networkCallsData = [
         user_field: { active: true, description: 'country', key: 'country', title: 'country' },
       },
       headers: {
-        Authorization: 'Basic dGVzdEBydWRkZXIuY29tL3Rva2VuOm15RHVtbXlBcGlUb2tlbjQ=',
+        Authorization: authHeader3,
         'Content-Type': 'application/json',
       },
       method: 'POST',
@@ -1180,7 +1188,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Basic dGVzdEBydWRkZXIuY29tL3Rva2VuOm15RHVtbXlBcGlUb2tlbjQ=',
+        Authorization: authHeader3,
         'Content-Type': 'application/json',
       },
       method: 'GET',
@@ -1251,7 +1259,7 @@ export const networkCallsData = [
         user_field: { active: true, description: 'country', key: 'country', title: 'country' },
       },
       headers: {
-        Authorization: 'Basic dGVzdEBydWRkZXIuY29tL3Rva2VuOm15RHVtbXlBcGlUb2tlbjQ=',
+        Authorization: authHeader3,
         'Content-Type': 'application/json',
       },
       method: 'POST',
@@ -1319,7 +1327,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Basic dGVzdEBydWRkZXIuY29tL3Rva2VuOm15RHVtbXlBcGlUb2tlbjQ=',
+        Authorization: authHeader3,
         'Content-Type': 'application/json',
       },
       method: 'GET',
@@ -1338,7 +1346,7 @@ export const networkCallsData = [
         },
       },
       headers: {
-        Authorization: 'Basic dGVzdEBydWRkZXIuY29tL3Rva2VuOm15RHVtbXlBcGlUb2tlbjM=',
+        Authorization: authHeader4,
         'Content-Type': 'application/json',
       },
       method: 'POST',
@@ -1393,7 +1401,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Basic dGVzdEBydWRkZXIuY29tL3Rva2VuOm15RHVtbXlBcGlUb2tlbjM=',
+        Authorization: authHeader4,
         'Content-Type': 'application/json',
       },
       method: 'GET',
@@ -1412,7 +1420,7 @@ export const networkCallsData = [
         },
       },
       headers: {
-        Authorization: 'Basic dGVzdEBydWRkZXIuY29tL3Rva2VuOm15RHVtbXlBcGlUb2tlbjM=',
+        Authorization: authHeader4,
         'Content-Type': 'application/json',
       },
       method: 'POST',
@@ -1467,7 +1475,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Basic bXlEdW1teVVzZXJOYW1lMi90b2tlbjpteUR1bW15QXBpVG9rZW4y',
+        Authorization: authHeader5,
         'Content-Type': 'application/json',
       },
       method: 'GET',
@@ -1478,7 +1486,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Basic bXlEdW1teVVzZXJOYW1lMS90b2tlbjpteUR1bW15QXBpVG9rZW40',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
       },
       method: 'GET',
@@ -1546,7 +1554,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Basic bXlEdW1teVVzZXJOYW1lMS90b2tlbjpteUR1bW15QXBpVG9rZW40',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
       },
       method: 'GET',
@@ -1614,7 +1622,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Basic bXlEdW1teVVzZXJOYW1lMS90b2tlbjpteUR1bW15QXBpVG9rZW40',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
       },
       method: 'GET',
@@ -1675,7 +1683,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Basic bXlEdW1teVVzZXJOYW1lMS90b2tlbjpteUR1bW15QXBpVG9rZW40',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
       },
       method: 'GET',
@@ -1721,7 +1729,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Basic cnVkZGVybGFidGVzdDFAZW1haWwuY29tL3Rva2VuOmR1bW15QXBpVG9rZW4=',
+        Authorization: authHeader6,
         'Content-Type': 'application/json',
       },
       method: 'GET',
@@ -1740,7 +1748,7 @@ export const networkCallsData = [
         },
       },
       headers: {
-        Authorization: 'Basic cnVkZGVybGFidGVzdDFAZW1haWwuY29tL3Rva2VuOmR1bW15QXBpVG9rZW4=',
+        Authorization: authHeader6,
         'Content-Type': 'application/json',
       },
       method: 'POST',
@@ -1795,7 +1803,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Basic cnVkZGVybGFidGVzdDJAZW1haWwuY29tL3Rva2VuOmR1bW15QXBpVG9rZW4=',
+        Authorization: authHeader2,
         'Content-Type': 'application/json',
       },
       method: 'GET',
@@ -1814,7 +1822,7 @@ export const networkCallsData = [
         },
       },
       headers: {
-        Authorization: 'Basic cnVkZGVybGFidGVzdDJAZW1haWwuY29tL3Rva2VuOmR1bW15QXBpVG9rZW4=',
+        Authorization: authHeader2,
         'Content-Type': 'application/json',
       },
       method: 'POST',
@@ -1826,7 +1834,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Basic bXlEdW1teVVzZXJOYW1lMS90b2tlbjpteUR1bW15QXBpVG9rZW40',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
       },
       method: 'GET',
@@ -1888,7 +1896,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Basic bXlEdW1teVVzZXJOYW1lMS90b2tlbjpteUR1bW15QXBpVG9rZW40',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
       },
       method: 'GET',
@@ -1946,7 +1954,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Basic bXlEdW1teVVzZXJOYW1lMS90b2tlbjpteUR1bW15QXBpVG9rZW40',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
       },
       method: 'GET',
@@ -2008,7 +2016,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Basic bXlEdW1teVVzZXJOYW1lMS90b2tlbjpteUR1bW15QXBpVG9rZW40',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
       },
       method: 'GET',
@@ -2053,7 +2061,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Basic bXlEdW1teVVzZXJOYW1lMS90b2tlbjpteUR1bW15QXBpVG9rZW40',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
       },
       method: 'GET',
@@ -2115,7 +2123,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Basic bXlEdW1teVVzZXJOYW1lMS90b2tlbjpteUR1bW15QXBpVG9rZW40',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
       },
       method: 'GET',

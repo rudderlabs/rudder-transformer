@@ -248,7 +248,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
             message: '[GA4 Response Handler] - Request Processed Successfully',
             response: [
               {
-                error: '{"validationMessages":[]}',
+                error: JSON.stringify({ validationMessages: [] }),
                 metadata: generateMetadata(1),
                 statusCode: 200,
               },

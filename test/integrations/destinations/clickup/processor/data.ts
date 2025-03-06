@@ -1,3 +1,5 @@
+import { secretApiToken } from '../maskedSecrets';
+
 export const data = [
   {
     name: 'clickup',
@@ -11,7 +13,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiToken: 'pk_123',
+                apiToken: secretApiToken,
                 listId: 'correctListId123',
               },
               ID: 'clickup-1234',
@@ -64,7 +66,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiToken: 'pk_123',
+                apiToken: secretApiToken,
                 listId: 'correctListId123',
                 keyToCustomFieldName: [
                   {
@@ -122,7 +124,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiToken: 'pk_123',
+                apiToken: secretApiToken,
                 listId: 'correctListId123',
                 keyToCustomFieldName: [
                   {
@@ -180,7 +182,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiToken: 'pk_123',
+                apiToken: secretApiToken,
                 listId: 'correctListId123',
                 keyToCustomFieldName: [
                   {
@@ -238,7 +240,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiToken: 'pk_123',
+                apiToken: secretApiToken,
                 listId: 'correctListId123',
                 keyToCustomFieldName: [
                   {
@@ -300,7 +302,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiToken: 'pk_123',
+                apiToken: secretApiToken,
                 listId: 'correctListId123',
                 keyToCustomFieldName: [
                   {
@@ -358,7 +360,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiToken: 'pk_123',
+                apiToken: secretApiToken,
                 listId: 'correctListId123',
                 keyToCustomFieldName: [
                   {
@@ -460,7 +462,7 @@ export const data = [
               endpoint: 'https://api.clickup.com/api/v2/list/correctListId123/task',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'pk_123',
+                Authorization: secretApiToken,
               },
               params: {},
               body: {
@@ -557,7 +559,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiToken: 'pk_123',
+                apiToken: secretApiToken,
                 listId: 'correctListId123',
               },
               ID: 'clickup-1234',
@@ -604,7 +606,7 @@ export const data = [
               endpoint: 'https://api.clickup.com/api/v2/list/correctListId123/task',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'pk_123',
+                Authorization: secretApiToken,
               },
               params: {},
               body: {
@@ -637,7 +639,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiToken: 'pk_123',
+                apiToken: secretApiToken,
                 listId: 'correctListId123',
                 whitelistedEvents: [
                   {
@@ -698,7 +700,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiToken: 'pk_123',
+                apiToken: secretApiToken,
                 listId: 'correctListId123',
                 whitelistedEvents: [
                   {
@@ -759,7 +761,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiToken: 'pk_123',
+                apiToken: secretApiToken,
                 listId: 'correctListId123',
               },
               ID: 'clickup-1234',
@@ -795,7 +797,7 @@ export const data = [
               endpoint: 'https://api.clickup.com/api/v2/list/correctListId456/task',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'pk_123',
+                Authorization: secretApiToken,
               },
               params: {},
               body: {

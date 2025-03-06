@@ -1,3 +1,4 @@
+import { authHeader1, secret1, secret2 } from '../maskedSecrets';
 export const data = [
   {
     name: 'mautic',
@@ -45,9 +46,9 @@ export const data = [
               destination: {
                 Config: {
                   lookUpField: 'email',
-                  password: 'dummyPassword',
+                  password: secret2,
                   subDomainName: 'ruddertest2',
-                  userName: 'TestRudderlabs45823@gmail.com',
+                  userName: secret1,
                 },
               },
               metadata: { jobId: 1, userId: 'u1' },
@@ -71,8 +72,7 @@ export const data = [
                 endpoint: 'https://ruddertest2.mautic.net/api/contacts/new',
                 headers: {
                   'Content-Type': 'application/json',
-                  Authorization:
-                    'Basic VGVzdFJ1ZGRlcmxhYnM0NTgyM0BnbWFpbC5jb206ZHVtbXlQYXNzd29yZA==',
+                  Authorization: authHeader1,
                 },
                 params: {},
                 body: {
@@ -107,9 +107,9 @@ export const data = [
               destination: {
                 Config: {
                   lookUpField: 'email',
-                  password: 'dummyPassword',
+                  password: secret2,
                   subDomainName: 'ruddertest2',
-                  userName: 'TestRudderlabs45823@gmail.com',
+                  userName: secret1,
                 },
               },
             },
@@ -164,7 +164,7 @@ export const data = [
               destination: {
                 Config: {
                   lookUpField: 'email',
-                  password: 'dummyPassword',
+                  password: secret2,
                   subDomainName: '',
                   domainName: '',
                   userName: 'abcdef',
@@ -197,7 +197,7 @@ export const data = [
                 Config: {
                   domainName: '',
                   lookUpField: 'email',
-                  password: 'dummyPassword',
+                  password: secret2,
                   subDomainName: '',
                   userName: 'abcdef',
                 },
@@ -232,9 +232,9 @@ export const data = [
               destination: {
                 Config: {
                   lookUpField: 'lastName',
-                  password: 'dummyPassword',
+                  password: secret2,
                   subDomainName: 'ruddertest2',
-                  userName: 'TestRudderlabs45823@gmail.com',
+                  userName: secret1,
                 },
               },
               metadata: { jobId: 3, userId: 'u1' },
@@ -258,8 +258,7 @@ export const data = [
                 endpoint: 'https://ruddertest2.mautic.net/api/segments/17/contact/246/add',
                 headers: {
                   'Content-Type': 'application/json',
-                  Authorization:
-                    'Basic VGVzdFJ1ZGRlcmxhYnM0NTgyM0BnbWFpbC5jb206ZHVtbXlQYXNzd29yZA==',
+                  Authorization: authHeader1,
                 },
                 params: {},
                 body: { JSON: {}, JSON_ARRAY: {}, XML: {}, FORM: {} },
@@ -271,9 +270,9 @@ export const data = [
               destination: {
                 Config: {
                   lookUpField: 'lastName',
-                  password: 'dummyPassword',
+                  password: secret2,
                   subDomainName: 'ruddertest2',
-                  userName: 'TestRudderlabs45823@gmail.com',
+                  userName: secret1,
                 },
               },
             },

@@ -121,7 +121,21 @@ export const data = [
                   JSON_ARRAY: {},
                   FORM: {
                     data: [
-                      '{"user_data":{"em":"48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08","zp":"03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4"},"event_name":"spin_result","event_time":1699784211,"action_source":"website","custom_data":{"revenue":400,"additional_bet_index":0,"value":400,"currency":"USD"}}',
+                      JSON.stringify({
+                        user_data: {
+                          em: '48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08',
+                          zp: '03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4',
+                        },
+                        event_name: 'spin_result',
+                        event_time: 1699784211,
+                        action_source: 'website',
+                        custom_data: {
+                          revenue: 400,
+                          additional_bet_index: 0,
+                          value: 400,
+                          currency: 'USD',
+                        },
+                      }),
                     ],
                   },
                 },
@@ -159,7 +173,24 @@ export const data = [
                   JSON_ARRAY: {},
                   FORM: {
                     data: [
-                      '{"user_data":{"em":"48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08","zp":"03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4"},"event_name":"Search","event_time":1699784211,"action_source":"website","custom_data":{"revenue":400,"additional_bet_index":0,"content_ids":[],"contents":[],"content_type":"product","currency":"USD","value":400}}',
+                      JSON.stringify({
+                        user_data: {
+                          em: '48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08',
+                          zp: '03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4',
+                        },
+                        event_name: 'Search',
+                        event_time: 1699784211,
+                        action_source: 'website',
+                        custom_data: {
+                          revenue: 400,
+                          additional_bet_index: 0,
+                          content_ids: [],
+                          contents: [],
+                          content_type: 'product',
+                          currency: 'USD',
+                          value: 400,
+                        },
+                      }),
                     ],
                   },
                 },

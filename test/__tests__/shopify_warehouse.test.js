@@ -62,10 +62,10 @@ describe('DATA_WAREHOUSE integrations', () => {
         expect(responses[1].metadata.table).toBe('ORDER_UPDATED');
 
         expect(responses[0].metadata.columns.CONTEXT_SHOPIFY_DETAILS).toBe('json');
-        expect(responses[0].data.CONTEXT_SHOPIFY_DETAILS).toBe('{"id":5778367414385,"current_total_tax":"10.00","current_total_tax_set":{"shop_money":{"amount":"10.00","currency_code":"USD"}},"name":"#1017","phone":null}');
+        expect(responses[0].data.CONTEXT_SHOPIFY_DETAILS).toBe(JSON.stringify({"id":5778367414385,"current_total_tax":"10.00","current_total_tax_set":{"shop_money":{"amount":"10.00","currency_code":"USD"}},"name":"#1017","phone":null}));
 
         expect(responses[1].metadata.columns.CONTEXT_SHOPIFY_DETAILS).toBe('json');
-        expect(responses[1].data.CONTEXT_SHOPIFY_DETAILS).toBe('{"id":5778367414385,"current_total_tax":"10.00","current_total_tax_set":{"shop_money":{"amount":"10.00","currency_code":"USD"}},"name":"#1017","phone":null}');
+        expect(responses[1].data.CONTEXT_SHOPIFY_DETAILS).toBe(JSON.stringify({"id":5778367414385,"current_total_tax":"10.00","current_total_tax_set":{"shop_money":{"amount":"10.00","currency_code":"USD"}},"name":"#1017","phone":null}));
     });
 
     it('should process event and return response for other providers like mssql', () => {

@@ -1,3 +1,4 @@
+import { authHeader1, authHeader2 } from './maskedSecrets';
 const dataDeliveryMocksData = [
   {
     httpReq: {
@@ -13,7 +14,7 @@ const dataDeliveryMocksData = [
       params: { destination: 'braze' },
       headers: {
         Accept: 'application/json',
-        Authorization: 'Bearer api_key',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
         'User-Agent': 'RudderLabs',
       },
@@ -35,7 +36,7 @@ const dataDeliveryMocksData = [
       params: { destination: 'braze' },
       headers: {
         Accept: 'application/json',
-        Authorization: 'Bearer api_key',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
         'User-Agent': 'RudderLabs',
       },
@@ -57,7 +58,7 @@ const dataDeliveryMocksData = [
       params: { destination: 'braze' },
       headers: {
         Accept: 'application/json',
-        Authorization: 'Bearer api_key',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
         'User-Agent': 'RudderLabs',
       },
@@ -82,7 +83,7 @@ const dataDeliveryMocksData = [
       params: { destination: 'braze' },
       headers: {
         Accept: 'application/json',
-        Authorization: 'Bearer api_key',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
         'User-Agent': 'RudderLabs',
       },
@@ -104,7 +105,7 @@ const dataDeliveryMocksData = [
       params: { destination: 'braze' },
       headers: {
         Accept: 'application/json',
-        Authorization: 'Bearer api_key',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
         'User-Agent': 'RudderLabs',
       },
@@ -126,7 +127,7 @@ const dataDeliveryMocksData = [
       params: { destination: 'braze' },
       headers: {
         Accept: 'application/json',
-        Authorization: 'Bearer api_key',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
         'User-Agent': 'RudderLabs',
       },
@@ -197,7 +198,7 @@ const deleteNwData = [
       },
       headers: {
         'Content-Type': 'application/json',
-        Authorization: 'Bearer 1234',
+        Authorization: authHeader2,
       },
     },
     httpRes: {
@@ -269,7 +270,7 @@ const deleteNwData = [
       },
       headers: {
         'Content-Type': 'application/json',
-        Authorization: 'Bearer 1234',
+        Authorization: authHeader2,
       },
     },
     httpRes: {
@@ -288,7 +289,7 @@ const deleteNwData = [
       data: { external_ids: ['test_user_id51'] },
       headers: {
         'Content-Type': 'application/json',
-        Authorization: 'Bearer 1234',
+        Authorization: authHeader2,
       },
     },
     httpRes: {
@@ -311,7 +312,7 @@ const deleteNwData = [
       },
       headers: {
         'Content-Type': 'application/json',
-        Authorization: 'Bearer 1234',
+        Authorization: authHeader2,
       },
     },
     httpRes: {
@@ -339,7 +340,7 @@ const deleteNwData = [
       params: { destination: 'braze' },
       headers: {
         Accept: 'application/json',
-        Authorization: 'Bearer api_key',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
         'User-Agent': 'RudderLabs',
       },
@@ -386,7 +387,7 @@ const deleteNwData = [
       params: { destination: 'braze' },
       headers: {
         Accept: 'application/json',
-        Authorization: 'Bearer api_key',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
         'User-Agent': 'RudderLabs',
       },
@@ -421,7 +422,7 @@ const deleteNwData = [
           'user_aliases',
         ],
       },
-      headers: { Authorization: 'Bearer dummyApiKey' },
+      headers: { Authorization: authHeader1 },
       url: 'https://rest.iad-03.braze.com/users/export/ids',
     },
     httpRes: {
@@ -511,7 +512,7 @@ const deleteNwData = [
       params: { destination: 'braze' },
       headers: {
         Accept: 'application/json',
-        Authorization: 'Bearer api_key',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
         'User-Agent': 'RudderLabs',
       },

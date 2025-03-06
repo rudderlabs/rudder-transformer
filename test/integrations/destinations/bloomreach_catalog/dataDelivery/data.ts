@@ -21,8 +21,10 @@ export const data: ProxyV1TestData[] = [
             params: {},
             JSON: {},
             JSON_ARRAY: {
-              batch:
-                '[{"item_id":"test-item-id","properties":{"unprinted":"1"}},{"item_id":"test-item-id-faulty","properties":{"unprinted1":"1"}}]',
+              batch: JSON.stringify([
+                { item_id: 'test-item-id', properties: { unprinted: '1' } },
+                { item_id: 'test-item-id-faulty', properties: { unprinted1: '1' } },
+              ]),
             },
             endpoint: updateEndpoint,
           },
@@ -89,8 +91,10 @@ export const data: ProxyV1TestData[] = [
             params: {},
             JSON: {},
             JSON_ARRAY: {
-              batch:
-                '[{"item_id":"test-item-id-1","properties":{"unprinted":"1"}},{"item_id":"test-item-id-2","properties":{"unprinted":"2"}}]',
+              batch: JSON.stringify([
+                { item_id: 'test-item-id-1', properties: { unprinted: '1' } },
+                { item_id: 'test-item-id-2', properties: { unprinted: '2' } },
+              ]),
             },
             endpoint: updateEndpoint,
           },
@@ -154,7 +158,9 @@ export const data: ProxyV1TestData[] = [
             params: {},
             JSON: {},
             JSON_ARRAY: {
-              batch: '[{"item_id":"test-item-id-faulty","properties":{"unprinted1":"1"}}]',
+              batch: JSON.stringify([
+                { item_id: 'test-item-id-faulty', properties: { unprinted1: '1' } },
+              ]),
             },
             endpoint: updateEndpoint,
           },

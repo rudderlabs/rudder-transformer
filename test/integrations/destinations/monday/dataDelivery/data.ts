@@ -113,7 +113,7 @@ export const data: ProxyV1TestData[] = [
           output: {
             response: [
               {
-                error: '{"error_message":"Rate Limit Exceeded.","status_code":429}',
+                error: JSON.stringify({ error_message: 'Rate Limit Exceeded.', status_code: 429 }),
                 statusCode: 429,
                 metadata: generateMetadata(1),
               },
@@ -163,7 +163,7 @@ export const data: ProxyV1TestData[] = [
           output: {
             response: [
               {
-                error: '{"error_message":"Internal server error","status_code":500}',
+                error: JSON.stringify({ error_message: 'Internal server error', status_code: 500 }),
                 statusCode: 500,
                 metadata: generateMetadata(1),
               },

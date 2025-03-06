@@ -1,8 +1,9 @@
+import { authHeader1 } from './maskedSecrets';
 export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Token dummyApiKey',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
       },
 
@@ -44,7 +45,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Token dummyApiKey',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
       },
 
@@ -92,7 +93,7 @@ export const networkCallsData = [
         user_custom_id: 'user@123',
       },
       headers: {
-        Authorization: 'Token dummyApiKey',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
       },
 
@@ -130,7 +131,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Token dummyApiKey',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
       },
 
@@ -167,7 +168,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Token dummyApiKey',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
       },
 
@@ -204,7 +205,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Token dummyApiKey',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
       },
 
@@ -241,7 +242,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Token dummyApiKey',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
       },
 
@@ -277,7 +278,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Token dummyApiKey',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
       },
 
@@ -313,7 +314,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Token dummyApiKey',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
       },
 
@@ -355,7 +356,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Token dummyApiKey',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
       },
 
@@ -403,7 +404,7 @@ export const networkCallsData = [
         user_custom_id: 'user@123',
       },
       headers: {
-        Authorization: 'Token dummyApiKey',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
       },
 

@@ -5,7 +5,7 @@ import {
   generateSimplifiedPageOrScreenPayload,
   transformResultBuilder,
 } from '../../../testUtils';
-
+import { secret1, authHeader1 } from '../maskedSecrets';
 const destination: Destination = {
   ID: '123',
   Name: 'klaviyo',
@@ -17,7 +17,7 @@ const destination: Destination = {
   },
   Config: {
     apiVersion: 'v2',
-    privateApiKey: 'dummyPrivateApiKey',
+    privateApiKey: secret1,
   },
   Enabled: true,
   WorkspaceID: '123',
@@ -88,7 +88,7 @@ export const screenTestData: ProcessorTestData[] = [
               endpoint: 'https://a.klaviyo.com/api/events',
               headers: {
                 Accept: 'application/json',
-                Authorization: 'Klaviyo-API-Key dummyPrivateApiKey',
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
                 revision: '2024-06-15',
               },

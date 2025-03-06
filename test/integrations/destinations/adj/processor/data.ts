@@ -105,8 +105,14 @@ export const data = [
               endpoint: 'https://s2s.adjust.com/event',
               headers: { Accept: '*/*' },
               params: {
-                callback_params:
-                  '{"key1":"value1","key2":"value2","key3.k4":"v4","key3.k5.k6":"v6","key5[0].k":"v1","key5[1].k":"v2"}',
+                callback_params: JSON.stringify({
+                  key1: 'value1',
+                  key2: 'value2',
+                  'key3.k4': 'v4',
+                  'key3.k5.k6': 'v6',
+                  'key5[0].k': 'v1',
+                  'key5[1].k': 'v2',
+                }),
                 revenue: 20.38,
                 android_id: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
                 gps_adid: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
@@ -462,8 +468,14 @@ export const data = [
               endpoint: 'https://s2s.adjust.com/event',
               headers: { Accept: '*/*' },
               params: {
-                callback_params:
-                  '{"key1":"value1","key2":"value2","key3.k4":"v4","key3.k5.k6":"v6","key5[0].k":"v1","key5[1].k":"v2"}',
+                callback_params: JSON.stringify({
+                  key1: 'value1',
+                  key2: 'value2',
+                  'key3.k4': 'v4',
+                  'key3.k5.k6': 'v6',
+                  'key5[0].k': 'v1',
+                  'key5[1].k': 'v2',
+                }),
                 revenue: 20.38,
                 idfv: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
                 idfa: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
@@ -933,8 +945,14 @@ export const data = [
               endpoint: 'https://s2s.adjust.com/event',
               headers: { Accept: '*/*' },
               params: {
-                callback_params:
-                  '{"key1":"value1","key2":"value2","key3.k4":"v4","key3.k5.k6":"v6","key5[0].k":"v1","key5[1].k":"v2"}',
+                callback_params: JSON.stringify({
+                  key1: 'value1',
+                  key2: 'value2',
+                  'key3.k4': 'v4',
+                  'key3.k5.k6': 'v6',
+                  'key5[0].k': 'v1',
+                  'key5[1].k': 'v2',
+                }),
                 revenue: 20.38,
                 android_id: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
                 gps_adid: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
@@ -1062,8 +1080,14 @@ export const data = [
               endpoint: 'https://s2s.adjust.com/event',
               headers: { Accept: '*/*' },
               params: {
-                callback_params:
-                  '{"key1":"value1","key2":"value2","key3.k4":"v4","key3.k5.k6":"v6","key5[0].k":"v1","key5[1].k":"v2"}',
+                callback_params: JSON.stringify({
+                  key1: 'value1',
+                  key2: 'value2',
+                  'key3.k4': 'v4',
+                  'key3.k5.k6': 'v6',
+                  'key5[0].k': 'v1',
+                  'key5[1].k': 'v2',
+                }),
                 revenue: 20.38,
                 android_id: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
                 gps_adid: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
@@ -1191,8 +1215,14 @@ export const data = [
               endpoint: 'https://s2s.adjust.com/event',
               headers: { Accept: '*/*' },
               params: {
-                callback_params:
-                  '{"key1":"value1","key2":"value2","key3.k4":"v4","key3.k5.k6":"v6","key5[0].k":"v1","key5[1].k":"v2"}',
+                callback_params: JSON.stringify({
+                  key1: 'value1',
+                  key2: 'value2',
+                  'key3.k4': 'v4',
+                  'key3.k5.k6': 'v6',
+                  'key5[0].k': 'v1',
+                  'key5[1].k': 'v2',
+                }),
                 revenue: 20.37,
                 android_id: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
                 gps_adid: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
@@ -1433,8 +1463,14 @@ export const data = [
               endpoint: 'https://s2s.adjust.com/event',
               headers: { Accept: '*/*' },
               params: {
-                callback_params:
-                  '{"key1":"value1","key2":"value2","key3.k4":"v4","key3.k5.k6":"v6","key5[0].k":"v1","key5[1].k":"v2"}',
+                callback_params: JSON.stringify({
+                  key1: 'value1',
+                  key2: 'value2',
+                  'key3.k4': 'v4',
+                  'key3.k5.k6': 'v6',
+                  'key5[0].k': 'v1',
+                  'key5[1].k': 'v2',
+                }),
                 revenue: 20.37,
                 android_id: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
                 gps_adid: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
@@ -1681,8 +1717,14 @@ export const data = [
               endpoint: 'https://s2s.adjust.com/event',
               headers: { Accept: '*/*' },
               params: {
-                callback_params:
-                  '{"key1":"value1","key2":"value2","key3.k4":"v4","key3.k5.k6":"v6","key5[0].k":"v1","key5[1].k":"v2"}',
+                callback_params: JSON.stringify({
+                  key1: 'value1',
+                  key2: 'value2',
+                  'key3.k4': 'v4',
+                  'key3.k5.k6': 'v6',
+                  'key5[0].k': 'v1',
+                  'key5[1].k': 'v2',
+                }),
                 revenue: 20.38,
                 idfv: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
                 idfa: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
@@ -2053,8 +2095,14 @@ export const data = [
               endpoint: 'https://s2s.adjust.com/event',
               headers: { Accept: '*/*' },
               params: {
-                callback_params:
-                  '{"key1":"value1","key2":"value2","key3.k4":"v4","key3.k5.k6":"v6","key5[0].k":"v1","key5[1].k":"v2"}',
+                callback_params: JSON.stringify({
+                  key1: 'value1',
+                  key2: 'value2',
+                  'key3.k4': 'v4',
+                  'key3.k5.k6': 'v6',
+                  'key5[0].k': 'v1',
+                  'key5[1].k': 'v2',
+                }),
                 partner_params: {
                   'partnerParamKey-1': 'value1',
                   'partnerParamKey-2': 'value2',

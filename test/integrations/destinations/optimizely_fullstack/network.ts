@@ -37,8 +37,15 @@ const deleteNwData = [
           {
             id: '$opt_test_audience',
             name: 'Optimizely-Generated Audience for Backwards Compatibility',
-            conditions:
-              '["or", {"match": "exact", "name": "$opt_test_attribute", "type": "custom_attribute", "value": "$opt_test_value"}]',
+            conditions: JSON.stringify([
+              'or',
+              {
+                match: 'exact',
+                name: '$opt_test_attribute',
+                type: 'custom_attribute',
+                value: '$opt_test_value',
+              },
+            ]),
           },
         ],
         version: '4',

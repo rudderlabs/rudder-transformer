@@ -1,3 +1,4 @@
+import { authHeader1, secret1 } from '../maskedSecrets';
 export const data = [
   {
     name: 'stormly',
@@ -11,7 +12,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: secret1,
               },
               ID: 'stormly123',
             },
@@ -64,7 +65,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: secret1,
               },
               ID: 'stormly123',
             },
@@ -100,7 +101,7 @@ export const data = [
               endpoint: 'https://rudderstack.t.stormly.com/webhook/rudderstack/identify',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Basic dummyApiKey',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -138,7 +139,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: secret1,
               },
               ID: 'stormly123',
             },
@@ -193,7 +194,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: secret1,
               },
               ID: 'stormly123',
             },
@@ -228,7 +229,7 @@ export const data = [
               endpoint: 'https://rudderstack.t.stormly.com/webhook/rudderstack/track',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Basic dummyApiKey',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -268,7 +269,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: secret1,
               },
               ID: 'stormly123',
             },
@@ -297,7 +298,7 @@ export const data = [
               endpoint: 'https://rudderstack.t.stormly.com/webhook/rudderstack/track',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Basic dummyApiKey',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -331,7 +332,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: secret1,
               },
               ID: 'stormly123',
             },
@@ -367,7 +368,7 @@ export const data = [
               endpoint: 'https://rudderstack.t.stormly.com/webhook/rudderstack/track',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Basic dummyApiKey',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -410,7 +411,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: secret1,
               },
               ID: 'stormly123',
             },
@@ -453,7 +454,7 @@ export const data = [
               endpoint: 'https://rudderstack.t.stormly.com/webhook/rudderstack/track',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Basic dummyApiKey',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -496,7 +497,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: secret1,
               },
               ID: 'stormly123',
             },
@@ -533,7 +534,7 @@ export const data = [
               endpoint: 'https://rudderstack.t.stormly.com/webhook/rudderstack/group',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Basic dummyApiKey',
+                Authorization: authHeader1,
               },
               params: {},
               body: {

@@ -1,3 +1,5 @@
+import { defaultApiKey } from '../../common/secrets';
+
 export const networkCallsData = [
   {
     httpReq: {
@@ -565,7 +567,7 @@ export const networkCallsData = [
         },
       },
       headers: {
-        'Api-Token': 'dummyApiKey',
+        'Api-Token': defaultApiKey,
         'Content-Type': 'application/json',
       },
 
@@ -638,7 +640,7 @@ export const networkCallsData = [
     httpReq: {
       data: { contactList: { contact: '2', list: 2, status: '1' } },
       headers: {
-        'Api-Token': 'dummyApiKey',
+        'Api-Token': defaultApiKey,
         'Content-Type': 'application/json',
       },
 
@@ -652,7 +654,7 @@ export const networkCallsData = [
     httpReq: {
       data: { contactList: { contact: '2', list: 3, status: '2' } },
       headers: {
-        'Api-Token': 'dummyApiKey',
+        'Api-Token': defaultApiKey,
         'Content-Type': 'application/json',
       },
 
@@ -664,7 +666,7 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      headers: { Accept: 'application/json, text/plain, */*', 'Api-Token': 'dummyApiKey' },
+      headers: { Accept: 'application/json, text/plain, */*', 'Api-Token': defaultApiKey },
 
       method: 'GET',
 
@@ -807,7 +809,7 @@ export const networkCallsData = [
         },
       },
       headers: {
-        'Api-Token': 'dummyApiKey',
+        'Api-Token': defaultApiKey,
         'Content-Type': 'application/json',
       },
 
@@ -879,7 +881,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        'Api-Token': 'dummyApiKey',
+        'Api-Token': defaultApiKey,
         'Content-Type': 'application/json',
       },
 
@@ -956,7 +958,7 @@ export const networkCallsData = [
     httpReq: {
       data: { tag: { description: '', tag: 'Test_User', tagType: 'contact' } },
       headers: {
-        'Api-Token': 'dummyApiKey',
+        'Api-Token': defaultApiKey,
         'Content-Type': 'application/json',
       },
 
@@ -1037,7 +1039,7 @@ export const networkCallsData = [
     httpReq: {
       data: { tag: { description: '', tag: 'Interested_User', tagType: 'contact' } },
       headers: {
-        'Api-Token': 'dummyApiKey',
+        'Api-Token': defaultApiKey,
         'Content-Type': 'application/json',
       },
 
@@ -1118,7 +1120,7 @@ export const networkCallsData = [
     httpReq: {
       data: { contactTag: { contact: '2', tag: '5' } },
       headers: {
-        'Api-Token': 'dummyApiKey',
+        'Api-Token': defaultApiKey,
         'Content-Type': 'application/json',
       },
 
@@ -1143,7 +1145,7 @@ export const networkCallsData = [
     httpReq: {
       data: { contactTag: { contact: '2', tag: 6 } },
       headers: {
-        'Api-Token': 'dummyApiKey',
+        'Api-Token': defaultApiKey,
         'Content-Type': 'application/json',
       },
 
@@ -1168,7 +1170,7 @@ export const networkCallsData = [
     httpReq: {
       data: { contactTag: { contact: '2', tag: 7 } },
       headers: {
-        'Api-Token': 'dummyApiKey',
+        'Api-Token': defaultApiKey,
         'Content-Type': 'application/json',
       },
 
@@ -1193,7 +1195,7 @@ export const networkCallsData = [
     httpReq: {
       data: { contactList: { contact: '2', list: 2, status: '1' } },
       headers: {
-        'Api-Token': 'dummyApiKey',
+        'Api-Token': defaultApiKey,
         'Content-Type': 'application/json',
       },
 
@@ -1207,7 +1209,7 @@ export const networkCallsData = [
     httpReq: {
       data: { contactList: { contact: '2', list: 3, status: '2' } },
       headers: {
-        'Api-Token': 'dummyApiKey',
+        'Api-Token': defaultApiKey,
         'Content-Type': 'application/json',
       },
 
@@ -1219,7 +1221,7 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      headers: { Accept: 'application/json, text/plain, */*', 'Api-Token': 'dummyApiKey' },
+      headers: { Accept: 'application/json, text/plain, */*', 'Api-Token': defaultApiKey },
 
       method: 'GET',
 
@@ -1354,7 +1356,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        'Api-Token': 'dummyApiKey',
+        'Api-Token': defaultApiKey,
 
         'Content-Type': 'application/json',
       },
@@ -1375,7 +1377,7 @@ export const networkCallsData = [
     httpReq: {
       data: { eventTrackingEvent: { name: 'ScreenViewed' } },
       headers: {
-        'Api-Token': 'dummyApiKey',
+        'Api-Token': defaultApiKey,
         'Content-Type': 'application/json',
       },
 
@@ -1387,7 +1389,7 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      headers: { 'Api-Token': 'dummyApiKey', Accept: 'application/json, text/plain, */*' },
+      headers: { 'Api-Token': defaultApiKey, Accept: 'application/json, text/plain, */*' },
 
       method: 'GET',
 
@@ -1405,7 +1407,7 @@ export const networkCallsData = [
     httpReq: {
       data: { eventTrackingEvent: { name: 'Tracking Action' } },
       headers: {
-        'Api-Token': 'dummyApiKey',
+        'Api-Token': defaultApiKey,
         'Content-Type': 'application/json',
       },
 
@@ -1419,7 +1421,7 @@ export const networkCallsData = [
     httpReq: {
       data: { contact: { email: 'jamesDoe@gmail.com', phone: '92374162212' } },
       headers: {
-        'Api-Token': 'dummyApiKey',
+        'Api-Token': defaultApiKey,
         'Content-Type': 'application/json',
       },
 
@@ -1491,7 +1493,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        'Api-Token': 'dummyApiKey',
+        'Api-Token': defaultApiKey,
         'Content-Type': 'application/json',
       },
 
@@ -1568,7 +1570,7 @@ export const networkCallsData = [
     httpReq: {
       data: { tag: { description: '', tag: 'Test_User', tagType: 'contact' } },
       headers: {
-        'Api-Token': 'dummyApiKey',
+        'Api-Token': defaultApiKey,
         'Content-Type': 'application/json',
       },
 
@@ -1649,7 +1651,7 @@ export const networkCallsData = [
     httpReq: {
       data: { tag: { description: '', tag: 'Interested_User', tagType: 'contact' } },
       headers: {
-        'Api-Token': 'dummyApiKey',
+        'Api-Token': defaultApiKey,
         'Content-Type': 'application/json',
       },
 
@@ -1730,7 +1732,7 @@ export const networkCallsData = [
     httpReq: {
       data: { contactTag: { contact: '2', tag: '5' } },
       headers: {
-        'Api-Token': 'dummyApiKey',
+        'Api-Token': defaultApiKey,
         'Content-Type': 'application/json',
       },
 
@@ -1755,7 +1757,7 @@ export const networkCallsData = [
     httpReq: {
       data: { contactTag: { contact: '2', tag: 11 } },
       headers: {
-        'Api-Token': 'dummyApiKey',
+        'Api-Token': defaultApiKey,
         'Content-Type': 'application/json',
       },
 
@@ -1780,7 +1782,7 @@ export const networkCallsData = [
     httpReq: {
       data: { contactTag: { contact: '2', tag: 12 } },
       headers: {
-        'Api-Token': 'dummyApiKey',
+        'Api-Token': defaultApiKey,
         'Content-Type': 'application/json',
       },
 
@@ -1805,7 +1807,7 @@ export const networkCallsData = [
     httpReq: {
       data: { contactList: { contact: '2', list: 2, status: '1' } },
       headers: {
-        'Api-Token': 'dummyApiKey',
+        'Api-Token': defaultApiKey,
         'Content-Type': 'application/json',
       },
 
@@ -1819,7 +1821,7 @@ export const networkCallsData = [
     httpReq: {
       data: { contactList: { contact: '2', list: 3, status: '2' } },
       headers: {
-        'Api-Token': 'dummyApiKey',
+        'Api-Token': defaultApiKey,
         'Content-Type': 'application/json',
       },
 
@@ -1831,7 +1833,7 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      headers: { Accept: 'application/json, text/plain, */*', 'Api-Token': 'dummyApiKey' },
+      headers: { Accept: 'application/json, text/plain, */*', 'Api-Token': defaultApiKey },
 
       method: 'GET',
 

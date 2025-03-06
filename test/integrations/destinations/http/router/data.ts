@@ -1,3 +1,4 @@
+import { authHeader1 } from '../maskedSecrets';
 import { generateMetadata } from '../../../testUtils';
 import { destType, destinations, traits, properties } from '../common';
 
@@ -235,7 +236,7 @@ export const data = [
                 endpoint: 'http://abc.com/contacts',
                 headers: {
                   'Content-Type': 'application/json',
-                  Authorization: 'Basic dGVzdC11c2VyOg==',
+                  Authorization: authHeader1,
                   'content-type': 'application/json',
                   h1: 'val1',
                   h2: '2',
@@ -268,7 +269,7 @@ export const data = [
                 endpoint: 'http://abc.com/contacts',
                 headers: {
                   'Content-Type': 'application/json',
-                  Authorization: 'Basic dGVzdC11c2VyOg==',
+                  Authorization: authHeader1,
                   'content-type': 'application/json',
                   h1: 'val1',
                   h2: '2',
@@ -301,7 +302,7 @@ export const data = [
                 endpoint: 'http://abc.com/contacts',
                 headers: {
                   'Content-Type': 'application/json',
-                  Authorization: 'Basic dGVzdC11c2VyOg==',
+                  Authorization: authHeader1,
                   'content-type': 'application/json',
                   h1: 'val1',
                   h2: '2',
@@ -365,8 +366,39 @@ export const data = [
                 body: {
                   JSON: {},
                   JSON_ARRAY: {
-                    batch:
-                      '[{"event":"Product Viewed","userId":"userId1","properties":{"items":[]}},{"event":"Order Completed","currency":"USD","userId":"userId2","properties":{"items":[{"item_id":"622c6f5d5cf86a4c77358033","name":"Cones of Dunshire","price":40},{"item_id":"577c6f5d5cf86a4c7735ba03","name":"Five Crowns","price":5}]}},{"event":"Product Added","currency":"USD","userId":"userId3","properties":{"items":[{"item_id":"622c6f5d5cf86a4c77358033","name":"Cones of Dunshire","price":40},{"item_id":"577c6f5d5cf86a4c7735ba03","name":"Five Crowns","price":5}]}}]',
+                    batch: JSON.stringify([
+                      { event: 'Product Viewed', userId: 'userId1', properties: { items: [] } },
+                      {
+                        event: 'Order Completed',
+                        currency: 'USD',
+                        userId: 'userId2',
+                        properties: {
+                          items: [
+                            {
+                              item_id: '622c6f5d5cf86a4c77358033',
+                              name: 'Cones of Dunshire',
+                              price: 40,
+                            },
+                            { item_id: '577c6f5d5cf86a4c7735ba03', name: 'Five Crowns', price: 5 },
+                          ],
+                        },
+                      },
+                      {
+                        event: 'Product Added',
+                        currency: 'USD',
+                        userId: 'userId3',
+                        properties: {
+                          items: [
+                            {
+                              item_id: '622c6f5d5cf86a4c77358033',
+                              name: 'Cones of Dunshire',
+                              price: 40,
+                            },
+                            { item_id: '577c6f5d5cf86a4c7735ba03', name: 'Five Crowns', price: 5 },
+                          ],
+                        },
+                      },
+                    ]),
                   },
                   XML: {},
                   FORM: {},

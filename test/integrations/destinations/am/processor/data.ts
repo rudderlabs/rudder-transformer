@@ -1,3 +1,5 @@
+import { secret2 } from '../maskedSecrets';
+
 export const data = [
   {
     name: 'am',
@@ -47,7 +49,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'abcde',
+                apiKey: secret2,
                 groupTypeTrait: 'email',
                 groupValueTrait: 'age',
                 trackProductsOnce: true,
@@ -105,7 +107,7 @@ export const data = [
             destination: {
               Config: {
                 groupTypeTrait: 'email',
-                apiKey: 'abcde',
+                apiKey: secret2,
                 groupValueTrait: 'age',
                 trackProductsOnce: true,
                 trackRevenuePerProduct: false,
@@ -239,7 +241,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'abcde',
+                apiKey: secret2,
                 groupTypeTrait: 'email',
                 groupValueTrait: 'age',
                 trackProductsOnce: true,
@@ -266,7 +268,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  api_key: 'abcde',
+                  api_key: secret2,
                   events: [
                     {
                       device_id: '50be5c78-6c3f-4b60-be84-97805a316fb1',
@@ -382,7 +384,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'abcde',
+                apiKey: secret2,
                 groupTypeTrait: 'email',
                 groupValueTrait: 'age',
                 trackProductsOnce: true,
@@ -409,7 +411,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  api_key: 'abcde',
+                  api_key: secret2,
                   events: [
                     {
                       device_id: '50be5c78-6c3f-4b60-be84-97805a316fb1',
@@ -573,7 +575,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'abcde',
+                apiKey: secret2,
                 groupTypeTrait: 'email',
                 groupValueTrait: 'age',
                 traitsToIncrement: [
@@ -603,7 +605,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  api_key: 'abcde',
+                  api_key: secret2,
                   events: [
                     {
                       os_name: 'Chrome',
@@ -757,7 +759,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'abcde',
+                apiKey: secret2,
                 groupTypeTrait: 'email',
                 groupValueTrait: 'age',
               },
@@ -782,7 +784,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  api_key: 'abcde',
+                  api_key: secret2,
                   events: [
                     {
                       os_name: 'Chrome',
@@ -910,7 +912,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'abcde',
+                apiKey: secret2,
                 groupTypeTrait: 'email',
                 groupValueTrait: 'age',
               },
@@ -935,7 +937,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  api_key: 'abcde',
+                  api_key: secret2,
                   events: [
                     {
                       os_name: 'Chrome',
@@ -1058,7 +1060,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'abcde',
+                apiKey: secret2,
               },
             },
           },
@@ -1081,7 +1083,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  api_key: 'abcde',
+                  api_key: secret2,
                   events: [
                     {
                       os_name: 'Chrome',
@@ -1213,7 +1215,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'abcde',
+                apiKey: secret2,
               },
             },
           },
@@ -1236,7 +1238,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  api_key: 'abcde',
+                  api_key: secret2,
                   events: [
                     {
                       os_name: 'Chrome',
@@ -1361,7 +1363,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'abcde',
+                apiKey: secret2,
               },
             },
           },
@@ -1384,7 +1386,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  api_key: 'abcde',
+                  api_key: secret2,
                   events: [
                     {
                       os_name: 'Chrome',
@@ -1512,7 +1514,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'abcde',
+                apiKey: secret2,
               },
             },
           },
@@ -1535,7 +1537,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  api_key: 'abcde',
+                  api_key: secret2,
                   events: [
                     {
                       os_name: 'Chrome',
@@ -1615,7 +1617,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'abcde',
+                apiKey: secret2,
               },
             },
           },
@@ -1638,7 +1640,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  api_key: 'abcde',
+                  api_key: secret2,
                   events: [
                     {
                       device_id: '123456',
@@ -1703,7 +1705,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'abcde',
+                apiKey: secret2,
               },
             },
           },
@@ -1726,7 +1728,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  api_key: 'abcde',
+                  api_key: secret2,
                   events: [
                     {
                       device_id: '123456',
@@ -1791,7 +1793,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'abcde',
+                apiKey: secret2,
               },
             },
           },
@@ -1814,7 +1816,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  api_key: 'abcde',
+                  api_key: secret2,
                   events: [
                     {
                       device_id: '123456',
@@ -1878,7 +1880,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'abcde',
+                apiKey: secret2,
               },
             },
           },
@@ -1901,7 +1903,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  api_key: 'abcde',
+                  api_key: secret2,
                   events: [
                     {
                       device_id: '123456',
@@ -2027,7 +2029,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'abcde',
+                apiKey: secret2,
               },
             },
           },
@@ -2050,7 +2052,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  api_key: 'abcde',
+                  api_key: secret2,
                   events: [
                     {
                       os_name: 'Chrome',
@@ -2108,8 +2110,8 @@ export const data = [
                 JSON_ARRAY: {},
                 XML: {},
                 FORM: {
-                  api_key: 'abcde',
-                  identification: ['{"group_type":"Company","group_value":"ABC"}'],
+                  api_key: secret2,
+                  identification: [JSON.stringify({ group_type: 'Company', group_value: 'ABC' })],
                 },
               },
               files: {},
@@ -2206,7 +2208,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'abcde',
+                apiKey: secret2,
                 groupTypeTrait: 'name_trait',
                 groupValueTrait: 'value_trait',
               },
@@ -2231,7 +2233,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  api_key: 'abcde',
+                  api_key: secret2,
                   events: [
                     {
                       os_name: 'Chrome',
@@ -2289,9 +2291,18 @@ export const data = [
                 JSON_ARRAY: {},
                 XML: {},
                 FORM: {
-                  api_key: 'abcde',
+                  api_key: secret2,
                   identification: [
-                    '{"group_type":"Company","group_value":"ABC","group_properties":{"KEY_3":{"CHILD_KEY_92":"value_95","CHILD_KEY_102":"value_103"},"KEY_2":{"CHILD_KEY_92":"value_95","CHILD_KEY_102":"value_103"},"name_trait":"Company","value_trait":"ABC"}}',
+                    JSON.stringify({
+                      group_type: 'Company',
+                      group_value: 'ABC',
+                      group_properties: {
+                        KEY_3: { CHILD_KEY_92: 'value_95', CHILD_KEY_102: 'value_103' },
+                        KEY_2: { CHILD_KEY_92: 'value_95', CHILD_KEY_102: 'value_103' },
+                        name_trait: 'Company',
+                        value_trait: 'ABC',
+                      },
+                    }),
                   ],
                 },
               },
@@ -2389,7 +2400,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'abcde',
+                apiKey: secret2,
                 groupTypeTrait: 'name_trait',
                 groupValueTrait: 'value_trait',
               },
@@ -2491,7 +2502,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'abcde',
+                apiKey: secret2,
               },
             },
           },
@@ -2515,9 +2526,22 @@ export const data = [
                 JSON_ARRAY: {},
                 XML: {},
                 FORM: {
-                  api_key: 'abcde',
+                  api_key: secret2,
                   mapping: [
-                    '{"global_user_id":"newUserIdAlias","user_id":"sampleusrRudder3","user_properties":{"initial_referrer":"https://docs.rudderstack.com","initial_referring_domain":"docs.rudderstack.com","utm_source":"google","utm_medium":"medium","utm_term":"keyword","utm_content":"some content","utm_name":"some campaign","utm_test":"other value"}}',
+                    JSON.stringify({
+                      global_user_id: 'newUserIdAlias',
+                      user_id: 'sampleusrRudder3',
+                      user_properties: {
+                        initial_referrer: 'https://docs.rudderstack.com',
+                        initial_referring_domain: 'docs.rudderstack.com',
+                        utm_source: 'google',
+                        utm_medium: 'medium',
+                        utm_term: 'keyword',
+                        utm_content: 'some content',
+                        utm_name: 'some campaign',
+                        utm_test: 'other value',
+                      },
+                    }),
                   ],
                 },
               },
@@ -2606,7 +2630,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'abcde',
+                apiKey: secret2,
               },
             },
           },
@@ -2630,9 +2654,22 @@ export const data = [
                 JSON_ARRAY: {},
                 XML: {},
                 FORM: {
-                  api_key: 'abcde',
+                  api_key: secret2,
                   mapping: [
-                    '{"user_id":"sampleusrRudder3","user_properties":{"initial_referrer":"https://docs.rudderstack.com","initial_referring_domain":"docs.rudderstack.com","utm_source":"google","utm_medium":"medium","utm_term":"keyword","utm_content":"some content","utm_name":"some campaign","utm_test":"other value"},"unmap":true}',
+                    JSON.stringify({
+                      user_id: 'sampleusrRudder3',
+                      user_properties: {
+                        initial_referrer: 'https://docs.rudderstack.com',
+                        initial_referring_domain: 'docs.rudderstack.com',
+                        utm_source: 'google',
+                        utm_medium: 'medium',
+                        utm_term: 'keyword',
+                        utm_content: 'some content',
+                        utm_name: 'some campaign',
+                        utm_test: 'other value',
+                      },
+                      unmap: true,
+                    }),
                   ],
                 },
               },
@@ -2718,7 +2755,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'abcde',
+                apiKey: secret2,
               },
             },
           },
@@ -2741,7 +2778,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  api_key: 'abcde',
+                  api_key: secret2,
                   events: [
                     {
                       os_name: 'Android',
@@ -2856,7 +2893,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'abcde',
+                apiKey: secret2,
               },
             },
           },
@@ -2879,7 +2916,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  api_key: 'abcde',
+                  api_key: secret2,
                   events: [
                     {
                       os_name: 'Android',
@@ -2997,7 +3034,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'abcde',
+                apiKey: secret2,
               },
             },
           },
@@ -3020,7 +3057,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  api_key: 'abcde',
+                  api_key: secret2,
                   events: [
                     {
                       os_name: 'Android',
@@ -3138,7 +3175,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'abcde',
+                apiKey: secret2,
               },
             },
           },
@@ -3161,7 +3198,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  api_key: 'abcde',
+                  api_key: secret2,
                   events: [
                     {
                       os_name: 'iOS',
@@ -3280,7 +3317,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'abcde',
+                apiKey: secret2,
               },
             },
           },
@@ -3303,7 +3340,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  api_key: 'abcde',
+                  api_key: secret2,
                   events: [
                     {
                       os_name: 'iOS',
@@ -3379,7 +3416,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'abcde',
+                apiKey: secret2,
               },
             },
           },
@@ -3402,7 +3439,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  api_key: 'abcde',
+                  api_key: secret2,
                   events: [
                     {
                       device_id: 'anon-id-new',
@@ -3505,7 +3542,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'abcde',
+                apiKey: secret2,
                 groupTypeTrait: 'email',
                 groupValueTrait: 'age',
                 trackProductsOnce: false,
@@ -3532,7 +3569,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  api_key: 'abcde',
+                  api_key: secret2,
                   events: [
                     {
                       device_id: '50be5c78-6c3f-4b60-be84-97805a316fb1',
@@ -3587,7 +3624,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  api_key: 'abcde',
+                  api_key: secret2,
                   events: [
                     {
                       device_id: '50be5c78-6c3f-4b60-be84-97805a316fb1',
@@ -3636,7 +3673,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  api_key: 'abcde',
+                  api_key: secret2,
                   events: [
                     {
                       device_id: '50be5c78-6c3f-4b60-be84-97805a316fb1',
@@ -3744,7 +3781,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'abcde',
+                apiKey: secret2,
                 groupTypeTrait: 'email',
                 groupValueTrait: 'age',
                 trackProductsOnce: true,
@@ -3771,7 +3808,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  api_key: 'abcde',
+                  api_key: secret2,
                   events: [
                     {
                       device_id: '50be5c78-6c3f-4b60-be84-97805a316fb1',
@@ -3907,7 +3944,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'abcde',
+                apiKey: secret2,
                 groupTypeTrait: 'email',
                 groupValueTrait: 'age',
                 trackProductsOnce: false,
@@ -3934,7 +3971,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  api_key: 'abcde',
+                  api_key: secret2,
                   events: [
                     {
                       device_id: '50be5c78-6c3f-4b60-be84-97805a316fb1',
@@ -3988,7 +4025,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  api_key: 'abcde',
+                  api_key: secret2,
                   events: [
                     {
                       device_id: '50be5c78-6c3f-4b60-be84-97805a316fb1',
@@ -4038,7 +4075,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  api_key: 'abcde',
+                  api_key: secret2,
                   events: [
                     {
                       device_id: '50be5c78-6c3f-4b60-be84-97805a316fb1',
@@ -4147,7 +4184,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'abcde',
+                apiKey: secret2,
                 groupTypeTrait: 'email',
                 groupValueTrait: 'age',
                 trackProductsOnce: true,
@@ -4174,7 +4211,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  api_key: 'abcde',
+                  api_key: secret2,
                   events: [
                     {
                       device_id: '50be5c78-6c3f-4b60-be84-97805a316fb1',
@@ -4248,7 +4285,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  api_key: 'abcde',
+                  api_key: secret2,
                   events: [
                     {
                       device_id: '50be5c78-6c3f-4b60-be84-97805a316fb1',
@@ -4298,7 +4335,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  api_key: 'abcde',
+                  api_key: secret2,
                   events: [
                     {
                       device_id: '50be5c78-6c3f-4b60-be84-97805a316fb1',
@@ -4387,7 +4424,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'abcde',
+                apiKey: secret2,
                 groupTypeTrait: 'email',
                 groupValueTrait: 'age',
                 trackProductsOnce: true,
@@ -4414,7 +4451,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  api_key: 'abcde',
+                  api_key: secret2,
                   events: [
                     {
                       device_id: '50be5c78-6c3f-4b60-be84-97805a316fb1',
@@ -4510,7 +4547,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'abcde',
+                apiKey: secret2,
                 groupTypeTrait: 'email',
                 groupValueTrait: 'age',
                 trackProductsOnce: true,
@@ -4537,7 +4574,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  api_key: 'abcde',
+                  api_key: secret2,
                   events: [
                     {
                       device_id: '50be5c78-6c3f-4b60-be84-97805a316fb1',
@@ -4633,7 +4670,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'abcde',
+                apiKey: secret2,
                 groupTypeTrait: 'email',
                 groupValueTrait: 'age',
                 trackProductsOnce: false,
@@ -4660,7 +4697,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  api_key: 'abcde',
+                  api_key: secret2,
                   events: [
                     {
                       device_id: '50be5c78-6c3f-4b60-be84-97805a316fb1',
@@ -4756,7 +4793,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'abcde',
+                apiKey: secret2,
                 groupTypeTrait: 'email',
                 groupValueTrait: 'age',
                 trackProductsOnce: false,
@@ -4783,7 +4820,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  api_key: 'abcde',
+                  api_key: secret2,
                   events: [
                     {
                       device_id: '50be5c78-6c3f-4b60-be84-97805a316fb1',
@@ -4897,7 +4934,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'abcde',
+                apiKey: secret2,
                 groupTypeTrait: 'email',
                 groupValueTrait: 'age',
                 traitsToIncrement: [
@@ -4930,7 +4967,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  api_key: 'abcde',
+                  api_key: secret2,
                   events: [
                     {
                       os_name: 'Chrome',
@@ -5042,7 +5079,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'abcde',
+                apiKey: secret2,
                 groupTypeTrait: 'email',
                 groupValueTrait: 'age',
                 traitsToSetOnce: [
@@ -5075,7 +5112,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  api_key: 'abcde',
+                  api_key: secret2,
                   events: [
                     {
                       os_name: 'Chrome',
@@ -5185,7 +5222,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'abcde',
+                apiKey: secret2,
                 groupTypeTrait: 'email',
                 groupValueTrait: 'age',
                 traitsToAppend: [
@@ -5218,7 +5255,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  api_key: 'abcde',
+                  api_key: secret2,
                   events: [
                     {
                       os_name: 'Chrome',
@@ -5328,7 +5365,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'abcde',
+                apiKey: secret2,
                 groupTypeTrait: 'email',
                 groupValueTrait: 'age',
                 traitsToPrepend: [
@@ -5361,7 +5398,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  api_key: 'abcde',
+                  api_key: secret2,
                   events: [
                     {
                       os_name: 'Chrome',
@@ -5471,7 +5508,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'abcde',
+                apiKey: secret2,
                 groupTypeTrait: 'email',
                 groupValueTrait: 'age',
                 traitsToIncrement: [
@@ -5528,7 +5565,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  api_key: 'abcde',
+                  api_key: secret2,
                   events: [
                     {
                       os_name: 'Chrome',
@@ -5681,7 +5718,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'abcde',
+                apiKey: secret2,
                 trackProductsOnce: false,
                 trackRevenuePerProduct: true,
               },
@@ -5706,7 +5743,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  api_key: 'abcde',
+                  api_key: secret2,
                   events: [
                     {
                       os_name: 'Android',
@@ -5780,7 +5817,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  api_key: 'abcde',
+                  api_key: secret2,
                   events: [
                     {
                       os_name: 'Android',
@@ -5850,7 +5887,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  api_key: 'abcde',
+                  api_key: secret2,
                   events: [
                     {
                       os_name: 'Android',
@@ -6008,7 +6045,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'abcde',
+                apiKey: secret2,
                 trackProductsOnce: true,
                 trackRevenuePerProduct: false,
               },
@@ -6033,7 +6070,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  api_key: 'abcde',
+                  api_key: secret2,
                   events: [
                     {
                       os_name: 'Android',
@@ -6187,7 +6224,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'abcde',
+                apiKey: secret2,
                 trackProductsOnce: true,
                 trackRevenuePerProduct: false,
               },
@@ -6212,7 +6249,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  api_key: 'abcde',
+                  api_key: secret2,
                   events: [
                     {
                       os_name: 'Android',
@@ -6323,7 +6360,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'abcde',
+                apiKey: secret2,
                 groupTypeTrait: 'email',
                 groupValueTrait: 'age',
                 traitsToIncrement: [
@@ -6356,7 +6393,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  api_key: 'abcde',
+                  api_key: secret2,
                   events: [
                     {
                       os_name: 'Chrome',
@@ -6494,7 +6531,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'abcde',
+                apiKey: secret2,
                 trackProductsOnce: true,
                 trackRevenuePerProduct: true,
               },
@@ -6519,7 +6556,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  api_key: 'abcde',
+                  api_key: secret2,
                   events: [
                     {
                       os_name: 'Android',
@@ -6612,7 +6649,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  api_key: 'abcde',
+                  api_key: secret2,
                   events: [
                     {
                       os_name: 'Android',
@@ -6681,7 +6718,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  api_key: 'abcde',
+                  api_key: secret2,
                   events: [
                     {
                       os_name: 'Android',
@@ -6814,7 +6851,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'abcde',
+                apiKey: secret2,
               },
             },
           },
@@ -6837,7 +6874,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  api_key: 'abcde',
+                  api_key: secret2,
                   events: [
                     {
                       os_name: 'Android',
@@ -6960,7 +6997,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'abcde',
+                apiKey: secret2,
                 groupTypeTrait: 'email',
                 groupValueTrait: 'age',
               },
@@ -6985,7 +7022,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  api_key: 'abcde',
+                  api_key: secret2,
                   events: [
                     {
                       os_name: 'Android',
@@ -7104,7 +7141,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'abcde',
+                apiKey: secret2,
               },
             },
           },
@@ -7127,7 +7164,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  api_key: 'abcde',
+                  api_key: secret2,
                   events: [
                     {
                       device_manufacturer: 'Apple',
@@ -7238,7 +7275,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'abcde',
+                apiKey: secret2,
               },
             },
           },
@@ -7261,7 +7298,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  api_key: 'abcde',
+                  api_key: secret2,
                   events: [
                     {
                       device_manufacturer: 'Apple',
@@ -7372,7 +7409,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'abcde',
+                apiKey: secret2,
               },
             },
           },
@@ -7395,7 +7432,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  api_key: 'abcde',
+                  api_key: secret2,
                   events: [
                     {
                       device_manufacturer: 'Apple',
@@ -7516,7 +7553,7 @@ export const data = [
             destination: {
               Config: {
                 mapDeviceBrand: true,
-                apiKey: 'abcde',
+                apiKey: secret2,
                 groupTypeTrait: 'email',
                 groupValueTrait: 'age',
               },
@@ -7541,7 +7578,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  api_key: 'abcde',
+                  api_key: secret2,
                   events: [
                     {
                       os_name: 'Chrome',
@@ -7671,7 +7708,7 @@ export const data = [
             destination: {
               Config: {
                 mapDeviceBrand: true,
-                apiKey: 'abcde',
+                apiKey: secret2,
               },
             },
           },
@@ -7694,7 +7731,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  api_key: 'abcde',
+                  api_key: secret2,
                   events: [
                     {
                       os_name: 'Android',
@@ -7773,7 +7810,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'abcde',
+                apiKey: secret2,
                 mapDeviceBrand: true,
               },
             },
@@ -7797,7 +7834,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  api_key: 'abcde',
+                  api_key: secret2,
                   events: [
                     {
                       device_manufacturer: 'testManufacturer',
@@ -7929,7 +7966,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'abcde',
+                apiKey: secret2,
                 groupTypeTrait: 'email',
                 groupValueTrait: 'age',
                 residencyServer: 'EU',
@@ -7955,7 +7992,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  api_key: 'abcde',
+                  api_key: secret2,
                   events: [
                     {
                       os_name: 'Chrome',
@@ -8094,7 +8131,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'abcde',
+                apiKey: secret2,
                 groupTypeTrait: 'name_trait',
                 groupValueTrait: 'value_trait',
                 residencyServer: 'EU',
@@ -8120,7 +8157,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  api_key: 'abcde',
+                  api_key: secret2,
                   events: [
                     {
                       os_name: 'Chrome',
@@ -8178,9 +8215,18 @@ export const data = [
                 JSON_ARRAY: {},
                 XML: {},
                 FORM: {
-                  api_key: 'abcde',
+                  api_key: secret2,
                   identification: [
-                    '{"group_type":"Company","group_value":"ABC","group_properties":{"KEY_3":{"CHILD_KEY_92":"value_95","CHILD_KEY_102":"value_103"},"KEY_2":{"CHILD_KEY_92":"value_95","CHILD_KEY_102":"value_103"},"name_trait":"Company","value_trait":"ABC"}}',
+                    JSON.stringify({
+                      group_type: 'Company',
+                      group_value: 'ABC',
+                      group_properties: {
+                        KEY_3: { CHILD_KEY_92: 'value_95', CHILD_KEY_102: 'value_103' },
+                        KEY_2: { CHILD_KEY_92: 'value_95', CHILD_KEY_102: 'value_103' },
+                        name_trait: 'Company',
+                        value_trait: 'ABC',
+                      },
+                    }),
                   ],
                 },
               },
@@ -8266,7 +8312,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'abcde',
+                apiKey: secret2,
                 residencyServer: 'EU',
               },
             },
@@ -8291,9 +8337,22 @@ export const data = [
                 JSON_ARRAY: {},
                 XML: {},
                 FORM: {
-                  api_key: 'abcde',
+                  api_key: secret2,
                   mapping: [
-                    '{"global_user_id":"newUserIdAlias","user_id":"sampleusrRudder3","user_properties":{"initial_referrer":"https://docs.rudderstack.com","initial_referring_domain":"docs.rudderstack.com","utm_source":"google","utm_medium":"medium","utm_term":"keyword","utm_content":"some content","utm_name":"some campaign","utm_test":"other value"}}',
+                    JSON.stringify({
+                      global_user_id: 'newUserIdAlias',
+                      user_id: 'sampleusrRudder3',
+                      user_properties: {
+                        initial_referrer: 'https://docs.rudderstack.com',
+                        initial_referring_domain: 'docs.rudderstack.com',
+                        utm_source: 'google',
+                        utm_medium: 'medium',
+                        utm_term: 'keyword',
+                        utm_content: 'some content',
+                        utm_name: 'some campaign',
+                        utm_test: 'other value',
+                      },
+                    }),
                   ],
                 },
               },
@@ -8377,7 +8436,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'abcde',
+                apiKey: secret2,
                 trackProductsOnce: true,
                 trackRevenuePerProduct: false,
               },
@@ -8402,7 +8461,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  api_key: 'abcde',
+                  api_key: secret2,
                   events: [
                     {
                       os_name: 'Android',
@@ -8527,7 +8586,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'abcde',
+                apiKey: secret2,
                 trackProductsOnce: true,
                 trackRevenuePerProduct: false,
               },
@@ -8552,7 +8611,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  api_key: 'abcde',
+                  api_key: secret2,
                   events: [
                     {
                       os_name: 'Android',
@@ -8677,7 +8736,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'abcde',
+                apiKey: secret2,
                 trackProductsOnce: true,
                 trackRevenuePerProduct: false,
               },
@@ -8702,7 +8761,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  api_key: 'abcde',
+                  api_key: secret2,
                   events: [
                     {
                       os_name: 'Android',
@@ -8853,7 +8912,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'abcde',
+                apiKey: secret2,
                 groupTypeTrait: 'email',
                 groupValueTrait: 'age',
               },
@@ -8878,7 +8937,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  api_key: 'abcde',
+                  api_key: secret2,
                   events: [
                     {
                       os_name: 'Chrome',
@@ -9031,7 +9090,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'abcde',
+                apiKey: secret2,
                 groupTypeTrait: 'email',
                 groupValueTrait: 'age',
               },
@@ -9056,7 +9115,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  api_key: 'abcde',
+                  api_key: secret2,
                   events: [
                     {
                       os_name: 'Chrome',
@@ -9199,7 +9258,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'abcde',
+                apiKey: secret2,
                 groupTypeTrait: 'name_trait',
                 groupValueTrait: 'value_trait',
               },
@@ -9224,7 +9283,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  api_key: 'abcde',
+                  api_key: secret2,
                   events: [
                     {
                       os_name: 'Chrome',
@@ -9283,9 +9342,18 @@ export const data = [
                 JSON_ARRAY: {},
                 XML: {},
                 FORM: {
-                  api_key: 'abcde',
+                  api_key: secret2,
                   identification: [
-                    '{"group_type":"Company","group_value":"ABC","group_properties":{"KEY_3":{"CHILD_KEY_92":"value_95","CHILD_KEY_102":"value_103"},"KEY_2":{"CHILD_KEY_92":"value_95","CHILD_KEY_102":"value_103"},"name_trait":"Company","value_trait":"ABC"}}',
+                    JSON.stringify({
+                      group_type: 'Company',
+                      group_value: 'ABC',
+                      group_properties: {
+                        KEY_3: { CHILD_KEY_92: 'value_95', CHILD_KEY_102: 'value_103' },
+                        KEY_2: { CHILD_KEY_92: 'value_95', CHILD_KEY_102: 'value_103' },
+                        name_trait: 'Company',
+                        value_trait: 'ABC',
+                      },
+                    }),
                   ],
                 },
               },
@@ -9333,7 +9401,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'abcde',
+                apiKey: secret2,
               },
             },
           },
@@ -9356,7 +9424,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  api_key: 'abcde',
+                  api_key: secret2,
                   events: [
                     {
                       event_id: 7,
@@ -9468,7 +9536,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'abcde',
+                apiKey: secret2,
               },
             },
           },
@@ -9491,7 +9559,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  api_key: 'abcde',
+                  api_key: secret2,
                   events: [
                     {
                       os_name: 'Chrome',
@@ -9622,7 +9690,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'abcde',
+                apiKey: secret2,
               },
             },
           },
@@ -9646,9 +9714,23 @@ export const data = [
                 JSON_ARRAY: {},
                 XML: {},
                 FORM: {
-                  api_key: 'abcde',
+                  api_key: secret2,
                   mapping: [
-                    '{"global_user_id":"newUserIdAlias","user_id":"sampleusrRudder3","event_id":67,"user_properties":{"initial_referrer":"https://docs.rudderstack.com","initial_referring_domain":"docs.rudderstack.com","utm_source":"google","utm_medium":"medium","utm_term":"keyword","utm_content":"some content","utm_name":"some campaign","utm_test":"other value"}}',
+                    JSON.stringify({
+                      global_user_id: 'newUserIdAlias',
+                      user_id: 'sampleusrRudder3',
+                      event_id: 67,
+                      user_properties: {
+                        initial_referrer: 'https://docs.rudderstack.com',
+                        initial_referring_domain: 'docs.rudderstack.com',
+                        utm_source: 'google',
+                        utm_medium: 'medium',
+                        utm_term: 'keyword',
+                        utm_content: 'some content',
+                        utm_name: 'some campaign',
+                        utm_test: 'other value',
+                      },
+                    }),
                   ],
                 },
               },
@@ -9732,7 +9814,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'abcde',
+                apiKey: secret2,
               },
             },
           },
@@ -9755,7 +9837,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  api_key: 'abcde',
+                  api_key: secret2,
                   events: [
                     {
                       os_name: 'Android',
@@ -9870,7 +9952,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'abcde',
+                apiKey: secret2,
               },
             },
           },
@@ -9893,7 +9975,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  api_key: 'abcde',
+                  api_key: secret2,
                   events: [
                     {
                       os_name: 'Android',
@@ -10032,7 +10114,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'abcde',
+                apiKey: secret2,
               },
             },
           },
@@ -10055,7 +10137,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  api_key: 'abcde',
+                  api_key: secret2,
                   events: [
                     {
                       os_name: 'Chrome',
@@ -10177,7 +10259,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'abcde',
+                apiKey: secret2,
               },
             },
           },
@@ -10200,7 +10282,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  api_key: 'abcde',
+                  api_key: secret2,
                   events: [
                     {
                       os_name: 'Android',
@@ -10330,7 +10412,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'abcde',
+                apiKey: secret2,
                 groupTypeTrait: 'name_trait',
                 groupValueTrait: 'value_trait',
               },
@@ -10435,7 +10517,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'abcde',
+                apiKey: secret2,
                 useUserDefinedPageEventName: true,
                 userProvidedPageEventString: 'My custom Page Name is {{ name }} . Custom Name.',
               },
@@ -10460,7 +10542,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  api_key: 'abcde',
+                  api_key: secret2,
                   events: [
                     {
                       os_name: 'Chrome',
@@ -10591,7 +10673,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'abcde',
+                apiKey: secret2,
                 useUserDefinedPageEventName: true,
                 userProvidedPageEventString: '{{name}}',
               },
@@ -10616,7 +10698,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  api_key: 'abcde',
+                  api_key: secret2,
                   events: [
                     {
                       os_name: 'Chrome',
@@ -10748,7 +10830,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'abcde',
+                apiKey: secret2,
                 useUserDefinedPageEventName: true,
                 userProvidedPageEventString: '',
               },
@@ -10773,7 +10855,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  api_key: 'abcde',
+                  api_key: secret2,
                   events: [
                     {
                       os_name: 'Chrome',
@@ -10903,7 +10985,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'abcde',
+                apiKey: secret2,
                 useUserDefinedPageEventName: false,
                 userProvidedPageEventString: 'Viewed {{context.page.title}} event.',
               },
@@ -10928,7 +11010,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  api_key: 'abcde',
+                  api_key: secret2,
                   events: [
                     {
                       os_name: 'Chrome',
@@ -11010,7 +11092,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'abcde',
+                apiKey: secret2,
                 useUserDefinedScreenEventName: true,
                 userProvidedScreenEventString: 'My {{ event }} event.',
               },
@@ -11035,7 +11117,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  api_key: 'abcde',
+                  api_key: secret2,
                   events: [
                     {
                       device_id: 'anon-id-new',
@@ -11097,7 +11179,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'abcde',
+                apiKey: secret2,
                 useUserDefinedScreenEventName: false,
                 userProvidedScreenEventString: 'My {{ event }} event.',
               },
@@ -11122,7 +11204,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  api_key: 'abcde',
+                  api_key: secret2,
                   events: [
                     {
                       device_id: 'anon-id-new',
@@ -11184,7 +11266,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'abcde',
+                apiKey: secret2,
                 useUserDefinedScreenEventName: true,
                 userProvidedScreenEventString: '{{ event }}',
               },
@@ -11209,7 +11291,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  api_key: 'abcde',
+                  api_key: secret2,
                   events: [
                     {
                       device_id: 'anon-id-new',
@@ -11271,7 +11353,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'abcde',
+                apiKey: secret2,
                 useUserDefinedScreenEventName: true,
                 userProvidedScreenEventString: '',
               },
@@ -11296,7 +11378,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  api_key: 'abcde',
+                  api_key: secret2,
                   events: [
                     {
                       device_id: 'anon-id-new',
@@ -11353,7 +11435,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'abcde',
+                apiKey: secret2,
                 useUserDefinedPageEventName: true,
                 userProvidedPageEventString: '',
               },

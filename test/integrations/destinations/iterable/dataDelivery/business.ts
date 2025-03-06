@@ -9,6 +9,7 @@ import {
   wrongIdentifyData,
   wrongTrackData,
 } from './network';
+import { defaultAccessToken } from '../../../common/secrets';
 
 export const statTags = {
   destType: 'ITERABLE',
@@ -32,7 +33,7 @@ export const singleMetadata = [
     workspaceId: 'default-workspaceId',
     sourceId: 'default-sourceId',
     secret: {
-      accessToken: 'default-accessToken',
+      accessToken: defaultAccessToken,
     },
     dontBatch: false,
   },
@@ -164,14 +165,20 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
               {
                 statusCode: 400,
                 metadata: generateMetadata(1),
-                error:
-                  '{"msg":"[/api/events/trackBulk] Invalid JSON body","code":"BadJsonBody","params":{"obj.events[1].createdAt":"Number value expected"}}',
+                error: JSON.stringify({
+                  msg: '[/api/events/trackBulk] Invalid JSON body',
+                  code: 'BadJsonBody',
+                  params: { 'obj.events[1].createdAt': 'Number value expected' },
+                }),
               },
               {
                 statusCode: 400,
                 metadata: generateMetadata(2),
-                error:
-                  '{"msg":"[/api/events/trackBulk] Invalid JSON body","code":"BadJsonBody","params":{"obj.events[1].createdAt":"Number value expected"}}',
+                error: JSON.stringify({
+                  msg: '[/api/events/trackBulk] Invalid JSON body',
+                  code: 'BadJsonBody',
+                  params: { 'obj.events[1].createdAt': 'Number value expected' },
+                }),
               },
             ],
           },
@@ -356,14 +363,20 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
               {
                 statusCode: 400,
                 metadata: generateMetadata(1),
-                error:
-                  '{"msg":"[/api/users/bulkUpdate] Invalid JSON body","code":"BadJsonBody","params":{"obj.users[1].preferUserId":"Boolean value expected"}}',
+                error: JSON.stringify({
+                  msg: '[/api/users/bulkUpdate] Invalid JSON body',
+                  code: 'BadJsonBody',
+                  params: { 'obj.users[1].preferUserId': 'Boolean value expected' },
+                }),
               },
               {
                 statusCode: 400,
                 metadata: generateMetadata(2),
-                error:
-                  '{"msg":"[/api/users/bulkUpdate] Invalid JSON body","code":"BadJsonBody","params":{"obj.users[1].preferUserId":"Boolean value expected"}}',
+                error: JSON.stringify({
+                  msg: '[/api/users/bulkUpdate] Invalid JSON body',
+                  code: 'BadJsonBody',
+                  params: { 'obj.users[1].preferUserId': 'Boolean value expected' },
+                }),
               },
             ],
           },
@@ -479,8 +492,11 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
               {
                 statusCode: 400,
                 metadata: generateMetadata(1),
-                error:
-                  '{"msg":"Invalid currentEmail sayan","code":"InvalidEmailAddressError","params":null}',
+                error: JSON.stringify({
+                  msg: 'Invalid currentEmail sayan',
+                  code: 'InvalidEmailAddressError',
+                  params: null,
+                }),
               },
             ],
           },
@@ -576,8 +592,11 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
               {
                 statusCode: 400,
                 metadata: generateMetadata(1),
-                error:
-                  '{"msg":"Invalid email: sayan","code":"InvalidEmailAddressError","params":null}',
+                error: JSON.stringify({
+                  msg: 'Invalid email: sayan',
+                  code: 'InvalidEmailAddressError',
+                  params: null,
+                }),
               },
             ],
           },
@@ -627,8 +646,12 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
               {
                 statusCode: 404,
                 metadata: generateMetadata(1),
-                error:
-                  '{"error":"NotFound","message":"Catalog not found: rudder-test","code":"error.catalogs.notFound","data":{"args":["rudder-test"]}}',
+                error: JSON.stringify({
+                  error: 'NotFound',
+                  message: 'Catalog not found: rudder-test',
+                  code: 'error.catalogs.notFound',
+                  data: { args: ['rudder-test'] },
+                }),
               },
             ],
           },
@@ -738,8 +761,16 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
               {
                 statusCode: 401,
                 metadata: generateMetadata(1),
-                error:
-                  '{"msg":"Disabled API key or insufficient privileges","code":"BadApiKey","params":{"ip":"103.189.130.133","endpoint":"/api/users/registerDeviceToken","apiKeyIdentifier":"af831922","apiKeyType":"ServerSide"}}',
+                error: JSON.stringify({
+                  msg: 'Disabled API key or insufficient privileges',
+                  code: 'BadApiKey',
+                  params: {
+                    ip: '103.189.130.133',
+                    endpoint: '/api/users/registerDeviceToken',
+                    apiKeyIdentifier: 'af831922',
+                    apiKeyType: 'ServerSide',
+                  },
+                }),
               },
             ],
           },
@@ -787,8 +818,16 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
               {
                 statusCode: 401,
                 metadata: generateMetadata(1),
-                error:
-                  '{"msg":"Disabled API key or insufficient privileges","code":"BadApiKey","params":{"ip":"103.189.130.129","endpoint":"/api/users/registerBrowserToken","apiKeyIdentifier":"af831922","apiKeyType":"ServerSide"}}',
+                error: JSON.stringify({
+                  msg: 'Disabled API key or insufficient privileges',
+                  code: 'BadApiKey',
+                  params: {
+                    ip: '103.189.130.129',
+                    endpoint: '/api/users/registerBrowserToken',
+                    apiKeyIdentifier: 'af831922',
+                    apiKeyType: 'ServerSide',
+                  },
+                }),
               },
             ],
           },

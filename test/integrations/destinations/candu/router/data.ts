@@ -1,3 +1,4 @@
+import { authHeader1, secret1 } from '../maskedSecrets';
 export const data = [
   {
     name: 'candu',
@@ -40,7 +41,7 @@ export const data = [
                   },
                   ResponseRules: {},
                 },
-                Config: { apiKey: 'FXLkLUEhGJyvmY4' },
+                Config: { apiKey: secret1 },
                 Enabled: true,
                 Transformations: [],
                 IsProcessorEnabled: true,
@@ -109,7 +110,7 @@ export const data = [
                 method: 'POST',
                 endpoint: 'https://api.candu.ai/api/eventWebhook',
                 headers: {
-                  Authorization: 'Basic RlhMa0xVRWhHSnl2bVk0',
+                  Authorization: authHeader1,
                   'Content-Type': 'application/json',
                 },
                 params: {},
@@ -167,7 +168,7 @@ export const data = [
                   },
                   ResponseRules: {},
                 },
-                Config: { apiKey: 'FXLkLUEhGJyvmY4' },
+                Config: { apiKey: secret1 },
                 Enabled: true,
                 Transformations: [],
                 IsProcessorEnabled: true,

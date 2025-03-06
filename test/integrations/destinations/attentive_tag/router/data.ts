@@ -1,3 +1,4 @@
+import { authHeader1, secret1 } from '../maskedSecrets';
 export const data = [
   {
     name: 'attentive_tag',
@@ -10,7 +11,7 @@ export const data = [
         body: {
           input: [
             {
-              destination: { Config: { apiKey: 'dummyApiKey', signUpSourceId: '241654' } },
+              destination: { Config: { apiKey: secret1, signUpSourceId: '241654' } },
               metadata: { jobId: 1, userId: 'u1' },
               message: {
                 anonymousId: '4eb021e9-a2af-4926-ae82-fe996d12f3c5',
@@ -59,7 +60,7 @@ export const data = [
                 method: 'POST',
                 endpoint: 'https://api.attentivemobile.com/v1/subscriptions/unsubscribe',
                 headers: {
-                  Authorization: 'Bearer dummyApiKey',
+                  Authorization: authHeader1,
                   'Content-Type': 'application/json',
                 },
                 params: {},
@@ -74,7 +75,7 @@ export const data = [
               metadata: [{ jobId: 1, userId: 'u1' }],
               batched: false,
               statusCode: 200,
-              destination: { Config: { apiKey: 'dummyApiKey', signUpSourceId: '241654' } },
+              destination: { Config: { apiKey: secret1, signUpSourceId: '241654' } },
             },
           ],
         },

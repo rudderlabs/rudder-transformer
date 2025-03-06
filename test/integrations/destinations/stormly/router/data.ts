@@ -1,3 +1,4 @@
+import { authHeader1, secret1 } from '../maskedSecrets';
 export const data = [
   {
     name: 'stormly',
@@ -10,7 +11,7 @@ export const data = [
         body: {
           input: [
             {
-              destination: { Config: { apiKey: 'dummyApiKey' }, ID: 'stormly123' },
+              destination: { Config: { apiKey: secret1 }, ID: 'stormly123' },
               metadata: { jobId: 1, userId: 'u1' },
               message: {
                 type: 'identify',
@@ -24,7 +25,7 @@ export const data = [
               },
             },
             {
-              destination: { Config: { apiKey: 'dummyApiKey' }, ID: 'stormly123' },
+              destination: { Config: { apiKey: secret1 }, ID: 'stormly123' },
               metadata: { jobId: 2, userId: 'u1' },
               message: {
                 type: 'track',
@@ -68,18 +69,18 @@ export const data = [
                 },
                 endpoint: 'https://rudderstack.t.stormly.com/webhook/rudderstack/identify',
                 files: {},
-                headers: { Authorization: 'Basic dummyApiKey', 'Content-Type': 'application/json' },
+                headers: { Authorization: authHeader1, 'Content-Type': 'application/json' },
                 method: 'POST',
                 params: {},
                 type: 'REST',
                 version: '1',
               },
-              destination: { Config: { apiKey: 'dummyApiKey' }, ID: 'stormly123' },
+              destination: { Config: { apiKey: secret1 }, ID: 'stormly123' },
               metadata: [{ jobId: 1, userId: 'u1' }],
               statusCode: 200,
             },
             {
-              destination: { Config: { apiKey: 'dummyApiKey' }, ID: 'stormly123' },
+              destination: { Config: { apiKey: secret1 }, ID: 'stormly123' },
               batched: false,
               error: 'Missing required value from "userIdOnly"',
               metadata: [{ jobId: 2, userId: 'u1' }],

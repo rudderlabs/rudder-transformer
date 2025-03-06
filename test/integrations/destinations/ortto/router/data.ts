@@ -1,3 +1,5 @@
+import { defaultApiKey } from '../../../common/secrets';
+
 export const data = [
   {
     name: 'ortto',
@@ -19,7 +21,7 @@ export const data = [
                 ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
                 Name: 'ORTTO',
                 Config: {
-                  privateApiKey: 'dummyApiKey',
+                  privateApiKey: defaultApiKey,
                   instanceRegion: 'other',
                   orttoEventsMapping: [
                     {
@@ -140,7 +142,7 @@ export const data = [
                 ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
                 Name: 'ORTTO',
                 Config: {
-                  privateApiKey: 'dummyApiKey',
+                  privateApiKey: defaultApiKey,
                   instanceRegion: 'other',
                   orttoEventsMapping: [
                     {
@@ -314,7 +316,7 @@ export const data = [
                 method: 'POST',
                 endpoint: 'https://api.ap3api.com/v1/person/merge',
                 headers: {
-                  'X-Api-Key': 'dummyApiKey',
+                  'X-Api-Key': defaultApiKey,
                   'Content-Type': 'application/json',
                 },
                 params: {},
@@ -338,7 +340,7 @@ export const data = [
                 ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
                 Name: 'ORTTO',
                 Config: {
-                  privateApiKey: 'dummyApiKey',
+                  privateApiKey: defaultApiKey,
                   instanceRegion: 'other',
                   orttoEventsMapping: [
                     {
@@ -424,7 +426,7 @@ export const data = [
                 method: 'POST',
                 endpoint: 'https://api.ap3api.com/v1/activities/create',
                 headers: {
-                  'X-Api-Key': 'dummyApiKey',
+                  'X-Api-Key': defaultApiKey,
                   'Content-Type': 'application/json',
                 },
                 params: {},
@@ -448,7 +450,7 @@ export const data = [
                 ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
                 Name: 'ORTTO',
                 Config: {
-                  privateApiKey: 'dummyApiKey',
+                  privateApiKey: defaultApiKey,
                   instanceRegion: 'other',
                   orttoEventsMapping: [
                     {

@@ -1,3 +1,5 @@
+import { secret2 } from '../maskedSecrets';
+
 export const data = [
   {
     name: 'am',
@@ -61,7 +63,7 @@ export const data = [
               },
               metadata: { jobId: 1, userId: 'u1' },
               destination: {
-                Config: { apiKey: 'abcde', groupTypeTrait: 'email', groupValueTrait: 'age' },
+                Config: { apiKey: secret2, groupTypeTrait: 'email', groupValueTrait: 'age' },
               },
             },
             {
@@ -114,7 +116,7 @@ export const data = [
                 sentAt: '2019-10-14T11:15:53.296Z',
               },
               metadata: { jobId: 2, userId: 'u1' },
-              destination: { Config: { apiKey: 'abcde' } },
+              destination: { Config: { apiKey: secret2 } },
             },
           ],
           destType: 'am',
@@ -138,7 +140,7 @@ export const data = [
                   params: {},
                   body: {
                     JSON: {
-                      api_key: 'abcde',
+                      api_key: secret2,
                       events: [
                         {
                           os_name: 'Chrome',
@@ -185,7 +187,7 @@ export const data = [
               batched: false,
               statusCode: 200,
               destination: {
-                Config: { apiKey: 'abcde', groupTypeTrait: 'email', groupValueTrait: 'age' },
+                Config: { apiKey: secret2, groupTypeTrait: 'email', groupValueTrait: 'age' },
               },
             },
             {
@@ -199,7 +201,7 @@ export const data = [
                   params: {},
                   body: {
                     JSON: {
-                      api_key: 'abcde',
+                      api_key: secret2,
                       events: [
                         {
                           os_name: 'Chrome',
@@ -249,7 +251,7 @@ export const data = [
               metadata: [{ jobId: 2, userId: 'u1' }],
               batched: false,
               statusCode: 200,
-              destination: { Config: { apiKey: 'abcde' } },
+              destination: { Config: { apiKey: secret2 } },
             },
           ],
         },

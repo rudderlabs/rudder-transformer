@@ -1,10 +1,11 @@
+import { authHeader1 } from './maskedSecrets';
 import { destination } from './common';
 export const networkCallsData = [
   {
     httpReq: {
       url: `${destination.Config.apiBaseUrl}/v2/contacts/email:johndoe@example.com`,
       headers: {
-        Authorization: 'Basic dGVzdC1hcGkta2V5Og==',
+        Authorization: authHeader1,
       },
       method: 'GET',
     },
@@ -38,7 +39,7 @@ export const networkCallsData = [
     httpReq: {
       url: `${destination.Config.apiBaseUrl}/v2/contacts/6690fe3655e334d6270287b5`,
       headers: {
-        Authorization: 'Basic dGVzdC1hcGkta2V5Og==',
+        Authorization: authHeader1,
       },
       method: 'GET',
     },

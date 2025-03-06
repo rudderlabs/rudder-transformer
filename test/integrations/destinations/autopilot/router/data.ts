@@ -1,3 +1,5 @@
+import { defaultApiKey } from '../../../common/secrets';
+
 export const data = [
   {
     name: 'autopilot',
@@ -20,7 +22,7 @@ export const data = [
                   Config: { excludeKeys: [], includeKeys: [] },
                 },
                 Config: {
-                  apiKey: 'dummyApiKey',
+                  apiKey: defaultApiKey,
                   customMappings: [{ from: '0001', to: 'Signup' }],
                   triggerId: '00XX',
                 },
@@ -76,7 +78,7 @@ export const data = [
                   Config: { excludeKeys: [], includeKeys: [] },
                 },
                 Config: {
-                  apiKey: 'dummyApiKey',
+                  apiKey: defaultApiKey,
                   customMappings: [{ from: '0001', to: 'Signup' }],
                   triggerId: '00XX',
                 },
@@ -141,7 +143,7 @@ export const data = [
                 method: 'POST',
                 endpoint: 'https://api2.autopilothq.com/v1/contact',
                 headers: {
-                  autopilotapikey: 'dummyApiKey',
+                  autopilotapikey: defaultApiKey,
                   'Content-Type': 'application/json',
                   Accept: 'application/json',
                 },
@@ -174,7 +176,7 @@ export const data = [
                   Config: { excludeKeys: [], includeKeys: [] },
                 },
                 Config: {
-                  apiKey: 'dummyApiKey',
+                  apiKey: defaultApiKey,
                   customMappings: [{ from: '0001', to: 'Signup' }],
                   triggerId: '00XX',
                 },
@@ -191,7 +193,7 @@ export const data = [
                 endpoint:
                   'https://api2.autopilothq.com/v1/trigger/00XX/contact/testmp@rudderstack.com',
                 headers: {
-                  autopilotapikey: 'dummyApiKey',
+                  autopilotapikey: defaultApiKey,
                   'Content-Type': 'application/json',
                   Accept: 'application/json',
                 },
@@ -218,7 +220,7 @@ export const data = [
                   Config: { excludeKeys: [], includeKeys: [] },
                 },
                 Config: {
-                  apiKey: 'dummyApiKey',
+                  apiKey: defaultApiKey,
                   customMappings: [{ from: '0001', to: 'Signup' }],
                   triggerId: '00XX',
                 },

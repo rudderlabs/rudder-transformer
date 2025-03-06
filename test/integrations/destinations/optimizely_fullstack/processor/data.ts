@@ -598,8 +598,17 @@ export const data = [
         status: 200,
         body: [
           {
-            error:
-              '{"message":"{\\"message\\":\\"Data File Lookup Failed due to {\\\\\\"code\\\\\\":\\\\\\"document_not_found\\\\\\",\\\\\\"message\\\\\\":\\\\\\"document_not_found\\\\\\"}: Workflow: procWorkflow, Step: dataFile, ChildStep: undefined, OriginalError: Data File Lookup Failed due to {\\\\\\"code\\\\\\":\\\\\\"document_not_found\\\\\\",\\\\\\"message\\\\\\":\\\\\\"document_not_found\\\\\\"}\\",\\"destinationResponse\\":{\\"code\\":\\"document_not_found\\",\\"message\\":\\"document_not_found\\"}}","destinationResponse":{"code":"document_not_found","message":"document_not_found"}}',
+            error: JSON.stringify({
+              message: JSON.stringify({
+                message:
+                  'Data File Lookup Failed due to {"code":"document_not_found","message":"document_not_found"}: Workflow: procWorkflow, Step: dataFile, ChildStep: undefined, OriginalError: Data File Lookup Failed due to {"code":"document_not_found","message":"document_not_found"}',
+                destinationResponse: { code: 'document_not_found', message: 'document_not_found' },
+              }),
+              destinationResponse: {
+                code: 'document_not_found',
+                message: 'document_not_found',
+              },
+            }),
             statTags: {
               destType: 'OPTIMIZELY_FULLSTACK',
               errorCategory: 'network',

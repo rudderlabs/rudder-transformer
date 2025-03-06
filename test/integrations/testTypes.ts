@@ -141,7 +141,7 @@ export type RouterTestData = {
   };
 };
 
-export type ProxyV1TestData = {
+export type ProxyV1TestData = BaseTestCase & {
   id: string;
   name: string;
   description: string;

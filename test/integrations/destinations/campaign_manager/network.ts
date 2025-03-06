@@ -1,5 +1,7 @@
+import { authHeader1 } from '../am/maskedSecrets';
+
 const commonHeaders = {
-  Authorization: 'Bearer dummyApiKey',
+  Authorization: authHeader1,
   'Content-Type': 'application/json',
 };
 

@@ -86,7 +86,7 @@ const sampleEvents = {
           object_prop_first_level_map_second_level_map_third_level_string:
             "third level",
           object_prop_first_level_map_second_level_map_third_level_map:
-            '{"fourthLevelInt":4}'
+            JSON.stringify({"fourthLevelInt":4})
         },
         columnTypes: {
           int_prop: "int",
@@ -106,12 +106,12 @@ const sampleEvents = {
           int_prop: 0,
           float_prop: 2.2,
           string_prop: "zero",
-          array_prop: '["zero","level"]',
+          array_prop: JSON.stringify(["zero","level"]),
           object_prop_first_level_int: 1,
           object_prop_first_level_bool: true,
           object_prop_first_level_map_second_level_array: ["second", "level"],
           object_prop_first_level_map_second_level_map:
-            '{"thirdLevelString":"third level","thirdLevelMap":{"fourthLevelInt":4}}'
+            JSON.stringify({"thirdLevelString":"third level","thirdLevelMap":{"fourthLevelInt":4}})
         },
         columnTypes: {
           int_prop: "int",
@@ -136,7 +136,7 @@ const sampleEvents = {
           object_prop_first_level_map_second_level_map_third_level_string:
             "third level",
           object_prop_first_level_map_second_level_map_third_level_map:
-            '{"fourthLevelInt":4}'
+            JSON.stringify({"fourthLevelInt":4})
         },
         columnTypes: {
           int_prop: "int",
@@ -156,13 +156,13 @@ const sampleEvents = {
           int_prop: 0,
           float_prop: 2.2,
           string_prop: "zero",
-          array_prop: '["zero","level"]',
+          array_prop: JSON.stringify(["zero","level"]),
           object_prop_first_level_int: 1,
           object_prop_first_level_map_second_level_array: ["second", "level"],
           object_prop_first_level_map_second_level_map_third_level_string:
             "third level",
           object_prop_first_level_map_second_level_map_third_level_map:
-            '{"fourthLevelInt":4,"fourthLevelMap":{"fifthLevelString":"fifth level"}}'
+            JSON.stringify({"fourthLevelInt":4,"fourthLevelMap":{"fifthLevelString":"fifth level"}})
         },
         columnTypes: {
           int_prop: "int",
@@ -280,7 +280,7 @@ const sampleEvents = {
           object_prop_first_level_map_second_level_map_third_level_string:
             "third level",
           object_prop_first_level_map_second_level_map_third_level_map:
-            '{"fourthLevelInt":4}'
+            JSON.stringify({"fourthLevelInt":4})
         },
         columnTypes: {
           int_prop: "int",
@@ -300,12 +300,12 @@ const sampleEvents = {
           int_prop: 0,
           float_prop: 2.2,
           string_prop: "zero",
-          array_prop: '["zero","level"]',
+          array_prop: JSON.stringify(["zero","level"]),
           object_prop_first_level_int: 1,
           object_prop_first_level_bool: true,
           object_prop_first_level_map_second_level_array: ["second", "level"],
           object_prop_first_level_map_second_level_map:
-            '{"thirdLevelString":"third level","thirdLevelMap":{"fourthLevelInt":4}}'
+            JSON.stringify({"thirdLevelString":"third level","thirdLevelMap":{"fourthLevelInt":4}})
         },
         columnTypes: {
           int_prop: "int",
@@ -330,7 +330,7 @@ const sampleEvents = {
           object_prop_first_level_map_second_level_map_third_level_string:
             "third level",
           object_prop_first_level_map_second_level_map_third_level_map:
-            '{"fourthLevelInt":4}'
+            JSON.stringify({"fourthLevelInt":4})
         },
         columnTypes: {
           int_prop: "int",
@@ -350,13 +350,13 @@ const sampleEvents = {
           int_prop: 0,
           float_prop: 2.2,
           string_prop: "zero",
-          array_prop: '["zero","level"]',
+          array_prop: JSON.stringify(["zero","level"]),
           object_prop_first_level_int: 1,
           object_prop_first_level_map_second_level_array: ["second", "level"],
           object_prop_first_level_map_second_level_map_third_level_string:
             "third level",
           object_prop_first_level_map_second_level_map_third_level_map:
-            '{"fourthLevelInt":4,"fourthLevelMap":{"fifthLevelString":"fifth level"}}'
+            JSON.stringify({"fourthLevelInt":4,"fourthLevelMap":{"fifthLevelString":"fifth level"}})
         },
         columnTypes: {
           int_prop: "int",
@@ -476,7 +476,7 @@ const sampleEvents = {
           object_prop_first_level_map_second_level_map_third_level_string:
             "third level",
           object_prop_first_level_map_second_level_map_third_level_map:
-            '{"fourthLevelInt":4}'
+            JSON.stringify({"fourthLevelInt":4})
         },
         columnTypes: {
           int_prop: "int",
@@ -496,12 +496,12 @@ const sampleEvents = {
           int_prop: 0,
           float_prop: 2.2,
           string_prop: "zero",
-          array_prop: '["zero","level"]',
+          array_prop: JSON.stringify(["zero","level"]),
           object_prop_first_level_int: 1,
           object_prop_first_level_bool: true,
           object_prop_first_level_map_second_level_array: ["second", "level"],
           object_prop_first_level_map_second_level_map:
-            '{"thirdLevelString":"third level","thirdLevelMap":{"fourthLevelInt":4}}'
+            JSON.stringify({"thirdLevelString":"third level","thirdLevelMap":{"fourthLevelInt":4}})
         },
         columnTypes: {
           int_prop: "int",
@@ -526,7 +526,7 @@ const sampleEvents = {
           object_prop_first_level_map_second_level_map_third_level_string:
             "third level",
           object_prop_first_level_map_second_level_map_third_level_map:
-            '{"fourthLevelInt":4}'
+            JSON.stringify({"fourthLevelInt":4})
         },
         columnTypes: {
           int_prop: "int",
@@ -546,13 +546,13 @@ const sampleEvents = {
           int_prop: 0,
           float_prop: 2.2,
           string_prop: "zero",
-          array_prop: '["zero","level"]',
+          array_prop: JSON.stringify(["zero","level"]),
           object_prop_first_level_int: 1,
           object_prop_first_level_map_second_level_array: ["second", "level"],
           object_prop_first_level_map_second_level_map_third_level_string:
             "third level",
           object_prop_first_level_map_second_level_map_third_level_map:
-            '{"fourthLevelInt":4,"fourthLevelMap":{"fifthLevelString":"fifth level"}}'
+            JSON.stringify({"fourthLevelInt":4,"fourthLevelMap":{"fifthLevelString":"fifth level"}})
         },
         columnTypes: {
           int_prop: "int",

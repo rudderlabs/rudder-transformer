@@ -1,3 +1,4 @@
+import { authHeader1, secret1 } from '../maskedSecrets';
 export const data = [
   {
     name: 'kustomer',
@@ -11,7 +12,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: secret1,
               },
             },
             message: {
@@ -105,7 +106,7 @@ export const data = [
               endpoint: 'https://api.kustomerapp.com/v1/customers',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Bearer dummyApiKey',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -188,7 +189,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: secret1,
               },
             },
             message: {
@@ -248,7 +249,7 @@ export const data = [
                 'https://api.kustomerapp.com/v1/customers/58210c3db0f09110006b7953?replace=false',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Bearer dummyApiKey',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -289,7 +290,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: secret1,
               },
             },
             message: {
@@ -365,7 +366,7 @@ export const data = [
               endpoint: 'https://api.kustomerapp.com/v1/tracking/identityEvent',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Bearer dummyApiKey',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -407,7 +408,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: secret1,
               },
             },
             message: {
@@ -486,7 +487,7 @@ export const data = [
               endpoint: 'https://api.kustomerapp.com/v1/tracking/identityEvent',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Bearer dummyApiKey',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -533,7 +534,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: secret1,
               },
             },
             message: {
@@ -612,7 +613,7 @@ export const data = [
               endpoint: 'https://api.kustomerapp.com/v1/tracking/identityEvent',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Bearer dummyApiKey',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -660,7 +661,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: secret1,
               },
             },
             message: {
@@ -730,7 +731,7 @@ export const data = [
               endpoint: 'https://api.kustomerapp.com/v1/tracking/identityEvent',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Bearer dummyApiKey',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -773,7 +774,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: secret1,
               },
             },
             message: {
@@ -842,7 +843,7 @@ export const data = [
               endpoint: 'https://api.kustomerapp.com/v1/tracking/identityEvent',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Bearer dummyApiKey',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -885,7 +886,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: secret1,
                 genericPage: true,
               },
             },
@@ -958,7 +959,7 @@ export const data = [
               endpoint: 'https://api.kustomerapp.com/v1/tracking/identityEvent',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Bearer dummyApiKey',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -1004,7 +1005,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: secret1,
                 genericScreen: true,
               },
             },
@@ -1081,7 +1082,7 @@ export const data = [
               endpoint: 'https://api.kustomerapp.com/v1/tracking/identityEvent',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Bearer dummyApiKey',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -1123,7 +1124,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: secret1,
               },
             },
             message: {
@@ -1218,7 +1219,7 @@ export const data = [
               endpoint: 'https://api.kustomerapp.com/v1/customers',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Bearer dummyApiKey',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -1301,7 +1302,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: secret1,
               },
             },
             message: {
@@ -1401,7 +1402,7 @@ export const data = [
               endpoint: 'https://api.kustomerapp.com/v1/customers',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Bearer dummyApiKey',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -1484,7 +1485,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: secret1,
               },
             },
             message: {
@@ -1590,7 +1591,7 @@ export const data = [
               endpoint: 'https://api.kustomerapp.com/v1/customers/abcd1234?replace=false',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Bearer dummyApiKey',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -1673,7 +1674,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: secret1,
                 genericScreen: true,
               },
             },
@@ -1749,7 +1750,7 @@ export const data = [
               endpoint: 'https://api.kustomerapp.com/v1/tracking/identityEvent',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Bearer dummyApiKey',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -1791,7 +1792,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: secret1,
                 baseEndpoint: 'https://api.prod2.kustomerapp.com',
                 genericScreen: true,
               },
@@ -1868,7 +1869,7 @@ export const data = [
               endpoint: 'https://api.prod2.kustomerapp.com/v1/tracking/identityEvent',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Bearer dummyApiKey',
+                Authorization: authHeader1,
               },
               params: {},
               body: {

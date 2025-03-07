@@ -6,6 +6,7 @@ const {
   UnhandledStatusCodeError,
   InstrumentationError,
 } = require('@rudderstack/integrations-lib');
+const stats = require('../../../util/stats');
 const { httpGET, httpPOST } = require('../../../adapters/network');
 const {
   getDynamicErrorType,
@@ -59,7 +60,7 @@ const MARKETO_THROTTLED_CODES = ['502', '606', '607', '608', '615'];
 //   '1049',
 // ];
 
-const { DESTINATION } = require('./config');
+const { DESTINATION, FETCH_TOKEN_METRIC } = require('./config');
 const logger = require('../../../logger');
 
 // handles marketo application level failures
@@ -72,12 +73,14 @@ const marketoApplicationErrorHandler = (marketoResponse, sourceMessage, destinat
       400,
       marketoResponse,
     );
-  } else if (errors && MARKETO_THROTTLED_CODES.includes(errors[0].code)) {
+  }
+  if (errors && MARKETO_THROTTLED_CODES.includes(errors[0].code)) {
     throw new ThrottledError(
       `Request Failed for ${destination}, ${errors[0].message} (Throttled).${sourceMessage}`,
       marketoResponse,
     );
-  } else if (errors && MARKETO_RETRYABLE_CODES.includes(errors[0].code)) {
+  }
+  if (errors && MARKETO_RETRYABLE_CODES.includes(errors[0].code)) {
     throw new RetryableError(
       `Request Failed for ${destination}, ${errors[0].message} (Retryable).${sourceMessage}`,
       500,
@@ -283,7 +286,35 @@ const getResponseHandlerData = (clientResponse, lookupMessage, formattedDestinat
     authCache,
   );
 
+// //////////////////////////////////////////////////////////////////////
+// BASE URL REF: https://developers.marketo.com/rest-api/base-url/
+// //////////////////////////////////////////////////////////////////////
+
+// calls Marketo Auth API and fetches bearer token
+// fails the transformer if auth fails
+// ------------------------
+// Ref: https://developers.marketo.com/rest-api/authentication/#creating_an_access_token
+const getAuthToken = async (authCache, formattedDestination, metadata) =>
+  authCache.get(formattedDestination.ID, async () => {
+    const { accountId, clientId, clientSecret } = formattedDestination;
+    const clientResponse = await sendGetRequest(
+      `https://${accountId}.mktorest.com/identity/oauth/token`,
+      {
+        params: {
+          client_id: clientId,
+          client_secret: clientSecret,
+          grant_type: 'client_credentials',
+        },
+      },
+      metadata,
+    );
+    const data = marketoResponseHandler(clientResponse, 'During fetching auth token');
+    stats.increment(FETCH_TOKEN_METRIC, { status: 'success' });
+    return { value: data.access_token, age: data.expires_in };
+  });
+
 module.exports = {
+  getAuthToken,
   marketoResponseHandler,
   sendGetRequest,
   sendPostRequest,

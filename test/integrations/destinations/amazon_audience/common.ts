@@ -1,3 +1,4 @@
+import { secret1 } from './maskedSecrets';
 export const destination = {
   DestinationDefinition: {
     Config: {
@@ -6,7 +7,7 @@ export const destination = {
     },
   },
   Config: {
-    advertiserId: '{"Dummy Name":"1234"}',
+    advertiserId: JSON.stringify({ 'Dummy Name': '1234' }),
     audienceId: 'dummyId',
   },
   ID: 'amazonAud-1234',
@@ -22,7 +23,7 @@ export const generateMetadata = (jobId: number, userId?: string): any => {
     workspaceId: 'default-workspaceId',
     dontBatch: false,
     secret: {
-      accessToken: 'dummyAccessToken',
+      accessToken: secret1,
       refreshToken: 'dummyRefreshToken',
       clientId: 'dummyClientId',
     },

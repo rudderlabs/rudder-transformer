@@ -2,6 +2,7 @@ import { Destination } from '../../../../../src/types';
 import { RouterTestData } from '../../../testTypes';
 import { routerRequestV2 } from './commonConfig';
 import { generateMetadata, transformResultBuilder } from '../../../testUtils';
+import { secret1, authHeader1 } from '../maskedSecrets';
 
 const destination: Destination = {
   ID: '123',
@@ -13,7 +14,7 @@ const destination: Destination = {
     Config: {},
   },
   Config: {
-    privateApiKey: 'dummyPrivateApiKey',
+    privateApiKey: secret1,
     apiVersion: 'v2',
   },
   Enabled: true,
@@ -23,7 +24,7 @@ const destination: Destination = {
 const userProfileCommonEndpoint = 'https://a.klaviyo.com/api/profile-import';
 
 const headers = {
-  Authorization: 'Klaviyo-API-Key dummyPrivateApiKey',
+  Authorization: authHeader1,
   'Content-Type': 'application/json',
   Accept: 'application/json',
   revision: '2024-06-15',
@@ -731,7 +732,7 @@ export const dataV2: RouterTestData[] = [
                 method: 'POST',
                 endpoint: 'https://a.klaviyo.com/api/events',
                 headers: {
-                  Authorization: 'Klaviyo-API-Key dummyPrivateApiKey',
+                  Authorization: authHeader1,
                   Accept: 'application/json',
                   'Content-Type': 'application/json',
                   revision: '2024-06-15',
@@ -790,7 +791,7 @@ export const dataV2: RouterTestData[] = [
                 method: 'POST',
                 endpoint: 'https://a.klaviyo.com/api/events',
                 headers: {
-                  Authorization: 'Klaviyo-API-Key dummyPrivateApiKey',
+                  Authorization: authHeader1,
                   Accept: 'application/json',
                   'Content-Type': 'application/json',
                   revision: '2024-06-15',
@@ -847,7 +848,7 @@ export const dataV2: RouterTestData[] = [
                   method: 'POST',
                   endpoint: 'https://a.klaviyo.com/api/profile-import',
                   headers: {
-                    Authorization: 'Klaviyo-API-Key dummyPrivateApiKey',
+                    Authorization: authHeader1,
                     Accept: 'application/json',
                     'Content-Type': 'application/json',
                     revision: '2024-06-15',
@@ -881,7 +882,7 @@ export const dataV2: RouterTestData[] = [
                   method: 'POST',
                   endpoint: 'https://a.klaviyo.com/api/profile-import',
                   headers: {
-                    Authorization: 'Klaviyo-API-Key dummyPrivateApiKey',
+                    Authorization: authHeader1,
                     Accept: 'application/json',
                     'Content-Type': 'application/json',
                     revision: '2024-06-15',
@@ -914,7 +915,7 @@ export const dataV2: RouterTestData[] = [
                   method: 'POST',
                   endpoint: 'https://a.klaviyo.com/api/profile-subscription-bulk-create-jobs',
                   headers: {
-                    Authorization: 'Klaviyo-API-Key dummyPrivateApiKey',
+                    Authorization: authHeader1,
                     'Content-Type': 'application/json',
                     Accept: 'application/json',
                     revision: '2024-06-15',
@@ -985,7 +986,7 @@ export const dataV2: RouterTestData[] = [
                 method: 'POST',
                 endpoint: 'https://a.klaviyo.com/api/events',
                 headers: {
-                  Authorization: 'Klaviyo-API-Key dummyPrivateApiKey',
+                  Authorization: authHeader1,
                   Accept: 'application/json',
                   'Content-Type': 'application/json',
                   revision: '2024-06-15',
@@ -1132,7 +1133,7 @@ export const dataV2: RouterTestData[] = [
                   method: 'POST',
                   endpoint: 'https://a.klaviyo.com/api/profile-import',
                   headers: {
-                    Authorization: 'Klaviyo-API-Key dummyPrivateApiKey',
+                    Authorization: authHeader1,
                     Accept: 'application/json',
                     'Content-Type': 'application/json',
                     revision: '2024-06-15',
@@ -1166,7 +1167,7 @@ export const dataV2: RouterTestData[] = [
                   method: 'POST',
                   endpoint: 'https://a.klaviyo.com/api/profile-subscription-bulk-create-jobs',
                   headers: {
-                    Authorization: 'Klaviyo-API-Key dummyPrivateApiKey',
+                    Authorization: authHeader1,
                     'Content-Type': 'application/json',
                     Accept: 'application/json',
                     revision: '2024-06-15',
@@ -1225,7 +1226,7 @@ export const dataV2: RouterTestData[] = [
                   method: 'POST',
                   endpoint: 'https://a.klaviyo.com/api/profile-import',
                   headers: {
-                    Authorization: 'Klaviyo-API-Key dummyPrivateApiKey',
+                    Authorization: authHeader1,
                     Accept: 'application/json',
                     'Content-Type': 'application/json',
                     revision: '2024-06-15',
@@ -1755,7 +1756,7 @@ export const dataV2: RouterTestData[] = [
                 method: 'POST',
                 endpoint: 'https://a.klaviyo.com/api/events',
                 headers: {
-                  Authorization: 'Klaviyo-API-Key dummyPrivateApiKey',
+                  Authorization: authHeader1,
                   Accept: 'application/json',
                   'Content-Type': 'application/json',
                   revision: '2024-06-15',
@@ -1814,7 +1815,7 @@ export const dataV2: RouterTestData[] = [
                 method: 'POST',
                 endpoint: 'https://a.klaviyo.com/api/events',
                 headers: {
-                  Authorization: 'Klaviyo-API-Key dummyPrivateApiKey',
+                  Authorization: authHeader1,
                   Accept: 'application/json',
                   'Content-Type': 'application/json',
                   revision: '2024-06-15',
@@ -1871,7 +1872,7 @@ export const dataV2: RouterTestData[] = [
                   method: 'POST',
                   endpoint: 'https://a.klaviyo.com/api/profile-import',
                   headers: {
-                    Authorization: 'Klaviyo-API-Key dummyPrivateApiKey',
+                    Authorization: authHeader1,
                     Accept: 'application/json',
                     'Content-Type': 'application/json',
                     revision: '2024-06-15',
@@ -1905,7 +1906,7 @@ export const dataV2: RouterTestData[] = [
                   method: 'POST',
                   endpoint: 'https://a.klaviyo.com/api/profile-import',
                   headers: {
-                    Authorization: 'Klaviyo-API-Key dummyPrivateApiKey',
+                    Authorization: authHeader1,
                     Accept: 'application/json',
                     'Content-Type': 'application/json',
                     revision: '2024-06-15',
@@ -1938,7 +1939,7 @@ export const dataV2: RouterTestData[] = [
                   method: 'POST',
                   endpoint: 'https://a.klaviyo.com/api/profile-subscription-bulk-delete-jobs',
                   headers: {
-                    Authorization: 'Klaviyo-API-Key dummyPrivateApiKey',
+                    Authorization: authHeader1,
                     'Content-Type': 'application/json',
                     Accept: 'application/json',
                     revision: '2024-06-15',
@@ -1995,7 +1996,7 @@ export const dataV2: RouterTestData[] = [
                 method: 'POST',
                 endpoint: 'https://a.klaviyo.com/api/events',
                 headers: {
-                  Authorization: 'Klaviyo-API-Key dummyPrivateApiKey',
+                  Authorization: authHeader1,
                   Accept: 'application/json',
                   'Content-Type': 'application/json',
                   revision: '2024-06-15',

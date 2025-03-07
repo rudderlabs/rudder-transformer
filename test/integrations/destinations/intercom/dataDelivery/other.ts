@@ -1,3 +1,4 @@
+import { authHeader1 } from '../maskedSecrets';
 import { ProxyV1TestData } from '../../../testTypes';
 import {
   generateMetadata,
@@ -7,7 +8,7 @@ import {
 
 const commonHeaders = {
   'Content-Type': 'application/json',
-  Authorization: 'Bearer testApiKey',
+  Authorization: authHeader1,
   Accept: 'application/json',
   'Intercom-Version': '1.4',
   'User-Agent': 'RudderStack',
@@ -245,8 +246,16 @@ export const otherScenariosV1: ProxyV1TestData[] = [
               '[Intercom Response Handler] Request failed for destination intercom with status: 408',
             response: [
               {
-                error:
-                  '{"type":"error.list","request_id":"000on04msi4jpk7d3u60","errors":[{"code":"Request Timeout","message":"The server would not wait any longer for the client"}]}',
+                error: JSON.stringify({
+                  type: 'error.list',
+                  request_id: '000on04msi4jpk7d3u60',
+                  errors: [
+                    {
+                      code: 'Request Timeout',
+                      message: 'The server would not wait any longer for the client',
+                    },
+                  ],
+                }),
                 metadata: generateMetadata(1),
                 statusCode: 500,
               },
@@ -288,8 +297,16 @@ export const otherScenariosV1: ProxyV1TestData[] = [
             message: 'Request Processed Successfully',
             response: [
               {
-                error:
-                  '{"type":"error.list","request_id":"request127","errors":[{"code":"service_unavailable","message":"Sorry, the API service is temporarily unavailable"}]}',
+                error: JSON.stringify({
+                  type: 'error.list',
+                  request_id: 'request127',
+                  errors: [
+                    {
+                      code: 'service_unavailable',
+                      message: 'Sorry, the API service is temporarily unavailable',
+                    },
+                  ],
+                }),
                 metadata: generateMetadata(1),
                 statusCode: 503,
               },
@@ -329,8 +346,11 @@ export const otherScenariosV1: ProxyV1TestData[] = [
             message: 'Request Processed Successfully',
             response: [
               {
-                error:
-                  '{"type":"error.list","request_id":"request128","errors":[{"code":"client_error","message":"Unknown server error"}]}',
+                error: JSON.stringify({
+                  type: 'error.list',
+                  request_id: 'request128',
+                  errors: [{ code: 'client_error', message: 'Unknown server error' }],
+                }),
                 metadata: generateMetadata(1),
                 statusCode: 500,
               },
@@ -370,8 +390,13 @@ export const otherScenariosV1: ProxyV1TestData[] = [
             message: 'Request Processed Successfully',
             response: [
               {
-                error:
-                  '{"type":"error.list","request_id":"request129","errors":[{"code":"server_timeout","message":"Server timed out when making request"}]}',
+                error: JSON.stringify({
+                  type: 'error.list',
+                  request_id: 'request129',
+                  errors: [
+                    { code: 'server_timeout', message: 'Server timed out when making request' },
+                  ],
+                }),
                 metadata: generateMetadata(1),
                 statusCode: 504,
               },

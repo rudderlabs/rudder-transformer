@@ -1,15 +1,17 @@
+import { authHeader1, authHeader2, secret3 } from '../maskedSecrets';
 import {
   generateMetadata,
   generateProxyV1Payload,
   generateProxyV0Payload,
 } from '../../../testUtils';
+import { defaultAccessToken } from '../../../common/secrets';
 
 const API_VERSION = 'v18';
 
 const commonHeaders = {
-  Authorization: 'Bearer abcd1234',
+  Authorization: authHeader1,
   'Content-Type': 'application/json',
-  'developer-token': 'ijkl91011',
+  'developer-token': secret3,
   'login-customer-id': 'logincustomerid',
 };
 
@@ -277,9 +279,9 @@ export const v1oauthScenarios = [
           {
             ...commonRequestParameters,
             headers: {
-              Authorization: 'Bearer invalidabcd1234',
+              Authorization: authHeader2,
               'Content-Type': 'application/json',
-              'developer-token': 'ijkl91011',
+              'developer-token': secret3,
               'login-customer-id': 'logincustomerid',
             },
             endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/customerid/offlineUserDataJobs`,
@@ -307,7 +309,7 @@ export const v1oauthScenarios = [
                   dontBatch: false,
                   jobId: 1,
                   secret: {
-                    accessToken: 'default-accessToken',
+                    accessToken: defaultAccessToken,
                   },
                   sourceId: 'default-sourceId',
                   userId: 'default-userId',
@@ -348,9 +350,9 @@ export const v1oauthScenarios = [
           {
             ...{ ...commonRequestParameters, JSON: { isStoreConversion: false } },
             headers: {
-              Authorization: 'Bearer invalidabcd1234',
+              Authorization: authHeader2,
               'Content-Type': 'application/json',
-              'developer-token': 'ijkl91011',
+              'developer-token': secret3,
               'login-customer-id': 'logincustomerid',
             },
             endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/customerid/offlineUserDataJobs`,
@@ -378,7 +380,7 @@ export const v1oauthScenarios = [
                   dontBatch: false,
                   jobId: 1,
                   secret: {
-                    accessToken: 'default-accessToken',
+                    accessToken: defaultAccessToken,
                   },
                   sourceId: 'default-sourceId',
                   userId: 'default-userId',

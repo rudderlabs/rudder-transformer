@@ -1,5 +1,7 @@
 import { generateMetadata } from '../../../testUtils';
 import { Destination, RouterTransformationRequest } from '../../../../../src/types';
+import { secret1 } from '../maskedSecrets';
+
 const destination: Destination = {
   ID: '123',
   Name: 'klaviyo',
@@ -10,7 +12,7 @@ const destination: Destination = {
     Config: {},
   },
   Config: {
-    privateApiKey: 'dummyPrivateApiKey',
+    privateApiKey: secret1,
   },
   Enabled: true,
   WorkspaceID: '123',
@@ -26,7 +28,7 @@ const destinationV2: Destination = {
     Config: {},
   },
   Config: {
-    privateApiKey: 'dummyPrivateApiKey',
+    privateApiKey: secret1,
     apiVersion: 'v2',
   },
   Enabled: true,

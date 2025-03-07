@@ -832,7 +832,7 @@ export const data = [
               jobId: 2,
             },
             error:
-              '{"message":"Failed to get hubspot properties: {\\"status\\":\\"error\\",\\"message\\":\\"The API key provided is invalid. View or manage your API key here: https://app.hubspot.com/l/api-key/\\",\\"correlationId\\":\\"4d39ff11-e121-4514-bcd8-132a9dd1ff50\\",\\"category\\":\\"INVALID_AUTHENTICATION\\",\\"links\\":{\\"api key\\":\\"https://app.hubspot.com/l/api-key/\\"}}","destinationResponse":{"response":{"status":"error","message":"The API key provided is invalid. View or manage your API key here: https://app.hubspot.com/l/api-key/","correlationId":"4d39ff11-e121-4514-bcd8-132a9dd1ff50","category":"INVALID_AUTHENTICATION","links":{"api key":"https://app.hubspot.com/l/api-key/"}},"status":401}}',
+              '{"message":"Failed to get hubspot properties: {\\"status\\":\\"error\\",\\"message\\":\\"The API key provided is invalid. View or manage your API key here: https://app.hubspot.com/l/api-key/\\",\\"correlationId\\":\\"correlation-id\\",\\"category\\":\\"INVALID_AUTHENTICATION\\",\\"links\\":{\\"api key\\":\\"https://app.hubspot.com/l/api-key/\\"}}","destinationResponse":{"response":{"status":"error","message":"The API key provided is invalid. View or manage your API key here: https://app.hubspot.com/l/api-key/","correlationId":"correlation-id","category":"INVALID_AUTHENTICATION","links":{"api key":"https://app.hubspot.com/l/api-key/"}},"status":401}}',
             statTags: {
               destType: 'HS',
               errorCategory: 'network',
@@ -944,7 +944,7 @@ export const data = [
               jobId: 2,
             },
             error:
-              '{"message":"Failed to get hubspot properties: {\\"status\\":\\"error\\",\\"message\\":\\"Request Rate Limit reached\\",\\"correlationId\\":\\"4d39ff11-e121-4514-bcd8-132a9dd1ff50\\",\\"category\\":\\"RATE-LIMIT_REACHED\\",\\"links\\":{\\"api key\\":\\"https://app.hubspot.com/l/api-key/\\"}}","destinationResponse":{"response":{"status":"error","message":"Request Rate Limit reached","correlationId":"4d39ff11-e121-4514-bcd8-132a9dd1ff50","category":"RATE-LIMIT_REACHED","links":{"api key":"https://app.hubspot.com/l/api-key/"}},"status":429}}',
+              '{"message":"Failed to get hubspot properties: {\\"status\\":\\"error\\",\\"message\\":\\"Request Rate Limit reached\\",\\"correlationId\\":\\"correlation-id\\",\\"category\\":\\"RATE-LIMIT_REACHED\\",\\"links\\":{\\"api key\\":\\"https://app.hubspot.com/l/api-key/\\"}}","destinationResponse":{"response":{"status":"error","message":"Request Rate Limit reached","correlationId":"correlation-id","category":"RATE-LIMIT_REACHED","links":{"api key":"https://app.hubspot.com/l/api-key/"}},"status":429}}',
             statTags: {
               destType: 'HS',
               errorCategory: 'network',
@@ -4811,7 +4811,7 @@ export const data = [
         body: [
           {
             error:
-              '{"message":"rETL - Error during searching object record. \\"Request Rate Limit reached\\"","destinationResponse":{"response":{"status":"error","message":"Request Rate Limit reached","correlationId":"4d39ff11-e121-4514-bcd8-132a9dd1ff50","category":"RATE-LIMIT_REACHED","links":{"api key":"https://app.hubspot.com/l/api-key/"}},"status":429}}',
+              '{"message":"rETL - Error during searching object record. \\"Request Rate Limit reached\\"","destinationResponse":{"response":{"status":"error","message":"Request Rate Limit reached","correlationId":"correlation-id","category":"RATE-LIMIT_REACHED","links":{"api key":"https://app.hubspot.com/l/api-key/"}},"status":429}}',
             metadata: {
               jobId: 2,
             },
@@ -4873,14 +4873,14 @@ export const data = [
                 traits: {
                   email: 'testhubspot2@email.com',
                   firstname: 'Test Hubspot',
-                  anonymousId: 'ea5cfab2-3961-4d8a-8187-3d1858c99090',
+                  anonymousId: 'anonymous-id',
                   days_to_close: '29 days to close',
                 },
               },
               type: 'identify',
               messageId: '50360b9c-ea8d-409c-b672-c9230f91cce5',
               originalTimestamp: '2023-04-11T09:35:31.288Z',
-              anonymousId: 'ea5cfab2-3961-4d8a-8187-3d1858c99090',
+              anonymousId: 'anonymous-id',
               userId: 'user@1',
               integrations: {
                 All: true,

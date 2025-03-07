@@ -1,8 +1,9 @@
 import crypto from 'crypto';
+import { NONCE, TIMESTAMP_2 } from '../constants';
+const buf = Buffer.from(NONCE, 'hex');
 
-const buf = Buffer.from('5398e214ae99c2e50afb709a3bc423f9', 'hex');
 export const mockFns = (_) => {
-  jest.spyOn(Date.prototype, 'toISOString').mockReturnValueOnce('2023-10-14T00:00:00.000Z');
+  jest.spyOn(Date.prototype, 'toISOString').mockReturnValueOnce(TIMESTAMP_2);
   // @ts-ignore
   jest.spyOn(crypto, 'randomBytes').mockReturnValue(buf);
 };

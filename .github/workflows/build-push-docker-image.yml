@@ -119,6 +119,8 @@ jobs:
           load: true
           tags: ${{ inputs.build_tag }}
           push: true
+          platforms: |
+            linux/arm64
           # cache-from: type=gha
           # cache-to: type=gha,mode=max
 
@@ -173,6 +175,8 @@ jobs:
           load: true
           tags: ${{ inputs.build_tag }}
           push: true
+          platforms: |
+            linux/amd64
           # cache-from: type=gha
           # cache-to: type=gha,mode=max
 

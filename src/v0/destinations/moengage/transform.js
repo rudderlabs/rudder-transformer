@@ -4,6 +4,7 @@ const {
   TransformationError,
   InstrumentationError,
   isObject,
+  isEmptyObject,
 } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const {
@@ -104,7 +105,7 @@ function responseBuilderSimple(message, category, destination) {
   const basePayload = constructPayload(message, MAPPING_CONFIG[category.name]);
   if (!basePayload) {
     // fail-safety for developer error
-    throw new TransformationError('Payload could not be constructed');
+    throw new TransformationError('Base payload could not be constructed');
   }
 
   const { apiId, region, apiKey, useObjectData } = destination.Config;
@@ -127,9 +128,10 @@ function responseBuilderSimple(message, category, destination) {
   }
 
   const payload = createDestinationPayload({ message, category, useObjectData });
-  if (payload) {
-    response.body.JSON = removeUndefinedAndNullValues({ ...basePayload, ...payload });
+  if (isEmptyObject(payload)) {
+    throw new TransformationError('Payload could not be constructed');
   }
+  response.body.JSON = removeUndefinedAndNullValues({ ...basePayload, ...payload });
   return response;
 }
 

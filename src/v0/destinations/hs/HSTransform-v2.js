@@ -159,6 +159,7 @@ const processIdentify = async ({ message, destination, metadata }, propertyMap) 
       // update
       endpoint = IDENTIFY_CRM_UPDATE_CONTACT.replace(':contactId', contactId);
       response.operation = 'updateContacts';
+      response.method = defaultPatchRequestConfig.requestMethod;
     } else {
       // contact do not exist
       // create

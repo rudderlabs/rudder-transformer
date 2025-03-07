@@ -23,7 +23,6 @@ const {
   isNull,
   validateEventName,
   defaultBatchRequestConfig,
-  defaultPostRequestConfig,
   getSuccessRespEvents,
 } = require('../../util');
 const {
@@ -608,8 +607,8 @@ const performHubSpotSearch = async (
   /*
   searchResults = {
     id: 'existing_contact_id',
-    property: 'existing_contact_email', // when email is identifier 
-    hs_additional_emails: ['secondary_email'] // when email is identifier 
+    property: 'existing_contact_email', // when email is identifier
+    hs_additional_emails: ['secondary_email'] // when email is identifier
   } */
   return searchResults;
 };
@@ -838,9 +837,9 @@ const addExternalIdToHSTraits = (message) => {
   const externalIdObj = message.context?.externalId?.[0];
   if (externalIdObj.useSecondaryObject) {
     /* this condition help us to NOT override the primary key value with the secondary key value
-     example: 
+     example:
      for `email` as primary key and `hs_additonal_emails` as secondary key we don't want to override `email` with `hs_additional_emails`.
-    neither we want to map anything for `hs_additional_emails` as this property can not be set 
+    neither we want to map anything for `hs_additional_emails` as this property can not be set
      */
     return;
   }
@@ -859,7 +858,7 @@ const convertToResponseFormat = (successRespListWithDontBatchTrue) => {
       batchedResponse.batchedRequest.endpoint = endpoint;
       batchedResponse.batchedRequest.body = message.body;
       batchedResponse.batchedRequest.params = message.params;
-      batchedResponse.batchedRequest.method = defaultPostRequestConfig.requestMethod;
+      batchedResponse.batchedRequest.method = message.method;
       batchedResponse.metadata = [metadata];
       batchedResponse.destination = destination;
 

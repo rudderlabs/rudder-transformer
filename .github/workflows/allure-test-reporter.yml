@@ -34,71 +34,76 @@ jobs:
 
       - name: Run Tests and Generate Report
         run: |
-          npm run test:ts
+          npm run test:ts:silent
 
-      - name: Load test report history
-        uses: actions/checkout@v4
-        if: always()
-        continue-on-error: true
-        with:
-          ref: gh-pages
-          path: gh-pages
+      - name: Install Allure
+        run: npm install -g allure-commandline
 
       - name: Generate Allure Report
-        uses: simple-elf/allure-report-action@master
-        if: always()
-        with:
-          gh_pages: gh-pages
-          allure_results: allure-results
-          allure_history: allure-history
-          keep_reports: 20
-
-      - name: Publish to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        id: deploy
-        if: always()
-        with:
-          github_token: ${{ secrets.PAT }}
-          publish_branch: gh-pages
-          publish_dir: allure-history
-
-      - name: Get Report Number
-        id: report-number
-        if: always()
         run: |
-          # Wait a moment for gh-pages to update
-          sleep 10
+          REPO_NAME=$(basename ${{ github.repository }})
+          PR_NUMBER=${{ github.event.pull_request.number }}
+          REPORT_FOLDER="${REPO_NAME}/${PR_NUMBER}"
+          allure generate allure-results --clean -o "${REPORT_FOLDER}"
+          echo "REPORT_FOLDER=${REPORT_FOLDER}" >> $GITHUB_ENV  # Persist this variable
 
-          # Create a temporary directory for gh-pages checkout
-          mkdir temp_gh_pages
-          cd temp_gh_pages
+      - name: Checkout Reports Repository
+        uses: actions/checkout@v4
+        with:
+          repository: rudderlabs/test-reports
+          token: ${{ secrets.PAT }}
+          path: test-reports
 
-          # Initialize git and fetch gh-pages
-          git init
-          git remote add origin https://github.com/rudderlabs/rudder-transformer.git
-          git fetch origin gh-pages
-          git checkout gh-pages
+      - name: Copy Allure Report to Reports Repository
+        run: |
+          mkdir -p "test-reports/$REPORT_FOLDER"
+          cp -r $REPORT_FOLDER/* test-reports/$REPORT_FOLDER/
 
-          # Find the latest numbered directory
-          LATEST_NUM=$(find . -maxdepth 1 -type d -name "[0-9]*" | sort -n | tail -1 | sed 's/\.\///')
-          echo "number=${LATEST_NUM}" >> $GITHUB_OUTPUT
+      - name: Cleanup Old Reports (Keep Only Last 50)
+        run: |
+          REPO_NAME=$(basename ${{ github.repository }})
+          cd test-reports/${REPO_NAME}
+          ls -t | tail -n +51 | xargs rm -rf || echo "No old reports to delete"
 
-          # Cleanup
-          cd ..
-          rm -rf temp_gh_pages
+      - name: Commit and Push Report
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT }}
+        run: |
+          cd test-reports
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+
+          # Stash any unstaged changes before pulling
+          git add .
+          git stash || echo "No changes to stash"
+
+          # Pull latest changes safely
+          git pull --rebase origin main
+
+          # Apply the stashed changes back
+          git stash pop || echo "No stash to apply"
+
+          # Commit new report if there are changes
+          git add .
+          git commit -m "chore: add allure report for $REPORT_FOLDER" || echo "No changes to commit"
+
+          # Push changes with retry logic
+          for i in {1..5}; do
+            git push origin main && break || sleep 5
+            git pull --rebase origin main
+          done
 
       - name: Add Test Report Link as Comment on PR
         uses: actions/github-script@v7
-        if: always()
         with:
           github-token: ${{ secrets.PAT }}
           script: |
             const { owner, repo } = context.repo;
             const prNumber = context.payload.pull_request.number;
-            const reportNumber = '${{ steps.report-number.outputs.number }}';
 
+            const reportFolder = process.env.REPORT_FOLDER;  // Read from environment variable
             const commentBody = `Allure Test reports for this run are available at:
-            - Allure Report: https://rudderlabs.github.io/rudder-transformer/${reportNumber}/index.html`;
+            - Allure Report: [View Report](https://rudderlabs.github.io/test-reports/${reportFolder}/index.html)`;
 
             // Comment on the pull request
             await github.rest.issues.createComment({

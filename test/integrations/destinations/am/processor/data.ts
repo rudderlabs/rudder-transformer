@@ -3,7 +3,7 @@ import { secret2 } from '../maskedSecrets';
 export const data = [
   {
     name: 'am',
-    description: 'Test 0: ERROR - Event not present. Please send event field',
+    description: 'Test 0: should error when event field is not present',
     feature: 'processor',
     module: 'destination',
     version: 'v0',

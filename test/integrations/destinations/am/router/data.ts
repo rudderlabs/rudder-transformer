@@ -3,7 +3,7 @@ import { secret2 } from '../maskedSecrets';
 export const data = [
   {
     name: 'am',
-    description: 'Test 0',
+    description: 'Test 0: Should route events to amplitude',
     feature: 'router',
     module: 'destination',
     version: 'v0',

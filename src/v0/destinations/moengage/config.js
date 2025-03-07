@@ -24,6 +24,7 @@ const endpointIND = {
   alias: `https://api-03.moengage.com/v1/customer/merge?app_id=`,
 };
 
+// moengage supports object types, we added a new mapping for identify, track and device to support object data type
 const CONFIG_CATEGORIES = {
   IDENTIFY: { type: 'identify', name: 'MOENGAGEIdentifyConfig' },
   TRACK: { type: 'track', name: 'MOENGAGETrackConfig' },
@@ -32,13 +33,25 @@ const CONFIG_CATEGORIES = {
     type: 'identifyAttr',
     name: 'MOENGAGEIdentifyAttributesConfig',
   },
+  IDENTIFY_ATTR_OBJ: {
+    type: 'identifyAttr',
+    name: 'MOENGAGEIdentifyAttributesObjectConfig',
+  },
   DEVICE_ATTR: {
     type: 'deviceAttr',
     name: 'MOENGAGEDeviceAttributesConfig',
   },
+  DEVICE_ATTR_OBJ: {
+    type: 'deviceAttr',
+    name: 'MOENGAGEDeviceAttributesObjectConfig',
+  },
   TRACK_ATTR: {
     type: 'trackAttr',
     name: 'MOENGAGETrackAttributesConfig',
+  },
+  TRACK_ATTR_OBJ: {
+    type: 'trackAttrObj',
+    name: 'MOENGAGETrackAttributesObjectConfig',
   },
   ALIAS: { type: 'alias', name: 'MoEngageAliasConfig' },
 };

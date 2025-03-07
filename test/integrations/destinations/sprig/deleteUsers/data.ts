@@ -1,3 +1,5 @@
+import { secret1, secretInvalid } from '../maskedSecrets';
+
 export const data = [
   {
     name: 'sprig',
@@ -57,7 +59,7 @@ export const data = [
               },
             ],
             config: {
-              apiKey: 'invalidApiKey',
+              apiKey: secretInvalid,
             },
           },
         ],
@@ -119,7 +121,7 @@ export const data = [
               },
             ],
             config: {
-              apiKey: 'testApiKey',
+              apiKey: secret1,
             },
           },
         ],
@@ -154,7 +156,7 @@ export const data = [
               },
             ],
             config: {
-              apiKey: 'testApiKey',
+              apiKey: secret1,
             },
           },
         ],
@@ -196,7 +198,7 @@ export const data = [
               },
             ],
             config: {
-              apiKey: 'testApiKey',
+              apiKey: secret1,
             },
           },
         ],

@@ -29,7 +29,7 @@ const { JsonTemplateEngine, PathType } = require('@rudderstack/json-template-eng
 const isString = require('lodash/isString');
 const logger = require('../../logger');
 const stats = require('../../util/stats');
-const { DestCanonicalNames, DestHandlerMap } = require('../../constants/destinationCanonicalNames');
+const { DestCanonicalNames } = require('../../constants/destinationCanonicalNames');
 const { client: errNotificationClient } = require('../../util/errorNotifier');
 const { HTTP_STATUS_CODES, VDM_V2_SCHEMA_VERSION, ERROR_MESSAGES } = require('./constant');
 const {
@@ -1898,31 +1898,6 @@ const flattenMultilevelPayload = (payload) => {
 };
 
 /**
- * Gets the destintion's transform.js file used for transformation
- * **Note**: The transform.js file is imported from
- *  `v0/destinations/${dest}/transform`
- * @param {*} _version -> version for the transfor
- * @param {*} dest destination name
- * @returns
- *  The transform.js instance used for destination transformation
- */
-const getDestHandler = (dest) => {
-  const destName = DestHandlerMap[dest] || dest;
-  // eslint-disable-next-line import/no-dynamic-require, global-require
-  return require(`../destinations/${destName}/transform`);
-};
-
-/**
- * Obtain the authCache instance used to store the access token information to send/get information to/from destination
- * @param {string} destType destination name
- * @returns {Cache | undefined} The instance of "v0/util/cache.js"
- */
-const getDestAuthCacheInstance = (destType) => {
-  const destInf = getDestHandler(destType);
-  return destInf?.authCache || {};
-};
-
-/**
  * This function removes all those variables which are
  * empty or undefined or null from all levels of object.
  * @param {*} obj
@@ -2510,7 +2485,6 @@ module.exports = {
   simpleProcessRouterDestSync,
   handleRtTfSingleEventError,
   getErrorStatusCode,
-  getDestAuthCacheInstance,
   refinePayload,
   validateEventName,
   validatePhoneWithCountryCode,

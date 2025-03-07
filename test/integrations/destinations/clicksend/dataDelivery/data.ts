@@ -1,10 +1,11 @@
 import { generateMetadata, generateProxyV1Payload } from '../../../testUtils';
 import { ProxyV1TestData } from '../../../testTypes';
 import { defaultAccessToken } from '../../../common/secrets';
+import { secret1 } from '../maskedSecrets';
 
 export const headerBlockWithCorrectAccessToken = {
   'Content-Type': 'application/json',
-  Authorization: 'dummy-key',
+  Authorization: secret1,
 };
 
 export const contactPayload = {

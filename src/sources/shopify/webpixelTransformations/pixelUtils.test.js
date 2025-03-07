@@ -10,9 +10,9 @@ const {
   extractCampaignParams,
 } = require('./pixelUtils');
 const campaignObjectMappings = require('../pixelEventsMappings/campaignObjectMappings.json');
-const Message = require('../../../../sources/message');
+const Message = require('../../message');
 jest.mock('ioredis', () => require('../../../../test/__mocks__/redis'));
-jest.mock('../../../../sources/message');
+jest.mock('../../message');
 
 describe('utilV2.js', () => {
   beforeEach(() => {

@@ -72,11 +72,22 @@ jobs:
           cd test-reports
           git config --global user.name "github-actions"
           git config --global user.email "github-actions@github.com"
-          # Pull latest changes
-          git pull --rebase origin main 
+
+          # Stash any unstaged changes before pulling
+          git add .
+          git stash || echo "No changes to stash"
+
+          # Pull latest changes safely
+          git pull --rebase origin main
+
+          # Apply the stashed changes back
+          git stash pop || echo "No stash to apply"
+
+          # Commit new report if there are changes
           git add .
           git commit -m "chore: add allure report for $REPORT_FOLDER" || echo "No changes to commit"
-          # Push the report to the reports repository
+
+          # Push changes with retry logic
           for i in {1..5}; do
             git push origin main && break || sleep 5
             git pull --rebase origin main

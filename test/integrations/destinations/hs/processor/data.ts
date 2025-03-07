@@ -2075,7 +2075,7 @@ export const data = [
               version: '1',
               type: 'REST',
               userId: '',
-              method: 'POST',
+              method: 'PATCH',
               endpoint: 'https://api.hubapi.com/crm/v3/objects/contacts/103604',
               headers: {
                 'Content-Type': 'application/json',

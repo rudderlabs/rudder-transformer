@@ -1,3 +1,4 @@
+import { authHeader1, secret1 } from '../maskedSecrets';
 export const data = [
   {
     name: 'braze',
@@ -11,7 +12,7 @@ export const data = [
           {
             destination: {
               Config: {
-                restApiKey: 'dummyApiKey',
+                restApiKey: secret1,
                 prefixProperties: true,
                 useNativeSDK: false,
                 dataCenter: 'us-01',
@@ -90,7 +91,7 @@ export const data = [
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
-                Authorization: 'Bearer dummyApiKey',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -135,7 +136,7 @@ export const data = [
           {
             destination: {
               Config: {
-                restApiKey: 'dummyApiKey',
+                restApiKey: secret1,
                 prefixProperties: true,
                 useNativeSDK: false,
                 dataCenter: 'us-01',
@@ -224,7 +225,7 @@ export const data = [
           {
             destination: {
               Config: {
-                restApiKey: 'dummyApiKey',
+                restApiKey: secret1,
                 prefixProperties: true,
                 useNativeSDK: false,
               },
@@ -298,7 +299,7 @@ export const data = [
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
-                Authorization: 'Bearer dummyApiKey',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -341,7 +342,7 @@ export const data = [
           {
             destination: {
               Config: {
-                restApiKey: 'dummyApiKey',
+                restApiKey: secret1,
                 prefixProperties: true,
                 useNativeSDK: false,
               },
@@ -419,7 +420,7 @@ export const data = [
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
-                Authorization: 'Bearer dummyApiKey',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -469,7 +470,7 @@ export const data = [
           {
             destination: {
               Config: {
-                restApiKey: 'dummyApiKey',
+                restApiKey: secret1,
                 prefixProperties: true,
                 useNativeSDK: false,
                 dataCenter: 'eu-01',
@@ -547,7 +548,7 @@ export const data = [
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
-                Authorization: 'Bearer dummyApiKey',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -597,7 +598,7 @@ export const data = [
           {
             destination: {
               Config: {
-                restApiKey: 'dummyApiKey',
+                restApiKey: secret1,
                 prefixProperties: true,
                 useNativeSDK: false,
                 dataCenter: 'us-01',
@@ -674,7 +675,7 @@ export const data = [
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
-                Authorization: 'Bearer dummyApiKey',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -717,7 +718,7 @@ export const data = [
           {
             destination: {
               Config: {
-                restApiKey: 'dummyApiKey',
+                restApiKey: secret1,
                 prefixProperties: true,
                 useNativeSDK: false,
                 enableNestedArrayOperations: false,
@@ -800,7 +801,7 @@ export const data = [
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
-                Authorization: 'Bearer dummyApiKey',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -861,7 +862,7 @@ export const data = [
           {
             destination: {
               Config: {
-                restApiKey: 'dummyApiKey',
+                restApiKey: secret1,
                 prefixProperties: true,
                 useNativeSDK: false,
               },
@@ -970,7 +971,7 @@ export const data = [
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
-                Authorization: 'Bearer dummyApiKey',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -1132,7 +1133,7 @@ export const data = [
             },
             destination: {
               Config: {
-                restApiKey: 'dummyApiKey',
+                restApiKey: secret1,
                 prefixProperties: true,
                 useNativeSDK: false,
               },
@@ -1231,7 +1232,7 @@ export const data = [
             },
             destination: {
               Config: {
-                restApiKey: 'dummyApiKey',
+                restApiKey: secret1,
                 prefixProperties: true,
                 useNativeSDK: false,
               },
@@ -1262,7 +1263,7 @@ export const data = [
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
-                Authorization: 'Bearer dummyApiKey',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -1300,7 +1301,7 @@ export const data = [
           {
             destination: {
               Config: {
-                restApiKey: 'dummyApiKey',
+                restApiKey: secret1,
                 prefixProperties: true,
                 useNativeSDK: false,
                 dataCenter: 'us-01',
@@ -1383,7 +1384,7 @@ export const data = [
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
-                Authorization: 'Bearer dummyApiKey',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -1421,7 +1422,7 @@ export const data = [
           {
             destination: {
               Config: {
-                restApiKey: 'dummyApiKey',
+                restApiKey: secret1,
                 prefixProperties: true,
                 useNativeSDK: false,
               },
@@ -1530,7 +1531,7 @@ export const data = [
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
-                Authorization: 'Bearer dummyApiKey',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -1601,7 +1602,7 @@ export const data = [
           {
             destination: {
               Config: {
-                restApiKey: 'dummyApiKey',
+                restApiKey: secret1,
                 prefixProperties: true,
                 useNativeSDK: false,
               },
@@ -1710,7 +1711,7 @@ export const data = [
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
-                Authorization: 'Bearer dummyApiKey',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -1781,7 +1782,7 @@ export const data = [
           {
             destination: {
               Config: {
-                restApiKey: 'dummyApiKey',
+                restApiKey: secret1,
                 prefixProperties: true,
                 useNativeSDK: false,
                 enableNestedArrayOperations: true,
@@ -1908,7 +1909,7 @@ export const data = [
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
-                Authorization: 'Bearer dummyApiKey',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -2012,7 +2013,7 @@ export const data = [
           {
             destination: {
               Config: {
-                restApiKey: 'dummyApiKey',
+                restApiKey: secret1,
                 prefixProperties: true,
                 useNativeSDK: false,
                 enableNestedArrayOperations: true,
@@ -2133,7 +2134,7 @@ export const data = [
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
-                Authorization: 'Bearer dummyApiKey',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -2229,7 +2230,7 @@ export const data = [
           {
             destination: {
               Config: {
-                restApiKey: 'dummyApiKey',
+                restApiKey: secret1,
                 prefixProperties: true,
                 useNativeSDK: false,
                 dataCenter: 'us-01',
@@ -2310,7 +2311,7 @@ export const data = [
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
-                Authorization: 'Bearer dummyApiKey',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -2360,7 +2361,7 @@ export const data = [
           {
             destination: {
               Config: {
-                restApiKey: 'dummyApiKey',
+                restApiKey: secret1,
                 prefixProperties: true,
                 useNativeSDK: false,
                 dataCenter: 'us-01',
@@ -2441,7 +2442,7 @@ export const data = [
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
-                Authorization: 'Bearer dummyApiKey',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -2491,7 +2492,7 @@ export const data = [
           {
             destination: {
               Config: {
-                restApiKey: 'dummyApiKey',
+                restApiKey: secret1,
                 prefixProperties: true,
                 useNativeSDK: false,
                 dataCenter: 'US-03',
@@ -2556,7 +2557,7 @@ export const data = [
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
-                Authorization: 'Bearer dummyApiKey',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -2597,7 +2598,7 @@ export const data = [
           {
             destination: {
               Config: {
-                restApiKey: 'dummyApiKey',
+                restApiKey: secret1,
                 prefixProperties: true,
                 useNativeSDK: false,
                 dataCenter: 'US-03',
@@ -2680,7 +2681,7 @@ export const data = [
           {
             destination: {
               Config: {
-                restApiKey: 'dummyApiKey',
+                restApiKey: secret1,
                 prefixProperties: true,
                 useNativeSDK: false,
                 dataCenter: 'US-03',
@@ -2763,7 +2764,7 @@ export const data = [
           {
             destination: {
               Config: {
-                restApiKey: 'dummyApiKey',
+                restApiKey: secret1,
                 prefixProperties: true,
                 useNativeSDK: false,
                 dataCenter: 'us-01',
@@ -2845,7 +2846,7 @@ export const data = [
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
-                Authorization: 'Bearer dummyApiKey',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -2898,7 +2899,7 @@ export const data = [
           {
             destination: {
               Config: {
-                restApiKey: 'dummyApiKey',
+                restApiKey: secret1,
                 prefixProperties: true,
                 useNativeSDK: false,
                 dataCenter: 'us-01',
@@ -3005,7 +3006,7 @@ export const data = [
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
-                Authorization: 'Bearer dummyApiKey',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -3119,7 +3120,7 @@ export const data = [
             },
             destination: {
               Config: {
-                restApiKey: 'dummyApiKey',
+                restApiKey: secret1,
                 prefixProperties: true,
                 useNativeSDK: false,
                 enableSubscriptionGroupInGroupCall: true,
@@ -3151,7 +3152,7 @@ export const data = [
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
-                Authorization: 'Bearer dummyApiKey',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -3240,7 +3241,7 @@ export const data = [
             },
             destination: {
               Config: {
-                restApiKey: 'dummyApiKey',
+                restApiKey: secret1,
                 prefixProperties: true,
                 useNativeSDK: false,
                 enableSubscriptionGroupInGroupCall: true,
@@ -3272,7 +3273,7 @@ export const data = [
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
-                Authorization: 'Bearer dummyApiKey',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -3311,7 +3312,7 @@ export const data = [
           {
             destination: {
               Config: {
-                restApiKey: 'dummyApiKey',
+                restApiKey: secret1,
                 prefixProperties: true,
                 useNativeSDK: false,
               },
@@ -3393,7 +3394,7 @@ export const data = [
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
-                Authorization: 'Bearer dummyApiKey',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -3442,7 +3443,7 @@ export const data = [
           {
             destination: {
               Config: {
-                restApiKey: 'dummyApiKey',
+                restApiKey: secret1,
                 prefixProperties: true,
                 useNativeSDK: false,
                 sendPurchaseEventWithExtraProperties: true,
@@ -3552,7 +3553,7 @@ export const data = [
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
-                Authorization: 'Bearer dummyApiKey',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -3633,7 +3634,7 @@ export const data = [
           {
             destination: {
               Config: {
-                restApiKey: 'dummyApiKey',
+                restApiKey: secret1,
                 prefixProperties: true,
                 useNativeSDK: false,
                 dataCenter: 'us-01',
@@ -3711,7 +3712,7 @@ export const data = [
           {
             destination: {
               Config: {
-                restApiKey: 'dummyApiKey',
+                restApiKey: secret1,
                 prefixProperties: true,
                 useNativeSDK: false,
                 sendPurchaseEventWithExtraProperties: true,
@@ -3856,7 +3857,7 @@ export const data = [
               files: {},
               headers: {
                 Accept: 'application/json',
-                Authorization: 'Bearer dummyApiKey',
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
               method: 'POST',
@@ -3883,7 +3884,7 @@ export const data = [
           {
             destination: {
               Config: {
-                restApiKey: 'dummyApiKey',
+                restApiKey: secret1,
                 prefixProperties: true,
                 useNativeSDK: false,
               },
@@ -3959,7 +3960,7 @@ export const data = [
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
-                Authorization: 'Bearer dummyApiKey',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -4029,7 +4030,7 @@ export const data = [
           {
             destination: {
               Config: {
-                restApiKey: 'dummyApiKey',
+                restApiKey: secret1,
                 prefixProperties: true,
                 useNativeSDK: false,
                 dataCenter: 'us-01',
@@ -4091,7 +4092,7 @@ export const data = [
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
-                Authorization: 'Bearer dummyApiKey',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -4196,7 +4197,7 @@ export const data = [
             },
             destination: {
               Config: {
-                restApiKey: 'dummyApiKey',
+                restApiKey: secret1,
                 prefixProperties: true,
                 useNativeSDK: false,
               },
@@ -4295,7 +4296,7 @@ export const data = [
             },
             destination: {
               Config: {
-                restApiKey: 'dummyApiKey',
+                restApiKey: secret1,
                 prefixProperties: true,
                 useNativeSDK: false,
               },

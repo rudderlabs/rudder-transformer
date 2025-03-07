@@ -1,7 +1,9 @@
 import { ProxyV1TestData } from '../../../testTypes';
 import { generateProxyV1Payload, generateMetadata } from '../../../testUtils';
+import { defaultAccessTokenAuthHeader } from '../../../common/secrets';
+
 export const headers = {
-  Authorization: 'Bearer success_access_token',
+  Authorization: defaultAccessTokenAuthHeader,
   'Content-Type': 'application/json',
   Accept: 'application/json',
 };
@@ -230,8 +232,15 @@ export const V1BusinessTestScenarion: ProxyV1TestData[] = [
             message: 'AudienceId is Invalid. Please Provide Valid AudienceId',
             response: [
               {
-                error:
-                  '{"errors":[{"traceIdentifier":"80a1a0ba3981b04da847d05700752c77","type":"authorization","code":"audience-invalid"}]}',
+                error: JSON.stringify({
+                  errors: [
+                    {
+                      traceIdentifier: '80a1a0ba3981b04da847d05700752c77',
+                      type: 'authorization',
+                      code: 'audience-invalid',
+                    },
+                  ],
+                }),
                 metadata: generateMetadata(4),
                 statusCode: 400,
               },

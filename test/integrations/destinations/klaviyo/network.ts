@@ -1,3 +1,5 @@
+import { authHeaderBadApiKey } from './maskedSecrets';
+
 export const networkCallsData = [
   {
     httpReq: {
@@ -51,7 +53,7 @@ export const networkCallsData = [
     httpReq: {
       url: 'https://a.klaviyo.com/api/profiles',
       method: 'POST',
-      headers: { Authorization: 'Klaviyo-API-Key dummyPrivateApiKeyforfailure' },
+      headers: { Authorization: authHeaderBadApiKey },
     },
     httpRes: {},
   },

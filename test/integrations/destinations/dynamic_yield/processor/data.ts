@@ -1,3 +1,5 @@
+import { defaultApiKey } from '../../../common/secrets';
+
 export const data = [
   {
     name: 'dynamic_yield',
@@ -32,7 +34,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: defaultApiKey,
                 hashEmail: true,
               },
               DestinationDefinition: { Config: { cdkV2Enabled: true } },
@@ -62,7 +64,7 @@ export const data = [
               endpoint: 'https://dy-api.com/v2/collect/user/event',
               headers: {
                 'Content-Type': 'application/json',
-                'DY-API-Key': 'dummyApiKey',
+                'DY-API-Key': defaultApiKey,
               },
               params: {},
               body: {
@@ -126,7 +128,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: defaultApiKey,
                 hashEmail: false,
               },
               DestinationDefinition: { Config: { cdkV2Enabled: true } },
@@ -156,7 +158,7 @@ export const data = [
               endpoint: 'https://dy-api.com/v2/collect/user/event',
               headers: {
                 'Content-Type': 'application/json',
-                'DY-API-Key': 'dummyApiKey',
+                'DY-API-Key': defaultApiKey,
               },
               params: {},
               body: {
@@ -233,7 +235,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: defaultApiKey,
                 hashEmail: false,
               },
               DestinationDefinition: { Config: { cdkV2Enabled: true } },
@@ -263,7 +265,7 @@ export const data = [
               endpoint: 'https://dy-api.com/v2/collect/user/event',
               headers: {
                 'Content-Type': 'application/json',
-                'DY-API-Key': 'dummyApiKey',
+                'DY-API-Key': defaultApiKey,
               },
               params: {},
               body: {
@@ -326,7 +328,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: defaultApiKey,
                 hashEmail: false,
               },
               DestinationDefinition: { Config: { cdkV2Enabled: true } },
@@ -356,7 +358,7 @@ export const data = [
               endpoint: 'https://dy-api.com/v2/collect/user/event',
               headers: {
                 'Content-Type': 'application/json',
-                'DY-API-Key': 'dummyApiKey',
+                'DY-API-Key': defaultApiKey,
               },
               params: {},
               body: {
@@ -433,7 +435,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: defaultApiKey,
                 hashEmail: false,
               },
               DestinationDefinition: { Config: { cdkV2Enabled: true } },
@@ -463,7 +465,7 @@ export const data = [
               endpoint: 'https://dy-api.com/v2/collect/user/event',
               headers: {
                 'Content-Type': 'application/json',
-                'DY-API-Key': 'dummyApiKey',
+                'DY-API-Key': defaultApiKey,
               },
               params: {},
               body: {
@@ -541,7 +543,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: defaultApiKey,
                 hashEmail: false,
               },
               DestinationDefinition: { Config: { cdkV2Enabled: true } },
@@ -571,7 +573,7 @@ export const data = [
               endpoint: 'https://dy-api.com/v2/collect/user/event',
               headers: {
                 'Content-Type': 'application/json',
-                'DY-API-Key': 'dummyApiKey',
+                'DY-API-Key': defaultApiKey,
               },
               params: {},
               body: {
@@ -667,7 +669,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: defaultApiKey,
                 hashEmail: false,
               },
               DestinationDefinition: { Config: { cdkV2Enabled: true } },
@@ -697,7 +699,7 @@ export const data = [
               endpoint: 'https://dy-api.com/v2/collect/user/event',
               headers: {
                 'Content-Type': 'application/json',
-                'DY-API-Key': 'dummyApiKey',
+                'DY-API-Key': defaultApiKey,
               },
               params: {},
               body: {
@@ -774,7 +776,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: defaultApiKey,
               },
               DestinationDefinition: { Config: { cdkV2Enabled: true } },
             },
@@ -845,7 +847,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: defaultApiKey,
               },
               DestinationDefinition: { Config: { cdkV2Enabled: true } },
             },
@@ -999,7 +1001,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: defaultApiKey,
               },
               DestinationDefinition: { Config: { cdkV2Enabled: true } },
             },

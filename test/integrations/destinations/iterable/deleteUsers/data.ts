@@ -1,3 +1,5 @@
+import { defaultApiKey } from '../../../common/secrets';
+
 const destType = 'iterable';
 
 export const data = [
@@ -50,7 +52,7 @@ export const data = [
               },
             ],
             config: {
-              apiToken: 'dummyApiKey',
+              apiToken: defaultApiKey,
             },
           },
         ],
@@ -88,7 +90,7 @@ export const data = [
               },
             ],
             config: {
-              apiKey: 'dummyApiKey',
+              apiKey: defaultApiKey,
             },
           },
         ],
@@ -165,7 +167,7 @@ export const data = [
               },
             ],
             config: {
-              apiKey: 'dummyApiKey',
+              apiKey: defaultApiKey,
             },
           },
         ],
@@ -200,7 +202,7 @@ export const data = [
               },
             ],
             config: {
-              apiKey: 'dummyApiKey',
+              apiKey: defaultApiKey,
               dataCenter: 'EUDC',
             },
           },

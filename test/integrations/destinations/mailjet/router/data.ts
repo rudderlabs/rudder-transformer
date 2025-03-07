@@ -1,3 +1,4 @@
+import { authHeader1, secret1, secret2 } from '../maskedSecrets';
 export const data = [
   {
     name: 'mailjet',
@@ -12,8 +13,8 @@ export const data = [
             {
               destination: {
                 Config: {
-                  apiKey: 'dummyApiKey',
-                  apiSecret: 'dummyApiSecret',
+                  apiKey: secret1,
+                  apiSecret: secret2,
                   listId: '58578',
                   contactPropertiesMapping: [{ from: 'userCountry', to: 'country' }],
                 },
@@ -56,7 +57,7 @@ export const data = [
                 endpoint: 'https://api.mailjet.com/v3/REST/contactslist/58578/managemanycontacts',
                 headers: {
                   'Content-Type': 'application/json',
-                  Authorization: 'Basic ZHVtbXlBcGlLZXk6ZHVtbXlBcGlTZWNyZXQ=',
+                  Authorization: authHeader1,
                 },
                 params: {},
                 body: {
@@ -75,8 +76,8 @@ export const data = [
               statusCode: 200,
               destination: {
                 Config: {
-                  apiKey: 'dummyApiKey',
-                  apiSecret: 'dummyApiSecret',
+                  apiKey: secret1,
+                  apiSecret: secret2,
                   listId: '58578',
                   contactPropertiesMapping: [{ from: 'userCountry', to: 'country' }],
                 },
@@ -100,8 +101,8 @@ export const data = [
             {
               destination: {
                 Config: {
-                  apiKey: 'dummyApiKey',
-                  apiSecret: 'dummyApiSecret',
+                  apiKey: secret1,
+                  apiSecret: secret2,
                   listId: '58578',
                   contactPropertiesMapping: [{ from: 'userCountry', to: 'country' }],
                 },
@@ -147,7 +148,7 @@ export const data = [
                 endpoint: 'https://api.mailjet.com/v3/REST/contactslist/58578/managemanycontacts',
                 headers: {
                   'Content-Type': 'application/json',
-                  Authorization: 'Basic ZHVtbXlBcGlLZXk6ZHVtbXlBcGlTZWNyZXQ=',
+                  Authorization: authHeader1,
                 },
                 params: {},
                 body: {
@@ -176,8 +177,8 @@ export const data = [
               statusCode: 200,
               destination: {
                 Config: {
-                  apiKey: 'dummyApiKey',
-                  apiSecret: 'dummyApiSecret',
+                  apiKey: secret1,
+                  apiSecret: secret2,
                   listId: '58578',
                   contactPropertiesMapping: [
                     {
@@ -206,8 +207,8 @@ export const data = [
             {
               destination: {
                 Config: {
-                  apiKey: 'dummyApiKey',
-                  apiSecret: 'dummyApiSecret',
+                  apiKey: secret1,
+                  apiSecret: secret2,
                   listId: '58578',
                   contactPropertiesMapping: [{ from: 'userCountry', to: 'country' }],
                 },
@@ -237,8 +238,8 @@ export const data = [
             {
               destination: {
                 Config: {
-                  apiKey: 'dummyApiKey',
-                  apiSecret: 'dummyApiSecret',
+                  apiKey: secret1,
+                  apiSecret: secret2,
                   listId: '58578',
                   contactPropertiesMapping: [{ from: 'userCountry', to: 'country' }],
                 },
@@ -280,8 +281,8 @@ export const data = [
             {
               destination: {
                 Config: {
-                  apiKey: 'dummyApiKey',
-                  apiSecret: 'dummyApiSecret',
+                  apiKey: secret1,
+                  apiSecret: secret2,
                   listId: '58578',
                   contactPropertiesMapping: [{ from: 'userCountry', to: 'country' }],
                 },
@@ -323,8 +324,8 @@ export const data = [
             {
               destination: {
                 Config: {
-                  apiKey: 'dummyApiKey',
-                  apiSecret: 'dummyApiSecret',
+                  apiKey: secret1,
+                  apiSecret: secret2,
                   listId: '58578',
                   contactPropertiesMapping: [{ from: 'userCountry', to: 'country' }],
                 },
@@ -366,8 +367,8 @@ export const data = [
             {
               destination: {
                 Config: {
-                  apiKey: 'dummyApiKey',
-                  apiSecret: 'dummyApiSecret',
+                  apiKey: secret1,
+                  apiSecret: secret2,
                   listId: '58578',
                   contactPropertiesMapping: [{ from: 'userCountry', to: 'country' }],
                 },
@@ -409,8 +410,8 @@ export const data = [
             {
               destination: {
                 Config: {
-                  apiKey: 'dummyApiKey',
-                  apiSecret: 'dummyApiSecret',
+                  apiKey: secret1,
+                  apiSecret: secret2,
                   listId: '58578',
                   contactPropertiesMapping: [{ from: 'userCountry', to: 'country' }],
                 },
@@ -446,8 +447,8 @@ export const data = [
             {
               destination: {
                 Config: {
-                  apiKey: 'dummyApiKey',
-                  apiSecret: 'dummyApiSecret',
+                  apiKey: secret1,
+                  apiSecret: secret2,
                   listId: '58578',
                   contactPropertiesMapping: [{ from: 'userCountry', to: 'country' }],
                 },
@@ -493,7 +494,7 @@ export const data = [
                 endpoint: 'https://api.mailjet.com/v3/REST/contactslist/58578/managemanycontacts',
                 headers: {
                   'Content-Type': 'application/json',
-                  Authorization: 'Basic ZHVtbXlBcGlLZXk6ZHVtbXlBcGlTZWNyZXQ=',
+                  Authorization: authHeader1,
                 },
                 params: {},
                 body: {
@@ -528,8 +529,8 @@ export const data = [
               statusCode: 200,
               destination: {
                 Config: {
-                  apiKey: 'dummyApiKey',
-                  apiSecret: 'dummyApiSecret',
+                  apiKey: secret1,
+                  apiSecret: secret2,
                   listId: '58578',
                   contactPropertiesMapping: [
                     {
@@ -548,7 +549,7 @@ export const data = [
                 endpoint: 'https://api.mailjet.com/v3/REST/contactslist/58570/managemanycontacts',
                 headers: {
                   'Content-Type': 'application/json',
-                  Authorization: 'Basic ZHVtbXlBcGlLZXk6ZHVtbXlBcGlTZWNyZXQ=',
+                  Authorization: authHeader1,
                 },
                 params: {},
                 body: {
@@ -574,8 +575,8 @@ export const data = [
               statusCode: 200,
               destination: {
                 Config: {
-                  apiKey: 'dummyApiKey',
-                  apiSecret: 'dummyApiSecret',
+                  apiKey: secret1,
+                  apiSecret: secret2,
                   listId: '58578',
                   contactPropertiesMapping: [
                     {
@@ -594,7 +595,7 @@ export const data = [
                 endpoint: 'https://api.mailjet.com/v3/REST/contactslist/58576/managemanycontacts',
                 headers: {
                   'Content-Type': 'application/json',
-                  Authorization: 'Basic ZHVtbXlBcGlLZXk6ZHVtbXlBcGlTZWNyZXQ=',
+                  Authorization: authHeader1,
                 },
                 params: {},
                 body: {
@@ -620,8 +621,8 @@ export const data = [
               statusCode: 200,
               destination: {
                 Config: {
-                  apiKey: 'dummyApiKey',
-                  apiSecret: 'dummyApiSecret',
+                  apiKey: secret1,
+                  apiSecret: secret2,
                   listId: '58578',
                   contactPropertiesMapping: [
                     {
@@ -640,7 +641,7 @@ export const data = [
                 endpoint: 'https://api.mailjet.com/v3/REST/contactslist/58576/managemanycontacts',
                 headers: {
                   'Content-Type': 'application/json',
-                  Authorization: 'Basic ZHVtbXlBcGlLZXk6ZHVtbXlBcGlTZWNyZXQ=',
+                  Authorization: authHeader1,
                 },
                 params: {},
                 body: {
@@ -666,8 +667,8 @@ export const data = [
               statusCode: 200,
               destination: {
                 Config: {
-                  apiKey: 'dummyApiKey',
-                  apiSecret: 'dummyApiSecret',
+                  apiKey: secret1,
+                  apiSecret: secret2,
                   listId: '58578',
                   contactPropertiesMapping: [
                     {
@@ -686,7 +687,7 @@ export const data = [
                 endpoint: 'https://api.mailjet.com/v3/REST/contactslist/585896/managemanycontacts',
                 headers: {
                   'Content-Type': 'application/json',
-                  Authorization: 'Basic ZHVtbXlBcGlLZXk6ZHVtbXlBcGlTZWNyZXQ=',
+                  Authorization: authHeader1,
                 },
                 params: {},
                 body: {
@@ -712,8 +713,8 @@ export const data = [
               statusCode: 200,
               destination: {
                 Config: {
-                  apiKey: 'dummyApiKey',
-                  apiSecret: 'dummyApiSecret',
+                  apiKey: secret1,
+                  apiSecret: secret2,
                   listId: '58578',
                   contactPropertiesMapping: [
                     {
@@ -732,7 +733,7 @@ export const data = [
                 endpoint: 'https://api.mailjet.com/v3/REST/contactslist/584896/managemanycontacts',
                 headers: {
                   'Content-Type': 'application/json',
-                  Authorization: 'Basic ZHVtbXlBcGlLZXk6ZHVtbXlBcGlTZWNyZXQ=',
+                  Authorization: authHeader1,
                 },
                 params: {},
                 body: {
@@ -758,8 +759,8 @@ export const data = [
               statusCode: 200,
               destination: {
                 Config: {
-                  apiKey: 'dummyApiKey',
-                  apiSecret: 'dummyApiSecret',
+                  apiKey: secret1,
+                  apiSecret: secret2,
                   listId: '58578',
                   contactPropertiesMapping: [
                     {

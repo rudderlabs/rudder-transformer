@@ -181,4 +181,9 @@ const processRouterDest = async (inputs, reqMetadata) => {
   return respList;
 };
 
-module.exports = { process, processRouterDest, mergeCustomAttributes };
+module.exports = {
+  process,
+  processRouterDest,
+  mergeCustomAttributes,
+  getCommonDestinationEndpoint,
+};

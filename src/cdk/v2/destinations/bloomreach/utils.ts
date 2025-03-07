@@ -23,8 +23,8 @@ const getCustomerIDsFromIntegrationObject = (message: RudderMessage): any => {
 
 export const prepareCustomerIDs = (message: RudderMessage, destination: Destination): any => {
   const customerIDs = {
-    [destination.Config.hardID]: message.userId,
-    [destination.Config.softID]: message.anonymousId,
+    [String(destination.Config.hardID)]: message.userId,
+    [String(destination.Config.softID)]: message.anonymousId,
     ...getCustomerIDsFromIntegrationObject(message),
   };
   return customerIDs;

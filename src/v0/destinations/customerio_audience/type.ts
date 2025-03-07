@@ -1,4 +1,12 @@
-import { Connection, Destination, Metadata, RouterTransformationRequestData } from '../../../types';
+import { z } from 'zod';
+
+import {
+  Connection,
+  Destination,
+  DestinationConnectionConfig,
+  Metadata,
+  RouterTransformationRequestData,
+} from '../../../types';
 
 // Basic response type for audience list operations
 export type RespList = {
@@ -22,39 +30,40 @@ export type SegmentationHeadersType = {
   Authorization: string;
 };
 
-// CustomerIO specific configuration types
-type CustomerIODestinationConfig = {
-  apiKey: string;
-  appApiKey: string;
-  siteId: string;
-  [key: string]: any;
-};
+export const CustomerIODestinationConfigSchema = z
+  .object({
+    apiKey: z.string(),
+    appApiKey: z.string(),
+    siteId: z.string(),
+  })
+  .passthrough();
 
-type CustomerIOConnectionConfig = {
-  destination: {
-    audienceId: string | number;
-    identifierMappings: {
-      from: string;
-      to: string;
-    }[];
-  };
-};
+// CustomerIO specific configuration types
+export type CustomerIODestinationConfig = z.infer<typeof CustomerIODestinationConfigSchema>;
+
+export const CustomerIOConnectionConfigSchema = z
+  .object({
+    audienceId: z.string(),
+    identifierMappings: z.array(z.object({ from: z.string(), to: z.string() })),
+  })
+  .passthrough();
+
+export type CustomerIOConnectionConfig = z.infer<typeof CustomerIOConnectionConfigSchema>;
 
 // Message type specific to CustomerIO
-export type CustomerIOMessageType = {
-  action: string;
-  identifiers: Record<string, string | number>;
-  [key: string]: any;
-};
+export const CustomerIOMessageSchema = z
+  .object({
+    action: z.string(),
+    identifiers: z.record(z.string(), z.union([z.string(), z.number()])),
+  })
+  .passthrough();
+
+export type CustomerIOMessage = z.infer<typeof CustomerIOMessageSchema>;
 
 // Final exported types using generics from base types
 export type CustomerIODestinationType = Destination<CustomerIODestinationConfig>;
 export type CustomerIOConnectionType = Connection & {
-  config: CustomerIOConnectionConfig;
+  config: DestinationConnectionConfig<CustomerIOConnectionConfig>;
 };
 
-export type CustomerIORouterRequestType = RouterTransformationRequestData<
-  CustomerIOMessageType,
-  CustomerIODestinationType,
-  CustomerIOConnectionType
->;
+export type CustomerIORouterRequestType = RouterTransformationRequestData;

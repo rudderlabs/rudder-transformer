@@ -100,8 +100,9 @@ const createDestinationPayload = ({ message, category, useObjectData }) => {
 };
 
 function responseBuilderSimple(message, category, destination) {
-  const payload = constructPayload(message, MAPPING_CONFIG[category.name]);
-  if (!payload) {
+  // preparing base payload with mandatory fields
+  const basePayload = constructPayload(message, MAPPING_CONFIG[category.name]);
+  if (!basePayload) {
     // fail-safety for developer error
     throw new TransformationError('Payload could not be constructed');
   }
@@ -121,13 +122,13 @@ function responseBuilderSimple(message, category, destination) {
 
   if (category.type === 'alias') {
     delete response.headers['MOE-APPKEY'];
-    response.body.JSON = removeUndefinedAndNullValues(payload);
+    response.body.JSON = removeUndefinedAndNullValues(basePayload);
     return response;
   }
 
-  const destinationPayload = createDestinationPayload({ message, category, useObjectData });
-  if (destinationPayload) {
-    response.body.JSON = removeUndefinedAndNullValues({ ...payload, ...destinationPayload });
+  const payload = createDestinationPayload({ message, category, useObjectData });
+  if (payload) {
+    response.body.JSON = removeUndefinedAndNullValues({ ...basePayload, ...payload });
   }
   return response;
 }
@@ -180,4 +181,4 @@ const processRouterDest = async (inputs, reqMetadata) => {
   return respList;
 };
 
-module.exports = { process, processRouterDest };
+module.exports = { process, processRouterDest, mergeCustomAttributes };

@@ -3,7 +3,7 @@ import { secret1, secret2 } from '../maskedSecrets';
 export const data = [
   {
     name: 'am',
-    description: 'Test 0',
+    description: 'Test 0: Should default to US residencyServer',
     feature: 'userDeletion',
     module: 'destination',
     version: 'v0',

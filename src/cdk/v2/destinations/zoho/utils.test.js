@@ -9,8 +9,6 @@ const {
   validateConfigurationIssue,
   formatMultiSelectFields,
   formatMultiSelectFieldsV2,
-  transformToURLParams,
-  transformToURLParamsV2,
   calculateTrigger,
   searchRecordId,
   searchRecordIdV2,
@@ -154,57 +152,6 @@ describe('formatMultiSelectFieldsV2', () => {
   });
 });
 
-describe('transformToURLParams', () => {
-  const testCases = [
-    {
-      name: 'should build a proper URL with encoded criteria based on fields and config for Leads module',
-      input: {
-        fields: { First_Name: 'John, Doe', Age: '30' },
-        config: { region: 'US' },
-        object: 'Leads',
-      },
-      expected: `https://www.zohoapis.com/crm/v6/Leads/search?criteria=(First_Name:equals:John%5C%2C%20Doe)and(Age:equals:30)`,
-    },
-    {
-      name: 'should build a proper URL with encoded criteria based on fields and config for Contacts module',
-      input: {
-        fields: { First_Name: 'John, Doe', Age: '30' },
-        config: { region: 'US' },
-        object: 'Contacts',
-      },
-      expected: `https://www.zohoapis.com/crm/v6/Contacts/search?criteria=(First_Name:equals:John%5C%2C%20Doe)and(Age:equals:30)`,
-    },
-  ];
-
-  testCases.forEach(({ name, input, expected }) => {
-    it(name, () => {
-      const url = transformToURLParams(input.fields, input.config, input.object);
-      expect(url).toEqual(expected);
-    });
-  });
-});
-
-describe('transformToURLParamsV2', () => {
-  const testCases = [
-    {
-      name: 'should build a proper URL with encoded criteria based on fields and config',
-      input: {
-        fields: { First_Name: 'John, Doe', Age: '30' },
-        config: { region: 'US' },
-        object: 'Leads',
-      },
-      expected: `https://www.zohoapis.com/crm/v6/Leads/search?criteria=(First_Name:equals:John%5C%2C%20Doe)and(Age:equals:30)`,
-    },
-  ];
-
-  testCases.forEach(({ name, input, expected }) => {
-    it(name, () => {
-      const url = transformToURLParamsV2(input.fields, input.config, input.object);
-      expect(url).toEqual(expected);
-    });
-  });
-});
-
 describe('calculateTrigger', () => {
   const testCases = [
     {
@@ -237,9 +184,11 @@ describe('calculateTrigger', () => {
 });
 
 describe('searchRecordId', () => {
-  const mockFields = { Email: 'test@example.com' };
+  const module = 'Leads';
+  const mockFields = { Email: 'test@example.com', Name: 'John Doe' };
   const mockMetadata = { secret: { accessToken: 'mock-token' } };
-  const mockConfig = { region: 'us' };
+  const mockConfig = { region: 'US' };
+  const mockQuery = "SELECT id FROM Leads WHERE Email = 'test@example.com'";
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -247,7 +196,11 @@ describe('searchRecordId', () => {
 
   const testCases = [
     {
+      fields: mockFields,
+      module,
+      query: mockQuery,
       name: 'should handle non-array response data',
+      identifierType: 'Email',
       response: {
         processedResponse: {
           status: 200,
@@ -258,11 +211,15 @@ describe('searchRecordId', () => {
       },
       expected: {
         erroneous: true,
-        message: 'No contact is found with record details',
+        message: 'No Leads is found with record details',
       },
     },
     {
+      fields: mockFields,
+      query: mockQuery,
+      module,
       name: 'should handle missing response data property',
+      identifierType: 'Email',
       response: {
         processedResponse: {
           status: 200,
@@ -271,11 +228,15 @@ describe('searchRecordId', () => {
       },
       expected: {
         erroneous: true,
-        message: 'No contact is found with record details',
+        message: 'No Leads is found with record details',
       },
     },
     {
+      fields: mockFields,
+      query: mockQuery,
+      module,
       name: 'should handle null response data',
+      identifierType: 'Email',
       response: {
         processedResponse: {
           status: 200,
@@ -286,11 +247,15 @@ describe('searchRecordId', () => {
       },
       expected: {
         erroneous: true,
-        message: 'No contact is found with record details',
+        message: 'No Leads is found with record details',
       },
     },
     {
+      fields: mockFields,
+      query: mockQuery,
+      module,
       name: 'should handle empty array response data',
+      identifierType: 'Email',
       response: {
         processedResponse: {
           status: 200,
@@ -301,11 +266,15 @@ describe('searchRecordId', () => {
       },
       expected: {
         erroneous: true,
-        message: 'No contact is found with record details',
+        message: 'No Leads is found with record details',
       },
     },
     {
+      fields: mockFields,
+      query: mockQuery,
+      module,
       name: 'should handle valid array response data with single record',
+      identifierType: 'Email',
       response: {
         processedResponse: {
           status: 200,
@@ -320,22 +289,11 @@ describe('searchRecordId', () => {
       },
     },
     {
-      name: 'should handle valid array response data with multiple records',
-      response: {
-        processedResponse: {
-          status: 200,
-          response: {
-            data: [{ id: '123' }, { id: '456' }],
-          },
-        },
-      },
-      expected: {
-        erroneous: false,
-        message: ['123', '456'],
-      },
-    },
-    {
+      fields: mockFields,
+      query: mockQuery,
+      module,
       name: 'should handle non-success HTTP status code',
+      identifierType: 'Email',
       response: {
         processedResponse: {
           status: 400,
@@ -348,7 +306,11 @@ describe('searchRecordId', () => {
       },
     },
     {
+      fields: mockFields,
+      query: mockQuery,
+      module,
       name: 'should handle HTTP request error',
+      identifierType: 'Email',
       error: new Error('Network Error'),
       expected: {
         erroneous: true,
@@ -357,7 +319,7 @@ describe('searchRecordId', () => {
     },
   ];
 
-  testCases.forEach(({ name, response, error, expected }) => {
+  testCases.forEach(({ name, response, error, expected, query, fields, identifierType }) => {
     it(name, async () => {
       if (error) {
         handleHttpRequest.mockRejectedValueOnce(error);
@@ -365,8 +327,61 @@ describe('searchRecordId', () => {
         handleHttpRequest.mockResolvedValueOnce(response);
       }
 
-      const result = await searchRecordId(mockFields, mockMetadata, mockConfig);
+      const result = await searchRecordId(fields, mockMetadata, mockConfig, module, identifierType);
+      expect(handleHttpRequest).toHaveBeenCalledWith(
+        'post',
+        'https://www.zohoapis.com/crm/v6/coql',
+        {
+          select_query: query,
+        },
+        {
+          headers: {
+            Authorization: `Zoho-oauthtoken ${mockMetadata.secret.accessToken}`,
+          },
+        },
+        {
+          destType: 'zoho',
+          feature: 'deleteRecords',
+          requestMethod: 'POST',
+          endpointPath: 'https://www.zohoapis.com/crm/v6/coql',
+          module: 'router',
+        },
+      );
 
+      expect(result).toEqual(expected);
+    });
+  });
+
+  const testCases2 = [
+    {
+      fields: {
+        Email: '',
+        phone: null,
+        jobs: [],
+      },
+      query: mockQuery,
+      module,
+      identifierType: 'Email',
+      name: 'should return intrumentation error when identifier value is empty',
+      response: {
+        processedResponse: {
+          status: 200,
+          response: {
+            data: [{ id: '123' }],
+          },
+        },
+      },
+      expected: {
+        erroneous: true,
+        code: 'INSTRUMENTATION_ERROR',
+        message: 'Identifier values are not provided for Leads',
+      },
+    },
+  ];
+
+  testCases2.forEach(({ name, expected, fields, identifierType }) => {
+    it(name, async () => {
+      const result = await searchRecordId(fields, mockMetadata, mockConfig, module, identifierType);
       expect(result).toEqual(expected);
     });
   });
@@ -375,13 +390,14 @@ describe('searchRecordId', () => {
 describe('searchRecordIdV2', () => {
   const mockFields = { Email: 'test@example.com' };
   const mockMetadata = { secret: { accessToken: 'mock-token' } };
-  const mockConfig = { region: 'us' };
+  const mockConfig = { region: 'US' };
   const mockConConfig = {
     destination: {
       object: 'Leads',
       identifierMappings: [{ to: 'Email', from: 'Email' }],
     },
   };
+  const mockQuery = "SELECT id FROM Leads WHERE Email = 'test@example.com'";
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -389,6 +405,9 @@ describe('searchRecordIdV2', () => {
 
   const testCases = [
     {
+      fields: mockFields,
+      module: mockConConfig.destination.object,
+      query: mockQuery,
       name: 'should handle non-array response data',
       response: {
         processedResponse: {
@@ -400,10 +419,13 @@ describe('searchRecordIdV2', () => {
       },
       expected: {
         erroneous: true,
-        message: 'No contact is found with record details',
+        message: 'No Leads is found with record details',
       },
     },
     {
+      fields: mockFields,
+      query: mockQuery,
+      module: mockConConfig.destination.object,
       name: 'should handle missing response data property',
       response: {
         processedResponse: {
@@ -413,10 +435,13 @@ describe('searchRecordIdV2', () => {
       },
       expected: {
         erroneous: true,
-        message: 'No contact is found with record details',
+        message: 'No Leads is found with record details',
       },
     },
     {
+      fields: mockFields,
+      query: mockQuery,
+      module: mockConConfig.destination.object,
       name: 'should handle null response data',
       response: {
         processedResponse: {
@@ -428,10 +453,13 @@ describe('searchRecordIdV2', () => {
       },
       expected: {
         erroneous: true,
-        message: 'No contact is found with record details',
+        message: 'No Leads is found with record details',
       },
     },
     {
+      fields: mockFields,
+      query: mockQuery,
+      module: mockConConfig.destination.object,
       name: 'should handle empty array response data',
       response: {
         processedResponse: {
@@ -443,10 +471,13 @@ describe('searchRecordIdV2', () => {
       },
       expected: {
         erroneous: true,
-        message: 'No contact is found with record details',
+        message: 'No Leads is found with record details',
       },
     },
     {
+      fields: mockFields,
+      query: mockQuery,
+      module: mockConConfig.destination.object,
       name: 'should handle valid array response data with single record',
       response: {
         processedResponse: {
@@ -462,6 +493,42 @@ describe('searchRecordIdV2', () => {
       },
     },
     {
+      fields: {
+        Name: 'rid1927ce14265c006ae11555ec6e1cdbbac',
+        Name1: 'Liam Bailey',
+        Has_Chargeback: true,
+        Last_Client_Purchase: '2021-06-15T00:00:00Z',
+        Purchase_Category: ['category1', 'category2'],
+        Lifetime_Client_Revenue: 1200,
+        Name2: 'Olivia Smith',
+        Has_Chargeback2: false,
+        Last_Client_Purchase2: '2022-01-10T00:00:00Z',
+        Purchase_Category2: ['category3', 'category4'],
+        Lifetime_Client_Revenue2: 800,
+        Name3: 'Noah Johnson',
+        Has_Chargeback3: true,
+        Last_Client_Purchase3: '2023-03-22T00:00:00Z',
+        Purchase_Category3: ['category5'],
+        Lifetime_Client_Revenue3: 1500,
+        Name4: 'Emma Davis',
+        Has_Chargeback4: false,
+        Last_Client_Purchase4: '2023-07-01T00:00:00Z',
+        Purchase_Category4: ['category6', 'category7'],
+        Lifetime_Client_Revenue4: 900,
+        Name5: 'James Wilson',
+        Has_Chargeback5: true,
+        Last_Client_Purchase5: '2022-11-05T00:00:00Z',
+        Purchase_Category5: ['category8'],
+        Lifetime_Client_Revenue5: 1100,
+        Name6: 'Sophia Miller',
+        Has_Chargeback6: false,
+        Last_Client_Purchase6: '2024-01-12T00:00:00Z',
+        Purchase_Category6: ['category9', 'category10'],
+        Lifetime_Client_Revenue6: 1300,
+      },
+      module: mockConConfig.destination.object,
+      query:
+        "SELECT id FROM Leads WHERE ((Name = 'rid1927ce14265c006ae11555ec6e1cdbbac' AND Name1 = 'Liam Bailey') AND ((Has_Chargeback = 'true' AND Last_Client_Purchase = '2021-06-15T00:00:00Z') AND ((Purchase_Category = 'category1;category2' AND Lifetime_Client_Revenue = 1200) AND ((Name2 = 'Olivia Smith' AND Has_Chargeback2 = 'false') AND ((Last_Client_Purchase2 = '2022-01-10T00:00:00Z' AND Purchase_Category2 = 'category3;category4') AND ((Lifetime_Client_Revenue2 = 800 AND Name3 = 'Noah Johnson') AND ((Has_Chargeback3 = 'true' AND Last_Client_Purchase3 = '2023-03-22T00:00:00Z') AND ((Purchase_Category3 = 'category5' AND Lifetime_Client_Revenue3 = 1500) AND ((Name4 = 'Emma Davis' AND Has_Chargeback4 = 'false') AND ((Last_Client_Purchase4 = '2023-07-01T00:00:00Z' AND Purchase_Category4 = 'category6;category7') AND ((Lifetime_Client_Revenue4 = 900 AND Name5 = 'James Wilson') AND ((Has_Chargeback5 = 'true' AND Last_Client_Purchase5 = '2022-11-05T00:00:00Z') AND Purchase_Category5 = 'category8'))))))))))))",
       name: 'should handle valid array response data with multiple records',
       response: {
         processedResponse: {
@@ -477,6 +544,9 @@ describe('searchRecordIdV2', () => {
       },
     },
     {
+      fields: mockFields,
+      query: mockQuery,
+      module: mockConConfig.destination.object,
       name: 'should handle non-success HTTP status code',
       response: {
         processedResponse: {
@@ -490,6 +560,9 @@ describe('searchRecordIdV2', () => {
       },
     },
     {
+      fields: mockFields,
+      query: mockQuery,
+      module: mockConConfig.destination.object,
       name: 'should handle HTTP request error',
       error: new Error('Network Error'),
       expected: {
@@ -499,7 +572,7 @@ describe('searchRecordIdV2', () => {
     },
   ];
 
-  testCases.forEach(({ name, response, error, expected }) => {
+  testCases.forEach(({ name, response, error, expected, query, fields }) => {
     it(name, async () => {
       if (error) {
         handleHttpRequest.mockRejectedValueOnce(error);
@@ -507,8 +580,70 @@ describe('searchRecordIdV2', () => {
         handleHttpRequest.mockResolvedValueOnce(response);
       }
 
-      const result = await searchRecordIdV2(mockFields, mockMetadata, mockConfig, mockConConfig);
+      const result = await searchRecordIdV2(
+        fields,
+        mockMetadata,
+        mockConfig,
+        mockConConfig.destination,
+      );
+      expect(handleHttpRequest).toHaveBeenCalledWith(
+        'post',
+        'https://www.zohoapis.com/crm/v6/coql',
+        {
+          select_query: query,
+        },
+        {
+          headers: {
+            Authorization: `Zoho-oauthtoken ${mockMetadata.secret.accessToken}`,
+          },
+        },
+        {
+          destType: 'zoho',
+          feature: 'deleteRecords',
+          requestMethod: 'POST',
+          endpointPath: 'https://www.zohoapis.com/crm/v6/coql',
+          module: 'router',
+        },
+      );
 
+      expect(result).toEqual(expected);
+    });
+  });
+
+  const testCases2 = [
+    {
+      fields: {
+        Email: '',
+        phone: null,
+        jobs: [],
+      },
+      query: mockQuery,
+      module: mockConConfig.destination.object,
+      name: 'should return intrumentation error when identifier value is empty',
+      response: {
+        processedResponse: {
+          status: 200,
+          response: {
+            data: [{ id: '123' }],
+          },
+        },
+      },
+      expected: {
+        erroneous: true,
+        code: 'INSTRUMENTATION_ERROR',
+        message: 'Identifier values are not provided for Leads',
+      },
+    },
+  ];
+
+  testCases2.forEach(({ name, expected, fields }) => {
+    it(name, async () => {
+      const result = await searchRecordIdV2(
+        fields,
+        mockMetadata,
+        mockConfig,
+        mockConConfig.destination,
+      );
       expect(result).toEqual(expected);
     });
   });

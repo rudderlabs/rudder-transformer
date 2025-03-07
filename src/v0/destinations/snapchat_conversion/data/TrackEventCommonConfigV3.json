@@ -1,0 +1,77 @@
+[
+  {
+    "destKey": "data.description",
+    "sourceKeys": "properties.description",
+    "required": false
+  },
+  {
+    "destKey": "data.custom_data.brands",
+    "sourceKeys": "properties.brands",
+    "required": false,
+    "metadata": {
+      "type": "IsArray"
+    }
+  },
+  {
+    "destKey": "data.event_tag",
+    "sourceKeys": "properties.event_tag",
+    "required": false
+  },
+  {
+    "destKey": "data.level",
+    "sourceKeys": "properties.level",
+    "required": false
+  },
+  {
+    "destKey": "customer_status",
+    "sourceKeys": "properties.customer_status",
+    "required": false
+  },
+  {
+    "destKey": "data",
+    "sourceKeys": "properties.data",
+    "required": false
+  },
+  {
+    "destKey": "sign_up_method",
+    "sourceKeys": "properties.sign_up_method",
+    "required": false
+  },
+  {
+    "destKey": "data.advertiser_cookie_1",
+    "sourceKeys": "properties.advertiser_cookie_1",
+    "required": false
+  },
+  {
+    "sourceKeys": "country",
+    "destKey": "data.user_data.country",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "sourceKeys": "context.clientUserAgent",
+    "destKey": "data.user_data.client_user_agent",
+    "metadata": {
+      "type": "toLower"
+    },
+    "required": false
+  },
+  {
+    "destKey": "data.user_data.sc_click_id",
+    "sourceKeys": ["properties.sc_click_id", "properties.scClickId"],
+    "required": false
+  },
+  {
+    "destKey": "data.user_data.sc_cookie1",
+    "sourceKeys": ["properties.sc_cookie1", "properties.scCookie1"],
+    "required": false
+  },
+  {
+    "destKey": "data.app_data.advertiser_tracking_enabled",
+    "sourceKeys": [
+      "properties.advertiser_tracking_enabled",
+      "properties.advertiserTrackingEnabled"
+    ],
+    "required": false
+  }
+]

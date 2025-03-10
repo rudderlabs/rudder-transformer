@@ -1,3 +1,5 @@
+import { defaultApiKey } from '../../../common/secrets';
+
 export const data = [
   {
     name: 'mailmodo',
@@ -9,7 +11,7 @@ export const data = [
       request: {
         body: [
           {
-            destination: { Config: { apiKey: 'dummyApiKey' } },
+            destination: { Config: { apiKey: defaultApiKey } },
             message: {
               event: 'trackevent',
               type: 'track',
@@ -72,7 +74,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api.mailmodo.com/api/v1/addEvent',
-              headers: { mmApiKey: 'dummyApiKey', 'Content-Type': 'application/json' },
+              headers: { mmApiKey: defaultApiKey, 'Content-Type': 'application/json' },
               params: {},
               body: {
                 JSON: { email: 'firstUser@testmail.com', event_name: 'trackevent' },
@@ -264,7 +266,7 @@ export const data = [
       request: {
         body: [
           {
-            destination: { Config: { apiKey: 'dummyApiKey', listName: 'abcdef' } },
+            destination: { Config: { apiKey: defaultApiKey, listName: 'abcdef' } },
             message: {
               type: 'page',
               event: 'Email Opened',
@@ -317,7 +319,7 @@ export const data = [
       request: {
         body: [
           {
-            destination: { Config: { apiKey: 'dummyApiKey', listName: '' } },
+            destination: { Config: { apiKey: defaultApiKey, listName: '' } },
             message: {
               type: 'identify',
               event: 'Email Opened',
@@ -351,7 +353,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api.mailmodo.com/api/v1/addToList/batch',
-              headers: { mmApiKey: 'dummyApiKey', 'Content-Type': 'application/json' },
+              headers: { mmApiKey: defaultApiKey, 'Content-Type': 'application/json' },
               params: {},
               body: {
                 JSON: { listName: 'Rudderstack', values: [{ email: 'test3@abc.com' }] },
@@ -378,7 +380,7 @@ export const data = [
       request: {
         body: [
           {
-            destination: { Config: { apiKey: 'dummyApiKey', listName: 'abcdef' } },
+            destination: { Config: { apiKey: defaultApiKey, listName: 'abcdef' } },
             message: {
               type: 'identify',
               event: 'Email Opened',
@@ -412,7 +414,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api.mailmodo.com/api/v1/addToList/batch',
-              headers: { mmApiKey: 'dummyApiKey', 'Content-Type': 'application/json' },
+              headers: { mmApiKey: defaultApiKey, 'Content-Type': 'application/json' },
               params: {},
               body: {
                 JSON: { listName: 'abcdef', values: [{ email: 'test3@abc.com' }] },
@@ -439,7 +441,7 @@ export const data = [
       request: {
         body: [
           {
-            destination: { Config: { apiKey: 'dummyApiKey', listName: 'abcdef' } },
+            destination: { Config: { apiKey: defaultApiKey, listName: 'abcdef' } },
             message: {
               type: 'identify',
               event: 'Email Opened',
@@ -493,7 +495,7 @@ export const data = [
       request: {
         body: [
           {
-            destination: { Config: { apiKey: 'dummyApiKey', listName: 'abcdef' } },
+            destination: { Config: { apiKey: defaultApiKey, listName: 'abcdef' } },
             message: {
               type: 'identify',
               userId: 'identified user id',
@@ -530,7 +532,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api.mailmodo.com/api/v1/addToList/batch',
-              headers: { mmApiKey: 'dummyApiKey', 'Content-Type': 'application/json' },
+              headers: { mmApiKey: defaultApiKey, 'Content-Type': 'application/json' },
               params: {},
               body: {
                 JSON: {
@@ -575,7 +577,7 @@ export const data = [
       request: {
         body: [
           {
-            destination: { Config: { apiKey: 'dummyApiKey', listName: 'abcdef' } },
+            destination: { Config: { apiKey: defaultApiKey, listName: 'abcdef' } },
             message: {
               type: 'identify',
               userId: 'identified user id',
@@ -612,7 +614,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api.mailmodo.com/api/v1/addToList/batch',
-              headers: { mmApiKey: 'dummyApiKey', 'Content-Type': 'application/json' },
+              headers: { mmApiKey: defaultApiKey, 'Content-Type': 'application/json' },
               params: {},
               body: {
                 JSON: {

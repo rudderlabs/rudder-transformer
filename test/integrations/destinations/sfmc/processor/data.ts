@@ -1,3 +1,4 @@
+import { authHeader1 } from '../maskedSecrets';
 export const data = [
   {
     name: 'sfmc',
@@ -210,7 +211,7 @@ export const data = [
                 'https://vcn7AQ2W9GGIAZSsN6Mfq.rest.marketingcloudapis.com/contacts/v1/contacts',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Bearer yourAuthToken',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -236,7 +237,7 @@ export const data = [
                 'https://vcn7AQ2W9GGIAZSsN6Mfq.rest.marketingcloudapis.com/hub/v1/dataevents/key:f3ffa19b-e0b3-4967-829f-549b781080e6/rows/Contact Key:12345',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Bearer yourAuthToken',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -710,7 +711,7 @@ export const data = [
                 'https://vcn7AQ2W9GGIAZSsN6Mfq.rest.marketingcloudapis.com/contacts/v1/contacts',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Bearer yourAuthToken',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -736,7 +737,7 @@ export const data = [
                 'https://vcn7AQ2W9GGIAZSsN6Mfq.rest.marketingcloudapis.com/hub/v1/dataevents/key:f3ffa19b-e0b3-4967-829f-549b781080e6/rows/Contact Key:12345',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Bearer yourAuthToken',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -902,7 +903,7 @@ export const data = [
                 'https://vcn7AQ2W9GGIAZSsN6Mfq.rest.marketingcloudapis.com/hub/v1/dataevents/key:C500FD37-155C-49BD-A21B-AFCEF3D1A9CB/rows/Contact Key:12345',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Bearer yourAuthToken',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -1106,7 +1107,7 @@ export const data = [
               params: {},
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Bearer yourAuthToken',
+                Authorization: authHeader1,
               },
               version: '1',
               endpoint:
@@ -1549,7 +1550,7 @@ export const data = [
               params: {},
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Bearer yourAuthToken',
+                Authorization: authHeader1,
               },
               version: '1',
               endpoint:
@@ -1719,7 +1720,7 @@ export const data = [
               params: {},
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Bearer yourAuthToken',
+                Authorization: authHeader1,
               },
               version: '1',
               endpoint:
@@ -1881,7 +1882,7 @@ export const data = [
               params: {},
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Bearer yourAuthToken',
+                Authorization: authHeader1,
               },
               version: '1',
               endpoint:
@@ -1986,8 +1987,15 @@ export const data = [
         status: 200,
         body: [
           {
-            error:
-              '{"message":"Could not retrieve access token","destinationResponse":{"error":"invalid_client","error_description":"Invalid client ID. Use the client ID in Marketing Cloud Installed Packages.","error_uri":"https://developer.salesforce.com/docs"}}',
+            error: JSON.stringify({
+              message: 'Could not retrieve access token',
+              destinationResponse: {
+                error: 'invalid_client',
+                error_description:
+                  'Invalid client ID. Use the client ID in Marketing Cloud Installed Packages.',
+                error_uri: 'https://developer.salesforce.com/docs',
+              },
+            }),
             statTags: {
               destType: 'SFMC',
               errorCategory: 'network',
@@ -2058,8 +2066,15 @@ export const data = [
         status: 200,
         body: [
           {
-            error:
-              '{"message":"Could not retrieve access token","destinationResponse":{"message":"Your requests are temporarily blocked.","errorcode":50200,"documentation":"https://developer.salesforce.com/docs/atlas.en-us.mc-apis.meta/mc-apis/error-handling.htm"}}',
+            error: JSON.stringify({
+              message: 'Could not retrieve access token',
+              destinationResponse: {
+                message: 'Your requests are temporarily blocked.',
+                errorcode: 50200,
+                documentation:
+                  'https://developer.salesforce.com/docs/atlas.en-us.mc-apis.meta/mc-apis/error-handling.htm',
+              },
+            }),
             statTags: {
               destType: 'SFMC',
               errorCategory: 'network',
@@ -2130,7 +2145,10 @@ export const data = [
         status: 200,
         body: [
           {
-            error: '{"message":"Could not retrieve access token","destinationResponse":{}}',
+            error: JSON.stringify({
+              message: 'Could not retrieve access token',
+              destinationResponse: {},
+            }),
             statTags: {
               destType: 'SFMC',
               errorCategory: 'network',
@@ -2303,7 +2321,7 @@ export const data = [
                 'https://vcn7AQ2W9GGIAZSsN6Mfq.rest.marketingcloudapis.com/hub/v1/dataevents/key:externalKey/rows/key1:someRandomEmail@test.com',
               files: {},
               headers: {
-                Authorization: 'Bearer yourAuthToken',
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
               method: 'PUT',

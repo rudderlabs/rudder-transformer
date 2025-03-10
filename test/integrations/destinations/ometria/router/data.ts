@@ -1,3 +1,5 @@
+import { defaultApiKey } from '../../../common/secrets';
+
 export const data = [
   {
     name: 'ometria',
@@ -103,7 +105,7 @@ export const data = [
                   ResponseRules: {},
                 },
                 Config: {
-                  apiKey: 'dummyApiKey',
+                  apiKey: defaultApiKey,
                   allowMarketing: false,
                   allowTransactional: false,
                   marketingOptin: 'EXPLICITLY_OPTEDOUT',
@@ -207,7 +209,7 @@ export const data = [
                   ResponseRules: {},
                 },
                 Config: {
-                  apiKey: 'dummyApiKey',
+                  apiKey: defaultApiKey,
                   allowMarketing: false,
                   allowTransactional: false,
                   marketingOptin: 'EXPLICITLY_OPTEDOUT',
@@ -234,13 +236,35 @@ export const data = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://api.ometria.com/v2/push',
-                headers: { 'X-Ometria-Auth': 'dummyApiKey' },
+                headers: { 'X-Ometria-Auth': defaultApiKey },
                 params: {},
                 body: {
                   JSON: {},
                   JSON_ARRAY: {
-                    batch:
-                      '[{"email":"testone@gmail.com","id":"test1","customer_id":"userId1","firstname":"test","lastname":"one","@type":"contact","properties":{"field1":"val1","ip":"0.0.0.0"},"marketing_optin":"EXPLICITLY_OPTEDOUT","channels":{"sms":{"allow_marketing":false,"allow_transactional":false}}},{"email":"testone@gmail.com","id":"updatedId1","customer_id":"userId1","firstname":"test","lastname":"one","@type":"contact","properties":{"field1":"val1","ip":"0.0.0.0"},"marketing_optin":"EXPLICITLY_OPTEDOUT","channels":{"sms":{"allow_marketing":true,"allow_transactional":false}}}]',
+                    batch: JSON.stringify([
+                      {
+                        email: 'testone@gmail.com',
+                        id: 'test1',
+                        customer_id: 'userId1',
+                        firstname: 'test',
+                        lastname: 'one',
+                        '@type': 'contact',
+                        properties: { field1: 'val1', ip: '0.0.0.0' },
+                        marketing_optin: 'EXPLICITLY_OPTEDOUT',
+                        channels: { sms: { allow_marketing: false, allow_transactional: false } },
+                      },
+                      {
+                        email: 'testone@gmail.com',
+                        id: 'updatedId1',
+                        customer_id: 'userId1',
+                        firstname: 'test',
+                        lastname: 'one',
+                        '@type': 'contact',
+                        properties: { field1: 'val1', ip: '0.0.0.0' },
+                        marketing_optin: 'EXPLICITLY_OPTEDOUT',
+                        channels: { sms: { allow_marketing: true, allow_transactional: false } },
+                      },
+                    ]),
                   },
                   XML: {},
                   FORM: {},
@@ -291,7 +315,7 @@ export const data = [
                   ResponseRules: {},
                 },
                 Config: {
-                  apiKey: 'dummyApiKey',
+                  apiKey: defaultApiKey,
                   allowMarketing: false,
                   allowTransactional: false,
                   marketingOptin: 'EXPLICITLY_OPTEDOUT',

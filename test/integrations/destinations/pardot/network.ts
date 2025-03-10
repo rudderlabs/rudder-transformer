@@ -1,3 +1,4 @@
+import { authHeader1 } from './maskedSecrets';
 import { getFormData } from '../../../../src/adapters/network';
 
 export const networkCallsData = [
@@ -268,7 +269,7 @@ export const networkCallsData = [
       }).toString(),
       params: { destination: 'pardot' },
       headers: {
-        Authorization: 'Bearer myToken',
+        Authorization: authHeader1,
         'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
         'Pardot-Business-Unit-Id': '0Uv2v000000k9tHCAQ',
         'User-Agent': 'RudderLabs',

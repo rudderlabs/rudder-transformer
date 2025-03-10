@@ -1,3 +1,4 @@
+import { authHeader1, secret1 } from '../maskedSecrets';
 export const data = [
   {
     name: 'fb',
@@ -10,7 +11,7 @@ export const data = [
         body: {
           input: [
             {
-              destination: { Config: { apiKey: '93EMyDLvfpbRxxYn' }, ID: 'june123' },
+              destination: { Config: { apiKey: secret1 }, ID: 'june123' },
               metadata: { jobId: 1, userId: 'u1' },
               message: {
                 type: 'identify',
@@ -24,7 +25,7 @@ export const data = [
               },
             },
             {
-              destination: { Config: { apiKey: '93EMyDLvfpbRxxYn' }, ID: 'june123' },
+              destination: { Config: { apiKey: secret1 }, ID: 'june123' },
               metadata: { jobId: 2, userId: 'u1' },
               message: {
                 type: 'track',
@@ -69,7 +70,7 @@ export const data = [
                 endpoint: 'https://api.june.so/api/identify',
                 files: {},
                 headers: {
-                  Authorization: 'Basic 93EMyDLvfpbRxxYn',
+                  Authorization: authHeader1,
                   'Content-Type': 'application/json',
                 },
                 method: 'POST',
@@ -77,12 +78,12 @@ export const data = [
                 type: 'REST',
                 version: '1',
               },
-              destination: { Config: { apiKey: '93EMyDLvfpbRxxYn' }, ID: 'june123' },
+              destination: { Config: { apiKey: secret1 }, ID: 'june123' },
               metadata: [{ jobId: 1, userId: 'u1' }],
               statusCode: 200,
             },
             {
-              destination: { Config: { apiKey: '93EMyDLvfpbRxxYn' }, ID: 'june123' },
+              destination: { Config: { apiKey: secret1 }, ID: 'june123' },
               batched: false,
               error: 'Missing required value from "userIdOnly"',
               metadata: [{ jobId: 2, userId: 'u1' }],

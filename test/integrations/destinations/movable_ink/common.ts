@@ -1,3 +1,4 @@
+import { authHeader1, secret1, secret2 } from './maskedSecrets';
 import { Destination } from '../../../../src/types';
 
 const destType = 'movable_ink';
@@ -7,8 +8,8 @@ const channel = 'web';
 const destination: Destination = {
   Config: {
     endpoint: 'https://collector.movableink-dmz.com/behavioral/abc123',
-    accessKey: 'test-access-key',
-    accessSecret: 'test_access_secret',
+    accessKey: secret1,
+    accessSecret: secret2,
   },
   DestinationDefinition: {
     DisplayName: displayName,
@@ -48,7 +49,7 @@ const traits = {
 
 const headers = {
   'Content-Type': 'application/json',
-  Authorization: 'Basic dGVzdC1hY2Nlc3Mta2V5OnRlc3RfYWNjZXNzX3NlY3JldA==',
+  Authorization: authHeader1,
 };
 
 const commonProperties = {

@@ -1,3 +1,5 @@
+import { authHeader4, secret4 } from './maskedSecrets';
+
 const deleteNwData = [
   {
     httpReq: {
@@ -1077,16 +1079,14 @@ const deleteNwData = [
   {
     httpReq: {
       method: 'post',
-
-      url: 'https://mixpanel.com/api/app/data-deletions/v3.0/?token=test_token',
+      url: `https://mixpanel.com/api/app/data-deletions/v3.0/?token=${secret4}`,
       data: {
         distinct_ids: ['rudder1', 'rudder2', 'rudder3'],
         compliance_type: 'CCPA',
       },
       headers: {
         'Content-Type': 'application/json',
-
-        Authorization: 'Bearer test_gdpr_token',
+        Authorization: authHeader4,
       },
     },
     httpRes: {
@@ -1101,7 +1101,7 @@ const deleteNwData = [
     httpReq: {
       method: 'post',
 
-      url: 'https://mixpanel.com/api/app/data-deletions/v3.0/?token=test_token',
+      url: `https://mixpanel.com/api/app/data-deletions/v3.0/?token=${secret4}`,
       data: {
         distinct_ids: ['rudder2'],
         compliance_type: 'GDPR',
@@ -1109,7 +1109,7 @@ const deleteNwData = [
       headers: {
         'Content-Type': 'application/json',
         Accept: 'text/plain',
-        Authorization: 'Bearer test_gdpr_token',
+        Authorization: authHeader4,
       },
     },
     httpRes: {
@@ -1150,7 +1150,7 @@ const deleteNwData = [
     httpReq: {
       method: 'post',
       url: 'https://api-eu.mixpanel.com/engage',
-      data: [{ $distinct_id: 'rudder1', $token: 'test_token', $delete: null, $ignore_alias: true }],
+      data: [{ $distinct_id: 'rudder1', $token: secret4, $delete: null, $ignore_alias: true }],
       headers: {
         'Content-Type': 'application/json',
         Accept: 'text/plain',

@@ -1,3 +1,4 @@
+import { authHeader1, secret1 } from '../maskedSecrets';
 export const data = [
   {
     name: 'june',
@@ -11,7 +12,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: '93EMyDLvfpbRxxYn',
+                apiKey: secret1,
               },
               ID: 'june123',
             },
@@ -64,7 +65,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: '93EMyDLvfpbRxxYn',
+                apiKey: secret1,
               },
               ID: 'june123',
             },
@@ -100,7 +101,7 @@ export const data = [
               endpoint: 'https://api.june.so/api/identify',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Basic 93EMyDLvfpbRxxYn',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -139,7 +140,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: '93EMyDLvfpbRxxYn',
+                apiKey: secret1,
               },
               ID: 'june123',
             },
@@ -194,7 +195,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: '93EMyDLvfpbRxxYn',
+                apiKey: secret1,
               },
               ID: 'june123',
             },
@@ -229,7 +230,7 @@ export const data = [
               endpoint: 'https://api.june.so/api/track',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Basic 93EMyDLvfpbRxxYn',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -270,7 +271,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: '93EMyDLvfpbRxxYn',
+                apiKey: secret1,
               },
               ID: 'june123',
             },
@@ -299,7 +300,7 @@ export const data = [
               endpoint: 'https://api.june.so/api/track',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Basic 93EMyDLvfpbRxxYn',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -334,7 +335,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: '93EMyDLvfpbRxxYn',
+                apiKey: secret1,
               },
               ID: 'june123',
             },
@@ -370,7 +371,7 @@ export const data = [
               endpoint: 'https://api.june.so/api/track',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Basic 93EMyDLvfpbRxxYn',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -414,7 +415,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: '93EMyDLvfpbRxxYn',
+                apiKey: secret1,
               },
               ID: 'june123',
             },
@@ -457,7 +458,7 @@ export const data = [
               endpoint: 'https://api.june.so/api/track',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Basic 93EMyDLvfpbRxxYn',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -501,7 +502,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: '93EMyDLvfpbRxxYn',
+                apiKey: secret1,
               },
               ID: 'june123',
             },
@@ -538,7 +539,7 @@ export const data = [
               endpoint: 'https://api.june.so/api/group',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Basic 93EMyDLvfpbRxxYn',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -581,7 +582,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: '93EMyDLvfpbRxxYn',
+                apiKey: secret1,
               },
               ID: 'june123',
             },
@@ -635,7 +636,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: '93EMyDLvfpbRxxYn',
+                apiKey: secret1,
               },
               ID: 'june123',
             },
@@ -690,7 +691,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: '93EMyDLvfpbRxxYn',
+                apiKey: secret1,
               },
               ID: 'june123',
             },
@@ -725,7 +726,7 @@ export const data = [
               endpoint: 'https://api.june.so/api/page',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Basic 93EMyDLvfpbRxxYn',
+                Authorization: authHeader1,
               },
               params: {},
               body: {

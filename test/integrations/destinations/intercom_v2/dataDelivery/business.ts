@@ -360,8 +360,16 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
           output: {
             response: [
               {
-                error:
-                  '{"errors":[{"code":"rate_limit_exceeded","message":"The rate limit for the App has been exceeded"}],"request_id":"request125","type":"error.list"}',
+                error: JSON.stringify({
+                  errors: [
+                    {
+                      code: 'rate_limit_exceeded',
+                      message: 'The rate limit for the App has been exceeded',
+                    },
+                  ],
+                  request_id: 'request125',
+                  type: 'error.list',
+                }),
                 statusCode: 429,
                 metadata: generateMetadata(1),
               },
@@ -404,8 +412,16 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
           output: {
             response: [
               {
-                error:
-                  '{"errors":[{"code":"conflict","message":"A contact matching those details already exists with id=test"}],"request_id":"request126","type":"error.list"}',
+                error: JSON.stringify({
+                  errors: [
+                    {
+                      code: 'conflict',
+                      message: 'A contact matching those details already exists with id=test',
+                    },
+                  ],
+                  request_id: 'request126',
+                  type: 'error.list',
+                }),
                 statusCode: 409,
                 metadata: generateMetadata(1),
               },
@@ -452,8 +468,15 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
           output: {
             response: [
               {
-                error:
-                  '{"errors":[{"code":"media_type_not_acceptable","message":"The Accept header should send a media type of application/json"}],"type":"error.list"}',
+                error: JSON.stringify({
+                  errors: [
+                    {
+                      code: 'media_type_not_acceptable',
+                      message: 'The Accept header should send a media type of application/json',
+                    },
+                  ],
+                  type: 'error.list',
+                }),
                 statusCode: 406,
                 metadata: generateMetadata(1),
               },
@@ -501,8 +524,16 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
               '[Intercom V2 Response Handler] Request failed for destination intercom_v2 with status: 408',
             response: [
               {
-                error:
-                  '{"type":"error.list","request_id":"req-123","errors":[{"code":"Request Timeout","message":"The server would not wait any longer for the client"}]}',
+                error: JSON.stringify({
+                  type: 'error.list',
+                  request_id: 'req-123',
+                  errors: [
+                    {
+                      code: 'Request Timeout',
+                      message: 'The server would not wait any longer for the client',
+                    },
+                  ],
+                }),
                 metadata: generateMetadata(1),
                 statusCode: 500,
               },

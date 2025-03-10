@@ -1,5 +1,6 @@
 import { ProxyV1TestData } from '../../../testTypes';
 import { generateProxyV1Payload } from '../../../testUtils';
+import { defaultAccessToken } from '../../../common/secrets';
 
 const statTags = {
   errorCategory: 'network',
@@ -19,7 +20,7 @@ const metadata = {
   workspaceId: 'default-workspaceId',
   sourceId: 'default-sourceId',
   secret: {
-    accessToken: 'default-accessToken',
+    accessToken: defaultAccessToken,
   },
   dontBatch: false,
 };
@@ -50,8 +51,13 @@ export const otherSalesforceScenariosV1: ProxyV1TestData[] = [
           output: {
             response: [
               {
-                error:
-                  '{"error":{"message":"Service Unavailable","description":"The server is currently unable to handle the request due to temporary overloading or maintenance of the server. Please try again later."}}',
+                error: JSON.stringify({
+                  error: {
+                    message: 'Service Unavailable',
+                    description:
+                      'The server is currently unable to handle the request due to temporary overloading or maintenance of the server. Please try again later.',
+                  },
+                }),
                 statusCode: 500,
                 metadata,
               },

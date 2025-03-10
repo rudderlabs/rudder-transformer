@@ -1,3 +1,4 @@
+const { generateRandomString } = require('@rudderstack/integrations-lib');
 const {
   msUnixTimestamp,
   getItemIds,
@@ -283,6 +284,7 @@ describe('getDataUseValue', () => {
 });
 
 describe('generateBatchedPayloadForArray', () => {
+  const apiKey = generateRandomString();
   const testCases = [
     {
       name: 'should generate batched payload with correct structure',
@@ -290,14 +292,14 @@ describe('generateBatchedPayloadForArray', () => {
         events: [{ body: { JSON: { event: 1 } } }, { body: { JSON: { event: 2 } } }],
         destination: {
           Config: {
-            apiKey: 'test-api-key',
+            apiKey,
           },
         },
       },
       expected: {
         headers: {
           'Content-Type': 'application/json',
-          Authorization: 'Bearer test-api-key',
+          Authorization: `Bearer ${apiKey}`,
         },
         endpoint: 'https://tr.snapchat.com/v2/conversion',
         body: {
@@ -313,14 +315,14 @@ describe('generateBatchedPayloadForArray', () => {
         events: [],
         destination: {
           Config: {
-            apiKey: 'test-api-key',
+            apiKey,
           },
         },
       },
       expected: {
         headers: {
           'Content-Type': 'application/json',
-          Authorization: 'Bearer test-api-key',
+          Authorization: `Bearer ${apiKey}`,
         },
         endpoint: 'https://tr.snapchat.com/v2/conversion',
         body: {

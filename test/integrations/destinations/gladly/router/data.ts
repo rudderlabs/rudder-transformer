@@ -1,3 +1,4 @@
+import { authHeader1, secret1, secret2 } from '../maskedSecrets';
 export const data = [
   {
     name: 'gladly',
@@ -31,8 +32,8 @@ export const data = [
               destination: {
                 DestinationDefinition: { Config: { cdkV2Enabled: true } },
                 Config: {
-                  apiToken: 'testApiToken',
-                  userName: 'testUserName',
+                  apiToken: secret2,
+                  userName: secret1,
                   domain: 'rudderlabs.us-uat.gladly.qa',
                 },
               },
@@ -60,8 +61,8 @@ export const data = [
               destination: {
                 DestinationDefinition: { Config: { cdkV2Enabled: true } },
                 Config: {
-                  apiToken: 'testApiToken',
-                  userName: 'testUserName',
+                  apiToken: secret2,
+                  userName: secret1,
                   domain: 'rudderlabs.us-uat.gladly.qa',
                 },
               },
@@ -87,8 +88,8 @@ export const data = [
               destination: {
                 DestinationDefinition: { Config: { cdkV2Enabled: true } },
                 Config: {
-                  apiToken: 'testApiToken',
-                  userName: 'testUserName',
+                  apiToken: secret2,
+                  userName: secret1,
                   domain: 'rudderlabs.us-uat.gladly.qa',
                 },
               },
@@ -124,7 +125,7 @@ export const data = [
                 endpoint: 'https://rudderlabs.us-uat.gladly.qa/api/v1/customer-profiles',
                 files: {},
                 headers: {
-                  Authorization: 'Basic dGVzdFVzZXJOYW1lOnRlc3RBcGlUb2tlbg==',
+                  Authorization: authHeader1,
                   'Content-Type': 'application/json',
                 },
                 method: 'POST',
@@ -134,9 +135,9 @@ export const data = [
               },
               destination: {
                 Config: {
-                  apiToken: 'testApiToken',
+                  apiToken: secret2,
                   domain: 'rudderlabs.us-uat.gladly.qa',
-                  userName: 'testUserName',
+                  userName: secret1,
                 },
                 DestinationDefinition: { Config: { cdkV2Enabled: true } },
               },
@@ -161,7 +162,7 @@ export const data = [
                 endpoint: 'https://rudderlabs.us-uat.gladly.qa/api/v1/customer-profiles/user@2',
                 files: {},
                 headers: {
-                  Authorization: 'Basic dGVzdFVzZXJOYW1lOnRlc3RBcGlUb2tlbg==',
+                  Authorization: authHeader1,
                   'Content-Type': 'application/json',
                 },
                 method: 'PATCH',
@@ -171,9 +172,9 @@ export const data = [
               },
               destination: {
                 Config: {
-                  apiToken: 'testApiToken',
+                  apiToken: secret2,
                   domain: 'rudderlabs.us-uat.gladly.qa',
-                  userName: 'testUserName',
+                  userName: secret1,
                 },
                 DestinationDefinition: { Config: { cdkV2Enabled: true } },
               },
@@ -196,7 +197,7 @@ export const data = [
                 endpoint: 'https://rudderlabs.us-uat.gladly.qa/api/v1/customer-profiles/user@3',
                 files: {},
                 headers: {
-                  Authorization: 'Basic dGVzdFVzZXJOYW1lOnRlc3RBcGlUb2tlbg==',
+                  Authorization: authHeader1,
                   'Content-Type': 'application/json',
                 },
                 method: 'PATCH',
@@ -206,9 +207,9 @@ export const data = [
               },
               destination: {
                 Config: {
-                  apiToken: 'testApiToken',
+                  apiToken: secret2,
                   domain: 'rudderlabs.us-uat.gladly.qa',
-                  userName: 'testUserName',
+                  userName: secret1,
                 },
                 DestinationDefinition: { Config: { cdkV2Enabled: true } },
               },
@@ -253,8 +254,8 @@ export const data = [
               destination: {
                 DestinationDefinition: { Config: { cdkV2Enabled: true } },
                 Config: {
-                  apiToken: 'testApiToken',
-                  userName: 'testUserName',
+                  apiToken: secret2,
+                  userName: secret1,
                   domain: 'rudderlabs.us-uat.gladly.qa',
                 },
               },
@@ -283,8 +284,8 @@ export const data = [
               destination: {
                 DestinationDefinition: { Config: { cdkV2Enabled: true } },
                 Config: {
-                  apiToken: 'testApiToken',
-                  userName: 'testUserName',
+                  apiToken: secret2,
+                  userName: secret1,
                   domain: 'rudderlabs.us-uat.gladly.qa',
                 },
               },
@@ -312,8 +313,8 @@ export const data = [
               destination: {
                 DestinationDefinition: { Config: { cdkV2Enabled: true } },
                 Config: {
-                  apiToken: 'testApiToken',
-                  userName: 'testUserName',
+                  apiToken: secret2,
+                  userName: secret1,
                   domain: 'rudderlabs.us-uat.gladly.qa',
                 },
               },
@@ -348,7 +349,7 @@ export const data = [
                 endpoint: 'https://rudderlabs.us-uat.gladly.qa/api/v1/customer-profiles',
                 files: {},
                 headers: {
-                  Authorization: 'Basic dGVzdFVzZXJOYW1lOnRlc3RBcGlUb2tlbg==',
+                  Authorization: authHeader1,
                   'Content-Type': 'application/json',
                 },
                 method: 'POST',
@@ -358,9 +359,9 @@ export const data = [
               },
               destination: {
                 Config: {
-                  apiToken: 'testApiToken',
+                  apiToken: secret2,
                   domain: 'rudderlabs.us-uat.gladly.qa',
-                  userName: 'testUserName',
+                  userName: secret1,
                 },
                 DestinationDefinition: { Config: { cdkV2Enabled: true } },
               },
@@ -384,7 +385,7 @@ export const data = [
                 endpoint: 'https://rudderlabs.us-uat.gladly.qa/api/v1/customer-profiles/user@2',
                 files: {},
                 headers: {
-                  Authorization: 'Basic dGVzdFVzZXJOYW1lOnRlc3RBcGlUb2tlbg==',
+                  Authorization: authHeader1,
                   'Content-Type': 'application/json',
                 },
                 method: 'PATCH',
@@ -394,9 +395,9 @@ export const data = [
               },
               destination: {
                 Config: {
-                  apiToken: 'testApiToken',
+                  apiToken: secret2,
                   domain: 'rudderlabs.us-uat.gladly.qa',
-                  userName: 'testUserName',
+                  userName: secret1,
                 },
                 DestinationDefinition: { Config: { cdkV2Enabled: true } },
               },
@@ -419,7 +420,7 @@ export const data = [
                 endpoint: 'https://rudderlabs.us-uat.gladly.qa/api/v1/customer-profiles/user@3',
                 files: {},
                 headers: {
-                  Authorization: 'Basic dGVzdFVzZXJOYW1lOnRlc3RBcGlUb2tlbg==',
+                  Authorization: authHeader1,
                   'Content-Type': 'application/json',
                 },
                 method: 'PATCH',
@@ -429,9 +430,9 @@ export const data = [
               },
               destination: {
                 Config: {
-                  apiToken: 'testApiToken',
+                  apiToken: secret2,
                   domain: 'rudderlabs.us-uat.gladly.qa',
-                  userName: 'testUserName',
+                  userName: secret1,
                 },
                 DestinationDefinition: { Config: { cdkV2Enabled: true } },
               },

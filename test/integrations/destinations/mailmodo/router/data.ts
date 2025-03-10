@@ -1,3 +1,5 @@
+import { defaultApiKey } from '../../../common/secrets';
+
 export const data = [
   {
     name: 'mailmodo',
@@ -28,7 +30,7 @@ export const data = [
                 originalTimestamp: '2020-08-28T16:26:06.468Z',
               },
               metadata: { jobId: 2, userId: 'u1' },
-              destination: { Config: { apiKey: 'dummyApiKey', listName: 'abc' }, Enabled: true },
+              destination: { Config: { apiKey: defaultApiKey, listName: 'abc' }, Enabled: true },
             },
             {
               message: {
@@ -49,7 +51,7 @@ export const data = [
                 originalTimestamp: '2020-08-28T16:26:06.468Z',
               },
               metadata: { jobId: 3, userId: 'u1' },
-              destination: { Config: { apiKey: 'dummyApiKey', listName: 'abc' }, Enabled: true },
+              destination: { Config: { apiKey: defaultApiKey, listName: 'abc' }, Enabled: true },
             },
             {
               message: {
@@ -72,7 +74,7 @@ export const data = [
                 timestamp: '2020-02-02T00:23:09.544Z',
               },
               metadata: { jobId: 4, userId: 'u1' },
-              destination: { Config: { apiKey: 'dummyApiKey', listName: 'abc' }, Enabled: true },
+              destination: { Config: { apiKey: defaultApiKey, listName: 'abc' }, Enabled: true },
             },
             {
               message: {
@@ -92,7 +94,7 @@ export const data = [
                 originalTimestamp: '2020-08-28T16:26:06.468Z',
               },
               metadata: { jobId: 5, userId: 'u1' },
-              destination: { Config: { apiKey: 'dummyApiKey', listName: '' }, Enabled: true },
+              destination: { Config: { apiKey: defaultApiKey, listName: '' }, Enabled: true },
             },
           ],
           destType: 'mailmodo',
@@ -133,7 +135,7 @@ export const data = [
                 files: {},
                 method: 'POST',
                 params: {},
-                headers: { mmApiKey: 'dummyApiKey', 'Content-Type': 'application/json' },
+                headers: { mmApiKey: defaultApiKey, 'Content-Type': 'application/json' },
                 version: '1',
                 endpoint: 'https://api.mailmodo.com/api/v1/addToList/batch',
               },
@@ -143,7 +145,7 @@ export const data = [
               ],
               batched: true,
               statusCode: 200,
-              destination: { Config: { apiKey: 'dummyApiKey', listName: 'abc' }, Enabled: true },
+              destination: { Config: { apiKey: defaultApiKey, listName: 'abc' }, Enabled: true },
             },
             {
               batchedRequest: {
@@ -166,14 +168,14 @@ export const data = [
                 files: {},
                 method: 'POST',
                 params: {},
-                headers: { mmApiKey: 'dummyApiKey', 'Content-Type': 'application/json' },
+                headers: { mmApiKey: defaultApiKey, 'Content-Type': 'application/json' },
                 version: '1',
                 endpoint: 'https://api.mailmodo.com/api/v1/addEvent',
               },
               metadata: [{ jobId: 3, userId: 'u1' }],
               batched: false,
               statusCode: 200,
-              destination: { Config: { apiKey: 'dummyApiKey', listName: 'abc' }, Enabled: true },
+              destination: { Config: { apiKey: defaultApiKey, listName: 'abc' }, Enabled: true },
             },
             {
               batched: false,
@@ -189,7 +191,7 @@ export const data = [
                 module: 'destination',
               },
               statusCode: 400,
-              destination: { Config: { apiKey: 'dummyApiKey', listName: '' }, Enabled: true },
+              destination: { Config: { apiKey: defaultApiKey, listName: '' }, Enabled: true },
             },
           ],
         },

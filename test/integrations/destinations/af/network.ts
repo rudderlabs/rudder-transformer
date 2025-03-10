@@ -1,3 +1,4 @@
+import { authHeader1 } from './maskedSecrets';
 import { JSON_MIME_TYPE } from '../../../../src/v0/util/constant';
 
 export const networkCallsData = [
@@ -8,7 +9,7 @@ export const networkCallsData = [
       headers: {
         'Content-Type': JSON_MIME_TYPE,
 
-        Authorization: 'Bearer dummyApiToken',
+        Authorization: authHeader1,
       },
       data: {
         subject_request_type: 'erasure',
@@ -56,7 +57,7 @@ export const networkCallsData = [
       headers: {
         'Content-Type': JSON_MIME_TYPE,
 
-        Authorization: 'Bearer dummyApiToken',
+        Authorization: authHeader1,
       },
     },
     httpRes: {

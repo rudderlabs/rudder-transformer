@@ -1,3 +1,4 @@
+import { authHeader1, secret1 } from '../maskedSecrets';
 export const data = [
   {
     name: 'courier',
@@ -21,7 +22,7 @@ export const data = [
                 messageId: '2116ef8c-efc3-4ca4-851b-02ee60dad6ff',
                 anonymousId: '97c46c81-3140-456d-b2a9-690d70aaca35',
               },
-              destination: { Config: { apiKey: 'dummyApiKey' } },
+              destination: { Config: { apiKey: secret1 } },
               metadata: { jobId: 1, userId: 'u1' },
             },
             {
@@ -66,7 +67,7 @@ export const data = [
                 method: 'POST',
                 endpoint: 'https://api.courier.com/inbound/rudderstack',
                 headers: {
-                  Authorization: 'Bearer dummyApiKey',
+                  Authorization: authHeader1,
                   'Content-Type': 'application/json',
                 },
                 params: {},
@@ -88,7 +89,7 @@ export const data = [
                 },
                 files: {},
               },
-              destination: { Config: { apiKey: 'dummyApiKey' } },
+              destination: { Config: { apiKey: secret1 } },
               metadata: [{ jobId: 1, userId: 'u1' }],
               statusCode: 200,
             },

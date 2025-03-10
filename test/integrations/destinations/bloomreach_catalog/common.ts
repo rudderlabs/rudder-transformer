@@ -1,3 +1,4 @@
+import { authHeader1, secret1, secret2 } from './maskedSecrets';
 import { Destination } from '../../../../src/types';
 
 const destType = 'bloomreach_catalog';
@@ -7,8 +8,8 @@ const channel = 'web';
 const destination: Destination = {
   Config: {
     apiBaseUrl: 'https://demoapp-api.bloomreach.com',
-    apiKey: 'test-api-key',
-    apiSecret: 'test-api-secret',
+    apiKey: secret1,
+    apiSecret: secret2,
     projectToken: 'test-project-token',
     catalogID: 'test-catalog-id',
   },
@@ -58,7 +59,7 @@ const proxyV1RetryableErrorStatTags = {
 
 const headers = {
   'Content-Type': 'application/json',
-  Authorization: 'Basic dGVzdC1hcGkta2V5OnRlc3QtYXBpLXNlY3JldA==',
+  Authorization: authHeader1,
 };
 
 const sampleContext = {

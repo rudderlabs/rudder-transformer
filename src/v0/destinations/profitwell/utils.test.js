@@ -1,3 +1,4 @@
+const path = require('path');
 const {
   validatePayloadAndRetunImpIds,
   createMissingSubscriptionResponse,
@@ -48,6 +49,8 @@ const getTestMessage = () => {
   return message;
 };
 
+const secretApiKey = path.basename(__dirname) + 1;
+
 describe('profitwell utils test cases', () => {
   describe('createResponseForSubscribedUser', () => {
     it('correct flow', async () => {
@@ -65,7 +68,7 @@ describe('profitwell utils test cases', () => {
         },
         endpoint: 'https://api.profitwell.com/v2/subscriptions/testId/',
         files: {},
-        headers: { Authorization: 'dummyApiKey', 'Content-Type': 'application/json' },
+        headers: { Authorization: secretApiKey, 'Content-Type': 'application/json' },
         method: 'PUT',
         params: {},
         type: 'REST',
@@ -73,7 +76,7 @@ describe('profitwell utils test cases', () => {
       };
       expect(
         createResponseForSubscribedUser(getTestMessage(), 'testId', 'testAlias', {
-          privateApiKey: 'dummyApiKey',
+          privateApiKey: secretApiKey,
         }),
       ).toEqual(expectedOutput);
     });
@@ -83,7 +86,7 @@ describe('profitwell utils test cases', () => {
       fittingPayload.traits.effectiveDate = '2019-10-15T09:35:31.288Z';
       expect(() =>
         createResponseForSubscribedUser(fittingPayload, 'testId', 'testAlias', {
-          privateApiKey: 'dummyApiKey',
+          privateApiKey: secretApiKey,
         }),
       ).toThrow('Invalid timestamp format for effectiveDate. Aborting');
     });
@@ -108,7 +111,7 @@ describe('profitwell utils test cases', () => {
         },
         endpoint: 'https://api.profitwell.com/v2/subscriptions/',
         files: {},
-        headers: { Authorization: 'dummyApiKey', 'Content-Type': 'application/json' },
+        headers: { Authorization: secretApiKey, 'Content-Type': 'application/json' },
         method: 'POST',
         params: {},
         type: 'REST',
@@ -116,7 +119,7 @@ describe('profitwell utils test cases', () => {
       };
       expect(
         createMissingSubscriptionResponse('testId', 'testAlias', null, null, getTestMessage(), {
-          privateApiKey: 'dummyApiKey',
+          privateApiKey: secretApiKey,
         }),
       ).toEqual(expectedOutput);
     });
@@ -126,7 +129,7 @@ describe('profitwell utils test cases', () => {
       fittingPayload.traits.planInterval = 'test';
       expect(() =>
         createMissingSubscriptionResponse('testId', 'testAlias', null, null, fittingPayload, {
-          privateApiKey: 'dummyApiKey',
+          privateApiKey: secretApiKey,
         }),
       ).toThrow('invalid format for planInterval. Aborting');
     });
@@ -136,7 +139,7 @@ describe('profitwell utils test cases', () => {
       fittingPayload.traits.planInterval = 'test';
       expect(() =>
         createMissingSubscriptionResponse('testId', 'testAlias', 124, fittingPayload, {
-          privateApiKey: 'dummyApiKey',
+          privateApiKey: secretApiKey,
         }),
       ).toThrow('Profitwell subscription_id not found');
     });

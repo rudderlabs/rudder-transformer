@@ -1,6 +1,6 @@
 import { ProxyV1TestData } from '../../../testTypes';
 import { generateProxyV0Payload, generateProxyV1Payload } from '../../../testUtils';
-
+import { defaultAccessToken } from '../../../common/secrets';
 export const otherScenariosV0 = [
   {
     id: 'algolia_v0_other_scenario_1',
@@ -258,8 +258,13 @@ export const otherScenariosV1: ProxyV1TestData[] = [
           output: {
             response: [
               {
-                error:
-                  '{"error":{"message":"Service Unavailable","description":"The server is currently unable to handle the request due to temporary overloading or maintenance of the server. Please try again later."}}',
+                error: JSON.stringify({
+                  error: {
+                    message: 'Service Unavailable',
+                    description:
+                      'The server is currently unable to handle the request due to temporary overloading or maintenance of the server. Please try again later.',
+                  },
+                }),
                 statusCode: 503,
                 metadata: {
                   jobId: 1,
@@ -269,7 +274,7 @@ export const otherScenariosV1: ProxyV1TestData[] = [
                   workspaceId: 'default-workspaceId',
                   sourceId: 'default-sourceId',
                   secret: {
-                    accessToken: 'default-accessToken',
+                    accessToken: defaultAccessToken,
                   },
                   dontBatch: true,
                 },
@@ -326,7 +331,7 @@ export const otherScenariosV1: ProxyV1TestData[] = [
                   workspaceId: 'default-workspaceId',
                   sourceId: 'default-sourceId',
                   secret: {
-                    accessToken: 'default-accessToken',
+                    accessToken: defaultAccessToken,
                   },
                   dontBatch: true,
                 },
@@ -383,7 +388,7 @@ export const otherScenariosV1: ProxyV1TestData[] = [
                   workspaceId: 'default-workspaceId',
                   sourceId: 'default-sourceId',
                   secret: {
-                    accessToken: 'default-accessToken',
+                    accessToken: defaultAccessToken,
                   },
                   dontBatch: true,
                 },
@@ -440,7 +445,7 @@ export const otherScenariosV1: ProxyV1TestData[] = [
                   workspaceId: 'default-workspaceId',
                   sourceId: 'default-sourceId',
                   secret: {
-                    accessToken: 'default-accessToken',
+                    accessToken: defaultAccessToken,
                   },
                   dontBatch: true,
                 },
@@ -498,7 +503,7 @@ export const otherScenariosV1: ProxyV1TestData[] = [
                   workspaceId: 'default-workspaceId',
                   sourceId: 'default-sourceId',
                   secret: {
-                    accessToken: 'default-accessToken',
+                    accessToken: defaultAccessToken,
                   },
                   dontBatch: true,
                 },

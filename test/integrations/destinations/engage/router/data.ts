@@ -1,3 +1,5 @@
+import { authHeader1, secret1, secret2 } from '../maskedSecrets';
+
 export const data = [
   {
     name: 'engage',
@@ -18,8 +20,8 @@ export const data = [
               },
               destination: {
                 Config: {
-                  publicKey: '49ur490rjfo34gi04y38r9go',
-                  privateKey: 'n89g389yr389fgbef0u2rff',
+                  publicKey: secret1,
+                  privateKey: secret2,
                   listIds: [
                     { listId: '9834trg3rgy3g08oi9893rgfb' },
                     { listId: 'f39487tyh49go3h093gh2if2f2' },
@@ -47,8 +49,7 @@ export const data = [
                 endpoint: 'https://api.engage.so/v1/lists/17/subscribers/246',
                 headers: {
                   'Content-Type': 'application/json',
-                  Authorization:
-                    'Basic NDl1cjQ5MHJqZm8zNGdpMDR5MzhyOWdvOm44OWczODl5cjM4OWZnYmVmMHUycmZm',
+                  Authorization: authHeader1,
                 },
                 params: {},
                 body: { JSON: { subscribed: true }, JSON_ARRAY: {}, XML: {}, FORM: {} },
@@ -56,8 +57,8 @@ export const data = [
               },
               destination: {
                 Config: {
-                  publicKey: '49ur490rjfo34gi04y38r9go',
-                  privateKey: 'n89g389yr389fgbef0u2rff',
+                  publicKey: secret1,
+                  privateKey: secret2,
                   listIds: [
                     { listId: '9834trg3rgy3g08oi9893rgfb' },
                     { listId: 'f39487tyh49go3h093gh2if2f2' },
@@ -107,8 +108,8 @@ export const data = [
               },
               destination: {
                 Config: {
-                  publicKey: '49ur490rjfo34gi04y38r9go',
-                  privateKey: 'n89g389yr389fgbef0u2rff',
+                  publicKey: secret1,
+                  privateKey: secret2,
                   listIds: [
                     { listId: '9834trg3rgy3g08oi9893rgfb' },
                     { listId: 'f39487tyh49go3h093gh2if2f2' },
@@ -155,16 +156,15 @@ export const data = [
                 params: {},
                 headers: {
                   'Content-Type': 'application/json',
-                  Authorization:
-                    'Basic NDl1cjQ5MHJqZm8zNGdpMDR5MzhyOWdvOm44OWczODl5cjM4OWZnYmVmMHUycmZm',
+                  Authorization: authHeader1,
                 },
                 version: '1',
                 endpoint: 'https://api.engage.so/v1/users/1',
               },
               destination: {
                 Config: {
-                  publicKey: '49ur490rjfo34gi04y38r9go',
-                  privateKey: 'n89g389yr389fgbef0u2rff',
+                  publicKey: secret1,
+                  privateKey: secret2,
                   listIds: [
                     { listId: '9834trg3rgy3g08oi9893rgfb' },
                     { listId: 'f39487tyh49go3h093gh2if2f2' },
@@ -199,8 +199,8 @@ export const data = [
               },
               destination: {
                 Config: {
-                  publicKey: '49ur490rjfo34gi04y38r9go',
-                  privateKey: 'n89g389yr389fgbef0u2rff',
+                  publicKey: secret1,
+                  privateKey: secret2,
                   listIds: [
                     { listId: '9834trg3rgy3g08oi9893rgfb' },
                     { listId: 'f39487tyh49go3h093gh2if2f2' },
@@ -224,8 +224,8 @@ export const data = [
               metadata: [{ jobId: 3, userId: 'u1' }],
               destination: {
                 Config: {
-                  publicKey: '49ur490rjfo34gi04y38r9go',
-                  privateKey: 'n89g389yr389fgbef0u2rff',
+                  publicKey: secret1,
+                  privateKey: secret2,
                   listIds: [
                     { listId: '9834trg3rgy3g08oi9893rgfb' },
                     { listId: 'f39487tyh49go3h093gh2if2f2' },

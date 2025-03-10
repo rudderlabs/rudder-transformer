@@ -1,3 +1,4 @@
+import { secret1, secret2 } from '../maskedSecrets';
 export const data = [
   {
     name: 'mailjet',
@@ -20,7 +21,7 @@ export const data = [
               },
               integrations: { All: true, 'user.com': { lookup: 'email' } },
             },
-            destination: { Config: { apiKey: 'dummyApiKey', apiSecret: 'dummyApiSecret' } },
+            destination: { Config: { apiKey: secret1, apiSecret: secret2 } },
           },
         ],
         method: 'POST',
@@ -75,7 +76,7 @@ export const data = [
                 },
               },
             },
-            destination: { Config: { apiKey: 'dummyApiKey', apiSecret: 'dummyApiSecret' } },
+            destination: { Config: { apiKey: secret1, apiSecret: secret2 } },
           },
         ],
         method: 'POST',
@@ -129,7 +130,7 @@ export const data = [
                 },
               },
             },
-            destination: { Config: { apiKey: 'dummyApiKey', apiSecret: 'dummyApiSecret' } },
+            destination: { Config: { apiKey: secret1, apiSecret: secret2 } },
           },
         ],
         method: 'POST',
@@ -185,8 +186,8 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
-                apiSecret: 'dummyApiSecret',
+                apiKey: secret1,
+                apiSecret: secret2,
                 listId: '58578',
                 contactPropertiesMapping: [{ from: 'userCountry', to: 'country' }],
               },

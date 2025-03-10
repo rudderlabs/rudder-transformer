@@ -1,7 +1,7 @@
 import { Destination } from '../../../../../src/types';
 import { ProcessorTestData } from '../../../testTypes';
 import { generateMetadata } from '../../../testUtils';
-
+import { secret1 } from '../maskedSecrets';
 const destination: Destination = {
   ID: '123',
   Name: 'klaviyo',
@@ -12,7 +12,7 @@ const destination: Destination = {
     Config: {},
   },
   Config: {
-    privateApiKey: 'dummyPrivateApiKey',
+    privateApiKey: secret1,
     apiVersion: 'v2',
   },
   Enabled: true,

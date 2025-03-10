@@ -4,9 +4,10 @@ import {
   generateProxyV0Payload,
   generateProxyV1Payload,
 } from '../../../testUtils';
+import { authHeader1 } from '../maskedSecrets';
 
 const commonHeaders = {
-  Authorization: 'Bearer abcd123',
+  Authorization: authHeader1,
   'Content-Type': 'application/json',
   'User-Agent': 'RudderLabs',
 };
@@ -16,19 +17,6 @@ const commonRequestParameters = {
   JSON: {
     users: [
       {
-        schema: ['EMAIL_SHA256'],
-        data: [['938758751f5af66652a118e26503af824404bc13acd1cb7642ddff99916f0e1c']],
-      },
-    ],
-  },
-};
-
-const commonDeleteRequestParameters = {
-  headers: commonHeaders,
-  JSON: {
-    users: [
-      {
-        id: '123456',
         schema: ['EMAIL_SHA256'],
         data: [['938758751f5af66652a118e26503af824404bc13acd1cb7642ddff99916f0e1c']],
       },

@@ -13,6 +13,7 @@ const {
   removeUndefinedAndNullValues,
   removeUndefinedAndNullAndEmptyValues,
 } = require('../../util');
+const { generateRandomString } = require('@rudderstack/integrations-lib');
 
 // Mock the handleHttpRequest function
 jest.mock('../../../adapters/network');
@@ -255,7 +256,7 @@ describe('dedup utility tests', () => {
           enableNestedArrayOperations: false,
           enableSubscriptionGroupInGroupCall: false,
           eventFilteringOption: 'disable',
-          restApiKey: 'test-rest-api-key',
+          restApiKey: generateRandomString(),
           supportDedup: true,
           trackAnonymousUser: true,
           whitelistedEvents: [],
@@ -321,7 +322,7 @@ describe('dedup utility tests', () => {
         },
         {
           headers: {
-            Authorization: 'Bearer test-rest-api-key',
+            Authorization: `Bearer ${destination.Config.restApiKey}`,
           },
           timeout: 10000,
         },
@@ -341,7 +342,7 @@ describe('dedup utility tests', () => {
         ID: 'some-destination-id',
         Name: 'Test Destination',
         Config: {
-          restApiKey: 'test-rest-api-key',
+          restApiKey: generateRandomString(),
         },
       };
 

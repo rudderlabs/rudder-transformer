@@ -1,3 +1,5 @@
+import { authHeader1 } from '../maskedSecrets';
+
 export const data = [
   {
     name: 'variance',
@@ -109,7 +111,7 @@ export const data = [
               },
               Config: {
                 webhookUrl: 'http://6b0e6a60.ngrok.io',
-                authHeader: 'Basic MVA4dUtGOF=',
+                authHeader: authHeader1,
               },
             },
             metadata: {
@@ -131,7 +133,7 @@ export const data = [
               method: 'POST',
               endpoint: 'http://6b0e6a60.ngrok.io',
               headers: {
-                authorization: 'Basic MVA4dUtGOF=',
+                authorization: authHeader1,
                 'content-type': 'application/json',
               },
               params: {},

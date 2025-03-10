@@ -1068,7 +1068,7 @@ export const data = [
                 JSON: {
                   attributes: {
                     description: 'Stringify test for object values',
-                    nested: '{"a":[1,2,3],"b":{"c":1}}',
+                    nested: JSON.stringify({ a: [1, 2, 3], b: { c: 1 } }),
                     arr: '[1,2,3]',
                   },
                   propertyKey: 'AP-XABC-123',
@@ -1205,7 +1205,7 @@ export const data = [
                 JSON: {
                   attributes: {
                     description: 'Stringify test for object values',
-                    nested: '{"a":[1,2,3],"b":{"c":1}}',
+                    nested: JSON.stringify({ a: [1, 2, 3], b: { c: 1 } }),
                     arr: '[1,2,3]',
                   },
                   propertyKey: 'AP-XABC-123',

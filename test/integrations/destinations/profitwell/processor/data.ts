@@ -1,3 +1,5 @@
+import { secretApiKey } from '../maskedSecrets';
+
 export const data = [
   {
     name: 'profitwell',
@@ -11,7 +13,7 @@ export const data = [
           {
             destination: {
               Config: {
-                privateApiKey: '9270161a8e5abaa0e56efddfd9dbcb62',
+                privateApiKey: secretApiKey,
               },
             },
             message: {
@@ -92,7 +94,7 @@ export const data = [
           {
             destination: {
               Config: {
-                privateApiKey: '9270161a8e5abaa0e56efddfd9dbcb62',
+                privateApiKey: secretApiKey,
               },
             },
             message: {
@@ -179,7 +181,7 @@ export const data = [
           {
             destination: {
               Config: {
-                privateApiKey: '9270161a8e5abaa0e56efddfd9dbcb62',
+                privateApiKey: secretApiKey,
               },
             },
             message: {
@@ -241,7 +243,7 @@ export const data = [
               endpoint: 'https://api.profitwell.com/v2/subscriptions/',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: '9270161a8e5abaa0e56efddfd9dbcb62',
+                Authorization: secretApiKey,
               },
               params: {},
               body: {
@@ -281,7 +283,7 @@ export const data = [
           {
             destination: {
               Config: {
-                privateApiKey: '9270161a8e5abaa0e56efddfd9dbcb62',
+                privateApiKey: secretApiKey,
               },
             },
             message: {
@@ -362,7 +364,7 @@ export const data = [
           {
             destination: {
               Config: {
-                privateApiKey: '9270161a8e5abaa0e56efddfd9dbcb62',
+                privateApiKey: secretApiKey,
               },
             },
             message: {
@@ -450,7 +452,7 @@ export const data = [
           {
             destination: {
               Config: {
-                privateApiKey: '9270161a8e5abaa0e56efddfd9dbcb62',
+                privateApiKey: secretApiKey,
               },
             },
             message: {
@@ -518,7 +520,7 @@ export const data = [
               endpoint: 'https://api.profitwell.com/v2/subscriptions/',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: '9270161a8e5abaa0e56efddfd9dbcb62',
+                Authorization: secretApiKey,
               },
               params: {},
               body: {
@@ -559,7 +561,7 @@ export const data = [
           {
             destination: {
               Config: {
-                privateApiKey: '9270161a8e5abaa0e56efddfd9dbcb62',
+                privateApiKey: secretApiKey,
               },
             },
             message: {
@@ -652,7 +654,7 @@ export const data = [
           {
             destination: {
               Config: {
-                privateApiKey: '9270161a8e5abaa0e56efddfd9dbcb62',
+                privateApiKey: secretApiKey,
               },
             },
             message: {
@@ -725,7 +727,7 @@ export const data = [
               endpoint: 'https://api.profitwell.com/v2/subscriptions/pws_FecTCEyo17rV/',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: '9270161a8e5abaa0e56efddfd9dbcb62',
+                Authorization: secretApiKey,
               },
               params: {},
               body: {
@@ -761,7 +763,7 @@ export const data = [
           {
             destination: {
               Config: {
-                privateApiKey: '9270161a8e5abaa0e56efddfd9dbcb62',
+                privateApiKey: secretApiKey,
               },
             },
             message: {
@@ -854,7 +856,7 @@ export const data = [
           {
             destination: {
               Config: {
-                privateApiKey: '9270161a8e5abaa0e56efddfd9dbcb62',
+                privateApiKey: secretApiKey,
               },
             },
             message: {
@@ -927,7 +929,7 @@ export const data = [
               endpoint: 'https://api.profitwell.com/v2/subscriptions/pws_FecTCEyo17rV/',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: '9270161a8e5abaa0e56efddfd9dbcb62',
+                Authorization: secretApiKey,
               },
               params: {},
               body: {
@@ -1053,7 +1055,7 @@ export const data = [
           {
             destination: {
               Config: {
-                privateApiKey: '9270161a8e5abaa0e56efddfd9dbcb62',
+                privateApiKey: secretApiKey,
               },
             },
             message: {
@@ -1147,7 +1149,7 @@ export const data = [
           {
             destination: {
               Config: {
-                privateApiKey: '9270161a8e5abaa0e56efddfd9dbcb62',
+                privateApiKey: secretApiKey,
               },
             },
             message: {
@@ -1210,7 +1212,7 @@ export const data = [
               endpoint: 'https://api.profitwell.com/v2/subscriptions/',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: '9270161a8e5abaa0e56efddfd9dbcb62',
+                Authorization: secretApiKey,
               },
               params: {},
               body: {

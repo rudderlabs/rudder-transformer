@@ -1,3 +1,5 @@
+import { authHeader1 } from './maskedSecrets';
+
 const deleteNwData = [
   {
     httpReq: {
@@ -111,7 +113,7 @@ const deleteNwData = [
       },
       headers: {
         'Content-Type': 'application/json',
-        Authorization: 'Basic MTIzNDphYmNk',
+        Authorization: authHeader1,
       },
     },
     httpRes: {
@@ -154,7 +156,7 @@ const deleteNwData = [
       },
       headers: {
         'Content-Type': 'application/json',
-        Authorization: 'Basic MTIzNDphYmNk',
+        Authorization: authHeader1,
       },
     },
     httpRes: {
@@ -174,7 +176,7 @@ const deleteNwData = [
       },
       headers: {
         'Content-Type': 'application/json',
-        Authorization: 'Basic MTIzNDphYmNk',
+        Authorization: authHeader1,
       },
     },
     httpRes: {
@@ -194,7 +196,7 @@ const deleteNwData = [
       },
       headers: {
         'Content-Type': 'application/json',
-        Authorization: 'Basic MTIzNDphYmNk',
+        Authorization: authHeader1,
       },
     },
     httpRes: {
@@ -216,7 +218,7 @@ const deleteNwData = [
       },
       headers: {
         'Content-Type': 'application/json',
-        Authorization: 'Basic MTIzNDphYmNk',
+        Authorization: authHeader1,
       },
     },
     httpRes: {

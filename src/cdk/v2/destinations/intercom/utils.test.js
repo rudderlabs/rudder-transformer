@@ -1,5 +1,6 @@
 const md5 = require('md5');
 const axios = require('axios');
+const { generateRandomString } = require('@rudderstack/integrations-lib');
 const {
   getName,
   getHeaders,
@@ -743,7 +744,7 @@ describe('attachUserAndCompany utility test', () => {
     };
     const Config = {
       sendAnonymousId: false,
-      apiKey: 'testApiKey',
+      apiKey: generateRandomString(),
     };
 
     const expectedResponse = {
@@ -755,7 +756,7 @@ describe('attachUserAndCompany utility test', () => {
       files: {},
       headers: {
         'Content-Type': 'application/json',
-        Authorization: 'Bearer testApiKey',
+        Authorization: `Bearer ${Config.apiKey}`,
         Accept: 'application/json',
         'Intercom-Version': '1.4',
         'User-Agent': 'RudderStack',

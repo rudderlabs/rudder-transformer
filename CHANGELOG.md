@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.93.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.92.1...v1.93.0) (2025-03-10)
+
+
+### Features
+
+* **destination:** pass object data in event for moengage ([#4111](https://github.com/rudderlabs/rudder-transformer/issues/4111)) ([5edfbb8](https://github.com/rudderlabs/rudder-transformer/commit/5edfbb834bfde0d39f6f177406ebf70a1138ddad))
+* onboarding new source facebook lead ads ([#4132](https://github.com/rudderlabs/rudder-transformer/issues/4132)) ([7e54fa2](https://github.com/rudderlabs/rudder-transformer/commit/7e54fa22e416aa998e6d2d009b36cff814df94a1))
+
+
+### Bug Fixes
+
+* **destination:** use coql api to delete record for zoho ([#4134](https://github.com/rudderlabs/rudder-transformer/issues/4134)) ([2c67c9a](https://github.com/rudderlabs/rudder-transformer/commit/2c67c9abe6ca50320bea195d22bc00f70ee65ddf))
+* marketo get auth token cache issue ([#4140](https://github.com/rudderlabs/rudder-transformer/issues/4140)) ([29175ac](https://github.com/rudderlabs/rudder-transformer/commit/29175ac13e1918a67e9a8367423fd9c1327aacc5))
+
 ### [1.92.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.92.0...v1.92.1) (2025-03-07)
 
 

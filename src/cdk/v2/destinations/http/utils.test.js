@@ -91,7 +91,11 @@ describe('Utils Functions', () => {
         key2: 'value2',
         key3: { subKey: 'value3', subkey2: undefined },
       };
-      const expectedFORM = { key1: 'value1', key2: 'value2', key3: '{"subKey":"value3"}' };
+      const expectedFORM = {
+        key1: 'value1',
+        key2: 'value2',
+        key3: JSON.stringify({ subKey: 'value3' }),
+      };
       const result = prepareBody(payload, 'FORM');
       expect(result).toEqual(expectedFORM);
     });
@@ -113,7 +117,7 @@ describe('Utils Functions', () => {
   describe('stringifyFirstLevelValues', () => {
     test('converts non-string first-level values to strings', () => {
       const input = { a: 1, b: true, c: { d: 42 } };
-      const expected = { a: '1', b: 'true', c: '{"d":42}' };
+      const expected = { a: '1', b: 'true', c: JSON.stringify({ d: 42 }) };
       expect(stringifyFirstLevelValues(input)).toEqual(expected);
     });
 

@@ -1,4 +1,5 @@
 import { AUTH_STATUS_INACTIVE } from '../../../../../src/adapters/networkhandler/authConstants';
+import { secret1, secret2, secret3 } from '../maskedSecrets';
 
 export const data = [
   {
@@ -10,7 +11,7 @@ export const data = [
     input: {
       request: {
         headers: {
-          'x-rudder-dest-info': '{"secret": { "access_token": "valid_token" }}',
+          'x-rudder-dest-info': JSON.stringify({ secret: { access_token: secret1 } }),
         },
         body: [
           {
@@ -52,7 +53,7 @@ export const data = [
     input: {
       request: {
         headers: {
-          'x-rudder-dest-info': '{"secret": { "access_token": "expired_token" }}',
+          'x-rudder-dest-info': JSON.stringify({ secret: { access_token: secret2 } }),
         },
         body: [
           {
@@ -95,7 +96,7 @@ export const data = [
     input: {
       request: {
         headers: {
-          'x-rudder-dest-info': '{"secret": { "access_token": "valid_token_1" }}',
+          'x-rudder-dest-info': JSON.stringify({ secret: { access_token: secret1 } }),
         },
         body: [
           {
@@ -147,7 +148,7 @@ export const data = [
     input: {
       request: {
         headers: {
-          'x-rudder-dest-info': '{"secret": { "access_token": "no_permissions_token" }}',
+          'x-rudder-dest-info': JSON.stringify({ secret: { access_token: secret3 } }),
         },
         body: [
           {

@@ -1,3 +1,5 @@
+import { defaultApiKey } from '../../../common/secrets';
+
 export const data = [
   {
     name: 'signl4',
@@ -12,7 +14,7 @@ export const data = [
             {
               destination: {
                 Config: {
-                  apiKey: 'dummyApiKey',
+                  apiKey: defaultApiKey,
                   s4ServiceValue: 'service',
                   s4ServiceProperty: '',
                   s4LocationValue: '67.3, 32.3',
@@ -71,7 +73,7 @@ export const data = [
                 version: '1',
                 type: 'REST',
                 method: 'POST',
-                endpoint: 'https://connect.signl4.com/webhook/dummyApiKey',
+                endpoint: `https://connect.signl4.com/webhook/${defaultApiKey}`,
                 headers: { 'Content-Type': 'application/json' },
                 params: {},
                 body: {
@@ -97,7 +99,7 @@ export const data = [
               statusCode: 200,
               destination: {
                 Config: {
-                  apiKey: 'dummyApiKey',
+                  apiKey: defaultApiKey,
                   s4ServiceValue: 'service',
                   s4ServiceProperty: '',
                   s4LocationValue: '67.3, 32.3',
@@ -131,7 +133,7 @@ export const data = [
             {
               destination: {
                 Config: {
-                  apiKey: 'dummyApiKey',
+                  apiKey: defaultApiKey,
                   s4ServiceValue: 'service',
                   s4ServiceProperty: '',
                   s4LocationValue: '67.3, 32.3',
@@ -188,7 +190,7 @@ export const data = [
             {
               destination: {
                 Config: {
-                  apiKey: 'dummyApiKey',
+                  apiKey: defaultApiKey,
                   s4ServiceValue: 'service',
                   s4ServiceProperty: '',
                   s4LocationValue: '67.3, 32.3',

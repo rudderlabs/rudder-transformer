@@ -1,3 +1,5 @@
+import { defaultApiKey } from '../../../common/secrets';
+
 export const data = [
   {
     name: 'singular',
@@ -12,7 +14,7 @@ export const data = [
             {
               destination: {
                 Config: {
-                  apiKey: 'dummyApiKey',
+                  apiKey: defaultApiKey,
                   sessionEventList: [
                     { sessionEventName: 'mysessionevent' },
                     { sessionEventName: 'randomuser' },
@@ -140,7 +142,7 @@ export const data = [
                   update_time: 1630511211,
                   ua: 'Dalvik/2.1.0 (Linux; U; Android 9; Android SDK built for x86 Build/PSR1.180720.075)',
                   c: 'wifi',
-                  a: 'dummyApiKey',
+                  a: defaultApiKey,
                 },
                 body: { JSON: {}, JSON_ARRAY: {}, XML: {}, FORM: {} },
                 files: {},
@@ -150,7 +152,7 @@ export const data = [
               statusCode: 200,
               destination: {
                 Config: {
-                  apiKey: 'dummyApiKey',
+                  apiKey: defaultApiKey,
                   sessionEventList: [
                     { sessionEventName: 'mysessionevent' },
                     { sessionEventName: 'randomuser' },
@@ -177,7 +179,7 @@ export const data = [
             {
               destination: {
                 Config: {
-                  apiKey: 'dummyApiKey',
+                  apiKey: defaultApiKey,
                   sessionEventList: [
                     { sessionEventName: 'mysessionevent' },
                     { sessionEventName: 'randomuser' },
@@ -305,7 +307,7 @@ export const data = [
                   update_time: 1630511211,
                   ua: 'Dalvik/2.1.0 (Linux; U; Android 9; Android SDK built for x86 Build/PSR1.180720.075)',
                   c: 'wifi',
-                  a: 'dummyApiKey',
+                  a: defaultApiKey,
                 },
                 body: { JSON: {}, JSON_ARRAY: {}, XML: {}, FORM: {} },
                 files: {},
@@ -315,7 +317,7 @@ export const data = [
               statusCode: 200,
               destination: {
                 Config: {
-                  apiKey: 'dummyApiKey',
+                  apiKey: defaultApiKey,
                   sessionEventList: [
                     { sessionEventName: 'mysessionevent' },
                     { sessionEventName: 'randomuser' },
@@ -342,7 +344,7 @@ export const data = [
             {
               destination: {
                 Config: {
-                  apiKey: 'dummyApiKey',
+                  apiKey: defaultApiKey,
                   sessionEventList: [
                     { sessionEventName: 'mysessionevent' },
                     { sessionEventName: 'randomuser' },
@@ -470,7 +472,7 @@ export const data = [
                   update_time: 1630511211,
                   ua: 'Dalvik/2.1.0 (Linux; U; Android 9; Android SDK built for x86 Build/PSR1.180720.075)',
                   c: 'wifi',
-                  a: 'dummyApiKey',
+                  a: defaultApiKey,
                 },
                 body: { JSON: {}, JSON_ARRAY: {}, XML: {}, FORM: {} },
                 files: {},
@@ -480,7 +482,7 @@ export const data = [
               statusCode: 200,
               destination: {
                 Config: {
-                  apiKey: 'dummyApiKey',
+                  apiKey: defaultApiKey,
                   sessionEventList: [
                     { sessionEventName: 'mysessionevent' },
                     { sessionEventName: 'randomuser' },

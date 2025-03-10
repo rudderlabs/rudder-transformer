@@ -1,3 +1,5 @@
+import { secret2 } from './maskedSecrets';
+
 export const networkCallsData = [
   {
     httpReq: {
@@ -5,7 +7,7 @@ export const networkCallsData = [
         Accept: 'application/json',
         'Content-Type': 'application/x-www-form-urlencoded',
       },
-      data: 'apiKey=apikey123&email=test%40rudderstack.com',
+      data: `apiKey=${secret2}&email=test%40rudderstack.com`,
       method: 'POST',
       url: 'https://canny.io/api/v1/users/retrieve',
     },

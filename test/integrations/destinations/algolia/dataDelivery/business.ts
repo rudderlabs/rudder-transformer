@@ -1,6 +1,8 @@
 import { ProxyV1TestData } from '../../../testTypes';
 import { generateProxyV0Payload, generateProxyV1Payload } from '../../../testUtils';
 import { abortStatTags, commonRequestProperties, metadataArray, retryStatTags } from './constant';
+import { defaultAccessToken } from '../../../common/secrets';
+
 const proxyMetdata3 = {
   jobId: 3,
   attemptNum: 1,
@@ -214,8 +216,10 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
             message: 'ALGOLIA: Error transformer proxy v1 during ALGOLIA response transformation',
             response: [
               {
-                error:
-                  '{"status":422,"message":"EventType must be one of \\"click\\", \\"conversion\\" or \\"view\\""}',
+                error: JSON.stringify({
+                  status: 422,
+                  message: `EventType must be one of "click", "conversion" or "view"`,
+                }),
                 metadata: {
                   jobId: 1,
                   attemptNum: 1,
@@ -224,7 +228,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
                   workspaceId: 'default-workspaceId',
                   sourceId: 'default-sourceId',
                   secret: {
-                    accessToken: 'default-accessToken',
+                    accessToken: defaultAccessToken,
                   },
                   dontBatch: true,
                 },
@@ -277,8 +281,10 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
             message: 'ALGOLIA: Error transformer proxy v1 during ALGOLIA response transformation',
             response: [
               {
-                error:
-                  '{"status":422,"message":"EventType must be one of \\"click\\", \\"conversion\\" or \\"view\\""}',
+                error: JSON.stringify({
+                  status: 422,
+                  message: `EventType must be one of "click", "conversion" or "view"`,
+                }),
                 metadata: {
                   jobId: 1,
                   attemptNum: 1,
@@ -292,8 +298,10 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
                 statusCode: 500,
               },
               {
-                error:
-                  '{"status":422,"message":"EventType must be one of \\"click\\", \\"conversion\\" or \\"view\\""}',
+                error: JSON.stringify({
+                  status: 422,
+                  message: `EventType must be one of "click", "conversion" or "view"`,
+                }),
                 metadata: {
                   jobId: 2,
                   attemptNum: 1,
@@ -307,8 +315,10 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
                 statusCode: 500,
               },
               {
-                error:
-                  '{"status":422,"message":"EventType must be one of \\"click\\", \\"conversion\\" or \\"view\\""}',
+                error: JSON.stringify({
+                  status: 422,
+                  message: `EventType must be one of "click", "conversion" or "view"`,
+                }),
                 metadata: {
                   jobId: 3,
                   attemptNum: 1,

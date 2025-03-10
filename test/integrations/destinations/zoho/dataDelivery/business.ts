@@ -1,5 +1,6 @@
 import { generateMetadata, generateProxyV1Payload } from '../../../testUtils';
 import { ProxyV1TestData } from '../../../testTypes';
+import { defaultAccessToken } from '../../../common/secrets';
 
 export const headerBlockWithCorrectAccessToken = {
   'Content-Type': 'application/json',
@@ -39,7 +40,7 @@ export const metadata = [
     workspaceId: 'default-workspaceId',
     sourceId: 'default-sourceId',
     secret: {
-      accessToken: 'default-accessToken',
+      accessToken: defaultAccessToken,
     },
     dontBatch: false,
   },
@@ -51,7 +52,7 @@ export const metadata = [
     workspaceId: 'default-workspaceId',
     sourceId: 'default-sourceId',
     secret: {
-      accessToken: 'default-accessToken',
+      accessToken: defaultAccessToken,
     },
     dontBatch: false,
   },
@@ -63,7 +64,7 @@ export const metadata = [
     workspaceId: 'default-workspaceId',
     sourceId: 'default-sourceId',
     secret: {
-      accessToken: 'default-accessToken',
+      accessToken: defaultAccessToken,
     },
     dontBatch: false,
   },
@@ -78,7 +79,7 @@ export const singleMetadata = [
     workspaceId: 'default-workspaceId',
     sourceId: 'default-sourceId',
     secret: {
-      accessToken: 'default-accessToken',
+      accessToken: defaultAccessToken,
     },
     dontBatch: false,
   },
@@ -236,8 +237,12 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
               {
                 statusCode: 400,
                 metadata: generateMetadata(1),
-                error:
-                  '{"code":"INVALID_MODULE","details":{"resource_path_index":0},"message":"the module name given seems to be invalid","status":"error"}',
+                error: JSON.stringify({
+                  code: 'INVALID_MODULE',
+                  details: { resource_path_index: 0 },
+                  message: 'the module name given seems to be invalid',
+                  status: 'error',
+                }),
               },
             ],
           },
@@ -278,8 +283,12 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
             authErrorCategory: 'REFRESH_TOKEN',
             response: [
               {
-                error:
-                  '{"code":"INVALID_TOKEN","details":{},"message":"invalid oauth token","status":"error"}',
+                error: JSON.stringify({
+                  code: 'INVALID_TOKEN',
+                  details: {},
+                  message: 'invalid oauth token',
+                  status: 'error',
+                }),
                 statusCode: 500,
                 metadata: generateMetadata(1),
               },

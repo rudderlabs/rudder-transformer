@@ -1,6 +1,7 @@
 import { ProxyMetdata } from '../../../../../src/types';
 import { ProxyV1TestData } from '../../../testTypes';
 import { generateMetadata, generateProxyV1Payload } from '../../../testUtils';
+import { authHeader1 } from '../maskedSecrets';
 
 const BRAZE_USERS_TRACK_ENDPOINT = 'https://rest.iad-03.braze.com/users/track';
 
@@ -8,7 +9,7 @@ const partner = 'RudderStack';
 
 const headers = {
   Accept: 'application/json',
-  Authorization: 'Bearer api_key',
+  Authorization: authHeader1,
   'Content-Type': 'application/json',
   'User-Agent': 'RudderLabs',
 };
@@ -128,7 +129,7 @@ const BrazePurchaseEvent = {
 const metadataArray = [generateMetadata(1), generateMetadata(2), generateMetadata(3)];
 
 const errorMessages = {
-  message_1: '{"events_processed":2,"purchases_processed":1,"message":"success"}',
+  message_1: JSON.stringify({ events_processed: 2, purchases_processed: 1, message: 'success' }),
   message_2:
     '{"events_processed":1,"message":"success","errors":[{"type":"\'external_id\', \'braze_id\', \'user_alias\', \'email\' or \'phone\' is required","input_array":"events","index":1},{"type":"\'quantity\' is not valid","input_array":"purchases","index":0}]}',
   message_3:
@@ -351,17 +352,17 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
           output: {
             response: [
               {
-                error: '{"message":"Invalid API Key"}',
+                error: JSON.stringify({ message: 'Invalid API Key' }),
                 statusCode: 401,
                 metadata: generateMetadata(1),
               },
               {
-                error: '{"message":"Invalid API Key"}',
+                error: JSON.stringify({ message: 'Invalid API Key' }),
                 statusCode: 401,
                 metadata: generateMetadata(2),
               },
               {
-                error: '{"message":"Invalid API Key"}',
+                error: JSON.stringify({ message: 'Invalid API Key' }),
                 statusCode: 401,
                 metadata: generateMetadata(3),
               },

@@ -1,3 +1,5 @@
+import { authHeader1, authHeaderInvalid } from './maskedSecrets';
+
 const deleteNwData = [
   {
     httpReq: {
@@ -8,7 +10,7 @@ const deleteNwData = [
       },
       headers: {
         Accept: 'application/json',
-        Authorization: 'API-Key invalidApiKey',
+        Authorization: authHeaderInvalid,
         'Content-Type': 'application/json',
       },
     },
@@ -26,7 +28,7 @@ const deleteNwData = [
       },
       headers: {
         Accept: 'application/json',
-        Authorization: 'API-Key testApiKey',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
       },
     },
@@ -44,7 +46,7 @@ const deleteNwData = [
       },
       headers: {
         Accept: 'application/json',
-        Authorization: 'API-Key testApiKey',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
       },
     },
@@ -64,7 +66,7 @@ const deleteNwData = [
       },
       headers: {
         Accept: 'application/json',
-        Authorization: 'API-Key testApiKey',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
       },
     },

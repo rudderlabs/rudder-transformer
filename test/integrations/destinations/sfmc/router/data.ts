@@ -1,3 +1,4 @@
+import { authHeader1 } from '../maskedSecrets';
 export const data = [
   {
     name: 'sfmc',
@@ -237,7 +238,7 @@ export const data = [
                     'https://vcn7AQ2W9GGIAZSsN6Mfq.rest.marketingcloudapis.com/contacts/v1/contacts',
                   headers: {
                     'Content-Type': 'application/json',
-                    Authorization: 'Bearer yourAuthToken',
+                    Authorization: authHeader1,
                   },
                   params: {},
                   body: {
@@ -259,7 +260,7 @@ export const data = [
                     'https://vcn7AQ2W9GGIAZSsN6Mfq.rest.marketingcloudapis.com/hub/v1/dataevents/key:f3ffa19b-e0b3-4967-829f-549b781080e6/rows/Contact Key:12345',
                   headers: {
                     'Content-Type': 'application/json',
-                    Authorization: 'Bearer yourAuthToken',
+                    Authorization: authHeader1,
                   },
                   params: {},
                   body: {

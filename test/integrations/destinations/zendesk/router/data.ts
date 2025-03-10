@@ -1,3 +1,4 @@
+import { authHeader1, secret1, secret2 } from '../maskedSecrets';
 export const data = [
   {
     name: 'zendesk',
@@ -12,7 +13,7 @@ export const data = [
             {
               destination: {
                 Config: {
-                  apiToken: 'myDummyApiToken4',
+                  apiToken: secret1,
                   createUsersAsVerified: true,
                   domain: 'rudderlabshelp',
                   email: 'myDummyUserName1',
@@ -80,7 +81,7 @@ export const data = [
                   method: 'POST',
                   endpoint: 'https://rudderlabshelp.zendesk.com/api/v2/users/create_or_update.json',
                   headers: {
-                    Authorization: 'Basic bXlEdW1teVVzZXJOYW1lMS90b2tlbjpteUR1bW15QXBpVG9rZW40',
+                    Authorization: authHeader1,
                     'Content-Type': 'application/json',
                     'X-Zendesk-Marketplace-Name': 'RudderStack',
                     'X-Zendesk-Marketplace-Organization-Id': '3339',
@@ -110,7 +111,7 @@ export const data = [
               statusCode: 200,
               destination: {
                 Config: {
-                  apiToken: 'myDummyApiToken4',
+                  apiToken: secret1,
                   createUsersAsVerified: true,
                   domain: 'rudderlabshelp',
                   email: 'myDummyUserName1',
@@ -147,7 +148,7 @@ export const data = [
             {
               destination: {
                 Config: {
-                  apiToken: 'myDummyApiToken4',
+                  apiToken: secret1,
                   createUsersAsVerified: true,
                   domain: 'rudderlabshelp',
                   email: 'myDummyUserName1',
@@ -220,7 +221,7 @@ export const data = [
                 method: 'POST',
                 endpoint: 'https://rudderlabshelp.zendesk.com/api/v2/organization_memberships.json',
                 headers: {
-                  Authorization: 'Basic bXlEdW1teVVzZXJOYW1lMS90b2tlbjpteUR1bW15QXBpVG9rZW40',
+                  Authorization: authHeader1,
                   'Content-Type': 'application/json',
                   'X-Zendesk-Marketplace-Name': 'RudderStack',
                   'X-Zendesk-Marketplace-Organization-Id': '3339',
@@ -246,7 +247,7 @@ export const data = [
               statusCode: 200,
               destination: {
                 Config: {
-                  apiToken: 'myDummyApiToken4',
+                  apiToken: secret1,
                   createUsersAsVerified: true,
                   domain: 'rudderlabshelp',
                   email: 'myDummyUserName1',
@@ -283,7 +284,7 @@ export const data = [
             {
               destination: {
                 Config: {
-                  apiToken: 'dummyApiToken',
+                  apiToken: secret2,
                   createUsersAsVerified: true,
                   domain: 'rudderlabtest2',
                   email: 'rudderlabtest2@email.com',
@@ -355,7 +356,7 @@ export const data = [
               batched: false,
               destination: {
                 Config: {
-                  apiToken: 'dummyApiToken',
+                  apiToken: secret2,
                   createUsersAsVerified: true,
                   domain: 'rudderlabtest2',
                   email: 'rudderlabtest2@email.com',

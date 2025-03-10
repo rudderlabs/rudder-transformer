@@ -1,3 +1,4 @@
+import { authHeader1 } from '../maskedSecrets';
 import {
   generateMetadata,
   generateTrackPayload,
@@ -6,6 +7,7 @@ import {
 } from '../../../testUtils';
 import { Destination } from '../../../../../src/types';
 import { ProcessorTestData } from '../../../testTypes';
+import { defaultAccessTokenAuthHeader } from '../../../common/secrets';
 
 const commonDestination: Destination = {
   ID: '12335',
@@ -55,7 +57,7 @@ const commonUserProperties = {
 const commonTimestamp = new Date('2023-10-14');
 
 const commonHeader = {
-  Authorization: 'Bearer default-accessToken',
+  Authorization: defaultAccessTokenAuthHeader,
   'Content-Type': 'application/json',
   'LinkedIn-Version': '202409',
   'X-RestLi-Method': 'BATCH_CREATE',

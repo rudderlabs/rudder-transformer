@@ -1,3 +1,6 @@
+import { defaultApiKey } from '../../../common/secrets';
+import { secret4 } from '../maskedSecrets';
+
 export const data = [
   {
     name: 'mp',
@@ -3099,7 +3102,7 @@ export const data = [
               },
             ],
             config: {
-              apiKey: 'dummyApiKey',
+              apiKey: defaultApiKey,
               prefixProperties: true,
               useNativeSDK: false,
             },
@@ -3179,11 +3182,11 @@ export const data = [
               },
             ],
             config: {
-              token: 'test_token',
+              token: secret4,
               prefixProperties: true,
               useNativeSDK: false,
               userDeletionApi: 'task',
-              gdprApiToken: 'test_gdpr_token',
+              gdprApiToken: secret4,
             },
           },
         ],
@@ -3218,7 +3221,7 @@ export const data = [
               },
             ],
             config: {
-              token: 'test_token',
+              token: secret4,
               prefixProperties: true,
               useNativeSDK: false,
               userDeletionApi: 'task',
@@ -3257,7 +3260,7 @@ export const data = [
               },
             ],
             config: {
-              token: 'test_token',
+              token: secret4,
               prefixProperties: true,
               useNativeSDK: false,
               dataResidency: 'eu',

@@ -1,3 +1,17 @@
+import {
+  authHeader1,
+  secret1,
+  secret2,
+  authHeader2,
+  secret3,
+  secret4,
+  authHeader3,
+  secret5,
+  secret6,
+  authHeader4,
+  secret7,
+  secret8,
+} from '../maskedSecrets';
 export const data = [
   {
     name: 'customerio',
@@ -25,8 +39,8 @@ export const data = [
             destination: {
               Config: {
                 datacenter: 'US',
-                siteID: '46be54768e7d49ab2628',
-                apiKey: 'dummyApiKey',
+                siteID: secret1,
+                apiKey: secret2,
               },
             },
           },
@@ -52,7 +66,7 @@ export const data = [
               endpoint: 'https://track.customer.io/api/v1/customers/cio_1234',
               userId: 'cio_1234',
               headers: {
-                Authorization: 'Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk=',
+                Authorization: authHeader1,
               },
               version: '1',
               params: {},
@@ -143,7 +157,7 @@ export const data = [
             destination: {
               Config: {
                 datacenter: 'US',
-                siteID: '46be54768e7d49ab2628',
+                siteID: secret1,
               },
             },
           },
@@ -247,8 +261,8 @@ export const data = [
             destination: {
               Config: {
                 datacenter: 'US',
-                siteID: '46be54768e7d49ab2628',
-                apiKey: 'dummyApiKey',
+                siteID: secret1,
+                apiKey: secret2,
               },
             },
           },
@@ -283,7 +297,7 @@ export const data = [
               endpoint: 'https://track.customer.io/api/v1/customers/123456',
               userId: '123456',
               headers: {
-                Authorization: 'Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk=',
+                Authorization: authHeader1,
               },
               version: '1',
               params: {},
@@ -371,8 +385,8 @@ export const data = [
             destination: {
               Config: {
                 datacenter: 'US',
-                siteID: '46be54768e7d49ab2628',
-                apiKey: 'dummyApiKey',
+                siteID: secret1,
+                apiKey: secret2,
               },
             },
           },
@@ -475,8 +489,8 @@ export const data = [
             destination: {
               Config: {
                 datacenter: 'US',
-                siteID: '46be54768e7d49ab2628',
-                apiKey: 'dummyApiKey',
+                siteID: secret1,
+                apiKey: secret2,
               },
             },
           },
@@ -511,7 +525,7 @@ export const data = [
               endpoint: 'https://track.customer.io/api/v1/customers/test@gmail.com',
               userId: '123456',
               headers: {
-                Authorization: 'Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk=',
+                Authorization: authHeader1,
               },
               version: '1',
               params: {},
@@ -585,8 +599,8 @@ export const data = [
             destination: {
               Config: {
                 datacenter: 'US',
-                siteID: '46be54768e7d49ab2628',
-                apiKey: 'dummyApiKey',
+                siteID: secret1,
+                apiKey: secret2,
               },
             },
           },
@@ -620,7 +634,7 @@ export const data = [
               endpoint: 'https://track.customer.io/api/v1/customers/12345/events',
               userId: '12345',
               headers: {
-                Authorization: 'Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk=',
+                Authorization: authHeader1,
               },
               version: '1',
               params: {},
@@ -692,8 +706,8 @@ export const data = [
             destination: {
               Config: {
                 datacenter: 'US',
-                siteID: '46be54768e7d49ab2628',
-                apiKey: 'dummyApiKey',
+                siteID: secret1,
+                apiKey: secret2,
               },
             },
           },
@@ -725,7 +739,7 @@ export const data = [
               endpoint: 'https://track.customer.io/api/v1/customers/12345/events',
               userId: '12345',
               headers: {
-                Authorization: 'Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk=',
+                Authorization: authHeader1,
               },
               version: '1',
               params: {},
@@ -797,8 +811,8 @@ export const data = [
             destination: {
               Config: {
                 datacenter: 'US',
-                siteID: '46be54768e7d49ab2628',
-                apiKey: 'dummyApiKey',
+                siteID: secret1,
+                apiKey: secret2,
               },
             },
           },
@@ -830,7 +844,7 @@ export const data = [
               endpoint: 'https://track.customer.io/api/v1/customers/test@rudderstack.com/events',
               userId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
               headers: {
-                Authorization: 'Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk=',
+                Authorization: authHeader1,
               },
               version: '1',
               params: {},
@@ -901,8 +915,8 @@ export const data = [
             destination: {
               Config: {
                 datacenter: 'US',
-                siteID: '46be54768e7d49ab2628',
-                apiKey: 'dummyApiKey',
+                siteID: secret1,
+                apiKey: secret2,
               },
             },
           },
@@ -935,7 +949,7 @@ export const data = [
               endpoint: 'https://track.customer.io/api/v1/events',
               userId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
               headers: {
-                Authorization: 'Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk=',
+                Authorization: authHeader1,
               },
               version: '1',
               params: {},
@@ -1023,8 +1037,8 @@ export const data = [
             destination: {
               Config: {
                 datacenter: 'US',
-                siteID: '46be54768e7d49ab2628',
-                apiKey: 'dummyApiKey',
+                siteID: secret1,
+                apiKey: secret2,
               },
             },
           },
@@ -1057,7 +1071,7 @@ export const data = [
               endpoint: 'https://track.customer.io/api/v1/customers/12345/devices',
               userId: '12345',
               headers: {
-                Authorization: 'Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk=',
+                Authorization: authHeader1,
               },
               version: '1',
               params: {},
@@ -1145,8 +1159,8 @@ export const data = [
             destination: {
               Config: {
                 datacenter: 'US',
-                siteID: '46be54768e7d49ab2628',
-                apiKey: 'dummyApiKey',
+                siteID: secret1,
+                apiKey: secret2,
               },
             },
           },
@@ -1169,7 +1183,7 @@ export const data = [
               endpoint: 'https://track.customer.io/api/v1/customers/12345/devices/abcxyz',
               userId: '12345',
               headers: {
-                Authorization: 'Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk=',
+                Authorization: authHeader1,
               },
               version: '1',
               params: {},
@@ -1248,8 +1262,8 @@ export const data = [
             destination: {
               Config: {
                 datacenter: 'US',
-                siteID: '46be54768e7d49ab2628',
-                apiKey: 'dummyApiKey',
+                siteID: secret1,
+                apiKey: secret2,
               },
             },
           },
@@ -1272,7 +1286,7 @@ export const data = [
               endpoint: 'https://track.customer.io/api/v1/customers/12345/devices/somel',
               userId: '12345',
               headers: {
-                Authorization: 'Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk=',
+                Authorization: authHeader1,
               },
               version: '1',
               params: {},
@@ -1350,8 +1364,8 @@ export const data = [
             destination: {
               Config: {
                 datacenter: 'US',
-                siteID: '46be54768e7d49ab2628',
-                apiKey: 'dummyApiKey',
+                siteID: secret1,
+                apiKey: secret2,
               },
             },
           },
@@ -1375,7 +1389,7 @@ export const data = [
                 'https://track.customer.io/api/v1/customers/test@rudderstack.com/devices/somel',
               userId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
               headers: {
-                Authorization: 'Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk=',
+                Authorization: authHeader1,
               },
               version: '1',
               params: {},
@@ -1452,8 +1466,8 @@ export const data = [
             destination: {
               Config: {
                 datacenter: 'US',
-                siteID: '46be54768e7d49ab2628',
-                apiKey: 'dummyApiKey',
+                siteID: secret1,
+                apiKey: secret2,
               },
             },
           },
@@ -1544,8 +1558,8 @@ export const data = [
             destination: {
               Config: {
                 datacenter: 'US',
-                siteID: '46be54768e7d49ab2628',
-                apiKey: 'dummyApiKey',
+                siteID: secret1,
+                apiKey: secret2,
               },
             },
           },
@@ -1577,7 +1591,7 @@ export const data = [
               endpoint: 'https://track.customer.io/api/v1/customers/test@rudderstack.com/devices',
               userId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
               headers: {
-                Authorization: 'Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk=',
+                Authorization: authHeader1,
               },
               version: '1',
               params: {},
@@ -1654,8 +1668,8 @@ export const data = [
             destination: {
               Config: {
                 datacenter: 'US',
-                siteID: '46be54768e7d49ab2628',
-                apiKey: 'dummyApiKey',
+                siteID: secret1,
+                apiKey: secret2,
               },
             },
           },
@@ -1688,7 +1702,7 @@ export const data = [
               endpoint: 'https://track.customer.io/api/v1/events',
               userId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
               headers: {
-                Authorization: 'Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk=',
+                Authorization: authHeader1,
               },
               version: '1',
               params: {},
@@ -1767,8 +1781,8 @@ export const data = [
             destination: {
               Config: {
                 datacenter: 'US',
-                siteID: '46be54768e7d49ab2628',
-                apiKey: 'dummyApiKey',
+                siteID: secret1,
+                apiKey: secret2,
               },
             },
           },
@@ -1800,7 +1814,7 @@ export const data = [
               endpoint: 'https://track.customer.io/api/v1/customers/12345/devices',
               userId: '12345',
               headers: {
-                Authorization: 'Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk=',
+                Authorization: authHeader1,
               },
               version: '1',
               params: {},
@@ -1878,8 +1892,8 @@ export const data = [
             destination: {
               Config: {
                 datacenter: 'US',
-                siteID: '46be54768e7d49ab2628',
-                apiKey: 'dummyApiKey',
+                siteID: secret1,
+                apiKey: secret2,
               },
             },
           },
@@ -1911,7 +1925,7 @@ export const data = [
               endpoint: 'https://track.customer.io/api/v1/customers/12345/events',
               userId: '12345',
               headers: {
-                Authorization: 'Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk=',
+                Authorization: authHeader1,
               },
               version: '1',
               params: {},
@@ -1989,8 +2003,8 @@ export const data = [
             destination: {
               Config: {
                 datacenter: 'US',
-                siteID: '46be54768e7d49ab2628',
-                apiKey: 'dummyApiKey',
+                siteID: secret1,
+                apiKey: secret2,
               },
             },
           },
@@ -2022,7 +2036,7 @@ export const data = [
               endpoint: 'https://track.customer.io/api/v1/customers/12345/events',
               userId: '12345',
               headers: {
-                Authorization: 'Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk=',
+                Authorization: authHeader1,
               },
               version: '1',
               params: {},
@@ -2101,8 +2115,8 @@ export const data = [
             destination: {
               Config: {
                 datacenter: 'US',
-                siteID: '46be54768e7d49ab2628',
-                apiKey: 'dummyApiKey',
+                siteID: secret1,
+                apiKey: secret2,
               },
             },
           },
@@ -2134,7 +2148,7 @@ export const data = [
               endpoint: 'https://track.customer.io/api/v1/customers/12345/devices',
               userId: '12345',
               headers: {
-                Authorization: 'Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk=',
+                Authorization: authHeader1,
               },
               version: '1',
               params: {},
@@ -2213,8 +2227,8 @@ export const data = [
             destination: {
               Config: {
                 datacenter: 'US',
-                siteID: '46be54768e7d49ab2628',
-                apiKey: 'dummyApiKey',
+                siteID: secret1,
+                apiKey: secret2,
               },
             },
           },
@@ -2238,7 +2252,7 @@ export const data = [
                 'https://track.customer.io/api/v1/customers/12345/devices/sample_device_token',
               userId: '12345',
               headers: {
-                Authorization: 'Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk=',
+                Authorization: authHeader1,
               },
               version: '1',
               params: {},
@@ -2328,8 +2342,8 @@ export const data = [
             destination: {
               Config: {
                 datacenter: 'EU',
-                siteID: '46be54768e7d49ab2628',
-                apiKey: 'dummyApiKey',
+                siteID: secret1,
+                apiKey: secret2,
               },
             },
           },
@@ -2363,7 +2377,7 @@ export const data = [
               endpoint: 'https://track-eu.customer.io/api/v1/customers/123456',
               userId: '123456',
               headers: {
-                Authorization: 'Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk=',
+                Authorization: authHeader1,
               },
               version: '1',
               params: {},
@@ -2437,8 +2451,8 @@ export const data = [
             destination: {
               Config: {
                 datacenter: 'EU',
-                siteID: '46be54768e7d49ab2628',
-                apiKey: 'dummyApiKey',
+                siteID: secret1,
+                apiKey: secret2,
               },
             },
           },
@@ -2472,7 +2486,7 @@ export const data = [
               endpoint: 'https://track-eu.customer.io/api/v1/customers/12345/events',
               userId: '12345',
               headers: {
-                Authorization: 'Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk=',
+                Authorization: authHeader1,
               },
               version: '1',
               params: {},
@@ -2544,8 +2558,8 @@ export const data = [
             destination: {
               Config: {
                 datacenter: 'EU',
-                siteID: '46be54768e7d49ab2628',
-                apiKey: 'dummyApiKey',
+                siteID: secret1,
+                apiKey: secret2,
               },
             },
           },
@@ -2577,7 +2591,7 @@ export const data = [
               endpoint: 'https://track-eu.customer.io/api/v1/customers/12345/events',
               userId: '12345',
               headers: {
-                Authorization: 'Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk=',
+                Authorization: authHeader1,
               },
               version: '1',
               params: {},
@@ -2649,8 +2663,8 @@ export const data = [
             destination: {
               Config: {
                 datacenter: 'EU',
-                siteID: '46be54768e7d49ab2628',
-                apiKey: 'dummyApiKey',
+                siteID: secret1,
+                apiKey: secret2,
               },
             },
           },
@@ -2682,7 +2696,7 @@ export const data = [
               endpoint: 'https://track-eu.customer.io/api/v1/customers/test@rudderstack.com/events',
               userId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
               headers: {
-                Authorization: 'Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk=',
+                Authorization: authHeader1,
               },
               version: '1',
               params: {},
@@ -2753,8 +2767,8 @@ export const data = [
             destination: {
               Config: {
                 datacenter: 'EU',
-                siteID: '46be54768e7d49ab2628',
-                apiKey: 'dummyApiKey',
+                siteID: secret1,
+                apiKey: secret2,
               },
             },
           },
@@ -2787,7 +2801,7 @@ export const data = [
               endpoint: 'https://track-eu.customer.io/api/v1/events',
               userId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
               headers: {
-                Authorization: 'Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk=',
+                Authorization: authHeader1,
               },
               version: '1',
               params: {},
@@ -2875,8 +2889,8 @@ export const data = [
             destination: {
               Config: {
                 datacenter: 'EU',
-                siteID: '46be54768e7d49ab2628',
-                apiKey: 'dummyApiKey',
+                siteID: secret1,
+                apiKey: secret2,
               },
             },
           },
@@ -2909,7 +2923,7 @@ export const data = [
               endpoint: 'https://track-eu.customer.io/api/v1/customers/12345/devices',
               userId: '12345',
               headers: {
-                Authorization: 'Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk=',
+                Authorization: authHeader1,
               },
               version: '1',
               params: {},
@@ -2997,8 +3011,8 @@ export const data = [
             destination: {
               Config: {
                 datacenter: 'EU',
-                siteID: '46be54768e7d49ab2628',
-                apiKey: 'dummyApiKey',
+                siteID: secret1,
+                apiKey: secret2,
               },
             },
           },
@@ -3021,7 +3035,7 @@ export const data = [
               endpoint: 'https://track-eu.customer.io/api/v1/customers/12345/devices/abcxyz',
               userId: '12345',
               headers: {
-                Authorization: 'Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk=',
+                Authorization: authHeader1,
               },
               version: '1',
               params: {},
@@ -3100,8 +3114,8 @@ export const data = [
             destination: {
               Config: {
                 datacenter: 'EU',
-                siteID: '46be54768e7d49ab2628',
-                apiKey: 'dummyApiKey',
+                siteID: secret1,
+                apiKey: secret2,
               },
             },
           },
@@ -3124,7 +3138,7 @@ export const data = [
               endpoint: 'https://track-eu.customer.io/api/v1/customers/12345/devices/somel',
               userId: '12345',
               headers: {
-                Authorization: 'Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk=',
+                Authorization: authHeader1,
               },
               version: '1',
               params: {},
@@ -3201,8 +3215,8 @@ export const data = [
             destination: {
               Config: {
                 datacenter: 'EU',
-                siteID: '46be54768e7d49ab2628',
-                apiKey: 'dummyApiKey',
+                siteID: secret1,
+                apiKey: secret2,
               },
             },
           },
@@ -3293,8 +3307,8 @@ export const data = [
             destination: {
               Config: {
                 datacenter: 'EU',
-                siteID: '46be54768e7d49ab2628',
-                apiKey: 'dummyApiKey',
+                siteID: secret1,
+                apiKey: secret2,
               },
             },
           },
@@ -3327,7 +3341,7 @@ export const data = [
                 'https://track-eu.customer.io/api/v1/customers/test@rudderstack.com/devices',
               userId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
               headers: {
-                Authorization: 'Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk=',
+                Authorization: authHeader1,
               },
               version: '1',
               params: {},
@@ -3404,8 +3418,8 @@ export const data = [
             destination: {
               Config: {
                 datacenter: 'EU',
-                siteID: '46be54768e7d49ab2628',
-                apiKey: 'dummyApiKey',
+                siteID: secret1,
+                apiKey: secret2,
               },
             },
           },
@@ -3438,7 +3452,7 @@ export const data = [
               endpoint: 'https://track-eu.customer.io/api/v1/events',
               userId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
               headers: {
-                Authorization: 'Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk=',
+                Authorization: authHeader1,
               },
               version: '1',
               params: {},
@@ -3517,8 +3531,8 @@ export const data = [
             destination: {
               Config: {
                 datacenter: 'EU',
-                siteID: '46be54768e7d49ab2628',
-                apiKey: 'dummyApiKey',
+                siteID: secret1,
+                apiKey: secret2,
               },
             },
           },
@@ -3550,7 +3564,7 @@ export const data = [
               endpoint: 'https://track-eu.customer.io/api/v1/customers/12345/devices',
               userId: '12345',
               headers: {
-                Authorization: 'Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk=',
+                Authorization: authHeader1,
               },
               version: '1',
               params: {},
@@ -3628,8 +3642,8 @@ export const data = [
             destination: {
               Config: {
                 datacenter: 'EU',
-                siteID: '46be54768e7d49ab2628',
-                apiKey: 'dummyApiKey',
+                siteID: secret1,
+                apiKey: secret2,
               },
             },
           },
@@ -3661,7 +3675,7 @@ export const data = [
               endpoint: 'https://track-eu.customer.io/api/v1/customers/12345/events',
               userId: '12345',
               headers: {
-                Authorization: 'Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk=',
+                Authorization: authHeader1,
               },
               version: '1',
               params: {},
@@ -3739,8 +3753,8 @@ export const data = [
             destination: {
               Config: {
                 datacenter: 'EU',
-                siteID: '46be54768e7d49ab2628',
-                apiKey: 'dummyApiKey',
+                siteID: secret1,
+                apiKey: secret2,
               },
             },
           },
@@ -3772,7 +3786,7 @@ export const data = [
               endpoint: 'https://track-eu.customer.io/api/v1/customers/12345/events',
               userId: '12345',
               headers: {
-                Authorization: 'Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk=',
+                Authorization: authHeader1,
               },
               version: '1',
               params: {},
@@ -3851,8 +3865,8 @@ export const data = [
             destination: {
               Config: {
                 datacenter: 'EU',
-                siteID: '46be54768e7d49ab2628',
-                apiKey: 'dummyApiKey',
+                siteID: secret1,
+                apiKey: secret2,
               },
             },
           },
@@ -3884,7 +3898,7 @@ export const data = [
               endpoint: 'https://track-eu.customer.io/api/v1/customers/12345/devices',
               userId: '12345',
               headers: {
-                Authorization: 'Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk=',
+                Authorization: authHeader1,
               },
               version: '1',
               params: {},
@@ -3963,8 +3977,8 @@ export const data = [
             destination: {
               Config: {
                 datacenter: 'EU',
-                siteID: '46be54768e7d49ab2628',
-                apiKey: 'dummyApiKey',
+                siteID: secret1,
+                apiKey: secret2,
               },
             },
           },
@@ -3988,7 +4002,7 @@ export const data = [
                 'https://track-eu.customer.io/api/v1/customers/12345/devices/sample_device_token',
               userId: '12345',
               headers: {
-                Authorization: 'Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk=',
+                Authorization: authHeader1,
               },
               version: '1',
               params: {},
@@ -4059,8 +4073,8 @@ export const data = [
             destination: {
               Config: {
                 datacenter: 'US',
-                siteID: '46be54768e7d49ab2628',
-                apiKey: 'dummyApiKey',
+                siteID: secret1,
+                apiKey: secret2,
               },
             },
           },
@@ -4078,7 +4092,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://track.customer.io/api/v1/events',
               headers: {
-                Authorization: 'Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk=',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -4165,8 +4179,8 @@ export const data = [
             destination: {
               Config: {
                 datacenter: 'US',
-                siteID: '46be54768e7d49ab2628',
-                apiKey: 'dummyApiKey',
+                siteID: secret1,
+                apiKey: secret2,
               },
             },
           },
@@ -4184,7 +4198,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://track.customer.io/api/v1/customers/test@rudderstack.com/events',
               headers: {
-                Authorization: 'Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk=',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -4269,8 +4283,8 @@ export const data = [
             destination: {
               Config: {
                 datacenter: 'US',
-                siteID: '46be54768e7d49ab2628',
-                apiKey: 'dummyApiKey',
+                siteID: secret1,
+                apiKey: secret2,
               },
             },
           },
@@ -4288,7 +4302,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://track.customer.io/api/v1/events',
               headers: {
-                Authorization: 'Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk=',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -4375,8 +4389,8 @@ export const data = [
             destination: {
               Config: {
                 datacenter: 'US',
-                siteID: '46be54768e7d49ab2628',
-                apiKey: 'dummyApiKey',
+                siteID: secret1,
+                apiKey: secret2,
               },
             },
           },
@@ -4394,7 +4408,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://track.customer.io/api/v1/customers/test@rudderstack.com/events',
               headers: {
-                Authorization: 'Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk=',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -4491,8 +4505,8 @@ export const data = [
             destination: {
               Config: {
                 datacenter: 'US',
-                siteID: 'abc',
-                apiKey: 'xyz',
+                siteID: secret1,
+                apiKey: secret2,
               },
             },
           },
@@ -4510,7 +4524,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://track.customer.io/api/v1/customers/dummy-user-id-100/events',
               headers: {
-                Authorization: 'Basic YWJjOnh5eg==',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -4605,8 +4619,8 @@ export const data = [
             destination: {
               Config: {
                 datacenter: 'EU',
-                siteID: '46be54768e7d49ab2628',
-                apiKey: 'dummyApiKey',
+                siteID: secret1,
+                apiKey: secret2,
               },
             },
           },
@@ -4624,7 +4638,7 @@ export const data = [
               method: 'PUT',
               endpoint: 'https://track-eu.customer.io/api/v1/customers/dummy-user-id-100',
               headers: {
-                Authorization: 'Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk=',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -4729,9 +4743,9 @@ export const data = [
                 ResponseRules: null,
               },
               Config: {
-                apiKey: 'a292d85ac36de15fc219',
+                apiKey: secret4,
                 datacenter: 'US',
-                siteID: 'eead090ab9e2e35004dc',
+                siteID: secret3,
               },
               Enabled: true,
               Transformations: [],
@@ -4756,7 +4770,7 @@ export const data = [
               method: 'PUT',
               endpoint: 'https://track.customer.io/api/v1/customers/xaviercharles@hotmail.com',
               headers: {
-                Authorization: 'Basic ZWVhZDA5MGFiOWUyZTM1MDA0ZGM6YTI5MmQ4NWFjMzZkZTE1ZmMyMTk=',
+                Authorization: authHeader2,
               },
               params: {},
               body: {
@@ -4856,9 +4870,9 @@ export const data = [
                 ResponseRules: null,
               },
               Config: {
-                apiKey: 'a292d85ac36de15fc219',
+                apiKey: secret4,
                 datacenter: 'US',
-                siteID: 'eead090ab9e2e35004dc',
+                siteID: secret3,
               },
               Enabled: true,
               Transformations: [],
@@ -4883,7 +4897,7 @@ export const data = [
               method: 'PUT',
               endpoint: 'https://track.customer.io/api/v1/customers/xaviercharles',
               headers: {
-                Authorization: 'Basic ZWVhZDA5MGFiOWUyZTM1MDA0ZGM6YTI5MmQ4NWFjMzZkZTE1ZmMyMTk=',
+                Authorization: authHeader2,
               },
               params: {},
               body: {
@@ -5033,10 +5047,10 @@ export const data = [
                 ResponseRules: {},
               },
               Config: {
-                apiKey: 'DESAU SAI',
+                apiKey: secret6,
                 datacenter: 'US',
                 deviceTokenEventName: 'device_token_registered',
-                siteID: 'DESU SAI',
+                siteID: secret5,
               },
               Enabled: true,
               Transformations: [],
@@ -5058,7 +5072,7 @@ export const data = [
               endpoint:
                 'https://track.customer.io/api/v1/customers/e91e0378-63fe-11ec-82ac-0a028ee659c3/devices',
               headers: {
-                Authorization: 'Basic REVTVSBTQUk6REVTQVUgU0FJ',
+                Authorization: authHeader3,
               },
               params: {},
               body: {
@@ -5210,10 +5224,10 @@ export const data = [
                 ResponseRules: {},
               },
               Config: {
-                apiKey: 'DESAU SAI',
+                apiKey: secret6,
                 datacenter: 'US',
                 deviceTokenEventName: 'device_token_registered',
-                siteID: 'DESU SAI',
+                siteID: secret5,
               },
               Enabled: true,
               Transformations: [],
@@ -5235,7 +5249,7 @@ export const data = [
               endpoint:
                 'https://track.customer.io/api/v1/customers/e91e0378-63fe-11ec-82ac-0a028ee659c3/events',
               headers: {
-                Authorization: 'Basic REVTVSBTQUk6REVTQVUgU0FJ',
+                Authorization: authHeader3,
               },
               params: {},
               body: {
@@ -5386,10 +5400,10 @@ export const data = [
                 ResponseRules: {},
               },
               Config: {
-                apiKey: 'DESAU SAI',
+                apiKey: secret6,
                 datacenter: 'US',
                 deviceTokenEventName: 'device_token_registered',
-                siteID: 'DESU SAI',
+                siteID: secret5,
               },
               Enabled: true,
               Transformations: [],
@@ -5411,7 +5425,7 @@ export const data = [
               endpoint:
                 'https://track.customer.io/api/v1/customers/e91e0378-63fe-11ec-82ac-0a028ee659c3/devices',
               headers: {
-                Authorization: 'Basic REVTVSBTQUk6REVTQVUgU0FJ',
+                Authorization: authHeader3,
               },
               params: {},
               body: {
@@ -5562,10 +5576,10 @@ export const data = [
                 ResponseRules: {},
               },
               Config: {
-                apiKey: 'DESAU SAI',
+                apiKey: secret6,
                 datacenter: 'US',
                 deviceTokenEventName: 'device_token_registered',
-                siteID: 'DESU SAI',
+                siteID: secret5,
               },
               Enabled: true,
               Transformations: [],
@@ -5587,7 +5601,7 @@ export const data = [
               endpoint:
                 'https://track.customer.io/api/v1/customers/e91e0378-63fe-11ec-82ac-0a028ee659c3/devices',
               headers: {
-                Authorization: 'Basic REVTVSBTQUk6REVTQVUgU0FJ',
+                Authorization: authHeader3,
               },
               params: {},
               body: {
@@ -5735,10 +5749,10 @@ export const data = [
                 ResponseRules: {},
               },
               Config: {
-                apiKey: 'DESAU SAI',
+                apiKey: secret6,
                 datacenter: 'US',
                 deviceTokenEventName: 'device_token_registered',
-                siteID: 'DESU SAI',
+                siteID: secret5,
               },
               Enabled: true,
               Transformations: [],
@@ -5760,7 +5774,7 @@ export const data = [
               endpoint:
                 'https://track.customer.io/api/v1/customers/e91e0378-63fe-11ec-82ac-0a028ee659c3/devices',
               headers: {
-                Authorization: 'Basic REVTVSBTQUk6REVTQVUgU0FJ',
+                Authorization: authHeader3,
               },
               params: {},
               body: {
@@ -5911,10 +5925,10 @@ export const data = [
                 ResponseRules: {},
               },
               Config: {
-                apiKey: 'DESAU SAI',
+                apiKey: secret6,
                 datacenter: 'US',
                 deviceTokenEventName: 'device_token_registered',
-                siteID: 'DESU SAI',
+                siteID: secret5,
               },
               Enabled: true,
               Transformations: [],
@@ -5936,7 +5950,7 @@ export const data = [
               endpoint:
                 'https://track.customer.io/api/v1/customers/e91e0378-63fe-11ec-82ac-0a028ee659c3/devices',
               headers: {
-                Authorization: 'Basic REVTVSBTQUk6REVTQVUgU0FJ',
+                Authorization: authHeader3,
               },
               params: {},
               body: {
@@ -6088,10 +6102,10 @@ export const data = [
                 ResponseRules: {},
               },
               Config: {
-                apiKey: 'DESAU SAI',
+                apiKey: secret6,
                 datacenter: 'US',
                 deviceTokenEventName: 'device_token_registered',
-                siteID: 'DESU SAI',
+                siteID: secret5,
               },
               Enabled: true,
               Transformations: [],
@@ -6113,7 +6127,7 @@ export const data = [
               endpoint:
                 'https://track.customer.io/api/v1/customers/e91e0378-63fe-11ec-82ac-0a028ee659c3/events',
               headers: {
-                Authorization: 'Basic REVTVSBTQUk6REVTQVUgU0FJ',
+                Authorization: authHeader3,
               },
               params: {},
               body: {
@@ -6265,10 +6279,10 @@ export const data = [
                 ResponseRules: {},
               },
               Config: {
-                apiKey: 'DESAU SAI',
+                apiKey: secret6,
                 datacenter: 'US',
                 deviceTokenEventName: 'device_token_registered',
-                siteID: 'DESU SAI',
+                siteID: secret5,
               },
               Enabled: true,
               Transformations: [],
@@ -6290,7 +6304,7 @@ export const data = [
               endpoint:
                 'https://track.customer.io/api/v1/customers/e91e0378-63fe-11ec-82ac-0a028ee659c3/devices',
               headers: {
-                Authorization: 'Basic REVTVSBTQUk6REVTQVUgU0FJ',
+                Authorization: authHeader3,
               },
               params: {},
               body: {
@@ -6441,10 +6455,10 @@ export const data = [
                 ResponseRules: {},
               },
               Config: {
-                apiKey: 'DESAU SAI',
+                apiKey: secret6,
                 datacenter: 'US',
                 deviceTokenEventName: 'device_token_registered',
-                siteID: 'DESU SAI',
+                siteID: secret5,
               },
               Enabled: true,
               Transformations: [],
@@ -6466,7 +6480,7 @@ export const data = [
               endpoint:
                 'https://track.customer.io/api/v1/customers/e91e0378-63fe-11ec-82ac-0a028ee659c3/devices',
               headers: {
-                Authorization: 'Basic REVTVSBTQUk6REVTQVUgU0FJ',
+                Authorization: authHeader3,
               },
               params: {},
               body: {
@@ -6614,10 +6628,10 @@ export const data = [
                 ResponseRules: {},
               },
               Config: {
-                apiKey: 'DESAU SAI',
+                apiKey: secret6,
                 datacenter: 'US',
                 deviceTokenEventName: 'device_token_registered',
-                siteID: 'DESU SAI',
+                siteID: secret5,
               },
               Enabled: true,
               Transformations: [],
@@ -6639,7 +6653,7 @@ export const data = [
               endpoint:
                 'https://track.customer.io/api/v1/customers/e91e0378-63fe-11ec-82ac-0a028ee659c3/devices',
               headers: {
-                Authorization: 'Basic REVTVSBTQUk6REVTQVUgU0FJ',
+                Authorization: authHeader3,
               },
               params: {},
               body: {
@@ -6790,10 +6804,10 @@ export const data = [
                 ResponseRules: {},
               },
               Config: {
-                apiKey: 'DESAU SAI',
+                apiKey: secret6,
                 datacenter: 'US',
                 deviceTokenEventName: 'device_token_registered',
-                siteID: 'DESU SAI',
+                siteID: secret5,
               },
               Enabled: true,
               Transformations: [],
@@ -6815,7 +6829,7 @@ export const data = [
               endpoint:
                 'https://track.customer.io/api/v1/customers/e91e0378-63fe-11ec-82ac-0a028ee659c3/devices',
               headers: {
-                Authorization: 'Basic REVTVSBTQUk6REVTQVUgU0FJ',
+                Authorization: authHeader3,
               },
               params: {},
               body: {
@@ -6932,10 +6946,10 @@ export const data = [
                 ResponseRules: {},
               },
               Config: {
-                apiKey: 'ef32c3f60fb98f39ef35',
+                apiKey: secret8,
                 datacenter: 'US',
                 deviceTokenEventName: 'device_token_registered',
-                siteID: 'c0efdbd20b9fbe24a7e2',
+                siteID: secret7,
               },
               Enabled: true,
               Transformations: [],
@@ -6956,7 +6970,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://track.customer.io/api/v2/batch',
               headers: {
-                Authorization: 'Basic YzBlZmRiZDIwYjlmYmUyNGE3ZTI6ZWYzMmMzZjYwZmI5OGYzOWVmMzU=',
+                Authorization: authHeader4,
               },
               params: {},
               body: {
@@ -7085,10 +7099,10 @@ export const data = [
                 ResponseRules: {},
               },
               Config: {
-                apiKey: 'ef32c3f60fb98f39ef35',
+                apiKey: secret8,
                 datacenter: 'US',
                 deviceTokenEventName: 'device_token_registered',
-                siteID: 'c0efdbd20b9fbe24a7e2',
+                siteID: secret7,
               },
               Enabled: true,
               Transformations: [],
@@ -7109,7 +7123,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://track.customer.io/api/v2/batch',
               headers: {
-                Authorization: 'Basic YzBlZmRiZDIwYjlmYmUyNGE3ZTI6ZWYzMmMzZjYwZmI5OGYzOWVmMzU=',
+                Authorization: authHeader4,
               },
               params: {},
               body: {
@@ -7241,10 +7255,10 @@ export const data = [
                 ResponseRules: {},
               },
               Config: {
-                apiKey: 'ef32c3f60fb98f39ef35',
+                apiKey: secret8,
                 datacenter: 'US',
                 deviceTokenEventName: 'device_token_registered',
-                siteID: 'c0efdbd20b9fbe24a7e2',
+                siteID: secret7,
               },
               Enabled: true,
               Transformations: [],
@@ -7265,7 +7279,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://track.customer.io/api/v2/batch',
               headers: {
-                Authorization: 'Basic YzBlZmRiZDIwYjlmYmUyNGE3ZTI6ZWYzMmMzZjYwZmI5OGYzOWVmMzU=',
+                Authorization: authHeader4,
               },
               params: {},
               body: {
@@ -7397,10 +7411,10 @@ export const data = [
                 ResponseRules: {},
               },
               Config: {
-                apiKey: 'ef32c3f60fb98f39ef35',
+                apiKey: secret8,
                 datacenter: 'US',
                 deviceTokenEventName: 'device_token_registered',
-                siteID: 'c0efdbd20b9fbe24a7e2',
+                siteID: secret7,
               },
               Enabled: true,
               Transformations: [],
@@ -7421,7 +7435,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://track.customer.io/api/v2/batch',
               headers: {
-                Authorization: 'Basic YzBlZmRiZDIwYjlmYmUyNGE3ZTI6ZWYzMmMzZjYwZmI5OGYzOWVmMzU=',
+                Authorization: authHeader4,
               },
               params: {},
               body: {
@@ -7553,10 +7567,10 @@ export const data = [
                 ResponseRules: {},
               },
               Config: {
-                apiKey: 'ef32c3f60fb98f39ef35',
+                apiKey: secret8,
                 datacenter: 'US',
                 deviceTokenEventName: 'device_token_registered',
-                siteID: 'c0efdbd20b9fbe24a7e2',
+                siteID: secret7,
               },
               Enabled: true,
               Transformations: [],
@@ -7577,7 +7591,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://track.customer.io/api/v2/batch',
               headers: {
-                Authorization: 'Basic YzBlZmRiZDIwYjlmYmUyNGE3ZTI6ZWYzMmMzZjYwZmI5OGYzOWVmMzU=',
+                Authorization: authHeader4,
               },
               params: {},
               body: {
@@ -7723,10 +7737,10 @@ export const data = [
                 ResponseRules: {},
               },
               Config: {
-                apiKey: 'ef32c3f60fb98f39ef35',
+                apiKey: secret8,
                 datacenter: 'US',
                 deviceTokenEventName: 'device_token_registered',
-                siteID: 'c0efdbd20b9fbe24a7e2',
+                siteID: secret7,
               },
               Enabled: true,
               Transformations: [],
@@ -7747,7 +7761,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://track.customer.io/api/v2/batch',
               headers: {
-                Authorization: 'Basic YzBlZmRiZDIwYjlmYmUyNGE3ZTI6ZWYzMmMzZjYwZmI5OGYzOWVmMzU=',
+                Authorization: authHeader4,
               },
               params: {},
               body: {
@@ -7893,10 +7907,10 @@ export const data = [
                 ResponseRules: {},
               },
               Config: {
-                apiKey: 'ef32c3f60fb98f39ef35',
+                apiKey: secret8,
                 datacenter: 'EU',
                 deviceTokenEventName: 'device_token_registered',
-                siteID: 'c0efdbd20b9fbe24a7e2',
+                siteID: secret7,
               },
               Enabled: true,
               Transformations: [],
@@ -7917,7 +7931,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://track-eu.customer.io/api/v2/batch',
               headers: {
-                Authorization: 'Basic YzBlZmRiZDIwYjlmYmUyNGE3ZTI6ZWYzMmMzZjYwZmI5OGYzOWVmMzU=',
+                Authorization: authHeader4,
               },
               params: {},
               body: {
@@ -8028,8 +8042,8 @@ export const data = [
             destination: {
               Config: {
                 datacenter: 'US',
-                siteID: '46be54768e7d49ab2628',
-                apiKey: 'dummyApiKey',
+                siteID: secret1,
+                apiKey: secret2,
               },
             },
           },
@@ -8063,7 +8077,7 @@ export const data = [
               endpoint: 'https://track.customer.io/api/v1/customers/12345/events',
               userId: '12345',
               headers: {
-                Authorization: 'Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk=',
+                Authorization: authHeader1,
               },
               version: '1',
               params: {},
@@ -8135,8 +8149,8 @@ export const data = [
             destination: {
               Config: {
                 datacenter: 'US',
-                siteID: '46be54768e7d49ab2628',
-                apiKey: 'dummyApiKey',
+                siteID: secret1,
+                apiKey: secret2,
               },
             },
           },
@@ -8168,7 +8182,7 @@ export const data = [
               endpoint: 'https://track.customer.io/api/v1/customers/12345/events',
               userId: '12345',
               headers: {
-                Authorization: 'Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk=',
+                Authorization: authHeader1,
               },
               version: '1',
               params: {},
@@ -8234,8 +8248,8 @@ export const data = [
             destination: {
               Config: {
                 datacenter: 'US',
-                siteID: '46be54768e7d49ab2628',
-                apiKey: 'dummyApiKey',
+                siteID: secret1,
+                apiKey: secret2,
               },
             },
           },
@@ -8261,7 +8275,7 @@ export const data = [
               endpoint: 'https://track.customer.io/api/v1/customers/12345/events',
               userId: '12345',
               headers: {
-                Authorization: 'Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk=',
+                Authorization: authHeader1,
               },
               version: '1',
               params: {},
@@ -8301,8 +8315,8 @@ export const data = [
             destination: {
               Config: {
                 datacenter: 'US',
-                siteID: '46be54768e7d49ab2628',
-                apiKey: 'dummyApiKey',
+                siteID: secret1,
+                apiKey: secret2,
               },
             },
           },

@@ -6,7 +6,7 @@ import { isMatch } from 'lodash';
 export const data = [
   {
     name: 'am',
-    description: 'Test 0',
+    description: 'Test 0: Should send events to amplitude',
     feature: 'dataDelivery',
     module: 'destination',
     version: 'v0',

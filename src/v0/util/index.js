@@ -2369,7 +2369,7 @@ const getBodyFromV2SpecPayload = ({ request }) => {
 
 const unwrapArrayValues = (payload) => {
   if (!payload || typeof payload !== 'object' || Array.isArray(payload)) {
-    throw new Error('Payload must be an valid object');
+    throw new InstrumentationError('Payload must be an valid object');
   }
   const result = {};
   Object.keys(payload).forEach((key) => {

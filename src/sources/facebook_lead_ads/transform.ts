@@ -18,7 +18,7 @@ function processEvent(inputEvent: InputEventType): any {
   const unwrappedInputEvent = unwrapArrayValues(inputEvent);
 
   if (Object.keys(unwrappedInputEvent).length === 0) {
-    throw new Error('input event must have at least one field');
+    throw new TransformationError('input event must have at least one field');
   }
 
   const message = new Message(`FacebookLeadAds`);
@@ -30,9 +30,11 @@ function processEvent(inputEvent: InputEventType): any {
   message.setPropertiesV2(unwrappedInputEvent, mapping);
 
   // set and transform originalTimestamp to ISO 8601 from mm/dd/yyyy hh:mm
-  const date: Date = new Date(`${unwrappedInputEvent.created_time} UTC`);
-  if (!Number.isNaN(date.getTime())) {
-    message.setProperty('originalTimestamp', date.toISOString());
+  if (unwrappedInputEvent.created_time) {
+    const date: Date = new Date(`${unwrappedInputEvent.created_time} UTC`);
+    if (!Number.isNaN(date.getTime())) {
+      message.setProperty('originalTimestamp', date.toISOString());
+    }
   }
 
   // set anonymous id if userId unavailable
@@ -49,12 +51,8 @@ function processEvent(inputEvent: InputEventType): any {
 
 const process = (payload: SourceInputV2) => {
   const event = getBodyFromV2SpecPayload(payload);
-  try {
-    const response: OutputEventType = processEvent(event);
-    return removeUndefinedAndNullValues(response);
-  } catch (error) {
-    throw new TransformationError(`Error while processing event: ${error}`);
-  }
+  const response: OutputEventType = processEvent(event);
+  return removeUndefinedAndNullValues(response);
 };
 
 export { process };

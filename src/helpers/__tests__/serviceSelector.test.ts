@@ -49,7 +49,7 @@ describe('ServiceSelector Service', () => {
               cdkV2Enabled: true,
             },
           },
-        },
+        } as any,
       },
     ] as ProcessorTransformationRequest[];
     expect(ServiceSelector['getPrimaryDestinationService'](events)).toBeInstanceOf(

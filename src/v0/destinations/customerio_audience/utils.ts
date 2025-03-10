@@ -115,7 +115,10 @@ const batchResponseBuilder = (
   return [...insertResponses, ...deleteResponses];
 };
 
-const getEventAction = (event: CustomerIORouterRequestType): string =>
-  event?.message?.action?.toLowerCase() || '';
+const getEventAction = (event: CustomerIORouterRequestType): string => {
+  const { message } = event;
+  const action = (message as { action?: string }).action || '';
+  return action;
+};
 
 export { batchResponseBuilder, getEventAction };

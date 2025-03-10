@@ -2,6 +2,7 @@ import { AxiosError } from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { testScenariosForV1API } from './business';
 import { otherSalesforceScenariosV1 } from './other';
+import { authHeader1, authHeader2 } from '../maskedSecrets';
 
 const legacyDataValue = {
   Email: 'danis.archurav@sbermarket.ru',
@@ -28,7 +29,7 @@ const legacyTests = [
           userId: '',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: 'Bearer token',
+            Authorization: authHeader1,
           },
           version: '1',
           endpoint: 'https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/1',
@@ -83,7 +84,7 @@ const legacyTests = [
           userId: '',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: 'Bearer token',
+            Authorization: authHeader1,
           },
           version: '1',
           endpoint: 'https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/3',
@@ -152,7 +153,7 @@ const legacyTests = [
           userId: '',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: 'Bearer Incorrect_token',
+            Authorization: authHeader2,
           },
           version: '1',
           endpoint: 'https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/2',
@@ -221,7 +222,7 @@ const legacyTests = [
           userId: '',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: 'Bearer token',
+            Authorization: authHeader1,
           },
           version: '1',
           endpoint: 'https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/4',
@@ -290,7 +291,7 @@ const legacyTests = [
           userId: '',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: 'Bearer token',
+            Authorization: authHeader1,
           },
           version: '1',
           endpoint: 'https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/5',
@@ -359,7 +360,7 @@ const legacyTests = [
           userId: '',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: 'Bearer token',
+            Authorization: authHeader1,
           },
           version: '1',
           endpoint: 'https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/6',
@@ -426,7 +427,7 @@ const legacyTests = [
           userId: '',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: 'Bearer token',
+            Authorization: authHeader1,
           },
           version: '1',
           endpoint: 'https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/7',
@@ -493,7 +494,7 @@ const legacyTests = [
             'https://rudderstack.my.salesforce.com/services/data/v50.0/parameterizedSearch/?q=123&sobject=object_name&in=External_ID__c&object_name.fields=id,External_ID__c',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: 'Bearer token',
+            Authorization: authHeader1,
           },
           body: {
             JSON: {
@@ -567,7 +568,7 @@ const legacyTests = [
           userId: '',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: 'Bearer token',
+            Authorization: authHeader1,
           },
           version: '1',
           endpoint: 'https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/101',
@@ -637,7 +638,7 @@ const legacyTests = [
           },
           {
             'Content-Type': 'application/json',
-            Authorization: 'Bearer token',
+            Authorization: authHeader1,
             'User-Agent': 'RudderLabs',
             Accept: 'application/json, text/plain, */*',
           },
@@ -660,7 +661,7 @@ const legacyTests = [
           userId: '',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: 'Bearer token',
+            Authorization: authHeader1,
           },
           version: '1',
           endpoint: 'https://rudder.my.salesforce.com/services/data/v50.0/sobjects/Lead/102',
@@ -730,7 +731,7 @@ const legacyTests = [
           },
           {
             'Content-Type': 'application/json',
-            Authorization: 'Bearer token',
+            Authorization: authHeader1,
             'User-Agent': 'RudderLabs',
             Accept: 'application/json, text/plain, */*',
           },

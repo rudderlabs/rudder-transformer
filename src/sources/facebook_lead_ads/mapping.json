@@ -1,0 +1,66 @@
+[
+  {
+    "sourceKeys": ["id", "facebook_lead_id"],
+    "destKeys": "userId"
+  },
+  {
+    "sourceKeys": "full_name",
+    "destKeys": "context.traits.name"
+  },
+  {
+    "sourceKeys": "first_name",
+    "destKeys": "context.traits.firstName"
+  },
+  {
+    "sourceKeys": "last_name",
+    "destKeys": "context.traits.lastName"
+  },
+  {
+    "sourceKeys": "date_of_birth",
+    "destKeys": "context.traits.birthday"
+  },
+  {
+    "sourceKeys": "phone_number",
+    "destKeys": "context.traits.phone"
+  },
+  {
+    "sourceKeys": "email",
+    "destKeys": "context.traits.email"
+  },
+  {
+    "sourceKeys": "gender",
+    "destKeys": "context.traits.gender"
+  },
+  {
+    "sourceKeys": "zip_code",
+    "destKeys": "context.traits.address.zipCode"
+  },
+  {
+    "sourceKeys": "post_code",
+    "destKeys": "context.traits.address.postalCode"
+  },
+  {
+    "sourceKeys": "state",
+    "destKeys": "context.traits.address.state"
+  },
+  {
+    "sourceKeys": "city",
+    "destKeys": "context.traits.address.city"
+  },
+  {
+    "sourceKeys": "country",
+    "destKeys": "context.traits.address.country"
+  },
+  {
+    "sourceKeys": "province",
+    "destKeys": "context.traits.address.province"
+  },
+  {
+    "sourceKeys": "street_address",
+    "destKeys": "context.traits.address.street"
+  },
+  {
+    "sourceKeys": "company_name",
+    "destKeys": "context.traits.company.name"
+  }
+]

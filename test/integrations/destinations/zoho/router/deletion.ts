@@ -142,7 +142,7 @@ export const deleteData = [
                   externalId: [
                     {
                       type: 'ZOHO-Contacts',
-                      identifierType: 'email',
+                      identifierType: 'Email',
                     },
                   ],
                   mappedToDestination: 'true',
@@ -452,7 +452,7 @@ export const deleteData = [
                   externalId: [
                     {
                       type: 'ZOHO-Leads',
-                      identifierType: 'email',
+                      identifierType: 'Email',
                     },
                   ],
                   mappedToDestination: 'true',
@@ -536,7 +536,7 @@ export const deleteData = [
               batched: false,
               statusCode: 400,
               error:
-                'failed to fetch zoho id for record for "No contact is found with record details"',
+                'failed to fetch zoho id for record for "No Leads is found with record details"',
               statTags: {
                 errorCategory: 'dataValidation',
                 errorType: 'configuration',
@@ -663,7 +663,7 @@ export const deleteData = [
               batched: false,
               statusCode: 400,
               error:
-                'failed to fetch zoho id for record for "No contact is found with record details"',
+                'failed to fetch zoho id for record for "No Leads is found with record details"',
               statTags: {
                 errorCategory: 'dataValidation',
                 errorType: 'configuration',
@@ -757,6 +757,259 @@ export const deleteData = [
                 implementation: 'cdkV2',
                 feature: 'router',
               },
+            },
+          ],
+        },
+      },
+    },
+    mockFns: defaultMockFns,
+  },
+  {
+    name: destType,
+    id: 'zoho_deletion_2_v2',
+    description: 'Test empty identifier in deletion payload V2',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: {
+                action: 'delete',
+                context: {
+                  sources: {
+                    job_run_id: 'cgiiurt8um7k7n5dq480',
+                    task_run_id: 'cgiiurt8um7k7n5dq48g',
+                    job_id: '2MUWghI7u85n91dd1qzGyswpZan',
+                    version: '895/merge',
+                  },
+                },
+                recordId: '2',
+                rudderId: '2',
+                fields: {
+                  First_Name: 'subcribed3',
+                  Last_Name: ' User3',
+                },
+                identifiers: {},
+                type: 'record',
+              },
+              metadata: {
+                jobId: 2,
+                userId: 'u1',
+                secret: {
+                  accessToken: 'correct-access-token',
+                },
+              },
+              destination: commonDeletionDestConfig,
+              connection: commonDeletionConnectionConfigV2,
+            },
+          ],
+          destType,
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              metadata: [
+                {
+                  jobId: 2,
+                  userId: 'u1',
+                  secret: {
+                    accessToken: 'correct-access-token',
+                  },
+                },
+              ],
+              batched: false,
+              statusCode: 400,
+              error: '`identifiers` cannot be empty',
+              statTags: {
+                errorCategory: 'dataValidation',
+                errorType: 'instrumentation',
+                destType: 'ZOHO',
+                module: 'destination',
+                implementation: 'cdkV2',
+                feature: 'router',
+              },
+              destination: commonDeletionDestConfig,
+            },
+          ],
+        },
+      },
+    },
+    mockFns: defaultMockFns,
+  },
+  {
+    name: destType,
+    id: 'zoho_deletion_1_v2',
+    description: 'Instrumentation error when the identifiers are empty in the payload V2',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: {
+                action: 'delete',
+                context: {
+                  sources: {
+                    job_run_id: 'cgiiurt8um7k7n5dq480',
+                    task_run_id: 'cgiiurt8um7k7n5dq48g',
+                    job_id: '2MUWghI7u85n91dd1qzGyswpZan',
+                    version: '895/merge',
+                  },
+                },
+                recordId: '2',
+                rudderId: '2',
+                fields: {
+                  First_Name: 'subcribed2',
+                  Last_Name: ' User2',
+                },
+                identifiers: {
+                  Email: '',
+                },
+                type: 'record',
+              },
+              metadata: {
+                jobId: 2,
+                userId: 'u1',
+                secret: {
+                  accessToken: 'correct-access-token',
+                },
+              },
+              destination: commonDeletionDestConfig,
+              connection: commonDeletionConnectionConfigV2,
+            },
+          ],
+          destType,
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              metadata: [
+                {
+                  jobId: 2,
+                  userId: 'u1',
+                  secret: {
+                    accessToken: 'correct-access-token',
+                  },
+                },
+              ],
+              batched: false,
+              statusCode: 400,
+              error:
+                'failed to fetch zoho id for record for "Identifier values are not provided for Leads"',
+              statTags: {
+                errorCategory: 'dataValidation',
+                errorType: 'configuration',
+                destType: 'ZOHO',
+                module: 'destination',
+                implementation: 'cdkV2',
+                feature: 'router',
+              },
+              destination: commonDeletionDestConfig,
+            },
+          ],
+        },
+      },
+    },
+    mockFns: defaultMockFns,
+  },
+  {
+    name: destType,
+    id: 'zoho_deletion_2',
+    description: 'Instrumentation error when the identifiers are empty in the payload',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: {
+                action: 'delete',
+                context: {
+                  externalId: [
+                    {
+                      type: 'ZOHO-Leads',
+                      identifierType: 'Email',
+                    },
+                  ],
+                  mappedToDestination: 'true',
+                  sources: {
+                    job_run_id: 'cgiiurt8um7k7n5dq480',
+                    task_run_id: 'cgiiurt8um7k7n5dq48g',
+                    job_id: '2MUWghI7u85n91dd1qzGyswpZan',
+                    version: '895/merge',
+                  },
+                },
+                recordId: '2',
+                rudderId: '2',
+                fields: {
+                  Email: '',
+                  First_Name: 'subcribed3',
+                  Last_Name: ' User3',
+                },
+                type: 'record',
+              },
+              metadata: {
+                jobId: 2,
+                userId: 'u1',
+                secret: {
+                  accessToken: 'correct-access-token',
+                },
+              },
+              destination: commonDeletionDestConfig,
+            },
+          ],
+          destType,
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              metadata: [
+                {
+                  jobId: 2,
+                  userId: 'u1',
+                  secret: {
+                    accessToken: 'correct-access-token',
+                  },
+                },
+              ],
+              batched: false,
+              statusCode: 400,
+              error:
+                'failed to fetch zoho id for record for "Identifier values are not provided for Leads"',
+              statTags: {
+                errorCategory: 'dataValidation',
+                errorType: 'configuration',
+                destType: 'ZOHO',
+                module: 'destination',
+                implementation: 'cdkV2',
+                feature: 'router',
+              },
+              destination: commonDeletionDestConfig,
             },
           ],
         },

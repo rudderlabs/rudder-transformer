@@ -1,3 +1,4 @@
+import { authHeader1 } from './maskedSecrets';
 export const networkCallsData = [
   {
     httpReq: {
@@ -38,7 +39,7 @@ export const networkCallsData = [
       },
       params: { destination: 'reddit' },
       headers: {
-        Authorization: 'Bearer dummyAccessToken',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
       },
       method: 'POST',
@@ -90,7 +91,7 @@ export const networkCallsData = [
       },
       params: { destination: 'reddit' },
       headers: {
-        Authorization: 'Bearer dummyAccessToken',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
       },
       method: 'POST',
@@ -136,7 +137,7 @@ export const networkCallsData = [
       },
       params: { destination: 'reddit' },
       headers: {
-        Authorization: 'Bearer dummyAccessToken',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
       },
       method: 'POST',
@@ -193,7 +194,7 @@ export const networkCallsData = [
       },
       params: { destination: 'reddit' },
       headers: {
-        Authorization: 'Bearer dummyAccessToken',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
       },
       method: 'POST',
@@ -279,7 +280,7 @@ export const networkCallsData = [
       },
       params: { destination: 'reddit' },
       headers: {
-        Authorization: 'Bearer dummyAccessToken',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
       },
       method: 'POST',

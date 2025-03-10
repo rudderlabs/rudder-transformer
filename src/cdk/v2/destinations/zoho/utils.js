@@ -6,6 +6,7 @@ const {
   removeUndefinedNullEmptyExclBoolInt,
   ZOHO_SDK,
 } = require('@rudderstack/integrations-lib');
+const { isEmpty } = require('lodash');
 const { getDestinationExternalIDInfoForRetl, isHttpStatusSuccess } = require('../../../../v0/util');
 const zohoConfig = require('./config');
 const { handleHttpRequest } = require('../../../../adapters/network');
@@ -66,14 +67,14 @@ function validatePresenceOfMandatoryProperties(objectName, object) {
 function validatePresenceOfMandatoryPropertiesV2(objectName, object) {
   const { ZOHO } = ZOHO_SDK;
   const moduleWiseMandatoryFields = ZOHO.fetchModuleWiseMandatoryFields(objectName);
-  if (!moduleWiseMandatoryFields || moduleWiseMandatoryFields.length === 0) {
+  if (isEmpty(moduleWiseMandatoryFields)) {
     return undefined;
   }
   // All the required field keys are mapped but we need to check they have values
   // We have this gurantee because the creation of the configuration doens't permit user to omit the mandatory fields
-  const missingFields = moduleWiseMandatoryFields
-    .filter((field) => object.hasOwnProperty(field))
-    .filter((field) => !isDefinedAndNotNullAndNotEmpty(object[field]));
+  const missingFields = moduleWiseMandatoryFields.filter(
+    (field) => object.hasOwnProperty(field) && !isDefinedAndNotNullAndNotEmpty(object[field]),
+  );
 
   return {
     status: missingFields.length > 0,

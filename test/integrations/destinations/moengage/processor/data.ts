@@ -6,7 +6,7 @@ const mockFns = (_) => {
 export const data = [
   {
     name: 'moengage',
-    description: 'Test 0',
+    description: 'Test 0: Track event with nested arrays and product properties',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -304,7 +304,7 @@ export const data = [
   },
   {
     name: 'moengage',
-    description: 'Test 1',
+    description: 'Test 1: Identify call with user traits',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -436,7 +436,7 @@ export const data = [
   },
   {
     name: 'moengage',
-    description: 'Test 2',
+    description: 'Test 2: Identify call with custom traits',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -564,7 +564,7 @@ export const data = [
   },
   {
     name: 'moengage',
-    description: 'Test 3',
+    description: 'Test 3: Identify call with device information for Android',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -737,7 +737,7 @@ export const data = [
   },
   {
     name: 'moengage',
-    description: 'Test 4',
+    description: 'Test 4: Identify call with EU region configuration',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -869,7 +869,7 @@ export const data = [
   },
   {
     name: 'moengage',
-    description: 'Test 5: pass traits as a object',
+    description: 'Test 5: Pass traits as object with nested properties',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -1071,7 +1071,7 @@ export const data = [
   },
   {
     name: 'moengage',
-    description: 'Test 6',
+    description: 'Test 6: Identify call with IND region configuration',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -1203,7 +1203,7 @@ export const data = [
   },
   {
     name: 'moengage',
-    description: 'Test 7',
+    description: 'Test 7: Invalid region configuration',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -1313,7 +1313,7 @@ export const data = [
   },
   {
     name: 'moengage',
-    description: 'Test 8',
+    description: 'Test 8: Missing event type validation',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -1422,7 +1422,7 @@ export const data = [
   },
   {
     name: 'moengage',
-    description: 'Test 9',
+    description: 'Test 9: Unsupported event type validation',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -1532,7 +1532,7 @@ export const data = [
   },
   {
     name: 'moengage',
-    description: 'Test 10',
+    description: 'Test 10: Track event with timezone offset',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -1841,7 +1841,7 @@ export const data = [
   },
   {
     name: 'moengage',
-    description: 'Test 11: pass traits as a object',
+    description: 'Test 11: Track event with object data enabled',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -2133,7 +2133,7 @@ export const data = [
   },
   {
     name: 'moengage',
-    description: 'Test 12',
+    description: 'Test 12: Track event with invalid timezone',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -2380,7 +2380,7 @@ export const data = [
   },
   {
     name: 'moengage',
-    description: 'Test 13',
+    description: 'Test 13: Identify call with iOS device information',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -2553,7 +2553,7 @@ export const data = [
   },
   {
     name: 'moengage',
-    description: 'Test 14',
+    description: 'Test 14: Track event with iOS device information and invalid timezone',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -2823,7 +2823,7 @@ export const data = [
   },
   {
     name: 'moengage',
-    description: 'Test 15',
+    description: 'Test 15: Track event with nested object properties and invalid timezone',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -3104,7 +3104,7 @@ export const data = [
   },
   {
     name: 'moengage',
-    description: 'Test 16',
+    description: 'Test 16: Alias call for user merging',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -3199,7 +3199,7 @@ export const data = [
   },
   {
     name: 'moengage',
-    description: 'Test 17',
+    description: 'Test 17: Alias call without previousId validation',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -3279,8 +3279,7 @@ export const data = [
   },
   {
     name: 'moengage',
-    description:
-      'Test 18: when identify is sent without context, the event should not throw internal server error',
+    description: 'Test 18: Identify call without context',
     feature: 'processor',
     module: 'destination',
     version: 'v0',

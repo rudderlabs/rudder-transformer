@@ -4,6 +4,7 @@ const {
   ConfigurationError,
   isDefinedAndNotNullAndNotEmpty,
   removeUndefinedNullEmptyExclBoolInt,
+  ZOHO_SDK,
 } = require('@rudderstack/integrations-lib');
 const { getDestinationExternalIDInfoForRetl, isHttpStatusSuccess } = require('../../../../v0/util');
 const zohoConfig = require('./config');
@@ -37,7 +38,10 @@ const deduceModuleInfoV2 = (Config, destConfig) => {
   const identifierType = identifierMappings.map(({ to }) => to);
   return {
     operationModuleType: object,
-    upsertEndPoint: zohoConfig.COMMON_RECORD_ENDPOINT(Config.region).replace('moduleType', object),
+    upsertEndPoint: ZOHO_SDK.ZOHO.getBaseRecordUrl({
+      dataCenter: Config.region,
+      moduleName: object,
+    }),
     identifierType,
   };
 };
@@ -52,6 +56,24 @@ function validatePresenceOfMandatoryProperties(objectName, object) {
   const missingFields = requiredFields.filter(
     (field) => !object.hasOwnProperty(field) || !isDefinedAndNotNullAndNotEmpty(object[field]),
   );
+
+  return {
+    status: missingFields.length > 0,
+    missingField: missingFields,
+  };
+}
+
+function validatePresenceOfMandatoryPropertiesV2(objectName, object) {
+  const { ZOHO } = ZOHO_SDK;
+  const moduleWiseMandatoryFields = ZOHO.fetchModuleWiseMandatoryFields(objectName);
+  if (!moduleWiseMandatoryFields || moduleWiseMandatoryFields.length === 0) {
+    return undefined;
+  }
+  // All the required field keys are mapped but we need to check they have values
+  // We have this gurantee because the creation of the configuration doens't permit user to omit the mandatory fields
+  const missingFields = moduleWiseMandatoryFields
+    .filter((field) => object.hasOwnProperty(field))
+    .filter((field) => !isDefinedAndNotNullAndNotEmpty(object[field]));
 
   return {
     status: missingFields.length > 0,
@@ -120,11 +142,8 @@ const handleDuplicateCheckV2 = (addDefaultDuplicateCheck, identifierType, operat
   let additionalFields = [];
 
   if (addDefaultDuplicateCheck) {
-    const moduleDuplicateCheckField =
-      zohoConfig.MODULE_WISE_DUPLICATE_CHECK_FIELD[operationModuleType];
-    additionalFields = isDefinedAndNotNull(moduleDuplicateCheckField)
-      ? moduleDuplicateCheckField
-      : ['Name'];
+    const { ZOHO } = ZOHO_SDK;
+    additionalFields = ZOHO.fetchModuleWiseDuplicateCheckField(operationModuleType);
   }
 
   return Array.from(new Set([...identifierType, ...additionalFields]));
@@ -301,6 +320,7 @@ module.exports = {
   deduceModuleInfo,
   deduceModuleInfoV2,
   validatePresenceOfMandatoryProperties,
+  validatePresenceOfMandatoryPropertiesV2,
   formatMultiSelectFields,
   formatMultiSelectFieldsV2,
   handleDuplicateCheck,

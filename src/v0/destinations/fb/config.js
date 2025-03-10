@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const VERSION = 'v20.0';
+const VERSION = 'v22.0';
 
 const getPath = (file) => path.resolve(__dirname, file);
 

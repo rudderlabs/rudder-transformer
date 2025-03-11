@@ -1,7 +1,6 @@
-const { TransformationError } = require('@rudderstack/integrations-lib');
+const { flattenParams, TransformationError } = require('@rudderstack/integrations-lib');
 const { CommonUtils } = require('../../util/common');
 const logger = require('../../logger');
-const { flattenParams } = require('./utils');
 const { processPayload } = require('./core');
 
 /**

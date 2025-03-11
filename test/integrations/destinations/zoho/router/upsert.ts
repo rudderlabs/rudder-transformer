@@ -992,6 +992,8 @@ export const upsertData = [
                 rudderId: '2',
                 fields: {
                   'multi-language': 'Bengali',
+                  First_Name: 'subcribed',
+                  Last_Name: null,
                 },
                 identifiers: {
                   email: 'subscribed@eewrfrd.com',

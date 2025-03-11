@@ -1,5 +1,6 @@
 import { ProcessorTestData } from '../../../testTypes';
 import { Metadata } from '../../../../../src/types';
+import { authHeader1, authHeader2, secret1, secret2 } from '../maskedSecrets';
 
 const baseMetadata: Metadata = {
   destinationDefinitionId: 'default-dest-def',
@@ -56,7 +57,7 @@ export const data: ProcessorTestData[] = [
               type: 'track',
               messageId: '1873f8bd-68f7-40fc-b262-56a245f22862',
               properties: {
-                email: 'frank@example.com'
+                email: 'frank@example.com',
               },
               timestamp: '2024-01-23T08:35:17.562Z',
             },
@@ -73,8 +74,7 @@ export const data: ProcessorTestData[] = [
                 },
               },
               Config: {
-                apiKey: 'api_key',
-                apiUrl: 'https://in.accoil.com/segment',
+                apiKey: secret1,
               },
               Enabled: true,
               WorkspaceID: 'default-workspace',
@@ -99,7 +99,7 @@ export const data: ProcessorTestData[] = [
               endpoint: 'https://in.accoil.com/segment',
               headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Basic YXBpX2tleTo=',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -165,8 +165,7 @@ export const data: ProcessorTestData[] = [
                 },
               },
               Config: {
-                apiKey: 'api_key',
-                apiUrl: 'https://in.accoil.com/segment',
+                apiKey: secret1,
               },
               Enabled: true,
               WorkspaceID: 'default-workspace',
@@ -191,7 +190,7 @@ export const data: ProcessorTestData[] = [
               endpoint: 'https://in.accoil.com/segment',
               headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Basic YXBpX2tleTo=',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -264,8 +263,7 @@ export const data: ProcessorTestData[] = [
                 },
               },
               Config: {
-                apiKey: 'api_key',
-                apiUrl: 'https://in.accoil.com/segment',
+                apiKey: secret1,
               },
               Enabled: true,
               WorkspaceID: 'default-workspace',
@@ -290,7 +288,7 @@ export const data: ProcessorTestData[] = [
               endpoint: 'https://in.accoil.com/segment',
               headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Basic YXBpX2tleTo=',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -360,8 +358,7 @@ export const data: ProcessorTestData[] = [
                 },
               },
               Config: {
-                apiKey: 'api_key',
-                apiUrl: 'https://in.accoil.com/segment',
+                apiKey: secret1,
               },
               Enabled: true,
               WorkspaceID: 'default-workspace',
@@ -386,7 +383,7 @@ export const data: ProcessorTestData[] = [
               endpoint: 'https://in.accoil.com/segment',
               headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Basic YXBpX2tleTo=',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -449,8 +446,7 @@ export const data: ProcessorTestData[] = [
                 },
               },
               Config: {
-                apiKey: 'api_key',
-                apiUrl: 'https://in.accoil.com/segment',
+                apiKey: secret1,
               },
               Enabled: true,
               WorkspaceID: 'default-workspace',
@@ -475,7 +471,7 @@ export const data: ProcessorTestData[] = [
               endpoint: 'https://in.accoil.com/segment',
               headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Basic YXBpX2tleTo=',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -538,8 +534,7 @@ export const data: ProcessorTestData[] = [
                 },
               },
               Config: {
-                apiKey: 'stg_api_key',
-                apiUrl: 'https://instaging.accoil.com/segment',
+                apiKey: secret2,
               },
               Enabled: true,
               WorkspaceID: 'default-workspace',
@@ -564,7 +559,7 @@ export const data: ProcessorTestData[] = [
               endpoint: 'https://instaging.accoil.com/segment',
               headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Basic c3RnX2FwaV9rZXk6',
+                Authorization: authHeader2,
               },
               params: {},
               body: {
@@ -611,7 +606,7 @@ export const data: ProcessorTestData[] = [
               type: 'track',
               messageId: '1873f8bd-68f7-40fc-b262-56a245f22862',
               properties: {
-                email: 'frank@example.com'
+                email: 'frank@example.com',
               },
               timestamp: '2024-01-23T08:35:17.562Z',
             },
@@ -648,7 +643,8 @@ export const data: ProcessorTestData[] = [
           {
             metadata: baseMetadata,
             statusCode: 400,
-            error: 'apiKey must be supplied in destination config: Workflow: procWorkflow, Step: validateInput, ChildStep: undefined, OriginalError: apiKey must be supplied in destination config',
+            error:
+              'apiKey must be supplied in destination config: Workflow: procWorkflow, Step: validateInput, ChildStep: undefined, OriginalError: apiKey must be supplied in destination config',
             statTags: {
               errorCategory: 'dataValidation',
               errorType: 'configuration',
@@ -684,7 +680,7 @@ export const data: ProcessorTestData[] = [
               type: 'track',
               messageId: '1873f8bd-68f7-40fc-b262-56a245f22862',
               properties: {
-                email: 'frank@example.com'
+                email: 'frank@example.com',
               },
             },
             metadata: baseMetadata,
@@ -700,8 +696,7 @@ export const data: ProcessorTestData[] = [
                 },
               },
               Config: {
-                apiKey: 'api_key',
-                apiUrl: 'https://in.accoil.com/segment',
+                apiKey: secret1,
               },
               Enabled: true,
               WorkspaceID: 'default-workspace',
@@ -721,7 +716,8 @@ export const data: ProcessorTestData[] = [
           {
             metadata: baseMetadata,
             statusCode: 400,
-            error: 'timestamp is required for all calls: Workflow: procWorkflow, Step: validateTimestamp, ChildStep: undefined, OriginalError: timestamp is required for all calls',
+            error:
+              'timestamp is required for all calls: Workflow: procWorkflow, Step: validateTimestamp, ChildStep: undefined, OriginalError: timestamp is required for all calls',
             statTags: {
               errorCategory: 'dataValidation',
               errorType: 'instrumentation',
@@ -757,7 +753,7 @@ export const data: ProcessorTestData[] = [
               type: 'track',
               messageId: '1873f8bd-68f7-40fc-b262-56a245f22862',
               properties: {
-                email: 'frank@example.com'
+                email: 'frank@example.com',
               },
               timestamp: '2024-01-23T08:35:17.562Z',
             },
@@ -774,8 +770,7 @@ export const data: ProcessorTestData[] = [
                 },
               },
               Config: {
-                apiKey: 'api_key',
-                apiUrl: 'https://in.accoil.com/segment',
+                apiKey: secret1,
               },
               Enabled: true,
               WorkspaceID: 'default-workspace',
@@ -795,7 +790,8 @@ export const data: ProcessorTestData[] = [
           {
             metadata: baseMetadata,
             statusCode: 400,
-            error: 'event is required for track call: Workflow: procWorkflow, Step: validateTrackPayload, ChildStep: undefined, OriginalError: event is required for track call',
+            error:
+              'event is required for track call: Workflow: procWorkflow, Step: validateTrackPayload, ChildStep: undefined, OriginalError: event is required for track call',
             statTags: {
               errorCategory: 'dataValidation',
               errorType: 'instrumentation',
@@ -830,7 +826,7 @@ export const data: ProcessorTestData[] = [
               type: 'track',
               messageId: '1873f8bd-68f7-40fc-b262-56a245f22862',
               properties: {
-                email: 'frank@example.com'
+                email: 'frank@example.com',
               },
               timestamp: '2024-01-23T08:35:17.562Z',
             },
@@ -847,8 +843,7 @@ export const data: ProcessorTestData[] = [
                 },
               },
               Config: {
-                apiKey: 'api_key',
-                apiUrl: 'https://in.accoil.com/segment',
+                apiKey: secret1,
               },
               Enabled: true,
               WorkspaceID: 'default-workspace',
@@ -868,7 +863,8 @@ export const data: ProcessorTestData[] = [
           {
             metadata: baseMetadata,
             statusCode: 400,
-            error: 'userId is required for track call: Workflow: procWorkflow, Step: validateTrackPayload, ChildStep: undefined, OriginalError: userId is required for track call',
+            error:
+              'userId is required for track call: Workflow: procWorkflow, Step: validateTrackPayload, ChildStep: undefined, OriginalError: userId is required for track call',
             statTags: {
               errorCategory: 'dataValidation',
               errorType: 'instrumentation',
@@ -904,7 +900,7 @@ export const data: ProcessorTestData[] = [
               type: 'page',
               messageId: '1873f8bd-68f7-40fc-b262-56a245f22862',
               properties: {
-                email: 'frank@example.com'
+                email: 'frank@example.com',
               },
               timestamp: '2024-01-23T08:35:17.562Z',
             },
@@ -921,8 +917,7 @@ export const data: ProcessorTestData[] = [
                 },
               },
               Config: {
-                apiKey: 'api_key',
-                apiUrl: 'https://in.accoil.com/segment',
+                apiKey: secret1,
               },
               Enabled: true,
               WorkspaceID: 'default-workspace',
@@ -942,7 +937,8 @@ export const data: ProcessorTestData[] = [
           {
             metadata: baseMetadata,
             statusCode: 400,
-            error: 'name is required for page call: Workflow: procWorkflow, Step: validatePagePayload, ChildStep: undefined, OriginalError: name is required for page call',
+            error:
+              'name is required for page call: Workflow: procWorkflow, Step: validatePagePayload, ChildStep: undefined, OriginalError: name is required for page call',
             statTags: {
               errorCategory: 'dataValidation',
               errorType: 'instrumentation',
@@ -977,7 +973,7 @@ export const data: ProcessorTestData[] = [
               type: 'page',
               messageId: '1873f8bd-68f7-40fc-b262-56a245f22862',
               properties: {
-                email: 'frank@example.com'
+                email: 'frank@example.com',
               },
               timestamp: '2024-01-23T08:35:17.562Z',
             },
@@ -994,8 +990,7 @@ export const data: ProcessorTestData[] = [
                 },
               },
               Config: {
-                apiKey: 'api_key',
-                apiUrl: 'https://in.accoil.com/segment',
+                apiKey: secret1,
               },
               Enabled: true,
               WorkspaceID: 'default-workspace',
@@ -1015,7 +1010,8 @@ export const data: ProcessorTestData[] = [
           {
             metadata: baseMetadata,
             statusCode: 400,
-            error: 'userId is required for page call: Workflow: procWorkflow, Step: validatePagePayload, ChildStep: undefined, OriginalError: userId is required for page call',
+            error:
+              'userId is required for page call: Workflow: procWorkflow, Step: validatePagePayload, ChildStep: undefined, OriginalError: userId is required for page call',
             statTags: {
               errorCategory: 'dataValidation',
               errorType: 'instrumentation',
@@ -1051,7 +1047,7 @@ export const data: ProcessorTestData[] = [
               type: 'screen',
               messageId: '1873f8bd-68f7-40fc-b262-56a245f22862',
               properties: {
-                email: 'frank@example.com'
+                email: 'frank@example.com',
               },
               timestamp: '2024-01-23T08:35:17.562Z',
             },
@@ -1068,8 +1064,7 @@ export const data: ProcessorTestData[] = [
                 },
               },
               Config: {
-                apiKey: 'api_key',
-                apiUrl: 'https://in.accoil.com/segment',
+                apiKey: secret1,
               },
               Enabled: true,
               WorkspaceID: 'default-workspace',
@@ -1089,7 +1084,8 @@ export const data: ProcessorTestData[] = [
           {
             metadata: baseMetadata,
             statusCode: 400,
-            error: 'name is required for screen call: Workflow: procWorkflow, Step: validateScreenPayload, ChildStep: undefined, OriginalError: name is required for screen call',
+            error:
+              'name is required for screen call: Workflow: procWorkflow, Step: validateScreenPayload, ChildStep: undefined, OriginalError: name is required for screen call',
             statTags: {
               errorCategory: 'dataValidation',
               errorType: 'instrumentation',
@@ -1124,7 +1120,7 @@ export const data: ProcessorTestData[] = [
               type: 'screen',
               messageId: '1873f8bd-68f7-40fc-b262-56a245f22862',
               properties: {
-                email: 'frank@example.com'
+                email: 'frank@example.com',
               },
               timestamp: '2024-01-23T08:35:17.562Z',
             },
@@ -1141,8 +1137,7 @@ export const data: ProcessorTestData[] = [
                 },
               },
               Config: {
-                apiKey: 'api_key',
-                apiUrl: 'https://in.accoil.com/segment',
+                apiKey: secret1,
               },
               Enabled: true,
               WorkspaceID: 'default-workspace',
@@ -1162,7 +1157,8 @@ export const data: ProcessorTestData[] = [
           {
             metadata: baseMetadata,
             statusCode: 400,
-            error: 'userId is required for screen call: Workflow: procWorkflow, Step: validateScreenPayload, ChildStep: undefined, OriginalError: userId is required for screen call',
+            error:
+              'userId is required for screen call: Workflow: procWorkflow, Step: validateScreenPayload, ChildStep: undefined, OriginalError: userId is required for screen call',
             statTags: {
               errorCategory: 'dataValidation',
               errorType: 'instrumentation',
@@ -1197,7 +1193,7 @@ export const data: ProcessorTestData[] = [
               type: 'identify',
               messageId: '1873f8bd-68f7-40fc-b262-56a245f22862',
               properties: {
-                email: 'frank@example.com'
+                email: 'frank@example.com',
               },
               timestamp: '2024-01-23T08:35:17.562Z',
             },
@@ -1214,8 +1210,7 @@ export const data: ProcessorTestData[] = [
                 },
               },
               Config: {
-                apiKey: 'api_key',
-                apiUrl: 'https://in.accoil.com/segment',
+                apiKey: secret1,
               },
               Enabled: true,
               WorkspaceID: 'default-workspace',
@@ -1235,7 +1230,8 @@ export const data: ProcessorTestData[] = [
           {
             metadata: baseMetadata,
             statusCode: 400,
-            error: 'userId is required for identify call: Workflow: procWorkflow, Step: validateIdentifyPayload, ChildStep: undefined, OriginalError: userId is required for identify call',
+            error:
+              'userId is required for identify call: Workflow: procWorkflow, Step: validateIdentifyPayload, ChildStep: undefined, OriginalError: userId is required for identify call',
             statTags: {
               errorCategory: 'dataValidation',
               errorType: 'instrumentation',
@@ -1271,7 +1267,7 @@ export const data: ProcessorTestData[] = [
               groupId: 'group1',
               messageId: '1873f8bd-68f7-40fc-b262-56a245f22862',
               properties: {
-                email: 'frank@example.com'
+                email: 'frank@example.com',
               },
               timestamp: '2024-01-23T08:35:17.562Z',
             },
@@ -1288,8 +1284,7 @@ export const data: ProcessorTestData[] = [
                 },
               },
               Config: {
-                apiKey: 'api_key',
-                apiUrl: 'https://in.accoil.com/segment',
+                apiKey: secret1,
               },
               Enabled: true,
               WorkspaceID: 'default-workspace',
@@ -1309,7 +1304,8 @@ export const data: ProcessorTestData[] = [
           {
             metadata: baseMetadata,
             statusCode: 400,
-            error: 'userId is required for group call: Workflow: procWorkflow, Step: validateGroupPayload, ChildStep: undefined, OriginalError: userId is required for group call',
+            error:
+              'userId is required for group call: Workflow: procWorkflow, Step: validateGroupPayload, ChildStep: undefined, OriginalError: userId is required for group call',
             statTags: {
               errorCategory: 'dataValidation',
               errorType: 'instrumentation',
@@ -1344,7 +1340,7 @@ export const data: ProcessorTestData[] = [
               type: 'group',
               messageId: '1873f8bd-68f7-40fc-b262-56a245f22862',
               properties: {
-                email: 'frank@example.com'
+                email: 'frank@example.com',
               },
               timestamp: '2024-01-23T08:35:17.562Z',
             },
@@ -1361,8 +1357,7 @@ export const data: ProcessorTestData[] = [
                 },
               },
               Config: {
-                apiKey: 'api_key',
-                apiUrl: 'https://in.accoil.com/segment',
+                apiKey: secret1,
               },
               Enabled: true,
               WorkspaceID: 'default-workspace',
@@ -1382,7 +1377,8 @@ export const data: ProcessorTestData[] = [
           {
             metadata: baseMetadata,
             statusCode: 400,
-            error: 'groupId is required for group call: Workflow: procWorkflow, Step: validateGroupPayload, ChildStep: undefined, OriginalError: groupId is required for group call',
+            error:
+              'groupId is required for group call: Workflow: procWorkflow, Step: validateGroupPayload, ChildStep: undefined, OriginalError: groupId is required for group call',
             statTags: {
               errorCategory: 'dataValidation',
               errorType: 'instrumentation',

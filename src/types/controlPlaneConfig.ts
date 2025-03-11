@@ -25,11 +25,11 @@ export type DestinationConnectionConfig<T> = {
   destination: T;
 };
 
-export type Connection = {
+export type Connection<T = Record<string, unknown>> = {
   sourceId: string;
   destinationId: string;
   enabled: boolean;
-  config: Record<string, unknown>;
+  config: T;
   processorEnabled?: boolean;
 };
 

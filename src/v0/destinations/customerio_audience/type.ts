@@ -4,6 +4,7 @@ import {
   Connection,
   Destination,
   DestinationConnectionConfig,
+  MessageType,
   Metadata,
   RouterTransformationRequestData,
 } from '../../../types';
@@ -17,15 +18,15 @@ export type RespList = {
 };
 
 // Types for API request components
-export type SegmentationPayloadType = {
+export type SegmentationPayload = {
   ids: (string | number)[];
 };
 
-export type SegmentationParamType = {
+export type SegmentationParam = {
   id_type: string;
 };
 
-export type SegmentationHeadersType = {
+export type SegmentationHeaders = {
   'Content-Type': string;
   Authorization: string;
 };
@@ -53,6 +54,7 @@ export type CustomerIOConnectionConfig = z.infer<typeof CustomerIOConnectionConf
 // Message type specific to CustomerIO
 export const CustomerIOMessageSchema = z
   .object({
+    type: z.literal(MessageType.enum.record),
     action: z.string(),
     identifiers: z.record(z.string(), z.union([z.string(), z.number()])),
   })
@@ -61,9 +63,13 @@ export const CustomerIOMessageSchema = z
 export type CustomerIOMessage = z.infer<typeof CustomerIOMessageSchema>;
 
 // Final exported types using generics from base types
-export type CustomerIODestinationType = Destination<CustomerIODestinationConfig>;
-export type CustomerIOConnectionType = Connection & {
-  config: DestinationConnectionConfig<CustomerIOConnectionConfig>;
-};
+export type CustomerIODestination = Destination<CustomerIODestinationConfig>;
+export type CustomerIOConnection = Connection<
+  DestinationConnectionConfig<CustomerIOConnectionConfig>
+>;
 
-export type CustomerIORouterRequestType = RouterTransformationRequestData;
+export type CustomerIORouterRequest = RouterTransformationRequestData<
+  CustomerIOMessage,
+  CustomerIODestination,
+  CustomerIOConnection
+>;

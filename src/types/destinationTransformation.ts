@@ -50,12 +50,16 @@ export type ProcessorTransformationResponse = {
 /**
  * Router transformation structures
  */
-export type RouterTransformationRequestData = {
+export type RouterTransformationRequestData<
+  M = Record<string, unknown>,
+  D = Destination,
+  C = Connection,
+> = {
   request?: object;
-  message: object;
+  message: M;
   metadata: Metadata;
-  destination: Destination;
-  connection?: Connection;
+  destination: D;
+  connection?: C;
 };
 
 export type RouterTransformationRequest = {

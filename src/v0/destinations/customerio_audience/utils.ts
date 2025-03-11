@@ -2,44 +2,44 @@ import { base64Convertor } from '@rudderstack/integrations-lib';
 import { BatchUtils } from '@rudderstack/workflow-engine';
 import { BASE_ENDPOINT, DEFAULT_ID_TYPE, MAX_ITEMS } from './config';
 import {
-  CustomerIOConnectionType,
-  CustomerIODestinationType,
-  CustomerIORouterRequestType,
+  CustomerIOConnection,
+  CustomerIODestination,
+  CustomerIORouterRequest,
   RespList,
-  SegmentationHeadersType,
-  SegmentationParamType,
-  SegmentationPayloadType,
+  SegmentationHeaders,
+  SegmentationParam,
+  SegmentationPayload,
 } from './type';
 import { Metadata } from '../../../types';
 
-const getIdType = (connection: CustomerIOConnectionType): string =>
+const getIdType = (connection: CustomerIOConnection): string =>
   connection.config.destination.identifierMappings[0]?.to || DEFAULT_ID_TYPE;
 
-const getSegmentId = (connection: CustomerIOConnectionType): string | number =>
+const getSegmentId = (connection: CustomerIOConnection): string | number =>
   connection.config.destination.audienceId;
 
-const getHeaders = (destination: CustomerIODestinationType): SegmentationHeadersType => ({
+const getHeaders = (destination: CustomerIODestination): SegmentationHeaders => ({
   'Content-Type': 'application/json',
   Authorization: `Basic ${base64Convertor(`${destination.Config.siteId}:${destination.Config.apiKey}`)}`,
 });
 
-const getParams = (connection: CustomerIOConnectionType): SegmentationParamType => ({
+const getParams = (connection: CustomerIOConnection): SegmentationParam => ({
   id_type: getIdType(connection),
 });
 
-const getMergedPayload = (batch: RespList[]): SegmentationPayloadType => ({
+const getMergedPayload = (batch: RespList[]): SegmentationPayload => ({
   ids: batch.flatMap((input) => input.payload.ids),
 });
 
 const getMergedMetadata = (batch: RespList[]): Metadata[] => batch.map((input) => input.metadata);
 
 const buildBatchedResponse = (
-  payload: SegmentationPayloadType,
+  payload: SegmentationPayload,
   endpoint: string,
-  headers: SegmentationHeadersType,
-  params: SegmentationParamType,
+  headers: SegmentationHeaders,
+  params: SegmentationParam,
   metadata: Metadata[],
-  destination: CustomerIODestinationType,
+  destination: CustomerIODestination,
 ) => ({
   batchedRequest: {
     body: {
@@ -65,8 +65,8 @@ const buildBatchedResponse = (
 const processBatch = (
   respList: RespList[],
   endpoint: string,
-  destination: CustomerIODestinationType,
-  connection: CustomerIOConnectionType,
+  destination: CustomerIODestination,
+  connection: CustomerIOConnection,
 ): any[] => {
   if (!respList?.length) {
     return [];
@@ -93,8 +93,8 @@ const processBatch = (
 const batchResponseBuilder = (
   insertOrUpdateRespList: RespList[],
   deleteRespList: RespList[],
-  destination: CustomerIODestinationType,
-  connection: CustomerIOConnectionType,
+  destination: CustomerIODestination,
+  connection: CustomerIOConnection,
 ): any[] => {
   const segmentId = getSegmentId(connection);
 
@@ -115,7 +115,7 @@ const batchResponseBuilder = (
   return [...insertResponses, ...deleteResponses];
 };
 
-const getEventAction = (event: CustomerIORouterRequestType): string => {
+const getEventAction = (event: CustomerIORouterRequest): string => {
   const { message } = event;
   const action = (message as { action?: string }).action || '';
   return action;

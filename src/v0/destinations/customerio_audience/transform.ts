@@ -5,9 +5,9 @@ import {
 } from '@rudderstack/integrations-lib';
 import { SegmentAction } from './config';
 import {
-  CustomerIOConnectionType,
-  CustomerIODestinationType,
-  CustomerIORouterRequestType,
+  CustomerIOConnection,
+  CustomerIODestination,
+  CustomerIORouterRequest,
   RespList,
 } from './type';
 
@@ -19,9 +19,7 @@ interface ProcessedEvent extends RespList {
   eventAction: keyof typeof SegmentAction;
 }
 
-export const createEventChunk = (
-  event: CustomerIORouterRequestType & { message: { identifiers: Record<string, any> } },
-): ProcessedEvent => {
+export const createEventChunk = (event: CustomerIORouterRequest): ProcessedEvent => {
   const eventAction = getEventAction(event);
 
   const identifiers = event?.message?.identifiers;
@@ -45,9 +43,7 @@ export const createEventChunk = (
   };
 };
 
-export const validateEvent = (
-  event: CustomerIORouterRequestType & { message: { identifiers: Record<string, any> } },
-): boolean => {
+export const validateEvent = (event: CustomerIORouterRequest): boolean => {
   const eventType = getEventType(event.message);
   if (eventType !== EventType.RECORD) {
     throw new InstrumentationError(`message type ${eventType} is not supported`);
@@ -94,25 +90,21 @@ export const validateEvent = (
   return true;
 };
 
-const processRouterDest = async (inputs: CustomerIORouterRequestType[], reqMetadata: any) => {
+const processRouterDest = async (inputs: CustomerIORouterRequest[], reqMetadata: any) => {
   if (!inputs?.length) return [];
 
   const { destination, connection } = inputs[0];
 
-  const customerIODestination = destination as CustomerIODestinationType;
-  const customerIOConnection = connection as CustomerIOConnectionType;
+  const customerIODestination = destination as CustomerIODestination;
+  const customerIOConnection = connection as CustomerIOConnection;
 
   // Process events and separate valid and error cases
   const processedEvents = inputs.map((event) => {
     try {
-      validateEvent(
-        event as CustomerIORouterRequestType & { message: { identifiers: Record<string, any> } },
-      );
+      validateEvent(event);
       return {
         success: true,
-        data: createEventChunk(
-          event as CustomerIORouterRequestType & { message: { identifiers: Record<string, any> } },
-        ),
+        data: createEventChunk(event),
       };
     } catch (error) {
       return {

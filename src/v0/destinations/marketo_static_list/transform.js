@@ -1,25 +1,19 @@
 const lodash = require('lodash');
 const cloneDeep = require('lodash/cloneDeep');
-const {
-  InstrumentationError,
-  UnauthorizedError,
-  getErrorRespEvents,
-} = require('@rudderstack/integrations-lib');
+const { InstrumentationError, UnauthorizedError } = require('@rudderstack/integrations-lib');
 const {
   defaultPostRequestConfig,
   defaultDeleteRequestConfig,
   generateErrorObject,
   simpleProcessRouterDest,
+  getErrorRespEvents,
 } = require('../../util');
-const { AUTH_CACHE_TTL, JSON_MIME_TYPE } = require('../../util/constant');
-const { getIds, validateMessageType } = require('./util');
+const { JSON_MIME_TYPE } = require('../../util/constant');
+const { getIds, validateMessageType, authCache } = require('./util');
 const { getDestinationExternalID, defaultRequestConfig } = require('../../util');
 const { formatConfig, MAX_LEAD_IDS_SIZE } = require('./config');
-const Cache = require('../../util/cache');
-const { getAuthToken } = require('../marketo/transform');
+const { getAuthToken } = require('../marketo/util');
 const { processRecordInputs } = require('./transformV2');
-
-const authCache = new Cache(AUTH_CACHE_TTL); // 1 hr
 
 const responseBuilder = (endPoint, leadIds, operation, token) => {
   let updatedEndpoint = endPoint;
@@ -93,7 +87,7 @@ const processEvent = (event) => {
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const process = async (event, _processParams) => {
-  const token = await getAuthToken(formatConfig(event.destination), event.metadata);
+  const token = await getAuthToken(authCache, formatConfig(event.destination), event.metadata);
   if (!token) {
     throw new UnauthorizedError('Authorization failed');
   }
@@ -108,7 +102,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
 
   const { destination, metadata } = inputs[0];
   try {
-    const token = await getAuthToken(formatConfig(destination), metadata);
+    const token = await getAuthToken(authCache, formatConfig(destination), metadata);
     if (!token) {
       throw new UnauthorizedError('Could not retrieve authorisation token');
     }

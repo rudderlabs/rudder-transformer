@@ -12,18 +12,20 @@ const {
   formatFieldForEventStream,
 } = require('./utils');
 const { base64Convertor } = require('../../../../v0/util');
+const { generateRandomString } = require('@rudderstack/integrations-lib');
 
 describe('Unit test cases for getHeaders function', () => {
   it('Should return headers', () => {
     const destination = {
       Config: {
-        apiToken: 'token',
+        apiToken: generateRandomString(),
         userName: 'user',
       },
     };
+    const authInfo = `${destination.Config.userName}:${destination.Config.apiToken}`;
     const expectedHeaders = {
       'Content-Type': 'application/json',
-      Authorization: `Basic ${base64Convertor('user:token')}`,
+      Authorization: `Basic ${base64Convertor(authInfo)}`,
     };
 
     const result = getHeaders(destination);

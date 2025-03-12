@@ -72,8 +72,13 @@ export const otherScenariosV1: ProxyV1TestData[] = [
         body: {
           output: {
             status: 500,
-            message:
-              '{"message":"Unhandled random error","type":"RandomException","code":5,"error_subcode":12,"fbtrace_id":"facebook_px_trace_id_10"}',
+            message: JSON.stringify({
+              message: 'Unhandled random error',
+              type: 'RandomException',
+              code: 5,
+              error_subcode: 12,
+              fbtrace_id: 'facebook_px_trace_id_10',
+            }),
             statTags: {
               ...statTags,
               errorType: 'retryable',
@@ -81,8 +86,13 @@ export const otherScenariosV1: ProxyV1TestData[] = [
             },
             response: [
               {
-                error:
-                  '{"message":"Unhandled random error","type":"RandomException","code":5,"error_subcode":12,"fbtrace_id":"facebook_px_trace_id_10"}',
+                error: JSON.stringify({
+                  message: 'Unhandled random error',
+                  type: 'RandomException',
+                  code: 5,
+                  error_subcode: 12,
+                  fbtrace_id: 'facebook_px_trace_id_10',
+                }),
                 statusCode: 500,
                 metadata: generateMetadata(1),
               },

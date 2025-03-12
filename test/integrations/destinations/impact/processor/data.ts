@@ -1,3 +1,4 @@
+import { authHeader1, secret1, secret2 } from '../maskedSecrets';
 export const data = [
   {
     name: 'impact',
@@ -50,8 +51,8 @@ export const data = [
             },
             destination: {
               Config: {
-                accountSID: 'dfsgertrtff3erfc34rfwf',
-                apiKey: 'fghsdfgegvcergfvfdfsag',
+                accountSID: secret1,
+                apiKey: secret2,
                 campaignId: '23224',
                 impactAppId: '2323',
                 eventTypeId: '56446',
@@ -122,7 +123,7 @@ export const data = [
               params: {},
               headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
-                Authorization: 'Basic ZGZzZ2VydHJ0ZmYzZXJmYzM0cmZ3ZjpmZ2hzZGZnZWd2Y2VyZ2Z2ZmRmc2Fn',
+                Authorization: authHeader1,
               },
               version: '1',
               endpoint: 'https://trkapi.impact.com/PageLoad',
@@ -185,8 +186,8 @@ export const data = [
             },
             destination: {
               Config: {
-                accountSID: 'dfsgertrtff3erfc34rfwf',
-                apiKey: 'fghsdfgegvcergfvfdfsag',
+                accountSID: secret1,
+                apiKey: secret2,
                 campaignId: '23224',
                 impactAppId: '2323',
                 eventTypeId: '56446',
@@ -294,7 +295,7 @@ export const data = [
             destination: {
               Config: {
                 accountSID: '',
-                apiKey: 'fghsdfgegvcergfvfdfsag',
+                apiKey: secret2,
                 campaignId: '23224',
                 impactAppId: '2323',
                 eventTypeId: '56446',
@@ -627,8 +628,8 @@ export const data = [
             },
             destination: {
               Config: {
-                accountSID: 'dfsgertrtff3erfc34rfwf',
-                apiKey: 'fghsdfgegvcergfvfdfsag',
+                accountSID: secret1,
+                apiKey: secret2,
                 campaignId: '23224',
                 impactAppId: '2323',
                 eventTypeId: '56446',
@@ -704,10 +705,10 @@ export const data = [
               params: {},
               headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
-                Authorization: 'Basic ZGZzZ2VydHJ0ZmYzZXJmYzM0cmZ3ZjpmZ2hzZGZnZWd2Y2VyZ2Z2ZmRmc2Fn',
+                Authorization: authHeader1,
               },
               version: '1',
-              endpoint: 'https://api.impact.com/Advertisers/dfsgertrtff3erfc34rfwf/Conversions',
+              endpoint: `https://api.impact.com/Advertisers/${secret1}/Conversions`,
               userId: '',
             },
             statusCode: 200,
@@ -777,8 +778,8 @@ export const data = [
             },
             destination: {
               Config: {
-                accountSID: 'dfsgertrtff3erfc34rfwf',
-                apiKey: 'fghsdfgegvcergfvfdfsag',
+                accountSID: secret1,
+                apiKey: secret2,
                 campaignId: '23224',
                 impactAppId: '2323',
                 eventTypeId: '56446',
@@ -850,10 +851,10 @@ export const data = [
               params: {},
               headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
-                Authorization: 'Basic ZGZzZ2VydHJ0ZmYzZXJmYzM0cmZ3ZjpmZ2hzZGZnZWd2Y2VyZ2Z2ZmRmc2Fn',
+                Authorization: authHeader1,
               },
               version: '1',
-              endpoint: 'https://api.impact.com/Advertisers/dfsgertrtff3erfc34rfwf/Conversions',
+              endpoint: `https://api.impact.com/Advertisers/${secret1}/Conversions`,
               userId: '',
             },
             statusCode: 200,
@@ -925,8 +926,8 @@ export const data = [
             },
             destination: {
               Config: {
-                accountSID: 'dfsgertrtff3erfc34rfwf',
-                apiKey: 'fghsdfgegvcergfvfdfsag',
+                accountSID: secret1,
+                apiKey: secret2,
                 campaignId: '23224',
                 impactAppId: '2323',
                 eventTypeId: '56446',
@@ -1008,10 +1009,10 @@ export const data = [
               params: {},
               headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
-                Authorization: 'Basic ZGZzZ2VydHJ0ZmYzZXJmYzM0cmZ3ZjpmZ2hzZGZnZWd2Y2VyZ2Z2ZmRmc2Fn',
+                Authorization: authHeader1,
               },
               version: '1',
-              endpoint: 'https://api.impact.com/Advertisers/dfsgertrtff3erfc34rfwf/Conversions',
+              endpoint: `https://api.impact.com/Advertisers/${secret1}/Conversions`,
               userId: '',
             },
             statusCode: 200,
@@ -1083,8 +1084,8 @@ export const data = [
             },
             destination: {
               Config: {
-                accountSID: 'dfsgertrtff3erfc34rfwf',
-                apiKey: 'fghsdfgegvcergfvfdfsag',
+                accountSID: secret1,
+                apiKey: secret2,
                 campaignId: '23224',
                 impactAppId: '2323',
                 eventTypeId: '56446',
@@ -1162,10 +1163,10 @@ export const data = [
               params: {},
               headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
-                Authorization: 'Basic ZGZzZ2VydHJ0ZmYzZXJmYzM0cmZ3ZjpmZ2hzZGZnZWd2Y2VyZ2Z2ZmRmc2Fn',
+                Authorization: authHeader1,
               },
               version: '1',
-              endpoint: 'https://api.impact.com/Advertisers/dfsgertrtff3erfc34rfwf/Conversions',
+              endpoint: `https://api.impact.com/Advertisers/${secret1}/Conversions`,
               userId: '',
             },
             statusCode: 200,
@@ -1240,8 +1241,8 @@ export const data = [
             },
             destination: {
               Config: {
-                accountSID: 'dfsgertrtff3erfc34rfwf',
-                apiKey: 'fghsdfgegvcergfvfdfsag',
+                accountSID: secret1,
+                apiKey: secret2,
                 campaignId: '23224',
                 impactAppId: '2323',
                 eventTypeId: '56446',
@@ -1323,10 +1324,10 @@ export const data = [
               params: {},
               headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
-                Authorization: 'Basic ZGZzZ2VydHJ0ZmYzZXJmYzM0cmZ3ZjpmZ2hzZGZnZWd2Y2VyZ2Z2ZmRmc2Fn',
+                Authorization: authHeader1,
               },
               version: '1',
-              endpoint: 'https://api.impact.com/Advertisers/dfsgertrtff3erfc34rfwf/Conversions',
+              endpoint: `https://api.impact.com/Advertisers/${secret1}/Conversions`,
               userId: '',
             },
             statusCode: 200,
@@ -1401,8 +1402,8 @@ export const data = [
             },
             destination: {
               Config: {
-                accountSID: 'dfsgertrtff3erfc34rfwf',
-                apiKey: 'fghsdfgegvcergfvfdfsag',
+                accountSID: secret1,
+                apiKey: secret2,
                 campaignId: '23224',
                 impactAppId: '2323',
                 eventTypeId: '56446',
@@ -1484,10 +1485,10 @@ export const data = [
               params: {},
               headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
-                Authorization: 'Basic ZGZzZ2VydHJ0ZmYzZXJmYzM0cmZ3ZjpmZ2hzZGZnZWd2Y2VyZ2Z2ZmRmc2Fn',
+                Authorization: authHeader1,
               },
               version: '1',
-              endpoint: 'https://api.impact.com/Advertisers/dfsgertrtff3erfc34rfwf/Conversions',
+              endpoint: `https://api.impact.com/Advertisers/${secret1}/Conversions`,
               userId: '',
             },
             statusCode: 200,
@@ -1547,8 +1548,8 @@ export const data = [
             },
             destination: {
               Config: {
-                accountSID: 'dfsgertrtff3erfc34rfwf',
-                apiKey: 'fghsdfgegvcergfvfdfsag',
+                accountSID: secret1,
+                apiKey: secret2,
                 campaignId: '23224',
                 impactAppId: '2323',
                 eventTypeId: '56446',
@@ -1619,7 +1620,7 @@ export const data = [
               params: {},
               headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
-                Authorization: 'Basic ZGZzZ2VydHJ0ZmYzZXJmYzM0cmZ3ZjpmZ2hzZGZnZWd2Y2VyZ2Z2ZmRmc2Fn',
+                Authorization: authHeader1,
               },
               version: '1',
               endpoint: 'https://trkapi.impact.com/PageLoad',
@@ -1682,8 +1683,8 @@ export const data = [
             },
             destination: {
               Config: {
-                accountSID: 'dfsgertrtff3erfc34rfwf',
-                apiKey: 'fghsdfgegvcergfvfdfsag',
+                accountSID: secret1,
+                apiKey: secret2,
                 campaignId: '23224',
                 impactAppId: '2323',
                 eventTypeId: '56446',
@@ -1754,7 +1755,7 @@ export const data = [
               params: {},
               headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
-                Authorization: 'Basic ZGZzZ2VydHJ0ZmYzZXJmYzM0cmZ3ZjpmZ2hzZGZnZWd2Y2VyZ2Z2ZmRmc2Fn',
+                Authorization: authHeader1,
               },
               version: '1',
               endpoint: 'https://trkapi.impact.com/PageLoad',
@@ -1827,8 +1828,8 @@ export const data = [
             },
             destination: {
               Config: {
-                accountSID: 'dfsgertrtff3erfc34rfwf',
-                apiKey: 'fghsdfgegvcergfvfdfsag',
+                accountSID: secret1,
+                apiKey: secret2,
                 campaignId: '23224',
                 impactAppId: '2323',
                 eventTypeId: '56446',
@@ -1945,8 +1946,8 @@ export const data = [
             },
             destination: {
               Config: {
-                accountSID: 'dfsgertrtff3erfc34rfwf',
-                apiKey: 'fghsdfgegvcergfvfdfsag',
+                accountSID: secret1,
+                apiKey: secret2,
                 campaignId: '23224',
                 impactAppId: '2323',
                 eventTypeId: '56446',
@@ -2059,8 +2060,8 @@ export const data = [
             },
             destination: {
               Config: {
-                accountSID: 'dfsgertrtff3erfc34rfwf',
-                apiKey: 'fghsdfgegvcergfvfdfsag',
+                accountSID: secret1,
+                apiKey: secret2,
                 campaignId: '23224',
                 impactAppId: '2323',
                 eventTypeId: '56446',
@@ -2138,10 +2139,10 @@ export const data = [
               params: {},
               headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
-                Authorization: 'Basic ZGZzZ2VydHJ0ZmYzZXJmYzM0cmZ3ZjpmZ2hzZGZnZWd2Y2VyZ2Z2ZmRmc2Fn',
+                Authorization: authHeader1,
               },
               version: '1',
-              endpoint: 'https://api.impact.com/Advertisers/dfsgertrtff3erfc34rfwf/Conversions',
+              endpoint: `https://api.impact.com/Advertisers/${secret1}/Conversions`,
               userId: '',
             },
             statusCode: 200,
@@ -2216,8 +2217,8 @@ export const data = [
             },
             destination: {
               Config: {
-                accountSID: 'dfsgertrtff3erfc34rfwf',
-                apiKey: 'fghsdfgegvcergfvfdfsag',
+                accountSID: secret1,
+                apiKey: secret2,
                 campaignId: '23224',
                 impactAppId: '2323',
                 eventTypeId: '56446',
@@ -2298,10 +2299,10 @@ export const data = [
               params: {},
               headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
-                Authorization: 'Basic ZGZzZ2VydHJ0ZmYzZXJmYzM0cmZ3ZjpmZ2hzZGZnZWd2Y2VyZ2Z2ZmRmc2Fn',
+                Authorization: authHeader1,
               },
               version: '1',
-              endpoint: 'https://api.impact.com/Advertisers/dfsgertrtff3erfc34rfwf/Conversions',
+              endpoint: `https://api.impact.com/Advertisers/${secret1}/Conversions`,
               userId: '',
             },
             statusCode: 200,
@@ -2348,10 +2349,10 @@ export const data = [
               params: {},
               headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
-                Authorization: 'Basic ZGZzZ2VydHJ0ZmYzZXJmYzM0cmZ3ZjpmZ2hzZGZnZWd2Y2VyZ2Z2ZmRmc2Fn',
+                Authorization: authHeader1,
               },
               version: '1',
-              endpoint: 'https://api.impact.com/Advertisers/dfsgertrtff3erfc34rfwf/Conversions',
+              endpoint: `https://api.impact.com/Advertisers/${secret1}/Conversions`,
               userId: '',
             },
             statusCode: 200,

@@ -13,8 +13,10 @@ const {
   isAxiosError,
   removeHyphens,
   convertToUuid,
+  unwrapArrayValues,
 } = require('./index');
 const exp = require('constants');
+const { ERROR_MESSAGES } = require('./constant');
 
 // Names of the utility functions to test
 const functionNames = [
@@ -1071,5 +1073,158 @@ describe('', () => {
     };
     const res = utilities.handleMetadataForValue(value, metadata);
     expect(res).toBe(1003);
+  });
+});
+
+describe('isAndroidFamily', () => {
+  it('should return true for "android" platform', () => {
+    expect(utilities.isAndroidFamily('android')).toBe(true);
+  });
+
+  it('should return true for "ANDROID" platform (case insensitive)', () => {
+    expect(utilities.isAndroidFamily('ANDROID')).toBe(true);
+  });
+
+  it('should return false for non-android platforms', () => {
+    expect(utilities.isAndroidFamily('ios')).toBe(false);
+    expect(utilities.isAndroidFamily('web')).toBe(false);
+    expect(utilities.isAndroidFamily('windows')).toBe(false);
+  });
+
+  it('should return false for empty string', () => {
+    expect(utilities.isAndroidFamily('')).toBe(false);
+  });
+
+  it('should return false for non-string inputs', () => {
+    expect(utilities.isAndroidFamily(null)).toBe(false);
+    expect(utilities.isAndroidFamily(undefined)).toBe(false);
+    expect(utilities.isAndroidFamily(123)).toBe(false);
+    expect(utilities.isAndroidFamily({})).toBe(false);
+    expect(utilities.isAndroidFamily([])).toBe(false);
+    expect(utilities.isAndroidFamily(true)).toBe(false);
+  });
+});
+
+describe('getBodyFromV2SpecPayload', () => {
+  it('should successfully parse valid JSON body', () => {
+    const input = {
+      request: {
+        body: '{"key": "value", "number": 123}',
+      },
+    };
+    const expected = {
+      key: 'value',
+      number: 123,
+    };
+    expect(utilities.getBodyFromV2SpecPayload(input)).toEqual(expected);
+  });
+
+  it('should throw TransformationError for malformed JSON', () => {
+    const input = {
+      request: {
+        body: '{invalid json}',
+      },
+    };
+    expect(() => utilities.getBodyFromV2SpecPayload(input)).toThrow(
+      ERROR_MESSAGES.MALFORMED_JSON_IN_REQUEST_BODY,
+    );
+  });
+
+  it('should throw TransformationError when request body is missing', () => {
+    const input = {
+      request: {},
+    };
+    expect(() => utilities.getBodyFromV2SpecPayload(input)).toThrow(
+      ERROR_MESSAGES.REQUEST_BODY_NOT_PRESENT_IN_V2_SPEC_PAYLOAD,
+    );
+  });
+
+  it('should throw TransformationError when request is missing', () => {
+    const input = {};
+    expect(() => utilities.getBodyFromV2SpecPayload(input)).toThrow(
+      ERROR_MESSAGES.REQUEST_BODY_NOT_PRESENT_IN_V2_SPEC_PAYLOAD,
+    );
+  });
+
+  it('should parse empty JSON object', () => {
+    const input = {
+      request: {
+        body: '{}',
+      },
+    };
+    expect(utilities.getBodyFromV2SpecPayload(input)).toEqual({});
+  });
+
+  it('should parse JSON array', () => {
+    const input = {
+      request: {
+        body: '[1,2,3]',
+      },
+    };
+    expect(utilities.getBodyFromV2SpecPayload(input)).toEqual([1, 2, 3]);
+  });
+});
+
+describe('unwrapArrayValues', () => {
+  const testCases = [
+    {
+      name: 'should throw an error if the payload is null',
+      input: null,
+      error: new InstrumentationError('Payload must be an valid object'),
+    },
+    {
+      name: 'should throw an error if the payload is string',
+      input: 'payload',
+      error: new InstrumentationError('Payload must be an valid object'),
+    },
+    {
+      name: 'should throw an error if the payload is array',
+      input: [],
+      error: new InstrumentationError('Payload must be an valid object'),
+    },
+    {
+      name: 'should return an empty object when given an empty object',
+      input: {},
+      expected: {},
+    },
+    {
+      name: 'should unwrap array of length 1 and assign the other value as it is',
+      input: {
+        ids: [1, 2, 3],
+        names: ['Test 1', 'Test 2', 'Test 3'],
+        items: [['apple', 'banana']],
+        age: [100],
+        id: '456',
+        emptyStr: [''],
+        emptyArray: [],
+        array: [null],
+        boolean: true,
+        null: null,
+        undefined: undefined,
+      },
+      expected: {
+        ids: [1, 2, 3],
+        names: ['Test 1', 'Test 2', 'Test 3'],
+        items: ['apple', 'banana'],
+        age: 100,
+        id: '456',
+        emptyStr: '',
+        emptyArray: [],
+        array: null,
+        boolean: true,
+        null: null,
+        undefined: undefined,
+      },
+    },
+  ];
+
+  testCases.forEach(({ name, input, error, expected }) => {
+    it(name, () => {
+      if (error) {
+        expect(() => unwrapArrayValues(input)).toThrow(error);
+      } else {
+        expect(unwrapArrayValues(input)).toEqual(expected);
+      }
+    });
   });
 });

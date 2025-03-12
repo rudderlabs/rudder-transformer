@@ -1,5 +1,6 @@
 import { generateProxyV1Payload } from '../../../testUtils';
 import { ProxyV1TestData } from '../../../testTypes';
+import { defaultAccessToken, defaultAccessTokenAuthHeader } from '../../../common/secrets';
 
 export const element = {
   conversion: 'urn:lla:llaPartnerConversion:23456',
@@ -75,14 +76,14 @@ export const metadata = {
   workspaceId: 'default-workspaceId',
   sourceId: 'default-sourceId',
   secret: {
-    accessToken: 'default-accessToken',
+    accessToken: defaultAccessToken,
   },
   dontBatch: false,
 };
 export const headerBlockWithCorrectAccessToken = {
-  Authorization: 'Bearer default-accessToken',
+  Authorization: defaultAccessTokenAuthHeader,
   'Content-Type': 'application/json',
-  'LinkedIn-Version': '202402',
+  'LinkedIn-Version': '202409',
   'X-RestLi-Method': 'BATCH_CREATE',
   'X-Restli-Protocol-Version': '2.0.0',
 };

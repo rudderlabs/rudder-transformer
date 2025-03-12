@@ -92,7 +92,7 @@ jobs:
 
   build-transformer-image-arm64:
     name: Build Transformer Docker Image ARM64
-    runs-on: [self-hosted, Linux, ARM64]
+    runs-on: [self-hosted, Linux, ARM64, ubuntu-22]
     needs: [get_sha, get_changed_files]
     steps:
       - name: Checkout

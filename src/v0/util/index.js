@@ -2367,6 +2367,21 @@ const getBodyFromV2SpecPayload = ({ request }) => {
   throw new TransformationError(ERROR_MESSAGES.REQUEST_BODY_NOT_PRESENT_IN_V2_SPEC_PAYLOAD);
 };
 
+const unwrapArrayValues = (payload) => {
+  if (!payload || typeof payload !== 'object' || Array.isArray(payload)) {
+    throw new InstrumentationError('Payload must be an valid object');
+  }
+  const result = {};
+  Object.keys(payload).forEach((key) => {
+    if (Array.isArray(payload[key]) && payload[key].length === 1) {
+      [result[key]] = payload[key];
+    } else {
+      result[key] = payload[key];
+    }
+  });
+  return result;
+};
+
 // ========================================================================
 // EXPORTS
 // ========================================================================
@@ -2496,4 +2511,5 @@ module.exports = {
   isAxiosError,
   convertToUuid,
   handleMetadataForValue,
+  unwrapArrayValues,
 };

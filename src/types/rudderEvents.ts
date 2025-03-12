@@ -3,7 +3,7 @@ import { z } from 'zod';
 /**
  * Supported message types in the event specification
  */
-export const MessageType = z.enum([
+export const MessageTypeSchema = z.enum([
   'identify',
   'track',
   'page',
@@ -14,31 +14,35 @@ export const MessageType = z.enum([
   'audiencelist',
 ]);
 
+export type MessageType = z.infer<typeof MessageTypeSchema>;
+
 /**
  * Core event message structure following Rudder event spec
  */
 
-export const RudderMessageSchema = z.object({
-  userId: z.string().optional(),
-  anonymousId: z.string(),
-  type: MessageType,
-  channel: z.string(),
-  context: z.object({}),
-  originalTimestamp: z.date(),
-  sentAt: z.date(),
-  timestamp: z.date(),
-  event: z.string().optional(),
-  integrations: z.object({}).optional(),
-  messageId: z.string(),
-  properties: z.object({}).optional(),
-  traits: z.object({}).optional(),
-});
+export const RudderMessageSchema = z
+  .object({
+    userId: z.string().optional(),
+    anonymousId: z.string().optional(),
+    type: MessageTypeSchema,
+    channel: z.string().optional(),
+    context: z.object({}).optional(),
+    originalTimestamp: z.string().optional(),
+    sentAt: z.string().optional(),
+    timestamp: z.string().optional(),
+    event: z.string().optional(),
+    integrations: z.object({}).optional(),
+    messageId: z.string().optional(),
+    properties: z.object({}).optional(),
+    traits: z.object({}).optional(),
+    statusCode: z.number().optional(),
+  })
+  .passthrough();
 
 export type RudderMessage = z.infer<typeof RudderMessageSchema>;
 
 export const RudderRecordV1Schema = z.object({
   type: z.literal('record'),
-  
 });
 
 export type RudderRecordV1 = z.infer<typeof RudderRecordV1Schema>;
@@ -67,6 +71,7 @@ export const MetadataSchema = z.object({
   sourceTaskRunId: z.string(),
   recordId: z.object({}),
   destinationType: z.string(),
+  destType: z.string(),
   messageId: z.string(),
   oauthAccessToken: z.string(),
   messageIds: z.array(z.string()),
@@ -82,4 +87,4 @@ export const MetadataSchema = z.object({
 
 export type Metadata = z.infer<typeof MetadataSchema>;
 
-export type MessageIdMetadataMap = Record<string, Metadata>;
+export type MessageIdMetadataMap = Record<string, Partial<Metadata>>;

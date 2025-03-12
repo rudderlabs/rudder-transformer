@@ -4,17 +4,23 @@ import {
   Connection,
   Destination,
   DestinationConnectionConfig,
-  MessageType,
+  MessageTypeSchema,
   Metadata,
   RouterTransformationRequestData,
 } from '../../../types';
+
+import {
+  BatchedRequest,
+  BatchedRequestBody,
+  BatchRequestOutput,
+} from '../../../types/destinationTransformation';
 
 // Basic response type for audience list operations
 export type RespList = {
   payload: {
     ids: (string | number)[];
   };
-  metadata: Metadata;
+  metadata: Partial<Metadata>;
 };
 
 // Types for API request components
@@ -31,6 +37,12 @@ export type SegmentationHeaders = {
   Authorization: string;
 };
 
+export const SegmentAction = {
+  INSERT: 'insert',
+  UPDATE: 'update',
+  DELETE: 'delete',
+} as const;
+
 export const CustomerIODestinationConfigSchema = z
   .object({
     apiKey: z.string(),
@@ -44,21 +56,39 @@ export type CustomerIODestinationConfig = z.infer<typeof CustomerIODestinationCo
 
 export const CustomerIOConnectionConfigSchema = z
   .object({
-    audienceId: z.string(),
-    identifierMappings: z.array(z.object({ from: z.string(), to: z.string() })),
+    audienceId: z.string().nonempty(),
+    identifierMappings: z.array(z.object({ from: z.string(), to: z.string() })).nonempty(),
   })
   .passthrough();
 
 export type CustomerIOConnectionConfig = z.infer<typeof CustomerIOConnectionConfigSchema>;
 
+const SegmentActionSchema = z.nativeEnum(SegmentAction);
+
 // Message type specific to CustomerIO
 export const CustomerIOMessageSchema = z
   .object({
-    type: z.literal(MessageType.enum.record),
-    action: z.string(),
-    identifiers: z.record(z.string(), z.union([z.string(), z.number()])),
+    type: z.literal(MessageTypeSchema.enum.record),
+    action: SegmentActionSchema,
+    identifiers: z
+      .record(z.string(), z.union([z.string(), z.number()]))
+      .superRefine((identifiers, ctx) => {
+        if (Object.keys(identifiers).length === 0) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: 'cannot be empty',
+          });
+        } else if (Object.keys(identifiers).length !== 1) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: 'only one identifier is supported',
+          });
+        }
+      }),
   })
   .passthrough();
+
+export type SegmentActionType = z.infer<typeof SegmentActionSchema>;
 
 export type CustomerIOMessage = z.infer<typeof CustomerIOMessageSchema>;
 
@@ -73,3 +103,23 @@ export type CustomerIORouterRequest = RouterTransformationRequestData<
   CustomerIODestination,
   CustomerIOConnection
 >;
+
+// Remove the duplicate types and use the generic ones instead
+export type CustomerIOBatchResponse = BatchRequestOutput<
+  SegmentationPayload,
+  SegmentationHeaders,
+  SegmentationParam,
+  CustomerIODestination
+>;
+
+export type CustomerIOBatchedRequest = BatchedRequest<
+  SegmentationPayload,
+  SegmentationHeaders,
+  SegmentationParam
+>;
+
+export type CustomerIOBatchedRequestBody = BatchedRequestBody<SegmentationPayload>;
+
+export type ProcessedEvent = RespList & {
+  eventAction: SegmentActionType;
+};

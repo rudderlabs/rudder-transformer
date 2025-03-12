@@ -1,5 +1,5 @@
 import { secret1 } from '../maskedSecrets';
-import { Destination } from '../../../../../src/types';
+import { Destination, RudderMessage } from '../../../../../src/types';
 import { ProcessorTestData } from '../../../testTypes';
 import { generateMetadata } from '../../../testUtils';
 

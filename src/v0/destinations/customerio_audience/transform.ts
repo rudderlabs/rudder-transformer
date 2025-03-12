@@ -1,94 +1,12 @@
 import {
-  ConfigurationError,
-  InstrumentationError,
-  isDefinedAndNotNull,
-} from '@rudderstack/integrations-lib';
-import { SegmentAction } from './config';
-import {
+  SegmentAction,
   CustomerIOConnection,
   CustomerIODestination,
   CustomerIORouterRequest,
-  RespList,
+  ProcessedEvent,
 } from './type';
-
-import { batchResponseBuilder, getEventAction } from './utils';
-import { handleRtTfSingleEventError, getEventType } from '../../util';
-import { EventType } from '../../../constants';
-
-interface ProcessedEvent extends RespList {
-  eventAction: keyof typeof SegmentAction;
-}
-
-export const createEventChunk = (event: CustomerIORouterRequest): ProcessedEvent => {
-  const eventAction = getEventAction(event);
-
-  const identifiers = event?.message?.identifiers;
-  if (!isDefinedAndNotNull(identifiers) || Object.keys(identifiers).length === 0) {
-    throw new ConfigurationError('[CustomerIO] Identifiers are required, aborting.');
-  }
-
-  const id = Object.values(identifiers)[0];
-  if (!isDefinedAndNotNull(id)) {
-    throw new ConfigurationError('[CustomerIO] Identifier is required, aborting.');
-  }
-
-  if (typeof id !== 'string' && typeof id !== 'number') {
-    throw new ConfigurationError('[CustomerIO] Identifier type should be a string or integer');
-  }
-
-  return {
-    payload: { ids: [id] },
-    metadata: event.metadata,
-    eventAction: eventAction as keyof typeof SegmentAction,
-  };
-};
-
-export const validateEvent = (event: CustomerIORouterRequest): boolean => {
-  const eventType = getEventType(event.message);
-  if (eventType !== EventType.RECORD) {
-    throw new InstrumentationError(`message type ${eventType} is not supported`);
-  }
-
-  const eventAction = getEventAction(event);
-  if (!Object.values(SegmentAction).includes(eventAction)) {
-    throw new InstrumentationError(`action ${eventAction} is not supported`);
-  }
-
-  const identifiers = event?.message?.identifiers;
-  if (!identifiers || Object.keys(identifiers).length === 0) {
-    throw new InstrumentationError(`identifiers cannot be empty`);
-  }
-
-  if (Object.keys(identifiers).length > 1) {
-    throw new InstrumentationError(`only one identifier is supported`);
-  }
-
-  const id = Object.values(identifiers)[0];
-  if (typeof id !== 'string' && typeof id !== 'number') {
-    throw new ConfigurationError(`identifier type should be a string or integer`);
-  }
-
-  const connectionConfig = event?.connection?.config as
-    | {
-        destination: { audienceId: string; identifierMappings: Record<string, any> };
-      }
-    | undefined;
-  if (!connectionConfig) {
-    throw new InstrumentationError('connection config is required, aborting.');
-  }
-
-  const { audienceId, identifierMappings } = connectionConfig.destination;
-
-  if (!audienceId) {
-    throw new InstrumentationError('audienceId is required, aborting.');
-  }
-
-  if (!identifierMappings || Object.keys(identifierMappings).length === 0) {
-    throw new InstrumentationError('identifierMappings cannot be empty');
-  }
-
-  return true;
-};
+import { batchResponseBuilder, createEventChunk } from './utils';
+import { handleRtTfSingleEventError } from '../../util';
 
 const processRouterDest = async (inputs: CustomerIORouterRequest[], reqMetadata: any) => {
   if (!inputs?.length) return [];
@@ -101,7 +19,6 @@ const processRouterDest = async (inputs: CustomerIORouterRequest[], reqMetadata:
   // Process events and separate valid and error cases
   const processedEvents = inputs.map((event) => {
     try {
-      validateEvent(event);
       return {
         success: true,
         data: createEventChunk(event),

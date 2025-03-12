@@ -1,6 +1,6 @@
 import type { CatchErr } from '../util/types';
 import type { Source } from './controlPlaneConfig';
-import type { RudderMessage } from './rudderEvent';
+import type { RudderMessage } from './rudderEvents';
 
 export type SourceTransformationEvent = {
   headers?: Record<string, string>;
@@ -39,10 +39,18 @@ export type SourceTransformationOutput = {
   batch: RudderMessage[];
 };
 
-export type SourceTransformationResponse = {
+export type SourceTransformationSuccessResponse = {
   output: SourceTransformationOutput;
+  statusCode: number;
+  outputToSource?: object;
+};
+
+export type SourceTransformationErrorResponse = {
   error: CatchErr;
   statusCode: number;
-  outputToSource: object;
   statTags: object;
 };
+
+export type SourceTransformationResponse =
+  | SourceTransformationSuccessResponse
+  | SourceTransformationErrorResponse;

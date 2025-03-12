@@ -1,4 +1,9 @@
-import { base64Convertor } from '@rudderstack/integrations-lib';
+import {
+  base64Convertor,
+  ConfigurationError,
+  formatZodError,
+  InstrumentationError,
+} from '@rudderstack/integrations-lib';
 import { BatchUtils } from '@rudderstack/workflow-engine';
 import { BASE_ENDPOINT, DEFAULT_ID_TYPE, MAX_ITEMS } from './config';
 import {
@@ -9,6 +14,11 @@ import {
   SegmentationHeaders,
   SegmentationParam,
   SegmentationPayload,
+  CustomerIOBatchResponse,
+  SegmentActionType,
+  CustomerIOConnectionConfigSchema,
+  CustomerIOMessageSchema,
+  ProcessedEvent,
 } from './type';
 import { Metadata } from '../../../types';
 
@@ -31,16 +41,17 @@ const getMergedPayload = (batch: RespList[]): SegmentationPayload => ({
   ids: batch.flatMap((input) => input.payload.ids),
 });
 
-const getMergedMetadata = (batch: RespList[]): Metadata[] => batch.map((input) => input.metadata);
+const getMergedMetadata = (batch: RespList[]): Partial<Metadata>[] =>
+  batch.map((input) => input.metadata);
 
 const buildBatchedResponse = (
   payload: SegmentationPayload,
   endpoint: string,
   headers: SegmentationHeaders,
   params: SegmentationParam,
-  metadata: Metadata[],
+  metadata: Partial<Metadata>[],
   destination: CustomerIODestination,
-) => ({
+): CustomerIOBatchResponse => ({
   batchedRequest: {
     body: {
       JSON: payload,
@@ -67,7 +78,7 @@ const processBatch = (
   endpoint: string,
   destination: CustomerIODestination,
   connection: CustomerIOConnection,
-): any[] => {
+): CustomerIOBatchResponse[] => {
   if (!respList?.length) {
     return [];
   }
@@ -90,12 +101,12 @@ const processBatch = (
   });
 };
 
-const batchResponseBuilder = (
+export const batchResponseBuilder = (
   insertOrUpdateRespList: RespList[],
   deleteRespList: RespList[],
   destination: CustomerIODestination,
   connection: CustomerIOConnection,
-): any[] => {
+): CustomerIOBatchResponse[] => {
   const segmentId = getSegmentId(connection);
 
   const insertResponses = processBatch(
@@ -115,10 +126,35 @@ const batchResponseBuilder = (
   return [...insertResponses, ...deleteResponses];
 };
 
-const getEventAction = (event: CustomerIORouterRequest): string => {
-  const { message } = event;
-  const action = (message as { action?: string }).action || '';
-  return action;
+const getEventAction = (event: CustomerIORouterRequest): string => event.message.action;
+
+const validateEvent = (event: CustomerIORouterRequest): boolean => {
+  const { message, connection } = event;
+
+  const connectionValidation = CustomerIOConnectionConfigSchema.safeParse(
+    connection?.config.destination,
+  );
+
+  if (!connectionValidation.success) {
+    throw new ConfigurationError(formatZodError(connectionValidation.error));
+  }
+  const messageValidation = CustomerIOMessageSchema.safeParse(message);
+
+  if (!messageValidation.success) {
+    throw new InstrumentationError(formatZodError(messageValidation.error));
+  }
+
+  return true;
 };
 
-export { batchResponseBuilder, getEventAction };
+export const createEventChunk = (event: CustomerIORouterRequest): ProcessedEvent => {
+  validateEvent(event);
+  const eventAction = getEventAction(event);
+  const id = Object.values(event.message.identifiers)[0];
+
+  return {
+    payload: { ids: [id] },
+    metadata: event.metadata,
+    eventAction: eventAction as SegmentActionType,
+  };
+};

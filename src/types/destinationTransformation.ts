@@ -9,14 +9,49 @@ import type { Metadata, RudderMessage } from './rudderEvents';
 /**
  * Processor transformation request/response structures
  */
-export type ProcessorTransformationRequest = {
+export type ProcessorTransformationRequest<M = RudderMessage, MD = Metadata> = {
   request?: object;
-  message: object;
-  metadata: Metadata;
+  message: M;
+  metadata: MD;
   destination: Destination;
   connection?: Connection;
   libraries?: UserTransformationLibrary[];
   credentials?: Credential[];
+};
+
+export type BatchedRequestBody<T = Record<string, unknown>> = {
+  JSON?: T;
+  JSON_ARRAY?: Record<string, unknown>;
+  XML?: Record<string, unknown>;
+  FORM?: Record<string, unknown>;
+};
+
+export type BatchedRequest<
+  TPayload = Record<string, unknown>,
+  THeaders = Record<string, unknown>,
+  TParams = Record<string, unknown>,
+> = {
+  body: BatchedRequestBody<TPayload>;
+  version: string;
+  type: string;
+  method: string;
+  endpoint: string;
+  headers: THeaders;
+  params: TParams;
+  files: Record<string, never>;
+};
+
+export type BatchRequestOutput<
+  TPayload = Record<string, unknown>,
+  THeaders = Record<string, unknown>,
+  TParams = Record<string, unknown>,
+  TDestination = Destination,
+> = {
+  batchedRequest: BatchedRequest<TPayload, THeaders, TParams>;
+  metadata: Partial<Metadata>[];
+  batched: boolean;
+  statusCode: number;
+  destination: TDestination;
 };
 
 /**
@@ -30,18 +65,13 @@ export type ProcessorTransformationOutput = {
   userId?: string;
   headers?: Record<string, unknown>;
   params?: Record<string, unknown>;
-  body?: {
-    JSON?: Record<string, unknown>;
-    JSON_ARRAY?: Record<string, unknown>;
-    XML?: Record<string, unknown>;
-    FORM?: Record<string, unknown>;
-  };
+  body?: BatchedRequestBody;
   files?: Record<string, unknown>;
 };
 
 export type ProcessorTransformationResponse = {
   output?: ProcessorTransformationOutput | RudderMessage;
-  metadata: Metadata;
+  metadata: Partial<Metadata>;
   statusCode: number;
   error?: string;
   statTags?: object;
@@ -51,25 +81,26 @@ export type ProcessorTransformationResponse = {
  * Router transformation structures
  */
 export type RouterTransformationRequestData<
-  M = Record<string, unknown>,
+  M = RudderMessage,
   D = Destination,
   C = Connection,
+  MD = Metadata,
 > = {
   request?: object;
   message: M;
-  metadata: Metadata;
+  metadata: MD;
   destination: D;
   connection?: C;
 };
 
-export type RouterTransformationRequest = {
-  input: RouterTransformationRequestData[];
+export type RouterTransformationRequest<M = RudderMessage, MD = Metadata> = {
+  input: RouterTransformationRequestData<M, Destination, Connection, MD>[];
   destType: string;
 };
 
 export type RouterTransformationResponse = {
   batchedRequest?: ProcessorTransformationOutput | ProcessorTransformationOutput[];
-  metadata: Metadata[];
+  metadata: Partial<Metadata>[];
   destination: Destination;
   batched: boolean;
   statusCode: number;
@@ -155,8 +186,8 @@ export type MetaTransferObjectForProxy = {
 
 export type MetaTransferObject =
   | {
-      metadatas?: Metadata[];
-      metadata?: Metadata;
+      metadatas?: Partial<Metadata>[];
+      metadata?: Partial<Metadata>;
       errorDetails: ErrorDetailer;
       errorContext: string;
     }
@@ -195,3 +226,13 @@ export type ComparatorInput = {
   requestMetadata: object;
   feature: string;
 };
+
+// Add type guard to check if a request is a ProcessorTransformationRequest
+export const isProcessorTransformationRequest = (
+  request: ProcessorTransformationRequest | RouterTransformationRequestData,
+): request is ProcessorTransformationRequest => 'libraries' in request || 'credentials' in request;
+
+// Add helper type for pre-processing functions
+export type PreProcessableRequest =
+  | ProcessorTransformationRequest
+  | RouterTransformationRequestData;

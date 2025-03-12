@@ -61,8 +61,8 @@ export class CDKV2DestinationService implements DestinationService {
       events.map(async (event) => {
         const metaTo = this.getTags(
           destinationType,
-          event.metadata.destinationId,
-          event.metadata.workspaceId,
+          event.metadata?.destinationId,
+          event.metadata?.workspaceId,
           tags.FEATURES.PROCESSOR,
         );
         metaTo.metadata = event.metadata;
@@ -78,8 +78,8 @@ export class CDKV2DestinationService implements DestinationService {
           stats.increment('event_transform_success', {
             destType: destinationType,
             module: tags.MODULES.DESTINATION,
-            destinationId: event.metadata.destinationId,
-            workspaceId: event.metadata.workspaceId,
+            destinationId: event.metadata?.destinationId,
+            workspaceId: event.metadata?.workspaceId,
             feature: tags.FEATURES.PROCESSOR,
             implementation: tags.IMPLEMENTATIONS.CDK_V2,
           });

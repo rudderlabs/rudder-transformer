@@ -74,6 +74,12 @@ const RouterInstrumentationErrorStatTags = {
   feature: 'router',
 };
 
+const RouterConfigurationErrorStatTags = {
+  ...processorInstrumentationErrorStatTags,
+  feature: 'router',
+  errorType: 'configuration',
+};
+
 const headers = {
   'Content-Type': 'application/json',
   Authorization: authHeader1,
@@ -91,6 +97,7 @@ export {
   inValidConnection,
   processorInstrumentationErrorStatTags,
   RouterInstrumentationErrorStatTags,
+  RouterConfigurationErrorStatTags,
   headers,
   params,
   insertOrUpdateEndpoint,

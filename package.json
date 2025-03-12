@@ -1,6 +1,6 @@
 {
   "name": "rudder-transformer",
-  "version": "1.92.1",
+  "version": "1.93.0",
   "description": "",
   "homepage": "https://github.com/rudderlabs/rudder-transformer#readme",
   "bugs": {
@@ -102,7 +102,7 @@
     "md5": "^2.3.0",
     "modclean": "^3.0.0-beta.1",
     "moment": "^2.29.4",
-    "moment-timezone": "^0.5.43",
+    "moment-timezone": "^0.5.47",
     "node-cache": "^5.1.2",
     "node-fetch": "^2.6.12",
     "oauth-1.0a": "^2.2.6",

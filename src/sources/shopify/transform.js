@@ -1,7 +1,7 @@
 const { process: processTrackerEvents } = require('./tracker/transform');
 const { getBodyFromV2SpecPayload } = require('../../v0/util');
 const { processPixelEvents } = require('./transformPixel');
-const { isShopifyV1Event } = require('./utils');
+const { isShopifyPixelEvent } = require('./utils');
 
 /*
 V0
@@ -47,7 +47,7 @@ function getEventFromV2Request(sourceEvent) {
 const process = async (payload) => {
   const event = getEventFromV2Request(payload);
 
-  if (isShopifyV1Event(event)) {
+  if (isShopifyPixelEvent(event)) {
     return processPixelEvents(event);
   }
   return processTrackerEvents(event);

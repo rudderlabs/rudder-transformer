@@ -64,7 +64,7 @@ steps:
       $.context.payload.userId = .message.().({{{{$.getGenericPaths("userId")}}}});
       $.context.payload.groupId = .message.groupId;
       $.context.payload.timestamp = .message.().({{{{$.getGenericPaths("timestamp")}}}});
-      $.context.payload.traits = .message.traits ?? .message.context.traits;
+      $.context.payload.traits = .message.traits;
 
   - name: validateTimestamp
     template: |

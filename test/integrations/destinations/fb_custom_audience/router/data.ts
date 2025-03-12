@@ -36,7 +36,7 @@ export const data = [
                   version: '1',
                   type: 'REST',
                   method: 'DELETE',
-                  endpoint: 'https://graph.facebook.com/v20.0/aud1/users',
+                  endpoint: 'https://graph.facebook.com/v22.0/aud1/users',
                   headers: {},
                   params: {
                     access_token: 'ABC',
@@ -87,7 +87,7 @@ export const data = [
                   version: '1',
                   type: 'REST',
                   method: 'POST',
-                  endpoint: 'https://graph.facebook.com/v20.0/aud1/users',
+                  endpoint: 'https://graph.facebook.com/v22.0/aud1/users',
                   headers: {},
                   params: {
                     access_token: 'ABC',
@@ -159,7 +159,7 @@ export const data = [
                   version: '1',
                   type: 'REST',
                   method: 'DELETE',
-                  endpoint: 'https://graph.facebook.com/v20.0/aud1/users',
+                  endpoint: 'https://graph.facebook.com/v22.0/aud1/users',
                   headers: {},
                   params: {
                     access_token: 'ABC',
@@ -210,7 +210,7 @@ export const data = [
                   version: '1',
                   type: 'REST',
                   method: 'POST',
-                  endpoint: 'https://graph.facebook.com/v20.0/aud1/users',
+                  endpoint: 'https://graph.facebook.com/v22.0/aud1/users',
                   headers: {},
                   params: {
                     access_token: 'ABC',
@@ -305,7 +305,7 @@ export const data = [
                   version: '1',
                   type: 'REST',
                   method: 'DELETE',
-                  endpoint: 'https://graph.facebook.com/v20.0/23848494844100489/users',
+                  endpoint: 'https://graph.facebook.com/v22.0/23848494844100489/users',
                   headers: {},
                   params: {
                     access_token: 'ABC',
@@ -368,7 +368,7 @@ export const data = [
                   version: '1',
                   type: 'REST',
                   method: 'POST',
-                  endpoint: 'https://graph.facebook.com/v20.0/23848494844100489/users',
+                  endpoint: 'https://graph.facebook.com/v22.0/23848494844100489/users',
                   headers: {},
                   params: {
                     access_token: 'ABC',
@@ -415,7 +415,7 @@ export const data = [
                   version: '1',
                   type: 'REST',
                   method: 'POST',
-                  endpoint: 'https://graph.facebook.com/v20.0/23848494844100489/users',
+                  endpoint: 'https://graph.facebook.com/v22.0/23848494844100489/users',
                   headers: {},
                   params: {
                     access_token: 'ABC',
@@ -546,7 +546,7 @@ export const data = [
                   version: '1',
                   type: 'REST',
                   method: 'DELETE',
-                  endpoint: 'https://graph.facebook.com/v20.0/23848494844100489/users',
+                  endpoint: 'https://graph.facebook.com/v22.0/23848494844100489/users',
                   headers: {},
                   params: {
                     access_token: 'ABC',
@@ -637,7 +637,7 @@ export const data = [
                   version: '1',
                   type: 'REST',
                   method: 'POST',
-                  endpoint: 'https://graph.facebook.com/v20.0/23848494844100489/users',
+                  endpoint: 'https://graph.facebook.com/v22.0/23848494844100489/users',
                   headers: {},
                   params: {
                     access_token: 'ABC',
@@ -712,7 +712,7 @@ export const data = [
                   version: '1',
                   type: 'REST',
                   method: 'POST',
-                  endpoint: 'https://graph.facebook.com/v20.0/23848494844100489/users',
+                  endpoint: 'https://graph.facebook.com/v22.0/23848494844100489/users',
                   headers: {},
                   params: {
                     access_token: 'ABC',
@@ -872,7 +872,7 @@ export const data = [
                   version: '1',
                   type: 'REST',
                   method: 'POST',
-                  endpoint: 'https://graph.facebook.com/v20.0/23848494844100489/users',
+                  endpoint: 'https://graph.facebook.com/v22.0/23848494844100489/users',
                   headers: {},
                   params: {
                     access_token: 'ABC',

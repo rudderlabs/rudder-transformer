@@ -820,7 +820,7 @@ describe('deduceModuleInfoV2', () => {
     {
       name: 'should use default US region when config.region is null',
       input: {
-        config: { region: null },
+        config: {},
         destination: {
           object: 'Leads',
           identifierMappings: [{ to: 'Email', from: 'Email' }],

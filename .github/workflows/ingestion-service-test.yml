@@ -4,9 +4,13 @@ on:
   push:
     branches:
       - master
-      - main
-      - 'release/*'
   pull_request:
+    types:
+      - opened
+      - edited
+      - reopened
+      - synchronize
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.sha }}
   cancel-in-progress: true
@@ -24,7 +28,7 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: '1.23.5'
-      - name: "Test Run"
+      - name: 'Test Run'
         run: |
           git clone https://${{secrets.PAT}}@github.com/rudderlabs/rudder-ingestion-svc.git
           cd rudder-ingestion-svc

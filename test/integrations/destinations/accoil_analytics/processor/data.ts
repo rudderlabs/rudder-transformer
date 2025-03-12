@@ -1,6 +1,6 @@
 import { ProcessorTestData } from '../../../testTypes';
 import { Metadata } from '../../../../../src/types';
-import { authHeader1, authHeader2, secret1, secret2 } from '../maskedSecrets';
+import { authHeader1, authHeaderStaging1, secret1, secretStaging1 } from '../maskedSecrets';
 
 const baseMetadata: Metadata = {
   destinationDefinitionId: 'default-dest-def',
@@ -534,7 +534,7 @@ export const data: ProcessorTestData[] = [
                 },
               },
               Config: {
-                apiKey: secret2,
+                apiKey: secretStaging1,
               },
               Enabled: true,
               WorkspaceID: 'default-workspace',
@@ -559,7 +559,7 @@ export const data: ProcessorTestData[] = [
               endpoint: 'https://instaging.accoil.com/segment',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: authHeader2,
+                Authorization: authHeaderStaging1,
               },
               params: {},
               body: {

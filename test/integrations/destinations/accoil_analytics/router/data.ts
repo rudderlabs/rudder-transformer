@@ -1,5 +1,5 @@
 import { RouterTestData } from '../../../testTypes';
-import { authHeader1, authHeader2, secret1, secret2 } from '../maskedSecrets';
+import { authHeader1, authHeaderStaging1, secret1, secretStaging1 } from '../maskedSecrets';
 
 export const data: RouterTestData[] = [
   {
@@ -145,7 +145,7 @@ export const data: RouterTestData[] = [
                 ID: 'default-destination-id',
                 Name: 'Default Destination',
                 Config: {
-                  apiKey: secret2,
+                  apiKey: secretStaging1,
                 },
                 DestinationDefinition: {
                   ID: 'default-dest-def-id',
@@ -400,7 +400,7 @@ export const data: RouterTestData[] = [
                 version: '1',
                 method: 'POST',
                 headers: {
-                  Authorization: authHeader2,
+                  Authorization: authHeaderStaging1,
                   'Content-Type': 'application/json',
                 },
               },
@@ -445,7 +445,7 @@ export const data: RouterTestData[] = [
                 ID: 'default-destination-id',
                 Name: 'Default Destination',
                 Config: {
-                  apiKey: secret2,
+                  apiKey: secretStaging1,
                 },
                 DestinationDefinition: {
                   ID: 'default-dest-def-id',

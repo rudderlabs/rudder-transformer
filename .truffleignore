@@ -4,3 +4,4 @@
 image-metadata:history*:created-by
 node_modules/
 test/integrations/destinations/emarsys/
+/usr/lib/aarch64-linux-gnu/

@@ -1,0 +1,32 @@
+name: Ingestion Service Test
+
+on:
+  push:
+    branches:
+      - master
+      - main
+      - 'release/*'
+  pull_request:
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.sha }}
+  cancel-in-progress: true
+
+jobs:
+  ingestion-service-test:
+    name: ingestion-service-test
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.23.5'
+      - name:
+        run: |
+          git clone https://github.com/rudderlabs/rudder-ingestion-svc.git
+          cd rudder-ingestion-svc
+          pwd
+          make test package=internal/gateway exclude='internal/gateway/.+'

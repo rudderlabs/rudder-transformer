@@ -50,7 +50,7 @@ const processIdentifierEvent = async (event) => {
   return NO_OPERATION_SUCCESS;
 };
 
-const isShopifyV1Event = (event) => {
+const isShopifyPixelEvent = (event) => {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   const { query_parameters } = event;
   const { pixelEventLabel: pixelClientEventLabel } = event;
@@ -64,6 +64,6 @@ const isShopifyV1Event = (event) => {
 module.exports = {
   processIdentifierEvent,
   isIdentifierEvent,
-  isShopifyV1Event,
+  isShopifyPixelEvent,
   updateAnonymousIdToUserIdInRedis,
 };

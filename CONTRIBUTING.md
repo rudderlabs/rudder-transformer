@@ -23,7 +23,7 @@ See the project's [README](README.md) for further information about working in t
 1. Submit an [issue][issue] describing your proposed change.
 2. We will try to respond to your issue promptly.
 3. Fork this repo, develop and test your code changes. See the project's [README](README.md) for further information about working in this repository.
-4. Submit a pull request against this repo's `main` branch.
+4. Submit a pull request against this repo's `develop` branch.
    - Include instructions on how to test your changes.
 5. Your branch may be merged once all configured checks pass, including:
    - A review from appropriate maintainers
@@ -31,10 +31,36 @@ See the project's [README](README.md) for further information about working in t
 ### Are you developing a new Integration with us?
 
 1. Fork this repo, develop and test your code changes. See the project's [README](README.md) for further information about working in this repository.
-2. Submit a pull request against this repo's `main` branch.
+2. Submit a pull request against this repo's `develop` branch.
    - Include instructions on how to test your changes.
 3. Your branch may be merged once all configured checks pass, including:
    - A review from appropriate maintainers
+
+### Test-Driven Development (Recommended)
+
+1. **Write Component Test Cases First:**  
+   Before developing a new integration (whether for a source or destination), start by writing [component test cases](./test/integrations/). This approach ensures clarity on expected behavior and outcomes.  
+
+2. **Use Skipped Tests for Context:**  
+   Write your test cases with the `skip` option to prevent them from running initially. This allows reviewers to understand the business context and requirements before the actual integration is developed. Once the test cases are approved, proceed with the implementation.  
+
+3. **Skipping Entire Test Files:**  
+   To skip an entire test file, use the following syntax. See this [example](./test/integrations/destinations/examples/processor/data.ts):  
+   ```ts
+   export const skip = true;
+   export const data = [...]
+   ```
+
+4. **Skipping Individual Test Cases:**  
+   To skip specific test cases within a file, use this syntax. See this [example](./test/integrations/destinations/examples/router/data.ts):  
+   ```ts
+   export const data = [
+     {
+       skip: true,
+       ...
+     }
+   ]
+   ```
 
 ## Committing
 

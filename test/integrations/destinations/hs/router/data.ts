@@ -1,4 +1,4 @@
-import { authHeader1, secret1, authHeader3, secret3 } from '../maskedSecrets';
+import { authHeader1, secret1, authHeader2, authHeader3, secret3, secret2 } from '../maskedSecrets';
 import { destination } from './config';
 export const data = [
   {
@@ -3770,7 +3770,7 @@ export const data = [
                 ID: '2RnSBhn4zPTOF8NdqAIrnVPPnfr',
                 Name: 'hs-1',
                 Config: {
-                  accessToken: 'dummy-access-tokensuccess',
+                  accessToken: secret2,
                   apiKey: '',
                   apiVersion: 'newApi',
                   authorizationType: 'newPrivateAppApi',
@@ -3841,7 +3841,7 @@ export const data = [
                 endpoint: 'https://api.hubapi.com/crm/v3/objects/contacts/103604',
                 files: {},
                 headers: {
-                  Authorization: 'Bearer dummy-access-tokensuccess',
+                  Authorization: authHeader2,
                   'Content-Type': 'application/json',
                 },
                 method: 'PATCH',
@@ -3851,7 +3851,7 @@ export const data = [
               },
               destination: {
                 Config: {
-                  accessToken: 'dummy-access-tokensuccess',
+                  accessToken: secret2,
                   apiKey: '',
                   apiVersion: 'newApi',
                   authorizationType: 'newPrivateAppApi',

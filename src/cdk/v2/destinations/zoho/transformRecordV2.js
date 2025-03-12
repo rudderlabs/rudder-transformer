@@ -17,7 +17,7 @@ const {
 const zohoConfig = require('./config');
 const {
   deduceModuleInfoV2,
-  validatePresenceOfMandatoryProperties,
+  validatePresenceOfMandatoryPropertiesV2,
   formatMultiSelectFieldsV2,
   handleDuplicateCheckV2,
   searchRecordIdV2,
@@ -155,7 +155,7 @@ const handleUpsert = async (
   transformedResponseToBeBatched,
   errorResponseList,
 ) => {
-  const eventErroneous = validatePresenceOfMandatoryProperties(operationModuleType, allFields);
+  const eventErroneous = validatePresenceOfMandatoryPropertiesV2(destConfig.object, allFields);
 
   if (eventErroneous?.status) {
     const error = new ConfigurationError(

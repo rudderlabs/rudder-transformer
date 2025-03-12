@@ -47,7 +47,8 @@ export const getTestDataFilePaths = (dirPath: string, opts: OptionValues): strin
 };
 
 export const getTestData = (filePath): TestCaseData[] => {
-  return filter(require(filePath).data as TestCaseData[]);
+  const { data, skip } = require(filePath);
+  return skip ? [] : filter(data as TestCaseData[]);
 };
 
 export const getTestSecrets = (destination: string) => {

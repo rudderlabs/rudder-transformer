@@ -4,7 +4,7 @@ const { isDefinedNotNullNotEmpty } = require('@rudderstack/integrations-lib');
 const stats = require('../../../../util/stats');
 const { getShopifyTopic } = require('../../../../v0/sources/shopify/util');
 const { removeUndefinedAndNullValues } = require('../../../../v0/util');
-const Message = require('../../../../v0/sources/message');
+const Message = require('../../../../sources/message');
 const { EventType } = require('../../../../constants');
 const {
   IDENTIFY_TOPICS,
@@ -104,6 +104,12 @@ const createIdentifyEvent = (message) => {
   });
   // Set the mapped traits
   identifyEvent.context.traits = removeUndefinedAndNullValues(mappedTraits);
+  identifyEvent.setProperty(`integrations.${INTEGERATION}`, true);
+  identifyEvent.setProperty('context.library', {
+    eventOrigin: 'server',
+    name: 'RudderStack Shopify Cloud',
+    version: '2.0.0',
+  });
   return identifyEvent;
 };
 

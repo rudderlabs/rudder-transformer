@@ -1,3 +1,4 @@
+import { authHeader1 } from '../maskedSecrets';
 export const retryStatTags = {
   destType: 'PARDOT',
   errorCategory: 'network',
@@ -9,7 +10,7 @@ export const retryStatTags = {
   module: 'destination',
 };
 const commonHeaders = {
-  Authorization: 'Bearer myToken',
+  Authorization: authHeader1,
   'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
   'Pardot-Business-Unit-Id': '0Uv2v000000k9tHCAQ',
   'User-Agent': 'RudderLabs',

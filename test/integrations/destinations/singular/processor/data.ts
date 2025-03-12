@@ -1,3 +1,5 @@
+import { defaultApiKey } from '../../../common/secrets';
+
 export const data = [
   {
     name: 'singular',
@@ -11,7 +13,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: defaultApiKey,
                 sessionEventList: [
                   { sessionEventName: 'mysessionevent' },
                   { sessionEventName: 'randomuser' },
@@ -135,7 +137,7 @@ export const data = [
                 install_time: 1630511211,
                 update_time: 1630511211,
                 ua: 'Dalvik/2.1.0 (Linux; U; Android 9; Android SDK built for x86 Build/PSR1.180720.075)',
-                a: 'dummyApiKey',
+                a: defaultApiKey,
               },
               body: { JSON: {}, JSON_ARRAY: {}, XML: {}, FORM: {} },
               files: {},
@@ -159,7 +161,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: defaultApiKey,
                 sessionEventList: [
                   { sessionEventName: 'mysessionevent' },
                   { sessionEventName: 'randomuser' },
@@ -273,7 +275,7 @@ export const data = [
                 receipt_signature: '1234dfghnh',
                 purchase_product_id: '789',
                 c: 'wifi',
-                a: 'dummyApiKey',
+                a: defaultApiKey,
                 e: {
                   url: 'myapp%3A%2F%2Fhome%2Fpage%3Fqueryparam1%3Dvalue1',
                   install: 'SM-G935F',
@@ -320,7 +322,7 @@ export const data = [
                 amt: 6.9,
                 asid: 'IISqwYJKoZIcNqts0jvcNvPc',
                 receipt_signature: '1234dfghnh',
-                a: 'dummyApiKey',
+                a: defaultApiKey,
                 c: 'wifi',
                 e: {
                   url: 'myapp%3A%2F%2Fhome%2Fpage%3Fqueryparam1%3Dvalue1',
@@ -361,7 +363,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: defaultApiKey,
                 sessionEventList: [
                   { sessionEventName: 'mysessionevent' },
                   { sessionEventName: 'randomuser' },
@@ -470,7 +472,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: defaultApiKey,
                 sessionEventList: [
                   { sessionEventName: 'mysessionevent' },
                   { sessionEventName: 'randomuser' },
@@ -588,7 +590,7 @@ export const data = [
                 openuri: 'myapp%3A%2F%2Fhome%2Fpage%3Fqueryparam1%3Dvalue1',
                 install_source: '',
                 c: 'wifi',
-                a: 'dummyApiKey',
+                a: defaultApiKey,
               },
               body: { JSON: {}, JSON_ARRAY: {}, XML: {}, FORM: {} },
               files: {},
@@ -612,7 +614,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: defaultApiKey,
                 sessionEventList: [
                   { sessionEventName: 'mysessionevent' },
                   { sessionEventName: 'randomuser' },
@@ -721,7 +723,7 @@ export const data = [
                 receipt_signature: '1234dfghnh',
                 amt: 20,
                 is_revenue_event: true,
-                a: 'dummyApiKey',
+                a: defaultApiKey,
                 c: 'wifi',
                 e: {
                   url: 'myapp%3A%2F%2Fhome%2Fpage%3Fqueryparam1%3Dvalue1',
@@ -763,7 +765,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: defaultApiKey,
                 sessionEventList: [
                   { sessionEventName: 'mysessionevent' },
                   { sessionEventName: 'randomuser' },
@@ -875,7 +877,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: defaultApiKey,
                 sessionEventList: [
                   { sessionEventName: 'mysessionevent' },
                   { sessionEventName: 'randomuser' },
@@ -988,7 +990,7 @@ export const data = [
                 install_time: 1630511211,
                 update_time: 1630511211,
                 ua: 'Dalvik/2.1.0 (Linux; U; Android 9; Android SDK built for x86 Build/PSR1.180720.075)',
-                a: 'dummyApiKey',
+                a: defaultApiKey,
               },
               body: { JSON: {}, JSON_ARRAY: {}, XML: {}, FORM: {} },
               files: {},
@@ -1012,7 +1014,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: defaultApiKey,
                 sessionEventList: [
                   { sessionEventName: 'mysessionevent' },
                   { sessionEventName: 'randomuser' },
@@ -1125,7 +1127,7 @@ export const data = [
                 install_time: 1630511211,
                 update_time: 1630511211,
                 ua: 'Dalvik/2.1.0 (Linux; U; Android 9; Android SDK built for x86 Build/PSR1.180720.075)',
-                a: 'dummyApiKey',
+                a: defaultApiKey,
               },
               body: { JSON: {}, JSON_ARRAY: {}, XML: {}, FORM: {} },
               files: {},
@@ -1149,7 +1151,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: defaultApiKey,
                 sessionEventList: [
                   { sessionEventName: 'mysessionevent' },
                   { sessionEventName: 'randomuser' },
@@ -1255,7 +1257,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: defaultApiKey,
                 sessionEventList: [
                   { sessionEventName: 'mysessionevent' },
                   { sessionEventName: 'randomuser' },
@@ -1376,7 +1378,7 @@ export const data = [
                 idfv: 'fc8d449516de0dfb',
                 install_time: 1630511211,
                 update_time: 1630511211,
-                a: 'dummyApiKey',
+                a: defaultApiKey,
               },
               body: { JSON: {}, JSON_ARRAY: {}, XML: {}, FORM: {} },
               files: {},
@@ -1400,7 +1402,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: defaultApiKey,
                 sessionEventList: [
                   { sessionEventName: 'mysessionevent' },
                   { sessionEventName: 'randomuser' },
@@ -1509,7 +1511,7 @@ export const data = [
                 purchase_transaction_id: '2134dfg',
                 idfa: '8ecd7512-2864-440c-93f3-a3cabe62525b',
                 idfv: 'fc8d449516de0dfb',
-                a: 'dummyApiKey',
+                a: defaultApiKey,
                 c: 'carrier',
                 e: {
                   asid: 'IISqwYJKoZIcNqts0jvcNvPc',
@@ -1554,7 +1556,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: defaultApiKey,
                 sessionEventList: [
                   { sessionEventName: 'mysessionevent' },
                   { sessionEventName: 'randomuser' },
@@ -1669,7 +1671,7 @@ export const data = [
                 idfv: 'fc8d449516de0dfb',
                 install_time: 1630511211,
                 update_time: 1630511211,
-                a: 'dummyApiKey',
+                a: defaultApiKey,
               },
               body: { JSON: {}, JSON_ARRAY: {}, XML: {}, FORM: {} },
               files: {},
@@ -1693,7 +1695,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: defaultApiKey,
                 sessionEventList: [
                   { sessionEventName: 'mysessionevent' },
                   { sessionEventName: 'randomuser' },
@@ -1804,7 +1806,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: defaultApiKey,
                 sessionEventList: [
                   { sessionEventName: 'mysessionevent' },
                   { sessionEventName: 'randomuser' },
@@ -1915,7 +1917,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: defaultApiKey,
                 sessionEventList: [
                   { sessionEventName: 'mysessionevent' },
                   { sessionEventName: 'randomuser' },
@@ -1992,7 +1994,7 @@ export const data = [
               endpoint: 'https://s2s.singular.net/api/v1/launch',
               headers: {},
               params: {
-                a: 'dummyApiKey',
+                a: defaultApiKey,
                 av: '1.1.5.581823alpha',
                 data_sharing_options: '%7B%22limit_data_sharing%22%3Atrue%7D',
                 i: 'com.singular.game',
@@ -2028,7 +2030,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: defaultApiKey,
                 sessionEventList: [
                   { sessionEventName: 'mysessionevent' },
                   { sessionEventName: 'randomuser' },
@@ -2137,7 +2139,7 @@ export const data = [
                 cur: 'USD',
                 amt: 28,
                 purchase_product_id: '789',
-                a: 'dummyApiKey',
+                a: defaultApiKey,
                 install_source: 'selfdistributed',
                 os: 'metaquest_pro',
                 p: 'metaquest',
@@ -2172,7 +2174,7 @@ export const data = [
                 amt: 6.9,
                 os: 'metaquest_pro',
                 p: 'metaquest',
-                a: 'dummyApiKey',
+                a: defaultApiKey,
                 sdid: '49c2d3a6-326e-4ec5-a16b-0a47e34ed953',
                 ua: 'Mozilla/5.0 (Nintendo Switch; WebApplet) AppleWebKit/613.0 (KHTML, like Gecko) NF/6.0.3.25.0 NintendoBrowser/5.1.0.32061',
                 ve: 'qst2-2023h2',

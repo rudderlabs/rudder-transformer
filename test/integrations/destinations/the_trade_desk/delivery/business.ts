@@ -159,8 +159,9 @@ export const businessProxyV1: ProxyV1TestData[] = [
               'Request failed with status: 200 due to {"FailedLines":[{"ErrorCode":"MissingUserId","Message":"Invalid UID2, item #2"}]}',
             response: [
               {
-                error:
-                  '{"FailedLines":[{"ErrorCode":"MissingUserId","Message":"Invalid UID2, item #2"}]}',
+                error: JSON.stringify({
+                  FailedLines: [{ ErrorCode: 'MissingUserId', Message: 'Invalid UID2, item #2' }],
+                }),
                 metadata: generateMetadata(1),
                 statusCode: 400,
               },

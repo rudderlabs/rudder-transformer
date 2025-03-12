@@ -1,3 +1,4 @@
+import { authHeader1, authHeader2, authHeader3, authHeader4 } from './maskedSecrets';
 export const networkCallsData = [
   {
     httpReq: {
@@ -424,7 +425,7 @@ export const networkCallsData = [
       url: 'https://api.hubapi.com/crm/v3/objects/contacts/search',
       method: 'POST',
       headers: {
-        Authorization: 'Bearer dummy-access-token',
+        Authorization: authHeader1,
       },
     },
     httpRes: {
@@ -436,7 +437,7 @@ export const networkCallsData = [
       url: 'https://api.hubapi.com/crm/v3/objects/contacts/search',
       method: 'POST',
       headers: {
-        Authorization: 'Bearer dummy-access-tokensuccess',
+        Authorization: authHeader2,
       },
     },
     httpRes: {
@@ -466,7 +467,7 @@ export const networkCallsData = [
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: 'Bearer dummy-access-token-hs-additonal-email',
+        Authorization: authHeader3,
       },
     },
     httpRes: {
@@ -496,7 +497,7 @@ export const networkCallsData = [
       url: 'https://api.hubapi.com/crm/v3/objects/contacts/search',
       method: 'POST',
       headers: {
-        Authorization: 'Bearer dummy-access-tokenmultiple',
+        Authorization: authHeader4,
       },
     },
     httpRes: {
@@ -865,7 +866,7 @@ export const networkCallsData = [
       url: 'https://api.hubapi.com/crm/v3/objects/contacts/search',
       method: 'POST',
       headers: {
-        Authorization: 'Bearer dontbatchtrueaccesstoken',
+        Authorization: authHeader1,
       },
     },
     httpRes: {
@@ -883,7 +884,7 @@ export const networkCallsData = [
       headers: {
         'User-Agent': 'RudderLabs',
         'Content-Type': 'application/json',
-        Authorization: 'Bearer validApiKey',
+        Authorization: authHeader1,
       },
     },
     httpRes: {
@@ -897,7 +898,7 @@ export const networkCallsData = [
       headers: {
         'User-Agent': 'RudderLabs',
         'Content-Type': 'application/json',
-        Authorization: 'Bearer inValidApiKey',
+        Authorization: authHeader2,
       },
     },
     httpRes: {
@@ -942,7 +943,7 @@ export const networkCallsData = [
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: 'Bearer validAccessToken',
+        Authorization: authHeader1,
       },
     },
     httpRes: {
@@ -1010,7 +1011,7 @@ export const networkCallsData = [
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: 'Bearer dummy-access-token',
+        Authorization: authHeader1,
       },
     },
     httpRes: {
@@ -1024,7 +1025,7 @@ export const networkCallsData = [
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: 'Bearer invalid-dummy-access-token',
+        Authorization: authHeader2,
       },
     },
     httpRes: {
@@ -1044,7 +1045,7 @@ export const networkCallsData = [
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: 'Bearer dummy-access-token',
+        Authorization: authHeader1,
       },
     },
     httpRes: {

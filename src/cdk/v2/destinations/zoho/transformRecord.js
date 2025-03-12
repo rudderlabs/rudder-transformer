@@ -13,6 +13,7 @@ const {
   handleRtTfSingleEventError,
   isEmptyObject,
   defaultDeleteRequestConfig,
+  isEventSentByVDMV2Flow,
 } = require('../../../../v0/util');
 const zohoConfig = require('./config');
 const {
@@ -24,6 +25,8 @@ const {
   calculateTrigger,
   validateConfigurationIssue,
 } = require('./utils');
+
+const { processRecordInputsV2 } = require('./transformRecordV2');
 const { REFRESH_TOKEN } = require('../../../../adapters/networkhandler/authConstants');
 
 // Main response builder function
@@ -197,10 +200,18 @@ const handleDeletion = async (
   input,
   fields,
   Config,
+  operationModuleType,
+  identifierType,
   transformedResponseToBeBatched,
   errorResponseList,
 ) => {
-  const searchResponse = await searchRecordId(fields, input.metadata, Config);
+  const searchResponse = await searchRecordId(
+    fields,
+    input.metadata,
+    Config,
+    operationModuleType,
+    identifierType,
+  );
 
   if (searchResponse.erroneous) {
     const error = handleSearchError(searchResponse);
@@ -226,6 +237,7 @@ const handleDeletion = async (
 const processInput = async (
   input,
   operationModuleType,
+  identifierType,
   Config,
   transformedResponseToBeBatched,
   errorResponseList,
@@ -248,7 +260,15 @@ const processInput = async (
       errorResponseList,
     );
   } else {
-    await handleDeletion(input, fields, Config, transformedResponseToBeBatched, errorResponseList);
+    await handleDeletion(
+      input,
+      fields,
+      Config,
+      operationModuleType,
+      identifierType,
+      transformedResponseToBeBatched,
+      errorResponseList,
+    );
   }
 };
 
@@ -300,6 +320,7 @@ const processRecordInputs = async (inputs, destination) => {
       processInput(
         input,
         operationModuleType,
+        identifierType,
         Config,
         transformedResponseToBeBatched,
         errorResponseList,
@@ -330,4 +351,15 @@ const processRecordInputs = async (inputs, destination) => {
   return [...response, ...errorResponseList];
 };
 
-module.exports = { processRecordInputs };
+const processRecordInputsWrap = async (inputs, destination) => {
+  if (!inputs || inputs.length === 0) {
+    return [];
+  }
+  const event = inputs[0];
+  if (isEventSentByVDMV2Flow(event)) {
+    return processRecordInputsV2(inputs, destination);
+  }
+  return processRecordInputs(inputs, destination);
+};
+
+module.exports = { processRecordInputsWrap };

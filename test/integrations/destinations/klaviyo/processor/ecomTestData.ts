@@ -1,6 +1,7 @@
 import { overrideDestination, transformResultBuilder, generateMetadata } from '../../../testUtils';
 import { ProcessorTestData } from '../../../testTypes';
 import { Destination } from '../../../../../src/types';
+import { secret1, authHeader1 } from '../maskedSecrets';
 
 const destination: Destination = {
   ID: '123',
@@ -13,7 +14,7 @@ const destination: Destination = {
   },
   Config: {
     publicApiKey: 'dummyPublicApiKey',
-    privateApiKey: 'dummyPrivateApiKey',
+    privateApiKey: secret1,
   },
   Enabled: true,
   WorkspaceID: '123',
@@ -33,7 +34,7 @@ const commonTraits = {
 const eventsEndpoint = 'https://a.klaviyo.com/api/events';
 
 const commonOutputHeaders = {
-  Authorization: 'Klaviyo-API-Key dummyPrivateApiKey',
+  Authorization: authHeader1,
   'Content-Type': 'application/json',
   Accept: 'application/json',
   revision: '2023-02-22',

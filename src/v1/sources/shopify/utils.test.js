@@ -96,8 +96,6 @@ describe('Identifier Utils Tests', () => {
 
   describe('test updateAnonymousIdToUserIdInRedis', () => {
     beforeEach(() => {
-      jest.restoreAllMocks();
-
       jest.clearAllMocks();
     });
 

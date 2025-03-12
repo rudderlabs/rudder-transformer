@@ -11,8 +11,6 @@ jest.mock('./adapters/utils/networkUtils');
 
 describe('sendToDestination', () => {
   beforeEach(() => {
-    jest.restoreAllMocks();
-
     jest.clearAllMocks(); // Clear mocks before each test
   });
 

@@ -191,8 +191,6 @@ describe('searchRecordId', () => {
   const mockQuery = "SELECT id FROM Leads WHERE Email = 'test@example.com'";
 
   beforeEach(() => {
-    jest.restoreAllMocks();
-
     jest.clearAllMocks();
   });
 
@@ -402,8 +400,6 @@ describe('searchRecordIdV2', () => {
   const mockQuery = "SELECT id FROM Leads WHERE Email = 'test@example.com'";
 
   beforeEach(() => {
-    jest.restoreAllMocks();
-
     jest.clearAllMocks();
   });
 

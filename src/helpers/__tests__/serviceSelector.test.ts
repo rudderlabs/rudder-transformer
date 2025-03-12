@@ -5,8 +5,6 @@ import { ProcessorTransformationRequest } from '../../types/index';
 import { ServiceSelector } from '../serviceSelector';
 
 afterEach(() => {
-  jest.restoreAllMocks();
-
   jest.clearAllMocks();
 });
 

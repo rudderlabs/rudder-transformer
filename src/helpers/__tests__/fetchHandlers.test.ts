@@ -2,8 +2,6 @@ import { FetchHandler } from '../fetchHandlers';
 import { MiscService } from '../../services/misc';
 
 afterEach(() => {
-  jest.restoreAllMocks();
-
   jest.clearAllMocks();
 });
 

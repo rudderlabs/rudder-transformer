@@ -13,7 +13,6 @@ const ECOM_TOPICS = {
   CHECKOUTS_UPDATE: 'checkouts_update',
   ORDERS_UPDATE: 'orders_updated',
   ORDERS_CREATE: 'orders_create',
-  CARTS_UPDATE: 'carts_update',
 };
 
 const RUDDER_ECOM_MAP = {

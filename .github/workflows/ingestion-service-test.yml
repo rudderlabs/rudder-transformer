@@ -28,9 +28,15 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: '1.23.5'
-      - name: 'Test Run'
+      - name: 'Clone ingestion service'
         run: |
           git clone https://${{secrets.PAT}}@github.com/rudderlabs/rudder-ingestion-svc.git
+      - name: 'Install dependencies'
+        run: |
+          cd rudder-ingestion-svc
+          go mod download
+      - name: 'Run tests'
+        run: |
           cd rudder-ingestion-svc
           pwd
           make test package=internal/gateway exclude='internal/gateway/.+'

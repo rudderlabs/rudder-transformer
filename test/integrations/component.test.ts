@@ -41,7 +41,7 @@ command
   .allowUnknownOption()
   .option('-d, --destination <string>', 'Enter Destination Name')
   .option('-f, --feature <string>', 'Enter Feature Name(processor, router)')
-  .option('-i, --index <number>', 'Enter Test index')
+  .option('-i, --index <number>', 'Enter Test index', parseInt)
   .option('-g, --generate <string>', 'Enter "true" If you want to generate network file')
   .option('-id, --id <string>', 'Enter unique "Id" of the test case you want to run')
   .option('-s, --source <string>', 'Enter Source Name')
@@ -209,8 +209,8 @@ describe('Component Test Suite', () => {
         jest.clearAllMocks();
       });
       let testData: TestCaseData[] = getTestData(testDataPath);
-      if (opts.index !== undefined) {
-        testData = [testData[parseInt(opts.index)]];
+      if (opts.index < testData.length && opts.index >= 0) {
+        testData = [testData[opts.index]];
       }
       if (opts.id) {
         testData = testData.filter((data) => data.id === opts.id);

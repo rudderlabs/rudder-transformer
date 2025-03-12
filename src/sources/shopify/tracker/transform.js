@@ -125,90 +125,138 @@ const trackPayloadBuilder = (event, shopifyTopic) => {
   return message;
 };
 
-const processEvent = async (inputEvent, metricMetadata) => {
-  let message;
-  const event = lodash.cloneDeep(inputEvent);
-  let redisData;
-  const shopifyTopic = getShopifyTopic(event);
-  delete event.query_parameters;
-  switch (shopifyTopic) {
-    case IDENTIFY_TOPICS.CUSTOMERS_CREATE:
-    case IDENTIFY_TOPICS.CUSTOMERS_UPDATE:
-      message = identifyPayloadBuilder(event);
-      break;
-    case ECOM_TOPICS.ORDERS_CREATE:
-    case ECOM_TOPICS.ORDERS_UPDATE:
-    case ECOM_TOPICS.CHECKOUTS_CREATE:
-    case ECOM_TOPICS.CHECKOUTS_UPDATE:
-      message = ecomPayloadBuilder(event, shopifyTopic);
-      break;
-    case ECOM_TOPICS.CARTS_UPDATE:
-      if (useRedisDatabase) {
-        redisData = await getDataFromRedis(event.id || event.token, metricMetadata, 'Cart Update');
-        const isValidEvent = await checkAndUpdateCartItems(
-          inputEvent,
-          redisData,
-          metricMetadata,
-          shopifyTopic,
-        );
-        if (!isValidEvent) {
-          return NO_OPERATION_SUCCESS;
-        }
-      }
-      message = trackPayloadBuilder(event, shopifyTopic);
-      break;
-    default:
-      if (!SUPPORTED_TRACK_EVENTS.includes(shopifyTopic)) {
-        stats.increment('invalid_shopify_event', {
-          writeKey: metricMetadata.writeKey,
-          source: metricMetadata.source,
-          shopifyTopic: metricMetadata.shopifyTopic,
-        });
-        return NO_OPERATION_SUCCESS;
-      }
-      message = trackPayloadBuilder(event, shopifyTopic);
-      break;
+const createMessageForEvent = (event, shopifyTopic) => {
+  if (
+    shopifyTopic === IDENTIFY_TOPICS.CUSTOMERS_CREATE ||
+    shopifyTopic === IDENTIFY_TOPICS.CUSTOMERS_UPDATE
+  ) {
+    return identifyPayloadBuilder(event);
   }
 
+  if (Object.values(ECOM_TOPICS).includes(shopifyTopic)) {
+    return ecomPayloadBuilder(event, shopifyTopic);
+  }
+
+  return trackPayloadBuilder(event, shopifyTopic);
+};
+
+const handleCartsUpdate = async (event, metricMetadata) => {
+  if (!useRedisDatabase) {
+    return { message: trackPayloadBuilder(event, 'carts_update') };
+  }
+
+  const redisData = await getDataFromRedis(event.id || event.token, metricMetadata, 'Cart Update');
+
+  const isValidEvent = await checkAndUpdateCartItems(
+    event,
+    redisData,
+    metricMetadata,
+    'carts_update',
+  );
+
+  if (!isValidEvent) {
+    return { invalidEvent: true };
+  }
+
+  return {
+    message: trackPayloadBuilder(event, 'carts_update'),
+    redisData,
+  };
+};
+
+const enrichNonIdentifyMessage = async (
+  message,
+  event,
+  shopifyTopic,
+  metricMetadata,
+  redisData,
+) => {
+  const { anonymousId, sessionId } = await getAnonymousIdAndSessionId(
+    message,
+    { shopifyTopic, ...metricMetadata },
+    redisData,
+  );
+
+  if (isDefinedAndNotNull(anonymousId)) {
+    message.setProperty('anonymousId', anonymousId);
+  } else if (!message.userId) {
+    message.setProperty('userId', 'shopify-admin');
+  }
+
+  if (isDefinedAndNotNull(sessionId)) {
+    message.setProperty('context.sessionId', sessionId);
+  }
+};
+
+const enrichMessage = async (message, event, shopifyTopic, metricMetadata, redisData) => {
   if (message.userId) {
+    // eslint-disable-next-line no-param-reassign
     message.userId = String(message.userId);
   }
+
   if (!get(message, 'traits.email')) {
     const email = extractEmailFromPayload(event);
     if (email) {
       message.setProperty('traits.email', email);
     }
   }
+
   if (message.type !== EventType.IDENTIFY) {
-    const { anonymousId, sessionId } = await getAnonymousIdAndSessionId(
-      message,
-      { shopifyTopic, ...metricMetadata },
-      redisData,
-    );
-    if (isDefinedAndNotNull(anonymousId)) {
-      message.setProperty('anonymousId', anonymousId);
-    } else if (!message.userId) {
-      message.setProperty('userId', 'shopify-admin');
-    }
-    if (isDefinedAndNotNull(sessionId)) {
-      message.setProperty('context.sessionId', sessionId);
-    }
+    await enrichNonIdentifyMessage(message, event, shopifyTopic, metricMetadata, redisData);
   }
+
+  // Set common properties for all messages
   message.setProperty(`integrations.${INTEGERATION}`, true);
   message.setProperty('context.library', {
     name: 'RudderStack Shopify Cloud',
     version: '1.0.0',
   });
   message.setProperty('context.topic', shopifyTopic);
-  // attaching cart, checkout and order tokens in context object
+
+  // Attach tokens
   message.setProperty(`context.cart_token`, event.cart_token);
   message.setProperty(`context.checkout_token`, event.checkout_token);
   if (shopifyTopic === 'orders_updated') {
     message.setProperty(`context.order_token`, event.token);
   }
-  message = removeUndefinedAndNullValues(message);
-  return message;
+
+  return removeUndefinedAndNullValues(message);
 };
+
+const processEvent = async (inputEvent, metricMetadata) => {
+  const event = lodash.cloneDeep(inputEvent);
+  const shopifyTopic = getShopifyTopic(event);
+  delete event.query_parameters;
+
+  // Handle unsupported events
+  if (
+    shopifyTopic !== 'carts_update' &&
+    !SUPPORTED_TRACK_EVENTS.includes(shopifyTopic) &&
+    !Object.values(IDENTIFY_TOPICS).includes(shopifyTopic) &&
+    !Object.values(ECOM_TOPICS).includes(shopifyTopic)
+  ) {
+    stats.increment('invalid_shopify_event', {
+      writeKey: metricMetadata.writeKey,
+      source: metricMetadata.source,
+      shopifyTopic: metricMetadata.shopifyTopic,
+    });
+    return NO_OPERATION_SUCCESS;
+  }
+
+  // Special handling for carts_update
+  if (shopifyTopic === 'carts_update') {
+    const result = await handleCartsUpdate(event, metricMetadata);
+    if (result.invalidEvent) {
+      return NO_OPERATION_SUCCESS;
+    }
+    return enrichMessage(result.message, event, shopifyTopic, metricMetadata, result.redisData);
+  }
+
+  // Handle all other supported events
+  const message = createMessageForEvent(event, shopifyTopic);
+  return enrichMessage(message, event, shopifyTopic, metricMetadata);
+};
+
 const isIdentifierEvent = (event) =>
   ['rudderIdentifier', 'rudderSessionIdentifier'].includes(event?.event);
 const processIdentifierEvent = async (event, metricMetadata) => {

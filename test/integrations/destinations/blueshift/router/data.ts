@@ -1,3 +1,4 @@
+import { authHeader1, secret1, authHeader2, secret2 } from '../maskedSecrets';
 export const data = [
   {
     name: 'blueshift',
@@ -12,7 +13,7 @@ export const data = [
             {
               destination: {
                 Config: {
-                  eventApiKey: 'efeb4a29aba5e75d99c8a18acd620ec1',
+                  eventApiKey: secret1,
                   usersApiKey: 'b4a29aba5e75duic8a18acd920ec1e2e',
                   datacenterEU: false,
                 },
@@ -44,7 +45,7 @@ export const data = [
             {
               destination: {
                 Config: {
-                  eventApiKey: 'efeb4a29aba5e75d99c8a18acd620ec1',
+                  eventApiKey: secret1,
                   usersApiKey: 'b4a29aba5e75duic8a18acd920ec1e2e',
                   datacenterEU: false,
                 },
@@ -86,7 +87,7 @@ export const data = [
               destination: {
                 Config: {
                   eventApiKey: 'a5e75d99c8a18acb4a29abd920ec1e2e',
-                  usersApiKey: 'b4a29aba5e75d99c8a18acd920ec1e2e',
+                  usersApiKey: secret2,
                   datacenterEU: false,
                 },
               },
@@ -164,7 +165,7 @@ export const data = [
                 method: 'POST',
                 endpoint: 'https://api.getblueshift.com/api/v1/event',
                 headers: {
-                  Authorization: 'Basic ZWZlYjRhMjlhYmE1ZTc1ZDk5YzhhMThhY2Q2MjBlYzE=',
+                  Authorization: authHeader1,
                   'Content-Type': 'application/json',
                 },
                 params: {},
@@ -186,7 +187,7 @@ export const data = [
               statusCode: 200,
               destination: {
                 Config: {
-                  eventApiKey: 'efeb4a29aba5e75d99c8a18acd620ec1',
+                  eventApiKey: secret1,
                   usersApiKey: 'b4a29aba5e75duic8a18acd920ec1e2e',
                   datacenterEU: false,
                 },
@@ -221,7 +222,7 @@ export const data = [
                 params: {},
                 headers: {
                   'Content-Type': 'application/json',
-                  Authorization: 'Basic ZWZlYjRhMjlhYmE1ZTc1ZDk5YzhhMThhY2Q2MjBlYzE=',
+                  Authorization: authHeader1,
                 },
                 version: '1',
                 endpoint: 'https://api.getblueshift.com/api/v1/event',
@@ -231,7 +232,7 @@ export const data = [
               statusCode: 200,
               destination: {
                 Config: {
-                  eventApiKey: 'efeb4a29aba5e75d99c8a18acd620ec1',
+                  eventApiKey: secret1,
                   usersApiKey: 'b4a29aba5e75duic8a18acd920ec1e2e',
                   datacenterEU: false,
                 },
@@ -244,7 +245,7 @@ export const data = [
                 method: 'POST',
                 endpoint: 'https://api.getblueshift.com/api/v1/customers',
                 headers: {
-                  Authorization: 'Basic YjRhMjlhYmE1ZTc1ZDk5YzhhMThhY2Q5MjBlYzFlMmU=',
+                  Authorization: authHeader2,
                   'Content-Type': 'application/json',
                 },
                 params: {},
@@ -291,7 +292,7 @@ export const data = [
               destination: {
                 Config: {
                   eventApiKey: 'a5e75d99c8a18acb4a29abd920ec1e2e',
-                  usersApiKey: 'b4a29aba5e75d99c8a18acd920ec1e2e',
+                  usersApiKey: secret2,
                   datacenterEU: false,
                 },
               },

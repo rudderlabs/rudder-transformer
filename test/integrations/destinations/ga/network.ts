@@ -1,3 +1,5 @@
+import { authHeader1, authHeader2, authHeader3 } from './maskedSecrets';
+
 const deleteNwData = [
   {
     httpReq: {
@@ -12,7 +14,7 @@ const deleteNwData = [
         webPropertyId: 'UA-123456789-5',
       },
       headers: {
-        Authorization: 'Bearer valid_token',
+        Authorization: authHeader1,
         Accept: 'application/json',
         'Content-Type': 'application/json',
       },
@@ -44,7 +46,7 @@ const deleteNwData = [
         webPropertyId: 'UA-123456789-5',
       },
       headers: {
-        Authorization: 'Bearer valid_token',
+        Authorization: authHeader1,
         Accept: 'application/json',
         'Content-Type': 'application/json',
       },
@@ -76,7 +78,7 @@ const deleteNwData = [
         webPropertyId: 'UA-123456789-6',
       },
       headers: {
-        Authorization: 'Bearer expired_token',
+        Authorization: authHeader2,
         Accept: 'application/json',
         'Content-Type': 'application/json',
       },
@@ -107,7 +109,7 @@ const deleteNwData = [
         webPropertyId: 'UA-123456789-6',
       },
       headers: {
-        Authorization: 'Bearer expired_token',
+        Authorization: authHeader2,
         Accept: 'application/json',
         'Content-Type': 'application/json',
       },
@@ -138,7 +140,7 @@ const deleteNwData = [
         webPropertyId: 'UA-123456789-7',
       },
       headers: {
-        Authorization: 'Bearer valid_token_1',
+        Authorization: authHeader1,
         Accept: 'application/json',
         'Content-Type': 'application/json',
       },
@@ -170,7 +172,7 @@ const deleteNwData = [
         webPropertyId: 'UA-123456789-7',
       },
       headers: {
-        Authorization: 'Bearer valid_token_1',
+        Authorization: authHeader1,
         Accept: 'application/json',
         'Content-Type': 'application/json',
       },
@@ -202,7 +204,7 @@ const deleteNwData = [
         webPropertyId: 'UA-123456789-7',
       },
       headers: {
-        Authorization: 'Bearer valid_token_1',
+        Authorization: authHeader1,
         Accept: 'application/json',
         'Content-Type': 'application/json',
       },
@@ -238,7 +240,7 @@ const deleteNwData = [
         webPropertyId: 'UA-123456789-7',
       },
       headers: {
-        Authorization: 'Bearer valid_token_1',
+        Authorization: authHeader1,
         Accept: 'application/json',
         'Content-Type': 'application/json',
       },
@@ -270,7 +272,7 @@ const deleteNwData = [
         webPropertyId: 'UA-123456789-7',
       },
       headers: {
-        Authorization: 'Bearer valid_token_1',
+        Authorization: authHeader1,
         Accept: 'application/json',
         'Content-Type': 'application/json',
       },
@@ -302,7 +304,7 @@ const deleteNwData = [
         webPropertyId: 'UA-123456789-7',
       },
       headers: {
-        Authorization: 'Bearer no_permissions_token',
+        Authorization: authHeader3,
         Accept: 'application/json',
         'Content-Type': 'application/json',
       },

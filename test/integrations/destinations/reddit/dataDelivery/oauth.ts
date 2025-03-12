@@ -1,3 +1,4 @@
+import { authHeader1 } from '../maskedSecrets';
 import {
   generateMetadata,
   generateProxyV1Payload,
@@ -40,7 +41,7 @@ const authorizationRequiredRequestPayload = {
 };
 
 const commonHeaders = {
-  Authorization: 'Bearer dummyAccessToken',
+  Authorization: authHeader1,
   'Content-Type': 'application/json',
 };
 
@@ -217,8 +218,14 @@ export const v1oauthScenarios = [
               'This server could not verify that you are authorized to access the document you requested. during reddit response transformation',
             response: [
               {
-                error:
-                  '{"success":false,"error":{"reason":"UNAUTHORIZED","explanation":"This server could not verify that you are authorized to access the document you requested."}}',
+                error: JSON.stringify({
+                  success: false,
+                  error: {
+                    reason: 'UNAUTHORIZED',
+                    explanation:
+                      'This server could not verify that you are authorized to access the document you requested.',
+                  },
+                }),
                 metadata: generateMetadata(1),
                 statusCode: 401,
               },

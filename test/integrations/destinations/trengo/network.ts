@@ -1,8 +1,9 @@
+import { authHeader1, authHeader2 } from './maskedSecrets';
 export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Bearer trengo_integration_test_api_token',
+        Authorization: authHeader1,
       },
 
       method: 'GET',
@@ -80,7 +81,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Bearer trengo_integration_test_api_token',
+        Authorization: authHeader1,
       },
 
       method: 'GET',
@@ -110,7 +111,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Bearer trengo_integration_test_api_token',
+        Authorization: authHeader1,
       },
 
       method: 'GET',
@@ -140,7 +141,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Bearer trengo_integration_test_api_token',
+        Authorization: authHeader1,
       },
 
       method: 'GET',
@@ -152,7 +153,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Bearer trengo_integration_test_api_token',
+        Authorization: authHeader1,
       },
 
       method: 'GET',
@@ -182,7 +183,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Bearer trengo_integration_test_api_token',
+        Authorization: authHeader1,
       },
 
       method: 'GET',
@@ -194,7 +195,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Bearer trengo_integration_test_api_token',
+        Authorization: authHeader1,
       },
 
       method: 'GET',
@@ -319,7 +320,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Bearer trengo_integration_test_api_token',
+        Authorization: authHeader1,
       },
 
       method: 'GET',
@@ -453,7 +454,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Bearer trengo_integration_test_api_token',
+        Authorization: authHeader1,
       },
 
       method: 'GET',
@@ -587,7 +588,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Bearer trengo_integration_test_api_token',
+        Authorization: authHeader1,
       },
 
       method: 'GET',
@@ -712,7 +713,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Bearer trengo_integration_test_api_token',
+        Authorization: authHeader1,
       },
 
       method: 'GET',
@@ -846,7 +847,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Bearer trengo_integration_test_api_token',
+        Authorization: authHeader1,
       },
 
       method: 'GET',
@@ -980,7 +981,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Bearer trengo_integration_test_api_token',
+        Authorization: authHeader1,
       },
 
       method: 'GET',
@@ -1114,7 +1115,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Bearer trengo_integration_test_api_token',
+        Authorization: authHeader1,
       },
 
       method: 'GET',
@@ -1248,7 +1249,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Bearer trengo_integration_test_api_token',
+        Authorization: authHeader1,
       },
 
       method: 'GET',
@@ -1326,7 +1327,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Bearer wrong_trengo_integration_test_api_token',
+        Authorization: authHeader2,
       },
 
       method: 'GET',

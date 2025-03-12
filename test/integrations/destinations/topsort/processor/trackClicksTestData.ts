@@ -1,3 +1,4 @@
+import { authHeader1, secret1 } from '../maskedSecrets';
 import { Destination } from '../../../../../src/types';
 import { ProcessorTestData } from '../../../testTypes';
 import {
@@ -19,7 +20,7 @@ const destination: Destination = {
     },
   },
   Config: {
-    apiKey: 'test-api',
+    apiKey: secret1,
     connectionMode: {
       web: 'cloud',
     },
@@ -110,7 +111,7 @@ export const trackClicksTestData: ProcessorTestData[] = [
               endpoint: 'https://api.topsort.com/v2/events',
               headers: {
                 'content-type': 'application/json',
-                Authorization: 'Bearer test-api',
+                Authorization: authHeader1,
               },
               params: {},
               userId: '',
@@ -230,7 +231,7 @@ export const trackClicksTestData: ProcessorTestData[] = [
               endpoint: 'https://api.topsort.com/v2/events',
               headers: {
                 'content-type': 'application/json',
-                Authorization: 'Bearer test-api',
+                Authorization: authHeader1,
               },
               params: {},
               userId: '',
@@ -493,7 +494,7 @@ export const trackClicksTestData: ProcessorTestData[] = [
               endpoint: 'https://api.topsort.com/v2/events',
               headers: {
                 'content-type': 'application/json',
-                Authorization: 'Bearer test-api',
+                Authorization: authHeader1,
               },
               params: {},
               userId: '',

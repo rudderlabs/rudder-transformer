@@ -1,3 +1,4 @@
+import { authHeader1, secret1 } from '../maskedSecrets';
 export const mockFns = (_) => {
   jest.spyOn(Date, 'now').mockReturnValue(new Date('2023-10-14T00:00:00.000Z').valueOf());
 };
@@ -40,7 +41,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: secret1,
                 signUpSourceId: '241654',
               },
             },
@@ -60,7 +61,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://api.attentivemobile.com/v1/subscriptions',
               headers: {
-                Authorization: 'Bearer dummyApiKey',
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
               params: {},
@@ -168,7 +169,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: secret1,
                 signUpSourceId: '240654',
               },
             },
@@ -238,7 +239,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: secret1,
                 signUpSourceId: '241654',
               },
             },
@@ -258,7 +259,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://api.attentivemobile.com/v1/subscriptions/unsubscribe',
               headers: {
-                Authorization: 'Bearer dummyApiKey',
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
               params: {},
@@ -364,7 +365,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: secret1,
                 signUpSourceId: '240654',
               },
             },
@@ -476,7 +477,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: secret1,
                 signUpSourceId: '240654',
               },
             },
@@ -589,7 +590,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: secret1,
                 signUpSourceId: '240654',
               },
             },
@@ -702,7 +703,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: secret1,
                 signUpSourceId: '240654',
               },
             },
@@ -805,7 +806,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: secret1,
                 signUpSourceId: '240654',
               },
             },
@@ -917,7 +918,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: secret1,
                 signUpSourceId: '240654',
               },
             },
@@ -988,7 +989,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: secret1,
                 signUpSourceId: '241654',
               },
             },
@@ -1008,7 +1009,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://api.attentivemobile.com/v1/subscriptions',
               headers: {
-                Authorization: 'Bearer dummyApiKey',
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
               params: {},
@@ -1114,7 +1115,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: secret1,
                 signUpSourceId: '240654',
               },
             },
@@ -1223,7 +1224,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: secret1,
                 signUpSourceId: '240654',
               },
             },
@@ -1333,7 +1334,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: secret1,
                 signUpSourceId: '240654',
               },
             },
@@ -1444,7 +1445,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: secret1,
                 signUpSourceId: '240654',
               },
             },
@@ -1514,7 +1515,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: secret1,
                 signUpSourceId: '241654',
               },
             },
@@ -1534,7 +1535,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://api.attentivemobile.com/v1/subscriptions',
               headers: {
-                Authorization: 'Bearer dummyApiKey',
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
               params: {},
@@ -1624,7 +1625,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: secret1,
                 signUpSourceId: '240654',
               },
             },
@@ -1644,7 +1645,7 @@ export const data = [
               userId: '',
               endpoint: 'https://api.attentivemobile.com/v1/events/ecommerce/product-view',
               headers: {
-                Authorization: 'Bearer dummyApiKey',
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
               params: {},
@@ -1728,7 +1729,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: secret1,
                 signUpSourceId: '240654',
               },
             },
@@ -1748,7 +1749,7 @@ export const data = [
               userId: '',
               endpoint: 'https://api.attentivemobile.com/v1/events/custom',
               headers: {
-                Authorization: 'Bearer dummyApiKey',
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
               params: {},

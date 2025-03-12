@@ -1,3 +1,4 @@
+import { authHeader1, secret1 } from './maskedSecrets';
 export const data = [
   {
     name: 'factorsai',
@@ -11,7 +12,7 @@ export const data = [
           {
             destination: {
               Config: {
-                factorsAIApiKey: 'sdgerghsdfhsdhsdh432141dfgdfsg',
+                factorsAIApiKey: secret1,
               },
             },
             message: {
@@ -87,7 +88,7 @@ export const data = [
               params: {},
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Basic c2RnZXJnaHNkZmhzZGhzZGg0MzIxNDFkZmdkZnNnOg==',
+                Authorization: authHeader1,
               },
               version: '1',
               endpoint: 'https://api.factors.ai/integrations/rudderstack_platform',
@@ -110,7 +111,7 @@ export const data = [
           {
             destination: {
               Config: {
-                factorsAIApiKey: 'sdgerghsdfhsdhsdh432141dfgdfsg',
+                factorsAIApiKey: secret1,
               },
             },
             message: {
@@ -175,7 +176,7 @@ export const data = [
           {
             destination: {
               Config: {
-                factorsAIApiKey: 'sdgerghsdfhsdhsdh432141dfgdfsg',
+                factorsAIApiKey: secret1,
               },
             },
             message: {
@@ -251,7 +252,7 @@ export const data = [
               params: {},
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Basic c2RnZXJnaHNkZmhzZGhzZGg0MzIxNDFkZmdkZnNnOg==',
+                Authorization: authHeader1,
               },
               version: '1',
               endpoint: 'https://api.factors.ai/integrations/rudderstack_platform',
@@ -274,7 +275,7 @@ export const data = [
           {
             destination: {
               Config: {
-                factorsAIApiKey: 'sdgerghsdfhsdhsdh432141dfgdfsg',
+                factorsAIApiKey: secret1,
               },
             },
             message: {
@@ -332,7 +333,7 @@ export const data = [
               params: {},
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Basic c2RnZXJnaHNkZmhzZGhzZGg0MzIxNDFkZmdkZnNnOg==',
+                Authorization: authHeader1,
               },
               version: '1',
               endpoint: 'https://api.factors.ai/integrations/rudderstack_platform',
@@ -355,7 +356,7 @@ export const data = [
           {
             destination: {
               Config: {
-                factorsAIApiKey: 'sdgerghsdfhsdhsdh432141dfgdfsg',
+                factorsAIApiKey: secret1,
               },
             },
             message: {
@@ -403,7 +404,7 @@ export const data = [
               userId: '',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Basic c2RnZXJnaHNkZmhzZGhzZGg0MzIxNDFkZmdkZnNnOg==',
+                Authorization: authHeader1,
               },
               version: '1',
               endpoint: 'https://api.factors.ai/integrations/rudderstack_platform',
@@ -426,7 +427,7 @@ export const data = [
           {
             destination: {
               Config: {
-                factorsAIApiKey: 'sdgerghsdfhsdhsdh432141dfgdfsg',
+                factorsAIApiKey: secret1,
               },
             },
             message: {
@@ -532,7 +533,7 @@ export const data = [
               userId: '',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Basic c2RnZXJnaHNkZmhzZGhzZGg0MzIxNDFkZmdkZnNnOg==',
+                Authorization: authHeader1,
               },
               version: '1',
               endpoint: 'https://api.factors.ai/integrations/rudderstack_platform',
@@ -555,7 +556,7 @@ export const data = [
           {
             destination: {
               Config: {
-                factorsAIApiKey: 'sdgerghsdfhsdhsdh432141dfgdfsg',
+                factorsAIApiKey: secret1,
               },
             },
             message: {
@@ -631,7 +632,7 @@ export const data = [
               params: {},
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Basic c2RnZXJnaHNkZmhzZGhzZGg0MzIxNDFkZmdkZnNnOg==',
+                Authorization: authHeader1,
               },
               version: '1',
               endpoint: 'https://api.factors.ai/integrations/rudderstack_platform',
@@ -654,7 +655,7 @@ export const data = [
           {
             destination: {
               Config: {
-                factorsAIApiKey: 'sdgerghsdfhsdhsdh432141dfgdfsg',
+                factorsAIApiKey: secret1,
               },
             },
             message: {
@@ -726,7 +727,7 @@ export const data = [
               params: {},
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Basic c2RnZXJnaHNkZmhzZGhzZGg0MzIxNDFkZmdkZnNnOg==',
+                Authorization: authHeader1,
               },
               version: '1',
               endpoint: 'https://api.factors.ai/integrations/rudderstack_platform',
@@ -749,7 +750,7 @@ export const data = [
           {
             destination: {
               Config: {
-                factorsAIApiKey: 'sdgerghsdfhsdhsdh432141dfgdfsg',
+                factorsAIApiKey: secret1,
               },
             },
             message: {
@@ -799,7 +800,7 @@ export const data = [
               params: {},
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Basic c2RnZXJnaHNkZmhzZGhzZGg0MzIxNDFkZmdkZnNnOg==',
+                Authorization: authHeader1,
               },
               version: '1',
               endpoint: 'https://api.factors.ai/integrations/rudderstack_platform',

@@ -1,3 +1,4 @@
+import { authHeader1, secret1 } from '../maskedSecrets';
 export const data = [
   {
     name: 'pinterest_tag',
@@ -2791,7 +2792,7 @@ export const data = [
                 tagId: '123456789',
                 apiVersion: 'newApi',
                 adAccountId: 'accountId123',
-                conversionToken: 'conversionToken123',
+                conversionToken: secret1,
                 appId: '429047995',
                 enhancedMatch: true,
                 enableDeduplication: true,
@@ -2824,7 +2825,7 @@ export const data = [
               endpoint: 'https://api.pinterest.com/v5/ad_accounts/accountId123/events',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Bearer conversionToken123',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -2972,7 +2973,7 @@ export const data = [
                 tagId: '123456789',
                 apiVersion: 'newApi',
                 adAccountId: 'accountId123',
-                conversionToken: 'conversionToken123',
+                conversionToken: secret1,
                 appId: '429047995',
                 enhancedMatch: true,
                 enableDeduplication: true,
@@ -3005,7 +3006,7 @@ export const data = [
               endpoint: 'https://api.pinterest.com/v5/ad_accounts/accountId123/events',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Bearer conversionToken123',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -3156,7 +3157,7 @@ export const data = [
                 tagId: '123456789',
                 apiVersion: 'newApi',
                 adAccountId: 'accountId123',
-                conversionToken: 'conversionToken123',
+                conversionToken: secret1,
                 appId: '429047995',
                 enhancedMatch: true,
                 enableDeduplication: true,
@@ -3189,7 +3190,7 @@ export const data = [
               endpoint: 'https://api.pinterest.com/v5/ad_accounts/accountId123/events',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Bearer conversionToken123',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -3321,7 +3322,7 @@ export const data = [
                 tagId: '123456789',
                 apiVersion: 'newApi',
                 adAccountId: '',
-                conversionToken: 'conversionToken123',
+                conversionToken: secret1,
                 appId: '429047995',
                 enhancedMatch: true,
                 enableDeduplication: true,
@@ -3510,7 +3511,7 @@ export const data = [
                 tagId: '123456789',
                 apiVersion: 'newApi',
                 adAccountId: 'accountId123',
-                conversionToken: 'conversionToken123',
+                conversionToken: secret1,
                 appId: '429047995',
                 enhancedMatch: true,
                 enableDeduplication: true,
@@ -3580,7 +3581,7 @@ export const data = [
               endpoint: 'https://api.pinterest.com/v5/ad_accounts/accountId123/events',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Bearer conversionToken123',
+                Authorization: authHeader1,
               },
               params: {},
               files: {},
@@ -3636,7 +3637,7 @@ export const data = [
                 tagId: '123456789',
                 apiVersion: 'newApi',
                 adAccountId: 'accountId123',
-                conversionToken: 'conversionToken123',
+                conversionToken: secret1,
                 appId: '429047995',
                 enhancedMatch: true,
                 enableDeduplication: true,
@@ -3761,7 +3762,7 @@ export const data = [
                 tagId: '123456789',
                 apiVersion: 'newApi',
                 adAccountId: 'accountId123',
-                conversionToken: 'conversionToken123',
+                conversionToken: secret1,
                 appId: '429047995',
                 enhancedMatch: true,
                 enableDeduplication: true,

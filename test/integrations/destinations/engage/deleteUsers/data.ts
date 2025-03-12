@@ -1,3 +1,5 @@
+import { secret1, secret2 } from '../maskedSecrets';
+
 export const data = [
   {
     name: 'engage',
@@ -22,8 +24,8 @@ export const data = [
               },
             ],
             config: {
-              publicKey: 'abcd',
-              privateKey: 'efgh',
+              publicKey: secret1,
+              privateKey: secret2,
             },
           },
         ],
@@ -64,8 +66,8 @@ export const data = [
               },
             ],
             config: {
-              publicKey: 'abcd',
-              privateKey: 'efgh',
+              publicKey: secret1,
+              privateKey: secret2,
             },
           },
         ],
@@ -106,8 +108,8 @@ export const data = [
               },
             ],
             config: {
-              publicKey: 'abcd',
-              privateKey: 'efgh',
+              publicKey: secret1,
+              privateKey: secret2,
             },
           },
         ],
@@ -142,8 +144,8 @@ export const data = [
               },
             ],
             config: {
-              publicKey: 'abcd',
-              privateKey: 'efgh',
+              publicKey: secret1,
+              privateKey: secret2,
             },
           },
         ],
@@ -181,7 +183,7 @@ export const data = [
               },
             ],
             config: {
-              privateKey: 'abcd',
+              privateKey: secret2,
             },
           },
         ],
@@ -219,8 +221,8 @@ export const data = [
               },
             ],
             config: {
-              publicKey: 'abcd',
-              privateKey: 'efgh',
+              publicKey: secret1,
+              privateKey: secret2,
             },
           },
         ],

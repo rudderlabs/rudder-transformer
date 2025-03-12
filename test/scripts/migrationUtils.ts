@@ -17,7 +17,7 @@ import {
 } from '../integrations/testTypes';
 
 // Default metadata to fill in missing fields
-const defaultMetadata: Partial<Metadata> = {
+const defaultMetadata: Metadata = {
   sourceId: 'default-source',
   workspaceId: 'default-workspace',
   namespace: 'default-namespace',

@@ -8,8 +8,6 @@ import {
   ProcessorTransformationResponse,
   RouterTransformationRequest,
   RouterTransformationResponse,
-  RouterTransformationRequestData,
-  RudderMessage,
 } from '../types';
 import { DynamicConfigParser } from '../util/dynamicConfigParser';
 import stats from '../util/stats';
@@ -49,7 +47,7 @@ export class DestinationController {
         version,
         requestMetadata,
       );
-    } catch (error: any) {
+    } catch (error: unknown) {
       resplist = events.map((ev) => {
         const metaTO = integrationService.getTags(
           destination,
@@ -59,7 +57,7 @@ export class DestinationController {
         );
         metaTO.metadata = ev.metadata;
         const errResp = DestinationPostTransformationService.handleProcessorTransformFailureEvents(
-          error,
+          error as Error,
           metaTO,
         );
         return errResp;
@@ -80,26 +78,20 @@ export class DestinationController {
     const requestMetadata = MiscService.getRequestMetadata(ctx);
     const routerRequest = ctx.request.body as RouterTransformationRequest;
     const destination = routerRequest.destType;
-    let events = routerRequest.input as RouterTransformationRequestData<RudderMessage>[];
+    let events = routerRequest.input;
 
     const errorRespEvents = checkInvalidRtTfEvents(events);
     if (errorRespEvents.length > 0) {
-      const errorResponse = {
-        metadata: [
-          {
-            destinationType: destination,
-          },
-        ],
-        destination: events?.[0]?.destination || {},
-        batched: false,
-        statusCode: 400,
-        error: 'Invalid router transform payload structure',
-      };
+      errorRespEvents[0].metadata = [
+        {
+          destType: destination,
+        },
+      ];
 
       logger.debug(
         `[${destination}] Invalid router transform payload structure: ${JSON.stringify(events)}`,
       );
-      ctx.body = { output: [errorResponse] };
+      ctx.body = { output: errorRespEvents };
       ControllerUtility.postProcess(ctx);
       return ctx;
     }
@@ -115,18 +107,11 @@ export class DestinationController {
     let resplist: RouterTransformationResponse[];
 
     try {
-      const processedEvents = DestinationPreTransformationService.preProcess(
-        events,
-        ctx,
-      ) as RouterTransformationRequestData<RudderMessage>[];
+      const processedEvents = DestinationPreTransformationService.preProcess(events, ctx);
 
-      const timestampCorrectEvents = ControllerUtility.handleTimestampInEvents(
-        processedEvents,
-      ) as RouterTransformationRequestData<RudderMessage>[];
+      const timestampCorrectEvents = ControllerUtility.handleTimestampInEvents(processedEvents);
 
-      events = DynamicConfigParser.process(
-        timestampCorrectEvents,
-      ) as RouterTransformationRequestData<RudderMessage>[];
+      events = DynamicConfigParser.process(timestampCorrectEvents);
 
       resplist = await integrationService.doRouterTransformation(
         events,
@@ -164,18 +149,13 @@ export class DestinationController {
     const requestMetadata = MiscService.getRequestMetadata(ctx);
     const routerRequest = ctx.request.body as RouterTransformationRequest;
     const destination = routerRequest.destType;
-    const events = routerRequest.input as RouterTransformationRequestData<RudderMessage>[];
+    const events = routerRequest.input;
 
     const integrationService = ServiceSelector.getDestinationService(events);
     try {
-      const processedEvents = DestinationPreTransformationService.preProcess(
-        events,
-        ctx,
-      ) as RouterTransformationRequestData<RudderMessage>[];
+      const processedEvents = DestinationPreTransformationService.preProcess(events, ctx);
 
-      const timestampCorrectEvents = ControllerUtility.handleTimestampInEvents(
-        processedEvents,
-      ) as RouterTransformationRequestData<RudderMessage>[];
+      const timestampCorrectEvents = ControllerUtility.handleTimestampInEvents(processedEvents);
 
       const resplist = integrationService.doBatchTransformation(
         timestampCorrectEvents,

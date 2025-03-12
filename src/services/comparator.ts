@@ -62,7 +62,7 @@ export class ComparatorService implements DestinationService {
   }
 
   private getTestThreshold(destination: Destination): number {
-    const threshold = destination.DestinationDefinition?.Config?.camparisonTestThreshold;
+    const threshold = destination.DestinationDefinition.Config.camparisonTestThreshold;
     return typeof threshold === 'number' ? threshold : 0;
   }
 

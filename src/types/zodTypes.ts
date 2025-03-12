@@ -240,5 +240,3 @@ export const DeliveryV1ResponseSchemaForOauth = z
     message: "authErrorCategory can't be empty when status is not a 2XX",
     path: ['authErrorCategory'], // Pointing out which field is invalid
   });
-
-export const BaseSchema = z.object({}).passthrough();

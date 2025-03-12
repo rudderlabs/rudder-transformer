@@ -1,4 +1,4 @@
-import { Destination, MessageType } from '../../../../../src/types';
+import { Destination } from '../../../../../src/types';
 import { RouterTestData } from '../../../testTypes';
 import { generateMetadata } from '../../../testUtils';
 

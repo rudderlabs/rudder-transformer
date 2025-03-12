@@ -509,11 +509,10 @@ const invalidRtTfCases = [
         body: {
           output: [
             {
-              error: 'Invalid router transform payload structure',
-              destination: {},
+              error: 'Invalid event array',
               metadata: [
                 {
-                  destinationType: 'google_adwords_enhanced_conversions',
+                  destType: 'google_adwords_enhanced_conversions',
                 },
               ],
               batched: false,
@@ -545,8 +544,7 @@ const invalidRtTfCases = [
         body: {
           output: [
             {
-              error: 'Invalid router transform payload structure',
-              destination: {},
+              error: 'Invalid event array',
               metadata: [{}],
               batched: false,
               statusCode: 400,
@@ -557,7 +555,6 @@ const invalidRtTfCases = [
     },
   },
   {
-    only: true,
     name: 'google_adwords_enhanced_conversions',
     description:
       'Test 3 - should abort events, invalid router transform structure without input & destType',
@@ -576,9 +573,8 @@ const invalidRtTfCases = [
         body: {
           output: [
             {
-              error: 'Invalid router transform payload structure',
+              error: 'Invalid event array',
               metadata: [{}],
-              destination: {},
               batched: false,
               statusCode: 400,
             },

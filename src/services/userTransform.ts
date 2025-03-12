@@ -55,10 +55,9 @@ export class UserTransformService {
         const messageIdsSet = new Set<string>();
         const messageIdMetadataMap: MessageIdMetadataMap = {};
         eventsToProcess.forEach((ev) => {
-          const messageId = ev.metadata?.messageId || '';
-          messageIds.push(messageId);
-          messageIdsSet.add(messageId);
-          messageIdMetadataMap[messageId] = ev.metadata;
+          messageIds.push(ev.metadata?.messageId);
+          messageIdsSet.add(ev.metadata?.messageId);
+          messageIdMetadataMap[ev.metadata?.messageId] = ev.metadata;
         });
 
         const messageIdsInOutputSet = new Set<string>();

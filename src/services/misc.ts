@@ -36,7 +36,7 @@ export class MiscService {
     };
   }
 
-  public static getMetaTags(metadata: Partial<Metadata>) {
+  public static getMetaTags(metadata?: Metadata) {
     if (!metadata) {
       return {};
     }

@@ -95,6 +95,7 @@ const defaultFeaturesConfig: FeaturesConfig = {
     LINKEDIN_AUDIENCE: true,
     TOPSORT: true,
     CUSTOMERIO_AUDIENCE: true,
+    ACCOIL_ANALYTICS: true,
   },
   regulations: [
     'BRAZE',

@@ -64,7 +64,7 @@ const ecomPayloadBuilder = (event, shopifyTopic) => {
     message.setPropertiesV2(customerDetails, MAPPING_CATEGORIES[EventType.IDENTIFY]);
   }
   if (event.updated_at) {
-    // TODO: look for created_at for checkout_create?
+    // Look for created_at for checkout_create?
     // converting shopify updated_at timestamp to rudder timestamp format
     message.setTimestamp(new Date(event.updated_at).toISOString());
   }
@@ -142,7 +142,7 @@ const processEvent = async (inputEvent, metricMetadata) => {
     case ECOM_TOPICS.CHECKOUTS_UPDATE:
       message = ecomPayloadBuilder(event, shopifyTopic);
       break;
-    case 'carts_update':
+    case ECOM_TOPICS.CARTS_UPDATE:
       if (useRedisDatabase) {
         redisData = await getDataFromRedis(event.id || event.token, metricMetadata, 'Cart Update');
         const isValidEvent = await checkAndUpdateCartItems(

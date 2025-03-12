@@ -70,7 +70,7 @@ const getShopifyTopic = (event) => {
   return topic[0];
 };
 const getHashLineItems = (cart) => {
-  if (cart && cart?.line_items && cart.line_items.length > 0) {
+  if (cart?.line_items?.length > 0) {
     return sha256(JSON.stringify(cart.line_items));
   }
   return 'EMPTY';
@@ -211,7 +211,7 @@ const getAnonymousIdAndSessionId = async (message, metricMetadata, redisData = n
  * @param {*} inputEvent
  * @returns true if event is valid else false
  */
-const isValidCartEvent = (newCartItems, prevCartItems) => !(prevCartItems === newCartItems);
+const isValidCartEvent = (newCartItems, prevCartItems) => prevCartItems !== newCartItems;
 const updateCartItemsInRedis = async (cartToken, newCartItemsHash, metricMetadata) => {
   const value = ['itemsHash', newCartItemsHash];
   try {

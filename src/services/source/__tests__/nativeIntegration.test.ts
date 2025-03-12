@@ -8,6 +8,8 @@ import { NativeIntegrationSourceService } from '../nativeIntegration';
 import { SourcePostTransformationService } from '../postTransformation';
 
 afterEach(() => {
+  jest.restoreAllMocks();
+
   jest.clearAllMocks();
 });
 

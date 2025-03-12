@@ -68,6 +68,8 @@ describe('extractCartToken', () => {
 
 describe('handleCartTokenRedisOperations', () => {
   beforeEach(() => {
+    jest.restoreAllMocks();
+
     jest.clearAllMocks();
   });
 

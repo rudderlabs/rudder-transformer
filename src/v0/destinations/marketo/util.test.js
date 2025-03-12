@@ -28,6 +28,7 @@ describe('getAuthToken', () => {
   };
 
   beforeEach(() => {
+    jest.restoreAllMocks();
     jest.clearAllMocks();
   });
 

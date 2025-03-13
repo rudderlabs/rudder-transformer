@@ -1,4 +1,4 @@
-import { flattenParams, TransformationError } from '@rudderstack/integrations-lib';
+import { flattenQueryParams, TransformationError } from '@rudderstack/integrations-lib';
 import get from 'get-value';
 import Message = require('../message');
 import { EventType } from '../../constants';
@@ -11,7 +11,7 @@ const { removeUndefinedAndNullValues, getBodyFromV2SpecPayload } = require('../.
 const mapping = require('./mapping.json');
 
 function processEvent(inputEvent: InputEventType): any {
-  const unwrappedInputEvent = flattenParams(inputEvent);
+  const unwrappedInputEvent = flattenQueryParams(inputEvent);
 
   if (Object.keys(unwrappedInputEvent).length === 0) {
     throw new TransformationError('input event must have at least one field');

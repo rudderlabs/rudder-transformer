@@ -1,4 +1,4 @@
-const { flattenParams, TransformationError } = require('@rudderstack/integrations-lib');
+const { flattenQueryParams, TransformationError } = require('@rudderstack/integrations-lib');
 const { CommonUtils } = require('../../util/common');
 const logger = require('../../logger');
 const { processPayload } = require('./core');
@@ -21,7 +21,7 @@ const getPayloadFromRequest = (inputRequest) => {
     throw new TransformationError('Query_parameters is missing');
   }
 
-  return flattenParams(qParams);
+  return flattenQueryParams(qParams);
 };
 
 /**

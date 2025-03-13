@@ -661,7 +661,7 @@ export const networkCallsData = [
           message: '(#2655) Marketing Messaging TOS not accepted',
           type: 'OAuthException',
           code: 2655,
-          fbtrace_id: 'KSB2jSGDMX_CwgM9230pDxM',
+          fbtrace_id: 'fbtrace_id',
         },
       },
       status: 400,

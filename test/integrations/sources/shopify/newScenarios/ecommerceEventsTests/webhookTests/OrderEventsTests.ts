@@ -8,7 +8,7 @@ export const newWebhookOrderEventsTestScenarios = [
     id: 'os001',
     name: 'shopify',
     skip: true,
-    description: 'Track Call -> Order Updated event from Pixel app',
+    description: 'Track Call -> [ECOM] Order Updated event from Pixel app',
     module: 'source',
     version: 'v1',
     input: {
@@ -682,7 +682,7 @@ export const newWebhookOrderEventsTestScenarios = [
     id: 'os002',
     name: 'shopify',
     skip: true,
-    description: 'Track Call -> Order Created event from Pixel app',
+    description: 'Track Call -> [ECOM] Order Created event from Pixel app',
     module: 'source',
     version: 'v1',
     input: {
@@ -1057,7 +1057,7 @@ export const newWebhookOrderEventsTestScenarios = [
     id: 'os003',
     name: 'shopify',
     skip: true,
-    description: 'Track Call -> Order Cancelled event from Pixel app',
+    description: 'Track Call -> [ECOM] Order Cancelled event from Pixel app',
     module: 'source',
     version: 'v1',
     input: {

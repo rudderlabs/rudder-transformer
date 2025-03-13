@@ -221,7 +221,7 @@ export const pixelEventsTestScenarios = [
   {
     name: 'shopify',
     skip: true,
-    description: 'Track Call -> cart_viewed event from web pixel',
+    description: 'Track Call -> [ECOM] cart_viewed event from web pixel',
     module: 'source',
     version: 'v1',
     input: {
@@ -400,7 +400,7 @@ export const pixelEventsTestScenarios = [
   },
   {
     name: 'shopify',
-    description: 'Track Call -> collection_viewed event from web pixel',
+    description: 'Track Call -> [ECOM] collection_viewed event from web pixel',
     module: 'source',
     version: 'v1',
     input: {
@@ -655,7 +655,7 @@ export const pixelEventsTestScenarios = [
   {
     name: 'shopify',
     skip: true,
-    description: 'Track Call -> product_added_to_cart event from web pixel',
+    description: 'Track Call -> [ECOM] product_added_to_cart event from web pixel',
     module: 'source',
     version: 'v1',
     input: {
@@ -800,7 +800,7 @@ export const pixelEventsTestScenarios = [
   {
     name: 'shopify',
     skip: true,
-    description: 'Track Call -> product_removed_from_cart event from web pixel',
+    description: 'Track Call -> [ECOM] product_removed_from_cart event from web pixel',
     module: 'source',
     version: 'v1',
     input: {
@@ -945,7 +945,7 @@ export const pixelEventsTestScenarios = [
   {
     name: 'shopify',
     skip: true,
-    description: 'Track Call -> search_submitted event from web pixel',
+    description: 'Track Call -> [ECOM] search_submitted event from web pixel',
     module: 'source',
     version: 'v1',
     input: {

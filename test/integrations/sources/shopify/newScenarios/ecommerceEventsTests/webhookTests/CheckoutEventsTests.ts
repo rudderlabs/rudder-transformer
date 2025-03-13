@@ -251,7 +251,7 @@ export const newWebhookcheckoutEventsTestScenarios = [
     id: 'cs002',
     name: 'shopify',
     skip: true,
-    description: 'Track Call -> Order Cancelled event from Pixel app',
+    description: 'Track Call -> Server side Order Cancelled triggered via webhook',
     module: 'source',
     version: 'v1',
     input: {
@@ -388,7 +388,7 @@ export const newWebhookcheckoutEventsTestScenarios = [
     name: 'shopify',
     skip: true,
     description:
-      'Track Call -> Checkout Started event from Pixel app, with no anonymoudId in redis. anonymousId is set as hash of cart_token (race condition scenario)',
+      'Track Call -> Server side Checkout Started triggered via webhook, with no anonymoudId in redis. anonymousId is set as hash of cart_token (race condition scenario)',
     module: 'source',
     version: 'v1',
     input: {

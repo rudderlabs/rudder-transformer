@@ -6,15 +6,22 @@ function initPyroscope() {
   Pyroscope.init({
     appName: 'rudder-transformer',
   });
-  Pyroscope.startHeapCollecting();
+  Pyroscope.startHeapProfiling();
 }
 
 function getCPUProfile(seconds) {
-  return Pyroscope.collectCpu(seconds);
+  Pyroscope.startCpuProfiling();
+  return new Promise((resolve) => {
+    setTimeout(async () => {
+      const profile = Pyroscope.stopCpuProfiling();
+      resolve(profile);
+    }, seconds * 1000);
+  });
 }
 
 function getHeapProfile() {
-  return Pyroscope.collectHeap();
+  Pyroscope.startHeapProfiling();
+  return Pyroscope.stopHeapProfiling();
 }
 
 function durationMiddleware() {

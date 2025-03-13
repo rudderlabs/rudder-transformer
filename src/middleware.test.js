@@ -12,7 +12,13 @@ const stats = require('./util/stats');
 const { getDestTypeFromContext } = require('@rudderstack/integrations-lib');
 
 // Mock dependencies
-jest.mock('@pyroscope/nodejs');
+jest.mock('@pyroscope/nodejs', () => ({
+  init: jest.fn(),
+  startHeapProfiling: jest.fn(),
+  stopHeapProfiling: jest.fn().mockResolvedValue({}),
+  startCpuProfiling: jest.fn(),
+  stopCpuProfiling: jest.fn().mockResolvedValue({}),
+}));
 jest.mock('./util/stats', () => ({
   timing: jest.fn(),
   histogram: jest.fn(),
@@ -25,22 +31,49 @@ describe('Pyroscope Initialization', () => {
   it('should initialize Pyroscope with the correct app name', () => {
     initPyroscope();
     expect(Pyroscope.init).toHaveBeenCalledWith({ appName: 'rudder-transformer' });
-    expect(Pyroscope.startHeapCollecting).toHaveBeenCalled();
+    expect(Pyroscope.startHeapProfiling).toHaveBeenCalled();
   });
 });
 
 describe('getCPUProfile', () => {
-  it('should call Pyroscope.collectCpu with the specified seconds', () => {
+  it('should start and stop CPU profiling after specified seconds', async () => {
+    jest.useFakeTimers();
     const seconds = 5;
-    getCPUProfile(seconds);
-    expect(Pyroscope.collectCpu).toHaveBeenCalledWith(seconds);
+    const profilePromise = getCPUProfile(seconds);
+
+    expect(Pyroscope.startCpuProfiling).toHaveBeenCalled();
+    jest.advanceTimersByTime(seconds * 1000);
+
+    await profilePromise;
+    expect(Pyroscope.stopCpuProfiling).toHaveBeenCalled();
+    jest.useRealTimers();
+  });
+
+  it('should return the result of stopCpuProfiling', async () => {
+    const mockProfileData = { profile: 'data' };
+    Pyroscope.stopCpuProfiling.mockResolvedValue(mockProfileData);
+
+    const result = await getCPUProfile(1);
+
+    expect(result).toBe(mockProfileData);
   });
 });
 
 describe('getHeapProfile', () => {
-  it('should call Pyroscope.collectHeap', () => {
-    getHeapProfile();
-    expect(Pyroscope.collectHeap).toHaveBeenCalled();
+  it('should start and stop heap profiling', async () => {
+    await getHeapProfile();
+
+    expect(Pyroscope.startHeapProfiling).toHaveBeenCalled();
+    expect(Pyroscope.stopHeapProfiling).toHaveBeenCalled();
+  });
+
+  it('should return the result of stopHeapProfiling', async () => {
+    const mockHeapData = { heap: 'data' };
+    Pyroscope.stopHeapProfiling.mockResolvedValue(mockHeapData);
+
+    const result = await getHeapProfile();
+
+    expect(result).toBe(mockHeapData);
   });
 });
 

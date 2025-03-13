@@ -1,6 +1,6 @@
 // This file contains the test scenarios related to Shopify pixel events, emitted from web pixel on the browser.
-import { mockFns } from '../../../mocks';
-import { dummyContext, dummyContextwithCampaign, dummySourceConfig } from '../../../constants';
+import { mockFns } from '../mocks';
+import { dummyContext, dummyContextwithCampaign, dummySourceConfig } from '../constants';
 
 export const pixelEventsTestScenarios = [
   {
@@ -193,6 +193,7 @@ export const pixelEventsTestScenarios = [
                           untranslatedTitle: 'Default Title',
                         },
                       },
+                      context: dummyContext,
                       id: 'sh-f6c07b5a-D20A-4E5F-812E-337299B56C34',
                       name: 'product_viewed',
                       timestamp: '2024-09-15T17:34:54.889Z',
@@ -373,6 +374,7 @@ export const pixelEventsTestScenarios = [
                           totalQuantity: 2,
                         },
                       },
+                      context: dummyContext,
                       id: 'shu-f6eecef1-4132-459F-CDB5-681DA3DD61CD',
                       name: 'cart_viewed',
                       timestamp: '2024-09-15T18:25:30.125Z',
@@ -627,6 +629,7 @@ export const pixelEventsTestScenarios = [
                           title: 'Products',
                         },
                       },
+                      context: dummyContext,
                       id: 'sh-f6f0c6be-43F8-47D2-5F94-C22AD5ED3E79',
                       name: 'collection_viewed',
                       timestamp: '2024-09-15T18:27:39.197Z',
@@ -772,6 +775,7 @@ export const pixelEventsTestScenarios = [
                           quantity: 1,
                         },
                       },
+                      context: dummyContext,
                       id: 'sh-f6f828db-F77B-43E8-96C4-1D51DACD52A3',
                       name: 'product_added_to_cart',
                       timestamp: '2024-09-15T18:34:42.625Z',
@@ -917,6 +921,7 @@ export const pixelEventsTestScenarios = [
                           quantity: 1,
                         },
                       },
+                      context: dummyContext,
                       id: 'shu-f778d1eb-9B83-4832-9DC0-5C3B33A809F0',
                       name: 'product_removed_from_cart',
                       timestamp: '2024-09-15T20:56:00.125Z',
@@ -1003,6 +1008,7 @@ export const pixelEventsTestScenarios = [
                           query: 'skate',
                         },
                       },
+                      context: dummyContext,
                       id: 'sh-f7d599b4-D80F-4D05-C4CE-B980D5444596',
                       name: 'search_submitted',
                       timestamp: '2024-09-15T22:37:35.869Z',

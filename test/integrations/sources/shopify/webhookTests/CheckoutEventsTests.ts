@@ -1,7 +1,7 @@
 // This file contains the test scenarios for the server-side events from the Shopify GraphQL API for
 // the v1 transformation flow
-import { mockFns } from '../../../mocks';
-import { dummySourceConfig, note_attributes } from '../../../constants';
+import { mockFns } from '../mocks';
+import { dummySourceConfig, note_attributes } from '../constants';
 
 export const newWebhookcheckoutEventsTestScenarios = [
   {

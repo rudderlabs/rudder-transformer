@@ -1,4 +1,4 @@
-import { dummySourceConfig, dummyContext } from '../../../constants';
+import { dummySourceConfig, dummyContext } from '../constants';
 
 export const newpixelCheckoutStepsScenarios = [
   {

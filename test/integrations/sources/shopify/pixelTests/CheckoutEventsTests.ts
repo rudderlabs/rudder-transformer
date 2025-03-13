@@ -1,5 +1,5 @@
 // This file contains the test scenarios for the pixel checkout events
-import { dummySourceConfig, dummyBillingAddresses, dummyContext } from '../../../constants';
+import { dummySourceConfig, dummyBillingAddresses, dummyContext } from '../constants';
 
 export const newpixelCheckoutEventsTestScenarios = [
   {

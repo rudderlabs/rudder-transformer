@@ -1,6 +1,6 @@
 // This file contains the test scenarios for the pixel checkout events
-import { dummySourceConfig, note_attributes } from '../constants';
-import { mockFns } from '../mocks';
+import { dummySourceConfig, note_attributes } from './constants';
+import { mockFns } from './mocks';
 
 export const userTestScenarios = [
   {

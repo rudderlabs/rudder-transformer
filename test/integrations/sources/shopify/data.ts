@@ -4,11 +4,11 @@ import { pixelEventsTestScenarios } from './pixelTestScenarios/ProductEventsTest
 import { checkoutEventsTestScenarios } from './webhookTestScenarios/CheckoutEventsTests';
 import { genericTrackTestScenarios } from './webhookTestScenarios/GenericTrackTests';
 import { identityTestScenarios } from './webhookTestScenarios/IdentifyTests';
-import { userTestScenarios } from './newScenarios/userIdentifyTests';
-import { newpixelCheckoutEventsTestScenarios } from './newScenarios/ecommerceEventsTests/pixelTests/CheckoutEventsTests';
-import { newpixelCheckoutStepsScenarios } from './newScenarios/ecommerceEventsTests/pixelTests/CheckoutStepsTests';
-import { newWebhookcheckoutEventsTestScenarios } from './newScenarios/ecommerceEventsTests/webhookTests/CheckoutEventsTests';
-import { newWebhookOrderEventsTestScenarios } from './newScenarios/ecommerceEventsTests/webhookTests/OrderEventsTests';
+import { userTestScenarios } from './userIdentifyTests';
+import { newpixelCheckoutEventsTestScenarios } from './pixelTests/CheckoutEventsTests';
+import { newpixelCheckoutStepsScenarios } from './pixelTests/CheckoutStepsTests';
+import { newWebhookcheckoutEventsTestScenarios } from './webhookTests/CheckoutEventsTests';
+import { newWebhookOrderEventsTestScenarios } from './webhookTests/OrderEventsTests';
 import { mockFns } from './mocks';
 
 const serverSideEventsScenarios = [

@@ -155,7 +155,10 @@ export const userTestScenarios = [
             output: {
               batch: [
                 {
+                  type: 'track',
+                  event: 'Checkout Updated',
                   anonymousId: '50ead33e-d763-4854-b0ab-765859ef05cb',
+                  userId: '7188389789809',
                   context: {
                     cart_token: 'Z2NwLXVzLWVhc3QxOjAxSjdXRjdOQjY0NlFFNFdQVEg0MTRFM1E2',
                     integration: {
@@ -303,7 +306,6 @@ export const userTestScenarios = [
                     },
                     topic: 'checkouts_update',
                   },
-                  event: 'Checkout Updated',
                   integrations: {
                     SHOPIFY: true,
                     DATA_WAREHOUSE: {
@@ -326,11 +328,11 @@ export const userTestScenarios = [
                     tax: 0,
                   },
                   timestamp: '2024-09-17T07:29:02.000Z',
-                  type: 'track',
-                  userId: '7188389789809',
                 },
                 {
+                  type: 'identify',
                   anonymousId: '50ead33e-d763-4854-b0ab-765859ef05cb',
+                  userId: '7188389789809',
                   context: {
                     integration: {
                       name: 'SHOPIFY',
@@ -363,8 +365,6 @@ export const userTestScenarios = [
                   integrations: {
                     SHOPIFY: true,
                   },
-                  type: 'identify',
-                  userId: '7188389789809',
                 },
               ],
             },
@@ -479,6 +479,8 @@ export const userTestScenarios = [
             output: {
               batch: [
                 {
+                  type: 'identify',
+                  userId: '7358220173425',
                   context: {
                     library: {
                       eventOrigin: 'server',
@@ -584,8 +586,6 @@ export const userTestScenarios = [
                     },
                   },
                   created_at: '2024-10-23T16:03:11-04:00',
-                  type: 'identify',
-                  userId: '7358220173425',
                   timestamp: '2024-11-06T02:54:49.000Z',
                 },
               ],
@@ -699,6 +699,8 @@ export const userTestScenarios = [
             output: {
               batch: [
                 {
+                  type: 'identify',
+                  userId: '7358220173425',
                   context: {
                     library: {
                       eventOrigin: 'server',
@@ -804,8 +806,6 @@ export const userTestScenarios = [
                     },
                   },
                   created_at: '2024-10-23T16:03:11-04:00',
-                  type: 'identify',
-                  userId: '7358220173425',
                   timestamp: '2024-11-06T02:54:49.000Z',
                 },
               ],

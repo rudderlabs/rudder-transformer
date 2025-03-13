@@ -311,6 +311,24 @@ export const newWebhookOrderEventsTestScenarios = [
             output: {
               batch: [
                 {
+                  type: 'track',
+                  event: 'Order Updated',
+                  anonymousId: '50ead33e-d763-4854-b0ab-765859ef05cb',
+                  userId: '7358220173425',
+                  properties: {
+                    order_id: '5778367414385',
+                    tax: 0,
+                    currency: 'USD',
+                    products: [
+                      {
+                        product_id: '7234590408817',
+                        title: 'The Collection Snowboard: Hydrogen',
+                        price: 600,
+                        brand: 'Hydrogen Vendor',
+                        quantity: 1,
+                      },
+                    ],
+                  },
                   context: {
                     library: {
                       eventOrigin: 'server',
@@ -620,28 +638,12 @@ export const newWebhookOrderEventsTestScenarios = [
                       },
                     },
                   },
-                  type: 'track',
-                  event: 'Order Updated',
-                  properties: {
-                    order_id: '5778367414385',
-                    tax: 0,
-                    currency: 'USD',
-                    products: [
-                      {
-                        product_id: '7234590408817',
-                        title: 'The Collection Snowboard: Hydrogen',
-                        price: 600,
-                        brand: 'Hydrogen Vendor',
-                        quantity: 1,
-                      },
-                    ],
-                  },
-                  userId: '7358220173425',
                   timestamp: '2024-11-06T02:54:50.000Z',
-                  anonymousId: '50ead33e-d763-4854-b0ab-765859ef05cb',
                 },
                 {
+                  type: 'identify',
                   anonymousId: '50ead33e-d763-4854-b0ab-765859ef05cb',
+                  userId: '7358220173425',
                   context: {
                     integration: {
                       name: 'SHOPIFY',
@@ -668,8 +670,6 @@ export const newWebhookOrderEventsTestScenarios = [
                   integrations: {
                     SHOPIFY: true,
                   },
-                  type: 'identify',
-                  userId: '7358220173425',
                 },
               ],
             },
@@ -838,6 +838,25 @@ export const newWebhookOrderEventsTestScenarios = [
             output: {
               batch: [
                 {
+                  type: 'track',
+                  event: 'Order Created',
+                  anonymousId: '50ead33e-d763-4854-b0ab-765859ef05cb',
+                  userId: '7358220173425',
+                  properties: {
+                    order_id: '5778367414385',
+                    value: 600,
+                    tax: 0,
+                    currency: 'USD',
+                    products: [
+                      {
+                        product_id: '7234590408817',
+                        title: 'The Collection Snowboard: Hydrogen',
+                        price: 600,
+                        brand: 'Hydrogen Vendor',
+                        quantity: 1,
+                      },
+                    ],
+                  },
                   context: {
                     library: {
                       eventOrigin: 'server',
@@ -994,29 +1013,12 @@ export const newWebhookOrderEventsTestScenarios = [
                       },
                     },
                   },
-                  type: 'track',
-                  event: 'Order Created',
-                  properties: {
-                    order_id: '5778367414385',
-                    value: 600,
-                    tax: 0,
-                    currency: 'USD',
-                    products: [
-                      {
-                        product_id: '7234590408817',
-                        title: 'The Collection Snowboard: Hydrogen',
-                        price: 600,
-                        brand: 'Hydrogen Vendor',
-                        quantity: 1,
-                      },
-                    ],
-                  },
-                  userId: '7358220173425',
                   timestamp: '2024-11-06T02:54:50.000Z',
-                  anonymousId: '50ead33e-d763-4854-b0ab-765859ef05cb',
                 },
                 {
+                  type: 'identify',
                   anonymousId: '50ead33e-d763-4854-b0ab-765859ef05cb',
+                  userId: '7358220173425',
                   context: {
                     integration: {
                       name: 'SHOPIFY',
@@ -1043,8 +1045,6 @@ export const newWebhookOrderEventsTestScenarios = [
                     SHOPIFY: true,
                   },
                   createdAt: '2024-11-06T02:54:50.000Z',
-                  type: 'identify',
-                  userId: '7358220173425',
                 },
               ],
             },
@@ -1111,6 +1111,21 @@ export const newWebhookOrderEventsTestScenarios = [
             output: {
               batch: [
                 {
+                  type: 'track',
+                  event: 'Order Cancelled',
+                  properties: {
+                    products: [
+                      {
+                        brand: 'Hydrogen Vendor',
+                        price: 600,
+                        product_id: '7234590408817',
+                        quantity: 1,
+                        title: 'The Collection Snowboard: Hydrogen',
+                      },
+                    ],
+                    tax: 0,
+                    value: 600,
+                  },
                   context: {
                     integration: {
                       name: 'SHOPIFY',
@@ -1157,7 +1172,6 @@ export const newWebhookOrderEventsTestScenarios = [
                     },
                     topic: 'orders_cancelled',
                   },
-                  event: 'Order Cancelled',
                   integrations: {
                     SHOPIFY: true,
                     DATA_WAREHOUSE: {
@@ -1166,21 +1180,7 @@ export const newWebhookOrderEventsTestScenarios = [
                       },
                     },
                   },
-                  properties: {
-                    products: [
-                      {
-                        brand: 'Hydrogen Vendor',
-                        price: 600,
-                        product_id: '7234590408817',
-                        quantity: 1,
-                        title: 'The Collection Snowboard: Hydrogen',
-                      },
-                    ],
-                    tax: 0,
-                    value: 600,
-                  },
                   timestamp: '2024-11-06T02:54:50.000Z',
-                  type: 'track',
                 },
               ],
             },
@@ -1402,6 +1402,20 @@ export const newWebhookOrderEventsTestScenarios = [
             output: {
               batch: [
                 {
+                  type: 'track',
+                  event: 'Order Paid',
+                  anonymousId: '50ead33e-d763-4854-b0ab-765859ef05cb',
+                  properties: {
+                    products: [
+                      {
+                        product_id: '7234590408817',
+                        title: 'The Collection Snowboard: Hydrogen',
+                        price: 600,
+                        brand: 'Hydrogen Vendor',
+                        quantity: 1,
+                      },
+                    ],
+                  },
                   context: {
                     library: {
                       eventOrigin: 'server',
@@ -1608,22 +1622,9 @@ export const newWebhookOrderEventsTestScenarios = [
                       },
                     },
                   },
-                  type: 'track',
-                  event: 'Order Paid',
-                  properties: {
-                    products: [
-                      {
-                        product_id: '7234590408817',
-                        title: 'The Collection Snowboard: Hydrogen',
-                        price: 600,
-                        brand: 'Hydrogen Vendor',
-                        quantity: 1,
-                      },
-                    ],
-                  },
-                  anonymousId: '50ead33e-d763-4854-b0ab-765859ef05cb',
                 },
                 {
+                  type: 'identify',
                   anonymousId: '50ead33e-d763-4854-b0ab-765859ef05cb',
                   context: {
                     integration: {
@@ -1641,7 +1642,6 @@ export const newWebhookOrderEventsTestScenarios = [
                   integrations: {
                     SHOPIFY: true,
                   },
-                  type: 'identify',
                 },
               ],
             },

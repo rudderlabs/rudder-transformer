@@ -12,8 +12,9 @@ export const newpixelCheckoutStepsScenarios = [
         body: [
           {
             event: {
-              id: 'sh-f7d2154d-7525-47A4-87FA-E54D2322E129',
+              type: 'standard',
               name: 'checkout_address_info_submitted',
+              clientId: 'c7b3f99b-4d34-463b-835f-c879482a7750',
               data: {
                 checkout: {
                   buyerAcceptsEmailMarketing: false,
@@ -181,8 +182,7 @@ export const newpixelCheckoutStepsScenarios = [
                   transactions: [],
                 },
               },
-              type: 'standard',
-              clientId: 'c7b3f99b-4d34-463b-835f-c879482a7750',
+              id: 'sh-f7d2154d-7525-47A4-87FA-E54D2322E129',
               timestamp: '2024-09-15T21:45:50.523Z',
               context: dummyContext,
               pixelEventLabel: true,
@@ -207,6 +207,148 @@ export const newpixelCheckoutStepsScenarios = [
             output: {
               batch: [
                 {
+                  type: 'track',
+                  event: 'Checkout Address Info Submitted',
+                  anonymousId: 'c7b3f99b-4d34-463b-835f-c879482a7750',
+                  properties: {
+                    buyerAcceptsEmailMarketing: false,
+                    buyerAcceptsSmsMarketing: false,
+                    attributes: [],
+                    billingAddress: {
+                      country: 'US',
+                      countryCode: 'US',
+                    },
+                    token: '5f7028e0bd5225c17b24bdaa0c09f914',
+                    currencyCode: 'USD',
+                    discountApplications: [],
+                    discountsAmount: {
+                      amount: 0,
+                      currencyCode: 'USD',
+                    },
+                    email: 'test-user@sampleemail.com',
+                    phone: '',
+                    lineItems: [
+                      {
+                        discountAllocations: [],
+                        id: '41327143321713',
+                        quantity: 2,
+                        title: 'The Collection Snowboard: Liquid',
+                        variant: {
+                          id: '41327143321713',
+                          image: {
+                            src: 'https://cdn.shopify.com/s/files/1/0590/2696/4593/files/Main_b13ad453-477c-4ed1-9b43-81f3345adfd6_64x64.jpg?v=1724736600',
+                          },
+                          price: {
+                            amount: 749.95,
+                            currencyCode: 'USD',
+                          },
+                          product: {
+                            id: '7234590834801',
+                            title: 'The Collection Snowboard: Liquid',
+                            vendor: 'Hydrogen Vendor',
+                            type: 'snowboard',
+                            untranslatedTitle: 'The Collection Snowboard: Liquid',
+                            url: '/products/the-collection-snowboard-liquid',
+                          },
+                        },
+                        finalLinePrice: {
+                          amount: 1499.9,
+                          currencyCode: 'USD',
+                        },
+                        properties: [],
+                      },
+                      {
+                        discountAllocations: [],
+                        id: '41327143157873',
+                        quantity: 2,
+                        title: 'The Multi-managed Snowboard',
+                        variant: {
+                          id: '41327143157873',
+                          image: {
+                            src: 'https://cdn.shopify.com/s/files/1/0590/2696/4593/files/Main_9129b69a-0c7b-4f66-b6cf-c4222f18028a_64x64.jpg?v=1724736597',
+                          },
+                          price: {
+                            amount: 629.95,
+                            currencyCode: 'USD',
+                          },
+                          product: {
+                            id: '7234590736497',
+                            title: 'The Multi-managed Snowboard',
+                            vendor: 'Multi-managed Vendor',
+                            type: 'snowboard',
+                            untranslatedTitle: 'The Multi-managed Snowboard',
+                            url: '/products/the-multi-managed-snowboard',
+                          },
+                          sku: 'sku-managed-1',
+                        },
+                        finalLinePrice: {
+                          amount: 1259.9,
+                          currencyCode: 'USD',
+                        },
+                        properties: [],
+                      },
+                    ],
+                    localization: {
+                      country: {
+                        isoCode: 'US',
+                      },
+                      language: {
+                        isoCode: 'en-US',
+                      },
+                      market: {
+                        id: 'gid://shopify/Market/23505895537',
+                        handle: 'us',
+                      },
+                    },
+                    delivery: {
+                      selectedDeliveryOptions: [
+                        {
+                          cost: {
+                            amount: 0,
+                            currencyCode: 'USD',
+                          },
+                          costAfterDiscounts: {
+                            amount: 0,
+                            currencyCode: 'USD',
+                          },
+                          handle:
+                            '5f7028e0bd5225c17b24bdaa0c09f914-8388085074acab7e91de633521be86f0',
+                          title: 'Economy',
+                          type: 'shipping',
+                        },
+                      ],
+                    },
+                    shippingAddress: {
+                      address1: 'Queens Center',
+                      city: 'Elmhurst',
+                      country: 'US',
+                      countryCode: 'US',
+                      firstName: 'test',
+                      lastName: 'user',
+                      province: 'NY',
+                      provinceCode: 'NY',
+                      zip: '11373',
+                    },
+                    subtotalPrice: {
+                      amount: 2759.8,
+                      currencyCode: 'USD',
+                    },
+                    shippingLine: {
+                      price: {
+                        amount: 0,
+                        currencyCode: 'USD',
+                      },
+                    },
+                    totalTax: {
+                      amount: 0,
+                      currencyCode: 'USD',
+                    },
+                    totalPrice: {
+                      amount: 2759.8,
+                      currencyCode: 'USD',
+                    },
+                    transactions: [],
+                  },
                   context: {
                     shopifyDetails: {
                       clientId: 'c7b3f99b-4d34-463b-835f-c879482a7750',
@@ -394,149 +536,7 @@ export const newpixelCheckoutStepsScenarios = [
                       },
                     },
                   },
-                  type: 'track',
-                  event: 'Checkout Address Info Submitted',
-                  properties: {
-                    buyerAcceptsEmailMarketing: false,
-                    buyerAcceptsSmsMarketing: false,
-                    attributes: [],
-                    billingAddress: {
-                      country: 'US',
-                      countryCode: 'US',
-                    },
-                    token: '5f7028e0bd5225c17b24bdaa0c09f914',
-                    currencyCode: 'USD',
-                    discountApplications: [],
-                    discountsAmount: {
-                      amount: 0,
-                      currencyCode: 'USD',
-                    },
-                    email: 'test-user@sampleemail.com',
-                    phone: '',
-                    lineItems: [
-                      {
-                        discountAllocations: [],
-                        id: '41327143321713',
-                        quantity: 2,
-                        title: 'The Collection Snowboard: Liquid',
-                        variant: {
-                          id: '41327143321713',
-                          image: {
-                            src: 'https://cdn.shopify.com/s/files/1/0590/2696/4593/files/Main_b13ad453-477c-4ed1-9b43-81f3345adfd6_64x64.jpg?v=1724736600',
-                          },
-                          price: {
-                            amount: 749.95,
-                            currencyCode: 'USD',
-                          },
-                          product: {
-                            id: '7234590834801',
-                            title: 'The Collection Snowboard: Liquid',
-                            vendor: 'Hydrogen Vendor',
-                            type: 'snowboard',
-                            untranslatedTitle: 'The Collection Snowboard: Liquid',
-                            url: '/products/the-collection-snowboard-liquid',
-                          },
-                        },
-                        finalLinePrice: {
-                          amount: 1499.9,
-                          currencyCode: 'USD',
-                        },
-                        properties: [],
-                      },
-                      {
-                        discountAllocations: [],
-                        id: '41327143157873',
-                        quantity: 2,
-                        title: 'The Multi-managed Snowboard',
-                        variant: {
-                          id: '41327143157873',
-                          image: {
-                            src: 'https://cdn.shopify.com/s/files/1/0590/2696/4593/files/Main_9129b69a-0c7b-4f66-b6cf-c4222f18028a_64x64.jpg?v=1724736597',
-                          },
-                          price: {
-                            amount: 629.95,
-                            currencyCode: 'USD',
-                          },
-                          product: {
-                            id: '7234590736497',
-                            title: 'The Multi-managed Snowboard',
-                            vendor: 'Multi-managed Vendor',
-                            type: 'snowboard',
-                            untranslatedTitle: 'The Multi-managed Snowboard',
-                            url: '/products/the-multi-managed-snowboard',
-                          },
-                          sku: 'sku-managed-1',
-                        },
-                        finalLinePrice: {
-                          amount: 1259.9,
-                          currencyCode: 'USD',
-                        },
-                        properties: [],
-                      },
-                    ],
-                    localization: {
-                      country: {
-                        isoCode: 'US',
-                      },
-                      language: {
-                        isoCode: 'en-US',
-                      },
-                      market: {
-                        id: 'gid://shopify/Market/23505895537',
-                        handle: 'us',
-                      },
-                    },
-                    delivery: {
-                      selectedDeliveryOptions: [
-                        {
-                          cost: {
-                            amount: 0,
-                            currencyCode: 'USD',
-                          },
-                          costAfterDiscounts: {
-                            amount: 0,
-                            currencyCode: 'USD',
-                          },
-                          handle:
-                            '5f7028e0bd5225c17b24bdaa0c09f914-8388085074acab7e91de633521be86f0',
-                          title: 'Economy',
-                          type: 'shipping',
-                        },
-                      ],
-                    },
-                    shippingAddress: {
-                      address1: 'Queens Center',
-                      city: 'Elmhurst',
-                      country: 'US',
-                      countryCode: 'US',
-                      firstName: 'test',
-                      lastName: 'user',
-                      province: 'NY',
-                      provinceCode: 'NY',
-                      zip: '11373',
-                    },
-                    subtotalPrice: {
-                      amount: 2759.8,
-                      currencyCode: 'USD',
-                    },
-                    shippingLine: {
-                      price: {
-                        amount: 0,
-                        currencyCode: 'USD',
-                      },
-                    },
-                    totalTax: {
-                      amount: 0,
-                      currencyCode: 'USD',
-                    },
-                    totalPrice: {
-                      amount: 2759.8,
-                      currencyCode: 'USD',
-                    },
-                    transactions: [],
-                  },
                   timestamp: '2024-09-15T21:45:50.523Z',
-                  anonymousId: 'c7b3f99b-4d34-463b-835f-c879482a7750',
                   messageId: 'sh-f7d2154d-7525-47A4-87FA-E54D2322E129',
                 },
               ],
@@ -557,8 +557,9 @@ export const newpixelCheckoutStepsScenarios = [
         body: [
           {
             event: {
-              id: 'sh-f7c8416f-1D35-4304-EF29-78666678C4E9',
+              type: 'standard',
               name: 'checkout_contact_info_submitted',
+              clientId: 'c7b3f99b-4d34-463b-835f-c879482a7750',
               data: {
                 checkout: {
                   buyerAcceptsEmailMarketing: false,
@@ -711,8 +712,7 @@ export const newpixelCheckoutStepsScenarios = [
                   transactions: [],
                 },
               },
-              type: 'standard',
-              clientId: 'c7b3f99b-4d34-463b-835f-c879482a7750',
+              id: 'sh-f7c8416f-1D35-4304-EF29-78666678C4E9',
               timestamp: '2024-09-15T21:40:28.498Z',
               context: dummyContext,
               pixelEventLabel: true,
@@ -737,6 +737,133 @@ export const newpixelCheckoutStepsScenarios = [
             output: {
               batch: [
                 {
+                  type: 'track',
+                  event: 'Checkout Contact Info Submitted',
+                  anonymousId: 'c7b3f99b-4d34-463b-835f-c879482a7750',
+                  properties: {
+                    buyerAcceptsEmailMarketing: false,
+                    buyerAcceptsSmsMarketing: false,
+                    attributes: [],
+                    billingAddress: {
+                      country: 'US',
+                      countryCode: 'US',
+                    },
+                    token: '5f7028e0bd5225c17b24bdaa0c09f914',
+                    currencyCode: 'USD',
+                    discountApplications: [],
+                    discountsAmount: {
+                      amount: 0,
+                      currencyCode: 'USD',
+                    },
+                    email: 'test-user@sampleemail.com',
+                    phone: '',
+                    lineItems: [
+                      {
+                        discountAllocations: [],
+                        id: '41327143321713',
+                        quantity: 2,
+                        title: 'The Collection Snowboard: Liquid',
+                        variant: {
+                          id: '41327143321713',
+                          image: {
+                            src: 'https://cdn.shopify.com/s/files/1/0590/2696/4593/files/Main_b13ad453-477c-4ed1-9b43-81f3345adfd6_64x64.jpg?v=1724736600',
+                          },
+                          price: {
+                            amount: 749.95,
+                            currencyCode: 'USD',
+                          },
+                          product: {
+                            id: '7234590834801',
+                            title: 'The Collection Snowboard: Liquid',
+                            vendor: 'Hydrogen Vendor',
+                            type: 'snowboard',
+                            untranslatedTitle: 'The Collection Snowboard: Liquid',
+                            url: '/products/the-collection-snowboard-liquid',
+                          },
+                          sku: null,
+                          title: null,
+                          untranslatedTitle: null,
+                        },
+                        finalLinePrice: {
+                          amount: 1499.9,
+                          currencyCode: 'USD',
+                        },
+                        sellingPlanAllocation: null,
+                        properties: [],
+                      },
+                      {
+                        discountAllocations: [],
+                        id: '41327143157873',
+                        quantity: 2,
+                        title: 'The Multi-managed Snowboard',
+                        variant: {
+                          id: '41327143157873',
+                          image: {
+                            src: 'https://cdn.shopify.com/s/files/1/0590/2696/4593/files/Main_9129b69a-0c7b-4f66-b6cf-c4222f18028a_64x64.jpg?v=1724736597',
+                          },
+                          price: {
+                            amount: 629.95,
+                            currencyCode: 'USD',
+                          },
+                          product: {
+                            id: '7234590736497',
+                            title: 'The Multi-managed Snowboard',
+                            vendor: 'Multi-managed Vendor',
+                            type: 'snowboard',
+                            untranslatedTitle: 'The Multi-managed Snowboard',
+                            url: '/products/the-multi-managed-snowboard',
+                          },
+                          sku: 'sku-managed-1',
+                          title: null,
+                          untranslatedTitle: null,
+                        },
+                        finalLinePrice: {
+                          amount: 1259.9,
+                          currencyCode: 'USD',
+                        },
+                        sellingPlanAllocation: null,
+                        properties: [],
+                      },
+                    ],
+                    localization: {
+                      country: {
+                        isoCode: 'US',
+                      },
+                      language: {
+                        isoCode: 'en-US',
+                      },
+                      market: {
+                        id: 'gid://shopify/Market/23505895537',
+                        handle: 'us',
+                      },
+                    },
+                    delivery: {
+                      selectedDeliveryOptions: [],
+                    },
+                    shippingAddress: {
+                      country: 'US',
+                      countryCode: 'US',
+                    },
+                    subtotalPrice: {
+                      amount: 2759.8,
+                      currencyCode: 'USD',
+                    },
+                    shippingLine: {
+                      price: {
+                        amount: 0,
+                        currencyCode: 'USD',
+                      },
+                    },
+                    totalTax: {
+                      amount: 0,
+                      currencyCode: 'USD',
+                    },
+                    totalPrice: {
+                      amount: 2759.8,
+                      currencyCode: 'USD',
+                    },
+                    transactions: [],
+                  },
                   context: {
                     shopifyDetails: {
                       clientId: 'c7b3f99b-4d34-463b-835f-c879482a7750',
@@ -908,134 +1035,7 @@ export const newpixelCheckoutStepsScenarios = [
                       },
                     },
                   },
-                  type: 'track',
-                  event: 'Checkout Contact Info Submitted',
-                  properties: {
-                    buyerAcceptsEmailMarketing: false,
-                    buyerAcceptsSmsMarketing: false,
-                    attributes: [],
-                    billingAddress: {
-                      country: 'US',
-                      countryCode: 'US',
-                    },
-                    token: '5f7028e0bd5225c17b24bdaa0c09f914',
-                    currencyCode: 'USD',
-                    discountApplications: [],
-                    discountsAmount: {
-                      amount: 0,
-                      currencyCode: 'USD',
-                    },
-                    email: 'test-user@sampleemail.com',
-                    phone: '',
-                    lineItems: [
-                      {
-                        discountAllocations: [],
-                        id: '41327143321713',
-                        quantity: 2,
-                        title: 'The Collection Snowboard: Liquid',
-                        variant: {
-                          id: '41327143321713',
-                          image: {
-                            src: 'https://cdn.shopify.com/s/files/1/0590/2696/4593/files/Main_b13ad453-477c-4ed1-9b43-81f3345adfd6_64x64.jpg?v=1724736600',
-                          },
-                          price: {
-                            amount: 749.95,
-                            currencyCode: 'USD',
-                          },
-                          product: {
-                            id: '7234590834801',
-                            title: 'The Collection Snowboard: Liquid',
-                            vendor: 'Hydrogen Vendor',
-                            type: 'snowboard',
-                            untranslatedTitle: 'The Collection Snowboard: Liquid',
-                            url: '/products/the-collection-snowboard-liquid',
-                          },
-                          sku: null,
-                          title: null,
-                          untranslatedTitle: null,
-                        },
-                        finalLinePrice: {
-                          amount: 1499.9,
-                          currencyCode: 'USD',
-                        },
-                        sellingPlanAllocation: null,
-                        properties: [],
-                      },
-                      {
-                        discountAllocations: [],
-                        id: '41327143157873',
-                        quantity: 2,
-                        title: 'The Multi-managed Snowboard',
-                        variant: {
-                          id: '41327143157873',
-                          image: {
-                            src: 'https://cdn.shopify.com/s/files/1/0590/2696/4593/files/Main_9129b69a-0c7b-4f66-b6cf-c4222f18028a_64x64.jpg?v=1724736597',
-                          },
-                          price: {
-                            amount: 629.95,
-                            currencyCode: 'USD',
-                          },
-                          product: {
-                            id: '7234590736497',
-                            title: 'The Multi-managed Snowboard',
-                            vendor: 'Multi-managed Vendor',
-                            type: 'snowboard',
-                            untranslatedTitle: 'The Multi-managed Snowboard',
-                            url: '/products/the-multi-managed-snowboard',
-                          },
-                          sku: 'sku-managed-1',
-                          title: null,
-                          untranslatedTitle: null,
-                        },
-                        finalLinePrice: {
-                          amount: 1259.9,
-                          currencyCode: 'USD',
-                        },
-                        sellingPlanAllocation: null,
-                        properties: [],
-                      },
-                    ],
-                    localization: {
-                      country: {
-                        isoCode: 'US',
-                      },
-                      language: {
-                        isoCode: 'en-US',
-                      },
-                      market: {
-                        id: 'gid://shopify/Market/23505895537',
-                        handle: 'us',
-                      },
-                    },
-                    delivery: {
-                      selectedDeliveryOptions: [],
-                    },
-                    shippingAddress: {
-                      country: 'US',
-                      countryCode: 'US',
-                    },
-                    subtotalPrice: {
-                      amount: 2759.8,
-                      currencyCode: 'USD',
-                    },
-                    shippingLine: {
-                      price: {
-                        amount: 0,
-                        currencyCode: 'USD',
-                      },
-                    },
-                    totalTax: {
-                      amount: 0,
-                      currencyCode: 'USD',
-                    },
-                    totalPrice: {
-                      amount: 2759.8,
-                      currencyCode: 'USD',
-                    },
-                    transactions: [],
-                  },
                   timestamp: '2024-09-15T21:40:28.498Z',
-                  anonymousId: 'c7b3f99b-4d34-463b-835f-c879482a7750',
                   messageId: 'sh-f7c8416f-1D35-4304-EF29-78666678C4E9',
                 },
               ],
@@ -1056,7 +1056,8 @@ export const newpixelCheckoutStepsScenarios = [
         body: [
           {
             event: {
-              id: 'sh-f7d5618e-404A-4E6D-4662-599A4BCC9E7C',
+              type: 'standard',
+              clientId: 'c7b3f99b-4d34-463b-835f-c879482a7750',
               name: 'checkout_shipping_info_submitted',
               data: {
                 checkout: {
@@ -1225,8 +1226,7 @@ export const newpixelCheckoutStepsScenarios = [
                   transactions: [],
                 },
               },
-              type: 'standard',
-              clientId: 'c7b3f99b-4d34-463b-835f-c879482a7750',
+              id: 'sh-f7d5618e-404A-4E6D-4662-599A4BCC9E7C',
               timestamp: '2024-09-15T21:47:38.576Z',
               context: dummyContext,
               pixelEventLabel: true,
@@ -1251,6 +1251,155 @@ export const newpixelCheckoutStepsScenarios = [
             output: {
               batch: [
                 {
+                  type: 'track',
+                  event: 'Checkout Shipping Info Submitted',
+                  anonymousId: 'c7b3f99b-4d34-463b-835f-c879482a7750',
+                  properties: {
+                    buyerAcceptsEmailMarketing: false,
+                    buyerAcceptsSmsMarketing: false,
+                    attributes: [],
+                    billingAddress: {
+                      country: 'US',
+                      countryCode: 'US',
+                    },
+                    token: '5f7028e0bd5225c17b24bdaa0c09f914',
+                    currencyCode: 'USD',
+                    discountApplications: [],
+                    discountsAmount: {
+                      amount: 0,
+                      currencyCode: 'USD',
+                    },
+                    email: 'test-user@sampleemail.com',
+                    phone: '',
+                    lineItems: [
+                      {
+                        discountAllocations: [],
+                        id: '41327143321713',
+                        quantity: 2,
+                        title: 'The Collection Snowboard: Liquid',
+                        variant: {
+                          id: '41327143321713',
+                          image: {
+                            src: 'https://cdn.shopify.com/s/files/1/0590/2696/4593/files/Main_b13ad453-477c-4ed1-9b43-81f3345adfd6_64x64.jpg?v=1724736600',
+                          },
+                          price: {
+                            amount: 749.95,
+                            currencyCode: 'USD',
+                          },
+                          product: {
+                            id: '7234590834801',
+                            title: 'The Collection Snowboard: Liquid',
+                            vendor: 'Hydrogen Vendor',
+                            type: 'snowboard',
+                            untranslatedTitle: 'The Collection Snowboard: Liquid',
+                            url: '/products/the-collection-snowboard-liquid',
+                          },
+                          sku: null,
+                          title: null,
+                          untranslatedTitle: null,
+                        },
+                        finalLinePrice: {
+                          amount: 1499.9,
+                          currencyCode: 'USD',
+                        },
+                        sellingPlanAllocation: null,
+                        properties: [],
+                      },
+                      {
+                        discountAllocations: [],
+                        id: '41327143157873',
+                        quantity: 2,
+                        title: 'The Multi-managed Snowboard',
+                        variant: {
+                          id: '41327143157873',
+                          image: {
+                            src: 'https://cdn.shopify.com/s/files/1/0590/2696/4593/files/Main_9129b69a-0c7b-4f66-b6cf-c4222f18028a_64x64.jpg?v=1724736597',
+                          },
+                          price: {
+                            amount: 629.95,
+                            currencyCode: 'USD',
+                          },
+                          product: {
+                            id: '7234590736497',
+                            title: 'The Multi-managed Snowboard',
+                            vendor: 'Multi-managed Vendor',
+                            type: 'snowboard',
+                            untranslatedTitle: 'The Multi-managed Snowboard',
+                            url: '/products/the-multi-managed-snowboard',
+                          },
+                          sku: 'sku-managed-1',
+                          title: null,
+                          untranslatedTitle: null,
+                        },
+                        finalLinePrice: {
+                          amount: 1259.9,
+                          currencyCode: 'USD',
+                        },
+                        sellingPlanAllocation: null,
+                        properties: [],
+                      },
+                    ],
+                    localization: {
+                      country: {
+                        isoCode: 'US',
+                      },
+                      language: {
+                        isoCode: 'en-US',
+                      },
+                      market: {
+                        id: 'gid://shopify/Market/23505895537',
+                        handle: 'us',
+                      },
+                    },
+                    delivery: {
+                      selectedDeliveryOptions: [
+                        {
+                          cost: {
+                            amount: 0,
+                            currencyCode: 'USD',
+                          },
+                          costAfterDiscounts: {
+                            amount: 0,
+                            currencyCode: 'USD',
+                          },
+                          handle:
+                            '5f7028e0bd5225c17b24bdaa0c09f914-8388085074acab7e91de633521be86f0',
+                          title: 'Economy',
+                          type: 'shipping',
+                        },
+                      ],
+                    },
+                    shippingAddress: {
+                      address1: 'Queens Center',
+                      city: 'Elmhurst',
+                      country: 'US',
+                      countryCode: 'US',
+                      firstName: 'test',
+                      lastName: 'user',
+                      province: 'NY',
+                      provinceCode: 'NY',
+                      zip: '11373',
+                    },
+                    subtotalPrice: {
+                      amount: 2759.8,
+                      currencyCode: 'USD',
+                    },
+                    shippingLine: {
+                      price: {
+                        amount: 0,
+                        currencyCode: 'USD',
+                      },
+                    },
+                    totalTax: {
+                      amount: 0,
+                      currencyCode: 'USD',
+                    },
+                    totalPrice: {
+                      amount: 2759.8,
+                      currencyCode: 'USD',
+                    },
+                    transactions: [],
+                  },
                   context: {
                     shopifyDetails: {
                       clientId: 'c7b3f99b-4d34-463b-835f-c879482a7750',
@@ -1438,156 +1587,7 @@ export const newpixelCheckoutStepsScenarios = [
                       },
                     },
                   },
-                  type: 'track',
-                  event: 'Checkout Shipping Info Submitted',
-                  properties: {
-                    buyerAcceptsEmailMarketing: false,
-                    buyerAcceptsSmsMarketing: false,
-                    attributes: [],
-                    billingAddress: {
-                      country: 'US',
-                      countryCode: 'US',
-                    },
-                    token: '5f7028e0bd5225c17b24bdaa0c09f914',
-                    currencyCode: 'USD',
-                    discountApplications: [],
-                    discountsAmount: {
-                      amount: 0,
-                      currencyCode: 'USD',
-                    },
-                    email: 'test-user@sampleemail.com',
-                    phone: '',
-                    lineItems: [
-                      {
-                        discountAllocations: [],
-                        id: '41327143321713',
-                        quantity: 2,
-                        title: 'The Collection Snowboard: Liquid',
-                        variant: {
-                          id: '41327143321713',
-                          image: {
-                            src: 'https://cdn.shopify.com/s/files/1/0590/2696/4593/files/Main_b13ad453-477c-4ed1-9b43-81f3345adfd6_64x64.jpg?v=1724736600',
-                          },
-                          price: {
-                            amount: 749.95,
-                            currencyCode: 'USD',
-                          },
-                          product: {
-                            id: '7234590834801',
-                            title: 'The Collection Snowboard: Liquid',
-                            vendor: 'Hydrogen Vendor',
-                            type: 'snowboard',
-                            untranslatedTitle: 'The Collection Snowboard: Liquid',
-                            url: '/products/the-collection-snowboard-liquid',
-                          },
-                          sku: null,
-                          title: null,
-                          untranslatedTitle: null,
-                        },
-                        finalLinePrice: {
-                          amount: 1499.9,
-                          currencyCode: 'USD',
-                        },
-                        sellingPlanAllocation: null,
-                        properties: [],
-                      },
-                      {
-                        discountAllocations: [],
-                        id: '41327143157873',
-                        quantity: 2,
-                        title: 'The Multi-managed Snowboard',
-                        variant: {
-                          id: '41327143157873',
-                          image: {
-                            src: 'https://cdn.shopify.com/s/files/1/0590/2696/4593/files/Main_9129b69a-0c7b-4f66-b6cf-c4222f18028a_64x64.jpg?v=1724736597',
-                          },
-                          price: {
-                            amount: 629.95,
-                            currencyCode: 'USD',
-                          },
-                          product: {
-                            id: '7234590736497',
-                            title: 'The Multi-managed Snowboard',
-                            vendor: 'Multi-managed Vendor',
-                            type: 'snowboard',
-                            untranslatedTitle: 'The Multi-managed Snowboard',
-                            url: '/products/the-multi-managed-snowboard',
-                          },
-                          sku: 'sku-managed-1',
-                          title: null,
-                          untranslatedTitle: null,
-                        },
-                        finalLinePrice: {
-                          amount: 1259.9,
-                          currencyCode: 'USD',
-                        },
-                        sellingPlanAllocation: null,
-                        properties: [],
-                      },
-                    ],
-                    localization: {
-                      country: {
-                        isoCode: 'US',
-                      },
-                      language: {
-                        isoCode: 'en-US',
-                      },
-                      market: {
-                        id: 'gid://shopify/Market/23505895537',
-                        handle: 'us',
-                      },
-                    },
-                    delivery: {
-                      selectedDeliveryOptions: [
-                        {
-                          cost: {
-                            amount: 0,
-                            currencyCode: 'USD',
-                          },
-                          costAfterDiscounts: {
-                            amount: 0,
-                            currencyCode: 'USD',
-                          },
-                          handle:
-                            '5f7028e0bd5225c17b24bdaa0c09f914-8388085074acab7e91de633521be86f0',
-                          title: 'Economy',
-                          type: 'shipping',
-                        },
-                      ],
-                    },
-                    shippingAddress: {
-                      address1: 'Queens Center',
-                      city: 'Elmhurst',
-                      country: 'US',
-                      countryCode: 'US',
-                      firstName: 'test',
-                      lastName: 'user',
-                      province: 'NY',
-                      provinceCode: 'NY',
-                      zip: '11373',
-                    },
-                    subtotalPrice: {
-                      amount: 2759.8,
-                      currencyCode: 'USD',
-                    },
-                    shippingLine: {
-                      price: {
-                        amount: 0,
-                        currencyCode: 'USD',
-                      },
-                    },
-                    totalTax: {
-                      amount: 0,
-                      currencyCode: 'USD',
-                    },
-                    totalPrice: {
-                      amount: 2759.8,
-                      currencyCode: 'USD',
-                    },
-                    transactions: [],
-                  },
                   timestamp: '2024-09-15T21:47:38.576Z',
-                  anonymousId: 'c7b3f99b-4d34-463b-835f-c879482a7750',
                   messageId: 'sh-f7d5618e-404A-4E6D-4662-599A4BCC9E7C',
                 },
               ],
@@ -1608,8 +1608,10 @@ export const newpixelCheckoutStepsScenarios = [
         body: [
           {
             event: {
-              id: 'sh-f7d843ea-ED11-4A12-F32F-C5A45BED0413',
+              type: 'standard',
               name: 'payment_info_submitted',
+              clientId: 'c7b3f99b-4d34-463b-835f-c879482a7750',
+              id: 'sh-f7d843ea-ED11-4A12-F32F-C5A45BED0413',
               data: {
                 checkout: {
                   buyerAcceptsEmailMarketing: false,
@@ -1777,8 +1779,6 @@ export const newpixelCheckoutStepsScenarios = [
                   transactions: [],
                 },
               },
-              type: 'standard',
-              clientId: 'c7b3f99b-4d34-463b-835f-c879482a7750',
               timestamp: '2024-09-15T21:49:13.092Z',
               context: dummyContext,
               pixelEventLabel: true,
@@ -1803,6 +1803,148 @@ export const newpixelCheckoutStepsScenarios = [
             output: {
               batch: [
                 {
+                  type: 'track',
+                  event: 'Payment Info Entered',
+                  anonymousId: 'c7b3f99b-4d34-463b-835f-c879482a7750',
+                  properties: {
+                    buyerAcceptsEmailMarketing: false,
+                    buyerAcceptsSmsMarketing: false,
+                    attributes: [],
+                    billingAddress: {
+                      country: 'US',
+                      countryCode: 'US',
+                    },
+                    token: '5f7028e0bd5225c17b24bdaa0c09f914',
+                    currencyCode: 'USD',
+                    discountApplications: [],
+                    discountsAmount: {
+                      amount: 0,
+                      currencyCode: 'USD',
+                    },
+                    email: 'test-user@sampleemail.com',
+                    phone: '',
+                    lineItems: [
+                      {
+                        discountAllocations: [],
+                        id: '41327143321713',
+                        quantity: 2,
+                        title: 'The Collection Snowboard: Liquid',
+                        variant: {
+                          id: '41327143321713',
+                          image: {
+                            src: 'https://cdn.shopify.com/s/files/1/0590/2696/4593/files/Main_b13ad453-477c-4ed1-9b43-81f3345adfd6_64x64.jpg?v=1724736600',
+                          },
+                          price: {
+                            amount: 749.95,
+                            currencyCode: 'USD',
+                          },
+                          product: {
+                            id: '7234590834801',
+                            title: 'The Collection Snowboard: Liquid',
+                            vendor: 'Hydrogen Vendor',
+                            type: 'snowboard',
+                            untranslatedTitle: 'The Collection Snowboard: Liquid',
+                            url: '/products/the-collection-snowboard-liquid',
+                          },
+                        },
+                        finalLinePrice: {
+                          amount: 1499.9,
+                          currencyCode: 'USD',
+                        },
+                        properties: [],
+                      },
+                      {
+                        discountAllocations: [],
+                        id: '41327143157873',
+                        quantity: 2,
+                        title: 'The Multi-managed Snowboard',
+                        variant: {
+                          id: '41327143157873',
+                          image: {
+                            src: 'https://cdn.shopify.com/s/files/1/0590/2696/4593/files/Main_9129b69a-0c7b-4f66-b6cf-c4222f18028a_64x64.jpg?v=1724736597',
+                          },
+                          price: {
+                            amount: 629.95,
+                            currencyCode: 'USD',
+                          },
+                          product: {
+                            id: '7234590736497',
+                            title: 'The Multi-managed Snowboard',
+                            vendor: 'Multi-managed Vendor',
+                            type: 'snowboard',
+                            untranslatedTitle: 'The Multi-managed Snowboard',
+                            url: '/products/the-multi-managed-snowboard',
+                          },
+                          sku: 'sku-managed-1',
+                        },
+                        finalLinePrice: {
+                          amount: 1259.9,
+                          currencyCode: 'USD',
+                        },
+                        properties: [],
+                      },
+                    ],
+                    localization: {
+                      country: {
+                        isoCode: 'US',
+                      },
+                      language: {
+                        isoCode: 'en-US',
+                      },
+                      market: {
+                        id: 'gid://shopify/Market/23505895537',
+                        handle: 'us',
+                      },
+                    },
+                    delivery: {
+                      selectedDeliveryOptions: [
+                        {
+                          cost: {
+                            amount: 0,
+                            currencyCode: 'USD',
+                          },
+                          costAfterDiscounts: {
+                            amount: 0,
+                            currencyCode: 'USD',
+                          },
+                          handle:
+                            '5f7028e0bd5225c17b24bdaa0c09f914-8388085074acab7e91de633521be86f0',
+                          title: 'Economy',
+                          type: 'shipping',
+                        },
+                      ],
+                    },
+                    shippingAddress: {
+                      address1: 'Queens Center',
+                      city: 'Elmhurst',
+                      country: 'US',
+                      countryCode: 'US',
+                      firstName: 'test',
+                      lastName: 'user',
+                      province: 'NY',
+                      provinceCode: 'NY',
+                      zip: '11373',
+                    },
+                    subtotalPrice: {
+                      amount: 2759.8,
+                      currencyCode: 'USD',
+                    },
+                    shippingLine: {
+                      price: {
+                        amount: 0,
+                        currencyCode: 'USD',
+                      },
+                    },
+                    totalTax: {
+                      amount: 0,
+                      currencyCode: 'USD',
+                    },
+                    totalPrice: {
+                      amount: 2759.8,
+                      currencyCode: 'USD',
+                    },
+                    transactions: [],
+                  },
                   context: {
                     shopifyDetails: {
                       clientId: 'c7b3f99b-4d34-463b-835f-c879482a7750',
@@ -1990,149 +2132,7 @@ export const newpixelCheckoutStepsScenarios = [
                       },
                     },
                   },
-                  type: 'track',
-                  event: 'Payment Info Entered',
-                  properties: {
-                    buyerAcceptsEmailMarketing: false,
-                    buyerAcceptsSmsMarketing: false,
-                    attributes: [],
-                    billingAddress: {
-                      country: 'US',
-                      countryCode: 'US',
-                    },
-                    token: '5f7028e0bd5225c17b24bdaa0c09f914',
-                    currencyCode: 'USD',
-                    discountApplications: [],
-                    discountsAmount: {
-                      amount: 0,
-                      currencyCode: 'USD',
-                    },
-                    email: 'test-user@sampleemail.com',
-                    phone: '',
-                    lineItems: [
-                      {
-                        discountAllocations: [],
-                        id: '41327143321713',
-                        quantity: 2,
-                        title: 'The Collection Snowboard: Liquid',
-                        variant: {
-                          id: '41327143321713',
-                          image: {
-                            src: 'https://cdn.shopify.com/s/files/1/0590/2696/4593/files/Main_b13ad453-477c-4ed1-9b43-81f3345adfd6_64x64.jpg?v=1724736600',
-                          },
-                          price: {
-                            amount: 749.95,
-                            currencyCode: 'USD',
-                          },
-                          product: {
-                            id: '7234590834801',
-                            title: 'The Collection Snowboard: Liquid',
-                            vendor: 'Hydrogen Vendor',
-                            type: 'snowboard',
-                            untranslatedTitle: 'The Collection Snowboard: Liquid',
-                            url: '/products/the-collection-snowboard-liquid',
-                          },
-                        },
-                        finalLinePrice: {
-                          amount: 1499.9,
-                          currencyCode: 'USD',
-                        },
-                        properties: [],
-                      },
-                      {
-                        discountAllocations: [],
-                        id: '41327143157873',
-                        quantity: 2,
-                        title: 'The Multi-managed Snowboard',
-                        variant: {
-                          id: '41327143157873',
-                          image: {
-                            src: 'https://cdn.shopify.com/s/files/1/0590/2696/4593/files/Main_9129b69a-0c7b-4f66-b6cf-c4222f18028a_64x64.jpg?v=1724736597',
-                          },
-                          price: {
-                            amount: 629.95,
-                            currencyCode: 'USD',
-                          },
-                          product: {
-                            id: '7234590736497',
-                            title: 'The Multi-managed Snowboard',
-                            vendor: 'Multi-managed Vendor',
-                            type: 'snowboard',
-                            untranslatedTitle: 'The Multi-managed Snowboard',
-                            url: '/products/the-multi-managed-snowboard',
-                          },
-                          sku: 'sku-managed-1',
-                        },
-                        finalLinePrice: {
-                          amount: 1259.9,
-                          currencyCode: 'USD',
-                        },
-                        properties: [],
-                      },
-                    ],
-                    localization: {
-                      country: {
-                        isoCode: 'US',
-                      },
-                      language: {
-                        isoCode: 'en-US',
-                      },
-                      market: {
-                        id: 'gid://shopify/Market/23505895537',
-                        handle: 'us',
-                      },
-                    },
-                    delivery: {
-                      selectedDeliveryOptions: [
-                        {
-                          cost: {
-                            amount: 0,
-                            currencyCode: 'USD',
-                          },
-                          costAfterDiscounts: {
-                            amount: 0,
-                            currencyCode: 'USD',
-                          },
-                          handle:
-                            '5f7028e0bd5225c17b24bdaa0c09f914-8388085074acab7e91de633521be86f0',
-                          title: 'Economy',
-                          type: 'shipping',
-                        },
-                      ],
-                    },
-                    shippingAddress: {
-                      address1: 'Queens Center',
-                      city: 'Elmhurst',
-                      country: 'US',
-                      countryCode: 'US',
-                      firstName: 'test',
-                      lastName: 'user',
-                      province: 'NY',
-                      provinceCode: 'NY',
-                      zip: '11373',
-                    },
-                    subtotalPrice: {
-                      amount: 2759.8,
-                      currencyCode: 'USD',
-                    },
-                    shippingLine: {
-                      price: {
-                        amount: 0,
-                        currencyCode: 'USD',
-                      },
-                    },
-                    totalTax: {
-                      amount: 0,
-                      currencyCode: 'USD',
-                    },
-                    totalPrice: {
-                      amount: 2759.8,
-                      currencyCode: 'USD',
-                    },
-                    transactions: [],
-                  },
                   timestamp: '2024-09-15T21:49:13.092Z',
-                  anonymousId: 'c7b3f99b-4d34-463b-835f-c879482a7750',
                   messageId: 'sh-f7d843ea-ED11-4A12-F32F-C5A45BED0413',
                 },
               ],

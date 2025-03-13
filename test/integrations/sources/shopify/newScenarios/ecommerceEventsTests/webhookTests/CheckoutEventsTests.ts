@@ -117,6 +117,23 @@ export const newWebhookcheckoutEventsTestScenarios = [
             output: {
               batch: [
                 {
+                  type: 'track',
+                  event: 'Checkout Started Webhook',
+                  properties: {
+                    order_id: '35550298931313',
+                    value: 600,
+                    tax: 0,
+                    currency: 'USD',
+                    products: [
+                      {
+                        product_id: '7234590408817',
+                        price: 600.0,
+                        brand: 'Hydrogen Vendor',
+                        quantity: 1,
+                      },
+                    ],
+                  },
+                  anonymousId: '50ead33e-d763-4854-b0ab-765859ef05cb',
                   context: {
                     library: {
                       eventOrigin: 'server',
@@ -221,24 +238,7 @@ export const newWebhookcheckoutEventsTestScenarios = [
                       },
                     },
                   },
-                  type: 'track',
-                  event: 'Checkout Started Webhook',
-                  properties: {
-                    order_id: '35550298931313',
-                    value: 600,
-                    tax: 0,
-                    currency: 'USD',
-                    products: [
-                      {
-                        product_id: '7234590408817',
-                        price: 600.0,
-                        brand: 'Hydrogen Vendor',
-                        quantity: 1,
-                      },
-                    ],
-                  },
                   timestamp: '2024-11-06T02:22:02.000Z',
-                  anonymousId: '50ead33e-d763-4854-b0ab-765859ef05cb',
                 },
               ],
             },
@@ -305,6 +305,21 @@ export const newWebhookcheckoutEventsTestScenarios = [
             output: {
               batch: [
                 {
+                  type: 'track',
+                  event: 'Order Cancelled',
+                  properties: {
+                    products: [
+                      {
+                        brand: 'Hydrogen Vendor',
+                        price: 600,
+                        product_id: '7234590408817',
+                        quantity: 1,
+                        title: 'The Collection Snowboard: Hydrogen',
+                      },
+                    ],
+                    tax: 0,
+                    value: 600,
+                  },
                   context: {
                     integration: {
                       name: 'SHOPIFY',
@@ -351,7 +366,6 @@ export const newWebhookcheckoutEventsTestScenarios = [
                     },
                     topic: 'orders_cancelled',
                   },
-                  event: 'Order Cancelled',
                   integrations: {
                     SHOPIFY: true,
                     DATA_WAREHOUSE: {
@@ -360,21 +374,7 @@ export const newWebhookcheckoutEventsTestScenarios = [
                       },
                     },
                   },
-                  properties: {
-                    products: [
-                      {
-                        brand: 'Hydrogen Vendor',
-                        price: 600,
-                        product_id: '7234590408817',
-                        quantity: 1,
-                        title: 'The Collection Snowboard: Hydrogen',
-                      },
-                    ],
-                    tax: 0,
-                    value: 600,
-                  },
                   timestamp: '2024-11-06T02:54:50.000Z',
-                  type: 'track',
                 },
               ],
             },
@@ -497,6 +497,23 @@ export const newWebhookcheckoutEventsTestScenarios = [
             output: {
               batch: [
                 {
+                  type: 'track',
+                  event: 'Checkout Started Webhook',
+                  anonymousId: '9125e1da-57b9-5bdc-953e-eb2b0ded5edc',
+                  properties: {
+                    order_id: '35550298931313',
+                    value: 600,
+                    tax: 0,
+                    currency: 'USD',
+                    products: [
+                      {
+                        product_id: '7234590408817',
+                        price: 600.0,
+                        brand: 'Hydrogen Vendor',
+                        quantity: 1,
+                      },
+                    ],
+                  },
                   context: {
                     library: {
                       eventOrigin: 'server',
@@ -601,24 +618,7 @@ export const newWebhookcheckoutEventsTestScenarios = [
                       },
                     },
                   },
-                  type: 'track',
-                  event: 'Checkout Started Webhook',
-                  properties: {
-                    order_id: '35550298931313',
-                    value: 600,
-                    tax: 0,
-                    currency: 'USD',
-                    products: [
-                      {
-                        product_id: '7234590408817',
-                        price: 600.0,
-                        brand: 'Hydrogen Vendor',
-                        quantity: 1,
-                      },
-                    ],
-                  },
                   timestamp: '2024-11-06T02:22:02.000Z',
-                  anonymousId: '9125e1da-57b9-5bdc-953e-eb2b0ded5edc',
                 },
               ],
             },

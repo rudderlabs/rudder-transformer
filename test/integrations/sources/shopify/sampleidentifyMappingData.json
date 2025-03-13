@@ -1,0 +1,31 @@
+{
+  "id": "12345",
+  "firstName": "John",
+  "lastName": "Doe",
+  "name": "John Doe",
+  "age": 30,
+  "email": "johndoe@example.com",
+  "phone": "+1234567890",
+  "address": {
+    "street": "123 Main St",
+    "city": "New York",
+    "state": "NY",
+    "country": "USA",
+    "postalCode": "10001"
+  },
+  "birthday": "1993-05-15",
+  "company": {
+    "name": "Tech Corp",
+    "id": "TC-001",
+    "industry": "Technology",
+    "employee_count": 500,
+    "plan": "Enterprise"
+  },
+  "createdAt": "2023-06-01T12:00:00Z",
+  "description": "Software Engineer at Tech Corp",
+  "gender": "Male",
+  "title": "Lead Developer",
+  "username": "johndoe92",
+  "website": "https://johndoe.dev",
+  "avatar": "https://example.com/avatar.jpg"
+}

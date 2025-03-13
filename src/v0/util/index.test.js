@@ -13,7 +13,6 @@ const {
   isAxiosError,
   removeHyphens,
   convertToUuid,
-  unwrapArrayValues,
 } = require('./index');
 const exp = require('constants');
 const { ERROR_MESSAGES } = require('./constant');
@@ -1162,69 +1161,5 @@ describe('getBodyFromV2SpecPayload', () => {
       },
     };
     expect(utilities.getBodyFromV2SpecPayload(input)).toEqual([1, 2, 3]);
-  });
-});
-
-describe('unwrapArrayValues', () => {
-  const testCases = [
-    {
-      name: 'should throw an error if the payload is null',
-      input: null,
-      error: new InstrumentationError('Payload must be an valid object'),
-    },
-    {
-      name: 'should throw an error if the payload is string',
-      input: 'payload',
-      error: new InstrumentationError('Payload must be an valid object'),
-    },
-    {
-      name: 'should throw an error if the payload is array',
-      input: [],
-      error: new InstrumentationError('Payload must be an valid object'),
-    },
-    {
-      name: 'should return an empty object when given an empty object',
-      input: {},
-      expected: {},
-    },
-    {
-      name: 'should unwrap array of length 1 and assign the other value as it is',
-      input: {
-        ids: [1, 2, 3],
-        names: ['Test 1', 'Test 2', 'Test 3'],
-        items: [['apple', 'banana']],
-        age: [100],
-        id: '456',
-        emptyStr: [''],
-        emptyArray: [],
-        array: [null],
-        boolean: true,
-        null: null,
-        undefined: undefined,
-      },
-      expected: {
-        ids: [1, 2, 3],
-        names: ['Test 1', 'Test 2', 'Test 3'],
-        items: ['apple', 'banana'],
-        age: 100,
-        id: '456',
-        emptyStr: '',
-        emptyArray: [],
-        array: null,
-        boolean: true,
-        null: null,
-        undefined: undefined,
-      },
-    },
-  ];
-
-  testCases.forEach(({ name, input, error, expected }) => {
-    it(name, () => {
-      if (error) {
-        expect(() => unwrapArrayValues(input)).toThrow(error);
-      } else {
-        expect(unwrapArrayValues(input)).toEqual(expected);
-      }
-    });
   });
 });

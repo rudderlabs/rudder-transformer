@@ -168,6 +168,23 @@ export const pixelEventsTestScenarios = [
                     name: 'The Collection Snowboard: Liquid',
                   },
                   context: {
+                    page: {
+                      title: 'Checkout - pixel-testing-rs',
+                      url: 'https://store.myshopify.com/checkouts/cn/Z2NwLXVzLWVhc3QxOjAxSjY5OVpIRURQNERFMDBKUTVaRkI4UzdU',
+                      path: '/checkouts/cn/Z2NwLXVzLWVhc3QxOjAxSjY5OVpIRURQNERFMDBKUTVaRkI4UzdU',
+                      search: '',
+                    },
+                    userAgent:
+                      'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36',
+                    screen: {
+                      height: 1117,
+                      width: 1728,
+                    },
+                    library: {
+                      name: 'RudderStack Shopify Cloud',
+                      eventOrigin: 'client',
+                      version: '2.0.0',
+                    },
                     shopifyDetails: {
                       clientId: 'c7b3f99b-4d34-463b-835f-c879482a7750',
                       data: {
@@ -327,6 +344,23 @@ export const pixelEventsTestScenarios = [
                     total: 1259.9,
                   },
                   context: {
+                    page: {
+                      title: 'Checkout - pixel-testing-rs',
+                      url: 'https://store.myshopify.com/checkouts/cn/Z2NwLXVzLWVhc3QxOjAxSjY5OVpIRURQNERFMDBKUTVaRkI4UzdU',
+                      path: '/checkouts/cn/Z2NwLXVzLWVhc3QxOjAxSjY5OVpIRURQNERFMDBKUTVaRkI4UzdU',
+                      search: '',
+                    },
+                    userAgent:
+                      'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36',
+                    screen: {
+                      height: 1117,
+                      width: 1728,
+                    },
+                    library: {
+                      name: 'RudderStack Shopify Cloud',
+                      eventOrigin: 'client',
+                      version: '2.0.0',
+                    },
                     shopifyDetails: {
                       clientId: 'c7b3f99b-4d34-463b-835f-c879482a7750',
                       data: {
@@ -556,6 +590,23 @@ export const pixelEventsTestScenarios = [
                     ],
                   },
                   context: {
+                    page: {
+                      title: 'Checkout - pixel-testing-rs',
+                      url: 'https://store.myshopify.com/checkouts/cn/Z2NwLXVzLWVhc3QxOjAxSjY5OVpIRURQNERFMDBKUTVaRkI4UzdU',
+                      path: '/checkouts/cn/Z2NwLXVzLWVhc3QxOjAxSjY5OVpIRURQNERFMDBKUTVaRkI4UzdU',
+                      search: '',
+                    },
+                    userAgent:
+                      'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36',
+                    screen: {
+                      height: 1117,
+                      width: 1728,
+                    },
+                    library: {
+                      name: 'RudderStack Shopify Cloud',
+                      eventOrigin: 'client',
+                      version: '2.0.0',
+                    },
                     shopifyDetails: {
                       clientId: 'c7b3f99b-4d34-463b-835f-c879482a7750',
                       data: {
@@ -743,6 +794,23 @@ export const pixelEventsTestScenarios = [
                     quantity: 1,
                   },
                   context: {
+                    page: {
+                      title: 'Checkout - pixel-testing-rs',
+                      url: 'https://store.myshopify.com/checkouts/cn/Z2NwLXVzLWVhc3QxOjAxSjY5OVpIRURQNERFMDBKUTVaRkI4UzdU',
+                      path: '/checkouts/cn/Z2NwLXVzLWVhc3QxOjAxSjY5OVpIRURQNERFMDBKUTVaRkI4UzdU',
+                      search: '',
+                    },
+                    userAgent:
+                      'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36',
+                    screen: {
+                      height: 1117,
+                      width: 1728,
+                    },
+                    library: {
+                      name: 'RudderStack Shopify Cloud',
+                      eventOrigin: 'client',
+                      version: '2.0.0',
+                    },
                     shopifyDetails: {
                       clientId: 'c7b3f99b-4d34-463b-835f-c879482a7750',
                       data: {
@@ -889,6 +957,23 @@ export const pixelEventsTestScenarios = [
                     quantity: 1,
                   },
                   context: {
+                    page: {
+                      title: 'Checkout - pixel-testing-rs',
+                      url: 'https://store.myshopify.com/checkouts/cn/Z2NwLXVzLWVhc3QxOjAxSjY5OVpIRURQNERFMDBKUTVaRkI4UzdU',
+                      path: '/checkouts/cn/Z2NwLXVzLWVhc3QxOjAxSjY5OVpIRURQNERFMDBKUTVaRkI4UzdU',
+                      search: '',
+                    },
+                    userAgent:
+                      'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36',
+                    screen: {
+                      height: 1117,
+                      width: 1728,
+                    },
+                    library: {
+                      name: 'RudderStack Shopify Cloud',
+                      eventOrigin: 'client',
+                      version: '2.0.0',
+                    },
                     shopifyDetails: {
                       clientId: 'c7b3f99b-4d34-463b-835f-c879482a7750',
                       data: {
@@ -1000,6 +1085,23 @@ export const pixelEventsTestScenarios = [
                     query: 'skate',
                   },
                   context: {
+                    page: {
+                      title: 'Checkout - pixel-testing-rs',
+                      url: 'https://store.myshopify.com/checkouts/cn/Z2NwLXVzLWVhc3QxOjAxSjY5OVpIRURQNERFMDBKUTVaRkI4UzdU',
+                      path: '/checkouts/cn/Z2NwLXVzLWVhc3QxOjAxSjY5OVpIRURQNERFMDBKUTVaRkI4UzdU',
+                      search: '',
+                    },
+                    userAgent:
+                      'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36',
+                    screen: {
+                      height: 1117,
+                      width: 1728,
+                    },
+                    library: {
+                      name: 'RudderStack Shopify Cloud',
+                      eventOrigin: 'client',
+                      version: '2.0.0',
+                    },
                     shopifyDetails: {
                       clientId: 'c7b3f99b-4d34-463b-835f-c879482a7750',
                       data: {

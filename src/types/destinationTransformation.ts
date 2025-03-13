@@ -227,11 +227,6 @@ export type ComparatorInput = {
   feature: string;
 };
 
-// Add type guard to check if a request is a ProcessorTransformationRequest
-export const isProcessorTransformationRequest = (
-  request: ProcessorTransformationRequest | RouterTransformationRequestData,
-): request is ProcessorTransformationRequest => 'libraries' in request || 'credentials' in request;
-
 // Add helper type for pre-processing functions
 export type PreProcessableRequest =
   | ProcessorTransformationRequest

@@ -1,7 +1,7 @@
 export const data = [
   {
     name: 'am',
-    description: 'Test 0: ERROR - Both userId and deviceId cannot be undefined',
+    description: 'Test 0: should error when Both userId and deviceId are undefined',
     feature: 'batch',
     module: 'destination',
     version: 'v0',

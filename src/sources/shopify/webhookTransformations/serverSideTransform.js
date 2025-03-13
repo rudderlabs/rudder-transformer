@@ -1,16 +1,12 @@
 const lodash = require('lodash');
 const get = require('get-value');
 const { isDefinedNotNullNotEmpty } = require('@rudderstack/integrations-lib');
-const stats = require('../../../../util/stats');
-const { getShopifyTopic } = require('../../../../v0/sources/shopify/util');
-const { removeUndefinedAndNullValues } = require('../../../../v0/util');
-const Message = require('../../../../sources/message');
-const { EventType } = require('../../../../constants');
-const {
-  IDENTIFY_TOPICS,
-  SUPPORTED_TRACK_EVENTS,
-  SHOPIFY_TRACK_MAP,
-} = require('../../../../v0/sources/shopify/config');
+const stats = require('../../../util/stats');
+const { getShopifyTopic } = require('../tracker/util');
+const { removeUndefinedAndNullValues } = require('../../../v0/util');
+const Message = require('../../message');
+const { EventType } = require('../../../constants');
+const { IDENTIFY_TOPICS, SUPPORTED_TRACK_EVENTS, SHOPIFY_TRACK_MAP } = require('../tracker/config');
 const { INTEGERATION, identifyMappingJSON, lineItemsMappingJSON } = require('../config');
 const { ECOM_TOPICS, RUDDER_ECOM_MAP } = require('../config');
 const {
@@ -21,7 +17,7 @@ const {
   addCartTokenHashToTraits,
 } = require('./serverSideUtlis');
 const { updateAnonymousIdToUserIdInRedis } = require('../utils');
-const { RedisDB } = require('../../../../util/redis/redisConnector');
+const { RedisDB } = require('../../../util/redis/redisConnector');
 
 const NO_OPERATION_SUCCESS = {
   outputToSource: {

@@ -92,7 +92,7 @@ export const data = [
                 },
                 triggered_event: 'Completed Survey',
                 form: {
-                  uuid: '0d94c790-401c-11ed-bb27-e31f6832c5ae',
+                  uuid: 'form-uuid',
                   name: 'Customer Churn Survey',
                 },
                 response: {
@@ -146,7 +146,7 @@ export const data = [
                     },
                     library: { name: 'unknown', version: 'unknown' },
                     integration: { name: 'Refiner' },
-                    formUuid: '0d94c790-401c-11ed-bb27-e31f6832c5ae',
+                    formUuid: 'form-uuid',
                     formName: 'Customer Churn Survey',
                   },
                   integrations: { Refiner: false },
@@ -162,7 +162,7 @@ export const data = [
                   context: {
                     library: { name: 'unknown', version: 'unknown' },
                     formName: 'Customer Churn Survey',
-                    formUuid: '0d94c790-401c-11ed-bb27-e31f6832c5ae',
+                    formUuid: 'form-uuid',
                     integration: { name: 'Refiner' },
                   },
                   properties: {
@@ -180,7 +180,7 @@ export const data = [
                       first_data_reception_at: '2022-10-12T02:05:55.000000Z',
                     },
                     refiner_form_name: 'Customer Churn Survey',
-                    refiner_form_uuid: '0d94c790-401c-11ed-bb27-e31f6832c5ae',
+                    refiner_form_uuid: 'form-uuid',
                   },
                   integrations: { Refiner: false },
                   originalTimestamp: '2022-10-12T02:05:55.000000Z',
@@ -308,7 +308,7 @@ export const data = [
                 },
                 triggered_event: 'Completed Survey',
                 form: {
-                  uuid: '0d94c790-401c-11ed-bb27-e31f6832c5ae',
+                  uuid: 'form-uuid',
                   name: 'Customer Churn Survey',
                 },
                 response: {
@@ -369,7 +369,7 @@ export const data = [
                     },
                     library: { name: 'unknown', version: 'unknown' },
                     formName: 'Customer Churn Survey',
-                    formUuid: '0d94c790-401c-11ed-bb27-e31f6832c5ae',
+                    formUuid: 'form-uuid',
                     integration: { name: 'Refiner' },
                   },
                   integrations: { Refiner: false },
@@ -382,7 +382,7 @@ export const data = [
                   context: {
                     library: { name: 'unknown', version: 'unknown' },
                     formName: 'Customer Churn Survey',
-                    formUuid: '0d94c790-401c-11ed-bb27-e31f6832c5ae',
+                    formUuid: 'form-uuid',
                     integration: { name: 'Refiner' },
                   },
                   properties: {
@@ -400,7 +400,7 @@ export const data = [
                       first_data_reception_at: '2022-10-18T05:05:45.000000Z',
                     },
                     refiner_form_name: 'Customer Churn Survey',
-                    refiner_form_uuid: '0d94c790-401c-11ed-bb27-e31f6832c5ae',
+                    refiner_form_uuid: 'form-uuid',
                   },
                   integrations: { Refiner: false },
                   originalTimestamp: '2022-10-18T05:05:45.000000Z',

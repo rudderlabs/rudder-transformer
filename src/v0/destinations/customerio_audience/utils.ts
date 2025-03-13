@@ -1,46 +1,57 @@
-import { base64Convertor } from '@rudderstack/integrations-lib';
+import {
+  base64Convertor,
+  ConfigurationError,
+  formatZodError,
+  InstrumentationError,
+} from '@rudderstack/integrations-lib';
 import { BatchUtils } from '@rudderstack/workflow-engine';
 import { BASE_ENDPOINT, DEFAULT_ID_TYPE, MAX_ITEMS } from './config';
 import {
-  CustomerIOConnectionType,
-  CustomerIODestinationType,
-  CustomerIORouterRequestType,
+  CustomerIOConnection,
+  CustomerIODestination,
+  CustomerIORouterRequest,
   RespList,
-  SegmentationHeadersType,
-  SegmentationParamType,
-  SegmentationPayloadType,
+  SegmentationHeaders,
+  SegmentationParam,
+  SegmentationPayload,
+  CustomerIOBatchResponse,
+  SegmentActionType,
+  CustomerIOConnectionConfigSchema,
+  CustomerIOMessageSchema,
+  ProcessedEvent,
 } from './type';
 import { Metadata } from '../../../types';
 
-const getIdType = (connection: CustomerIOConnectionType): string =>
+const getIdType = (connection: CustomerIOConnection): string =>
   connection.config.destination.identifierMappings[0]?.to || DEFAULT_ID_TYPE;
 
-const getSegmentId = (connection: CustomerIOConnectionType): string | number =>
+const getSegmentId = (connection: CustomerIOConnection): string | number =>
   connection.config.destination.audienceId;
 
-const getHeaders = (destination: CustomerIODestinationType): SegmentationHeadersType => ({
+const getHeaders = (destination: CustomerIODestination): SegmentationHeaders => ({
   'Content-Type': 'application/json',
   Authorization: `Basic ${base64Convertor(`${destination.Config.siteId}:${destination.Config.apiKey}`)}`,
 });
 
-const getParams = (connection: CustomerIOConnectionType): SegmentationParamType => ({
+const getParams = (connection: CustomerIOConnection): SegmentationParam => ({
   id_type: getIdType(connection),
 });
 
-const getMergedPayload = (batch: RespList[]): SegmentationPayloadType => ({
+const getMergedPayload = (batch: RespList[]): SegmentationPayload => ({
   ids: batch.flatMap((input) => input.payload.ids),
 });
 
-const getMergedMetadata = (batch: RespList[]): Metadata[] => batch.map((input) => input.metadata);
+const getMergedMetadata = (batch: RespList[]): Partial<Metadata>[] =>
+  batch.map((input) => input.metadata);
 
 const buildBatchedResponse = (
-  payload: SegmentationPayloadType,
+  payload: SegmentationPayload,
   endpoint: string,
-  headers: SegmentationHeadersType,
-  params: SegmentationParamType,
-  metadata: Metadata[],
-  destination: CustomerIODestinationType,
-) => ({
+  headers: SegmentationHeaders,
+  params: SegmentationParam,
+  metadata: Partial<Metadata>[],
+  destination: CustomerIODestination,
+): CustomerIOBatchResponse => ({
   batchedRequest: {
     body: {
       JSON: payload,
@@ -65,9 +76,9 @@ const buildBatchedResponse = (
 const processBatch = (
   respList: RespList[],
   endpoint: string,
-  destination: CustomerIODestinationType,
-  connection: CustomerIOConnectionType,
-): any[] => {
+  destination: CustomerIODestination,
+  connection: CustomerIOConnection,
+): CustomerIOBatchResponse[] => {
   if (!respList?.length) {
     return [];
   }
@@ -90,12 +101,12 @@ const processBatch = (
   });
 };
 
-const batchResponseBuilder = (
+export const batchResponseBuilder = (
   insertOrUpdateRespList: RespList[],
   deleteRespList: RespList[],
-  destination: CustomerIODestinationType,
-  connection: CustomerIOConnectionType,
-): any[] => {
+  destination: CustomerIODestination,
+  connection: CustomerIOConnection,
+): CustomerIOBatchResponse[] => {
   const segmentId = getSegmentId(connection);
 
   const insertResponses = processBatch(
@@ -115,7 +126,35 @@ const batchResponseBuilder = (
   return [...insertResponses, ...deleteResponses];
 };
 
-const getEventAction = (event: CustomerIORouterRequestType): string =>
-  event?.message?.action?.toLowerCase() || '';
+const getEventAction = (event: CustomerIORouterRequest): string => event.message.action;
 
-export { batchResponseBuilder, getEventAction };
+const validateEvent = (event: CustomerIORouterRequest): boolean => {
+  const { message, connection } = event;
+
+  const connectionValidation = CustomerIOConnectionConfigSchema.safeParse(
+    connection?.config.destination,
+  );
+
+  if (!connectionValidation.success) {
+    throw new ConfigurationError(formatZodError(connectionValidation.error));
+  }
+  const messageValidation = CustomerIOMessageSchema.safeParse(message);
+
+  if (!messageValidation.success) {
+    throw new InstrumentationError(formatZodError(messageValidation.error));
+  }
+
+  return true;
+};
+
+export const createEventChunk = (event: CustomerIORouterRequest): ProcessedEvent => {
+  validateEvent(event);
+  const eventAction = getEventAction(event);
+  const id = Object.values(event.message.identifiers)[0];
+
+  return {
+    payload: { ids: [id] },
+    metadata: event.metadata,
+    eventAction: eventAction as SegmentActionType,
+  };
+};

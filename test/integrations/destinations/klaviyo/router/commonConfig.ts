@@ -1,5 +1,9 @@
 import { generateMetadata } from '../../../testUtils';
-import { Destination, RouterTransformationRequest } from '../../../../../src/types';
+import {
+  Destination,
+  RouterTransformationRequest,
+  RouterTransformationRequestData,
+} from '../../../../../src/types';
 import { secret1 } from '../maskedSecrets';
 
 const destination: Destination = {
@@ -192,10 +196,10 @@ const getRequest = (apiVersion) => {
   ];
 };
 export const routerRequest: RouterTransformationRequest = {
-  input: getRequest('v1'),
+  input: getRequest('v1') as unknown as RouterTransformationRequestData[],
   destType: 'klaviyo',
 };
 export const routerRequestV2: RouterTransformationRequest = {
-  input: getRequest('v2'),
+  input: getRequest('v2') as unknown as RouterTransformationRequestData[],
   destType: 'klaviyo',
 };

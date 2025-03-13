@@ -2,7 +2,7 @@ import { ProcessorTestData } from '../../../testTypes';
 import { Metadata } from '../../../../../src/types';
 import { authHeader1, authHeaderStaging1, secret1, secretStaging1 } from '../maskedSecrets';
 
-const baseMetadata: Metadata = {
+const baseMetadata: Partial<Metadata> = {
   destinationDefinitionId: 'default-dest-def',
   destinationType: 'default-destination-type',
   eventName: 'default-event',

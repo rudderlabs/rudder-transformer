@@ -1,5 +1,8 @@
 import { FetchHandler } from '../../../helpers/fetchHandlers';
-import { RudderMessage, SourceTransformationResponse } from '../../../types/index';
+import {
+  SourceTransformationResponse,
+  SourceTransformationSuccessResponse,
+} from '../../../types/index';
 import stats from '../../../util/stats';
 import { NativeIntegrationSourceService } from '../nativeIntegration';
 import { SourcePostTransformationService } from '../postTransformation';
@@ -21,8 +24,11 @@ describe('NativeIntegration Source Service', () => {
     const event = { message: { a: 'b' }, headers };
     const events = [event, event];
 
-    const tevent = { anonymousId: 'test', context: { headers } } as RudderMessage;
-    const tresp = { output: { batch: [tevent] }, statusCode: 200 } as SourceTransformationResponse;
+    const tevent = { anonymousId: 'test', context: { headers } };
+    const tresp = {
+      output: { batch: [tevent] },
+      statusCode: 200,
+    } as unknown as SourceTransformationSuccessResponse;
 
     const tresponse = [tresp, tresp];
 

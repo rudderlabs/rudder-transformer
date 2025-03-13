@@ -61,8 +61,9 @@ export class ComparatorService implements DestinationService {
     return metaTO;
   }
 
-  private getTestThreshold(destination: Destination) {
-    return destination.DestinationDefinition?.Config?.camparisonTestThreshold || 0;
+  private getTestThreshold(destination: Destination): number {
+    const threshold = destination.DestinationDefinition.Config.camparisonTestThreshold;
+    return typeof threshold === 'number' ? threshold : 0;
   }
 
   private getComparisonLogs(

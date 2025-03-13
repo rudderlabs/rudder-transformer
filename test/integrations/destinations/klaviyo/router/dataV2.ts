@@ -1,4 +1,4 @@
-import { Destination } from '../../../../../src/types';
+import { Destination, RouterTransformationRequestData } from '../../../../../src/types';
 import { RouterTestData } from '../../../testTypes';
 import { routerRequestV2 } from './commonConfig';
 import { generateMetadata, transformResultBuilder } from '../../../testUtils';
@@ -74,7 +74,7 @@ const alreadyTransformedEvent = {
   },
   metadata: generateMetadata(10),
   destination,
-};
+} as unknown as RouterTransformationRequestData;
 
 export const dataV2: RouterTestData[] = [
   {

@@ -1,4 +1,4 @@
-import { Destination } from '../../../../../src/types';
+import { Destination, MessageType } from '../../../../../src/types';
 import { ProcessorTestData } from '../../../testTypes';
 import { generateMetadata } from '../../../testUtils';
 import { secret1 } from '../maskedSecrets';
@@ -39,7 +39,7 @@ export const validationTestData: ProcessorTestData[] = [
             destination,
             message: {
               userId: 'user123',
-              type: 'random',
+              type: 'random' as MessageType,
               groupId: 'XUepkK',
               traits: {
                 subscribe: true,

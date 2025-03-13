@@ -545,11 +545,7 @@ const invalidRtTfCases = [
           output: [
             {
               error: 'Invalid event array',
-              metadata: [
-                {
-                  destType: undefined,
-                },
-              ],
+              metadata: [{}],
               batched: false,
               statusCode: 400,
             },
@@ -578,11 +574,7 @@ const invalidRtTfCases = [
           output: [
             {
               error: 'Invalid event array',
-              metadata: [
-                {
-                  destType: undefined,
-                },
-              ],
+              metadata: [{}],
               batched: false,
               statusCode: 400,
             },

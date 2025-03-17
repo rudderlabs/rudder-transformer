@@ -4,36 +4,24 @@ import { MiscService } from '../services/misc';
 import { SourcePostTransformationService } from '../services/source/postTransformation';
 import { ControllerUtility } from './util';
 import logger from '../logger';
+import { SourceInputV2 } from '../types';
 
 export class SourceController {
   public static async sourceTransform(ctx: Context) {
     logger.debug('Native(Source-Transform):: Request to transformer::', ctx.request.body);
     const requestMetadata = MiscService.getRequestMetadata(ctx);
-    const events = ctx.request.body as object[];
-    const { version, source }: { version: string; source: string } = ctx.params;
+    const input = ctx.request.body as SourceInputV2[];
+    const { source }: { source: string } = ctx.params;
     const enrichedMetadata = {
       ...requestMetadata,
       source,
-      version,
     };
     const integrationService = ServiceSelector.getNativeSourceService();
 
     try {
-      const { implementationVersion, input } = ControllerUtility.adaptInputToVersion(
-        source,
-        version,
-        events,
-      );
-      logger.debug('Native(Source-Transform):: Controller Input Adapter::', {
-        implementationVersion,
-        inputVersion: version,
-        source,
-      });
-
       const resplist = await integrationService.sourceTransformRoutine(
         input,
         source,
-        implementationVersion,
         requestMetadata,
       );
       ctx.body = resplist;
@@ -46,7 +34,6 @@ export class SourceController {
     ControllerUtility.postProcess(ctx);
     logger.debug('Native(Source-Transform):: Response from transformer::', {
       srcResponse: ctx.body,
-      version,
       source,
     });
     return ctx;

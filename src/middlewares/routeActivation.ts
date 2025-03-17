@@ -4,6 +4,7 @@ import { RouterTransformationRequest } from '../types';
 
 dotenv.config();
 
+const ACTIVE_SOURCE_ROUTE_VERSIONS = ['v2'];
 const transformerMode = process.env.TRANSFORMER_MODE;
 const startDestTransformer = transformerMode === 'destination' || !transformerMode;
 const startSourceTransformer = transformerMode === 'source' || !transformerMode;
@@ -41,6 +42,15 @@ export class RouteActivationMiddleware {
 
   public static isSourceRouteActive(ctx: Context, next: Next) {
     return RouteActivationMiddleware.executeActivationRule(ctx, next, startSourceTransformer);
+  }
+
+  public static isRouteVersionActive(ctx: Context, next: Next) {
+    const { version }: { version: string } = ctx.params;
+    return RouteActivationMiddleware.executeActivationRule(
+      ctx,
+      next,
+      ACTIVE_SOURCE_ROUTE_VERSIONS.includes(version),
+    );
   }
 
   public static isDeliveryRouteActive(ctx: Context, next: Next) {

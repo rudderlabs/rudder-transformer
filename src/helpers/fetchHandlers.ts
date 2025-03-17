@@ -18,12 +18,12 @@ export class FetchHandler {
     return destinationHandler;
   }
 
-  public static getSourceHandler(source: string, version: string) {
+  public static getSourceHandler(source: string) {
     let sourceHandler: any;
     if (this.sourceHandlerMap.has(source)) {
       sourceHandler = this.sourceHandlerMap.get(source);
     } else {
-      sourceHandler = MiscService.getSourceHandler(source, version);
+      sourceHandler = MiscService.getSourceHandler(source);
       this.sourceHandlerMap.set(source, sourceHandler);
     }
     return sourceHandler;

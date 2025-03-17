@@ -34,6 +34,58 @@ export const data = [
                 writeKey: ['write_key'],
               },
             },
+            source: {
+              Config: {
+                putRequestDetailsInContext: true,
+              },
+            },
+          },
+          {
+            request: {
+              body: JSON.stringify({
+                prop1: 'value1',
+                prop2: 'value2',
+              }),
+              method: 'POST',
+              url: '/v1/webhook?writeKey=write_key&query_param_key_1=query_param_value_1&query_param_key_2=query_param_value_2',
+              proto: 'HTTP/1.1',
+              headers: {
+                Connection: ['keep-alive'],
+                'Content-Length': ['48'],
+                'Content-Type': ['application/json'],
+              },
+              query_parameters: {
+                query_param_key_1: ['query_param_value_1'],
+                query_param_key_2: ['query_param_value_2'],
+                writeKey: ['write_key'],
+              },
+            },
+            source: {
+              Config: {
+                putRequestDetailsInContext: false,
+              },
+            },
+          },
+          {
+            request: {
+              body: JSON.stringify({
+                prop1: 'value1',
+                prop2: 'value2',
+              }),
+              method: 'POST',
+              url: '/v1/webhook?writeKey=write_key&query_param_key_1=query_param_value_1&query_param_key_2=query_param_value_2',
+              proto: 'HTTP/1.1',
+              headers: {
+                Connection: ['keep-alive'],
+                'Content-Length': ['48'],
+                'Content-Type': ['application/json'],
+              },
+              query_parameters: {
+                query_param_key_1: ['query_param_value_1'],
+                query_param_key_2: ['query_param_value_2'],
+                writeKey: ['write_key'],
+              },
+            },
             source: {},
           },
         ],
@@ -73,6 +125,38 @@ export const data = [
               ],
             },
           },
+          {
+            output: {
+              batch: [
+                {
+                  type: 'track',
+                  event: 'webhook_source_event',
+                  properties: {
+                    prop1: 'value1',
+                    prop2: 'value2',
+                  },
+                  anonymousId: ANONYMOUS_ID,
+                  context: {},
+                },
+              ],
+            },
+          },
+          {
+            output: {
+              batch: [
+                {
+                  type: 'track',
+                  event: 'webhook_source_event',
+                  properties: {
+                    prop1: 'value1',
+                    prop2: 'value2',
+                  },
+                  anonymousId: ANONYMOUS_ID,
+                  context: {},
+                },
+              ],
+            },
+          },
         ],
       },
     },
@@ -106,7 +190,11 @@ export const data = [
                 writeKey: ['write_key'],
               },
             },
-            source: {},
+            source: {
+              Config: {
+                putRequestDetailsInContext: true,
+              },
+            },
           },
         ],
       },

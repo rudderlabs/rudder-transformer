@@ -7,18 +7,25 @@ const {
 function processEvent(payload) {
   const event = getBodyFromV2SpecPayload(payload);
 
+  const putRequestDetailsInContext = Boolean(payload.source.Config?.putRequestDetailsInContext);
+
   const request = { ...payload.request };
-  delete request.body;
 
   const response = {
     type: 'track',
     event: 'webhook_source_event',
     properties: event,
     anonymousId: generateUUID(),
-    context: {
-      ...request,
-    },
   };
+
+  if (putRequestDetailsInContext) {
+    delete request.body;
+    response.context = {
+      ...response.context,
+      ...request,
+    };
+  }
+
   return response;
 }
 

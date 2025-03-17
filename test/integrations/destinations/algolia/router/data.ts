@@ -1,3 +1,5 @@
+import { defaultApiKey } from '../../../common/secrets';
+
 export const data = [
   {
     name: 'algolia',
@@ -265,7 +267,7 @@ export const data = [
               metadata: { jobId: 3, userId: 'u1' },
               destination: {
                 Config: {
-                  apiKey: 'dummyApiKey',
+                  apiKey: defaultApiKey,
                   applicationId: 'O2YARRI15I',
                   eventTypeSettings: [{ from: 'product clicked', to: 'cLick ' }],
                 },
@@ -369,7 +371,7 @@ export const data = [
               batched: false,
               destination: {
                 Config: {
-                  apiKey: 'dummyApiKey',
+                  apiKey: defaultApiKey,
                   applicationId: 'O2YARRI15I',
                   eventTypeSettings: [{ from: 'product clicked', to: 'cLick ' }],
                 },
@@ -2227,7 +2229,7 @@ export const data = [
                 },
                 Config: {
                   cdkV2Enabled: true,
-                  apiKey: 'dummyApiKey',
+                  apiKey: defaultApiKey,
                   applicationId: 'O2YARRI15I',
                   eventTypeSettings: [
                     {
@@ -2324,7 +2326,7 @@ export const data = [
                 },
                 Config: {
                   cdkV2Enabled: true,
-                  apiKey: 'dummyApiKey',
+                  apiKey: defaultApiKey,
                   applicationId: 'O2YARRI15I',
                   eventTypeSettings: [
                     {
@@ -2421,7 +2423,7 @@ export const data = [
                 },
                 Config: {
                   cdkV2Enabled: true,
-                  apiKey: 'dummyApiKey',
+                  apiKey: defaultApiKey,
                   applicationId: 'O2YARRI15I',
                   eventTypeSettings: [
                     {
@@ -2518,7 +2520,7 @@ export const data = [
                 },
                 Config: {
                   cdkV2Enabled: true,
-                  apiKey: 'dummyApiKey',
+                  apiKey: defaultApiKey,
                   applicationId: 'O2YARRI15I',
                   eventTypeSettings: [
                     {
@@ -2641,7 +2643,7 @@ export const data = [
                 endpoint: 'https://insights.algolia.io/1/events',
                 headers: {
                   'X-Algolia-Application-Id': 'O2YARRI15I',
-                  'X-Algolia-API-Key': 'dummyApiKey',
+                  'X-Algolia-API-Key': defaultApiKey,
                 },
                 params: {},
                 files: {},
@@ -2668,7 +2670,7 @@ export const data = [
                 },
                 Config: {
                   cdkV2Enabled: true,
-                  apiKey: 'dummyApiKey',
+                  apiKey: defaultApiKey,
                   applicationId: 'O2YARRI15I',
                   eventTypeSettings: [
                     {
@@ -2749,7 +2751,7 @@ export const data = [
                 endpoint: 'https://insights.algolia.io/1/events',
                 headers: {
                   'X-Algolia-Application-Id': 'O2YARRI15I',
-                  'X-Algolia-API-Key': 'dummyApiKey',
+                  'X-Algolia-API-Key': defaultApiKey,
                 },
                 params: {},
                 files: {},
@@ -2776,7 +2778,7 @@ export const data = [
                 },
                 Config: {
                   cdkV2Enabled: true,
-                  apiKey: 'dummyApiKey',
+                  apiKey: defaultApiKey,
                   applicationId: 'O2YARRI15I',
                   eventTypeSettings: [
                     {
@@ -2857,7 +2859,7 @@ export const data = [
                 endpoint: 'https://insights.algolia.io/1/events',
                 headers: {
                   'X-Algolia-Application-Id': 'O2YARRI15I',
-                  'X-Algolia-API-Key': 'dummyApiKey',
+                  'X-Algolia-API-Key': defaultApiKey,
                 },
                 params: {},
                 files: {},
@@ -2884,7 +2886,7 @@ export const data = [
                 },
                 Config: {
                   cdkV2Enabled: true,
-                  apiKey: 'dummyApiKey',
+                  apiKey: defaultApiKey,
                   applicationId: 'O2YARRI15I',
                   eventTypeSettings: [
                     {
@@ -2965,7 +2967,7 @@ export const data = [
                 endpoint: 'https://insights.algolia.io/1/events',
                 headers: {
                   'X-Algolia-Application-Id': 'O2YARRI15I',
-                  'X-Algolia-API-Key': 'dummyApiKey',
+                  'X-Algolia-API-Key': defaultApiKey,
                 },
                 params: {},
                 files: {},
@@ -2992,7 +2994,7 @@ export const data = [
                 },
                 Config: {
                   cdkV2Enabled: true,
-                  apiKey: 'dummyApiKey',
+                  apiKey: defaultApiKey,
                   applicationId: 'O2YARRI15I',
                   eventTypeSettings: [
                     {
@@ -3073,7 +3075,7 @@ export const data = [
                 },
                 Config: {
                   cdkV2Enabled: true,
-                  apiKey: 'dummyApiKey',
+                  apiKey: defaultApiKey,
                   applicationId: 'O2YARRI15I',
                   eventTypeSettings: [
                     {
@@ -3170,7 +3172,7 @@ export const data = [
                 },
                 Config: {
                   cdkV2Enabled: true,
-                  apiKey: 'dummyApiKey',
+                  apiKey: defaultApiKey,
                   applicationId: 'O2YARRI15I',
                   eventTypeSettings: [
                     {
@@ -3267,7 +3269,7 @@ export const data = [
                 },
                 Config: {
                   cdkV2Enabled: true,
-                  apiKey: 'dummyApiKey',
+                  apiKey: defaultApiKey,
                   applicationId: 'O2YARRI15I',
                   eventTypeSettings: [
                     {
@@ -3364,7 +3366,7 @@ export const data = [
                 },
                 Config: {
                   cdkV2Enabled: true,
-                  apiKey: 'dummyApiKey',
+                  apiKey: defaultApiKey,
                   applicationId: 'O2YARRI15I',
                   eventTypeSettings: [
                     {
@@ -3461,7 +3463,7 @@ export const data = [
                 },
                 Config: {
                   cdkV2Enabled: true,
-                  apiKey: 'dummyApiKey',
+                  apiKey: defaultApiKey,
                   applicationId: 'O2YARRI15I',
                   eventTypeSettings: [
                     {
@@ -3598,7 +3600,7 @@ export const data = [
                 endpoint: 'https://insights.algolia.io/1/events',
                 headers: {
                   'X-Algolia-Application-Id': 'O2YARRI15I',
-                  'X-Algolia-API-Key': 'dummyApiKey',
+                  'X-Algolia-API-Key': defaultApiKey,
                 },
                 params: {},
                 files: {},
@@ -3645,7 +3647,7 @@ export const data = [
                 },
                 Config: {
                   cdkV2Enabled: true,
-                  apiKey: 'dummyApiKey',
+                  apiKey: defaultApiKey,
                   applicationId: 'O2YARRI15I',
                   eventTypeSettings: [
                     {
@@ -3726,7 +3728,7 @@ export const data = [
                 endpoint: 'https://insights.algolia.io/1/events',
                 headers: {
                   'X-Algolia-Application-Id': 'O2YARRI15I',
-                  'X-Algolia-API-Key': 'dummyApiKey',
+                  'X-Algolia-API-Key': defaultApiKey,
                 },
                 params: {},
                 files: {},
@@ -3753,7 +3755,7 @@ export const data = [
                 },
                 Config: {
                   cdkV2Enabled: true,
-                  apiKey: 'dummyApiKey',
+                  apiKey: defaultApiKey,
                   applicationId: 'O2YARRI15I',
                   eventTypeSettings: [
                     {
@@ -3834,7 +3836,7 @@ export const data = [
                 endpoint: 'https://insights.algolia.io/1/events',
                 headers: {
                   'X-Algolia-Application-Id': 'O2YARRI15I',
-                  'X-Algolia-API-Key': 'dummyApiKey',
+                  'X-Algolia-API-Key': defaultApiKey,
                 },
                 params: {},
                 files: {},
@@ -3861,7 +3863,7 @@ export const data = [
                 },
                 Config: {
                   cdkV2Enabled: true,
-                  apiKey: 'dummyApiKey',
+                  apiKey: defaultApiKey,
                   applicationId: 'O2YARRI15I',
                   eventTypeSettings: [
                     {
@@ -3942,7 +3944,7 @@ export const data = [
                 },
                 Config: {
                   cdkV2Enabled: true,
-                  apiKey: 'dummyApiKey',
+                  apiKey: defaultApiKey,
                   applicationId: 'O2YARRI15I',
                   eventTypeSettings: [
                     {
@@ -4039,7 +4041,7 @@ export const data = [
                 },
                 Config: {
                   cdkV2Enabled: true,
-                  apiKey: 'dummyApiKey',
+                  apiKey: defaultApiKey,
                   applicationId: 'O2YARRI15I',
                   eventTypeSettings: [
                     {
@@ -4136,7 +4138,7 @@ export const data = [
                 },
                 Config: {
                   cdkV2Enabled: true,
-                  apiKey: 'dummyApiKey',
+                  apiKey: defaultApiKey,
                   applicationId: 'O2YARRI15I',
                   eventTypeSettings: [
                     {
@@ -4233,7 +4235,7 @@ export const data = [
                 },
                 Config: {
                   cdkV2Enabled: true,
-                  apiKey: 'dummyApiKey',
+                  apiKey: defaultApiKey,
                   applicationId: 'O2YARRI15I',
                   eventTypeSettings: [
                     {
@@ -4330,7 +4332,7 @@ export const data = [
                 },
                 Config: {
                   cdkV2Enabled: true,
-                  apiKey: 'dummyApiKey',
+                  apiKey: defaultApiKey,
                   applicationId: 'O2YARRI15I',
                   eventTypeSettings: [
                     {
@@ -4481,7 +4483,7 @@ export const data = [
                 endpoint: 'https://insights.algolia.io/1/events',
                 headers: {
                   'X-Algolia-Application-Id': 'O2YARRI15I',
-                  'X-Algolia-API-Key': 'dummyApiKey',
+                  'X-Algolia-API-Key': defaultApiKey,
                 },
                 params: {},
                 files: {},
@@ -4548,7 +4550,7 @@ export const data = [
                 },
                 Config: {
                   cdkV2Enabled: true,
-                  apiKey: 'dummyApiKey',
+                  apiKey: defaultApiKey,
                   applicationId: 'O2YARRI15I',
                   eventTypeSettings: [
                     {

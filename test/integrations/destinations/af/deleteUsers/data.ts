@@ -1,3 +1,4 @@
+import { secret1 } from '../maskedSecrets';
 import { cloneDeep } from 'lodash';
 import { FEATURES } from '../../../../../src/v0/util/tags';
 import { networkCallsData } from '../network';
@@ -28,7 +29,7 @@ const requests = [
           ],
           config: {
             devKey: 'ef1d42390426e3f7c90ac78272e74344',
-            apiToken: 'dummyApiToken',
+            apiToken: secret1,
           },
         },
       ],
@@ -54,7 +55,7 @@ const requests = [
             appleAppId: '123456789',
             statusCallbackUrls:
               'https://examplecontroller.com/opengdpr_callbacks,https://examplecontroller.com/opengdpr_callbacks,https://examplecontroller.com/opengdpr_callbacks,https://examplecontroller.com/opengdpr_callbacks',
-            apiToken: 'dummyApiToken',
+            apiToken: secret1,
           },
         },
       ],
@@ -82,7 +83,7 @@ const requests = [
             groupValueTrait: 'age',
             trackProductsOnce: false,
             trackRevenuePerProduct: false,
-            apiToken: 'dummyApiToken',
+            apiToken: secret1,
           },
         },
       ],
@@ -110,7 +111,7 @@ const requests = [
             groupValueTrait: 'age',
             trackProductsOnce: false,
             trackRevenuePerProduct: false,
-            apiToken: 'dummyApiToken',
+            apiToken: secret1,
           },
         },
       ],
@@ -138,7 +139,7 @@ const requests = [
             groupValueTrait: 'age',
             trackProductsOnce: false,
             trackRevenuePerProduct: false,
-            apiToken: 'dummyApiToken',
+            apiToken: secret1,
           },
         },
       ],
@@ -230,7 +231,7 @@ export const data = [
               devKey: 'ef1d42390426e3f7c90ac78272e74344',
               appleAppId: '123456789',
               androidAppId: 'AnAID',
-              apiToken: 'dummyApiToken',
+              apiToken: secret1,
             },
           },
         ],
@@ -274,7 +275,7 @@ export const data = [
               devKey: 'ef1d42390426e3f7c90ac78272e74344',
               appleAppId: '123456789',
               androidAppId: 'AnAID',
-              apiToken: 'dummyApiToken',
+              apiToken: secret1,
               statusCallbackUrls: 'https://examplecontroller.com/opengdpr_callbacks',
             },
           },

@@ -145,3 +145,6 @@ temp/
 # Allure
 allure-results/
 allure-report/
+
+# local scripts
+*/scripts/local/

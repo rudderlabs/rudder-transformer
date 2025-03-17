@@ -1,3 +1,5 @@
+import { defaultApiKey } from '../../../common/secrets';
+
 export const data = [
   {
     name: 'lytics',
@@ -113,7 +115,7 @@ export const data = [
             },
             destination: {
               DestinationDefinition: { Config: { cdkV2Enabled: true } },
-              Config: { apiKey: 'dummyApiKey', stream: 'default' },
+              Config: { apiKey: defaultApiKey, stream: 'default' },
               Enabled: true,
               Transformations: [],
               IsProcessorEnabled: true,
@@ -137,7 +139,7 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://api.lytics.io/collect/json/default?access_token=dummyApiKey',
+              endpoint: `https://api.lytics.io/collect/json/default?access_token=${defaultApiKey}`,
               headers: { 'Content-Type': 'application/json' },
               params: {},
               body: {
@@ -266,7 +268,7 @@ export const data = [
             },
             destination: {
               DestinationDefinition: { Config: { cdkV2Enabled: true } },
-              Config: { apiKey: 'dummyApiKey', stream: 'default' },
+              Config: { apiKey: defaultApiKey, stream: 'default' },
               Enabled: true,
               Transformations: [],
               IsProcessorEnabled: true,
@@ -290,7 +292,7 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://api.lytics.io/collect/json/default?access_token=dummyApiKey',
+              endpoint: `https://api.lytics.io/collect/json/default?access_token=${defaultApiKey}`,
               headers: { 'Content-Type': 'application/json' },
               params: {},
               body: {
@@ -381,7 +383,7 @@ export const data = [
             },
             destination: {
               DestinationDefinition: { Config: { cdkV2Enabled: true } },
-              Config: { apiKey: 'dummyApiKey', stream: 'default' },
+              Config: { apiKey: defaultApiKey, stream: 'default' },
               Enabled: true,
               Transformations: [],
               IsProcessorEnabled: true,
@@ -405,7 +407,7 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://api.lytics.io/collect/json/default?access_token=dummyApiKey',
+              endpoint: `https://api.lytics.io/collect/json/default?access_token=${defaultApiKey}`,
               headers: { 'Content-Type': 'application/json' },
               params: {},
               body: {
@@ -489,7 +491,7 @@ export const data = [
             destination: {
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               DestinationDefinition: { Config: { cdkV2Enabled: true } },
-              Config: { apiKey: 'dummyApiKey', stream: 'default' },
+              Config: { apiKey: defaultApiKey, stream: 'default' },
               Enabled: true,
               Transformations: [],
               IsProcessorEnabled: true,
@@ -513,7 +515,7 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://api.lytics.io/collect/json/default?access_token=dummyApiKey',
+              endpoint: `https://api.lytics.io/collect/json/default?access_token=${defaultApiKey}`,
               headers: { 'Content-Type': 'application/json' },
               params: {},
               body: {
@@ -596,7 +598,7 @@ export const data = [
             },
             destination: {
               DestinationDefinition: { Config: { cdkV2Enabled: true } },
-              Config: { apiKey: 'dummyApiKey', stream: 'default' },
+              Config: { apiKey: defaultApiKey, stream: 'default' },
               Enabled: true,
               Transformations: [],
               IsProcessorEnabled: true,
@@ -620,7 +622,7 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://api.lytics.io/collect/json/default?access_token=dummyApiKey',
+              endpoint: `https://api.lytics.io/collect/json/default?access_token=${defaultApiKey}`,
               headers: { 'Content-Type': 'application/json' },
               params: {},
               body: {
@@ -703,7 +705,7 @@ export const data = [
             },
             destination: {
               DestinationDefinition: { Config: { cdkV2Enabled: true } },
-              Config: { apiKey: 'dummyApiKey', stream: 'default' },
+              Config: { apiKey: defaultApiKey, stream: 'default' },
               Enabled: true,
               Transformations: [],
               IsProcessorEnabled: true,
@@ -727,7 +729,7 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://api.lytics.io/collect/json/default?access_token=dummyApiKey',
+              endpoint: `https://api.lytics.io/collect/json/default?access_token=${defaultApiKey}`,
               headers: { 'Content-Type': 'application/json' },
               params: {},
               body: {
@@ -810,7 +812,7 @@ export const data = [
             metadata: { destinationID: 'ewksfdgDFSdvzsdmwsdfvcxj' },
             destination: {
               DestinationDefinition: { Config: { cdkV2Enabled: true } },
-              Config: { apiKey: 'dummyApiKey', stream: 'default' },
+              Config: { apiKey: defaultApiKey, stream: 'default' },
               Enabled: true,
               Transformations: [],
               IsProcessorEnabled: true,
@@ -897,7 +899,7 @@ export const data = [
             metadata: { destinationID: 'ewksfdgDFSdvzsdmwsdfvcxj' },
             destination: {
               DestinationDefinition: { Config: { cdkV2Enabled: true } },
-              Config: { apiKey: 'dummyApiKey', stream: 'default' },
+              Config: { apiKey: defaultApiKey, stream: 'default' },
               Enabled: true,
               Transformations: [],
               IsProcessorEnabled: true,
@@ -1043,7 +1045,7 @@ export const data = [
             },
             destination: {
               DestinationDefinition: { Config: { cdkV2Enabled: true } },
-              Config: { apiKey: 'dummyApiKey', stream: 'default' },
+              Config: { apiKey: defaultApiKey, stream: 'default' },
               Enabled: true,
               Transformations: [],
               IsProcessorEnabled: true,
@@ -1067,7 +1069,7 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://api.lytics.io/collect/json/default?access_token=dummyApiKey',
+              endpoint: `https://api.lytics.io/collect/json/default?access_token=${defaultApiKey}`,
               headers: { 'Content-Type': 'application/json' },
               params: {},
               body: {
@@ -1187,7 +1189,7 @@ export const data = [
             },
             destination: {
               DestinationDefinition: { Config: { cdkV2Enabled: true } },
-              Config: { apiKey: 'dummyApiKey', stream: 'default' },
+              Config: { apiKey: defaultApiKey, stream: 'default' },
               Enabled: true,
               Transformations: [],
               IsProcessorEnabled: true,
@@ -1211,7 +1213,7 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://api.lytics.io/collect/json/default?access_token=dummyApiKey',
+              endpoint: `https://api.lytics.io/collect/json/default?access_token=${defaultApiKey}`,
               headers: { 'Content-Type': 'application/json' },
               params: {},
               body: {
@@ -1287,7 +1289,7 @@ export const data = [
             },
             destination: {
               DestinationDefinition: { Config: { cdkV2Enabled: true } },
-              Config: { apiKey: 'dummyApiKey', stream: 'default' },
+              Config: { apiKey: defaultApiKey, stream: 'default' },
               Enabled: true,
               Transformations: [],
               IsProcessorEnabled: true,
@@ -1311,7 +1313,7 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://api.lytics.io/collect/json/default?access_token=dummyApiKey',
+              endpoint: `https://api.lytics.io/collect/json/default?access_token=${defaultApiKey}`,
               headers: { 'Content-Type': 'application/json' },
               params: {},
               body: {
@@ -1397,7 +1399,7 @@ export const data = [
             },
             destination: {
               DestinationDefinition: { Config: { cdkV2Enabled: true } },
-              Config: { apiKey: 'dummyApiKey', stream: 'default' },
+              Config: { apiKey: defaultApiKey, stream: 'default' },
               Enabled: true,
               Transformations: [],
               IsProcessorEnabled: true,
@@ -1421,7 +1423,7 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://api.lytics.io/collect/json/default?access_token=dummyApiKey',
+              endpoint: `https://api.lytics.io/collect/json/default?access_token=${defaultApiKey}`,
               headers: { 'Content-Type': 'application/json' },
               params: {},
               body: {
@@ -1507,7 +1509,7 @@ export const data = [
             },
             destination: {
               DestinationDefinition: { Config: { cdkV2Enabled: true } },
-              Config: { apiKey: 'dummyApiKey', stream: 'default' },
+              Config: { apiKey: defaultApiKey, stream: 'default' },
               Enabled: true,
               Transformations: [],
               IsProcessorEnabled: true,
@@ -1531,7 +1533,7 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://api.lytics.io/collect/json/default?access_token=dummyApiKey',
+              endpoint: `https://api.lytics.io/collect/json/default?access_token=${defaultApiKey}`,
               headers: { 'Content-Type': 'application/json' },
               params: {},
               body: {

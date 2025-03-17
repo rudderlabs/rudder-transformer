@@ -57,7 +57,10 @@ export const v1OtherScenarios: ProxyV1TestData[] = [
             message: 'Request failed with status: 40100',
             response: [
               {
-                error: '{"code":40100,"message":"Too many requests. Please retry in some time."}',
+                error: JSON.stringify({
+                  code: 40100,
+                  message: 'Too many requests. Please retry in some time.',
+                }),
                 statusCode: 429,
                 metadata: generateMetadata(1234),
               },
@@ -157,8 +160,13 @@ export const v1OtherScenarios: ProxyV1TestData[] = [
             message: 'Request failed with status: 503',
             response: [
               {
-                error:
-                  '{"error":{"message":"Service Unavailable","description":"The server is currently unable to handle the request due to temporary overloading or maintenance of the server. Please try again later."}}',
+                error: JSON.stringify({
+                  error: {
+                    message: 'Service Unavailable',
+                    description:
+                      'The server is currently unable to handle the request due to temporary overloading or maintenance of the server. Please try again later.',
+                  },
+                }),
                 statusCode: 503,
                 metadata: generateMetadata(1234),
               },

@@ -314,7 +314,7 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://graph.facebook.com/v20.0/dummyID/events?access_token=09876',
+              endpoint: 'https://graph.facebook.com/v22.0/dummyID/events?access_token=09876',
               headers: {},
               params: {},
               body: {
@@ -323,7 +323,21 @@ export const data = [
                 JSON_ARRAY: {},
                 FORM: {
                   data: [
-                    '{"user_data":{"em":"48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08","zp":"03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4"},"event_name":"spin_result","event_time":1699784211,"action_source":"website","custom_data":{"revenue":400,"additional_bet_index":0,"value":400,"currency":"USD"}}',
+                    JSON.stringify({
+                      user_data: {
+                        em: '48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08',
+                        zp: '03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4',
+                      },
+                      event_name: 'spin_result',
+                      event_time: 1699784211,
+                      action_source: 'website',
+                      custom_data: {
+                        revenue: 400,
+                        additional_bet_index: 0,
+                        value: 400,
+                        currency: 'USD',
+                      },
+                    }),
                   ],
                 },
               },
@@ -433,7 +447,7 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://graph.facebook.com/v20.0/dummyID/events?access_token=09876',
+              endpoint: 'https://graph.facebook.com/v22.0/dummyID/events?access_token=09876',
               headers: {},
               params: {},
               body: {
@@ -442,7 +456,24 @@ export const data = [
                 JSON_ARRAY: {},
                 FORM: {
                   data: [
-                    '{"user_data":{"em":"48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08","zp":"03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4"},"event_name":"Search","event_time":1699784211,"action_source":"website","custom_data":{"revenue":400,"additional_bet_index":0,"content_ids":[],"contents":[],"content_type":"product","currency":"USD","value":400}}',
+                    JSON.stringify({
+                      user_data: {
+                        em: '48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08',
+                        zp: '03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4',
+                      },
+                      event_name: 'Search',
+                      event_time: 1699784211,
+                      action_source: 'website',
+                      custom_data: {
+                        revenue: 400,
+                        additional_bet_index: 0,
+                        content_ids: [],
+                        contents: [],
+                        content_type: 'product',
+                        currency: 'USD',
+                        value: 400,
+                      },
+                    }),
                   ],
                 },
               },
@@ -552,7 +583,7 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://graph.facebook.com/v20.0/dummyID/events?access_token=09876',
+              endpoint: 'https://graph.facebook.com/v22.0/dummyID/events?access_token=09876',
               headers: {},
               params: {},
               body: {
@@ -561,7 +592,24 @@ export const data = [
                 JSON_ARRAY: {},
                 FORM: {
                   data: [
-                    '{"user_data":{"em":"48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08","zp":"03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4"},"event_name":"AddToCart","event_time":1699784211,"action_source":"website","custom_data":{"revenue":400,"additional_bet_index":0,"content_ids":[],"contents":[],"content_type":"product","currency":"USD","value":400}}',
+                    JSON.stringify({
+                      user_data: {
+                        em: '48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08',
+                        zp: '03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4',
+                      },
+                      event_name: 'AddToCart',
+                      event_time: 1699784211,
+                      action_source: 'website',
+                      custom_data: {
+                        revenue: 400,
+                        additional_bet_index: 0,
+                        content_ids: [],
+                        contents: [],
+                        content_type: 'product',
+                        currency: 'USD',
+                        value: 400,
+                      },
+                    }),
                   ],
                 },
               },
@@ -671,7 +719,7 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://graph.facebook.com/v20.0/dummyID/events?access_token=09876',
+              endpoint: 'https://graph.facebook.com/v22.0/dummyID/events?access_token=09876',
               headers: {},
               params: {},
               body: {
@@ -680,7 +728,24 @@ export const data = [
                 JSON_ARRAY: {},
                 FORM: {
                   data: [
-                    '{"user_data":{"em":"48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08","zp":"03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4"},"event_name":"ViewContent","event_time":1699784211,"action_source":"website","custom_data":{"revenue":400,"additional_bet_index":0,"content_ids":[],"contents":[],"content_type":"product","currency":"USD","value":400}}',
+                    JSON.stringify({
+                      user_data: {
+                        em: '48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08',
+                        zp: '03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4',
+                      },
+                      event_name: 'ViewContent',
+                      event_time: 1699784211,
+                      action_source: 'website',
+                      custom_data: {
+                        revenue: 400,
+                        additional_bet_index: 0,
+                        content_ids: [],
+                        contents: [],
+                        content_type: 'product',
+                        currency: 'USD',
+                        value: 400,
+                      },
+                    }),
                   ],
                 },
               },
@@ -797,7 +862,7 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://graph.facebook.com/v20.0/dummyID/events?access_token=09876',
+              endpoint: 'https://graph.facebook.com/v22.0/dummyID/events?access_token=09876',
               headers: {},
               params: {},
               body: {
@@ -806,7 +871,25 @@ export const data = [
                 JSON_ARRAY: {},
                 FORM: {
                   data: [
-                    '{"user_data":{"em":"48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08","zp":"03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4"},"event_name":"ViewContent","event_time":1699784211,"action_source":"website","custom_data":{"revenue":400,"additional_bet_index":0,"products":[{"product_id":1234,"quantity":5,"price":55}],"content_ids":[1234],"contents":[{"id":1234,"quantity":5,"item_price":55}],"content_type":"product","currency":"USD","value":400}}',
+                    JSON.stringify({
+                      user_data: {
+                        em: '48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08',
+                        zp: '03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4',
+                      },
+                      event_name: 'ViewContent',
+                      event_time: 1699784211,
+                      action_source: 'website',
+                      custom_data: {
+                        revenue: 400,
+                        additional_bet_index: 0,
+                        products: [{ product_id: 1234, quantity: 5, price: 55 }],
+                        content_ids: [1234],
+                        contents: [{ id: 1234, quantity: 5, item_price: 55 }],
+                        content_type: 'product',
+                        currency: 'USD',
+                        value: 400,
+                      },
+                    }),
                   ],
                 },
               },
@@ -917,7 +1000,7 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://graph.facebook.com/v20.0/dummyID/events?access_token=09876',
+              endpoint: 'https://graph.facebook.com/v22.0/dummyID/events?access_token=09876',
               headers: {},
               params: {},
               body: {
@@ -926,7 +1009,26 @@ export const data = [
                 JSON_ARRAY: {},
                 FORM: {
                   data: [
-                    '{"user_data":{"em":"48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08","zp":"03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4"},"event_name":"ViewContent","event_time":1699784211,"action_source":"website","custom_data":{"revenue":400,"additional_bet_index":0,"category":"randomCategory","content_ids":["randomCategory"],"contents":[{"id":"randomCategory","quantity":1}],"content_type":"product_group","content_category":"randomCategory","currency":"USD","value":400}}',
+                    JSON.stringify({
+                      user_data: {
+                        em: '48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08',
+                        zp: '03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4',
+                      },
+                      event_name: 'ViewContent',
+                      event_time: 1699784211,
+                      action_source: 'website',
+                      custom_data: {
+                        revenue: 400,
+                        additional_bet_index: 0,
+                        category: 'randomCategory',
+                        content_ids: ['randomCategory'],
+                        contents: [{ id: 'randomCategory', quantity: 1 }],
+                        content_type: 'product_group',
+                        content_category: 'randomCategory',
+                        currency: 'USD',
+                        value: 400,
+                      },
+                    }),
                   ],
                 },
               },
@@ -1036,7 +1138,7 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://graph.facebook.com/v20.0/dummyID/events?access_token=09876',
+              endpoint: 'https://graph.facebook.com/v22.0/dummyID/events?access_token=09876',
               headers: {},
               params: {},
               body: {
@@ -1045,7 +1147,24 @@ export const data = [
                 JSON_ARRAY: {},
                 FORM: {
                   data: [
-                    '{"user_data":{"em":"48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08","zp":"03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4"},"event_name":"AddToWishlist","event_time":1699784211,"action_source":"website","custom_data":{"revenue":400,"additional_bet_index":0,"content_ids":[],"contents":[],"currency":"USD","value":400,"num_items":0}}',
+                    JSON.stringify({
+                      user_data: {
+                        em: '48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08',
+                        zp: '03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4',
+                      },
+                      event_name: 'AddToWishlist',
+                      event_time: 1699784211,
+                      action_source: 'website',
+                      custom_data: {
+                        revenue: 400,
+                        additional_bet_index: 0,
+                        content_ids: [],
+                        contents: [],
+                        currency: 'USD',
+                        value: 400,
+                        num_items: 0,
+                      },
+                    }),
                   ],
                 },
               },
@@ -1165,7 +1284,7 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://graph.facebook.com/v20.0/dummyID/events?access_token=09876',
+              endpoint: 'https://graph.facebook.com/v22.0/dummyID/events?access_token=09876',
               headers: {},
               params: {},
               body: {
@@ -1174,7 +1293,27 @@ export const data = [
                 JSON_ARRAY: {},
                 FORM: {
                   data: [
-                    '{"user_data":{"em":"48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08","zp":"03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4"},"event_name":"AddPaymentInfo","event_time":1699784211,"action_source":"website","custom_data":{"application_tracking_enabled":1,"content_name":"Checkout","content_type":"product","num_items":1,"products":[{"id":"12809","price":80,"quantity":1}],"revenue":93.99,"content_ids":["12809"],"contents":[{"id":"12809","quantity":1,"item_price":80}],"currency":"USD","value":93.99}}',
+                    JSON.stringify({
+                      user_data: {
+                        em: '48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08',
+                        zp: '03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4',
+                      },
+                      event_name: 'AddPaymentInfo',
+                      event_time: 1699784211,
+                      action_source: 'website',
+                      custom_data: {
+                        application_tracking_enabled: 1,
+                        content_name: 'Checkout',
+                        content_type: 'product',
+                        num_items: 1,
+                        products: [{ id: '12809', price: 80, quantity: 1 }],
+                        revenue: 93.99,
+                        content_ids: ['12809'],
+                        contents: [{ id: '12809', quantity: 1, item_price: 80 }],
+                        currency: 'USD',
+                        value: 93.99,
+                      },
+                    }),
                   ],
                 },
               },
@@ -1290,7 +1429,7 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://graph.facebook.com/v20.0/dummyID/events?access_token=09876',
+              endpoint: 'https://graph.facebook.com/v22.0/dummyID/events?access_token=09876',
               headers: {},
               params: {},
               body: {
@@ -1299,7 +1438,29 @@ export const data = [
                 JSON_ARRAY: {},
                 FORM: {
                   data: [
-                    '{"user_data":{"em":"48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08","zp":"03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4"},"event_name":"AddPaymentInfo","event_time":1699784211,"action_source":"website","custom_data":{"application_tracking_enabled":1,"content_name":"Checkout","content_type":"product","num_items":1,"id":"12809","price":80,"quantity":1,"revenue":93.99,"content_ids":["12809"],"contents":[{"id":"12809","quantity":1,"item_price":80}],"currency":"USD","value":93.99}}',
+                    JSON.stringify({
+                      user_data: {
+                        em: '48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08',
+                        zp: '03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4',
+                      },
+                      event_name: 'AddPaymentInfo',
+                      event_time: 1699784211,
+                      action_source: 'website',
+                      custom_data: {
+                        application_tracking_enabled: 1,
+                        content_name: 'Checkout',
+                        content_type: 'product',
+                        num_items: 1,
+                        id: '12809',
+                        price: 80,
+                        quantity: 1,
+                        revenue: 93.99,
+                        content_ids: ['12809'],
+                        contents: [{ id: '12809', quantity: 1, item_price: 80 }],
+                        currency: 'USD',
+                        value: 93.99,
+                      },
+                    }),
                   ],
                 },
               },
@@ -1418,7 +1579,7 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://graph.facebook.com/v20.0/dummyID/events?access_token=09876',
+              endpoint: 'https://graph.facebook.com/v22.0/dummyID/events?access_token=09876',
               headers: {},
               params: {},
               body: {
@@ -1427,7 +1588,40 @@ export const data = [
                 JSON_ARRAY: {},
                 FORM: {
                   data: [
-                    '{"user_data":{"em":"48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08","zp":"03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4"},"event_name":"Purchase","event_time":1699784211,"action_source":"website","custom_data":{"revenue":400,"additional_bet_index":0,"products":[{"product_id":1234,"quantity":5,"price":55,"delivery_category":"home_delivery"}],"content_ids":[1234],"contents":[{"id":1234,"quantity":5,"item_price":55,"delivery_category":"home_delivery"}],"content_type":"product","currency":"USD","value":400,"num_items":1}}',
+                    JSON.stringify({
+                      user_data: {
+                        em: '48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08',
+                        zp: '03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4',
+                      },
+                      event_name: 'Purchase',
+                      event_time: 1699784211,
+                      action_source: 'website',
+                      custom_data: {
+                        revenue: 400,
+                        additional_bet_index: 0,
+                        products: [
+                          {
+                            product_id: 1234,
+                            quantity: 5,
+                            price: 55,
+                            delivery_category: 'home_delivery',
+                          },
+                        ],
+                        content_ids: [1234],
+                        contents: [
+                          {
+                            id: 1234,
+                            quantity: 5,
+                            item_price: 55,
+                            delivery_category: 'home_delivery',
+                          },
+                        ],
+                        content_type: 'product',
+                        currency: 'USD',
+                        value: 400,
+                        num_items: 1,
+                      },
+                    }),
                   ],
                 },
               },
@@ -1546,7 +1740,7 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://graph.facebook.com/v20.0/dummyID/events?access_token=09876',
+              endpoint: 'https://graph.facebook.com/v22.0/dummyID/events?access_token=09876',
               headers: {},
               params: {},
               body: {
@@ -1555,7 +1749,34 @@ export const data = [
                 JSON_ARRAY: {},
                 FORM: {
                   data: [
-                    '{"user_data":{"em":"48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08","zp":"03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4"},"event_name":"Purchase","event_time":1699784211,"action_source":"website","custom_data":{"revenue":400,"additional_bet_index":0,"delivery_category":"home_delivery","products":[{"product_id":1234,"quantity":5,"price":55}],"content_ids":[1234],"contents":[{"id":1234,"quantity":5,"item_price":55,"delivery_category":"home_delivery"}],"content_type":"product","currency":"USD","value":400,"num_items":1}}',
+                    JSON.stringify({
+                      user_data: {
+                        em: '48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08',
+                        zp: '03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4',
+                      },
+                      event_name: 'Purchase',
+                      event_time: 1699784211,
+                      action_source: 'website',
+                      custom_data: {
+                        revenue: 400,
+                        additional_bet_index: 0,
+                        delivery_category: 'home_delivery',
+                        products: [{ product_id: 1234, quantity: 5, price: 55 }],
+                        content_ids: [1234],
+                        contents: [
+                          {
+                            id: 1234,
+                            quantity: 5,
+                            item_price: 55,
+                            delivery_category: 'home_delivery',
+                          },
+                        ],
+                        content_type: 'product',
+                        currency: 'USD',
+                        value: 400,
+                        num_items: 1,
+                      },
+                    }),
                   ],
                 },
               },
@@ -1646,7 +1867,7 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://graph.facebook.com/v20.0/dummyID/events?access_token=09876',
+              endpoint: 'https://graph.facebook.com/v22.0/dummyID/events?access_token=09876',
               headers: {},
               params: {},
               body: {
@@ -1655,7 +1876,26 @@ export const data = [
                 JSON_ARRAY: {},
                 FORM: {
                   data: [
-                    '{"user_data":{"em":"48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08","zp":"03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4"},"event_name":"Purchase","event_time":1699784211,"action_source":"website","custom_data":{"content_type":"product_group","revenue":400,"additional_bet_index":0,"products":[{"product_id":1234,"quantity":5,"price":55}],"content_ids":[1234],"contents":[{"id":1234,"quantity":5,"item_price":55}],"currency":"USD","value":400,"num_items":1}}',
+                    JSON.stringify({
+                      user_data: {
+                        em: '48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08',
+                        zp: '03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4',
+                      },
+                      event_name: 'Purchase',
+                      event_time: 1699784211,
+                      action_source: 'website',
+                      custom_data: {
+                        content_type: 'product_group',
+                        revenue: 400,
+                        additional_bet_index: 0,
+                        products: [{ product_id: 1234, quantity: 5, price: 55 }],
+                        content_ids: [1234],
+                        contents: [{ id: 1234, quantity: 5, item_price: 55 }],
+                        currency: 'USD',
+                        value: 400,
+                        num_items: 1,
+                      },
+                    }),
                   ],
                 },
               },
@@ -1767,7 +2007,7 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://graph.facebook.com/v20.0/dummyID/events?access_token=09876',
+              endpoint: 'https://graph.facebook.com/v22.0/dummyID/events?access_token=09876',
               headers: {},
               params: {},
               body: {
@@ -1776,7 +2016,26 @@ export const data = [
                 JSON_ARRAY: {},
                 FORM: {
                   data: [
-                    '{"user_data":{"em":"48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08","zp":"03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4"},"event_name":"AddToCart","event_time":1699784211,"action_source":"website","custom_data":{"revenue":400,"additional_bet_index":0,"id":"452345234","quantity":5,"content_ids":"452345234","contents":[{"id":"452345234","quantity":5}],"content_type":"product","currency":"USD","value":400}}',
+                    JSON.stringify({
+                      user_data: {
+                        em: '48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08',
+                        zp: '03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4',
+                      },
+                      event_name: 'AddToCart',
+                      event_time: 1699784211,
+                      action_source: 'website',
+                      custom_data: {
+                        revenue: 400,
+                        additional_bet_index: 0,
+                        id: '452345234',
+                        quantity: 5,
+                        content_ids: '452345234',
+                        contents: [{ id: '452345234', quantity: 5 }],
+                        content_type: 'product',
+                        currency: 'USD',
+                        value: 400,
+                      },
+                    }),
                   ],
                 },
               },

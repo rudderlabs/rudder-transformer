@@ -20,10 +20,7 @@ function processEvent(payload) {
 
   if (putRequestDetailsInContext) {
     delete request.body;
-    response.context = {
-      ...response.context,
-      ...request,
-    };
+    response.context = request;
   }
 
   return response;

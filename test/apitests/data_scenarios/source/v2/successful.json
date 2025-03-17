@@ -1,12 +1,8 @@
 {
   "input": [
     {
-      "event": {
-        "event": "Fulfillments Update",
-        "data": {
-          "fulfillment_id": "1234567890",
-          "status": "pending"
-        }
+      "request": {
+        "body": "{\"event\":\"Fulfillments Update\",\"data\":{\"fulfillment_id\":\"1234567890\",\"status\":\"pending\"}}"
       },
       "source": {
         "id": "source_id",

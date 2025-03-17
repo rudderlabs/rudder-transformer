@@ -626,4 +626,45 @@ export const networkCallsData = [
       status: 400,
     },
   },
+  {
+    httpReq: {
+      version: '1',
+      type: 'REST',
+      method: 'DELETE',
+      endpoint: getEndPoint('aud-new'),
+      headers: {
+        'test-dest-response-key': 'messagingTOSNotAccepted',
+      },
+      params: {
+        access_token: 'XYZ',
+        payload: {
+          is_raw: true,
+          data_source: {
+            sub_type: 'ANYTHING',
+          },
+          schema: ['DOBY', 'PHONE', 'GEN', 'FI', 'MADID', 'ZIP', 'ST', 'COUNTRY'],
+          data: [['2013', '@09432457768', 'f', 'Ms.', 'ABC', 'ZIP ', '123abc ', 'IN']],
+        },
+      },
+      userId: '',
+      body: {
+        JSON: {},
+        XML: {},
+        JSON_ARRAY: {},
+        FORM: {},
+      },
+      files: {},
+    },
+    httpRes: {
+      data: {
+        error: {
+          message: '(#2655) Marketing Messaging TOS not accepted',
+          type: 'OAuthException',
+          code: 2655,
+          fbtrace_id: 'fbtrace_id',
+        },
+      },
+      status: 400,
+    },
+  },
 ];

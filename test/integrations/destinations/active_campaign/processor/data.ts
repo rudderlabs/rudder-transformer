@@ -9,7 +9,7 @@ import MockAdapter from 'axios-mock-adapter';
 import { isMatch } from 'lodash';
 import { defaultApiKey } from '../../../common/secrets';
 
-const baseMetadata: Metadata = {
+const baseMetadata: Partial<Metadata> = {
   sourceId: 'default-source',
   workspaceId: 'default-workspace',
   namespace: 'default-namespace',

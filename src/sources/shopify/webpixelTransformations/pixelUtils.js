@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign */
-const { isDefinedAndNotNull } = require('@rudderstack/integrations-lib');
+const { isDefinedAndNotNull, removeNullValues } = require('@rudderstack/integrations-lib');
 const Message = require('../../message');
 const { EventType } = require('../../../constants');
 const {
@@ -32,26 +32,6 @@ function setNestedValue(object, path, value) {
 }
 
 /*
- * Creates a copy of the source object with the keys mapped to the destination keys
- * Keys that are not present in the mapping will be copied as is
- * @param {Object} sourceObject
- * @param {Array} keyMappings
- * @returns {Object} resultObject
- */
-function mapContextObjectKeys(sourceObject, keyMappings) {
-  const resultObject = { ...sourceObject };
-
-  // eslint-disable-next-line @typescript-eslint/no-shadow
-  return keyMappings.reduce((resultObject, { sourceKeys, destKeys }) => {
-    const value = getNestedValue(sourceObject, sourceKeys);
-    if (value !== undefined) {
-      setNestedValue(resultObject, destKeys, value);
-    }
-    return resultObject;
-  }, resultObject);
-}
-
-/*
  * Maps the keys of the source object to the destination object
  * Only the keys that are present in the mapping will be copied
  * @param {Object} sourceObject
@@ -68,7 +48,7 @@ function mapObjectKeys(sourceObject, keyMappings) {
     }
   });
 
-  return trackProperties;
+  return removeNullValues(trackProperties);
 }
 
 const createMessage = (eventType, eventName, properties, context) => {
@@ -82,9 +62,10 @@ const createMessage = (eventType, eventName, properties, context) => {
 };
 
 const pageViewedEventBuilder = (inputEvent) => {
-  const { data, context } = inputEvent;
-  const pageEventContextValues = mapContextObjectKeys(context, contextualFieldMappingJSON);
-  return createMessage(EventType.PAGE, 'Page View', { ...data }, pageEventContextValues);
+  const { context } = inputEvent;
+  const pageEventContextValues = mapObjectKeys(context, contextualFieldMappingJSON);
+  const properties = pageEventContextValues.page;
+  return createMessage(EventType.PAGE, 'Page View', properties, pageEventContextValues);
 };
 
 const cartViewedEventBuilder = (inputEvent) => {
@@ -104,7 +85,7 @@ const cartViewedEventBuilder = (inputEvent) => {
     cart_id: inputEvent.data.cart.id,
     total,
   };
-  const contextualPayload = mapContextObjectKeys(inputEvent.context, contextualFieldMappingJSON);
+  const contextualPayload = mapObjectKeys(inputEvent.context, contextualFieldMappingJSON);
   return createMessage(EventType.TRACK, 'Cart Viewed', properties, contextualPayload);
 };
 
@@ -123,7 +104,7 @@ const productListViewedEventBuilder = (inputEvent) => {
     products,
   };
 
-  const contextualPayload = mapContextObjectKeys(inputEvent.context, contextualFieldMappingJSON);
+  const contextualPayload = mapObjectKeys(inputEvent.context, contextualFieldMappingJSON);
   return createMessage(EventType.TRACK, 'Product List Viewed', properties, contextualPayload);
 };
 
@@ -131,7 +112,7 @@ const productViewedEventBuilder = (inputEvent) => {
   const properties = {
     ...mapObjectKeys(inputEvent.data, productViewedEventMappingJSON),
   };
-  const contextualPayload = mapContextObjectKeys(inputEvent.context, contextualFieldMappingJSON);
+  const contextualPayload = mapObjectKeys(inputEvent.context, contextualFieldMappingJSON);
   return createMessage(EventType.TRACK, 'Product Viewed', properties, contextualPayload);
 };
 
@@ -139,7 +120,7 @@ const productToCartEventBuilder = (inputEvent) => {
   const properties = {
     ...mapObjectKeys(inputEvent.data, productToCartEventMappingJSON),
   };
-  const contextualPayload = mapContextObjectKeys(inputEvent.context, contextualFieldMappingJSON);
+  const contextualPayload = mapObjectKeys(inputEvent.context, contextualFieldMappingJSON);
   return createMessage(
     EventType.TRACK,
     PIXEL_EVENT_MAPPING[inputEvent.name],
@@ -169,19 +150,20 @@ const checkoutEventBuilder = (inputEvent) => {
     value: inputEvent?.data?.checkout?.totalPrice?.amount,
     tax: inputEvent?.data?.checkout?.totalTax?.amount,
   };
-  const contextualPayload = mapContextObjectKeys(inputEvent.context, contextualFieldMappingJSON);
+  const sanitizedProperties = removeNullValues(properties);
+  const contextualPayload = mapObjectKeys(inputEvent.context, contextualFieldMappingJSON);
   return createMessage(
     EventType.TRACK,
     PIXEL_EVENT_MAPPING[inputEvent.name],
-    properties,
+    sanitizedProperties,
     contextualPayload,
   );
 };
 
 const checkoutStepEventBuilder = (inputEvent) => {
-  const contextualPayload = mapContextObjectKeys(inputEvent.context, contextualFieldMappingJSON);
+  const contextualPayload = mapObjectKeys(inputEvent.context, contextualFieldMappingJSON);
   const properties = {
-    ...inputEvent.data.checkout,
+    checkout_id: inputEvent.data.checkout.token,
   };
   return createMessage(
     EventType.TRACK,
@@ -195,7 +177,7 @@ const searchEventBuilder = (inputEvent) => {
   const properties = {
     query: inputEvent.data.searchResult.query,
   };
-  const contextualPayload = mapContextObjectKeys(inputEvent.context, contextualFieldMappingJSON);
+  const contextualPayload = mapObjectKeys(inputEvent.context, contextualFieldMappingJSON);
   return createMessage(
     EventType.TRACK,
     PIXEL_EVENT_MAPPING[inputEvent.name],
@@ -227,7 +209,9 @@ const extractCampaignParams = (context, campaignMappings) => {
     const campaignObjectSourceKeys = campaignMappings.flatMap((mapping) => mapping.sourceKeys);
     url.searchParams.forEach((value, key) => {
       if (key.startsWith('utm_') && !campaignObjectSourceKeys.includes(key)) {
-        campaignParams[key] = value;
+        // Strip 'utm_' prefix and use the rest of the parameter name
+        const strippedKey = key.substring(4);
+        campaignParams[strippedKey] = value;
       }
     });
 

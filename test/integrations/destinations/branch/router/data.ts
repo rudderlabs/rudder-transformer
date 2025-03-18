@@ -4,7 +4,7 @@
  */
 
 import { RouterTestData } from '../../../testTypes';
-import {} from '../../../../../src/types';
+import { Metadata } from '../../../../../src/types';
 
 export const data: RouterTestData[] = [
   {
@@ -196,7 +196,7 @@ export const data: RouterTestData[] = [
                 destinationDefinitionId: 'default-dest-def',
                 transformationId: 'default-transform',
                 dontBatch: false,
-              },
+              } as unknown as Metadata,
               destination: {
                 ID: '1WTpIHpH7NTBgjeiUPW1kCUgZGI',
                 Name: 'branch test',

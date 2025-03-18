@@ -155,26 +155,26 @@ describe('serverSideUtils.js', () => {
 
   describe('Test addCartTokenHashToTraits', () => {
     // Add cart token hash to traits when cart token exists in event
-    it('should add cart_token_hash to message traits when cart token exists', () => {
-      const message = { traits: { existingTrait: 'value' } };
+    it('should add cart_token_hash to message context traits when cart token exists', () => {
+      const message = { context: { traits: { existingTrait: 'value' } } };
       const event = { cart_token: 'Z2NwLXVzLWVhc3QxOjAxSkJaTUVRSjgzNUJUN1BTNjEzRFdRUFFQ' };
       const expectedHash = '9125e1da-57b9-5bdc-953e-eb2b0ded5edc';
 
       addCartTokenHashToTraits(message, event);
 
-      expect(message.traits).toEqual({
+      expect(message.context.traits).toEqual({
         existingTrait: 'value',
         cart_token_hash: expectedHash,
       });
     });
 
     // Do not add cart token hash to traits when cart token does not exist in event
-    it('should not add cart_token_hash to message traits when cart token does not exist', () => {
-      const message = { traits: { existingTrait: 'value' } };
+    it('should not add cart_token_hash to message context traits when cart token does not exist', () => {
+      const message = { context: { traits: { existingTrait: 'value' } } };
       const event = { property: 'value' };
       addCartTokenHashToTraits(message, event);
 
-      expect(message.traits).toEqual({ existingTrait: 'value' });
+      expect(message.context.traits).toEqual({ existingTrait: 'value' });
     });
   });
 });

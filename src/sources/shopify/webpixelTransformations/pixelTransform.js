@@ -87,9 +87,8 @@ const handleCartTokenRedisOperations = async (inputEvent, clientId) => {
 
 async function processPixelEvent(inputEvent) {
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  const { name, query_parameters, context, clientId, id } = inputEvent;
+  const { name, query_parameters, context, clientId, id, timestamp } = inputEvent;
   const shopifyDetails = { ...inputEvent };
-  delete shopifyDetails.context;
   delete shopifyDetails.query_parameters;
   delete shopifyDetails.pixelEventLabel;
   let message = {};
@@ -167,6 +166,7 @@ async function processPixelEvent(inputEvent) {
       operation: 'get',
     });
   }
+  message.setProperty('timestamp', timestamp);
   message = removeUndefinedAndNullValues(message);
   return message;
 }

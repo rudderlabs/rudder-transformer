@@ -556,6 +556,61 @@ export const newpixelCheckoutEventsTestScenarios = [
                     topic: 'checkout_completed',
                     shopifyDetails: {
                       clientId: 'c7b3f99b-4d34-463b-835f-c879482a7750',
+                      context: {
+                        document: {
+                          characterSet: 'UTF-8',
+                          location: {
+                            hash: '',
+                            host: 'store.myshopify.com',
+                            hostname: 'store.myshopify.com',
+                            href: 'https://store.myshopify.com/checkouts/cn/Z2NwLXVzLWVhc3QxOjAxSjY5OVpIRURQNERFMDBKUTVaRkI4UzdU',
+                            origin: 'https://store.myshopify.com',
+                            pathname:
+                              '/checkouts/cn/Z2NwLXVzLWVhc3QxOjAxSjY5OVpIRURQNERFMDBKUTVaRkI4UzdU',
+                            port: '',
+                            protocol: 'https:',
+                            search: '',
+                          },
+                          referrer: 'https://store.myshopify.com/cart',
+                          title: 'Checkout - pixel-testing-rs',
+                        },
+                        navigator: {
+                          cookieEnabled: true,
+                          language: 'en-US',
+                          languages: ['en-US', 'en'],
+                          userAgent:
+                            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36',
+                        },
+                        window: {
+                          innerHeight: 1028,
+                          innerWidth: 1362,
+                          location: {
+                            hash: '',
+                            host: 'store.myshopify.com',
+                            hostname: 'store.myshopify.com',
+                            href: 'https://store.myshopify.com/checkouts/cn/Z2NwLXVzLWVhc3QxOjAxSjY5OVpIRURQNERFMDBKUTVaRkI4UzdU',
+                            origin: 'https://store.myshopify.com',
+                            pathname:
+                              '/checkouts/cn/Z2NwLXVzLWVhc3QxOjAxSjY5OVpIRURQNERFMDBKUTVaRkI4UzdU',
+                            port: '',
+                            protocol: 'https:',
+                            search: '',
+                          },
+                          origin: 'https://store.myshopify.com',
+                          outerHeight: 1080,
+                          outerWidth: 1728,
+                          pageXOffset: 0,
+                          pageYOffset: 0,
+                          screen: {
+                            height: 1117,
+                            width: 1728,
+                          },
+                          screenX: 0,
+                          screenY: 37,
+                          scrollX: 0,
+                          scrollY: 0,
+                        },
+                      },
                       data: {
                         checkout: {
                           attributes: [],
@@ -623,6 +678,7 @@ export const newpixelCheckoutEventsTestScenarios = [
                               id: '41327143157873',
                               properties: [],
                               quantity: 2,
+                              sellingPlanAllocation: null,
                               title: 'The Multi-managed Snowboard',
                               variant: {
                                 id: '41327143157873',
@@ -642,6 +698,8 @@ export const newpixelCheckoutEventsTestScenarios = [
                                   vendor: 'Multi-managed Vendor',
                                 },
                                 sku: 'sku-managed-1',
+                                title: null,
+                                untranslatedTitle: null,
                               },
                             },
                           ],
@@ -657,11 +715,26 @@ export const newpixelCheckoutEventsTestScenarios = [
                               id: 'gid://shopify/Market/23505895537',
                             },
                           },
-                          order: {},
+                          order: {
+                            customer: {
+                              id: null,
+                              isFirstOrder: null,
+                            },
+                            id: null,
+                          },
                           phone: '',
                           shippingAddress: {
+                            address1: null,
+                            address2: null,
+                            city: null,
                             country: 'US',
                             countryCode: 'US',
+                            firstName: null,
+                            lastName: null,
+                            phone: null,
+                            province: null,
+                            provinceCode: null,
+                            zip: null,
                           },
                           shippingLine: {
                             price: {
@@ -669,6 +742,7 @@ export const newpixelCheckoutEventsTestScenarios = [
                               currencyCode: 'USD',
                             },
                           },
+                          smsMarketingPhone: null,
                           subtotalPrice: {
                             amount: 2759.8,
                             currencyCode: 'USD',
@@ -685,7 +759,6 @@ export const newpixelCheckoutEventsTestScenarios = [
                           transactions: [],
                         },
                       },
-                      context: dummyContext,
                       id: 'sh-f77a78f1-C1D8-4ED4-9C9B-0D352CF6F3BF',
                       name: 'checkout_completed',
                       timestamp: '2024-09-15T20:57:59.674Z',

@@ -75,8 +75,8 @@ const addCartTokenHashToTraits = (message, event) => {
   const cartToken = getCartToken(event);
   if (cartToken) {
     const cartTokenHash = uuidv5(cartToken);
-    message.traits = {
-      ...message.traits,
+    message.context.traits = {
+      ...message.context.traits,
       cart_token_hash: cartTokenHash,
     };
   }
@@ -135,10 +135,10 @@ const setAnonymousId = async (message, event, metricMetadata) => {
  * @param {String} shopifyTopic shopify event topic
 */
 const handleCommonProperties = (message, event, shopifyTopic) => {
-  if (!get(message, 'traits.email')) {
+  if (!get(message, 'context.traits.email')) {
     const email = extractEmailFromPayload(event);
     if (email) {
-      message.setProperty('traits.email', email);
+      message.setProperty('context.traits.email', email);
     }
   }
   message.setProperty(`integrations.${INTEGERATION}`, true);

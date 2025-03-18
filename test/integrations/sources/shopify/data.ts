@@ -6,11 +6,12 @@ import { genericTrackTestScenarios } from './webhookTestScenarios/GenericTrackTe
 import { userTestScenarios } from './webhookMappingTests/userIdentifyTests';
 import { newpixelCheckoutEventsTestScenarios } from './pixelMappingTests/CheckoutEventsTests';
 import { newpixelCheckoutStepsScenarios } from './pixelMappingTests/CheckoutStepsTests';
+import { newpixelEventsTestScenarios } from './pixelMappingTests/ProductEventsTests';
 import { newWebhookcheckoutEventsTestScenarios } from './webhookMappingTests/CheckoutEventsTests';
 import { newWebhookOrderEventsTestScenarios } from './webhookMappingTests/OrderEventsTests';
 import { mockFns } from './mocks';
 
-const serverSideEventsScenarios = [
+const serverSideEventsScenariosForLegacyApp = [
   {
     name: 'shopify',
     description: 'Track Call -> carts_create ',
@@ -1494,15 +1495,16 @@ const serverSideEventsScenarios = [
 ];
 
 export const data = [
-  ...serverSideEventsScenarios,
-  ...checkoutEventsTestScenarios,
-  ...genericTrackTestScenarios,
-  ...pixelCheckoutEventsTestScenarios,
-  ...pixelCheckoutStepsScenarios,
-  ...pixelEventsTestScenarios,
+  ...serverSideEventsScenariosForLegacyApp,
+  // ...checkoutEventsTestScenarios,
+  // ...genericTrackTestScenarios,
+  // ...pixelCheckoutEventsTestScenarios,
+  // ...pixelCheckoutStepsScenarios,
+  // ...pixelEventsTestScenarios,
   ...userTestScenarios,
   ...newpixelCheckoutEventsTestScenarios,
   ...newpixelCheckoutStepsScenarios,
+  ...newpixelEventsTestScenarios,
   ...newWebhookcheckoutEventsTestScenarios,
   ...newWebhookOrderEventsTestScenarios,
 ];

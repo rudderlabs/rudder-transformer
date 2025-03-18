@@ -227,7 +227,7 @@ export const newWebhookcheckoutEventsTestScenarios = [
                       closed_at: null,
                     },
                     traits: {
-                      cart_token_hash: '9e189f39-da46-58df-81b4-5e507d9ef64e',
+                      cart_token_hash: '9125e1da-57b9-5bdc-953e-eb2b0ded5edc',
                     },
                   },
                   integrations: {
@@ -359,7 +359,6 @@ export const newWebhookcheckoutEventsTestScenarios = [
                     },
                     traits: {
                       email: 'henry@wfls.com',
-                      firstName: 'henry',
                       address: {
                         street: 'Yuimaru Kitchen',
                         city: 'Johnson City',

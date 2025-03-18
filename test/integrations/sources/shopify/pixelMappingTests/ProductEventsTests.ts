@@ -1,27 +1,28 @@
-// This file contains the test scenarios related to Shopify pixel events, emitted from web pixel on the browser.
 import { mockFns } from '../mocks';
 import { dummyContext, dummyContextwithCampaign, dummySourceConfig } from '../constants';
 
 export const pixelEventsTestScenarios = [
   {
     name: 'shopify',
-    skip: true,
     description: 'Page Call -> page_view event from web pixel',
     module: 'source',
-    version: 'v1',
+    skip: true,
+    version: 'v2',
     input: {
       request: {
         body: [
           {
-            event: {
-              type: 'standard',
-              clientId: 'c7b3f99b-4d34-463b-835f-c879482a7750',
-              name: 'page_viewed',
-              data: {},
-              id: 'sh-f6b6f548-5FEF-4DAE-9CAB-39EE6F94E09B',
-              context: dummyContextwithCampaign,
-              timestamp: '2024-09-15T17:24:30.373Z',
-              pixelEventLabel: true,
+            request: {
+              body: JSON.stringify({
+                type: 'standard',
+                clientId: 'c7b3f99b-4d34-463b-835f-c879482a7750',
+                name: 'page_viewed',
+                data: {},
+                id: 'sh-f6b6f548-5FEF-4DAE-9CAB-39EE6F94E09B',
+                context: dummyContextwithCampaign,
+                timestamp: '2024-09-15T17:24:30.373Z',
+                pixelEventLabel: true,
+              }),
               query_parameters: {
                 topic: ['page_viewed'],
                 writeKey: ['dummy-write-key'],
@@ -93,45 +94,47 @@ export const pixelEventsTestScenarios = [
   },
   {
     name: 'shopify',
-    skip: true,
     description: 'Track Call -> product_viewed event from web pixel',
     module: 'source',
-    version: 'v1',
+    skip: true,
+    version: 'v2',
     input: {
       request: {
         body: [
           {
-            event: {
-              type: 'standard',
-              name: 'product_viewed',
-              clientId: 'c7b3f99b-4d34-463b-835f-c879482a7750',
-              data: {
-                productVariant: {
-                  price: {
-                    amount: 749.95,
-                    currencyCode: 'USD',
+            request: {
+              body: JSON.stringify({
+                type: 'standard',
+                name: 'product_viewed',
+                clientId: 'c7b3f99b-4d34-463b-835f-c879482a7750',
+                data: {
+                  productVariant: {
+                    price: {
+                      amount: 749.95,
+                      currencyCode: 'USD',
+                    },
+                    product: {
+                      title: 'The Collection Snowboard: Liquid',
+                      vendor: 'Hydrogen Vendor',
+                      id: '7234590834801',
+                      untranslatedTitle: 'The Collection Snowboard: Liquid',
+                      url: '/products/the-collection-snowboard-liquid',
+                      type: 'snowboard',
+                    },
+                    id: '41327143321713',
+                    image: {
+                      src: '//store.myshopify.com/cdn/shop/files/Main_b13ad453-477c-4ed1-9b43-81f3345adfd6.jpg?v=1724736600',
+                    },
+                    sku: '',
+                    title: 'Default Title',
+                    untranslatedTitle: 'Default Title',
                   },
-                  product: {
-                    title: 'The Collection Snowboard: Liquid',
-                    vendor: 'Hydrogen Vendor',
-                    id: '7234590834801',
-                    untranslatedTitle: 'The Collection Snowboard: Liquid',
-                    url: '/products/the-collection-snowboard-liquid',
-                    type: 'snowboard',
-                  },
-                  id: '41327143321713',
-                  image: {
-                    src: '//store.myshopify.com/cdn/shop/files/Main_b13ad453-477c-4ed1-9b43-81f3345adfd6.jpg?v=1724736600',
-                  },
-                  sku: '',
-                  title: 'Default Title',
-                  untranslatedTitle: 'Default Title',
                 },
-              },
-              context: dummyContext,
-              id: 'sh-f6c07b5a-D20A-4E5F-812E-337299B56C34',
-              timestamp: '2024-09-15T17:34:54.889Z',
-              pixelEventLabel: true,
+                context: dummyContext,
+                id: 'sh-f6c07b5a-D20A-4E5F-812E-337299B56C34',
+                timestamp: '2024-09-15T17:34:54.889Z',
+                pixelEventLabel: true,
+              }),
               query_parameters: {
                 topic: ['product_viewed'],
                 writeKey: ['dummy-write-key'],
@@ -238,67 +241,69 @@ export const pixelEventsTestScenarios = [
   },
   {
     name: 'shopify',
-    skip: true,
     description: 'Track Call -> [ECOM] cart_viewed event from web pixel',
     module: 'source',
-    version: 'v1',
+    skip: true,
+    version: 'v2',
     input: {
       request: {
         body: [
           {
-            event: {
-              type: 'standard',
-              name: 'cart_viewed',
-              clientId: 'c7b3f99b-4d34-463b-835f-c879482a7750',
-              data: {
-                cart: {
-                  cost: {
-                    totalAmount: {
-                      amount: 1259.9,
-                      currencyCode: 'USD',
+            request: {
+              body: JSON.stringify({
+                type: 'standard',
+                name: 'cart_viewed',
+                clientId: 'c7b3f99b-4d34-463b-835f-c879482a7750',
+                data: {
+                  cart: {
+                    cost: {
+                      totalAmount: {
+                        amount: 1259.9,
+                        currencyCode: 'USD',
+                      },
                     },
+                    lines: [
+                      {
+                        cost: {
+                          totalAmount: {
+                            amount: 1259.9,
+                            currencyCode: 'USD',
+                          },
+                        },
+                        merchandise: {
+                          price: {
+                            amount: 629.95,
+                            currencyCode: 'USD',
+                          },
+                          product: {
+                            title: 'The Multi-managed Snowboard',
+                            vendor: 'Multi-managed Vendor',
+                            id: '7234590736497',
+                            untranslatedTitle: 'The Multi-managed Snowboard',
+                            url: '/products/the-multi-managed-snowboard',
+                            type: 'snowboard',
+                          },
+                          id: '41327143157873',
+                          image: {
+                            src: '//store.myshopify.com/cdn/shop/files/Main_9129b69a-0c7b-4f66-b6cf-c4222f18028a.jpg?v=1724736597',
+                          },
+                          sku: 'sku-managed-1',
+                          title: 'Default Title',
+                          untranslatedTitle: 'Default Title',
+                        },
+                        quantity: 2,
+                      },
+                    ],
+                    totalQuantity: 2,
+                    attributes: [],
+                    id: 'Z2NwLXVzLWVhc3QxOjAxSjY5OVpIRURQNERFMDBKUTVaRkI4UzdU',
                   },
-                  lines: [
-                    {
-                      cost: {
-                        totalAmount: {
-                          amount: 1259.9,
-                          currencyCode: 'USD',
-                        },
-                      },
-                      merchandise: {
-                        price: {
-                          amount: 629.95,
-                          currencyCode: 'USD',
-                        },
-                        product: {
-                          title: 'The Multi-managed Snowboard',
-                          vendor: 'Multi-managed Vendor',
-                          id: '7234590736497',
-                          untranslatedTitle: 'The Multi-managed Snowboard',
-                          url: '/products/the-multi-managed-snowboard',
-                          type: 'snowboard',
-                        },
-                        id: '41327143157873',
-                        image: {
-                          src: '//store.myshopify.com/cdn/shop/files/Main_9129b69a-0c7b-4f66-b6cf-c4222f18028a.jpg?v=1724736597',
-                        },
-                        sku: 'sku-managed-1',
-                        title: 'Default Title',
-                        untranslatedTitle: 'Default Title',
-                      },
-                      quantity: 2,
-                    },
-                  ],
-                  totalQuantity: 2,
-                  attributes: [],
-                  id: 'Z2NwLXVzLWVhc3QxOjAxSjY5OVpIRURQNERFMDBKUTVaRkI4UzdU',
                 },
-              },
-              context: dummyContext,
-              id: 'shu-f6eecef1-4132-459F-CDB5-681DA3DD61CD',
-              timestamp: '2024-09-15T18:25:30.125Z',
-              pixelEventLabel: true,
+                context: dummyContext,
+                id: 'shu-f6eecef1-4132-459F-CDB5-681DA3DD61CD',
+                timestamp: '2024-09-15T18:25:30.125Z',
+                pixelEventLabel: true,
+              }),
               query_parameters: {
                 topic: ['cart_viewed'],
                 writeKey: ['dummy-write-key'],
@@ -438,90 +443,93 @@ export const pixelEventsTestScenarios = [
     name: 'shopify',
     description: 'Track Call -> [ECOM] collection_viewed event from web pixel',
     module: 'source',
-    version: 'v1',
+    skip: true,
+    version: 'v2',
     input: {
       request: {
         body: [
           {
-            event: {
-              id: 'sh-f6f0c6be-43F8-47D2-5F94-C22AD5ED3E79',
-              name: 'collection_viewed',
-              data: {
-                collection: {
-                  id: '',
-                  title: 'Products',
-                  productVariants: [
-                    {
-                      price: {
-                        amount: 10,
-                        currencyCode: 'USD',
+            request: {
+              body: JSON.stringify({
+                type: 'standard',
+                name: 'collection_viewed',
+                clientId: 'c7b3f99b-4d34-463b-835f-c879482a7750',
+                data: {
+                  collection: {
+                    id: '',
+                    title: 'Products',
+                    productVariants: [
+                      {
+                        price: {
+                          amount: 10,
+                          currencyCode: 'USD',
+                        },
+                        product: {
+                          title: 'Gift Card',
+                          vendor: 'Snowboard Vendor',
+                          id: '7234590605425',
+                          untranslatedTitle: 'Gift Card',
+                          url: '/products/gift-card',
+                          type: 'giftcard',
+                        },
+                        id: '41327142895729',
+                        image: {
+                          src: '//store.myshopify.com/cdn/shop/files/gift_card.png?v=1724736596',
+                        },
+                        sku: '',
+                        title: '$10',
+                        untranslatedTitle: '$10',
                       },
-                      product: {
-                        title: 'Gift Card',
-                        vendor: 'Snowboard Vendor',
-                        id: '7234590605425',
-                        untranslatedTitle: 'Gift Card',
-                        url: '/products/gift-card',
-                        type: 'giftcard',
-                      },
-                      id: '41327142895729',
-                      image: {
-                        src: '//store.myshopify.com/cdn/shop/files/gift_card.png?v=1724736596',
-                      },
-                      sku: '',
-                      title: '$10',
-                      untranslatedTitle: '$10',
-                    },
-                    {
-                      price: {
-                        amount: 24.95,
-                        currencyCode: 'USD',
-                      },
-                      product: {
+                      {
+                        price: {
+                          amount: 24.95,
+                          currencyCode: 'USD',
+                        },
+                        product: {
+                          title: 'Selling Plans Ski Wax',
+                          vendor: 'pixel-testing-rs',
+                          id: '7234590802033',
+                          untranslatedTitle: 'Selling Plans Ski Wax',
+                          url: '/products/selling-plans-ski-wax',
+                          type: 'accessories',
+                        },
+                        id: '41327143223409',
+                        image: {
+                          src: '//store.myshopify.com/cdn/shop/files/snowboard_wax.png?v=1724736599',
+                        },
+                        sku: '',
                         title: 'Selling Plans Ski Wax',
-                        vendor: 'pixel-testing-rs',
-                        id: '7234590802033',
                         untranslatedTitle: 'Selling Plans Ski Wax',
-                        url: '/products/selling-plans-ski-wax',
-                        type: 'accessories',
                       },
-                      id: '41327143223409',
-                      image: {
-                        src: '//store.myshopify.com/cdn/shop/files/snowboard_wax.png?v=1724736599',
+                      {
+                        price: {
+                          amount: 2629.95,
+                          currencyCode: 'USD',
+                        },
+                        product: {
+                          title: 'The 3p Fulfilled Snowboard',
+                          vendor: 'pixel-testing-rs',
+                          id: '7234590703729',
+                          untranslatedTitle: 'The 3p Fulfilled Snowboard',
+                          url: '/products/the-3p-fulfilled-snowboard',
+                          type: 'snowboard',
+                        },
+                        id: '41327143125105',
+                        image: {
+                          src: '//store.myshopify.com/cdn/shop/files/Main_b9e0da7f-db89-4d41-83f0-7f417b02831d.jpg?v=1724736597',
+                        },
+                        sku: 'sku-hosted-1',
+                        title: 'Default Title',
+                        untranslatedTitle: 'Default Title',
                       },
-                      sku: '',
-                      title: 'Selling Plans Ski Wax',
-                      untranslatedTitle: 'Selling Plans Ski Wax',
-                    },
-                    {
-                      price: {
-                        amount: 2629.95,
-                        currencyCode: 'USD',
-                      },
-                      product: {
-                        title: 'The 3p Fulfilled Snowboard',
-                        vendor: 'pixel-testing-rs',
-                        id: '7234590703729',
-                        untranslatedTitle: 'The 3p Fulfilled Snowboard',
-                        url: '/products/the-3p-fulfilled-snowboard',
-                        type: 'snowboard',
-                      },
-                      id: '41327143125105',
-                      image: {
-                        src: '//store.myshopify.com/cdn/shop/files/Main_b9e0da7f-db89-4d41-83f0-7f417b02831d.jpg?v=1724736597',
-                      },
-                      sku: 'sku-hosted-1',
-                      title: 'Default Title',
-                      untranslatedTitle: 'Default Title',
-                    },
-                  ],
+                    ],
+                  },
                 },
-              },
-              type: 'standard',
-              clientId: 'c7b3f99b-4d34-463b-835f-c879482a7750',
-              timestamp: '2024-09-15T18:27:39.197Z',
-              context: dummyContext,
-              pixelEventLabel: true,
+                context: dummyContext,
+                id: 'sh-f6f0c6be-43F8-47D2-5F94-C22AD5ED3E79',
+                timestamp: '2024-09-15T18:27:39.197Z',
+                pixelEventLabel: true,
+              }),
               query_parameters: {
                 topic: ['collection_viewed'],
                 writeKey: ['dummy-write-key'],
@@ -708,14 +716,18 @@ export const pixelEventsTestScenarios = [
   },
   {
     name: 'shopify',
-    skip: true,
     description: 'Track Call -> [ECOM] product_added_to_cart event from web pixel',
     module: 'source',
-    version: 'v1',
+    skip: true,
+    version: 'v2',
     input: {
       request: {
         body: [
           {
+            request: {
+              body: JSON.stringify({}),
+              query_parameters: {},
+            },
             event: {
               type: 'standard',
               name: 'product_added_to_cart',
@@ -871,54 +883,56 @@ export const pixelEventsTestScenarios = [
   },
   {
     name: 'shopify',
-    skip: true,
     description: 'Track Call -> [ECOM] product_removed_from_cart event from web pixel',
     module: 'source',
-    version: 'v1',
+    skip: true,
+    version: 'v2',
     input: {
       request: {
         body: [
           {
-            event: {
-              type: 'standard',
-              name: 'product_removed_from_cart',
-              clientId: 'c7b3f99b-4d34-463b-835f-c879482a7750',
-              data: {
-                cartLine: {
-                  cost: {
-                    totalAmount: {
-                      amount: 749.95,
-                      currencyCode: 'USD',
+            request: {
+              body: JSON.stringify({
+                type: 'standard',
+                name: 'product_removed_from_cart',
+                clientId: 'c7b3f99b-4d34-463b-835f-c879482a7750',
+                data: {
+                  cartLine: {
+                    cost: {
+                      totalAmount: {
+                        amount: 749.95,
+                        currencyCode: 'USD',
+                      },
                     },
+                    merchandise: {
+                      id: '41327143321713',
+                      image: {
+                        src: 'https://cdn.shopify.com/s/files/1/0590/2696/4593/files/Main_b13ad453-477c-4ed1-9b43-81f3345adfd6.jpg?v=1724736600',
+                      },
+                      price: {
+                        amount: 749.95,
+                        currencyCode: 'USD',
+                      },
+                      product: {
+                        id: '7234590834801',
+                        title: 'The Collection Snowboard: Liquid',
+                        vendor: 'Hydrogen Vendor',
+                        type: 'snowboard',
+                        untranslatedTitle: 'The Collection Snowboard: Liquid',
+                        url: '/products/the-collection-snowboard-liquid?variant=41327143321713',
+                      },
+                      sku: '',
+                      title: null,
+                      untranslatedTitle: null,
+                    },
+                    quantity: 1,
                   },
-                  merchandise: {
-                    id: '41327143321713',
-                    image: {
-                      src: 'https://cdn.shopify.com/s/files/1/0590/2696/4593/files/Main_b13ad453-477c-4ed1-9b43-81f3345adfd6.jpg?v=1724736600',
-                    },
-                    price: {
-                      amount: 749.95,
-                      currencyCode: 'USD',
-                    },
-                    product: {
-                      id: '7234590834801',
-                      title: 'The Collection Snowboard: Liquid',
-                      vendor: 'Hydrogen Vendor',
-                      type: 'snowboard',
-                      untranslatedTitle: 'The Collection Snowboard: Liquid',
-                      url: '/products/the-collection-snowboard-liquid?variant=41327143321713',
-                    },
-                    sku: '',
-                    title: null,
-                    untranslatedTitle: null,
-                  },
-                  quantity: 1,
                 },
-              },
-              context: dummyContext,
-              id: 'shu-f778d1eb-9B83-4832-9DC0-5C3B33A809F0',
-              timestamp: '2024-09-15T20:56:00.125Z',
-              pixelEventLabel: true,
+                context: dummyContext,
+                id: 'shu-f778d1eb-9B83-4832-9DC0-5C3B33A809F0',
+                timestamp: '2024-09-15T20:56:00.125Z',
+                pixelEventLabel: true,
+              }),
               query_parameters: {
                 topic: ['carts_update'],
                 writeKey: ['dummy-write-key'],
@@ -1034,28 +1048,30 @@ export const pixelEventsTestScenarios = [
   },
   {
     name: 'shopify',
-    skip: true,
     description: 'Track Call -> [ECOM] search_submitted event from web pixel',
     module: 'source',
-    version: 'v1',
+    skip: true,
+    version: 'v2',
     input: {
       request: {
         body: [
           {
-            event: {
-              type: 'standard',
-              name: 'search_submitted',
-              clientId: 'c7b3f99b-4d34-463b-835f-c879482a7750',
-              data: {
-                searchResult: {
-                  query: 'skate',
-                  productVariants: [],
+            request: {
+              body: JSON.stringify({
+                type: 'standard',
+                name: 'search_submitted',
+                clientId: 'c7b3f99b-4d34-463b-835f-c879482a7750',
+                data: {
+                  searchResult: {
+                    query: 'skate',
+                    productVariants: [],
+                  },
                 },
-              },
-              context: dummyContext,
-              timestamp: '2024-09-15T22:37:35.869Z',
-              id: 'sh-f7d599b4-D80F-4D05-C4CE-B980D5444596',
-              pixelEventLabel: true,
+                context: dummyContext,
+                timestamp: '2024-09-15T22:37:35.869Z',
+                id: 'sh-f7d599b4-D80F-4D05-C4CE-B980D5444596',
+                pixelEventLabel: true,
+              }),
               query_parameters: {
                 topic: ['search_submitted'],
                 writeKey: ['dummy-write-key'],
@@ -1138,28 +1154,30 @@ export const pixelEventsTestScenarios = [
   },
   {
     name: 'shopify',
-    skip: true,
     description: 'Track Call -> unknown event from web pixel, should not be sent to Shopify.',
     module: 'source',
-    version: 'v1',
+    skip: true,
+    version: 'v2',
     input: {
       request: {
         body: [
           {
-            event: {
-              type: 'standard',
-              name: 'unknown_event',
-              clientId: 'c7b3f99b-4d34-463b-835f-c879482a7750',
-              data: {
-                searchResult: {
-                  query: 'skate',
-                  productVariants: [],
+            request: {
+              body: JSON.stringify({
+                type: 'standard',
+                name: 'unknown_event',
+                clientId: 'c7b3f99b-4d34-463b-835f-c879482a7750',
+                data: {
+                  searchResult: {
+                    query: 'skate',
+                    productVariants: [],
+                  },
                 },
-              },
-              context: dummyContext,
-              timestamp: '2024-09-15T22:37:35.869Z',
-              id: 'sh-f7d599b4-D80F-4D05-C4CE-B980D5444596',
-              pixelEventLabel: true,
+                context: dummyContext,
+                timestamp: '2024-09-15T22:37:35.869Z',
+                id: 'sh-f7d599b4-D80F-4D05-C4CE-B980D5444596',
+                pixelEventLabel: true,
+              }),
               query_parameters: {
                 topic: ['search_submitted'],
                 writeKey: ['dummy-write-key'],

@@ -3,7 +3,6 @@ import { pixelCheckoutStepsScenarios } from './pixelTestScenarios/CheckoutStepsT
 import { pixelEventsTestScenarios } from './pixelTestScenarios/ProductEventsTests';
 import { checkoutEventsTestScenarios } from './webhookTestScenarios/CheckoutEventsTests';
 import { genericTrackTestScenarios } from './webhookTestScenarios/GenericTrackTests';
-import { identityTestScenarios } from './webhookTestScenarios/IdentifyTests';
 import { userTestScenarios } from './webhookMappingTests/userIdentifyTests';
 import { newpixelCheckoutEventsTestScenarios } from './pixelMappingTests/CheckoutEventsTests';
 import { newpixelCheckoutStepsScenarios } from './pixelMappingTests/CheckoutStepsTests';
@@ -1481,7 +1480,6 @@ export const data = [
   ...serverSideEventsScenarios,
   ...checkoutEventsTestScenarios,
   ...genericTrackTestScenarios,
-  ...identityTestScenarios,
   ...pixelCheckoutEventsTestScenarios,
   ...pixelCheckoutStepsScenarios,
   ...pixelEventsTestScenarios,

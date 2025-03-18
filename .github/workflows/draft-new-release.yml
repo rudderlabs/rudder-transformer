@@ -79,10 +79,11 @@ jobs:
           git push
 
       - name: Create Pull Request
-        uses: repo-sync/pull-request@v2.12.1
-        with:
-          source_branch: ${{ steps.create-release.outputs.branch_name }}
-          destination_branch: 'main'
-          github_token: ${{ secrets.PAT }}
-          pr_title: 'chore(release): pull ${{ steps.create-release.outputs.branch_name }} into main'
-          pr_body: ':crown: *An automated PR*'
+        run: |
+          gh pr create \
+            --base main \
+            --head "${{ steps.create-release.outputs.branch_name }}" \
+            --title "chore(release): pull ${{ steps.create-release.outputs.branch_name }} into main" \
+            --body ":crown: *An automated PR*"
+        env:
+          GH_TOKEN: ${{ secrets.PAT }}

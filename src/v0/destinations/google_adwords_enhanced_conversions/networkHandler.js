@@ -56,7 +56,7 @@ const getConversionActionId = async ({ params, googleAds }) => {
 
     if (resp.type === 'application-error') {
       throw new NetworkError(
-        `"${resp.responseBody} during Google_adwords_enhanced_conversions response transformation"`,
+        `"${JSON.stringify(resp.responseBody)} during Google_adwords_enhanced_conversions response transformation"`,
         resp.statusCode,
         {
           [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(resp.statusCode),
@@ -104,15 +104,14 @@ const ProxyRequest = async (request) => {
     };
   }
 
-  // const { httpResponse: response } = await handleHttpRequest('constructor', requestBody, {
-  //   destType: 'google_adwords_enhanced_conversions',
-  //   feature: 'proxy',
-  //   endpointPath: `/googleAds:uploadOfflineUserData`,
-  //   requestMethod: 'POST',
-  //   module: 'dataDelivery',
-  //   metadata,
-  // });
-  return response;
+  return {
+    success: false,
+    response: {
+      status: response.statusCode,
+      headers: response.headers,
+      data: response.responseBody,
+    },
+  };
 };
 
 const responseHandler = (responseParams) => {

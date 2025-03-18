@@ -3,6 +3,11 @@ import { pixelCheckoutStepsScenarios } from './pixelTestScenarios/CheckoutStepsT
 import { pixelEventsTestScenarios } from './pixelTestScenarios/ProductEventsTests';
 import { checkoutEventsTestScenarios } from './webhookTestScenarios/CheckoutEventsTests';
 import { genericTrackTestScenarios } from './webhookTestScenarios/GenericTrackTests';
+import { userTestScenarios } from './webhookMappingTests/userIdentifyTests';
+import { newpixelCheckoutEventsTestScenarios } from './pixelMappingTests/CheckoutEventsTests';
+import { newpixelCheckoutStepsScenarios } from './pixelMappingTests/CheckoutStepsTests';
+import { newWebhookcheckoutEventsTestScenarios } from './webhookMappingTests/CheckoutEventsTests';
+import { newWebhookOrderEventsTestScenarios } from './webhookMappingTests/OrderEventsTests';
 import { mockFns } from './mocks';
 
 const serverSideEventsScenarios = [
@@ -1495,4 +1500,9 @@ export const data = [
   ...pixelCheckoutEventsTestScenarios,
   ...pixelCheckoutStepsScenarios,
   ...pixelEventsTestScenarios,
+  ...userTestScenarios,
+  ...newpixelCheckoutEventsTestScenarios,
+  ...newpixelCheckoutStepsScenarios,
+  ...newWebhookcheckoutEventsTestScenarios,
+  ...newWebhookOrderEventsTestScenarios,
 ];

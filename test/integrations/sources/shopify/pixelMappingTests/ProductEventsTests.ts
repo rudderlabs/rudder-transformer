@@ -725,49 +725,47 @@ export const pixelEventsTestScenarios = [
         body: [
           {
             request: {
-              body: JSON.stringify({}),
-              query_parameters: {},
-            },
-            event: {
-              type: 'standard',
-              name: 'product_added_to_cart',
-              clientId: 'c7b3f99b-4d34-463b-835f-c879482a7750',
-              data: {
-                cartLine: {
-                  cost: {
-                    totalAmount: {
-                      amount: 749.95,
-                      currencyCode: 'USD',
+              body: JSON.stringify({
+                type: 'standard',
+                name: 'product_added_to_cart',
+                clientId: 'c7b3f99b-4d34-463b-835f-c879482a7750',
+                data: {
+                  cartLine: {
+                    cost: {
+                      totalAmount: {
+                        amount: 749.95,
+                        currencyCode: 'USD',
+                      },
                     },
+                    merchandise: {
+                      id: '41327143321713',
+                      image: {
+                        src: 'https://cdn.shopify.com/s/files/1/0590/2696/4593/files/Main_b13ad453-477c-4ed1-9b43-81f3345adfd6.jpg?v=1724736600',
+                      },
+                      price: {
+                        amount: 749.95,
+                        currencyCode: 'USD',
+                      },
+                      product: {
+                        id: '7234590834801',
+                        title: 'The Collection Snowboard: Liquid',
+                        vendor: 'Hydrogen Vendor',
+                        type: 'snowboard',
+                        untranslatedTitle: 'The Collection Snowboard: Liquid',
+                        url: '/products/the-collection-snowboard-liquid?variant=41327143321713',
+                      },
+                      sku: '',
+                      title: null,
+                      untranslatedTitle: null,
+                    },
+                    quantity: 1,
                   },
-                  merchandise: {
-                    id: '41327143321713',
-                    image: {
-                      src: 'https://cdn.shopify.com/s/files/1/0590/2696/4593/files/Main_b13ad453-477c-4ed1-9b43-81f3345adfd6.jpg?v=1724736600',
-                    },
-                    price: {
-                      amount: 749.95,
-                      currencyCode: 'USD',
-                    },
-                    product: {
-                      id: '7234590834801',
-                      title: 'The Collection Snowboard: Liquid',
-                      vendor: 'Hydrogen Vendor',
-                      type: 'snowboard',
-                      untranslatedTitle: 'The Collection Snowboard: Liquid',
-                      url: '/products/the-collection-snowboard-liquid?variant=41327143321713',
-                    },
-                    sku: '',
-                    title: null,
-                    untranslatedTitle: null,
-                  },
-                  quantity: 1,
                 },
-              },
-              context: dummyContext,
-              id: 'sh-f6f828db-F77B-43E8-96C4-1D51DACD52A3',
-              timestamp: '2024-09-15T18:34:42.625Z',
-              pixelEventLabel: true,
+                context: dummyContext,
+                id: 'sh-f6f828db-F77B-43E8-96C4-1D51DACD52A3',
+                timestamp: '2024-09-15T18:34:42.625Z',
+                pixelEventLabel: true,
+              }),
               query_parameters: {
                 topic: ['carts_update'],
                 writeKey: ['dummy-write-key'],

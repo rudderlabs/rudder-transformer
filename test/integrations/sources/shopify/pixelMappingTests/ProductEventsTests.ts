@@ -1,7 +1,7 @@
 import { mockFns } from '../mocks';
 import { dummyContext, dummyContextwithCampaign, dummySourceConfig } from '../constants';
 
-export const pixelEventsTestScenarios = [
+export const newpixelEventsTestScenarios = [
   {
     name: 'shopify',
     description: 'Page Call -> page_view event from web pixel',
@@ -62,6 +62,17 @@ export const pixelEventsTestScenarios = [
                       term: 'term_checkout',
                       custom1: 'customutm',
                     },
+                    library: {
+                      eventOrigin: 'client',
+                      name: 'RudderStack Shopify Cloud',
+                      version: '2.0.0',
+                    },
+                    screen: {
+                      height: 1117,
+                      width: 1728,
+                    },
+                    userAgent:
+                      'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36',
                     shopifyDetails: {
                       clientId: 'c7b3f99b-4d34-463b-835f-c879482a7750',
                       data: {},
@@ -81,7 +92,12 @@ export const pixelEventsTestScenarios = [
                       },
                     },
                   },
-                  properties: {},
+                  properties: {
+                    path: '/checkouts/cn/Z2NwLXVzLWVhc3QxOjAxSjY5OVpIRURQNERFMDBKUTVaRkI4UzdU',
+                    search: '',
+                    title: 'Checkout - pixel-testing-rs',
+                    url: 'https://store.myshopify.com/checkouts/cn/Z2NwLXVzLWVhc3QxOjAxSjY5OVpIRURQNERFMDBKUTVaRkI4UzdU',
+                  },
                   timestamp: '2024-09-15T17:24:30.373Z',
                   messageId: 'sh-f6b6f548-5FEF-4DAE-9CAB-39EE6F94E09B',
                 },
@@ -441,9 +457,9 @@ export const pixelEventsTestScenarios = [
   },
   {
     name: 'shopify',
+    skip: true,
     description: 'Track Call -> [ECOM] collection_viewed event from web pixel',
     module: 'source',
-    skip: true,
     version: 'v2',
     input: {
       request: {

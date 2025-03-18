@@ -6,7 +6,7 @@ const { getShopifyTopic } = require('../tracker/util');
 const { removeUndefinedAndNullValues } = require('../../../v0/util');
 const Message = require('../../message');
 const { EventType } = require('../../../constants');
-const { IDENTIFY_TOPICS, SUPPORTED_TRACK_EVENTS, SHOPIFY_TRACK_MAP } = require('../tracker/config');
+const { SUPPORTED_TRACK_EVENTS, SHOPIFY_TRACK_MAP } = require('../tracker/config');
 const { INTEGERATION, identifyMappingJSON, lineItemsMappingJSON } = require('../config');
 const { ECOM_TOPICS, RUDDER_ECOM_MAP } = require('../config');
 const {
@@ -25,17 +25,6 @@ const NO_OPERATION_SUCCESS = {
     contentType: 'text/plain',
   },
   statusCode: 200,
-};
-
-const identifyPayloadBuilder = (event) => {
-  const message = new Message(INTEGERATION);
-  message.setEventType(EventType.IDENTIFY);
-  message.setPropertiesV2(event, identifyMappingJSON);
-  if (event.updated_at) {
-    // converting shopify updated_at timestamp to rudder timestamp format
-    message.setTimestamp(new Date(event.updated_at).toISOString());
-  }
-  return message;
 };
 
 const ecomPayloadBuilder = (event, shopifyTopic) => {
@@ -116,10 +105,6 @@ const processEvent = async (inputEvent, metricMetadata) => {
   const shopifyTopic = getShopifyTopic(event);
   delete event.query_parameters;
   switch (shopifyTopic) {
-    case IDENTIFY_TOPICS.CUSTOMERS_CREATE:
-    case IDENTIFY_TOPICS.CUSTOMERS_UPDATE:
-      message = identifyPayloadBuilder(event);
-      break;
     case ECOM_TOPICS.ORDERS_CREATE:
     case ECOM_TOPICS.ORDERS_UPDATE:
     case ECOM_TOPICS.CHECKOUTS_CREATE:
@@ -139,11 +124,10 @@ const processEvent = async (inputEvent, metricMetadata) => {
       message = trackPayloadBuilder(event, shopifyTopic);
       break;
   }
-  // attach anonymousId if the event is track event using note_attributes
-  if (message.type !== EventType.IDENTIFY) {
-    await setAnonymousId(message, event, metricMetadata);
-    await updateAnonymousIdToUserIdInRedis(message.anonymousId, message.userId);
-  }
+  // attach anonymousId using note_attributes
+  await setAnonymousId(message, event, metricMetadata);
+  await updateAnonymousIdToUserIdInRedis(message.anonymousId, message.userId);
+
   // attach email and other contextual properties
   message = handleCommonProperties(message, event, shopifyTopic);
   // add cart_token_hash to traits if cart_token is present
@@ -185,7 +169,6 @@ const processWebhookEvents = async (event) => {
 module.exports = {
   processWebhookEvents,
   processEvent,
-  identifyPayloadBuilder,
   ecomPayloadBuilder,
   trackPayloadBuilder,
 };

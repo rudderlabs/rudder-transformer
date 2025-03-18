@@ -1,3 +1,4 @@
+const { flattenQueryParams: flattenMapWithArrayValues } = require('@rudderstack/integrations-lib');
 const {
   removeUndefinedAndNullValues,
   generateUUID,
@@ -19,8 +20,14 @@ function processEvent(payload) {
   };
 
   if (putRequestDetailsInContext) {
-    delete request.body;
-    response.context = request;
+    response.context = {
+      method: request.method,
+      url: request.url,
+      proto: request.proto,
+      headers: request.headers && flattenMapWithArrayValues(request.headers),
+      query_parameters:
+        request.query_parameters && flattenMapWithArrayValues(request.query_parameters),
+    };
   }
 
   return response;

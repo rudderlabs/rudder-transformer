@@ -3,7 +3,6 @@ import { pixelCheckoutStepsScenarios } from './pixelTestScenarios/CheckoutStepsT
 import { pixelEventsTestScenarios } from './pixelTestScenarios/ProductEventsTests';
 import { checkoutEventsTestScenarios } from './webhookTestScenarios/CheckoutEventsTests';
 import { genericTrackTestScenarios } from './webhookTestScenarios/GenericTrackTests';
-import { identityTestScenarios } from './webhookTestScenarios/IdentifyTests';
 import { mockFns } from './mocks';
 
 const serverSideEventsScenarios = [
@@ -1476,7 +1475,6 @@ export const data = [
   ...serverSideEventsScenarios,
   ...checkoutEventsTestScenarios,
   ...genericTrackTestScenarios,
-  ...identityTestScenarios,
   ...pixelCheckoutEventsTestScenarios,
   ...pixelCheckoutStepsScenarios,
   ...pixelEventsTestScenarios,

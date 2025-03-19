@@ -138,8 +138,11 @@ export const data = [
                 'login-customer-id': '1234567890',
               },
               params: {
+                accessToken: 'google_adwords_enhanced_conversions1',
                 event: 'Page View',
+                developerToken: 'ijkl91011',
                 customerId: '1234567890',
+                loginCustomerId: '1234567890',
               },
               body: {
                 JSON: {
@@ -625,8 +628,11 @@ export const data = [
                 'login-customer-id': '11',
               },
               params: {
+                accessToken: 'google_adwords_enhanced_conversions1',
                 event: 'Product Added',
+                developerToken: 'ijkl91011',
                 customerId: '1234567890',
+                loginCustomerId: '11',
               },
               body: {
                 JSON: {
@@ -1336,8 +1342,11 @@ export const data = [
                 'login-customer-id': '1234567890',
               },
               params: {
+                accessToken: 'google_adwords_enhanced_conversions1',
                 event: 'Page View',
+                developerToken: 'ijkl91011',
                 customerId: '1234567890',
+                loginCustomerId: '1234567890',
               },
               body: {
                 JSON: {
@@ -1526,8 +1535,11 @@ export const data = [
                 'login-customer-id': '1234567890',
               },
               params: {
+                accessToken: 'google_adwords_enhanced_conversions1',
                 event: 'Page View',
+                developerToken: 'ijkl91011',
                 customerId: '1234567890',
+                loginCustomerId: '1234567890',
               },
               body: {
                 JSON: {

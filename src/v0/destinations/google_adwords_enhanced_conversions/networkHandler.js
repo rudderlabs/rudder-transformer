@@ -61,7 +61,7 @@ const getConversionActionId = async ({ params, googleAds }) => {
         {
           [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(resp.statusCode),
         },
-        resp,
+        resp.responseBody,
         getAuthErrCategory({ response: resp.responseBody, status: resp.statusCode }),
       );
     }

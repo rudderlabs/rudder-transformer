@@ -4,7 +4,7 @@ const API_VERSION = 'v18';
 export const networkCallsData = [
   {
     httpReq: {
-      url: `https://googleads.googleapis.com/${API_VERSION}/customers/1234567890/googleAds:searchStream`,
+      url: `/1234567890/googleAds:searchStream`,
       data: {
         query: `SELECT conversion_action.id FROM conversion_action WHERE conversion_action.name = 'Product Added'`,
       },
@@ -32,7 +32,7 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      url: `https://googleads.googleapis.com/${API_VERSION}/customers/1234567899/googleAds:searchStream`,
+      url: `/1234567899/googleAds:searchStream`,
       data: {
         query: `SELECT conversion_action.id FROM conversion_action WHERE conversion_action.name = 'Product Added'`,
       },
@@ -385,7 +385,7 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      url: `https://googleads.googleapis.com/${API_VERSION}/customers/1234567910/googleAds:searchStream`,
+      url: `/1234567910/googleAds:searchStream`,
       data: {
         query: `SELECT conversion_action.id FROM conversion_action WHERE conversion_action.name = 'Product Added'`,
       },

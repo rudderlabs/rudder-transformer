@@ -1,5 +1,4 @@
 import { authHeader1 } from '../maskedSecrets';
-const API_VERSION = 'v18';
 
 import {
   generateProxyV1Payload,
@@ -88,7 +87,7 @@ export const v0oauthScenarios = [
       request: {
         body: generateProxyV0Payload({
           ...commonRequestParameters,
-          endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/1234567890:uploadConversionAdjustments`,
+          endpoint: '',
         }),
         method: 'POST',
       },
@@ -144,7 +143,7 @@ export const v0oauthScenarios = [
             customerId: '1234567910',
             destination: 'google_adwords_enhanced_conversions',
           },
-          endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/1234567910/googleAds:searchStream`,
+          endpoint: '',
         }),
         method: 'POST',
       },
@@ -198,7 +197,7 @@ export const v1oauthScenarios = [
       request: {
         body: generateProxyV1Payload({
           ...commonRequestParameters,
-          endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/1234567890:uploadConversionAdjustments`,
+          endpoint: '',
         }),
         method: 'POST',
       },
@@ -252,7 +251,7 @@ export const v1oauthScenarios = [
             customerId: '1234567910',
             destination: 'google_adwords_enhanced_conversions',
           },
-          endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/1234567910/googleAds:searchStream`,
+          endpoint: '',
         }),
         method: 'POST',
       },

@@ -1,5 +1,4 @@
 import { authHeader1, secret1 } from '../maskedSecrets';
-const API_VERSION = 'v18';
 
 const events = [
   {
@@ -652,7 +651,7 @@ export const data = [
                   JSON_ARRAY: {},
                   XML: {},
                 },
-                endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/1234567890:uploadConversionAdjustments`,
+                endpoint: '',
                 files: {},
                 headers: {
                   Authorization: authHeader1,
@@ -825,7 +824,7 @@ export const data = [
                   JSON_ARRAY: {},
                   XML: {},
                 },
-                endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/1234567890:uploadConversionAdjustments`,
+                endpoint: '',
                 files: {},
                 headers: {
                   Authorization: authHeader1,

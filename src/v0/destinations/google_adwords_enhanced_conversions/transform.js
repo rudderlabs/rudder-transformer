@@ -13,7 +13,7 @@ const {
   getAccessToken,
 } = require('../../util');
 
-const { trackMapping, BASE_ENDPOINT } = require('./config');
+const { trackMapping } = require('./config');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 /**
@@ -47,7 +47,6 @@ const responseBuilder = async (metadata, message, { Config }, payload) => {
   }
   const filteredCustomerId = removeHyphens(customerId);
 
-  response.endpoint = `${BASE_ENDPOINT}/${filteredCustomerId}:uploadConversionAdjustments`;
   response.body.JSON = payload;
   const accessToken = getAccessToken(metadata, 'access_token');
   response.headers = {

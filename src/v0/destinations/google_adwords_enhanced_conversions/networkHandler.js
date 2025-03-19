@@ -77,8 +77,8 @@ const getConversionActionId = async ({ params, googleAds }) => {
  * @returns
  */
 const ProxyRequest = async (request) => {
-  const { body, method, endpoint, params } = request;
-  const { headers } = request;
+  const { body, params } = request;
+
   const googleAds = new GoogleAdsSDK.GoogleAds({
     accessToken: params.accessToken,
     customerId: params.customerId,
@@ -91,8 +91,8 @@ const ProxyRequest = async (request) => {
   });
 
   set(body.JSON, 'conversionAdjustments[0].conversionAction', `${conversionActionId}`);
-  const requestBody = { url: endpoint, data: body.JSON, headers, method };
-  const response = await googleAds.addConversionAdjustMent(requestBody.data);
+
+  const response = await googleAds.addConversionAdjustMent(body.JSON);
   if (response.type === 'success') {
     return {
       success: true,

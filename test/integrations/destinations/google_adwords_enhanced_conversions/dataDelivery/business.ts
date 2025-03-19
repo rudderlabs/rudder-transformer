@@ -6,8 +6,6 @@ import {
 } from '../../../testUtils';
 import { ProxyV1TestData } from '../../../testTypes';
 
-const API_VERSION = 'v18';
-
 const headers = {
   Authorization: authHeader1,
   'Content-Type': 'application/json',
@@ -88,7 +86,7 @@ export const testScenariosForV0API = [
       request: {
         body: generateProxyV0Payload({
           ...commonRequestParameters,
-          endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/1234567899:uploadConversionAdjustments`,
+          endpoint: '',
         }),
         method: 'POST',
       },
@@ -146,7 +144,7 @@ export const testScenariosForV0API = [
             customerId: '1234567888',
             destination: 'google_adwords_enhanced_conversions',
           },
-          endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/1234567888:uploadConversionAdjustments`,
+          endpoint: '',
         }),
         method: 'POST',
       },
@@ -228,7 +226,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
         body: generateProxyV1Payload(
           {
             ...commonRequestParameters,
-            endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/1234567899:uploadConversionAdjustments`,
+            endpoint: '',
           },
           [generateMetadata(1)],
         ),
@@ -292,7 +290,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
               customerId: '1234567888',
               destination: 'google_adwords_enhanced_conversions',
             },
-            endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/1234567888:uploadConversionAdjustments`,
+            endpoint: '',
           },
           [generateMetadata(1)],
         ),

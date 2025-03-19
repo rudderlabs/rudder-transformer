@@ -139,6 +139,9 @@ export const testScenariosForV0API = [
         body: generateProxyV0Payload({
           ...commonRequestParameters,
           params: {
+            developerToken: 'ijkl91011',
+            accessToken: 'google_adwords_enhanced_conversions1',
+            loginCustomerId: '0987654321',
             event: 'Product Added',
             customerId: '1234567888',
             destination: 'google_adwords_enhanced_conversions',
@@ -282,6 +285,9 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
           {
             ...commonRequestParameters,
             params: {
+              developerToken: 'ijkl91011',
+              accessToken: 'google_adwords_enhanced_conversions1',
+              loginCustomerId: '0987654321',
               event: 'Product Added',
               customerId: '1234567888',
               destination: 'google_adwords_enhanced_conversions',

@@ -4,11 +4,13 @@ import { BaseTestCase } from '@rudderstack/integrations-lib';
 
 import {
   DeliveryV1Response,
+  Metadata,
   ProcessorTransformationRequest,
   ProcessorTransformationResponse,
   ProxyV1Request,
   RouterTransformationRequest,
   RouterTransformationResponse,
+  RudderMessage,
 } from '../../src/types';
 
 export interface requestType {
@@ -104,7 +106,7 @@ export type ProcessorTestData = {
   input: {
     request: {
       method: string;
-      body: ProcessorTransformationRequest[];
+      body: ProcessorTransformationRequest<Partial<RudderMessage>, Partial<Metadata>>[];
     };
   };
   output: {
@@ -127,7 +129,7 @@ export type RouterTestData = {
   version: string;
   input: {
     request: {
-      body: RouterTransformationRequest;
+      body: RouterTransformationRequest<Partial<RudderMessage>, Partial<Metadata>>;
       method: string;
     };
   };

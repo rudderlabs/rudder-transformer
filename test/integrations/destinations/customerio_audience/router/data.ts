@@ -10,6 +10,7 @@ import {
   connection,
   params,
   inValidConnection,
+  RouterConfigurationErrorStatTags,
 } from '../common';
 
 const routerRequest1 = {
@@ -105,6 +106,10 @@ const routerRequest1 = {
     {
       message: {
         type: 'identify',
+        action: 'insert',
+        identifiers: {
+          id: 'test-id-9',
+        },
         anonymousId: 'anonId1',
         userId: 'userId1',
         integrations: {
@@ -192,7 +197,7 @@ export const data = [
   {
     id: 'customerio-segment-router-test-1',
     name: destType,
-    description: 'Basic Router Test to test record payloads',
+    description: 'Basic Router Test to test correct record payloads',
     scenario: 'Framework+Business',
     successCriteria: 'All events should be transformed successfully and status code should be 200',
     feature: 'router',
@@ -282,7 +287,8 @@ export const data = [
               metadata: [generateMetadata(8)],
               batched: false,
               statusCode: 400,
-              error: 'action dummy-action is not supported',
+              error:
+                "action: Invalid enum value. Expected 'insert' | 'update' | 'delete', received 'dummy-action'",
               statTags: RouterInstrumentationErrorStatTags,
               destination,
             },
@@ -290,7 +296,7 @@ export const data = [
               metadata: [generateMetadata(9)],
               batched: false,
               statusCode: 400,
-              error: 'message type identify is not supported',
+              error: 'type: Invalid literal value, expected "record"',
               statTags: RouterInstrumentationErrorStatTags,
               destination,
             },
@@ -298,7 +304,7 @@ export const data = [
               metadata: [generateMetadata(10)],
               batched: false,
               statusCode: 400,
-              error: 'identifiers cannot be empty',
+              error: 'identifiers: cannot be empty',
               statTags: RouterInstrumentationErrorStatTags,
               destination,
             },
@@ -306,7 +312,7 @@ export const data = [
               metadata: [generateMetadata(11)],
               batched: false,
               statusCode: 400,
-              error: 'only one identifier is supported',
+              error: 'identifiers: only one identifier is supported',
               statTags: RouterInstrumentationErrorStatTags,
               destination,
             },
@@ -319,7 +325,7 @@ export const data = [
   {
     id: 'customerio-segment-router-test-2',
     name: destType,
-    description: 'Basic Router Test to test record payloads',
+    description: 'Basic Router Test to test incorrect connection config',
     scenario: 'Framework',
     successCriteria: 'All events should throw error',
     feature: 'router',
@@ -340,24 +346,26 @@ export const data = [
               metadata: [generateMetadata(1)],
               batched: false,
               statusCode: 400,
-              error: 'identifier type should be a string or integer',
-              statTags: { ...RouterInstrumentationErrorStatTags, errorType: 'configuration' },
+              error:
+                'audienceId: String must contain at least 1 character(s); identifierMappings: Required',
+              statTags: RouterConfigurationErrorStatTags,
               destination,
             },
             {
               metadata: [generateMetadata(2)],
               batched: false,
               statusCode: 400,
-              error: 'audienceId is required, aborting.',
-              statTags: RouterInstrumentationErrorStatTags,
+              error:
+                'audienceId: String must contain at least 1 character(s); identifierMappings: Required',
+              statTags: RouterConfigurationErrorStatTags,
               destination,
             },
             {
               metadata: [generateMetadata(3)],
               batched: false,
               statusCode: 400,
-              error: 'identifierMappings cannot be empty',
-              statTags: RouterInstrumentationErrorStatTags,
+              error: 'identifierMappings: Required',
+              statTags: RouterConfigurationErrorStatTags,
               destination,
             },
           ],

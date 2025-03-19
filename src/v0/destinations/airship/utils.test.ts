@@ -52,7 +52,7 @@ describe('Airship utils - getAirshipTimestamp', () => {
   test.each(timestampCases)('getAirshipTimestamp - $description', ({ input, output, error }) => {
     const message = {
       timestamp: input,
-    } as unknown as RudderMessage;
+    } as RudderMessage;
     if (error) {
       expect(() => getAirshipTimestamp(message)).toThrow(error);
     } else {
@@ -128,7 +128,7 @@ describe('Airship utils - prepareAttributePayload', () => {
         All: true,
       },
       type: 'identify',
-    } as unknown as RudderMessage;
+    };
 
     const expectedAttributePayload = {
       attributes: [
@@ -186,7 +186,7 @@ describe('Airship utils - prepareAttributePayload', () => {
         },
       },
       type: 'identify',
-    } as unknown as RudderMessage;
+    };
 
     const traits = getFieldValueFromMessage(message, 'traits');
     const flattenedTraits = flattenJson(traits);
@@ -220,7 +220,7 @@ describe('Airship utils - prepareAttributePayload', () => {
         },
       },
       type: 'identify',
-    } as unknown as RudderMessage;
+    };
 
     const expectedAttributePayload = {
       attributes: [
@@ -279,7 +279,7 @@ describe('Airship utils - prepareAttributePayload', () => {
         },
       },
       type: 'identify',
-    } as unknown as RudderMessage;
+    };
 
     const expectedAttributePayload = {
       attributes: [
@@ -351,7 +351,7 @@ describe('Airship utils - prepareAttributePayload', () => {
         },
       },
       type: 'identify',
-    } as unknown as RudderMessage;
+    };
 
     const expectedAttributePayload = {
       attributes: [

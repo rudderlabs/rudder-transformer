@@ -108,8 +108,7 @@ export const v0oauthScenarios = [
                 },
               },
             ],
-            message:
-              '"[{"error":{"code":401,"message":"Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.","status":"UNAUTHENTICATED"}}] during Google_adwords_enhanced_conversions response transformation"',
+            message: `"${JSON.stringify([{ error: { code: 401, message: 'Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.', status: 'UNAUTHENTICATED' } }])} during Google_adwords_enhanced_conversions response transformation"`,
             statTags: expectedStatTags,
             status: 401,
           },
@@ -170,8 +169,7 @@ export const v0oauthScenarios = [
                 },
               },
             ],
-            message:
-              '"[{"error":{"code":403,"message":"The caller does not have permission","errors":[{"message":"The caller does not have permission","domain":"global","reason":"forbidden"}],"status":"PERMISSION_DENIED"}}] during Google_adwords_enhanced_conversions response transformation"',
+            message: `"${JSON.stringify([{ error: { code: 403, message: 'The caller does not have permission', errors: [{ message: 'The caller does not have permission', domain: 'global', reason: 'forbidden' }], status: 'PERMISSION_DENIED' } }])} during Google_adwords_enhanced_conversions response transformation"`,
             statTags: expectedStatTags,
             status: 403,
           },
@@ -208,12 +206,10 @@ export const v1oauthScenarios = [
         body: {
           output: {
             authErrorCategory: 'REFRESH_TOKEN',
-            message:
-              '"[{"error":{"code":401,"message":"Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.","status":"UNAUTHENTICATED"}}] during Google_adwords_enhanced_conversions response transformation"',
+            message: `"${JSON.stringify([{ error: { code: 401, message: 'Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.', status: 'UNAUTHENTICATED' } }])} during Google_adwords_enhanced_conversions response transformation"`,
             response: [
               {
-                error:
-                  '"[{"error":{"code":401,"message":"Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.","status":"UNAUTHENTICATED"}}] during Google_adwords_enhanced_conversions response transformation"',
+                error: `"${JSON.stringify([{ error: { code: 401, message: 'Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.', status: 'UNAUTHENTICATED' } }])} during Google_adwords_enhanced_conversions response transformation"`,
                 metadata: generateMetadata(1),
                 statusCode: 401,
               },
@@ -262,12 +258,10 @@ export const v1oauthScenarios = [
         body: {
           output: {
             authErrorCategory: 'AUTH_STATUS_INACTIVE',
-            message:
-              '"[{"error":{"code":403,"message":"The caller does not have permission","errors":[{"message":"The caller does not have permission","domain":"global","reason":"forbidden"}],"status":"PERMISSION_DENIED"}}] during Google_adwords_enhanced_conversions response transformation"',
+            message: `"${JSON.stringify([{ error: { code: 403, message: 'The caller does not have permission', errors: [{ message: 'The caller does not have permission', domain: 'global', reason: 'forbidden' }], status: 'PERMISSION_DENIED' } }])} during Google_adwords_enhanced_conversions response transformation"`,
             response: [
               {
-                error:
-                  '"[{"error":{"code":403,"message":"The caller does not have permission","errors":[{"message":"The caller does not have permission","domain":"global","reason":"forbidden"}],"status":"PERMISSION_DENIED"}}] during Google_adwords_enhanced_conversions response transformation"',
+                error: `"${JSON.stringify([{ error: { code: 403, message: 'The caller does not have permission', errors: [{ message: 'The caller does not have permission', domain: 'global', reason: 'forbidden' }], status: 'PERMISSION_DENIED' } }])} during Google_adwords_enhanced_conversions response transformation"`,
                 metadata: generateMetadata(1),
                 statusCode: 403,
               },

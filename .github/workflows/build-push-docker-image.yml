@@ -118,7 +118,6 @@ jobs:
           target: ${{ inputs.load_target }}
           load: true
           tags: ${{ inputs.build_tag }}
-          push: true
           platforms: |
             linux/arm64
           # cache-from: type=gha

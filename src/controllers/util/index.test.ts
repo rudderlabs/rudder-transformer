@@ -1,10 +1,12 @@
 import { TransformationError } from '@rudderstack/integrations-lib';
 import { ErrorMessages } from '../../constants';
 import {
+  Connection,
   Destination,
   Metadata,
   ProcessorTransformationRequest,
   RouterTransformationRequestData,
+  RudderMessage,
 } from '../../types';
 import { ControllerUtility } from './index';
 import lodash from 'lodash';
@@ -494,7 +496,7 @@ type timestampTestCases = {
   inputEvents: Array<ProcessorTransformationRequest | RouterTransformationRequestData>;
 };
 
-const metadata: Metadata = {
+const metadata = {
   sourceId: '27O0bmEEx3GgfmEhZHUcPwJQVWC',
   workspaceId: '27O0bhB6p5ehfOWeeZlOSsSDTLg',
   namespace: '',
@@ -525,7 +527,7 @@ const metadata: Metadata = {
   sourceDefinitionId: '1b6gJdqOPOCadT3cddw8eidV591',
   destinationDefinitionId: '',
   transformationId: '',
-};
+} as unknown as Metadata;
 
 const destination: Destination = {
   ID: 'string',
@@ -542,7 +544,7 @@ const destination: Destination = {
   Transformations: [],
 };
 
-const message = {
+const message: RudderMessage = {
   anonymousId: '2073230',
   event: 'Test',
   messageId: 'e3a51e9a-6313-4389-ae73-07e487c8d9d0',
@@ -565,11 +567,11 @@ function getDestination(overrides: Destination): Destination {
   return lodash.merge({}, destination, overrides);
 }
 
-function getMessage(overrides: object): object {
+function getMessage(overrides: object): RudderMessage {
   return lodash.merge({}, message, overrides);
 }
 
-function getMessageWithShallowMerge(overrides: object): object {
+function getMessageWithShallowMerge(overrides: object): RudderMessage {
   return lodash.assign({}, message, overrides);
 }
 

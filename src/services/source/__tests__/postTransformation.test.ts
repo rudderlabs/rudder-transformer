@@ -28,12 +28,14 @@ describe('Source PostTransformation Service', () => {
     const event = {
       outputToSource: {},
       output: { batch: [{ anonymousId: 'test' }] },
+      statusCode: 200,
     } as SourceTransformationResponse;
 
     const postProcessedEvents = {
       outputToSource: {},
       output: { batch: [{ anonymousId: 'test', context: { headers } }] },
-    } as SourceTransformationResponse;
+      statusCode: 200,
+    } as unknown as SourceTransformationResponse;
 
     const result = SourcePostTransformationService.handleSuccessEventsSource(event, { headers });
 

@@ -1,4 +1,4 @@
-import { TransformationError } from '@rudderstack/integrations-lib';
+import { flattenQueryParams, TransformationError } from '@rudderstack/integrations-lib';
 import get from 'get-value';
 import Message = require('../message');
 import { EventType } from '../../constants';
@@ -6,16 +6,12 @@ import { InputEventType, OutputEventType } from './type';
 import { SourceInputV2 } from '../../types';
 import { generateUUID } from '../../v0/util';
 
-const {
-  removeUndefinedAndNullValues,
-  getBodyFromV2SpecPayload,
-  unwrapArrayValues,
-} = require('../../v0/util');
+const { removeUndefinedAndNullValues, getBodyFromV2SpecPayload } = require('../../v0/util');
 
 const mapping = require('./mapping.json');
 
 function processEvent(inputEvent: InputEventType): any {
-  const unwrappedInputEvent = unwrapArrayValues(inputEvent);
+  const unwrappedInputEvent = flattenQueryParams(inputEvent);
 
   if (Object.keys(unwrappedInputEvent).length === 0) {
     throw new TransformationError('input event must have at least one field');

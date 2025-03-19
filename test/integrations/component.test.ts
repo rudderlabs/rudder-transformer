@@ -124,22 +124,6 @@ const testRoute = async (route, tcData: TestCaseData) => {
     .send(body);
   const outputResp = tcData.output.response || ({} as any);
 
-  if (tcData.feature === tags.FEATURES.BATCH || tcData.feature === tags.FEATURES.ROUTER) {
-    //TODO get rid of these skipped destinations after they are fixed
-    if (
-      tcData.name != 'marketo_static_list' &&
-      tcData.name != 'mailmodo' &&
-      tcData.name != 'hs' &&
-      tcData.name != 'iterable' &&
-      tcData.name != 'klaviyo' &&
-      tcData.name != 'tiktok_ads' &&
-      tcData.name != 'mailjet' &&
-      tcData.name != 'google_adwords_offline_conversions'
-    ) {
-      assertRouterOutput(response.body.output, tcData.input.request.body.input);
-    }
-  }
-
   expect(response.status).toEqual(outputResp.status);
 
   if (INTEGRATIONS_WITH_UPDATED_TEST_STRUCTURE.includes(tcData.name?.toLocaleLowerCase())) {
@@ -154,6 +138,21 @@ const testRoute = async (route, tcData: TestCaseData) => {
 
   if (outputResp.headers !== undefined) {
     expect(response.headers).toEqual(outputResp.headers);
+  }
+  if (tcData.feature === tags.FEATURES.BATCH || tcData.feature === tags.FEATURES.ROUTER) {
+    //TODO get rid of these skipped destinations after they are fixed
+    if (
+      tcData.name != 'marketo_static_list' &&
+      tcData.name != 'mailmodo' &&
+      tcData.name != 'hs' &&
+      tcData.name != 'iterable' &&
+      tcData.name != 'klaviyo' &&
+      tcData.name != 'tiktok_ads' &&
+      tcData.name != 'mailjet' &&
+      tcData.name != 'google_adwords_offline_conversions'
+    ) {
+      assertRouterOutput(response.body.output, tcData.input.request.body.input);
+    }
   }
 };
 

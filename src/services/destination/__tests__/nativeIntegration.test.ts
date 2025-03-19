@@ -16,7 +16,7 @@ describe('NativeIntegration Service', () => {
     const destType = '__rudder_test__';
     const version = 'v0';
     const requestMetadata = {};
-    const event = { message: { a: 'b' } } as ProcessorTransformationRequest;
+    const event = { message: { a: 'b' } } as unknown as ProcessorTransformationRequest;
     const events: ProcessorTransformationRequest[] = [event, event];
 
     const tevent = { version: 'v0', endpoint: 'http://abc' } as ProcessorTransformationOutput;
@@ -58,7 +58,7 @@ describe('NativeIntegration Service', () => {
     const destType = '__rudder_test__';
     const version = 'v0';
     const requestMetadata = {};
-    const event = { message: { a: 'b' } } as ProcessorTransformationRequest;
+    const event = { message: { a: 'b' } } as unknown as ProcessorTransformationRequest;
     const events: ProcessorTransformationRequest[] = [event, event];
 
     FetchHandler.getDestHandler = jest.fn().mockImplementation((d, v) => {

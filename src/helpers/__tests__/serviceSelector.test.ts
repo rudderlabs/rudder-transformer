@@ -51,7 +51,7 @@ describe('ServiceSelector Service', () => {
           },
         },
       },
-    ] as ProcessorTransformationRequest[];
+    ] as unknown as ProcessorTransformationRequest[];
     expect(ServiceSelector['getPrimaryDestinationService'](events)).toBeInstanceOf(
       CDKV2DestinationService,
     );

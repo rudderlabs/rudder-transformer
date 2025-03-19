@@ -151,8 +151,8 @@ export class NativeIntegrationDestinationService implements DestinationService {
     const response = groupedEvents.map((destEvents) => {
       const metaTO = this.getTags(
         destinationType,
-        destEvents[0].metadata.destinationId,
-        destEvents[0].metadata.workspaceId,
+        destEvents[0].metadata?.destinationId,
+        destEvents[0].metadata?.workspaceId,
         tags.FEATURES.BATCH,
       );
       metaTO.metadatas = events.map((event) => event.metadata);

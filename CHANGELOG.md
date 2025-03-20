@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.94.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.93.0...v1.94.0) (2025-03-18)
+
+
+### Features
+
+* onboarding new destination accoil analytics ([#4156](https://github.com/rudderlabs/rudder-transformer/issues/4156)) ([8aad46f](https://github.com/rudderlabs/rudder-transformer/commit/8aad46fd8bde0d839a33751ef16e9e68c168c125))
+
+
+### Bug Fixes
+
+* add 2655 error handling to fb error handler at proxy ([#4152](https://github.com/rudderlabs/rudder-transformer/issues/4152)) ([5d3b226](https://github.com/rudderlabs/rudder-transformer/commit/5d3b2263754b94193c302c2f88cac2a055a22b53))
+
 ## [1.93.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.92.1...v1.93.0) (2025-03-10)
 
 

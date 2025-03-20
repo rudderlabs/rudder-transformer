@@ -23,7 +23,7 @@ export const data = [
           body: {
             FORM: {},
             JSON: {
-              api_key: 'c9d8a13b8bcab46a547f7be5200c483d',
+              api_key: 'dummy-api-key',
               events: [
                 {
                   app_name: 'Rudder-CleverTap_Example',
@@ -65,26 +65,9 @@ export const data = [
         body: {
           output: {
             status: 200,
-            message:
-              '[Generic Response Handler] Request for destination: am Processed Successfully',
-            destinationResponse: {
-              headers: {
-                'access-control-allow-methods': 'GET, POST',
-                'access-control-allow-origin': '*',
-                connection: 'keep-alive',
-                'content-length': '93',
-                'content-type': 'application/json',
-                date: 'Sat, 11 Dec 2021 15:08:22 GMT',
-                'strict-transport-security': 'max-age=15768000',
-              },
-              response: {
-                code: 200,
-                server_upload_time: 1639235302252,
-                payload_size_bytes: 863,
-                events_ingested: 1,
-              },
-              status: 200,
-            },
+            message: '[amplitude Response Handler] - Request Processed Successfully',
+            destinationResponse:
+              '{"code":200,"server_upload_time":1639235302252,"payload_size_bytes":863,"events_ingested":1}',
           },
         },
       },
@@ -109,7 +92,7 @@ export const data = [
           body: {
             FORM: {},
             JSON: {
-              api_key: 'c9d8a13b8bcab46a547f7be5200c483d',
+              api_key: 'dummy-api-key',
               events: [
                 {
                   app_name: 'Rudder-CleverTap_Example',
@@ -152,7 +135,7 @@ export const data = [
           output: {
             status: 400,
             message:
-              '[Generic Response Handler] Request failed for destination am with status: 400',
+              'Request Failed during amplitude response transformation: with status "400" due to "{"code":400,"server_upload_time":1639235302252,"payload_size_bytes":863,"events_ingested":0}", (Aborted)',
             destinationResponse: {
               headers: {
                 'access-control-allow-methods': 'GET, POST',
@@ -205,7 +188,7 @@ export const data = [
           body: {
             FORM: {},
             JSON: {
-              api_key: 'c9d8a13b8bcab46a547f7be5200c483d',
+              api_key: 'dummy-api-key',
               events: [
                 {
                   app_name: 'Rudder-CleverTap_Example',
@@ -248,7 +231,7 @@ export const data = [
           output: {
             status: 400,
             message:
-              '[Generic Response Handler] Request failed for destination am with status: 400',
+              'Request Failed during amplitude response transformation: with status "400" due to ""[ENOTFOUND] :: DNS lookup failed"", (Aborted)',
             destinationResponse: {
               response: '[ENOTFOUND] :: DNS lookup failed',
               status: 400,
@@ -274,7 +257,7 @@ export const data = [
           {
             asymmetricMatch: (actual) => {
               const expected = {
-                api_key: 'c9d8a13b8bcab46a547f7be5200c483d',
+                api_key: 'dummy-api-key',
                 events: [
                   {
                     app_name: 'Rudder-CleverTap_Example',
@@ -335,7 +318,7 @@ export const data = [
           body: {
             FORM: {},
             JSON: {
-              api_key: 'c9d8a13b8bcab46a547f7be5200c483d',
+              api_key: 'dummy-api-key',
               events: [
                 {
                   app_name: 'Rudder-CleverTap_Example',
@@ -378,7 +361,7 @@ export const data = [
           output: {
             status: 400,
             message:
-              '[Generic Response Handler] Request failed for destination am with status: 400',
+              'Request Failed during amplitude response transformation: with status "400" due to """", (Aborted)',
             destinationResponse: {
               response: '',
               status: 400,
@@ -417,7 +400,7 @@ export const data = [
           body: {
             FORM: {},
             JSON: {
-              api_key: 'c9d8a13b8bcab46a547f7be5200c483d',
+              api_key: 'dummy-api-key',
               events: [
                 {
                   app_name: 'Rudder-CleverTap_Example',
@@ -460,7 +443,7 @@ export const data = [
           output: {
             status: 500,
             message:
-              '[Generic Response Handler] Request failed for destination am with status: 500',
+              'Request Failed during amplitude response transformation: with status "500" due to """", (Retryable)',
             destinationResponse: {
               response: '',
               status: 500,
@@ -499,7 +482,7 @@ export const data = [
           body: {
             FORM: {},
             JSON: {
-              api_key: 'c9d8a13b8bcab46a547f7be5200c483d',
+              api_key: 'dummy-api-key',
               events: [
                 {
                   app_name: 'Rudder-CleverTap_Example',
@@ -542,7 +525,7 @@ export const data = [
           output: {
             status: 500,
             message:
-              '[Generic Response Handler] Request failed for destination am with status: 500',
+              'Request Failed during amplitude response transformation: with status "500" due to """", (Retryable)',
             destinationResponse: {
               response: '',
               status: 500,
@@ -560,6 +543,240 @@ export const data = [
           },
         },
       },
+    },
+  },
+  {
+    name: 'am',
+    description: 'Test 6: for 429 Rate Limit Handling',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          type: 'REST',
+          endpoint: 'https://api.amplitude.com/2/httpapi/rate-limited',
+          method: 'POST',
+          userId: 'test_user_123',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: {
+            FORM: {},
+            JSON: {
+              api_key: 'dummy-api-key',
+              events: [
+                {
+                  app_name: 'Rudder-Amplitude_Example',
+                  app_version: '1.0',
+                  time: 1619006730330,
+                  user_id: 'testrluser@email.com',
+                  user_properties: {
+                    city: 'San Francisco',
+                    country: 'US',
+                    email: 'testrluser@email.com',
+                  },
+                },
+              ],
+              options: {
+                min_id_length: 1,
+              },
+            },
+            JSON_ARRAY: {},
+            XML: {},
+          },
+          files: {},
+          params: {
+            destination: 'am',
+          },
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 500, // Expected status is 500 (RetryableError)
+        body: {
+          output: {
+            status: 500,
+            message:
+              'Request Failed during amplitude response transformation: Too many requests for some devices and users - due to Request Limit exceeded, (Retryable)',
+            destinationResponse: {
+              headers: {
+                'access-control-allow-methods': 'GET, POST',
+                'access-control-allow-origin': '*',
+                'content-type': 'application/json',
+                'retry-after': '120',
+              },
+              response: {
+                code: 429,
+                error: 'Too many requests for some devices and users',
+                eps_threshold: 30,
+                throttled_devices: {
+                  'HIJ3L821-F01A-2GY5-2C81-7F03X7DS291D': 31,
+                },
+                throttled_users: {
+                  'testrluser@email.com': 32,
+                },
+                throttled_events: [3, 4, 7],
+              },
+              status: 200,
+            },
+            statTags: {
+              destType: 'AM',
+              errorCategory: 'network',
+              destinationId: 'Non-determininable',
+              workspaceId: 'Non-determininable',
+              errorType: 'retryable',
+              feature: 'dataDelivery',
+              implementation: 'native',
+              module: 'destination',
+            },
+          },
+        },
+      },
+    },
+    mockFns: (mockAdapter: MockAdapter) => {
+      mockAdapter
+        .onPost('https://api.amplitude.com/2/httpapi/rate-limited', {
+          asymmetricMatch: (actual) => {
+            // Simple check to match the request body
+            return actual.api_key === 'dummy-api-key';
+          },
+        })
+        .replyOnce(
+          200,
+          {
+            code: 429,
+            error: 'Too many requests for some devices and users',
+            eps_threshold: 30,
+            throttled_devices: {
+              'HIJ3L821-F01A-2GY5-2C81-7F03X7DS291D': 31,
+            },
+            throttled_users: {
+              'testrluser@email.com': 32,
+            },
+            throttled_events: [3, 4, 7],
+          },
+          {
+            'access-control-allow-methods': 'GET, POST',
+            'access-control-allow-origin': '*',
+            'content-type': 'application/json',
+            'retry-after': '120',
+          },
+        );
+    },
+  },
+  {
+    name: 'am',
+    description: 'Test 7: for standard 429 Rate Limit Handling (ThrottledError)',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          type: 'REST',
+          endpoint: 'https://api.amplitude.com/2/httpapi/standard-rate-limited',
+          method: 'POST',
+          userId: 'test_user_456',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: {
+            FORM: {},
+            JSON: {
+              api_key: 'random-api-key',
+              events: [
+                {
+                  app_name: 'Rudder-Amplitude_Example',
+                  app_version: '1.0',
+                  time: 1619006730330,
+                  user_id: 'user@example.com',
+                  user_properties: {
+                    city: 'San Francisco',
+                    country: 'US',
+                    email: 'user@example.com',
+                  },
+                },
+              ],
+              options: {
+                min_id_length: 1,
+              },
+            },
+            JSON_ARRAY: {},
+            XML: {},
+          },
+          files: {},
+          params: {
+            destination: 'am',
+          },
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 429,
+        body: {
+          output: {
+            destinationResponse: {
+              headers: {
+                'access-control-allow-methods': 'GET, POST',
+                'access-control-allow-origin': '*',
+                'content-type': 'application/json',
+                'retry-after': '60',
+              },
+              response: {
+                code: 429,
+                eps_threshold: 20,
+                error: 'Rate limit exceeded',
+                throttled_events: [],
+                throttled_users: {},
+              },
+              status: 200,
+            },
+            message:
+              'Request Failed during amplitude response transformation: Rate limit exceeded - due to Request Limit exceeded, (Throttled)',
+            statTags: {
+              destType: 'AM',
+              destinationId: 'Non-determininable',
+              errorCategory: 'network',
+              errorType: 'throttled',
+              feature: 'dataDelivery',
+              implementation: 'native',
+              module: 'destination',
+              workspaceId: 'Non-determininable',
+            },
+            status: 429,
+          },
+        },
+      },
+    },
+    mockFns: (mockAdapter: MockAdapter) => {
+      mockAdapter
+        .onPost('https://api.amplitude.com/2/httpapi/standard-rate-limited', {
+          asymmetricMatch: (actual) => {
+            // Simple check to match the request body
+            return actual.api_key === 'random-api-key';
+          },
+        })
+        .replyOnce(
+          200,
+          {
+            code: 429,
+            error: 'Rate limit exceeded',
+            eps_threshold: 20,
+            throttled_users: {},
+            throttled_events: [],
+          },
+          {
+            'access-control-allow-methods': 'GET, POST',
+            'access-control-allow-origin': '*',
+            'content-type': 'application/json',
+            'retry-after': '60',
+          },
+        );
     },
   },
 ];

@@ -5,6 +5,7 @@ const {
   // NetworkInstrumentationError,
   GoogleAdsSDK,
   InstrumentationError,
+  isDefinedAndNotNullAndNotEmpty,
 } = require('@rudderstack/integrations-lib');
 // const SqlString = require('sqlstring');
 const { prepareProxyRequest } = require('../../../adapters/network');
@@ -14,10 +15,7 @@ const Cache = require('../../util/cache');
 
 const conversionActionIdCache = new Cache(CONVERSION_ACTION_ID_CACHE_TTL);
 
-const {
-  processAxiosResponse,
-  getDynamicErrorType,
-} = require('../../../adapters/utils/networkUtils');
+const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 
 const tags = require('../../util/tags');
 const { getAuthErrCategory } = require('../../util/googleUtils');
@@ -93,27 +91,15 @@ const ProxyRequest = async (request) => {
   set(body.JSON, 'conversionAdjustments[0].conversionAction', `${conversionActionId}`);
 
   const response = await googleAds.addConversionAdjustMent(body.JSON);
-  if (response.type === 'success') {
-    return {
-      success: true,
-      response: {
-        status: response.statusCode,
-        headers: response.headers,
-        data: response.responseBody,
-      },
-    };
-  }
 
-  return {
-    success: false,
-    response: {
-      status: response.statusCode,
-      headers: response.headers,
-      data: response.responseBody,
-    },
-  };
+  return response;
 };
 
+const gaecProcessAxiosResponse = (sdkResponse) => ({
+  response: sdkResponse.responseBody,
+  status: sdkResponse.statusCode,
+  ...(isDefinedAndNotNullAndNotEmpty(sdkResponse.headers) ? { headers: sdkResponse.headers } : {}),
+});
 const responseHandler = (responseParams) => {
   const { destinationResponse } = responseParams;
   const message = 'Request Processed Successfully';
@@ -159,7 +145,7 @@ class networkHandler {
   constructor() {
     this.proxy = ProxyRequest;
     this.responseHandler = responseHandler;
-    this.processAxiosResponse = processAxiosResponse;
+    this.processAxiosResponse = gaecProcessAxiosResponse;
     this.prepareProxy = prepareProxyRequest;
   }
 }

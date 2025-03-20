@@ -8,13 +8,13 @@ describe('PreTransformation Service', () => {
     ctx.request.query = { cycle: 'true', x: 'y' };
 
     const events: ProcessorTransformationRequest[] = [
-      { message: { a: 'b' } } as ProcessorTransformationRequest,
+      { message: { a: 'b' } } as unknown as ProcessorTransformationRequest,
     ];
     const expected: ProcessorTransformationRequest[] = [
       {
         message: { a: 'b' },
         request: { query: { cycle: 'true', x: 'y' } },
-      } as ProcessorTransformationRequest,
+      } as unknown as ProcessorTransformationRequest,
     ];
 
     const resp = DestinationPreTransformationService.preProcess(events, ctx);

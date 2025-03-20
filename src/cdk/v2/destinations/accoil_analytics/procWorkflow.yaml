@@ -1,0 +1,122 @@
+bindings:
+  - name: EventType
+    path: ../../../../constants
+  - path: ../../bindings/jsontemplate
+    exportAll: true
+  - name: removeUndefinedAndNullValues
+    path: ../../../../v0/util
+  - name: base64Convertor
+    path: ../../../../v0/util
+  - path: ./utils
+
+steps:
+  - name: validateInput
+    template: |
+      $.assert(.message.type, "message type is not present. Aborting message.");
+      $.assert(.message.type in {{$.EventType.([.TRACK, .PAGE, .SCREEN, .IDENTIFY, .GROUP])}},
+        "message type " + .message.type + " is not supported");
+      $.assertConfig(.destination.Config.apiKey, "apiKey must be supplied in destination config");
+
+#   Note our auth does not require a password in basic auth just the string "key:"
+  - name: prepareContext
+    template: |
+      $.context.messageType = .message.type.toLowerCase();
+      $.context.payload = {
+        "type": $.context.messageType
+      };
+      $.context.finalHeaders = {
+          "Authorization": "Basic " + $.base64Convertor(.destination.Config.apiKey + ":"),
+          "Content-Type": "application/json"
+        };
+      $.context.endpoint = $.endpointUrl(.destination.Config.apiKey);
+
+  - name: trackPayload
+    condition: $.context.messageType == {{$.EventType.TRACK}}
+    template: |
+      $.context.payload.event = .message.event;
+      $.context.payload.userId = .message.().({{{{$.getGenericPaths("userIdOnly")}}}})
+      $.context.payload.timestamp = .message.().({{{{$.getGenericPaths("timestamp")}}}})
+
+  - name: pagePayload
+    condition: $.context.messageType == {{$.EventType.PAGE}}
+    template: |
+      $.context.payload.userId = .message.().({{{{$.getGenericPaths("userIdOnly")}}}});
+      $.context.payload.name = .message.name;
+      $.context.payload.timestamp = .message.().({{{{$.getGenericPaths("timestamp")}}}});
+
+  - name: screenPayload
+    condition: $.context.messageType == {{$.EventType.SCREEN}}
+    template: |
+      $.context.payload.userId = .message.().({{{{$.getGenericPaths("userIdOnly")}}}});
+      $.context.payload.name = .message.name;
+      $.context.payload.timestamp = .message.().({{{{$.getGenericPaths("timestamp")}}}});
+
+  - name: identifyPayload
+    condition: $.context.messageType == {{$.EventType.IDENTIFY}}
+    template: |
+      $.context.payload.userId = .message.().({{{{$.getGenericPaths("userIdOnly")}}}});
+      $.context.payload.traits = .message.traits ?? .message.context.traits;
+      $.context.payload.timestamp = .message.().({{{{$.getGenericPaths("timestamp")}}}});
+
+  - name: groupPayload
+    condition: $.context.messageType == {{$.EventType.GROUP}}
+    template: |
+      $.context.payload.userId = .message.().({{{{$.getGenericPaths("userId")}}}});
+      $.context.payload.groupId = .message.groupId;
+      $.context.payload.timestamp = .message.().({{{{$.getGenericPaths("timestamp")}}}});
+      $.context.payload.traits = .message.traits;
+
+  - name: validateTimestamp
+    template: |
+      $.assert($.context.payload.timestamp, "timestamp is required for all calls")
+
+  - name: validateTrackPayload
+    condition: $.context.messageType == {{$.EventType.TRACK}}
+    template: |
+      $.assert($.context.payload.event, "event is required for track call")
+      $.assert($.context.payload.userId, "userId is required for track call")
+
+  - name: validatePagePayload
+    condition: $.context.messageType == {{$.EventType.PAGE}}
+    template: |
+      $.assert($.context.payload.name, "name is required for page call")
+      $.assert($.context.payload.userId, "userId is required for page call")
+
+  - name: validateScreenPayload
+    condition: $.context.messageType == {{$.EventType.SCREEN}}
+    template: |
+      $.assert($.context.payload.name, "name is required for screen call")
+      $.assert($.context.payload.userId, "userId is required for screen call")
+
+  - name: validateIdentifyPayload
+    condition: $.context.messageType == {{$.EventType.IDENTIFY}}
+    template: |
+      $.assert($.context.payload.userId, "userId is required for identify call")
+
+  - name: validateGroupPayload
+    condition: $.context.messageType == {{$.EventType.GROUP}}
+    template: |
+      $.assert($.context.payload.userId, "userId is required for group call")
+      $.assert($.context.payload.groupId, "groupId is required for group call")
+
+  - name: cleanPayload
+    template: |
+      $.context.payload = $.removeUndefinedAndNullValues($.context.payload);
+
+  - name: buildResponseForProcessTransformation
+    template: |
+      $.context.payload.({
+         "body": {
+           "JSON": .,
+           "JSON_ARRAY": {},
+           "XML": {},
+           "FORM": {}
+         },
+         "version": "1",
+         "type": "REST",
+         "method": "POST",
+         "endpoint": $.context.endpoint,
+         "headers": $.context.finalHeaders,
+         "params": {},
+         "files": {}
+       })

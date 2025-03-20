@@ -1,5 +1,5 @@
 import { secret1 } from '../maskedSecrets';
-import { RouterTransformationRequest } from '../../../../../src/types';
+import { MessageType, RouterTransformationRequest, RudderMessage } from '../../../../../src/types';
 import { generateMetadata } from '../../../testUtils';
 import {
   anonymousId,
@@ -400,7 +400,7 @@ const routerRequest5: RouterTransformationRequest = {
             ...companyTraits,
           },
         },
-        type: 'dummyGroupType',
+        type: 'dummyGroupType' as MessageType,
         integrations: { All: true },
         originalTimestamp,
         timestamp,

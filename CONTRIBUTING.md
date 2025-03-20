@@ -36,7 +36,7 @@ See the project's [README](README.md) for further information about working in t
 3. Your branch may be merged once all configured checks pass, including:
    - A review from appropriate maintainers
 
-### Test-Driven Development (Recommended)
+#### Test-Driven Development (Recommended)
 
 1. **Write Component Test Cases First:**  
    Before developing a new integration (whether for a source or destination), start by writing [component test cases](./test/integrations/). This approach ensures clarity on expected behavior and outcomes.  
@@ -61,6 +61,21 @@ See the project's [README](README.md) for further information about working in t
      }
    ]
    ```
+#### TypeScript Guidelines for New Integrations
+
+1. **Mandatory Use of TypeScript**  
+   - All new integrations on RudderStack must be developed using TypeScript.
+
+2. **Leverage Common Types**  
+   - Refer to the [common types](./src/types/) and define destination-specific types using these shared types.  
+   - For key entities like **Destination** and **Connection**, prioritize using generic common types and customize them as needed for each integration.
+
+3. **Adopt Zod for Type Definitions**  
+   - Use **Zod schemas** to define types, enabling both runtime validation and TypeScript type inference via Zod’s `infer` feature.
+
+4. **Follow Recommended Structure**  
+   - Refer to this [example](./src/v0/destinations/customerio_audience/) and maintain a similar project structure for consistency.
+
 
 ## Committing
 

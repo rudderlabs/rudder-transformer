@@ -3,8 +3,27 @@ import { DestinationController } from '../controllers/destination';
 import { RegulationController } from '../controllers/regulation';
 import { FeatureFlagMiddleware } from '../middlewares/featureFlag';
 import { RouteActivationMiddleware } from '../middlewares/routeActivation';
+import { ArraySpreader } from '../middlewares/arraySpreader';
 
 const router = new Router();
+
+// Create spreader instance with configuration
+const secretSpreader = new ArraySpreader({
+  name: 'secretSpreader',
+  rules: [
+    {
+      source: {
+        type: 'header',
+        path: 'oauth-secret',
+      },
+      target: {
+        path: 'metadata.secret',
+        arrayPath: 'input',
+      },
+      transform: (value: string) => (value ? JSON.parse(value) : ''),
+    },
+  ],
+});
 
 router.post(
   '/:version/destinations/:destination',
@@ -18,6 +37,7 @@ router.post(
   RouteActivationMiddleware.isDestinationRouteActive,
   RouteActivationMiddleware.destinationRtFilter,
   FeatureFlagMiddleware.handle,
+  secretSpreader.middleware(),
   DestinationController.destinationTransformAtRouter,
 );
 router.post(

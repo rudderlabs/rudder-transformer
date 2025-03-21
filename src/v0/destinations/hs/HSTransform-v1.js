@@ -35,7 +35,6 @@ const {
   formatPropertyValueForIdentify,
   getHsSearchId,
   populateTraits,
-  removeHubSpotSystemField,
 } = require('./util');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
@@ -49,10 +48,10 @@ const { JSON_MIME_TYPE } = require('../../util/constant');
  * Ref - https://developers.hubspot.com/docs/api/crm/crm-custom-objects
  * @param {*} message
  * @param {*} destination
- * @param {*} propertyMap
+ * @param {*} contactPropertiesMap
  * @returns
  */
-const processLegacyIdentify = async ({ message, destination, metadata }, propertyMap) => {
+const processLegacyIdentify = async ({ message, destination, metadata }, contactPropertiesMap) => {
   const { Config } = destination;
   let traits = getFieldValueFromMessage(message, 'traits');
   const mappedToDestination = get(message, MappedToDestinationKey);
@@ -83,8 +82,7 @@ const processLegacyIdentify = async ({ message, destination, metadata }, propert
       response.method = defaultPatchRequestConfig.requestMethod;
     }
 
-    traits = await populateTraits(propertyMap, traits, destination, metadata);
-    traits = removeHubSpotSystemField(traits);
+    traits = await populateTraits(contactPropertiesMap, traits, destination, metadata);
     response.body.JSON = removeUndefinedAndNullValues({ properties: traits });
     response.source = 'rETL';
     response.operation = operation;
@@ -94,8 +92,10 @@ const processLegacyIdentify = async ({ message, destination, metadata }, propert
     }
     const { email } = traits;
 
-    let userProperties = await getTransformedJSON({ message, destination, metadata }, propertyMap);
-    userProperties = removeHubSpotSystemField(userProperties);
+    const userProperties = await getTransformedJSON(
+      { message, destination, metadata },
+      contactPropertiesMap,
+    );
 
     const payload = {
       properties: formatPropertyValueForIdentify(userProperties),
@@ -134,10 +134,10 @@ const processLegacyIdentify = async ({ message, destination, metadata }, propert
  * Ref - https://legacydocs.hubspot.com/docs/methods/enterprise_events/http_api
  * @param {*} message
  * @param {*} destination
- * @param {*} propertyMap
+ * @param {*} contactPropertiesMap
  * @returns
  */
-const processLegacyTrack = async ({ message, destination, metadata }, propertyMap) => {
+const processLegacyTrack = async ({ message, destination, metadata }, contactPropertiesMap) => {
   const { Config } = destination;
 
   if (!Config.hubID) {
@@ -154,7 +154,10 @@ const processLegacyTrack = async ({ message, destination, metadata }, propertyMa
     id: getDestinationExternalID(message, 'hubspotId'),
   };
 
-  const userProperties = await getTransformedJSON({ message, destination, metadata }, propertyMap);
+  const userProperties = await getTransformedJSON(
+    { message, destination, metadata },
+    contactPropertiesMap,
+  );
 
   const payload = { ...parameters, ...userProperties };
   const params = removeUndefinedAndNullValues(payload);

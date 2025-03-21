@@ -88,9 +88,6 @@ const primaryToSecondaryFields = {
   email: 'hs_additional_emails',
 };
 
-// list of fields that hubspot maintains for each record of object
-const HUBSPOT_SYSTEM_FIELDS = ['hs_object_id'];
-
 module.exports = {
   BASE_ENDPOINT,
   CONTACT_PROPERTY_MAP_ENDPOINT,
@@ -121,5 +118,4 @@ module.exports = {
   MAX_CONTACTS_PER_REQUEST,
   primaryToSecondaryFields,
   DESTINATION: 'HS',
-  HUBSPOT_SYSTEM_FIELDS,
 };

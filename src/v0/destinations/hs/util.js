@@ -1,6 +1,5 @@
 /* eslint-disable no-await-in-loop */
 const chunk = require('lodash/chunk');
-const omit = require('lodash/omit');
 const set = require('set-value');
 const get = require('get-value');
 const {
@@ -8,6 +7,8 @@ const {
   InstrumentationError,
   ConfigurationError,
   NetworkError,
+  isEmpty,
+  isEmptyObject,
 } = require('@rudderstack/integrations-lib');
 const { httpGET, httpPOST } = require('../../../adapters/network');
 const {
@@ -17,7 +18,6 @@ const {
 const {
   getFieldValueFromMessage,
   constructPayload,
-  isEmpty,
   getHashFromArray,
   getDestinationExternalIDInfoForRetl,
   getValueFromMessage,
@@ -35,7 +35,6 @@ const {
   primaryToSecondaryFields,
   DESTINATION,
   MAX_CONTACTS_PER_REQUEST,
-  HUBSPOT_SYSTEM_FIELDS,
 } = require('./config');
 
 const tags = require('../../util/tags');
@@ -89,73 +88,77 @@ const fetchFinalSetOfTraits = (message) => {
   return traits;
 };
 
-/**
- * get all the hubspot properties
- * @param {*} destination
- * @returns
- */
-const getProperties = async (destination, metadata) => {
-  let hubspotPropertyMap = {};
-  let hubspotPropertyMapResponse;
+const getContactsProperties = async (destination, metadata) => {
   const { Config } = destination;
+  const commonReqMetadata = {
+    destType: 'hs',
+    feature: 'transformation',
+    requestMethod: 'GET',
+    module: 'router',
+    metadata,
+  };
 
-  // select API authorization type
+  const handleError = (hubspotPropertyMapResponse) => {
+    if (hubspotPropertyMapResponse.status !== 200) {
+      throw new NetworkError(
+        `Failed to get hubspot properties: ${JSON.stringify(hubspotPropertyMapResponse.response)}`,
+        hubspotPropertyMapResponse.status,
+        {
+          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(hubspotPropertyMapResponse.status),
+        },
+        hubspotPropertyMapResponse,
+      );
+    }
+  };
+
   if (Config.authorizationType === 'newPrivateAppApi') {
-    // Private Apps
     const requestOptions = {
       headers: {
         'Content-Type': JSON_MIME_TYPE,
         Authorization: `Bearer ${Config.accessToken}`,
       },
     };
-    hubspotPropertyMapResponse = await httpGET(CONTACT_PROPERTY_MAP_ENDPOINT, requestOptions, {
-      destType: 'hs',
-      feature: 'transformation',
+    let hubspotPropertyMapResponse = await httpGET(CONTACT_PROPERTY_MAP_ENDPOINT, requestOptions, {
+      ...commonReqMetadata,
       endpointPath: `/properties/v1/contacts/properties`,
-      requestMethod: 'GET',
-      module: 'router',
-      metadata,
     });
     hubspotPropertyMapResponse = processAxiosResponse(hubspotPropertyMapResponse);
-  } else {
-    // API Key (hapikey)
-    const url = `${CONTACT_PROPERTY_MAP_ENDPOINT}?hapikey=${Config.apiKey}`;
-    hubspotPropertyMapResponse = await httpGET(
-      url,
-      {},
-      {
-        destType: 'hs',
-        feature: 'transformation',
-        endpointPath: `/properties/v1/contacts/properties?hapikey`,
-        requestMethod: 'GET',
-        module: 'router',
-        metadata,
-      },
-    );
-    hubspotPropertyMapResponse = processAxiosResponse(hubspotPropertyMapResponse);
+    handleError(hubspotPropertyMapResponse);
+    return hubspotPropertyMapResponse;
   }
-
-  if (hubspotPropertyMapResponse.status !== 200) {
-    throw new NetworkError(
-      `Failed to get hubspot properties: ${JSON.stringify(hubspotPropertyMapResponse.response)}`,
-      hubspotPropertyMapResponse.status,
-      {
-        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(hubspotPropertyMapResponse.status),
-      },
-      hubspotPropertyMapResponse,
-    );
-  }
-
-  const propertyMap = {};
-  if (hubspotPropertyMapResponse.response && Array.isArray(hubspotPropertyMapResponse.response)) {
-    hubspotPropertyMapResponse.response.forEach((element) => {
-      propertyMap[element.name] = element.type;
-    });
-  }
-
-  hubspotPropertyMap = propertyMap;
-  return hubspotPropertyMap;
+  const url = `${CONTACT_PROPERTY_MAP_ENDPOINT}?hapikey=${Config.apiKey}`;
+  let hubspotPropertyMapResponse = await httpGET(
+    url,
+    {},
+    {
+      ...commonReqMetadata,
+      endpointPath: `/properties/v1/contacts/properties?hapikey`,
+    },
+  );
+  hubspotPropertyMapResponse = processAxiosResponse(hubspotPropertyMapResponse);
+  handleError(hubspotPropertyMapResponse);
+  return hubspotPropertyMapResponse;
 };
+
+/**
+ * get all the hubspot properties
+ * @param {*} destination
+ * @returns
+ */
+async function getContactsPropertiesMap(destination, metadata) {
+  console.log('getContactsPropertiesMap');
+  const contactPropertiesMap = {};
+  const { response } = await getContactsProperties(destination, metadata);
+  if (response && Array.isArray(response)) {
+    response.forEach(({ type, name, readOnlyValue }) => {
+      contactPropertiesMap[name] = {
+        type,
+        readOnlyValue: readOnlyValue ?? false,
+      };
+    });
+  }
+  return contactPropertiesMap;
+}
 
 /**
  * Validates the Hubspot property and payload property data types
@@ -164,10 +167,10 @@ const getProperties = async (destination, metadata) => {
  * @param {*} value
  * @param {*} traitsKey
  */
-const validatePayloadDataTypes = (propertyMap, hsSupportedKey, value, traitsKey) => {
+const validatePayloadDataTypes = (contactPropertiesMap, hsSupportedKey, value, traitsKey) => {
   let propValue = value;
   // Hub spot data type validations
-  if (propertyMap[hsSupportedKey] === 'string' && typeof propValue !== 'string') {
+  if (contactPropertiesMap[hsSupportedKey]?.type === 'string' && typeof propValue !== 'string') {
     if (typeof propValue === 'object') {
       propValue = JSON.stringify(propValue);
     } else {
@@ -175,18 +178,18 @@ const validatePayloadDataTypes = (propertyMap, hsSupportedKey, value, traitsKey)
     }
   }
 
-  if (propertyMap[hsSupportedKey] === 'bool' && typeof propValue === 'object') {
+  if (contactPropertiesMap[hsSupportedKey]?.type === 'bool' && typeof propValue === 'object') {
     throw new InstrumentationError(
       `Property ${traitsKey} data type ${typeof propValue} is not matching with Hubspot property data type ${
-        propertyMap[hsSupportedKey]
+        contactPropertiesMap[hsSupportedKey].type
       }`,
     );
   }
 
-  if (propertyMap[hsSupportedKey] === 'number' && typeof propValue !== 'number') {
+  if (contactPropertiesMap[hsSupportedKey]?.type === 'number' && typeof propValue !== 'number') {
     throw new InstrumentationError(
       `Property ${traitsKey} data type ${typeof propValue} is not matching with Hubspot property data type ${
-        propertyMap[hsSupportedKey]
+        contactPropertiesMap[hsSupportedKey].type
       }`,
     );
   }
@@ -211,20 +214,18 @@ const getUTCMidnightTimeStampValue = (propValue) => {
  * only when it matches with HS properties (pre-defined/created from dashboard)
  * @param {*} message
  * @param {*} destination
- * @param {*} propertyMap
+ * @param {*} contactPropertiesMap
  * @returns
  */
-const getTransformedJSON = async ({ message, destination, metadata }, propertyMap) => {
+const getTransformedJSON = async ({ message, destination, metadata }, contactPropertiesMap) => {
   let rawPayload = {};
   const traits = fetchFinalSetOfTraits(message);
-
   if (traits) {
+    const propertiesMap = isEmptyObject(contactPropertiesMap)
+      ? await getContactsPropertiesMap(destination, metadata)
+      : contactPropertiesMap;
+
     const traitsKeys = Object.keys(traits);
-    if (!propertyMap) {
-      // fetch HS properties
-      // eslint-disable-next-line no-param-reassign
-      propertyMap = await getProperties(destination, metadata);
-    }
     rawPayload = constructPayload(message, hsCommonConfigJson);
 
     // if there is any extra/custom property in hubspot, that has not already
@@ -232,20 +233,23 @@ const getTransformedJSON = async ({ message, destination, metadata }, propertyMa
     traitsKeys.forEach((traitsKey) => {
       // lowercase and replace ' ' & '.' with '_'
       const hsSupportedKey = formatKey(traitsKey);
-      if (!rawPayload[traitsKey] && propertyMap[hsSupportedKey]) {
+      if (!rawPayload[traitsKey] && propertiesMap[hsSupportedKey]) {
         // HS accepts empty string to remove the property from contact
         // https://community.hubspot.com/t5/APIs-Integrations/Clearing-values-of-custom-properties-in-Hubspot-contact-using/m-p/409156
         let propValue = isNull(traits[traitsKey]) ? '' : traits[traitsKey];
-        if (propertyMap[hsSupportedKey] === 'date') {
+
+        if (propertiesMap[hsSupportedKey]?.type === 'date') {
           propValue = getUTCMidnightTimeStampValue(propValue);
         }
 
-        rawPayload[hsSupportedKey] = validatePayloadDataTypes(
-          propertyMap,
-          hsSupportedKey,
-          propValue,
-          traitsKey,
-        );
+        if (!propertiesMap[hsSupportedKey]?.readOnlyValue) {
+          rawPayload[hsSupportedKey] = validatePayloadDataTypes(
+            propertiesMap,
+            hsSupportedKey,
+            propValue,
+            traitsKey,
+          );
+        }
       }
     });
   }
@@ -817,18 +821,16 @@ const getHsSearchId = (message) => {
  * @param {*} destination
  */
 const populateTraits = async (propertyMap, traits, destination, metadata) => {
-  const populatedTraits = traits;
-  let propertyToTypeMap = propertyMap;
-  if (!propertyToTypeMap) {
-    // fetch HS properties
-    propertyToTypeMap = await getProperties(destination, metadata);
-  }
+  const propertyToTypeMap = isEmptyObject(propertyMap)
+    ? await getContactsPropertiesMap(destination, metadata)
+    : propertyMap;
+  console.log('propertyToTypeMap', propertyToTypeMap);
+  const populatedTraits = {};
 
-  const keys = Object.keys(populatedTraits);
-  keys.forEach((key) => {
-    const value = populatedTraits[key];
-    if (propertyToTypeMap[key] === 'date') {
-      populatedTraits[key] = getUTCMidnightTimeStampValue(value);
+  Object.entries(traits).forEach(([key, value]) => {
+    if (!propertyToTypeMap[key]?.readOnlyValue) {
+      populatedTraits[key] =
+        propertyToTypeMap[key]?.type === 'date' ? getUTCMidnightTimeStampValue(value) : value;
     }
   });
 
@@ -884,15 +886,13 @@ const isIterable = (obj) => {
   return typeof obj[Symbol.iterator] === 'function';
 };
 
-// remove system fields from the properties because they are not allowed to be updated
-const removeHubSpotSystemField = (properties) => omit(properties, HUBSPOT_SYSTEM_FIELDS);
-
 module.exports = {
   validateDestinationConfig,
   addExternalIdToHSTraits,
   formatKey,
   fetchFinalSetOfTraits,
-  getProperties,
+  getContactsProperties,
+  getContactsPropertiesMap,
   getTransformedJSON,
   formatPropertyValueForIdentify,
   getEmailAndUpdatedProps,
@@ -908,5 +908,4 @@ module.exports = {
   getRequestData,
   convertToResponseFormat,
   isIterable,
-  removeHubSpotSystemField,
 };

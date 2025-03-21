@@ -3,17 +3,17 @@ const {
   extractIDsForSearchAPI,
   validatePayloadDataTypes,
   getObjectAndIdentifierType,
-  removeHubSpotSystemField,
+  populateTraits,
 } = require('./util');
 const { primaryToSecondaryFields } = require('./config');
 
 const propertyMap = {
-  firstName: 'string',
-  lstName: 'string',
-  age: 'number',
-  city: 'string',
-  isPaidPlan: 'bool',
-  address: 'enumeration',
+  firstName: { type: 'string', readOnlyValue: false },
+  lstName: { type: 'string', readOnlyValue: false },
+  age: { type: 'number', readOnlyValue: false },
+  city: { type: 'string', readOnlyValue: false },
+  isPaidPlan: { type: 'bool', readOnlyValue: false },
+  address: { type: 'enumeration', readOnlyValue: false },
 };
 
 describe('Validate payload data types utility function test cases', () => {
@@ -240,57 +240,46 @@ describe('getRequestDataAndRequestOptions utility test cases', () => {
   });
 });
 
-describe('removeHubSpotSystemField utility test cases', () => {
-  it('should remove HubSpot system fields from the properties', () => {
-    const properties = {
-      email: 'test@example.com',
-      firstname: 'John',
-      lastname: 'Doe',
-      hs_object_id: '123',
-    };
+describe('populateTraits utility test cases', () => {
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
 
-    const expectedOutput = {
-      email: 'test@example.com',
-      firstname: 'John',
-      lastname: 'Doe',
+  it('should populate traits with valid property map and traits', async () => {
+    const propertyMap = {
+      firstName: { type: 'string', readOnlyValue: false },
+      lastName: { type: 'string', readOnlyValue: true },
+      birthDate: { type: 'date', readOnlyValue: false },
     };
-
-    const result = removeHubSpotSystemField(properties);
+    const traits = {
+      firstName: 'John',
+      lastName: 'Doe',
+      birthDate: '2023-01-01',
+    };
+    const destination = {};
+    const metadata = {};
+    const result = await populateTraits(propertyMap, traits, destination, metadata);
+    // console.log(result);
+    const expectedOutput = { firstName: 'John', birthDate: 1672531200000 };
     expect(result).toEqual(expectedOutput);
   });
 
-  it('should return the same object if no HubSpot system fields are present', () => {
-    const properties = {
-      email: 'test@example.com',
-      firstname: 'John',
-      lastname: 'Doe',
+  it('should return an empty object if no traits match the property map', async () => {
+    const propertyMap = {
+      hs_object_id: { type: 'number', readOnlyValue: true },
+      lastName: { type: 'string' },
     };
-
-    const expectedOutput = {
-      email: 'test@example.com',
-      firstname: 'John',
-      lastname: 'Doe',
+    const traits = {
+      firstName: 'John',
+      lastName: 'Doe',
+      hs_object_id: 5756,
     };
-
-    const result = removeHubSpotSystemField(properties);
-    expect(result).toEqual(expectedOutput);
-  });
-
-  it('should return an empty object if all properties are HubSpot system fields', () => {
-    const properties = {
-      hs_object_id: '2023-01-01',
-    };
-    const expectedOutput = {};
-
-    const result = removeHubSpotSystemField(properties);
-    expect(result).toEqual(expectedOutput);
-  });
-
-  it('should handle an empty properties object', () => {
-    const properties = {};
-    const expectedOutput = {};
-
-    const result = removeHubSpotSystemField(properties);
-    expect(result).toEqual(expectedOutput);
+    const destination = {};
+    const metadata = {};
+    const result = await populateTraits(propertyMap, traits, destination, metadata);
+    expect(result).toEqual({
+      firstName: 'John',
+      lastName: 'Doe',
+    });
   });
 });

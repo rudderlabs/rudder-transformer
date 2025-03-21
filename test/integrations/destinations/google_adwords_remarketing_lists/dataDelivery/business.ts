@@ -1,13 +1,14 @@
+import { authHeader1, secret3 } from '../maskedSecrets';
 import {
   generateGoogleOAuthMetadata,
   generateProxyV0Payload,
   generateProxyV1Payload,
 } from '../../../testUtils';
 
-import { API_VERSION } from '../../../../../src/v0/destinations/google_adwords_remarketing_lists/config';
+const API_VERSION = 'v18';
 
 export const commonHeaders = {
-  Authorization: 'Bearer dummy-access',
+  Authorization: authHeader1,
   'Content-Type': 'application/json',
   'developer-token': 'dummy-dev-token',
 };
@@ -414,7 +415,7 @@ export const testScenariosForV1API = [
                   dontBatch: false,
                   jobId: 1,
                   secret: {
-                    access_token: 'default-accessToken',
+                    access_token: secret3,
                   },
                   sourceId: 'default-sourceId',
                   userId: 'default-userId',

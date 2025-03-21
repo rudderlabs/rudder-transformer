@@ -26,3 +26,5 @@ scripts/skipPrepareScript.js
 .eslintignore
 .prettierignore
 *.json
+Dockerfile*
+*.properties

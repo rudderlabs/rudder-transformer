@@ -16,7 +16,7 @@ const userDeletionHandler = async (userAttributes, config) => {
   if (!config) {
     throw new ConfigurationError('Config for deletion not present');
   }
-  const { apiKey, apiSecret } = config;
+  const { apiKey, apiSecret, residencyServer } = config;
   if (!apiKey || !apiSecret) {
     throw new ConfigurationError('api key/secret for deletion not present');
   }
@@ -27,7 +27,10 @@ const userDeletionHandler = async (userAttributes, config) => {
   };
   // Ref : https://www.docs.developers.amplitude.com/analytics/apis/user-privacy-api/#response
   const batchEvents = getUserIdBatches(userAttributes, DELETE_MAX_BATCH_SIZE);
-  const url = 'https://amplitude.com/api/2/deletions/users';
+  const url =
+    residencyServer === 'EU'
+      ? 'https://analytics.eu.amplitude.com/api/2/deletions/users'
+      : 'https://amplitude.com/api/2/deletions/users';
   const endpointPath = '/api/2/deletions/users';
   await Promise.all(
     batchEvents.map(async (batch) => {

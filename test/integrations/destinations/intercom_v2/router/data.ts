@@ -1,4 +1,5 @@
-import { RouterTransformationRequest } from '../../../../../src/types';
+import { secret1 } from '../maskedSecrets';
+import { MessageType, RouterTransformationRequest, RudderMessage } from '../../../../../src/types';
 import { generateMetadata } from '../../../testUtils';
 import {
   anonymousId,
@@ -112,7 +113,7 @@ const routerRequest1: RouterTransformationRequest = {
       metadata: {
         ...generateMetadata(5),
         secret: {
-          accessToken: 'revoked-accessToken',
+          accessToken: secret1,
         },
       },
     },
@@ -399,7 +400,7 @@ const routerRequest5: RouterTransformationRequest = {
             ...companyTraits,
           },
         },
-        type: 'dummyGroupType',
+        type: 'dummyGroupType' as MessageType,
         integrations: { All: true },
         originalTimestamp,
         timestamp,
@@ -424,6 +425,7 @@ export const data: RouterTestData[] = [
     input: {
       request: {
         body: routerRequest1,
+        method: 'POST',
       },
     },
     output: {
@@ -542,8 +544,19 @@ export const data: RouterTestData[] = [
             },
             {
               batched: false,
-              error:
-                '{"message":"Unable to search contact due to","destinationResponse":"{\\"type\\":\\"error.list\\",\\"request_id\\":\\"request_id-1\\",\\"errors\\":[{\\"code\\":\\"unauthorized\\",\\"message\\":\\"Access Token Invalid\\"}]}"}',
+              error: JSON.stringify({
+                message: 'Unable to search contact due to',
+                destinationResponse: JSON.stringify({
+                  type: 'error.list',
+                  request_id: 'request_id-1',
+                  errors: [
+                    {
+                      code: 'unauthorized',
+                      message: 'Access Token Invalid',
+                    },
+                  ],
+                }),
+              }),
               statTags: {
                 ...RouterNetworkErrorStatTags,
                 errorType: 'retryable',
@@ -554,7 +567,7 @@ export const data: RouterTestData[] = [
                 {
                   ...generateMetadata(5),
                   secret: {
-                    accessToken: 'revoked-accessToken',
+                    accessToken: secret1,
                   },
                 },
               ],
@@ -589,6 +602,7 @@ export const data: RouterTestData[] = [
     input: {
       request: {
         body: routerRequest2,
+        method: 'POST',
       },
     },
     output: {
@@ -682,6 +696,7 @@ export const data: RouterTestData[] = [
     input: {
       request: {
         body: routerRequest3,
+        method: 'POST',
       },
     },
     output: {
@@ -807,6 +822,7 @@ export const data: RouterTestData[] = [
     input: {
       request: {
         body: routerRequest4,
+        method: 'POST',
       },
     },
     output: {
@@ -881,6 +897,7 @@ export const data: RouterTestData[] = [
     input: {
       request: {
         body: routerRequest5,
+        method: 'POST',
       },
     },
     output: {
@@ -945,6 +962,7 @@ export const data: RouterTestData[] = [
     input: {
       request: {
         body: rETLRecordV2RouterRequest,
+        method: 'POST',
       },
     },
     output: {

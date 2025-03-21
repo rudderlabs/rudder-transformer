@@ -1,3 +1,4 @@
+import { authHeader1, secret1 } from '../maskedSecrets';
 export const data = [
   {
     name: 'drip',
@@ -12,7 +13,7 @@ export const data = [
             {
               destination: {
                 Config: {
-                  apiKey: 'dummyApiKey',
+                  apiKey: secret1,
                   accountId: '1809802',
                   campaignId: '',
                   enableUserCreation: true,
@@ -54,7 +55,7 @@ export const data = [
             {
               destination: {
                 Config: {
-                  apiKey: 'dummyApiKey',
+                  apiKey: secret1,
                   accountId: '1809802',
                   campaignId: '915194776',
                   enableUserCreation: true,
@@ -123,7 +124,7 @@ export const data = [
                 method: 'POST',
                 params: {},
                 headers: {
-                  Authorization: 'Basic ZHVtbXlBcGlLZXk=',
+                  Authorization: authHeader1,
                   'Content-Type': 'application/json',
                 },
                 version: '1',
@@ -134,7 +135,7 @@ export const data = [
               statusCode: 200,
               destination: {
                 Config: {
-                  apiKey: 'dummyApiKey',
+                  apiKey: secret1,
                   accountId: '1809802',
                   campaignId: '',
                   enableUserCreation: true,
@@ -163,7 +164,7 @@ export const data = [
                 method: 'POST',
                 params: {},
                 headers: {
-                  Authorization: 'Basic ZHVtbXlBcGlLZXk=',
+                  Authorization: authHeader1,
                   'Content-Type': 'application/json',
                 },
                 version: '1',
@@ -174,7 +175,7 @@ export const data = [
               statusCode: 200,
               destination: {
                 Config: {
-                  apiKey: 'dummyApiKey',
+                  apiKey: secret1,
                   accountId: '1809802',
                   campaignId: '915194776',
                   enableUserCreation: true,

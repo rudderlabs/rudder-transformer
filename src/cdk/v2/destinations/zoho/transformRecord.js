@@ -13,6 +13,7 @@ const {
   handleRtTfSingleEventError,
   isEmptyObject,
   defaultDeleteRequestConfig,
+  isEventSentByVDMV2Flow,
 } = require('../../../../v0/util');
 const zohoConfig = require('./config');
 const {
@@ -24,6 +25,8 @@ const {
   calculateTrigger,
   validateConfigurationIssue,
 } = require('./utils');
+
+const { processRecordInputsV2 } = require('./transformRecordV2');
 const { REFRESH_TOKEN } = require('../../../../adapters/networkhandler/authConstants');
 
 // Main response builder function
@@ -33,7 +36,7 @@ const responseBuilder = (
   identifierType,
   operationModuleType,
   commonEndPoint,
-  action,
+  isUpsert,
   metadata,
 ) => {
   const { trigger, addDefaultDuplicateCheck, multiSelectFieldLevelDecision } = config;
@@ -43,7 +46,7 @@ const responseBuilder = (
     Authorization: `Zoho-oauthtoken ${metadata[0].secret.accessToken}`,
   };
 
-  if (action === 'insert' || action === 'update') {
+  if (isUpsert) {
     const payload = {
       duplicate_check_fields: handleDuplicateCheck(
         addDefaultDuplicateCheck,
@@ -70,7 +73,6 @@ const batchResponseBuilder = (
   identifierType,
   operationModuleType,
   upsertEndPoint,
-  action,
 ) => {
   const upsertResponseArray = [];
   const deletionResponseArray = [];
@@ -101,7 +103,7 @@ const batchResponseBuilder = (
         identifierType,
         operationModuleType,
         upsertEndPoint,
-        action,
+        true,
         upsertmetadataChunks.items[0],
       ),
     );
@@ -115,7 +117,7 @@ const batchResponseBuilder = (
         identifierType,
         operationModuleType,
         upsertEndPoint,
-        action,
+        false,
         deletionmetadataChunks.items[0],
       ),
     );
@@ -198,10 +200,18 @@ const handleDeletion = async (
   input,
   fields,
   Config,
+  operationModuleType,
+  identifierType,
   transformedResponseToBeBatched,
   errorResponseList,
 ) => {
-  const searchResponse = await searchRecordId(fields, input.metadata, Config);
+  const searchResponse = await searchRecordId(
+    fields,
+    input.metadata,
+    Config,
+    operationModuleType,
+    identifierType,
+  );
 
   if (searchResponse.erroneous) {
     const error = handleSearchError(searchResponse);
@@ -226,13 +236,13 @@ const handleDeletion = async (
  */
 const processInput = async (
   input,
-  action,
   operationModuleType,
+  identifierType,
   Config,
   transformedResponseToBeBatched,
   errorResponseList,
 ) => {
-  const { fields } = input.message;
+  const { fields, action } = input.message;
 
   if (isEmptyObject(fields)) {
     const emptyFieldsError = new InstrumentationError('`fields` cannot be empty');
@@ -250,7 +260,15 @@ const processInput = async (
       errorResponseList,
     );
   } else {
-    await handleDeletion(input, fields, Config, transformedResponseToBeBatched, errorResponseList);
+    await handleDeletion(
+      input,
+      fields,
+      Config,
+      operationModuleType,
+      identifierType,
+      transformedResponseToBeBatched,
+      errorResponseList,
+    );
   }
 };
 
@@ -285,7 +303,6 @@ const processRecordInputs = async (inputs, destination) => {
   const response = [];
   const errorResponseList = [];
   const { Config } = destination;
-  const { action } = inputs[0].message;
 
   const transformedResponseToBeBatched = {
     upsertData: [],
@@ -296,14 +313,14 @@ const processRecordInputs = async (inputs, destination) => {
 
   const { operationModuleType, identifierType, upsertEndPoint } = deduceModuleInfo(inputs, Config);
 
-  validateConfigurationIssue(Config, operationModuleType, action);
+  validateConfigurationIssue(Config, operationModuleType);
 
   await Promise.all(
     inputs.map((input) =>
       processInput(
         input,
-        action,
         operationModuleType,
+        identifierType,
         Config,
         transformedResponseToBeBatched,
         errorResponseList,
@@ -322,7 +339,6 @@ const processRecordInputs = async (inputs, destination) => {
     identifierType,
     operationModuleType,
     upsertEndPoint,
-    action,
   );
 
   if (upsertResponseArray.length === 0 && deletionResponseArray.length === 0) {
@@ -335,4 +351,15 @@ const processRecordInputs = async (inputs, destination) => {
   return [...response, ...errorResponseList];
 };
 
-module.exports = { processRecordInputs };
+const processRecordInputsWrap = async (inputs, destination) => {
+  if (!inputs || inputs.length === 0) {
+    return [];
+  }
+  const event = inputs[0];
+  if (isEventSentByVDMV2Flow(event)) {
+    return processRecordInputsV2(inputs, destination);
+  }
+  return processRecordInputs(inputs, destination);
+};
+
+module.exports = { processRecordInputsWrap };

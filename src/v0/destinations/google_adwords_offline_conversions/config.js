@@ -1,6 +1,6 @@
 const { getMappingConfig } = require('../../util');
 
-const API_VERSION = 'v16';
+const API_VERSION = 'v18';
 
 const BASE_ENDPOINT = `https://googleads.googleapis.com/${API_VERSION}/customers/:customerId`;
 
@@ -65,4 +65,5 @@ module.exports = {
   trackAddStoreAddressConversionsMapping:
     MAPPING_CONFIG[CONFIG_CATEGORIES.TRACK_STORE_ADDRESS_IDENTIFIER.name],
   consentConfigMap,
+  API_VERSION,
 };

@@ -1,6 +1,7 @@
-import { Destination } from '../../../../../src/types';
+import { Destination, MessageType } from '../../../../../src/types';
 import { ProcessorTestData } from '../../../testTypes';
 import { generateMetadata } from '../../../testUtils';
+import { secret1 } from '../maskedSecrets';
 
 const destination: Destination = {
   ID: '123',
@@ -13,7 +14,7 @@ const destination: Destination = {
   },
   Config: {
     publicApiKey: 'dummyPublicApiKey',
-    privateApiKey: 'dummyPrivateApiKey',
+    privateApiKey: secret1,
   },
   Enabled: true,
   WorkspaceID: '123',
@@ -38,7 +39,7 @@ export const validationTestData: ProcessorTestData[] = [
             destination,
             message: {
               userId: 'user123',
-              type: 'random',
+              type: 'random' as MessageType,
               groupId: 'XUepkK',
               traits: {
                 subscribe: true,
@@ -55,6 +56,7 @@ export const validationTestData: ProcessorTestData[] = [
             metadata: generateMetadata(1),
           },
         ],
+        method: 'POST',
       },
     },
     output: {

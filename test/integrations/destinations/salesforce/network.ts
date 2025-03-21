@@ -1,5 +1,6 @@
+import { authHeader1, authHeader2, secret1 } from './maskedSecrets';
 const commonHeaders = {
-  Authorization: 'Bearer token',
+  Authorization: authHeader1,
   'Content-Type': 'application/json',
 };
 
@@ -20,7 +21,7 @@ const tfProxyMocksData = [
       params: { destination: 'salesforce' },
       headers: {
         'Content-Type': 'application/json',
-        Authorization: 'Bearer token',
+        Authorization: authHeader1,
         'User-Agent': 'RudderLabs',
       },
       method: 'POST',
@@ -37,7 +38,7 @@ const tfProxyMocksData = [
       params: { destination: 'salesforce' },
       headers: {
         'Content-Type': 'application/json',
-        Authorization: 'Bearer token',
+        Authorization: authHeader1,
         'User-Agent': 'RudderLabs',
       },
       method: 'POST',
@@ -54,7 +55,7 @@ const tfProxyMocksData = [
       params: { destination: 'salesforce' },
       headers: {
         'Content-Type': 'application/json',
-        Authorization: 'Bearer token',
+        Authorization: authHeader1,
       },
       method: 'POST',
     },
@@ -70,7 +71,7 @@ const tfProxyMocksData = [
       params: { destination: 'salesforce' },
       headers: {
         'Content-Type': 'application/json',
-        Authorization: 'Bearer token',
+        Authorization: authHeader1,
         'User-Agent': 'RudderLabs',
       },
       method: 'POST',
@@ -87,7 +88,7 @@ const tfProxyMocksData = [
       params: { destination: 'salesforce' },
       headers: {
         'Content-Type': 'application/json',
-        Authorization: 'Bearer token',
+        Authorization: authHeader1,
         'User-Agent': 'RudderLabs',
       },
       method: 'POST',
@@ -104,7 +105,7 @@ const tfProxyMocksData = [
       params: { destination: 'salesforce' },
       headers: {
         'Content-Type': 'application/json',
-        Authorization: 'Bearer token',
+        Authorization: authHeader1,
         'User-Agent': 'RudderLabs',
       },
       method: 'POST',
@@ -121,7 +122,7 @@ const tfProxyMocksData = [
       params: { destination: 'salesforce' },
       headers: {
         'Content-Type': 'application/json',
-        Authorization: 'Bearer token',
+        Authorization: authHeader1,
       },
       method: 'POST',
     },
@@ -140,7 +141,7 @@ const tfProxyMocksData = [
       params: { destination: 'salesforce' },
       headers: {
         'Content-Type': 'application/json',
-        Authorization: 'Bearer token',
+        Authorization: authHeader1,
         'User-Agent': 'RudderLabs',
       },
       method: 'POST',
@@ -180,7 +181,7 @@ const transformationMocksData = [
     httpRes: {
       status: 200,
       data: {
-        access_token: 'dummy.access.token',
+        access_token: secret1,
         instance_url: 'https://ap15.salesforce.com',
         id: 'https://login.salesforce.com/id/00D2v000002lXbXEAU/0052v00000ga9WqAAI',
         token_type: 'Bearer',
@@ -197,7 +198,7 @@ const transformationMocksData = [
     httpRes: {
       status: 200,
       data: {
-        access_token: 'dummy.access.token',
+        access_token: secret1,
         instance_url: 'https://ap15.salesforce.com',
         id: 'https://login.salesforce.com/id/00D2v000002lXbXEAU/0052v00000ga9WqAAI',
         token_type: 'Bearer',
@@ -374,7 +375,7 @@ const businessMockData = [
       params: { destination: 'salesforce' },
       headers: {
         'Content-Type': 'application/json',
-        Authorization: 'Bearer Incorrect_token',
+        Authorization: authHeader2,
         'User-Agent': 'RudderLabs',
       },
       method: 'POST',
@@ -391,7 +392,7 @@ const businessMockData = [
       params: { destination: 'salesforce' },
       headers: {
         'Content-Type': 'application/json',
-        Authorization: 'Bearer token',
+        Authorization: authHeader1,
         'User-Agent': 'RudderLabs',
       },
       method: 'POST',
@@ -408,7 +409,7 @@ const businessMockData = [
       params: { destination: 'salesforce' },
       headers: {
         'Content-Type': 'application/json',
-        Authorization: 'Bearer token',
+        Authorization: authHeader1,
         'User-Agent': 'RudderLabs',
       },
       method: 'POST',
@@ -425,7 +426,7 @@ const businessMockData = [
       params: { destination: 'salesforce' },
       headers: {
         'Content-Type': 'application/json',
-        Authorization: 'Bearer token',
+        Authorization: authHeader1,
         'User-Agent': 'RudderLabs',
       },
       method: 'POST',
@@ -442,7 +443,7 @@ const businessMockData = [
       params: { destination: 'salesforce' },
       headers: {
         'Content-Type': 'application/json',
-        Authorization: 'Bearer token',
+        Authorization: authHeader1,
         'User-Agent': 'RudderLabs',
       },
       method: 'POST',
@@ -462,7 +463,7 @@ const businessMockData = [
       params: { destination: 'salesforce' },
       headers: {
         'Content-Type': 'application/json',
-        Authorization: 'Bearer token',
+        Authorization: authHeader1,
         'User-Agent': 'RudderLabs',
       },
       method: 'POST',

@@ -57,10 +57,15 @@ export const V1BusinessTestScenarion: ProxyV1TestData[] = [
                     msgSms: true,
                     msgemail: true,
                     msgwhatsapp: false,
-                    custom_tags: '["Test_User","Interested_User","DIY_Hobby"]',
-                    custom_mappings: '{"Office":"Trastkiv","Country":"Russia"}',
-                    address:
-                      '{"city":"kolkata","country":"India","postalCode":789223,"state":"WB","street":""}',
+                    custom_tags: JSON.stringify(['Test_User', 'Interested_User', 'DIY_Hobby']),
+                    custom_mappings: JSON.stringify({ Office: 'Trastkiv', Country: 'Russia' }),
+                    address: JSON.stringify({
+                      city: 'kolkata',
+                      country: 'India',
+                      postalCode: 789223,
+                      state: 'WB',
+                      street: '',
+                    }),
                   },
                   identity: 'anon_id',
                 },
@@ -83,7 +88,7 @@ export const V1BusinessTestScenarion: ProxyV1TestData[] = [
             response: [
               {
                 metadata: generateMetadata(123),
-                error: '{"status":"success","processed":1,"unprocessed":[]}',
+                error: JSON.stringify({ status: 'success', processed: 1, unprocessed: [] }),
                 statusCode: 200,
               },
             ],
@@ -141,7 +146,7 @@ export const V1BusinessTestScenarion: ProxyV1TestData[] = [
             response: [
               {
                 metadata: generateMetadata(123),
-                error: '{"status":"fail","error":"Invalid Credentials","code":401}',
+                error: JSON.stringify({ status: 'fail', error: 'Invalid Credentials', code: 401 }),
                 statusCode: 401,
               },
             ],
@@ -200,7 +205,7 @@ export const V1BusinessTestScenarion: ProxyV1TestData[] = [
             response: [
               {
                 metadata: generateMetadata(123),
-                error: '{"status":"fail","processed":0,"unprocessed":[]}',
+                error: JSON.stringify({ status: 'fail', processed: 0, unprocessed: [] }),
                 statusCode: 400,
               },
             ],
@@ -271,8 +276,23 @@ export const V1BusinessTestScenarion: ProxyV1TestData[] = [
             response: [
               {
                 metadata: generateMetadata(123),
-                error:
-                  '{"status":"partial","processed":2,"unprocessed":[{"status":"fail","code":509,"error":"Event Name is incorrect. ErrorCode: 509 - Event name is mandatory. Skipped record number : 2","record":{"evtData":{"name":1234,"revenue":4.99},"type":"event","identity":"user123"}}]}',
+                error: JSON.stringify({
+                  status: 'partial',
+                  processed: 2,
+                  unprocessed: [
+                    {
+                      status: 'fail',
+                      code: 509,
+                      error:
+                        'Event Name is incorrect. ErrorCode: 509 - Event name is mandatory. Skipped record number : 2',
+                      record: {
+                        evtData: { name: 1234, revenue: 4.99 },
+                        type: 'event',
+                        identity: 'user123',
+                      },
+                    },
+                  ],
+                }),
                 statusCode: 400,
               },
             ],

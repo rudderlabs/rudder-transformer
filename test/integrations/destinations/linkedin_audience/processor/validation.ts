@@ -1,3 +1,4 @@
+import { defaultAccessTokenAuthHeader } from '../../../common/secrets';
 import { ProcessorTestData } from '../../../testTypes';
 import { generateMetadata, generateRecordPayload } from '../../../testUtils';
 
@@ -86,6 +87,7 @@ export const validationTestData: ProcessorTestData[] = [
             },
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -126,7 +128,7 @@ export const validationTestData: ProcessorTestData[] = [
               endpoint: 'https://api.linkedin.com/rest/dmpSegments/32589526/users',
               files: {},
               headers: {
-                Authorization: 'Bearer default-accessToken',
+                Authorization: defaultAccessTokenAuthHeader,
                 'Content-Type': 'application/json',
                 'LinkedIn-Version': '202409',
                 'X-RestLi-Method': 'BATCH_CREATE',
@@ -227,6 +229,7 @@ export const validationTestData: ProcessorTestData[] = [
             },
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -337,6 +340,7 @@ export const validationTestData: ProcessorTestData[] = [
             },
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -375,7 +379,7 @@ export const validationTestData: ProcessorTestData[] = [
               endpoint: 'https://api.linkedin.com/rest/dmpSegments/1234/users',
               files: {},
               headers: {
-                Authorization: 'Bearer default-accessToken',
+                Authorization: defaultAccessTokenAuthHeader,
                 'Content-Type': 'application/json',
                 'LinkedIn-Version': '202409',
                 'X-RestLi-Method': 'BATCH_CREATE',

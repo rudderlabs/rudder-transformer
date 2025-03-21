@@ -1,3 +1,4 @@
+import { authHeader1, secret1 } from '../maskedSecrets';
 import {
   commonInput,
   destination,
@@ -11,8 +12,8 @@ const commonDestination = {
   ID: 'random_id',
   Name: 'clicksend',
   Config: {
-    clicksendPassword: 'dummy',
-    clicksendUsername: 'dummy',
+    clicksendPassword: secret1,
+    clicksendUsername: secret1,
     defaultCampaignSchedule: '2',
     defaultCampaignScheduleUnit: 'day',
     defaultSenderId: 'abc@gmail.com',
@@ -121,7 +122,7 @@ export const data = [
                     from: 'abc@gmail.com',
                     list_id: 123345,
                     name: 'new campaign',
-                    schedule: 1631201576,
+                    schedule: 1611761576,
                   },
                   JSON_ARRAY: {},
                   XML: {},
@@ -129,7 +130,7 @@ export const data = [
                 endpoint: 'https://rest.clicksend.com/v3/sms-campaigns/send',
                 files: {},
                 headers: {
-                  Authorization: 'Basic ZHVtbXk6ZHVtbXk=',
+                  Authorization: authHeader1,
                   'Content-Type': 'application/json',
                 },
                 method: 'POST',
@@ -160,7 +161,7 @@ export const data = [
                         email: 'abc@gmail.com',
                         from: 'abc@gmail.com',
                         from_email: 'dummy@gmail.com',
-                        schedule: 1631201576,
+                        schedule: 1611761576,
                         source: 'php',
                         to: '+9182XXXX068',
                       },
@@ -172,7 +173,7 @@ export const data = [
                 endpoint: 'https://rest.clicksend.com/v3/sms/send',
                 files: {},
                 headers: {
-                  Authorization: 'Basic ZHVtbXk6ZHVtbXk=',
+                  Authorization: authHeader1,
                   'Content-Type': 'application/json',
                 },
                 method: 'POST',
@@ -196,8 +197,16 @@ export const data = [
                 body: {
                   FORM: {},
                   JSON: {
-                    address_line_1: '{"city":"New York","country":"USA","pinCode":"123456"}',
-                    address_line_2: '{"city":"New York","country":"USA","pinCode":"123456"}',
+                    address_line_1: JSON.stringify({
+                      city: 'New York',
+                      country: 'USA',
+                      pinCode: '123456',
+                    }),
+                    address_line_2: JSON.stringify({
+                      city: 'New York',
+                      country: 'USA',
+                      pinCode: '123456',
+                    }),
                     city: 'New York',
                     contact_id: '111',
                     email: 'abc@gmail.com',
@@ -211,7 +220,7 @@ export const data = [
                 endpoint: 'https://rest.clicksend.com/v3/lists/123345/contacts/111',
                 files: {},
                 headers: {
-                  Authorization: 'Basic ZHVtbXk6ZHVtbXk=',
+                  Authorization: authHeader1,
                   'Content-Type': 'application/json',
                 },
                 method: 'PUT',
@@ -373,7 +382,7 @@ export const data = [
                     from: 'abc@gmail.com',
                     list_id: 123345,
                     name: 'new campaign',
-                    schedule: 1631201576,
+                    schedule: 1611761576,
                   },
                   JSON_ARRAY: {},
                   XML: {},
@@ -381,7 +390,7 @@ export const data = [
                 endpoint: 'https://rest.clicksend.com/v3/sms-campaigns/send',
                 files: {},
                 headers: {
-                  Authorization: 'Basic ZHVtbXk6ZHVtbXk=',
+                  Authorization: authHeader1,
                   'Content-Type': 'application/json',
                 },
                 method: 'POST',
@@ -412,7 +421,7 @@ export const data = [
                         email: 'abc@gmail.com',
                         from: 'abc@gmail.com',
                         from_email: 'dummy@gmail.com',
-                        schedule: 1631201576,
+                        schedule: 1611761576,
                         source: 'php',
                         to: '+9182XXXX068',
                       },
@@ -422,7 +431,7 @@ export const data = [
                         email: 'abc@gmail.com',
                         from: 'abc@gmail.com',
                         from_email: 'dummy@gmail.com',
-                        schedule: 1631201576,
+                        schedule: 1611761576,
                         source: 'php',
                         to: '+9182XXXX068',
                       },
@@ -432,7 +441,7 @@ export const data = [
                         email: 'abc@gmail.com',
                         from: 'abc@gmail.com',
                         from_email: 'dummy@gmail.com',
-                        schedule: 1631201576,
+                        schedule: 1611761576,
                         source: 'php',
                         to: '+9182XXXX068',
                       },
@@ -444,7 +453,7 @@ export const data = [
                 endpoint: 'https://rest.clicksend.com/v3/sms/send',
                 files: {},
                 headers: {
-                  Authorization: 'Basic ZHVtbXk6ZHVtbXk=',
+                  Authorization: authHeader1,
                   'Content-Type': 'application/json',
                 },
                 method: 'POST',

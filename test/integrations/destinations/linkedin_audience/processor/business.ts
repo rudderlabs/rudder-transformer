@@ -1,5 +1,6 @@
 import { ProcessorTestData } from '../../../testTypes';
 import { generateMetadata, generateRecordPayload } from '../../../testUtils';
+import { defaultAccessTokenAuthHeader } from '../../../common/secrets';
 
 export const businessTestData: ProcessorTestData[] = [
   {
@@ -85,6 +86,7 @@ export const businessTestData: ProcessorTestData[] = [
             },
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -188,6 +190,7 @@ export const businessTestData: ProcessorTestData[] = [
             },
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -219,7 +222,7 @@ export const businessTestData: ProcessorTestData[] = [
               endpoint: 'https://api.linkedin.com/rest/dmpSegments/32589526/users',
               files: {},
               headers: {
-                Authorization: 'Bearer default-accessToken',
+                Authorization: defaultAccessTokenAuthHeader,
                 'Content-Type': 'application/json',
                 'LinkedIn-Version': '202409',
                 'X-RestLi-Method': 'BATCH_CREATE',
@@ -317,6 +320,7 @@ export const businessTestData: ProcessorTestData[] = [
             },
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -353,7 +357,7 @@ export const businessTestData: ProcessorTestData[] = [
               endpoint: 'https://api.linkedin.com/rest/dmpSegments/32589526/users',
               files: {},
               headers: {
-                Authorization: 'Bearer default-accessToken',
+                Authorization: defaultAccessTokenAuthHeader,
                 'Content-Type': 'application/json',
                 'LinkedIn-Version': '202409',
                 'X-RestLi-Method': 'BATCH_CREATE',
@@ -468,6 +472,7 @@ export const businessTestData: ProcessorTestData[] = [
             },
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -499,7 +504,7 @@ export const businessTestData: ProcessorTestData[] = [
               endpoint: 'https://api.linkedin.com/rest/dmpSegments/32589526/companies',
               files: {},
               headers: {
-                Authorization: 'Bearer default-accessToken',
+                Authorization: defaultAccessTokenAuthHeader,
                 'Content-Type': 'application/json',
                 'LinkedIn-Version': '202409',
                 'X-RestLi-Method': 'BATCH_CREATE',

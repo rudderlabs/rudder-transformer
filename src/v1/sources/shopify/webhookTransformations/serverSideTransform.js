@@ -1,26 +1,27 @@
-/* eslint-disable @typescript-eslint/naming-convention */
 const lodash = require('lodash');
 const get = require('get-value');
+const { isDefinedNotNullNotEmpty } = require('@rudderstack/integrations-lib');
 const stats = require('../../../../util/stats');
-const { getShopifyTopic, extractEmailFromPayload } = require('../../../../v0/sources/shopify/util');
-const { removeUndefinedAndNullValues, isDefinedAndNotNull } = require('../../../../v0/util');
-const Message = require('../../../../v0/sources/message');
+const { getShopifyTopic } = require('../../../../v0/sources/shopify/util');
+const { removeUndefinedAndNullValues } = require('../../../../v0/util');
+const Message = require('../../../../sources/message');
 const { EventType } = require('../../../../constants');
 const {
-  INTEGERATION,
-  MAPPING_CATEGORIES,
   IDENTIFY_TOPICS,
-  ECOM_TOPICS,
-  RUDDER_ECOM_MAP,
   SUPPORTED_TRACK_EVENTS,
   SHOPIFY_TRACK_MAP,
-  lineItemsMappingJSON,
 } = require('../../../../v0/sources/shopify/config');
+const { INTEGERATION, identifyMappingJSON, lineItemsMappingJSON } = require('../config');
+const { ECOM_TOPICS, RUDDER_ECOM_MAP } = require('../config');
 const {
   createPropertiesForEcomEventFromWebhook,
   getProductsFromLineItems,
-  getAnonymousIdFromAttributes,
+  setAnonymousId,
+  handleCommonProperties,
+  addCartTokenHashToTraits,
 } = require('./serverSideUtlis');
+const { updateAnonymousIdToUserIdInRedis } = require('../utils');
+const { RedisDB } = require('../../../../util/redis/redisConnector');
 
 const NO_OPERATION_SUCCESS = {
   outputToSource: {
@@ -33,7 +34,7 @@ const NO_OPERATION_SUCCESS = {
 const identifyPayloadBuilder = (event) => {
   const message = new Message(INTEGERATION);
   message.setEventType(EventType.IDENTIFY);
-  message.setPropertiesV2(event, MAPPING_CATEGORIES[EventType.IDENTIFY]);
+  message.setPropertiesV2(event, identifyMappingJSON);
   if (event.updated_at) {
     // converting shopify updated_at timestamp to rudder timestamp format
     message.setTimestamp(new Date(event.updated_at).toISOString());
@@ -46,27 +47,21 @@ const ecomPayloadBuilder = (event, shopifyTopic) => {
   message.setEventType(EventType.TRACK);
   message.setEventName(RUDDER_ECOM_MAP[shopifyTopic]);
 
-  const properties = createPropertiesForEcomEventFromWebhook(event);
+  const properties = createPropertiesForEcomEventFromWebhook(event, shopifyTopic);
   message.properties = removeUndefinedAndNullValues(properties);
   // Map Customer details if present
   const customerDetails = get(event, 'customer');
   if (customerDetails) {
-    message.setPropertiesV2(customerDetails, MAPPING_CATEGORIES[EventType.IDENTIFY]);
+    message.setPropertiesV2(customerDetails, identifyMappingJSON);
   }
   if (event.updated_at) {
     message.setTimestamp(new Date(event.updated_at).toISOString());
-  }
-  if (event.customer) {
-    message.setPropertiesV2(event.customer, MAPPING_CATEGORIES[EventType.IDENTIFY]);
   }
   if (event.shipping_address) {
     message.setProperty('traits.shippingAddress', event.shipping_address);
   }
   if (event.billing_address) {
     message.setProperty('traits.billingAddress', event.billing_address);
-  }
-  if (!message.userId && event.user_id) {
-    message.setProperty('userId', event.user_id);
   }
   return message;
 };
@@ -82,9 +77,46 @@ const trackPayloadBuilder = (event, shopifyTopic) => {
   return message;
 };
 
+/**
+ * Creates an identify event with userId and anonymousId from message object and identifyMappingJSON
+ * @param {String} message
+ * @returns {Message} identifyEvent
+ */
+const createIdentifyEvent = (message) => {
+  const { userId, anonymousId, traits } = message;
+  const identifyEvent = new Message(INTEGERATION);
+  identifyEvent.setEventType(EventType.IDENTIFY);
+  if (userId) {
+    identifyEvent.userId = userId;
+  }
+  if (anonymousId) {
+    identifyEvent.anonymousId = anonymousId;
+  }
+  const mappedTraits = {};
+  identifyMappingJSON.forEach((mapping) => {
+    if (mapping.destKeys.startsWith('traits.')) {
+      const traitKey = mapping.destKeys.replace('traits.', '');
+      const sourceValue = get(traits, traitKey);
+      if (sourceValue !== undefined) {
+        lodash.set(mappedTraits, traitKey, sourceValue);
+      }
+    }
+  });
+  // Set the mapped traits
+  identifyEvent.context.traits = removeUndefinedAndNullValues(mappedTraits);
+  identifyEvent.setProperty(`integrations.${INTEGERATION}`, true);
+  identifyEvent.setProperty('context.library', {
+    eventOrigin: 'server',
+    name: 'RudderStack Shopify Cloud',
+    version: '2.0.0',
+  });
+  return identifyEvent;
+};
+
 const processEvent = async (inputEvent, metricMetadata) => {
   let message;
   const event = lodash.cloneDeep(inputEvent);
+  const { customer } = event;
   const shopifyTopic = getShopifyTopic(event);
   delete event.query_parameters;
   switch (shopifyTopic) {
@@ -96,6 +128,7 @@ const processEvent = async (inputEvent, metricMetadata) => {
     case ECOM_TOPICS.ORDERS_UPDATE:
     case ECOM_TOPICS.CHECKOUTS_CREATE:
     case ECOM_TOPICS.CHECKOUTS_UPDATE:
+    case ECOM_TOPICS.ORDERS_CANCELLED:
       message = ecomPayloadBuilder(event, shopifyTopic);
       break;
     default:
@@ -110,42 +143,41 @@ const processEvent = async (inputEvent, metricMetadata) => {
       message = trackPayloadBuilder(event, shopifyTopic);
       break;
   }
-
+  // attach anonymousId if the event is track event using note_attributes
+  if (message.type !== EventType.IDENTIFY) {
+    await setAnonymousId(message, event, metricMetadata);
+    await updateAnonymousIdToUserIdInRedis(message.anonymousId, message.userId);
+  }
+  // attach email and other contextual properties
+  message = handleCommonProperties(message, event, shopifyTopic);
+  // add cart_token_hash to traits if cart_token is present
+  message = addCartTokenHashToTraits(message, event);
+  const redisData = await RedisDB.getVal(`pixel:${message.anonymousId}`);
+  if (isDefinedNotNullNotEmpty(redisData)) {
+    message.userId = redisData.userId;
+    stats.increment('shopify_pixel_userid_mapping', {
+      action: 'stitchUserIdToAnonId',
+      operation: 'get',
+    });
+  }
   if (message.userId) {
     message.userId = String(message.userId);
   }
-  if (!get(message, 'traits.email')) {
-    const email = extractEmailFromPayload(event);
-    if (email) {
-      message.setProperty('traits.email', email);
-    }
-  }
-  // attach anonymousId if the event is track event using note_attributes
-  if (message.type !== EventType.IDENTIFY) {
-    const anonymousId = getAnonymousIdFromAttributes(event);
-    if (isDefinedAndNotNull(anonymousId)) {
-      message.setProperty('anonymousId', anonymousId);
-    }
-  }
-  message.setProperty(`integrations.${INTEGERATION}`, true);
-  message.setProperty('context.library', {
-    eventOrigin: 'server',
-    name: 'RudderStack Shopify Cloud',
-    version: '2.0.0',
-  });
-  message.setProperty('context.topic', shopifyTopic);
-  // attaching cart, checkout and order tokens in context object
-  message.setProperty(`context.cart_token`, event.cart_token);
-  message.setProperty(`context.checkout_token`, event.checkout_token);
-  // raw shopify payload passed inside context object under shopifyDetails
-  message.setProperty('context.shopifyDetails', event);
-  if (shopifyTopic === 'orders_updated') {
-    message.setProperty(`context.order_token`, event.token);
-  }
   message = removeUndefinedAndNullValues(message);
+
+  // if the message payload contains both anonymousId and userId or contains customer object, hence the user is identified
+  // then create an identify event by multiplexing the original event and return both the message and identify event
+  if (
+    (message.userId && message.anonymousId) ||
+    (message.userId && customer) ||
+    (message.anonymousId && customer)
+  ) {
+    const identifyEvent = createIdentifyEvent(message);
+    return [message, identifyEvent];
+  }
   return message;
 };
-const process = async (event) => {
+const processWebhookEvents = async (event) => {
   const metricMetadata = {
     writeKey: event.query_parameters?.writeKey?.[0],
     source: 'SHOPIFY',
@@ -155,7 +187,7 @@ const process = async (event) => {
 };
 
 module.exports = {
-  process,
+  processWebhookEvents,
   processEvent,
   identifyPayloadBuilder,
   ecomPayloadBuilder,

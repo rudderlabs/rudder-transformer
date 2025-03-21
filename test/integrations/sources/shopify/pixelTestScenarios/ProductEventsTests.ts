@@ -1,5 +1,12 @@
 // This file contains the test scenarios related to Shopify pixel events, emitted from web pixel on the browser.
-import { dummyContext, dummySourceConfig, responseDummyContext } from '../constants';
+import { mockFns } from '../mocks';
+import {
+  dummyContext,
+  dummyContextwithCampaign,
+  dummySourceConfig,
+  responseDummyContext,
+  responseDummyContextwithCampaign,
+} from '../constants';
 
 export const pixelEventsTestScenarios = [
   {
@@ -18,7 +25,7 @@ export const pixelEventsTestScenarios = [
               type: 'standard',
               clientId: 'c7b3f99b-4d34-463b-835f-c879482a7750',
               timestamp: '2024-09-15T17:24:30.373Z',
-              context: dummyContext,
+              context: dummyContextwithCampaign,
               pixelEventLabel: true,
               query_parameters: {
                 topic: ['page_viewed'],
@@ -42,7 +49,14 @@ export const pixelEventsTestScenarios = [
               batch: [
                 {
                   context: {
-                    ...responseDummyContext,
+                    ...responseDummyContextwithCampaign,
+                    campaign: {
+                      content: 'web',
+                      medium: 'checkout',
+                      name: 'shopifySale',
+                      term: 'term_checkout',
+                      utm_custom1: 'customutm',
+                    },
                     shopifyDetails: {
                       clientId: 'c7b3f99b-4d34-463b-835f-c879482a7750',
                       data: {},
@@ -55,9 +69,15 @@ export const pixelEventsTestScenarios = [
                   },
                   integrations: {
                     SHOPIFY: true,
+                    DATA_WAREHOUSE: {
+                      options: {
+                        jsonPaths: ['page.context.shopifyDetails'],
+                      },
+                    },
                   },
                   name: 'Page View',
                   type: 'page',
+                  userId: 'test-user-id',
                   properties: {},
                   anonymousId: 'c7b3f99b-4d34-463b-835f-c879482a7750',
                   messageId: 'sh-f6b6f548-5FEF-4DAE-9CAB-39EE6F94E09B',
@@ -166,8 +186,14 @@ export const pixelEventsTestScenarios = [
                   },
                   integrations: {
                     SHOPIFY: true,
+                    DATA_WAREHOUSE: {
+                      options: {
+                        jsonPaths: ['track.context.shopifyDetails'],
+                      },
+                    },
                   },
                   type: 'track',
+                  userId: 'test-user-id',
                   event: 'Product Viewed',
                   properties: {
                     product_id: '7234590834801',
@@ -330,8 +356,14 @@ export const pixelEventsTestScenarios = [
                   },
                   integrations: {
                     SHOPIFY: true,
+                    DATA_WAREHOUSE: {
+                      options: {
+                        jsonPaths: ['track.context.shopifyDetails'],
+                      },
+                    },
                   },
                   type: 'track',
+                  userId: 'test-user-id',
                   event: 'Cart Viewed',
                   properties: {
                     products: [
@@ -555,8 +587,14 @@ export const pixelEventsTestScenarios = [
                   },
                   integrations: {
                     SHOPIFY: true,
+                    DATA_WAREHOUSE: {
+                      options: {
+                        jsonPaths: ['track.context.shopifyDetails'],
+                      },
+                    },
                   },
                   type: 'track',
+                  userId: 'test-user-id',
                   event: 'Product List Viewed',
                   properties: {
                     cart_id: 'c7b3f99b-4d34-463b-835f-c879482a7750',
@@ -725,8 +763,14 @@ export const pixelEventsTestScenarios = [
                   },
                   integrations: {
                     SHOPIFY: true,
+                    DATA_WAREHOUSE: {
+                      options: {
+                        jsonPaths: ['track.context.shopifyDetails'],
+                      },
+                    },
                   },
                   type: 'track',
+                  userId: 'test-user-id',
                   event: 'Product Added',
                   properties: {
                     image_url:
@@ -866,8 +910,14 @@ export const pixelEventsTestScenarios = [
                   },
                   integrations: {
                     SHOPIFY: true,
+                    DATA_WAREHOUSE: {
+                      options: {
+                        jsonPaths: ['track.context.shopifyDetails'],
+                      },
+                    },
                   },
                   type: 'track',
+                  userId: 'test-user-id',
                   event: 'Product Removed',
                   properties: {
                     image_url:
@@ -955,8 +1005,14 @@ export const pixelEventsTestScenarios = [
                   },
                   integrations: {
                     SHOPIFY: true,
+                    DATA_WAREHOUSE: {
+                      options: {
+                        jsonPaths: ['track.context.shopifyDetails'],
+                      },
+                    },
                   },
                   type: 'track',
+                  userId: 'test-user-id',
                   event: 'Search Submitted',
                   properties: {
                     query: 'skate',
@@ -1022,4 +1078,4 @@ export const pixelEventsTestScenarios = [
       },
     },
   },
-];
+].map((p1) => ({ ...p1, mockFns }));

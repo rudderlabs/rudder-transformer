@@ -29,15 +29,25 @@ export class ControllerUtility {
     [EventType.TRACK]: [`properties.${RETL_TIMESTAMP}`, ...genericFieldMap.timestamp],
   };
 
+  private static getSourceDirPath(version: string): string {
+    if (version === 'v2') {
+      return path.resolve(__dirname, '../../sources');
+    }
+    return path.resolve(__dirname, `../../${version}/sources`);
+  }
+
   private static getSourceVersionsMap(): Map<string, any> {
     if (this.sourceVersionMap?.size > 0) {
       return this.sourceVersionMap;
     }
-    const versions = ['v0', 'v1'];
+
+    const versions = ['v0', 'v1', 'v2'];
+
     versions.forEach((version) => {
-      const files = fs.readdirSync(path.resolve(__dirname, `../../${version}/sources`), {
+      const files = fs.readdirSync(this.getSourceDirPath(version), {
         withFileTypes: true,
       });
+
       const sources = files.filter((file) => file.isDirectory()).map((folder) => folder.name);
       sources.forEach((source) => {
         this.sourceVersionMap.set(source, version);

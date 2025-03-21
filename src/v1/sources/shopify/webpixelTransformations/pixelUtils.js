@@ -1,5 +1,6 @@
 /* eslint-disable no-param-reassign */
-const Message = require('../../../../v0/sources/message');
+const { isDefinedAndNotNull } = require('@rudderstack/integrations-lib');
+const Message = require('../../../../sources/message');
 const { EventType } = require('../../../../constants');
 const {
   INTEGERATION,
@@ -203,6 +204,41 @@ const searchEventBuilder = (inputEvent) => {
   );
 };
 
+/**
+ * Extracts UTM parameters from the context object
+ * @param {*} context context object from the event
+ * @param {*} campaignMappings mappings for UTM parameters
+ * @returns campaignParams, an object containing UTM parameters
+ */
+const extractCampaignParams = (context, campaignMappings) => {
+  if (context?.document?.location?.href) {
+    const url = new URL(context.document.location.href);
+    const campaignParams = {};
+
+    // Loop through mappings and extract UTM parameters
+    campaignMappings.forEach((mapping) => {
+      const value = url.searchParams.get(mapping.sourceKeys);
+      if (isDefinedAndNotNull(value)) {
+        campaignParams[mapping.destKeys] = value;
+      }
+    });
+
+    // Extract any UTM parameters not in the mappings
+    const campaignObjectSourceKeys = campaignMappings.flatMap((mapping) => mapping.sourceKeys);
+    url.searchParams.forEach((value, key) => {
+      if (key.startsWith('utm_') && !campaignObjectSourceKeys.includes(key)) {
+        campaignParams[key] = value;
+      }
+    });
+
+    // Only return campaign object if we have any UTM parameters
+    if (Object.keys(campaignParams).length > 0) {
+      return campaignParams;
+    }
+  }
+  return null;
+};
+
 module.exports = {
   pageViewedEventBuilder,
   cartViewedEventBuilder,
@@ -212,4 +248,5 @@ module.exports = {
   checkoutEventBuilder,
   checkoutStepEventBuilder,
   searchEventBuilder,
+  extractCampaignParams,
 };

@@ -467,8 +467,13 @@ export const v0TestData = [
         body: {
           output: {
             status: 500,
-            message:
-              '{"message":"Unhandled random error","type":"RandomException","code":5,"error_subcode":12,"fbtrace_id":"facebook_px_trace_id_10"}',
+            message: JSON.stringify({
+              message: 'Unhandled random error',
+              type: 'RandomException',
+              code: 5,
+              error_subcode: 12,
+              fbtrace_id: 'facebook_px_trace_id_10',
+            }),
             destinationResponse: {
               error: {
                 message: 'Unhandled random error',

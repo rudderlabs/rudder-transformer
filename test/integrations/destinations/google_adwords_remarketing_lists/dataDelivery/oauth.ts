@@ -1,6 +1,8 @@
+import { authHeader2, secret2, secret1 } from '../maskedSecrets';
 import { generateMetadata, generateProxyV1Payload } from '../../../testUtils';
 import { commonHeaders, commonParams, validRequestPayload1 } from './business';
-import { API_VERSION } from '../../../../../src/v0/destinations/google_adwords_remarketing_lists/config';
+
+const API_VERSION = 'v18';
 
 const commonStatTags = {
   destType: 'GOOGLE_ADWORDS_REMARKETING_LISTS',
@@ -31,7 +33,7 @@ export const oauthError = [
           params: commonParams,
           JSON: validRequestPayload1,
           endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/customerid/offlineUserDataJobs`,
-          accessToken: 'dummy-access',
+          accessToken: secret1,
         }),
         method: 'POST',
       },
@@ -54,7 +56,7 @@ export const oauthError = [
                   dontBatch: false,
                   jobId: 1,
                   secret: {
-                    accessToken: 'dummy-access',
+                    accessToken: secret1,
                   },
                   sourceId: 'default-sourceId',
                   userId: 'default-userId',
@@ -82,11 +84,11 @@ export const oauthError = [
     input: {
       request: {
         body: generateProxyV1Payload({
-          headers: { ...commonHeaders, Authorization: 'Bearer wrongCustomerID' },
-          params: { ...commonParams, customerId: 'wrongCustomerID' },
+          headers: { ...commonHeaders, Authorization: authHeader2 },
+          params: { ...commonParams, customerId: secret2 },
           JSON: validRequestPayload1,
           endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/customerid/offlineUserDataJobs`,
-          accessToken: 'wrongCustomerID',
+          accessToken: secret2,
         }),
         method: 'POST',
       },
@@ -103,7 +105,7 @@ export const oauthError = [
               {
                 error:
                   '{"error":{"code":401,"message":"Request is missing required authentication credential. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.","status":"UNAUTHENTICATED","details":[{"@type":"type.googleapis.com/google.ads.googleads.v16.errors.GoogleAdsFailure","errors":[{"errorCode":{"authenticationError":"CUSTOMER_NOT_FOUND"},"message":"No customer found for the provided customer id."}],"requestId":"lvB3KOjGHsgduHjt0wCglQ"}]}} during ga_audience response transformation',
-                metadata: { ...generateMetadata(1), secret: { accessToken: 'wrongCustomerID' } },
+                metadata: { ...generateMetadata(1), secret: { accessToken: secret2 } },
                 statusCode: 401,
               },
             ],

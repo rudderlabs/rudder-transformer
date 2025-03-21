@@ -292,6 +292,7 @@ export const ecommTestData: ProcessorTestData[] = [
             metadata: generateMetadata(1),
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -362,6 +363,7 @@ export const ecommTestData: ProcessorTestData[] = [
             metadata: generateMetadata(1),
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -434,6 +436,7 @@ export const ecommTestData: ProcessorTestData[] = [
             metadata: generateMetadata(1),
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -504,6 +507,7 @@ export const ecommTestData: ProcessorTestData[] = [
             metadata: generateMetadata(1),
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -574,6 +578,7 @@ export const ecommTestData: ProcessorTestData[] = [
             metadata: generateMetadata(1),
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -647,6 +652,7 @@ export const ecommTestData: ProcessorTestData[] = [
             metadata: generateMetadata(1),
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -721,6 +727,7 @@ export const ecommTestData: ProcessorTestData[] = [
             metadata: generateMetadata(1),
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -794,6 +801,7 @@ export const ecommTestData: ProcessorTestData[] = [
             metadata: generateMetadata(1),
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -869,6 +877,7 @@ export const ecommTestData: ProcessorTestData[] = [
             metadata: generateMetadata(1),
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -943,6 +952,7 @@ export const ecommTestData: ProcessorTestData[] = [
             metadata: generateMetadata(1),
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -1017,6 +1027,7 @@ export const ecommTestData: ProcessorTestData[] = [
             metadata: generateMetadata(1),
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -1093,6 +1104,7 @@ export const ecommTestData: ProcessorTestData[] = [
             metadata: generateMetadata(1),
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -1170,6 +1182,7 @@ export const ecommTestData: ProcessorTestData[] = [
             metadata: generateMetadata(1),
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -1244,6 +1257,7 @@ export const ecommTestData: ProcessorTestData[] = [
             metadata: generateMetadata(1),
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -1315,6 +1329,7 @@ export const ecommTestData: ProcessorTestData[] = [
             metadata: generateMetadata(1),
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -1385,6 +1400,7 @@ export const ecommTestData: ProcessorTestData[] = [
             metadata: generateMetadata(1),
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -1456,6 +1472,7 @@ export const ecommTestData: ProcessorTestData[] = [
             metadata: generateMetadata(1),
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -1525,6 +1542,7 @@ export const ecommTestData: ProcessorTestData[] = [
             metadata: generateMetadata(1),
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -1591,6 +1609,7 @@ export const ecommTestData: ProcessorTestData[] = [
             metadata: generateMetadata(1),
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -1657,6 +1676,7 @@ export const ecommTestData: ProcessorTestData[] = [
             metadata: generateMetadata(1),
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -1723,6 +1743,7 @@ export const ecommTestData: ProcessorTestData[] = [
             metadata: generateMetadata(1),
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -1800,6 +1821,7 @@ export const ecommTestData: ProcessorTestData[] = [
             metadata: generateMetadata(1),
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -1873,6 +1895,7 @@ export const ecommTestData: ProcessorTestData[] = [
             metadata: generateMetadata(1),
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -1943,6 +1966,7 @@ export const ecommTestData: ProcessorTestData[] = [
             metadata: generateMetadata(1),
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -2014,6 +2038,7 @@ export const ecommTestData: ProcessorTestData[] = [
             metadata: generateMetadata(1),
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -2087,6 +2112,7 @@ export const ecommTestData: ProcessorTestData[] = [
             metadata: generateMetadata(1),
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -2164,6 +2190,7 @@ export const ecommTestData: ProcessorTestData[] = [
             metadata: generateMetadata(1),
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -2247,6 +2274,7 @@ export const ecommTestData: ProcessorTestData[] = [
             metadata: generateMetadata(1),
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -2321,6 +2349,7 @@ export const ecommTestData: ProcessorTestData[] = [
             metadata: generateMetadata(1),
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -2410,6 +2439,7 @@ export const ecommTestData: ProcessorTestData[] = [
             metadata: generateMetadata(1),
           },
         ],
+        method: 'POST',
       },
     },
     output: {

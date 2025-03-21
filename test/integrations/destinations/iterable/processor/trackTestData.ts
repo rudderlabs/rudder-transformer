@@ -1,136 +1,39 @@
-import {
-  generateMetadata,
-  generateTrackPayload,
-  overrideDestination,
-  transformResultBuilder,
-} from './../../../testUtils';
-import { Destination } from '../../../../../src/types';
 import { ProcessorTestData } from '../../../testTypes';
+import { Metadata } from '../../../../../src/types';
 
-const destination: Destination = {
-  ID: '123',
-  Name: 'iterable',
-  DestinationDefinition: {
-    ID: '123',
-    Name: 'iterable',
-    DisplayName: 'Iterable',
-    Config: {},
-  },
-  WorkspaceID: '123',
-  Transformations: [],
-  Config: {
-    apiKey: 'testApiKey',
-    dataCenter: 'USDC',
-    preferUserId: false,
-    trackAllPages: true,
-    trackNamedPages: false,
-    mapToSingleEvent: false,
-    trackCategorisedPages: false,
-  },
-  Enabled: true,
+const baseMetadata: Partial<Metadata> = {
+  sourceId: 'default-sourceId',
+  workspaceId: 'default-workspaceId',
+  namespace: 'default-namespace',
+  instanceId: 'default-instance',
+  sourceType: 'default-source-type',
+  sourceCategory: 'default-category',
+  trackingPlanId: 'default-tracking-plan',
+  trackingPlanVersion: 1,
+  sourceTpConfig: {},
+  mergedTpConfig: {},
+  destinationId: 'default-destinationId',
+  jobRunId: 'default-job-run',
+  jobId: 1,
+  sourceBatchId: 'default-batch',
+  sourceJobId: 'default-source-job',
+  sourceJobRunId: 'default-source-job-run',
+  sourceTaskId: 'default-task',
+  sourceTaskRunId: 'default-task-run',
+  recordId: {},
+  destinationType: 'default-destination-type',
+  messageId: 'default-message-id',
+  oauthAccessToken: 'default-token',
+  messageIds: ['default-message-id'],
+  rudderId: 'default-rudder-id',
+  receivedAt: '2025-01-06T04:00:49.698Z',
+  eventName: 'default-event',
+  eventType: 'default-type',
+  sourceDefinitionId: 'default-source-def',
+  destinationDefinitionId: 'default-dest-def',
+  transformationId: 'default-transform',
+  dontBatch: false,
 };
-
-const headers = {
-  api_key: 'testApiKey',
-  'Content-Type': 'application/json',
-};
-
-const properties = {
-  subject: 'resume validate',
-  sendtime: '2020-01-01',
-  sendlocation: 'akashdeep@gmail.com',
-};
-
-const customEventProperties = {
-  campaignId: '1',
-  templateId: '0',
-  user_actual_id: 12345,
-  category: 'test-category',
-  email: 'ruchira@rudderlabs.com',
-  user_actual_role: 'system_admin, system_user',
-};
-
-const productInfo = {
-  price: 797,
-  variant: 'Oak',
-  quantity: 1,
-  quickship: true,
-  full_price: 1328,
-  product_id: 10606,
-  non_interaction: 1,
-  sku: 'JB24691400-W05',
-  name: 'Vira Console Cabinet',
-  cart_id: 'bd9b8dbf4ef8ee01d4206b04fe2ee6ae',
-};
-
-const orderCompletedProductInfo = {
-  price: 45,
-  quantity: 1,
-  total: '1000',
-  name: 'Shoes',
-  orderId: 10000,
-  product_id: 1234,
-  campaignId: '123456',
-  templateId: '1213458',
-};
-
-const products = [
-  {
-    product_id: '507f1f77bcf86cd799439011',
-    sku: '45790-32',
-    name: 'Monopoly: 3rd Edition',
-    price: '19',
-    position: '1',
-    category: 'cars',
-    url: 'https://www.example.com/product/path',
-    image_url: 'https://www.example.com/product/path.jpg',
-    quantity: '2',
-  },
-  {
-    product_id: '507f1f77bcf86cd7994390112',
-    sku: '45790-322',
-    name: 'Monopoly: 3rd Edition2',
-    price: '192',
-    quantity: 22,
-    position: '12',
-    category: 'Cars2',
-    url: 'https://www.example.com/product/path2',
-    image_url: 'https://www.example.com/product/path.jpg2',
-  },
-];
-
-const items = [
-  {
-    id: '507f1f77bcf86cd799439011',
-    sku: '45790-32',
-    name: 'Monopoly: 3rd Edition',
-    categories: ['cars'],
-    price: 19,
-    quantity: 2,
-    imageUrl: 'https://www.example.com/product/path.jpg',
-    url: 'https://www.example.com/product/path',
-  },
-  {
-    id: '507f1f77bcf86cd7994390112',
-    sku: '45790-322',
-    name: 'Monopoly: 3rd Edition2',
-    categories: ['Cars2'],
-    price: 192,
-    quantity: 22,
-    imageUrl: 'https://www.example.com/product/path.jpg2',
-    url: 'https://www.example.com/product/path2',
-  },
-];
-
-const userId = 'userId';
-const anonymousId = 'anonId';
-const sentAt = '2020-08-28T16:26:16.473Z';
-const originalTimestamp = '2020-08-28T16:26:06.468Z';
-
-const endpoint = 'https://api.iterable.com/api/events/track';
-const endpointEUDC = 'https://api.eu.iterable.com/api/events/track';
-const updateCartEndpoint = 'https://api.iterable.com/api/commerce/updateCart';
-const trackPurchaseEndpoint = 'https://api.iterable.com/api/commerce/trackPurchase';
 
 export const trackTestData: ProcessorTestData[] = [
   {
@@ -145,19 +48,48 @@ export const trackTestData: ProcessorTestData[] = [
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
-            destination,
             message: {
-              anonymousId,
+              anonymousId: 'anonId',
               event: 'Email Opened',
               type: 'track',
               context: {},
-              properties,
-              sentAt,
-              originalTimestamp,
+              properties: {
+                subject: 'resume validate',
+                sendtime: '2020-01-01',
+                sendlocation: 'akashdeep@gmail.com',
+              },
+              sentAt: '2020-08-28T16:26:16.473Z',
+              originalTimestamp: '2020-08-28T16:26:06.468Z',
             },
-            metadata: generateMetadata(1),
+            metadata: baseMetadata,
+            destination: {
+              ID: '123',
+              Name: 'iterable',
+              DestinationDefinition: {
+                ID: '123',
+                Name: 'iterable',
+                DisplayName: 'Iterable',
+                Config: {},
+              },
+              Config: {
+                apiKey: 'testApiKey',
+                dataCenter: 'USDC',
+                preferUserId: false,
+                trackAllPages: true,
+                trackNamedPages: false,
+                mapToSingleEvent: false,
+                trackCategorisedPages: false,
+              },
+              Enabled: true,
+              WorkspaceID: '123',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
+            },
           },
         ],
       },
@@ -167,19 +99,36 @@ export const trackTestData: ProcessorTestData[] = [
         status: 200,
         body: [
           {
-            output: transformResultBuilder({
+            output: {
+              version: '1',
+              type: 'REST',
               userId: '',
-              headers,
-              endpoint,
-              JSON: {
-                userId: 'anonId',
-                createdAt: 1598631966468,
-                eventName: 'Email Opened',
-                dataFields: properties,
+              method: 'POST',
+              endpoint: 'https://api.iterable.com/api/events/track',
+              headers: {
+                api_key: 'testApiKey',
+                'Content-Type': 'application/json',
               },
-            }),
+              params: {},
+              body: {
+                JSON: {
+                  userId: 'anonId',
+                  createdAt: 1598631966468,
+                  eventName: 'Email Opened',
+                  dataFields: {
+                    subject: 'resume validate',
+                    sendtime: '2020-01-01',
+                    sendlocation: 'akashdeep@gmail.com',
+                  },
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+            },
+            metadata: baseMetadata,
             statusCode: 200,
-            metadata: generateMetadata(1),
           },
         ],
       },
@@ -197,29 +146,107 @@ export const trackTestData: ProcessorTestData[] = [
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
-            destination,
-            message: generateTrackPayload({
-              userId,
-              anonymousId,
-              event: 'product added',
+            message: {
+              type: 'track',
+              sentAt: '2020-08-28T16:26:16.473Z',
+              userId: 'userId',
+              channel: 'web',
               context: {
+                os: {
+                  name: '',
+                  version: '1.12.3',
+                },
+                app: {
+                  name: 'RudderLabs JavaScript SDK',
+                  build: '1.0.0',
+                  version: '1.1.11',
+                  namespace: 'com.rudderlabs.javascript',
+                },
                 traits: {
                   email: 'sayan@gmail.com',
                 },
+                locale: 'en-US',
+                device: {
+                  token: 'token',
+                  id: 'id',
+                  type: 'ios',
+                },
+                screen: {
+                  density: 2,
+                },
+                library: {
+                  name: 'RudderLabs JavaScript SDK',
+                  version: '1.1.11',
+                },
+                campaign: {},
+                userAgent:
+                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0',
               },
+              rudderId: '227egb53wnacyz7f5hopt3jwriuwwk8n2y8i',
+              messageId: '40q64xrajd4kqt5174iy8889da8kjij55u85',
+              anonymousId: 'anonId',
+              originalTimestamp: '2020-08-28T16:26:06.468Z',
+              event: 'product added',
               properties: {
                 campaignId: '1',
                 templateId: '0',
                 orderId: 10000,
                 total: 1000,
-                products,
+                products: [
+                  {
+                    product_id: '507f1f77bcf86cd799439011',
+                    sku: '45790-32',
+                    name: 'Monopoly: 3rd Edition',
+                    price: '19',
+                    position: '1',
+                    category: 'cars',
+                    url: 'https://www.example.com/product/path',
+                    image_url: 'https://www.example.com/product/path.jpg',
+                    quantity: '2',
+                  },
+                  {
+                    product_id: '507f1f77bcf86cd7994390112',
+                    sku: '45790-322',
+                    name: 'Monopoly: 3rd Edition2',
+                    price: '192',
+                    quantity: 22,
+                    position: '12',
+                    category: 'Cars2',
+                    url: 'https://www.example.com/product/path2',
+                    image_url: 'https://www.example.com/product/path.jpg2',
+                  },
+                ],
               },
-              sentAt,
-              originalTimestamp,
-            }),
-            metadata: generateMetadata(1),
+            },
+            metadata: baseMetadata,
+            destination: {
+              ID: '123',
+              Name: 'iterable',
+              DestinationDefinition: {
+                ID: '123',
+                Name: 'iterable',
+                DisplayName: 'Iterable',
+                Config: {},
+              },
+              Config: {
+                apiKey: 'testApiKey',
+                dataCenter: 'USDC',
+                preferUserId: false,
+                trackAllPages: true,
+                trackNamedPages: false,
+                mapToSingleEvent: false,
+                trackCategorisedPages: false,
+              },
+              Enabled: true,
+              WorkspaceID: '123',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
+            },
           },
         ],
       },
@@ -229,25 +256,59 @@ export const trackTestData: ProcessorTestData[] = [
         status: 200,
         body: [
           {
-            output: transformResultBuilder({
+            output: {
+              version: '1',
+              type: 'REST',
               userId: '',
-              headers,
-              endpoint: updateCartEndpoint,
-              JSON: {
-                user: {
-                  email: 'sayan@gmail.com',
-                  dataFields: {
-                    email: 'sayan@gmail.com',
-                  },
-                  userId,
-                  preferUserId: false,
-                  mergeNestedObjects: true,
-                },
-                items,
+              method: 'POST',
+              endpoint: 'https://api.iterable.com/api/commerce/updateCart',
+              headers: {
+                api_key: 'testApiKey',
+                'Content-Type': 'application/json',
               },
-            }),
+              params: {},
+              body: {
+                JSON: {
+                  user: {
+                    email: 'sayan@gmail.com',
+                    dataFields: {
+                      email: 'sayan@gmail.com',
+                    },
+                    userId: 'userId',
+                    preferUserId: false,
+                    mergeNestedObjects: true,
+                  },
+                  items: [
+                    {
+                      id: '507f1f77bcf86cd799439011',
+                      sku: '45790-32',
+                      name: 'Monopoly: 3rd Edition',
+                      categories: ['cars'],
+                      price: 19,
+                      quantity: 2,
+                      imageUrl: 'https://www.example.com/product/path.jpg',
+                      url: 'https://www.example.com/product/path',
+                    },
+                    {
+                      id: '507f1f77bcf86cd7994390112',
+                      sku: '45790-322',
+                      name: 'Monopoly: 3rd Edition2',
+                      categories: ['Cars2'],
+                      price: 192,
+                      quantity: 22,
+                      imageUrl: 'https://www.example.com/product/path.jpg2',
+                      url: 'https://www.example.com/product/path2',
+                    },
+                  ],
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+            },
+            metadata: baseMetadata,
             statusCode: 200,
-            metadata: generateMetadata(1),
           },
         ],
       },
@@ -265,29 +326,107 @@ export const trackTestData: ProcessorTestData[] = [
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
-            destination,
-            message: generateTrackPayload({
-              userId,
-              anonymousId,
-              event: 'order completed',
+            message: {
+              type: 'track',
+              sentAt: '2020-08-28T16:26:16.473Z',
+              userId: 'userId',
+              channel: 'web',
               context: {
+                os: {
+                  name: '',
+                  version: '1.12.3',
+                },
+                app: {
+                  name: 'RudderLabs JavaScript SDK',
+                  build: '1.0.0',
+                  version: '1.1.11',
+                  namespace: 'com.rudderlabs.javascript',
+                },
                 traits: {
                   email: 'sayan@gmail.com',
                 },
+                locale: 'en-US',
+                device: {
+                  token: 'token',
+                  id: 'id',
+                  type: 'ios',
+                },
+                screen: {
+                  density: 2,
+                },
+                library: {
+                  name: 'RudderLabs JavaScript SDK',
+                  version: '1.1.11',
+                },
+                campaign: {},
+                userAgent:
+                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0',
               },
+              rudderId: 'npe99e7yc7apntgd9roobt2n8i7262rsg6vr',
+              messageId: '68ygodw5mj88lmjm5sm765tatvscrucqo6kx',
+              anonymousId: 'anonId',
+              originalTimestamp: '2020-08-28T16:26:06.468Z',
+              event: 'order completed',
               properties: {
                 orderId: 10000,
                 total: '1000',
                 campaignId: '123456',
                 templateId: '1213458',
-                products,
+                products: [
+                  {
+                    product_id: '507f1f77bcf86cd799439011',
+                    sku: '45790-32',
+                    name: 'Monopoly: 3rd Edition',
+                    price: '19',
+                    position: '1',
+                    category: 'cars',
+                    url: 'https://www.example.com/product/path',
+                    image_url: 'https://www.example.com/product/path.jpg',
+                    quantity: '2',
+                  },
+                  {
+                    product_id: '507f1f77bcf86cd7994390112',
+                    sku: '45790-322',
+                    name: 'Monopoly: 3rd Edition2',
+                    price: '192',
+                    quantity: 22,
+                    position: '12',
+                    category: 'Cars2',
+                    url: 'https://www.example.com/product/path2',
+                    image_url: 'https://www.example.com/product/path.jpg2',
+                  },
+                ],
               },
-              sentAt,
-              originalTimestamp,
-            }),
-            metadata: generateMetadata(1),
+            },
+            metadata: baseMetadata,
+            destination: {
+              ID: '123',
+              Name: 'iterable',
+              DestinationDefinition: {
+                ID: '123',
+                Name: 'iterable',
+                DisplayName: 'Iterable',
+                Config: {},
+              },
+              Config: {
+                apiKey: 'testApiKey',
+                dataCenter: 'USDC',
+                preferUserId: false,
+                trackAllPages: true,
+                trackNamedPages: false,
+                mapToSingleEvent: false,
+                trackCategorisedPages: false,
+              },
+              Enabled: true,
+              WorkspaceID: '123',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
+            },
           },
         ],
       },
@@ -297,37 +436,94 @@ export const trackTestData: ProcessorTestData[] = [
         status: 200,
         body: [
           {
-            output: transformResultBuilder({
+            output: {
+              version: '1',
+              type: 'REST',
               userId: '',
-              headers,
-              endpoint: trackPurchaseEndpoint,
-              JSON: {
-                dataFields: {
-                  orderId: 10000,
-                  total: '1000',
-                  campaignId: '123456',
-                  templateId: '1213458',
-                  products,
-                },
-                id: '10000',
-                createdAt: 1598631966468,
-                campaignId: 123456,
-                templateId: 1213458,
-                total: 1000,
-                user: {
-                  email: 'sayan@gmail.com',
-                  dataFields: {
-                    email: 'sayan@gmail.com',
-                  },
-                  userId,
-                  preferUserId: false,
-                  mergeNestedObjects: true,
-                },
-                items,
+              method: 'POST',
+              endpoint: 'https://api.iterable.com/api/commerce/trackPurchase',
+              headers: {
+                api_key: 'testApiKey',
+                'Content-Type': 'application/json',
               },
-            }),
+              params: {},
+              body: {
+                JSON: {
+                  dataFields: {
+                    orderId: 10000,
+                    total: '1000',
+                    campaignId: '123456',
+                    templateId: '1213458',
+                    products: [
+                      {
+                        product_id: '507f1f77bcf86cd799439011',
+                        sku: '45790-32',
+                        name: 'Monopoly: 3rd Edition',
+                        price: '19',
+                        position: '1',
+                        category: 'cars',
+                        url: 'https://www.example.com/product/path',
+                        image_url: 'https://www.example.com/product/path.jpg',
+                        quantity: '2',
+                      },
+                      {
+                        product_id: '507f1f77bcf86cd7994390112',
+                        sku: '45790-322',
+                        name: 'Monopoly: 3rd Edition2',
+                        price: '192',
+                        quantity: 22,
+                        position: '12',
+                        category: 'Cars2',
+                        url: 'https://www.example.com/product/path2',
+                        image_url: 'https://www.example.com/product/path.jpg2',
+                      },
+                    ],
+                  },
+                  id: '10000',
+                  createdAt: 1598631966468,
+                  campaignId: 123456,
+                  templateId: 1213458,
+                  total: 1000,
+                  user: {
+                    email: 'sayan@gmail.com',
+                    dataFields: {
+                      email: 'sayan@gmail.com',
+                    },
+                    userId: 'userId',
+                    preferUserId: false,
+                    mergeNestedObjects: true,
+                  },
+                  items: [
+                    {
+                      id: '507f1f77bcf86cd799439011',
+                      sku: '45790-32',
+                      name: 'Monopoly: 3rd Edition',
+                      categories: ['cars'],
+                      price: 19,
+                      quantity: 2,
+                      imageUrl: 'https://www.example.com/product/path.jpg',
+                      url: 'https://www.example.com/product/path',
+                    },
+                    {
+                      id: '507f1f77bcf86cd7994390112',
+                      sku: '45790-322',
+                      name: 'Monopoly: 3rd Edition2',
+                      categories: ['Cars2'],
+                      price: 192,
+                      quantity: 22,
+                      imageUrl: 'https://www.example.com/product/path.jpg2',
+                      url: 'https://www.example.com/product/path2',
+                    },
+                  ],
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+            },
+            metadata: baseMetadata,
             statusCode: 200,
-            metadata: generateMetadata(1),
           },
         ],
       },
@@ -345,23 +541,85 @@ export const trackTestData: ProcessorTestData[] = [
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
-            destination,
-            message: generateTrackPayload({
-              userId,
-              anonymousId,
-              event: 'test track event GA3',
+            message: {
+              type: 'track',
+              sentAt: '2020-08-28T16:26:16.473Z',
+              userId: 'userId',
+              channel: 'web',
               context: {
+                os: {
+                  name: '',
+                  version: '1.12.3',
+                },
+                app: {
+                  name: 'RudderLabs JavaScript SDK',
+                  build: '1.0.0',
+                  version: '1.1.11',
+                  namespace: 'com.rudderlabs.javascript',
+                },
                 traits: {
                   email: 'sayan@gmail.com',
                 },
+                locale: 'en-US',
+                device: {
+                  token: 'token',
+                  id: 'id',
+                  type: 'ios',
+                },
+                screen: {
+                  density: 2,
+                },
+                library: {
+                  name: 'RudderLabs JavaScript SDK',
+                  version: '1.1.11',
+                },
+                campaign: {},
+                userAgent:
+                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0',
               },
-              properties: customEventProperties,
-              sentAt,
-              originalTimestamp,
-            }),
-            metadata: generateMetadata(1),
+              rudderId: 'id2nbnto38rw1v5wiqyc81xe61c7t420zpjb',
+              messageId: '28pdlaljhp7i1woa7b0fhj47rlz3g4z2pvdw',
+              anonymousId: 'anonId',
+              originalTimestamp: '2020-08-28T16:26:06.468Z',
+              event: 'test track event GA3',
+              properties: {
+                campaignId: '1',
+                templateId: '0',
+                user_actual_id: 12345,
+                category: 'test-category',
+                email: 'ruchira@rudderlabs.com',
+                user_actual_role: 'system_admin, system_user',
+              },
+            },
+            metadata: baseMetadata,
+            destination: {
+              ID: '123',
+              Name: 'iterable',
+              DestinationDefinition: {
+                ID: '123',
+                Name: 'iterable',
+                DisplayName: 'Iterable',
+                Config: {},
+              },
+              Config: {
+                apiKey: 'testApiKey',
+                dataCenter: 'USDC',
+                preferUserId: false,
+                trackAllPages: true,
+                trackNamedPages: false,
+                mapToSingleEvent: false,
+                trackCategorisedPages: false,
+              },
+              Enabled: true,
+              WorkspaceID: '123',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
+            },
           },
         ],
       },
@@ -371,22 +629,42 @@ export const trackTestData: ProcessorTestData[] = [
         status: 200,
         body: [
           {
-            output: transformResultBuilder({
+            output: {
+              version: '1',
+              type: 'REST',
               userId: '',
-              headers,
-              endpoint,
-              JSON: {
-                email: 'ruchira@rudderlabs.com',
-                dataFields: customEventProperties,
-                userId,
-                eventName: 'test track event GA3',
-                createdAt: 1598631966468,
-                campaignId: 1,
-                templateId: 0,
+              method: 'POST',
+              endpoint: 'https://api.iterable.com/api/events/track',
+              headers: {
+                api_key: 'testApiKey',
+                'Content-Type': 'application/json',
               },
-            }),
+              params: {},
+              body: {
+                JSON: {
+                  email: 'ruchira@rudderlabs.com',
+                  dataFields: {
+                    campaignId: '1',
+                    templateId: '0',
+                    user_actual_id: 12345,
+                    category: 'test-category',
+                    email: 'ruchira@rudderlabs.com',
+                    user_actual_role: 'system_admin, system_user',
+                  },
+                  userId: 'userId',
+                  eventName: 'test track event GA3',
+                  createdAt: 1598631966468,
+                  campaignId: 1,
+                  templateId: 0,
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+            },
+            metadata: baseMetadata,
             statusCode: 200,
-            metadata: generateMetadata(1),
           },
         ],
       },
@@ -404,23 +682,89 @@ export const trackTestData: ProcessorTestData[] = [
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
-            destination,
-            message: generateTrackPayload({
-              userId,
-              anonymousId,
-              event: 'product added',
+            message: {
+              type: 'track',
+              sentAt: '2020-08-28T16:26:16.473Z',
+              userId: 'userId',
+              channel: 'web',
               context: {
+                os: {
+                  name: '',
+                  version: '1.12.3',
+                },
+                app: {
+                  name: 'RudderLabs JavaScript SDK',
+                  build: '1.0.0',
+                  version: '1.1.11',
+                  namespace: 'com.rudderlabs.javascript',
+                },
                 traits: {
                   email: 'jessica@jlpdesign.net',
                 },
+                locale: 'en-US',
+                device: {
+                  token: 'token',
+                  id: 'id',
+                  type: 'ios',
+                },
+                screen: {
+                  density: 2,
+                },
+                library: {
+                  name: 'RudderLabs JavaScript SDK',
+                  version: '1.1.11',
+                },
+                campaign: {},
+                userAgent:
+                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0',
               },
-              properties: productInfo,
-              sentAt,
-              originalTimestamp,
-            }),
-            metadata: generateMetadata(1),
+              rudderId: 'gm8wm4385x4kfzl464h7tjtob474i17anotc',
+              messageId: 'jslc0490479rziix9h0ya6z6qpn2taqmryro',
+              anonymousId: 'anonId',
+              originalTimestamp: '2020-08-28T16:26:06.468Z',
+              event: 'product added',
+              properties: {
+                price: 797,
+                variant: 'Oak',
+                quantity: 1,
+                quickship: true,
+                full_price: 1328,
+                product_id: 10606,
+                non_interaction: 1,
+                sku: 'JB24691400-W05',
+                name: 'Vira Console Cabinet',
+                cart_id: 'bd9b8dbf4ef8ee01d4206b04fe2ee6ae',
+              },
+            },
+            metadata: baseMetadata,
+            destination: {
+              ID: '123',
+              Name: 'iterable',
+              DestinationDefinition: {
+                ID: '123',
+                Name: 'iterable',
+                DisplayName: 'Iterable',
+                Config: {},
+              },
+              Config: {
+                apiKey: 'testApiKey',
+                dataCenter: 'USDC',
+                preferUserId: false,
+                trackAllPages: true,
+                trackNamedPages: false,
+                mapToSingleEvent: false,
+                trackCategorisedPages: false,
+              },
+              Enabled: true,
+              WorkspaceID: '123',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
+            },
           },
         ],
       },
@@ -430,33 +774,46 @@ export const trackTestData: ProcessorTestData[] = [
         status: 200,
         body: [
           {
-            output: transformResultBuilder({
+            output: {
+              version: '1',
+              type: 'REST',
               userId: '',
-              headers,
-              endpoint: updateCartEndpoint,
-              JSON: {
-                user: {
-                  email: 'jessica@jlpdesign.net',
-                  dataFields: {
-                    email: 'jessica@jlpdesign.net',
-                  },
-                  userId,
-                  preferUserId: false,
-                  mergeNestedObjects: true,
-                },
-                items: [
-                  {
-                    id: productInfo.product_id,
-                    sku: productInfo.sku,
-                    name: productInfo.name,
-                    price: productInfo.price,
-                    quantity: productInfo.quantity,
-                  },
-                ],
+              method: 'POST',
+              endpoint: 'https://api.iterable.com/api/commerce/updateCart',
+              headers: {
+                api_key: 'testApiKey',
+                'Content-Type': 'application/json',
               },
-            }),
+              params: {},
+              body: {
+                JSON: {
+                  user: {
+                    email: 'jessica@jlpdesign.net',
+                    dataFields: {
+                      email: 'jessica@jlpdesign.net',
+                    },
+                    userId: 'userId',
+                    preferUserId: false,
+                    mergeNestedObjects: true,
+                  },
+                  items: [
+                    {
+                      id: 10606,
+                      sku: 'JB24691400-W05',
+                      name: 'Vira Console Cabinet',
+                      price: 797,
+                      quantity: 1,
+                    },
+                  ],
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+            },
+            metadata: baseMetadata,
             statusCode: 200,
-            metadata: generateMetadata(1),
           },
         ],
       },
@@ -474,29 +831,92 @@ export const trackTestData: ProcessorTestData[] = [
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
-            destination,
-            message: generateTrackPayload({
-              userId,
-              anonymousId,
-              event: 'product added',
+            message: {
+              type: 'track',
+              sentAt: '2020-08-28T16:26:16.473Z',
+              userId: 'userId',
+              channel: 'web',
               context: {
+                os: {
+                  name: '',
+                  version: '1.12.3',
+                },
+                app: {
+                  name: 'RudderLabs JavaScript SDK',
+                  build: '1.0.0',
+                  version: '1.1.11',
+                  namespace: 'com.rudderlabs.javascript',
+                },
                 traits: {
                   email: 'jessica@jlpdesign.net',
                 },
+                locale: 'en-US',
+                device: {
+                  token: 'token',
+                  id: 'id',
+                  type: 'ios',
+                },
+                screen: {
+                  density: 2,
+                },
+                library: {
+                  name: 'RudderLabs JavaScript SDK',
+                  version: '1.1.11',
+                },
+                campaign: {},
+                userAgent:
+                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0',
               },
+              rudderId: '4osg2zcrsrh2accmbijxm0zqixtxyrsun8uc',
+              messageId: 'x901bx7paxtr7ktja5mhd1mi8q4lr5vlrl2x',
+              anonymousId: 'anonId',
+              originalTimestamp: '2020-08-28T16:26:06.468Z',
+              event: 'product added',
               properties: {
                 campaignId: '1',
                 templateId: '0',
                 orderId: 10000,
                 total: 1000,
-                ...products[1],
+                product_id: '507f1f77bcf86cd7994390112',
+                sku: '45790-322',
+                name: 'Monopoly: 3rd Edition2',
+                price: '192',
+                quantity: 22,
+                position: '12',
+                category: 'Cars2',
+                url: 'https://www.example.com/product/path2',
+                image_url: 'https://www.example.com/product/path.jpg2',
               },
-              sentAt,
-              originalTimestamp,
-            }),
-            metadata: generateMetadata(1),
+            },
+            metadata: baseMetadata,
+            destination: {
+              ID: '123',
+              Name: 'iterable',
+              DestinationDefinition: {
+                ID: '123',
+                Name: 'iterable',
+                DisplayName: 'Iterable',
+                Config: {},
+              },
+              Config: {
+                apiKey: 'testApiKey',
+                dataCenter: 'USDC',
+                preferUserId: false,
+                trackAllPages: true,
+                trackNamedPages: false,
+                mapToSingleEvent: false,
+                trackCategorisedPages: false,
+              },
+              Enabled: true,
+              WorkspaceID: '123',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
+            },
           },
         ],
       },
@@ -506,36 +926,49 @@ export const trackTestData: ProcessorTestData[] = [
         status: 200,
         body: [
           {
-            output: transformResultBuilder({
+            output: {
+              version: '1',
+              type: 'REST',
               userId: '',
-              headers,
-              endpoint: updateCartEndpoint,
-              JSON: {
-                user: {
-                  email: 'jessica@jlpdesign.net',
-                  dataFields: {
-                    email: 'jessica@jlpdesign.net',
-                  },
-                  userId,
-                  preferUserId: false,
-                  mergeNestedObjects: true,
-                },
-                items: [
-                  {
-                    price: 192,
-                    url: products[1].url,
-                    sku: products[1].sku,
-                    name: products[1].name,
-                    id: products[1].product_id,
-                    quantity: products[1].quantity,
-                    imageUrl: products[1].image_url,
-                    categories: [products[1].category],
-                  },
-                ],
+              method: 'POST',
+              endpoint: 'https://api.iterable.com/api/commerce/updateCart',
+              headers: {
+                api_key: 'testApiKey',
+                'Content-Type': 'application/json',
               },
-            }),
+              params: {},
+              body: {
+                JSON: {
+                  user: {
+                    email: 'jessica@jlpdesign.net',
+                    dataFields: {
+                      email: 'jessica@jlpdesign.net',
+                    },
+                    userId: 'userId',
+                    preferUserId: false,
+                    mergeNestedObjects: true,
+                  },
+                  items: [
+                    {
+                      price: 192,
+                      url: 'https://www.example.com/product/path2',
+                      sku: '45790-322',
+                      name: 'Monopoly: 3rd Edition2',
+                      id: '507f1f77bcf86cd7994390112',
+                      quantity: 22,
+                      imageUrl: 'https://www.example.com/product/path.jpg2',
+                      categories: ['Cars2'],
+                    },
+                  ],
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+            },
+            metadata: baseMetadata,
             statusCode: 200,
-            metadata: generateMetadata(1),
           },
         ],
       },
@@ -553,23 +986,87 @@ export const trackTestData: ProcessorTestData[] = [
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
-            destination,
-            message: generateTrackPayload({
-              userId,
-              anonymousId,
-              event: 'order completed',
+            message: {
+              type: 'track',
+              sentAt: '2020-08-28T16:26:16.473Z',
+              userId: 'userId',
+              channel: 'web',
               context: {
+                os: {
+                  name: '',
+                  version: '1.12.3',
+                },
+                app: {
+                  name: 'RudderLabs JavaScript SDK',
+                  build: '1.0.0',
+                  version: '1.1.11',
+                  namespace: 'com.rudderlabs.javascript',
+                },
                 traits: {
                   email: 'jessica@jlpdesign.net',
                 },
+                locale: 'en-US',
+                device: {
+                  token: 'token',
+                  id: 'id',
+                  type: 'ios',
+                },
+                screen: {
+                  density: 2,
+                },
+                library: {
+                  name: 'RudderLabs JavaScript SDK',
+                  version: '1.1.11',
+                },
+                campaign: {},
+                userAgent:
+                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0',
               },
-              properties: orderCompletedProductInfo,
-              sentAt,
-              originalTimestamp,
-            }),
-            metadata: generateMetadata(1),
+              rudderId: '9ovlz4kuew0wjcbwymj3vlhkngzixp9evf19',
+              messageId: 'ev0qyvsclinoh4z4e1uz4d8pdhrnf17q0rjd',
+              anonymousId: 'anonId',
+              originalTimestamp: '2020-08-28T16:26:06.468Z',
+              event: 'order completed',
+              properties: {
+                price: 45,
+                quantity: 1,
+                total: '1000',
+                name: 'Shoes',
+                orderId: 10000,
+                product_id: 1234,
+                campaignId: '123456',
+                templateId: '1213458',
+              },
+            },
+            metadata: baseMetadata,
+            destination: {
+              ID: '123',
+              Name: 'iterable',
+              DestinationDefinition: {
+                ID: '123',
+                Name: 'iterable',
+                DisplayName: 'Iterable',
+                Config: {},
+              },
+              Config: {
+                apiKey: 'testApiKey',
+                dataCenter: 'USDC',
+                preferUserId: false,
+                trackAllPages: true,
+                trackNamedPages: false,
+                mapToSingleEvent: false,
+                trackCategorisedPages: false,
+              },
+              Enabled: true,
+              WorkspaceID: '123',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
+            },
           },
         ],
       },
@@ -579,38 +1076,60 @@ export const trackTestData: ProcessorTestData[] = [
         status: 200,
         body: [
           {
-            output: transformResultBuilder({
+            output: {
+              version: '1',
+              type: 'REST',
               userId: '',
-              headers,
-              endpoint: trackPurchaseEndpoint,
-              JSON: {
-                dataFields: orderCompletedProductInfo,
-                user: {
-                  email: 'jessica@jlpdesign.net',
-                  dataFields: {
-                    email: 'jessica@jlpdesign.net',
-                  },
-                  userId,
-                  preferUserId: false,
-                  mergeNestedObjects: true,
-                },
-                id: '10000',
-                total: 1000,
-                campaignId: 123456,
-                templateId: 1213458,
-                createdAt: 1598631966468,
-                items: [
-                  {
-                    id: orderCompletedProductInfo.product_id,
-                    name: orderCompletedProductInfo.name,
-                    price: orderCompletedProductInfo.price,
-                    quantity: orderCompletedProductInfo.quantity,
-                  },
-                ],
+              method: 'POST',
+              endpoint: 'https://api.iterable.com/api/commerce/trackPurchase',
+              headers: {
+                api_key: 'testApiKey',
+                'Content-Type': 'application/json',
               },
-            }),
+              params: {},
+              body: {
+                JSON: {
+                  dataFields: {
+                    price: 45,
+                    quantity: 1,
+                    total: '1000',
+                    name: 'Shoes',
+                    orderId: 10000,
+                    product_id: 1234,
+                    campaignId: '123456',
+                    templateId: '1213458',
+                  },
+                  user: {
+                    email: 'jessica@jlpdesign.net',
+                    dataFields: {
+                      email: 'jessica@jlpdesign.net',
+                    },
+                    userId: 'userId',
+                    preferUserId: false,
+                    mergeNestedObjects: true,
+                  },
+                  id: '10000',
+                  total: 1000,
+                  campaignId: 123456,
+                  templateId: 1213458,
+                  createdAt: 1598631966468,
+                  items: [
+                    {
+                      id: 1234,
+                      name: 'Shoes',
+                      price: 45,
+                      quantity: 1,
+                    },
+                  ],
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+            },
+            metadata: baseMetadata,
             statusCode: 200,
-            metadata: generateMetadata(1),
           },
         ],
       },
@@ -628,18 +1147,47 @@ export const trackTestData: ProcessorTestData[] = [
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
-            destination,
             message: {
-              anonymousId,
+              anonymousId: 'anonId',
               type: 'track',
               context: {},
-              properties,
-              sentAt,
-              originalTimestamp,
+              properties: {
+                subject: 'resume validate',
+                sendtime: '2020-01-01',
+                sendlocation: 'akashdeep@gmail.com',
+              },
+              sentAt: '2020-08-28T16:26:16.473Z',
+              originalTimestamp: '2020-08-28T16:26:06.468Z',
             },
-            metadata: generateMetadata(1),
+            metadata: baseMetadata,
+            destination: {
+              ID: '123',
+              Name: 'iterable',
+              DestinationDefinition: {
+                ID: '123',
+                Name: 'iterable',
+                DisplayName: 'Iterable',
+                Config: {},
+              },
+              Config: {
+                apiKey: 'testApiKey',
+                dataCenter: 'USDC',
+                preferUserId: false,
+                trackAllPages: true,
+                trackNamedPages: false,
+                mapToSingleEvent: false,
+                trackCategorisedPages: false,
+              },
+              Enabled: true,
+              WorkspaceID: '123',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
+            },
           },
         ],
       },
@@ -649,18 +1197,35 @@ export const trackTestData: ProcessorTestData[] = [
         status: 200,
         body: [
           {
-            output: transformResultBuilder({
+            output: {
+              version: '1',
+              type: 'REST',
               userId: '',
-              headers,
-              endpoint,
-              JSON: {
-                userId: anonymousId,
-                createdAt: 1598631966468,
-                dataFields: properties,
+              method: 'POST',
+              endpoint: 'https://api.iterable.com/api/events/track',
+              headers: {
+                api_key: 'testApiKey',
+                'Content-Type': 'application/json',
               },
-            }),
+              params: {},
+              body: {
+                JSON: {
+                  userId: 'anonId',
+                  createdAt: 1598631966468,
+                  dataFields: {
+                    subject: 'resume validate',
+                    sendtime: '2020-01-01',
+                    sendlocation: 'akashdeep@gmail.com',
+                  },
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+            },
+            metadata: baseMetadata,
             statusCode: 200,
-            metadata: generateMetadata(1),
           },
         ],
       },
@@ -678,19 +1243,48 @@ export const trackTestData: ProcessorTestData[] = [
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
-            destination,
             message: {
-              userId,
-              anonymousId,
+              userId: 'userId',
+              anonymousId: 'anonId',
               type: 'track',
               context: {},
-              properties,
-              sentAt,
-              originalTimestamp,
+              properties: {
+                subject: 'resume validate',
+                sendtime: '2020-01-01',
+                sendlocation: 'akashdeep@gmail.com',
+              },
+              sentAt: '2020-08-28T16:26:16.473Z',
+              originalTimestamp: '2020-08-28T16:26:06.468Z',
             },
-            metadata: generateMetadata(1),
+            metadata: baseMetadata,
+            destination: {
+              ID: '123',
+              Name: 'iterable',
+              DestinationDefinition: {
+                ID: '123',
+                Name: 'iterable',
+                DisplayName: 'Iterable',
+                Config: {},
+              },
+              Config: {
+                apiKey: 'testApiKey',
+                dataCenter: 'USDC',
+                preferUserId: false,
+                trackAllPages: true,
+                trackNamedPages: false,
+                mapToSingleEvent: false,
+                trackCategorisedPages: false,
+              },
+              Enabled: true,
+              WorkspaceID: '123',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
+            },
           },
         ],
       },
@@ -700,18 +1294,35 @@ export const trackTestData: ProcessorTestData[] = [
         status: 200,
         body: [
           {
-            output: transformResultBuilder({
+            output: {
+              version: '1',
+              type: 'REST',
               userId: '',
-              headers,
-              endpoint,
-              JSON: {
-                userId,
-                createdAt: 1598631966468,
-                dataFields: properties,
+              method: 'POST',
+              endpoint: 'https://api.iterable.com/api/events/track',
+              headers: {
+                api_key: 'testApiKey',
+                'Content-Type': 'application/json',
               },
-            }),
+              params: {},
+              body: {
+                JSON: {
+                  userId: 'userId',
+                  createdAt: 1598631966468,
+                  dataFields: {
+                    subject: 'resume validate',
+                    sendtime: '2020-01-01',
+                    sendlocation: 'akashdeep@gmail.com',
+                  },
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+            },
+            metadata: baseMetadata,
             statusCode: 200,
-            metadata: generateMetadata(1),
           },
         ],
       },
@@ -729,19 +1340,48 @@ export const trackTestData: ProcessorTestData[] = [
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
-            destination: overrideDestination(destination, { dataCenter: 'EUDC' }),
             message: {
-              anonymousId,
+              anonymousId: 'anonId',
               event: 'Email Opened',
               type: 'track',
               context: {},
-              properties,
-              sentAt,
-              originalTimestamp,
+              properties: {
+                subject: 'resume validate',
+                sendtime: '2020-01-01',
+                sendlocation: 'akashdeep@gmail.com',
+              },
+              sentAt: '2020-08-28T16:26:16.473Z',
+              originalTimestamp: '2020-08-28T16:26:06.468Z',
             },
-            metadata: generateMetadata(1),
+            metadata: baseMetadata,
+            destination: {
+              ID: '123',
+              Name: 'iterable',
+              DestinationDefinition: {
+                ID: '123',
+                Name: 'iterable',
+                DisplayName: 'Iterable',
+                Config: {},
+              },
+              Config: {
+                apiKey: 'testApiKey',
+                dataCenter: 'EUDC',
+                preferUserId: false,
+                trackAllPages: true,
+                trackNamedPages: false,
+                mapToSingleEvent: false,
+                trackCategorisedPages: false,
+              },
+              Enabled: true,
+              WorkspaceID: '123',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
+            },
           },
         ],
       },
@@ -751,19 +1391,36 @@ export const trackTestData: ProcessorTestData[] = [
         status: 200,
         body: [
           {
-            output: transformResultBuilder({
+            output: {
+              version: '1',
+              type: 'REST',
               userId: '',
-              headers,
-              endpoint: endpointEUDC,
-              JSON: {
-                userId: 'anonId',
-                createdAt: 1598631966468,
-                eventName: 'Email Opened',
-                dataFields: properties,
+              method: 'POST',
+              endpoint: 'https://api.eu.iterable.com/api/events/track',
+              headers: {
+                api_key: 'testApiKey',
+                'Content-Type': 'application/json',
               },
-            }),
+              params: {},
+              body: {
+                JSON: {
+                  userId: 'anonId',
+                  createdAt: 1598631966468,
+                  eventName: 'Email Opened',
+                  dataFields: {
+                    subject: 'resume validate',
+                    sendtime: '2020-01-01',
+                    sendlocation: 'akashdeep@gmail.com',
+                  },
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+            },
+            metadata: baseMetadata,
             statusCode: 200,
-            metadata: generateMetadata(1),
           },
         ],
       },

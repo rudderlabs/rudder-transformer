@@ -1,13 +1,15 @@
+import { authHeader1 } from '../maskedSecrets';
 import {
   generateMetadata,
   generateProxyV0Payload,
   generateProxyV1Payload,
 } from '../../../testUtils';
 import { ProxyV1TestData } from '../../../testTypes';
-import { API_VERSION } from '../../../../../src/v0/destinations/google_adwords_enhanced_conversions/config';
+
+const API_VERSION = 'v18';
 
 const headers = {
-  Authorization: 'Bearer abcd1234',
+  Authorization: authHeader1,
   'Content-Type': 'application/json',
   'developer-token': 'ijkl91011',
   'login-customer-id': '0987654321',
@@ -175,8 +177,26 @@ export const testScenariosForV0API = [
               message:
                 'Conversion already has enhancements with the same Order ID and conversion action. Make sure your data is correctly configured and try again., at conversion_adjustments[0]',
             },
-            message:
-              '{"code":3,"message":"Conversion already has enhancements with the same Order ID and conversion action. Make sure your data is correctly configured and try again., at conversion_adjustments[0]","details":[{"@type":"type.googleapis.com/google.ads.googleads.v15.errors.GoogleAdsFailure","errors":[{"errorCode":{"conversionAdjustmentUploadError":"CONVERSION_ALREADY_ENHANCED"},"message":"Conversion already has enhancements with the same Order ID and conversion action. Make sure your data is correctly configured and try again.","location":{"fieldPathElements":[{"fieldName":"conversion_adjustments","index":0}]}}]}]}',
+            message: JSON.stringify({
+              code: 3,
+              message:
+                'Conversion already has enhancements with the same Order ID and conversion action. Make sure your data is correctly configured and try again., at conversion_adjustments[0]',
+              details: [
+                {
+                  '@type': 'type.googleapis.com/google.ads.googleads.v15.errors.GoogleAdsFailure',
+                  errors: [
+                    {
+                      errorCode: { conversionAdjustmentUploadError: 'CONVERSION_ALREADY_ENHANCED' },
+                      message:
+                        'Conversion already has enhancements with the same Order ID and conversion action. Make sure your data is correctly configured and try again.',
+                      location: {
+                        fieldPathElements: [{ fieldName: 'conversion_adjustments', index: 0 }],
+                      },
+                    },
+                  ],
+                },
+              ],
+            }),
             statTags: expectedStatTags,
             status: 400,
           },
@@ -217,8 +237,22 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
             message: 'Request Processed Successfully',
             response: [
               {
-                error:
-                  '[{"results":[{"adjustmentType":"ENHANCEMENT","conversionAction":"customers/7693729833/conversionActions/874224905","adjustmentDateTime":"2021-01-01 12:32:45-08:00","gclidDateTimePair":{"gclid":"1234","conversionDateTime":"2021-01-01 12:32:45-08:00"},"orderId":"12345"}]}]',
+                error: JSON.stringify([
+                  {
+                    results: [
+                      {
+                        adjustmentType: 'ENHANCEMENT',
+                        conversionAction: 'customers/7693729833/conversionActions/874224905',
+                        adjustmentDateTime: '2021-01-01 12:32:45-08:00',
+                        gclidDateTimePair: {
+                          gclid: '1234',
+                          conversionDateTime: '2021-01-01 12:32:45-08:00',
+                        },
+                        orderId: '12345',
+                      },
+                    ],
+                  },
+                ]),
                 metadata: generateMetadata(1),
                 statusCode: 200,
               },
@@ -261,12 +295,51 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
         status: 200,
         body: {
           output: {
-            message:
-              '{"code":3,"message":"Conversion already has enhancements with the same Order ID and conversion action. Make sure your data is correctly configured and try again., at conversion_adjustments[0]","details":[{"@type":"type.googleapis.com/google.ads.googleads.v15.errors.GoogleAdsFailure","errors":[{"errorCode":{"conversionAdjustmentUploadError":"CONVERSION_ALREADY_ENHANCED"},"message":"Conversion already has enhancements with the same Order ID and conversion action. Make sure your data is correctly configured and try again.","location":{"fieldPathElements":[{"fieldName":"conversion_adjustments","index":0}]}}]}]}',
+            message: JSON.stringify({
+              code: 3,
+              message:
+                'Conversion already has enhancements with the same Order ID and conversion action. Make sure your data is correctly configured and try again., at conversion_adjustments[0]',
+              details: [
+                {
+                  '@type': 'type.googleapis.com/google.ads.googleads.v15.errors.GoogleAdsFailure',
+                  errors: [
+                    {
+                      errorCode: { conversionAdjustmentUploadError: 'CONVERSION_ALREADY_ENHANCED' },
+                      message:
+                        'Conversion already has enhancements with the same Order ID and conversion action. Make sure your data is correctly configured and try again.',
+                      location: {
+                        fieldPathElements: [{ fieldName: 'conversion_adjustments', index: 0 }],
+                      },
+                    },
+                  ],
+                },
+              ],
+            }),
             response: [
               {
-                error:
-                  '{"code":3,"message":"Conversion already has enhancements with the same Order ID and conversion action. Make sure your data is correctly configured and try again., at conversion_adjustments[0]","details":[{"@type":"type.googleapis.com/google.ads.googleads.v15.errors.GoogleAdsFailure","errors":[{"errorCode":{"conversionAdjustmentUploadError":"CONVERSION_ALREADY_ENHANCED"},"message":"Conversion already has enhancements with the same Order ID and conversion action. Make sure your data is correctly configured and try again.","location":{"fieldPathElements":[{"fieldName":"conversion_adjustments","index":0}]}}]}]}',
+                error: JSON.stringify({
+                  code: 3,
+                  message:
+                    'Conversion already has enhancements with the same Order ID and conversion action. Make sure your data is correctly configured and try again., at conversion_adjustments[0]',
+                  details: [
+                    {
+                      '@type':
+                        'type.googleapis.com/google.ads.googleads.v15.errors.GoogleAdsFailure',
+                      errors: [
+                        {
+                          errorCode: {
+                            conversionAdjustmentUploadError: 'CONVERSION_ALREADY_ENHANCED',
+                          },
+                          message:
+                            'Conversion already has enhancements with the same Order ID and conversion action. Make sure your data is correctly configured and try again.',
+                          location: {
+                            fieldPathElements: [{ fieldName: 'conversion_adjustments', index: 0 }],
+                          },
+                        },
+                      ],
+                    },
+                  ],
+                }),
                 metadata: generateMetadata(1),
                 statusCode: 400,
               },

@@ -1,54 +1,39 @@
-import {
-  generateMetadata,
-  overrideDestination,
-  transformResultBuilder,
-} from './../../../testUtils';
-import { Destination } from '../../../../../src/types';
 import { ProcessorTestData } from '../../../testTypes';
+import { Metadata } from '../../../../../src/types';
 
-const destination: Destination = {
-  ID: '123',
-  Name: 'iterable',
-  DestinationDefinition: {
-    ID: '123',
-    Name: 'iterable',
-    DisplayName: 'Iterable',
-    Config: {},
-  },
-  WorkspaceID: '123',
-  Transformations: [],
-  Config: {
-    apiKey: 'testApiKey',
-    dataCenter: 'USDC',
-    preferUserId: false,
-    trackAllPages: true,
-    trackNamedPages: false,
-    mapToSingleEvent: false,
-    trackCategorisedPages: false,
-  },
-  Enabled: true,
+const baseMetadata: Partial<Metadata> = {
+  sourceId: 'default-sourceId',
+  workspaceId: 'default-workspaceId',
+  namespace: 'default-namespace',
+  instanceId: 'default-instance',
+  sourceType: 'default-source-type',
+  sourceCategory: 'default-category',
+  trackingPlanId: 'default-tracking-plan',
+  trackingPlanVersion: 1,
+  sourceTpConfig: {},
+  mergedTpConfig: {},
+  destinationId: 'default-destinationId',
+  jobRunId: 'default-job-run',
+  jobId: 1,
+  sourceBatchId: 'default-batch',
+  sourceJobId: 'default-source-job',
+  sourceJobRunId: 'default-source-job-run',
+  sourceTaskId: 'default-task',
+  sourceTaskRunId: 'default-task-run',
+  recordId: {},
+  destinationType: 'default-destination-type',
+  messageId: 'default-message-id',
+  oauthAccessToken: 'default-token',
+  messageIds: ['default-message-id'],
+  rudderId: 'default-rudder-id',
+  receivedAt: '2025-01-06T04:03:53.932Z',
+  eventName: 'default-event',
+  eventType: 'default-type',
+  sourceDefinitionId: 'default-source-def',
+  destinationDefinitionId: 'default-dest-def',
+  transformationId: 'default-transform',
+  dontBatch: false,
 };
-
-const headers = {
-  api_key: 'testApiKey',
-  'Content-Type': 'application/json',
-};
-
-const properties = {
-  path: '/abc',
-  referrer: '',
-  search: '',
-  title: '',
-  url: '',
-  category: 'test-category',
-};
-
-const anonymousId = 'anonId';
-const sentAt = '2020-08-28T16:26:16.473Z';
-const originalTimestamp = '2020-08-28T16:26:06.468Z';
-
-const pageEndpoint = 'https://api.iterable.com/api/events/track';
-const pageEndpointEUDC = 'https://api.eu.iterable.com/api/events/track';
 
 export const pageScreenTestData: ProcessorTestData[] = [
   {
@@ -63,23 +48,55 @@ export const pageScreenTestData: ProcessorTestData[] = [
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
-            destination,
             message: {
-              anonymousId,
+              anonymousId: 'anonId',
               name: 'ApplicationLoaded',
               context: {
                 traits: {
                   email: 'sayan@gmail.com',
                 },
               },
-              properties,
+              properties: {
+                path: '/abc',
+                referrer: '',
+                search: '',
+                title: '',
+                url: '',
+                category: 'test-category',
+              },
               type: 'page',
-              sentAt,
-              originalTimestamp,
+              sentAt: '2020-08-28T16:26:16.473Z',
+              originalTimestamp: '2020-08-28T16:26:06.468Z',
             },
-            metadata: generateMetadata(1),
+            metadata: baseMetadata,
+            destination: {
+              ID: '123',
+              Name: 'iterable',
+              DestinationDefinition: {
+                ID: '123',
+                Name: 'iterable',
+                DisplayName: 'Iterable',
+                Config: {},
+              },
+              Config: {
+                apiKey: 'testApiKey',
+                dataCenter: 'USDC',
+                preferUserId: false,
+                trackAllPages: true,
+                trackNamedPages: false,
+                mapToSingleEvent: false,
+                trackCategorisedPages: false,
+              },
+              Enabled: true,
+              WorkspaceID: '123',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
+            },
           },
         ],
       },
@@ -89,20 +106,40 @@ export const pageScreenTestData: ProcessorTestData[] = [
         status: 200,
         body: [
           {
-            output: transformResultBuilder({
+            output: {
+              version: '1',
+              type: 'REST',
               userId: '',
-              headers,
-              endpoint: pageEndpoint,
-              JSON: {
-                userId: anonymousId,
-                dataFields: properties,
-                email: 'sayan@gmail.com',
-                createdAt: 1598631966468,
-                eventName: 'ApplicationLoaded page',
+              method: 'POST',
+              endpoint: 'https://api.iterable.com/api/events/track',
+              headers: {
+                api_key: 'testApiKey',
+                'Content-Type': 'application/json',
               },
-            }),
+              params: {},
+              body: {
+                JSON: {
+                  userId: 'anonId',
+                  dataFields: {
+                    path: '/abc',
+                    referrer: '',
+                    search: '',
+                    title: '',
+                    url: '',
+                    category: 'test-category',
+                  },
+                  email: 'sayan@gmail.com',
+                  createdAt: 1598631966468,
+                  eventName: 'ApplicationLoaded page',
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+            },
+            metadata: baseMetadata,
             statusCode: 200,
-            metadata: generateMetadata(1),
           },
         ],
       },
@@ -120,26 +157,57 @@ export const pageScreenTestData: ProcessorTestData[] = [
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
-            destination: {
-              ...destination,
-              Config: { ...destination.Config, mapToSingleEvent: true },
-            },
             message: {
-              anonymousId,
+              anonymousId: 'anonId',
               name: 'ApplicationLoaded',
               context: {
                 traits: {
                   email: 'sayan@gmail.com',
                 },
               },
-              properties: { ...properties, campaignId: '123456', templateId: '1213458' },
+              properties: {
+                path: '/abc',
+                referrer: '',
+                search: '',
+                title: '',
+                url: '',
+                category: 'test-category',
+                campaignId: '123456',
+                templateId: '1213458',
+              },
               type: 'page',
-              sentAt,
-              originalTimestamp,
+              sentAt: '2020-08-28T16:26:16.473Z',
+              originalTimestamp: '2020-08-28T16:26:06.468Z',
             },
-            metadata: generateMetadata(1),
+            metadata: baseMetadata,
+            destination: {
+              ID: '123',
+              Name: 'iterable',
+              DestinationDefinition: {
+                ID: '123',
+                Name: 'iterable',
+                DisplayName: 'Iterable',
+                Config: {},
+              },
+              Config: {
+                apiKey: 'testApiKey',
+                dataCenter: 'USDC',
+                preferUserId: false,
+                trackAllPages: true,
+                trackNamedPages: false,
+                mapToSingleEvent: true,
+                trackCategorisedPages: false,
+              },
+              Enabled: true,
+              WorkspaceID: '123',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
+            },
           },
         ],
       },
@@ -149,22 +217,44 @@ export const pageScreenTestData: ProcessorTestData[] = [
         status: 200,
         body: [
           {
-            output: transformResultBuilder({
+            output: {
+              version: '1',
+              type: 'REST',
               userId: '',
-              headers,
-              endpoint: pageEndpoint,
-              JSON: {
-                campaignId: 123456,
-                templateId: 1213458,
-                userId: anonymousId,
-                email: 'sayan@gmail.com',
-                createdAt: 1598631966468,
-                eventName: 'Loaded a Page',
-                dataFields: { ...properties, campaignId: '123456', templateId: '1213458' },
+              method: 'POST',
+              endpoint: 'https://api.iterable.com/api/events/track',
+              headers: {
+                api_key: 'testApiKey',
+                'Content-Type': 'application/json',
               },
-            }),
+              params: {},
+              body: {
+                JSON: {
+                  campaignId: 123456,
+                  templateId: 1213458,
+                  userId: 'anonId',
+                  email: 'sayan@gmail.com',
+                  createdAt: 1598631966468,
+                  eventName: 'Loaded a Page',
+                  dataFields: {
+                    path: '/abc',
+                    referrer: '',
+                    search: '',
+                    title: '',
+                    url: '',
+                    category: 'test-category',
+                    campaignId: '123456',
+                    templateId: '1213458',
+                  },
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+            },
+            metadata: baseMetadata,
             statusCode: 200,
-            metadata: generateMetadata(1),
           },
         ],
       },
@@ -182,26 +272,55 @@ export const pageScreenTestData: ProcessorTestData[] = [
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
-            destination: {
-              ...destination,
-              Config: { ...destination.Config, trackNamedPages: true, trackAllPages: false },
-            },
             message: {
-              anonymousId,
+              anonymousId: 'anonId',
               name: 'ApplicationLoaded',
               context: {
                 traits: {
                   email: 'sayan@gmail.com',
                 },
               },
-              properties,
+              properties: {
+                path: '/abc',
+                referrer: '',
+                search: '',
+                title: '',
+                url: '',
+                category: 'test-category',
+              },
               type: 'page',
-              sentAt,
-              originalTimestamp,
+              sentAt: '2020-08-28T16:26:16.473Z',
+              originalTimestamp: '2020-08-28T16:26:06.468Z',
             },
-            metadata: generateMetadata(1),
+            metadata: baseMetadata,
+            destination: {
+              ID: '123',
+              Name: 'iterable',
+              DestinationDefinition: {
+                ID: '123',
+                Name: 'iterable',
+                DisplayName: 'Iterable',
+                Config: {},
+              },
+              Config: {
+                apiKey: 'testApiKey',
+                dataCenter: 'USDC',
+                preferUserId: false,
+                trackAllPages: false,
+                trackNamedPages: true,
+                mapToSingleEvent: false,
+                trackCategorisedPages: false,
+              },
+              Enabled: true,
+              WorkspaceID: '123',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
+            },
           },
         ],
       },
@@ -211,20 +330,40 @@ export const pageScreenTestData: ProcessorTestData[] = [
         status: 200,
         body: [
           {
-            output: transformResultBuilder({
+            output: {
+              version: '1',
+              type: 'REST',
               userId: '',
-              headers,
-              endpoint: pageEndpoint,
-              JSON: {
-                userId: anonymousId,
-                email: 'sayan@gmail.com',
-                createdAt: 1598631966468,
-                eventName: 'ApplicationLoaded page',
-                dataFields: properties,
+              method: 'POST',
+              endpoint: 'https://api.iterable.com/api/events/track',
+              headers: {
+                api_key: 'testApiKey',
+                'Content-Type': 'application/json',
               },
-            }),
+              params: {},
+              body: {
+                JSON: {
+                  userId: 'anonId',
+                  email: 'sayan@gmail.com',
+                  createdAt: 1598631966468,
+                  eventName: 'ApplicationLoaded page',
+                  dataFields: {
+                    path: '/abc',
+                    referrer: '',
+                    search: '',
+                    title: '',
+                    url: '',
+                    category: 'test-category',
+                  },
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+            },
+            metadata: baseMetadata,
             statusCode: 200,
-            metadata: generateMetadata(1),
           },
         ],
       },
@@ -242,26 +381,55 @@ export const pageScreenTestData: ProcessorTestData[] = [
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
-            destination: {
-              ...destination,
-              Config: { ...destination.Config, trackCategorisedPages: true, trackAllPages: false },
-            },
             message: {
-              anonymousId,
+              anonymousId: 'anonId',
               name: 'ApplicationLoaded',
               context: {
                 traits: {
                   email: 'sayan@gmail.com',
                 },
               },
-              properties,
+              properties: {
+                path: '/abc',
+                referrer: '',
+                search: '',
+                title: '',
+                url: '',
+                category: 'test-category',
+              },
               type: 'screen',
-              sentAt,
-              originalTimestamp,
+              sentAt: '2020-08-28T16:26:16.473Z',
+              originalTimestamp: '2020-08-28T16:26:06.468Z',
             },
-            metadata: generateMetadata(1),
+            metadata: baseMetadata,
+            destination: {
+              ID: '123',
+              Name: 'iterable',
+              DestinationDefinition: {
+                ID: '123',
+                Name: 'iterable',
+                DisplayName: 'Iterable',
+                Config: {},
+              },
+              Config: {
+                apiKey: 'testApiKey',
+                dataCenter: 'USDC',
+                preferUserId: false,
+                trackAllPages: false,
+                trackNamedPages: false,
+                mapToSingleEvent: false,
+                trackCategorisedPages: true,
+              },
+              Enabled: true,
+              WorkspaceID: '123',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
+            },
           },
         ],
       },
@@ -271,20 +439,40 @@ export const pageScreenTestData: ProcessorTestData[] = [
         status: 200,
         body: [
           {
-            output: transformResultBuilder({
+            output: {
+              version: '1',
+              type: 'REST',
               userId: '',
-              headers,
-              endpoint: pageEndpoint,
-              JSON: {
-                userId: anonymousId,
-                dataFields: properties,
-                email: 'sayan@gmail.com',
-                createdAt: 1598631966468,
-                eventName: 'ApplicationLoaded screen',
+              method: 'POST',
+              endpoint: 'https://api.iterable.com/api/events/track',
+              headers: {
+                api_key: 'testApiKey',
+                'Content-Type': 'application/json',
               },
-            }),
+              params: {},
+              body: {
+                JSON: {
+                  userId: 'anonId',
+                  dataFields: {
+                    path: '/abc',
+                    referrer: '',
+                    search: '',
+                    title: '',
+                    url: '',
+                    category: 'test-category',
+                  },
+                  email: 'sayan@gmail.com',
+                  createdAt: 1598631966468,
+                  eventName: 'ApplicationLoaded screen',
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+            },
+            metadata: baseMetadata,
             statusCode: 200,
-            metadata: generateMetadata(1),
           },
         ],
       },
@@ -302,26 +490,57 @@ export const pageScreenTestData: ProcessorTestData[] = [
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
-            destination: {
-              ...destination,
-              Config: { ...destination.Config, mapToSingleEvent: true },
-            },
             message: {
-              anonymousId,
+              anonymousId: 'anonId',
               name: 'ApplicationLoaded',
               context: {
                 traits: {
                   email: 'sayan@gmail.com',
                 },
               },
-              properties: { ...properties, campaignId: '123456', templateId: '1213458' },
+              properties: {
+                path: '/abc',
+                referrer: '',
+                search: '',
+                title: '',
+                url: '',
+                category: 'test-category',
+                campaignId: '123456',
+                templateId: '1213458',
+              },
               type: 'screen',
-              sentAt,
-              originalTimestamp,
+              sentAt: '2020-08-28T16:26:16.473Z',
+              originalTimestamp: '2020-08-28T16:26:06.468Z',
             },
-            metadata: generateMetadata(1),
+            metadata: baseMetadata,
+            destination: {
+              ID: '123',
+              Name: 'iterable',
+              DestinationDefinition: {
+                ID: '123',
+                Name: 'iterable',
+                DisplayName: 'Iterable',
+                Config: {},
+              },
+              Config: {
+                apiKey: 'testApiKey',
+                dataCenter: 'USDC',
+                preferUserId: false,
+                trackAllPages: true,
+                trackNamedPages: false,
+                mapToSingleEvent: true,
+                trackCategorisedPages: false,
+              },
+              Enabled: true,
+              WorkspaceID: '123',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
+            },
           },
         ],
       },
@@ -331,22 +550,44 @@ export const pageScreenTestData: ProcessorTestData[] = [
         status: 200,
         body: [
           {
-            output: transformResultBuilder({
+            output: {
+              version: '1',
+              type: 'REST',
               userId: '',
-              headers,
-              endpoint: pageEndpoint,
-              JSON: {
-                campaignId: 123456,
-                templateId: 1213458,
-                userId: anonymousId,
-                email: 'sayan@gmail.com',
-                createdAt: 1598631966468,
-                eventName: 'Loaded a Screen',
-                dataFields: { ...properties, campaignId: '123456', templateId: '1213458' },
+              method: 'POST',
+              endpoint: 'https://api.iterable.com/api/events/track',
+              headers: {
+                api_key: 'testApiKey',
+                'Content-Type': 'application/json',
               },
-            }),
+              params: {},
+              body: {
+                JSON: {
+                  campaignId: 123456,
+                  templateId: 1213458,
+                  userId: 'anonId',
+                  email: 'sayan@gmail.com',
+                  createdAt: 1598631966468,
+                  eventName: 'Loaded a Screen',
+                  dataFields: {
+                    path: '/abc',
+                    referrer: '',
+                    search: '',
+                    title: '',
+                    url: '',
+                    category: 'test-category',
+                    campaignId: '123456',
+                    templateId: '1213458',
+                  },
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+            },
+            metadata: baseMetadata,
             statusCode: 200,
-            metadata: generateMetadata(1),
           },
         ],
       },
@@ -364,26 +605,55 @@ export const pageScreenTestData: ProcessorTestData[] = [
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
-            destination: {
-              ...destination,
-              Config: { ...destination.Config, trackNamedPages: true, trackAllPages: false },
-            },
             message: {
-              anonymousId,
+              anonymousId: 'anonId',
               name: 'ApplicationLoaded',
               context: {
                 traits: {
                   email: 'sayan@gmail.com',
                 },
               },
-              properties,
+              properties: {
+                path: '/abc',
+                referrer: '',
+                search: '',
+                title: '',
+                url: '',
+                category: 'test-category',
+              },
               type: 'screen',
-              sentAt,
-              originalTimestamp,
+              sentAt: '2020-08-28T16:26:16.473Z',
+              originalTimestamp: '2020-08-28T16:26:06.468Z',
             },
-            metadata: generateMetadata(1),
+            metadata: baseMetadata,
+            destination: {
+              ID: '123',
+              Name: 'iterable',
+              DestinationDefinition: {
+                ID: '123',
+                Name: 'iterable',
+                DisplayName: 'Iterable',
+                Config: {},
+              },
+              Config: {
+                apiKey: 'testApiKey',
+                dataCenter: 'USDC',
+                preferUserId: false,
+                trackAllPages: false,
+                trackNamedPages: true,
+                mapToSingleEvent: false,
+                trackCategorisedPages: false,
+              },
+              Enabled: true,
+              WorkspaceID: '123',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
+            },
           },
         ],
       },
@@ -393,20 +663,40 @@ export const pageScreenTestData: ProcessorTestData[] = [
         status: 200,
         body: [
           {
-            output: transformResultBuilder({
+            output: {
+              version: '1',
+              type: 'REST',
               userId: '',
-              headers,
-              endpoint: pageEndpoint,
-              JSON: {
-                userId: anonymousId,
-                email: 'sayan@gmail.com',
-                createdAt: 1598631966468,
-                eventName: 'ApplicationLoaded screen',
-                dataFields: properties,
+              method: 'POST',
+              endpoint: 'https://api.iterable.com/api/events/track',
+              headers: {
+                api_key: 'testApiKey',
+                'Content-Type': 'application/json',
               },
-            }),
+              params: {},
+              body: {
+                JSON: {
+                  userId: 'anonId',
+                  email: 'sayan@gmail.com',
+                  createdAt: 1598631966468,
+                  eventName: 'ApplicationLoaded screen',
+                  dataFields: {
+                    path: '/abc',
+                    referrer: '',
+                    search: '',
+                    title: '',
+                    url: '',
+                    category: 'test-category',
+                  },
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+            },
+            metadata: baseMetadata,
             statusCode: 200,
-            metadata: generateMetadata(1),
           },
         ],
       },
@@ -424,23 +714,55 @@ export const pageScreenTestData: ProcessorTestData[] = [
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
-            destination: overrideDestination(destination, { dataCenter: 'EUDC' }),
             message: {
-              anonymousId,
+              anonymousId: 'anonId',
               name: 'ApplicationLoaded',
               context: {
                 traits: {
                   email: 'sayan@gmail.com',
                 },
               },
-              properties,
+              properties: {
+                path: '/abc',
+                referrer: '',
+                search: '',
+                title: '',
+                url: '',
+                category: 'test-category',
+              },
               type: 'page',
-              sentAt,
-              originalTimestamp,
+              sentAt: '2020-08-28T16:26:16.473Z',
+              originalTimestamp: '2020-08-28T16:26:06.468Z',
             },
-            metadata: generateMetadata(1),
+            metadata: baseMetadata,
+            destination: {
+              ID: '123',
+              Name: 'iterable',
+              DestinationDefinition: {
+                ID: '123',
+                Name: 'iterable',
+                DisplayName: 'Iterable',
+                Config: {},
+              },
+              Config: {
+                apiKey: 'testApiKey',
+                dataCenter: 'EUDC',
+                preferUserId: false,
+                trackAllPages: true,
+                trackNamedPages: false,
+                mapToSingleEvent: false,
+                trackCategorisedPages: false,
+              },
+              Enabled: true,
+              WorkspaceID: '123',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
+            },
           },
         ],
       },
@@ -450,20 +772,40 @@ export const pageScreenTestData: ProcessorTestData[] = [
         status: 200,
         body: [
           {
-            output: transformResultBuilder({
+            output: {
+              version: '1',
+              type: 'REST',
               userId: '',
-              headers,
-              endpoint: pageEndpointEUDC,
-              JSON: {
-                userId: anonymousId,
-                dataFields: properties,
-                email: 'sayan@gmail.com',
-                createdAt: 1598631966468,
-                eventName: 'ApplicationLoaded page',
+              method: 'POST',
+              endpoint: 'https://api.eu.iterable.com/api/events/track',
+              headers: {
+                api_key: 'testApiKey',
+                'Content-Type': 'application/json',
               },
-            }),
+              params: {},
+              body: {
+                JSON: {
+                  userId: 'anonId',
+                  dataFields: {
+                    path: '/abc',
+                    referrer: '',
+                    search: '',
+                    title: '',
+                    url: '',
+                    category: 'test-category',
+                  },
+                  email: 'sayan@gmail.com',
+                  createdAt: 1598631966468,
+                  eventName: 'ApplicationLoaded page',
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+            },
+            metadata: baseMetadata,
             statusCode: 200,
-            metadata: generateMetadata(1),
           },
         ],
       },

@@ -78,6 +78,7 @@ export const data: RouterTestData[] = [
           ],
           destType: 'tune',
         },
+        method: 'POST',
       },
     },
     output: {
@@ -134,7 +135,6 @@ export const data: RouterTestData[] = [
               destination,
               metadata: generateMetadata(1),
               message: {
-                type: 123,
                 event: 'Product added',
                 anonymousId: 'sampath',
                 channel: 'web',
@@ -156,6 +156,7 @@ export const data: RouterTestData[] = [
           ],
           destType: 'tune',
         },
+        method: 'POST',
       },
     },
     output: {

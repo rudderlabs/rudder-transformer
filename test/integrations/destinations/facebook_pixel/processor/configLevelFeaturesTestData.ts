@@ -116,6 +116,7 @@ export const configLevelFeaturesTestData: ProcessorTestData[] = [
             destination: commonDestination,
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -203,6 +204,7 @@ export const configLevelFeaturesTestData: ProcessorTestData[] = [
             destination: commonDestination,
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -294,6 +296,7 @@ export const configLevelFeaturesTestData: ProcessorTestData[] = [
             destination: commonDestination,
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -397,6 +400,7 @@ export const configLevelFeaturesTestData: ProcessorTestData[] = [
             }),
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -500,6 +504,7 @@ export const configLevelFeaturesTestData: ProcessorTestData[] = [
             }),
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -611,6 +616,7 @@ export const configLevelFeaturesTestData: ProcessorTestData[] = [
             }),
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -702,6 +708,7 @@ export const configLevelFeaturesTestData: ProcessorTestData[] = [
             destination: commonDestination,
           },
         ],
+        method: 'POST',
       },
     },
     output: {

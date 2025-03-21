@@ -30,35 +30,39 @@ steps:
 
   - name: deduceBodyFormat
     template: |
-      $.context.format = .destination.Config.format ?? 'JSON';
+      const format = .destination.Config.format ?? 'JSON';
+      $.context.format = $.CONTENT_TYPES_MAP[format];
 
   - name: buildHeaders
     template: |
       const configAuthHeaders = $.getAuthHeaders(.destination.Config);
       const additionalConfigHeaders = $.getCustomMappings(.message, .destination.Config.headers);   
+      const metadataHeaders = $.metadataHeaders($.context.format);
       $.context.headers = {
         ...configAuthHeaders,
-        ...additionalConfigHeaders
+        ...additionalConfigHeaders,
+        ...metadataHeaders,
       }
 
   - name: prepareParams
     template: |
-      $.context.params = $.getCustomMappings(.message, .destination.Config.queryParams)
+      const params = $.getCustomMappings(.message, .destination.Config.queryParams);
+      $.context.params = $.encodeParamsObject(params);
 
   - name: deduceEndPoint
     template: |
-      $.context.endpoint = $.addPathParams(.message, .destination.Config.apiUrl);
+      $.context.endpoint = $.prepareEndpoint(.message, .destination.Config.apiUrl, .destination.Config.pathParams);
 
   - name: prepareBody
     template: |
-      const payload = $.getCustomMappings(.message, .destination.Config.propertiesMapping);
-      $.context.payload = $.removeUndefinedAndNullValues($.excludeMappedFields(payload, .destination.Config.propertiesMapping))
-      $.context.format === "XML" &&  !$.isEmptyObject($.context.payload) ?  $.context.payload = {payload: $.getXMLPayload($.context.payload)};
+      const propertiesMapping = .destination.Config.isDefaultMapping ? [{"to": "$", "from": "$"}] : .destination.Config.propertiesMapping;
+      const payload = $.getCustomMappings(.message, propertiesMapping);
+      $.context.payload = $.prepareBody(payload, $.context.format, .destination.Config.xmlRootKey);
 
   - name: buildResponseForProcessTransformation
     template: |
       const response = $.defaultRequestConfig();
-      $.context.format === "JSON" ? response.body.JSON = $.context.payload: response.body.XML = $.context.payload;
+      response.body[$.context.format] = $.context.payload;
       response.endpoint = $.context.endpoint;
       response.headers = $.context.headers;
       response.method = $.context.method;

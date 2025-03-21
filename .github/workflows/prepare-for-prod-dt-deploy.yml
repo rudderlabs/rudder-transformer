@@ -161,7 +161,7 @@ jobs:
 
           cd customer-objects
 
-          declare -a enabled_ut_customers=()
+          declare -a enabled_dt_customers=()
           declare -a sub_directories=('enterprise-us' 'enterprise-eu')
 
           # identify the customers enabled in sub-directories
@@ -169,21 +169,21 @@ jobs:
             for f in "./$directory"/*; do
               [[ -f $f ]] || continue
 
-              enabled="$(yq e '.spec.user_transformer.enabled' $f)"
+              enabled="$(yq e '.spec.transformer.enabled' $f)"
               if [ $enabled == "true" ]; then
-                  enabled_ut_customers+=( $f )
+                  enabled_dt_customers+=( $f )
               fi
             done
           done
 
           # bump up the customers version and repository information
-          for customer in "${enabled_ut_customers[@]}"; do
-            yq eval -i ".spec.user_transformer.image.version=\"$TAG_NAME\"" $customer
-            yq eval -i ".spec.user_transformer.image.repository=\"$TF_IMAGE_REPOSITORY\"" $customer
+          for customer in "${enabled_dt_customers[@]}"; do
+            yq eval -i ".spec.transformer.image.version=\"$TAG_NAME\"" $customer
+            yq eval -i ".spec.transformer.image.repository=\"$TF_IMAGE_REPOSITORY\"" $customer
             git add $customer
           done
 
-          git commit -m "chore: upgrade dedicated transformers to $TAG_NAME"
+          git commit -m "chore: upgrade dedicated dt transformers to $TAG_NAME"
           git push -u origin dedicated-transformer-$TAG_NAME
 
           gh pr create --fill

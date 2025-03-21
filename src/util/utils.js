@@ -44,35 +44,37 @@ const fetchAddressFromHostName = async (hostname) => {
   return { address, cacheHit: false };
 };
 
-const staticLookup = (transformationTags) => async (hostname, _, cb) => {
-  let ip;
-  const resolveStartTime = new Date();
-  try {
-    const { address, cacheHit } = await fetchAddressFromHostName(hostname);
-    ip = address;
-    stats.timing('fetch_dns_resolve_time', resolveStartTime, { ...transformationTags, cacheHit });
-  } catch (error) {
-    logger.error(`DNS Error Code: ${error.code} | Message : ${error.message}`);
-    stats.timing('fetch_dns_resolve_time', resolveStartTime, {
-      ...transformationTags,
-      error: 'true',
-    });
-    cb(null, `unable to resolve IP address for ${hostname}`, RECORD_TYPE_A);
-    return;
-  }
+const staticLookup =
+  (transformationTags, fetchAddress = fetchAddressFromHostName) =>
+  (hostname, options, cb) => {
+    const resolveStartTime = new Date();
 
-  if (!ip) {
-    cb(null, `resolved empty list of IP address for ${hostname}`, RECORD_TYPE_A);
-    return;
-  }
+    fetchAddress(hostname)
+      .then(({ address, cacheHit }) => {
+        stats.timing('fetch_dns_resolve_time', resolveStartTime, {
+          ...transformationTags,
+          cacheHit,
+        });
 
-  if (ip.startsWith(LOCALHOST_OCTET)) {
-    cb(null, `cannot use ${ip} as IP address`, RECORD_TYPE_A);
-    return;
-  }
-
-  cb(null, ip, RECORD_TYPE_A);
-};
+        if (!address) {
+          cb(new Error(`resolved empty list of IP address for ${hostname}`), null);
+        } else if (address.startsWith(LOCALHOST_OCTET)) {
+          cb(new Error(`cannot use ${address} as IP address`), null);
+        } else if (options?.all) {
+          cb(null, [{ address, family: RECORD_TYPE_A }]);
+        } else {
+          cb(null, address, RECORD_TYPE_A);
+        }
+      })
+      .catch((error) => {
+        logger.error(`DNS Error Code: ${error.code} | Message : ${error.message}`);
+        stats.timing('fetch_dns_resolve_time', resolveStartTime, {
+          ...transformationTags,
+          error: 'true',
+        });
+        cb(new Error(`unable to resolve IP address for ${hostname}`), null);
+      });
+  };
 
 const httpAgentWithDnsLookup = (scheme, transformationTags) => {
   const httpModule = scheme === 'http' ? http : https;
@@ -226,4 +228,5 @@ module.exports = {
   logProcessInfo,
   extractStackTraceUptoLastSubstringMatch,
   fetchWithDnsWrapper,
+  staticLookup,
 };

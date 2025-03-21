@@ -5,7 +5,7 @@ import {
   generateSimplifiedPageOrScreenPayload,
   transformResultBuilder,
 } from '../../../testUtils';
-
+import { secret1, authHeader1 } from '../maskedSecrets';
 const destination: Destination = {
   ID: '123',
   Name: 'klaviyo',
@@ -17,7 +17,7 @@ const destination: Destination = {
   },
   Config: {
     apiVersion: 'v2',
-    privateApiKey: 'dummyPrivateApiKey',
+    privateApiKey: secret1,
   },
   Enabled: true,
   WorkspaceID: '123',
@@ -55,7 +55,7 @@ export const screenTestData: ProcessorTestData[] = [
                     id: 'user@1',
                     age: '22',
                     email: 'test@rudderstack.com',
-                    phone: '9112340375',
+                    phone: '+9112340375',
                     anonymousId: '9c6bd77ea9da3e68',
                     append1: 'value1',
                   },
@@ -75,6 +75,7 @@ export const screenTestData: ProcessorTestData[] = [
             metadata: generateMetadata(1),
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -87,7 +88,7 @@ export const screenTestData: ProcessorTestData[] = [
               endpoint: 'https://a.klaviyo.com/api/events',
               headers: {
                 Accept: 'application/json',
-                Authorization: 'Klaviyo-API-Key dummyPrivateApiKey',
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
                 revision: '2024-06-15',
               },
@@ -124,7 +125,7 @@ export const screenTestData: ProcessorTestData[] = [
                               },
                             },
                           },
-                          phone_number: '9112340375',
+                          phone_number: '+9112340375',
                           properties: {
                             id: 'user@1',
                             age: '22',

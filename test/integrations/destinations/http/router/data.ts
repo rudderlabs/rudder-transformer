@@ -1,3 +1,4 @@
+import { authHeader1 } from '../maskedSecrets';
 import { generateMetadata } from '../../../testUtils';
 import { destType, destinations, traits, properties } from '../common';
 
@@ -182,9 +183,10 @@ export const data = [
                 version: '1',
                 type: 'REST',
                 method: 'GET',
-                endpoint: 'http://abc.com/contacts/john.doe@example.com/',
+                endpoint: 'http://abc.com/contacts/john.doe%40example.com',
                 headers: {
                   'x-api-key': 'test-api-key',
+                  'Content-Type': 'application/json',
                 },
                 params: {},
                 body: {
@@ -233,15 +235,16 @@ export const data = [
                 method: 'GET',
                 endpoint: 'http://abc.com/contacts',
                 headers: {
-                  Authorization: 'Basic dGVzdC11c2VyOg==',
+                  'Content-Type': 'application/json',
+                  Authorization: authHeader1,
                   'content-type': 'application/json',
                   h1: 'val1',
-                  h2: 2,
+                  h2: '2',
                   h3: 'John',
                 },
                 params: {
                   q1: 'val1',
-                  q2: 'john.doe@example.com',
+                  q2: 'john.doe%40example.com',
                 },
                 body: {
                   JSON: {},
@@ -265,15 +268,16 @@ export const data = [
                 method: 'GET',
                 endpoint: 'http://abc.com/contacts',
                 headers: {
-                  Authorization: 'Basic dGVzdC11c2VyOg==',
+                  'Content-Type': 'application/json',
+                  Authorization: authHeader1,
                   'content-type': 'application/json',
                   h1: 'val1',
-                  h2: 2,
+                  h2: '2',
                   h3: 'John',
                 },
                 params: {
                   q1: 'val1',
-                  q2: 'john.doe@example.com',
+                  q2: 'john.doe%40example.com',
                 },
                 body: {
                   JSON: {},
@@ -297,15 +301,16 @@ export const data = [
                 method: 'GET',
                 endpoint: 'http://abc.com/contacts',
                 headers: {
-                  Authorization: 'Basic dGVzdC11c2VyOg==',
+                  'Content-Type': 'application/json',
+                  Authorization: authHeader1,
                   'content-type': 'application/json',
                   h1: 'val1',
-                  h2: 2,
+                  h2: '2',
                   h3: 'Alex',
                 },
                 params: {
                   q1: 'val1',
-                  q2: 'alex.t@example.com',
+                  q2: 'alex.t%40example.com',
                 },
                 body: {
                   JSON: {},
@@ -355,13 +360,45 @@ export const data = [
                 endpoint: 'http://abc.com/events',
                 params: {},
                 headers: {
+                  'Content-Type': 'application/json',
                   'content-type': 'application/json',
                 },
                 body: {
                   JSON: {},
                   JSON_ARRAY: {
-                    batch:
-                      '[{"event":"Product Viewed","userId":"userId1","properties":{"items":[]}},{"event":"Order Completed","currency":"USD","userId":"userId2","properties":{"items":[{"item_id":"622c6f5d5cf86a4c77358033","name":"Cones of Dunshire","price":40},{"item_id":"577c6f5d5cf86a4c7735ba03","name":"Five Crowns","price":5}]}},{"event":"Product Added","currency":"USD","userId":"userId3","properties":{"items":[{"item_id":"622c6f5d5cf86a4c77358033","name":"Cones of Dunshire","price":40},{"item_id":"577c6f5d5cf86a4c7735ba03","name":"Five Crowns","price":5}]}}]',
+                    batch: JSON.stringify([
+                      { event: 'Product Viewed', userId: 'userId1', properties: { items: [] } },
+                      {
+                        event: 'Order Completed',
+                        currency: 'USD',
+                        userId: 'userId2',
+                        properties: {
+                          items: [
+                            {
+                              item_id: '622c6f5d5cf86a4c77358033',
+                              name: 'Cones of Dunshire',
+                              price: 40,
+                            },
+                            { item_id: '577c6f5d5cf86a4c7735ba03', name: 'Five Crowns', price: 5 },
+                          ],
+                        },
+                      },
+                      {
+                        event: 'Product Added',
+                        currency: 'USD',
+                        userId: 'userId3',
+                        properties: {
+                          items: [
+                            {
+                              item_id: '622c6f5d5cf86a4c77358033',
+                              name: 'Cones of Dunshire',
+                              price: 40,
+                            },
+                            { item_id: '577c6f5d5cf86a4c7735ba03', name: 'Five Crowns', price: 5 },
+                          ],
+                        },
+                      },
+                    ]),
                   },
                   XML: {},
                   FORM: {},
@@ -409,6 +446,7 @@ export const data = [
                 method: 'POST',
                 endpoint: 'http://abc.com/contacts/1234567890',
                 headers: {
+                  'Content-Type': 'application/json',
                   'content-type': 'application/json',
                   key: 'value1',
                 },
@@ -433,6 +471,7 @@ export const data = [
                 method: 'POST',
                 endpoint: 'http://abc.com/contacts/1234567890',
                 headers: {
+                  'Content-Type': 'application/json',
                   'content-type': 'application/json',
                 },
                 params: {},
@@ -456,6 +495,7 @@ export const data = [
                 method: 'POST',
                 endpoint: 'http://abc.com/contacts/2234567890',
                 headers: {
+                  'Content-Type': 'application/json',
                   'content-type': 'application/json',
                 },
                 params: {},

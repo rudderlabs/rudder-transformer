@@ -1,12 +1,16 @@
 import { AxiosResponse } from 'axios';
 import MockAdapter from 'axios-mock-adapter';
+import { BaseTestCase } from '@rudderstack/integrations-lib';
+
 import {
   DeliveryV1Response,
+  Metadata,
   ProcessorTransformationRequest,
   ProcessorTransformationResponse,
   ProxyV1Request,
   RouterTransformationRequest,
   RouterTransformationResponse,
+  RudderMessage,
 } from '../../src/types';
 
 export interface requestType {
@@ -38,13 +42,14 @@ export interface mockType {
   response: responseType;
 }
 
-export interface TestCaseData {
+export interface TestCaseData extends BaseTestCase {
   id?: string;
   name: string;
   description: string;
   skipGo?: string;
   scenario?: string;
   successCriteria?: string;
+  tags?: string[];
   comment?: string;
   feature: string;
   module: string;
@@ -55,6 +60,14 @@ export interface TestCaseData {
   overrideReceivedAt?: string;
   overrideRequestIP?: string;
   mockFns?: (mockAdapter: MockAdapter) => {};
+}
+
+export interface ExtendedTestCaseData {
+  // use this to add any new properties for dynamic test cases
+  // this will keep the base TestCaseData structure generic and intact
+  tcData: TestCaseData;
+  sourceTransformV2Flag?: boolean;
+  descriptionSuffix?: string;
 }
 
 export type MockFns = (mockAdapter: MockAdapter) => void;
@@ -92,7 +105,8 @@ export type ProcessorTestData = {
   version: string;
   input: {
     request: {
-      body: ProcessorTransformationRequest[];
+      method: string;
+      body: ProcessorTransformationRequest<Partial<RudderMessage>, Partial<Metadata>>[];
     };
   };
   output: {
@@ -115,7 +129,8 @@ export type RouterTestData = {
   version: string;
   input: {
     request: {
-      body: RouterTransformationRequest;
+      body: RouterTransformationRequest<Partial<RudderMessage>, Partial<Metadata>>;
+      method: string;
     };
   };
   output: {
@@ -128,7 +143,7 @@ export type RouterTestData = {
   };
 };
 
-export type ProxyV1TestData = {
+export type ProxyV1TestData = BaseTestCase & {
   id: string;
   name: string;
   description: string;

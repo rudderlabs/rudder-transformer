@@ -38,6 +38,7 @@ bower_components
 
 # Compiled binary addons (https://nodejs.org/api/addons.html)
 build/Release
+build/
 
 # Dependency directories
 node_modules/
@@ -91,6 +92,7 @@ out
 # Nuxt.js build / generate output
 .nuxt
 dist
+dist-test
 
 # Gatsby files
 .cache/
@@ -140,3 +142,10 @@ dist
 # component test report
 test_reports/
 temp/
+
+# Allure
+allure-results/
+allure-report/
+
+# local scripts
+*/scripts/local/

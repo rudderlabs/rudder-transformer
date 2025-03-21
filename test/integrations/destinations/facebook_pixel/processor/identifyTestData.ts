@@ -1,5 +1,5 @@
 import { VERSION } from '../../../../../src/v0/destinations/facebook_pixel/config';
-import { Destination } from '../../../../../src/types';
+import { Destination, RudderMessage } from '../../../../../src/types';
 import { generateMetadata, transformResultBuilder, overrideDestination } from '../../../testUtils';
 import { ProcessorTestData } from '../../../testTypes';
 
@@ -81,7 +81,7 @@ const commonMessage = {
     plan: 'standard plan',
     name: 'rudder test',
   },
-  type: 'identify',
+  type: 'identify' as const,
   messageId: '84e26acc-56a5-4835-8233-591137fca468',
   originalTimestamp: '2023-10-14T15:46:51.693229+05:30',
   anonymousId: '00000000000000000000000000',
@@ -120,6 +120,7 @@ export const identifyTestData: ProcessorTestData[] = [
             destination: overrideDestination(commonDestination, { advancedMapping: false }),
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -160,6 +161,7 @@ export const identifyTestData: ProcessorTestData[] = [
             destination: commonDestination,
           },
         ],
+        method: 'POST',
       },
     },
     output: {

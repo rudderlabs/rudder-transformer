@@ -1,3 +1,4 @@
+import { authHeader1, secret1 } from '../maskedSecrets';
 import { Destination } from '../../../../../src/types';
 import { ProcessorTestData } from '../../../testTypes';
 import {
@@ -16,7 +17,7 @@ const destination: Destination = {
     Config: {},
   },
   Config: {
-    apiKey: 'dummyApiKey',
+    apiKey: secret1,
     blacklistedEvents: [{ eventName: '' }],
     eventDelivery: true,
     eventDeliveryTS: 1665474171943,
@@ -29,7 +30,7 @@ const destination: Destination = {
 };
 
 const headers = {
-  Authorization: 'Bearer dummyApiKey',
+  Authorization: authHeader1,
   'Content-Type': 'application/x-www-form-urlencoded',
 };
 
@@ -62,6 +63,7 @@ export const groupTestData: ProcessorTestData[] = [
             metadata: generateMetadata(1),
           },
         ],
+        method: 'POST',
       },
     },
     output: {

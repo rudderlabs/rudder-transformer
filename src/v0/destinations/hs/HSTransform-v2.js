@@ -5,6 +5,7 @@ const {
   ConfigurationError,
   InstrumentationError,
 } = require('@rudderstack/integrations-lib');
+const validator = require('validator');
 const { MappedToDestinationKey, GENERIC_TRUE_VALUES } = require('../../../constants');
 const {
   defaultPostRequestConfig,
@@ -72,6 +73,11 @@ const addHsAuthentication = (response, Config) => {
 const processIdentify = async ({ message, destination, metadata }, propertyMap) => {
   const { Config } = destination;
   let traits = getFieldValueFromMessage(message, 'traits');
+  // since hubspot does not allow imvalid emails, we need to
+  // validate the email before sending it to hubspot
+  if (traits?.email && !validator.isEmail(traits.email)) {
+    throw new InstrumentationError(`Email "${traits.email}" is invalid`);
+  }
   const mappedToDestination = get(message, MappedToDestinationKey);
   const operation = get(message, 'context.hubspotOperation');
   const externalIdObj = getDestinationExternalIDObjectForRetl(message, 'HS');
@@ -153,6 +159,7 @@ const processIdentify = async ({ message, destination, metadata }, propertyMap) 
       // update
       endpoint = IDENTIFY_CRM_UPDATE_CONTACT.replace(':contactId', contactId);
       response.operation = 'updateContacts';
+      response.method = defaultPatchRequestConfig.requestMethod;
     } else {
       // contact do not exist
       // create

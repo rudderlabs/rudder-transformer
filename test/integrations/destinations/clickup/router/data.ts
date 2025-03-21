@@ -1,3 +1,5 @@
+import { secretApiToken } from '../maskedSecrets';
+
 export const data = [
   {
     name: 'clickup',
@@ -12,7 +14,7 @@ export const data = [
             {
               description: 'Creating task using listId from externalId array',
               destination: {
-                Config: { apiToken: 'pk_123', listId: 'correctListId123' },
+                Config: { apiToken: secretApiToken, listId: 'correctListId123' },
                 ID: 'clickup-1234',
               },
               metadata: { jobId: 1, userId: 'u1' },
@@ -28,7 +30,7 @@ export const data = [
             {
               description: 'Creating task with assignees',
               destination: {
-                Config: { apiToken: 'pk_123', listId: 'correctListId123' },
+                Config: { apiToken: secretApiToken, listId: 'correctListId123' },
                 ID: 'clickup-1234',
               },
               metadata: { jobId: 2, userId: 'u1' },
@@ -52,7 +54,7 @@ export const data = [
               description: 'Creating task with valid custom fields values',
               destination: {
                 Config: {
-                  apiToken: 'pk_123',
+                  apiToken: secretApiToken,
                   listId: 'correctListId123',
                   keyToCustomFieldName: [
                     { from: 'industry', to: 'Industry' },
@@ -111,7 +113,7 @@ export const data = [
               description: 'Custom field: Invalid location latitude',
               destination: {
                 Config: {
-                  apiToken: 'pk_123',
+                  apiToken: secretApiToken,
                   listId: 'correctListId123',
                   keyToCustomFieldName: [{ from: 'location', to: 'Location' }],
                 },
@@ -147,14 +149,14 @@ export const data = [
                 body: { FORM: {}, JSON: { name: 'anonymous page visit' }, JSON_ARRAY: {}, XML: {} },
                 endpoint: 'https://api.clickup.com/api/v2/list/correctListId456/task',
                 files: {},
-                headers: { Authorization: 'pk_123', 'Content-Type': 'application/json' },
+                headers: { Authorization: secretApiToken, 'Content-Type': 'application/json' },
                 method: 'POST',
                 params: {},
                 type: 'REST',
                 version: '1',
               },
               destination: {
-                Config: { apiToken: 'pk_123', listId: 'correctListId123' },
+                Config: { apiToken: secretApiToken, listId: 'correctListId123' },
                 ID: 'clickup-1234',
               },
               metadata: [{ jobId: 1, userId: 'u1' }],
@@ -171,14 +173,14 @@ export const data = [
                 },
                 endpoint: 'https://api.clickup.com/api/v2/list/correctListId123/task',
                 files: {},
-                headers: { Authorization: 'pk_123', 'Content-Type': 'application/json' },
+                headers: { Authorization: secretApiToken, 'Content-Type': 'application/json' },
                 method: 'POST',
                 params: {},
                 type: 'REST',
                 version: '1',
               },
               destination: {
-                Config: { apiToken: 'pk_123', listId: 'correctListId123' },
+                Config: { apiToken: secretApiToken, listId: 'correctListId123' },
                 ID: 'clickup-1234',
               },
               metadata: [{ jobId: 2, userId: 'u1' }],
@@ -244,7 +246,7 @@ export const data = [
                 },
                 endpoint: 'https://api.clickup.com/api/v2/list/correctListId123/task',
                 files: {},
-                headers: { Authorization: 'pk_123', 'Content-Type': 'application/json' },
+                headers: { Authorization: secretApiToken, 'Content-Type': 'application/json' },
                 method: 'POST',
                 params: {},
                 type: 'REST',
@@ -252,7 +254,7 @@ export const data = [
               },
               destination: {
                 Config: {
-                  apiToken: 'pk_123',
+                  apiToken: secretApiToken,
                   keyToCustomFieldName: [
                     { from: 'industry', to: 'Industry' },
                     { from: 'Payment Status', to: 'Payment Status' },
@@ -276,7 +278,7 @@ export const data = [
             {
               destination: {
                 Config: {
-                  apiToken: 'pk_123',
+                  apiToken: secretApiToken,
                   listId: 'correctListId123',
                   keyToCustomFieldName: [{ from: 'location', to: 'Location' }],
                 },

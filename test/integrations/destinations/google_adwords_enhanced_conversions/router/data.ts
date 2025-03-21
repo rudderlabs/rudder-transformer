@@ -1,8 +1,11 @@
+import { authHeader1, secret1 } from '../maskedSecrets';
+const API_VERSION = 'v18';
+
 const events = [
   {
     metadata: {
       secret: {
-        access_token: 'abcd1234',
+        access_token: secret1,
         refresh_token: 'efgh5678',
         developer_token: 'ijkl91011',
       },
@@ -94,7 +97,7 @@ const events = [
   {
     metadata: {
       secret: {
-        access_token: 'abcd1234',
+        access_token: secret1,
         refresh_token: 'efgh5678',
         developer_token: 'ijkl91011',
       },
@@ -226,7 +229,7 @@ const events = [
   {
     metadata: {
       secret: {
-        access_token: 'abcd1234',
+        access_token: secret1,
         refresh_token: 'efgh5678',
         developer_token: 'ijkl91011',
       },
@@ -320,7 +323,7 @@ const events = [
   {
     metadata: {
       secret: {
-        access_token: 'abcd1234',
+        access_token: secret1,
         refresh_token: 'efgh5678',
         developer_token: 'ijkl91011',
       },
@@ -414,7 +417,7 @@ const events = [
   {
     metadata: {
       secret: {
-        access_token: 'abcd1234',
+        access_token: secret1,
         refresh_token: 'efgh5678',
         developer_token: 'ijkl91011',
       },
@@ -450,7 +453,7 @@ const events = [
   {
     metadata: {
       secret: {
-        access_token: 'abcd1234',
+        access_token: secret1,
         refresh_token: 'efgh5678',
         developer_token: 'ijkl91011',
       },
@@ -542,11 +545,7 @@ const invalidRtTfCases = [
           output: [
             {
               error: 'Invalid event array',
-              metadata: [
-                {
-                  destType: undefined,
-                },
-              ],
+              metadata: [{}],
               batched: false,
               statusCode: 400,
             },
@@ -575,11 +574,7 @@ const invalidRtTfCases = [
           output: [
             {
               error: 'Invalid event array',
-              metadata: [
-                {
-                  destType: undefined,
-                },
-              ],
+              metadata: [{}],
               batched: false,
               statusCode: 400,
             },
@@ -657,11 +652,10 @@ export const data = [
                   JSON_ARRAY: {},
                   XML: {},
                 },
-                endpoint:
-                  'https://googleads.googleapis.com/v17/customers/1234567890:uploadConversionAdjustments',
+                endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/1234567890:uploadConversionAdjustments`,
                 files: {},
                 headers: {
-                  Authorization: 'Bearer abcd1234',
+                  Authorization: authHeader1,
                   'Content-Type': 'application/json',
                   'developer-token': 'ijkl91011',
                   'login-customer-id': '11',
@@ -695,7 +689,7 @@ export const data = [
                 {
                   jobId: 1,
                   secret: {
-                    access_token: 'abcd1234',
+                    access_token: secret1,
                     developer_token: 'ijkl91011',
                     refresh_token: 'efgh5678',
                   },
@@ -728,7 +722,7 @@ export const data = [
                 {
                   jobId: 2,
                   secret: {
-                    access_token: 'abcd1234',
+                    access_token: secret1,
                     developer_token: 'ijkl91011',
                     refresh_token: 'efgh5678',
                   },
@@ -828,11 +822,10 @@ export const data = [
                   JSON_ARRAY: {},
                   XML: {},
                 },
-                endpoint:
-                  'https://googleads.googleapis.com/v17/customers/1234567890:uploadConversionAdjustments',
+                endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/1234567890:uploadConversionAdjustments`,
                 files: {},
                 headers: {
-                  Authorization: 'Bearer abcd1234',
+                  Authorization: authHeader1,
                   'Content-Type': 'application/json',
                   'developer-token': 'ijkl91011',
                   'login-customer-id': '11',
@@ -866,7 +859,7 @@ export const data = [
                 {
                   jobId: 4,
                   secret: {
-                    access_token: 'abcd1234',
+                    access_token: secret1,
                     developer_token: 'ijkl91011',
                     refresh_token: 'efgh5678',
                   },
@@ -899,7 +892,7 @@ export const data = [
                 {
                   jobId: 5,
                   secret: {
-                    access_token: 'abcd1234',
+                    access_token: secret1,
                     developer_token: 'ijkl91011',
                     refresh_token: 'efgh5678',
                   },
@@ -941,7 +934,7 @@ export const data = [
                 {
                   jobId: 7,
                   secret: {
-                    access_token: 'abcd1234',
+                    access_token: secret1,
                     developer_token: 'ijkl91011',
                     refresh_token: 'efgh5678',
                   },
@@ -973,7 +966,7 @@ export const data = [
               metadata: [
                 {
                   secret: {
-                    access_token: 'abcd1234',
+                    access_token: secret1,
                     refresh_token: 'efgh5678',
                     developer_token: 'ijkl91011',
                   },

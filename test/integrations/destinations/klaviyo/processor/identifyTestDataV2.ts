@@ -7,6 +7,7 @@ import {
 } from '../../../testUtils';
 import { ProcessorTestData } from '../../../testTypes';
 import { Destination } from '../../../../../src/types';
+import { secret1, authHeader1 } from '../maskedSecrets';
 
 const destination: Destination = {
   ID: '123',
@@ -19,7 +20,7 @@ const destination: Destination = {
   },
   Config: {
     apiVersion: 'v2',
-    privateApiKey: 'dummyPrivateApiKey',
+    privateApiKey: secret1,
   },
   Enabled: true,
   WorkspaceID: '123',
@@ -110,7 +111,7 @@ const subscriptionRelations = {
 };
 
 const commonOutputHeaders = {
-  Authorization: 'Klaviyo-API-Key dummyPrivateApiKey',
+  Authorization: authHeader1,
   'Content-Type': 'application/json',
   Accept: 'application/json',
   revision: '2024-06-15',
@@ -162,6 +163,7 @@ export const identifyData: ProcessorTestData[] = [
             metadata: generateMetadata(2),
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -254,6 +256,7 @@ export const identifyData: ProcessorTestData[] = [
             metadata: generateMetadata(2),
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -357,6 +360,7 @@ export const identifyData: ProcessorTestData[] = [
             metadata: generateMetadata(4),
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -424,6 +428,7 @@ export const identifyData: ProcessorTestData[] = [
             metadata: generateMetadata(5),
           },
         ],
+        method: 'POST',
       },
     },
     output: {

@@ -1,8 +1,16 @@
+import {
+  authHeader1,
+  authHeader2,
+  authHeader3,
+  authHeader4,
+  authHeader5,
+  authHeader6,
+} from './maskedSecrets';
 export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Basic bXlEdW1teVVzZXJOYW1lMS90b2tlbjpteUR1bW15QXBpVG9rZW40',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
       },
       method: 'GET',
@@ -70,7 +78,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Basic bXlEdW1teVVzZXJOYW1lMS90b2tlbjpteUR1bW15QXBpVG9rZW40',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
       },
       method: 'GET',
@@ -114,7 +122,7 @@ export const networkCallsData = [
         },
       },
       headers: {
-        Authorization: 'Basic bXlEdW1teVVzZXJOYW1lMS90b2tlbjpteUR1bW15QXBpVG9rZW40',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
       },
       method: 'POST',
@@ -145,7 +153,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Basic bXlEdW1teVVzZXJOYW1lMS90b2tlbjpteUR1bW15QXBpVG9rZW40',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
       },
       method: 'GET',
@@ -205,7 +213,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Basic bXlEdW1teVVzZXJOYW1lMS90b2tlbjpteUR1bW15QXBpVG9rZW40',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
       },
       method: 'GET',
@@ -216,7 +224,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Basic cnVkZGVybGFidGVzdDJAZW1haWwuY29tL3Rva2VuOmR1bW15QXBpVG9rZW4=',
+        Authorization: authHeader2,
         'Content-Type': 'application/json',
       },
       method: 'GET',
@@ -235,7 +243,7 @@ export const networkCallsData = [
         },
       },
       headers: {
-        Authorization: 'Basic cnVkZGVybGFidGVzdDJAZW1haWwuY29tL3Rva2VuOmR1bW15QXBpVG9rZW4=',
+        Authorization: authHeader2,
         'Content-Type': 'application/json',
       },
       method: 'POST',
@@ -246,7 +254,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Basic bXlEdW1teVVzZXJOYW1lMS90b2tlbjpteUR1bW15QXBpVG9rZW40',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
       },
       method: 'GET',
@@ -314,7 +322,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Basic bXlEdW1teVVzZXJOYW1lMS90b2tlbjpteUR1bW15QXBpVG9rZW40',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
       },
       method: 'GET',
@@ -382,7 +390,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Basic bXlEdW1teVVzZXJOYW1lMS90b2tlbjpteUR1bW15QXBpVG9rZW40',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
       },
       method: 'GET',
@@ -426,7 +434,7 @@ export const networkCallsData = [
         },
       },
       headers: {
-        Authorization: 'Basic bXlEdW1teVVzZXJOYW1lMS90b2tlbjpteUR1bW15QXBpVG9rZW40',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
       },
       method: 'POST',
@@ -457,7 +465,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Basic bXlEdW1teVVzZXJOYW1lMS90b2tlbjpteUR1bW15QXBpVG9rZW40',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
       },
       method: 'GET',
@@ -517,7 +525,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Basic bXlEdW1teVVzZXJOYW1lMS90b2tlbjpteUR1bW15QXBpVG9rZW40',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
       },
       method: 'GET',
@@ -528,7 +536,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Basic bXlEdW1teVVzZXJOYW1lMS90b2tlbjpteUR1bW15QXBpVG9rZW40',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
       },
       method: 'GET',
@@ -588,7 +596,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Basic bXlEdW1teVVzZXJOYW1lMS90b2tlbjpteUR1bW15QXBpVG9rZW40',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
       },
       method: 'GET',
@@ -656,7 +664,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Basic bXlEdW1teVVzZXJOYW1lMS90b2tlbjpteUR1bW15QXBpVG9rZW40',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
       },
       method: 'GET',
@@ -716,7 +724,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Basic bXlEdW1teVVzZXJOYW1lMS90b2tlbjpteUR1bW15QXBpVG9rZW40',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
       },
       method: 'GET',
@@ -745,7 +753,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Basic bXlEdW1teVVzZXJOYW1lMS90b2tlbjpteUR1bW15QXBpVG9rZW40',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
       },
       method: 'GET',
@@ -813,7 +821,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Basic bXlEdW1teVVzZXJOYW1lMS90b2tlbjpteUR1bW15QXBpVG9rZW40',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
       },
       method: 'GET',
@@ -873,7 +881,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Basic bXlEdW1teVVzZXJOYW1lMS90b2tlbjpteUR1bW15QXBpVG9rZW40',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
       },
       method: 'GET',
@@ -902,7 +910,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Basic dGVzdEBydWRkZXIuY29tL3Rva2VuOm15RHVtbXlBcGlUb2tlbjQ=',
+        Authorization: authHeader3,
         'Content-Type': 'application/json',
       },
       method: 'GET',
@@ -973,7 +981,7 @@ export const networkCallsData = [
         user_field: { active: true, description: 'country', key: 'country', title: 'country' },
       },
       headers: {
-        Authorization: 'Basic dGVzdEBydWRkZXIuY29tL3Rva2VuOm15RHVtbXlBcGlUb2tlbjQ=',
+        Authorization: authHeader3,
         'Content-Type': 'application/json',
       },
       method: 'POST',
@@ -1041,7 +1049,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Basic dGVzdEBydWRkZXIuY29tL3Rva2VuOm15RHVtbXlBcGlUb2tlbjQ=',
+        Authorization: authHeader3,
         'Content-Type': 'application/json',
       },
       method: 'GET',
@@ -1112,7 +1120,7 @@ export const networkCallsData = [
         user_field: { active: true, description: 'country', key: 'country', title: 'country' },
       },
       headers: {
-        Authorization: 'Basic dGVzdEBydWRkZXIuY29tL3Rva2VuOm15RHVtbXlBcGlUb2tlbjQ=',
+        Authorization: authHeader3,
         'Content-Type': 'application/json',
       },
       method: 'POST',
@@ -1180,7 +1188,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Basic dGVzdEBydWRkZXIuY29tL3Rva2VuOm15RHVtbXlBcGlUb2tlbjQ=',
+        Authorization: authHeader3,
         'Content-Type': 'application/json',
       },
       method: 'GET',
@@ -1251,7 +1259,7 @@ export const networkCallsData = [
         user_field: { active: true, description: 'country', key: 'country', title: 'country' },
       },
       headers: {
-        Authorization: 'Basic dGVzdEBydWRkZXIuY29tL3Rva2VuOm15RHVtbXlBcGlUb2tlbjQ=',
+        Authorization: authHeader3,
         'Content-Type': 'application/json',
       },
       method: 'POST',
@@ -1319,7 +1327,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Basic dGVzdEBydWRkZXIuY29tL3Rva2VuOm15RHVtbXlBcGlUb2tlbjQ=',
+        Authorization: authHeader3,
         'Content-Type': 'application/json',
       },
       method: 'GET',
@@ -1338,7 +1346,7 @@ export const networkCallsData = [
         },
       },
       headers: {
-        Authorization: 'Basic dGVzdEBydWRkZXIuY29tL3Rva2VuOm15RHVtbXlBcGlUb2tlbjM=',
+        Authorization: authHeader4,
         'Content-Type': 'application/json',
       },
       method: 'POST',
@@ -1393,7 +1401,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Basic dGVzdEBydWRkZXIuY29tL3Rva2VuOm15RHVtbXlBcGlUb2tlbjM=',
+        Authorization: authHeader4,
         'Content-Type': 'application/json',
       },
       method: 'GET',
@@ -1412,7 +1420,7 @@ export const networkCallsData = [
         },
       },
       headers: {
-        Authorization: 'Basic dGVzdEBydWRkZXIuY29tL3Rva2VuOm15RHVtbXlBcGlUb2tlbjM=',
+        Authorization: authHeader4,
         'Content-Type': 'application/json',
       },
       method: 'POST',
@@ -1467,7 +1475,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Basic bXlEdW1teVVzZXJOYW1lMi90b2tlbjpteUR1bW15QXBpVG9rZW4y',
+        Authorization: authHeader5,
         'Content-Type': 'application/json',
       },
       method: 'GET',
@@ -1478,7 +1486,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Basic bXlEdW1teVVzZXJOYW1lMS90b2tlbjpteUR1bW15QXBpVG9rZW40',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
       },
       method: 'GET',
@@ -1546,7 +1554,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Basic bXlEdW1teVVzZXJOYW1lMS90b2tlbjpteUR1bW15QXBpVG9rZW40',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
       },
       method: 'GET',
@@ -1614,7 +1622,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Basic bXlEdW1teVVzZXJOYW1lMS90b2tlbjpteUR1bW15QXBpVG9rZW40',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
       },
       method: 'GET',
@@ -1675,7 +1683,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Basic bXlEdW1teVVzZXJOYW1lMS90b2tlbjpteUR1bW15QXBpVG9rZW40',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
       },
       method: 'GET',
@@ -1721,7 +1729,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Basic cnVkZGVybGFidGVzdDFAZW1haWwuY29tL3Rva2VuOmR1bW15QXBpVG9rZW4=',
+        Authorization: authHeader6,
         'Content-Type': 'application/json',
       },
       method: 'GET',
@@ -1740,7 +1748,7 @@ export const networkCallsData = [
         },
       },
       headers: {
-        Authorization: 'Basic cnVkZGVybGFidGVzdDFAZW1haWwuY29tL3Rva2VuOmR1bW15QXBpVG9rZW4=',
+        Authorization: authHeader6,
         'Content-Type': 'application/json',
       },
       method: 'POST',
@@ -1795,7 +1803,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
-        Authorization: 'Basic cnVkZGVybGFidGVzdDJAZW1haWwuY29tL3Rva2VuOmR1bW15QXBpVG9rZW4=',
+        Authorization: authHeader2,
         'Content-Type': 'application/json',
       },
       method: 'GET',
@@ -1814,12 +1822,359 @@ export const networkCallsData = [
         },
       },
       headers: {
-        Authorization: 'Basic cnVkZGVybGFidGVzdDJAZW1haWwuY29tL3Rva2VuOmR1bW15QXBpVG9rZW4=',
+        Authorization: authHeader2,
         'Content-Type': 'application/json',
       },
       method: 'POST',
       url: 'https://rudderlabtest2.zendesk.com/api/v2/users/create_or_update.json',
     },
     httpRes: { data: { user: {} }, status: 200 },
+  },
+  // network call to get id for userId = test-user-id
+  {
+    httpReq: {
+      headers: {
+        Authorization: authHeader1,
+        'Content-Type': 'application/json',
+      },
+      method: 'GET',
+      url: 'https://rudderlabshelp.zendesk.com/api/v2/users/search.json?query=test-user-id',
+    },
+    httpRes: {
+      data: {
+        count: 1,
+        facets: null,
+        next_page: null,
+        previous_page: null,
+        users: [
+          {
+            active: true,
+            alias: null,
+            created_at: '2022-11-24T09:03:54Z',
+            custom_role_id: null,
+            default_group_id: null,
+            details: null,
+            email: 'test1000@email.com',
+            external_id: 'test-user-id',
+            iana_time_zone: 'Asia/Kolkata',
+            id: 911113780483,
+            last_login_at: null,
+            locale: 'en-US',
+            locale_id: 1,
+            moderator: false,
+            name: 'name-1000 user',
+            notes: null,
+            only_private_comments: false,
+            organization_id: null,
+            phone: null,
+            photo: null,
+            report_csv: false,
+            restricted_agent: true,
+            result_type: 'user',
+            role: 'end-user',
+            role_type: null,
+            shared: false,
+            shared_agent: false,
+            shared_phone_number: null,
+            signature: null,
+            suspended: false,
+            tags: [],
+            ticket_restriction: 'requested',
+            time_zone: 'Asia/Kolkata',
+            two_factor_auth_enabled: false,
+            updated_at: '2022-11-24T09:03:54Z',
+            url: 'https://rudderstack6787.zendesk.com/api/v2/users/10865192864273.json',
+            user_fields: {},
+            verified: true,
+          },
+        ],
+      },
+      status: 200,
+    },
+  },
+  // network call to get identities for user test-user-id
+  {
+    httpReq: {
+      headers: {
+        Authorization: authHeader1,
+        'Content-Type': 'application/json',
+      },
+      method: 'GET',
+      url: 'https://rudderlabshelp.zendesk.com/api/v2/users/911113780483/identities',
+    },
+    httpRes: {
+      data: {
+        count: 2,
+        identities: [
+          {
+            url: 'https://rudderlabshelp.zendesk.com/api/v2/users/7533979645597/identities/25465855449501.json',
+            id: 25465855449501,
+            user_id: 25465855448733,
+            type: 'phone_number',
+            value: '+910123456789',
+            verified: true,
+            primary: true,
+            created_at: '2025-02-27T14:14:58Z',
+            updated_at: '2025-02-27T14:14:58Z',
+          },
+          {
+            created_at: '2022-11-02T08:03:28Z',
+            deliverable_state: 'deliverable',
+            id: 7535981118877,
+            primary: false,
+            type: 'email',
+            undeliverable_count: 0,
+            updated_at: '2022-11-02T10:23:28Z',
+            url: 'https://rudderlabshelp.zendesk.com/api/v2/users/7533979645597/identities/7535981118877.json',
+            user_id: 900113780483,
+            value: 'example119@email.com',
+            verified: false,
+          },
+          {
+            created_at: '2022-11-02T04:23:46Z',
+            deliverable_state: 'deliverable',
+            id: 7534173321117,
+            primary: true,
+            type: 'email',
+            undeliverable_count: 0,
+            updated_at: '2022-11-02T10:23:28Z',
+            url: 'https://rudderlabshelp.zendesk.com/api/v2/users/7533979645597/identities/7534173321117.json',
+            user_id: 900113780483,
+            value: 'example115@email.com',
+            verified: true,
+          },
+        ],
+        next_page: null,
+        previous_page: null,
+      },
+      status: 200,
+    },
+  },
+  // network call to get id for user-id = test-user-id-no-primary-email
+  {
+    httpReq: {
+      headers: {
+        Authorization: authHeader1,
+        'Content-Type': 'application/json',
+      },
+      method: 'GET',
+      url: 'https://rudderlabshelp.zendesk.com/api/v2/users/search.json?query=test-user-id-no-primary-email',
+    },
+    httpRes: {
+      data: {
+        count: 1,
+        facets: null,
+        next_page: null,
+        previous_page: null,
+        users: [
+          {
+            active: true,
+            alias: null,
+            created_at: '2022-11-24T09:03:54Z',
+            custom_role_id: null,
+            default_group_id: null,
+            details: null,
+            email: 'test1000@email.com',
+            external_id: 'test-user-id',
+            iana_time_zone: 'Asia/Kolkata',
+            id: 911113781483,
+            last_login_at: null,
+            locale: 'en-US',
+            locale_id: 1,
+            moderator: false,
+            name: 'name-1000 user',
+            notes: null,
+            only_private_comments: false,
+            organization_id: null,
+            phone: null,
+            photo: null,
+            report_csv: false,
+            restricted_agent: true,
+            result_type: 'user',
+            role: 'end-user',
+            role_type: null,
+            shared: false,
+            shared_agent: false,
+            shared_phone_number: null,
+            signature: null,
+            suspended: false,
+            tags: [],
+            ticket_restriction: 'requested',
+            time_zone: 'Asia/Kolkata',
+            two_factor_auth_enabled: false,
+            updated_at: '2022-11-24T09:03:54Z',
+            url: 'https://rudderstack6787.zendesk.com/api/v2/users/10865192864273.json',
+            user_fields: {},
+            verified: true,
+          },
+        ],
+      },
+      status: 200,
+    },
+  },
+  // network call to get identities for user test-user-id-no-primary-email
+  {
+    httpReq: {
+      headers: {
+        Authorization: authHeader1,
+        'Content-Type': 'application/json',
+      },
+      method: 'GET',
+      url: 'https://rudderlabshelp.zendesk.com/api/v2/users/911113781483/identities',
+    },
+    httpRes: {
+      data: {
+        count: 2,
+        identities: [
+          {
+            url: 'https://rudderlabshelp.zendesk.com/api/v2/users/7533979645597/identities/25465855449501.json',
+            id: 25465855449501,
+            user_id: 25465855448733,
+            type: 'phone_number',
+            value: '+910123456789',
+            verified: true,
+            primary: true,
+            created_at: '2025-02-27T14:14:58Z',
+            updated_at: '2025-02-27T14:14:58Z',
+          },
+          {
+            created_at: '2022-11-02T08:03:28Z',
+            deliverable_state: 'deliverable',
+            id: 7535981118877,
+            primary: false,
+            type: 'email',
+            undeliverable_count: 0,
+            updated_at: '2022-11-02T10:23:28Z',
+            url: 'https://rudderlabshelp.zendesk.com/api/v2/users/7533979645597/identities/7535981118877.json',
+            user_id: 900113780483,
+            value: 'example119@email.com',
+            verified: false,
+          },
+        ],
+        next_page: null,
+        previous_page: null,
+      },
+      status: 200,
+    },
+  },
+  // network call to get id for user-id = test-user-id-with-same-primary-email
+  {
+    httpReq: {
+      headers: {
+        Authorization: authHeader1,
+        'Content-Type': 'application/json',
+      },
+      method: 'GET',
+      url: 'https://rudderlabshelp.zendesk.com/api/v2/users/search.json?query=test-user-id-with-same-primary-email',
+    },
+    httpRes: {
+      data: {
+        count: 1,
+        facets: null,
+        next_page: null,
+        previous_page: null,
+        users: [
+          {
+            active: true,
+            alias: null,
+            created_at: '2022-11-24T09:03:54Z',
+            custom_role_id: null,
+            default_group_id: null,
+            details: null,
+            email: 'test1000@email.com',
+            external_id: 'test-user-id',
+            iana_time_zone: 'Asia/Kolkata',
+            id: 911113781481,
+            last_login_at: null,
+            locale: 'en-US',
+            locale_id: 1,
+            moderator: false,
+            name: 'name-1000 user',
+            notes: null,
+            only_private_comments: false,
+            organization_id: null,
+            phone: null,
+            photo: null,
+            report_csv: false,
+            restricted_agent: true,
+            result_type: 'user',
+            role: 'end-user',
+            role_type: null,
+            shared: false,
+            shared_agent: false,
+            shared_phone_number: null,
+            signature: null,
+            suspended: false,
+            tags: [],
+            ticket_restriction: 'requested',
+            time_zone: 'Asia/Kolkata',
+            two_factor_auth_enabled: false,
+            updated_at: '2022-11-24T09:03:54Z',
+            url: 'https://rudderstack6787.zendesk.com/api/v2/users/10865192864273.json',
+            user_fields: {},
+            verified: true,
+          },
+        ],
+      },
+      status: 200,
+    },
+  },
+  // network call to get identities for user test-user-id-with-same-primary-email
+  {
+    httpReq: {
+      headers: {
+        Authorization: authHeader1,
+        'Content-Type': 'application/json',
+      },
+      method: 'GET',
+      url: 'https://rudderlabshelp.zendesk.com/api/v2/users/911113781481/identities',
+    },
+    httpRes: {
+      data: {
+        count: 2,
+        identities: [
+          {
+            url: 'https://rudderlabshelp.zendesk.com/api/v2/users/7533979645597/identities/25465855449501.json',
+            id: 25465855449501,
+            user_id: 25465855448733,
+            type: 'phone_number',
+            value: '+910123456789',
+            verified: true,
+            primary: true,
+            created_at: '2025-02-27T14:14:58Z',
+            updated_at: '2025-02-27T14:14:58Z',
+          },
+          {
+            created_at: '2022-11-02T08:03:28Z',
+            deliverable_state: 'deliverable',
+            id: 7535981118877,
+            primary: true,
+            type: 'email',
+            undeliverable_count: 0,
+            updated_at: '2022-11-02T10:23:28Z',
+            url: 'https://rudderlabshelp.zendesk.com/api/v2/users/7533979645597/identities/7535981118877.json',
+            user_id: 900113780483,
+            value: 'example@email.com',
+            verified: false,
+          },
+          {
+            created_at: '2022-11-02T08:03:28Z',
+            deliverable_state: 'deliverable',
+            id: 7535981118877,
+            primary: false,
+            type: 'email',
+            undeliverable_count: 0,
+            updated_at: '2022-11-02T10:23:28Z',
+            url: 'https://rudderlabshelp.zendesk.com/api/v2/users/7533979645597/identities/7535981118877.json',
+            user_id: 900113780483,
+            value: 'example119@email.com',
+            verified: false,
+          },
+        ],
+        next_page: null,
+        previous_page: null,
+      },
+      status: 200,
+    },
   },
 ];

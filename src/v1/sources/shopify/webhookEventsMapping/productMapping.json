@@ -1,0 +1,27 @@
+[
+  {
+    "sourceKeys": "id",
+    "destKey": "order_id",
+    "metadata": {
+      "type": "toString"
+    }
+  },
+  {
+    "sourceKeys": "total_price",
+    "destKey": "value",
+    "metadata": {
+      "type": "toNumber"
+    }
+  },
+  {
+    "sourceKeys": "total_tax",
+    "destKey": "tax",
+    "metadata": {
+      "type": "toNumber"
+    }
+  },
+  {
+    "sourceKeys": "currency",
+    "destKey": "currency"
+  }
+]

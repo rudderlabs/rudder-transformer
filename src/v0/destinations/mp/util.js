@@ -24,6 +24,12 @@ const {
   MP_IDENTIFY_EXCLUSION_LIST,
   GEO_SOURCE_ALLOWED_VALUES,
   mappingConfig,
+  BASE_ENDPOINT_EU,
+  BASE_ENDPOINT_IN,
+  BASE_ENDPOINT,
+  CREATE_DELETION_TASK_ENDPOINT_EU,
+  CREATE_DELETION_TASK_ENDPOINT_IN,
+  CREATE_DELETION_TASK_ENDPOINT,
 } = require('./config');
 const { CommonUtils } = require('../../../util/common');
 const stats = require('../../../util/stats');
@@ -378,6 +384,33 @@ const recordBatchSizeMetrics = (batchSize, destinationId) => {
   });
 };
 
+const getBaseEndpoint = (config) => {
+  const dataResidency = config?.dataResidency;
+  switch (dataResidency) {
+    case 'eu':
+      return BASE_ENDPOINT_EU;
+    case 'in':
+      return BASE_ENDPOINT_IN;
+    default:
+      return BASE_ENDPOINT;
+  }
+};
+
+const getDeletionTaskBaseEndpoint = (config) => {
+  const dataResidency = config?.dataResidency;
+  switch (dataResidency) {
+    case 'eu':
+      return CREATE_DELETION_TASK_ENDPOINT_EU;
+    case 'in':
+      return CREATE_DELETION_TASK_ENDPOINT_IN;
+    default:
+      return CREATE_DELETION_TASK_ENDPOINT;
+  }
+};
+
+const getCreateDeletionTaskEndpoint = (config, projectToken) =>
+  `${getDeletionTaskBaseEndpoint(config)}?token=${projectToken}`;
+
 module.exports = {
   createIdentifyResponse,
   isImportAuthCredentialsAvailable,
@@ -389,4 +422,7 @@ module.exports = {
   generatePageOrScreenCustomEventName,
   recordBatchSizeMetrics,
   getTransformedJSON,
+  getBaseEndpoint,
+  getDeletionTaskBaseEndpoint,
+  getCreateDeletionTaskEndpoint,
 };

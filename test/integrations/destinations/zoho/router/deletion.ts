@@ -2,9 +2,9 @@ import { defaultMockFns } from '../mocks';
 import {
   commonDeletionDestConfig,
   commonDeletionDestConfig2,
-  deletionPayload1V2,
-  commonDeletionConnectionConfigV2,
-  commonConnectionConfigV2_4,
+  deletionPayload1,
+  commonDeletionConnectionConfig,
+  commonConnectionConfig4,
   destType,
 } from '../common';
 
@@ -50,7 +50,7 @@ export const deleteData = [
                 },
               },
               destination: commonDeletionDestConfig2,
-              connection: commonConnectionConfigV2_4,
+              connection: commonConnectionConfig4,
             },
           ],
           destType,
@@ -113,7 +113,7 @@ export const deleteData = [
         body: {
           input: [
             {
-              message: deletionPayload1V2,
+              message: deletionPayload1,
               metadata: {
                 jobId: 1,
                 userId: 'u1',
@@ -122,7 +122,7 @@ export const deleteData = [
                 },
               },
               destination: commonDeletionDestConfig,
-              connection: commonDeletionConnectionConfigV2,
+              connection: commonDeletionConnectionConfig,
             },
             {
               message: {
@@ -154,7 +154,7 @@ export const deleteData = [
                 },
               },
               destination: commonDeletionDestConfig,
-              connection: commonDeletionConnectionConfigV2,
+              connection: commonDeletionConnectionConfig,
             },
           ],
           destType,
@@ -224,7 +224,7 @@ export const deleteData = [
         body: {
           input: [
             {
-              message: deletionPayload1V2,
+              message: deletionPayload1,
               metadata: {
                 jobId: 1,
                 userId: 'u1',
@@ -233,7 +233,7 @@ export const deleteData = [
                 },
               },
               destination: commonDeletionDestConfig,
-              connection: commonDeletionConnectionConfigV2,
+              connection: commonDeletionConnectionConfig,
             },
             {
               message: {
@@ -265,7 +265,7 @@ export const deleteData = [
                 },
               },
               destination: commonDeletionDestConfig,
-              connection: commonDeletionConnectionConfigV2,
+              connection: commonDeletionConnectionConfig,
             },
           ],
           destType,
@@ -380,7 +380,7 @@ export const deleteData = [
                 },
               },
               destination: commonDeletionDestConfig,
-              connection: commonDeletionConnectionConfigV2,
+              connection: commonDeletionConnectionConfig,
             },
           ],
           destType,
@@ -462,7 +462,7 @@ export const deleteData = [
                 },
               },
               destination: commonDeletionDestConfig,
-              connection: commonDeletionConnectionConfigV2,
+              connection: commonDeletionConnectionConfig,
             },
           ],
           destType,
@@ -545,7 +545,7 @@ export const deleteData = [
                 },
               },
               destination: commonDeletionDestConfig,
-              connection: commonDeletionConnectionConfigV2,
+              connection: commonDeletionConnectionConfig,
             },
           ],
           destType,

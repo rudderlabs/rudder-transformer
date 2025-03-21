@@ -2,14 +2,14 @@ jest.mock('../../../../adapters/network');
 const { ConfigurationError } = require('@rudderstack/integrations-lib');
 const { handleHttpRequest } = require('../../../../adapters/network');
 const {
-  deduceModuleInfoV2,
+  deduceModuleInfo,
   validateConfigurationIssue,
-  formatMultiSelectFieldsV2,
+  formatMultiSelectFields,
   calculateTrigger,
-  searchRecordIdV2,
+  searchRecordId,
 } = require('./utils');
 
-describe('formatMultiSelectFieldsV2', () => {
+describe('formatMultiSelectFields', () => {
   const testCases = [
     {
       name: 'should convert a field value to an array if a mapping exists in multiSelectFieldLevelDecision',
@@ -45,7 +45,7 @@ describe('formatMultiSelectFieldsV2', () => {
 
   testCases.forEach(({ name, input, expected }) => {
     it(name, () => {
-      const result = formatMultiSelectFieldsV2(input.config, { ...input.fields });
+      const result = formatMultiSelectFields(input.config, { ...input.fields });
       expect(result).toEqual(expected);
     });
   });
@@ -82,7 +82,7 @@ describe('calculateTrigger', () => {
   });
 });
 
-describe('searchRecordIdV2', () => {
+describe('searchRecordId', () => {
   const mockFields = { Email: 'test@example.com' };
   const mockMetadata = { secret: { accessToken: 'mock-token' } };
   const mockConfig = { region: 'US' };
@@ -275,7 +275,7 @@ describe('searchRecordIdV2', () => {
         handleHttpRequest.mockResolvedValueOnce(response);
       }
 
-      const result = await searchRecordIdV2(
+      const result = await searchRecordId(
         fields,
         mockMetadata,
         mockConfig,
@@ -333,7 +333,7 @@ describe('searchRecordIdV2', () => {
 
   testCases2.forEach(({ name, expected, fields }) => {
     it(name, async () => {
-      const result = await searchRecordIdV2(
+      const result = await searchRecordId(
         fields,
         mockMetadata,
         mockConfig,
@@ -344,7 +344,7 @@ describe('searchRecordIdV2', () => {
   });
 });
 
-describe('deduceModuleInfoV2', () => {
+describe('deduceModuleInfo', () => {
   const testCases = [
     {
       name: 'should return operationModuleInfo, upsertEndPoint and identifierType when conConfig is present',
@@ -410,7 +410,7 @@ describe('deduceModuleInfoV2', () => {
 
   testCases.forEach(({ name, input, expected }) => {
     it(name, () => {
-      const result = deduceModuleInfoV2(input.config, input.destination);
+      const result = deduceModuleInfo(input.config, input.destination);
       expect(result).toEqual(expected);
     });
   });

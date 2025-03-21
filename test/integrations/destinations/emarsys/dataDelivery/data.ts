@@ -1,18 +1,18 @@
 import { generateMetadata, generateProxyV1Payload } from '../../../testUtils';
 import { ProxyV1TestData } from '../../../testTypes';
 import { defaultAccessToken } from '../../../common/secrets';
+import { HEADER_BLOCK, WRONG_HEADER_BLOCK } from '../constants';
+
 export const headerBlockWithCorrectAccessToken = {
   'Content-Type': 'application/json',
   Accept: 'application/json',
-  'X-WSSE':
-    'UsernameToken Username="dummy", PasswordDigest="NDc5MjNlODIyMGE4ODhiMTQyNTA0OGMzZTFjZTM1MmMzMmU0NmNiNw==", Nonce="5398e214ae99c2e50afb709a3bc423f9", Created="2019-10-14T00:00:00.000Z"',
+  'X-WSSE': HEADER_BLOCK,
 };
 
 export const headerBlockWithWrongAccessToken = {
   'Content-Type': 'application/json',
   Accept: 'application/json',
-  'X-WSSE':
-    'UsernameToken Username="dummy2", PasswordDigest="NDc5MjNlODIyMGE4ODhiMTQyNTA0OGMzZTFjZTM1MmMzMmU0NmNiNw==", Nonce="5398e214ae99c2e50afb709a3bc423f9", Created="2019-10-14T00:00:00.000Z"',
+  'X-WSSE': WRONG_HEADER_BLOCK,
 };
 
 export const correctContactCreateUpdateData = [

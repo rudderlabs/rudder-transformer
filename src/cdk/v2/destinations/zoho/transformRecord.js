@@ -16,11 +16,11 @@ const {
 } = require('../../../../v0/util');
 const zohoConfig = require('./config');
 const {
-  deduceModuleInfoV2,
-  validatePresenceOfMandatoryPropertiesV2,
-  formatMultiSelectFieldsV2,
-  handleDuplicateCheckV2,
-  searchRecordIdV2,
+  deduceModuleInfo,
+  validatePresenceOfMandatoryProperties,
+  formatMultiSelectFields,
+  handleDuplicateCheck,
+  searchRecordId,
   calculateTrigger,
 } = require('./utils');
 const { REFRESH_TOKEN } = require('../../../../adapters/networkhandler/authConstants');
@@ -51,7 +51,7 @@ const responseBuilder = (
 
   if (isUpsert) {
     const payload = {
-      duplicate_check_fields: handleDuplicateCheckV2(
+      duplicate_check_fields: handleDuplicateCheck(
         addDefaultDuplicateCheck,
         identifierType,
         operationModuleType,
@@ -155,7 +155,7 @@ const handleUpsert = async (
   transformedResponseToBeBatched,
   errorResponseList,
 ) => {
-  const eventErroneous = validatePresenceOfMandatoryPropertiesV2(destConfig.object, allFields);
+  const eventErroneous = validatePresenceOfMandatoryProperties(destConfig.object, allFields);
 
   if (eventErroneous?.status) {
     const error = new ConfigurationError(
@@ -163,7 +163,7 @@ const handleUpsert = async (
     );
     errorResponseList.push(handleRtTfSingleEventError(input, error, {}));
   } else {
-    const formattedFields = formatMultiSelectFieldsV2(destConfig, allFields);
+    const formattedFields = formatMultiSelectFields(destConfig, allFields);
     transformedResponseToBeBatched.upsertSuccessMetadata.push(input.metadata);
     transformedResponseToBeBatched.upsertData.push(formattedFields);
   }
@@ -213,7 +213,7 @@ const handleDeletion = async (
   transformedResponseToBeBatched,
   errorResponseList,
 ) => {
-  const searchResponse = await searchRecordIdV2(identifiers, input.metadata, Config, destConfig);
+  const searchResponse = await searchRecordId(identifiers, input.metadata, Config, destConfig);
 
   if (searchResponse.erroneous) {
     const error = handleSearchError(searchResponse);
@@ -333,7 +333,7 @@ const processRecordInputs = async (inputs, destination) => {
     deletionData: [],
   };
 
-  const { operationModuleType, identifierType, upsertEndPoint } = deduceModuleInfoV2(
+  const { operationModuleType, identifierType, upsertEndPoint } = deduceModuleInfo(
     Config,
     destConfig,
   );

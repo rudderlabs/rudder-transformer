@@ -1,4 +1,4 @@
-const { processRecordInputs } = require('./transformRecordV2');
+const { processRecordInputs } = require('./transformRecord');
 
 describe('processRecordInputs', () => {
   it('should return an empty array if no inputs are provided', async () => {

@@ -2,17 +2,17 @@ import { defaultMockFns } from '../mocks';
 import {
   commonOutput1,
   commonUpsertDestConfig,
-  commonConnectionConfigV2,
-  commonConnectionConfigV2_2,
-  commonConnectionConfigV2_3,
-  commonConnectionConfigCustomModuleV2,
+  commonConnectionConfig,
+  commonConnectionConfig2,
+  commonConnectionConfig3,
+  commonConnectionConfigCustomModule,
   commonUpsertDestConfig2,
   commonUpsertDestConfig2CustomModule,
   commonUpsertDestConfig3,
   destType,
-  upsertPayload1V2,
-  upsertPayload2V2,
-  upsertPayload3V2,
+  upsertPayload1,
+  upsertPayload2,
+  upsertPayload3,
 } from '../common';
 
 export const upsertData = [
@@ -27,7 +27,7 @@ export const upsertData = [
         body: {
           input: [
             {
-              message: upsertPayload1V2,
+              message: upsertPayload1,
               metadata: {
                 jobId: 1,
                 userId: 'u1',
@@ -36,10 +36,10 @@ export const upsertData = [
                 },
               },
               destination: commonUpsertDestConfig,
-              connection: commonConnectionConfigV2,
+              connection: commonConnectionConfig,
             },
             {
-              message: upsertPayload2V2,
+              message: upsertPayload2,
               metadata: {
                 jobId: 2,
                 userId: 'u1',
@@ -48,7 +48,7 @@ export const upsertData = [
                 },
               },
               destination: commonUpsertDestConfig,
-              connection: commonConnectionConfigV2,
+              connection: commonConnectionConfig,
             },
           ],
           destType,
@@ -136,7 +136,7 @@ export const upsertData = [
         body: {
           input: [
             {
-              message: upsertPayload1V2,
+              message: upsertPayload1,
               metadata: {
                 jobId: 1,
                 userId: 'u1',
@@ -145,10 +145,10 @@ export const upsertData = [
                 },
               },
               destination: commonUpsertDestConfig2,
-              connection: commonConnectionConfigV2_2,
+              connection: commonConnectionConfig2,
             },
             {
-              message: upsertPayload2V2,
+              message: upsertPayload2,
               metadata: {
                 jobId: 2,
                 userId: 'u1',
@@ -157,7 +157,7 @@ export const upsertData = [
                 },
               },
               destination: commonUpsertDestConfig2,
-              connection: commonConnectionConfigV2_2,
+              connection: commonConnectionConfig2,
             },
           ],
           destType,
@@ -276,7 +276,7 @@ export const upsertData = [
                 },
               },
               destination: commonUpsertDestConfig2CustomModule,
-              connection: commonConnectionConfigCustomModuleV2,
+              connection: commonConnectionConfigCustomModule,
             },
             {
               message: {
@@ -311,7 +311,7 @@ export const upsertData = [
                 },
               },
               destination: commonUpsertDestConfig2,
-              connection: commonConnectionConfigCustomModuleV2,
+              connection: commonConnectionConfigCustomModule,
             },
           ],
           destType,
@@ -430,7 +430,7 @@ export const upsertData = [
                 },
               },
               destination: commonUpsertDestConfig,
-              connection: commonConnectionConfigV2,
+              connection: commonConnectionConfig,
             },
             {
               message: {
@@ -464,7 +464,7 @@ export const upsertData = [
                 },
               },
               destination: commonUpsertDestConfig,
-              connection: commonConnectionConfigV2,
+              connection: commonConnectionConfig,
             },
           ],
           destType,
@@ -563,7 +563,7 @@ export const upsertData = [
         body: {
           input: [
             {
-              message: upsertPayload3V2,
+              message: upsertPayload3,
               metadata: {
                 jobId: 1,
                 userId: 'u1',
@@ -572,7 +572,7 @@ export const upsertData = [
                 },
               },
               destination: commonUpsertDestConfig3,
-              connection: commonConnectionConfigV2_3,
+              connection: commonConnectionConfig3,
             },
           ],
           destType,
@@ -633,7 +633,7 @@ export const upsertData = [
         body: {
           input: [
             {
-              message: upsertPayload3V2,
+              message: upsertPayload3,
               metadata: {
                 jobId: 1,
                 userId: 'u1',
@@ -642,10 +642,10 @@ export const upsertData = [
                 },
               },
               destination: commonUpsertDestConfig3,
-              connection: commonConnectionConfigV2_3,
+              connection: commonConnectionConfig3,
             },
             {
-              message: upsertPayload3V2,
+              message: upsertPayload3,
               metadata: {
                 jobId: 2,
                 userId: 'u1',
@@ -654,10 +654,10 @@ export const upsertData = [
                 },
               },
               destination: commonUpsertDestConfig3,
-              connection: commonConnectionConfigV2_3,
+              connection: commonConnectionConfig3,
             },
             {
-              message: upsertPayload3V2,
+              message: upsertPayload3,
               metadata: {
                 jobId: 3,
                 userId: 'u1',
@@ -666,7 +666,7 @@ export const upsertData = [
                 },
               },
               destination: commonUpsertDestConfig3,
-              connection: commonConnectionConfigV2_3,
+              connection: commonConnectionConfig3,
             },
           ],
           destType,
@@ -781,7 +781,7 @@ export const upsertData = [
         body: {
           input: [
             {
-              message: upsertPayload3V2,
+              message: upsertPayload3,
               metadata: {
                 jobId: 1,
                 userId: 'u1',
@@ -790,7 +790,7 @@ export const upsertData = [
                 },
               },
               destination: commonUpsertDestConfig3,
-              connection: commonConnectionConfigV2_3,
+              connection: commonConnectionConfig3,
             },
             {
               message: {
@@ -802,7 +802,7 @@ export const upsertData = [
               },
               metadata: {},
               destination: commonUpsertDestConfig,
-              connection: commonConnectionConfigV2_3,
+              connection: commonConnectionConfig3,
             },
           ],
           destType,

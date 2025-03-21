@@ -2,7 +2,7 @@ bindings:
   - name: EventType
     path: ../../../../constants
   - name: processRecordInputs
-    path: ./transformRecordV2
+    path: ./transformRecord
   - name: handleRtTfSingleEventError
     path: ../../../../v0/util/index
   - name: InstrumentationError

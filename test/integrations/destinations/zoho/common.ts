@@ -7,7 +7,7 @@ const dataProviderId = 'rudderstack';
 const segmentName = 'test-segment';
 const leadUpsertEndpoint = 'https://www.zohoapis.in/crm/v6/Leads/upsert';
 
-const deletionPayload1V2 = {
+const deletionPayload1 = {
   action: 'delete',
   context: {
     sources: {
@@ -97,7 +97,7 @@ const commonDeletionDestConfig2: Destination = {
   },
 };
 
-const commonDeletionConnectionConfigV2: Connection = {
+const commonDeletionConnectionConfig: Connection = {
   sourceId: '2t1wMHLftBHKN1XzcfU4v7JTQTg',
   destinationId: '2tCmPNvYHqCUgcRva2XN52ZaYHk',
   enabled: true,
@@ -122,7 +122,7 @@ const commonDeletionConnectionConfigV2: Connection = {
   },
 };
 
-const upsertPayload1V2 = {
+const upsertPayload1 = {
   action: 'insert',
   context: {
     sources: {
@@ -144,7 +144,7 @@ const upsertPayload1V2 = {
   type: 'record',
 };
 
-const upsertPayload2V2 = {
+const upsertPayload2 = {
   action: 'insert',
   context: {
     sources: {
@@ -167,7 +167,7 @@ const upsertPayload2V2 = {
   type: 'record',
 };
 
-const upsertPayload3V2 = {
+const upsertPayload3 = {
   action: 'insert',
   context: {
     sources: {
@@ -328,7 +328,7 @@ const commonOutput1 = {
   trigger: ['workflow'],
 };
 
-const commonConnectionConfigV2: Connection = {
+const commonConnectionConfig: Connection = {
   sourceId: '2t1wMHLftBHKN1XzcfU4v7JTQTg',
   destinationId: '2tCmPNvYHqCUgcRva2XN52ZaYHk',
   enabled: true,
@@ -353,7 +353,7 @@ const commonConnectionConfigV2: Connection = {
   },
 };
 
-const commonConnectionConfigV2_2: Connection = {
+const commonConnectionConfig2: Connection = {
   sourceId: '2t1wMHLftBHKN1XzcfU4v7JTQTg',
   destinationId: '2tCmPNvYHqCUgcRva2XN52ZaYHk',
   enabled: true,
@@ -378,7 +378,7 @@ const commonConnectionConfigV2_2: Connection = {
   },
 };
 
-const commonConnectionConfigCustomModuleV2: Connection = {
+const commonConnectionConfigCustomModule: Connection = {
   sourceId: '2t1wMHLftBHKN1XzcfU4v7JTQTg',
   destinationId: '2tCmPNvYHqCUgcRva2XN52ZaYHk',
   enabled: true,
@@ -403,7 +403,7 @@ const commonConnectionConfigCustomModuleV2: Connection = {
   },
 };
 
-const commonConnectionConfigV2_3: Connection = {
+const commonConnectionConfig3: Connection = {
   sourceId: '2t1wMHLftBHKN1XzcfU4v7JTQTg',
   destinationId: '2tCmPNvYHqCUgcRva2XN52ZaYHk',
   enabled: true,
@@ -424,7 +424,7 @@ const commonConnectionConfigV2_3: Connection = {
   },
 };
 
-const commonConnectionConfigV2_4: Connection = {
+const commonConnectionConfig4: Connection = {
   sourceId: '2t1wMHLftBHKN1XzcfU4v7JTQTg',
   destinationId: '2tCmPNvYHqCUgcRva2XN52ZaYHk',
   enabled: true,
@@ -456,21 +456,21 @@ export {
   dataProviderId,
   segmentName,
   leadUpsertEndpoint,
-  deletionPayload1V2,
+  deletionPayload1,
   commonDeletionDestConfig,
   commonDeletionDestConfig2,
-  upsertPayload1V2,
-  upsertPayload2V2,
-  upsertPayload3V2,
+  upsertPayload1,
+  upsertPayload2,
+  upsertPayload3,
   commonUpsertDestConfig,
   commonUpsertDestConfig2,
   commonOutput1,
   commonUpsertDestConfig3,
   commonUpsertDestConfig2CustomModule,
-  commonConnectionConfigV2,
-  commonConnectionConfigV2_2,
-  commonConnectionConfigV2_3,
-  commonConnectionConfigV2_4,
-  commonConnectionConfigCustomModuleV2,
-  commonDeletionConnectionConfigV2,
+  commonConnectionConfig,
+  commonConnectionConfig2,
+  commonConnectionConfig3,
+  commonConnectionConfig4,
+  commonConnectionConfigCustomModule,
+  commonDeletionConnectionConfig,
 };

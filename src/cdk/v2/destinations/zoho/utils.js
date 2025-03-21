@@ -11,7 +11,7 @@ const { isHttpStatusSuccess } = require('../../../../v0/util');
 const { handleHttpRequest } = require('../../../../adapters/network');
 const { CommonUtils } = require('../../../../util/common');
 
-const deduceModuleInfoV2 = (Config, destConfig) => {
+const deduceModuleInfo = (Config, destConfig) => {
   const { object, identifierMappings } = destConfig;
   const identifierType = identifierMappings.map(({ to }) => to);
   return {
@@ -24,7 +24,7 @@ const deduceModuleInfoV2 = (Config, destConfig) => {
   };
 };
 
-function validatePresenceOfMandatoryPropertiesV2(objectName, object) {
+function validatePresenceOfMandatoryProperties(objectName, object) {
   const { ZOHO } = ZOHO_SDK;
   const moduleWiseMandatoryFields = ZOHO.fetchModuleWiseMandatoryFields(objectName);
   if (isEmpty(moduleWiseMandatoryFields)) {
@@ -42,7 +42,7 @@ function validatePresenceOfMandatoryPropertiesV2(objectName, object) {
   };
 }
 
-const formatMultiSelectFieldsV2 = (destConfig, fields) => {
+const formatMultiSelectFields = (destConfig, fields) => {
   const multiSelectFields = getHashFromArray(
     destConfig.multiSelectFieldLevelDecision,
     'from',
@@ -62,7 +62,7 @@ const formatMultiSelectFieldsV2 = (destConfig, fields) => {
   return formattedFields;
 };
 
-const handleDuplicateCheckV2 = (addDefaultDuplicateCheck, identifierType, operationModuleType) => {
+const handleDuplicateCheck = (addDefaultDuplicateCheck, identifierType, operationModuleType) => {
   let additionalFields = [];
 
   if (addDefaultDuplicateCheck) {
@@ -179,7 +179,7 @@ const sendCOQLRequest = async (region, accessToken, object, selectQuery) => {
   }
 };
 
-const searchRecordIdV2 = async (identifiers, metadata, Config, destConfig) => {
+const searchRecordId = async (identifiers, metadata, Config, destConfig) => {
   try {
     const { region } = Config;
     const { object } = destConfig;
@@ -222,11 +222,11 @@ const validateConfigurationIssue = (Config, operationModuleType) => {
 };
 
 module.exports = {
-  deduceModuleInfoV2,
-  validatePresenceOfMandatoryPropertiesV2,
-  formatMultiSelectFieldsV2,
-  handleDuplicateCheckV2,
-  searchRecordIdV2,
+  deduceModuleInfo,
+  validatePresenceOfMandatoryProperties,
+  formatMultiSelectFields,
+  handleDuplicateCheck,
+  searchRecordId,
   calculateTrigger,
   validateConfigurationIssue,
 };

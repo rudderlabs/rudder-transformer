@@ -70,10 +70,10 @@ const addHsAuthentication = (response, Config) => {
  * @param {*} propertyMap
  * @returns
  */
-const processIdentify = async ({ message, destination, metadata }, propertyMap) => {
+const processIdentify = async ({ message, destination, metadata }, contactsPropertiesMap) => {
   const { Config } = destination;
   let traits = getFieldValueFromMessage(message, 'traits');
-  // since hubspot does not allow imvalid emails, we need to
+  // since hubspot does not allow invalid emails, we need to
   // validate the email before sending it to hubspot
   if (traits?.email && !validator.isEmail(traits.email)) {
     throw new InstrumentationError(`Email "${traits.email}" is invalid`);
@@ -132,7 +132,7 @@ const processIdentify = async ({ message, destination, metadata }, propertyMap) 
       response.method = defaultPatchRequestConfig.requestMethod;
     }
 
-    traits = await populateTraits(propertyMap, traits, destination, metadata);
+    traits = await populateTraits(contactsPropertiesMap, traits, destination, metadata);
     response.body.JSON = removeUndefinedAndNullValues({ properties: traits });
     response.source = 'rETL';
     response.operation = operation;
@@ -148,7 +148,10 @@ const processIdentify = async ({ message, destination, metadata }, propertyMap) 
       contactId = await searchContacts(message, destination, metadata);
     }
 
-    const properties = await getTransformedJSON({ message, destination, metadata }, propertyMap);
+    const properties = await getTransformedJSON(
+      { message, destination, metadata },
+      contactsPropertiesMap,
+    );
 
     const payload = {
       properties,

@@ -93,11 +93,6 @@ const isValidUrl = (url) => {
 
 const stripTrailingSlash = (str) => (str && str.endsWith('/') ? str.slice(0, -1) : str);
 
-const isPrimitive = (arg) => {
-  const type = typeof arg;
-  return arg == null || (type !== 'object' && type !== 'function');
-};
-
 const isNewStatusCodesAccepted = (reqMetadata = {}) => {
   if (reqMetadata && typeof reqMetadata === 'object' && !Array.isArray(reqMetadata)) {
     const { features } = reqMetadata;
@@ -2448,7 +2443,6 @@ module.exports = {
   isOAuthDestination,
   isOAuthSupported,
   isObject,
-  isPrimitive,
   isValidUrl,
   removeHyphens,
   removeNullValues,

@@ -104,4 +104,70 @@ describe('requestSizeMiddleware', () => {
       route: '/test',
     });
   });
+
+  it('should handle missing request and response bodies', async () => {
+    const app = new Koa();
+    addRequestSizeMiddleware(app);
+
+    const ctx = {
+      method: 'GET',
+      status: 200,
+      request: {
+        url: '/test',
+        // No body property
+      },
+      response: {
+        // No body property
+      },
+    };
+    const next = jest.fn().mockResolvedValue(null);
+
+    await app.middleware[0](ctx, next);
+
+    expect(stats.histogram).toHaveBeenCalledWith('http_request_size', 0, {
+      method: 'GET',
+      code: 200,
+      route: '/test',
+    });
+
+    expect(stats.histogram).toHaveBeenCalledWith('http_response_size', 0, {
+      method: 'GET',
+      code: 200,
+      route: '/test',
+    });
+  });
+
+  it('should handle empty request and response bodies', async () => {
+    const app = new Koa();
+    addRequestSizeMiddleware(app);
+
+    const ctx = {
+      method: 'POST',
+      status: 200,
+      request: {
+        url: '/test',
+        body: {},
+      },
+      response: {
+        body: {},
+      },
+    };
+    const next = jest.fn().mockResolvedValue(null);
+
+    await app.middleware[0](ctx, next);
+
+    expect(stats.histogram).toHaveBeenCalledWith('http_request_size', 2, {
+      // "{}" is 2 bytes
+      method: 'POST',
+      code: 200,
+      route: '/test',
+    });
+
+    expect(stats.histogram).toHaveBeenCalledWith('http_response_size', 2, {
+      // "{}" is 2 bytes
+      method: 'POST',
+      code: 200,
+      route: '/test',
+    });
+  });
 });

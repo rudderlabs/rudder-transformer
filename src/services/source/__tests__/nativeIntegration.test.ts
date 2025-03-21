@@ -18,10 +18,12 @@ const headers = {
 describe('NativeIntegration Source Service', () => {
   test('sourceTransformRoutine - success', async () => {
     const sourceType = '__rudder_test__';
-    const version = 'v0';
     const requestMetadata = {};
 
-    const event = { message: { a: 'b' }, headers };
+    const event = {
+      request: { body: JSON.stringify({ message: { a: 'b' } }) },
+      headers,
+    };
     const events = [event, event];
 
     const tevent = { anonymousId: 'test', context: { headers } };
@@ -32,9 +34,8 @@ describe('NativeIntegration Source Service', () => {
 
     const tresponse = [tresp, tresp];
 
-    FetchHandler.getSourceHandler = jest.fn().mockImplementationOnce((d, v) => {
+    FetchHandler.getSourceHandler = jest.fn().mockImplementationOnce((d) => {
       expect(d).toEqual(sourceType);
-      expect(v).toEqual(version);
       return {
         process: jest.fn(() => {
           return tevent;
@@ -50,15 +51,7 @@ describe('NativeIntegration Source Service', () => {
       });
 
     const service = new NativeIntegrationSourceService();
-    const adapterConvertedEvents = events.map((eventInstance) => {
-      return { output: eventInstance };
-    });
-    const resp = await service.sourceTransformRoutine(
-      adapterConvertedEvents,
-      sourceType,
-      version,
-      requestMetadata,
-    );
+    const resp = await service.sourceTransformRoutine(events, sourceType, requestMetadata);
 
     expect(resp).toEqual(tresponse);
 
@@ -67,19 +60,20 @@ describe('NativeIntegration Source Service', () => {
 
   test('sourceTransformRoutine - failure', async () => {
     const sourceType = '__rudder_test__';
-    const version = 'v0';
     const requestMetadata = {};
 
-    const event = { message: { a: 'b' } };
+    const event = {
+      request: { body: JSON.stringify({ message: { a: 'b' } }) },
+      headers,
+    };
     const events = [event, event];
 
     const tresp = { error: 'error' } as SourceTransformationResponse;
 
     const tresponse = [{ error: 'error' }, { error: 'error' }];
 
-    FetchHandler.getSourceHandler = jest.fn().mockImplementationOnce((d, v) => {
+    FetchHandler.getSourceHandler = jest.fn().mockImplementationOnce((d) => {
       expect(d).toEqual(sourceType);
-      expect(v).toEqual(version);
       return {
         process: jest.fn(() => {
           throw new Error('test error');
@@ -95,15 +89,7 @@ describe('NativeIntegration Source Service', () => {
     jest.spyOn(stats, 'increment').mockImplementation(() => {});
 
     const service = new NativeIntegrationSourceService();
-    const adapterConvertedEvents = events.map((eventInstance) => {
-      return { output: eventInstance };
-    });
-    const resp = await service.sourceTransformRoutine(
-      adapterConvertedEvents,
-      sourceType,
-      version,
-      requestMetadata,
-    );
+    const resp = await service.sourceTransformRoutine(events, sourceType, requestMetadata);
 
     expect(resp).toEqual(tresponse);
 

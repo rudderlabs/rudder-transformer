@@ -8,7 +8,6 @@ const {
 } = require('@rudderstack/integrations-lib');
 const { isEmpty } = require('lodash');
 const { isHttpStatusSuccess } = require('../../../../v0/util');
-const zohoConfig = require('./config');
 const { handleHttpRequest } = require('../../../../adapters/network');
 const { CommonUtils } = require('../../../../util/common');
 
@@ -127,7 +126,10 @@ const sendCOQLRequest = async (region, accessToken, object, selectQuery) => {
       };
     }
 
-    const searchURL = `${zohoConfig.DATA_CENTRE_BASE_ENDPOINTS_MAP[region]}/crm/v6/coql`;
+    const searchURL = ZOHO_SDK.ZOHO.getBaseRecordUrl({
+      dataCenter: region,
+      moduleName: 'coql',
+    });
     const searchResult = await handleHttpRequest(
       'post',
       searchURL,

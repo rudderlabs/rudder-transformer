@@ -12,7 +12,7 @@ export const deleteData = [
   {
     name: destType,
     id: 'zoho_deletion_1',
-    description: 'Happy flow record deletion with Contacts module V2',
+    description: 'Happy flow record deletion with Contacts module',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -103,8 +103,8 @@ export const deleteData = [
   },
   {
     name: destType,
-    id: 'zoho_deletion_1_v2',
-    description: 'Happy flow record deletion with Leads module V2',
+    id: 'zoho_deletion_1',
+    description: 'Happy flow record deletion with Leads module',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -214,8 +214,8 @@ export const deleteData = [
   },
   {
     name: destType,
-    id: 'zoho_deletion_2_v2',
-    description: 'Batch containing already existing and non existing records for deletion V2',
+    id: 'zoho_deletion_2',
+    description: 'Batch containing already existing and non existing records for deletion',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -341,8 +341,8 @@ export const deleteData = [
   },
   {
     name: destType,
-    id: 'zoho_deletion_2_v2',
-    description: 'Delete with invalid access token V2',
+    id: 'zoho_deletion_2',
+    description: 'Delete with invalid access token',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -425,8 +425,8 @@ export const deleteData = [
   },
   {
     name: destType,
-    id: 'zoho_deletion_2_v2',
-    description: 'Test empty identifier in deletion payload V2',
+    id: 'zoho_deletion_2',
+    description: 'Test empty identifier in deletion payload',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -506,8 +506,8 @@ export const deleteData = [
   },
   {
     name: destType,
-    id: 'zoho_deletion_1_v2',
-    description: 'Instrumentation error when the identifiers are empty in the payload V2',
+    id: 'zoho_deletion_1',
+    description: 'Instrumentation error when the identifiers are empty in the payload',
     feature: 'router',
     module: 'destination',
     version: 'v0',

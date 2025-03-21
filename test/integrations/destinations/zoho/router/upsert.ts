@@ -18,7 +18,7 @@ import {
 export const upsertData = [
   {
     name: destType,
-    description: 'Happy flow with Leads module V2',
+    description: 'Happy flow with Leads module',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -127,7 +127,7 @@ export const upsertData = [
   },
   {
     name: destType,
-    description: 'Happy flow with Trigger None V2',
+    description: 'Happy flow with Trigger None',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -236,7 +236,7 @@ export const upsertData = [
   },
   {
     name: destType,
-    description: 'Happy flow with custom Module V2',
+    description: 'Happy flow with custom Module',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -392,7 +392,7 @@ export const upsertData = [
   },
   {
     name: destType,
-    description: 'If module specific mandatory field is absent, event will fail V2',
+    description: 'If module specific mandatory field is absent, event will fail',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -554,7 +554,7 @@ export const upsertData = [
   {
     name: destType,
     description:
-      'If multiselect key decision is not set from UI, Rudderstack will consider those as normal fields V2',
+      'If multiselect key decision is not set from UI, Rudderstack will consider those as normal fields',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -624,7 +624,7 @@ export const upsertData = [
   },
   {
     name: destType,
-    description: 'Test Batching V2',
+    description: 'Test Batching',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -772,7 +772,7 @@ export const upsertData = [
   },
   {
     name: destType,
-    description: 'Test fields can be empty V2',
+    description: 'Test fields can be empty',
     feature: 'router',
     module: 'destination',
     version: 'v0',

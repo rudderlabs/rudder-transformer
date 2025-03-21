@@ -230,6 +230,7 @@ const processEvent = async (inputEvent, metricMetadata) => {
 
   // Handle unsupported events
   if (
+    shopifyTopic !== 'carts_update' &&
     !SUPPORTED_TRACK_EVENTS.includes(shopifyTopic) &&
     !Object.values(IDENTIFY_TOPICS).includes(shopifyTopic) &&
     !Object.values(ECOM_TOPICS).includes(shopifyTopic)

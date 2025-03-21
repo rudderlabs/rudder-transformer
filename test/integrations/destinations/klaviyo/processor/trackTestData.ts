@@ -7,6 +7,7 @@ import {
   overrideDestination,
   transformResultBuilder,
 } from '../../../testUtils';
+import { secret1, authHeader1 } from '../maskedSecrets';
 
 const destination: Destination = {
   ID: '123',
@@ -19,7 +20,7 @@ const destination: Destination = {
   },
   Config: {
     publicApiKey: 'dummyPublicApiKey',
-    privateApiKey: 'dummyPrivateApiKey',
+    privateApiKey: secret1,
   },
   Enabled: true,
   WorkspaceID: '123',
@@ -40,7 +41,7 @@ const commonProps = {
 
 const commonOutputHeaders = {
   Accept: 'application/json',
-  Authorization: 'Klaviyo-API-Key dummyPrivateApiKey',
+  Authorization: authHeader1,
   'Content-Type': 'application/json',
   revision: '2023-02-22',
 };
@@ -88,6 +89,7 @@ export const trackTestData: ProcessorTestData[] = [
             metadata: generateMetadata(1),
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -170,6 +172,7 @@ export const trackTestData: ProcessorTestData[] = [
             metadata: generateMetadata(2),
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -244,6 +247,7 @@ export const trackTestData: ProcessorTestData[] = [
             metadata: generateMetadata(3),
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -312,6 +316,7 @@ export const trackTestData: ProcessorTestData[] = [
             metadata: generateMetadata(4),
           },
         ],
+        method: 'POST',
       },
     },
     output: {

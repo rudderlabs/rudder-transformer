@@ -3,30 +3,35 @@ const get = require('get-value');
 const unset = require('unset-value');
 
 function getDynamicConfigValue(event, value) {
-  // this regex checks for pattern  "only spaces {{ path || defaultvalue }}  only spaces" .
-  //  " {{message.traits.key  ||   \"email\" }} "
-  //  " {{ message.traits.key || 1233 }} "
-  const defFormat =
-    /^\s*{{\s*(?<path>[A-Z_a-z]\w*(?:\.[A-Z_a-z]\w*)+)\s*\|\|\s*(?<defaultVal>.*)\s*}}\s*$/;
-  const matResult = value.match(defFormat);
-  if (matResult) {
-    // Support "event.<obj1>.<key>" alias for "message.<obj1>.<key>"
-    const fieldPath = matResult.groups.path.replace(/^event\.(.*)$/, 'message.$1');
-    const pathVal = get(event, fieldPath);
-    if (pathVal) {
-      value = pathVal;
-      unset(event, fieldPath);
-    } else {
-      value = matResult.groups.defaultVal.replace(/"/g, '').trim();
+  // Check if the value contains the "{{ }}" pattern
+  value = value.trim();
+  if (value.startsWith(`{{`) && value.endsWith(`}}`)) {
+    // Remove the surrounding "{{ }}" and trim spaces
+    const innerContent = value.slice(2, -2).trim();
+
+    // Split the content by "||" to separate path and default value
+    const parts = innerContent.split('||').map((part) => part.trim());
+
+    // Ensure there are exactly two parts: path and default value
+    if (parts.length === 2) {
+      const [path, defaultVal] = parts;
+
+      // Replace "event.<obj1>.<key>" with "message.<obj1>.<key>"
+      const fieldPath = path.startsWith('event.') ? path.replace(/^event\./, 'message.') : path;
+
+      // Retrieve the value from the event object
+      const pathVal = get(event, fieldPath);
+
+      // Use the path value if available, otherwise use the default value
+      if (pathVal) {
+        unset(event, fieldPath); // Remove the used path from the event object
+        return pathVal;
+      }
+      return defaultVal.replace(/"/g, '').trim(); // Clean up and use default value
     }
-    return value;
   }
-  /** var format2 = /<some other regex>/;
-  matResult = value.match(format2);
-  if (matResult) {
-    <more logic here>
-    return value
-  } */
+
+  // Return the value unchanged if no "{{ }}" pattern or invalid format
   return value;
 }
 

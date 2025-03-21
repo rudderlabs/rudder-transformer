@@ -1,3 +1,5 @@
+import { authHeader1, secret1 } from '../maskedSecrets';
+
 export const data = [
   {
     name: 'freshsales',
@@ -68,7 +70,7 @@ export const data = [
                   ResponseRules: {},
                 },
                 Config: {
-                  apiKey: 'hrkjfergeferf',
+                  apiKey: secret1,
                   domain: 'rudderstack-479541159204968909.myfreshworks.com',
                 },
                 Enabled: true,
@@ -97,7 +99,7 @@ export const data = [
                 endpoint:
                   'https://rudderstack-479541159204968909.myfreshworks.com/crm/sales/api/contacts/upsert',
                 headers: {
-                  Authorization: 'Token token=hrkjfergeferf',
+                  Authorization: authHeader1,
                   'Content-Type': 'application/json',
                 },
                 params: {},
@@ -158,7 +160,7 @@ export const data = [
                   ResponseRules: {},
                 },
                 Config: {
-                  apiKey: 'hrkjfergeferf',
+                  apiKey: secret1,
                   domain: 'rudderstack-479541159204968909.myfreshworks.com',
                 },
                 Enabled: true,

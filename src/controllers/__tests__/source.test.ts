@@ -20,7 +20,7 @@ beforeAll(async () => {
     }),
   );
   applicationRoutes(app);
-  server = app.listen(9090);
+  server = app.listen();
 });
 
 afterAll(async () => {
@@ -41,8 +41,8 @@ const getData = () => {
 
 const getV2Data = () => {
   return [
-    { request: { body: '{"a": "b"}' }, source: { id: 1 } },
-    { request: { body: '{"a": "b"}' }, source: { id: 1 } },
+    { request: { body: JSON.stringify({ a: 'b' }) }, source: { id: 1 } },
+    { request: { body: JSON.stringify({ a: 'b' }) }, source: { id: 1 } },
   ];
 };
 

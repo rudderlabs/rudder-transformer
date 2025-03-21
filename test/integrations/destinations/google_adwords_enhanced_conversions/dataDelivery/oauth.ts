@@ -1,4 +1,6 @@
-import { API_VERSION } from '../../../../../src/v0/destinations/google_adwords_enhanced_conversions/config';
+import { authHeader1 } from '../maskedSecrets';
+const API_VERSION = 'v18';
+
 import {
   generateProxyV1Payload,
   generateProxyV0Payload,
@@ -38,7 +40,7 @@ const requestPayload = {
 };
 
 const headers = {
-  Authorization: 'Bearer abcd1234',
+  Authorization: authHeader1,
   'Content-Type': 'application/json',
   'developer-token': 'ijkl91011',
   'login-customer-id': '0987654321',

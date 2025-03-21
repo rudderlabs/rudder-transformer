@@ -1,5 +1,6 @@
 import { overrideDestination } from '../../../testUtils';
 import { sampleDestination } from '../common';
+import { authHeader2, secret1, secret2, secret3 } from '../maskedSecrets';
 
 export const data = [
   {
@@ -15,8 +16,8 @@ export const data = [
             {
               description: 'Page call',
               destination: overrideDestination(sampleDestination, {
-                apiSecret: 'test_api_secret',
-                token: 'test_api_token',
+                apiSecret: secret3,
+                token: secret2,
                 useOldMapping: true,
                 strictMode: true,
               }),
@@ -76,8 +77,8 @@ export const data = [
               description:
                 'Track: set device id and user id when simplified id merge api is selected',
               destination: overrideDestination(sampleDestination, {
-                apiSecret: 'test_api_secret',
-                token: 'test_api_token',
+                apiSecret: secret3,
+                token: secret2,
                 identityMergeApi: 'simplified',
                 strictMode: true,
               }),
@@ -124,8 +125,8 @@ export const data = [
             {
               description: 'Identify call to create anonymous user profile',
               destination: overrideDestination(sampleDestination, {
-                apiSecret: 'test_api_secret',
-                token: 'test_api_token',
+                apiSecret: secret3,
+                token: secret2,
                 useOldMapping: true,
                 strictMode: true,
               }),
@@ -189,8 +190,8 @@ export const data = [
               description:
                 'Identify: append $device: to deviceId while creating the user when simplified id merge api is selected',
               destination: overrideDestination(sampleDestination, {
-                apiSecret: 'test_api_secret',
-                token: 'test_api_token',
+                apiSecret: secret3,
+                token: secret2,
                 identityMergeApi: 'simplified',
                 strictMode: true,
               }),
@@ -254,8 +255,8 @@ export const data = [
             {
               description: 'Merge call with strict mode enabled',
               destination: overrideDestination(sampleDestination, {
-                apiSecret: 'test_api_secret',
-                token: 'test_api_token',
+                apiSecret: secret3,
+                token: secret2,
                 strictMode: true,
               }),
               metadata: { jobId: 5, additionalProp: 5, userId: 'u1' },
@@ -300,8 +301,8 @@ export const data = [
             {
               description: 'Group call',
               destination: overrideDestination(sampleDestination, {
-                apiSecret: 'test_api_secret',
-                token: 'test_api_token',
+                apiSecret: secret3,
+                token: secret2,
                 groupKeySettings: [
                   {
                     groupKey: 'company',
@@ -363,8 +364,8 @@ export const data = [
             {
               description: 'Group key not present in traits',
               destination: overrideDestination(sampleDestination, {
-                apiSecret: 'test_api_secret',
-                token: 'test_api_token',
+                apiSecret: secret3,
+                token: secret2,
                 groupKeySettings: [
                   {
                     groupKey: 'company',
@@ -442,15 +443,36 @@ export const data = [
                 endpoint: 'https://api.mixpanel.com/import/',
                 headers: {
                   'Content-Type': 'application/json',
-                  Authorization: 'Basic dGVzdF9hcGlfdG9rZW46',
+                  Authorization: authHeader2,
                 },
                 params: { strict: 1 },
                 body: {
                   JSON: {},
                   JSON_ARRAY: {},
                   GZIP: {
-                    payload:
-                      '[{"event":"Loaded a Page","properties":{"ip":"0.0.0.0","$user_id":"hjikl","$current_url":"https://docs.rudderstack.com/destinations/mixpanel","$screen_dpi":2,"mp_lib":"RudderLabs JavaScript SDK","$app_build_number":"1.0.0","$app_version_string":"1.0.5","$insert_id":"dd266c67-9199-4a52-ba32-f46ddde67312","token":"test_api_token","distinct_id":"hjikl","time":1688624942402,"name":"Contact Us","$browser":"Chrome","$browser_version":"79.0.3945.117"}}]',
+                    payload: JSON.stringify([
+                      {
+                        event: 'Loaded a Page',
+                        properties: {
+                          ip: '0.0.0.0',
+                          $user_id: 'hjikl',
+                          $current_url: 'https://docs.rudderstack.com/destinations/mixpanel',
+                          $screen_dpi: 2,
+                          mp_lib: 'RudderLabs JavaScript SDK',
+                          $initial_referrer: 'https://docs.rudderstack.com',
+                          $initial_referring_domain: 'docs.rudderstack.com',
+                          $app_build_number: '1.0.0',
+                          $app_version_string: '1.0.5',
+                          $insert_id: 'dd266c67-9199-4a52-ba32-f46ddde67312',
+                          token: secret2,
+                          distinct_id: 'hjikl',
+                          time: 1688624942402,
+                          name: 'Contact Us',
+                          $browser: 'Chrome',
+                          $browser_version: '79.0.3945.117',
+                        },
+                      },
+                    ]),
                   },
                   XML: {},
                   FORM: {},
@@ -462,9 +484,9 @@ export const data = [
               statusCode: 200,
               destination: {
                 Config: {
-                  apiKey: 'dummyApiKey',
-                  apiSecret: 'test_api_secret',
-                  token: 'test_api_token',
+                  apiKey: secret1,
+                  apiSecret: secret3,
+                  token: secret2,
                   prefixProperties: true,
                   useNativeSDK: false,
                   useOldMapping: true,
@@ -474,6 +496,7 @@ export const data = [
                   DisplayName: 'Mixpanel',
                   ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
                   Name: 'MP',
+                  Config: {},
                 },
                 Enabled: true,
                 ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
@@ -494,8 +517,15 @@ export const data = [
                   body: {
                     JSON: {},
                     JSON_ARRAY: {
-                      batch:
-                        '[{"$append":{"$transactions":{"$time":"2023-07-06T06:29:02.402Z","$amount":18.9}},"$token":"test_api_token","$distinct_id":"userId01"}]',
+                      batch: JSON.stringify([
+                        {
+                          $append: {
+                            $transactions: { $time: '2023-07-06T06:29:02.402Z', $amount: 18.9 },
+                          },
+                          $token: secret2,
+                          $distinct_id: 'userId01',
+                        },
+                      ]),
                     },
                     XML: {},
                     FORM: {},
@@ -509,15 +539,43 @@ export const data = [
                   endpoint: 'https://api.mixpanel.com/import/',
                   headers: {
                     'Content-Type': 'application/json',
-                    Authorization: 'Basic dGVzdF9hcGlfdG9rZW46',
+                    Authorization: authHeader2,
                   },
                   params: { strict: 1 },
                   body: {
                     JSON: {},
                     JSON_ARRAY: {},
                     GZIP: {
-                      payload:
-                        '[{"event":"Product Viewed","properties":{"name":"T-Shirt","revenue":18.9,"$user_id":"userId01","$os":"iOS","$screen_height":1794,"$screen_width":1080,"$screen_dpi":420,"$carrier":"Android","$os_version":"8.1.0","$device":"generic_x86","$manufacturer":"Google","$model":"Android SDK built for x86","mp_device_model":"Android SDK built for x86","$wifi":true,"$bluetooth_enabled":false,"mp_lib":"com.rudderstack.android.sdk.core","$app_build_number":"1","$app_version_string":"1.0","$insert_id":"id2","token":"test_api_token","distinct_id":"userId01","time":1688624942402,"$device_id":"anonId01"}}]',
+                      payload: JSON.stringify([
+                        {
+                          event: 'Product Viewed',
+                          properties: {
+                            name: 'T-Shirt',
+                            revenue: 18.9,
+                            $user_id: 'userId01',
+                            $os: 'iOS',
+                            $screen_height: 1794,
+                            $screen_width: 1080,
+                            $screen_dpi: 420,
+                            $carrier: 'Android',
+                            $os_version: '8.1.0',
+                            $device: 'generic_x86',
+                            $manufacturer: 'Google',
+                            $model: 'Android SDK built for x86',
+                            mp_device_model: 'Android SDK built for x86',
+                            $wifi: true,
+                            $bluetooth_enabled: false,
+                            mp_lib: 'com.rudderstack.android.sdk.core',
+                            $app_build_number: '1',
+                            $app_version_string: '1.0',
+                            $insert_id: 'id2',
+                            token: secret2,
+                            distinct_id: 'userId01',
+                            time: 1688624942402,
+                            $device_id: 'anonId01',
+                          },
+                        },
+                      ]),
                     },
                     XML: {},
                     FORM: {},
@@ -530,9 +588,9 @@ export const data = [
               statusCode: 200,
               destination: {
                 Config: {
-                  apiKey: 'dummyApiKey',
-                  apiSecret: 'test_api_secret',
-                  token: 'test_api_token',
+                  apiKey: secret1,
+                  apiSecret: secret3,
+                  token: secret2,
                   prefixProperties: true,
                   identityMergeApi: 'simplified',
                   strictMode: true,
@@ -542,6 +600,7 @@ export const data = [
                   DisplayName: 'Mixpanel',
                   ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
                   Name: 'MP',
+                  Config: {},
                 },
                 Enabled: true,
                 ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
@@ -562,8 +621,64 @@ export const data = [
                   body: {
                     JSON: {},
                     JSON_ARRAY: {
-                      batch:
-                        '[{"$set":{"$email":"mickey@disney.com","$country_code":"USA","$city":"Disney","$initial_referrer":"https://docs.rudderstack.com","$initial_referring_domain":"docs.rudderstack.com","$firstName":"Mickey","$browser":"Chrome","$browser_version":"79.0.3945.117"},"$token":"test_api_token","$distinct_id":"e6ab2c5e-2cda-44a9-a962-e2f67df78bca","$ip":"0.0.0.0","$time":1688624942402},{"$set":{"$created":"2020-01-23T08:54:02.362Z","$email":"mickey@disney.com","$country_code":"USA","$city":"Disney","$initial_referrer":"https://docs.rudderstack.com","$initial_referring_domain":"docs.rudderstack.com","$name":"Mickey Mouse","$firstName":"Mickey","$lastName":"Mouse","$browser":"Chrome","$browser_version":"79.0.3945.117"},"$token":"test_api_token","$distinct_id":"$device:anonId01","$ip":"0.0.0.0","$time":1688624942402},{"$set":{"$carrier":"Android","$manufacturer":"Google","$model":"Android SDK built for x86","$screen_height":1794,"$screen_width":1080,"$wifi":true,"anonymousId":"5094f5704b9cf2b3","userId":"test_user_id","$ios_devices":["test_device_token"],"$os":"iOS","$ios_device_model":"Android SDK built for x86","$ios_version":"8.1.0","$ios_app_release":"1","$ios_app_version":"1.0"},"$token":"test_api_token","$distinct_id":"test_user_id","$time":1584003903421}]',
+                      batch: JSON.stringify([
+                        {
+                          $set: {
+                            $email: 'mickey@disney.com',
+                            $country_code: 'USA',
+                            $city: 'Disney',
+                            $initial_referrer: 'https://docs.rudderstack.com',
+                            $initial_referring_domain: 'docs.rudderstack.com',
+                            $firstName: 'Mickey',
+                            $browser: 'Chrome',
+                            $browser_version: '79.0.3945.117',
+                          },
+                          $token: secret2,
+                          $distinct_id: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
+                          $ip: '0.0.0.0',
+                          $time: 1688624942402,
+                        },
+                        {
+                          $set: {
+                            $created: '2020-01-23T08:54:02.362Z',
+                            $email: 'mickey@disney.com',
+                            $country_code: 'USA',
+                            $city: 'Disney',
+                            $initial_referrer: 'https://docs.rudderstack.com',
+                            $initial_referring_domain: 'docs.rudderstack.com',
+                            $name: 'Mickey Mouse',
+                            $firstName: 'Mickey',
+                            $lastName: 'Mouse',
+                            $browser: 'Chrome',
+                            $browser_version: '79.0.3945.117',
+                          },
+                          $token: secret2,
+                          $distinct_id: '$device:anonId01',
+                          $ip: '0.0.0.0',
+                          $time: 1688624942402,
+                        },
+                        {
+                          $set: {
+                            $carrier: 'Android',
+                            $manufacturer: 'Google',
+                            $model: 'Android SDK built for x86',
+                            $screen_height: 1794,
+                            $screen_width: 1080,
+                            $wifi: true,
+                            anonymousId: '5094f5704b9cf2b3',
+                            userId: 'test_user_id',
+                            $ios_devices: ['test_device_token'],
+                            $os: 'iOS',
+                            $ios_device_model: 'Android SDK built for x86',
+                            $ios_version: '8.1.0',
+                            $ios_app_release: '1.0',
+                            $ios_app_version: '1',
+                          },
+                          $token: secret2,
+                          $distinct_id: 'test_user_id',
+                          $time: 1584003903421,
+                        },
+                      ]),
                     },
                     XML: {},
                     FORM: {},
@@ -577,15 +692,22 @@ export const data = [
                   endpoint: 'https://api.mixpanel.com/import/',
                   headers: {
                     'Content-Type': 'application/json',
-                    Authorization: 'Basic dGVzdF9hcGlfdG9rZW46',
+                    Authorization: authHeader2,
                   },
                   params: { strict: 1 },
                   body: {
                     JSON: {},
                     JSON_ARRAY: {},
                     GZIP: {
-                      payload:
-                        '[{"event":"$merge","properties":{"$distinct_ids":["test_user_id","5094f5704b9cf2b3"],"token":"test_api_token"}}]',
+                      payload: JSON.stringify([
+                        {
+                          event: '$merge',
+                          properties: {
+                            $distinct_ids: ['test_user_id', '5094f5704b9cf2b3'],
+                            token: secret2,
+                          },
+                        },
+                      ]),
                     },
                     XML: {},
                     FORM: {},
@@ -602,9 +724,9 @@ export const data = [
               statusCode: 200,
               destination: {
                 Config: {
-                  apiKey: 'dummyApiKey',
-                  apiSecret: 'test_api_secret',
-                  token: 'test_api_token',
+                  apiKey: secret1,
+                  apiSecret: secret3,
+                  token: secret2,
                   prefixProperties: true,
                   useNativeSDK: false,
                   useOldMapping: true,
@@ -614,6 +736,7 @@ export const data = [
                   DisplayName: 'Mixpanel',
                   ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
                   Name: 'MP',
+                  Config: {},
                 },
                 Enabled: true,
                 ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
@@ -634,8 +757,14 @@ export const data = [
                   body: {
                     JSON: {},
                     JSON_ARRAY: {
-                      batch:
-                        '[{"$token":"test_api_token","$distinct_id":"userId06","$set":{"company":["testComp"]},"$ip":"0.0.0.0"}]',
+                      batch: JSON.stringify([
+                        {
+                          $token: secret2,
+                          $distinct_id: 'userId06',
+                          $set: { company: ['testComp'] },
+                          $ip: '0.0.0.0',
+                        },
+                      ]),
                     },
                     XML: {},
                     FORM: {},
@@ -652,8 +781,14 @@ export const data = [
                   body: {
                     JSON: {},
                     JSON_ARRAY: {
-                      batch:
-                        '[{"$token":"test_api_token","$group_key":"company","$group_id":"testComp","$set":{"company":"testComp"}}]',
+                      batch: JSON.stringify([
+                        {
+                          $token: secret2,
+                          $group_key: 'company',
+                          $group_id: 'testComp',
+                          $set: { company: 'testComp' },
+                        },
+                      ]),
                     },
                     XML: {},
                     FORM: {},
@@ -666,9 +801,9 @@ export const data = [
               statusCode: 200,
               destination: {
                 Config: {
-                  apiKey: 'dummyApiKey',
-                  apiSecret: 'test_api_secret',
-                  token: 'test_api_token',
+                  apiKey: secret1,
+                  apiSecret: secret3,
+                  token: secret2,
                   prefixProperties: true,
                   groupKeySettings: [{ groupKey: 'company' }],
                   strictMode: true,
@@ -678,6 +813,7 @@ export const data = [
                   DisplayName: 'Mixpanel',
                   ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
                   Name: 'MP',
+                  Config: {},
                 },
                 Enabled: true,
                 ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
@@ -702,9 +838,9 @@ export const data = [
               },
               destination: {
                 Config: {
-                  apiKey: 'dummyApiKey',
-                  apiSecret: 'test_api_secret',
-                  token: 'test_api_token',
+                  apiKey: secret1,
+                  apiSecret: secret3,
+                  token: secret2,
                   prefixProperties: true,
                   useNativeSDK: false,
                   groupKeySettings: [{ groupKey: 'company' }],
@@ -714,6 +850,7 @@ export const data = [
                   DisplayName: 'Mixpanel',
                   ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
                   Name: 'MP',
+                  Config: {},
                 },
                 Enabled: true,
                 ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
@@ -740,8 +877,7 @@ export const data = [
             {
               description: 'Page call',
               destination: overrideDestination(sampleDestination, {
-                apiSecret: 'test_api_secret',
-                token: 'test_api_token',
+                apiSecret: secret3,
                 useOldMapping: true,
                 strictMode: true,
               }),
@@ -801,8 +937,8 @@ export const data = [
               description:
                 'Track: set device id and user id when simplified id merge api is selected',
               destination: overrideDestination(sampleDestination, {
-                apiSecret: 'test_api_secret',
-                token: 'test_api_token',
+                apiSecret: secret3,
+                token: secret2,
                 identityMergeApi: 'simplified',
                 strictMode: true,
               }),
@@ -849,8 +985,8 @@ export const data = [
             {
               description: 'Identify call to create anonymous user profile',
               destination: overrideDestination(sampleDestination, {
-                apiSecret: 'test_api_secret',
-                token: 'test_api_token',
+                apiSecret: secret3,
+                token: secret2,
                 useOldMapping: true,
                 strictMode: true,
               }),
@@ -914,8 +1050,8 @@ export const data = [
               description:
                 'Identify: append $device: to deviceId while creating the user when simplified id merge api is selected',
               destination: overrideDestination(sampleDestination, {
-                apiSecret: 'test_api_secret',
-                token: 'test_api_token',
+                apiSecret: secret3,
+                token: secret2,
                 identityMergeApi: 'simplified',
                 strictMode: true,
               }),
@@ -979,8 +1115,8 @@ export const data = [
             {
               description: 'Merge call with strict mode enabled',
               destination: overrideDestination(sampleDestination, {
-                apiSecret: 'test_api_secret',
-                token: 'test_api_token',
+                apiSecret: secret3,
+                token: secret2,
                 strictMode: true,
               }),
               metadata: { jobId: 5, additionalProp: 5, userId: 'u1' },
@@ -1025,8 +1161,8 @@ export const data = [
             {
               description: 'Group call',
               destination: overrideDestination(sampleDestination, {
-                apiSecret: 'test_api_secret',
-                token: 'test_api_token',
+                apiSecret: secret3,
+                token: secret2,
                 groupKeySettings: [
                   {
                     groupKey: 'company',
@@ -1088,8 +1224,8 @@ export const data = [
             {
               description: 'Group key not present in traits',
               destination: overrideDestination(sampleDestination, {
-                apiSecret: 'test_api_secret',
-                token: 'test_api_token',
+                apiSecret: secret3,
+                token: secret2,
                 groupKeySettings: [
                   {
                     groupKey: 'company',
@@ -1166,14 +1302,35 @@ export const data = [
                 endpoint: 'https://api.mixpanel.com/import/',
                 headers: {
                   'Content-Type': 'application/json',
-                  Authorization: 'Basic dGVzdF9hcGlfdG9rZW46',
+                  Authorization: authHeader2,
                 },
                 params: { strict: 1 },
                 body: {
                   JSON: {},
                   JSON_ARRAY: {
-                    batch:
-                      '[{"event":"Loaded a Page","properties":{"ip":"0.0.0.0","$user_id":"hjikl","$current_url":"https://docs.rudderstack.com/destinations/mixpanel","$screen_dpi":2,"mp_lib":"RudderLabs JavaScript SDK","$app_build_number":"1.0.0","$app_version_string":"1.0.5","$insert_id":"dd266c67-9199-4a52-ba32-f46ddde67312","token":"test_api_token","distinct_id":"hjikl","time":1688624942402,"name":"Contact Us","$browser":"Chrome","$browser_version":"79.0.3945.117"}}]',
+                    batch: JSON.stringify([
+                      {
+                        event: 'Loaded a Page',
+                        properties: {
+                          ip: '0.0.0.0',
+                          $user_id: 'hjikl',
+                          $current_url: 'https://docs.rudderstack.com/destinations/mixpanel',
+                          $screen_dpi: 2,
+                          mp_lib: 'RudderLabs JavaScript SDK',
+                          $initial_referrer: 'https://docs.rudderstack.com',
+                          $initial_referring_domain: 'docs.rudderstack.com',
+                          $app_build_number: '1.0.0',
+                          $app_version_string: '1.0.5',
+                          $insert_id: 'dd266c67-9199-4a52-ba32-f46ddde67312',
+                          token: secret2,
+                          distinct_id: 'hjikl',
+                          time: 1688624942402,
+                          name: 'Contact Us',
+                          $browser: 'Chrome',
+                          $browser_version: '79.0.3945.117',
+                        },
+                      },
+                    ]),
                   },
                   XML: {},
                   FORM: {},
@@ -1185,9 +1342,9 @@ export const data = [
               statusCode: 200,
               destination: {
                 Config: {
-                  apiKey: 'dummyApiKey',
-                  apiSecret: 'test_api_secret',
-                  token: 'test_api_token',
+                  apiKey: secret1,
+                  apiSecret: secret3,
+                  token: secret2,
                   prefixProperties: true,
                   useNativeSDK: false,
                   useOldMapping: true,
@@ -1197,6 +1354,7 @@ export const data = [
                   DisplayName: 'Mixpanel',
                   ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
                   Name: 'MP',
+                  Config: {},
                 },
                 Enabled: true,
                 ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
@@ -1217,8 +1375,15 @@ export const data = [
                   body: {
                     JSON: {},
                     JSON_ARRAY: {
-                      batch:
-                        '[{"$append":{"$transactions":{"$time":"2023-07-06T06:29:02.402Z","$amount":18.9}},"$token":"test_api_token","$distinct_id":"userId01"}]',
+                      batch: JSON.stringify([
+                        {
+                          $append: {
+                            $transactions: { $time: '2023-07-06T06:29:02.402Z', $amount: 18.9 },
+                          },
+                          $token: secret2,
+                          $distinct_id: 'userId01',
+                        },
+                      ]),
                     },
                     XML: {},
                     FORM: {},
@@ -1232,14 +1397,42 @@ export const data = [
                   endpoint: 'https://api.mixpanel.com/import/',
                   headers: {
                     'Content-Type': 'application/json',
-                    Authorization: 'Basic dGVzdF9hcGlfdG9rZW46',
+                    Authorization: authHeader2,
                   },
                   params: { strict: 1 },
                   body: {
                     JSON: {},
                     JSON_ARRAY: {
-                      batch:
-                        '[{"event":"Product Viewed","properties":{"name":"T-Shirt","revenue":18.9,"$user_id":"userId01","$os":"iOS","$screen_height":1794,"$screen_width":1080,"$screen_dpi":420,"$carrier":"Android","$os_version":"8.1.0","$device":"generic_x86","$manufacturer":"Google","$model":"Android SDK built for x86","mp_device_model":"Android SDK built for x86","$wifi":true,"$bluetooth_enabled":false,"mp_lib":"com.rudderstack.android.sdk.core","$app_build_number":"1","$app_version_string":"1.0","$insert_id":"id2","token":"test_api_token","distinct_id":"userId01","time":1688624942402,"$device_id":"anonId01"}}]',
+                      batch: JSON.stringify([
+                        {
+                          event: 'Product Viewed',
+                          properties: {
+                            name: 'T-Shirt',
+                            revenue: 18.9,
+                            $user_id: 'userId01',
+                            $os: 'iOS',
+                            $screen_height: 1794,
+                            $screen_width: 1080,
+                            $screen_dpi: 420,
+                            $carrier: 'Android',
+                            $os_version: '8.1.0',
+                            $device: 'generic_x86',
+                            $manufacturer: 'Google',
+                            $model: 'Android SDK built for x86',
+                            mp_device_model: 'Android SDK built for x86',
+                            $wifi: true,
+                            $bluetooth_enabled: false,
+                            mp_lib: 'com.rudderstack.android.sdk.core',
+                            $app_build_number: '1',
+                            $app_version_string: '1.0',
+                            $insert_id: 'id2',
+                            token: secret2,
+                            distinct_id: 'userId01',
+                            time: 1688624942402,
+                            $device_id: 'anonId01',
+                          },
+                        },
+                      ]),
                     },
                     XML: {},
                     FORM: {},
@@ -1252,9 +1445,9 @@ export const data = [
               statusCode: 200,
               destination: {
                 Config: {
-                  apiKey: 'dummyApiKey',
-                  apiSecret: 'test_api_secret',
-                  token: 'test_api_token',
+                  apiKey: secret1,
+                  apiSecret: secret3,
+                  token: secret2,
                   prefixProperties: true,
                   identityMergeApi: 'simplified',
                   strictMode: true,
@@ -1264,6 +1457,7 @@ export const data = [
                   DisplayName: 'Mixpanel',
                   ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
                   Name: 'MP',
+                  Config: {},
                 },
                 Enabled: true,
                 ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
@@ -1284,8 +1478,64 @@ export const data = [
                   body: {
                     JSON: {},
                     JSON_ARRAY: {
-                      batch:
-                        '[{"$set":{"$email":"mickey@disney.com","$country_code":"USA","$city":"Disney","$initial_referrer":"https://docs.rudderstack.com","$initial_referring_domain":"docs.rudderstack.com","$firstName":"Mickey","$browser":"Chrome","$browser_version":"79.0.3945.117"},"$token":"test_api_token","$distinct_id":"e6ab2c5e-2cda-44a9-a962-e2f67df78bca","$ip":"0.0.0.0","$time":1688624942402},{"$set":{"$created":"2020-01-23T08:54:02.362Z","$email":"mickey@disney.com","$country_code":"USA","$city":"Disney","$initial_referrer":"https://docs.rudderstack.com","$initial_referring_domain":"docs.rudderstack.com","$name":"Mickey Mouse","$firstName":"Mickey","$lastName":"Mouse","$browser":"Chrome","$browser_version":"79.0.3945.117"},"$token":"test_api_token","$distinct_id":"$device:anonId01","$ip":"0.0.0.0","$time":1688624942402},{"$set":{"$carrier":"Android","$manufacturer":"Google","$model":"Android SDK built for x86","$screen_height":1794,"$screen_width":1080,"$wifi":true,"anonymousId":"5094f5704b9cf2b3","userId":"test_user_id","$ios_devices":["test_device_token"],"$os":"iOS","$ios_device_model":"Android SDK built for x86","$ios_version":"8.1.0","$ios_app_release":"1","$ios_app_version":"1.0"},"$token":"test_api_token","$distinct_id":"test_user_id","$time":1584003903421}]',
+                      batch: JSON.stringify([
+                        {
+                          $set: {
+                            $email: 'mickey@disney.com',
+                            $country_code: 'USA',
+                            $city: 'Disney',
+                            $initial_referrer: 'https://docs.rudderstack.com',
+                            $initial_referring_domain: 'docs.rudderstack.com',
+                            $firstName: 'Mickey',
+                            $browser: 'Chrome',
+                            $browser_version: '79.0.3945.117',
+                          },
+                          $token: secret2,
+                          $distinct_id: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
+                          $ip: '0.0.0.0',
+                          $time: 1688624942402,
+                        },
+                        {
+                          $set: {
+                            $created: '2020-01-23T08:54:02.362Z',
+                            $email: 'mickey@disney.com',
+                            $country_code: 'USA',
+                            $city: 'Disney',
+                            $initial_referrer: 'https://docs.rudderstack.com',
+                            $initial_referring_domain: 'docs.rudderstack.com',
+                            $name: 'Mickey Mouse',
+                            $firstName: 'Mickey',
+                            $lastName: 'Mouse',
+                            $browser: 'Chrome',
+                            $browser_version: '79.0.3945.117',
+                          },
+                          $token: secret2,
+                          $distinct_id: '$device:anonId01',
+                          $ip: '0.0.0.0',
+                          $time: 1688624942402,
+                        },
+                        {
+                          $set: {
+                            $carrier: 'Android',
+                            $manufacturer: 'Google',
+                            $model: 'Android SDK built for x86',
+                            $screen_height: 1794,
+                            $screen_width: 1080,
+                            $wifi: true,
+                            anonymousId: '5094f5704b9cf2b3',
+                            userId: 'test_user_id',
+                            $ios_devices: ['test_device_token'],
+                            $os: 'iOS',
+                            $ios_device_model: 'Android SDK built for x86',
+                            $ios_version: '8.1.0',
+                            $ios_app_release: '1.0',
+                            $ios_app_version: '1',
+                          },
+                          $token: secret2,
+                          $distinct_id: 'test_user_id',
+                          $time: 1584003903421,
+                        },
+                      ]),
                     },
                     XML: {},
                     FORM: {},
@@ -1299,14 +1549,21 @@ export const data = [
                   endpoint: 'https://api.mixpanel.com/import/',
                   headers: {
                     'Content-Type': 'application/json',
-                    Authorization: 'Basic dGVzdF9hcGlfdG9rZW46',
+                    Authorization: authHeader2,
                   },
                   params: { strict: 1 },
                   body: {
                     JSON: {},
                     JSON_ARRAY: {
-                      batch:
-                        '[{"event":"$merge","properties":{"$distinct_ids":["test_user_id","5094f5704b9cf2b3"],"token":"test_api_token"}}]',
+                      batch: JSON.stringify([
+                        {
+                          event: '$merge',
+                          properties: {
+                            $distinct_ids: ['test_user_id', '5094f5704b9cf2b3'],
+                            token: secret2,
+                          },
+                        },
+                      ]),
                     },
                     XML: {},
                     FORM: {},
@@ -1323,9 +1580,9 @@ export const data = [
               statusCode: 200,
               destination: {
                 Config: {
-                  apiKey: 'dummyApiKey',
-                  apiSecret: 'test_api_secret',
-                  token: 'test_api_token',
+                  apiKey: secret1,
+                  apiSecret: secret3,
+                  token: secret2,
                   prefixProperties: true,
                   useNativeSDK: false,
                   useOldMapping: true,
@@ -1335,6 +1592,7 @@ export const data = [
                   DisplayName: 'Mixpanel',
                   ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
                   Name: 'MP',
+                  Config: {},
                 },
                 Enabled: true,
                 ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
@@ -1355,8 +1613,14 @@ export const data = [
                   body: {
                     JSON: {},
                     JSON_ARRAY: {
-                      batch:
-                        '[{"$token":"test_api_token","$distinct_id":"userId06","$set":{"company":["testComp"]},"$ip":"0.0.0.0"}]',
+                      batch: JSON.stringify([
+                        {
+                          $token: secret2,
+                          $distinct_id: 'userId06',
+                          $set: { company: ['testComp'] },
+                          $ip: '0.0.0.0',
+                        },
+                      ]),
                     },
                     XML: {},
                     FORM: {},
@@ -1373,8 +1637,14 @@ export const data = [
                   body: {
                     JSON: {},
                     JSON_ARRAY: {
-                      batch:
-                        '[{"$token":"test_api_token","$group_key":"company","$group_id":"testComp","$set":{"company":"testComp"}}]',
+                      batch: JSON.stringify([
+                        {
+                          $token: secret2,
+                          $group_key: 'company',
+                          $group_id: 'testComp',
+                          $set: { company: 'testComp' },
+                        },
+                      ]),
                     },
                     XML: {},
                     FORM: {},
@@ -1387,9 +1657,9 @@ export const data = [
               statusCode: 200,
               destination: {
                 Config: {
-                  apiKey: 'dummyApiKey',
-                  apiSecret: 'test_api_secret',
-                  token: 'test_api_token',
+                  apiKey: secret1,
+                  apiSecret: secret3,
+                  token: secret2,
                   prefixProperties: true,
                   groupKeySettings: [{ groupKey: 'company' }],
                   strictMode: true,
@@ -1399,6 +1669,7 @@ export const data = [
                   DisplayName: 'Mixpanel',
                   ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
                   Name: 'MP',
+                  Config: {},
                 },
                 Enabled: true,
                 ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
@@ -1423,9 +1694,9 @@ export const data = [
               },
               destination: {
                 Config: {
-                  apiKey: 'dummyApiKey',
-                  apiSecret: 'test_api_secret',
-                  token: 'test_api_token',
+                  apiKey: secret1,
+                  apiSecret: secret3,
+                  token: secret2,
                   prefixProperties: true,
                   useNativeSDK: false,
                   groupKeySettings: [{ groupKey: 'company' }],
@@ -1435,6 +1706,7 @@ export const data = [
                   DisplayName: 'Mixpanel',
                   ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
                   Name: 'MP',
+                  Config: {},
                 },
                 Enabled: true,
                 ID: '1WhcOCGgj9asZu850HvugU2C3Aq',

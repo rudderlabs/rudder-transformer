@@ -1,3 +1,5 @@
+import { secret1, secret2 } from '../maskedSecrets';
+
 export const data = [
   {
     name: 'am',
@@ -374,8 +376,8 @@ export const data = [
               },
             ],
             config: {
-              apiKey: '1234',
-              apiSecret: 'abcd',
+              apiKey: secret1,
+              apiSecret: secret2,
             },
           },
         ],
@@ -388,6 +390,47 @@ export const data = [
           {
             statusCode: 400,
             error: 'User deletion request failed',
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'am',
+    description: 'user deletion test with EU residencyServer',
+    feature: 'userDeletion',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            jobId: 'dummy-job-id',
+            destType: 'AM',
+            userAttributes: [
+              {
+                userId: 'test_user_id_1',
+              },
+              {
+                userId: 'test_user_id_2',
+              },
+            ],
+            config: {
+              apiKey: secret1,
+              apiSecret: secret2,
+              residencyServer: 'EU',
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            statusCode: 200,
+            status: 'successful',
           },
         ],
       },

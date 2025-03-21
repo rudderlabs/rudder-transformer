@@ -1,0 +1,31 @@
+title: Delivery response
+type: object
+properties:
+  status:
+    type: number
+  message:
+    type: string
+  destinationResponse:
+    type: object
+  statTags:
+    type: object
+    properties:
+      errorCategory:
+        type: string
+      errorType:
+        type: string
+      destType:
+        type: string
+      module:
+        type: string
+      implementation:
+        type: string
+      feature:
+        type: string
+        example: 'dataDelivery'
+      destinationId:
+        type: string
+      workspaceId:
+        type: string
+  authErrorCategory:
+    type: string

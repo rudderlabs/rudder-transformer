@@ -18,7 +18,6 @@ const {
   getClickConversionPayloadAndEndpoint,
   getConsentsDataFromIntegrationObj,
   getCallConversionPayload,
-  updateConversion,
 } = require('./utils');
 const helper = require('./helper');
 
@@ -49,17 +48,19 @@ const getConversions = (message, metadata, { Config }, event, conversionType) =>
       filteredCustomerId,
       eventLevelConsentsData,
     );
-    convertedPayload.payload.conversions[0] = updateConversion(
-      convertedPayload.payload.conversions[0],
-    );
     payload = convertedPayload.payload;
     endpoint = convertedPayload.endpoint;
   } else if (conversionType === 'store') {
-    payload = getStoreConversionPayload(message, Config, filteredCustomerId);
+    payload = getStoreConversionPayload(
+      message,
+      Config,
+      filteredCustomerId,
+      eventLevelConsentsData,
+    );
     endpoint = STORE_CONVERSION_CONFIG.replace(':customerId', filteredCustomerId);
   } else {
     // call conversions
-    payload = getCallConversionPayload(message, Config, eventLevelConsentsData);
+    payload = getCallConversionPayload(message, eventLevelConsentsData);
     endpoint = CALL_CONVERSION.replace(':customerId', filteredCustomerId);
   }
 

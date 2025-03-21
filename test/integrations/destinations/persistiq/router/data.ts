@@ -1,3 +1,5 @@
+import { defaultApiKey } from '../../../common/secrets';
+
 export const data = [
   {
     name: 'persistiq',
@@ -37,7 +39,7 @@ export const data = [
               },
               destination: {
                 Config: {
-                  apiKey: 'dummyApiKey',
+                  apiKey: defaultApiKey,
                   persistIqAttributesMapping: [{ from: 'useroccupation', to: 'occupation' }],
                 },
               },
@@ -79,7 +81,7 @@ export const data = [
                 },
                 endpoint: 'https://api.persistiq.com/v1/leads/lel1c5u1wuk8',
                 files: {},
-                headers: { 'x-api-key': 'dummyApiKey' },
+                headers: { 'x-api-key': defaultApiKey },
                 method: 'PATCH',
                 params: {},
                 type: 'REST',
@@ -87,7 +89,7 @@ export const data = [
               },
               destination: {
                 Config: {
-                  apiKey: 'dummyApiKey',
+                  apiKey: defaultApiKey,
                   persistIqAttributesMapping: [{ from: 'useroccupation', to: 'occupation' }],
                 },
               },

@@ -5,9 +5,11 @@ const {
   buildUtmParams,
   trimTraits,
   generatePageOrScreenCustomEventName,
+  getTransformedJSON,
 } = require('./util');
 const { FEATURE_GZIP_SUPPORT } = require('../../util/constant');
 const { ConfigurationError } = require('@rudderstack/integrations-lib');
+const { mappingConfig, ConfigCategory } = require('./config');
 
 const maxBatchSizeMock = 2;
 
@@ -30,7 +32,7 @@ describe('Unit test cases for groupEventsByEndpoint', () => {
           endpoint: '/engage',
           body: {
             JSON_ARRAY: {
-              batch: '[{prop:1}]',
+              batch: JSON.stringify([{ prop: 1 }]),
             },
           },
           userId: 'user1',
@@ -41,7 +43,7 @@ describe('Unit test cases for groupEventsByEndpoint', () => {
           endpoint: '/engage',
           body: {
             JSON_ARRAY: {
-              batch: '[{prop:2}]',
+              batch: JSON.stringify([{ prop: 2 }]),
             },
           },
           userId: 'user2',
@@ -52,7 +54,7 @@ describe('Unit test cases for groupEventsByEndpoint', () => {
           endpoint: '/groups',
           body: {
             JSON_ARRAY: {
-              batch: '[{prop:3}]',
+              batch: JSON.stringify([{ prop: 3 }]),
             },
           },
           userId: 'user1',
@@ -63,7 +65,7 @@ describe('Unit test cases for groupEventsByEndpoint', () => {
           endpoint: '/track',
           body: {
             JSON_ARRAY: {
-              batch: '[{prop:4}]',
+              batch: JSON.stringify([{ prop: 4 }]),
             },
           },
           userId: 'user1',
@@ -74,7 +76,7 @@ describe('Unit test cases for groupEventsByEndpoint', () => {
           endpoint: '/import',
           body: {
             JSON_ARRAY: {
-              batch: '[{prop:5}]',
+              batch: JSON.stringify([{ prop: 5 }]),
             },
           },
           userId: 'user2',
@@ -90,7 +92,7 @@ describe('Unit test cases for groupEventsByEndpoint', () => {
             endpoint: '/engage',
             body: {
               JSON_ARRAY: {
-                batch: '[{prop:1}]',
+                batch: JSON.stringify([{ prop: 1 }]),
               },
             },
             userId: 'user1',
@@ -101,7 +103,7 @@ describe('Unit test cases for groupEventsByEndpoint', () => {
             endpoint: '/engage',
             body: {
               JSON_ARRAY: {
-                batch: '[{prop:2}]',
+                batch: JSON.stringify([{ prop: 2 }]),
               },
             },
             userId: 'user2',
@@ -114,7 +116,7 @@ describe('Unit test cases for groupEventsByEndpoint', () => {
             endpoint: '/groups',
             body: {
               JSON_ARRAY: {
-                batch: '[{prop:3}]',
+                batch: JSON.stringify([{ prop: 3 }]),
               },
             },
             userId: 'user1',
@@ -127,7 +129,7 @@ describe('Unit test cases for groupEventsByEndpoint', () => {
             endpoint: '/import',
             body: {
               JSON_ARRAY: {
-                batch: '[{prop:5}]',
+                batch: JSON.stringify([{ prop: 5 }]),
               },
             },
             userId: 'user2',
@@ -147,7 +149,7 @@ describe('Unit test cases for batchEvents', () => {
           endpoint: '/engage',
           body: {
             JSON_ARRAY: {
-              batch: '[{"prop":1}]',
+              batch: JSON.stringify([{ prop: 1 }]),
             },
           },
           headers: {},
@@ -161,7 +163,7 @@ describe('Unit test cases for batchEvents', () => {
           endpoint: '/engage',
           body: {
             JSON_ARRAY: {
-              batch: '[{"prop":2}]',
+              batch: JSON.stringify([{ prop: 2 }]),
             },
           },
           headers: {},
@@ -175,7 +177,7 @@ describe('Unit test cases for batchEvents', () => {
           endpoint: '/engage',
           body: {
             JSON_ARRAY: {
-              batch: '[{"prop":3}]',
+              batch: JSON.stringify([{ prop: 3 }]),
             },
           },
           headers: {},
@@ -192,7 +194,12 @@ describe('Unit test cases for batchEvents', () => {
       {
         batched: true,
         batchedRequest: {
-          body: { FORM: {}, JSON: {}, JSON_ARRAY: { batch: '[{"prop":1},{"prop":2}]' }, XML: {} },
+          body: {
+            FORM: {},
+            JSON: {},
+            JSON_ARRAY: { batch: JSON.stringify([{ prop: 1 }, { prop: 2 }]) },
+            XML: {},
+          },
           endpoint: '/engage',
           files: {},
           headers: {},
@@ -208,7 +215,12 @@ describe('Unit test cases for batchEvents', () => {
       {
         batched: true,
         batchedRequest: {
-          body: { FORM: {}, JSON: {}, JSON_ARRAY: { batch: '[{"prop":3}]' }, XML: {} },
+          body: {
+            FORM: {},
+            JSON: {},
+            JSON_ARRAY: { batch: JSON.stringify([{ prop: 3 }]) },
+            XML: {},
+          },
           endpoint: '/engage',
           files: {},
           headers: {},
@@ -235,13 +247,13 @@ describe('Unit test cases for generateBatchedPayloadForArray', () => {
   it('should generate a batched payload with GZIP payload for /import endpoint when given an array of events', () => {
     const events = [
       {
-        body: { JSON_ARRAY: { batch: '[{"event": "event1"}]' } },
+        body: { JSON_ARRAY: { batch: JSON.stringify([{ event: 'event1' }]) } },
         endpoint: '/import',
         headers: { 'Content-Type': 'application/json' },
         params: {},
       },
       {
-        body: { JSON_ARRAY: { batch: '[{"event": "event2"}]' } },
+        body: { JSON_ARRAY: { batch: JSON.stringify([{ event: 'event2' }]) } },
         endpoint: '/import',
         headers: { 'Content-Type': 'application/json' },
         params: {},
@@ -254,7 +266,7 @@ describe('Unit test cases for generateBatchedPayloadForArray', () => {
         JSON_ARRAY: {},
         XML: {},
         GZIP: {
-          payload: '[{"event":"event1"},{"event":"event2"}]',
+          payload: JSON.stringify([{ event: 'event1' }, { event: 'event2' }]),
         },
       },
       endpoint: '/import',
@@ -276,13 +288,13 @@ describe('Unit test cases for generateBatchedPayloadForArray', () => {
   it('should generate a batched payload with JSON_ARRAY body when given an array of events', () => {
     const events = [
       {
-        body: { JSON_ARRAY: { batch: '[{"event": "event1"}]' } },
+        body: { JSON_ARRAY: { batch: JSON.stringify([{ event: 'event1' }]) } },
         endpoint: '/endpoint',
         headers: { 'Content-Type': 'application/json' },
         params: {},
       },
       {
-        body: { JSON_ARRAY: { batch: '[{"event": "event2"}]' } },
+        body: { JSON_ARRAY: { batch: JSON.stringify([{ event: 'event2' }]) } },
         endpoint: '/endpoint',
         headers: { 'Content-Type': 'application/json' },
         params: {},
@@ -292,7 +304,7 @@ describe('Unit test cases for generateBatchedPayloadForArray', () => {
       body: {
         FORM: {},
         JSON: {},
-        JSON_ARRAY: { batch: '[{"event":"event1"},{"event":"event2"}]' },
+        JSON_ARRAY: { batch: JSON.stringify([{ event: 'event1' }, { event: 'event2' }]) },
         XML: {},
       },
       endpoint: '/endpoint',
@@ -487,5 +499,201 @@ describe('generatePageOrScreenCustomEventName', () => {
     const expected = 'Viewed    page  someKeyword';
     const result = generatePageOrScreenCustomEventName(message, userDefinedEventTemplate);
     expect(result).toBe(expected);
+  });
+});
+
+describe('Unit test cases for getTransformedJSON', () => {
+  it('should transform the message payload to appropriate payload if device.token is present', () => {
+    const message = {
+      context: {
+        app: {
+          build: '1',
+          name: 'LeanPlumIntegrationAndroid',
+          namespace: 'com.android.SampleLeanPlum',
+          version: '1.0',
+        },
+        device: {
+          id: '5094f5704b9cf2b3',
+          manufacturer: 'Google',
+          model: 'Android SDK built for x86',
+          name: 'generic_x86',
+          type: 'ios',
+          token: 'test_device_token',
+        },
+        network: { carrier: 'Android', bluetooth: false, cellular: true, wifi: true },
+        os: { name: 'iOS', version: '8.1.0' },
+        timezone: 'Asia/Kolkata',
+        traits: { userId: 'test_user_id' },
+      },
+    };
+    const result = getTransformedJSON(message, mappingConfig[ConfigCategory.IDENTIFY.name], true);
+
+    const expectedResult = {
+      $carrier: 'Android',
+      $manufacturer: 'Google',
+      $model: 'Android SDK built for x86',
+      $wifi: true,
+      userId: 'test_user_id',
+      $ios_devices: ['test_device_token'],
+      $os: 'iOS',
+      $ios_device_model: 'Android SDK built for x86',
+      $ios_version: '8.1.0',
+      $ios_app_release: '1.0',
+      $ios_app_version: '1',
+    };
+
+    expect(result).toEqual(expectedResult);
+  });
+
+  it('should transform the message payload to appropriate payload if device.token is present and device.token is null', () => {
+    const message = {
+      context: {
+        app: {
+          build: '1',
+          name: 'LeanPlumIntegrationAndroid',
+          namespace: 'com.android.SampleLeanPlum',
+          version: '1.0',
+        },
+        device: {
+          id: '5094f5704b9cf2b3',
+          manufacturer: 'Google',
+          model: 'Android SDK built for x86',
+          name: 'generic_x86',
+          type: 'android',
+          token: null,
+        },
+        network: { carrier: 'Android', bluetooth: false, cellular: true, wifi: true },
+        os: { name: 'Android', version: '8.1.0' },
+        timezone: 'Asia/Kolkata',
+        traits: { userId: 'test_user_id' },
+      },
+    };
+    const result = getTransformedJSON(message, mappingConfig[ConfigCategory.IDENTIFY.name], true);
+
+    const expectedResult = {
+      $carrier: 'Android',
+      $manufacturer: 'Google',
+      $model: 'Android SDK built for x86',
+      $wifi: true,
+      userId: 'test_user_id',
+      $os: 'Android',
+      $android_model: 'Android SDK built for x86',
+      $android_os_version: '8.1.0',
+      $android_manufacturer: 'Google',
+      $android_app_version: '1.0',
+      $android_app_version_code: '1.0',
+      $android_brand: 'Google',
+    };
+
+    expect(result).toEqual(expectedResult);
+  });
+
+  it('should transform the message payload to appropriate payload if device.token is not present for apple device', () => {
+    const message = {
+      context: {
+        app: {
+          build: '1',
+          name: 'LeanPlumIntegrationAndroid',
+          namespace: 'com.android.SampleLeanPlum',
+          version: '1.0',
+        },
+        device: {
+          id: '5094f5704b9cf2b3',
+          manufacturer: 'Google',
+          model: 'Android SDK built for x86',
+          name: 'generic_x86',
+          type: 'ios',
+        },
+        network: { carrier: 'Android', bluetooth: false, cellular: true, wifi: true },
+        os: { name: 'iOS', version: '8.1.0' },
+        timezone: 'Asia/Kolkata',
+        traits: { userId: 'test_user_id' },
+      },
+    };
+    const result = getTransformedJSON(message, mappingConfig[ConfigCategory.IDENTIFY.name], true);
+
+    const expectedResult = {
+      $carrier: 'Android',
+      $manufacturer: 'Google',
+      $model: 'Android SDK built for x86',
+      $wifi: true,
+      userId: 'test_user_id',
+      $os: 'iOS',
+      $ios_device_model: 'Android SDK built for x86',
+      $ios_version: '8.1.0',
+      $ios_app_release: '1.0',
+      $ios_app_version: '1',
+    };
+
+    expect(result).toEqual(expectedResult);
+  });
+
+  it('should transform the message payload to appropriate payload if device.token is not present for android device', () => {
+    const message = {
+      context: {
+        app: {
+          build: '1',
+          name: 'LeanPlumIntegrationAndroid',
+          namespace: 'com.android.SampleLeanPlum',
+          version: '1.0',
+        },
+        device: {
+          id: '5094f5704b9cf2b3',
+          manufacturer: 'Google',
+          model: 'Android SDK built for x86',
+          name: 'generic_x86',
+          type: 'android',
+          token: undefined,
+        },
+        network: { carrier: 'Android', bluetooth: false, cellular: true, wifi: true },
+        os: { name: 'Android', version: '8.1.0' },
+        timezone: 'Asia/Kolkata',
+        traits: { userId: 'test_user_id' },
+      },
+    };
+    const result = getTransformedJSON(message, mappingConfig[ConfigCategory.IDENTIFY.name], true);
+
+    const expectedResult = {
+      $carrier: 'Android',
+      $manufacturer: 'Google',
+      $model: 'Android SDK built for x86',
+      $wifi: true,
+      userId: 'test_user_id',
+      $os: 'Android',
+      $android_model: 'Android SDK built for x86',
+      $android_os_version: '8.1.0',
+      $android_manufacturer: 'Google',
+      $android_app_version: '1.0',
+      $android_app_version_code: '1.0',
+      $android_brand: 'Google',
+    };
+
+    expect(result).toEqual(expectedResult);
+  });
+
+  it('should transform the message payload to appropriate payload if device is not present', () => {
+    const message = {
+      context: {
+        app: {
+          build: '1',
+          name: 'LeanPlumIntegrationAndroid',
+          namespace: 'com.android.SampleLeanPlum',
+          version: '1.0',
+        },
+        network: { carrier: 'Android', bluetooth: false, cellular: true, wifi: true },
+        os: { name: 'iOS', version: '8.1.0' },
+        timezone: 'Asia/Kolkata',
+        traits: { userId: 'test_user_id' },
+      },
+    };
+    const result = getTransformedJSON(message, mappingConfig[ConfigCategory.IDENTIFY.name], true);
+
+    const expectedResult = {
+      $carrier: 'Android',
+      $wifi: true,
+      userId: 'test_user_id',
+    };
+
+    expect(result).toEqual(expectedResult);
   });
 });

@@ -63,13 +63,14 @@ jobs:
           echo "DATE=$(date)" >> $GITHUB_ENV
 
       - name: Pull Changes Into develop Branch
-        uses: repo-sync/pull-request@v2.12.1
-        with:
-          source_branch: 'main'
-          destination_branch: 'develop'
-          github_token: ${{ secrets.PAT }}
-          pr_title: 'chore(release): pull main into develop post release v${{ steps.extract-version.outputs.release_version }}'
-          pr_body: ':crown: *An automated PR*'
+        run: |
+          gh pr create \
+            --base develop \
+            --head main \
+            --title "chore(release): pull main into develop post release v${{ steps.extract-version.outputs.release_version }}" \
+            --body ":crown: *An automated PR*"
+        env:
+          GH_TOKEN: ${{ secrets.PAT }}
 
       - name: Delete Release Branch
         uses: koj-co/delete-merged-action@master
@@ -99,7 +100,7 @@ jobs:
           channel-id: ${{ secrets.SLACK_RELEASE_CHANNEL_ID }}
           payload: |
             {
-              "text": "*<${{env.RELEASES_URL}}v${{ steps.extract-version.outputs.release_version }}|v${{ steps.extract-version.outputs.release_version }}>*\nCC: <@U03KG4BK1L1> <@U024YF8CR53> <@U01LVJ30QEB>",
+              "text": "*<${{env.RELEASES_URL}}v${{ steps.extract-version.outputs.release_version }}|v${{ steps.extract-version.outputs.release_version }}>*\nCC: <@S02AEQL26CT> <@S03SEKBFX0D> <@U021E50QAGY>",
               "blocks": [
                 {
                   "type": "header",

@@ -1,3 +1,4 @@
+import { authHeader1, secret1, secret2 } from '../maskedSecrets';
 const mockFns = (_) => {
   jest.spyOn(Date, 'now').mockReturnValueOnce(new Date('2023-10-14T00:00:00.000Z').valueOf());
 };
@@ -141,8 +142,8 @@ export const data = [
                   },
                 },
                 Config: {
-                  apiId: 'W0ZHNMPI2O4KHJ48ZILZACRA',
-                  apiKey: 'dummyApiKey',
+                  apiId: secret1,
+                  apiKey: secret2,
                   eventDelivery: false,
                   eventDeliveryTS: 1602757086384,
                   region: 'US',
@@ -218,8 +219,8 @@ export const data = [
                   },
                 },
                 Config: {
-                  apiId: 'W0ZHNMPI2O4KHJ48ZILZACRA',
-                  apiKey: 'dummyApiKey',
+                  apiId: secret1,
+                  apiKey: secret2,
                   eventDelivery: false,
                   eventDeliveryTS: 1602757086384,
                   region: 'US',
@@ -245,11 +246,11 @@ export const data = [
                 version: '1',
                 type: 'REST',
                 method: 'POST',
-                endpoint: 'https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA',
+                endpoint: `https://api-01.moengage.com/v1/event/${secret1}`,
                 headers: {
                   'Content-Type': 'application/json',
-                  'MOE-APPKEY': 'W0ZHNMPI2O4KHJ48ZILZACRA',
-                  Authorization: 'Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOmR1bW15QXBpS2V5',
+                  'MOE-APPKEY': secret1,
+                  Authorization: authHeader1,
                 },
                 params: {},
                 body: {
@@ -324,7 +325,7 @@ export const data = [
                   FORM: {},
                 },
                 files: {},
-                userId: '4eb021e9-a2af-4926-ae82-fe996d12f3c5',
+                userId: 'rudder123',
               },
               metadata: [{ jobId: 1, userId: 'u1' }],
               batched: false,
@@ -352,8 +353,8 @@ export const data = [
                   },
                 },
                 Config: {
-                  apiId: 'W0ZHNMPI2O4KHJ48ZILZACRA',
-                  apiKey: 'dummyApiKey',
+                  apiId: secret1,
+                  apiKey: secret2,
                   eventDelivery: false,
                   eventDeliveryTS: 1602757086384,
                   region: 'US',
@@ -368,11 +369,11 @@ export const data = [
                 version: '1',
                 type: 'REST',
                 method: 'POST',
-                endpoint: 'https://api-01.moengage.com/v1/customer/W0ZHNMPI2O4KHJ48ZILZACRA',
+                endpoint: `https://api-01.moengage.com/v1/customer/${secret1}`,
                 headers: {
                   'Content-Type': 'application/json',
-                  'MOE-APPKEY': 'W0ZHNMPI2O4KHJ48ZILZACRA',
-                  Authorization: 'Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOmR1bW15QXBpS2V5',
+                  'MOE-APPKEY': secret1,
+                  Authorization: authHeader1,
                 },
                 params: {},
                 body: {
@@ -393,7 +394,7 @@ export const data = [
                   FORM: {},
                 },
                 files: {},
-                userId: '4eb021e9-a2af-4926-ae82-fe996d12f3c5',
+                userId: 'rudder123',
               },
               metadata: [{ jobId: 2, userId: 'u1' }],
               batched: false,
@@ -421,8 +422,8 @@ export const data = [
                   },
                 },
                 Config: {
-                  apiId: 'W0ZHNMPI2O4KHJ48ZILZACRA',
-                  apiKey: 'dummyApiKey',
+                  apiId: secret1,
+                  apiKey: secret2,
                   eventDelivery: false,
                   eventDeliveryTS: 1602757086384,
                   region: 'US',

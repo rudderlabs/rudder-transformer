@@ -3,6 +3,8 @@ const {
   ConfigurationError,
   TransformationError,
   InstrumentationError,
+  isObject,
+  isEmptyObject,
 } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const {
@@ -23,24 +25,92 @@ const {
 } = require('../../util');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
-function responseBuilderSimple(message, category, destination) {
-  const payload = constructPayload(message, MAPPING_CONFIG[category.name]);
-  const { apiId, region, apiKey } = destination.Config;
-  const response = defaultRequestConfig();
-  // check the region and which api end point should be used
+// moengage supports object type, if user enables object data type we merge the custom attributes
+// ref: https://help.moengage.com/hc/en-us/articles/29787626775828-Support-for-Object-Data-Type
+const mergeCustomAttributes = (attributes) => {
+  if (!attributes.data) {
+    return attributes;
+  }
+  const { data, ...rest } = attributes;
+  return isObject(data) ? { ...rest, ...data } : rest;
+};
+
+// check the region and which api end point should be used
+const getCommonDestinationEndpoint = ({ apiId, region, category }) => {
   switch (region) {
     case 'EU':
-      response.endpoint = `${endpointEU[category.type]}${apiId}`;
-      break;
+      return `${endpointEU[category.type]}${apiId}`;
     case 'US':
-      response.endpoint = `${endpointUS[category.type]}${apiId}`;
-      break;
+      return `${endpointUS[category.type]}${apiId}`;
     case 'IND':
-      response.endpoint = `${endpointIND[category.type]}${apiId}`;
-      break;
+      return `${endpointIND[category.type]}${apiId}`;
     default:
       throw new ConfigurationError('The region is not valid');
   }
+};
+
+const createDestinationPayload = ({ message, category, useObjectData }) => {
+  const payload = {};
+  const setPayloadAttributes = (configCategory) => {
+    payload.attributes = constructPayload(message, MAPPING_CONFIG[configCategory]);
+    payload.attributes = useObjectData
+      ? mergeCustomAttributes(payload.attributes)
+      : flattenJson(payload.attributes);
+  };
+
+  switch (category.type) {
+    case 'identify':
+      // Track User
+      payload.type = 'customer';
+      setPayloadAttributes(
+        useObjectData
+          ? CONFIG_CATEGORIES.IDENTIFY_ATTR_OBJ.name
+          : CONFIG_CATEGORIES.IDENTIFY_ATTR.name,
+      );
+      return payload;
+    case 'device':
+      // Track Device
+      payload.type = 'device';
+      setPayloadAttributes(
+        useObjectData ? CONFIG_CATEGORIES.DEVICE_ATTR_OBJ.name : CONFIG_CATEGORIES.DEVICE_ATTR.name,
+      );
+
+      if (isAppleFamily(payload.attributes?.platform)) {
+        payload.attributes.platform = 'iOS';
+      }
+      return payload;
+    case 'track':
+      // Create Event
+      payload.type = 'event';
+      payload.actions = [
+        constructPayload(
+          message,
+          useObjectData
+            ? MAPPING_CONFIG[CONFIG_CATEGORIES.TRACK_ATTR_OBJ.name]
+            : MAPPING_CONFIG[CONFIG_CATEGORIES.TRACK_ATTR.name],
+        ),
+      ];
+
+      if (isAppleFamily(payload.actions[0]?.platform)) {
+        payload.actions[0].platform = 'iOS';
+      }
+      return payload;
+    default:
+      throw new InstrumentationError(`Event type ${category.type} is not supported`);
+  }
+};
+
+function responseBuilderSimple(message, category, destination) {
+  // preparing base payload with mandatory fields
+  const basePayload = constructPayload(message, MAPPING_CONFIG[category.name]);
+  if (!basePayload) {
+    // fail-safety for developer error
+    throw new TransformationError('Base payload could not be constructed');
+  }
+
+  const { apiId, region, apiKey, useObjectData } = destination.Config;
+  const response = defaultRequestConfig();
+  response.endpoint = getCommonDestinationEndpoint({ apiId, region, category });
   response.method = defaultPostRequestConfig.requestMethod;
   response.headers = {
     'Content-Type': JSON_MIME_TYPE,
@@ -49,59 +119,19 @@ function responseBuilderSimple(message, category, destination) {
     // using base64 and prepends it with the string 'Basic '.
     Authorization: `Basic ${btoa(`${apiId}:${apiKey}`)}`,
   };
-  response.userId = message.anonymousId || message.userId;
-  if (payload) {
-    switch (category.type) {
-      case 'identify':
-        // Ref: https://docs.moengage.com/docs/data-import-apis#user-api
-        payload.type = 'customer';
-        payload.attributes = constructPayload(
-          message,
-          MAPPING_CONFIG[CONFIG_CATEGORIES.IDENTIFY_ATTR.name],
-        );
-        // nested attributes are not by moengage so it is falttened
-        payload.attributes = flattenJson(payload.attributes);
-        break;
-      case 'device':
-        // Ref: https://docs.moengage.com/docs/data-import-apis#device-api
-        payload.type = 'device';
-        payload.attributes = constructPayload(
-          message,
-          MAPPING_CONFIG[CONFIG_CATEGORIES.DEVICE_ATTR.name],
-        );
-        // nested attributes are not by moengage so it is falttened
-        payload.attributes = flattenJson(payload.attributes);
+  response.userId = message.userId || message.anonymousId;
 
-        // Ref - https://developers.moengage.com/hc/en-us/articles/4413167466260-Device-
-        if (isAppleFamily(payload.attributes?.platform)) {
-          payload.attributes.platform = 'iOS';
-        }
-        break;
-      case 'track':
-        // Ref: https://docs.moengage.com/docs/data-import-apis#event-api
-        payload.type = 'event';
-        payload.actions = [
-          constructPayload(message, MAPPING_CONFIG[CONFIG_CATEGORIES.TRACK_ATTR.name]),
-        ];
+  if (category.type === 'alias') {
+    delete response.headers['MOE-APPKEY'];
+    response.body.JSON = removeUndefinedAndNullValues(basePayload);
+    return response;
+  }
 
-        // Ref - https://developers.moengage.com/hc/en-us/articles/4413174104852-Event-
-        if (isAppleFamily(payload.actions[0]?.platform)) {
-          payload.actions[0].platform = 'iOS';
-        }
-        break;
-      case EventType.ALIAS:
-        // clean as per merge user call in moengage
-        delete response.headers['MOE-APPKEY'];
-        break;
-      default:
-        throw new InstrumentationError(`Event type ${category.type} is not supported`);
-    }
-
-    response.body.JSON = removeUndefinedAndNullValues(payload);
-  } else {
-    // fail-safety for developer error
+  const payload = createDestinationPayload({ message, category, useObjectData });
+  if (isEmptyObject(payload)) {
     throw new TransformationError('Payload could not be constructed');
   }
+  response.body.JSON = removeUndefinedAndNullValues({ ...basePayload, ...payload });
   return response;
 }
 
@@ -153,4 +183,9 @@ const processRouterDest = async (inputs, reqMetadata) => {
   return respList;
 };
 
-module.exports = { process, processRouterDest };
+module.exports = {
+  process,
+  processRouterDest,
+  mergeCustomAttributes,
+  getCommonDestinationEndpoint,
+};

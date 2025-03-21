@@ -1,7 +1,8 @@
-import { Destination } from '../../../../../src/types';
+import { Destination, RouterTransformationRequestData } from '../../../../../src/types';
 import { RouterTestData } from '../../../testTypes';
 import { routerRequestV2 } from './commonConfig';
 import { generateMetadata, transformResultBuilder } from '../../../testUtils';
+import { secret1, authHeader1 } from '../maskedSecrets';
 
 const destination: Destination = {
   ID: '123',
@@ -13,7 +14,7 @@ const destination: Destination = {
     Config: {},
   },
   Config: {
-    privateApiKey: 'dummyPrivateApiKey',
+    privateApiKey: secret1,
     apiVersion: 'v2',
   },
   Enabled: true,
@@ -23,7 +24,7 @@ const destination: Destination = {
 const userProfileCommonEndpoint = 'https://a.klaviyo.com/api/profile-import';
 
 const headers = {
-  Authorization: 'Klaviyo-API-Key dummyPrivateApiKey',
+  Authorization: authHeader1,
   'Content-Type': 'application/json',
   Accept: 'application/json',
   revision: '2024-06-15',
@@ -73,7 +74,7 @@ const alreadyTransformedEvent = {
   },
   metadata: generateMetadata(10),
   destination,
-};
+} as unknown as RouterTransformationRequestData;
 
 export const dataV2: RouterTestData[] = [
   {
@@ -89,6 +90,7 @@ export const dataV2: RouterTestData[] = [
     input: {
       request: {
         body: routerRequestV2,
+        method: 'POST',
       },
     },
     output: {
@@ -422,6 +424,7 @@ export const dataV2: RouterTestData[] = [
           ],
           destType: 'klaviyo',
         },
+        method: 'POST',
       },
     },
     output: {
@@ -694,6 +697,7 @@ export const dataV2: RouterTestData[] = [
           ],
           destType: 'klaviyo',
         },
+        method: 'POST',
       },
     },
     output: {
@@ -728,7 +732,7 @@ export const dataV2: RouterTestData[] = [
                 method: 'POST',
                 endpoint: 'https://a.klaviyo.com/api/events',
                 headers: {
-                  Authorization: 'Klaviyo-API-Key dummyPrivateApiKey',
+                  Authorization: authHeader1,
                   Accept: 'application/json',
                   'Content-Type': 'application/json',
                   revision: '2024-06-15',
@@ -787,7 +791,7 @@ export const dataV2: RouterTestData[] = [
                 method: 'POST',
                 endpoint: 'https://a.klaviyo.com/api/events',
                 headers: {
-                  Authorization: 'Klaviyo-API-Key dummyPrivateApiKey',
+                  Authorization: authHeader1,
                   Accept: 'application/json',
                   'Content-Type': 'application/json',
                   revision: '2024-06-15',
@@ -844,7 +848,7 @@ export const dataV2: RouterTestData[] = [
                   method: 'POST',
                   endpoint: 'https://a.klaviyo.com/api/profile-import',
                   headers: {
-                    Authorization: 'Klaviyo-API-Key dummyPrivateApiKey',
+                    Authorization: authHeader1,
                     Accept: 'application/json',
                     'Content-Type': 'application/json',
                     revision: '2024-06-15',
@@ -878,7 +882,7 @@ export const dataV2: RouterTestData[] = [
                   method: 'POST',
                   endpoint: 'https://a.klaviyo.com/api/profile-import',
                   headers: {
-                    Authorization: 'Klaviyo-API-Key dummyPrivateApiKey',
+                    Authorization: authHeader1,
                     Accept: 'application/json',
                     'Content-Type': 'application/json',
                     revision: '2024-06-15',
@@ -911,7 +915,7 @@ export const dataV2: RouterTestData[] = [
                   method: 'POST',
                   endpoint: 'https://a.klaviyo.com/api/profile-subscription-bulk-create-jobs',
                   headers: {
-                    Authorization: 'Klaviyo-API-Key dummyPrivateApiKey',
+                    Authorization: authHeader1,
                     'Content-Type': 'application/json',
                     Accept: 'application/json',
                     revision: '2024-06-15',
@@ -982,7 +986,7 @@ export const dataV2: RouterTestData[] = [
                 method: 'POST',
                 endpoint: 'https://a.klaviyo.com/api/events',
                 headers: {
-                  Authorization: 'Klaviyo-API-Key dummyPrivateApiKey',
+                  Authorization: authHeader1,
                   Accept: 'application/json',
                   'Content-Type': 'application/json',
                   revision: '2024-06-15',
@@ -1113,6 +1117,7 @@ export const dataV2: RouterTestData[] = [
           ],
           destType: 'klaviyo',
         },
+        method: 'POST',
       },
     },
     output: {
@@ -1128,7 +1133,7 @@ export const dataV2: RouterTestData[] = [
                   method: 'POST',
                   endpoint: 'https://a.klaviyo.com/api/profile-import',
                   headers: {
-                    Authorization: 'Klaviyo-API-Key dummyPrivateApiKey',
+                    Authorization: authHeader1,
                     Accept: 'application/json',
                     'Content-Type': 'application/json',
                     revision: '2024-06-15',
@@ -1162,7 +1167,7 @@ export const dataV2: RouterTestData[] = [
                   method: 'POST',
                   endpoint: 'https://a.klaviyo.com/api/profile-subscription-bulk-create-jobs',
                   headers: {
-                    Authorization: 'Klaviyo-API-Key dummyPrivateApiKey',
+                    Authorization: authHeader1,
                     'Content-Type': 'application/json',
                     Accept: 'application/json',
                     revision: '2024-06-15',
@@ -1221,7 +1226,7 @@ export const dataV2: RouterTestData[] = [
                   method: 'POST',
                   endpoint: 'https://a.klaviyo.com/api/profile-import',
                   headers: {
-                    Authorization: 'Klaviyo-API-Key dummyPrivateApiKey',
+                    Authorization: authHeader1,
                     Accept: 'application/json',
                     'Content-Type': 'application/json',
                     revision: '2024-06-15',
@@ -1371,6 +1376,7 @@ export const dataV2: RouterTestData[] = [
           ],
           destType: 'klaviyo',
         },
+        method: 'POST',
       },
     },
     output: {
@@ -1734,6 +1740,7 @@ export const dataV2: RouterTestData[] = [
           ],
           destType: 'klaviyo',
         },
+        method: 'POST',
       },
     },
     output: {
@@ -1749,7 +1756,7 @@ export const dataV2: RouterTestData[] = [
                 method: 'POST',
                 endpoint: 'https://a.klaviyo.com/api/events',
                 headers: {
-                  Authorization: 'Klaviyo-API-Key dummyPrivateApiKey',
+                  Authorization: authHeader1,
                   Accept: 'application/json',
                   'Content-Type': 'application/json',
                   revision: '2024-06-15',
@@ -1808,7 +1815,7 @@ export const dataV2: RouterTestData[] = [
                 method: 'POST',
                 endpoint: 'https://a.klaviyo.com/api/events',
                 headers: {
-                  Authorization: 'Klaviyo-API-Key dummyPrivateApiKey',
+                  Authorization: authHeader1,
                   Accept: 'application/json',
                   'Content-Type': 'application/json',
                   revision: '2024-06-15',
@@ -1865,7 +1872,7 @@ export const dataV2: RouterTestData[] = [
                   method: 'POST',
                   endpoint: 'https://a.klaviyo.com/api/profile-import',
                   headers: {
-                    Authorization: 'Klaviyo-API-Key dummyPrivateApiKey',
+                    Authorization: authHeader1,
                     Accept: 'application/json',
                     'Content-Type': 'application/json',
                     revision: '2024-06-15',
@@ -1899,7 +1906,7 @@ export const dataV2: RouterTestData[] = [
                   method: 'POST',
                   endpoint: 'https://a.klaviyo.com/api/profile-import',
                   headers: {
-                    Authorization: 'Klaviyo-API-Key dummyPrivateApiKey',
+                    Authorization: authHeader1,
                     Accept: 'application/json',
                     'Content-Type': 'application/json',
                     revision: '2024-06-15',
@@ -1932,7 +1939,7 @@ export const dataV2: RouterTestData[] = [
                   method: 'POST',
                   endpoint: 'https://a.klaviyo.com/api/profile-subscription-bulk-delete-jobs',
                   headers: {
-                    Authorization: 'Klaviyo-API-Key dummyPrivateApiKey',
+                    Authorization: authHeader1,
                     'Content-Type': 'application/json',
                     Accept: 'application/json',
                     revision: '2024-06-15',
@@ -1989,7 +1996,7 @@ export const dataV2: RouterTestData[] = [
                 method: 'POST',
                 endpoint: 'https://a.klaviyo.com/api/events',
                 headers: {
-                  Authorization: 'Klaviyo-API-Key dummyPrivateApiKey',
+                  Authorization: authHeader1,
                   Accept: 'application/json',
                   'Content-Type': 'application/json',
                   revision: '2024-06-15',
@@ -2037,6 +2044,110 @@ export const dataV2: RouterTestData[] = [
               metadata: [generateMetadata(4, 'testKlaviyo2')],
               batched: false,
               statusCode: 200,
+              destination,
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    id: 'klaviyo-router-150624-test-7',
+    name: 'klaviyo',
+    description:
+      '150624 -> Router tests to check for invalid phone number format in identify and track calls and should throw error',
+    scenario: 'Framework',
+    successCriteria: 'Should throw invalid phone number error for identify and track calls',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: {
+                userId: 'user123',
+                type: 'identify',
+                traits: { subscribe: true },
+                context: {
+                  traits: {
+                    email: 'test@rudderstack.com',
+                    phone: '123321000',
+                    consent: 'email',
+                  },
+                  ip: '14.5.67.21',
+                  library: { name: 'http' },
+                },
+                timestamp: '2020-01-21T00:21:34.208Z',
+              },
+              destination,
+              metadata: generateMetadata(1),
+            },
+            {
+              message: {
+                type: 'track',
+                event: 'TestEven001',
+                sentAt: '2025-01-01T11:11:11.111Z',
+                userId: 'invalidPhoneUser',
+                context: {
+                  traits: {
+                    name: 'Test',
+                    email: 'test@rudderstack.com',
+                    phone: '9112340375',
+                  },
+                },
+                properties: {
+                  price: 120,
+                },
+                originalTimestamp: '2025-01-01T11:11:11.111Z',
+              },
+              metadata: generateMetadata(2),
+              destination,
+            },
+          ],
+          destType: 'klaviyo',
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              error: 'Phone number is not in E.164 format.',
+              statTags: {
+                destType: 'KLAVIYO',
+                destinationId: 'default-destinationId',
+                errorCategory: 'dataValidation',
+                errorType: 'instrumentation',
+                feature: 'router',
+                implementation: 'native',
+                module: 'destination',
+                workspaceId: 'default-workspaceId',
+              },
+              metadata: [generateMetadata(1)],
+              batched: false,
+              statusCode: 400,
+              destination,
+            },
+            {
+              error: 'Phone number is not in E.164 format.',
+              statTags: {
+                destType: 'KLAVIYO',
+                destinationId: 'default-destinationId',
+                errorCategory: 'dataValidation',
+                errorType: 'instrumentation',
+                feature: 'router',
+                implementation: 'native',
+                module: 'destination',
+                workspaceId: 'default-workspaceId',
+              },
+              metadata: [generateMetadata(2)],
+              batched: false,
+              statusCode: 400,
               destination,
             },
           ],

@@ -1,10 +1,12 @@
+import { authHeader3, secret3 } from '../maskedSecrets';
 import { rETLAudienceRouterRequest } from './audience';
 import {
   rETLRecordRouterRequest,
   rETLRecordRouterRequestVDMv2General,
   rETLRecordRouterRequestVDMv2UserId,
 } from './record';
-import { API_VERSION } from '../../../../../src/v0/destinations/google_adwords_remarketing_lists/config';
+
+const API_VERSION = 'v18';
 
 export const data = [
   {
@@ -32,7 +34,7 @@ export const data = [
                   method: 'POST',
                   endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
                   headers: {
-                    Authorization: 'Bearer default-accessToken',
+                    Authorization: authHeader3,
                     'Content-Type': 'application/json',
                   },
                   params: {
@@ -83,7 +85,7 @@ export const data = [
                   destinationId: 'default-destinationId',
                   dontBatch: false,
                   secret: {
-                    access_token: 'default-accessToken',
+                    access_token: secret3,
                   },
                   sourceId: 'default-sourceId',
                   userId: 'default-userId',
@@ -127,7 +129,7 @@ export const data = [
                   method: 'POST',
                   endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
                   headers: {
-                    Authorization: 'Bearer default-accessToken',
+                    Authorization: authHeader3,
                     'Content-Type': 'application/json',
                   },
                   params: {
@@ -178,7 +180,7 @@ export const data = [
                   destinationId: 'default-destinationId',
                   dontBatch: false,
                   secret: {
-                    access_token: 'default-accessToken',
+                    access_token: secret3,
                   },
                   sourceId: 'default-sourceId',
                   userId: 'default-userId',
@@ -222,7 +224,7 @@ export const data = [
                   method: 'POST',
                   endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
                   headers: {
-                    Authorization: 'Bearer default-accessToken',
+                    Authorization: authHeader3,
                     'Content-Type': 'application/json',
                   },
                   params: {
@@ -272,7 +274,7 @@ export const data = [
                   method: 'POST',
                   endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
                   headers: {
-                    Authorization: 'Bearer default-accessToken',
+                    Authorization: authHeader3,
                     'Content-Type': 'application/json',
                   },
                   params: {
@@ -323,7 +325,7 @@ export const data = [
                   destinationId: 'default-destinationId',
                   dontBatch: false,
                   secret: {
-                    access_token: 'default-accessToken',
+                    access_token: secret3,
                   },
                   sourceId: 'default-sourceId',
                   userId: 'default-userId',
@@ -389,7 +391,7 @@ export const data = [
                   method: 'POST',
                   endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
                   headers: {
-                    Authorization: 'Bearer default-accessToken',
+                    Authorization: authHeader3,
                     'Content-Type': 'application/json',
                   },
                   params: {
@@ -442,7 +444,7 @@ export const data = [
                   destinationId: 'default-destinationId',
                   dontBatch: false,
                   secret: {
-                    access_token: 'default-accessToken',
+                    access_token: secret3,
                   },
                   sourceId: 'default-sourceId',
                   userId: 'default-userId',
@@ -486,7 +488,7 @@ export const data = [
                   method: 'POST',
                   endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
                   headers: {
-                    Authorization: 'Bearer default-accessToken',
+                    Authorization: authHeader3,
                     'Content-Type': 'application/json',
                   },
                   params: {
@@ -557,7 +559,7 @@ export const data = [
                   destinationId: 'default-destinationId',
                   dontBatch: false,
                   secret: {
-                    access_token: 'default-accessToken',
+                    access_token: secret3,
                   },
                   sourceId: 'default-sourceId',
                   userId: 'default-userId',
@@ -570,7 +572,7 @@ export const data = [
                   dontBatch: false,
                   jobId: 3,
                   secret: {
-                    access_token: 'default-accessToken',
+                    access_token: secret3,
                   },
                   sourceId: 'default-sourceId',
                   userId: 'default-userId',
@@ -613,7 +615,7 @@ export const data = [
                   method: 'POST',
                   endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
                   headers: {
-                    Authorization: 'Bearer default-accessToken',
+                    Authorization: authHeader3,
                     'Content-Type': 'application/json',
                   },
                   params: {
@@ -666,7 +668,7 @@ export const data = [
                   destinationId: 'default-destinationId',
                   dontBatch: false,
                   secret: {
-                    access_token: 'default-accessToken',
+                    access_token: secret3,
                   },
                   sourceId: 'default-sourceId',
                   userId: 'default-userId',
@@ -709,7 +711,7 @@ export const data = [
                   destinationId: 'default-destinationId',
                   dontBatch: false,
                   secret: {
-                    access_token: 'default-accessToken',
+                    access_token: secret3,
                   },
                   sourceId: 'default-sourceId',
                   userId: 'default-userId',
@@ -761,7 +763,7 @@ export const data = [
                   method: 'POST',
                   endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
                   headers: {
-                    Authorization: 'Bearer default-accessToken',
+                    Authorization: authHeader3,
                     'Content-Type': 'application/json',
                   },
                   params: {
@@ -814,7 +816,7 @@ export const data = [
                   destinationId: 'default-destinationId',
                   dontBatch: false,
                   secret: {
-                    access_token: 'default-accessToken',
+                    access_token: secret3,
                   },
                   sourceId: 'default-sourceId',
                   userId: 'default-userId',
@@ -877,7 +879,7 @@ export const data = [
                   method: 'POST',
                   endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
                   headers: {
-                    Authorization: 'Bearer default-accessToken',
+                    Authorization: authHeader3,
                     'Content-Type': 'application/json',
                   },
                   params: {
@@ -915,7 +917,7 @@ export const data = [
                   destinationId: 'default-destinationId',
                   dontBatch: false,
                   secret: {
-                    access_token: 'default-accessToken',
+                    access_token: secret3,
                   },
                   sourceId: 'default-sourceId',
                   userId: 'default-userId',

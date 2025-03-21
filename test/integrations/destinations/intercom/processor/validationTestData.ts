@@ -1,16 +1,17 @@
+import { secret1, secret2, secret4 } from '../maskedSecrets';
 import { Destination } from '../../../../../src/types';
 import { ProcessorTestData } from '../../../testTypes';
 import { generateMetadata } from '../../../testUtils';
 
 const v1Config = {
-  apiKey: 'intercomApiKey',
+  apiKey: secret4,
   apiVersion: 'v1',
   appId: '9e9cdea1-78fa-4829-a9b2-5d7f7e96d1a0',
   collectContext: false,
 };
 
 const v2Config = {
-  apiKey: 'testApiKey',
+  apiKey: secret1,
   apiVersion: 'v2',
   apiServer: 'standard',
   sendAnonymousId: false,
@@ -28,7 +29,7 @@ const destination: Destination = {
     },
   },
   Config: {
-    apiKey: 'testApiKey',
+    apiKey: secret1,
     apiVersion: 'v2',
     apiServer: 'standard',
     sendAnonymousId: false,
@@ -108,6 +109,7 @@ export const validationTestData: ProcessorTestData[] = [
             metadata: generateMetadata(1),
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -151,6 +153,7 @@ export const validationTestData: ProcessorTestData[] = [
             metadata: generateMetadata(1),
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -197,6 +200,7 @@ export const validationTestData: ProcessorTestData[] = [
             metadata: generateMetadata(1),
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -245,6 +249,7 @@ export const validationTestData: ProcessorTestData[] = [
             metadata: generateMetadata(1),
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -293,6 +298,7 @@ export const validationTestData: ProcessorTestData[] = [
             metadata: generateMetadata(1),
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -327,7 +333,7 @@ export const validationTestData: ProcessorTestData[] = [
           {
             destination: {
               ...v2Destination,
-              Config: { ...v2Destination.Config, apiKey: 'invalidApiKey' },
+              Config: { ...v2Destination.Config, apiKey: secret2 },
             },
             message: {
               userId: 'user@3',
@@ -353,6 +359,7 @@ export const validationTestData: ProcessorTestData[] = [
             metadata: generateMetadata(1),
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -360,8 +367,38 @@ export const validationTestData: ProcessorTestData[] = [
         status: 200,
         body: [
           {
-            error:
-              '{"message":"{\\"message\\":\\"Unable to search contact due to : [{\\\\\\"code\\\\\\":\\\\\\"unauthorized\\\\\\",\\\\\\"message\\\\\\":\\\\\\"Access Token Invalid\\\\\\"}]: Workflow: procWorkflow, Step: searchContact, ChildStep: undefined, OriginalError: Unable to search contact due to : [{\\\\\\"code\\\\\\":\\\\\\"unauthorized\\\\\\",\\\\\\"message\\\\\\":\\\\\\"Access Token Invalid\\\\\\"}]\\",\\"destinationResponse\\":{\\"response\\":{\\"type\\":\\"error.list\\",\\"request_id\\":\\"request_1\\",\\"errors\\":[{\\"code\\":\\"unauthorized\\",\\"message\\":\\"Access Token Invalid\\"}]},\\"status\\":401}}","destinationResponse":{"response":{"type":"error.list","request_id":"request_1","errors":[{"code":"unauthorized","message":"Access Token Invalid"}]},"status":401}}',
+            error: JSON.stringify({
+              message: JSON.stringify({
+                message:
+                  'Unable to search contact due to : [{"code":"unauthorized","message":"Access Token Invalid"}]: Workflow: procWorkflow, Step: searchContact, ChildStep: undefined, OriginalError: Unable to search contact due to : [{"code":"unauthorized","message":"Access Token Invalid"}]',
+                destinationResponse: {
+                  response: {
+                    type: 'error.list',
+                    request_id: 'request_1',
+                    errors: [
+                      {
+                        code: 'unauthorized',
+                        message: 'Access Token Invalid',
+                      },
+                    ],
+                  },
+                  status: 401,
+                },
+              }),
+              destinationResponse: {
+                response: {
+                  type: 'error.list',
+                  request_id: 'request_1',
+                  errors: [
+                    {
+                      code: 'unauthorized',
+                      message: 'Access Token Invalid',
+                    },
+                  ],
+                },
+                status: 401,
+              },
+            }),
             statTags: { ...expectedStatTags, errorCategory: 'network', errorType: 'aborted' },
             statusCode: 401,
             metadata: generateMetadata(1),
@@ -397,6 +434,7 @@ export const validationTestData: ProcessorTestData[] = [
             metadata: generateMetadata(1),
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -447,6 +485,7 @@ export const validationTestData: ProcessorTestData[] = [
             metadata: generateMetadata(1),
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -490,6 +529,7 @@ export const validationTestData: ProcessorTestData[] = [
             metadata: generateMetadata(1),
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -534,6 +574,7 @@ export const validationTestData: ProcessorTestData[] = [
             metadata: generateMetadata(1),
           },
         ],
+        method: 'POST',
       },
     },
     output: {

@@ -76,10 +76,30 @@ const constructEndpoint = (dataCenter, category) => {
   return `${baseUrl}${category.endpoint}`;
 };
 
+const BULK_ENDPOINTS = ['/api/users/bulkUpdate', '/api/events/trackBulk'];
+
 const IDENTIFY_MAX_BATCH_SIZE = 1000;
 const IDENTIFY_MAX_BODY_SIZE_IN_BYTES = 4000000;
 
 const TRACK_MAX_BATCH_SIZE = 8000;
+
+const ITERABLE_RESPONSE_USER_ID_PATHS = [
+  'invalidUserIds',
+  'failedUpdates.invalidUserIds',
+  'failedUpdates.notFoundUserIds',
+  'failedUpdates.forgottenUserIds',
+  'failedUpdates.conflictUserIds',
+  'failedUpdates.invalidDataUserIds',
+];
+
+const ITERABLE_RESPONSE_EMAIL_PATHS = [
+  'invalidEmails',
+  'failedUpdates.invalidEmails',
+  'failedUpdates.notFoundEmails',
+  'failedUpdates.forgottenEmails',
+  'failedUpdates.conflictEmails',
+  'failedUpdates.invalidDataEmails',
+];
 
 module.exports = {
   mappingConfig,
@@ -88,4 +108,7 @@ module.exports = {
   TRACK_MAX_BATCH_SIZE,
   IDENTIFY_MAX_BATCH_SIZE,
   IDENTIFY_MAX_BODY_SIZE_IN_BYTES,
+  ITERABLE_RESPONSE_USER_ID_PATHS,
+  ITERABLE_RESPONSE_EMAIL_PATHS,
+  BULK_ENDPOINTS,
 };

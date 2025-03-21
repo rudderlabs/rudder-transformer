@@ -1,6 +1,7 @@
 import { generateMetadata, generateTrackPayload, transformResultBuilder } from '../../../testUtils';
 import { Destination } from '../../../../../src/types';
 import { ProcessorTestData } from '../../../testTypes';
+import { defaultAccessTokenAuthHeader } from '../../../common/secrets';
 
 const commonDestination: Destination = {
   ID: '12335',
@@ -113,9 +114,9 @@ const commonStatTags = {
 };
 
 const commonHeader = {
-  Authorization: 'Bearer default-accessToken',
+  Authorization: defaultAccessTokenAuthHeader,
   'Content-Type': 'application/json',
-  'LinkedIn-Version': '202402',
+  'LinkedIn-Version': '202409',
   'X-RestLi-Method': 'BATCH_CREATE',
   'X-Restli-Protocol-Version': '2.0.0',
 };
@@ -148,6 +149,7 @@ export const trackTestData: ProcessorTestData[] = [
             destination: commonDestination,
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -221,6 +223,7 @@ export const trackTestData: ProcessorTestData[] = [
             destination: commonDestination,
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -327,6 +330,7 @@ export const trackTestData: ProcessorTestData[] = [
             destination: commonDestination,
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -414,6 +418,7 @@ export const trackTestData: ProcessorTestData[] = [
             destination: commonDestination,
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -472,6 +477,7 @@ export const trackTestData: ProcessorTestData[] = [
             destination: commonDestination,
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -558,6 +564,7 @@ export const trackTestData: ProcessorTestData[] = [
             destination: commonDestination,
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -651,6 +658,7 @@ export const trackTestData: ProcessorTestData[] = [
             destination: commonDestination,
           },
         ],
+        method: 'POST',
       },
     },
     output: {

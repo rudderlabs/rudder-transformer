@@ -1,0 +1,114 @@
+name: Allure Test Reporter
+
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.sha }}
+  cancel-in-progress: true
+
+permissions:
+  id-token: write
+  contents: write # Required for gh-pages deployment
+
+jobs:
+  test_and_publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.2.1
+
+      - name: Setup Node
+        uses: actions/setup-node@v4.0.4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Run Tests and Generate Report
+        run: |
+          npm run test:ts:silent
+
+      - name: Install Allure
+        run: npm install -g allure-commandline
+
+      - name: Generate Allure Report
+        run: |
+          REPO_NAME=$(basename ${{ github.repository }})
+          PR_NUMBER=${{ github.event.pull_request.number }}
+          REPORT_FOLDER="${REPO_NAME}/${PR_NUMBER}"
+          allure generate allure-results --clean -o "${REPORT_FOLDER}"
+          echo "REPORT_FOLDER=${REPORT_FOLDER}" >> $GITHUB_ENV  # Persist this variable
+
+      - name: Checkout Reports Repository
+        uses: actions/checkout@v4
+        with:
+          repository: rudderlabs/test-reports
+          token: ${{ secrets.PAT }}
+          path: test-reports
+
+      - name: Copy Allure Report to Reports Repository
+        run: |
+          mkdir -p "test-reports/$REPORT_FOLDER"
+          cp -r $REPORT_FOLDER/* test-reports/$REPORT_FOLDER/
+
+      - name: Cleanup Old Reports (Keep Only Last 50)
+        run: |
+          REPO_NAME=$(basename ${{ github.repository }})
+          cd test-reports/${REPO_NAME}
+          ls -t | tail -n +51 | xargs rm -rf || echo "No old reports to delete"
+
+      - name: Commit and Push Report
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT }}
+        run: |
+          cd test-reports
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+
+          # Stash any unstaged changes before pulling
+          git add .
+          git stash || echo "No changes to stash"
+
+          # Pull latest changes safely
+          git pull --rebase origin main
+
+          # Apply the stashed changes back
+          git stash pop || echo "No stash to apply"
+
+          # Commit new report if there are changes
+          git add .
+          git commit -m "chore: add allure report for $REPORT_FOLDER" || echo "No changes to commit"
+
+          # Push changes with retry logic
+          for i in {1..5}; do
+            git push origin main && break || sleep 5
+            git pull --rebase origin main
+          done
+
+      - name: Add Test Report Link as Comment on PR
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.PAT }}
+          script: |
+            const { owner, repo } = context.repo;
+            const prNumber = context.payload.pull_request.number;
+
+            const reportFolder = process.env.REPORT_FOLDER;  // Read from environment variable
+            const commentBody = `Allure Test reports for this run are available at:
+            - Allure Report: [View Report](https://rudderlabs.github.io/test-reports/${reportFolder}/index.html)`;
+
+            // Comment on the pull request
+            await github.rest.issues.createComment({
+              owner,
+              repo,
+              issue_number: prNumber,
+              body: commentBody
+            });

@@ -5,6 +5,7 @@ import {
   generateSimplifiedPageOrScreenPayload,
   transformResultBuilder,
 } from '../../../testUtils';
+import { secret1, authHeader1 } from '../maskedSecrets';
 
 const destination: Destination = {
   ID: '123',
@@ -17,7 +18,7 @@ const destination: Destination = {
   },
   Config: {
     publicApiKey: 'dummyPublicApiKey',
-    privateApiKey: 'dummyPrivateApiKey',
+    privateApiKey: secret1,
   },
   Enabled: true,
   WorkspaceID: '123',
@@ -67,6 +68,7 @@ export const screenTestData: ProcessorTestData[] = [
             metadata: generateMetadata(1),
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -79,7 +81,7 @@ export const screenTestData: ProcessorTestData[] = [
               endpoint: 'https://a.klaviyo.com/api/events',
               headers: {
                 Accept: 'application/json',
-                Authorization: 'Klaviyo-API-Key dummyPrivateApiKey',
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
                 revision: '2023-02-22',
               },

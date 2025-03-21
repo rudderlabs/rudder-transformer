@@ -14,6 +14,9 @@ export class MiscService {
   }
 
   public static getSourceHandler(source: string, version: string) {
+    if (version === 'v2') {
+      return require(`../sources/${source}/transform`);
+    }
     return require(`../${version}/sources/${source}/transform`);
   }
 
@@ -33,7 +36,7 @@ export class MiscService {
     };
   }
 
-  public static getMetaTags(metadata: Metadata) {
+  public static getMetaTags(metadata?: Metadata) {
     if (!metadata) {
       return {};
     }

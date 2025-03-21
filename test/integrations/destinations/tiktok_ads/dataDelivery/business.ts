@@ -101,7 +101,7 @@ export const V1BusinessTestScenarion: ProxyV1TestData[] = [
             message: '[TIKTOK_ADS Response Handler] - Request Processed Successfully',
             response: [
               {
-                error: '{"code":0,"message":"OK"}',
+                error: JSON.stringify({ code: 0, message: 'OK' }),
                 statusCode: 200,
                 metadata: generateMetadata(1234),
               },
@@ -168,8 +168,10 @@ export const V1BusinessTestScenarion: ProxyV1TestData[] = [
             response: [
               {
                 statusCode: 400,
-                error:
-                  '{"code":40002,"message":"Batch.0.properties.contents.0.content_id: Not a valid string"}',
+                error: JSON.stringify({
+                  code: 40002,
+                  message: 'Batch.0.properties.contents.0.content_id: Not a valid string',
+                }),
                 metadata: generateMetadata(1234),
               },
             ],
@@ -235,8 +237,11 @@ export const V1BusinessTestScenarion: ProxyV1TestData[] = [
             response: [
               {
                 statusCode: 400,
-                error:
-                  '{"code":40001,"message":"No permission to operate pixel code: BU35TSQHT2A1QT375OMG. You must be an admin or operator of this advertiser account."}',
+                error: JSON.stringify({
+                  code: 40001,
+                  message:
+                    'No permission to operate pixel code: BU35TSQHT2A1QT375OMG. You must be an admin or operator of this advertiser account.',
+                }),
                 metadata: generateMetadata(1234),
               },
             ],

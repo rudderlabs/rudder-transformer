@@ -15,6 +15,7 @@ const {
   convertToUuid,
 } = require('./index');
 const exp = require('constants');
+const { ERROR_MESSAGES } = require('./constant');
 
 // Names of the utility functions to test
 const functionNames = [
@@ -1047,5 +1048,118 @@ describe('convertToUuid', () => {
     const input = {};
     const result = convertToUuid(input);
     expect(result).toBe('672ca00c-37f4-5d71-b8c3-6ae0848080ec');
+  });
+});
+
+describe('', () => {
+  it('should return original value when regex pattern is invalid', () => {
+    const value = 'test value';
+    const metadata = {
+      regex: `\\b(?!1000\\b)\\d{4,}\\b`,
+    };
+    try {
+      const result = utilities.handleMetadataForValue(value, metadata);
+    } catch (e) {
+      expect(e.message).toBe(
+        `The value 'test value' does not match the regex pattern, \\b(?!1000\\b)\\d{4,}\\b`,
+      );
+    }
+  });
+  it('should return true when the regex matches', () => {
+    const value = 1003;
+    const metadata = {
+      regex: `\\b(?!1000\\b)\\d{4,}\\b`,
+    };
+    const res = utilities.handleMetadataForValue(value, metadata);
+    expect(res).toBe(1003);
+  });
+});
+
+describe('isAndroidFamily', () => {
+  it('should return true for "android" platform', () => {
+    expect(utilities.isAndroidFamily('android')).toBe(true);
+  });
+
+  it('should return true for "ANDROID" platform (case insensitive)', () => {
+    expect(utilities.isAndroidFamily('ANDROID')).toBe(true);
+  });
+
+  it('should return false for non-android platforms', () => {
+    expect(utilities.isAndroidFamily('ios')).toBe(false);
+    expect(utilities.isAndroidFamily('web')).toBe(false);
+    expect(utilities.isAndroidFamily('windows')).toBe(false);
+  });
+
+  it('should return false for empty string', () => {
+    expect(utilities.isAndroidFamily('')).toBe(false);
+  });
+
+  it('should return false for non-string inputs', () => {
+    expect(utilities.isAndroidFamily(null)).toBe(false);
+    expect(utilities.isAndroidFamily(undefined)).toBe(false);
+    expect(utilities.isAndroidFamily(123)).toBe(false);
+    expect(utilities.isAndroidFamily({})).toBe(false);
+    expect(utilities.isAndroidFamily([])).toBe(false);
+    expect(utilities.isAndroidFamily(true)).toBe(false);
+  });
+});
+
+describe('getBodyFromV2SpecPayload', () => {
+  it('should successfully parse valid JSON body', () => {
+    const input = {
+      request: {
+        body: '{"key": "value", "number": 123}',
+      },
+    };
+    const expected = {
+      key: 'value',
+      number: 123,
+    };
+    expect(utilities.getBodyFromV2SpecPayload(input)).toEqual(expected);
+  });
+
+  it('should throw TransformationError for malformed JSON', () => {
+    const input = {
+      request: {
+        body: '{invalid json}',
+      },
+    };
+    expect(() => utilities.getBodyFromV2SpecPayload(input)).toThrow(
+      ERROR_MESSAGES.MALFORMED_JSON_IN_REQUEST_BODY,
+    );
+  });
+
+  it('should throw TransformationError when request body is missing', () => {
+    const input = {
+      request: {},
+    };
+    expect(() => utilities.getBodyFromV2SpecPayload(input)).toThrow(
+      ERROR_MESSAGES.REQUEST_BODY_NOT_PRESENT_IN_V2_SPEC_PAYLOAD,
+    );
+  });
+
+  it('should throw TransformationError when request is missing', () => {
+    const input = {};
+    expect(() => utilities.getBodyFromV2SpecPayload(input)).toThrow(
+      ERROR_MESSAGES.REQUEST_BODY_NOT_PRESENT_IN_V2_SPEC_PAYLOAD,
+    );
+  });
+
+  it('should parse empty JSON object', () => {
+    const input = {
+      request: {
+        body: '{}',
+      },
+    };
+    expect(utilities.getBodyFromV2SpecPayload(input)).toEqual({});
+  });
+
+  it('should parse JSON array', () => {
+    const input = {
+      request: {
+        body: '[1,2,3]',
+      },
+    };
+    expect(utilities.getBodyFromV2SpecPayload(input)).toEqual([1, 2, 3]);
   });
 });

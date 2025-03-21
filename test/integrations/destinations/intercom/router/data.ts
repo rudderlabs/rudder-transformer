@@ -1,3 +1,4 @@
+import { authHeader1, secret1 } from '../maskedSecrets';
 import { Destination, RouterTransformationRequest } from '../../../../../src/types';
 import { RouterTestData } from '../../../testTypes';
 import { generateMetadata } from '../../../testUtils';
@@ -14,7 +15,7 @@ const destination1: Destination = {
     },
   },
   Config: {
-    apiKey: 'testApiKey',
+    apiKey: secret1,
     apiServer: 'standard',
     apiVersion: 'v2',
     sendAnonymousId: false,
@@ -37,7 +38,7 @@ const destination2: Destination = {
     },
   },
   Config: {
-    apiKey: 'testApiKey',
+    apiKey: secret1,
     apiServer: 'standard',
     apiVersion: 'v2',
     sendAnonymousId: false,
@@ -60,7 +61,7 @@ const destination3: Destination = {
     },
   },
   Config: {
-    apiKey: 'testApiKey',
+    apiKey: secret1,
     apiVersion: 'v2',
     apiServer: 'eu',
     sendAnonymousId: false,
@@ -82,7 +83,7 @@ const destination4: Destination = {
     },
   },
   Config: {
-    apiKey: 'testApiKey',
+    apiKey: secret1,
     apiVersion: 'v1',
     sendAnonymousId: false,
     updateLastRequestAt: false,
@@ -105,7 +106,7 @@ const destination5: Destination = {
     },
   },
   Config: {
-    apiKey: 'testApiKey',
+    apiKey: secret1,
     apiVersion: 'v1',
     sendAnonymousId: false,
     collectContext: false,
@@ -125,7 +126,7 @@ const destination6: Destination = {
     Config: {},
   },
   Config: {
-    apiKey: 'testApiKey',
+    apiKey: secret1,
     apiVersion: 'v1',
     sendAnonymousId: false,
     updateLastRequestAt: false,
@@ -146,7 +147,7 @@ const destination7: Destination = {
     Config: {},
   },
   Config: {
-    apiKey: 'testApiKey',
+    apiKey: secret1,
     apiVersion: 'v1',
     sendAnonymousId: false,
     collectContext: false,
@@ -812,6 +813,7 @@ export const data: RouterTestData[] = [
     input: {
       request: {
         body: routerRequest1,
+        method: 'POST',
       },
     },
     output: {
@@ -841,7 +843,7 @@ export const data: RouterTestData[] = [
                 endpoint: 'https://api.intercom.io/contacts',
                 files: {},
                 headers: {
-                  Authorization: 'Bearer testApiKey',
+                  Authorization: authHeader1,
                   'Content-Type': 'application/json',
                   Accept: 'application/json',
                   'Intercom-Version': '2.10',
@@ -884,7 +886,7 @@ export const data: RouterTestData[] = [
                 endpoint: 'https://api.intercom.io/events',
                 files: {},
                 headers: {
-                  Authorization: 'Bearer testApiKey',
+                  Authorization: authHeader1,
                   'Content-Type': 'application/json',
                   Accept: 'application/json',
                   'Intercom-Version': '2.10',
@@ -913,7 +915,7 @@ export const data: RouterTestData[] = [
                 endpoint: 'https://api.eu.intercom.io/contacts/70701240741e45d040/companies',
                 files: {},
                 headers: {
-                  Authorization: 'Bearer testApiKey',
+                  Authorization: authHeader1,
                   'Content-Type': 'application/json',
                   Accept: 'application/json',
                   'Intercom-Version': '2.10',
@@ -942,7 +944,7 @@ export const data: RouterTestData[] = [
                 endpoint: 'https://api.eu.intercom.io/contacts/70701240741e45d040/companies',
                 files: {},
                 headers: {
-                  Authorization: 'Bearer testApiKey',
+                  Authorization: authHeader1,
                   'Content-Type': 'application/json',
                   Accept: 'application/json',
                   'Intercom-Version': '2.10',
@@ -993,6 +995,7 @@ export const data: RouterTestData[] = [
     input: {
       request: {
         body: routerRequest2,
+        method: 'POST',
       },
     },
     output: {
@@ -1008,7 +1011,7 @@ export const data: RouterTestData[] = [
                 endpoint: 'https://api.intercom.io/users',
                 headers: {
                   'Content-Type': 'application/json',
-                  Authorization: 'Bearer testApiKey',
+                  Authorization: authHeader1,
                   Accept: 'application/json',
                   'Intercom-Version': '1.4',
                   'User-Agent': 'RudderStack',
@@ -1048,7 +1051,7 @@ export const data: RouterTestData[] = [
                 endpoint: 'https://api.intercom.io/users',
                 headers: {
                   'Content-Type': 'application/json',
-                  Authorization: 'Bearer testApiKey',
+                  Authorization: authHeader1,
                   Accept: 'application/json',
                   'Intercom-Version': '1.4',
                   'User-Agent': 'RudderStack',
@@ -1100,7 +1103,7 @@ export const data: RouterTestData[] = [
                   files: {},
                   headers: {
                     Accept: 'application/json',
-                    Authorization: 'Bearer testApiKey',
+                    Authorization: authHeader1,
                     'Content-Type': 'application/json',
                     'Intercom-Version': '1.4',
                     'User-Agent': 'RudderStack',
@@ -1130,7 +1133,7 @@ export const data: RouterTestData[] = [
                   files: {},
                   headers: {
                     Accept: 'application/json',
-                    Authorization: 'Bearer testApiKey',
+                    Authorization: authHeader1,
                     'Content-Type': 'application/json',
                     'Intercom-Version': '1.4',
                     'User-Agent': 'RudderStack',
@@ -1153,7 +1156,7 @@ export const data: RouterTestData[] = [
                 endpoint: 'https://api.intercom.io/users',
                 headers: {
                   'Content-Type': 'application/json',
-                  Authorization: 'Bearer testApiKey',
+                  Authorization: authHeader1,
                   Accept: 'application/json',
                   'Intercom-Version': '1.4',
                   'User-Agent': 'RudderStack',
@@ -1212,6 +1215,7 @@ export const data: RouterTestData[] = [
     input: {
       request: {
         body: routerRequest4,
+        method: 'POST',
       },
     },
     output: {
@@ -1241,7 +1245,7 @@ export const data: RouterTestData[] = [
                 endpoint: 'https://api.eu.intercom.io/contacts/70701240741e45d040',
                 files: {},
                 headers: {
-                  Authorization: 'Bearer testApiKey',
+                  Authorization: authHeader1,
                   'Content-Type': 'application/json',
                   Accept: 'application/json',
                   'Intercom-Version': '2.10',

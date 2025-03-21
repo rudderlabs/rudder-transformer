@@ -1,3 +1,4 @@
+import { secret1, secret2 } from './maskedSecrets';
 import { Destination } from '../../../../src/types';
 
 const destType = 'http';
@@ -43,7 +44,7 @@ const destinations: Destination[] = [
     Config: {
       apiUrl: 'http://abc.com/contacts',
       auth: 'basicAuth',
-      username: 'test-user',
+      username: secret1,
       password: '',
       method: 'GET',
       format: 'JSON',
@@ -92,13 +93,18 @@ const destinations: Destination[] = [
   },
   {
     Config: {
-      apiUrl: 'http://abc.com/contacts/{{$.traits.email}}/',
+      apiUrl: 'http://abc.com/contacts/',
       auth: 'apiKeyAuth',
       apiKeyName: 'x-api-key',
       apiKeyValue: 'test-api-key',
       method: 'DELETE',
       isBatchingEnabled: true,
       maxBatchSize: 4,
+      pathParams: [
+        {
+          path: '$.traits.email',
+        },
+      ],
     },
     DestinationDefinition: {
       DisplayName: displayName,
@@ -114,13 +120,18 @@ const destinations: Destination[] = [
   },
   {
     Config: {
-      apiUrl: 'http://abc.com/contacts/{{$.traits.email}}/',
+      apiUrl: 'http://abc.com/contacts/',
       auth: 'apiKeyAuth',
       apiKeyName: 'x-api-key',
       apiKeyValue: 'test-api-key',
       method: 'GET',
       isBatchingEnabled: true,
       maxBatchSize: 4,
+      pathParams: [
+        {
+          path: '$.traits.email',
+        },
+      ],
     },
     DestinationDefinition: {
       DisplayName: displayName,
@@ -138,9 +149,10 @@ const destinations: Destination[] = [
     Config: {
       apiUrl: 'http://abc.com/events',
       auth: 'bearerTokenAuth',
-      bearerToken: 'test-token',
+      bearerToken: secret2,
       method: 'POST',
       format: 'XML',
+      xmlRootKey: 'body',
       headers: [
         {
           to: '$.h1',
@@ -249,7 +261,7 @@ const destinations: Destination[] = [
   },
   {
     Config: {
-      apiUrl: 'http://abc.com/contacts/{{$.traits.phone}}',
+      apiUrl: 'http://abc.com/contacts/',
       auth: 'noAuth',
       method: 'POST',
       format: 'JSON',
@@ -262,9 +274,366 @@ const destinations: Destination[] = [
         },
         {
           to: '$.key',
-          from: '.traits.key',
+          from: '$.traits.key',
         },
       ],
+      pathParams: [
+        {
+          path: '$.traits.phone',
+        },
+      ],
+    },
+    DestinationDefinition: {
+      DisplayName: displayName,
+      ID: '123',
+      Name: destTypeInUpperCase,
+      Config: { cdkV2Enabled: true },
+    },
+    Enabled: true,
+    ID: '123',
+    Name: destTypeInUpperCase,
+    Transformations: [],
+    WorkspaceID: 'test-workspace-id',
+  },
+  {
+    Config: {
+      apiUrl: 'http://abc.com/contacts',
+      auth: 'basicAuth',
+      username: secret1,
+      password: '',
+      method: 'GET',
+      format: 'JSON',
+      isBatchingEnabled: true,
+      maxBatchSize: 2,
+      headers: [
+        {
+          to: '$.h1',
+          from: "'val1'",
+        },
+        {
+          to: '$.h2',
+          from: '2',
+        },
+        {
+          to: "$.'content-type'",
+          from: "'application/json'",
+        },
+        {
+          to: '$.h3',
+          from: '$.traits.firstName',
+        },
+      ],
+      queryParams: [
+        {
+          to: "$['q1']",
+          from: "'val1'",
+        },
+        {
+          to: '$.q2',
+          from: '$.traits.email',
+        },
+      ],
+      pathParams: [
+        {
+          path: '$.userId',
+        },
+        {
+          path: 'c1',
+        },
+      ],
+    },
+    DestinationDefinition: {
+      DisplayName: displayName,
+      ID: '123',
+      Name: destTypeInUpperCase,
+      Config: { cdkV2Enabled: true },
+    },
+    Enabled: true,
+    ID: '123',
+    Name: destTypeInUpperCase,
+    Transformations: [],
+    WorkspaceID: 'test-workspace-id',
+  },
+  {
+    Config: {
+      apiUrl: 'http://abc.com/contacts',
+      auth: 'basicAuth',
+      username: secret1,
+      password: '',
+      method: 'GET',
+      format: 'JSON',
+      isBatchingEnabled: true,
+      maxBatchSize: 2,
+      headers: [
+        {
+          to: '$.h1',
+          from: "'val1'",
+        },
+        {
+          to: '$.h2',
+          from: '2',
+        },
+        {
+          to: "$.'content-type'",
+          from: "'application/json'",
+        },
+        {
+          to: '$.h3',
+          from: '$.traits.firstName',
+        },
+      ],
+      queryParams: [
+        {
+          to: 'user name',
+          from: "'val1'",
+        },
+        {
+          to: '$.q2',
+          from: '$.traits.email',
+        },
+      ],
+      pathParams: [
+        {
+          path: '$.userId',
+        },
+        {
+          path: 'c1',
+        },
+      ],
+    },
+    DestinationDefinition: {
+      DisplayName: displayName,
+      ID: '123',
+      Name: destTypeInUpperCase,
+      Config: { cdkV2Enabled: true },
+    },
+    Enabled: true,
+    ID: '123',
+    Name: destTypeInUpperCase,
+    Transformations: [],
+    WorkspaceID: 'test-workspace-id',
+  },
+  {
+    Config: {
+      apiUrl: 'http://abc.com/events',
+      auth: 'bearerTokenAuth',
+      bearerToken: secret2,
+      method: 'POST',
+      format: 'XML',
+      headers: [
+        {
+          to: '$.h1',
+          from: "'val1'",
+        },
+        {
+          to: '$.h2',
+          from: '$.key1',
+        },
+        {
+          to: "$.'content-type'",
+          from: "'application/json'",
+        },
+      ],
+      propertiesMapping: [
+        {
+          from: '$.properties',
+          to: '$',
+        },
+      ],
+    },
+    DestinationDefinition: {
+      DisplayName: displayName,
+      ID: '123',
+      Name: destTypeInUpperCase,
+      Config: { cdkV2Enabled: true },
+    },
+    Enabled: true,
+    ID: '123',
+    Name: destTypeInUpperCase,
+    Transformations: [],
+    WorkspaceID: 'test-workspace-id',
+  },
+  {
+    Config: {
+      apiUrl: 'http://abc.com/events',
+      auth: 'bearerTokenAuth',
+      bearerToken: secret2,
+      method: 'POST',
+      format: 'FORM',
+      headers: [
+        {
+          to: '$.h1',
+          from: "'val1'",
+        },
+        {
+          to: '$.h2',
+          from: '$.key1',
+        },
+        {
+          to: "$.'content-type'",
+          from: "'application/json'",
+        },
+      ],
+      propertiesMapping: [
+        {
+          from: '$.event',
+          to: '$.event',
+        },
+        {
+          from: '$.properties.currency',
+          to: '$.currency',
+        },
+        {
+          from: '$.userId',
+          to: '$.userId',
+        },
+      ],
+    },
+    DestinationDefinition: {
+      DisplayName: displayName,
+      ID: '123',
+      Name: destTypeInUpperCase,
+      Config: { cdkV2Enabled: true },
+    },
+    Enabled: true,
+    ID: '123',
+    Name: destTypeInUpperCase,
+    Transformations: [],
+    WorkspaceID: 'test-workspace-id',
+  },
+  {
+    Config: {
+      apiUrl: 'http://abc.com/events',
+      auth: 'bearerTokenAuth',
+      bearerToken: secret2,
+      method: 'POST',
+      format: 'FORM',
+      headers: [
+        {
+          to: '$.h1',
+          from: "'val1'",
+        },
+        {
+          to: '$.h2',
+          from: '$.key1',
+        },
+      ],
+      propertiesMapping: [
+        {
+          from: '$.event',
+          to: '$.event',
+        },
+        {
+          from: '$.properties.currency',
+          to: '$.currency',
+        },
+        {
+          from: '$.userId',
+          to: '$.userId',
+        },
+      ],
+    },
+    DestinationDefinition: {
+      DisplayName: displayName,
+      ID: '123',
+      Name: destTypeInUpperCase,
+      Config: { cdkV2Enabled: true },
+    },
+    Enabled: true,
+    ID: '123',
+    Name: destTypeInUpperCase,
+    Transformations: [],
+    WorkspaceID: 'test-workspace-id',
+  },
+  {
+    Config: {
+      apiUrl: 'http://abc.com/events',
+      auth: 'bearerTokenAuth',
+      bearerToken: secret2,
+      method: 'POST',
+      format: 'FORM',
+      headers: [
+        {
+          to: '$.h1',
+          from: "'val1'",
+        },
+        {
+          to: '$.h2',
+          from: '$.key1',
+        },
+      ],
+      propertiesMapping: [
+        {
+          from: '$.event',
+          to: '$.event',
+        },
+        {
+          from: '$.properties.currency',
+          to: '$.currency',
+        },
+        {
+          from: '$.userId',
+          to: '$.userId',
+        },
+      ],
+    },
+    DestinationDefinition: {
+      DisplayName: displayName,
+      ID: '123',
+      Name: destTypeInUpperCase,
+      Config: { cdkV2Enabled: true },
+    },
+    Enabled: true,
+    ID: '123',
+    Name: destTypeInUpperCase,
+    Transformations: [],
+    WorkspaceID: 'test-workspace-id',
+  },
+  {
+    Config: {
+      apiUrl: 'http://abc.com/contacts',
+      auth: 'noAuth',
+      method: 'POST',
+      format: 'FORM',
+      isBatchingEnabled: true,
+      maxBatchSize: '2',
+      propertiesMapping: [
+        {
+          from: '$.traits.firstName',
+          to: '$.contacts.first_name',
+        },
+        {
+          from: '$.traits.email',
+          to: '$.contacts.email',
+        },
+        {
+          from: '$.traits.address.pinCode',
+          to: '$.contacts.address.pin_code',
+        },
+      ],
+    },
+    DestinationDefinition: {
+      DisplayName: displayName,
+      ID: '123',
+      Name: destTypeInUpperCase,
+      Config: { cdkV2Enabled: true },
+    },
+    Enabled: true,
+    ID: '123',
+    Name: destTypeInUpperCase,
+    Transformations: [],
+    WorkspaceID: 'test-workspace-id',
+  },
+  {
+    Config: {
+      apiUrl: 'http://abc.com/contacts',
+      auth: 'noAuth',
+      method: 'POST',
+      format: 'JSON',
+      isBatchingEnabled: true,
+      maxBatchSize: '2',
+      isDefaultMapping: true,
+      propertiesMapping: [],
     },
     DestinationDefinition: {
       DisplayName: displayName,
@@ -329,7 +698,7 @@ const properties = {
 const processorInstrumentationErrorStatTags = {
   destType: destTypeInUpperCase,
   errorCategory: 'dataValidation',
-  errorType: 'instrumentation',
+  errorType: 'configuration',
   feature: 'processor',
   implementation: 'cdkV2',
   module: 'destination',

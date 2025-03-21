@@ -18,7 +18,7 @@ beforeAll(async () => {
     }),
   );
   applicationRoutes(app);
-  server = app.listen(9090);
+  server = app.listen();
 });
 
 afterAll(async () => {
@@ -64,7 +64,7 @@ describe('Regulation controller tests', () => {
       const response = await request(server)
         .post('/deleteUsers')
         .set('Accept', 'application/json')
-        .set('x-rudder-dest-info', '{"a": "test"}')
+        .set('x-rudder-dest-info', JSON.stringify({ a: 'test' }))
         .send(getDeletionData());
 
       expect(response.status).toEqual(400);
@@ -94,7 +94,7 @@ describe('Regulation controller tests', () => {
       const response = await request(server)
         .post('/deleteUsers')
         .set('Accept', 'application/json')
-        .set('x-rudder-dest-info', '{"a": "test"}')
+        .set('x-rudder-dest-info', JSON.stringify({ a: 'test' }))
         .send(getDeletionData());
 
       expect(response.status).toEqual(500);

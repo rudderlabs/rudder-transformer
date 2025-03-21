@@ -7,17 +7,10 @@ const {
   InstrumentationError,
   ConfigurationError,
   UnauthorizedError,
-  getErrorRespEvents,
 } = require('@rudderstack/integrations-lib');
 const stats = require('../../../util/stats');
 const { EventType, MappedToDestinationKey } = require('../../../constants');
-const {
-  identifyConfig,
-  formatConfig,
-  LEAD_LOOKUP_METRIC,
-  ACTIVITY_METRIC,
-  FETCH_TOKEN_METRIC,
-} = require('./config');
+const { identifyConfig, formatConfig, LEAD_LOOKUP_METRIC, ACTIVITY_METRIC } = require('./config');
 const {
   addExternalIdToTraits,
   getDestinationExternalIDInfoForRetl,
@@ -32,51 +25,16 @@ const {
   isDefinedAndNotNull,
   generateErrorObject,
   handleRtTfSingleEventError,
+  getErrorRespEvents,
 } = require('../../util');
 const Cache = require('../../util/cache');
 const { USER_LEAD_CACHE_TTL, AUTH_CACHE_TTL, JSON_MIME_TYPE } = require('../../util/constant');
-const {
-  marketoResponseHandler,
-  sendGetRequest,
-  sendPostRequest,
-  getResponseHandlerData,
-} = require('./util');
+const { sendGetRequest, sendPostRequest, getResponseHandlerData, getAuthToken } = require('./util');
 const logger = require('../../../logger');
 
 const userIdLeadCache = new Cache(USER_LEAD_CACHE_TTL); // 1 day
 const emailLeadCache = new Cache(USER_LEAD_CACHE_TTL); // 1 day
 const authCache = new Cache(AUTH_CACHE_TTL); // 1 hr
-
-// //////////////////////////////////////////////////////////////////////
-// BASE URL REF: https://developers.marketo.com/rest-api/base-url/
-// //////////////////////////////////////////////////////////////////////
-
-// calls Marketo Auth API and fetches bearer token
-// fails the transformer if auth fails
-// ------------------------
-// Ref: https://developers.marketo.com/rest-api/authentication/#creating_an_access_token
-const getAuthToken = async (formattedDestination, metadata) =>
-  authCache.get(formattedDestination.ID, async () => {
-    const { accountId, clientId, clientSecret } = formattedDestination;
-    const clientResponse = await sendGetRequest(
-      `https://${accountId}.mktorest.com/identity/oauth/token`,
-      {
-        params: {
-          client_id: clientId,
-          client_secret: clientSecret,
-          grant_type: 'client_credentials',
-        },
-      },
-      metadata,
-    );
-    const data = marketoResponseHandler(clientResponse, 'During fetching auth token');
-    if (data) {
-      stats.increment(FETCH_TOKEN_METRIC, { status: 'success' });
-      return { value: data.access_token, age: data.expires_in };
-    }
-    stats.increment(FETCH_TOKEN_METRIC, { status: 'failed' });
-    return null;
-  });
 
 // lookup Marketo with userId or anonymousId
 // Marketo will create the lead
@@ -460,7 +418,7 @@ const processEvent = async ({ message, destination, metadata }, token) => {
 };
 
 const process = async (event) => {
-  const token = await getAuthToken(formatConfig(event.destination), event.metadata);
+  const token = await getAuthToken(authCache, formatConfig(event.destination), event.metadata);
   if (!token) {
     throw new UnauthorizedError('Authorization failed');
   }
@@ -473,7 +431,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
   // If destination information is not present Error should be thrown
   let token;
   try {
-    token = await getAuthToken(formatConfig(inputs[0].destination), inputs[0].metadata);
+    token = await getAuthToken(authCache, formatConfig(inputs[0].destination), inputs[0].metadata);
 
     // If token is null track/identify calls cannot be executed.
     if (!token) {

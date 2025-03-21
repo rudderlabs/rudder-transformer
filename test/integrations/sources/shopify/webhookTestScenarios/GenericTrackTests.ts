@@ -68,6 +68,11 @@ export const genericTrackTestScenarios = [
                   event: 'Cart Update',
                   integrations: {
                     SHOPIFY: true,
+                    DATA_WAREHOUSE: {
+                      options: {
+                        jsonPaths: ['track.context.shopifyDetails'],
+                      },
+                    },
                   },
                   properties: {
                     products: [],
@@ -255,7 +260,7 @@ export const genericTrackTestScenarios = [
                   gift_card: false,
                   grams: 0,
                   name: 'The Collection Snowboard: Hydrogen',
-                  price: '600.00',
+                  price: 600,
                   price_set: {
                     shop_money: {
                       amount: '600.00',
@@ -267,7 +272,7 @@ export const genericTrackTestScenarios = [
                     },
                   },
                   product_exists: true,
-                  product_id: 7234590408817,
+                  product_id: '7234590408817',
                   properties: [],
                   quantity: 1,
                   requires_shipping: true,
@@ -469,7 +474,7 @@ export const genericTrackTestScenarios = [
                           gift_card: false,
                           grams: 0,
                           name: 'The Collection Snowboard: Hydrogen',
-                          price: '600.00',
+                          price: 600,
                           price_set: {
                             shop_money: {
                               amount: '600.00',
@@ -481,7 +486,7 @@ export const genericTrackTestScenarios = [
                             },
                           },
                           product_exists: true,
-                          product_id: 7234590408817,
+                          product_id: '7234590408817',
                           properties: [],
                           quantity: 1,
                           requires_shipping: true,
@@ -530,15 +535,20 @@ export const genericTrackTestScenarios = [
                   },
                   integrations: {
                     SHOPIFY: true,
+                    DATA_WAREHOUSE: {
+                      options: {
+                        jsonPaths: ['track.context.shopifyDetails'],
+                      },
+                    },
                   },
                   type: 'track',
                   event: 'Order Paid',
                   properties: {
                     products: [
                       {
-                        product_id: 7234590408817,
+                        product_id: '7234590408817',
                         title: 'The Collection Snowboard: Hydrogen',
-                        price: '600.00',
+                        price: 600,
                         brand: 'Hydrogen Vendor',
                         quantity: 1,
                       },
@@ -546,8 +556,29 @@ export const genericTrackTestScenarios = [
                   },
                   traits: {
                     email: 'henry@wfls.com',
+                    cart_token_hash: '9125e1da-57b9-5bdc-953e-eb2b0ded5edc',
                   },
                   anonymousId: '50ead33e-d763-4854-b0ab-765859ef05cb',
+                },
+                {
+                  anonymousId: '50ead33e-d763-4854-b0ab-765859ef05cb',
+                  context: {
+                    integration: {
+                      name: 'SHOPIFY',
+                    },
+                    library: {
+                      eventOrigin: 'server',
+                      name: 'RudderStack Shopify Cloud',
+                      version: '2.0.0',
+                    },
+                    traits: {
+                      email: 'henry@wfls.com',
+                    },
+                  },
+                  integrations: {
+                    SHOPIFY: true,
+                  },
+                  type: 'identify',
                 },
               ],
             },

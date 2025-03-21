@@ -7,10 +7,12 @@ const {
   checkoutEventBuilder,
   checkoutStepEventBuilder,
   searchEventBuilder,
+  extractCampaignParams,
 } = require('./pixelUtils');
-const Message = require('../../../../v0/sources/message');
+const campaignObjectMappings = require('../pixelEventsMappings/campaignObjectMappings.json');
+const Message = require('../../../../sources/message');
 jest.mock('ioredis', () => require('../../../../test/__mocks__/redis'));
-jest.mock('../../../../v0/sources/message');
+jest.mock('../../../../sources/message');
 
 describe('utilV2.js', () => {
   beforeEach(() => {
@@ -785,6 +787,61 @@ describe('utilV2.js', () => {
       expect(message).toBeInstanceOf(Message);
       expect(message.properties).toEqual({ query: 'test query' });
       expect(message.context).toEqual({ userAgent: 'Mozilla/5.0' });
+    });
+  });
+
+  describe('extractCampaignParams', () => {
+    it('should extract campaign parameters from URL', () => {
+      const context = {
+        document: {
+          location: {
+            href: 'https://example.com?utm_source=google&utm_medium=cpc&utm_campaign=spring_sale',
+          },
+        },
+      };
+
+      const result = extractCampaignParams(context, campaignObjectMappings);
+      expect(result).toEqual({
+        utm_source: 'google',
+        medium: 'cpc',
+        name: 'spring_sale',
+      });
+    });
+
+    it('should return null if no campaign parameters are found', () => {
+      const context = {
+        document: {
+          location: {
+            href: 'https://example.com',
+          },
+        },
+      };
+
+      const result = extractCampaignParams(context, campaignObjectMappings);
+      expect(result).toBeNull();
+    });
+
+    it('should extract additional UTM parameters not in mappings', () => {
+      const context = {
+        document: {
+          location: {
+            href: 'https://example.com?utm_source=google&utm_term=shoes',
+          },
+        },
+      };
+
+      const result = extractCampaignParams(context, campaignObjectMappings);
+      expect(result).toEqual({
+        utm_source: 'google',
+        term: 'shoes',
+      });
+    });
+
+    it('should handle missing context or location gracefully', () => {
+      const context = {};
+
+      const result = extractCampaignParams(context, campaignObjectMappings);
+      expect(result).toBeNull();
     });
   });
 });

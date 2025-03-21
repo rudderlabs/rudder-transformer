@@ -1,3 +1,4 @@
+import { authHeader1, secret1 } from '../maskedSecrets';
 export const data = [
   {
     name: 'trengo',
@@ -48,7 +49,7 @@ export const data = [
               metadata: { jobId: 2, userId: 'u1' },
               destination: {
                 Config: {
-                  apiToken: 'trengo_integration_test_api_token',
+                  apiToken: secret1,
                   channelId: 'trengo_phone_channel',
                   channelIdentifier: 'phone',
                   enableDedup: true,
@@ -125,7 +126,7 @@ export const data = [
                 headers: {
                   'Content-Type': 'application/json',
                   Accept: 'application/json',
-                  Authorization: 'Bearer trengo_integration_test_api_token',
+                  Authorization: authHeader1,
                 },
                 params: {},
                 body: {
@@ -141,7 +142,7 @@ export const data = [
               statusCode: 200,
               destination: {
                 Config: {
-                  apiToken: 'trengo_integration_test_api_token',
+                  apiToken: secret1,
                   channelId: 'trengo_phone_channel',
                   channelIdentifier: 'phone',
                   enableDedup: true,
@@ -245,7 +246,7 @@ export const data = [
               metadata: { jobId: 2, userId: 'u1' },
               destination: {
                 Config: {
-                  apiToken: 'trengo_integration_test_api_token',
+                  apiToken: secret1,
                   channelId: 'trengo_email_channel',
                   channelIdentifier: 'email',
                   enableDedup: true,
@@ -322,7 +323,7 @@ export const data = [
                 headers: {
                   'Content-Type': 'application/json',
                   Accept: 'application/json',
-                  Authorization: 'Bearer trengo_integration_test_api_token',
+                  Authorization: authHeader1,
                 },
                 params: {},
                 body: {
@@ -342,7 +343,7 @@ export const data = [
               statusCode: 200,
               destination: {
                 Config: {
-                  apiToken: 'trengo_integration_test_api_token',
+                  apiToken: secret1,
                   channelId: 'trengo_email_channel',
                   channelIdentifier: 'email',
                   enableDedup: true,

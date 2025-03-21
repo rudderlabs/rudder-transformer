@@ -1,4 +1,5 @@
-import { API_VERSION } from '../../../../src/v0/destinations/google_adwords_remarketing_lists/config';
+import { authHeader1, authHeader2, secret2 } from './maskedSecrets';
+const API_VERSION = 'v18';
 
 export const networkCallsData = [
   {
@@ -14,7 +15,7 @@ export const networkCallsData = [
         },
       },
       headers: {
-        Authorization: 'Bearer dummy-access',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
         'developer-token': 'dummy-dev-token',
       },
@@ -58,7 +59,7 @@ export const networkCallsData = [
         ],
       },
       headers: {
-        Authorization: 'Bearer dummy-access',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
         'developer-token': 'dummy-dev-token',
       },
@@ -73,7 +74,7 @@ export const networkCallsData = [
     httpReq: {
       url: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs/18025019461:run`,
       headers: {
-        Authorization: 'Bearer dummy-access',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
         'developer-token': 'dummy-dev-token',
       },
@@ -96,7 +97,7 @@ export const networkCallsData = [
         },
       },
       headers: {
-        Authorization: 'Bearer dummy-access',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
         'developer-token': 'dummy-dev-token',
       },
@@ -117,7 +118,7 @@ export const networkCallsData = [
         operations: [{ create: { userIdentifiers: [{ hashedEmail: 'abcd@testmail.com' }] } }],
       },
       headers: {
-        Authorization: 'Bearer dummy-access',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
         'developer-token': 'dummy-dev-token',
       },
@@ -196,7 +197,7 @@ export const networkCallsData = [
         ],
       },
       headers: {
-        Authorization: 'Bearer dummy-access',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
         'developer-token': 'dummy-dev-token',
       },
@@ -223,7 +224,7 @@ export const networkCallsData = [
         },
       },
       headers: {
-        Authorization: 'Bearer dummy-access',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
         'developer-token': 'dummy-dev-token',
       },
@@ -248,7 +249,7 @@ export const networkCallsData = [
         job: {
           type: 'CUSTOMER_MATCH_USER_LIST',
           customerMatchUserListMetadata: {
-            userList: 'customers/wrongCustomerID/userLists/709078448',
+            userList: `customers/${secret2}/userLists/709078448`,
             consent: {
               adPersonalization: 'UNSPECIFIED',
               adUserData: 'UNSPECIFIED',
@@ -257,7 +258,7 @@ export const networkCallsData = [
         },
       },
       headers: {
-        Authorization: 'Bearer wrongCustomerID',
+        Authorization: authHeader2,
         'Content-Type': 'application/json',
         'developer-token': 'dummy-dev-token',
       },
@@ -305,7 +306,7 @@ export const networkCallsData = [
         },
       },
       headers: {
-        Authorization: 'Bearer dummy-access',
+        Authorization: authHeader1,
         'Content-Type': 'application/json',
         'developer-token': 'dummy-dev-token',
       },

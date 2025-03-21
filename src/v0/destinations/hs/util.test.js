@@ -3,7 +3,7 @@ const {
   extractIDsForSearchAPI,
   validatePayloadDataTypes,
   getObjectAndIdentifierType,
-  isIterable,
+  removeHubSpotSystemField,
 } = require('./util');
 const { primaryToSecondaryFields } = require('./config');
 
@@ -208,7 +208,6 @@ describe('getRequestDataAndRequestOptions utility test cases', () => {
   it('Should return an object with requestData and requestOptions', () => {
     const identifierType = 'email';
     const chunk = ['test1@gmail.com'];
-    const accessToken = 'dummyAccessToken';
 
     const expectedRequestData = {
       filterGroups: [
@@ -236,25 +235,62 @@ describe('getRequestDataAndRequestOptions utility test cases', () => {
       after: 0,
     };
 
-    const requestData = getRequestData(identifierType, chunk, accessToken);
+    const requestData = getRequestData(identifierType, chunk);
     expect(requestData).toEqual(expectedRequestData);
   });
 });
 
-describe('isIterable utility test cases', () => {
-  it('should return true when the input is an array', () => {
-    const input = [1, 2, 3];
-    const result = isIterable(input);
-    expect(result).toBe(true);
+describe('removeHubSpotSystemField utility test cases', () => {
+  it('should remove HubSpot system fields from the properties', () => {
+    const properties = {
+      email: 'test@example.com',
+      firstname: 'John',
+      lastname: 'Doe',
+      hs_object_id: '123',
+    };
+
+    const expectedOutput = {
+      email: 'test@example.com',
+      firstname: 'John',
+      lastname: 'Doe',
+    };
+
+    const result = removeHubSpotSystemField(properties);
+    expect(result).toEqual(expectedOutput);
   });
-  it('should return false when the input is null', () => {
-    const input = null;
-    const result = isIterable(input);
-    expect(result).toBe(false);
+
+  it('should return the same object if no HubSpot system fields are present', () => {
+    const properties = {
+      email: 'test@example.com',
+      firstname: 'John',
+      lastname: 'Doe',
+    };
+
+    const expectedOutput = {
+      email: 'test@example.com',
+      firstname: 'John',
+      lastname: 'Doe',
+    };
+
+    const result = removeHubSpotSystemField(properties);
+    expect(result).toEqual(expectedOutput);
   });
-  it('should return false when the input is undefined', () => {
-    const input = undefined;
-    const result = isIterable(input);
-    expect(result).toBe(false);
+
+  it('should return an empty object if all properties are HubSpot system fields', () => {
+    const properties = {
+      hs_object_id: '2023-01-01',
+    };
+    const expectedOutput = {};
+
+    const result = removeHubSpotSystemField(properties);
+    expect(result).toEqual(expectedOutput);
+  });
+
+  it('should handle an empty properties object', () => {
+    const properties = {};
+    const expectedOutput = {};
+
+    const result = removeHubSpotSystemField(properties);
+    expect(result).toEqual(expectedOutput);
   });
 });

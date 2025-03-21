@@ -96,7 +96,7 @@ const OTHER_STANDARD_EVENTS = [
   'Subscribe',
 ];
 
-const FB_PIXEL_DEFAULT_EXCLUSION = ['opt_out', 'event_id', 'action_source'];
+const FB_PIXEL_DEFAULT_EXCLUSION = ['opt_out', 'event_id', 'action_source', 'fbp', 'fbc'];
 const FB_PIXEL_CUSTOM_DATA_EXCLUDE_FLATTENING = ['content_ids', 'contents'];
 const STANDARD_ECOMM_EVENTS_TYPE = [
   CONFIG_CATEGORIES.PRODUCT_LIST_VIEWED.type,

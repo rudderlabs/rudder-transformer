@@ -7,60 +7,6 @@ const dataProviderId = 'rudderstack';
 const segmentName = 'test-segment';
 const leadUpsertEndpoint = 'https://www.zohoapis.in/crm/v6/Leads/upsert';
 
-const deletionPayload1 = {
-  action: 'delete',
-  context: {
-    externalId: [
-      {
-        type: 'ZOHO-Leads',
-        identifierType: 'Email',
-      },
-    ],
-    mappedToDestination: 'true',
-    sources: {
-      job_run_id: 'cgiiurt8um7k7n5dq480',
-      task_run_id: 'cgiiurt8um7k7n5dq48g',
-      job_id: '2MUWghI7u85n91dd1qzGyswpZan',
-      version: '895/merge',
-    },
-  },
-  recordId: '2',
-  rudderId: '2',
-  fields: {
-    Email: 'tobedeleted@gmail.com',
-    First_Name: 'subcribed',
-    Last_Name: ' User',
-  },
-  type: 'record',
-};
-
-const deletionPayload2 = {
-  action: 'delete',
-  context: {
-    externalId: [
-      {
-        type: 'ZOHO-Contacts',
-        identifierType: 'Email',
-      },
-    ],
-    mappedToDestination: 'true',
-    sources: {
-      job_run_id: 'cgiiurt8um7k7n5dq480',
-      task_run_id: 'cgiiurt8um7k7n5dq48g',
-      job_id: '2MUWghI7u85n91dd1qzGyswpZan',
-      version: '895/merge',
-    },
-  },
-  recordId: '2',
-  rudderId: '2',
-  fields: {
-    Email: 'tobedeleted@gmail.com',
-    First_Name: 'subcribed',
-    Last_Name: ' User',
-  },
-  type: 'record',
-};
-
 const deletionPayload1V2 = {
   action: 'delete',
   context: {
@@ -176,33 +122,6 @@ const commonDeletionConnectionConfigV2: Connection = {
   },
 };
 
-const upsertPayload1 = {
-  action: 'insert',
-  context: {
-    externalId: [
-      {
-        type: 'ZOHO-Leads',
-        identifierType: 'email',
-      },
-    ],
-    mappedToDestination: 'true',
-    sources: {
-      job_run_id: 'cgiiurt8um7k7n5dq480',
-      task_run_id: 'cgiiurt8um7k7n5dq48g',
-      job_id: '2MUWghI7u85n91dd1qzGyswpZan',
-      version: '895/merge',
-    },
-  },
-  recordId: '2',
-  rudderId: '2',
-  fields: {
-    Email: 'subscribed@eewrfrd.com',
-    First_Name: 'subcribed',
-    Last_Name: ' User',
-  },
-  type: 'record',
-};
-
 const upsertPayload1V2 = {
   action: 'insert',
   context: {
@@ -221,34 +140,6 @@ const upsertPayload1V2 = {
   },
   identifiers: {
     Email: 'subscribed@eewrfrd.com',
-  },
-  type: 'record',
-};
-
-const upsertPayload2 = {
-  action: 'insert',
-  context: {
-    externalId: [
-      {
-        type: 'ZOHO-Leads',
-        identifierType: 'email',
-      },
-    ],
-    mappedToDestination: 'true',
-    sources: {
-      job_run_id: 'cgiiurt8um7k7n5dq480',
-      task_run_id: 'cgiiurt8um7k7n5dq48g',
-      job_id: '2MUWghI7u85n91dd1qzGyswpZan',
-      version: '895/merge',
-    },
-  },
-  recordId: '2',
-  rudderId: '2',
-  fields: {
-    Email: 'subscribed@eewrfrd.com',
-    First_Name: 'subcribed',
-    Last_Name: ' User',
-    'multi-language': 'Bengali',
   },
   type: 'record',
 };
@@ -272,33 +163,6 @@ const upsertPayload2V2 = {
   },
   identifiers: {
     Email: 'subscribed@eewrfrd.com',
-  },
-  type: 'record',
-};
-
-const upsertPayload3 = {
-  action: 'insert',
-  context: {
-    externalId: [
-      {
-        type: 'ZOHO-Leads',
-        identifierType: 'Email',
-      },
-    ],
-    mappedToDestination: 'true',
-    sources: {
-      job_run_id: 'cgiiurt8um7k7n5dq480',
-      task_run_id: 'cgiiurt8um7k7n5dq48g',
-      job_id: '2MUWghI7u85n91dd1qzGyswpZan',
-      version: '895/merge',
-    },
-  },
-  recordId: '2',
-  rudderId: '2',
-  fields: {
-    Email: 'subscribed@eewrfrd.com',
-    First_Name: 'subcribed',
-    Last_Name: ' User',
   },
   type: 'record',
 };
@@ -592,16 +456,11 @@ export {
   dataProviderId,
   segmentName,
   leadUpsertEndpoint,
-  deletionPayload1,
-  deletionPayload2,
   deletionPayload1V2,
   commonDeletionDestConfig,
   commonDeletionDestConfig2,
-  upsertPayload1,
   upsertPayload1V2,
-  upsertPayload2,
   upsertPayload2V2,
-  upsertPayload3,
   upsertPayload3V2,
   commonUpsertDestConfig,
   commonUpsertDestConfig2,

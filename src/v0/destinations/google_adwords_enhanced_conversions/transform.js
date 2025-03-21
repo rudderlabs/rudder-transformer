@@ -13,7 +13,7 @@ const {
   getAccessToken,
 } = require('../../util');
 
-const { trackMapping, BASE_ENDPOINT } = require('./config');
+const { trackMapping } = require('./config');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 /**
@@ -47,7 +47,6 @@ const responseBuilder = async (metadata, message, { Config }, payload) => {
   }
   const filteredCustomerId = removeHyphens(customerId);
 
-  response.endpoint = `${BASE_ENDPOINT}/${filteredCustomerId}:uploadConversionAdjustments`;
   response.body.JSON = payload;
   const accessToken = getAccessToken(metadata, 'access_token');
   response.headers = {
@@ -55,7 +54,14 @@ const responseBuilder = async (metadata, message, { Config }, payload) => {
     'Content-Type': JSON_MIME_TYPE,
     'developer-token': getValueFromMessage(metadata, 'secret.developer_token'),
   };
-  response.params = { event, customerId: filteredCustomerId };
+  const filteredLoginCustomerId = removeHyphens(loginCustomerId);
+  response.params = {
+    event,
+    customerId: filteredCustomerId,
+    accessToken,
+    loginCustomerId: filteredLoginCustomerId,
+    developerToken: getValueFromMessage(metadata, 'secret.developer_token'),
+  };
   if (subAccount) {
     if (!loginCustomerId) {
       throw new ConfigurationError(`loginCustomerId is required as subAccount is true.`);
@@ -66,7 +72,6 @@ const responseBuilder = async (metadata, message, { Config }, payload) => {
     if (loginCustomerId && !isString(loginCustomerId)) {
       throw new InstrumentationError('loginCustomerId should be a string or number');
     }
-    const filteredLoginCustomerId = removeHyphens(loginCustomerId);
     response.headers['login-customer-id'] = filteredLoginCustomerId;
   }
 

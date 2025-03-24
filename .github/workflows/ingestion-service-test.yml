@@ -1,15 +1,10 @@
 name: Ingestion Service Test
 
 on:
-  push:
-    branches:
-      - master
-  pull_request:
+  workflow_run:
+    workflows: [Build Artifacts for PRs]
     types:
-      - opened
-      - edited
-      - reopened
-      - synchronize
+      - completed
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.sha }}
@@ -36,6 +31,8 @@ jobs:
           cd rudder-ingestion-svc
           go mod download
       - name: 'Run tests'
+        env:
+          TRANSFORMER_IMAGE_TAG_FOR_TEST: ${{ github.head_ref }}
         run: |
           cd rudder-ingestion-svc
           pwd

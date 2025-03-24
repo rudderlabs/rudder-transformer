@@ -263,7 +263,7 @@ describe('populateTraits utility test cases', () => {
     expect(result).toEqual(expectedOutput);
   });
 
-  it('should return an empty object if no traits match the property map', async () => {
+  it('should return an remove a read only property', async () => {
     const propertyMap = {
       hs_object_id: { type: 'number', readOnlyValue: true },
       lastName: { type: 'string' },

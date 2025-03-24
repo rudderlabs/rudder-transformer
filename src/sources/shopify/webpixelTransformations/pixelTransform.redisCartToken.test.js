@@ -1,20 +1,19 @@
 const { extractCartToken, handleCartTokenRedisOperations } = require('./pixelTransform');
-const { RedisDB } = require('../../../../util/redis/redisConnector');
-const stats = require('../../../../util/stats');
-const logger = require('../../../../logger');
-const { pixelEventToCartTokenLocationMapping } = require('../config');
+const { RedisDB } = require('../../../util/redis/redisConnector');
+const stats = require('../../../util/stats');
+const logger = require('../../../logger');
 
-jest.mock('../../../../util/redis/redisConnector', () => ({
+jest.mock('../../../util/redis/redisConnector', () => ({
   RedisDB: {
     setVal: jest.fn(),
   },
 }));
 
-jest.mock('../../../../util/stats', () => ({
+jest.mock('../../../util/stats', () => ({
   increment: jest.fn(),
 }));
 
-jest.mock('../../../../logger', () => ({
+jest.mock('../../../logger', () => ({
   info: jest.fn(),
   error: jest.fn(),
 }));

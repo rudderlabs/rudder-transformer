@@ -146,7 +146,6 @@ const getContactsProperties = async (destination, metadata) => {
  * @returns
  */
 async function getContactsPropertiesMap(destination, metadata) {
-  console.log('getContactsPropertiesMap');
   const contactPropertiesMap = {};
   const { response } = await getContactsProperties(destination, metadata);
   if (response && Array.isArray(response)) {
@@ -824,7 +823,6 @@ const populateTraits = async (propertyMap, traits, destination, metadata) => {
   const propertyToTypeMap = isEmptyObject(propertyMap)
     ? await getContactsPropertiesMap(destination, metadata)
     : propertyMap;
-  console.log('propertyToTypeMap', propertyToTypeMap);
   const populatedTraits = {};
 
   Object.entries(traits).forEach(([key, value]) => {

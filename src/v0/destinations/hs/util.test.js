@@ -259,7 +259,6 @@ describe('populateTraits utility test cases', () => {
     const destination = {};
     const metadata = {};
     const result = await populateTraits(propertyMap, traits, destination, metadata);
-    // console.log(result);
     const expectedOutput = { firstName: 'John', birthDate: 1672531200000 };
     expect(result).toEqual(expectedOutput);
   });

@@ -47,19 +47,117 @@ const {
 } = require('./util');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
-const addHsAuthentication = (response, Config) => {
-  // choosing API Type
-  if (Config.authorizationType === 'newPrivateAppApi') {
-    // Private Apps
-    response.headers = {
-      ...response.headers,
+const addHsAuthentication = (Config) => ({
+  headers: {
+    'Content-Type': JSON_MIME_TYPE,
+    ...(Config.authorizationType === 'newPrivateAppApi' && {
       Authorization: `Bearer ${Config.accessToken}`,
-    };
-  } else {
-    // use legacy API Key
-    response.params = { hapikey: Config.apiKey };
+    }),
+  },
+  ...(Config.authorizationType !== 'newPrivateAppApi' && { params: { hapikey: Config.apiKey } }),
+});
+
+const buildResponse = ({ endpoint, method, body, source, operation, destination }) => {
+  const response = defaultRequestConfig();
+  response.body.JSON = body;
+  return {
+    ...response,
+    endpoint,
+    method,
+    operation,
+    ...(source && { source }), // Conditionally adds `source`
+    ...addHsAuthentication(destination.Config),
+  };
+};
+
+const handleRETLRequest = async (
+  { message, destination, metadata, operation },
+  contactsPropertiesMap,
+) => {
+  const traits = getFieldValueFromMessage(message, 'traits');
+  const { objectType } = getDestinationExternalIDInfoForRetl(message, 'HS');
+  if (!objectType) {
+    throw new InstrumentationError('objectType not found');
   }
-  return response;
+
+  if (objectType.toLowerCase() === 'association') {
+    const { associationTypeId, fromObjectType, toObjectType } =
+      getDestinationExternalIDObjectForRetl(message, 'HS');
+    return buildResponse({
+      endpoint: CRM_ASSOCIATION_V3.replace(':fromObjectType', fromObjectType).replace(
+        ':toObjectType',
+        toObjectType,
+      ),
+      method: defaultPostRequestConfig.requestMethod,
+      body: {
+        ...traits,
+        type: associationTypeId,
+      },
+      source: RETL_SOURCE,
+      operation: RETL_CREATE_ASSOCIATION_OPERATION,
+      destination,
+    });
+  }
+
+  let endpoint;
+  let method = defaultPostRequestConfig.requestMethod;
+  if (operation === 'createObject') {
+    addExternalIdToHSTraits(message);
+    endpoint = CRM_CREATE_UPDATE_ALL_OBJECTS.replace(':objectType', objectType);
+  } else if (operation === 'updateObject' && getHsSearchId(message)) {
+    const { hsSearchId } = getHsSearchId(message);
+    endpoint = `${CRM_CREATE_UPDATE_ALL_OBJECTS.replace(':objectType', objectType)}/${hsSearchId}`;
+    method = defaultPatchRequestConfig.requestMethod;
+  }
+
+  const destTraits = await populateTraits(contactsPropertiesMap, traits, destination, metadata);
+  return buildResponse({
+    endpoint,
+    method,
+    body: removeUndefinedAndNullValues({ properties: destTraits }),
+    source: RETL_SOURCE,
+    operation,
+    destination,
+  });
+};
+
+const handleGenericEvent = async ({ message, destination, metadata }, contactsPropertiesMap) => {
+  const { Config } = destination;
+  if (!Config.lookupField) {
+    throw new ConfigurationError('lookupField is a required field in webapp config');
+  }
+
+  let contactId = getDestinationExternalID(message, 'hsContactId');
+  // if contactId is not provided then search
+  if (!contactId) {
+    contactId = await searchContacts(message, destination, metadata);
+  }
+  const properties = await getTransformedJSON(
+    { message, destination, metadata },
+    contactsPropertiesMap,
+  );
+  const payload = {
+    properties,
+  };
+  if (contactId) {
+    // contact exists
+    // update
+    return buildResponse({
+      endpoint: IDENTIFY_CRM_UPDATE_CONTACT.replace(':contactId', contactId),
+      method: defaultPatchRequestConfig.requestMethod,
+      body: removeUndefinedAndNullValues(payload),
+      destination,
+      operation: 'updateContacts',
+    });
+  }
+
+  return buildResponse({
+    endpoint: IDENTIFY_CRM_CREATE_NEW_CONTACT,
+    method: defaultPostRequestConfig.requestMethod,
+    body: removeUndefinedAndNullValues(payload),
+    destination,
+    operation: 'createContacts',
+  });
 };
 
 /**
@@ -71,124 +169,20 @@ const addHsAuthentication = (response, Config) => {
  * @returns
  */
 const processIdentify = async ({ message, destination, metadata }, contactsPropertiesMap) => {
-  const { Config } = destination;
-  let traits = getFieldValueFromMessage(message, 'traits');
+  const traits = getFieldValueFromMessage(message, 'traits');
   // since hubspot does not allow invalid emails, we need to
   // validate the email before sending it to hubspot
   if (traits?.email && !validator.isEmail(traits.email)) {
     throw new InstrumentationError(`Email "${traits.email}" is invalid`);
   }
+
   const mappedToDestination = get(message, MappedToDestinationKey);
   const operation = get(message, 'context.hubspotOperation');
-  const externalIdObj = getDestinationExternalIDObjectForRetl(message, 'HS');
-  const { objectType } = getDestinationExternalIDInfoForRetl(message, 'HS');
-  // build response
-  let endpoint;
-  const response = defaultRequestConfig();
-  response.method = defaultPostRequestConfig.requestMethod;
-
-  // Handle hubspot association events sent from retl source
-  if (
-    objectType &&
-    objectType.toLowerCase() === 'association' &&
-    mappedToDestination &&
-    GENERIC_TRUE_VALUES.includes(mappedToDestination.toString())
-  ) {
-    const { associationTypeId, fromObjectType, toObjectType } = externalIdObj;
-    response.endpoint = CRM_ASSOCIATION_V3.replace(':fromObjectType', fromObjectType).replace(
-      ':toObjectType',
-      toObjectType,
-    );
-    response.body.JSON = {
-      ...traits,
-      type: associationTypeId,
-    };
-    response.headers = {
-      'Content-Type': JSON_MIME_TYPE,
-    };
-    response.operation = RETL_CREATE_ASSOCIATION_OPERATION;
-    response.source = RETL_SOURCE;
-    return addHsAuthentication(response, Config);
+  if (mappedToDestination && GENERIC_TRUE_VALUES.includes(mappedToDestination.toString())) {
+    return handleRETLRequest({ message, destination, metadata, operation }, contactsPropertiesMap);
   }
 
-  // if mappedToDestination is set true, then add externalId to traits
-  if (
-    mappedToDestination &&
-    GENERIC_TRUE_VALUES.includes(mappedToDestination.toString()) &&
-    operation
-  ) {
-    if (!objectType) {
-      throw new InstrumentationError('objectType not found');
-    }
-    if (operation === 'createObject') {
-      addExternalIdToHSTraits(message);
-      endpoint = CRM_CREATE_UPDATE_ALL_OBJECTS.replace(':objectType', objectType);
-    } else if (operation === 'updateObject' && getHsSearchId(message)) {
-      const { hsSearchId } = getHsSearchId(message);
-      endpoint = `${CRM_CREATE_UPDATE_ALL_OBJECTS.replace(
-        ':objectType',
-        objectType,
-      )}/${hsSearchId}`;
-      response.method = defaultPatchRequestConfig.requestMethod;
-    }
-
-    traits = await populateTraits(contactsPropertiesMap, traits, destination, metadata);
-    response.body.JSON = removeUndefinedAndNullValues({ properties: traits });
-    response.source = 'rETL';
-    response.operation = operation;
-  } else {
-    if (!Config.lookupField) {
-      throw new ConfigurationError('lookupField is a required field in webapp config');
-    }
-
-    let contactId = getDestinationExternalID(message, 'hsContactId');
-
-    // if contactId is not provided then search
-    if (!contactId) {
-      contactId = await searchContacts(message, destination, metadata);
-    }
-
-    const properties = await getTransformedJSON(
-      { message, destination, metadata },
-      contactsPropertiesMap,
-    );
-
-    const payload = {
-      properties,
-    };
-
-    if (contactId) {
-      // contact exists
-      // update
-      endpoint = IDENTIFY_CRM_UPDATE_CONTACT.replace(':contactId', contactId);
-      response.operation = 'updateContacts';
-      response.method = defaultPatchRequestConfig.requestMethod;
-    } else {
-      // contact do not exist
-      // create
-      endpoint = IDENTIFY_CRM_CREATE_NEW_CONTACT;
-      response.operation = 'createContacts';
-    }
-    response.body.JSON = removeUndefinedAndNullValues(payload);
-  }
-
-  response.endpoint = endpoint;
-  response.headers = {
-    'Content-Type': JSON_MIME_TYPE,
-  };
-
-  // choosing API Type
-  if (Config.authorizationType === 'newPrivateAppApi') {
-    // Private Apps
-    response.headers = {
-      ...response.headers,
-      Authorization: `Bearer ${Config.accessToken}`,
-    };
-  } else {
-    // use legacy API Key
-    response.params = { hapikey: Config.apiKey };
-  }
-  return response;
+  return handleGenericEvent({ message, destination, metadata }, contactsPropertiesMap);
 };
 
 /**

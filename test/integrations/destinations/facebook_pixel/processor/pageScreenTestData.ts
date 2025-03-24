@@ -238,7 +238,7 @@ export const pageScreenTestData: ProcessorTestData[] = [
         body: [
           {
             error:
-              "After excluding opt_out,event_id,action_source,fbp,fbc, no fields are present in 'properties' for a standard event",
+              "After excluding opt_out,event_id,action_source, no fields are present in 'properties' for a standard event",
             metadata: generateMetadata(1),
             statTags: {
               ...commonStatTags,
@@ -546,7 +546,7 @@ export const pageScreenTestData: ProcessorTestData[] = [
         body: [
           {
             error:
-              "After excluding opt_out,event_id,action_source,fbp,fbc, no fields are present in 'properties' for a standard event",
+              "After excluding opt_out,event_id,action_source, no fields are present in 'properties' for a standard event",
             statTags: {
               ...commonStatTags,
               destinationId: 'default-destinationId',

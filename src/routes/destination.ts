@@ -19,7 +19,7 @@ router.post(
   RouteActivationMiddleware.isDestinationRouteActive,
   RouteActivationMiddleware.destinationRtFilter,
   FeatureFlagMiddleware.handle,
-  SecretSpreader.middleware,
+  SecretSpreader.middleware(),
   DestinationController.destinationTransformAtRouter,
 );
 router.post(

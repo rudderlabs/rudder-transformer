@@ -37,8 +37,9 @@ export class ArraySpreader extends BaseSpreader {
         }
         return acc[part];
       }, obj);
-
-      target[last] = value;
+      if (value) {
+        target[last] = value;
+      }
     }
   }
 }

@@ -121,7 +121,7 @@ const handleRETLRequest = async (
   });
 };
 
-const handleGenericEvent = async ({ message, destination, metadata }, contactsPropertiesMap) => {
+const handleGenericRequest = async ({ message, destination, metadata }, contactsPropertiesMap) => {
   const { Config } = destination;
   if (!Config.lookupField) {
     throw new ConfigurationError('lookupField is a required field in webapp config');
@@ -182,7 +182,7 @@ const processIdentify = async ({ message, destination, metadata }, contactsPrope
     return handleRETLRequest({ message, destination, metadata, operation }, contactsPropertiesMap);
   }
 
-  return handleGenericEvent({ message, destination, metadata }, contactsPropertiesMap);
+  return handleGenericRequest({ message, destination, metadata }, contactsPropertiesMap);
 };
 
 /**

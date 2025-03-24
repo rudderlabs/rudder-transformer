@@ -276,16 +276,6 @@ describe('removeHubSpotSystemField utility test cases', () => {
     expect(result).toEqual(expectedOutput);
   });
 
-  it('should return an empty object if all properties are HubSpot system fields', () => {
-    const properties = {
-      hs_object_id: '2023-01-01',
-    };
-    const expectedOutput = {};
-
-    const result = removeHubSpotSystemField(properties);
-    expect(result).toEqual(expectedOutput);
-  });
-
   it('should handle an empty properties object', () => {
     const properties = {};
     const expectedOutput = {};

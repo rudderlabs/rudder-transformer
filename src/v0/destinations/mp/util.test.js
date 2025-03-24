@@ -581,7 +581,7 @@ describe('Unit test cases for getTransformedJSON', () => {
       $android_os_version: '8.1.0',
       $android_manufacturer: 'Google',
       $android_app_version: '1.0',
-      $android_app_version_code: '1.0',
+      $android_app_version_code: '1',
       $android_brand: 'Google',
     };
 
@@ -664,7 +664,7 @@ describe('Unit test cases for getTransformedJSON', () => {
       $android_os_version: '8.1.0',
       $android_manufacturer: 'Google',
       $android_app_version: '1.0',
-      $android_app_version_code: '1.0',
+      $android_app_version_code: '1',
       $android_brand: 'Google',
     };
 

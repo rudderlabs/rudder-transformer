@@ -42,3 +42,21 @@ export class ArraySpreader extends BaseSpreader {
     }
   }
 }
+
+// Create spreader instance with configuration
+export const SecretSpreader = new ArraySpreader({
+  name: 'secretSpreader',
+  rules: [
+    {
+      source: {
+        type: 'header',
+        path: 'oauth-secret',
+      },
+      target: {
+        path: 'metadata.secret',
+        arrayPath: 'input',
+      },
+      transform: (value: string) => (value ? JSON.parse(value) : ''),
+    },
+  ],
+});

@@ -102,7 +102,7 @@ const OTHER_STANDARD_EVENTS = [
   'Subscribe',
 ];
 
-const FB_CONVERSIONS_DEFAULT_EXCLUSION = ['opt_out', 'event_id', 'action_source', 'fbp', 'fbc'];
+const FB_CONVERSIONS_DEFAULT_EXCLUSION = ['opt_out', 'event_id', 'action_source'];
 const STANDARD_ECOMM_EVENTS_CATEGORIES = [
   CONFIG_CATEGORIES.PRODUCT_LIST_VIEWED,
   CONFIG_CATEGORIES.PRODUCT_VIEWED,

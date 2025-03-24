@@ -338,6 +338,7 @@ export const data = [
                       custom_data: {
                         revenue: 400,
                         additional_bet_index: 0,
+                        fbp: 'fbp_value',
                         value: 400,
                         currency: 'USD',
                       },

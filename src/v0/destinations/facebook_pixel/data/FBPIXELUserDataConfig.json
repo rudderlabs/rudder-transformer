@@ -133,12 +133,12 @@
   },
   {
     "destKey": "fbc",
-    "sourceKeys": "context.fbc",
+    "sourceKeys": ["context.fbc", "properties.fbc"],
     "required": false
   },
   {
     "destKey": "fbp",
-    "sourceKeys": "context.fbp",
+    "sourceKeys": ["context.fbp", "properties.fbp"],
     "required": false
   },
   {

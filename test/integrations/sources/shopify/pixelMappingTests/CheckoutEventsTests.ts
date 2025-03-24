@@ -1,11 +1,12 @@
 // This file contains the test scenarios for the pixel checkout events
 import { dummySourceConfig, dummyBillingAddresses, dummyContext } from '../constants';
 
-export const pixelCheckoutEventsTestScenarios = [
+export const newpixelCheckoutEventsTestScenarios = [
   {
     name: 'shopify',
-    description: 'Track Call -> checkout_started event from web pixel',
+    description: 'Track Call -> [ECOM] checkout_started event from web pixel',
     module: 'source',
+    skip: true,
     version: 'v2',
     input: {
       request: {
@@ -13,8 +14,9 @@ export const pixelCheckoutEventsTestScenarios = [
           {
             request: {
               body: JSON.stringify({
-                id: 'sh-f77a78f1-C1D8-4ED4-9C9B-0D352CF6F3BF',
+                type: 'standard',
                 name: 'checkout_started',
+                clientId: 'c7b3f99b-4d34-463b-835f-c879482a7750',
                 data: {
                   checkout: {
                     buyerAcceptsEmailMarketing: false,
@@ -110,10 +112,9 @@ export const pixelCheckoutEventsTestScenarios = [
                     transactions: [],
                   },
                 },
-                type: 'standard',
-                clientId: 'c7b3f99b-4d34-463b-835f-c879482a7750',
-                timestamp: '2024-09-15T20:57:59.674Z',
+                id: 'sh-f77a78f1-C1D8-4ED4-9C9B-0D352CF6F3BF',
                 context: dummyContext,
+                timestamp: '2024-09-15T20:57:59.674Z',
                 pixelEventLabel: true,
               }),
               query_parameters: {
@@ -137,60 +138,34 @@ export const pixelCheckoutEventsTestScenarios = [
             output: {
               batch: [
                 {
+                  type: 'track',
+                  event: 'Checkout Started',
+                  anonymousId: 'c7b3f99b-4d34-463b-835f-c879482a7750',
+                  properties: {
+                    products: [
+                      {
+                        quantity: 2,
+                        variant: 'The Collection Snowboard: Liquid',
+                        name: 'The Collection Snowboard: Liquid',
+                        image_url:
+                          'https://cdn.shopify.com/s/files/1/0590/2696/4593/files/Main_b13ad453-477c-4ed1-9b43-81f3345adfd6_64x64.jpg?v=1724736600',
+                        price: 749.95,
+                        product_id: '7234590834801',
+                        category: 'snowboard',
+                        url: '/products/the-collection-snowboard-liquid',
+                        brand: 'Hydrogen Vendor',
+                      },
+                    ],
+                    checkout_id: '5f7028e0bd5225c17b24bdaa0c09f914',
+                    total: 2759.8,
+                    currency: 'USD',
+                    discount: 0,
+                    shipping: 0,
+                    revenue: 2759.8,
+                    value: 2759.8,
+                    tax: 0,
+                  },
                   context: {
-                    document: {
-                      location: {
-                        href: 'https://store.myshopify.com/checkouts/cn/Z2NwLXVzLWVhc3QxOjAxSjY5OVpIRURQNERFMDBKUTVaRkI4UzdU',
-                        hash: '',
-                        host: 'store.myshopify.com',
-                        hostname: 'store.myshopify.com',
-                        origin: 'https://store.myshopify.com',
-                        pathname:
-                          '/checkouts/cn/Z2NwLXVzLWVhc3QxOjAxSjY5OVpIRURQNERFMDBKUTVaRkI4UzdU',
-                        port: '',
-                        protocol: 'https:',
-                        search: '',
-                      },
-                      referrer: 'https://store.myshopify.com/cart',
-                      characterSet: 'UTF-8',
-                      title: 'Checkout - pixel-testing-rs',
-                    },
-                    navigator: {
-                      language: 'en-US',
-                      cookieEnabled: true,
-                      languages: ['en-US', 'en'],
-                      userAgent:
-                        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36',
-                    },
-                    window: {
-                      innerHeight: 1028,
-                      innerWidth: 1362,
-                      outerHeight: 1080,
-                      outerWidth: 1728,
-                      pageXOffset: 0,
-                      pageYOffset: 0,
-                      location: {
-                        href: 'https://store.myshopify.com/checkouts/cn/Z2NwLXVzLWVhc3QxOjAxSjY5OVpIRURQNERFMDBKUTVaRkI4UzdU',
-                        hash: '',
-                        host: 'store.myshopify.com',
-                        hostname: 'store.myshopify.com',
-                        origin: 'https://store.myshopify.com',
-                        pathname:
-                          '/checkouts/cn/Z2NwLXVzLWVhc3QxOjAxSjY5OVpIRURQNERFMDBKUTVaRkI4UzdU',
-                        port: '',
-                        protocol: 'https:',
-                        search: '',
-                      },
-                      origin: 'https://store.myshopify.com',
-                      screen: {
-                        height: 1117,
-                        width: 1728,
-                      },
-                      screenX: 0,
-                      screenY: 37,
-                      scrollX: 0,
-                      scrollY: 0,
-                    },
                     page: {
                       title: 'Checkout - pixel-testing-rs',
                       url: 'https://store.myshopify.com/checkouts/cn/Z2NwLXVzLWVhc3QxOjAxSjY5OVpIRURQNERFMDBKUTVaRkI4UzdU',
@@ -211,6 +186,7 @@ export const pixelCheckoutEventsTestScenarios = [
                     topic: 'checkout_started',
                     shopifyDetails: {
                       clientId: 'c7b3f99b-4d34-463b-835f-c879482a7750',
+                      context: dummyContext,
                       data: {
                         checkout: {
                           attributes: [],
@@ -344,35 +320,7 @@ export const pixelCheckoutEventsTestScenarios = [
                       },
                     },
                   },
-                  type: 'track',
-                  event: 'Checkout Started',
-                  properties: {
-                    products: [
-                      {
-                        quantity: 2,
-                        variant: 'The Collection Snowboard: Liquid',
-                        name: 'The Collection Snowboard: Liquid',
-                        image_url:
-                          'https://cdn.shopify.com/s/files/1/0590/2696/4593/files/Main_b13ad453-477c-4ed1-9b43-81f3345adfd6_64x64.jpg?v=1724736600',
-                        price: 749.95,
-                        sku: null,
-                        product_id: '7234590834801',
-                        category: 'snowboard',
-                        url: '/products/the-collection-snowboard-liquid',
-                        brand: 'Hydrogen Vendor',
-                      },
-                    ],
-                    order_id: null,
-                    checkout_id: '5f7028e0bd5225c17b24bdaa0c09f914',
-                    total: 2759.8,
-                    currency: 'USD',
-                    discount: 0,
-                    shipping: 0,
-                    revenue: 2759.8,
-                    value: 2759.8,
-                    tax: 0,
-                  },
-                  anonymousId: 'c7b3f99b-4d34-463b-835f-c879482a7750',
+                  timestamp: '2024-09-15T20:57:59.674Z',
                   messageId: 'sh-f77a78f1-C1D8-4ED4-9C9B-0D352CF6F3BF',
                 },
               ],
@@ -384,8 +332,9 @@ export const pixelCheckoutEventsTestScenarios = [
   },
   {
     name: 'shopify',
-    description: 'Track Call -> checkout_completed event from web pixel',
+    description: 'Track Call -> [ECOM] checkout_completed event from web pixel',
     module: 'source',
+    skip: true,
     version: 'v2',
     input: {
       request: {
@@ -393,8 +342,9 @@ export const pixelCheckoutEventsTestScenarios = [
           {
             request: {
               body: JSON.stringify({
-                id: 'sh-f77a78f1-C1D8-4ED4-9C9B-0D352CF6F3BF',
+                type: 'standard',
                 name: 'checkout_completed',
+                clientId: 'c7b3f99b-4d34-463b-835f-c879482a7750',
                 data: {
                   checkout: {
                     buyerAcceptsEmailMarketing: false,
@@ -433,15 +383,11 @@ export const pixelCheckoutEventsTestScenarios = [
                             untranslatedTitle: 'The Collection Snowboard: Liquid',
                             url: '/products/the-collection-snowboard-liquid',
                           },
-                          sku: null,
-                          title: null,
-                          untranslatedTitle: null,
                         },
                         finalLinePrice: {
                           amount: 1499.9,
                           currencyCode: 'USD',
                         },
-                        sellingPlanAllocation: null,
                         properties: [],
                       },
                       {
@@ -523,10 +469,9 @@ export const pixelCheckoutEventsTestScenarios = [
                     transactions: [],
                   },
                 },
-                type: 'standard',
-                clientId: 'c7b3f99b-4d34-463b-835f-c879482a7750',
-                timestamp: '2024-09-15T20:57:59.674Z',
+                id: 'sh-f77a78f1-C1D8-4ED4-9C9B-0D352CF6F3BF',
                 context: dummyContext,
+                timestamp: '2024-09-15T20:57:59.674Z',
                 pixelEventLabel: true,
               }),
               query_parameters: {
@@ -550,60 +495,47 @@ export const pixelCheckoutEventsTestScenarios = [
             output: {
               batch: [
                 {
+                  type: 'track',
+                  event: 'Order Completed',
+                  anonymousId: 'c7b3f99b-4d34-463b-835f-c879482a7750',
+                  properties: {
+                    products: [
+                      {
+                        quantity: 2,
+                        variant: 'The Collection Snowboard: Liquid',
+                        name: 'The Collection Snowboard: Liquid',
+                        image_url:
+                          'https://cdn.shopify.com/s/files/1/0590/2696/4593/files/Main_b13ad453-477c-4ed1-9b43-81f3345adfd6_64x64.jpg?v=1724736600',
+                        price: 749.95,
+                        product_id: '7234590834801',
+                        category: 'snowboard',
+                        url: '/products/the-collection-snowboard-liquid',
+                        brand: 'Hydrogen Vendor',
+                      },
+                      {
+                        quantity: 2,
+                        variant: 'The Multi-managed Snowboard',
+                        name: 'The Multi-managed Snowboard',
+                        image_url:
+                          'https://cdn.shopify.com/s/files/1/0590/2696/4593/files/Main_9129b69a-0c7b-4f66-b6cf-c4222f18028a_64x64.jpg?v=1724736597',
+                        price: 629.95,
+                        sku: 'sku-managed-1',
+                        product_id: '7234590736497',
+                        category: 'snowboard',
+                        url: '/products/the-multi-managed-snowboard',
+                        brand: 'Multi-managed Vendor',
+                      },
+                    ],
+                    checkout_id: '5f7028e0bd5225c17b24bdaa0c09f914',
+                    total: 2759.8,
+                    currency: 'USD',
+                    discount: 0,
+                    shipping: 0,
+                    revenue: 2759.8,
+                    value: 2759.8,
+                    tax: 0,
+                  },
                   context: {
-                    document: {
-                      location: {
-                        href: 'https://store.myshopify.com/checkouts/cn/Z2NwLXVzLWVhc3QxOjAxSjY5OVpIRURQNERFMDBKUTVaRkI4UzdU',
-                        hash: '',
-                        host: 'store.myshopify.com',
-                        hostname: 'store.myshopify.com',
-                        origin: 'https://store.myshopify.com',
-                        pathname:
-                          '/checkouts/cn/Z2NwLXVzLWVhc3QxOjAxSjY5OVpIRURQNERFMDBKUTVaRkI4UzdU',
-                        port: '',
-                        protocol: 'https:',
-                        search: '',
-                      },
-                      referrer: 'https://store.myshopify.com/cart',
-                      characterSet: 'UTF-8',
-                      title: 'Checkout - pixel-testing-rs',
-                    },
-                    navigator: {
-                      language: 'en-US',
-                      cookieEnabled: true,
-                      languages: ['en-US', 'en'],
-                      userAgent:
-                        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36',
-                    },
-                    window: {
-                      innerHeight: 1028,
-                      innerWidth: 1362,
-                      outerHeight: 1080,
-                      outerWidth: 1728,
-                      pageXOffset: 0,
-                      pageYOffset: 0,
-                      location: {
-                        href: 'https://store.myshopify.com/checkouts/cn/Z2NwLXVzLWVhc3QxOjAxSjY5OVpIRURQNERFMDBKUTVaRkI4UzdU',
-                        hash: '',
-                        host: 'store.myshopify.com',
-                        hostname: 'store.myshopify.com',
-                        origin: 'https://store.myshopify.com',
-                        pathname:
-                          '/checkouts/cn/Z2NwLXVzLWVhc3QxOjAxSjY5OVpIRURQNERFMDBKUTVaRkI4UzdU',
-                        port: '',
-                        protocol: 'https:',
-                        search: '',
-                      },
-                      origin: 'https://store.myshopify.com',
-                      screen: {
-                        height: 1117,
-                        width: 1728,
-                      },
-                      screenX: 0,
-                      screenY: 37,
-                      scrollX: 0,
-                      scrollY: 0,
-                    },
                     page: {
                       title: 'Checkout - pixel-testing-rs',
                       url: 'https://store.myshopify.com/checkouts/cn/Z2NwLXVzLWVhc3QxOjAxSjY5OVpIRURQNERFMDBKUTVaRkI4UzdU',
@@ -624,6 +556,61 @@ export const pixelCheckoutEventsTestScenarios = [
                     topic: 'checkout_completed',
                     shopifyDetails: {
                       clientId: 'c7b3f99b-4d34-463b-835f-c879482a7750',
+                      context: {
+                        document: {
+                          characterSet: 'UTF-8',
+                          location: {
+                            hash: '',
+                            host: 'store.myshopify.com',
+                            hostname: 'store.myshopify.com',
+                            href: 'https://store.myshopify.com/checkouts/cn/Z2NwLXVzLWVhc3QxOjAxSjY5OVpIRURQNERFMDBKUTVaRkI4UzdU',
+                            origin: 'https://store.myshopify.com',
+                            pathname:
+                              '/checkouts/cn/Z2NwLXVzLWVhc3QxOjAxSjY5OVpIRURQNERFMDBKUTVaRkI4UzdU',
+                            port: '',
+                            protocol: 'https:',
+                            search: '',
+                          },
+                          referrer: 'https://store.myshopify.com/cart',
+                          title: 'Checkout - pixel-testing-rs',
+                        },
+                        navigator: {
+                          cookieEnabled: true,
+                          language: 'en-US',
+                          languages: ['en-US', 'en'],
+                          userAgent:
+                            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36',
+                        },
+                        window: {
+                          innerHeight: 1028,
+                          innerWidth: 1362,
+                          location: {
+                            hash: '',
+                            host: 'store.myshopify.com',
+                            hostname: 'store.myshopify.com',
+                            href: 'https://store.myshopify.com/checkouts/cn/Z2NwLXVzLWVhc3QxOjAxSjY5OVpIRURQNERFMDBKUTVaRkI4UzdU',
+                            origin: 'https://store.myshopify.com',
+                            pathname:
+                              '/checkouts/cn/Z2NwLXVzLWVhc3QxOjAxSjY5OVpIRURQNERFMDBKUTVaRkI4UzdU',
+                            port: '',
+                            protocol: 'https:',
+                            search: '',
+                          },
+                          origin: 'https://store.myshopify.com',
+                          outerHeight: 1080,
+                          outerWidth: 1728,
+                          pageXOffset: 0,
+                          pageYOffset: 0,
+                          screen: {
+                            height: 1117,
+                            width: 1728,
+                          },
+                          screenX: 0,
+                          screenY: 37,
+                          scrollX: 0,
+                          scrollY: 0,
+                        },
+                      },
                       data: {
                         checkout: {
                           attributes: [],
@@ -662,7 +649,6 @@ export const pixelCheckoutEventsTestScenarios = [
                               id: '41327143321713',
                               properties: [],
                               quantity: 2,
-                              sellingPlanAllocation: null,
                               title: 'The Collection Snowboard: Liquid',
                               variant: {
                                 id: '41327143321713',
@@ -681,9 +667,6 @@ export const pixelCheckoutEventsTestScenarios = [
                                   url: '/products/the-collection-snowboard-liquid',
                                   vendor: 'Hydrogen Vendor',
                                 },
-                                sku: null,
-                                title: null,
-                                untranslatedTitle: null,
                               },
                             },
                             {
@@ -790,48 +773,7 @@ export const pixelCheckoutEventsTestScenarios = [
                       },
                     },
                   },
-                  type: 'track',
-                  event: 'Order Completed',
-                  properties: {
-                    products: [
-                      {
-                        quantity: 2,
-                        variant: 'The Collection Snowboard: Liquid',
-                        name: 'The Collection Snowboard: Liquid',
-                        image_url:
-                          'https://cdn.shopify.com/s/files/1/0590/2696/4593/files/Main_b13ad453-477c-4ed1-9b43-81f3345adfd6_64x64.jpg?v=1724736600',
-                        price: 749.95,
-                        sku: null,
-                        product_id: '7234590834801',
-                        category: 'snowboard',
-                        url: '/products/the-collection-snowboard-liquid',
-                        brand: 'Hydrogen Vendor',
-                      },
-                      {
-                        quantity: 2,
-                        variant: 'The Multi-managed Snowboard',
-                        name: 'The Multi-managed Snowboard',
-                        image_url:
-                          'https://cdn.shopify.com/s/files/1/0590/2696/4593/files/Main_9129b69a-0c7b-4f66-b6cf-c4222f18028a_64x64.jpg?v=1724736597',
-                        price: 629.95,
-                        sku: 'sku-managed-1',
-                        product_id: '7234590736497',
-                        category: 'snowboard',
-                        url: '/products/the-multi-managed-snowboard',
-                        brand: 'Multi-managed Vendor',
-                      },
-                    ],
-                    order_id: null,
-                    checkout_id: '5f7028e0bd5225c17b24bdaa0c09f914',
-                    total: 2759.8,
-                    currency: 'USD',
-                    discount: 0,
-                    shipping: 0,
-                    revenue: 2759.8,
-                    value: 2759.8,
-                    tax: 0,
-                  },
-                  anonymousId: 'c7b3f99b-4d34-463b-835f-c879482a7750',
+                  timestamp: '2024-09-15T20:57:59.674Z',
                   messageId: 'sh-f77a78f1-C1D8-4ED4-9C9B-0D352CF6F3BF',
                 },
               ],

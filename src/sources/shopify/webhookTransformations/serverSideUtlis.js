@@ -1,11 +1,11 @@
 /* eslint-disable no-param-reassign */
 const get = require('get-value');
 const { isDefinedAndNotNull, uuidv5 } = require('@rudderstack/integrations-lib');
-const { extractEmailFromPayload } = require('../../../../v0/sources/shopify/util');
-const { constructPayload } = require('../../../../v0/util');
+const { extractEmailFromPayload } = require('../tracker/util');
+const { constructPayload } = require('../../../v0/util');
 const { INTEGERATION, lineItemsMappingJSON, productMappingJSON } = require('../config');
-const { RedisDB } = require('../../../../util/redis/redisConnector');
-const stats = require('../../../../util/stats');
+const { RedisDB } = require('../../../util/redis/redisConnector');
+const stats = require('../../../util/stats');
 
 /**
  * Returns an array of products from the lineItems array received from the webhook event
@@ -75,8 +75,8 @@ const addCartTokenHashToTraits = (message, event) => {
   const cartToken = getCartToken(event);
   if (cartToken) {
     const cartTokenHash = uuidv5(cartToken);
-    message.traits = {
-      ...message.traits,
+    message.context.traits = {
+      ...message.context.traits,
       cart_token_hash: cartTokenHash,
     };
   }
@@ -135,10 +135,10 @@ const setAnonymousId = async (message, event, metricMetadata) => {
  * @param {String} shopifyTopic shopify event topic
 */
 const handleCommonProperties = (message, event, shopifyTopic) => {
-  if (!get(message, 'traits.email')) {
+  if (!get(message, 'context.traits.email')) {
     const email = extractEmailFromPayload(event);
     if (email) {
-      message.setProperty('traits.email', email);
+      message.setProperty('context.traits.email', email);
     }
   }
   message.setProperty(`integrations.${INTEGERATION}`, true);

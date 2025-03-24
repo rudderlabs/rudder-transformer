@@ -16,8 +16,8 @@ describe('Misc tests', () => {
       require(`../../${version}/destinations/am/transform`),
     );
 
-    expect(MiscService.getSourceHandler('shopify', version)).toEqual(
-      require(`../../${version}/sources/shopify/transform`),
+    expect(MiscService.getSourceHandler('shopify', 'v2')).toEqual(
+      require(`../../sources/shopify/transform`),
     );
 
     expect(MiscService.getDeletionHandler('intercom', version)).toEqual(

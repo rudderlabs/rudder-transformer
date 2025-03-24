@@ -20,7 +20,7 @@
     "destKey": "$android_app_version"
   },
   {
-    "sourceKeys": "context.app.version",
+    "sourceKeys": "context.app.build",
     "destKey": "$android_app_version_code"
   },
   {

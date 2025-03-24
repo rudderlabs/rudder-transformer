@@ -2,22 +2,16 @@ const lodash = require('lodash');
 const { ConfigurationError, NetworkError } = require('@rudderstack/integrations-lib');
 const { handleHttpRequest } = require('../../../adapters/network');
 const { isHttpStatusSuccess } = require('../../util');
-const {
-  DEL_MAX_BATCH_SIZE,
-  getCreateDeletionTaskEndpoint,
-  DISTINCT_ID_MAX_BATCH_SIZE,
-} = require('./config');
+const { DEL_MAX_BATCH_SIZE, DISTINCT_ID_MAX_BATCH_SIZE } = require('./config');
 const { executeCommonValidations } = require('../../util/regulation-api');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const tags = require('../../util/tags');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 const { getUserIdBatches } = require('../../util/deleteUserUtils');
+const { getBaseEndpoint, getCreateDeletionTaskEndpoint } = require('./util');
 
 const deleteProfile = async (userAttributes, config) => {
-  const endpoint =
-    config.dataResidency === 'eu'
-      ? 'https://api-eu.mixpanel.com/engage'
-      : 'https://api.mixpanel.com/engage';
+  const endpoint = `${getBaseEndpoint(config)}/engage`;
   const endpointPath = '/engage';
   const defaultValues = {
     $token: `${config.token}`,
@@ -81,7 +75,7 @@ const createDeletionTask = async (userAttributes, config) => {
     );
   }
 
-  const endpoint = getCreateDeletionTaskEndpoint(token);
+  const endpoint = getCreateDeletionTaskEndpoint(config, token);
   const endpointPath = '/api/app/data-deletions/v3.0/';
   const headers = {
     'Content-Type': JSON_MIME_TYPE,

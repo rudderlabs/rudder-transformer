@@ -212,6 +212,12 @@ const errorDetailsMap = {
       .setMessage('There have been too many calls to this ad-account.')
       .build(),
   },
+  2655: {
+    default: new ErrorDetailsExtractorBuilder()
+      .setStatus(400)
+      .setMessage('Marketing Messaging TOS not accepted.')
+      .build(),
+  },
   200: {
     default: new ErrorDetailsExtractorBuilder()
       .setStatus(403)

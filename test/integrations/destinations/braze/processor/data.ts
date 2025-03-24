@@ -15,7 +15,7 @@ export const data = [
                 restApiKey: secret1,
                 prefixProperties: true,
                 useNativeSDK: false,
-                dataCenter: 'us-01',
+                dataCenter: 'au-01',
               },
               DestinationDefinition: {
                 DisplayName: 'Braze',
@@ -87,7 +87,7 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://rest.iad-01.braze.com/users/track',
+              endpoint: 'https://rest.au-01.braze.com/users/track',
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
@@ -228,6 +228,7 @@ export const data = [
                 restApiKey: secret1,
                 prefixProperties: true,
                 useNativeSDK: false,
+                dataCenter: 'eu-01',
               },
               DestinationDefinition: {
                 DisplayName: 'Braze',
@@ -345,6 +346,7 @@ export const data = [
                 restApiKey: secret1,
                 prefixProperties: true,
                 useNativeSDK: false,
+                dataCenter: 'eu-01',
               },
               DestinationDefinition: {
                 DisplayName: 'Braze',
@@ -722,6 +724,7 @@ export const data = [
                 prefixProperties: true,
                 useNativeSDK: false,
                 enableNestedArrayOperations: false,
+                dataCenter: 'eu-01',
               },
               DestinationDefinition: {
                 DisplayName: 'Braze',
@@ -865,6 +868,7 @@ export const data = [
                 restApiKey: secret1,
                 prefixProperties: true,
                 useNativeSDK: false,
+                dataCenter: 'eu-01',
               },
               DestinationDefinition: {
                 DisplayName: 'Braze',
@@ -1136,6 +1140,7 @@ export const data = [
                 restApiKey: secret1,
                 prefixProperties: true,
                 useNativeSDK: false,
+                dataCenter: 'eu-01',
               },
               DestinationDefinition: {
                 DisplayName: 'Braze',
@@ -1235,6 +1240,7 @@ export const data = [
                 restApiKey: secret1,
                 prefixProperties: true,
                 useNativeSDK: false,
+                dataCenter: 'eu-01',
               },
               DestinationDefinition: {
                 DisplayName: 'Braze',
@@ -1425,6 +1431,7 @@ export const data = [
                 restApiKey: secret1,
                 prefixProperties: true,
                 useNativeSDK: false,
+                dataCenter: 'eu-01',
               },
               DestinationDefinition: {
                 DisplayName: 'Braze',
@@ -1605,6 +1612,7 @@ export const data = [
                 restApiKey: secret1,
                 prefixProperties: true,
                 useNativeSDK: false,
+                dataCenter: 'eu-01',
               },
               DestinationDefinition: {
                 DisplayName: 'Braze',
@@ -1786,6 +1794,7 @@ export const data = [
                 prefixProperties: true,
                 useNativeSDK: false,
                 enableNestedArrayOperations: true,
+                dataCenter: 'eu-01',
               },
               DestinationDefinition: {
                 DisplayName: 'Braze',
@@ -2017,6 +2026,7 @@ export const data = [
                 prefixProperties: true,
                 useNativeSDK: false,
                 enableNestedArrayOperations: true,
+                dataCenter: 'eu-01',
               },
               DestinationDefinition: {
                 DisplayName: 'Braze',
@@ -3124,6 +3134,7 @@ export const data = [
                 prefixProperties: true,
                 useNativeSDK: false,
                 enableSubscriptionGroupInGroupCall: true,
+                dataCenter: 'eu-01',
               },
               DestinationDefinition: {
                 DisplayName: 'Braze',
@@ -3245,6 +3256,7 @@ export const data = [
                 prefixProperties: true,
                 useNativeSDK: false,
                 enableSubscriptionGroupInGroupCall: true,
+                dataCenter: 'eu-01',
               },
               DestinationDefinition: {
                 DisplayName: 'Braze',
@@ -3315,6 +3327,7 @@ export const data = [
                 restApiKey: secret1,
                 prefixProperties: true,
                 useNativeSDK: false,
+                dataCenter: 'eu-01',
               },
               DestinationDefinition: {
                 DisplayName: 'Braze',
@@ -3447,6 +3460,7 @@ export const data = [
                 prefixProperties: true,
                 useNativeSDK: false,
                 sendPurchaseEventWithExtraProperties: true,
+                dataCenter: 'eu-01',
               },
               DestinationDefinition: {
                 DisplayName: 'Braze',
@@ -3716,6 +3730,7 @@ export const data = [
                 prefixProperties: true,
                 useNativeSDK: false,
                 sendPurchaseEventWithExtraProperties: true,
+                dataCenter: 'eu-01',
               },
               DestinationDefinition: {
                 DisplayName: 'Braze',
@@ -3887,6 +3902,7 @@ export const data = [
                 restApiKey: secret1,
                 prefixProperties: true,
                 useNativeSDK: false,
+                dataCenter: 'eu-01',
               },
               DestinationDefinition: {
                 DisplayName: 'Braze',
@@ -4200,6 +4216,7 @@ export const data = [
                 restApiKey: secret1,
                 prefixProperties: true,
                 useNativeSDK: false,
+                dataCenter: 'eu-01',
               },
               DestinationDefinition: {
                 DisplayName: 'Braze',
@@ -4299,6 +4316,7 @@ export const data = [
                 restApiKey: secret1,
                 prefixProperties: true,
                 useNativeSDK: false,
+                dataCenter: 'eu-01',
               },
               DestinationDefinition: {
                 DisplayName: 'Braze',

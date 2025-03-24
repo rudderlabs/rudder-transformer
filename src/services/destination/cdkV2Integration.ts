@@ -61,8 +61,8 @@ export class CDKV2DestinationService implements DestinationService {
       events.map(async (event) => {
         const metaTo = this.getTags(
           destinationType,
-          event.metadata.destinationId,
-          event.metadata.workspaceId,
+          event.metadata?.destinationId,
+          event.metadata?.workspaceId,
           tags.FEATURES.PROCESSOR,
         );
         metaTo.metadata = event.metadata;

@@ -1,0 +1,36 @@
+[
+  {
+    "sourceKeys": "id",
+    "destKeys": "userId"
+  },
+
+  {
+    "sourceKeys": "email",
+    "destKeys": "traits.email"
+  },
+
+  {
+    "sourceKeys": "first_name",
+    "destKeys": "traits.firstName"
+  },
+
+  {
+    "sourceKeys": "last_name",
+    "destKeys": "traits.lastName"
+  },
+
+  {
+    "sourceKeys": "phone",
+    "destKeys": "traits.phone"
+  },
+
+  {
+    "sourceKeys": "shipping_address.company",
+    "destKeys": "traits.company"
+  },
+
+  {
+    "sourceKeys": "created_at",
+    "destKeys": "traits.createdAt"
+  }
+]

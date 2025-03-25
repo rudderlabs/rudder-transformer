@@ -10,9 +10,9 @@ const {
   extractCampaignParams,
 } = require('./pixelUtils');
 const campaignObjectMappings = require('../pixelEventsMappings/campaignObjectMappings.json');
-const Message = require('../../../../sources/message');
+const Message = require('../../message');
 jest.mock('ioredis', () => require('../../../../test/__mocks__/redis'));
-jest.mock('../../../../sources/message');
+jest.mock('../../message');
 
 describe('utilV2.js', () => {
   beforeEach(() => {
@@ -22,14 +22,84 @@ describe('utilV2.js', () => {
   describe('pageViewedEventBuilder', () => {
     it('should build a page viewed event message', () => {
       const inputEvent = {
-        data: { url: 'https://example.com' },
-        context: { userAgent: 'Mozilla/5.0' },
+        data: {},
+        context: {
+          document: {
+            location: {
+              href: 'https://store.myshopify.com/checkouts/cn/Z2NwLXVzLWVhc3QxOjAxSjY5OVpIRURQNERFMDBKUTVaRkI4UzdU?checkout%5Bpayment_gateway%5D=shopify_payments&utm_campaign=shopifySale&utm_medium=checkout&utm_term=term_checkout&utm_content=web&utm_custom1=customutm&tag=tag',
+              hash: '',
+              host: 'store.myshopify.com',
+              hostname: 'store.myshopify.com',
+              origin: 'https://store.myshopify.com',
+              pathname: '/checkouts/cn/Z2NwLXVzLWVhc3QxOjAxSjY5OVpIRURQNERFMDBKUTVaRkI4UzdU',
+              port: '',
+              protocol: 'https:',
+              search: '',
+            },
+            referrer: 'https://store.myshopify.com/cart',
+            characterSet: 'UTF-8',
+            title: 'Checkout - pixel-testing-rs',
+          },
+          navigator: {
+            language: 'en-US',
+            cookieEnabled: true,
+            languages: ['en-US', 'en'],
+            userAgent:
+              'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36',
+          },
+          window: {
+            innerHeight: 1028,
+            innerWidth: 1362,
+            outerHeight: 1080,
+            outerWidth: 1728,
+            pageXOffset: 0,
+            pageYOffset: 0,
+            location: {
+              href: 'https://store.myshopify.com/checkouts/cn/Z2NwLXVzLWVhc3QxOjAxSjY5OVpIRURQNERFMDBKUTVaRkI4UzdU',
+              hash: '',
+              host: 'store.myshopify.com',
+              hostname: 'store.myshopify.com',
+              origin: 'https://store.myshopify.com',
+              pathname: '/checkouts/cn/Z2NwLXVzLWVhc3QxOjAxSjY5OVpIRURQNERFMDBKUTVaRkI4UzdU',
+              port: '',
+              protocol: 'https:',
+              search: '',
+            },
+            origin: 'https://store.myshopify.com',
+            screen: {
+              height: 1117,
+              width: 1728,
+            },
+            screenX: 0,
+            screenY: 37,
+            scrollX: 0,
+            scrollY: 0,
+          },
+        },
       };
       const message = pageViewedEventBuilder(inputEvent);
       expect(message).toBeInstanceOf(Message);
       expect(message.name).toBe('Page View');
-      expect(message.properties).toEqual(inputEvent.data);
-      expect(message.context).toEqual({ userAgent: 'Mozilla/5.0' });
+      expect(message.properties).toEqual({
+        path: '/checkouts/cn/Z2NwLXVzLWVhc3QxOjAxSjY5OVpIRURQNERFMDBKUTVaRkI4UzdU',
+        search: '',
+        title: 'Checkout - pixel-testing-rs',
+        url: 'https://store.myshopify.com/checkouts/cn/Z2NwLXVzLWVhc3QxOjAxSjY5OVpIRURQNERFMDBKUTVaRkI4UzdU',
+      });
+      expect(message.context).toEqual({
+        page: {
+          path: '/checkouts/cn/Z2NwLXVzLWVhc3QxOjAxSjY5OVpIRURQNERFMDBKUTVaRkI4UzdU',
+          search: '',
+          title: 'Checkout - pixel-testing-rs',
+          url: 'https://store.myshopify.com/checkouts/cn/Z2NwLXVzLWVhc3QxOjAxSjY5OVpIRURQNERFMDBKUTVaRkI4UzdU',
+        },
+        screen: {
+          height: 1117,
+          width: 1728,
+        },
+        userAgent:
+          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36',
+      });
     });
   });
 
@@ -88,7 +158,6 @@ describe('utilV2.js', () => {
         cart_id: '123',
         total: 1259.9,
       });
-      expect(message.context).toEqual({ userAgent: 'Mozilla/5.0' });
     });
   });
 
@@ -145,7 +214,6 @@ describe('utilV2.js', () => {
           },
         ],
       });
-      expect(message.context).toEqual({ userAgent: 'Mozilla/5.0' });
     });
   });
 
@@ -189,7 +257,6 @@ describe('utilV2.js', () => {
         url: '/products/the-collection-snowboard-liquid',
         variant: 'The Collection Snowboard: Liquid',
       });
-      expect(message.context).toEqual({ userAgent: 'Mozilla/5.0' });
     });
   });
 
@@ -238,7 +305,6 @@ describe('utilV2.js', () => {
         category: 'snowboard',
         image_url:
           'https://cdn.shopify.com/s/files/1/0590/2696/4593/files/Main_b13ad453-477c-4ed1-9b43-81f3345adfd6.jpg?v=1724736600',
-        name: null,
         price: 749.95,
         product_id: '7234590834801',
         quantity: 1,
@@ -246,7 +312,6 @@ describe('utilV2.js', () => {
         url: '/products/the-collection-snowboard-liquid?variant=41327143321713',
         variant: 'The Collection Snowboard: Liquid',
       });
-      expect(message.context).toEqual({ userAgent: 'Mozilla/5.0' });
     });
   });
 
@@ -396,7 +461,6 @@ describe('utilV2.js', () => {
             price: 749.95,
             product_id: '7234590834801',
             quantity: 2,
-            sku: null,
             url: '/products/the-collection-snowboard-liquid',
             variant: 'The Collection Snowboard: Liquid',
           },
@@ -414,7 +478,6 @@ describe('utilV2.js', () => {
             variant: 'The Multi-managed Snowboard',
           },
         ],
-        order_id: null,
         checkout_id: '5f7028e0bd5225c17b24bdaa0c09f914',
         total: 2759.8,
         currency: 'USD',
@@ -424,7 +487,6 @@ describe('utilV2.js', () => {
         value: 2759.8,
         tax: 0,
       });
-      expect(message.context).toEqual({ userAgent: 'Mozilla/5.0' });
     });
   });
 
@@ -604,171 +666,8 @@ describe('utilV2.js', () => {
       const message = checkoutStepEventBuilder(inputEvent);
       expect(message).toBeInstanceOf(Message);
       expect(message.properties).toEqual({
-        attributes: [],
-        billingAddress: {
-          address1: null,
-          address2: null,
-          city: null,
-          country: 'US',
-          countryCode: 'US',
-          firstName: null,
-          lastName: null,
-          phone: null,
-          province: null,
-          provinceCode: null,
-          zip: null,
-        },
-        buyerAcceptsEmailMarketing: false,
-        buyerAcceptsSmsMarketing: false,
-        currencyCode: 'USD',
-        delivery: {
-          selectedDeliveryOptions: [
-            {
-              cost: {
-                amount: 0,
-                currencyCode: 'USD',
-              },
-              costAfterDiscounts: {
-                amount: 0,
-                currencyCode: 'USD',
-              },
-              description: null,
-              handle: '5f7028e0bd5225c17b24bdaa0c09f914-8388085074acab7e91de633521be86f0',
-              title: 'Economy',
-              type: 'shipping',
-            },
-          ],
-        },
-        discountApplications: [],
-        discountsAmount: {
-          amount: 0,
-          currencyCode: 'USD',
-        },
-        email: 'test-user@sampleemail.com',
-        lineItems: [
-          {
-            discountAllocations: [],
-            finalLinePrice: {
-              amount: 1499.9,
-              currencyCode: 'USD',
-            },
-            id: '41327143321713',
-            properties: [],
-            quantity: 2,
-            sellingPlanAllocation: null,
-            title: 'The Collection Snowboard: Liquid',
-            variant: {
-              id: '41327143321713',
-              image: {
-                src: 'https://cdn.shopify.com/s/files/1/0590/2696/4593/files/Main_b13ad453-477c-4ed1-9b43-81f3345adfd6_64x64.jpg?v=1724736600',
-              },
-              price: {
-                amount: 749.95,
-                currencyCode: 'USD',
-              },
-              product: {
-                id: '7234590834801',
-                title: 'The Collection Snowboard: Liquid',
-                type: 'snowboard',
-                untranslatedTitle: 'The Collection Snowboard: Liquid',
-                url: '/products/the-collection-snowboard-liquid',
-                vendor: 'Hydrogen Vendor',
-              },
-              sku: null,
-              title: null,
-              untranslatedTitle: null,
-            },
-          },
-          {
-            discountAllocations: [],
-            finalLinePrice: {
-              amount: 1259.9,
-              currencyCode: 'USD',
-            },
-            id: '41327143157873',
-            properties: [],
-            quantity: 2,
-            sellingPlanAllocation: null,
-            title: 'The Multi-managed Snowboard',
-            variant: {
-              id: '41327143157873',
-              image: {
-                src: 'https://cdn.shopify.com/s/files/1/0590/2696/4593/files/Main_9129b69a-0c7b-4f66-b6cf-c4222f18028a_64x64.jpg?v=1724736597',
-              },
-              price: {
-                amount: 629.95,
-                currencyCode: 'USD',
-              },
-              product: {
-                id: '7234590736497',
-                title: 'The Multi-managed Snowboard',
-                type: 'snowboard',
-                untranslatedTitle: 'The Multi-managed Snowboard',
-                url: '/products/the-multi-managed-snowboard',
-                vendor: 'Multi-managed Vendor',
-              },
-              sku: 'sku-managed-1',
-              title: null,
-              untranslatedTitle: null,
-            },
-          },
-        ],
-        localization: {
-          country: {
-            isoCode: 'US',
-          },
-          language: {
-            isoCode: 'en-US',
-          },
-          market: {
-            handle: 'us',
-            id: 'gid://shopify/Market/23505895537',
-          },
-        },
-        order: {
-          customer: {
-            id: null,
-            isFirstOrder: null,
-          },
-          id: null,
-        },
-        phone: '',
-        shippingAddress: {
-          address1: 'Queens Center',
-          address2: null,
-          city: 'Elmhurst',
-          country: 'US',
-          countryCode: 'US',
-          firstName: 'test',
-          lastName: 'user',
-          phone: null,
-          province: 'NY',
-          provinceCode: 'NY',
-          zip: '11373',
-        },
-        shippingLine: {
-          price: {
-            amount: 0,
-            currencyCode: 'USD',
-          },
-        },
-        smsMarketingPhone: null,
-        subtotalPrice: {
-          amount: 2759.8,
-          currencyCode: 'USD',
-        },
-        token: '5f7028e0bd5225c17b24bdaa0c09f914',
-        totalPrice: {
-          amount: 2759.8,
-          currencyCode: 'USD',
-        },
-        totalTax: {
-          amount: 0,
-          currencyCode: 'USD',
-        },
-        transactions: [],
+        checkout_id: '5f7028e0bd5225c17b24bdaa0c09f914',
       });
-      expect(message.context).toEqual({ userAgent: 'Mozilla/5.0' });
     });
   });
 
@@ -786,7 +685,6 @@ describe('utilV2.js', () => {
       const message = searchEventBuilder(inputEvent);
       expect(message).toBeInstanceOf(Message);
       expect(message.properties).toEqual({ query: 'test query' });
-      expect(message.context).toEqual({ userAgent: 'Mozilla/5.0' });
     });
   });
 
@@ -802,7 +700,7 @@ describe('utilV2.js', () => {
 
       const result = extractCampaignParams(context, campaignObjectMappings);
       expect(result).toEqual({
-        utm_source: 'google',
+        source: 'google',
         medium: 'cpc',
         name: 'spring_sale',
       });
@@ -832,7 +730,7 @@ describe('utilV2.js', () => {
 
       const result = extractCampaignParams(context, campaignObjectMappings);
       expect(result).toEqual({
-        utm_source: 'google',
+        source: 'google',
         term: 'shoes',
       });
     });

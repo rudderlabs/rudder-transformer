@@ -6,6 +6,9 @@ const {
   trimTraits,
   generatePageOrScreenCustomEventName,
   getTransformedJSON,
+  getBaseEndpoint,
+  getDeletionTaskBaseEndpoint,
+  getCreateDeletionTaskEndpoint,
 } = require('./util');
 const { FEATURE_GZIP_SUPPORT } = require('../../util/constant');
 const { ConfigurationError } = require('@rudderstack/integrations-lib');
@@ -581,7 +584,7 @@ describe('Unit test cases for getTransformedJSON', () => {
       $android_os_version: '8.1.0',
       $android_manufacturer: 'Google',
       $android_app_version: '1.0',
-      $android_app_version_code: '1.0',
+      $android_app_version_code: '1',
       $android_brand: 'Google',
     };
 
@@ -664,7 +667,7 @@ describe('Unit test cases for getTransformedJSON', () => {
       $android_os_version: '8.1.0',
       $android_manufacturer: 'Google',
       $android_app_version: '1.0',
-      $android_app_version_code: '1.0',
+      $android_app_version_code: '1',
       $android_brand: 'Google',
     };
 
@@ -695,5 +698,88 @@ describe('Unit test cases for getTransformedJSON', () => {
     };
 
     expect(result).toEqual(expectedResult);
+  });
+});
+
+describe('getBaseEndpoint', () => {
+  const testCases = [
+    {
+      name: 'should return BASE_ENDPOINT_EU when dataResidency is eu',
+      input: { dataResidency: 'eu' },
+      expected: 'https://api-eu.mixpanel.com',
+    },
+    {
+      name: 'should return BASE_ENDPOINT_IN when dataResidency is in',
+      input: { dataResidency: 'in' },
+      expected: 'https://api-in.mixpanel.com',
+    },
+    {
+      name: 'should return default BASE_ENDPOINT when dataResidency is other',
+      input: { dataResidency: 'us' },
+      expected: 'https://api.mixpanel.com',
+    },
+    {
+      name: 'should return BASE_ENDPOINT when dataResidency is not provided',
+      input: {},
+      expected: 'https://api.mixpanel.com',
+    },
+  ];
+
+  testCases.forEach(({ name, input, expected }) => {
+    it(name, () => {
+      expect(getBaseEndpoint(input)).toEqual(expected);
+    });
+  });
+});
+
+describe('getDeletionTaskBaseEndpoint', () => {
+  const testCases = [
+    {
+      name: 'should return CREATE_DELETION_TASK_ENDPOINT_EU when dataResidency is eu',
+      input: { dataResidency: 'eu' },
+      expected: 'https://eu.mixpanel.com/api/app/data-deletions/v3.0/',
+    },
+    {
+      name: 'should return CREATE_DELETION_TASK_ENDPOINT_IN when dataResidency is in',
+      input: { dataResidency: 'in' },
+      expected: 'https://in.mixpanel.com/api/app/data-deletions/v3.0/',
+    },
+    {
+      name: 'should return default CREATE_DELETION_TASK_ENDPOINT when dataResidency is other',
+      input: { dataResidency: 'us' },
+      expected: 'https://mixpanel.com/api/app/data-deletions/v3.0/',
+    },
+    {
+      name: 'should return CREATE_DELETION_TASK_ENDPOINT when dataResidency is not provided',
+      input: {},
+      expected: 'https://mixpanel.com/api/app/data-deletions/v3.0/',
+    },
+  ];
+
+  testCases.forEach(({ name, input, expected }) => {
+    it(name, () => {
+      expect(getDeletionTaskBaseEndpoint(input)).toEqual(expected);
+    });
+  });
+});
+
+describe('getCreateDeletionTaskEndpoint', () => {
+  const testCases = [
+    {
+      name: 'should return endpoint',
+      input: {
+        config: {
+          dataResidency: 'eu',
+        },
+        token: 'dummy-Token',
+      },
+      expected: 'https://eu.mixpanel.com/api/app/data-deletions/v3.0/?token=dummy-Token',
+    },
+  ];
+
+  testCases.forEach(({ name, input, expected }) => {
+    it(name, () => {
+      expect(getCreateDeletionTaskEndpoint(input.config, input.token)).toEqual(expected);
+    });
   });
 });

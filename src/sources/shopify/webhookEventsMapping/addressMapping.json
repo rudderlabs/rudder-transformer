@@ -1,0 +1,26 @@
+[
+  {
+    "sourceKeys": "address1",
+    "destKeys": "traits.address.street"
+  },
+
+  {
+    "sourceKeys": "city",
+    "destKeys": "traits.address.city"
+  },
+
+  {
+    "sourceKeys": "province",
+    "destKeys": "traits.address.state"
+  },
+
+  {
+    "sourceKeys": "zip",
+    "destKeys": "traits.address.postalCode"
+  },
+
+  {
+    "sourceKeys": "country",
+    "destKeys": "traits.address.country"
+  }
+]

@@ -61,16 +61,9 @@ export class NativeIntegrationSourceService implements SourceService {
           if (sourceEvent.output) {
             const newSourceEvent = sourceEvent.output;
 
-            const { headers } = newSourceEvent;
-            if (headers) {
-              delete newSourceEvent.headers;
-            }
-
             const respEvents: RudderMessage | RudderMessage[] | SourceTransformationResponse =
               await sourceHandler.process(newSourceEvent);
-            return SourcePostTransformationService.handleSuccessEventsSource(respEvents, {
-              headers,
-            });
+            return SourcePostTransformationService.handleSuccessEventsSource(respEvents, {});
           }
           return SourcePostTransformationService.handleFailureEventsSource(
             new Error('Error post version converstion, converstion output is undefined'),

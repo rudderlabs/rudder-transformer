@@ -22,8 +22,6 @@ const {
 const {
   ConfigCategory,
   mappingConfig,
-  BASE_ENDPOINT,
-  BASE_ENDPOINT_EU,
   IMPORT_MAX_BATCH_SIZE,
   ENGAGE_MAX_BATCH_SIZE,
   GROUPS_MAX_BATCH_SIZE,
@@ -37,6 +35,7 @@ const {
   trimTraits,
   generatePageOrScreenCustomEventName,
   recordBatchSizeMetrics,
+  getBaseEndpoint,
 } = require('./util');
 const { CommonUtils } = require('../../../util/common');
 
@@ -44,8 +43,7 @@ const { CommonUtils } = require('../../../util/common');
 const mPEventPropertiesConfigJson = mappingConfig[ConfigCategory.EVENT_PROPERTIES.name];
 
 const setImportCredentials = (destConfig) => {
-  const endpoint =
-    destConfig.dataResidency === 'eu' ? `${BASE_ENDPOINT_EU}/import/` : `${BASE_ENDPOINT}/import/`;
+  const endpoint = `${getBaseEndpoint(destConfig)}/import/`;
   const params = { strict: destConfig.strictMode ? 1 : 0 };
   const { serviceAccountUserName, serviceAccountSecret, projectId, token } = destConfig;
   let credentials;
@@ -67,7 +65,6 @@ const responseBuilderSimple = (payload, message, eventType, destConfig) => {
   response.method = defaultPostRequestConfig.requestMethod;
   response.userId = message.userId || message.anonymousId;
   response.body.JSON_ARRAY = { batch: JSON.stringify([removeUndefinedValues(payload)]) };
-  const { dataResidency } = destConfig;
   const duration = getTimeDifference(message.timestamp);
 
   const setCredentials = () => {
@@ -96,8 +93,7 @@ const responseBuilderSimple = (payload, message, eventType, destConfig) => {
       break;
     }
     default:
-      response.endpoint =
-        dataResidency === 'eu' ? `${BASE_ENDPOINT_EU}/engage/` : `${BASE_ENDPOINT}/engage/`;
+      response.endpoint = `${getBaseEndpoint(destConfig)}/engage/`;
       response.headers = {};
   }
   return response;
@@ -164,9 +160,7 @@ const getEventValueForTrackEvent = (message, destination) => {
 
   const unixTimestamp = toUnixTimestampInMS(message.timestamp || message.originalTimestamp);
 
-  const traits = destination.Config?.dropTraitsInTrackEvent
-    ? {}
-    : { ...message?.context?.traits };
+  const traits = destination.Config?.dropTraitsInTrackEvent ? {} : { ...message?.context?.traits };
 
   let properties = {
     ...message.properties,
@@ -413,10 +407,7 @@ const processGroupEvents = (message, type, destination) => {
             type,
             destination.Config,
           );
-          groupResponse.endpoint =
-            destination.Config.dataResidency === 'eu'
-              ? `${BASE_ENDPOINT_EU}/groups/`
-              : `${BASE_ENDPOINT}/groups/`;
+          groupResponse.endpoint = `${getBaseEndpoint(destination?.Config)}/groups/`;
           returnValue.push(groupResponse);
         });
       }

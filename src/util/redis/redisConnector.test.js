@@ -4,7 +4,6 @@ const version = 'v0';
 const { RedisDB } = require('./redisConnector');
 jest.mock('ioredis', () => require('../../../test/__mocks__/redis'));
 
-const sourcesList = ['shopify'];
 process.env.USE_REDIS_DB = 'true';
 
 const timeoutPromise = () =>
@@ -42,26 +41,6 @@ describe('checkAndConnectConnection', () => {
   it('should resolve if client is already connected', async () => {
     await RedisDB.checkAndConnectConnection();
     expect(RedisDB.client.status).toBe('ready');
-  });
-});
-describe(`Source Tests`, () => {
-  sourcesList.forEach((source) => {
-    const testDataFile = fs.readFileSync(
-      path.resolve(__dirname, `./testData/${source}_source.json`),
-    );
-    const data = JSON.parse(testDataFile);
-    const transformer = require(`../../${version}/sources/${source}/transform`);
-
-    data.forEach((dataPoint, index) => {
-      it(`${index}. ${source} - ${dataPoint.description}`, async () => {
-        try {
-          const output = await transformer.process(dataPoint.input);
-          expect(output).toEqual(dataPoint.output);
-        } catch (error) {
-          expect(error.message).toEqual(dataPoint.output.error);
-        }
-      });
-    });
   });
 });
 

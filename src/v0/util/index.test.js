@@ -15,7 +15,7 @@ const {
   convertToUuid,
 } = require('./index');
 const exp = require('constants');
-const { ERROR_MESSAGES } = require('./constant');
+const { ERROR_MESSAGES, FEATURE_FILTER_CODE } = require('./constant');
 
 // Names of the utility functions to test
 const functionNames = [
@@ -1161,5 +1161,205 @@ describe('getBodyFromV2SpecPayload', () => {
       },
     };
     expect(utilities.getBodyFromV2SpecPayload(input)).toEqual([1, 2, 3]);
+  });
+});
+
+describe('isNewStatusCodesAccepted', () => {
+  const testCases = [
+    {
+      description:
+        'should return true when features object contains FEATURE_FILTER_CODE with truthy value',
+      input: {
+        features: {
+          [FEATURE_FILTER_CODE]: true,
+        },
+      },
+      expected: true,
+    },
+    {
+      description:
+        'should return false when features object contains FEATURE_FILTER_CODE with falsy value',
+      input: {
+        features: {
+          [FEATURE_FILTER_CODE]: false,
+        },
+      },
+      expected: false,
+    },
+    {
+      description: 'should return false when features object is empty',
+      input: {
+        features: {},
+      },
+      expected: false,
+    },
+    {
+      description: 'should return false when features property is missing',
+      input: {},
+      expected: false,
+    },
+    {
+      description: 'should return false when reqMetadata is a string',
+      input: 'string',
+      expected: false,
+    },
+    {
+      description: 'should return false when reqMetadata is a number',
+      input: 123,
+      expected: false,
+    },
+    {
+      description: 'should return false when reqMetadata is a boolean',
+      input: true,
+      expected: false,
+    },
+    {
+      description: 'should return false when reqMetadata is an array',
+      input: [],
+      expected: false,
+    },
+    {
+      description: 'should return false when reqMetadata is undefined',
+      input: undefined,
+      expected: false,
+    },
+    {
+      description: 'should return false when reqMetadata is null',
+      input: null,
+      expected: false,
+    },
+  ];
+
+  test.each(testCases)('$description', ({ input, expected }) => {
+    expect(utilities.isNewStatusCodesAccepted(input)).toBe(expected);
+  });
+});
+
+describe('getType', () => {
+  const testCases = [
+    {
+      description: 'should handle null value',
+      input: null,
+      expected: 'NULL',
+    },
+    {
+      description: 'should handle undefined value',
+      input: undefined,
+      expected: 'NULL',
+    },
+    {
+      description: 'should handle empty array',
+      input: [],
+      expected: 'array',
+    },
+    {
+      description: 'should handle non-empty array',
+      input: [1, 2, 3],
+      expected: 'array',
+    },
+    {
+      description: 'should handle array constructor',
+      input: new Array(),
+      expected: 'array',
+    },
+    {
+      description: 'should handle empty string',
+      input: '',
+      expected: 'string',
+    },
+    {
+      description: 'should handle non-empty string',
+      input: 'hello',
+      expected: 'string',
+    },
+    {
+      description: 'should handle string constructor',
+      input: String('test'),
+      expected: 'string',
+    },
+    {
+      description: 'should handle zero number',
+      input: 0,
+      expected: 'number',
+    },
+    {
+      description: 'should handle positive integer',
+      input: 123,
+      expected: 'number',
+    },
+    {
+      description: 'should handle negative number',
+      input: -456,
+      expected: 'number',
+    },
+    {
+      description: 'should handle floating point number',
+      input: 1.234,
+      expected: 'number',
+    },
+    {
+      description: 'should handle number constructor',
+      input: Number(789),
+      expected: 'number',
+    },
+    {
+      description: 'should handle true boolean',
+      input: true,
+      expected: 'boolean',
+    },
+    {
+      description: 'should handle false boolean',
+      input: false,
+      expected: 'boolean',
+    },
+    {
+      description: 'should handle boolean constructor',
+      input: Boolean(true),
+      expected: 'boolean',
+    },
+    {
+      description: 'should handle empty object',
+      input: {},
+      expected: 'object',
+    },
+    {
+      description: 'should handle non-empty object',
+      input: { key: 'value' },
+      expected: 'object',
+    },
+    {
+      description: 'should handle object constructor',
+      input: new Object(),
+      expected: 'object',
+    },
+    {
+      description: 'should handle arrow function',
+      input: () => {},
+      expected: 'function',
+    },
+    {
+      description: 'should handle function declaration',
+      input: function () {},
+      expected: 'function',
+    },
+    {
+      description: 'should handle built-in function',
+      input: Date,
+      expected: 'function',
+    },
+    {
+      description: 'should handle symbol',
+      input: Symbol(),
+      expected: 'symbol',
+    },
+    {
+      description: 'should handle symbol with description',
+      input: Symbol('test'),
+      expected: 'symbol',
+    },
+  ];
+
+  test.each(testCases)('$description', ({ input, expected }) => {
+    expect(utilities.getType(input)).toBe(expected);
   });
 });

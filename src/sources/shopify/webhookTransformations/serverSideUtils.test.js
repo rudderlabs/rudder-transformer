@@ -7,14 +7,15 @@ const {
   setAnonymousId,
   addCartTokenHashToTraits,
 } = require('./serverSideUtlis');
-const { RedisDB } = require('../../../../util/redis/redisConnector');
-const stats = require('../../../../util/stats');
 
-const { lineItemsMappingJSON } = require('../../../../v0/sources/shopify/config');
-const Message = require('../../../../sources/message');
+const stats = require('../../../util/stats');
 
-jest.mock('../../../../sources/message');
-jest.mock('../../../../util/stats', () => ({
+const { lineItemsMappingJSON } = require('../config');
+const Message = require('../../message');
+const { RedisDB } = require('../../../util/redis/redisConnector');
+
+jest.mock('../../message');
+jest.mock('../../../util/stats', () => ({
   increment: jest.fn(),
 }));
 
@@ -70,11 +71,11 @@ describe('serverSideUtils.js', () => {
     it('should return array of products', () => {
       const result = getProductsFromLineItems(LINEITEMS, lineItemsMappingJSON);
       expect(result).toEqual([
-        { brand: 'Hydrogen Vendor', price: '600.00', product_id: 7234590408818, quantity: 1 },
+        { brand: 'Hydrogen Vendor', price: 600, product_id: '7234590408818', quantity: 1 },
         {
           brand: 'Hydrogen Vendor',
-          price: '600.00',
-          product_id: 7234590408817,
+          price: 600,
+          product_id: '7234590408817',
           quantity: 1,
           title: 'The Collection Snowboard: Nitrogen',
         },
@@ -154,26 +155,26 @@ describe('serverSideUtils.js', () => {
 
   describe('Test addCartTokenHashToTraits', () => {
     // Add cart token hash to traits when cart token exists in event
-    it('should add cart_token_hash to message traits when cart token exists', () => {
-      const message = { traits: { existingTrait: 'value' } };
+    it('should add cart_token_hash to message context traits when cart token exists', () => {
+      const message = { context: { traits: { existingTrait: 'value' } } };
       const event = { cart_token: 'Z2NwLXVzLWVhc3QxOjAxSkJaTUVRSjgzNUJUN1BTNjEzRFdRUFFQ' };
       const expectedHash = '9125e1da-57b9-5bdc-953e-eb2b0ded5edc';
 
       addCartTokenHashToTraits(message, event);
 
-      expect(message.traits).toEqual({
+      expect(message.context.traits).toEqual({
         existingTrait: 'value',
         cart_token_hash: expectedHash,
       });
     });
 
     // Do not add cart token hash to traits when cart token does not exist in event
-    it('should not add cart_token_hash to message traits when cart token does not exist', () => {
-      const message = { traits: { existingTrait: 'value' } };
+    it('should not add cart_token_hash to message context traits when cart token does not exist', () => {
+      const message = { context: { traits: { existingTrait: 'value' } } };
       const event = { property: 'value' };
       addCartTokenHashToTraits(message, event);
 
-      expect(message.traits).toEqual({ existingTrait: 'value' });
+      expect(message.context.traits).toEqual({ existingTrait: 'value' });
     });
   });
 });

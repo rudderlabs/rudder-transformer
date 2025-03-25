@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.95.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.94.0...v1.95.0) (2025-03-24)
+
+
+### Features
+
+* added india residency support in mixpanel destination ([#4191](https://github.com/rudderlabs/rudder-transformer/issues/4191)) ([173c50f](https://github.com/rudderlabs/rudder-transformer/commit/173c50f5c0babbaa933c7cce98ac93f154900c2d))
+
+
+### Bug Fixes
+
+* mapping of android app version code in mixpanel destination ([#4188](https://github.com/rudderlabs/rudder-transformer/issues/4188)) ([1c30a07](https://github.com/rudderlabs/rudder-transformer/commit/1c30a072310bdcd8f685a2d39f52290e05b8f50a))
+* update pixel app specific transformations ([#4173](https://github.com/rudderlabs/rudder-transformer/issues/4173)) ([1bc6754](https://github.com/rudderlabs/rudder-transformer/commit/1bc6754cfadde76cb0b69ee3c29351b8b82784c2))
+
 ## [1.94.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.93.0...v1.94.0) (2025-03-18)
 
 

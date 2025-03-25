@@ -23,6 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      TRANSFORMER_IMAGE_TAG_FOR_TEST: 1.95.0
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -38,9 +39,8 @@ jobs:
           cd rudder-ingestion-svc
           go mod download
       - name: 'Run tests'
-        env:
-          TRANSFORMER_IMAGE_TAG_FOR_TEST: 1.95.0
         run: |
+          echo "Running tests ${{ github.event.pull_request.head.ref }} $TRANSFORMER_IMAGE_TAG_FOR_TEST"
           cd rudder-ingestion-svc
           pwd
           make test package=internal/gateway exclude='internal/gateway/.+'

@@ -1,3 +1,5 @@
+import { defaultApiKey } from '../../../common/secrets';
+
 export const data = [
   {
     name: 'persistiq',
@@ -43,7 +45,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: defaultApiKey,
                 persistIqAttributesMapping: [
                   {
                     from: 'useroccupation',
@@ -87,7 +89,7 @@ export const data = [
               files: {},
               userId: '',
               headers: {
-                'x-api-key': 'dummyApiKey',
+                'x-api-key': defaultApiKey,
               },
               method: 'PATCH',
               params: {},
@@ -140,7 +142,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: defaultApiKey,
                 persistIqAttributesMapping: [
                   {
                     from: 'useroccupation',
@@ -189,7 +191,7 @@ export const data = [
               files: {},
               userId: '',
               headers: {
-                'x-api-key': 'dummyApiKey',
+                'x-api-key': defaultApiKey,
               },
               method: 'POST',
               params: {},
@@ -224,7 +226,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: defaultApiKey,
               },
             },
           },
@@ -285,7 +287,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: defaultApiKey,
               },
             },
           },
@@ -339,7 +341,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: defaultApiKey,
               },
             },
           },
@@ -400,7 +402,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: defaultApiKey,
               },
             },
           },
@@ -429,7 +431,7 @@ export const data = [
               method: 'POST',
               params: {},
               headers: {
-                'x-api-key': 'dummyApiKey',
+                'x-api-key': defaultApiKey,
               },
               version: '1',
               endpoint: 'https://api.persistiq.com/v1/campaigns/testgroup1/leads',
@@ -472,7 +474,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: defaultApiKey,
               },
             },
           },
@@ -498,7 +500,7 @@ export const data = [
               method: 'DELETE',
               params: {},
               headers: {
-                'x-api-key': 'dummyApiKey',
+                'x-api-key': defaultApiKey,
               },
               version: '1',
               endpoint: 'https://api.persistiq.com/v1/campaigns/testgroup1/leads/lel1c5u1wuk8',
@@ -547,7 +549,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: defaultApiKey,
                 persistIqAttributesMapping: [
                   {
                     from: 'useroccupation',

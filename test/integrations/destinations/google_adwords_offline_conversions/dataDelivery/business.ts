@@ -1,3 +1,4 @@
+import { authHeader1, secret3 } from '../maskedSecrets';
 import {
   generateMetadata,
   generateProxyV0Payload,
@@ -44,15 +45,15 @@ const products = [
 
 const headers = {
   header1: {
-    Authorization: 'Bearer abcd1234',
+    Authorization: authHeader1,
     'Content-Type': 'application/json',
-    'developer-token': 'ijkl91011',
+    'developer-token': secret3,
     'login-customer-id': 'logincustomerid',
   },
   header2: {
-    Authorization: 'Bearer abcd1234',
+    Authorization: authHeader1,
     'Content-Type': 'application/json',
-    'developer-token': 'ijkl91011',
+    'developer-token': secret3,
   },
 };
 
@@ -513,7 +514,7 @@ export const testScenariosForV1API = [
               '[Google Ads Offline Conversions Response Handler] - Request processed successfully',
             response: [
               {
-                error: '{"name":"customers/111-222-3333/operations/abcd="}',
+                error: JSON.stringify({ name: 'customers/111-222-3333/operations/abcd=' }),
                 metadata: generateMetadata(1),
                 statusCode: 200,
               },
@@ -557,8 +558,18 @@ export const testScenariosForV1API = [
               '[Google Ads Offline Conversions Response Handler] - Request processed successfully',
             response: [
               {
-                error:
-                  '[{"adjustmentType":"ENHANCEMENT","conversionAction":"customers/1234567891/conversionActions/874224905","adjustmentDateTime":"2021-01-01 12:32:45-08:00","gclidDateTimePair":{"gclid":"1234","conversionDateTime":"2021-01-01 12:32:45-08:00"},"orderId":"12345"}]',
+                error: JSON.stringify([
+                  {
+                    adjustmentType: 'ENHANCEMENT',
+                    conversionAction: 'customers/1234567891/conversionActions/874224905',
+                    adjustmentDateTime: '2021-01-01 12:32:45-08:00',
+                    gclidDateTimePair: {
+                      gclid: '1234',
+                      conversionDateTime: '2021-01-01 12:32:45-08:00',
+                    },
+                    orderId: '12345',
+                  },
+                ]),
                 metadata: generateMetadata(1),
                 statusCode: 200,
               },
@@ -602,8 +613,18 @@ export const testScenariosForV1API = [
               '[Google Ads Offline Conversions Response Handler] - Request processed successfully',
             response: [
               {
-                error:
-                  '[{"adjustmentType":"ENHANCEMENT","conversionAction":"customers/1234567891/conversionActions/874224905","adjustmentDateTime":"2021-01-01 12:32:45-08:00","gclidDateTimePair":{"gclid":"1234","conversionDateTime":"2021-01-01 12:32:45-08:00"},"orderId":"12345"}]',
+                error: JSON.stringify([
+                  {
+                    adjustmentType: 'ENHANCEMENT',
+                    conversionAction: 'customers/1234567891/conversionActions/874224905',
+                    adjustmentDateTime: '2021-01-01 12:32:45-08:00',
+                    gclidDateTimePair: {
+                      gclid: '1234',
+                      conversionDateTime: '2021-01-01 12:32:45-08:00',
+                    },
+                    orderId: '12345',
+                  },
+                ]),
                 metadata: generateMetadata(1),
                 statusCode: 200,
               },

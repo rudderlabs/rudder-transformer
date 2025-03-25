@@ -6,6 +6,9 @@ const {
   trimTraits,
   generatePageOrScreenCustomEventName,
   getTransformedJSON,
+  getBaseEndpoint,
+  getDeletionTaskBaseEndpoint,
+  getCreateDeletionTaskEndpoint,
 } = require('./util');
 const { FEATURE_GZIP_SUPPORT } = require('../../util/constant');
 const { ConfigurationError } = require('@rudderstack/integrations-lib');
@@ -32,7 +35,7 @@ describe('Unit test cases for groupEventsByEndpoint', () => {
           endpoint: '/engage',
           body: {
             JSON_ARRAY: {
-              batch: '[{prop:1}]',
+              batch: JSON.stringify([{ prop: 1 }]),
             },
           },
           userId: 'user1',
@@ -43,7 +46,7 @@ describe('Unit test cases for groupEventsByEndpoint', () => {
           endpoint: '/engage',
           body: {
             JSON_ARRAY: {
-              batch: '[{prop:2}]',
+              batch: JSON.stringify([{ prop: 2 }]),
             },
           },
           userId: 'user2',
@@ -54,7 +57,7 @@ describe('Unit test cases for groupEventsByEndpoint', () => {
           endpoint: '/groups',
           body: {
             JSON_ARRAY: {
-              batch: '[{prop:3}]',
+              batch: JSON.stringify([{ prop: 3 }]),
             },
           },
           userId: 'user1',
@@ -65,7 +68,7 @@ describe('Unit test cases for groupEventsByEndpoint', () => {
           endpoint: '/track',
           body: {
             JSON_ARRAY: {
-              batch: '[{prop:4}]',
+              batch: JSON.stringify([{ prop: 4 }]),
             },
           },
           userId: 'user1',
@@ -76,7 +79,7 @@ describe('Unit test cases for groupEventsByEndpoint', () => {
           endpoint: '/import',
           body: {
             JSON_ARRAY: {
-              batch: '[{prop:5}]',
+              batch: JSON.stringify([{ prop: 5 }]),
             },
           },
           userId: 'user2',
@@ -92,7 +95,7 @@ describe('Unit test cases for groupEventsByEndpoint', () => {
             endpoint: '/engage',
             body: {
               JSON_ARRAY: {
-                batch: '[{prop:1}]',
+                batch: JSON.stringify([{ prop: 1 }]),
               },
             },
             userId: 'user1',
@@ -103,7 +106,7 @@ describe('Unit test cases for groupEventsByEndpoint', () => {
             endpoint: '/engage',
             body: {
               JSON_ARRAY: {
-                batch: '[{prop:2}]',
+                batch: JSON.stringify([{ prop: 2 }]),
               },
             },
             userId: 'user2',
@@ -116,7 +119,7 @@ describe('Unit test cases for groupEventsByEndpoint', () => {
             endpoint: '/groups',
             body: {
               JSON_ARRAY: {
-                batch: '[{prop:3}]',
+                batch: JSON.stringify([{ prop: 3 }]),
               },
             },
             userId: 'user1',
@@ -129,7 +132,7 @@ describe('Unit test cases for groupEventsByEndpoint', () => {
             endpoint: '/import',
             body: {
               JSON_ARRAY: {
-                batch: '[{prop:5}]',
+                batch: JSON.stringify([{ prop: 5 }]),
               },
             },
             userId: 'user2',
@@ -149,7 +152,7 @@ describe('Unit test cases for batchEvents', () => {
           endpoint: '/engage',
           body: {
             JSON_ARRAY: {
-              batch: '[{"prop":1}]',
+              batch: JSON.stringify([{ prop: 1 }]),
             },
           },
           headers: {},
@@ -163,7 +166,7 @@ describe('Unit test cases for batchEvents', () => {
           endpoint: '/engage',
           body: {
             JSON_ARRAY: {
-              batch: '[{"prop":2}]',
+              batch: JSON.stringify([{ prop: 2 }]),
             },
           },
           headers: {},
@@ -177,7 +180,7 @@ describe('Unit test cases for batchEvents', () => {
           endpoint: '/engage',
           body: {
             JSON_ARRAY: {
-              batch: '[{"prop":3}]',
+              batch: JSON.stringify([{ prop: 3 }]),
             },
           },
           headers: {},
@@ -194,7 +197,12 @@ describe('Unit test cases for batchEvents', () => {
       {
         batched: true,
         batchedRequest: {
-          body: { FORM: {}, JSON: {}, JSON_ARRAY: { batch: '[{"prop":1},{"prop":2}]' }, XML: {} },
+          body: {
+            FORM: {},
+            JSON: {},
+            JSON_ARRAY: { batch: JSON.stringify([{ prop: 1 }, { prop: 2 }]) },
+            XML: {},
+          },
           endpoint: '/engage',
           files: {},
           headers: {},
@@ -210,7 +218,12 @@ describe('Unit test cases for batchEvents', () => {
       {
         batched: true,
         batchedRequest: {
-          body: { FORM: {}, JSON: {}, JSON_ARRAY: { batch: '[{"prop":3}]' }, XML: {} },
+          body: {
+            FORM: {},
+            JSON: {},
+            JSON_ARRAY: { batch: JSON.stringify([{ prop: 3 }]) },
+            XML: {},
+          },
           endpoint: '/engage',
           files: {},
           headers: {},
@@ -237,13 +250,13 @@ describe('Unit test cases for generateBatchedPayloadForArray', () => {
   it('should generate a batched payload with GZIP payload for /import endpoint when given an array of events', () => {
     const events = [
       {
-        body: { JSON_ARRAY: { batch: '[{"event": "event1"}]' } },
+        body: { JSON_ARRAY: { batch: JSON.stringify([{ event: 'event1' }]) } },
         endpoint: '/import',
         headers: { 'Content-Type': 'application/json' },
         params: {},
       },
       {
-        body: { JSON_ARRAY: { batch: '[{"event": "event2"}]' } },
+        body: { JSON_ARRAY: { batch: JSON.stringify([{ event: 'event2' }]) } },
         endpoint: '/import',
         headers: { 'Content-Type': 'application/json' },
         params: {},
@@ -256,7 +269,7 @@ describe('Unit test cases for generateBatchedPayloadForArray', () => {
         JSON_ARRAY: {},
         XML: {},
         GZIP: {
-          payload: '[{"event":"event1"},{"event":"event2"}]',
+          payload: JSON.stringify([{ event: 'event1' }, { event: 'event2' }]),
         },
       },
       endpoint: '/import',
@@ -278,13 +291,13 @@ describe('Unit test cases for generateBatchedPayloadForArray', () => {
   it('should generate a batched payload with JSON_ARRAY body when given an array of events', () => {
     const events = [
       {
-        body: { JSON_ARRAY: { batch: '[{"event": "event1"}]' } },
+        body: { JSON_ARRAY: { batch: JSON.stringify([{ event: 'event1' }]) } },
         endpoint: '/endpoint',
         headers: { 'Content-Type': 'application/json' },
         params: {},
       },
       {
-        body: { JSON_ARRAY: { batch: '[{"event": "event2"}]' } },
+        body: { JSON_ARRAY: { batch: JSON.stringify([{ event: 'event2' }]) } },
         endpoint: '/endpoint',
         headers: { 'Content-Type': 'application/json' },
         params: {},
@@ -294,7 +307,7 @@ describe('Unit test cases for generateBatchedPayloadForArray', () => {
       body: {
         FORM: {},
         JSON: {},
-        JSON_ARRAY: { batch: '[{"event":"event1"},{"event":"event2"}]' },
+        JSON_ARRAY: { batch: JSON.stringify([{ event: 'event1' }, { event: 'event2' }]) },
         XML: {},
       },
       endpoint: '/endpoint',
@@ -571,7 +584,7 @@ describe('Unit test cases for getTransformedJSON', () => {
       $android_os_version: '8.1.0',
       $android_manufacturer: 'Google',
       $android_app_version: '1.0',
-      $android_app_version_code: '1.0',
+      $android_app_version_code: '1',
       $android_brand: 'Google',
     };
 
@@ -654,7 +667,7 @@ describe('Unit test cases for getTransformedJSON', () => {
       $android_os_version: '8.1.0',
       $android_manufacturer: 'Google',
       $android_app_version: '1.0',
-      $android_app_version_code: '1.0',
+      $android_app_version_code: '1',
       $android_brand: 'Google',
     };
 
@@ -685,5 +698,88 @@ describe('Unit test cases for getTransformedJSON', () => {
     };
 
     expect(result).toEqual(expectedResult);
+  });
+});
+
+describe('getBaseEndpoint', () => {
+  const testCases = [
+    {
+      name: 'should return BASE_ENDPOINT_EU when dataResidency is eu',
+      input: { dataResidency: 'eu' },
+      expected: 'https://api-eu.mixpanel.com',
+    },
+    {
+      name: 'should return BASE_ENDPOINT_IN when dataResidency is in',
+      input: { dataResidency: 'in' },
+      expected: 'https://api-in.mixpanel.com',
+    },
+    {
+      name: 'should return default BASE_ENDPOINT when dataResidency is other',
+      input: { dataResidency: 'us' },
+      expected: 'https://api.mixpanel.com',
+    },
+    {
+      name: 'should return BASE_ENDPOINT when dataResidency is not provided',
+      input: {},
+      expected: 'https://api.mixpanel.com',
+    },
+  ];
+
+  testCases.forEach(({ name, input, expected }) => {
+    it(name, () => {
+      expect(getBaseEndpoint(input)).toEqual(expected);
+    });
+  });
+});
+
+describe('getDeletionTaskBaseEndpoint', () => {
+  const testCases = [
+    {
+      name: 'should return CREATE_DELETION_TASK_ENDPOINT_EU when dataResidency is eu',
+      input: { dataResidency: 'eu' },
+      expected: 'https://eu.mixpanel.com/api/app/data-deletions/v3.0/',
+    },
+    {
+      name: 'should return CREATE_DELETION_TASK_ENDPOINT_IN when dataResidency is in',
+      input: { dataResidency: 'in' },
+      expected: 'https://in.mixpanel.com/api/app/data-deletions/v3.0/',
+    },
+    {
+      name: 'should return default CREATE_DELETION_TASK_ENDPOINT when dataResidency is other',
+      input: { dataResidency: 'us' },
+      expected: 'https://mixpanel.com/api/app/data-deletions/v3.0/',
+    },
+    {
+      name: 'should return CREATE_DELETION_TASK_ENDPOINT when dataResidency is not provided',
+      input: {},
+      expected: 'https://mixpanel.com/api/app/data-deletions/v3.0/',
+    },
+  ];
+
+  testCases.forEach(({ name, input, expected }) => {
+    it(name, () => {
+      expect(getDeletionTaskBaseEndpoint(input)).toEqual(expected);
+    });
+  });
+});
+
+describe('getCreateDeletionTaskEndpoint', () => {
+  const testCases = [
+    {
+      name: 'should return endpoint',
+      input: {
+        config: {
+          dataResidency: 'eu',
+        },
+        token: 'dummy-Token',
+      },
+      expected: 'https://eu.mixpanel.com/api/app/data-deletions/v3.0/?token=dummy-Token',
+    },
+  ];
+
+  testCases.forEach(({ name, input, expected }) => {
+    it(name, () => {
+      expect(getCreateDeletionTaskEndpoint(input.config, input.token)).toEqual(expected);
+    });
   });
 });

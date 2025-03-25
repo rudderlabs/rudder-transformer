@@ -5,6 +5,7 @@ import {
   generateSimplifiedGroupPayload,
   transformResultBuilder,
 } from '../../../testUtils';
+import { secret1, authHeader1 } from '../maskedSecrets';
 
 const destination: Destination = {
   ID: '123',
@@ -17,7 +18,7 @@ const destination: Destination = {
   },
   Config: {
     apiVersion: 'v2',
-    privateApiKey: 'dummyPrivateApiKey',
+    privateApiKey: secret1,
     consent: ['email'],
   },
   Enabled: true,
@@ -26,7 +27,7 @@ const destination: Destination = {
 };
 
 const headers = {
-  Authorization: 'Klaviyo-API-Key dummyPrivateApiKey',
+  Authorization: authHeader1,
   'Content-Type': 'application/json',
   Accept: 'application/json',
   revision: '2024-06-15',

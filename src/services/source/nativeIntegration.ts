@@ -1,3 +1,4 @@
+import { JsonSchemaGenerator } from '@rudderstack/integrations-lib';
 import { FetchHandler } from '../../helpers/fetchHandlers';
 import { SourceService } from '../../interfaces/SourceService';
 import {
@@ -14,6 +15,7 @@ import { FixMe } from '../../util/types';
 import tags from '../../v0/util/tags';
 import { SourcePostTransformationService } from './postTransformation';
 import logger from '../../logger';
+import { getBodyFromV2SpecPayload } from '../../v0/util';
 
 export class NativeIntegrationSourceService implements SourceService {
   public getTags(extraErrorDetails: ErrorDetailerOptions = {}): MetaTransferObject {
@@ -59,16 +61,9 @@ export class NativeIntegrationSourceService implements SourceService {
           if (sourceEvent.output) {
             const newSourceEvent = sourceEvent.output;
 
-            const { headers } = newSourceEvent;
-            if (headers) {
-              delete newSourceEvent.headers;
-            }
-
             const respEvents: RudderMessage | RudderMessage[] | SourceTransformationResponse =
               await sourceHandler.process(newSourceEvent);
-            return SourcePostTransformationService.handleSuccessEventsSource(respEvents, {
-              headers,
-            });
+            return SourcePostTransformationService.handleSuccessEventsSource(respEvents, {});
           }
           return SourcePostTransformationService.handleFailureEventsSource(
             new Error('Error post version converstion, converstion output is undefined'),
@@ -82,6 +77,19 @@ export class NativeIntegrationSourceService implements SourceService {
           logger.debug(`Error during source Transform: ${error}`, {
             ...logger.getLogMetadata(metaTO.errorDetails),
           });
+          // log the payload schema here
+          const duplicateSourceEvent: any = sourceEvent;
+          try {
+            duplicateSourceEvent.output.request.body = getBodyFromV2SpecPayload(
+              duplicateSourceEvent?.output,
+            );
+          } catch (e) {
+            /* empty */
+          }
+          logger.error(
+            `Sample Payload Schema for source ${sourceType} : ${JSON.stringify(JsonSchemaGenerator.generate(duplicateSourceEvent))}`,
+          );
+
           return SourcePostTransformationService.handleFailureEventsSource(error, metaTO);
         }
       }),

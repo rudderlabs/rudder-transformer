@@ -51,11 +51,16 @@ const getConversions = (message, metadata, { Config }, event, conversionType) =>
     payload = convertedPayload.payload;
     endpoint = convertedPayload.endpoint;
   } else if (conversionType === 'store') {
-    payload = getStoreConversionPayload(message, Config, filteredCustomerId);
+    payload = getStoreConversionPayload(
+      message,
+      Config,
+      filteredCustomerId,
+      eventLevelConsentsData,
+    );
     endpoint = STORE_CONVERSION_CONFIG.replace(':customerId', filteredCustomerId);
   } else {
     // call conversions
-    payload = getCallConversionPayload(message, Config, eventLevelConsentsData);
+    payload = getCallConversionPayload(message, eventLevelConsentsData);
     endpoint = CALL_CONVERSION.replace(':customerId', filteredCustomerId);
   }
 

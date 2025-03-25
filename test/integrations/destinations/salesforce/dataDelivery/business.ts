@@ -1,9 +1,10 @@
 import { ProxyMetdata } from '../../../../../src/types';
 import { ProxyV1TestData } from '../../../testTypes';
 import { generateProxyV1Payload } from '../../../testUtils';
+import { authHeader1 } from '../maskedSecrets';
 
 const commonHeaders = {
-  Authorization: 'Bearer token',
+  Authorization: authHeader1,
   'Content-Type': 'application/json',
 };
 const params = { destination: 'salesforce' };
@@ -111,7 +112,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
             message: 'Request for destination: salesforce Processed Successfully',
             response: [
               {
-                error: '{"statusText":"No Content"}',
+                error: JSON.stringify({ statusText: 'No Content' }),
                 metadata: proxyMetdata,
                 statusCode: 200,
               },
@@ -153,8 +154,9 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
               'Salesforce Request Failed: 500 - due to "Session expired or invalid", (Retryable) during Salesforce Response Handling',
             response: [
               {
-                error:
-                  '[{"message":"Session expired or invalid","errorCode":"INVALID_SESSION_ID"}]',
+                error: JSON.stringify([
+                  { message: 'Session expired or invalid', errorCode: 'INVALID_SESSION_ID' },
+                ]),
                 metadata: proxyMetdata,
                 statusCode: 500,
               },
@@ -196,7 +198,9 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
               'Salesforce Request Failed: "401" due to "INVALID_HEADER_TYPE", (Aborted) during Salesforce Response Handling',
             response: [
               {
-                error: '[{"message":"INVALID_HEADER_TYPE","errorCode":"INVALID_AUTH_HEADER"}]',
+                error: JSON.stringify([
+                  { message: 'INVALID_HEADER_TYPE', errorCode: 'INVALID_AUTH_HEADER' },
+                ]),
                 metadata: proxyMetdata,
                 statusCode: 400,
               },
@@ -237,8 +241,9 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
               'Salesforce Request Failed - due to "REQUEST_LIMIT_EXCEEDED", (Throttled) during Salesforce Response Handling',
             response: [
               {
-                error:
-                  '[{"message":"Request limit exceeded","errorCode":"REQUEST_LIMIT_EXCEEDED"}]',
+                error: JSON.stringify([
+                  { message: 'Request limit exceeded', errorCode: 'REQUEST_LIMIT_EXCEEDED' },
+                ]),
                 metadata: proxyMetdata,
                 statusCode: 429,
               },
@@ -280,7 +285,9 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
               'Salesforce Request Failed: 503 - due to Server Unavailable, during Salesforce Response Handling',
             response: [
               {
-                error: '[{"message":"Server Unavailable","errorCode":"SERVER_UNAVAILABLE"}]',
+                error: JSON.stringify([
+                  { message: 'Server Unavailable', errorCode: 'SERVER_UNAVAILABLE' },
+                ]),
                 metadata: proxyMetdata,
                 statusCode: 429,
               },
@@ -323,7 +330,10 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
               'Salesforce Request Failed: "400" due to "{"error":"invalid_grant","error_description":"authentication failure"}", (Aborted) during Salesforce Response Handling',
             response: [
               {
-                error: '{"error":"invalid_grant","error_description":"authentication failure"}',
+                error: JSON.stringify({
+                  error: 'invalid_grant',
+                  error_description: 'authentication failure',
+                }),
                 metadata: proxyMetdata,
                 statusCode: 400,
               },
@@ -365,8 +375,26 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
             message: 'Request for destination: salesforce Processed Successfully',
             response: [
               {
-                error:
-                  '{"searchRecords":[{"attributes":{"type":"object_name","url":"/services/data/v50.0/sobjects/object_name/a0J75100002w97gEAA"},"Id":"a0J75100002w97gEAA","External_ID__c":"external_id"},{"attributes":{"type":"object_name","url":"/services/data/v50.0/sobjects/object_name/a0J75200002w9ZsEAI"},"Id":"a0J75200002w9ZsEAI","External_ID__c":"external_id TEST"}]}',
+                error: JSON.stringify({
+                  searchRecords: [
+                    {
+                      attributes: {
+                        type: 'object_name',
+                        url: '/services/data/v50.0/sobjects/object_name/a0J75100002w97gEAA',
+                      },
+                      Id: 'a0J75100002w97gEAA',
+                      External_ID__c: 'external_id',
+                    },
+                    {
+                      attributes: {
+                        type: 'object_name',
+                        url: '/services/data/v50.0/sobjects/object_name/a0J75200002w9ZsEAI',
+                      },
+                      Id: 'a0J75200002w9ZsEAI',
+                      External_ID__c: 'external_id TEST',
+                    },
+                  ],
+                }),
                 metadata: proxyMetdata,
                 statusCode: 200,
               },

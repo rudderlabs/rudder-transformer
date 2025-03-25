@@ -1,3 +1,5 @@
+import { authHeader1 } from './maskedSecrets';
+
 const deleteNwData = [
   {
     httpReq: {
@@ -111,7 +113,7 @@ const deleteNwData = [
       },
       headers: {
         'Content-Type': 'application/json',
-        Authorization: 'Basic MTIzNDphYmNk',
+        Authorization: authHeader1,
       },
     },
     httpRes: {
@@ -154,7 +156,7 @@ const deleteNwData = [
       },
       headers: {
         'Content-Type': 'application/json',
-        Authorization: 'Basic MTIzNDphYmNk',
+        Authorization: authHeader1,
       },
     },
     httpRes: {
@@ -174,7 +176,7 @@ const deleteNwData = [
       },
       headers: {
         'Content-Type': 'application/json',
-        Authorization: 'Basic MTIzNDphYmNk',
+        Authorization: authHeader1,
       },
     },
     httpRes: {
@@ -194,7 +196,7 @@ const deleteNwData = [
       },
       headers: {
         'Content-Type': 'application/json',
-        Authorization: 'Basic MTIzNDphYmNk',
+        Authorization: authHeader1,
       },
     },
     httpRes: {
@@ -216,7 +218,7 @@ const deleteNwData = [
       },
       headers: {
         'Content-Type': 'application/json',
-        Authorization: 'Basic MTIzNDphYmNk',
+        Authorization: authHeader1,
       },
     },
     httpRes: {
@@ -250,7 +252,7 @@ const deliveryNwData = [
     httpReq: {
       url: 'https://api.amplitude.com/2/httpapi/test1',
       data: {
-        api_key: 'c9d8a13b8bcab46a547f7be5200c483d',
+        api_key: 'dummy-api-key',
         events: [
           {
             app_name: 'Rudder-CleverTap_Example',
@@ -301,7 +303,7 @@ const deliveryNwData = [
     httpReq: {
       url: 'https://api.amplitude.com/2/httpapi/test2',
       data: {
-        api_key: 'c9d8a13b8bcab46a547f7be5200c483d',
+        api_key: 'dummy-api-key',
         events: [
           {
             app_name: 'Rudder-CleverTap_Example',
@@ -354,7 +356,7 @@ const deliveryNwData = [
     httpReq: {
       url: 'https://api.amplitude.com/2/httpapi/test4',
       data: {
-        api_key: 'c9d8a13b8bcab46a547f7be5200c483d',
+        api_key: 'dummy-api-key',
         events: [
           {
             app_name: 'Rudder-CleverTap_Example',
@@ -387,7 +389,7 @@ const deliveryNwData = [
     httpReq: {
       url: 'https://api.amplitude.com/2/httpapi/test5',
       data: {
-        api_key: 'c9d8a13b8bcab46a547f7be5200c483d',
+        api_key: 'dummy-api-key',
         events: [
           {
             app_name: 'Rudder-CleverTap_Example',
@@ -420,7 +422,7 @@ const deliveryNwData = [
     httpReq: {
       url: 'https://api.amplitude.com/2/httpapi/test6',
       data: {
-        api_key: 'c9d8a13b8bcab46a547f7be5200c483d',
+        api_key: 'dummy-api-key',
         events: [
           {
             app_name: 'Rudder-CleverTap_Example',

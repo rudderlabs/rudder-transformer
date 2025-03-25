@@ -1,3 +1,5 @@
+import { defaultApiKey } from '../../../common/secrets';
+
 export const data = [
   {
     name: 'ometria',
@@ -55,7 +57,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: defaultApiKey,
                 allowMarketing: false,
                 allowTransactional: false,
                 marketingOptin: 'EXPLICITLY_OPTEDOUT',
@@ -77,13 +79,24 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api.ometria.com/v2/push',
-              headers: { 'X-Ometria-Auth': 'dummyApiKey' },
+              headers: { 'X-Ometria-Auth': defaultApiKey },
               params: {},
               body: {
                 JSON: {},
                 JSON_ARRAY: {
-                  batch:
-                    '[{"email":"testone@gmail.com","id":"test1","customer_id":"userId1","firstname":"test","lastname":"one","@type":"contact","properties":{"field1":"val1","ip":"0.0.0.0"},"marketing_optin":"EXPLICITLY_OPTEDOUT","channels":{"sms":{"allow_marketing":false,"allow_transactional":false}}}]',
+                  batch: JSON.stringify([
+                    {
+                      email: 'testone@gmail.com',
+                      id: 'test1',
+                      customer_id: 'userId1',
+                      firstname: 'test',
+                      lastname: 'one',
+                      '@type': 'contact',
+                      properties: { field1: 'val1', ip: '0.0.0.0' },
+                      marketing_optin: 'EXPLICITLY_OPTEDOUT',
+                      channels: { sms: { allow_marketing: false, allow_transactional: false } },
+                    },
+                  ]),
                 },
                 XML: {},
                 FORM: {},
@@ -153,7 +166,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: defaultApiKey,
                 allowMarketing: false,
                 allowTransactional: false,
                 marketingOptin: 'EXPLICITLY_OPTEDOUT',
@@ -175,13 +188,24 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api.ometria.com/v2/push',
-              headers: { 'X-Ometria-Auth': 'dummyApiKey' },
+              headers: { 'X-Ometria-Auth': defaultApiKey },
               params: {},
               body: {
                 JSON: {},
                 JSON_ARRAY: {
-                  batch:
-                    '[{"email":"testone@gmail.com","id":"updatedId1","customer_id":"userId1","firstname":"test","lastname":"one","@type":"contact","properties":{"field1":"val1","ip":"0.0.0.0"},"marketing_optin":"EXPLICITLY_OPTEDOUT","channels":{"sms":{"allow_marketing":true,"allow_transactional":false}}}]',
+                  batch: JSON.stringify([
+                    {
+                      email: 'testone@gmail.com',
+                      id: 'updatedId1',
+                      customer_id: 'userId1',
+                      firstname: 'test',
+                      lastname: 'one',
+                      '@type': 'contact',
+                      properties: { field1: 'val1', ip: '0.0.0.0' },
+                      marketing_optin: 'EXPLICITLY_OPTEDOUT',
+                      channels: { sms: { allow_marketing: true, allow_transactional: false } },
+                    },
+                  ]),
                 },
                 XML: {},
                 FORM: {},
@@ -250,7 +274,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: defaultApiKey,
                 allowMarketing: false,
                 allowTransactional: false,
                 marketingOptin: 'EXPLICITLY_OPTEDOUT',
@@ -272,13 +296,25 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api.ometria.com/v2/push',
-              headers: { 'X-Ometria-Auth': 'dummyApiKey' },
+              headers: { 'X-Ometria-Auth': defaultApiKey },
               params: {},
               body: {
                 JSON: {},
                 JSON_ARRAY: {
-                  batch:
-                    '[{"email":"testone@gmail.com","id":"test1","customer_id":"userId1","@type":"contact","properties":{"field1":"val1","ip":"0.0.0.0"},"marketing_optin":"EXPLICITLY_OPTEDOUT","channels":{"sms":{"allow_marketing":false,"allow_transactional":false}},"firstname":"test","middlename":"one","lastname":"two"}]',
+                  batch: JSON.stringify([
+                    {
+                      email: 'testone@gmail.com',
+                      id: 'test1',
+                      customer_id: 'userId1',
+                      '@type': 'contact',
+                      properties: { field1: 'val1', ip: '0.0.0.0' },
+                      marketing_optin: 'EXPLICITLY_OPTEDOUT',
+                      channels: { sms: { allow_marketing: false, allow_transactional: false } },
+                      firstname: 'test',
+                      middlename: 'one',
+                      lastname: 'two',
+                    },
+                  ]),
                 },
                 XML: {},
                 FORM: {},
@@ -349,7 +385,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: defaultApiKey,
                 allowMarketing: false,
                 allowTransactional: false,
                 marketingOptin: 'NOT_SPECIFIED',
@@ -371,13 +407,25 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api.ometria.com/v2/push',
-              headers: { 'X-Ometria-Auth': 'dummyApiKey' },
+              headers: { 'X-Ometria-Auth': defaultApiKey },
               params: {},
               body: {
                 JSON: {},
                 JSON_ARRAY: {
-                  batch:
-                    '[{"email":"testone@gmail.com","id":"test1","phone_number":"+911234567890","customer_id":"userId1","@type":"contact","properties":{"field1":"val1"},"marketing_optin":"NOT_SPECIFIED","channels":{"sms":{"allow_marketing":false,"allow_transactional":false}},"firstname":"test","lastname":"one"}]',
+                  batch: JSON.stringify([
+                    {
+                      email: 'testone@gmail.com',
+                      id: 'test1',
+                      phone_number: '+911234567890',
+                      customer_id: 'userId1',
+                      '@type': 'contact',
+                      properties: { field1: 'val1' },
+                      marketing_optin: 'NOT_SPECIFIED',
+                      channels: { sms: { allow_marketing: false, allow_transactional: false } },
+                      firstname: 'test',
+                      lastname: 'one',
+                    },
+                  ]),
                 },
                 XML: {},
                 FORM: {},
@@ -450,7 +498,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: defaultApiKey,
                 allowMarketing: false,
                 allowTransactional: false,
                 marketingOptin: 'NOT_SPECIFIED',
@@ -472,13 +520,25 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api.ometria.com/v2/push',
-              headers: { 'X-Ometria-Auth': 'dummyApiKey' },
+              headers: { 'X-Ometria-Auth': defaultApiKey },
               params: {},
               body: {
                 JSON: {},
                 JSON_ARRAY: {
-                  batch:
-                    '[{"email":"testone@gmail.com","id":"test1","phone_number":"+911234567890","customer_id":"userId1","@type":"contact","properties":{"field1":"val1"},"marketing_optin":"NOT_SPECIFIED","channels":{"sms":{"allow_marketing":true,"allow_transactional":true}},"firstname":"test","lastname":"one"}]',
+                  batch: JSON.stringify([
+                    {
+                      email: 'testone@gmail.com',
+                      id: 'test1',
+                      phone_number: '+911234567890',
+                      customer_id: 'userId1',
+                      '@type': 'contact',
+                      properties: { field1: 'val1' },
+                      marketing_optin: 'NOT_SPECIFIED',
+                      channels: { sms: { allow_marketing: true, allow_transactional: true } },
+                      firstname: 'test',
+                      lastname: 'one',
+                    },
+                  ]),
                 },
                 XML: {},
                 FORM: {},
@@ -545,7 +605,7 @@ export const data = [
               integrations: { All: true },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
-            destination: { Config: { apiKey: 'dummyApiKey' } },
+            destination: { Config: { apiKey: defaultApiKey } },
           },
         ],
         method: 'POST',
@@ -562,13 +622,22 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api.ometria.com/v2/push',
-              headers: { 'X-Ometria-Auth': 'dummyApiKey' },
+              headers: { 'X-Ometria-Auth': defaultApiKey },
               params: {},
               body: {
                 JSON: {},
                 JSON_ARRAY: {
-                  batch:
-                    '[{"id":"eventId1","timestamp":"2017-05-01T14:00:00Z","identity_email":"testone@gmail.com","identity_account_id":"userId1","@type":"custom_event","event_type":"event name","properties":{"field1":"val1"}}]',
+                  batch: JSON.stringify([
+                    {
+                      id: 'eventId1',
+                      timestamp: '2017-05-01T14:00:00Z',
+                      identity_email: 'testone@gmail.com',
+                      identity_account_id: 'userId1',
+                      '@type': 'custom_event',
+                      event_type: 'event name',
+                      properties: { field1: 'val1' },
+                    },
+                  ]),
                 },
                 XML: {},
                 FORM: {},
@@ -637,7 +706,7 @@ export const data = [
               integrations: { All: true },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
-            destination: { Config: { apiKey: 'dummyApiKey' } },
+            destination: { Config: { apiKey: defaultApiKey } },
           },
         ],
         method: 'POST',
@@ -654,13 +723,30 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api.ometria.com/v2/push',
-              headers: { 'X-Ometria-Auth': 'dummyApiKey' },
+              headers: { 'X-Ometria-Auth': defaultApiKey },
               params: {},
               body: {
                 JSON: {},
                 JSON_ARRAY: {
-                  batch:
-                    '[{"id":"orderId1","timestamp":"2017-05-01T14:00:00Z","grand_total":1000,"currency":"INR","ip_address":"0.0.0.0","customer":{"id":"userId1","email":"testone@gmail.com","firstname":"test","lastname":"one"},"@type":"order","status":"complete","is_valid":true,"properties":{"field1":"val1"}}]',
+                  batch: JSON.stringify([
+                    {
+                      id: 'orderId1',
+                      timestamp: '2017-05-01T14:00:00Z',
+                      grand_total: 1000,
+                      currency: 'INR',
+                      ip_address: '0.0.0.0',
+                      customer: {
+                        id: 'userId1',
+                        email: 'testone@gmail.com',
+                        firstname: 'test',
+                        lastname: 'one',
+                      },
+                      '@type': 'order',
+                      status: 'complete',
+                      is_valid: true,
+                      properties: { field1: 'val1' },
+                    },
+                  ]),
                 },
                 XML: {},
                 FORM: {},
@@ -730,7 +816,7 @@ export const data = [
               integrations: { All: true },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
-            destination: { Config: { apiKey: 'dummyApiKey' } },
+            destination: { Config: { apiKey: defaultApiKey } },
           },
         ],
         method: 'POST',
@@ -747,13 +833,31 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api.ometria.com/v2/push',
-              headers: { 'X-Ometria-Auth': 'dummyApiKey' },
+              headers: { 'X-Ometria-Auth': defaultApiKey },
               params: {},
               body: {
                 JSON: {},
                 JSON_ARRAY: {
-                  batch:
-                    '[{"id":"orderId1","timestamp":"2017-05-01T14:00:00Z","grand_total":1000,"currency":"INR","ip_address":"0.0.0.0","customer":{"id":"userId1","email":"testone@gmail.com","firstname":"test","lastname":"one"},"@type":"order","status":"complete","is_valid":true,"properties":{"field1":"val1"},"lineitems":[{"product_id":"prod123","quantity":4,"subtotal":10}]}]',
+                  batch: JSON.stringify([
+                    {
+                      id: 'orderId1',
+                      timestamp: '2017-05-01T14:00:00Z',
+                      grand_total: 1000,
+                      currency: 'INR',
+                      ip_address: '0.0.0.0',
+                      customer: {
+                        id: 'userId1',
+                        email: 'testone@gmail.com',
+                        firstname: 'test',
+                        lastname: 'one',
+                      },
+                      '@type': 'order',
+                      status: 'complete',
+                      is_valid: true,
+                      properties: { field1: 'val1' },
+                      lineitems: [{ product_id: 'prod123', quantity: 4, subtotal: 10 }],
+                    },
+                  ]),
                 },
                 XML: {},
                 FORM: {},
@@ -830,7 +934,7 @@ export const data = [
               integrations: { All: true },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
-            destination: { Config: { apiKey: 'dummyApiKey' } },
+            destination: { Config: { apiKey: defaultApiKey } },
           },
         ],
         method: 'POST',
@@ -847,13 +951,38 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api.ometria.com/v2/push',
-              headers: { 'X-Ometria-Auth': 'dummyApiKey' },
+              headers: { 'X-Ometria-Auth': defaultApiKey },
               params: {},
               body: {
                 JSON: {},
                 JSON_ARRAY: {
-                  batch:
-                    '[{"id":"orderId1","timestamp":"2017-05-01T14:00:00Z","grand_total":1000,"currency":"INR","ip_address":"0.0.0.0","customer":{"id":"userId1","email":"testone@gmail.com","firstname":"test","lastname":"one"},"@type":"order","status":"complete","is_valid":true,"properties":{"field1":"val1"},"lineitems":[{"product_id":"prod123","quantity":4,"subtotal":10,"variant_options":[{"id":"newid","type":"size","label":"5"}]}]}]',
+                  batch: JSON.stringify([
+                    {
+                      id: 'orderId1',
+                      timestamp: '2017-05-01T14:00:00Z',
+                      grand_total: 1000,
+                      currency: 'INR',
+                      ip_address: '0.0.0.0',
+                      customer: {
+                        id: 'userId1',
+                        email: 'testone@gmail.com',
+                        firstname: 'test',
+                        lastname: 'one',
+                      },
+                      '@type': 'order',
+                      status: 'complete',
+                      is_valid: true,
+                      properties: { field1: 'val1' },
+                      lineitems: [
+                        {
+                          product_id: 'prod123',
+                          quantity: 4,
+                          subtotal: 10,
+                          variant_options: [{ id: 'newid', type: 'size', label: '5' }],
+                        },
+                      ],
+                    },
+                  ]),
                 },
                 XML: {},
                 FORM: {},
@@ -932,7 +1061,7 @@ export const data = [
               integrations: { All: true },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
-            destination: { Config: { apiKey: 'dummyApiKey' } },
+            destination: { Config: { apiKey: defaultApiKey } },
           },
         ],
         method: 'POST',
@@ -949,13 +1078,38 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api.ometria.com/v2/push',
-              headers: { 'X-Ometria-Auth': 'dummyApiKey' },
+              headers: { 'X-Ometria-Auth': defaultApiKey },
               params: {},
               body: {
                 JSON: {},
                 JSON_ARRAY: {
-                  batch:
-                    '[{"id":"orderId1","timestamp":"2017-05-01T14:00:00Z","grand_total":1000,"currency":"INR","ip_address":"0.0.0.0","customer":{"id":"userId1","email":"testone@gmail.com","firstname":"test","lastname":"one"},"@type":"order","status":"complete","is_valid":true,"properties":{"field1":"val1"},"lineitems":[{"product_id":"prod123","quantity":4,"subtotal":10,"variant_options":[{"id":"newid","type":"size","label":"5"}]}]}]',
+                  batch: JSON.stringify([
+                    {
+                      id: 'orderId1',
+                      timestamp: '2017-05-01T14:00:00Z',
+                      grand_total: 1000,
+                      currency: 'INR',
+                      ip_address: '0.0.0.0',
+                      customer: {
+                        id: 'userId1',
+                        email: 'testone@gmail.com',
+                        firstname: 'test',
+                        lastname: 'one',
+                      },
+                      '@type': 'order',
+                      status: 'complete',
+                      is_valid: true,
+                      properties: { field1: 'val1' },
+                      lineitems: [
+                        {
+                          product_id: 'prod123',
+                          quantity: 4,
+                          subtotal: 10,
+                          variant_options: [{ id: 'newid', type: 'size', label: '5' }],
+                        },
+                      ],
+                    },
+                  ]),
                 },
                 XML: {},
                 FORM: {},
@@ -1038,7 +1192,7 @@ export const data = [
               integrations: { All: true },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
-            destination: { Config: { apiKey: 'dummyApiKey' } },
+            destination: { Config: { apiKey: defaultApiKey } },
           },
         ],
         method: 'POST',
@@ -1055,13 +1209,44 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api.ometria.com/v2/push',
-              headers: { 'X-Ometria-Auth': 'dummyApiKey' },
+              headers: { 'X-Ometria-Auth': defaultApiKey },
               params: {},
               body: {
                 JSON: {},
                 JSON_ARRAY: {
-                  batch:
-                    '[{"id":"orderId1","timestamp":"2017-05-01T14:00:00Z","grand_total":1000,"currency":"INR","ip_address":"0.0.0.0","shipping_address":{"city":"Kolkata","state":"West Bengal","country_code":"IN","postcode":"700001"},"customer":{"id":"userId1","email":"testone@gmail.com","firstname":"test","lastname":"one"},"@type":"order","status":"complete","is_valid":true,"properties":{"field1":"val1"},"lineitems":[{"product_id":"prod123","quantity":4,"subtotal":10,"variant_options":[{"id":"newid","type":"size","label":"5"}]}]}]',
+                  batch: JSON.stringify([
+                    {
+                      id: 'orderId1',
+                      timestamp: '2017-05-01T14:00:00Z',
+                      grand_total: 1000,
+                      currency: 'INR',
+                      ip_address: '0.0.0.0',
+                      shipping_address: {
+                        city: 'Kolkata',
+                        state: 'West Bengal',
+                        country_code: 'IN',
+                        postcode: '700001',
+                      },
+                      customer: {
+                        id: 'userId1',
+                        email: 'testone@gmail.com',
+                        firstname: 'test',
+                        lastname: 'one',
+                      },
+                      '@type': 'order',
+                      status: 'complete',
+                      is_valid: true,
+                      properties: { field1: 'val1' },
+                      lineitems: [
+                        {
+                          product_id: 'prod123',
+                          quantity: 4,
+                          subtotal: 10,
+                          variant_options: [{ id: 'newid', type: 'size', label: '5' }],
+                        },
+                      ],
+                    },
+                  ]),
                 },
                 XML: {},
                 FORM: {},

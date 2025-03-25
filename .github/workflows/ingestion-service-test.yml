@@ -1,10 +1,17 @@
 name: Ingestion Service Test
 
 on:
-  workflow_run:
-    workflows: [Build Artifacts for PRs]
+  pull_request:
     types:
-      - completed
+      - opened
+      - reopened
+      - synchronize
+
+# on:
+#   workflow_run:
+#     workflows: [Build Artifacts for PRs]
+#     types:
+#       - completed
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.sha }}
@@ -32,7 +39,7 @@ jobs:
           go mod download
       - name: 'Run tests'
         env:
-          TRANSFORMER_IMAGE_TAG_FOR_TEST: ${{ github.head_ref }}
+          TRANSFORMER_IMAGE_TAG_FOR_TEST: 1.95.0
         run: |
           cd rudder-ingestion-svc
           pwd

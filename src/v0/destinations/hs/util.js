@@ -1,5 +1,6 @@
 /* eslint-disable no-await-in-loop */
-const lodash = require('lodash');
+const chunk = require('lodash/chunk');
+const omit = require('lodash/omit');
 const set = require('set-value');
 const get = require('get-value');
 const {
@@ -34,6 +35,7 @@ const {
   primaryToSecondaryFields,
   DESTINATION,
   MAX_CONTACTS_PER_REQUEST,
+  HUBSPOT_SYSTEM_FIELDS,
 } = require('./config');
 
 const tags = require('../../util/tags');
@@ -616,17 +618,17 @@ const performHubSpotSearch = async (
 /**
  * Returns requestData
  * @param {*} identifierType
- * @param {*} chunk
+ * @param {*} chunkValue
  * @returns
  */
-const getRequestData = (identifierType, chunk) => {
+const getRequestData = (identifierType, chunkValue) => {
   const requestData = {
     filterGroups: [
       {
         filters: [
           {
             propertyName: identifierType,
-            values: chunk,
+            values: chunkValue,
             operator: 'IN',
           },
         ],
@@ -648,7 +650,7 @@ const getRequestData = (identifierType, chunk) => {
       filters: [
         {
           propertyName: secondaryProp,
-          values: chunk,
+          values: chunkValue,
           operator: 'IN',
         },
       ],
@@ -675,7 +677,7 @@ const getExistingContactsData = async (inputs, destination, metadata) => {
   const { objectType, identifierType } = getObjectAndIdentifierType(firstMessage);
 
   const values = extractIDsForSearchAPI(inputs);
-  const valuesChunk = lodash.chunk(values, MAX_CONTACTS_PER_REQUEST);
+  const chunkValues = chunk(values, MAX_CONTACTS_PER_REQUEST);
   const requestOptions = {
     headers: {
       'Content-Type': JSON_MIME_TYPE,
@@ -683,8 +685,8 @@ const getExistingContactsData = async (inputs, destination, metadata) => {
     },
   };
   // eslint-disable-next-line no-restricted-syntax
-  for (const chunk of valuesChunk) {
-    const requestData = getRequestData(identifierType, chunk);
+  for (const chunkValue of chunkValues) {
+    const requestData = getRequestData(identifierType, chunkValue);
     const searchResults = await performHubSpotSearch(
       requestData,
       requestOptions,
@@ -882,6 +884,9 @@ const isIterable = (obj) => {
   return typeof obj[Symbol.iterator] === 'function';
 };
 
+// remove system fields from the properties because they are not allowed to be updated
+const removeHubSpotSystemField = (properties) => omit(properties, HUBSPOT_SYSTEM_FIELDS);
+
 module.exports = {
   validateDestinationConfig,
   addExternalIdToHSTraits,
@@ -903,4 +908,5 @@ module.exports = {
   getRequestData,
   convertToResponseFormat,
   isIterable,
+  removeHubSpotSystemField,
 };

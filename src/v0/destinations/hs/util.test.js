@@ -3,6 +3,7 @@ const {
   extractIDsForSearchAPI,
   validatePayloadDataTypes,
   getObjectAndIdentifierType,
+  removeHubSpotSystemField,
   isIterable,
 } = require('./util');
 const { primaryToSecondaryFields } = require('./config');
@@ -208,7 +209,6 @@ describe('getRequestDataAndRequestOptions utility test cases', () => {
   it('Should return an object with requestData and requestOptions', () => {
     const identifierType = 'email';
     const chunk = ['test1@gmail.com'];
-    const accessToken = 'dummyAccessToken';
 
     const expectedRequestData = {
       filterGroups: [
@@ -236,7 +236,7 @@ describe('getRequestDataAndRequestOptions utility test cases', () => {
       after: 0,
     };
 
-    const requestData = getRequestData(identifierType, chunk, accessToken);
+    const requestData = getRequestData(identifierType, chunk);
     expect(requestData).toEqual(expectedRequestData);
   });
 });
@@ -256,5 +256,50 @@ describe('isIterable utility test cases', () => {
     const input = undefined;
     const result = isIterable(input);
     expect(result).toBe(false);
+  });
+});
+
+describe('removeHubSpotSystemField utility test cases', () => {
+  it('should remove HubSpot system fields from the properties', () => {
+    const properties = {
+      email: 'test@example.com',
+      firstname: 'John',
+      lastname: 'Doe',
+      hs_object_id: '123',
+    };
+
+    const expectedOutput = {
+      email: 'test@example.com',
+      firstname: 'John',
+      lastname: 'Doe',
+    };
+
+    const result = removeHubSpotSystemField(properties);
+    expect(result).toEqual(expectedOutput);
+  });
+
+  it('should return the same object if no HubSpot system fields are present', () => {
+    const properties = {
+      email: 'test@example.com',
+      firstname: 'John',
+      lastname: 'Doe',
+    };
+
+    const expectedOutput = {
+      email: 'test@example.com',
+      firstname: 'John',
+      lastname: 'Doe',
+    };
+
+    const result = removeHubSpotSystemField(properties);
+    expect(result).toEqual(expectedOutput);
+  });
+
+  it('should handle an empty properties object', () => {
+    const properties = {};
+    const expectedOutput = {};
+
+    const result = removeHubSpotSystemField(properties);
+    expect(result).toEqual(expectedOutput);
   });
 });

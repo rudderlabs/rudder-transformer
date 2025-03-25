@@ -93,11 +93,6 @@ const isValidUrl = (url) => {
 
 const stripTrailingSlash = (str) => (str && str.endsWith('/') ? str.slice(0, -1) : str);
 
-const isPrimitive = (arg) => {
-  const type = typeof arg;
-  return arg == null || (type !== 'object' && type !== 'function');
-};
-
 const isNewStatusCodesAccepted = (reqMetadata = {}) => {
   if (reqMetadata && typeof reqMetadata === 'object' && !Array.isArray(reqMetadata)) {
     const { features } = reqMetadata;
@@ -2366,22 +2361,6 @@ const getBodyFromV2SpecPayload = ({ request }) => {
   }
   throw new TransformationError(ERROR_MESSAGES.REQUEST_BODY_NOT_PRESENT_IN_V2_SPEC_PAYLOAD);
 };
-
-const unwrapArrayValues = (payload) => {
-  if (!payload || typeof payload !== 'object' || Array.isArray(payload)) {
-    throw new InstrumentationError('Payload must be an valid object');
-  }
-  const result = {};
-  Object.keys(payload).forEach((key) => {
-    if (Array.isArray(payload[key]) && payload[key].length === 1) {
-      [result[key]] = payload[key];
-    } else {
-      result[key] = payload[key];
-    }
-  });
-  return result;
-};
-
 // ========================================================================
 // EXPORTS
 // ========================================================================
@@ -2464,7 +2443,6 @@ module.exports = {
   isOAuthDestination,
   isOAuthSupported,
   isObject,
-  isPrimitive,
   isValidUrl,
   removeHyphens,
   removeNullValues,
@@ -2511,5 +2489,4 @@ module.exports = {
   isAxiosError,
   convertToUuid,
   handleMetadataForValue,
-  unwrapArrayValues,
 };

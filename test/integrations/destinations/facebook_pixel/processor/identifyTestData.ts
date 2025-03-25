@@ -1,5 +1,5 @@
 import { VERSION } from '../../../../../src/v0/destinations/facebook_pixel/config';
-import { Destination } from '../../../../../src/types';
+import { Destination, RudderMessage } from '../../../../../src/types';
 import { generateMetadata, transformResultBuilder, overrideDestination } from '../../../testUtils';
 import { ProcessorTestData } from '../../../testTypes';
 
@@ -76,12 +76,14 @@ const commonMessage = {
     screen: {
       density: 2,
     },
+    fbp: 'fbp_value',
   },
   properties: {
     plan: 'standard plan',
     name: 'rudder test',
+    fbc: 'fbc_value',
   },
-  type: 'identify',
+  type: 'identify' as const,
   messageId: '84e26acc-56a5-4835-8233-591137fca468',
   originalTimestamp: '2023-10-14T15:46:51.693229+05:30',
   anonymousId: '00000000000000000000000000',
@@ -190,6 +192,8 @@ export const identifyTestData: ProcessorTestData[] = [
                       client_ip_address: '0.0.0.0',
                       client_user_agent:
                         'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
+                      fbc: 'fbc_value',
+                      fbp: 'fbp_value',
                     },
                     event_name: 'identify',
                     event_time: 1697278611,

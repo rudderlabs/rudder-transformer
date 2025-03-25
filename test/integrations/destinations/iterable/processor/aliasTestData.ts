@@ -2,7 +2,7 @@ import { ProcessorTestData } from '../../../testTypes';
 import { Destination, Metadata } from '../../../../../src/types';
 import { overrideDestination } from '../../../testUtils';
 
-const baseMetadata: Metadata = {
+const baseMetadata: Partial<Metadata> = {
   sourceId: 'default-sourceId',
   workspaceId: 'default-workspaceId',
   namespace: 'default-namespace',

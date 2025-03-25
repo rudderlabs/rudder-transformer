@@ -1,5 +1,5 @@
 import { RouterTestData } from '../../../testTypes';
-import {} from '../../../../../src/types';
+import { MessageType, RudderMessage } from '../../../../../src/types';
 import { generateMetadata } from '../../../testUtils';
 
 export const data: RouterTestData[] = [
@@ -1397,7 +1397,7 @@ export const data: RouterTestData[] = [
               message: {
                 statusCode: 200,
                 version: '1',
-                type: 'REST',
+                type: 'REST' as MessageType,
                 method: 'POST',
                 endpoint: 'https://api.eu.iterable.com/api/catalogs/test-ruchira/items',
                 headers: {

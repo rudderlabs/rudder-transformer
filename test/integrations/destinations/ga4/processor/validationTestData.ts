@@ -1,5 +1,5 @@
 import { defaultMockFns } from '../mocks';
-import { Destination } from '../../../../../src/types';
+import { Destination, RudderMessage } from '../../../../../src/types';
 import { ProcessorTestData } from '../../../testTypes';
 import { generateMetadata, generateSimplifiedTrackPayload } from '../../../testUtils';
 
@@ -848,9 +848,8 @@ export const validationTestData: ProcessorTestData[] = [
             destination,
             message: {
               type: 'track',
-              event: {
-                name: 'promotion_viewed',
-              },
+              // intentional to test event name as number
+              event: 122 as unknown as string,
               properties: {
                 products: commonProductInfo,
               },

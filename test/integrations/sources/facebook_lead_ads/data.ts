@@ -545,11 +545,10 @@ export const data = [
         status: 200,
         body: [
           {
-            error: 'Payload must be an valid object',
+            error: 'input event must have at least one field',
             statTags: {
               destinationId: 'Non determinable',
-              errorCategory: 'dataValidation',
-              errorType: 'instrumentation',
+              errorCategory: 'transformation',
               implementation: 'native',
               module: 'source',
               srcType: 'facebook_lead_ads',

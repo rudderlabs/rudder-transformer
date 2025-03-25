@@ -49,6 +49,10 @@ type AirshipObjectAttributes = Partial<{
   removeAttributes: Omit<Attribute, 'value'>[];
 }>;
 
+type TimestampAttributes = Array<{
+  timestampAttribute: string;
+}>;
+
 const getDigitCount = (num: number): number => Math.floor(Math.log10(Math.abs(num))) + 1;
 
 export const isValidTimestamp = (timestamp: string | number): boolean => {
@@ -65,7 +69,7 @@ export const isValidTimestamp = (timestamp: string | number): boolean => {
 // Airship timestamp format: https://docs.airship.com/api/ua/#api-request-format
 const AIRSHIP_TIMESTAMP_FORMAT = 'YYYY-MM-DD[T]HH:mm:ss[Z]';
 
-const convertToAirshipTimestamp = (timestamp: string) => {
+const convertToAirshipTimestamp = (timestamp: string | number) => {
   if (!timestamp || !moment(timestamp).isValid()) {
     throw new InstrumentationError(`timestamp is not supported: ${timestamp}`);
   }
@@ -145,8 +149,12 @@ const getJsonAttributesFromIntegrationsObj = (message: RudderMessage): AirshipOb
   return airshipObjectAttributes;
 };
 
-export const getAttributeValue = (value: string | number | object): AttributeValue => {
-  if (isValidTimestamp(value as string)) {
+export const getAttributeValue = (
+  key: string,
+  value: string | number | object,
+  extractTimestampAttributes: string[],
+): AttributeValue => {
+  if (extractTimestampAttributes.includes(key) && isValidTimestamp(value as string)) {
     return convertToAirshipTimestamp(value as string);
   }
   return value as AttributeValue;
@@ -155,6 +163,7 @@ export const getAttributeValue = (value: string | number | object): AttributeVal
 export const prepareAttributePayload = (
   flattenedTraits: Record<string, unknown>,
   message: RudderMessage,
+  timestampAttributes: TimestampAttributes,
 ): AttributePayload => {
   const timestamp = getAirshipTimestamp(message);
   const initialAttributePayload: AttributePayload = { attributes: [] };
@@ -165,6 +174,10 @@ export const prepareAttributePayload = (
     Array.isArray(airshipObjectAttributes?.jsonAttributes) &&
     airshipObjectAttributes?.jsonAttributes.length > 0;
 
+  const extractTimestampAttributes = timestampAttributes.map(
+    ({ timestampAttribute }) => timestampAttribute,
+  );
+  console.log('extractTimestampAttributes', extractTimestampAttributes);
   const attributePayload = Object.entries(flattenedTraits).reduce((acc, [key, value]) => {
     // attribute
     if (typeof value !== 'boolean') {
@@ -193,7 +206,12 @@ export const prepareAttributePayload = (
           return acc;
         }
       }
-      attribute.value = getAttributeValue(value as AttributeValue);
+      attribute.value = getAttributeValue(
+        attribute.key,
+        value as AttributeValue,
+        extractTimestampAttributes,
+      );
+
       acc.attributes.push(attribute);
     }
     return acc;

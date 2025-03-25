@@ -87,6 +87,7 @@ const hsCommonConfigJson = mappingConfig[ConfigCategory.COMMON.name];
 const primaryToSecondaryFields = {
   email: 'hs_additional_emails',
 };
+
 module.exports = {
   BASE_ENDPOINT,
   CONTACT_PROPERTY_MAP_ENDPOINT,

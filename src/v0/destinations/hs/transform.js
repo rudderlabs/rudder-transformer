@@ -17,12 +17,12 @@ const { processIdentify, processTrack, batchEvents } = require('./HSTransform-v2
 const {
   splitEventsForCreateUpdate,
   fetchFinalSetOfTraits,
-  getProperties,
+  getContactsPropertiesMap,
   validateDestinationConfig,
   convertToResponseFormat,
 } = require('./util');
 
-const processSingleMessage = async ({ message, destination, metadata }, propertyMap) => {
+const processSingleMessage = async ({ message, destination, metadata }, contactsPropertiesMap) => {
   if (!message.type) {
     throw new InstrumentationError('Message type is not present. Aborting message.');
   }
@@ -35,18 +35,25 @@ const processSingleMessage = async ({ message, destination, metadata }, property
     case EventType.IDENTIFY: {
       response = [];
       if (destination.Config.apiVersion === API_VERSION.v3) {
-        response.push(await processIdentify({ message, destination, metadata }, propertyMap));
+        response.push(
+          await processIdentify({ message, destination, metadata }, contactsPropertiesMap),
+        );
       } else {
         // Legacy API
-        response.push(await processLegacyIdentify({ message, destination, metadata }, propertyMap));
+        response.push(
+          await processLegacyIdentify({ message, destination, metadata }, contactsPropertiesMap),
+        );
       }
       break;
     }
     case EventType.TRACK:
       if (destination.Config.apiVersion === API_VERSION.v3) {
-        response = await processTrack({ message, destination }, propertyMap);
+        response = await processTrack({ message, destination });
       } else {
-        response = await processLegacyTrack({ message, destination, metadata }, propertyMap);
+        response = await processLegacyTrack(
+          { message, destination, metadata },
+          contactsPropertiesMap,
+        );
       }
       break;
     default:
@@ -76,7 +83,7 @@ const processBatchRouter = async (inputs, reqMetadata) => {
   let tempInputs = inputs;
   // using the first destination config for transforming the batch
   const { destination, metadata } = tempInputs[0];
-  let propertyMap;
+  let contactsPropertiesMap = {};
   const mappedToDestination = get(tempInputs[0].message, MappedToDestinationKey);
   const { objectType } = getDestinationExternalIDInfoForRetl(tempInputs[0].message, 'HS');
   const successRespList = [];
@@ -87,7 +94,7 @@ const processBatchRouter = async (inputs, reqMetadata) => {
     if (mappedToDestination && GENERIC_TRUE_VALUES.includes(mappedToDestination?.toString())) {
       // skip splitting the batches to inserts and updates if object it is an association
       if (objectType?.toLowerCase() !== 'association') {
-        propertyMap = await getProperties(destination, metadata);
+        contactsPropertiesMap = await getContactsPropertiesMap(destination, metadata);
         // get info about existing objects and splitting accordingly.
         tempInputs = await splitEventsForCreateUpdate(tempInputs, destination, metadata);
       }
@@ -97,7 +104,7 @@ const processBatchRouter = async (inputs, reqMetadata) => {
         (input) => fetchFinalSetOfTraits(input.message) !== undefined,
       );
       if (traitsFound) {
-        propertyMap = await getProperties(destination, metadata);
+        contactsPropertiesMap = await getContactsPropertiesMap(destination, metadata);
       }
     }
   } catch (error) {
@@ -125,7 +132,7 @@ const processBatchRouter = async (inputs, reqMetadata) => {
           // event is not transformed
           let receivedResponse = await processSingleMessage(
             { message: input.message, destination, metadata: input.metadata },
-            propertyMap,
+            contactsPropertiesMap,
           );
 
           receivedResponse = Array.isArray(receivedResponse)

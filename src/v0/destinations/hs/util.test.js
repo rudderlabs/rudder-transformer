@@ -3,17 +3,17 @@ const {
   extractIDsForSearchAPI,
   validatePayloadDataTypes,
   getObjectAndIdentifierType,
-  isIterable,
+  populateTraits,
 } = require('./util');
 const { primaryToSecondaryFields } = require('./config');
 
 const propertyMap = {
-  firstName: 'string',
-  lstName: 'string',
-  age: 'number',
-  city: 'string',
-  isPaidPlan: 'bool',
-  address: 'enumeration',
+  firstName: { type: 'string', readOnlyValue: false },
+  lstName: { type: 'string', readOnlyValue: false },
+  age: { type: 'number', readOnlyValue: false },
+  city: { type: 'string', readOnlyValue: false },
+  isPaidPlan: { type: 'bool', readOnlyValue: false },
+  address: { type: 'enumeration', readOnlyValue: false },
 };
 
 describe('Validate payload data types utility function test cases', () => {
@@ -208,7 +208,6 @@ describe('getRequestDataAndRequestOptions utility test cases', () => {
   it('Should return an object with requestData and requestOptions', () => {
     const identifierType = 'email';
     const chunk = ['test1@gmail.com'];
-    const accessToken = 'dummyAccessToken';
 
     const expectedRequestData = {
       filterGroups: [
@@ -236,25 +235,50 @@ describe('getRequestDataAndRequestOptions utility test cases', () => {
       after: 0,
     };
 
-    const requestData = getRequestData(identifierType, chunk, accessToken);
+    const requestData = getRequestData(identifierType, chunk);
     expect(requestData).toEqual(expectedRequestData);
   });
 });
 
-describe('isIterable utility test cases', () => {
-  it('should return true when the input is an array', () => {
-    const input = [1, 2, 3];
-    const result = isIterable(input);
-    expect(result).toBe(true);
+describe('populateTraits utility test cases', () => {
+  afterEach(() => {
+    jest.restoreAllMocks();
   });
-  it('should return false when the input is null', () => {
-    const input = null;
-    const result = isIterable(input);
-    expect(result).toBe(false);
+
+  it('should populate traits with valid property map and traits', async () => {
+    const propertyMap = {
+      firstName: { type: 'string', readOnlyValue: false },
+      lastName: { type: 'string', readOnlyValue: true },
+      birthDate: { type: 'date', readOnlyValue: false },
+    };
+    const traits = {
+      firstName: 'John',
+      lastName: 'Doe',
+      birthDate: '2023-01-01',
+    };
+    const destination = {};
+    const metadata = {};
+    const result = await populateTraits(propertyMap, traits, destination, metadata);
+    const expectedOutput = { firstName: 'John', birthDate: 1672531200000 };
+    expect(result).toEqual(expectedOutput);
   });
-  it('should return false when the input is undefined', () => {
-    const input = undefined;
-    const result = isIterable(input);
-    expect(result).toBe(false);
+
+  it('should return an remove a read only property', async () => {
+    const propertyMap = {
+      hs_object_id: { type: 'number', readOnlyValue: true },
+      lastName: { type: 'string' },
+    };
+    const traits = {
+      firstName: 'John',
+      lastName: 'Doe',
+      hs_object_id: 5756,
+    };
+    const destination = {};
+    const metadata = {};
+    const result = await populateTraits(propertyMap, traits, destination, metadata);
+    expect(result).toEqual({
+      firstName: 'John',
+      lastName: 'Doe',
+    });
   });
 });

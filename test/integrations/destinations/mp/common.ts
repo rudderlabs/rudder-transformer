@@ -15,7 +15,7 @@ const sampleDestination: Destination = {
     DisplayName: 'Mixpanel',
     ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
     Name: 'MP',
-    Config: undefined,
+    Config: {},
   },
   Enabled: true,
   ID: '1WhcOCGgj9asZu850HvugU2C3Aq',

@@ -14,9 +14,11 @@ const arrayHandlingCases = [
         },
         traits: {
           email: 'testone@gmail.com',
-          firstName: 'test',
+          firstName: 'test 2',
           lastName: 'one',
+          af_campaign: '1742887180',
           colors: ['red', 'blue'],
+          account_creation: 1742887180,
         },
         library: { name: 'RudderLabs JavaScript SDK', version: '1.0.0' },
         userAgent:
@@ -71,13 +73,25 @@ const arrayHandlingCases = [
                   {
                     action: 'set',
                     key: 'first_name',
-                    value: 'test',
+                    value: 'test 2',
                     timestamp: '2019-10-14T09:03:17Z',
                   },
                   {
                     action: 'set',
                     key: 'last_name',
                     value: 'one',
+                    timestamp: '2019-10-14T09:03:17Z',
+                  },
+                  {
+                    action: 'set',
+                    key: 'af_campaign',
+                    value: '1742887180',
+                    timestamp: '2019-10-14T09:03:17Z',
+                  },
+                  {
+                    action: 'set',
+                    key: 'account_creation',
+                    value: '2025-03-25T07:19:40Z',
                     timestamp: '2019-10-14T09:03:17Z',
                   },
                   {
@@ -110,6 +124,7 @@ const arrayHandlingCases = [
       context: {
         traits: {
           preferences: ['value1'], // should be processed as preferences_0
+          af_campaign: '2025-01-23 12:00:00',
           'settings.theme': 'dark',
           'data[test]_value': 'test',
           simple: 'value', // no delimiters
@@ -155,6 +170,12 @@ const arrayHandlingCases = [
                     action: 'set',
                     key: 'preferences[0]',
                     value: 'value1',
+                    timestamp: '2019-10-14T09:03:17Z',
+                  },
+                  {
+                    action: 'set',
+                    key: 'af_campaign',
+                    value: '2025-01-23 12:00:00',
                     timestamp: '2019-10-14T09:03:17Z',
                   },
                   {
@@ -217,6 +238,11 @@ const getIdentifyTestCase = ({ description, inputEvent, expectedOutputResponse }
                 apiKey: secret1,
                 appKey: 'O2YARRI15I',
                 dataCenter: false,
+                timestampAttributes: [
+                  {
+                    timestampAttribute: 'account_creation',
+                  },
+                ],
               },
             },
           },

@@ -1,17 +1,10 @@
 name: Ingestion Service Test
 
 on:
-  pull_request:
+  workflow_run:
+    workflows: [Build Artifacts for PRs]
     types:
-      - opened
-      - reopened
-      - synchronize
-
-# on:
-#   workflow_run:
-#     workflows: [Build Artifacts for PRs]
-#     types:
-#       - completed
+      - completed
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.sha }}
@@ -23,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      TRANSFORMER_IMAGE_TAG_FOR_TEST: 1.95.0
+      TRANSFORMER_IMAGE_TAG_FOR_TEST: ${{ github.head_ref }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -40,7 +33,6 @@ jobs:
           go mod download
       - name: 'Run tests'
         run: |
-          echo "Running tests ${{ github.event.pull_request.head.ref }} $TRANSFORMER_IMAGE_TAG_FOR_TEST"
           cd rudder-ingestion-svc
           pwd
           make test package=internal/gateway exclude='internal/gateway/.+'

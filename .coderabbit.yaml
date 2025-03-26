@@ -1,0 +1,59 @@
+version: 2
+
+# General Annotations and Summaries
+annotations: true
+summaries:
+  short_summary: true
+  full_summary: true
+  include_files_summary: true
+  complexity_report: true
+
+# AI-Powered PR Review Configuration
+ai_pr_review:
+  enabled: true
+  comment_on_pr: true
+  comment_on_file_changes: true
+  require_code_quality_comments: true
+  require_inline_comments: true
+
+# Specific Review Settings
+review:
+  # Files and paths to ignore during review
+  ignore_paths:
+    - '**/*.md'
+    - '**/test/**'
+    - '**/tests/**'
+    - 'docs/**'
+    - '**/*.json'
+    - '**/*.lock'
+
+  # Specific file type configurations
+  file_types:
+    # Language-specific review focus
+    javascript:
+      quality_gates:
+        - name: eslint_errors
+          max_value: 3
+        - name: eslint_warnings
+          max_value: 5
+
+# Performance and Resource Management
+performance:
+  timeout: 600 # 10 minutes max review time
+  max_file_size: 500 # KB
+  max_total_files: 50
+
+# Customized AI Guidance
+ai_guidance:
+  # Specific areas to focus on during review
+  focus_areas:
+    - code_quality
+    - security_vulnerabilities
+    - performance_improvements
+    - architectural_consistency
+
+  # Tone and style of AI comments
+  comment_style:
+    tone: professional
+    detail_level: moderate
+    suggest_improvements: true

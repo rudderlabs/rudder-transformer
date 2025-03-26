@@ -1,4 +1,12 @@
-import { authHeader1, secret1, authHeader2, secret2, secret3, secret4 } from '../maskedSecrets';
+import {
+  authHeader1,
+  secret1,
+  authHeader2,
+  secret2,
+  secret4,
+  secret5,
+  authHeader5,
+} from '../maskedSecrets';
 import { Destination } from '../../../../../src/types';
 import { generateMetadata, generateSimplifiedIdentifyPayload } from '../../../testUtils';
 
@@ -65,6 +73,7 @@ export const data = [
                   email: 'testhubspot2@email.com',
                   firstname: 'Test Hubspot',
                   anonymousId: '12345',
+                  hs_object_id: 64657,
                 },
                 library: {
                   name: 'RudderLabs JavaScript SDK',
@@ -2899,11 +2908,12 @@ export const data = [
         body: [
           {
             description:
-              '[HS] (New API v3) - (newPrivateAppApi) email is present in traits as a default lookup field',
+              '[HS] (New API v3) - (newPrivateAppApi) email is present in traits as a default lookup field and remove system fields',
             message: {
               type: 'identify',
               traits: {
                 email: 'noname@email.com',
+                hs_object_id: 12345,
               },
               context: {
                 mappedToDestination: false,
@@ -2993,6 +3003,90 @@ export const data = [
               },
               files: {},
               operation: 'createContacts',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'hs',
+    description:
+      '[HS] (New API v3) - (newPrivateAppApi) firstname is present in traits and lookupField is hs_object_id',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            description:
+              '[HS] (New API v3) - (newPrivateAppApi) firstname is present in traits and lookupField is hs_object_id',
+            message: {
+              type: 'identify',
+              traits: {
+                firstname: 'john',
+                hs_object_id: 345678,
+              },
+              context: {
+                mappedToDestination: false,
+              },
+            },
+            destination: {
+              Config: {
+                authorizationType: 'newPrivateAppApi',
+                hubID: '',
+                apiKey: '',
+                accessToken: secret5,
+                apiVersion: 'newApi',
+                lookupField: 'hs_object_id',
+                eventFilteringOption: 'disable',
+                blacklistedEvents: [
+                  {
+                    eventName: '',
+                  },
+                ],
+                whitelistedEvents: [
+                  {
+                    eventName: '',
+                  },
+                ],
+              },
+              Enabled: true,
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              userId: '',
+              method: 'PATCH',
+              endpoint: 'https://api.hubapi.com/crm/v3/objects/contacts/103689',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: authHeader5,
+              },
+              params: {},
+              body: {
+                JSON: {
+                  properties: {
+                    firstname: 'john',
+                  },
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              operation: 'updateContacts',
             },
             statusCode: 200,
           },

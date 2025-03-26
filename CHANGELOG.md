@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.95.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.95.0...v1.95.1) (2025-03-26)
+
+
+### Bug Fixes
+
+* correctly handle timestamp and date for airship ([#4201](https://github.com/rudderlabs/rudder-transformer/issues/4201)) ([cdcdd78](https://github.com/rudderlabs/rudder-transformer/commit/cdcdd78669a52c92d3afaacd40c1fb78b764b7f2))
+* remove hubspot system defined field from payload ([#4193](https://github.com/rudderlabs/rudder-transformer/issues/4193)) ([89c198e](https://github.com/rudderlabs/rudder-transformer/commit/89c198ec6cf661e09d37b2ccf0fcacec1227dad6))
+
 ## [1.95.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.94.0...v1.95.0) (2025-03-24)
 
 

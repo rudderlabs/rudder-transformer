@@ -185,7 +185,7 @@ export const prepareAttributePayload = (
     airshipObjectAttributes?.jsonAttributes.length > 0;
 
   const extractTimestampAttributes = timestampAttributes
-    ? timestampAttributes.map(({ timestampAttribute }) => timestampAttribute)
+    ? timestampAttributes.map(({ timestampAttribute }) => timestampAttribute.trim())
     : [];
   const attributePayload = Object.entries(flattenedTraits).reduce((acc, [key, value]) => {
     // attribute
@@ -215,11 +215,7 @@ export const prepareAttributePayload = (
           return acc;
         }
       }
-      attribute.value = getAttributeValue(
-        attribute.key,
-        value as AttributeValue,
-        extractTimestampAttributes,
-      );
+      attribute.value = getAttributeValue(key, value as AttributeValue, extractTimestampAttributes);
 
       acc.attributes.push(attribute);
     }

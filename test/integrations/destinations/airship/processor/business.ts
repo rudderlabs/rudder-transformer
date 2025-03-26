@@ -17,6 +17,7 @@ const arrayHandlingCases = [
           firstName: 'test 2',
           lastName: 'one',
           af_campaign: '1742887180',
+          'date.purchased': '2025-03-25 07:19:40',
           colors: ['red', 'blue'],
           account_creation: 1742887180,
         },
@@ -86,6 +87,12 @@ const arrayHandlingCases = [
                     action: 'set',
                     key: 'af_campaign',
                     value: '1742887180',
+                    timestamp: '2019-10-14T09:03:17Z',
+                  },
+                  {
+                    action: 'set',
+                    key: 'date_purchased',
+                    value: '2025-03-25T07:19:40Z',
                     timestamp: '2019-10-14T09:03:17Z',
                   },
                   {
@@ -240,7 +247,10 @@ const getIdentifyTestCase = ({ description, inputEvent, expectedOutputResponse }
                 dataCenter: false,
                 timestampAttributes: [
                   {
-                    timestampAttribute: 'account_creation',
+                    timestampAttribute: 'account_creation ',
+                  },
+                  {
+                    timestampAttribute: ' date.purchased',
                   },
                 ],
               },

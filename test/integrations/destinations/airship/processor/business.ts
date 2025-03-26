@@ -1,8 +1,32 @@
 import { authHeader1, secret1 } from '../maskedSecrets';
+
+const commonDestinationConfig = {
+  Config: {
+    apiKey: secret1,
+    appKey: 'O2YARRI15I',
+    dataCenter: false,
+  },
+};
+
 const arrayHandlingCases = [
   {
     description:
       '[identify] should send array traits as is to airship when present in integrationsObject(even when similar key is present in traits)',
+    destination: {
+      Config: {
+        apiKey: secret1,
+        appKey: 'O2YARRI15I',
+        dataCenter: false,
+        timestampAttributes: [
+          {
+            timestampAttribute: 'account_creation ',
+          },
+          {
+            timestampAttribute: ' date.purchased',
+          },
+        ],
+      },
+    },
     inputEvent: {
       channel: 'web',
       context: {
@@ -126,6 +150,7 @@ const arrayHandlingCases = [
   // not expected in reality & leads to error in airship, but just to test the delimiter handling
   {
     description: '[identify] should handle keys with delimiters and JSON attributes correctly',
+    destination: commonDestinationConfig,
     inputEvent: {
       channel: 'web',
       context: {
@@ -134,6 +159,7 @@ const arrayHandlingCases = [
           af_campaign: '2025-01-23 12:00:00',
           'settings.theme': 'dark',
           'data[test]_value': 'test',
+          account_value: 1742887180,
           simple: 'value', // no delimiters
           'company[location]': 'SF', // should be processed since not in JSONAttributes
         },
@@ -199,6 +225,12 @@ const arrayHandlingCases = [
                   },
                   {
                     action: 'set',
+                    key: 'account_value',
+                    value: 1742887180,
+                    timestamp: '2019-10-14T09:03:17Z',
+                  },
+                  {
+                    action: 'set',
                     key: 'simple',
                     value: 'value',
                     timestamp: '2019-10-14T09:03:17Z',
@@ -228,7 +260,7 @@ const arrayHandlingCases = [
   },
 ];
 
-const getIdentifyTestCase = ({ description, inputEvent, expectedOutputResponse }) => {
+const getIdentifyTestCase = ({ description, inputEvent, expectedOutputResponse, destination }) => {
   return {
     name: 'airship',
     description: description,
@@ -240,21 +272,7 @@ const getIdentifyTestCase = ({ description, inputEvent, expectedOutputResponse }
         body: [
           {
             message: inputEvent,
-            destination: {
-              Config: {
-                apiKey: secret1,
-                appKey: 'O2YARRI15I',
-                dataCenter: false,
-                timestampAttributes: [
-                  {
-                    timestampAttribute: 'account_creation ',
-                  },
-                  {
-                    timestampAttribute: ' date.purchased',
-                  },
-                ],
-              },
-            },
+            destination: destination,
           },
         ],
         method: 'POST',

@@ -1,4 +1,5 @@
 import moment from 'moment';
+import isNumeric from 'validator/lib/isNumeric';
 import { InstrumentationError } from '@rudderstack/integrations-lib';
 import { RudderMessage } from '../../../types';
 import { getFieldValueFromMessage, getIntegrationsObj } from '../../util';
@@ -57,7 +58,7 @@ export const convertToAirshipTimestamp = (timeValue: string | number): string =>
   let millis;
   let timestamp = timeValue;
   // Check if the input is a string containing a numeric timestamp
-  if (typeof timestamp === 'string' && /^\d+$/.test(timestamp)) {
+  if (typeof timestamp === 'string' && isNumeric(timestamp)) {
     timestamp = Number(timestamp); // Convert string to number
   }
 

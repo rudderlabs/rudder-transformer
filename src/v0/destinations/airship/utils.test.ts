@@ -440,9 +440,14 @@ describe('Airship utils - convertToAirshipTimestamp', () => {
       output: '2025-03-25T07:19:40Z',
     },
     {
-      description: 'should return the correct timestamp when epoch second is passed',
+      description: 'should return the correct timestamp when epoch milisecond is passed',
       input: '1742887326657',
       output: '2025-03-25T07:22:06Z',
+    },
+    {
+      description: 'should return the correct timestamp when epoch microsecond is passed',
+      input: '1742974069043000',
+      output: '2025-03-26T07:27:49Z',
     },
     {
       description: 'should throw an error when incorrect epoch second is passed',

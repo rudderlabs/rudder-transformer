@@ -35,6 +35,7 @@ const {
   formatPropertyValueForIdentify,
   getHsSearchId,
   populateTraits,
+  removeHubSpotSystemField,
 } = require('./util');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
@@ -83,6 +84,7 @@ const processLegacyIdentify = async ({ message, destination, metadata }, propert
     }
 
     traits = await populateTraits(propertyMap, traits, destination, metadata);
+    traits = removeHubSpotSystemField(traits);
     response.body.JSON = removeUndefinedAndNullValues({ properties: traits });
     response.source = 'rETL';
     response.operation = operation;
@@ -92,10 +94,8 @@ const processLegacyIdentify = async ({ message, destination, metadata }, propert
     }
     const { email } = traits;
 
-    const userProperties = await getTransformedJSON(
-      { message, destination, metadata },
-      propertyMap,
-    );
+    let userProperties = await getTransformedJSON({ message, destination, metadata }, propertyMap);
+    userProperties = removeHubSpotSystemField(userProperties);
 
     const payload = {
       properties: formatPropertyValueForIdentify(userProperties),

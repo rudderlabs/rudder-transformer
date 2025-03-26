@@ -1,0 +1,42 @@
+[
+  {
+    "destKey": "data.custom_data.currency",
+    "sourceKeys": "properties.currency",
+    "required": false
+  },
+  {
+    "destKey": "data.custom_data.search_string",
+    "sourceKeys": "properties.search_string",
+    "required": false
+  },
+  {
+    "destKey": "data.custom_data.contents.price",
+    "sourceKeys": ["properties.price", "properties.value", "properties.revenue"],
+    "required": false
+  },
+  {
+    "destKey": "data.custom_data.content_ids",
+    "sourceKeys": "properties.content_ids",
+    "required": false
+  },
+  {
+    "destKey": "data.custom_data.content_category",
+    "sourceKeys": "properties.content_category",
+    "required": false
+  },
+  {
+    "destKey": "data.event_id",
+    "sourceKeys": ["properties.event_id", "properties.eventId"],
+    "required": false
+  },
+  {
+    "destKey": "data.custom_data.num_items",
+    "sourceKeys": ["properties.num_items", "properties.quantity"],
+    "required": false
+  },
+  {
+    "destKey": "data.custom_data.sign_up_method",
+    "sourceKeys": ["properties.signUpMethod", "properties.sign_up_method"],
+    "required": false
+  }
+]

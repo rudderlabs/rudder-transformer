@@ -18,24 +18,22 @@ steps:
       $.assert(.message.type, "message Type is not present. Aborting message.");
       $.assert(.message.type in {{$.EventType.([.TRACK, .IDENTIFY])}}, 
         "message type " + .message.type + " is not supported");
+      $.assertConfig(.destination.Config.apiKey, "apiKey must be supplied in destination config.");
 
-  - name: validateIdentifyEmail
+  - name: validateIdentifyEvent
     condition: $.outputs.messageType === {{$.EventType.IDENTIFY}}
     template: |
+      const userId = .message.({{{{$.getGenericPaths("userIdOnly")}}}});
       const email = .message.({{{{$.getGenericPaths("emailOnly")}}}});
-      $.assert(email, "email is required. Aborting");
+      $.assert(email || userId, "Either email or userId is required for track call.");
 
-  - name: validateTrackIdentifier
+  - name: validateTrackEvent
     condition: $.outputs.messageType === {{$.EventType.TRACK}}
     template: |
       const userId = .message.({{{{$.getGenericPaths("userIdOnly")}}}});
       const email = .message.({{{{$.getGenericPaths("emailOnly")}}}});
-      $.assert(email || userId, "Either email or userId is required. Aborting");
-
-  - name: validateEventName
-    condition: $.outputs.messageType === {{$.EventType.TRACK}}
-    template: |
-      $.assert(.message.event, "event is required for track call")
+      $.assert(email || userId, "Either email or userId is required for track call.");
+      $.assert(.message.event, "event is required for track call.");
 
   - name: prepareContext
     template: |

@@ -44,6 +44,7 @@ const {
   getHsSearchId,
   populateTraits,
   addExternalIdToHSTraits,
+  removeHubSpotSystemField,
 } = require('./util');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
@@ -73,7 +74,7 @@ const addHsAuthentication = (response, Config) => {
 const processIdentify = async ({ message, destination, metadata }, propertyMap) => {
   const { Config } = destination;
   let traits = getFieldValueFromMessage(message, 'traits');
-  // since hubspot does not allow imvalid emails, we need to
+  // since hubspot does not allow invalid emails, we need to
   // validate the email before sending it to hubspot
   if (traits?.email && !validator.isEmail(traits.email)) {
     throw new InstrumentationError(`Email "${traits.email}" is invalid`);
@@ -133,6 +134,7 @@ const processIdentify = async ({ message, destination, metadata }, propertyMap) 
     }
 
     traits = await populateTraits(propertyMap, traits, destination, metadata);
+    traits = removeHubSpotSystemField(traits);
     response.body.JSON = removeUndefinedAndNullValues({ properties: traits });
     response.source = 'rETL';
     response.operation = operation;
@@ -148,7 +150,8 @@ const processIdentify = async ({ message, destination, metadata }, propertyMap) 
       contactId = await searchContacts(message, destination, metadata);
     }
 
-    const properties = await getTransformedJSON({ message, destination, metadata }, propertyMap);
+    let properties = await getTransformedJSON({ message, destination, metadata }, propertyMap);
+    properties = removeHubSpotSystemField(properties);
 
     const payload = {
       properties,

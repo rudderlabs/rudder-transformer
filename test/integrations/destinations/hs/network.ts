@@ -594,7 +594,7 @@ export const networkCallsData = [
       data: {
         status: 'error',
         message: 'Request Rate Limit reached',
-        correlationId: '4d39ff11-e121-4514-bcd8-132a9dd1ff50',
+        correlationId: 'correlation-id',
         category: 'RATE-LIMIT_REACHED',
         links: {
           'api key': 'https://app.hubspot.com/l/api-key/',
@@ -656,7 +656,7 @@ export const networkCallsData = [
       data: {
         status: 'error',
         message: 'Request Rate Limit reached',
-        correlationId: '4d39ff11-e121-4514-bcd8-132a9dd1ff50',
+        correlationId: 'correlation-id',
         category: 'RATE-LIMIT_REACHED',
         links: {
           'api key': 'https://app.hubspot.com/l/api-key/',
@@ -675,7 +675,7 @@ export const networkCallsData = [
         status: 'error',
         message:
           'The API key provided is invalid. View or manage your API key here: https://app.hubspot.com/l/api-key/',
-        correlationId: '4d39ff11-e121-4514-bcd8-132a9dd1ff50',
+        correlationId: 'correlation-id',
         category: 'INVALID_AUTHENTICATION',
         links: {
           'api key': 'https://app.hubspot.com/l/api-key/',

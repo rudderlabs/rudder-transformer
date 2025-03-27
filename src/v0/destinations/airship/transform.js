@@ -38,7 +38,7 @@ const transformSessionId = (rawSessionId) => {
 
 const identifyResponseBuilder = (message, { Config }) => {
   const initialTagPayload = constructPayload(message, identifyMapping);
-  const { apiKey, dataCenter } = Config;
+  const { apiKey, dataCenter, timestampAttributes } = Config;
 
   if (!apiKey)
     throw new ConfigurationError('API Key is required for authorization for Identify events');
@@ -58,7 +58,7 @@ const identifyResponseBuilder = (message, { Config }) => {
   const tagPayload = prepareTagPayload(traits, initialTagPayload);
 
   // Creating attribute payload
-  const attributePayload = prepareAttributePayload(traits, message);
+  const attributePayload = prepareAttributePayload(traits, message, timestampAttributes);
 
   let tagResponse;
   let attributeResponse;
@@ -156,7 +156,7 @@ const trackResponseBuilder = async (message, { Config }) => {
 
 const groupResponseBuilder = (message, { Config }) => {
   const initTagPayload = constructPayload(message, groupMapping);
-  const { apiKey, dataCenter } = Config;
+  const { apiKey, dataCenter, timestampAttributes } = Config;
 
   if (!apiKey)
     throw new ConfigurationError('API Key is required for authorization for group events');
@@ -174,7 +174,7 @@ const groupResponseBuilder = (message, { Config }) => {
 
   const tagPayload = prepareTagPayload(traits, initTagPayload, 'group');
 
-  const attributePayload = prepareAttributePayload(traits, message);
+  const attributePayload = prepareAttributePayload(traits, message, timestampAttributes);
 
   let tagResponse;
   let attributeResponse;

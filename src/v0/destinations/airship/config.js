@@ -43,6 +43,9 @@ const RESERVED_TRAITS_MAPPING = {
 
 const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
 
+// Airship timestamp format: https://docs.airship.com/api/ua/#api-request-format
+const AIRSHIP_TIMESTAMP_FORMAT = 'YYYY-MM-DD[T]HH:mm:ss[Z]';
+
 module.exports = {
   CONFIG_CATEGORIES,
   identifyMapping: MAPPING_CONFIG[CONFIG_CATEGORIES.IDENTIFY.name],
@@ -53,4 +56,5 @@ module.exports = {
   BASE_URL_US,
   RESERVED_TRAITS_MAPPING,
   AIRSHIP_TRACK_EXCLUSION,
+  AIRSHIP_TIMESTAMP_FORMAT,
 };

@@ -8,11 +8,11 @@ const getBirthdayObj = (birthday) => {
   if (!dateRegex.test(birthday)) {
     return null; // Invalid birthday format
   }
-  const date = new Date(birthday);
+  const date = new Date(`${birthday}T00:00:00Z`);
 
-  const year = date.getFullYear();
-  const month = date.getMonth() + 1; // Month is 0-based, so add 1
-  const day = date.getDate();
+  const year = date.getUTCFullYear();
+  const month = date.getUTCMonth() + 1; // Month is 0-based, so add 1
+  const day = date.getUTCDate();
 
   return { year, month, day };
 };

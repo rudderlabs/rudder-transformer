@@ -24,6 +24,12 @@ const arrayHandlingCases = [
           {
             timestampAttribute: ' date.purchased',
           },
+          {
+            timestampAttribute: 'current_trip_date',
+          },
+          {
+            timestampAttribute: 'end_trip_date',
+          },
         ],
       },
     },
@@ -44,6 +50,8 @@ const arrayHandlingCases = [
           'date.purchased': '2025-03-25 07:19:40',
           colors: ['red', 'blue'],
           account_creation: 1742887180,
+          current_trip_date: '',
+          end_trip_date: null,
         },
         library: { name: 'RudderLabs JavaScript SDK', version: '1.0.0' },
         userAgent:
@@ -123,6 +131,18 @@ const arrayHandlingCases = [
                     action: 'set',
                     key: 'account_creation',
                     value: '2025-03-25T07:19:40Z',
+                    timestamp: '2019-10-14T09:03:17Z',
+                  },
+                  {
+                    action: 'set',
+                    key: 'current_trip_date',
+                    value: '',
+                    timestamp: '2019-10-14T09:03:17Z',
+                  },
+                  {
+                    action: 'set',
+                    key: 'end_trip_date',
+                    value: null,
                     timestamp: '2019-10-14T09:03:17Z',
                   },
                   {

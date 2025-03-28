@@ -1,5 +1,10 @@
-export const data = [
+import { ProcessorTestData } from '../../../testTypes';
+
+export const data: ProcessorTestData[] = [
   {
+    id: 'loops-1',
+    scenario: 'Contact is created/updated in Loops',
+    successCriteria: 'Test should pass successfully.',
     name: 'loops',
     description: 'Identify event with traits',
     feature: 'processor',
@@ -27,10 +32,14 @@ export const data = [
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'Loops',
               DestinationDefinition: {
+                ID: 'loops-destination',
+                Name: 'Loops Definition',
+                DisplayName: 'Default Display Name',
                 Config: {
                   cdkV2Enabled: true,
                 },
               },
+              WorkspaceID: 'default-workspace',
               Config: {
                 apiKey: 'dummyApiKey',
               },
@@ -43,6 +52,7 @@ export const data = [
             },
           },
         ],
+        method: 'POST'
       },
     },
     output: {
@@ -86,6 +96,9 @@ export const data = [
     },
   },
   {
+    id: 'loops-2',
+    scenario: 'Contact is created/updated in Loops with mailing lists',
+    successCriteria: 'Test should pass successfully.',
     name: 'loops',
     description: 'Identify event with mailing lists',
     feature: 'processor',
@@ -116,10 +129,14 @@ export const data = [
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'Loops',
               DestinationDefinition: {
+                ID: 'loops-destination',
+                Name: 'Loops Definition',
+                DisplayName: 'Default Display Name',
                 Config: {
                   cdkV2Enabled: true,
                 },
               },
+              WorkspaceID: 'default-workspace',
               Config: {
                 apiKey: 'dummyApiKey',
               },
@@ -129,6 +146,7 @@ export const data = [
             metadata: {},
           },
         ],
+        method: 'POST'
       },
     },
     output: {
@@ -173,6 +191,9 @@ export const data = [
     },
   },
   {
+    id: 'loops-3',
+    scenario: 'Identify event with missing email trait',
+    successCriteria: 'Test should fail.',
     name: 'loops',
     description: 'Identify event with missing email trait',
     feature: 'processor',
@@ -199,10 +220,14 @@ export const data = [
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'Loops',
               DestinationDefinition: {
+                ID: 'loops-destination',
+                Name: 'Loops Definition',
+                DisplayName: 'Default Display Name',
                 Config: {
                   cdkV2Enabled: true,
                 },
               },
+              WorkspaceID: 'default-workspace',
               Config: {
                 apiKey: 'dummyApiKey',
               },
@@ -212,6 +237,7 @@ export const data = [
             metadata: {},
           },
         ],
+        method: 'POST'
       },
     },
     output: {
@@ -237,6 +263,9 @@ export const data = [
     },
   },
   {
+    id: 'loops-4',
+    scenario: 'Send event to Loops',
+    successCriteria: 'Test should pass successfully.',
     name: 'loops',
     description: 'Track event with traits',
     feature: 'processor',
@@ -269,10 +298,14 @@ export const data = [
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'Loops',
               DestinationDefinition: {
+                ID: 'loops-destination',
+                Name: 'Loops Definition',
+                DisplayName: 'Default Display Name',
                 Config: {
                   cdkV2Enabled: true,
                 },
               },
+              WorkspaceID: 'default-workspace',
               Config: {
                 apiKey: 'dummyApiKey',
               },
@@ -282,6 +315,7 @@ export const data = [
             metadata: {},
           },
         ],
+        method: 'POST'
       },
     },
     output: {
@@ -327,6 +361,9 @@ export const data = [
     },
   },
   {
+    id: 'loops-5',
+    scenario: 'Send event to Loops (no email in traits)',
+    successCriteria: 'Test should pass successfully.',
     name: 'loops',
     description: 'Track event with no email in traits',
     feature: 'processor',
@@ -354,10 +391,14 @@ export const data = [
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'Loops',
               DestinationDefinition: {
+                ID: 'loops-destination',
+                Name: 'Loops Definition',
+                DisplayName: 'Default Display Name',
                 Config: {
                   cdkV2Enabled: true,
                 },
               },
+              WorkspaceID: 'default-workspace',
               Config: {
                 apiKey: 'dummyApiKey',
               },
@@ -367,6 +408,7 @@ export const data = [
             metadata: {},
           },
         ],
+        method: 'POST'
       },
     },
     output: {
@@ -408,6 +450,9 @@ export const data = [
     },
   },
   {
+    id: 'loops-6',
+    scenario: 'Send event to Loops (no email or userId)',
+    successCriteria: 'Test should fail.',
     name: 'loops',
     description: 'Track event with missing email and userId',
     feature: 'processor',
@@ -432,10 +477,14 @@ export const data = [
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'Loops',
               DestinationDefinition: {
+                ID: 'loops-destination',
+                Name: 'Loops Definition',
+                DisplayName: 'Default Display Name',
                 Config: {
                   cdkV2Enabled: true,
                 },
               },
+              WorkspaceID: 'default-workspace',
               Config: {
                 apiKey: 'dummyApiKey',
               },
@@ -445,6 +494,7 @@ export const data = [
             metadata: {},
           },
         ],
+        method: 'POST'
       },
     },
     output: {

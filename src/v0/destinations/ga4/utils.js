@@ -503,7 +503,7 @@ const addClientDetails = (payload, message, Config, destType = 'ga4') => {
       // GA4 uses it as an identifier to distinguish site visitors.
       rawPayload.client_id = getGA4ClientId(message, Config, destType);
       if (!isDefinedAndNotNull(rawPayload.client_id)) {
-        throw new ConfigurationError('ga4ClientId, anonymousId or messageId must be provided');
+        throw new ConfigurationError('ga4ClientId or anonymousId must be provided');
       }
       break;
     case 'firebase':

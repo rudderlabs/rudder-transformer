@@ -1,5 +1,10 @@
 [
   {
+    "destKey": "$ip",
+    "sourceKeys": ["context.ip", "request_ip"],
+    "required": false
+  },
+  {
     "destKey": "$created",
     "sourceKeys": "createdAtOnly",
     "required": false,

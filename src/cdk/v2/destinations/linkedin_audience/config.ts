@@ -1,5 +1,5 @@
 export const SUPPORTED_EVENT_TYPE = 'record';
-export const ACTION_TYPES = ['insert', 'delete'];
+export const ACTION_TYPES = ['insert', 'delete', 'update'];
 export const BASE_ENDPOINT = 'https://api.linkedin.com/rest';
 export const USER_ENDPOINT = '/dmpSegments/audienceId/users';
 export const COMPANY_ENDPOINT = '/dmpSegments/audienceId/companies';

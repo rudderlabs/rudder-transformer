@@ -77,7 +77,7 @@ export function batchResponseBuilder(successfulEvents) {
 }
 
 export const generateActionType = (actionType: string): string => {
-  if (actionType === 'insert') {
+  if (actionType === 'insert' || actionType === 'update') {
     return 'ADD';
   }
   if (actionType === 'delete') {

@@ -30,11 +30,6 @@ export type SourceInputV2 = {
   source?: Source;
 };
 
-export type SourceInputConversionResult<T> = {
-  output?: T;
-  conversionError?: Error;
-};
-
 export type SourceTransformationOutput = {
   batch: RudderMessage[];
 };

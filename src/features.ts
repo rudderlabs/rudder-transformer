@@ -114,7 +114,7 @@ const defaultFeaturesConfig: FeaturesConfig = {
   ],
   supportSourceTransformV1: true,
   supportTransformerProxyV1: true,
-  upgradedToSourceTransformV2: process.env.UPGRADED_TO_SOURCE_TRANSFORM_V2 === 'true' || false, // redundant but required to show that the default is false
+  upgradedToSourceTransformV2: !(process.env.UPGRADED_TO_SOURCE_TRANSFORM_V2 === 'false'),
 };
 
 export default defaultFeaturesConfig;

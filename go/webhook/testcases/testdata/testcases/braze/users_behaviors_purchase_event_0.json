@@ -1,0 +1,71 @@
+{
+  "name": "braze",
+  "description": "users.behaviors.Purchase event",
+  "input": {
+    "request": {
+      "query": {},
+      "body": "{\"events\":[{\"event_type\":\"users.behaviors.Purchase\",\"id\":\"a1234567-89ab-cdef-0123-456789abcdef\",\"time\":1477502783,\"user\":{\"user_id\":\"0123456789abcdef01234567\",\"external_user_id\":\"user_id\",\"device_id\":\"fedcba87-6543-210f-edc-ba9876543210\",\"timezone\":\"America/Chicago\"},\"properties\":{\"app_id\":\"01234567-89ab-cdef-0123-456789abcdef\",\"platform\":\"ios\",\"os_version\":\"iOS10.3.1\",\"device_model\":\"iPhone7Plus\",\"product_id\":\"1234\",\"price\":12.34,\"currency\":\"AED\",\"ad_id\":\"01234567-89ab-cdef-0123-456789abcdef\",\"ad_id_type\":\"roku_ad_id\",\"ad_tracking_enabled\":true,\"purchase_properties\":{\"stringpropertyname\":\"a\",\"numberpropertyname\":1,\"listpropertyname\":[\"a\",\"b\"]}}}]}",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "method": "POST"
+    },
+    "source": {
+      "config": "{\"customMapping\":[{\"from\":\"randomEvent\",\"to\":\"In-App Message Clicked\"}]}"
+    }
+  },
+  "output": {
+    "response": {
+      "status": 200,
+      "body": "OK"
+    },
+    "queue": [
+      {
+        "context": {
+          "library": {
+            "name": "unknown",
+            "version": "unknown"
+          },
+          "integration": {
+            "name": "Braze"
+          },
+          "device": {
+            "id": "fedcba87-6543-210f-edc-ba9876543210",
+            "model": "iPhone7Plus",
+            "advertisingId": "01234567-89ab-cdef-0123-456789abcdef",
+            "adTrackingEnabled": true
+          },
+          "timezone": "America/Chicago",
+          "os": {
+            "version": "iOS10.3.1",
+            "name": "ios"
+          }
+        },
+        "integrations": {
+          "Braze": false
+        },
+        "type": "track",
+        "event": "users.behaviors.Purchase",
+        "messageId": "a1234567-89ab-cdef-0123-456789abcdef",
+        "anonymousId": "0123456789abcdef01234567",
+        "userId": "user_id",
+        "properties": {
+          "app_id": "01234567-89ab-cdef-0123-456789abcdef",
+          "product_id": "1234",
+          "price": 12.34,
+          "currency": "AED",
+          "ad_id_type": "roku_ad_id",
+          "purchase_properties": {
+            "stringpropertyname": "a",
+            "numberpropertyname": 1,
+            "listpropertyname": ["a", "b"]
+          }
+        },
+        "timestamp": "2016-10-26T17:26:23.000Z",
+        "receivedAt": "2024-03-03T04:48:29.000Z",
+        "request_ip": "192.0.2.30"
+      }
+    ],
+    "errQueue": []
+  }
+}

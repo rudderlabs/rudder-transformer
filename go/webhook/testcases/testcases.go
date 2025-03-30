@@ -1,6 +1,7 @@
 package testcases
 
 import (
+	"bytes"
 	"embed"
 	"encoding/json"
 	"io/fs"
@@ -30,12 +31,17 @@ type Case struct {
 
 type Input struct {
 	Request Request
+	Source  Source
+}
+
+type Source struct {
+	Config string `json:"config"`
 }
 type Request struct {
 	Method   string
-	RawQuery string `json:"query_parameters"`
+	RawQuery map[string][]string `json:"query"`
 	Headers  map[string]string
-	Body     json.RawMessage
+	Body     string
 }
 
 type Output struct {
@@ -81,9 +87,20 @@ func Load(t *testing.T) Setup {
 		}
 		defer f.Close()
 
-		var tc Case
-		err = json.NewDecoder(f).Decode(&tc)
+		// Read the entire file first
+		rawJSON, err := fs.ReadFile(testdata, path)
 		if err != nil {
+			return err
+		}
+
+		// Compact the JSON to remove whitespace
+		buffer := new(bytes.Buffer)
+		if err := json.Compact(buffer, rawJSON); err != nil {
+			return err
+		}
+
+		var tc Case
+		if err := json.NewDecoder(buffer).Decode(&tc); err != nil {
 			return err
 		}
 		tcs = append(tcs, tc)

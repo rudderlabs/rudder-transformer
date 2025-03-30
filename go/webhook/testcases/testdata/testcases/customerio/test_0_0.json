@@ -1,0 +1,52 @@
+{
+  "name": "customerio",
+  "description": "test-0",
+  "input": {
+    "request": {
+      "query": {},
+      "body": "{\"data\":{\"customer_id\":\"0200102\",\"identifiers\":{\"id\":\"0200102\"},\"email_address\":\"test@example.com\"},\"event_id\":\"01E4C4CT6YDC7Y5M7FE1GWWPQJ\",\"object_type\":\"customer\",\"metric\":\"subscribed\",\"timestamp\":\"abc\"}",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "method": "POST"
+    },
+    "source": {
+      "config": "{}"
+    }
+  },
+  "output": {
+    "response": {
+      "status": 200,
+      "body": "OK"
+    },
+    "queue": [
+      {
+        "context": {
+          "library": {
+            "name": "unknown",
+            "version": "unknown"
+          },
+          "integration": {
+            "name": "Customer.io"
+          },
+          "traits": {
+            "email": "test@example.com"
+          }
+        },
+        "integrations": {
+          "Customer.io": false
+        },
+        "type": "track",
+        "event": "Customer Subscribed",
+        "properties": {
+          "eventId": "01E4C4CT6YDC7Y5M7FE1GWWPQJ"
+        },
+        "userId": "0200102",
+        "receivedAt": "2024-03-03T04:48:29.000Z",
+        "request_ip": "192.0.2.30",
+        "messageId": "00000000-0000-0000-0000-000000000000"
+      }
+    ],
+    "errQueue": []
+  }
+}

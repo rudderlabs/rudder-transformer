@@ -1,0 +1,74 @@
+{
+  "name": "gainsightpx",
+  "description": "Identify Call",
+  "input": {
+    "request": {
+      "query": {},
+      "body": "{\"user\":{\"aptrinsicId\":\"cab9c469-8602-4933-acdb-68338fbb9ab1\",\"identifyId\":\"New!\",\"type\":\"USER\",\"gender\":\"EMPTY_GENDER\",\"email\":\"userEmail@address.com\",\"firstName\":\"test\",\"lastName\":\"rudderlabs\",\"lastSeenDate\":1665582808669,\"signUpDate\":1665582791753,\"firstVisitDate\":1665582791753,\"title\":\"Mr.\",\"phone\":\"\",\"score\":0,\"role\":\"\",\"subscriptionId\":\"\",\"accountId\":\"IBM\",\"numberOfVisits\":1,\"location\":{\"countryName\":\"India\",\"countryCode\":\"\",\"stateName\":\"\",\"stateCode\":\"\",\"city\":\"\",\"street\":\"\",\"postalCode\":\"\",\"continent\":\"\",\"regionName\":\"\",\"timeZone\":\"\",\"coordinates\":{\"latitude\":0,\"longitude\":0}},\"propertyKeys\":[\"AP-EOXPSEZGC5LA-2-1\"],\"createDate\":1665582808376,\"lastModifiedDate\":1665582808717,\"customAttributes\":null,\"globalUnsubscribe\":false,\"sfdcContactId\":\"\",\"lastVisitedUserAgentData\":null,\"id\":\"New!\",\"lastInferredLocation\":null},\"account\":{\"id\":\"IBM\",\"name\":\"International Business Machine\",\"trackedSubscriptionId\":\"\",\"sfdcId\":\"\",\"lastSeenDate\":1665582808669,\"dunsNumber\":\"\",\"industry\":\"\",\"numberOfEmployees\":0,\"sicCode\":\"\",\"website\":\"\",\"naicsCode\":\"\",\"plan\":\"\",\"location\":{\"countryName\":\"\",\"countryCode\":\"\",\"stateName\":\"\",\"stateCode\":\"\",\"city\":\"\",\"street\":\"\",\"postalCode\":\"\",\"continent\":\"\",\"regionName\":\"\",\"timeZone\":\"\",\"coordinates\":{\"latitude\":0,\"longitude\":0}},\"numberOfUsers\":0,\"propertyKeys\":[\"AP-EOXPSEZGC5LA-2-1\"],\"createDate\":1665578567565,\"lastModifiedDate\":1665582808669,\"customAttributes\":null,\"parentGroupId\":\"\"},\"event\":{\"eventType\":\"SIGN_UP\",\"eventId\":\"1283c08b-f290-4bc4-9deb-75c7867d69ee\",\"propertyKey\":\"AP-EOXPSEZGC5LA-2-1\",\"date\":1665582808376,\"sessionId\":\"AP-EOXPSEZGC5LA-2-1665582441084-16821368\",\"globalContext\":{},\"userType\":\"USER\"},\"configId\":\"32f07727-d231-4c9d-881e-fb50b80bad63\"}",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "method": "POST"
+    },
+    "source": {
+      "config": "{}"
+    }
+  },
+  "output": {
+    "response": {
+      "status": 200,
+      "body": "OK"
+    },
+    "queue": [
+      {
+        "context": {
+          "library": {
+            "name": "unknown",
+            "version": "unknown"
+          },
+          "integration": {
+            "name": "GAINSIGHTPX"
+          },
+          "externalId": [
+            {
+              "type": "gainsightpxAptrinsicId",
+              "id": "cab9c469-8602-4933-acdb-68338fbb9ab1"
+            }
+          ]
+        },
+        "integrations": {
+          "GAINSIGHTPX": false
+        },
+        "type": "identify",
+        "traits": {
+          "type": "USER",
+          "gender": "EMPTY_GENDER",
+          "email": "userEmail@address.com",
+          "firstName": "test",
+          "lastName": "rudderlabs",
+          "title": "Mr.",
+          "score": 0,
+          "globalUnsubscribe": false,
+          "accountId": "IBM",
+          "numberOfVisits": 1,
+          "propertyKeys": ["AP-EOXPSEZGC5LA-2-1"],
+          "id": "New!",
+          "country": "India",
+          "account": {
+            "id": "IBM",
+            "name": "International Business Machine",
+            "numberOfEmployees": 0,
+            "numberOfUsers": 0
+          }
+        },
+        "userId": "New!",
+        "createdAt": "2022-10-12T13:53:11.753Z",
+        "originalTimestamp": "2022-10-12T13:53:11.753Z",
+        "receivedAt": "2024-03-03T04:48:29.000Z",
+        "request_ip": "192.0.2.30",
+        "messageId": "00000000-0000-0000-0000-000000000000"
+      }
+    ],
+    "errQueue": []
+  }
+}

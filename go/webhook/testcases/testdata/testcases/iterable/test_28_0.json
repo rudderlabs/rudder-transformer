@@ -1,0 +1,73 @@
+{
+  "name": "iterable",
+  "description": "test-28",
+  "input": {
+    "request": {
+      "query": {},
+      "body": "{\"email\":\"docs@iterable.com\",\"eventName\":\"webPushSend\",\"dataFields\":{\"campaignId\":723636,\"browserToken\":\"cZn_inqLGPk:APA91bHsn5jo0-4V55RB38eCeLHj8ZXVJYciU7k6Kipbit3lrRlEe2Dt6bNzR4lSf6r2YNVdWY8l90hV0jmb_Y7y5ufcJ68xNI7wbsH6Q2jbEghA_Qo4kWbtu6A4NZN4gxc1xsEbyh7b\",\"contentId\":3681,\"messageId\":\"af4c726ae76b48c7871b6d0d7760d47c\",\"workflowName\":\"My workflow name\",\"emailId\":\"c723636:t1020396:docs@iterable.com\",\"locale\":null,\"webPushIcon\":null,\"templateId\":1020396,\"labels\":[],\"createdAt\":\"2019-08-07 23:43:02 +00:00\",\"templateName\":\"My template name\",\"webPushMessage\":\"\",\"messageTypeId\":9106,\"webPushBody\":null,\"experimentId\":null,\"webPushClickAction\":null,\"campaignName\":\"My campaign name\",\"workflowId\":53505,\"channelId\":8539,\"email\":\"docs@iterable.com\"}}",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "method": "POST"
+    },
+    "source": {
+      "config": "{}"
+    }
+  },
+  "output": {
+    "response": {
+      "status": 200,
+      "body": "OK"
+    },
+    "queue": [
+      {
+        "userId": "0e13848b1c7e27eb5d88c5d35b70783e",
+        "context": {
+          "integration": {
+            "name": "Iterable",
+            "version": "1.0.0"
+          },
+          "library": {
+            "name": "unknown",
+            "version": "unknown"
+          },
+          "traits": {
+            "email": "docs@iterable.com"
+          }
+        },
+        "event": "webPushSend",
+        "integrations": {
+          "Iterable": false
+        },
+        "properties": {
+          "campaignId": 723636,
+          "browserToken": "cZn_inqLGPk:APA91bHsn5jo0-4V55RB38eCeLHj8ZXVJYciU7k6Kipbit3lrRlEe2Dt6bNzR4lSf6r2YNVdWY8l90hV0jmb_Y7y5ufcJ68xNI7wbsH6Q2jbEghA_Qo4kWbtu6A4NZN4gxc1xsEbyh7b",
+          "contentId": 3681,
+          "messageId": "af4c726ae76b48c7871b6d0d7760d47c",
+          "workflowName": "My workflow name",
+          "emailId": "c723636:t1020396:docs@iterable.com",
+          "locale": null,
+          "webPushIcon": null,
+          "templateId": 1020396,
+          "labels": [],
+          "createdAt": "2019-08-07 23:43:02 +00:00",
+          "templateName": "My template name",
+          "webPushMessage": "",
+          "messageTypeId": 9106,
+          "webPushBody": null,
+          "experimentId": null,
+          "webPushClickAction": null,
+          "campaignName": "My campaign name",
+          "workflowId": 53505,
+          "channelId": 8539
+        },
+        "receivedAt": "2024-03-03T04:48:29.000Z",
+        "timestamp": "2019-08-07T23:43:02.000Z",
+        "type": "track",
+        "request_ip": "192.0.2.30",
+        "messageId": "00000000-0000-0000-0000-000000000000"
+      }
+    ],
+    "errQueue": []
+  }
+}

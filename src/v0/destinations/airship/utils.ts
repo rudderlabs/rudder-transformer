@@ -1,6 +1,6 @@
 import moment from 'moment';
 import isNumeric from 'validator/lib/isNumeric';
-import { InstrumentationError } from '@rudderstack/integrations-lib';
+import { InstrumentationError, isDefinedNotNullNotEmpty } from '@rudderstack/integrations-lib';
 import { RudderMessage } from '../../../types';
 import { getFieldValueFromMessage, getIntegrationsObj } from '../../util';
 import { RESERVED_TRAITS_MAPPING, AIRSHIP_TIMESTAMP_FORMAT } from './config';
@@ -63,8 +63,12 @@ export const convertToAirshipTimestamp = (timeValue: string | number): string =>
   }
 
   // Check if the input is a valid date string
-  if (typeof timestamp === 'string' && moment.utc(timestamp, moment.ISO_8601, true).isValid()) {
-    return moment.utc(timestamp).format(AIRSHIP_TIMESTAMP_FORMAT);
+  if (typeof timestamp === 'string') {
+    const parsedDate = moment.utc(timestamp);
+    if (!parsedDate.isValid()) {
+      throw new InstrumentationError(`timestamp is not supported: ${timestamp}`);
+    }
+    return parsedDate.format(AIRSHIP_TIMESTAMP_FORMAT);
   }
 
   // If it's a number, handle different timestamp formats
@@ -165,7 +169,7 @@ export const getAttributeValue = (
   value: string | number | object,
   extractTimestampAttributes: string[],
 ): AttributeValue => {
-  if (extractTimestampAttributes.includes(key)) {
+  if (extractTimestampAttributes.includes(key) && isDefinedNotNullNotEmpty(value)) {
     return convertToAirshipTimestamp(value as string);
   }
   return value as AttributeValue;

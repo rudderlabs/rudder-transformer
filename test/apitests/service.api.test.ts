@@ -65,18 +65,25 @@ describe('features tests', () => {
     expect(Object.keys(routerTransform).length).toBeGreaterThan(0);
   });
 
-  test('features supportSourceTransformV1 to be boolean', async () => {
+  test('features supportSourceTransformV1 to be always true', async () => {
     const response = await request(server).get('/features');
     expect(response.status).toEqual(200);
     const supportSourceTransformV1 = JSON.parse(response.text).supportSourceTransformV1;
-    expect(typeof supportSourceTransformV1).toBe('boolean');
+    expect(supportSourceTransformV1).toBe(true);
   });
 
-  test('features supportTransformerProxyV1 to be boolean', async () => {
+  test('features upgradedToSourceTransformV2 to be always true', async () => {
+    const response = await request(server).get('/features');
+    expect(response.status).toEqual(200);
+    const upgradedToSourceTransformV2 = JSON.parse(response.text).upgradedToSourceTransformV2;
+    expect(upgradedToSourceTransformV2).toBe(true);
+  });
+
+  test('features supportTransformerProxyV1 to be always true', async () => {
     const response = await request(server).get('/features');
     expect(response.status).toEqual(200);
     const supportTransformerProxyV1 = JSON.parse(response.text).supportTransformerProxyV1;
-    expect(typeof supportTransformerProxyV1).toBe('boolean');
+    expect(supportTransformerProxyV1).toBe(true);
   });
 });
 

@@ -44,7 +44,7 @@ export class RouteActivationMiddleware {
     return RouteActivationMiddleware.executeActivationRule(ctx, next, startSourceTransformer);
   }
 
-  public static isRouteVersionActive(ctx: Context, next: Next) {
+  public static isSourceRouteVersionActive(ctx: Context, next: Next) {
     const { version }: { version: string } = ctx.params;
     return RouteActivationMiddleware.executeActivationRule(
       ctx,

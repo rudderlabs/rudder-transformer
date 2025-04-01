@@ -79,9 +79,34 @@ const populateRevenueField = (eventType, properties) => {
   // Return the value as it is if it's not NaN
   return revenueInCents;
 };
+
+// ref: https://business.reddithelp.com/s/article/about-event-metadata
+const removeUnsupportedFields = (eventType, eventMetadata) => {
+  const itemCountSupportedEvents = ['Purchase', 'AddToCart', 'AddToWishlist', 'Custom'];
+  const valueAndCurrencySupportedEvents = [
+    'Purchase',
+    'AddToCart',
+    'AddToWishlist',
+    'Lead',
+    'SignUp',
+    'Custom',
+  ];
+  const updatedEventMetadata = { ...eventMetadata };
+  if (!itemCountSupportedEvents.includes(eventType)) {
+    delete updatedEventMetadata.item_count;
+  }
+  if (!valueAndCurrencySupportedEvents.includes(eventType)) {
+    delete updatedEventMetadata.value;
+    delete updatedEventMetadata.value_decimal;
+    delete updatedEventMetadata.currency;
+  }
+  return updatedEventMetadata;
+};
+
 module.exports = {
   batchEvents,
   batchEventChunks,
   populateRevenueField,
   calculateDefaultRevenue,
+  removeUnsupportedFields,
 };

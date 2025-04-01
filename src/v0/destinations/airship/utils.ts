@@ -1,6 +1,6 @@
 import moment from 'moment';
 import isNumeric from 'validator/lib/isNumeric';
-import { InstrumentationError } from '@rudderstack/integrations-lib';
+import { InstrumentationError, isDefinedNotNullNotEmpty } from '@rudderstack/integrations-lib';
 import { RudderMessage } from '../../../types';
 import { getFieldValueFromMessage, getIntegrationsObj } from '../../util';
 import { RESERVED_TRAITS_MAPPING, AIRSHIP_TIMESTAMP_FORMAT } from './config';
@@ -165,7 +165,7 @@ export const getAttributeValue = (
   value: string | number | object,
   extractTimestampAttributes: string[],
 ): AttributeValue => {
-  if (extractTimestampAttributes.includes(key)) {
+  if (extractTimestampAttributes.includes(key) && isDefinedNotNullNotEmpty(value)) {
     return convertToAirshipTimestamp(value as string);
   }
   return value as AttributeValue;

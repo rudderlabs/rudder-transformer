@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.95.2](https://github.com/rudderlabs/rudder-transformer/compare/v1.95.1...v1.95.2) (2025-03-27)
+
+
+### Bug Fixes
+
+* add empty check for timestamp value for airship ([996344c](https://github.com/rudderlabs/rudder-transformer/commit/996344c39af710bc6e7eea5a6e4ea942ddb0a17c))
+
 ### [1.95.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.95.0...v1.95.1) (2025-03-26)
 
 

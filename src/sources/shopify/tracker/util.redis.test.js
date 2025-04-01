@@ -14,20 +14,10 @@ jest.mock('../../../v0/util/index', () => {
   };
 });
 
-jest.mock('./config', () => {
-  const originalModule = jest.requireActual('./config');
-  return {
-    ...originalModule,
-    useRedisDatabase: true,
-  };
-});
-
 const timeoutPromise = () =>
   new Promise((resolve, _) => {
     setTimeout(() => resolve(), 100);
   });
-
-process.env.USE_REDIS_DB = 'true';
 
 const metricMetadata = {
   writeKey: 'dummyKey',
@@ -35,7 +25,7 @@ const metricMetadata = {
 };
 describe('Shopify Utils Test', () => {
   describe('Check for valid cart update event test cases', () => {
-    it('Event containing token and nothing is retreived from redis and less than req. time difference between created_at and uadated_at', async () => {
+    it('Event containing token and nothing is retrieved from redis and less than req. time difference between created_at and uadated_at', async () => {
       const input = {
         query_parameters: {
           topic: ['carts_update'],
@@ -50,7 +40,7 @@ describe('Shopify Utils Test', () => {
       const output = await checkAndUpdateCartItems(input, null, metricMetadata);
       expect(output).toEqual(expectedOutput);
     });
-    it('Event containing token and nothing is retreived from redis', async () => {
+    it('Event containing token and nothing is retrieved from redis', async () => {
       const input = {
         token: 'token_not_in_redis',
         line_items: [

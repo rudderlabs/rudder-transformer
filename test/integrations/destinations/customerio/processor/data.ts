@@ -15,6 +15,75 @@ import {
 export const data = [
   {
     name: 'customerio',
+    description: 'Test for userId with forward slash',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              channel: 'web',
+              type: 'track',
+              userId: 'user/with/slashes',
+              event: 'Test Event',
+              properties: {
+                test: 'property',
+                value: 123,
+              },
+              sentAt: '2023-05-14T09:03:22.563Z',
+            },
+            destination: {
+              Config: {
+                datacenter: 'US',
+                siteID: secret1,
+                apiKey: secret2,
+              },
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              body: {
+                XML: {},
+                JSON_ARRAY: {},
+                JSON: {
+                  data: {
+                    test: 'property',
+                    value: 123,
+                  },
+                  name: 'Test Event',
+                  type: 'event',
+                },
+                FORM: {},
+              },
+              files: {},
+              endpoint: 'https://track.customer.io/api/v1/customers/user%2Fwith%2Fslashes/events',
+              userId: 'user/with/slashes',
+              headers: {
+                Authorization: authHeader1,
+              },
+              version: '1',
+              params: {},
+              type: 'REST',
+              method: 'POST',
+              statusCode: 200,
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'customerio',
     description: 'Test 0',
     feature: 'processor',
     module: 'destination',

@@ -1,5 +1,10 @@
 import { overrideDestination } from '../../../testUtils';
-import { sampleDestination, defaultMockFns, destinationWithSetOnceProperty } from '../common';
+import {
+  sampleDestination,
+  defaultMockFns,
+  destinationWithSetOnceProperty,
+  destinationWithUnionAndAppendProperty,
+} from '../common';
 import { authHeader2, secret2, secret3 } from '../maskedSecrets';
 
 export const data = [
@@ -7751,6 +7756,243 @@ export const data = [
               },
               files: {},
               userId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'mp',
+    description: 'Test Union and Append Property',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    skip: true,
+    input: {
+      request: {
+        body: [
+          {
+            destination: destinationWithUnionAndAppendProperty,
+            message: {
+              anonymousId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
+              channel: 'web',
+              context: {
+                app: {
+                  build: '1.0.0',
+                  name: 'RudderLabs JavaScript SDK',
+                  namespace: 'com.rudderlabs.javascript',
+                  version: '1.0.5',
+                },
+                ip: '0.0.0.0',
+                library: {
+                  name: 'RudderLabs JavaScript SDK',
+                  version: '1.0.5',
+                },
+                locale: 'en-GB',
+                os: {
+                  name: '',
+                  version: '',
+                },
+                screen: {
+                  density: 2,
+                },
+                traits: {
+                  address: {
+                    city: 'Disney',
+                  },
+                  country: 'USA',
+                  email: 'TestSanity@disney.com',
+                  firstName: 'Mickey test',
+                  lastName: 'VarChange',
+                  createdAt: '2020-01-23T08:54:02.362Z',
+                  nationality: 'USA',
+                  random: 'superProp',
+                  // union properties should be a list else we will ignore it
+                  unionProperty1: 'union-1',
+                  unionProperty2: [1, 2, 3],
+                  appendProperty1: ['append-1'],
+                  appendProperty2: 0,
+                },
+                page: {
+                  path: '/destinations/mixpanel',
+                  referrer: '',
+                  search: '',
+                  title: '',
+                  url: 'https://docs.rudderstack.com/destinations/mixpanel',
+                  category: 'destination',
+                  initial_referrer: 'https://docs.rudderstack.com',
+                  initial_referring_domain: 'docs.rudderstack.com',
+                },
+                userAgent:
+                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36',
+              },
+              integrations: {
+                All: true,
+              },
+              page: {
+                path: '/destinations/mixpanel',
+                referrer: '',
+                search: '',
+                title: '',
+                url: 'https://docs.rudderstack.com/destinations/mixpanel',
+                category: 'destination',
+                initial_referrer: 'https://docs.rudderstack.com',
+                initial_referring_domain: 'docs.rudderstack.com',
+              },
+              request_ip: '[::1]:53709',
+              type: 'identify',
+              userId: 'Santiy',
+            },
+          },
+        ],
+        method: 'POST',
+      },
+      pathSuffix: '',
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://api.mixpanel.com/engage/',
+              headers: {},
+              params: {},
+              body: {
+                JSON: {},
+                JSON_ARRAY: {
+                  batch: JSON.stringify([
+                    {
+                      $set_once: {
+                        $first_name: 'Mickey test',
+                        $city: 'Disney',
+                        nationality: 'USA',
+                      },
+                      $token: secret2,
+                      $distinct_id: 'Santiy',
+                    },
+                  ]),
+                },
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: 'Santiy',
+            },
+            statusCode: 200,
+          },
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://api.mixpanel.com/engage/',
+              headers: {},
+              params: {},
+              body: {
+                JSON: {},
+                JSON_ARRAY: {
+                  batch: JSON.stringify([
+                    {
+                      $set: {
+                        $created: '2020-01-23T08:54:02.362Z',
+                        $email: 'TestSanity@disney.com',
+                        $country_code: 'USA',
+                        $initial_referrer: 'https://docs.rudderstack.com',
+                        $initial_referring_domain: 'docs.rudderstack.com',
+                        random: 'superProp',
+                        $lastName: 'VarChange',
+                        $browser: 'Chrome',
+                        $browser_version: '79.0.3945.117',
+                      },
+                      $token: secret2,
+                      $distinct_id: 'Santiy',
+                      $ip: '0.0.0.0',
+                      $time: null,
+                    },
+                  ]),
+                },
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: 'Santiy',
+            },
+            statusCode: 200,
+          },
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://api.mixpanel.com/engage/',
+              headers: {},
+              params: {},
+              body: {
+                JSON: {},
+                JSON_ARRAY: {
+                  batch: JSON.stringify([
+                    {
+                      /*
+                      This will perform append operation on the existing property list.
+                       If the property doesn't exist, a new property will be created.
+                       Before Operation => appendProperty1: null, appendProperty2: ['abc', 1]
+                       After Operation => appendProperty1: [['append-1']], appendProperty2: ['abc', 1, 0]
+                       */
+                      $append: {
+                        appendProperty1: ['append-1'],
+                        appendProperty2: 0,
+                      },
+                      $token: secret2,
+                      $distinct_id: 'Santiy',
+                    },
+                  ]),
+                },
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: 'Santiy',
+            },
+            statusCode: 200,
+          },
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://api.mixpanel.com/engage/',
+              headers: {},
+              params: {},
+              body: {
+                JSON: {},
+                JSON_ARRAY: {
+                  batch: JSON.stringify([
+                    {
+                      /*
+                      This will perform a union operation on the existing property with the provided property in the list.
+                       If the property doesn't exist, a new property will be created.
+                       Before Operation => unionProperty2: ['abc', 1]
+                       After Operation => unionProperty2: ['abc', 1, 2, 3]
+                       */
+                      $union: {
+                        unionProperty2: [1, 2, 3],
+                      },
+                      $token: secret2,
+                      $distinct_id: 'Santiy',
+                    },
+                  ]),
+                },
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: 'Santiy',
             },
             statusCode: 200,
           },

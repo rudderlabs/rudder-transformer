@@ -7809,7 +7809,6 @@ export const data = [
                   createdAt: '2020-01-23T08:54:02.362Z',
                   nationality: 'USA',
                   random: 'superProp',
-                  // union properties should be a list else we will ignore it
                   unionProperty1: 'union-1',
                   unionProperty2: [1, 2, 3],
                   appendProperty1: ['append-1'],
@@ -7977,10 +7976,11 @@ export const data = [
                       /*
                       This will perform a union operation on the existing property with the provided property in the list.
                        If the property doesn't exist, a new property will be created.
-                       Before Operation => unionProperty2: ['abc', 1]
-                       After Operation => unionProperty2: ['abc', 1, 2, 3]
+                       Before Operation => unionProperty1: null, unionProperty2: ['abc', 1]
+                       After Operation => unionProperty1: ['union-1'], unionProperty2: ['abc', 1, 2, 3]
                        */
                       $union: {
+                        unionProperty1: ['union-1'],
                         unionProperty2: [1, 2, 3],
                       },
                       $token: secret2,

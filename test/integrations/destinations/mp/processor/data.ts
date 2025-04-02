@@ -7811,8 +7811,11 @@ export const data = [
                   random: 'superProp',
                   unionProperty1: 'union-1',
                   unionProperty2: [1, 2, 3],
+                  unionProperty3: [1, 'test', 3.14, true, false, null, ['1', 2]],
+                  unionProperty4: undefined,
                   appendProperty1: ['append-1'],
                   appendProperty2: 0,
+                  appendProperty3: null,
                 },
                 page: {
                   path: '/destinations/mixpanel',
@@ -7940,7 +7943,7 @@ export const data = [
                       /*
                       This will perform append operation on the existing property list.
                        If the property doesn't exist, a new property will be created.
-                       Before Operation => appendProperty1: null, appendProperty2: ['abc', 1]
+                       Before Operation => appendProperty1: does not exist, appendProperty2: ['abc', 1]
                        After Operation => appendProperty1: [['append-1']], appendProperty2: ['abc', 1, 0]
                        */
                       $append: {
@@ -7976,12 +7979,13 @@ export const data = [
                       /*
                       This will perform a union operation on the existing property with the provided property in the list.
                        If the property doesn't exist, a new property will be created.
-                       Before Operation => unionProperty1: null, unionProperty2: ['abc', 1]
+                       Before Operation => unionProperty1: does not exists, unionProperty2: ['abc', 1]
                        After Operation => unionProperty1: ['union-1'], unionProperty2: ['abc', 1, 2, 3]
                        */
                       $union: {
                         unionProperty1: ['union-1'],
                         unionProperty2: [1, 2, 3],
+                        unionProperty3: [1, 'test', 3.14, true, false, null, ['1', 2]],
                       },
                       $token: secret2,
                       $distinct_id: 'Santiy',

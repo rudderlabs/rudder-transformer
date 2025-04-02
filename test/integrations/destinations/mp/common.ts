@@ -66,8 +66,17 @@ const destinationWithUnionAndAppendProperty = {
   ...destinationWithSetOnceProperty,
   Config: {
     ...destinationWithSetOnceProperty.Config,
-    unionProperties: [{ property: 'unionProperty1' }, { property: 'unionProperty2' }],
-    appendProperties: [{ property: 'appendProperty1' }, { property: 'appendProperty2' }],
+    unionProperties: [
+      { property: 'unionProperty1' },
+      { property: 'unionProperty2' },
+      { property: 'unionProperty3' },
+      { property: 'unionProperty4' },
+    ],
+    appendProperties: [
+      { property: 'appendProperty1' },
+      { property: 'appendProperty2' },
+      { property: 'appendProperty3' },
+    ],
   },
 };
 

@@ -116,7 +116,7 @@ jobs:
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "*<${{env.RELEASES_URL}}v${{ steps.extract-version.outputs.release_version }}|v${{ steps.extract-version.outputs.release_version }}>*\nCC: <@U03KG4BK1L1> <@U024YF8CR53> <@U01LVJ30QEB>"
+                    "text": "*<${{env.RELEASES_URL}}v${{ steps.extract-version.outputs.release_version }}|v${{ steps.extract-version.outputs.release_version }}>*\nCC: <!subteam^S02AEQL26CT> <!subteam^S03SEKBFX0D> <@U021E50QAGY>"
                   }
                 }
               ]

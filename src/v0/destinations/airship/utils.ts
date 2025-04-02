@@ -63,8 +63,12 @@ export const convertToAirshipTimestamp = (timeValue: string | number): string =>
   }
 
   // Check if the input is a valid date string
-  if (typeof timestamp === 'string' && moment.utc(timestamp, moment.ISO_8601, true).isValid()) {
-    return moment.utc(timestamp).format(AIRSHIP_TIMESTAMP_FORMAT);
+  if (typeof timestamp === 'string') {
+    const parsedDate = moment.utc(timestamp);
+    if (!parsedDate.isValid()) {
+      throw new InstrumentationError(`timestamp is not supported: ${timestamp}`);
+    }
+    return parsedDate.format(AIRSHIP_TIMESTAMP_FORMAT);
   }
 
   // If it's a number, handle different timestamp formats

@@ -450,6 +450,11 @@ describe('Airship utils - convertToAirshipTimestamp', () => {
       output: '2025-03-26T07:27:49Z',
     },
     {
+      description: 'should return formatted date time when date time string is passed',
+      input: '2025-03-27 16:00:48 +0100',
+      output: '2025-03-27T16:00:48Z',
+    },
+    {
       description: 'should throw an error when incorrect epoch second is passed',
       input: '17428871802',
       error: 'timestamp is not supported: 17428871802',

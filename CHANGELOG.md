@@ -2,6 +2,94 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.95.2](https://github.com/rudderlabs/rudder-transformer/compare/v1.95.1...v1.95.2) (2025-03-27)
+
+
+### Bug Fixes
+
+* add empty check for timestamp value for airship ([996344c](https://github.com/rudderlabs/rudder-transformer/commit/996344c39af710bc6e7eea5a6e4ea942ddb0a17c))
+
+### [1.95.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.95.0...v1.95.1) (2025-03-26)
+
+
+### Bug Fixes
+
+* correctly handle timestamp and date for airship ([#4201](https://github.com/rudderlabs/rudder-transformer/issues/4201)) ([cdcdd78](https://github.com/rudderlabs/rudder-transformer/commit/cdcdd78669a52c92d3afaacd40c1fb78b764b7f2))
+* remove hubspot system defined field from payload ([#4193](https://github.com/rudderlabs/rudder-transformer/issues/4193)) ([89c198e](https://github.com/rudderlabs/rudder-transformer/commit/89c198ec6cf661e09d37b2ccf0fcacec1227dad6))
+
+## [1.95.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.94.0...v1.95.0) (2025-03-24)
+
+
+### Features
+
+* added india residency support in mixpanel destination ([#4191](https://github.com/rudderlabs/rudder-transformer/issues/4191)) ([173c50f](https://github.com/rudderlabs/rudder-transformer/commit/173c50f5c0babbaa933c7cce98ac93f154900c2d))
+
+
+### Bug Fixes
+
+* mapping of android app version code in mixpanel destination ([#4188](https://github.com/rudderlabs/rudder-transformer/issues/4188)) ([1c30a07](https://github.com/rudderlabs/rudder-transformer/commit/1c30a072310bdcd8f685a2d39f52290e05b8f50a))
+* update pixel app specific transformations ([#4173](https://github.com/rudderlabs/rudder-transformer/issues/4173)) ([1bc6754](https://github.com/rudderlabs/rudder-transformer/commit/1bc6754cfadde76cb0b69ee3c29351b8b82784c2))
+
+## [1.94.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.93.0...v1.94.0) (2025-03-18)
+
+
+### Features
+
+* onboarding new destination accoil analytics ([#4156](https://github.com/rudderlabs/rudder-transformer/issues/4156)) ([8aad46f](https://github.com/rudderlabs/rudder-transformer/commit/8aad46fd8bde0d839a33751ef16e9e68c168c125))
+
+
+### Bug Fixes
+
+* add 2655 error handling to fb error handler at proxy ([#4152](https://github.com/rudderlabs/rudder-transformer/issues/4152)) ([5d3b226](https://github.com/rudderlabs/rudder-transformer/commit/5d3b2263754b94193c302c2f88cac2a055a22b53))
+
+## [1.93.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.92.1...v1.93.0) (2025-03-10)
+
+
+### Features
+
+* **destination:** pass object data in event for moengage ([#4111](https://github.com/rudderlabs/rudder-transformer/issues/4111)) ([5edfbb8](https://github.com/rudderlabs/rudder-transformer/commit/5edfbb834bfde0d39f6f177406ebf70a1138ddad))
+* onboarding new source facebook lead ads ([#4132](https://github.com/rudderlabs/rudder-transformer/issues/4132)) ([7e54fa2](https://github.com/rudderlabs/rudder-transformer/commit/7e54fa22e416aa998e6d2d009b36cff814df94a1))
+
+
+### Bug Fixes
+
+* **destination:** use coql api to delete record for zoho ([#4134](https://github.com/rudderlabs/rudder-transformer/issues/4134)) ([2c67c9a](https://github.com/rudderlabs/rudder-transformer/commit/2c67c9abe6ca50320bea195d22bc00f70ee65ddf))
+* marketo get auth token cache issue ([#4140](https://github.com/rudderlabs/rudder-transformer/issues/4140)) ([29175ac](https://github.com/rudderlabs/rudder-transformer/commit/29175ac13e1918a67e9a8367423fd9c1327aacc5))
+
+### [1.92.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.92.0...v1.92.1) (2025-03-07)
+
+
+### Bug Fixes
+
+* wrong method during update call when dont batch true ([#4146](https://github.com/rudderlabs/rudder-transformer/issues/4146)) ([3aae1cb](https://github.com/rudderlabs/rudder-transformer/commit/3aae1cbba494c29824154d98beff5ae5ec67b506))
+
+## [1.92.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.91.5...v1.92.0) (2025-03-03)
+
+
+### Features
+
+* added event validation in braze source ([#4104](https://github.com/rudderlabs/rudder-transformer/issues/4104)) ([bcb98e1](https://github.com/rudderlabs/rudder-transformer/commit/bcb98e13509b734d68d20fbc42277cc94398eeba))
+* id stitching improvement in shopify pixel transformations ([#4060](https://github.com/rudderlabs/rudder-transformer/issues/4060)) ([558eab6](https://github.com/rudderlabs/rudder-transformer/commit/558eab64652da9f75ca9bc4a5484460e3a95b8e9)), closes [#4074](https://github.com/rudderlabs/rudder-transformer/issues/4074) [#4092](https://github.com/rudderlabs/rudder-transformer/issues/4092)
+* remove consent from db-config and add store sales to integrations object ([#4091](https://github.com/rudderlabs/rudder-transformer/issues/4091)) ([2943b3d](https://github.com/rudderlabs/rudder-transformer/commit/2943b3d77f177d6b93fb5231eead81f9f05accb9))
+* zoho vdmv2 ([#4096](https://github.com/rudderlabs/rudder-transformer/issues/4096)) ([2d129a7](https://github.com/rudderlabs/rudder-transformer/commit/2d129a79ce8e8599e4bd5d5718afb25100a689ff))
+
+
+### Bug Fixes
+
+* add module in the search url path for zoho ([#4126](https://github.com/rudderlabs/rudder-transformer/issues/4126)) ([f7ed9a4](https://github.com/rudderlabs/rudder-transformer/commit/f7ed9a434299b750095642b0030323bc72f1341c))
+* added missing email check during primary email id filtering in zendesk destination ([#4124](https://github.com/rudderlabs/rudder-transformer/issues/4124)) ([b991017](https://github.com/rudderlabs/rudder-transformer/commit/b991017faffed3479d805a276d53f58469f16699))
+* mixpanel ios property mapping ios_app_release and ios_app_version ([#4072](https://github.com/rudderlabs/rudder-transformer/issues/4072)) ([d9eb0c5](https://github.com/rudderlabs/rudder-transformer/commit/d9eb0c5da16eccedac8d1b9bf524ef8bd6569fa4))
+* vs code debugger config ([#4130](https://github.com/rudderlabs/rudder-transformer/issues/4130)) ([bbb969b](https://github.com/rudderlabs/rudder-transformer/commit/bbb969b90c3e82f73d2bbd99f5ec62bb8dd67a8c))
+
+### [1.91.5](https://github.com/rudderlabs/rudder-transformer/compare/v1.91.4...v1.91.5) (2025-02-28)
+
+
+### Bug Fixes
+
+* mailjet handling of v2 spec ([94611c9](https://github.com/rudderlabs/rudder-transformer/commit/94611c942afca4b17f4dd60024172ce4bc599563))
+
+### [1.91.4](https://github.com/rudderlabs/rudder-transformer/compare/v1.91.3...v1.91.4) (2025-02-27)
+
 ### [1.91.3](https://github.com/rudderlabs/rudder-transformer/compare/v1.91.2...v1.91.3) (2025-02-25)
 
 ### [1.91.2](https://github.com/rudderlabs/rudder-transformer/compare/v1.91.1...v1.91.2) (2025-02-24)

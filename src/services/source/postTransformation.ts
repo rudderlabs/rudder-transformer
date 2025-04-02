@@ -1,4 +1,9 @@
-import { MetaTransferObject, RudderMessage, SourceTransformationResponse } from '../../types/index';
+import {
+  MetaTransferObject,
+  RudderMessage,
+  SourceTransformationResponse,
+  SourceTransformationSuccessResponse,
+} from '../../types/index';
 import { CommonUtils } from '../../util/common';
 import { CatchErr } from '../../util/types';
 import { generateErrorObject } from '../../v0/util';
@@ -26,12 +31,12 @@ export class SourcePostTransformationService {
     // We send response back to the source
     // through outputToSource. This is not sent to gateway
     // We will not return array for events not meant for gateway
-    let sourceTransformationResponse = events as SourceTransformationResponse;
+    let sourceTransformationResponse = events as SourceTransformationSuccessResponse;
     if (!Object.prototype.hasOwnProperty.call(events, 'outputToSource')) {
       const eventsBatch = CommonUtils.toArray(events);
       sourceTransformationResponse = {
         output: { batch: eventsBatch },
-      } as SourceTransformationResponse;
+      } as SourceTransformationSuccessResponse;
     }
 
     if (sourceTransformationResponse.output) {

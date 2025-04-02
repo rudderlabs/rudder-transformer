@@ -1,8 +1,9 @@
 import moment from 'moment';
-import { InstrumentationError } from '@rudderstack/integrations-lib';
+import isNumeric from 'validator/lib/isNumeric';
+import { InstrumentationError, isDefinedNotNullNotEmpty } from '@rudderstack/integrations-lib';
 import { RudderMessage } from '../../../types';
 import { getFieldValueFromMessage, getIntegrationsObj } from '../../util';
-import { RESERVED_TRAITS_MAPPING } from './config';
+import { RESERVED_TRAITS_MAPPING, AIRSHIP_TIMESTAMP_FORMAT } from './config';
 
 export type TagPayloadEventType = 'identify' | 'group';
 
@@ -49,27 +50,45 @@ type AirshipObjectAttributes = Partial<{
   removeAttributes: Omit<Attribute, 'value'>[];
 }>;
 
-const getDigitCount = (num: number): number => Math.floor(Math.log10(Math.abs(num))) + 1;
+type TimestampAttributes = Array<{
+  timestampAttribute: string;
+}>;
 
-export const isValidTimestamp = (timestamp: string | number): boolean => {
-  // Check if timestamp is a valid Unix timestamp (10 digits)
-  if (typeof timestamp === 'number' || !Number.isNaN(Number(timestamp))) {
-    return getDigitCount(Number(timestamp)) >= 10;
+export const convertToAirshipTimestamp = (timeValue: string | number): string => {
+  let millis;
+  let timestamp = timeValue;
+  // Check if the input is a string containing a numeric timestamp
+  if (typeof timestamp === 'string' && isNumeric(timestamp)) {
+    timestamp = Number(timestamp); // Convert string to number
   }
 
-  // Check if timestamp is a valid date string
-  const date = moment.utc(timestamp);
-  return date.isValid() && date.year() >= 1970;
-};
-
-// Airship timestamp format: https://docs.airship.com/api/ua/#api-request-format
-const AIRSHIP_TIMESTAMP_FORMAT = 'YYYY-MM-DD[T]HH:mm:ss[Z]';
-
-const convertToAirshipTimestamp = (timestamp: string) => {
-  if (!timestamp || !moment(timestamp).isValid()) {
-    throw new InstrumentationError(`timestamp is not supported: ${timestamp}`);
+  // Check if the input is a valid date string
+  if (typeof timestamp === 'string') {
+    const parsedDate = moment.utc(timestamp);
+    if (!parsedDate.isValid()) {
+      throw new InstrumentationError(`timestamp is not supported: ${timestamp}`);
+    }
+    return parsedDate.format(AIRSHIP_TIMESTAMP_FORMAT);
   }
-  return moment.utc(timestamp).format(AIRSHIP_TIMESTAMP_FORMAT);
+
+  // If it's a number, handle different timestamp formats
+  if (typeof timestamp === 'number') {
+    const { length } = timestamp.toString();
+
+    if (length === 10) {
+      millis = timestamp * 1000; // Convert seconds to milliseconds
+    } else if (length === 13) {
+      millis = timestamp; // Already in milliseconds
+    } else if (length === 16) {
+      millis = Math.floor(timestamp / 1000); // Convert microseconds to milliseconds
+    } else {
+      throw new InstrumentationError(`timestamp is not supported: ${timestamp}`);
+    }
+
+    return moment.utc(millis).format(AIRSHIP_TIMESTAMP_FORMAT);
+  }
+
+  throw new InstrumentationError(`timestamp is not supported: ${timestamp}`);
 };
 
 export const getAirshipTimestamp = (message: RudderMessage) => {
@@ -145,8 +164,12 @@ const getJsonAttributesFromIntegrationsObj = (message: RudderMessage): AirshipOb
   return airshipObjectAttributes;
 };
 
-export const getAttributeValue = (value: string | number | object): AttributeValue => {
-  if (isValidTimestamp(value as string)) {
+export const getAttributeValue = (
+  key: string,
+  value: string | number | object,
+  extractTimestampAttributes: string[],
+): AttributeValue => {
+  if (extractTimestampAttributes.includes(key) && isDefinedNotNullNotEmpty(value)) {
     return convertToAirshipTimestamp(value as string);
   }
   return value as AttributeValue;
@@ -155,6 +178,7 @@ export const getAttributeValue = (value: string | number | object): AttributeVal
 export const prepareAttributePayload = (
   flattenedTraits: Record<string, unknown>,
   message: RudderMessage,
+  timestampAttributes?: TimestampAttributes,
 ): AttributePayload => {
   const timestamp = getAirshipTimestamp(message);
   const initialAttributePayload: AttributePayload = { attributes: [] };
@@ -165,6 +189,9 @@ export const prepareAttributePayload = (
     Array.isArray(airshipObjectAttributes?.jsonAttributes) &&
     airshipObjectAttributes?.jsonAttributes.length > 0;
 
+  const extractTimestampAttributes = timestampAttributes
+    ? timestampAttributes.map(({ timestampAttribute }) => timestampAttribute.trim())
+    : [];
   const attributePayload = Object.entries(flattenedTraits).reduce((acc, [key, value]) => {
     // attribute
     if (typeof value !== 'boolean') {
@@ -193,7 +220,8 @@ export const prepareAttributePayload = (
           return acc;
         }
       }
-      attribute.value = getAttributeValue(value as AttributeValue);
+      attribute.value = getAttributeValue(key, value as AttributeValue, extractTimestampAttributes);
+
       acc.attributes.push(attribute);
     }
     return acc;

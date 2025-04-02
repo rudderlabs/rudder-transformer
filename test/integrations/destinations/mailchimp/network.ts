@@ -1,3 +1,4 @@
+import { authHeader1 } from './maskedSecrets';
 export const networkCallsData = [
   {
     httpReq: {
@@ -82,7 +83,7 @@ export const networkCallsData = [
       url: 'https://usXX.api.mailchimp.com/3.0/lists/aud111/members/5587981bdf09024971ff9ddfb2590a6d',
       method: 'GET',
       headers: {
-        Authorization: 'Basic YXBpS2V5OmFwaUtleS1kdW1teUFwaUtleQ==',
+        Authorization: authHeader1,
       },
     },
     httpRes: {
@@ -101,7 +102,7 @@ export const networkCallsData = [
       url: 'https://usXX.api.mailchimp.com/3.0/lists/aud111',
       method: 'GET',
       headers: {
-        Authorization: 'Basic YXBpS2V5OmFwaUtleS1kdW1teUFwaUtleQ==',
+        Authorization: authHeader1,
       },
     },
     httpRes: {

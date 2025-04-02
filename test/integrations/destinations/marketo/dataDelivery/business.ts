@@ -1,6 +1,7 @@
 import { ProxyMetdata } from '../../../../../src/types';
 import { ProxyV1TestData } from '../../../testTypes';
 import { generateProxyV1Payload } from '../../../testUtils';
+import { authHeader1 } from '../maskedSecrets';
 
 const statTags = {
   aborted: {
@@ -86,7 +87,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
           {
             ...commonRequestParameters,
             headers: {
-              Authorization: 'Bearer test_token_1',
+              Authorization: authHeader1,
               'Content-Type': 'application/json',
               'User-Agent': 'RudderLabs',
             },
@@ -106,8 +107,11 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
             message: 'Request Processed Successfully',
             response: [
               {
-                error:
-                  '{"requestId":"664#17dae8c3d48","result":[{"id":1328328,"status":"updated"}],"success":true}',
+                error: JSON.stringify({
+                  requestId: '664#17dae8c3d48',
+                  result: [{ id: 1328328, status: 'updated' }],
+                  success: true,
+                }),
                 metadata: proxyMetdata,
                 statusCode: 200,
               },
@@ -132,7 +136,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
           {
             ...commonRequestParameters,
             headers: {
-              Authorization: 'Bearer test_token_2',
+              Authorization: authHeader1,
               'Content-Type': 'application/json',
             },
             endpoint: 'https://mktId.mktorest.com/rest/v1/leads.json/test2',
@@ -153,8 +157,11 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
               'Request Failed for marketo, Access token invalid (Retryable).during Marketo Response Handling',
             response: [
               {
-                error:
-                  '{"requestId":"a61c#17daea5968a","success":false,"errors":[{"code":"601","message":"Access token invalid"}]}',
+                error: JSON.stringify({
+                  requestId: 'a61c#17daea5968a',
+                  success: false,
+                  errors: [{ code: '601', message: 'Access token invalid' }],
+                }),
                 metadata: proxyMetdata,
                 statusCode: 500,
               },
@@ -179,7 +186,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
           {
             ...commonRequestParameters,
             headers: {
-              Authorization: 'Bearer test_token_3',
+              Authorization: authHeader1,
               'Content-Type': 'application/json',
             },
             endpoint: 'https://mktId.mktorest.com/rest/v1/leads.json/test3',
@@ -200,8 +207,11 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
               'Request Failed for marketo, Requested resource not found (Aborted).during Marketo Response Handling',
             response: [
               {
-                error:
-                  '{"requestId":"a61c#17daea5968a","success":false,"errors":[{"code":"610","message":"Requested resource not found"}]}',
+                error: JSON.stringify({
+                  requestId: 'a61c#17daea5968a',
+                  success: false,
+                  errors: [{ code: '610', message: 'Requested resource not found' }],
+                }),
                 metadata: proxyMetdata,
                 statusCode: 400,
               },
@@ -226,7 +236,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
           {
             ...commonRequestParameters,
             headers: {
-              Authorization: 'Bearer test_token_4',
+              Authorization: authHeader1,
               'Content-Type': 'application/json',
             },
             endpoint: 'https://mktId.mktorest.com/rest/v1/leads.json/test4',
@@ -270,7 +280,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
         body: generateProxyV1Payload(
           {
             headers: {
-              Authorization: 'Bearer test_token_6',
+              Authorization: authHeader1,
               'Content-Type': 'invalid',
               'User-Agent': 'RudderLabs',
             },
@@ -292,8 +302,10 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
               'Request Failed for marketo, Invalid Content Type (Aborted).during Marketo Response Handling',
             response: [
               {
-                error:
-                  '{"success":false,"errors":[{"code":"612","message":"Invalid Content Type"}]}',
+                error: JSON.stringify({
+                  success: false,
+                  errors: [{ code: '612', message: 'Invalid Content Type' }],
+                }),
                 metadata: proxyMetdata,
                 statusCode: 400,
               },
@@ -317,7 +329,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
         body: generateProxyV1Payload(
           {
             headers: {
-              Authorization: 'Bearer test_token_6',
+              Authorization: authHeader1,
               'Content-Type': 'application/json',
               'User-Agent': 'RudderLabs',
             },
@@ -338,8 +350,10 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
             message: 'Request failed  with status: 400',
             response: [
               {
-                error:
-                  '{"success":false,"errors":[{"code":"1077","message":"Value for field exceeds max length"}]}',
+                error: JSON.stringify({
+                  success: false,
+                  errors: [{ code: '1077', message: 'Value for field exceeds max length' }],
+                }),
                 metadata: proxyMetdata,
                 statusCode: 400,
               },

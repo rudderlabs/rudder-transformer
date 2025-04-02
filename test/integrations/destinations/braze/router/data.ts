@@ -1,3 +1,4 @@
+import { authHeader1, secret1 } from '../maskedSecrets';
 export const data = [
   {
     name: 'braze',
@@ -12,7 +13,7 @@ export const data = [
             {
               destination: {
                 Config: {
-                  restApiKey: 'dummyApiKey',
+                  restApiKey: secret1,
                   prefixProperties: true,
                   useNativeSDK: false,
                   dataCenter: 'eu-01',
@@ -68,7 +69,7 @@ export const data = [
             {
               destination: {
                 Config: {
-                  restApiKey: 'dummyApiKey',
+                  restApiKey: secret1,
                   prefixProperties: true,
                   useNativeSDK: false,
                   dataCenter: 'us-01',
@@ -122,7 +123,7 @@ export const data = [
             {
               destination: {
                 Config: {
-                  restApiKey: 'dummyApiKey',
+                  restApiKey: secret1,
                   prefixProperties: true,
                   useNativeSDK: false,
                   dataCenter: 'us-01',
@@ -150,7 +151,7 @@ export const data = [
             {
               destination: {
                 Config: {
-                  restApiKey: 'dummyApiKey',
+                  restApiKey: secret1,
                   prefixProperties: true,
                   useNativeSDK: false,
                   dataCenter: 'us-01',
@@ -178,7 +179,7 @@ export const data = [
             {
               destination: {
                 Config: {
-                  restApiKey: 'dummyApiKey',
+                  restApiKey: secret1,
                   prefixProperties: true,
                   useNativeSDK: false,
                   dataCenter: 'us-01',
@@ -200,7 +201,7 @@ export const data = [
             {
               destination: {
                 Config: {
-                  restApiKey: 'dummyApiKey',
+                  restApiKey: secret1,
                   prefixProperties: true,
                   useNativeSDK: false,
                   dataCenter: 'us-01',
@@ -222,7 +223,7 @@ export const data = [
             {
               destination: {
                 Config: {
-                  restApiKey: 'dummyApiKey',
+                  restApiKey: secret1,
                   prefixProperties: true,
                   useNativeSDK: false,
                   dataCenter: 'us-01',
@@ -268,7 +269,7 @@ export const data = [
                   headers: {
                     'Content-Type': 'application/json',
                     Accept: 'application/json',
-                    Authorization: 'Bearer dummyApiKey',
+                    Authorization: authHeader1,
                   },
                   params: {},
                   body: {
@@ -320,7 +321,7 @@ export const data = [
                   headers: {
                     'Content-Type': 'application/json',
                     Accept: 'application/json',
-                    Authorization: 'Bearer dummyApiKey',
+                    Authorization: authHeader1,
                   },
                   params: {},
                   body: {
@@ -354,7 +355,7 @@ export const data = [
                   headers: {
                     'Content-Type': 'application/json',
                     Accept: 'application/json',
-                    Authorization: 'Bearer dummyApiKey',
+                    Authorization: authHeader1,
                   },
                   params: {},
                   body: {
@@ -390,7 +391,7 @@ export const data = [
               statusCode: 200,
               destination: {
                 Config: {
-                  restApiKey: 'dummyApiKey',
+                  restApiKey: secret1,
                   prefixProperties: true,
                   useNativeSDK: false,
                   dataCenter: 'eu-01',
@@ -432,7 +433,7 @@ export const data = [
                   enableNestedArrayOperations: false,
                   enableSubscriptionGroupInGroupCall: false,
                   eventFilteringOption: 'disable',
-                  restApiKey: 'dummyApiKey',
+                  restApiKey: secret1,
                   supportDedup: true,
                   trackAnonymousUser: true,
                   whitelistedEvents: [],
@@ -501,7 +502,7 @@ export const data = [
                   enableNestedArrayOperations: false,
                   enableSubscriptionGroupInGroupCall: false,
                   eventFilteringOption: 'disable',
-                  restApiKey: 'dummyApiKey',
+                  restApiKey: secret1,
                   supportDedup: true,
                   trackAnonymousUser: true,
                   whitelistedEvents: [],
@@ -570,7 +571,7 @@ export const data = [
                   enableNestedArrayOperations: false,
                   enableSubscriptionGroupInGroupCall: false,
                   eventFilteringOption: 'disable',
-                  restApiKey: 'dummyApiKey',
+                  restApiKey: secret1,
                   supportDedup: true,
                   trackAnonymousUser: true,
                   whitelistedEvents: [],
@@ -623,7 +624,7 @@ export const data = [
                   enableNestedArrayOperations: false,
                   enableSubscriptionGroupInGroupCall: false,
                   eventFilteringOption: 'disable',
-                  restApiKey: 'dummyApiKey',
+                  restApiKey: secret1,
                   supportDedup: true,
                   trackAnonymousUser: true,
                   whitelistedEvents: [],
@@ -676,7 +677,7 @@ export const data = [
                   enableNestedArrayOperations: false,
                   enableSubscriptionGroupInGroupCall: false,
                   eventFilteringOption: 'disable',
-                  restApiKey: 'dummyApiKey',
+                  restApiKey: secret1,
                   supportDedup: true,
                   trackAnonymousUser: true,
                   whitelistedEvents: [],
@@ -738,7 +739,7 @@ export const data = [
                   headers: {
                     'Content-Type': 'application/json',
                     Accept: 'application/json',
-                    Authorization: 'Bearer dummyApiKey',
+                    Authorization: authHeader1,
                   },
                   params: {},
                   body: {
@@ -828,7 +829,7 @@ export const data = [
                   enableNestedArrayOperations: false,
                   enableSubscriptionGroupInGroupCall: false,
                   eventFilteringOption: 'disable',
-                  restApiKey: 'dummyApiKey',
+                  restApiKey: secret1,
                   supportDedup: true,
                   trackAnonymousUser: true,
                   whitelistedEvents: [],
@@ -863,7 +864,7 @@ export const data = [
                   enableNestedArrayOperations: false,
                   enableSubscriptionGroupInGroupCall: false,
                   eventFilteringOption: 'disable',
-                  restApiKey: 'dummyApiKey',
+                  restApiKey: secret1,
                   supportDedup: true,
                   trackAnonymousUser: true,
                   whitelistedEvents: [],

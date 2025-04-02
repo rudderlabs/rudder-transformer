@@ -1,7 +1,7 @@
 import { ProcessorTestData } from '../../../testTypes';
 import { Metadata } from '../../../../../src/types';
 
-const baseMetadata: Metadata = {
+const baseMetadata: Partial<Metadata> = {
   sourceId: 'default-sourceId',
   workspaceId: 'default-workspaceId',
   namespace: 'default-namespace',

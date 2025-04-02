@@ -139,5 +139,13 @@
     "metadata": {
       "type": "toString"
     }
+  },
+  {
+    "sourceKeys": "context.app.name",
+    "destKey": "$app_name"
+  },
+  {
+    "sourceKeys": "context.app.namespace",
+    "destKey": "$app_namespace"
   }
 ]

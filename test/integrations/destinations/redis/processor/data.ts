@@ -320,7 +320,7 @@ export const data = [
                   Cízǔ: 'test',
                   CamelCase123Key: 'test',
                   '1CComega': 'test',
-                  arrayProp: '[{"x":1,"y":2}]',
+                  arrayProp: JSON.stringify([{ x: 1, y: 2 }]),
                   'nestedProp.innerProp1': 'innerPropVal1',
                   'nestedProp.innerProp2': 'innerPropVal2',
                 },
@@ -449,7 +449,7 @@ export const data = [
                   Cízǔ: 'test',
                   CamelCase123Key: 'test',
                   '1CComega': 'test',
-                  arrayProp: '[{"x":1,"y":2}]',
+                  arrayProp: JSON.stringify([{ x: 1, y: 2 }]),
                   'nestedProp.innerProp1': 'innerPropVal1',
                   'nestedProp.innerProp2': 'innerPropVal2',
                 },
@@ -560,7 +560,7 @@ export const data = [
                 fields: {
                   country: 'USA',
                   lastname: 'Mouse',
-                  arrayProp: '[{"x":1,"y":2}]',
+                  arrayProp: JSON.stringify([{ x: 1, y: 2 }]),
                   'nestedProp.innerProp1': 'innerPropVal1',
                   'nestedProp.innerProp2': 'innerPropVal2',
                   firstname: 'Mickey',
@@ -673,7 +673,7 @@ export const data = [
                 fields: {
                   country: 'USA',
                   lastname: 'Mouse',
-                  arrayProp: '[{"x":1,"y":2}]',
+                  arrayProp: JSON.stringify([{ x: 1, y: 2 }]),
                   emptyKey: '',
                   'nestedProp.innerProp1': 'innerPropVal1',
                   'nestedProp.innerProp2': 'innerPropVal2',
@@ -848,8 +848,13 @@ export const data = [
               message: {
                 hash: 'some-workspace-id:1WhcOCGgj9asZu850HvugU2C3Aq:some-entity:some-id-type:some-user-id',
                 key: 'some-model',
-                value:
-                  '{"MODEL_ID":"1691755780","VALID_AT":"2023-08-11T11:32:44.963062Z","USER_MAIN_ID":"rid5530313526204a95efe71d98cd17d5a1","CHURN_SCORE_7_DAYS":0.027986,"PERCENTILE_CHURN_SCORE_7_DAYS":0}',
+                value: JSON.stringify({
+                  MODEL_ID: '1691755780',
+                  VALID_AT: '2023-08-11T11:32:44.963062Z',
+                  USER_MAIN_ID: 'rid5530313526204a95efe71d98cd17d5a1',
+                  CHURN_SCORE_7_DAYS: 0.027986,
+                  PERCENTILE_CHURN_SCORE_7_DAYS: 0,
+                }),
               },
               userId: 'some-user-id',
             },

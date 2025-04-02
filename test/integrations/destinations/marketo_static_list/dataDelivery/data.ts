@@ -1,3 +1,4 @@
+import { authHeader1, authHeaderAccessToken } from '../maskedSecrets';
 import { testScenariosForV1API } from './business';
 import { otherScenariosV1 } from './other';
 
@@ -13,11 +14,11 @@ const legacyTests = [
         body: {
           type: 'REST',
           endpoint:
-            'https://marketo_acct_id_success.mktorest.com/rest/v1/lists/1234/leads.json?id=110&id=111&id=112',
+            'https://marketo_static_list_acct_id_success.mktorest.com/rest/v1/lists/1234/leads.json?id=110&id=111&id=112',
           method: 'POST',
           userId: '',
           headers: {
-            Authorization: 'Bearer Incorrect_token',
+            Authorization: authHeaderAccessToken,
             'Content-Type': 'application/json',
           },
           body: {
@@ -84,11 +85,11 @@ const legacyTests = [
         body: {
           type: 'REST',
           endpoint:
-            'https://marketo_acct_id_success.mktorest.com/rest/v1/lists/1234/leads.json?id=1&id=2&id=3',
+            'https://marketo_static_list_acct_id_success.mktorest.com/rest/v1/lists/1234/leads.json?id=1&id=2&id=3',
           method: 'POST',
           userId: '',
           headers: {
-            Authorization: 'Bearer Incorrect_token',
+            Authorization: authHeaderAccessToken,
             'Content-Type': 'application/json',
           },
           body: {
@@ -152,11 +153,11 @@ const legacyTests = [
         body: {
           type: 'REST',
           endpoint:
-            'https://marketo_acct_id_success.mktorest.com/rest/v1/lists/1234/leads.json?id=1&id=2',
+            'https://marketo_static_list_acct_id_success.mktorest.com/rest/v1/lists/1234/leads.json?id=1&id=2',
           method: 'POST',
           userId: '',
           headers: {
-            Authorization: 'Bearer token',
+            Authorization: authHeader1,
             'Content-Type': 'application/json',
           },
           body: {
@@ -213,11 +214,11 @@ const legacyTests = [
         body: {
           type: 'REST',
           endpoint:
-            'https://marketo_acct_id_success.mktorest.com/rest/v1/lists/1234/leads.json?id=3&id=4',
+            'https://marketo_static_list_acct_id_success.mktorest.com/rest/v1/lists/1234/leads.json?id=3&id=4',
           method: 'POST',
           userId: '',
           headers: {
-            Authorization: 'Bearer token',
+            Authorization: authHeader1,
             'Content-Type': 'application/json',
           },
           params: {},
@@ -267,11 +268,11 @@ const legacyTests = [
         body: {
           type: 'REST',
           endpoint:
-            'https://marketo_acct_id_success.mktorest.com/rest/v1/lists/1234/leads.json?id=5&id=6',
+            'https://marketo_static_list_acct_id_success.mktorest.com/rest/v1/lists/1234/leads.json?id=5&id=6',
           method: 'POST',
           userId: '',
           headers: {
-            Authorization: 'Bearer token',
+            Authorization: authHeader1,
             'Content-Type': 'application/json',
           },
           params: {},

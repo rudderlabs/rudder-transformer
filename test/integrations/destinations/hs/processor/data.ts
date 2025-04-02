@@ -1,15 +1,24 @@
+import {
+  authHeader1,
+  secret1,
+  authHeader2,
+  secret2,
+  secret4,
+  secret5,
+  authHeader5,
+} from '../maskedSecrets';
 import { Destination } from '../../../../../src/types';
 import { generateMetadata, generateSimplifiedIdentifyPayload } from '../../../testUtils';
 
 const commonOutputHeaders = {
   'Content-Type': 'application/json',
-  Authorization: 'Bearer dummy-access-token',
+  Authorization: authHeader1,
 };
 
 const destination: Destination = {
   Config: {
     authorizationType: 'newPrivateAppApi',
-    accessToken: 'dummy-access-token',
+    accessToken: secret1,
     hubID: 'dummy-hubId',
     apiKey: 'dummy-apikey',
     apiVersion: 'newApi',
@@ -64,6 +73,7 @@ export const data = [
                   email: 'testhubspot2@email.com',
                   firstname: 'Test Hubspot',
                   anonymousId: '12345',
+                  hs_object_id: 64657,
                 },
                 library: {
                   name: 'RudderLabs JavaScript SDK',
@@ -1356,7 +1366,7 @@ export const data = [
                 authorizationType: 'newPrivateAppApi',
                 hubID: '',
                 apiKey: '',
-                accessToken: 'dummy-access-token',
+                accessToken: secret1,
                 apiVersion: 'newApi',
                 lookupField: 'lookupField',
                 hubspotEvents: [],
@@ -1392,7 +1402,7 @@ export const data = [
               source: 'rETL',
               operation: 'createObject',
               headers: {
-                Authorization: 'Bearer dummy-access-token',
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
               params: {},
@@ -1488,7 +1498,7 @@ export const data = [
                 authorizationType: 'newPrivateAppApi',
                 hubID: '',
                 apiKey: '',
-                accessToken: 'dummy-access-token',
+                accessToken: secret1,
                 apiVersion: 'newApi',
                 lookupField: 'lookupField',
                 hubspotEvents: [],
@@ -1524,7 +1534,7 @@ export const data = [
               source: 'rETL',
               operation: 'updateObject',
               headers: {
-                Authorization: 'Bearer dummy-access-token',
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
               params: {},
@@ -1917,7 +1927,7 @@ export const data = [
                 authorizationType: 'newPrivateAppApi',
                 hubID: 'dummy-hubId',
                 apiKey: 'dummy-apikey',
-                accessToken: 'dummy-access-token',
+                accessToken: secret1,
                 apiVersion: 'legacyApi',
                 lookupField: '',
                 blacklistedEvents: [
@@ -1951,7 +1961,7 @@ export const data = [
                 'https://api.hubapi.com/contacts/v1/contact/createOrUpdate/email/testhubspot2@email.com',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Bearer dummy-access-token',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -2042,7 +2052,7 @@ export const data = [
             destination: {
               Config: {
                 authorizationType: 'newPrivateAppApi',
-                accessToken: 'dummy-access-tokensuccess',
+                accessToken: secret2,
                 hubID: 'dummy-hubId',
                 apiKey: 'dummy-apikey',
                 apiVersion: 'newApi',
@@ -2075,11 +2085,11 @@ export const data = [
               version: '1',
               type: 'REST',
               userId: '',
-              method: 'POST',
+              method: 'PATCH',
               endpoint: 'https://api.hubapi.com/crm/v3/objects/contacts/103604',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Bearer dummy-access-tokensuccess',
+                Authorization: authHeader2,
               },
               params: {},
               operation: 'updateContacts',
@@ -2165,7 +2175,7 @@ export const data = [
             destination: {
               Config: {
                 authorizationType: 'newPrivateAppApi',
-                accessToken: 'dummy-access-token',
+                accessToken: secret1,
                 hubID: 'dummy-hubId',
                 apiKey: 'dummy-apikey',
                 apiVersion: 'newApi',
@@ -2202,7 +2212,7 @@ export const data = [
               endpoint: 'https://api.hubapi.com/crm/v3/objects/contacts',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Bearer dummy-access-token',
+                Authorization: authHeader1,
               },
               params: {},
               operation: 'createContacts',
@@ -2287,7 +2297,7 @@ export const data = [
             destination: {
               Config: {
                 authorizationType: 'newPrivateAppApi',
-                accessToken: 'dummy-access-tokenmultiple',
+                accessToken: secret4,
                 hubID: 'dummy-hubId',
                 apiKey: 'dummy-apikey',
                 apiVersion: 'newApi',
@@ -2391,7 +2401,7 @@ export const data = [
                 authorizationType: 'newPrivateAppApi',
                 hubID: '1',
                 apiKey: '1',
-                accessToken: 'dummy-access-token',
+                accessToken: secret1,
                 apiVersion: 'newApi',
                 lookupField: 'lookupField',
                 hubspotEvents: [
@@ -2455,7 +2465,7 @@ export const data = [
               endpoint: 'https://api.hubapi.com/events/v3/send',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Bearer dummy-access-token',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -2814,7 +2824,7 @@ export const data = [
                 authorizationType: 'newPrivateAppApi',
                 hubID: '',
                 apiKey: '',
-                accessToken: 'dummy-access-token',
+                accessToken: secret1,
                 apiVersion: 'newApi',
                 lookupField: 'lookupField',
                 hubspotEvents: [
@@ -2898,11 +2908,12 @@ export const data = [
         body: [
           {
             description:
-              '[HS] (New API v3) - (newPrivateAppApi) email is present in traits as a default lookup field',
+              '[HS] (New API v3) - (newPrivateAppApi) email is present in traits as a default lookup field and remove system fields',
             message: {
               type: 'identify',
               traits: {
                 email: 'noname@email.com',
+                hs_object_id: 12345,
               },
               context: {
                 mappedToDestination: false,
@@ -2913,7 +2924,7 @@ export const data = [
                 authorizationType: 'newPrivateAppApi',
                 hubID: '',
                 apiKey: '',
-                accessToken: 'dummy-access-token',
+                accessToken: secret1,
                 apiVersion: 'newApi',
                 lookupField: 'lookupField',
                 hubspotEvents: [
@@ -2977,7 +2988,7 @@ export const data = [
               endpoint: 'https://api.hubapi.com/crm/v3/objects/contacts',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Bearer dummy-access-token',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -2992,6 +3003,90 @@ export const data = [
               },
               files: {},
               operation: 'createContacts',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'hs',
+    description:
+      '[HS] (New API v3) - (newPrivateAppApi) firstname is present in traits and lookupField is hs_object_id',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            description:
+              '[HS] (New API v3) - (newPrivateAppApi) firstname is present in traits and lookupField is hs_object_id',
+            message: {
+              type: 'identify',
+              traits: {
+                firstname: 'john',
+                hs_object_id: 345678,
+              },
+              context: {
+                mappedToDestination: false,
+              },
+            },
+            destination: {
+              Config: {
+                authorizationType: 'newPrivateAppApi',
+                hubID: '',
+                apiKey: '',
+                accessToken: secret5,
+                apiVersion: 'newApi',
+                lookupField: 'hs_object_id',
+                eventFilteringOption: 'disable',
+                blacklistedEvents: [
+                  {
+                    eventName: '',
+                  },
+                ],
+                whitelistedEvents: [
+                  {
+                    eventName: '',
+                  },
+                ],
+              },
+              Enabled: true,
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              userId: '',
+              method: 'PATCH',
+              endpoint: 'https://api.hubapi.com/crm/v3/objects/contacts/103689',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: authHeader5,
+              },
+              params: {},
+              body: {
+                JSON: {
+                  properties: {
+                    firstname: 'john',
+                  },
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              operation: 'updateContacts',
             },
             statusCode: 200,
           },
@@ -3030,7 +3125,7 @@ export const data = [
                 authorizationType: 'newPrivateAppApi',
                 hubID: '',
                 apiKey: '',
-                accessToken: 'dummy-access-token',
+                accessToken: secret1,
                 apiVersion: 'newApi',
                 lookupField: 'lookupField',
                 hubspotEvents: [
@@ -3094,7 +3189,7 @@ export const data = [
               endpoint: 'https://api.hubapi.com/crm/v3/objects/contacts',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Bearer dummy-access-token',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -3142,7 +3237,7 @@ export const data = [
                 authorizationType: 'newPrivateAppApi',
                 hubID: '',
                 apiKey: '',
-                accessToken: 'dummy-access-token',
+                accessToken: secret1,
                 apiVersion: 'newApi',
                 lookupField: 'lookupField',
                 hubspotEvents: [
@@ -3247,7 +3342,7 @@ export const data = [
                 authorizationType: 'newPrivateAppApi',
                 hubID: '',
                 apiKey: '',
-                accessToken: 'dummy-access-token',
+                accessToken: secret1,
                 apiVersion: 'newApi',
                 lookupField: 'lookupField',
                 hubspotEvents: [
@@ -3310,7 +3405,7 @@ export const data = [
               endpoint: 'https://api.hubapi.com/events/v3/send',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Bearer dummy-access-token',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -3887,7 +3982,7 @@ export const data = [
             destination: {
               Config: {
                 authorizationType: 'legacyApiKey',
-                accessToken: 'dummy-access-token',
+                accessToken: secret1,
                 hubID: 'dummy-hubId',
                 apiKey: 'dummy-apikeysuccess',
                 apiVersion: 'newApi',
@@ -3980,7 +4075,7 @@ export const data = [
                 authorizationType: 'newPrivateAppApi',
                 hubID: '',
                 apiKey: '',
-                accessToken: 'dummy-access-token',
+                accessToken: secret1,
                 apiVersion: 'newApi',
                 lookupField: 'lookupField',
                 hubspotEvents: [
@@ -4180,7 +4275,7 @@ export const data = [
                 authorizationType: 'newPrivateAppApi',
                 hubID: '',
                 apiKey: '',
-                accessToken: 'dummy-access-token',
+                accessToken: secret1,
                 apiVersion: 'newApi',
                 lookupField: 'lookupField',
                 hubspotEvents: [
@@ -4533,7 +4628,7 @@ export const data = [
                 authorizationType: 'newPrivateAppApi',
                 hubID: '',
                 apiKey: '',
-                accessToken: 'dummy-access-token',
+                accessToken: secret1,
                 apiVersion: 'legacyApi',
                 lookupField: 'lookupField',
                 hubspotEvents: [
@@ -4663,7 +4758,7 @@ export const data = [
                 apiKey: 'dummy-apikey',
                 hubID: 'dummy-hubId',
                 authorizationType: 'newPrivateAppApi',
-                accessToken: 'dummy-access-token',
+                accessToken: secret1,
                 apiVersion: 'legacyApi',
               },
               Enabled: true,
@@ -4685,7 +4780,7 @@ export const data = [
               endpoint: 'https://track.hubspot.com/v1/event',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Bearer dummy-access-token',
+                Authorization: authHeader1,
               },
               params: {
                 _a: 'dummy-hubId',
@@ -5269,7 +5364,7 @@ export const data = [
                 authorizationType: 'newPrivateAppApi',
                 hubID: '',
                 apiKey: '',
-                accessToken: 'dummy-access-token',
+                accessToken: secret1,
                 apiVersion: 'newApi',
                 lookupField: 'lookupField',
                 eventFilteringOption: 'disable',
@@ -5466,7 +5561,7 @@ export const data = [
                 authorizationType: 'newPrivateAppApi',
                 hubID: '',
                 apiKey: '',
-                accessToken: 'dummy-access-token',
+                accessToken: secret1,
                 apiVersion: 'newApi',
                 lookupField: 'lookupField',
                 eventFilteringOption: 'disable',

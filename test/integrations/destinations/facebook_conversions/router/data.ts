@@ -16,6 +16,7 @@ export const data = [
                 anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
                 channel: 'web',
                 context: {
+                  fbc: 'fbc_value',
                   device: {
                     id: 'df16bffa-5c3d-4fbb-9bce-3bab098129a7R',
                     manufacturer: 'Xiaomi',
@@ -34,7 +35,7 @@ export const data = [
                 event: 'spin_result',
                 integrations: { All: true },
                 message_id: 'a80f82be-9bdc-4a9f-b2a5-15621ee41df8',
-                properties: { revenue: 400, additional_bet_index: 0 },
+                properties: { revenue: 400, additional_bet_index: 0, fbp: 'fbp_value' },
                 timestamp: '2023-11-12T15:46:51.693229+05:30',
                 type: 'track',
               },
@@ -112,7 +113,7 @@ export const data = [
                 version: '1',
                 type: 'REST',
                 method: 'POST',
-                endpoint: 'https://graph.facebook.com/v20.0/dummyID/events?access_token=09876',
+                endpoint: 'https://graph.facebook.com/v22.0/dummyID/events?access_token=09876',
                 headers: {},
                 params: {},
                 body: {
@@ -121,7 +122,24 @@ export const data = [
                   JSON_ARRAY: {},
                   FORM: {
                     data: [
-                      '{"user_data":{"em":"48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08","zp":"03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4"},"event_name":"spin_result","event_time":1699784211,"action_source":"website","custom_data":{"revenue":400,"additional_bet_index":0,"value":400,"currency":"USD"}}',
+                      JSON.stringify({
+                        user_data: {
+                          em: '48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08',
+                          zp: '03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4',
+                          fbc: 'fbc_value',
+                          fbp: 'fbp_value',
+                        },
+                        event_name: 'spin_result',
+                        event_time: 1699784211,
+                        action_source: 'website',
+                        custom_data: {
+                          revenue: 400,
+                          additional_bet_index: 0,
+                          fbp: 'fbp_value',
+                          value: 400,
+                          currency: 'USD',
+                        },
+                      }),
                     ],
                   },
                 },
@@ -150,7 +168,7 @@ export const data = [
                 version: '1',
                 type: 'REST',
                 method: 'POST',
-                endpoint: 'https://graph.facebook.com/v20.0/dummyID/events?access_token=09876',
+                endpoint: 'https://graph.facebook.com/v22.0/dummyID/events?access_token=09876',
                 headers: {},
                 params: {},
                 body: {
@@ -159,7 +177,24 @@ export const data = [
                   JSON_ARRAY: {},
                   FORM: {
                     data: [
-                      '{"user_data":{"em":"48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08","zp":"03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4"},"event_name":"Search","event_time":1699784211,"action_source":"website","custom_data":{"revenue":400,"additional_bet_index":0,"content_ids":[],"contents":[],"content_type":"product","currency":"USD","value":400}}',
+                      JSON.stringify({
+                        user_data: {
+                          em: '48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08',
+                          zp: '03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4',
+                        },
+                        event_name: 'Search',
+                        event_time: 1699784211,
+                        action_source: 'website',
+                        custom_data: {
+                          revenue: 400,
+                          additional_bet_index: 0,
+                          content_ids: [],
+                          contents: [],
+                          content_type: 'product',
+                          currency: 'USD',
+                          value: 400,
+                        },
+                      }),
                     ],
                   },
                 },

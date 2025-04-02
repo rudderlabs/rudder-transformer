@@ -1,3 +1,4 @@
+import { authHeader1 } from '../maskedSecrets';
 import { testScenariosForV1API } from './business';
 import { otheMarketoScenariosV1 } from './other';
 
@@ -16,7 +17,7 @@ const legacyTests = [
           method: 'POST',
           userId: '',
           headers: {
-            Authorization: 'Bearer test_token_1',
+            Authorization: authHeader1,
             'Content-Type': 'application/json',
           },
           body: {
@@ -81,7 +82,7 @@ const legacyTests = [
           method: 'POST',
           userId: '',
           headers: {
-            Authorization: 'Bearer test_token_2',
+            Authorization: authHeader1,
             'Content-Type': 'application/json',
           },
           body: {
@@ -157,7 +158,7 @@ const legacyTests = [
           method: 'POST',
           userId: '',
           headers: {
-            Authorization: 'Bearer test_token_3',
+            Authorization: authHeader1,
             'Content-Type': 'application/json',
           },
           body: {
@@ -233,7 +234,7 @@ const legacyTests = [
           method: 'POST',
           userId: '',
           headers: {
-            Authorization: 'Bearer test_token_4',
+            Authorization: authHeader1,
             'Content-Type': 'application/json',
           },
           body: {
@@ -299,7 +300,7 @@ const legacyTests = [
           method: 'POST',
           userId: '',
           headers: {
-            Authorization: 'Bearer test_token_5',
+            Authorization: authHeader1,
             'Content-Type': 'application/json',
           },
           body: {
@@ -365,7 +366,7 @@ const legacyTests = [
           method: 'POST',
           userId: '',
           headers: {
-            Authorization: 'Bearer test_token_6',
+            Authorization: authHeader1,
             'Content-Type': 'application/json',
           },
           body: {
@@ -432,7 +433,7 @@ const legacyTests = [
           endpoint: 'https://unhandled_exception_in_proxy_req.mktorest.com/rest/v1/leads.json',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: 'Bearer access_token_success',
+            Authorization: authHeader1,
           },
           body: {
             JSON: {

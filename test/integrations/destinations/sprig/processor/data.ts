@@ -1,3 +1,5 @@
+import { authHeader1, secret1 } from '../maskedSecrets';
+
 export const data = [
   {
     name: 'sprig',
@@ -29,7 +31,7 @@ export const data = [
                 },
               },
               Config: {
-                apiKey: 'testApiKey',
+                apiKey: secret1,
               },
             },
             metadata: {
@@ -97,7 +99,7 @@ export const data = [
                 },
               },
               Config: {
-                apiKey: 'testApiKey',
+                apiKey: secret1,
               },
             },
             metadata: {
@@ -227,7 +229,7 @@ export const data = [
                 },
               },
               Config: {
-                apiKey: 'testApiKey',
+                apiKey: secret1,
               },
             },
             metadata: {
@@ -293,7 +295,7 @@ export const data = [
                 },
               },
               Config: {
-                apiKey: 'testApiKey',
+                apiKey: secret1,
               },
             },
             metadata: {
@@ -317,7 +319,7 @@ export const data = [
               endpoint: 'https://api.sprig.com/v2/users',
               headers: {
                 accept: 'application/json',
-                authorization: 'API-Key testApiKey',
+                authorization: authHeader1,
                 'content-type': 'application/json',
               },
               body: {
@@ -379,7 +381,7 @@ export const data = [
                 },
               },
               Config: {
-                apiKey: 'testApiKey',
+                apiKey: secret1,
               },
             },
             metadata: {
@@ -447,7 +449,7 @@ export const data = [
                 },
               },
               Config: {
-                apiKey: 'testApiKey',
+                apiKey: secret1,
               },
             },
             metadata: {
@@ -471,7 +473,7 @@ export const data = [
               endpoint: 'https://api.sprig.com/v2/users',
               headers: {
                 accept: 'application/json',
-                authorization: 'API-Key testApiKey',
+                authorization: authHeader1,
                 'content-type': 'application/json',
               },
               body: {

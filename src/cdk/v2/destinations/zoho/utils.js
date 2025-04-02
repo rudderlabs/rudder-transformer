@@ -3,7 +3,10 @@ const {
   isDefinedAndNotNull,
   ConfigurationError,
   isDefinedAndNotNullAndNotEmpty,
+  removeUndefinedNullEmptyExclBoolInt,
+  ZOHO_SDK,
 } = require('@rudderstack/integrations-lib');
+const { isEmpty } = require('lodash');
 const { getDestinationExternalIDInfoForRetl, isHttpStatusSuccess } = require('../../../../v0/util');
 const zohoConfig = require('./config');
 const { handleHttpRequest } = require('../../../../adapters/network');
@@ -36,7 +39,10 @@ const deduceModuleInfoV2 = (Config, destConfig) => {
   const identifierType = identifierMappings.map(({ to }) => to);
   return {
     operationModuleType: object,
-    upsertEndPoint: zohoConfig.COMMON_RECORD_ENDPOINT(Config.region).replace('moduleType', object),
+    upsertEndPoint: ZOHO_SDK.ZOHO.getBaseRecordUrl({
+      dataCenter: Config.region,
+      moduleName: object,
+    }),
     identifierType,
   };
 };
@@ -50,6 +56,24 @@ function validatePresenceOfMandatoryProperties(objectName, object) {
   const requiredFields = zohoConfig.MODULE_MANDATORY_FIELD_CONFIG[objectName];
   const missingFields = requiredFields.filter(
     (field) => !object.hasOwnProperty(field) || !isDefinedAndNotNullAndNotEmpty(object[field]),
+  );
+
+  return {
+    status: missingFields.length > 0,
+    missingField: missingFields,
+  };
+}
+
+function validatePresenceOfMandatoryPropertiesV2(objectName, object) {
+  const { ZOHO } = ZOHO_SDK;
+  const moduleWiseMandatoryFields = ZOHO.fetchModuleWiseMandatoryFields(objectName);
+  if (isEmpty(moduleWiseMandatoryFields)) {
+    return undefined;
+  }
+  // All the required field keys are mapped but we need to check they have values
+  // We have this gurantee because the creation of the configuration doens't permit user to omit the mandatory fields
+  const missingFields = moduleWiseMandatoryFields.filter(
+    (field) => object.hasOwnProperty(field) && !isDefinedAndNotNullAndNotEmpty(object[field]),
   );
 
   return {
@@ -119,58 +143,83 @@ const handleDuplicateCheckV2 = (addDefaultDuplicateCheck, identifierType, operat
   let additionalFields = [];
 
   if (addDefaultDuplicateCheck) {
-    const moduleDuplicateCheckField =
-      zohoConfig.MODULE_WISE_DUPLICATE_CHECK_FIELD[operationModuleType];
-    additionalFields = isDefinedAndNotNull(moduleDuplicateCheckField)
-      ? moduleDuplicateCheckField
-      : ['Name'];
+    const { ZOHO } = ZOHO_SDK;
+    additionalFields = ZOHO.fetchModuleWiseDuplicateCheckField(operationModuleType);
   }
 
   return Array.from(new Set([...identifierType, ...additionalFields]));
 };
 
-function escapeAndEncode(value) {
-  return encodeURIComponent(value.replace(/([(),\\])/g, '\\$1'));
-}
+// Zoho has limitation that where clause should be formatted in a specific way
+// ref: https://www.zoho.com/crm/developer/docs/api/v6/COQL-Limitations.html
+const groupConditions = (conditions) => {
+  if (conditions.length === 1) {
+    return conditions[0]; // No need for grouping with a single condition
+  }
+  if (conditions.length === 2) {
+    return `(${conditions[0]} AND ${conditions[1]})`; // Base case
+  }
+  return `(${groupConditions(conditions.slice(0, 2))} AND ${groupConditions(conditions.slice(2))})`;
+};
 
-function transformToURLParams(fields, Config) {
-  const criteria = Object.entries(fields)
-    .map(([key, value]) => `(${key}:equals:${escapeAndEncode(value)})`)
-    .join('and');
+// supported data type in where clause
+// ref: https://help.zoho.com/portal/en/kb/creator/developer-guide/forms/add-and-manage-fields/articles/understand-fields#Types_of_fields
+// ref: https://www.zoho.com/crm/developer/docs/api/v6/Get-Records-through-COQL-Query.html
+const generateWhereClause = (fields) => {
+  const conditions = Object.keys(removeUndefinedNullEmptyExclBoolInt(fields)).map((key) => {
+    const value = fields[key];
+    if (Array.isArray(value)) {
+      return `${key} = '${value.join(';')}'`;
+    }
+    if (typeof value === 'number') {
+      return `${key} = ${value}`;
+    }
+    return `${key} = '${value}'`;
+  });
 
-  const dataCenter = Config.region;
-  const regionBasedEndPoint = zohoConfig.DATA_CENTRE_BASE_ENDPOINTS_MAP[dataCenter];
+  return conditions.length > 0 ? `WHERE ${groupConditions(conditions)}` : '';
+};
 
-  return `${regionBasedEndPoint}/crm/v6/Leads/search?criteria=${criteria}`;
-}
+const generateSqlQuery = (module, fields) => {
+  // Generate the WHERE clause based on the fields
+  // Limiting to 25 fields
+  const entries = Object.entries(fields).slice(0, 25);
+  const whereClause = generateWhereClause(Object.fromEntries(entries));
+  if (whereClause === '') {
+    return '';
+  }
 
-function transformToURLParamsV2(fields, Config, object) {
-  const criteria = Object.entries(fields)
-    .map(([key, value]) => `(${key}:equals:${escapeAndEncode(value)})`)
-    .join('and');
+  // Construct the SQL query with specific fields in the SELECT clause
+  return `SELECT id FROM ${module} ${whereClause}`;
+};
 
-  const dataCenter = Config.region;
-  const regionBasedEndPoint = zohoConfig.DATA_CENTRE_BASE_ENDPOINTS_MAP[dataCenter];
-
-  return `${regionBasedEndPoint}/crm/v6/${object}/search?criteria=${criteria}`;
-}
-
-const searchRecordId = async (fields, metadata, Config) => {
+const sendCOQLRequest = async (region, accessToken, object, selectQuery) => {
   try {
-    const searchURL = transformToURLParams(fields, Config);
+    if (selectQuery === '') {
+      return {
+        erroneous: true,
+        code: 'INSTRUMENTATION_ERROR',
+        message: `Identifier values are not provided for ${object}`,
+      };
+    }
+
+    const searchURL = `${zohoConfig.DATA_CENTRE_BASE_ENDPOINTS_MAP[region]}/crm/v6/coql`;
     const searchResult = await handleHttpRequest(
-      'get',
+      'post',
       searchURL,
       {
+        select_query: selectQuery,
+      },
+      {
         headers: {
-          Authorization: `Zoho-oauthtoken ${metadata.secret.accessToken}`,
+          Authorization: `Zoho-oauthtoken ${accessToken}`,
         },
       },
       {
         destType: 'zoho',
         feature: 'deleteRecords',
-        requestMethod: 'GET',
-        endpointPath: 'crm/v6/Leads/search?criteria=',
+        requestMethod: 'POST',
+        endpointPath: searchURL,
         module: 'router',
       },
     );
@@ -188,7 +237,7 @@ const searchRecordId = async (fields, metadata, Config) => {
     ) {
       return {
         erroneous: true,
-        message: 'No contact is found with record details',
+        message: `No ${object} is found with record details`,
       };
     }
 
@@ -204,48 +253,36 @@ const searchRecordId = async (fields, metadata, Config) => {
   }
 };
 
-const searchRecordIdV2 = async (fields, metadata, Config, destConfig) => {
+const searchRecordId = async (fields, metadata, Config, operationModuleType, identifierType) => {
   try {
-    const { object } = destConfig;
-    const searchURL = transformToURLParamsV2(fields, Config, object);
-    const searchResult = await handleHttpRequest(
-      'get',
-      searchURL,
-      {
-        headers: {
-          Authorization: `Zoho-oauthtoken ${metadata.secret.accessToken}`,
-        },
-      },
-      {
-        destType: 'zoho',
-        feature: 'deleteRecords',
-        requestMethod: 'GET',
-        endpointPath: `crm/v6/${object}/search?criteria=`,
-        module: 'router',
-      },
+    const { region } = Config;
+
+    const selectQuery = generateSqlQuery(operationModuleType, {
+      [identifierType]: fields[identifierType],
+    });
+    const result = await sendCOQLRequest(
+      region,
+      metadata.secret.accessToken,
+      operationModuleType,
+      selectQuery,
     );
-
-    if (!isHttpStatusSuccess(searchResult.processedResponse.status)) {
-      return {
-        erroneous: true,
-        message: searchResult.processedResponse.response,
-      };
-    }
-
-    if (
-      searchResult.processedResponse.status === 204 ||
-      !CommonUtils.isNonEmptyArray(searchResult.processedResponse.response?.data)
-    ) {
-      return {
-        erroneous: true,
-        message: 'No contact is found with record details',
-      };
-    }
-
+    return result;
+  } catch (error) {
     return {
-      erroneous: false,
-      message: searchResult.processedResponse.response.data.map((record) => record.id),
+      erroneous: true,
+      message: error.message,
     };
+  }
+};
+
+const searchRecordIdV2 = async (identifiers, metadata, Config, destConfig) => {
+  try {
+    const { region } = Config;
+    const { object } = destConfig;
+
+    const selectQuery = generateSqlQuery(object, identifiers);
+    const result = await sendCOQLRequest(region, metadata.secret.accessToken, object, selectQuery);
+    return result;
   } catch (error) {
     return {
       erroneous: true,
@@ -284,14 +321,13 @@ module.exports = {
   deduceModuleInfo,
   deduceModuleInfoV2,
   validatePresenceOfMandatoryProperties,
+  validatePresenceOfMandatoryPropertiesV2,
   formatMultiSelectFields,
   formatMultiSelectFieldsV2,
   handleDuplicateCheck,
   handleDuplicateCheckV2,
   searchRecordId,
   searchRecordIdV2,
-  transformToURLParams,
-  transformToURLParamsV2,
   calculateTrigger,
   validateConfigurationIssue,
 };

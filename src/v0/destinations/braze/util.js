@@ -30,19 +30,28 @@ const { removeUndefinedValues, getIntegrationsObj } = require('../../util');
 const { InstrumentationError, isDefined } = require('@rudderstack/integrations-lib');
 
 const getEndpointFromConfig = (destination) => {
-  // Init -- mostly for test cases
-  let endpoint = 'https://rest.fra-01.braze.eu';
+  if (!destination.Config?.dataCenter || typeof destination.Config.dataCenter !== 'string') {
+    throw new InstrumentationError('Invalid Data Center: valid values are EU, US, AU');
+  }
 
   // Ref: https://www.braze.com/docs/user_guide/administrative/access_braze/braze_instances
-  if (destination.Config.dataCenter) {
-    const dataCenterArr = destination.Config.dataCenter.trim().split('-');
-    if (dataCenterArr[0].toLowerCase() === 'eu') {
-      endpoint = `https://rest.fra-${dataCenterArr[1]}.braze.eu`;
-    } else {
-      endpoint = `https://rest.iad-${dataCenterArr[1]}.braze.com`;
-    }
+  const [dataCenterRegion, dataCenterNumber] = destination.Config.dataCenter
+    .trim()
+    .toLowerCase()
+    .split('-');
+
+  switch (dataCenterRegion) {
+    case 'eu':
+      return `https://rest.fra-${dataCenterNumber}.braze.eu`;
+    case 'us':
+      return `https://rest.iad-${dataCenterNumber}.braze.com`;
+    case 'au':
+      return `https://rest.au-${dataCenterNumber}.braze.com`;
+    default:
+      throw new InstrumentationError(
+        `Invalid Data Center: ${destination.Config.dataCenter}, valid values are EU, US, AU`,
+      );
   }
-  return endpoint;
 };
 
 // Merges external_ids, emails, and phones for entries with the same subscription_group_id and subscription_state

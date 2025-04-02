@@ -1,10 +1,10 @@
 import { globSync } from 'glob';
 import { join } from 'path';
 import { MockHttpCallsData, TestCaseData } from './testTypes';
-import MockAdapter from 'axios-mock-adapter';
+import MockAxiosAdapter from 'axios-mock-adapter';
 import isMatch from 'lodash/isMatch';
 import { OptionValues } from 'commander';
-import { removeUndefinedAndNullValues } from '@rudderstack/integrations-lib';
+import { filter, removeUndefinedAndNullValues } from '@rudderstack/integrations-lib';
 import tags from '../../src/v0/util/tags';
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { Destination, ProxyMetdata, ProxyV0Request, ProxyV1Request } from '../../src/types';
@@ -18,9 +18,14 @@ import {
   ProxyV1RequestSchema,
   RouterTransformationResponseListSchema,
 } from '../../src/types/zodTypes';
+import { defaultAccessToken } from './common/secrets';
+import { randomBytes } from 'crypto';
 
-const generateAlphanumericId = (size = 36) =>
-  [...Array(size)].map(() => ((Math.random() * size) | 0).toString(size)).join('');
+const generateAlphanumericId = (size = 36) => {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  const bytes = randomBytes(size);
+  return Array.from(bytes, (byte) => chars[byte % chars.length]).join('');
+};
 export const getTestDataFilePaths = (dirPath: string, opts: OptionValues): string[] => {
   const globPattern = join(dirPath, '**', 'data.ts');
   let testFilePaths = globSync(globPattern);
@@ -28,8 +33,9 @@ export const getTestDataFilePaths = (dirPath: string, opts: OptionValues): strin
 
   const destinationOrSource = opts.destination || opts.source;
   if (destinationOrSource) {
-    filteredTestFilePaths = testFilePaths.filter(
-      (testFile) => destinationOrSource && testFile.includes(`${destinationOrSource}/`),
+    const resources = destinationOrSource.split(',');
+    filteredTestFilePaths = testFilePaths.filter((testFile) =>
+      resources.some((resource) => testFile.includes(`/${resource}/`)),
     );
   }
   if (opts.feature) {
@@ -41,27 +47,54 @@ export const getTestDataFilePaths = (dirPath: string, opts: OptionValues): strin
 };
 
 export const getTestData = (filePath): TestCaseData[] => {
-  return require(filePath).data as TestCaseData[];
+  const { data, skip } = require(filePath);
+  return skip ? [] : filter(data as TestCaseData[]);
+};
+
+export const getTestSecrets = (destination: string) => {
+  const filePath = join(__dirname, 'destinations', destination, 'maskedSecrets.ts');
+  return require(filePath);
 };
 
 export const getMockHttpCallsData = (filePath): MockHttpCallsData[] => {
   return require(filePath).networkCallsData as MockHttpCallsData[];
 };
 
-export const getAllTestMockDataFilePaths = (dirPath: string, destination: string): string[] => {
+export const registerAxiosMocks = (
+  mockAdapter: MockAxiosAdapter,
+  axiosMocks: MockHttpCallsData[],
+) => {
+  axiosMocks.forEach((axiosMock) => addMock(mockAdapter, axiosMock));
+};
+
+export const getAllTestMockDataFilePaths = (dirPath: string, resourceName?: string): string[] => {
   const globPattern = join(dirPath, '**', 'network.ts');
   let testFilePaths = globSync(globPattern);
-  if (destination) {
+
+  if (resourceName) {
+    const resources = resourceName.split(',');
     const commonTestFilePaths = testFilePaths.filter((testFile) =>
       testFile.includes('test/integrations/common'),
     );
-    testFilePaths = testFilePaths.filter((testFile) => testFile.includes(destination));
+    testFilePaths = testFilePaths.filter((testFile) =>
+      resources.some((resource) => testFile.includes(`/${resource}/`)),
+    );
     testFilePaths = [...commonTestFilePaths, ...testFilePaths];
   }
   return testFilePaths;
 };
 
-export const addMock = (mock: MockAdapter, axiosMock: MockHttpCallsData) => {
+export const getTestMockData = (resourceName?: string) => {
+  const allTestMockDataFilePaths = getAllTestMockDataFilePaths(__dirname, resourceName);
+  return allTestMockDataFilePaths
+    .map((currPath) => {
+      const mockNetworkCallsData: MockHttpCallsData[] = getMockHttpCallsData(currPath);
+      return mockNetworkCallsData;
+    })
+    .flat();
+};
+
+export const addMock = (mock: MockAxiosAdapter, axiosMock: MockHttpCallsData) => {
   const { url, method, data: reqData, params, ...opts } = axiosMock.httpReq;
   const { data, headers, status } = axiosMock.httpRes;
 
@@ -98,6 +131,7 @@ export const addMock = (mock: MockAdapter, axiosMock: MockHttpCallsData) => {
       break;
   }
 };
+
 export const overrideDestination = (destination: Destination, overrideConfigValues) => {
   return Object.assign({}, destination, {
     Config: { ...destination.Config, ...overrideConfigValues },
@@ -480,7 +514,7 @@ export const generateProxyV0Payload = (
     workspaceId: 'default-workspaceId',
     sourceId: 'default-sourceId',
     secret: {
-      accessToken: 'default-accessToken',
+      accessToken: defaultAccessToken,
     },
     dontBatch: false,
   };
@@ -522,7 +556,7 @@ export const generateProxyV1Payload = (
       workspaceId: 'default-workspaceId',
       sourceId: 'default-sourceId',
       secret: {
-        accessToken: payloadParameters.accessToken || 'default-accessToken',
+        accessToken: payloadParameters.accessToken || defaultAccessToken,
       },
       dontBatch: false,
     },
@@ -604,7 +638,7 @@ export const generateMetadata = (jobId: number, userId?: string): any => {
     destinationId: 'default-destinationId',
     workspaceId: 'default-workspaceId',
     secret: {
-      accessToken: 'default-accessToken',
+      accessToken: defaultAccessToken,
     },
     dontBatch: false,
   };
@@ -618,7 +652,7 @@ export const generateGoogleOAuthMetadata = (jobId: number): any => {
     destinationId: 'default-destinationId',
     workspaceId: 'default-workspaceId',
     secret: {
-      access_token: 'default-accessToken', // applicable for google destinations
+      access_token: defaultAccessToken, // applicable for google destinations
     },
     dontBatch: false,
   };

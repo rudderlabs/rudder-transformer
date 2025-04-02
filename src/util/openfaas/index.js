@@ -37,6 +37,7 @@ const FAAS_READINESS_HTTP_FAILURE_THRESHOLD =
   process.env.FAAS_READINESS_HTTP_FAILURE_THRESHOLD || '5';
 const FAAS_READINESS_HTTP_SUCCESS_THRESHOLD =
   process.env.FAAS_READINESS_HTTP_SUCCESS_THRESHOLD || '1';
+const FAAS_PROFILE = process.env.FAAS_PROFILE || '';
 
 const PARENT_NAMESPACE = process.env.NAMESPACE || 'default';
 const PARENT_CLUSTER = process.env.FAAS_FN_PARENT_CLUSTER || 'default';
@@ -342,6 +343,19 @@ function buildOpenfaasFn(name, code, versionId, libraryVersionIDs, testMode, trM
     labels['custom-network-policy'] = 'true';
   }
 
+  const annotations = {
+    'prometheus.io.scrape': 'true',
+    'com.openfaas.ready.http.path': FAAS_READINESS_HTTP_PATH,
+    'com.openfaas.ready.http.initialDelaySeconds': FAAS_READINESS_HTTP_INITIAL_DELAY_S,
+    'com.openfaas.ready.http.periodSeconds': FAAS_READINESS_HTTP_PERIOD_S,
+    'com.openfaas.ready.http.successThreshold': FAAS_READINESS_HTTP_SUCCESS_THRESHOLD,
+    'com.openfaas.ready.http.failureThreshold': FAAS_READINESS_HTTP_FAILURE_THRESHOLD,
+  };
+
+  if (FAAS_PROFILE) {
+    annotations['com.openfaas.profile'] = FAAS_PROFILE;
+  }
+
   return {
     service: name,
     name: name,
@@ -349,14 +363,7 @@ function buildOpenfaasFn(name, code, versionId, libraryVersionIDs, testMode, trM
     envProcess,
     envVars,
     labels,
-    annotations: {
-      'prometheus.io.scrape': 'true',
-      'com.openfaas.ready.http.path': FAAS_READINESS_HTTP_PATH,
-      'com.openfaas.ready.http.initialDelaySeconds': FAAS_READINESS_HTTP_INITIAL_DELAY_S,
-      'com.openfaas.ready.http.periodSeconds': FAAS_READINESS_HTTP_PERIOD_S,
-      'com.openfaas.ready.http.successThreshold': FAAS_READINESS_HTTP_SUCCESS_THRESHOLD,
-      'com.openfaas.ready.http.failureThreshold': FAAS_READINESS_HTTP_FAILURE_THRESHOLD,
-    },
+    annotations,
     limits: {
       memory: FAAS_LIMITS_MEMORY,
       cpu: FAAS_LIMITS_CPU,

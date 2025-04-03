@@ -1,6 +1,6 @@
 const { processRecordInputsV2 } = require('./transformRecordV2');
 
-describe('processRecordInputs', () => {
+describe('processRecordInputsV2', () => {
   it('should return an empty array if no inputs are provided', async () => {
     const result = await processRecordInputsV2([]);
     expect(result).toEqual([]);

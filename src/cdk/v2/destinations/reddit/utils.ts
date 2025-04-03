@@ -44,6 +44,11 @@ const batchEventChunks = (eventChunks: EventMetadata[][]): BatchedResponse[] => 
   }
 
   return eventChunks.map((eventChunk) => {
+    // Handle empty chunks
+    if (eventChunk.length === 0) {
+      return null;
+    }
+
     const [firstEvent, ...restEvents] = eventChunk;
 
     // Initialize response with first event's data
@@ -60,7 +65,7 @@ const batchEventChunks = (eventChunks: EventMetadata[][]): BatchedResponse[] => 
     });
 
     return response;
-  });
+  }).filter(Boolean) as BatchedResponse[];
 };
 
 const batchEvents = (successfulEvents: EventMetadata[]): BatchedResponse[] => {

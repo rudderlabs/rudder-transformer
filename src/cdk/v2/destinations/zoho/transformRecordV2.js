@@ -304,7 +304,7 @@ const appendSuccessResponses = (response, responseArray, metadataChunks, destina
  * @param {Object} destination - The destination object containing configuration.
  * @returns {Array} - An array of responses after processing the record inputs.
  */
-const processRecordInputs = async (inputs, destination) => {
+const processRecordInputsV2 = async (inputs, destination) => {
   if (!inputs || inputs.length === 0) {
     return [];
   }
@@ -375,4 +375,4 @@ const processRecordInputs = async (inputs, destination) => {
   return [...response, ...errorResponseList];
 };
 
-module.exports = { processRecordInputs };
+module.exports = { processRecordInputsV2 };

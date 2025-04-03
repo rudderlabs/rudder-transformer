@@ -1,13 +1,13 @@
-const { processRecordInputs } = require('./transformRecordV2');
+const { processRecordInputsV2 } = require('./transformRecordV2');
 
 describe('processRecordInputs', () => {
   it('should return an empty array if no inputs are provided', async () => {
-    const result = await processRecordInputs([]);
+    const result = await processRecordInputsV2([]);
     expect(result).toEqual([]);
   });
 
   it('should return an empty array if no destination is provided', async () => {
-    const result = await processRecordInputs(
+    const result = await processRecordInputsV2(
       [
         {
           id: '1',
@@ -21,7 +21,7 @@ describe('processRecordInputs', () => {
   });
 
   it('should return an empty array if no destination config is provided', async () => {
-    const result = await processRecordInputs([], {
+    const result = await processRecordInputsV2([], {
       destination: {
         config: {},
       },
@@ -31,7 +31,7 @@ describe('processRecordInputs', () => {
 
   it('should return an empty array if no connection is provided', async () => {
     await expect(
-      processRecordInputs(
+      processRecordInputsV2(
         [
           {
             id: '1',
@@ -52,7 +52,7 @@ describe('processRecordInputs', () => {
 
   it('should return an empty array if no connection destination config is provided', async () => {
     await expect(
-      processRecordInputs(
+      processRecordInputsV2(
         [
           {
             id: '1',
@@ -74,7 +74,7 @@ describe('processRecordInputs', () => {
 
   it('should return an empty array if no object and identifierMappings are provided in destination config', async () => {
     await expect(
-      processRecordInputs(
+      processRecordInputsV2(
         [
           {
             id: '1',

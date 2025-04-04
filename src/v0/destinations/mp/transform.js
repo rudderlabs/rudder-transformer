@@ -229,6 +229,44 @@ const createSetOnceResponse = (message, type, destination, setOnce) => {
   return responseBuilderSimple(payload, message, type, destination.Config);
 };
 
+const createUnionResponse = (message, type, destination, union) => {
+  const payload = {
+    $union: union,
+    $token: destination.Config.token,
+    $distinct_id: message.userId || message.anonymousId,
+  };
+
+  if (destination?.Config.identityMergeApi === 'simplified') {
+    payload.$distinct_id = message.userId || `$device:${message.anonymousId}`;
+  }
+
+  return responseBuilderSimple(payload, message, type, destination.Config);
+};
+
+const createAppendResponse = (message, type, destination, append) => {
+  const payload = {
+    $append: append,
+    $token: destination.Config.token,
+    $distinct_id: message.userId || message.anonymousId,
+  };
+
+  if (destination?.Config.identityMergeApi === 'simplified') {
+    payload.$distinct_id = message.userId || `$device:${message.anonymousId}`;
+  }
+
+  return responseBuilderSimple(payload, message, type, destination.Config);
+};
+
+const toArray = (value) => {
+  if (value === null || value === undefined) {
+    return [];
+  }
+  if (Array.isArray(value)) {
+    return value;
+  }
+  return [value];
+};
+
 const processIdentifyEvents = async (message, type, destination) => {
   const messageClone = { ...message };
   let seggregatedTraits = {};
@@ -248,6 +286,41 @@ const processIdentifyEvents = async (message, type, destination) => {
     if (Object.keys(seggregatedTraits.setOnce).length > 0) {
       returnValue.push(
         createSetOnceResponse(messageClone, type, destination, seggregatedTraits.setOnce),
+      );
+    }
+  }
+
+  // making payload for union properties
+  if (destination.Config.unionProperties && destination.Config.unionProperties.length > 0) {
+    setOnceProperties = parseConfigArray(destination.Config.unionProperties, 'property');
+    seggregatedTraits = trimTraits(
+      messageClone.traits,
+      messageClone.context.traits,
+      setOnceProperties,
+    );
+    messageClone.traits = seggregatedTraits.traits;
+    messageClone.context.traits = seggregatedTraits.contextTraits;
+    const unionPropertiesList = Object.fromEntries(
+      Object.entries(seggregatedTraits.setOnce).map(([key, value]) => [key, toArray(value)]),
+    );
+    if (Object.keys(unionPropertiesList).length > 0) {
+      returnValue.push(createUnionResponse(messageClone, type, destination, unionPropertiesList));
+    }
+  }
+
+  // making payload for append properties
+  if (destination.Config.appendProperties && destination.Config.appendProperties.length > 0) {
+    setOnceProperties = parseConfigArray(destination.Config.appendProperties, 'property');
+    seggregatedTraits = trimTraits(
+      messageClone.traits,
+      messageClone.context.traits,
+      setOnceProperties,
+    );
+    messageClone.traits = seggregatedTraits.traits;
+    messageClone.context.traits = seggregatedTraits.contextTraits;
+    if (Object.keys(seggregatedTraits.setOnce).length > 0) {
+      returnValue.push(
+        createAppendResponse(messageClone, type, destination, seggregatedTraits.setOnce),
       );
     }
   }

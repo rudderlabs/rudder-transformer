@@ -7769,7 +7769,6 @@ export const data = [
     feature: 'processor',
     module: 'destination',
     version: 'v0',
-    skip: true,
     input: {
       request: {
         body: [
@@ -7901,21 +7900,19 @@ export const data = [
                 JSON_ARRAY: {
                   batch: JSON.stringify([
                     {
-                      $set: {
-                        $created: '2020-01-23T08:54:02.362Z',
-                        $email: 'TestSanity@disney.com',
-                        $country_code: 'USA',
-                        $initial_referrer: 'https://docs.rudderstack.com',
-                        $initial_referring_domain: 'docs.rudderstack.com',
-                        random: 'superProp',
-                        $lastName: 'VarChange',
-                        $browser: 'Chrome',
-                        $browser_version: '79.0.3945.117',
+                      /*
+                      This will perform a union operation on the existing property with the provided property in the list.
+                       If the property doesn't exist, a new property will be created.
+                       Before Operation => unionProperty1: does not exists, unionProperty2: ['abc', 1]
+                       After Operation => unionProperty1: ['union-1'], unionProperty2: ['abc', 1, 2, 3]
+                       */
+                      $union: {
+                        unionProperty1: ['union-1'],
+                        unionProperty2: [1, 2, 3],
+                        unionProperty3: [1, 'test', 3.14, true, false, null, ['1', 2]],
                       },
                       $token: secret2,
                       $distinct_id: 'Santiy',
-                      $ip: '0.0.0.0',
-                      $time: null,
                     },
                   ]),
                 },
@@ -7949,6 +7946,7 @@ export const data = [
                       $append: {
                         appendProperty1: ['append-1'],
                         appendProperty2: 0,
+                        appendProperty3: null,
                       },
                       $token: secret2,
                       $distinct_id: 'Santiy',
@@ -7976,19 +7974,21 @@ export const data = [
                 JSON_ARRAY: {
                   batch: JSON.stringify([
                     {
-                      /*
-                      This will perform a union operation on the existing property with the provided property in the list.
-                       If the property doesn't exist, a new property will be created.
-                       Before Operation => unionProperty1: does not exists, unionProperty2: ['abc', 1]
-                       After Operation => unionProperty1: ['union-1'], unionProperty2: ['abc', 1, 2, 3]
-                       */
-                      $union: {
-                        unionProperty1: ['union-1'],
-                        unionProperty2: [1, 2, 3],
-                        unionProperty3: [1, 'test', 3.14, true, false, null, ['1', 2]],
+                      $set: {
+                        $created: '2020-01-23T08:54:02.362Z',
+                        $email: 'TestSanity@disney.com',
+                        $country_code: 'USA',
+                        $initial_referrer: 'https://docs.rudderstack.com',
+                        $initial_referring_domain: 'docs.rudderstack.com',
+                        random: 'superProp',
+                        $lastName: 'VarChange',
+                        $browser: 'Chrome',
+                        $browser_version: '79.0.3945.117',
                       },
                       $token: secret2,
                       $distinct_id: 'Santiy',
+                      $ip: '0.0.0.0',
+                      $time: null,
                     },
                   ]),
                 },

@@ -15,7 +15,6 @@ const {
   defaultBatchRequestConfig,
   IsGzipSupported,
   isObject,
-  isDefinedAndNotNullAndNotEmpty,
   isDefinedAndNotNull,
   removeUndefinedValues,
 } = require('../../util');
@@ -289,11 +288,11 @@ function trimTraits(traits, contextTraits, setOnceProperties) {
     const traitsValue = get(traitsCopy, propertyPath);
     const contextTraitsValue = get(contextTraitsCopy, propertyPath);
 
-    if (isDefinedAndNotNullAndNotEmpty(traitsValue)) {
+    if (traitsValue !== undefined) {
       setOnceEligible[propName] = traitsValue;
       lodash.unset(traitsCopy, propertyPath);
     }
-    if (isDefinedAndNotNullAndNotEmpty(contextTraitsValue)) {
+    if (contextTraitsValue !== undefined) {
       if (!setOnceEligible.hasOwnProperty(propName)) {
         setOnceEligible[propName] = contextTraitsValue;
       }

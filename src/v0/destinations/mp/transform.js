@@ -36,6 +36,7 @@ const {
   generatePageOrScreenCustomEventName,
   recordBatchSizeMetrics,
   getBaseEndpoint,
+  toArray,
 } = require('./util');
 const { CommonUtils } = require('../../../util/common');
 
@@ -215,9 +216,9 @@ const processTrack = (message, destination) => {
   return returnValue;
 };
 
-const createSetOnceResponse = (message, type, destination, setOnce) => {
+const createUserProfileOperation = (message, type, destination, properties, operation) => {
   const payload = {
-    $set_once: setOnce,
+    [`${operation}`]: properties,
     $token: destination.Config.token,
     $distinct_id: message.userId || message.anonymousId,
   };
@@ -229,101 +230,79 @@ const createSetOnceResponse = (message, type, destination, setOnce) => {
   return responseBuilderSimple(payload, message, type, destination.Config);
 };
 
-const createUnionResponse = (message, type, destination, union) => {
-  const payload = {
-    $union: union,
-    $token: destination.Config.token,
-    $distinct_id: message.userId || message.anonymousId,
-  };
-
-  if (destination?.Config.identityMergeApi === 'simplified') {
-    payload.$distinct_id = message.userId || `$device:${message.anonymousId}`;
+const createResponseForUserProfileOperation = (
+  message,
+  type,
+  destination,
+  propertiesConfig,
+  operation,
+) => {
+  if (!propertiesConfig || propertiesConfig.length === 0) {
+    return null;
   }
+  const operationProperties = parseConfigArray(propertiesConfig, 'property');
+  const segregatedTraits = trimTraits(message.traits, message.context.traits, operationProperties);
 
-  return responseBuilderSimple(payload, message, type, destination.Config);
-};
+  // eslint-disable-next-line no-param-reassign
+  message.traits = segregatedTraits.traits;
+  // eslint-disable-next-line no-param-reassign
+  message.context.traits = segregatedTraits.contextTraits;
 
-const createAppendResponse = (message, type, destination, append) => {
-  const payload = {
-    $append: append,
-    $token: destination.Config.token,
-    $distinct_id: message.userId || message.anonymousId,
-  };
+  const finalOperationProperties =
+    operation === '$union'
+      ? Object.fromEntries(
+          Object.entries(segregatedTraits.operationTransformedProperties).map(([key, value]) => [
+            key,
+            toArray(value),
+          ]),
+        )
+      : segregatedTraits.operationTransformedProperties;
 
-  if (destination?.Config.identityMergeApi === 'simplified') {
-    payload.$distinct_id = message.userId || `$device:${message.anonymousId}`;
+  if (Object.keys(finalOperationProperties).length > 0) {
+    return createUserProfileOperation(
+      message,
+      type,
+      destination,
+      finalOperationProperties,
+      operation,
+    );
   }
-
-  return responseBuilderSimple(payload, message, type, destination.Config);
-};
-
-const toArray = (value) => {
-  if (value === null || value === undefined) {
-    return [];
-  }
-  if (Array.isArray(value)) {
-    return value;
-  }
-  return [value];
+  return null;
 };
 
 const processIdentifyEvents = async (message, type, destination) => {
   const messageClone = { ...message };
-  let seggregatedTraits = {};
   const returnValue = [];
-  let setOnceProperties = [];
 
-  // making payload for set_once properties
-  if (destination.Config.setOnceProperties && destination.Config.setOnceProperties.length > 0) {
-    setOnceProperties = parseConfigArray(destination.Config.setOnceProperties, 'property');
-    seggregatedTraits = trimTraits(
-      messageClone.traits,
-      messageClone.context.traits,
-      setOnceProperties,
-    );
-    messageClone.traits = seggregatedTraits.traits;
-    messageClone.context.traits = seggregatedTraits.contextTraits;
-    if (Object.keys(seggregatedTraits.setOnce).length > 0) {
-      returnValue.push(
-        createSetOnceResponse(messageClone, type, destination, seggregatedTraits.setOnce),
-      );
-    }
-  }
+  // Set Once Properties
+  const setOnceResponse = createResponseForUserProfileOperation(
+    messageClone,
+    type,
+    destination,
+    destination.Config.setOnceProperties,
+    '$set_once',
+  );
+  if (setOnceResponse) returnValue.push(setOnceResponse);
 
-  // making payload for union properties
-  if (destination.Config.unionProperties && destination.Config.unionProperties.length > 0) {
-    setOnceProperties = parseConfigArray(destination.Config.unionProperties, 'property');
-    seggregatedTraits = trimTraits(
-      messageClone.traits,
-      messageClone.context.traits,
-      setOnceProperties,
-    );
-    messageClone.traits = seggregatedTraits.traits;
-    messageClone.context.traits = seggregatedTraits.contextTraits;
-    const unionPropertiesList = Object.fromEntries(
-      Object.entries(seggregatedTraits.setOnce).map(([key, value]) => [key, toArray(value)]),
-    );
-    if (Object.keys(unionPropertiesList).length > 0) {
-      returnValue.push(createUnionResponse(messageClone, type, destination, unionPropertiesList));
-    }
-  }
+  // Union Properties
+  const unionResponse = createResponseForUserProfileOperation(
+    messageClone,
+    type,
+    destination,
+    destination.Config.unionProperties,
+    '$union',
+  );
+  if (unionResponse) returnValue.push(unionResponse);
 
-  // making payload for append properties
-  if (destination.Config.appendProperties && destination.Config.appendProperties.length > 0) {
-    setOnceProperties = parseConfigArray(destination.Config.appendProperties, 'property');
-    seggregatedTraits = trimTraits(
-      messageClone.traits,
-      messageClone.context.traits,
-      setOnceProperties,
-    );
-    messageClone.traits = seggregatedTraits.traits;
-    messageClone.context.traits = seggregatedTraits.contextTraits;
-    if (Object.keys(seggregatedTraits.setOnce).length > 0) {
-      returnValue.push(
-        createAppendResponse(messageClone, type, destination, seggregatedTraits.setOnce),
-      );
-    }
-  }
+  // Append Properties
+  const appendResponse = createResponseForUserProfileOperation(
+    messageClone,
+    type,
+    destination,
+    destination.Config.appendProperties,
+    '$append',
+  );
+  if (appendResponse) returnValue.push(appendResponse);
 
   // Creating the user profile
   // https://developer.mixpanel.com/reference/profile-set

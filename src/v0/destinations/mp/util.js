@@ -260,7 +260,7 @@ const batchEvents = (successRespList, maxBatchSize, reqMetadata) => {
  *
  * @param {object} traits - An object representing the traits.
  * @param {object} contextTraits - An object representing the context traits.
- * @param {string[]} setOnceProperties - An array of property paths to be considered for the setOnce transformation.
+ * @param userProfileProperties
  * @returns {object} - An object containing the modified traits, contextTraits, and setOnce properties.
  *
  * @example
@@ -271,44 +271,44 @@ const batchEvents = (successRespList, maxBatchSize, reqMetadata) => {
  * const result = trimTraits(traits, contextTraits, setOnceProperties);
  * // Output: { traits: { age: 30 }, contextTraits: { language: 'English' }, setOnce: { $name: 'John', $country_code: 'USA', city: 'New York'} }
  */
-function trimTraits(traits, contextTraits, setOnceProperties) {
-  let sentOnceTransformedPayload;
+function trimTraits(traits, contextTraits, userProfileProperties) {
+  let operationTransformedPayload;
   // Create a copy of the original traits object
   const traitsCopy = { ...traits };
   const contextTraitsCopy = { ...contextTraits };
 
-  // Initialize setOnce object
-  const setOnceEligible = {};
+  // Initialize operation eligible object
+  const operationEligible = {};
 
   // Step 1: find the k-v pairs of setOnceProperties in traits and contextTraits
 
-  setOnceProperties.forEach((propertyPath) => {
+  userProfileProperties.forEach((propertyPath) => {
     const propName = lodash.last(propertyPath.split('.'));
 
     const traitsValue = get(traitsCopy, propertyPath);
     const contextTraitsValue = get(contextTraitsCopy, propertyPath);
 
     if (traitsValue !== undefined) {
-      setOnceEligible[propName] = traitsValue;
+      operationEligible[propName] = traitsValue;
       lodash.unset(traitsCopy, propertyPath);
     }
     if (contextTraitsValue !== undefined) {
-      if (!setOnceEligible.hasOwnProperty(propName)) {
-        setOnceEligible[propName] = contextTraitsValue;
+      if (!operationEligible.hasOwnProperty(propName)) {
+        operationEligible[propName] = contextTraitsValue;
       }
       lodash.unset(contextTraitsCopy, propertyPath);
     }
   });
 
-  if (setOnceEligible && Object.keys(setOnceEligible).length > 0) {
+  if (operationEligible && Object.keys(operationEligible).length > 0) {
     // Step 2: transform properties eligible as per rudderstack declared identify event mapping
     // setOnce should have all traits from message.traits and message.context.traits by now
-    sentOnceTransformedPayload = constructPayload(setOnceEligible, mPSetOnceConfigJson);
+    operationTransformedPayload = constructPayload(operationEligible, mPSetOnceConfigJson);
 
     // Step 3: combine the transformed and custom setOnce traits
-    sentOnceTransformedPayload = extractCustomFields(
-      setOnceEligible,
-      sentOnceTransformedPayload,
+    operationTransformedPayload = extractCustomFields(
+      operationEligible,
+      operationTransformedPayload,
       'root',
       MP_IDENTIFY_EXCLUSION_LIST,
     );
@@ -317,7 +317,7 @@ function trimTraits(traits, contextTraits, setOnceProperties) {
   return {
     traits: traitsCopy,
     contextTraits: contextTraitsCopy,
-    setOnce: sentOnceTransformedPayload || {},
+    operationTransformedProperties: operationTransformedPayload || {},
   };
 }
 
@@ -410,6 +410,16 @@ const getDeletionTaskBaseEndpoint = (config) => {
 const getCreateDeletionTaskEndpoint = (config, projectToken) =>
   `${getDeletionTaskBaseEndpoint(config)}?token=${projectToken}`;
 
+const toArray = (value) => {
+  if (value === null || value === undefined) {
+    return [];
+  }
+  if (Array.isArray(value)) {
+    return value;
+  }
+  return [value];
+};
+
 module.exports = {
   createIdentifyResponse,
   isImportAuthCredentialsAvailable,
@@ -424,4 +434,5 @@ module.exports = {
   getBaseEndpoint,
   getDeletionTaskBaseEndpoint,
   getCreateDeletionTaskEndpoint,
+  toArray,
 };

@@ -9,10 +9,17 @@ const {
   getBaseEndpoint,
   getDeletionTaskBaseEndpoint,
   getCreateDeletionTaskEndpoint,
+  validateMixpanelPayloadLimits,
 } = require('./util');
 const { FEATURE_GZIP_SUPPORT } = require('../../util/constant');
-const { ConfigurationError } = require('@rudderstack/integrations-lib');
-const { mappingConfig, ConfigCategory } = require('./config');
+const { ConfigurationError, InstrumentationError } = require('@rudderstack/integrations-lib');
+const {
+  mappingConfig,
+  ConfigCategory,
+  MAX_PROPERTY_KEYS_COUNT,
+  MAX_ARRAY_ELEMENTS_COUNT,
+  MAX_NESTING_DEPTH,
+} = require('./config');
 
 const maxBatchSizeMock = 2;
 
@@ -781,5 +788,147 @@ describe('getCreateDeletionTaskEndpoint', () => {
     it(name, () => {
       expect(getCreateDeletionTaskEndpoint(input.config, input.token)).toEqual(expected);
     });
+  });
+});
+
+describe('validateMixpanelPayloadLimits', () => {
+  it('should not throw error for valid properties object', () => {
+    const properties = {
+      prop1: 'value1',
+      prop2: 'value2',
+      prop3: { nestedProp: 'nestedValue' },
+      prop4: [1, 2, 3],
+    };
+
+    expect(() => validateMixpanelPayloadLimits(properties)).not.toThrow();
+  });
+
+  it('should throw error when properties exceed the maximum key limit', () => {
+    // Create an object with MAX_PROPERTY_KEYS_COUNT + 1 properties
+    const properties = {};
+    for (let i = 0; i < MAX_PROPERTY_KEYS_COUNT + 1; i++) {
+      properties[`prop${i}`] = `value${i}`;
+    }
+
+    expect(() => validateMixpanelPayloadLimits(properties)).toThrow(InstrumentationError);
+    expect(() => validateMixpanelPayloadLimits(properties)).toThrow(
+      `Mixpanel properties exceed the limit of ${MAX_PROPERTY_KEYS_COUNT} keys`,
+    );
+  });
+
+  it('should throw error when nested object properties exceed the maximum key limit', () => {
+    // Create a nested object with MAX_PROPERTY_KEYS_COUNT + 1 properties
+    const nestedProperties = {};
+    for (let i = 0; i < MAX_PROPERTY_KEYS_COUNT + 1; i++) {
+      nestedProperties[`nestedProp${i}`] = `nestedValue${i}`;
+    }
+
+    const properties = {
+      prop1: 'value1',
+      prop2: nestedProperties,
+    };
+
+    expect(() => validateMixpanelPayloadLimits(properties)).toThrow(InstrumentationError);
+    expect(() => validateMixpanelPayloadLimits(properties)).toThrow(
+      `Mixpanel properties at prop2 exceed the limit of ${MAX_PROPERTY_KEYS_COUNT} keys`,
+    );
+  });
+
+  it('should throw error when array properties exceed the maximum element limit', () => {
+    // Create an array with MAX_ARRAY_ELEMENTS_COUNT + 1 elements
+    const array = [];
+    for (let i = 0; i < MAX_ARRAY_ELEMENTS_COUNT + 1; i++) {
+      array.push(`element${i}`);
+    }
+
+    const properties = {
+      prop1: 'value1',
+      prop2: array,
+    };
+
+    expect(() => validateMixpanelPayloadLimits(properties)).toThrow(InstrumentationError);
+    expect(() => validateMixpanelPayloadLimits(properties)).toThrow(
+      `Mixpanel array property 'prop2' exceeds the limit of ${MAX_ARRAY_ELEMENTS_COUNT} elements`,
+    );
+  });
+
+  it('should throw error when nesting depth exceeds the maximum', () => {
+    // Create a deeply nested object that exceeds MAX_NESTING_DEPTH
+    let deepObject = { value: 'test' };
+    for (let i = 0; i < MAX_NESTING_DEPTH; i++) {
+      deepObject = { nested: deepObject };
+    }
+
+    const properties = {
+      prop1: deepObject,
+    };
+
+    expect(() => validateMixpanelPayloadLimits(properties)).toThrow(InstrumentationError);
+    expect(() => validateMixpanelPayloadLimits(properties)).toThrow(
+      `exceed the maximum nesting depth of ${MAX_NESTING_DEPTH}`,
+    );
+  });
+
+  it('should handle non-object input gracefully', () => {
+    expect(() => validateMixpanelPayloadLimits(null)).not.toThrow();
+    expect(() => validateMixpanelPayloadLimits(undefined)).not.toThrow();
+    expect(() => validateMixpanelPayloadLimits('string')).not.toThrow();
+    expect(() => validateMixpanelPayloadLimits(123)).not.toThrow();
+    expect(() => validateMixpanelPayloadLimits(true)).not.toThrow();
+    expect(() => validateMixpanelPayloadLimits([])).not.toThrow();
+  });
+
+  it('should throw error when an object within an array exceeds the property limit', () => {
+    // Create an object with MAX_PROPERTY_KEYS_COUNT + 1 properties
+    const objectWithTooManyProps = {};
+    for (let i = 0; i < MAX_PROPERTY_KEYS_COUNT + 1; i++) {
+      objectWithTooManyProps[`prop${i}`] = `value${i}`;
+    }
+
+    const properties = {
+      prop1: 'value1',
+      prop2: [1, 2, objectWithTooManyProps],
+    };
+
+    expect(() => validateMixpanelPayloadLimits(properties)).toThrow(InstrumentationError);
+    expect(() => validateMixpanelPayloadLimits(properties)).toThrow(
+      `Mixpanel properties at prop2[2] exceed the limit of ${MAX_PROPERTY_KEYS_COUNT} keys`,
+    );
+  });
+
+  it('should handle complex objects with multiple levels of nesting correctly', () => {
+    // Create a valid complex object with multiple levels of nesting
+    const complexObject = {
+      level1: {
+        level2: {
+          level3: {
+            // This is at depth 3, which is the maximum allowed
+            property: 'value',
+            array: [1, 2, 3],
+          },
+        },
+      },
+    };
+
+    expect(() => validateMixpanelPayloadLimits(complexObject)).not.toThrow();
+
+    // Now add one more level to exceed the maximum depth
+    const tooDeepObject = {
+      level1: {
+        level2: {
+          level3: {
+            level4: {
+              // This exceeds MAX_NESTING_DEPTH
+              property: 'value',
+            },
+          },
+        },
+      },
+    };
+
+    expect(() => validateMixpanelPayloadLimits(tooDeepObject)).toThrow(InstrumentationError);
+    expect(() => validateMixpanelPayloadLimits(tooDeepObject)).toThrow(
+      `exceed the maximum nesting depth of ${MAX_NESTING_DEPTH}`,
+    );
   });
 });

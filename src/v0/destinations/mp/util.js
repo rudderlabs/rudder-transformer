@@ -30,6 +30,10 @@ const {
   CREATE_DELETION_TASK_ENDPOINT_EU,
   CREATE_DELETION_TASK_ENDPOINT_IN,
   CREATE_DELETION_TASK_ENDPOINT,
+  MAX_PROPERTY_KEYS_COUNT,
+  MAX_ARRAY_ELEMENTS_COUNT,
+  MAX_NESTING_DEPTH,
+  MAX_PAYLOAD_SIZE_BYTES,
 } = require('./config');
 const { CommonUtils } = require('../../../util/common');
 const stats = require('../../../util/stats');
@@ -38,6 +42,75 @@ const mPIdentifyConfigJson = mappingConfig[ConfigCategory.IDENTIFY.name];
 const mPProfileAndroidConfigJson = mappingConfig[ConfigCategory.PROFILE_ANDROID.name];
 const mPProfileIosConfigJson = mappingConfig[ConfigCategory.PROFILE_IOS.name];
 const mPSetOnceConfigJson = mappingConfig[ConfigCategory.SET_ONCE.name];
+
+/**
+ * Helper function that performs recursive validation of objects
+ * @private
+ */
+function validateObjectRecursively(obj, path, depth) {
+  // Check nesting depth
+  if (depth > MAX_NESTING_DEPTH) {
+    const location = path ? ` at ${path}` : '';
+    throw new InstrumentationError(
+      `Mixpanel properties${location} exceed the maximum nesting depth of ${MAX_NESTING_DEPTH}`,
+    );
+  }
+
+  // Check number of keys
+  const keys = Object.keys(obj);
+  if (keys.length >= MAX_PROPERTY_KEYS_COUNT) {
+    const location = path ? ` at ${path}` : '';
+    throw new InstrumentationError(
+      `Mixpanel properties${location} exceed the limit of ${MAX_PROPERTY_KEYS_COUNT} keys (found ${keys.length})`,
+    );
+  }
+
+  // Check each property
+  keys.forEach((key) => {
+    const value = obj[key];
+    const newPath = path ? `${path}.${key}` : key;
+
+    if (Array.isArray(value)) {
+      if (value.length > MAX_ARRAY_ELEMENTS_COUNT) {
+        throw new InstrumentationError(
+          `Mixpanel array property '${newPath}' exceeds the limit of ${MAX_ARRAY_ELEMENTS_COUNT} elements (found ${value.length})`,
+        );
+      }
+      // Check objects within arrays
+      value.forEach((item, index) => {
+        if (isObject(item)) {
+          validateObjectRecursively(item, `${newPath}[${index}]`, depth + 1);
+        }
+      });
+    } else if (isObject(value)) {
+      validateObjectRecursively(value, newPath, depth + 1);
+    }
+  });
+}
+/**
+ * Validates that payload object adheres to Mixpanel's limits:
+ * - Must be smaller than 1MB of uncompressed JSON
+ * - Must have fewer than 255 properties
+ * - All nested object payload must have fewer than 255 keys and max nesting depth is 3
+ * - All array payload must have fewer than 255 elements
+ *
+ * @param {Object} payload - The payload object to validate
+ * @throws {InstrumentationError} If any of the limits are exceeded
+ */
+const validateMixpanelPayloadLimits = (payload) => {
+  if (!isDefinedAndNotNull(payload)) {
+    return;
+  }
+  const payloadSize = Buffer.byteLength(JSON.stringify(payload));
+  if (payloadSize > MAX_PAYLOAD_SIZE_BYTES) {
+    throw new InstrumentationError(
+      `Mixpanel payload exceeds the maximum size limit of 1MB (found ${Math.round(payloadSize / 1024)} KB)`,
+    );
+  }
+
+  // Start the recursive validation
+  validateObjectRecursively(payload, '', 0);
+};
 
 /**
  * This method populates the payload with device fields based on mp mapping
@@ -130,6 +203,9 @@ const createIdentifyResponse = (message, type, destination, responseBuilderSimpl
   const { useNewMapping, token } = destination.Config;
   // user payload created
   const properties = getTransformedJSON(message, mPIdentifyConfigJson, useNewMapping);
+
+  // Validate properties against Mixpanel's limits
+  validateMixpanelPayloadLimits(properties);
 
   const payload = {
     $set: properties,
@@ -425,4 +501,5 @@ module.exports = {
   getBaseEndpoint,
   getDeletionTaskBaseEndpoint,
   getCreateDeletionTaskEndpoint,
+  validateMixpanelPayloadLimits,
 };

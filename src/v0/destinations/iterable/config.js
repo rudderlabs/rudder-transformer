@@ -78,10 +78,12 @@ const constructEndpoint = (dataCenter, category) => {
 
 const BULK_ENDPOINTS = ['/api/users/bulkUpdate', '/api/events/trackBulk'];
 
-const IDENTIFY_MAX_BATCH_SIZE = 1000;
-const IDENTIFY_MAX_BODY_SIZE_IN_BYTES = 4000000;
+// Iterable has a single API limit of 4MB request size for all operations
+const MAX_BODY_SIZE_IN_BYTES = 4000000; // 4MB
 
-const TRACK_MAX_BATCH_SIZE = 8000;
+// Batch size limits
+const INITIAL_CHUNK_SIZE = 1000; // Initial chunk size for all operations
+const CATALOG_MAX_ITEMS_PER_REQUEST = 1000;
 
 const ITERABLE_RESPONSE_USER_ID_PATHS = [
   'invalidUserIds',
@@ -105,9 +107,9 @@ module.exports = {
   mappingConfig,
   ConfigCategory,
   constructEndpoint,
-  TRACK_MAX_BATCH_SIZE,
-  IDENTIFY_MAX_BATCH_SIZE,
-  IDENTIFY_MAX_BODY_SIZE_IN_BYTES,
+  MAX_BODY_SIZE_IN_BYTES,
+  INITIAL_CHUNK_SIZE,
+  CATALOG_MAX_ITEMS_PER_REQUEST,
   ITERABLE_RESPONSE_USER_ID_PATHS,
   ITERABLE_RESPONSE_EMAIL_PATHS,
   BULK_ENDPOINTS,

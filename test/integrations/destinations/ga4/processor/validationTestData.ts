@@ -920,7 +920,7 @@ export const validationTestData: ProcessorTestData[] = [
         status: 200,
         body: [
           {
-            error: 'ga4ClientId, anonymousId or messageId must be provided',
+            error: 'ga4ClientId or anonymousId must be provided',
             statTags: { ...expectedStatTags, errorType: 'configuration' },
             statusCode: 400,
             metadata: generateMetadata(1),

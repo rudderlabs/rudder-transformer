@@ -57,7 +57,6 @@ steps:
   - name: groupPayload
     condition: $.context.messageType == {{$.EventType.GROUP}}
     template: |
-      $.assert(.message.userId, "User ID is required for Userpilot group calls");
       $.assert(.message.groupId, "Group ID is required for Userpilot group calls");
 
       let traits = $.transformTraits(.message.traits || {});

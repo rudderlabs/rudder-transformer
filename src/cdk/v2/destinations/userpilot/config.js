@@ -1,4 +1,4 @@
-const DEFAULT_BASE_URL = 'https://analytex.userpilot.io/v1';
+const DEFAULT_BASE_URL = 'https://analytex.userpilot.io';
 
 const MAPPINGS = {
   createdAt: 'created_at',

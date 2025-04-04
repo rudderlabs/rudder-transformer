@@ -5,9 +5,9 @@ const getEndpoints = (config) => {
   const normalizedBaseUrl = baseUrl.endsWith('/') ? baseUrl.slice(0, -1) : baseUrl;
 
   return {
-    IDENTIFY: `${normalizedBaseUrl}/identify`,
-    TRACK: `${normalizedBaseUrl}/track`,
-    GROUP: `${normalizedBaseUrl}/companies/identify`,
+    IDENTIFY: `${normalizedBaseUrl}/v1/identify`,
+    TRACK: `${normalizedBaseUrl}/v1/track`,
+    GROUP: `${normalizedBaseUrl}/v1/companies/identify`,
   };
 };
 

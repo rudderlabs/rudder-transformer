@@ -19,7 +19,7 @@ export const data = [
               },
               Config: {
                 apiKey: 'your-userpilot-api-key',
-                apiEndpoint: 'https://analytex.userpilot.io/v1',
+                apiEndpoint: 'https://analytex.userpilot.io',
               },
               enabled: true,
               transformations: [],
@@ -165,7 +165,7 @@ export const data = [
               },
               Config: {
                 apiKey: 'your-userpilot-api-key',
-                apiEndpoint: 'https://analytex.userpilot.io/v1',
+                apiEndpoint: 'https://analytex.userpilot.io',
               },
               enabled: true,
               transformations: [],
@@ -308,7 +308,7 @@ export const data = [
               },
               Config: {
                 apiKey: 'your-userpilot-api-key',
-                apiEndpoint: 'https://analytex.userpilot.io/v1',
+                apiEndpoint: 'https://analytex.userpilot.io',
               },
               enabled: true,
               transformations: [],

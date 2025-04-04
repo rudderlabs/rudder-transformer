@@ -14,16 +14,16 @@ describe('FetchHandlers Service', () => {
     MiscService.getDestHandler = jest.fn().mockImplementation((dest, version) => {
       return {};
     });
-    MiscService.getSourceHandler = jest.fn().mockImplementation((source, version) => {
+    MiscService.getSourceHandler = jest.fn().mockImplementation((source) => {
       return {};
     });
     MiscService.getDeletionHandler = jest.fn().mockImplementation((source, version) => {
       return {};
     });
 
-    expect(FetchHandler['sourceHandlerMap'].get(dest)).toBeUndefined();
-    FetchHandler.getSourceHandler(dest, version);
-    expect(FetchHandler['sourceHandlerMap'].get(dest)).toBeDefined();
+    expect(FetchHandler['sourceHandlerMap'].get(source)).toBeUndefined();
+    FetchHandler.getSourceHandler(source);
+    expect(FetchHandler['sourceHandlerMap'].get(source)).toBeDefined();
 
     expect(FetchHandler['destHandlerMap'].get(dest)).toBeUndefined();
     FetchHandler.getDestHandler(dest, version);

@@ -63,7 +63,14 @@ const getConversionActionId = async ({ params, googleAds }) => {
         getAuthErrCategory({ response: resp.responseBody, status: resp.statusCode }),
       );
     }
-    return resp;
+    throw new NetworkError(
+      `"${JSON.stringify(resp)} during Google_adwords_enhanced_conversions response transformation"`,
+      500,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(500),
+      },
+      resp,
+    );
   });
 };
 
@@ -74,7 +81,7 @@ const getConversionActionId = async ({ params, googleAds }) => {
  * @param {*} request
  * @returns
  */
-const ProxyRequest = async (request) => {
+const gaecProxyRequest = async (request) => {
   const { body, params } = request;
 
   const googleAds = new GoogleAdsSDK.GoogleAds({
@@ -100,7 +107,7 @@ const gaecProcessAxiosResponse = (sdkResponse) => ({
   status: sdkResponse.statusCode,
   ...(isDefinedAndNotNullAndNotEmpty(sdkResponse.headers) ? { headers: sdkResponse.headers } : {}),
 });
-const responseHandler = (responseParams) => {
+const gaecResponseHandler = (responseParams) => {
   const { destinationResponse } = responseParams;
   const message = 'Request Processed Successfully';
   const { status } = destinationResponse;
@@ -143,8 +150,8 @@ const responseHandler = (responseParams) => {
 // eslint-disable-next-line func-names, @typescript-eslint/naming-convention
 class networkHandler {
   constructor() {
-    this.proxy = ProxyRequest;
-    this.responseHandler = responseHandler;
+    this.proxy = gaecProxyRequest;
+    this.responseHandler = gaecResponseHandler;
     this.processAxiosResponse = gaecProcessAxiosResponse;
     this.prepareProxy = prepareProxyRequest;
   }

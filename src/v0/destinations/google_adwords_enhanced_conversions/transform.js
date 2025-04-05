@@ -34,7 +34,7 @@ const updateMappingJson = (mapping) => {
 };
 
 const responseBuilder = async (metadata, message, { Config }, payload) => {
-  const response = defaultRequestConfig();
+  const deliveryRequest = defaultRequestConfig();
   const { event } = message;
   const { subAccount } = Config;
   let { customerId, loginCustomerId } = Config;
@@ -47,15 +47,15 @@ const responseBuilder = async (metadata, message, { Config }, payload) => {
   }
   const filteredCustomerId = removeHyphens(customerId);
 
-  response.body.JSON = payload;
+  deliveryRequest.body.JSON = payload;
   const accessToken = getAccessToken(metadata, 'access_token');
-  response.headers = {
+  deliveryRequest.headers = {
     Authorization: `Bearer ${accessToken}`,
     'Content-Type': JSON_MIME_TYPE,
     'developer-token': getValueFromMessage(metadata, 'secret.developer_token'),
   };
   const filteredLoginCustomerId = removeHyphens(loginCustomerId);
-  response.params = {
+  deliveryRequest.params = {
     event,
     customerId: filteredCustomerId,
     accessToken,
@@ -72,10 +72,10 @@ const responseBuilder = async (metadata, message, { Config }, payload) => {
     if (loginCustomerId && !isString(loginCustomerId)) {
       throw new InstrumentationError('loginCustomerId should be a string or number');
     }
-    response.headers['login-customer-id'] = filteredLoginCustomerId;
+    deliveryRequest.headers['login-customer-id'] = filteredLoginCustomerId;
   }
 
-  return response;
+  return deliveryRequest;
 };
 
 const processTrackEvent = async (metadata, message, destination) => {

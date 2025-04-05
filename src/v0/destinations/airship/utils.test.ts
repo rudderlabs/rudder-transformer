@@ -1,10 +1,10 @@
 import { RudderMessage } from '../../../types';
-import { convertToUuid, flattenJson, getFieldValueFromMessage } from '../../util';
-import { getAirshipTimestamp, isValidTimestamp, prepareAttributePayload } from './utils';
+import { flattenJson, getFieldValueFromMessage } from '../../util';
+import { getAirshipTimestamp, convertToAirshipTimestamp, prepareAttributePayload } from './utils';
 
 type timestampTc = {
   description: string;
-  input: string;
+  input: string | number;
   output?: string;
   error?: string;
 };
@@ -110,6 +110,7 @@ describe('Airship utils - prepareAttributePayload', () => {
     sentAt: '2025-01-07T10:57:47.707Z',
     userId: '1c5577e3-8d2d-4ecd-9361-88c2bfb254c5',
   };
+  const timestampAttributes = [{ timestampAttribute: 'af_install_time' }];
   it('should return the correct attribute payload when jsonAttributes is not present in integrations object ', () => {
     const message = {
       ...commonEventProps,
@@ -159,7 +160,7 @@ describe('Airship utils - prepareAttributePayload', () => {
     const traits = getFieldValueFromMessage(message, 'traits');
     const flattenedTraits = flattenJson(traits);
     // @ts-expect-error error with type
-    const attributePayload = prepareAttributePayload(flattenedTraits, message);
+    const attributePayload = prepareAttributePayload(flattenedTraits, message, timestampAttributes);
     expect(attributePayload).toEqual(expectedAttributePayload);
   });
 
@@ -191,7 +192,7 @@ describe('Airship utils - prepareAttributePayload', () => {
     const traits = getFieldValueFromMessage(message, 'traits');
     const flattenedTraits = flattenJson(traits);
     // @ts-expect-error error with type
-    expect(() => prepareAttributePayload(flattenedTraits, message)).toThrow(
+    expect(() => prepareAttributePayload(flattenedTraits, message, timestampAttributes)).toThrow(
       'JsonAttribute as array is not supported for widgets_installed#123 in Airship',
     );
   });
@@ -247,7 +248,7 @@ describe('Airship utils - prepareAttributePayload', () => {
     const traits = getFieldValueFromMessage(message, 'traits');
     const flattenedTraits = flattenJson(traits);
     // @ts-expect-error error with type
-    const attributePayload = prepareAttributePayload(flattenedTraits, message);
+    const attributePayload = prepareAttributePayload(flattenedTraits, message, timestampAttributes);
     expect(attributePayload).toEqual(expectedAttributePayload);
   });
 
@@ -318,7 +319,7 @@ describe('Airship utils - prepareAttributePayload', () => {
     const traits = getFieldValueFromMessage(message, 'traits');
     const flattenedTraits = flattenJson(traits);
     // @ts-expect-error error with type
-    const attributePayload = prepareAttributePayload(flattenedTraits, message);
+    const attributePayload = prepareAttributePayload(flattenedTraits, message, timestampAttributes);
     expect(attributePayload).toEqual(expectedAttributePayload);
   });
 
@@ -390,44 +391,85 @@ describe('Airship utils - prepareAttributePayload', () => {
     const traits = getFieldValueFromMessage(message, 'traits');
     const flattenedTraits = flattenJson(traits);
     // @ts-expect-error error with type
-    const attributePayload = prepareAttributePayload(flattenedTraits, message);
+    const attributePayload = prepareAttributePayload(flattenedTraits, message, timestampAttributes);
     expect(attributePayload).toEqual(expectedAttributePayload);
   });
 });
 
-describe('Airship utils - isValidTimestamp', () => {
-  it('should return true when timestamp is a valid Unix timestamp', () => {
-    const timestamp = 1736246350;
-    expect(isValidTimestamp(timestamp)).toBe(true);
-  });
+describe('Airship utils - convertToAirshipTimestamp', () => {
+  const timestampCases: timestampTc[] = [
+    {
+      description: 'should return the same timestamp',
+      input: '2025-01-23T12:00:00Z',
+      output: '2025-01-23T12:00:00Z',
+    },
+    {
+      description: 'should remove milliseconds',
+      input: '2025-01-23T12:00:00.123Z',
+      output: '2025-01-23T12:00:00Z',
+    },
+    {
+      description: 'should remove milliseconds - 2',
+      input: '2025-01-23T12:00:00.123456Z',
+      output: '2025-01-23T12:00:00Z',
+    },
+    {
+      description: 'should return with correct format when T is present but Z is not present',
+      input: '2025-01-23T12:00:00',
+      output: '2025-01-23T12:00:00Z',
+    },
+    {
+      description: 'should return with correct format when T & Z is not present',
+      input: '2025-01-23 12:00:00',
+      output: '2025-01-23T12:00:00Z',
+    },
+    {
+      description: 'should throw error when timestamp is not supported',
+      input: 'abcd',
+      error: 'timestamp is not supported: abcd',
+    },
+    {
+      description:
+        'should return with correct format when timestamp contains microseconds without Z',
+      input: '2025-01-23T12:00:00.123456',
+      output: '2025-01-23T12:00:00Z',
+    },
+    {
+      description: 'should return the correct timestamp when epoch second is passed',
+      input: 1742887180,
+      output: '2025-03-25T07:19:40Z',
+    },
+    {
+      description: 'should return the correct timestamp when epoch milisecond is passed',
+      input: '1742887326657',
+      output: '2025-03-25T07:22:06Z',
+    },
+    {
+      description: 'should return the correct timestamp when epoch microsecond is passed',
+      input: '1742974069043000',
+      output: '2025-03-26T07:27:49Z',
+    },
+    {
+      description: 'should return formatted date time when date time string is passed',
+      input: '2025-03-27 16:00:48 +0100',
+      output: '2025-03-27T16:00:48Z',
+    },
+    {
+      description: 'should throw an error when incorrect epoch second is passed',
+      input: '17428871802',
+      error: 'timestamp is not supported: 17428871802',
+    },
+  ];
 
-  it('should return true when timestamp is a valid Unix timestamp with milliseconds', () => {
-    const timestamp = 1736246350 * 1000;
-    expect(isValidTimestamp(timestamp)).toBe(true);
-  });
-
-  it('should return true when timestamp is a valid date string', () => {
-    const timestamp = '2025-01-23T12:00:00Z';
-    expect(isValidTimestamp(timestamp)).toBe(true);
-  });
-
-  it('should return false when timestamp is not a valid Unix timestamp or date string(invalid_timestamp)', () => {
-    const timestamp = 'invalid_timestamp';
-    expect(isValidTimestamp(timestamp)).toBe(false);
-  });
-
-  it('should return false when timestamp is not a valid Unix timestamp or date string(uuid)', () => {
-    const timestamp = convertToUuid('invalid_timestamp');
-    expect(isValidTimestamp(timestamp)).toBe(false);
-  });
-
-  it('should return false when timestamp is not a valid Unix timestamp or date string(91504)', () => {
-    const timestamp = 91504;
-    expect(isValidTimestamp(timestamp)).toBe(false);
-  });
-
-  it('should return false when timestamp is not a valid Unix timestamp or date string("91504")', () => {
-    const timestamp = '91504';
-    expect(isValidTimestamp(timestamp)).toBe(false);
-  });
+  test.each(timestampCases)(
+    'convertToAirshipTimestamp - $description',
+    ({ input, output, error }) => {
+      if (error) {
+        expect(() => convertToAirshipTimestamp(input)).toThrow(error);
+      } else {
+        const timestamp = convertToAirshipTimestamp(input);
+        expect(timestamp).toBe(output);
+      }
+    },
+  );
 });

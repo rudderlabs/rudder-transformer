@@ -1,4 +1,12 @@
-import { authHeader1, secret1, authHeader2, secret2, secret3, secret4 } from '../maskedSecrets';
+import {
+  authHeader1,
+  secret1,
+  authHeader2,
+  secret2,
+  secret4,
+  secret5,
+  authHeader5,
+} from '../maskedSecrets';
 import { Destination } from '../../../../../src/types';
 import { generateMetadata, generateSimplifiedIdentifyPayload } from '../../../testUtils';
 
@@ -65,6 +73,7 @@ export const data = [
                   email: 'testhubspot2@email.com',
                   firstname: 'Test Hubspot',
                   anonymousId: '12345',
+                  hs_object_id: 64657,
                 },
                 library: {
                   name: 'RudderLabs JavaScript SDK',
@@ -832,7 +841,7 @@ export const data = [
               jobId: 2,
             },
             error:
-              '{"message":"Failed to get hubspot properties: {\\"status\\":\\"error\\",\\"message\\":\\"The API key provided is invalid. View or manage your API key here: https://app.hubspot.com/l/api-key/\\",\\"correlationId\\":\\"4d39ff11-e121-4514-bcd8-132a9dd1ff50\\",\\"category\\":\\"INVALID_AUTHENTICATION\\",\\"links\\":{\\"api key\\":\\"https://app.hubspot.com/l/api-key/\\"}}","destinationResponse":{"response":{"status":"error","message":"The API key provided is invalid. View or manage your API key here: https://app.hubspot.com/l/api-key/","correlationId":"4d39ff11-e121-4514-bcd8-132a9dd1ff50","category":"INVALID_AUTHENTICATION","links":{"api key":"https://app.hubspot.com/l/api-key/"}},"status":401}}',
+              '{"message":"Failed to get hubspot properties: {\\"status\\":\\"error\\",\\"message\\":\\"The API key provided is invalid. View or manage your API key here: https://app.hubspot.com/l/api-key/\\",\\"correlationId\\":\\"correlation-id\\",\\"category\\":\\"INVALID_AUTHENTICATION\\",\\"links\\":{\\"api key\\":\\"https://app.hubspot.com/l/api-key/\\"}}","destinationResponse":{"response":{"status":"error","message":"The API key provided is invalid. View or manage your API key here: https://app.hubspot.com/l/api-key/","correlationId":"correlation-id","category":"INVALID_AUTHENTICATION","links":{"api key":"https://app.hubspot.com/l/api-key/"}},"status":401}}',
             statTags: {
               destType: 'HS',
               errorCategory: 'network',
@@ -944,7 +953,7 @@ export const data = [
               jobId: 2,
             },
             error:
-              '{"message":"Failed to get hubspot properties: {\\"status\\":\\"error\\",\\"message\\":\\"Request Rate Limit reached\\",\\"correlationId\\":\\"4d39ff11-e121-4514-bcd8-132a9dd1ff50\\",\\"category\\":\\"RATE-LIMIT_REACHED\\",\\"links\\":{\\"api key\\":\\"https://app.hubspot.com/l/api-key/\\"}}","destinationResponse":{"response":{"status":"error","message":"Request Rate Limit reached","correlationId":"4d39ff11-e121-4514-bcd8-132a9dd1ff50","category":"RATE-LIMIT_REACHED","links":{"api key":"https://app.hubspot.com/l/api-key/"}},"status":429}}',
+              '{"message":"Failed to get hubspot properties: {\\"status\\":\\"error\\",\\"message\\":\\"Request Rate Limit reached\\",\\"correlationId\\":\\"correlation-id\\",\\"category\\":\\"RATE-LIMIT_REACHED\\",\\"links\\":{\\"api key\\":\\"https://app.hubspot.com/l/api-key/\\"}}","destinationResponse":{"response":{"status":"error","message":"Request Rate Limit reached","correlationId":"correlation-id","category":"RATE-LIMIT_REACHED","links":{"api key":"https://app.hubspot.com/l/api-key/"}},"status":429}}',
             statTags: {
               destType: 'HS',
               errorCategory: 'network',
@@ -2899,11 +2908,12 @@ export const data = [
         body: [
           {
             description:
-              '[HS] (New API v3) - (newPrivateAppApi) email is present in traits as a default lookup field',
+              '[HS] (New API v3) - (newPrivateAppApi) email is present in traits as a default lookup field and remove system fields',
             message: {
               type: 'identify',
               traits: {
                 email: 'noname@email.com',
+                hs_object_id: 12345,
               },
               context: {
                 mappedToDestination: false,
@@ -2993,6 +3003,90 @@ export const data = [
               },
               files: {},
               operation: 'createContacts',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'hs',
+    description:
+      '[HS] (New API v3) - (newPrivateAppApi) firstname is present in traits and lookupField is hs_object_id',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            description:
+              '[HS] (New API v3) - (newPrivateAppApi) firstname is present in traits and lookupField is hs_object_id',
+            message: {
+              type: 'identify',
+              traits: {
+                firstname: 'john',
+                hs_object_id: 345678,
+              },
+              context: {
+                mappedToDestination: false,
+              },
+            },
+            destination: {
+              Config: {
+                authorizationType: 'newPrivateAppApi',
+                hubID: '',
+                apiKey: '',
+                accessToken: secret5,
+                apiVersion: 'newApi',
+                lookupField: 'hs_object_id',
+                eventFilteringOption: 'disable',
+                blacklistedEvents: [
+                  {
+                    eventName: '',
+                  },
+                ],
+                whitelistedEvents: [
+                  {
+                    eventName: '',
+                  },
+                ],
+              },
+              Enabled: true,
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              userId: '',
+              method: 'PATCH',
+              endpoint: 'https://api.hubapi.com/crm/v3/objects/contacts/103689',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: authHeader5,
+              },
+              params: {},
+              body: {
+                JSON: {
+                  properties: {
+                    firstname: 'john',
+                  },
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              operation: 'updateContacts',
             },
             statusCode: 200,
           },
@@ -4811,7 +4905,7 @@ export const data = [
         body: [
           {
             error:
-              '{"message":"rETL - Error during searching object record. \\"Request Rate Limit reached\\"","destinationResponse":{"response":{"status":"error","message":"Request Rate Limit reached","correlationId":"4d39ff11-e121-4514-bcd8-132a9dd1ff50","category":"RATE-LIMIT_REACHED","links":{"api key":"https://app.hubspot.com/l/api-key/"}},"status":429}}',
+              '{"message":"rETL - Error during searching object record. \\"Request Rate Limit reached\\"","destinationResponse":{"response":{"status":"error","message":"Request Rate Limit reached","correlationId":"correlation-id","category":"RATE-LIMIT_REACHED","links":{"api key":"https://app.hubspot.com/l/api-key/"}},"status":429}}',
             metadata: {
               jobId: 2,
             },
@@ -4873,14 +4967,14 @@ export const data = [
                 traits: {
                   email: 'testhubspot2@email.com',
                   firstname: 'Test Hubspot',
-                  anonymousId: 'ea5cfab2-3961-4d8a-8187-3d1858c99090',
+                  anonymousId: 'anonymous-id',
                   days_to_close: '29 days to close',
                 },
               },
               type: 'identify',
               messageId: '50360b9c-ea8d-409c-b672-c9230f91cce5',
               originalTimestamp: '2023-04-11T09:35:31.288Z',
-              anonymousId: 'ea5cfab2-3961-4d8a-8187-3d1858c99090',
+              anonymousId: 'anonymous-id',
               userId: 'user@1',
               integrations: {
                 All: true,

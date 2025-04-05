@@ -1,8 +1,38 @@
 import { authHeader1, secret1 } from '../maskedSecrets';
+
+const commonDestinationConfig = {
+  Config: {
+    apiKey: secret1,
+    appKey: 'O2YARRI15I',
+    dataCenter: false,
+  },
+};
+
 const arrayHandlingCases = [
   {
     description:
       '[identify] should send array traits as is to airship when present in integrationsObject(even when similar key is present in traits)',
+    destination: {
+      Config: {
+        apiKey: secret1,
+        appKey: 'O2YARRI15I',
+        dataCenter: false,
+        timestampAttributes: [
+          {
+            timestampAttribute: 'account_creation ',
+          },
+          {
+            timestampAttribute: ' date.purchased',
+          },
+          {
+            timestampAttribute: 'current_trip_date',
+          },
+          {
+            timestampAttribute: 'end_trip_date',
+          },
+        ],
+      },
+    },
     inputEvent: {
       channel: 'web',
       context: {
@@ -14,9 +44,14 @@ const arrayHandlingCases = [
         },
         traits: {
           email: 'testone@gmail.com',
-          firstName: 'test',
+          firstName: 'test 2',
           lastName: 'one',
+          af_campaign: '1742887180',
+          'date.purchased': '2025-03-25 07:19:40',
           colors: ['red', 'blue'],
+          account_creation: 1742887180,
+          current_trip_date: '',
+          end_trip_date: null,
         },
         library: { name: 'RudderLabs JavaScript SDK', version: '1.0.0' },
         userAgent:
@@ -71,13 +106,43 @@ const arrayHandlingCases = [
                   {
                     action: 'set',
                     key: 'first_name',
-                    value: 'test',
+                    value: 'test 2',
                     timestamp: '2019-10-14T09:03:17Z',
                   },
                   {
                     action: 'set',
                     key: 'last_name',
                     value: 'one',
+                    timestamp: '2019-10-14T09:03:17Z',
+                  },
+                  {
+                    action: 'set',
+                    key: 'af_campaign',
+                    value: '1742887180',
+                    timestamp: '2019-10-14T09:03:17Z',
+                  },
+                  {
+                    action: 'set',
+                    key: 'date_purchased',
+                    value: '2025-03-25T07:19:40Z',
+                    timestamp: '2019-10-14T09:03:17Z',
+                  },
+                  {
+                    action: 'set',
+                    key: 'account_creation',
+                    value: '2025-03-25T07:19:40Z',
+                    timestamp: '2019-10-14T09:03:17Z',
+                  },
+                  {
+                    action: 'set',
+                    key: 'current_trip_date',
+                    value: '',
+                    timestamp: '2019-10-14T09:03:17Z',
+                  },
+                  {
+                    action: 'set',
+                    key: 'end_trip_date',
+                    value: null,
                     timestamp: '2019-10-14T09:03:17Z',
                   },
                   {
@@ -105,13 +170,16 @@ const arrayHandlingCases = [
   // not expected in reality & leads to error in airship, but just to test the delimiter handling
   {
     description: '[identify] should handle keys with delimiters and JSON attributes correctly',
+    destination: commonDestinationConfig,
     inputEvent: {
       channel: 'web',
       context: {
         traits: {
           preferences: ['value1'], // should be processed as preferences_0
+          af_campaign: '2025-01-23 12:00:00',
           'settings.theme': 'dark',
           'data[test]_value': 'test',
+          account_value: 1742887180,
           simple: 'value', // no delimiters
           'company[location]': 'SF', // should be processed since not in JSONAttributes
         },
@@ -159,6 +227,12 @@ const arrayHandlingCases = [
                   },
                   {
                     action: 'set',
+                    key: 'af_campaign',
+                    value: '2025-01-23 12:00:00',
+                    timestamp: '2019-10-14T09:03:17Z',
+                  },
+                  {
+                    action: 'set',
                     key: 'settings_theme',
                     value: 'dark',
                     timestamp: '2019-10-14T09:03:17Z',
@@ -167,6 +241,12 @@ const arrayHandlingCases = [
                     action: 'set',
                     key: 'data[test]_value',
                     value: 'test',
+                    timestamp: '2019-10-14T09:03:17Z',
+                  },
+                  {
+                    action: 'set',
+                    key: 'account_value',
+                    value: 1742887180,
                     timestamp: '2019-10-14T09:03:17Z',
                   },
                   {
@@ -200,7 +280,7 @@ const arrayHandlingCases = [
   },
 ];
 
-const getIdentifyTestCase = ({ description, inputEvent, expectedOutputResponse }) => {
+const getIdentifyTestCase = ({ description, inputEvent, expectedOutputResponse, destination }) => {
   return {
     name: 'airship',
     description: description,
@@ -212,13 +292,7 @@ const getIdentifyTestCase = ({ description, inputEvent, expectedOutputResponse }
         body: [
           {
             message: inputEvent,
-            destination: {
-              Config: {
-                apiKey: secret1,
-                appKey: 'O2YARRI15I',
-                dataCenter: false,
-              },
-            },
+            destination: destination,
           },
         ],
         method: 'POST',

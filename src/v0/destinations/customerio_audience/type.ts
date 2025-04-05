@@ -56,7 +56,7 @@ export type CustomerIODestinationConfig = z.infer<typeof CustomerIODestinationCo
 
 export const CustomerIOConnectionConfigSchema = z
   .object({
-    audienceId: z.string().nonempty(),
+    audienceId: z.union([z.string().nonempty(), z.number()]),
     identifierMappings: z.array(z.object({ from: z.string(), to: z.string() })).nonempty(),
   })
   .passthrough();

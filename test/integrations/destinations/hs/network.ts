@@ -1,4 +1,4 @@
-import { authHeader1, authHeader2, authHeader3, authHeader4 } from './maskedSecrets';
+import { authHeader1, authHeader2, authHeader3, authHeader4, secret5 } from './maskedSecrets';
 export const networkCallsData = [
   {
     httpReq: {
@@ -594,7 +594,7 @@ export const networkCallsData = [
       data: {
         status: 'error',
         message: 'Request Rate Limit reached',
-        correlationId: '4d39ff11-e121-4514-bcd8-132a9dd1ff50',
+        correlationId: 'correlation-id',
         category: 'RATE-LIMIT_REACHED',
         links: {
           'api key': 'https://app.hubspot.com/l/api-key/',
@@ -656,7 +656,7 @@ export const networkCallsData = [
       data: {
         status: 'error',
         message: 'Request Rate Limit reached',
-        correlationId: '4d39ff11-e121-4514-bcd8-132a9dd1ff50',
+        correlationId: 'correlation-id',
         category: 'RATE-LIMIT_REACHED',
         links: {
           'api key': 'https://app.hubspot.com/l/api-key/',
@@ -675,7 +675,7 @@ export const networkCallsData = [
         status: 'error',
         message:
           'The API key provided is invalid. View or manage your API key here: https://app.hubspot.com/l/api-key/',
-        correlationId: '4d39ff11-e121-4514-bcd8-132a9dd1ff50',
+        correlationId: 'correlation-id',
         category: 'INVALID_AUTHENTICATION',
         links: {
           'api key': 'https://app.hubspot.com/l/api-key/',
@@ -1067,6 +1067,46 @@ export const networkCallsData = [
         ],
         status: 'PENDING',
       },
+    },
+  },
+  {
+    httpReq: {
+      url: 'https://api.hubapi.com/crm/v3/objects/contacts/search',
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${secret5}`,
+      },
+      data: {
+        filterGroups: [
+          { filters: [{ propertyName: 'hs_object_id', value: 345678, operator: 'EQ' }] },
+        ],
+        sorts: ['ascending'],
+        properties: ['hs_object_id'],
+        limit: 2,
+        after: 0,
+      },
+    },
+    httpRes: {
+      data: {
+        total: 1,
+        results: [
+          {
+            id: '103689',
+            properties: {
+              createdate: '2022-07-15T15:25:08.975Z',
+              email: 'primary@email.com',
+              hs_object_id: 345678,
+              hs_additional_emails: 'abc@extraemail.com;secondary@email.com',
+              lastmodifieddate: '2022-07-15T15:26:49.590Z',
+            },
+            createdAt: '2022-07-15T15:25:08.975Z',
+            updatedAt: '2022-07-15T15:26:49.590Z',
+            archived: false,
+          },
+        ],
+      },
+      status: 200,
     },
   },
 ];

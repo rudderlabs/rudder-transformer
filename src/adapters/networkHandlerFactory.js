@@ -26,10 +26,9 @@ SUPPORTED_VERSIONS.forEach((version) => {
       //     dest: handler
       //   },
       // generic: GenericNetworkHandler,
-      // }
-      handlers[version][dest] = require(
-        `../${version}/destinations/${dest}/networkHandler`,
-      ).networkHandler;
+      // }'
+      const networkHandler = require(`../${version}/destinations/${dest}/networkHandler`);
+      handlers[version][dest] = networkHandler.networkHandler || networkHandler.NetworkHandler;
     } catch {
       // Do nothing as exception indicates
       // network handler is not defined for that destination

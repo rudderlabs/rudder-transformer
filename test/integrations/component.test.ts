@@ -22,9 +22,6 @@ import { Server } from 'http';
 import { appendFileSync } from 'fs';
 import { assertRouterOutput, responses } from '../testHelper';
 import { initaliseReport } from '../test_reporter/reporter';
-import _ from 'lodash';
-import defaultFeaturesConfig from '../../src/features';
-import { ControllerUtility } from '../../src/controllers/util';
 import { FetchHandler } from '../../src/helpers/fetchHandlers';
 import { enhancedTestUtils } from '../test_reporter/allureReporter';
 
@@ -185,12 +182,7 @@ const destinationTestHandler = async (tcData: TestCaseData) => {
 };
 
 const sourceTestHandler = async (tcData) => {
-  const route = `/${join(
-    tcData.version || DEFAULT_VERSION,
-    'sources',
-    tcData.name,
-    tcData.input.pathSuffix,
-  )}`;
+  const route = `/${join(tcData.version || 'v2', 'sources', tcData.name, tcData.input.pathSuffix || '')}`;
   await testRoute(route, tcData);
 };
 
@@ -216,20 +208,6 @@ describe('Component Test Suite', () => {
       }
 
       const extendedTestData: ExtendedTestCaseData[] = testData.flatMap((tcData) => {
-        if (tcData.module === tags.MODULES.SOURCE) {
-          return [
-            {
-              tcData,
-              sourceTransformV2Flag: false,
-              descriptionSuffix: ' (sourceTransformV2Flag: false)',
-            },
-            {
-              tcData,
-              sourceTransformV2Flag: true,
-              descriptionSuffix: ' (sourceTransformV2Flag: true)',
-            },
-          ];
-        }
         return [{ tcData, descriptionSuffix: '' }];
       });
       if (extendedTestData.length === 0) {
@@ -239,7 +217,7 @@ describe('Component Test Suite', () => {
         describe(`${testData[0].name} ${testData[0].module}`, () => {
           test.each(extendedTestData)(
             '$tcData.feature -> $tcData.description$descriptionSuffix (index: $#)',
-            async ({ tcData, sourceTransformV2Flag }) => {
+            async ({ tcData }) => {
               tcData?.mockFns?.(mockAdapter);
 
               switch (tcData.module) {
@@ -247,8 +225,8 @@ describe('Component Test Suite', () => {
                   await destinationTestHandler(tcData);
                   break;
                 case tags.MODULES.SOURCE:
+                  FetchHandler['sourceHandlerMap'] = new Map();
                   tcData?.mockFns?.(mockAdapter);
-                  testSetupSourceTransformV2(sourceTransformV2Flag);
                   await sourceTestHandler(tcData);
                   break;
                 default:
@@ -264,9 +242,3 @@ describe('Component Test Suite', () => {
     });
   }
 });
-
-const testSetupSourceTransformV2 = (flag) => {
-  defaultFeaturesConfig.upgradedToSourceTransformV2 = flag;
-  ControllerUtility['sourceVersionMap'] = new Map();
-  FetchHandler['sourceHandlerMap'] = new Map();
-};

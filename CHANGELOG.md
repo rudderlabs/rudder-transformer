@@ -2,6 +2,59 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.96.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.95.2...v1.96.0) (2025-04-01)
+
+
+### Features
+
+* add app_name and app_namespace mapping in track call ([#4203](https://github.com/rudderlabs/rudder-transformer/issues/4203)) ([d3c6937](https://github.com/rudderlabs/rudder-transformer/commit/d3c6937f7e214ab621f876c99c341a78495ae86a))
+
+
+### Bug Fixes
+
+* remove hard check for timestamp for airship ([#4214](https://github.com/rudderlabs/rudder-transformer/issues/4214)) ([c03829d](https://github.com/rudderlabs/rudder-transformer/commit/c03829dcc2bde95eedeb8bb738c1a072f1e7dcf4))
+* support update action type for linkedin audience destination ([#4213](https://github.com/rudderlabs/rudder-transformer/issues/4213)) ([f6c54e8](https://github.com/rudderlabs/rudder-transformer/commit/f6c54e86d06d8cb93f5ac9edf4e0e7f5e843cb8a))
+
+### [1.95.2](https://github.com/rudderlabs/rudder-transformer/compare/v1.95.1...v1.95.2) (2025-03-27)
+
+
+### Bug Fixes
+
+* add empty check for timestamp value for airship ([996344c](https://github.com/rudderlabs/rudder-transformer/commit/996344c39af710bc6e7eea5a6e4ea942ddb0a17c))
+
+### [1.95.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.95.0...v1.95.1) (2025-03-26)
+
+
+### Bug Fixes
+
+* correctly handle timestamp and date for airship ([#4201](https://github.com/rudderlabs/rudder-transformer/issues/4201)) ([cdcdd78](https://github.com/rudderlabs/rudder-transformer/commit/cdcdd78669a52c92d3afaacd40c1fb78b764b7f2))
+* remove hubspot system defined field from payload ([#4193](https://github.com/rudderlabs/rudder-transformer/issues/4193)) ([89c198e](https://github.com/rudderlabs/rudder-transformer/commit/89c198ec6cf661e09d37b2ccf0fcacec1227dad6))
+
+## [1.95.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.94.0...v1.95.0) (2025-03-24)
+
+
+### Features
+
+* added india residency support in mixpanel destination ([#4191](https://github.com/rudderlabs/rudder-transformer/issues/4191)) ([173c50f](https://github.com/rudderlabs/rudder-transformer/commit/173c50f5c0babbaa933c7cce98ac93f154900c2d))
+
+
+### Bug Fixes
+
+* mapping of android app version code in mixpanel destination ([#4188](https://github.com/rudderlabs/rudder-transformer/issues/4188)) ([1c30a07](https://github.com/rudderlabs/rudder-transformer/commit/1c30a072310bdcd8f685a2d39f52290e05b8f50a))
+* update pixel app specific transformations ([#4173](https://github.com/rudderlabs/rudder-transformer/issues/4173)) ([1bc6754](https://github.com/rudderlabs/rudder-transformer/commit/1bc6754cfadde76cb0b69ee3c29351b8b82784c2))
+
+## [1.94.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.93.0...v1.94.0) (2025-03-18)
+
+
+### Features
+
+* onboarding new destination accoil analytics ([#4156](https://github.com/rudderlabs/rudder-transformer/issues/4156)) ([8aad46f](https://github.com/rudderlabs/rudder-transformer/commit/8aad46fd8bde0d839a33751ef16e9e68c168c125))
+
+
+### Bug Fixes
+
+* add 2655 error handling to fb error handler at proxy ([#4152](https://github.com/rudderlabs/rudder-transformer/issues/4152)) ([5d3b226](https://github.com/rudderlabs/rudder-transformer/commit/5d3b2263754b94193c302c2f88cac2a055a22b53))
+
 ## [1.93.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.92.1...v1.93.0) (2025-03-10)
 
 

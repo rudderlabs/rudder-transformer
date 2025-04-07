@@ -4,7 +4,7 @@ const API_VERSION = 'v18';
 export const networkCallsData = [
   {
     httpReq: {
-      url: `https://googleads.googleapis.com/${API_VERSION}/customers/1234567890/googleAds:searchStream`,
+      url: `/1234567890/googleAds:searchStream`,
       data: {
         query: `SELECT conversion_action.id FROM conversion_action WHERE conversion_action.name = 'Product Added'`,
       },
@@ -32,7 +32,7 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      url: `https://googleads.googleapis.com/${API_VERSION}/customers/1234567899/googleAds:searchStream`,
+      url: `/1234567899/googleAds:searchStream`,
       data: {
         query: `SELECT conversion_action.id FROM conversion_action WHERE conversion_action.name = 'Product Added'`,
       },
@@ -52,6 +52,7 @@ export const networkCallsData = [
             {
               conversionAction: {
                 id: 123434342,
+                resourceName: 'customers/1234567899/conversionActions/123434342',
               },
             },
           ],
@@ -62,7 +63,7 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      url: `https://googleads.googleapis.com/${API_VERSION}/customers/1234567899:uploadConversionAdjustments`,
+      url: `/1234567899:uploadConversionAdjustments`,
       data: {
         conversionAdjustments: [
           {
@@ -278,7 +279,7 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      url: `https://googleads.googleapis.com/${API_VERSION}/customers/1234567888/googleAds:searchStream`,
+      url: `/1234567888/googleAds:searchStream`,
       data: {
         query: `SELECT conversion_action.id FROM conversion_action WHERE conversion_action.name = 'Product Added'`,
       },
@@ -298,6 +299,7 @@ export const networkCallsData = [
             {
               conversionAction: {
                 id: 123434345,
+                resourceName: 'customers/1234567888/conversionActions/123434345',
               },
             },
           ],
@@ -308,7 +310,7 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      url: `https://googleads.googleapis.com/${API_VERSION}/customers/1234567888:uploadConversionAdjustments`,
+      url: `/1234567888:uploadConversionAdjustments`,
       data: {
         conversionAdjustments: [
           {
@@ -385,7 +387,7 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      url: `https://googleads.googleapis.com/${API_VERSION}/customers/1234567910/googleAds:searchStream`,
+      url: `/1234567910/googleAds:searchStream`,
       data: {
         query: `SELECT conversion_action.id FROM conversion_action WHERE conversion_action.name = 'Product Added'`,
       },

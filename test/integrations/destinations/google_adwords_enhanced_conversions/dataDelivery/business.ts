@@ -6,8 +6,6 @@ import {
 } from '../../../testUtils';
 import { ProxyV1TestData } from '../../../testTypes';
 
-const API_VERSION = 'v18';
-
 const headers = {
   Authorization: authHeader1,
   'Content-Type': 'application/json',
@@ -19,6 +17,9 @@ const params = {
   event: 'Product Added',
   customerId: '1234567899',
   destination: 'google_adwords_enhanced_conversions',
+  developerToken: 'ijkl91011',
+  accessToken: 'google_adwords_enhanced_conversions1',
+  loginCustomerId: '0987654321',
 };
 
 const validRequestPaylod = {
@@ -85,7 +86,7 @@ export const testScenariosForV0API = [
       request: {
         body: generateProxyV0Payload({
           ...commonRequestParameters,
-          endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/1234567899:uploadConversionAdjustments`,
+          endpoint: '',
         }),
         method: 'POST',
       },
@@ -136,11 +137,14 @@ export const testScenariosForV0API = [
         body: generateProxyV0Payload({
           ...commonRequestParameters,
           params: {
+            developerToken: 'ijkl91011',
+            accessToken: 'google_adwords_enhanced_conversions1',
+            loginCustomerId: '0987654321',
             event: 'Product Added',
             customerId: '1234567888',
             destination: 'google_adwords_enhanced_conversions',
           },
-          endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/1234567888:uploadConversionAdjustments`,
+          endpoint: '',
         }),
         method: 'POST',
       },
@@ -222,7 +226,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
         body: generateProxyV1Payload(
           {
             ...commonRequestParameters,
-            endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/1234567899:uploadConversionAdjustments`,
+            endpoint: '',
           },
           [generateMetadata(1)],
         ),
@@ -279,11 +283,14 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
           {
             ...commonRequestParameters,
             params: {
+              developerToken: 'ijkl91011',
+              accessToken: 'google_adwords_enhanced_conversions1',
+              loginCustomerId: '0987654321',
               event: 'Product Added',
               customerId: '1234567888',
               destination: 'google_adwords_enhanced_conversions',
             },
-            endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/1234567888:uploadConversionAdjustments`,
+            endpoint: '',
           },
           [generateMetadata(1)],
         ),

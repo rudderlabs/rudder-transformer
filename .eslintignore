@@ -28,3 +28,4 @@ scripts/skipPrepareScript.js
 *.json
 Dockerfile*
 *.properties
+*.go

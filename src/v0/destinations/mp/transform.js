@@ -36,6 +36,7 @@ const {
   generatePageOrScreenCustomEventName,
   recordBatchSizeMetrics,
   getBaseEndpoint,
+  validateMixpanelPayloadLimits,
 } = require('./util');
 const { CommonUtils } = require('../../../util/common');
 
@@ -61,6 +62,7 @@ const setImportCredentials = (destConfig) => {
 };
 
 const responseBuilderSimple = (payload, message, eventType, destConfig) => {
+  validateMixpanelPayloadLimits(payload);
   const response = defaultRequestConfig();
   response.method = defaultPostRequestConfig.requestMethod;
   response.userId = message.userId || message.anonymousId;
@@ -354,13 +356,15 @@ const processAliasEvents = (message, type, destination) => {
     );
   }
 
+  const properties = {
+    distinct_id: aliasId,
+    alias: message.userId,
+    token: destination.Config.token,
+  };
+
   const payload = {
     event: '$create_alias',
-    properties: {
-      distinct_id: aliasId,
-      alias: message.userId,
-      token: destination.Config.token,
-    },
+    properties,
   };
   return responseBuilderSimple(payload, message, type, destination.Config);
 };
@@ -379,12 +383,14 @@ const processGroupEvents = (message, type, destination) => {
         groupKeyVal = [groupKeyVal];
       }
       if (groupKeyVal) {
+        const setPayload = {
+          [groupKey]: groupKeyVal,
+        };
+
         const payload = {
           $token: destination.Config.token,
           $distinct_id: message.userId || message.anonymousId,
-          $set: {
-            [groupKey]: groupKeyVal,
-          },
+          $set: setPayload,
           $ip: get(message, 'context.ip') || message.request_ip,
         };
         if (destination?.Config.identityMergeApi === 'simplified') {

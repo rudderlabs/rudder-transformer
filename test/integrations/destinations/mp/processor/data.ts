@@ -7946,7 +7946,6 @@ export const data = [
                       $append: {
                         appendProperty1: ['append-1'],
                         appendProperty2: 0,
-                        appendProperty3: null,
                       },
                       $token: secret2,
                       $distinct_id: 'Santiy',
@@ -7981,6 +7980,7 @@ export const data = [
                         $initial_referrer: 'https://docs.rudderstack.com',
                         $initial_referring_domain: 'docs.rudderstack.com',
                         random: 'superProp',
+                        appendProperty3: null,
                         $lastName: 'VarChange',
                         $browser: 'Chrome',
                         $browser_version: '79.0.3945.117',

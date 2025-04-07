@@ -288,11 +288,15 @@ function trimTraits(traits, contextTraits, userProfileProperties) {
     const traitsValue = get(traitsCopy, propertyPath);
     const contextTraitsValue = get(contextTraitsCopy, propertyPath);
 
-    if (traitsValue !== undefined) {
+    if (traitsValue !== null && traitsValue !== undefined && traitsValue !== '') {
       operationEligibleProperties[propName] = traitsValue;
       lodash.unset(traitsCopy, propertyPath);
     }
-    if (contextTraitsValue !== undefined) {
+    if (
+      contextTraitsValue !== null &&
+      contextTraitsValue !== undefined &&
+      contextTraitsValue !== ''
+    ) {
       if (!operationEligibleProperties.hasOwnProperty(propName)) {
         operationEligibleProperties[propName] = contextTraitsValue;
       }
@@ -413,16 +417,6 @@ const getDeletionTaskBaseEndpoint = (config) => {
 const getCreateDeletionTaskEndpoint = (config, projectToken) =>
   `${getDeletionTaskBaseEndpoint(config)}?token=${projectToken}`;
 
-const toArray = (value) => {
-  if (value === null || value === undefined) {
-    return [];
-  }
-  if (Array.isArray(value)) {
-    return value;
-  }
-  return [value];
-};
-
 module.exports = {
   createIdentifyResponse,
   isImportAuthCredentialsAvailable,
@@ -437,5 +431,4 @@ module.exports = {
   getBaseEndpoint,
   getDeletionTaskBaseEndpoint,
   getCreateDeletionTaskEndpoint,
-  toArray,
 };

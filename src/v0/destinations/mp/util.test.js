@@ -363,7 +363,7 @@ describe('Unit test cases for trimTraits', () => {
     {
       name: 'should return an object containing traits, contextTraits, and operationTransformedProperties when given valid inputs',
       input: {
-        traits: { name: 'John', age: 30 },
+        traits: { name: 'John', age: 30, email: 'john@example.com' },
         contextTraits: { email: 'john@example.com' },
         userProfileProperties: ['name', 'email'],
       },
@@ -782,47 +782,6 @@ describe('getCreateDeletionTaskEndpoint', () => {
   testCases.forEach(({ name, input, expected }) => {
     it(name, () => {
       expect(getCreateDeletionTaskEndpoint(input.config, input.token)).toEqual(expected);
-    });
-  });
-});
-
-describe('toArray', () => {
-  const testCases = [
-    {
-      name: 'should return an empty array for null value',
-      input: null,
-      expected: [],
-    },
-    {
-      name: 'should return an empty array for undefined value',
-      input: undefined,
-      expected: [],
-    },
-    {
-      name: 'should return the same array if input is already an array',
-      input: [1, 2, 3],
-      expected: [1, 2, 3],
-    },
-    {
-      name: 'should return an array with the value if input is a primitive type',
-      input: 42,
-      expected: [42],
-    },
-    {
-      name: 'should return an array with the string value if input is a string',
-      input: 'test',
-      expected: ['test'],
-    },
-    {
-      name: 'should return an array with boolean value if input is a boolean',
-      input: false,
-      expected: [false],
-    },
-  ];
-
-  testCases.forEach(({ name, input, expected }) => {
-    it(name, () => {
-      expect(toArray(input)).toEqual(expected);
     });
   });
 });

@@ -36,7 +36,6 @@ const {
   generatePageOrScreenCustomEventName,
   recordBatchSizeMetrics,
   getBaseEndpoint,
-  toArray,
 } = require('./util');
 const { CommonUtils } = require('../../../util/common');
 
@@ -216,9 +215,10 @@ const processTrack = (message, destination) => {
   return returnValue;
 };
 
-const createUserProfileOperation = (message, type, destination, properties, operation) => {
+const buildUserProfileResponse = (userProfileParams) => {
+  const { message, type, destination, properties, operation } = userProfileParams;
   const payload = {
-    [`${operation}`]: properties,
+    [operation]: properties,
     $token: destination.Config.token,
     $distinct_id: message.userId || message.anonymousId,
   };
@@ -230,13 +230,7 @@ const createUserProfileOperation = (message, type, destination, properties, oper
   return responseBuilderSimple(payload, message, type, destination.Config);
 };
 
-const createResponseForUserProfileOperation = (
-  message,
-  type,
-  destination,
-  propertiesConfig,
-  operation,
-) => {
+const handleUserProfileOperation = (message, type, destination, propertiesConfig, operation) => {
   if (!propertiesConfig || propertiesConfig.length === 0) {
     return null;
   }
@@ -253,19 +247,19 @@ const createResponseForUserProfileOperation = (
       ? Object.fromEntries(
           Object.entries(segregatedTraits.operationTransformedProperties).map(([key, value]) => [
             key,
-            toArray(value),
+            CommonUtils.toArray(value),
           ]),
         )
       : segregatedTraits.operationTransformedProperties;
 
   if (Object.keys(finalOperationProperties).length > 0) {
-    return createUserProfileOperation(
+    return buildUserProfileResponse({
       message,
       type,
       destination,
-      finalOperationProperties,
+      properties: finalOperationProperties,
       operation,
-    );
+    });
   }
   return null;
 };
@@ -275,7 +269,7 @@ const processIdentifyEvents = async (message, type, destination) => {
   const returnValue = [];
 
   // Set Once Properties
-  const setOnceResponse = createResponseForUserProfileOperation(
+  const setOnceResponse = handleUserProfileOperation(
     messageClone,
     type,
     destination,
@@ -285,7 +279,7 @@ const processIdentifyEvents = async (message, type, destination) => {
   if (setOnceResponse) returnValue.push(setOnceResponse);
 
   // Union Properties
-  const unionResponse = createResponseForUserProfileOperation(
+  const unionResponse = handleUserProfileOperation(
     messageClone,
     type,
     destination,
@@ -295,7 +289,7 @@ const processIdentifyEvents = async (message, type, destination) => {
   if (unionResponse) returnValue.push(unionResponse);
 
   // Append Properties
-  const appendResponse = createResponseForUserProfileOperation(
+  const appendResponse = handleUserProfileOperation(
     messageClone,
     type,
     destination,

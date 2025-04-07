@@ -64,7 +64,7 @@ describe('errorResponseHandler', () => {
     }
   });
 
-  it('should throw a NetworkError with default message when error details are not found', () => {
+  it('should throw a NetworkError with stringified error object when error_user_msg is missing', () => {
     const destResponse = {
       response: {
         error: {
@@ -187,7 +187,7 @@ describe('errorResponseHandler', () => {
     }
   });
 
-  it('should throw a NetworkError with error object as stringified', () => {
+  it('should throw a NetworkError with default message for unknown error code', () => {
     const destResponse = {
       response: {
         error: {
@@ -269,12 +269,10 @@ describe('errorResponseHandler', () => {
     try {
       errorResponseHandler(destResponse);
     } catch (e) {
-      if (e) {
-        expect(e).toBeInstanceOf(NetworkError);
-        const error = e as CommonErrorType;
-        expect(error.message).toBe('Unhandled error.');
-        expect(error.status).toBe(500);
-      }
+      expect(e).toBeInstanceOf(NetworkError);
+      const error = e as CommonErrorType;
+      expect(error.message).toBe('Unhandled error.');
+      expect(error.status).toBe(500);
     }
   });
 });

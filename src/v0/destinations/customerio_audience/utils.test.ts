@@ -62,7 +62,7 @@ describe('utils', () => {
       describe('createEventChunk', () => {
         const testCases = [
           {
-            name: 'should create valid event chunk',
+            name: 'should create valid event chunk when audienceId is a string',
             input: {
               message: {
                 type: 'record',
@@ -74,6 +74,30 @@ describe('utils', () => {
                   destination: {
                     identifierMappings: [{ to: 'email', from: 'email' }],
                     audienceId: '123',
+                  },
+                },
+              },
+              metadata: { sourceId: '1' },
+            },
+            expected: {
+              payload: { ids: ['test@test.com'] },
+              eventAction: 'insert',
+              metadata: { sourceId: '1' },
+            },
+          },
+          {
+            name: 'should create valid event chunk when audienceId is a number',
+            input: {
+              message: {
+                type: 'record',
+                action: 'insert',
+                identifiers: { email: 'test@test.com' },
+              },
+              connection: {
+                config: {
+                  destination: {
+                    identifierMappings: [{ to: 'email', from: 'email' }],
+                    audienceId: 123,
                   },
                 },
               },

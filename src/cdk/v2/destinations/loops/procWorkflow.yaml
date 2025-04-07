@@ -23,9 +23,8 @@ steps:
   - name: validateIdentifyEvent
     condition: $.outputs.messageType === {{$.EventType.IDENTIFY}}
     template: |
-      const userId = .message.({{{{$.getGenericPaths("userIdOnly")}}}});
       const email = .message.({{{{$.getGenericPaths("emailOnly")}}}});
-      $.assert(email || userId, "Either email or userId is required for track call.");
+      $.assert(email, "email is required for identify call.");
 
   - name: validateTrackEvent
     condition: $.outputs.messageType === {{$.EventType.TRACK}}
@@ -45,22 +44,28 @@ steps:
     template: |
       $.context.endpoint = "https://app.loops.so/api/v1/contacts/update";
       const payload = {}
-      Object.assign(payload, .message.context.traits);
+      Object.assign(payload, .message.({{{{$.getGenericPaths("traits")}}}}));
       payload.userId = .message.({{{{$.getGenericPaths("userIdOnly")}}}});
       payload.email = .message.({{{{$.getGenericPaths("emailOnly")}}}});
       $.context.payload = payload;
+      $.context.method = "PUT";
 
   - name: trackPayload
     condition: $.outputs.messageType === {{$.EventType.TRACK}}
     template: |
       $.context.endpoint = "https://app.loops.so/api/v1/events/send";
       const payload = {}
-      Object.assign(payload, .message.context.traits);
+      Object.assign(payload, .message.({{{{$.getGenericPaths("traits")}}}}));
       payload.userId = .message.({{{{$.getGenericPaths("userIdOnly")}}}});
       payload.email = .message.({{{{$.getGenericPaths("emailOnly")}}}});
       payload.eventName = .message.event;
       payload.eventProperties = .message.properties;
       $.context.payload = payload;
+      $.context.method = "POST";
+
+  - name: cleanPayload
+    template: |
+      $.context.payload = $.removeUndefinedAndNullValues($.context.payload);
 
   - name: buildResponse
     template: |
@@ -71,4 +76,5 @@ steps:
         "authorization": "Bearer " + .destination.Config.apiKey,
         "content-type": "application/json"
       };
+      response.method = $.context.method;
       response

@@ -297,7 +297,7 @@ function trimTraits(traits, contextTraits, userProfileProperties) {
       lodash.unset(traitsCopy, propertyPath);
     }
     if (isDefinedNotNullNotEmpty(contextTraitsValue)) {
-      if (!operationEligibleProperties.hasOwnProperty(propName)) {
+      if (!Object.hasOwn(operationEligibleProperties, propName)) {
         operationEligibleProperties[propName] = contextTraitsValue;
       }
       lodash.unset(contextTraitsCopy, propertyPath);

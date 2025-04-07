@@ -1,4 +1,4 @@
-import { ArraySpreader } from '../arraySpreader';
+import { ArraySpreader, SecretSpreader } from '../arraySpreader';
 import { SpreaderContext } from '../types/spreader';
 
 describe('arraySpreader', () => {
@@ -13,7 +13,8 @@ describe('arraySpreader', () => {
         rules: [
           {
             source: { type: 'header' as const, path: 'x-tenant-id' },
-            target: { path: 'tenantId', arrayPath: 'items' },
+            target: { path: 'value.tenantId', arrayPath: 'items' },
+            transform: (value: string) => (value ? JSON.parse(value) : ''),
           },
         ],
       };
@@ -21,14 +22,11 @@ describe('arraySpreader', () => {
       const arraySpreader = new ArraySpreader(config);
 
       const ctx = {
-        get: jest.fn().mockReturnValue('tenant-123'),
+        get: jest.fn().mockReturnValue('{"id":"tenant-123"}'),
         request: {
           body: {
             items: [{ name: 'Item 1' }, { name: 'Item 2' }, { name: 'Item 3' }],
           },
-        },
-        spreadData: {
-          tenantId: 'tenant-123',
         },
       } as unknown as SpreaderContext;
 
@@ -36,9 +34,9 @@ describe('arraySpreader', () => {
       await arraySpreader.middleware()(ctx, jest.fn());
 
       // Assert
-      expect((ctx.request.body as any).items[0].tenantId).toBe('tenant-123');
-      expect((ctx.request.body as any).items[1].tenantId).toBe('tenant-123');
-      expect((ctx.request.body as any).items[2].tenantId).toBe('tenant-123');
+      expect((ctx.request.body as any).items[0].value.tenantId).toEqual({ id: 'tenant-123' });
+      expect((ctx.request.body as any).items[1].value.tenantId).toEqual({ id: 'tenant-123' });
+      expect((ctx.request.body as any).items[2].value.tenantId).toEqual({ id: 'tenant-123' });
     });
 
     // Correctly sets nested values in array items using dot notation paths
@@ -103,6 +101,118 @@ describe('arraySpreader', () => {
       // Act & Assert
       await expect(arraySpreader.middleware()(ctx, jest.fn())).resolves.not.toThrow();
       expect((ctx.request.body as any).items).toEqual([]);
+    });
+
+    it('should apply spread data to each item in an array when target has arrayPath and source type is query param', async () => {
+      // Arrange
+      const config = {
+        name: 'tenantSpreader',
+        rules: [
+          {
+            source: { type: 'query' as const, path: 'tenantId' },
+            target: { path: 'tenantId', arrayPath: 'items' },
+          },
+        ],
+      };
+
+      const arraySpreader = new ArraySpreader(config);
+
+      const ctx = {
+        query: { tenantId: { id: 'tenant-123' } },
+        request: {
+          body: {
+            items: [{ name: 'Item 1' }, { name: 'Item 2' }, { name: 'Item 3' }],
+          },
+        },
+      } as unknown as SpreaderContext;
+
+      // Act
+      await arraySpreader.middleware()(ctx, jest.fn());
+
+      // Assert
+      expect((ctx.request.body as any).items[0].tenantId).toEqual({ id: 'tenant-123' });
+      expect((ctx.request.body as any).items[1].tenantId).toEqual({ id: 'tenant-123' });
+      expect((ctx.request.body as any).items[2].tenantId).toEqual({ id: 'tenant-123' });
+    });
+
+    it('should handle rule transform function failure errors', async () => {
+      const config = {
+        name: 'tenantSpreader',
+        rules: [
+          {
+            source: { type: 'header' as const, path: 'x-tenant-id' },
+            target: { path: 'tenantId', arrayPath: 'items' },
+            transform: (value: string) => (value ? JSON.parse(value) : ''),
+          },
+        ],
+      };
+
+      const arraySpreader = new ArraySpreader(config);
+
+      const ctx = {
+        get: jest.fn().mockReturnValue('{id":"tenant-123"}'),
+        request: {
+          body: {
+            items: [{ name: 'Item 1' }, { name: 'Item 2' }, { name: 'Item 3' }],
+          },
+        },
+      } as unknown as SpreaderContext;
+
+      // Act
+      try {
+        await arraySpreader.middleware()(ctx, jest.fn());
+      } catch (e) {
+        // Assert
+        expect(e).toEqual(
+          Error(
+            'Error applying transform function for rule: {"source":{"type":"header","path":"x-tenant-id"},"target":{"path":"tenantId","arrayPath":"items"}}',
+          ),
+        );
+      }
+    });
+  });
+
+  describe('SecretSpreader', () => {
+    it('tests secretSpreader', async () => {
+      const ctx = {
+        get: jest.fn().mockReturnValue('{"id":"tenant-123"}'),
+        request: {
+          headers: {
+            'oauth-secret': JSON.stringify({ token: 'abc123' }),
+          },
+          body: {
+            input: [{ id: 1 }, { id: 2, metadata: {} }],
+          },
+        },
+        spreadData: {},
+      } as unknown as SpreaderContext;
+
+      // Act
+      await SecretSpreader.middleware()(ctx, jest.fn());
+
+      // Assert
+      expect((ctx.request.body as any).input[0].metadata.secret).toEqual({ id: 'tenant-123' });
+      expect((ctx.request.body as any).input[1].metadata.secret).toEqual({ id: 'tenant-123' });
+    });
+    it('should set empty string when oauth-secret header is missing', async () => {
+      // Arrange
+      const ctx = {
+        get: jest.fn().mockReturnValue(''),
+        request: {
+          headers: {},
+          body: {
+            input: [{ id: 1 }, { id: 2, metadata: {} }],
+          },
+        },
+        spreadData: {},
+      } as unknown as SpreaderContext;
+
+      // Act
+      await SecretSpreader.middleware()(ctx, jest.fn());
+
+      // Assert
+      expect((ctx.request.body as any).input[0].metadata.secret).toEqual(undefined);
+      expect((ctx.request.body as any).input[1].metadata.secret).toEqual(undefined);
     });
   });
 });

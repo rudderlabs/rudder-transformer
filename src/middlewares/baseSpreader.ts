@@ -1,4 +1,5 @@
 import { Context, Next } from 'koa';
+import { PlatformError } from '@rudderstack/integrations-lib';
 import { SpreaderConfig, SpreaderContext } from './types/spreader';
 
 export abstract class BaseSpreader {
@@ -17,7 +18,15 @@ export abstract class BaseSpreader {
       this.config.rules.forEach((rule) => {
         const value = this.extractValue(spreaderCtx, rule.source);
         if (value !== undefined) {
-          spreaderCtx.spreadData[rule.target.path] = rule.transform ? rule.transform(value) : value;
+          try {
+            spreaderCtx.spreadData[rule.target.path] = rule.transform
+              ? rule.transform(value)
+              : value;
+          } catch (e) {
+            throw new PlatformError(
+              `Error applying transform function for rule: ${JSON.stringify(rule)}`,
+            );
+          }
         }
       });
 

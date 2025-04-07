@@ -1,4 +1,5 @@
 import { ProcessorTestData } from '../../../testTypes';
+import { authHeader1, secret1 } from '../maskedSecrets';
 
 export const data: ProcessorTestData[] = [
   {
@@ -41,7 +42,7 @@ export const data: ProcessorTestData[] = [
               },
               WorkspaceID: 'default-workspace',
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: secret1,
               },
               Enabled: true,
               Transformations: [],
@@ -52,7 +53,7 @@ export const data: ProcessorTestData[] = [
             },
           },
         ],
-        method: 'POST'
+        method: 'POST',
       },
     },
     output: {
@@ -80,10 +81,10 @@ export const data: ProcessorTestData[] = [
               endpoint: 'https://app.loops.so/api/v1/contacts/update',
               files: {},
               headers: {
-                authorization: 'Bearer dummyApiKey',
+                authorization: authHeader1,
                 'content-type': 'application/json',
               },
-              method: 'POST',
+              method: 'PUT',
               type: 'REST',
               version: '1',
               params: {},
@@ -138,7 +139,7 @@ export const data: ProcessorTestData[] = [
               },
               WorkspaceID: 'default-workspace',
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: secret1,
               },
               Enabled: true,
               Transformations: [],
@@ -146,7 +147,7 @@ export const data: ProcessorTestData[] = [
             metadata: {},
           },
         ],
-        method: 'POST'
+        method: 'POST',
       },
     },
     output: {
@@ -174,10 +175,10 @@ export const data: ProcessorTestData[] = [
               endpoint: 'https://app.loops.so/api/v1/contacts/update',
               files: {},
               headers: {
-                authorization: 'Bearer dummyApiKey',
+                authorization: authHeader1,
                 'content-type': 'application/json',
               },
-              method: 'POST',
+              method: 'PUT',
               type: 'REST',
               version: '1',
               params: {},
@@ -192,10 +193,10 @@ export const data: ProcessorTestData[] = [
   },
   {
     id: 'loops-3',
-    scenario: 'Identify event with missing email trait',
+    scenario: 'Identify event with missing email or userId',
     successCriteria: 'Test should fail.',
     name: 'loops',
-    description: 'Identify event with missing email trait',
+    description: 'Identify event with missing email or userId',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -204,7 +205,6 @@ export const data: ProcessorTestData[] = [
         body: [
           {
             message: {
-              userId: 'dummy-user001',
               channel: 'web',
               context: {
                 traits: {
@@ -229,7 +229,7 @@ export const data: ProcessorTestData[] = [
               },
               WorkspaceID: 'default-workspace',
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: secret1,
               },
               Enabled: true,
               Transformations: [],
@@ -237,7 +237,7 @@ export const data: ProcessorTestData[] = [
             metadata: {},
           },
         ],
-        method: 'POST'
+        method: 'POST',
       },
     },
     output: {
@@ -246,7 +246,7 @@ export const data: ProcessorTestData[] = [
         body: [
           {
             error:
-              'email is required. Aborting: Workflow: procWorkflow, Step: validateIdentifyEmail, ChildStep: undefined, OriginalError: email is required. Aborting',
+              'email is required for identify call.: Workflow: procWorkflow, Step: validateIdentifyEvent, ChildStep: undefined, OriginalError: email is required for identify call.',
             metadata: {},
             statTags: {
               destType: 'LOOPS',
@@ -307,7 +307,7 @@ export const data: ProcessorTestData[] = [
               },
               WorkspaceID: 'default-workspace',
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: secret1,
               },
               Enabled: true,
               Transformations: [],
@@ -315,7 +315,7 @@ export const data: ProcessorTestData[] = [
             metadata: {},
           },
         ],
-        method: 'POST'
+        method: 'POST',
       },
     },
     output: {
@@ -345,7 +345,7 @@ export const data: ProcessorTestData[] = [
               endpoint: 'https://app.loops.so/api/v1/events/send',
               files: {},
               headers: {
-                authorization: 'Bearer dummyApiKey',
+                authorization: authHeader1,
                 'content-type': 'application/json',
               },
               method: 'POST',
@@ -400,7 +400,7 @@ export const data: ProcessorTestData[] = [
               },
               WorkspaceID: 'default-workspace',
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: secret1,
               },
               Enabled: true,
               Transformations: [],
@@ -408,7 +408,7 @@ export const data: ProcessorTestData[] = [
             metadata: {},
           },
         ],
-        method: 'POST'
+        method: 'POST',
       },
     },
     output: {
@@ -434,7 +434,7 @@ export const data: ProcessorTestData[] = [
               endpoint: 'https://app.loops.so/api/v1/events/send',
               files: {},
               headers: {
-                authorization: 'Bearer dummyApiKey',
+                authorization: authHeader1,
                 'content-type': 'application/json',
               },
               method: 'POST',
@@ -486,7 +486,7 @@ export const data: ProcessorTestData[] = [
               },
               WorkspaceID: 'default-workspace',
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: secret1,
               },
               Enabled: true,
               Transformations: [],
@@ -494,7 +494,7 @@ export const data: ProcessorTestData[] = [
             metadata: {},
           },
         ],
-        method: 'POST'
+        method: 'POST',
       },
     },
     output: {
@@ -503,7 +503,7 @@ export const data: ProcessorTestData[] = [
         body: [
           {
             error:
-              'Either email or userId is required. Aborting: Workflow: procWorkflow, Step: validateTrackIdentifier, ChildStep: undefined, OriginalError: Either email or userId is required. Aborting',
+              'Either email or userId is required for track call.: Workflow: procWorkflow, Step: validateTrackEvent, ChildStep: undefined, OriginalError: Either email or userId is required for track call.',
             metadata: {},
             statTags: {
               destType: 'LOOPS',

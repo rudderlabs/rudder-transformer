@@ -230,16 +230,16 @@ const buildUserProfileResponse = (userProfileParams) => {
   return responseBuilderSimple(payload, message, type, destination.Config);
 };
 
-const handleUserProfileOperation = (message, type, destination, propertiesConfig, operation) => {
+const handleUserProfileOperation = (userProfileParams) => {
+  const { message, type, destination, propertiesConfig, operation } = userProfileParams;
+
   if (!propertiesConfig || propertiesConfig.length === 0) {
     return null;
   }
   const operationProperties = parseConfigArray(propertiesConfig, 'property');
   const segregatedTraits = trimTraits(message.traits, message.context.traits, operationProperties);
 
-  // eslint-disable-next-line no-param-reassign
   message.traits = segregatedTraits.traits;
-  // eslint-disable-next-line no-param-reassign
   message.context.traits = segregatedTraits.contextTraits;
 
   const finalOperationProperties =
@@ -269,33 +269,33 @@ const processIdentifyEvents = async (message, type, destination) => {
   const returnValue = [];
 
   // Set Once Properties
-  const setOnceResponse = handleUserProfileOperation(
-    messageClone,
+  const setOnceResponse = handleUserProfileOperation({
+    message: messageClone,
     type,
     destination,
-    destination.Config.setOnceProperties,
-    '$set_once',
-  );
+    propertiesConfig: destination.Config.setOnceProperties,
+    operation: '$set_once',
+  });
   if (setOnceResponse) returnValue.push(setOnceResponse);
 
   // Union Properties
-  const unionResponse = handleUserProfileOperation(
-    messageClone,
+  const unionResponse = handleUserProfileOperation({
+    message: messageClone,
     type,
     destination,
-    destination.Config.unionProperties,
-    '$union',
-  );
+    propertiesConfig: destination.Config.unionProperties,
+    operation: '$union',
+  });
   if (unionResponse) returnValue.push(unionResponse);
 
   // Append Properties
-  const appendResponse = handleUserProfileOperation(
-    messageClone,
+  const appendResponse = handleUserProfileOperation({
+    message: messageClone,
     type,
     destination,
-    destination.Config.appendProperties,
-    '$append',
-  );
+    propertiesConfig: destination.Config.appendProperties,
+    operation: '$append',
+  });
   if (appendResponse) returnValue.push(appendResponse);
 
   // Creating the user profile

@@ -1,7 +1,11 @@
 const lodash = require('lodash');
 const set = require('set-value');
 const get = require('get-value');
-const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
+const {
+  isDefinedNotNullNotEmpty,
+  InstrumentationError,
+  ConfigurationError,
+} = require('@rudderstack/integrations-lib');
 const {
   isDefined,
   constructPayload,
@@ -288,15 +292,11 @@ function trimTraits(traits, contextTraits, userProfileProperties) {
     const traitsValue = get(traitsCopy, propertyPath);
     const contextTraitsValue = get(contextTraitsCopy, propertyPath);
 
-    if (traitsValue !== null && traitsValue !== undefined && traitsValue !== '') {
+    if (isDefinedNotNullNotEmpty(traitsValue)) {
       operationEligibleProperties[propName] = traitsValue;
       lodash.unset(traitsCopy, propertyPath);
     }
-    if (
-      contextTraitsValue !== null &&
-      contextTraitsValue !== undefined &&
-      contextTraitsValue !== ''
-    ) {
+    if (isDefinedNotNullNotEmpty(contextTraitsValue)) {
       if (!operationEligibleProperties.hasOwnProperty(propName)) {
         operationEligibleProperties[propName] = contextTraitsValue;
       }

@@ -357,9 +357,6 @@ export const data = [
                           screen_dimensions: {},
                         },
                         event_metadata: {
-                          item_count: 0,
-                          value: 2600,
-                          value_decimal: 26,
                           products: [
                             {
                               id: '017c6f5d5cf86a4b22432066',
@@ -537,9 +534,6 @@ export const data = [
                           screen_dimensions: {},
                         },
                         event_metadata: {
-                          item_count: 0,
-                          value: 2600,
-                          value_decimal: 26,
                           products: [
                             {
                               id: '017c6f5d5cf86a4b22432066',

@@ -2,6 +2,11 @@ const { NetworkError, ConfigurationAuthError } = require('@rudderstack/integrati
 
 const { errorResponseHandler } = require('./networkHandler');
 
+type CommonErrorType = {
+  status: number;
+  message: string;
+};
+
 describe('errorResponseHandler', () => {
   it('should return successfully when there is no error in the response', () => {
     const destResponse = {
@@ -30,8 +35,9 @@ describe('errorResponseHandler', () => {
       errorResponseHandler(destResponse);
     } catch (e) {
       expect(e).toBeInstanceOf(ConfigurationAuthError);
-      expect(e.message).toBe('Invalid OAuth access token.');
-      expect(e.status).toBe(400);
+      const error = e as CommonErrorType;
+      expect(error.message).toBe('Invalid OAuth access token.');
+      expect(error.status).toBe(400);
     }
   });
 
@@ -52,8 +58,9 @@ describe('errorResponseHandler', () => {
       errorResponseHandler(destResponse);
     } catch (e) {
       expect(e).toBeInstanceOf(NetworkError);
-      expect(e.message).toBe('Event sent after seven days.');
-      expect(e.status).toBe(400);
+      const error = e as CommonErrorType;
+      expect(error.message).toBe('Event sent after seven days.');
+      expect(error.status).toBe(400);
     }
   });
 
@@ -73,13 +80,14 @@ describe('errorResponseHandler', () => {
       errorResponseHandler(destResponse);
     } catch (e) {
       expect(e).toBeInstanceOf(NetworkError);
-      expect(e.message).toBe(
+      const error = e as CommonErrorType;
+      expect(error.message).toBe(
         JSON.stringify({
           code: 999,
           error_subcode: 9999,
         }),
       );
-      expect(e.status).toBe(500);
+      expect(error.status).toBe(500);
     }
   });
 
@@ -99,8 +107,9 @@ describe('errorResponseHandler', () => {
       errorResponseHandler(destResponse);
     } catch (e) {
       expect(e).toBeInstanceOf(NetworkError);
-      expect(e.message).toBe('Rate limit exceeded.');
-      expect(e.status).toBe(429);
+      const error = e as CommonErrorType;
+      expect(error.message).toBe('Rate limit exceeded.');
+      expect(error.status).toBe(429);
     }
   });
 
@@ -121,8 +130,9 @@ describe('errorResponseHandler', () => {
       errorResponseHandler(destResponse);
     } catch (e) {
       expect(e).toBeInstanceOf(ConfigurationAuthError);
-      expect(e.message).toBe('Invalid OAuth token.');
-      expect(e.status).toBe(400);
+      const error = e as CommonErrorType;
+      expect(error.message).toBe('Invalid OAuth token.');
+      expect(error.status).toBe(400);
     }
   });
 
@@ -145,10 +155,11 @@ describe('errorResponseHandler', () => {
       errorResponseHandler(destResponse);
     } catch (e) {
       expect(e).toBeInstanceOf(ConfigurationAuthError);
-      expect(e.message).toBe(
+      const error = e as CommonErrorType;
+      expect(error.message).toBe(
         'The token has expired on Saturday, 23-Sep-23 23:29:14 PDT. The current time is Monday, 07-Apr-25 03:48:44 PDT.',
       );
-      expect(e.status).toBe(400);
+      expect(error.status).toBe(400);
     }
   });
 
@@ -170,8 +181,9 @@ describe('errorResponseHandler', () => {
       errorResponseHandler(destResponse);
     } catch (e) {
       expect(e).toBeInstanceOf(ConfigurationAuthError);
-      expect(e.message).toBe('Unknown auth error during response transformation');
-      expect(e.status).toBe(400);
+      const error = e as CommonErrorType;
+      expect(error.message).toBe('Unknown auth error during response transformation');
+      expect(error.status).toBe(400);
     }
   });
 
@@ -191,8 +203,9 @@ describe('errorResponseHandler', () => {
       errorResponseHandler(destResponse);
     } catch (e) {
       expect(e).toBeInstanceOf(NetworkError);
-      expect(e.message).toBe('Unknown failure during response transformation');
-      expect(e.status).toBe(400);
+      const error = e as CommonErrorType;
+      expect(error.message).toBe('Unknown failure during response transformation');
+      expect(error.status).toBe(400);
     }
   });
 
@@ -212,10 +225,11 @@ describe('errorResponseHandler', () => {
       errorResponseHandler(destResponse);
     } catch (e) {
       expect(e).toBeInstanceOf(NetworkError);
-      expect(e.message).toBe(
+      const error = e as CommonErrorType;
+      expect(error.message).toBe(
         'Custom Audience Unavailable: The custom audience you are trying to use has not been shared with your ad account',
       );
-      expect(e.status).toBe(400);
+      expect(error.status).toBe(400);
     }
   });
 
@@ -235,8 +249,9 @@ describe('errorResponseHandler', () => {
       errorResponseHandler(destResponse);
     } catch (e) {
       expect(e).toBeInstanceOf(NetworkError);
-      expect(e.message).toBe('Rate limit exceeded.');
-      expect(e.status).toBe(429);
+      const error = e as CommonErrorType;
+      expect(error.message).toBe('Rate limit exceeded.');
+      expect(error.status).toBe(429);
     }
   });
 
@@ -254,9 +269,12 @@ describe('errorResponseHandler', () => {
     try {
       errorResponseHandler(destResponse);
     } catch (e) {
-      expect(e).toBeInstanceOf(NetworkError);
-      expect(e.message).toBe('Unhandled error.');
-      expect(e.status).toBe(500);
+      if (e) {
+        expect(e).toBeInstanceOf(NetworkError);
+        const error = e as CommonErrorType;
+        expect(error.message).toBe('Unhandled error.');
+        expect(error.status).toBe(500);
+      }
     }
   });
 });

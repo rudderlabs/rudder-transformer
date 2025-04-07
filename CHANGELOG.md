@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.96.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.95.2...v1.96.0) (2025-04-01)
+
+
+### Features
+
+* add app_name and app_namespace mapping in track call ([#4203](https://github.com/rudderlabs/rudder-transformer/issues/4203)) ([d3c6937](https://github.com/rudderlabs/rudder-transformer/commit/d3c6937f7e214ab621f876c99c341a78495ae86a))
+
+
+### Bug Fixes
+
+* remove hard check for timestamp for airship ([#4214](https://github.com/rudderlabs/rudder-transformer/issues/4214)) ([c03829d](https://github.com/rudderlabs/rudder-transformer/commit/c03829dcc2bde95eedeb8bb738c1a072f1e7dcf4))
+* support update action type for linkedin audience destination ([#4213](https://github.com/rudderlabs/rudder-transformer/issues/4213)) ([f6c54e8](https://github.com/rudderlabs/rudder-transformer/commit/f6c54e86d06d8cb93f5ac9edf4e0e7f5e843cb8a))
+
 ### [1.95.2](https://github.com/rudderlabs/rudder-transformer/compare/v1.95.1...v1.95.2) (2025-03-27)
 
 

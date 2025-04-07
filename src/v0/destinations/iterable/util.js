@@ -1,3 +1,4 @@
+/* eslint-disable unicorn/consistent-destructuring */
 const lodash = require('lodash');
 const get = require('get-value');
 const jsonSize = require('json-size');
@@ -10,19 +11,14 @@ const {
   defaultBatchRequestConfig,
   getDestinationExternalIDInfoForRetl,
 } = require('../../util');
-const {
-  ConfigCategory,
-  mappingConfig,
-  TRACK_MAX_BATCH_SIZE,
-  IDENTIFY_MAX_BATCH_SIZE,
-  IDENTIFY_MAX_BODY_SIZE_IN_BYTES,
-  constructEndpoint,
-} = require('./config');
+
+const configurations = require('./config');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 const { EventType, MappedToDestinationKey } = require('../../../constants');
 
 const MESSAGE_JSON_PATH = 'message.body.JSON';
 
+const { ConfigCategory, mappingConfig, constructEndpoint } = configurations;
 /**
  * Returns preferUserId param
  * @param {*} config
@@ -376,7 +372,7 @@ const prepareAndSplitUpdateUserBatchesBasedOnPayloadSize = (
 
   chunk.forEach((event) => {
     size += jsonSize(get(event, `${MESSAGE_JSON_PATH}`));
-    if (size > IDENTIFY_MAX_BODY_SIZE_IN_BYTES) {
+    if (size > configurations.MAX_BODY_SIZE_IN_BYTES) {
       batches.push({
         users: usersChunk,
         metadata: metadataChunk,
@@ -474,7 +470,8 @@ const processUpdateUserBatch = (chunk, registerDeviceOrBrowserTokenEvents) => {
 const batchUpdateUserEvents = (updateUserEvents, registerDeviceOrBrowserTokenEvents) => {
   // Batching update user events
   // arrayChunks = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
-  const updateUserEventsChunks = lodash.chunk(updateUserEvents, IDENTIFY_MAX_BATCH_SIZE);
+  // Create chunks of events, but we'll rely on size-based batching in processUpdateUserBatch
+  const updateUserEventsChunks = lodash.chunk(updateUserEvents, configurations.INITIAL_CHUNK_SIZE);
   return updateUserEventsChunks.reduce((batchedResponseList, chunk) => {
     const batchedResponse = processUpdateUserBatch(chunk, registerDeviceOrBrowserTokenEvents);
     return batchedResponseList.concat(batchedResponse);
@@ -484,26 +481,25 @@ const batchUpdateUserEvents = (updateUserEvents, registerDeviceOrBrowserTokenEve
 /**
  * Processes chunks of catalog events, extracts the necessary data, and prepares batched requests for further processing
  * ref : https://api.iterable.com/api/docs#catalogs_bulkUpdateCatalogItems
- * @param {*} catalogEventsChunks
- * @returns
+ *
+ * Up to 1,000 items can be created at a time, which is the only limit we enforce for catalog operations.
+ *
+ * @param {*} chunk - A chunk of catalog events (up to 1,000 items)
+ * @returns {Object} - The prepared batch request
  */
 const processCatalogBatch = (chunk) => {
   const metadata = [];
-  const batchCatalogResponseList = {
-    documents: {},
-    replaceUploadedFieldsOnly: true,
-  };
+  const documents = {};
 
-  const { destination } = chunk[0];
-  const { apiKey } = destination.Config;
-
+  // Extract metadata and documents from each event in the chunk
   chunk.forEach((event) => {
     metadata.push(event.metadata);
     const catalogId = get(event, 'message.body.JSON.catalogId');
     const update = get(event, 'message.body.JSON.update');
-    batchCatalogResponseList.documents[catalogId] = update;
+    documents[catalogId] = update;
   });
 
+  // Prepare the batch request
   const batchEventResponse = defaultBatchRequestConfig();
   /**
    * body will be in the format:
@@ -517,15 +513,22 @@ const processCatalogBatch = (chunk) => {
             }
         },
         "replaceUploadedFieldsOnly": true
-      }   
+      }
   */
-  batchEventResponse.batchedRequest.body.JSON = batchCatalogResponseList;
-  const endPoint = chunk[0].message.endpoint;
+  batchEventResponse.batchedRequest.body.JSON = {
+    documents,
+    replaceUploadedFieldsOnly: true,
+  };
 
+  const { destination, message } = chunk[0];
+  const { apiKey } = destination.Config;
+  const { endpoint } = message;
+
+  // Combine the batch request with any non-batched requests (none in this case)
   return combineBatchedAndNonBatchedEvents(
     apiKey,
     metadata,
-    endPoint,
+    endpoint,
     destination,
     batchEventResponse,
     [],
@@ -533,18 +536,63 @@ const processCatalogBatch = (chunk) => {
 };
 
 /**
- * Takes a list of catalog events and batches them into chunks, preparing them for batch processing
+ * Takes a list of catalog events and batches them into chunks of up to 1,000 items (Iterable's limit),
+ * preparing them for batch processing
  * @param {*} catalogEvents
  * @returns
  */
 const batchCatalogEvents = (catalogEvents) => {
-  // Batching catalog events
-  // arrayChunks = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
-  const catalogEventsChunks = lodash.chunk(catalogEvents, IDENTIFY_MAX_BATCH_SIZE);
+  // Directly chunk catalog events into batches of CATALOG_MAX_ITEMS_PER_REQUEST (1,000)
+  // This is the only limit we need to respect for catalog operations
+  const catalogEventsChunks = lodash.chunk(
+    catalogEvents,
+    configurations.CATALOG_MAX_ITEMS_PER_REQUEST,
+  );
+
   return catalogEventsChunks.reduce((batchedResponseList, chunk) => {
     const batchedResponse = processCatalogBatch(chunk);
     return batchedResponseList.concat(batchedResponse);
   }, []);
+};
+
+/**
+ * This function prepares and splits track event batches based on payload size
+ * @param {*} chunk
+ * @returns
+ */
+const prepareAndSplitTrackBatchesBasedOnPayloadSize = (chunk) => {
+  const batches = [];
+  let size = 0;
+  let eventsChunk = [];
+  let metadataChunk = [];
+
+  chunk.forEach((event) => {
+    size += jsonSize(get(event, `${MESSAGE_JSON_PATH}`));
+    if (size > configurations.MAX_BODY_SIZE_IN_BYTES) {
+      batches.push({
+        events: eventsChunk,
+        metadata: metadataChunk,
+        destination: event.destination,
+      });
+
+      eventsChunk = [];
+      metadataChunk = [];
+      size = jsonSize(get(event, `${MESSAGE_JSON_PATH}`));
+    }
+
+    metadataChunk.push(event.metadata);
+    eventsChunk.push(get(event, `${MESSAGE_JSON_PATH}`));
+  });
+
+  if (eventsChunk.length > 0) {
+    batches.push({
+      events: eventsChunk,
+      metadata: metadataChunk,
+      destination: chunk[0].destination,
+    });
+  }
+
+  return batches;
 };
 
 /**
@@ -553,30 +601,30 @@ const batchCatalogEvents = (catalogEvents) => {
  * @returns
  */
 const processTrackBatch = (chunk) => {
-  const events = [];
-  const metadata = [];
+  const batchedResponseList = [];
 
-  const { destination } = chunk[0];
-  const { apiKey, dataCenter } = destination.Config;
-  const TRACK_BATCH_ENDPOINT = constructEndpoint(dataCenter, { endpoint: 'events/trackBulk' });
-  chunk.forEach((event) => {
-    metadata.push(event.metadata);
-    events.push(get(event, `${MESSAGE_JSON_PATH}`));
+  const batches = prepareAndSplitTrackBatchesBasedOnPayloadSize(chunk);
+
+  batches.forEach((batch) => {
+    const batchEventResponse = defaultBatchRequestConfig();
+    batchEventResponse.batchedRequest.body.JSON = { events: batch.events };
+
+    const { destination, metadata } = batch;
+    const { apiKey, dataCenter } = destination.Config;
+    const TRACK_BATCH_ENDPOINT = constructEndpoint(dataCenter, { endpoint: 'events/trackBulk' });
+    const batchedResponse = combineBatchedAndNonBatchedEvents(
+      apiKey,
+      metadata,
+      TRACK_BATCH_ENDPOINT,
+      destination,
+      batchEventResponse,
+      [],
+    );
+
+    batchedResponseList.push(batchedResponse);
   });
 
-  const batchEventResponse = defaultBatchRequestConfig();
-  batchEventResponse.batchedRequest.body.JSON = {
-    events,
-  };
-
-  return combineBatchedAndNonBatchedEvents(
-    apiKey,
-    metadata,
-    TRACK_BATCH_ENDPOINT,
-    destination,
-    batchEventResponse,
-    [],
-  );
+  return batchedResponseList;
 };
 
 /**
@@ -587,10 +635,12 @@ const processTrackBatch = (chunk) => {
 const batchTrackEvents = (trackEvents) => {
   // Batching track events
   // arrayChunks = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
-  const trackEventsChunks = lodash.chunk(trackEvents, TRACK_MAX_BATCH_SIZE);
+  // Create chunks of events, but we'll rely on size-based batching in processTrackBatch
+  const trackEventsChunks = lodash.chunk(trackEvents, configurations.INITIAL_CHUNK_SIZE);
   return trackEventsChunks.reduce((batchedResponseList, chunk) => {
-    const batchedResponse = processTrackBatch(chunk);
-    return batchedResponseList.concat(batchedResponse);
+    // processTrackBatch now returns an array of responses
+    const batchedResponses = processTrackBatch(chunk);
+    return batchedResponseList.concat(batchedResponses);
   }, []);
 };
 
@@ -761,5 +811,6 @@ module.exports = {
   registerBrowserTokenEventPayloadBuilder,
   getCategoryWithEndpoint,
   prepareAndSplitUpdateUserBatchesBasedOnPayloadSize,
+  prepareAndSplitTrackBatchesBasedOnPayloadSize,
   getMergeNestedObjects,
 };

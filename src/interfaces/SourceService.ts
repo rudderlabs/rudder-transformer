@@ -1,16 +1,11 @@
-import {
-  MetaTransferObject,
-  SourceInputConversionResult,
-  SourceTransformationResponse,
-} from '../types/index';
+import { MetaTransferObject, SourceInputV2, SourceTransformationResponse } from '../types/index';
 
 export interface SourceService {
   getTags(): MetaTransferObject;
 
   sourceTransformRoutine(
-    sourceEvents: SourceInputConversionResult<NonNullable<unknown>>[],
+    sourceEvents: NonNullable<SourceInputV2>[],
     sourceType: string,
-    version: string,
     requestMetadata: NonNullable<unknown>,
   ): Promise<SourceTransformationResponse[]>;
 }

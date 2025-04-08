@@ -209,6 +209,16 @@ describe('Unit test cases for customerio encodePathParameter', () => {
       param: 'some@email.com',
       expectedOutput: 'some@email.com',
     },
+    {
+      name: 'should not encode non-string parameter',
+      param: 123,
+      expectedOutput: 123,
+    },
+    {
+      name: 'should not encode null parameter',
+      param: null,
+      expectedOutput: null,
+    },
   ];
 
   testCases.forEach((testCase) => {

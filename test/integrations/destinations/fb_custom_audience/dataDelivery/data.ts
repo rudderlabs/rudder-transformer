@@ -716,6 +716,77 @@ export const existingTestData = [
       },
     },
   },
+  {
+    name: 'fb_custom_audience',
+    description: 'user deletion failed due expired access token error',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          version: '1',
+          type: 'REST',
+          method: 'DELETE',
+          endpoint: getEndPoint('aud1'),
+          headers: {
+            'test-dest-response-key': 'accessTokenInvalidError-2',
+          },
+          params: {
+            access_token: 'ABC',
+            payload: {
+              is_raw: true,
+              data_source: {
+                sub_type: 'ANYTHING',
+              },
+              schema: ['DOBY', 'PHONE', 'GEN', 'FI', 'MADID', 'ZIP', 'ST', 'COUNTRY'],
+              data: [['2013', '@09432457768', 'f', 'Ms.', 'ABC', 'ZIP ', '123abc ', 'IN']],
+            },
+          },
+          body: {
+            JSON: {},
+            XML: {},
+            JSON_ARRAY: {},
+            FORM: {},
+          },
+          files: {},
+        },
+      },
+    },
+    output: {
+      response: {
+        status: 400,
+        body: {
+          output: {
+            destinationResponse: {
+              error: {
+                code: 190,
+                fbtrace_id: 'AxFa_0JxfQ4sctzqEQisyeJ',
+                message:
+                  'The token has expired on Saturday, 23-Sep-23 23:29:14 PDT. The current time is Monday, 07-Apr-25 03:48:44 PDT.',
+                type: 'OAuthException',
+              },
+              status: 400,
+            },
+            message:
+              'The token has expired on Saturday, 23-Sep-23 23:29:14 PDT. The current time is Monday, 07-Apr-25 03:48:44 PDT.',
+            statTags: {
+              destType: 'FB_CUSTOM_AUDIENCE',
+              destinationId: 'Non-determininable',
+              errorCategory: 'dataValidation',
+              errorType: 'configuration',
+              meta: 'accessTokenExpired',
+              feature: 'dataDelivery',
+              implementation: 'native',
+              module: 'destination',
+              workspaceId: 'Non-determininable',
+            },
+            status: 400,
+          },
+        },
+      },
+    },
+  },
 ];
 
 export const data = [...existingTestData, ...testScenariosForV1API, ...otherScenariosV1];

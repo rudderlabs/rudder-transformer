@@ -1,10 +1,11 @@
 name: Ingestion Service Test
 
 on:
-  workflow_run:
-    workflows: [Build Artifacts for PRs]
-    types:
-      - completed
+  workflow_call:
+    inputs:
+      build_tag:
+        required: true
+        type: string
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.sha }}
@@ -16,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      TRANSFORMER_IMAGE_TAG_FOR_TEST: ${{ github.head_ref }}
+      TRANSFORMER_IMAGE_NAME_FOR_TEST: ${{ inputs.build_tag }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4

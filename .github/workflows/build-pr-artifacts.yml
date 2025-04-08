@@ -46,7 +46,7 @@ jobs:
     needs: [generate-tag-names]
     uses: ./.github/workflows/build-push-docker-image.yml
     with:
-      build_tag: rudderstack/develop-rudder-transformer:${{ needs.generate-tag-names.outputs.tag_name }}
+      build_tag: rudderstack/develop-rudder-transformer:${{ needs.generate-tag-names.outputs.tag_name }} >
       push_tags: rudderstack/develop-rudder-transformer:${{ needs.generate-tag-names.outputs.tag_name }}
       img_tag: ${{ needs.generate-tag-names.outputs.tag_name }}
       dockerfile: Dockerfile
@@ -70,3 +70,10 @@ jobs:
       push_target: production
     secrets:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
+  run-ingestion-service-test:
+    name: Run Ingestion Service Test
+    needs: [build-transformer-image]
+    uses: ./.github/workflows/ingestion-service-test.yml
+    with:
+      build_tag: rudderstack/develop-rudder-transformer:${{ needs.generate-tag-names.outputs.tag_name }}

@@ -73,7 +73,7 @@ jobs:
 
   run-ingestion-service-test:
     name: Run Ingestion Service Test
-    needs: [build-transformer-image]
+    needs: [build-transformer-image, generate-tag-names]
     uses: ./.github/workflows/ingestion-service-test.yml
     with:
       build_tag: rudderstack/develop-rudder-transformer:${{ needs.generate-tag-names.outputs.tag_name }}

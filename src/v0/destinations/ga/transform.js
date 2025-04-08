@@ -362,15 +362,12 @@ function processNonEComGenericEvent(message, destination) {
   let { nonInteraction } = destination.Config;
   nonInteraction = nonInteraction || false;
   const nonInteractionProp =
-    message.properties !== undefined && message.properties.nonInteraction !== undefined
+    message.properties?.nonInteraction !== undefined
       ? !!message.properties.nonInteraction
       : !!nonInteraction;
   const parameters = {
     ea: message.event,
-    ec:
-      message.properties !== undefined && message.properties.category !== undefined
-        ? message.properties.category
-        : 'All',
+    ec: message.properties?.category !== undefined ? message.properties.category : 'All',
     ni: nonInteractionProp === false ? 0 : 1,
   };
 
@@ -840,4 +837,4 @@ const processRouterDest = async (inputs, reqMetadata) => {
   const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
   return respList;
 };
-module.exports = { process, processRouterDest };
+module.exports = { process, processRouterDest, processNonEComGenericEvent };

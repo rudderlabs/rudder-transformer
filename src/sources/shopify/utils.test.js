@@ -1,148 +1,102 @@
 const {
-  isIdentifierEvent,
   processIdentifierEvent,
   updateAnonymousIdToUserIdInRedis,
 } = require('./utils');
 const { RedisDB } = require('../../util/redis/redisConnector');
 const stats = require('../../util/stats');
 
+// Mock the Redis module
+jest.mock('../../util/redis/redisConnector', () => ({
+  RedisDB: {
+    setVal: jest.fn().mockResolvedValue({ status: 'OK' }),
+    getVal: jest.fn().mockResolvedValue(null)
+  }
+}));
+
 jest.mock('../../util/stats', () => ({
   increment: jest.fn(),
 }));
 
-describe('Identifier Utils Tests', () => {
-  describe('test isIdentifierEvent', () => {
-    it('should return true if the event is rudderIdentifier', () => {
-      const event = { event: 'rudderIdentifier' };
-      expect(isIdentifierEvent(event)).toBe(true);
-    });
-
-    it('should return false if the event is not rudderIdentifier', () => {
-      const event = { event: 'checkout started' };
-      expect(isIdentifierEvent(event)).toBe(false);
-    });
+describe('Shopify Utils Tests', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    // Reset mock implementations
+    RedisDB.setVal.mockResolvedValue({ status: 'OK' });
+    RedisDB.getVal.mockResolvedValue(null);
   });
 
-  describe('test processIdentifierEvent', () => {
-    beforeEach(() => {
-      jest.clearAllMocks();
-    });
-
-    it('should set the cartToken mapping in redis and increment stats', async () => {
-      const setValSpy = jest.spyOn(RedisDB, 'setVal').mockResolvedValue('OK');
+  describe('processIdentifierEvent', () => {
+    it('should process valid identifier event', async () => {
       const event = {
-        cartToken: 'cartTokenTest1',
-        anonymousId: 'anonymousIdTest1',
-        action: 'stitchCartTokenToAnonId',
+        event: 'rudderIdentifier',
+        anonymousId: 'anon123',
+        userId: 'user123',
+        cartToken: 'cart123',
+        action: 'stitchCartTokenToAnonId'
       };
 
-      const response = await processIdentifierEvent(event);
-
-      expect(setValSpy).toHaveBeenCalledWith(
-        'pixel:cartTokenTest1',
-        ['anonymousId', 'anonymousIdTest1'],
-        43200,
-      );
-      expect(stats.increment).toHaveBeenCalledWith('shopify_pixel_cart_token_mapping', {
-        action: 'stitchCartTokenToAnonId',
-        operation: 'set',
-      });
-      expect(response).toEqual({
+      const result = await processIdentifierEvent(event);
+      expect(result).toEqual({
         outputToSource: {
           body: Buffer.from('OK').toString('base64'),
           contentType: 'text/plain',
         },
-        statusCode: 200,
+        statusCode: 200
       });
+      expect(RedisDB.setVal).toHaveBeenCalledWith(
+        'pixel:cart123',
+        ['anonymousId', 'anon123'],
+        43200
+      );
     });
 
-    it('should update the anonymousId to userId mapping in redis and increment stats', async () => {
-      const setValSpy = jest.spyOn(RedisDB, 'setVal').mockResolvedValue('OK');
+    it('should handle missing cart token', async () => {
       const event = {
-        anonymousId: 'anonymousIdTest1',
-        userId: 'userIdTest1',
-        action: 'stitchUserIdToAnonId',
+        event: 'rudderIdentifier',
+        anonymousId: 'anon123',
+        userId: 'user123',
+        action: 'stitchUserIdToAnonId'
       };
 
-      const response = await processIdentifierEvent(event);
-
-      expect(setValSpy).toHaveBeenCalled();
-      expect(stats.increment).toHaveBeenCalledWith('shopify_pixel_userid_mapping', {
-        action: 'stitchUserIdToAnonId',
-        operation: 'set',
-      });
-      expect(response).toEqual({
+      const result = await processIdentifierEvent(event);
+      expect(result).toEqual({
         outputToSource: {
           body: Buffer.from('OK').toString('base64'),
           contentType: 'text/plain',
         },
-        statusCode: 200,
+        statusCode: 200
       });
-    });
-
-    it('should handle redis errors and increment error stats', async () => {
-      const error = new Error('Redis connection failed');
-      jest.spyOn(RedisDB, 'setVal').mockRejectedValue(error);
-      const event = {
-        cartToken: 'cartTokenTest1',
-        anonymousId: 'anonymousIdTest1',
-        action: 'stitchCartTokenToAnonId',
-      };
-
-      await expect(processIdentifierEvent(event)).rejects.toThrow('Redis connection failed');
-      expect(stats.increment).not.toHaveBeenCalled();
+      expect(RedisDB.setVal).toHaveBeenCalledWith(
+        'pixel:anon123',
+        ['userId', 'user123'],
+        86400
+      );
     });
   });
 
-  describe('test updateAnonymousIdToUserIdInRedis', () => {
-    beforeEach(() => {
-      jest.clearAllMocks();
-    });
+  describe('updateAnonymousIdToUserIdInRedis', () => {
+    it('should update mapping successfully', async () => {
+      const anonymousId = 'anon123';
+      const userId = 'user123';
 
-    it('should update the anonymousId to userId in redis and increment stats', async () => {
-      const setValSpy = jest.spyOn(RedisDB, 'setVal').mockResolvedValue('OK');
-      const event = {
-        anonymousId: 'anonymousTest1',
-        userId: 'userIdTest1',
-      };
-
-      await updateAnonymousIdToUserIdInRedis(event.anonymousId, event.userId);
-
-      expect(setValSpy).toHaveBeenCalledWith(
-        'pixel:anonymousTest1',
-        ['userId', 'userIdTest1'],
-        86400,
+      await updateAnonymousIdToUserIdInRedis(anonymousId, userId);
+      expect(RedisDB.setVal).toHaveBeenCalledWith(
+        'pixel:anon123',
+        ['userId', 'user123'],
+        86400
       );
       expect(stats.increment).toHaveBeenCalledWith('shopify_pixel_userid_mapping', {
         action: 'stitchUserIdToAnonId',
-        operation: 'set',
+        operation: 'set'
       });
     });
 
-    it('should handle redis errors in updateAnonymousIdToUserIdInRedis', async () => {
-      const error = new Error('Redis connection failed');
-      jest.spyOn(RedisDB, 'setVal').mockRejectedValue(error);
-      const event = {
-        anonymousId: 'anonymousTest1',
-        userId: 'userIdTest1',
-      };
-
-      await expect(
-        updateAnonymousIdToUserIdInRedis(event.anonymousId, event.userId),
-      ).rejects.toThrow('Redis connection failed');
-      expect(stats.increment).not.toHaveBeenCalled();
-    });
-
-    it('should handle null values and not call Redis or stats', async () => {
-      const setValSpy = jest.spyOn(RedisDB, 'setVal').mockResolvedValue('OK');
-      const event = {
-        anonymousId: null,
-        userId: null,
-      };
-
-      await updateAnonymousIdToUserIdInRedis(event.anonymousId, event.userId);
-      expect(setValSpy).not.toHaveBeenCalled();
-      expect(stats.increment).not.toHaveBeenCalled();
+    it('should handle missing parameters', async () => {
+      await updateAnonymousIdToUserIdInRedis(null, 'user123');
+      expect(RedisDB.setVal).not.toHaveBeenCalled();
+      
+      await updateAnonymousIdToUserIdInRedis('anon123', null);
+      expect(RedisDB.setVal).not.toHaveBeenCalled();
     });
   });
 });

@@ -1,13 +1,12 @@
 const { DEFAULT_BASE_URL, MAPPINGS } = require('./config');
 
-const getEndpoints = (config) => {
-  const baseUrl = config.apiEndpoint || DEFAULT_BASE_URL;
-  const normalizedBaseUrl = baseUrl.endsWith('/') ? baseUrl.slice(0, -1) : baseUrl;
+const getEndpoints = ({ apiEndpoint = DEFAULT_BASE_URL }) => {
+  const base = apiEndpoint.replace(/\/+$/, ''); // Removes trailing slashes
 
   return {
-    IDENTIFY: `${normalizedBaseUrl}/v1/identify`,
-    TRACK: `${normalizedBaseUrl}/v1/track`,
-    GROUP: `${normalizedBaseUrl}/v1/companies/identify`,
+    IDENTIFY: `${base}/v1/identify`,
+    TRACK: `${base}/v1/track`,
+    GROUP: `${base}/v1/companies/identify`,
   };
 };
 

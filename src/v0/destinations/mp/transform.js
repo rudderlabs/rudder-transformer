@@ -275,7 +275,7 @@ const processIdentifyEvents = async (message, type, destination) => {
     message: messageClone,
     type,
     destination,
-    propertiesConfig: destination.Config.?setOnceProperties,
+    propertiesConfig: destination.Config?.setOnceProperties,
     operation: '$set_once',
   });
   if (setOnceResponse) returnValue.push(setOnceResponse);
@@ -285,7 +285,7 @@ const processIdentifyEvents = async (message, type, destination) => {
     message: messageClone,
     type,
     destination,
-    propertiesConfig: destination.Config.?unionProperties,
+    propertiesConfig: destination.Config?.unionProperties,
     operation: '$union',
   });
   if (unionResponse) returnValue.push(unionResponse);
@@ -295,7 +295,7 @@ const processIdentifyEvents = async (message, type, destination) => {
     message: messageClone,
     type,
     destination,
-    propertiesConfig: destination.Config.?appendProperties,
+    propertiesConfig: destination.Config?.appendProperties,
     operation: '$append',
   });
   if (appendResponse) returnValue.push(appendResponse);

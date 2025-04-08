@@ -6,6 +6,12 @@ import type {
 } from './controlPlaneConfig';
 import type { Metadata, RudderMessage } from './rudderEvents';
 
+export type ProcessorCompactedTransformationRequest<M = RudderMessage, MD = Metadata> = {
+  input: Omit<ProcessorTransformationRequest<M, MD>, 'connection' | 'destination'>[];
+  destinations: Record<string, Destination>;
+  connections: Record<string, Connection>;
+};
+
 /**
  * Processor transformation request/response structures
  */
@@ -96,6 +102,16 @@ export type RouterTransformationRequestData<
 export type RouterTransformationRequest<M = RudderMessage, MD = Metadata> = {
   input: RouterTransformationRequestData<M, Destination, Connection, MD>[];
   destType: string;
+};
+
+export type RouterCompactedTransformationRequest<M = RudderMessage, MD = Metadata> = {
+  input: Omit<
+    RouterTransformationRequestData<M, Destination, Connection, MD>,
+    'destination' | 'connection'
+  >[];
+  destType: string;
+  connections: Record<string, Connection>;
+  destinations: Record<string, Destination>;
 };
 
 export type RouterTransformationResponse = {

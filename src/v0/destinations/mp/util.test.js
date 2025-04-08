@@ -10,6 +10,7 @@ const {
   getDeletionTaskBaseEndpoint,
   getCreateDeletionTaskEndpoint,
   validateMixpanelPayloadLimits,
+  toArray,
 } = require('./util');
 const { FEATURE_GZIP_SUPPORT } = require('../../util/constant');
 const { ConfigurationError, InstrumentationError } = require('@rudderstack/integrations-lib');
@@ -365,94 +366,95 @@ describe('Unit test cases for buildUtmParams', () => {
   });
 });
 describe('Unit test cases for trimTraits', () => {
-  // Given a valid traits object and contextTraits object, and a valid setOnceProperties array, the function should return an object containing traits, contextTraits, and setOnce properties.
-  it('should return an object containing traits, contextTraits, and setOnce properties when given valid inputs', () => {
-    const traits = { name: 'John', age: 30 };
-    const contextTraits = { email: 'john@example.com' };
-    const setOnceProperties = ['name', 'email'];
-
-    const result = trimTraits(traits, contextTraits, setOnceProperties);
-
-    expect(result).toEqual({
-      traits: {
-        age: 30,
+  const testCases = [
+    {
+      name: 'should return an object containing traits, contextTraits, and operationTransformedProperties when given valid inputs',
+      input: {
+        traits: { name: 'John', age: 30, email: 'john@example.com' },
+        contextTraits: { email: 'john@example.com' },
+        userProfileProperties: ['name', 'email'],
       },
-      contextTraits: {},
-      setOnce: { $name: 'John', $email: 'john@example.com' },
-    });
-  });
+      expected: {
+        traits: { age: 30 },
+        contextTraits: {},
+        operationTransformedProperties: { $name: 'John', $email: 'john@example.com' },
+      },
+    },
+    {
+      name: 'should return an object containing empty traits and contextTraits, and an empty operationTransformedProperties when given empty traits and contextTraits objects',
+      input: {
+        traits: {},
+        contextTraits: { phone: '0123456789' },
+        userProfileProperties: ['name', 'email'],
+      },
+      expected: {
+        traits: {},
+        contextTraits: { phone: '0123456789' },
+        operationTransformedProperties: {},
+      },
+    },
+    {
+      name: 'should return an object containing the original traits and contextTraits objects, and an empty operationTransformedProperties when given an empty userProfileProperties array',
+      input: {
+        traits: { name: 'John', age: 30 },
+        contextTraits: { email: 'john@example.com' },
+        userProfileProperties: [],
+      },
+      expected: {
+        traits: { name: 'John', age: 30 },
+        contextTraits: { email: 'john@example.com' },
+        operationTransformedProperties: {},
+      },
+    },
+    {
+      name: 'should not add properties to the operationTransformedProperties when given userProfileProperties array with non-existent properties',
+      input: {
+        traits: { name: 'John', age: 30 },
+        contextTraits: { email: 'john@example.com' },
+        userProfileProperties: ['name', 'email', 'address'],
+      },
+      expected: {
+        traits: { age: 30 },
+        contextTraits: {},
+        operationTransformedProperties: { $name: 'John', $email: 'john@example.com' },
+      },
+    },
+    {
+      name: 'should not add properties to the operationTransformedProperties when given userProfileProperties array with non-existent nested properties',
+      input: {
+        traits: { name: 'John', age: 30, address: 'kolkata' },
+        contextTraits: { email: 'john@example.com' },
+        userProfileProperties: ['name', 'email', 'address.city'],
+      },
+      expected: {
+        traits: { age: 30, address: 'kolkata' },
+        contextTraits: {},
+        operationTransformedProperties: { $name: 'John', $email: 'john@example.com' },
+      },
+    },
+    {
+      name: 'should add properties to the operationTransformedProperties when given userProfileProperties array with existent nested properties',
+      input: {
+        traits: { name: 'John', age: 30, address: { city: 'kolkata' }, isAdult: false },
+        contextTraits: { email: 'john@example.com' },
+        userProfileProperties: ['name', 'email', 'address.city'],
+      },
+      expected: {
+        traits: { age: 30, address: {}, isAdult: false },
+        contextTraits: {},
+        operationTransformedProperties: {
+          $name: 'John',
+          $email: 'john@example.com',
+          $city: 'kolkata',
+        },
+      },
+    },
+  ];
 
-  // Given an empty traits object and contextTraits object, and a valid setOnceProperties array, the function should return an object containing empty traits and contextTraits, and an empty setOnce property.
-  it('should return an object containing empty traits and contextTraits, and an empty setOnce property when given empty traits and contextTraits objects', () => {
-    const traits = {};
-    const contextTraits = {};
-    const setOnceProperties = ['name', 'email'];
-
-    const result = trimTraits(traits, contextTraits, setOnceProperties);
-
-    expect(result).toEqual({
-      traits: {},
-      contextTraits: {},
-      setOnce: {},
-    });
-  });
-
-  // Given an empty setOnceProperties array, the function should return an object containing the original traits and contextTraits objects, and an empty setOnce property.
-  it('should return an object containing the original traits and contextTraits objects, and an empty setOnce property when given an empty setOnceProperties array', () => {
-    const traits = { name: 'John', age: 30 };
-    const contextTraits = { email: 'john@example.com' };
-    const setOnceProperties = [];
-
-    const result = trimTraits(traits, contextTraits, setOnceProperties);
-
-    expect(result).toEqual({
-      traits: { name: 'John', age: 30 },
-      contextTraits: { email: 'john@example.com' },
-      setOnce: {},
-    });
-  });
-
-  // Given a setOnceProperties array containing properties that do not exist in either traits or contextTraits objects, the function should not add the property to the setOnce property.
-  it('should not add properties to the setOnce property when given setOnceProperties array with non-existent properties', () => {
-    const traits = { name: 'John', age: 30 };
-    const contextTraits = { email: 'john@example.com' };
-    const setOnceProperties = ['name', 'email', 'address'];
-
-    const result = trimTraits(traits, contextTraits, setOnceProperties);
-
-    expect(result).toEqual({
-      traits: { age: 30 },
-      contextTraits: {},
-      setOnce: { $name: 'John', $email: 'john@example.com' },
-    });
-  });
-
-  // Given a setOnceProperties array containing properties with nested paths that do not exist in either traits or contextTraits objects, the function should not add the property to the setOnce property.
-  it('should not add properties to the setOnce property when given setOnceProperties array with non-existent nested properties', () => {
-    const traits = { name: 'John', age: 30, address: 'kolkata' };
-    const contextTraits = { email: 'john@example.com' };
-    const setOnceProperties = ['name', 'email', 'address.city'];
-
-    const result = trimTraits(traits, contextTraits, setOnceProperties);
-
-    expect(result).toEqual({
-      traits: { age: 30, address: 'kolkata' },
-      contextTraits: {},
-      setOnce: { $name: 'John', $email: 'john@example.com' },
-    });
-  });
-
-  it('should add properties to the setOnce property when given setOnceProperties array with existent nested properties', () => {
-    const traits = { name: 'John', age: 30, address: { city: 'kolkata' }, isAdult: false };
-    const contextTraits = { email: 'john@example.com' };
-    const setOnceProperties = ['name', 'email', 'address.city'];
-
-    const result = trimTraits(traits, contextTraits, setOnceProperties);
-
-    expect(result).toEqual({
-      traits: { age: 30, address: {}, isAdult: false },
-      contextTraits: {},
-      setOnce: { $name: 'John', $email: 'john@example.com', $city: 'kolkata' },
+  testCases.forEach(({ name, input, expected }) => {
+    it(name, () => {
+      const result = trimTraits(input.traits, input.contextTraits, input.userProfileProperties);
+      expect(result).toEqual(expected);
     });
   });
 });

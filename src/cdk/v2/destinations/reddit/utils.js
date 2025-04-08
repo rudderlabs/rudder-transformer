@@ -83,7 +83,12 @@ const populateRevenueField = (eventType, properties) => {
 // ref: https://business.reddithelp.com/s/article/about-event-metadata
 const itemCountSupportedEvents = new Set(['Purchase', 'AddToCart', 'AddToWishlist', 'Custom']);
 const valueAndCurrencySupportedEvents = new Set([
-  'Purchase', 'AddToCart', 'AddToWishlist', 'Lead', 'SignUp', 'Custom'
+  'Purchase',
+  'AddToCart',
+  'AddToWishlist',
+  'Lead',
+  'SignUp',
+  'Custom',
 ]);
 
 const removeUnsupportedFields = (eventType, eventMetadata) => {
@@ -93,7 +98,7 @@ const removeUnsupportedFields = (eventType, eventMetadata) => {
     delete updatedEventMetadata.item_count;
   }
   if (!valueAndCurrencySupportedEvents.has(eventType)) {
-    ['value', 'value_decimal', 'currency'].forEach(field => delete updatedEventMetadata[field]);
+    ['value', 'value_decimal', 'currency'].forEach((field) => delete updatedEventMetadata[field]);
   }
 
   return updatedEventMetadata;

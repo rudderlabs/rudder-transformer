@@ -146,7 +146,14 @@ export const testScenariosForV0API = [
               status: 200,
             },
             message:
-              '[Generic Response Handler] Request for destination: reddit Processed Successfully',
+              '[Base Response Handler] Request for destination: reddit Processed Successfully',
+            response: [
+              {
+                error: 'success',
+                metadata: generateMetadata(1),
+                statusCode: 200,
+              },
+            ],
             status: 200,
           },
         },

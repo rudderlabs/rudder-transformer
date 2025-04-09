@@ -5,6 +5,8 @@ const BASE_ENDPOINT = 'https://api.mixpanel.com';
 const BASE_ENDPOINT_EU = 'https://api-eu.mixpanel.com';
 const BASE_ENDPOINT_IN = 'https://api-in.mixpanel.com';
 
+const DESTINATION = 'MP';
+
 // ref: https://developer.mixpanel.com/reference/overview#gdpr-api
 const CREATE_DELETION_TASK_ENDPOINT = 'https://mixpanel.com/api/app/data-deletions/v3.0/';
 const CREATE_DELETION_TASK_ENDPOINT_EU = 'https://eu.mixpanel.com/api/app/data-deletions/v3.0/';
@@ -87,4 +89,5 @@ module.exports = {
   CREATE_DELETION_TASK_ENDPOINT,
   CREATE_DELETION_TASK_ENDPOINT_EU,
   CREATE_DELETION_TASK_ENDPOINT_IN,
+  DESTINATION,
 };

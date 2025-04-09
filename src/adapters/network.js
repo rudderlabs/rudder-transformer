@@ -411,7 +411,7 @@ const handleHttpRequest = async (requestType = 'post', ...httpArgs) => {
 };
 
 /**
- * depricating: handles proxying requests to destinations from server, expects requsts in "defaultRequestConfig"
+ * deprecating: handles proxying requests to destinations from server, expects requests in "defaultRequestConfig"
  * note: needed for test api
  * @param {*} request
  * @returns

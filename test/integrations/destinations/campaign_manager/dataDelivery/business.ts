@@ -1,4 +1,4 @@
-import { ProxyMetdata } from '../../../../../src/types';
+import { ProxyMetadata } from '../../../../../src/types';
 import { ProxyV1TestData } from '../../../testTypes';
 import { generateProxyV0Payload, generateProxyV1Payload } from '../../../testUtils';
 import { authHeader1 } from '../../am/maskedSecrets';
@@ -49,7 +49,7 @@ const commonRequestParameters = {
   },
 };
 
-const proxyMetdata1: ProxyMetdata = {
+const proxyMetadata1: ProxyMetadata = {
   jobId: 1,
   attemptNum: 1,
   userId: 'dummyUserId',
@@ -60,7 +60,7 @@ const proxyMetdata1: ProxyMetdata = {
   dontBatch: false,
 };
 
-const proxyMetdata2: ProxyMetdata = {
+const proxyMetadata2: ProxyMetadata = {
   jobId: 2,
   attemptNum: 1,
   userId: 'dummyUserId',
@@ -71,7 +71,7 @@ const proxyMetdata2: ProxyMetdata = {
   dontBatch: false,
 };
 
-const metadataArray = [proxyMetdata1, proxyMetdata2];
+const metadataArray = [proxyMetadata1, proxyMetadata2];
 
 // Test scenarios for the test cases
 // ===================================

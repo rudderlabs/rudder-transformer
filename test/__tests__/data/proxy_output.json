@@ -2,7 +2,7 @@
   {
     "output": {
       "status": 200,
-      "message": "[Generic Response Handler] Request for destination: any Processed Successfully",
+      "message": "[Base Response Handler] Request for destination: any Processed Successfully",
       "destinationResponse": {
         "response": {
           "code": 200,
@@ -17,7 +17,7 @@
   {
     "output": {
       "status": 400,
-      "message": "[Generic Response Handler] Request failed for destination any with status: 400",
+      "message": "[Base Response Handler] Request failed for destination any with status: 400",
       "destinationResponse": {
         "response": {
           "code": 400,
@@ -42,7 +42,7 @@
   {
     "output": {
       "status": 400,
-      "message": "[Generic Response Handler] Request failed for destination any with status: 400",
+      "message": "[Base Response Handler] Request failed for destination any with status: 400",
       "destinationResponse": {
         "response": "[[ENOTFOUND] :: DNS lookup failed]",
         "status": 400
@@ -62,7 +62,7 @@
   {
     "output": {
       "status": 400,
-      "message": "[Generic Response Handler] Request failed for destination any with status: 400",
+      "message": "[Base Response Handler] Request failed for destination any with status: 400",
       "destinationResponse": {
         "response": "",
         "status": 400
@@ -82,7 +82,7 @@
   {
     "output": {
       "status": 500,
-      "message": "[Generic Response Handler] Request failed for destination any with status: 500",
+      "message": "[Base Response Handler] Request failed for destination any with status: 500",
       "destinationResponse": {
         "response": "",
         "status": 500
@@ -102,7 +102,7 @@
   {
     "output": {
       "status": 500,
-      "message": "[Generic Response Handler] Request failed for destination any with status: 500",
+      "message": "[Base Response Handler] Request failed for destination any with status: 500",
       "destinationResponse": {
         "response": "",
         "status": 500

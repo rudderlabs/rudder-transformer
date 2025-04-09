@@ -3,6 +3,7 @@ import { createHttpTerminator } from 'http-terminator';
 import Koa from 'koa';
 import bodyParser from 'koa-bodyparser';
 import path from 'path';
+// @ts-ignore - no type definitions for set-value
 import setValue from 'set-value';
 import request from 'supertest';
 import networkHandlerFactory from '../../src/adapters/networkHandlerFactory';
@@ -37,7 +38,8 @@ afterEach(() => {
   jest.clearAllMocks();
 });
 
-const getDataFromPath = (pathInput) => {
+// @ts-ignore - simplified for tests
+const getDataFromPath = (pathInput: string) => {
   const testDataFile = fs.readFileSync(path.resolve(__dirname, pathInput));
   return JSON.parse(testDataFile.toString());
 };
@@ -241,21 +243,28 @@ describe('Api tests with a mock source/destination', () => {
         expect(d).toEqual(destType);
         return proxyResponse;
       }),
+      prepareProxy: jest.fn(),
       processAxiosResponse: jest.fn((r) => {
         expect(r).toEqual(proxyResponse);
         return { response: 'response', status: 200 };
       }),
-      responseHandler: jest.fn((o, d) => {
+      responseHandler: jest.fn((o) => {
         expect(o.destinationResponse).toEqual({ response: 'response', status: 200 });
         expect(o.rudderJobMetadata).toEqual({ a1: 'b1' });
         expect(o.destType).toEqual(destType);
-        return { status: 200, message: 'response', destinationResponse: 'response' };
+        return {
+          status: 200,
+          message: 'response',
+          destinationResponse: 'response',
+          response: [{ statusCode: 200, error: 'success', metadata: { a1: 'b1' } }],
+        };
       }),
     };
 
     const getNetworkHandlerSpy = jest
       .spyOn(networkHandlerFactory, 'getNetworkHandler')
-      .mockImplementationOnce((d, v) => {
+      // @ts-ignore - simplified for tests
+      .mockImplementationOnce((d, v): any => {
         expect(d).toEqual(destType);
         expect(v).toEqual(version);
         return {
@@ -271,7 +280,12 @@ describe('Api tests with a mock source/destination', () => {
 
     expect(response.status).toEqual(200);
     expect(JSON.parse(response.text)).toEqual({
-      output: { status: 200, message: 'response', destinationResponse: 'response' },
+      output: {
+        status: 200,
+        message: 'response',
+        destinationResponse: 'response',
+        response: [{ statusCode: 200, error: 'success', metadata: { a1: 'b1' } }],
+      },
     });
     expect(getNetworkHandlerSpy).toHaveBeenCalledTimes(1);
   });
@@ -302,11 +316,12 @@ describe('Api tests with a mock source/destination', () => {
         expect(d).toEqual(destType);
         return proxyResponse;
       }),
+      prepareProxy: jest.fn(),
       processAxiosResponse: jest.fn((r) => {
         expect(r).toEqual(proxyResponse);
         return { response: 'response', status: 200 };
       }),
-      responseHandler: jest.fn((o, d) => {
+      responseHandler: jest.fn((o) => {
         expect(o.destinationResponse).toEqual({ response: 'response', status: 200 });
         expect(o.rudderJobMetadata).toEqual([{ a1: 'b1' }]);
         expect(o.destType).toEqual(destType);
@@ -316,7 +331,8 @@ describe('Api tests with a mock source/destination', () => {
 
     const getNetworkHandlerSpy = jest
       .spyOn(networkHandlerFactory, 'getNetworkHandler')
-      .mockImplementationOnce((d, v) => {
+      // @ts-ignore - simplified for tests
+      .mockImplementationOnce((d, v): any => {
         expect(d).toEqual(destType);
         expect(v).toEqual(version);
         return {
@@ -524,7 +540,8 @@ describe('Comparsion service tests', () => {
   test('compare cdk v2 and native', async () => {
     process.env.COMPARATOR_ENABLED = 'true';
     const data = getDataFromPath('./data_scenarios/cdk_v2/success.json');
-    data.input.forEach((input) => {
+    // @ts-ignore - simplified for tests
+    data.input.forEach((input: any) => {
       setValue(input, 'destination.DestinationDefinition.Config.comparisonTestEnabeld', true);
       setValue(input, 'destination.DestinationDefinition.Config.comparisonService', 'native_dest');
     });
@@ -539,11 +556,13 @@ describe('Comparsion service tests', () => {
   test('compare native and cdk v2', async () => {
     process.env.COMPARATOR_ENABLED = 'true';
     const data = getDataFromPath('./data_scenarios/destination/router/successful_test.json');
-    data.input.input.forEach((input) => {
+    // @ts-ignore - simplified for tests
+    data.input.input.forEach((input: any) => {
       setValue(input, 'destination.DestinationDefinition.Config.comparisonTestEnabeld', true);
       setValue(input, 'destination.DestinationDefinition.Config.comparisonService', 'cdkv2_dest');
     });
-    data.output.output.forEach((output) => {
+    // @ts-ignore - simplified for tests
+    data.output.output.forEach((output: any) => {
       setValue(output, 'destination.DestinationDefinition.Config.comparisonTestEnabeld', true);
       setValue(output, 'destination.DestinationDefinition.Config.comparisonService', 'cdkv2_dest');
     });

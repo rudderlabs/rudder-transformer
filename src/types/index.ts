@@ -1,5 +1,6 @@
 export * from './rudderEvents';
 export * from './controlPlaneConfig';
+export * from './delivery';
 export * from './destinationTransformation';
 export * from './sourceTransformation';
 export * from './userTransformation';

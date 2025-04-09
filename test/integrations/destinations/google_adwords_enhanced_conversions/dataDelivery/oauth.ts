@@ -52,6 +52,7 @@ const params = {
   developerToken: 'ijkl91011',
   accessToken: 'google_adwords_enhanced_conversions1',
   loginCustomerId: '0987654321',
+  subAccount: true,
 };
 
 const commonRequestParameters = {
@@ -141,6 +142,7 @@ export const v0oauthScenarios = [
             event: 'Product Added',
             customerId: '1234567910',
             destination: 'google_adwords_enhanced_conversions',
+            subAccount: true,
           },
           endpoint: '',
         }),
@@ -246,6 +248,7 @@ export const v1oauthScenarios = [
             event: 'Product Added',
             customerId: '1234567910',
             destination: 'google_adwords_enhanced_conversions',
+            subAccount: true,
           },
           endpoint: '',
         }),

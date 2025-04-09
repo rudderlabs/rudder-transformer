@@ -83,11 +83,10 @@ const getConversionActionId = async ({ params, googleAds }) => {
  */
 const gaecProxyRequest = async (request) => {
   const { body, params } = request;
-
   const googleAds = new GoogleAdsSDK.GoogleAds({
     accessToken: params.accessToken,
     customerId: params.customerId,
-    loginCustomerId: params.loginCustomerId,
+    loginCustomerId: params.subAccount ? params.loginCustomerId : '',
     developerToken: params.developerToken,
   });
   const conversionActionId = await getConversionActionId({

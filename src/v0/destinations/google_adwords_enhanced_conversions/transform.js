@@ -61,6 +61,7 @@ const responseBuilder = async (metadata, message, { Config }, payload) => {
     accessToken,
     loginCustomerId: filteredLoginCustomerId,
     developerToken: getValueFromMessage(metadata, 'secret.developer_token'),
+    subAccount,
   };
   if (subAccount) {
     if (!loginCustomerId) {

@@ -20,6 +20,7 @@ const params = {
   developerToken: 'ijkl91011',
   accessToken: 'google_adwords_enhanced_conversions1',
   loginCustomerId: '0987654321',
+  subAccount: true,
 };
 
 const validRequestPaylod = {
@@ -143,6 +144,7 @@ export const testScenariosForV0API = [
             event: 'Product Added',
             customerId: '1234567888',
             destination: 'google_adwords_enhanced_conversions',
+            subAccount: true,
           },
           endpoint: '',
         }),
@@ -289,6 +291,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
               event: 'Product Added',
               customerId: '1234567888',
               destination: 'google_adwords_enhanced_conversions',
+              subAccount: true,
             },
             endpoint: '',
           },

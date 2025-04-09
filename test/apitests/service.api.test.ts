@@ -65,25 +65,25 @@ describe('features tests', () => {
     expect(Object.keys(routerTransform).length).toBeGreaterThan(0);
   });
 
-  test('features supportSourceTransformV1 to be boolean', async () => {
+  test('features supportSourceTransformV1 to be always true', async () => {
     const response = await request(server).get('/features');
     expect(response.status).toEqual(200);
     const supportSourceTransformV1 = JSON.parse(response.text).supportSourceTransformV1;
-    expect(typeof supportSourceTransformV1).toBe('boolean');
+    expect(supportSourceTransformV1).toBe(true);
   });
 
-  test('features supportTransformerProxyV1 to be boolean', async () => {
-    const response = await request(server).get('/features');
-    expect(response.status).toEqual(200);
-    const supportTransformerProxyV1 = JSON.parse(response.text).supportTransformerProxyV1;
-    expect(typeof supportTransformerProxyV1).toBe('boolean');
-  });
-
-  test('features upgradedToSourceTransformV2 to be boolean', async () => {
+  test('features upgradedToSourceTransformV2 to be always true', async () => {
     const response = await request(server).get('/features');
     expect(response.status).toEqual(200);
     const upgradedToSourceTransformV2 = JSON.parse(response.text).upgradedToSourceTransformV2;
-    expect(typeof upgradedToSourceTransformV2).toBe('boolean');
+    expect(upgradedToSourceTransformV2).toBe(true);
+  });
+
+  test('features supportTransformerProxyV1 to be always true', async () => {
+    const response = await request(server).get('/features');
+    expect(response.status).toEqual(200);
+    const supportTransformerProxyV1 = JSON.parse(response.text).supportTransformerProxyV1;
+    expect(supportTransformerProxyV1).toBe(true);
   });
 });
 
@@ -336,81 +336,6 @@ describe('Api tests with a mock source/destination', () => {
     });
     expect(getNetworkHandlerSpy).toHaveBeenCalledTimes(1);
   });
-
-  test('(mock source) v0 source transformation', async () => {
-    const sourceType = '__rudder_test__';
-    const version = 'v0';
-
-    const getData = () => {
-      return [{ event: { a: 'b1' } }, { event: { a: 'b2' } }];
-    };
-
-    const tevent = { event: 'clicked', type: 'track' };
-
-    const getSourceHandlerSpy = jest
-      .spyOn(FetchHandler, 'getSourceHandler')
-      .mockImplementationOnce((s, v) => {
-        expect(s).toEqual(sourceType);
-        return {
-          process: jest.fn(() => {
-            return tevent;
-          }),
-        };
-      });
-
-    const response = await request(server)
-      .post('/v0/sources/__rudder_test__')
-      .set('Accept', 'application/json')
-      .send(getData());
-
-    const expected = [
-      { output: { batch: [{ event: 'clicked', type: 'track', context: {} }] } },
-      { output: { batch: [{ event: 'clicked', type: 'track', context: {} }] } },
-    ];
-
-    expect(response.status).toEqual(200);
-    expect(JSON.parse(response.text)).toEqual(expected);
-    expect(getSourceHandlerSpy).toHaveBeenCalledTimes(1);
-  });
-
-  test('(mock source) v1 source transformation', async () => {
-    const sourceType = '__rudder_test__';
-    const version = 'v1';
-
-    const getData = () => {
-      return [
-        { event: { a: 'b1' }, source: { id: 'id' } },
-        { event: { a: 'b2' }, source: { id: 'id' } },
-      ];
-    };
-
-    const tevent = { event: 'clicked', type: 'track' };
-
-    const getSourceHandlerSpy = jest
-      .spyOn(FetchHandler, 'getSourceHandler')
-      .mockImplementationOnce((s, v) => {
-        expect(s).toEqual(sourceType);
-        return {
-          process: jest.fn(() => {
-            return tevent;
-          }),
-        };
-      });
-
-    const response = await request(server)
-      .post('/v1/sources/__rudder_test__')
-      .set('Accept', 'application/json')
-      .send(getData());
-
-    const expected = [
-      { output: { batch: [{ event: 'clicked', type: 'track', context: {} }] } },
-      { output: { batch: [{ event: 'clicked', type: 'track', context: {} }] } },
-    ];
-
-    expect(response.status).toEqual(200);
-    expect(JSON.parse(response.text)).toEqual(expected);
-    expect(getSourceHandlerSpy).toHaveBeenCalledTimes(1);
-  });
 });
 
 describe('Destination api tests', () => {
@@ -553,36 +478,22 @@ describe('Source api tests', () => {
     expect(JSON.parse(response.text)).toEqual(data.output);
   });
 
-  test('(webhook) successful source transform for source present in v1 and server providing v0 endpoint', async () => {
-    const data = getDataFromPath('./data_scenarios/source/v1/successful.json');
-    const response = await request(server)
-      .post('/v1/sources/webhook')
-      .set('Accept', 'application/json')
-      .send(data.input);
-    const parsedResp = JSON.parse(response.text);
-    delete parsedResp[0].output.batch[0].anonymousId;
-    expect(response.status).toEqual(200);
-    expect(parsedResp).toEqual(data.output);
-  });
-
   test('(NA_SOURCE) failure source transform ', async () => {
-    const data = getDataFromPath('./data_scenarios/source/v1/failure.json');
+    const data = getDataFromPath('./data_scenarios/source/v2/failure.json');
     const response = await request(server)
-      .post('/v0/sources/NA_SOURCE')
+      .post('/v2/sources/NA_SOURCE')
       .set('Accept', 'application/json')
       .send(data.input);
     expect(response.status).toEqual(200);
     expect(JSON.parse(response.text)).toEqual(data.output);
   });
 
-  test('(pipedream) success source transform for source present in v0 and server providing v1 endpoint', async () => {
-    const data = getDataFromPath('./data_scenarios/source/v1/pipedream.json');
+  test('failure source transform for deprecated versions', async () => {
     const response = await request(server)
-      .post('/v1/sources/pipedream')
+      .post('/v0/sources/adjust')
       .set('Accept', 'application/json')
-      .send(data.input);
-    expect(response.status).toEqual(200);
-    expect(JSON.parse(response.text)).toEqual(data.output);
+      .send({ some: 'input' });
+    expect(response.status).toEqual(404);
   });
 });
 

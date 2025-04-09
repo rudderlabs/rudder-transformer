@@ -287,11 +287,11 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
             params: {
               developerToken: 'ijkl91011',
               accessToken: 'google_adwords_enhanced_conversions1',
-              loginCustomerId: '0987654321',
+              loginCustomerId: 'wrongLoginCustomerId',
               event: 'Product Added',
               customerId: '1234567888',
               destination: 'google_adwords_enhanced_conversions',
-              subAccount: true,
+              subAccount: false,
             },
             endpoint: '',
           },

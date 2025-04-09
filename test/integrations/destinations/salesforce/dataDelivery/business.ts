@@ -1,4 +1,4 @@
-import { ProxyMetdata } from '../../../../../src/types';
+import { ProxyMetadata } from '../../../../../src/types';
 import { ProxyV1TestData } from '../../../testTypes';
 import { generateProxyV1Payload } from '../../../testUtils';
 import { authHeader1 } from '../maskedSecrets';
@@ -53,7 +53,7 @@ const statTags = {
   },
 };
 
-export const proxyMetdata: ProxyMetdata = {
+export const proxyMetadata: ProxyMetadata = {
   jobId: 1,
   attemptNum: 1,
   userId: 'dummyUserId',
@@ -64,7 +64,7 @@ export const proxyMetdata: ProxyMetdata = {
   dontBatch: false,
 };
 
-export const reqMetadataArray = [proxyMetdata];
+export const reqMetadataArray = [proxyMetadata];
 
 const commonRequestParameters = {
   headers: commonHeaders,
@@ -113,7 +113,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
             response: [
               {
                 error: JSON.stringify({ statusText: 'No Content' }),
-                metadata: proxyMetdata,
+                metadata: proxyMetadata,
                 statusCode: 200,
               },
             ],
@@ -157,7 +157,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
                 error: JSON.stringify([
                   { message: 'Session expired or invalid', errorCode: 'INVALID_SESSION_ID' },
                 ]),
-                metadata: proxyMetdata,
+                metadata: proxyMetadata,
                 statusCode: 500,
               },
             ],
@@ -201,7 +201,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
                 error: JSON.stringify([
                   { message: 'INVALID_HEADER_TYPE', errorCode: 'INVALID_AUTH_HEADER' },
                 ]),
-                metadata: proxyMetdata,
+                metadata: proxyMetadata,
                 statusCode: 400,
               },
             ],
@@ -244,7 +244,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
                 error: JSON.stringify([
                   { message: 'Request limit exceeded', errorCode: 'REQUEST_LIMIT_EXCEEDED' },
                 ]),
-                metadata: proxyMetdata,
+                metadata: proxyMetadata,
                 statusCode: 429,
               },
             ],
@@ -288,7 +288,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
                 error: JSON.stringify([
                   { message: 'Server Unavailable', errorCode: 'SERVER_UNAVAILABLE' },
                 ]),
-                metadata: proxyMetdata,
+                metadata: proxyMetadata,
                 statusCode: 429,
               },
             ],
@@ -334,7 +334,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
                   error: 'invalid_grant',
                   error_description: 'authentication failure',
                 }),
-                metadata: proxyMetdata,
+                metadata: proxyMetadata,
                 statusCode: 400,
               },
             ],
@@ -395,7 +395,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
                     },
                   ],
                 }),
-                metadata: proxyMetdata,
+                metadata: proxyMetadata,
                 statusCode: 200,
               },
             ],

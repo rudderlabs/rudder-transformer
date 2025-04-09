@@ -1,4 +1,4 @@
-import { ProxyMetdata } from '../../../../../src/types';
+import { ProxyMetadata } from '../../../../../src/types';
 import { ProxyV1TestData } from '../../../testTypes';
 import { generateProxyV1Payload } from '../../../testUtils';
 
@@ -15,7 +15,7 @@ const statTags = {
   },
 };
 
-export const proxyMetdata: ProxyMetdata = {
+export const proxyMetadata: ProxyMetadata = {
   jobId: 1,
   attemptNum: 1,
   userId: 'dummyUserId',
@@ -29,7 +29,7 @@ const headers = {
   'Content-Type': 'application/xml',
 };
 
-export const reqMetadataArray = [proxyMetdata];
+export const reqMetadataArray = [proxyMetadata];
 
 const failureRequestParameters = {
   XML: {
@@ -83,7 +83,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
               {
                 error:
                   '[ADOBE_ANALYTICS Response Handler] Request failed for destination adobe_analytics : NO pagename OR pageurl',
-                metadata: proxyMetdata,
+                metadata: proxyMetadata,
                 statusCode: 400,
               },
             ],
@@ -128,7 +128,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
               {
                 error:
                   '[ADOBE_ANALYTICS Response Handler] Request failed for destination adobe_analytics with a general error',
-                metadata: proxyMetdata,
+                metadata: proxyMetadata,
                 statusCode: 400,
               },
             ],
@@ -169,7 +169,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
             response: [
               {
                 error: '"<?xml version=\\"1.0\\" encoding=\\"UTF-8\\"?><status>SUCCESS</status>"',
-                metadata: proxyMetdata,
+                metadata: proxyMetadata,
                 statusCode: 200,
               },
             ],

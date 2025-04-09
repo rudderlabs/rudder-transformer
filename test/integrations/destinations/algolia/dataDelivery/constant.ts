@@ -1,6 +1,6 @@
 import { defaultApiKey } from '../../../common/secrets';
 
-const proxyMetdata1 = {
+const proxyMetadata1 = {
   jobId: 1,
   attemptNum: 1,
   userId: 'dummyUserId',
@@ -11,7 +11,7 @@ const proxyMetdata1 = {
   dontBatch: false,
 };
 
-const proxyMetdata2 = {
+const proxyMetadata2 = {
   jobId: 2,
   attemptNum: 1,
   userId: 'dummyUserId',
@@ -22,7 +22,7 @@ const proxyMetdata2 = {
   dontBatch: false,
 };
 
-export const metadataArray = [proxyMetdata1, proxyMetdata2];
+export const metadataArray = [proxyMetadata1, proxyMetadata2];
 
 export const abortStatTags = {
   errorCategory: 'network',

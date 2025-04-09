@@ -1,4 +1,4 @@
-import { ProxyMetdata } from '../../../../../src/types';
+import { ProxyMetadata } from '../../../../../src/types';
 import { ProxyV1TestData } from '../../../testTypes';
 import { generateProxyV1Payload } from '../../../testUtils';
 import { authHeader1, authHeaderAccessToken } from '../maskedSecrets';
@@ -35,7 +35,7 @@ export const statTags = {
   },
 };
 
-export const proxyMetdata: ProxyMetdata = {
+export const proxyMetadata: ProxyMetadata = {
   jobId: 1,
   attemptNum: 1,
   userId: 'dummyUserId',
@@ -46,7 +46,7 @@ export const proxyMetdata: ProxyMetdata = {
   dontBatch: false,
 };
 
-export const reqMetadataArray = [proxyMetdata];
+export const reqMetadataArray = [proxyMetadata];
 const params = {
   destination: 'marketo_static_list',
 };
@@ -112,7 +112,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
                   ],
                   success: true,
                 }),
-                metadata: proxyMetdata,
+                metadata: proxyMetadata,
                 statusCode: 200,
               },
             ],
@@ -163,7 +163,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
                   success: false,
                   errors: [{ code: '601', message: 'Access token invalid' }],
                 }),
-                metadata: proxyMetdata,
+                metadata: proxyMetadata,
                 statusCode: 500,
               },
             ],
@@ -217,7 +217,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
                   ],
                   success: true,
                 }),
-                metadata: proxyMetdata,
+                metadata: proxyMetadata,
                 statusCode: 200,
               },
             ],
@@ -263,7 +263,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
             response: [
               {
                 error: '""',
-                metadata: proxyMetdata,
+                metadata: proxyMetadata,
                 statusCode: 500,
               },
             ],

@@ -2,8 +2,6 @@ import { authHeader2, secret2, secret1 } from '../maskedSecrets';
 import { generateMetadata, generateProxyV1Payload } from '../../../testUtils';
 import { commonHeaders, commonParams, validRequestPayload1 } from './business';
 
-const API_VERSION = 'v18';
-
 const commonStatTags = {
   destType: 'GOOGLE_ADWORDS_REMARKETING_LISTS',
   destinationId: 'default-destinationId',
@@ -30,9 +28,9 @@ export const oauthError = [
       request: {
         body: generateProxyV1Payload({
           headers: commonHeaders,
-          params: commonParams,
+          params: { ...commonParams, customerId: 'customerid1' },
           JSON: validRequestPayload1,
-          endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/customerid/offlineUserDataJobs`,
+          endpoint: '',
           accessToken: secret1,
         }),
         method: 'POST',
@@ -85,9 +83,9 @@ export const oauthError = [
       request: {
         body: generateProxyV1Payload({
           headers: { ...commonHeaders, Authorization: authHeader2 },
-          params: { ...commonParams, customerId: secret2 },
+          params: { ...commonParams, customerId: secret2, accessToken: secret2 },
           JSON: validRequestPayload1,
-          endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/customerid/offlineUserDataJobs`,
+          endpoint: '',
           accessToken: secret2,
         }),
         method: 'POST',

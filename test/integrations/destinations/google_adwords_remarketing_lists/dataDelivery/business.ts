@@ -1,23 +1,20 @@
-import { authHeader1, secret3 } from '../maskedSecrets';
+import { secret1, secret3 } from '../maskedSecrets';
 import {
   generateGoogleOAuthMetadata,
   generateProxyV0Payload,
   generateProxyV1Payload,
 } from '../../../testUtils';
 
-const API_VERSION = 'v18';
-
-export const commonHeaders = {
-  Authorization: authHeader1,
-  'Content-Type': 'application/json',
-  'developer-token': 'dummy-dev-token',
-};
+export const commonHeaders = {};
 
 export const commonParams = {
+  developerToken: 'dummy-dev-token',
+  accessToken: secret1,
   destination: 'google_adwords_remarketing_lists',
   listId: '709078448',
   customerId: '7693729833',
   consent: { adPersonalization: 'UNSPECIFIED', adUserData: 'UNSPECIFIED' },
+  loginCustomerId: '',
 };
 
 export const validRequestPayload1 = {
@@ -123,7 +120,7 @@ export const testScenariosForV0API = [
           headers: commonHeaders,
           params: commonParams,
           JSON: validRequestPayload1,
-          endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
+          endpoint: ``,
         }),
         method: 'POST',
       },
@@ -155,9 +152,9 @@ export const testScenariosForV0API = [
       request: {
         body: generateProxyV0Payload({
           headers: commonHeaders,
-          params: commonParams,
+          params: { ...commonParams, customerId: '7693729834' },
           JSON: invalidArgumentRequestPayload,
-          endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729834/offlineUserDataJobs`,
+          endpoint: ``,
         }),
         method: 'POST',
       },
@@ -220,7 +217,7 @@ export const testScenariosForV0API = [
           headers: commonHeaders,
           params: commonParams,
           JSON: validRequestPayload2,
-          endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
+          endpoint: ``,
         }),
         method: 'POST',
       },
@@ -258,7 +255,7 @@ export const testScenariosForV1API = [
             headers: commonHeaders,
             params: commonParams,
             JSON: validRequestPayload1,
-            endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
+            endpoint: ``,
           },
           metadataArray,
         ),
@@ -299,9 +296,9 @@ export const testScenariosForV1API = [
         body: generateProxyV1Payload(
           {
             headers: commonHeaders,
-            params: commonParams,
+            params: { ...commonParams, customerId: '7693729834' },
             JSON: invalidArgumentRequestPayload,
-            endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729834/offlineUserDataJobs`,
+            endpoint: ``,
           },
           metadataArray,
         ),
@@ -347,7 +344,7 @@ export const testScenariosForV1API = [
             headers: commonHeaders,
             params: commonParams,
             JSON: validRequestPayload2,
-            endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
+            endpoint: ``,
           },
           metadataArray,
         ),
@@ -390,8 +387,7 @@ export const testScenariosForV1API = [
             headers: commonHeaders,
             params: { ...commonParams, customerId: 'wrongCustomerId' },
             JSON: validRequestPayload2,
-            endpoint:
-              'https://googleads.googleapis.com/v15/customers/wrongCustomerId/offlineUserDataJobs',
+            endpoint: '',
           },
           metadataArray,
         ),

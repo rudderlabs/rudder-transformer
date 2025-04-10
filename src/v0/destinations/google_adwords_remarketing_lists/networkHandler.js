@@ -1,103 +1,56 @@
-const { NetworkError } = require('@rudderstack/integrations-lib');
-const get = require('get-value');
-const { prepareProxyRequest, handleHttpRequest } = require('../../../adapters/network');
-const { isHttpStatusSuccess } = require('../../util/index');
 const {
-  processAxiosResponse,
-  getDynamicErrorType,
-} = require('../../../adapters/utils/networkUtils');
+  NetworkError,
+  isDefinedAndNotNullAndNotEmpty,
+  GoogleAdsSDK,
+} = require('@rudderstack/integrations-lib');
+const get = require('get-value');
+const { prepareProxyRequest } = require('../../../adapters/network');
+const { isHttpStatusSuccess } = require('../../util/index');
+const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const tags = require('../../util/tags');
 const { getAuthErrCategory } = require('../../util/googleUtils');
 /**
  * This function helps to create a offlineUserDataJobs
- * @param endpoint
- * @param customerId
- * @param listId
- * @param headers
- * @param method
- * @consentBlock
+ * @param googleAds
+ * @param params
  * ref: https://developers.google.com/google-ads/api/rest/reference/rest/v15/CustomerMatchUserListMetadata
  */
 
-const createJob = async ({ endpoint, headers, method, params, metadata }) => {
-  const jobCreatingUrl = `${endpoint}:create`;
-  const customerMatchUserListMetadata = {
-    userList: `customers/${params.customerId}/userLists/${params.listId}`,
-  };
-  if (Object.keys(params.consent).length > 0) {
-    customerMatchUserListMetadata.consent = params.consent;
-  }
+const createJob = async ({ googleAds, params }) => {
   const jobCreatingRequest = {
-    url: jobCreatingUrl,
-    data: {
-      job: {
-        type: 'CUSTOMER_MATCH_USER_LIST',
-        customerMatchUserListMetadata,
+    job: {
+      type: 'CUSTOMER_MATCH_USER_LIST',
+      customerMatchUserListMetadata: {
+        userList: `customers/${params.customerId}/userLists/${params.listId}`,
+        ...(Object.keys(params.consent).length > 0 && {
+          consent: params.consent,
+        }),
       },
     },
-    headers,
-    method,
   };
-  const { httpResponse } = await handleHttpRequest('constructor', jobCreatingRequest, {
-    destType: 'google_adwords_remarketing_lists',
-    feature: 'proxy',
-    endpointPath: '/customers/create',
-    requestMethod: 'POST',
-    module: 'dataDelivery',
-    metadata,
-  });
-  return httpResponse;
+
+  const response = await googleAds.createOfflineUserDataJob(jobCreatingRequest);
+  return response;
 };
 /**
  * This function helps to put user details in a offlineUserDataJobs
- * @param endpoint
- * @param headers
- * @param method
+ * @param googleAds
  * @param jobId
  * @param body
  */
 
-const addUserToJob = async ({ endpoint, headers, method, jobId, body, metadata }) => {
-  const jobAddingUrl = `${endpoint}/${jobId}:addOperations`;
-  const secondRequest = {
-    url: jobAddingUrl,
-    data: body.JSON,
-    headers,
-    method,
-  };
-  const { httpResponse: response } = await handleHttpRequest('constructor', secondRequest, {
-    destType: 'google_adwords_remarketing_lists',
-    feature: 'proxy',
-    endpointPath: '/addOperations',
-    requestMethod: 'POST',
-    module: 'dataDelivery',
-    metadata,
-  });
+const addUserToJob = async ({ googleAds, jobId, body }) => {
+  const response = await googleAds.addUserToOfflineUserDataJob(jobId, body.JSON);
   return response;
 };
 
 /**
  * This function helps to run a offlineUserDataJobs
- * @param endpoint
- * @param headers
- * @param method
+ * @param googleAds
  * @param jobId
  */
-const runTheJob = async ({ endpoint, headers, method, jobId, metadata }) => {
-  const jobRunningUrl = `${endpoint}/${jobId}:run`;
-  const thirdRequest = {
-    url: jobRunningUrl,
-    headers,
-    method,
-  };
-  const { httpResponse: response } = await handleHttpRequest('constructor', thirdRequest, {
-    destType: 'google_adwords_remarketing_lists',
-    feature: 'proxy',
-    endpointPath: '/run',
-    requestMethod: 'POST',
-    module: 'dataDelivery',
-    metadata,
-  });
+const runTheJob = async ({ googleAds, jobId }) => {
+  const response = await googleAds.runOfflineUserDataJob(jobId);
   return response;
 };
 
@@ -108,44 +61,49 @@ const runTheJob = async ({ endpoint, headers, method, jobId, metadata }) => {
  * @returns
  */
 const gaAudienceProxyRequest = async (request) => {
-  const { body, method, params, endpoint, metadata } = request;
-  const { headers } = request;
+  const { body, params } = request;
+
+  const googleAds = new GoogleAdsSDK.GoogleAds({
+    accessToken: params.accessToken,
+    customerId: params.customerId,
+    loginCustomerId: params.loginCustomerId,
+    developerToken: params.developerToken,
+  });
 
   // step1: offlineUserDataJobs creation
 
-  const firstResponse = await createJob({ endpoint, headers, method, params, metadata });
-  if (!firstResponse.success && !isHttpStatusSuccess(firstResponse?.response?.status)) {
+  const firstResponse = await createJob({ googleAds, params });
+  if (firstResponse.type !== 'success') {
     return firstResponse;
   }
 
-  if (isHttpStatusSuccess(firstResponse?.response?.status)) {
-    const { partialFailureError } = firstResponse.response.data;
-    if (partialFailureError && partialFailureError.code !== 0) {
-      return firstResponse;
-    }
-  }
-
   // step2: putting users into the job
-  let jobId;
-  if (firstResponse?.response?.data?.resourceName)
-    // eslint-disable-next-line prefer-destructuring
-    jobId = firstResponse.response.data.resourceName.split('/')[3];
-  const secondResponse = await addUserToJob({ endpoint, headers, method, jobId, body, metadata });
-  if (!secondResponse.success && !isHttpStatusSuccess(secondResponse?.response?.status)) {
+  const jobId = firstResponse.responseBody.resourceName.split('/')[3];
+  const secondResponse = await addUserToJob({
+    googleAds,
+    jobId,
+    body,
+  });
+  if (secondResponse.type !== 'success') {
+    return secondResponse;
+  }
+  const {
+    responseBody: { partialFailureError },
+  } = secondResponse;
+  if (partialFailureError && partialFailureError.code !== 0) {
     return secondResponse;
   }
 
-  if (isHttpStatusSuccess(secondResponse?.response?.status)) {
-    const { partialFailureError } = secondResponse.response.data;
-    if (partialFailureError && partialFailureError.code !== 0) {
-      return secondResponse;
-    }
-  }
-
   // step3: running the job
-  const thirdResponse = await runTheJob({ endpoint, headers, method, jobId, metadata });
+  const thirdResponse = await runTheJob({ googleAds, jobId });
   return thirdResponse;
 };
+
+const garlProcessAxiosResponse = (sdkResponse) => ({
+  response: sdkResponse.responseBody || '',
+  status: sdkResponse.statusCode,
+  ...(isDefinedAndNotNullAndNotEmpty(sdkResponse.headers) ? { headers: sdkResponse.headers } : {}),
+});
 
 const gaAudienceRespHandler = (destResponse, stageMsg) => {
   let { status } = destResponse;
@@ -205,7 +163,7 @@ const responseHandler = (responseParams) => {
 
 function networkHandler() {
   this.proxy = gaAudienceProxyRequest;
-  this.processAxiosResponse = processAxiosResponse;
+  this.processAxiosResponse = garlProcessAxiosResponse;
   this.prepareProxy = prepareProxyRequest;
   this.responseHandler = responseHandler;
 }

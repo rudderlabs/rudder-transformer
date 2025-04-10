@@ -11,12 +11,10 @@ const {
 } = require('../../util');
 const logger = require('../../../logger');
 const { MappedToDestinationKey } = require('../../../constants');
-const { JSON_MIME_TYPE } = require('../../util/constant');
 const {
   addressInfoMapping,
   attributeMapping,
   TYPEOFLIST,
-  BASE_ENDPOINT,
   hashAttributes,
   ADDRESS_INFO_ATTRIBUTES,
 } = require('./config');
@@ -41,7 +39,6 @@ const responseBuilder = (
   const payload = body;
   const response = defaultRequestConfig();
   const filteredCustomerId = removeHyphens(Config.customerId);
-  response.endpoint = `${BASE_ENDPOINT}/${filteredCustomerId}/offlineUserDataJobs`;
   response.body.JSON = removeUndefinedAndNullValues(payload);
   if (!isDefinedAndNotNullAndNotEmpty(audienceId)) {
     throw new ConfigurationError('List ID is a mandatory field');
@@ -50,16 +47,13 @@ const responseBuilder = (
     listId: audienceId,
     customerId: filteredCustomerId,
     consent: consentBlock,
-  };
-  response.headers = {
-    Authorization: `Bearer ${accessToken}`,
-    'Content-Type': JSON_MIME_TYPE,
-    'developer-token': developerToken,
+    accessToken,
+    developerToken,
   };
   if (Config.subAccount)
     if (Config.loginCustomerId) {
       const filteredLoginCustomerId = removeHyphens(Config.loginCustomerId);
-      response.headers['login-customer-id'] = filteredLoginCustomerId;
+      response.params.loginCustomerId = filteredLoginCustomerId;
     } else throw new ConfigurationError(`loginCustomerId is required as subAccount is true.`);
   return response;
 };

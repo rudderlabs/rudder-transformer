@@ -1,4 +1,4 @@
-import { authHeader3, secret3 } from '../maskedSecrets';
+import { secret3 } from '../maskedSecrets';
 import { rETLAudienceRouterRequest } from './audience';
 import {
   rETLRecordRouterRequest,
@@ -7,8 +7,6 @@ import {
   eventStreamRecordRouterRequest,
   rETLRecordRouterRequestVDMv1,
 } from './record';
-
-const API_VERSION = 'v18';
 
 export const data = [
   {
@@ -34,12 +32,10 @@ export const data = [
                   version: '1',
                   type: 'REST',
                   method: 'POST',
-                  endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
-                  headers: {
-                    Authorization: authHeader3,
-                    'Content-Type': 'application/json',
-                  },
+                  endpoint: ``,
+                  headers: {},
                   params: {
+                    accessToken: secret3,
                     listId: '7090784486',
                     customerId: '7693729833',
                     consent: {
@@ -153,12 +149,10 @@ export const data = [
                   version: '1',
                   type: 'REST',
                   method: 'POST',
-                  endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
-                  headers: {
-                    Authorization: authHeader3,
-                    'Content-Type': 'application/json',
-                  },
+                  endpoint: ``,
+                  headers: {},
                   params: {
+                    accessToken: secret3,
                     listId: '7090784486',
                     customerId: '7693729833',
                     consent: {
@@ -272,12 +266,10 @@ export const data = [
                   version: '1',
                   type: 'REST',
                   method: 'POST',
-                  endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
-                  headers: {
-                    Authorization: authHeader3,
-                    'Content-Type': 'application/json',
-                  },
+                  endpoint: ``,
+                  headers: {},
                   params: {
+                    accessToken: secret3,
                     listId: '7090784486',
                     customerId: '7693729833',
                     consent: { adPersonalization: 'UNSPECIFIED', adUserData: 'UNSPECIFIED' },
@@ -367,12 +359,10 @@ export const data = [
                   version: '1',
                   type: 'REST',
                   method: 'POST',
-                  endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
-                  headers: {
-                    Authorization: authHeader3,
-                    'Content-Type': 'application/json',
-                  },
+                  endpoint: ``,
+                  headers: {},
                   params: {
+                    accessToken: secret3,
                     listId: '7090784486',
                     customerId: '7693729833',
                     consent: { adPersonalization: 'UNSPECIFIED', adUserData: 'UNSPECIFIED' },
@@ -462,12 +452,10 @@ export const data = [
                   version: '1',
                   type: 'REST',
                   method: 'POST',
-                  endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
-                  headers: {
-                    Authorization: authHeader3,
-                    'Content-Type': 'application/json',
-                  },
+                  endpoint: ``,
+                  headers: {},
                   params: {
+                    accessToken: secret3,
                     listId: '7090784486',
                     customerId: '7693729833',
                     consent: { adPersonalization: 'UNSPECIFIED', adUserData: 'UNSPECIFIED' },
@@ -512,12 +500,10 @@ export const data = [
                   version: '1',
                   type: 'REST',
                   method: 'POST',
-                  endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
-                  headers: {
-                    Authorization: authHeader3,
-                    'Content-Type': 'application/json',
-                  },
+                  endpoint: ``,
+                  headers: {},
                   params: {
+                    accessToken: secret3,
                     listId: '7090784486',
                     customerId: '7693729833',
                     consent: { adPersonalization: 'UNSPECIFIED', adUserData: 'UNSPECIFIED' },
@@ -629,12 +615,10 @@ export const data = [
                   version: '1',
                   type: 'REST',
                   method: 'POST',
-                  endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
-                  headers: {
-                    Authorization: authHeader3,
-                    'Content-Type': 'application/json',
-                  },
+                  endpoint: ``,
+                  headers: {},
                   params: {
+                    accessToken: secret3,
                     listId: '7090784486',
                     customerId: '7693729833',
                     consent: {
@@ -726,12 +710,10 @@ export const data = [
                   version: '1',
                   type: 'REST',
                   method: 'POST',
-                  endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
-                  headers: {
-                    Authorization: authHeader3,
-                    'Content-Type': 'application/json',
-                  },
+                  endpoint: ``,
+                  headers: {},
                   params: {
+                    accessToken: secret3,
                     listId: '7090784486',
                     customerId: '7693729833',
                     consent: {
@@ -853,12 +835,10 @@ export const data = [
                   version: '1',
                   type: 'REST',
                   method: 'POST',
-                  endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
-                  headers: {
-                    Authorization: authHeader3,
-                    'Content-Type': 'application/json',
-                  },
+                  endpoint: ``,
+                  headers: {},
                   params: {
+                    accessToken: secret3,
                     listId: '7090784486',
                     customerId: '7693729833',
                     consent: {
@@ -1001,12 +981,10 @@ export const data = [
                   version: '1',
                   type: 'REST',
                   method: 'POST',
-                  endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
-                  headers: {
-                    Authorization: authHeader3,
-                    'Content-Type': 'application/json',
-                  },
+                  endpoint: ``,
+                  headers: {},
                   params: {
+                    accessToken: secret3,
                     listId: '7090784486',
                     customerId: '7693729833',
                     consent: {
@@ -1117,12 +1095,10 @@ export const data = [
                   version: '1',
                   type: 'REST',
                   method: 'POST',
-                  endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
-                  headers: {
-                    Authorization: authHeader3,
-                    'Content-Type': 'application/json',
-                  },
+                  endpoint: ``,
+                  headers: {},
                   params: {
+                    accessToken: secret3,
                     listId: '7090784486',
                     customerId: '7693729833',
                     consent: {

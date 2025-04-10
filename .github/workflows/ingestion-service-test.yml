@@ -6,6 +6,9 @@ on:
       build_tag:
         required: true
         type: string
+    secrets:
+      PAT:
+        required: true
 
 jobs:
   ingestion-service-test:

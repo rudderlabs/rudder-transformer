@@ -7,10 +7,6 @@ on:
         required: true
         type: string
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.head_ref || github.sha }}
-  cancel-in-progress: true
-
 jobs:
   ingestion-service-test:
     name: ingestion-service-test

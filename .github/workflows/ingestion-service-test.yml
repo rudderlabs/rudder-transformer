@@ -42,6 +42,8 @@ jobs:
         with:
           username: ${{ env.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Pull Docker Image
+        run: docker pull ${{ inputs.build_tag }}
       - name: 'Run tests'
         run: |
           cd rudder-ingestion-svc

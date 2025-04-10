@@ -1,4 +1,4 @@
-import { ProxyMetdata } from '../../../../../src/types';
+import { ProxyMetadata } from '../../../../../src/types';
 import { ProxyV1TestData } from '../../../testTypes';
 import { generateMetadata, generateProxyV1Payload } from '../../../testUtils';
 import { authHeader1 } from '../maskedSecrets';

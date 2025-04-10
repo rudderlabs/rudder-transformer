@@ -3,11 +3,13 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import cloneDeep from 'lodash/cloneDeep';
 import groupBy from 'lodash/groupBy';
+import { PlatformError } from '@rudderstack/integrations-lib';
 import networkHandlerFactory from '../../adapters/networkHandlerFactory';
 import { FetchHandler } from '../../helpers/fetchHandlers';
 import { DestinationService } from '../../interfaces/DestinationService';
 import {
   DeliveryJobState,
+  DeliveryResponse,
   DeliveryV0Response,
   DeliveryV1Response,
   ErrorDetailer,
@@ -178,7 +180,7 @@ export class NativeIntegrationDestinationService implements DestinationService {
     destinationType: string,
     _requestMetadata: NonNullable<unknown>,
     version: string,
-  ): Promise<DeliveryV0Response | DeliveryV1Response> {
+  ): Promise<DeliveryResponse> {
     try {
       const { networkHandler, handlerVersion } = networkHandlerFactory.getNetworkHandler(
         destinationType,
@@ -223,7 +225,11 @@ export class NativeIntegrationDestinationService implements DestinationService {
           authErrorCategory: v0Response.authErrorCategory,
         } as DeliveryV1Response;
       }
-      return responseProxy;
+
+      if (version.toLowerCase() === 'v1' && !responseProxy.response) {
+        throw new PlatformError('Delivery response is not in the correct format');
+      }
+      return responseProxy as DeliveryResponse;
     } catch (err: any) {
       const metadata = Array.isArray(deliveryRequest.metadata)
         ? deliveryRequest.metadata[0]

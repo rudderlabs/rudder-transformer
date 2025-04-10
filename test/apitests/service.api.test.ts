@@ -236,20 +236,26 @@ describe('Api tests with a mock source/destination', () => {
     const proxyResponse = { success: true, response: { response: 'response', code: 200 } };
 
     const mockNetworkHandler = {
+      prepareProxy: jest.fn(),
       proxy: jest.fn((r, d) => {
         expect(r).toEqual(getData());
         expect(d).toEqual(destType);
-        return proxyResponse;
+        return Promise.resolve(proxyResponse);
       }),
       processAxiosResponse: jest.fn((r) => {
         expect(r).toEqual(proxyResponse);
         return { response: 'response', status: 200 };
       }),
-      responseHandler: jest.fn((o, d) => {
-        expect(o.destinationResponse).toEqual({ response: 'response', status: 200 });
-        expect(o.rudderJobMetadata).toEqual({ a1: 'b1' });
-        expect(o.destType).toEqual(destType);
-        return { status: 200, message: 'response', destinationResponse: 'response' };
+      responseHandler: jest.fn((params) => {
+        expect(params.destinationResponse).toEqual({ response: 'response', status: 200 });
+        expect(params.rudderJobMetadata).toEqual({ a1: 'b1' });
+        expect(params.destType).toEqual(destType);
+
+        return {
+          status: 200,
+          message: 'response',
+          destinationResponse: 'response',
+        };
       }),
     };
 
@@ -279,11 +285,19 @@ describe('Api tests with a mock source/destination', () => {
   test('(mock destination) v1 proxy', async () => {
     const destType = '__rudder_test__';
     const version = 'v1';
+    const mockMetadata = {
+      jobId: 1,
+      attemptNum: 1,
+      userId: 'user_abc',
+      sourceId: 'src_456',
+      destinationId: 'dest_xyz',
+      workspaceId: 'ws_789',
+    };
 
     const getData = () => {
       return {
         body: { JSON: { a: 'b' } },
-        metadata: [{ a1: 'b1' }],
+        metadata: [mockMetadata],
         destinationConfig: { a2: 'b2' },
       };
     };
@@ -293,22 +307,29 @@ describe('Api tests with a mock source/destination', () => {
       status: 200,
       message: 'response',
       destinationResponse: 'response',
-      response: [{ statusCode: 200, metadata: { a1: 'b1' } }],
+      response: [
+        {
+          statusCode: 200,
+          metadata: mockMetadata,
+          error: 'success',
+        },
+      ],
     };
 
     const mockNetworkHandler = {
       proxy: jest.fn((r, d) => {
         expect(r).toEqual(getData());
         expect(d).toEqual(destType);
-        return proxyResponse;
+        return Promise.resolve(proxyResponse);
       }),
+      prepareProxy: jest.fn(),
       processAxiosResponse: jest.fn((r) => {
         expect(r).toEqual(proxyResponse);
         return { response: 'response', status: 200 };
       }),
-      responseHandler: jest.fn((o, d) => {
+      responseHandler: jest.fn((o) => {
         expect(o.destinationResponse).toEqual({ response: 'response', status: 200 });
-        expect(o.rudderJobMetadata).toEqual([{ a1: 'b1' }]);
+        expect(o.rudderJobMetadata).toEqual([mockMetadata]);
         expect(o.destType).toEqual(destType);
         return respHandlerResponse;
       }),

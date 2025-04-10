@@ -27,7 +27,7 @@ export const otherScenariosV0 = [
           output: {
             status: 503,
             message:
-              '[Generic Response Handler] Request failed for destination algolia with status: 503',
+              '[Base Response Handler] Request failed for destination algolia with status: 503',
             destinationResponse: {
               response: {
                 error: {
@@ -77,7 +77,7 @@ export const otherScenariosV0 = [
           output: {
             status: 500,
             message:
-              '[Generic Response Handler] Request failed for destination algolia with status: 500',
+              '[Base Response Handler] Request failed for destination algolia with status: 500',
             destinationResponse: {
               response: 'Internal Server Error',
               status: 500,
@@ -121,7 +121,7 @@ export const otherScenariosV0 = [
           output: {
             status: 504,
             message:
-              '[Generic Response Handler] Request failed for destination algolia with status: 504',
+              '[Base Response Handler] Request failed for destination algolia with status: 504',
             destinationResponse: {
               response: 'Gateway Timeout',
               status: 504,
@@ -165,7 +165,7 @@ export const otherScenariosV0 = [
           output: {
             status: 500,
             message:
-              '[Generic Response Handler] Request failed for destination algolia with status: 500',
+              '[Base Response Handler] Request failed for destination algolia with status: 500',
             destinationResponse: {
               response: '',
               status: 500,
@@ -210,7 +210,7 @@ export const otherScenariosV0 = [
           output: {
             status: 500,
             message:
-              '[Generic Response Handler] Request failed for destination algolia with status: 500',
+              '[Base Response Handler] Request failed for destination algolia with status: 500',
             destinationResponse: {
               response: '',
               status: 500,

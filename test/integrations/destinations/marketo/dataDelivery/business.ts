@@ -1,4 +1,4 @@
-import { ProxyMetdata } from '../../../../../src/types';
+import { ProxyMetadata } from '../../../../../src/types';
 import { ProxyV1TestData } from '../../../testTypes';
 import { generateProxyV1Payload } from '../../../testUtils';
 import { authHeader1 } from '../maskedSecrets';
@@ -36,7 +36,7 @@ const statTags = {
   },
 };
 
-export const proxyMetdata: ProxyMetdata = {
+export const proxyMetadata: ProxyMetadata = {
   jobId: 1,
   attemptNum: 1,
   userId: 'dummyUserId',
@@ -47,7 +47,7 @@ export const proxyMetdata: ProxyMetdata = {
   dontBatch: false,
 };
 
-export const reqMetadataArray = [proxyMetdata];
+export const reqMetadataArray = [proxyMetadata];
 const params = {
   destination: 'marketo',
 };
@@ -112,7 +112,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
                   result: [{ id: 1328328, status: 'updated' }],
                   success: true,
                 }),
-                metadata: proxyMetdata,
+                metadata: proxyMetadata,
                 statusCode: 200,
               },
             ],
@@ -162,7 +162,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
                   success: false,
                   errors: [{ code: '601', message: 'Access token invalid' }],
                 }),
-                metadata: proxyMetdata,
+                metadata: proxyMetadata,
                 statusCode: 500,
               },
             ],
@@ -212,7 +212,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
                   success: false,
                   errors: [{ code: '610', message: 'Requested resource not found' }],
                 }),
-                metadata: proxyMetdata,
+                metadata: proxyMetadata,
                 statusCode: 400,
               },
             ],
@@ -257,7 +257,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
             response: [
               {
                 error: '""',
-                metadata: proxyMetdata,
+                metadata: proxyMetadata,
                 statusCode: 500,
               },
             ],
@@ -306,7 +306,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
                   success: false,
                   errors: [{ code: '612', message: 'Invalid Content Type' }],
                 }),
-                metadata: proxyMetdata,
+                metadata: proxyMetadata,
                 statusCode: 400,
               },
             ],
@@ -354,7 +354,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
                   success: false,
                   errors: [{ code: '1077', message: 'Value for field exceeds max length' }],
                 }),
-                metadata: proxyMetdata,
+                metadata: proxyMetadata,
                 statusCode: 400,
               },
             ],

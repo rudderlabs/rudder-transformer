@@ -90,7 +90,7 @@ export const v0oauthScenarios = [
               status: 401,
             },
             message:
-              '[Generic Response Handler] Request failed for destination reddit with status: 401',
+              '[Base Response Handler] Request failed for destination reddit with status: 401',
             statTags: { ...expectedStatTags, errorType: 'aborted' },
             status: 401,
           },
@@ -133,7 +133,7 @@ export const v0oauthScenarios = [
               status: 401,
             },
             message:
-              '[Generic Response Handler] Request failed for destination reddit with status: 401',
+              '[Base Response Handler] Request failed for destination reddit with status: 401',
             statTags: { ...expectedStatTags, errorType: 'aborted' },
             status: 401,
           },

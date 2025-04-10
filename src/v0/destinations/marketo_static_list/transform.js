@@ -14,6 +14,7 @@ const { getDestinationExternalID, defaultRequestConfig } = require('../../util')
 const { formatConfig, MAX_LEAD_IDS_SIZE } = require('./config');
 const { getAuthToken } = require('../marketo/util');
 const { processRecordInputs } = require('./transformV2');
+const { CommonUtils } = require('../../../util/common');
 
 const responseBuilder = (endPoint, leadIds, operation, token) => {
   let updatedEndpoint = endPoint;
@@ -161,14 +162,16 @@ const processRouterDest = async (inputs, reqMetadata) => {
  */
 function processMetadataForRouter(output) {
   const { metadata, destination } = output;
-  const clonedMetadata = cloneDeep(metadata);
-  if (Array.isArray(clonedMetadata)) {
-    clonedMetadata.forEach((metadataElement) => {
-      // eslint-disable-next-line no-param-reassign
-      metadataElement.destInfo = { authKey: destination?.ID };
-    });
-  }
-  return clonedMetadata;
+  // Ensure metadata is always an array
+  const metadataArray = CommonUtils.toArray(cloneDeep(metadata));
+
+  // Add destInfo to each metadata element
+  metadataArray.forEach((metadataElement) => {
+    // eslint-disable-next-line no-param-reassign
+    metadataElement.destInfo = { authKey: destination?.ID };
+  });
+
+  return metadataArray;
 }
 
 module.exports = {

@@ -1,4 +1,4 @@
-import { JsonSchemaGenerator } from '@rudderstack/integrations-lib';
+import { JsonSchemaGenerator, TransformationError } from '@rudderstack/integrations-lib';
 import { FetchHandler } from '../../helpers/fetchHandlers';
 import { SourceService } from '../../interfaces/SourceService';
 import {
@@ -37,6 +37,9 @@ export class NativeIntegrationSourceService implements SourceService {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _requestMetadata: NonNullable<unknown>,
   ): Promise<SourceTransformationResponse[]> {
+    if (!Array.isArray(sourceEvents)) {
+      throw new TransformationError('Invalid source events');
+    }
     const sourceHandler = FetchHandler.getSourceHandler(sourceType);
     const metaTO = this.getTags({ srcType: sourceType });
     const respList: SourceTransformationResponse[] = await Promise.all<FixMe>(

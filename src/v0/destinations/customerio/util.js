@@ -211,7 +211,10 @@ const groupResponseBuilder = (message) => {
   return { rawPayload, endpoint, requestConfig };
 };
 
-const encodePathParameter = (param) => (param?.includes('/') ? encodeURIComponent(param) : param);
+const encodePathParameter = (param) => {
+  if (typeof param !== 'string') return param;
+  return param.includes('/') ? encodeURIComponent(param) : param;
+};
 
 const defaultResponseBuilder = (message, evName, userId, evType, destination, messageType) => {
   const rawPayload = {};

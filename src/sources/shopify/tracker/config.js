@@ -159,7 +159,6 @@ const SUPPORTED_TRACK_EVENTS = [
 ];
 
 const maxTimeToIdentifyRSGeneratedCall = 10000; // in ms
-const useRedisDatabase = process.env.USE_REDIS_DB === 'true' || false;
 
 module.exports = {
   ECOM_TOPICS,
@@ -173,7 +172,6 @@ module.exports = {
   PRODUCT_MAPPING_EXCLUSION_FIELDS,
   SUPPORTED_TRACK_EVENTS,
   SHOPIFY_TRACK_MAP,
-  useRedisDatabase,
   SHOPIFY_ADMIN_ONLY_EVENTS,
   maxTimeToIdentifyRSGeneratedCall,
 };

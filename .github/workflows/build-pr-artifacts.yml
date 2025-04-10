@@ -77,3 +77,5 @@ jobs:
     uses: ./.github/workflows/ingestion-service-test.yml
     with:
       build_tag: rudderstack/develop-rudder-transformer:${{ needs.generate-tag-names.outputs.tag_name }}
+    secrets:
+      PAT: ${{ secrets.PAT }}

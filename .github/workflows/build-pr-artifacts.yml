@@ -79,3 +79,4 @@ jobs:
       build_tag: rudderstack/develop-rudder-transformer:${{ needs.generate-tag-names.outputs.tag_name }}
     secrets:
       PAT: ${{ secrets.PAT }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}

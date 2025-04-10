@@ -9,6 +9,11 @@ on:
     secrets:
       PAT:
         required: true
+      DOCKERHUB_TOKEN:
+        required: true
+
+env:
+  DOCKERHUB_USERNAME: rudderlabs
 
 jobs:
   ingestion-service-test:
@@ -32,6 +37,11 @@ jobs:
           go version
           cd rudder-ingestion-svc
           go mod download
+      - name: Login to DockerHub
+        uses: docker/login-action@v3.4.0
+        with:
+          username: ${{ env.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: 'Run tests'
         run: |
           cd rudder-ingestion-svc

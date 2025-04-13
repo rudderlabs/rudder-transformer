@@ -49,11 +49,6 @@ function responseBuilderSimple(payload, message, destination) {
 
   // Extract endpoint determination to reduce complexity
   const endpoint = determineEndpoint(os, finalEndPoint, androidAppId, appleAppId);
-  if (!endpoint) {
-    throw new ConfigurationError(
-      'os name is required along with the respective appId eg. (os->android & Android App Id is required) or (os->ios & Apple App Id is required)',
-    );
-  }
 
   const appsflyerId = getDestinationExternalID(message, 'appsflyerExternalId');
   if (!appsflyerId) {

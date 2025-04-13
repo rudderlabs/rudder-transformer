@@ -118,9 +118,7 @@ const payloadBuilderforUpdatingEmail = async (
   let primaryEmailIdentity;
 
   try {
-    console.log(url);
     const identities = await getUserIdentities(url, headers, metadata);
-    console.log(JSON.stringify(identities));
     if (identities && Array.isArray(identities)) {
       identityContainingNonPrimaryEmail = identities.find(
         (identity) =>

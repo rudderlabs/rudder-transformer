@@ -24,21 +24,29 @@ const {
   defaultDeleteRequestConfig,
   getFieldValueFromMessage,
   constructPayload,
-  simpleProcessRouterDest,
   defaultPutRequestConfig,
   isEmptyObject,
   getEventType,
+  getSuccessRespEvents,
+  handleRtTfSingleEventError,
 } = require('../../util');
-const { getSourceName } = require('./util');
+const {
+  getSourceName,
+  createOrUpdateUser,
+  getUserIdentities,
+  deleteEmailFromUser,
+  updatePrimaryEmailOfUser,
+  getStatusCode,
+  removeUserFromOrganizationMembership,
+} = require('./util');
 const logger = require('../../../logger');
-const { httpGET } = require('../../../adapters/network');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const tags = require('../../util/tags');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const CONTEXT_TRAITS_KEY_PATH = 'context.traits';
 const endpointPath = '/users/search.json';
-function responseBuilder(message, headers, payload, endpoint) {
+const responseBuilder = (message, headers, payload, endpoint) => {
   const response = defaultRequestConfig();
 
   const updatedHeaders = {
@@ -53,7 +61,7 @@ function responseBuilder(message, headers, payload, endpoint) {
   response.body.JSON = payload;
 
   return response;
-}
+};
 
 /**
  * Returns the payload for updating primary email of users.
@@ -63,12 +71,13 @@ function responseBuilder(message, headers, payload, endpoint) {
  * @param {*} email -> email of user
  * @returns
  */
-const responseBuilderToUpdatePrimaryAccount = (
+const responseBuilderToUpdatePrimaryAccount = async (
   userIdentityId,
   userId,
   headers,
   email,
   baseEndpoint,
+  metadata,
 ) => {
   const response = defaultRequestConfig();
   const updatedHeaders = {
@@ -84,6 +93,7 @@ const responseBuilderToUpdatePrimaryAccount = (
       value: `${email}`,
     },
   };
+  await updatePrimaryEmailOfUser(response.endpoint, response.body.JSON, headers, metadata);
   return response;
 };
 
@@ -104,40 +114,47 @@ const payloadBuilderforUpdatingEmail = async (
 ) => {
   // url for list all identities of user
   const url = `${baseEndpoint}users/${userId}/identities`;
-  const config = { headers };
+  let identityContainingNonPrimaryEmail;
+  let primaryEmailIdentity;
+
   try {
-    const res = await httpGET(url, config, {
-      destType: 'zendesk',
-      feature: 'transformation',
-      endpointPath: 'users/userId/identities',
-      requestMethod: 'POST',
-      module: 'router',
-      metadata,
-    });
-    if (res?.response?.data?.count > 0) {
-      const { identities } = res.response.data;
-      if (identities && Array.isArray(identities)) {
-        const identitiesDetails = identities.find(
-          (identitieslist) =>
-            identitieslist.primary === true &&
-            identitieslist.type === 'email' &&
-            identitieslist.value !== userEmail,
-        );
-        if (identitiesDetails?.id && userEmail) {
-          return responseBuilderToUpdatePrimaryAccount(
-            identitiesDetails.id,
-            userId,
-            headers,
-            userEmail,
-            baseEndpoint,
-          );
-        }
-      }
+    console.log(url);
+    const identities = await getUserIdentities(url, headers, metadata);
+    console.log(JSON.stringify(identities));
+    if (identities && Array.isArray(identities)) {
+      identityContainingNonPrimaryEmail = identities.find(
+        (identity) =>
+          identity.type === 'email' && identity.value === userEmail && identity.primary !== true,
+      );
+      primaryEmailIdentity = identities.find(
+        (identity) =>
+          identity.primary === true && identity.type === 'email' && identity.value !== userEmail,
+      );
     }
-    logger.debug(`${NAME}:: Failed in fetching Identity details`);
   } catch (error) {
     logger.debug(`${NAME}:: Error :`, error.response ? error.response.data : error);
+    return {};
   }
+
+  // delete secondary email if required
+  if (identityContainingNonPrimaryEmail && identityContainingNonPrimaryEmail?.id) {
+    const endpoint = `${baseEndpoint}users/${userId}/identities/${identityContainingNonPrimaryEmail.id}`;
+    await deleteEmailFromUser(endpoint, headers, metadata);
+  }
+
+  // update primary email if required
+  if (primaryEmailIdentity && primaryEmailIdentity?.id) {
+    const response = await responseBuilderToUpdatePrimaryAccount(
+      primaryEmailIdentity.id,
+      userId,
+      headers,
+      userEmail,
+      baseEndpoint,
+      metadata,
+    );
+    return response;
+  }
+
   return {};
 };
 
@@ -256,41 +273,6 @@ function getIdentifyPayload(message, category, destinationConfig, type) {
 
   return payload;
 }
-/**
- * ref: https://developer.zendesk.com/api-reference/ticketing/users/users/#search-users
- * @param {*} message message
- * @param {*} headers headers for authorizations
- * @returns
- */
-const getUserIdByExternalId = async (message, headers, baseEndpoint, metadata) => {
-  const externalId = getFieldValueFromMessage(message, 'userIdOnly');
-  if (!externalId) {
-    logger.debug(`${NAME}:: externalId is required for getting zenuserId`);
-    return undefined;
-  }
-  const url = `${baseEndpoint}users/search.json?query=${externalId}`;
-  const config = { headers };
-
-  try {
-    const resp = await httpGET(url, config, {
-      destType: 'zendesk',
-      feature: 'transformation',
-      endpointPath,
-      requestMethod: 'GET',
-      module: 'router',
-      metadata,
-    });
-
-    if (resp?.response?.data?.count > 0) {
-      const zendeskUserId = get(resp, 'response.data.users.0.id');
-      return zendeskUserId;
-    }
-    logger.debug(`${NAME}:: Failed in fetching User details`);
-  } catch (error) {
-    logger.debug(`${NAME}:: Cannot get userId for externalId : ${externalId}`, error.response);
-  }
-  return undefined;
-};
 
 async function getUserId(message, headers, baseEndpoint, type, metadata) {
   const traits =
@@ -521,24 +503,20 @@ async function processIdentify(message, destinationConfig, headers, baseEndpoint
   const url = baseEndpoint + category.createOrUpdateUserEndpoint;
   const returnList = [];
 
-  if (destinationConfig.searchByExternalId) {
-    const userIdByExternalId = await getUserIdByExternalId(
-      message,
+  // create or update the user
+  const userIdByZendesk = await createOrUpdateUser(payload, url, headers, metadata);
+
+  // handle primary email update if required
+  const userEmail = traits?.email;
+  if (destinationConfig.searchByExternalId && userIdByZendesk && userEmail) {
+    const payloadForUpdatingEmail = await payloadBuilderforUpdatingEmail(
+      userIdByZendesk,
       headers,
+      userEmail,
       baseEndpoint,
       metadata,
     );
-    const userEmail = traits?.email;
-    if (userIdByExternalId && userEmail) {
-      const payloadForUpdatingEmail = await payloadBuilderforUpdatingEmail(
-        userIdByExternalId,
-        headers,
-        userEmail,
-        baseEndpoint,
-        metadata,
-      );
-      if (!isEmptyObject(payloadForUpdatingEmail)) returnList.push(payloadForUpdatingEmail);
-    }
+    if (!isEmptyObject(payloadForUpdatingEmail)) returnList.push(payloadForUpdatingEmail);
   }
 
   if (
@@ -577,6 +555,7 @@ async function processIdentify(message, destinationConfig, headers, baseEndpoint
             ...DEFAULT_HEADERS,
           };
           deleteResponse.userId = message.anonymousId;
+          await removeUserFromOrganizationMembership(deleteResponse.endpoint, headers, metadata);
           returnList.push(deleteResponse);
         }
       } catch (error) {
@@ -751,7 +730,27 @@ async function process(event) {
 }
 
 const processRouterDest = async (inputs, reqMetadata) => {
-  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
+  const respList = await Promise.all(
+    inputs.map(async (input) => {
+      try {
+        let resp = input.message;
+        // transform if not already done
+        if (!input.message.statusCode) {
+          resp = await process(input);
+        }
+
+        return getSuccessRespEvents(
+          resp,
+          [input.metadata],
+          input.destination,
+          false,
+          getStatusCode(input),
+        );
+      } catch (error) {
+        return handleRtTfSingleEventError(input, error, reqMetadata);
+      }
+    }),
+  );
   return respList;
 };
 

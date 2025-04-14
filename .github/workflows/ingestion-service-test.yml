@@ -38,13 +38,6 @@ jobs:
           cd rudder-ingestion-svc
           git checkout chore.transformer_docker_test_pull_option
           go mod download
-      # - name: Login to DockerHub
-      #   uses: docker/login-action@v3.4.0
-      #   with:
-      #     username: ${{ env.DOCKERHUB_USERNAME }}
-      #     password: ${{ secrets.DOCKERHUB_TOKEN }}
-      # - name: Pull Docker Image
-      #   run: docker pull ${{ inputs.build_tag }}
       - name: 'Run tests'
         run: |
           cd rudder-ingestion-svc

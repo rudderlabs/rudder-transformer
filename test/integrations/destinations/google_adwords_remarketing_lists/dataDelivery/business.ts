@@ -439,9 +439,8 @@ export const testScenariosForV1API = [
   {
     id: 'garl_v1_scenario_5',
     name: 'google_adwords_remarketing_lists',
-    description:
-      '[Proxy v1 API] :: getting handle partial failure error code while sending request',
-    successCriteria: 'Should return 500 with destination response',
+    description: '[Proxy v1 API] :: handle partial failure when addOperations throw error',
+    successCriteria: 'Should return 400 with destination response',
     scenario: 'Business',
     feature: 'dataDelivery',
     module: 'destination',

@@ -2482,4 +2482,66 @@ export const networkCallsData = [
       status: 200,
     },
   },
+  // network call to create or update user
+  {
+    httpReq: {
+      data: {
+        user: {
+          email: 'example115@email.com',
+          name: 'test-user-name',
+          external_id: 'test-user-id-with-secondary-email',
+          user_fields: { id: 'test-user-id-with-secondary-email' },
+          verified: true,
+        },
+      },
+      headers: {
+        Authorization: authHeader1,
+        'Content-Type': 'application/json',
+      },
+      method: 'POST',
+      url: 'https://rudderlabshelp.zendesk.com/api/v2/users/create_or_update.json',
+    },
+    httpRes: {
+      data: {
+        user: {
+          id: 900113780483,
+          url: 'https://rudderlabshelp.zendesk.com/api/v2/users/900113780483.json',
+          name: 'test-user-name',
+          email: 'example115@email.com',
+          created_at: '2025-04-09T17:52:48Z',
+          updated_at: '2025-04-09T17:58:06Z',
+        },
+      },
+      status: 200,
+    },
+  },
+  // network call to remove email from user
+  {
+    httpReq: {
+      headers: {
+        Authorization: authHeader1,
+        'Content-Type': 'application/json',
+      },
+      method: 'DELETE',
+      url: 'https://rudderlabshelp.zendesk.com/api/v2/users/900113780483/identities/7534173321117',
+    },
+    httpRes: {
+      status: 200,
+    },
+  },
+  // network call to update primary email
+  {
+    httpReq: {
+      data: { identity: { type: 'email', value: 'example115@email.com' } },
+      headers: {
+        Authorization: authHeader1,
+        'Content-Type': 'application/json',
+      },
+      method: 'PUT',
+      url: 'https://rudderlabshelp.zendesk.com/api/v2/users/900113780483/identities/7535981118877',
+    },
+    httpRes: {
+      status: 200,
+    },
+  },
 ];

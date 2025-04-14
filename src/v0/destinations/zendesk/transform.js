@@ -471,7 +471,7 @@ async function createOrganization(
     const orgId = resp?.data?.organization?.id;
     return orgId;
   } catch (error) {
-    logger.debug(`${NAME}:: Couldn't create Organization: ${message.traits.name} and error: ${error}`);
+    logger.debug(`${NAME}:: Couldn't create Organization: ${message.traits.name}`);
     return undefined;
   }
 }

@@ -34,24 +34,14 @@ function getHashedValue(identifier) {
 }
 
 function getNormalizedPhoneNumber(message) {
-  const regexExp = /^[\da-f]{64}$/gi;
-  let phoneNumber = getFieldValueFromMessage(message, 'phone');
-  if (regexExp.test(phoneNumber)) {
-    return phoneNumber;
-  }
-  let leadingZero = true;
-  if (phoneNumber) {
-    for (let i = 0; i < phoneNumber.length; i += 1) {
-      if (Number.isNaN(parseInt(phoneNumber[i], 10)) || (phoneNumber[i] === '0' && leadingZero)) {
-        phoneNumber = phoneNumber.replace(phoneNumber[i], '');
-        i -= 1;
-      } else {
-        leadingZero = false;
-      }
-    }
-    return phoneNumber;
-  }
-  return null;
+  const regexExp = /^[\da-f]{64}$/i;
+  const phoneNumber = getFieldValueFromMessage(message, 'phone');
+
+  if (!phoneNumber) return null;
+  if (regexExp.test(phoneNumber)) return phoneNumber;
+
+  // Remove leading zeros and non-numeric characters
+  return String(phoneNumber).replace(/\D/g, '').replace(/^0+/, '') || null;
 }
 
 function getDataUseValue(message) {

@@ -1,3 +1,4 @@
+import { secret1 } from '../maskedSecrets';
 const destType = 'custify';
 const commonData = {
   name: destType,
@@ -48,7 +49,7 @@ export const data = [
               },
             ],
             config: {
-              apiToken: 'dummyApiKey',
+              apiToken: secret1,
             },
           },
         ],
@@ -83,7 +84,7 @@ export const data = [
               },
             ],
             config: {
-              apiKey: 'dummyApiKey',
+              apiKey: secret1,
             },
           },
         ],
@@ -114,7 +115,7 @@ export const data = [
               },
             ],
             config: {
-              apiKey: 'dummyApiKey',
+              apiKey: secret1,
             },
           },
         ],
@@ -123,7 +124,9 @@ export const data = [
     output: {
       response: {
         status: 400,
-        body: [{ statusCode: 400, error: '{"error":"User: rudder3 has a problem"}' }],
+        body: [
+          { statusCode: 400, error: JSON.stringify({ error: 'User: rudder3 has a problem' }) },
+        ],
       },
     },
   },
@@ -142,7 +145,7 @@ export const data = [
               {},
             ],
             config: {
-              apiKey: 'dummyApiKey',
+              apiKey: secret1,
             },
           },
         ],

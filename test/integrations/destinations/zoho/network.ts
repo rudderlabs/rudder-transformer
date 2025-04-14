@@ -212,109 +212,20 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      url: 'https://www.zohoapis.in/crm/v6/Leads/search?criteria=(Email:equals:tobedeleted3%40gmail.com)and(First_Name:equals:subcribed3)and(Last_Name:equals:%20User3)',
+      url: 'https://www.zohoapis.in/crm/v6/coql',
       headers: {
         Authorization: 'Zoho-oauthtoken correct-access-token',
       },
-      method: 'GET',
-    },
-    httpRes: {
       data: {
-        data: '',
+        select_query: "SELECT id FROM Leads WHERE Email = 'tobedeleted@gmail.com'",
       },
-      status: 204,
-      statusText: 'OK',
-    },
-  },
-  {
-    httpReq: {
-      url: 'https://www.zohoapis.in/crm/v6/Leads/search?criteria=(Email:equals:tobedeleted%40gmail.com)and(First_Name:equals:subcribed)and(Last_Name:equals:%20User)',
-      headers: {
-        Authorization: 'Zoho-oauthtoken correct-access-token',
-      },
-      method: 'GET',
+      method: 'POST',
     },
     httpRes: {
       data: {
         data: [
           {
-            Owner: {
-              name: 'dummy-user',
-              id: '724445000000323001',
-              email: 'dummy@gmail.com',
-            },
-            Company: null,
-            Email: 'tobedeleted@gmail.com',
-            $currency_symbol: '$',
-            $field_states: null,
-            $sharing_permission: 'full_access',
-            Last_Activity_Time: '2024-07-18T23:55:42+05:30',
-            Industry: null,
-            Unsubscribed_Mode: null,
-            $process_flow: false,
-            Street: null,
-            Zip_Code: null,
             id: '<RECORD_ID_1>',
-            $approval: {
-              delegate: false,
-              approve: false,
-              reject: false,
-              resubmit: false,
-            },
-            Created_Time: '2024-07-18T19:34:50+05:30',
-            $editable: true,
-            City: null,
-            No_of_Employees: null,
-            Converted_Account: null,
-            State: null,
-            Country: null,
-            Created_By: {
-              name: 'dummy-user',
-              id: '724445000000323001',
-              email: 'dummy@gmail.com',
-            },
-            $zia_owner_assignment: 'owner_recommendation_unavailable',
-            Annual_Revenue: null,
-            Secondary_Email: null,
-            Description: null,
-            Rating: null,
-            $review_process: {
-              approve: false,
-              reject: false,
-              resubmit: false,
-            },
-            Website: null,
-            Twitter: null,
-            Salutation: null,
-            First_Name: 'subcribed',
-            Full_Name: 'subcribed User',
-            Lead_Status: null,
-            Record_Image: null,
-            Modified_By: {
-              name: 'dummy-user',
-              id: '724445000000323001',
-              email: 'dummy@gmail.com',
-            },
-            Converted_Deal: null,
-            $review: null,
-            Lead_Conversion_Time: null,
-            Skype_ID: null,
-            Phone: null,
-            Email_Opt_Out: false,
-            $zia_visions: null,
-            Designation: null,
-            Modified_Time: '2024-07-18T23:55:42+05:30',
-            $converted_detail: {},
-            Unsubscribed_Time: null,
-            Converted_Contact: null,
-            Mobile: null,
-            $orchestration: null,
-            Last_Name: 'User',
-            $in_merge: false,
-            Lead_Source: null,
-            Fax: null,
-            $approval_state: 'approved',
-            $pathfinder: null,
           },
         ],
       },
@@ -324,93 +235,106 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      url: 'https://www.zohoapis.in/crm/v6/Leads/search?criteria=(Email:equals:tobedeleted2%40gmail.com)and(First_Name:equals:subcribed2)and(Last_Name:equals:%20User2)',
+      url: 'https://www.zohoapis.in/crm/v6/coql',
       headers: {
         Authorization: 'Zoho-oauthtoken correct-access-token',
       },
-      method: 'GET',
+      data: {
+        select_query: "SELECT id FROM Leads WHERE Email = 'tobedeleted2@gmail.com'",
+      },
+      method: 'POST',
     },
     httpRes: {
       data: {
         data: [
           {
-            Owner: {
-              name: 'dummy-user',
-              id: '724445000000323001',
-              email: 'dummy@gmail.com',
-            },
-            Company: null,
-            Email: 'tobedeleted2@gmail.com',
-            $currency_symbol: '$',
-            $field_states: null,
-            $sharing_permission: 'full_access',
-            Last_Activity_Time: '2024-07-18T23:55:42+05:30',
-            Industry: null,
-            Unsubscribed_Mode: null,
-            $process_flow: false,
-            Street: null,
-            Zip_Code: null,
             id: '<RECORD_ID_2>',
-            $approval: {
-              delegate: false,
-              approve: false,
-              reject: false,
-              resubmit: false,
-            },
-            Created_Time: '2024-07-18T19:34:50+05:30',
-            $editable: true,
-            City: null,
-            No_of_Employees: null,
-            Converted_Account: null,
-            State: null,
-            Country: null,
-            Created_By: {
-              name: 'dummy-user',
-              id: '724445000000323001',
-              email: 'dummy@gmail.com',
-            },
-            $zia_owner_assignment: 'owner_recommendation_unavailable',
-            Annual_Revenue: null,
-            Secondary_Email: null,
-            Description: null,
-            Rating: null,
-            $review_process: {
-              approve: false,
-              reject: false,
-              resubmit: false,
-            },
-            Website: null,
-            Twitter: null,
-            Salutation: null,
-            First_Name: 'subcribed2',
-            Full_Name: 'subcribed2 User',
-            Lead_Status: null,
-            Record_Image: null,
-            Modified_By: {
-              name: 'dummy-user',
-              id: '724445000000323001',
-              email: 'dummy@gmail.com',
-            },
-            Converted_Deal: null,
-            $review: null,
-            Lead_Conversion_Time: null,
-            Skype_ID: null,
-            Phone: null,
-            Email_Opt_Out: false,
-            $zia_visions: null,
-            Designation: null,
-            Modified_Time: '2024-07-18T23:55:42+05:30',
-            $converted_detail: {},
-            Unsubscribed_Time: null,
-            Converted_Contact: null,
-            Mobile: null,
-            $orchestration: null,
-            Last_Name: 'User2',
-            $in_merge: false,
-            Lead_Source: null,
-            Fax: null,
-            $approval_state: 'approved',
-            $pathfinder: null,
+          },
+        ],
+      },
+      status: 200,
+      statusText: 'OK',
+    },
+  },
+  {
+    httpReq: {
+      url: 'https://www.zohoapis.in/crm/v6/coql',
+      headers: {
+        Authorization: 'Zoho-oauthtoken correct-access-token',
+      },
+      data: {
+        select_query: "SELECT id FROM Leads WHERE Email = 'tobedeleted3@gmail.com'",
+      },
+      method: 'POST',
+    },
+    httpRes: {
+      data: '',
+      status: 204,
+      statusText: 'OK',
+    },
+  },
+  {
+    httpReq: {
+      url: 'https://www.zohoapis.in/crm/v6/coql',
+      headers: {
+        Authorization: 'Zoho-oauthtoken expired-access-token',
+      },
+      data: {
+        select_query: "SELECT id FROM Leads WHERE Email = 'tobedeleted3@gmail.com'",
+      },
+      method: 'POST',
+    },
+    httpRes: {
+      data: {
+        code: 'INVALID_TOKEN',
+        details: {},
+        message: 'invalid oauth token',
+        status: 'error',
+      },
+      status: 401,
+      statusText: 'Bad Request',
+    },
+  },
+  {
+    httpReq: {
+      url: 'https://www.zohoapis.in/crm/v6/coql',
+      headers: {
+        Authorization: 'Zoho-oauthtoken correct-access-token',
+      },
+      data: {
+        select_query:
+          "SELECT id FROM Leads WHERE ((Email = 'tobedeleted2@gmail.com' AND First_Name = 'subcribed2') AND Last_Name = ' User2')",
+      },
+      method: 'POST',
+    },
+    httpRes: {
+      data: {
+        data: [
+          {
+            id: '<RECORD_ID_2>',
+          },
+        ],
+      },
+      status: 200,
+      statusText: 'OK',
+    },
+  },
+  {
+    httpReq: {
+      url: 'https://www.zohoapis.in/crm/v6/coql',
+      headers: {
+        Authorization: 'Zoho-oauthtoken correct-access-token',
+      },
+      data: {
+        select_query: "SELECT id FROM Contacts WHERE Email = 'tobedeleted2@gmail.com'",
+      },
+      method: 'POST',
+    },
+    httpRes: {
+      data: {
+        data: [
+          {
+            id: '<RECORD_ID_2>',
           },
         ],
       },

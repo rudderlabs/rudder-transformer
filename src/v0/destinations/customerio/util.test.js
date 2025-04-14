@@ -1,8 +1,10 @@
 const {
+  encodePathParameter,
   isdeviceRelatedEventName,
   identifyResponseBuilder,
   aliasResponseBuilder,
   groupResponseBuilder,
+  defaultResponseBuilder,
 } = require('./util');
 
 const getTestMessage = () => {
@@ -18,6 +20,10 @@ const getTestMessage = () => {
       },
       createdAt: '2014-05-21T15:54:20Z',
       timestamp: '2014-05-21T15:54:20Z',
+    },
+    properties: {
+      test: 'property',
+      value: 123,
     },
   };
   return message;
@@ -188,5 +194,115 @@ describe('Unit test cases for customerio groupResponseBuilder', () => {
       requestConfig: { requestFormat: 'JSON', requestMethod: 'POST' },
     };
     expect(groupResponseBuilder(getGroupTestMessage(), 'user1')).toEqual(expectedOutput);
+  });
+});
+
+describe('Unit test cases for customerio encodePathParameter', () => {
+  const testCases = [
+    {
+      name: "should encode path parameter with '/'",
+      param: 'test/param',
+      expectedOutput: 'test%2Fparam',
+    },
+    {
+      name: "should not encode path parameter without '/'",
+      param: 'some@email.com',
+      expectedOutput: 'some@email.com',
+    },
+    {
+      name: 'should not encode non-string parameter',
+      param: 123,
+      expectedOutput: 123,
+    },
+    {
+      name: 'should not encode null parameter',
+      param: null,
+      expectedOutput: null,
+    },
+  ];
+
+  testCases.forEach((testCase) => {
+    it(testCase.name, () => {
+      expect(encodePathParameter(testCase.param)).toEqual(testCase.expectedOutput);
+    });
+  });
+});
+
+describe('Unit test cases for customerio defaultResponseBuilder with userId containing forward slash', () => {
+  const testCases = [
+    {
+      name: 'should encode userId with forward slash in the endpoint URL',
+      message: {
+        properties: { test: 'property' },
+        anonymousId: 'anon123',
+      },
+      evName: 'Test Event',
+      userId: 'user/with/slashes',
+      evType: 'event',
+      destination: {
+        Config: {
+          apiKey: 'test-api-key',
+          siteID: 'test-site-id',
+        },
+      },
+      messageType: 'track',
+      expectedEndpoint: 'https://track.customer.io/api/v1/customers/user%2Fwith%2Fslashes/events',
+      expectedPayloadProps: {
+        data: true,
+        name: 'Test Event',
+        type: 'event',
+      },
+    },
+    {
+      name: 'should encode userId with multiple forward slashes in the endpoint URL',
+      message: {
+        properties: { test: 'property' },
+        anonymousId: 'anon123',
+      },
+      evName: 'Test Event',
+      userId: 'user/with/multiple/slashes',
+      evType: 'event',
+      destination: {
+        Config: {
+          apiKey: 'test-api-key',
+          siteID: 'test-site-id',
+        },
+      },
+      messageType: 'track',
+      expectedEndpoint:
+        'https://track.customer.io/api/v1/customers/user%2Fwith%2Fmultiple%2Fslashes/events',
+      expectedPayloadProps: {
+        data: true,
+        name: 'Test Event',
+        type: 'event',
+      },
+    },
+  ];
+
+  testCases.forEach((testCase) => {
+    it(testCase.name, () => {
+      const result = defaultResponseBuilder(
+        testCase.message,
+        testCase.evName,
+        testCase.userId,
+        testCase.evType,
+        testCase.destination,
+        testCase.messageType,
+      );
+
+      // Check that the userId is properly encoded in the endpoint URL
+      expect(result.endpoint).toEqual(testCase.expectedEndpoint);
+
+      // Verify other parts of the response
+      if (testCase.expectedPayloadProps.data) {
+        expect(result.rawPayload).toHaveProperty('data');
+      }
+      if (testCase.expectedPayloadProps.name) {
+        expect(result.rawPayload).toHaveProperty('name', testCase.expectedPayloadProps.name);
+      }
+      if (testCase.expectedPayloadProps.type) {
+        expect(result.rawPayload).toHaveProperty('type', testCase.expectedPayloadProps.type);
+      }
+    });
   });
 });

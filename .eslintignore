@@ -4,6 +4,7 @@ reports/
 test/
 benchmark/
 dist/
+dist-test/
 **/warehouse/
 **/lambda/
 **/openfaas/

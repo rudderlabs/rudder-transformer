@@ -10,7 +10,7 @@ import {
   rETLRecordV2RouterInvalidRequest,
 } from './rETL';
 import { mockFns } from '../mocks';
-
+import { defaultAccessToken } from '../../../common/secrets';
 export const data = [
   {
     name: 'fb_custom_audience',
@@ -36,7 +36,7 @@ export const data = [
                   version: '1',
                   type: 'REST',
                   method: 'DELETE',
-                  endpoint: 'https://graph.facebook.com/v20.0/aud1/users',
+                  endpoint: 'https://graph.facebook.com/v22.0/aud1/users',
                   headers: {},
                   params: {
                     access_token: 'ABC',
@@ -87,7 +87,7 @@ export const data = [
                   version: '1',
                   type: 'REST',
                   method: 'POST',
-                  endpoint: 'https://graph.facebook.com/v20.0/aud1/users',
+                  endpoint: 'https://graph.facebook.com/v22.0/aud1/users',
                   headers: {},
                   params: {
                     access_token: 'ABC',
@@ -142,7 +142,7 @@ export const data = [
                   dontBatch: false,
                   jobId: 1,
                   secret: {
-                    accessToken: 'default-accessToken',
+                    accessToken: defaultAccessToken,
                   },
                   sourceId: 'default-sourceId',
                   userId: 'default-userId',
@@ -159,7 +159,7 @@ export const data = [
                   version: '1',
                   type: 'REST',
                   method: 'DELETE',
-                  endpoint: 'https://graph.facebook.com/v20.0/aud1/users',
+                  endpoint: 'https://graph.facebook.com/v22.0/aud1/users',
                   headers: {},
                   params: {
                     access_token: 'ABC',
@@ -210,7 +210,7 @@ export const data = [
                   version: '1',
                   type: 'REST',
                   method: 'POST',
-                  endpoint: 'https://graph.facebook.com/v20.0/aud1/users',
+                  endpoint: 'https://graph.facebook.com/v22.0/aud1/users',
                   headers: {},
                   params: {
                     access_token: 'ABC',
@@ -265,7 +265,7 @@ export const data = [
                   dontBatch: false,
                   jobId: 2,
                   secret: {
-                    accessToken: 'default-accessToken',
+                    accessToken: defaultAccessToken,
                   },
                   sourceId: 'default-sourceId',
                   userId: 'default-userId',
@@ -305,7 +305,7 @@ export const data = [
                   version: '1',
                   type: 'REST',
                   method: 'DELETE',
-                  endpoint: 'https://graph.facebook.com/v20.0/23848494844100489/users',
+                  endpoint: 'https://graph.facebook.com/v22.0/23848494844100489/users',
                   headers: {},
                   params: {
                     access_token: 'ABC',
@@ -339,7 +339,7 @@ export const data = [
                   dontBatch: false,
                   jobId: 1,
                   secret: {
-                    accessToken: 'default-accessToken',
+                    accessToken: defaultAccessToken,
                   },
                   sourceId: 'default-sourceId',
                   userId: 'default-userId',
@@ -351,7 +351,7 @@ export const data = [
                   dontBatch: false,
                   jobId: 2,
                   secret: {
-                    accessToken: 'default-accessToken',
+                    accessToken: defaultAccessToken,
                   },
                   sourceId: 'default-sourceId',
                   userId: 'default-userId',
@@ -368,7 +368,7 @@ export const data = [
                   version: '1',
                   type: 'REST',
                   method: 'POST',
-                  endpoint: 'https://graph.facebook.com/v20.0/23848494844100489/users',
+                  endpoint: 'https://graph.facebook.com/v22.0/23848494844100489/users',
                   headers: {},
                   params: {
                     access_token: 'ABC',
@@ -398,7 +398,7 @@ export const data = [
                   dontBatch: false,
                   jobId: 3,
                   secret: {
-                    accessToken: 'default-accessToken',
+                    accessToken: defaultAccessToken,
                   },
                   sourceId: 'default-sourceId',
                   userId: 'default-userId',
@@ -415,7 +415,7 @@ export const data = [
                   version: '1',
                   type: 'REST',
                   method: 'POST',
-                  endpoint: 'https://graph.facebook.com/v20.0/23848494844100489/users',
+                  endpoint: 'https://graph.facebook.com/v22.0/23848494844100489/users',
                   headers: {},
                   params: {
                     access_token: 'ABC',
@@ -453,7 +453,7 @@ export const data = [
                   dontBatch: false,
                   jobId: 4,
                   secret: {
-                    accessToken: 'default-accessToken',
+                    accessToken: defaultAccessToken,
                   },
                   sourceId: 'default-sourceId',
                   userId: 'default-userId',
@@ -465,7 +465,7 @@ export const data = [
                   dontBatch: false,
                   jobId: 5,
                   secret: {
-                    accessToken: 'default-accessToken',
+                    accessToken: defaultAccessToken,
                   },
                   sourceId: 'default-sourceId',
                   userId: 'default-userId',
@@ -477,7 +477,7 @@ export const data = [
                   dontBatch: false,
                   jobId: 6,
                   secret: {
-                    accessToken: 'default-accessToken',
+                    accessToken: defaultAccessToken,
                   },
                   sourceId: 'default-sourceId',
                   userId: 'default-userId',
@@ -496,7 +496,7 @@ export const data = [
                   dontBatch: false,
                   jobId: 7,
                   secret: {
-                    accessToken: 'default-accessToken',
+                    accessToken: defaultAccessToken,
                   },
                   sourceId: 'default-sourceId',
                   userId: 'default-userId',
@@ -546,7 +546,7 @@ export const data = [
                   version: '1',
                   type: 'REST',
                   method: 'DELETE',
-                  endpoint: 'https://graph.facebook.com/v20.0/23848494844100489/users',
+                  endpoint: 'https://graph.facebook.com/v22.0/23848494844100489/users',
                   headers: {},
                   params: {
                     access_token: 'ABC',
@@ -583,7 +583,7 @@ export const data = [
                   dontBatch: false,
                   jobId: 1,
                   secret: {
-                    accessToken: 'default-accessToken',
+                    accessToken: defaultAccessToken,
                   },
                   sourceId: 'default-sourceId',
                   userId: 'default-userId',
@@ -595,7 +595,7 @@ export const data = [
                   dontBatch: false,
                   jobId: 2,
                   secret: {
-                    accessToken: 'default-accessToken',
+                    accessToken: defaultAccessToken,
                   },
                   sourceId: 'default-sourceId',
                   userId: 'default-userId',
@@ -637,7 +637,7 @@ export const data = [
                   version: '1',
                   type: 'REST',
                   method: 'POST',
-                  endpoint: 'https://graph.facebook.com/v20.0/23848494844100489/users',
+                  endpoint: 'https://graph.facebook.com/v22.0/23848494844100489/users',
                   headers: {},
                   params: {
                     access_token: 'ABC',
@@ -670,7 +670,7 @@ export const data = [
                   dontBatch: false,
                   jobId: 3,
                   secret: {
-                    accessToken: 'default-accessToken',
+                    accessToken: defaultAccessToken,
                   },
                   sourceId: 'default-sourceId',
                   userId: 'default-userId',
@@ -712,7 +712,7 @@ export const data = [
                   version: '1',
                   type: 'REST',
                   method: 'POST',
-                  endpoint: 'https://graph.facebook.com/v20.0/23848494844100489/users',
+                  endpoint: 'https://graph.facebook.com/v22.0/23848494844100489/users',
                   headers: {},
                   params: {
                     access_token: 'ABC',
@@ -753,7 +753,7 @@ export const data = [
                   dontBatch: false,
                   jobId: 4,
                   secret: {
-                    accessToken: 'default-accessToken',
+                    accessToken: defaultAccessToken,
                   },
                   sourceId: 'default-sourceId',
                   userId: 'default-userId',
@@ -765,7 +765,7 @@ export const data = [
                   dontBatch: false,
                   jobId: 5,
                   secret: {
-                    accessToken: 'default-accessToken',
+                    accessToken: defaultAccessToken,
                   },
                   sourceId: 'default-sourceId',
                   userId: 'default-userId',
@@ -777,7 +777,7 @@ export const data = [
                   dontBatch: false,
                   jobId: 6,
                   secret: {
-                    accessToken: 'default-accessToken',
+                    accessToken: defaultAccessToken,
                   },
                   sourceId: 'default-sourceId',
                   userId: 'default-userId',
@@ -821,7 +821,7 @@ export const data = [
                   dontBatch: false,
                   jobId: 7,
                   secret: {
-                    accessToken: 'default-accessToken',
+                    accessToken: defaultAccessToken,
                   },
                   sourceId: 'default-sourceId',
                   userId: 'default-userId',
@@ -849,9 +849,10 @@ export const data = [
   },
   {
     name: 'fb_custom_audience',
-    description: 'rETL record V2 tests',
+    description: 'rETL record V2 tests with null values',
     scenario: 'Framework',
-    successCriteria: 'all record events should be transformed correctly based on their operation',
+    successCriteria:
+      'all record events should be transformed correctly including records with null values',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -871,7 +872,7 @@ export const data = [
                   version: '1',
                   type: 'REST',
                   method: 'POST',
-                  endpoint: 'https://graph.facebook.com/v20.0/23848494844100489/users',
+                  endpoint: 'https://graph.facebook.com/v22.0/23848494844100489/users',
                   headers: {},
                   params: {
                     access_token: 'ABC',
@@ -890,6 +891,7 @@ export const data = [
                           'b100c2ec0718fe6b4805b623aeec6710719d042ceea55f5c8135b010ec1c7b36',
                           '1e14a2f476f7611a8b22bc85d14237fdc88aac828737e739416c32c5bce3bd16',
                         ],
+                        ['', ''],
                       ],
                     },
                   },
@@ -909,7 +911,7 @@ export const data = [
                   dontBatch: false,
                   jobId: 1,
                   secret: {
-                    accessToken: 'default-accessToken',
+                    accessToken: defaultAccessToken,
                   },
                   sourceId: 'default-sourceId',
                   userId: 'default-userId',
@@ -921,7 +923,7 @@ export const data = [
                   dontBatch: false,
                   jobId: 2,
                   secret: {
-                    accessToken: 'default-accessToken',
+                    accessToken: defaultAccessToken,
                   },
                   sourceId: 'default-sourceId',
                   userId: 'default-userId',
@@ -933,7 +935,19 @@ export const data = [
                   dontBatch: false,
                   jobId: 3,
                   secret: {
-                    accessToken: 'default-accessToken',
+                    accessToken: defaultAccessToken,
+                  },
+                  sourceId: 'default-sourceId',
+                  userId: 'default-userId',
+                  workspaceId: 'default-workspaceId',
+                },
+                {
+                  attemptNum: 1,
+                  destinationId: 'default-destinationId',
+                  dontBatch: false,
+                  jobId: 4,
+                  secret: {
+                    accessToken: defaultAccessToken,
                   },
                   sourceId: 'default-sourceId',
                   userId: 'default-userId',
@@ -1000,7 +1014,7 @@ export const data = [
                   destinationId: 'default-destinationId',
                   workspaceId: 'default-workspaceId',
                   secret: {
-                    accessToken: 'default-accessToken',
+                    accessToken: defaultAccessToken,
                   },
                   dontBatch: false,
                 },

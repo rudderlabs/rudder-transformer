@@ -1,7 +1,11 @@
 const lodash = require('lodash');
 const set = require('set-value');
 const get = require('get-value');
-const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
+const {
+  isDefinedNotNullNotEmpty,
+  InstrumentationError,
+  ConfigurationError,
+} = require('@rudderstack/integrations-lib');
 const {
   isDefined,
   constructPayload,
@@ -15,7 +19,6 @@ const {
   defaultBatchRequestConfig,
   IsGzipSupported,
   isObject,
-  isDefinedAndNotNullAndNotEmpty,
   isDefinedAndNotNull,
   removeUndefinedValues,
 } = require('../../util');
@@ -24,6 +27,16 @@ const {
   MP_IDENTIFY_EXCLUSION_LIST,
   GEO_SOURCE_ALLOWED_VALUES,
   mappingConfig,
+  BASE_ENDPOINT_EU,
+  BASE_ENDPOINT_IN,
+  BASE_ENDPOINT,
+  CREATE_DELETION_TASK_ENDPOINT_EU,
+  CREATE_DELETION_TASK_ENDPOINT_IN,
+  CREATE_DELETION_TASK_ENDPOINT,
+  MAX_PROPERTY_KEYS_COUNT,
+  MAX_ARRAY_ELEMENTS_COUNT,
+  MAX_NESTING_DEPTH,
+  MAX_PAYLOAD_SIZE_BYTES,
 } = require('./config');
 const { CommonUtils } = require('../../../util/common');
 const stats = require('../../../util/stats');
@@ -32,6 +45,75 @@ const mPIdentifyConfigJson = mappingConfig[ConfigCategory.IDENTIFY.name];
 const mPProfileAndroidConfigJson = mappingConfig[ConfigCategory.PROFILE_ANDROID.name];
 const mPProfileIosConfigJson = mappingConfig[ConfigCategory.PROFILE_IOS.name];
 const mPSetOnceConfigJson = mappingConfig[ConfigCategory.SET_ONCE.name];
+
+/**
+ * Helper function that performs recursive validation of objects
+ * @private
+ */
+function validateObjectRecursively(obj, path, depth) {
+  // Check nesting depth
+  if (depth > MAX_NESTING_DEPTH) {
+    const location = path ? ` at ${path}` : '';
+    throw new InstrumentationError(
+      `Mixpanel properties${location} exceed the maximum nesting depth of ${MAX_NESTING_DEPTH}`,
+    );
+  }
+
+  // Check number of keys
+  const keys = Object.keys(obj);
+  if (keys.length >= MAX_PROPERTY_KEYS_COUNT) {
+    const location = path ? ` at ${path}` : '';
+    throw new InstrumentationError(
+      `Mixpanel properties${location} exceed the limit of ${MAX_PROPERTY_KEYS_COUNT} keys (found ${keys.length})`,
+    );
+  }
+
+  // Check each property
+  keys.forEach((key) => {
+    const value = obj[key];
+    const newPath = path ? `${path}.${key}` : key;
+
+    if (Array.isArray(value)) {
+      if (value.length > MAX_ARRAY_ELEMENTS_COUNT) {
+        throw new InstrumentationError(
+          `Mixpanel array property '${newPath}' exceeds the limit of ${MAX_ARRAY_ELEMENTS_COUNT} elements (found ${value.length})`,
+        );
+      }
+      // Check objects within arrays
+      value.forEach((item, index) => {
+        if (isObject(item)) {
+          validateObjectRecursively(item, `${newPath}[${index}]`, depth + 1);
+        }
+      });
+    } else if (isObject(value)) {
+      validateObjectRecursively(value, newPath, depth + 1);
+    }
+  });
+}
+/**
+ * Validates that payload object adheres to Mixpanel's limits:
+ * - Must be smaller than 1MB of uncompressed JSON
+ * - Must have fewer than 255 properties
+ * - All nested object payload must have fewer than 255 keys and max nesting depth is 3
+ * - All array payload must have fewer than 255 elements
+ *
+ * @param {Object} payload - The payload object to validate
+ * @throws {InstrumentationError} If any of the limits are exceeded
+ */
+const validateMixpanelPayloadLimits = (payload) => {
+  if (!isDefinedAndNotNull(payload)) {
+    return;
+  }
+  const payloadSize = Buffer.byteLength(JSON.stringify(payload));
+  if (payloadSize > MAX_PAYLOAD_SIZE_BYTES) {
+    throw new InstrumentationError(
+      `Mixpanel payload exceeds the maximum size limit of 1MB (found ${Math.round(payloadSize / 1024)} KB)`,
+    );
+  }
+
+  // Start the recursive validation
+  validateObjectRecursively(payload, '', 0);
+};
 
 /**
  * This method populates the payload with device fields based on mp mapping
@@ -124,6 +206,9 @@ const createIdentifyResponse = (message, type, destination, responseBuilderSimpl
   const { useNewMapping, token } = destination.Config;
   // user payload created
   const properties = getTransformedJSON(message, mPIdentifyConfigJson, useNewMapping);
+
+  // Validate properties against Mixpanel's limits
+  validateMixpanelPayloadLimits(properties);
 
   const payload = {
     $set: properties,
@@ -251,59 +336,62 @@ const batchEvents = (successRespList, maxBatchSize, reqMetadata) => {
 };
 
 /**
- * Trims the traits and contextTraits objects based on the setOnceProperties array and returns an object containing the modified traits, contextTraits, and setOnce properties.
+ * Trims the traits and contextTraits objects based on the userProfileProperties array and returns an object containing the modified traits, contextTraits, and operationTransformedProperties properties.
  *
  * @param {object} traits - An object representing the traits.
  * @param {object} contextTraits - An object representing the context traits.
- * @param {string[]} setOnceProperties - An array of property paths to be considered for the setOnce transformation.
+ * @param userProfileProperties
  * @returns {object} - An object containing the modified traits, contextTraits, and setOnce properties.
  *
  * @example
  * const traits = { name: 'John', age: 30 };
  * const contextTraits = { country: 'USA', language: 'English', address: { city: 'New York', state: 'NY' }}};
- * const setOnceProperties = ['name', 'country', 'address.city'];
+ * const userProfileProperties = ['name', 'country', 'address.city'];
  *
- * const result = trimTraits(traits, contextTraits, setOnceProperties);
- * // Output: { traits: { age: 30 }, contextTraits: { language: 'English' }, setOnce: { $name: 'John', $country_code: 'USA', city: 'New York'} }
+ * const result = trimTraits(traits, contextTraits, operationTransformedProperties);
+ * // Output: { traits: { age: 30 }, contextTraits: { language: 'English' }, operationTransformedProperties: { $name: 'John', $country_code: 'USA', city: 'New York'} }
  */
-function trimTraits(traits, contextTraits, setOnceProperties) {
-  let sentOnceTransformedPayload;
+function trimTraits(traits, contextTraits, userProfileProperties) {
+  let operationTransformedPayload;
   // Create a copy of the original traits object
   const traitsCopy = { ...traits };
   const contextTraitsCopy = { ...contextTraits };
 
-  // Initialize setOnce object
-  const setOnceEligible = {};
+  // Initialize operation eligible object
+  const operationEligibleProperties = {};
 
-  // Step 1: find the k-v pairs of setOnceProperties in traits and contextTraits
+  // Step 1: find the k-v pairs of userProfileProperties in traits and contextTraits
 
-  setOnceProperties.forEach((propertyPath) => {
+  userProfileProperties.forEach((propertyPath) => {
     const propName = lodash.last(propertyPath.split('.'));
 
     const traitsValue = get(traitsCopy, propertyPath);
     const contextTraitsValue = get(contextTraitsCopy, propertyPath);
 
-    if (isDefinedAndNotNullAndNotEmpty(traitsValue)) {
-      setOnceEligible[propName] = traitsValue;
+    if (isDefinedNotNullNotEmpty(traitsValue)) {
+      operationEligibleProperties[propName] = traitsValue;
       lodash.unset(traitsCopy, propertyPath);
     }
-    if (isDefinedAndNotNullAndNotEmpty(contextTraitsValue)) {
-      if (!setOnceEligible.hasOwnProperty(propName)) {
-        setOnceEligible[propName] = contextTraitsValue;
+    if (isDefinedNotNullNotEmpty(contextTraitsValue)) {
+      if (!Object.hasOwn(operationEligibleProperties, propName)) {
+        operationEligibleProperties[propName] = contextTraitsValue;
       }
       lodash.unset(contextTraitsCopy, propertyPath);
     }
   });
 
-  if (setOnceEligible && Object.keys(setOnceEligible).length > 0) {
+  if (operationEligibleProperties && Object.keys(operationEligibleProperties).length > 0) {
     // Step 2: transform properties eligible as per rudderstack declared identify event mapping
-    // setOnce should have all traits from message.traits and message.context.traits by now
-    sentOnceTransformedPayload = constructPayload(setOnceEligible, mPSetOnceConfigJson);
+    // operationEligibleProperties should have all required traits from message.traits and message.context.traits by now
+    operationTransformedPayload = constructPayload(
+      operationEligibleProperties,
+      mPSetOnceConfigJson,
+    );
 
-    // Step 3: combine the transformed and custom setOnce traits
-    sentOnceTransformedPayload = extractCustomFields(
-      setOnceEligible,
-      sentOnceTransformedPayload,
+    // Step 3: combine the transformed and custom traits
+    operationTransformedPayload = extractCustomFields(
+      operationEligibleProperties,
+      operationTransformedPayload,
       'root',
       MP_IDENTIFY_EXCLUSION_LIST,
     );
@@ -312,7 +400,7 @@ function trimTraits(traits, contextTraits, setOnceProperties) {
   return {
     traits: traitsCopy,
     contextTraits: contextTraitsCopy,
-    setOnce: sentOnceTransformedPayload || {},
+    operationTransformedProperties: operationTransformedPayload || {},
   };
 }
 
@@ -378,6 +466,33 @@ const recordBatchSizeMetrics = (batchSize, destinationId) => {
   });
 };
 
+const getBaseEndpoint = (config) => {
+  const dataResidency = config?.dataResidency;
+  switch (dataResidency) {
+    case 'eu':
+      return BASE_ENDPOINT_EU;
+    case 'in':
+      return BASE_ENDPOINT_IN;
+    default:
+      return BASE_ENDPOINT;
+  }
+};
+
+const getDeletionTaskBaseEndpoint = (config) => {
+  const dataResidency = config?.dataResidency;
+  switch (dataResidency) {
+    case 'eu':
+      return CREATE_DELETION_TASK_ENDPOINT_EU;
+    case 'in':
+      return CREATE_DELETION_TASK_ENDPOINT_IN;
+    default:
+      return CREATE_DELETION_TASK_ENDPOINT;
+  }
+};
+
+const getCreateDeletionTaskEndpoint = (config, projectToken) =>
+  `${getDeletionTaskBaseEndpoint(config)}?token=${projectToken}`;
+
 module.exports = {
   createIdentifyResponse,
   isImportAuthCredentialsAvailable,
@@ -389,4 +504,8 @@ module.exports = {
   generatePageOrScreenCustomEventName,
   recordBatchSizeMetrics,
   getTransformedJSON,
+  getBaseEndpoint,
+  getDeletionTaskBaseEndpoint,
+  getCreateDeletionTaskEndpoint,
+  validateMixpanelPayloadLimits,
 };

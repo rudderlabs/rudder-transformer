@@ -1,3 +1,4 @@
+import { authHeader1 } from '../maskedSecrets';
 import { destination, generateMetadata } from '../common';
 const sha256 = require('sha256');
 
@@ -97,7 +98,7 @@ export const data = [
               headers: {
                 'Amazon-Advertising-API-ClientId': 'dummyClientId',
                 'Content-Type': 'application/json',
-                Authorization: 'Bearer dummyAccessToken',
+                Authorization: authHeader1,
               },
               method: 'POST',
               params: {},
@@ -151,7 +152,7 @@ export const data = [
               headers: {
                 'Amazon-Advertising-API-ClientId': 'dummyClientId',
                 'Content-Type': 'application/json',
-                Authorization: 'Bearer dummyAccessToken',
+                Authorization: authHeader1,
               },
               params: {},
               body: {

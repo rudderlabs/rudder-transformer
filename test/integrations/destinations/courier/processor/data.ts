@@ -1,3 +1,4 @@
+import { authHeader1, secret1 } from '../maskedSecrets';
 export const data = [
   {
     name: 'courier',
@@ -73,7 +74,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: secret1,
               },
             },
           },
@@ -92,7 +93,7 @@ export const data = [
               endpoint: 'https://api.courier.com/inbound/rudderstack',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Bearer dummyApiKey',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -151,7 +152,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: secret1,
               },
             },
           },
@@ -170,7 +171,7 @@ export const data = [
               endpoint: 'https://api.courier.com/inbound/rudderstack',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Bearer dummyApiKey',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -229,7 +230,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: secret1,
               },
             },
           },
@@ -281,7 +282,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'dummyApiKey',
+                apiKey: secret1,
               },
             },
           },
@@ -300,7 +301,7 @@ export const data = [
               endpoint: 'https://api.courier.com/inbound/rudderstack',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Bearer dummyApiKey',
+                Authorization: authHeader1,
               },
               params: {},
               body: {

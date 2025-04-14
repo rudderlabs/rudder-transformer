@@ -270,8 +270,66 @@ export const rETLRecordRouterRequestVDMv2UserId: RouterTransformationRequest = {
   destType: 'google_adwords_remarketing_lists',
 };
 
-module.exports = {
-  rETLRecordRouterRequest,
-  rETLRecordRouterRequestVDMv2General,
-  rETLRecordRouterRequestVDMv2UserId,
+export const eventStreamRecordRouterRequest: RouterTransformationRequest = {
+  input: [
+    {
+      destination: destination,
+      message: {
+        action: 'insert',
+        context: {
+          ip: '14.5.67.21',
+          library: {
+            name: 'http',
+          },
+        },
+        recordId: '2',
+        rudderId: '2',
+        fields: {
+          email: 'test@abc.com',
+          phone: '@09876543210',
+          firstName: 'test',
+          lastName: 'rudderlabs',
+          country: 'US',
+          postalCode: '1245',
+        },
+        type: 'record',
+      },
+      metadata: generateGoogleOAuthMetadata(2),
+    },
+  ],
+  destType: 'google_adwords_remarketing_lists',
+};
+
+export const rETLRecordRouterRequestVDMv1: RouterTransformationRequest = {
+  input: [
+    {
+      destination: destination,
+      message: {
+        action: 'insert',
+        context: {
+          ip: '14.5.67.21',
+          library: {
+            name: 'http',
+          },
+          vdm: {
+            version: 'v1',
+          },
+          mappedToDestination: true,
+        },
+        recordId: '2',
+        rudderId: '2',
+        fields: {
+          email: 'test@abc.com',
+          phone: '@09876543210',
+          firstName: 'test',
+          lastName: 'rudderlabs',
+          country: 'US',
+          postalCode: '1245',
+        },
+        type: 'record',
+      },
+      metadata: generateGoogleOAuthMetadata(3),
+    },
+  ],
+  destType: 'google_adwords_remarketing_lists',
 };

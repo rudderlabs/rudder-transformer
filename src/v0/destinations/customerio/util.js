@@ -211,6 +211,11 @@ const groupResponseBuilder = (message) => {
   return { rawPayload, endpoint, requestConfig };
 };
 
+const encodePathParameter = (param) => {
+  if (typeof param !== 'string') return param;
+  return param.includes('/') ? encodeURIComponent(param) : param;
+};
+
 const defaultResponseBuilder = (message, evName, userId, evType, destination, messageType) => {
   const rawPayload = {};
   let endpoint;
@@ -218,7 +223,7 @@ const defaultResponseBuilder = (message, evName, userId, evType, destination, me
   let requestConfig = defaultPostRequestConfig;
   // any other event type except identify
   const token = get(message, 'context.device.token');
-  const id = userId || getFieldValueFromMessage(message, 'email');
+  const id = encodePathParameter(userId) || getFieldValueFromMessage(message, 'email');
   // use this if only top level keys are to be sent
   // DEVICE DELETE from CustomerIO
   const isDeviceDeleteEvent = deviceDeleteRelatedEventName === evName;
@@ -303,6 +308,7 @@ const validateConfigFields = (destination) => {
 };
 
 module.exports = {
+  encodePathParameter,
   getEventChunks,
   identifyResponseBuilder,
   aliasResponseBuilder,

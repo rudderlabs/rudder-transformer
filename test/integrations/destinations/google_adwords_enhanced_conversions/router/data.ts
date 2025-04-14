@@ -1,8 +1,10 @@
+import { authHeader1, secret1 } from '../maskedSecrets';
+
 const events = [
   {
     metadata: {
       secret: {
-        access_token: 'abcd1234',
+        access_token: secret1,
         refresh_token: 'efgh5678',
         developer_token: 'ijkl91011',
       },
@@ -94,7 +96,7 @@ const events = [
   {
     metadata: {
       secret: {
-        access_token: 'abcd1234',
+        access_token: secret1,
         refresh_token: 'efgh5678',
         developer_token: 'ijkl91011',
       },
@@ -226,7 +228,7 @@ const events = [
   {
     metadata: {
       secret: {
-        access_token: 'abcd1234',
+        access_token: secret1,
         refresh_token: 'efgh5678',
         developer_token: 'ijkl91011',
       },
@@ -320,7 +322,7 @@ const events = [
   {
     metadata: {
       secret: {
-        access_token: 'abcd1234',
+        access_token: secret1,
         refresh_token: 'efgh5678',
         developer_token: 'ijkl91011',
       },
@@ -414,7 +416,7 @@ const events = [
   {
     metadata: {
       secret: {
-        access_token: 'abcd1234',
+        access_token: secret1,
         refresh_token: 'efgh5678',
         developer_token: 'ijkl91011',
       },
@@ -450,7 +452,7 @@ const events = [
   {
     metadata: {
       secret: {
-        access_token: 'abcd1234',
+        access_token: secret1,
         refresh_token: 'efgh5678',
         developer_token: 'ijkl91011',
       },
@@ -542,11 +544,7 @@ const invalidRtTfCases = [
           output: [
             {
               error: 'Invalid event array',
-              metadata: [
-                {
-                  destType: undefined,
-                },
-              ],
+              metadata: [{}],
               batched: false,
               statusCode: 400,
             },
@@ -575,11 +573,7 @@ const invalidRtTfCases = [
           output: [
             {
               error: 'Invalid event array',
-              metadata: [
-                {
-                  destType: undefined,
-                },
-              ],
+              metadata: [{}],
               batched: false,
               statusCode: 400,
             },
@@ -657,19 +651,22 @@ export const data = [
                   JSON_ARRAY: {},
                   XML: {},
                 },
-                endpoint:
-                  'https://googleads.googleapis.com/v17/customers/1234567890:uploadConversionAdjustments',
+                endpoint: '',
                 files: {},
                 headers: {
-                  Authorization: 'Bearer abcd1234',
+                  Authorization: authHeader1,
                   'Content-Type': 'application/json',
                   'developer-token': 'ijkl91011',
                   'login-customer-id': '11',
                 },
                 method: 'POST',
                 params: {
+                  accessToken: 'google_adwords_enhanced_conversions1',
                   customerId: '1234567890',
+                  developerToken: 'ijkl91011',
                   event: 'Page View',
+                  loginCustomerId: '11',
+                  subAccount: true,
                 },
                 type: 'REST',
                 version: '1',
@@ -695,7 +692,7 @@ export const data = [
                 {
                   jobId: 1,
                   secret: {
-                    access_token: 'abcd1234',
+                    access_token: secret1,
                     developer_token: 'ijkl91011',
                     refresh_token: 'efgh5678',
                   },
@@ -728,7 +725,7 @@ export const data = [
                 {
                   jobId: 2,
                   secret: {
-                    access_token: 'abcd1234',
+                    access_token: secret1,
                     developer_token: 'ijkl91011',
                     refresh_token: 'efgh5678',
                   },
@@ -828,19 +825,22 @@ export const data = [
                   JSON_ARRAY: {},
                   XML: {},
                 },
-                endpoint:
-                  'https://googleads.googleapis.com/v17/customers/1234567890:uploadConversionAdjustments',
+                endpoint: '',
                 files: {},
                 headers: {
-                  Authorization: 'Bearer abcd1234',
+                  Authorization: authHeader1,
                   'Content-Type': 'application/json',
                   'developer-token': 'ijkl91011',
-                  'login-customer-id': '11',
+                  'login-customer-id': 11,
                 },
                 method: 'POST',
                 params: {
+                  accessToken: 'google_adwords_enhanced_conversions1',
                   customerId: '1234567890',
+                  developerToken: 'ijkl91011',
                   event: 'Page View',
+                  loginCustomerId: 11,
+                  subAccount: true,
                 },
                 type: 'REST',
                 version: '1',
@@ -866,7 +866,7 @@ export const data = [
                 {
                   jobId: 4,
                   secret: {
-                    access_token: 'abcd1234',
+                    access_token: secret1,
                     developer_token: 'ijkl91011',
                     refresh_token: 'efgh5678',
                   },
@@ -899,7 +899,7 @@ export const data = [
                 {
                   jobId: 5,
                   secret: {
-                    access_token: 'abcd1234',
+                    access_token: secret1,
                     developer_token: 'ijkl91011',
                     refresh_token: 'efgh5678',
                   },
@@ -941,7 +941,7 @@ export const data = [
                 {
                   jobId: 7,
                   secret: {
-                    access_token: 'abcd1234',
+                    access_token: secret1,
                     developer_token: 'ijkl91011',
                     refresh_token: 'efgh5678',
                   },
@@ -973,7 +973,7 @@ export const data = [
               metadata: [
                 {
                   secret: {
-                    access_token: 'abcd1234',
+                    access_token: secret1,
                     refresh_token: 'efgh5678',
                     developer_token: 'ijkl91011',
                   },

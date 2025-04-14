@@ -7,25 +7,21 @@ import axios from 'axios';
 import bodyParser from 'koa-bodyparser';
 import { Command } from 'commander';
 import { createHttpTerminator } from 'http-terminator';
-import { ExtendedTestCaseData, MockHttpCallsData, TestCaseData } from './testTypes';
+import { ExtendedTestCaseData, TestCaseData } from './testTypes';
 import { applicationRoutes } from '../../src/routes/index';
 import MockAxiosAdapter from 'axios-mock-adapter';
 import {
   getTestDataFilePaths,
   getTestData,
-  getMockHttpCallsData,
-  getAllTestMockDataFilePaths,
-  addMock,
+  registerAxiosMocks,
   validateTestWithZOD,
+  getTestMockData,
 } from './testUtils';
 import tags from '../../src/v0/util/tags';
 import { Server } from 'http';
 import { appendFileSync } from 'fs';
 import { assertRouterOutput, responses } from '../testHelper';
-import { generateTestReport, initaliseReport } from '../test_reporter/reporter';
-import _ from 'lodash';
-import defaultFeaturesConfig from '../../src/features';
-import { ControllerUtility } from '../../src/controllers/util';
+import { initaliseReport } from '../test_reporter/reporter';
 import { FetchHandler } from '../../src/helpers/fetchHandlers';
 import { enhancedTestUtils } from '../test_reporter/allureReporter';
 
@@ -42,7 +38,7 @@ command
   .allowUnknownOption()
   .option('-d, --destination <string>', 'Enter Destination Name')
   .option('-f, --feature <string>', 'Enter Feature Name(processor, router)')
-  .option('-i, --index <number>', 'Enter Test index')
+  .option('-i, --index <number>', 'Enter Test index', parseInt)
   .option('-g, --generate <string>', 'Enter "true" If you want to generate network file')
   .option('-id, --id <string>', 'Enter unique "Id" of the test case you want to run')
   .option('-s, --source <string>', 'Enter Source Name')
@@ -80,6 +76,7 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
+  await createHttpTerminator({ server }).terminate();
   if (opts.generate === 'true') {
     const callsDataStr = responses.join('\n');
     const calls = `
@@ -89,26 +86,7 @@ afterAll(async () => {
     `;
     appendFileSync(join(__dirname, 'destinations', opts.destination, 'network.ts'), calls);
   }
-  await createHttpTerminator({ server }).terminate();
 });
-let mockAdapter;
-if (!opts.generate || opts.generate === 'false') {
-  // unmock already existing axios-mocking
-  mockAdapter = new MockAxiosAdapter(axios, { onNoMatch: 'throwException' });
-  const registerAxiosMocks = (axiosMocks: MockHttpCallsData[]) => {
-    axiosMocks.forEach((axiosMock) => addMock(mockAdapter, axiosMock));
-  };
-
-  // // all the axios requests will be stored in this map
-  const allTestMockDataFilePaths = getAllTestMockDataFilePaths(__dirname, opts.destination);
-  const allAxiosRequests = allTestMockDataFilePaths
-    .map((currPath) => {
-      const mockNetworkCallsData: MockHttpCallsData[] = getMockHttpCallsData(currPath);
-      return mockNetworkCallsData;
-    })
-    .flat();
-  registerAxiosMocks(allAxiosRequests);
-}
 
 // END
 const rootDir = __dirname;
@@ -143,22 +121,6 @@ const testRoute = async (route, tcData: TestCaseData) => {
     .send(body);
   const outputResp = tcData.output.response || ({} as any);
 
-  if (tcData.feature === tags.FEATURES.BATCH || tcData.feature === tags.FEATURES.ROUTER) {
-    //TODO get rid of these skipped destinations after they are fixed
-    if (
-      tcData.name != 'marketo_static_list' &&
-      tcData.name != 'mailmodo' &&
-      tcData.name != 'hs' &&
-      tcData.name != 'iterable' &&
-      tcData.name != 'klaviyo' &&
-      tcData.name != 'tiktok_ads' &&
-      tcData.name != 'mailjet' &&
-      tcData.name != 'google_adwords_offline_conversions'
-    ) {
-      assertRouterOutput(response.body.output, tcData.input.request.body.input);
-    }
-  }
-
   expect(response.status).toEqual(outputResp.status);
 
   if (INTEGRATIONS_WITH_UPDATED_TEST_STRUCTURE.includes(tcData.name?.toLocaleLowerCase())) {
@@ -173,6 +135,21 @@ const testRoute = async (route, tcData: TestCaseData) => {
 
   if (outputResp.headers !== undefined) {
     expect(response.headers).toEqual(outputResp.headers);
+  }
+  if (tcData.feature === tags.FEATURES.BATCH || tcData.feature === tags.FEATURES.ROUTER) {
+    //TODO get rid of these skipped destinations after they are fixed
+    if (
+      tcData.name != 'marketo_static_list' &&
+      tcData.name != 'mailmodo' &&
+      tcData.name != 'hs' &&
+      tcData.name != 'iterable' &&
+      tcData.name != 'klaviyo' &&
+      tcData.name != 'tiktok_ads' &&
+      tcData.name != 'mailjet' &&
+      tcData.name != 'google_adwords_offline_conversions'
+    ) {
+      assertRouterOutput(response.body.output, tcData.input.request.body.input);
+    }
   }
 };
 
@@ -205,81 +182,63 @@ const destinationTestHandler = async (tcData: TestCaseData) => {
 };
 
 const sourceTestHandler = async (tcData) => {
-  const route = `/${join(
-    tcData.version || DEFAULT_VERSION,
-    'sources',
-    tcData.name,
-    tcData.input.pathSuffix,
-  )}`;
+  const route = `/${join(tcData.version || 'v2', 'sources', tcData.name, tcData.input.pathSuffix || '')}`;
   await testRoute(route, tcData);
 };
 
-// Trigger the test suites
-describe.each(allTestDataFilePaths)('%s Tests', (testDataPath) => {
-  beforeEach(() => {
-    jest.resetAllMocks();
-    jest.clearAllMocks();
-  });
-  // add special mocks for specific destinations
-  let testData: TestCaseData[] = getTestData(testDataPath);
-  if (opts.index !== undefined) {
-    testData = [testData[parseInt(opts.index)]];
-  }
-  if (opts.id) {
-    testData = testData.filter((data) => {
-      if (data['id'] === opts.id) {
-        return true;
+const mockAdapter = new MockAxiosAdapter(axios as any, { onNoMatch: 'throwException' });
+registerAxiosMocks(mockAdapter, getTestMockData(opts.destination || opts.source));
+
+describe('Component Test Suite', () => {
+  if (allTestDataFilePaths.length === 0) {
+    // Reason: No test cases matched the given criteria
+    test.skip('No test cases provided. Skipping tests.', () => {});
+  } else {
+    describe.each(allTestDataFilePaths)('%s Tests', (testDataPath) => {
+      beforeEach(() => {
+        jest.resetAllMocks();
+        jest.clearAllMocks();
+      });
+      let testData: TestCaseData[] = getTestData(testDataPath);
+      if (opts.index < testData.length && opts.index >= 0) {
+        testData = [testData[opts.index]];
       }
-      return false;
+      if (opts.id) {
+        testData = testData.filter((data) => data.id === opts.id);
+      }
+
+      const extendedTestData: ExtendedTestCaseData[] = testData.flatMap((tcData) => {
+        return [{ tcData, descriptionSuffix: '' }];
+      });
+      if (extendedTestData.length === 0) {
+        // Reason: user may have skipped the test cases
+        test.skip('No test cases provided. Skipping tests.', () => {});
+      } else {
+        describe(`${testData[0].name} ${testData[0].module}`, () => {
+          test.each(extendedTestData)(
+            '$tcData.feature -> $tcData.description$descriptionSuffix (index: $#)',
+            async ({ tcData }) => {
+              tcData?.mockFns?.(mockAdapter);
+
+              switch (tcData.module) {
+                case tags.MODULES.DESTINATION:
+                  await destinationTestHandler(tcData);
+                  break;
+                case tags.MODULES.SOURCE:
+                  FetchHandler['sourceHandlerMap'] = new Map();
+                  tcData?.mockFns?.(mockAdapter);
+                  await sourceTestHandler(tcData);
+                  break;
+                default:
+                  console.log('Invalid module');
+                  // Intentionally fail the test case
+                  expect(true).toEqual(false);
+                  break;
+              }
+            },
+          );
+        });
+      }
     });
   }
-
-  const extendedTestData: ExtendedTestCaseData[] = testData.flatMap((tcData) => {
-    if (tcData.module === tags.MODULES.SOURCE) {
-      return [
-        {
-          tcData,
-          sourceTransformV2Flag: false,
-          descriptionSuffix: ' (sourceTransformV2Flag: false)',
-        },
-        {
-          tcData,
-          sourceTransformV2Flag: true,
-          descriptionSuffix: ' (sourceTransformV2Flag: true)',
-        },
-      ];
-    }
-    return [{ tcData }];
-  });
-
-  describe(`${testData[0].name} ${testData[0].module}`, () => {
-    test.each(extendedTestData)(
-      '$tcData.feature -> $tcData.description $descriptionSuffix (index: $#)',
-      async ({ tcData, sourceTransformV2Flag }) => {
-        tcData?.mockFns?.(mockAdapter);
-
-        switch (tcData.module) {
-          case tags.MODULES.DESTINATION:
-            await destinationTestHandler(tcData);
-            break;
-          case tags.MODULES.SOURCE:
-            tcData?.mockFns?.(mockAdapter);
-            testSetupSourceTransformV2(sourceTransformV2Flag);
-            await sourceTestHandler(tcData);
-            break;
-          default:
-            console.log('Invalid module');
-            // Intentionally fail the test case
-            expect(true).toEqual(false);
-            break;
-        }
-      },
-    );
-  });
 });
-
-const testSetupSourceTransformV2 = (flag) => {
-  defaultFeaturesConfig.upgradedToSourceTransformV2 = flag;
-  ControllerUtility['sourceVersionMap'] = new Map();
-  FetchHandler['sourceHandlerMap'] = new Map();
-};

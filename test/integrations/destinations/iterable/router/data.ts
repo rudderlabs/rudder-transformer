@@ -1,7 +1,6 @@
 import { RouterTestData } from '../../../testTypes';
-import {} from '../../../../../src/types';
+import { MessageType, RudderMessage } from '../../../../../src/types';
 import { generateMetadata } from '../../../testUtils';
-import { getBrowserInfo } from '../../../../../src/v0/util';
 
 export const data: RouterTestData[] = [
   {
@@ -1375,6 +1374,135 @@ export const data: RouterTestData[] = [
                 IsConnectionEnabled: true,
               },
               batched: true,
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    id: 'router-1736135082963',
+    name: 'iterable',
+    description: 'Already transformed event sent in the message body',
+    scenario: 'Default router scenario',
+    successCriteria: 'Router test should pass successfully',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: {
+                statusCode: 200,
+                version: '1',
+                type: 'REST' as MessageType,
+                method: 'POST',
+                endpoint: 'https://api.eu.iterable.com/api/catalogs/test-ruchira/items',
+                headers: {
+                  'Content-Type': 'application/json',
+                  api_key: '583af2f8-15ba-49c0-8511-76383e7de07e',
+                },
+                params: {},
+                body: {
+                  JSON: {
+                    documents: {
+                      Tiffany: {
+                        ruchira: 'donaldbaker@ellis.com',
+                        new_field2: 'GB',
+                      },
+                      ABC: {
+                        ruchira: 'abc@ellis.com',
+                        new_field2: 'GB1',
+                      },
+                    },
+                    replaceUploadedFieldsOnly: true,
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+              },
+              metadata: generateMetadata(4),
+              destination: {
+                ID: 'default-destination-id',
+                Name: 'Default Destination',
+                DestinationDefinition: {
+                  ID: 'default-dest-def-id',
+                  Name: 'Default Destination Definition',
+                  DisplayName: 'Default Display Name',
+                  Config: {},
+                },
+                Config: {
+                  apiKey: '583af2f8-15ba-49c0-8511-76383e7de07e',
+                  hubID: '22066036',
+                },
+                Enabled: true,
+                WorkspaceID: 'default-workspace',
+                Transformations: [],
+                RevisionID: 'default-revision',
+                IsProcessorEnabled: true,
+                IsConnectionEnabled: true,
+              },
+            },
+          ],
+          destType: 'iterable',
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batched: true,
+              batchedRequest: {
+                body: {
+                  FORM: {},
+                  JSON: {
+                    documents: {},
+                    replaceUploadedFieldsOnly: true,
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                },
+                endpoint: 'https://api.eu.iterable.com/api/catalogs/test-ruchira/items',
+                files: {},
+                headers: {
+                  'Content-Type': 'application/json',
+                  api_key: '583af2f8-15ba-49c0-8511-76383e7de07e',
+                },
+                method: 'POST',
+                params: {},
+                type: 'REST',
+                version: '1',
+              },
+              destination: {
+                Config: {
+                  apiKey: '583af2f8-15ba-49c0-8511-76383e7de07e',
+                  hubID: '22066036',
+                },
+                DestinationDefinition: {
+                  Config: {},
+                  DisplayName: 'Default Display Name',
+                  ID: 'default-dest-def-id',
+                  Name: 'Default Destination Definition',
+                },
+                Enabled: true,
+                ID: 'default-destination-id',
+                IsConnectionEnabled: true,
+                IsProcessorEnabled: true,
+                Name: 'Default Destination',
+                RevisionID: 'default-revision',
+                Transformations: [],
+                WorkspaceID: 'default-workspace',
+              },
+              metadata: [generateMetadata(4)],
+              statusCode: 200,
             },
           ],
         },

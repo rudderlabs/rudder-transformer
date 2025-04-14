@@ -1,3 +1,4 @@
+import { authHeader1, secret1 } from '../maskedSecrets';
 export const data = [
   {
     name: 'splitio',
@@ -41,7 +42,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'abcde',
+                apiKey: secret1,
                 environment: 'staging',
                 trafficType: 'anonymous',
               },
@@ -62,7 +63,7 @@ export const data = [
               endpoint: 'https://events.split.io/api/events',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Bearer abcde',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -142,7 +143,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'abcde',
+                apiKey: secret1,
                 environment: 'staging',
                 trafficType: 'user',
               },
@@ -163,7 +164,7 @@ export const data = [
               endpoint: 'https://events.split.io/api/events',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Bearer abcde',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -244,7 +245,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'abcde',
+                apiKey: secret1,
                 environment: 'production',
                 trafficType: 'anonymous',
               },
@@ -265,7 +266,7 @@ export const data = [
               endpoint: 'https://events.split.io/api/events',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Bearer abcde',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -334,7 +335,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'abcde',
+                apiKey: secret1,
                 environment: 'production',
                 trafficType: 'user',
               },
@@ -355,7 +356,7 @@ export const data = [
               endpoint: 'https://events.split.io/api/events',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Bearer abcde',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -418,7 +419,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'abcde',
+                apiKey: secret1,
                 environment: 'staging',
                 trafficType: 'user',
               },
@@ -439,7 +440,7 @@ export const data = [
               endpoint: 'https://events.split.io/api/events',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Bearer abcde',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -506,7 +507,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'abcde',
+                apiKey: secret1,
                 environment: 'staging',
                 trafficType: 'user',
               },
@@ -527,7 +528,7 @@ export const data = [
               endpoint: 'https://events.split.io/api/events',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Bearer abcde',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -590,7 +591,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'abcde',
+                apiKey: secret1,
                 environment: 'staging',
                 trafficType: 'user',
               },
@@ -652,7 +653,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'abcde',
+                apiKey: secret1,
                 environment: 'staging',
                 trafficType: 'user',
               },
@@ -713,7 +714,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'abcde',
+                apiKey: secret1,
                 environment: 'production',
                 trafficType: 'user',
               },
@@ -775,7 +776,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'abcde',
+                apiKey: secret1,
                 environment: 'production',
                 trafficType: 'user',
               },
@@ -796,7 +797,7 @@ export const data = [
               endpoint: 'https://events.split.io/api/events',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Bearer abcde',
+                Authorization: authHeader1,
               },
               params: {},
               body: {
@@ -859,7 +860,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'abcde',
+                apiKey: secret1,
                 environment: 'staging',
                 trafficType: 'anonymous',
               },
@@ -880,7 +881,7 @@ export const data = [
               endpoint: 'https://events.split.io/api/events',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Bearer abcde',
+                Authorization: authHeader1,
               },
               params: {},
               body: {

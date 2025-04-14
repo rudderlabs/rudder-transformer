@@ -7,7 +7,7 @@ import {
   overrideDestination,
   transformResultBuilder,
 } from '../../../testUtils';
-
+import { secret1, authHeader1 } from '../maskedSecrets';
 const destination: Destination = {
   ID: '123',
   Name: 'klaviyo',
@@ -18,7 +18,7 @@ const destination: Destination = {
     Config: {},
   },
   Config: {
-    privateApiKey: 'dummyPrivateApiKey',
+    privateApiKey: secret1,
     apiVersion: 'v2',
   },
   Enabled: true,
@@ -40,7 +40,7 @@ const commonProps = {
 
 const commonOutputHeaders = {
   Accept: 'application/json',
-  Authorization: 'Klaviyo-API-Key dummyPrivateApiKey',
+  Authorization: authHeader1,
   'Content-Type': 'application/json',
   revision: '2024-06-15',
 };

@@ -1,7 +1,7 @@
 import { ProcessorTestData } from '../../../testTypes';
-import { Metadata, Destination } from '../../../../../src/types';
+import { Metadata, Destination, RudderMessage } from '../../../../../src/types';
 
-const baseMetadata: Metadata = {
+const baseMetadata: Partial<Metadata> = {
   sourceId: 'default-sourceId',
   workspaceId: 'default-workspaceId',
   namespace: 'default-namespace',
@@ -318,6 +318,61 @@ export const validationTestData: ProcessorTestData[] = [
             metadata: baseMetadata,
             statusCode: 400,
             error: 'Missing required value from "userId"',
+            statTags: {
+              destType: 'ITERABLE',
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              feature: 'processor',
+              implementation: 'native',
+              module: 'destination',
+              destinationId: 'default-destinationId',
+              workspaceId: 'default-workspaceId',
+            },
+          },
+        ],
+      },
+    },
+  },
+  {
+    id: 'iterable-validation-test-6',
+    name: 'iterable',
+    description: '[Error]: Missing message type',
+    scenario: 'Framework',
+    successCriteria:
+      'Response should contain status code 400 and it should throw instrumentation error with respective message type',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        method: 'POST',
+        body: [
+          {
+            message: {
+              context: {},
+              event: 'testEvent',
+              properties: {
+                url: 'https://nodominoes.com',
+                title: 'Pizza',
+                referrer: 'https://google.com',
+              },
+              sentAt: '2020-08-28T16:26:16.473Z',
+              originalTimestamp: '2020-08-28T16:26:06.468Z',
+            },
+            metadata: baseMetadata,
+            destination: baseDestination,
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            metadata: baseMetadata,
+            statusCode: 400,
+            error: 'Event type is required',
             statTags: {
               destType: 'ITERABLE',
               errorCategory: 'dataValidation',

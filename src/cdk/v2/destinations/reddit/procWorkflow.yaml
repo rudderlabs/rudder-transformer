@@ -114,7 +114,7 @@ steps:
             "event_at": .message.().({{{{$.getGenericPaths("timestamp")}}}}),
             "event_type": $.outputs.prepareTrackPayload.eventType,
             "user": $.outputs.prepareTrackPayload.prepareUserObject,
-            "event_metadata": $.outputs.prepareTrackPayload.combineAllEcomFields,
+            "event_metadata": $.removeUnsupportedFields($.outputs.prepareTrackPayload.eventType.tracking_type, $.outputs.prepareTrackPayload.combineAllEcomFields),
             }]
           }
 

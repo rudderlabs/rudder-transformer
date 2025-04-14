@@ -1,3 +1,5 @@
+import { defaultAccessToken, defaultAccessTokenAuthHeader } from '../../../common/secrets';
+
 export const mockFns = (_) => {
   // @ts-ignore
   jest.useFakeTimers().setSystemTime(new Date('2023-10-15'));
@@ -118,7 +120,7 @@ export const data = [
                 namespace: '',
                 jobId: 1,
                 secret: {
-                  accessToken: 'dummyToken',
+                  accessToken: defaultAccessToken,
                 },
               },
               destination: commonDestination,
@@ -187,7 +189,7 @@ export const data = [
                 namespace: '',
                 jobId: 2,
                 secret: {
-                  accessToken: 'dummyToken',
+                  accessToken: defaultAccessToken,
                 },
               },
               destination: commonDestination,
@@ -255,7 +257,7 @@ export const data = [
                 namespace: '',
                 jobId: 3,
                 secret: {
-                  accessToken: 'dummyToken',
+                  accessToken: defaultAccessToken,
                 },
               },
               destination: commonDestination,
@@ -279,7 +281,7 @@ export const data = [
                   namespace: '',
                   jobId: 3,
                   secret: {
-                    accessToken: 'dummyToken',
+                    accessToken: defaultAccessToken,
                   },
                 },
               ],
@@ -419,8 +421,8 @@ export const data = [
                   'Content-Type': 'application/json',
                   'X-RestLi-Method': 'BATCH_CREATE',
                   'X-Restli-Protocol-Version': '2.0.0',
-                  'LinkedIn-Version': '202402',
-                  Authorization: 'Bearer dummyToken',
+                  'LinkedIn-Version': '202409',
+                  Authorization: defaultAccessTokenAuthHeader,
                 },
                 params: {},
                 files: {},
@@ -432,7 +434,7 @@ export const data = [
                   namespace: '',
                   jobId: 1,
                   secret: {
-                    accessToken: 'dummyToken',
+                    accessToken: defaultAccessToken,
                   },
                 },
                 {
@@ -441,7 +443,7 @@ export const data = [
                   namespace: '',
                   jobId: 2,
                   secret: {
-                    accessToken: 'dummyToken',
+                    accessToken: defaultAccessToken,
                   },
                 },
               ],

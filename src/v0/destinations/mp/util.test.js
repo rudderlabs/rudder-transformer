@@ -6,10 +6,21 @@ const {
   trimTraits,
   generatePageOrScreenCustomEventName,
   getTransformedJSON,
+  getBaseEndpoint,
+  getDeletionTaskBaseEndpoint,
+  getCreateDeletionTaskEndpoint,
+  validateMixpanelPayloadLimits,
+  toArray,
 } = require('./util');
 const { FEATURE_GZIP_SUPPORT } = require('../../util/constant');
-const { ConfigurationError } = require('@rudderstack/integrations-lib');
-const { mappingConfig, ConfigCategory } = require('./config');
+const { ConfigurationError, InstrumentationError } = require('@rudderstack/integrations-lib');
+const {
+  mappingConfig,
+  ConfigCategory,
+  MAX_PROPERTY_KEYS_COUNT,
+  MAX_ARRAY_ELEMENTS_COUNT,
+  MAX_NESTING_DEPTH,
+} = require('./config');
 
 const maxBatchSizeMock = 2;
 
@@ -32,7 +43,7 @@ describe('Unit test cases for groupEventsByEndpoint', () => {
           endpoint: '/engage',
           body: {
             JSON_ARRAY: {
-              batch: '[{prop:1}]',
+              batch: JSON.stringify([{ prop: 1 }]),
             },
           },
           userId: 'user1',
@@ -43,7 +54,7 @@ describe('Unit test cases for groupEventsByEndpoint', () => {
           endpoint: '/engage',
           body: {
             JSON_ARRAY: {
-              batch: '[{prop:2}]',
+              batch: JSON.stringify([{ prop: 2 }]),
             },
           },
           userId: 'user2',
@@ -54,7 +65,7 @@ describe('Unit test cases for groupEventsByEndpoint', () => {
           endpoint: '/groups',
           body: {
             JSON_ARRAY: {
-              batch: '[{prop:3}]',
+              batch: JSON.stringify([{ prop: 3 }]),
             },
           },
           userId: 'user1',
@@ -65,7 +76,7 @@ describe('Unit test cases for groupEventsByEndpoint', () => {
           endpoint: '/track',
           body: {
             JSON_ARRAY: {
-              batch: '[{prop:4}]',
+              batch: JSON.stringify([{ prop: 4 }]),
             },
           },
           userId: 'user1',
@@ -76,7 +87,7 @@ describe('Unit test cases for groupEventsByEndpoint', () => {
           endpoint: '/import',
           body: {
             JSON_ARRAY: {
-              batch: '[{prop:5}]',
+              batch: JSON.stringify([{ prop: 5 }]),
             },
           },
           userId: 'user2',
@@ -92,7 +103,7 @@ describe('Unit test cases for groupEventsByEndpoint', () => {
             endpoint: '/engage',
             body: {
               JSON_ARRAY: {
-                batch: '[{prop:1}]',
+                batch: JSON.stringify([{ prop: 1 }]),
               },
             },
             userId: 'user1',
@@ -103,7 +114,7 @@ describe('Unit test cases for groupEventsByEndpoint', () => {
             endpoint: '/engage',
             body: {
               JSON_ARRAY: {
-                batch: '[{prop:2}]',
+                batch: JSON.stringify([{ prop: 2 }]),
               },
             },
             userId: 'user2',
@@ -116,7 +127,7 @@ describe('Unit test cases for groupEventsByEndpoint', () => {
             endpoint: '/groups',
             body: {
               JSON_ARRAY: {
-                batch: '[{prop:3}]',
+                batch: JSON.stringify([{ prop: 3 }]),
               },
             },
             userId: 'user1',
@@ -129,7 +140,7 @@ describe('Unit test cases for groupEventsByEndpoint', () => {
             endpoint: '/import',
             body: {
               JSON_ARRAY: {
-                batch: '[{prop:5}]',
+                batch: JSON.stringify([{ prop: 5 }]),
               },
             },
             userId: 'user2',
@@ -149,7 +160,7 @@ describe('Unit test cases for batchEvents', () => {
           endpoint: '/engage',
           body: {
             JSON_ARRAY: {
-              batch: '[{"prop":1}]',
+              batch: JSON.stringify([{ prop: 1 }]),
             },
           },
           headers: {},
@@ -163,7 +174,7 @@ describe('Unit test cases for batchEvents', () => {
           endpoint: '/engage',
           body: {
             JSON_ARRAY: {
-              batch: '[{"prop":2}]',
+              batch: JSON.stringify([{ prop: 2 }]),
             },
           },
           headers: {},
@@ -177,7 +188,7 @@ describe('Unit test cases for batchEvents', () => {
           endpoint: '/engage',
           body: {
             JSON_ARRAY: {
-              batch: '[{"prop":3}]',
+              batch: JSON.stringify([{ prop: 3 }]),
             },
           },
           headers: {},
@@ -194,7 +205,12 @@ describe('Unit test cases for batchEvents', () => {
       {
         batched: true,
         batchedRequest: {
-          body: { FORM: {}, JSON: {}, JSON_ARRAY: { batch: '[{"prop":1},{"prop":2}]' }, XML: {} },
+          body: {
+            FORM: {},
+            JSON: {},
+            JSON_ARRAY: { batch: JSON.stringify([{ prop: 1 }, { prop: 2 }]) },
+            XML: {},
+          },
           endpoint: '/engage',
           files: {},
           headers: {},
@@ -210,7 +226,12 @@ describe('Unit test cases for batchEvents', () => {
       {
         batched: true,
         batchedRequest: {
-          body: { FORM: {}, JSON: {}, JSON_ARRAY: { batch: '[{"prop":3}]' }, XML: {} },
+          body: {
+            FORM: {},
+            JSON: {},
+            JSON_ARRAY: { batch: JSON.stringify([{ prop: 3 }]) },
+            XML: {},
+          },
           endpoint: '/engage',
           files: {},
           headers: {},
@@ -237,13 +258,13 @@ describe('Unit test cases for generateBatchedPayloadForArray', () => {
   it('should generate a batched payload with GZIP payload for /import endpoint when given an array of events', () => {
     const events = [
       {
-        body: { JSON_ARRAY: { batch: '[{"event": "event1"}]' } },
+        body: { JSON_ARRAY: { batch: JSON.stringify([{ event: 'event1' }]) } },
         endpoint: '/import',
         headers: { 'Content-Type': 'application/json' },
         params: {},
       },
       {
-        body: { JSON_ARRAY: { batch: '[{"event": "event2"}]' } },
+        body: { JSON_ARRAY: { batch: JSON.stringify([{ event: 'event2' }]) } },
         endpoint: '/import',
         headers: { 'Content-Type': 'application/json' },
         params: {},
@@ -256,7 +277,7 @@ describe('Unit test cases for generateBatchedPayloadForArray', () => {
         JSON_ARRAY: {},
         XML: {},
         GZIP: {
-          payload: '[{"event":"event1"},{"event":"event2"}]',
+          payload: JSON.stringify([{ event: 'event1' }, { event: 'event2' }]),
         },
       },
       endpoint: '/import',
@@ -278,13 +299,13 @@ describe('Unit test cases for generateBatchedPayloadForArray', () => {
   it('should generate a batched payload with JSON_ARRAY body when given an array of events', () => {
     const events = [
       {
-        body: { JSON_ARRAY: { batch: '[{"event": "event1"}]' } },
+        body: { JSON_ARRAY: { batch: JSON.stringify([{ event: 'event1' }]) } },
         endpoint: '/endpoint',
         headers: { 'Content-Type': 'application/json' },
         params: {},
       },
       {
-        body: { JSON_ARRAY: { batch: '[{"event": "event2"}]' } },
+        body: { JSON_ARRAY: { batch: JSON.stringify([{ event: 'event2' }]) } },
         endpoint: '/endpoint',
         headers: { 'Content-Type': 'application/json' },
         params: {},
@@ -294,7 +315,7 @@ describe('Unit test cases for generateBatchedPayloadForArray', () => {
       body: {
         FORM: {},
         JSON: {},
-        JSON_ARRAY: { batch: '[{"event":"event1"},{"event":"event2"}]' },
+        JSON_ARRAY: { batch: JSON.stringify([{ event: 'event1' }, { event: 'event2' }]) },
         XML: {},
       },
       endpoint: '/endpoint',
@@ -345,94 +366,95 @@ describe('Unit test cases for buildUtmParams', () => {
   });
 });
 describe('Unit test cases for trimTraits', () => {
-  // Given a valid traits object and contextTraits object, and a valid setOnceProperties array, the function should return an object containing traits, contextTraits, and setOnce properties.
-  it('should return an object containing traits, contextTraits, and setOnce properties when given valid inputs', () => {
-    const traits = { name: 'John', age: 30 };
-    const contextTraits = { email: 'john@example.com' };
-    const setOnceProperties = ['name', 'email'];
-
-    const result = trimTraits(traits, contextTraits, setOnceProperties);
-
-    expect(result).toEqual({
-      traits: {
-        age: 30,
+  const testCases = [
+    {
+      name: 'should return an object containing traits, contextTraits, and operationTransformedProperties when given valid inputs',
+      input: {
+        traits: { name: 'John', age: 30, email: 'john@example.com' },
+        contextTraits: { email: 'john@example.com' },
+        userProfileProperties: ['name', 'email'],
       },
-      contextTraits: {},
-      setOnce: { $name: 'John', $email: 'john@example.com' },
-    });
-  });
+      expected: {
+        traits: { age: 30 },
+        contextTraits: {},
+        operationTransformedProperties: { $name: 'John', $email: 'john@example.com' },
+      },
+    },
+    {
+      name: 'should return an object containing empty traits and contextTraits, and an empty operationTransformedProperties when given empty traits and contextTraits objects',
+      input: {
+        traits: {},
+        contextTraits: { phone: '0123456789' },
+        userProfileProperties: ['name', 'email'],
+      },
+      expected: {
+        traits: {},
+        contextTraits: { phone: '0123456789' },
+        operationTransformedProperties: {},
+      },
+    },
+    {
+      name: 'should return an object containing the original traits and contextTraits objects, and an empty operationTransformedProperties when given an empty userProfileProperties array',
+      input: {
+        traits: { name: 'John', age: 30 },
+        contextTraits: { email: 'john@example.com' },
+        userProfileProperties: [],
+      },
+      expected: {
+        traits: { name: 'John', age: 30 },
+        contextTraits: { email: 'john@example.com' },
+        operationTransformedProperties: {},
+      },
+    },
+    {
+      name: 'should not add properties to the operationTransformedProperties when given userProfileProperties array with non-existent properties',
+      input: {
+        traits: { name: 'John', age: 30 },
+        contextTraits: { email: 'john@example.com' },
+        userProfileProperties: ['name', 'email', 'address'],
+      },
+      expected: {
+        traits: { age: 30 },
+        contextTraits: {},
+        operationTransformedProperties: { $name: 'John', $email: 'john@example.com' },
+      },
+    },
+    {
+      name: 'should not add properties to the operationTransformedProperties when given userProfileProperties array with non-existent nested properties',
+      input: {
+        traits: { name: 'John', age: 30, address: 'kolkata' },
+        contextTraits: { email: 'john@example.com' },
+        userProfileProperties: ['name', 'email', 'address.city'],
+      },
+      expected: {
+        traits: { age: 30, address: 'kolkata' },
+        contextTraits: {},
+        operationTransformedProperties: { $name: 'John', $email: 'john@example.com' },
+      },
+    },
+    {
+      name: 'should add properties to the operationTransformedProperties when given userProfileProperties array with existent nested properties',
+      input: {
+        traits: { name: 'John', age: 30, address: { city: 'kolkata' }, isAdult: false },
+        contextTraits: { email: 'john@example.com' },
+        userProfileProperties: ['name', 'email', 'address.city'],
+      },
+      expected: {
+        traits: { age: 30, address: {}, isAdult: false },
+        contextTraits: {},
+        operationTransformedProperties: {
+          $name: 'John',
+          $email: 'john@example.com',
+          $city: 'kolkata',
+        },
+      },
+    },
+  ];
 
-  // Given an empty traits object and contextTraits object, and a valid setOnceProperties array, the function should return an object containing empty traits and contextTraits, and an empty setOnce property.
-  it('should return an object containing empty traits and contextTraits, and an empty setOnce property when given empty traits and contextTraits objects', () => {
-    const traits = {};
-    const contextTraits = {};
-    const setOnceProperties = ['name', 'email'];
-
-    const result = trimTraits(traits, contextTraits, setOnceProperties);
-
-    expect(result).toEqual({
-      traits: {},
-      contextTraits: {},
-      setOnce: {},
-    });
-  });
-
-  // Given an empty setOnceProperties array, the function should return an object containing the original traits and contextTraits objects, and an empty setOnce property.
-  it('should return an object containing the original traits and contextTraits objects, and an empty setOnce property when given an empty setOnceProperties array', () => {
-    const traits = { name: 'John', age: 30 };
-    const contextTraits = { email: 'john@example.com' };
-    const setOnceProperties = [];
-
-    const result = trimTraits(traits, contextTraits, setOnceProperties);
-
-    expect(result).toEqual({
-      traits: { name: 'John', age: 30 },
-      contextTraits: { email: 'john@example.com' },
-      setOnce: {},
-    });
-  });
-
-  // Given a setOnceProperties array containing properties that do not exist in either traits or contextTraits objects, the function should not add the property to the setOnce property.
-  it('should not add properties to the setOnce property when given setOnceProperties array with non-existent properties', () => {
-    const traits = { name: 'John', age: 30 };
-    const contextTraits = { email: 'john@example.com' };
-    const setOnceProperties = ['name', 'email', 'address'];
-
-    const result = trimTraits(traits, contextTraits, setOnceProperties);
-
-    expect(result).toEqual({
-      traits: { age: 30 },
-      contextTraits: {},
-      setOnce: { $name: 'John', $email: 'john@example.com' },
-    });
-  });
-
-  // Given a setOnceProperties array containing properties with nested paths that do not exist in either traits or contextTraits objects, the function should not add the property to the setOnce property.
-  it('should not add properties to the setOnce property when given setOnceProperties array with non-existent nested properties', () => {
-    const traits = { name: 'John', age: 30, address: 'kolkata' };
-    const contextTraits = { email: 'john@example.com' };
-    const setOnceProperties = ['name', 'email', 'address.city'];
-
-    const result = trimTraits(traits, contextTraits, setOnceProperties);
-
-    expect(result).toEqual({
-      traits: { age: 30, address: 'kolkata' },
-      contextTraits: {},
-      setOnce: { $name: 'John', $email: 'john@example.com' },
-    });
-  });
-
-  it('should add properties to the setOnce property when given setOnceProperties array with existent nested properties', () => {
-    const traits = { name: 'John', age: 30, address: { city: 'kolkata' }, isAdult: false };
-    const contextTraits = { email: 'john@example.com' };
-    const setOnceProperties = ['name', 'email', 'address.city'];
-
-    const result = trimTraits(traits, contextTraits, setOnceProperties);
-
-    expect(result).toEqual({
-      traits: { age: 30, address: {}, isAdult: false },
-      contextTraits: {},
-      setOnce: { $name: 'John', $email: 'john@example.com', $city: 'kolkata' },
+  testCases.forEach(({ name, input, expected }) => {
+    it(name, () => {
+      const result = trimTraits(input.traits, input.contextTraits, input.userProfileProperties);
+      expect(result).toEqual(expected);
     });
   });
 });
@@ -528,8 +550,8 @@ describe('Unit test cases for getTransformedJSON', () => {
       $os: 'iOS',
       $ios_device_model: 'Android SDK built for x86',
       $ios_version: '8.1.0',
-      $ios_app_release: '1',
-      $ios_app_version: '1.0',
+      $ios_app_release: '1.0',
+      $ios_app_version: '1',
     };
 
     expect(result).toEqual(expectedResult);
@@ -571,7 +593,7 @@ describe('Unit test cases for getTransformedJSON', () => {
       $android_os_version: '8.1.0',
       $android_manufacturer: 'Google',
       $android_app_version: '1.0',
-      $android_app_version_code: '1.0',
+      $android_app_version_code: '1',
       $android_brand: 'Google',
     };
 
@@ -611,8 +633,8 @@ describe('Unit test cases for getTransformedJSON', () => {
       $os: 'iOS',
       $ios_device_model: 'Android SDK built for x86',
       $ios_version: '8.1.0',
-      $ios_app_release: '1',
-      $ios_app_version: '1.0',
+      $ios_app_release: '1.0',
+      $ios_app_version: '1',
     };
 
     expect(result).toEqual(expectedResult);
@@ -654,7 +676,7 @@ describe('Unit test cases for getTransformedJSON', () => {
       $android_os_version: '8.1.0',
       $android_manufacturer: 'Google',
       $android_app_version: '1.0',
-      $android_app_version_code: '1.0',
+      $android_app_version_code: '1',
       $android_brand: 'Google',
     };
 
@@ -685,5 +707,230 @@ describe('Unit test cases for getTransformedJSON', () => {
     };
 
     expect(result).toEqual(expectedResult);
+  });
+});
+
+describe('getBaseEndpoint', () => {
+  const testCases = [
+    {
+      name: 'should return BASE_ENDPOINT_EU when dataResidency is eu',
+      input: { dataResidency: 'eu' },
+      expected: 'https://api-eu.mixpanel.com',
+    },
+    {
+      name: 'should return BASE_ENDPOINT_IN when dataResidency is in',
+      input: { dataResidency: 'in' },
+      expected: 'https://api-in.mixpanel.com',
+    },
+    {
+      name: 'should return default BASE_ENDPOINT when dataResidency is other',
+      input: { dataResidency: 'us' },
+      expected: 'https://api.mixpanel.com',
+    },
+    {
+      name: 'should return BASE_ENDPOINT when dataResidency is not provided',
+      input: {},
+      expected: 'https://api.mixpanel.com',
+    },
+  ];
+
+  testCases.forEach(({ name, input, expected }) => {
+    it(name, () => {
+      expect(getBaseEndpoint(input)).toEqual(expected);
+    });
+  });
+});
+
+describe('getDeletionTaskBaseEndpoint', () => {
+  const testCases = [
+    {
+      name: 'should return CREATE_DELETION_TASK_ENDPOINT_EU when dataResidency is eu',
+      input: { dataResidency: 'eu' },
+      expected: 'https://eu.mixpanel.com/api/app/data-deletions/v3.0/',
+    },
+    {
+      name: 'should return CREATE_DELETION_TASK_ENDPOINT_IN when dataResidency is in',
+      input: { dataResidency: 'in' },
+      expected: 'https://in.mixpanel.com/api/app/data-deletions/v3.0/',
+    },
+    {
+      name: 'should return default CREATE_DELETION_TASK_ENDPOINT when dataResidency is other',
+      input: { dataResidency: 'us' },
+      expected: 'https://mixpanel.com/api/app/data-deletions/v3.0/',
+    },
+    {
+      name: 'should return CREATE_DELETION_TASK_ENDPOINT when dataResidency is not provided',
+      input: {},
+      expected: 'https://mixpanel.com/api/app/data-deletions/v3.0/',
+    },
+  ];
+
+  testCases.forEach(({ name, input, expected }) => {
+    it(name, () => {
+      expect(getDeletionTaskBaseEndpoint(input)).toEqual(expected);
+    });
+  });
+});
+
+describe('getCreateDeletionTaskEndpoint', () => {
+  const testCases = [
+    {
+      name: 'should return endpoint',
+      input: {
+        config: {
+          dataResidency: 'eu',
+        },
+        token: 'dummy-Token',
+      },
+      expected: 'https://eu.mixpanel.com/api/app/data-deletions/v3.0/?token=dummy-Token',
+    },
+  ];
+
+  testCases.forEach(({ name, input, expected }) => {
+    it(name, () => {
+      expect(getCreateDeletionTaskEndpoint(input.config, input.token)).toEqual(expected);
+    });
+  });
+});
+
+describe('validateMixpanelPayloadLimits', () => {
+  it('should not throw error for valid properties object', () => {
+    const properties = {
+      prop1: 'value1',
+      prop2: 'value2',
+      prop3: { nestedProp: 'nestedValue' },
+      prop4: [1, 2, 3],
+    };
+
+    expect(() => validateMixpanelPayloadLimits(properties)).not.toThrow();
+  });
+
+  it('should throw error when properties exceed the maximum key limit', () => {
+    // Create an object with MAX_PROPERTY_KEYS_COUNT + 1 properties
+    const properties = {};
+    for (let i = 0; i < MAX_PROPERTY_KEYS_COUNT + 1; i++) {
+      properties[`prop${i}`] = `value${i}`;
+    }
+
+    expect(() => validateMixpanelPayloadLimits(properties)).toThrow(InstrumentationError);
+    expect(() => validateMixpanelPayloadLimits(properties)).toThrow(
+      `Mixpanel properties exceed the limit of ${MAX_PROPERTY_KEYS_COUNT} keys`,
+    );
+  });
+
+  it('should throw error when nested object properties exceed the maximum key limit', () => {
+    // Create a nested object with MAX_PROPERTY_KEYS_COUNT + 1 properties
+    const nestedProperties = {};
+    for (let i = 0; i < MAX_PROPERTY_KEYS_COUNT + 1; i++) {
+      nestedProperties[`nestedProp${i}`] = `nestedValue${i}`;
+    }
+
+    const properties = {
+      prop1: 'value1',
+      prop2: nestedProperties,
+    };
+
+    expect(() => validateMixpanelPayloadLimits(properties)).toThrow(InstrumentationError);
+    expect(() => validateMixpanelPayloadLimits(properties)).toThrow(
+      `Mixpanel properties at prop2 exceed the limit of ${MAX_PROPERTY_KEYS_COUNT} keys`,
+    );
+  });
+
+  it('should throw error when array properties exceed the maximum element limit', () => {
+    // Create an array with MAX_ARRAY_ELEMENTS_COUNT + 1 elements
+    const array = [];
+    for (let i = 0; i < MAX_ARRAY_ELEMENTS_COUNT + 1; i++) {
+      array.push(`element${i}`);
+    }
+
+    const properties = {
+      prop1: 'value1',
+      prop2: array,
+    };
+
+    expect(() => validateMixpanelPayloadLimits(properties)).toThrow(InstrumentationError);
+    expect(() => validateMixpanelPayloadLimits(properties)).toThrow(
+      `Mixpanel array property 'prop2' exceeds the limit of ${MAX_ARRAY_ELEMENTS_COUNT} elements`,
+    );
+  });
+
+  it('should throw error when nesting depth exceeds the maximum', () => {
+    // Create a deeply nested object that exceeds MAX_NESTING_DEPTH
+    let deepObject = { value: 'test' };
+    for (let i = 0; i < MAX_NESTING_DEPTH; i++) {
+      deepObject = { nested: deepObject };
+    }
+
+    const properties = {
+      prop1: deepObject,
+    };
+
+    expect(() => validateMixpanelPayloadLimits(properties)).toThrow(InstrumentationError);
+    expect(() => validateMixpanelPayloadLimits(properties)).toThrow(
+      `exceed the maximum nesting depth of ${MAX_NESTING_DEPTH}`,
+    );
+  });
+
+  it('should handle non-object input gracefully', () => {
+    expect(() => validateMixpanelPayloadLimits(null)).not.toThrow();
+    expect(() => validateMixpanelPayloadLimits(undefined)).not.toThrow();
+    expect(() => validateMixpanelPayloadLimits('string')).not.toThrow();
+    expect(() => validateMixpanelPayloadLimits(123)).not.toThrow();
+    expect(() => validateMixpanelPayloadLimits(true)).not.toThrow();
+    expect(() => validateMixpanelPayloadLimits([])).not.toThrow();
+  });
+
+  it('should throw error when an object within an array exceeds the property limit', () => {
+    // Create an object with MAX_PROPERTY_KEYS_COUNT + 1 properties
+    const objectWithTooManyProps = {};
+    for (let i = 0; i < MAX_PROPERTY_KEYS_COUNT + 1; i++) {
+      objectWithTooManyProps[`prop${i}`] = `value${i}`;
+    }
+
+    const properties = {
+      prop1: 'value1',
+      prop2: [1, 2, objectWithTooManyProps],
+    };
+
+    expect(() => validateMixpanelPayloadLimits(properties)).toThrow(InstrumentationError);
+    expect(() => validateMixpanelPayloadLimits(properties)).toThrow(
+      `Mixpanel properties at prop2[2] exceed the limit of ${MAX_PROPERTY_KEYS_COUNT} keys`,
+    );
+  });
+
+  it('should handle complex objects with multiple levels of nesting correctly', () => {
+    // Create a valid complex object with multiple levels of nesting
+    const complexObject = {
+      level1: {
+        level2: {
+          level3: {
+            // This is at depth 3, which is the maximum allowed
+            property: 'value',
+            array: [1, 2, 3],
+          },
+        },
+      },
+    };
+
+    expect(() => validateMixpanelPayloadLimits(complexObject)).not.toThrow();
+
+    // Now add one more level to exceed the maximum depth
+    const tooDeepObject = {
+      level1: {
+        level2: {
+          level3: {
+            level4: {
+              // This exceeds MAX_NESTING_DEPTH
+              property: 'value',
+            },
+          },
+        },
+      },
+    };
+
+    expect(() => validateMixpanelPayloadLimits(tooDeepObject)).toThrow(InstrumentationError);
+    expect(() => validateMixpanelPayloadLimits(tooDeepObject)).toThrow(
+      `exceed the maximum nesting depth of ${MAX_NESTING_DEPTH}`,
+    );
   });
 });

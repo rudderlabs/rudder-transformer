@@ -107,8 +107,13 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
             message: 'Request Processed Successfully',
             response: [
               {
-                error:
-                  '{"audience_id":"aud1","session_id":"123","num_received":4,"num_invalid_entries":0,"invalid_entry_samples":{}}',
+                error: JSON.stringify({
+                  audience_id: 'aud1',
+                  session_id: '123',
+                  num_received: 4,
+                  num_invalid_entries: 0,
+                  invalid_entry_samples: {},
+                }),
                 statusCode: 200,
                 metadata: generateMetadata(1),
               },

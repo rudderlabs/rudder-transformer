@@ -60,7 +60,7 @@ jobs:
       use_merge_sha: true
       skip_tests: ${{startsWith(github.event.pull_request.head.ref, 'hotfix-release/')}}
     secrets:
-      DOCKERHUB_PROD_TOKEN: ${{ secrets.DOCKERHUB_PROD_TOKEN }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   create-pull-request:
     name: Update Helm Charts For Production and Create Pull Request
@@ -107,21 +107,15 @@ jobs:
 
           cd helm-charts/shared-services/per-az/environment/production
           yq eval -i ".rudder-transformer.image.tag=\"$TAG_NAME\"" production.yaml
-          yq eval -i ".user-transformer.image.tag=\"$TAG_NAME\"" production.yaml
           yq eval -i ".rudder-transformer.image.repository=\"$TF_IMAGE_REPOSITORY\"" production.yaml
-          yq eval -i ".user-transformer.image.repository=\"$TF_IMAGE_REPOSITORY\"" production.yaml
           git add production.yaml
 
           yq eval -i ".rudder-transformer.image.tag=\"$TAG_NAME\"" enterprise/enterprise.yaml
-          yq eval -i ".user-transformer.image.tag=\"$TAG_NAME\"" enterprise/enterprise.yaml
           yq eval -i ".rudder-transformer.image.repository=\"$TF_IMAGE_REPOSITORY\"" enterprise/enterprise.yaml
-          yq eval -i ".user-transformer.image.repository=\"$TF_IMAGE_REPOSITORY\"" enterprise/enterprise.yaml
           git add enterprise/enterprise.yaml
 
           yq eval -i ".rudder-transformer.image.tag=\"$TAG_NAME\"" multi-tenant/multi-tenant.yaml
-          yq eval -i ".user-transformer.image.tag=\"$TAG_NAME\"" multi-tenant/multi-tenant.yaml
           yq eval -i ".rudder-transformer.image.repository=\"$TF_IMAGE_REPOSITORY\"" multi-tenant/multi-tenant.yaml
-          yq eval -i ".user-transformer.image.repository=\"$TF_IMAGE_REPOSITORY\"" multi-tenant/multi-tenant.yaml
           git add multi-tenant/multi-tenant.yaml
 
           cd ../../../../config-be-rudder-transformer/environment/prod

@@ -1,5 +1,5 @@
 import { defaultMockFns } from '../mocks';
-import { Destination } from '../../../../../src/types';
+import { Destination, RudderMessage } from '../../../../../src/types';
 import { ProcessorTestData } from '../../../testTypes';
 import { generateMetadata, generateSimplifiedTrackPayload } from '../../../testUtils';
 
@@ -848,9 +848,8 @@ export const validationTestData: ProcessorTestData[] = [
             destination,
             message: {
               type: 'track',
-              event: {
-                name: 'promotion_viewed',
-              },
+              // intentional to test event name as number
+              event: 122 as unknown as string,
               properties: {
                 products: commonProductInfo,
               },
@@ -921,7 +920,7 @@ export const validationTestData: ProcessorTestData[] = [
         status: 200,
         body: [
           {
-            error: 'ga4ClientId, anonymousId or messageId must be provided',
+            error: 'ga4ClientId or anonymousId must be provided',
             statTags: { ...expectedStatTags, errorType: 'configuration' },
             statusCode: 400,
             metadata: generateMetadata(1),

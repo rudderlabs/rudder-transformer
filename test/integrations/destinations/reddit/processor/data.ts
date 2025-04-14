@@ -1,3 +1,4 @@
+import { authHeader1, secret1 } from '../maskedSecrets';
 export const data = [
   {
     name: 'reddit',
@@ -84,7 +85,7 @@ export const data = [
               destinationId: 'destId',
               workspaceId: 'wspId',
               secret: {
-                accessToken: 'dummyAccessToken',
+                accessToken: secret1,
               },
             },
           },
@@ -102,7 +103,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://ads-api.reddit.com/api/v2.0/conversions/events/a2_fsddXXXfsfd',
               headers: {
-                Authorization: 'Bearer dummyAccessToken',
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
               params: {},
@@ -157,7 +158,7 @@ export const data = [
               destinationId: 'destId',
               workspaceId: 'wspId',
               secret: {
-                accessToken: 'dummyAccessToken',
+                accessToken: secret1,
               },
             },
             statusCode: 200,
@@ -251,7 +252,7 @@ export const data = [
               destinationId: 'destId',
               workspaceId: 'wspId',
               secret: {
-                accessToken: 'dummyAccessToken',
+                accessToken: secret1,
               },
             },
           },
@@ -269,7 +270,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://ads-api.reddit.com/api/v2.0/conversions/events/a2_fsddXXXfsfd',
               headers: {
-                Authorization: 'Bearer dummyAccessToken',
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
               params: {},
@@ -324,7 +325,7 @@ export const data = [
               destinationId: 'destId',
               workspaceId: 'wspId',
               secret: {
-                accessToken: 'dummyAccessToken',
+                accessToken: secret1,
               },
             },
             statusCode: 200,
@@ -403,7 +404,7 @@ export const data = [
               destinationId: 'destId',
               workspaceId: 'wspId',
               secret: {
-                accessToken: 'dummyAccessToken',
+                accessToken: secret1,
               },
             },
           },
@@ -421,7 +422,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://ads-api.reddit.com/api/v2.0/conversions/events/a2_fsddXXXfsfd',
               headers: {
-                Authorization: 'Bearer dummyAccessToken',
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
               params: {},
@@ -442,9 +443,6 @@ export const data = [
                         screen_dimensions: {},
                       },
                       event_metadata: {
-                        item_count: 0,
-                        value: 2600,
-                        value_decimal: 26,
                         products: [
                           {
                             id: '017c6f5d5cf86a4b22432066',
@@ -472,7 +470,7 @@ export const data = [
               destinationId: 'destId',
               workspaceId: 'wspId',
               secret: {
-                accessToken: 'dummyAccessToken',
+                accessToken: secret1,
               },
             },
             statusCode: 200,
@@ -541,7 +539,7 @@ export const data = [
               destinationId: 'destId',
               workspaceId: 'wspId',
               secret: {
-                accessToken: 'dummyAccessToken',
+                accessToken: secret1,
               },
             },
           },
@@ -559,7 +557,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://ads-api.reddit.com/api/v2.0/conversions/events/a2_fsddXXXfsfd',
               headers: {
-                Authorization: 'Bearer dummyAccessToken',
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
               params: {},
@@ -607,7 +605,7 @@ export const data = [
               destinationId: 'destId',
               workspaceId: 'wspId',
               secret: {
-                accessToken: 'dummyAccessToken',
+                accessToken: secret1,
               },
             },
             statusCode: 200,
@@ -676,7 +674,7 @@ export const data = [
               destinationId: 'destId',
               workspaceId: 'wspId',
               secret: {
-                accessToken: 'dummyAccessToken',
+                accessToken: secret1,
               },
             },
           },
@@ -694,7 +692,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://ads-api.reddit.com/api/v2.0/conversions/events/a2_fsddXXXfsfd',
               headers: {
-                Authorization: 'Bearer dummyAccessToken',
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
               params: {},
@@ -717,7 +715,6 @@ export const data = [
                         screen_dimensions: {},
                       },
                       event_metadata: {
-                        item_count: 5,
                         products: [
                           {
                             id: '622c6f5d5cf86a4c77358033',
@@ -740,7 +737,7 @@ export const data = [
               destinationId: 'destId',
               workspaceId: 'wspId',
               secret: {
-                accessToken: 'dummyAccessToken',
+                accessToken: secret1,
               },
             },
             statusCode: 200,
@@ -809,7 +806,7 @@ export const data = [
               destinationId: 'destId',
               workspaceId: 'wspId',
               secret: {
-                accessToken: 'dummyAccessToken',
+                accessToken: secret1,
               },
             },
           },
@@ -827,7 +824,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://ads-api.reddit.com/api/v2.0/conversions/events/a2_fsddXXXfsfd',
               headers: {
-                Authorization: 'Bearer dummyAccessToken',
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
               params: {},
@@ -850,9 +847,6 @@ export const data = [
                         screen_dimensions: {},
                       },
                       event_metadata: {
-                        item_count: 5,
-                        value: 24995,
-                        value_decimal: 249.95,
                         products: [
                           {
                             id: '622c6f5d5cf86a4c77358033',
@@ -875,7 +869,7 @@ export const data = [
               destinationId: 'destId',
               workspaceId: 'wspId',
               secret: {
-                accessToken: 'dummyAccessToken',
+                accessToken: secret1,
               },
             },
             statusCode: 200,
@@ -954,7 +948,7 @@ export const data = [
               destinationId: 'destId',
               workspaceId: 'wspId',
               secret: {
-                accessToken: 'dummyAccessToken',
+                accessToken: secret1,
               },
             },
           },
@@ -972,7 +966,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://ads-api.reddit.com/api/v2.0/conversions/events/a2_fsddXXXfsfd',
               headers: {
-                Authorization: 'Bearer dummyAccessToken',
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
               params: {},
@@ -1023,7 +1017,7 @@ export const data = [
               destinationId: 'destId',
               workspaceId: 'wspId',
               secret: {
-                accessToken: 'dummyAccessToken',
+                accessToken: secret1,
               },
             },
             statusCode: 200,
@@ -1102,7 +1096,7 @@ export const data = [
               destinationId: 'destId',
               workspaceId: 'wspId',
               secret: {
-                accessToken: 'dummyAccessToken',
+                accessToken: secret1,
               },
             },
           },
@@ -1120,7 +1114,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://ads-api.reddit.com/api/v2.0/conversions/events/a2_fsddXXXfsfd',
               headers: {
-                Authorization: 'Bearer dummyAccessToken',
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
               params: {},
@@ -1172,7 +1166,7 @@ export const data = [
               destinationId: 'destId',
               workspaceId: 'wspId',
               secret: {
-                accessToken: 'dummyAccessToken',
+                accessToken: secret1,
               },
             },
             statusCode: 200,
@@ -1249,7 +1243,7 @@ export const data = [
               destinationId: 'destId',
               workspaceId: 'wspId',
               secret: {
-                accessToken: 'dummyAccessToken',
+                accessToken: secret1,
               },
             },
           },
@@ -1277,7 +1271,7 @@ export const data = [
             metadata: {
               destinationId: 'destId',
               secret: {
-                accessToken: 'dummyAccessToken',
+                accessToken: secret1,
               },
               workspaceId: 'wspId',
             },
@@ -1355,7 +1349,7 @@ export const data = [
               destinationId: 'destId',
               workspaceId: 'wspId',
               secret: {
-                accessToken: 'dummyAccessToken',
+                accessToken: secret1,
               },
             },
           },
@@ -1383,7 +1377,7 @@ export const data = [
             metadata: {
               destinationId: 'destId',
               secret: {
-                accessToken: 'dummyAccessToken',
+                accessToken: secret1,
               },
               workspaceId: 'wspId',
             },
@@ -1461,7 +1455,7 @@ export const data = [
               destinationId: 'destId',
               workspaceId: 'wspId',
               secret: {
-                accessToken: 'dummyAccessToken',
+                accessToken: secret1,
               },
             },
           },
@@ -1489,7 +1483,7 @@ export const data = [
             metadata: {
               destinationId: 'destId',
               secret: {
-                accessToken: 'dummyAccessToken',
+                accessToken: secret1,
               },
               workspaceId: 'wspId',
             },
@@ -1566,7 +1560,7 @@ export const data = [
               destinationId: 'destId',
               workspaceId: 'wspId',
               secret: {
-                accessToken: 'dummyAccessToken',
+                accessToken: secret1,
               },
             },
           },
@@ -1594,7 +1588,7 @@ export const data = [
             metadata: {
               destinationId: 'destId',
               secret: {
-                accessToken: 'dummyAccessToken',
+                accessToken: secret1,
               },
               workspaceId: 'wspId',
             },

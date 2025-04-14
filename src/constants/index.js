@@ -55,6 +55,10 @@ const HTTP_CUSTOM_STATUS_CODES = {
   FILTERED: 298,
 };
 
+const ErrorMessages = {
+  JSONParseError: 'Malformed JSON in request body',
+};
+
 module.exports = {
   EventType,
   GENERIC_TRUE_VALUES,
@@ -64,4 +68,5 @@ module.exports = {
   TraitsMapping,
   WhiteListedTraits,
   HTTP_CUSTOM_STATUS_CODES,
+  ErrorMessages,
 };

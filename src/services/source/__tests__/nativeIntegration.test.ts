@@ -1,5 +1,8 @@
 import { FetchHandler } from '../../../helpers/fetchHandlers';
-import { RudderMessage, SourceTransformationResponse } from '../../../types/index';
+import {
+  SourceTransformationResponse,
+  SourceTransformationSuccessResponse,
+} from '../../../types/index';
 import stats from '../../../util/stats';
 import { NativeIntegrationSourceService } from '../nativeIntegration';
 import { SourcePostTransformationService } from '../postTransformation';
@@ -15,20 +18,24 @@ const headers = {
 describe('NativeIntegration Source Service', () => {
   test('sourceTransformRoutine - success', async () => {
     const sourceType = '__rudder_test__';
-    const version = 'v0';
     const requestMetadata = {};
 
-    const event = { message: { a: 'b' }, headers };
+    const event = {
+      request: { body: JSON.stringify({ message: { a: 'b' } }) },
+      headers,
+    };
     const events = [event, event];
 
-    const tevent = { anonymousId: 'test', context: { headers } } as RudderMessage;
-    const tresp = { output: { batch: [tevent] }, statusCode: 200 } as SourceTransformationResponse;
+    const tevent = { anonymousId: 'test', context: { headers } };
+    const tresp = {
+      output: { batch: [tevent] },
+      statusCode: 200,
+    } as unknown as SourceTransformationSuccessResponse;
 
     const tresponse = [tresp, tresp];
 
-    FetchHandler.getSourceHandler = jest.fn().mockImplementationOnce((d, v) => {
+    FetchHandler.getSourceHandler = jest.fn().mockImplementationOnce((d) => {
       expect(d).toEqual(sourceType);
-      expect(v).toEqual(version);
       return {
         process: jest.fn(() => {
           return tevent;
@@ -44,63 +51,60 @@ describe('NativeIntegration Source Service', () => {
       });
 
     const service = new NativeIntegrationSourceService();
-    const adapterConvertedEvents = events.map((eventInstance) => {
-      return { output: eventInstance };
-    });
-    const resp = await service.sourceTransformRoutine(
-      adapterConvertedEvents,
-      sourceType,
-      version,
-      requestMetadata,
-    );
+    const resp = await service.sourceTransformRoutine(events, sourceType, requestMetadata);
 
     expect(resp).toEqual(tresponse);
 
     expect(postTransformSpy).toHaveBeenCalledTimes(2);
   });
 
-  test('sourceTransformRoutine - failure', async () => {
-    const sourceType = '__rudder_test__';
-    const version = 'v0';
-    const requestMetadata = {};
+  describe('sourceTransformRoutine - failure', () => {
+    test('integration failure', async () => {
+      const sourceType = '__rudder_test__';
+      const requestMetadata = {};
 
-    const event = { message: { a: 'b' } };
-    const events = [event, event];
-
-    const tresp = { error: 'error' } as SourceTransformationResponse;
-
-    const tresponse = [{ error: 'error' }, { error: 'error' }];
-
-    FetchHandler.getSourceHandler = jest.fn().mockImplementationOnce((d, v) => {
-      expect(d).toEqual(sourceType);
-      expect(v).toEqual(version);
-      return {
-        process: jest.fn(() => {
-          throw new Error('test error');
-        }),
+      const event = {
+        request: { body: JSON.stringify({ message: { a: 'b' } }) },
+        headers,
       };
-    });
+      const events = [event, event];
 
-    const postTransformSpy = jest
-      .spyOn(SourcePostTransformationService, 'handleFailureEventsSource')
-      .mockImplementation((e, m) => {
-        return tresp;
+      const tresp = { error: 'error' } as SourceTransformationResponse;
+
+      const tresponse = [{ error: 'error' }, { error: 'error' }];
+
+      FetchHandler.getSourceHandler = jest.fn().mockImplementationOnce((d) => {
+        expect(d).toEqual(sourceType);
+        return {
+          process: jest.fn(() => {
+            throw new Error('test error');
+          }),
+        };
       });
-    jest.spyOn(stats, 'increment').mockImplementation(() => {});
 
-    const service = new NativeIntegrationSourceService();
-    const adapterConvertedEvents = events.map((eventInstance) => {
-      return { output: eventInstance };
+      const postTransformSpy = jest
+        .spyOn(SourcePostTransformationService, 'handleFailureEventsSource')
+        .mockImplementation((e, m) => {
+          return tresp;
+        });
+      jest.spyOn(stats, 'increment').mockImplementation(() => {});
+
+      const service = new NativeIntegrationSourceService();
+      const resp = await service.sourceTransformRoutine(events, sourceType, requestMetadata);
+
+      expect(resp).toEqual(tresponse);
+
+      expect(postTransformSpy).toHaveBeenCalledTimes(2);
     });
-    const resp = await service.sourceTransformRoutine(
-      adapterConvertedEvents,
-      sourceType,
-      version,
-      requestMetadata,
-    );
 
-    expect(resp).toEqual(tresponse);
+    test('invalid source events', async () => {
+      const sourceType = '__rudder_test__';
+      const requestMetadata = {};
 
-    expect(postTransformSpy).toHaveBeenCalledTimes(2);
+      const service = new NativeIntegrationSourceService();
+      await expect(
+        service.sourceTransformRoutine({} as any, sourceType, requestMetadata),
+      ).rejects.toThrow('Invalid source events');
+    });
   });
 });

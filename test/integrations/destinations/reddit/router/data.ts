@@ -1,3 +1,4 @@
+import { authHeader1, secret1 } from '../maskedSecrets';
 export const data = [
   {
     name: 'reddit',
@@ -69,7 +70,7 @@ export const data = [
               metadata: {
                 destinationId: 'destId',
                 workspaceId: 'wspId',
-                secret: { accessToken: 'dummyAccessToken' },
+                secret: { accessToken: secret1 },
                 jobId: 1,
                 userId: 'u1',
               },
@@ -127,7 +128,7 @@ export const data = [
               metadata: {
                 destinationId: 'destId',
                 workspaceId: 'wspId',
-                secret: { accessToken: 'dummyAccessToken' },
+                secret: { accessToken: secret1 },
                 jobId: 2,
                 userId: 'u1',
               },
@@ -173,7 +174,7 @@ export const data = [
               metadata: {
                 destinationId: 'destId',
                 workspaceId: 'wspId',
-                secret: { accessToken: 'dummyAccessToken' },
+                secret: { accessToken: secret1 },
                 jobId: 3,
                 userId: 'u1',
               },
@@ -238,7 +239,7 @@ export const data = [
               metadata: {
                 destinationId: 'destId',
                 workspaceId: 'wspId',
-                secret: { accessToken: 'dummyAccessToken' },
+                secret: { accessToken: secret1 },
                 jobId: 4,
                 userId: 'u1',
                 dontBatch: true,
@@ -297,7 +298,7 @@ export const data = [
               metadata: {
                 destinationId: 'destId',
                 workspaceId: 'wspId',
-                secret: { accessToken: 'dummyAccessToken' },
+                secret: { accessToken: secret1 },
                 jobId: 5,
                 userId: 'u1',
                 dontBatch: true,
@@ -356,9 +357,6 @@ export const data = [
                           screen_dimensions: {},
                         },
                         event_metadata: {
-                          item_count: 0,
-                          value: 2600,
-                          value_decimal: 26,
                           products: [
                             {
                               id: '017c6f5d5cf86a4b22432066',
@@ -410,7 +408,7 @@ export const data = [
                 method: 'POST',
                 endpoint: 'https://ads-api.reddit.com/api/v2.0/conversions/events/a2_fsddXXXfsfd',
                 headers: {
-                  Authorization: 'Bearer dummyAccessToken',
+                  Authorization: authHeader1,
                   'Content-Type': 'application/json',
                 },
                 params: {},
@@ -420,21 +418,21 @@ export const data = [
                 {
                   destinationId: 'destId',
                   workspaceId: 'wspId',
-                  secret: { accessToken: 'dummyAccessToken' },
+                  secret: { accessToken: secret1 },
                   jobId: 1,
                   userId: 'u1',
                 },
                 {
                   destinationId: 'destId',
                   workspaceId: 'wspId',
-                  secret: { accessToken: 'dummyAccessToken' },
+                  secret: { accessToken: secret1 },
                   jobId: 2,
                   userId: 'u1',
                 },
                 {
                   destinationId: 'destId',
                   workspaceId: 'wspId',
-                  secret: { accessToken: 'dummyAccessToken' },
+                  secret: { accessToken: secret1 },
                   jobId: 3,
                   userId: 'u1',
                 },
@@ -490,7 +488,7 @@ export const data = [
                 method: 'POST',
                 endpoint: 'https://ads-api.reddit.com/api/v2.0/conversions/events/a2_fsddXXXfsfd',
                 headers: {
-                  Authorization: 'Bearer dummyAccessToken',
+                  Authorization: authHeader1,
                   'Content-Type': 'application/json',
                 },
                 params: {},
@@ -500,7 +498,7 @@ export const data = [
                 {
                   destinationId: 'destId',
                   workspaceId: 'wspId',
-                  secret: { accessToken: 'dummyAccessToken' },
+                  secret: { accessToken: secret1 },
                   jobId: 4,
                   userId: 'u1',
                   dontBatch: true,
@@ -536,9 +534,6 @@ export const data = [
                           screen_dimensions: {},
                         },
                         event_metadata: {
-                          item_count: 0,
-                          value: 2600,
-                          value_decimal: 26,
                           products: [
                             {
                               id: '017c6f5d5cf86a4b22432066',
@@ -564,7 +559,7 @@ export const data = [
                 method: 'POST',
                 endpoint: 'https://ads-api.reddit.com/api/v2.0/conversions/events/a2_fsddXXXfsfd',
                 headers: {
-                  Authorization: 'Bearer dummyAccessToken',
+                  Authorization: authHeader1,
                   'Content-Type': 'application/json',
                 },
                 params: {},
@@ -574,7 +569,7 @@ export const data = [
                 {
                   destinationId: 'destId',
                   workspaceId: 'wspId',
-                  secret: { accessToken: 'dummyAccessToken' },
+                  secret: { accessToken: secret1 },
                   jobId: 5,
                   userId: 'u1',
                   dontBatch: true,
@@ -657,7 +652,7 @@ export const data = [
               metadata: {
                 destinationId: 'destId',
                 workspaceId: 'wspId',
-                secret: { accessToken: 'dummyAccessToken' },
+                secret: { accessToken: secret1 },
                 jobId: 1,
                 userId: 'u1',
               },
@@ -677,7 +672,7 @@ export const data = [
                 {
                   destinationId: 'destId',
                   workspaceId: 'wspId',
-                  secret: { accessToken: 'dummyAccessToken' },
+                  secret: { accessToken: secret1 },
                   jobId: 1,
                   userId: 'u1',
                 },

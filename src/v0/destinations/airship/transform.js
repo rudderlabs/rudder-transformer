@@ -7,7 +7,6 @@ const {
   groupMapping,
   BASE_URL_EU,
   BASE_URL_US,
-  RESERVED_TRAITS_MAPPING,
   AIRSHIP_TRACK_EXCLUSION,
 } = require('./config');
 
@@ -25,6 +24,7 @@ const {
   convertToUuid,
 } = require('../../util');
 const { JSON_MIME_TYPE } = require('../../util/constant');
+const { prepareAttributePayload, prepareTagPayload } = require('./utils');
 
 const DEFAULT_ACCEPT_HEADER = 'application/vnd.urbanairship+json; version=3';
 
@@ -37,8 +37,8 @@ const transformSessionId = (rawSessionId) => {
 };
 
 const identifyResponseBuilder = (message, { Config }) => {
-  const tagPayload = constructPayload(message, identifyMapping);
-  const { apiKey, dataCenter } = Config;
+  const initialTagPayload = constructPayload(message, identifyMapping);
+  const { apiKey, dataCenter, timestampAttributes } = Config;
 
   if (!apiKey)
     throw new ConfigurationError('API Key is required for authorization for Identify events');
@@ -55,38 +55,10 @@ const identifyResponseBuilder = (message, { Config }) => {
   }
 
   // Creating tags and attribute payload
-  tagPayload.add = { rudderstack_integration: [] };
-  tagPayload.remove = { rudderstack_integration: [] };
-  let timestamp = getFieldValueFromMessage(message, 'timestamp');
-  timestamp = new Date(timestamp).toISOString().replace(/\.\d{3}/, '');
+  const tagPayload = prepareTagPayload(traits, initialTagPayload);
 
   // Creating attribute payload
-  const attributePayload = { attributes: [] };
-  Object.keys(traits).forEach((key) => {
-    // tags
-    if (typeof traits[key] === 'boolean') {
-      const tag = key.toLowerCase().replace(/\./g, '_');
-      if (traits[key] === true) {
-        tagPayload.add.rudderstack_integration.push(tag);
-      }
-      if (traits[key] === false) {
-        tagPayload.remove.rudderstack_integration.push(tag);
-      }
-    }
-    // attribute
-    if (typeof traits[key] !== 'boolean') {
-      const attribute = { action: 'set' };
-      const keyMapped = RESERVED_TRAITS_MAPPING[key] || RESERVED_TRAITS_MAPPING[key.toLowerCase()];
-      if (keyMapped) {
-        attribute.key = keyMapped;
-      } else {
-        attribute.key = key.replace(/\./g, '_');
-      }
-      attribute.value = traits[key];
-      attribute.timestamp = timestamp;
-      attributePayload.attributes.push(attribute);
-    }
-  });
+  const attributePayload = prepareAttributePayload(traits, message, timestampAttributes);
 
   let tagResponse;
   let attributeResponse;
@@ -183,8 +155,8 @@ const trackResponseBuilder = async (message, { Config }) => {
 };
 
 const groupResponseBuilder = (message, { Config }) => {
-  const tagPayload = constructPayload(message, groupMapping);
-  const { apiKey, dataCenter } = Config;
+  const initTagPayload = constructPayload(message, groupMapping);
+  const { apiKey, dataCenter, timestampAttributes } = Config;
 
   if (!apiKey)
     throw new ConfigurationError('API Key is required for authorization for group events');
@@ -200,37 +172,9 @@ const groupResponseBuilder = (message, { Config }) => {
     );
   }
 
-  tagPayload.add = { rudderstack_integration_group: [] };
-  tagPayload.remove = { rudderstack_integration_group: [] };
-  let timestamp = getFieldValueFromMessage(message, 'timestamp');
-  timestamp = new Date(timestamp).toISOString().replace(/\.\d{3}/, '');
+  const tagPayload = prepareTagPayload(traits, initTagPayload, 'group');
 
-  const attributePayload = { attributes: [] };
-  Object.keys(traits).forEach((key) => {
-    // tags
-    if (typeof traits[key] === 'boolean') {
-      const tag = key.toLowerCase().replace(/\./g, '_');
-      if (traits[key] === true) {
-        tagPayload.add.rudderstack_integration_group.push(tag);
-      }
-      if (traits[key] === false) {
-        tagPayload.remove.rudderstack_integration_group.push(tag);
-      }
-    }
-    // attribute
-    if (typeof traits[key] !== 'boolean') {
-      const attribute = { action: 'set' };
-      const keyMapped = RESERVED_TRAITS_MAPPING[key.toLowerCase()];
-      if (keyMapped) {
-        attribute.key = keyMapped;
-      } else {
-        attribute.key = key.replace(/\./g, '_');
-      }
-      attribute.value = traits[key];
-      attribute.timestamp = timestamp;
-      attributePayload.attributes.push(attribute);
-    }
-  });
+  const attributePayload = prepareAttributePayload(traits, message, timestampAttributes);
 
   let tagResponse;
   let attributeResponse;

@@ -1,18 +1,18 @@
 import { generateMetadata, generateProxyV1Payload } from '../../../testUtils';
 import { ProxyV1TestData } from '../../../testTypes';
+import { defaultAccessToken } from '../../../common/secrets';
+import { HEADER_BLOCK, WRONG_HEADER_BLOCK } from '../constants';
 
 export const headerBlockWithCorrectAccessToken = {
   'Content-Type': 'application/json',
   Accept: 'application/json',
-  'X-WSSE':
-    'UsernameToken Username="dummy", PasswordDigest="NDc5MjNlODIyMGE4ODhiMTQyNTA0OGMzZTFjZTM1MmMzMmU0NmNiNw==", Nonce="5398e214ae99c2e50afb709a3bc423f9", Created="2019-10-14T00:00:00.000Z"',
+  'X-WSSE': HEADER_BLOCK,
 };
 
 export const headerBlockWithWrongAccessToken = {
   'Content-Type': 'application/json',
   Accept: 'application/json',
-  'X-WSSE':
-    'UsernameToken Username="dummy2", PasswordDigest="NDc5MjNlODIyMGE4ODhiMTQyNTA0OGMzZTFjZTM1MmMzMmU0NmNiNw==", Nonce="5398e214ae99c2e50afb709a3bc423f9", Created="2019-10-14T00:00:00.000Z"',
+  'X-WSSE': WRONG_HEADER_BLOCK,
 };
 
 export const correctContactCreateUpdateData = [
@@ -115,7 +115,7 @@ export const metadata = [
     workspaceId: 'default-workspaceId',
     sourceId: 'default-sourceId',
     secret: {
-      accessToken: 'default-accessToken',
+      accessToken: defaultAccessToken,
     },
     dontBatch: false,
   },
@@ -127,7 +127,7 @@ export const metadata = [
     workspaceId: 'default-workspaceId',
     sourceId: 'default-sourceId',
     secret: {
-      accessToken: 'default-accessToken',
+      accessToken: defaultAccessToken,
     },
     dontBatch: false,
   },
@@ -220,12 +220,12 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
               {
                 statusCode: 400,
                 metadata: generateMetadata(1),
-                error: '{"2004":"Invalid key field id: 100"}',
+                error: JSON.stringify({ '2004': 'Invalid key field id: 100' }),
               },
               {
                 statusCode: 400,
                 metadata: generateMetadata(2),
-                error: '{"2004":"Invalid key field id: 100"}',
+                error: JSON.stringify({ '2004': 'Invalid key field id: 100' }),
               },
             ],
           },
@@ -337,7 +337,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
               {
                 statusCode: 400,
                 metadata: generateMetadata(2),
-                error: '{"2010":"Contacts with the external id already exist: 3"}',
+                error: JSON.stringify({ '2010': 'Contacts with the external id already exist: 3' }),
               },
             ],
           },
@@ -427,12 +427,20 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
               {
                 statusCode: 400,
                 metadata: generateMetadata(1),
-                error: '{"replyCode":2004,"replyText":"Invalid key field id: wrong_id","data":""}',
+                error: JSON.stringify({
+                  replyCode: 2004,
+                  replyText: 'Invalid key field id: wrong_id',
+                  data: '',
+                }),
               },
               {
                 statusCode: 400,
                 metadata: generateMetadata(2),
-                error: '{"replyCode":2004,"replyText":"Invalid key field id: wrong_id","data":""}',
+                error: JSON.stringify({
+                  replyCode: 2004,
+                  replyText: 'Invalid key field id: wrong_id',
+                  data: '',
+                }),
               },
             ],
           },
@@ -495,12 +503,12 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
               {
                 statusCode: 400,
                 metadata: generateMetadata(2),
-                error: '{"2008":"No contact found with the external id: 3"}',
+                error: JSON.stringify({ '2008': 'No contact found with the external id: 3' }),
               },
               {
                 statusCode: 400,
                 metadata: generateMetadata(3),
-                error: '{"2008":"No contact found with the external id: 3"}',
+                error: JSON.stringify({ '2008': 'No contact found with the external id: 3' }),
               },
               {
                 statusCode: 200,
@@ -547,7 +555,11 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
               {
                 statusCode: 400,
                 metadata: generateMetadata(1),
-                error: '{"replyCode":1,"replyText":"Action Wrong-id is invalid.","data":""}',
+                error: JSON.stringify({
+                  replyCode: 1,
+                  replyText: 'Action Wrong-id is invalid.',
+                  data: '',
+                }),
               },
             ],
           },

@@ -13,11 +13,8 @@ export class MiscService {
     return require(`../${version}/destinations/${dest}/transform`);
   }
 
-  public static getSourceHandler(source: string, version: string) {
-    if (version === 'v2') {
-      return require(`../sources/${source}/transform`);
-    }
-    return require(`../${version}/sources/${source}/transform`);
+  public static getSourceHandler(source: string) {
+    return require(`../sources/${source}/transform`);
   }
 
   public static getDeletionHandler(dest: string, version: string) {
@@ -36,7 +33,7 @@ export class MiscService {
     };
   }
 
-  public static getMetaTags(metadata: Metadata) {
+  public static getMetaTags(metadata?: Metadata) {
     if (!metadata) {
       return {};
     }

@@ -212,6 +212,12 @@ const errorDetailsMap = {
       .setMessage('There have been too many calls to this ad-account.')
       .build(),
   },
+  2655: {
+    default: new ErrorDetailsExtractorBuilder()
+      .setStatus(400)
+      .setMessage('Marketing Messaging TOS not accepted.')
+      .build(),
+  },
   200: {
     default: new ErrorDetailsExtractorBuilder()
       .setStatus(403)
@@ -263,11 +269,17 @@ const errorResponseHandler = (destResponse) => {
   }
   const { error } = response;
   const { status, errorMessage, stats: errorStatTags } = getStatus(error);
+
+  // check errorMessage is falsy
+  // if yes, then get the error message from the error object or else use the default error message to avoid base error message
   if (
     isDefinedAndNotNull(errorStatTags) &&
     errorStatTags?.[TAG_NAMES.ERROR_TYPE] === ERROR_TYPES.AUTH
   ) {
-    throw new ConfigurationAuthError(errorMessage, { ...response, status: destResponse.status });
+    throw new ConfigurationAuthError(
+      errorMessage || error.message || 'Unknown auth error during response transformation',
+      { ...response, status: destResponse.status },
+    );
   }
   throw new NetworkError(
     `${errorMessage || error.message || 'Unknown failure during response transformation'}`,

@@ -23,16 +23,15 @@ const {
   PlatformError,
   TransformationError,
   OAuthSecretError,
-  getErrorRespEvents,
 } = require('@rudderstack/integrations-lib');
 
 const { JsonTemplateEngine, PathType } = require('@rudderstack/json-template-engine');
 const isString = require('lodash/isString');
 const logger = require('../../logger');
 const stats = require('../../util/stats');
-const { DestCanonicalNames, DestHandlerMap } = require('../../constants/destinationCanonicalNames');
+const { DestCanonicalNames } = require('../../constants/destinationCanonicalNames');
 const { client: errNotificationClient } = require('../../util/errorNotifier');
-const { HTTP_STATUS_CODES, VDM_V2_SCHEMA_VERSION } = require('./constant');
+const { HTTP_STATUS_CODES, VDM_V2_SCHEMA_VERSION, ERROR_MESSAGES } = require('./constant');
 const {
   REFRESH_TOKEN,
   AUTH_STATUS_INACTIVE,
@@ -93,11 +92,6 @@ const isValidUrl = (url) => {
 };
 
 const stripTrailingSlash = (str) => (str && str.endsWith('/') ? str.slice(0, -1) : str);
-
-const isPrimitive = (arg) => {
-  const type = typeof arg;
-  return arg == null || (type !== 'object' && type !== 'function');
-};
 
 const isNewStatusCodesAccepted = (reqMetadata = {}) => {
   if (reqMetadata && typeof reqMetadata === 'object' && !Array.isArray(reqMetadata)) {
@@ -1663,6 +1657,14 @@ function isAppleFamily(platform) {
   return false;
 }
 
+function isAndroidFamily(platform) {
+  const androidOsNames = ['android'];
+  if (typeof platform === 'string') {
+    return androidOsNames.includes(platform?.toLowerCase());
+  }
+  return false;
+}
+
 function removeHyphens(str) {
   if (!isString(str)) {
     return str;
@@ -1718,6 +1720,14 @@ function getValidDynamicFormConfig(
   }
   return res;
 }
+
+const getErrorRespEvents = (metadata, statusCode, error, statTags, batched = false) => ({
+  metadata,
+  batched,
+  statusCode,
+  error,
+  statTags,
+});
 
 /**
  * This method is used to check if the input events sent to router transformation are valid
@@ -1880,31 +1890,6 @@ const flattenMultilevelPayload = (payload) => {
     });
   }
   return flattenedPayload;
-};
-
-/**
- * Gets the destintion's transform.js file used for transformation
- * **Note**: The transform.js file is imported from
- *  `v0/destinations/${dest}/transform`
- * @param {*} _version -> version for the transfor
- * @param {*} dest destination name
- * @returns
- *  The transform.js instance used for destination transformation
- */
-const getDestHandler = (dest) => {
-  const destName = DestHandlerMap[dest] || dest;
-  // eslint-disable-next-line import/no-dynamic-require, global-require
-  return require(`../destinations/${destName}/transform`);
-};
-
-/**
- * Obtain the authCache instance used to store the access token information to send/get information to/from destination
- * @param {string} destType destination name
- * @returns {Cache | undefined} The instance of "v0/util/cache.js"
- */
-const getDestAuthCacheInstance = (destType) => {
-  const destInf = getDestHandler(destType);
-  return destInf?.authCache || {};
 };
 
 /**
@@ -2364,6 +2349,18 @@ const convertToUuid = (input) => {
     throw new InstrumentationError(errorMessage);
   }
 };
+
+const getBodyFromV2SpecPayload = ({ request }) => {
+  if (request?.body) {
+    try {
+      const parsedBody = JSON.parse(request.body);
+      return parsedBody;
+    } catch (error) {
+      throw new TransformationError(ERROR_MESSAGES.MALFORMED_JSON_IN_REQUEST_BODY);
+    }
+  }
+  throw new TransformationError(ERROR_MESSAGES.REQUEST_BODY_NOT_PRESENT_IN_V2_SPEC_PAYLOAD);
+};
 // ========================================================================
 // EXPORTS
 // ========================================================================
@@ -2397,11 +2394,13 @@ module.exports = {
   generateErrorObject,
   generateUUID,
   getBrowserInfo,
+  getBodyFromV2SpecPayload,
   getDateInFormat,
   getDestinationExternalID,
   getDestinationExternalIDInfoForRetl,
   getDestinationExternalIDObjectForRetl,
   getDeviceModel,
+  getErrorRespEvents,
   getEventTime,
   getFieldValueFromMessage,
   getFirstAndLastName,
@@ -2427,6 +2426,7 @@ module.exports = {
   handleSourceKeysOperation,
   hashToSha256,
   isAppleFamily,
+  isAndroidFamily,
   isBlank,
   isDefined,
   isDefinedAndNotNull,
@@ -2443,7 +2443,6 @@ module.exports = {
   isOAuthDestination,
   isOAuthSupported,
   isObject,
-  isPrimitive,
   isValidUrl,
   removeHyphens,
   removeNullValues,
@@ -2464,7 +2463,6 @@ module.exports = {
   simpleProcessRouterDestSync,
   handleRtTfSingleEventError,
   getErrorStatusCode,
-  getDestAuthCacheInstance,
   refinePayload,
   validateEventName,
   validatePhoneWithCountryCode,

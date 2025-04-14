@@ -9,35 +9,33 @@ const timeoutPromise = () =>
   });
 const RedisDB = {
   init() {
-    if (process.env.USE_REDIS_DB && process.env.USE_REDIS_DB !== 'false') {
-      this.host = process.env.REDIS_HOST || 'localhost';
-      this.port = parseInt(process.env.REDIS_PORT, 10) || 6379;
-      this.password = process.env.REDIS_PASSWORD;
-      this.userName = process.env.REDIS_USERNAME;
-      this.maxRetries = parseInt(process.env.REDIS_MAX_RETRIES, 10) || 5;
-      this.timeAfterRetry = parseInt(process.env.REDIS_TIME_AFTER_RETRY_IN_MS, 10) || 500;
-      this.client = new Redis({
-        host: this.host,
-        port: this.port,
-        password: this.password,
-        username: this.userName,
-        enableReadyCheck: true,
-        retryStrategy: (times) => {
-          if (times <= this.maxRetries) {
-            return (1 + times) * this.timeAfterRetry; // reconnect after
-          }
-          stats.increment('redis_error', {
-            operation: 'redis_down',
-          });
-          logger.error(`Redis is down at ${this.host}:${this.port}`);
-          return false; // stop retrying
-        },
-        tls: {},
-      });
-      this.client.on('ready', () => {
-        logger.info(`Connected to redis at ${this.host}:${this.port}`);
-      });
-    }
+    this.host = process.env.REDIS_HOST || 'localhost';
+    this.port = parseInt(process.env.REDIS_PORT, 10) || 6379;
+    this.password = process.env.REDIS_PASSWORD;
+    this.userName = process.env.REDIS_USERNAME;
+    this.maxRetries = parseInt(process.env.REDIS_MAX_RETRIES, 10) || 5;
+    this.timeAfterRetry = parseInt(process.env.REDIS_TIME_AFTER_RETRY_IN_MS, 10) || 500;
+    this.client = new Redis({
+      host: this.host,
+      port: this.port,
+      password: this.password,
+      username: this.userName,
+      enableReadyCheck: true,
+      retryStrategy: (times) => {
+        if (times <= this.maxRetries) {
+          return (1 + times) * this.timeAfterRetry; // reconnect after
+        }
+        stats.increment('redis_error', {
+          operation: 'redis_down',
+        });
+        logger.error(`Redis is down at ${this.host}:${this.port}`);
+        return false; // stop retrying
+      },
+      tls: {},
+    });
+    this.client.on('ready', () => {
+      logger.info(`Connected to redis at ${this.host}:${this.port}`);
+    });
   },
 
   async checkRedisConnectionReadyState() {
@@ -129,10 +127,8 @@ const RedisDB = {
     }
   },
   async disconnect() {
-    if (process.env.USE_REDIS_DB && process.env.USE_REDIS_DB !== 'false') {
-      logger.info(`Disconnecting from redis at ${this.host}:${this.port}`);
-      this.client.disconnect();
-    }
+    logger.info(`Disconnecting from redis at ${this.host}:${this.port}`);
+    this.client.disconnect();
   },
 };
 

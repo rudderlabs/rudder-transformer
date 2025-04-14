@@ -16,8 +16,8 @@ describe('Misc tests', () => {
       require(`../../${version}/destinations/am/transform`),
     );
 
-    expect(MiscService.getSourceHandler('shopify', version)).toEqual(
-      require(`../../${version}/sources/shopify/transform`),
+    expect(MiscService.getSourceHandler('shopify')).toEqual(
+      require(`../../sources/shopify/transform`),
     );
 
     expect(MiscService.getDeletionHandler('intercom', version)).toEqual(
@@ -51,16 +51,5 @@ describe('Misc | getFeatures', () => {
     const expectedConfig = JSON.stringify(defaultFeaturesConfig);
     const result = miscService.getFeatures();
     expect(result).toBe(expectedConfig);
-  });
-
-  it('should return configuration with upgradedToSourceTransformV2 overridden by environment variable', () => {
-    process.env.UPGRADED_TO_SOURCE_TRANSFORM_V2 = 'true';
-    const expectedConfig = {
-      ...defaultFeaturesConfig,
-      upgradedToSourceTransformV2: true,
-    };
-    const miscService = getMiscService();
-    const result = miscService.getFeatures();
-    expect(result).toBe(JSON.stringify(expectedConfig));
   });
 });

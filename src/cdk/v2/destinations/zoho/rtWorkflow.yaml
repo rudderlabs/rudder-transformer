@@ -1,8 +1,8 @@
 bindings:
   - name: EventType
     path: ../../../../constants
-  - name: processRecordInputs
-    path: ./transformRecord
+  - name: processRecordInputsV2
+    path: ./transformRecordV2
   - name: handleRtTfSingleEventError
     path: ../../../../v0/util/index
   - name: InstrumentationError
@@ -20,7 +20,7 @@ steps:
 
   - name: processRecordEvents
     template: |
-      await $.processRecordInputs(^.{.message.type === $.EventType.RECORD}[], ^[0].destination)
+      await $.processRecordInputsV2(^.{.message.type === $.EventType.RECORD}[], ^[0].destination)
 
   - name: failOtherEvents
     template: |

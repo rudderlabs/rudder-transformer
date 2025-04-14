@@ -1,5 +1,6 @@
 import { ProcessorTestData } from '../../../testTypes';
 import { generateMetadata, generateRecordPayload } from '../../../testUtils';
+import { defaultAccessTokenAuthHeader } from '../../../common/secrets';
 
 export const businessTestData: ProcessorTestData[] = [
   {
@@ -114,7 +115,7 @@ export const businessTestData: ProcessorTestData[] = [
   {
     id: 'linkedin_audience-business-test-2',
     name: 'linkedin_audience',
-    description: 'Record call : Valid event without any field mappings',
+    description: 'Record call : Valid event with action type insert without any field mappings',
     scenario: 'Business',
     successCriteria: 'should pass with 200 status code and transformed message',
     feature: 'processor',
@@ -221,7 +222,7 @@ export const businessTestData: ProcessorTestData[] = [
               endpoint: 'https://api.linkedin.com/rest/dmpSegments/32589526/users',
               files: {},
               headers: {
-                Authorization: 'Bearer default-accessToken',
+                Authorization: defaultAccessTokenAuthHeader,
                 'Content-Type': 'application/json',
                 'LinkedIn-Version': '202409',
                 'X-RestLi-Method': 'BATCH_CREATE',
@@ -242,7 +243,8 @@ export const businessTestData: ProcessorTestData[] = [
   {
     id: 'linkedin_audience-business-test-2',
     name: 'linkedin_audience',
-    description: 'Record call : customer provided hashed value and isHashRequired is false',
+    description:
+      'Record call : customer provided hashed value, isHashRequired is false and action type is update',
     scenario: 'Business',
     successCriteria: 'should pass with 200 status code and transformed message',
     feature: 'processor',
@@ -259,7 +261,7 @@ export const businessTestData: ProcessorTestData[] = [
                 sha512Email:
                   '631372c5eafe80f3fe1b5d067f6a1870f1f04a0f0c0d9298eeaa20b9e54224da9588e3164d2ec6e2a5545a5299ed7df563e4a60315e6782dfa7db4de6b1c5326',
               },
-              action: 'insert',
+              action: 'update',
             }),
             metadata: generateMetadata(1),
             destination: {
@@ -356,7 +358,7 @@ export const businessTestData: ProcessorTestData[] = [
               endpoint: 'https://api.linkedin.com/rest/dmpSegments/32589526/users',
               files: {},
               headers: {
-                Authorization: 'Bearer default-accessToken',
+                Authorization: defaultAccessTokenAuthHeader,
                 'Content-Type': 'application/json',
                 'LinkedIn-Version': '202409',
                 'X-RestLi-Method': 'BATCH_CREATE',
@@ -503,7 +505,7 @@ export const businessTestData: ProcessorTestData[] = [
               endpoint: 'https://api.linkedin.com/rest/dmpSegments/32589526/companies',
               files: {},
               headers: {
-                Authorization: 'Bearer default-accessToken',
+                Authorization: defaultAccessTokenAuthHeader,
                 'Content-Type': 'application/json',
                 'LinkedIn-Version': '202409',
                 'X-RestLi-Method': 'BATCH_CREATE',

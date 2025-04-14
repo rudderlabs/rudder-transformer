@@ -217,9 +217,10 @@ const processTrack = (message, destination) => {
   return returnValue;
 };
 
-const createSetOnceResponse = (message, type, destination, setOnce) => {
+const buildUserProfileResponse = (userProfileParams) => {
+  const { message, type, destination, properties, operation } = userProfileParams;
   const payload = {
-    $set_once: setOnce,
+    [operation]: properties,
     $token: destination.Config.token,
     $distinct_id: message.userId || message.anonymousId,
   };
@@ -231,28 +232,73 @@ const createSetOnceResponse = (message, type, destination, setOnce) => {
   return responseBuilderSimple(payload, message, type, destination.Config);
 };
 
+const handleUserProfileOperation = (userProfileParams) => {
+  const { message, type, destination, propertiesConfig, operation } = userProfileParams;
+
+  if (!propertiesConfig || propertiesConfig.length === 0) {
+    return null;
+  }
+  const operationProperties = parseConfigArray(propertiesConfig, 'property');
+  const segregatedTraits = trimTraits(message.traits, message.context.traits, operationProperties);
+
+  message.traits = segregatedTraits.traits;
+  message.context.traits = segregatedTraits.contextTraits;
+
+  const finalOperationProperties =
+    operation === '$union'
+      ? Object.fromEntries(
+          Object.entries(segregatedTraits.operationTransformedProperties).map(([key, value]) => [
+            key,
+            CommonUtils.toArray(value),
+          ]),
+        )
+      : segregatedTraits.operationTransformedProperties;
+
+  if (Object.keys(finalOperationProperties).length > 0) {
+    return buildUserProfileResponse({
+      message,
+      type,
+      destination,
+      properties: finalOperationProperties,
+      operation,
+    });
+  }
+  return null;
+};
+
 const processIdentifyEvents = async (message, type, destination) => {
   const messageClone = { ...message };
-  let seggregatedTraits = {};
   const returnValue = [];
-  let setOnceProperties = [];
 
-  // making payload for set_once properties
-  if (destination.Config.setOnceProperties && destination.Config.setOnceProperties.length > 0) {
-    setOnceProperties = parseConfigArray(destination.Config.setOnceProperties, 'property');
-    seggregatedTraits = trimTraits(
-      messageClone.traits,
-      messageClone.context.traits,
-      setOnceProperties,
-    );
-    messageClone.traits = seggregatedTraits.traits;
-    messageClone.context.traits = seggregatedTraits.contextTraits;
-    if (Object.keys(seggregatedTraits.setOnce).length > 0) {
-      returnValue.push(
-        createSetOnceResponse(messageClone, type, destination, seggregatedTraits.setOnce),
-      );
-    }
-  }
+  // Set Once Properties
+  const setOnceResponse = handleUserProfileOperation({
+    message: messageClone,
+    type,
+    destination,
+    propertiesConfig: destination.Config?.setOnceProperties,
+    operation: '$set_once',
+  });
+  if (setOnceResponse) returnValue.push(setOnceResponse);
+
+  // Union Properties
+  const unionResponse = handleUserProfileOperation({
+    message: messageClone,
+    type,
+    destination,
+    propertiesConfig: destination.Config?.unionProperties,
+    operation: '$union',
+  });
+  if (unionResponse) returnValue.push(unionResponse);
+
+  // Append Properties
+  const appendResponse = handleUserProfileOperation({
+    message: messageClone,
+    type,
+    destination,
+    propertiesConfig: destination.Config?.appendProperties,
+    operation: '$append',
+  });
+  if (appendResponse) returnValue.push(appendResponse);
 
   // Creating the user profile
   // https://developer.mixpanel.com/reference/profile-set

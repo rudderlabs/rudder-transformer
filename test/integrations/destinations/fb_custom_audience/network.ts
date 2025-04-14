@@ -532,6 +532,48 @@ export const networkCallsData = [
       method: 'DELETE',
       endpoint: getEndPoint('aud1'),
       headers: {
+        'test-dest-response-key': 'accessTokenInvalidError-2',
+      },
+      params: {
+        access_token: 'ABC',
+        payload: {
+          is_raw: true,
+          data_source: {
+            sub_type: 'ANYTHING',
+          },
+          schema: ['DOBY', 'PHONE', 'GEN', 'FI', 'MADID', 'ZIP', 'ST', 'COUNTRY'],
+          data: [['2013', '@09432457768', 'f', 'Ms.', 'ABC', 'ZIP ', '123abc ', 'IN']],
+        },
+      },
+      userId: '',
+      body: {
+        JSON: {},
+        XML: {},
+        JSON_ARRAY: {},
+        FORM: {},
+      },
+      files: {},
+    },
+    httpRes: {
+      data: {
+        error: {
+          message:
+            'The token has expired on Saturday, 23-Sep-23 23:29:14 PDT. The current time is Monday, 07-Apr-25 03:48:44 PDT.',
+          type: 'OAuthException',
+          code: 190,
+          fbtrace_id: 'AxFa_0JxfQ4sctzqEQisyeJ',
+        },
+      },
+      status: 400,
+    },
+  },
+  {
+    httpReq: {
+      version: '1',
+      type: 'REST',
+      method: 'DELETE',
+      endpoint: getEndPoint('aud1'),
+      headers: {
         'test-dest-response-key': 'htmlResponse',
       },
       params: {

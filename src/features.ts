@@ -4,6 +4,7 @@ interface FeaturesConfig {
   supportSourceTransformV1: true;
   supportTransformerProxyV1: true;
   upgradedToSourceTransformV2: true;
+  supportDestTransformCompactedPayloadV1: true;
 }
 
 const defaultFeaturesConfig: FeaturesConfig = {
@@ -115,6 +116,7 @@ const defaultFeaturesConfig: FeaturesConfig = {
   supportSourceTransformV1: true,
   supportTransformerProxyV1: true,
   upgradedToSourceTransformV2: true,
+  supportDestTransformCompactedPayloadV1: true,
 };
 
 export default defaultFeaturesConfig;

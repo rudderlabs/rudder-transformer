@@ -1,7 +1,11 @@
 const lodash = require('lodash');
 const set = require('set-value');
 const get = require('get-value');
-const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
+const {
+  isDefinedNotNullNotEmpty,
+  InstrumentationError,
+  ConfigurationError,
+} = require('@rudderstack/integrations-lib');
 const {
   isDefined,
   constructPayload,
@@ -15,7 +19,6 @@ const {
   defaultBatchRequestConfig,
   IsGzipSupported,
   isObject,
-  isDefinedAndNotNullAndNotEmpty,
   isDefinedAndNotNull,
   removeUndefinedValues,
 } = require('../../util');
@@ -333,59 +336,62 @@ const batchEvents = (successRespList, maxBatchSize, reqMetadata) => {
 };
 
 /**
- * Trims the traits and contextTraits objects based on the setOnceProperties array and returns an object containing the modified traits, contextTraits, and setOnce properties.
+ * Trims the traits and contextTraits objects based on the userProfileProperties array and returns an object containing the modified traits, contextTraits, and operationTransformedProperties properties.
  *
  * @param {object} traits - An object representing the traits.
  * @param {object} contextTraits - An object representing the context traits.
- * @param {string[]} setOnceProperties - An array of property paths to be considered for the setOnce transformation.
+ * @param userProfileProperties
  * @returns {object} - An object containing the modified traits, contextTraits, and setOnce properties.
  *
  * @example
  * const traits = { name: 'John', age: 30 };
  * const contextTraits = { country: 'USA', language: 'English', address: { city: 'New York', state: 'NY' }}};
- * const setOnceProperties = ['name', 'country', 'address.city'];
+ * const userProfileProperties = ['name', 'country', 'address.city'];
  *
- * const result = trimTraits(traits, contextTraits, setOnceProperties);
- * // Output: { traits: { age: 30 }, contextTraits: { language: 'English' }, setOnce: { $name: 'John', $country_code: 'USA', city: 'New York'} }
+ * const result = trimTraits(traits, contextTraits, operationTransformedProperties);
+ * // Output: { traits: { age: 30 }, contextTraits: { language: 'English' }, operationTransformedProperties: { $name: 'John', $country_code: 'USA', city: 'New York'} }
  */
-function trimTraits(traits, contextTraits, setOnceProperties) {
-  let sentOnceTransformedPayload;
+function trimTraits(traits, contextTraits, userProfileProperties) {
+  let operationTransformedPayload;
   // Create a copy of the original traits object
   const traitsCopy = { ...traits };
   const contextTraitsCopy = { ...contextTraits };
 
-  // Initialize setOnce object
-  const setOnceEligible = {};
+  // Initialize operation eligible object
+  const operationEligibleProperties = {};
 
-  // Step 1: find the k-v pairs of setOnceProperties in traits and contextTraits
+  // Step 1: find the k-v pairs of userProfileProperties in traits and contextTraits
 
-  setOnceProperties.forEach((propertyPath) => {
+  userProfileProperties.forEach((propertyPath) => {
     const propName = lodash.last(propertyPath.split('.'));
 
     const traitsValue = get(traitsCopy, propertyPath);
     const contextTraitsValue = get(contextTraitsCopy, propertyPath);
 
-    if (isDefinedAndNotNullAndNotEmpty(traitsValue)) {
-      setOnceEligible[propName] = traitsValue;
+    if (isDefinedNotNullNotEmpty(traitsValue)) {
+      operationEligibleProperties[propName] = traitsValue;
       lodash.unset(traitsCopy, propertyPath);
     }
-    if (isDefinedAndNotNullAndNotEmpty(contextTraitsValue)) {
-      if (!setOnceEligible.hasOwnProperty(propName)) {
-        setOnceEligible[propName] = contextTraitsValue;
+    if (isDefinedNotNullNotEmpty(contextTraitsValue)) {
+      if (!Object.hasOwn(operationEligibleProperties, propName)) {
+        operationEligibleProperties[propName] = contextTraitsValue;
       }
       lodash.unset(contextTraitsCopy, propertyPath);
     }
   });
 
-  if (setOnceEligible && Object.keys(setOnceEligible).length > 0) {
+  if (operationEligibleProperties && Object.keys(operationEligibleProperties).length > 0) {
     // Step 2: transform properties eligible as per rudderstack declared identify event mapping
-    // setOnce should have all traits from message.traits and message.context.traits by now
-    sentOnceTransformedPayload = constructPayload(setOnceEligible, mPSetOnceConfigJson);
+    // operationEligibleProperties should have all required traits from message.traits and message.context.traits by now
+    operationTransformedPayload = constructPayload(
+      operationEligibleProperties,
+      mPSetOnceConfigJson,
+    );
 
-    // Step 3: combine the transformed and custom setOnce traits
-    sentOnceTransformedPayload = extractCustomFields(
-      setOnceEligible,
-      sentOnceTransformedPayload,
+    // Step 3: combine the transformed and custom traits
+    operationTransformedPayload = extractCustomFields(
+      operationEligibleProperties,
+      operationTransformedPayload,
       'root',
       MP_IDENTIFY_EXCLUSION_LIST,
     );
@@ -394,7 +400,7 @@ function trimTraits(traits, contextTraits, setOnceProperties) {
   return {
     traits: traitsCopy,
     contextTraits: contextTraitsCopy,
-    setOnce: sentOnceTransformedPayload || {},
+    operationTransformedProperties: operationTransformedPayload || {},
   };
 }
 

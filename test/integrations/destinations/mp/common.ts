@@ -62,4 +62,27 @@ const destinationWithSetOnceProperty = {
   Transformations: [],
 };
 
-export { sampleDestination, defaultMockFns, destinationWithSetOnceProperty };
+const destinationWithUnionAndAppendProperty = {
+  ...destinationWithSetOnceProperty,
+  Config: {
+    ...destinationWithSetOnceProperty.Config,
+    unionProperties: [
+      { property: 'unionProperty1' },
+      { property: 'unionProperty2' },
+      { property: 'unionProperty3' },
+      { property: 'unionProperty4' },
+    ],
+    appendProperties: [
+      { property: 'appendProperty1' },
+      { property: 'appendProperty2' },
+      { property: 'appendProperty3' },
+    ],
+  },
+};
+
+export {
+  sampleDestination,
+  defaultMockFns,
+  destinationWithSetOnceProperty,
+  destinationWithUnionAndAppendProperty,
+};

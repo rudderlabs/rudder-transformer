@@ -23,6 +23,8 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       TRANSFORMER_IMAGE_NAME_FOR_TEST: ${{ inputs.build_tag }}
       TRANSFORMER_IMAGE_ALWAYS_PULL: 'false'
+      TRANSFORMER_DOCKER_USERNAME: ${{ env.DOCKERHUB_USERNAME }}
+      TRANSFORMER_DOCKER_PASSWORD: ${{ secrets.DOCKERHUB_TOKEN }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4

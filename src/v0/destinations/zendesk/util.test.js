@@ -35,7 +35,7 @@ describe('getSourceName utility test', () => {
 
 describe('getUserIdentities', () => {
   const endpoint = 'https://rudderstack.zendesk.com/api/v2/users/123/identities';
-  const headers = { Authorization: 'Bearer token' };
+  const headers = {};
   const metadata = { jobId: 1 };
 
   const testCases = [
@@ -88,7 +88,7 @@ describe('getUserIdentities', () => {
 
 describe('deleteEmailFromUser', () => {
   const endpoint = 'https://rudderstack.zendesk.com/api/v2/users/123/identities/456';
-  const headers = { Authorization: 'Bearer token' };
+  const headers = {};
   const metadata = { jobId: 1 };
 
   const testCases = [
@@ -130,7 +130,7 @@ describe('deleteEmailFromUser', () => {
 
 describe('updatePrimaryEmailOfUser', () => {
   const endpoint = 'https://rudderstack.zendesk.com/api/v2/users/123/identities/456';
-  const headers = { Authorization: 'Bearer token' };
+  const headers = {};
   const metadata = { jobId: 1 };
   const payload = { identity: { type: 'email', value: 'example@email.com' } };
 
@@ -175,7 +175,7 @@ describe('updatePrimaryEmailOfUser', () => {
 
 describe('createOrUpdateUser', () => {
   const endpoint = 'https://rudderstack.zendesk.com/api/v2/users/create_or_update.json';
-  const headers = { Authorization: 'Bearer token' };
+  const headers = {};
   const metadata = { jobId: 1 };
   const payload = { user: { email: 'user@example.com' } };
 
@@ -226,7 +226,7 @@ describe('createOrUpdateUser', () => {
 describe('removeUserFromOrganizationMembership', () => {
   const endpoint =
     'https://rudderstack.zendesk.com/api/v2/users/123/organization_memberships/456.json';
-  const headers = { Authorization: 'Bearer token' };
+  const headers = {};
   const metadata = { jobId: 1 };
 
   const testCases = [

@@ -436,4 +436,70 @@ export const testScenariosForV1API = [
       },
     },
   },
+  {
+    id: 'garl_v1_scenario_5',
+    name: 'google_adwords_remarketing_lists',
+    description:
+      '[Proxy v1 API] :: getting handle partial failure error code while sending request',
+    successCriteria: 'Should return 500 with destination response',
+    scenario: 'Business',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v1',
+    input: {
+      request: {
+        body: generateProxyV1Payload(
+          {
+            headers: commonHeaders,
+            params: { ...commonParams, customerId: '7693729835' },
+            JSON: validRequestPayload1,
+            endpoint: '',
+          },
+          metadataArray,
+        ),
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: {
+            message:
+              '[Google Ads Re-marketing Lists]:: partialFailureError - {\"code\":3,\"message\":\"Partial failure occurred. Check errors for details.\",\"details\":[{\"@type\":\"type.googleapis.com/google.ads.googleads.v16.errors.GoogleAdsFailure\",\"errors\":[{\"message\":\"UserIdentifierError.INVALID_EMAIL\",\"location\":{\"fieldPathElements\":[{\"fieldName\":\"operations\",\"index\":0},{\"fieldName\":\"create\"},{\"fieldName\":\"userIdentifiers\"},{\"fieldName\":\"hashedEmail\"}]},\"errorCode\":{\"userIdentifierError\":\"INVALID_EMAIL\"}}]}]}',
+            response: [
+              {
+                error:
+                  '[Google Ads Re-marketing Lists]:: partialFailureError - {\"code\":3,\"message\":\"Partial failure occurred. Check errors for details.\",\"details\":[{\"@type\":\"type.googleapis.com/google.ads.googleads.v16.errors.GoogleAdsFailure\",\"errors\":[{\"message\":\"UserIdentifierError.INVALID_EMAIL\",\"location\":{\"fieldPathElements\":[{\"fieldName\":\"operations\",\"index\":0},{\"fieldName\":\"create\"},{\"fieldName\":\"userIdentifiers\"},{\"fieldName\":\"hashedEmail\"}]},\"errorCode\":{\"userIdentifierError\":\"INVALID_EMAIL\"}}]}]}',
+                metadata: {
+                  attemptNum: 1,
+                  destinationId: 'default-destinationId',
+                  dontBatch: false,
+                  jobId: 1,
+                  secret: {
+                    access_token: secret3,
+                  },
+                  sourceId: 'default-sourceId',
+                  userId: 'default-userId',
+                  workspaceId: 'default-workspaceId',
+                },
+                statusCode: 400,
+              },
+            ],
+            statTags: {
+              destType: 'GOOGLE_ADWORDS_REMARKETING_LISTS',
+              destinationId: 'default-destinationId',
+              errorCategory: 'network',
+              errorType: 'aborted',
+              feature: 'dataDelivery',
+              implementation: 'native',
+              module: 'destination',
+              workspaceId: 'default-workspaceId',
+            },
+            status: 400,
+          },
+        },
+      },
+    },
+  },
 ];

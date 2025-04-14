@@ -337,4 +337,111 @@ export const networkCallsData = [
       },
     },
   },
+  {
+    httpReq: {
+      url: `/7693729835/offlineUserDataJobs:create`,
+      data: {
+        job: {
+          type: 'CUSTOMER_MATCH_USER_LIST',
+          customerMatchUserListMetadata: {
+            userList: 'customers/7693729835/userLists/709078448',
+            consent: { adPersonalization: 'UNSPECIFIED', adUserData: 'UNSPECIFIED' },
+          },
+        },
+      },
+      headers: {
+        Authorization: authHeader1,
+        'Content-Type': 'application/json',
+        'developer-token': 'dummy-dev-token',
+      },
+      method: 'POST',
+    },
+    httpRes: {
+      status: 200,
+      data: {
+        resourceName: 'customers/9249589672/offlineUserDataJobs/18025019463',
+      },
+    },
+  },
+  {
+    httpReq: {
+      url: `/7693729835/offlineUserDataJobs/18025019463:addOperations`,
+      data: {
+        enablePartialFailure: true,
+        operations: [
+          {
+            create: {
+              userIdentifiers: [
+                {
+                  hashedEmail: '85cc9fefa1eff1baab55d10df0cecff2acb25344867a5d0f96e1b1c5e2f10f05',
+                },
+                {
+                  hashedPhoneNumber:
+                    '8846dcb6ab2d73a0e67dbd569fa17cec2d9d391e5b05d1dd42919bc21ae82c45',
+                },
+                {
+                  hashedEmail: '85cc9fefa1eff1baab55d10df0cecff2acb25344867a5d0f96e1b1c5e2f10f05',
+                },
+                {
+                  hashedPhoneNumber:
+                    '8846dcb6ab2d73a0e67dbd569fa17cec2d9d391e5b05d1dd42919bc21ae82c45',
+                },
+                {
+                  addressInfo: {
+                    hashedFirstName:
+                      'e56d336922eaab3be8c1244dbaa713e134a8eba50ddbd4f50fd2fe18d72595cd',
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+      headers: {
+        Authorization: authHeader1,
+        'Content-Type': 'application/json',
+        'developer-token': 'dummy-dev-token',
+      },
+      method: 'POST',
+    },
+    httpRes: {
+      data: {
+        partialFailureError: {
+          code: 3,
+          message: 'Partial failure occurred. Check errors for details.',
+          details: [
+            {
+              '@type': 'type.googleapis.com/google.ads.googleads.v16.errors.GoogleAdsFailure',
+              errors: [
+                {
+                  message: 'UserIdentifierError.INVALID_EMAIL',
+                  location: {
+                    fieldPathElements: [
+                      {
+                        fieldName: 'operations',
+                        index: 0,
+                      },
+                      {
+                        fieldName: 'create',
+                      },
+                      {
+                        fieldName: 'userIdentifiers',
+                      },
+                      {
+                        fieldName: 'hashedEmail',
+                      },
+                    ],
+                  },
+                  errorCode: {
+                    userIdentifierError: 'INVALID_EMAIL',
+                  },
+                },
+              ],
+            },
+          ],
+        },
+      },
+      status: 200,
+    },
+  },
 ];

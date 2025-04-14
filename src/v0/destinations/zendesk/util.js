@@ -54,7 +54,7 @@ const getUserIdentities = async (endpoint, headers, metadata) => {
     {
       [tags]: getDynamicErrorType(response.status),
     },
-    response,
+    response.response,
   );
 };
 
@@ -84,7 +84,7 @@ const deleteEmailFromUser = async (endpoint, headers, metadata) => {
       {
         [tags]: getDynamicErrorType(response.status),
       },
-      response,
+      response.response,
     );
   }
 };
@@ -116,7 +116,7 @@ const updatePrimaryEmailOfUser = async (endpoint, payload, headers, metadata) =>
       {
         [tags]: getDynamicErrorType(response.status),
       },
-      response,
+      response.response,
     );
   }
 };
@@ -151,7 +151,7 @@ const createOrUpdateUser = async (payload, endpoint, headers, metadata) => {
     {
       [tags]: getDynamicErrorType(response.status),
     },
-    response,
+    response.response,
   );
 };
 
@@ -181,7 +181,7 @@ const removeUserFromOrganizationMembership = async (endpoint, headers, metadata)
       {
         [tags]: getDynamicErrorType(response.status),
       },
-      response,
+      response.response,
     );
   }
 };

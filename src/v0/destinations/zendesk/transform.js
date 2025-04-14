@@ -135,13 +135,13 @@ const payloadBuilderforUpdatingEmail = async (
   }
 
   // delete secondary email if required
-  if (identityContainingNonPrimaryEmail && identityContainingNonPrimaryEmail?.id) {
+  if (identityContainingNonPrimaryEmail?.id) {
     const endpoint = `${baseEndpoint}users/${userId}/identities/${identityContainingNonPrimaryEmail.id}`;
     await deleteEmailFromUser(endpoint, headers, metadata);
   }
 
   // update primary email if required
-  if (primaryEmailIdentity && primaryEmailIdentity?.id) {
+  if (primaryEmailIdentity?.id) {
     const response = await responseBuilderToUpdatePrimaryAccount(
       primaryEmailIdentity.id,
       userId,

@@ -26,7 +26,8 @@ steps:
         "Content-Type": "application/json",
         "X-API-Version": $.context.apiVersion
       };
-
+  # Central API docs: https://docs.userpilot.com/article/195-identify-users-and-track-api
+  # Identify user API
   - name: identifyPayload
     condition: $.context.messageType == {{$.EventType.IDENTIFY}}
     template: |
@@ -40,6 +41,7 @@ steps:
       $.context.payload.metadata = $.removeUndefinedAndNullValues(traits);
       $.context.endpoint = $.getEndpoints(.destination.Config).IDENTIFY;
 
+  # Track event API
   - name: trackPayload
     condition: $.context.messageType == {{$.EventType.TRACK}}
     template: |
@@ -54,6 +56,7 @@ steps:
 
       $.context.endpoint = $.getEndpoints(.destination.Config).TRACK;
 
+  # Group company API
   - name: groupPayload
     condition: $.context.messageType == {{$.EventType.GROUP}}
     template: |
@@ -74,5 +77,5 @@ steps:
       response.endpoint = $.context.endpoint;
       response.headers = $.context.finalHeaders;
       response.method = "POST";
-      response.body = $.context.payload;
+      response.body.JSON = $.context.payload;
       response

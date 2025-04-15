@@ -105,39 +105,44 @@ export const data = [
         status: 200,
         body: [
           {
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
             output: {
-              version: '1',
-              type: 'REST',
-              method: 'POST',
+              body: {
+                FORM: {},
+                JSON: {
+                  metadata: {
+                    city: 'Austin',
+                    company: 'Company123',
+                    country: 'US',
+                    email: 'name.surname@domain.com',
+                    name: 'John Doe',
+                    phone: '123-456-7890',
+                    postalCode: '12345',
+                    rating: 'Hot',
+                    state: 'TX',
+                    street: 'Sample Address',
+                    title: 'CEO',
+                  },
+                  user_id: 'customUserID',
+                },
+                JSON_ARRAY: {},
+                XML: {},
+              },
               endpoint: 'https://analytex.userpilot.io/v1/identify',
+              files: {},
               headers: {
                 Authorization: 'Token your-userpilot-api-key',
                 'Content-Type': 'application/json',
                 'X-API-Version': '2020-09-22',
               },
+              method: 'POST',
               params: {},
-              body: {
-                user_id: 'customUserID',
-                metadata: {
-                  name: 'John Doe',
-                  title: 'CEO',
-                  email: 'name.surname@domain.com',
-                  company: 'Company123',
-                  phone: '123-456-7890',
-                  rating: 'Hot',
-                  city: 'Austin',
-                  postalCode: '12345',
-                  country: 'US',
-                  street: 'Sample Address',
-                  state: 'TX',
-                },
-              },
-              files: {},
+              type: 'REST',
               userId: '',
-            },
-            metadata: {
-              destinationId: 'destId',
-              workspaceId: 'wspId',
+              version: '1',
             },
             statusCode: 200,
           },
@@ -255,32 +260,37 @@ export const data = [
         status: 200,
         body: [
           {
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
             output: {
-              version: '1',
-              type: 'REST',
-              method: 'POST',
+              body: {
+                FORM: {},
+                JSON: {
+                  event: 'test track event 1',
+                  metadata: {
+                    currency: 'USD',
+                    revenue: 30,
+                    user_actual_id: 12345,
+                  },
+                  user_id: 'customUserID',
+                },
+                JSON_ARRAY: {},
+                XML: {},
+              },
               endpoint: 'https://analytex.userpilot.io/v1/track',
+              files: {},
               headers: {
                 Authorization: 'Token your-userpilot-api-key',
                 'Content-Type': 'application/json',
                 'X-API-Version': '2020-09-22',
               },
+              method: 'POST',
               params: {},
-              body: {
-                user_id: 'customUserID',
-                event: 'test track event 1',
-                metadata: {
-                  revenue: 30,
-                  currency: 'USD',
-                  user_actual_id: 12345,
-                },
-              },
-              files: {},
+              type: 'REST',
               userId: '',
-            },
-            metadata: {
-              destinationId: 'destId',
-              workspaceId: 'wspId',
+              version: '1',
             },
             statusCode: 200,
           },
@@ -399,30 +409,35 @@ export const data = [
         status: 200,
         body: [
           {
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
             output: {
-              version: '1',
-              type: 'REST',
-              method: 'POST',
+              body: {
+                FORM: {},
+                JSON: {
+                  company_id: 'sample_group_id',
+                  metadata: {
+                    location: 'USA',
+                    name: 'Apple Inc.',
+                  },
+                },
+                JSON_ARRAY: {},
+                XML: {},
+              },
               endpoint: 'https://analytex.userpilot.io/v1/companies/identify',
+              files: {},
               headers: {
                 Authorization: 'Token your-userpilot-api-key',
                 'Content-Type': 'application/json',
                 'X-API-Version': '2020-09-22',
               },
+              method: 'POST',
               params: {},
-              body: {
-                company_id: 'sample_group_id',
-                metadata: {
-                  name: 'Apple Inc.',
-                  location: 'USA',
-                },
-              },
-              files: {},
+              type: 'REST',
               userId: '',
-            },
-            metadata: {
-              destinationId: 'destId',
-              workspaceId: 'wspId',
+              version: '1',
             },
             statusCode: 200,
           },

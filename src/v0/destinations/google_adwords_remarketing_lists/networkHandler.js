@@ -78,7 +78,7 @@ const gaAudienceProxyRequest = async (request) => {
   }
 
   // step2: putting users into the job
-  const jobId = firstResponse.responseBody.resourceName.split('/')[3];
+  const jobId = firstResponse.responseBody?.resourceName?.split('/')[3];
   const secondResponse = await addUserToJob({
     googleAds,
     jobId,

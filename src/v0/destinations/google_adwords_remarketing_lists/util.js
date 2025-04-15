@@ -50,11 +50,12 @@ const responseBuilder = (
     accessToken,
     developerToken,
   };
-  if (Config.subAccount)
+  if (Config.subAccount) {
     if (Config.loginCustomerId) {
       const filteredLoginCustomerId = removeHyphens(Config.loginCustomerId);
       response.params.loginCustomerId = filteredLoginCustomerId;
     } else throw new ConfigurationError(`loginCustomerId is required as subAccount is true.`);
+  }
   return response;
 };
 

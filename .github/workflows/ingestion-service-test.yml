@@ -19,7 +19,6 @@ jobs:
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       TRANSFORMER_IMAGE_NAME_FOR_TEST: ${{ inputs.build_tag }}
-      TRANSFORMER_IMAGE_ALWAYS_PULL: 'false'
       TRANSFORMER_DOCKER_USERNAME: rudderlabs
       TRANSFORMER_DOCKER_PASSWORD: ${{ secrets.DOCKERHUB_TOKEN }}
     steps:

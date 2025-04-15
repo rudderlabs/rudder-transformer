@@ -32,13 +32,15 @@ steps:
     condition: $.context.messageType == {{$.EventType.IDENTIFY}}
     template: |
       $.assert(.message.userId, "User ID is required for Userpilot identify calls");
+      $.assert((.message.context.traits.company && .message.context.traits.company.id), "Company ID is required in company object in contextual traits when passing company information");
 
       $.context.payload = {
-        "user_id": .message.userId
+        "user_id": .message.userId,
+        "company": .message.context.traits.company
       };
 
       let traits = $.transformTraits(.message.context.traits || {});
-      $.context.payload.metadata = $.removeUndefinedAndNullValues(traits);
+      $.context.payload.metadata = $.removeUndefinedAndNullValues(traits);      
       $.context.endpoint = $.getEndpoints(.destination.Config).IDENTIFY;
 
   # Track event API
@@ -50,7 +52,7 @@ steps:
 
       $.context.payload = {
         "user_id": .message.userId,
-        "event": .message.event,
+        "event_name": .message.event,
         "metadata": $.removeUndefinedAndNullValues(.message.properties || {}),
       };
 

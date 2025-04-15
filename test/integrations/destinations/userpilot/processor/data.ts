@@ -36,7 +36,10 @@ export const data = [
                   name: 'John Doe',
                   title: 'CEO',
                   email: 'name.surname@domain.com',
-                  company: 'Company123',
+                  company: {
+                    id: '12345',
+                    name: 'Company123',
+                  },
                   phone: '123-456-7890',
                   rating: 'Hot',
                   city: 'Austin',
@@ -115,7 +118,10 @@ export const data = [
                 JSON: {
                   metadata: {
                     city: 'Austin',
-                    company: 'Company123',
+                    company: {
+                      id: '12345',
+                      name: 'Company123',
+                    },
                     country: 'US',
                     email: 'name.surname@domain.com',
                     name: 'John Doe',
@@ -127,6 +133,10 @@ export const data = [
                     title: 'CEO',
                   },
                   user_id: 'customUserID',
+                  company: {
+                    id: '12345',
+                    name: 'Company123',
+                  },
                 },
                 JSON_ARRAY: {},
                 XML: {},
@@ -145,6 +155,128 @@ export const data = [
               version: '1',
             },
             statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'userpilot',
+    description: 'Identify user test with missing required company id, should fail',
+    module: 'destination',
+    version: 'v0',
+    feature: 'processor',
+    input: {
+      request: {
+        body: [
+          {
+            destination: {
+              ID: 'userpilot-destination-id',
+              Name: 'Userpilot',
+              DestinationDefinition: {
+                Config: {
+                  cdkV2Enabled: true,
+                },
+              },
+              Config: {
+                apiKey: 'your-userpilot-api-key',
+                apiEndpoint: 'https://analytex.userpilot.io',
+              },
+              enabled: true,
+              transformations: [],
+            },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
+            message: {
+              userId: 'customUserID',
+              type: 'identify',
+              context: {
+                traits: {
+                  name: 'John Doe',
+                  email: 'name.surname@domain.com',
+                  company: {
+                    name: 'Company123',
+                  },
+                },
+                sessionId: 1742115400440,
+                app: {
+                  name: 'RudderLabs JavaScript SDK',
+                  namespace: 'com.rudderlabs.javascript',
+                  version: 'dev-snapshot',
+                  installType: 'cdn',
+                },
+                library: {
+                  name: 'RudderLabs JavaScript SDK',
+                  version: 'dev-snapshot',
+                  snippetVersion: '3.0.60',
+                },
+                userAgent:
+                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36',
+                os: {
+                  name: '',
+                  version: '',
+                },
+                locale: 'en',
+                screen: {
+                  width: 1728,
+                  height: 1117,
+                  density: 2,
+                  innerWidth: 1688,
+                  innerHeight: 451,
+                },
+                campaign: {},
+                page: {
+                  path: '/cdn/legacy/iife/index.html',
+                  referrer: 'http://localhost:3001/cdn/legacy/iife/index.html',
+                  referring_domain: 'localhost:3001',
+                  search: '',
+                  title: '',
+                  url: 'http://localhost:3001/cdn/legacy/iife/index.html',
+                  tab_url: 'http://localhost:3001/cdn/legacy/iife/index.html',
+                  initial_referrer: '$direct',
+                  initial_referring_domain: 'localhost:3001',
+                },
+                timezone: 'GMT+0200',
+              },
+              channel: 'web',
+              originalTimestamp: '2025-03-16T08:57:10.737Z',
+              messageId: '5799e19f-57e9-4a36-a34b-369d455b8332',
+              anonymousId: 'd681c65d-f3fd-4f2e-b9a7-d5c2ae3c8b9b',
+              event: null,
+              properties: null,
+              integrations: {
+                All: true,
+              },
+              sentAt: '2025-03-16T08:57:10.737Z',
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            error:
+              'Company ID is required in company object in contextual traits when passing company information: Workflow: procWorkflow, Step: identifyPayload, ChildStep: undefined, OriginalError: Company ID is required in company object in contextual traits when passing company information',
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
+            statTags: {
+              destType: 'USERPILOT',
+              destinationId: 'destId',
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              feature: 'processor',
+              implementation: 'cdkV2',
+              module: 'destination',
+              workspaceId: 'wspId',
+            },
+            statusCode: 400,
           },
         ],
       },
@@ -268,7 +400,7 @@ export const data = [
               body: {
                 FORM: {},
                 JSON: {
-                  event: 'test track event 1',
+                  event_name: 'test track event 1',
                   metadata: {
                     currency: 'USD',
                     revenue: 30,

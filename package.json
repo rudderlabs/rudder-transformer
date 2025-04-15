@@ -66,7 +66,7 @@
     "@ndhoule/extend": "^2.0.0",
     "@rudderstack/integrations-lib": "^0.2.25",
     "@rudderstack/json-template-engine": "^0.19.5",
-    "@rudderstack/pyroscope-nodejs": "^0.4.6",
+    "@rudderstack/pyroscope-nodejs": "^0.4.6-fork.1",
     "@rudderstack/workflow-engine": "^0.8.13",
     "@shopify/jest-koa-mocks": "^5.1.1",
     "ajv": "^8.17.1",

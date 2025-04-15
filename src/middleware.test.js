@@ -5,12 +5,12 @@ const {
   addProfilingMiddleware,
 } = require('./middleware');
 
-const Pyroscope = require('rudderstack-pyroscope-nodejs').default;
+const Pyroscope = require('@rudderstack/pyroscope-nodejs').default;
 const stats = require('./util/stats');
 const { getDestTypeFromContext } = require('@rudderstack/integrations-lib');
 
 // Mock dependencies
-jest.mock('rudderstack-pyroscope-nodejs', () => ({
+jest.mock('@rudderstack/pyroscope-nodejs', () => ({
   default: {
     init: jest.fn(),
     koaMiddleware: () => async (ctx, next) => {

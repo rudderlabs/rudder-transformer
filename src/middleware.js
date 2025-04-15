@@ -1,4 +1,4 @@
-const Pyroscope = require('rudderstack-pyroscope-nodejs').default;
+const Pyroscope = require('@rudderstack/pyroscope-nodejs').default;
 
 const { getDestTypeFromContext } = require('@rudderstack/integrations-lib');
 const stats = require('./util/stats');

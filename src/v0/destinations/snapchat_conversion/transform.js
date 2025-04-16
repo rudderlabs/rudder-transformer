@@ -330,7 +330,6 @@ const eventMappingHandler = (message, destination) => {
 
 const process = (event) => {
   const { message, destination } = event;
-  // const message = { ...incomingMessage };
   if (!message.type) {
     throw new InstrumentationError('Event type is required');
   }

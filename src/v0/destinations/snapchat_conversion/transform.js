@@ -1,6 +1,6 @@
 const get = require('get-value');
 const moment = require('moment');
-const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 
 const {
@@ -11,7 +11,6 @@ const {
   getFieldValueFromMessage,
   getSuccessRespEvents,
   isAppleFamily,
-  getValidDynamicFormConfig,
   handleRtTfSingleEventError,
   batchMultiplexedEvents,
 } = require('../../util');
@@ -31,8 +30,10 @@ const {
   getPriceSum,
   getDataUseValue,
   getNormalizedPhoneNumber,
-  channelMapping,
   generateBatchedPayloadForArray,
+  eventMappingHandler,
+  getEventConversionType,
+  validateEventConfiguration,
 } = require('./util');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 const { processV3, processRouterDest: processRouterV3 } = require('./transformV3');
@@ -113,19 +114,7 @@ const populateHashedValues = (payload, message) => {
 };
 const getEventCommonProperties = (message) =>
   constructPayload(message, mappingConfig[ConfigCategory.TRACK_COMMON.name]);
-const validateEventConfiguration = (eventConversionType, pixelId, snapAppId, appId) => {
-  if ((eventConversionType === 'WEB' || eventConversionType === 'OFFLINE') && !pixelId) {
-    throw new ConfigurationError('Pixel Id is required for web and offline events');
-  }
 
-  if (eventConversionType === 'MOBILE_APP' && !(appId && snapAppId)) {
-    let requiredId = 'App Id';
-    if (!snapAppId) {
-      requiredId = 'Snap App Id';
-    }
-    throw new ConfigurationError(`${requiredId} is required for app events`);
-  }
-};
 const validateRequiredFields = (payload) => {
   if (
     !payload.hashed_email &&
@@ -161,21 +150,6 @@ const addSpecificEventDetails = (
     updatedPayload.pixel_id = pixelId;
   }
   return updatedPayload;
-};
-const getEventConversionType = (message) => {
-  const channel = get(message, 'channel');
-  let eventConversionType = message?.properties?.eventConversionType;
-  if (
-    channelMapping[eventConversionType?.toLowerCase()] ||
-    channelMapping[channel?.toLowerCase()]
-  ) {
-    eventConversionType = eventConversionType
-      ? channelMapping[eventConversionType?.toLowerCase()]
-      : channelMapping[channel?.toLowerCase()];
-  } else {
-    eventConversionType = 'OFFLINE';
-  }
-  return eventConversionType;
 };
 
 // Returns the response for the track event after constructing the payload and setting necessary fields
@@ -298,36 +272,6 @@ const trackResponseBuilder = (message, { Config }, mappedEvent) => {
   // build response
   const response = buildResponse(apiKey, payload);
   return response;
-};
-
-// Checks if there are any mapping events for the track event and returns them
-const eventMappingHandler = (message, destination) => {
-  let event = get(message, 'event');
-
-  if (!event) {
-    throw new InstrumentationError('Event name is required');
-  }
-  event = event.toString().trim().replace(/\s+/g, '_');
-
-  let { rudderEventsToSnapEvents } = destination.Config;
-  const mappedEvents = new Set();
-
-  if (Array.isArray(rudderEventsToSnapEvents)) {
-    rudderEventsToSnapEvents = getValidDynamicFormConfig(
-      rudderEventsToSnapEvents,
-      'from',
-      'to',
-      'snapchat_conversion',
-      destination.ID,
-    );
-    rudderEventsToSnapEvents.forEach((mapping) => {
-      if (mapping.from.trim().replace(/\s+/g, '_').toLowerCase() === event.toLowerCase()) {
-        mappedEvents.add(mapping.to);
-      }
-    });
-  }
-
-  return [...mappedEvents];
 };
 
 const process = (event) => {

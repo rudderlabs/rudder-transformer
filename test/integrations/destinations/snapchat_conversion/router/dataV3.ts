@@ -1,11 +1,10 @@
 import { authHeader1, secret1 } from '../maskedSecrets';
 import { FEATURES, IMPLEMENTATIONS, MODULES } from '../../../../../src/v0/util/tags';
-import { dataV3 } from './dataV3';
 
-export const dataV2 = [
+export const dataV3 = [
   {
     name: 'snapchat_conversion',
-    description: 'Test 0',
+    description: '[CAPIv3]: Test 0 - Web/Offline Events',
     feature: FEATURES.ROUTER,
     module: MODULES.DESTINATION,
     version: 'v0',
@@ -77,6 +76,7 @@ export const dataV2 = [
                 Config: {
                   pixelId: 'dummyPixelId',
                   apiKey: secret1,
+                  apiVersion: 'newApi',
                 },
               },
             },
@@ -144,6 +144,7 @@ export const dataV2 = [
                 Config: {
                   pixelId: 'dummyPixelId',
                   apiKey: secret1,
+                  apiVersion: 'newApi',
                 },
               },
             },
@@ -211,6 +212,7 @@ export const dataV2 = [
                 Config: {
                   pixelId: 'dummyPixelId',
                   apiKey: secret1,
+                  apiVersion: 'newApi',
                 },
               },
             },
@@ -229,69 +231,67 @@ export const dataV2 = [
                 version: '1',
                 type: 'REST',
                 method: 'POST',
-                endpoint: 'https://tr.snapchat.com/v2/conversion',
+                endpoint: 'https://tr.snapchat.com/v3/dummyPixelId/events',
                 headers: {
                   'Content-Type': 'application/json',
-                  Authorization: authHeader1,
                 },
-                params: {},
+                params: {
+                  access_token: secret1,
+                },
                 body: {
-                  JSON: {},
-                  JSON_ARRAY: {
-                    batch: JSON.stringify([
+                  JSON: {
+                    data: [
                       {
-                        search_string: 't-shirts',
-                        event_type: 'SEARCH',
-                        user_agent:
-                          'mozilla/5.0 (macintosh; intel mac os x 10_15_2) applewebkit/537.36 (khtml, like gecko) chrome/79.0.3945.88 safari/537.36',
-                        hashed_email:
-                          '73062d872926c2a556f17b36f50e328ddf9bff9d403939bd14b6c3b7f5a33fc2',
-                        hashed_phone_number:
-                          'bc77d64d7045fe44795ed926df37231a0cfb6ec6b74588c512790e9f143cc492',
-                        hashed_idfv:
-                          '54bd0b26a3d39dad90f5149db49b9fd9ba885f8e35d1d94cae69273f5e657b9f',
-                        hashed_mobile_ad_id:
-                          'f9779d734aaee50f16ee0011260bae7048f1d9a128c62b6a661077875701edd2',
-                        timestamp: '1650625078',
-                        event_conversion_type: 'OFFLINE',
-                        pixel_id: 'dummyPixelId',
+                        action_source: 'OFFLINE',
+                        custom_data: {
+                          search_string: 't-shirts',
+                        },
+                        event_name: 'SEARCH',
+                        event_time: '1650625078',
+                        user_data: {
+                          client_user_agent:
+                            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36',
+                          em: '73062d872926c2a556f17b36f50e328ddf9bff9d403939bd14b6c3b7f5a33fc2',
+                          idfv: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
+                          madid: 'T0T0T072-5e28-45a1-9eda-ce22a3e36d1a',
+                          ph: 'bc77d64d7045fe44795ed926df37231a0cfb6ec6b74588c512790e9f143cc492',
+                        },
                       },
                       {
-                        search_string: 't-shirts',
-                        event_type: 'SEARCH',
-                        user_agent:
-                          'mozilla/5.0 (macintosh; intel mac os x 10_15_2) applewebkit/537.36 (khtml, like gecko) chrome/79.0.3945.88 safari/537.36',
-                        hashed_email:
-                          '73062d872926c2a556f17b36f50e328ddf9bff9d403939bd14b6c3b7f5a33fc2',
-                        hashed_phone_number:
-                          'bc77d64d7045fe44795ed926df37231a0cfb6ec6b74588c512790e9f143cc492',
-                        hashed_idfv:
-                          '54bd0b26a3d39dad90f5149db49b9fd9ba885f8e35d1d94cae69273f5e657b9f',
-                        hashed_mobile_ad_id:
-                          'f9779d734aaee50f16ee0011260bae7048f1d9a128c62b6a661077875701edd2',
-                        timestamp: '1650625078',
-                        event_conversion_type: 'OFFLINE',
-                        pixel_id: 'dummyPixelId',
+                        action_source: 'OFFLINE',
+                        custom_data: {
+                          search_string: 't-shirts',
+                        },
+                        event_name: 'SEARCH',
+                        event_time: '1650625078',
+                        user_data: {
+                          client_user_agent:
+                            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36',
+                          em: '73062d872926c2a556f17b36f50e328ddf9bff9d403939bd14b6c3b7f5a33fc2',
+                          idfv: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
+                          madid: 'T0T0T072-5e28-45a1-9eda-ce22a3e36d1a',
+                          ph: 'bc77d64d7045fe44795ed926df37231a0cfb6ec6b74588c512790e9f143cc492',
+                        },
                       },
                       {
-                        search_string: 't-shirts',
-                        event_type: 'SEARCH',
-                        user_agent:
-                          'mozilla/5.0 (macintosh; intel mac os x 10_15_2) applewebkit/537.36 (khtml, like gecko) chrome/79.0.3945.88 safari/537.36',
-                        hashed_email:
-                          '73062d872926c2a556f17b36f50e328ddf9bff9d403939bd14b6c3b7f5a33fc2',
-                        hashed_phone_number:
-                          'bc77d64d7045fe44795ed926df37231a0cfb6ec6b74588c512790e9f143cc492',
-                        hashed_idfv:
-                          '54bd0b26a3d39dad90f5149db49b9fd9ba885f8e35d1d94cae69273f5e657b9f',
-                        hashed_mobile_ad_id:
-                          'f9779d734aaee50f16ee0011260bae7048f1d9a128c62b6a661077875701edd2',
-                        timestamp: '1650625078',
-                        event_conversion_type: 'OFFLINE',
-                        pixel_id: 'dummyPixelId',
+                        action_source: 'OFFLINE',
+                        custom_data: {
+                          search_string: 't-shirts',
+                        },
+                        event_name: 'SEARCH',
+                        event_time: '1650625078',
+                        user_data: {
+                          client_user_agent:
+                            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36',
+                          em: '73062d872926c2a556f17b36f50e328ddf9bff9d403939bd14b6c3b7f5a33fc2',
+                          idfv: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
+                          madid: 'T0T0T072-5e28-45a1-9eda-ce22a3e36d1a',
+                          ph: 'bc77d64d7045fe44795ed926df37231a0cfb6ec6b74588c512790e9f143cc492',
+                        },
                       },
-                    ]),
+                    ],
                   },
+                  JSON_ARRAY: {},
                   XML: {},
                   FORM: {},
                 },
@@ -317,6 +317,7 @@ export const dataV2 = [
                 Config: {
                   pixelId: 'dummyPixelId',
                   apiKey: secret1,
+                  apiVersion: 'newApi',
                 },
               },
             },
@@ -331,7 +332,294 @@ export const dataV2 = [
   },
   {
     name: 'snapchat_conversion',
-    description: 'Test 1',
+    description: '[CAPIv3]: Test 1 - Mobile Events',
+    feature: FEATURES.ROUTER,
+    module: MODULES.DESTINATION,
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: {
+                messageId: 'ec5481b6-a926-4d2e-b293-0b3a77c4d3be',
+                originalTimestamp: '2022-04-22T10:57:58Z',
+                channel: 'mobile',
+                anonymousId: 'ea5cfab2-3961-4d8a-8187-3d1858c99090',
+                context: {
+                  traits: {
+                    email: 'test@email.com',
+                    phone: '+91 2111111 ',
+                  },
+                  app: {
+                    build: '1.0.0',
+                    name: 'RudderLabs JavaScript SDK',
+                    namespace: 'com.rudderlabs.javascript',
+                    version: '1.0.0',
+                  },
+                  device: {
+                    advertisingId: 'T0T0T072-5e28-45a1-9eda-ce22a3e36d1a',
+                    id: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
+                    manufacturer: 'Google',
+                    model: 'AOSP on IA Emulator',
+                    name: 'generic_x86_arm',
+                    type: 'ios',
+                    attTrackingStatus: 3,
+                  },
+                  library: {
+                    name: 'RudderLabs JavaScript SDK',
+                    version: '1.0.0',
+                  },
+                  locale: 'en-US',
+                  os: {
+                    name: 'iOS',
+                    version: '14.4.1',
+                  },
+                  screen: {
+                    density: 2,
+                  },
+                  externalId: [
+                    {
+                      type: 'ga4AppInstanceId',
+                      id: 'f0dd99v4f979fb997ce453373900f891',
+                    },
+                  ],
+                  userAgent:
+                    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36',
+                },
+                type: 'track',
+                event: 'Products Searched',
+                properties: {
+                  delivery_method: 'in_store',
+                  query: 't-shirts',
+                  event_conversion_type: 'web',
+                },
+                integrations: {
+                  All: true,
+                },
+                sentAt: '2022-04-22T10:57:58Z',
+              },
+              destination: {
+                DestinationDefinition: {
+                  Config: {
+                    cdkV2Enabled: false,
+                  },
+                },
+                Config: {
+                  apiKey: secret1,
+                  pixelId: 'dummyPixelId',
+                  appId: 'dhfeih44f',
+                  snapAppId: 'hfhdhfd',
+                  apiVersion: 'newApi',
+                },
+              },
+              metadata: {
+                jobId: 28,
+                destinationId: 'd2',
+                workspaceId: 'w2',
+              },
+            },
+            {
+              message: {
+                messageId: 'ec5481b6-a926-4d2e-b293-0b3a77c4d3be',
+                originalTimestamp: '2022-04-22T10:57:58Z',
+                channel: 'mobile',
+                anonymousId: 'ea5cfab2-3961-4d8a-8187-3d1858c99090',
+                context: {
+                  traits: {
+                    email: 'test@email.com',
+                    phone: '+91 2111111 ',
+                    country: 'IN',
+                    zipcode: 'Sxp-12345',
+                    region: 'some_region',
+                  },
+                  app: {
+                    build: '1.0.0',
+                    name: 'RudderLabs JavaScript SDK',
+                    namespace: 'com.rudderlabs.javascript',
+                    version: '1.0.0',
+                  },
+                  device: {
+                    advertisingId: 'T0T0T072-5e28-45a1-9eda-ce22a3e36d1a',
+                    id: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
+                    manufacturer: 'Google',
+                    name: 'generic_x86_arm',
+                    type: 'ios',
+                    attTrackingStatus: 3,
+                  },
+                  library: {
+                    name: 'RudderLabs JavaScript SDK',
+                    version: '1.0.0',
+                  },
+                  locale: 'en-US',
+                  os: {
+                    name: 'iOS',
+                    version: '14.4.1',
+                  },
+                  screen: {
+                    density: 2,
+                  },
+                  externalId: [
+                    {
+                      type: 'ga4AppInstanceId',
+                      id: 'f0dd99v4f979fb997ce453373900f891',
+                    },
+                  ],
+                  userAgent:
+                    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36',
+                },
+                type: 'track',
+                event: 'Product List Viewed',
+                properties: {
+                  products: [
+                    {
+                      product_id: '123',
+                      price: '14',
+                    },
+                    {
+                      product_id: '123',
+                      price: 14,
+                      quantity: 3,
+                    },
+                  ],
+                },
+                integrations: {
+                  All: true,
+                },
+                sentAt: '2022-04-22T10:57:58Z',
+              },
+              destination: {
+                DestinationDefinition: {
+                  Config: {
+                    cdkV2Enabled: false,
+                  },
+                },
+                Config: {
+                  apiKey: secret1,
+                  pixelId: 'dummyPixelId',
+                  appId: 'dhfeih44f',
+                  snapAppId: 'hfhdhfd',
+                  apiVersion: 'newApi',
+                },
+              },
+              metadata: {
+                jobId: 29,
+                destinationId: 'd2',
+                workspaceId: 'w2',
+              },
+            },
+          ],
+          destType: 'snapchat_conversion',
+        },
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: 'https://tr.snapchat.com/v3/hfhdhfd/events',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                params: {
+                  access_token: secret1,
+                },
+                body: {
+                  JSON: {
+                    data: [
+                      {
+                        action_source: 'MOBILE_APP',
+                        app_data: {
+                          app_id: 'dhfeih44f',
+                        },
+                        custom_data: {
+                          search_string: 't-shirts',
+                        },
+                        event_name: 'SEARCH',
+                        event_time: '1650625078',
+                        user_data: {
+                          client_user_agent:
+                            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36',
+                          em: '73062d872926c2a556f17b36f50e328ddf9bff9d403939bd14b6c3b7f5a33fc2',
+                          idfv: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
+                          madid: 'T0T0T072-5e28-45a1-9eda-ce22a3e36d1a',
+                          ph: 'bc77d64d7045fe44795ed926df37231a0cfb6ec6b74588c512790e9f143cc492',
+                        },
+                      },
+                      {
+                        action_source: 'MOBILE_APP',
+                        app_data: {
+                          app_id: 'dhfeih44f',
+                        },
+                        custom_data: {
+                          content_ids: ['123', '123'],
+                          value: '56',
+                        },
+                        event_name: 'VIEW_CONTENT',
+                        event_time: '1650625078',
+                        user_data: {
+                          client_user_agent:
+                            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36',
+                          country:
+                            '582967534d0f909d196b97f9e6921342777aea87b46fa52df165389db1fb8ccf',
+                          em: '73062d872926c2a556f17b36f50e328ddf9bff9d403939bd14b6c3b7f5a33fc2',
+                          idfv: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
+                          madid: 'T0T0T072-5e28-45a1-9eda-ce22a3e36d1a',
+                          ph: 'bc77d64d7045fe44795ed926df37231a0cfb6ec6b74588c512790e9f143cc492',
+                          zp: 'cbb2704f5b334a0cec32e5463d1fd9355f6ef73987bfe0ebb8389b7617452152',
+                        },
+                      },
+                    ],
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+              },
+              metadata: [
+                {
+                  jobId: 28,
+                  destinationId: 'd2',
+                  workspaceId: 'w2',
+                },
+                {
+                  jobId: 29,
+                  destinationId: 'd2',
+                  workspaceId: 'w2',
+                },
+              ],
+              batched: true,
+              statusCode: 200,
+              destination: {
+                DestinationDefinition: {
+                  Config: {
+                    cdkV2Enabled: false,
+                  },
+                },
+                Config: {
+                  apiKey: secret1,
+                  pixelId: 'dummyPixelId',
+                  appId: 'dhfeih44f',
+                  snapAppId: 'hfhdhfd',
+                  apiVersion: 'newApi',
+                },
+              },
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    name: 'snapchat_conversion',
+    description: '[CAPIv3]: Test 2',
     feature: FEATURES.ROUTER,
     module: MODULES.DESTINATION,
     version: 'v0',
@@ -455,6 +743,7 @@ export const dataV2 = [
                       to: 'product_list_viewed',
                     },
                   ],
+                  apiVersion: 'newApi',
                 },
               },
             },
@@ -499,6 +788,7 @@ export const dataV2 = [
                       to: 'product_list_viewed',
                     },
                   ],
+                  apiVersion: 'newApi',
                 },
               },
             },
@@ -508,5 +798,3 @@ export const dataV2 = [
     },
   },
 ];
-
-export const data = [...dataV2, ...dataV3];

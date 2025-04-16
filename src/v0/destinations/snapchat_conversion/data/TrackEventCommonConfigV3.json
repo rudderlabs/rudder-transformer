@@ -1,11 +1,6 @@
 [
   {
-    "destKey": "data.description",
-    "sourceKeys": "properties.description",
-    "required": false
-  },
-  {
-    "destKey": "data.custom_data.brands",
+    "destKey": "custom_data.brands",
     "sourceKeys": "properties.brands",
     "required": false,
     "metadata": {
@@ -13,65 +8,38 @@
     }
   },
   {
-    "destKey": "data.event_tag",
-    "sourceKeys": "properties.event_tag",
+    "destKey": "user_data.sc_click_id",
+    "sourceKeys": "properties.click_id",
     "required": false
   },
   {
-    "destKey": "data.level",
-    "sourceKeys": "properties.level",
+    "destKey": "user_data.sc_cookie1",
+    "sourceKeys": "properties.uuid_c1",
     "required": false
   },
   {
-    "destKey": "customer_status",
-    "sourceKeys": "properties.customer_status",
+    "destKey": "app_data.advertiser_tracking_enabled",
+    "sourceKeys": "properties.att_status",
     "required": false
   },
   {
-    "destKey": "data",
-    "sourceKeys": "properties.data",
+    "destKey": "user_data.client_ip_address",
+    "sourceKeys": ["context.ip", "request_ip"],
     "required": false
   },
   {
-    "destKey": "sign_up_method",
-    "sourceKeys": "properties.sign_up_method",
+    "destKey": "user_data.client_user_agent",
+    "sourceKeys": "context.userAgent",
     "required": false
   },
   {
-    "destKey": "data.advertiser_cookie_1",
-    "sourceKeys": "properties.advertiser_cookie_1",
+    "destKey": "user_data.idfv",
+    "sourceKeys": ["properties.idfv", "context.device.id"],
     "required": false
   },
   {
-    "sourceKeys": "country",
-    "destKey": "data.user_data.country",
-    "sourceFromGenericMap": true,
-    "required": false
-  },
-  {
-    "sourceKeys": "context.clientUserAgent",
-    "destKey": "data.user_data.client_user_agent",
-    "metadata": {
-      "type": "toLower"
-    },
-    "required": false
-  },
-  {
-    "destKey": "data.user_data.sc_click_id",
-    "sourceKeys": ["properties.sc_click_id", "properties.scClickId"],
-    "required": false
-  },
-  {
-    "destKey": "data.user_data.sc_cookie1",
-    "sourceKeys": ["properties.sc_cookie1", "properties.scCookie1"],
-    "required": false
-  },
-  {
-    "destKey": "data.app_data.advertiser_tracking_enabled",
-    "sourceKeys": [
-      "properties.advertiser_tracking_enabled",
-      "properties.advertiserTrackingEnabled"
-    ],
+    "destKey": "user_data.madid",
+    "sourceKeys": ["properties.adId", "context.device.advertisingId"],
     "required": false
   }
 ]

@@ -1,4 +1,4 @@
-import type { CatchErr } from '../util/types';
+import type { CatchErr } from './index';
 import type { Metadata, RudderMessage } from './rudderEvents';
 import type { ProcessorTransformationResponse } from './destinationTransformation';
 

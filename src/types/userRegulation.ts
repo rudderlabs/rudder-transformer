@@ -1,4 +1,4 @@
-import type { FixMe } from '../util/types';
+import type { FixMe } from './index';
 
 /**
  * Types for user data regulation operations

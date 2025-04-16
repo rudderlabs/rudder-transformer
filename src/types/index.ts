@@ -5,3 +5,6 @@ export * from './sourceTransformation';
 export * from './userTransformation';
 export * from './userRegulation';
 export * from './zodTypes';
+
+export type FixMe = any;
+export type CatchErr = any;

@@ -5,7 +5,7 @@ import {
   WorkflowEngine,
   WorkflowEngineFactory,
 } from '@rudderstack/workflow-engine';
-import { FixMe } from '../../util/types';
+import { FixMe } from '../../types';
 
 import tags from '../../v0/util/tags';
 

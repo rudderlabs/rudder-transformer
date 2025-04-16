@@ -1,10 +1,9 @@
 import { Context } from 'koa';
 import { ServiceSelector } from '../helpers/serviceSelector';
 import { DestinationPostTransformationService } from '../services/destination/postTransformation';
-import { UserDeletionRequest, UserDeletionResponse } from '../types';
-import tags from '../v0/util/tags';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { CatchErr } from '../util/types';
+import { UserDeletionRequest, UserDeletionResponse, CatchErr } from '../types';
+import tags from '../v0/util/tags';
 import logger from '../logger';
 
 export class RegulationController {

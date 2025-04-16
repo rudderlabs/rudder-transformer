@@ -1,4 +1,7 @@
+import { promisify } from 'node:util';
+import { gzip } from 'node:zlib';
 import { get } from 'lodash';
+import logger from '../../../logger';
 import { isHttpStatusSuccess } from '../../../v0/util';
 import { DESTINATION } from '../../../v0/destinations/mp/config';
 import { TransformerProxyError } from '../../../v0/util/errorTypes';
@@ -276,6 +279,17 @@ export const handleEndpointSpecificResponses = (
   return null;
 };
 
+export const getZippedPayload = async (payload: string): Promise<Buffer | undefined> => {
+  try {
+    const promisifiedGzip = promisify(gzip);
+    const data = await promisifiedGzip(payload);
+    return data;
+  } catch (err) {
+    logger.error(`Failed to parse GZIP payload: ${err}`);
+    return undefined;
+  }
+};
+
 export default {
   checkIfEventIsAbortableInImport,
   createResponsesForAllEvents,
@@ -284,4 +298,5 @@ export default {
   handleStandardApiResponse,
   handleEndpointSpecificResponses,
   handleApiErrorResponse,
+  getZippedPayload,
 };

@@ -1,6 +1,7 @@
 import { networkHandler } from './networkHandler';
 import { TransformerProxyError } from '../../../v0/util/errorTypes';
 import { ResponseParams } from '../../../types';
+import { getZippedPayload } from './utils';
 
 describe('Mixpanel V1 Network Handler', () => {
   const handler = new networkHandler();
@@ -649,5 +650,176 @@ describe('Mixpanel V1 Network Handler', () => {
         }
       },
     );
+  });
+
+  describe('prepareProxyRequest', () => {
+    const handler = new networkHandler();
+    let gzippedData: Buffer | undefined;
+
+    beforeAll(async () => {
+      gzippedData = await getZippedPayload('{"key":"value"}');
+    });
+
+    const testCases = [
+      {
+        name: 'JSON payload',
+        input: {
+          body: {
+            JSON: { key: 'value' },
+          },
+          method: 'POST',
+          params: { param1: 'value1' },
+          endpoint: 'https://api.example.com',
+          headers: { 'Content-Type': 'application/json' },
+          destinationConfig: { apiKey: 'test-key' },
+        },
+        expected: {
+          endpoint: 'https://api.example.com',
+          data: { key: 'value' },
+          method: 'POST',
+          params: { param1: 'value1' },
+          headers: {
+            'Content-Type': 'application/json',
+            'User-Agent': 'RudderLabs',
+          },
+          config: { apiKey: 'test-key' },
+        },
+      },
+      {
+        name: 'JSON_ARRAY payload',
+        input: {
+          body: {
+            JSON_ARRAY: {
+              batch: [{ id: 1 }, { id: 2 }],
+            },
+          },
+          method: 'POST',
+          endpoint: 'https://api.example.com/batch',
+          headers: { 'Content-Type': 'application/json' },
+          destinationConfig: { apiKey: 'test-key' },
+        },
+        expected: {
+          endpoint: 'https://api.example.com/batch',
+          data: [{ id: 1 }, { id: 2 }],
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'User-Agent': 'RudderLabs',
+          },
+          config: { apiKey: 'test-key' },
+        },
+      },
+      {
+        name: 'XML payload',
+        input: {
+          body: {
+            XML: {
+              payload: '<root><key>value</key></root>',
+            },
+          },
+          method: 'POST',
+          endpoint: 'https://api.example.com/xml',
+          headers: { 'Content-Type': 'application/xml' },
+          destinationConfig: { apiKey: 'test-key' },
+        },
+        expected: {
+          endpoint: 'https://api.example.com/xml',
+          data: '<root><key>value</key></root>',
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/xml',
+            'User-Agent': 'RudderLabs',
+          },
+          config: { apiKey: 'test-key' },
+        },
+      },
+      {
+        name: 'with undefined values',
+        input: {
+          body: {
+            JSON: { key: 'value' },
+          },
+          method: 'POST',
+          params: undefined,
+          endpoint: 'https://api.example.com',
+          headers: { 'Content-Type': 'application/json' },
+          destinationConfig: undefined,
+        },
+        expected: {
+          endpoint: 'https://api.example.com',
+          data: { key: 'value' },
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'User-Agent': 'RudderLabs',
+          },
+        },
+      },
+    ];
+
+    // Run the basic test cases
+    test.each(testCases)('prepareProxyRequest: $name', async ({ input, expected }) => {
+      const result = await handler.prepareProxy(input);
+      expect(result).toEqual(expected);
+    });
+
+    // Separate test for GZIP
+    test('prepareProxyRequest: GZIP payload', async () => {
+      const input = {
+        body: {
+          GZIP: {
+            payload: '{"key":"value"}',
+          },
+        },
+        method: 'POST',
+        endpoint: 'https://api.example.com/gzip',
+        headers: { 'Content-Type': 'application/json' },
+        destinationConfig: { apiKey: 'test-key' },
+      };
+
+      const expected = {
+        endpoint: 'https://api.example.com/gzip',
+        data: gzippedData,
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Content-Encoding': 'gzip',
+          'User-Agent': 'RudderLabs',
+        },
+        config: { apiKey: 'test-key' },
+      };
+
+      const result = await handler.prepareProxy(input);
+      expect(result).toEqual(expected);
+    });
+
+    test('prepareProxyRequest: GZIP invalid payload', async () => {
+      const input = {
+        body: {
+          GZIP: {
+            payload: { key: 'value' },
+          },
+        },
+        method: 'POST',
+        endpoint: 'https://api.example.com/gzip',
+        headers: { 'Content-Type': 'application/json' },
+        destinationConfig: { apiKey: 'test-key' },
+      };
+
+      const expected = {
+        endpoint: 'https://api.example.com/gzip',
+        data: undefined,
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Content-Encoding': 'gzip',
+          'User-Agent': 'RudderLabs',
+        },
+        config: { apiKey: 'test-key' },
+      };
+
+      const result = await handler.prepareProxy(input);
+      expect(result).toEqual(expected);
+    });
   });
 });

@@ -34,7 +34,8 @@ steps:
       $.assert(.message.userId, "User ID is required for Userpilot identify calls");
 
       $.context.payload = {
-        "user_id": .message.userId
+        "user_id": .message.userId,
+        "company": .message.context.traits.company ? .message.context.traits.company : undefined
       };
 
       let traits = $.transformTraits(.message.context.traits || {});

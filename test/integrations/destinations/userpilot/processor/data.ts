@@ -36,7 +36,6 @@ export const data = [
                   name: 'John Doe',
                   title: 'CEO',
                   email: 'name.surname@domain.com',
-                  company: 'Company123',
                   phone: '123-456-7890',
                   rating: 'Hot',
                   city: 'Austin',
@@ -115,7 +114,6 @@ export const data = [
                 JSON: {
                   metadata: {
                     city: 'Austin',
-                    company: 'Company123',
                     country: 'US',
                     email: 'name.surname@domain.com',
                     name: 'John Doe',

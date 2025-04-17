@@ -5,4 +5,3 @@ export * from './sourceTransformation';
 export * from './userTransformation';
 export * from './userRegulation';
 export * from './zodTypes';
-export * from './delivery';

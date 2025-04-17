@@ -3,6 +3,8 @@ bindings:
     path: ../../../../constants
   - name: defaultRequestConfig
     path: ../../../../v0/util
+  - name: isDefinedAndNotNull
+    path: ../../../../v0/util
   - name: removeUndefinedAndNullValues
     path: ../../../../v0/util
   - name: transformTraits
@@ -32,11 +34,10 @@ steps:
     condition: $.context.messageType == {{$.EventType.IDENTIFY}}
     template: |
       $.assert(.message.userId, "User ID is required for Userpilot identify calls");
-      $.assert((.message.context.traits.company && .message.context.traits.company.id), "Company ID is required in company object in contextual traits when passing company information");
 
       $.context.payload = {
         "user_id": .message.userId,
-        "company": .message.context.traits.company
+        "company": $.isDefinedAndNotNull(.message.context.traits.company.id) ? .message.context.traits.company : null,
       };
 
       let traits = $.transformTraits(.message.context.traits || {});
@@ -79,5 +80,5 @@ steps:
       response.endpoint = $.context.endpoint;
       response.headers = $.context.finalHeaders;
       response.method = "POST";
-      response.body.JSON = $.context.payload;
+      response.body.JSON = $.removeUndefinedAndNullValues($.context.payload);
       response

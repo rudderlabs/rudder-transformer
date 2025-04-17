@@ -162,7 +162,7 @@ export const data = [
   },
   {
     name: 'userpilot',
-    description: 'Identify user test with missing required company id, should fail',
+    description: 'Identify user test without company object',
     module: 'destination',
     version: 'v0',
     feature: 'processor',
@@ -195,10 +195,15 @@ export const data = [
               context: {
                 traits: {
                   name: 'John Doe',
+                  title: 'CEO',
                   email: 'name.surname@domain.com',
-                  company: {
-                    name: 'Company123',
-                  },
+                  phone: '123-456-7890',
+                  rating: 'Hot',
+                  city: 'Austin',
+                  postalCode: '12345',
+                  country: 'US',
+                  street: 'Sample Address',
+                  state: 'TX',
                 },
                 sessionId: 1742115400440,
                 app: {
@@ -242,9 +247,7 @@ export const data = [
               },
               channel: 'web',
               originalTimestamp: '2025-03-16T08:57:10.737Z',
-              messageId: '5799e19f-57e9-4a36-a34b-369d455b8332',
               anonymousId: 'd681c65d-f3fd-4f2e-b9a7-d5c2ae3c8b9b',
-              event: null,
               properties: null,
               integrations: {
                 All: true,
@@ -260,23 +263,45 @@ export const data = [
         status: 200,
         body: [
           {
-            error:
-              'Company ID is required in company object in contextual traits when passing company information: Workflow: procWorkflow, Step: identifyPayload, ChildStep: undefined, OriginalError: Company ID is required in company object in contextual traits when passing company information',
             metadata: {
               destinationId: 'destId',
               workspaceId: 'wspId',
             },
-            statTags: {
-              destType: 'USERPILOT',
-              destinationId: 'destId',
-              errorCategory: 'dataValidation',
-              errorType: 'instrumentation',
-              feature: 'processor',
-              implementation: 'cdkV2',
-              module: 'destination',
-              workspaceId: 'wspId',
+            output: {
+              body: {
+                FORM: {},
+                JSON: {
+                  metadata: {
+                    city: 'Austin',
+                    country: 'US',
+                    email: 'name.surname@domain.com',
+                    name: 'John Doe',
+                    phone: '123-456-7890',
+                    postalCode: '12345',
+                    rating: 'Hot',
+                    state: 'TX',
+                    street: 'Sample Address',
+                    title: 'CEO',
+                  },
+                  user_id: 'customUserID',
+                },
+                JSON_ARRAY: {},
+                XML: {},
+              },
+              endpoint: 'https://analytex.userpilot.io/v1/identify',
+              files: {},
+              headers: {
+                Authorization: 'Token your-userpilot-api-key',
+                'Content-Type': 'application/json',
+                'X-API-Version': '2020-09-22',
+              },
+              method: 'POST',
+              params: {},
+              type: 'REST',
+              userId: '',
+              version: '1',
             },
-            statusCode: 400,
+            statusCode: 200,
           },
         ],
       },

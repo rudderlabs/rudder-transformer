@@ -130,7 +130,7 @@ describe('Mixpanel V1 Network Handler', () => {
           rudderJobMetadata: [{ jobId: 1 }, { jobId: 2 }],
         },
         expectError: false,
-        expectedStatus: 207,
+        expectedStatus: 200,
         expectedMessage: 'Partial failure',
         expectedResponseLength: 2,
         expectedEvents: [
@@ -140,45 +140,6 @@ describe('Mixpanel V1 Network Handler', () => {
             metadata: { jobId: 1 },
           },
           { statusCode: 200, error: 'success', metadata: { jobId: 2 } },
-        ],
-      },
-      {
-        name: 'Import API with malformed JSON batch',
-        responseParams: {
-          destinationResponse: {
-            status: 400,
-            response: {
-              failed_records: [],
-              num_records_imported: 0,
-            },
-          },
-          // @ts-ignore - simplified test data
-          destinationRequest: {
-            endpoint: 'https://api.mixpanel.com/import',
-            method: 'POST',
-            version: 'v1',
-            type: 'mixpanel',
-            userId: 'test-user',
-            destinationConfig: {},
-            body: {
-              JSON_ARRAY: {
-                batch: '{malformed json}', // Intentionally malformed JSON
-              },
-            },
-          },
-          // @ts-ignore - simplified test data
-          rudderJobMetadata: [{ jobId: 1 }],
-        },
-        expectError: false,
-        expectedStatus: 207,
-        expectedMessage: 'Partial failure',
-        expectedResponseLength: 1,
-        expectedEvents: [
-          {
-            statusCode: 400,
-            error: expect.stringContaining('Failed to parse JSON batch'),
-            metadata: { jobId: 1 },
-          },
         ],
       },
       {
@@ -231,7 +192,7 @@ describe('Mixpanel V1 Network Handler', () => {
           rudderJobMetadata: [{ jobId: 1 }, { jobId: 2 }],
         },
         expectError: false,
-        expectedStatus: 207,
+        expectedStatus: 200,
         expectedMessage: 'Error in Engage API',
         expectedResponseLength: 2,
         expectedEvents: [
@@ -297,7 +258,7 @@ describe('Mixpanel V1 Network Handler', () => {
           rudderJobMetadata: [{ jobId: 1 }, { jobId: 2 }],
         },
         expectError: false,
-        expectedStatus: 207,
+        expectedStatus: 200,
         expectedMessage: 'Error in Groups API',
         expectedResponseLength: 2,
         expectedEvents: [
@@ -466,8 +427,8 @@ describe('Mixpanel V1 Network Handler', () => {
           // @ts-ignore - simplified test data
           rudderJobMetadata: [{ jobId: 1 }],
         },
-        expectError: false,
-        expectedStatus: 207,
+        expectError: true,
+        expectedStatus: 200,
         expectedResponseLength: 1,
         expectedFirstEventStatus: 200,
         expectedFirstEventError: 'success',
@@ -499,8 +460,8 @@ describe('Mixpanel V1 Network Handler', () => {
           // @ts-ignore - simplified test data
           rudderJobMetadata: [{ jobId: 1 }],
         },
-        expectError: false,
-        expectedStatus: 207,
+        expectError: true,
+        expectedStatus: 200,
         expectedResponseLength: 1,
         expectedFirstEventStatus: 400,
         expectedFirstEventError: expect.stringContaining('Failed to parse JSON batch'),

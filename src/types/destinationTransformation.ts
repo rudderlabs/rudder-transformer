@@ -156,6 +156,7 @@ export type ProxyV0Request = {
     JSON_ARRAY?: Record<string, unknown>;
     XML?: Record<string, unknown>;
     FORM?: Record<string, unknown>;
+    GZIP?: Record<string, unknown>;
   };
   files?: Record<string, unknown>;
   metadata: ProxyMetdata;

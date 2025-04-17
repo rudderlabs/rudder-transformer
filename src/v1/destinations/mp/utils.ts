@@ -1,5 +1,4 @@
-import { promisify } from 'node:util';
-import { gzip } from 'node:zlib';
+import { gzipSync } from 'node:zlib';
 import { get } from 'lodash';
 import logger from '../../../logger';
 import { isHttpStatusSuccess } from '../../../v0/util';
@@ -7,11 +6,32 @@ import { DESTINATION } from '../../../v0/destinations/mp/config';
 import { TransformerProxyError } from '../../../v0/util/errorTypes';
 import tags from '../../../v0/util/tags';
 import { getDynamicErrorType } from '../../../adapters/utils/networkUtils';
-import { ResponseParams, ResponseObject, DeliveryJobState } from '../../../types';
+import { ResponseParams, ResponseObject, DeliveryJobState, ProxyRequest } from '../../../types';
 import { Event, FailedRecord } from './types';
 
+const handleDestinationRequest = (destinationRequest: ProxyRequest): Event[] | undefined => {
+  const batchPayload = destinationRequest.body?.JSON_ARRAY?.batch;
+  const gzipPayload = destinationRequest.body?.GZIP?.payload;
+  const rawPayload = batchPayload ?? gzipPayload;
+
+  if (typeof rawPayload !== 'string') {
+    logger.warn('handleDestinationRequest: No valid string payload found in request body.');
+    return undefined;
+  }
+
+  try {
+    return JSON.parse(rawPayload);
+  } catch (error) {
+    logger.error(
+      `handleDestinationRequest: Failed to parse payload. Error: ${(error as Error).message}`,
+    );
+    return undefined;
+  }
+};
+
 /**
- * Checks if an event has failed in the Mixpanel Import API response
+ * Checks if an event has failed in the Mixpanel Import API response,
+ * we are doing this by comparing the $insert_id of the event with the $insert_id of the failed records
  *
  * @param event - The event to check
  * @param failedRecords - The array of failed records from Mixpanel
@@ -134,7 +154,7 @@ export const handleStandardApiResponse = (
   const error = get(response, 'error');
   if (error) {
     return {
-      status: 207,
+      status: 200,
       message: `MIXPANEL: Error in ${apiName} API: ${error}`,
       response: createResponsesForAllEvents(metadata, 400, `${apiName} API error: ${error}`),
     };
@@ -169,7 +189,7 @@ export const handleApiErrorResponse = (
   );
 
   return {
-    status: 207,
+    status: 200,
     message: `MIXPANEL: Error in ${apiName} API: ${error}`,
     response: responseWithIndividualEvents,
   };
@@ -185,35 +205,26 @@ export const handleImportApiResponse = (responseParams: ResponseParams): Respons
   const { destinationResponse, destinationRequest, rudderJobMetadata } = responseParams;
   const message = `Request for ${DESTINATION} Processed Successfully`;
   const { response, status } = destinationResponse;
-
   // Ensure rudderJobMetadata is an array
   const metadata = Array.isArray(rudderJobMetadata) ? rudderJobMetadata : [rudderJobMetadata];
 
   if (status === 400) {
+    if (!destinationRequest) {
+      return null;
+    }
+    const events: Event[] | undefined = handleDestinationRequest(destinationRequest);
+    if (!events) {
+      return null;
+    }
     const failedRecords = get(response, 'failed_records', []);
     const numRecordsImported = get(response, 'num_records_imported', 0);
 
     // For each event in the batch, check if it failed and create appropriate response
     const importResponses = metadata.map((metadataItem, index) => {
-      let event: Event | null = null;
-
-      // Safely parse JSON with try-catch to handle malformed JSON
-      if (destinationRequest?.body?.JSON_ARRAY?.batch) {
-        try {
-          const batchStr = destinationRequest.body.JSON_ARRAY.batch as string;
-          const parsedBatch = JSON.parse(batchStr);
-          event = parsedBatch[index];
-        } catch (error: any) {
-          // If JSON parsing fails, return an error response
-          return {
-            statusCode: 400,
-            metadata: metadataItem,
-            error: `Failed to parse JSON batch: ${error.message}`,
-          };
-        }
-      }
-
-      const { isAbortable, errorMsg } = checkIfEventIsAbortableInImport(event, failedRecords);
+      const { isAbortable, errorMsg } = checkIfEventIsAbortableInImport(
+        events[index],
+        failedRecords,
+      );
 
       return {
         statusCode: isAbortable ? 400 : 200,
@@ -223,7 +234,7 @@ export const handleImportApiResponse = (responseParams: ResponseParams): Respons
     });
 
     return {
-      status: 207, // Using 207 Multi-Status to indicate partial success
+      status: 200,
       message: `MIXPANEL: Partial failure in batch import. ${failedRecords.length} events failed, ${numRecordsImported} succeeded.`,
       response: importResponses,
     };
@@ -279,11 +290,9 @@ export const handleEndpointSpecificResponses = (
   return null;
 };
 
-export const getZippedPayload = async (payload: string): Promise<Buffer | undefined> => {
+export const getZippedPayload = (payload: string): Buffer | undefined => {
   try {
-    const promisifiedGzip = promisify(gzip);
-    const data = await promisifiedGzip(payload);
-    return data;
+    return gzipSync(payload);
   } catch (err) {
     logger.error(`Failed to parse GZIP payload: ${err}`);
     return undefined;

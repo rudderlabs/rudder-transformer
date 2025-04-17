@@ -158,7 +158,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
         status: 200, // The HTTP status is 200, but the response body contains 207
         body: {
           output: {
-            status: 207,
+            status: 200,
             message: expect.stringContaining('Partial failure in batch import'),
             response: [
               {
@@ -235,7 +235,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
         status: 200, // The HTTP status is 200, but the response body contains 207
         body: {
           output: {
-            status: 207,
+            status: 200,
             message: expect.stringContaining('Error in Engage API'),
             response: [
               {
@@ -298,7 +298,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
         status: 200, // The HTTP status is 200, but the response body contains 207
         body: {
           output: {
-            status: 207,
+            status: 200,
             message: expect.stringContaining('Error in Groups API'),
             response: [
               {
@@ -384,6 +384,88 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
       // Mock the Mixpanel Import API response with a server error
       mockAdapter.onPost('https://api.mixpanel.com/import').reply(500, {
         error: 'Internal Server Error',
+      });
+    },
+  },
+  {
+    id: 'mp_v1_scenario_6',
+    name: 'mp',
+    description: '[Proxy v1 API] :: Mixpanel Import API successful batch with GZIP payload',
+    successCriteria: 'Should return 200 with successful response for all events',
+    scenario: 'Business',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v1',
+    input: {
+      request: {
+        body: generateProxyV1Payload(
+          {
+            endpoint: 'https://api.mixpanel.com/import',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            params: {
+              project_id: secret1,
+            },
+            GZIP: {
+              payload: JSON.stringify([
+                {
+                  event: 'Test Event 1',
+                  properties: {
+                    time: 1619006730,
+                    $insert_id: 'event1',
+                    distinct_id: 'user123',
+                    property1: 'value1',
+                  },
+                },
+                {
+                  event: 'Test Event 2',
+                  properties: {
+                    time: 1619006731,
+                    $insert_id: 'event2',
+                    distinct_id: 'user123',
+                    property2: 'value2',
+                  },
+                },
+              ]),
+            },
+          },
+          metadata,
+        ),
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: {
+            status: 200,
+            message: 'Request for MP Processed Successfully',
+            response: [
+              {
+                statusCode: 200,
+                metadata: expect.objectContaining({
+                  jobId: 1,
+                }),
+                error: 'success',
+              },
+              {
+                statusCode: 200,
+                metadata: expect.objectContaining({
+                  jobId: 2,
+                }),
+                error: 'success',
+              },
+            ],
+          },
+        },
+      },
+    },
+    mockFns: (mockAdapter: MockAdapter) => {
+      // Mock the Mixpanel Import API response for successful batch
+      mockAdapter.onPost('https://api.mixpanel.com/import').reply(200, {
+        status: 1,
       });
     },
   },

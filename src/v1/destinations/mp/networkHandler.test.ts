@@ -343,7 +343,7 @@ describe('Mixpanel V1 Network Handler', () => {
             expect(result.message).toContain(expectedMessage);
           }
 
-          if (expectedResponseLength) {
+          if (expectedResponseLength != undefined) {
             expect(result.response).toHaveLength(expectedResponseLength);
           }
 
@@ -599,7 +599,7 @@ describe('Mixpanel V1 Network Handler', () => {
           const result = handler.responseHandler(responseParams);
 
           expect(result.status).toBe(expectedStatus);
-          if (expectedResponseLength) {
+          if (expectedResponseLength != undefined) {
             expect(result.response).toHaveLength(expectedResponseLength);
           }
 

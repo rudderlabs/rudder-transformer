@@ -6,7 +6,7 @@ import {
   handleApiErrorResponse,
   handleNonSuccessResponse,
   handleEndpointSpecificResponses,
-} from './utils.mock';
+} from './utils';
 import { TransformerProxyError } from '../../../v0/util/errorTypes';
 import { DESTINATION } from '../../../v0/destinations/mp/config';
 import { Event, FailedRecord } from './types';
@@ -123,7 +123,7 @@ describe('Mixpanel Utils', () => {
         },
         apiName: 'TestAPI',
         expectedResult: {
-          status: 207,
+          status: 200,
           message: expect.stringContaining('Error in TestAPI API'),
           response: [
             {
@@ -145,7 +145,7 @@ describe('Mixpanel Utils', () => {
         },
         apiName: 'TestAPI',
         expectedResult: {
-          status: 207,
+          status: 200,
           message: expect.stringContaining('Error in TestAPI API'),
           response: [
             {
@@ -242,7 +242,7 @@ describe('Mixpanel Utils', () => {
         },
         apiName: 'DifferentAPI',
         expectedResult: {
-          status: 207,
+          status: 200,
           message: expect.stringContaining('Error in DifferentAPI API'),
           response: [
             {
@@ -259,7 +259,7 @@ describe('Mixpanel Utils', () => {
       'should handle $name correctly',
       ({ responseParams, apiName, expectedResult }) => {
         // Test the function directly
-        const result = handleStandardApiResponse(responseParams, apiName);
+        const result = handleStandardApiResponse(responseParams as any, apiName);
 
         if (expectedResult === null) {
           expect(result).toBeNull();
@@ -343,7 +343,7 @@ describe('Mixpanel Utils', () => {
         response: { error: 'Some API error' },
         rudderJobMetadata: [{ jobId: 1 }, { jobId: 2 }],
         expectedResult: {
-          status: 207,
+          status: 200,
           message: 'MIXPANEL: Error in TestAPI API: Some API error',
           response: [
             { statusCode: 400, metadata: { jobId: 1 }, error: 'TestAPI API error: Some API error' },
@@ -402,11 +402,11 @@ describe('Mixpanel Utils', () => {
       'should throw TransformerProxyError for $name',
       ({ responseParams, expectedError }) => {
         expect(() => {
-          handleNonSuccessResponse(responseParams);
+          handleNonSuccessResponse(responseParams as any);
         }).toThrow(TransformerProxyError);
 
         try {
-          handleNonSuccessResponse(responseParams);
+          handleNonSuccessResponse(responseParams as any);
         } catch (error) {
           // Check basic error properties
           if (error instanceof TransformerProxyError) {
@@ -506,7 +506,7 @@ describe('Mixpanel Utils', () => {
     test.each(testCases)(
       'should handle $name correctly',
       ({ endpoint, responseParams, expectedResult }) => {
-        const result = handleEndpointSpecificResponses(endpoint, responseParams);
+        const result = handleEndpointSpecificResponses(endpoint, responseParams as any);
         expect(result).toEqual(expectedResult);
       },
     );

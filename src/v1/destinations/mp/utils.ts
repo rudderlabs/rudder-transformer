@@ -221,10 +221,8 @@ export const handleImportApiResponse = (responseParams: ResponseParams): Respons
 
     // For each event in the batch, check if it failed and create appropriate response
     const importResponses = metadata.map((metadataItem, index) => {
-      const { isAbortable, errorMsg } = checkIfEventIsAbortableInImport(
-        events[index],
-        failedRecords,
-      );
+      const event = index < events.length ? events[index] : null;
+      const { isAbortable, errorMsg } = checkIfEventIsAbortableInImport(event, failedRecords);
 
       return {
         statusCode: isAbortable ? 400 : 200,

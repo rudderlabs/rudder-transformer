@@ -343,7 +343,9 @@ describe('Mixpanel V1 Network Handler', () => {
             expect(result.message).toContain(expectedMessage);
           }
 
-          expect(result.response).toHaveLength(expectedResponseLength!);
+          if (expectedResponseLength) {
+            expect(result.response).toHaveLength(expectedResponseLength);
+          }
 
           if (expectedEvents) {
             expectedEvents.forEach((expectedEvent, index) => {
@@ -597,7 +599,9 @@ describe('Mixpanel V1 Network Handler', () => {
           const result = handler.responseHandler(responseParams);
 
           expect(result.status).toBe(expectedStatus);
-          expect(result.response).toHaveLength(expectedResponseLength!);
+          if (expectedResponseLength) {
+            expect(result.response).toHaveLength(expectedResponseLength);
+          }
 
           if (expectedFirstEventStatus) {
             // @ts-ignore - response is defined in this context

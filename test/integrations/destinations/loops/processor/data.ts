@@ -519,4 +519,211 @@ export const data: ProcessorTestData[] = [
       },
     },
   },
+  {
+    id: 'loops-7',
+    scenario: 'Send event to Loops without event type',
+    successCriteria: 'Test should fail.',
+    name: 'loops',
+    description: 'event without event type',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              channel: 'web',
+              event: 'signup',
+              properties: {
+                subscriptionStatus: 'trial',
+                plan: null,
+              },
+              timestamp: '2020-01-27T17:50:57.109+05:30',
+              context: {},
+            },
+            destination: {
+              ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
+              Name: 'Loops',
+              DestinationDefinition: {
+                ID: 'loops-destination',
+                Name: 'Loops Definition',
+                DisplayName: 'Default Display Name',
+                Config: {
+                  cdkV2Enabled: true,
+                },
+              },
+              WorkspaceID: 'default-workspace',
+              Config: {
+                apiKey: secret1,
+              },
+              Enabled: true,
+              Transformations: [],
+            },
+            metadata: {},
+          },
+        ],
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            error:
+              'message Type is not present. Aborting message.: Workflow: procWorkflow, Step: validateInput, ChildStep: undefined, OriginalError: message Type is not present. Aborting message.',
+            metadata: {},
+            statTags: {
+              destType: 'LOOPS',
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              feature: 'processor',
+              implementation: 'cdkV2',
+              module: 'destination',
+            },
+            statusCode: 400,
+          },
+        ],
+      },
+    },
+  },
+  {
+    id: 'loops-8',
+    scenario: 'group call to Loops should fail',
+    successCriteria: 'Test should fail.',
+    name: 'loops',
+    description: 'Send group call to Loops',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              channel: 'web',
+              event: 'signup',
+              properties: {
+                subscriptionStatus: 'trial',
+                plan: null,
+              },
+              timestamp: '2020-01-27T17:50:57.109+05:30',
+              type: 'group',
+              context: {},
+            },
+            destination: {
+              ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
+              Name: 'Loops',
+              DestinationDefinition: {
+                ID: 'loops-destination',
+                Name: 'Loops Definition',
+                DisplayName: 'Default Display Name',
+                Config: {
+                  cdkV2Enabled: true,
+                },
+              },
+              WorkspaceID: 'default-workspace',
+              Config: {
+                apiKey: secret1,
+              },
+              Enabled: true,
+              Transformations: [],
+            },
+            metadata: {},
+          },
+        ],
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            error:
+              'message type group is not supported: Workflow: procWorkflow, Step: validateInput, ChildStep: undefined, OriginalError: message type group is not supported',
+            metadata: {},
+            statTags: {
+              destType: 'LOOPS',
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              feature: 'processor',
+              implementation: 'cdkV2',
+              module: 'destination',
+            },
+            statusCode: 400,
+          },
+        ],
+      },
+    },
+  },
+  {
+    id: 'loops-9',
+    scenario: 'Send event to Loops without api key',
+    successCriteria: 'Test should fail.',
+    name: 'loops',
+    description: 'Track event without api key',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              channel: 'web',
+              event: 'signup',
+              properties: {
+                subscriptionStatus: 'trial',
+                plan: null,
+              },
+              timestamp: '2020-01-27T17:50:57.109+05:30',
+              type: 'track',
+              context: {},
+            },
+            destination: {
+              ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
+              Name: 'Loops',
+              DestinationDefinition: {
+                ID: 'loops-destination',
+                Name: 'Loops Definition',
+                DisplayName: 'Default Display Name',
+                Config: {
+                  cdkV2Enabled: true,
+                },
+              },
+              WorkspaceID: 'default-workspace',
+              Config: {},
+              Enabled: true,
+              Transformations: [],
+            },
+            metadata: {},
+          },
+        ],
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            error:
+              'apiKey must be supplied in destination config.: Workflow: procWorkflow, Step: validateInput, ChildStep: undefined, OriginalError: apiKey must be supplied in destination config.',
+            metadata: {},
+            statTags: {
+              destType: 'LOOPS',
+              errorCategory: 'dataValidation',
+              errorType: 'configuration',
+              feature: 'processor',
+              implementation: 'cdkV2',
+              module: 'destination',
+            },
+            statusCode: 400,
+          },
+        ],
+      },
+    },
+  },
 ];

@@ -1,6 +1,6 @@
 const { BatchUtils } = require('@rudderstack/workflow-engine');
 const { get } = require('lodash');
-const moment = require('moment');
+const moment = require('moment-timezone');
 const { MAX_BATCH_SIZE } = require('./config');
 const { isAppleFamily } = require('../../util');
 
@@ -28,7 +28,7 @@ const buildBatchedResponse = (
     },
     version: '1',
     type: 'REST',
-    method: 'POST',
+    method,
     endpoint,
     headers,
     params,
@@ -95,8 +95,8 @@ const getExtInfo = (message) => {
 
   // Screen related information
   const screenInfo = {
-    width: getValue('context.screen.height'),
-    height: getValue('context.screen.width'),
+    width: getValue('context.screen.width'),
+    height: getValue('context.screen.height'),
     density: getValue('context.screen.density'),
   };
 

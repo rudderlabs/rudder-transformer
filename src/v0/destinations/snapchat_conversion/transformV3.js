@@ -47,36 +47,28 @@ function buildResponse(apiKey, payload, ID) {
 }
 
 const populateHashedTraitsValues = (payload, message) => {
-  const firstName = getFieldValueFromMessage(message, 'firstName');
-  const lastName = getFieldValueFromMessage(message, 'lastName');
-  const gender = getFieldValueFromMessage(message, 'gender');
-  const city = getFieldValueFromMessage(message, 'city');
-  const state = getFieldValueFromMessage(message, 'state');
-  const zip = getFieldValueFromMessage(message, 'zipcode');
-  const country = getFieldValueFromMessage(message, 'country');
-
   const updatedPayload = { ...payload };
+  const userData = updatedPayload.data[0].user_data || {};
 
-  if (!updatedPayload.data[0].user_data) {
-    updatedPayload.data[0].user_data = {};
-  }
+  const getHashedTrait = (value) =>
+    value ? getHashedValue(value.toString().toLowerCase().trim()) : undefined;
 
   updatedPayload.data[0].user_data = {
-    ...updatedPayload.data[0].user_data,
-    fn: firstName ? getHashedValue(firstName.toString().toLowerCase().trim()) : undefined,
-    ln: lastName ? getHashedValue(lastName.toString().toLowerCase().trim()) : undefined,
-    ge: gender ? getHashedValue(gender.toString().toLowerCase().trim()) : undefined,
-    ct: city ? getHashedValue(city.toString().toLowerCase().trim()) : undefined,
-    zp: zip ? getHashedValue(zip.toString().toLowerCase().trim()) : undefined,
-    st: state ? getHashedValue(state.toString().toLowerCase().trim()) : undefined,
-    country: country ? getHashedValue(country.toString().toLowerCase().trim()) : undefined,
+    ...userData,
+    fn: getHashedTrait(getFieldValueFromMessage(message, 'firstName')),
+    ln: getHashedTrait(getFieldValueFromMessage(message, 'lastName')),
+    ge: getHashedTrait(getFieldValueFromMessage(message, 'gender')),
+    ct: getHashedTrait(getFieldValueFromMessage(message, 'city')),
+    zp: getHashedTrait(getFieldValueFromMessage(message, 'zipcode')),
+    st: getHashedTrait(getFieldValueFromMessage(message, 'state')),
+    country: getHashedTrait(getFieldValueFromMessage(message, 'country')),
   };
 
   return updatedPayload;
 };
 
 const populateHashedValues = (payload, message) => {
-  const email = getFieldValueFromMessage(message, 'email');
+  const email = getFieldValueFromMessage(message, 'emailOnly');
   const phone = getNormalizedPhoneNumber(message);
   const updatedPayload = populateHashedTraitsValues(payload, message);
 
@@ -95,12 +87,13 @@ const getEventCommonProperties = (message) =>
 
 const validateRequiredFields = (payload) => {
   const userData = payload.data?.[0]?.user_data || {};
-  if (
-    !userData.em &&
-    !userData.ph &&
-    !userData.madid &&
-    !(userData.client_ip_address && userData.client_user_agent)
-  ) {
+  const hasRequiredFields =
+    userData.em ||
+    userData.ph ||
+    userData.madid ||
+    (userData.client_ip_address && userData.client_user_agent);
+
+  if (!hasRequiredFields) {
     throw new InstrumentationError(
       'At least one of email or phone or advertisingId or ip and clientUserAgent is required',
     );
@@ -175,7 +168,7 @@ const processPayload = (payload, message, config) => {
   let processedPayload = populateHashedValues(payload, message);
   validateRequiredFields(processedPayload);
 
-  processedPayload.data[0].event_time = getEventTimestamp(message);
+  processedPayload.data[0].event_time = getEventTimestamp(message, 7);
   processedPayload.data[0].data_processing_options = getDataUseValue(message);
   processedPayload.data[0].action_source = actionSource;
 

@@ -18,7 +18,8 @@ export const dataV3 = [
               context: {
                 traits: {
                   email: 'test@email.com',
-                  phone: '+91 2111111 ',
+                  gender: 'M',
+                  country: 'India',
                 },
                 app: {
                   build: '1.0.0',
@@ -121,10 +122,11 @@ export const dataV3 = [
                       user_data: {
                         client_user_agent:
                           'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36',
+                        country: 'fb54e9062429a93785559529beda15c55f62c29be22267811c0e8346c14846d3',
                         em: '73062d872926c2a556f17b36f50e328ddf9bff9d403939bd14b6c3b7f5a33fc2',
+                        ge: '62c66a7a5dd70c3146618063c344e531e6d4b59e379808443ce962b3abd63c5a',
                         idfv: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
                         madid: 'T0T0T072-5e28-45a1-9eda-ce22a3e36d1a',
-                        ph: 'bc77d64d7045fe44795ed926df37231a0cfb6ec6b74588c512790e9f143cc492',
                       },
                     },
                   ],
@@ -1137,6 +1139,187 @@ export const dataV3 = [
                       action_source: 'MOBILE_APP',
                       app_data: {
                         app_id: 'dhfeih44f',
+                      },
+                      custom_data: {
+                        search_string: 't-shirts',
+                      },
+                      event_name: 'SEARCH',
+                      event_time: '1650625078',
+                      user_data: {
+                        client_user_agent:
+                          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36',
+                        em: '73062d872926c2a556f17b36f50e328ddf9bff9d403939bd14b6c3b7f5a33fc2',
+                        idfv: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
+                        madid: 'T0T0T072-5e28-45a1-9eda-ce22a3e36d1a',
+                        ph: 'bc77d64d7045fe44795ed926df37231a0cfb6ec6b74588c512790e9f143cc492',
+                      },
+                    },
+                  ],
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: '',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'snapchat_conversion',
+    description:
+      '[CAPIv3]: Product Searched event where conversion type is mobile app and extinfo is available',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              messageId: 'ec5481b6-a926-4d2e-b293-0b3a77c4d3be',
+              originalTimestamp: '2022-04-22T10:57:58Z',
+              channel: 'mobile',
+              anonymousId: 'ea5cfab2-3961-4d8a-8187-3d1858c99090',
+              context: {
+                traits: {
+                  email: 'test@email.com',
+                  phone: '+91 2111111 ',
+                },
+                app: {
+                  build: '1',
+                  name: 'RudderLabs JavaScript SDK',
+                  namespace: 'com.rudderlabs.javascript',
+                  version: '1.0.0',
+                },
+                device: {
+                  advertisingId: 'T0T0T072-5e28-45a1-9eda-ce22a3e36d1a',
+                  id: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
+                  manufacturer: 'Google',
+                  model: 'AOSP on IA Emulator',
+                  name: 'generic_x86_arm',
+                  type: 'ios',
+                  attTrackingStatus: 3,
+                },
+                screen: {
+                  density: 420,
+                  height: 1794,
+                  width: 1080,
+                },
+                network: {
+                  bluetooth: false,
+                  carrier: 'Android',
+                  cellular: true,
+                  wifi: true,
+                },
+                library: {
+                  name: 'RudderLabs JavaScript SDK',
+                  version: '1.0.0',
+                },
+                locale: 'en-US',
+                timezone: 'Asia/Kolkata',
+                os: {
+                  name: 'iOS',
+                  version: '14.4.1',
+                },
+                externalId: [
+                  {
+                    type: 'ga4AppInstanceId',
+                    id: 'f0dd99v4f979fb997ce453373900f891',
+                  },
+                ],
+                userAgent:
+                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36',
+              },
+              type: 'track',
+              event: 'Products Searched',
+              properties: {
+                delivery_method: 'in_store',
+                query: 't-shirts',
+                event_conversion_type: 'web',
+                storage: 128,
+                free_storage: 8,
+                cpu_cores: 2,
+              },
+              integrations: {
+                All: true,
+              },
+              sentAt: '2022-04-22T10:57:58Z',
+            },
+            destination: {
+              DestinationDefinition: {
+                Config: {
+                  cdkV2Enabled: false,
+                },
+              },
+              Config: {
+                apiKey: secret1,
+                pixelId: 'dummyPixelId',
+                appId: 'dhfeih44f',
+                snapAppId: 'hfhdhfd',
+                apiVersion: 'newApi',
+              },
+            },
+            metadata: {
+              jobId: 28,
+              destinationId: 'd2',
+              workspaceId: 'w2',
+            },
+          },
+        ],
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            metadata: {
+              jobId: 28,
+              destinationId: 'd2',
+              workspaceId: 'w2',
+            },
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://tr.snapchat.com/v3/hfhdhfd/events',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              params: {
+                access_token: 'snapchat_conversion1',
+              },
+              body: {
+                JSON: {
+                  data: [
+                    {
+                      action_source: 'MOBILE_APP',
+                      app_data: {
+                        app_id: 'dhfeih44f',
+                        extinfo: [
+                          'i2',
+                          'com.rudderlabs.javascript',
+                          '1',
+                          '1.0.0',
+                          '14.4.1',
+                          'AOSP on IA Emulator',
+                          'en-US',
+                          'IST',
+                          'Android',
+                          '1794',
+                          '1080',
+                          '420',
+                          '2',
+                          '128',
+                          '8',
+                          'Asia/Kolkata',
+                        ],
                       },
                       custom_data: {
                         search_string: 't-shirts',
@@ -5207,6 +5390,361 @@ export const dataV3 = [
               userId: '',
             },
             statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'snapchat_conversion',
+    description: '[CAPIv3]: Test case with unavailable required field',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              messageId: 'ec5481b6-a926-4d2e-b293-0b3a77c4d3be',
+              originalTimestamp: '2022-04-22T10:57:58Z',
+              anonymousId: 'ea5cfab2-3961-4d8a-8187-3d1858c99090',
+              context: {
+                traits: {
+                  firstName: 'john',
+                  middleName: 'victor',
+                  lastName: 'doe',
+                  city: 'some_city',
+                  state: 'some_state',
+                },
+                app: {
+                  build: '1.0.0',
+                  name: 'RudderLabs JavaScript SDK',
+                  namespace: 'com.rudderlabs.javascript',
+                  version: '1.0.0',
+                },
+                device: {
+                  id: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
+                  manufacturer: 'Google',
+                  name: 'generic_x86_arm',
+                  type: 'ios',
+                  attTrackingStatus: 3,
+                },
+                library: {
+                  name: 'RudderLabs JavaScript SDK',
+                  version: '1.0.0',
+                },
+                locale: 'en-US',
+                os: {
+                  name: 'iOS',
+                  version: '14.4.1',
+                },
+                screen: {
+                  density: 2,
+                },
+                externalId: [
+                  {
+                    type: 'ga4AppInstanceId',
+                    id: 'f0dd99v4f979fb997ce453373900f891',
+                  },
+                ],
+              },
+              type: 'track',
+              event: 'Products Searched',
+              properties: {
+                brands: 'abc',
+                action_source: 'web',
+                num_items: 4,
+                sc_click_id: 'some_click_id',
+                description: 'Products Searched event for conversion type offline',
+                event_source_url: 'https://www.example.com&ScCid=123',
+              },
+              integrations: {
+                All: true,
+              },
+              sentAt: '2022-04-22T10:57:58Z',
+            },
+            destination: {
+              DestinationDefinition: {
+                Config: {
+                  cdkV2Enabled: false,
+                },
+              },
+              Config: {
+                pixelId: 'dummyPixelId',
+                apiKey: secret1,
+                apiVersion: 'newApi',
+              },
+            },
+            metadata: {
+              jobId: 21,
+              destinationId: 'd2',
+              workspaceId: 'w2',
+            },
+          },
+        ],
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            error:
+              'At least one of email or phone or advertisingId or ip and clientUserAgent is required',
+            metadata: {
+              destinationId: 'd2',
+              jobId: 21,
+              workspaceId: 'w2',
+            },
+            statTags: {
+              destType: 'SNAPCHAT_CONVERSION',
+              destinationId: 'd2',
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              feature: 'processor',
+              implementation: 'native',
+              module: 'destination',
+              workspaceId: 'w2',
+            },
+            statusCode: 400,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'snapchat_conversion',
+    description: '[CAPIv3]: Test case without any event type',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              messageId: 'ec5481b6-a926-4d2e-b293-0b3a77c4d3be',
+              originalTimestamp: '2022-04-22T10:57:58Z',
+              anonymousId: 'ea5cfab2-3961-4d8a-8187-3d1858c99090',
+              context: {
+                traits: {
+                  firstName: 'john',
+                  middleName: 'victor',
+                  lastName: 'doe',
+                  city: 'some_city',
+                  state: 'some_state',
+                },
+                app: {
+                  build: '1.0.0',
+                  name: 'RudderLabs JavaScript SDK',
+                  namespace: 'com.rudderlabs.javascript',
+                  version: '1.0.0',
+                },
+                device: {
+                  id: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
+                  manufacturer: 'Google',
+                  name: 'generic_x86_arm',
+                  type: 'ios',
+                  attTrackingStatus: 3,
+                },
+                library: {
+                  name: 'RudderLabs JavaScript SDK',
+                  version: '1.0.0',
+                },
+                locale: 'en-US',
+                os: {
+                  name: 'iOS',
+                  version: '14.4.1',
+                },
+                screen: {
+                  density: 2,
+                },
+                externalId: [
+                  {
+                    type: 'ga4AppInstanceId',
+                    id: 'f0dd99v4f979fb997ce453373900f891',
+                  },
+                ],
+              },
+              event: 'Products Searched',
+              properties: {
+                brands: 'abc',
+                action_source: 'web',
+                num_items: 4,
+                sc_click_id: 'some_click_id',
+                description: 'Products Searched event for conversion type offline',
+                event_source_url: 'https://www.example.com&ScCid=123',
+              },
+              integrations: {
+                All: true,
+              },
+              sentAt: '2022-04-22T10:57:58Z',
+            },
+            destination: {
+              DestinationDefinition: {
+                Config: {
+                  cdkV2Enabled: false,
+                },
+              },
+              Config: {
+                pixelId: 'dummyPixelId',
+                apiKey: secret1,
+                apiVersion: 'newApi',
+              },
+            },
+            metadata: {
+              jobId: 21,
+              destinationId: 'd2',
+              workspaceId: 'w2',
+            },
+          },
+        ],
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            error: 'Event type is required',
+            metadata: {
+              destinationId: 'd2',
+              jobId: 21,
+              workspaceId: 'w2',
+            },
+            statTags: {
+              destType: 'SNAPCHAT_CONVERSION',
+              destinationId: 'd2',
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              feature: 'processor',
+              implementation: 'native',
+              module: 'destination',
+              workspaceId: 'w2',
+            },
+            statusCode: 400,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'snapchat_conversion',
+    description: '[CAPIv3]: Test case when event time is more than 7 days',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              messageId: 'ec5481b6-a926-4d2e-b293-0b3a77c4d3be',
+              originalTimestamp: '2022-03-22T10:57:58Z',
+              anonymousId: 'ea5cfab2-3961-4d8a-8187-3d1858c99090',
+              context: {
+                traits: {
+                  email: 'test@gmail.com',
+                  firstName: 'john',
+                  middleName: 'victor',
+                  lastName: 'doe',
+                  city: 'some_city',
+                  state: 'some_state',
+                },
+                app: {
+                  build: '1.0.0',
+                  name: 'RudderLabs JavaScript SDK',
+                  namespace: 'com.rudderlabs.javascript',
+                  version: '1.0.0',
+                },
+                device: {
+                  id: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
+                  manufacturer: 'Google',
+                  name: 'generic_x86_arm',
+                  type: 'ios',
+                  attTrackingStatus: 3,
+                },
+                library: {
+                  name: 'RudderLabs JavaScript SDK',
+                  version: '1.0.0',
+                },
+                locale: 'en-US',
+                os: {
+                  name: 'iOS',
+                  version: '14.4.1',
+                },
+                screen: {
+                  density: 2,
+                },
+                externalId: [
+                  {
+                    type: 'ga4AppInstanceId',
+                    id: 'f0dd99v4f979fb997ce453373900f891',
+                  },
+                ],
+              },
+              event: 'Products Searched',
+              type: 'track',
+              properties: {
+                brands: 'abc',
+                action_source: 'web',
+                num_items: 4,
+                sc_click_id: 'some_click_id',
+                description: 'Products Searched event for conversion type offline',
+                event_source_url: 'https://www.example.com&ScCid=123',
+              },
+              integrations: {
+                All: true,
+              },
+              sentAt: '2022-03-22T10:57:58Z',
+            },
+            destination: {
+              DestinationDefinition: {
+                Config: {
+                  cdkV2Enabled: false,
+                },
+              },
+              Config: {
+                pixelId: 'dummyPixelId',
+                apiKey: secret1,
+                apiVersion: 'newApi',
+              },
+            },
+            metadata: {
+              jobId: 21,
+              destinationId: 'd2',
+              workspaceId: 'w2',
+            },
+          },
+        ],
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            error: 'Events must be sent within 7 days of their occurrence',
+            metadata: {
+              destinationId: 'd2',
+              jobId: 21,
+              workspaceId: 'w2',
+            },
+            statTags: {
+              destType: 'SNAPCHAT_CONVERSION',
+              destinationId: 'd2',
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              feature: 'processor',
+              implementation: 'native',
+              module: 'destination',
+              workspaceId: 'w2',
+            },
+            statusCode: 400,
           },
         ],
       },

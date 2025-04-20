@@ -66,7 +66,10 @@ const batchResponseBuilder = (webOrOfflineEventsChunk, mobileEventsChunk) => {
 };
 
 const getExtInfo = (message) => {
-  const getValue = (path) => get(message, path);
+  const getValue = (path) => {
+    const value = get(message, path);
+    return value != null ? String(value) : null;
+  };
 
   const extInfoVersion = isAppleFamily(message.context?.device?.type) ? 'i2' : 'a2';
 
@@ -81,13 +84,13 @@ const getExtInfo = (message) => {
   const deviceInfo = {
     model: getValue('context.device.model'),
     storage: getValue('properties.storage'),
-    freeStorage: getValue('properties.freeStorage'),
+    freeStorage: getValue('properties.free_storage'),
   };
 
   // OS related information
   const osInfo = {
     version: getValue('context.os.version'),
-    sdkLevel: getValue('properties.sdkLevel'),
+    cpuCores: getValue('properties.cpu_cores'),
   };
 
   // Screen related information
@@ -103,8 +106,8 @@ const getExtInfo = (message) => {
     timezone: getValue('context.timezone'),
     carrier: getValue('context.network.carrier'),
   };
-  if (extInfoVersion?.timezone) {
-    extInfoVersion.timezoneAbbr = moment().tz(extInfoVersion.timezone)?.format('z');
+  if (environmentInfo.timezone) {
+    environmentInfo.timezoneAbbr = moment().tz(environmentInfo.timezone)?.format('z');
   }
 
   const extInfo = [
@@ -120,7 +123,7 @@ const getExtInfo = (message) => {
     screenInfo.width,
     screenInfo.height,
     screenInfo.density,
-    osInfo.sdkLevel,
+    osInfo.cpuCores,
     deviceInfo.storage,
     deviceInfo.freeStorage,
     environmentInfo.timezone,

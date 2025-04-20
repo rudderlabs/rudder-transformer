@@ -190,15 +190,17 @@ const validateEventConfiguration = (eventConversionType, pixelId, snapAppId, app
   }
 };
 
-const getEventTimestamp = (message) => {
+const getEventTimestamp = (message, requiredDays = 28) => {
   const eventTime = getFieldValueFromMessage(message, 'timestamp');
   if (eventTime) {
     const start = moment.unix(moment(eventTime).format('X'));
     const current = moment.unix(moment().format('X'));
     // calculates past event in days
     const deltaDay = Math.ceil(moment.duration(current.diff(start)).asDays());
-    if (deltaDay > 28) {
-      throw new InstrumentationError('Events must be sent within 28 days of their occurrence');
+    if (deltaDay > requiredDays) {
+      throw new InstrumentationError(
+        `Events must be sent within ${requiredDays} days of their occurrence`,
+      );
     }
     return msUnixTimestamp(eventTime)?.toString()?.slice(0, 10);
   }

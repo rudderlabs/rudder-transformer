@@ -1,6 +1,7 @@
 const get = require('get-value');
 const sha256 = require('sha256');
 const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
+const moment = require('moment/moment');
 const logger = require('../../../logger');
 
 const {
@@ -189,6 +190,21 @@ const validateEventConfiguration = (eventConversionType, pixelId, snapAppId, app
   }
 };
 
+const getEventTimestamp = (message) => {
+  const eventTime = getFieldValueFromMessage(message, 'timestamp');
+  if (eventTime) {
+    const start = moment.unix(moment(eventTime).format('X'));
+    const current = moment.unix(moment().format('X'));
+    // calculates past event in days
+    const deltaDay = Math.ceil(moment.duration(current.diff(start)).asDays());
+    if (deltaDay > 28) {
+      throw new InstrumentationError('Events must be sent within 28 days of their occurrence');
+    }
+    return msUnixTimestamp(eventTime)?.toString()?.slice(0, 10);
+  }
+  return eventTime;
+};
+
 module.exports = {
   msUnixTimestamp,
   getItemIds,
@@ -201,4 +217,5 @@ module.exports = {
   getEventConversionType,
   validateEventConfiguration,
   channelMapping,
+  getEventTimestamp,
 };

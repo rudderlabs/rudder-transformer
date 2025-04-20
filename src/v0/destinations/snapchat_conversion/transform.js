@@ -1,5 +1,4 @@
 const get = require('get-value');
-const moment = require('moment');
 const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 
@@ -24,7 +23,6 @@ const {
   API_VERSION,
 } = require('./config');
 const {
-  msUnixTimestamp,
   getHashedValue,
   getItemIds,
   getPriceSum,
@@ -34,6 +32,7 @@ const {
   eventMappingHandler,
   getEventConversionType,
   validateEventConfiguration,
+  getEventTimestamp,
 } = require('./util');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 const { processV3, processRouterDest: processRouterV3 } = require('./transformV3');
@@ -237,21 +236,8 @@ const trackResponseBuilder = (message, { Config }, mappedEvent) => {
   payload = { ...payload, ...getEventCommonProperties(message) };
   payload = populateHashedValues(payload, message);
   validateRequiredFields(payload);
-  payload.timestamp = getFieldValueFromMessage(message, 'timestamp');
-  const timeStamp = payload.timestamp;
-  if (timeStamp) {
-    const start = moment.unix(moment(timeStamp).format('X'));
-    const current = moment.unix(moment().format('X'));
-    // calculates past event in days
-    const deltaDay = Math.ceil(moment.duration(current.diff(start)).asDays());
-    if (deltaDay > 28) {
-      throw new InstrumentationError('Events must be sent within 28 days of their occurrence');
-    }
-  }
+  payload.timestamp = getEventTimestamp(message);
   payload.data_use = getDataUseValue(message);
-  if (timeStamp) {
-    payload.timestamp = msUnixTimestamp(payload.timestamp)?.toString()?.slice(0, 10);
-  }
 
   payload.event_conversion_type = eventConversionType;
   payload = addSpecificEventDetails(

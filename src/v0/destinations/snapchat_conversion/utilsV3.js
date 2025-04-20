@@ -1,5 +1,8 @@
 const { BatchUtils } = require('@rudderstack/workflow-engine');
+const { get } = require('lodash');
+const moment = require('moment');
 const { MAX_BATCH_SIZE } = require('./config');
+const { isAppleFamily } = require('../../util');
 
 const getMergedPayload = (batch) => ({
   data: batch.flatMap((input) => input.message.body.JSON.data[0]),
@@ -62,6 +65,71 @@ const batchResponseBuilder = (webOrOfflineEventsChunk, mobileEventsChunk) => {
   return [...webOrOfflineEventsResp, ...mobileEventsResp];
 };
 
+const getExtInfo = (message) => {
+  const getValue = (path) => get(message, path);
+
+  const extInfoVersion = isAppleFamily(message.context?.device?.type) ? 'i2' : 'a2';
+
+  // App related information
+  const appInfo = {
+    packageName: getValue('context.app.namespace'),
+    buildNumber: getValue('context.app.build'),
+    versionName: getValue('context.app.version'),
+  };
+
+  // Device related information
+  const deviceInfo = {
+    model: getValue('context.device.model'),
+    storage: getValue('properties.storage'),
+    freeStorage: getValue('properties.freeStorage'),
+  };
+
+  // OS related information
+  const osInfo = {
+    version: getValue('context.os.version'),
+    sdkLevel: getValue('properties.sdkLevel'),
+  };
+
+  // Screen related information
+  const screenInfo = {
+    width: getValue('context.screen.height'),
+    height: getValue('context.screen.width'),
+    density: getValue('context.screen.density'),
+  };
+
+  // User environment information
+  const environmentInfo = {
+    locale: getValue('context.locale'),
+    timezone: getValue('context.timezone'),
+    carrier: getValue('context.network.carrier'),
+  };
+  if (extInfoVersion?.timezone) {
+    extInfoVersion.timezoneAbbr = moment().tz(extInfoVersion.timezone)?.format('z');
+  }
+
+  const extInfo = [
+    extInfoVersion,
+    appInfo.packageName,
+    appInfo.buildNumber,
+    appInfo.versionName,
+    osInfo.version,
+    deviceInfo.model,
+    environmentInfo.locale,
+    environmentInfo.timezoneAbbr,
+    environmentInfo.carrier,
+    screenInfo.width,
+    screenInfo.height,
+    screenInfo.density,
+    osInfo.sdkLevel,
+    deviceInfo.storage,
+    deviceInfo.freeStorage,
+    environmentInfo.timezone,
+  ];
+
+  return extInfo.some((value) => value == null) ? null : extInfo;
+};
+
 module.exports = {
   batchResponseBuilder,
+  getExtInfo,
 };

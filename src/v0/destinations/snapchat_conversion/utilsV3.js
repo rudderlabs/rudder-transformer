@@ -5,7 +5,7 @@ const { MAX_BATCH_SIZE } = require('./config');
 const { isAppleFamily } = require('../../util');
 
 const getMergedPayload = (batch) => ({
-  data: batch.flatMap((input) => input.message.body.JSON.data[0]),
+  data: batch.flatMap((input) => input.message.body.JSON.data),
 });
 
 const getMergedMetadata = (batch) => batch.map((input) => input.metadata);

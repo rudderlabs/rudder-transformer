@@ -75,16 +75,9 @@ const populateHashedTraitsValues = (payload, message) => {
   return updatedPayload;
 };
 
-/**
- * Seperate out hashing operations into one function
- * @param {*} payload
- * @param {*} message
- * @returns updatedPayload
- */
 const populateHashedValues = (payload, message) => {
   const email = getFieldValueFromMessage(message, 'email');
   const phone = getNormalizedPhoneNumber(message);
-
   const updatedPayload = populateHashedTraitsValues(payload, message);
 
   if (email) {
@@ -153,10 +146,8 @@ const getEventConfig = (eventType) => {
   return configMap[eventType] || mappingConfigV3[ConfigCategoryV3.DEFAULT.name];
 };
 
-const isProductEvent = (eventType) => {
-  const productEvents = ['product_list_viewed', 'checkout_started', 'order_completed'];
-  return productEvents.includes(eventType);
-};
+const isProductEvent = (eventType) =>
+  ['product_list_viewed', 'checkout_started', 'order_completed'].includes(eventType);
 
 const buildBasePayload = (message, event) => {
   const payload = { data: [{}] };
@@ -245,32 +236,40 @@ const trackResponseBuilder = (message, { Config }, mappedEvent) => {
   return buildResponse(apiKey, processedPayload, ID);
 };
 
+const handlePageEvent = (message, destination) =>
+  trackResponseBuilder(message, destination, pageTypeToTrackEvent);
+
+const handleTrackEvent = (message, destination) => {
+  const mappedEvents = eventMappingHandler(message, destination);
+
+  if (mappedEvents.length > 0) {
+    const responses = mappedEvents.map((mappedEvent) =>
+      trackResponseBuilder(message, destination, mappedEvent),
+    );
+    responses[0].body.JSON.data = responses.flatMap((response) => response.body.JSON.data);
+    return responses[0];
+  }
+
+  return trackResponseBuilder(message, destination, get(message, 'event'));
+};
+
 const processV3 = (event) => {
   const { message, destination } = event;
-
   const messageType = getEventType(message);
+
   if (!messageType) {
     throw new InstrumentationError('Event type is required');
   }
 
-  let response;
-
   if (messageType === EventType.PAGE) {
-    response = trackResponseBuilder(message, destination, pageTypeToTrackEvent);
-  } else if (messageType === EventType.TRACK) {
-    const mappedEvents = eventMappingHandler(message, destination);
-    if (mappedEvents.length > 0) {
-      response = mappedEvents.map((mappedEvent) =>
-        trackResponseBuilder(message, destination, mappedEvent),
-      );
-    } else {
-      response = trackResponseBuilder(message, destination, get(message, 'event'));
-    }
-  } else {
-    throw new InstrumentationError(`Event type ${messageType} is not supported`);
+    return handlePageEvent(message, destination);
   }
 
-  return response;
+  if (messageType === EventType.TRACK) {
+    return handleTrackEvent(message, destination);
+  }
+
+  throw new InstrumentationError(`Event type ${messageType} is not supported`);
 };
 
 const processRouterDest = async (inputs, reqMetadata) => {

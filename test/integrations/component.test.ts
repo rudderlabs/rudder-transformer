@@ -61,6 +61,7 @@ const INTEGRATIONS_WITH_UPDATED_TEST_STRUCTURE = [
   'campaign_manager',
   'criteo_audience',
   'branch',
+  'userpilot',
 ];
 
 beforeAll(async () => {

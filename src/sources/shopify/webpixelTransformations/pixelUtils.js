@@ -82,7 +82,7 @@ const cartViewedEventBuilder = (inputEvent) => {
 
   const properties = {
     products,
-    cart_id: inputEvent.data.cart.id,
+    cart_id: inputEvent.data?.cart?.id,
     total,
   };
   const contextualPayload = mapObjectKeys(inputEvent.context, contextualFieldMappingJSON);
@@ -163,7 +163,7 @@ const checkoutEventBuilder = (inputEvent) => {
 const checkoutStepEventBuilder = (inputEvent) => {
   const contextualPayload = mapObjectKeys(inputEvent.context, contextualFieldMappingJSON);
   const properties = {
-    checkout_id: inputEvent.data.checkout.token,
+    checkout_id: inputEvent?.data?.checkout?.token,
   };
   return createMessage(
     EventType.TRACK,
@@ -175,7 +175,7 @@ const checkoutStepEventBuilder = (inputEvent) => {
 
 const searchEventBuilder = (inputEvent) => {
   const properties = {
-    query: inputEvent.data.searchResult.query,
+    query: inputEvent?.data?.searchResult?.query,
   };
   const contextualPayload = mapObjectKeys(inputEvent.context, contextualFieldMappingJSON);
   return createMessage(

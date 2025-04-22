@@ -62,7 +62,6 @@ const setImportCredentials = (destConfig) => {
 };
 
 const responseBuilderSimple = (payload, message, eventType, destConfig) => {
-  validateMixpanelPayloadLimits(payload);
   const response = defaultRequestConfig();
   response.method = defaultPostRequestConfig.requestMethod;
   response.userId = message.userId || message.anonymousId;
@@ -188,7 +187,7 @@ const getEventValueForTrackEvent = (message, destination) => {
     properties.$browser = browser.name;
     properties.$browser_version = browser.version;
   }
-
+  validateMixpanelPayloadLimits(properties);
   const payload = {
     event: message.event,
     properties,
@@ -381,6 +380,7 @@ const processPageOrScreenEvents = (message, type, destination) => {
       : 'Loaded a Screen';
   }
 
+  validateMixpanelPayloadLimits(properties);
   const payload = {
     event: eventName,
     properties,

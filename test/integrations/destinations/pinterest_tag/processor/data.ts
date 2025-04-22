@@ -53,7 +53,7 @@ export const data = [
                 order_id: '50314b8e9bcf000000000000',
                 requestIP: '123.0.0.0',
                 optOutType: 'LDP',
-                clickId: 'dummy_clickId',
+                clickId: 4567576,
                 products: [
                   {
                     sku: '45790-32',
@@ -153,7 +153,7 @@ export const data = [
                   event_time: 1597383030,
                   partner_name: 'testPartner',
                   user_data: {
-                    click_id: 'dummy_clickId',
+                    click_id: '4567576',
                     client_user_agent: 'chrome',
                     country: ['582967534d0f909d196b97f9e6921342777aea87b46fa52df165389db1fb8ccf'],
                     ct: ['6689106ca7922c30b2fd2c175c85bc7fc2d52cc4941bdd7bb622c6cdc6284a85'],
@@ -237,24 +237,23 @@ export const data = [
                 discount: 2.5,
                 order_id: '50314b8e9bcf000000000000',
                 requestIP: '123.0.0.0',
+                clickId: 'dummy_clickId',
                 products: [
                   {
-                    sku: '45790-32',
+                    sku: 4579032,
                     url: 'https://www.example.com/product/path',
                     name: 'Monopoly: 3rd Edition',
                     price: 19,
                     category: 'Games',
                     quantity: 1,
                     image_url: 'https:///www.example.com/product/path.jpg',
-                    product_id: '507f1f77bcf86cd799439011',
                   },
                   {
-                    sku: '46493-32',
+                    sku: 4649332,
                     name: 'Uno Card Game',
                     price: 3,
                     category: 'Games',
                     quantity: 2,
-                    product_id: '505bd76785ebb509fc183733',
                   },
                 ],
                 shipping: 3,
@@ -325,23 +324,24 @@ export const data = [
                       '6ca13d52ca70c883e0f0bb101e425a89e8624de51db2d2392593af6a84118090',
                     ],
                     client_user_agent: 'chrome',
+                    click_id: 'dummy_clickId',
                   },
                   custom_data: {
                     currency: 'USD',
                     value: '27.5',
                     order_id: '50314b8e9bcf000000000000',
                     num_items: 3,
-                    content_ids: ['507f1f77bcf86cd799439011', '505bd76785ebb509fc183733'],
+                    content_ids: ['4579032', '4649332'],
                     contents: [
                       {
-                        id: '507f1f77bcf86cd799439011',
+                        id: '4579032',
                         item_category: 'Games',
                         item_name: 'Monopoly: 3rd Edition',
                         quantity: 1,
                         item_price: '19',
                       },
                       {
-                        id: '505bd76785ebb509fc183733',
+                        id: '4649332',
                         item_category: 'Games',
                         item_name: 'Uno Card Game',
                         quantity: 2,
@@ -397,7 +397,7 @@ export const data = [
               messageId: '7208bbb6-2c4e-45bb-bf5b-ad426f3593e9',
               timestamp: '2020-08-14T05:30:30.118Z',
               properties: {
-                product_id: '123',
+                product_id: 123,
                 tax: 2,
                 total: 27.5,
                 coupon: 'hasbros',
@@ -779,7 +779,7 @@ export const data = [
                 quantity: 2,
                 currency: 'USD',
                 discount: 2.5,
-                order_id: '50314b8e9bcf000000000000',
+                order_id: 465467456790,
                 requestIP: '123.0.0.0',
                 numOfItems: 2,
                 products: [
@@ -875,7 +875,7 @@ export const data = [
                     currency: 'USD',
                     value: '27.5',
                     num_items: 2,
-                    order_id: '50314b8e9bcf000000000000',
+                    order_id: '465467456790',
                     content_ids: ['507f1f77bcf86cd799439011', '505bd76785ebb509fc183733'],
                     contents: [
                       {
@@ -2945,7 +2945,7 @@ export const data = [
                     category: 'Games',
                     quantity: 1,
                     image_url: 'https:///www.example.com/product/path.jpg',
-                    product_id: '507f1f77bcf86cd799439011',
+                    product_id: 56457,
                   },
                   {
                     sku: '46493-32',
@@ -3036,10 +3036,10 @@ export const data = [
                     order_id: '50314b8e9bcf000000000000',
                     opt_out_type: 'LDP',
                     num_items: 3,
-                    content_ids: ['507f1f77bcf86cd799439011', '505bd76785ebb509fc183733'],
+                    content_ids: ['56457', '505bd76785ebb509fc183733'],
                     contents: [
                       {
-                        id: '507f1f77bcf86cd799439011',
+                        id: '56457',
                         item_category: 'Games',
                         item_name: 'Monopoly: 3rd Edition',
                         quantity: 1,

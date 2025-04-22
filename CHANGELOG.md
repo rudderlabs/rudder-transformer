@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.97.3](https://github.com/rudderlabs/rudder-transformer/compare/v1.97.2...v1.97.3) (2025-04-22)
+
+
+### Bug Fixes
+
+* revert validation in mixpanel ([#4273](https://github.com/rudderlabs/rudder-transformer/issues/4273)) ([9662439](https://github.com/rudderlabs/rudder-transformer/commit/966243965262278f5bfab3434d186defa395eaab))
+
 ### [1.97.2](https://github.com/rudderlabs/rudder-transformer/compare/v1.97.1...v1.97.2) (2025-04-22)
 
 

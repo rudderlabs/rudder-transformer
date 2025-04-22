@@ -35,7 +35,6 @@ const {
   CREATE_DELETION_TASK_ENDPOINT,
   MAX_PROPERTY_KEYS_COUNT,
   MAX_ARRAY_ELEMENTS_COUNT,
-  MAX_NESTING_DEPTH,
   MAX_PAYLOAD_SIZE_BYTES,
 } = require('./config');
 const { CommonUtils } = require('../../../util/common');
@@ -50,15 +49,7 @@ const mPSetOnceConfigJson = mappingConfig[ConfigCategory.SET_ONCE.name];
  * Helper function that performs recursive validation of objects
  * @private
  */
-function validateObjectRecursively(obj, path, depth) {
-  // Check nesting depth
-  if (depth > MAX_NESTING_DEPTH) {
-    const location = path ? ` at ${path}` : '';
-    throw new InstrumentationError(
-      `Mixpanel properties${location} exceed the maximum nesting depth of ${MAX_NESTING_DEPTH}`,
-    );
-  }
-
+function validateObjectRecursively(obj, path) {
   // Check number of keys
   const keys = Object.keys(obj);
   if (keys.length >= MAX_PROPERTY_KEYS_COUNT) {
@@ -82,11 +73,11 @@ function validateObjectRecursively(obj, path, depth) {
       // Check objects within arrays
       value.forEach((item, index) => {
         if (isObject(item)) {
-          validateObjectRecursively(item, `${newPath}[${index}]`, depth + 1);
+          validateObjectRecursively(item, `${newPath}[${index}]`);
         }
       });
     } else if (isObject(value)) {
-      validateObjectRecursively(value, newPath, depth + 1);
+      validateObjectRecursively(value, newPath);
     }
   });
 }
@@ -94,7 +85,7 @@ function validateObjectRecursively(obj, path, depth) {
  * Validates that payload object adheres to Mixpanel's limits:
  * - Must be smaller than 1MB of uncompressed JSON
  * - Must have fewer than 255 properties
- * - All nested object payload must have fewer than 255 keys and max nesting depth is 3
+ * - All nested object payload must have fewer than 255 keys
  * - All array payload must have fewer than 255 elements
  *
  * @param {Object} payload - The payload object to validate
@@ -112,7 +103,7 @@ const validateMixpanelPayloadLimits = (payload) => {
   }
 
   // Start the recursive validation
-  validateObjectRecursively(payload, '', 0);
+  validateObjectRecursively(payload, '');
 };
 
 /**

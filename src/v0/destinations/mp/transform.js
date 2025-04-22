@@ -36,7 +36,6 @@ const {
   generatePageOrScreenCustomEventName,
   recordBatchSizeMetrics,
   getBaseEndpoint,
-  validateMixpanelPayloadLimits,
 } = require('./util');
 const { CommonUtils } = require('../../../util/common');
 
@@ -187,7 +186,6 @@ const getEventValueForTrackEvent = (message, destination) => {
     properties.$browser = browser.name;
     properties.$browser_version = browser.version;
   }
-  validateMixpanelPayloadLimits(properties);
   const payload = {
     event: message.event,
     properties,
@@ -380,7 +378,6 @@ const processPageOrScreenEvents = (message, type, destination) => {
       : 'Loaded a Screen';
   }
 
-  validateMixpanelPayloadLimits(properties);
   const payload = {
     event: eventName,
     properties,

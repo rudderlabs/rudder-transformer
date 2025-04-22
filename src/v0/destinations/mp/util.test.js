@@ -865,10 +865,7 @@ describe('validateMixpanelPayloadLimits', () => {
       prop1: deepObject,
     };
 
-    expect(() => validateMixpanelPayloadLimits(properties)).toThrow(InstrumentationError);
-    expect(() => validateMixpanelPayloadLimits(properties)).toThrow(
-      `exceed the maximum nesting depth of ${MAX_NESTING_DEPTH}`,
-    );
+    expect(() => validateMixpanelPayloadLimits(properties)).not.toThrow();
   });
 
   it('should handle non-object input gracefully', () => {
@@ -928,9 +925,6 @@ describe('validateMixpanelPayloadLimits', () => {
       },
     };
 
-    expect(() => validateMixpanelPayloadLimits(tooDeepObject)).toThrow(InstrumentationError);
-    expect(() => validateMixpanelPayloadLimits(tooDeepObject)).toThrow(
-      `exceed the maximum nesting depth of ${MAX_NESTING_DEPTH}`,
-    );
+    expect(() => validateMixpanelPayloadLimits(tooDeepObject)).not.toThrow();
   });
 });

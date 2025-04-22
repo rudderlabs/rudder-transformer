@@ -198,9 +198,6 @@ const createIdentifyResponse = (message, type, destination, responseBuilderSimpl
   // user payload created
   const properties = getTransformedJSON(message, mPIdentifyConfigJson, useNewMapping);
 
-  // Validate properties against Mixpanel's limits
-  validateMixpanelPayloadLimits(properties);
-
   const payload = {
     $set: properties,
     $token: token,

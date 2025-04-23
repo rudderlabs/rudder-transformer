@@ -28,6 +28,7 @@ const {
   MAX_BATCH_SIZE_CRM_CONTACT,
   BATCH_IDENTIFY_CRM_CREATE_NEW_CONTACT,
   BATCH_IDENTIFY_CRM_UPDATE_CONTACT,
+  BATCH_UPSERT_CRM_CONTACT,
   mappingConfig,
   ConfigCategory,
   TRACK_CRM_ENDPOINT,
@@ -45,6 +46,7 @@ const {
   populateTraits,
   addExternalIdToHSTraits,
   removeHubSpotSystemField,
+  isUpsertEnabled,
 } = require('./util');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
@@ -329,6 +331,30 @@ const batchIdentify = (arrayChunksIdentify, batchedResponseList, batchOperation)
         }
         metadata.push(ev.metadata);
       });
+    } else if (batchOperation === 'upsertContacts') {
+      // Use new batch upsert endpoint if env enabled, else fallback to old logic (if any)
+      if (isUpsertEnabled()) {
+        batchEventResponse.batchedRequest.endpoint = BATCH_UPSERT_CRM_CONTACT;
+        const lookupField = chunk[0].destination.Config.lookupField || 'email';
+        chunk.forEach((ev) => {
+          // Use idProperty from event if defined and not null/empty; else, use lookupField.
+          const idProp = ev.message.body.JSON.idProperty?.trim()
+            ? ev.message.body.JSON.idProperty
+            : lookupField;
+          identifyResponseList.push({
+            properties: ev.message.body.JSON.properties,
+            idProperty: idProp,
+          });
+          metadata.push(ev.metadata);
+        });
+      } else {
+        // fallback to previous logic (if any), or keep as is
+        chunk.forEach((ev) => {
+          batchEventResponse.batchedRequest.endpoint = ev.message.endpoint;
+          identifyResponseList.push(ev.message.body.JSON);
+          metadata.push(ev.metadata);
+        });
+      }
     } else if (batchOperation === 'createAssociations') {
       chunk.forEach((ev) => {
         batchEventResponse.batchedRequest.endpoint = ev.message.endpoint;
@@ -376,6 +402,8 @@ const batchEvents = (destEvents) => {
   const createContactEventsChunk = [];
   // update contact chunk
   const updateContactEventsChunk = [];
+  // upsert contact chunk
+  const upsertContactEventsChunk = [];
   // rETL specific chunk
   const createAllObjectsEventChunk = [];
   const updateAllObjectsEventChunk = [];
@@ -429,6 +457,9 @@ const batchEvents = (destEvents) => {
     } else if (operation === 'updateContacts') {
       // Identify: making chunks for CRM update contact endpoint
       updateContactEventsChunk.push(event);
+    } else if (operation === 'upsertContacts') {
+      // Identify: making chunks for CRM upsert contact endpoint
+      upsertContactEventsChunk.push(event);
     } else {
       throw new TransformationError('rETL - Not a valid operation');
     }
@@ -437,6 +468,11 @@ const batchEvents = (destEvents) => {
   const arrayChunksIdentifyCreateObjects = lodash.chunk(createAllObjectsEventChunk, maxBatchSize);
 
   const arrayChunksIdentifyUpdateObjects = lodash.chunk(updateAllObjectsEventChunk, maxBatchSize);
+
+  const arrayChunksIdentifyUpsertContact = lodash.chunk(
+    upsertContactEventsChunk,
+    MAX_BATCH_SIZE_CRM_CONTACT,
+  );
 
   // eventChunks = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
   // CRM create contact endpoint chunks
@@ -488,6 +524,16 @@ const batchEvents = (destEvents) => {
       arrayChunksIdentifyUpdateContact,
       batchedResponseList,
       'updateContacts',
+    );
+  }
+
+  // batching up 'upsert' contact endpoint chunks
+  if (arrayChunksIdentifyUpsertContact.length > 0) {
+    // <--- ADD THIS BLOCK
+    batchedResponseList = batchIdentify(
+      arrayChunksIdentifyUpsertContact,
+      batchedResponseList,
+      'upsertContacts',
     );
   }
 

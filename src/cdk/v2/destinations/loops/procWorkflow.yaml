@@ -15,9 +15,9 @@ steps:
 
   - name: validateInput
     template: |
+      console.log(.message);
       $.assert(.message.type, "message Type is not present. Aborting message.");
-      $.assert(.message.type in {{$.EventType.([.TRACK, .IDENTIFY])}}, 
-        "message type " + .message.type + " is not supported");
+      $.assert(.message.type in {{$.EventType.([.TRACK, .IDENTIFY])}}, "message type " + .message.type + " is not supported");
       $.assertConfig(.destination.Config.apiKey, "apiKey must be supplied in destination config.");
 
   - name: validateIdentifyEvent
@@ -73,8 +73,8 @@ steps:
       response.body.JSON = $.context.payload;
       response.endpoint = $.context.endpoint;
       response.headers = {
-        "authorization": "Bearer " + .destination.Config.apiKey,
-        "content-type": "application/json"
+        "Authorization": "Bearer " + .destination.Config.apiKey,
+        "Content-Type": "application/json"
       };
       response.method = $.context.method;
       response

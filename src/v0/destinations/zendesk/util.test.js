@@ -12,6 +12,9 @@ const { NetworkError } = require('@rudderstack/integrations-lib');
 
 jest.mock('../../../adapters/network');
 jest.mock('../../util');
+beforeEach(() => {
+  jest.clearAllMocks();
+});
 
 describe('getSourceName utility test', () => {
   it('send source name from config', () => {

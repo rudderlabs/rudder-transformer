@@ -25,7 +25,6 @@ const {
   getFieldValueFromMessage,
   constructPayload,
   defaultPutRequestConfig,
-  isEmptyObject,
   getEventType,
   getSuccessRespEvents,
   handleRtTfSingleEventError,
@@ -64,11 +63,14 @@ const responseBuilder = (message, headers, payload, endpoint) => {
 };
 
 /**
- * Returns the payload for updating primary email of users.
+ * It makes an API call to update the user's primary email.
+ * And it returns the payload for updating primary email of user
  * @param {*} userIdentityId -> userIdentity Id
  * @param {*} userId -> userId of users
  * @param {*} headers -> Authorizations for API's call
  * @param {*} email -> email of user
+ * @param {*} baseEndpoint
+ * @param {*} metadata
  * @returns
  */
 const responseBuilderToUpdatePrimaryAccount = async (
@@ -93,40 +95,75 @@ const responseBuilderToUpdatePrimaryAccount = async (
       value: `${email}`,
     },
   };
-  await updatePrimaryEmailOfUser(response.endpoint, response.body.JSON, headers, metadata);
+  // API call to update primary email of the user
+  await updatePrimaryEmailOfUser(response.endpoint, response.body.JSON, response.headers, metadata);
+  return response;
+};
+
+/**
+ * It makes an API call to remove email from the user's account.
+ * And it returns the payload for updating primary email of user
+ * @param {*} userIdentityId -> userIdentity Id
+ * @param {*} userId -> userId of users
+ * @param {*} headers -> Authorizations for API's call
+ * @param {*} baseEndpoint
+ * @param {*} metadata
+ * @returns
+ */
+const responseBuilderToRemoveEmailFromUser = async (
+  userIdentityId,
+  userId,
+  headers,
+  baseEndpoint,
+  metadata,
+) => {
+  const response = defaultRequestConfig();
+  const updatedHeaders = {
+    ...headers,
+    ...DEFAULT_HEADERS,
+  };
+  response.endpoint = `${baseEndpoint}users/${userId}/identities/${userIdentityId}`;
+  response.method = defaultDeleteRequestConfig.requestMethod;
+  response.headers = updatedHeaders;
+  // API call to remove email from user
+  await deleteEmailFromUser(response.endpoint, response.headers, metadata);
   return response;
 };
 
 /**
  * ref: https://developer.zendesk.com/api-reference/ticketing/users/user_identities/#list-identities
  * This function search id of primary email from userId and fetch its details.
- * @param {*} message -> message
+ * It also removes duplicate email if found, and updates the new email as the primary email.
  * @param {*} userId -> userId of users
  * @param {*} headers -> Authorizations for API's call
- * @returns it return payloadbuilder for updating email
+ * @param {*} newEmail -> new email of the user
+ * @param baseEndpoint
+ * @param metadata
+ * @returns it returns needed payloads for updating email
  */
 const payloadBuilderforUpdatingEmail = async (
   userId,
   headers,
-  userEmail,
+  newEmail,
   baseEndpoint,
   metadata,
 ) => {
   // url for list all identities of user
   const url = `${baseEndpoint}users/${userId}/identities`;
-  let identityContainingNonPrimaryEmail;
-  let primaryEmailIdentity;
+  const respLists = [];
+  let duplicateEmailIdentity;
+  let currentPrimaryEmailIdentity;
 
   try {
     const identities = await getUserIdentities(url, headers, metadata);
     if (identities && Array.isArray(identities)) {
-      identityContainingNonPrimaryEmail = identities.find(
+      duplicateEmailIdentity = identities.find(
         (identity) =>
-          identity.type === 'email' && identity.value === userEmail && identity.primary !== true,
+          identity.type === 'email' && identity.value === newEmail && identity.primary !== true,
       );
-      primaryEmailIdentity = identities.find(
+      currentPrimaryEmailIdentity = identities.find(
         (identity) =>
-          identity.primary === true && identity.type === 'email' && identity.value !== userEmail,
+          identity.type === 'email' && identity.value !== newEmail && identity.primary === true,
       );
     }
   } catch (error) {
@@ -134,26 +171,32 @@ const payloadBuilderforUpdatingEmail = async (
     return {};
   }
 
-  // delete secondary email if required
-  if (identityContainingNonPrimaryEmail?.id) {
-    const endpoint = `${baseEndpoint}users/${userId}/identities/${identityContainingNonPrimaryEmail.id}`;
-    await deleteEmailFromUser(endpoint, headers, metadata);
-  }
-
-  // update primary email if required
-  if (primaryEmailIdentity?.id) {
-    const response = await responseBuilderToUpdatePrimaryAccount(
-      primaryEmailIdentity.id,
+  // Remove duplicate email if it exists
+  if (duplicateEmailIdentity?.id) {
+    const response = await responseBuilderToRemoveEmailFromUser(
+      duplicateEmailIdentity.id,
       userId,
       headers,
-      userEmail,
       baseEndpoint,
       metadata,
     );
-    return response;
+    respLists.push(response);
   }
 
-  return {};
+  // update primary email if needed
+  if (currentPrimaryEmailIdentity?.id) {
+    const response = await responseBuilderToUpdatePrimaryAccount(
+      currentPrimaryEmailIdentity.id,
+      userId,
+      headers,
+      newEmail,
+      baseEndpoint,
+      metadata,
+    );
+    respLists.push(response);
+  }
+
+  return respLists;
 };
 
 async function createUserFields(url, config, newFields, fieldJson, metadata) {
@@ -509,14 +552,15 @@ async function processIdentify(message, destinationConfig, headers, baseEndpoint
   // handle primary email update if required
   const userEmail = traits?.email;
   if (destinationConfig.searchByExternalId && userIdByZendesk && userEmail) {
-    const payloadForUpdatingEmail = await payloadBuilderforUpdatingEmail(
+    const payloadsForUpdatingEmail = await payloadBuilderforUpdatingEmail(
       userIdByZendesk,
       headers,
       userEmail,
       baseEndpoint,
       metadata,
     );
-    if (!isEmptyObject(payloadForUpdatingEmail)) returnList.push(payloadForUpdatingEmail);
+    if (payloadsForUpdatingEmail && payloadsForUpdatingEmail.length > 0)
+      returnList.push(...payloadsForUpdatingEmail);
   }
 
   if (

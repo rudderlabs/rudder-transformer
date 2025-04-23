@@ -870,82 +870,124 @@ describe('getPayloadData tests', () => {
 });
 
 describe('prepareProxyRequest tests', () => {
-  test('should prepare proxy request with correct headers and payload', () => {
-    const request = {
-      body: { JSON: { key: 'value' } },
-      method: 'POST',
-      params: { param1: 'value1' },
-      endpoint: 'https://example.com',
-      headers: { 'Content-Type': 'application/json' },
-      destinationConfig: { key: 'value' },
-    };
-    const result = prepareProxyRequest(request);
-    expect(result).toEqual({
-      endpoint: 'https://example.com',
-      data: { key: 'value' },
-      params: { param1: 'value1' },
-      headers: { 'Content-Type': 'application/json', 'User-Agent': 'RudderLabs' },
-      method: 'POST',
-      config: { key: 'value' },
+  const testCases = [
+    {
+      name: 'should prepare proxy request with correct headers and payload',
+      input: {
+        body: { JSON: { key: 'value' } },
+        method: 'POST',
+        params: { param1: 'value1' },
+        endpoint: 'https://example.com',
+        headers: { 'Content-Type': 'application/json' },
+        destinationConfig: { key: 'value' },
+      },
+      expected: {
+        endpoint: 'https://example.com',
+        data: { key: 'value' },
+        params: { param1: 'value1' },
+        headers: {
+          'Content-Type': 'application/json',
+          'User-Agent': 'RudderLabs',
+        },
+        method: 'POST',
+        config: { key: 'value' },
+      },
+    },
+    {
+      name: 'should prepare proxy request when gzip payload is correct',
+      input: {
+        body: {
+          GZIP: {
+            payload: '{"key":"value"}',
+          },
+        },
+        method: 'POST',
+        endpoint: 'https://api.example.com/gzip',
+        headers: { 'Content-Type': 'application/json' },
+        destinationConfig: { apiKey: 'test-key' },
+      },
+      expected: {
+        endpoint: 'https://api.example.com/gzip',
+        data: getZippedPayload('{"key":"value"}'),
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Content-Encoding': 'gzip',
+          'User-Agent': 'RudderLabs',
+        },
+        config: { apiKey: 'test-key' },
+      },
+    },
+    {
+      name: 'should prepare proxy request when gzip payload is not correct',
+      input: {
+        body: {
+          GZIP: {
+            payload: { key: 'value' },
+          },
+        },
+        method: 'POST',
+        endpoint: 'https://api.example.com/gzip',
+        headers: { 'Content-Type': 'application/json' },
+        destinationConfig: { apiKey: 'test-key' },
+      },
+      expected: {
+        endpoint: 'https://api.example.com/gzip',
+        data: undefined,
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Content-Encoding': 'gzip',
+          'User-Agent': 'RudderLabs',
+        },
+        config: { apiKey: 'test-key' },
+      },
+    },
+    {
+      name: 'should prepare proxy request when body is empty',
+      input: {
+        body: {},
+        method: 'GET',
+        params: { param1: 'value1' },
+        endpoint: 'https://example.com',
+        destinationConfig: { key: 'value' },
+      },
+      expected: {
+        endpoint: 'https://example.com',
+        params: { param1: 'value1' },
+        headers: {
+          'User-Agent': 'RudderLabs',
+        },
+        method: 'GET',
+        config: { key: 'value' },
+      },
+    },
+  ];
+
+  testCases.forEach(({ name, input, expected }) => {
+    test(name, () => {
+      const result = prepareProxyRequest(input);
+      expect(result).toEqual(expected);
     });
   });
-
-  test('prepareProxyRequest: GZIP payload', () => {
-    const input = {
+  // Special case for FORM payload string verification
+  test('should prepare proxy request when body contains FORM payload', () => {
+    const request = {
       body: {
-        GZIP: {
-          payload: '{"key":"value"}',
+        FORM: {
+          field1: 'value1',
+          field2: 'value2',
         },
       },
       method: 'POST',
-      endpoint: 'https://api.example.com/gzip',
-      headers: { 'Content-Type': 'application/json' },
-      destinationConfig: { apiKey: 'test-key' },
+      endpoint: 'https://example.com',
     };
 
-    const expected = {
-      endpoint: 'https://api.example.com/gzip',
-      data: getZippedPayload('{"key":"value"}'),
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Content-Encoding': 'gzip',
-        'User-Agent': 'RudderLabs',
-      },
-      config: { apiKey: 'test-key' },
-    };
+    const result = prepareProxyRequest(request);
+    const formData = result.data.toString();
 
-    const result = prepareProxyRequest(input);
-    expect(result).toEqual(expected);
-  });
-
-  test('prepareProxyRequest: GZIP invalid payload', () => {
-    const input = {
-      body: {
-        GZIP: {
-          payload: { key: 'value' },
-        },
-      },
-      method: 'POST',
-      endpoint: 'https://api.example.com/gzip',
-      headers: { 'Content-Type': 'application/json' },
-      destinationConfig: { apiKey: 'test-key' },
-    };
-
-    const expected = {
-      endpoint: 'https://api.example.com/gzip',
-      data: undefined,
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Content-Encoding': 'gzip',
-        'User-Agent': 'RudderLabs',
-      },
-      config: { apiKey: 'test-key' },
-    };
-
-    const result = prepareProxyRequest(input);
-    expect(result).toEqual(expected);
+    expect(formData).toContain('field1=value1');
+    expect(formData).toContain('field2=value2');
   });
 });
 

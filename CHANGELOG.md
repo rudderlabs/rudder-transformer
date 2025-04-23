@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.97.2](https://github.com/rudderlabs/rudder-transformer/compare/v1.97.1...v1.97.2) (2025-04-22)
+
+
+### Bug Fixes
+
+* property validations in mixpanel ([#4269](https://github.com/rudderlabs/rudder-transformer/issues/4269)) ([c05f99d](https://github.com/rudderlabs/rudder-transformer/commit/c05f99d717c0c319316268f2a3db6e1c576bd99a))
+
+### [1.97.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.97.0...v1.97.1) (2025-04-15)
+
+
+### Bug Fixes
+
+* userpilot response structure ([#4253](https://github.com/rudderlabs/rudder-transformer/issues/4253)) ([10924bd](https://github.com/rudderlabs/rudder-transformer/commit/10924bd9d87545462c5f20b35dad9e2052dfa319))
+
 ## [1.97.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.96.0...v1.97.0) (2025-04-08)
 
 

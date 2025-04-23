@@ -18,29 +18,3 @@ export interface FailedRecord {
   message: string;
   [key: string]: any;
 }
-
-/**
- * Interface for event response
- */
-export interface EventResponse {
-  statusCode: number;
-  metadata: any;
-  error: string;
-}
-
-/**
- * Mock ProxyMetadata for testing
- */
-export interface MockProxyMetadata {
-  jobId: number;
-  [key: string]: any;
-}
-
-export interface PrepareProxyResponse {
-  endpoint: string;
-  data: Record<string, unknown> | string | Buffer | undefined;
-  params: Record<string, unknown>;
-  headers: Record<string, unknown>;
-  method: string;
-  config: Record<string, unknown>;
-}

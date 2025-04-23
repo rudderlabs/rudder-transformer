@@ -6,7 +6,12 @@ import { DESTINATION } from '../../../v0/destinations/mp/config';
 import { TransformerProxyError } from '../../../v0/util/errorTypes';
 import tags from '../../../v0/util/tags';
 import { getDynamicErrorType } from '../../../adapters/utils/networkUtils';
-import { ResponseParams, ResponseObject, DeliveryJobState, ProxyRequest } from '../../../types';
+import {
+  ResponseHandlerParams,
+  ResponseProxyObject,
+  DeliveryJobState,
+  ProxyRequest,
+} from '../../../types';
 import { Event, FailedRecord } from './types';
 
 const handleDestinationRequest = (destinationRequest: ProxyRequest): Event[] | undefined => {
@@ -92,7 +97,7 @@ export const createSuccessResponse = (
   status: number,
   message: string,
   rudderJobMetadata: any[],
-): ResponseObject => ({
+): ResponseProxyObject => ({
   status,
   message,
   response: createResponsesForAllEvents(rudderJobMetadata, 200, 'success'),
@@ -104,7 +109,7 @@ export const createSuccessResponse = (
  * @param responseParams - The response parameters
  * @throws {TransformerProxyError} - Throws error with appropriate status and message
  */
-export const handleNonSuccessResponse = (responseParams: ResponseParams): never => {
+export const handleNonSuccessResponse = (responseParams: ResponseHandlerParams): never => {
   const { destinationResponse, rudderJobMetadata } = responseParams;
   const { status } = destinationResponse;
 
@@ -137,9 +142,9 @@ export const handleNonSuccessResponse = (responseParams: ResponseParams): never 
  * @returns The processed response or null if not applicable
  */
 export const handleStandardApiResponse = (
-  responseParams: ResponseParams,
+  responseParams: ResponseHandlerParams,
   apiName: string,
-): ResponseObject | null => {
+): ResponseProxyObject | null => {
   const { destinationResponse, rudderJobMetadata } = responseParams;
   const message = `Request for ${DESTINATION} Processed Successfully`;
   const { response, status } = destinationResponse;
@@ -175,7 +180,7 @@ export const handleApiErrorResponse = (
   apiName: string,
   response: any,
   rudderJobMetadata: any[],
-): ResponseObject | null => {
+): ResponseProxyObject | null => {
   const error = get(response, 'error');
 
   if (!error) {
@@ -201,7 +206,9 @@ export const handleApiErrorResponse = (
  * @param responseParams - The response parameters
  * @returns The processed response
  */
-export const handleImportApiResponse = (responseParams: ResponseParams): ResponseObject | null => {
+export const handleImportApiResponse = (
+  responseParams: ResponseHandlerParams,
+): ResponseProxyObject | null => {
   const { destinationResponse, destinationRequest, rudderJobMetadata } = responseParams;
   const message = `Request for ${DESTINATION} Processed Successfully`;
   const { response, status } = destinationResponse;
@@ -253,8 +260,9 @@ export const handleImportApiResponse = (responseParams: ResponseParams): Respons
  * @param responseParams - The response parameters
  * @returns The processed response or null if not applicable
  */
-export const handleEngageApiResponse = (responseParams: ResponseParams): ResponseObject | null =>
-  handleStandardApiResponse(responseParams, 'Engage');
+export const handleEngageApiResponse = (
+  responseParams: ResponseHandlerParams,
+): ResponseProxyObject | null => handleStandardApiResponse(responseParams, 'Engage');
 
 /**
  * Handles responses from Mixpanel Groups API
@@ -262,8 +270,9 @@ export const handleEngageApiResponse = (responseParams: ResponseParams): Respons
  * @param responseParams - The response parameters
  * @returns The processed response or null if not applicable
  */
-export const handleGroupsApiResponse = (responseParams: ResponseParams): ResponseObject | null =>
-  handleStandardApiResponse(responseParams, 'Groups');
+export const handleGroupsApiResponse = (
+  responseParams: ResponseHandlerParams,
+): ResponseProxyObject | null => handleStandardApiResponse(responseParams, 'Groups');
 
 /**
  * Handles endpoint-specific responses based on the endpoint path
@@ -274,8 +283,8 @@ export const handleGroupsApiResponse = (responseParams: ResponseParams): Respons
  */
 export const handleEndpointSpecificResponses = (
   endpoint: string,
-  responseParams: ResponseParams,
-): ResponseObject | null => {
+  responseParams: ResponseHandlerParams,
+): ResponseProxyObject | null => {
   if (endpoint.includes('/import')) {
     return handleImportApiResponse(responseParams);
   }

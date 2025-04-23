@@ -1,6 +1,6 @@
 import { networkHandler } from './networkHandler';
 import { TransformerProxyError } from '../../../v0/util/errorTypes';
-import { ResponseParams } from '../../../types';
+import { ResponseHandlerParams } from '../../../types';
 import { getZippedPayload } from './utils';
 
 describe('Mixpanel V1 Network Handler', () => {
@@ -13,7 +13,7 @@ describe('Mixpanel V1 Network Handler', () => {
   describe('responseHandler', () => {
     interface TestCase {
       name: string;
-      responseParams: ResponseParams;
+      responseParams: ResponseHandlerParams;
       expectError: boolean;
       expectedStatus?: number;
       expectedMessage?: string;
@@ -372,7 +372,7 @@ describe('Mixpanel V1 Network Handler', () => {
   describe('endpoint-specific handlers', () => {
     interface EndpointTestCase {
       name: string;
-      responseParams: ResponseParams;
+      responseParams: ResponseHandlerParams;
       expectError: boolean;
       expectedStatus?: number;
       expectedResponseLength?: number;

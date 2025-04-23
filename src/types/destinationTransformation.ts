@@ -239,7 +239,7 @@ export type DeliveryV1Response = {
 /**
  * Interface for response parameters in network handlers
  */
-export interface ResponseParams {
+export interface ResponseHandlerParams {
   destinationResponse: {
     status: number;
     response?: any;
@@ -254,7 +254,9 @@ export interface ResponseParams {
 /**
  * Interface for response object from network handlers
  */
-export interface ResponseObject extends Partial<DeliveryV0Response>, Partial<DeliveryV1Response> {
+export interface ResponseProxyObject
+  extends Partial<DeliveryV0Response>,
+    Partial<DeliveryV1Response> {
   status: number;
   message: string;
   destinationResponse?: any;

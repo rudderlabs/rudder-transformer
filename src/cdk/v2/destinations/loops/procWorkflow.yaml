@@ -15,7 +15,6 @@ steps:
 
   - name: validateInput
     template: |
-      console.log(.message);
       $.assert(.message.type, "message Type is not present. Aborting message.");
       $.assert(.message.type in {{$.EventType.([.TRACK, .IDENTIFY])}}, "message type " + .message.type + " is not supported");
       $.assertConfig(.destination.Config.apiKey, "apiKey must be supplied in destination config.");

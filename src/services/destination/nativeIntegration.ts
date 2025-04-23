@@ -224,7 +224,7 @@ export class NativeIntegrationDestinationService implements DestinationService {
         } as DeliveryV1Response;
       }
 
-      return responseProxy as DeliveryV0Response | DeliveryV1Response;
+      return responseProxy;
     } catch (err: any) {
       const metadata = Array.isArray(deliveryRequest.metadata)
         ? deliveryRequest.metadata[0]

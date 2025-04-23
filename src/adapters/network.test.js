@@ -962,6 +962,25 @@ describe('prepareProxyRequest tests', () => {
         config: { key: 'value' },
       },
     },
+    {
+      name: 'should prepare proxy request when body contains in valid payload format',
+      input: {
+        body: { abc: 'value' },
+        method: 'PUT',
+        params: { param1: 'value1' },
+        endpoint: 'https://example.com',
+        destinationConfig: { key: 'value' },
+      },
+      expected: {
+        endpoint: 'https://example.com',
+        params: { param1: 'value1' },
+        headers: {
+          'User-Agent': 'RudderLabs',
+        },
+        method: 'PUT',
+        config: { key: 'value' },
+      },
+    },
   ];
 
   testCases.forEach(({ name, input, expected }) => {

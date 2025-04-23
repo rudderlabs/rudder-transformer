@@ -1,8 +1,8 @@
+import { gunzipSync } from 'zlib';
 import { ProxyV1TestData } from '../../../testTypes';
 import { generateProxyV1Payload, generateMetadata } from '../../../testUtils';
 import { secret1 } from '../maskedSecrets';
 import MockAdapter from 'axios-mock-adapter';
-
 // Generate metadata for test events
 const metadata = [generateMetadata(1), generateMetadata(2)];
 
@@ -17,6 +17,27 @@ const retryStatTags = {
   destinationId: 'default-destinationId',
   workspaceId: 'default-workspaceId',
 };
+
+const gzipPayload = JSON.stringify([
+  {
+    event: 'Test Event 1',
+    properties: {
+      time: 1619006730,
+      $insert_id: 'event1',
+      distinct_id: 'user123',
+      property1: 'value1',
+    },
+  },
+  {
+    event: 'Test Event 2',
+    properties: {
+      time: 1619006731,
+      $insert_id: 'event2',
+      distinct_id: 'user123',
+      property2: 'value2',
+    },
+  },
+]);
 
 // Test data for v1 API
 export const testScenariosForV1API: ProxyV1TestData[] = [
@@ -94,12 +115,6 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
           },
         },
       },
-    },
-    mockFns: (mockAdapter: MockAdapter) => {
-      // Mock the Mixpanel Import API response for successful batch
-      mockAdapter.onPost('https://api.mixpanel.com/import').reply(200, {
-        status: 1,
-      });
     },
   },
   {
@@ -180,20 +195,6 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
         },
       },
     },
-    mockFns: (mockAdapter: MockAdapter) => {
-      // Mock the Mixpanel API response for partial batch failure
-      mockAdapter.onPost('https://api.mixpanel.com/import').reply(400, {
-        failed_records: [
-          {
-            index: 1,
-            $insert_id: 'event2',
-            field: 'time',
-            message: 'Invalid timestamp',
-          },
-        ],
-        num_records_imported: 1,
-      });
-    },
   },
   {
     id: 'mp_v1_scenario_3',
@@ -249,12 +250,6 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
           },
         },
       },
-    },
-    mockFns: (mockAdapter: MockAdapter) => {
-      // Mock the Mixpanel Engage API response with an error
-      mockAdapter.onPost('https://api.mixpanel.com/engage').reply(200, {
-        error: 'Some properties are invalid',
-      });
     },
   },
   {
@@ -312,12 +307,6 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
           },
         },
       },
-    },
-    mockFns: (mockAdapter: MockAdapter) => {
-      // Mock the Mixpanel Groups API response with an error
-      mockAdapter.onPost('https://api.mixpanel.com/groups').reply(200, {
-        error: 'Some group properties are invalid',
-      });
     },
   },
   {
@@ -380,12 +369,6 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
         },
       },
     },
-    mockFns: (mockAdapter: MockAdapter) => {
-      // Mock the Mixpanel Import API response with a server error
-      mockAdapter.onPost('https://api.mixpanel.com/import').reply(500, {
-        error: 'Internal Server Error',
-      });
-    },
   },
   {
     id: 'mp_v1_scenario_6',
@@ -408,26 +391,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
               project_id: secret1,
             },
             GZIP: {
-              payload: JSON.stringify([
-                {
-                  event: 'Test Event 1',
-                  properties: {
-                    time: 1619006730,
-                    $insert_id: 'event1',
-                    distinct_id: 'user123',
-                    property1: 'value1',
-                  },
-                },
-                {
-                  event: 'Test Event 2',
-                  properties: {
-                    time: 1619006731,
-                    $insert_id: 'event2',
-                    distinct_id: 'user123',
-                    property2: 'value2',
-                  },
-                },
-              ]),
+              payload: gzipPayload,
             },
           },
           metadata,
@@ -463,9 +427,31 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
       },
     },
     mockFns: (mockAdapter: MockAdapter) => {
-      // Mock the Mixpanel Import API response for successful batch
-      mockAdapter.onPost('https://api.mixpanel.com/import').reply(200, {
-        status: 1,
+      // Mock the Mixpanel Import API response for successful batch we are doing beacuse data in gzip format
+      // mockAdapter.onPost do not handle deep match of body due to this we
+      // create custom mock so that we can check wheather the correct body and header is sent to mockAdapter
+      mockAdapter.onPost('https://api.mixpanel.com/import').reply((config) => {
+        const actualBody = gunzipSync(config.data).toString();
+        const actualHeaders = config.headers || {};
+        const headersMatch = Object.entries({
+          'Content-Encoding': 'gzip',
+          'Content-Type': 'application/json',
+          'User-Agent': 'RudderLabs',
+        }).every(
+          ([key, value]) =>
+            actualHeaders[key] && actualHeaders[key].toLowerCase() === value.toLowerCase(),
+        );
+
+        if (actualBody === gzipPayload && headersMatch) {
+          return [
+            200,
+            {
+              status: 2,
+            },
+          ];
+        } else {
+          return [400, 'Request body did not match'];
+        }
       });
     },
   },

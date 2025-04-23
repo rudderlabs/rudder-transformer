@@ -351,7 +351,7 @@ const extractPayloadForFormat = (payload, format) => {
     JSON: () => payload,
     XML: () => payload?.payload,
     FORM: () => getFormData(payload),
-    GZIP: () => getZippedPayload(payload.payload),
+    GZIP: () => getZippedPayload(payload?.payload),
   };
 
   const extractor = extractors[format];
@@ -369,7 +369,15 @@ const extractPayloadForFormat = (payload, format) => {
  * @returns
  */
 const prepareProxyRequest = (request) => {
-  const { body, method, params, endpoint, headers, destinationConfig: config } = request;
+  const {
+    body,
+    method,
+    params,
+    endpoint,
+    headers: incomingHeaders = {},
+    destinationConfig: config,
+  } = request;
+  const headers = { ...incomingHeaders };
   const { payload, payloadFormat } = getPayloadData(body);
   if (payloadFormat === 'GZIP') {
     headers['Content-Encoding'] = 'gzip';

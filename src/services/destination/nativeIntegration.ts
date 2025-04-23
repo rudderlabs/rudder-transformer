@@ -223,7 +223,6 @@ export class NativeIntegrationDestinationService implements DestinationService {
           authErrorCategory: v0Response.authErrorCategory,
         } as DeliveryV1Response;
       }
-
       return responseProxy;
     } catch (err: any) {
       const metadata = Array.isArray(deliveryRequest.metadata)

@@ -1,4 +1,3 @@
-import { gzipSync } from 'node:zlib';
 import { get } from 'lodash';
 import logger from '../../../logger';
 import { isHttpStatusSuccess } from '../../../v0/util';
@@ -297,15 +296,6 @@ export const handleEndpointSpecificResponses = (
   return null;
 };
 
-export const getZippedPayload = (payload: string): Buffer | undefined => {
-  try {
-    return gzipSync(payload);
-  } catch (err) {
-    logger.error(`Failed to parse GZIP payload: ${err}`);
-    return undefined;
-  }
-};
-
 export default {
   checkIfEventIsAbortableInImport,
   createResponsesForAllEvents,
@@ -314,5 +304,4 @@ export default {
   handleStandardApiResponse,
   handleEndpointSpecificResponses,
   handleApiErrorResponse,
-  getZippedPayload,
 };

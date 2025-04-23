@@ -1,5 +1,6 @@
 const mockLoggerInstance = {
   info: jest.fn(),
+  error: jest.fn(),
 };
 const {
   getFormData,
@@ -14,6 +15,7 @@ const {
   httpPUT,
   httpPATCH,
   getPayloadData,
+  getZippedPayload,
 } = require('./network');
 const { getFuncTestData } = require('../../test/testHelper');
 jest.mock('../util/stats', () => ({
@@ -886,6 +888,64 @@ describe('prepareProxyRequest tests', () => {
       method: 'POST',
       config: { key: 'value' },
     });
+  });
+
+  test('prepareProxyRequest: GZIP payload', () => {
+    const input = {
+      body: {
+        GZIP: {
+          payload: '{"key":"value"}',
+        },
+      },
+      method: 'POST',
+      endpoint: 'https://api.example.com/gzip',
+      headers: { 'Content-Type': 'application/json' },
+      destinationConfig: { apiKey: 'test-key' },
+    };
+
+    const expected = {
+      endpoint: 'https://api.example.com/gzip',
+      data: getZippedPayload('{"key":"value"}'),
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Content-Encoding': 'gzip',
+        'User-Agent': 'RudderLabs',
+      },
+      config: { apiKey: 'test-key' },
+    };
+
+    const result = prepareProxyRequest(input);
+    expect(result).toEqual(expected);
+  });
+
+  test('prepareProxyRequest: GZIP invalid payload', () => {
+    const input = {
+      body: {
+        GZIP: {
+          payload: { key: 'value' },
+        },
+      },
+      method: 'POST',
+      endpoint: 'https://api.example.com/gzip',
+      headers: { 'Content-Type': 'application/json' },
+      destinationConfig: { apiKey: 'test-key' },
+    };
+
+    const expected = {
+      endpoint: 'https://api.example.com/gzip',
+      data: undefined,
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Content-Encoding': 'gzip',
+        'User-Agent': 'RudderLabs',
+      },
+      config: { apiKey: 'test-key' },
+    };
+
+    const result = prepareProxyRequest(input);
+    expect(result).toEqual(expected);
   });
 });
 

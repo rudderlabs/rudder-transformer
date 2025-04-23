@@ -379,7 +379,7 @@ const prepareProxyRequest = (request) => {
   } = request;
   const headers = { ...incomingHeaders };
   const { payload, payloadFormat } = getPayloadData(body);
-  if (payloadFormat === 'GZIP') {
+  if (payloadFormat && payloadFormat === 'GZIP') {
     headers['Content-Encoding'] = 'gzip';
   }
   const data = extractPayloadForFormat(payload, payloadFormat);
@@ -474,4 +474,5 @@ module.exports = {
   handleHttpRequest,
   enhanceRequestOptions,
   fireHTTPStats,
+  getZippedPayload,
 };

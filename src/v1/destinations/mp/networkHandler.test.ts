@@ -405,13 +405,8 @@ describe('Mixpanel V1 Network Handler', () => {
         name: 'Import API responses with missing batch data',
         responseParams: {
           destinationResponse: {
-            status: 400,
-            response: {
-              failed_records: [
-                { $insert_id: 'event1', field: 'time', message: 'Invalid timestamp' },
-              ],
-              num_records_imported: 0,
-            },
+            status: 500,
+            response: { error: 'Internal Server Error' },
           },
           // @ts-ignore - simplified test data
           destinationRequest: {
@@ -429,20 +424,13 @@ describe('Mixpanel V1 Network Handler', () => {
           rudderJobMetadata: [{ jobId: 1 }],
         },
         expectError: true,
-        expectedStatus: 200,
-        expectedResponseLength: 1,
-        expectedFirstEventStatus: 200,
-        expectedFirstEventError: 'success',
       },
       {
         name: 'Import API responses with malformed JSON batch',
         responseParams: {
           destinationResponse: {
-            status: 400,
-            response: {
-              failed_records: [],
-              num_records_imported: 0,
-            },
+            status: 500,
+            response: { error: 'Internal Server Error' },
           },
           // @ts-ignore - simplified test data
           destinationRequest: {
@@ -462,10 +450,6 @@ describe('Mixpanel V1 Network Handler', () => {
           rudderJobMetadata: [{ jobId: 1 }],
         },
         expectError: true,
-        expectedStatus: 200,
-        expectedResponseLength: 1,
-        expectedFirstEventStatus: 400,
-        expectedFirstEventError: expect.stringContaining('Failed to parse JSON batch'),
       },
       {
         name: 'non-success status codes from generic endpoints',

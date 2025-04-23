@@ -223,21 +223,6 @@ export class NativeIntegrationDestinationService implements DestinationService {
           authErrorCategory: v0Response.authErrorCategory,
         } as DeliveryV1Response;
       }
-      // Ensure response is always defined for V1 responses
-      if (version.toLowerCase() === 'v1' && !responseProxy.response) {
-        const jobStates = (deliveryRequest as ProxyV1Request).metadata.map(
-          (metadata) =>
-            ({
-              error: 'success',
-              statusCode: responseProxy.status,
-              metadata,
-            }) as DeliveryJobState,
-        );
-        responseProxy = {
-          ...responseProxy,
-          response: jobStates,
-        } as DeliveryV1Response;
-      }
 
       return responseProxy as DeliveryV0Response | DeliveryV1Response;
     } catch (err: any) {

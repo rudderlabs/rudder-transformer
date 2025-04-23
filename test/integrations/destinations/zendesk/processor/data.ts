@@ -2865,6 +2865,32 @@ export const data = [
           {
             output: {
               body: {
+                FORM: {},
+                JSON: {},
+                JSON_ARRAY: {},
+                XML: {},
+              },
+              endpoint:
+                'https://rudderlabshelp.zendesk.com/api/v2/users/900113780483/identities/7534173321117',
+              files: {},
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: authHeader1,
+                'X-Zendesk-Marketplace-Name': 'RudderStack',
+                'X-Zendesk-Marketplace-App-Id': '263241',
+                'X-Zendesk-Marketplace-Organization-Id': '3339',
+              },
+              method: 'DELETE',
+              params: {},
+              type: 'REST',
+              userId: '',
+              version: '1',
+            },
+            statusCode: 200,
+          },
+          {
+            output: {
+              body: {
                 XML: {},
                 FORM: {},
                 JSON: { identity: { type: 'email', value: 'example115@email.com' } },

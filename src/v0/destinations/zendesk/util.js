@@ -44,7 +44,7 @@ const getUserIdentities = async (endpoint, headers, metadata) => {
   );
 
   if (isHttpStatusSuccess(response.status)) {
-    const { identities } = response?.response || [];
+    const { identities } = response?.response || {};
     return identities;
   }
 

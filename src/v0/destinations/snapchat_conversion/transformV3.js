@@ -1,5 +1,6 @@
 const get = require('get-value');
 const { InstrumentationError } = require('@rudderstack/integrations-lib');
+const validator = require('validator');
 const { EventType } = require('../../../constants');
 
 const {
@@ -50,8 +51,10 @@ const populateHashedTraitsValues = (payload, message) => {
   const updatedPayload = { ...payload };
   const userData = updatedPayload.data[0].user_data || {};
 
-  const getHashedTrait = (value) =>
-    value ? getHashedValue(value.toString().toLowerCase().trim()) : undefined;
+  const getHashedTrait = (value) => {
+    const trimmed = value?.toString().trim().toLowerCase();
+    return trimmed ? getHashedValue(trimmed) : undefined;
+  };
 
   updatedPayload.data[0].user_data = {
     ...userData,
@@ -68,15 +71,18 @@ const populateHashedTraitsValues = (payload, message) => {
 };
 
 const populateHashedValues = (payload, message) => {
-  const email = getFieldValueFromMessage(message, 'emailOnly');
-  const phone = getNormalizedPhoneNumber(message);
   const updatedPayload = populateHashedTraitsValues(payload, message);
 
-  if (email) {
-    updatedPayload.data[0].user_data.em = getHashedValue(email.toString().toLowerCase().trim());
+  const email = getFieldValueFromMessage(message, 'emailOnly');
+  const trimmedEmail = email?.toString().toLowerCase().trim();
+  if (trimmedEmail && validator.isEmail(trimmedEmail)) {
+    updatedPayload.data[0].user_data.em = getHashedValue(trimmedEmail);
   }
-  if (phone) {
-    updatedPayload.data[0].user_data.ph = getHashedValue(phone.toString().toLowerCase().trim());
+
+  const phone = getNormalizedPhoneNumber(message);
+  const trimmedPhone = phone?.toString().toLowerCase().trim();
+  if (trimmedPhone) {
+    updatedPayload.data[0].user_data.ph = getHashedValue(trimmedPhone);
   }
 
   return updatedPayload;

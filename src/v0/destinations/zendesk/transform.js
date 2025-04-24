@@ -551,7 +551,9 @@ async function processIdentify(message, destinationConfig, headers, baseEndpoint
 
   // handle primary email update if required
   const userEmail = traits?.email;
-  if (destinationConfig.searchByExternalId && userIdByZendesk && userEmail) {
+  const shouldUpdateUsersPrimaryEmail =
+    destinationConfig.searchByExternalId && userIdByZendesk && userEmail;
+  if (shouldUpdateUsersPrimaryEmail) {
     const payloadsForUpdatingEmail = await payloadBuilderforUpdatingEmail(
       userIdByZendesk,
       headers,
@@ -559,8 +561,7 @@ async function processIdentify(message, destinationConfig, headers, baseEndpoint
       baseEndpoint,
       metadata,
     );
-    if (payloadsForUpdatingEmail && payloadsForUpdatingEmail.length > 0)
-      returnList.push(...payloadsForUpdatingEmail);
+    if (payloadsForUpdatingEmail?.length > 0) returnList.push(...payloadsForUpdatingEmail);
   }
 
   if (

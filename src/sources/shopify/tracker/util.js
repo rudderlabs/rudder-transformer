@@ -13,7 +13,6 @@ const {
   PRODUCT_MAPPING_EXCLUSION_FIELDS,
   SHOPIFY_TRACK_MAP,
   SHOPIFY_ADMIN_ONLY_EVENTS,
-  useRedisDatabase,
   maxTimeToIdentifyRSGeneratedCall,
 } = require('./config');
 const logger = require('../../../logger');
@@ -180,15 +179,13 @@ const getAnonymousIdAndSessionId = async (message, metricMetadata, redisData = n
       sessionId,
     };
   }
-  if (useRedisDatabase) {
-    if (!isDefinedAndNotNull(redisData)) {
-      const { event } = message;
-      // eslint-disable-next-line no-param-reassign
-      redisData = await getDataFromRedis(cartToken, metricMetadata, event);
-    }
-    anonymousId = redisData?.anonymousId;
-    sessionId = redisData?.sessionId;
+  if (!isDefinedAndNotNull(redisData)) {
+    const { event } = message;
+    // eslint-disable-next-line no-param-reassign
+    redisData = await getDataFromRedis(cartToken, metricMetadata, event);
   }
+  anonymousId = redisData?.anonymousId;
+  sessionId = redisData?.sessionId;
   if (!isDefinedAndNotNull(anonymousId)) {
     /* anonymousId or sessionId not found from db as well
     Hash the id and use it as anonymousId (limiting 256 -> 36 chars) and sessionId is not sent as its not required field

@@ -1,7 +1,6 @@
 /* eslint-disable global-require, import/no-dynamic-require */
 import { Context } from 'koa';
 import { DestHandlerMap } from '../constants/destinationCanonicalNames';
-import { getCPUProfile, getHeapProfile } from '../middleware';
 import { Metadata } from '../types';
 import defaultFeaturesConfig from '../features';
 
@@ -13,11 +12,8 @@ export class MiscService {
     return require(`../${version}/destinations/${dest}/transform`);
   }
 
-  public static getSourceHandler(source: string, version: string) {
-    if (version === 'v2') {
-      return require(`../sources/${source}/transform`);
-    }
-    return require(`../${version}/sources/${source}/transform`);
+  public static getSourceHandler(source: string) {
+    return require(`../sources/${source}/transform`);
   }
 
   public static getDeletionHandler(dest: string, version: string) {
@@ -66,13 +62,5 @@ export class MiscService {
 
   public static getFeatures() {
     return JSON.stringify(defaultFeaturesConfig);
-  }
-
-  public static async getCPUProfile(seconds: number) {
-    return getCPUProfile(seconds);
-  }
-
-  public static async getHeapProfile() {
-    return getHeapProfile();
   }
 }

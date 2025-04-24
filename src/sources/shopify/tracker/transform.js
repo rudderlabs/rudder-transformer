@@ -18,6 +18,8 @@ const { RedisDB } = require('../../../util/redis/redisConnector');
 const { removeUndefinedAndNullValues, isDefinedAndNotNull } = require('../../../v0/util');
 const Message = require('../../message');
 const { EventType } = require('../../../constants');
+const config = require('./config');
+
 const {
   INTEGERATION,
   MAPPING_CATEGORIES,
@@ -26,9 +28,7 @@ const {
   RUDDER_ECOM_MAP,
   SUPPORTED_TRACK_EVENTS,
   SHOPIFY_TRACK_MAP,
-  useRedisDatabase,
-} = require('./config');
-
+} = config;
 const NO_OPERATION_SUCCESS = {
   outputToSource: {
     body: Buffer.from('OK').toString('base64'),
@@ -141,10 +141,6 @@ const createMessageForEvent = (event, shopifyTopic) => {
 };
 
 const handleCartsUpdate = async (event, metricMetadata) => {
-  if (!useRedisDatabase) {
-    return { message: trackPayloadBuilder(event, 'carts_update') };
-  }
-
   const redisData = await getDataFromRedis(event.id || event.token, metricMetadata, 'Cart Update');
 
   const isValidEvent = await checkAndUpdateCartItems(
@@ -159,7 +155,6 @@ const handleCartsUpdate = async (event, metricMetadata) => {
   }
 
   return {
-    message: trackPayloadBuilder(event, 'carts_update'),
     redisData,
   };
 };
@@ -242,83 +237,82 @@ const processEvent = async (inputEvent, metricMetadata) => {
     return NO_OPERATION_SUCCESS;
   }
 
+  let redisData;
   // Special handling for carts_update
   if (shopifyTopic === 'carts_update') {
     const result = await handleCartsUpdate(event, metricMetadata);
     if (result.invalidEvent) {
       return NO_OPERATION_SUCCESS;
     }
-    return enrichMessage(result.message, event, shopifyTopic, metricMetadata, result.redisData);
+    redisData = result.redisData;
   }
 
   // Handle all other supported events
   const message = createMessageForEvent(event, shopifyTopic);
-  return enrichMessage(message, event, shopifyTopic, metricMetadata);
+  return enrichMessage(message, event, shopifyTopic, metricMetadata, redisData);
 };
 
 const isIdentifierEvent = (event) =>
   ['rudderIdentifier', 'rudderSessionIdentifier'].includes(event?.event);
 const processIdentifierEvent = async (event, metricMetadata) => {
-  if (useRedisDatabase) {
-    const cartToken =
-      typeof event.cartToken === 'string' ? event.cartToken.split('?')[0] : event.cartToken;
-    logger.info(`{{SHOPIFY::}} writeKey: ${metricMetadata.writeKey}, cartToken: ${cartToken}`, {
+  const cartToken =
+    typeof event.cartToken === 'string' ? event.cartToken.split('?')[0] : event.cartToken;
+  logger.info(`{{SHOPIFY::}} writeKey: ${metricMetadata.writeKey}, cartToken: ${cartToken}`, {
+    type: 'set',
+    source: metricMetadata.source,
+    writeKey: metricMetadata.writeKey,
+  });
+  let value;
+  let field;
+  if (event.event === 'rudderIdentifier') {
+    field = 'anonymousId';
+    // eslint-disable-next-line unicorn/consistent-destructuring
+    const lineItemshash = getHashLineItems(event.cart);
+    // eslint-disable-next-line unicorn/consistent-destructuring
+    value = ['anonymousId', event.anonymousId, 'itemsHash', lineItemshash];
+    stats.increment('shopify_redis_calls', {
+      type: 'set',
+      field: 'itemsHash',
+      source: metricMetadata.source,
+      writeKey: metricMetadata.writeKey,
+    });
+    /* cart_token: {
+         anonymousId: 'anon_id1',
+         lineItemshash: '0943gh34pg'
+        }
+    */
+  } else {
+    field = 'sessionId';
+    // eslint-disable-next-line unicorn/consistent-destructuring
+    value = ['sessionId', event.sessionId];
+    /* cart_token: {
+        anonymousId:'anon_id1',
+        lineItemshash:'90fg348fg83497u',
+        sessionId: 'session_id1'
+       }
+     */
+  }
+  try {
+    stats.increment('shopify_redis_calls', {
+      type: 'set',
+      field,
+      source: metricMetadata.source,
+      writeKey: metricMetadata.writeKey,
+    });
+    await RedisDB.setVal(`${cartToken}`, value);
+  } catch (e) {
+    logger.debug(`{{SHOPIFY::}} cartToken map set call Failed due redis error ${e}`, {
       type: 'set',
       source: metricMetadata.source,
       writeKey: metricMetadata.writeKey,
     });
-    let value;
-    let field;
-    if (event.event === 'rudderIdentifier') {
-      field = 'anonymousId';
-      // eslint-disable-next-line unicorn/consistent-destructuring
-      const lineItemshash = getHashLineItems(event.cart);
-      // eslint-disable-next-line unicorn/consistent-destructuring
-      value = ['anonymousId', event.anonymousId, 'itemsHash', lineItemshash];
-      stats.increment('shopify_redis_calls', {
-        type: 'set',
-        field: 'itemsHash',
-        source: metricMetadata.source,
-        writeKey: metricMetadata.writeKey,
-      });
-      /* cart_token: {
-           anonymousId: 'anon_id1',
-           lineItemshash: '0943gh34pg'
-          }
-      */
-    } else {
-      field = 'sessionId';
-      // eslint-disable-next-line unicorn/consistent-destructuring
-      value = ['sessionId', event.sessionId];
-      /* cart_token: {
-          anonymousId:'anon_id1',
-          lineItemshash:'90fg348fg83497u',
-          sessionId: 'session_id1'
-         }
-       */
-    }
-    try {
-      stats.increment('shopify_redis_calls', {
-        type: 'set',
-        field,
-        source: metricMetadata.source,
-        writeKey: metricMetadata.writeKey,
-      });
-      await RedisDB.setVal(`${cartToken}`, value);
-    } catch (e) {
-      logger.debug(`{{SHOPIFY::}} cartToken map set call Failed due redis error ${e}`, {
-        type: 'set',
-        source: metricMetadata.source,
-        writeKey: metricMetadata.writeKey,
-      });
-      stats.increment('shopify_redis_failures', {
-        type: 'set',
-        source: metricMetadata.source,
-        writeKey: metricMetadata.writeKey,
-      });
-      // returning 500 as status code in case of redis failure
-      throw new RedisError(`${e}`, 500);
-    }
+    stats.increment('shopify_redis_failures', {
+      type: 'set',
+      source: metricMetadata.source,
+      writeKey: metricMetadata.writeKey,
+    });
+    // returning 500 as status code in case of redis failure
+    throw new RedisError(`${e}`, 500);
   }
   return NO_OPERATION_SUCCESS;
 };
@@ -340,4 +334,8 @@ module.exports = {
   identifyPayloadBuilder,
   ecomPayloadBuilder,
   trackPayloadBuilder,
+  createMessageForEvent,
+  handleCartsUpdate,
+  enrichMessage,
+  enrichNonIdentifyMessage,
 };

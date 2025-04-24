@@ -1,11 +1,8 @@
 {
   "input": [
     {
-      "event": {
-        "anonymousId": "63767499ca6fb1b7c988d5bb",
-        "artist": "Gautam",
-        "genre": "Jazz",
-        "song": "Take Five"
+      "request": {
+        "body": "{\"anonymousId\": \"63767499ca6fb1b7c988d5bb\", \"artist\": \"Gautam\", \"genre\": \"Jazz\", \"song\": \"Take Five\"}"
       },
       "source": {
         "id": "source_id",
@@ -18,7 +15,7 @@
   "output": [
     {
       "statusCode": 500,
-      "error": "Cannot find module '../undefined/sources/NA_SOURCE/transform' from 'src/services/misc.ts'",
+      "error": "Cannot find module '../sources/NA_SOURCE/transform' from 'src/services/misc.ts'",
       "statTags": {
         "errorCategory": "transformation"
       }

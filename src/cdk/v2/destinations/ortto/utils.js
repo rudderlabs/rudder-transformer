@@ -2,17 +2,18 @@ const lodash = require('lodash');
 const { CommonUtils } = require('../../../../util/common');
 const { maxBatchSize } = require('./config');
 
-const getBirthdayObj = (birthday) => {
-  const dateRegex = /^\d{4}-\d{2}-\d{2}$/; // YYYY-MM-DD format
+const dateRegex = /^\d{4}-\d{2}-\d{2}$/; // YYYY-MM-DD format
 
+const getBirthdayObj = (birthday) => {
   if (!dateRegex.test(birthday)) {
     return null; // Invalid birthday format
   }
+
   const date = new Date(birthday);
 
-  const year = date.getFullYear();
-  const month = date.getMonth() + 1; // Month is 0-based, so add 1
-  const day = date.getDate();
+  const year = date.getUTCFullYear();
+  const month = date.getUTCMonth() + 1; // Month is 0-based, so add 1
+  const day = date.getUTCDate();
 
   return { year, month, day };
 };

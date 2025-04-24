@@ -1,21 +1,11 @@
-const Pyroscope = require('@pyroscope/nodejs');
+const Pyroscope = require('@rudderstack/pyroscope-nodejs').default;
+
 const { getDestTypeFromContext } = require('@rudderstack/integrations-lib');
 const stats = require('./util/stats');
 
-function initPyroscope() {
-  Pyroscope.init({
-    appName: 'rudder-transformer',
-  });
-  Pyroscope.startHeapCollecting();
-}
-
-function getCPUProfile(seconds) {
-  return Pyroscope.collectCpu(seconds);
-}
-
-function getHeapProfile() {
-  return Pyroscope.collectHeap();
-}
+Pyroscope.init({
+  appName: 'rudder-transformer',
+});
 
 function durationMiddleware() {
   return async (ctx, next) => {
@@ -60,10 +50,12 @@ function addRequestSizeMiddleware(app) {
   app.use(requestSizeMiddleware());
 }
 
+function addProfilingMiddleware(app) {
+  app.use(Pyroscope.koaMiddleware());
+}
+
 module.exports = {
   addStatMiddleware,
   addRequestSizeMiddleware,
-  getHeapProfile,
-  getCPUProfile,
-  initPyroscope,
+  addProfilingMiddleware,
 };

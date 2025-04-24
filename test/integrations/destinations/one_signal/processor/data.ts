@@ -554,7 +554,7 @@ export const data = [
               userId: 'user@27',
               channel: 'mobile',
               context: {
-                externalId: [{ type: 'playerId', id: '85be324d-6dab-4293-ad1f-42199d4c455b' }],
+                externalId: [{ type: 'playerId', id: 'external-player-id' }],
                 os: { name: '', version: '1.12.3' },
                 app: {
                   name: 'RudderLabs JavaScript SDK',
@@ -598,7 +598,7 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'PUT',
-              endpoint: 'https://onesignal.com/api/v1/players/85be324d-6dab-4293-ad1f-42199d4c455b',
+              endpoint: 'https://onesignal.com/api/v1/players/external-player-id',
               headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
               params: {},
               body: {

@@ -106,7 +106,30 @@ function preparePayload(events, config) {
   return finalResponse;
 }
 
-function processRecordInputsV0(groupedRecordInputs) {
+function processEventStreamRecordV1Events(groupedRecordInputs) {
+  const { destination } = groupedRecordInputs[0];
+  const {
+    audienceId,
+    typeOfList,
+    isHashRequired,
+    userSchema,
+    userDataConsent,
+    personalizationConsent,
+  } = destination.Config;
+
+  const config = {
+    audienceId,
+    typeOfList,
+    userSchema,
+    isHashRequired,
+    userDataConsent,
+    personalizationConsent,
+  };
+
+  return preparePayload(groupedRecordInputs, config);
+}
+
+function processVDMV1RecordEvents(groupedRecordInputs) {
   const { destination, message } = groupedRecordInputs[0];
   const {
     audienceId,
@@ -129,7 +152,7 @@ function processRecordInputsV0(groupedRecordInputs) {
   return preparePayload(groupedRecordInputs, config);
 }
 
-function processRecordInputsV1(groupedRecordInputs) {
+function processVDMV2RecordEvents(groupedRecordInputs) {
   const { connection, message } = groupedRecordInputs[0];
   const { audienceId, typeOfList, isHashRequired, userDataConsent, personalizationConsent } =
     connection.config.destination;
@@ -158,9 +181,14 @@ function processRecordInputsV1(groupedRecordInputs) {
 
 function processRecordInputs(groupedRecordInputs) {
   const event = groupedRecordInputs[0];
-  return isEventSentByVDMV1Flow(event) || !isEventSentByVDMV2Flow(event)
-    ? processRecordInputsV0(groupedRecordInputs)
-    : processRecordInputsV1(groupedRecordInputs);
+
+  if (isEventSentByVDMV1Flow(event)) {
+    return processVDMV1RecordEvents(groupedRecordInputs);
+  }
+  if (isEventSentByVDMV2Flow(event)) {
+    return processVDMV2RecordEvents(groupedRecordInputs);
+  }
+  return processEventStreamRecordV1Events(groupedRecordInputs);
 }
 
 module.exports = {

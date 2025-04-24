@@ -1,0 +1,84 @@
+bindings:
+  - name: EventType
+    path: ../../../../constants
+  - name: defaultRequestConfig
+    path: ../../../../v0/util
+  - name: isDefinedAndNotNull
+    path: ../../../../v0/util
+  - name: removeUndefinedAndNullValues
+    path: ../../../../v0/util
+  - name: transformTraits
+    path: ./utils
+  - name: getEndpoints
+    path: ./utils
+steps:
+  - name: validateInput
+    template: |
+      $.assert(.message.type, "message Type is not present. Aborting message.");
+      $.assert(.message.type in {{$.EventType.([.IDENTIFY, .TRACK, .GROUP])}}, 
+        "message type " + .message.type + " is not supported by Userpilot");
+
+  - name: prepareContext
+    template: |
+      $.context.messageType = .message.type;
+      $.context.payload = {};
+      $.context.apiVersion = "2020-09-22";
+      $.context.finalHeaders = {
+        "Authorization": "Token " + .destination.Config.apiKey,
+        "Content-Type": "application/json",
+        "X-API-Version": $.context.apiVersion
+      };
+  # Central API docs: https://docs.userpilot.com/article/195-identify-users-and-track-api
+  # Identify user API
+  - name: identifyPayload
+    condition: $.context.messageType == {{$.EventType.IDENTIFY}}
+    template: |
+      $.assert(.message.userId, "User ID is required for Userpilot identify calls");
+
+      $.context.payload = {
+        "user_id": .message.userId,
+        "company": $.isDefinedAndNotNull(.message.context.traits.company.id) ? .message.context.traits.company : null,
+      };
+
+      let traits = $.transformTraits(.message.context.traits || {});
+      $.context.payload.metadata = $.removeUndefinedAndNullValues(traits);      
+      $.context.endpoint = $.getEndpoints(.destination.Config).IDENTIFY;
+
+  # Track event API
+  - name: trackPayload
+    condition: $.context.messageType == {{$.EventType.TRACK}}
+    template: |
+      $.assert(.message.userId, "User ID is required for Userpilot track calls");
+      $.assert(.message.event, "Event name is required for Userpilot track calls");
+
+      $.context.payload = {
+        "user_id": .message.userId,
+        "event_name": .message.event,
+        "metadata": $.removeUndefinedAndNullValues(.message.properties || {}),
+      };
+
+      $.context.endpoint = $.getEndpoints(.destination.Config).TRACK;
+
+  # Group company API
+  - name: groupPayload
+    condition: $.context.messageType == {{$.EventType.GROUP}}
+    template: |
+      $.assert(.message.groupId, "Group ID is required for Userpilot group calls");
+
+      let traits = $.transformTraits(.message.traits || {});
+
+      $.context.payload = {
+        "company_id": .message.groupId,
+        "metadata": $.removeUndefinedAndNullValues(traits),
+      };
+
+      $.context.endpoint = $.getEndpoints(.destination.Config).GROUP;
+
+  - name: returnResponse
+    template: |
+      const response = $.defaultRequestConfig();
+      response.endpoint = $.context.endpoint;
+      response.headers = $.context.finalHeaders;
+      response.method = "POST";
+      response.body.JSON = $.removeUndefinedAndNullValues($.context.payload);
+      response

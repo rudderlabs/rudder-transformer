@@ -1,9 +1,10 @@
 interface FeaturesConfig {
   routerTransform: Record<string, boolean>;
   regulations: string[];
-  supportSourceTransformV1: boolean;
-  supportTransformerProxyV1: boolean;
-  upgradedToSourceTransformV2?: boolean;
+  supportSourceTransformV1: true;
+  supportTransformerProxyV1: true;
+  upgradedToSourceTransformV2: true;
+  supportDestTransformCompactedPayloadV1: true;
 }
 
 const defaultFeaturesConfig: FeaturesConfig = {
@@ -114,7 +115,8 @@ const defaultFeaturesConfig: FeaturesConfig = {
   ],
   supportSourceTransformV1: true,
   supportTransformerProxyV1: true,
-  upgradedToSourceTransformV2: process.env.UPGRADED_TO_SOURCE_TRANSFORM_V2 === 'true' || false, // redundant but required to show that the default is false
+  upgradedToSourceTransformV2: true,
+  supportDestTransformCompactedPayloadV1: true,
 };
 
 export default defaultFeaturesConfig;

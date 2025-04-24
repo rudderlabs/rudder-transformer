@@ -1,5 +1,5 @@
 import { authHeader1, secret1 } from '../maskedSecrets';
-const API_VERSION = 'v18';
+
 export const data = [
   {
     name: 'google_adwords_enhanced_conversions',
@@ -130,7 +130,7 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/1234567890:uploadConversionAdjustments`,
+              endpoint: '',
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
@@ -138,8 +138,12 @@ export const data = [
                 'login-customer-id': '1234567890',
               },
               params: {
+                accessToken: 'google_adwords_enhanced_conversions1',
                 event: 'Page View',
+                developerToken: 'ijkl91011',
                 customerId: '1234567890',
+                loginCustomerId: '1234567890',
+                subAccount: true,
               },
               body: {
                 JSON: {
@@ -617,7 +621,7 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/1234567890:uploadConversionAdjustments`,
+              endpoint: '',
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
@@ -625,8 +629,12 @@ export const data = [
                 'login-customer-id': '11',
               },
               params: {
+                accessToken: 'google_adwords_enhanced_conversions1',
                 event: 'Product Added',
+                developerToken: 'ijkl91011',
                 customerId: '1234567890',
+                loginCustomerId: '11',
+                subAccount: true,
               },
               body: {
                 JSON: {
@@ -1328,7 +1336,7 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/1234567890:uploadConversionAdjustments`,
+              endpoint: '',
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
@@ -1336,8 +1344,12 @@ export const data = [
                 'login-customer-id': '1234567890',
               },
               params: {
+                accessToken: 'google_adwords_enhanced_conversions1',
                 event: 'Page View',
+                developerToken: 'ijkl91011',
                 customerId: '1234567890',
+                loginCustomerId: '1234567890',
+                subAccount: true,
               },
               body: {
                 JSON: {
@@ -1518,7 +1530,7 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/1234567890:uploadConversionAdjustments`,
+              endpoint: '',
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
@@ -1526,8 +1538,12 @@ export const data = [
                 'login-customer-id': '1234567890',
               },
               params: {
+                accessToken: 'google_adwords_enhanced_conversions1',
                 event: 'Page View',
+                developerToken: 'ijkl91011',
                 customerId: '1234567890',
+                loginCustomerId: '1234567890',
+                subAccount: true,
               },
               body: {
                 JSON: {
@@ -1716,6 +1732,85 @@ export const data = [
               implementation: 'native',
               feature: 'processor',
             },
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'google_adwords_enhanced_conversions',
+    description: 'Test 11: Invalid event',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            metadata: {
+              secret: {
+                access_token: secret1,
+                refresh_token: 'efgh5678',
+                developer_token: 'ijkl91011',
+              },
+            },
+            destination: {
+              Config: {
+                rudderAccountId: '25u5whFH7gVTnCiAjn4ykoCLGoC',
+                customerId: '123-456-7890',
+                subAccount: true,
+                loginCustomerId: '123-456-7890',
+                listOfConversions: [
+                  {
+                    conversions: 'Page View',
+                  },
+                  {
+                    conversions: 'Product Added',
+                  },
+                ],
+                authStatus: 'active',
+              },
+            },
+            message: {
+              userId: 'identified user id',
+              anonymousId: 'anon-id-new',
+              context: {
+                traits: {
+                  trait1: 'new-val',
+                },
+                ip: '14.5.67.21',
+                library: {
+                  name: 'http',
+                },
+              },
+              timestamp: '2020-02-02T00:23:09.544Z',
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            error: 'Invalid payload. Message Type is not present',
+            metadata: {
+              secret: {
+                access_token: 'google_adwords_enhanced_conversions1',
+                developer_token: 'ijkl91011',
+                refresh_token: 'efgh5678',
+              },
+            },
+            statTags: {
+              destType: 'GOOGLE_ADWORDS_ENHANCED_CONVERSIONS',
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              feature: 'processor',
+              implementation: 'native',
+              module: 'destination',
+            },
+            statusCode: 400,
           },
         ],
       },

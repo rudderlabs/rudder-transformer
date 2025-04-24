@@ -1,24 +1,24 @@
 const { get, set } = require('lodash');
 const sha256 = require('sha256');
-const { NetworkError, NetworkInstrumentationError } = require('@rudderstack/integrations-lib');
-const SqlString = require('sqlstring');
-const { prepareProxyRequest, handleHttpRequest } = require('../../../adapters/network');
+const {
+  NetworkError,
+  // NetworkInstrumentationError,
+  GoogleAdsSDK,
+  InstrumentationError,
+  isDefinedAndNotNullAndNotEmpty,
+} = require('@rudderstack/integrations-lib');
+// const SqlString = require('sqlstring');
+const { prepareProxyRequest } = require('../../../adapters/network');
 const { isHttpStatusSuccess } = require('../../util/index');
 const { CONVERSION_ACTION_ID_CACHE_TTL } = require('./config');
 const Cache = require('../../util/cache');
 
 const conversionActionIdCache = new Cache(CONVERSION_ACTION_ID_CACHE_TTL);
 
-const {
-  processAxiosResponse,
-  getDynamicErrorType,
-} = require('../../../adapters/utils/networkUtils');
-const { BASE_ENDPOINT } = require('./config');
+const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 
 const tags = require('../../util/tags');
 const { getAuthErrCategory } = require('../../util/googleUtils');
-
-const ERROR_MSG_PATH = 'response[0].error.message';
 
 /**
  *  This function is used for collecting the conversionActionId using the conversion name
@@ -28,61 +28,49 @@ const ERROR_MSG_PATH = 'response[0].error.message';
  * @returns
  */
 
-const getConversionActionId = async ({ method, headers, params, metadata }) => {
+const getConversionActionId = async ({ params, googleAds }) => {
   const conversionActionIdKey = sha256(params.event + params.customerId).toString();
   return conversionActionIdCache.get(conversionActionIdKey, async () => {
-    const queryString = SqlString.format(
-      'SELECT conversion_action.id FROM conversion_action WHERE conversion_action.name = ?',
-      [params.event],
-    );
-    const data = {
-      query: queryString,
-    };
-    const searchStreamEndpoint = `${BASE_ENDPOINT}/${params.customerId}/googleAds:searchStream`;
-    const requestBody = {
-      url: searchStreamEndpoint,
-      data,
-      headers,
-      method,
-    };
-    const { processedResponse: gaecConversionActionIdResponse } = await handleHttpRequest(
-      'constructor',
-      requestBody,
-      {
-        destType: 'google_adwords_enhanced_conversions',
-        feature: 'proxy',
-        endpointPath: `/googleAds:searchStream`,
-        requestMethod: 'POST',
-        module: 'dataDelivery',
-        metadata,
-      },
-    );
-    const { status, response } = gaecConversionActionIdResponse;
-    if (!isHttpStatusSuccess(status)) {
+    const resp = await googleAds.getConversionActionId(params.event);
+    if (typeof resp === 'string') {
+      return resp;
+    }
+    if (resp === null) {
+      throw new InstrumentationError(
+        'Conversion Action not found, make sure the event name provided on the dashboard is exactly same as the conversion action name in Google Ads',
+      );
+    }
+    if (resp.type === 'client-error') {
       throw new NetworkError(
-        `"${JSON.stringify(
-          get(gaecConversionActionIdResponse, ERROR_MSG_PATH, '')
-            ? get(gaecConversionActionIdResponse, ERROR_MSG_PATH, '')
-            : response,
-        )} during Google_adwords_enhanced_conversions response transformation"`,
-        status,
+        `"${resp.message} during Google_adwords_enhanced_conversions response transformation[client-error]"`,
+        resp.statusCode,
         {
-          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
+          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(resp.statusCode),
         },
-        response,
-        getAuthErrCategory(gaecConversionActionIdResponse),
+        resp,
+        getAuthErrCategory({ response: resp, status: resp.statusCode }),
       );
     }
-    const conversionActionId = get(
-      gaecConversionActionIdResponse,
-      'response[0].results[0].conversionAction.id',
+
+    if (resp.type === 'application-error') {
+      throw new NetworkError(
+        `"${JSON.stringify(resp.responseBody)} during Google_adwords_enhanced_conversions response transformation"`,
+        resp.statusCode,
+        {
+          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(resp.statusCode),
+        },
+        resp.responseBody,
+        getAuthErrCategory({ response: resp.responseBody, status: resp.statusCode }),
+      );
+    }
+    throw new NetworkError(
+      `"${JSON.stringify(resp)} during Google_adwords_enhanced_conversions response transformation"`,
+      500,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(500),
+      },
+      resp,
     );
-    if (!conversionActionId) {
-      throw new NetworkInstrumentationError(
-        `Unable to find conversionActionId for conversion:${params.event}`,
-      );
-    }
-    return conversionActionId;
   });
 };
 
@@ -93,30 +81,32 @@ const getConversionActionId = async ({ method, headers, params, metadata }) => {
  * @param {*} request
  * @returns
  */
-const ProxyRequest = async (request) => {
-  const { body, method, endpoint, params, metadata } = request;
-  const { headers } = request;
-
-  const conversionActionId = await getConversionActionId({ method, headers, params, metadata });
-
-  set(
-    body.JSON,
-    'conversionAdjustments[0].conversionAction',
-    `customers/${params.customerId}/conversionActions/${conversionActionId}`,
-  );
-  const requestBody = { url: endpoint, data: body.JSON, headers, method };
-  const { httpResponse: response } = await handleHttpRequest('constructor', requestBody, {
-    destType: 'google_adwords_enhanced_conversions',
-    feature: 'proxy',
-    endpointPath: `/googleAds:uploadOfflineUserData`,
-    requestMethod: 'POST',
-    module: 'dataDelivery',
-    metadata,
+const gaecProxyRequest = async (request) => {
+  const { body, params } = request;
+  const googleAds = new GoogleAdsSDK.GoogleAds({
+    accessToken: params.accessToken,
+    customerId: params.customerId,
+    loginCustomerId: params.subAccount ? params.loginCustomerId : '',
+    developerToken: params.developerToken,
   });
+  const conversionActionId = await getConversionActionId({
+    params,
+    googleAds,
+  });
+
+  set(body.JSON, 'conversionAdjustments[0].conversionAction', `${conversionActionId}`);
+
+  const response = await googleAds.addConversionAdjustMent(body.JSON);
+
   return response;
 };
 
-const responseHandler = (responseParams) => {
+const gaecProcessAxiosResponse = (sdkResponse) => ({
+  response: sdkResponse.responseBody,
+  status: sdkResponse.statusCode,
+  ...(isDefinedAndNotNullAndNotEmpty(sdkResponse.headers) ? { headers: sdkResponse.headers } : {}),
+});
+const gaecResponseHandler = (responseParams) => {
   const { destinationResponse } = responseParams;
   const message = 'Request Processed Successfully';
   const { status } = destinationResponse;
@@ -159,9 +149,9 @@ const responseHandler = (responseParams) => {
 // eslint-disable-next-line func-names, @typescript-eslint/naming-convention
 class networkHandler {
   constructor() {
-    this.proxy = ProxyRequest;
-    this.responseHandler = responseHandler;
-    this.processAxiosResponse = processAxiosResponse;
+    this.proxy = gaecProxyRequest;
+    this.responseHandler = gaecResponseHandler;
+    this.processAxiosResponse = gaecProcessAxiosResponse;
     this.prepareProxy = prepareProxyRequest;
   }
 }

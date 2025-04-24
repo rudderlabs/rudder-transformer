@@ -400,13 +400,19 @@ describe('Mixpanel V1 Network Handler', () => {
           rudderJobMetadata: [{ jobId: 1 }],
         },
         expectError: true,
+        expectedStatus: 500,
       },
       {
         name: 'Import API responses with missing batch data',
         responseParams: {
           destinationResponse: {
-            status: 500,
-            response: { error: 'Internal Server Error' },
+            status: 400,
+            response: {
+              failed_records: [
+                { $insert_id: 'event1', field: 'time', message: 'Invalid timestamp' },
+              ],
+              num_records_imported: 0,
+            },
           },
           // @ts-ignore - simplified test data
           destinationRequest: {
@@ -424,13 +430,17 @@ describe('Mixpanel V1 Network Handler', () => {
           rudderJobMetadata: [{ jobId: 1 }],
         },
         expectError: true,
+        expectedStatus: 400,
       },
       {
         name: 'Import API responses with malformed JSON batch',
         responseParams: {
           destinationResponse: {
-            status: 500,
-            response: { error: 'Internal Server Error' },
+            status: 400,
+            response: {
+              failed_records: [],
+              num_records_imported: 0,
+            },
           },
           // @ts-ignore - simplified test data
           destinationRequest: {
@@ -450,6 +460,7 @@ describe('Mixpanel V1 Network Handler', () => {
           rudderJobMetadata: [{ jobId: 1 }],
         },
         expectError: true,
+        expectedStatus: 400,
       },
       {
         name: 'non-success status codes from generic endpoints',
@@ -471,6 +482,7 @@ describe('Mixpanel V1 Network Handler', () => {
           rudderJobMetadata: [{ jobId: 1 }],
         },
         expectError: true,
+        expectedStatus: 400,
       },
       {
         name: 'Engage API non-success responses',
@@ -492,6 +504,7 @@ describe('Mixpanel V1 Network Handler', () => {
           rudderJobMetadata: [{ jobId: 1 }],
         },
         expectError: true,
+        expectedStatus: 500,
       },
       {
         name: 'Groups API non-success responses',
@@ -513,6 +526,7 @@ describe('Mixpanel V1 Network Handler', () => {
           rudderJobMetadata: [{ jobId: 1 }],
         },
         expectError: true,
+        expectedStatus: 500,
       },
       {
         name: 'Engage API responses without errors',
@@ -577,7 +591,14 @@ describe('Mixpanel V1 Network Handler', () => {
         expectedFirstEventError,
       }) => {
         if (expectError) {
-          expect(() => handler.responseHandler(responseParams)).toThrow(TransformerProxyError);
+          expect.assertions(2);
+          try {
+            handler.responseHandler(responseParams);
+          } catch (error) {
+            expect(error).toBeInstanceOf(TransformerProxyError);
+            const err = error as TransformerProxyError;
+            expect(err.status).toBe(expectedStatus);
+          }
         } else {
           const result = handler.responseHandler(responseParams);
 
